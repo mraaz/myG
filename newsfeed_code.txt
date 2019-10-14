@@ -1,0 +1,6 @@
+fetch all posts from our followers order by date && limit to 20 && <> to []
+append to [] ID's of fetched data
+
+When user scrolls to fetch more data...
+
+
