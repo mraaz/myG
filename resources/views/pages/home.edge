@@ -1,0 +1,108 @@
+@layout('layouts/app')
+
+@section('title')
+myGame - Social Network
+@endsection
+
+@section('current-class')
+home-page
+@endsection
+
+@section('notifications')
+  <div class="notifications welcome
+    @if(flashMessage('notification'))
+      active
+    @endif
+  ">
+    @if(flashMessage('notification'))
+      {{flashMessage('notification')}}
+    @endif
+
+  </div>
+@endsection
+
+
+@section('content-area')
+<section class="compose-section">
+  <textarea name="name" rows="8" cols="80"> </textarea>
+  <div class="user-img"></div>
+  <div class="buttons">
+    <div class=" button photo-btn"><i class="fas fa-camera"></i></div>
+    <div class="button video-btn"><i class="fas fa-video"></i></div>
+    <div class="button send-btn"><i class="fas fa-scroll"></i></div>
+  </div>
+</section>
+<section id="updates">
+  <!-- Single update -->
+  <div class="update-container">
+    <div class="author-info">
+      <a href="#" class="user-img"></a>
+      <div class="info"><a href="#">Marc Raaz</a> shared a <a href="#">story</a></div>
+    </div>
+    <div class="media">
+      <div class="image" style="background: url('https://i.ytimg.com/vi/EDzLx3hkli0/maxresdefault.jpg'); background-position: center center;
+      background-repeat: no-repeat;background-size: contain;">
+      </div>
+    </div>
+    <div class="padding-container">
+      <div class="grey-container">
+        <div class="update-info">
+          <h3> How to become a developer?</h3>
+          <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        </div>
+        <div class="update-stats">
+          <div class="icon-section">
+            <div class="like-circle">
+              <i class="fas fa-thumbs-up"></i>
+            </div>
+          </div>
+          <div class="other-users">Jezza Raaz and 23 others liked update</div>
+          <div class="comments-stats">4 Comments</div>
+        </div>
+        <div class="compose-comment">
+          <textarea name="name" rows="800" cols="80"></textarea>
+          <div class="buttons">
+            <div class="repost-btn"><i class="fas fa-reply"></i> </div>
+            <div class="like-btn"><i class="fas fa-thumbs-up"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="update-container">
+    <div class="author-info">
+      <a href="#" class="user-img"></a>
+      <div class="info"><a href="#">Marc Raaz</a> shared a <a href="#">story</a></div>
+    </div>
+    <div class="media">
+      <div class="image" style="background: url('https://i.ytimg.com/vi/EDzLx3hkli0/maxresdefault.jpg'); background-position: center center;
+      background-repeat: no-repeat;background-size: contain;">
+      </div>
+    </div>
+    <div class="padding-container">
+      <div class="grey-container">
+        <div class="update-info">
+          <h3> How to become a developer?</h3>
+          <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        </div>
+        <div class="update-stats">
+          <div class="icon-section">
+            <div class="like-circle">
+              <i class="fas fa-thumbs-up"></i>
+            </div>
+          </div>
+          <div class="other-users">Jezza Raaz and 23 others liked update</div>
+          <div class="comments-stats">4 Comments</div>
+        </div>
+        <div class="compose-comment">
+          <textarea name="name" rows="8" cols="80"></textarea>
+          <div class="buttons">
+            <div class="repost-btn"><i class="fas fa-reply"></i> </div>
+            <div class="like-btn"><i class="fas fa-thumbs-up"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+@endsection

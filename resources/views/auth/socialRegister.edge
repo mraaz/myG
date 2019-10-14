@@ -1,0 +1,88 @@
+@layout('layouts/empty')
+
+@section('title')
+  myGame - Register
+@endsection
+
+@section('current-class')
+  auth-page
+@endsection
+
+@section('custom-style-app-container')
+
+@endsection
+
+@section('content')
+<div class="auth-form">
+  <h1>myGame</h1>
+  <form action="/user/save" method="POST" class="default-form">
+    {{ csrfField() }}
+    <div class="error-box
+      @if( hasErrorFor('email') || hasErrorFor('password') || hasErrorFor('alias') )
+        active
+      @endif
+    ">
+      @if(hasErrorFor('alias'))
+        {{getErrorFor('alias')}}
+      @endif
+      @if(hasErrorFor('database'))
+        {{getErrorFor('database')}}
+      @endif
+    </div>
+    <div class="form-group">
+      <label for="alias">Alias: (Unqiue! Can't be changed later!)</label>
+      <input type="text" name="alias" value="{{alias}}" class="text
+
+        @if(hasErrorFor('alias'))
+          error
+        @endif
+      "  required="" onkeypress="return checkKeyPress(this)">
+    </div>
+    <div class="form-group">
+      <label for="email">Email: (Unqiue! Can't be changed later!)</label>
+      <input type="text" name="email" value="{{email}}" class="text
+
+        @if(hasErrorFor('email'))
+          error
+        @endif
+      "  required="" readonly>
+    </div>
+    <div class="form-group">
+      <label for="firstName">First Name:</label>
+      <input type="text" name="firstName" value="{{ old ('firstName', '')}}" class="text
+
+        @if(hasErrorFor('firstName'))
+          error
+        @endif
+      " required="">
+    </div>
+    <div class="form-group">
+      <label for="lastName">Last Name:</label>
+      <input type="text" name="lastName" value="{{ old ('lastName', '')}}" class="text
+
+        @if(hasErrorFor('lastName'))
+          error
+        @endif
+      " required="">
+    </div>
+    <div class="form-group">
+      <button type="submit">Register</button>
+    </div>
+  <form>
+</div>
+<div class="side-image">
+</div>
+<script>
+  function checkKeyPress(ele){
+    console.log(event.keyCode);
+
+    if(event.keyCode == 32 || event.keyCode == 38 || event.keyCode == 61 || event.keyCode == 62 || event.keyCode == 60 || event.keyCode == 43 || event.keyCode == 44){
+      return false;
+    }
+
+    if(event.keyCode == 46 && ele.value.includes('.')){
+      return false;
+    }
+  }
+</script>
+@endsection

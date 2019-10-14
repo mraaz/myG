@@ -1,0 +1,101 @@
+@layout('layouts/empty')
+
+@section('title')
+  myGame - Register
+@endsection
+
+@section('current-class')
+  auth-page
+@endsection
+
+@section('custom-style-app-container')
+
+@endsection
+
+@section('content')
+<div class="auth-form">
+  <h1>myGame</h1>
+  <form action="/register" method="POST" class="default-form">
+    {{ csrfField() }}
+    <div class="error-box
+      @if( hasErrorFor('email') || hasErrorFor('password') || hasErrorFor('alias') )
+        active
+      @endif
+    ">
+      @if(hasErrorFor('email'))
+        {{getErrorFor('email')}}
+      @endif
+      @if(hasErrorFor('password'))
+        {{getErrorFor('password')}}
+      @endif
+      @if(hasErrorFor('alias'))
+        {{getErrorFor('alias')}}
+      @endif
+      @if(hasErrorFor('database'))
+        {{getErrorFor('database')}}
+      @endif
+    </div>
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input type="email" name="email" value="{{ old ('email', '')}}" class="text
+
+        @if(hasErrorFor('email'))
+          error
+        @endif
+      ">
+    </div>
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input type="password" name="password" value="" class="text
+
+        @if(hasErrorFor('password'))
+          error
+        @endif
+      ">
+    </div>
+    <div class="form-group">
+      <label for="confirm_password">Confirm Password:</label>
+      <input type="password" name="confirm_password" value="" class="text
+
+        @if(hasErrorFor('confirm_password'))
+          error
+        @endif
+      ">
+    </div>
+    <div class="form-group">
+      <label for="alias">Alias: (Unqiue! Can't be changed later!)</label>
+      <input type="text" name="alias" value="{{ old ('alias', '')}}" class="text
+
+        @if(hasErrorFor('alias'))
+          error
+        @endif
+      ">
+    </div>
+    <div class="form-group">
+      <label for="firstName">First Name:</label>
+      <input type="text" name="firstName" value="{{ old ('firstName', '')}}" class="text
+
+        @if(hasErrorFor('firstName'))
+          error
+        @endif
+      ">
+    </div>
+    <div class="form-group">
+      <label for="lastName">Last Name:</label>
+      <input type="text" name="lastName" value="{{ old ('lastName', '')}}" class="text
+
+        @if(hasErrorFor('lastName'))
+          error
+        @endif
+      ">
+    </div>
+    <div class="form-group">
+      <button type="submit">Register</button>
+    </div>
+    <hr>
+    <a href="/login">I remembered my details, let me try again</a>
+  <form>
+</div>
+<div class="side-image">
+</div>
+@endsection

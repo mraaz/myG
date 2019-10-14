@@ -1,0 +1,215 @@
+.app-container.home-page .addscheduleGames-page{
+  overflow: hidden;
+  position: absolute;
+  color: #0b0f14;
+  .content{
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-gap: 20px;
+    width: 64%;
+    padding: 30px;
+    justify-content: center;
+    align-items: center;
+    grid-column-gap: 88px;
+    grid-row-gap: 20px;
+    position: relative;
+    h1{
+      grid-column: span 2;
+      font-size: 2rem;
+      margin: 1rem 0;
+    }
+    label {
+      color:#fff;
+    }
+    .game-name{
+      width: 50%;
+      .game-name-box{
+        background: $backgroundContent;
+      }
+    }
+    .date-time{
+      display: grid;
+      grid-template-columns: max-content 3% max-content;
+      align-items: baseline;
+      font-size: 11px;
+      .date-time-label{
+        grid-column: span 3;
+      }
+      .start-date-box{
+        width: 88%;
+        cursor: pointer;
+        background: $backgroundContent;
+        font-size: 14px;
+        line-height: 32px;
+        color: #808080;
+      }
+      p{
+        font-weight: 400rem;
+        font-size: 18px;
+      }
+      .end-date-box{
+        cursor: pointer;
+        width: 88%;
+        background: $backgroundContent;
+        margin-left: 20px;
+        font-size: 14px;
+        line-height: 32px;
+        color: #808080;
+      }
+    }
+    .region{
+      cursor: pointer;
+      padding-top: 8px;
+      width: 48%;
+    }
+    .experience{
+      width: 48%;
+      cursor: pointer;
+      padding-top: 8px;
+    }
+    .platform{
+      cursor: pointer;
+      padding-top: 8px;
+      width: 48%;
+    }
+    .dota2_medal_ranks{
+      cursor: pointer;
+      width: 48%;
+    }
+    .dota2_medal_ranks_header{
+      display: flex;
+      align-items: center;
+      label{
+        align-items: center;
+        padding-top: 18px;
+        padding-left: 4px;
+      }
+    }
+
+    .dota2_server_regions{
+      cursor: pointer;
+      width: 48%;
+    }
+    .dota2_server_regions_header{
+      display: flex;
+      align-items: center;
+      label{
+        align-items: center;
+        padding-top: 18px;
+        padding-left: 4px;
+      }
+    }
+    .dota2_roles{
+      cursor: pointer;
+      width: 48%;
+    }
+    .dota2_roles_header{
+      display: flex;
+      align-items: center;
+      label{
+        align-items: center;
+        padding-top: 18px;
+        padding-left: 4px;
+      }
+    }
+    .description{
+      width: 48%;
+      padding-top: 8px;
+      .description-box{
+        background: $backgroundContent;
+        margin-left: 20px;
+        height: 60px;
+        font-size: 12px;
+        width: 90%;
+      }
+    }
+
+    .css-10nd86i {
+      padding-left: 20px;
+      font-size: 12px;
+      width: 120%;
+    }
+    .other{
+      padding-top: 8px;
+      .other-box{
+        background: $backgroundContent;
+        margin-left: 20px;
+        height: 60px;
+        font-size: 12px;
+        width: 90%;
+      }
+    }
+    .expiry{
+      padding-top: 8px;
+      cursor: pointer;
+      width: 48%;
+    }
+    .visibility{
+      padding-top: 8px;
+      cursor: pointer;
+      width: 50%;
+    }
+    .limit{
+      padding-top: 8px;
+      cursor: pointer;
+      width: 48%;
+    }
+    .accept-msg{
+      padding-top: 8px;
+      width: 100%;
+      .txtarea-accept{
+        background: white;
+        border-radius: 8px;
+        margin-left: 20px;
+        font-size: 14px;
+        color: #808080;
+      }
+    }
+    .buttons{
+      display: flex;
+      font-size: 4rem;
+      font-weight: 100;
+      margin-left:20px;
+      margin-top: 16px;
+      .save{
+        padding: 18px;
+        background: $primarybuttonBG;
+        border-radius: 4px;
+        border: none;
+        color: #fff;
+      cursor: pointer;
+      }
+      .save-create{
+        background: $primarybuttonBG;
+        border-radius: 4px;
+        border: none;
+        color: #fff;
+        margin-left: 10px;
+        padding: 16px;
+        cursor: pointer;
+      }
+    }
+    .info_box{
+      background-color: white;
+      grid-column: span 2;
+      width: 500px;
+      height: 200px;
+      padding: 25px;
+      margin: 25px;
+      border: 10px solid $primarybuttonBG;
+      -webkit-box-shadow: 0 0 15px -3px rgba(191,191,191,1);
+      -moz-box-shadow: 0 0 15px -3px rgba(191,191,191,1);
+      box-shadow: 0 0 15px -3px rgba(191,191,191,1);
+      justify-content: center;
+      align-items: center;
+    }
+    .game_name_error{
+      color: red;
+    }
+    .date_error{
+      color: red;
+    }
+  }//content
+
+
+} //.app-container

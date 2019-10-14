@@ -1,0 +1,50 @@
+@layout('layouts/empty')
+
+@section('title')
+  myGame - Social Network
+@endsection
+
+@section('current-class')
+  welcome-page
+@endsection
+
+@section('custom-style-app-container')
+  background: url('https://imgnooz.com/sites/default/files/wallpaper/nature/60886/beautiful-sea-landscape-wallpapers-60886-8495457.jpg'); background-size: cover; background-position: center center; background-repeat: none;
+@endsection
+
+@section('content')
+  <div class="welcome-message">
+    <h1>Welcome to myGame</h1>
+    <h3>The gamers social network</h3>
+  </div>
+    <div class="home-container">
+      <div class="box">
+        <div class="login-buttons">
+          <div class="button google-btn">
+            <a href="/login/google" class="button email-btn">
+              Google
+            </a>
+          </div>
+          <div class="button steam-btn">
+            <a href="/login/steam" class="button email-btn">
+              Steam
+            </a>
+          </div>
+          <div class="button facebook-btn">
+            <a href="/login/facebook" class="button email-btn">
+              FaceBook
+            </a>
+          </div>
+          <div class="button discord-btn">
+            <a href="/login/discord" class="button email-btn">
+              Discord
+            </a>
+          </div>
+          <hr>
+          <a href="/login" class="button email-btn">
+            Email
+          </a>
+        </div>
+      </div>
+    </div>
+@endsection

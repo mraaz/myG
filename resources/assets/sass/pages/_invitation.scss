@@ -1,0 +1,116 @@
+.app-container.home-page .invitation-page{
+  overflow: hidden;
+
+  .group-settings{
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 18px;
+  }
+
+  .padding-container{
+    padding: 18px 15px;
+    justify-content: center;
+
+  }
+  .invitation-grey-container{
+    width: 69%;
+    position: relative;
+    z-index: 1;
+    left: 14.8%;
+    background: #151b26;
+    border: 1px solid $veryLightText;
+
+    -webkit-box-shadow: 0 21px 48px -21px rgba(59,71,99,0.5);
+    -moz-box-shadow: 0 21px 48px -21px rgba(59,71,99,0.5);
+    box-shadow: 0 21px 48px -21px rgba(59,71,99,0.5);
+
+    h3{
+      margin-left: 1rem;
+      color: $veryLightText;
+    }
+  }
+
+  .invitation-info{
+    margin-left: 1rem;
+    position: relative;
+
+    .user-img{
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      border-radius: 50%;
+      height: 40px;
+      width: 40px;
+      border: 5px solid white;
+      position: absolute;
+      top: -12px;
+      margin-left: 3px;
+    }
+
+    .user-info{
+      display: inline-block;
+      position: relative;
+      margin-left: 48px;
+    }
+
+    .invitiation-options{
+      display: inline-block;
+      position: absolute;
+      right:0;
+
+      .invitation-accept{
+        display: inline-block;
+        color: $veryLightText;
+        &:hover{
+          cursor: pointer;
+          color: black;
+        }
+      }
+      .invitation-deny{
+        display: inline-block;
+        color: $veryLightText;
+        &:hover{
+          cursor: pointer;
+          color: black;
+        }
+      }
+      .invitation-accepted{
+        display: inline-block;
+        color: green;
+      }
+      .invitation-denied{
+        display: inline-block;
+        color: red;
+      }
+    }
+    .member-controls{
+      display: inline-block;
+      position: absolute;
+      right: 0;
+      .promote{
+        display: inline-block;
+        padding-right: 4px;
+        cursor: pointer;
+        color: #29793f;
+      }
+      .depromote{
+        display: inline-block;
+        padding-right: 4px;
+        cursor: pointer;
+        color: #ce2b35;
+      }
+      .kick{
+        display: inline-block;
+        padding-right: 4px;
+        cursor: pointer;
+        color: #034e7b;
+      }
+    }
+    .line-break{
+      margin: 18px 0 18px 0;
+    }
+    .last-row{
+      margin: 18px 0 18px 0;
+    }
+  }
+}

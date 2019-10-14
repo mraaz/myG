@@ -1,0 +1,147 @@
+.app-container.home-page .addGamingExp-page{
+
+} //.app-container
+.addGamingModal {
+  position: absolute;
+  top: 11%;
+  left: 16%;
+  right: 21%;
+  bottom: 20%;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  overflow: hidden;
+  border-radius: 4px;
+  outline: none;
+  padding: 20px;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: .08fr .15fr .15fr .15fr .15fr .15fr;
+  grid-column-gap: 20px;
+  grid-row-gap: 0;
+
+  .fa-times{
+    display: flex;
+    justify-content: flex-end;
+    cursor: pointer;
+   }
+  .gName_txtBox{
+    grid-column-start: 1;
+    p{
+      padding: 2px 0 4px 0;
+    }
+    .game_name_box{
+      width: 55%;
+    }
+  }
+  .experience_box{
+    width: 55%;
+  }
+  .played_box{
+    width: 55%;
+  }
+  .ratings{
+    margin-top: .3rem;
+  }
+  .ratings_box{
+    width: 55%;
+  }
+  .status{
+    p{
+      padding: 2px 0 4px 0;
+    }
+  }
+  .status_box{
+    width: 55%;
+  }
+  .link_txtBox{
+    p{
+      padding: 2px 0 4px 0;
+    }
+    .link_box{
+      font-family: $sans-serif;
+      font-size: 1rem;
+      padding: 5px 15px;
+      margin-bottom: 1rem;
+      background-color: white;
+      border: 1px solid rgba(0,0,0, .5);
+      width: 75%;
+    }
+  }
+  .comments{
+    grid-column: span 2;
+    p{
+      padding: 2px 0 4px 0;
+    }
+    .comments_box{
+      font-family: $sans-serif;
+      font-size: 1rem;
+      padding: 5px 15px;
+      margin-bottom: 1rem;
+      background-color: white;
+      border: 1px solid rgba(0,0,0, .5);
+    }
+  }
+  .tag_txtBox{
+    grid-column: span 2;
+    p{
+      padding: 2px 0 4px 0;
+    }
+  }
+  .save-btn{
+    grid-column: span 2;
+    font-size: 14rem;
+    display: flex;
+    justify-content: flex-end;
+    padding: 3px;
+    height: 55%;
+    text-align: center;
+    align-items: center;
+    .save{
+      padding: 18px;
+      background: $primarybuttonBG;
+      border-radius: 4px;
+      border: 1px solid rgba(0,0,0, .2);
+      color: #fff;
+      cursor: pointer;
+    }
+    .delete{
+      padding: 18px;
+      background: $primarybuttonBG;
+      border-radius: 4px;
+      border: 1px solid rgba(0,0,0, .2);
+      color: #fff;
+      cursor: pointer;
+    }
+  }
+  .info_box{
+    background-color: white;
+    grid-column: span 2;
+    width: 400px;
+    height: 100px;
+    padding: 25px;
+    margin: 25px;
+    border: 10px solid $primarybuttonBG;
+    -webkit-box-shadow: 0 0 15px -3px rgba(191,191,191,1);
+    -moz-box-shadow: 0 0 15px -3px rgba(191,191,191,1);
+    box-shadow: 0 0 15px -3px rgba(191,191,191,1);
+    justify-content: center;
+    align-items: center;
+  }
+  .game_name_error{
+    color: red;
+  }
+  .status_name_error{
+    color: red;
+  }
+}
+
+.Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  background-color: rgba(0,0,0,0.5);
+}

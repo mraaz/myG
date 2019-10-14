@@ -1,0 +1,65 @@
+.auth-page{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  .auth-form{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: $backgroundContent;
+    h1{
+      font-family: $cursive;
+      font-size: 3rem;
+      text-align: center;
+      margin-bottom: 1.2rem;
+    }
+    hr{
+      height: 1px;
+      background: #1b1b1b;
+      width: 100%;
+      margin: 1rem 0;
+    }
+    a{
+      text-decoration: none;
+      color: blue;
+      text-transform: capitalize;
+      text-align: center;
+      display: block;
+
+    }
+    form{
+      min-width: 350px;
+      max-width: 400px;
+      font-size: 1.2rem;
+    }
+    .register-btn{
+      cursor: pointer;
+      width: 100%;
+      min-width: 200px;
+      font-size: 1.2rem;
+      font-weight: 300;
+      border-radius: 14px;
+      padding: 10px 0;
+      color: #1b1b1b;
+      border: 1px solid #1b1b1b;
+      background: #fff;
+      text-decoration: none;
+      transition: all 0.4s ease-in-out;
+      margin-bottom: 1rem;
+      &:visited{
+        color: #1b1b1b;
+      }
+      &:hover{
+        background: #1b1b1b;
+        color: #fff;
+      }
+    }
+  }
+  .side-image{
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-image: url('https://images.pexels.com/photos/207190/pexels-photo-207190.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260'); background-size: cover;
+    height: 100%;
+  }
+}
