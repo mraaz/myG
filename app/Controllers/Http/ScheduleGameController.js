@@ -404,7 +404,7 @@ class ScheduleGameController {
 
   async filtered_by_one({auth, request, response}){
     try{
-      const latestScheduledGames = await Database.from('schedule_games').innerJoin('users', 'users.id', 'schedule_games.user_id').where('schedule_games.id', '=', request.params.id).select('users.id as user_id', 'users.alias', 'users.profile_img', 'schedule_games.id', 'schedule_games.game_name', 'schedule_games.region', 'schedule_games.experience', 'schedule_games.start_date_time', 'schedule_games.end_date_time', 'schedule_games.platform', 'schedule_games.description', 'schedule_games.other', 'schedule_games.expiry', 'schedule_games.limit', 'schedule_games.created_at', 'schedule_games.updated_at')
+      const latestScheduledGames = await Database.from('schedule_games').innerJoin('users', 'users.id', 'schedule_games.user_id').where('schedule_games.id', '=', request.params.id).select('*', 'users.id as user_id', 'schedule_games.id', 'schedule_games.created_at', 'schedule_games.updated_at')
       return {
         latestScheduledGames
       }
