@@ -2,6 +2,7 @@
 
 const Database = use('Database')
 const Attendee = use("App/Models/Attendee")
+const NotificationController = use("./NotificationController")
 
 class AttendeeController {
 
@@ -17,6 +18,21 @@ class AttendeeController {
         dota_2_position_four: request.input('dota_2_position_four'),
         dota_2_position_five: request.input('dota_2_position_five')
       })
+
+      if (request.input('notify') == true){
+        const all_pending_attendees = await Database.from('attendees').innerJoin('schedule_games', 'schedule_games.id', 'attendees.schedule_games_id').select("schedule_games.user_id").where({schedule_games_id: request.input('schedule_games_id'), type: 3}).limit(1)
+
+        if (all_pending_attendees.length > 0){
+          let noti = new NotificationController()
+          request.params.id = request.input('schedule_games_id')
+          await noti.remove_schedule_game_attendees({auth, request, response})
+          request.params.other_user_id = all_pending_attendees[0].user_id
+          request.params.schedule_games_id = request.input('schedule_games_id')
+
+          noti.addScheduleGame_attendance({auth, request, response})
+        }
+      }
+
       return 'Saved successfully'
     }
     catch(error){
@@ -39,10 +55,10 @@ class AttendeeController {
     }
   }
 
-  async show_Allattending({auth, request, response}){
+  async show_all_pending_attendance({auth, request, response}){
     try{
 
-      const allAttendees = await Database.from('attendees').where({schedule_games_id: request.params.id, type: 1})
+      const allAttendees = await Database.from('attendees').where({schedule_games_id: request.params.id, type: 3})
 
       return {
         allAttendees
@@ -124,6 +140,18 @@ class AttendeeController {
   async remove_myattendance({auth, request, response}){
     if(auth.user){
       try{
+
+        const attendees = await Database.from('attendees').innerJoin('schedule_games', 'schedule_games.id', 'attendees.schedule_games_id').innerJoin('users', 'users.id', 'schedule_games.user_id').where({schedule_games_id: request.params.id, type: 1}).where('attendees.user_id', '=', auth.user.id).select("users.id")
+
+        if (attendees.length > 0){
+          let noti = new NotificationController()
+          request.params.schedule_games_id = request.params.id
+          request.params.other_user_id = attendees[0].id
+          noti.add_approved_attendee_left({auth, request, response})
+        }
+
+
+
         const delete_attendance = await Database.table('attendees').where({
           schedule_games_id: request.params.id,
           user_id: auth.user.id
