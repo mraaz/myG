@@ -83,7 +83,8 @@ export default class EditGamingExp extends Component <*, State> {
       link_chkbox: false,
       name_trigger: false,
       intial_trigger: true,
-      edit_game_name: ""
+      edit_game_name: "",
+      just_one_time: true
     }
   }
 
@@ -245,7 +246,6 @@ export default class EditGamingExp extends Component <*, State> {
       var i
       var j
       var tmpnewGameID = ""
-      console.log(this.state.value);
       if (this.state.value.game_names_id == null ) {
         tmpnewGameID = newGameID
       }
@@ -282,6 +282,11 @@ export default class EditGamingExp extends Component <*, State> {
 
     this.state.comments_box == undefined ? undefined: this.state.comments_box = this.state.comments_box.trim()
     this.state.link_box == undefined ? undefined: this.state.link_box = this.state.link_box.trim()
+
+    if(!this.state.just_one_time){
+      return
+    }
+    this.state.just_one_time = false
 
     try {
       const {match} = this.props.routeProps

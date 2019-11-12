@@ -299,7 +299,7 @@ export default class IndividualGamingExperience extends Component {
         <div className="game-commendation">
           <i className="fas fa-dragon"></i>&nbsp;{`${commendation}`}&nbsp;
           {this.state.showCommends && <div className="commendation">
-            <button className="commend" type="button" onClick={() => this.commend_me(id)}>Commend!</button>
+            <button className="commend" type="button" onClick={() => { if (window.confirm('Commend allows you to reward positive behaviour or recongise great skill')) this.commend_me(id) } }>Commend!</button>
           </div>}
         </div>
         {show_comments && <div className="game-comments">

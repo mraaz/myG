@@ -73,9 +73,9 @@ export default class IndividualApproval extends Component {
     let {approvals} = this.props
     try{
       if (this.state.not_dota_2){
-        const accepted_invite = await axios.post(`/api/attendees/update_invite/${approvals.attendees.schedule_games_id}/${approvals.attendees.user_id}`)
+        const accepted_invite = axios.post(`/api/attendees/update_invite/${approvals.attendees.schedule_games_id}/${approvals.attendees.user_id}`)
       }else {
-        const accepted_invite = await axios.post(`/api/attendees/update_invite/${approvals.attendees.schedule_games_id}/${approvals.attendees.user_id}`,{
+        const accepted_invite = axios.post(`/api/attendees/update_invite/${approvals.attendees.schedule_games_id}/${approvals.attendees.user_id}`,{
           dota_2_position_one: this.state.dota_2_position_one_ticked,
           dota_2_position_two: this.state.dota_2_position_two_ticked,
           dota_2_position_three: this.state.dota_2_position_three_ticked,
@@ -137,8 +137,13 @@ export default class IndividualApproval extends Component {
         var str = approvals.users.first_name + " " + approvals.users.last_name + " was approved for position/s: " + strposition
       }
 
-      const post = await axios.post('/api/comments/',{
+      const post = axios.post('/api/comments/',{
         content: str,
+        schedule_games_id: approvals.attendees.schedule_games_id
+      })
+
+      const post_game = axios.post('/api/notifications/addGameApproved',{
+        other_user_id: approvals.attendees.user_id,
         schedule_games_id: approvals.attendees.schedule_games_id
       })
 
@@ -246,6 +251,7 @@ export default class IndividualApproval extends Component {
     if (approvals.users.profile_img != null){
       show_profile_img = true
     }
+
     return (
       <div className="scheduledGamesApprovals-info">
         {show_profile_img && <a href={`/profile/${approvals.attendees.user_id}`} className="user-img" style={{

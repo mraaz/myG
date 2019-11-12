@@ -9,6 +9,8 @@ import {
 import axios from "axios"
 import moment from "moment"
 import IndividualComment from "./IndividualComment"
+import DeleteScheduleGameModal from "./DeleteScheduleGameModal";
+
 
 const createOption = (label: string, value: int) => ({
   label,
@@ -54,8 +56,13 @@ export default class ScheduledGamePost extends Component {
       dota_2_pos_three_count: 0,
       dota_2_pos_four_count: 0,
       dota_2_pos_five_count: 0,
-      clash_royale_field: false
+      clash_royale_field: false,
+      bDeleteModalOpen: false,
+      modal_id: 0
     }
+
+    this.callbackPostFileModalClose = this.callbackPostFileModalClose.bind(this);
+    this.callbackPostFileModalConfirm=this.callbackPostFileModalConfirm.bind(this);
 
     this.textInput = null;
 
@@ -66,6 +73,26 @@ export default class ScheduledGamePost extends Component {
     this.focusTextInput = () => {
       // Focus the text input using the raw DOM API
       if (this.textInput) this.textInput.focus()
+    }
+  }
+
+  callbackPostFileModalClose(){
+
+    this.setState({
+      bDeleteModalOpen: false
+    })
+  }
+
+  callbackPostFileModalConfirm = async (data) => {
+    this.setState({
+      bDeleteModalOpen: false
+    })
+
+    try{
+      const mysch = axios.get(`/api/ScheduleGame/delete/${this.state.modal_id}/${data.value}`)
+      location.reload()
+    } catch(error){
+      console.log(error)
     }
   }
 
@@ -424,6 +451,8 @@ export default class ScheduledGamePost extends Component {
   }
 
   insert_comment = () => {
+    const { schedule_game } = this.props
+    const self = this
 
     if (this.state.value == ""){
       return
@@ -436,9 +465,6 @@ export default class ScheduledGamePost extends Component {
     }
 
     this.onFocus()
-    const { schedule_game } = this.props
-
-    const self = this
 
     const saveComment = async function(){
       try{
@@ -454,6 +480,13 @@ export default class ScheduledGamePost extends Component {
           comment_total: self.state.comment_total + 1,
           zero_comments: true
         })
+        if (schedule_game.user_id != self.props.user.userInfo.id){
+          const addPostLike = axios.post('/api/notifications/addComment',{
+            other_user_id: schedule_game.user_id,
+            schedule_games_id: schedule_game.id,
+            comment_id: postComment.data.id
+          })
+        }
 
       } catch(error){
        console.log(error)
@@ -493,9 +526,21 @@ export default class ScheduledGamePost extends Component {
   // }
 
   delete_sch = async (id) => {
+    const tmp = null
+
     try{
-      const mysch = await axios.get(`/api/ScheduleGame/delete/${id}`)
-      location.reload()
+      const all_attendees = await axios.get(`/api/attendees/attending/${id}`)
+      if (all_attendees.data.allAttendees[0].no_of_allAttendees > 0){
+        this.setState({
+          bDeleteModalOpen: true,
+          modal_id: id
+        })
+      } else {
+        if (window.confirm('Are you sure you wish to trash this game boss?')){
+          const mysch = axios.get(`/api/ScheduleGame/delete/${id}/${tmp}`)
+          location.reload()
+        }
+      }
     } catch(error){
       console.log(error)
     }
@@ -532,39 +577,41 @@ export default class ScheduledGamePost extends Component {
     }
     try{
       const getNumberofAttendees = await axios.get(`/api/attendees/attending/${this.props.schedule_game.id}`)
-      if (getNumberofAttendees.data.allAttendees[0].no_of_allAttendees < this.props.schedule_game.limit){
+      if (this.props.schedule_game.limit == 42 || getNumberofAttendees.data.allAttendees[0].no_of_allAttendees < this.props.schedule_game.limit){
 
         const savemySpot = axios.post('/api/attendees/savemySpot',{
-         schedule_games_id: this.props.schedule_game.id,
-         dota_2_position_one: this.state.show_dota_2_pos_one,
-         dota_2_position_two: this.state.show_dota_2_pos_two,
-         dota_2_position_three: this.state.show_dota_2_pos_three,
-         dota_2_position_four: this.state.show_dota_2_pos_four,
-         dota_2_position_five: this.state.show_dota_2_pos_five
+          schedule_games_id: this.props.schedule_game.id,
+          dota_2_position_one: this.state.show_dota_2_pos_one,
+          dota_2_position_two: this.state.show_dota_2_pos_two,
+          dota_2_position_three: this.state.show_dota_2_pos_three,
+          dota_2_position_four: this.state.show_dota_2_pos_four,
+          dota_2_position_five: this.state.show_dota_2_pos_five,
+          notify: true
        })
        this.setState({show_invite: false,
-        show_attending: false,
-        show_full: false,
-        show_pending: true
-        })
-
-        const deleteNoti = await axios.get(`/api/notifications/delete/schedule_game_attendees/${this.props.schedule_game.id}`)
-
-        const getAllAttendees = await axios.get(`/api/attendees/allattending/${this.props.schedule_game.id}`)
-        for (var i=0; i < getAllAttendees.data.allAttendees.length; i++){
-          if (this.props.user.userInfo.id != getAllAttendees.data.allAttendees[i].user_id){
-            const post_game = axios.post('/api/notifications/addScheduleGame/attendance',{
-              other_user_id: getAllAttendees.data.allAttendees[i].user_id,
-              schedule_games_id: this.props.schedule_game.id
-            })
-          }
-        }
-      } else {
-        window.alert("Sorry mate, the spot got filled up! You're NOT in!")
-        this.setState({show_invite: false,
          show_attending: false,
-         show_full: true
-         })
+         show_full: false,
+         show_pending: true
+       })
+
+        // const deleteNoti = await axios.get(`/api/notifications/delete/schedule_game_attendees/${this.props.schedule_game.id}`)
+        //
+        // const getAllAttendees = await axios.get(`/api/attendees/show_all_pending_attendance/${this.props.schedule_game.id}`)
+        // console.log(getAllAttendees);
+        // for (var i=0; i < getAllAttendees.data.allAttendees.length; i++){
+        //   if (this.props.user.userInfo.id != getAllAttendees.data.allAttendees[i].user_id){
+        //     const post_game = axios.post('/api/notifications/addScheduleGame/attendance',{
+        //       other_user_id: getAllAttendees.data.allAttendees[i].user_id,
+        //       schedule_games_id: this.props.schedule_game.id
+        //     })
+        //   }
+        // }
+      } else {
+        window.alert("Sorry mate, the spot got filled up! You are NOT in :(")
+        this.setState({show_invite: false,
+          show_attending: false,
+          show_full: true
+        })
       }
     } catch(error){
       console.log(error)
@@ -575,15 +622,15 @@ export default class ScheduledGamePost extends Component {
     try{
       const getNumberofAttendees = axios.get(`/api/attendees/removeattending/${this.props.schedule_game.id}`)
       this.setState({show_invite: true,
-       show_attending: false,
-       show_full: false,
-       show_pending: false
-       })
+        show_attending: false,
+        show_full: false,
+        show_pending: false
+      })
 
-       const no_vacany = axios.post('/api/ScheduleGame/update_vacany/',{
-         vacancy: true,
-         id: this.props.schedule_game.id
-       })
+      const no_vacany = axios.post('/api/ScheduleGame/update_vacany/',{
+        vacancy: true,
+        id: this.props.schedule_game.id
+      })
 
     } catch(error){
       console.log(error)
@@ -686,11 +733,18 @@ export default class ScheduledGamePost extends Component {
                 {this.state.zero_comments && <div className="comments-statz" onClick={this.onChange}> {this.state.comment_total > 1 ? `${this.state.comment_total} comments` : `${this.state.comment_total} comment`} </div>}
                 {!this.state.zero_comments && <div className="comments-statz" onClick={this.focusTextInput}> No comments</div>}
               </div>
-              {!this.state.myPost && <h6> Posted by {schedule_game.alias}</h6>}
-              {this.state.myPost && <div className="delete-icon" onClick={() => { if (window.confirm('Are you sure you wish to delete this Schedule?')) this.delete_sch(schedule_game.id) } }>
+              {!this.state.myPost && <h6> <a href={`/profile/${schedule_game.user_id}`} style={{ textDecoration: 'none', color: 'white' }}> Posted by {schedule_game.alias}</a></h6>}
+
+              {/*<a href="/profile/{schedule_game.user_id}"{schedule_game.alias}</a>*/}
+              {this.state.myPost && <div className="delete-icon" onClick={() => { this.delete_sch(schedule_game.id) } }>
                 <i className="fas fa-trash-alt"></i>
               </div>}
             </div>
+            <DeleteScheduleGameModal
+              bOpen={this.state.bDeleteModalOpen}
+              callbackClose={this.callbackPostFileModalClose}
+              callbackConfirm={this.callbackPostFileModalConfirm}
+            ></DeleteScheduleGameModal>
             <div className="expiry-info">
               Expiry:&nbsp;{duration}
             </div>

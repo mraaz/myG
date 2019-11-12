@@ -84,7 +84,8 @@ export default class EditEsportsExp extends Component <*, State> {
       newValueCreated_tags: [],
       name_trigger: false,
       createEsportsPost: true,
-      intial_trigger: true
+      intial_trigger: true,
+      just_one_time: true
     }
   }
 
@@ -362,6 +363,11 @@ export default class EditEsportsExp extends Component <*, State> {
     this.state.achievements_box == undefined ? undefined: this.state.achievements_box = this.state.achievements_box.trim()
     this.state.team_name_box == undefined ? undefined: this.state.team_name_box = this.state.team_name_box.trim()
     this.state.role_title_box == undefined ? undefined: this.state.role_title_box = this.state.role_title_box.trim()
+
+    if(!this.state.just_one_time){
+      return
+    }
+    this.state.just_one_time = false
 
     if (this.state.createEsportsPost == true){
       try {

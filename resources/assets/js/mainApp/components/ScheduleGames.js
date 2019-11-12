@@ -372,13 +372,13 @@ export default class ScheduleGames extends Component {
   }
 
   toggleChange = () => {
-   this.setState({
-    isChecked: !this.state.isChecked,
-    db_row_counter: 0
-   }, () => {
-     this.pullData()
-   })
- }
+    this.setState({
+      isChecked: !this.state.isChecked,
+      db_row_counter: 0
+    }, () => {
+      this.pullData()
+    })
+  }
 
   showLatestPosts = () => {
     if(this.state.allscheduledGames != undefined){

@@ -58,7 +58,7 @@ export default class Notifications extends Component {
     const getNoti = async function(){
       try{
         const getnoti = await axios.get('/api/notifications/getAllNoti')
-        var singleArr = [...getnoti.data.allMylike_posts, ...getnoti.data.allMylike_comments, ...getnoti.data.allMylike_replies, ...getnoti.data.allMycomments, ...getnoti.data.allMyreplies, ...getnoti.data.allMyschedulegames, ...getnoti.data.myschedulegames_attendees, ...getnoti.data.mygroups]
+        var singleArr = [...getnoti.data.allMylike_posts, ...getnoti.data.allMylike_comments, ...getnoti.data.allMylike_replies, ...getnoti.data.allMycomments, ...getnoti.data.allMyreplies, ...getnoti.data.allMyschedulegames, ...getnoti.data.myschedulegames_attendees, ...getnoti.data.mygroups, ...getnoti.data.myschedulegames_approvals, ...getnoti.data.allMyarchived_schedulegames, ...getnoti.data.dropped_out_attendees, ...getnoti.data.group_member_approved]
         self.setState({
           myNoti: singleArr.length == 0 ? "" : self.mergeSort(singleArr)
           })
