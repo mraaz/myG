@@ -401,7 +401,7 @@ export default class Profile extends Component {
               </div>
               <div className="padding-container">
                 <div className="game-experience-grey-container">
-                  <h3> Gaming Grats</h3>
+                  <h3> Gaming Interests</h3>
                   <div className="add-gaming-experience">
                     {this.state.myPage && <i className="fas fa-plus-circle" onClick={this.addGamingExp}></i>}
                   </div>

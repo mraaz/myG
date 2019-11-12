@@ -15,7 +15,8 @@ export default class MyComposeSection extends Component {
       post_content: "",
       bFileModalOpen: false,
       fileType: 'photo',
-      groups_post: false
+      groups_post: false,
+      no_show: false
     }
 
     this.openPhotoPost = this.openPhotoPost.bind(this);
@@ -200,21 +201,34 @@ export default class MyComposeSection extends Component {
   }
 
   componentWillMount(){
+    const self = this
+
+    var now = moment().subtract(5, 'seconds').utc().format('YYYY-MM-DDTHH:mm:ss')
+    this.setState({
+      myDate: now,
+    })
+
+    const getGroupDetails = async function(){
+      const mygroup_details = await axios.get(`/api/usergroup/mygroup_details/${self.props.groups_id.params.id}`)
+      if (mygroup_details.data.mygroup_details.length == 0 || mygroup_details.data.mygroup_details[0].permission_level == 42){
+        self.setState({
+          no_show: true,
+        })
+      }
+    }
+
     try {
       if (this.props.groups_id.params.id != undefined){
         this.state.groups_post = true
+        getGroupDetails()
       }
     } catch (e) {
       this.state.groups_post = false
     }
 
-
     //const now = moment.utc()
     //var now = moment().utc().format('YYYY-MM-DDTHH:mm:ss')
-    var now = moment().subtract(5, 'seconds').utc().format('YYYY-MM-DDTHH:mm:ss')
-    this.setState({
-      myDate: now,
-    })
+
     if (this.props != undefined){
       if (this.props.initialData.userInfo != undefined){
         this.setState({
@@ -228,7 +242,7 @@ export default class MyComposeSection extends Component {
   render() {
     return (
       <section className="compose-area">
-        <div className="compose-section">
+        {!this.state.no_show && <div className="compose-section">
           <textarea name="post_content" rows={8} cols={80} defaultValue={''} onChange={this.handleChange} value={this.state.post_content} onKeyUp = {this.detectKey} maxLength="254" placeholder="What's up..."/>
           <div className="user-img" />
           <a href={`/profile/${this.state.user_id}`} className="user-img" style={{
@@ -251,7 +265,7 @@ export default class MyComposeSection extends Component {
               <i className="far fa-paper-plane" />
             </div>
           </div>
-        </div>
+        </div>}
         <section id="posts">
           {this.state.show_post && this.showLatestPosts()}
         </section>
