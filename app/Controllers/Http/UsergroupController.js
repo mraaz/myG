@@ -3,6 +3,7 @@
 const Usergroup = use("App/Models/Usergroup")
 const Group = use("App/Models/Group")
 const Database = use('Database')
+const NotificationController = use("./NotificationController")
 
 class UsergroupController {
 
@@ -144,6 +145,15 @@ class UsergroupController {
 
       if(access_granted){
         const updated_permission = await Usergroup.query().where({id: request.params.usergrp_id}).update({permission_level: 3})
+
+        //get user id for other_user_id
+        //update noti with 17 as type
+        const query_for_user = await Database.from('usergroups').innerJoin('users', 'users.id', 'usergroups.user_id').where('usergroups.id', '=', request.params.usergrp_id).select('users.id')
+        let noti = new NotificationController()
+        request.params.group_id = request.params.id
+        request.params.other_user_id = query_for_user[0].id
+        noti.add_approved_group_attendee({auth, request, response})
+
         return 'Saved successfully'
       }
     }
