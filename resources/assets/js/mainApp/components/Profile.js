@@ -353,6 +353,9 @@ export default class Profile extends Component {
                     <i className="fas fa-circle"></i>&nbsp;
                     {`${region}`}&nbsp;{`${country}`}
                   </div>}
+                  <div className="alias">
+                    ({`${this.state.userProfile.alias}`})
+                  </div>
                   {this.state.myPage && <div className="edit_btn">
                     <i className="fas fa-pencil-alt" onClick={this.editDossier}></i>
                   </div>}
