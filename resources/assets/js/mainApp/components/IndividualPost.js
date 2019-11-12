@@ -244,7 +244,7 @@ export default class IndividualPost extends Component {
         })
         let {post, user} = self.props
         if (post.user_id != user.userInfo.id){
-          const addPostLike = await axios.post('/api/notifications/addComment',{
+          const addPostLike = axios.post('/api/notifications/addComment',{
             other_user_id: post.user_id,
             post_id: self.props.post.id,
             comment_id: postComment.data.id

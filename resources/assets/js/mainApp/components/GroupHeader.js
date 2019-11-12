@@ -224,7 +224,7 @@ export default class GroupHeader extends Component {
                 </Link>
               </div>
               {this.state.show_approvals && <div className="group-approvals">
-                <button className="approvals" onClick={this.show_approvals_screen}>Group Approvals</button>
+                <button className="approvals" onClick={this.show_approvals_screen}>Pending Approvals</button>
               </div>}
               <div className="group-type">
                 {this.state.myPage === true ? <button type="button" onClick={() => { if (window.confirm('Are you sure you wish to change this group type?')) this.change_type() } } className="type">{str_group_type}</button> : str_group_type }

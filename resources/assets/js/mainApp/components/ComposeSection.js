@@ -189,7 +189,6 @@ export default class ComposeSection extends Component {
 
   componentWillMount(){
 
-    //const now = moment.utc()
     var now = moment().subtract(5, 'seconds').utc().format('YYYY-MM-DDTHH:mm:ss')
     this.setState({
       myDate: now,

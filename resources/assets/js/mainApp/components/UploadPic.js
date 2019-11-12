@@ -28,8 +28,6 @@ export default class UploadPic extends Component {
 
     //const {match} = this.props.routeProps
     const self = this
-    console.log(this.props.routeProps);
-    console.log("this.props.routeProps");
     //
     // const getUser = async function(){
     //   try{

@@ -81,7 +81,7 @@ export default class AddGamingExp extends Component <*, State> {
       newValueCreated: [],
       comments_chkbox: false,
       link_chkbox: false,
-      name_trigger: false
+      just_one_time: true
     }
   }
 
@@ -147,28 +147,13 @@ export default class AddGamingExp extends Component <*, State> {
     var myRatings = ""
     var myTags = ""
 
-    let {name_trigger} = this.state.name_trigger
-
     if ((this.state.value == "") || (this.state.value == null)) {
-      this.setState({show_info_box: true})
-      this.setState({show_game_name_info_box: true})
-      name_trigger=true
-    }
-    else{
-      this.setState({show_game_name_info_box: false})
+      alert("Sorry mate! Game name can not be blank")
+      return
     }
 
     if ((this.state.status_box == "") || (this.state.status_box == null)) {
-      this.setState({show_info_box: true})
-      this.setState({show_status_info_box: true})
-      name_trigger=true
-    }
-    else{
-      this.setState({show_status_info_box: false})
-    }
-
-    if (name_trigger){
-      this.setState({name_trigger: false})
+      alert("Sorry mate! Status name can not be blank")
       return
     }
 
@@ -242,6 +227,11 @@ export default class AddGamingExp extends Component <*, State> {
 
     this.state.comments_box == undefined ? undefined: this.state.comments_box = this.state.comments_box.trim()
     this.state.link_box == undefined ? undefined: this.state.link_box = this.state.link_box.trim()
+
+    if(!this.state.just_one_time){
+      return
+    }
+    this.state.just_one_time = false
 
     try {
       const post = await axios.post('/api/GameExperiences',{
@@ -393,7 +383,7 @@ export default class AddGamingExp extends Component <*, State> {
            className="addGamingModal"
            overlayClassName="Overlay"
           >
-          Add Gaming Experience:
+          Add Gaming Interest:
           <i className="fas fa-times" onClick={this.handleCloseModal}></i>
           <div className="gName_txtBox">
             <p>Game Name <span style={{color: "red"}}>*</span></p>
@@ -408,6 +398,7 @@ export default class AddGamingExp extends Component <*, State> {
               className="game_name_box"
               onCreateOption={this.handleCreate}
               onInputChange={inputValue => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
+              placeholder="Enter in a Game name"
             />
           </div>
           <div className="status">
@@ -477,7 +468,7 @@ export default class AddGamingExp extends Component <*, State> {
             <p>Comments</p>
             <textarea id="comments_box" className="comments_box" rows={8} cols={80} defaultValue={''} maxLength="254" onChange={this.handleChange}/>
           </div>}
-          {this.state.show_info_box &&
+          {/*{this.state.show_info_box &&
             <div className="info_box">
               {this.state.show_game_name_info_box &&
                 <div className="game_name_error">
@@ -490,7 +481,7 @@ export default class AddGamingExp extends Component <*, State> {
                 </div>
               }
             </div>
-          }
+          }*/}
           <div className="save-btn">
             <button className="save" onClick={this.submitForm}>Save</button>
           </div>

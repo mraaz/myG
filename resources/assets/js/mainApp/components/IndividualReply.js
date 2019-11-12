@@ -97,19 +97,27 @@ export default class IndividualReply extends Component {
   }
 
 
-  click_reply_like_btn = async (reply_id) => {
+  click_reply_like_btn = (reply_id) => {
     try{
-      const replyLike = await axios.post('/api/likes',{
+      const replyLike = axios.post('/api/likes',{
         reply_id: reply_id
       })
 
-      let {comment_user_id, post_id, reply, user} = this.props
+      let {comment_user_id, post_id, reply, user, schedule_game_id} = this.props
       if (reply.user_id != user.userInfo.id){
-        const addReplyLike = axios.post('/api/notifications/addReplyLike',{
-          other_user_id: comment_user_id,
-          post_id: post_id,
-          reply_id: reply_id
-        })
+        if (schedule_game_id != null){
+          const addReplyLike = axios.post('/api/notifications/addReplyLike',{
+            other_user_id: reply.user_id,
+            schedule_games_id: schedule_game_id,
+            reply_id: reply_id
+          })
+        } else {
+          const addReplyLike = axios.post('/api/notifications/addReplyLike',{
+            other_user_id: reply.user_id,
+            post_id: post_id,
+            reply_id: reply_id
+          })
+        }
       }
     } catch(error){
       console.log(error)
@@ -125,11 +133,11 @@ export default class IndividualReply extends Component {
     })
   }
 
-  click_reply_unlike_btn = async (reply_id) => {
+  click_reply_unlike_btn = (reply_id) => {
     let {post_id} = this.props
     try{
-      const reply_unlike = await axios.get(`/api/likes/delete/reply/${reply_id}`)
-      const deleteReplyLike = await axios.get(`/api/notifications/deleteReplyLike/${reply_id}`)
+      const reply_unlike =  axios.get(`/api/likes/delete/reply/${reply_id}`)
+      const deleteReplyLike = axios.get(`/api/notifications/deleteReplyLike/${reply_id}`)
 
     } catch(error){
       console.log(error)
@@ -156,7 +164,7 @@ export default class IndividualReply extends Component {
     })
   }
 
-  delete_exp = async () => {
+  delete_exp = () => {
     var reply_id = this.props.reply.id
 
     try{

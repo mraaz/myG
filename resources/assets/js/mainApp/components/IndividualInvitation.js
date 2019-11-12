@@ -26,7 +26,6 @@ export default class IndividualInvitation extends Component {
       this.setState({
         group_approvals: true
       })
-      console.log("true");
     }
   }
 
@@ -49,10 +48,8 @@ export default class IndividualInvitation extends Component {
   }
 
   clickedDenied = () => {
-    console.log("abc");
     if(this.state.group_approvals){
       try{
-        console.log("whhaaat");
         const remove_group_approval = axios.get(`/api/usergroup/remove_group_approval/${this.props.invitation.group_id}/${this.props.invitation.id}`)
       } catch(error){
         console.log(error)

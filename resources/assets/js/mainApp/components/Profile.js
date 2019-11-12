@@ -23,7 +23,8 @@ export default class Profile extends Component {
       myPage: false,
       bFileModalOpen: false,
       profile_attr: '',
-      show_bio: false
+      show_bio: false,
+      noti_id: 0
     }
 
     this.callbackFileModalClose = this.callbackFileModalClose.bind(this);
@@ -105,24 +106,33 @@ export default class Profile extends Component {
         self.setState({
           initialData: self.props.initialData,
           userProfile: userProfile.data.user[0],
-          })
-        if(userProfile.data.friend){
+        })
+        if (userProfile.data.friend){
           self.setState({
             friendTxt: "Remove Friend",
             friendStatus: 1
-            })
+          })
         } else {
           const checkFriend = await axios.get(`/api/notifications/friend/${match.params.id}`)
-          if(checkFriend.data.checkedFriend){
+          if (checkFriend.data.checkedFriend){
             self.setState({
               friendTxt: "Request Pending",
               friendStatus: 2
+            })
+          } else {
+            const checkFriendPending = await axios.get(`/api/notifications/myFriendRequest/${match.params.id}`)
+            if (checkFriendPending.data.myFriendRequest){
+              self.setState({
+                friendTxt: "Accept Request",
+                friendStatus: 3,
+                noti_id: checkFriendPending.data.noti_id[0].id
               })
-          }else{
-            self.setState({
-              friendTxt: "Add Friend",
-              friendStatus: 0
+            } else {
+              self.setState({
+                friendTxt: "Add Friend",
+                friendStatus: 0
               })
+            }
           }
         }
       } catch(error){
@@ -183,9 +193,26 @@ export default class Profile extends Component {
     const {match} = this.props.routeProps
     const self = this
 
-    if(this.state.friendStatus === 2){
+    if (this.state.friendStatus === 2){
       return
     }
+
+    if (this.state.friendStatus === 3){
+      try{
+        const deleteNoti = axios.get(`/api/notifications/delete/${this.state.noti_id}`)
+        const createFriend = axios.post('/api/friends/create',{
+          friend_id: match.params.id,
+        })
+      } catch(error){
+        console.log(error)
+      }
+      self.setState({
+        friendTxt: "Remove Friend",
+        friendStatus: 1
+      })
+      return
+    }
+
     if(this.state.friendStatus){
       if (window.confirm('Are you sure you wish to unfriend?')){
         try{
@@ -324,7 +351,7 @@ export default class Profile extends Component {
                   <h1>{`${first_name} ${last_name}`}</h1>
                   {show_location && <div className="location">
                     <i className="fas fa-circle"></i>&nbsp;
-                    {`${region}`},&nbsp;{`${country}`}
+                    {`${region}`}&nbsp;{`${country}`}
                   </div>}
                   {this.state.myPage && <div className="edit_btn">
                     <i className="fas fa-pencil-alt" onClick={this.editDossier}></i>
@@ -358,7 +385,7 @@ export default class Profile extends Component {
 
               <div className="padding-container">
                 <div className="esports-experience-grey-container">
-                  <h3> myEsports Experience</h3>
+                  <h3> Esports Career</h3>
                   <div className="add-esports-experience">
                     {this.state.myPage && <i className="fas fa-plus-circle" onClick={this.addEsportsExp}></i>}
                   </div>
@@ -374,7 +401,7 @@ export default class Profile extends Component {
               </div>
               <div className="padding-container">
                 <div className="game-experience-grey-container">
-                  <h3> myGaming Experience</h3>
+                  <h3> Gaming Interests</h3>
                   <div className="add-gaming-experience">
                     {this.state.myPage && <i className="fas fa-plus-circle" onClick={this.addGamingExp}></i>}
                   </div>

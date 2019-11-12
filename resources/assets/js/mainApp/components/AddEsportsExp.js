@@ -80,7 +80,8 @@ export default class AddEsportsExp extends Component <*, State> {
       newValueCreated_tags: [],
       name_trigger: false,
       createEsportsPost: true,
-      intial_trigger: true
+      intial_trigger: true,
+      just_one_time: true
     }
   }
 
@@ -154,28 +155,14 @@ export default class AddEsportsExp extends Component <*, State> {
     var uShallNotPass = false
     var ardourNgame_name_same_same = false
 
-    let {name_trigger} = this.state.name_trigger
 
     if ((this.state.status_box.label == "") || (this.state.status_box.label == null)) {
-      this.setState({show_info_box: true})
-      this.setState({show_status_info_box: true})
-      name_trigger=true
-    }
-    else{
-      this.setState({show_status_info_box: false})
+      alert("Sorry mate! Status can not be blank")
+      return
     }
 
     if ((this.state.email_box.label == "") || (this.state.email_box.label == null)) {
-      this.setState({show_info_box: true})
-      this.setState({show_email_info_box: true})
-      name_trigger=true
-    }
-    else{
-      this.setState({show_email_info_box: false})
-    }
-
-    if (name_trigger){
-      this.setState({name_trigger: false})
+      alert("Sorry mate! Email can not be blank")
       return
     }
 
@@ -200,19 +187,10 @@ export default class AddEsportsExp extends Component <*, State> {
     }
 
     if ( ((this.state.role_title_box == "") || (this.state.role_title_box == null)) && (uShallNotPass)) {
-      this.setState({show_info_box: true})
-      this.setState({show_role_title_info_box: true})
-      name_trigger=true
+      alert("Sorry mate! Role title can not be blank")
+      return
     } else if ((this.state.value_game_name.length == 0) && (uShallNotPass)) {
-      this.setState({show_info_box: true})
-      this.setState({show_role_title_info_box: true})
-      name_trigger=true
-    } else {
-      this.setState({show_status_info_box: false})
-    }
-
-    if (name_trigger){
-      this.setState({name_trigger: false})
+      alert("Sorry mate! Game name can not be blank")
       return
     }
 
@@ -327,6 +305,11 @@ export default class AddEsportsExp extends Component <*, State> {
     this.state.achievements_box == undefined ? undefined: this.state.achievements_box = this.state.achievements_box.trim()
     this.state.team_name_box == undefined ? undefined: this.state.team_name_box = this.state.team_name_box.trim()
     this.state.role_title_box == undefined ? undefined: this.state.role_title_box = this.state.role_title_box.trim()
+
+    if(!this.state.just_one_time){
+      return
+    }
+    this.state.just_one_time = false
 
     if (this.state.createEsportsPost == true){
       try {
@@ -540,7 +523,7 @@ export default class AddEsportsExp extends Component <*, State> {
              className="addEsportsModal"
              overlayClassName="Overlay"
             >
-            Esports Experience:
+            Esports Career:
             <i className="fas fa-times" onClick={this.handleCloseModal}></i>
             <div className="status">
               <p>Status <span style={{color: "red"}}>*</span></p>
@@ -644,7 +627,7 @@ export default class AddEsportsExp extends Component <*, State> {
               />
             </div>
             <div></div>
-            {!this.state.show_info_box && <div></div>}
+            {/* {!this.state.show_info_box && <div></div>}
             {this.state.show_info_box &&
               <div className="info_box">
                 {this.state.show_email_info_box &&
@@ -663,8 +646,9 @@ export default class AddEsportsExp extends Component <*, State> {
                   </div>
                 }
               </div>
-            }
+            }*/}
 
+            <div></div>
             <div></div>
             <div className="save-btn">
               <button className="save" onClick={this.submitForm}>Save</button>

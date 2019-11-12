@@ -260,7 +260,6 @@ export default class PostFileModal extends Component {
                     <div className="uploaded-file-preview">
                         {
                             this.state.preview_files.map(function(data, index){
-                                console.log(data, index);
                                 return (
                                     <FilePreview
                                         key={data.key}

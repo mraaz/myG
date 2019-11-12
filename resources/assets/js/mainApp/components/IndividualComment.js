@@ -138,19 +138,28 @@ export default class IndividualComment extends Component {
     getComments()
   }
 
-  click_like_btn = async (comment_id) => {
+  click_like_btn = (comment_id) => {
     try{
-      const commentLike = await axios.post('/api/likes',{
+      const commentLike = axios.post('/api/likes',{
         comment_id: comment_id
       })
 
       let {comment, user} = this.props
       if (comment.user_id != user.userInfo.id){
-        const addCommentLike = await axios.post('/api/notifications/addCommentLike',{
-          other_user_id: comment.user_id,
-          post_id: comment.post_id,
-          comment_id: comment_id
-        })
+        if (this.props.comment.schedule_games_id != null){
+          const addCommentLike = axios.post('/api/notifications/addCommentLike',{
+            other_user_id: comment.user_id,
+            schedule_games_id: this.props.comment.schedule_games_id,
+            comment_id: comment_id
+          })
+        } else {
+          const addCommentLike = axios.post('/api/notifications/addCommentLike',{
+            other_user_id: comment.user_id,
+            post_id: comment.post_id,
+            comment_id: comment_id
+          })
+        }
+
       }
     } catch(error){
       console.log(error)
@@ -166,11 +175,11 @@ export default class IndividualComment extends Component {
     })
   }
 
-  click_unlike_btn = async (comment_id) => {
+  click_unlike_btn = (comment_id) => {
     let {comment} = this.props
     try{
-      const unlike = await axios.get(`/api/likes/delete/comment/${comment_id}`)
-      const deleteCommentLike = await axios.get(`/api/notifications/deleteCommentLike/${comment_id}`)
+      const unlike =  axios.get(`/api/likes/delete/comment/${comment_id}`)
+      const deleteCommentLike =  axios.get(`/api/notifications/deleteCommentLike/${comment_id}`)
 
     } catch(error){
       console.log(error)
@@ -215,7 +224,7 @@ export default class IndividualComment extends Component {
   showReplies = () => {
     if(this.state.myReplies != undefined){
       return this.state.myReplies.map((item, index) => {
-        return <IndividualReply reply={item} key={index} comment_user_id={this.props.comment.user_id} post_id={this.props.comment.post_id} user={this.props.user} />
+        return <IndividualReply reply={item} key={index} comment_user_id={this.props.comment.user_id} post_id={this.props.comment.post_id} user={this.props.user} schedule_game_id={this.props.comment.schedule_games_id} />
       })
     }
   }
@@ -308,11 +317,20 @@ export default class IndividualComment extends Component {
 
         let {comment, user} = self.props
         if (comment.user_id != user.userInfo.id){
-          const addReply = await axios.post('/api/notifications/addReply',{
-            other_user_id: comment.user_id,
-            post_id: comment.post_id,
-            reply_id: postReply.data.id
-          })
+          if (self.props.comment.schedule_games_id != null){
+            const addReply = axios.post('/api/notifications/addReply',{
+              other_user_id: comment.user_id,
+              schedule_games_id: self.props.comment.schedule_games_id,
+              reply_id: postReply.data.id
+            })
+          }else {
+            const addReply = axios.post('/api/notifications/addReply',{
+              other_user_id: comment.user_id,
+              post_id: comment.post_id,
+              reply_id: postReply.data.id
+            })
+          }
+
         }
         self.setState({
            myReplies: [],

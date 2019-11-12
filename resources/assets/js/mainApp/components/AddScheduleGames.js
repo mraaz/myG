@@ -50,7 +50,7 @@ const visibility_options = [
   { value: 4, label: 'Hidden' }
 ]
 const limit_options = [
-  { value: 1, label: '5' },
+  { value: 5, label: '5' },
   { value: 10, label: '10' },
   { value: 20, label: '20' },
   { value: 25, label: '25' },
@@ -67,7 +67,9 @@ const dota2_medal_ranks = [
   { value: 'Crusader', label: 'Crusader' },
   { value: 'Archon', label: 'Archon' },
   { value: 'Legend', label: 'Legend' },
-  { value: 'Divine', label: 'Divine' }
+  { value: 'Ancient', label: 'Ancient' },
+  { value: 'Divine', label: 'Divine' },
+  { value: 'Immortal', label: 'Immortal' }
 ]
 
 const dota2_server_regions = [
@@ -162,26 +164,13 @@ export default class AddScheduleGames extends Component {
       selected_visibility: [{label: "Public", value: 1}],
       selected_limit: [{label: "Unlimited", value: 42}],
       startDate: moment(),
-      endDate: moment(),
+      endDate: null,
       game_name_box: "",
       description_box: "",
       other_box: "",
       tmp_expiry: "2 days",
-      show_info_box: false,
-      show_game_info_box: false,
-      show_date_info_box: false,
-      show_region_info_box: false,
-      show_experience_info_box: false,
-      show_platform_info_box: false,
-      show_description_info_box: false,
-      show_other_info_box: false,
-      show_expiry_info_box: false,
       redirect_scheduleGames: false,
       refresh_addscheduleGames: false,
-      show_game_name_error: false,
-      show_date_error: false,
-      show_visibility_info_box: false,
-      show_limit_info_box: false,
       txtAreaValue: "",
       show_fields_for_dota2: false,
       dota2_medal_ranks: null,
@@ -191,19 +180,23 @@ export default class AddScheduleGames extends Component {
       show_default_fields_experience: true,
       show_default_fields_platform: true,
       show_fields_for_clash_royale: false,
-      clash_royale_trophy: null
+      clash_royale_trophy: null,
+      just_one_time: true
     }
   }
 
   submitForm = async () => {
     if ( (this.state.game_name_box == "") || (this.state.game_name_box == null) ) {
-      this.setState({show_info_box: true})
-      this.setState({show_game_name_error: true})
+      alert("Sorry mate! Game name can not be blank")
       return
     }
+    if (this.state.startDate == null || this.state.startDate == undefined){
+      alert("Sorry mate! Start date can not be empty")
+      return
+    }
+
     if (this.state.startDate.isSameOrAfter(this.state.endDate)) {
-      this.setState({show_info_box: true})
-      this.setState({show_date_error: true})
+      alert("Sorry mate! End date needs to be AFTER start date")
       return
     }
     this.submitData()
@@ -212,13 +205,17 @@ export default class AddScheduleGames extends Component {
 
   submitForm_moveaway = async () => {
     if ( (this.state.game_name_box == "") || (this.state.game_name_box == null) ){
-      this.setState({show_info_box: true})
-      this.setState({show_game_name_error: true})
+      alert("Sorry mate! Game name can not be blank")
       return
     }
+
+    if (this.state.startDate == null || this.state.startDate == undefined){
+      alert("Sorry mate! Start date can not be empty")
+      return
+    }
+
     if (this.state.startDate.isSameOrAfter(this.state.endDate)) {
-      this.setState({show_info_box: true})
-      this.setState({show_date_error: true})
+      alert("Sorry mate! End date needs to be AFTER start date")
       return
     }
     this.submitData()
@@ -236,6 +233,9 @@ export default class AddScheduleGames extends Component {
       var myDota2_server_regions = ""
       var myDota2_roles = ""
       var myClash_royale_trophies = ""
+      var now = moment()
+      var end_date = this.state.endDate
+
 
       if (this.state.selected_region !== null && this.state.selected_region.length !== 0){
         for (var i = 0; i < this.state.selected_region.length; i++){
@@ -254,6 +254,7 @@ export default class AddScheduleGames extends Component {
         myExperience = myExperience.replace(/;/g, "")
         myExperience = myExperience.replace(/,/g, ", ")
       }
+
       if (this.state.selected_platform !== null && this.state.selected_platform.length !== 0){
         for (var i = 0; i < this.state.selected_platform.length; i++){
          myPlatform += this.state.selected_platform[i].value + "; "
@@ -262,9 +263,17 @@ export default class AddScheduleGames extends Component {
         myPlatform = myPlatform.replace(/;/g, "")
         myPlatform = myPlatform.replace(/,/g, ", ")
       }
-      if (this.state.selected_expiry != null || this.state.selected_expiry != undefined){
-        this.state.tmp_expiry = this.state.selected_expiry.value
+
+      if (this.state.endDate != null || this.state.endDate != undefined){
+        now = moment(this.state.endDate)
+        now.add(8,'hour')
+      } else {
+        now = moment(this.state.startDate)
+        end_date = moment(now)
+        end_date.add(18,'hour')
+        now.add(18,'hour')
       }
+
       if (this.state.selected_visibility != null || this.state.selected_visibility != undefined){
         myVisibility = this.state.selected_visibility.value
       }
@@ -304,29 +313,41 @@ export default class AddScheduleGames extends Component {
         myDota2_roles = myDota2_roles.replace(/,/g, ", ")
       }
 
-      const now = moment()
-      switch(this.state.tmp_expiry) {
-        case '8 hours':
-          now.add(8,'hour')
-          break
-        case '2 days':
-          now.add(2,'day')
-          break
-        case '7 days':
-          now.add(7,'day')
-          break
-        case '14 days':
-          now.add(14,'day')
-          break
-        case '1 month':
-          now.add(1,'month')
-          break
-        default:
-          now.add(2,'day')
-      }
+
+      // const now = moment()
+      //
+      // if(myEndDate !=""){
+      //   myEndDate.add(12,'hour')
+      //   now = myEndDate
+      // }
+      //
+      // switch(this.state.tmp_expiry) {
+      //   case '8 hours':
+      //     now.add(8,'hour')
+      //     break
+      //   case '2 days':
+      //     now.add(2,'day')
+      //     break
+      //   case '7 days':
+      //     now.add(7,'day')
+      //     break
+      //   case '14 days':
+      //     now.add(14,'day')
+      //     break
+      //   case '1 month':
+      //     now.add(1,'month')
+      //     break
+      //   default:
+      //     now.add(2,'day')
+      // }
 
       const uuidv1 = require('uuid/v1')
       var tmp = uuidv1()
+
+      if(!this.state.just_one_time){
+        return
+      }
+      this.state.just_one_time = false
 
       const post = await axios.post('/api/ScheduleGame',{
         game_name_box: this.state.game_name_box.value,
@@ -334,7 +355,7 @@ export default class AddScheduleGames extends Component {
         selected_region: myRegion,
         selected_experience: myExperience,
         start_date_time: this.state.startDate,
-        end_date_time: this.state.endDate,
+        end_date_time: end_date,
         selected_platform: myPlatform,
         description_box: this.state.description_box,
         other_box: this.state.other_box,
@@ -406,107 +427,6 @@ export default class AddScheduleGames extends Component {
   }
   handleChange_Dota2_roles = (dota2_roles) => {
     this.setState({ dota2_roles })
-  }
-
-  onFocus_game_name = () => {
-    this.setState({show_game_name_error: false})
-    this.setState({show_date_error: false})
-    this.setState({show_info_box: true})
-    this.setState({show_game_info_box: true})
-  }
-  onBlur_game_name = () => {
-    this.setState({show_info_box: false})
-    this.setState({show_game_info_box: false})
-  }
-  onFocus_date_name = () => {
-    this.setState({show_game_name_error: false})
-    this.setState({show_date_error: false})
-    this.setState({show_info_box: true})
-    this.setState({show_date_info_box: true})
-  }
-  onBlur_date_name = () => {
-    this.setState({show_info_box: false})
-    this.setState({show_date_info_box: false})
-  }
-  onFocus_region_name = () => {
-    this.setState({show_game_name_error: false})
-    this.setState({show_date_error: false})
-    this.setState({show_info_box: true})
-    this.setState({show_region_info_box: true})
-  }
-  onBlur_region_name = () => {
-    this.setState({show_info_box: false})
-    this.setState({show_region_info_box: false})
-  }
-  onFocus_experience_name = () => {
-    this.setState({show_game_name_error: false})
-    this.setState({show_date_error: false})
-    this.setState({show_info_box: true})
-    this.setState({show_experience_info_box: true})
-  }
-  onBlur_experience_name = () => {
-    this.setState({show_info_box: false})
-    this.setState({show_experience_info_box: false})
-  }
-  onFocus_platform_name = () => {
-    this.setState({show_game_name_error: false})
-    this.setState({show_date_error: false})
-    this.setState({show_info_box: true})
-    this.setState({show_platform_info_box: true})
-  }
-  onBlur_platform_name = () => {
-    this.setState({show_info_box: false})
-    this.setState({show_platform_info_box: false})
-  }
-  onFocus_description_name = () => {
-    this.setState({show_game_name_error: false})
-    this.setState({show_date_error: false})
-    this.setState({show_info_box: true})
-    this.setState({show_description_info_box: true})
-  }
-  onBlur_description_name = () => {
-    this.setState({show_info_box: false})
-    this.setState({show_description_info_box: false})
-  }
-  onFocus_other_name = () => {
-    this.setState({show_game_name_error: false})
-    this.setState({show_date_error: false})
-    this.setState({show_info_box: true})
-    this.setState({show_other_info_box: true})
-  }
-  onBlur_other_name = () => {
-    this.setState({show_info_box: false})
-    this.setState({show_other_info_box: false})
-  }
-  onFocus_expiry_name = () => {
-    this.setState({show_game_name_error: false})
-    this.setState({show_date_error: false})
-    this.setState({show_info_box: true})
-    this.setState({show_expiry_info_box: true})
-  }
-  onBlur_expiry_name = () => {
-    this.setState({show_info_box: false})
-    this.setState({show_expiry_info_box: false})
-  }
-  onFocus_visibility_name = () => {
-    this.setState({show_game_name_error: false})
-    this.setState({show_date_error: false})
-    this.setState({show_info_box: true})
-    this.setState({show_visibility_info_box: true})
-  }
-  onBlur_visibility_name = () => {
-    this.setState({show_info_box: false})
-    this.setState({show_visibility_info_box: false})
-  }
-  onFocus_limit_name = () => {
-    this.setState({show_game_name_error: false})
-    this.setState({show_date_error: false})
-    this.setState({show_info_box: true})
-    this.setState({show_limit_info_box: true})
-  }
-  onBlur_limit_name = () => {
-    this.setState({show_info_box: false})
-    this.setState({show_limit_info_box: false})
   }
 
   handleCreate_game_name = (inputValue: any) => {
@@ -621,7 +541,7 @@ export default class AddScheduleGames extends Component {
               />
             </div>
             <div className="date-time">
-              <div className="date-time-label"><label>Date and Time: <span style={{color: "red"}}>*</span></label></div>
+              <div className="date-time-label"><label>Start<span style={{color: "red"}}>*</span> and End date:</label></div>
               {/*}<input type="text" className="start-date-box" placeholder="8 Nov 2018" />*/}
               <DatePicker
                 selected={this.state.startDate}
@@ -637,7 +557,7 @@ export default class AddScheduleGames extends Component {
                 onBlur={this.onBlur_date_name}
                 onFocus={this.onFocus_date_name}
               />
-              <p>to</p>
+              <p>till</p>
               <DatePicker
                 selected={this.state.endDate}
                 onChange={this.handleChange_forEnddate}
@@ -651,7 +571,10 @@ export default class AddScheduleGames extends Component {
                 shouldCloseOnSelect={true}
                 onBlur={this.onBlur_date_name}
                 onFocus={this.onFocus_date_name}
+                minDate={this.state.startDate}
+                maxDate={moment(this.state.startDate).add(7,'days')}
               />
+              {/* maxDate = Don't think its just games, it could be post for LFG for clan */}
             </div>
             {this.state.show_default_fields_region && <div className="region">
               <label>Region:</label>
@@ -730,7 +653,7 @@ export default class AddScheduleGames extends Component {
             {this.state.show_fields_for_dota2 && <div className="dota2_roles">
               <div className="dota2_roles_header">
                 <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/game_icons/dota_2_logo.png' height="23" width="23"/>
-                <label>Roles:</label>
+                <label>Which roles do you need?</label>
               </div>
               <Select
                 onChange={this.handleChange_Dota2_roles}
@@ -749,7 +672,7 @@ export default class AddScheduleGames extends Component {
               <input type="text" id="other_box" className="other-box" maxLength="254" placeholder="Additional comments?" onBlur={this.onBlur_other_name} onFocus={this.onFocus_other_name} onChange={this.handleChange} value={this.state.other_box}/>
             </div>
             <div className="limit">
-              <label>Limit:</label>
+              <label>Max number of players:</label>
               <Select
                 onChange={this.handleChange_Limit}
                 options={limit_options}
@@ -772,7 +695,7 @@ export default class AddScheduleGames extends Component {
                 onFocus={this.onFocus_expiry_name}
               />
             </div>
-            <div className="expiry">
+            {/*<div className="expiry">
               <div><label>Post Expiry: <span style={{color: "red"}}>*</span></label></div>
               <Select
                 onChange={this.handleChange_Expiry}
@@ -783,6 +706,8 @@ export default class AddScheduleGames extends Component {
                 onBlur={this.onBlur_expiry_name}
                 onFocus={this.onFocus_expiry_name}
               />
+            </div>*/}
+            <div>
             </div>
             <div className="accept-msg">
               <label>Accept Message:</label>
@@ -797,76 +722,11 @@ export default class AddScheduleGames extends Component {
               />
             </div>
             <div className="buttons">
-              <button className="save" type="button" onClick={this.submitForm_moveaway}>&nbsp;&nbsp;Save&nbsp;&nbsp;</button>
+              <button className="save" type="button" onClick={this.submitForm_moveaway}>&nbsp;&nbsp;Create game&nbsp;&nbsp;</button>
               &nbsp;
               <button className="save-create" type="button" onClick={this.submitForm}>Save & Create Another</button>
             </div>
-            {this.state.show_info_box &&
-              <div className="info_box">
-                {this.state.show_game_info_box &&
-                  <div className="game_info">
-                    What game did you wanna play? eg. Dota, LOL, Fortnite...
-                  </div>
-                }
-                {this.state.show_date_info_box &&
-                  <div className="date_info">
-                    From when to when are you around?
-                  </div>
-                }
-                {this.state.show_region_info_box &&
-                  <div className="region_info">
-                    Select which region/s you wanna play, chose Earth or leave blank if it does not matter.
-                  </div>
-                }
-                {this.state.show_experience_info_box &&
-                  <div className="experience_info">
-                    What calibre of skill were you after? Leave blank for any.
-                  </div>
-                }
-                {this.state.show_platform_info_box &&
-                  <div className="platform_info">
-                    Any or leave blank to include all.
-                  </div>
-                }
-                {this.state.show_description_info_box &&
-                  <div className="description_info">
-                    Any special description for this game. ie 5v5, LF Tank...etc
-                  </div>
-                }
-                {this.state.show_other_info_box &&
-                  <div className="other_info">
-                    Extra field for any other info
-                  </div>
-                }
-                {this.state.show_expiry_info_box &&
-                  <div className="expiry_info">
-                    All good things must come to an end, all posts have an expiry date. Longest a post can live is 1 month. Once a post expires, it will be deleted.
-                  </div>
-                }
-                {this.state.show_visibility_info_box &&
-                  <div className="visibility_info">
-                    Now you see me, now you don't....the decision is yours to make. Hidden is only viewable to you.
-                  </div>
-                }
-                {this.state.show_limit_info_box &&
-                  <div className="limit_info">
-                    How many attendees?
-                  </div>
-                }
-                {this.state.show_game_name_error &&
-                  <div className="game_name_error">
-                    Opps! Unable to save this as Game Name is empty. All fields with a Red asterix needs to be filled in.
-                  </div>
-                }
-                {this.state.show_date_error &&
-                  <div className="date_error">
-                    Opps! Unable to save this as End date is before Start Date.
-                  </div>
-                }
-              </div> //info_box
-            }
           </div>
-
         </div>
       )
   }

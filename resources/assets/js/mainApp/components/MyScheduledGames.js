@@ -16,6 +16,7 @@ export default class MyScheduledGames extends Component {
       db_row_counter: 0,
       show_prev: false,
       show_more: false,
+      isChecked: true
     }
   }
 
@@ -59,8 +60,7 @@ export default class MyScheduledGames extends Component {
       this.setState({
         myScheduledGames: []
       })
-      const myScheduledGames = await axios.get(`/api/myScheduledGames/${this.state.db_row_counter}`)
-      console.log(myScheduledGames);
+      const myScheduledGames = await axios.get(`/api/myScheduledGames/${this.state.db_row_counter}/${this.state.isChecked}`)
       if (myScheduledGames.data.myScheduledGames.data.length > 10 ){
         this.setState({
           show_more: true
@@ -79,12 +79,26 @@ export default class MyScheduledGames extends Component {
     }
   }
 
+  toggleChange = () => {
+    this.setState({
+      isChecked: !this.state.isChecked,
+      db_row_counter: 1
+    }, () => {
+      this.pullData()
+    })
+  }
+
   render() {
     if (this.state.myScheduledGames !== undefined){
       return (
         <section id="posts">
           <div className="content-area scheduleGames-page">
           <div id="header-2"><img src="https://mygame-media.s3-ap-southeast-2.amazonaws.com/headers/headers_v1-19.png" /></div>
+            <div className="full-game">
+              <input type="checkbox" defaultChecked={this.state.isChecked} onChange={this.toggleChange} />&nbsp;Exclude Expired Games?
+            </div>
+            <div className="da-gap">
+            </div>
             {this.showLatestPosts()}
             {this.state.show_prev && <div className="prev_pls" onClick={this.fetchPrevData}>
               {'<'}- Previous

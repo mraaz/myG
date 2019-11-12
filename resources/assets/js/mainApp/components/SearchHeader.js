@@ -73,13 +73,13 @@ export default class SearchHeader extends Component {
         const getFriendnoti = await axios.get('/api/notifications/myFriendRequests')
         self.setState({
           myFriendRequestNo: getFriendnoti.data.checkMyFriends[0].no_of_my_notiFriends,
-          })
+        })
 
         const myRequests = await axios.get('/api/notifications/myRequests')
-        var singleArr = [...myRequests.data.allMylike_posts, ...myRequests.data.allMylike_comments, ...myRequests.data.allMylike_replies, ...myRequests.data.allMycomments, ...myRequests.data.allMyreplies]
+        //var singleArr = [...myRequests.data.allMylike_posts, ...myRequests.data.allMylike_comments, ...myRequests.data.allMylike_replies, ...myRequests.data.allMycomments, ...myRequests.data.allMyreplies, ...myRequests.data.allMyschedulegames, ...myRequests.data.myschedulegames_attendees, ...myRequests.data.mygroups, ...myRequests.data.myschedulegames_approvals, ...myRequests.data.allMyarchived_schedulegames, ...myRequests.data.dropped_out_attendees, ...myRequests.data.group_member_approved]
         self.setState({
-          myRequests: singleArr.length,
-          })
+          myRequests: myRequests.data.number_of_notis,
+        })
 
       } catch(error){
         console.log(error)

@@ -7,9 +7,18 @@ import {
 } from "react-router-dom"
 import axios from "axios"
 import Modal from "react-modal"
-import { CountryDropdown, RegionDropdown, CountryRegionData } from 'react-country-region-selector'
+
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng,
+} from 'react-places-autocomplete';
+
 
 Modal.setAppElement('#app')
+
+const searchOptions = {
+  types: ['(regions)']
+}
 
 export default class Dossier extends Component {
   constructor () {
@@ -17,10 +26,6 @@ export default class Dossier extends Component {
     self = this
     this.state = {
       shouldCloseOnOverlayClick_ : true,
-      show_info_box: false,
-      show_first_name_info_box: false,
-      show_last_name_info_box: false,
-      name_trigger: false,
       intial_trigger: true,
       first_name_box: "",
       last_name_box: "",
@@ -28,7 +33,10 @@ export default class Dossier extends Component {
       region_: "",
       slogan_box: "",
       bio_box: "",
-      contact_info_box: ""
+      contact_info_box: "",
+      address: '',
+      final_add: '',
+      just_one_time: true
     }
   }
 
@@ -40,11 +48,8 @@ export default class Dossier extends Component {
       try{
         const userProfile = await axios.get(`/api/user/${match.params.id}`)
         self.setState({
-          userProfile: userProfile.data.user[0],
-
-          }, () => {
-            console.log()
-          })
+          userProfile: userProfile.data.user[0]
+        })
       } catch(error){
         console.log(error)
       }
@@ -61,44 +66,63 @@ export default class Dossier extends Component {
     this.setState({shouldCloseOnOverlayClick_: true})
   }
 
-  selectCountry (val) {
-    this.setState({ country_: val })
-    this.setState({shouldCloseOnOverlayClick_: false})
-  }
-
-  selectRegion (val) {
-    this.setState({ region_: val })
-    this.setState({shouldCloseOnOverlayClick_: false})
-  }
-
   handleChange = (e) => {
     this.setState({[e.target.id]: e.target.value})
     this.setState({shouldCloseOnOverlayClick_: false})
   }
 
+  handleChange_address = address => {
+    this.setState({ address })
+
+  }
+  handleSelect = final_add => {
+    this.setState({ final_add })
+    this.setState({ address: final_add })
+    this.setState({shouldCloseOnOverlayClick_: false})
+  }
+
   submitForm = async () => {
-    let {name_trigger} = this.state.name_trigger
+    this.state.country_ = ""
+    this.state.region_ = ""
 
     if ((this.state.first_name_box == "") || (this.state.first_name_box == undefined)) {
-      this.setState({show_info_box: true})
-      this.setState({show_first_name_info_box: true})
-      name_trigger=true
-    }
-    else{
-      this.setState({show_first_name_info_box: false})
-    }
-    if ((this.state.last_name_box == "") || (this.state.last_name_box == undefined)) {
-      this.setState({show_info_box: true})
-      this.setState({show_last_name_info_box: true})
-      name_trigger=true
-    }
-    else{
-      this.setState({show_last_name_info_box: false})
-    }
-    if (name_trigger){
-      this.setState({name_trigger: false})
+      alert("Sorry mate! First & Last name can't be blank")
       return
     }
+
+    if ((this.state.last_name_box == "") || (this.state.last_name_box == undefined)) {
+      alert("Sorry mate! First & Last name can't be blank")
+      return
+    }
+
+    if (!this.state.address.length){
+      alert("Sorry mate! Location can't be blank")
+      return
+    } else {
+      if (this.state.address != this.state.final_add){
+        alert("Sorry mate! You have to pick a location from the list")
+        return
+      }
+    }
+
+    var arrTags = this.state.address.split(',')
+    if (arrTags.length == 1){
+      this.state.country_ = arrTags[0]
+    } else {
+      for(var i=0; i < arrTags.length; i++){
+        if (i==(arrTags.length-1)){
+          this.state.country_ = arrTags[i].trim()
+        }else {
+          this.state.region_+= arrTags[i] + ","
+        }
+      }
+    }
+
+    if(!this.state.just_one_time){
+      return
+    }
+    this.state.just_one_time = false
+
     try {
       const post = await axios.post('/api/user',{
         first_name_box: this.state.first_name_box,
@@ -122,8 +146,8 @@ export default class Dossier extends Component {
       if (this.state.intial_trigger){
         this.setState({first_name_box: first_name})
         this.setState({last_name_box: last_name})
-        this.setState({country_: country})
-        this.setState({region_: region})
+        this.setState({address: region + country})
+        this.setState({final_add: region + country})
         this.setState({slogan_box: slogan})
         this.setState({bio_box: bio})
         this.setState({intial_trigger: false})
@@ -143,6 +167,11 @@ export default class Dossier extends Component {
              shouldCloseOnOverlayClick={this.state.shouldCloseOnOverlayClick_}
              className="Modal"
              overlayClassName="Overlay"
+             style={{
+              content: {
+                backgroundColor: '#151b26'
+              }
+            }}
             >
             Edit intro:
             <i className="fas fa-times" onClick={this.handleCloseModal}></i>
@@ -156,24 +185,45 @@ export default class Dossier extends Component {
             </div>
             <div className="location">
               <p>Location <span style={{color: "red"}}>*</span></p>
-              <CountryDropdown
-                value={country_}
-                defaultOptionLabel={country}
-                onChange={(val) => this.selectCountry(val)}
-                valueType="full"
-                style={{
-                  fontSize: 15.2
-                }}
-              />&nbsp;
-              <RegionDropdown
-                country={country_}
-                value={region_}
-                blankOptionLabel={region}
-                onChange={(val) => this.selectRegion(val)}
-                style={{
-                  fontSize: 15.2
-                }}
-              />
+              <PlacesAutocomplete
+                value={this.state.address}
+                onChange={this.handleChange_address}
+                onSelect={this.handleSelect}
+                searchOptions={searchOptions}
+              >
+                {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+                  <div>
+                    <input
+                      {...getInputProps({
+                        placeholder: 'Search Places ...',
+                        className: 'location-search-input',
+                      })}
+                    />
+                    {suggestions.length > 0 && (<div className="autocomplete-dropdown-container">
+                      {loading && <div>Loading...</div>}
+                      {suggestions.map(suggestion => {
+                        const className = suggestion.active
+                          ? 'suggestion-item--active'
+                          : 'suggestion-item';
+                        // inline style for demonstration purpose
+                        const style = suggestion.active
+                          ? { backgroundColor: '#fff', cursor: 'pointer' }
+                          : { backgroundColor: '#151b26', cursor: 'pointer' };
+                        return (
+                          <div
+                            {...getSuggestionItemProps(suggestion, {
+                              className,
+                              style,
+                            })}
+                          >
+                            <span>{suggestion.description}</span>
+                          </div>
+                        );
+                      })}
+                    </div> )}
+                  </div>
+                )}
+              </PlacesAutocomplete>
             </div>
             <div className="contact-info">
               <p>Contact Info (visible to friends ONLY)</p>
@@ -191,20 +241,6 @@ export default class Dossier extends Component {
             <div className="save-btn">
               <button className="save" onClick={this.submitForm}>Save</button>
             </div>
-            {this.state.show_info_box &&
-              <div className="info_box">
-                {this.state.show_first_name_info_box &&
-                  <div className="first_name_error">
-                    Error: First Name can't be blank
-                  </div>
-                }
-                {this.state.show_last_name_info_box &&
-                  <div className="last_name_error">
-                    Error: Last Name can't be blank
-                  </div>
-                }
-              </div>
-            }
           </Modal>
         </div>
       )
