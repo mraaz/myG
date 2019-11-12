@@ -75,6 +75,19 @@ class GroupController {
     }
   }
 
+  async show_owner({auth, request, response}){
+    try{
+      const show_owner = await Database.from('groups').innerJoin('users', 'users.id', 'groups.user_id').where('groups.id', '=', request.params.id)
+
+      return {
+        show_owner
+      }
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
+
   async update_img({auth, request, response}){
     let current_user_permission = -1
 

@@ -225,6 +225,7 @@ Route.get('/api/groups/:id', 'GroupController.show')
 Route.post('/api/groups/update_img', 'GroupController.update_img')
 Route.post('/api/groups/update/all_accept/', 'GroupController.update_all_accept')
 Route.get('/api/groups/update_type/:id/:group_type', 'GroupController.update_type')
+Route.get('/api/groups/show_owner/:id', 'GroupController.show_owner')
 
 Route.get('/api/usergroup/get_all_my_group_approvals/:id', 'UsergroupController.get_all_my_group_approvals')
 Route.post('/api/usergroup/create', 'UsergroupController.store')

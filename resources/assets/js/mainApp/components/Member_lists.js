@@ -27,12 +27,16 @@ export default class Member_lists extends Component {
       try{
         const getMembers = await axios.get(`/api/usergroup/member_lists/${self.props.routeProps.match.params.id}`)
 
+        const getOwner = await axios.get(`/api/groups/show_owner/${self.props.routeProps.match.params.id}`)
+
         if(getMembers.data.all_group_members.length == 0){
           self.setState({
-            allGroupies: getMembers.data.all_group_members
+            allGroupies: getOwner.data.show_owner
           })
           return
         }
+        getMembers.data.all_group_members.push(getOwner.data.show_owner[0])
+
 
         //0=Owner, 1=Admin, 2=Moderator, 3=User, 42=Pending, -1=Not a member
         if(self.props.initialData.userInfo.id == getMembers.data.all_group_members[0].user_id){
