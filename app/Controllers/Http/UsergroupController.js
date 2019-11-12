@@ -28,8 +28,6 @@ class UsergroupController {
       const groups_im_in = await Database.from('usergroups').innerJoin('groups', 'groups.id', 'usergroups.group_id').where('usergroups.user_id', '=', auth.user.id).whereNot('usergroups.permission_level', 42).whereNotIn('usergroups.group_id', subquery)
 
       //const myPosts = await Database.from('posts').innerJoin('users', 'users.id', 'posts.user_id').where('posts.user_id', '=', auth.user.id).andWhere('posts.created_at', '>=', request.params.myDate).select('*', 'posts.id', 'posts.created_at','posts.updated_at').orderBy('posts.created_at', 'desc')
-
-
       return {
         groups_im_in
       }
