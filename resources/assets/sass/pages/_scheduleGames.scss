@@ -111,21 +111,19 @@
   .gap{
     padding: 78px;
   }
+  .da-gap{
+    padding-bottom: 18px;
+  }
   .gamesPosts{
-    position: relative;
-    display: grid;
-    grid-template-columns: 1 1 1 1;
-    max-width: 720px;
-    margin: 0 auto;
+    width: 55%;
+    padding-left: 8%;
+    max-width: 820px;
     .padding-container{
       padding: 0 15px;
     }
     .grey-container{
       z-index: 0;
-      position: relative;
       padding: 20px;
-      top: 10px;
-      right: 325px;
       background: #151b26;
       -webkit-box-shadow: 0 21px 48px -21px rgba(0,0,0,0.1);
       -moz-box-shadow: 0 21px 48px -21px rgba(0,0,0,0.1);

@@ -1,14 +1,15 @@
 .app-container.home-page .dossier-page{
 
 } //.app-container
+
 .Modal {
   position: absolute;
   top: 5%;
   left: 16%;
   right: 21%;
   bottom: 25%;
-  border: 1px solid #ccc;
-  background-color: #fff;
+  border: 1px solid $veryLightText;
+  background-color: #151b26;
   overflow: hidden;
   border-radius: 4px;
   outline: none;
@@ -55,7 +56,7 @@
     width: 55%;
   }
   .location{
-    grid-column: span 2;
+    width: 55%;
     p{
       padding: 2px 0 4px 0;
     }
