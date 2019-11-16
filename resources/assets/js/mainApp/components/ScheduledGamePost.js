@@ -58,7 +58,8 @@ export default class ScheduledGamePost extends Component {
       dota_2_pos_five_count: 0,
       clash_royale_field: false,
       bDeleteModalOpen: false,
-      modal_id: 0
+      modal_id: 0,
+      visibility_hidden_lnk: false
     }
 
     this.callbackPostFileModalClose = this.callbackPostFileModalClose.bind(this);
@@ -406,6 +407,10 @@ export default class ScheduledGamePost extends Component {
     }
     if (schedule_game.game_name == "Clash Royale"){
       self.setState({clash_royale_field: true})
+    }
+
+    if (schedule_game.visibility == 4){
+      this.setState({visibility_hidden_lnk: true})
     }
 
     getCommentsCount()
@@ -759,7 +764,8 @@ export default class ScheduledGamePost extends Component {
               {dota2_server_regions && <div>Server Regions: {schedule_game.dota2_server_regions} </div>}
               {dota2_roles && <div>Roles: {schedule_game.dota2_roles} </div>}
               {this.state.clash_royale_field && <div> Royale Trophies: {schedule_game.clash_royale_trophies} </div>}
-              <div> Visibility: {visibility} </div>
+              {!this.state.visibility_hidden_lnk && <div> Visibility: {visibility} </div>}
+              {this.state.visibility_hidden_lnk && <div> Visibility: <a href={`/scheduledGames/${schedule_game.id}`}> {visibility}</a> (Send this link to players to join game)  </div>}
               {description && <div> Description: {schedule_game.description} </div>}
             </div>
           </div>
