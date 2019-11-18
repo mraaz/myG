@@ -99,6 +99,7 @@ Route.get('/api/ScheduleGame/:id', 'ScheduleGameController.show_one')
 Route.post('/api/ScheduleGame/update_vacany', 'ScheduleGameController.update_vacany')
 
 Route.get('/api/ArchiveScheduleGame/:id', 'Archive_ScheduleGameController.show_one')
+Route.get('/api/ArchiveScheduleGame/filtered_by_one/:id', 'Archive_ScheduleGameController.filtered_by_one')
 
 Route.get('/api/ScheduleGame/filtered/:limitstr/:gameNamestr/:regionstr/:expstr/:platformstr/:descstr/:otherstr/:startDate/:endDate/:whenDate/:visibility/:dota2_medal_ranks/:dota2_server_regions/:dota2_roles/:clash_royale_trophies/:check_full_games', 'ScheduleGameController.scheduleSearchResults')
 
@@ -106,6 +107,8 @@ Route.get('/api/ScheduleGame/filtered_by_one/:id', 'ScheduleGameController.filte
 
 Route.get('/api/myScheduledGames/:limitstr/:exclude_expired', 'ScheduleGameController.myScheduledGames')
 Route.get('/api/myScheduledGamesCount/:id', 'ScheduleGameController.myScheduledGamesCount')
+
+Route.get('/api/ArchivemyScheduledGamesCount/:id', 'Archive_ScheduleGameController.myScheduledGamesCount')
 
 Route.get('/api/GameNames', 'GameNameController.show')
 Route.get('/api/GameName/:name', 'GameNameController.show_one')
@@ -134,6 +137,8 @@ Route.get('/api/comments/show_comment/:id', 'CommentController.show_comment')
 Route.post('/api/comments/update/:id', 'CommentController.update')
 Route.get('/api/comments/scheduled_games/:id', 'CommentController.show_scheduled_games')
 Route.get('/api/comments/scheduled_gamesCount/:id', 'CommentController.show_scheduled_gamesCount')
+
+Route.get('/api/archive_comments/scheduled_gamesCount/:id', 'Archive_CommentController.show_scheduled_gamesCount')
 
 Route.get('/api/replies/delete/:id', 'ReplyController.destroy')
 Route.get('/api/replies/:id', 'ReplyController.show')
@@ -167,11 +172,11 @@ Route.get('/api/notifications/markAllNoti', 'NotificationController.markAllNoti'
 Route.get('/api/notifications/deleteAllNoti', 'NotificationController.deleteAllNoti')
 Route.get('/api/notifications/getunread/:post_id/:activity_type', 'NotificationController.getRead_Status')
 Route.get('/api/notifications/getunread_schedule_game/:schedule_game_id/:activity_type', 'NotificationController.getRead_Status_schedule_game')
-Route.get('/api/notifications/getunread_archive_schedule_game/:archive_schedule_games_id/:activity_type', 'NotificationController.getunread_archive_schedule_game')
+Route.get('/api/notifications/getunread_archive_schedule_game/:archive_schedule_game_id/:activity_type', 'NotificationController.getunread_archive_schedule_game')
 Route.post('/api/notifications/addScheduleGame', 'NotificationController.addScheduleGame')
 Route.post('/api/notifications/addScheduleGame/attendance', 'NotificationController.addScheduleGame_attendance')
 Route.post('/api/notifications/updateRead_Status_schedule_game/:schedule_game_id/:activity_type', 'NotificationController.updateRead_Status_schedule_game')
-Route.post('/api/notifications/updateRead_Status_archive_schedule_game/:archive_schedule_games_id/:activity_type', 'NotificationController.updateRead_Status_archive_schedule_game')
+Route.post('/api/notifications/updateRead_Status_archive_schedule_game/:archive_schedule_game_id/:activity_type', 'NotificationController.updateRead_Status_archive_schedule_game')
 Route.post('/api/notifications/updateRead_Status_groups/:group_id/:activity_type/:user_id', 'NotificationController.updateRead_Status_groups')
 Route.get('/api/notifications/getAllNotiScheduleGamesAttendees/:schedule_games_id', 'NotificationController.getAllNotiScheduleGamesAttendees')
 Route.get('/api/notifications/delete/schedule_game_attendees/:id', 'NotificationController.remove_schedule_game_attendees')

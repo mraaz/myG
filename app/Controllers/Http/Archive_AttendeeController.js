@@ -9,8 +9,7 @@ class Archive_AttendeeController {
     if(auth.user){
       try{
         const savemySpot = await Archive_Attendee.create({
-          id: request.params.id,
-          archive_schedule_games_id: request.params.archive_schedule_games_id,
+          archive_schedule_game_id: request.params.archive_schedule_game_id,
           user_id: request.params.user_id,
           type: request.params.type,
           dota_2_position_one: request.params.dota_2_position_one,

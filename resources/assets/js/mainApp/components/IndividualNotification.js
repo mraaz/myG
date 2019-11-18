@@ -318,17 +318,17 @@ export default class IndividualNotification extends Component {
 
     const getArchive_scheduled_game_Data = async function(){
       try {
-        const getunread = await axios.get(`/api/notifications/getunread_archive_schedule_game/${notification.archive_schedule_games_id}/${notification.activity_type}`)
+        const getunread = await axios.get(`/api/notifications/getunread_archive_schedule_game/${notification.archive_schedule_game_id}/${notification.activity_type}`)
         if (getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0){
           self.state.unread = true
         }
 
-        const myArchiveScheduledGame = await axios.get(`/api/ArchiveScheduleGame/${notification.archive_schedule_games_id}`)
+        const myArchiveScheduledGame = await axios.get(`/api/ArchiveScheduleGame/${notification.archive_schedule_game_id}`)
 
         var myStartDateTime = moment(myArchiveScheduledGame.data.getOne[0].start_date_time, "YYYY-MM-DD HH:mm:ssZ").local()
 
         self.setState({
-          notification_str: "Crikey mate! One of your approved game's: " + myArchiveScheduledGame.data.getOne[0].game_name + ", was deleted! :'( This game was created by " + notification.alias + ". It was meant to start: " + myStartDateTime.format('Do MMM YY - h:mm a')
+          notification_str: "Crikey mate! One of your approved game's: " + myArchiveScheduledGame.data.getOne[0].game_name + ", was deleted! :'( This game was created by " + notification.alias + ". It was meant to start: " + myStartDateTime.format('Do MMM YY - h:mm a') + ". Their reason for cancelling was: " + myArchiveScheduledGame.data.getOne[0].reason_for_cancel
         })
 
       } catch (error){
@@ -380,11 +380,11 @@ export default class IndividualNotification extends Component {
 
   updateRead_Status_archive_schedule_game(){
     try{
-      const updateRead_Status_archive_schedule_game = axios.post(`/api/notifications/updateRead_Status_archive_schedule_game/${this.props.notification.archive_schedule_games_id}/${this.props.notification.activity_type}`)
+      const updateRead_Status_archive_schedule_game = axios.post(`/api/notifications/updateRead_Status_archive_schedule_game/${this.props.notification.archive_schedule_game_id}/${this.props.notification.activity_type}`)
     } catch (error){
       console.log(error)
     }
-    window.location.href = `/scheduledGames`
+    window.location.href = `/archived_scheduledGames/${this.props.notification.archive_schedule_game_id}`
   }
 
 
@@ -418,7 +418,7 @@ export default class IndividualNotification extends Component {
       this.state.group_post = false
       this.state.schedule_game = false
       this.state.archive_schedule_game = true
-      str_href = "/scheduledGames/"
+      str_href = `/archived_scheduledGames/${this.props.notification.archive_schedule_game_id}`
     } else {
       this.state.post = true
       this.state.group_post = false

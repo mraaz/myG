@@ -1,18 +1,18 @@
 'use strict'
 const Database = use('Database')
-const Reply = use("App/Models/Reply")
+const Archive_Reply = use("App/Models/Archive_Reply")
 
-class ReplyController {
+class Archive_ReplyController {
   async store({auth, request, response}){
     if(auth.user){
       try{
-        const newReply = await Reply.create({
-          user_id: auth.user.id,
-          comment_id: request.input('comment_id'),
-          content: request.input('content')
+        const newReply = await Archive_Reply.create({
+          content: request.params.content,
+          archive_comment_id: request.params.archive_comment_id,
+          user_id: request.params.user_id,
+          og_created_at: request.params.og_created_at,
+          og_updated_at: request.params.og_updated_at
         })
-        return newReply
-
       } catch(error){
         console.log(error)
       }
@@ -91,4 +91,4 @@ class ReplyController {
   }
 }
 
-module.exports = ReplyController
+module.exports = Archive_ReplyController

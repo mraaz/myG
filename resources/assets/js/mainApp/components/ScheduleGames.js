@@ -220,6 +220,7 @@ export default class ScheduleGames extends Component {
         console.log(error)
       }
     }
+    
     if (match.params.id != undefined && match.params.id != "" ){
       getExactData()
     } else{
