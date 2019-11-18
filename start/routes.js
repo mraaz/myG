@@ -139,6 +139,7 @@ Route.get('/api/comments/scheduled_games/:id', 'CommentController.show_scheduled
 Route.get('/api/comments/scheduled_gamesCount/:id', 'CommentController.show_scheduled_gamesCount')
 
 Route.get('/api/archive_comments/scheduled_gamesCount/:id', 'Archive_CommentController.show_scheduled_gamesCount')
+Route.get('/api/archive_comments/scheduled_games/:id', 'Archive_CommentController.show_scheduled_games')
 
 Route.get('/api/replies/delete/:id', 'ReplyController.destroy')
 Route.get('/api/replies/:id', 'ReplyController.show')
@@ -221,6 +222,9 @@ Route.get('/api/attendees/game_positions/:id', 'AttendeeController.show_game_pos
 Route.get('/api/attendees/getScheduleGameInvites/:id', 'AttendeeController.getScheduleGameInvites')
 Route.get('/api/attendees/delete_myInvite/:schedule_game_id/:id', 'AttendeeController.delete_invite')
 Route.post('/api/attendees/update_invite/:schedule_game_id/:id', 'AttendeeController.up_invite')
+
+Route.get('/api/archive_attendees/attending/:id', 'Archive_AttendeeController.show_attending')
+Route.get('/api/archive_attendees/role_call/:id', 'Archive_AttendeeController.role_call')
 
 Route.post('/api/groups/create', 'GroupController.store')
 Route.get('/api/groups/groupName/:name', 'GroupController.show_one_name')

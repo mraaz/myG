@@ -31,7 +31,7 @@ class Archive_AttendeeController {
     try{
 
       //const allAttendees = await Database.select('*').from('archive_attendees').where({schedule_games_id: request.params.id})
-      const allAttendees = await Database.from('archive_attendees').where({schedule_games_id: request.params.id, type: 1}).count('* as no_of_allAttendees')
+      const allAttendees = await Database.from('archive_attendees').where({archive_schedule_game_id: request.params.id, type: 1}).count('* as no_of_allAttendees')
 
       return {
         allAttendees
@@ -99,7 +99,7 @@ class Archive_AttendeeController {
   async role_call({auth, request, response}){
     try{
 
-      const role_call = await Database.from('archive_attendees').innerJoin('users', 'users.id', 'attendees.user_id').select('users.id as user_id', 'users.profile_img').where({schedule_games_id: request.params.id, type: 1}).limit(6)
+      const role_call = await Database.from('archive_attendees').innerJoin('users', 'users.id', 'archive_attendees.user_id').select('users.id as user_id', 'users.profile_img').where({archive_schedule_game_id: request.params.id, type: 1}).limit(6)
 
       return {
         role_call

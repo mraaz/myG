@@ -20,17 +20,12 @@ export default class ArchivedScheduledGamePost extends Component {
     super()
     this.state = {
       show_more_comments: false,
-      pull_once:true,
       value: "",
       zero_comments: false,
       comment_total:0,
       myPost: false,
       show_attendees: false,
       attendees_count: 0,
-      show_invite: false,
-      show_full: false,
-      show_attending: false,
-      show_pending: false,
       show_one_profile: false,
       show_two_profile: false,
       show_three_profile: false,
@@ -38,9 +33,6 @@ export default class ArchivedScheduledGamePost extends Component {
       show_five_profile: false,
       show_more_profile: false,
       attendees_profiles: [],
-      show_Dota_2_roles_selector: false,
-      dota_2_roles_selector: [],
-      dota2_roles_box: null,
       show_dota_2_position: false,
       dota_2_position: "Pos: ",
       show_dota_2_pos_one: false,
@@ -54,9 +46,6 @@ export default class ArchivedScheduledGamePost extends Component {
       dota_2_pos_four_count: 0,
       dota_2_pos_five_count: 0,
       clash_royale_field: false,
-      bDeleteModalOpen: false,
-      modal_id: 0,
-      visibility_hidden_lnk: false
     }
 
     this.textInput = null;
@@ -70,40 +59,6 @@ export default class ArchivedScheduledGamePost extends Component {
       if (this.textInput) this.textInput.focus()
     }
   }
-
-  detectKey = (e) => {
-    if (e.key === 'Enter' && e.shiftKey) {
-      return
-    }
-
-    if (e.key === 'Enter') {
-      event.preventDefault()
-      event.stopPropagation()
-      this.insert_comment()
-    }
-  }
-
-  handleChange = (e) => {
-    this.setState({value: e.target.value})
-  }
-
-  onChange = () => {
-    let tmpState = this.state.show_more_comments
-
-    if (!this.state.show_more_comments) {
-      this.pullComments()
-    }
-    // this.setState({
-    //   pull_once: false
-    // })
-    this.setState({
-      show_more_comments: !this.state.show_more_comments
-    })
-    if (!tmpState){
-      this.focusTextInput()
-    }
-  }
-
 
   componentWillMount(){
     const self = this
@@ -140,12 +95,12 @@ export default class ArchivedScheduledGamePost extends Component {
       try{
         if(schedule_game.limit != 42){
           self.state.show_attendees = true
-          const getNumberofAttendees = await axios.get(`/api/attendees/attending/${schedule_game.id}`)
+          const getNumberofAttendees = await axios.get(`/api/archive_attendees/attending/${schedule_game.archive_schedule_game_id}`)
           if (getNumberofAttendees.data.allAttendees[0].no_of_allAttendees != 0){
 
             self.state.attendees_count = getNumberofAttendees.data.allAttendees[0].no_of_allAttendees
 
-            const getwhoisAttending = await axios.get(`/api/attendees/role_call/${schedule_game.id}`)
+            const getwhoisAttending = await axios.get(`/api/archive_attendees/role_call/${schedule_game.archive_schedule_game_id}`)
             for (var i = 0; i < getwhoisAttending.data.role_call.length; i++){
               self.state.attendees_profiles.push(getwhoisAttending.data.role_call[i])
               switch(i) {
@@ -172,7 +127,7 @@ export default class ArchivedScheduledGamePost extends Component {
           }
         } else {
           try{
-            const getwhoisAttending = await axios.get(`/api/attendees/role_call/${schedule_game.id}`)
+            const getwhoisAttending = await axios.get(`/api/archive_attendees/role_call/${schedule_game.archive_schedule_game_id}`)
             for (var i = 0; i < getwhoisAttending.data.role_call.length; i++){
               self.state.attendees_profiles.push(getwhoisAttending.data.role_call[i])
               switch(i) {
@@ -206,23 +161,9 @@ export default class ArchivedScheduledGamePost extends Component {
       self.forceUpdate()
     }
 
-    if (schedule_game.visibility == 4){
-      this.setState({visibility_hidden_lnk: true})
-    }
-
     getCommentsCount()
     checkWhosPost()
     getNumberofAttendees()
-  }
-
-  onFocus = () => {
-    if (this.state.pull_once) {
-      this.pullComments()
-    }
-    this.setState({
-      pull_once: false,
-      show_more_comments: true
-    })
   }
 
   pullComments = () => {
@@ -231,7 +172,7 @@ export default class ArchivedScheduledGamePost extends Component {
 
     const getComments = async function(){
       try{
-        const myComments = await axios.get(`/api/comments/scheduled_games/${schedule_game.id}`)
+        const myComments = await axios.get(`/api/archive_comments/scheduled_games/${schedule_game.archive_schedule_game_id}`)
         self.setState({
           myComments: myComments.data.allComments,
           value: "",
@@ -252,208 +193,19 @@ export default class ArchivedScheduledGamePost extends Component {
     }
   }
 
-  insert_comment = () => {
-    const { schedule_game } = this.props
-    const self = this
+  onChange = () => {
+    let tmpState = this.state.show_more_comments
 
-    if (this.state.value == ""){
-      return
+    if (!this.state.show_more_comments) {
+      this.pullComments()
     }
-    if (this.state.value.trim() == ""){
-      this.setState({
-         value: "",
-      })
-      return
-    }
-
-    this.onFocus()
-
-    const saveComment = async function(){
-      try{
-        const postComment = await axios.post('/api/comments',{
-          content: self.state.value.trim(),
-          schedule_games_id: schedule_game.id
-        })
-        self.setState({
-           myComments: [],
-        })
-        self.pullComments()
-        self.setState({
-          comment_total: self.state.comment_total + 1,
-          zero_comments: true
-        })
-        if (schedule_game.user_id != self.props.user.userInfo.id){
-          const addPostLike = axios.post('/api/notifications/addComment',{
-            other_user_id: schedule_game.user_id,
-            schedule_games_id: schedule_game.id,
-            comment_id: postComment.data.id
-          })
-        }
-
-      } catch(error){
-       console.log(error)
-      }
-    }
-    saveComment()
-  }
-
-  // update_post = (e) => {
-  //   if (this.state.value2 == ""){
-  //     return
-  //   }
-  //   if (this.state.value2.trim() == ""){
-  //     this.setState({
-  //        value: "",
-  //     })
-  //     return
-  //   }
-  //   const self = this
-  //   const { schedule_game } = this.props
-  //
-  //   const editPost = async function(){
-  //     try{
-  //       const myEditPost = await axios.post(`/api/post/update/${schedule_game.id}`,{
-  //         content: self.state.value
-  //       })
-  //       self.setState({
-  //         content: self.state.value2,
-  //         edit_post: false,
-  //         value2: ""
-  //       })
-  //     } catch(error){
-  //      console.log(error)
-  //     }
-  //   }
-  //   editPost()
-  // }
-
-  delete_sch = async (id) => {
-    const tmp = null
-
-    try{
-      const all_attendees = await axios.get(`/api/attendees/attending/${id}`)
-      if (all_attendees.data.allAttendees[0].no_of_allAttendees > 0){
-        this.setState({
-          bDeleteModalOpen: true,
-          modal_id: id
-        })
-      } else {
-        if (window.confirm('Are you sure you wish to trash this game boss?')){
-          const mysch = axios.get(`/api/ScheduleGame/delete/${id}/${tmp}`)
-          location.reload()
-        }
-      }
-    } catch(error){
-      console.log(error)
-    }
-  }
-
-  enrollinGame = async () => {
-    var myDota2_roles = ""
-
-    if (this.state.show_Dota_2_roles_selector){
-      if ( (this.state.dota2_roles_box != "") && (this.state.dota2_roles_box != null) ){
-        for (var i=0; i < this.state.dota2_roles_box.length; i++){
-          switch(this.state.dota2_roles_box[i].value) {
-            case 1:
-              this.state.show_dota_2_pos_one = true
-              break
-            case 2:
-              this.state.show_dota_2_pos_two = true
-              break
-            case 3:
-              this.state.show_dota_2_pos_three = true
-              break
-            case 4:
-              this.state.show_dota_2_pos_four = true
-              break
-            case 5:
-              this.state.show_dota_2_pos_five = true
-              break
-          }
-        }
-      }else {
-        window.alert("Sorry mate, you need to select a role")
-        return
-      }
-    }
-    try{
-      const getNumberofAttendees = await axios.get(`/api/attendees/attending/${this.props.schedule_game.id}`)
-      if (this.props.schedule_game.limit == 42 || getNumberofAttendees.data.allAttendees[0].no_of_allAttendees < this.props.schedule_game.limit){
-
-        const savemySpot = axios.post('/api/attendees/savemySpot',{
-          schedule_games_id: this.props.schedule_game.id,
-          dota_2_position_one: this.state.show_dota_2_pos_one,
-          dota_2_position_two: this.state.show_dota_2_pos_two,
-          dota_2_position_three: this.state.show_dota_2_pos_three,
-          dota_2_position_four: this.state.show_dota_2_pos_four,
-          dota_2_position_five: this.state.show_dota_2_pos_five,
-          notify: true
-       })
-       this.setState({show_invite: false,
-         show_attending: false,
-         show_full: false,
-         show_pending: true
-       })
-
-        // const deleteNoti = await axios.get(`/api/notifications/delete/schedule_game_attendees/${this.props.schedule_game.id}`)
-        //
-        // const getAllAttendees = await axios.get(`/api/attendees/show_all_pending_attendance/${this.props.schedule_game.id}`)
-        // console.log(getAllAttendees);
-        // for (var i=0; i < getAllAttendees.data.allAttendees.length; i++){
-        //   if (this.props.user.userInfo.id != getAllAttendees.data.allAttendees[i].user_id){
-        //     const post_game = axios.post('/api/notifications/addScheduleGame/attendance',{
-        //       other_user_id: getAllAttendees.data.allAttendees[i].user_id,
-        //       schedule_games_id: this.props.schedule_game.id
-        //     })
-        //   }
-        // }
-      } else {
-        window.alert("Sorry mate, the spot got filled up! You are NOT in :(")
-        this.setState({show_invite: false,
-          show_attending: false,
-          show_full: true
-        })
-      }
-    } catch(error){
-      console.log(error)
-    }
-  }
-
-  disenrollinGame = () => {
-    try{
-      const getNumberofAttendees = axios.get(`/api/attendees/removeattending/${this.props.schedule_game.id}`)
-      this.setState({show_invite: true,
-        show_attending: false,
-        show_full: false,
-        show_pending: false
-      })
-
-      const no_vacany = axios.post('/api/ScheduleGame/update_vacany/',{
-        vacancy: true,
-        id: this.props.schedule_game.id
-      })
-
-    } catch(error){
-      console.log(error)
-    }
-    this.state.show_dota_2_pos_one = false
-    this.state.show_dota_2_pos_two = false
-    this.state.show_dota_2_pos_three = false
-    this.state.show_dota_2_pos_four = false
-    this.state.show_dota_2_pos_five = false
+    this.setState({
+      show_more_comments: !this.state.show_more_comments
+    })
   }
 
   redirect_link = () => {
     window.location.href = `/playerList/${this.props.schedule_game.id}`
-  }
-
-  handleChange_dota2_roles = (dota2_roles_box) => {
-    this.setState({ dota2_roles_box })
-  }
-
-  approvals = () => {
-    window.location.href = `/scheduledGamesApprovals/${this.props.schedule_game.schedule_games_GUID}`
   }
 
   render() {
@@ -548,42 +300,12 @@ export default class ArchivedScheduledGamePost extends Component {
               {dota2_server_regions && <div>Server Regions: {schedule_game.dota2_server_regions} </div>}
               {dota2_roles && <div>Roles: {schedule_game.dota2_roles} </div>}
               {this.state.clash_royale_field && <div> Royale Trophies: {schedule_game.clash_royale_trophies} </div>}
-              {!this.state.visibility_hidden_lnk && <div> Visibility: {visibility} </div>}
-              {this.state.visibility_hidden_lnk && <div> Visibility: <a href={`/scheduledGames/${schedule_game.id}`}> {visibility}</a> (Send this link to players to join game)  </div>}
+              <div> Visibility: {visibility} </div>
               {description && <div> Description: {schedule_game.description} </div>}
+              <div> Reason for Cancelling: {schedule_game.reason_for_cancel} </div>
             </div>
           </div>
           <div className="invitation-panel">
-            {this.state.show_invite && <div className="invitation-link">
-              <div className="hack-text" onClick={() => this.enrollinGame()}>
-                <i className="fas fa-dungeon"></i>&nbsp;Join Queue
-              </div>
-              {this.state.show_Dota_2_roles_selector && <div className="dota2-roles">
-                <Select
-                  onChange={this.handleChange_dota2_roles}
-                  options={this.state.dota_2_roles_selector}
-                  className="dota2-roles-box"
-                  placeholder="Select Role/s"
-                  isClearable
-                  isMulti
-                />
-              </div>}
-            </div>}
-            {this.state.show_full && <div className="invitation-link">
-              <div className="hack-text2">
-                <i className="fas fa-door-closed"></i>&nbsp;Sorry it's <span style={{color: "#f44336"}}>&nbsp; full :( </span>
-              </div>
-            </div>}
-            {this.state.show_attending && <div className="invitation-link">
-              <div className="hack-text3" onClick={() => { if (window.confirm('Are you sure you wish to remove yourself from this Game?')) this.disenrollinGame()}}>
-                <i className="fas fa-door-closed"></i><span style={{color: "#4CAF50"}}>&nbsp;Leave game</span>
-              </div>
-            </div>}
-            {this.state.show_pending && <div className="invitation-link">
-              <div className="hack-text3" onClick={() => { if (window.confirm('Are you sure you wish to remove yourself from this Game?')) this.disenrollinGame()}}>
-                <i className="fas fa-door-closed"></i><span style={{color: "#2196F3"}}>&nbsp;Waiting on host...</span>
-              </div>
-            </div>}
             {this.state.show_dota_2_position && <div className="dota2-roles-answers">
               {this.state.dota_2_position}
               {this.state.show_dota_2_pos_one && <div className="dota_2_position_one_text"> 1<div className={`noti-number ${this.state.dota_2_pos_one_count > 0 ? 'active' : '' }`}> {this.state.dota_2_pos_one_count}</div> </div>}
@@ -643,16 +365,12 @@ export default class ArchivedScheduledGamePost extends Component {
               name="name"
               rows={8}
               cols={80}
-              placeholder="Write a comment..."
+              placeholder="No more comments, this game is cancelled."
               value={this.state.value}
-              onChange={this.handleChange}
-              maxLength="254"
-              onKeyUp = {this.detectKey}
-              ref={this.setTextInputRef}
-              onFocus={this.onFocus}
+              disabled={true}
             />
             <div className="buttons">
-              <div className="repost-btn" onClick={this.insert_comment}>
+              <div className="repost-btn">
                 <i className="fas fa-reply" />{" "}
               </div>
             </div>

@@ -64,7 +64,7 @@ class Archive_CommentController {
 
   async show_scheduled_games({auth, request, response}){
     try{
-      const allComments = await Database.from('comments').innerJoin('users', 'users.id', 'comments.user_id').where('schedule_games_id', '=', request.params.id).select('*', 'comments.id', 'comments.updated_at').orderBy('comments.created_at', 'desc')
+      const allComments = await Database.from('archive_comments').innerJoin('users', 'users.id', 'archive_comments.user_id').where({archive_schedule_game_id: request.params.id}).select('*', 'archive_comments.id', 'archive_comments.og_updated_at').orderBy('archive_comments.og_created_at', 'desc')
 
       return {
         allComments,
