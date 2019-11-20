@@ -112,8 +112,7 @@ class Archive_AttendeeController {
 
   async role_call_ALL({auth, request, response}){
     try{
-
-      const role_call_ALL = await Database.from('archive_attendees').innerJoin('users', 'users.id', 'attendees.user_id').select('users.id as user_id', 'users.profile_img', 'users.first_name', 'users.last_name').where({schedule_games_id: request.params.id, type: 1})
+      const role_call_ALL = await Database.from('archive_attendees').innerJoin('users', 'users.id', 'archive_attendees.user_id').select('users.id as user_id', 'users.profile_img', 'users.first_name', 'users.last_name').where({archive_schedule_game_id: request.params.id, type: 1})
 
       return {
         role_call_ALL

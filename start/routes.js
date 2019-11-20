@@ -225,6 +225,7 @@ Route.post('/api/attendees/update_invite/:schedule_game_id/:id', 'AttendeeContro
 
 Route.get('/api/archive_attendees/attending/:id', 'Archive_AttendeeController.show_attending')
 Route.get('/api/archive_attendees/role_call/:id', 'Archive_AttendeeController.role_call')
+Route.get('/api/archive_attendees/role_call_ALL/:id', 'Archive_AttendeeController.role_call_ALL')
 
 Route.post('/api/groups/create', 'GroupController.store')
 Route.get('/api/groups/groupName/:name', 'GroupController.show_one_name')

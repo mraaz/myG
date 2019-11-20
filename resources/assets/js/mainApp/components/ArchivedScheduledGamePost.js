@@ -205,7 +205,7 @@ export default class ArchivedScheduledGamePost extends Component {
   }
 
   redirect_link = () => {
-    window.location.href = `/playerList/${this.props.schedule_game.id}`
+    window.location.href = `/archive_playerList/${this.props.schedule_game.archive_schedule_game_id}`
   }
 
   render() {
@@ -302,7 +302,7 @@ export default class ArchivedScheduledGamePost extends Component {
               {this.state.clash_royale_field && <div> Royale Trophies: {schedule_game.clash_royale_trophies} </div>}
               <div> Visibility: {visibility} </div>
               {description && <div> Description: {schedule_game.description} </div>}
-              <div> Reason for Cancelling: {schedule_game.reason_for_cancel} </div>
+              <div>Reason for Cancelling: {schedule_game.reason_for_cancel} </div>
             </div>
           </div>
           <div className="invitation-panel">

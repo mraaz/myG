@@ -156,6 +156,9 @@ class Layout extends Component {
             <Route exact path="/playerList/:id" component={(props) => <PlayerList routeProps={props}
             initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} />} />
 
+            <Route exact path="/archive_playerList/:archive_id" component={(props) => <PlayerList routeProps={props}
+            initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} />} />
+
             <Route exact path="/groups/" component={(props) => <GroupMain routeProps={props}
             initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} />} />
 

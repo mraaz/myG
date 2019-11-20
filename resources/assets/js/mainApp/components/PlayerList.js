@@ -31,7 +31,24 @@ export default class PlayerList extends Component {
         console.log(error)
       }
     }
-    getAttendees()
+
+    const getArchive_Attendees = async function(){
+      try{
+        const getAttendees = await axios.get(`/api/archive_attendees/role_call_ALL/${match.params.archive_id}`)
+        self.setState({
+          allMyFriends: getAttendees.data.role_call_ALL
+          })
+
+      } catch(error){
+        console.log(error)
+      }
+    }
+
+    if (match.params.archive_id != undefined || match.params.archive_id != null){
+      getArchive_Attendees()
+    } else {
+      getAttendees()
+    }
   }
 
   showFriends = () => {
