@@ -48,6 +48,7 @@ import ScheduledGamesApprovals from "./components/ScheduledGamesApprovals"
 import GroupHome from "./components/GroupHome"
 import MyApprovals from "./components/MyApprovals"
 import Member_lists from "./components/Member_lists"
+import ArchivedScheduledGames from "./components/ArchivedScheduledGames"
 
 
 class Layout extends Component {
@@ -69,9 +70,8 @@ class Layout extends Component {
 
         self.setState({
           initialData: initialData.data
-        }, () => {
-          console.log(self.state)
         })
+
       } catch (error){
         console.log(error)
       }
@@ -156,6 +156,9 @@ class Layout extends Component {
             <Route exact path="/playerList/:id" component={(props) => <PlayerList routeProps={props}
             initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} />} />
 
+            <Route exact path="/archive_playerList/:archive_id" component={(props) => <PlayerList routeProps={props}
+            initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} />} />
+
             <Route exact path="/groups/" component={(props) => <GroupMain routeProps={props}
             initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} />} />
 
@@ -169,6 +172,9 @@ class Layout extends Component {
             initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} />} />
 
             <Route exact path="/groups/:id/members" component={(props) => <Member_lists routeProps={props}
+            initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} />} />
+
+            <Route exact path="/archived_scheduledGames/:id" component={(props) => <ArchivedScheduledGames routeProps={props}
             initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} />} />
 
           </section>

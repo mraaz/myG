@@ -6,7 +6,8 @@ const Schema = use('Schema')
 class ArchiveScheduleGamesSchema extends Schema {
   up () {
     this.create('archive_schedule_games', (table) => {
-      table.integer('id').unsigned().notNullable().unique().primary()
+      table.increments()
+      table.integer('archive_schedule_game_id').unsigned().notNullable().unique()
       table.integer('user_id').unsigned().notNullable()
       table.foreign('user_id').references('users.id').onDelete('cascade')
       table.string('game_name', 254).notNullable()

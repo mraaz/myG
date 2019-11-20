@@ -4,6 +4,8 @@ const ScheduleGame = use("App/Models/ScheduleGame")
 const NotificationController = use("./NotificationController")
 const Archive_AttendeeController = use("./Archive_AttendeeController")
 const Archive_ScheduleGameController = use("./Archive_ScheduleGameController")
+const Archive_CommentController = use("./Archive_CommentController")
+const Archive_ReplyController = use("./Archive_ReplyController")
 
 class ScheduleGameController {
   async store({auth, request, response}){
@@ -38,10 +40,13 @@ class ScheduleGameController {
         let noti = new NotificationController()
         let archive_attendees = new Archive_AttendeeController()
         let archive_schedule_games = new Archive_ScheduleGameController()
+        let archive_comments = new Archive_CommentController()
+        let archive_replies = new Archive_ReplyController()
 
         var schedule_game_id = request.params.id
 
         const getOne = await Database.from('schedule_games').where({id: request.params.id})
+
         request.params.id = getOne[0].id
         request.params.game_name = getOne[0].game_name
         request.params.user_id = getOne[0].user_id
@@ -68,9 +73,9 @@ class ScheduleGameController {
         await archive_schedule_games.store({auth, request, response})
 
         const allAttendees = await Database.from('attendees').where({schedule_games_id: request.params.id, type: 1})
+
         for (var i=0; i < allAttendees.length; i++){
-          request.params.id = allAttendees[i].id
-          request.params.archive_schedule_games_id = allAttendees[i].schedule_games_id
+          request.params.archive_schedule_game_id = allAttendees[i].schedule_games_id
           request.params.user_id = allAttendees[i].user_id
           request.params.type = allAttendees[i].type
           request.params.dota_2_position_one = allAttendees[i].dota_2_position_one
@@ -84,9 +89,35 @@ class ScheduleGameController {
 
           if (auth.user.id != allAttendees[i].user_id){
             request.params.id = allAttendees[i].user_id
-            request.params.archive_schedule_games_id = schedule_game_id
+            request.params.archive_schedule_game_id = schedule_game_id
             noti.addGameDeleted({auth, request, response})
             //request.params.payload = `${getOne[0].game_name} was deleted! This game was scheduled to start ${getOne[0].start_date_time}`
+          }
+        }
+
+        const getComments = await Database.from('comments').where({schedule_games_id: schedule_game_id})
+        var getReplies
+
+        for (var i=0; i < getComments.length; i++){
+          request.params.id = getComments[i].id
+          request.params.content = getComments[i].content
+          request.params.archive_schedule_game_id = schedule_game_id
+          request.params.user_id = getComments[i].user_id
+          request.params.og_created_at = getComments[i].created_at
+          request.params.og_updated_at = getComments[i].updated_at
+
+          archive_comments.store({auth, request, response})
+
+          getReplies = await Database.from('replies').where({comment_id: getComments[i].id})
+
+          for (var x=0; x < getReplies.length; x++){
+            request.params.content = getReplies[x].content
+            request.params.archive_comment_id = getComments[i].id
+            request.params.user_id = getReplies[x].user_id
+            request.params.og_created_at = getReplies[x].created_at
+            request.params.og_updated_at = getReplies[x].updated_at
+
+            archive_replies.store({auth, request, response})
           }
         }
 

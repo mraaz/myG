@@ -7,7 +7,7 @@ class Archive_ScheduleGameController {
   async store({auth, request, response}){
     if(auth.user){
       const newScheduleGame = await Archive_ScheduleGame.create({
-        id: request.params.id,
+        archive_schedule_game_id: request.params.id,
         game_name: request.params.game_name,
         user_id: request.params.user_id,
         region: request.params.region,
@@ -28,7 +28,7 @@ class Archive_ScheduleGameController {
         clash_royale_trophies: request.params.clash_royale_trophies,
         vacancy: request.params.vacancy,
         og_created_at: request.params.og_created_at,
-        reason_for_cancel: request.params.reason_for_cancel
+        reason_for_cancel: decodeURI(request.params.reason_for_cancel)
       })
       return newScheduleGame
     }
@@ -91,7 +91,7 @@ class Archive_ScheduleGameController {
   async myScheduledGamesCount({auth, request, response}){
     try{
       //const latestScheduledGames = await Archive_ScheduleGame.query().innerJoin('users', 'user_id', 'schedule_games.user_id').options({nestTables:true}).fetch()
-      const myScheduledGamesCount = await Database.from('archive_schedule_games').where({id: request.params.id, user_id: auth.user.id}).count('* as no_of_my_posts')
+      const myScheduledGamesCount = await Database.from('archive_schedule_games').where({archive_schedule_game_id: request.params.id, user_id: auth.user.id}).count('* as no_of_my_posts')
       return {
         myScheduledGamesCount
       }
@@ -352,7 +352,7 @@ class Archive_ScheduleGameController {
 
   async filtered_by_one({auth, request, response}){
     try{
-      const latestScheduledGames = await Database.from('archive_schedule_games').innerJoin('users', 'users.id', 'schedule_games.user_id').where('schedule_games.id', '=', request.params.id).select('users.id as user_id', 'users.alias', 'users.profile_img', 'schedule_games.id', 'schedule_games.game_name', 'schedule_games.region', 'schedule_games.experience', 'schedule_games.start_date_time', 'schedule_games.end_date_time', 'schedule_games.platform', 'schedule_games.description', 'schedule_games.other', 'schedule_games.expiry', 'schedule_games.limit', 'schedule_games.created_at', 'schedule_games.updated_at')
+      const latestScheduledGames = await Database.from('archive_schedule_games').innerJoin('users', 'users.id', 'archive_schedule_games.user_id').where('archive_schedule_games.archive_schedule_game_id', '=', request.params.id).select('*', 'users.id as user_id' )
       return {
         latestScheduledGames
       }
@@ -364,7 +364,7 @@ class Archive_ScheduleGameController {
 
   async show_one({auth, request, response}){
     try{
-      const getOne = await Database.from('archive_schedule_games').where({id: request.params.id})
+      const getOne = await Database.from('archive_schedule_games').where({archive_schedule_game_id: request.params.id})
 
       return {
         getOne

@@ -9,8 +9,7 @@ class Archive_AttendeeController {
     if(auth.user){
       try{
         const savemySpot = await Archive_Attendee.create({
-          id: request.params.id,
-          archive_schedule_games_id: request.params.archive_schedule_games_id,
+          archive_schedule_game_id: request.params.archive_schedule_game_id,
           user_id: request.params.user_id,
           type: request.params.type,
           dota_2_position_one: request.params.dota_2_position_one,
@@ -32,7 +31,7 @@ class Archive_AttendeeController {
     try{
 
       //const allAttendees = await Database.select('*').from('archive_attendees').where({schedule_games_id: request.params.id})
-      const allAttendees = await Database.from('archive_attendees').where({schedule_games_id: request.params.id, type: 1}).count('* as no_of_allAttendees')
+      const allAttendees = await Database.from('archive_attendees').where({archive_schedule_game_id: request.params.id, type: 1}).count('* as no_of_allAttendees')
 
       return {
         allAttendees
@@ -100,7 +99,7 @@ class Archive_AttendeeController {
   async role_call({auth, request, response}){
     try{
 
-      const role_call = await Database.from('archive_attendees').innerJoin('users', 'users.id', 'attendees.user_id').select('users.id as user_id', 'users.profile_img').where({schedule_games_id: request.params.id, type: 1}).limit(6)
+      const role_call = await Database.from('archive_attendees').innerJoin('users', 'users.id', 'archive_attendees.user_id').select('users.id as user_id', 'users.profile_img').where({archive_schedule_game_id: request.params.id, type: 1}).limit(6)
 
       return {
         role_call
@@ -113,8 +112,7 @@ class Archive_AttendeeController {
 
   async role_call_ALL({auth, request, response}){
     try{
-
-      const role_call_ALL = await Database.from('archive_attendees').innerJoin('users', 'users.id', 'attendees.user_id').select('users.id as user_id', 'users.profile_img', 'users.first_name', 'users.last_name').where({schedule_games_id: request.params.id, type: 1})
+      const role_call_ALL = await Database.from('archive_attendees').innerJoin('users', 'users.id', 'archive_attendees.user_id').select('users.id as user_id', 'users.profile_img', 'users.first_name', 'users.last_name').where({archive_schedule_game_id: request.params.id, type: 1})
 
       return {
         role_call_ALL

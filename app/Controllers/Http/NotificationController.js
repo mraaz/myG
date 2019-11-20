@@ -152,7 +152,7 @@ class NotificationController {
           other_user_id: request.params.id,
           user_id: auth.user.id,
           activity_type: 15,
-          archive_schedule_games_id: request.params.archive_schedule_games_id
+          archive_schedule_game_id: request.params.archive_schedule_game_id
         })
         return 'Saved item'
 
@@ -244,7 +244,7 @@ class NotificationController {
       const myschedulegames_attendees = await Database.from('notifications').where({other_user_id: auth.user.id}).where({activity_type: 11, read_status: 0}).groupBy('notifications.schedule_games_id').select("id")
       const mygroups = await Database.from('notifications').where({other_user_id: auth.user.id}).where({activity_type: 12, read_status: 0}).groupBy('notifications.group_id').select("id")
       const myschedulegames_approvals = await Database.from('notifications').where({other_user_id: auth.user.id}).where({activity_type: 14, read_status: 0}).groupBy('notifications.schedule_games_id').select("id")
-      const allMyarchived_schedulegames = await Database.from('notifications').where({other_user_id: auth.user.id}).where({activity_type: 15, read_status: 0}).groupBy('notifications.archive_schedule_games_id').select("id")
+      const allMyarchived_schedulegames = await Database.from('notifications').where({other_user_id: auth.user.id}).where({activity_type: 15, read_status: 0}).groupBy('notifications.archive_schedule_game_id').select("id")
       const dropped_out_attendees = await Database.from('notifications').where({other_user_id: auth.user.id}).where({activity_type: 16, read_status: 0}).groupBy('notifications.schedule_games_id').select("id")
       const group_member_approved = await Database.from('notifications').where({other_user_id: auth.user.id}).where({activity_type: 17, read_status: 0}).groupBy('notifications.schedule_games_id').select("id")
 
@@ -313,7 +313,7 @@ class NotificationController {
       const myschedulegames_attendees = await Database.from('notifications').innerJoin('users', 'users.id', 'notifications.user_id').where({other_user_id: auth.user.id}).where({activity_type: 11}).groupBy('notifications.schedule_games_id').select('notifications.schedule_games_id', 'notifications.activity_type', 'users.alias', 'users.first_name', 'users.last_name', 'users.profile_img', 'users.id', 'notifications.updated_at').orderBy('notifications.updated_at').limit(88)
       const mygroups = await Database.from('notifications').innerJoin('users', 'users.id', 'notifications.user_id').innerJoin('groups', 'groups.id', 'notifications.group_id').where({other_user_id: auth.user.id}).where({activity_type: 12}).groupBy('notifications.group_id').select('notifications.group_id', 'notifications.activity_type', 'users.first_name', 'users.last_name', 'users.profile_img', 'users.id', 'notifications.updated_at', 'groups.name').orderBy('notifications.updated_at').limit(88)
       const myschedulegames_approvals = await Database.from('notifications').innerJoin('users', 'users.id', 'notifications.user_id').where({other_user_id: auth.user.id}).where({activity_type: 14}).groupBy('notifications.schedule_games_id').select('notifications.schedule_games_id', 'notifications.activity_type', 'users.alias', 'users.first_name', 'users.last_name', 'users.profile_img', 'users.id', 'notifications.updated_at').orderBy('notifications.updated_at').limit(88)
-      const allMyarchived_schedulegames = await Database.from('notifications').innerJoin('users', 'users.id', 'notifications.user_id').where({other_user_id: auth.user.id}).where({activity_type: 15}).groupBy('notifications.archive_schedule_games_id').select('notifications.archive_schedule_games_id', 'notifications.activity_type', 'users.alias', 'users.first_name', 'users.last_name', 'users.profile_img', 'users.id', 'notifications.updated_at').orderBy('notifications.updated_at').limit(88)
+      const allMyarchived_schedulegames = await Database.from('notifications').innerJoin('users', 'users.id', 'notifications.user_id').where({other_user_id: auth.user.id}).where({activity_type: 15}).groupBy('notifications.archive_schedule_game_id').select('notifications.archive_schedule_game_id', 'notifications.activity_type', 'users.alias', 'users.first_name', 'users.last_name', 'users.profile_img', 'users.id', 'notifications.updated_at').orderBy('notifications.updated_at').limit(88)
       const dropped_out_attendees = await Database.from('notifications').innerJoin('users', 'users.id', 'notifications.user_id').where({other_user_id: auth.user.id}).where({activity_type: 16}).groupBy('notifications.schedule_games_id').select('notifications.schedule_games_id', 'notifications.activity_type', 'users.first_name', 'users.last_name', 'users.profile_img', 'users.id', 'notifications.updated_at').orderBy('notifications.updated_at').limit(88)
       const group_member_approved = await Database.from('notifications').innerJoin('users', 'users.id', 'notifications.user_id').where({other_user_id: auth.user.id}).where({activity_type: 17}).groupBy('notifications.schedule_games_id').select('notifications.group_id', 'notifications.activity_type', 'users.first_name', 'users.last_name', 'users.profile_img', 'users.id', 'notifications.updated_at').orderBy('notifications.updated_at').limit(88)
 
@@ -557,7 +557,7 @@ class NotificationController {
   async updateRead_Status_archive_schedule_game({auth, request, response}){
     if(auth.user){
       try{
-        const updateRead_Status_archive_schedule_game = await Notification.query().where({other_user_id: auth.user.id, archive_schedule_games_id: request.params.archive_schedule_games_id, activity_type: request.params.activity_type}).update({read_status:1})
+        const updateRead_Status_archive_schedule_game = await Notification.query().where({other_user_id: auth.user.id, archive_schedule_game_id: request.params.archive_schedule_game_id, activity_type: request.params.activity_type}).update({read_status:1})
         return 'Saved successfully'
       }
       catch(error){
@@ -630,7 +630,7 @@ class NotificationController {
 
   async getunread_archive_schedule_game({auth, request, response}){
     try{
-      const getunread_archive_schedule_game = await Database.from('notifications').where({other_user_id: auth.user.id}).where({archive_schedule_games_id: request.params.archive_schedule_games_id, activity_type: request.params.activity_type, read_status: 0}).count('* as no_of_my_unread')
+      const getunread_archive_schedule_game = await Database.from('notifications').where({other_user_id: auth.user.id}).where({archive_schedule_game_id: request.params.archive_schedule_game_id, activity_type: request.params.activity_type, read_status: 0}).count('* as no_of_my_unread')
 
       return {
         getAllNotiReplyCount_unreadCount: getunread_archive_schedule_game

@@ -1,18 +1,19 @@
 'use strict'
-const Comment = use("App/Models/Comment")
+const Archive_Comment = use("App/Models/Archive_Comment")
 const Database = use('Database')
 
-class CommentController {
+class Archive_CommentController {
   async store({auth, request, response}){
     if(auth.user){
       try{
-        const newComment = await Comment.create({
-          content: request.input('content'),
-          post_id: request.input('post_id'),
-          schedule_games_id: request.input('schedule_games_id'),
-          user_id: auth.user.id
+        const newComment = await Archive_Comment.create({
+          archive_comment_id: request.params.id,
+          content: request.params.content,
+          archive_schedule_game_id: request.params.archive_schedule_game_id,
+          user_id: request.params.user_id,
+          og_created_at: request.params.og_created_at,
+          og_updated_at: request.params.og_updated_at
         })
-        return newComment
       }
       catch(error){
         console.log(error);
@@ -63,7 +64,7 @@ class CommentController {
 
   async show_scheduled_games({auth, request, response}){
     try{
-      const allComments = await Database.from('comments').innerJoin('users', 'users.id', 'comments.user_id').where('schedule_games_id', '=', request.params.id).select('*', 'comments.id', 'comments.updated_at').orderBy('comments.created_at', 'desc')
+      const allComments = await Database.from('archive_comments').innerJoin('users', 'users.id', 'archive_comments.user_id').where({archive_schedule_game_id: request.params.id}).select('*', 'archive_comments.id', 'archive_comments.og_updated_at').orderBy('archive_comments.og_created_at', 'desc')
 
       return {
         allComments,
@@ -104,7 +105,7 @@ class CommentController {
 
   async show_scheduled_gamesCount({auth, request, response}){
     try{
-      const no_of_comments = await Database.from('comments').where({schedule_games_id: request.params.id}).count('* as no_of_comments')
+      const no_of_comments = await Database.from('archive_comments').where({archive_schedule_game_id: request.params.id}).count('* as no_of_comments')
 
       return {
         no_of_comments,
@@ -117,4 +118,4 @@ class CommentController {
 
 }
 
-module.exports = CommentController
+module.exports = Archive_CommentController
