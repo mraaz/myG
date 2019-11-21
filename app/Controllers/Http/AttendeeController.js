@@ -170,8 +170,12 @@ class AttendeeController {
   async getScheduleGameInvites({auth, request, response}){
     try{
 
-      const getScheduleGameInvites = await Database.from('attendees').innerJoin('users', 'users.id', 'attendees.user_id').innerJoin('schedule_games', 'schedule_games.id', 'attendees.schedule_games_id').where({schedule_games_GUID: request.params.id, type: 3}).options({nestTables:true})
+      var getScheduleGameInvites = await Database.from('attendees').innerJoin('users', 'users.id', 'attendees.user_id').innerJoin('schedule_games', 'schedule_games.id', 'attendees.schedule_games_id').where({schedule_games_GUID: request.params.id, type: 3}).options({nestTables:true})
 
+      if (getScheduleGameInvites.length == 0){
+        getScheduleGameInvites = await Database.from('schedule_games').where({schedule_games_GUID: request.params.id}).options({nestTables:true})
+      }
+      
       return {
         getScheduleGameInvites
       }

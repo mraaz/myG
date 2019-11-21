@@ -14,7 +14,8 @@ export default class ScheduledGamesApprovals extends Component {
   constructor() {
     super()
     this.state = {
-      start_date: ""
+      start_date: "",
+      show_game_header: false
     }
   }
 
@@ -25,12 +26,17 @@ export default class ScheduledGamesApprovals extends Component {
     const getScheduleGameInvites = async function(){
       try{
         const getScheduleGameInvites = await axios.get(`/api/attendees/getScheduleGameInvites/${match.params.id}`)
-        var myStartDateTime = moment(getScheduleGameInvites.data.getScheduleGameInvites[0].schedule_games.start_date_time, "YYYY-MM-DD HH:mm:ssZ").local()
         self.setState({
           myInvites: getScheduleGameInvites.data.getScheduleGameInvites,
-          start_date: myStartDateTime.format('Do MMM YY - h:mm a')
         })
 
+        if (getScheduleGameInvites.data.getScheduleGameInvites.length > 0){
+          var myStartDateTime = moment(getScheduleGameInvites.data.getScheduleGameInvites[0].schedule_games.start_date_time, "YYYY-MM-DD HH:mm:ssZ").local()
+          self.setState({
+            start_date: myStartDateTime.format('Do MMM YY - h:mm a'),
+            show_game_header: true
+          })
+        }
       } catch(error){
         console.log(error)
       }
@@ -40,16 +46,16 @@ export default class ScheduledGamesApprovals extends Component {
 
   showApprovals = () => {
     if(this.state.myInvites != undefined){
-      const rowLen = this.state.myInvites.length
       var lastRow = false
-      if(rowLen == 0){
+      if(this.state.myInvites.length == 0 || this.state.myInvites[0].attendees == undefined || this.state.myInvites[0].attendees.length == 0 ){
         return( <div className="scheduledGamesApprovals-info">
          No pending approvals
          </div>
         )
+        return
       }
       return this.state.myInvites.map((item, index) => {
-        if (rowLen === index + 1) {
+        if (this.state.myInvites.length === index + 1) {
           lastRow = true
         }
         return <IndividualApproval approvals={item} key={index} lastRow={lastRow}/>
@@ -65,7 +71,8 @@ export default class ScheduledGamesApprovals extends Component {
           <div className="content-area scheduledGamesApprovals-page">
             <div className="padding-container">
               <div className="scheduledGamesApprovals-grey-container">
-                <h3>myApprovals for <a href={`/scheduledGames/${this.state.myInvites[0].schedule_games.id}`}> {this.state.myInvites[0].schedule_games.game_name}</a> on this date: {this.state.start_date}</h3>
+                {this.state.show_game_header && <h3>myApprovals for <a href={`/scheduledGames/${this.state.myInvites[0].schedule_games.id}`}> {this.state.myInvites[0].schedule_games.game_name}</a> on this date: {this.state.start_date}</h3>}
+                {!this.state.show_game_header && <h3>myApprovals</h3>}
                 <div className="padding-container">
                 </div>
                 <div className="scheduledGamesApprovals-container">
