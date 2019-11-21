@@ -8,11 +8,13 @@ import {
 } from "react-router-dom"
 import axios from "axios"
 import IndividualApproval from "./IndividualApproval"
+import moment from "moment"
 
 export default class ScheduledGamesApprovals extends Component {
   constructor() {
     super()
     this.state = {
+      start_date: ""
     }
   }
 
@@ -23,9 +25,12 @@ export default class ScheduledGamesApprovals extends Component {
     const getScheduleGameInvites = async function(){
       try{
         const getScheduleGameInvites = await axios.get(`/api/attendees/getScheduleGameInvites/${match.params.id}`)
+        console.log(getScheduleGameInvites);
+        var myStartDateTime = moment(getScheduleGameInvites.data.getScheduleGameInvites[0].schedule_games.start_date_time, "YYYY-MM-DD HH:mm:ssZ").local()
         self.setState({
-          myInvites: getScheduleGameInvites.data.getScheduleGameInvites
-          })
+          myInvites: getScheduleGameInvites.data.getScheduleGameInvites,
+          start_date: myStartDateTime.format('Do MMM YY - h:mm a')
+        })
 
       } catch(error){
         console.log(error)
@@ -54,21 +59,29 @@ export default class ScheduledGamesApprovals extends Component {
   }
 
   render() {
-    return (
-      <section id="scheduledGamesApprovals-page">
-        <div className="content-area scheduledGamesApprovals-page">
-          <div className="padding-container">
-            <div className="scheduledGamesApprovals-grey-container">
-              <h3>myApprovals</h3>
-              <div className="padding-container">
-              </div>
-              <div className="scheduledGamesApprovals-container">
-                {this.showApprovals()}
+    if(this.state.myInvites != undefined){
+
+      return (
+        <section id="scheduledGamesApprovals-page">
+          <div className="content-area scheduledGamesApprovals-page">
+            <div className="padding-container">
+              <div className="scheduledGamesApprovals-grey-container">
+                <h3>myApprovals for <a href={`/scheduledGames/${this.state.myInvites[0].schedule_games.id}`}> {this.state.myInvites[0].schedule_games.game_name}</a> on this date: {this.state.start_date}</h3>                
+                <div className="padding-container">
+                </div>
+                <div className="scheduledGamesApprovals-container">
+                  {this.showApprovals()}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-    )
+        </section>
+      )
+    } else{
+      return (
+        <section id="scheduledGamesApprovals-page">
+        </section>
+      )
+    }
   }
 }

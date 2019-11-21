@@ -83,7 +83,6 @@ class Layout extends Component {
     return (
       <Router>
         <div className="app-container home-page">
-          <LoadingComp initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData}/>
           <LeftMenu initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData}/>
           <section id="content-container">
             <SearchHeader />

@@ -7,9 +7,9 @@
   align-items: center;
   height: 100%;
   width: 100%;
-  background: $darksideBlue;
+  background: $myG-black;
   z-index: 20;
-  transition: all .6s ease-in-out .5s;
+  transition: all .3s ease-in-out .2s;
   &.active{
     transform: translate3d(0, 0, 0);
   }
