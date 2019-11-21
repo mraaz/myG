@@ -166,7 +166,8 @@ export default class ScheduleGames extends Component {
       show_prev: false,
       show_more: false,
       show_full_games: false,
-      isChecked: true
+      isChecked: true,
+      show_single_game: false
     }
   }
 
@@ -176,56 +177,26 @@ export default class ScheduleGames extends Component {
 
   componentWillMount(){
 
-    const self = this
-
     const {match} = this.props.routeProps
 
-    // const getInitialData = async function(){
-    //   var myGame_name_box = "1981`^"
-    //   var myRegion = "1981`^"
-    //   var myExperience = "1981`^"
-    //   var myPlatform = "1981`^"
-    //   var myDescription_box = "1981`^"
-    //   var myOther_box = "1981`^"
-    //   var myWhenDate = "1981`^"
-    //   var startDate = moment().subtract(5, 'seconds').utc().format('YYYY-MM-DDTHH:mm:ss')
-    //   var tmp_endDate = moment().utc()
-    //   var endDate = tmp_endDate.add(2000,'years').format('YYYY-MM-DDTHH:mm:ss')
-    //   var myVisibility = 1
-    //   var dota2_medal_ranks = "1981`^"
-    //   var dota2_server_regions = "1981`^"
-    //   var dota2_roles = "1981`^"
-    //   var clash_royale_trophies = "1981`^"
-    //   var myLimit = self.state.db_row_counter
-    //
-    //   try{
-    //     //const allscheduledGames = await axios.get('/api/ScheduleGame')
-    //     const allscheduledGames = await axios.get(`/api/ScheduleGame/filtered/${myLimit}/${myGame_name_box}/${myRegion}/${myExperience}/${myPlatform}/${myDescription_box}/${myOther_box}/${startDate}/${endDate}/${myWhenDate}/${myVisibility}/${dota2_medal_ranks}/${dota2_server_regions}/${dota2_roles}/${clash_royale_trophies}`)
-    //     //self.state.allscheduledGames = allscheduledGames.data.latestScheduledGames[0]
-    //     self.setState({
-    //       allscheduledGames: allscheduledGames.data.latestScheduledGames[0]
-    //     })
-    //   } catch (error){
-    //     console.log(error)
-    //   }
-    // }
-
-    const getExactData = async function(){
-      try{
-        const onescheduledGames = await axios.get(`/api/ScheduleGame/filtered_by_one/${match.params.id}`)
-        self.setState({
-          allscheduledGames: onescheduledGames.data.latestScheduledGames
-        })
-      } catch (error){
-        console.log(error)
-      }
-    }
-    
     if (match.params.id != undefined && match.params.id != "" ){
-      getExactData()
+      this.getExactData()
+      this.setState({
+        show_single_game: true
+      })
     } else{
-      //getInitialData()
       this.fetchMoreData()
+    }
+  }
+
+  async getExactData(){
+    try{
+      const onescheduledGames = await axios.get(`/api/ScheduleGame/filtered_by_one/${this.props.routeProps.match.params.id}`)
+      this.setState({
+        allscheduledGames: onescheduledGames.data.latestScheduledGames,
+      })
+    } catch (error){
+      console.log(error)
     }
   }
 
@@ -383,83 +354,6 @@ export default class ScheduleGames extends Component {
 
   showLatestPosts = () => {
     if(this.state.allscheduledGames != undefined){
-      // let filteredResults = this.state.allscheduledGames.filter(
-      //   (result) => {
-      //     var myRegion = ""
-      //     var myExperience = ""
-      //     var myPlatform = ""
-      //
-      //     //**** As per bug: https://github.com/mraaz/myGame/issues/9 I have changed the filters to be single, as a result, I've commented out this code
-      //     // Once the bug is fixed we can uncomment the code     ****
-      //
-      //     // if (this.state.selected_region !== null && this.state.selected_region.length !== 0){
-      //     //   for (var i = 0; i < this.state.selected_region.length; i++){
-      //     //    myRegion += this.state.selected_region[i].value + "; "
-      //     //   }
-      //     //   myRegion = myRegion.trim().replace(/; /g, ",").trim()
-      //     //   myRegion = myRegion.replace(/;/g, "")
-      //     //   myRegion = myRegion.replace(/,/g, ", ")
-      //     // }
-      //     if (this.state.selected_region != null || this.state.selected_region != undefined){
-      //       myRegion = this.state.selected_region.value
-      //     }
-      //     if (this.state.selected_experience != null || this.state.selected_experience != undefined){
-      //       myExperience = this.state.selected_experience.value
-      //     }
-      //     if (this.state.selected_platform != null || this.state.selected_platform != undefined){
-      //       myPlatform = this.state.selected_platform.value
-      //     }
-      //
-      //     // if (this.state.selected_experience !== null && this.state.selected_experience.length !== 0){
-      //     //   for (var i = 0; i < this.state.selected_experience.length; i++){
-      //     //    myExperience += this.state.selected_experience[i].value + "; "
-      //     //   }
-      //     //   myExperience = myExperience.trim().replace(/; /g, ",").trim()
-      //     //   myExperience = myExperience.replace(/;/g, "")
-      //     //   myExperience = myExperience.replace(/,/g, ", ")
-      //     // }
-      //     // if (this.state.selected_platform !== null && this.state.selected_platform.length !== 0){
-      //     //   for (var i = 0; i < this.state.selected_platform.length; i++){
-      //     //    myPlatform += this.state.selected_platform[i].value + "; "
-      //     //   }
-      //     //   myPlatform = myPlatform.trim().replace(/; /g, ",").trim()
-      //     //   myPlatform = myPlatform.replace(/;/g, "")
-      //     //   myPlatform = myPlatform.replace(/,/g, ", ")
-      //     // }
-      //     if (this.state.when != null || this.state.when != undefined){
-      //       this.state.tmp_time = this.state.when.value
-      //     }
-      //     const now = moment()
-      //     switch(this.state.tmp_time) {
-      //       case 'Now-ish':
-      //         now.add(4,'hour')
-      //         break
-      //       case '8 hours':
-      //         now.add(8,'hour')
-      //         break
-      //       case '2 days':
-      //         now.add(2,'day')
-      //         break
-      //       case '7 days':
-      //         now.add(7,'day')
-      //         break
-      //       case '14 days':
-      //         now.add(14,'day')
-      //         break
-      //       default:
-      //         now.add(2000,'years')
-      //     }
-      //     const myDate = moment(result.end_date_time)
-      //
-      //     return result.game_name.toLowerCase().indexOf(this.state.game_name_box.toLowerCase()) !== -1
-      //      && result.description.toLowerCase().indexOf(this.state.description_box.toLowerCase()) !== -1
-      //      && result.other.toLowerCase().indexOf(this.state.other_box.toLowerCase()) !== -1
-      //      && result.region.indexOf(myRegion) !== -1
-      //      && result.experience.indexOf(myExperience) !== -1
-      //      && result.platform.indexOf(myPlatform) !== -1
-      //      && myDate.isSameOrBefore(now)
-      //   }
-      // )
       return this.state.allscheduledGames.map((item, index) => {
        return <ScheduledGamePost schedule_game={item} key={index} user={this.props.initialData} />
       })
@@ -486,6 +380,14 @@ export default class ScheduleGames extends Component {
     var clash_royale_trophies = "1981`^"
     var myLimit = this.state.db_row_counter
     var check_full_games = this.state.isChecked
+
+    if (this.state.show_single_game){
+      this.setState({
+        show_single_game: !this.state.show_single_game,
+        db_row_counter: 0
+      })
+      myLimit = 0
+    }
 
     if (this.state.visibility_box != undefined && this.state.visibility_box != null && this.state.visibility_box != ""){
       myVisibility = this.state.visibility_box.value
@@ -719,9 +621,9 @@ export default class ScheduleGames extends Component {
                 <div className="plus-button" onClick={this.moveaway}>
                   <i className="fas fa-plus" />
                 </div>
-                <div className="full-game">
+                {!this.state.show_single_game && <div className="full-game">
                   <input type="checkbox" defaultChecked={this.state.isChecked} onChange={this.toggleChange} />&nbsp;Exclude Full Games?
-                </div>
+                </div>}
               </div>
             </div>
             <div className="gap">
