@@ -25,7 +25,6 @@ export default class ScheduledGamesApprovals extends Component {
     const getScheduleGameInvites = async function(){
       try{
         const getScheduleGameInvites = await axios.get(`/api/attendees/getScheduleGameInvites/${match.params.id}`)
-        console.log(getScheduleGameInvites);
         var myStartDateTime = moment(getScheduleGameInvites.data.getScheduleGameInvites[0].schedule_games.start_date_time, "YYYY-MM-DD HH:mm:ssZ").local()
         self.setState({
           myInvites: getScheduleGameInvites.data.getScheduleGameInvites,
@@ -66,7 +65,7 @@ export default class ScheduledGamesApprovals extends Component {
           <div className="content-area scheduledGamesApprovals-page">
             <div className="padding-container">
               <div className="scheduledGamesApprovals-grey-container">
-                <h3>myApprovals for <a href={`/scheduledGames/${this.state.myInvites[0].schedule_games.id}`}> {this.state.myInvites[0].schedule_games.game_name}</a> on this date: {this.state.start_date}</h3>                
+                <h3>myApprovals for <a href={`/scheduledGames/${this.state.myInvites[0].schedule_games.id}`}> {this.state.myInvites[0].schedule_games.game_name}</a> on this date: {this.state.start_date}</h3>
                 <div className="padding-container">
                 </div>
                 <div className="scheduledGamesApprovals-container">
