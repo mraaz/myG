@@ -101,7 +101,7 @@ Route.post('/api/ScheduleGame/update_vacany', 'ScheduleGameController.update_vac
 Route.get('/api/ArchiveScheduleGame/:id', 'Archive_ScheduleGameController.show_one')
 Route.get('/api/ArchiveScheduleGame/filtered_by_one/:id', 'Archive_ScheduleGameController.filtered_by_one')
 
-Route.get('/api/ScheduleGame/filtered/:limitstr/:gameNamestr/:regionstr/:expstr/:platformstr/:descstr/:otherstr/:startDate/:endDate/:whenDate/:visibility/:dota2_medal_ranks/:dota2_server_regions/:dota2_roles/:clash_royale_trophies/:check_full_games', 'ScheduleGameController.scheduleSearchResults')
+Route.post('/api/ScheduleGame/scheduleSearchResults', 'ScheduleGameController.scheduleSearchResults')
 
 Route.get('/api/ScheduleGame/filtered_by_one/:id', 'ScheduleGameController.filtered_by_one')
 
