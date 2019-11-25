@@ -225,7 +225,6 @@ class ScheduleGameController {
         builder.where('dota2_roles', 'like', "%" + request.input('dota2_roles') + "%")
 
 //Clash Royale
-
       if (request.input('clash_royale_trophies') != null)
         builder.where('clash_royale_trophies', 'like', "%" + request.input('clash_royale_trophies') + "%")
 
