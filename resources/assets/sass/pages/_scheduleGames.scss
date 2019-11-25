@@ -1,90 +1,46 @@
 .app-container.home-page .scheduleGames-page{
   position: absolute;
 
+  .game-menu{
+    width: 65%;
+    color: #0b0f14;
+    font-size: 12px;
+    padding-left: 16px;
+    .game-name{
+      display: block;
+      padding: 8px 2px;
+      width:28%;
+      .game-name-box{
+        background: $backgroundContent;
+      }
+    }
+  }
   .filterMenu{
     display: grid;
     width: 65%;
     height: calc(10% - 53px);
     grid-template-columns: 25% 25% 25% 25%;
-    padding: 40px 15px 0 8px;
+    padding: 8px 15px 0 8px;
     margin-bottom: 38px;
     color: #0b0f14;
     font-size: 12px;
-    .game-name{
+
+    .region, .experience, .dota2_medal_ranks, .dota2_server_regions, .dota2_roles, .date-time, .platform, .clash_royale_trophies, .description, .other, .visibility{
       display: block;
       padding: 8px 2px;
       width:80%;
-      .game-name-box{
-        background: $backgroundContent;
-      }
-    }
-    .description{
-      display: block;
-      padding: 8px 2px;
-      width:80%;
-      .description-box{
+
+      .description-box, .other-box, .visibility-box{
         background: $backgroundContent;
         font-size: 12px;
         line-height: 34px;
       }
     }
-    .region {
-      display: block;
-      padding: 8px 2px;
-      width:80%;
-    }
-    .experience{
-      display: block;
-      padding: 8px 2px;
-      width:80%;
-    }
-    .dota2_medal_ranks{
-      display: block;
-      padding: 8px 2px;
-      width:80%;
-    }
-    .dota2_server_regions{
-      display: block;
-      padding: 8px 2px;
-      width:80%;
-    }
-    .dota2_roles{
-      display: block;
-      padding: 8px 2px;
-      width:80%;
-    }
-    .date-time{
-      display: block;
-      padding: 8px 2px;
-      width:80%;
-    }
-    .platform{
-      display: block;
-      padding: 8px 2px;
-      width:80%;
-    }
-    .other{
-      display: block;
-      padding: 8px 2px;
-      width:80%;
-      .other-box{
-        background: $backgroundContent;
-        font-size: 12px;
-        line-height: 34px;
-      }
-    }
-    .visibility{
-      display: block;
-      padding: 8px 2px;
-      width:80%;
-      .visibility-box{
-        background: $backgroundContent;
-      }
-    }
+
     .button{
       display: grid;
-      width: 388%;
-      grid-template-columns: 25% 50%;
+      color: #0b0f14;
+      font-size: 12px;
       .plus-button{
         position: relative;
         left: 10px;
@@ -93,7 +49,6 @@
         color: white;
         border-radius: 50%;
         background: #151b26;
-        /* box-shadow: 0 2px 15px -3px #bfbfbf; */
         cursor: pointer;
         .fa-plus{
           font-size: 40px;
@@ -108,6 +63,7 @@
       }
     }
   }
+
   .gap{
     padding: 78px;
   }
