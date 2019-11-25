@@ -416,6 +416,13 @@ export default class ScheduledGamePost extends Component {
     getCommentsCount()
     checkWhosPost()
     getNumberofAttendees()
+
+    if (this.props.props != undefined){
+      if (this.props.props.match.params.id != undefined && this.props.props.match.params.id != "" && this.props.show_single == true ){
+        this.onChange()
+      }
+    }
+
   }
 
   onFocus = () => {

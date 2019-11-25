@@ -206,7 +206,7 @@ export default class ScheduleGames_Header extends Component {
   showLatestPosts = () => {
     if(this.state.allscheduledGames != undefined){
       return this.state.allscheduledGames.map((item, index) => {
-       return <ScheduledGamePost schedule_game={item} key={index} user={this.props.props.initialData} />
+       return <ScheduledGamePost schedule_game={item} key={index} user={this.props.props.initialData} props={this.props.props.routeProps} show_single={this.props.show_single} />
       })
     }
   }
