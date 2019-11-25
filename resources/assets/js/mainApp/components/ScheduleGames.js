@@ -57,7 +57,7 @@ export default class ScheduleGames extends Component {
   }
 
   componentWillMount(){
-
+  console.log("test");
   }
 
   handleChange_game_name = (entered_name) => {
