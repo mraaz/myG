@@ -1,7 +1,6 @@
 import React, { Component } from "react"
 import Select from 'react-select'
 import ReactDOM from "react-dom"
-import axios from "axios"
 import {
   BrowserRouter as Router,
   Route,
@@ -11,30 +10,10 @@ import {
 import ScheduledGamePost from "./ScheduledGamePost"
 import { PullDataFunction } from "./ScheduleGames_Pull_Data"
 
-const region_options = [
-  { value: 'North America', label: 'North America' },
-  { value: 'Europe', label: 'Europe' },
-  { value: 'Asia', label: 'Asia' },
-  { value: 'Russia', label: 'Russia' },
-  { value: 'South America', label: 'South America' },
-  { value: 'Oceania', label: 'Oceania' },
-  { value: 'Middle East', label: 'Middle East' },
-  { value: 'Africa', label: 'Africa' },
-  { value: 'Central America', label: 'Central America' },
-  { value: '', label: 'Earth' }
-]
 const experience_options = [
   { value: 'Casual', label: 'Casual' },
   { value: 'Semi Pro', label: 'Semi Pro' },
   { value: 'Professional', label: 'Professional' }
-]
-const platform_options = [
-  { value: 'PC', label: 'PC' },
-  { value: 'XB', label: 'XB' },
-  { value: 'PS', label: 'PS' },
-  { value: 'Nintendo', label: 'Nintendo' },
-  { value: 'Mobile', label: 'Mobile' },
-  { value: 'Tabletop', label: 'Tabletop' }
 ]
 const date_options = [
   { value: 'Now-ish', label: 'Now-ish' },
@@ -49,14 +28,21 @@ const visibility_options = [
   { value: 3, label: 'Group' }
 ]
 
-export default class ScheduleGames_Header extends Component {
+const clash_royale_trophy = [
+  { value: '1000', label: '> 1000' },
+  { value: '2000', label: '> 2000' },
+  { value: '3000', label: '> 3000' },
+  { value: '4000', label: '> 4000' },
+  { value: '5000', label: '> 5000' },
+  { value: 'competitive', label: 'Competitive' }
+]
+
+export default class ScheduleGames_Clash_Royale extends Component {
   constructor() {
     super()
     this.state = {
       game_name_box: "",
-      selected_region: null,
       selected_experience: null,
-      selected_platform: null,
       description_box: "",
       other_box: "",
       visibility_box: null,
@@ -65,6 +51,7 @@ export default class ScheduleGames_Header extends Component {
       db_row_counter: 0,
       show_prev: false,
       show_more: false,
+      clash_royale_trophies: null
     }
   }
 
@@ -73,27 +60,8 @@ export default class ScheduleGames_Header extends Component {
   }
 
   componentWillMount(){
-    const self = this
-
-    const {match} = this.props.props.routeProps
     this.state.game_name_box = this.props.game_name_box
-
-    const getExactData = async function(){
-      try{
-        const onescheduledGames = await axios.get(`/api/ScheduleGame/filtered_by_one/${match.params.id}`)
-        self.setState({
-          allscheduledGames: onescheduledGames.data.latestScheduledGames
-        })
-      } catch (error){
-        console.log(error)
-      }
-    }
-
-    if (match.params.id != undefined && match.params.id != "" && this.props.show_single == true ){
-      getExactData()
-    } else{
-      this.call_PullDataFunc()
-    }
+    this.call_PullDataFunc()
   }
 
   call_PullDataFunc = async () => {
@@ -141,13 +109,6 @@ export default class ScheduleGames_Header extends Component {
     window.scrollTo(0, 0)
   }
 
-  handleChange_region = (selected_region) => {
-    this.setState({
-      selected_region,
-    }, () => {
-      this.call_PullDataFunc()
-    })
-  }
   handleChange_experience = (selected_experience) => {
     this.setState({
       selected_experience,
@@ -155,13 +116,7 @@ export default class ScheduleGames_Header extends Component {
       this.call_PullDataFunc()
     })
   }
-  handleChange_platform = (selected_platform) => {
-    this.setState({
-      selected_platform,
-    }, () => {
-      this.call_PullDataFunc()
-    })
-  }
+
   handleChange_time = (when) => {
     this.setState({
       when,
@@ -194,14 +149,14 @@ export default class ScheduleGames_Header extends Component {
     })
   }
 
-  toggleChange = () => {
+  handleChange_Clash_royale_trophies = (clash_royale_trophies) => {
     this.setState({
-      isChecked: !this.state.isChecked,
-      db_row_counter: 0
+      clash_royale_trophies
     }, () => {
       this.call_PullDataFunc()
     })
   }
+
 
   showLatestPosts = () => {
     if(this.state.allscheduledGames != undefined){
@@ -216,13 +171,13 @@ export default class ScheduleGames_Header extends Component {
       <section id="posts">
         <div className="content-area scheduleGames-page">
           <div className="filterMenu">
-            <div className="region">
+            <div className="clash_royale_trophies">
               <Select
-                onChange={this.handleChange_region}
-                options={region_options}
-                placeholder="Select your region"
-                name="region-box"
-                isClearable
+                onChange={this.handleChange_Clash_royale_trophies}
+                options={clash_royale_trophy}
+                className="clash-royale-trophies"
+                isClearable={true}
+                placeholder="Trophies"
               />
             </div>
             <div className="experience">
@@ -231,15 +186,6 @@ export default class ScheduleGames_Header extends Component {
                 options={experience_options}
                 placeholder="Select experience level"
                 name="experience-box"
-                isClearable
-              />
-            </div>
-            <div className="platform">
-              <Select
-                onChange={this.handleChange_platform}
-                options={platform_options}
-                placeholder="Select which platform"
-                name="platform-box"
                 isClearable
               />
             </div>

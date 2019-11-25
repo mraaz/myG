@@ -8,6 +8,8 @@ import {
 import axios from "axios"
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import ScheduleGames_Header from "./ScheduleGames_Header"
+import ScheduleGames_Dota2 from "./ScheduleGames_Dota2"
+import ScheduleGames_Clash_Royale from "./ScheduleGames_Clash_Royale"
 
 const createOption = (label: string, game_names_id: string) => ({
 label,
@@ -49,8 +51,8 @@ export default class ScheduleGames extends Component {
     this.state = {
       game_name_box: null,
       default: true,
-      dota_2: false,
-      clash_royale: false,
+      games: false,
+      just_one_time: true
     }
   }
 
@@ -61,16 +63,16 @@ export default class ScheduleGames extends Component {
   handleChange_game_name = (entered_name) => {
     this.setState({
       game_name_box: entered_name,
-      default: false
+      default: false,
+      games: false
     }, () => {
       if (entered_name){
         switch(entered_name.value) {
           case 'Dota 2':
-            this.setState({default: false,
-              dota_2:true})
+            this.setState({games:true})
             break
           case 'Clash Royale':
-            this.setState({clash_royale:true})
+            this.setState({games:true})
             break
           default:
             this.setState({default:true})
@@ -82,7 +84,24 @@ export default class ScheduleGames extends Component {
   }
 
   showHeaders = () => {
-    return <ScheduleGames_Header game_name_box={this.state.game_name_box} props={this.props} />
+    if (this.state.just_one_time){
+      this.state.just_one_time = false
+      return <ScheduleGames_Header game_name_box={this.state.game_name_box} show_single={true} props={this.props} />
+    }else {
+      return <ScheduleGames_Header game_name_box={this.state.game_name_box} show_single={false} props={this.props} />
+    }
+  }
+
+  showGames = () => {
+    switch(this.state.game_name_box.value) {
+      case 'Dota 2':
+        return <ScheduleGames_Dota2 game_name_box={this.state.game_name_box} props={this.props} />
+        break
+      case 'Clash Royale':
+        return <ScheduleGames_Clash_Royale game_name_box={this.state.game_name_box} props={this.props} />
+        break
+    }
+
   }
 
   async getOptions(inputValue) {
@@ -137,6 +156,7 @@ export default class ScheduleGames extends Component {
             </div>
           </div>
           {this.state.default && this.showHeaders()}
+          {this.state.games && this.showGames()}
         </div>
       </section>
     )

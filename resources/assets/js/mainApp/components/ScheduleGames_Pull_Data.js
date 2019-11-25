@@ -14,7 +14,11 @@ export async function PullDataFunction (myG) {
       check_full_games = true,
       startDate = moment().subtract(5, 'seconds').utc().format('YYYY-MM-DDTHH:mm:ss'),
       tmp_endDate = moment().utc(),
-      endDate = moment().utc()
+      endDate = moment().utc(),
+      dota2_medal_ranks = null,
+      dota2_server_regions = null,
+      dota2_roles = null,
+      clash_royale_trophies = null
 
   if (myG.visibility_box != undefined && myG.visibility_box != null && myG.visibility_box != ""){
     myVisibility = myG.visibility_box.value
@@ -32,21 +36,21 @@ export async function PullDataFunction (myG) {
     myPlatform = myG.selected_platform.value
   }
 
-  // if (myG.dota2_medal_ranks != undefined && myG.dota2_medal_ranks != null && myG.dota2_medal_ranks != ""){
-  //   dota2_medal_ranks = myG.dota2_medal_ranks.value
-  // }
-  //
-  // if (myG.dota2_server_regions != undefined && myG.dota2_server_regions != null && tmyG.dota2_server_regions != ""){
-  //   dota2_server_regions = myG.dota2_server_regions.value
-  // }
-  //
-  // if (myG.dota2_roles != undefined && myG.dota2_roles != null && myG.dota2_roles != ""){
-  //   dota2_roles = myG.dota2_roles.value
-  // }
-  //
-  // if (myG.clash_royale_trophies != undefined && myG.clash_royale_trophies != null && myG.clash_royale_trophies != ""){
-  //   clash_royale_trophies = myG.clash_royale_trophies.value
-  // }
+  if (myG.dota2_medal_ranks != undefined && myG.dota2_medal_ranks != null && myG.dota2_medal_ranks != ""){
+    dota2_medal_ranks = myG.dota2_medal_ranks.value
+  }
+
+  if (myG.dota2_server_regions != undefined && myG.dota2_server_regions != null && myG.dota2_server_regions != ""){
+    dota2_server_regions = myG.dota2_server_regions.value
+  }
+
+  if (myG.dota2_roles != undefined && myG.dota2_roles != null && myG.dota2_roles != ""){
+    dota2_roles = myG.dota2_roles.value
+  }
+
+  if (myG.clash_royale_trophies != undefined && myG.clash_royale_trophies != null && myG.clash_royale_trophies != ""){
+    clash_royale_trophies = myG.clash_royale_trophies.value
+  }
 
   if (myG.when != undefined && myG.when != null ){
     switch(myG.when.value) {
@@ -92,7 +96,11 @@ export async function PullDataFunction (myG) {
        other: myOther_box,
        visibility:myVisibility,
        limit_clause: myLimit,
-       vacancy: check_full_games
+       vacancy: check_full_games,
+       dota2_medal_ranks: dota2_medal_ranks,
+       dota2_server_regions: dota2_server_regions,
+       dota2_roles: dota2_roles,
+       clash_royale_trophies: clash_royale_trophies
      })
      return allscheduledGames
 

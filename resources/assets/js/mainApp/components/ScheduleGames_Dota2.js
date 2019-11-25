@@ -1,7 +1,6 @@
 import React, { Component } from "react"
 import Select from 'react-select'
 import ReactDOM from "react-dom"
-import axios from "axios"
 import {
   BrowserRouter as Router,
   Route,
@@ -11,31 +10,59 @@ import {
 import ScheduledGamePost from "./ScheduledGamePost"
 import { PullDataFunction } from "./ScheduleGames_Pull_Data"
 
-const region_options = [
-  { value: 'North America', label: 'North America' },
-  { value: 'Europe', label: 'Europe' },
-  { value: 'Asia', label: 'Asia' },
-  { value: 'Russia', label: 'Russia' },
-  { value: 'South America', label: 'South America' },
-  { value: 'Oceania', label: 'Oceania' },
-  { value: 'Middle East', label: 'Middle East' },
-  { value: 'Africa', label: 'Africa' },
-  { value: 'Central America', label: 'Central America' },
-  { value: '', label: 'Earth' }
+const dota2_server_regions = [
+  { value: 'EU West', label: 'EU West' },
+  { value: 'EU East', label: 'EU East' },
+  { value: 'EU North', label: 'EU North' },
+  { value: 'Poland', label: 'Poland' },
+  { value: 'Spain', label: 'Spain' },
+  { value: 'US Northwest', label: 'US Northwest' },
+  { value: 'US Northeast', label: 'US Northeast' },
+  { value: 'US Northcentral', label: 'US Northcentral' },
+  { value: 'US Southwest', label: 'US Southwest' },
+  { value: 'Australia', label: 'Australia' },
+  { value: 'Brazil', label: 'Brazil' },
+  { value: 'Chile', label: 'Chile' },
+  { value: 'Emirates', label: 'Emirates' },
+  { value: 'India', label: 'India' },
+  { value: 'India East', label: 'India East' },
+  { value: 'Peru', label: 'Peru' },
+  { value: 'Japan', label: 'Japan' },
+  { value: 'Hong Kong', label: 'Hong Kong' },
+  { value: 'Singapore', label: 'Singapore' },
+  { value: 'South Africa', label: 'South Africa' },
+  { value: 'China Shanghai', label: 'China Shanghai' },
+  { value: 'China Guangzhou', label: 'China Guangzhou' },
+  { value: 'China Tianjin', label: 'China Tianjin' },
+  { value: 'China TC Zhejiang', label: 'China TC Zhejiang' },
+  { value: 'China UC', label: 'China UC' },
+  { value: 'China UC 2', label: 'China UC 2' },
+  { value: 'China TC Wuhan', label: 'China TC Wuhan' },
 ]
+
+const dota2_roles = [
+  { value: 'Position 1', label: 'Position 1' },
+  { value: 'Position 2', label: 'Position 2' },
+  { value: 'Position 3', label: 'Position 3' },
+  { value: 'Position 4', label: 'Position 4' },
+  { value: 'Position 5', label: 'Position 5' }
+]
+
+const dota2_medal_ranks = [
+  { value: 'Herald', label: 'Herald' },
+  { value: 'Guardian', label: 'Guardian' },
+  { value: 'Crusader', label: 'Crusader' },
+  { value: 'Archon', label: 'Archon' },
+  { value: 'Legend', label: 'Legend' },
+  { value: 'Divine', label: 'Divine' }
+]
+
 const experience_options = [
   { value: 'Casual', label: 'Casual' },
   { value: 'Semi Pro', label: 'Semi Pro' },
   { value: 'Professional', label: 'Professional' }
 ]
-const platform_options = [
-  { value: 'PC', label: 'PC' },
-  { value: 'XB', label: 'XB' },
-  { value: 'PS', label: 'PS' },
-  { value: 'Nintendo', label: 'Nintendo' },
-  { value: 'Mobile', label: 'Mobile' },
-  { value: 'Tabletop', label: 'Tabletop' }
-]
+
 const date_options = [
   { value: 'Now-ish', label: 'Now-ish' },
   { value: '8 hours', label: '8 hours' },
@@ -43,20 +70,19 @@ const date_options = [
   { value: '7 days', label: '7 days' },
   { value: '14 days', label: '14 days' }
 ]
+
 const visibility_options = [
   { value: 1, label: 'Public' },
   { value: 2, label: 'Friends' },
   { value: 3, label: 'Group' }
 ]
 
-export default class ScheduleGames_Header extends Component {
+export default class ScheduleGames_Dota2 extends Component {
   constructor() {
     super()
     this.state = {
       game_name_box: "",
-      selected_region: null,
       selected_experience: null,
-      selected_platform: null,
       description_box: "",
       other_box: "",
       visibility_box: null,
@@ -65,6 +91,9 @@ export default class ScheduleGames_Header extends Component {
       db_row_counter: 0,
       show_prev: false,
       show_more: false,
+      dota2_medal_ranks: null,
+      dota2_server_regions: null,
+      dota2_roles: null
     }
   }
 
@@ -73,27 +102,8 @@ export default class ScheduleGames_Header extends Component {
   }
 
   componentWillMount(){
-    const self = this
-
-    const {match} = this.props.props.routeProps
     this.state.game_name_box = this.props.game_name_box
-
-    const getExactData = async function(){
-      try{
-        const onescheduledGames = await axios.get(`/api/ScheduleGame/filtered_by_one/${match.params.id}`)
-        self.setState({
-          allscheduledGames: onescheduledGames.data.latestScheduledGames
-        })
-      } catch (error){
-        console.log(error)
-      }
-    }
-
-    if (match.params.id != undefined && match.params.id != "" && this.props.show_single == true ){
-      getExactData()
-    } else{
-      this.call_PullDataFunc()
-    }
+    this.call_PullDataFunc()
   }
 
   call_PullDataFunc = async () => {
@@ -141,13 +151,6 @@ export default class ScheduleGames_Header extends Component {
     window.scrollTo(0, 0)
   }
 
-  handleChange_region = (selected_region) => {
-    this.setState({
-      selected_region,
-    }, () => {
-      this.call_PullDataFunc()
-    })
-  }
   handleChange_experience = (selected_experience) => {
     this.setState({
       selected_experience,
@@ -155,13 +158,7 @@ export default class ScheduleGames_Header extends Component {
       this.call_PullDataFunc()
     })
   }
-  handleChange_platform = (selected_platform) => {
-    this.setState({
-      selected_platform,
-    }, () => {
-      this.call_PullDataFunc()
-    })
-  }
+
   handleChange_time = (when) => {
     this.setState({
       when,
@@ -194,6 +191,28 @@ export default class ScheduleGames_Header extends Component {
     })
   }
 
+  handleChange_Dota2_medal_ranks = (dota2_medal_ranks) => {
+    this.setState({
+      dota2_medal_ranks
+    }, () => {
+      this.call_PullDataFunc()
+    })
+  }
+  handleChange_Dota2_server_regions = (dota2_server_regions) => {
+    this.setState({
+      dota2_server_regions
+    }, () => {
+      this.call_PullDataFunc()
+    })
+  }
+  handleChange_Dota2_roles = (dota2_roles) => {
+    this.setState({
+      dota2_roles
+    }, () => {
+      this.call_PullDataFunc()
+    })
+  }
+
   toggleChange = () => {
     this.setState({
       isChecked: !this.state.isChecked,
@@ -216,13 +235,31 @@ export default class ScheduleGames_Header extends Component {
       <section id="posts">
         <div className="content-area scheduleGames-page">
           <div className="filterMenu">
-            <div className="region">
+            <div className="dota2_medal_ranks">
               <Select
-                onChange={this.handleChange_region}
-                options={region_options}
-                placeholder="Select your region"
-                name="region-box"
-                isClearable
+                onChange={this.handleChange_Dota2_medal_ranks}
+                options={dota2_medal_ranks}
+                className="dota2-medal-ranks"
+                isClearable={true}
+                placeholder="Rank"
+              />
+            </div>
+            <div className="dota2_server_regions">
+              <Select
+                onChange={this.handleChange_Dota2_server_regions}
+                options={dota2_server_regions}
+                className="dota2-server-regions"
+                isClearable={true}
+                placeholder="Region"
+              />
+            </div>
+            <div className="dota2_roles">
+              <Select
+                onChange={this.handleChange_Dota2_roles}
+                options={dota2_roles}
+                className="dota2-roles"
+                isClearable={true}
+                placeholder="Role"
               />
             </div>
             <div className="experience">
@@ -231,15 +268,6 @@ export default class ScheduleGames_Header extends Component {
                 options={experience_options}
                 placeholder="Select experience level"
                 name="experience-box"
-                isClearable
-              />
-            </div>
-            <div className="platform">
-              <Select
-                onChange={this.handleChange_platform}
-                options={platform_options}
-                placeholder="Select which platform"
-                name="platform-box"
                 isClearable
               />
             </div>

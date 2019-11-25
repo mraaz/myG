@@ -184,8 +184,8 @@ class ScheduleGameController {
     }
   }
   async scheduleSearchResults({auth, request, response}){
-    console.log(request.input('limit_clause'));
-    console.log(parseInt( request.input('limit_clause'), 10 ));
+    console.log(request.input('dota2_roles'));
+    //console.log(parseInt( request.input('limit_clause'), 10 ));
     console.log("----------------------------------------");
 
     const latestScheduledGames = await Database.from('schedule_games').where((builder) => {
@@ -216,6 +216,22 @@ class ScheduleGameController {
 
       if (request.input('visibility') != null)
         builder.where('visibility', request.input('visibility'))
+
+//Dota 2
+      if (request.input('dota2_medal_ranks') != null)
+        builder.where('dota2_medal_ranks', 'like', "%" + request.input('dota2_medal_ranks') + "%")
+
+      if (request.input('dota2_server_regions') != null)
+        builder.where('dota2_server_regions', 'like', "%" + request.input('dota2_server_regions') + "%")
+
+      if (request.input('dota2_roles') != null)
+        builder.where('dota2_roles', 'like', "%" + request.input('dota2_roles') + "%")
+
+//Clash Royale
+
+      if (request.input('clash_royale_trophies') != null)
+        builder.where('clash_royale_trophies', 'like', "%" + request.input('clash_royale_trophies') + "%")
+
 
       }).limit(11).offset(parseInt( request.input('limit_clause'), 10 ))
 

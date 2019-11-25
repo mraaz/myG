@@ -36,41 +36,43 @@
         line-height: 34px;
       }
     }
-    .region {
+    .region, .experience, .dota2_medal_ranks, .dota2_server_regions, .dota2_roles, .date-time, .platform, .clash_royale_trophies{
       display: block;
       padding: 8px 2px;
       width:80%;
     }
-    .experience{
-      display: block;
-      padding: 8px 2px;
-      width:80%;
-    }
-    .dota2_medal_ranks{
-      display: block;
-      padding: 8px 2px;
-      width:80%;
-    }
-    .dota2_server_regions{
-      display: block;
-      padding: 8px 2px;
-      width:80%;
-    }
-    .dota2_roles{
-      display: block;
-      padding: 8px 2px;
-      width:80%;
-    }
-    .date-time{
-      display: block;
-      padding: 8px 2px;
-      width:80%;
-    }
-    .platform{
-      display: block;
-      padding: 8px 2px;
-      width:80%;
-    }
+
+    // }
+    // .experience{
+    //   display: block;
+    //   padding: 8px 2px;
+    //   width:80%;
+    // }
+    // .dota2_medal_ranks{
+    //   display: block;
+    //   padding: 8px 2px;
+    //   width:80%;
+    // }
+    // .dota2_server_regions{
+    //   display: block;
+    //   padding: 8px 2px;
+    //   width:80%;
+    // }
+    // .dota2_roles{
+    //   display: block;
+    //   padding: 8px 2px;
+    //   width:80%;
+    // }
+    // .date-time{
+    //   display: block;
+    //   padding: 8px 2px;
+    //   width:80%;
+    // }
+    // .platform{
+    //   display: block;
+    //   padding: 8px 2px;
+    //   width:80%;
+    // }
     .other{
       display: block;
       padding: 8px 2px;
@@ -89,6 +91,7 @@
         background: $backgroundContent;
       }
     }
+
     .button{
       display: grid;
       color: #0b0f14;
