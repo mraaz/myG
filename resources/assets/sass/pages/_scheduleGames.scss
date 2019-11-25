@@ -25,70 +25,15 @@
     color: #0b0f14;
     font-size: 12px;
 
-    .description{
+    .region, .experience, .dota2_medal_ranks, .dota2_server_regions, .dota2_roles, .date-time, .platform, .clash_royale_trophies, .description, .other, .visibility{
       display: block;
       padding: 8px 2px;
       width:80%;
 
-      .description-box{
+      .description-box, .other-box, .visibility-box{
         background: $backgroundContent;
         font-size: 12px;
         line-height: 34px;
-      }
-    }
-    .region, .experience, .dota2_medal_ranks, .dota2_server_regions, .dota2_roles, .date-time, .platform, .clash_royale_trophies{
-      display: block;
-      padding: 8px 2px;
-      width:80%;
-    }
-
-    // }
-    // .experience{
-    //   display: block;
-    //   padding: 8px 2px;
-    //   width:80%;
-    // }
-    // .dota2_medal_ranks{
-    //   display: block;
-    //   padding: 8px 2px;
-    //   width:80%;
-    // }
-    // .dota2_server_regions{
-    //   display: block;
-    //   padding: 8px 2px;
-    //   width:80%;
-    // }
-    // .dota2_roles{
-    //   display: block;
-    //   padding: 8px 2px;
-    //   width:80%;
-    // }
-    // .date-time{
-    //   display: block;
-    //   padding: 8px 2px;
-    //   width:80%;
-    // }
-    // .platform{
-    //   display: block;
-    //   padding: 8px 2px;
-    //   width:80%;
-    // }
-    .other{
-      display: block;
-      padding: 8px 2px;
-      width:80%;
-      .other-box{
-        background: $backgroundContent;
-        font-size: 12px;
-        line-height: 34px;
-      }
-    }
-    .visibility{
-      display: block;
-      padding: 8px 2px;
-      width:80%;
-      .visibility-box{
-        background: $backgroundContent;
       }
     }
 

@@ -184,9 +184,6 @@ class ScheduleGameController {
     }
   }
   async scheduleSearchResults({auth, request, response}){
-    console.log(request.input('dota2_roles'));
-    //console.log(parseInt( request.input('limit_clause'), 10 ));
-    console.log("----------------------------------------");
 
     const latestScheduledGames = await Database.from('schedule_games').where((builder) => {
 
@@ -235,7 +232,7 @@ class ScheduleGameController {
 
       }).limit(11).offset(parseInt( request.input('limit_clause'), 10 ))
 
-    console.log(latestScheduledGames.length);
+    //console.log(latestScheduledGames.length);
 
     return {
       latestScheduledGames
