@@ -174,7 +174,6 @@ Route.get('/api/notifications/deleteAllNoti', 'NotificationController.deleteAllN
 Route.get('/api/notifications/getunread/:post_id/:activity_type', 'NotificationController.getRead_Status')
 Route.get('/api/notifications/getunread_schedule_game/:schedule_game_id/:activity_type', 'NotificationController.getRead_Status_schedule_game')
 Route.get('/api/notifications/getunread_archive_schedule_game/:archive_schedule_game_id/:activity_type', 'NotificationController.getunread_archive_schedule_game')
-Route.post('/api/notifications/addScheduleGame', 'NotificationController.addScheduleGame')
 Route.post('/api/notifications/addScheduleGame/attendance', 'NotificationController.addScheduleGame_attendance')
 Route.post('/api/notifications/updateRead_Status_schedule_game/:schedule_game_id/:activity_type', 'NotificationController.updateRead_Status_schedule_game')
 Route.post('/api/notifications/updateRead_Status_archive_schedule_game/:archive_schedule_game_id/:activity_type', 'NotificationController.updateRead_Status_archive_schedule_game')

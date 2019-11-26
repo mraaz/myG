@@ -30,6 +30,17 @@ class ScheduleGameController {
         schedule_games_GUID: request.input('schedule_games_GUID'),
         clash_royale_trophies: request.input('clash_royale_trophies')
       })
+
+      if ( parseInt( request.input('visibility'), 10 ) == 2){
+        const getFriends = await Database.from('friends').where({user_id: auth.user.id}).select('friend_id')
+        let noti = new NotificationController()
+        for (var i=0; i < getFriends.length; i++){
+          request.params.other_user_id = getFriends[i].friend_id
+          request.params.schedule_games_id = newScheduleGame.id
+          noti.addScheduleGame({auth, request, response})
+        }
+      }
+
       return newScheduleGame
     }
   }
@@ -229,7 +240,7 @@ class ScheduleGameController {
         builder.where('clash_royale_trophies', 'like', "%" + request.input('clash_royale_trophies') + "%")
 
 
-      }).limit(11).offset(parseInt( request.input('limit_clause'), 10 ))
+      }).limit(11).offset(parseInt( request.input('limit_clause'), 10 )).orderBy('created_at', 'desc')
 
     //console.log(latestScheduledGames.length);
 

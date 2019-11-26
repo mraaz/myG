@@ -658,13 +658,12 @@ class NotificationController {
     if(auth.user){
       try{
         const addScheduleGame = await Notification.create({
-          other_user_id: request.input('other_user_id'),
+          other_user_id: request.params.other_user_id,
           user_id: auth.user.id,
           activity_type: 10,
-          schedule_games_id: request.input('schedule_games_id')
+          schedule_games_id: request.params.schedule_games_id
         })
         return 'Saved item'
-
       } catch(error){
         console.log(error)
       }
