@@ -5,17 +5,13 @@ import {
   Route,
   NavLink
 } from "react-router-dom"
-import axios from "axios"
+
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import ScheduleGames_Header from "./ScheduleGames_Header"
 import ScheduleGames_Dota2 from "./ScheduleGames_Dota2"
 import ScheduleGames_Clash_Royale from "./ScheduleGames_Clash_Royale"
 
-const createOption = (label: string, game_names_id: string) => ({
-label,
-  value: label,
-  game_names_id,
-})
+import { Game_name_values, Disable_keys } from "./Utility_Function"
 
 function isValidNewOption(
   inputValue,
@@ -57,7 +53,6 @@ export default class ScheduleGames extends Component {
   }
 
   componentWillMount(){
-  console.log("test");
   }
 
   handleChange_game_name = (entered_name) => {
@@ -105,34 +100,13 @@ export default class ScheduleGames extends Component {
   }
 
   async getOptions(inputValue) {
-    if ( (inputValue == "") || (inputValue == undefined) ){
-      return []
-    }
-    try{
-      inputValue = inputValue.trimStart()
-      const getGameName = await axios.get(`/api/GameNames/${inputValue}/gameSearchResults`)
-      var results =  getGameName.data.gameSearchResults[0].filter(i =>
-        i.game_name.toLowerCase().includes(inputValue.toLowerCase()));
-      var newArr = []
-      var i, newOption
-      if (results.length != 0){
-        for(i=0; i < results.length; i++){
-          if ( (results[i].game_img != '') && (results[i].game_img != null) ){
-            newOption = createOption(results[i].game_name, results[i].id )
-            newOption.label = <img src={results[i].game_img}/>
-          }else {
-            newOption = createOption(results[i].game_name, results[i].id )
-          }
-          newArr.push(newOption)
-        }
-      } else {
-        return []
-      }
-      return newArr
-    } catch(error){
-      console.log(error)
-    }
+    return Game_name_values(inputValue)
   }
+
+  onKeyDown = e => {
+    Disable_keys(e)
+  }
+
 
   render() {
     return (
@@ -152,6 +126,7 @@ export default class ScheduleGames extends Component {
                 className="game-name-box"
                 placeholder="Game name"
                 onInputChange={inputValue => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
+                onKeyDown={this.onKeyDown}
               />
             </div>
           </div>

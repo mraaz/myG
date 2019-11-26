@@ -20,8 +20,7 @@ const region_options = [
   { value: 'Oceania', label: 'Oceania' },
   { value: 'Middle East', label: 'Middle East' },
   { value: 'Africa', label: 'Africa' },
-  { value: 'Central America', label: 'Central America' },
-  { value: '', label: 'Earth' }
+  { value: 'Central America', label: 'Central America' }
 ]
 const experience_options = [
   { value: 'Casual', label: 'Casual' },
@@ -76,7 +75,6 @@ export default class ScheduleGames_Header extends Component {
     const self = this
 
     const {match} = this.props.props.routeProps
-    this.state.game_name_box = this.props.game_name_box
 
     const getExactData = async function(){
       try{
@@ -97,6 +95,7 @@ export default class ScheduleGames_Header extends Component {
   }
 
   call_PullDataFunc = async () => {
+    this.state.game_name_box = this.props.game_name_box
     var tmp_allscheduledGames = await PullDataFunction(this.state)
     this.setState({
       allscheduledGames: []
