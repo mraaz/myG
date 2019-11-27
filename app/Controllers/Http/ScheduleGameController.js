@@ -196,7 +196,7 @@ class ScheduleGameController {
   }
   async scheduleSearchResults({auth, request, response}){
 
-    const latestScheduledGames = await Database.from('schedule_games').where((builder) => {
+    const latestScheduledGames = await Database.from('schedule_games').innerJoin('users', 'users.id', 'schedule_games.user_id').where((builder) => {
 
       if (request.input('game_name') != null)
         builder.where('game_name', request.input('game_name'))
@@ -240,7 +240,7 @@ class ScheduleGameController {
         builder.where('clash_royale_trophies', 'like', "%" + request.input('clash_royale_trophies') + "%")
 
 
-      }).limit(11).offset(parseInt( request.input('limit_clause'), 10 )).orderBy('created_at', 'desc')
+      }).limit(11).offset(parseInt( request.input('limit_clause'), 10 )).orderBy('schedule_games.created_at', 'desc').select('*', 'schedule_games.id', 'users.id as user_id')
 
     //console.log(latestScheduledGames.length);
 

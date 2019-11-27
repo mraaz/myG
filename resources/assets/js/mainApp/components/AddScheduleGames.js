@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import ReactDOM from "react-dom"
-import { Route, Redirect } from 'react-router'
+import { Route } from 'react-router'
 
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 

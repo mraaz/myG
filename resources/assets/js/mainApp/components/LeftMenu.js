@@ -88,7 +88,7 @@ export default class LeftMenu extends Component {
 
   render() {
     if (this.state.redirect_addScheduleGames === true) {
-      return <Redirect to='/addScheduleGames' />
+      return <Redirect push to='/addScheduleGames' />
     }
     var left_icon ='https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/v1_Logo.png'
     if(this.props.initialData.userInfo == undefined){
