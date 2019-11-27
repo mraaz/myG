@@ -240,7 +240,7 @@ export default class GroupOpenModal extends Component {
   render() {
     if (this.state.redirect_groups === true) {
       const tmp = '/groups/' + this.state.group_id
-      return <Redirect to={tmp} />
+      return <Redirect push to={tmp} />
     }
 
     var class_modal_status = '';

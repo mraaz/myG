@@ -144,10 +144,10 @@ export default class AddScheduleGames_Headers extends Component {
 
   render() {
     if (this.state.redirect_ScheduleGames === true) {
-      return <Redirect to='/scheduledGames' />
+      return <Redirect push to='/scheduledGames' />
     }
     if (this.state.redirect_myScheduleGames === true) {
-      return <Redirect to='/myScheduledGames' />
+      return <Redirect push to='/myScheduledGames' />
     }
     return (
       <div className="content-area addscheduleGames-page">

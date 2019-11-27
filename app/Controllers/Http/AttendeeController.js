@@ -74,12 +74,18 @@ class AttendeeController {
     try{
 
       //const allAttendees = await Database.select('*').from('attendees').where({schedule_games_id: request.params.id})
-      const myattendance = await Database.from('attendees').where({schedule_games_id: request.params.id, user_id: auth.user.id, type: 1}).count('* as no_of_myAttendance')
-      const myattendance_pending = await Database.from('attendees').where({schedule_games_id: request.params.id, user_id: auth.user.id, type: 3}).count('* as no_of_myAttendance_pending')
+      // const myattendance = await Database.from('attendees').where({schedule_games_id: request.params.id, user_id: auth.user.id, type: 1}).count('* as no_of_myAttendance')
+      // const myattendance_pending = await Database.from('attendees').where({schedule_games_id: request.params.id, user_id: auth.user.id, type: 3}).count('* as no_of_myAttendance_pending')
+      //
+      // return {
+      //   myattendance,
+      //   myattendance_pending
+      // }
+
+      const myattendance = await Database.from('attendees').where({schedule_games_id: request.params.id, user_id: auth.user.id}).select('type')
 
       return {
-        myattendance,
-        myattendance_pending
+        myattendance
       }
     }
     catch(error){
@@ -175,7 +181,7 @@ class AttendeeController {
       if (getScheduleGameInvites.length == 0){
         getScheduleGameInvites = await Database.from('schedule_games').where({schedule_games_GUID: request.params.id}).options({nestTables:true})
       }
-      
+
       return {
         getScheduleGameInvites
       }
