@@ -1,10 +1,6 @@
 import React, { Component } from "react"
 import ReactDOM from "react-dom"
-import {
-  BrowserRouter as Router,
-  Route,
-  NavLink
-} from "react-router-dom"
+import { Route, Redirect } from 'react-router'
 import axios from "axios"
 import Modal from "react-modal"
 
@@ -23,7 +19,6 @@ const searchOptions = {
 export default class Dossier extends Component {
   constructor () {
     super()
-    self = this
     this.state = {
       shouldCloseOnOverlayClick_ : true,
       intial_trigger: true,
@@ -36,7 +31,8 @@ export default class Dossier extends Component {
       contact_info_box: "",
       address: '',
       final_add: '',
-      just_one_time: true
+      just_one_time: true,
+      redirect_: false
     }
   }
 
@@ -57,9 +53,8 @@ export default class Dossier extends Component {
     getUser()
   }
 
-  handleCloseModal () {
-    const {match} = self.props.routeProps
-    window.location.href = `/profile/${match.params.id}`
+  handleCloseModal = () =>{
+    this.setState({redirect_: true})
   }
 
   testModal = (e) => {
@@ -140,6 +135,12 @@ export default class Dossier extends Component {
   }
 
   render() {
+    if (this.state.redirect_){
+      const {match} = this.props.routeProps
+      var tmp = `/profile/${match.params.id}`
+      return <Redirect push to ={tmp}  />
+    }
+
     if(this.state.userProfile !== undefined) {
       const {country_, region_} = this.state
       const {first_name, last_name, country, region, profile_img, profile_bg, slogan, bio, contact_info} = this.state.userProfile

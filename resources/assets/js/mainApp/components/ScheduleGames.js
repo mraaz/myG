@@ -124,7 +124,7 @@ export default class ScheduleGames extends Component {
                 isClearable
                 value={this.state.game_name_box}
                 className="game-name-box"
-                placeholder="Game name"
+                placeholder="Enter Game name"
                 onInputChange={inputValue => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
                 onKeyDown={this.onKeyDown}
               />

@@ -1,11 +1,7 @@
 import React, { Component } from "react"
 import Select from 'react-select'
 import ReactDOM from "react-dom"
-import {
-  BrowserRouter as Router,
-  Route,
-  NavLink
-} from "react-router-dom"
+import { Route, Redirect } from 'react-router'
 import axios from "axios"
 
 export default class IndividualEsportsExperience extends Component {
@@ -13,6 +9,9 @@ export default class IndividualEsportsExperience extends Component {
     super()
     this.state = {
       myPage: false,
+      redirect_esportsExp: false,
+      redirect_advancedSearch: false,
+      tmp_id: ""
     }
   }
 
@@ -27,11 +26,6 @@ export default class IndividualEsportsExperience extends Component {
       }
     }
   }
-
-  find_tag(tag){
-    window.location.href = `/advancedSearch/${tag}/Esports Experience`
-  }
-
 
   showAllTags = (arrTags) => {
     if(arrTags !== undefined){
@@ -79,12 +73,28 @@ export default class IndividualEsportsExperience extends Component {
   }
 
   edit_lnk = (id) => {
-    const {match} = self.props.routeProps
-    window.location.href = `/profile/${match.params.id}/edit/esportsExp/${id}`
+    this.state.tmp_id = id
+    this.setState({redirect_esportsExp: true})
+  }
+
+  find_tag(tag){
+    this.state.tmp_id = tag
+    this.setState({redirect_advancedSearch: true})
   }
 
 
   render() {
+    if (this.state.redirect_esportsExp){
+      const {match} = this.props.routeProps
+      var tmp = `/profile/${match.params.id}/edit/esportsExp/${this.state.tmp_id}`
+      return <Redirect push to ={tmp}  />
+    }
+
+    if (this.state.redirect_advancedSearch){
+      var tmp = `/advancedSearch/${this.state.tmp_id}/Esports Experience`
+      return <Redirect push to ={tmp}  />
+    }
+
     let {item, rowLen, row} = this.props
     var show_lines = true
 

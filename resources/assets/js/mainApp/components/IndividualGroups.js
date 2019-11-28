@@ -1,26 +1,26 @@
 import React, { Component } from "react"
-import Select from 'react-select'
 import ReactDOM from "react-dom"
-import {
-  BrowserRouter as Router,
-  Route,
-  NavLink
-} from "react-router-dom"
-import axios from "axios"
+import { Route, Redirect } from 'react-router'
 
 export default class IndividualGroups extends Component {
   constructor() {
     super()
     this.state = {
+      redirect_groups: false
     }
   }
 
   redirect(){
-    const {groups} = this.props
-    window.location.href = `/groups/${groups.id}`
+    this.setState({redirect_groups: true})
   }
 
   render() {
+    if (this.state.redirect_groups){
+      const {groups} = this.props
+      var tmp = `/groups/${groups.id}`
+      return <Redirect push to ={tmp}  />
+    }
+
     let {groups} = this.props
     return (
       <div className="groups-info">

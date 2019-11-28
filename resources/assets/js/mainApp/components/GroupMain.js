@@ -1,10 +1,6 @@
 import React, { Component } from "react"
 import ReactDOM from "react-dom"
-import {
-  BrowserRouter as Router,
-  Route,
-  NavLink
-} from "react-router-dom"
+import { Route, Redirect } from 'react-router'
 import axios from "axios"
 import IndividualGroups from "./IndividualGroups"
 
@@ -77,7 +73,9 @@ export default class GroupMain extends Component {
       profile_attr: '',
       show_bio: false,
       value: '',
-      suggestions: []
+      suggestions: [],
+      redirect_: false,
+      redirect_link: ""
     }
 
     this.callbackFileModalClose = this.callbackFileModalClose.bind(this);
@@ -186,9 +184,8 @@ export default class GroupMain extends Component {
   }
 
   onSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
-    //return <Redirect to={`/profile/${suggestion.id}`}/>
-    window.location.href = `/groups/${suggestion.id}`
-
+    this.state.redirect_link = suggestion.id
+    this.setState({redirect_: true})
   }
 
   showmyGroups = () => {
@@ -208,6 +205,10 @@ export default class GroupMain extends Component {
   }
 
   render() {
+    if (this.state.redirect_){
+      var tmp = `/groups/${this.state.redirect_link}`
+      return <Redirect push to ={tmp}  />
+    }
     const { value, suggestions } = this.state;
 
     // Autosuggest will pass through all these props to the input.

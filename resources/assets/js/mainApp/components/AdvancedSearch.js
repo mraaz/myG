@@ -1,13 +1,8 @@
 import React, { Component } from "react"
 import Select from 'react-select'
 import ReactDOM from "react-dom"
-import {
-  BrowserRouter as Router,
-  Route,
-  NavLink
-} from "react-router-dom"
+import { Route } from 'react-router'
 import axios from "axios"
-import moment from "moment"
 import AsyncSelect from 'react-select/lib/Async'
 import CreatableSelect from 'react-select/lib/Creatable'
 import AdvancedSearchPost from "./AdvancedSearchPost"
@@ -94,12 +89,8 @@ export default class AdvancedSearch extends Component <*, State> {
       value_tags: [],
       newValueCreated_tags: [],
       country_: "",
-      time_role_box: ""
+      time_role_box: "",
     }
-  }
-
-  moveaway = () => {
-    window.location.href = '/addscheduleGames'
   }
 
   componentWillMount(){
