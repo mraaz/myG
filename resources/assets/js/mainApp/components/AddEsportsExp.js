@@ -1,10 +1,6 @@
 import React, { Component } from "react"
 import ReactDOM from "react-dom"
-import {
-  BrowserRouter as Router,
-  Route,
-  NavLink
-} from "react-router-dom"
+import { Route, Redirect } from 'react-router'
 import axios from "axios"
 import Select from 'react-select'
 import CreatableSelect from 'react-select/lib/Creatable'
@@ -81,13 +77,13 @@ export default class AddEsportsExp extends Component <*, State> {
       name_trigger: false,
       createEsportsPost: true,
       intial_trigger: true,
-      just_one_time: true
+      just_one_time: true,
+      redirect_profile: false
     }
   }
 
-  handleCloseModal () {
-    const {match} = self.props.routeProps
-    window.location.href = `/profile/${match.params.id}`
+  handleCloseModal = () => {
+    this.setState({redirect_profile: true})
   }
 
   testModal = (e) => {
@@ -491,6 +487,12 @@ export default class AddEsportsExp extends Component <*, State> {
   }
 
   render() {
+    if (this.state.redirect_profile){
+      const {match} = this.props.routeProps
+      var tmp = `/profile/${match.params.id}`
+      return <Redirect push to ={tmp}  />
+    }
+
     if(this.state.myEsports_bio !== undefined) {
       const { isLoading_ardour, options_ardour, value_ardour, isLoading_tags, options_tags, value_tags, value_game_name, options_game_name, isLoading_game_name } = this.state
       const { email_visibility, games_of_ardour, career_highlights, status } = this.state.myEsports_bio
@@ -590,6 +592,7 @@ export default class AddEsportsExp extends Component <*, State> {
                 isClearable
                 value={value_game_name}
                 className="game_name_box2"
+                placeholder="Enter Game name"
                 onInputChange={inputValue => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
               />
             </div>

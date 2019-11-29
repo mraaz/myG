@@ -1,11 +1,7 @@
 import React, { Component } from "react"
 import Select from 'react-select'
 import ReactDOM from "react-dom"
-import {
-  BrowserRouter as Router,
-  Route,
-  NavLink
-} from "react-router-dom"
+import { Route, Redirect } from 'react-router'
 import axios from "axios"
 import moment from "moment"
 
@@ -21,7 +17,10 @@ export default class IndividualNotification extends Component {
       post: false,
       schedule_game: false,
       group_post: false,
-      archive_schedule_game: false
+      archive_schedule_game: false,
+      redirect_: false,
+      redirect_link: "",
+      redirect_tmp: ""
     }
   }
 
@@ -357,7 +356,8 @@ export default class IndividualNotification extends Component {
     } catch (error){
       console.log(error)
     }
-    window.location.href = `/post/${this.props.notification.post_id}`
+    this.state.redirect_link = "updateRead_Status"
+    this.setState({redirect_: true})
   }
 
   updateRead_Status_schedule_game(str_href){
@@ -366,16 +366,20 @@ export default class IndividualNotification extends Component {
     } catch (error){
       console.log(error)
     }
-    window.location.href = `${str_href}`
+    this.state.redirect_link = "updateRead_Status_schedule_game"
+    this.state.redirect_tmp = str_href
+
+    this.setState({redirect_: true})
   }
 
-  async updateRead_Status_groups (){
+  updateRead_Status_groups (){
     try{
-      const updateRead_Status_groups = await axios.post(`/api/notifications/updateRead_Status_groups/${this.props.notification.group_id}/${this.props.notification.activity_type}/${this.props.notification.id}`)
+      const updateRead_Status_groups = axios.post(`/api/notifications/updateRead_Status_groups/${this.props.notification.group_id}/${this.props.notification.activity_type}/${this.props.notification.id}`)
     } catch (error){
       console.log(error)
     }
-    window.location.href = `/groups/${this.props.notification.group_id}`
+    this.state.redirect_link = "updateRead_Status_groups"
+    this.setState({redirect_: true})
   }
 
   updateRead_Status_archive_schedule_game(){
@@ -384,11 +388,33 @@ export default class IndividualNotification extends Component {
     } catch (error){
       console.log(error)
     }
-    window.location.href = `/archived_scheduledGames/${this.props.notification.archive_schedule_game_id}`
+    this.state.redirect_link = "updateRead_Status_archive_schedule_game"
+    this.setState({redirect_: true})
   }
 
 
   render() {
+    if (this.state.redirect_){
+      var tmp
+      switch (this.state.redirect_link) {
+        case "updateRead_Status":
+          tmp = `/post/${this.props.notification.post_id}`
+          return <Redirect push to ={tmp}  />
+          break
+        case "updateRead_Status_schedule_game":
+          return <Redirect push to ={this.state.redirect_tmp}  />
+          break
+        case "updateRead_Status_groups":
+          tmp = `/groups/${this.props.notification.group_id}`
+          return <Redirect push to ={tmp}  />
+          break
+        case "updateRead_Status_archive_schedule_game":
+          tmp = `/archived_scheduledGames/${this.props.notification.archive_schedule_game_id}`
+          return <Redirect push to ={tmp}  />
+          break
+      }
+    }
+
     let {notification, lastRow} = this.props
     var str_href
 

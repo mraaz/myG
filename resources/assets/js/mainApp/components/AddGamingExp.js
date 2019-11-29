@@ -1,10 +1,6 @@
 import React, { Component } from "react"
 import ReactDOM from "react-dom"
-import {
-  BrowserRouter as Router,
-  Route,
-  NavLink
-} from "react-router-dom"
+import { Route, Redirect } from 'react-router'
 import axios from "axios"
 import Select from 'react-select'
 import CreatableSelect from 'react-select/lib/Creatable'
@@ -81,13 +77,13 @@ export default class AddGamingExp extends Component <*, State> {
       newValueCreated: [],
       comments_chkbox: false,
       link_chkbox: false,
-      just_one_time: true
+      just_one_time: true,
+      redirect_profile: false
     }
   }
 
-  handleCloseModal () {
-    const {match} = self.props.routeProps
-    window.location.href = `/profile/${match.params.id}`
+  handleCloseModal = () => {
+    this.setState({redirect_profile: true})
   }
 
   testModal = (e) => {
@@ -366,6 +362,12 @@ export default class AddGamingExp extends Component <*, State> {
   }
 
   render() {
+    if (this.state.redirect_profile){
+      const {match} = this.props.routeProps
+      var tmp = `/profile/${match.params.id}`
+      return <Redirect push to ={tmp}  />
+    }
+
     const { isLoading, options, value, isLoading_tags, options_tags, value_tags } = this.state
     return (
       <div className="content-area addGamingExp-page">

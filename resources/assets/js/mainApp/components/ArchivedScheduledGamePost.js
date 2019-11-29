@@ -1,11 +1,7 @@
 import React, { Component } from "react"
 import Select from 'react-select'
 import ReactDOM from "react-dom"
-import {
-  BrowserRouter as Router,
-  Route,
-  NavLink
-} from "react-router-dom"
+import { Route, Redirect } from 'react-router'
 import axios from "axios"
 import moment from "moment"
 import IndividualComment from "./IndividualComment"
@@ -46,6 +42,7 @@ export default class ArchivedScheduledGamePost extends Component {
       dota_2_pos_four_count: 0,
       dota_2_pos_five_count: 0,
       clash_royale_field: false,
+      redirect_: false
     }
 
     this.textInput = null;
@@ -205,10 +202,15 @@ export default class ArchivedScheduledGamePost extends Component {
   }
 
   redirect_link = () => {
-    window.location.href = `/archive_playerList/${this.props.schedule_game.archive_schedule_game_id}`
+    this.setState({redirect_: true})
   }
 
   render() {
+    if (this.state.redirect_){
+      var tmp = `/archive_playerList/${this.props.schedule_game.archive_schedule_game_id}`
+      return <Redirect push to ={tmp}  />
+    }
+
     const { schedule_game } = this.props
     var region = false
     var experience = false

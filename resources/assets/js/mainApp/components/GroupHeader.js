@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import ReactDOM from "react-dom"
+import { Redirect } from 'react-router'
 import {
   BrowserRouter as Router,
   Route,
@@ -18,7 +19,8 @@ export default class GroupHeader extends Component {
       status: 0, //0: Not a member of this group, 1: Admin of group, 2: Owner, 3: User, 42:Pending approval
       bFileModalOpen: false,
       statusTxt: 'Join',
-      show_approvals: false
+      show_approvals: false,
+      redirect_: false
     }
 
     this.callbackFileModalClose = this.callbackFileModalClose.bind(this);
@@ -107,7 +109,7 @@ export default class GroupHeader extends Component {
   }
 
   show_approvals_screen = () => {
-    window.location.href = `/myApprovals/${this.props.groups_id.params.id}`
+    this.setState({redirect_: true})
   }
 
   change_type = () => {
@@ -188,6 +190,11 @@ export default class GroupHeader extends Component {
   }
 
   render() {
+    if (this.state.redirect_){
+      var tmp = `/myApprovals/${this.props.groups_id.params.id}`
+      return <Redirect push to ={tmp}  />
+    }
+
     if(this.state.group_info !== undefined) {
       let str_group_type = ""
       switch (this.state.group_info.type) {

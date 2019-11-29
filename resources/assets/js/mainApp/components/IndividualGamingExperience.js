@@ -1,11 +1,7 @@
 import React, { Component } from "react"
 import Select from 'react-select'
 import ReactDOM from "react-dom"
-import {
-  BrowserRouter as Router,
-  Route,
-  NavLink
-} from "react-router-dom"
+import { Route, Redirect } from 'react-router'
 import axios from "axios"
 
 export default class IndividualGamingExperience extends Component {
@@ -13,7 +9,10 @@ export default class IndividualGamingExperience extends Component {
     super()
     this.state = {
       myPage: false,
-      showCommends: true
+      showCommends: true,
+      redirect_GamingExp: false,
+      redirect_advancedSearch: false,
+      tmp_id: ""
     }
   }
 
@@ -164,10 +163,6 @@ export default class IndividualGamingExperience extends Component {
     }
   }
 
-  find_tag(tag){
-    window.location.href = `/advancedSearch/${tag}/Gaming Experience`
-  }
-
   showAllTags = (arrTags) => {
     if(arrTags !== undefined){
       return arrTags.map((tag, index) => {
@@ -215,12 +210,28 @@ export default class IndividualGamingExperience extends Component {
   }
 
   edit_lnk = (id) => {
-    const {match} = self.props.routeProps
-    window.location.href = `/profile/${match.params.id}/edit/gamingexp/${id}`
+    this.state.tmp_id = id
+    this.setState({redirect_GamingExp: true})
   }
 
+  find_tag(tag){
+    this.state.tmp_id = tag
+    this.setState({redirect_advancedSearch: true})
+  }
 
   render() {
+
+    if (this.state.redirect_GamingExp){
+      const {match} = this.props.routeProps
+      var tmp = `/profile/${match.params.id}/edit/gamingexp/${this.state.tmp_id}`
+      return <Redirect push to ={tmp}  />
+    }
+
+    if (this.state.redirect_advancedSearch){
+      var tmp = `/advancedSearch/${this.state.tmp_id}/Gaming Experience`
+      return <Redirect push to ={tmp}  />
+    }
+
     let {item, rowLen, row} = this.props
     var show_lines = true
 

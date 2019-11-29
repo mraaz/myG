@@ -1,10 +1,6 @@
 import React, { Component } from "react"
 import ReactDOM from "react-dom"
-import {
-  BrowserRouter as Router,
-  Route,
-  NavLink
-} from "react-router-dom"
+import { Route, Redirect } from 'react-router'
 import axios from "axios"
 import Select from 'react-select'
 import CreatableSelect from 'react-select/lib/Creatable'
@@ -85,13 +81,13 @@ export default class EditEsportsExp extends Component <*, State> {
       name_trigger: false,
       createEsportsPost: true,
       intial_trigger: true,
-      just_one_time: true
+      just_one_time: true,
+      redirect_: false
     }
   }
 
-  handleCloseModal () {
-    const {match} = self.props.routeProps
-    window.location.href = `/profile/${match.params.id}`
+  handleCloseModal = () => {
+    this.setState({redirect_: true})
   }
 
   testModal = (e) => {
@@ -285,7 +281,7 @@ export default class EditEsportsExp extends Component <*, State> {
               game_name: this.state.value_game_name.label
             })
             newGame_name =  post.data.game_name
-            newGameID =  post.data.id
+            newGameID =  post.data
           } catch(error){
             console.log(error)
           }
@@ -495,6 +491,7 @@ export default class EditEsportsExp extends Component <*, State> {
 
     const getEsports_exp = async function(){
       try{
+        //TODO: We should just to one call and use an innerjoin on the backend
         const getEsports_exp = await axios.get(`/api/esports_experiences/show/${match.params.esportsExp_id}`)
         const gameName = await axios.get(`/api/GameName/${getEsports_exp.data.myesportsExperience[0].game_name}`)
 
@@ -645,8 +642,14 @@ export default class EditEsportsExp extends Component <*, State> {
   }
 
   render() {
-    if(this.state.myEsports_bio !== undefined) {
-      if(this.state.myEsports_exp !== undefined) {
+    if (this.state.redirect_){
+      const {match} = this.props.routeProps
+      var tmp = `/profile/${match.params.id}`
+      return <Redirect push to ={tmp}  />
+    }
+
+    if (this.state.myEsports_bio !== undefined) {
+      if (this.state.myEsports_exp !== undefined) {
 
         const { isLoading_ardour, options_ardour, value_ardour, isLoading_tags, options_tags, value_tags, value_game_name, options_game_name, isLoading_game_name } = this.state
         const { email_visibility, games_of_ardour, career_highlights, status } = this.state.myEsports_bio

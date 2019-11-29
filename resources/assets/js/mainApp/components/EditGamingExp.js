@@ -1,10 +1,6 @@
 import React, { Component } from "react"
 import ReactDOM from "react-dom"
-import {
-  BrowserRouter as Router,
-  Route,
-  NavLink
-} from "react-router-dom"
+import { Route, Redirect } from 'react-router'
 import axios from "axios"
 import Select from 'react-select'
 import CreatableSelect from 'react-select/lib/Creatable'
@@ -84,13 +80,13 @@ export default class EditGamingExp extends Component <*, State> {
       name_trigger: false,
       intial_trigger: true,
       edit_game_name: "",
-      just_one_time: true
+      just_one_time: true,
+      redirect_: false
     }
   }
 
-  handleCloseModal () {
-    const {match} = self.props.routeProps
-    window.location.href = `/profile/${match.params.id}`
+  handleCloseModal = () => {
+    this.setState({redirect_: true})
   }
 
   testModal = (e) => {
@@ -512,6 +508,11 @@ export default class EditGamingExp extends Component <*, State> {
   }
 
   render() {
+    if (this.state.redirect_){
+      const {match} = this.props.routeProps
+      var tmp = `/profile/${match.params.id}`
+      return <Redirect push to ={tmp}  />
+    }
     if(this.state.myGame !== undefined) {
       const { isLoading, options, value, isLoading_tags, options_tags, value_tags, edit_game_name } = this.state
       const { game_name, experience, comments, played_label, played_value, status, link, tags, ratings } = this.state.myGame
