@@ -19,6 +19,7 @@ class UserSchema extends Schema {
       table.string('slogan', 254).nullable().defaultTo("")
       table.string('bio', 254).nullable().defaultTo("")
       table.string('contact_info', 254).nullable().defaultTo("")
+      table.string('relationship_status', 254).nullable().defaultTo("")
       table.string('provider_id', 254).nullable()
       table.string('provider', 254).nullable()
       table.timestamps()

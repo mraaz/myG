@@ -36,6 +36,7 @@ class UserController {
             country: request.input('country'),
             region: request.input('region'),
             contact_info: request.input('contact_info'),
+            relationship_status: request.input('relationship_status'),
           })
         return 'Saved successfully'
       } catch (error) {
