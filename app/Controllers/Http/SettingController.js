@@ -1,4 +1,5 @@
 'use strict'
+
 const Database = use('Database')
 const Settings = use('App/Models/Setting')
 

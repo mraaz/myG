@@ -1,6 +1,5 @@
-.app-container.home-page .addGamingExp-page{
-
-} //.app-container
+.app-container.home-page .addGamingExp-page {
+}
 .addGamingModal {
   position: absolute;
   top: 11%;
@@ -16,79 +15,79 @@
 
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: .08fr .15fr .15fr .15fr .15fr .15fr;
+  grid-template-rows: 0.08fr 0.15fr 0.15fr 0.15fr 0.15fr 0.15fr;
   grid-column-gap: 20px;
   grid-row-gap: 0;
 
-  .fa-times{
+  .fa-times {
     display: flex;
     justify-content: flex-end;
     cursor: pointer;
-   }
-  .gName_txtBox{
+  }
+  .gName_txtBox {
     grid-column-start: 1;
-    p{
+    p {
       padding: 2px 0 4px 0;
     }
-    .game_name_box{
+    .game_name_box {
       width: 55%;
     }
   }
-  .experience_box{
+  .experience_box {
     width: 55%;
   }
-  .played_box{
+  .played_box {
     width: 55%;
   }
-  .ratings{
-    margin-top: .3rem;
+  .ratings {
+    margin-top: 0.3rem;
   }
-  .ratings_box{
+  .ratings_box {
     width: 55%;
   }
-  .status{
-    p{
+  .status {
+    p {
       padding: 2px 0 4px 0;
     }
   }
-  .status_box{
+  .status_box {
     width: 55%;
   }
-  .link_txtBox{
-    p{
+  .link_txtBox {
+    p {
       padding: 2px 0 4px 0;
     }
-    .link_box{
+    .link_box {
       font-family: $sans-serif;
       font-size: 1rem;
       padding: 5px 15px;
       margin-bottom: 1rem;
       background-color: white;
-      border: 1px solid rgba(0,0,0, .5);
+      border: 1px solid rgba(0, 0, 0, 0.5);
       width: 75%;
     }
   }
-  .comments{
+  .comments {
     grid-column: span 2;
-    p{
+    p {
       padding: 2px 0 4px 0;
     }
-    .comments_box{
+    .comments_box {
       font-family: $sans-serif;
       font-size: 1rem;
       padding: 5px 15px;
       margin-bottom: 1rem;
       background-color: white;
-      border: 1px solid rgba(0,0,0, .5);
+      border: 1px solid rgba(0, 0, 0, 0.5);
     }
   }
-  .tag_txtBox{
+  .tag_txtBox {
     grid-column: span 2;
-    p{
+    p {
       padding: 2px 0 4px 0;
     }
   }
-  .save-btn{
+  .save-btn {
     grid-column: span 2;
     font-size: 14rem;
     display: flex;
@@ -97,24 +96,24 @@
     height: 55%;
     text-align: center;
     align-items: center;
-    .save{
+    .save {
       padding: 18px;
       background: $primarybuttonBG;
       border-radius: 4px;
-      border: 1px solid rgba(0,0,0, .2);
+      border: 1px solid rgba(0, 0, 0, 0.2);
       color: #fff;
       cursor: pointer;
     }
-    .delete{
+    .delete {
       padding: 18px;
       background: $primarybuttonBG;
       border-radius: 4px;
-      border: 1px solid rgba(0,0,0, .2);
+      border: 1px solid rgba(0, 0, 0, 0.2);
       color: #fff;
       cursor: pointer;
     }
   }
-  .info_box{
+  .info_box {
     background-color: white;
     grid-column: span 2;
     width: 400px;
@@ -122,16 +121,16 @@
     padding: 25px;
     margin: 25px;
     border: 10px solid $primarybuttonBG;
-    -webkit-box-shadow: 0 0 15px -3px rgba(191,191,191,1);
-    -moz-box-shadow: 0 0 15px -3px rgba(191,191,191,1);
-    box-shadow: 0 0 15px -3px rgba(191,191,191,1);
+    -webkit-box-shadow: 0 0 15px -3px rgba(191, 191, 191, 1);
+    -moz-box-shadow: 0 0 15px -3px rgba(191, 191, 191, 1);
+    box-shadow: 0 0 15px -3px rgba(191, 191, 191, 1);
     justify-content: center;
     align-items: center;
   }
-  .game_name_error{
+  .game_name_error {
     color: red;
   }
-  .status_name_error{
+  .status_name_error {
     color: red;
   }
 }
@@ -143,5 +142,5 @@
   right: 0;
   bottom: 0;
   overflow: hidden;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 }

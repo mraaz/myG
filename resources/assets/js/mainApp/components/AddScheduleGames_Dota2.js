@@ -1,24 +1,24 @@
-import React, { Component } from "react"
+import React, { Component } from 'react'
 import Select from 'react-select'
-import ReactDOM from "react-dom"
-import { Route, Redirect } from 'react-router'
-import DatePicker from "react-datepicker"
-import moment from "moment"
-import "react-datepicker/dist/react-datepicker.css"
+import ReactDOM from 'react-dom'
+import { Redirect } from 'react-router'
+import DatePicker from 'react-datepicker'
+import moment from 'moment'
+import 'react-datepicker/dist/react-datepicker.css'
 
-import { SubmitDataFunction } from "./AddScheduleGames_Submit_Data"
+import { SubmitDataFunction } from './AddScheduleGames_Submit_Data'
 
 const experience_options = [
   { value: 'Casual', label: 'Casual' },
   { value: 'Semi Pro', label: 'Semi Pro' },
-  { value: 'Professional', label: 'Professional' }
+  { value: 'Professional', label: 'Professional' },
 ]
 
 const visibility_options = [
   { value: 1, label: 'Public' },
   { value: 2, label: 'Friends' },
   { value: 3, label: 'Group' },
-  { value: 4, label: 'Hidden' }
+  { value: 4, label: 'Hidden' },
 ]
 
 const limit_options = [
@@ -30,7 +30,7 @@ const limit_options = [
   { value: 40, label: '40' },
   { value: 50, label: '50' },
   { value: 100, label: '100' },
-  { value: 42, label: 'Unlimited' }
+  { value: 42, label: 'Unlimited' },
 ]
 
 const dota2_medal_ranks = [
@@ -41,7 +41,7 @@ const dota2_medal_ranks = [
   { value: 'Legend', label: 'Legend' },
   { value: 'Ancient', label: 'Ancient' },
   { value: 'Divine', label: 'Divine' },
-  { value: 'Immortal', label: 'Immortal' }
+  { value: 'Immortal', label: 'Immortal' },
 ]
 
 const dota2_server_regions = [
@@ -79,51 +79,51 @@ const dota2_roles = [
   { value: 'Position 2', label: 'Position 2' },
   { value: 'Position 3', label: 'Position 3' },
   { value: 'Position 4', label: 'Position 4' },
-  { value: 'Position 5', label: 'Position 5' }
+  { value: 'Position 5', label: 'Position 5' },
 ]
 
 export default class AddScheduleGames_Dota2 extends Component {
   constructor() {
     super()
     this.state = {
-      game_name_box: "",
+      game_name_box: '',
       selected_experience: null,
       selected_expiry: null,
-      selected_visibility: [{label: "Public", value: 1}],
-      selected_limit: [{label: "Unlimited", value: 42}],
+      selected_visibility: [{ label: 'Public', value: 1 }],
+      selected_limit: [{ label: 'Unlimited', value: 42 }],
       startDate: moment(),
       endDate: null,
-      description_box: "",
-      other_box: "",
-      tmp_expiry: "2 days",
-      txtAreaValue: "",
+      description_box: '',
+      other_box: '',
+      tmp_expiry: '2 days',
+      txtAreaValue: '',
       just_one_time: true,
       redirect_ScheduleGames: false,
       redirect_myScheduleGames: false,
       dota2_medal_ranks: null,
       dota2_server_regions: null,
-      dota2_roles: null
+      dota2_roles: null,
     }
   }
 
   submitForm = (e) => {
     this.state.game_name_box = this.props.game_name_box
 
-    if ( (this.props.game_name_box == "") || (this.props.game_name_box == null) ) {
-      alert("Sorry mate! Game name can not be blank")
+    if (this.props.game_name_box == '' || this.props.game_name_box == null) {
+      alert('Sorry mate! Game name can not be blank')
       return
     }
-    if (this.state.startDate == null || this.state.startDate == undefined){
-      alert("Sorry mate! Start date can not be empty")
+    if (this.state.startDate == null || this.state.startDate == undefined) {
+      alert('Sorry mate! Start date can not be empty')
       return
     }
 
     if (this.state.startDate.isSameOrAfter(this.state.endDate)) {
-      alert("Sorry mate! End date needs to be AFTER start date")
+      alert('Sorry mate! End date needs to be AFTER start date')
       return
     }
     //Slow connections this function can get called multiple times
-    if(!this.state.just_one_time){
+    if (!this.state.just_one_time) {
       return
     }
     this.state.just_one_time = false
@@ -131,16 +131,20 @@ export default class AddScheduleGames_Dota2 extends Component {
     SubmitDataFunction(this.state)
 
     if (e === true) {
-      if ( (this.state.selected_visibility != null && this.state.selected_visibility != undefined) && (this.state.selected_visibility.value == 2 || this.state.selected_visibility.value == 4) ){
-        this.setState({redirect_myScheduleGames: true})
-      }else {
-        this.setState({redirect_ScheduleGames: true})
+      if (
+        this.state.selected_visibility != null &&
+        this.state.selected_visibility != undefined &&
+        (this.state.selected_visibility.value == 2 ||
+          this.state.selected_visibility.value == 4)
+      ) {
+        this.setState({ redirect_myScheduleGames: true })
+      } else {
+        this.setState({ redirect_ScheduleGames: true })
       }
-    }else {
+    } else {
       location.reload()
     }
   }
-
 
   handleChange_Experience = (selected_experience) => {
     this.setState({ selected_experience })
@@ -162,11 +166,11 @@ export default class AddScheduleGames_Dota2 extends Component {
     this.setState({ endDate: date })
   }
   handleChange = (e) => {
-    this.setState({[e.target.id]: e.target.value})
+    this.setState({ [e.target.id]: e.target.value })
   }
 
   handleChange_txtArea = (e) => {
-    this.setState({txtAreaValue: e.target.value})
+    this.setState({ txtAreaValue: e.target.value })
   }
 
   handleChange_Dota2_medal_ranks = (dota2_medal_ranks) => {
@@ -187,20 +191,24 @@ export default class AddScheduleGames_Dota2 extends Component {
       return <Redirect to='/myScheduledGames' />
     }
     return (
-      <div className="content-area addscheduleGames-page">
-        <div className="content">
-          <div className="date-time">
-            <div className="date-time-label"><label>Start<span style={{color: "red"}}>*</span> and End date:</label></div>
+      <div className='content-area addscheduleGames-page'>
+        <div className='content'>
+          <div className='date-time'>
+            <div className='date-time-label'>
+              <label>
+                Start<span style={{ color: 'red' }}>*</span> and End date:
+              </label>
+            </div>
             <DatePicker
               selected={this.state.startDate}
               onChange={this.handleChange_forStartdate}
               showTimeSelect
-              timeFormat="HH:mm"
+              timeFormat='HH:mm'
               timeIntervals={15}
-              dateFormat="lll"
-              timeCaption="time"
-              className="start-date-box"
-              todayButton={"Today"}
+              dateFormat='lll'
+              timeCaption='time'
+              className='start-date-box'
+              todayButton={'Today'}
               shouldCloseOnSelect={true}
               onBlur={this.onBlur_date_name}
               onFocus={this.onFocus_date_name}
@@ -209,119 +217,161 @@ export default class AddScheduleGames_Dota2 extends Component {
               selected={this.state.endDate}
               onChange={this.handleChange_forEnddate}
               showTimeSelect
-              timeFormat="HH:mm"
+              timeFormat='HH:mm'
               timeIntervals={15}
-              dateFormat="lll"
-              timeCaption="time"
-              className="end-date-box"
-              todayButton={"Today"}
+              dateFormat='lll'
+              timeCaption='time'
+              className='end-date-box'
+              todayButton={'Today'}
               shouldCloseOnSelect={true}
               onBlur={this.onBlur_date_name}
               onFocus={this.onFocus_date_name}
               minDate={this.state.startDate}
-              maxDate={moment(this.state.startDate).add(7,'days')}
+              maxDate={moment(this.state.startDate).add(7, 'days')}
             />
             {/* maxDate = Don't think its just games, it could be post for LFG for clan */}
           </div>
-          <div className="dota2_medal_ranks">
-            <div className="dota2_medal_ranks_header">
-              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/game_icons/dota_2_logo.png' height="23" width="23"/>
+          <div className='dota2_medal_ranks'>
+            <div className='dota2_medal_ranks_header'>
+              <img
+                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/game_icons/dota_2_logo.png'
+                height='23'
+                width='23'
+              />
               <label>Medal Ranks:</label>
             </div>
             <Select
               onChange={this.handleChange_Dota2_medal_ranks}
               options={dota2_medal_ranks}
-              className="dota2-medal-ranks"
+              className='dota2-medal-ranks'
               isClearable={true}
               isMulti
             />
           </div>
-          <div className="dota2_server_regions">
-            <div className="dota2_server_regions_header">
-              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/game_icons/dota_2_logo.png' height="23" width="23"/>
+          <div className='dota2_server_regions'>
+            <div className='dota2_server_regions_header'>
+              <img
+                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/game_icons/dota_2_logo.png'
+                height='23'
+                width='23'
+              />
               <label>Server Regions:</label>
             </div>
             <Select
               onChange={this.handleChange_Dota2_server_regions}
               options={dota2_server_regions}
-              className="dota2-server-regions"
+              className='dota2-server-regions'
               isClearable={true}
               isMulti
             />
           </div>
-          <div className="dota2_roles">
-            <div className="dota2_roles_header">
-              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/game_icons/dota_2_logo.png' height="23" width="23"/>
+          <div className='dota2_roles'>
+            <div className='dota2_roles_header'>
+              <img
+                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/game_icons/dota_2_logo.png'
+                height='23'
+                width='23'
+              />
               <label>Which roles do you need?</label>
             </div>
             <Select
               onChange={this.handleChange_Dota2_roles}
               options={dota2_roles}
-              className="dota2-roles"
+              className='dota2-roles'
               isClearable={true}
               isMulti
             />
           </div>
-          <div className="experience">
+          <div className='experience'>
             <label>Experience:</label>
             <Select
               onChange={this.handleChange_Experience}
               options={experience_options}
               isMulti
-              placeholder="Select experience level/s"
-              className="experience-box"
+              placeholder='Select experience level/s'
+              className='experience-box'
               onBlur={this.onBlur_experience_name}
               onFocus={this.onFocus_experience_name}
             />
           </div>
-          <div className="description">
+          <div className='description'>
             <label>Description:</label>
-            <input type="text" id="description_box" className="description-box" maxLength="254" placeholder="Any details for this game?" onBlur={this.onBlur_description_name} onFocus={this.onFocus_description_name} onChange={this.handleChange} value={this.state.post_description_box}/>
+            <input
+              type='text'
+              id='description_box'
+              className='description-box'
+              maxLength='254'
+              placeholder='Any details for this game?'
+              onBlur={this.onBlur_description_name}
+              onFocus={this.onFocus_description_name}
+              onChange={this.handleChange}
+              value={this.state.post_description_box}
+            />
           </div>
-          <div className="other">
+          <div className='other'>
             <label>Other Info:</label>
-            <input type="text" id="other_box" className="other-box" maxLength="254" placeholder="Additional comments?" onBlur={this.onBlur_other_name} onFocus={this.onFocus_other_name} onChange={this.handleChange} value={this.state.other_box}/>
+            <input
+              type='text'
+              id='other_box'
+              className='other-box'
+              maxLength='254'
+              placeholder='Additional comments?'
+              onBlur={this.onBlur_other_name}
+              onFocus={this.onFocus_other_name}
+              onChange={this.handleChange}
+              value={this.state.other_box}
+            />
           </div>
-          <div className="limit">
+          <div className='limit'>
             <label>Max number of players:</label>
             <Select
               onChange={this.handleChange_Limit}
               options={limit_options}
-              className="limit-box"
+              className='limit-box'
               defaultValue={[limit_options[8]]}
               isClearable={false}
               onBlur={this.onBlur_limit_name}
               onFocus={this.onFocus_limit_name}
             />
           </div>
-          <div className="visibility">
+          <div className='visibility'>
             <label>Visibility:</label>
             <Select
               onChange={this.handleChange_Visibility}
               options={visibility_options}
-              className="visibility-box"
+              className='visibility-box'
               defaultValue={[visibility_options[0]]}
               isClearable={false}
               onBlur={this.onBlur_expiry_name}
               onFocus={this.onFocus_expiry_name}
             />
           </div>
-          <div className="accept-msg">
+          <div className='accept-msg'>
             <label>Accept Message:</label>
             <textarea
-              className="txtarea-accept"
+              className='txtarea-accept'
               rows={8}
               cols={80}
-              placeholder="Msg that will be sent to players when they accept this game invite"
+              placeholder='Msg that will be sent to players when they accept this game invite'
               value={this.state.txtAreaValue}
               onChange={this.handleChange_txtArea}
-              maxLength="254"
+              maxLength='254'
             />
           </div>
-          <div className="buttons">
-            <button className="save" type="button" onClick={() => this.submitForm(true)}>&nbsp;&nbsp;Create game&nbsp;&nbsp;</button>
+          <div className='buttons'>
+            <button
+              className='save'
+              type='button'
+              onClick={() => this.submitForm(true)}>
+              &nbsp;&nbsp;Create game&nbsp;&nbsp;
+            </button>
             &nbsp;
-            <button className="save-create" type="button" onClick={() => this.submitForm(false)}>Save & Create Another</button>
+            <button
+              className='save-create'
+              type='button'
+              onClick={() => this.submitForm(false)}>
+              Save & Create Another
+            </button>
           </div>
         </div>
       </div>

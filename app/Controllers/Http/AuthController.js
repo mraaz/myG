@@ -1,4 +1,5 @@
 'use strict'
+
 const { validate, sanitize } = use('Validator')
 const Hash = use('Hash')
 const User = use('App/Models/User')

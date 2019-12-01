@@ -1,9 +1,13 @@
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-.groups-modal-container{
+.groups-modal-container {
   position: fixed;
   left: 0px;
   top: 0px;
@@ -17,85 +21,85 @@
   justify-content: center;
   display: none;
 
-  &.modal--show{
+  &.modal--show {
     display: flex;
   }
 
-  .modal-wrap{
+  .modal-wrap {
     width: 90%;
     max-width: 880px;
     height: 788px;
     background: white;
     position: relative;
 
-    .modal-header{
+    .modal-header {
       padding: 10px 12px;
       background: #f5f6f7;
     }
 
-    .modal-content{
+    .modal-content {
       padding: 10px 12px;
 
-      .group-name{
+      .group-name {
         color: black;
-        .group-name-error-msg{
+        .group-name-error-msg {
           display: inline-flex;
           color: red;
           margin-left: 3px;
         }
-        .group-name-error-unique-msg{
+        .group-name-error-unique-msg {
           display: inline-flex;
           color: red;
           margin-left: 3px;
         }
-        .group-name-box{
+        .group-name-box {
           font-family: $sans-serif;
           font-size: 1rem;
           padding: 5px 15px;
           margin-bottom: 1rem;
           background-color: white;
-          border: 1px solid rgba(0,0,0, .5);
+          border: 1px solid rgba(0, 0, 0, 0.5);
           margin-top: 2px;
         }
       }
 
-      .privacy_box{
+      .privacy_box {
         width: 25%;
         margin-top: 2px;
       }
-      .all_accept{
+      .all_accept {
         padding-top: 8px;
         padding-bottom: 8px;
       }
 
-      .upload-image-preview{
+      .upload-image-preview {
         width: 288px;
         height: 288px;
         border: 1px solid gray;
 
-        &.open{
+        &.open {
           width: 100%;
           height: auto;
           max-height: 388px;
           overflow: auto;
         }
 
-        img{
+        img {
           width: 100%;
         }
       }
 
-      .uploading-container{
+      .uploading-container {
         display: inline-block;
         position: relative;
         top: 5px;
         left: 10px;
 
-        &.uploading--hide{
+        &.uploading--hide {
           display: none;
         }
 
-        .uploading{
+        .uploading {
           border: 3px solid #f3f3f3;
           border-top: 3px solid #311a1a;
           border-radius: 50%;
@@ -105,7 +109,7 @@
         }
       }
 
-      .open-btn{
+      .open-btn {
         cursor: pointer;
         display: inline-block;
         margin-top: 20px;
@@ -117,30 +121,30 @@
       //   margin-bottom: 10px;
       // }
 
-      .save-btn{
+      .save-btn {
         margin-top: 20px;
         padding: 10px 20px;
         display: inline-block;
-        background: #0178FF;
+        background: #0178ff;
         color: white;
         cursor: pointer;
 
-        &.btn--disable{
+        &.btn--disable {
           background: #59636d;
         }
       }
 
-      .uploaded-files-content{
+      .uploaded-files-content {
         overflow: auto;
         height: 300px;
 
-        .uploaded-file-preview{
+        .uploaded-file-preview {
           display: flex;
           align-items: center;
           justify-content: flex-start;
           flex-wrap: wrap;
 
-          .file-preview-wrap{
+          .file-preview-wrap {
             width: calc(50% - 10px);
             // height: 150px;
             font-size: 0px;
@@ -152,44 +156,43 @@
             border: 1px solid white;
             position: relative;
 
-            &:hover{
-              border:1px solid blue;
+            &:hover {
+              border: 1px solid blue;
             }
-            img{
+            img {
               width: 100%;
             }
 
-            video{
+            video {
               width: 100%;
             }
 
-            .file-preview-overlay{
-             position: absolute;
-             left: 0px;
-             right: 0px;
-             width: 100%;
-             height: 100%;
-             background: #18161675;
-             display: none;
-             .file-preview-delete{
-               position: absolute;
-               right: 5px;
-               top: 5px;
-               color: red;
-               z-index: 11;
-               font-size: 12px;
-             }
-           }
-           &:hover .file-preview-overlay{
-             display: block;
-           }
+            .file-preview-overlay {
+              position: absolute;
+              left: 0px;
+              right: 0px;
+              width: 100%;
+              height: 100%;
+              background: #18161675;
+              display: none;
+              .file-preview-delete {
+                position: absolute;
+                right: 5px;
+                top: 5px;
+                color: red;
+                z-index: 11;
+                font-size: 12px;
+              }
+            }
+            &:hover .file-preview-overlay {
+              display: block;
+            }
           }
         }
       }
-
     }
 
-    .modal-close-btn{
+    .modal-close-btn {
       display: inline-block;
       position: absolute;
       right: 12px;
