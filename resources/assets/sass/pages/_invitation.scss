@@ -1,18 +1,17 @@
-.app-container.home-page .invitation-page{
+.app-container.home-page .invitation-page {
   overflow: hidden;
 
-  .group-settings{
+  .group-settings {
     display: flex;
     justify-content: flex-end;
     padding-right: 18px;
   }
 
-  .padding-container{
+  .padding-container {
     padding: 18px 15px;
     justify-content: center;
-
   }
-  .invitation-grey-container{
+  .invitation-grey-container {
     width: 69%;
     position: relative;
     z-index: 1;
@@ -20,21 +19,21 @@
     background: #151b26;
     border: 1px solid $veryLightText;
 
-    -webkit-box-shadow: 0 21px 48px -21px rgba(59,71,99,0.5);
-    -moz-box-shadow: 0 21px 48px -21px rgba(59,71,99,0.5);
-    box-shadow: 0 21px 48px -21px rgba(59,71,99,0.5);
+    -webkit-box-shadow: 0 21px 48px -21px rgba(59, 71, 99, 0.5);
+    -moz-box-shadow: 0 21px 48px -21px rgba(59, 71, 99, 0.5);
+    box-shadow: 0 21px 48px -21px rgba(59, 71, 99, 0.5);
 
-    h3{
+    h3 {
       margin-left: 1rem;
       color: $veryLightText;
     }
   }
 
-  .invitation-info{
+  .invitation-info {
     margin-left: 1rem;
     position: relative;
 
-    .user-img{
+    .user-img {
       background-position: center;
       background-repeat: no-repeat;
       background-size: cover;
@@ -47,69 +46,69 @@
       margin-left: 3px;
     }
 
-    .user-info{
+    .user-info {
       display: inline-block;
       position: relative;
       margin-left: 48px;
     }
 
-    .invitiation-options{
+    .invitiation-options {
       display: inline-block;
       position: absolute;
-      right:0;
+      right: 0;
 
-      .invitation-accept{
+      .invitation-accept {
         display: inline-block;
         color: $veryLightText;
-        &:hover{
+        &:hover {
           cursor: pointer;
           color: black;
         }
       }
-      .invitation-deny{
+      .invitation-deny {
         display: inline-block;
         color: $veryLightText;
-        &:hover{
+        &:hover {
           cursor: pointer;
           color: black;
         }
       }
-      .invitation-accepted{
+      .invitation-accepted {
         display: inline-block;
         color: green;
       }
-      .invitation-denied{
+      .invitation-denied {
         display: inline-block;
         color: red;
       }
     }
-    .member-controls{
+    .member-controls {
       display: inline-block;
       position: absolute;
       right: 0;
-      .promote{
+      .promote {
         display: inline-block;
         padding-right: 4px;
         cursor: pointer;
         color: #29793f;
       }
-      .depromote{
+      .depromote {
         display: inline-block;
         padding-right: 4px;
         cursor: pointer;
         color: #ce2b35;
       }
-      .kick{
+      .kick {
         display: inline-block;
         padding-right: 4px;
         cursor: pointer;
         color: #034e7b;
       }
     }
-    .line-break{
+    .line-break {
       margin: 18px 0 18px 0;
     }
-    .last-row{
+    .last-row {
       margin: 18px 0 18px 0;
     }
   }

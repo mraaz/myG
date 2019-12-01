@@ -1,28 +1,20 @@
-import React, { Component } from "react"
-import ReactDOM from "react-dom"
-import {
-  BrowserRouter as Router,
-  Route,
-  NavLink
-} from "react-router-dom"
+import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 
-import ScheduledGamePost_Default from "./ScheduledGamePost_Default"
-import ScheduledGamePost_Dota2 from "./ScheduledGamePost_Dota2"
-import ScheduledGamePost_Clash_Royale from "./ScheduledGamePost_Clash_Royale"
+import ScheduledGamePost_Default from './ScheduledGamePost_Default'
+import ScheduledGamePost_Dota2 from './ScheduledGamePost_Dota2'
+import ScheduledGamePost_Clash_Royale from './ScheduledGamePost_Clash_Royale'
 
 export default class ScheduledGamePost extends Component {
   constructor() {
     super()
-    this.state = {
-    }
+    this.state = {}
   }
 
-  componentWillMount(){
-
-  }
+  componentWillMount() {}
 
   showPost = () => {
-    switch(this.props.schedule_game.game_name) {
+    switch (this.props.schedule_game.game_name) {
       case 'Dota 2':
         return <ScheduledGamePost_Dota2 props={this.props} />
         break
@@ -35,10 +27,6 @@ export default class ScheduledGamePost extends Component {
   }
 
   render() {
-    return (
-      <div className="gamesPosts">
-        {this.showPost()}
-      </div>
-    )
+    return <div className='gamesPosts'>{this.showPost()}</div>
   }
 }

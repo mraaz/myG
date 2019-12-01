@@ -1,21 +1,21 @@
-.app-container.welcome-page{
+.app-container.welcome-page {
   display: flex;
   justify-content: flex-end;
   align-items: center;
   height: 800px;
 
-  .welcome-message{
+  .welcome-message {
     background: #fff;
     padding: 20px;
 
-    h1{
+    h1 {
       font-size: 3rem;
       font-weight: 100;
       margin-bottom: 1rem;
       //text-transform: capitalize;
     }
 
-    h3{
+    h3 {
       font-size: 1.2rem;
       font-weight: 100;
       margin-bottom: 1rem;
@@ -24,7 +24,7 @@
     }
   }
 
-  .home-container{
+  .home-container {
     background: #fff;
     height: 100%;
     max-width: 400px;
@@ -33,38 +33,38 @@
     justify-content: center;
     align-items: center;
 
-    .login-buttons{
+    .login-buttons {
       display: flex;
       flex-direction: column;
       align-items: center;
 
-      .button{
+      .button {
         width: 250px;
         padding: 15px;
         display: flex;
         align-items: center;
         justify-content: center;
         margin-bottom: 10px;
-        transition: all .3s ease-in-out;
+        transition: all 0.3s ease-in-out;
         cursor: pointer;
-        &:hover{
+        &:hover {
           background: black;
           color: white;
         }
       }
-      hr{
+      hr {
         height: 2px;
         width: 100%;
       }
-      .google-btn{
+      .google-btn {
         background: #dd4b39;
         color: white;
       }
-      .facebook-btn{
+      .facebook-btn {
         background: #3b5998;
         color: white;
       }
-      .email-btn{
+      .email-btn {
         color: $htext;
         text-decoration: none;
         border: 1px solid black;

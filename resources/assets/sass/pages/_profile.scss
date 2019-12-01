@@ -1,16 +1,16 @@
-.app-container.home-page .profile-page{
+.app-container.home-page .profile-page {
   overflow: hidden;
   // //display: grid;
   // grid-template-columns: 4fr 2fr 2fr 3fr 6fr;
   // grid-template-rows: 4fr 2fr 2fr 3fr 6fr;
-  .header-grey-container{
+  .header-grey-container {
     position: relative;
     width: 99%;
     height: 408px;
     z-index: 1;
     //background: $backgroundContent;
-    .top-container{
-      .userbackground-img{
+    .top-container {
+      .userbackground-img {
         background-position: center center;
         background-repeat: no-repeat;
         background-size: cover;
@@ -18,7 +18,7 @@
         width: 99%;
         z-index: 2;
 
-        .header-background-uploader{
+        .header-background-uploader {
           position: absolute;
           left: 30px;
           top: 30px;
@@ -29,11 +29,11 @@
           display: none;
         }
 
-        &:hover .header-background-uploader{
+        &:hover .header-background-uploader {
           display: inline-block;
         }
       }
-      .user-img-upload-container{
+      .user-img-upload-container {
         position: relative;
         width: 168px;
         height: 168px; //causing bottom container to drop down
@@ -41,14 +41,14 @@
         top: -120px;
         display: inline-block;
 
-        .user-img{
+        .user-img {
           background-position: center center;
           background-repeat: no-repeat;
           background-size: cover;
           height: 48%;
           width: 28%;
           border-radius: 50%;
-          position:absolute;
+          position: absolute;
           top: 218px;
           left: 18px;
           border: 5px solid white;
@@ -56,14 +56,14 @@
           display: none;
         }
 
-        .user-profile-img{
+        .user-profile-img {
           width: 100%;
           height: 100%;
           border-radius: 50%;
           border: 5px solid white;
         }
 
-        .user-img-upload{
+        .user-img-upload {
           position: absolute;
           background: #1b1b1bc2;
           height: 82px;
@@ -79,16 +79,16 @@
           cursor: pointer;
         }
 
-        &:hover .user-img-upload{
+        &:hover .user-img-upload {
           display: block;
         }
       }
     }
-    .bottom-container{
+    .bottom-container {
       position: absolute;
-      .follow_btn{
+      .follow_btn {
         width: 220px;
-        .follow-btn{
+        .follow-btn {
           text-align: center;
           width: 76%; //36
           bottom: 123px;
@@ -98,26 +98,26 @@
           padding-top: 15px;
           padding-bottom: 15px;
           //border-radius: 4px;
-          border: 1px solid rgba(0,0,0, .2);
+          border: 1px solid rgba(0, 0, 0, 0.2);
           //background: $primarybuttonBG;
           cursor: pointer;
         }
       }
     }
   }
-  .personal-container{
+  .personal-container {
     position: relative;
     width: 99%;
     //height: 188px;
     z-index: 1;
 
-    -webkit-box-shadow: 0 2px 2px -2px rgba(0,0,0,0.1);
-    -moz-box-shadow: 0 2px 2px -2px rgba(0,0,0,0.1);
-    box-shadow: 0 2px 2px -2px rgba(0,0,0,0.1);
+    -webkit-box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
     // display: grid;
     // grid-template-columns: 4fr 4fr;
-    .info{
-      h1{
+    .info {
+      h1 {
         display: flex;
         justify-content: center;
         position: relative;
@@ -125,7 +125,7 @@
         font-size: 2rem;
         //margin: 1rem 0;
       }
-      .location{
+      .location {
         display: flex;
         display: inline-flex;
         position: absolute;
@@ -133,14 +133,14 @@
         //left: 39rem;
         //top: 13px;
         color: $veryLightText;
-        .fa-circle{
+        .fa-circle {
           display: flex;
           align-items: center;
           font-size: 12px;
         }
         //font-size: 1rem;
       }
-      .alias{
+      .alias {
         display: flex;
         justify-content: center;
         position: relative;
@@ -148,7 +148,7 @@
         font-style: italic;
         //margin: 1rem 0;
       }
-      .edit_btn{
+      .edit_btn {
         position: absolute;
         // display: flex;
         // justify-content:flex-end;
@@ -158,7 +158,7 @@
         right: 5px;
         top: 12px;
         // display: flex;
-        .fa-pencil-alt{
+        .fa-pencil-alt {
           margin-right: 30px;
           font-size: 18px;
           color: white;
@@ -167,7 +167,7 @@
           cursor: pointer;
         }
       }
-      h4{
+      h4 {
         justify-content: center;
         display: flex;
         position: relative;
@@ -175,16 +175,16 @@
         padding: 10px;
       }
     }
-    .table{
+    .table {
       display: grid;
       grid-template-columns: 4fr 4fr;
       padding-bottom: 18px;
       //position: relative;
 
-      .contact-info{
+      .contact-info {
         width: 50%;
       }
-      .myBio{
+      .myBio {
         margin-left: 1rem;
         // display: flex;
         // display: inline-flex;
@@ -193,29 +193,29 @@
       }
     }
   }
-  .padding-container{
+  .padding-container {
     padding: 18px 15px;
   }
-  .game-experience-grey-container{
+  .game-experience-grey-container {
     width: 99%;
     position: relative;
     //height: 600px;
     z-index: 1;
     background: #151b26;
     padding: 20px;
-    border-radius:5px;
+    border-radius: 5px;
 
-    -webkit-box-shadow: 0 2px 2px -2px rgba(0,0,0,0.1);
-    -moz-box-shadow: 0 2px 2px -2px rgba(0,0,0,0.1);
-    box-shadow: 0 2px 2px -2px rgba(0,0,0,0.1);
+    -webkit-box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
 
-    h3{
+    h3 {
       color: $veryLightText;
       font-size: 1.4rem;
-      margin: .5rem;
+      margin: 0.5rem;
       display: inline-block;
     }
-    .add-gaming-experience{
+    .add-gaming-experience {
       position: absolute;
       right: 35px;
       display: flex;
@@ -224,7 +224,7 @@
       padding: 10px;
       align-items: center;
       cursor: pointer;
-      .fa-plus-circle{
+      .fa-plus-circle {
         color: white;
         border-radius: 50%;
         background: white;
@@ -232,7 +232,7 @@
         cursor: pointer;
       }
     }
-    .icon{
+    .icon {
       position: absolute;
       right: 5px;
       display: flex;
@@ -243,87 +243,87 @@
       cursor: pointer;
       color: $veryLightText;
     }
-    .game-info{
+    .game-info {
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-row-gap: 8px;
 
-      .game-name{
+      .game-name {
         color: $htext;
         font-size: 1.5rem;
-        margin: .5rem;
+        margin: 0.5rem;
         font-weight: bold;
       }
 
-      .game-infos{
+      .game-infos {
         display: flex;
         align-items: center;
         justify-content: center;
-        .fa-pen{
+        .fa-pen {
           position: absolute;
           right: 5px;
           display: flex;
           display: inline-flex;
           justify-content: flex-end;
           font-size: 1rem;
-          color: #2196F3;
+          color: #2196f3;
           cursor: pointer;
         }
       }
-      .game-rating{
+      .game-rating {
         display: flex;
-        .stars{
+        .stars {
           padding-left: 16px;
-          .fa-star{
+          .fa-star {
             color: orange;
           }
         }
       }
-      .game-stuff{
-        margin: .5rem;
+      .game-stuff {
+        margin: 0.5rem;
         display: flex;
         align-items: center;
-        .fa-gamepad{
+        .fa-gamepad {
           align-items: center;
           font-size: 1.5rem;
-          color: #2196F3;
+          color: #2196f3;
           display: flex;
-          justify-content:flex-end;
+          justify-content: flex-end;
         }
       }
-      .game-comments{
-        margin: .5rem;
+      .game-comments {
+        margin: 0.5rem;
         display: flex;
-        justify-content:flex-start;
+        justify-content: flex-start;
         align-items: center;
         grid-column: span 2;
-        .fa-trophy{
+        .fa-trophy {
           font-size: 1.5rem;
-          color: #F7CA18;
+          color: #f7ca18;
         }
       }
-      .game-status{
+      .game-status {
         display: flex;
         align-items: center;
-        margin: .5rem;
-        .fa-d-and-d{
+        margin: 0.5rem;
+        .fa-d-and-d {
           align-items: center;
           font-size: 1.5rem;
           color: #f44336;
           display: flex;
-          justify-content:flex-end;
+          justify-content: flex-end;
         }
       }
-      .game-commendation{
-        margin: .5rem;
+      .game-commendation {
+        margin: 0.5rem;
         display: flex;
         align-items: center;
-        justify-content:flex-start;
-        .fa-dragon{
+        justify-content: flex-start;
+        .fa-dragon {
           font-size: 1.5rem;
-          color: #4CAF50;
+          color: #4caf50;
         }
-        .commendation{
+        .commendation {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -331,64 +331,64 @@
         }
       }
 
-      .game-misc{
-        margin: .5rem;
+      .game-misc {
+        margin: 0.5rem;
         display: flex;
         align-items: center;
-        justify-content:flex-start;
+        justify-content: flex-start;
         grid-column: span 2;
-        .fa-broadcast-tower{
+        .fa-broadcast-tower {
           font-size: 1.5rem;
           color: #f44336;
         }
       }
-      .tags{
+      .tags {
         grid-column: span 2;
-        margin: .5rem;
+        margin: 0.5rem;
         display: flex;
         align-items: center;
-        justify-content:flex-start;
+        justify-content: flex-start;
         display: inline-block;
-        .tag{
+        .tag {
           display: flex;
           align-items: center;
           display: inline-block;
           margin-top: 2px;
           margin-bottom: 2px;
 
-          .btn-green{
+          .btn-green {
             border: 2px solid black;
             background-color: white;
             color: black;
             padding: 12px 12px;
             font-size: 13px;
-            border-color: #4CAF50;
+            border-color: #4caf50;
             color: green;
             border-radius: 15px;
             cursor: pointer;
 
-            &:hover{
-              background-color: #4CAF50;
+            &:hover {
+              background-color: #4caf50;
               color: white;
             }
           }
-          .btn-blue{
+          .btn-blue {
             border: 2px solid black;
             background-color: white;
             color: black;
             padding: 12px 12px;
             font-size: 13px;
-            border-color: #2196F3;
+            border-color: #2196f3;
             color: dodgerblue;
             border-radius: 15px;
             cursor: pointer;
 
-            &:hover{
-              background-color: #2196F3;
+            &:hover {
+              background-color: #2196f3;
               color: white;
             }
           }
-          .btn-red{
+          .btn-red {
             border: 2px solid black;
             background-color: white;
             color: black;
@@ -399,39 +399,38 @@
             border-radius: 15px;
             cursor: pointer;
 
-            &:hover{
+            &:hover {
               background-color: #f44336;
               color: white;
             }
           }
-          .btn-yellow{
+          .btn-yellow {
             border: 2px solid black;
             background-color: white;
             padding: 12px 12px;
             font-size: 13px;
-            border-color:  #F7CA18;
+            border-color: #f7ca18;
             color: gold;
             border-radius: 15px;
             cursor: pointer;
 
-            &:hover{
-              background-color: #F7CA18;
+            &:hover {
+              background-color: #f7ca18;
               color: white;
             }
           }
         }
       }
-      .line-break{
-        hr{
+      .line-break {
+        hr {
           grid-column: span 2;
           width: 100%;
         }
       }
-
     }
   }
 
-  .esports-bio-grey-container{
+  .esports-bio-grey-container {
     width: 99%;
     position: relative;
     //height: 600px;
@@ -439,58 +438,58 @@
     background: #151b26;
     padding: 20px;
 
-    -webkit-box-shadow: 0 2px 2px -2px rgba(0,0,0,0.1);
-    -moz-box-shadow: 0 2px 2px -2px rgba(0,0,0,0.1);
-    box-shadow: 0 2px 2px -2px rgba(0,0,0,0.1);
+    -webkit-box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
 
-    h3{
+    h3 {
       color: $veryLightText;
       font-size: 1.4rem;
-      margin: .5rem;
+      margin: 0.5rem;
       display: inline-block;
     }
-    .esports-bio-ardour{
-      margin: .5rem;
+    .esports-bio-ardour {
+      margin: 0.5rem;
       display: flex;
-      justify-content:flex-start;
+      justify-content: flex-start;
       align-items: center;
-      .fa-user-shield{
+      .fa-user-shield {
         font-size: 1.5rem;
         color: #f44336;
       }
     }
-    .esports-bio-highlights{
-      margin: .5rem;
+    .esports-bio-highlights {
+      margin: 0.5rem;
       display: flex;
-      justify-content:flex-start;
+      justify-content: flex-start;
       align-items: center;
-      .fa-crown{
+      .fa-crown {
         font-size: 1.5rem;
-        color: #F7CA18;
+        color: #f7ca18;
       }
     }
   }
 
-  .esports-experience-grey-container{
+  .esports-experience-grey-container {
     width: 99%;
     position: relative;
     //height: 600px;
     z-index: 1;
     background: #151b26;
     padding: 20px;
-    border-radius:5px;
+    border-radius: 5px;
 
-    -webkit-box-shadow: 0 2px 2px -2px rgba(0,0,0,0.1);
-    -moz-box-shadow: 0 2px 2px -2px rgba(0,0,0,0.1);
-    box-shadow: 0 2px 2px -2px rgba(0,0,0,0.1);
+    -webkit-box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
 
-    h3{
+    h3 {
       color: $veryLightText;
       font-size: 1.4rem;
-      margin: .5rem;
+      margin: 0.5rem;
       display: inline-block;
     }
-    .add-esports-experience{
+    .add-esports-experience {
       position: absolute;
       right: 35px;
       display: flex;
@@ -499,7 +498,7 @@
       padding: 10px;
       align-items: center;
       cursor: pointer;
-      .fa-plus-circle{
+      .fa-plus-circle {
         color: white;
         border-radius: 50%;
         background: white;
@@ -507,7 +506,7 @@
         cursor: pointer;
       }
     }
-    .icon{
+    .icon {
       position: absolute;
       right: 5px;
       display: flex;
@@ -518,156 +517,155 @@
       cursor: pointer;
       color: $veryLightText;
     }
-    .game-info{
+    .game-info {
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-row-gap: 8px;
-      .game-name{
+      .game-name {
         color: $htext;
         font-size: 1.5rem;
-        margin: .5rem;
+        margin: 0.5rem;
         font-weight: bold;
       }
-      .role-title{
-        margin: .5rem;
+      .role-title {
+        margin: 0.5rem;
         display: flex;
         align-items: center;
-        .fa-angle-double-down{
+        .fa-angle-double-down {
           font-size: 1.5rem;
           color: #f44336;
         }
       }
-      .game-infos{
+      .game-infos {
         display: flex;
         align-items: center;
         justify-content: center;
-        .fa-pen{
+        .fa-pen {
           position: absolute;
           right: 5px;
           display: flex;
           display: inline-flex;
           justify-content: flex-end;
           font-size: 1rem;
-          color: #2196F3;
+          color: #2196f3;
           cursor: pointer;
         }
       }
-      .team-name{
+      .team-name {
         display: flex;
         align-items: center;
-        margin: .5rem;
-        .fa-users{
+        margin: 0.5rem;
+        .fa-users {
           font-size: 1.5rem;
-          color: #4CAF50;
+          color: #4caf50;
         }
       }
-      .game-rating{
+      .game-rating {
         display: flex;
-        .stars{
+        .stars {
           padding-left: 16px;
-          .fa-star{
+          .fa-star {
             color: orange;
           }
         }
       }
-      .game-stuff{
+      .game-stuff {
         display: flex;
         align-items: center;
-        margin: .5rem;
-        .fa-gamepad{
+        margin: 0.5rem;
+        .fa-gamepad {
           align-items: center;
           font-size: 1.5rem;
-          color: #2196F3;
+          color: #2196f3;
           display: flex;
         }
       }
-      .game-comments{
-        margin: .5rem;
+      .game-comments {
+        margin: 0.5rem;
         display: flex;
-        justify-content:flex-start;
+        justify-content: flex-start;
         align-items: center;
         grid-column: span 2;
-        .fa-trophy{
+        .fa-trophy {
           font-size: 1.5rem;
-          color: #F7CA18;
+          color: #f7ca18;
         }
       }
-      .game-commendation{
-        margin: .5rem;
+      .game-commendation {
+        margin: 0.5rem;
         display: flex;
         align-items: center;
-        justify-content:flex-start;
+        justify-content: flex-start;
         grid-column: span 2;
-        .fa-dragon{
+        .fa-dragon {
           font-size: 1.5rem;
-          color: #4CAF50;
+          color: #4caf50;
         }
-        .commendation{
+        .commendation {
           display: flex;
           align-items: center;
           justify-content: center;
           display: inline-block;
-
         }
       }
 
-      .game-misc{
-        margin: .5rem;
+      .game-misc {
+        margin: 0.5rem;
         display: flex;
         align-items: center;
-        justify-content:flex-start;
+        justify-content: flex-start;
         grid-column: span 2;
-        .fa-broadcast-tower{
+        .fa-broadcast-tower {
           font-size: 1.5rem;
           color: #f44336;
         }
       }
-      .tags{
+      .tags {
         grid-column: span 2;
-        margin: .5rem;
+        margin: 0.5rem;
         display: flex;
         align-items: center;
-        justify-content:flex-start;
+        justify-content: flex-start;
         display: inline-block;
-        .tag{
+        .tag {
           display: flex;
           align-items: center;
           display: inline-block;
           margin-top: 2px;
 
-          .btn-green{
+          .btn-green {
             border: 2px solid black;
             background-color: white;
             color: black;
             padding: 12px 12px;
             font-size: 13px;
-            border-color: #4CAF50;
+            border-color: #4caf50;
             color: green;
             border-radius: 15px;
             cursor: pointer;
 
-            &:hover{
-              background-color: #4CAF50;
+            &:hover {
+              background-color: #4caf50;
               color: white;
             }
           }
-          .btn-blue{
+          .btn-blue {
             border: 2px solid black;
             background-color: white;
             color: black;
             padding: 12px 12px;
             font-size: 13px;
-            border-color: #2196F3;
+            border-color: #2196f3;
             color: dodgerblue;
             border-radius: 15px;
             cursor: pointer;
 
-            &:hover{
-              background-color: #2196F3;
+            &:hover {
+              background-color: #2196f3;
               color: white;
             }
           }
-          .btn-red{
+          .btn-red {
             border: 2px solid black;
             background-color: white;
             color: black;
@@ -678,37 +676,37 @@
             border-radius: 15px;
             cursor: pointer;
 
-            &:hover{
+            &:hover {
               background-color: #f44336;
               color: white;
             }
           }
-          .btn-yellow{
+          .btn-yellow {
             border: 2px solid black;
             background-color: white;
             padding: 12px 12px;
             font-size: 13px;
-            border-color:  #F7CA18;
+            border-color: #f7ca18;
             color: gold;
             border-radius: 15px;
             cursor: pointer;
 
-            &:hover{
-              background-color: #F7CA18;
+            &:hover {
+              background-color: #f7ca18;
               color: white;
             }
           }
         }
       }
-      .line-break{
-        hr{
+      .line-break {
+        hr {
           grid-column: span 2;
           width: 100%;
         }
       }
     }
   }
-  .ReactModal{
+  .ReactModal {
     z-index: 1000;
   }
 }

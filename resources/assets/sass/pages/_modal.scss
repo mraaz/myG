@@ -1,9 +1,13 @@
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-.modal-container{
+.modal-container {
   position: fixed;
   left: 0px;
   top: 0px;
@@ -16,59 +20,59 @@
   justify-content: center;
   display: none;
 
-  &.modal--show{
+  &.modal--show {
     display: flex;
   }
 
-  .modal-wrap{
+  .modal-wrap {
     width: 90%;
     max-width: 800px;
     height: 688px;
     background: white;
     position: relative;
 
-    .modal-header{
+    .modal-header {
       padding: 10px 12px;
       background: #f5f6f7;
     }
 
-    .modal-content{
+    .modal-content {
       padding: 10px 12px;
 
-      .upload-image-preview{
+      .upload-image-preview {
         width: 288px;
         height: 288px;
         border: 1px solid gray;
 
-        &.open{
+        &.open {
           width: 100%;
           height: auto;
           max-height: 388px;
           overflow: auto;
         }
 
-        img{
+        img {
           width: 100%;
         }
       }
 
-      .upload-btn{
+      .upload-btn {
         cursor: pointer;
         display: inline-block;
         margin-top: 20px;
       }
 
-      .uploading-container{
+      .uploading-container {
         display: inline-block;
         position: relative;
         top: 5px;
         left: 10px;
 
-        &.uploading--hide{
+        &.uploading--hide {
           display: none;
         }
 
-        .uploading{
+        .uploading {
           border: 3px solid #f3f3f3;
           border-top: 3px solid #311a1a;
           border-radius: 50%;
@@ -78,40 +82,40 @@
         }
       }
 
-      .open-btn{
+      .open-btn {
         cursor: pointer;
         display: inline-block;
       }
 
-      .modal-text{
+      .modal-text {
         margin-top: 25px;
         margin-bottom: 10px;
       }
 
-      .save-btn{
+      .save-btn {
         margin-top: 20px;
         padding: 10px 20px;
         display: inline-block;
-        background: #0178FF;
+        background: #0178ff;
         color: white;
         cursor: pointer;
-        
-        &.btn--disable{
+
+        &.btn--disable {
           background: #59636d;
         }
       }
 
-      .uploaded-files-content{
+      .uploaded-files-content {
         overflow: auto;
         height: 300px;
 
-        .uploaded-file-preview{
+        .uploaded-file-preview {
           display: flex;
           align-items: center;
           justify-content: flex-start;
           flex-wrap: wrap;
 
-          .file-preview-wrap{
+          .file-preview-wrap {
             width: calc(50% - 10px);
             // height: 150px;
             font-size: 0px;
@@ -123,44 +127,43 @@
             border: 1px solid white;
             position: relative;
 
-            &:hover{
-              border:1px solid blue;
+            &:hover {
+              border: 1px solid blue;
             }
-            img{
+            img {
               width: 100%;
             }
 
-            video{
+            video {
               width: 100%;
             }
 
-            .file-preview-overlay{
-             position: absolute;
-             left: 0px;
-             right: 0px;
-             width: 100%;
-             height: 100%;
-             background: #18161675;
-             display: none;
-             .file-preview-delete{
-               position: absolute;
-               right: 5px;
-               top: 5px;
-               color: red;
-               z-index: 11;
-               font-size: 12px;
-             }
-           }
-           &:hover .file-preview-overlay{
-             display: block;
-           }
+            .file-preview-overlay {
+              position: absolute;
+              left: 0px;
+              right: 0px;
+              width: 100%;
+              height: 100%;
+              background: #18161675;
+              display: none;
+              .file-preview-delete {
+                position: absolute;
+                right: 5px;
+                top: 5px;
+                color: red;
+                z-index: 11;
+                font-size: 12px;
+              }
+            }
+            &:hover .file-preview-overlay {
+              display: block;
+            }
           }
         }
       }
-
     }
 
-    .modal-close-btn{
+    .modal-close-btn {
       display: inline-block;
       position: absolute;
       right: 12px;

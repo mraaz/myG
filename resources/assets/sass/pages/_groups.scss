@@ -1,25 +1,25 @@
-.app-container.home-page .group-page{
+.app-container.home-page .group-page {
   overflow: hidden;
   // //display: grid;
   // grid-template-columns: 4fr 2fr 2fr 3fr 6fr;
   // grid-template-rows: 4fr 2fr 2fr 3fr 6fr;
-  .header-grey-container{
+  .header-grey-container {
     position: relative;
     width: 99%;
     height: 408px;
     z-index: 1;
     background: $backgroundContent;
 
-    -webkit-box-shadow: 0 21px 48px -21px rgba(0,0,0,0.5);
-    -moz-box-shadow: 0 21px 48px -21px rgba(0,0,0,0.5);
-    box-shadow: 0 21px 48px -21px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.5);
   }
 
-  .padding-container{
+  .padding-container {
     padding: 10px 10px;
   }
 
-  .groups-grey-container{
+  .groups-grey-container {
     width: 99%;
     position: relative;
     border-radius: 10px;
@@ -28,17 +28,17 @@
     z-index: 1;
     background: #151b26;
 
-    -webkit-box-shadow: 0 21px 48px -21px rgba(0,0,0,0.5);
-    -moz-box-shadow: 0 21px 48px -21px rgba(0,0,0,0.5);
-    box-shadow: 0 21px 48px -21px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.5);
 
-    h3{
+    h3 {
       color: $veryLightText;
       font-size: 1.4rem;
-      margin: .5rem;
+      margin: 0.5rem;
       display: inline-block;
     }
-    .add-group{
+    .add-group {
       position: absolute;
       right: 25px;
       display: flex;
@@ -48,7 +48,7 @@
       align-items: center;
       cursor: pointer;
       font-size: 18px;
-      .fa-plus-circle{
+      .fa-plus-circle {
         border-radius: 50%;
         background: white;
         box-shadow: $boxshadowbtns;
@@ -56,7 +56,7 @@
         cursor: pointer;
       }
     }
-    .group-search-box{
+    .group-search-box {
       width: 20%;
       padding-left: 8px;
       z-index: 2;
@@ -82,12 +82,13 @@
       font-size: 16px;
       border: 1px solid #aaa;
       border-radius: 4px;
-      background-color: $backgroundContent
+      background-color: $backgroundContent;
     }
     .react-autosuggest__suggestions-container {
       display: none;
     }
-    .react-autosuggest__container--open .react-autosuggest__suggestions-container {
+    .react-autosuggest__container--open
+      .react-autosuggest__suggestions-container {
       display: block;
       position: absolute;
       top: 108px;
@@ -131,7 +132,7 @@
     }
 
     .react-autosuggest__suggestion--focused {
-      background-color: #0C7EAF;
+      background-color: #0c7eaf;
       color: #fff;
     }
 
@@ -139,7 +140,7 @@
       display: flex;
       align-items: center;
       width: 100%;
-      .suggestion-user-img{
+      .suggestion-user-img {
         display: flex;
         align-items: center;
         background-position: center;
@@ -152,7 +153,7 @@
       }
     }
 
-    .icon{
+    .icon {
       position: absolute;
       right: 5px;
       display: flex;
@@ -165,7 +166,7 @@
     }
   }
 
-  .mygroups-grey-container{
+  .mygroups-grey-container {
     width: 99%;
     position: relative;
     border-radius: 6px;
@@ -174,17 +175,17 @@
     //z-index: 1;
     background: #151b26;
 
-    -webkit-box-shadow: 0 21px 48px -21px rgba(0,0,0,0.5);
-    -moz-box-shadow: 0 21px 48px -21px rgba(0,0,0,0.5);
-    box-shadow: 0 21px 48px -21px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.5);
 
-    h3{
+    h3 {
       color: $veryLightText;
       font-size: 1.4rem;
-      margin: .5rem;
+      margin: 0.5rem;
       display: inline-block;
     }
-    .add-gaming-experience{
+    .add-gaming-experience {
       position: absolute;
       right: 35px;
       display: flex;
@@ -193,7 +194,7 @@
       padding: 10px;
       align-items: center;
       cursor: pointer;
-      .fa-plus-circle{
+      .fa-plus-circle {
         color: white;
         border-radius: 50%;
         background: white;
@@ -202,7 +203,7 @@
         cursor: pointer;
       }
     }
-    .icon{
+    .icon {
       position: absolute;
       right: 5px;
       display: flex;
@@ -213,16 +214,16 @@
       cursor: pointer;
       color: $veryLightText;
     }
-    .my-groups{
+    .my-groups {
       display: flex;
     }
-    .indent{
+    .indent {
       display: flex;
       padding-left: 22px;
     }
-    .groups-info{
+    .groups-info {
       padding-right: 8px;
-      .group_img{
+      .group_img {
         display: flex;
         align-items: center;
         background-position: center;
@@ -234,36 +235,35 @@
         border: 3px solid white;
         cursor: pointer;
       }
-      .group-name{
+      .group-name {
         padding-top: 8px;
-        text-overflow:ellipsis;
+        text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
         width: 63px;
       }
-
     }
   }
 
-  .groups-im-in-grey-container{
+  .groups-im-in-grey-container {
     width: 99%;
     position: relative;
     border-radius: 10px;
-    padding: 20px;    //height: 600px;
+    padding: 20px; //height: 600px;
     //z-index: 1;
     background: #151b26;
 
-    -webkit-box-shadow: 0 21px 48px -21px rgba(0,0,0,0.5);
-    -moz-box-shadow: 0 21px 48px -21px rgba(0,0,0,0.5);
-    box-shadow: 0 21px 48px -21px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.5);
 
-    h3{
+    h3 {
       color: $veryLightText;
       font-size: 1.4rem;
-      margin: .5rem;
+      margin: 0.5rem;
       display: inline-block;
     }
-    .add-gaming-experience{
+    .add-gaming-experience {
       position: absolute;
       right: 35px;
       display: flex;
@@ -272,7 +272,7 @@
       padding: 10px;
       align-items: center;
       cursor: pointer;
-      .fa-plus-circle{
+      .fa-plus-circle {
         color: white;
         border-radius: 50%;
         background: white;
@@ -281,7 +281,7 @@
         cursor: pointer;
       }
     }
-    .icon{
+    .icon {
       position: absolute;
       right: 5px;
       display: flex;
@@ -292,16 +292,16 @@
       cursor: pointer;
       color: $veryLightText;
     }
-    groups-im-in{
+    groups-im-in {
       display: flex;
     }
-    .indent{
+    .indent {
       display: flex;
       padding-left: 22px;
     }
-    .groups-info{
+    .groups-info {
       padding-right: 8px;
-      .group_img{
+      .group_img {
         display: flex;
         align-items: center;
         background-position: center;
@@ -313,9 +313,9 @@
         border: 3px solid white;
         cursor: pointer;
       }
-      .group-name{
+      .group-name {
         padding-top: 8px;
-        text-overflow:ellipsis;
+        text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
         width: 63px;
@@ -323,7 +323,7 @@
     }
   }
 
-  .ReactModal{
+  .ReactModal {
     z-index: 1000;
   }
 }

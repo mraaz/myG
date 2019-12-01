@@ -1,5 +1,4 @@
-.app-container.home-page .dossier-page{
-
+.app-container.home-page .dossier-page {
 } //.app-container
 
 .Modal {
@@ -17,110 +16,110 @@
 
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: .1fr .1fr .1fr .1fr .1fr .1fr;
+  grid-template-rows: 0.1fr 0.1fr 0.1fr 0.1fr 0.1fr 0.1fr;
   grid-column-gap: 20px;
   grid-row-gap: 0;
 
-  .fa-times{
+  .fa-times {
     display: flex;
     justify-content: flex-end;
     cursor: pointer;
-   }
-  .fName_txtBox{
+  }
+  .fName_txtBox {
     grid-column-start: 1;
-    p{
+    p {
       padding: 2px 0 4px 0;
     }
-    .first_name_box{
+    .first_name_box {
       font-family: $sans-serif;
       font-size: 1rem;
       padding: 5px 15px;
       margin-bottom: 1rem;
       background-color: white;
-      border: 1px solid rgba(0,0,0, .5);
+      border: 1px solid rgba(0, 0, 0, 0.5);
       width: 55%;
     }
   }
-  .lName_txtBox{
-    p{
+  .lName_txtBox {
+    p {
       padding: 2px 0 4px 0;
     }
   }
-  .last_name_box{
+  .last_name_box {
     font-family: $sans-serif;
     font-size: 1rem;
     padding: 5px 15px;
     margin-bottom: 1rem;
     background-color: white;
-    border: 1px solid rgba(0,0,0, .5);
+    border: 1px solid rgba(0, 0, 0, 0.5);
     width: 55%;
   }
-  .location{
+  .location {
     width: 55%;
-    p{
+    p {
       padding: 2px 0 4px 0;
     }
   }
-  .contact-info{
+  .contact-info {
     grid-column: span 2;
-    p{
+    p {
       margin-top: 1rem;
       padding: 2px 0 4px 0;
     }
-    .contact_info_box{
+    .contact_info_box {
       font-family: $sans-serif;
       font-size: 1rem;
       padding: 5px 15px;
       background-color: white;
-      border: 1px solid rgba(0,0,0, .5);
+      border: 1px solid rgba(0, 0, 0, 0.5);
     }
   }
-  .slogan{
+  .slogan {
     grid-column: span 2;
-    p{
+    p {
       padding: 8px 0 4px 0;
     }
   }
-  .slogan_box{
+  .slogan_box {
     font-family: $sans-serif;
     font-size: 1rem;
     padding: 5px 15px;
     margin-bottom: 1rem;
     background-color: white;
-    border: 1px solid rgba(0,0,0, .5);
+    border: 1px solid rgba(0, 0, 0, 0.5);
     width: 100%;
   }
-  .bio{
+  .bio {
     grid-column: span 2;
-    p{
+    p {
       padding: 2px 0 4px 0;
     }
-    .bio_box{
+    .bio_box {
       font-family: $sans-serif;
       font-size: 1rem;
       padding: 5px 15px;
       margin-bottom: 1rem;
       background-color: white;
-      border: 1px solid rgba(0,0,0, .5);
+      border: 1px solid rgba(0, 0, 0, 0.5);
     }
   }
 
-  .save-btn{
+  .save-btn {
     font-size: 14rem;
     display: flex;
     justify-content: flex-end;
     padding: 3px;
     height: 48%;
-    .save{
+    .save {
       padding: 18px;
       background: $primarybuttonBG;
       border-radius: 4px;
-      border: 1px solid rgba(0,0,0, .2);
+      border: 1px solid rgba(0, 0, 0, 0.2);
       color: #fff;
       cursor: pointer;
     }
   }
-  .info_box{
+  .info_box {
     background-color: white;
     grid-column: span 2;
     width: 500px;
@@ -128,16 +127,16 @@
     padding: 25px;
     margin: 25px;
     border: 10px solid $primarybuttonBG;
-    -webkit-box-shadow: 0 0 15px -3px rgba(191,191,191,1);
-    -moz-box-shadow: 0 0 15px -3px rgba(191,191,191,1);
-    box-shadow: 0 0 15px -3px rgba(191,191,191,1);
+    -webkit-box-shadow: 0 0 15px -3px rgba(191, 191, 191, 1);
+    -moz-box-shadow: 0 0 15px -3px rgba(191, 191, 191, 1);
+    box-shadow: 0 0 15px -3px rgba(191, 191, 191, 1);
     justify-content: center;
     align-items: center;
   }
-  .first_name_error{
+  .first_name_error {
     color: red;
   }
-  .last_name_error{
+  .last_name_error {
     color: red;
   }
 }
@@ -149,5 +148,5 @@
   right: 0;
   bottom: 0;
   overflow: hidden;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 }

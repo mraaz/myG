@@ -1,32 +1,26 @@
-import React, { Component } from "react"
-import Select from 'react-select'
-import ReactDOM from "react-dom"
-import {
-  BrowserRouter as Router,
-  Route,
-  NavLink
-} from "react-router-dom"
-import axios from "axios"
-import IndividualInvitation from "./IndividualInvitation"
+import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
+import axios from 'axios'
+import IndividualInvitation from './IndividualInvitation'
 
 export default class MyApprovals extends Component {
   constructor() {
     super()
-    this.state = {
-    }
+    this.state = {}
   }
 
-  componentWillMount(){
+  componentWillMount() {
     const self = this
 
-    const get_group_approvals = async function(){
-      try{
-        const get_group_approvals = await axios.get(`/api/usergroup/get_all_my_group_approvals/${self.props.routeProps.match.params.id}`)
+    const get_group_approvals = async function() {
+      try {
+        const get_group_approvals = await axios.get(
+          `/api/usergroup/get_all_my_group_approvals/${self.props.routeProps.match.params.id}`
+        )
         self.setState({
-          myGroup_approvals: get_group_approvals.data.admin_group_permissions
+          myGroup_approvals: get_group_approvals.data.admin_group_permissions,
         })
-
-      } catch(error){
+      } catch (error) {
         console.log(error)
       }
     }
@@ -34,34 +28,37 @@ export default class MyApprovals extends Component {
   }
 
   showInvitations = () => {
-    if(this.state.myGroup_approvals != undefined){
+    if (this.state.myGroup_approvals != undefined) {
       const rowLen = this.state.myGroup_approvals.length
       var lastRow = false
-      if(rowLen == 0){
-        return( <div className="invitation-info">
-         No pending approvals
-         </div>
-        )
+      if (rowLen == 0) {
+        return <div className='invitation-info'>No pending approvals</div>
       }
       return this.state.myGroup_approvals.map((item, index) => {
         if (rowLen === index + 1) {
           lastRow = true
         }
-        return <IndividualInvitation invitation={item} key={index} lastRow={lastRow} type="group_approvals"/>
+        return (
+          <IndividualInvitation
+            invitation={item}
+            key={index}
+            lastRow={lastRow}
+            type='group_approvals'
+          />
+        )
       })
     }
   }
 
   render() {
     return (
-      <section id="invitation-page">
-        <div className="content-area invitation-page">
-          <div className="padding-container">
-            <div className="invitation-grey-container">
+      <section id='invitation-page'>
+        <div className='content-area invitation-page'>
+          <div className='padding-container'>
+            <div className='invitation-grey-container'>
               <h3>myApprovals</h3>
-              <div className="padding-container">
-              </div>
-              <div className="invitation-container">
+              <div className='padding-container'></div>
+              <div className='invitation-container'>
                 {this.showInvitations()}
               </div>
             </div>

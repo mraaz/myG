@@ -1,31 +1,29 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,400i,500,500i,700|Sofadi+One');
 @import url('https://fonts.googleapis.com/css?family=Montserrat+Alternates&display=swap');
-@import "reset";
-@import "variables";
-@import "pages/welcome";
-@import "pages/home";
-@import "pages/profile";
-@import "pages/scheduleGames";
-@import "pages/addscheduleGames";
-@import "pages/dossier";
-@import "pages/addGamingExp";
-@import "pages/invitation";
-@import "pages/mySettings";
-@import "pages/uploadPic";
-@import "pages/notifications";
-@import "pages/addEsportsExp";
-@import "pages/modal";
-@import "pages/advancedSearch";
-@import "pages/groups";
-@import "pages/groupsmodal";
-@import "pages/scheduledGamesApprovals";
-@import "pages/groupHome";
+@import 'reset';
+@import 'variables';
+@import 'pages/welcome';
+@import 'pages/home';
+@import 'pages/profile';
+@import 'pages/scheduleGames';
+@import 'pages/addscheduleGames';
+@import 'pages/dossier';
+@import 'pages/addGamingExp';
+@import 'pages/invitation';
+@import 'pages/mySettings';
+@import 'pages/uploadPic';
+@import 'pages/notifications';
+@import 'pages/addEsportsExp';
+@import 'pages/modal';
+@import 'pages/advancedSearch';
+@import 'pages/groups';
+@import 'pages/groupsmodal';
+@import 'pages/scheduledGamesApprovals';
+@import 'pages/groupHome';
 
+@import 'auth/auth';
 
-@import "auth/auth";
-
-
-*{
+* {
   box-sizing: border-box;
 }
 
@@ -35,7 +33,7 @@ body {
   justify-content: center;
   font-family: 'Roboto', sans-serif;
   min-height: 100vh;
-  background: #23272A;
+  background: #23272a;
   // background: rgba(183,222,237,1);
   // background: -moz-linear-gradient(-45deg, rgba(183,222,237,1) 0%, rgba(33,180,226,1) 9%, rgba(183,222,237,1) 100%);
   // background: -webkit-gradient(left top, right bottom, color-stop(0%, rgba(183,222,237,1)), color-stop(9%, rgba(33,180,226,1)), color-stop(100%, rgba(183,222,237,1)));
@@ -44,10 +42,14 @@ body {
   // background: -ms-linear-gradient(-45deg, rgba(183,222,237,1) 0%, rgba(33,180,226,1) 9%, rgba(183,222,237,1) 100%);
   // background: linear-gradient(135deg, rgba(183,222,237,1) 0%, rgba(33,180,226,1) 9%, rgba(183,222,237,1) 100%);
 }
-body, h1,h2,h3,h4 {
-  color:#D5DCE0;
+body,
+h1,
+h2,
+h3,
+h4 {
+  color: #d5dce0;
 }
-#app{
+#app {
   width: 100%;
 }
 .app-container {
@@ -63,18 +65,18 @@ body, h1,h2,h3,h4 {
 input:focus,
 select:focus,
 button:focus,
-textarea:focus{
+textarea:focus {
   outline: none;
 }
-label{
-  font-size: .8rem;
+label {
+  font-size: 0.8rem;
   font-weight: 600;
   margin-bottom: 1rem;
   display: block;
 }
-input[type="text"],
-input.text{
-  background: #F3F3F3;
+input[type='text'],
+input.text {
+  background: #f3f3f3;
   border: none;
   border-radius: 3px;
   font-size: 1.2rem;
@@ -82,7 +84,7 @@ input.text{
   padding: 5px 15px;
   margin-bottom: 1rem;
 }
-textarea{
+textarea {
   width: 100%;
   height: 75px;
   background: $textfield;
@@ -91,24 +93,24 @@ textarea{
   padding: 15px 30px;
   font-size: 1.2rem;
 }
-.default-form{
-  .error-box{
+.default-form {
+  .error-box {
     display: none;
     background: $red;
     color: white;
     padding: 15px;
     margin-bottom: 1rem;
 
-    &.active{
+    &.active {
       display: block;
     }
   }
-  .form-group{
-    & > .error{
+  .form-group {
+    & > .error {
       border: 1px solid red;
     }
   }
-  button{
+  button {
     cursor: pointer;
     width: 100%;
     min-width: 200px;
@@ -117,18 +119,49 @@ textarea{
     border-radius: 14px;
     padding: 10px 0;
     color: white;
-    background: rgba(183,222,237,1);
-    background: -moz-linear-gradient(-45deg, rgba(183,222,237,1) 0%, rgba(33,180,226,1) 9%, rgba(183,222,237,1) 100%);
-    background: -webkit-gradient(left top, right bottom, color-stop(0%, rgba(183,222,237,1)), color-stop(9%, rgba(33,180,226,1)), color-stop(100%, rgba(183,222,237,1)));
-    background: -webkit-linear-gradient(-45deg, rgba(183,222,237,1) 0%, rgba(33,180,226,1) 9%, rgba(183,222,237,1) 100%);
-    background: -o-linear-gradient(-45deg, rgba(183,222,237,1) 0%, rgba(33,180,226,1) 9%, rgba(183,222,237,1) 100%);
-    background: -ms-linear-gradient(-45deg, rgba(183,222,237,1) 0%, rgba(33,180,226,1) 9%, rgba(183,222,237,1) 100%);
-    background: linear-gradient(135deg, rgba(183,222,237,1) 0%, rgba(33,180,226,1) 9%, rgba(183,222,237,1) 100%);
+    background: rgba(183, 222, 237, 1);
+    background: -moz-linear-gradient(
+      -45deg,
+      rgba(183, 222, 237, 1) 0%,
+      rgba(33, 180, 226, 1) 9%,
+      rgba(183, 222, 237, 1) 100%
+    );
+    background: -webkit-gradient(
+      left top,
+      right bottom,
+      color-stop(0%, rgba(183, 222, 237, 1)),
+      color-stop(9%, rgba(33, 180, 226, 1)),
+      color-stop(100%, rgba(183, 222, 237, 1))
+    );
+    background: -webkit-linear-gradient(
+      -45deg,
+      rgba(183, 222, 237, 1) 0%,
+      rgba(33, 180, 226, 1) 9%,
+      rgba(183, 222, 237, 1) 100%
+    );
+    background: -o-linear-gradient(
+      -45deg,
+      rgba(183, 222, 237, 1) 0%,
+      rgba(33, 180, 226, 1) 9%,
+      rgba(183, 222, 237, 1) 100%
+    );
+    background: -ms-linear-gradient(
+      -45deg,
+      rgba(183, 222, 237, 1) 0%,
+      rgba(33, 180, 226, 1) 9%,
+      rgba(183, 222, 237, 1) 100%
+    );
+    background: linear-gradient(
+      135deg,
+      rgba(183, 222, 237, 1) 0%,
+      rgba(33, 180, 226, 1) 9%,
+      rgba(183, 222, 237, 1) 100%
+    );
   }
 }
-.notifications{
+.notifications {
   display: none;
-  &.welcome{
+  &.welcome {
     background: #a7f442;
     position: fixed;
     top: 20px;
@@ -136,7 +169,7 @@ textarea{
     padding: 20px;
     z-index: 100;
   }
-  &.active{
+  &.active {
     display: block;
   }
 }

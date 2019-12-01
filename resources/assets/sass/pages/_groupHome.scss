@@ -1,21 +1,21 @@
-.app-container.home-page .group-home{
+.app-container.home-page .group-home {
   overflow: hidden;
 
-  .header-area{
+  .header-area {
     position: relative;
     width: 99%;
     height: 408px;
   }
 
-  .top-container{
-    .userbackground-img{
+  .top-container {
+    .userbackground-img {
       background-position: center center;
       background-repeat: no-repeat;
       background-size: cover;
       height: 360px;
       width: 99%;
 
-      .header-background-uploader{
+      .header-background-uploader {
         position: absolute;
         left: 30px;
         top: 30px;
@@ -26,39 +26,40 @@
         display: none;
       }
 
-      &:hover .header-background-uploader{
+      &:hover .header-background-uploader {
         display: inline-block;
       }
     }
-    .group-controller-container{
+    .group-controller-container {
       background-color: white;
       width: 99%;
       height: 42px;
       display: flex;
-      .group-status{
+      .group-status {
         padding: 8px;
-        .status{
+        .status {
           padding: 4px;
         }
       }
-      .group-approvals{
+      .group-approvals {
         padding: 8px;
-        .approvals{
+        .approvals {
           padding: 4px;
         }
       }
-      .group-type, .group-name{
+      .group-type,
+      .group-name {
         padding: 8px;
         display: flex;
         align-items: center;
         color: $myG-black;
-        .type{
+        .type {
           padding: 4px;
         }
       }
-      .member-list{
+      .member-list {
         padding: 8px;
-        .members{
+        .members {
           padding: 4px;
         }
       }

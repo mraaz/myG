@@ -1,11 +1,11 @@
-.app-container.home-page .addscheduleGames-page{
+.app-container.home-page .addscheduleGames-page {
   overflow: hidden;
   position: absolute;
   color: #0b0f14;
-  .content{
-    .game-name{
+  .content {
+    .game-name {
       width: 50%;
-      .game-name-box{
+      .game-name-box {
         background: $backgroundContent;
       }
     }
@@ -15,27 +15,27 @@
     grid-gap: 20px;
     width: 64%;
     padding: 30px;
-    //justify-content: center;
     align-items: center;
     grid-column-gap: 88px;
     grid-row-gap: 20px;
     position: relative;
-    h1{
+    h1 {
       grid-column: span 2;
       font-size: 2rem;
       margin: 1rem 0;
     }
     label {
-      color:#fff;
+      color: #fff;
     }
-    .date-time{
+    .date-time {
       display: grid;
       align-items: baseline;
       font-size: 11px;
-      .date-time-label{
+      .date-time-label {
         grid-column: span 3;
       }
-      .start-date-box, .end-date-box{
+      .start-date-box,
+      .end-date-box {
         width: 88%;
         cursor: pointer;
         background: $backgroundContent;
@@ -44,15 +44,27 @@
         color: #808080;
       }
     }
-    .region, .experience, .platform, .expiry, .visibility, .limit, .clash_royale_trophy, .dota2_medal_ranks, .dota2_server_regions, .dota2_roles{
+    .region,
+    .experience,
+    .platform,
+    .expiry,
+    .visibility,
+    .limit,
+    .clash_royale_trophy,
+    .dota2_medal_ranks,
+    .dota2_server_regions,
+    .dota2_roles {
       cursor: pointer;
       padding-top: 8px;
       width: 48%;
     }
-    .clash_royale_trophy_header, .dota2_medal_ranks_header, .dota2_server_regions_header, .dota2_roles_header{
+    .clash_royale_trophy_header,
+    .dota2_medal_ranks_header,
+    .dota2_server_regions_header,
+    .dota2_roles_header {
       display: flex;
       align-items: center;
-      label{
+      label {
         align-items: center;
         padding-top: 18px;
         padding-left: 4px;
@@ -65,10 +77,10 @@
       width: 120%;
     }
 
-    .description{
+    .description {
       width: 48%;
       padding-top: 8px;
-      .description-box{
+      .description-box {
         background: $backgroundContent;
         margin-left: 20px;
         height: 60px;
@@ -77,9 +89,9 @@
       }
     }
 
-    .other{
+    .other {
       padding-top: 8px;
-      .other-box{
+      .other-box {
         background: $backgroundContent;
         margin-left: 20px;
         height: 60px;
@@ -87,10 +99,10 @@
         width: 90%;
       }
     }
-    .accept-msg{
+    .accept-msg {
       padding-top: 8px;
       width: 100%;
-      .txtarea-accept{
+      .txtarea-accept {
         background: white;
         border-radius: 8px;
         margin-left: 20px;
@@ -98,21 +110,21 @@
         color: #808080;
       }
     }
-    .buttons{
+    .buttons {
       display: flex;
       font-size: 4rem;
       font-weight: 100;
-      margin-left:20px;
+      margin-left: 20px;
       margin-top: 16px;
-      .save{
+      .save {
         padding: 18px;
         background: $primarybuttonBG;
         border-radius: 4px;
         border: none;
         color: #fff;
-      cursor: pointer;
+        cursor: pointer;
       }
-      .save-create{
+      .save-create {
         background: $primarybuttonBG;
         border-radius: 4px;
         border: none;
@@ -122,7 +134,5 @@
         cursor: pointer;
       }
     }
-  }//content
-
-
+  } //content
 } //.app-container
