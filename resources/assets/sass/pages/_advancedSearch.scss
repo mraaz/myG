@@ -140,8 +140,8 @@
     }
   }
   .gamesPosts {
-    display: grid;
-    grid-template-columns: 1 1 1 1;
+    //display: grid;
+    //grid-template-columns: 1 1 1 1;
     max-width: 630px;
     margin: 0 auto;
     .padding-container {
@@ -149,15 +149,15 @@
     .grey-container {
       z-index: 0;
       position: relative;
-      top: 200px;
-      right: 325px;
-      padding: 20px;
+      //top: 200px;
+      //right: 325px;
+      padding: 12px;
       margin: 20px;
       background: #151b26;
-      -webkit-box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.5);
-      -moz-box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.5);
-      box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.5);
-      margin-bottom: 1rem;
+      // -webkit-box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.5);
+      // -moz-box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.5);
+      //box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.5);
+      //margin-bottom: 1rem;
       border-radius: 20px;
       .update-info {
         display: grid;

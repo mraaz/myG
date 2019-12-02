@@ -439,7 +439,7 @@ export default class Profile extends Component {
               {this.state.show_bio && (
                 <div className='padding-container'>
                   <div className='esports-bio-grey-container'>
-                    <h3> myEsports Profile</h3>
+                    <h3> Esports Profile</h3>
                     <div className='esports-bio-container'>
                       {show_ardour && (
                         <div className='esports-bio-ardour'>
