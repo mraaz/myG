@@ -407,8 +407,7 @@ section#content-container {
       .react-autosuggest__suggestions-container {
         display: none;
       }
-      .react-autosuggest__container--open
-        .react-autosuggest__suggestions-container {
+      .react-autosuggest__container--open .react-autosuggest__suggestions-container {
         display: block;
         position: absolute;
         top: 51px;
@@ -497,7 +496,8 @@ section#content-container {
         right: 0;
         font-size: 1.2rem;
         padding-right: 15px;
-        & > div {
+        & > div,
+        a {
           display: inline-block;
           color: #797979;
           padding: 0 5px;
