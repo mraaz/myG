@@ -366,10 +366,9 @@ section#content-container {
     //overflow: hidden;
     //height: 900px; Hide the scroll bars, decided against it
     .content-area {
-      box-sizing: content-box;
       width: 100%;
       height: calc(100% - 53px);
-      overflow: auto;
+      position: relative;
       padding: 0 15px 0 8px;
     }
     .search-header {
@@ -1073,11 +1072,9 @@ section#content-container {
       height: 67%; //Friends List scroll height
       overflow: hidden;
       .users-container {
-        box-sizing: content-box;
         padding: 0 15px;
         height: 100%;
         width: 100%;
-        overflow: auto;
       }
       .user {
         display: flex;
