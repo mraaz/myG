@@ -2,7 +2,6 @@
   position: absolute;
 
   .game-menu {
-    width: 65%;
     color: #0b0f14;
     font-size: 12px;
     padding-left: 16px;
@@ -17,7 +16,6 @@
   }
   .filterMenu {
     display: grid;
-    width: 65%;
     height: calc(10% - 53px);
     grid-template-columns: 25% 25% 25% 25%;
     padding: 8px 15px 0 8px;

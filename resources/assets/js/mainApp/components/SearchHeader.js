@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import axios from 'axios'
-import { withRouter, Redirect } from 'react-router'
+import { withRouter, Link } from 'react-router-dom'
 import Autosuggest from 'react-autosuggest'
 import AutosuggestHighlightMatch from 'autosuggest-highlight/match'
 import AutosuggestHighlightParse from 'autosuggest-highlight/parse'
@@ -72,12 +72,9 @@ class SearchHeader extends Component {
 
     const getFriendnoti = async function() {
       try {
-        const getFriendnoti = await axios.get(
-          '/api/notifications/myFriendRequests'
-        )
+        const getFriendnoti = await axios.get('/api/notifications/myFriendRequests')
         self.setState({
-          myFriendRequestNo:
-            getFriendnoti.data.checkMyFriends[0].no_of_my_notiFriends,
+          myFriendRequestNo: getFriendnoti.data.checkMyFriends[0].no_of_my_notiFriends,
         })
 
         const myRequests = await axios.get('/api/notifications/myRequests')
@@ -90,17 +87,6 @@ class SearchHeader extends Component {
       }
     }
     getFriendnoti()
-  }
-
-  redirectToInvitation = () => {
-    //window.location.href = '/invitation'
-    this.setState({
-      redirect_: true,
-    })
-  }
-
-  redirectToNotifications = () => {
-    window.location.href = '/notifications'
   }
 
   onChange = (event, { newValue }) => {
@@ -131,9 +117,7 @@ class SearchHeader extends Component {
 
     const getPlayerInfo = async function() {
       try {
-        const getPlayerInfo = await axios.get(
-          `/api/user/${value}/playerSearchResults`
-        )
+        const getPlayerInfo = await axios.get(`/api/user/${value}/playerSearchResults`)
         playersDB = getPlayerInfo.data.playerSearchResults
         self.setState({
           suggestions: getSuggestions(value),
@@ -151,12 +135,8 @@ class SearchHeader extends Component {
     })
   }
 
-  onSuggestionSelected = (
-    event,
-    { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }
-  ) => {
-    //return <Redirect to={`/profile/${suggestion.id}`}/>
-    window.location.href = `/profile/${suggestion.id}`
+  onSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
+    this.props.history.push(`/profile/${suggestion.id}`)
   }
 
   onKeyDown = (e) => {
@@ -175,10 +155,6 @@ class SearchHeader extends Component {
   }
 
   render() {
-    if (this.state.redirect_) {
-      //window.location.href = '/invitation'
-      return <Redirect push to='/invitation' />
-    }
     const { value, suggestions } = this.state
 
     // Autosuggest will pass through all these props to the input.
@@ -203,31 +179,20 @@ class SearchHeader extends Component {
           />
           <div className='icon-section'>
             <div className='noti'>
-              <i
-                className='fas fa-bell'
-                onClick={this.redirectToNotifications}
-              />
-              <div
-                className={`noti-number ${
-                  this.state.myRequests > 0 ? 'active' : ''
-                }`}>
-                {' '}
-                {this.state.myRequests}
-              </div>
+              <Link to='/notifications'>
+                <i className='fas fa-bell' />
+              </Link>
+              <div className={`noti-number ${this.state.myRequests > 0 ? 'active' : ''}`}> {this.state.myRequests}</div>
             </div>
             <div className='comments'>
               <i className='fas fa-comment' />
               <div className='noti-number'>3</div>
             </div>
             <div className='user'>
-              <i className='fas fa-user' onClick={this.redirectToInvitation} />
-              <div
-                className={`noti-number ${
-                  this.state.myFriendRequestNo > 0 ? 'active' : ''
-                }`}>
-                {' '}
-                {this.state.myFriendRequestNo}
-              </div>
+              <Link to='/invitation'>
+                <i className='fas fa-user' />
+              </Link>
+              <div className={`noti-number ${this.state.myFriendRequestNo > 0 ? 'active' : ''}`}> {this.state.myFriendRequestNo}</div>
             </div>
           </div>
         </div>
