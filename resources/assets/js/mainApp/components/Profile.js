@@ -108,18 +108,14 @@ export default class Profile extends Component {
             friendStatus: 1,
           })
         } else {
-          const checkFriend = await axios.get(
-            `/api/notifications/friend/${match.params.id}`
-          )
+          const checkFriend = await axios.get(`/api/notifications/friend/${match.params.id}`)
           if (checkFriend.data.checkedFriend) {
             self.setState({
               friendTxt: 'Request Pending',
               friendStatus: 2,
             })
           } else {
-            const checkFriendPending = await axios.get(
-              `/api/notifications/myFriendRequest/${match.params.id}`
-            )
+            const checkFriendPending = await axios.get(`/api/notifications/myFriendRequest/${match.params.id}`)
             if (checkFriendPending.data.myFriendRequest) {
               self.setState({
                 friendTxt: 'Accept Request',
@@ -140,9 +136,7 @@ export default class Profile extends Component {
     }
     const getGameExperiences = async function() {
       try {
-        const gameExperience = await axios.get(
-          `/api/GameExperiences/${match.params.id}`
-        )
+        const gameExperience = await axios.get(`/api/GameExperiences/${match.params.id}`)
         self.setState({
           gameData: gameExperience.data,
         })
@@ -153,9 +147,7 @@ export default class Profile extends Component {
 
     const getEsportsExperiences = async function() {
       try {
-        const esportsExperience = await axios.get(
-          `/api/esports_experiences/${match.params.id}`
-        )
+        const esportsExperience = await axios.get(`/api/esports_experiences/${match.params.id}`)
         self.setState({
           esportsExpData: esportsExperience.data,
         })
@@ -166,9 +158,7 @@ export default class Profile extends Component {
 
     const getEsportsBio = async function() {
       try {
-        const esportsBio = await axios.get(
-          `/api/esports_bio/show_bio/${match.params.id}`
-        )
+        const esportsBio = await axios.get(`/api/esports_bio/show_bio/${match.params.id}`)
         self.setState({
           esportsBioData: esportsBio.data,
         })
@@ -177,10 +167,7 @@ export default class Profile extends Component {
             self.setState({
               show_bio: true,
             })
-          } else if (
-            esportsBio.data.myProfile[0].career_highlights != '' &&
-            esportsBio.data.myProfile[0].career_highlights != null
-          ) {
+          } else if (esportsBio.data.myProfile[0].career_highlights != '' && esportsBio.data.myProfile[0].career_highlights != null) {
             self.setState({
               show_bio: true,
             })
@@ -207,9 +194,7 @@ export default class Profile extends Component {
 
     if (this.state.friendStatus === 3) {
       try {
-        const deleteNoti = axios.get(
-          `/api/notifications/delete/${this.state.noti_id}`
-        )
+        const deleteNoti = axios.get(`/api/notifications/delete/${this.state.noti_id}`)
         const createFriend = axios.post('/api/friends/create', {
           friend_id: match.params.id,
         })
@@ -226,9 +211,7 @@ export default class Profile extends Component {
     if (this.state.friendStatus) {
       if (window.confirm('Are you sure you wish to unfriend?')) {
         try {
-          const userProfile = await axios.get(
-            `/api/user/${match.params.id}/unfriend`
-          )
+          const userProfile = await axios.get(`/api/user/${match.params.id}/unfriend`)
           self.setState({
             friendTxt: 'Add Friend',
             friendStatus: 0,
@@ -346,6 +329,7 @@ export default class Profile extends Component {
           slogan,
           bio,
           contact_info,
+          relationship_status,
         } = this.state.userProfile
         var games_of_ardour,
           show_ardour = false
@@ -367,18 +351,15 @@ export default class Profile extends Component {
             this.state.esportsBioData.myProfile[0].games_of_ardour != '' &&
             this.state.esportsBioData.myProfile[0].games_of_ardour != undefined
           ) {
-            games_of_ardour = this.state.esportsBioData.myProfile[0]
-              .games_of_ardour
+            games_of_ardour = this.state.esportsBioData.myProfile[0].games_of_ardour
             show_ardour = true
           }
 
           if (
             this.state.esportsBioData.myProfile[0].career_highlights != '' &&
-            this.state.esportsBioData.myProfile[0].career_highlights !=
-              undefined
+            this.state.esportsBioData.myProfile[0].career_highlights != undefined
           ) {
-            career_highlights = this.state.esportsBioData.myProfile[0]
-              .career_highlights
+            career_highlights = this.state.esportsBioData.myProfile[0].career_highlights
             show_highlights = true
           }
         }
@@ -398,9 +379,7 @@ export default class Profile extends Component {
                       backgroundImage: `url('${profile_bg}')`,
                     }}>
                     {this.state.myPage && (
-                      <div
-                        className='header-background-uploader'
-                        onClick={() => this.clickUpdateProfileBack()}>
+                      <div className='header-background-uploader' onClick={() => this.clickUpdateProfileBack()}>
                         Update
                       </div>
                     )}
@@ -413,9 +392,7 @@ export default class Profile extends Component {
                       }}></div>
                     <img className='user-profile-img' src={profile_img}></img>
                     {this.state.myPage && (
-                      <div
-                        className='user-img-upload'
-                        onClick={() => this.clickUpdateProfile()}>
+                      <div className='user-img-upload' onClick={() => this.clickUpdateProfile()}>
                         Update{' '}
                       </div>
                     )}
@@ -441,23 +418,18 @@ export default class Profile extends Component {
                       {`${region}`}&nbsp;{`${country}`}
                     </div>
                   )}
-                  <div className='alias'>
-                    ({`${this.state.userProfile.alias}`})
-                  </div>
+                  <div className='alias'>({`${this.state.userProfile.alias}`})</div>
                   {this.state.myPage && (
                     <div className='edit_btn'>
-                      <i
-                        className='fas fa-pencil-alt'
-                        onClick={this.editDossier}></i>
+                      <i className='fas fa-pencil-alt' onClick={this.editDossier}></i>
                     </div>
                   )}
                   <h4>{`${slogan}`}</h4>
                 </div>
                 <div className='table'>
                   <div className='myBio'>{`${bio}`}</div>
-                  {show_contact_info && (
-                    <div className='contact-info'>{`${contact_info}`}</div>
-                  )}
+                  {show_contact_info && <div className='contact-info'>{`${contact_info}`}</div>}
+                  {show_contact_info && <div className='relationship_status'>{`${relationship_status}`}</div>}
                 </div>
               </div>
               <div id='header'>
@@ -477,8 +449,7 @@ export default class Profile extends Component {
                       )}
                       {show_highlights && (
                         <div className='esports-bio-highlights'>
-                          <i className='fas fa-crown'></i>&nbsp;{' '}
-                          {`${career_highlights}`}
+                          <i className='fas fa-crown'></i>&nbsp; {`${career_highlights}`}
                         </div>
                       )}
                     </div>
@@ -490,42 +461,26 @@ export default class Profile extends Component {
                 <div className='esports-experience-grey-container'>
                   <h3> Esports Career</h3>
                   <div className='add-esports-experience'>
-                    {this.state.myPage && (
-                      <i
-                        className='fas fa-plus-circle'
-                        onClick={this.addEsportsExp}></i>
-                    )}
+                    {this.state.myPage && <i className='fas fa-plus-circle' onClick={this.addEsportsExp}></i>}
                   </div>
                   <div className='icon' onClick={this.clickedDropdownesports}>
                     <i className='fas fa-chevron-down' />
                   </div>
                   <div className='padding-container'></div>
-                  {this.state.collapseesports && (
-                    <div className='esports-container'>
-                      {this.showAllesportsExperiences()}
-                    </div>
-                  )}
+                  {this.state.collapseesports && <div className='esports-container'>{this.showAllesportsExperiences()}</div>}
                 </div>
               </div>
               <div className='padding-container'>
                 <div className='game-experience-grey-container'>
                   <h3> Gaming Interests</h3>
                   <div className='add-gaming-experience'>
-                    {this.state.myPage && (
-                      <i
-                        className='fas fa-plus-circle'
-                        onClick={this.addGamingExp}></i>
-                    )}
+                    {this.state.myPage && <i className='fas fa-plus-circle' onClick={this.addGamingExp}></i>}
                   </div>
                   <div className='icon' onClick={this.clickedDropdown}>
                     <i className='fas fa-chevron-down' />
                   </div>
                   <div className='padding-container'></div>
-                  {this.state.collapse && (
-                    <div className='experience-container'>
-                      {this.showAllGamingExperiences()}
-                    </div>
-                  )}
+                  {this.state.collapse && <div className='experience-container'>{this.showAllGamingExperiences()}</div>}
                 </div>
               </div>
             </div>
