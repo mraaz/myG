@@ -89,7 +89,7 @@ export default class Dossier extends Component {
     this.state.country_ = ''
     this.state.region_ = ''
 
-    var relationship_status = ''
+    var relationship_status = null
 
     if (this.state.first_name_box == '' || this.state.first_name_box == undefined) {
       alert("Sorry mate! First & Last name can't be blank")
@@ -185,6 +185,10 @@ export default class Dossier extends Component {
         this.setState({ relationship_status_box: relationship_status })
         this.setState({ intial_trigger: false })
       }
+      var stupid_hack = false
+      if (relationship_status == null) {
+        stupid_hack = true
+      }
       return (
         <div className='content-area dossier-page'>
           <Modal
@@ -277,14 +281,25 @@ export default class Dossier extends Component {
             </div>
             <div className='realtionship-status'>
               <p>Relationship Status (Only visible to friends)</p>
-              <Select
-                onChange={this.handleChange_Relationship_Status}
-                options={relationship_status_options}
-                placeholder='Set your relationship status'
-                className='realtionship_status_box'
-                defaultValue={[{ label: relationship_status, value: relationship_status }]}
-                isClearable
-              />
+              {stupid_hack && (
+                <Select
+                  onChange={this.handleChange_Relationship_Status}
+                  options={relationship_status_options}
+                  placeholder='Set your relationship status'
+                  className='relationship_status_box'
+                  isClearable
+                />
+              )}
+              {!stupid_hack && (
+                <Select
+                  onChange={this.handleChange_Relationship_Status}
+                  options={relationship_status_options}
+                  placeholder='Set your relationship status'
+                  className='relationship_status_box'
+                  defaultValue={[{ label: relationship_status, value: relationship_status }]}
+                  isClearable
+                />
+              )}
             </div>
             <div className='contact-info'>
               <p>Contact Info (Only visible to friends)</p>
