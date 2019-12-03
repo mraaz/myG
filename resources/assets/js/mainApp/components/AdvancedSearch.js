@@ -1,16 +1,11 @@
 import React, { Component } from 'react'
 import Select from 'react-select'
 import ReactDOM from 'react-dom'
-import { Route } from 'react-router'
 import axios from 'axios'
 import AsyncSelect from 'react-select/lib/Async'
 import CreatableSelect from 'react-select/lib/Creatable'
 import AdvancedSearchPost from './AdvancedSearchPost'
-import {
-  CountryDropdown,
-  RegionDropdown,
-  CountryRegionData,
-} from 'react-country-region-selector'
+import { CountryDropdown } from 'react-country-region-selector'
 
 const table_options = [
   { value: 'Gaming Experience', label: 'Gaming Experience' },
@@ -293,14 +288,7 @@ export default class AdvancedSearch extends Component<*, State> {
         if (this.state.selected_table.value != 'Gaming Experience') {
           table = false
         }
-        return (
-          <AdvancedSearchPost
-            game_experience={item}
-            key={index}
-            table={table}
-            user={this.props.initialData}
-          />
-        )
+        return <AdvancedSearchPost game_experience={item} key={index} table={table} user={this.props.initialData} />
       })
     }
   }
@@ -320,11 +308,7 @@ export default class AdvancedSearch extends Component<*, State> {
     var myTeam_name = '1981`^'
     var myTime_role = '1981`^'
 
-    if (
-      this.state.selected_table != '' &&
-      this.state.selected_table != undefined &&
-      this.state.selected_table.length != 0
-    ) {
+    if (this.state.selected_table != '' && this.state.selected_table != undefined && this.state.selected_table.length != 0) {
       myTable = this.state.selected_table.label
     }
 
@@ -336,51 +320,27 @@ export default class AdvancedSearch extends Component<*, State> {
       myExperience = this.state.selected_experience.label
     }
 
-    if (
-      this.state.value != null &&
-      this.state.value != '' &&
-      this.state.value.length != 0
-    ) {
+    if (this.state.value != null && this.state.value != '' && this.state.value.length != 0) {
       myGame_name_box = this.state.value.label.trim()
     }
 
-    if (
-      this.state.status_box != '' &&
-      this.state.status_box != null &&
-      this.state.status_box.length != 0
-    ) {
+    if (this.state.status_box != '' && this.state.status_box != null && this.state.status_box.length != 0) {
       myStatus = this.state.status_box.label
     }
 
-    if (
-      this.state.played_box != '' &&
-      this.state.played_box != null &&
-      this.state.played_box.length != 0
-    ) {
+    if (this.state.played_box != '' && this.state.played_box != null && this.state.played_box.length != 0) {
       myPlayed = this.state.played_box.value
     }
 
-    if (
-      this.state.ratings_box != '' &&
-      this.state.ratings_box != null &&
-      this.state.ratings_box.length != 0
-    ) {
+    if (this.state.ratings_box != '' && this.state.ratings_box != null && this.state.ratings_box.length != 0) {
       myRatings = this.state.ratings_box.value
     }
 
-    if (
-      this.state.commendation_box != '' &&
-      this.state.commendation_box != null &&
-      this.state.commendation_box.length != 0
-    ) {
+    if (this.state.commendation_box != '' && this.state.commendation_box != null && this.state.commendation_box.length != 0) {
       myCommendation = this.state.commendation_box.value
     }
 
-    if (
-      this.state.country_ != '' &&
-      this.state.country_ != null &&
-      this.state.country_.length != 0
-    ) {
+    if (this.state.country_ != '' && this.state.country_ != null && this.state.country_.length != 0) {
       myCountry = this.state.country_
     }
 
@@ -396,25 +356,15 @@ export default class AdvancedSearch extends Component<*, State> {
       myTags = myTags.replace(/,/g, ', ')
     }
 
-    if (
-      this.state.role_title_box != '' &&
-      this.state.role_title_box != undefined
-    ) {
+    if (this.state.role_title_box != '' && this.state.role_title_box != undefined) {
       myRole_title = this.state.role_title_box
     }
 
-    if (
-      this.state.team_name_box != '' &&
-      this.state.team_name_box != undefined
-    ) {
+    if (this.state.team_name_box != '' && this.state.team_name_box != undefined) {
       myTeam_name = this.state.team_name_box
     }
 
-    if (
-      this.state.time_role_box != '' &&
-      this.state.time_role_box != null &&
-      this.state.time_role_box.length != 0
-    ) {
+    if (this.state.time_role_box != '' && this.state.time_role_box != null && this.state.time_role_box.length != 0) {
       myTime_role = this.state.time_role_box.value
     }
 
@@ -460,12 +410,8 @@ export default class AdvancedSearch extends Component<*, State> {
     }
     try {
       inputValue = inputValue.trimStart()
-      const getGameName = await axios.get(
-        `/api/GameNames/${inputValue}/gameSearchResults`
-      )
-      var results = getGameName.data.gameSearchResults[0].filter((i) =>
-        i.game_name.toLowerCase().includes(inputValue.toLowerCase())
-      )
+      const getGameName = await axios.get(`/api/GameNames/${inputValue}/gameSearchResults`)
+      var results = getGameName.data.gameSearchResults[0].filter((i) => i.game_name.toLowerCase().includes(inputValue.toLowerCase()))
       var newArr = []
       var i, newOption
       if (results.length != 0) {
@@ -552,11 +498,7 @@ export default class AdvancedSearch extends Component<*, State> {
                     value={this.state.value}
                     className='game-name-box'
                     placeholder='Game name'
-                    onInputChange={(inputValue) =>
-                      inputValue.length <= 88
-                        ? inputValue
-                        : inputValue.substr(0, 88)
-                    }
+                    onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
                   />
                 </div>
               </div>
@@ -620,11 +562,7 @@ export default class AdvancedSearch extends Component<*, State> {
                         placeholder='Tags'
                         isMulti
                         defaultValue={this.state.value_tags}
-                        onInputChange={(inputValue) =>
-                          inputValue.length <= 250
-                            ? inputValue
-                            : inputValue.substr(0, 250)
-                        }
+                        onInputChange={(inputValue) => (inputValue.length <= 250 ? inputValue : inputValue.substr(0, 250))}
                       />
                     </div>
                     <div className='location'>
@@ -682,11 +620,7 @@ export default class AdvancedSearch extends Component<*, State> {
                         className='skill-name-box'
                         placeholder='Skills'
                         isMulti
-                        onInputChange={(inputValue) =>
-                          inputValue.length <= 250
-                            ? inputValue
-                            : inputValue.substr(0, 250)
-                        }
+                        onInputChange={(inputValue) => (inputValue.length <= 250 ? inputValue : inputValue.substr(0, 250))}
                       />
                     </div>
                     <div className='location'>

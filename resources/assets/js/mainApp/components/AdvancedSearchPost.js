@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
+import { Link } from 'react-router-dom'
 
 export default class AdvancedSearchPost extends Component {
   constructor() {
@@ -170,10 +171,7 @@ export default class AdvancedSearchPost extends Component {
             played_converted = 'Less than 1 year'
         }
       }
-      if (
-        game_experience.experience == '' ||
-        game_experience.experience == null
-      ) {
+      if (game_experience.experience == '' || game_experience.experience == null) {
         game_experience.experience = ''
       }
       if (game_experience.status != '' && game_experience.status != null) {
@@ -182,10 +180,7 @@ export default class AdvancedSearchPost extends Component {
       if (game_experience.ratings != '' && game_experience.ratings != null) {
         ratings = true
       }
-      if (
-        game_experience.commendation != '' &&
-        game_experience.commendation != null
-      ) {
+      if (game_experience.commendation != '' && game_experience.commendation != null) {
         commendation = true
       }
       if (game_experience.tags != '' && game_experience.tags != null) {
@@ -197,10 +192,7 @@ export default class AdvancedSearchPost extends Component {
       var show_tags = false
       var duration_converted = 'Less than 3 months'
 
-      if (
-        game_experience.team_name != null &&
-        game_experience.team_name != ''
-      ) {
+      if (game_experience.team_name != null && game_experience.team_name != '') {
         show_team_name = true
       }
 
@@ -245,36 +237,27 @@ export default class AdvancedSearchPost extends Component {
               <div className='update-info'>
                 <div className='author-info'>
                   {show_profile_img && (
-                    <a
-                      href={`/profile/${game_experience.user_id}`}
+                    <Link
+                      to={`/profile/${game_experience.user_id}`}
                       className='user-img'
                       style={{
                         backgroundImage: `url('${game_experience.profile_img}')`,
-                      }}
-                    />
+                      }}></Link>
                   )}
                   {!show_profile_img && (
-                    <a
-                      href={`/profile/${game_experience.user_id}`}
+                    <Link
+                      to={`/profile/${game_experience.user_id}`}
                       className='user-img'
                       style={{
                         backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png')`,
-                      }}
-                    />
+                      }}></Link>
                   )}
                   <div className='info'>
-                    <a href={`/profile/${game_experience.user_id}`}>
-                      {game_experience.alias}
-                    </a>
+                    <Link to={`/profile/${game_experience.user_id}`}>{game_experience.alias}</Link>
                   </div>
                 </div>
                 <div className='game-name'> {game_experience.game_name} </div>
-                {ratings && (
-                  <div className='game-rating'>
-                    {' '}
-                    {this.showRating(game_experience.ratings)}{' '}
-                  </div>
-                )}
+                {ratings && <div className='game-rating'> {this.showRating(game_experience.ratings)} </div>}
                 {status && (
                   <div className='game-status'>
                     {' '}
@@ -294,57 +277,46 @@ export default class AdvancedSearchPost extends Component {
                     {`${game_experience.commendation}`}&nbsp;{' '}
                   </div>
                 )}
-                {tags && (
-                  <div className='tags'> {this.showAllTags(arrTags)} </div>
-                )}
+                {tags && <div className='tags'> {this.showAllTags(arrTags)} </div>}
               </div>
             )}
             {!this.props.table && (
               <div className='update-info'>
                 <div className='author-info'>
                   {show_profile_img && (
-                    <a
-                      href={`/profile/${game_experience.user_id}`}
+                    <Link
+                      to={`/profile/${game_experience.user_id}`}
                       className='user-img'
                       style={{
                         backgroundImage: `url('${game_experience.profile_img}')`,
-                      }}
-                    />
+                      }}></Link>
                   )}
                   {!show_profile_img && (
-                    <a
-                      href={`/profile/${game_experience.user_id}`}
+                    <Link
+                      to={`/profile/${game_experience.user_id}`}
                       className='user-img'
                       style={{
                         backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png')`,
-                      }}
-                    />
+                      }}></Link>
                   )}
                   <div className='info'>
-                    <a href={`/profile/${game_experience.user_id}`}>
-                      {game_experience.alias}
-                    </a>
+                    <Link to={`/profile/${game_experience.user_id}`}>{game_experience.alias}</Link>
                   </div>
                 </div>
                 <div className='game-name'> {game_experience.game_name} </div>
                 <div className='role-title'>
                   {' '}
-                  <i className='fas fa-angle-double-down'></i>&nbsp;{' '}
-                  {game_experience.role_title}
+                  <i className='fas fa-angle-double-down'></i>&nbsp; {game_experience.role_title}
                 </div>
                 {show_team_name && (
                   <div className='team-name'>
-                    <i className='fas fa-users'></i>&nbsp;{' '}
-                    {game_experience.team_name}
+                    <i className='fas fa-users'></i>&nbsp; {game_experience.team_name}
                   </div>
                 )}
                 <div className='game-stuff'>
-                  <i className='fas fa-gamepad'></i>&nbsp;{' '}
-                  {`${duration_converted}`}
+                  <i className='fas fa-gamepad'></i>&nbsp; {`${duration_converted}`}
                 </div>
-                {show_tags && (
-                  <div className='tags'> {this.showAllTags(arrTags)} </div>
-                )}
+                {show_tags && <div className='tags'> {this.showAllTags(arrTags)} </div>}
               </div>
             )}
           </div>
