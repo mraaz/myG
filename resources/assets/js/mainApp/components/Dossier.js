@@ -16,8 +16,8 @@ const searchOptions = {
 const relationship_status_options = [
   { value: 'Waiting for Player 2', label: 'Waiting for Player 2' },
   {
-    value: 'Unable to join, Game in progress',
-    label: 'Unable to join, Game in progress',
+    value: 'Game in progress',
+    label: 'Game in progress',
   },
 ]
 
