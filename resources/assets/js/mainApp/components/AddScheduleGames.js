@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
-import { Route } from 'react-router'
 
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 
@@ -25,8 +24,7 @@ function isValidNewOption(inputValue, selectValue, selectOptions) {
 }
 
 const compareOption = (inputValue, option) => {
-  const candidate =
-    typeof inputValue === 'string' ? inputValue.toLowerCase() : inputValue
+  const candidate = typeof inputValue === 'string' ? inputValue.toLowerCase() : inputValue
   if (typeof option.value === 'string') {
     if (option.value.toLowerCase() === candidate) {
       return true
@@ -84,31 +82,16 @@ export default class AddScheduleGames extends Component {
   }
 
   showHeaders = () => {
-    return (
-      <AddScheduleGames_Headers
-        game_name_box={this.state.game_name_box}
-        props={this.props}
-      />
-    )
+    return <AddScheduleGames_Headers game_name_box={this.state.game_name_box} props={this.props} />
   }
 
   showGames = () => {
     switch (this.state.game_name_box.value) {
       case 'Dota 2':
-        return (
-          <AddScheduleGames_Dota2
-            game_name_box={this.state.game_name_box}
-            props={this.props}
-          />
-        )
+        return <AddScheduleGames_Dota2 game_name_box={this.state.game_name_box} props={this.props} />
         break
       case 'Clash Royale':
-        return (
-          <AddScheduleGames_Clash_Royale
-            game_name_box={this.state.game_name_box}
-            props={this.props}
-          />
-        )
+        return <AddScheduleGames_Clash_Royale game_name_box={this.state.game_name_box} props={this.props} />
         break
     }
   }
@@ -147,9 +130,7 @@ export default class AddScheduleGames extends Component {
               onFocus={this.onFocus_game_name}
               className='game_name_box'
               placeholder='Enter Game name'
-              onInputChange={(inputValue) =>
-                inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88)
-              }
+              onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
               onKeyDown={this.onKeyDown}
             />
           </div>

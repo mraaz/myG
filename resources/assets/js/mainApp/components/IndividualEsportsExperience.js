@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Select from 'react-select'
 import ReactDOM from 'react-dom'
-import { Route, Redirect } from 'react-router'
+import { Redirect } from 'react-router'
 import axios from 'axios'
 
 export default class IndividualEsportsExperience extends Component {
@@ -34,9 +34,7 @@ export default class IndividualEsportsExperience extends Component {
           case 0:
             return (
               <div className='tag' key={index}>
-                <button
-                  className='btn-green'
-                  onClick={() => this.find_tag(tag)}>
+                <button className='btn-green' onClick={() => this.find_tag(tag)}>
                   {tag}
                 </button>
                 &nbsp;
@@ -66,9 +64,7 @@ export default class IndividualEsportsExperience extends Component {
           case 3:
             return (
               <div className='tag' key={index}>
-                <button
-                  className='btn-yellow'
-                  onClick={() => this.find_tag(tag)}>
+                <button className='btn-yellow' onClick={() => this.find_tag(tag)}>
                   {tag}
                 </button>
                 &nbsp;
@@ -78,9 +74,7 @@ export default class IndividualEsportsExperience extends Component {
           default:
             return (
               <div className='tag' key={index}>
-                <button
-                  className='btn-green'
-                  onClick={() => this.find_tag(tag)}>
+                <button className='btn-green' onClick={() => this.find_tag(tag)}>
                   {tag}
                 </button>
                 &nbsp;
@@ -117,15 +111,7 @@ export default class IndividualEsportsExperience extends Component {
     let { item, rowLen, row } = this.props
     var show_lines = true
 
-    const {
-      id,
-      achievements,
-      duration,
-      game_name,
-      role_title,
-      skills,
-      team_name,
-    } = item
+    const { id, achievements, duration, game_name, role_title, skills, team_name } = item
 
     var arrTags = ''
     var show_team_name = false
@@ -146,11 +132,7 @@ export default class IndividualEsportsExperience extends Component {
       arrTags = skills.split(',')
       show_tags = true
     }
-    if (
-      show_tags == false &&
-      show_team_name == true &&
-      show_achievements == false
-    ) {
+    if (show_tags == false && show_team_name == true && show_achievements == false) {
       show_fix = true
     }
 
@@ -183,11 +165,7 @@ export default class IndividualEsportsExperience extends Component {
     return (
       <div className='game-info'>
         <div className='game-name'>{`${game_name}`}</div>
-        <div className='game-infos'>
-          {this.state.myPage && (
-            <i className='fas fa-pen' onClick={() => this.edit_lnk(id)}></i>
-          )}
-        </div>
+        <div className='game-infos'>{this.state.myPage && <i className='fas fa-pen' onClick={() => this.edit_lnk(id)}></i>}</div>
         <div className='role-title'>
           <i className='fas fa-angle-double-down'></i>&nbsp; {`${role_title}`}
         </div>

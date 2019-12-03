@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
-import { Redirect, Link } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 
-export default class LeftMenu extends Component {
+class LeftMenu extends Component {
   constructor() {
     super()
     this.state = {
       dropdown: false,
       show_top_btn: false,
-      redirect_addScheduleGames: false,
     }
   }
   clickedDropdown = () => {
@@ -45,50 +44,25 @@ export default class LeftMenu extends Component {
   moveTop = () => {
     window.scrollTo(0, 0)
   }
-  redirect = () => {
-    window.location.href = '/'
-  }
 
-  redirect_addScheduleGames = () => {
-    window.location.href = '/addScheduleGames'
-    //this.setState({redirect_addScheduleGames: true})
-    // <div className="add-ScheduleGames-caption">
-    //   <Link to="/addScheduleGames" className="link" style={{ textDecoration: 'none', color: 'white' }}>
-    //     Add Games
-    //   </Link>
-    // </div>
-  }
-  redirect_viewScheduleGames = () => {
-    window.location.href = '/scheduledGames'
-  }
-  redirect_advancedSearch = () => {
-    window.location.href = '/advancedSearch'
-  }
   redirect_groups = () => {
-    window.location.href = '/groups'
+    this.props.history.push('/groups')
   }
   redirect_feed = () => {
-    window.location.href = '/'
-  }
-  redirect_profile = () => {
-    window.location.href = '/profile/' + this.props.initialData.userInfo.id
+    this.props.history.push('/')
   }
   redirect_games = () => {
-    window.location.href = '/myScheduledGames'
+    this.props.history.push('/myScheduledGames')
   }
   redirect_friends = () => {
-    window.location.href = '/myFriends'
+    this.props.history.push('/myFriends')
   }
   redirect_myPosts = () => {
-    window.location.href = '/myPosts'
+    this.props.history.push('/myPosts')
   }
 
   render() {
-    if (this.state.redirect_addScheduleGames === true) {
-      return <Redirect push to='/addScheduleGames' />
-    }
-    var left_icon =
-      'https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/v1_Logo.png'
+    var left_icon = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/v1_Logo.png'
     if (this.props.initialData.userInfo == undefined) {
       return <div>Loading</div>
     } else {
@@ -119,47 +93,45 @@ export default class LeftMenu extends Component {
           </div>
           <div className='groups'>
             <div className='menu'>
-              <div
-                className='add-ScheduleGames'
-                onClick={this.redirect_addScheduleGames}
-                style={{
-                  backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/v1_Icon_01.png')`,
-                }}></div>
-              <div
-                className='view-ScheduleGames'
-                onClick={this.redirect_viewScheduleGames}
-                style={{
-                  backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/v1_Icon_02.png')`,
-                }}></div>
-              <div
-                className='add-ScheduleGames-caption'
-                onClick={this.redirect_addScheduleGames}>
-                Add Game
+              <Link to='/addScheduleGames'>
+                <div
+                  className='add-ScheduleGames'
+                  style={{ backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/v1_Icon_01.png')` }}></div>
+              </Link>
+              <Link to='/scheduledGames'>
+                <div
+                  className='view-ScheduleGames'
+                  style={{ backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/v1_Icon_02.png')` }}></div>
+              </Link>
+              <div className='add-ScheduleGames-caption'>
+                <Link to='/addScheduleGames' style={{ textDecoration: 'none', color: 'white' }}>
+                  Add Game
+                </Link>
               </div>
-              <div
-                className='view-ScheduleGames-caption'
-                onClick={this.redirect_viewScheduleGames}>
-                View Games
+              <div className='view-ScheduleGames-caption'>
+                <Link to='/scheduledGames' style={{ textDecoration: 'none', color: 'white' }}>
+                  View Game
+                </Link>
               </div>
-              <div
-                className='advancedSearch'
-                onClick={this.redirect_advancedSearch}
-                style={{
-                  backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/v1_Icon_03.png')`,
-                }}></div>
-              <div
-                className='groups'
-                onClick={this.redirect_profile}
-                style={{
-                  backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/v2_Icon-11.png')`,
-                }}></div>
-              <div
-                className='advancedSearch-caption'
-                onClick={this.redirect_advancedSearch}>
-                Search
+              <Link to='/advancedSearch'>
+                <div
+                  className='advancedSearch'
+                  style={{ backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/v1_Icon_03.png')` }}></div>
+              </Link>
+              <Link to={`/profile/${this.props.initialData.userInfo.id}`}>
+                <div
+                  className='profile'
+                  style={{ backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/v2_Icon-11.png')` }}></div>
+              </Link>
+              <div className='advancedSearch-caption'>
+                <Link to='/advancedSearch' style={{ textDecoration: 'none', color: 'white' }}>
+                  Search
+                </Link>
               </div>
-              <div className='groups-caption' onClick={this.redirect_profile}>
-                Profile
+              <div className='groups-caption'>
+                <Link to={`/profile/${this.props.initialData.userInfo.id}`} style={{ textDecoration: 'none', color: 'white' }}>
+                  Profile
+                </Link>
               </div>
             </div>
           </div>
@@ -220,3 +192,4 @@ export default class LeftMenu extends Component {
 }
 
 const app = document.getElementById('app')
+export default withRouter(LeftMenu)
