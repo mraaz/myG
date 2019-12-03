@@ -144,9 +144,7 @@ export default class EditGamingExp extends Component<*, State> {
     const { match } = this.props.routeProps
 
     try {
-      const myGame = axios.get(
-        `/api/GameExperiences/delete/${match.params.game_id}`
-      )
+      const myGame = axios.get(`/api/GameExperiences/delete/${match.params.game_id}`)
     } catch (error) {
       console.log(error)
     }
@@ -176,7 +174,7 @@ export default class EditGamingExp extends Component<*, State> {
       }
     }
 
-    if (this.state.status_box == '' || this.state.status_box == null) {
+    if (this.state.status_box == '' && this.state.status_box == null) {
       this.setState({ show_info_box: true })
       this.setState({ show_status_info_box: true })
       name_trigger = true
@@ -194,10 +192,7 @@ export default class EditGamingExp extends Component<*, State> {
       return
     }
 
-    if (
-      this.state.experience_box != null ||
-      this.state.experience_box != undefined
-    ) {
+    if (this.state.experience_box != null && this.state.experience_box != undefined && this.state.experience_box.length != 0) {
       if (this.state.experience_box.value != null) {
         myExperience = this.state.experience_box.value
       } else {
@@ -205,10 +200,10 @@ export default class EditGamingExp extends Component<*, State> {
       }
     }
 
-    if (this.state.played_box != null || this.state.played_box != undefined) {
+    if (this.state.played_box != null && this.state.played_box != undefined && this.state.played_box.length != 0) {
       myPlayed = this.state.played_box.value
     }
-    if (this.state.ratings_box != null || this.state.ratings_box != undefined) {
+    if (this.state.ratings_box != null && this.state.ratings_box != undefined && this.state.ratings_box.length != 0) {
       if (this.state.ratings_box.value != null) {
         myRatings = this.state.ratings_box.value
       } else {
@@ -247,9 +242,7 @@ export default class EditGamingExp extends Component<*, State> {
       }
       for (i = 0; i < this.state.newValueCreated_tags.length; i++) {
         for (j = 0; j < this.state.value_tags.length; j++) {
-          if (
-            this.state.value_tags[j].label == this.state.newValueCreated_tags[i]
-          ) {
+          if (this.state.value_tags[j].label == this.state.newValueCreated_tags[i]) {
             try {
               if (tmpnewGameID != '') {
                 const post = await axios.post('/api/Tags', {
@@ -278,12 +271,8 @@ export default class EditGamingExp extends Component<*, State> {
       myTags = myTags.replace(/,/g, ', ')
     }
 
-    this.state.comments_box == undefined
-      ? undefined
-      : (this.state.comments_box = this.state.comments_box.trim())
-    this.state.link_box == undefined
-      ? undefined
-      : (this.state.link_box = this.state.link_box.trim())
+    this.state.comments_box == undefined ? undefined : (this.state.comments_box = this.state.comments_box.trim())
+    this.state.link_box == undefined ? undefined : (this.state.link_box = this.state.link_box.trim())
 
     if (!this.state.just_one_time) {
       return
@@ -292,19 +281,16 @@ export default class EditGamingExp extends Component<*, State> {
 
     try {
       const { match } = this.props.routeProps
-      const post = await axios.post(
-        `/api/GameExperiences/${match.params.id}/${match.params.game_id}`,
-        {
-          game_name: myGame_name,
-          experience: myExperience,
-          comments: this.state.comments_box,
-          status: myStatus,
-          played: myPlayed,
-          link: this.state.link_box,
-          ratings: myRatings,
-          tags: myTags,
-        }
-      )
+      const post = await axios.post(`/api/GameExperiences/${match.params.id}/${match.params.game_id}`, {
+        game_name: myGame_name,
+        experience: myExperience,
+        comments: this.state.comments_box,
+        status: myStatus,
+        played: myPlayed,
+        link: this.state.link_box,
+        ratings: myRatings,
+        tags: myTags,
+      })
       this.handleCloseModal()
     } catch (error) {
       console.log(error)
@@ -346,19 +332,12 @@ export default class EditGamingExp extends Component<*, State> {
 
     const getGamingExp = async function() {
       try {
-        const myGame = await axios.get(
-          `/api/GameExperiences/${match.params.id}/${match.params.game_id}`
-        )
+        const myGame = await axios.get(`/api/GameExperiences/${match.params.id}/${match.params.game_id}`)
 
         self.state.edit_game_name = myGame.data.myGameExperience[0].game_name
 
-        const gameName = await axios.get(
-          `/api/GameName/${self.state.edit_game_name}`
-        )
-        const game_newOption = createOption(
-          myGame.data.myGameExperience[0].game_name,
-          gameName.data.getOne[0].id
-        )
+        const gameName = await axios.get(`/api/GameName/${self.state.edit_game_name}`)
+        const game_newOption = createOption(myGame.data.myGameExperience[0].game_name, gameName.data.getOne[0].id)
 
         var allTags
         allTags = await axios.get(`/api/Tags/${gameName.data.getOne[0].id}`)
@@ -506,12 +485,8 @@ export default class EditGamingExp extends Component<*, State> {
     }
     try {
       inputValue = inputValue.trimStart()
-      const getGameName = await axios.get(
-        `/api/GameNames/${inputValue}/gameSearchResults`
-      )
-      var results = getGameName.data.gameSearchResults[0].filter((i) =>
-        i.game_name.toLowerCase().includes(inputValue.toLowerCase())
-      )
+      const getGameName = await axios.get(`/api/GameNames/${inputValue}/gameSearchResults`)
+      var results = getGameName.data.gameSearchResults[0].filter((i) => i.game_name.toLowerCase().includes(inputValue.toLowerCase()))
       var newArr = []
       var i, newOption
       if (results.length != 0) {
@@ -535,26 +510,8 @@ export default class EditGamingExp extends Component<*, State> {
       return <Redirect push to={tmp} />
     }
     if (this.state.myGame !== undefined) {
-      const {
-        isLoading,
-        options,
-        value,
-        isLoading_tags,
-        options_tags,
-        value_tags,
-        edit_game_name,
-      } = this.state
-      const {
-        game_name,
-        experience,
-        comments,
-        played_label,
-        played_value,
-        status,
-        link,
-        tags,
-        ratings,
-      } = this.state.myGame
+      const { isLoading, options, value, isLoading_tags, options_tags, value_tags, edit_game_name } = this.state
+      const { game_name, experience, comments, played_label, played_value, status, link, tags, ratings } = this.state.myGame
       var comments_chkbox_state = false
       var link_chkbox_state = false
 
@@ -583,11 +540,7 @@ export default class EditGamingExp extends Component<*, State> {
             isOpen={true}
             onRequestClose={(event) => {
               // Ignore react-modal esc-close handling
-              if (
-                event.type === 'keydown' &&
-                event.keyCode === 27 &&
-                this.state.shouldCloseOnOverlayClick_ === false
-              ) {
+              if (event.type === 'keydown' && event.keyCode === 27 && this.state.shouldCloseOnOverlayClick_ === false) {
                 return
               } else {
                 this.handleCloseModal()
@@ -611,11 +564,7 @@ export default class EditGamingExp extends Component<*, State> {
                 onChange={this.handleChange2}
                 className='game_name_box'
                 onCreateOption={this.handleCreate}
-                onInputChange={(inputValue) =>
-                  inputValue.length <= 88
-                    ? inputValue
-                    : inputValue.substr(0, 88)
-                }
+                onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
                 defaultValue={[{ label: game_name, value: game_name }]}
               />
             </div>
@@ -663,13 +612,7 @@ export default class EditGamingExp extends Component<*, State> {
             </div>
             <div className='options_checkbox'>
               <p>Show Link box and/or Comments box</p>
-              <input
-                id='link_ChkBox'
-                type='checkbox'
-                defaultChecked={link_chkbox_state}
-                onChange={this.toggleChange_link}
-              />{' '}
-              Link
+              <input id='link_ChkBox' type='checkbox' defaultChecked={link_chkbox_state} onChange={this.toggleChange_link} /> Link
               <input
                 id='comments_ChkBox'
                 type='checkbox'
@@ -683,12 +626,10 @@ export default class EditGamingExp extends Component<*, State> {
                 <span style={{ color: 'green' }}>T</span>
                 <span style={{ color: 'dodgerblue' }}>a</span>
                 <span style={{ color: 'red' }}>g</span>
-                <span style={{ color: 'gold' }}>s</span> (Keywords that identify{' '}
-                <span style={{ color: 'green' }}>y</span>
+                <span style={{ color: 'gold' }}>s</span> (Keywords that identify <span style={{ color: 'green' }}>y</span>
                 <span style={{ color: 'dodgerblue' }}>o</span>
                 <span style={{ color: 'red' }}>u</span>
-                <span style={{ color: 'gold' }}>r</span> unique experience with
-                this game. Max 250 chars)
+                <span style={{ color: 'gold' }}>r</span> unique experience with this game. Max 250 chars)
               </p>
               <CreatableSelect
                 onChange={this.handleChange3}
@@ -699,11 +640,7 @@ export default class EditGamingExp extends Component<*, State> {
                 isLoading={isLoading_tags}
                 className='tag_name_box'
                 isMulti
-                onInputChange={(inputValue) =>
-                  inputValue.length <= 250
-                    ? inputValue
-                    : inputValue.substr(0, 250)
-                }
+                onInputChange={(inputValue) => (inputValue.length <= 250 ? inputValue : inputValue.substr(0, 250))}
                 value={value_tags}
               />
             </div>
@@ -742,16 +679,8 @@ export default class EditGamingExp extends Component<*, State> {
             {!this.state.show_info_box && <div></div>}
             {this.state.show_info_box && (
               <div className='info_box'>
-                {this.state.show_game_name_info_box && (
-                  <div className='game_name_error'>
-                    Error: Game Name can't be empty
-                  </div>
-                )}
-                {this.state.show_status_info_box && (
-                  <div className='status_name_error'>
-                    Error: Status can't be empty
-                  </div>
-                )}
+                {this.state.show_game_name_info_box && <div className='game_name_error'>Error: Game Name can't be empty</div>}
+                {this.state.show_status_info_box && <div className='status_name_error'>Error: Status can't be empty</div>}
               </div>
             )}
             <div></div>
@@ -759,12 +688,7 @@ export default class EditGamingExp extends Component<*, State> {
               <button
                 className='delete'
                 onClick={() => {
-                  if (
-                    window.confirm(
-                      'Are you sure you wish to delete this Gaming Experience?'
-                    )
-                  )
-                    this.delete_exp()
+                  if (window.confirm('Are you sure you wish to delete this Gaming Experience?')) this.delete_exp()
                 }}>
                 Delete
               </button>

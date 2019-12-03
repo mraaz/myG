@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Select from 'react-select'
 import ReactDOM from 'react-dom'
+import { Redirect } from 'react-router'
 import axios from 'axios'
 
 export default class IndividualGamingExperience extends Component {
@@ -151,12 +152,9 @@ export default class IndividualGamingExperience extends Component {
       oldTitle = getCommendTitle.data.myGameExperience[0].commendation
 
       if (oldTitle != commendTitle) {
-        const addCommendTitle = axios.post(
-          `/api/GameExperiences/commend/${id}`,
-          {
-            commendation: commendTitle,
-          }
-        )
+        const addCommendTitle = axios.post(`/api/GameExperiences/commend/${id}`, {
+          commendation: commendTitle,
+        })
       }
     } catch (error) {
       console.log(error)
@@ -171,9 +169,7 @@ export default class IndividualGamingExperience extends Component {
           case 0:
             return (
               <div className='tag' key={index}>
-                <button
-                  className='btn-green'
-                  onClick={() => this.find_tag(tag)}>
+                <button className='btn-green' onClick={() => this.find_tag(tag)}>
                   {tag}
                 </button>
                 &nbsp;
@@ -203,9 +199,7 @@ export default class IndividualGamingExperience extends Component {
           case 3:
             return (
               <div className='tag' key={index}>
-                <button
-                  className='btn-yellow'
-                  onClick={() => this.find_tag(tag)}>
+                <button className='btn-yellow' onClick={() => this.find_tag(tag)}>
                   {tag}
                 </button>
                 &nbsp;
@@ -215,9 +209,7 @@ export default class IndividualGamingExperience extends Component {
           default:
             return (
               <div className='tag' key={index}>
-                <button
-                  className='btn-green'
-                  onClick={() => this.find_tag(tag)}>
+                <button className='btn-green' onClick={() => this.find_tag(tag)}>
                   {tag}
                 </button>
                 &nbsp;
@@ -254,44 +246,42 @@ export default class IndividualGamingExperience extends Component {
     let { item, rowLen, row } = this.props
     var show_lines = true
 
-    var {
-      id,
-      game_name,
-      experience,
-      status,
-      comments,
-      played,
-      commendation,
-      link,
-      tags,
-      ratings,
-    } = item
-    var arrTags = ''
-    var show_tags = false
-    var show_link = false
-    var show_comments = false
-    var show_ratings = false
-    var played_converted = 'Less than 1 year'
+    var { id, game_name, experience, status, comments, played, commendation, link, tags, ratings } = item
+    var arrTags = '',
+      show_tags = false,
+      show_link = false,
+      show_comments = false,
+      show_ratings = false,
+      played_converted = 'Less than 1 year',
+      check_if_its_odd = 0,
+      show_extra_div = false
 
     if (tags != null && tags != '') {
       arrTags = tags.split(',')
       show_tags = true
+      check_if_its_odd = check_if_its_odd + 1
     }
 
     if (link != null && link != '') {
       show_link = true
+      check_if_its_odd = check_if_its_odd + 1
     }
 
     if (comments != null && comments != '') {
       show_comments = true
+      check_if_its_odd = check_if_its_odd + 1
     }
 
     if (ratings != 0 && ratings != '') {
       show_ratings = true
+      check_if_its_odd = check_if_its_odd + 1
     }
 
     if (experience == null) {
       experience = ''
+    }
+    if (check_if_its_odd == 0) {
+      show_extra_div = true
     }
 
     switch (played) {
@@ -318,22 +308,16 @@ export default class IndividualGamingExperience extends Component {
     }
 
     if (rowLen === row + 1) {
-      show_lines = false
+      show_lines = false //Show lines for all entries expect for the very last one
     }
+
     return (
       <div className='game-info'>
         <div className='game-name'>{`${game_name}`}</div>
-        <div className='game-infos'>
-          {this.state.myPage && (
-            <i className='fas fa-pen' onClick={() => this.edit_lnk(id)}></i>
-          )}
-        </div>
-        {show_ratings && (
-          <div className='game-rating'>{this.showRating(ratings)}</div>
-        )}
+        <div className='game-infos'>{this.state.myPage && <i className='fas fa-pen' onClick={() => this.edit_lnk(id)}></i>}</div>
+        {show_ratings && <div className='game-rating'>{this.showRating(ratings)}</div>}
         <div className='game-stuff'>
-          <i className='fas fa-gamepad'></i>&nbsp;{`${experience}`},{' '}
-          {`${played_converted}`}
+          <i className='fas fa-gamepad'></i>&nbsp;{`${experience}`}, {`${played_converted}`}
         </div>
         <div className='game-status'>
           <i className='fab fa-d-and-d'></i>&nbsp;{`${status}`}
@@ -346,12 +330,7 @@ export default class IndividualGamingExperience extends Component {
                 className='commend'
                 type='button'
                 onClick={() => {
-                  if (
-                    window.confirm(
-                      'Commend allows you to reward positive behaviour or recongise great skill'
-                    )
-                  )
-                    this.commend_me(id)
+                  if (window.confirm('Commend allows you to reward positive behaviour and/or recongise great skill')) this.commend_me(id)
                 }}>
                 Commend!
               </button>
@@ -368,6 +347,7 @@ export default class IndividualGamingExperience extends Component {
             <i className='fas fa-broadcast-tower'></i>&nbsp;Link:{`${link}`}
           </div>
         )}
+        {show_extra_div && <div> </div>}
         {show_tags && <div className='tags'>{this.showAllTags(arrTags)}</div>}
         {show_lines && (
           <div className='line-break'>

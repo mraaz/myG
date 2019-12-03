@@ -187,245 +187,12 @@
       .relationship_status {
         width: 50%;
         margin-left: 1rem;
-        padding-top: 2px;
+        padding-top: 18px;
       }
     }
   }
   .padding-container {
     padding: 18px 15px;
-  }
-  .game-experience-grey-container {
-    width: 99%;
-    position: relative;
-    //height: 600px;
-    z-index: 1;
-    background: #151b26;
-    padding: 20px;
-    border-radius: 5px;
-
-    -webkit-box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
-    -moz-box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
-    box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
-
-    h3 {
-      color: $veryLightText;
-      font-size: 1.4rem;
-      margin: 0.5rem;
-      display: inline-block;
-    }
-    .add-gaming-experience {
-      position: absolute;
-      right: 35px;
-      display: flex;
-      display: inline-flex;
-      justify-content: flex-end;
-      padding: 10px;
-      align-items: center;
-      cursor: pointer;
-      .fa-plus-circle {
-        color: white;
-        border-radius: 50%;
-        background: white;
-        color: #5f695a;
-        cursor: pointer;
-      }
-    }
-    .icon {
-      position: absolute;
-      right: 5px;
-      display: flex;
-      display: inline-flex;
-      justify-content: flex-end;
-      padding: 10px;
-      align-items: center;
-      cursor: pointer;
-      color: $veryLightText;
-    }
-    .game-info {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-row-gap: 8px;
-
-      .game-name {
-        color: $htext;
-        font-size: 1.5rem;
-        margin: 0.5rem;
-        font-weight: bold;
-      }
-
-      .game-infos {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        .fa-pen {
-          position: absolute;
-          right: 5px;
-          display: flex;
-          display: inline-flex;
-          justify-content: flex-end;
-          font-size: 1rem;
-          color: #2196f3;
-          cursor: pointer;
-        }
-      }
-      .game-rating {
-        display: flex;
-        .stars {
-          padding-left: 16px;
-          .fa-star {
-            color: orange;
-          }
-        }
-      }
-      .game-stuff {
-        margin: 0.5rem;
-        display: flex;
-        align-items: center;
-        .fa-gamepad {
-          align-items: center;
-          font-size: 1.5rem;
-          color: #2196f3;
-          display: flex;
-          justify-content: flex-end;
-        }
-      }
-      .game-comments {
-        margin: 0.5rem;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        grid-column: span 2;
-        .fa-trophy {
-          font-size: 1.5rem;
-          color: #f7ca18;
-        }
-      }
-      .game-status {
-        display: flex;
-        align-items: center;
-        margin: 0.5rem;
-        .fa-d-and-d {
-          align-items: center;
-          font-size: 1.5rem;
-          color: #f44336;
-          display: flex;
-          justify-content: flex-end;
-        }
-      }
-      .game-commendation {
-        margin: 0.5rem;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        .fa-dragon {
-          font-size: 1.5rem;
-          color: #4caf50;
-        }
-        .commendation {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          display: inline-block;
-        }
-      }
-
-      .game-misc {
-        margin: 0.5rem;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        grid-column: span 2;
-        .fa-broadcast-tower {
-          font-size: 1.5rem;
-          color: #f44336;
-        }
-      }
-      .tags {
-        grid-column: span 2;
-        margin: 0.5rem;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        display: inline-block;
-        .tag {
-          display: flex;
-          align-items: center;
-          display: inline-block;
-          margin-top: 2px;
-          margin-bottom: 2px;
-
-          .btn-green {
-            border: 2px solid black;
-            background-color: white;
-            color: black;
-            padding: 12px 12px;
-            font-size: 13px;
-            border-color: #4caf50;
-            color: green;
-            border-radius: 15px;
-            cursor: pointer;
-
-            &:hover {
-              background-color: #4caf50;
-              color: white;
-            }
-          }
-          .btn-blue {
-            border: 2px solid black;
-            background-color: white;
-            color: black;
-            padding: 12px 12px;
-            font-size: 13px;
-            border-color: #2196f3;
-            color: dodgerblue;
-            border-radius: 15px;
-            cursor: pointer;
-
-            &:hover {
-              background-color: #2196f3;
-              color: white;
-            }
-          }
-          .btn-red {
-            border: 2px solid black;
-            background-color: white;
-            color: black;
-            padding: 12px 12px;
-            font-size: 13px;
-            border-color: #f44336;
-            color: red;
-            border-radius: 15px;
-            cursor: pointer;
-
-            &:hover {
-              background-color: #f44336;
-              color: white;
-            }
-          }
-          .btn-yellow {
-            border: 2px solid black;
-            background-color: white;
-            padding: 12px 12px;
-            font-size: 13px;
-            border-color: #f7ca18;
-            color: gold;
-            border-radius: 15px;
-            cursor: pointer;
-
-            &:hover {
-              background-color: #f7ca18;
-              color: white;
-            }
-          }
-        }
-      }
-      .line-break {
-        hr {
-          grid-column: span 2;
-          width: 100%;
-        }
-      }
-    }
   }
 
   .esports-bio-grey-container {
@@ -435,10 +202,7 @@
     z-index: 1;
     background: #151b26;
     padding: 20px;
-
-    -webkit-box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
-    -moz-box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
-    box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
 
     h3 {
       color: $veryLightText;
@@ -476,10 +240,6 @@
     background: #151b26;
     padding: 20px;
     border-radius: 5px;
-
-    -webkit-box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
-    -moz-box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
-    box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
 
     h3 {
       color: $veryLightText;
@@ -704,6 +464,231 @@
       }
     }
   }
+
+  .game-experience-grey-container {
+    width: 99%;
+    position: relative;
+    //height: 600px;
+    z-index: 1;
+    background: #151b26;
+    padding: 20px;
+    border-radius: 5px;
+
+    h3 {
+      color: $veryLightText;
+      font-size: 1.4rem;
+      margin: 0.5rem;
+      display: inline-block;
+    }
+    .add-gaming-experience {
+      position: absolute;
+      right: 35px;
+      display: flex;
+      display: inline-flex;
+      justify-content: flex-end;
+      padding: 10px;
+      align-items: center;
+      cursor: pointer;
+      .fa-plus-circle {
+        color: white;
+        border-radius: 50%;
+        background: white;
+        color: #5f695a;
+        cursor: pointer;
+      }
+    }
+    .icon {
+      position: absolute;
+      right: 5px;
+      display: flex;
+      display: inline-flex;
+      justify-content: flex-end;
+      padding: 10px;
+      align-items: center;
+      cursor: pointer;
+      color: $veryLightText;
+    }
+    .game-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-row-gap: 8px;
+
+      .game-name {
+        color: $htext;
+        font-size: 1.5rem;
+        margin: 0.5rem;
+        font-weight: bold;
+      }
+
+      .game-infos {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .fa-pen {
+          position: absolute;
+          right: 5px;
+          display: flex;
+          display: inline-flex;
+          justify-content: flex-end;
+          font-size: 1rem;
+          color: #2196f3;
+          cursor: pointer;
+        }
+      }
+      .game-rating {
+        display: flex;
+        .stars {
+          padding-left: 16px;
+          .fa-star {
+            color: orange;
+          }
+        }
+      }
+      .game-stuff {
+        margin: 0.5rem;
+        display: flex;
+        align-items: center;
+        .fa-gamepad {
+          align-items: center;
+          font-size: 1.5rem;
+          color: #2196f3;
+          display: flex;
+          justify-content: flex-end;
+        }
+      }
+      .game-comments {
+        margin: 0.5rem;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        grid-column: span 2;
+        .fa-trophy {
+          font-size: 1.5rem;
+          color: #f7ca18;
+        }
+      }
+      .game-status {
+        display: flex;
+        align-items: center;
+        margin: 0.5rem;
+        .fa-d-and-d {
+          align-items: center;
+          font-size: 1.5rem;
+          color: #f44336;
+          display: flex;
+          justify-content: flex-end;
+        }
+      }
+      .game-commendation {
+        margin: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        .fa-dragon {
+          font-size: 1.5rem;
+          color: #4caf50;
+        }
+        .commendation {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          display: inline-block;
+        }
+      }
+
+      .game-misc {
+        margin: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        grid-column: span 2;
+        .fa-broadcast-tower {
+          font-size: 1.5rem;
+          color: #f44336;
+        }
+      }
+      .tags {
+        grid-column: span 2;
+        margin: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        display: inline-block;
+        .tag {
+          display: flex;
+          align-items: center;
+          display: inline-block;
+          margin-top: 2px;
+          margin-bottom: 2px;
+
+          .btn-green {
+            border: 2px solid black;
+            background-color: white;
+            color: black;
+            padding: 12px 12px;
+            font-size: 13px;
+            border-color: #4caf50;
+            color: green;
+            border-radius: 15px;
+            cursor: pointer;
+
+            &:hover {
+              background-color: #4caf50;
+              color: white;
+            }
+          }
+          .btn-blue {
+            border: 2px solid black;
+            background-color: white;
+            color: black;
+            padding: 12px 12px;
+            font-size: 13px;
+            border-color: #2196f3;
+            color: dodgerblue;
+            border-radius: 15px;
+            cursor: pointer;
+
+            &:hover {
+              background-color: #2196f3;
+              color: white;
+            }
+          }
+          .btn-red {
+            border: 2px solid black;
+            background-color: white;
+            color: black;
+            padding: 12px 12px;
+            font-size: 13px;
+            border-color: #f44336;
+            color: red;
+            border-radius: 15px;
+            cursor: pointer;
+
+            &:hover {
+              background-color: #f44336;
+              color: white;
+            }
+          }
+          .btn-yellow {
+            border: 2px solid black;
+            background-color: white;
+            padding: 12px 12px;
+            font-size: 13px;
+            border-color: #f7ca18;
+            color: gold;
+            border-radius: 15px;
+            cursor: pointer;
+
+            &:hover {
+              background-color: #f7ca18;
+              color: white;
+            }
+          }
+        }
+      }
+    }
+  }
+
   .ReactModal {
     z-index: 1000;
   }

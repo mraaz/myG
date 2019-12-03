@@ -160,7 +160,7 @@ export default class IndividualEsportsExperience extends Component {
     }
 
     if (rowLen === row + 1) {
-      show_lines = false
+      show_lines = false //Show lines for all entries expect for the very last one
     }
     return (
       <div className='game-info'>
