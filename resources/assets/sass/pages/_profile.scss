@@ -121,7 +121,7 @@
         display: flex;
         justify-content: center;
         position: relative;
-        padding-bottom: 28px;
+        padding-bottom: 23px;
         font-size: 2rem;
         //margin: 1rem 0;
       }
@@ -143,7 +143,6 @@
       .alias {
         display: flex;
         justify-content: center;
-        position: relative;
         font-size: 1.5rem;
         font-style: italic;
         //margin: 1rem 0;
@@ -170,8 +169,6 @@
       h4 {
         justify-content: center;
         display: flex;
-        position: relative;
-        top: -28px;
         padding: 10px;
       }
     }
@@ -179,17 +176,18 @@
       display: grid;
       grid-template-columns: 4fr 4fr;
       padding-bottom: 18px;
-      //position: relative;
 
+      .myBio {
+        margin-left: 1rem;
+        width: 50%;
+      }
       .contact-info {
         width: 50%;
       }
-      .myBio {
-        margin-left: 1rem;
-        // display: flex;
-        // display: inline-flex;
-        //justify-content: flex-end;
+      .relationship_status {
         width: 50%;
+        margin-left: 1rem;
+        padding-top: 2px;
       }
     }
   }
