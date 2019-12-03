@@ -9,7 +9,7 @@ class NotificationsSchema extends Schema {
       table.increments()
       table.integer('user_id').unsigned().notNullable()
       table.foreign('user_id').references('users.id').onDelete('cascade')
-      table.integer('activity_type').unsigned().notNullable()
+      table.integer('activity_type').unsigned().notNullable().index()
       table.integer('other_user_id').unsigned().notNullable()
       table.foreign('other_user_id').references('users.id').onDelete('cascade')
       table.integer('post_id').unsigned().nullable()

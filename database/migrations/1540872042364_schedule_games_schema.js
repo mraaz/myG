@@ -9,7 +9,7 @@ class ScheduleGamesSchema extends Schema {
       table.increments()
       table.integer('user_id').unsigned().notNullable()
       table.foreign('user_id').references('users.id').onDelete('cascade')
-      table.string('game_name', 254).notNullable()
+      table.string('game_name', 254).notNullable().index()
       table.string('region', 254).nullable()
       table.string('experience', 254).nullable()
       table.timestamp('start_date_time').notNullable()

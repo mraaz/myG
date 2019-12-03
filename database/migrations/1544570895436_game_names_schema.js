@@ -7,7 +7,7 @@ class GameNamesSchema extends Schema {
   up () {
     this.create('game_names', (table) => {
       table.increments()
-      table.string('game_name', 254).notNullable().unique()
+      table.string('game_name', 254).notNullable().unique().index()
       table.integer('created_by').unsigned().notNullable()
       table.foreign('created_by').references('users.id').onDelete('cascade')
       table.integer('counter').unsigned().nullable().defaultTo(1)
