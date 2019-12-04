@@ -8,5 +8,9 @@ tmp
 # Environment variables, never commit this file
 .env
 
+# Gulp generated files
+public/css/*
+public/js/*
+
 # The development sqlite file
 database/development.sqlite
