@@ -78,7 +78,7 @@ Route.post('/api/user', 'UserController.store')
 Route.post('/api/userprofile', 'UserController.changeProfile')
 Route.post('/api/userprofilebg', 'UserController.changeProfileBg')
 Route.get('/api/user/delete', 'UserController.destroy')
-Route.get('/api/user/:id', 'UserController.profile')
+Route.get('w:id', 'UserController.profile')
 Route.get('/api/user/:id/addFriend', 'UserController.addFriend')
 Route.get('/api/user/:id/unfriend', 'UserController.unfriend')
 Route.get('/api/user/:str/playerSearchResults', 'UserController.playerSearchResults')
@@ -249,6 +249,12 @@ Route.get('/api/usergroup/delete_member/:id/:usergrp_id', 'UsergroupController.d
 Route.get('/api/usergroup/promote_member/:id/:usergrp_id', 'UsergroupController.promote_member')
 Route.get('/api/usergroup/demote_member/:id/:usergrp_id', 'UsergroupController.demote_member')
 Route.get('/api/usergroup/current_member/:id', 'UsergroupController.current_member')
+
+Route.get('/api/chats/:user_id', 'UserChatController.fetchChats');
+Route.get('/api/chat/:id', 'ChatController.fetchMessages');
+Route.get('/api/chat/:chat_id/title', 'UserChatController.fetchTitle');
+Route.post('/api/chat/', 'ChatController.create');
+Route.post('/api/chat/:id/message', 'ChatController.createMessage');
 
 
 Route.any('*', ({view}) => view.render('pages/react'))

@@ -1048,6 +1048,19 @@ section#content-container {
         padding-right: 15px;
       }
     }
+    .messenger-body {
+      display: flex;
+      padding: 12px;
+      .messenger-contact {
+        &:active { opacity: 0.3 };
+      }
+    }
+    .messenger-chat-bar {
+      display: flex;
+      position: absolute;
+      right: 20%;
+      bottom: 0;
+    }
     .search {
       background: #2c2f33;
       padding: 8px 10px;
