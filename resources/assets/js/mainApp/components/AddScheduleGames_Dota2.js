@@ -5,6 +5,7 @@ import { Redirect } from 'react-router'
 import DatePicker from 'react-datepicker'
 import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
+import { toast } from 'react-toastify'
 
 import { SubmitDataFunction } from './AddScheduleGames_Submit_Data'
 
@@ -82,6 +83,13 @@ const dota2_roles = [
   { value: 'Position 5', label: 'Position 5' },
 ]
 
+const Toast_style = (props) => (
+  <div className='individual-toasts'>
+    <img width={48} src={'https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/Logo.png'}></img>
+    <div>{props.text}</div>
+  </div>
+)
+
 export default class AddScheduleGames_Dota2 extends Component {
   constructor() {
     super()
@@ -110,16 +118,16 @@ export default class AddScheduleGames_Dota2 extends Component {
     this.state.game_name_box = this.props.game_name_box
 
     if (this.props.game_name_box == '' || this.props.game_name_box == null) {
-      alert('Sorry mate! Game name can not be blank')
+      toast.success(<Toast_style text={'Sorry mate! Game name can not be blank'} />)
       return
     }
     if (this.state.startDate == null || this.state.startDate == undefined) {
-      alert('Sorry mate! Start date can not be empty')
+      toast.success(<Toast_style text={'Sorry mate! Start date can not be empty'} />)
       return
     }
 
     if (this.state.startDate.isSameOrAfter(this.state.endDate)) {
-      alert('Sorry mate! End date needs to be AFTER start date')
+      toast.success(<Toast_style text={'Sorry mate! End date needs to be AFTER start date'} />)
       return
     }
     //Slow connections this function can get called multiple times
@@ -134,8 +142,7 @@ export default class AddScheduleGames_Dota2 extends Component {
       if (
         this.state.selected_visibility != null &&
         this.state.selected_visibility != undefined &&
-        (this.state.selected_visibility.value == 2 ||
-          this.state.selected_visibility.value == 4)
+        (this.state.selected_visibility.value == 2 || this.state.selected_visibility.value == 4)
       ) {
         this.setState({ redirect_myScheduleGames: true })
       } else {
@@ -233,11 +240,7 @@ export default class AddScheduleGames_Dota2 extends Component {
           </div>
           <div className='dota2_medal_ranks'>
             <div className='dota2_medal_ranks_header'>
-              <img
-                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/game_icons/dota_2_logo.png'
-                height='23'
-                width='23'
-              />
+              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/game_icons/dota_2_logo.png' height='23' width='23' />
               <label>Medal Ranks:</label>
             </div>
             <Select
@@ -250,11 +253,7 @@ export default class AddScheduleGames_Dota2 extends Component {
           </div>
           <div className='dota2_server_regions'>
             <div className='dota2_server_regions_header'>
-              <img
-                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/game_icons/dota_2_logo.png'
-                height='23'
-                width='23'
-              />
+              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/game_icons/dota_2_logo.png' height='23' width='23' />
               <label>Server Regions:</label>
             </div>
             <Select
@@ -267,20 +266,10 @@ export default class AddScheduleGames_Dota2 extends Component {
           </div>
           <div className='dota2_roles'>
             <div className='dota2_roles_header'>
-              <img
-                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/game_icons/dota_2_logo.png'
-                height='23'
-                width='23'
-              />
+              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/game_icons/dota_2_logo.png' height='23' width='23' />
               <label>Which roles do you need?</label>
             </div>
-            <Select
-              onChange={this.handleChange_Dota2_roles}
-              options={dota2_roles}
-              className='dota2-roles'
-              isClearable={true}
-              isMulti
-            />
+            <Select onChange={this.handleChange_Dota2_roles} options={dota2_roles} className='dota2-roles' isClearable={true} isMulti />
           </div>
           <div className='experience'>
             <label>Experience:</label>
@@ -359,17 +348,11 @@ export default class AddScheduleGames_Dota2 extends Component {
             />
           </div>
           <div className='buttons'>
-            <button
-              className='save'
-              type='button'
-              onClick={() => this.submitForm(true)}>
+            <button className='save' type='button' onClick={() => this.submitForm(true)}>
               &nbsp;&nbsp;Create game&nbsp;&nbsp;
             </button>
             &nbsp;
-            <button
-              className='save-create'
-              type='button'
-              onClick={() => this.submitForm(false)}>
+            <button className='save-create' type='button' onClick={() => this.submitForm(false)}>
               Save & Create Another
             </button>
           </div>

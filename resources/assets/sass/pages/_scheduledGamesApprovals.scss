@@ -27,6 +27,11 @@
     margin-left: 1rem;
     position: relative;
 
+    .individual-toasts {
+      display: flex;
+      align-items: center;
+    }
+
     .user-img {
       background-position: center;
       background-repeat: no-repeat;

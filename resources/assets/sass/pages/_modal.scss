@@ -7,6 +7,11 @@
   }
 }
 
+.individual-toasts {
+  display: flex;
+  align-items: center;
+}
+
 .modal-container {
   position: fixed;
   left: 0px;
