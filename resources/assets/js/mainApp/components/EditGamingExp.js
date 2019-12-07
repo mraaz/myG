@@ -6,6 +6,7 @@ import Select from 'react-select'
 import CreatableSelect from 'react-select/lib/Creatable'
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import Modal from 'react-modal'
+import { toast } from 'react-toastify'
 
 Modal.setAppElement('#app')
 
@@ -51,15 +52,19 @@ const createOption = (label: string, game_names_id: string) => ({
   game_names_id,
 })
 
+const Toast_style = (props) => (
+  <div className='individual-toasts'>
+    <img width={48} src={'https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/Logo.png'}></img>
+    <div>{props.text}</div>
+  </div>
+)
+
 export default class EditGamingExp extends Component<*, State> {
   constructor() {
     super()
     self = this
     this.state = {
       shouldCloseOnOverlayClick_: true,
-      show_info_box: false,
-      show_game_name_info_box: false,
-      show_status_info_box: false,
       game_name_box: '',
       status_box: '',
       experience_box: '',
@@ -77,7 +82,6 @@ export default class EditGamingExp extends Component<*, State> {
       newValueCreated: [],
       comments_chkbox: false,
       link_chkbox: false,
-      name_trigger: false,
       intial_trigger: true,
       edit_game_name: '',
       just_one_time: true,
@@ -159,14 +163,10 @@ export default class EditGamingExp extends Component<*, State> {
     var myGame_name = ''
     var myStatus = ''
 
-    let { name_trigger } = this.state.name_trigger
-
     if (this.state.value == '' || this.state.value == null) {
-      this.setState({ show_info_box: true })
-      this.setState({ show_game_name_info_box: true })
-      name_trigger = true
+      toast.success(<Toast_style text={'Sorry mate! Game Name can not be blank'} />)
+      return
     } else {
-      this.setState({ show_game_name_info_box: false })
       if (this.state.value.label != null) {
         myGame_name = this.state.value.label
       } else {
@@ -175,21 +175,14 @@ export default class EditGamingExp extends Component<*, State> {
     }
 
     if (this.state.status_box == '' && this.state.status_box == null) {
-      this.setState({ show_info_box: true })
-      this.setState({ show_status_info_box: true })
-      name_trigger = true
+      toast.success(<Toast_style text={'Sorry mate! Status can not be blank'} />)
+      return
     } else {
-      this.setState({ show_status_info_box: false })
       if (this.state.status_box.label != null) {
         myStatus = this.state.status_box.label
       } else {
         myStatus = this.state.status_box
       }
-    }
-
-    if (name_trigger) {
-      this.setState({ name_trigger: false })
-      return
     }
 
     if (this.state.experience_box != null && this.state.experience_box != undefined && this.state.experience_box.length != 0) {
@@ -406,43 +399,7 @@ export default class EditGamingExp extends Component<*, State> {
         console.log(error)
       }
     }
-    // const getGameNameTags = async function(){
-    //   try{
-    //     console.log(self.state.edit_game_name);
-    //     const gameName = await axios.get(`/api/GameName/${self.state.edit_game_name}`)
-    //     console.log(gameName);
-    //     return
-    //
-    //     var i
-    //     for (i = 0; i < allGameNames.data.allGameNames.length; i++){
-    //       const newOption = createOption(allGameNames.data.allGameNames[i].game_name, allGameNames.data.allGameNames[i].id )
-    //       const { options } = self.state
-    //       self.state.options = [...options, newOption]
-    //
-    //       if (self.state.edit_game_name == allGameNames.data.allGameNames[i].game_name){
-    //         var allTags
-    //         allTags = await axios.get(`/api/Tags/${allGameNames.data.allGameNames[i].id}`)
-    //
-    //         var x
-    //         for (x = 0; x < allTags.data.allTags.length; x++){
-    //           const anotherOption = createOption(allTags.data.allTags[x].tag)
-    //           let { options_tags } = self.state
-    //           if (x == 0){
-    //             options_tags=""
-    //           }
-    //           // self.setState({
-    //           //     options_tags: [...options_tags, anotherOption],
-    //           // })
-    //           self.state.options_tags = [...options_tags, anotherOption]
-    //         }
-    //       }
-    //     }
-    //   } catch (error){
-    //     console.log(error)
-    //   }
-    // }
     getGamingExp()
-    //getGameNameTags()
   }
 
   onBlur_game_name = (value) => {
@@ -555,7 +512,6 @@ export default class EditGamingExp extends Component<*, State> {
               <p>
                 Game Name <span style={{ color: 'red' }}>*</span>
               </p>
-              {/* <input type="text" id="game_name_box" className="game_name_box" maxLength="50" onKeyDown={this.onKeyDown} onChange={this.handleChange} /> */}
               <AsyncCreatableSelect
                 cacheOptions
                 defaultOptions
@@ -676,13 +632,7 @@ export default class EditGamingExp extends Component<*, State> {
               </div>
             )}
             <div></div>
-            {!this.state.show_info_box && <div></div>}
-            {this.state.show_info_box && (
-              <div className='info_box'>
-                {this.state.show_game_name_info_box && <div className='game_name_error'>Error: Game Name can't be empty</div>}
-                {this.state.show_status_info_box && <div className='status_name_error'>Error: Status can't be empty</div>}
-              </div>
-            )}
+            <div></div>
             <div></div>
             <div className='save-btn'>
               <button

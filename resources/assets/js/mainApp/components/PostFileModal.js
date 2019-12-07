@@ -1,6 +1,15 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 
+import { toast } from 'react-toastify'
+
+const Toast_style = (props) => (
+  <div className='individual-toasts'>
+    <img width={48} src={'https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/Logo.png'}></img>
+    <div>{props.text}</div>
+  </div>
+)
+
 class FilePreview extends Component {
   constructor(props) {
     super(props)
@@ -19,9 +28,7 @@ class FilePreview extends Component {
       return (
         <div className='file-preview-wrap'>
           <div className='file-preview-overlay'>
-            <span
-              className='file-preview-delete'
-              onClick={() => this.clickDelete()}>
+            <span className='file-preview-delete' onClick={() => this.clickDelete()}>
               <i className='fas fa-times'></i>
             </span>
           </div>
@@ -34,9 +41,7 @@ class FilePreview extends Component {
       return (
         <div className='file-preview-wrap'>
           <div className='file-preview-overlay'>
-            <span
-              className='file-preview-delete'
-              onClick={() => this.clickDelete()}>
+            <span className='file-preview-delete' onClick={() => this.clickDelete()}>
               <i className='fas fa-times'></i>
             </span>
           </div>
@@ -53,24 +58,7 @@ export default class PostFileModal extends Component {
     this.state = {
       file: null,
       file_preview: '',
-      preview_files: [
-        // {
-        //   src: 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/1556592223564-lg.jpg',
-        //   key: '1556592223564-lg.jpg'
-        // },
-        // {
-        //   src: 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/1556630834362-lg.png',
-        //   key: '1556630834362-lg.png'
-        // },
-        // {
-        //   src: 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/1557052734263_7KtWM6_SampleVideo_1280x720_1mb.mp4',
-        //   key: ''
-        // }
-        // {
-        //   src: 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/1557106454637_KnDFzf_Amazing+Video.avi',
-        //   key: '1557106707224_WvK0ly_Meek+Mill+-+Going+Bad+feat.+Drake+(Official+Video).mp4'
-        // }
-      ],
+      preview_files: [],
       uploading: false,
       file_src: '',
       file_key: '',
@@ -183,9 +171,8 @@ export default class PostFileModal extends Component {
       })
       .catch((error) => {
         // handle your error
-        alert(
-          'Opps, something went wrong. Unable to upload your file. Max file size is 100MB.'
-        )
+        console.log('got jhere')
+        toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Max file size is 100MB.'} />)
         instance.setState({
           uploading: false,
         })
@@ -214,10 +201,7 @@ export default class PostFileModal extends Component {
 
   handleChange = (event) => {
     const name = event.target.name
-    const value =
-      event.target.type == 'checkbox'
-        ? event.target.checked
-        : event.target.value
+    const value = event.target.type == 'checkbox' ? event.target.checked : event.target.value
     this.setState({
       [name]: value,
     })
@@ -238,15 +222,12 @@ export default class PostFileModal extends Component {
       accept = '.ogv, .mp4, .m4v, .mpeg, .wmv, .mov, .ogm, .webm, .asx, .mpg'
     }
 
-    var filepath =
-      'https://s3-ap-southeast-2.amazonaws.com/mygame-media/blank-profile-picture-973460_1280.png'
+    var filepath = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/blank-profile-picture-973460_1280.png'
     var instance = this
     return (
       <div className={'modal-container ' + class_modal_status}>
         <div className='modal-wrap'>
-          <div className='modal-header'>
-            {this.props.fileType == 'photo' ? 'Upload Photos' : 'Upload Videos'}
-          </div>
+          <div className='modal-header'>{this.props.fileType == 'photo' ? 'Upload Photos' : 'Upload Videos'}</div>
           <div className='modal-close-btn' onClick={() => this.closeModal()}>
             <i className='fas fa-times'></i>
           </div>
@@ -274,12 +255,7 @@ export default class PostFileModal extends Component {
             <div className='open-btn' onClick={() => this.ref_upload.click()}>
               <i className='fas fa-upload'></i> Upload File
             </div>
-            <div
-              className={
-                this.state.uploading
-                  ? 'uploading-container'
-                  : 'uploading-container uploading--hide'
-              }>
+            <div className={this.state.uploading ? 'uploading-container' : 'uploading-container uploading--hide'}>
               <div className='uploading'></div>
             </div>
             {/* <div className="modal-text">Image Preview</div>
@@ -296,18 +272,12 @@ export default class PostFileModal extends Component {
                       src={data.src}
                       srcKey={data.key}
                       fileType={instance.props.fileType}
-                      callbackDelete={
-                        instance.callbackDeletePreview
-                      }></FilePreview>
+                      callbackDelete={instance.callbackDeletePreview}></FilePreview>
                   )
                 })}
               </div>
             </div>
-            <div
-              className={
-                this.state.uploading ? 'save-btn btn--disable' : 'save-btn'
-              }
-              onClick={() => this.clickSave()}>
+            <div className={this.state.uploading ? 'save-btn btn--disable' : 'save-btn'} onClick={() => this.clickSave()}>
               <i className='fas fa-save'></i> Save
             </div>
           </div>

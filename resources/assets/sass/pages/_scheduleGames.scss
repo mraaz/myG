@@ -84,6 +84,7 @@
     //width: 55%;
     max-width: 630px;
     margin: 0 auto;
+
     .padding-container {
       //padding: 0 15px;
     }
@@ -91,11 +92,16 @@
       z-index: 0;
       padding: 20px;
       background: #151b26;
-      // -webkit-box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.1);
-      // -moz-box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.1);
+
       box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.1);
       margin-bottom: 1rem;
       border-radius: 20px;
+
+      .individual-toasts {
+        display: flex;
+        align-items: center;
+      }
+
       .update-info {
         .game-name-display {
           display: flex;
@@ -159,6 +165,7 @@
             }
           }
         }
+
         .expiry-info {
           width: 100%;
           color: $veryLightText;

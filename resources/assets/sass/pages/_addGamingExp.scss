@@ -1,5 +1,9 @@
 .app-container.home-page .addGamingExp-page {
 }
+.individual-toasts {
+  display: flex;
+  align-items: center;
+}
 .addGamingModal {
   position: absolute;
   top: 11%;
@@ -112,26 +116,6 @@
       color: #fff;
       cursor: pointer;
     }
-  }
-  .info_box {
-    background-color: white;
-    grid-column: span 2;
-    width: 400px;
-    height: 100px;
-    padding: 25px;
-    margin: 25px;
-    border: 10px solid $primarybuttonBG;
-    -webkit-box-shadow: 0 0 15px -3px rgba(191, 191, 191, 1);
-    -moz-box-shadow: 0 0 15px -3px rgba(191, 191, 191, 1);
-    box-shadow: 0 0 15px -3px rgba(191, 191, 191, 1);
-    justify-content: center;
-    align-items: center;
-  }
-  .game_name_error {
-    color: red;
-  }
-  .status_name_error {
-    color: red;
   }
 }
 

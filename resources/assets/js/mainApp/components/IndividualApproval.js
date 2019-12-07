@@ -2,6 +2,14 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
+import { toast } from 'react-toastify'
+
+const Toast_style = (props) => (
+  <div className='individual-toasts'>
+    <img width={48} src={'https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/Logo.png'}></img>
+    <div>{props.text}</div>
+  </div>
+)
 
 export default class IndividualApproval extends Component {
   constructor() {
@@ -29,38 +37,23 @@ export default class IndividualApproval extends Component {
   componentWillMount() {
     let { approvals } = this.props
 
-    if (
-      approvals.attendees.dota_2_position_one != '' &&
-      approvals.attendees.dota_2_position_one != null
-    ) {
+    if (approvals.attendees.dota_2_position_one != '' && approvals.attendees.dota_2_position_one != null) {
       this.state.dota_2_position_one = true
       this.state.dota_2_show_position = true
     }
-    if (
-      approvals.attendees.dota_2_position_two != '' &&
-      approvals.attendees.dota_2_position_two != null
-    ) {
+    if (approvals.attendees.dota_2_position_two != '' && approvals.attendees.dota_2_position_two != null) {
       this.state.dota_2_position_two = true
       this.state.dota_2_show_position = true
     }
-    if (
-      approvals.attendees.dota_2_position_three != '' &&
-      approvals.attendees.dota_2_position_three != null
-    ) {
+    if (approvals.attendees.dota_2_position_three != '' && approvals.attendees.dota_2_position_three != null) {
       this.state.dota_2_position_three = true
       this.state.dota_2_show_position = true
     }
-    if (
-      approvals.attendees.dota_2_position_four != '' &&
-      approvals.attendees.dota_2_position_four != null
-    ) {
+    if (approvals.attendees.dota_2_position_four != '' && approvals.attendees.dota_2_position_four != null) {
       this.state.dota_2_position_four = true
       this.state.dota_2_show_position = true
     }
-    if (
-      approvals.attendees.dota_2_position_five != '' &&
-      approvals.attendees.dota_2_position_five != null
-    ) {
+    if (approvals.attendees.dota_2_position_five != '' && approvals.attendees.dota_2_position_five != null) {
       this.state.dota_2_position_five = true
       this.state.dota_2_show_position = true
     }
@@ -71,18 +64,12 @@ export default class IndividualApproval extends Component {
 
   clickedAccept = () => {
     let { approvals } = this.props
-    if (
-      this.state.dota_2_position_selected == false &&
-      this.state.not_dota_2 == false
-    ) {
-      alert(
-        'Sorry mate! You need to select a Position first! Click on a number to select the position'
-      )
+    if (this.state.dota_2_position_selected == false && this.state.not_dota_2 == false) {
+      toast.success(<Toast_style text={'Sorry mate! You need to select a Position first! Click on a number to select the position'} />)
       return
     }
 
-    if (window.confirm("Happy with your choice? Once in, you can't reject!"))
-      this.accepted_invite()
+    if (window.confirm("Happy with your choice? Once in, you can't reject!")) this.accepted_invite()
   }
 
   accepted_invite = async () => {
@@ -105,13 +92,8 @@ export default class IndividualApproval extends Component {
         )
       }
       if (approvals.schedule_games.limit != 42) {
-        const getNumberofAttendees = await axios.get(
-          `/api/attendees/attending/${approvals.attendees.schedule_games_id}`
-        )
-        if (
-          getNumberofAttendees.data.allAttendees[0].no_of_allAttendees ==
-          approvals.schedule_games.limit
-        ) {
+        const getNumberofAttendees = await axios.get(`/api/attendees/attending/${approvals.attendees.schedule_games_id}`)
+        if (getNumberofAttendees.data.allAttendees[0].no_of_allAttendees == approvals.schedule_games.limit) {
           const no_vacany = axios.post('/api/ScheduleGame/update_vacany/', {
             vacancy: false,
             id: approvals.attendees.schedule_games_id,
@@ -158,18 +140,9 @@ export default class IndividualApproval extends Component {
       }
 
       if (this.state.not_dota_2) {
-        var str =
-          approvals.users.first_name +
-          ' ' +
-          approvals.users.last_name +
-          ' was approved'
+        var str = approvals.users.first_name + ' ' + approvals.users.last_name + ' was approved'
       } else {
-        var str =
-          approvals.users.first_name +
-          ' ' +
-          approvals.users.last_name +
-          ' was approved for position/s: ' +
-          strposition
+        var str = approvals.users.first_name + ' ' + approvals.users.last_name + ' was approved for position/s: ' + strposition
       }
 
       const post = axios.post('/api/comments/', {
@@ -310,16 +283,10 @@ export default class IndividualApproval extends Component {
         <div className='user-info'>
           {`${approvals.users.first_name}`} {`${approvals.users.last_name}`}
         </div>
-        {this.state.dota_2_show_position && (
-          <div className='dota_2_position'>Positions: </div>
-        )}
-        {!this.state.dota_2_position_one && (
-          <div className='dota_2_position_dummy'></div>
-        )}
+        {this.state.dota_2_show_position && <div className='dota_2_position'>Positions: </div>}
+        {!this.state.dota_2_position_one && <div className='dota_2_position_dummy'></div>}
         {this.state.dota_2_position_one && (
-          <div
-            className='dota_2_position_one'
-            onClick={() => this.clickUpdatePosition(1)}>
+          <div className='dota_2_position_one' onClick={() => this.clickUpdatePosition(1)}>
             <img
               src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-one-key-first-3-512.png'
               height='40'
@@ -327,9 +294,7 @@ export default class IndividualApproval extends Component {
           </div>
         )}
         {this.state.dota_2_position_one_ticked && (
-          <div
-            className='dota_2_position_one'
-            onClick={() => this.clickUpdatePosition(-1)}>
+          <div className='dota_2_position_one' onClick={() => this.clickUpdatePosition(-1)}>
             <img
               src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-one-key-first-3-512-Ticked.png'
               height='40'
@@ -337,9 +302,7 @@ export default class IndividualApproval extends Component {
           </div>
         )}
         {this.state.dota_2_position_two && (
-          <div
-            className='dota_2_position_two'
-            onClick={() => this.clickUpdatePosition(2)}>
+          <div className='dota_2_position_two' onClick={() => this.clickUpdatePosition(2)}>
             <img
               src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-two-key-3-512.png'
               height='40'
@@ -347,9 +310,7 @@ export default class IndividualApproval extends Component {
           </div>
         )}
         {this.state.dota_2_position_two_ticked && (
-          <div
-            className='dota_2_position_two'
-            onClick={() => this.clickUpdatePosition(-2)}>
+          <div className='dota_2_position_two' onClick={() => this.clickUpdatePosition(-2)}>
             <img
               src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-two-key-3-512-Ticked.png'
               height='40'
@@ -357,9 +318,7 @@ export default class IndividualApproval extends Component {
           </div>
         )}
         {this.state.dota_2_position_three && (
-          <div
-            className='dota_2_position_three'
-            onClick={() => this.clickUpdatePosition(3)}>
+          <div className='dota_2_position_three' onClick={() => this.clickUpdatePosition(3)}>
             <img
               src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-three-keyboard-3-512.png'
               height='40'
@@ -367,9 +326,7 @@ export default class IndividualApproval extends Component {
           </div>
         )}
         {this.state.dota_2_position_three_ticked && (
-          <div
-            className='dota_2_position_three'
-            onClick={() => this.clickUpdatePosition(-3)}>
+          <div className='dota_2_position_three' onClick={() => this.clickUpdatePosition(-3)}>
             <img
               src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-three-keyboard-3-512-Ticked.png'
               height='40'
@@ -377,9 +334,7 @@ export default class IndividualApproval extends Component {
           </div>
         )}
         {this.state.dota_2_position_four && (
-          <div
-            className='dota_2_position_four'
-            onClick={() => this.clickUpdatePosition(4)}>
+          <div className='dota_2_position_four' onClick={() => this.clickUpdatePosition(4)}>
             <img
               src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-four-keyboard-3-512.png'
               height='40'
@@ -387,9 +342,7 @@ export default class IndividualApproval extends Component {
           </div>
         )}
         {this.state.dota_2_position_four_ticked && (
-          <div
-            className='dota_2_position_four'
-            onClick={() => this.clickUpdatePosition(-4)}>
+          <div className='dota_2_position_four' onClick={() => this.clickUpdatePosition(-4)}>
             <img
               src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-four-keyboard-3-512-Ticked.png'
               height='40'
@@ -397,9 +350,7 @@ export default class IndividualApproval extends Component {
           </div>
         )}
         {this.state.dota_2_position_five && (
-          <div
-            className='dota_2_position_five'
-            onClick={() => this.clickUpdatePosition(5)}>
+          <div className='dota_2_position_five' onClick={() => this.clickUpdatePosition(5)}>
             <img
               src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-five-keyboard-3-512.png'
               height='40'
@@ -407,9 +358,7 @@ export default class IndividualApproval extends Component {
           </div>
         )}
         {this.state.dota_2_position_five_ticked && (
-          <div
-            className='dota_2_position_five'
-            onClick={() => this.clickUpdatePosition(-5)}>
+          <div className='dota_2_position_five' onClick={() => this.clickUpdatePosition(-5)}>
             <img
               src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-five-keyboard-3-512-Ticked.png'
               height='40'
@@ -427,12 +376,8 @@ export default class IndividualApproval extends Component {
               Deny&nbsp;&nbsp;
             </div>
           )}
-          {this.state.actionClickedAccept && (
-            <div className='invitation-accepted'>Accepted! &nbsp;&nbsp;</div>
-          )}
-          {this.state.actionClickedDeny && (
-            <div className='invitation-denied'>Denied! &nbsp;&nbsp;</div>
-          )}
+          {this.state.actionClickedAccept && <div className='invitation-accepted'>Accepted! &nbsp;&nbsp;</div>}
+          {this.state.actionClickedDeny && <div className='invitation-denied'>Denied! &nbsp;&nbsp;</div>}
         </div>
         {!lastRow && (
           <div className='line-break'>

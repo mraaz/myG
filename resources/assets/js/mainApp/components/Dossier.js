@@ -4,6 +4,7 @@ import { Redirect } from 'react-router'
 import Select from 'react-select'
 import axios from 'axios'
 import Modal from 'react-modal'
+import { toast } from 'react-toastify'
 
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete'
 
@@ -20,6 +21,13 @@ const relationship_status_options = [
     label: 'Game in progress',
   },
 ]
+
+const Toast_style = (props) => (
+  <div className='individual-toasts'>
+    <img width={48} src={'https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/Logo.png'}></img>
+    <div>{props.text}</div>
+  </div>
+)
 
 export default class Dossier extends Component {
   constructor() {
@@ -92,21 +100,21 @@ export default class Dossier extends Component {
     var relationship_status = null
 
     if (this.state.first_name_box == '' || this.state.first_name_box == undefined) {
-      alert("Sorry mate! First & Last name can't be blank")
+      toast.success(<Toast_style text={"Sorry mate! First & Last name can't be blank"} />)
       return
     }
 
     if (this.state.last_name_box == '' || this.state.last_name_box == undefined) {
-      alert("Sorry mate! First & Last name can't be blank")
+      toast.success(<Toast_style text={"Sorry mate! First & Last name can't be blank"} />)
       return
     }
 
     if (!this.state.address.length) {
-      alert("Sorry mate! Location can't be blank")
+      toast.success(<Toast_style text={"Sorry mate! Location can't be blank"} />)
       return
     } else {
       if (this.state.address != this.state.final_add) {
-        alert('Sorry mate! You have to pick a location from the list')
+        toast.success(<Toast_style text={'Sorry mate! You have to pick a location from the list'} />)
         return
       }
     }

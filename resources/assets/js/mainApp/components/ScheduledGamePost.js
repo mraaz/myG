@@ -27,6 +27,6 @@ export default class ScheduledGamePost extends Component {
   }
 
   render() {
-    return <div className='gamesPosts'>{this.showPost()}</div>
+    return <div className='gamesPosts'> {this.showPost()}</div>
   }
 }

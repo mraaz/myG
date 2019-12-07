@@ -6,13 +6,11 @@ import Select from 'react-select'
 import CreatableSelect from 'react-select/lib/Creatable'
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import Modal from 'react-modal'
+import { toast } from 'react-toastify'
 
 Modal.setAppElement('#app')
 
-const email_options = [
-  { value: 'Yes', label: 'Yes' },
-  { value: 'No', label: 'No' },
-]
+const email_options = [{ value: 'Yes', label: 'Yes' }, { value: 'No', label: 'No' }]
 
 const played_options = [
   { value: 1, label: 'Less than 3 months' },
@@ -46,6 +44,13 @@ const createOption = (label: string, game_names_id: string) => ({
   value: label.toLowerCase().replace(/\W/g, ''),
   game_names_id,
 })
+
+const Toast_style = (props) => (
+  <div className='individual-toasts'>
+    <img width={48} src={'https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/Logo.png'}></img>
+    <div>{props.text}</div>
+  </div>
+)
 
 export default class AddEsportsExp extends Component<*, State> {
   constructor() {
@@ -154,26 +159,17 @@ export default class AddEsportsExp extends Component<*, State> {
     var uShallNotPass = false
     var ardourNgame_name_same_same = false
 
-    if (
-      this.state.status_box.label == '' ||
-      this.state.status_box.label == null
-    ) {
-      alert('Sorry mate! Status can not be blank')
+    if (this.state.status_box.label == '' || this.state.status_box.label == null) {
+      toast.success(<Toast_style text={'Sorry mate! Status can not be blank'} />)
       return
     }
 
-    if (
-      this.state.email_box.label == '' ||
-      this.state.email_box.label == null
-    ) {
-      alert('Sorry mate! Email can not be blank')
+    if (this.state.email_box.label == '' || this.state.email_box.label == null) {
+      toast.success(<Toast_style text={'Sorry mate! Email can not be blank'} />)
       return
     }
 
-    if (
-      this.state.played_box.value != '' &&
-      this.state.played_box.value != undefined
-    ) {
+    if (this.state.played_box.value != '' && this.state.played_box.value != undefined) {
       myPlayed = this.state.played_box.value
     }
 
@@ -193,21 +189,15 @@ export default class AddEsportsExp extends Component<*, State> {
       this.state.value_game_name = []
     }
 
-    if (
-      (this.state.role_title_box == '' || this.state.role_title_box == null) &&
-      uShallNotPass
-    ) {
-      alert('Sorry mate! Role title can not be blank')
+    if ((this.state.role_title_box == '' || this.state.role_title_box == null) && uShallNotPass) {
+      toast.success(<Toast_style text={'Sorry mate! Role title can not be blank'} />)
       return
     } else if (this.state.value_game_name.length == 0 && uShallNotPass) {
-      alert('Sorry mate! Game name can not be blank')
+      toast.success(<Toast_style text={'Sorry mate! Game name can not be blank'} />)
       return
     }
 
-    if (
-      this.state.value_ardour !== null &&
-      this.state.value_ardour.length !== 0
-    ) {
+    if (this.state.value_ardour !== null && this.state.value_ardour.length !== 0) {
       for (var i = 0; i < this.state.value_ardour.length; i++) {
         myardour += this.state.value_ardour[i].label + '; '
       }
@@ -226,18 +216,12 @@ export default class AddEsportsExp extends Component<*, State> {
       var j
       for (i = 0; i < this.state.newValueCreated_ardour.length; i++) {
         for (j = 0; j < this.state.value_ardour.length; j++) {
-          if (
-            this.state.value_ardour[j].label ==
-            this.state.newValueCreated_ardour[i]
-          ) {
+          if (this.state.value_ardour[j].label == this.state.newValueCreated_ardour[i]) {
             try {
               const post = await axios.post('/api/GameNames', {
                 game_name: this.state.newValueCreated_ardour[i],
               })
-              if (
-                this.state.newValueCreated_ardour[i] ==
-                this.state.value_game_name.label
-              ) {
+              if (this.state.newValueCreated_ardour[i] == this.state.value_game_name.label) {
                 ardourNgame_name_same_same = true
                 newGame_name = post.data.game_name
                 newGameID = post.data.id
@@ -256,16 +240,10 @@ export default class AddEsportsExp extends Component<*, State> {
     var newGame_name = ''
     var newGameID = ''
 
-    if (
-      this.state.newValueCreated_game_name != '' &&
-      ardourNgame_name_same_same == false
-    ) {
+    if (this.state.newValueCreated_game_name != '' && ardourNgame_name_same_same == false) {
       var i
       for (i = 0; i < this.state.newValueCreated_game_name.length; i++) {
-        if (
-          this.state.value_game_name.label ==
-          this.state.newValueCreated_game_name[i]
-        ) {
+        if (this.state.value_game_name.label == this.state.newValueCreated_game_name[i]) {
           try {
             const post = await axios.post('/api/GameNames', {
               game_name: this.state.value_game_name.label,
@@ -292,9 +270,7 @@ export default class AddEsportsExp extends Component<*, State> {
       }
       for (i = 0; i < this.state.newValueCreated_tags.length; i++) {
         for (j = 0; j < this.state.value_tags.length; j++) {
-          if (
-            this.state.value_tags[j].label == this.state.newValueCreated_tags[i]
-          ) {
+          if (this.state.value_tags[j].label == this.state.newValueCreated_tags[i]) {
             try {
               if (tmpnewGameID != '') {
                 const post = await axios.post('/api/Tags', {
@@ -327,26 +303,16 @@ export default class AddEsportsExp extends Component<*, State> {
       _OGstatus = false
     } else if (this.state.email_box_OG != this.state.email_box.label) {
       _OGstatus = false
-    } else if (
-      this.state.career_highlights_box_OG != this.state.career_highlights_box
-    ) {
+    } else if (this.state.career_highlights_box_OG != this.state.career_highlights_box) {
       _OGstatus = false
     } else if (this.state.games_of_ardour_OG != myardour) {
       _OGstatus = false
     }
 
-    this.state.career_highlights_box == undefined
-      ? undefined
-      : (this.state.career_highlights_box = this.state.career_highlights_box.trim())
-    this.state.achievements_box == undefined
-      ? undefined
-      : (this.state.achievements_box = this.state.achievements_box.trim())
-    this.state.team_name_box == undefined
-      ? undefined
-      : (this.state.team_name_box = this.state.team_name_box.trim())
-    this.state.role_title_box == undefined
-      ? undefined
-      : (this.state.role_title_box = this.state.role_title_box.trim())
+    this.state.career_highlights_box == undefined ? undefined : (this.state.career_highlights_box = this.state.career_highlights_box.trim())
+    this.state.achievements_box == undefined ? undefined : (this.state.achievements_box = this.state.achievements_box.trim())
+    this.state.team_name_box == undefined ? undefined : (this.state.team_name_box = this.state.team_name_box.trim())
+    this.state.role_title_box == undefined ? undefined : (this.state.role_title_box = this.state.role_title_box.trim())
 
     if (!this.state.just_one_time) {
       return
@@ -369,8 +335,7 @@ export default class AddEsportsExp extends Component<*, State> {
         try {
           const post_bio = await axios.post('/api/esports_bio/update/', {
             status: this.state.status_box.label,
-            email_visibility:
-              this.state.email_box.label == 'Yes' ? 'Yes' : 'No',
+            email_visibility: this.state.email_box.label == 'Yes' ? 'Yes' : 'No',
             games_of_ardour: myardour,
             career_highlights: this.state.career_highlights_box,
           })
@@ -384,10 +349,7 @@ export default class AddEsportsExp extends Component<*, State> {
       try {
         const post_role = await axios.post('/api/esports_experiences/create', {
           role_title: this.state.role_title_box,
-          game_name:
-            newGame_name == ''
-              ? this.state.value_game_name.label
-              : newGame_name,
+          game_name: newGame_name == '' ? this.state.value_game_name.label : newGame_name,
           team_name: this.state.team_name_box,
           duration: myPlayed,
           achievements: this.state.achievements_box,
@@ -403,11 +365,7 @@ export default class AddEsportsExp extends Component<*, State> {
   handleCreate_ardour = (inputValue: any) => {
     this.setState({ isLoading_ardour: true })
     setTimeout(() => {
-      const {
-        options_ardour,
-        value_ardour,
-        newValueCreated_ardour,
-      } = this.state
+      const { options_ardour, value_ardour, newValueCreated_ardour } = this.state
       const newOption = createOption(inputValue, null)
       this.setState({ isLoading_ardour: false })
       this.setState({ options_ardour: [...options_ardour, newOption] })
@@ -421,20 +379,13 @@ export default class AddEsportsExp extends Component<*, State> {
 
   handleCreate_game_name = (inputValue: any) => {
     setTimeout(() => {
-      const {
-        options_game_name,
-        value_game_name,
-        newValueCreated_game_name,
-      } = this.state
+      const { options_game_name, value_game_name, newValueCreated_game_name } = this.state
       const newOption = createOption(inputValue, null)
       this.setState({ options_game_name: [...options_game_name, newOption] })
       this.setState({ value_game_name: newOption })
       this.setState({ value_tags: '' })
       this.setState({
-        newValueCreated_game_name: [
-          ...newValueCreated_game_name,
-          newOption.label,
-        ],
+        newValueCreated_game_name: [...newValueCreated_game_name, newOption.label],
       })
       this.setState({ newValueCreated_tags: [] })
       this.setState({ options_tags: '' })
@@ -534,12 +485,8 @@ export default class AddEsportsExp extends Component<*, State> {
     }
     try {
       inputValue = inputValue.trimStart()
-      const getGameName = await axios.get(
-        `/api/GameNames/${inputValue}/gameSearchResults`
-      )
-      var results = getGameName.data.gameSearchResults[0].filter((i) =>
-        i.game_name.toLowerCase().includes(inputValue.toLowerCase())
-      )
+      const getGameName = await axios.get(`/api/GameNames/${inputValue}/gameSearchResults`)
+      var results = getGameName.data.gameSearchResults[0].filter((i) => i.game_name.toLowerCase().includes(inputValue.toLowerCase()))
       var newArr = []
       var i, newOption
       if (results.length != 0) {
@@ -575,12 +522,7 @@ export default class AddEsportsExp extends Component<*, State> {
         options_game_name,
         isLoading_game_name,
       } = this.state
-      const {
-        email_visibility,
-        games_of_ardour,
-        career_highlights,
-        status,
-      } = this.state.myEsports_bio
+      const { email_visibility, games_of_ardour, career_highlights, status } = this.state.myEsports_bio
 
       if (this.state.intial_trigger) {
         this.state.status_box.label = status
@@ -600,11 +542,7 @@ export default class AddEsportsExp extends Component<*, State> {
             isOpen={true}
             onRequestClose={(event) => {
               // Ignore react-modal esc-close handling
-              if (
-                event.type === 'keydown' &&
-                event.keyCode === 27 &&
-                this.state.shouldCloseOnOverlayClick_ === false
-              ) {
+              if (event.type === 'keydown' && event.keyCode === 27 && this.state.shouldCloseOnOverlayClick_ === false) {
                 return
               } else {
                 this.handleCloseModal()
@@ -636,9 +574,7 @@ export default class AddEsportsExp extends Component<*, State> {
                 options={email_options}
                 placeholder="Show/Don't show email?"
                 className='email_box'
-                defaultValue={[
-                  { label: email_visibility, value: email_visibility },
-                ]}
+                defaultValue={[{ label: email_visibility, value: email_visibility }]}
               />
             </div>
             <div className='games_ardour_txtBox'>
@@ -654,11 +590,7 @@ export default class AddEsportsExp extends Component<*, State> {
                 className='games_ardour_box'
                 placeholder='Games your passionate about'
                 isMulti
-                onInputChange={(inputValue) =>
-                  inputValue.length <= 88
-                    ? inputValue
-                    : inputValue.substr(0, 88)
-                }
+                onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
               />
             </div>
             <div className='career-highlights'>
@@ -685,13 +617,7 @@ export default class AddEsportsExp extends Component<*, State> {
               <p>
                 Role Title <span style={{ color: 'red' }}>*</span>
               </p>
-              <input
-                type='text'
-                id='role_title_box'
-                className='role_title_box'
-                maxLength='120'
-                onChange={this.handleChange}
-              />
+              <input type='text' id='role_title_box' className='role_title_box' maxLength='120' onChange={this.handleChange} />
             </div>
             <div className='gName_txtBox2'>
               <p>
@@ -707,22 +633,12 @@ export default class AddEsportsExp extends Component<*, State> {
                 value={value_game_name}
                 className='game_name_box2'
                 placeholder='Enter Game name'
-                onInputChange={(inputValue) =>
-                  inputValue.length <= 88
-                    ? inputValue
-                    : inputValue.substr(0, 88)
-                }
+                onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
               />
             </div>
             <div className='team-name'>
               <p>Team name</p>
-              <input
-                type='text'
-                id='team_name_box'
-                className='team_name_box'
-                maxLength='120'
-                onChange={this.handleChange}
-              />
+              <input type='text' id='team_name_box' className='team_name_box' maxLength='120' onChange={this.handleChange} />
             </div>
             <div className='played'>
               <p>
@@ -755,12 +671,10 @@ export default class AddEsportsExp extends Component<*, State> {
                 <span style={{ color: 'red' }}>i</span>
                 <span style={{ color: 'gold' }}>l</span>
                 <span style={{ color: 'green' }}>l</span>
-                <span style={{ color: 'dodgerblue' }}>s</span> (Keywords that
-                identify <span style={{ color: 'green' }}>y</span>
+                <span style={{ color: 'dodgerblue' }}>s</span> (Keywords that identify <span style={{ color: 'green' }}>y</span>
                 <span style={{ color: 'dodgerblue' }}>o</span>
                 <span style={{ color: 'red' }}>u</span>
-                <span style={{ color: 'gold' }}>r</span> expertise with this
-                role. Max 250 chars)
+                <span style={{ color: 'gold' }}>r</span> expertise with this role. Max 250 chars)
               </p>
               <CreatableSelect
                 onChange={this.handleChange3}
@@ -772,34 +686,10 @@ export default class AddEsportsExp extends Component<*, State> {
                 value={value_tags}
                 className='tag_name_box'
                 isMulti
-                onInputChange={(inputValue) =>
-                  inputValue.length <= 250
-                    ? inputValue
-                    : inputValue.substr(0, 250)
-                }
+                onInputChange={(inputValue) => (inputValue.length <= 250 ? inputValue : inputValue.substr(0, 250))}
               />
             </div>
             <div></div>
-            {/* {!this.state.show_info_box && <div></div>}
-            {this.state.show_info_box &&
-              <div className="info_box">
-                {this.state.show_email_info_box &&
-                  <div className="email_error">
-                    Error: Email field can't be empty
-                  </div>
-                }
-                {this.state.show_status_info_box &&
-                  <div className="status_name_error">
-                    Error: Status can't be empty
-                  </div>
-                }
-                {this.state.show_role_title_info_box &&
-                  <div className="role_name_error">
-                    Error: Role or Game Name can't be empty
-                  </div>
-                }
-              </div>
-            }*/}
             <div></div>
             <div></div>
             <div className='save-btn'>

@@ -6,6 +6,7 @@ import Select from 'react-select'
 import CreatableSelect from 'react-select/lib/Creatable'
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import Modal from 'react-modal'
+import { toast } from 'react-toastify'
 
 Modal.setAppElement('#app')
 
@@ -50,6 +51,13 @@ const createOption = (label: string, game_names_id: string) => ({
   value: label.toLowerCase().replace(/\W/g, ''),
   game_names_id,
 })
+
+const Toast_style = (props) => (
+  <div className='individual-toasts'>
+    <img width={48} src={'https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/Logo.png'}></img>
+    <div>{props.text}</div>
+  </div>
+)
 
 export default class AddGamingExp extends Component<*, State> {
   constructor() {
@@ -144,19 +152,16 @@ export default class AddGamingExp extends Component<*, State> {
     var myTags = ''
 
     if (this.state.value == '' || this.state.value == null) {
-      alert('Sorry mate! Game name can not be blank')
+      toast.success(<Toast_style text={'Sorry mate! Game name can not be blank'} />)
       return
     }
 
     if (this.state.status_box == '' || this.state.status_box == null) {
-      alert('Sorry mate! Status name can not be blank')
+      toast.success(<Toast_style text={'Sorry mate! Status name can not be blank'} />)
       return
     }
 
-    if (
-      this.state.experience_box != null ||
-      this.state.experience_box != undefined
-    ) {
+    if (this.state.experience_box != null || this.state.experience_box != undefined) {
       myExperience = this.state.experience_box.value
     }
     if (this.state.played_box != null || this.state.played_box != undefined) {
@@ -197,9 +202,7 @@ export default class AddGamingExp extends Component<*, State> {
       }
       for (i = 0; i < this.state.newValueCreated_tags.length; i++) {
         for (j = 0; j < this.state.value_tags.length; j++) {
-          if (
-            this.state.value_tags[j].label == this.state.newValueCreated_tags[i]
-          ) {
+          if (this.state.value_tags[j].label == this.state.newValueCreated_tags[i]) {
             try {
               if (tmpnewGameID != '') {
                 const post = await axios.post('/api/Tags', {
@@ -228,12 +231,8 @@ export default class AddGamingExp extends Component<*, State> {
       myTags = myTags.replace(/,/g, ', ')
     }
 
-    this.state.comments_box == undefined
-      ? undefined
-      : (this.state.comments_box = this.state.comments_box.trim())
-    this.state.link_box == undefined
-      ? undefined
-      : (this.state.link_box = this.state.link_box.trim())
+    this.state.comments_box == undefined ? undefined : (this.state.comments_box = this.state.comments_box.trim())
+    this.state.link_box == undefined ? undefined : (this.state.link_box = this.state.link_box.trim())
 
     if (!this.state.just_one_time) {
       return
@@ -256,16 +255,6 @@ export default class AddGamingExp extends Component<*, State> {
       console.log(error)
     }
   }
-
-  // input: HTMLDivElement | null = null;
-  // onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
-  //   // 'keypress' event misbehaves on mobile so we track 'Enter' key via 'keydown' event
-  //   if (event.key === 'Enter') {
-  //     event.preventDefault()
-  //     event.stopPropagation()
-  //     console.log("asdfasdf");
-  //   }
-  // }
 
   handleCreate = (inputValue: any) => {
     setTimeout(() => {
@@ -291,29 +280,6 @@ export default class AddGamingExp extends Component<*, State> {
       })
     }, 300)
   }
-
-  // componentWillMount(){
-  //   // const self = this
-  //   //
-  //   // const getInitialData = async function(){
-  //   //   try{
-  //   //     const allGameNames = await axios.get('/api/GameNames')
-  //   //
-  //   //     var i
-  //   //     for (i = 0; i < allGameNames.data.allGameNames.length; i++){
-  //   //       const newOption = createOption(allGameNames.data.allGameNames[i].game_name, allGameNames.data.allGameNames[i].id )
-  //   //       const { options } = self.state
-  //   //
-  //   //       self.setState({
-  //   //         options: [...options, newOption],
-  //   //       })
-  //   //     }
-  //   //   } catch (error){
-  //   //     console.log(error)
-  //   //   }
-  //   // }
-  //   //getInitialData()
-  // }
 
   onBlur_game_name = (value) => {
     const getInitialData = async function() {
@@ -355,12 +321,8 @@ export default class AddGamingExp extends Component<*, State> {
     }
     try {
       inputValue = inputValue.trimStart()
-      const getGameName = await axios.get(
-        `/api/GameNames/${inputValue}/gameSearchResults`
-      )
-      var results = getGameName.data.gameSearchResults[0].filter((i) =>
-        i.game_name.toLowerCase().includes(inputValue.toLowerCase())
-      )
+      const getGameName = await axios.get(`/api/GameNames/${inputValue}/gameSearchResults`)
+      var results = getGameName.data.gameSearchResults[0].filter((i) => i.game_name.toLowerCase().includes(inputValue.toLowerCase()))
       var newArr = []
       var i, newOption
       if (results.length != 0) {
@@ -384,25 +346,14 @@ export default class AddGamingExp extends Component<*, State> {
       return <Redirect push to={tmp} />
     }
 
-    const {
-      isLoading,
-      options,
-      value,
-      isLoading_tags,
-      options_tags,
-      value_tags,
-    } = this.state
+    const { isLoading, options, value, isLoading_tags, options_tags, value_tags } = this.state
     return (
       <div className='content-area addGamingExp-page'>
         <Modal
           isOpen={true}
           onRequestClose={(event) => {
             // Ignore react-modal esc-close handling
-            if (
-              event.type === 'keydown' &&
-              event.keyCode === 27 &&
-              this.state.shouldCloseOnOverlayClick_ === false
-            ) {
+            if (event.type === 'keydown' && event.keyCode === 27 && this.state.shouldCloseOnOverlayClick_ === false) {
               return
             } else {
               this.handleCloseModal()
@@ -427,9 +378,7 @@ export default class AddGamingExp extends Component<*, State> {
               value={value}
               className='game_name_box'
               onCreateOption={this.handleCreate}
-              onInputChange={(inputValue) =>
-                inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88)
-              }
+              onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
               placeholder='Enter in a Game name'
             />
           </div>
@@ -437,12 +386,7 @@ export default class AddGamingExp extends Component<*, State> {
             <p>
               Status <span style={{ color: 'red' }}>*</span>
             </p>
-            <Select
-              onChange={this.handleChange_Status}
-              options={status_options}
-              placeholder='Set your status'
-              className='status_box'
-            />
+            <Select onChange={this.handleChange_Status} options={status_options} placeholder='Set your status' className='status_box' />
           </div>
           <div className='experience'>
             <p>Experience:</p>
@@ -474,13 +418,7 @@ export default class AddGamingExp extends Component<*, State> {
           </div>
           <div className='options_checkbox'>
             <p>Show Link box and/or Comments box</p>
-            <input
-              id='link_ChkBox'
-              type='checkbox'
-              defaultChecked={this.state.link_chkbox}
-              onChange={this.toggleChange_link}
-            />{' '}
-            Link
+            <input id='link_ChkBox' type='checkbox' defaultChecked={this.state.link_chkbox} onChange={this.toggleChange_link} /> Link
             <input
               id='comments_ChkBox'
               type='checkbox'
@@ -494,12 +432,10 @@ export default class AddGamingExp extends Component<*, State> {
               <span style={{ color: 'green' }}>T</span>
               <span style={{ color: 'dodgerblue' }}>a</span>
               <span style={{ color: 'red' }}>g</span>
-              <span style={{ color: 'gold' }}>s</span> (Keywords that identify{' '}
-              <span style={{ color: 'green' }}>y</span>
+              <span style={{ color: 'gold' }}>s</span> (Keywords that identify <span style={{ color: 'green' }}>y</span>
               <span style={{ color: 'dodgerblue' }}>o</span>
               <span style={{ color: 'red' }}>u</span>
-              <span style={{ color: 'gold' }}>r</span> unique experience with
-              this game. Max 250 chars)
+              <span style={{ color: 'gold' }}>r</span> unique experience with this game. Max 250 chars)
             </p>
             <CreatableSelect
               onChange={this.handleChange3}
@@ -511,11 +447,7 @@ export default class AddGamingExp extends Component<*, State> {
               value={value_tags}
               className='tag_name_box'
               isMulti
-              onInputChange={(inputValue) =>
-                inputValue.length <= 250
-                  ? inputValue
-                  : inputValue.substr(0, 250)
-              }
+              onInputChange={(inputValue) => (inputValue.length <= 250 ? inputValue : inputValue.substr(0, 250))}
             />
           </div>
           {this.state.link_chkbox == false ? (
@@ -523,13 +455,7 @@ export default class AddGamingExp extends Component<*, State> {
           ) : (
             <div className='link_txtBox'>
               <p>Link</p>
-              <input
-                type='text'
-                id='link_box'
-                className='link_box'
-                maxLength='50'
-                onChange={this.handleChange}
-              />
+              <input type='text' id='link_box' className='link_box' maxLength='50' onChange={this.handleChange} />
             </div>
           )}
           {this.state.comments_chkbox == false ? (
@@ -548,20 +474,6 @@ export default class AddGamingExp extends Component<*, State> {
               />
             </div>
           )}
-          {/*{this.state.show_info_box &&
-            <div className="info_box">
-              {this.state.show_game_name_info_box &&
-                <div className="game_name_error">
-                  Error: Game Name can't be empty
-                </div>
-              }
-              {this.state.show_status_info_box &&
-                <div className="status_name_error">
-                  Error: Status can't be empty
-                </div>
-              }
-            </div>
-          }*/}
           <div className='save-btn'>
             <button className='save' onClick={this.submitForm}>
               Save
