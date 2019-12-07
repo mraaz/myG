@@ -1,6 +1,10 @@
 .app-container.home-page .dossier-page {
 } //.app-container
 
+.individual-toasts {
+  display: flex;
+  align-items: center;
+}
 .Modal {
   position: absolute;
   top: 5%;
@@ -123,26 +127,6 @@
       color: #fff;
       cursor: pointer;
     }
-  }
-  .info_box {
-    background-color: white;
-    grid-column: span 2;
-    width: 500px;
-    height: 200px;
-    padding: 25px;
-    margin: 25px;
-    border: 10px solid $primarybuttonBG;
-    -webkit-box-shadow: 0 0 15px -3px rgba(191, 191, 191, 1);
-    -moz-box-shadow: 0 0 15px -3px rgba(191, 191, 191, 1);
-    box-shadow: 0 0 15px -3px rgba(191, 191, 191, 1);
-    justify-content: center;
-    align-items: center;
-  }
-  .first_name_error {
-    color: red;
-  }
-  .last_name_error {
-    color: red;
   }
 }
 

@@ -6,6 +6,14 @@ import axios from 'axios'
 import moment from 'moment'
 import IndividualComment from './IndividualComment'
 import DeleteScheduleGameModal from './DeleteScheduleGameModal'
+import { toast } from 'react-toastify'
+
+const Toast_style = (props) => (
+  <div className='individual-toasts'>
+    <img width={48} src={'https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/Logo.png'}></img>
+    <div>{props.text}</div>
+  </div>
+)
 
 export default class ScheduledGamePost_Clash_Royale extends Component {
   constructor() {
@@ -49,9 +57,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
     }
 
     this.callbackPostFileModalClose = this.callbackPostFileModalClose.bind(this)
-    this.callbackPostFileModalConfirm = this.callbackPostFileModalConfirm.bind(
-      this
-    )
+    this.callbackPostFileModalConfirm = this.callbackPostFileModalConfirm.bind(this)
 
     this.textInput = null
 
@@ -77,9 +83,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
     })
 
     try {
-      const mysch = axios.get(
-        `/api/ScheduleGame/delete/${this.state.modal_id}/${data.value}`
-      )
+      const mysch = axios.get(`/api/ScheduleGame/delete/${this.state.modal_id}/${data.value}`)
       location.reload()
     } catch (error) {
       console.log(error)
@@ -122,13 +126,10 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
 
     const getCommentsCount = async function() {
       try {
-        const myCommentsCount = await axios.get(
-          `/api/comments/scheduled_gamesCount/${schedule_game.id}`
-        )
+        const myCommentsCount = await axios.get(`/api/comments/scheduled_gamesCount/${schedule_game.id}`)
         if (myCommentsCount.data.no_of_comments[0].no_of_comments != 0) {
           self.state.zero_comments = true
-          self.state.comment_total =
-            myCommentsCount.data.no_of_comments[0].no_of_comments
+          self.state.comment_total = myCommentsCount.data.no_of_comments[0].no_of_comments
         }
       } catch (error) {
         console.log(error)
@@ -137,13 +138,9 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
 
     const getNumberofAttendees = async function() {
       try {
-        const getwhoisAttending = await axios.get(
-          `/api/attendees/role_call/${schedule_game.id}`
-        )
+        const getwhoisAttending = await axios.get(`/api/attendees/role_call/${schedule_game.id}`)
         for (var i = 0; i < getwhoisAttending.data.role_call.length; i++) {
-          self.state.attendees_profiles.push(
-            getwhoisAttending.data.role_call[i]
-          )
+          self.state.attendees_profiles.push(getwhoisAttending.data.role_call[i])
           switch (i) {
             case 0:
               self.state.show_one_profile = true
@@ -166,9 +163,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
           }
         }
 
-        const get_if_im_Attending = await axios.get(
-          `/api/attendees/myattendance/${schedule_game.id}`
-        )
+        const get_if_im_Attending = await axios.get(`/api/attendees/myattendance/${schedule_game.id}`)
         if (get_if_im_Attending.data.myattendance.length == 0) {
           //You're not approved or pending
           self.state.show_attending = false
@@ -192,18 +187,10 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
         if (schedule_game.limit != 42) {
           //If its not an unlimited game
           self.state.show_attendees = true //Display the count ie 1 of 5
-          const getNumberofAttendees = await axios.get(
-            `/api/attendees/attending/${schedule_game.id}`
-          ) //Get the total
-          if (
-            getNumberofAttendees.data.allAttendees[0].no_of_allAttendees != 0
-          ) {
-            self.state.attendees_count =
-              getNumberofAttendees.data.allAttendees[0].no_of_allAttendees
-            if (
-              getNumberofAttendees.data.allAttendees[0].no_of_allAttendees >=
-              schedule_game.limit
-            ) {
+          const getNumberofAttendees = await axios.get(`/api/attendees/attending/${schedule_game.id}`) //Get the total
+          if (getNumberofAttendees.data.allAttendees[0].no_of_allAttendees != 0) {
+            self.state.attendees_count = getNumberofAttendees.data.allAttendees[0].no_of_allAttendees
+            if (getNumberofAttendees.data.allAttendees[0].no_of_allAttendees >= schedule_game.limit) {
               self.state.show_attending = false
               self.state.show_invite = false
               self.state.show_full = true
@@ -284,14 +271,8 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
       this.state.duration = moment.duration(myExpiry.diff(now)).humanize()
     }
 
-    this.state.start_date = moment(
-      schedule_game.start_date_time,
-      'YYYY-MM-DD HH:mm:ssZ'
-    ).local()
-    this.state.end_date = moment(
-      schedule_game.end_date_time,
-      'YYYY-MM-DD HH:mm:ssZ'
-    ).local()
+    this.state.start_date = moment(schedule_game.start_date_time, 'YYYY-MM-DD HH:mm:ssZ').local()
+    this.state.end_date = moment(schedule_game.end_date_time, 'YYYY-MM-DD HH:mm:ssZ').local()
 
     this.state.clash_royale_field = true
 
@@ -315,9 +296,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
 
     const getComments = async function() {
       try {
-        const myComments = await axios.get(
-          `/api/comments/scheduled_games/${schedule_game.id}`
-        )
+        const myComments = await axios.get(`/api/comments/scheduled_games/${schedule_game.id}`)
         self.setState({
           myComments: myComments.data.allComments,
           value: '',
@@ -333,13 +312,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
   showComment = () => {
     if (this.state.myComments != undefined) {
       return this.state.myComments.map((item, index) => {
-        return (
-          <IndividualComment
-            comment={item}
-            key={index}
-            user={this.props.props.user}
-          />
-        )
+        return <IndividualComment comment={item} key={index} user={this.props.props.user} />
       })
     }
   }
@@ -411,13 +384,10 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
 
   enrollinGame = async () => {
     try {
-      const getNumberofAttendees = await axios.get(
-        `/api/attendees/attending/${this.props.props.schedule_game.id}`
-      )
+      const getNumberofAttendees = await axios.get(`/api/attendees/attending/${this.props.props.schedule_game.id}`)
       if (
         this.props.props.schedule_game.limit == 42 ||
-        getNumberofAttendees.data.allAttendees[0].no_of_allAttendees <
-          this.props.props.schedule_game.limit
+        getNumberofAttendees.data.allAttendees[0].no_of_allAttendees < this.props.props.schedule_game.limit
       ) {
         const savemySpot = axios.post('/api/attendees/savemySpot', {
           schedule_games_id: this.props.props.schedule_game.id,
@@ -430,7 +400,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
           show_pending: true,
         })
       } else {
-        window.alert('Sorry mate, the spot got filled up! You are NOT in :(')
+        toast.success(<Toast_style text={'Sorry mate, the spot got filled up! You are NOT in :('} />)
         this.setState({
           show_invite: false,
           show_attending: false,
@@ -445,9 +415,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
 
   disenrollinGame = () => {
     try {
-      const getNumberofAttendees = axios.get(
-        `/api/attendees/removeattending/${this.props.props.schedule_game.id}`
-      )
+      const getNumberofAttendees = axios.get(`/api/attendees/removeattending/${this.props.props.schedule_game.id}`)
       this.setState({
         show_invite: true,
         show_attending: false,
@@ -504,9 +472,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
                 {this.state.zero_comments && (
                   <div className='comments-statz' onClick={this.onChange}>
                     {' '}
-                    {this.state.comment_total > 1
-                      ? `${this.state.comment_total} comments`
-                      : `${this.state.comment_total} comment`}{' '}
+                    {this.state.comment_total > 1 ? `${this.state.comment_total} comments` : `${this.state.comment_total} comment`}{' '}
                   </div>
                 )}
                 {!this.state.zero_comments && (
@@ -519,9 +485,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
               {!this.state.myPost && (
                 <h6>
                   {' '}
-                  <Link
-                    to={`/profile/${schedule_game.user_id}`}
-                    style={{ textDecoration: 'none', color: 'white' }}>
+                  <Link to={`/profile/${schedule_game.user_id}`} style={{ textDecoration: 'none', color: 'white' }}>
                     {' '}
                     Posted by {schedule_game.alias}
                   </Link>
@@ -540,56 +504,25 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
             <DeleteScheduleGameModal
               bOpen={this.state.bDeleteModalOpen}
               callbackClose={this.callbackPostFileModalClose}
-              callbackConfirm={
-                this.callbackPostFileModalConfirm
-              }></DeleteScheduleGameModal>
-            <div className='expiry-info'>
-              Expiry:&nbsp;{this.state.duration}
-            </div>
+              callbackConfirm={this.callbackPostFileModalConfirm}></DeleteScheduleGameModal>
+            <div className='expiry-info'>Expiry:&nbsp;{this.state.duration}</div>
             <div className='myFields'>
-              {this.state.region && (
-                <div> Region/s: {schedule_game.region} </div>
-              )}
-              <div>
-                {' '}
-                Start Time: {this.state.start_date.format(
-                  'Do MMM YY, h:mm a'
-                )}{' '}
-              </div>
-              <div>
-                {' '}
-                End Time: {this.state.end_date.format('Do MMM YY, h:mm a')}{' '}
-              </div>
-              {this.state.experience && (
-                <div> Experience: {schedule_game.experience} </div>
-              )}
-              {this.state.platform && (
-                <div> Platform: {schedule_game.platform} </div>
-              )}
+              {this.state.region && <div> Region/s: {schedule_game.region} </div>}
+              <div> Start Time: {this.state.start_date.format('Do MMM YY, h:mm a')} </div>
+              <div> End Time: {this.state.end_date.format('Do MMM YY, h:mm a')} </div>
+              {this.state.experience && <div> Experience: {schedule_game.experience} </div>}
+              {this.state.platform && <div> Platform: {schedule_game.platform} </div>}
               {this.state.other && <div> Other: {schedule_game.other} </div>}
-              {this.state.clash_royale_field && (
-                <div>
-                  {' '}
-                  Royale Trophies: {schedule_game.clash_royale_trophies}{' '}
-                </div>
-              )}
-              {!this.state.visibility_hidden_lnk && (
-                <div> Visibility: {this.state.visibility} </div>
-              )}
+              {this.state.clash_royale_field && <div> Royale Trophies: {schedule_game.clash_royale_trophies} </div>}
+              {!this.state.visibility_hidden_lnk && <div> Visibility: {this.state.visibility} </div>}
               {this.state.visibility_hidden_lnk && (
                 <div>
                   {' '}
-                  Visibility:{' '}
-                  <Link to={`/scheduledGames/${schedule_game.id}`}>
-                    {' '}
-                    {this.state.visibility}
-                  </Link>{' '}
-                  (Send this link to players inorder to join this game){' '}
+                  Visibility: <Link to={`/scheduledGames/${schedule_game.id}`}> {this.state.visibility}</Link> (Send this link to players
+                  inorder to join this game){' '}
                 </div>
               )}
-              {this.state.description && (
-                <div> Description: {schedule_game.description} </div>
-              )}
+              {this.state.description && <div> Description: {schedule_game.description} </div>}
             </div>
           </div>
           <div className='invitation-panel'>
@@ -603,8 +536,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
             {this.state.show_full && (
               <div className='invitation-link'>
                 <div className='hack-text2'>
-                  <i className='fas fa-door-closed'></i>&nbsp;Sorry it's{' '}
-                  <span style={{ color: '#f44336' }}>&nbsp; full :( </span>
+                  <i className='fas fa-door-closed'></i>&nbsp;Sorry it's <span style={{ color: '#f44336' }}>&nbsp; full :( </span>
                 </div>
               </div>
             )}
@@ -613,12 +545,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
                 <div
                   className='hack-text3'
                   onClick={() => {
-                    if (
-                      window.confirm(
-                        'Are you sure you wish to remove yourself from this Game?'
-                      )
-                    )
-                      this.disenrollinGame()
+                    if (window.confirm('Are you sure you wish to remove yourself from this Game?')) this.disenrollinGame()
                   }}>
                   <i className='fas fa-door-closed'></i>
                   <span style={{ color: '#4CAF50' }}>&nbsp;Leave game</span>
@@ -630,17 +557,10 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
                 <div
                   className='hack-text3'
                   onClick={() => {
-                    if (
-                      window.confirm(
-                        'Are you sure you wish to remove yourself from this Game?'
-                      )
-                    )
-                      this.disenrollinGame()
+                    if (window.confirm('Are you sure you wish to remove yourself from this Game?')) this.disenrollinGame()
                   }}>
                   <i className='fas fa-door-closed'></i>
-                  <span style={{ color: '#2196F3' }}>
-                    &nbsp;Waiting on host...
-                  </span>
+                  <span style={{ color: '#2196F3' }}>&nbsp;Waiting on host...</span>
                 </div>
               </div>
             )}
@@ -711,9 +631,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
                 {this.state.attendees_count} out of {schedule_game.limit}
               </div>
             )}
-            {!this.state.show_attendees && (
-              <div className='attendees-count'>Unlimited</div>
-            )}
+            {!this.state.show_attendees && <div className='attendees-count'>Unlimited</div>}
           </div>
           <div className='compose-comment'>
             <textarea
@@ -735,11 +653,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
             </div>
           </div>
           <div className='comments'>
-            {this.state.show_more_comments && (
-              <div className='show-individual-comments'>
-                {this.showComment()}
-              </div>
-            )}
+            {this.state.show_more_comments && <div className='show-individual-comments'>{this.showComment()}</div>}
           </div>
         </div>
       </div>

@@ -6,6 +6,7 @@ import Select from 'react-select'
 import CreatableSelect from 'react-select/lib/Creatable'
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import Modal from 'react-modal'
+import { toast } from 'react-toastify'
 
 Modal.setAppElement('#app')
 
@@ -46,17 +47,19 @@ const createOptionDifValue = (value: string, label: string) => ({
   label,
 })
 
+const Toast_style = (props) => (
+  <div className='individual-toasts'>
+    <img width={48} src={'https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/Logo.png'}></img>
+    <div>{props.text}</div>
+  </div>
+)
+
 export default class EditEsportsExp extends Component<*, State> {
   constructor() {
     super()
     self = this
     this.state = {
       shouldCloseOnOverlayClick_: true,
-      show_info_box: false,
-      show_email_info_box: false,
-      show_status_info_box: false,
-      show_role_title_info_box: false,
-      show_game_name_info_box: false,
       status_box: [{ label: '', value: '' }],
       email_box: [{ label: '', value: '' }],
       played_box: '',
@@ -76,7 +79,6 @@ export default class EditEsportsExp extends Component<*, State> {
       newValueCreated_ardour: [],
       newValueCreated_game_name: [],
       newValueCreated_tags: [],
-      name_trigger: false,
       createEsportsPost: true,
       intial_trigger: true,
       just_one_time: true,
@@ -171,26 +173,13 @@ export default class EditEsportsExp extends Component<*, State> {
       this.state.value_game_name.game_names_id = null
     }
 
-    let { name_trigger } = this.state.name_trigger
-
     if (this.state.status_box.label == '' || this.state.status_box.label == null) {
-      this.setState({ show_info_box: true })
-      this.setState({ show_status_info_box: true })
-      name_trigger = true
-    } else {
-      this.setState({ show_status_info_box: false })
+      toast.success(<Toast_style text={'Sorry mate! Status can not be blank'} />)
+      return
     }
 
     if (this.state.email_box.label == '' || this.state.email_box.label == null) {
-      this.setState({ show_info_box: true })
-      this.setState({ show_email_info_box: true })
-      name_trigger = true
-    } else {
-      this.setState({ show_email_info_box: false })
-    }
-
-    if (name_trigger) {
-      this.setState({ name_trigger: false })
+      toast.success(<Toast_style text={'Sorry mate! Email can not be blank'} />)
       return
     }
 
@@ -213,19 +202,10 @@ export default class EditEsportsExp extends Component<*, State> {
     }
 
     if ((this.state.role_title_box == '' || this.state.role_title_box == null) && uShallNotPass) {
-      this.setState({ show_info_box: true })
-      this.setState({ show_role_title_info_box: true })
-      name_trigger = true
+      toast.success(<Toast_style text={'Sorry mate! Role Title can not be blank'} />)
+      return
     } else if (this.state.value_game_name.label == '' && uShallNotPass) {
-      this.setState({ show_info_box: true })
-      this.setState({ show_role_title_info_box: true })
-      name_trigger = true
-    } else {
-      this.setState({ show_status_info_box: false })
-    }
-
-    if (name_trigger) {
-      this.setState({ name_trigger: false })
+      toast.success(<Toast_style text={'Sorry mate! Game Name can not be blank'} />)
       return
     }
 
@@ -671,12 +651,10 @@ export default class EditEsportsExp extends Component<*, State> {
           this.state.email_box_OG = email_visibility
           this.state.career_highlights_box_OG = career_highlights
           this.state.games_of_ardour_OG = games_of_ardour
-
           ;(this.state.role_title_box = role_title),
             (this.state.value_game_name.label = game_name),
             (this.state.team_name_box = team_name),
             (this.state.achievements_box = achievements)
-
           ;(this.state.role_title_box_OG = role_title),
             (this.state.value_game_name_OG = game_name),
             (this.state.team_name_box_OG = team_name),
@@ -851,14 +829,7 @@ export default class EditEsportsExp extends Component<*, State> {
                 />
               </div>
               <div></div>
-              {!this.state.show_info_box && <div></div>}
-              {this.state.show_info_box && (
-                <div className='info_box'>
-                  {this.state.show_email_info_box && <div className='email_error'>Error: Email field can't be empty</div>}
-                  {this.state.show_status_info_box && <div className='status_name_error'>Error: Status can't be empty</div>}
-                  {this.state.show_role_title_info_box && <div className='role_name_error'>Error: Role or Game Name can't be empty</div>}
-                </div>
-              )}
+              <div></div>
               <div></div>
               <div className='save-btn'>
                 <button

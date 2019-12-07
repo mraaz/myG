@@ -4,10 +4,12 @@ import ReactDOM from "react-dom"
 import {
   BrowserRouter as Router,
   Route,
-  NavLink,
   Switch
 } from "react-router-dom"
 import axios from "axios"
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
 import Home from "./components/Home"
 import Profile from "./components/Profile"
 import ScheduleGames from "./components/ScheduleGames"
@@ -88,6 +90,13 @@ class Layout extends Component {
           <LeftMenu initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} />
           <section id="content-container">
             <SearchHeader />
+            <ToastContainer
+              autoClose={8000}
+              draggablePercent={60}
+              hideProgressBar={false}
+              className='toast-container'
+              toastClassName='dark-toast'
+            />
             <Switch>
               <Route exact path="/" component={(props) => <Home routeProps={props}
                 initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} />} />
