@@ -20,8 +20,6 @@ const Route = use('Route')
 Route.get('/', 'PageController.home')
 Route.get('/home', 'PageController.redirectHome')
 
-
-
 //Authentication
 Route.get('/register', 'AuthController.register')
 Route.post('/register', 'AuthController.storeUser')
@@ -60,7 +58,6 @@ Route.post('/api/uploadFile', 'ApiController.uploadFile')
 Route.post('/api/deleteFile', 'ApiController.deleteFile')
 Route.post('/api/deleteFiles', 'ApiController.deleteFiles')
 
-
 Route.get('/api/post/:paginateNo', 'PostController.show')
 Route.get('/api/mypost/:myDate', 'PostController.myshow')
 Route.get('/api/getmypost/:paginateNo', 'PostController.showmyposts')
@@ -72,7 +69,6 @@ Route.get('/api/post/my_count/:id', 'PostController.posts_count')
 Route.get('/api/post/delete/:id', 'PostController.destroy')
 Route.post('/api/post/update/:id', 'PostController.update')
 Route.get('/api/getpost/:id', 'PostController.showpost')
-
 
 Route.post('/api/user', 'UserController.store')
 Route.post('/api/userprofile', 'UserController.changeProfile')
@@ -127,7 +123,6 @@ Route.get('/api/likes/delete/:id', 'LikeController.destroy')
 Route.get('/api/likes/delete/comment/:id', 'LikeController.destroy_comment')
 Route.get('/api/likes/delete/reply/:id', 'LikeController.destroy_reply')
 Route.get('/api/thisLike/:id', 'LikeController.getthisLike')
-
 
 Route.get('/api/comments/delete/:id', 'CommentController.destroy')
 Route.get('/api/comments/:id', 'CommentController.show')
@@ -250,5 +245,10 @@ Route.get('/api/usergroup/promote_member/:id/:usergrp_id', 'UsergroupController.
 Route.get('/api/usergroup/demote_member/:id/:usergrp_id', 'UsergroupController.demote_member')
 Route.get('/api/usergroup/current_member/:id', 'UsergroupController.current_member')
 
+Route.get('/api/chats/:userId', 'UserChatController.fetchChats');
+Route.get('/api/chat/:chatId', 'ChatController.fetchMessages');
+Route.get('/api/chat/:chatId/info', 'UserChatController.fetchInfo');
+Route.post('/api/chat/', 'ChatController.create');
+Route.post('/api/chat/:chatId/message', 'ChatController.createMessage');
 
 Route.any('*', ({view}) => view.render('pages/react'))

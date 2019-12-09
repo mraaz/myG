@@ -1,0 +1,197 @@
+.chat-component-base {
+  background-color: #171A1C;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  margin: 12px;
+  height: 360px;
+  width: 320px;
+  font-family: 'Montserrat Alternates', sans-serif;
+}
+
+.chat-component-header {
+  display: flex;
+  background-color: #1D2326;
+  padding: 12px;
+  border-top-right-radius: 12px;
+  border-top-left-radius: 12px;
+}
+
+.chat-component-header-icon {
+  background-color: #2D363A;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  border-radius: 20px;
+  width: 40px;
+  height: 40px;
+  margin-right: 12px;
+}
+
+.chat-component-header-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-around;
+  &:active { opacity: 0.3 };
+}
+
+.chat-component-header-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.chat-component-header-subtitle {
+  font-size: 12px;
+  color: #FFFFFF;
+}
+
+.chat-component-header-close {
+  width: 24px;
+  height: 24px;
+  &:active { opacity: 0.3 };
+}
+
+.chat-component-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background-color: #171A1C;
+  overflow-y: scroll;
+  padding: 12px;
+}
+
+.chat-component-footer-divider {
+  background-color: rgba(66, 81, 86, 0.4);
+  align-self: center;
+  width: 300px;
+  height: 1px;
+  margin-bottom: 2px;
+}
+
+.chat-component-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #171A1C;
+  padding: 4px;
+}
+
+.chat-component-input {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  border: none;
+  background-color: #1D2326;
+  color: #93A4A5;
+  padding-left: 8px;
+  padding-right: 8px;
+  font-size: 14px;
+}
+
+.chat-component-send-button {
+  background-color: #2D363A;
+  background-size: 28px;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 32px;
+  height: 32px;
+  border-top-right-radius: 16px;
+  border-bottom-right-radius: 16px;
+  &:active { opacity: 0.3 };
+}
+
+.chat-component-attach-button-container {
+  background-color: #1D2326;
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+  overflow: hidden;
+  display: flex;
+}
+
+.chat-component-attach-button {
+  background-color: #1D2326;
+  background-size: 28px;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 32px;
+  height: 32px;
+  &:active { opacity: 0.3 };
+}
+
+.chat-component-attach-button-divider {
+  background-color: #171A1C;
+  height: 24px;
+  width: 1px;
+  align-self: center;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+.chat-component-message {
+  padding: 8px 12px;
+  border-bottom-right-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+.chat-component-message::before {
+  content: "\00a0";
+  display: block;
+  height: 8px;
+  width:  20px;
+}
+
+.chat-component-message-received {
+  background-color: #2D363A;
+  margin: 4px 40px 4px 8px;
+}
+
+.chat-component-message-received::before {
+  background-color: #2D363A;
+  margin-left: -18px;
+  margin-top: -6px;
+  float: left;
+  transform:             rotate(36deg) skew(-54deg);
+      -moz-transform:    rotate(36deg) skew(-54deg);
+      -ms-transform:     rotate(36deg) skew(-54deg);
+      -o-transform:      rotate(36deg) skew(-54deg);
+      -webkit-transform: rotate(36deg) skew(-54deg);
+}
+
+.chat-component-message-sent {
+  background-color: #425156;
+  margin: 4px 8px 4px 40px;
+}
+
+.chat-component-message-sent::before {
+  background-color: #425156;
+  margin-right: -18px;
+  margin-top: -8px;
+  float: right;
+  transform:             skew(-54deg);
+      -moz-transform:    skew(-54deg);
+      -ms-transform:     skew(-54deg);
+      -o-transform:      skew(-54deg);
+      -webkit-transform: skew(-54deg);
+}
+
+.chat-component-message-content-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.chat-component-message-content {
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  color: #FFFFFF;
+  font-size: 12px;
+}
+
+.chat-component-message-date {
+  z-index: 1;
+  color: #93A4A5;
+  font-size: 8px;
+}
