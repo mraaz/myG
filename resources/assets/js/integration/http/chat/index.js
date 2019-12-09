@@ -10,9 +10,9 @@ export function fetchMessages(chatId) {
   return axios.get(`/api/chat/${chatId}`).then(response => ({ messages: response.data }));
 }
 
-export function fetchTitle(chatId) {
-  console.log('HTTP', `Fetching Title for Chat ${chatId}`);
-  return axios.get(`/api/chat/${chatId}/title`).then(response => ({ title: response.data }));
+export function fetchInfo(chatId) {
+  console.log('HTTP', `Fetching Info for Chat ${chatId}`);
+  return axios.get(`/api/chat/${chatId}/info`).then(response => response.data);
 }
 
 export function createChat(members) {

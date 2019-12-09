@@ -1,5 +1,5 @@
 
-export function howLongAgo(date) {
+function howLongAgo(date) {
 
   const delta = Date.now() - date;
   const seconds = Math.floor(delta / 1000);
@@ -33,7 +33,7 @@ export function howLongAgo(date) {
 
 }
 
-export function formatDate(date) {
+function formatDate(date) {
   const hours = formatAMPM(date);
   if (isToday(date)) return hours;
   const day = date.getDate();
@@ -42,7 +42,7 @@ export function formatDate(date) {
   return `${year}-${month}-${day} ${hours}`;
 }
 
-export function formatAMPM(date) {
+function formatAMPM(date) {
   let hours = date.getHours();
   let minutes = date.getMinutes();
   const ampm = hours >= 12 ? 'pm' : 'am';
@@ -52,9 +52,11 @@ export function formatAMPM(date) {
   return hours + ':' + minutes + ' ' + ampm;
 }
 
-export function isToday(someDate) {
+function isToday(someDate) {
   const today = new Date()
   return someDate.getDate() == today.getDate() &&
     someDate.getMonth() == today.getMonth() &&
     someDate.getFullYear() == today.getFullYear()
 }
+
+module.exports = { howLongAgo, formatDate, formatAMPM, isToday}

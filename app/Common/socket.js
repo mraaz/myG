@@ -15,6 +15,4 @@ function broadcast(channelId, id, type, data) {
 
 }
 
-module.exports = {
-  broadcast
-}
+module.exports = { broadcast }

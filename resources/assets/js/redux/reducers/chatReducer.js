@@ -26,12 +26,14 @@ export default function reducer(state = {
             };
         }
 
-        case "FETCH_CHAT_TITLE_FULFILLED": {
-            console.log(`Redux -> Fetched Chat Title: `, action.payload);
+        case "FETCH_CHAT_INFO_FULFILLED": {
+            console.log(`Redux -> Fetched Chat Info: `, action.payload);
             const chatId = action.meta.chatId;
             const chats = JSON.parse(JSON.stringify(state.chats));
             const chat = chats.find(candidate => candidate.chatId === chatId);
+            chat.icon = action.payload.icon;
             chat.title = action.payload.title;
+            chat.subtitle = action.payload.subtitle;
             return {
                 ...state,
                 chats,
@@ -55,6 +57,20 @@ export default function reducer(state = {
             const chats = JSON.parse(JSON.stringify(state.chats));
             const chat = chats.find(candidate => candidate.chatId === chatId);
             chat.messages.push(message);
+            return {
+                ...state,
+                chats,
+            };
+        }
+
+        case "INFO_UPDATED": {
+            console.log(`Redux -> Info Updated: `, action.payload);
+            const chatId = action.meta.chatId;
+            const { userId, subtitle } = action.payload;
+            const chats = JSON.parse(JSON.stringify(state.chats));
+            const chat = chats.find(candidate => candidate.chatId === chatId);
+            if (chat.userId === userId) return state;
+            chat.subtitle = subtitle;
             return {
                 ...state,
                 chats,

@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { monitorMessages } from '../../integration/ws/chat';
-import { fetchMessagesAction, fetchTitleAction, sendMessageAction } from '../../redux/actions/chatAction';
-import { howLongAgo, formatAMPM } from '../../common/date';
+import { fetchMessagesAction, fetchInfoAction, sendMessageAction } from '../../redux/actions/chatAction';
+import { formatAMPM } from '../../common/date';
 
 class Chat extends React.Component {
 
@@ -14,7 +14,7 @@ class Chat extends React.Component {
   componentDidMount() {
     this.subscription = monitorMessages(this.props.chatId);
     this.props.fetchMessages(this.props.chatId);
-    this.props.fetchTitle(this.props.chatId);
+    this.props.fetchInfo(this.props.chatId);
   }
 
   componentWillUnmount() {
@@ -35,14 +35,17 @@ class Chat extends React.Component {
   renderHeader = () => {
     return (
       <div className="chat-component-header">
-        <div className="chat-component-header-icon" />
+        <div
+          className="chat-component-header-icon"
+          style={{ backgroundImage: `url('${this.props.icon}')` }}
+        />
         <div className="chat-component-header-info">
           <div className="chat-component-header-title">
             {this.props.title}
           </div>
           <div className="chat-component-header-subtitle">
-            Last seen {howLongAgo((Date.now() - (Math.floor(Math.random() * Math.floor(100000)))))} ago.
-            </div>
+            {this.props.subtitle}
+          </div>
         </div>
         <div className="chat-component-header-close"
           style={{ backgroundImage: `url(/assets/svg/ic_chat_close.svg)` }}
@@ -63,7 +66,10 @@ class Chat extends React.Component {
   renderMessage = (message) => {
     const origin = parseInt(message.user_id) === this.props.userId ? 'sent' : 'received';
     return (
-      <div className={`chat-component-message chat-component-message-${origin}`}>
+      <div
+        key={message.id}
+        className={`chat-component-message chat-component-message-${origin}`}
+      >
         <div className="chat-component-message-content-container">
           <p className="chat-component-message-content">
             {message.content}
@@ -119,7 +125,9 @@ function mapStateToProps(state, props) {
   const chat = state.chat.chats.find(chat => chat.chatId === props.chatId) || {};
   return {
     messages: chat.messages || [],
+    icon: chat.icon || '',
     title: chat.title || '',
+    subtitle: chat.subtitle || '',
   }
 }
 
@@ -127,7 +135,7 @@ function mapDispatchToProps(dispatch) {
   return ({
     sendMessage: (chatId, userId, content) => dispatch(sendMessageAction(chatId, userId, content)),
     fetchMessages: (chatId) => dispatch(fetchMessagesAction(chatId)),
-    fetchTitle: (chatId) => dispatch(fetchTitleAction(chatId)),
+    fetchInfo: (chatId) => dispatch(fetchInfoAction(chatId)),
   });
 }
 

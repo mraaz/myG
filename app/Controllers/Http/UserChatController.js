@@ -2,6 +2,7 @@
 
 const UserChat = use('App/Models/UserChat');
 const UserController = use('./UserController');
+const { formatDate } = require('../../Common/date');
 
 class UserChatController {
 
@@ -10,10 +11,10 @@ class UserChatController {
       .query()
       .where('user_id', params.userId)
       .fetch();
-    return chats.toJSON().map(chat => ({ ...chat, chatId: chat.chat_id }));
+    return chats.toJSON().map(chat => ({ ...chat, chatId: chat.chat_id, userId: chat.user_id }));
   }
 
-  async fetchTitle({ auth, params }) {
+  async fetchInfo({ auth, params }) {
 
     const chat = await UserChat
       .query()
@@ -31,8 +32,20 @@ class UserChatController {
       }
     });
 
-    return `${friend.user[0].first_name} ${friend.user[0].last_name}`;
+    const icon = friend.user[0].profile_img;
+    const title = `${friend.user[0].first_name} ${friend.user[0].last_name}`;
+    const subtitle = this.getSubtitle(friend.user[0].online, friend.user[0].last_seen);
 
+    return {
+      icon,
+      title,
+      subtitle,
+    };
+
+  }
+
+  getSubtitle(online, lastSeen) {
+    return online ? 'Online' : `Last seen at ${formatDate(lastSeen)}`;
   }
 
   async create({ request }) {
@@ -45,4 +58,4 @@ class UserChatController {
 
 }
 
-module.exports = UserChatController
+module.exports = UserChatController;

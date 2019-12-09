@@ -20,7 +20,7 @@ class ChatController {
 
   }
 
-  async create({ request }) {
+  async create({ auth, request }) {
 
     const chat = new Chat();
     const uuid = uuidv4();
@@ -37,7 +37,7 @@ class ChatController {
           userId: id,
         }
       });
-      broadcast('user_chat:*', `user_chat:${id}`, 'user_chat:newChat', { chatId: uuid });
+      broadcast('user_chat:*', `user_chat:${id}`, 'user_chat:newChat', { chatId: uuid, userId: auth.user.id });
     });
 
     return Chat.find(uuid);

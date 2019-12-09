@@ -1,4 +1,11 @@
-import { fetchChats, fetchMessages, fetchTitle, createChat, sendMessage } from '../../integration/http/chat';
+import { fetchChats, fetchMessages, fetchInfo, createChat, sendMessage } from '../../integration/http/chat';
+
+export function onNewChatAction(chat) {
+    return {
+        type: 'NEW_CHAT',
+        payload: { chat }
+    }
+}
 
 export function onNewMessageAction(message, chatId) {
     return {
@@ -8,10 +15,11 @@ export function onNewMessageAction(message, chatId) {
     }
 }
 
-export function onNewChatAction(chat) {
+export function onInfoUpdatedAction(activity, chatId) {
     return {
-        type: 'NEW_CHAT',
-        payload: { chat }
+        type: 'INFO_UPDATED',
+        payload: activity,
+        meta: { chatId },
     }
 }
 
@@ -30,10 +38,10 @@ export function fetchMessagesAction(chatId) {
     }
 }
 
-export function fetchTitleAction(chatId) {
+export function fetchInfoAction(chatId) {
     return {
-        type: 'FETCH_CHAT_TITLE',
-        payload: fetchTitle(chatId),
+        type: 'FETCH_CHAT_INFO',
+        payload: fetchInfo(chatId),
         meta: { chatId },
     }
 }
