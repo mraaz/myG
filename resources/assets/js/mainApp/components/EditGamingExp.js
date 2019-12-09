@@ -7,6 +7,7 @@ import CreatableSelect from 'react-select/lib/Creatable'
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import Modal from 'react-modal'
 import { toast } from 'react-toastify'
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 Modal.setAppElement('#app')
 
@@ -86,6 +87,7 @@ export default class EditGamingExp extends Component<*, State> {
       edit_game_name: '',
       just_one_time: true,
       redirect_: false,
+      alert: null,
     }
   }
 
@@ -460,6 +462,37 @@ export default class EditGamingExp extends Component<*, State> {
     }
   }
 
+  showAlert() {
+    const getAlert = () => (
+      <SweetAlert
+        danger
+        showCancel
+        title='Are you sure you wish to delete this Gaming Experience?'
+        confirmBtnText='Make it so!'
+        confirmBtnBsStyle='danger'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={true}
+        onConfirm={() => this.hideAlert('true')}
+        onCancel={() => this.hideAlert('false')}>
+        You will not be able to recover this entry!
+      </SweetAlert>
+    )
+
+    this.setState({
+      alert: getAlert(),
+    })
+  }
+
+  hideAlert(text) {
+    this.setState({
+      alert: null,
+    })
+    if (text == 'true') {
+      this.delete_exp()
+    }
+  }
+
   render() {
     if (this.state.redirect_) {
       const { match } = this.props.routeProps
@@ -493,6 +526,7 @@ export default class EditGamingExp extends Component<*, State> {
       }
       return (
         <div className='content-area addGamingExp-page'>
+          {this.state.alert}
           <Modal
             isOpen={true}
             onRequestClose={(event) => {
@@ -635,11 +669,7 @@ export default class EditGamingExp extends Component<*, State> {
             <div></div>
             <div></div>
             <div className='save-btn'>
-              <button
-                className='delete'
-                onClick={() => {
-                  if (window.confirm('Are you sure you wish to delete this Gaming Experience?')) this.delete_exp()
-                }}>
+              <button className='delete' onClick={() => this.showAlert()}>
                 Delete
               </button>
               &nbsp;

@@ -3,6 +3,7 @@ import Select from 'react-select'
 import ReactDOM from 'react-dom'
 import { Redirect } from 'react-router'
 import axios from 'axios'
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 export default class IndividualGamingExperience extends Component {
   constructor() {
@@ -13,6 +14,7 @@ export default class IndividualGamingExperience extends Component {
       redirect_GamingExp: false,
       redirect_advancedSearch: false,
       tmp_id: '',
+      alert: null,
     }
   }
 
@@ -231,6 +233,37 @@ export default class IndividualGamingExperience extends Component {
     this.setState({ redirect_advancedSearch: true })
   }
 
+  showAlert() {
+    const getAlert = () => (
+      <SweetAlert
+        success
+        showCancel
+        title='Commend me!'
+        confirmBtnText='Make it so!'
+        confirmBtnBsStyle='success'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={true}
+        onConfirm={() => this.hideAlert('true')}
+        onCancel={() => this.hideAlert('false')}>
+        Commend allows you to reward positive behaviour and/or recongise great skill.
+      </SweetAlert>
+    )
+
+    this.setState({
+      alert: getAlert(),
+    })
+  }
+
+  hideAlert(text) {
+    this.setState({
+      alert: null,
+    })
+    if (text == 'true') {
+      this.commend_me(this.props.item.id)
+    }
+  }
+
   render() {
     if (this.state.redirect_GamingExp) {
       const { match } = this.props.routeProps
@@ -313,6 +346,7 @@ export default class IndividualGamingExperience extends Component {
 
     return (
       <div className='game-info'>
+        {this.state.alert}
         <div className='game-name'>{`${game_name}`}</div>
         <div className='game-infos'>{this.state.myPage && <i className='fas fa-pen' onClick={() => this.edit_lnk(id)}></i>}</div>
         {show_ratings && <div className='game-rating'>{this.showRating(ratings)}</div>}
@@ -326,12 +360,7 @@ export default class IndividualGamingExperience extends Component {
           <i className='fas fa-dragon'></i>&nbsp;{`${commendation}`}&nbsp;
           {this.state.showCommends && (
             <div className='commendation'>
-              <button
-                className='commend'
-                type='button'
-                onClick={() => {
-                  if (window.confirm('Commend allows you to reward positive behaviour and/or recongise great skill')) this.commend_me(id)
-                }}>
+              <button className='commend' type='button' onClick={() => this.showAlert()}>
                 Commend!
               </button>
             </div>

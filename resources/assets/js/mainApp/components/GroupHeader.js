@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, NavLink, Link } from 'react-router-dom'
 import axios from 'axios'
 import FileOpenModal from './FileOpenModal'
 import { toast } from 'react-toastify'
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 const Toast_style = (props) => (
   <div className='individual-toasts'>
@@ -23,6 +24,7 @@ export default class GroupHeader extends Component {
       statusTxt: 'Join',
       show_approvals: false,
       redirect_: false,
+      alert: null,
     }
 
     this.callbackFileModalClose = this.callbackFileModalClose.bind(this)
@@ -135,24 +137,13 @@ export default class GroupHeader extends Component {
     this.forceUpdate()
   }
 
-  statusToggle = async () => {
+  statusToggle = () => {
     if (this.state.status == 2) {
       toast.success(<Toast_style text={"Sorry, The captain goes down with the ship, you can't leave this group"} />)
       return
     }
     if (this.state.statusTxt == 'Joined') {
-      if (window.confirm('Are you sure you wish to remove yourself from this group?')) {
-        try {
-          const deleteRegistration = axios.get(`/api/usergroup/delete/${this.props.groups_id.params.id}`)
-          const killInvite = axios.get(`/api/notifications/delete_group/${this.props.groups_id.params.id}`)
-        } catch (error) {
-          console.log(error)
-        }
-        this.setState({
-          statusTxt: 'Join',
-          show_approvals: false,
-        })
-      }
+      this.showAlert_remove_group()
     } else if (this.state.statusTxt == 'Join') {
       try {
         const sendInvite = axios.post('/api/usergroup/create', {
@@ -178,7 +169,61 @@ export default class GroupHeader extends Component {
         statusTxt: 'Pending Approval',
       })
     } else if (this.state.statusTxt == 'Pending Approval') {
-      if (window.confirm('Are you sure you wish to remove yourself from this group?')) {
+      this.showAlert_remove_group()
+    }
+  }
+
+  showAlert() {
+    const getAlert = () => (
+      <SweetAlert
+        warning
+        showCancel
+        confirmBtnText='Make it so!'
+        confirmBtnBsStyle='warning'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={true}
+        onConfirm={() => this.hideAlert('true')}
+        onCancel={() => this.hideAlert('false')}>
+        Are you sure you wish to change this group type?
+      </SweetAlert>
+    )
+
+    this.setState({
+      alert: getAlert(),
+    })
+  }
+
+  showAlert_remove_group() {
+    const getAlert = () => (
+      <SweetAlert
+        danger
+        showCancel
+        confirmBtnText='Make it so!'
+        confirmBtnBsStyle='danger'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={true}
+        onConfirm={() => this.hideAlert('showAlert_remove_group_true')}
+        onCancel={() => this.hideAlert('false')}>
+        Are you sure you wish to remove yourself from this group?
+      </SweetAlert>
+    )
+
+    this.setState({
+      alert: getAlert(),
+    })
+  }
+
+  hideAlert(text) {
+    this.setState({
+      alert: null,
+    })
+    switch (text) {
+      case 'true':
+        this.change_type()
+        break
+      case 'showAlert_remove_group_true':
         try {
           const deleteRegistration = axios.get(`/api/usergroup/delete/${this.props.groups_id.params.id}`)
           const killInvite = axios.get(`/api/notifications/delete_group/${this.props.groups_id.params.id}`)
@@ -187,8 +232,21 @@ export default class GroupHeader extends Component {
         }
         this.setState({
           statusTxt: 'Join',
+          show_approvals: false,
         })
-      }
+        break
+      case 'showAlert_remove_group_true':
+        try {
+          const deleteRegistration = axios.get(`/api/usergroup/delete/${this.props.groups_id.params.id}`)
+          const killInvite = axios.get(`/api/notifications/delete_group/${this.props.groups_id.params.id}`)
+        } catch (error) {
+          console.log(error)
+        }
+        this.setState({
+          statusTxt: 'Join',
+          show_approvals: false,
+        })
+        break
     }
   }
 
@@ -213,6 +271,7 @@ export default class GroupHeader extends Component {
       }
       return (
         <div className='header-area'>
+          {this.state.alert}
           <FileOpenModal
             bOpen={this.state.bFileModalOpen}
             callbackClose={this.callbackFileModalClose}
@@ -251,12 +310,7 @@ export default class GroupHeader extends Component {
               )}
               <div className='group-type'>
                 {this.state.myPage === true ? (
-                  <button
-                    type='button'
-                    onClick={() => {
-                      if (window.confirm('Are you sure you wish to change this group type?')) this.change_type()
-                    }}
-                    className='type'>
+                  <button type='button' onClick={() => this.showAlert()} className='type'>
                     {str_group_type}
                   </button>
                 ) : (

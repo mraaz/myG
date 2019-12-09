@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import { Redirect } from 'react-router'
 import axios from 'axios'
 import ToggleButton from 'react-toggle-button'
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 export default class MySettings extends Component {
   constructor() {
@@ -12,6 +13,7 @@ export default class MySettings extends Component {
       value_password: false,
       value_delete: false,
       redirect_: false,
+      alert: null,
     }
   }
   componentWillMount() {
@@ -32,11 +34,7 @@ export default class MySettings extends Component {
   }
 
   confirm_delete_exp = () => {
-    if (
-      window.confirm(
-        'Are you REALLY sure you wish to delete your Account? Once gone, its gone, we wont be able to recover this!!!'
-      )
-    )
+    if (window.confirm('Are you REALLY sure you wish to delete your Account? Once gone, its gone, we wont be able to recover this!!!'))
       this.delete_exp()
   }
 
@@ -63,6 +61,37 @@ export default class MySettings extends Component {
     }
   }
 
+  showAlert() {
+    const getAlert = () => (
+      <SweetAlert
+        danger
+        showCancel
+        title='Are you sure you wish to delete your Account???'
+        confirmBtnText='Make it so!'
+        confirmBtnBsStyle='danger'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={true}
+        onConfirm={() => this.hideAlert('true')}
+        onCancel={() => this.hideAlert('false')}>
+        You will not be able to recover this Account!!
+      </SweetAlert>
+    )
+
+    this.setState({
+      alert: getAlert(),
+    })
+  }
+
+  hideAlert(text) {
+    this.setState({
+      alert: null,
+    })
+    if (text == 'true') {
+      this.confirm_delete_exp()
+    }
+  }
+
   render() {
     if (this.state.redirect_) {
       return <Redirect push to='/logout' />
@@ -70,6 +99,7 @@ export default class MySettings extends Component {
     return (
       <section id='mySettings-page'>
         <div className='content-area mySettings-page'>
+          {this.state.alert}
           <div className='padding-container'>
             <div className='invitation-grey-container'>
               <h3>mySettings</h3>
@@ -89,19 +119,7 @@ export default class MySettings extends Component {
                 <div className='delete-account'>
                   Delete Account:
                   <div className='delete-toggle'>
-                    <ToggleButton
-                      value={this.state.value_delete || false}
-                      onToggle={(value_delete) => {
-                        {
-                          if (
-                            window.confirm(
-                              'Are you sure you wish to delete your Account???'
-                            )
-                          )
-                            this.confirm_delete_exp()
-                        }
-                      }}
-                    />
+                    <ToggleButton value={this.state.value_delete || false} onToggle={(value_delete) => this.showAlert()} />
                   </div>
                 </div>
                 <div className='change-password'>

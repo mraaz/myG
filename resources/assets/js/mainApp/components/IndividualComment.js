@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 import IndividualReply from './IndividualReply'
 import moment from 'moment'
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 export default class IndividualComment extends Component {
   constructor() {
@@ -25,6 +26,7 @@ export default class IndividualComment extends Component {
       show_edit_comment: false,
       content: '',
       comment_time: '',
+      alert: null,
     }
     this.textInput = null
 
@@ -47,10 +49,7 @@ export default class IndividualComment extends Component {
       content: this.props.comment.content,
     })
 
-    var comment_timestamp = moment(
-      this.props.comment.updated_at,
-      'YYYY-MM-DD HH:mm:ssZ'
-    )
+    var comment_timestamp = moment(this.props.comment.updated_at, 'YYYY-MM-DD HH:mm:ssZ')
     this.setState({ comment_time: comment_timestamp.local().fromNow() })
 
     const self = this
@@ -60,9 +59,7 @@ export default class IndividualComment extends Component {
       try {
         var i
 
-        const myCommentLike = await axios.get(
-          `/api/likes/comment/${comment.comment.id}`
-        )
+        const myCommentLike = await axios.get(`/api/likes/comment/${comment.comment.id}`)
 
         if (myCommentLike.data.do_I_like_this_comment[0].myOpinion != 0) {
           self.setState({
@@ -84,9 +81,7 @@ export default class IndividualComment extends Component {
       try {
         var i
 
-        const myCommentReplies = await axios.get(
-          `/api/replies/${comment.comment.id}`
-        )
+        const myCommentReplies = await axios.get(`/api/replies/${comment.comment.id}`)
         self.setState({
           myReplies: myCommentReplies.data.this_comments_replies,
         })
@@ -106,9 +101,7 @@ export default class IndividualComment extends Component {
       try {
         var i
 
-        const myCommentCount = await axios.get(
-          `/api/comments/my_count/${comment.comment.id}`
-        )
+        const myCommentCount = await axios.get(`/api/comments/my_count/${comment.comment.id}`)
 
         if (myCommentCount.data.no_of_my_comments[0].no_of_my_comments != 0) {
           self.setState({
@@ -150,23 +143,17 @@ export default class IndividualComment extends Component {
       let { comment, user } = this.props
       if (comment.user_id != user.userInfo.id) {
         if (this.props.comment.schedule_games_id != null) {
-          const addCommentLike = axios.post(
-            '/api/notifications/addCommentLike',
-            {
-              other_user_id: comment.user_id,
-              schedule_games_id: this.props.comment.schedule_games_id,
-              comment_id: comment_id,
-            }
-          )
+          const addCommentLike = axios.post('/api/notifications/addCommentLike', {
+            other_user_id: comment.user_id,
+            schedule_games_id: this.props.comment.schedule_games_id,
+            comment_id: comment_id,
+          })
         } else {
-          const addCommentLike = axios.post(
-            '/api/notifications/addCommentLike',
-            {
-              other_user_id: comment.user_id,
-              post_id: comment.post_id,
-              comment_id: comment_id,
-            }
-          )
+          const addCommentLike = axios.post('/api/notifications/addCommentLike', {
+            other_user_id: comment.user_id,
+            post_id: comment.post_id,
+            comment_id: comment_id,
+          })
         }
       }
     } catch (error) {
@@ -187,9 +174,7 @@ export default class IndividualComment extends Component {
     let { comment } = this.props
     try {
       const unlike = axios.get(`/api/likes/delete/comment/${comment_id}`)
-      const deleteCommentLike = axios.get(
-        `/api/notifications/deleteCommentLike/${comment_id}`
-      )
+      const deleteCommentLike = axios.get(`/api/notifications/deleteCommentLike/${comment_id}`)
     } catch (error) {
       console.log(error)
     }
@@ -297,12 +282,9 @@ export default class IndividualComment extends Component {
 
     const saveComment = async function() {
       try {
-        const mysaveComment = await axios.post(
-          `/api/comments/update/${comment_id}`,
-          {
-            content: self.state.value2,
-          }
-        )
+        const mysaveComment = await axios.post(`/api/comments/update/${comment_id}`, {
+          content: self.state.value2,
+        })
 
         self.setState({
           show_edit_comment: false,
@@ -383,9 +365,7 @@ export default class IndividualComment extends Component {
     var comment_id = this.props.comment.id
 
     try {
-      const myComment_content = await axios.get(
-        `/api/comments/show_comment/${comment_id}`
-      )
+      const myComment_content = await axios.get(`/api/comments/show_comment/${comment_id}`)
 
       this.setState({
         show_edit_comment: true,
@@ -397,7 +377,7 @@ export default class IndividualComment extends Component {
     }
   }
 
-  delete_exp = async () => {
+  delete_exp = () => {
     var comment_id = this.props.comment.id
 
     try {
@@ -408,17 +388,51 @@ export default class IndividualComment extends Component {
     } catch (error) {
       console.log(error)
     }
+  }
+
+  showAlert() {
+    const getAlert = () => (
+      <SweetAlert
+        danger
+        showCancel
+        title='Are you sure you wish to delete this comment?'
+        confirmBtnText='Make it so!'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={false}
+        btnSize='lg'
+        style={{
+          display: 'flex',
+          whiteSpace: 'pre',
+          width: '41%',
+        }}
+        onConfirm={() => this.hideAlert('true')}
+        onCancel={() => this.hideAlert('false')}>
+        You will not be able to recover this entry!
+      </SweetAlert>
+    )
+
     this.setState({
+      alert: getAlert(),
+    })
+  }
+
+  hideAlert(text) {
+    this.setState({
+      alert: null,
       dropdown: false,
     })
+    if (text == 'true') {
+      this.delete_exp()
+    }
   }
 
   render() {
     let { comment } = this.props
-    //console.log(comment);
     if (this.state.comment_deleted != true) {
       return (
         <div className='individual-comment-container'>
+          {this.state.alert}
           <div className='author-info'>
             {this.state.show_profile_img && (
               <Link
@@ -437,14 +451,11 @@ export default class IndividualComment extends Component {
                 }}></Link>
             )}
             <div className='comment-info'>
-              <Link
-                to={`/profile/${comment.user_id}`}>{`${comment.first_name} ${comment.last_name}`}</Link>
+              <Link to={`/profile/${comment.user_id}`}>{`${comment.first_name} ${comment.last_name}`}</Link>
             </div>
             {this.state.show_comment_options && (
               <div className='comment-options'>
-                <i
-                  className='fas fa-ellipsis-h'
-                  onClick={this.clickedDropdown}></i>
+                <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}></i>
               </div>
             )}
             <div className={`dropdown ${this.state.dropdown ? 'active' : ''}`}>
@@ -452,16 +463,7 @@ export default class IndividualComment extends Component {
                 <div className='edit' onClick={this.clickedEdit}>
                   Edit &nbsp;
                 </div>
-                <div
-                  className='delete'
-                  onClick={() => {
-                    if (
-                      window.confirm(
-                        'Are you sure you wish to delete this comment?'
-                      )
-                    )
-                      this.delete_exp()
-                  }}>
+                <div className='delete' onClick={() => this.showAlert()}>
                   Delete
                 </div>
                 &nbsp;
@@ -473,38 +475,29 @@ export default class IndividualComment extends Component {
           </div>
           <div className='comment-panel'>
             {this.state.like && (
-              <div
-                className='comment-panel-liked'
-                onClick={() => this.click_unlike_btn(comment.id)}>
+              <div className='comment-panel-liked' onClick={() => this.click_unlike_btn(comment.id)}>
                 Like
               </div>
             )}
             {!this.state.like && (
-              <div
-                className='comment-panel-like'
-                onClick={() => this.click_like_btn(comment.id)}>
+              <div className='comment-panel-like' onClick={() => this.click_like_btn(comment.id)}>
                 Like
               </div>
             )}
             <div className='comment-panel-reply' onClick={this.toggleReply}>
               Reply
             </div>
-            {(this.state.show_like || this.state.show_reply) && (
-              <div className='divider'>|</div>
-            )}
+            {(this.state.show_like || this.state.show_reply) && <div className='divider'>|</div>}
             {this.state.show_like && (
               <div className='no-likes'>
                 {this.state.total} {this.state.total > 1 ? 'Likes' : 'Like'}{' '}
               </div>
             )}
-            {this.state.show_reply && this.state.show_like && (
-              <div className='colon'>:</div>
-            )}
+            {this.state.show_reply && this.state.show_like && <div className='colon'>:</div>}
             {this.state.show_reply && (
               <div className='no-reply'>
                 {' '}
-                {this.state.reply_total}{' '}
-                {this.state.reply_total > 1 ? 'Replies' : 'Reply'}
+                {this.state.reply_total} {this.state.reply_total > 1 ? 'Replies' : 'Reply'}
               </div>
             )}
             <div className='comment-time'>
