@@ -85,7 +85,6 @@ export default class EditEsportsExp extends Component<*, State> {
       just_one_time: true,
       redirect_: false,
       alert: null,
-      button: 'active',
     }
   }
 
@@ -627,7 +626,7 @@ export default class EditEsportsExp extends Component<*, State> {
         danger
         showCancel
         title='Are you sure you wish to delete this Esports Experience?'
-        confirmBtnText='Yes, delete it!'
+        confirmBtnText='Make it so!'
         confirmBtnBsStyle='danger'
         focusCancelBtn={true}
         focusConfirmBtn={false}

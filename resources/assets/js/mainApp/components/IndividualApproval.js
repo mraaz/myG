@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 const Toast_style = (props) => (
   <div className='individual-toasts'>
@@ -31,6 +32,7 @@ export default class IndividualApproval extends Component {
       dota_2_position_five_ticked: false,
       dota_2_position_selected: false,
       not_dota_2: false,
+      alert: null,
     }
   }
 
@@ -68,8 +70,7 @@ export default class IndividualApproval extends Component {
       toast.success(<Toast_style text={'Sorry mate! You need to select a Position first! Click on a number to select the position'} />)
       return
     }
-
-    if (window.confirm("Happy with your choice? Once in, you can't reject!")) this.accepted_invite()
+    this.showAlert()
   }
 
   accepted_invite = async () => {
@@ -254,6 +255,36 @@ export default class IndividualApproval extends Component {
     }
   }
 
+  showAlert() {
+    const getAlert = () => (
+      <SweetAlert
+        info
+        showCancel
+        confirmBtnText='Make it so!'
+        confirmBtnBsStyle='info'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={true}
+        onConfirm={() => this.hideAlert('true')}
+        onCancel={() => this.hideAlert('false')}>
+        Happy with your choice? Once in, you can't reject!
+      </SweetAlert>
+    )
+
+    this.setState({
+      alert: getAlert(),
+    })
+  }
+
+  hideAlert(text) {
+    this.setState({
+      alert: null,
+    })
+    if (text == 'true') {
+      this.accepted_invite()
+    }
+  }
+
   render() {
     let { approvals, lastRow } = this.props
     var show_profile_img = false
@@ -263,7 +294,7 @@ export default class IndividualApproval extends Component {
 
     return (
       <div className='scheduledGamesApprovals-info'>
-        {' '}
+        {this.state.alert}{' '}
         {show_profile_img && (
           <Link
             to={`/profile/${approvals.attendees.user_id}`}

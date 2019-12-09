@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 import IndividualComment from './IndividualComment'
 import moment from 'moment'
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 export default class IndividualPost extends Component {
   constructor() {
@@ -27,6 +28,7 @@ export default class IndividualPost extends Component {
       edit_post: false,
       content: '',
       post_time: '',
+      alert: null,
     }
     this.textInput = null
 
@@ -95,9 +97,7 @@ export default class IndividualPost extends Component {
   click_unlike_btn = async (post_id) => {
     try {
       const unlike = await axios.get(`/api/likes/delete/${post_id}`)
-      const deletePostLike = axios.get(
-        `/api/notifications/deletePostLike/${post_id}`
-      )
+      const deletePostLike = axios.get(`/api/notifications/deletePostLike/${post_id}`)
     } catch (error) {
       console.log(error)
     }
@@ -122,10 +122,7 @@ export default class IndividualPost extends Component {
     this.setState({ admirer_first_name: this.props.post.admirer_first_name })
     this.setState({ admirer_last_name: this.props.post.admirer_last_name })
 
-    var post_timestamp = moment(
-      this.props.post.updated_at,
-      'YYYY-MM-DD HH:mm:ssZ'
-    )
+    var post_timestamp = moment(this.props.post.updated_at, 'YYYY-MM-DD HH:mm:ssZ')
     this.setState({ post_time: post_timestamp.local().fromNow() })
 
     if (this.props.post.total == 0) {
@@ -328,13 +325,7 @@ export default class IndividualPost extends Component {
   showComment = () => {
     if (this.state.myComments != undefined) {
       return this.state.myComments.map((item, index) => {
-        return (
-          <IndividualComment
-            comment={item}
-            key={index}
-            user={this.props.user}
-          />
-        )
+        return <IndividualComment comment={item} key={index} user={this.props.user} />
       })
     }
   }
@@ -360,7 +351,7 @@ export default class IndividualPost extends Component {
     )
   }
 
-  delete_exp = async () => {
+  delete_exp = () => {
     var post_id = this.props.post.id
 
     try {
@@ -371,9 +362,38 @@ export default class IndividualPost extends Component {
     } catch (error) {
       console.log(error)
     }
+  }
+
+  showAlert() {
+    const getAlert = () => (
+      <SweetAlert
+        danger
+        showCancel
+        title='Are you sure you wish to delete this post?'
+        confirmBtnText='Make it so!'
+        confirmBtnBsStyle='danger'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={true}
+        onConfirm={() => this.hideAlert('true')}
+        onCancel={() => this.hideAlert('false')}>
+        You will not be able to recover this entry!
+      </SweetAlert>
+    )
+
     this.setState({
+      alert: getAlert(),
+    })
+  }
+
+  hideAlert(text) {
+    this.setState({
+      alert: null,
       dropdown: false,
     })
+    if (text == 'true') {
+      this.delete_exp()
+    }
   }
 
   render() {
@@ -387,6 +407,7 @@ export default class IndividualPost extends Component {
 
       return (
         <div className='update-container'>
+          {this.state.alert}
           <div className='padding-container'>
             <div className='grey-container'>
               <div className='author-info'>
@@ -407,38 +428,20 @@ export default class IndividualPost extends Component {
                     }}></Link>
                 )}
                 <div className='info'>
-                  <Link
-                    to={`/profile/${post.user_id}`}>{`${post.first_name} ${post.last_name}`}</Link>{' '}
-                  shared a{' '}
-                  <Link to={`/profile/${post.user_id}`}>
-                    {post.type == 'text' ? 'story' : 'image'}
-                  </Link>
+                  <Link to={`/profile/${post.user_id}`}>{`${post.first_name} ${post.last_name}`}</Link> shared a{' '}
+                  <Link to={`/profile/${post.user_id}`}>{post.type == 'text' ? 'story' : 'image'}</Link>
                 </div>
                 {this.state.show_post_options && (
                   <div className='post-options'>
-                    <i
-                      className='fas fa-ellipsis-h'
-                      onClick={this.clickedDropdown}></i>
+                    <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}></i>
                   </div>
                 )}
-                <div
-                  className={`post-dropdown ${
-                    this.state.dropdown ? 'active' : ''
-                  }`}>
+                <div className={`post-dropdown ${this.state.dropdown ? 'active' : ''}`}>
                   <nav>
                     <div className='edit' onClick={this.clickedEdit}>
                       Edit &nbsp;
                     </div>
-                    <div
-                      className='delete'
-                      onClick={() => {
-                        if (
-                          window.confirm(
-                            'Are you sure you wish to delete this post?'
-                          )
-                        )
-                          this.delete_exp()
-                      }}>
+                    <div className='delete' onClick={() => this.showAlert()}>
                       Delete
                     </div>
                     &nbsp;
@@ -469,12 +472,7 @@ export default class IndividualPost extends Component {
                 )}
                 {media_urls.map(function(data, index) {
                   if (post.type == 'photo') {
-                    return (
-                      <img
-                        className='post-photo'
-                        src={data.src}
-                        key={data.key}></img>
-                    )
+                    return <img className='post-photo' src={data.src} key={data.key}></img>
                   } else if (post.type == 'video') {
                     return (
                       <video className='post-video' key={data.key} controls>
@@ -497,22 +495,16 @@ export default class IndividualPost extends Component {
                       : `${this.state.admirer_first_name} ${this.state.admirer_last_name} liked this update`}
                   </div>
                 )}
-                {!this.state.show_like && (
-                  <div className='other-users'>Be the first to like this!</div>
-                )}
+                {!this.state.show_like && <div className='other-users'>Be the first to like this!</div>}
                 <div className='post-time'>{this.state.post_time}</div>
                 {this.state.like && (
-                  <div
-                    className='like-btn'
-                    onClick={() => this.click_unlike_btn(post.id)}>
+                  <div className='like-btn' onClick={() => this.click_unlike_btn(post.id)}>
                     <i className='fas fa-thumbs-up' />
                     &nbsp;Like
                   </div>
                 )}
                 {!this.state.like && (
-                  <div
-                    className='like-btn'
-                    onClick={() => this.click_like_btn(post.id)}>
+                  <div className='like-btn' onClick={() => this.click_like_btn(post.id)}>
                     <i className='far fa-thumbs-up' />
                     &nbsp;Like
                   </div>
@@ -520,9 +512,7 @@ export default class IndividualPost extends Component {
                 {this.state.zero_comments && (
                   <div className='comments-stats' onClick={this.onChange}>
                     {' '}
-                    {this.state.comment_total > 1
-                      ? `${this.state.comment_total} comments`
-                      : `${this.state.comment_total} comment`}{' '}
+                    {this.state.comment_total > 1 ? `${this.state.comment_total} comments` : `${this.state.comment_total} comment`}{' '}
                   </div>
                 )}
                 {!this.state.zero_comments && (
@@ -552,11 +542,7 @@ export default class IndividualPost extends Component {
                 </div>
               </div>
               <div className='comments'>
-                {this.state.show_more_comments && (
-                  <div className='show-individual-comments'>
-                    {this.showComment()}
-                  </div>
-                )}
+                {this.state.show_more_comments && <div className='show-individual-comments'>{this.showComment()}</div>}
               </div>
             </div>
           </div>

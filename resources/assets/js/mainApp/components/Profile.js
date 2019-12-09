@@ -5,7 +5,7 @@ import axios from 'axios'
 import IndividualGamingExperience from './IndividualGamingExperience'
 import IndividualEsportsExperience from './IndividualEsportsExperience'
 import FileOpenModal from './FileOpenModal'
-//Need to work for it
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 export default class Profile extends Component {
   constructor() {
@@ -22,6 +22,7 @@ export default class Profile extends Component {
       noti_id: 0,
       redirect_: false,
       redirect_link: '',
+      alert: null,
     }
 
     this.callbackFileModalClose = this.callbackFileModalClose.bind(this)
@@ -185,7 +186,7 @@ export default class Profile extends Component {
     getEsportsBio()
   }
 
-  addFriend = async () => {
+  addFriend = () => {
     const { match } = this.props.routeProps
     const self = this
 
@@ -210,20 +211,10 @@ export default class Profile extends Component {
     }
 
     if (this.state.friendStatus) {
-      if (window.confirm('Are you sure you wish to unfriend?')) {
-        try {
-          const userProfile = await axios.get(`/api/user/${match.params.id}/unfriend`)
-          self.setState({
-            friendTxt: 'Add Friend',
-            friendStatus: 0,
-          })
-        } catch (error) {
-          console.log(error)
-        }
-      }
+      this.showAlert()
     } else {
       try {
-        const addFriend = await axios.post('/api/notifications/addFriend', {
+        const addFriend = axios.post('/api/notifications/addFriend', {
           other_user_id: match.params.id,
         })
         self.setState({
@@ -299,6 +290,46 @@ export default class Profile extends Component {
     this.setState({ redirect_: true })
   }
 
+  showAlert() {
+    const getAlert = () => (
+      <SweetAlert
+        warning
+        showCancel
+        title='Remove Friend?'
+        confirmBtnText='Make it so!'
+        confirmBtnBsStyle='warning'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={true}
+        onConfirm={() => this.hideAlert('true')}
+        onCancel={() => this.hideAlert('false')}>
+        Are you sure you wish to unfriend?
+      </SweetAlert>
+    )
+
+    this.setState({
+      alert: getAlert(),
+    })
+  }
+
+  hideAlert(text) {
+    this.setState({
+      alert: null,
+    })
+    if (text == 'true') {
+      const { match } = this.props.routeProps
+      try {
+        const userProfile = axios.get(`/api/user/${match.params.id}/unfriend`)
+        this.setState({
+          friendTxt: 'Add Friend',
+          friendStatus: 0,
+        })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+
   render() {
     if (this.state.redirect_) {
       const { match } = this.props.routeProps
@@ -367,6 +398,7 @@ export default class Profile extends Component {
 
         return (
           <section id='profile-page'>
+            {this.state.alert}
             <FileOpenModal
               bOpen={this.state.bFileModalOpen}
               callbackClose={this.callbackFileModalClose}

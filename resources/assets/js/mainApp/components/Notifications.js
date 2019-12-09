@@ -2,11 +2,12 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import axios from 'axios'
 import IndividualNotification from './IndividualNotification'
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 export default class Notifications extends Component {
   constructor() {
     super()
-    this.state = {}
+    this.state = { alert: null }
   }
 
   // Split the array into halves and merge them recursively
@@ -83,13 +84,7 @@ export default class Notifications extends Component {
         if (rowLen === index + 1) {
           lastRow = true
         }
-        return (
-          <IndividualNotification
-            notification={item}
-            key={index}
-            lastRow={lastRow}
-          />
-        )
+        return <IndividualNotification notification={item} key={index} lastRow={lastRow} />
       })
     }
   }
@@ -112,6 +107,58 @@ export default class Notifications extends Component {
     window.location.reload()
   }
 
+  showAlert() {
+    const getAlert = () => (
+      <SweetAlert
+        success
+        showCancel
+        title='Are you sure you wish to Mark ALL as Read?'
+        confirmBtnText='Make it so!'
+        confirmBtnBsStyle='success'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={true}
+        onConfirm={() => this.hideAlert('true')}
+        onCancel={() => this.hideAlert('false')}></SweetAlert>
+    )
+
+    this.setState({
+      alert: getAlert(),
+    })
+  }
+
+  showAlert_delete_all() {
+    const getAlert = () => (
+      <SweetAlert
+        success
+        showCancel
+        title='Are you sure you wish to Delete ALL notifications?'
+        confirmBtnText='Make it so!'
+        confirmBtnBsStyle='success'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={true}
+        onConfirm={() => this.hideAlert('delete_true')}
+        onCancel={() => this.hideAlert('false')}></SweetAlert>
+    )
+
+    this.setState({
+      alert: getAlert(),
+    })
+  }
+
+  hideAlert(text) {
+    this.setState({
+      alert: null,
+    })
+
+    if (text == 'true') {
+      this.mark_all()
+    } else if (text == 'delete_true') {
+      this.delete_all()
+    }
+  }
+
   render() {
     if (this.state.myNoti != undefined) {
       var show_buttons = false
@@ -123,41 +170,22 @@ export default class Notifications extends Component {
       return (
         <section id='notifications-page'>
           <div className='content-area notifications-page'>
+            {this.state.alert}
             <div className='padding-container'>
               <div className='notifications-grey-container'>
                 <h3>myNotifications</h3>
                 {show_buttons && (
                   <div className='noti-buttons'>
-                    <button
-                      className='allread'
-                      onClick={() => {
-                        if (
-                          window.confirm(
-                            'Are you sure you wish to Mark ALL as Read?'
-                          )
-                        )
-                          this.mark_all()
-                      }}>
+                    <button className='allread' onClick={() => this.showAlert()}>
                       Mark all as read
                     </button>
-                    <button
-                      className='deleteall'
-                      onClick={() => {
-                        if (
-                          window.confirm(
-                            'Are you sure you wish to Delete ALL notifications?'
-                          )
-                        )
-                          this.delete_all()
-                      }}>
+                    <button className='deleteall' onClick={() => this.showAlert_delete_all()}>
                       Delete All
                     </button>
                   </div>
                 )}
                 <div className='padding-container'></div>
-                <div className='notifications-container'>
-                  {this.showNotifications()}
-                </div>
+                <div className='notifications-container'>{this.showNotifications()}</div>
               </div>
             </div>
           </div>

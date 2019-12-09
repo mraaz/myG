@@ -7,6 +7,7 @@ import moment from 'moment'
 import IndividualComment from './IndividualComment'
 import DeleteScheduleGameModal from './DeleteScheduleGameModal'
 import { toast } from 'react-toastify'
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 const Toast_style = (props) => (
   <div className='individual-toasts'>
@@ -53,6 +54,7 @@ export default class ScheduledGamePost_Default extends Component {
       end_date: moment(),
       redirect_Approvals: false,
       redirect_PlayerList: false,
+      alert: null,
     }
 
     this.callbackPostFileModalClose = this.callbackPostFileModalClose.bind(this)
@@ -437,6 +439,35 @@ export default class ScheduledGamePost_Default extends Component {
     this.setState({ redirect_Approvals: true })
   }
 
+  showAlert() {
+    const getAlert = () => (
+      <SweetAlert
+        danger
+        showCancel
+        title='Are you sure you wish to remove yourself from this Game?'
+        confirmBtnText='Make it so!'
+        confirmBtnBsStyle='danger'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={true}
+        onConfirm={() => this.hideAlert('true')}
+        onCancel={() => this.hideAlert('false')}></SweetAlert>
+    )
+
+    this.setState({
+      alert: getAlert(),
+    })
+  }
+
+  hideAlert(text) {
+    this.setState({
+      alert: null,
+    })
+    if (text == 'true') {
+      this.disenrollinGame()
+    }
+  }
+
   render() {
     const { schedule_game } = this.props.props
 
@@ -451,6 +482,7 @@ export default class ScheduledGamePost_Default extends Component {
 
     return (
       <div className='padding-container'>
+        {this.state.alert}
         <div className='grey-container'>
           <div className='update-info'>
             <div className='game-name-display'>
@@ -538,11 +570,7 @@ export default class ScheduledGamePost_Default extends Component {
             )}
             {this.state.show_attending && (
               <div className='invitation-link'>
-                <div
-                  className='hack-text3'
-                  onClick={() => {
-                    if (window.confirm('Are you sure you wish to remove yourself from this Game?')) this.disenrollinGame()
-                  }}>
+                <div className='hack-text3' onClick={() => this.showAlert()}>
                   <i className='fas fa-door-closed'></i>
                   <span style={{ color: '#4CAF50' }}>&nbsp;Leave game</span>
                 </div>
@@ -550,11 +578,7 @@ export default class ScheduledGamePost_Default extends Component {
             )}
             {this.state.show_pending && (
               <div className='invitation-link'>
-                <div
-                  className='hack-text3'
-                  onClick={() => {
-                    if (window.confirm('Are you sure you wish to remove yourself from this Game?')) this.disenrollinGame()
-                  }}>
+                <div className='hack-text3' onClick={() => this.showAlert()}>
                   <i className='fas fa-door-closed'></i>
                   <span style={{ color: '#2196F3' }}>&nbsp;Waiting on host...</span>
                 </div>

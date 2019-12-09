@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import moment from 'moment'
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 export default class IndividualReply extends Component {
   constructor() {
@@ -21,6 +22,7 @@ export default class IndividualReply extends Component {
       value: '',
       content: '',
       reply_time: '',
+      alert: null,
     }
     this.textInput = null
 
@@ -43,10 +45,7 @@ export default class IndividualReply extends Component {
       content: this.props.reply.content,
     })
 
-    var reply_timestamp = moment(
-      this.props.reply.updated_at,
-      'YYYY-MM-DD HH:mm:ssZ'
-    )
+    var reply_timestamp = moment(this.props.reply.updated_at, 'YYYY-MM-DD HH:mm:ssZ')
     this.setState({ reply_time: reply_timestamp.local().fromNow() })
 
     const self = this
@@ -56,9 +55,7 @@ export default class IndividualReply extends Component {
       try {
         var i
 
-        const myReplyLikes = await axios.get(
-          `/api/likes/reply/${reply.reply.id}`
-        )
+        const myReplyLikes = await axios.get(`/api/likes/reply/${reply.reply.id}`)
 
         if (myReplyLikes.data.do_I_like_this_reply[0].myOpinion != 0) {
           self.setState({
@@ -81,9 +78,7 @@ export default class IndividualReply extends Component {
       try {
         var i
 
-        const myRepliesCount = await axios.get(
-          `/api/replies/my_count/${reply.reply.id}`
-        )
+        const myRepliesCount = await axios.get(`/api/replies/my_count/${reply.reply.id}`)
 
         if (myRepliesCount.data.no_of_my_replies[0].no_of_my_replies != 0) {
           self.setState({
@@ -104,13 +99,7 @@ export default class IndividualReply extends Component {
         reply_id: reply_id,
       })
 
-      let {
-        comment_user_id,
-        post_id,
-        reply,
-        user,
-        schedule_game_id,
-      } = this.props
+      let { comment_user_id, post_id, reply, user, schedule_game_id } = this.props
       if (reply.user_id != user.userInfo.id) {
         if (schedule_game_id != null) {
           const addReplyLike = axios.post('/api/notifications/addReplyLike', {
@@ -144,9 +133,7 @@ export default class IndividualReply extends Component {
     let { post_id } = this.props
     try {
       const reply_unlike = axios.get(`/api/likes/delete/reply/${reply_id}`)
-      const deleteReplyLike = axios.get(
-        `/api/notifications/deleteReplyLike/${reply_id}`
-      )
+      const deleteReplyLike = axios.get(`/api/notifications/deleteReplyLike/${reply_id}`)
     } catch (error) {
       console.log(error)
     }
@@ -183,18 +170,13 @@ export default class IndividualReply extends Component {
     } catch (error) {
       console.log(error)
     }
-    this.setState({
-      dropdown: false,
-    })
   }
 
   clickedEdit = async () => {
     var reply_id = this.props.reply.id
 
     try {
-      const myReply_content = await axios.get(
-        `/api/replies/show_reply/${reply_id}`
-      )
+      const myReply_content = await axios.get(`/api/replies/show_reply/${reply_id}`)
 
       this.setState({
         show_edit_reply: true,
@@ -245,12 +227,9 @@ export default class IndividualReply extends Component {
 
     const saveReply = async function() {
       try {
-        const mysaveReply = await axios.post(
-          `/api/replies/update/${reply_id}`,
-          {
-            content: self.state.value,
-          }
-        )
+        const mysaveReply = await axios.post(`/api/replies/update/${reply_id}`, {
+          content: self.state.value,
+        })
 
         self.setState({
           show_edit_reply: false,
@@ -265,12 +244,51 @@ export default class IndividualReply extends Component {
     saveReply()
   }
 
+  showAlert() {
+    const getAlert = () => (
+      <SweetAlert
+        danger
+        showCancel
+        title='Are you sure you wish to delete this reply?'
+        confirmBtnText='Make it so!'
+        confirmBtnBsStyle='danger'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={false}
+        btnSize='lg'
+        style={{
+          display: 'flex',
+          whiteSpace: 'pre',
+          width: '41%',
+        }}
+        onConfirm={() => this.hideAlert('true')}
+        onCancel={() => this.hideAlert('false')}>
+        You will not be able to recover this entry!
+      </SweetAlert>
+    )
+
+    this.setState({
+      alert: getAlert(),
+    })
+  }
+
+  hideAlert(text) {
+    this.setState({
+      alert: null,
+      dropdown: false,
+    })
+    if (text == 'true') {
+      this.delete_exp()
+    }
+  }
+
   render() {
     let { reply } = this.props
     //console.log(reply);
     if (this.state.reply_deleted != true) {
       return (
         <div className='comment-replies'>
+          {this.state.alert}
           {this.state.show_profile_img && (
             <Link
               to={`/profile/${reply.user_id}`}
@@ -291,28 +309,16 @@ export default class IndividualReply extends Component {
             {reply.first_name} {reply.last_name}
             {this.state.show_reply_options && (
               <div className='reply-options'>
-                <i
-                  className='fas fa-ellipsis-h'
-                  onClick={this.clickedDropdown}></i>
+                <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}></i>
               </div>
             )}
           </div>
-          <div
-            className={`reply-dropdown ${this.state.dropdown ? 'active' : ''}`}>
+          <div className={`reply-dropdown ${this.state.dropdown ? 'active' : ''}`}>
             <nav>
               <div className='edit' onClick={this.clickedEdit}>
                 Edit &nbsp;
               </div>
-              <div
-                className='delete'
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      'Are you sure you wish to delete this reply?'
-                    )
-                  )
-                    this.delete_exp()
-                }}>
+              <div className='delete' onClick={() => this.showAlert()}>
                 Delete
               </div>
               &nbsp;
@@ -322,26 +328,19 @@ export default class IndividualReply extends Component {
           <div className='replies-panel'>
             <div className='comment-panel'>
               {this.state.reply_like && (
-                <div
-                  className='comment-panel-liked'
-                  onClick={() => this.click_reply_unlike_btn(reply.id)}>
+                <div className='comment-panel-liked' onClick={() => this.click_reply_unlike_btn(reply.id)}>
                   Like
                 </div>
               )}
               {!this.state.reply_like && (
-                <div
-                  className='comment-panel-like'
-                  onClick={() => this.click_reply_like_btn(reply.id)}>
+                <div className='comment-panel-like' onClick={() => this.click_reply_like_btn(reply.id)}>
                   Like
                 </div>
               )}
-              {(this.state.show_reply_like || this.state.show_reply) && (
-                <div className='divider'>|</div>
-              )}
+              {(this.state.show_reply_like || this.state.show_reply) && <div className='divider'>|</div>}
               {this.state.show_reply_like && (
                 <div className='no-likes'>
-                  {this.state.reply_like_total}{' '}
-                  {this.state.reply_like_total > 1 ? 'Likes' : 'Like'}{' '}
+                  {this.state.reply_like_total} {this.state.reply_like_total > 1 ? 'Likes' : 'Like'}{' '}
                 </div>
               )}
               <div className='comment-time'>
