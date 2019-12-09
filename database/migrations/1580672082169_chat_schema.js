@@ -7,7 +7,6 @@ class ChatSchema extends Schema {
   up () {
     this.create('chats', (table) => {
       table.increments()
-      table.uuid('uuid').unique()
       table.timestamps()
     })
   }

@@ -4,14 +4,6 @@
 const Model = use('Model')
 
 class Chat extends Model {
-  static get hidden() {
-    return ['id']
-  }
-
-  static get primaryKey() {
-    return 'uuid'
-  }
-
   messages() {
     return this.hasMany('App/Models/ChatMessage')
   }

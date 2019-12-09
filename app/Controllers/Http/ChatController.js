@@ -1,6 +1,5 @@
 'use strict';
 
-const uuidv4 = require('uuid/v4');
 const Chat = use('App/Models/Chat');
 const UserChatController = use('./UserChatController');
 const { broadcast } = require('../../Common/socket');
@@ -11,7 +10,7 @@ class ChatController {
 
     const chat = await Chat
       .query()
-      .where('uuid', params.chatId)
+      .where('id', params.chatId)
       .with('messages')
       .first();
 
@@ -23,8 +22,6 @@ class ChatController {
   async create({ auth, request }) {
 
     const chat = new Chat();
-    const uuid = uuidv4();
-    chat.uuid = uuid;
     await chat.save();
 
     const userChatController = new UserChatController();
@@ -33,14 +30,14 @@ class ChatController {
     data.members.forEach(async id => {
       await userChatController.create({
         request: {
-          chatId: uuid,
+          chatId: chat.id,
           userId: id,
         }
       });
-      broadcast('user_chat:*', `user_chat:${id}`, 'user_chat:newChat', { chatId: uuid, userId: auth.user.id });
+      broadcast('user_chat:*', `user_chat:${id}`, 'user_chat:newChat', { chatId: chat.id, userId: auth.user.id });
     });
 
-    return Chat.find(uuid);
+    return Chat.find(chat.id);
 
   }
 
@@ -57,9 +54,10 @@ class ChatController {
     message.userId = message.user_id;
     delete message.user_id;
 
-    broadcast('chat:*', `chat:${chat.uuid}`, 'chat:newMessage', message);
+    broadcast('chat:*', `chat:${chat.id}`, 'chat:newMessage', message);
 
-    return message
+    return message;
+
   }
 }
 
