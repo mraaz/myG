@@ -1,70 +1,62 @@
-import React, { Component } from "react";
-import axios from 'axios';
+
+import React from "react";
+import { connect } from 'react-redux';
+
 import IndividualFriend from './IndividualFriend';
 import Chat from './Chat';
-import socket from '../common/socket';
 
-export default class Messenger extends Component {
+import { monitorChats } from '../../integration/ws/chat';
+import { fetchChatsAction, createChatAction } from '../../redux/actions/chatAction';
+import { fetchFriendsAction } from '../../redux/actions/friendAction';
+
+class Messenger extends React.PureComponent {
 
   state = {
     loaded: false,
-    friends: [],
-    chats: [],
+  }
+
+  componentDidUpdate() {
+    if (!this.state.loaded && !this.props.loading) {
+      this.setState({ loaded: true });
+      this.subscription = monitorChats(this.props.userId);
+      this.props.fetchChats(this.props.userId);
+      this.props.fetchFriends();
+    }
   }
 
   componentWillUnmount() {
     if (this.subscription) this.subscription.close();
   }
 
-  componentDidUpdate() {
-    if (!this.state.loaded && !this.props.loading) {
-      socket.connect();
-      this.subscription = socket.subscribe(`user_chat:${this.props.userId}`, this.onNewChat);
-      this.setState({ loaded: true });
-      this.fetchFriends();
-      this.fetchChats();
-    }
-  }
-
-  fetchFriends = () => {
-    axios.get('/api/friends/allmyFriends').then(response => {
-      this.setState({
-        friends: response.data.showallMyFriends,
-      });
-    });
-  }
-
-  fetchChats = () => {
-    axios.get(`/api/chats/${this.props.userId}`).then(response => {
-      this.setState({
-        chats: response.data,
-      });
-    });
-  }
-
-  onNewChat = chat => {
-    this.setState(prevState => ({
-      chats: [...prevState.chats, { chat_id: chat.data }]
-    }));
-  };
-
   openChat = (friend) => {
-    axios.post(`/api/chat/`, {
-      members: [
-        this.props.userId,
-        friend.friend_id,
-      ]
-    });
+    this.props.createChat([this.props.userId, friend.friend_id]);
   }
 
-  closeChat = (chat) => {
-    this.setState(previous => {
-      const chats = JSON.parse(JSON.stringify(previous.chats));
-      const match = chats.find(candidate => candidate.contact === chat.contact);
-      const index = chats.indexOf(match);
-      if (index !== -1) chats.splice(index, 1);
-      return { chats }
-    });
+  renderChats = () => {
+    return (
+      <div className="messenger-chat-bar">
+        {this.props.chats.map(this.renderChat)}
+      </div>
+    );
+  }
+
+  renderFriends = () => {
+    return (
+      <div className="messenger-body">
+        {this.props.friends.map(this.renderFriend)}
+      </div>
+    );
+  }
+
+  renderChat = (chat) => {
+    return (
+      <Chat
+        key={chat.chatId}
+        userId={this.props.userId}
+        chatId={chat.chatId}
+        onClose={() => { }}
+      />
+    );
   }
 
   renderFriend = (friend) => {
@@ -79,32 +71,30 @@ export default class Messenger extends Component {
     );
   }
 
-  renderChats = () => {
-    return (
-      <div className="messenger-chat-bar">
-        {this.state.chats.map(chat => (
-          <Chat
-            userId={this.props.userId}
-            chatId={chat.chat_id}
-            onClose={() => this.closeChat(chat)}
-          />
-        ))}
-      </div>
-    );
-  }
-
   render() {
     return (
       <section id="messenger">
         {this.renderChats()}
-        <div className="messenger-header">
-          <img src="https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/Chat.png" />
-        </div>
-        <div className="messenger-body">
-          {this.state.friends.map(this.renderFriend)}
-        </div>
+        {this.renderFriends()}
       </section>
     );
   }
 
 }
+
+function mapStateToProps(state) {
+  return {
+    chats: state.chat.chats,
+    friends: state.friend.friends,
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return ({
+    createChat: members => dispatch(createChatAction(members)),
+    fetchChats: userId => dispatch(fetchChatsAction(userId)),
+    fetchFriends: () => dispatch(fetchFriendsAction()),
+  });
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Messenger);

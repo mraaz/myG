@@ -6,21 +6,20 @@ const UserController = use('./UserController');
 class UserChatController {
 
   async fetchChats({ params }) {
-    return UserChat
+    const chats = await UserChat
       .query()
-      .where('user_id', params.user_id)
+      .where('user_id', params.userId)
       .fetch();
+    return chats.toJSON().map(chat => ({ ...chat, chatId: chat.chat_id }));
   }
 
   async fetchTitle({ auth, params }) {
 
     const chat = await UserChat
       .query()
-      .where('chat_id', params.chat_id)
+      .where('chat_id', params.chatId)
       .andWhere('user_id', '!=', auth.user.id)
       .first();
-
-    console.log('found chat', chat.toJSON(), 'for params', params)
 
     const userController = new UserController();
     const friend = await userController.profile({
@@ -31,8 +30,6 @@ class UserChatController {
         }
       }
     });
-
-    console.log(`found friend`, friend);
 
     return `${friend.user[0].first_name} ${friend.user[0].last_name}`;
 

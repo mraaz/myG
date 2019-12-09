@@ -1,63 +1,35 @@
 import React from 'react';
-import axios from 'axios';
-import socket from '../../common/socket';
+import { connect } from 'react-redux';
+
+import { monitorMessages } from '../../integration/ws/chat';
+import { fetchMessagesAction, fetchTitleAction, sendMessageAction } from '../../redux/actions/chatAction';
 import { howLongAgo, formatAMPM } from '../../common/date';
 
 class Chat extends React.Component {
 
   state = {
     input: '',
-    messages: [],
-    title: '',
   };
 
   componentDidMount() {
-    socket.connect();
-    this.subscription = socket.subscribe(`chat:${this.props.chatId}`, this.onNewMessage);
-    this.fetchMessages();
-    this.fetchTitle();
+    this.subscription = monitorMessages(this.props.chatId);
+    this.props.fetchMessages(this.props.chatId);
+    this.props.fetchTitle(this.props.chatId);
   }
 
   componentWillUnmount() {
     this.subscription.close();
   }
 
-  fetchMessages = () => {
-    axios.get(`/api/chat/${this.props.chatId}`).then(response => {
-      console.log(`onFetchMessages`, response)
-      this.setState({
-        messages: response.data.messages,
-      });
-    });
-  }
-
-  fetchTitle = () => {
-    axios.get(`/api/chat/${this.props.chatId}/title`).then(response => {
-      console.log(`onFetchTitle`, response)
-      this.setState({
-        title: response.data,
-      });
-    });
-  }
-
-  onNewMessage = message => {
-    console.log(`onNewMessage`, message)
-    this.setState(prevState => ({
-      messages: [...prevState.messages, message.data]
-    }));
-  };
-
   sendMessage = () => {
-    axios.post(`/api/chat/${this.props.chatId}/message/`, {
-      content: this.state.input,
-      user_id: this.props.userId,
-    });
-    this.setState({ input: '' }); ƒ
+    this.props.sendMessage(this.props.chatId, this.props.userId, this.state.input);
+    this.setState({ input: '' });
   }
 
   onKeyPressed = event => {
     const code = event.keyCode || event.which;
-    if (code === 13) this.sendMessage();
+    const enterKeyCode = 13;
+    if (code === enterKeyCode) this.sendMessage();
   }
 
   renderHeader = () => {
@@ -66,10 +38,10 @@ class Chat extends React.Component {
         <div className="chat-component-header-icon" />
         <div className="chat-component-header-info">
           <div className="chat-component-header-title">
-            {this.state.title}
+            {this.props.title}
           </div>
           <div className="chat-component-header-subtitle">
-            Last seen {howLongAgo(this.props.lastOnline)} ago.
+            Last seen {howLongAgo((Date.now() - (Math.floor(Math.random() * Math.floor(100000)))))} ago.
             </div>
         </div>
         <div className="chat-component-header-close"
@@ -83,7 +55,7 @@ class Chat extends React.Component {
   renderBody = () => {
     return (
       <div className="chat-component-body">
-        {this.state.messages.map(this.renderMessage)}
+        {this.props.messages.map(this.renderMessage)}
       </div>
     );
   }
@@ -130,7 +102,10 @@ class Chat extends React.Component {
 
   render() {
     return (
-      <div className="chat-component-base">
+      <div
+        key={this.props.chatId}
+        className="chat-component-base"
+      >
         {this.renderHeader()}
         {this.renderBody()}
         <div className="chat-component-footer-divider" />
@@ -140,10 +115,20 @@ class Chat extends React.Component {
   }
 }
 
-Chat.defaultProps = {
-  id: '',
-  title: 'Nickname',
-  lastOnline: Date.now() - (Math.floor(Math.random() * Math.floor(100000)))
+function mapStateToProps(state, props) {
+  const chat = state.chat.chats.find(chat => chat.chatId === props.chatId) || {};
+  return {
+    messages: chat.messages || [],
+    title: chat.title || '',
+  }
 }
 
-export default Chat;
+function mapDispatchToProps(dispatch) {
+  return ({
+    sendMessage: (chatId, userId, content) => dispatch(sendMessageAction(chatId, userId, content)),
+    fetchMessages: (chatId) => dispatch(fetchMessagesAction(chatId)),
+    fetchTitle: (chatId) => dispatch(fetchTitleAction(chatId)),
+  });
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Chat);

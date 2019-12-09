@@ -250,11 +250,11 @@ Route.get('/api/usergroup/promote_member/:id/:usergrp_id', 'UsergroupController.
 Route.get('/api/usergroup/demote_member/:id/:usergrp_id', 'UsergroupController.demote_member')
 Route.get('/api/usergroup/current_member/:id', 'UsergroupController.current_member')
 
-Route.get('/api/chats/:user_id', 'UserChatController.fetchChats');
-Route.get('/api/chat/:id', 'ChatController.fetchMessages');
-Route.get('/api/chat/:chat_id/title', 'UserChatController.fetchTitle');
+Route.get('/api/chats/:userId', 'UserChatController.fetchChats');
+Route.get('/api/chat/:chatId', 'ChatController.fetchMessages');
+Route.get('/api/chat/:chatId/title', 'UserChatController.fetchTitle');
 Route.post('/api/chat/', 'ChatController.create');
-Route.post('/api/chat/:id/message', 'ChatController.createMessage');
+Route.post('/api/chat/:chatId/message', 'ChatController.createMessage');
 
 
 Route.any('*', ({view}) => view.render('pages/react'))

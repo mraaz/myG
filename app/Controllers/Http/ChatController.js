@@ -11,15 +11,12 @@ class ChatController {
 
     const chat = await Chat
       .query()
-      .where('uuid', params.id)
+      .where('uuid', params.chatId)
       .with('messages')
       .first();
 
-    if (!chat) {
-      return response.notFound(`Chat ${params.id} was not found.`)
-    }
-
-    return chat;
+    if (!chat) return response.notFound(`Chat ${params.chatId} was not found.`);
+    return chat.toJSON().messages;
 
   }
 
@@ -40,7 +37,7 @@ class ChatController {
           userId: id,
         }
       });
-      broadcast('user_chat:*', `user_chat:${id}`, 'user_chat:newChat', uuid);
+      broadcast('user_chat:*', `user_chat:${id}`, 'user_chat:newChat', { chatId: uuid });
     });
 
     return Chat.find(uuid);
@@ -48,13 +45,17 @@ class ChatController {
   }
 
   async createMessage({ params, request, response }) {
-    const chat = await Chat.find(params.id);
-    if (!chat) {
-      return response.notFound(`Chat ${params.id} was not found.`)
-    }
 
-    const data = request.only(['name', 'content', 'user_id']);
+    const chat = await Chat.find(params.chatId);
+    if (!chat) return response.notFound(`Chat ${params.chatId} was not found.`);
+
+    const data = request.only(['name', 'content', 'userId']);
+    data.user_id = data.userId;
+    delete data.userId;
+
     const message = await chat.messages().create(data);
+    message.userId = message.user_id;
+    delete message.user_id;
 
     broadcast('chat:*', `chat:${chat.uuid}`, 'chat:newMessage', message);
 
