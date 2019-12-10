@@ -9,6 +9,8 @@ class Chat extends React.Component {
 
   state = {
     input: '',
+    maximized: false,
+    minimized: false,
   };
 
   componentDidMount() {
@@ -47,9 +49,17 @@ class Chat extends React.Component {
             {this.props.subtitle}
           </div>
         </div>
-        <div className="chat-component-header-close"
+        <div className="chat-component-header-button"
+          style={{ backgroundImage: `url(/assets/svg/ic_chat_minimize.svg)` }}
+          onClick={() => this.setState(previous => ({ minimized: !previous.minimized, maximized: false }))}
+        />
+        <div className="chat-component-header-button"
+          style={{ backgroundImage: `url(/assets/svg/ic_chat_maximize.svg)` }}
+          onClick={() => this.setState(previous => ({ maximized: !previous.maximized, minimized: false }))}
+        />
+        <div className="chat-component-header-button"
           style={{ backgroundImage: `url(/assets/svg/ic_chat_close.svg)` }}
-          onClick={this.props.onClose}
+          onClick={this.props.onClose()}
         />
       </div>
     );
@@ -107,15 +117,18 @@ class Chat extends React.Component {
   }
 
   render() {
+    let extraClass = "";
+    if (this.state.maximized) extraClass += "chat-maximized";
+    if (this.state.minimized) extraClass += "chat-minimized";
     return (
       <div
         key={this.props.chatId}
-        className="chat-component-base"
+        className={`chat-component-base ${extraClass}`}
       >
         {this.renderHeader()}
-        {this.renderBody()}
-        <div className="chat-component-footer-divider" />
-        {this.renderFooter()}
+        {!this.state.minimized && this.renderBody()}
+        {!this.state.minimized && <div className="chat-component-footer-divider" />}
+        {!this.state.minimized && this.renderFooter()}
       </div>
     );
   }

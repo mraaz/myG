@@ -45,7 +45,7 @@ class UserChatController {
   }
 
   getSubtitle(online, lastSeen) {
-    return online ? 'Online' : `Last seen at ${formatDate(lastSeen)}`;
+    return online ? 'Online' : `${formatDate(lastSeen)}`;
   }
 
   async create({ request }) {

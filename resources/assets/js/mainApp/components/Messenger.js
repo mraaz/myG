@@ -2,7 +2,6 @@
 import React from "react";
 import { connect } from 'react-redux';
 
-import IndividualFriend from './IndividualFriend';
 import Chat from './Chat';
 
 import { monitorChats } from '../../integration/ws/chat';
@@ -66,7 +65,30 @@ class Messenger extends React.PureComponent {
         className="messenger-contact"
         onClick={() => this.openChat(friend)}
       >
-        <IndividualFriend friend={friend} />
+        <div
+          className="messenger-contact-icon"
+          style={{ backgroundImage: `url('${friend.profile_img}')` }}
+        >
+          <div className="messenger-contact-online-indicator" />
+        </div>
+        <div className="messenger-contact-body">
+          <p className="messenger-contact-body-title">
+            {friend.first_name} {friend.last_name}
+          </p>
+          <p className="messenger-contact-body-subtitle">
+            Hey what's up
+          </p>
+        </div>
+        <div className="messenger-contact-info">
+          <p className="messenger-contact-info-last-seen">
+            10:38pm
+          </p>
+          <div className="messenger-contact-info-unread">
+            <p className="messenger-contact-info-unread-count">
+              6
+          </p>
+          </div>
+        </div>
       </div>
     );
   }

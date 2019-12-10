@@ -36,6 +36,7 @@ function howLongAgo(date) {
 function formatDate(date) {
   const hours = formatAMPM(date);
   if (isToday(date)) return hours;
+  if (isYesterday(date)) return `Yesterday ${hours}`;
   const day = date.getDate();
   const month = date.getMonth() + 1;
   const year = date.getFullYear();
@@ -57,6 +58,13 @@ function isToday(someDate) {
   return someDate.getDate() == today.getDate() &&
     someDate.getMonth() == today.getMonth() &&
     someDate.getFullYear() == today.getFullYear()
+}
+
+function isYesterday(someDate) {
+  const yesterday = new Date(new Date().setDate(new Date().getDate()-1));
+  return someDate.getDate() == yesterday.getDate() &&
+    someDate.getMonth() == yesterday.getMonth() &&
+    someDate.getFullYear() == yesterday.getFullYear()
 }
 
 module.exports = { howLongAgo, formatDate, formatAMPM, isToday}
