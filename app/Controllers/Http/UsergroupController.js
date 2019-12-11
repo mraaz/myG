@@ -92,6 +92,7 @@ class UsergroupController {
       //const subquery = Database.select('group_id').from('usergroups').where({user_id: auth.user.id, permission_level: 1}).orWhere({user_id: auth.user.id, permission_level: 2})
       //const admin_group_permissions = await Database.from('usergroups').innerJoin('users', 'users.id', 'usergroups.user_id').whereIn('usergroups.group_id', subquery).where({permission_level: 42})
       let admin_group_permissions = ''
+      let group_query = ''
       let access_granted = false
 
       const permissions_query = await Database.from('usergroups')
@@ -115,7 +116,7 @@ class UsergroupController {
         if (owner_query.length > 0) {
           access_granted = true
         } else {
-          const group_query = await Database.from('groups').where({
+          group_query = await Database.from('groups').where({
             id: request.params.id,
           })
           if (group_query[0].all_accept) {
@@ -137,9 +138,15 @@ class UsergroupController {
           .where({ group_id: request.params.id, permission_level: 42 })
           .select('*', 'usergroups.id')
       }
+      if (group_query.length == 0) {
+        group_query = await Database.from('groups').where({
+          id: request.params.id,
+        })
+      }
 
       return {
         admin_group_permissions,
+        group_query: group_query[0].name,
       }
     } catch (error) {
       console.log(error)
@@ -272,12 +279,9 @@ class UsergroupController {
       let current_user_permission = -1
       let user_to_be_deleted_permission = -1
 
-      const permission_query_current_user = await Database.from(
-        'usergroups'
-      ).where({ user_id: auth.user.id, group_id: request.params.id })
+      const permission_query_current_user = await Database.from('usergroups').where({ user_id: auth.user.id, group_id: request.params.id })
       if (permission_query_current_user.length > 0) {
-        current_user_permission =
-          permission_query_current_user[0].permission_level
+        current_user_permission = permission_query_current_user[0].permission_level
       } else {
         const owner_query = await Database.from('groups').where({
           user_id: auth.user.id,
@@ -288,20 +292,13 @@ class UsergroupController {
         }
       }
 
-      if (
-        current_user_permission == 3 ||
-        current_user_permission == 42 ||
-        current_user_permission == -1
-      ) {
+      if (current_user_permission == 3 || current_user_permission == 42 || current_user_permission == -1) {
         return
       }
 
-      const permission_query_to_be_deleted_user = await Database.from(
-        'usergroups'
-      ).where({ id: request.params.usergrp_id })
+      const permission_query_to_be_deleted_user = await Database.from('usergroups').where({ id: request.params.usergrp_id })
       if (permission_query_to_be_deleted_user.length > 0) {
-        user_to_be_deleted_permission =
-          permission_query_to_be_deleted_user[0].permission_level
+        user_to_be_deleted_permission = permission_query_to_be_deleted_user[0].permission_level
       } else {
         return
       }
@@ -331,12 +328,9 @@ class UsergroupController {
       let current_user_permission = -1
       let user_to_be_promoted_permission = -1
 
-      const permission_query_current_user = await Database.from(
-        'usergroups'
-      ).where({ user_id: auth.user.id, group_id: request.params.id })
+      const permission_query_current_user = await Database.from('usergroups').where({ user_id: auth.user.id, group_id: request.params.id })
       if (permission_query_current_user.length > 0) {
-        current_user_permission =
-          permission_query_current_user[0].permission_level
+        current_user_permission = permission_query_current_user[0].permission_level
       } else {
         const owner_query = await Database.from('groups').where({
           user_id: auth.user.id,
@@ -347,23 +341,16 @@ class UsergroupController {
         }
       }
 
-      if (
-        current_user_permission == 3 ||
-        current_user_permission == 42 ||
-        current_user_permission == -1
-      ) {
+      if (current_user_permission == 3 || current_user_permission == 42 || current_user_permission == -1) {
         return
       }
 
-      const permission_query_to_be_promoted_user = await Database.from(
-        'usergroups'
-      ).where({ id: request.params.usergrp_id })
+      const permission_query_to_be_promoted_user = await Database.from('usergroups').where({ id: request.params.usergrp_id })
       if (permission_query_to_be_promoted_user.length > 0) {
         if (permission_query_to_be_promoted_user[0].permission_level == 1) {
           return
         }
-        user_to_be_promoted_permission =
-          permission_query_to_be_promoted_user[0].permission_level
+        user_to_be_promoted_permission = permission_query_to_be_promoted_user[0].permission_level
       } else {
         return
       }
@@ -391,12 +378,9 @@ class UsergroupController {
       let current_user_permission = -1
       let user_to_be_demoted_permission = -1
 
-      const permission_query_current_user = await Database.from(
-        'usergroups'
-      ).where({ user_id: auth.user.id, group_id: request.params.id })
+      const permission_query_current_user = await Database.from('usergroups').where({ user_id: auth.user.id, group_id: request.params.id })
       if (permission_query_current_user.length > 0) {
-        current_user_permission =
-          permission_query_current_user[0].permission_level
+        current_user_permission = permission_query_current_user[0].permission_level
       } else {
         const owner_query = await Database.from('groups').where({
           user_id: auth.user.id,
@@ -407,23 +391,16 @@ class UsergroupController {
         }
       }
 
-      if (
-        current_user_permission == 3 ||
-        current_user_permission == 42 ||
-        current_user_permission == -1
-      ) {
+      if (current_user_permission == 3 || current_user_permission == 42 || current_user_permission == -1) {
         return
       }
 
-      const permission_query_to_be_demoted_user = await Database.from(
-        'usergroups'
-      ).where({ id: request.params.usergrp_id })
+      const permission_query_to_be_demoted_user = await Database.from('usergroups').where({ id: request.params.usergrp_id })
       if (permission_query_to_be_demoted_user.length > 0) {
         if (permission_query_to_be_demoted_user[0].permission_level == 3) {
           return
         }
-        user_to_be_demoted_permission =
-          permission_query_to_be_demoted_user[0].permission_level
+        user_to_be_demoted_permission = permission_query_to_be_demoted_user[0].permission_level
       } else {
         return
       }
@@ -450,12 +427,7 @@ class UsergroupController {
         .innerJoin('users', 'users.id', 'usergroups.user_id')
         .where('usergroups.group_id', '=', request.params.id)
         .whereNot('usergroups.permission_level', 42)
-        .select(
-          '*',
-          'usergroups.user_id as usergroups_user_id',
-          'groups.user_id as groups_user_id',
-          'usergroups.id'
-        )
+        .select('*', 'usergroups.user_id as usergroups_user_id', 'groups.user_id as groups_user_id', 'usergroups.id')
 
       return {
         all_group_members,
