@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
+import { Link } from 'react-router-dom'
 import axios from 'axios'
 import IndividualInvitation from './IndividualInvitation'
 
@@ -14,11 +15,10 @@ export default class MyApprovals extends Component {
 
     const get_group_approvals = async function() {
       try {
-        const get_group_approvals = await axios.get(
-          `/api/usergroup/get_all_my_group_approvals/${self.props.routeProps.match.params.id}`
-        )
+        const get_group_approvals = await axios.get(`/api/usergroup/get_all_my_group_approvals/${self.props.routeProps.match.params.id}`)
         self.setState({
           myGroup_approvals: get_group_approvals.data.admin_group_permissions,
+          group_name: get_group_approvals.data.group_query,
         })
       } catch (error) {
         console.log(error)
@@ -38,33 +38,34 @@ export default class MyApprovals extends Component {
         if (rowLen === index + 1) {
           lastRow = true
         }
-        return (
-          <IndividualInvitation
-            invitation={item}
-            key={index}
-            lastRow={lastRow}
-            type='group_approvals'
-          />
-        )
+        return <IndividualInvitation invitation={item} key={index} lastRow={lastRow} type='group_approvals' />
       })
     }
   }
 
   render() {
-    return (
-      <section id='invitation-page'>
-        <div className='content-area invitation-page'>
-          <div className='padding-container'>
-            <div className='invitation-grey-container'>
-              <h3>myApprovals</h3>
-              <div className='padding-container'></div>
-              <div className='invitation-container'>
-                {this.showInvitations()}
+    if (this.state.myGroup_approvals != undefined) {
+      return (
+        <section id='invitation-page'>
+          <div className='content-area invitation-page'>
+            <div className='padding-container'>
+              <div className='invitation-grey-container'>
+                <h3>
+                  myApprovals for{' '}
+                  <Link to={`/groups/${this.props.routeProps.match.params.id}`} style={{ textDecoration: 'none' }}>
+                    {' '}
+                    {this.state.group_name}
+                  </Link>
+                </h3>
+                <div className='padding-container'></div>
+                <div className='invitation-container'>{this.showInvitations()}</div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-    )
+        </section>
+      )
+    } else {
+      return <section id='invitation-page'></section>
+    }
   }
 }

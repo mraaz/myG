@@ -20,17 +20,14 @@ export default class ScheduledGamesApprovals extends Component {
 
     const getScheduleGameInvites = async function() {
       try {
-        const getScheduleGameInvites = await axios.get(
-          `/api/attendees/getScheduleGameInvites/${match.params.id}`
-        )
+        const getScheduleGameInvites = await axios.get(`/api/attendees/getScheduleGameInvites/${match.params.id}`)
         self.setState({
           myInvites: getScheduleGameInvites.data.getScheduleGameInvites,
         })
 
         if (getScheduleGameInvites.data.getScheduleGameInvites.length > 0) {
           var myStartDateTime = moment(
-            getScheduleGameInvites.data.getScheduleGameInvites[0].schedule_games
-              .start_date_time,
+            getScheduleGameInvites.data.getScheduleGameInvites[0].schedule_games.start_date_time,
             'YYYY-MM-DD HH:mm:ssZ'
           ).local()
           self.setState({
@@ -53,20 +50,14 @@ export default class ScheduledGamesApprovals extends Component {
         this.state.myInvites[0].attendees == undefined ||
         this.state.myInvites[0].attendees.length == 0
       ) {
-        return (
-          <div className='scheduledGamesApprovals-info'>
-            No pending approvals
-          </div>
-        )
+        return <div className='scheduledGamesApprovals-info'>No pending approvals</div>
         return
       }
       return this.state.myInvites.map((item, index) => {
         if (this.state.myInvites.length === index + 1) {
           lastRow = true
         }
-        return (
-          <IndividualApproval approvals={item} key={index} lastRow={lastRow} />
-        )
+        return <IndividualApproval approvals={item} key={index} lastRow={lastRow} />
       })
     }
   }
@@ -81,8 +72,7 @@ export default class ScheduledGamesApprovals extends Component {
                 {this.state.show_game_header && (
                   <h3>
                     myApprovals for{' '}
-                    <Link
-                      to={`/scheduledGames/${this.state.myInvites[0].schedule_games.id}`}>
+                    <Link to={`/scheduledGames/${this.state.myInvites[0].schedule_games.id}`} style={{ textDecoration: 'none' }}>
                       {' '}
                       {this.state.myInvites[0].schedule_games.game_name}
                     </Link>{' '}
@@ -91,9 +81,7 @@ export default class ScheduledGamesApprovals extends Component {
                 )}
                 {!this.state.show_game_header && <h3>myApprovals</h3>}
                 <div className='padding-container'></div>
-                <div className='scheduledGamesApprovals-container'>
-                  {this.showApprovals()}
-                </div>
+                <div className='scheduledGamesApprovals-container'>{this.showApprovals()}</div>
               </div>
             </div>
           </div>
