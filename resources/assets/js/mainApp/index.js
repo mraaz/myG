@@ -192,6 +192,8 @@ class Layout extends Component {
 
                   <Route exact path="/archived_scheduledGames/:id" component={(props) => <ArchivedScheduledGames routeProps={props}
                     initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} />} />
+
+                  <Route render={ () => <h3> Oops! I couldn't find that </h3>} />
                 </Switch>
               </section>
               <Messenger
