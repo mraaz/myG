@@ -361,8 +361,6 @@ export default class ScheduledGamePost_Default extends Component {
   }
 
   delete_sch = async (id) => {
-    const tmp = null
-
     try {
       const all_attendees = await axios.get(`/api/attendees/attending/${id}`)
       if (all_attendees.data.allAttendees[0].no_of_allAttendees > 0) {
@@ -371,10 +369,7 @@ export default class ScheduledGamePost_Default extends Component {
           modal_id: id,
         })
       } else {
-        if (window.confirm('Are you sure you wish to trash this game boss?')) {
-          const mysch = axios.get(`/api/ScheduleGame/delete/${id}/${tmp}`)
-          location.reload()
-        }
+        this.showAlert_delete()
       }
     } catch (error) {
       console.log(error)
@@ -459,12 +454,41 @@ export default class ScheduledGamePost_Default extends Component {
     })
   }
 
+  showAlert_delete() {
+    const getAlert = () => (
+      <SweetAlert
+        danger
+        showCancel
+        title='Are you sure you wish to trash this game boss?'
+        confirmBtnText='Make it so!'
+        confirmBtnBsStyle='danger'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={true}
+        onConfirm={() => this.hideAlert('delete_true')}
+        onCancel={() => this.hideAlert('false')}></SweetAlert>
+    )
+
+    this.setState({
+      alert: getAlert(),
+    })
+  }
+
   hideAlert(text) {
     this.setState({
       alert: null,
     })
     if (text == 'true') {
       this.disenrollinGame()
+    }
+    if (text == 'delete_true') {
+      try {
+        const tmp = null
+        const mysch = axios.get(`/api/ScheduleGame/delete/${this.props.props.schedule_game.id}/${tmp}`)
+        location.reload()
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 

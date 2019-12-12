@@ -136,7 +136,12 @@ class SearchHeader extends Component {
   }
 
   onSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
-    this.props.history.push(`/profile/${suggestion.id}`)
+    const tmp = suggestion.id
+    this.setState({
+      suggestions: [],
+      value: '',
+    })
+    this.props.history.push(`/profile/${tmp}`)
   }
 
   onKeyDown = (e) => {
@@ -156,6 +161,7 @@ class SearchHeader extends Component {
 
   render() {
     const { value, suggestions } = this.state
+    //console.log(this.props)
 
     // Autosuggest will pass through all these props to the input.
     const inputProps = {

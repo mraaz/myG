@@ -86,6 +86,11 @@ export default class Profile extends Component {
       profile_attr: 'profile_img',
     })
   }
+  componentDidUpdate(prevProps) {
+    if (this.props.routeProps.location.pathname !== prevProps.routeProps.location.pathname) {
+      this.componentWillMount()
+    }
+  }
 
   componentWillMount() {
     const self = this
