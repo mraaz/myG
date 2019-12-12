@@ -59,7 +59,7 @@ class Chat extends React.Component {
         />
         <div className="chat-component-header-button"
           style={{ backgroundImage: `url(/assets/svg/ic_chat_close.svg)` }}
-          onClick={this.props.onClose()}
+          onClick={() => this.props.onClose(this.props.chatId)}
         />
       </div>
     );

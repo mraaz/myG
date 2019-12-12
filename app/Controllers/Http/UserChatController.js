@@ -11,7 +11,13 @@ class UserChatController {
       .query()
       .where('user_id', params.userId)
       .fetch();
-    return chats.toJSON().map(chat => ({ ...chat, chatId: chat.chat_id, userId: chat.user_id }));
+    return chats.toJSON().map(chat => {
+      chat.chatId = chat.chat_id;
+      chat.userId = chat.user_id;
+      delete chat.user_id;
+      delete chat.chat_id;
+      return chat;
+    });
   }
 
   async fetchInfo({ auth, params }) {
@@ -23,11 +29,12 @@ class UserChatController {
       .first();
 
     const userController = new UserController();
+    const friendId = chat.toJSON().user_id;
     const friend = await userController.profile({
       auth,
       request: {
         params: {
-          id: chat.toJSON().user_id
+          id: friendId
         }
       }
     });
@@ -40,6 +47,7 @@ class UserChatController {
       icon,
       title,
       subtitle,
+      friendId,
     };
 
   }

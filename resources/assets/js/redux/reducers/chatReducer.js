@@ -6,7 +6,8 @@ export default function reducer(state = {
 
         case "FETCH_CHATS_FULFILLED": {
             console.log(`Redux -> Fetched Chats: `, action.payload);
-            const chats = action.payload.chats;
+            const findChat = chatId => state.chats.find(candidate => candidate.chatId === chatId) || {};
+            const chats = action.payload.chats.map(chat => ({ ...chat, ...findChat(chat.chatId) }));
             return {
                 ...state,
                 chats,
@@ -34,10 +35,35 @@ export default function reducer(state = {
             chat.icon = action.payload.icon;
             chat.title = action.payload.title;
             chat.subtitle = action.payload.subtitle;
+            chat.friendId = action.payload.friendId;
             return {
                 ...state,
                 chats,
             };
+        }
+
+        case "OPEN_CHAT": {
+            console.log(`Redux -> Open Chat: `, action.payload);
+            const chatId = action.payload.chatId;
+            const chats = JSON.parse(JSON.stringify(state.chats));
+            const chat = chats.find(candidate => candidate.chatId === chatId);
+            chat.closed = false;
+            return {
+                ...state,
+                chats,
+            }
+        }
+
+        case "CLOSE_CHAT": {
+            console.log(`Redux -> Close Chat: `, action.payload);
+            const chatId = action.payload.chatId;
+            const chats = JSON.parse(JSON.stringify(state.chats));
+            const chat = chats.find(candidate => candidate.chatId === chatId);
+            chat.closed = true;
+            return {
+                ...state,
+                chats,
+            }
         }
 
         case "NEW_CHAT": {

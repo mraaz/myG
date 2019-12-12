@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import Chat from './Chat';
 
 import { monitorChats } from '../../integration/ws/chat';
-import { fetchChatsAction, createChatAction } from '../../redux/actions/chatAction';
+import { fetchChatsAction, createChatAction, openChatAction, closeChatAction } from '../../redux/actions/chatAction';
 import { fetchFriendsAction } from '../../redux/actions/friendAction';
 
 class Messenger extends React.PureComponent {
@@ -28,13 +28,19 @@ class Messenger extends React.PureComponent {
   }
 
   openChat = (friend) => {
+    const chat = this.props.chats.find(chat => chat.friendId === friend.friend_id);
+    if (chat) return this.props.openChat(chat.chatId);
     this.props.createChat([this.props.userId, friend.friend_id]);
+  }
+
+  closeChat = (chatId) => {
+    this.props.closeChat(chatId);
   }
 
   renderChats = () => {
     return (
       <div className="messenger-chat-bar">
-        {this.props.chats.map(this.renderChat)}
+        {this.props.chats.filter(chat => !chat.closed).map(this.renderChat)}
       </div>
     );
   }
@@ -53,7 +59,7 @@ class Messenger extends React.PureComponent {
         key={chat.chatId}
         userId={this.props.userId}
         chatId={chat.chatId}
-        onClose={() => { }}
+        onClose={chatId => this.closeChat(chatId)}
       />
     );
   }
@@ -105,6 +111,7 @@ class Messenger extends React.PureComponent {
 }
 
 function mapStateToProps(state) {
+  console.log(`Chats: `, state.chat.chats);
   return {
     chats: state.chat.chats,
     friends: state.friend.friends,
@@ -114,6 +121,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return ({
     createChat: members => dispatch(createChatAction(members)),
+    openChat: chatId => dispatch(openChatAction(chatId)),
+    closeChat: chatId => dispatch(closeChatAction(chatId)),
     fetchChats: userId => dispatch(fetchChatsAction(userId)),
     fetchFriends: () => dispatch(fetchFriendsAction()),
   });

@@ -53,6 +53,20 @@ export function createChatAction(members) {
     }
 }
 
+export function openChatAction(chatId) {
+    return {
+        type: 'OPEN_CHAT',
+        payload: { chatId },
+    }
+}
+
+export function closeChatAction(chatId) {
+    return {
+        type: 'CLOSE_CHAT',
+        payload: { chatId },
+    }
+}
+
 export function sendMessageAction(chatId, userId, content) {
     return {
         type: 'SEND_MESSAGE',
