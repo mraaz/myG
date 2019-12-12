@@ -126,8 +126,6 @@ export default class AddScheduleGames extends Component {
               onCreateOption={this.handleCreate_game_name}
               isClearable
               value={this.state.game_name_box}
-              onBlur={this.onBlur_game_name}
-              onFocus={this.onFocus_game_name}
               className='game_name_box'
               placeholder='Enter Game name'
               onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
