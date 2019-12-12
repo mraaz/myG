@@ -7,6 +7,7 @@ import CreatableSelect from 'react-select/lib/Creatable'
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import Modal from 'react-modal'
 import { toast } from 'react-toastify'
+import { Game_name_values, Disable_keys } from './Utility_Function'
 
 Modal.setAppElement('#app')
 
@@ -480,27 +481,11 @@ export default class AddEsportsExp extends Component<*, State> {
   }
 
   async getOptions(inputValue) {
-    if (inputValue == '' || inputValue == undefined) {
-      return []
-    }
-    try {
-      inputValue = inputValue.trimStart()
-      const getGameName = await axios.get(`/api/GameNames/${inputValue}/gameSearchResults`)
-      var results = getGameName.data.gameSearchResults[0].filter((i) => i.game_name.toLowerCase().includes(inputValue.toLowerCase()))
-      var newArr = []
-      var i, newOption
-      if (results.length != 0) {
-        for (i = 0; i < results.length; i++) {
-          newOption = createOption(results[i].game_name, results[i].id)
-          newArr.push(newOption)
-        }
-      } else {
-        return []
-      }
-      return newArr
-    } catch (error) {
-      console.log(error)
-    }
+    return Game_name_values(inputValue)
+  }
+
+  onKeyDown = (e) => {
+    Disable_keys(e)
   }
 
   render() {
@@ -591,6 +576,7 @@ export default class AddEsportsExp extends Component<*, State> {
                 placeholder='Games your passionate about'
                 isMulti
                 onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
+                onKeyDown={this.onKeyDown}
               />
             </div>
             <div className='career-highlights'>
@@ -634,6 +620,7 @@ export default class AddEsportsExp extends Component<*, State> {
                 className='game_name_box2'
                 placeholder='Enter Game name'
                 onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
+                onKeyDown={this.onKeyDown}
               />
             </div>
             <div className='team-name'>

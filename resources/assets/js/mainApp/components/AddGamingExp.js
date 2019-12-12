@@ -8,6 +8,8 @@ import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import Modal from 'react-modal'
 import { toast } from 'react-toastify'
 
+import { Game_name_values, Disable_keys } from './Utility_Function'
+
 Modal.setAppElement('#app')
 
 const experience_options = [
@@ -315,28 +317,12 @@ export default class AddGamingExp extends Component<*, State> {
     getInitialData()
   }
 
-  async getOptions(inputValue) {
-    if (inputValue == '' || inputValue == undefined) {
-      return []
-    }
-    try {
-      inputValue = inputValue.trimStart()
-      const getGameName = await axios.get(`/api/GameNames/${inputValue}/gameSearchResults`)
-      var results = getGameName.data.gameSearchResults[0].filter((i) => i.game_name.toLowerCase().includes(inputValue.toLowerCase()))
-      var newArr = []
-      var i, newOption
-      if (results.length != 0) {
-        for (i = 0; i < results.length; i++) {
-          newOption = createOption(results[i].game_name, results[i].id)
-          newArr.push(newOption)
-        }
-      } else {
-        return []
-      }
-      return newArr
-    } catch (error) {
-      console.log(error)
-    }
+  getOptions(inputValue) {
+    return Game_name_values(inputValue)
+  }
+
+  onKeyDown = (e) => {
+    Disable_keys(e)
   }
 
   render() {
@@ -368,7 +354,6 @@ export default class AddGamingExp extends Component<*, State> {
             <p>
               Game Name <span style={{ color: 'red' }}>*</span>
             </p>
-            {/* <input type="text" id="game_name_box" className="game_name_box" maxLength="50" onKeyDown={this.onKeyDown} onChange={this.handleChange} /> */}
             <AsyncCreatableSelect
               cacheOptions
               defaultOptions
@@ -380,6 +365,7 @@ export default class AddGamingExp extends Component<*, State> {
               onCreateOption={this.handleCreate}
               onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
               placeholder='Enter in a Game name'
+              onKeyDown={this.onKeyDown}
             />
           </div>
           <div className='status'>
