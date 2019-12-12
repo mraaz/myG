@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { monitorMessages } from '../../integration/ws/chat';
 import { fetchMessagesAction, fetchInfoAction, sendMessageAction } from '../../redux/actions/chatAction';
 import { formatAMPM } from '../../common/date';
 
@@ -14,13 +13,8 @@ class Chat extends React.Component {
   };
 
   componentDidMount() {
-    this.subscription = monitorMessages(this.props.chatId);
     this.props.fetchMessages(this.props.chatId);
     this.props.fetchInfo(this.props.chatId);
-  }
-
-  componentWillUnmount() {
-    this.subscription.close();
   }
 
   sendMessage = () => {

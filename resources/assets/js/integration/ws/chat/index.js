@@ -1,20 +1,35 @@
 import { store } from '../../../redux/Store';
 import { onNewChatAction, onNewMessageAction, onInfoUpdatedAction } from '../../../redux/actions/chatAction';
 import socket from '../../../common/socket';
+
 socket.connect();
+let subscriptions = {};
+
+export function closeSubscriptions() {
+  Object.keys(subscriptions).forEach(subscriptionKey => subscriptions[`${subscriptionKey}`].close());
+  subscriptions = {};
+}
 
 export function monitorChats(userId) {
-  return socket.subscribe(`user_chat:${userId}`, event => {
+  const subscriptionKey = `user_chat:${userId}`;
+  if (subscriptions[`${subscriptionKey}`]) return;
+  console.log(`WS`, `Monitoring ${subscriptionKey}`);
+  const subscription = socket.subscribe(subscriptionKey, event => {
     console.log('WS', `New "${event.type}" Event Received`, event.data);
     store.dispatch(onNewChatAction(event.data));
   });
+  subscriptions[`${subscriptionKey}`] = subscription;
 }
 
 export function monitorMessages(chatId) {
-  return socket.subscribe(`chat:${chatId}`, event => {
+  const subscriptionKey = `chat:${chatId}`;
+  if (subscriptions[`${subscriptionKey}`]) return;
+  console.log(`WS`, `Monitoring ${subscriptionKey}`);
+  const subscription = socket.subscribe(subscriptionKey, event => {
     console.log('WS', `New "${event.type}" Event Received`, event.data);
     if (event.type === "chat:newMessage") return store.dispatch(onNewMessageAction(event.data, chatId));
     if (event.type === "chat:info") return store.dispatch(onInfoUpdatedAction(event.data, chatId));
   });
+  subscriptions[`${subscriptionKey}`] = subscription;
 }
 

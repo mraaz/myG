@@ -1,4 +1,6 @@
 
+import { monitorMessages } from '../../integration/ws/chat'
+
 export default function reducer(state = {
     chats: [],
 }, action) {
@@ -8,6 +10,7 @@ export default function reducer(state = {
             console.log(`Redux -> Fetched Chats: `, action.payload);
             const findChat = chatId => state.chats.find(candidate => candidate.chatId === chatId) || {};
             const chats = action.payload.chats.map(chat => ({ ...chat, ...findChat(chat.chatId) }));
+            chats.forEach(chat => monitorMessages(chat.chatId));
             return {
                 ...state,
                 chats,
@@ -70,6 +73,7 @@ export default function reducer(state = {
             console.log(`Redux -> New Chat: `, action.payload);
             const chats = JSON.parse(JSON.stringify(state.chats));
             chats.push(action.payload.chat);
+            monitorMessages(chat.chatId);
             return {
                 ...state,
                 chats,
@@ -82,6 +86,7 @@ export default function reducer(state = {
             const message = action.payload.message;
             const chats = JSON.parse(JSON.stringify(state.chats));
             const chat = chats.find(candidate => candidate.chatId === chatId);
+            chat.closed = false;
             chat.messages.push(message);
             return {
                 ...state,

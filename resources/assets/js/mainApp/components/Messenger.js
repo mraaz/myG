@@ -3,8 +3,9 @@ import React from "react";
 import { connect } from 'react-redux';
 
 import Chat from './Chat';
+import { formatAMPM } from '../../common/date';
 
-import { monitorChats } from '../../integration/ws/chat';
+import { monitorChats, closeSubscriptions } from '../../integration/ws/chat';
 import { fetchChatsAction, createChatAction, openChatAction, closeChatAction } from '../../redux/actions/chatAction';
 import { fetchFriendsAction } from '../../redux/actions/friendAction';
 
@@ -17,14 +18,14 @@ class Messenger extends React.PureComponent {
   componentDidUpdate() {
     if (!this.state.loaded && !this.props.loading) {
       this.setState({ loaded: true });
-      this.subscription = monitorChats(this.props.userId);
+      monitorChats(this.props.userId);
       this.props.fetchChats(this.props.userId);
       this.props.fetchFriends();
     }
   }
 
   componentWillUnmount() {
-    if (this.subscription) this.subscription.close();
+    closeSubscriptions();
   }
 
   openChat = (friend) => {
@@ -65,6 +66,8 @@ class Messenger extends React.PureComponent {
   }
 
   renderFriend = (friend) => {
+    const chat = this.props.chats.find(chat => chat.friendId === friend.friend_id) || {};
+    const lastMessage = (chat.messages || [])[(chat.messages || []).length - 1];
     return (
       <div
         key={friend.id}
@@ -81,19 +84,25 @@ class Messenger extends React.PureComponent {
           <p className="messenger-contact-body-title">
             {friend.first_name} {friend.last_name}
           </p>
-          <p className="messenger-contact-body-subtitle">
-            Hey what's up
-          </p>
+          {lastMessage && (
+            <p className="messenger-contact-body-subtitle">
+              {lastMessage.content}
+            </p>
+          )}
         </div>
         <div className="messenger-contact-info">
-          <p className="messenger-contact-info-last-seen">
-            10:38pm
-          </p>
+          {lastMessage && (
+            <p className="messenger-contact-info-last-seen">
+              {formatAMPM(new Date(lastMessage.created_at))}
+            </p>
+          )}
+          {/* 
           <div className="messenger-contact-info-unread">
             <p className="messenger-contact-info-unread-count">
               6
-          </p>
+            </p>
           </div>
+          */}
         </div>
       </div>
     );
