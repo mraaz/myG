@@ -2,8 +2,10 @@ import Ws from '@adonisjs/websocket-client'
 
 export class SocketConnection {
   connect() {
-    this.ws = Ws(`wss://myg.gg`).connect()
-    return this
+    const protocol = window.location.href.includes('localhost') ? 'ws://' : 'wss://';
+    const url = window.location.href.includes('localhost') ? 'localhost:3333' : 'myg.gg';
+    this.ws = Ws(`${protocol}${url}`).connect();
+    return this;
   }
 
   subscribe(channel, handler) {
