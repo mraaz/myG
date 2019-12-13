@@ -8,8 +8,8 @@ class Chat extends React.Component {
 
   state = {
     input: '',
-    maximized: false,
-    minimized: false,
+    maximised: false,
+    minimised: false,
   };
 
   componentDidMount() {
@@ -44,12 +44,12 @@ class Chat extends React.Component {
           </div>
         </div>
         <div className="chat-component-header-button"
-          style={{ backgroundImage: `url(/assets/svg/ic_chat_minimize.svg)` }}
-          onClick={() => this.setState(previous => ({ minimized: !previous.minimized, maximized: false }))}
+          style={{ backgroundImage: `url(/assets/svg/ic_chat_minimise.svg)` }}
+          onClick={() => this.setState(previous => ({ minimised: !previous.minimised, maximised: false }))}
         />
         <div className="chat-component-header-button"
-          style={{ backgroundImage: `url(/assets/svg/ic_chat_maximize.svg)` }}
-          onClick={() => this.setState(previous => ({ maximized: !previous.maximized, minimized: false }))}
+          style={{ backgroundImage: `url(/assets/svg/ic_chat_maximise.svg)` }}
+          onClick={() => this.setState(previous => ({ maximised: !previous.maximised, minimised: false }))}
         />
         <div className="chat-component-header-button"
           style={{ backgroundImage: `url(/assets/svg/ic_chat_close.svg)` }}
@@ -112,17 +112,17 @@ class Chat extends React.Component {
 
   render() {
     let extraClass = "";
-    if (this.state.maximized) extraClass += "chat-maximized";
-    if (this.state.minimized) extraClass += "chat-minimized";
+    if (this.state.maximised) extraClass += "chat-maximised";
+    if (this.state.minimised) extraClass += "chat-minimised";
     return (
       <div
         key={this.props.chatId}
         className={`chat-component-base ${extraClass}`}
       >
         {this.renderHeader()}
-        {!this.state.minimized && this.renderBody()}
-        {!this.state.minimized && <div className="chat-component-footer-divider" />}
-        {!this.state.minimized && this.renderFooter()}
+        {!this.state.minimised && this.renderBody()}
+        {!this.state.minimised && <div className="chat-component-footer-divider" />}
+        {!this.state.minimised && this.renderFooter()}
       </div>
     );
   }

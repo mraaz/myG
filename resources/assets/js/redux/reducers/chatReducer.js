@@ -73,7 +73,7 @@ export default function reducer(state = {
             console.log(`Redux -> New Chat: `, action.payload);
             const chats = JSON.parse(JSON.stringify(state.chats));
             chats.push(action.payload.chat);
-            monitorMessages(chat.chatId);
+            monitorMessages(action.payload.chat.chatId);
             return {
                 ...state,
                 chats,
