@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { monitorMessages } from '../../integration/ws/chat';
 import { fetchMessagesAction, fetchInfoAction, sendMessageAction } from '../../redux/actions/chatAction';
 import { formatAMPM } from '../../common/date';
 
@@ -9,16 +8,13 @@ class Chat extends React.Component {
 
   state = {
     input: '',
+    maximised: false,
+    minimised: false,
   };
 
   componentDidMount() {
-    this.subscription = monitorMessages(this.props.chatId);
     this.props.fetchMessages(this.props.chatId);
     this.props.fetchInfo(this.props.chatId);
-  }
-
-  componentWillUnmount() {
-    this.subscription.close();
   }
 
   sendMessage = () => {
@@ -47,9 +43,17 @@ class Chat extends React.Component {
             {this.props.subtitle}
           </div>
         </div>
-        <div className="chat-component-header-close"
+        <div className="chat-component-header-button"
+          style={{ backgroundImage: `url(/assets/svg/ic_chat_minimise.svg)` }}
+          onClick={() => this.setState(previous => ({ minimised: !previous.minimised, maximised: false }))}
+        />
+        <div className="chat-component-header-button"
+          style={{ backgroundImage: `url(/assets/svg/ic_chat_maximise.svg)` }}
+          onClick={() => this.setState(previous => ({ maximised: !previous.maximised, minimised: false }))}
+        />
+        <div className="chat-component-header-button"
           style={{ backgroundImage: `url(/assets/svg/ic_chat_close.svg)` }}
-          onClick={this.props.onClose}
+          onClick={() => this.props.onClose(this.props.chatId)}
         />
       </div>
     );
@@ -107,15 +111,18 @@ class Chat extends React.Component {
   }
 
   render() {
+    let extraClass = "";
+    if (this.state.maximised) extraClass += "chat-maximised";
+    if (this.state.minimised) extraClass += "chat-minimised";
     return (
       <div
         key={this.props.chatId}
-        className="chat-component-base"
+        className={`chat-component-base ${extraClass}`}
       >
         {this.renderHeader()}
-        {this.renderBody()}
-        <div className="chat-component-footer-divider" />
-        {this.renderFooter()}
+        {!this.state.minimised && this.renderBody()}
+        {!this.state.minimised && <div className="chat-component-footer-divider" />}
+        {!this.state.minimised && this.renderFooter()}
       </div>
     );
   }

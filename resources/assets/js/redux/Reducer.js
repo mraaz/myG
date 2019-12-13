@@ -18,5 +18,5 @@ const rootReducer = (state, action) => {
 export default persistReducer({
     key: 'root',
     storage: storage,
-    whitelist: []
+    whitelist: ['chat']
 }, rootReducer);

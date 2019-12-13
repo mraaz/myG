@@ -7,12 +7,14 @@
   "scripts": {
     "start": "node server.js",
     "test": "node ace test",
+    "dev": "npm run build && npm run start",
     "production": "./node_modules/.bin/webpack -p",
     "watch": "gulp",
     "server": "adonis serve",
     "watch-server": "adonis serve --dev",
     "sass": "gulp styles",
     "js": "gulp webpack",
+    "build": "npm run sass && npm run js",
     "foreverstart": "forever start --minUptime 500 --spinSleepTime 1000 server.js",
     "foreverstop": "forever stopall"
   },
