@@ -222,7 +222,7 @@ export default class AddEsportsExp extends Component<*, State> {
               const post = await axios.post('/api/GameNames', {
                 game_name: this.state.newValueCreated_ardour[i],
               })
-              if (this.state.newValueCreated_ardour[i] == this.state.value_game_name.label) {
+              if (this.state.newValueCreated_ardour[i] == this.state.value_game_name.value) {
                 ardourNgame_name_same_same = true
                 newGame_name = post.data.game_name
                 newGameID = post.data.id
@@ -244,10 +244,10 @@ export default class AddEsportsExp extends Component<*, State> {
     if (this.state.newValueCreated_game_name != '' && ardourNgame_name_same_same == false) {
       var i
       for (i = 0; i < this.state.newValueCreated_game_name.length; i++) {
-        if (this.state.value_game_name.label == this.state.newValueCreated_game_name[i]) {
+        if (this.state.value_game_name.value == this.state.newValueCreated_game_name[i]) {
           try {
             const post = await axios.post('/api/GameNames', {
-              game_name: this.state.value_game_name.label,
+              game_name: this.state.value_game_name.value,
             })
             newGame_name = post.data.game_name
             newGameID = post.data.id
@@ -350,7 +350,7 @@ export default class AddEsportsExp extends Component<*, State> {
       try {
         const post_role = await axios.post('/api/esports_experiences/create', {
           role_title: this.state.role_title_box,
-          game_name: newGame_name == '' ? this.state.value_game_name.label : newGame_name,
+          game_name: newGame_name == '' ? this.state.value_game_name.value : newGame_name,
           team_name: this.state.team_name_box,
           duration: myPlayed,
           achievements: this.state.achievements_box,

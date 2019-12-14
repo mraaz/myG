@@ -243,7 +243,7 @@ export default class AddGamingExp extends Component<*, State> {
 
     try {
       const post = await axios.post('/api/GameExperiences', {
-        game_name: this.state.value.label,
+        game_name: this.state.value.value,
         experience: myExperience,
         comments: this.state.comments_box,
         status: this.state.status_box.label,

@@ -70,13 +70,15 @@ class LeftMenu extends Component {
       return (
         <section id='left-menu'>
           <div className='account-dropdown'>
-            <div className='logo' onClick={this.redirect}>
-              <div
-                className='logo-img'
-                style={{
-                  backgroundImage: `url('${left_icon}')`,
-                }}></div>
-            </div>
+            <Link to='/'>
+              <div className='logo'>
+                <div
+                  className='logo-img'
+                  style={{
+                    backgroundImage: `url('${left_icon}')`,
+                  }}></div>
+              </div>
+            </Link>
             <div className='name' onClick={this.clickedDropdown}>
               {`${first_name} ${last_name}`}
             </div>
