@@ -6,6 +6,8 @@ import AsyncSelect from 'react-select/lib/Async'
 import CreatableSelect from 'react-select/lib/Creatable'
 import AdvancedSearchPost from './AdvancedSearchPost'
 import { CountryDropdown } from 'react-country-region-selector'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import { Game_name_values, Disable_keys } from './Utility_Function'
 
 const table_options = [
   { value: 'Gaming Experience', label: 'Gaming Experience' },
@@ -79,7 +81,7 @@ export default class AdvancedSearch extends Component<*, State> {
       other_box: '',
       when: null,
       tmp_time: '',
-      value: '',
+      game_name_box: '',
       status_box: '',
       played_box: '',
       ratings_box: '',
@@ -89,26 +91,29 @@ export default class AdvancedSearch extends Component<*, State> {
       newValueCreated_tags: [],
       country_: '',
       time_role_box: '',
+      counter: 0,
+      moreplease: true,
+      allGameExperiences: [],
     }
   }
 
   componentWillMount() {
-    const self = this
-
-    var myGame_name_box = '1981`^'
-    var myStatus = '1981`^'
-    var myExperience = '1981`^'
-    var myPlayed = '1981`^'
-    var myRatings = '1981`^'
-    var myCommendation = '1981`^'
-    var myTags = '1981`^'
-    var myCountry = '1981`^'
+    // const self = this
+    //
+    // var myGame_name_box = '1981`^'
+    // var myStatus = '1981`^'
+    // var myExperience = '1981`^'
+    // var myPlayed = '1981`^'
+    // var myRatings = '1981`^'
+    // var myCommendation = '1981`^'
+    // var myTags = '1981`^'
+    // var myCountry = '1981`^'
 
     const { match } = this.props.routeProps
 
     this.state.selected_table = {
-      label: 'Gaming Experience',
-      value: 'Gaming Experience',
+      label: 'Esports Experience',
+      value: 'Esports Experience',
     }
 
     if (match.params.id != undefined && match.params.id != '') {
@@ -119,194 +124,48 @@ export default class AdvancedSearch extends Component<*, State> {
           value: 'Esports Experience',
         }
       }
+      return
     }
 
-    const getInitialData = async function() {
-      try {
-        const allGameExperiences = await axios.get(
-          `/api/GameExperiences/filtered/${myGame_name_box}/${myStatus}/${myExperience}/${myPlayed}/${myRatings}/${myCommendation}/${myTags}/${myCountry}`
-        )
-        self.setState({
-          allGameExperiences: allGameExperiences.data.latestGameExperiences[0],
-        })
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    getInitialData()
+    // const getInitialData = async function() {
+    //   try {
+    //     const allGameExperiences = await axios.get(
+    //       `/api/GameExperiences/filtered/${myGame_name_box}/${myStatus}/${myExperience}/${myPlayed}/${myRatings}/${myCommendation}/${myTags}/${myCountry}`
+    //     )
+    //     //var tmp_allscheduledGames = await PullDataFunction(this.state)
+    //     self.setState({
+    //       allGameExperiences: allGameExperiences.data.latestGameExperiences[0],
+    //     })
+    //   } catch (error) {
+    //     console.log(error)
+    //   }
+    // }
+    this.pullData()
   }
 
-  handleChange_GameName = (value: any) => {
-    this.setState(
-      {
-        value,
-      },
-      () => {
-        this.pullData()
-      }
-    )
-    this.onBlur_game_name(value)
-  }
-
-  handleChange3 = (value_tags: any) => {
-    this.setState(
-      {
-        value_tags,
-      },
-      () => {
-        this.pullData()
-      }
-    )
-  }
-
-  handleChange_table = (selected_table) => {
-    this.setState(
-      {
-        selected_table,
-        value_tags: '',
-      },
-      () => {
-        this.pullData()
-      }
-    )
-  }
-
-  handleChange_Experience = (selected_experience) => {
-    this.setState(
-      {
-        selected_experience,
-      },
-      () => {
-        this.pullData()
-      }
-    )
-  }
-
-  handleChange_Status = (status_box) => {
-    this.setState(
-      {
-        status_box,
-      },
-      () => {
-        this.pullData()
-      }
-    )
-  }
-
-  handleChange_Played = (played_box) => {
-    this.setState(
-      {
-        played_box,
-      },
-      () => {
-        this.pullData()
-      }
-    )
-  }
-
-  handleChange_Ratings = (ratings_box) => {
-    this.setState(
-      {
-        ratings_box,
-      },
-      () => {
-        this.pullData()
-      }
-    )
-  }
-
-  handleChange_Commendation = (commendation_box) => {
-    this.setState(
-      {
-        commendation_box,
-      },
-      () => {
-        this.pullData()
-      }
-    )
-  }
-
-  selectCountry(val) {
-    this.setState(
-      {
-        country_: val,
-      },
-      () => {
-        this.pullData()
-      }
-    )
-  }
-
-  handleChange_e_status = (eStatus_box) => {
-    this.setState(
-      {
-        eStatus_box,
-      },
-      () => {
-        this.pullData()
-      }
-    )
-  }
-
-  handleChange_role_title = (e) => {
-    this.setState(
-      {
-        role_title_box: e.target.value,
-      },
-      () => {
-        this.pullData()
-      }
-    )
-  }
-
-  handleChange_team_name = (e) => {
-    this.setState(
-      {
-        team_name_box: e.target.value,
-      },
-      () => {
-        this.pullData()
-      }
-    )
-  }
-
-  handleChange_Time_role = (time_role_box) => {
-    this.setState(
-      {
-        time_role_box,
-      },
-      () => {
-        this.pullData()
-      }
-    )
-  }
-
-  showLatestPosts = () => {
-    if (this.state.allGameExperiences != undefined) {
-      return this.state.allGameExperiences.map((item, index) => {
-        var table = true
-        if (this.state.selected_table.value != 'Gaming Experience') {
-          table = false
-        }
-        return <AdvancedSearchPost game_experience={item} key={index} table={table} user={this.props.initialData} />
-      })
-    }
-  }
-
-  async pullData() {
+  pullData = async () => {
     var myTable = ''
 
-    var myGame_name_box = '1981`^'
-    var myStatus = '1981`^'
-    var myExperience = '1981`^'
-    var myPlayed = '1981`^'
-    var myRatings = '1981`^'
-    var myTags = '1981`^'
-    var myCommendation = '1981`^'
-    var myCountry = '1981`^'
-    var myRole_title = '1981`^'
-    var myTeam_name = '1981`^'
-    var myTime_role = '1981`^'
+    var myGame_name_box = null
+    var myStatus = null
+    var myExperience = null
+    var myPlayed = null
+    var myRatings = null
+    var myTags = null
+    var myCommendation = null
+    var myCountry = null
+    var myRole_title = null
+    var myTeam_name = null
+    var myTime_role = null
+    var allGameExperiences = []
+
+    this.state.counter = this.state.counter + 1
+
+    if (this.state.counter != 1) {
+      this.setState({
+        show_top_btn: true,
+      })
+    }
 
     if (this.state.selected_table != '' && this.state.selected_table != undefined && this.state.selected_table.length != 0) {
       myTable = this.state.selected_table.label
@@ -320,8 +179,8 @@ export default class AdvancedSearch extends Component<*, State> {
       myExperience = this.state.selected_experience.label
     }
 
-    if (this.state.value != null && this.state.value != '' && this.state.value.length != 0) {
-      myGame_name_box = this.state.value.label.trim()
+    if (this.state.game_name_box != null && this.state.game_name_box != '' && this.state.game_name_box.length != 0) {
+      myGame_name_box = this.state.game_name_box.value.trim()
     }
 
     if (this.state.status_box != '' && this.state.status_box != null && this.state.status_box.length != 0) {
@@ -368,25 +227,201 @@ export default class AdvancedSearch extends Component<*, State> {
       myTime_role = this.state.time_role_box.value
     }
 
-    if (myTable == 'Gaming Experience') {
-      try {
-        const allGameExperiences = await axios.get(
+    try {
+      if (myTable == 'Gaming Experience') {
+        allGameExperiences = await axios.get(
           `/api/GameExperiences/filtered/${myGame_name_box}/${myStatus}/${myExperience}/${myPlayed}/${myRatings}/${myCommendation}/${myTags}/${myCountry}`
         )
+      } else if (myTable == 'Esports Experience') {
+        // const alleSportsExperiences = await axios.get(
+        //   `/api/esports_experiences/filtered/${myGame_name_box}/${myRole_title}/${myTeam_name}/${myTime_role}/${myTags}/${myCountry}`
+        // )
 
-        this.setState({
-          allGameExperiences: allGameExperiences.data.latestGameExperiences[0],
+        allGameExperiences = await axios.post('/api/esports_experiences/esportsSearchResults', {
+          game_name: myGame_name_box,
+          role_title: myRole_title,
+          team_name: myTeam_name,
+          duration: myTime_role,
+          skills: myTags,
+          country: myCountry,
+          counter: this.state.counter,
         })
-      } catch (error) {
-        console.log(error)
       }
-    } else if (myTable == 'Esports Experience') {
-      const alleSportsExperiences = await axios.get(
-        `/api/esports_experiences/filtered/${myGame_name_box}/${myRole_title}/${myTeam_name}/${myTime_role}/${myTags}/${myCountry}`
-      )
+    } catch (error) {
+      console.log(error)
+    }
 
-      this.setState({
-        allGameExperiences: alleSportsExperiences.data.latestGameExperiences[0],
+    this.setState({
+      allGameExperiences: allGameExperiences.data.latestGameExperiences.data,
+    })
+  }
+
+  handleChange_GameName = (value: any) => {
+    this.setState(
+      {
+        game_name_box: value,
+        counter: 0,
+      },
+      () => {
+        this.pullData()
+      }
+    )
+    this.onBlur_game_name(value)
+  }
+
+  handleChange3 = (value_tags: any) => {
+    this.setState(
+      {
+        value_tags,
+        counter: 0,
+      },
+      () => {
+        this.pullData()
+      }
+    )
+  }
+
+  handleChange_table = (selected_table) => {
+    this.setState(
+      {
+        selected_table,
+        value_tags: '',
+        counter: 0,
+      },
+      () => {
+        this.pullData()
+      }
+    )
+  }
+
+  handleChange_Experience = (selected_experience) => {
+    this.setState(
+      {
+        selected_experience,
+        counter: 0,
+      },
+      () => {
+        this.pullData()
+      }
+    )
+  }
+
+  handleChange_Status = (status_box) => {
+    this.setState(
+      {
+        status_box,
+        counter: 0,
+      },
+      () => {
+        this.pullData()
+      }
+    )
+  }
+
+  handleChange_Played = (played_box) => {
+    this.setState(
+      {
+        played_box,
+        counter: 0,
+      },
+      () => {
+        this.pullData()
+      }
+    )
+  }
+
+  handleChange_Ratings = (ratings_box) => {
+    this.setState(
+      {
+        ratings_box,
+        counter: 0,
+      },
+      () => {
+        this.pullData()
+      }
+    )
+  }
+
+  handleChange_Commendation = (commendation_box) => {
+    this.setState(
+      {
+        commendation_box,
+        counter: 0,
+      },
+      () => {
+        this.pullData()
+      }
+    )
+  }
+
+  selectCountry(val) {
+    this.setState(
+      {
+        country_: val,
+        counter: 0,
+      },
+      () => {
+        this.pullData()
+      }
+    )
+  }
+
+  handleChange_e_status = (eStatus_box) => {
+    this.setState(
+      {
+        eStatus_box,
+        counter: 0,
+      },
+      () => {
+        this.pullData()
+      }
+    )
+  }
+
+  handleChange_role_title = (e) => {
+    this.setState(
+      {
+        role_title_box: e.target.value,
+        counter: 0,
+      },
+      () => {
+        this.pullData()
+      }
+    )
+  }
+
+  handleChange_team_name = (e) => {
+    this.setState(
+      {
+        team_name_box: e.target.value,
+        counter: 0,
+      },
+      () => {
+        this.pullData()
+      }
+    )
+  }
+
+  handleChange_Time_role = (time_role_box) => {
+    this.setState(
+      {
+        time_role_box,
+        counter: 0,
+      },
+      () => {
+        this.pullData()
+      }
+    )
+  }
+
+  showLatestPosts = () => {
+    if (this.state.allGameExperiences != undefined) {
+      return this.state.allGameExperiences.map((item, index) => {
+        var table = true
+        if (this.state.selected_table.value != 'Gaming Experience') {
+          table = false
+        }
+        return <AdvancedSearchPost game_experience={item} key={index} table={table} user={this.props.initialData} />
       })
     }
   }
@@ -399,33 +434,18 @@ export default class AdvancedSearch extends Component<*, State> {
       this.setState({ value_tags: [...value_tags, newOption] })
       this.setState({
         newValueCreated_tags: [...newValueCreated_tags, newOption.label],
+        counter: 0,
       })
       this.pullData()
     }, 300)
   }
 
   async getOptions(inputValue) {
-    if (inputValue == '' || inputValue == undefined) {
-      return []
-    }
-    try {
-      inputValue = inputValue.trimStart()
-      const getGameName = await axios.get(`/api/GameNames/${inputValue}/gameSearchResults`)
-      var results = getGameName.data.gameSearchResults[0].filter((i) => i.game_name.toLowerCase().includes(inputValue.toLowerCase()))
-      var newArr = []
-      var i, newOption
-      if (results.length != 0) {
-        for (i = 0; i < results.length; i++) {
-          newOption = createOption(results[i].game_name, results[i].id)
-          newArr.push(newOption)
-        }
-      } else {
-        return []
-      }
-      return newArr
-    } catch (error) {
-      console.log(error)
-    }
+    return Game_name_values(inputValue)
+  }
+
+  onKeyDown = (e) => {
+    Disable_keys(e)
   }
 
   onBlur_game_name = (value) => {
@@ -495,10 +515,11 @@ export default class AdvancedSearch extends Component<*, State> {
                     loadOptions={this.getOptions}
                     isClearable
                     onChange={this.handleChange_GameName}
-                    value={this.state.value}
+                    value={this.state.game_name_box}
                     className='game-name-box'
                     placeholder='Game name'
                     onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
+                    onKeyDown={this.onKeyDown}
                   />
                 </div>
               </div>
@@ -638,7 +659,9 @@ export default class AdvancedSearch extends Component<*, State> {
                 </div>
               )}
             </div>
-            {this.showLatestPosts()}
+            <InfiniteScroll dataLength={this.state.allGameExperiences.length} next={this.pullData} hasMore={this.state.moreplease}>
+              {this.showLatestPosts()}
+            </InfiniteScroll>
           </div>
         </section>
       )

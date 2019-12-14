@@ -86,7 +86,10 @@ Route.post('/api/GameExperiences', 'GameExperienceController.store')
 Route.get('/api/GameExperiences/delete/:game_id', 'GameExperienceController.destroy')
 Route.post('/api/GameExperiences/:id/:game_id', 'GameExperienceController.update')
 Route.get('/api/GameExperiences/:id/:game_id', 'GameExperienceController.show_Game')
-Route.get('/api/GameExperiences/filtered/:gameNamestr/:statusstr/:expstr/:playedstr/:ratingsstr/:commendationstr/:tags/:countrystr', 'GameExperienceController.gameExpSearchResults')
+Route.get(
+  '/api/GameExperiences/filtered/:gameNamestr/:statusstr/:expstr/:playedstr/:ratingsstr/:commendationstr/:tags/:countrystr',
+  'GameExperienceController.gameExpSearchResults'
+)
 
 Route.post('/api/ScheduleGame', 'ScheduleGameController.store')
 Route.get('/api/ScheduleGame/delete/:id/:reason', 'ScheduleGameController.destroy')
@@ -167,13 +170,31 @@ Route.post('/api/notifications/updateRead_Status/:post_id/:activity_type', 'Noti
 Route.get('/api/notifications/markAllNoti', 'NotificationController.markAllNoti')
 Route.get('/api/notifications/deleteAllNoti', 'NotificationController.deleteAllNoti')
 Route.get('/api/notifications/getunread/:post_id/:activity_type', 'NotificationController.getRead_Status')
-Route.get('/api/notifications/getunread_schedule_game/:schedule_game_id/:activity_type', 'NotificationController.getRead_Status_schedule_game')
-Route.get('/api/notifications/getunread_archive_schedule_game/:archive_schedule_game_id/:activity_type', 'NotificationController.getunread_archive_schedule_game')
+Route.get(
+  '/api/notifications/getunread_schedule_game/:schedule_game_id/:activity_type',
+  'NotificationController.getRead_Status_schedule_game'
+)
+Route.get(
+  '/api/notifications/getunread_archive_schedule_game/:archive_schedule_game_id/:activity_type',
+  'NotificationController.getunread_archive_schedule_game'
+)
 Route.post('/api/notifications/addScheduleGame/attendance', 'NotificationController.addScheduleGame_attendance')
-Route.post('/api/notifications/updateRead_Status_schedule_game/:schedule_game_id/:activity_type', 'NotificationController.updateRead_Status_schedule_game')
-Route.post('/api/notifications/updateRead_Status_archive_schedule_game/:archive_schedule_game_id/:activity_type', 'NotificationController.updateRead_Status_archive_schedule_game')
-Route.post('/api/notifications/updateRead_Status_groups/:group_id/:activity_type/:user_id', 'NotificationController.updateRead_Status_groups')
-Route.get('/api/notifications/getAllNotiScheduleGamesAttendees/:schedule_games_id', 'NotificationController.getAllNotiScheduleGamesAttendees')
+Route.post(
+  '/api/notifications/updateRead_Status_schedule_game/:schedule_game_id/:activity_type',
+  'NotificationController.updateRead_Status_schedule_game'
+)
+Route.post(
+  '/api/notifications/updateRead_Status_archive_schedule_game/:archive_schedule_game_id/:activity_type',
+  'NotificationController.updateRead_Status_archive_schedule_game'
+)
+Route.post(
+  '/api/notifications/updateRead_Status_groups/:group_id/:activity_type/:user_id',
+  'NotificationController.updateRead_Status_groups'
+)
+Route.get(
+  '/api/notifications/getAllNotiScheduleGamesAttendees/:schedule_games_id',
+  'NotificationController.getAllNotiScheduleGamesAttendees'
+)
 Route.get('/api/notifications/delete/schedule_game_attendees/:id', 'NotificationController.remove_schedule_game_attendees')
 Route.get('/api/notifications/myRequests/', 'NotificationController.myRequests')
 Route.post('/api/notifications/addGroup', 'NotificationController.addGroup')
@@ -203,7 +224,7 @@ Route.get('/api/esports_experiences/show/:esportsExp_id', 'EsportsExperienceCont
 Route.post('/api/esports_experiences/update/:id', 'EsportsExperienceController.update')
 Route.get('/api/esports_experiences/delete/:id', 'EsportsExperienceController.destroy')
 Route.get('/api/esports_experiences/:id', 'EsportsExperienceController.show')
-Route.get('/api/esports_experiences/filtered/:gameNamestr/:rolestr/:teamstr/:time_role/:tags/:countrystr', 'EsportsExperienceController.esportsSearchResults')
+Route.post('/api/esports_experiences/esportsSearchResults', 'EsportsExperienceController.esportsSearchResults')
 
 Route.get('/api/attendees/attending/:id', 'AttendeeController.show_attending')
 Route.get('/api/attendees/show_all_pending_attendance/:id', 'AttendeeController.show_all_pending_attendance')
@@ -245,10 +266,10 @@ Route.get('/api/usergroup/promote_member/:id/:usergrp_id', 'UsergroupController.
 Route.get('/api/usergroup/demote_member/:id/:usergrp_id', 'UsergroupController.demote_member')
 Route.get('/api/usergroup/current_member/:id', 'UsergroupController.current_member')
 
-Route.get('/api/chats/:userId', 'UserChatController.fetchChats');
-Route.get('/api/chat/:chatId', 'ChatController.fetchMessages');
-Route.get('/api/chat/:chatId/info', 'UserChatController.fetchInfo');
-Route.post('/api/chat/', 'ChatController.create');
-Route.post('/api/chat/:chatId/message', 'ChatController.createMessage');
+Route.get('/api/chats/:userId', 'UserChatController.fetchChats')
+Route.get('/api/chat/:chatId', 'ChatController.fetchMessages')
+Route.get('/api/chat/:chatId/info', 'UserChatController.fetchInfo')
+Route.post('/api/chat/', 'ChatController.create')
+Route.post('/api/chat/:chatId/message', 'ChatController.createMessage')
 
-Route.any('*', ({view}) => view.render('pages/react'))
+Route.any('*', ({ view }) => view.render('pages/react'))
