@@ -179,10 +179,10 @@ export default class AddGamingExp extends Component<*, State> {
     if (this.state.newValueCreated != '') {
       var i
       for (i = 0; i < this.state.newValueCreated.length; i++) {
-        if (this.state.value.label == this.state.newValueCreated[i]) {
+        if (this.state.value.value == this.state.newValueCreated[i]) {
           try {
             const post = await axios.post('/api/GameNames', {
-              game_name: this.state.value.label,
+              game_name: this.state.value.value,
             })
             newGameID = post.data.id
           } catch (error) {
