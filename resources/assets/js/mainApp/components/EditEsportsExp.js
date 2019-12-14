@@ -207,7 +207,7 @@ export default class EditEsportsExp extends Component<*, State> {
     if ((this.state.role_title_box == '' || this.state.role_title_box == null) && uShallNotPass) {
       toast.success(<Toast_style text={'Sorry mate! Role Title can not be blank'} />)
       return
-    } else if (this.state.value_game_name.label == '' && uShallNotPass) {
+    } else if (this.state.value_game_name.value == '' && uShallNotPass) {
       toast.success(<Toast_style text={'Sorry mate! Game Name can not be blank'} />)
       return
     }
@@ -236,7 +236,7 @@ export default class EditEsportsExp extends Component<*, State> {
                 game_name: this.state.newValueCreated_ardour[i],
               })
 
-              if (this.state.newValueCreated_ardour[i] == this.state.value_game_name.label) {
+              if (this.state.newValueCreated_ardour[i] == this.state.value_game_name.value) {
                 ardourNgame_name_same_same = true
                 newGame_name = post.data.game_name
                 newGameID = post.data.id
@@ -257,10 +257,10 @@ export default class EditEsportsExp extends Component<*, State> {
     if (this.state.newValueCreated_game_name != '' && ardourNgame_name_same_same == false) {
       var i
       for (i = 0; i < this.state.newValueCreated_game_name.length; i++) {
-        if (this.state.value_game_name.label == this.state.newValueCreated_game_name[i]) {
+        if (this.state.value_game_name.value == this.state.newValueCreated_game_name[i]) {
           try {
             const post = await axios.post('/api/GameNames', {
-              game_name: this.state.value_game_name.label,
+              game_name: this.state.value_game_name.value,
             })
             newGame_name = post.data.game_name
             newGameID = post.data
@@ -325,7 +325,7 @@ export default class EditEsportsExp extends Component<*, State> {
 
     if (this.state.role_title_box_OG != this.state.role_title_box) {
       _OGstatus_exp = false
-    } else if (this.state.value_game_name_OG != this.state.value_game_name.label) {
+    } else if (this.state.value_game_name_OG != this.state.value_game_name.value) {
       _OGstatus_exp = false
     } else if (this.state.team_name_box_OG != this.state.team_name_box) {
       _OGstatus_exp = false
@@ -379,7 +379,7 @@ export default class EditEsportsExp extends Component<*, State> {
           const { match } = this.props.routeProps
           const update_exp = await axios.post(`/api/esports_experiences/update/${match.params.esportsExp_id}`, {
             role_title: this.state.role_title_box,
-            game_name: newGame_name == '' ? this.state.value_game_name.label : newGame_name,
+            game_name: newGame_name == '' ? this.state.value_game_name.value : newGame_name,
             team_name: this.state.team_name_box,
             duration: myPlayed,
             achievements: this.state.achievements_box,
@@ -670,7 +670,7 @@ export default class EditEsportsExp extends Component<*, State> {
           this.state.career_highlights_box_OG = career_highlights
           this.state.games_of_ardour_OG = games_of_ardour
           ;(this.state.role_title_box = role_title),
-            (this.state.value_game_name.label = game_name),
+            (this.state.value_game_name.value = game_name),
             (this.state.team_name_box = team_name),
             (this.state.achievements_box = achievements)
           ;(this.state.role_title_box_OG = role_title),
