@@ -1,4 +1,4 @@
-import { fetchChats, fetchMessages, fetchInfo, createChat, sendMessage } from '../../integration/http/chat';
+import { fetchChats, fetchMessages, fetchInfo, createChat, sendMessage, editMessage, deleteMessage } from '../../integration/http/chat';
 
 export function onNewChatAction(chat) {
     return {
@@ -10,6 +10,14 @@ export function onNewChatAction(chat) {
 export function onNewMessageAction(message, chatId) {
     return {
         type: 'NEW_MESSAGE',
+        payload: { message },
+        meta: { chatId },
+    }
+}
+
+export function onUpdateMessageAction(message, chatId) {
+    return {
+        type: 'UPDATE_MESSAGE',
         payload: { message },
         meta: { chatId },
     }
@@ -71,6 +79,22 @@ export function sendMessageAction(chatId, userId, content) {
     return {
         type: 'SEND_MESSAGE',
         payload: sendMessage(chatId, userId, content),
+        meta: { chatId },
+    }
+}
+
+export function editMessageAction(chatId, messageId, content) {
+    return {
+        type: 'EDIT_MESSAGE',
+        payload: editMessage(chatId, messageId, content),
+        meta: { chatId },
+    }
+}
+
+export function deleteMessageAction(chatId, messageId) {
+    return {
+        type: 'DELETE_MESSAGE',
+        payload: deleteMessage(chatId, messageId),
         meta: { chatId },
     }
 }

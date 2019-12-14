@@ -1,5 +1,5 @@
 import { store } from '../../../redux/Store';
-import { onNewChatAction, onNewMessageAction, onInfoUpdatedAction } from '../../../redux/actions/chatAction';
+import { onNewChatAction, onNewMessageAction, onUpdateMessageAction, onInfoUpdatedAction } from '../../../redux/actions/chatAction';
 import socket from '../../../common/socket';
 
 socket.connect();
@@ -28,6 +28,7 @@ export function monitorMessages(chatId) {
   const subscription = socket.subscribe(subscriptionKey, event => {
     console.log('WS', `New "${event.type}" Event Received`, event.data);
     if (event.type === "chat:newMessage") return store.dispatch(onNewMessageAction(event.data, chatId));
+    if (event.type === "chat:updateMessage") return store.dispatch(onUpdateMessageAction(event.data, chatId));
     if (event.type === "chat:info") return store.dispatch(onInfoUpdatedAction(event.data, chatId));
   });
   subscriptions[`${subscriptionKey}`] = subscription;

@@ -12,6 +12,8 @@ class ChatMessageSchema extends Schema {
       table.foreign('chat_id').references('id').inTable('chats').onDelete('CASCADE')
       table.foreign('user_id').references('id').inTable('users').onDelete('CASCADE')
       table.text('content').notNullable()
+      table.boolean('deleted').notNullable().defaultTo(false)
+      table.boolean('edited').notNullable().defaultTo(false)
       table.timestamps()
     })
   }

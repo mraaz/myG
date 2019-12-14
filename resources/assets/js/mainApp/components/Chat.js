@@ -1,20 +1,38 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import ChatMessage from './ChatMessage';
+
 import { fetchMessagesAction, fetchInfoAction, sendMessageAction } from '../../redux/actions/chatAction';
-import { formatAMPM } from '../../common/date';
 
 class Chat extends React.Component {
 
-  state = {
-    input: '',
-    maximised: false,
-    minimised: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      input: '',
+      maximised: false,
+      minimised: false,
+      lastMessageId: null,
+    };
+    this.messageListRef = React.createRef();
+  }
 
   componentDidMount() {
     this.props.fetchMessages(this.props.chatId);
     this.props.fetchInfo(this.props.chatId);
+  }
+
+  componentDidUpdate() {
+    const lastMessage = this.props.messages[this.props.messages.length - 1] || {};
+    const lastMessageId = lastMessage.id;
+    if (this.state.lastMessageId === lastMessageId) return;
+    this.setState({ lastMessageId });
+    this.scrollToLastMessage();
+  }
+
+  scrollToLastMessage = () => {
+    if (this.messageListRef.current) this.messageListRef.current.scrollTo(0, this.messageListRef.current.scrollHeight);
   }
 
   sendMessage = () => {
@@ -61,28 +79,24 @@ class Chat extends React.Component {
 
   renderBody = () => {
     return (
-      <div className="chat-component-body">
+      <div
+        className="chat-component-body"
+        ref={this.messageListRef}
+      >
         {this.props.messages.map(this.renderMessage)}
       </div>
     );
   }
 
   renderMessage = (message) => {
-    const origin = parseInt(message.user_id) === this.props.userId ? 'sent' : 'received';
     return (
-      <div
+      <ChatMessage
         key={message.id}
-        className={`chat-component-message chat-component-message-${origin}`}
-      >
-        <div className="chat-component-message-content-container">
-          <p className="chat-component-message-content">
-            {message.content}
-          </p>
-          <p className="chat-component-message-date">
-            {formatAMPM(new Date(message.created_at))}
-          </p>
-        </div>
-      </div>
+        message={message}
+        userId={this.props.userId}
+        chatId={this.props.chatId}
+        messageId={message.id}
+      />
     );
   }
 

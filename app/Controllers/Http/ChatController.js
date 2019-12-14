@@ -1,6 +1,7 @@
 'use strict';
 
 const Chat = use('App/Models/Chat');
+const ChatMessage = use('App/Models/ChatMessage');
 const UserChatController = use('./UserChatController');
 const { broadcast } = require('../../Common/socket');
 
@@ -55,6 +56,37 @@ class ChatController {
     delete message.user_id;
 
     broadcast('chat:*', `chat:${chat.id}`, 'chat:newMessage', message);
+
+    return message;
+
+  }
+
+  async updateMessage({ params, request, response }) {
+
+    const message = await ChatMessage.find(params.messageId);
+    if (!message) return response.notFound(`Message ${params.messageId} was not found.`);
+
+    const data = request.only(['content']);
+    message.content = data.content;
+    message.edited = true;
+    await message.save();
+
+    broadcast('chat:*', `chat:${params.chatId}`, 'chat:updateMessage', message);
+
+    return message;
+
+  }
+
+  async deleteMessage({ params, response }) {
+
+    const message = await ChatMessage.find(params.messageId);
+    if (!message) return response.notFound(`Message ${params.messageId} was not found.`);
+
+    message.content = '';
+    message.deleted = true;
+    await message.save();
+
+    broadcast('chat:*', `chat:${params.chatId}`, 'chat:updateMessage', message);
 
     return message;
 

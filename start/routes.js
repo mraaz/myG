@@ -250,5 +250,7 @@ Route.get('/api/chat/:chatId', 'ChatController.fetchMessages');
 Route.get('/api/chat/:chatId/info', 'UserChatController.fetchInfo');
 Route.post('/api/chat/', 'ChatController.create');
 Route.post('/api/chat/:chatId/message', 'ChatController.createMessage');
+Route.put('/api/chat/:chatId/message/:messageId', 'ChatController.updateMessage');
+Route.delete('/api/chat/:chatId/message/:messageId', 'ChatController.deleteMessage');
 
 Route.any('*', ({view}) => view.render('pages/react'))

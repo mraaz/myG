@@ -93,6 +93,22 @@ export default function reducer(state = {
                 chats,
             };
         }
+        
+        case "UPDATE_MESSAGE": {
+            console.log(`Redux -> Update Message: `, action.payload);
+            const chatId = action.meta.chatId;
+            const message = action.payload.message;
+            const chats = JSON.parse(JSON.stringify(state.chats));
+            const chat = chats.find(candidate => candidate.chatId === chatId);
+            const updated = chat.messages.find(candidate => candidate.id === message.id);
+            updated.content = message.content;
+            updated.edited = message.edited;
+            updated.deleted = message.deleted;
+            return {
+                ...state,
+                chats,
+            };
+        }
 
         case "INFO_UPDATED": {
             console.log(`Redux -> Info Updated: `, action.payload);
