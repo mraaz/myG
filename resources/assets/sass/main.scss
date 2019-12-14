@@ -21,6 +21,7 @@
 @import 'pages/scheduledGamesApprovals';
 @import 'pages/groupHome';
 @import 'pages/chat';
+@import 'pages/chatMessage';
 @import 'pages/messenger';
 
 @import 'auth/auth';
@@ -167,4 +168,8 @@ textarea {
   &.active {
     display: block;
   }
+}
+.clickable {
+  cursor: pointer;
+  &:active { opacity: 0.3 };
 }
