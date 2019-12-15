@@ -24,3 +24,13 @@ export function sendMessage(chatId, userId, content) {
   console.log('HTTP', `Sending Message ${content} from User ${userId} to Chat ${chatId}`);
   return axios.post(`/api/chat/${chatId}/message/`, { userId, content });
 }
+
+export function editMessage(chatId, messageId, content) {
+  console.log('HTTP', `Editing Message ${messageId} to content ${content} on Chat ${chatId}`);
+  return axios.put(`/api/chat/${chatId}/message/${messageId}`, { content });
+}
+
+export function deleteMessage(chatId, messageId) {
+  console.log('HTTP', `Deleting Message ${messageId} from Chat ${chatId}`);
+  return axios.delete(`/api/chat/${chatId}/message/${messageId}`);
+}
