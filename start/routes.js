@@ -86,10 +86,7 @@ Route.post('/api/GameExperiences', 'GameExperienceController.store')
 Route.get('/api/GameExperiences/delete/:game_id', 'GameExperienceController.destroy')
 Route.post('/api/GameExperiences/:id/:game_id', 'GameExperienceController.update')
 Route.get('/api/GameExperiences/:id/:game_id', 'GameExperienceController.show_Game')
-Route.get(
-  '/api/GameExperiences/filtered/:gameNamestr/:statusstr/:expstr/:playedstr/:ratingsstr/:commendationstr/:tags/:countrystr',
-  'GameExperienceController.gameExpSearchResults'
-)
+Route.post('/api/GameExperiences/gameExpSearchResults', 'GameExperienceController.gameExpSearchResults')
 
 Route.post('/api/ScheduleGame', 'ScheduleGameController.store')
 Route.get('/api/ScheduleGame/delete/:id/:reason', 'ScheduleGameController.destroy')

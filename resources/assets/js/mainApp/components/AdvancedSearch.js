@@ -98,22 +98,11 @@ export default class AdvancedSearch extends Component<*, State> {
   }
 
   componentWillMount() {
-    // const self = this
-    //
-    // var myGame_name_box = '1981`^'
-    // var myStatus = '1981`^'
-    // var myExperience = '1981`^'
-    // var myPlayed = '1981`^'
-    // var myRatings = '1981`^'
-    // var myCommendation = '1981`^'
-    // var myTags = '1981`^'
-    // var myCountry = '1981`^'
-
     const { match } = this.props.routeProps
 
     this.state.selected_table = {
-      label: 'Esports Experience',
-      value: 'Esports Experience',
+      label: 'Gaming Experience',
+      value: 'Gaming Experience',
     }
 
     if (match.params.id != undefined && match.params.id != '') {
@@ -127,19 +116,6 @@ export default class AdvancedSearch extends Component<*, State> {
       return
     }
 
-    // const getInitialData = async function() {
-    //   try {
-    //     const allGameExperiences = await axios.get(
-    //       `/api/GameExperiences/filtered/${myGame_name_box}/${myStatus}/${myExperience}/${myPlayed}/${myRatings}/${myCommendation}/${myTags}/${myCountry}`
-    //     )
-    //     //var tmp_allscheduledGames = await PullDataFunction(this.state)
-    //     self.setState({
-    //       allGameExperiences: allGameExperiences.data.latestGameExperiences[0],
-    //     })
-    //   } catch (error) {
-    //     console.log(error)
-    //   }
-    // }
     this.pullData()
   }
 
@@ -229,14 +205,18 @@ export default class AdvancedSearch extends Component<*, State> {
 
     try {
       if (myTable == 'Gaming Experience') {
-        allGameExperiences = await axios.get(
-          `/api/GameExperiences/filtered/${myGame_name_box}/${myStatus}/${myExperience}/${myPlayed}/${myRatings}/${myCommendation}/${myTags}/${myCountry}`
-        )
+        allGameExperiences = await axios.post('/api/GameExperiences/gameExpSearchResults', {
+          game_name: myGame_name_box,
+          status: myStatus,
+          experience: myExperience,
+          played: myPlayed,
+          ratings: myRatings,
+          commendation: myCommendation,
+          tags: myTags,
+          country: myCountry,
+          counter: this.state.counter,
+        })
       } else if (myTable == 'Esports Experience') {
-        // const alleSportsExperiences = await axios.get(
-        //   `/api/esports_experiences/filtered/${myGame_name_box}/${myRole_title}/${myTeam_name}/${myTime_role}/${myTags}/${myCountry}`
-        // )
-
         allGameExperiences = await axios.post('/api/esports_experiences/esportsSearchResults', {
           game_name: myGame_name_box,
           role_title: myRole_title,
