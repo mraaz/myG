@@ -114,15 +114,13 @@
   }
 
   .save-btn {
-    font-size: 14rem;
     display: flex;
     justify-content: flex-end;
     padding: 3px;
-    height: 48%;
+    height: 28%;
     .save {
       padding: 18px;
       background: $primarybuttonBG;
-      border-radius: 4px;
       border: 1px solid rgba(0, 0, 0, 0.2);
       color: #fff;
       cursor: pointer;
