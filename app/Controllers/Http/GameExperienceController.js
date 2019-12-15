@@ -114,13 +114,41 @@ class GameExperienceController {
 
   async gameExpSearchResults({ auth, request, response }) {
     try {
+      const latestGameExperiences = await Database.from('game_experiences')
+        .innerJoin('users', 'users.id', 'game_experiences.user_id')
+        .where((builder) => {
+          if (request.input('game_name') != null) builder.where('game_name', 'like', '%' + request.input('game_name') + '%')
+
+          if (request.input('status') != null) builder.where('status', 'like', '%' + request.input('status') + '%')
+
+          if (request.input('played') != null) builder.where('played', 'like', '%' + request.input('played') + '%')
+
+          if (request.input('ratings') != null) builder.where('ratings', request.input('ratings'))
+
+          if (request.input('commendation') != null) builder.where('commendation', 'like', '%' + request.input('commendation') + '%')
+
+          if (request.input('tags') != null) builder.where('tags', 'like', '%' + request.input('tags') + '%')
+
+          if (request.input('country') != null) builder.where('country', request.input('country'))
+        })
+        .orderBy('game_experiences.created_at', 'desc')
+        .select('*', 'game_experiences.id', 'users.id as user_id')
+        .paginate(parseInt(request.input('counter')), 10)
+
+      return {
+        latestGameExperiences,
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async gameExpSearchResults2({ auth, request, response }) {
+    try {
       var counter = 0
       var mySQL = ''
 
-      var inputValueGameName = request.params.gameNamestr.replace(
-        /1981%60%5E/g,
-        ''
-      )
+      var inputValueGameName = request.params.gameNamestr.replace(/1981%60%5E/g, '')
       if (inputValueGameName != '') {
         if (counter == 0) {
           mySQL = mySQL + ' WHERE game_experiences.game_name Like '
@@ -162,10 +190,7 @@ class GameExperienceController {
         mySQL = mySQL + inputValueExp
       }
 
-      var inputValuePlatform = request.params.playedstr.replace(
-        /1981%60%5E/g,
-        ''
-      )
+      var inputValuePlatform = request.params.playedstr.replace(/1981%60%5E/g, '')
       if (inputValuePlatform != '') {
         if (counter == 0) {
           mySQL = mySQL + ' WHERE game_experiences.played Like '
@@ -193,10 +218,7 @@ class GameExperienceController {
         mySQL = mySQL + inputValueDesc
       }
 
-      var inputValueCommendation = request.params.commendationstr.replace(
-        /1981%60%5E/g,
-        ''
-      )
+      var inputValueCommendation = request.params.commendationstr.replace(/1981%60%5E/g, '')
       if (inputValueCommendation != '') {
         if (counter == 0) {
           mySQL = mySQL + ' WHERE game_experiences.commendation Like '
@@ -224,10 +246,7 @@ class GameExperienceController {
         mySQL = mySQL + inputValueOther
       }
 
-      var inputValueCountry = request.params.countrystr.replace(
-        /1981%60%5E/g,
-        ''
-      )
+      var inputValueCountry = request.params.countrystr.replace(/1981%60%5E/g, '')
       if (inputValueCountry != '') {
         if (counter == 0) {
           mySQL = mySQL + ' WHERE users.country Like '

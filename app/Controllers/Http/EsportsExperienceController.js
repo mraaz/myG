@@ -87,13 +87,39 @@ class EsportsExperienceController {
 
   async esportsSearchResults({ auth, request, response }) {
     try {
+      const latestGameExperiences = await Database.from('esports_experiences')
+        .innerJoin('users', 'users.id', 'esports_experiences.user_id')
+        .where((builder) => {
+          if (request.input('game_name') != null) builder.where('game_name', 'like', '%' + request.input('game_name') + '%')
+
+          if (request.input('role_title') != null) builder.where('role_title', 'like', '%' + request.input('role_title') + '%')
+
+          if (request.input('team_name') != null) builder.where('team_name', 'like', '%' + request.input('team_name') + '%')
+
+          if (request.input('duration') != null) builder.where('duration', request.input('duration'))
+
+          if (request.input('skills') != null) builder.where('skills', 'like', '%' + request.input('skills') + '%')
+
+          if (request.input('country') != null) builder.where('country', request.input('country'))
+        })
+        .orderBy('esports_experiences.created_at', 'desc')
+        .select('*', 'esports_experiences.id', 'users.id as user_id')
+        .paginate(parseInt(request.input('counter')), 10)
+
+      return {
+        latestGameExperiences,
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async esportsSearchResults2({ auth, request, response }) {
+    try {
       var counter = 0
       var mySQL = ''
 
-      var inputValueGameName = request.params.gameNamestr.replace(
-        /1981%60%5E/g,
-        ''
-      )
+      var inputValueGameName = request.params.gameNamestr.replace(/1981%60%5E/g, '')
       if (inputValueGameName != '') {
         if (counter == 0) {
           mySQL = mySQL + ' WHERE esports_experiences.game_name Like '
@@ -163,10 +189,7 @@ class EsportsExperienceController {
         mySQL = mySQL + inputValueOther
       }
 
-      var inputValueCountry = request.params.countrystr.replace(
-        /1981%60%5E/g,
-        ''
-      )
+      var inputValueCountry = request.params.countrystr.replace(/1981%60%5E/g, '')
       if (inputValueCountry != '') {
         if (counter == 0) {
           mySQL = mySQL + ' WHERE users.country Like '
