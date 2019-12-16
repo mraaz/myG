@@ -18,14 +18,20 @@ class ChatMessage extends React.Component {
     };
   }
 
+  static getDerivedStateFromProps(props) {
+    return { editing: props.editing };
+  }
+
   handleKeyPress = (event) => {
     if (event.keyCode == 13) {
       this.props.editMessage(this.props.chatId, this.props.messageId, this.state.input);
       this.setState({ editing: false });
+      this.props.onEdit();
       return;
     }
-    if (event.key === 27) {
+    if (event.keyCode === 27) {
       this.setState({ editing: false });
+      this.props.onEdit();
     }
   }
 

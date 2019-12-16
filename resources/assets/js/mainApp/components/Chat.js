@@ -14,8 +14,10 @@ class Chat extends React.Component {
       maximised: false,
       minimised: false,
       lastMessageId: null,
+      editing: false,
     };
     this.messageListRef = React.createRef();
+    this.inputRef = React.createRef();
   }
 
   componentDidMount() {
@@ -36,14 +38,33 @@ class Chat extends React.Component {
   }
 
   sendMessage = () => {
+    if (!this.state.input) return;
     this.props.sendMessage(this.props.chatId, this.props.userId, this.state.input);
     this.setState({ input: '' });
+  }
+
+  editLastMessage = () => {
+    const sentMessages = this.props.messages.filter(message => parseInt(message.user_id) === this.props.userId);
+    const lastSentMessage = sentMessages[sentMessages.length - 1];
+    if (!lastSentMessage) return;
+    this.setState({ input: '', editing: lastSentMessage.id });
   }
 
   onKeyPressed = event => {
     const code = event.keyCode || event.which;
     const enterKeyCode = 13;
-    if (code === enterKeyCode) this.sendMessage();
+    if (code === enterKeyCode) return this.sendMessage();
+  }
+
+  onKeyDown = event => {
+    const code = event.keyCode || event.which;
+    const arrowUpKeyCode = 38;
+    if (code === arrowUpKeyCode) return this.editLastMessage();
+  }
+
+  onEdit = () => {
+    this.setState({ editing: false });
+    this.inputRef.current.focus();
   }
 
   renderHeader = () => {
@@ -96,6 +117,8 @@ class Chat extends React.Component {
         userId={this.props.userId}
         chatId={this.props.chatId}
         messageId={message.id}
+        editing={this.state.editing === message.id}
+        onEdit={this.onEdit}
       />
     );
   }
@@ -115,6 +138,8 @@ class Chat extends React.Component {
           value={this.state.input}
           onChange={event => this.setState({ input: event.target.value })}
           onKeyPress={this.onKeyPressed}
+          onKeyDown={this.onKeyDown}
+          ref={this.inputRef}
         />
         <div className="chat-component-send-button"
           style={{ backgroundImage: `url(/assets/svg/ic_chat_send.svg)` }}
