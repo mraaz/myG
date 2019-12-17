@@ -86,6 +86,8 @@ export default function reducer(state = {
             const message = action.payload.message;
             const chats = JSON.parse(JSON.stringify(state.chats));
             const chat = chats.find(candidate => candidate.chatId === chatId);
+            if (window.document.hidden || chat.closed) new Audio('/assets/sound/notification.ogg').play();
+            if (window.document.hidden) window.document.title = `myGame - (${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) Messages`;
             chat.closed = false;
             chat.messages.push(message);
             return {

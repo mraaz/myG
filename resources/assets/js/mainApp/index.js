@@ -86,6 +86,18 @@ class Layout extends Component {
     getInitialData()
   }
 
+  componentDidMount() {
+    window.addEventListener("focus", this.onFocus);
+  }
+
+  componentWilUnmount() {
+    window.removeEventListener("focus", this.onFocus);
+  }
+
+  onFocus = () => {
+    window.document.title = 'myGame - Social Network';
+  }
+
   render() {
     return (
       <Provider store={store}>
