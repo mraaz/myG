@@ -119,6 +119,7 @@ class Chat extends React.Component {
         messageId={message.id}
         editing={this.state.editing === message.id}
         onEdit={this.onEdit}
+        messageListRef={this.messageListRef}
       />
     );
   }
@@ -139,6 +140,7 @@ class Chat extends React.Component {
           onChange={event => this.setState({ input: event.target.value })}
           onKeyPress={this.onKeyPressed}
           onKeyDown={this.onKeyDown}
+          onFocus={() => this.setState({ editing: false })}
           ref={this.inputRef}
         />
         <div className="chat-component-send-button"
