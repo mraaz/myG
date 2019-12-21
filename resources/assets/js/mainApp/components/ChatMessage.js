@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import { editMessageAction, deleteMessageAction } from '../../redux/actions/chatAction';
 import { formatAMPM, formatDate } from '../../common/date';
+import { copyToClipboard } from '../../common/clipboard';
 
 class ChatMessage extends React.Component {
 
@@ -54,14 +55,20 @@ class ChatMessage extends React.Component {
       <div className={`chat-component-message-options-menu ${origin === "sent" ? sentStyle : receivedStyle} ${directionStyle}`}>
         <div
           className="chat-component-message-options-row clickable"
-          onClick={() => this.setState({ editing: true, showOptionsMenu: false, input: this.props.message.content })}
+          onClick={() => {
+            if (origin === 'sent') this.setState({ editing: true, showOptionsMenu: false, input: this.props.message.content });
+            else {
+              this.setState({ showOptionsMenu: false });
+              copyToClipboard(this.props.message.content);
+            }
+          }}
         >
-          <p className="chat-component-message-options-label">edit</p>
+          <p className="chat-component-message-options-label">{origin === 'sent' ? 'edit' : 'copy'}</p>
         </div>
         <div className={`chat-component-message-options-row-divider ${origin === "received" ? sentStyle : receivedStyle}`} />
         <div
           className="chat-component-message-options-row clickable"
-          onClick={() => this.props.deleteMessage(this.props.chatId, this.props.messageId)}
+          onClick={() => this.props.deleteMessage(this.props.chatId, this.props.messageId, origin)}
         >
           <p className="chat-component-message-options-label">delete</p>
         </div>
@@ -97,11 +104,11 @@ class ChatMessage extends React.Component {
   }
 
   render() {
-    if (this.state.editing) return this.renderInput();
-    if (this.props.message.isDateDivisor) return this.renderDateDivisor();
     const { message } = this.props;
     const origin = parseInt(message.user_id) === this.props.userId ? 'sent' : 'received';
     const deletedStyle = message.deleted && 'chat-component-message-deleted';
+    if (this.state.editing) return this.renderInput();
+    if (message.isDateDivisor) return this.renderDateDivisor();
     return (
       <div
         key={message.id}
@@ -150,7 +157,7 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
   return ({
     editMessage: (chatId, messageId, content) => dispatch(editMessageAction(chatId, messageId, content)),
-    deleteMessage: (chatId, messageId) => dispatch(deleteMessageAction(chatId, messageId)),
+    deleteMessage: (chatId, messageId, origin) => dispatch(deleteMessageAction(chatId, messageId, origin)),
   });
 }
 

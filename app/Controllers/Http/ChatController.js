@@ -1,45 +1,29 @@
 'use strict';
 
 const Chat = use('App/Models/Chat');
+const UserChat = use('App/Models/UserChat');
 const ChatMessage = use('App/Models/ChatMessage');
-const UserChatController = use('./UserChatController');
 const { broadcast } = require('../../Common/socket');
 
 class ChatController {
 
-  async fetchMessages({ params, response }) {
+  async fetchMessages(chatId) {
 
     const chat = await Chat
       .query()
-      .where('id', params.chatId)
+      .where('id', chatId)
       .with('messages')
       .first();
 
-    if (!chat) return response.notFound(`Chat ${params.chatId} was not found.`);
+    if (!chat) return [];
     return chat.toJSON().messages;
 
   }
 
-  async create({ auth, request }) {
-
+  async create() {
     const chat = new Chat();
     await chat.save();
-
-    const userChatController = new UserChatController();
-
-    const data = request.only(['members']);
-    data.members.forEach(async id => {
-      await userChatController.create({
-        request: {
-          chatId: chat.id,
-          userId: id,
-        }
-      });
-      broadcast('user_chat:*', `user_chat:${id}`, 'user_chat:newChat', { chatId: chat.id, userId: auth.user.id });
-    });
-
     return Chat.find(chat.id);
-
   }
 
   async createMessage({ params, request, response }) {
@@ -77,16 +61,29 @@ class ChatController {
 
   }
 
-  async deleteMessage({ params, response }) {
+  async deleteMessage({ auth, params, response }) {
 
-    const message = await ChatMessage.find(params.messageId);
+    const [chat, message] = await Promise.all([
+      UserChat.query().where('chat_id', params.chatId).andWhere('user_id', auth.user.id).first(),
+      ChatMessage.find(params.messageId)
+    ]);
+    if (!chat) return response.notFound(`Chat ${params.chatId} was not found.`);
     if (!message) return response.notFound(`Message ${params.messageId} was not found.`);
 
     message.content = '';
     message.deleted = true;
-    await message.save();
 
-    broadcast('chat:*', `chat:${params.chatId}`, 'chat:updateMessage', message);
+    if (message.user_id === auth.user.id) {
+      await message.save();
+      broadcast('chat:*', `chat:${params.chatId}`, 'chat:updateMessage', message);
+    }
+
+    else {
+      const deletedMessages = JSON.parse(chat.toJSON().deleted_messages);
+      deletedMessages.push(params.messageId);
+      chat.deleted_messages = JSON.stringify(deletedMessages);
+      await chat.save();
+    }
 
     return message;
 

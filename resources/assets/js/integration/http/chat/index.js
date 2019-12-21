@@ -1,36 +1,42 @@
 import axios from 'axios';
+import logger from '../../../common/logger';
 
 export function fetchChats(userId) {
-  console.log('HTTP', `Fetching Chats for User ${userId}`);
-  return axios.get(`/api/chats/${userId}`).then(response => ({ chats: response.data }));
-}
-
-export function fetchMessages(chatId) {
-  console.log('HTTP', `Fetching Messages for Chat ${chatId}`);
-  return axios.get(`/api/chat/${chatId}`).then(response => ({ messages: response.data }));
+  logger.log('CHAT', 'HTTP', `Fetching Chats for User ${userId}`);
+  return axios.get(`/api/chat`).then(response => ({ chats: response.data }));
 }
 
 export function fetchInfo(chatId) {
-  console.log('HTTP', `Fetching Info for Chat ${chatId}`);
-  return axios.get(`/api/chat/${chatId}/info`).then(response => response.data);
+  logger.log('CHAT', 'HTTP', `Fetching Info for Chat ${chatId}`);
+  return axios.get(`/api/chat/${chatId}`).then(response => response.data);
 }
 
 export function createChat(members) {
-  console.log('HTTP', `Creating Chat for Members`, members);
+  logger.log('CHAT', 'HTTP', `Creating Chat for Members`, members);
   return axios.post(`/api/chat/`, { members });
 }
 
+export function updateChat(chatId, payload) {
+  logger.log('CHAT', 'HTTP', `Updating Chat ${chatId} -> ${payload}`);
+  return axios.put(`/api/chat/${chatId}`, payload);
+}
+
+export function clearChat(chatId) {
+  logger.log('CHAT', 'HTTP', `Clearing Chat ${chatId}`);
+  return axios.delete(`/api/chat/${chatId}`);
+}
+
 export function sendMessage(chatId, userId, content) {
-  console.log('HTTP', `Sending Message ${content} from User ${userId} to Chat ${chatId}`);
+  logger.log('CHAT', 'HTTP', `Sending Message ${content} from User ${userId} to Chat ${chatId}`);
   return axios.post(`/api/chat/${chatId}/message/`, { userId, content });
 }
 
 export function editMessage(chatId, messageId, content) {
-  console.log('HTTP', `Editing Message ${messageId} to content ${content} on Chat ${chatId}`);
+  logger.log('CHAT', 'HTTP', `Editing Message ${messageId} to content ${content} on Chat ${chatId}`);
   return axios.put(`/api/chat/${chatId}/message/${messageId}`, { content });
 }
 
 export function deleteMessage(chatId, messageId) {
-  console.log('HTTP', `Deleting Message ${messageId} from Chat ${chatId}`);
+  logger.log('CHAT', 'HTTP', `Deleting Message ${messageId} from Chat ${chatId}`);
   return axios.delete(`/api/chat/${chatId}/message/${messageId}`);
 }

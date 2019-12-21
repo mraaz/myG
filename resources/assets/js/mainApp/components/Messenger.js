@@ -120,7 +120,6 @@ class Messenger extends React.PureComponent {
 }
 
 function mapStateToProps(state) {
-  console.log(`Chats: `, state.chat.chats);
   return {
     chats: state.chat.chats,
     friends: state.friend.friends,

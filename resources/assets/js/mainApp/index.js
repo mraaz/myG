@@ -1,3 +1,13 @@
+
+// --- One way to disable adonis websocket logs.
+const log = console.log;
+console.log = function(payload) { 
+  if (payload && payload.includes('adonis:websocket')) return;
+  log(payload)
+ };
+window.console = console;
+// --- One way to disable adonis websocket logs.
+
 import "@babel/polyfill";
 import React, { Component } from "react"
 import ReactDOM from "react-dom"
@@ -95,7 +105,7 @@ class Layout extends Component {
   }
 
   onFocus = () => {
-    window.document.title = 'myGame - Social Network';
+    window.document.title = 'myGame';
   }
 
   render() {
