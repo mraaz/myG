@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { editMessageAction, deleteMessageAction } from '../../redux/actions/chatAction';
-import { formatAMPM } from '../../common/date';
+import { formatAMPM, formatDate } from '../../common/date';
 
 class ChatMessage extends React.Component {
 
@@ -87,8 +87,18 @@ class ChatMessage extends React.Component {
     );
   }
 
+  renderDateDivisor() {
+    const { message } = this.props;
+    return (
+      <div className="chat-component-message-date-divisor">
+        <p>{message.isYesterday ? 'Yesterday' : formatDate(message.date)}</p>
+      </div>
+    );
+  }
+
   render() {
     if (this.state.editing) return this.renderInput();
+    if (this.props.message.isDateDivisor) return this.renderDateDivisor();
     const { message } = this.props;
     const origin = parseInt(message.user_id) === this.props.userId ? 'sent' : 'received';
     const deletedStyle = message.deleted && 'chat-component-message-deleted';

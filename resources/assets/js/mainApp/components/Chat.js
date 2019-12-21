@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import ChatMessage from './ChatMessage';
 
 import { fetchMessagesAction, fetchInfoAction, sendMessageAction } from '../../redux/actions/chatAction';
+import { enrichMessagesWithDates } from '../../common/chat';
 
 class Chat extends React.Component {
 
@@ -171,8 +172,10 @@ class Chat extends React.Component {
 
 function mapStateToProps(state, props) {
   const chat = state.chat.chats.find(chat => chat.chatId === props.chatId) || {};
+  const messages = enrichMessagesWithDates(chat.messages || []);
+  console.log(messages);
   return {
-    messages: chat.messages || [],
+    messages,
     icon: chat.icon || '',
     title: chat.title || '',
     subtitle: chat.subtitle || '',

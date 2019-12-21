@@ -2,7 +2,7 @@
 
 const UserChat = use('App/Models/UserChat');
 const UserController = use('./UserController');
-const { formatDate } = require('../../Common/date');
+const { formatDateTime } = require('../../Common/date');
 
 class UserChatController {
 
@@ -53,7 +53,7 @@ class UserChatController {
   }
 
   getSubtitle(online, lastSeen) {
-    return online ? 'Online' : `${formatDate(lastSeen)}`;
+    return online ? 'Online' : `${formatDateTime(lastSeen)}`;
   }
 
   async create({ request }) {

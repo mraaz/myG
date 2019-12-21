@@ -33,7 +33,7 @@ function howLongAgo(date) {
 
 }
 
-function formatDate(date) {
+function formatDateTime(date) {
   const hours = formatAMPM(date);
   if (isToday(date)) return hours;
   if (isYesterday(date)) return `Yesterday ${hours}`;
@@ -67,4 +67,4 @@ function isYesterday(someDate) {
     someDate.getFullYear() == yesterday.getFullYear()
 }
 
-module.exports = { howLongAgo, formatDate, formatAMPM, isToday}
+module.exports = { howLongAgo, formatDateTime, formatAMPM, isToday}
