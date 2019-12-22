@@ -143,7 +143,7 @@ Route.get('/api/replies/show_reply/:id', 'ReplyController.show_reply')
 Route.get('/api/replies/my_count/:id', 'ReplyController.replies_count')
 Route.post('/api/replies/', 'ReplyController.store')
 
-Route.get('/api/notifications/getAllNoti', 'NotificationController.getAllNoti')
+Route.post('/api/notifications/getAllNoti/:counter', 'NotificationController.getAllNotifications')
 Route.post('/api/notifications/addFriend', 'NotificationController.addFriend')
 Route.get('/api/notifications/friend/:id', 'NotificationController.checkFriend')
 Route.get('/api/notifications/myFriendRequests/', 'NotificationController.myFriendRequests')
@@ -262,6 +262,7 @@ Route.get('/api/usergroup/delete_member/:id/:usergrp_id', 'UsergroupController.d
 Route.get('/api/usergroup/promote_member/:id/:usergrp_id', 'UsergroupController.promote_member')
 Route.get('/api/usergroup/demote_member/:id/:usergrp_id', 'UsergroupController.demote_member')
 Route.get('/api/usergroup/current_member/:id', 'UsergroupController.current_member')
+
 
 Route.get('/api/chat/', 'UserChatController.fetchChats');
 Route.get('/api/chat/:chatId', 'UserChatController.fetchChatInfo');
