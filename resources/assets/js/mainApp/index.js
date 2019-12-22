@@ -1,10 +1,11 @@
 
 // --- One way to disable adonis websocket logs.
 const log = console.log;
-console.log = function(payload) {
-  if (payload && payload.includes && payload.includes('adonis:websocket')) return;
-  log(payload)
- };
+console.log = function () {
+  if (arguments[0] && arguments[0].includes && arguments[0].includes('adonis:websocket')) return;
+  if (log.apply) log.apply(console, arguments)
+  else log(Array.prototype.slice.apply(arguments).join(' '))
+};
 window.console = console;
 // --- One way to disable adonis websocket logs.
 
@@ -214,7 +215,7 @@ class Layout extends Component {
                   <Route exact path="/archived_scheduledGames/:id" component={(props) => <ArchivedScheduledGames routeProps={props}
                     initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} />} />
 
-                  <Route render={ () => <h3> Oops! I couldn't find that </h3>} />
+                  <Route render={() => <h3> Oops! I couldn't find that </h3>} />
                 </Switch>
               </section>
               <Messenger

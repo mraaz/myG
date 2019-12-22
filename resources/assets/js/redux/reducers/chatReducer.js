@@ -9,9 +9,8 @@ export default function reducer(state = {
 
         case "FETCH_CHATS_FULFILLED": {
             logger.log('CHAT', `Redux -> Fetched Chats: `, action.payload);
-            const rawChats = action.payload.chats || [];
             const findChat = chatId => state.chats.find(candidate => candidate.chatId === chatId) || {};
-            const chats = rawChats.map(chat => ({ ...chat, ...findChat(chat.chatId) }));
+            const chats = action.payload.chats.map(chat => ({ ...chat, ...findChat(chat.chatId) }));
             chats.forEach(chat => monitorMessages(chat.chatId));
             return {
                 ...state,
@@ -81,7 +80,7 @@ export default function reducer(state = {
             const chat = chats.find(candidate => candidate.chatId === chatId);
             if (chat.blocked) return state;
             if (!chat.muted && (window.document.hidden || chat.closed)) new Audio('/assets/sound/notification.ogg').play();
-            if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myGame`;
+            if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
             if (!chat.muted) chat.closed = false;
             chat.messages.push(message);
             return {
