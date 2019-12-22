@@ -67,7 +67,6 @@ import MyApprovals from "./components/MyApprovals"
 import Member_lists from "./components/Member_lists"
 import ArchivedScheduledGames from "./components/ArchivedScheduledGames"
 
-
 class Layout extends Component {
   constructor() {
     super()
