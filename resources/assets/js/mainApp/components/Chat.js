@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 
 import ChatMessage from './ChatMessage';
 
-import { fetchMessagesAction, fetchInfoAction, sendMessageAction } from '../../redux/actions/chatAction';
+import { fetchInfoAction, sendMessageAction, updateChatAction, clearChatAction } from '../../redux/actions/chatAction';
+import { enrichMessagesWithDates } from '../../common/chat';
 
 class Chat extends React.Component {
 
@@ -15,13 +16,13 @@ class Chat extends React.Component {
       minimised: false,
       lastMessageId: null,
       editing: false,
+      settings: false,
     };
     this.messageListRef = React.createRef();
     this.inputRef = React.createRef();
   }
 
   componentDidMount() {
-    this.props.fetchMessages(this.props.chatId);
     this.props.fetchInfo(this.props.chatId);
   }
 
@@ -66,14 +67,59 @@ class Chat extends React.Component {
     this.setState({ editing: false });
     this.inputRef.current.focus();
   }
+  
+  renderSettings = () => {
+    if (!this.state.settings) return;
+    const inactiveStyle = 'chat-component-header-settings-option-inactive';
+    return (
+      <div className="chat-component-header-settings-popup">
+
+        <div
+          className={`chat-component-header-settings-option clickable ${this.props.blocked && inactiveStyle}`}
+          onClick={() => this.props.updateChat(this.props.chatId, { blocked: !this.props.blocked })}
+        >
+          <div
+            className="chat-component-header-settings-option-icon"
+            style={{ backgroundImage: `url(/assets/svg/ic_chat_block.svg)` }}
+          />
+          block
+        </div>
+
+        <div
+          className={`chat-component-header-settings-option clickable ${this.props.muted && inactiveStyle}`}
+          onClick={() => this.props.updateChat(this.props.chatId, { muted: !this.props.muted })}
+        >
+          <div
+            className="chat-component-header-settings-option-icon"
+            style={{ backgroundImage: `url(/assets/svg/ic_chat_mute.svg)` }}
+          />
+          mute
+        </div>
+
+        <div
+          className={`chat-component-header-settings-option clickable ${!this.props.messages.length && inactiveStyle}`}
+          onClick={() => this.props.clearChat(this.props.chatId)}
+        >
+          <div
+            className="chat-component-header-settings-option-icon"
+            style={{ backgroundImage: `url(/assets/svg/ic_chat_delete.svg)` }}
+          />
+          delete all messages
+        </div>
+
+      </div>
+    );
+  }
 
   renderHeader = () => {
     return (
       <div className="chat-component-header">
+
         <div
           className="chat-component-header-icon"
           style={{ backgroundImage: `url('${this.props.icon}')` }}
         />
+
         <div className="chat-component-header-info">
           <div className="chat-component-header-title">
             {this.props.title}
@@ -82,18 +128,29 @@ class Chat extends React.Component {
             {this.props.subtitle}
           </div>
         </div>
-        <div className="chat-component-header-button"
-          style={{ backgroundImage: `url(/assets/svg/ic_chat_minimise.svg)` }}
-          onClick={() => this.setState(previous => ({ minimised: !previous.minimised, maximised: false }))}
-        />
-        <div className="chat-component-header-button"
-          style={{ backgroundImage: `url(/assets/svg/ic_chat_maximise.svg)` }}
-          onClick={() => this.setState(previous => ({ maximised: !previous.maximised, minimised: false }))}
-        />
-        <div className="chat-component-header-button"
-          style={{ backgroundImage: `url(/assets/svg/ic_chat_close.svg)` }}
-          onClick={() => this.props.onClose(this.props.chatId)}
-        />
+
+        <div className="chat-component-header-options">
+          <div className="chat-component-header-top-buttons">
+            <div className="chat-component-header-button"
+              style={{ backgroundImage: `url(/assets/svg/ic_chat_minimise.svg)` }}
+              onClick={() => this.setState(previous => ({ minimised: !previous.minimised, maximised: false }))}
+            />
+            <div className="chat-component-header-button"
+              style={{ backgroundImage: `url(/assets/svg/ic_chat_maximise.svg)` }}
+              onClick={() => this.setState(previous => ({ maximised: !previous.maximised, minimised: false }))}
+            />
+            <div className="chat-component-header-button"
+              style={{ backgroundImage: `url(/assets/svg/ic_chat_close.svg)` }}
+              onClick={() => this.props.onClose(this.props.chatId)}
+            />
+          </div>
+          <div
+            className="chat-component-header-settings clickable"
+            style={{ backgroundImage: `url('/assets/svg/ic_chat_settings.svg')` }}
+            onClick={() => this.setState(previous => ({ settings: !previous.settings }))}
+          />
+        </div>
+
       </div>
     );
   }
@@ -119,6 +176,7 @@ class Chat extends React.Component {
         messageId={message.id}
         editing={this.state.editing === message.id}
         onEdit={this.onEdit}
+        messageListRef={this.messageListRef}
       />
     );
   }
@@ -133,12 +191,14 @@ class Chat extends React.Component {
           <div className="chat-component-attach-button-divider" />
         </div>
         <input
+          disabled={this.props.blocked}
           className="chat-component-input"
-          placeholder="Type your message here"
+          placeholder={`${this.props.blocked ? 'Unblock to send messages' : 'Type your message here'}`}
           value={this.state.input}
           onChange={event => this.setState({ input: event.target.value })}
           onKeyPress={this.onKeyPressed}
           onKeyDown={this.onKeyDown}
+          onFocus={() => this.setState({ editing: false })}
           ref={this.inputRef}
         />
         <div className="chat-component-send-button"
@@ -158,6 +218,7 @@ class Chat extends React.Component {
         key={this.props.chatId}
         className={`chat-component-base ${extraClass}`}
       >
+        {this.renderSettings()}
         {this.renderHeader()}
         {!this.state.minimised && this.renderBody()}
         {!this.state.minimised && <div className="chat-component-footer-divider" />}
@@ -169,19 +230,23 @@ class Chat extends React.Component {
 
 function mapStateToProps(state, props) {
   const chat = state.chat.chats.find(chat => chat.chatId === props.chatId) || {};
+  const messages = enrichMessagesWithDates(chat.messages || []);
   return {
-    messages: chat.messages || [],
+    messages,
     icon: chat.icon || '',
     title: chat.title || '',
     subtitle: chat.subtitle || '',
+    blocked: chat.blocked || false,
+    muted: chat.muted || false
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return ({
     sendMessage: (chatId, userId, content) => dispatch(sendMessageAction(chatId, userId, content)),
-    fetchMessages: (chatId) => dispatch(fetchMessagesAction(chatId)),
     fetchInfo: (chatId) => dispatch(fetchInfoAction(chatId)),
+    updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
+    clearChat: (chatId) => dispatch(clearChatAction(chatId)),
   });
 }
 

@@ -1,4 +1,5 @@
 
+import logger from '../../common/logger';
 
 export default function reducer(state = {
   friends: [],
@@ -6,7 +7,7 @@ export default function reducer(state = {
   switch (action.type) {
 
       case "FETCH_FRIENDS_FULFILLED": {
-          console.log(`Redux -> Fetched Friends: `, action.payload);
+          logger.log('CHAT', `Redux -> Fetched Friends: `, action.payload);
           const friends = action.payload.friends;
           return {
               ...state,

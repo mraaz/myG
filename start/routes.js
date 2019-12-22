@@ -263,12 +263,16 @@ Route.get('/api/usergroup/promote_member/:id/:usergrp_id', 'UsergroupController.
 Route.get('/api/usergroup/demote_member/:id/:usergrp_id', 'UsergroupController.demote_member')
 Route.get('/api/usergroup/current_member/:id', 'UsergroupController.current_member')
 
-Route.get('/api/chats/:userId', 'UserChatController.fetchChats')
-Route.get('/api/chat/:chatId', 'ChatController.fetchMessages')
-Route.get('/api/chat/:chatId/info', 'UserChatController.fetchInfo')
-Route.post('/api/chat/', 'ChatController.create')
-Route.post('/api/chat/:chatId/message', 'ChatController.createMessage')
-Route.put('/api/chat/:chatId/message/:messageId', 'ChatController.updateMessage')
-Route.delete('/api/chat/:chatId/message/:messageId', 'ChatController.deleteMessage')
+
+Route.get('/api/chat/', 'UserChatController.fetchChats');
+Route.get('/api/chat/:chatId', 'UserChatController.fetchChatInfo');
+
+Route.post('/api/chat/', 'UserChatController.create');
+Route.put('/api/chat/:chatId', 'UserChatController.update');
+Route.delete('/api/chat/:chatId', 'UserChatController.deleteMessages');
+
+Route.post('/api/chat/:chatId/message', 'ChatController.createMessage');
+Route.put('/api/chat/:chatId/message/:messageId', 'ChatController.updateMessage');
+Route.delete('/api/chat/:chatId/message/:messageId', 'ChatController.deleteMessage');
 
 Route.any('*', ({ view }) => view.render('pages/react'))

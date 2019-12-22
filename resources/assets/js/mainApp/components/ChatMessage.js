@@ -1,25 +1,27 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Manager, Reference, Popper } from 'react-popper';
 
 import { editMessageAction, deleteMessageAction } from '../../redux/actions/chatAction';
-import { formatAMPM } from '../../common/date';
+import { formatAMPM, formatDate } from '../../common/date';
+import { copyToClipboard } from '../../common/clipboard';
 
 class ChatMessage extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      onMessage: false,
-      onOverlay: false,
-      onOptions: false,
+      showOptionsButton: false,
+      showOptionsMenu: false,
+      lastEditing: false,
       editing: false,
       input: '',
     };
+    this.messageRef = React.createRef();
   }
 
-  static getDerivedStateFromProps(props) {
-    return { editing: props.editing };
+  static getDerivedStateFromProps(props, state) {
+    if (props.editing === state.lastEditing) return {};
+    return { editing: props.editing, lastEditing: props.editing };
   }
 
   handleKeyPress = (event) => {
@@ -35,50 +37,40 @@ class ChatMessage extends React.Component {
     }
   }
 
-  renderOverlay = (origin) => {
-    if ((!this.state.onMessage && !this.state.onOverlay) || origin !== 'sent' || this.props.message.deleted) return;
-    return (
-      <div className="chat-component-message-overlay">
-        <div
-          className="chat-component-message-overlay-options-icon chat-component-message-overlay-options-button"
-          style={{ backgroundImage: `url(/assets/svg/ic_chat_options.svg)` }}
-          onMouseEnter={() => this.setState({ onOverlay: true })}
-          onMouseLeave={() => this.setState({ onOverlay: false })}
-        />
-      </div>
-    )
+  shouldRenderOptionsUpwards() {
+    const { y: messageOffset } = this.messageRef.current.getBoundingClientRect();
+    const { y: chatOffset, height: chatHeight } = this.props.messageListRef.current.getBoundingClientRect();
+    const messagePosition = messageOffset - (chatOffset + chatHeight);
+    const approximateOptionMenuHeight = 70;
+    return messagePosition > -approximateOptionMenuHeight;
   }
 
   renderOptions = () => {
-    if (!this.state.onOverlay && !this.state.onOptions) return;
+    if (!this.state.showOptionsMenu || this.props.message.deleted) return;
+    const origin = parseInt(this.props.message.user_id) === this.props.userId ? 'sent' : 'received';
+    const sentStyle = 'chat-component-message-options-menu-sent';
+    const receivedStyle = 'chat-component-message-options-menu-received';
+    const directionStyle = `chat-component-message-options-menu-${this.shouldRenderOptionsUpwards() ? 'upwards' : 'downwards'}`;
     return (
-      <div
-        className="chat-component-message-overlay-options"
-        onMouseEnter={() => this.setState({ onOptions: true })}
-        onMouseLeave={() => this.setState({ onOptions: false })}
-      >
+      <div className={`chat-component-message-options-menu ${origin === "sent" ? sentStyle : receivedStyle} ${directionStyle}`}>
         <div
-          onClick={() => this.setState({
-            editing: true, input: this.props.message.content,
-            onOptions: false, onOverlay: false, onMessage: false,
-          })}
-          className="chat-component-message-overlay-options-row clickable"
+          className="chat-component-message-options-row clickable"
+          onClick={() => {
+            if (origin === 'sent') this.setState({ editing: true, showOptionsMenu: false, input: this.props.message.content });
+            else {
+              this.setState({ showOptionsMenu: false });
+              copyToClipboard(this.props.message.content);
+            }
+          }}
         >
-          <p className="chat-component-message-overlay-options-label">Edit</p>
-          <div
-            className="chat-component-message-overlay-options-icon"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_edit.svg)` }}
-          />
+          <p className="chat-component-message-options-label">{origin === 'sent' ? 'edit' : 'copy'}</p>
         </div>
+        <div className={`chat-component-message-options-row-divider ${origin === "received" ? sentStyle : receivedStyle}`} />
         <div
-          onClick={() => this.props.deleteMessage(this.props.chatId, this.props.messageId)}
-          className="chat-component-message-overlay-options-row clickable"
+          className="chat-component-message-options-row clickable"
+          onClick={() => this.props.deleteMessage(this.props.chatId, this.props.messageId, origin)}
         >
-          <p className="chat-component-message-overlay-options-label">Delete</p>
-          <div
-            className="chat-component-message-overlay-options-icon"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_delete.svg)` }}
-          />
+          <p className="chat-component-message-options-label">delete</p>
         </div>
       </div>
     )
@@ -102,52 +94,56 @@ class ChatMessage extends React.Component {
     );
   }
 
+  renderDateDivisor() {
+    const { message } = this.props;
+    return (
+      <div className="chat-component-message-date-divisor">
+        <p>{message.isYesterday ? 'Yesterday' : formatDate(message.date)}</p>
+      </div>
+    );
+  }
+
   render() {
-    if (this.state.editing) return this.renderInput();
     const { message } = this.props;
     const origin = parseInt(message.user_id) === this.props.userId ? 'sent' : 'received';
-    const isSelected = !message.deleted && (this.state.onMessage || this.state.onOverlay || this.state.onOptions);
-    const selectedStyle = isSelected && 'chat-component-message-selected';
     const deletedStyle = message.deleted && 'chat-component-message-deleted';
+    if (this.state.editing) return this.renderInput();
+    if (message.isDateDivisor) return this.renderDateDivisor();
     return (
-      <Manager>
-        <div
-          key={message.id}
-          className={`chat-component-message chat-component-message-${origin} ${selectedStyle} ${deletedStyle}`}
-          onMouseEnter={() => this.setState({ onMessage: true })}
-          onMouseLeave={() => this.setState({ onMessage: false })}
-        >
-          <Reference>
-            {({ ref }) => (
-              <div ref={ref} className="chat-component-message-content-container">
-                <p className={`chat-component-message-content`}>
-                  {message.deleted ? 'This message was deleted.' : message.content}
-                </p>
-                <div className="chat-component-message-content-info">
-                  {!!message.edited && !message.deleted && <p className="chat-component-message-edited">edited</p>}
-                  <p className="chat-component-message-date">
-                    {formatAMPM(new Date(message.created_at))}
-                  </p>
-                </div>
-              </div>
-            )}
-          </Reference>
-          <Popper placement="top">
-            {({ ref, style, placement }) => (
-              <div ref={ref} style={style} data-placement={placement}>
+      <div
+        key={message.id}
+        ref={this.messageRef}
+        className={`chat-component-message chat-component-message-${origin} ${deletedStyle}`}
+        onMouseEnter={() => this.setState({ showOptionsButton: true })}
+        onMouseLeave={() => this.setState({ showOptionsButton: false, showOptionsMenu: false })}
+      >
+        <div className="chat-component-message-container">
+
+          <div className="chat-component-message-content-body">
+            <p className={`chat-component-message-content`}>
+              {message.deleted ? 'This message was deleted.' : message.content}
+            </p>
+          </div>
+
+          <div className="chat-component-message-content-info">
+            <div
+              onClick={() => this.setState({ showOptionsMenu: true })}
+              className={`chat-component-message-options-button ${!this.state.showOptionsMenu && !this.props.message.deleted && 'clickable'}`}
+              style={{ backgroundImage: this.state.showOptionsButton && !this.props.message.deleted && `url(/assets/svg/ic_chat_options.svg)` }}
+            />
+            <div className="chat-component-message-options-menu-container">
+              <div style={{ position: 'absolute' }}>
                 {this.renderOptions()}
               </div>
-            )}
-          </Popper>
-          <Popper placement="top">
-            {({ ref, style, placement }) => (
-              <div ref={ref} style={style} data-placement={placement}>
-                {this.renderOverlay(origin)}
-              </div>
-            )}
-          </Popper>
+            </div>
+            {!!message.edited && !message.deleted && <p className="chat-component-message-edited">edited</p>}
+            <p className="chat-component-message-date">
+              {formatAMPM(new Date(message.created_at))}
+            </p>
+          </div>
+
         </div>
-      </Manager>
+      </div>
     );
   }
 }
@@ -161,7 +157,7 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
   return ({
     editMessage: (chatId, messageId, content) => dispatch(editMessageAction(chatId, messageId, content)),
-    deleteMessage: (chatId, messageId) => dispatch(deleteMessageAction(chatId, messageId)),
+    deleteMessage: (chatId, messageId, origin) => dispatch(deleteMessageAction(chatId, messageId, origin)),
   });
 }
 

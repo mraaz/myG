@@ -2,14 +2,46 @@
 
 const UserChat = use('App/Models/UserChat');
 const UserController = use('./UserController');
-const { formatDate } = require('../../Common/date');
+const ChatController = use('./ChatController');
+const { formatDateTime, toSQLDateTime } = require('../../Common/date');
+const { broadcast } = require('../../Common/socket');
 
 class UserChatController {
 
-  async fetchChats({ params }) {
+  async create({ auth, request }) {
+    const chat = await new ChatController().create();
+    const data = request.only(['members']);
+    data.members.forEach(async id => {
+      const userChat = new UserChat();
+      userChat.chat_id = chat.id;
+      userChat.user_id = id;
+      userChat.deleted_messages = '[]';
+      await userChat.save();
+      broadcast('user_chat:*', `user_chat:${id}`, 'user_chat:newChat', { chatId: chat.id, userId: auth.user.id });
+    });
+    return chat;
+  }
+
+  async update({ params, request, auth }) {
+    const chat = await this.fetchChat(params.chatId, auth.user.id);
+    const data = request.only(['muted', 'blocked']);
+    if (data.muted !== undefined) chat.muted = data.muted;
+    if (data.blocked !== undefined) chat.blocked = data.blocked;
+    await chat.save();
+    return chat;
+  }
+
+  async deleteMessages({ params, auth }) {
+    const chat = await this.fetchChat(params.chatId, auth.user.id);
+    chat.cleared_date = toSQLDateTime(new Date());
+    await chat.save();
+    return chat;
+  }
+
+  async fetchChats({ auth }) {
     const chats = await UserChat
       .query()
-      .where('user_id', params.userId)
+      .where('user_id', auth.user.id)
       .fetch();
     return chats.toJSON().map(chat => {
       chat.chatId = chat.chat_id;
@@ -20,16 +52,42 @@ class UserChatController {
     });
   }
 
-  async fetchInfo({ auth, params }) {
+  async fetchChatInfo({ auth, params }) {
 
-    const chat = await UserChat
-      .query()
-      .where('chat_id', params.chatId)
-      .andWhere('user_id', '!=', auth.user.id)
-      .first();
+    const [chat, friend, messages] = await Promise.all([
+      this.fetchChat(params.chatId, auth.user.id),
+      this.fetchFriend(auth, params.chatId, auth.user.id),
+      new ChatController().fetchMessages(params.chatId),
+    ]);
 
+    const icon = friend.user[0].profile_img;
+    const title = `${friend.user[0].first_name} ${friend.user[0].last_name}`;
+    const subtitle = this.getSubtitle(friend.user[0].online, friend.user[0].last_seen);
+    const muted = chat.toJSON().muted;
+    const blocked = chat.toJSON().blocked;
+
+    const clearedDate = chat.toJSON().cleared_date;
+    const deletedMessages = JSON.parse(chat.toJSON().deleted_messages);
+    const filteredMessages = messages
+      .filter(message => new Date(message.created_at) > new Date(clearedDate))
+      .filter(message => !deletedMessages.includes(`${message.id}`));
+
+    return {
+      icon,
+      title,
+      subtitle,
+      friendId: friend.friendId,
+      muted,
+      blocked,
+      messages: filteredMessages,
+    };
+
+  }
+
+  async fetchFriend(auth, chatId, userId) {
+    const friendChat = await this.fetchFriendChat(chatId, userId);
+    const friendId = friendChat.toJSON().user_id;
     const userController = new UserController();
-    const friendId = chat.toJSON().user_id;
     const friend = await userController.profile({
       auth,
       request: {
@@ -38,30 +96,28 @@ class UserChatController {
         }
       }
     });
-
-    const icon = friend.user[0].profile_img;
-    const title = `${friend.user[0].first_name} ${friend.user[0].last_name}`;
-    const subtitle = this.getSubtitle(friend.user[0].online, friend.user[0].last_seen);
-
-    return {
-      icon,
-      title,
-      subtitle,
-      friendId,
-    };
-
+    friend.friendId = friendId;
+    return friend;
   }
 
   getSubtitle(online, lastSeen) {
-    return online ? 'Online' : `${formatDate(lastSeen)}`;
+    return online ? 'Online' : `${formatDateTime(lastSeen)}`;
   }
 
-  async create({ request }) {
-    const userChat = new UserChat();
-    userChat.chat_id = request.chatId;
-    userChat.user_id = request.userId;
-    await userChat.save();
-    return userChat;
+  fetchChat(chatId, userId) {
+    return UserChat
+      .query()
+      .where('chat_id', chatId)
+      .andWhere('user_id', userId)
+      .first();
+  }
+
+  fetchFriendChat(chatId, userId) {
+    return UserChat
+      .query()
+      .where('chat_id', chatId)
+      .andWhere('user_id', '!=', userId)
+      .first();
   }
 
 }

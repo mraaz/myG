@@ -24,7 +24,7 @@ class UserChatRealtimeController {
 
   async notifyActivity(userId, online, lastSeen) {
     const controller = new UserChatController();
-    const chats = await controller.fetchChats({ params: { userId } });
+    const chats = await controller.fetchChats({ auth: { user: { id: userId } } });
     const subtitle = controller.getSubtitle(online, lastSeen);
     chats.forEach(chat => {
       broadcast('chat:*', `chat:${chat.chatId}`, 'chat:info', {

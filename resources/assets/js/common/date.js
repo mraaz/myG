@@ -33,13 +33,20 @@ export function howLongAgo(date) {
 
 }
 
-export function formatDate(date) {
+export function formatDateTime(date) {
   const hours = formatAMPM(date);
   if (isToday(date)) return hours;
   const day = date.getDate();
   const month = date.getMonth() + 1;
   const year = date.getFullYear();
   return `${year}-${month}-${day} ${hours}`;
+}
+
+export function formatDate(date) {
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+  return `${year}-${month}-${day}`;
 }
 
 export function formatAMPM(date) {
@@ -57,4 +64,26 @@ export function isToday(someDate) {
   return someDate.getDate() == today.getDate() &&
     someDate.getMonth() == today.getMonth() &&
     someDate.getFullYear() == today.getFullYear()
+}
+
+export function isYesterday(someDate) {
+  const yesterday = new Date(new Date().setDate(new Date().getDate()-1));
+  return someDate.getDate() == yesterday.getDate() &&
+    someDate.getMonth() == yesterday.getMonth() &&
+    someDate.getFullYear() == yesterday.getFullYear()
+}
+
+export function isOneDayBehind(date1, date2) {
+  const compareDate = new Date(date1);
+  const comparingDate = new Date(date2);
+  compareDate.setHours(0);
+  compareDate.setMinutes(0);
+  compareDate.setSeconds(0);
+  compareDate.setMilliseconds(0);
+  comparingDate.setHours(0);
+  comparingDate.setMinutes(0);
+  comparingDate.setSeconds(0);
+  comparingDate.setMilliseconds(0);
+  compareDate.setDate(compareDate.getDate() - 1);
+  return comparingDate <= compareDate;
 }

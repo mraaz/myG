@@ -1,4 +1,4 @@
-import { fetchChats, fetchMessages, fetchInfo, createChat, sendMessage, editMessage, deleteMessage } from '../../integration/http/chat';
+import { fetchChats, fetchInfo, createChat, updateChat, clearChat, sendMessage, editMessage, deleteMessage } from '../../integration/http/chat';
 
 export function onNewChatAction(chat) {
     return {
@@ -38,14 +38,6 @@ export function fetchChatsAction(userId) {
     }
 }
 
-export function fetchMessagesAction(chatId) {
-    return {
-        type: 'FETCH_MESSAGES',
-        payload: fetchMessages(chatId),
-        meta: { chatId },
-    }
-}
-
 export function fetchInfoAction(chatId) {
     return {
         type: 'FETCH_CHAT_INFO',
@@ -58,6 +50,22 @@ export function createChatAction(members) {
     return {
         type: 'CREATE_CHAT',
         payload: createChat(members),
+    }
+}
+
+export function updateChatAction(chatId, payload) {
+    return {
+        type: 'UPDATE_CHAT',
+        payload: updateChat(chatId, payload),
+        meta: { chatId, ...payload },
+    }
+}
+
+export function clearChatAction(chatId) {
+    return {
+        type: 'CLEAR_CHAT',
+        payload: clearChat(chatId),
+        meta: { chatId },
     }
 }
 
@@ -91,10 +99,10 @@ export function editMessageAction(chatId, messageId, content) {
     }
 }
 
-export function deleteMessageAction(chatId, messageId) {
+export function deleteMessageAction(chatId, messageId, origin) {
     return {
         type: 'DELETE_MESSAGE',
         payload: deleteMessage(chatId, messageId),
-        meta: { chatId },
+        meta: { chatId, messageId, origin },
     }
 }
