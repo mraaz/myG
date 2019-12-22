@@ -24,6 +24,7 @@ class UserSchema extends Schema {
       table.string('provider', 254).nullable()
       table.boolean('online').notNullable().defaultTo(false)
       table.datetime('last_seen').nullable()
+      table.string('public_key', 172).nullable()
       table.timestamps()
     })
   }
