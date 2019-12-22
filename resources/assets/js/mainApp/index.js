@@ -67,8 +67,6 @@ import MyApprovals from "./components/MyApprovals"
 import Member_lists from "./components/Member_lists"
 import ArchivedScheduledGames from "./components/ArchivedScheduledGames"
 
-console.log({ hey: 1 });
-
 class Layout extends Component {
   constructor() {
     super()
