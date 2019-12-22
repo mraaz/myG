@@ -231,6 +231,10 @@ export default class AdvancedSearch extends Component<*, State> {
       console.log(error)
     }
 
+    if (allGameExperiences.data.latestGameExperiences.data.length == 0) {
+      this.state.moreplease = false
+    }
+
     this.setState({
       allGameExperiences: allGameExperiences.data.latestGameExperiences.data,
     })

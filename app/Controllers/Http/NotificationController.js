@@ -4,6 +4,39 @@ const Notification = use('App/Models/Notification')
 const Usergroup = use('App/Models/Usergroup')
 const Database = use('Database')
 
+// Split the array into halves and merge them recursively
+function mergeSort(arr) {
+  if (arr.length === 1) {
+    // return once we hit an array with a single item
+    return arr
+  }
+
+  const middle = Math.floor(arr.length / 2) // get the middle item of the array rounded down
+  const left = arr.slice(0, middle) // items on the left side
+  const right = arr.slice(middle) // items on the right side
+
+  return merge(mergeSort(left), mergeSort(right))
+}
+
+// compare the arrays item by item and return the concatenated result
+function merge(left, right) {
+  let result = []
+  let indexLeft = 0
+  let indexRight = 0
+
+  while (indexLeft < left.length && indexRight < right.length) {
+    if (left[indexLeft].updated_at > right[indexRight].updated_at) {
+      result.push(left[indexLeft])
+      indexLeft++
+    } else {
+      result.push(right[indexRight])
+      indexRight++
+    }
+  }
+
+  return result.concat(left.slice(indexLeft)).concat(right.slice(indexRight))
+}
+
 class NotificationController {
   async addFriend({ auth, request, response }) {
     if (auth.user) {
@@ -201,8 +234,7 @@ class NotificationController {
       })
 
       return {
-        checkedFriend:
-          checkFriend === undefined || checkFriend.length == 0 ? false : true,
+        checkedFriend: checkFriend === undefined || checkFriend.length == 0 ? false : true,
       }
     } catch (error) {
       console.log(error)
@@ -356,26 +388,19 @@ class NotificationController {
         .select('notifications.id')
 
       return {
-        myFriendRequest:
-          myFriendRequest === undefined || myFriendRequest.length == 0
-            ? false
-            : true,
-        noti_id:
-          myFriendRequest === undefined || myFriendRequest.length == 0
-            ? 0
-            : myFriendRequest,
+        myFriendRequest: myFriendRequest === undefined || myFriendRequest.length == 0 ? false : true,
+        noti_id: myFriendRequest === undefined || myFriendRequest.length == 0 ? 0 : myFriendRequest,
       }
     } catch (error) {
       console.log(error)
     }
   }
 
-  async getAllNoti({ auth, request, response }) {
+  async getAllNotifications({ auth, request, response }) {
     try {
       const allMylike_posts = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
-        .where({ other_user_id: auth.user.id })
-        .where({ activity_type: 2 })
+        .where({ other_user_id: auth.user.id, activity_type: 2 })
         .groupBy('notifications.post_id')
         .count('* as no_of_my_notis')
         .select(
@@ -389,11 +414,11 @@ class NotificationController {
           'notifications.updated_at'
         )
         .orderBy('notifications.updated_at')
-        .limit(88)
+        .limit(10)
+        .offset(parseInt(request.input('counter'), 10))
       const allMylike_comments = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
-        .where({ other_user_id: auth.user.id })
-        .where({ activity_type: 3 })
+        .where({ other_user_id: auth.user.id, activity_type: 3 })
         .groupBy('notifications.post_id')
         .count('* as no_of_my_notis')
         .select(
@@ -407,11 +432,11 @@ class NotificationController {
           'notifications.updated_at'
         )
         .orderBy('notifications.updated_at')
-        .limit(88)
+        .limit(10)
+        .offset(parseInt(request.input('counter'), 10))
       const allMylike_replies = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
-        .where({ other_user_id: auth.user.id })
-        .where({ activity_type: 4 })
+        .where({ other_user_id: auth.user.id, activity_type: 4 })
         .groupBy('notifications.post_id')
         .count('* as no_of_my_notis')
         .select(
@@ -425,11 +450,11 @@ class NotificationController {
           'notifications.updated_at'
         )
         .orderBy('notifications.updated_at')
-        .limit(88)
+        .limit(10)
+        .offset(parseInt(request.input('counter'), 10))
       const allMycomments = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
-        .where({ other_user_id: auth.user.id })
-        .where({ activity_type: 5 })
+        .where({ other_user_id: auth.user.id, activity_type: 5 })
         .groupBy('notifications.post_id')
         .count('* as no_of_my_notis')
         .select(
@@ -443,11 +468,11 @@ class NotificationController {
           'notifications.updated_at'
         )
         .orderBy('notifications.updated_at')
-        .limit(88)
+        .limit(10)
+        .offset(parseInt(request.input('counter'), 10))
       const allMyreplies = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
-        .where({ other_user_id: auth.user.id })
-        .where({ activity_type: 6 })
+        .where({ other_user_id: auth.user.id, activity_type: 6 })
         .groupBy('notifications.post_id')
         .count('* as no_of_my_notis')
         .select(
@@ -461,11 +486,11 @@ class NotificationController {
           'notifications.updated_at'
         )
         .orderBy('notifications.updated_at')
-        .limit(88)
+        .limit(10)
+        .offset(parseInt(request.input('counter'), 10))
       const allMyschedulegames = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
-        .where({ other_user_id: auth.user.id })
-        .where({ activity_type: 10 })
+        .where({ other_user_id: auth.user.id, activity_type: 10 })
         .groupBy('notifications.schedule_games_id')
         .select(
           'notifications.schedule_games_id',
@@ -477,11 +502,11 @@ class NotificationController {
           'notifications.updated_at'
         )
         .orderBy('notifications.updated_at')
-        .limit(88)
+        .limit(10)
+        .offset(parseInt(request.input('counter'), 10))
       const myschedulegames_attendees = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
-        .where({ other_user_id: auth.user.id })
-        .where({ activity_type: 11 })
+        .where({ other_user_id: auth.user.id, activity_type: 11 })
         .groupBy('notifications.schedule_games_id')
         .select(
           'notifications.schedule_games_id',
@@ -494,12 +519,12 @@ class NotificationController {
           'notifications.updated_at'
         )
         .orderBy('notifications.updated_at')
-        .limit(88)
+        .limit(10)
+        .offset(parseInt(request.input('counter'), 10))
       const mygroups = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .innerJoin('groups', 'groups.id', 'notifications.group_id')
-        .where({ other_user_id: auth.user.id })
-        .where({ activity_type: 12 })
+        .where({ other_user_id: auth.user.id, activity_type: 12 })
         .groupBy('notifications.group_id')
         .select(
           'notifications.group_id',
@@ -512,11 +537,11 @@ class NotificationController {
           'groups.name'
         )
         .orderBy('notifications.updated_at')
-        .limit(88)
+        .limit(10)
+        .offset(parseInt(request.input('counter'), 10))
       const myschedulegames_approvals = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
-        .where({ other_user_id: auth.user.id })
-        .where({ activity_type: 14 })
+        .where({ other_user_id: auth.user.id, activity_type: 14 })
         .groupBy('notifications.schedule_games_id')
         .select(
           'notifications.schedule_games_id',
@@ -529,11 +554,11 @@ class NotificationController {
           'notifications.updated_at'
         )
         .orderBy('notifications.updated_at')
-        .limit(88)
+        .limit(10)
+        .offset(parseInt(request.input('counter'), 10))
       const allMyarchived_schedulegames = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
-        .where({ other_user_id: auth.user.id })
-        .where({ activity_type: 15 })
+        .where({ other_user_id: auth.user.id, activity_type: 15 })
         .groupBy('notifications.archive_schedule_game_id')
         .select(
           'notifications.archive_schedule_game_id',
@@ -546,11 +571,11 @@ class NotificationController {
           'notifications.updated_at'
         )
         .orderBy('notifications.updated_at')
-        .limit(88)
+        .limit(10)
+        .offset(parseInt(request.input('counter'), 10))
       const dropped_out_attendees = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
-        .where({ other_user_id: auth.user.id })
-        .where({ activity_type: 16 })
+        .where({ other_user_id: auth.user.id, activity_type: 16 })
         .groupBy('notifications.schedule_games_id')
         .select(
           'notifications.schedule_games_id',
@@ -562,11 +587,11 @@ class NotificationController {
           'notifications.updated_at'
         )
         .orderBy('notifications.updated_at')
-        .limit(88)
+        .limit(10)
+        .offset(parseInt(request.input('counter'), 10))
       const group_member_approved = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
-        .where({ other_user_id: auth.user.id })
-        .where({ activity_type: 17 })
+        .where({ other_user_id: auth.user.id, activity_type: 17 })
         .groupBy('notifications.schedule_games_id')
         .select(
           'notifications.group_id',
@@ -578,21 +603,28 @@ class NotificationController {
           'notifications.updated_at'
         )
         .orderBy('notifications.updated_at')
-        .limit(88)
+        .limit(10)
+        .offset(parseInt(request.input('counter'), 10))
 
-      return {
-        allMylike_posts: allMylike_posts,
-        allMylike_comments: allMylike_comments,
-        allMylike_replies: allMylike_replies,
-        allMycomments: allMycomments,
-        allMyreplies: allMyreplies,
-        allMyschedulegames: allMyschedulegames,
-        myschedulegames_attendees: myschedulegames_attendees,
-        mygroups: mygroups,
-        myschedulegames_approvals: myschedulegames_approvals,
-        allMyarchived_schedulegames: allMyarchived_schedulegames,
-        dropped_out_attendees: dropped_out_attendees,
-        group_member_approved: group_member_approved,
+      var singleArr = [
+        ...allMylike_posts,
+        ...allMylike_comments,
+        ...allMylike_replies,
+        ...allMycomments,
+        ...allMyreplies,
+        ...allMyschedulegames,
+        ...myschedulegames_attendees,
+        ...mygroups,
+        ...myschedulegames_approvals,
+        ...allMyarchived_schedulegames,
+        ...dropped_out_attendees,
+        ...group_member_approved,
+      ]
+
+      if (singleArr.length == 0) {
+        return singleArr
+      } else {
+        return (singleArr = mergeSort(singleArr))
       }
     } catch (error) {
       console.log(error)
@@ -731,9 +763,7 @@ class NotificationController {
         .where({ other_user_id: auth.user.id })
         .where({ post_id: request.params.id, activity_type: 5 })
         .count('* as no_of_my_notis')
-      const getAllNotiCommentCount_unreadCount = await Database.from(
-        'notifications'
-      )
+      const getAllNotiCommentCount_unreadCount = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id })
         .where({ post_id: request.params.id, activity_type: 5, read_status: 0 })
@@ -770,9 +800,7 @@ class NotificationController {
         .where({ other_user_id: auth.user.id })
         .where({ post_id: request.params.id, activity_type: 6 })
         .count('* as no_of_my_notis')
-      const getAllNotiReplyCount_unreadCount = await Database.from(
-        'notifications'
-      )
+      const getAllNotiReplyCount_unreadCount = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id })
         .where({ post_id: request.params.id, activity_type: 6, read_status: 0 })
@@ -790,9 +818,7 @@ class NotificationController {
 
   async getAllNotiScheduleGamesAttendees({ auth, request, response }) {
     try {
-      const getAllNotiScheduleGamesAttendees = await Database.from(
-        'notifications'
-      )
+      const getAllNotiScheduleGamesAttendees = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.other_user_id')
         .where({
           schedule_games_id: request.params.schedule_games_id,
@@ -808,9 +834,7 @@ class NotificationController {
         )
         .orderBy('notifications.created_at')
         .limit(3)
-      const getAllNotiScheduleGamesAttendeesCount = await Database.from(
-        'notifications'
-      )
+      const getAllNotiScheduleGamesAttendeesCount = await Database.from('notifications')
         .where({
           schedule_games_id: request.params.schedule_games_id,
           activity_type: 16,
@@ -867,9 +891,7 @@ class NotificationController {
   async remove_schedule_game_attendees({ auth, request, response }) {
     if (auth.user) {
       try {
-        const remove_schedule_game_attendees = await Database.table(
-          'notifications'
-        )
+        const remove_schedule_game_attendees = await Database.table('notifications')
           .where({
             schedule_games_id: request.params.id,
             activity_type: 11,
@@ -1021,9 +1043,7 @@ class NotificationController {
 
   async getRead_Status({ auth, request, response }) {
     try {
-      const getAllNotiReplyCount_unreadCount = await Database.from(
-        'notifications'
-      )
+      const getAllNotiReplyCount_unreadCount = await Database.from('notifications')
         .where({ other_user_id: auth.user.id })
         .where({
           post_id: request.params.post_id,
@@ -1042,9 +1062,7 @@ class NotificationController {
 
   async getRead_Status_schedule_game({ auth, request, response }) {
     try {
-      const getAllNotiReplyCount_unreadCount = await Database.from(
-        'notifications'
-      )
+      const getAllNotiReplyCount_unreadCount = await Database.from('notifications')
         .where({ other_user_id: auth.user.id })
         .where({
           schedule_games_id: request.params.schedule_game_id,
@@ -1063,9 +1081,7 @@ class NotificationController {
 
   async getunread_archive_schedule_game({ auth, request, response }) {
     try {
-      const getunread_archive_schedule_game = await Database.from(
-        'notifications'
-      )
+      const getunread_archive_schedule_game = await Database.from('notifications')
         .where({ other_user_id: auth.user.id })
         .where({
           archive_schedule_game_id: request.params.archive_schedule_game_id,
@@ -1084,9 +1100,7 @@ class NotificationController {
 
   async getunread_group({ auth, request, response }) {
     try {
-      const getAllNotiReplyCount_unreadCount = await Database.from(
-        'notifications'
-      )
+      const getAllNotiReplyCount_unreadCount = await Database.from('notifications')
         .where({ other_user_id: auth.user.id })
         .where({
           group_id: request.params.id,

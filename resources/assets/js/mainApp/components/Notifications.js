@@ -3,74 +3,42 @@ import ReactDOM from 'react-dom'
 import axios from 'axios'
 import IndividualNotification from './IndividualNotification'
 import SweetAlert from 'react-bootstrap-sweetalert'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 export default class Notifications extends Component {
   constructor() {
     super()
-    this.state = { alert: null }
-  }
-
-  // Split the array into halves and merge them recursively
-  mergeSort = function(arr) {
-    if (arr.length === 1) {
-      // return once we hit an array with a single item
-      return arr
-    }
-
-    const middle = Math.floor(arr.length / 2) // get the middle item of the array rounded down
-    const left = arr.slice(0, middle) // items on the left side
-    const right = arr.slice(middle) // items on the right side
-
-    return this.merge(this.mergeSort(left), this.mergeSort(right))
-  }
-
-  // compare the arrays item by item and return the concatenated result
-  merge = function(left, right) {
-    let result = []
-    let indexLeft = 0
-    let indexRight = 0
-
-    while (indexLeft < left.length && indexRight < right.length) {
-      if (left[indexLeft].updated_at > right[indexRight].updated_at) {
-        result.push(left[indexLeft])
-        indexLeft++
-      } else {
-        result.push(right[indexRight])
-        indexRight++
-      }
-    }
-
-    return result.concat(left.slice(indexLeft)).concat(right.slice(indexRight))
+    this.state = { alert: null, moreplease: true, counter: -10 }
   }
 
   componentWillMount() {
-    const self = this
+    this.pullData()
+  }
 
-    const getNoti = async function() {
-      try {
-        const getnoti = await axios.get('/api/notifications/getAllNoti')
-        var singleArr = [
-          ...getnoti.data.allMylike_posts,
-          ...getnoti.data.allMylike_comments,
-          ...getnoti.data.allMylike_replies,
-          ...getnoti.data.allMycomments,
-          ...getnoti.data.allMyreplies,
-          ...getnoti.data.allMyschedulegames,
-          ...getnoti.data.myschedulegames_attendees,
-          ...getnoti.data.mygroups,
-          ...getnoti.data.myschedulegames_approvals,
-          ...getnoti.data.allMyarchived_schedulegames,
-          ...getnoti.data.dropped_out_attendees,
-          ...getnoti.data.group_member_approved,
-        ]
-        self.setState({
-          myNoti: singleArr.length == 0 ? '' : self.mergeSort(singleArr),
-        })
-      } catch (error) {
-        console.log(error)
-      }
+  pullData = async () => {
+    this.state.counter = this.state.counter + 10
+
+    if (this.state.counter != 1) {
+      this.setState({
+        show_top_btn: true,
+      })
     }
-    getNoti()
+
+    try {
+      const getnoti = await axios.post('/api/notifications/getAllNoti', {
+        counter: this.state.counter,
+      })
+
+      if (getnoti.data.length == 0) {
+        this.state.moreplease = false
+      }
+
+      this.setState({
+        myNoti: getnoti.data,
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   showNotifications = () => {
@@ -185,7 +153,11 @@ export default class Notifications extends Component {
                   </div>
                 )}
                 <div className='padding-container'></div>
-                <div className='notifications-container'>{this.showNotifications()}</div>
+                <div className='notifications-container'>
+                  <InfiniteScroll dataLength={this.state.myNoti.length} next={this.pullData} hasMore={this.state.moreplease}>
+                    {this.showNotifications()}
+                  </InfiniteScroll>
+                </div>
               </div>
             </div>
           </div>
