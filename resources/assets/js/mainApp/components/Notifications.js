@@ -8,7 +8,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 export default class Notifications extends Component {
   constructor() {
     super()
-    this.state = { alert: null, moreplease: true, counter: -10 }
+    this.state = { alert: null, moreplease: true, counter: -10, myNoti: [] }
   }
 
   componentWillMount() {
@@ -16,7 +16,9 @@ export default class Notifications extends Component {
   }
 
   pullData = async () => {
+    console.log('pulling')
     this.state.counter = this.state.counter + 10
+    console.log(this.state.counter)
 
     if (this.state.counter != 1) {
       this.setState({
@@ -31,10 +33,11 @@ export default class Notifications extends Component {
 
       if (getnoti.data.length == 0) {
         this.state.moreplease = false
+        return
       }
 
       this.setState({
-        myNoti: getnoti.data,
+        myNoti: this.state.myNoti.concat(getnoti.data),
       })
     } catch (error) {
       console.log(error)
