@@ -8,40 +8,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 export default class Notifications extends Component {
   constructor() {
     super()
-    this.state = { alert: null, moreplease: true, counter: 0 }
-  }
-
-  // Split the array into halves and merge them recursively
-  mergeSort = function(arr) {
-    if (arr.length === 1) {
-      // return once we hit an array with a single item
-      return arr
-    }
-
-    const middle = Math.floor(arr.length / 2) // get the middle item of the array rounded down
-    const left = arr.slice(0, middle) // items on the left side
-    const right = arr.slice(middle) // items on the right side
-
-    return this.merge(this.mergeSort(left), this.mergeSort(right))
-  }
-
-  // compare the arrays item by item and return the concatenated result
-  merge = function(left, right) {
-    let result = []
-    let indexLeft = 0
-    let indexRight = 0
-
-    while (indexLeft < left.length && indexRight < right.length) {
-      if (left[indexLeft].updated_at > right[indexRight].updated_at) {
-        result.push(left[indexLeft])
-        indexLeft++
-      } else {
-        result.push(right[indexRight])
-        indexRight++
-      }
-    }
-
-    return result.concat(left.slice(indexLeft)).concat(right.slice(indexRight))
+    this.state = { alert: null, moreplease: true, counter: -10 }
   }
 
   componentWillMount() {
@@ -49,7 +16,7 @@ export default class Notifications extends Component {
   }
 
   pullData = async () => {
-    this.state.counter = this.state.counter + 1
+    this.state.counter = this.state.counter + 10
 
     if (this.state.counter != 1) {
       this.setState({
@@ -62,22 +29,12 @@ export default class Notifications extends Component {
         counter: this.state.counter,
       })
 
-      var singleArr = [
-        ...getnoti.data.allMylike_posts,
-        ...getnoti.data.allMylike_comments,
-        ...getnoti.data.allMylike_replies,
-        ...getnoti.data.allMycomments,
-        ...getnoti.data.allMyreplies,
-        ...getnoti.data.allMyschedulegames,
-        ...getnoti.data.myschedulegames_attendees,
-        ...getnoti.data.mygroups,
-        ...getnoti.data.myschedulegames_approvals,
-        ...getnoti.data.allMyarchived_schedulegames,
-        ...getnoti.data.dropped_out_attendees,
-        ...getnoti.data.group_member_approved,
-      ]
+      if (getnoti.data.length == 0) {
+        this.state.moreplease = false
+      }
+
       this.setState({
-        myNoti: singleArr.length == 0 ? '' : this.mergeSort(singleArr),
+        myNoti: getnoti.data,
       })
     } catch (error) {
       console.log(error)
