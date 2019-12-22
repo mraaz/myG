@@ -27,6 +27,7 @@ export default function reducer(state = {
             chat.icon = action.payload.icon;
             chat.title = action.payload.title;
             chat.subtitle = action.payload.subtitle;
+            chat.publicKey = action.payload.publicKey;
             chat.friendId = action.payload.friendId;
             chat.muted = action.payload.muted;
             chat.blocked = action.payload.blocked;
@@ -98,6 +99,7 @@ export default function reducer(state = {
             if (chat.blocked) return state;
             const updated = chat.messages.find(candidate => candidate.id === message.id);
             updated.content = message.content;
+            updated.backup = message.backup;
             updated.edited = message.edited;
             updated.deleted = message.deleted;
             return {

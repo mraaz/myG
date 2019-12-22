@@ -63,6 +63,7 @@ class UserChatController {
     const icon = friend.user[0].profile_img;
     const title = `${friend.user[0].first_name} ${friend.user[0].last_name}`;
     const subtitle = this.getSubtitle(friend.user[0].online, friend.user[0].last_seen);
+    const publicKey = friend.user[0].public_key;
     const muted = chat.toJSON().muted;
     const blocked = chat.toJSON().blocked;
 
@@ -76,6 +77,7 @@ class UserChatController {
       icon,
       title,
       subtitle,
+      publicKey,
       friendId: friend.friendId,
       muted,
       blocked,

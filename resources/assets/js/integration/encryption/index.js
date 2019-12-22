@@ -1,27 +1,23 @@
 
 import cryptico from 'cryptico';
+import logger from '../../common/logger';
 
 export function generateKeys(pin) {
+  logger.log('ENCRYPTION', 'Generating Keys for Pin', pin);
   if (!pin) pin = generatePin(12);
   const privateKey = cryptico.generateRSAKey(pin, 1024);
   const publicKey = cryptico.publicKeyString(privateKey);
   return { pin, privateKey, publicKey };
 }
 
-export function encryptMessageToSend(senderPrivateKey, receiverPublicKey, message) {
-  return cryptico.encrypt(cryptico.encrypt(message, senderPrivateKey).cipher, receiverPublicKey).cipher;
+export function encryptMessage(message, publicKey, privateKey) {
+  if (!message || !publicKey || !privateKey) return null;
+  return cryptico.encrypt(message, publicKey, privateKey).cipher;
 }
 
-export function decryptMessageReceived(senderPublicKey, receiverPrivateKey, message) {
-  return cryptico.decrypt(cryptico.decrypt(message, receiverPrivateKey).plaintext, senderPublicKey).plaintext;
-}
-
-export function encryptMessageToBackup(senderPublicKey, message) {
-  return cryptico.encrypt(message, senderPublicKey).cipher;
-}
-
-export function decryptMessageFromBackup(senderPrivateKey, message) {
-  return cryptico.decrypt(message, senderPrivateKey).plaintext;
+export function decryptMessage(message, privateKey) {
+  if (!message || !privateKey) return null;
+  return cryptico.decrypt(message, privateKey).plaintext;
 }
 
 function generatePin(length) {

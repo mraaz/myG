@@ -9,25 +9,33 @@ import { monitorChats, closeSubscriptions } from '../../integration/ws/chat';
 import { fetchChatsAction, createChatAction, openChatAction, closeChatAction } from '../../redux/actions/chatAction';
 import { fetchFriendsAction } from '../../redux/actions/friendAction';
 import { generateKeysAction } from '../../redux/actions/encryptionAction';
+import { decryptMessage } from '../../integration/encryption';
 
 class Messenger extends React.PureComponent {
 
   state = {
     loaded: false,
   }
-
+  
   componentDidUpdate() {
     if (!this.state.loaded && !this.props.loading) {
-      this.setState({ loaded: true });
       monitorChats(this.props.userId);
       if (!this.props.publicKey) this.props.generateKeys();
+      if (this.props.pin) this.props.generateKeys(this.props.pin);
       this.props.fetchChats(this.props.userId);
       this.props.fetchFriends();
+      this.setState({ loaded: true });
     }
   }
 
   componentWillUnmount() {
     closeSubscriptions();
+  }
+
+  decryptMessage = (message) => {
+    const origin = parseInt(message.user_id) === this.props.userId ? 'sent' : 'received';
+    const content = decryptMessage(origin === 'sent' ? message.backup : message.content, this.props.privateKey);
+    return { ...message, content };
   }
 
   openChat = (friend) => {
@@ -88,7 +96,7 @@ class Messenger extends React.PureComponent {
           </p>
           {lastMessage && (
             <p className="messenger-contact-body-subtitle">
-              {lastMessage.content}
+              {this.decryptMessage(lastMessage).content}
             </p>
           )}
         </div>
@@ -111,6 +119,7 @@ class Messenger extends React.PureComponent {
   }
 
   render() {
+    if (!this.state.loaded) return null;
     return (
       <section id="messenger">
         {this.renderChats()}
@@ -125,6 +134,8 @@ function mapStateToProps(state) {
   return {
     chats: state.chat.chats,
     friends: state.friend.friends,
+    pin: state.encryption.pin,
+    privateKey: state.encryption.privateKey,
   }
 }
 

@@ -1,5 +1,5 @@
 
-import { generateKeys, encryptMessageToSend, encryptMessageToBackup, decryptMessageReceived, decryptMessageFromBackup } from '../../integration/encryption';
+import { generateKeys } from '../../integration/encryption';
 
 export function generateKeysAction(pin) {
   return {
