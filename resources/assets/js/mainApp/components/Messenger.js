@@ -8,6 +8,7 @@ import { formatAMPM } from '../../common/date';
 import { monitorChats, closeSubscriptions } from '../../integration/ws/chat';
 import { fetchChatsAction, createChatAction, openChatAction, closeChatAction } from '../../redux/actions/chatAction';
 import { fetchFriendsAction } from '../../redux/actions/friendAction';
+import { generateKeysAction } from '../../redux/actions/encryptionAction';
 
 class Messenger extends React.PureComponent {
 
@@ -19,6 +20,7 @@ class Messenger extends React.PureComponent {
     if (!this.state.loaded && !this.props.loading) {
       this.setState({ loaded: true });
       monitorChats(this.props.userId);
+      if (!this.props.publicKey) this.props.generateKeys();
       this.props.fetchChats(this.props.userId);
       this.props.fetchFriends();
     }
@@ -133,6 +135,7 @@ function mapDispatchToProps(dispatch) {
     closeChat: chatId => dispatch(closeChatAction(chatId)),
     fetchChats: userId => dispatch(fetchChatsAction(userId)),
     fetchFriends: () => dispatch(fetchFriendsAction()),
+    generateKeys: pin => dispatch(generateKeysAction(pin))
   });
 }
 
