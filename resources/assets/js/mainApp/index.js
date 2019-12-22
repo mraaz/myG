@@ -2,7 +2,7 @@
 // --- One way to disable adonis websocket logs.
 const log = console.log;
 console.log = function(payload) { 
-  if (payload && payload.includes('adonis:websocket')) return;
+  if (payload && payload.includes && payload.includes('adonis:websocket')) return;
   log(payload)
  };
 window.console = console;
@@ -67,6 +67,7 @@ import MyApprovals from "./components/MyApprovals"
 import Member_lists from "./components/Member_lists"
 import ArchivedScheduledGames from "./components/ArchivedScheduledGames"
 
+console.log({ hey: 1 });
 
 class Layout extends Component {
   constructor() {
