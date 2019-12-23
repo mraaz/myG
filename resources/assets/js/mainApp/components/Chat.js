@@ -16,6 +16,7 @@ class Chat extends React.Component {
       maximised: false,
       minimised: false,
       lastMessageId: null,
+      wasEncrypted: !props.userPrivateKey,
       editing: false,
       settings: false,
     };
@@ -30,9 +31,11 @@ class Chat extends React.Component {
   componentDidUpdate() {
     const lastMessage = this.props.messages[this.props.messages.length - 1] || {};
     const lastMessageId = lastMessage.id;
-    if (this.state.lastMessageId === lastMessageId) return;
-    this.setState({ lastMessageId });
-    this.scrollToLastMessage();
+    const gotDecrypted = this.state.wasEncrypted && this.props.userPrivateKey;
+    const hasNewMessage = this.state.lastMessageId !== lastMessageId;
+    if (hasNewMessage) this.setState({ lastMessageId });
+    if (gotDecrypted) this.setState({ wasEncrypted: false });
+    if (hasNewMessage || gotDecrypted) this.scrollToLastMessage();
   }
 
   scrollToLastMessage = () => {
@@ -84,7 +87,7 @@ class Chat extends React.Component {
     this.setState({ editing: false });
     this.inputRef.current.focus();
   }
-  
+
   renderSettings = () => {
     if (!this.state.settings) return;
     const inactiveStyle = 'chat-component-header-settings-option-inactive';
@@ -209,7 +212,7 @@ class Chat extends React.Component {
           <div className="chat-component-attach-button-divider" />
         </div>
         <input
-          disabled={this.props.blocked}
+          disabled={this.props.blocked || !this.props.userPrivateKey}
           className="chat-component-input"
           placeholder={`${this.props.blocked ? 'Unblock to send messages' : 'Type your message here'}`}
           value={this.state.input}
@@ -227,7 +230,24 @@ class Chat extends React.Component {
     );
   }
 
+  renderEncryptedChat() {
+    return (
+      <div
+        key={this.props.chatId}
+        className="chat-component-base"
+      >
+        {this.renderSettings()}
+        {this.renderHeader()}
+        <div className="chat-component-encryption-warning">
+          Please inform your encryption key to read the contents of this chat.
+        </div>
+        {this.renderFooter()}
+      </div>
+    );
+  }
+
   render() {
+    if (!this.props.userPrivateKey) return this.renderEncryptedChat();
     let extraClass = "";
     if (this.state.maximised) extraClass += "chat-maximised";
     if (this.state.minimised) extraClass += "chat-minimised";

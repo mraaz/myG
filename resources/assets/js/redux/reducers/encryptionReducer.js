@@ -7,6 +7,7 @@ export default function reducer(state = {
   pin: null,
   publicKey: null,
   privateKey: null,
+  invalidPin: false,
 }, action) {
   switch (action.type) {
 
@@ -18,6 +19,19 @@ export default function reducer(state = {
         pin: action.payload.pin,
         publicKey: action.payload.publicKey,
         privateKey: action.payload.privateKey,
+      };
+    }
+
+    case "VALIDATE_PIN": {
+      logger.log('ENCRYPTION', `Redux -> Validating Pin: ${action.meta.pin}`, action.payload);
+      if (action.meta.publicKey !== action.payload.publicKey) return { ...state, invalidPin: true }
+      storePublicKey(action.payload.publicKey);
+      return {
+        ...state,
+        pin: action.payload.pin,
+        publicKey: action.payload.publicKey,
+        privateKey: action.payload.privateKey,
+        invalidPin: false,
       };
     }
 

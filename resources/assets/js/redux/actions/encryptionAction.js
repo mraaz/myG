@@ -8,3 +8,11 @@ export function generateKeysAction(pin) {
       meta: { pin }
   }
 }
+
+export function validatePinAction(pin, publicKey) {
+  return {
+      type: 'VALIDATE_PIN',
+      payload: generateKeys(pin),
+      meta: { pin, publicKey }
+  }
+}
