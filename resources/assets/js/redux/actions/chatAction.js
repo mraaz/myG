@@ -83,18 +83,18 @@ export function closeChatAction(chatId) {
     }
 }
 
-export function sendMessageAction(chatId, userId, content) {
+export function sendMessageAction(chatId, userId, encrypted) {
     return {
         type: 'SEND_MESSAGE',
-        payload: sendMessage(chatId, userId, content),
+        payload: sendMessage(chatId, userId, encrypted),
         meta: { chatId },
     }
 }
 
-export function editMessageAction(chatId, messageId, content) {
+export function editMessageAction(chatId, messageId, encrypted) {
     return {
         type: 'EDIT_MESSAGE',
-        payload: editMessage(chatId, messageId, content),
+        payload: editMessage(chatId, messageId, encrypted),
         meta: { chatId },
     }
 }

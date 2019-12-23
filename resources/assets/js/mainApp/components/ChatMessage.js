@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { editMessageAction, deleteMessageAction } from '../../redux/actions/chatAction';
+import { deleteMessageAction } from '../../redux/actions/chatAction';
 import { formatAMPM, formatDate } from '../../common/date';
 import { copyToClipboard } from '../../common/clipboard';
 
@@ -156,7 +156,6 @@ function mapStateToProps(state, props) {
 
 function mapDispatchToProps(dispatch) {
   return ({
-    editMessage: (chatId, messageId, content) => dispatch(editMessageAction(chatId, messageId, content)),
     deleteMessage: (chatId, messageId, origin) => dispatch(deleteMessageAction(chatId, messageId, origin)),
   });
 }

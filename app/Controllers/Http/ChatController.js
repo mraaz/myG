@@ -31,8 +31,11 @@ class ChatController {
     const chat = await Chat.find(params.chatId);
     if (!chat) return response.notFound(`Chat ${params.chatId} was not found.`);
 
-    const data = request.only(['name', 'content', 'userId']);
+    const data = request.only(['name', 'encrypted', 'userId']);
     data.user_id = data.userId;
+    data.content = data.encrypted.content;
+    data.backup = data.encrypted.backup;
+    delete data.encrypted;
     delete data.userId;
 
     const message = await chat.messages().create(data);
@@ -50,8 +53,9 @@ class ChatController {
     const message = await ChatMessage.find(params.messageId);
     if (!message) return response.notFound(`Message ${params.messageId} was not found.`);
 
-    const data = request.only(['content']);
-    message.content = data.content;
+    const data = request.only(['encrypted']);
+    message.content = data.encrypted.content;
+    message.backup = data.encrypted.backup;
     message.edited = true;
     await message.save();
 

@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 
 import ChatMessage from './ChatMessage';
 
-import { fetchInfoAction, sendMessageAction, updateChatAction, clearChatAction } from '../../redux/actions/chatAction';
+import { fetchInfoAction, sendMessageAction, editMessageAction, updateChatAction, clearChatAction } from '../../redux/actions/chatAction';
 import { enrichMessagesWithDates } from '../../common/chat';
+import { encryptMessage, decryptMessage } from '../../integration/encryption';
 
 class Chat extends React.Component {
 
@@ -15,6 +16,7 @@ class Chat extends React.Component {
       maximised: false,
       minimised: false,
       lastMessageId: null,
+      wasEncrypted: !props.userPrivateKey,
       editing: false,
       settings: false,
     };
@@ -29,9 +31,11 @@ class Chat extends React.Component {
   componentDidUpdate() {
     const lastMessage = this.props.messages[this.props.messages.length - 1] || {};
     const lastMessageId = lastMessage.id;
-    if (this.state.lastMessageId === lastMessageId) return;
-    this.setState({ lastMessageId });
-    this.scrollToLastMessage();
+    const gotDecrypted = this.state.wasEncrypted && this.props.userPrivateKey;
+    const hasNewMessage = this.state.lastMessageId !== lastMessageId;
+    if (hasNewMessage) this.setState({ lastMessageId });
+    if (gotDecrypted) this.setState({ wasEncrypted: false });
+    if (hasNewMessage || gotDecrypted) this.scrollToLastMessage();
   }
 
   scrollToLastMessage = () => {
@@ -40,8 +44,24 @@ class Chat extends React.Component {
 
   sendMessage = () => {
     if (!this.state.input) return;
-    this.props.sendMessage(this.props.chatId, this.props.userId, this.state.input);
+    this.props.sendMessage(this.props.chatId, this.props.userId, this.encryptInput(this.state.input));
     this.setState({ input: '' });
+  }
+
+  editMessage = (chatId, messageId, input) => {
+    this.props.editMessage(chatId, messageId, this.encryptInput(input));
+  }
+
+  encryptInput = (input) => {
+    const content = encryptMessage(input, this.props.friendPublicKey, this.props.userPrivateKey);
+    const backup = encryptMessage(input, this.props.userPublicKey, this.props.userPrivateKey);
+    return { content, backup }
+  }
+
+  decryptMessage = (message) => {
+    const origin = parseInt(message.user_id) === this.props.userId ? 'sent' : 'received';
+    const content = decryptMessage(origin === 'sent' ? message.backup : message.content, this.props.userPrivateKey);
+    return { ...message, content };
   }
 
   editLastMessage = () => {
@@ -67,7 +87,7 @@ class Chat extends React.Component {
     this.setState({ editing: false });
     this.inputRef.current.focus();
   }
-  
+
   renderSettings = () => {
     if (!this.state.settings) return;
     const inactiveStyle = 'chat-component-header-settings-option-inactive';
@@ -170,13 +190,14 @@ class Chat extends React.Component {
     return (
       <ChatMessage
         key={message.id}
-        message={message}
+        message={this.decryptMessage(message)}
         userId={this.props.userId}
         chatId={this.props.chatId}
         messageId={message.id}
+        messageListRef={this.messageListRef}
         editing={this.state.editing === message.id}
         onEdit={this.onEdit}
-        messageListRef={this.messageListRef}
+        editMessage={this.editMessage}
       />
     );
   }
@@ -191,7 +212,7 @@ class Chat extends React.Component {
           <div className="chat-component-attach-button-divider" />
         </div>
         <input
-          disabled={this.props.blocked}
+          disabled={this.props.blocked || !this.props.userPrivateKey}
           className="chat-component-input"
           placeholder={`${this.props.blocked ? 'Unblock to send messages' : 'Type your message here'}`}
           value={this.state.input}
@@ -209,7 +230,24 @@ class Chat extends React.Component {
     );
   }
 
+  renderEncryptedChat() {
+    return (
+      <div
+        key={this.props.chatId}
+        className="chat-component-base"
+      >
+        {this.renderSettings()}
+        {this.renderHeader()}
+        <div className="chat-component-encryption-warning">
+          Please inform your encryption key to read the contents of this chat.
+        </div>
+        {this.renderFooter()}
+      </div>
+    );
+  }
+
   render() {
+    if (!this.props.userPrivateKey) return this.renderEncryptedChat();
     let extraClass = "";
     if (this.state.maximised) extraClass += "chat-maximised";
     if (this.state.minimised) extraClass += "chat-minimised";
@@ -237,13 +275,17 @@ function mapStateToProps(state, props) {
     title: chat.title || '',
     subtitle: chat.subtitle || '',
     blocked: chat.blocked || false,
-    muted: chat.muted || false
+    muted: chat.muted || false,
+    friendPublicKey: chat.publicKey,
+    userPublicKey: state.encryption.publicKey,
+    userPrivateKey: state.encryption.privateKey,
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return ({
     sendMessage: (chatId, userId, content) => dispatch(sendMessageAction(chatId, userId, content)),
+    editMessage: (chatId, messageId, content) => dispatch(editMessageAction(chatId, messageId, content)),
     fetchInfo: (chatId) => dispatch(fetchInfoAction(chatId)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),

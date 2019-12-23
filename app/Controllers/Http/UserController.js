@@ -153,6 +153,21 @@ class UserController {
       return 'You are not Logged In!'
     }
   }
+
+  async storePublicKey({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        await User.query()
+          .where('id', '=', auth.user.id)
+          .update({ public_key: request.input('publicKey') })
+        return response.status(200).json({ success: true })
+      } catch (error) {
+        return response.status(200).json({ success: false })
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
 }
 
 module.exports = UserController

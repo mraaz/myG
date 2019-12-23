@@ -26,14 +26,14 @@ export function clearChat(chatId) {
   return axios.delete(`/api/chat/${chatId}`);
 }
 
-export function sendMessage(chatId, userId, content) {
-  logger.log('CHAT', 'HTTP', `Sending Message ${content} from User ${userId} to Chat ${chatId}`);
-  return axios.post(`/api/chat/${chatId}/message/`, { userId, content });
+export function sendMessage(chatId, userId, encrypted) {
+  logger.log('CHAT', 'HTTP', `Sending Message from User ${userId} to Chat ${chatId}`);
+  return axios.post(`/api/chat/${chatId}/message/`, { userId, encrypted });
 }
 
-export function editMessage(chatId, messageId, content) {
-  logger.log('CHAT', 'HTTP', `Editing Message ${messageId} to content ${content} on Chat ${chatId}`);
-  return axios.put(`/api/chat/${chatId}/message/${messageId}`, { content });
+export function editMessage(chatId, messageId, encrypted) {
+  logger.log('CHAT', 'HTTP', `Editing Message ${messageId} on Chat ${chatId}`);
+  return axios.put(`/api/chat/${chatId}/message/${messageId}`, { encrypted });
 }
 
 export function deleteMessage(chatId, messageId) {

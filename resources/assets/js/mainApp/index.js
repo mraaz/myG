@@ -220,6 +220,7 @@ class Layout extends Component {
               </section>
               <Messenger
                 userId={this.state.initialData && this.state.initialData.userInfo.id}
+                publicKey={this.state.initialData && this.state.initialData.userInfo.public_key}
                 loading={!this.state.initialData}
               />
             </div>

@@ -6,26 +6,42 @@ import Chat from './Chat';
 import { formatAMPM } from '../../common/date';
 
 import { monitorChats, closeSubscriptions } from '../../integration/ws/chat';
-import { fetchChatsAction, createChatAction, openChatAction, closeChatAction } from '../../redux/actions/chatAction';
+import { fetchChatsAction, createChatAction, openChatAction, closeChatAction, clearChatAction } from '../../redux/actions/chatAction';
 import { fetchFriendsAction } from '../../redux/actions/friendAction';
+import { generateKeysAction, validatePinAction } from '../../redux/actions/encryptionAction';
+import { decryptMessage } from '../../integration/encryption';
+import { copyToClipboard } from '../../common/clipboard';
 
 class Messenger extends React.PureComponent {
 
   state = {
     loaded: false,
+    pin: '',
+  }
+
+  static getDerivedStateFromProps(props) {
+    return { invalidPin: props.invalidPin }
   }
 
   componentDidUpdate() {
     if (!this.state.loaded && !this.props.loading) {
-      this.setState({ loaded: true });
       monitorChats(this.props.userId);
+      if (!this.props.publicKey) this.props.generateKeys();
+      if (this.props.pin) this.props.generateKeys(this.props.pin);
       this.props.fetchChats(this.props.userId);
       this.props.fetchFriends();
+      this.setState({ loaded: true });
     }
   }
 
   componentWillUnmount() {
     closeSubscriptions();
+  }
+
+  decryptMessage = (message) => {
+    const origin = parseInt(message.user_id) === this.props.userId ? 'sent' : 'received';
+    const content = decryptMessage(origin === 'sent' ? message.backup : message.content, this.props.privateKey);
+    return { ...message, content };
   }
 
   openChat = (friend) => {
@@ -86,7 +102,7 @@ class Messenger extends React.PureComponent {
           </p>
           {lastMessage && (
             <p className="messenger-contact-body-subtitle">
-              {lastMessage.content}
+              {this.decryptMessage(lastMessage).content}
             </p>
           )}
         </div>
@@ -108,11 +124,74 @@ class Messenger extends React.PureComponent {
     );
   }
 
+  renderFooter() {
+    return (
+      <div className="messenger-settings-encryption-container">
+        <p className="messenger-settings-encryption-title">Encrypted Chat Key</p>
+        <p className="messenger-settings-encryption-subtitle">
+          Your messages cannot be read by anyone other than you and your friends.<br /><br />
+          Because of this, we cannot store your encryption key in our servers.<br /><br />
+          {this.props.pin ?
+            `Please keep this key somewhere safe, you'll need it when logging in on another device.` :
+            `To decrypt your previous messages, you'll need to inform your encryption key.`
+          }
+        </p>
+        <input
+          className="messenger-settings-encryption-key"
+          type="text"
+          maxLength={12}
+          placeholder="Encryption Key"
+          disabled={this.props.pin}
+          value={this.props.pin || this.state.pin}
+          onChange={event => this.setState({ pin: event.target.value })}
+        />
+        {this.state.invalidPin && (
+          <p className="messenger-settings-encryption-error">That's the wrong key, try again!</p>
+        )}
+        <div className="messenger-settings-encryption-footer">
+          {!this.props.pin && (
+            <div
+              className="messenger-settings-encryption-footer-button clickable"
+              onClick={() => {
+                this.props.generateKeys();
+                this.props.chats.forEach(chat => this.props.clearChat(chat.chatId));
+              }}
+            >new</div>
+          )}
+          {!this.props.pin && (
+            <div
+              className="messenger-settings-encryption-footer-button clickable"
+              onClick={() => this.props.validatePin(this.state.pin, this.props.publicKey)}
+            >validate</div>
+          )}
+          {!!this.props.pin && (
+            <div
+              className="messenger-settings-encryption-footer-button clickable"
+              onClick={() => copyToClipboard(this.props.pin)}
+            >copy</div>
+          )}
+          {!!this.props.pin && (
+            <div
+              className="messenger-settings-encryption-footer-button clickable"
+              onClick={() => {
+                const email = "felipe.roque@outlook.com"
+                const mailLink = `mailto:${email}?subject=myG%20Security%20Key&body=%20This%20is%20my%20myG%20security%20key:%20${this.props.pin}`;
+                window.open(mailLink, '_blank').focus();
+              }}
+            >email</div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   render() {
+    if (!this.state.loaded) return null;
     return (
       <section id="messenger">
         {this.renderChats()}
         {this.renderFriends()}
+        {this.renderFooter()}
       </section>
     );
   }
@@ -123,6 +202,9 @@ function mapStateToProps(state) {
   return {
     chats: state.chat.chats,
     friends: state.friend.friends,
+    pin: state.encryption.pin,
+    invalidPin: state.encryption.invalidPin,
+    privateKey: state.encryption.privateKey,
   }
 }
 
@@ -133,6 +215,9 @@ function mapDispatchToProps(dispatch) {
     closeChat: chatId => dispatch(closeChatAction(chatId)),
     fetchChats: userId => dispatch(fetchChatsAction(userId)),
     fetchFriends: () => dispatch(fetchFriendsAction()),
+    generateKeys: pin => dispatch(generateKeysAction(pin)),
+    validatePin: (pin, publicKey) => dispatch(validatePinAction(pin, publicKey)),
+    clearChat: (chatId) => dispatch(clearChatAction(chatId)),
   });
 }
 
