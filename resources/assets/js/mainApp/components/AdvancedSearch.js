@@ -232,11 +232,14 @@ export default class AdvancedSearch extends Component<*, State> {
     }
 
     if (allGameExperiences.data.latestGameExperiences.data.length == 0) {
-      this.state.moreplease = false
+      this.setState({
+        moreplease: false,
+      })
+      return
     }
 
     this.setState({
-      allGameExperiences: allGameExperiences.data.latestGameExperiences.data,
+      allGameExperiences: this.state.allGameExperiences.concat(allGameExperiences.data.latestGameExperiences.data),
     })
   }
 

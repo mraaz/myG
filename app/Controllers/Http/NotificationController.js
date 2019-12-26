@@ -25,7 +25,7 @@ function merge(left, right) {
   let indexRight = 0
 
   while (indexLeft < left.length && indexRight < right.length) {
-    if (left[indexLeft].updated_at > right[indexRight].updated_at) {
+    if (left[indexLeft].created_at > right[indexRight].created_at) {
       result.push(left[indexLeft])
       indexLeft++
     } else {
@@ -411,9 +411,9 @@ class NotificationController {
           'users.last_name',
           'users.profile_img',
           'users.id',
-          'notifications.updated_at'
+          'notifications.created_at'
         )
-        .orderBy('notifications.updated_at')
+        .orderBy('notifications.created_at')
         .limit(10)
         .offset(parseInt(request.input('counter'), 10))
       const allMylike_comments = await Database.from('notifications')
@@ -429,9 +429,9 @@ class NotificationController {
           'users.last_name',
           'users.profile_img',
           'users.id',
-          'notifications.updated_at'
+          'notifications.created_at'
         )
-        .orderBy('notifications.updated_at')
+        .orderBy('notifications.created_at')
         .limit(10)
         .offset(parseInt(request.input('counter'), 10))
       const allMylike_replies = await Database.from('notifications')
@@ -447,9 +447,9 @@ class NotificationController {
           'users.last_name',
           'users.profile_img',
           'users.id',
-          'notifications.updated_at'
+          'notifications.created_at'
         )
-        .orderBy('notifications.updated_at')
+        .orderBy('notifications.created_at')
         .limit(10)
         .offset(parseInt(request.input('counter'), 10))
       const allMycomments = await Database.from('notifications')
@@ -465,9 +465,9 @@ class NotificationController {
           'users.last_name',
           'users.profile_img',
           'users.id',
-          'notifications.updated_at'
+          'notifications.created_at'
         )
-        .orderBy('notifications.updated_at')
+        .orderBy('notifications.created_at')
         .limit(10)
         .offset(parseInt(request.input('counter'), 10))
       const allMyreplies = await Database.from('notifications')
@@ -483,9 +483,9 @@ class NotificationController {
           'users.last_name',
           'users.profile_img',
           'users.id',
-          'notifications.updated_at'
+          'notifications.created_at'
         )
-        .orderBy('notifications.updated_at')
+        .orderBy('notifications.created_at')
         .limit(10)
         .offset(parseInt(request.input('counter'), 10))
       const allMyschedulegames = await Database.from('notifications')
@@ -499,9 +499,9 @@ class NotificationController {
           'users.last_name',
           'users.profile_img',
           'users.id',
-          'notifications.updated_at'
+          'notifications.created_at'
         )
-        .orderBy('notifications.updated_at')
+        .orderBy('notifications.created_at')
         .limit(10)
         .offset(parseInt(request.input('counter'), 10))
       const myschedulegames_attendees = await Database.from('notifications')
@@ -516,9 +516,9 @@ class NotificationController {
           'users.last_name',
           'users.profile_img',
           'users.id',
-          'notifications.updated_at'
+          'notifications.created_at'
         )
-        .orderBy('notifications.updated_at')
+        .orderBy('notifications.created_at')
         .limit(10)
         .offset(parseInt(request.input('counter'), 10))
       const mygroups = await Database.from('notifications')
@@ -533,10 +533,10 @@ class NotificationController {
           'users.last_name',
           'users.profile_img',
           'users.id',
-          'notifications.updated_at',
+          'notifications.created_at',
           'groups.name'
         )
-        .orderBy('notifications.updated_at')
+        .orderBy('notifications.created_at')
         .limit(10)
         .offset(parseInt(request.input('counter'), 10))
       const myschedulegames_approvals = await Database.from('notifications')
@@ -551,9 +551,9 @@ class NotificationController {
           'users.last_name',
           'users.profile_img',
           'users.id',
-          'notifications.updated_at'
+          'notifications.created_at'
         )
-        .orderBy('notifications.updated_at')
+        .orderBy('notifications.created_at')
         .limit(10)
         .offset(parseInt(request.input('counter'), 10))
       const allMyarchived_schedulegames = await Database.from('notifications')
@@ -568,9 +568,9 @@ class NotificationController {
           'users.last_name',
           'users.profile_img',
           'users.id',
-          'notifications.updated_at'
+          'notifications.created_at'
         )
-        .orderBy('notifications.updated_at')
+        .orderBy('notifications.created_at')
         .limit(10)
         .offset(parseInt(request.input('counter'), 10))
       const dropped_out_attendees = await Database.from('notifications')
@@ -584,9 +584,9 @@ class NotificationController {
           'users.last_name',
           'users.profile_img',
           'users.id',
-          'notifications.updated_at'
+          'notifications.created_at'
         )
-        .orderBy('notifications.updated_at')
+        .orderBy('notifications.created_at')
         .limit(10)
         .offset(parseInt(request.input('counter'), 10))
       const group_member_approved = await Database.from('notifications')
@@ -600,9 +600,9 @@ class NotificationController {
           'users.last_name',
           'users.profile_img',
           'users.id',
-          'notifications.updated_at'
+          'notifications.created_at'
         )
-        .orderBy('notifications.updated_at')
+        .orderBy('notifications.created_at')
         .limit(10)
         .offset(parseInt(request.input('counter'), 10))
 

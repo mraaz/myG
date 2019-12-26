@@ -32,7 +32,9 @@ export default class Notifications extends Component {
       })
 
       if (getnoti.data.length == 0) {
-        this.state.moreplease = false
+        this.setState({
+          moreplease: false,
+        })
         return
       }
 
