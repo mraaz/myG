@@ -31,6 +31,7 @@ export default function reducer(state = {
             chat.friendId = action.payload.friendId;
             chat.muted = action.payload.muted;
             chat.blocked = action.payload.blocked;
+            chat.clearedDate = action.payload.clearedDate;
             chat.messages = chat.blocked ? chat.messages || [] : messages;
             return {
                 ...state,

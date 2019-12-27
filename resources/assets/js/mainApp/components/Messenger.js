@@ -71,7 +71,9 @@ class Messenger extends React.PureComponent {
   }
 
   renderChat = (chat) => {
-    if (!(chat.messages || []).length && chat.userId !== this.props.userId) return;
+    const hasMessages = !!(chat.messages || []).length;
+    const wasCleared = new Date(chat.clearedDate).getFullYear() > 1970;
+    if ((!hasMessages && !wasCleared) && chat.userId !== this.props.userId) return;
     return (
       <Chat
         key={chat.chatId}
