@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { deleteMessageAction } from '../../redux/actions/chatAction';
-import { formatAMPM, formatDate } from '../../common/date';
+import { formatAMPM, formatDate, convertUTCDateToLocalDate } from '../../common/date';
 import { copyToClipboard } from '../../common/clipboard';
 
 class ChatMessage extends React.Component {
@@ -138,7 +138,7 @@ class ChatMessage extends React.Component {
             </div>
             {!!message.edited && !message.deleted && <p className="chat-component-message-edited">edited</p>}
             <p className="chat-component-message-date">
-              {formatAMPM(new Date(message.created_at))}
+              {formatAMPM(convertUTCDateToLocalDate(new Date(message.created_at)))}
             </p>
           </div>
 
