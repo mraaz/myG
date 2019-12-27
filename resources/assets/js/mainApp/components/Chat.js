@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import ChatMessage from './ChatMessage';
 
-import { fetchInfoAction, sendMessageAction, editMessageAction, updateChatAction, clearChatAction } from '../../redux/actions/chatAction';
+import { fetchInfoAction, sendMessageAction, editMessageAction, updateChatAction, updateChatStateAction, clearChatAction } from '../../redux/actions/chatAction';
 import { enrichMessagesWithDates } from '../../common/chat';
 import { encryptMessage, decryptMessage } from '../../integration/encryption';
 
@@ -13,8 +13,6 @@ class Chat extends React.Component {
     super(props);
     this.state = {
       input: '',
-      maximised: false,
-      minimised: false,
       lastMessageId: null,
       wasEncrypted: !props.userPrivateKey,
       editing: false,
@@ -153,11 +151,11 @@ class Chat extends React.Component {
           <div className="chat-component-header-top-buttons">
             <div className="chat-component-header-button"
               style={{ backgroundImage: `url(/assets/svg/ic_chat_minimise.svg)` }}
-              onClick={() => this.setState(previous => ({ minimised: !previous.minimised, maximised: false }))}
+              onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}
             />
             <div className="chat-component-header-button"
               style={{ backgroundImage: `url(/assets/svg/ic_chat_maximise.svg)` }}
-              onClick={() => this.setState(previous => ({ maximised: !previous.maximised, minimised: false }))}
+              onClick={() => this.props.updateChatState(this.props.chatId, { maximised: !this.props.maximised, minimised: false })}
             />
             <div className="chat-component-header-button"
               style={{ backgroundImage: `url(/assets/svg/ic_chat_close.svg)` }}
@@ -249,8 +247,8 @@ class Chat extends React.Component {
   render() {
     if (!this.props.userPrivateKey) return this.renderEncryptedChat();
     let extraClass = "";
-    if (this.state.maximised) extraClass += "chat-maximised";
-    if (this.state.minimised) extraClass += "chat-minimised";
+    if (this.props.maximised) extraClass += "chat-maximised";
+    if (this.props.minimised) extraClass += "chat-minimised";
     return (
       <div
         key={this.props.chatId}
@@ -258,9 +256,9 @@ class Chat extends React.Component {
       >
         {this.renderSettings()}
         {this.renderHeader()}
-        {!this.state.minimised && this.renderBody()}
-        {!this.state.minimised && <div className="chat-component-footer-divider" />}
-        {!this.state.minimised && this.renderFooter()}
+        {!this.props.minimised && this.renderBody()}
+        {!this.props.minimised && <div className="chat-component-footer-divider" />}
+        {!this.props.minimised && this.renderFooter()}
       </div>
     );
   }
@@ -276,6 +274,8 @@ function mapStateToProps(state, props) {
     subtitle: chat.subtitle || '',
     blocked: chat.blocked || false,
     muted: chat.muted || false,
+    maximised: chat.maximised || false,
+    minimised: chat.minimised || false,
     friendPublicKey: chat.publicKey,
     userPublicKey: state.encryption.publicKey,
     userPrivateKey: state.encryption.privateKey,
@@ -288,6 +288,7 @@ function mapDispatchToProps(dispatch) {
     editMessage: (chatId, messageId, content) => dispatch(editMessageAction(chatId, messageId, content)),
     fetchInfo: (chatId) => dispatch(fetchInfoAction(chatId)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
+    updateChatState: (chatId, state) => dispatch(updateChatStateAction(chatId, state)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
   });
 }

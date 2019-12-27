@@ -165,6 +165,21 @@ export default function reducer(state = {
             };
         }
 
+        case "CHAT_STATE_UPDATED": {
+            logger.log('CHAT', `Redux -> Chat State Updated: `, action.payload);
+            const chatId = action.meta.chatId;
+            const { maximised, minimised } = action.payload;
+            const chats = JSON.parse(JSON.stringify(state.chats));
+            const chat = chats.find(candidate => candidate.chatId === chatId);
+            if (!chat) return state;
+            if (minimised !== undefined) chat.minimised = minimised;
+            if (maximised !== undefined) chat.maximised = maximised;
+            return {
+                ...state,
+                chats,
+            };
+        }
+
         default: return state;
 
     }
