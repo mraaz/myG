@@ -88,6 +88,7 @@ class ChatMessage extends React.Component {
           className="chat-component-message-input"
           value={this.state.input}
           onKeyDown={this.handleKeyPress}
+          onBlur={() => this.setState({ editing: false })}
           onChange={event => this.setState({ input: event.target.value })}
         />
       </div>
