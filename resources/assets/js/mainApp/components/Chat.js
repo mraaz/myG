@@ -94,7 +94,10 @@ class Chat extends React.Component {
 
         <div
           className={`chat-component-header-settings-option clickable ${this.props.blocked && inactiveStyle}`}
-          onClick={() => this.props.updateChat(this.props.chatId, { blocked: !this.props.blocked })}
+          onClick={() => {
+            this.setState({ settings: false });
+            this.props.updateChat(this.props.chatId, { blocked: !this.props.blocked });
+          }}
         >
           <div
             className="chat-component-header-settings-option-icon"
@@ -105,7 +108,10 @@ class Chat extends React.Component {
 
         <div
           className={`chat-component-header-settings-option clickable ${this.props.muted && inactiveStyle}`}
-          onClick={() => this.props.updateChat(this.props.chatId, { muted: !this.props.muted })}
+          onClick={() => {
+            this.setState({ settings: false });
+            this.props.updateChat(this.props.chatId, { muted: !this.props.muted });
+          }}
         >
           <div
             className="chat-component-header-settings-option-icon"
@@ -116,7 +122,10 @@ class Chat extends React.Component {
 
         <div
           className={`chat-component-header-settings-option clickable ${!this.props.messages.length && inactiveStyle}`}
-          onClick={() => this.props.clearChat(this.props.chatId)}
+          onClick={() => {
+            this.setState({ settings: false });
+            this.props.clearChat(this.props.chatId);
+          }}
         >
           <div
             className="chat-component-header-settings-option-icon"
