@@ -71,6 +71,7 @@ class Messenger extends React.PureComponent {
   }
 
   renderChat = (chat) => {
+    if (!(chat.messages || []).length && chat.userId !== this.props.userId) return;
     return (
       <Chat
         key={chat.chatId}

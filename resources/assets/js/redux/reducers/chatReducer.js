@@ -83,6 +83,7 @@ export default function reducer(state = {
             if (!chat.muted && (window.document.hidden || chat.closed)) new Audio('/assets/sound/notification.ogg').play();
             if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
             if (!chat.muted) chat.closed = false;
+            if (!chat.messages) chat.messages = [];
             chat.messages.push(message);
             return {
                 ...state,
