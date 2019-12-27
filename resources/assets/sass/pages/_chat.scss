@@ -150,6 +150,12 @@
   padding: 4px;
 }
 
+.chat-component-input-container {
+  display: flex;
+  flex: 1;
+  height: 100%;
+}
+
 .chat-component-input {
   display: flex;
   flex: 1;

@@ -2,24 +2,23 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import ChatMessage from './ChatMessage';
+import ChatInput from './ChatInput';
 
 import { fetchInfoAction, sendMessageAction, editMessageAction, updateChatAction, updateChatStateAction, clearChatAction } from '../../redux/actions/chatAction';
 import { enrichMessagesWithDates } from '../../common/chat';
 import { encryptMessage, decryptMessage } from '../../integration/encryption';
 
-class Chat extends React.Component {
+class Chat extends React.PureComponent {
 
   constructor(props) {
     super(props);
     this.state = {
-      input: '',
       lastMessageId: null,
       wasEncrypted: !props.userPrivateKey,
       editing: false,
       settings: false,
     };
     this.messageListRef = React.createRef();
-    this.inputRef = React.createRef();
   }
 
   componentDidMount() {
@@ -40,10 +39,9 @@ class Chat extends React.Component {
     if (this.messageListRef.current) this.messageListRef.current.scrollTo(0, this.messageListRef.current.scrollHeight);
   }
 
-  sendMessage = () => {
-    if (!this.state.input) return;
-    this.props.sendMessage(this.props.chatId, this.props.userId, this.encryptInput(this.state.input));
-    this.setState({ input: '' });
+  sendMessage = (input) => {
+    if (!input) return;
+    this.props.sendMessage(this.props.chatId, this.props.userId, this.encryptInput(input));
   }
 
   editMessage = (chatId, messageId, input) => {
@@ -66,24 +64,11 @@ class Chat extends React.Component {
     const sentMessages = this.props.messages.filter(message => parseInt(message.user_id) === this.props.userId && !message.deleted);
     const lastSentMessage = sentMessages[sentMessages.length - 1];
     if (!lastSentMessage) return;
-    this.setState({ input: '', editing: lastSentMessage.id });
-  }
-
-  onKeyPressed = event => {
-    const code = event.keyCode || event.which;
-    const enterKeyCode = 13;
-    if (code === enterKeyCode) return this.sendMessage();
-  }
-
-  onKeyDown = event => {
-    const code = event.keyCode || event.which;
-    const arrowUpKeyCode = 38;
-    if (code === arrowUpKeyCode) return this.editLastMessage();
+    this.setState({ editing: lastSentMessage.id });
   }
 
   onEdit = () => {
     this.setState({ editing: false });
-    this.inputRef.current.focus();
   }
 
   renderSettings = () => {
@@ -218,20 +203,12 @@ class Chat extends React.Component {
           />
           <div className="chat-component-attach-button-divider" />
         </div>
-        <input
-          disabled={this.props.blocked || !this.props.userPrivateKey}
-          className="chat-component-input"
-          placeholder={`${this.props.blocked ? 'Unblock to send messages' : 'Type your message here'}`}
-          value={this.state.input}
-          onChange={event => this.setState({ input: event.target.value })}
-          onKeyPress={this.onKeyPressed}
-          onKeyDown={this.onKeyDown}
+        <ChatInput 
+          blocked={this.props.blocked}
+          userPrivateKey={this.props.userPrivateKey}
+          sendMessage={this.sendMessage}
+          editLastMessage={this.editLastMessage}
           onFocus={() => this.setState({ editing: false })}
-          ref={this.inputRef}
-        />
-        <div className="chat-component-send-button"
-          style={{ backgroundImage: `url(/assets/svg/ic_chat_send.svg)` }}
-          onClick={this.sendMessage}
         />
       </div>
     );
