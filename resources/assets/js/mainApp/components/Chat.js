@@ -63,7 +63,7 @@ class Chat extends React.Component {
   }
 
   editLastMessage = () => {
-    const sentMessages = this.props.messages.filter(message => parseInt(message.user_id) === this.props.userId);
+    const sentMessages = this.props.messages.filter(message => parseInt(message.user_id) === this.props.userId && !message.deleted);
     const lastSentMessage = sentMessages[sentMessages.length - 1];
     if (!lastSentMessage) return;
     this.setState({ input: '', editing: lastSentMessage.id });

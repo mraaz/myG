@@ -14,7 +14,7 @@ class ChatMessage extends React.Component {
       showOptionsMenu: false,
       lastEditing: false,
       editing: false,
-      input: '',
+      input: props.message.content,
     };
     this.messageRef = React.createRef();
   }
@@ -121,7 +121,14 @@ class ChatMessage extends React.Component {
 
           <div className="chat-component-message-content-body">
             <p className={`chat-component-message-content`}>
-              {message.deleted ? 'This message was deleted.' : message.content}
+              {
+                message.deleted ?
+                  origin === 'sent' ?
+                    'You deleted this message' :
+                    'This message was deleted.'
+                  :
+                  message.content
+              }
             </p>
           </div>
 
