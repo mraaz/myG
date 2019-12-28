@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import CreatableSelect from 'react-select/lib/Creatable'
 import { toast } from 'react-toastify'
+import { Toast_style } from './Utility_Function'
 
 const reasons = [
   { value: 1, label: 'Real life issues, sorry all' },
@@ -42,13 +43,6 @@ const compareOption = (inputValue, option) => {
   }
   return option.value === candidate || option.label === candidate
 }
-
-const Toast_style = (props) => (
-  <div className='individual-toasts'>
-    <img width={48} src={'https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/Logo.png'}></img>
-    <div>{props.text}</div>
-  </div>
-)
 
 export default class DeleteScheduleGameModal extends Component<*, State> {
   constructor() {

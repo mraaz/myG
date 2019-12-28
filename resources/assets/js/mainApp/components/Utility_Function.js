@@ -13,12 +13,8 @@ export async function Game_name_values(inputValue) {
   }
   try {
     inputValue = inputValue.trimStart()
-    const getGameName = await axios.get(
-      `/api/GameNames/${inputValue}/gameSearchResults`
-    )
-    var results = getGameName.data.gameSearchResults[0].filter((i) =>
-      i.game_name.toLowerCase().includes(inputValue.toLowerCase())
-    )
+    const getGameName = await axios.get(`/api/GameNames/${inputValue}/gameSearchResults`)
+    var results = getGameName.data.gameSearchResults[0].filter((i) => i.game_name.toLowerCase().includes(inputValue.toLowerCase()))
     var newArr = []
     var i, newOption
     if (results.length != 0) {
@@ -55,3 +51,10 @@ export function Disable_keys(e) {
     e.stopPropagation()
   }
 }
+
+export const Toast_style = (props) => (
+  <div className='individual-toasts'>
+    <img width={48} src={'https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/Logo.png'}></img>
+    <div>{props.text}</div>
+  </div>
+)

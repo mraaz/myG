@@ -7,7 +7,7 @@ import CreatableSelect from 'react-select/lib/Creatable'
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import Modal from 'react-modal'
 import { toast } from 'react-toastify'
-import { Game_name_values, Disable_keys } from './Utility_Function'
+import { Game_name_values, Disable_keys, Toast_style } from './Utility_Function'
 
 Modal.setAppElement('#app')
 
@@ -45,13 +45,6 @@ const createOption = (label: string, game_names_id: string) => ({
   value: label.toLowerCase().replace(/\W/g, ''),
   game_names_id,
 })
-
-const Toast_style = (props) => (
-  <div className='individual-toasts'>
-    <img width={48} src={'https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/Logo.png'}></img>
-    <div>{props.text}</div>
-  </div>
-)
 
 export default class AddEsportsExp extends Component<*, State> {
   constructor() {

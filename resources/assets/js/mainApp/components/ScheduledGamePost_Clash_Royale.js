@@ -7,14 +7,8 @@ import moment from 'moment'
 import IndividualComment from './IndividualComment'
 import DeleteScheduleGameModal from './DeleteScheduleGameModal'
 import { toast } from 'react-toastify'
+import { Toast_style } from './Utility_Function'
 import SweetAlert from 'react-bootstrap-sweetalert'
-
-const Toast_style = (props) => (
-  <div className='individual-toasts'>
-    <img width={48} src={'https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/Logo.png'}></img>
-    <div>{props.text}</div>
-  </div>
-)
 
 export default class ScheduledGamePost_Clash_Royale extends Component {
   constructor() {

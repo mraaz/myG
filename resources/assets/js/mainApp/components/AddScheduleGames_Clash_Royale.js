@@ -8,6 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { toast } from 'react-toastify'
 
 import { SubmitDataFunction } from './AddScheduleGames_Submit_Data'
+import { Toast_style } from './Utility_Function'
 
 const experience_options = [
   { value: 'Casual', label: 'Casual' },
@@ -42,13 +43,6 @@ const clash_royale_trophy = [
   { value: '5000', label: '> 5000' },
   { value: 'competitive', label: 'Competitive' },
 ]
-
-const Toast_style = (props) => (
-  <div className='individual-toasts'>
-    <img width={48} src={'https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/Logo.png'}></img>
-    <div>{props.text}</div>
-  </div>
-)
 
 export default class AddScheduleGames_Clash_Royale extends Component {
   constructor() {

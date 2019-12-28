@@ -5,6 +5,7 @@ import Select from 'react-select'
 import axios from 'axios'
 import Modal from 'react-modal'
 import { toast } from 'react-toastify'
+import { Toast_style } from './Utility_Function'
 
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete'
 
@@ -21,13 +22,6 @@ const relationship_status_options = [
     label: 'Game in progress',
   },
 ]
-
-const Toast_style = (props) => (
-  <div className='individual-toasts'>
-    <img width={48} src={'https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/Logo.png'}></img>
-    <div>{props.text}</div>
-  </div>
-)
 
 export default class Dossier extends Component {
   constructor() {

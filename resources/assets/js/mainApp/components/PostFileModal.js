@@ -2,13 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios'
 
 import { toast } from 'react-toastify'
-
-const Toast_style = (props) => (
-  <div className='individual-toasts'>
-    <img width={48} src={'https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/Logo.png'}></img>
-    <div>{props.text}</div>
-  </div>
-)
+import { Toast_style } from './Utility_Function'
 
 class FilePreview extends Component {
   constructor(props) {

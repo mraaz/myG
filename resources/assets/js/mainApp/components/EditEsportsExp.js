@@ -8,7 +8,7 @@ import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import Modal from 'react-modal'
 import { toast } from 'react-toastify'
 import SweetAlert from 'react-bootstrap-sweetalert'
-import { Game_name_values, Disable_keys } from './Utility_Function'
+import { Game_name_values, Disable_keys, Toast_style } from './Utility_Function'
 
 Modal.setAppElement('#app')
 
@@ -48,13 +48,6 @@ const createOptionDifValue = (value: string, label: string) => ({
   value: value,
   label,
 })
-
-const Toast_style = (props) => (
-  <div className='individual-toasts'>
-    <img width={48} src={'https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/Logo.png'}></img>
-    <div>{props.text}</div>
-  </div>
-)
 
 export default class EditEsportsExp extends Component<*, State> {
   constructor() {

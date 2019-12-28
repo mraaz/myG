@@ -8,6 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { toast } from 'react-toastify'
 
 import { SubmitDataFunction } from './AddScheduleGames_Submit_Data'
+import { Toast_style } from './Utility_Function'
 
 const experience_options = [
   { value: 'Casual', label: 'Casual' },
@@ -82,13 +83,6 @@ const dota2_roles = [
   { value: 'Position 4', label: 'Position 4' },
   { value: 'Position 5', label: 'Position 5' },
 ]
-
-const Toast_style = (props) => (
-  <div className='individual-toasts'>
-    <img width={48} src={'https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/Logo.png'}></img>
-    <div>{props.text}</div>
-  </div>
-)
 
 export default class AddScheduleGames_Dota2 extends Component {
   constructor() {

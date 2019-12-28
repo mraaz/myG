@@ -8,6 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { toast } from 'react-toastify'
 
 import { SubmitDataFunction } from './AddScheduleGames_Submit_Data'
+import { Toast_style } from './Utility_Function'
 
 const region_options = [
   { value: 'North America', label: 'North America' },
@@ -52,13 +53,6 @@ const limit_options = [
   { value: 100, label: '100' },
   { value: 42, label: 'Unlimited' },
 ]
-
-const Toast_style = (props) => (
-  <div className='individual-toasts'>
-    <img width={48} src={'https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/Logo.png'}></img>
-    <div>{props.text}</div>
-  </div>
-)
 
 export default class AddScheduleGames_Headers extends Component {
   constructor() {
