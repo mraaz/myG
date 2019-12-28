@@ -139,7 +139,7 @@ export default class AddEsportsExp extends Component<*, State> {
   }
 
   handleChange_ardour = (value_ardour: any) => {
-    self.setState({ value_ardour })
+    this.setState({ value_ardour })
     this.setState({ shouldCloseOnOverlayClick_: false })
   }
   handleChange_game_name = (value_game_name: any) => {
@@ -200,7 +200,7 @@ export default class AddEsportsExp extends Component<*, State> {
 
     if (this.state.value_ardour !== null && this.state.value_ardour.length !== 0) {
       for (var i = 0; i < this.state.value_ardour.length; i++) {
-        myardour += this.state.value_ardour[i].label + '; '
+        myardour += this.state.value_ardour[i].value + '; '
       }
       myardour = myardour
         .trim()
@@ -217,7 +217,7 @@ export default class AddEsportsExp extends Component<*, State> {
       var j
       for (i = 0; i < this.state.newValueCreated_ardour.length; i++) {
         for (j = 0; j < this.state.value_ardour.length; j++) {
-          if (this.state.value_ardour[j].label == this.state.newValueCreated_ardour[i]) {
+          if (this.state.value_ardour[j].value == this.state.newValueCreated_ardour[i]) {
             try {
               const post = await axios.post('/api/GameNames', {
                 game_name: this.state.newValueCreated_ardour[i],
@@ -373,7 +373,7 @@ export default class AddEsportsExp extends Component<*, State> {
       this.setState({ value_ardour: newOption })
       this.setState({ value_ardour: [...value_ardour, newOption] })
       this.setState({
-        newValueCreated_ardour: [...newValueCreated_ardour, newOption.label],
+        newValueCreated_ardour: [...newValueCreated_ardour, newOption.value],
       })
     }, 300)
   }
@@ -386,7 +386,7 @@ export default class AddEsportsExp extends Component<*, State> {
       this.setState({ value_game_name: newOption })
       this.setState({ value_tags: '' })
       this.setState({
-        newValueCreated_game_name: [...newValueCreated_game_name, newOption.label],
+        newValueCreated_game_name: [...newValueCreated_game_name, newOption.value],
       })
       this.setState({ newValueCreated_tags: [] })
       this.setState({ options_tags: '' })
