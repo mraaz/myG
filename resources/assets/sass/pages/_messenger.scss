@@ -78,6 +78,11 @@
   .messenger-contact-body-subtitle {
     font-size: 14px;
     color: #A0A0A0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 10em;
+    height: 14px;
   }
 
   .messenger-contact-info {

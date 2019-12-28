@@ -11,7 +11,7 @@
 }
 
 .chat-maximised {
-  height: 360px !important;
+  height: 420px !important;
 }
 
 .chat-minimised {
@@ -148,6 +148,12 @@
   justify-content: space-between;
   background-color: #171A1C;
   padding: 4px;
+}
+
+.chat-component-input-container {
+  display: flex;
+  flex: 1;
+  height: 100%;
 }
 
 .chat-component-input {

@@ -67,7 +67,7 @@ export function isToday(someDate) {
 }
 
 export function isYesterday(someDate) {
-  const yesterday = new Date(new Date().setDate(new Date().getDate()-1));
+  const yesterday = new Date(new Date().setDate(new Date().getDate() - 1));
   return someDate.getDate() == yesterday.getDate() &&
     someDate.getMonth() == yesterday.getMonth() &&
     someDate.getFullYear() == yesterday.getFullYear()
@@ -86,4 +86,16 @@ export function isOneDayBehind(date1, date2) {
   comparingDate.setMilliseconds(0);
   compareDate.setDate(compareDate.getDate() - 1);
   return comparingDate <= compareDate;
+}
+
+export function convertUTCDateToLocalDate(date) {
+  return new Date(
+    Date.UTC(date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      date.getHours(),
+      date.getMinutes(),
+      date.getSeconds()
+    )
+  );
 }

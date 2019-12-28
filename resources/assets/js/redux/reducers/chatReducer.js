@@ -31,6 +31,7 @@ export default function reducer(state = {
             chat.friendId = action.payload.friendId;
             chat.muted = action.payload.muted;
             chat.blocked = action.payload.blocked;
+            chat.clearedDate = action.payload.clearedDate;
             chat.messages = chat.blocked ? chat.messages || [] : messages;
             return {
                 ...state,
@@ -80,9 +81,10 @@ export default function reducer(state = {
             const chats = JSON.parse(JSON.stringify(state.chats));
             const chat = chats.find(candidate => candidate.chatId === chatId);
             if (chat.blocked) return state;
-            if (!chat.muted && (window.document.hidden || chat.closed)) new Audio('/assets/sound/notification.ogg').play();
+            if (!chat.muted && !window.document.hasFocus()) new Audio('/assets/sound/notification.ogg').play();
             if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
             if (!chat.muted) chat.closed = false;
+            if (!chat.messages) chat.messages = [];
             chat.messages.push(message);
             return {
                 ...state,
@@ -158,6 +160,21 @@ export default function reducer(state = {
             const chat = chats.find(candidate => candidate.chatId === chatId);
             if (chat.userId === userId) return state;
             chat.subtitle = subtitle;
+            return {
+                ...state,
+                chats,
+            };
+        }
+
+        case "CHAT_STATE_UPDATED": {
+            logger.log('CHAT', `Redux -> Chat State Updated: `, action.payload);
+            const chatId = action.meta.chatId;
+            const { maximised, minimised } = action.payload;
+            const chats = JSON.parse(JSON.stringify(state.chats));
+            const chat = chats.find(candidate => candidate.chatId === chatId);
+            if (!chat) return state;
+            if (minimised !== undefined) chat.minimised = minimised;
+            if (maximised !== undefined) chat.maximised = maximised;
             return {
                 ...state,
                 chats,

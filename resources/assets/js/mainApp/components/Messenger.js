@@ -3,13 +3,13 @@ import React from "react";
 import { connect } from 'react-redux';
 
 import Chat from './Chat';
-import { formatAMPM } from '../../common/date';
 
 import { monitorChats, closeSubscriptions } from '../../integration/ws/chat';
 import { fetchChatsAction, createChatAction, openChatAction, closeChatAction, clearChatAction } from '../../redux/actions/chatAction';
 import { fetchFriendsAction } from '../../redux/actions/friendAction';
 import { generateKeysAction, validatePinAction } from '../../redux/actions/encryptionAction';
 import { decryptMessage } from '../../integration/encryption';
+import { formatAMPM, convertUTCDateToLocalDate } from '../../common/date';
 import { copyToClipboard } from '../../common/clipboard';
 
 class Messenger extends React.PureComponent {
@@ -71,6 +71,9 @@ class Messenger extends React.PureComponent {
   }
 
   renderChat = (chat) => {
+    const hasMessages = !!(chat.messages || []).length;
+    const wasCleared = new Date(chat.clearedDate).getFullYear() > 1970;
+    if ((!hasMessages && !wasCleared) && chat.userId !== this.props.userId) return;
     return (
       <Chat
         key={chat.chatId}
@@ -109,7 +112,7 @@ class Messenger extends React.PureComponent {
         <div className="messenger-contact-info">
           {lastMessage && (
             <p className="messenger-contact-info-last-seen">
-              {formatAMPM(new Date(lastMessage.created_at))}
+              {formatAMPM(convertUTCDateToLocalDate(new Date(lastMessage.created_at)))}
             </p>
           )}
           {/* 

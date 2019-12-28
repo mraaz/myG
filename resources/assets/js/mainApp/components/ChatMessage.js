@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { deleteMessageAction } from '../../redux/actions/chatAction';
-import { formatAMPM, formatDate } from '../../common/date';
+import { formatAMPM, formatDate, convertUTCDateToLocalDate } from '../../common/date';
 import { copyToClipboard } from '../../common/clipboard';
 
 class ChatMessage extends React.Component {
@@ -14,7 +14,7 @@ class ChatMessage extends React.Component {
       showOptionsMenu: false,
       lastEditing: false,
       editing: false,
-      input: '',
+      input: props.message.content,
     };
     this.messageRef = React.createRef();
   }
@@ -88,6 +88,7 @@ class ChatMessage extends React.Component {
           className="chat-component-message-input"
           value={this.state.input}
           onKeyDown={this.handleKeyPress}
+          onBlur={() => this.setState({ editing: false })}
           onChange={event => this.setState({ input: event.target.value })}
         />
       </div>
@@ -121,25 +122,36 @@ class ChatMessage extends React.Component {
 
           <div className="chat-component-message-content-body">
             <p className={`chat-component-message-content`}>
-              {message.deleted ? 'This message was deleted.' : message.content}
+              {
+                message.deleted ?
+                  origin === 'sent' ?
+                    'You deleted this message' :
+                    'This message was deleted.'
+                  :
+                  message.content
+              }
             </p>
           </div>
 
           <div className="chat-component-message-content-info">
-            <div
-              onClick={() => this.setState({ showOptionsMenu: true })}
-              className={`chat-component-message-options-button ${!this.state.showOptionsMenu && !this.props.message.deleted && 'clickable'}`}
-              style={{ backgroundImage: this.state.showOptionsButton && !this.props.message.deleted && `url(/assets/svg/ic_chat_options.svg)` }}
-            />
-            <div className="chat-component-message-options-menu-container">
-              <div style={{ position: 'absolute' }}>
-                {this.renderOptions()}
+            <div className="chat-component-message-side-container">
+              <div
+                onClick={() => this.setState({ showOptionsMenu: true })}
+                className={`chat-component-message-options-button ${!this.state.showOptionsMenu && !this.props.message.deleted && 'clickable'}`}
+                style={{ backgroundImage: this.state.showOptionsButton && !this.props.message.deleted && `url(/assets/svg/ic_chat_options.svg)` }}
+              />
+              <div className="chat-component-message-options-menu-container">
+                <div className="chat-component-message-options-menu-inner-container">
+                  {this.renderOptions()}
+                </div>
               </div>
             </div>
-            {!!message.edited && !message.deleted && <p className="chat-component-message-edited">edited</p>}
-            <p className="chat-component-message-date">
-              {formatAMPM(new Date(message.created_at))}
-            </p>
+            <div className="chat-component-message-side-container">
+              {!!message.edited && !message.deleted && <p className="chat-component-message-edited">edited</p>}
+              <p className="chat-component-message-date">
+                {formatAMPM(convertUTCDateToLocalDate(new Date(message.created_at)))}
+              </p>
+            </div>
           </div>
 
         </div>

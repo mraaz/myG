@@ -67,10 +67,10 @@ class UserChatController {
     const muted = chat.toJSON().muted;
     const blocked = chat.toJSON().blocked;
 
-    const clearedDate = chat.toJSON().cleared_date;
+    const clearedDate = new Date(chat.toJSON().cleared_date.toISOString().replace("T", " ").split('.')[0]);
     const deletedMessages = JSON.parse(chat.toJSON().deleted_messages);
     const filteredMessages = messages
-      .filter(message => new Date(message.created_at) > new Date(clearedDate))
+      .filter(message => new Date(message.created_at) > clearedDate)
       .filter(message => !deletedMessages.includes(`${message.id}`));
 
     return {
@@ -81,6 +81,7 @@ class UserChatController {
       friendId: friend.friendId,
       muted,
       blocked,
+      clearedDate,
       messages: filteredMessages,
     };
 

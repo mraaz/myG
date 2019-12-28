@@ -83,13 +83,20 @@
   display: flex;
   flex: 1;
   color: #FFFFFF;
+  word-break: break-word;
   font-size: 12px;
   margin-right: 4px;
+}
+
+.chat-component-message-side-container {
+  display: flex;
+  align-items: flex-end;
 }
 
 .chat-component-message-edited {
   z-index: 1;
   color: #93A4A5;
+  margin-bottom: 2px;
   font-size: 7px;
 }
 
@@ -113,6 +120,11 @@
   position: relative;
   width: 0px;
   height: 0px;
+}
+
+.chat-component-message-options-menu-inner-container {
+  position: absolute;
+  top: 0;
 }
 
 .chat-component-message-options-menu {

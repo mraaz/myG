@@ -31,6 +31,14 @@ export function onInfoUpdatedAction(activity, chatId) {
     }
 }
 
+export function updateChatStateAction(chatId, state) {
+    return {
+        type: 'CHAT_STATE_UPDATED',
+        payload: state,
+        meta: { chatId },
+    }
+}
+
 export function fetchChatsAction(userId) {
     return {
         type: 'FETCH_CHATS',
