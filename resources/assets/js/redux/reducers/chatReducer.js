@@ -81,7 +81,7 @@ export default function reducer(state = {
             const chats = JSON.parse(JSON.stringify(state.chats));
             const chat = chats.find(candidate => candidate.chatId === chatId);
             if (chat.blocked) return state;
-            if (!chat.muted && (window.document.hidden || chat.closed)) new Audio('/assets/sound/notification.ogg').play();
+            if (!chat.muted && !window.document.hasFocus()) new Audio('/assets/sound/notification.ogg').play();
             if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
             if (!chat.muted) chat.closed = false;
             if (!chat.messages) chat.messages = [];
