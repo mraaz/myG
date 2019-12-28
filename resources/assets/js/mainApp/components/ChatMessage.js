@@ -134,20 +134,24 @@ class ChatMessage extends React.Component {
           </div>
 
           <div className="chat-component-message-content-info">
-            <div
-              onClick={() => this.setState({ showOptionsMenu: true })}
-              className={`chat-component-message-options-button ${!this.state.showOptionsMenu && !this.props.message.deleted && 'clickable'}`}
-              style={{ backgroundImage: this.state.showOptionsButton && !this.props.message.deleted && `url(/assets/svg/ic_chat_options.svg)` }}
-            />
-            <div className="chat-component-message-options-menu-container">
-              <div style={{ position: 'absolute' }}>
-                {this.renderOptions()}
+            <div className="chat-component-message-side-container">
+              <div
+                onClick={() => this.setState({ showOptionsMenu: true })}
+                className={`chat-component-message-options-button ${!this.state.showOptionsMenu && !this.props.message.deleted && 'clickable'}`}
+                style={{ backgroundImage: this.state.showOptionsButton && !this.props.message.deleted && `url(/assets/svg/ic_chat_options.svg)` }}
+              />
+              <div className="chat-component-message-options-menu-container">
+                <div className="chat-component-message-options-menu-inner-container">
+                  {this.renderOptions()}
+                </div>
               </div>
             </div>
-            {!!message.edited && !message.deleted && <p className="chat-component-message-edited">edited</p>}
-            <p className="chat-component-message-date">
-              {formatAMPM(convertUTCDateToLocalDate(new Date(message.created_at)))}
-            </p>
+            <div className="chat-component-message-side-container">
+              {!!message.edited && !message.deleted && <p className="chat-component-message-edited">edited</p>}
+              <p className="chat-component-message-date">
+                {formatAMPM(convertUTCDateToLocalDate(new Date(message.created_at)))}
+              </p>
+            </div>
           </div>
 
         </div>
