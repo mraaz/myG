@@ -4,6 +4,9 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
 
+import 'react-dropzone-uploader/dist/styles.css'
+import Dropzone from 'react-dropzone-uploader'
+
 class FilePreview extends Component {
   constructor(props) {
     super(props)
@@ -137,40 +140,53 @@ export default class PostFileModal extends Component {
     })
   }
 
-  doUploadS3(file) {
+  async doUploadS3(file, name) {
     var instance = this
     this.setState({
       uploading: true,
     })
     const formData = new FormData()
     formData.append('upload_file', file)
-    formData.append('filename', file.name)
+    formData.append('filename', name)
 
-    axios
-      .post('/api/uploadFile', formData, {
+    try {
+      const post = await axios.post('/api/uploadFile', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       })
-      .then(function(resp) {
-        var new_preview_files = instance.state.preview_files
-        new_preview_files.push({
-          src: resp.data.Location,
-          key: resp.data.Key,
-        })
-        instance.setState({
-          uploading: false,
-          preview_files: new_preview_files,
-        })
+      console.log('asfsadfds!!!')
+      console.log(post)
+    } catch (error) {
+      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Max file size is 100MB.'} />)
+      instance.setState({
+        uploading: false,
       })
-      .catch((error) => {
-        // handle your error
-        console.log('got jhere')
-        toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Max file size is 100MB.'} />)
-        instance.setState({
-          uploading: false,
-        })
-      })
+    }
+    this.setState({
+      uploading: true,
+    })
+
+    // const post = await axios
+    //   .post('/api/uploadFile', formData, {
+    //     headers: {
+    //       'Content-Type': 'multipart/form-data',
+    //     },
+    //   })
+    //   .then(function(resp) {
+    //     var new_preview_files = instance.state.preview_files
+    //     new_preview_files.push({
+    //       src: resp.data.Location,
+    //       key: resp.data.Key,
+    //     })
+    //     instance.setState({
+    //       uploading: false,
+    //       preview_files: new_preview_files,
+    //     })
+    //   })
+    //   .catch((error) => {
+    //     // handle your error
+    //   })
   }
 
   onChangeFile(event) {
@@ -199,6 +215,20 @@ export default class PostFileModal extends Component {
     this.setState({
       [name]: value,
     })
+  }
+
+  getUploadParams = async ({ file, meta: { name } }) => {
+    this.doUploadS3(file, name)
+    return { url: 'https://httpbin.org/post' }
+  }
+
+  handleChangeStatus = ({ meta }, status) => {
+    console.log(status, meta)
+  }
+
+  handleSubmit = (files, allFiles) => {
+    console.log(files.map((f) => f.meta))
+    allFiles.forEach((f) => f.remove())
   }
 
   render() {
@@ -236,41 +266,12 @@ export default class PostFileModal extends Component {
               maxLength='254'
               placeholder="What's up..."
             />
-            <input
-              id='myInput'
-              type='file'
-              ref={(ref) => (this.ref_upload = ref)}
-              style={{ display: 'none' }}
-              accept={accept}
-              onClick={() => (this.ref_upload.value = null)}
-              onChange={this.onChangeFile.bind(this)}
+            <Dropzone
+              getUploadParams={this.getUploadParams}
+              onChangeStatus={this.handleChangeStatus}
+              onSubmit={this.handleSubmit}
+              styles={{ dropzone: { minHeight: 200, maxHeight: 250 } }}
             />
-
-            <div className='open-btn' onClick={() => this.ref_upload.click()}>
-              <i className='fas fa-upload'></i> Upload File
-            </div>
-            <div className={this.state.uploading ? 'uploading-container' : 'uploading-container uploading--hide'}>
-              <div className='uploading'></div>
-            </div>
-            {/* <div className="modal-text">Image Preview</div>
-                <div className={this.state.file_preview == '' ? 'upload-image-preview' : 'upload-image-preview open'}>
-                    <img src={this.state.file_preview}></img>
-                </div> */}
-            <div className='modal-text'>Previews</div>
-            <div className='uploaded-files-content'>
-              <div className='uploaded-file-preview'>
-                {this.state.preview_files.map(function(data, index) {
-                  return (
-                    <FilePreview
-                      key={data.key}
-                      src={data.src}
-                      srcKey={data.key}
-                      fileType={instance.props.fileType}
-                      callbackDelete={instance.callbackDeletePreview}></FilePreview>
-                  )
-                })}
-              </div>
-            </div>
             <div className={this.state.uploading ? 'save-btn btn--disable' : 'save-btn'} onClick={() => this.clickSave()}>
               <i className='fas fa-save'></i> Save
             </div>

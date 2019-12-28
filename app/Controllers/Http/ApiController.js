@@ -34,8 +34,7 @@ const uploadFile = (buffer, name, type) => {
 
 const generateRandomString = (length) => {
   var result = ''
-  var characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
   var charactersLength = characters.length
   for (var i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength))
@@ -76,8 +75,7 @@ class ApiController {
       const buffer = fs.readFileSync(tmpfilepath)
       const type = fileType(buffer)
       const timestamp = Date.now().toString()
-      const fileName =
-        timestamp + '_' + generateRandomString(6) + '_' + filename
+      const fileName = timestamp + '_' + generateRandomString(6) + '_' + filename
       const data = await uploadFile(buffer, fileName, type)
       return response.status(200).json(data)
     } catch (error) {
