@@ -7,102 +7,24 @@ import { Toast_style } from './Utility_Function'
 import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
 
-class FilePreview extends Component {
-  constructor(props) {
-    super(props)
-
-    this.clickDelete = this.clickDelete.bind(this)
-  }
-
-  clickDelete() {
-    if (typeof this.props.callbackDelete != 'undefined') {
-      this.props.callbackDelete(this.props.srcKey)
-    }
-  }
-
-  render() {
-    if (this.props.fileType == 'video') {
-      return (
-        <div className='file-preview-wrap'>
-          <div className='file-preview-overlay'>
-            <span className='file-preview-delete' onClick={() => this.clickDelete()}>
-              <i className='fas fa-times'></i>
-            </span>
-          </div>
-          <video controls>
-            <source src={this.props.src}></source>
-          </video>
-        </div>
-      )
-    } else {
-      return (
-        <div className='file-preview-wrap'>
-          <div className='file-preview-overlay'>
-            <span className='file-preview-delete' onClick={() => this.clickDelete()}>
-              <i className='fas fa-times'></i>
-            </span>
-          </div>
-          <img src={this.props.src}></img>
-        </div>
-      )
-    }
-  }
-}
 export default class PostFileModal extends Component {
   constructor() {
     super()
 
     this.state = {
-      file: null,
       file_preview: '',
       preview_files: [],
-      uploading: false,
-      file_src: '',
-      file_key: '',
       post_content: '',
+      store_files: [],
     }
 
     this.closeModal = this.closeModal.bind(this)
     this.doUploadS3 = this.doUploadS3.bind(this)
-    this.clickSave = this.clickSave.bind(this)
-
-    this.callbackDeletePreview = this.callbackDeletePreview.bind(this)
   }
 
   componentWillMount() {}
 
-  callbackDeletePreview(key) {
-    var instance = this
-
-    const formData = new FormData()
-    formData.append('key', key)
-
-    axios
-      .post('/api/deleteFile', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      .then(function(resp) {
-        var preview_files = instance.state.preview_files
-        for (var index = 0; index < preview_files.length; index++) {
-          if (instance.state.preview_files[index].key == key) {
-            preview_files.splice(index, 1)
-          }
-        }
-
-        instance.setState({
-          preview_files: preview_files,
-        })
-      })
-      .catch((error) => {})
-  }
-
   closeModal() {
-    if (this.state.uploading) {
-      return
-    }
-
     this.props.callbackClose()
 
     if (this.state.preview_files.length != 0) {
@@ -110,29 +32,10 @@ export default class PostFileModal extends Component {
         .post('/api/deleteFiles', {
           files: this.state.preview_files,
         })
-        .then(function(resp) {
-          instance.setState({
-            file_src: resp.data.Location,
-          })
-        })
         .catch((error) => {})
     }
 
-    this.setState({
-      preview_files: [],
-      post_content: '',
-    })
-  }
-
-  clickSave() {
-    if (this.state.uploading) {
-      return
-    }
-
-    this.props.callbackConfirm({
-      media_url: this.state.preview_files,
-      content: this.state.post_content,
-    })
+    this.state.store_files.forEach((f) => f.remove())
 
     this.setState({
       preview_files: [],
@@ -142,9 +45,7 @@ export default class PostFileModal extends Component {
 
   async doUploadS3(file, name) {
     var instance = this
-    this.setState({
-      uploading: true,
-    })
+
     const formData = new FormData()
     formData.append('upload_file', file)
     formData.append('filename', name)
@@ -155,58 +56,17 @@ export default class PostFileModal extends Component {
           'Content-Type': 'multipart/form-data',
         },
       })
-      console.log('asfsadfds!!!')
-      console.log(post)
+      var new_preview_files = instance.state.preview_files
+      new_preview_files.push({
+        src: post.data.Location,
+        key: post.data.Key,
+      })
+      instance.setState({
+        preview_files: new_preview_files,
+      })
     } catch (error) {
       toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Max file size is 100MB.'} />)
-      instance.setState({
-        uploading: false,
-      })
     }
-    this.setState({
-      uploading: true,
-    })
-
-    // const post = await axios
-    //   .post('/api/uploadFile', formData, {
-    //     headers: {
-    //       'Content-Type': 'multipart/form-data',
-    //     },
-    //   })
-    //   .then(function(resp) {
-    //     var new_preview_files = instance.state.preview_files
-    //     new_preview_files.push({
-    //       src: resp.data.Location,
-    //       key: resp.data.Key,
-    //     })
-    //     instance.setState({
-    //       uploading: false,
-    //       preview_files: new_preview_files,
-    //     })
-    //   })
-    //   .catch((error) => {
-    //     // handle your error
-    //   })
-  }
-
-  onChangeFile(event) {
-    event.stopPropagation()
-    event.preventDefault()
-
-    var instance = this
-    var file = event.target.files[0]
-
-    var reader = new FileReader()
-
-    reader.onload = function(e) {
-      instance.setState({
-        file_preview: e.target.result,
-      })
-    }
-
-    reader.readAsDataURL(file)
-
-    this.doUploadS3(file)
   }
 
   handleChange = (event) => {
@@ -222,13 +82,26 @@ export default class PostFileModal extends Component {
     return { url: 'https://httpbin.org/post' }
   }
 
-  handleChangeStatus = ({ meta }, status) => {
-    console.log(status, meta)
+  handleChangeStatus = ({ meta }, status, allFiles) => {
+    //console.log(status, meta)
+    this.state.store_files = allFiles
+    if (status == 'removed') {
+      console.log(meta.name)
+    }
   }
 
   handleSubmit = (files, allFiles) => {
-    console.log(files.map((f) => f.meta))
+    this.props.callbackConfirm({
+      media_url: this.state.preview_files,
+      content: this.state.post_content,
+    })
+
     allFiles.forEach((f) => f.remove())
+
+    this.setState({
+      preview_files: [],
+      post_content: '',
+    })
   }
 
   render() {
@@ -243,7 +116,7 @@ export default class PostFileModal extends Component {
     if (this.props.fileType == 'photo') {
       accept = 'image/*'
     } else {
-      accept = '.ogv, .mp4, .m4v, .mpeg, .wmv, .mov, .ogm, .webm, .asx, .mpg'
+      accept = 'video/*'
     }
 
     var filepath = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/blank-profile-picture-973460_1280.png'
@@ -270,11 +143,16 @@ export default class PostFileModal extends Component {
               getUploadParams={this.getUploadParams}
               onChangeStatus={this.handleChangeStatus}
               onSubmit={this.handleSubmit}
-              styles={{ dropzone: { minHeight: 200, maxHeight: 250 } }}
+              accept={accept}
+              inputContent={(files, extra) => (extra.reject ? 'Image or video files only' : 'Drag Files or Click to Browse')}
+              styles={{
+                dropzone: { minHeight: 200, maxHeight: 250 },
+                dropzoneReject: { borderColor: 'red', backgroundColor: '#DAA' },
+                inputLabel: (files, extra) => (extra.reject ? { color: 'red' } : {}),
+              }}
+              maxFiles={4}
+              maxSizeBytes={26214400}
             />
-            <div className={this.state.uploading ? 'save-btn btn--disable' : 'save-btn'} onClick={() => this.clickSave()}>
-              <i className='fas fa-save'></i> Save
-            </div>
           </div>
         </div>
       </div>
