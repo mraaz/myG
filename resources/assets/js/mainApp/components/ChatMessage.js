@@ -126,7 +126,7 @@ class ChatMessage extends React.Component {
                 message.deleted ?
                   origin === 'sent' ?
                     'You deleted this message' :
-                    'This message was deleted.'
+                    'This message was deleted'
                   :
                   message.content
               }
