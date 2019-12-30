@@ -219,6 +219,7 @@ class Layout extends Component {
                 </Switch>
               </section>
               <Messenger
+                profileImage={this.state.initialData && this.state.initialData.userInfo.profile_img}
                 userId={this.state.initialData && this.state.initialData.userInfo.id}
                 publicKey={this.state.initialData && this.state.initialData.userInfo.public_key}
                 loading={!this.state.initialData}

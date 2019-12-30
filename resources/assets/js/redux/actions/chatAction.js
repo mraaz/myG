@@ -1,9 +1,10 @@
 import { fetchChats, fetchInfo, createChat, updateChat, clearChat, sendMessage, editMessage, deleteMessage } from '../../integration/http/chat';
 
-export function onNewChatAction(chat) {
+export function onNewChatAction(chat, userId) {
     return {
         type: 'NEW_CHAT',
-        payload: { chat }
+        payload: { chat },
+        meta: { userId },
     }
 }
 
@@ -31,6 +32,14 @@ export function onInfoUpdatedAction(activity, chatId) {
     }
 }
 
+export function onPublicKeyUpdatedAction(payload, chatId, userId) {
+    return {
+        type: 'PUBLIC_KEY_UPDATED',
+        payload: payload,
+        meta: { chatId, userId },
+    }
+}
+
 export function updateChatStateAction(chatId, state) {
     return {
         type: 'CHAT_STATE_UPDATED',
@@ -43,6 +52,7 @@ export function fetchChatsAction(userId) {
     return {
         type: 'FETCH_CHATS',
         payload: fetchChats(userId),
+        meta: { userId },
     }
 }
 

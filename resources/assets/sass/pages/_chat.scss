@@ -101,7 +101,6 @@
   flex: 1;
   flex-direction: column;
   justify-content: space-around;
-  &:active { opacity: 0.3 };
 }
 
 .chat-component-header-title {
@@ -122,7 +121,6 @@
   background-position: center center;
   background-size: cover;
   cursor: pointer;
-  &:active { opacity: 0.3 };
 }
 
 .chat-component-body {
@@ -157,14 +155,15 @@
 }
 
 .chat-component-input {
+  resize: none;
+  overflow: auto;
   display: flex;
   flex: 1;
   height: 100%;
   border: none;
   background-color: #1D2326;
   color: #93A4A5;
-  padding-left: 8px;
-  padding-right: 8px;
+  padding: 8px 2px;
   font-size: 14px;
 }
 
@@ -174,14 +173,14 @@
   background-position: center;
   background-repeat: no-repeat;
   width: 32px;
-  height: 32px;
+  height: 100%;
   border-top-right-radius: 16px;
   border-bottom-right-radius: 16px;
-  &:active { opacity: 0.3 };
 }
 
 .chat-component-attach-button-container {
   background-color: #1D2326;
+  height: 100%;
   border-top-left-radius: 16px;
   border-bottom-left-radius: 16px;
   overflow: hidden;
@@ -194,8 +193,7 @@
   background-position: center;
   background-repeat: no-repeat;
   width: 32px;
-  height: 32px;
-  &:active { opacity: 0.3 };
+  height: 100%;
 }
 
 .chat-component-attach-button-divider {

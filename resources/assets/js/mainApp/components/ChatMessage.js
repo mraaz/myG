@@ -83,14 +83,16 @@ class ChatMessage extends React.Component {
         key={message.id}
         className="chat-component-message chat-component-message-sent"
       >
-        <input
+        <textarea
+          rows={1}
           autoFocus
           className="chat-component-message-input"
           value={this.state.input}
           onKeyDown={this.handleKeyPress}
           onBlur={() => this.setState({ editing: false })}
           onChange={event => this.setState({ input: event.target.value })}
-        />
+        >
+        </textarea>
       </div>
     );
   }
@@ -126,7 +128,7 @@ class ChatMessage extends React.Component {
                 message.deleted ?
                   origin === 'sent' ?
                     'You deleted this message' :
-                    'This message was deleted.'
+                    'This message was deleted'
                   :
                   message.content
               }

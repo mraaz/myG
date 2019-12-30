@@ -19,6 +19,7 @@ export default function reducer(state = {
         pin: action.payload.pin,
         publicKey: action.payload.publicKey,
         privateKey: action.payload.privateKey,
+        invalidPin: false,
       };
     }
 

@@ -1,5 +1,6 @@
 'use strict'
 
+const User = use('App/Models/User');
 const UserChat = use('App/Models/UserChat');
 const UserController = use('./UserController');
 const ChatController = use('./ChatController');
@@ -29,6 +30,28 @@ class UserChatController {
     if (data.blocked !== undefined) chat.blocked = data.blocked;
     await chat.save();
     return chat;
+  }
+
+  async updateStatus({ request, auth }) {
+    const userId = auth.user.id;
+    const user = await User.query().where('id', '=', userId).first();
+    const status = request.only ? request.only(['status']).status : request.status;
+    const forceStatus = request.only ? request.only(['forceStatus']).forceStatus : request.forceStatus;
+    const status_locked = user.toJSON().status_locked;
+    if (status !== 'offline' && !forceStatus && status_locked) return { status: user.toJSON().status };
+    const data = { status, status_locked: status !== 'online' && forceStatus };
+    const lastSeen = status === 'offline' && new Date();
+    if (status === 'offline') data.last_seen = lastSeen;
+    await User.query().where('id', '=', userId).update(data);
+    const chats = await this.fetchChats({ auth: { user: { id: userId } } });
+    const subtitle = this.getSubtitle(status, lastSeen);
+    chats.forEach(chat => {
+      broadcast('chat:*', `chat:${chat.chatId}`, 'chat:info', {
+        userId,
+        subtitle,
+      });
+    });
+    return { status }
   }
 
   async deleteMessages({ params, auth }) {
@@ -62,10 +85,11 @@ class UserChatController {
 
     const icon = friend.user[0].profile_img;
     const title = `${friend.user[0].first_name} ${friend.user[0].last_name}`;
-    const subtitle = this.getSubtitle(friend.user[0].online, friend.user[0].last_seen);
+    const subtitle = this.getSubtitle(friend.user[0].status, friend.user[0].last_seen);
     const publicKey = friend.user[0].public_key;
     const muted = chat.toJSON().muted;
     const blocked = chat.toJSON().blocked;
+    const status = chat.toJSON().status;
 
     const clearedDate = new Date(chat.toJSON().cleared_date.toISOString().replace("T", " ").split('.')[0]);
     const deletedMessages = JSON.parse(chat.toJSON().deleted_messages);
@@ -82,6 +106,7 @@ class UserChatController {
       muted,
       blocked,
       clearedDate,
+      status,
       messages: filteredMessages,
     };
 
@@ -103,8 +128,8 @@ class UserChatController {
     return friend;
   }
 
-  getSubtitle(online, lastSeen) {
-    return online ? 'Online' : `${formatDateTime(lastSeen)}`;
+  getSubtitle(status, lastSeen) {
+    return status === 'offline' ? `${formatDateTime(lastSeen)}` : `${status}`;
   }
 
   fetchChat(chatId, userId) {

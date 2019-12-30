@@ -1,5 +1,5 @@
 import { store } from '../../../redux/Store';
-import { onNewChatAction, onNewMessageAction, onUpdateMessageAction, onInfoUpdatedAction } from '../../../redux/actions/chatAction';
+import { onNewChatAction, onNewMessageAction, onUpdateMessageAction, onInfoUpdatedAction, onPublicKeyUpdatedAction } from '../../../redux/actions/chatAction';
 import socket from '../../../common/socket';
 import logger from '../../../common/logger';
 
@@ -17,20 +17,21 @@ export function monitorChats(userId) {
   logger.log('CHAT', `WS`, `Monitoring ${subscriptionKey}`);
   const subscription = socket.subscribe(subscriptionKey, event => {
     logger.log('CHAT', 'WS', `New "${event.type}" Event Received`, event.data);
-    store.dispatch(onNewChatAction(event.data));
+    store.dispatch(onNewChatAction(event.data, userId));
   });
   subscriptions[`${subscriptionKey}`] = subscription;
 }
 
-export function monitorMessages(chatId) {
+export function monitorMessages(chatId, userId) {
   const subscriptionKey = `chat:${chatId}`;
   if (subscriptions[`${subscriptionKey}`]) return;
   logger.log('CHAT', `WS`, `Monitoring ${subscriptionKey}`);
   const subscription = socket.subscribe(subscriptionKey, event => {
     logger.log('CHAT', 'WS', `New "${event.type}" Event Received`, event.data);
-    if (event.type === "chat:newMessage") return store.dispatch(onNewMessageAction(event.data, chatId));
-    if (event.type === "chat:updateMessage") return store.dispatch(onUpdateMessageAction(event.data, chatId));
-    if (event.type === "chat:info") return store.dispatch(onInfoUpdatedAction(event.data, chatId));
+    if (event.type === "chat:newMessage") return store.dispatch(onNewMessageAction(event.data, chatId, userId));
+    if (event.type === "chat:updateMessage") return store.dispatch(onUpdateMessageAction(event.data, chatId, userId));
+    if (event.type === "chat:info") return store.dispatch(onInfoUpdatedAction(event.data, chatId, userId));
+    if (event.type === "chat:encryption") return store.dispatch(onPublicKeyUpdatedAction(event.data, chatId, userId));
   });
   subscriptions[`${subscriptionKey}`] = subscription;
 }
