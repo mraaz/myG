@@ -2,6 +2,8 @@
 
 const Database = use('Database')
 const User = use('App/Models/User')
+const UserChat = use('App/Models/UserChat');
+const { broadcast } = require('../../Common/socket');
 
 class UserController {
   async profile({ auth, request, response }) {
@@ -157,9 +159,21 @@ class UserController {
   async storePublicKey({ auth, request, response }) {
     if (auth.user) {
       try {
+        const user = await User.query().where('id', '=', auth.user.id).first();
+        const publicKey = request.input('publicKey');
+        const previousKey = user.toJSON().public_key;
+        if (previousKey !== publicKey) {
+          const chats = await UserChat
+            .query()
+            .where('user_id', auth.user.id)
+            .fetch();
+          chats.toJSON().forEach(chat => {
+            broadcast('chat:*', `chat:${chat.chat_id}`, 'chat:encryption', { publicKey, userId: auth.user.id });
+          });
+        }
         await User.query()
           .where('id', '=', auth.user.id)
-          .update({ public_key: request.input('publicKey') })
+          .update({ public_key: publicKey });
         return response.status(200).json({ success: true })
       } catch (error) {
         return response.status(200).json({ success: false })
@@ -168,6 +182,7 @@ class UserController {
       return 'You are not Logged In!'
     }
   }
+
 }
 
 module.exports = UserController

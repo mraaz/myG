@@ -128,15 +128,20 @@ class Chat extends React.PureComponent {
       <div className="chat-component-header">
 
         <div
-          className="chat-component-header-icon"
+          className="chat-component-header-icon clickable"
+          onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised })}
           style={{ backgroundImage: `url('${this.props.icon}')` }}
         />
 
         <div className="chat-component-header-info">
-          <div className="chat-component-header-title">
+          <div className="chat-component-header-title clickable"
+            onClick={() => window.location.replace(`/profile/${this.props.friendId}`)}
+          >
             {this.props.title}
           </div>
-          <div className="chat-component-header-subtitle">
+          <div className="chat-component-header-subtitle clickable"
+            onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised })}
+          >
             {this.props.subtitle}
           </div>
         </div>
@@ -261,6 +266,7 @@ function mapStateToProps(state, props) {
     muted: chat.muted || false,
     maximised: chat.maximised || false,
     minimised: chat.minimised || false,
+    friendId: chat.userId,
     friendPublicKey: chat.publicKey,
     userPublicKey: state.encryption.publicKey,
     userPrivateKey: state.encryption.privateKey,
