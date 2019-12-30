@@ -1,6 +1,7 @@
 
 import React from "react";
 import { connect } from 'react-redux';
+import IdleTimer from 'react-idle-timer'
 
 import Chat from './Chat';
 
@@ -34,11 +35,6 @@ class Messenger extends React.PureComponent {
     return { invalidPin: props.invalidPin }
   }
 
-  componentDidMount() {
-    window.addEventListener("focus", this.onFocus);
-    window.addEventListener("blur", this.onBlur);
-  }
-
   componentDidUpdate() {
     if (!this.state.loaded && !this.props.loading) {
       monitorChats(this.props.userId);
@@ -52,8 +48,6 @@ class Messenger extends React.PureComponent {
 
   componentWillUnmount() {
     closeSubscriptions();
-    window.removeEventListener("focus", this.onFocus);
-    window.removeEventListener("blur", this.onBlur);
   }
 
   decryptMessage = (message) => {
@@ -70,14 +64,6 @@ class Messenger extends React.PureComponent {
 
   closeChat = (chatId) => {
     this.props.closeChat(chatId);
-  }
-
-  onFocus = () => {
-    this.props.updateStatus('online', false);
-  }
-
-  onBlur = () => {
-    this.props.updateStatus('afk', false);
   }
 
   setStatus = (status) => {
@@ -314,7 +300,7 @@ class Messenger extends React.PureComponent {
             />
             <div
               className={`messenger-footer-status-indicator messenger-footer-status-${this.props.status} clickable`}
-              onClick={() => this.setState({ changingStatus: true })}
+              onClick={() => this.setState(previous => ({ changingStatus: !previous.changingStatus }))}
             >
               {this.props.status}
             </div>
@@ -348,11 +334,17 @@ class Messenger extends React.PureComponent {
   render() {
     if (!this.state.loaded) return null;
     return (
-      <section id="messenger">
-        {this.renderChats()}
-        {this.renderFriends()}
-        {this.renderFooter()}
-      </section>
+      <IdleTimer
+        onAction={() => this.props.updateStatus('online', false)}
+        onIdle={() => this.props.updateStatus('afk', false)}
+        timeout={1000 * 60}
+      >
+        <section id="messenger">
+          {this.renderChats()}
+          {this.renderFriends()}
+          {this.renderFooter()}
+        </section>
+      </IdleTimer>
     );
   }
 

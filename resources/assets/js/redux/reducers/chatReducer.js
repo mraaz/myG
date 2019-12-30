@@ -45,6 +45,8 @@ export default function reducer(state = {
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       chat.closed = false;
+      chat.minimised = false;
+      chat.maximised = false;
       return {
         ...state,
         chats,
