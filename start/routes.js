@@ -73,6 +73,7 @@ Route.get('/api/getpost/:id', 'PostController.showpost')
 Route.post('/api/user', 'UserController.store')
 Route.post('/api/userprofile', 'UserController.changeProfile')
 Route.post('/api/userprofilebg', 'UserController.changeProfileBg')
+Route.put('/api/user/status', 'UserChatController.updateStatus');
 Route.put('/api/user/publicKey', 'UserController.storePublicKey')
 Route.get('/api/user/delete', 'UserController.destroy')
 Route.get('/api/user/:id', 'UserController.profile')

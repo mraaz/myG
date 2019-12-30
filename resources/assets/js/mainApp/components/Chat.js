@@ -143,15 +143,15 @@ class Chat extends React.PureComponent {
 
         <div className="chat-component-header-options">
           <div className="chat-component-header-top-buttons">
-            <div className="chat-component-header-button"
+            <div className="chat-component-header-button clickable"
               style={{ backgroundImage: `url(/assets/svg/ic_chat_minimise.svg)` }}
               onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}
             />
-            <div className="chat-component-header-button"
+            <div className="chat-component-header-button clickable"
               style={{ backgroundImage: `url(/assets/svg/ic_chat_maximise.svg)` }}
               onClick={() => this.props.updateChatState(this.props.chatId, { maximised: !this.props.maximised, minimised: false })}
             />
-            <div className="chat-component-header-button"
+            <div className="chat-component-header-button clickable"
               style={{ backgroundImage: `url(/assets/svg/ic_chat_close.svg)` }}
               onClick={() => this.props.onClose(this.props.chatId)}
             />
@@ -198,17 +198,16 @@ class Chat extends React.PureComponent {
     return (
       <div className="chat-component-footer">
         <div className="chat-component-attach-button-container">
-          <div className="chat-component-attach-button"
+          <div className="chat-component-attach-button clickable"
             style={{ backgroundImage: `url(/assets/svg/ic_chat_attach.svg)` }}
           />
           <div className="chat-component-attach-button-divider" />
         </div>
-        <ChatInput 
+        <ChatInput
           blocked={this.props.blocked}
           userPrivateKey={this.props.userPrivateKey}
           sendMessage={this.sendMessage}
           editLastMessage={this.editLastMessage}
-          onFocus={() => this.setState({ editing: false })}
         />
       </div>
     );

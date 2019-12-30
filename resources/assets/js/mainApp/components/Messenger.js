@@ -7,20 +7,36 @@ import Chat from './Chat';
 import { monitorChats, closeSubscriptions } from '../../integration/ws/chat';
 import { fetchChatsAction, createChatAction, openChatAction, closeChatAction, clearChatAction } from '../../redux/actions/chatAction';
 import { fetchFriendsAction } from '../../redux/actions/friendAction';
+import { updateStatusAction } from '../../redux/actions/userAction';
 import { generateKeysAction, validatePinAction } from '../../redux/actions/encryptionAction';
 import { decryptMessage } from '../../integration/encryption';
 import { formatAMPM, convertUTCDateToLocalDate } from '../../common/date';
 import { copyToClipboard } from '../../common/clipboard';
+import { STATUS_ENUM, compareStatus } from '../../common/status';
 
 class Messenger extends React.PureComponent {
 
   state = {
     loaded: false,
+    showingSettings: false,
+    changingStatus: false,
+    searchInput: '',
     pin: '',
+    sectionExpanded: {
+      [STATUS_ENUM.ONLINE]: true,
+      [STATUS_ENUM.PLAYING]: false,
+      [STATUS_ENUM.AFK]: false,
+      [STATUS_ENUM.OFFLINE]: false,
+    },
   }
 
   static getDerivedStateFromProps(props) {
     return { invalidPin: props.invalidPin }
+  }
+
+  componentDidMount() {
+    window.addEventListener("focus", this.onFocus);
+    window.addEventListener("blur", this.onBlur);
   }
 
   componentDidUpdate() {
@@ -36,6 +52,8 @@ class Messenger extends React.PureComponent {
 
   componentWillUnmount() {
     closeSubscriptions();
+    window.removeEventListener("focus", this.onFocus);
+    window.removeEventListener("blur", this.onBlur);
   }
 
   decryptMessage = (message) => {
@@ -54,6 +72,25 @@ class Messenger extends React.PureComponent {
     this.props.closeChat(chatId);
   }
 
+  onFocus = () => {
+    this.props.updateStatus('online', false);
+  }
+
+  onBlur = () => {
+    this.props.updateStatus('afk', false);
+  }
+
+  setStatus = (status) => {
+    this.props.updateStatus(status, true);
+    this.setState({ changingStatus: false });
+  }
+
+  compareLastMessages = (f1, f2) => {
+    const m1 = (f1.chat.messages || [])[(f1.chat.messages || []).length - 1] || { created_at: 0 };
+    const m2 = (f2.chat.messages || [])[(f2.chat.messages || []).length - 1] || { created_at: 0 };
+    return new Date(m2.created_at) - new Date(m1.created_at);
+  }
+
   renderChats = () => {
     return (
       <div className="messenger-chat-bar">
@@ -63,10 +100,69 @@ class Messenger extends React.PureComponent {
   }
 
   renderFriends = () => {
+
+    const sections = {};
+
+    if (this.state.searchInput) {
+      const search = (name) => name.toLowerCase().includes(this.state.searchInput.toLowerCase());
+      sections['suggestions'] = this.props.friends.slice(0)
+        .filter(friend => search(`${friend.first_name} ${friend.last_name}`))
+        .sort((f1, f2) => this.compareLastMessages(f1, f2))
+        .slice(0, 18);
+    }
+
+    else {
+      const friends = this.props.friends.slice(0).sort((f1, f2) => compareStatus(f1.status, f2.status));
+      sections[STATUS_ENUM.ONLINE] = friends.filter(friend => friend.status === STATUS_ENUM.ONLINE).sort((f1, f2) => this.compareLastMessages(f1, f2));
+      sections[STATUS_ENUM.PLAYING] = friends.filter(friend => friend.status === STATUS_ENUM.PLAYING).sort((f1, f2) => this.compareLastMessages(f1, f2));
+      sections[STATUS_ENUM.AFK] = friends.filter(friend => friend.status === STATUS_ENUM.AFK).sort((f1, f2) => this.compareLastMessages(f1, f2));
+      sections[STATUS_ENUM.OFFLINE] = friends.filter(friend => friend.status === STATUS_ENUM.OFFLINE).sort((f1, f2) => this.compareLastMessages(f1, f2));
+    }
+
     return (
       <div className="messenger-body">
-        {this.props.friends.map(this.renderFriend)}
+        {!!this.state.searchInput && this.renderSection('suggestions', sections['suggestions'].length, sections['suggestions'], true)}
+        {!this.state.searchInput && this.renderSection(STATUS_ENUM.ONLINE, sections[STATUS_ENUM.ONLINE].length, sections[STATUS_ENUM.ONLINE], this.state.sectionExpanded[STATUS_ENUM.ONLINE])}
+        {!this.state.searchInput && this.renderSection(STATUS_ENUM.PLAYING, sections[STATUS_ENUM.PLAYING].length, sections[STATUS_ENUM.PLAYING], this.state.sectionExpanded[STATUS_ENUM.PLAYING])}
+        {!this.state.searchInput && this.renderSection(STATUS_ENUM.AFK, sections[STATUS_ENUM.AFK].length, sections[STATUS_ENUM.AFK], this.state.sectionExpanded[STATUS_ENUM.AFK])}
+        {!this.state.searchInput && this.renderSection(STATUS_ENUM.OFFLINE, sections[STATUS_ENUM.OFFLINE].length, sections[STATUS_ENUM.OFFLINE], this.state.sectionExpanded[STATUS_ENUM.OFFLINE])}
       </div>
+    );
+
+  }
+
+  renderSection(name, count, friends, expanded) {
+    const chevronType = (friends.length && expanded) ? 'down' : 'right';
+    return (
+      <div className="messenger-body-section">
+        <div className="messenger-body-section-header clickable"
+          onClick={() => this.setState(previous => ({
+            sectionExpanded: {
+              ...{
+                [STATUS_ENUM.ONLINE]: false,
+                [STATUS_ENUM.PLAYING]: false,
+                [STATUS_ENUM.AFK]: false,
+                [STATUS_ENUM.OFFLINE]: false,
+              },
+              [name]: !previous.sectionExpanded[name]
+            }
+          }))}
+        >
+          <p className="messenger-body-section-header-name">{name}</p>
+          <div className="messenger-body-section-header-info">
+            <p className="messenger-body-section-header-count">{`(${count})`}</p>
+            <div
+              className="messenger-body-section-header-icon"
+              style={{ backgroundImage: `url('/assets/svg/ic_messenger_chevron_${chevronType}.svg')` }}
+            />
+          </div>
+        </div>
+        {!!friends.length && expanded && (
+          <div className="messenger-body-section-content">
+            {friends.map(this.renderFriend)}
+          </div>
+        )}
+      </div >
     );
   }
 
@@ -85,8 +181,7 @@ class Messenger extends React.PureComponent {
   }
 
   renderFriend = (friend) => {
-    const chat = this.props.chats.find(chat => chat.friendId === friend.friend_id) || {};
-    const lastMessage = (chat.messages || [])[(chat.messages || []).length - 1];
+    const lastMessage = (friend.chat.messages || [])[(friend.chat.messages || []).length - 1];
     return (
       <div
         key={friend.id}
@@ -115,19 +210,18 @@ class Messenger extends React.PureComponent {
               {formatAMPM(convertUTCDateToLocalDate(new Date(lastMessage.created_at)))}
             </p>
           )}
-          {/* 
           <div className="messenger-contact-info-unread">
             <p className="messenger-contact-info-unread-count">
-              6
+              {(friend.chat.messages || []).filter(message => message.isUnread).length}
             </p>
           </div>
-          */}
         </div>
       </div>
     );
   }
 
-  renderFooter() {
+  renderEncryptionSettings() {
+    if (!this.state.showingSettings) return;
     return (
       <div className="messenger-settings-encryption-container">
         <p className="messenger-settings-encryption-title">Encrypted Chat Key</p>
@@ -188,6 +282,69 @@ class Messenger extends React.PureComponent {
     );
   }
 
+  renderStatusSettings() {
+    if (!this.state.changingStatus) return;
+    return (
+      <div className="messenger-settings-status">
+        <p className="messenger-settings-status-indicator messenger-settings-status-option clickable messenger-footer-status-online"
+          onClick={() => this.setStatus('online')}
+        >online</p>
+        <p className="messenger-settings-status-indicator messenger-settings-status-option clickable messenger-footer-status-playing"
+          onClick={() => this.setStatus('playing')}
+        >playing</p>
+        <p className="messenger-settings-status-indicator messenger-settings-status-option clickable messenger-footer-status-afk"
+          onClick={() => this.setStatus('afk')}
+        >afk</p>
+        <p className="messenger-settings-status-indicator messenger-settings-status-option clickable messenger-footer-status-offline"
+          onClick={() => this.setStatus('offline')}
+        >offline</p>
+      </div>
+    );
+  }
+
+  renderFooter() {
+    return (
+      <div className="messenger-footer-container">
+        {this.renderEncryptionSettings()}
+        <div className="messenger-footer">
+          <div className="messenger-footer-icon-container">
+            <div
+              className="messenger-footer-icon"
+              style={{ backgroundImage: `url('${this.props.profileImage}')` }}
+            />
+            <div
+              className={`messenger-footer-status-indicator messenger-footer-status-${this.props.status} clickable`}
+              onClick={() => this.setState({ changingStatus: true })}
+            >
+              {this.props.status}
+            </div>
+            <div className="messenger-settings-status-container">
+              {this.renderStatusSettings()}
+            </div>
+          </div>
+          <div className="messenger-footer-search-bar">
+            <input
+              className="messenger-settings-search-field"
+              type="text"
+              placeholder="Search"
+              value={this.state.searchInput}
+              onChange={event => this.setState({ searchInput: event.target.value })}
+            />
+            <div className="messenger-settings-search-button clickable"
+              style={{ backgroundImage: `url(/assets/svg/ic_messenger_search.svg)` }}
+              onClick={() => this.filterFriends()}
+            />
+          </div>
+          <div
+            className="messenger-footer-settings-button clickable"
+            style={{ backgroundImage: `url(/assets/svg/ic_messenger_settings.svg)` }}
+            onClick={() => this.setState(previous => ({ showingSettings: !previous.showingSettings }))}
+          ></div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     if (!this.state.loaded) return null;
     return (
@@ -202,7 +359,14 @@ class Messenger extends React.PureComponent {
 }
 
 function mapStateToProps(state) {
+  const chats = state.chat.chats;
+  const friends = state.friend.friends;
+  friends.forEach(friend => {
+    const chat = chats.find(chat => chat.friendId === friend.friend_id) || {};
+    friend.chat = chat;
+  });
   return {
+    status: state.user.status,
     chats: state.chat.chats,
     friends: state.friend.friends,
     pin: state.encryption.pin,
@@ -221,6 +385,7 @@ function mapDispatchToProps(dispatch) {
     generateKeys: pin => dispatch(generateKeysAction(pin)),
     validatePin: (pin, publicKey) => dispatch(validatePinAction(pin, publicKey)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
+    updateStatus: (status, forcedStatus) => dispatch(updateStatusAction(status, forcedStatus)),
   });
 }
 

@@ -84,12 +84,14 @@
   flex: 1;
   color: #FFFFFF;
   word-break: break-word;
+  white-space: pre-wrap;
   font-size: 12px;
   margin-right: 4px;
 }
 
 .chat-component-message-side-container {
   display: flex;
+  flex-direction: column;
   align-items: flex-end;
 }
 
@@ -172,10 +174,14 @@
 }
 
 .chat-component-message-input {
+  resize: none;
+  overflow: auto;
+  padding: 6px 8px;
   font-size: 14px;
   background-color: #425156;
   border: none;
   color: #FAFAFA;
+  height: auto;
 }
 
 .chat-component-message-date-divisor {
