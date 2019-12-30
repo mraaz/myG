@@ -129,19 +129,17 @@ class Chat extends React.PureComponent {
 
         <div
           className="chat-component-header-icon clickable"
-          onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised })}
+          onClick={() => window.location.replace(`/profile/${this.props.friendId}`)}
           style={{ backgroundImage: `url('${this.props.icon}')` }}
         />
 
-        <div className="chat-component-header-info">
-          <div className="chat-component-header-title clickable"
-            onClick={() => window.location.replace(`/profile/${this.props.friendId}`)}
-          >
+        <div className="chat-component-header-info clickable"
+          onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised })}
+        >
+          <div className="chat-component-header-title">
             {this.props.title}
           </div>
-          <div className="chat-component-header-subtitle clickable"
-            onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised })}
-          >
+          <div className="chat-component-header-subtitle">
             {this.props.subtitle}
           </div>
         </div>
