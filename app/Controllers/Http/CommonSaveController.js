@@ -36,8 +36,7 @@ class CommonSaveController {
       user.email = request.input('email')
       user.provider_id = session.get('provider_id')
       user.profile_img = session.get('profile_img')
-      user.profile_bg =
-        'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/universe.jpg'
+      user.profile_bg = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/universe.jpg'
       user.provider = session.get('provider')
       await user.save()
 
@@ -103,7 +102,7 @@ class CommonSaveController {
 
     const mailOptions = {
       from: 'teamraaz@gmail.com', // sender address
-      to: 'aquatechbiswa@gmail.com', // list of receivers
+      to: 'mnraaz@gmail.com', // list of receivers
       subject: 'test mail', // Subject line
       html: '<h1>this is a test mail.</h1>', // plain text body
     }

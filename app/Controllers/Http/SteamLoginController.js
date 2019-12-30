@@ -17,8 +17,7 @@ class SteamLoginController {
       var all_data_arr = all['openid.claimed_id'].split('id/')
       if (all_data_arr[2]) {
         const res = await fetch(
-          `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=760542281E3E38E7359E1DF7455D77B0&steamids=` +
-            all_data_arr[2],
+          `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=D79F9A74D6438202D12060A9819ED956&steamids=` + all_data_arr[2],
           {
             method: 'GET',
           }
