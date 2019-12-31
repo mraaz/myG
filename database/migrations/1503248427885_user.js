@@ -11,7 +11,7 @@ class UserSchema extends Schema {
       table.string('first_name', 50).nullable().defaultTo("").index()
       table.string('last_name', 50).nullable().defaultTo("").index()
       table.string('email', 88).notNullable().unique()
-      table.string('password', 60).notNullable()
+      table.string('password', 60).nullable()
       table.string('country', 254).nullable().defaultTo("")
       table.string('region', 254).nullable().defaultTo("")
       table.string('profile_img', 254).nullable()

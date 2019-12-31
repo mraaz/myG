@@ -4,7 +4,6 @@ const User = use('App/Models/User')
 const fetch = require('node-fetch')
 class DiscordLoginController {
   async redirect({ ally, response }) {
-    //await ally.driver('google').redirect()
     return response.redirect(
       'https://discordapp.com/api/oauth2/authorize?client_id=588326792289320962&redirect_uri=https://myg.gg/authenticated%2Fdiscord&response_type=code&scope=email%20identify'
     )
@@ -20,8 +19,7 @@ class DiscordLoginController {
     const token = all.token
     if (code) {
       //const creds = btoa(`${CLIENT_ID}:${CLIENT_SECRET}`);
-      const creds =
-        'NTg4MzI2NzkyMjg5MzIwOTYyOndyNDdMWnBxRW9WVWQyQUV1c1NxVE5XeFdmSlpGVzly'
+      const creds = 'NTg4MzI2NzkyMjg5MzIwOTYyOndyNDdMWnBxRW9WVWQyQUV1c1NxVE5XeFdmSlpGVzly'
       const res = await fetch(
         `https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=https://myg.gg/authenticated/discord`,
         {
@@ -32,9 +30,7 @@ class DiscordLoginController {
         }
       )
       const json = await res.json()
-      return response.redirect(
-        `https://myg.gg/authenticated/discord/?token=${json.access_token}`
-      )
+      return response.redirect(`https://myg.gg/authenticated/discord/?token=${json.access_token}`)
     } else if (token) {
       const res = await fetch(`https://discordapp.com/api/users/@me`, {
         method: 'GET',
@@ -59,14 +55,7 @@ class DiscordLoginController {
           session.put('provider_id', json.id)
           session.put('alias', json.username)
           session.put('email', json.email)
-          session.put(
-            'profile_img',
-            '//cdn.discordapp.com/avatars/' +
-              json.id +
-              '/' +
-              json.avatar +
-              '.png'
-          )
+          session.put('profile_img', '//cdn.discordapp.com/avatars/' + json.id + '/' + json.avatar + '.png')
           return response.redirect('/user/register')
         }
 
@@ -96,9 +85,7 @@ class DiscordLoginController {
     const provider = 'discord'
     try {
       const Requestcurl = use('Request')
-      const result = Requestcurl.get(
-        'https://discordapp.com/api/oauth2/users/@me'
-      )
+      const result = Requestcurl.get('https://discordapp.com/api/oauth2/users/@me')
       console.log(result)
 
       const userData = await ally.driver(provider).getUser()

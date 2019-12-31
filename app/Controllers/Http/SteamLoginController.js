@@ -12,7 +12,6 @@ class SteamLoginController {
 
   async callback({ ally, auth, response, request, session }) {
     var all = request.all()
-    console.log(all)
     if (all['openid.claimed_id']) {
       var all_data_arr = all['openid.claimed_id'].split('id/')
       if (all_data_arr[2]) {
