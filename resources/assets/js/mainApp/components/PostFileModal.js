@@ -22,7 +22,26 @@ export default class PostFileModal extends Component {
     this.doUploadS3 = this.doUploadS3.bind(this)
   }
 
-  componentWillMount() {}
+  removeIndivdualfromAWS(id) {
+    for (var i = 0; i < this.state.preview_files.length; i++) {
+      if (this.state.preview_files[i].id == id) {
+        const formData = new FormData()
+        formData.append('key', this.state.preview_files[i].key)
+
+        try {
+          const post = axios.post('/api/deleteFile', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          })
+        } catch (error) {
+          toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Max file size is 100MB.'} />)
+        }
+        this.state.preview_files.splice(i, 1)
+        break
+      }
+    }
+  }
 
   closeModal() {
     this.props.callbackClose()
@@ -40,10 +59,11 @@ export default class PostFileModal extends Component {
     this.setState({
       preview_files: [],
       post_content: '',
+      store_files: [],
     })
   }
 
-  async doUploadS3(file, name) {
+  async doUploadS3(file, id) {
     var instance = this
 
     const formData = new FormData()
@@ -60,6 +80,7 @@ export default class PostFileModal extends Component {
       new_preview_files.push({
         src: post.data.Location,
         key: post.data.Key,
+        id: id,
       })
       instance.setState({
         preview_files: new_preview_files,
@@ -77,16 +98,15 @@ export default class PostFileModal extends Component {
     })
   }
 
-  getUploadParams = async ({ file, meta: { name } }) => {
-    this.doUploadS3(file, name)
+  getUploadParams = async ({ file, meta: { id } }) => {
+    this.doUploadS3(file, id)
     return { url: 'https://httpbin.org/post' }
   }
 
   handleChangeStatus = ({ meta }, status, allFiles) => {
-    //console.log(status, meta)
     this.state.store_files = allFiles
     if (status == 'removed') {
-      console.log(meta.name)
+      this.removeIndivdualfromAWS(meta.id)
     }
   }
 
