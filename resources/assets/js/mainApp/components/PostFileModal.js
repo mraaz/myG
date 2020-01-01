@@ -35,7 +35,7 @@ export default class PostFileModal extends Component {
             },
           })
         } catch (error) {
-          toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Max file size is 100MB.'} />)
+          toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
         }
         this.state.preview_files.splice(i, 1)
         break
