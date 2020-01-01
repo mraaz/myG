@@ -299,8 +299,10 @@ class Messenger extends React.PureComponent {
               style={{ backgroundImage: `url('${this.props.profileImage}')` }}
             />
             <div
+              tabIndex={0}
               className={`messenger-footer-status-indicator messenger-footer-status-${this.props.status} clickable`}
               onClick={() => this.setState(previous => ({ changingStatus: !previous.changingStatus }))}
+              onBlur={() => this.setState({ changingStatus: false })}
             >
               {this.props.status}
             </div>

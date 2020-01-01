@@ -134,7 +134,7 @@ class Chat extends React.PureComponent {
         />
 
         <div className="chat-component-header-info clickable"
-          onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised })}
+          onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}
         >
           <div className="chat-component-header-title">
             {this.props.title}
