@@ -12,10 +12,10 @@ export default class PostFileModal extends Component {
     super()
 
     this.state = {
-      file_preview: '',
       preview_files: [],
       post_content: '',
       store_files: [],
+      lock: false,
     }
 
     this.closeModal = this.closeModal.bind(this)
@@ -45,7 +45,6 @@ export default class PostFileModal extends Component {
 
   closeModal() {
     this.props.callbackClose()
-
     if (this.state.preview_files.length != 0) {
       axios
         .post('/api/deleteFiles', {
@@ -54,7 +53,13 @@ export default class PostFileModal extends Component {
         .catch((error) => {})
     }
 
-    this.state.store_files.forEach((f) => f.remove())
+    const tmparray = [...this.state.store_files]
+    this.state.lock = true
+
+    for (var i = 0; i < tmparray.length; i++) {
+      tmparray[i].remove()
+    }
+    this.state.lock = false
 
     this.setState({
       preview_files: [],
@@ -63,7 +68,7 @@ export default class PostFileModal extends Component {
     })
   }
 
-  async doUploadS3(file, id) {
+  async doUploadS3(file, id, name) {
     var instance = this
 
     const formData = new FormData()
@@ -86,26 +91,18 @@ export default class PostFileModal extends Component {
         preview_files: new_preview_files,
       })
     } catch (error) {
-      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Max file size is 100MB.'} />)
+      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
     }
   }
 
-  handleChange = (event) => {
-    const name = event.target.name
-    const value = event.target.type == 'checkbox' ? event.target.checked : event.target.value
-    this.setState({
-      [name]: value,
-    })
-  }
-
-  getUploadParams = async ({ file, meta: { id } }) => {
-    this.doUploadS3(file, id)
+  getUploadParams = async ({ file, meta: { id, name } }) => {
+    this.doUploadS3(file, id, name)
     return { url: 'https://httpbin.org/post' }
   }
 
   handleChangeStatus = ({ meta }, status, allFiles) => {
     this.state.store_files = allFiles
-    if (status == 'removed') {
+    if (status == 'removed' && this.state.lock == false) {
       this.removeIndivdualfromAWS(meta.id)
     }
   }

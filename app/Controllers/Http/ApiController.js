@@ -6,7 +6,8 @@ const Helpers = use('Helpers')
 const fileType = require('file-type')
 const bluebird = require('bluebird')
 
-const S3_BUCKET = 'mygame-media'
+const S3_BUCKET = 'mygame-media/user_files'
+const S3_BUCKET_DELETE = 'mygame-media'
 const AWS_ACCESS_KEY_ID = 'AKIAJNVULTAMH7XPCXRA'
 const AWS_SECRET_ACCESS_KEY = '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'
 // configure the keys for accessing AWS
@@ -59,8 +60,8 @@ class ApiController {
     var file = request.file('upload_file')
     var filename = request.input('filename')
 
-    //return response.status(200).send(file.name);
-    var tmpfilename = 's3-tmpfile'
+    const timestamp_OG = Date.now().toString()
+    var tmpfilename = timestamp_OG + '_' + generateRandomString(6) + '_' + filename
     //var tmpfilepath = Helpers.tmpPath('uploads') + '\\' + tmpfilename; FOR WINDOWS ONLY
     var tmpfilepath = Helpers.tmpPath('uploads') + '/' + tmpfilename
 
@@ -75,8 +76,8 @@ class ApiController {
       const buffer = fs.readFileSync(tmpfilepath)
       const type = fileType(buffer)
       const timestamp = Date.now().toString()
-      const fileName = timestamp + '_' + generateRandomString(6) + '_' + filename
-      const data = await uploadFile(buffer, fileName, type)
+      //const fileName = timestamp + '_' + generateRandomString(6) + '_' + filename
+      const data = await uploadFile(buffer, tmpfilename, type)
       return response.status(200).json(data)
     } catch (error) {
       return response.status(400).json(error)
@@ -87,7 +88,7 @@ class ApiController {
     var key = request.input('key')
     s3.deleteObject(
       {
-        Bucket: S3_BUCKET,
+        Bucket: S3_BUCKET_DELETE,
         Key: key,
       },
       function(err, data) {
@@ -106,7 +107,7 @@ class ApiController {
     for (var findex = 0; findex < files.length; findex++) {
       s3.deleteObject(
         {
-          Bucket: S3_BUCKET,
+          Bucket: S3_BUCKET_DELETE,
           Key: files[findex].key,
         },
         function(err, data) {

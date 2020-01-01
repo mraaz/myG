@@ -3,19 +3,10 @@ import axios from 'axios'
 import Select from 'react-select'
 import { Redirect } from 'react-router-dom'
 
-class FilePreview extends Component {
-  constructor(props) {
-    super(props)
-  }
+import Dropzone from 'react-dropzone-uploader'
 
-  render() {
-    return (
-      <div className='file-preview-wrap' onClick={() => this.props.callbackClick(this.props.src)}>
-        <img src={this.props.src}></img>
-      </div>
-    )
-  }
-}
+import { toast } from 'react-toastify'
+import { Toast_style } from './Utility_Function'
 
 const privacy_options = [{ value: 1, label: 'Public' }, { value: 2, label: 'Closed' }, { value: 3, label: 'Secret' }]
 
@@ -24,15 +15,10 @@ export default class GroupOpenModal extends Component {
     super()
 
     this.state = {
-      file: null,
-      file_preview: '',
-      preview_files: [
-        'https://s3-ap-southeast-2.amazonaws.com/mygame-media/1556592223564-lg.jpg',
-        'https://s3-ap-southeast-2.amazonaws.com/mygame-media/1556630834362-lg.png',
-      ],
-      uploading: false,
       file_src: '',
       file_key: '',
+      store_files: [],
+      lock: false,
       group_name_box: '',
       privacy_box: '',
       all_accept_chkbox: true,
@@ -41,22 +27,32 @@ export default class GroupOpenModal extends Component {
       is_unique: false,
       redirect_groups: false,
       groups_id: '',
+      uploading: '',
     }
 
     this.closeModal = this.closeModal.bind(this)
     this.doUploadS3 = this.doUploadS3.bind(this)
-    this.clickSave = this.clickSave.bind(this)
   }
 
-  componentWillMount() {}
+  removeIndivdualfromAWS() {
+    if (this.state.file_key != '') {
+      const formData = new FormData()
+      formData.append('key', this.state.file_key)
+
+      try {
+        const post = axios.post('/api/deleteFile', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+      } catch (error) {
+        toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
+      }
+    }
+  }
 
   closeModal() {
-    if (this.state.uploading) {
-      return
-    }
-
     this.props.callbackClose()
-
     if (this.state.file_key != '') {
       const formData = new FormData()
       formData.append('key', this.state.file_key)
@@ -75,10 +71,18 @@ export default class GroupOpenModal extends Component {
         .catch((error) => {})
     }
 
+    const tmparray = [...this.state.store_files]
+    this.state.lock = true
+
+    for (var i = 0; i < tmparray.length; i++) {
+      tmparray[i].remove()
+    }
+    this.state.lock = false
+
     this.setState({
-      file_preview: '',
       file_key: '',
       file_src: '',
+      store_files: [],
     })
   }
 
@@ -92,14 +96,12 @@ export default class GroupOpenModal extends Component {
         show_group_name_error: true,
         show_group_name_unique_error: false,
       })
+      toast.success(<Toast_style text={"Hmmmm, blank group name can't be. The rules it is"} />)
       return
     }
 
     if (this.state.is_unique == false) {
-      this.setState({
-        show_group_name_unique_error: true,
-        show_group_name_error: false,
-      })
+      toast.success(<Toast_style text={'Hmmmm, be unique group name must'} />)
       return
     }
 
@@ -133,8 +135,6 @@ export default class GroupOpenModal extends Component {
       file_key: '',
       redirect_groups: true,
     })
-
-    //this.props.callbackConfirm(this.state.file_src)
   }
 
   onBlur_group_name = async () => {
@@ -160,67 +160,54 @@ export default class GroupOpenModal extends Component {
     }
   }
 
-  doUploadS3(file) {
+  async doUploadS3(file, name) {
     var instance = this
-    this.setState({
-      uploading: true,
-    })
+    this.setState({ uploading: true })
+
     const formData = new FormData()
     formData.append('upload_file', file)
-    formData.append('filename', file.name)
+    formData.append('filename', name)
 
-    axios
-      .post('/api/uploadFile', formData, {
+    try {
+      const post = await axios.post('/api/uploadFile', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       })
-      .then(function(resp) {
-        instance.setState({
-          uploading: false,
-          file_src: resp.data.Location,
-          file_key: resp.data.Key,
-        })
+      instance.setState({
+        file_src: post.data.Location,
+        file_key: post.data.Key,
       })
-      .catch((error) => {
-        // handle your error
-        instance.setState({
-          uploading: false,
-        })
-      })
+    } catch (error) {
+      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
+    }
+    this.setState({ uploading: false })
   }
 
-  onChangeFile(event) {
-    event.stopPropagation()
-    event.preventDefault()
+  getUploadParams = async ({ file, meta: { id, name } }) => {
+    this.doUploadS3(file, name)
+    return { url: 'https://httpbin.org/post' }
+  }
 
-    var instance = this
-    var file = event.target.files[0]
-
-    var reader = new FileReader()
-
-    reader.onload = function(e) {
-      instance.setState({
-        file_preview: e.target.result,
-      })
+  handleChangeStatus = ({ meta }, status, allFiles) => {
+    this.state.store_files = allFiles
+    if (status == 'removed' && this.state.lock == false) {
+      this.removeIndivdualfromAWS()
     }
+  }
 
-    if (this.state.file_key != '') {
-      //delete file
-      const formData = new FormData()
-      formData.append('key', this.state.file_key)
-      axios
-        .post('/api/deleteFile', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-        .then(function(resp) {})
-        .catch((error) => {})
-    }
-    reader.readAsDataURL(file)
+  handleSubmit = (files, allFiles) => {
+    this.props.callbackConfirm(this.state.file_src)
 
-    this.doUploadS3(file)
+    this.setState({
+      store_files: [],
+      file_key: '',
+      file_src: '',
+    })
+
+    this.state.lock = true
+    allFiles.forEach((f) => f.remove())
+    this.state.lock = false
   }
 
   handleChange_Privacy = (privacy_box) => {
@@ -248,8 +235,6 @@ export default class GroupOpenModal extends Component {
     if (this.props.bOpen) {
       class_modal_status = 'modal--show'
     }
-
-    var filepath = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/blank-profile-picture-973460_1280.png'
     var instance = this
     return (
       <div className={'groups-modal-container ' + class_modal_status}>
@@ -259,21 +244,8 @@ export default class GroupOpenModal extends Component {
             <i className='fas fa-times'></i>
           </div>
           <div className='modal-content'>
-            <input
-              id='myInput'
-              type='file'
-              ref={(ref) => (this.ref_upload = ref)}
-              style={{ display: 'none' }}
-              accept='image/*'
-              onClick={() => (this.ref_upload.value = null)}
-              onChange={this.onChangeFile.bind(this)}
-            />
             <div className='group-name'>
               <span style={{ color: 'red' }}>*</span> Enter your group name here (names must be unique)
-              {this.state.show_group_name_error && <div className='group-name-error-msg'>Error, group name can't be blank</div>}
-              {this.state.show_group_name_unique_error && (
-                <div className='group-name-error-unique-msg'>Error, group name MUST be unique</div>
-              )}
               <input
                 type='text'
                 id='group_name_box'
@@ -284,7 +256,6 @@ export default class GroupOpenModal extends Component {
                 maxLength='254'
               />
             </div>
-
             <div className='privacy'>
               Select privacy
               <Select
@@ -299,16 +270,22 @@ export default class GroupOpenModal extends Component {
               <input id='all_accept_ChkBox' type='checkbox' defaultChecked='true' onChange={this.toggleChange_all_accept} /> All members can
               accept group invitations
             </div>
-
-            <div className='open-btn' onClick={() => this.ref_upload.click()}>
-              <i className='fas fa-upload'></i> Upload File
-            </div>
-            <div className={this.state.uploading ? 'uploading-container' : 'uploading-container uploading--hide'}>
-              <div className='uploading'></div>
-            </div>
-            <div className={this.state.file_preview == '' ? 'upload-image-preview' : 'upload-image-preview open'}>
-              <img src={this.state.file_preview}></img>
-            </div>
+            <Dropzone
+              getUploadParams={this.getUploadParams}
+              onChangeStatus={this.handleChangeStatus}
+              onSubmit={this.handleSubmit}
+              accept='image/*'
+              inputContent={(files, extra) => (extra.reject ? 'Image files only' : 'Drag Files or Click to Browse')}
+              styles={{
+                dropzone: { minHeight: 200, maxHeight: 250 },
+                dropzoneReject: { borderColor: 'red', backgroundColor: '#DAA' },
+                inputLabel: (files, extra) => (extra.reject ? { color: 'red' } : {}),
+              }}
+              maxFiles={1}
+              maxSizeBytes={26214400}
+              submitButtonDisabled={true}
+              submitButtonContent={null}
+            />
             <div className={this.state.uploading ? 'save-btn btn--disable' : 'save-btn'} onClick={() => this.clickSave()}>
               Create Group
             </div>

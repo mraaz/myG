@@ -1,197 +1,158 @@
-import React, { Component } from "react"
-import axios from "axios"
+import React, { Component } from 'react'
+import axios from 'axios'
+import 'react-dropzone-uploader/dist/styles.css'
+import Dropzone from 'react-dropzone-uploader'
 
-class FilePreview extends Component{
-    constructor(props){
-        super(props);
-    }
+import { toast } from 'react-toastify'
+import { Toast_style } from './Utility_Function'
 
-    render(){
-        return (
-            <div className="file-preview-wrap" onClick={() => this.props.callbackClick(this.props.src)}>
-                <img src={this.props.src}></img>
-            </div>
-        )
-    }
-}
 export default class FileOpenModal extends Component {
   constructor() {
     super()
 
     this.state = {
-        file: null,
-        file_preview: '',
-        preview_files: ['https://s3-ap-southeast-2.amazonaws.com/mygame-media/1556592223564-lg.jpg', 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/1556630834362-lg.png'],
-        uploading: false,
-        file_src: '',
-        file_key: '',
-    }
-
-    this.closeModal = this.closeModal.bind(this);
-    this.doUploadS3 = this.doUploadS3.bind(this);
-    this.clickSave = this.clickSave.bind(this);
-  }
-
-  componentWillMount(){
-  }
-
-  closeModal(){
-    if(this.state.uploading){
-      return;
-    }
-
-    this.props.callbackClose();
-
-    if(this.state.file_key != ''){
-      const formData = new FormData();
-      formData.append('key', this.state.file_key);
-
-      axios.post('/api/deleteFile', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }).then(function(resp){
-        instance.setState({
-          file_src: resp.data.Location
-        })
-      }).catch(error => {
-      });
-    }
-
-    this.setState({
-      file_preview: '',
+      file_src: '',
       file_key: '',
-      file_src: ''
-    });
-  }
-
-  clickSave(){
-    if(this.state.uploading){
-      return;
+      store_files: [],
+      lock: false,
     }
 
-    this.setState({
-      file_preview: '',
-      file_key:'',
-      file_src:''
-    })
-    this.props.callbackConfirm(this.state.file_src);
+    this.closeModal = this.closeModal.bind(this)
+    this.doUploadS3 = this.doUploadS3.bind(this)
   }
 
-  doUploadS3(file){
-    var instance = this;
-    this.setState({
-        uploading: true
-    })
-    const formData = new FormData();
-    formData.append('upload_file', file);
-    formData.append('filename', file.name);
+  removeIndivdualfromAWS() {
+    if (this.state.file_key != '') {
+      const formData = new FormData()
+      formData.append('key', this.state.file_key)
 
-    axios.post('/api/uploadFile', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    }).then(function(resp){
-
-      instance.setState({
-        uploading: false,
-        file_src: resp.data.Location,
-        file_key: resp.data.Key
-      })
-
-    }).catch(error => {
-      // handle your error
-      instance.setState({
-        uploading: false
-      })
-    });
-  }
-
-  onChangeFile(event){
-    event.stopPropagation();
-    event.preventDefault();
-
-    var instance = this;
-    var file = event.target.files[0];
-
-    var reader = new FileReader();
-
-    reader.onload = function(e) {
-        instance.setState({
-            file_preview: e.target.result
+      try {
+        const post = axios.post('/api/deleteFile', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         })
+      } catch (error) {
+        toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
+      }
+    }
+  }
+
+  closeModal() {
+    this.props.callbackClose()
+    if (this.state.file_key != '') {
+      const formData = new FormData()
+      formData.append('key', this.state.file_key)
+
+      axios
+        .post('/api/deleteFile', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(function(resp) {
+          instance.setState({
+            file_src: resp.data.Location,
+          })
+        })
+        .catch((error) => {})
     }
 
-    if(this.state.file_key != ''){
-      //delete file
-      const formData = new FormData();
-      formData.append('key', this.state.file_key);
-      axios.post('/api/deleteFile', formData, {
+    const tmparray = [...this.state.store_files]
+    this.state.lock = true
+
+    for (var i = 0; i < tmparray.length; i++) {
+      tmparray[i].remove()
+    }
+    this.state.lock = false
+
+    this.setState({
+      file_key: '',
+      file_src: '',
+      store_files: [],
+    })
+  }
+
+  async doUploadS3(file, name) {
+    var instance = this
+
+    const formData = new FormData()
+    formData.append('upload_file', file)
+    formData.append('filename', name)
+
+    try {
+      const post = await axios.post('/api/uploadFile', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }).then(function(resp){
-      }).catch(error => {
-      });
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      instance.setState({
+        file_src: post.data.Location,
+        file_key: post.data.Key,
+      })
+    } catch (error) {
+      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
     }
-    reader.readAsDataURL(file);
+  }
 
-    this.doUploadS3(file);
+  getUploadParams = async ({ file, meta: { id, name } }) => {
+    this.doUploadS3(file, name)
+    return { url: 'https://httpbin.org/post' }
+  }
+
+  handleChangeStatus = ({ meta }, status, allFiles) => {
+    this.state.store_files = allFiles
+    if (status == 'removed' && this.state.lock == false) {
+      this.removeIndivdualfromAWS()
+    }
+  }
+
+  handleSubmit = (files, allFiles) => {
+    this.props.callbackConfirm(this.state.file_src)
+
+    this.setState({
+      store_files: [],
+      file_key: '',
+      file_src: '',
+    })
+
+    this.state.lock = true
+    allFiles.forEach((f) => f.remove())
+    this.state.lock = false
   }
 
   render() {
+    var class_modal_status = ''
 
-    var class_modal_status = '';
-
-    if(this.props.bOpen){
-        class_modal_status = 'modal--show';
+    if (this.props.bOpen) {
+      class_modal_status = 'modal--show'
     }
 
-    var filepath = "https://s3-ap-southeast-2.amazonaws.com/mygame-media/blank-profile-picture-973460_1280.png";
-    var instance = this;
+    var filepath = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/blank-profile-picture-973460_1280.png'
+    var instance = this
     return (
-      <div className={"modal-container " + class_modal_status}>
-        <div className="modal-wrap">
-            <div className="modal-header">Update Picture</div>
-            <div className="modal-close-btn" onClick={() => this.closeModal()}><i className="fas fa-times"></i></div>
-            <div className="modal-content">
-                <input id="myInput"
-                    type="file"
-                    ref={(ref) => this.ref_upload = ref}
-                    style={{display: 'none'}}
-                    accept="image/*"
-                    onClick={() => this.ref_upload.value = null}
-                    onChange={this.onChangeFile.bind(this)}
-                />
-                <div className="open-btn" onClick={() => this.ref_upload.click()}>
-                  <i className="fas fa-upload"></i> Upload File
-                </div>
-                <div className={this.state.uploading ? "uploading-container" : "uploading-container uploading--hide"}>
-                    <div className="uploading"></div>
-                </div>
-                <div className="modal-text">Image Preview</div>
-                <div className={this.state.file_preview == '' ? 'upload-image-preview' : 'upload-image-preview open'}>
-                    <img src={this.state.file_preview}></img>
-                </div>
-                <div className={this.state.uploading ? "save-btn btn--disable" : "save-btn"} onClick={() => this.clickSave()}><i className="fas fa-save"></i> Save</div>
-                {/* <div className="modal-text">Previews</div>
-                <div className="uploaded-files-content">
-                    <div className="uploaded-file-preview">
-                        {
-                            this.state.preview_files.map(function(data, index){
-                                console.log(data, index);
-                                return (
-                                    <FilePreview
-                                        key={index}
-                                        src={data}
-                                        callbackClick={(src) => instance.props.callbackConfirm(src)}
-                                    ></FilePreview>
-                                )
-                            })
-                        }
-                    </div>
-                </div> */}
-            </div>
+      <div className={'modal-container ' + class_modal_status}>
+        <div className='modal-wrap'>
+          <div className='modal-header'>Update Picture</div>
+          <div className='modal-close-btn' onClick={() => this.closeModal()}>
+            <i className='fas fa-times'></i>
+          </div>
+          <div className='modal-content'>
+            <Dropzone
+              getUploadParams={this.getUploadParams}
+              onChangeStatus={this.handleChangeStatus}
+              onSubmit={this.handleSubmit}
+              accept='image/*'
+              inputContent={(files, extra) => (extra.reject ? 'Image files only' : 'Drag Files or Click to Browse')}
+              styles={{
+                dropzone: { minHeight: 200, maxHeight: 250 },
+                dropzoneReject: { borderColor: 'red', backgroundColor: '#DAA' },
+                inputLabel: (files, extra) => (extra.reject ? { color: 'red' } : {}),
+              }}
+              maxFiles={1}
+              maxSizeBytes={26214400}
+            />
+          </div>
         </div>
       </div>
     )
