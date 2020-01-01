@@ -7,9 +7,9 @@ export function updateStatusAction(status, forceStatus) {
     }
 }
 
-export function onUpdateStatusAction(status) {
+export function onUpdateStatusAction(status, isStatusLocked) {
     return {
         type: 'ON_UPDATE_STATUS',
-        payload: { status },
+        payload: { status, isStatusLocked },
     }
 }

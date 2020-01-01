@@ -1,9 +1,9 @@
 
 import React from "react";
 import { connect } from 'react-redux';
-import IdleTimer from 'react-idle-timer'
 
 import Chat from './Chat';
+import StatusTimerWrapper from './StatusTimerWrapper';
 
 import { monitorChats, closeSubscriptions } from '../../integration/ws/chat';
 import { fetchChatsAction, createChatAction, openChatAction, closeChatAction, clearChatAction } from '../../redux/actions/chatAction';
@@ -334,17 +334,19 @@ class Messenger extends React.PureComponent {
   render() {
     if (!this.state.loaded) return null;
     return (
-      <IdleTimer
-        onAction={() => this.props.updateStatus('online', false)}
-        onIdle={() => this.props.updateStatus('afk', false)}
-        timeout={1000 * 60}
-      >
-        <section id="messenger">
-          {this.renderChats()}
-          {this.renderFriends()}
-          {this.renderFooter()}
-        </section>
-      </IdleTimer>
+      <section id="messenger">
+
+        {this.renderChats()}
+        {this.renderFriends()}
+        {this.renderFooter()}
+
+        <StatusTimerWrapper {...{
+          status: this.props.status,
+          isStatusLocked: this.props.isStatusLocked,
+          updateStatus: this.props.updateStatus,
+        }} />
+
+      </section>
     );
   }
 
@@ -359,6 +361,7 @@ function mapStateToProps(state) {
   });
   return {
     status: state.user.status,
+    isStatusLocked: state.user.isStatusLocked,
     chats: state.chat.chats,
     friends: state.friend.friends,
     pin: state.encryption.pin,

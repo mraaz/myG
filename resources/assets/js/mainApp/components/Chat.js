@@ -264,7 +264,7 @@ function mapStateToProps(state, props) {
     muted: chat.muted || false,
     maximised: chat.maximised || false,
     minimised: chat.minimised || false,
-    friendId: chat.userId,
+    friendId: chat.friendId,
     friendPublicKey: chat.publicKey,
     userPublicKey: state.encryption.publicKey,
     userPrivateKey: state.encryption.privateKey,
