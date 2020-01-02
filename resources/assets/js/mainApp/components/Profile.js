@@ -39,7 +39,7 @@ export default class Profile extends Component {
     })
   }
 
-  callbackFileModalConfirm(src) {
+  callbackFileModalConfirm(src, key) {
     var profile = this.state.userProfile
     if (profile.hasOwnProperty(this.state.profile_attr)) {
       profile[this.state.profile_attr] = src
@@ -54,7 +54,9 @@ export default class Profile extends Component {
 
     if (this.state.profile_attr != '') {
       var data = {}
+      var tmp = 'aws_key'
       data[this.state.profile_attr] = src
+      data[tmp] = key
 
       var url = '/api/userprofile'
       if (this.state.profile_attr == 'profile_bg') {
