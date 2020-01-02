@@ -1,5 +1,6 @@
 # This is a Script for loading the database with some info.
 # sudo apt-get install python3-mysql.connector
+# password: mygame
 import mysql.connector
 
 mydb = mysql.connector.connect(
