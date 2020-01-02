@@ -2,7 +2,8 @@
 import logger from '../../common/logger';
 
 export default function reducer(state = {
-  status: 'online'
+  status: 'online',
+  isStatusLocked: false,
 }, action) {
   switch (action.type) {
 
@@ -11,6 +12,7 @@ export default function reducer(state = {
       return {
         ...state,
         status: action.payload.status,
+        isStatusLocked: action.payload.isStatusLocked,
       };
     }
 
@@ -19,6 +21,7 @@ export default function reducer(state = {
       return {
         ...state,
         status: action.payload.status,
+        isStatusLocked: action.payload.isStatusLocked,
       };
     }
 

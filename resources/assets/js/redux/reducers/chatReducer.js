@@ -155,11 +155,11 @@ export default function reducer(state = {
     }
 
     case "INFO_UPDATED": {
-      const chatId = action.meta.chatId;
-      const { userId, subtitle } = action.payload;
+      const { chatId, userId: thisUserId } = action.meta;
+      const { subtitle, userId: updatedUserId } = action.payload;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
-      if (chat.userId === userId) return state;
+      if (updatedUserId === thisUserId) return state;
       logger.log('CHAT', `Redux -> Info Updated: `, action.payload);
       chat.subtitle = subtitle;
       return {

@@ -134,7 +134,7 @@ class Chat extends React.PureComponent {
         />
 
         <div className="chat-component-header-info clickable"
-          onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised })}
+          onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}
         >
           <div className="chat-component-header-title">
             {this.props.title}
@@ -264,7 +264,7 @@ function mapStateToProps(state, props) {
     muted: chat.muted || false,
     maximised: chat.maximised || false,
     minimised: chat.minimised || false,
-    friendId: chat.userId,
+    friendId: chat.friendId,
     friendPublicKey: chat.publicKey,
     userPublicKey: state.encryption.publicKey,
     userPrivateKey: state.encryption.privateKey,

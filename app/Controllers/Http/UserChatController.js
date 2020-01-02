@@ -38,7 +38,12 @@ class UserChatController {
     const status = request.only ? request.only(['status']).status : request.status;
     const forceStatus = request.only ? request.only(['forceStatus']).forceStatus : request.forceStatus;
     const status_locked = user.toJSON().status_locked;
-    if (status !== 'offline' && !forceStatus && status_locked) return { status: user.toJSON().status };
+    if (status !== 'offline' && !forceStatus && status_locked) {
+      return {
+        status: user.toJSON().status,
+        isStatusLocked: !!status_locked,
+      };
+    }
     const data = { status, status_locked: status !== 'online' && forceStatus };
     const lastSeen = status === 'offline' && new Date();
     if (status === 'offline') data.last_seen = lastSeen;
@@ -51,7 +56,10 @@ class UserChatController {
         subtitle,
       });
     });
-    return { status }
+    return {
+      status,
+      isStatusLocked: !!status_locked,
+    }
   }
 
   async deleteMessages({ params, auth }) {
@@ -83,6 +91,7 @@ class UserChatController {
       new ChatController().fetchMessages(params.chatId),
     ]);
 
+    const friendId = friend.user[0].id;
     const icon = friend.user[0].profile_img;
     const title = `${friend.user[0].first_name} ${friend.user[0].last_name}`;
     const subtitle = this.getSubtitle(friend.user[0].status, friend.user[0].last_seen);
@@ -102,7 +111,7 @@ class UserChatController {
       title,
       subtitle,
       publicKey,
-      friendId: friend.friendId,
+      friendId,
       muted,
       blocked,
       clearedDate,
@@ -124,7 +133,6 @@ class UserChatController {
         }
       }
     });
-    friend.friendId = friendId;
     return friend;
   }
 
