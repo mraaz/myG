@@ -24,11 +24,11 @@ export function onUpdateMessageAction(message, chatId) {
     }
 }
 
-export function onInfoUpdatedAction(activity, chatId) {
+export function onInfoUpdatedAction(activity, chatId, userId) {
     return {
         type: 'INFO_UPDATED',
         payload: activity,
-        meta: { chatId },
+        meta: { chatId, userId },
     }
 }
 
