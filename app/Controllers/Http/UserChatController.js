@@ -24,8 +24,9 @@ class UserChatController {
   }
 
   async update({ params, request, auth }) {
+    const data = request.only(['muted', 'blocked', 'markAsRead']);
+    if (data.markAsRead) return this.markAsRead({ params, auth });
     const chat = await this.fetchChat(params.chatId, auth.user.id);
-    const data = request.only(['muted', 'blocked']);
     if (data.muted !== undefined) chat.muted = data.muted;
     if (data.blocked !== undefined) chat.blocked = data.blocked;
     await chat.save();
@@ -62,6 +63,18 @@ class UserChatController {
     }
   }
 
+  async markAsRead({ params, auth }) {
+    const chat = await this.fetchChat(params.chatId, auth.user.id);
+    chat.read_date = toSQLDateTime(new Date());
+    await chat.save();
+    broadcast('chat:*', `chat:${chat.toJSON().chat_id}`, 'chat:info', {
+      userId: auth.user.id,
+      readDate: chat.toJSON().read_date,
+      friendReadDate: chat.toJSON().read_date,
+    });
+    return chat;
+  }
+
   async deleteMessages({ params, auth }) {
     const chat = await this.fetchChat(params.chatId, auth.user.id);
     chat.cleared_date = toSQLDateTime(new Date());
@@ -92,6 +105,7 @@ class UserChatController {
     ]);
 
     const friendId = friend.user[0].id;
+    const friendReadDate = friend.user[0].readDate;
     const icon = friend.user[0].profile_img;
     const title = `${friend.user[0].first_name} ${friend.user[0].last_name}`;
     const subtitle = this.getSubtitle(friend.user[0].status, friend.user[0].last_seen);
@@ -100,7 +114,8 @@ class UserChatController {
     const blocked = chat.toJSON().blocked;
     const status = chat.toJSON().status;
 
-    const clearedDate = new Date(chat.toJSON().cleared_date.toISOString().replace("T", " ").split('.')[0]);
+    const clearedDate = new Date(chat.toJSON().cleared_date);
+    const readDate = new Date(chat.toJSON().read_date);
     const deletedMessages = JSON.parse(chat.toJSON().deleted_messages);
     const filteredMessages = messages
       .filter(message => new Date(message.created_at) > clearedDate)
@@ -115,6 +130,8 @@ class UserChatController {
       muted,
       blocked,
       clearedDate,
+      readDate,
+      friendReadDate,
       status,
       messages: filteredMessages,
     };
@@ -124,6 +141,7 @@ class UserChatController {
   async fetchFriend(auth, chatId, userId) {
     const friendChat = await this.fetchFriendChat(chatId, userId);
     const friendId = friendChat.toJSON().user_id;
+    const friendReadDate = new Date(friendChat.toJSON().read_date);
     const userController = new UserController();
     const friend = await userController.profile({
       auth,
@@ -133,6 +151,7 @@ class UserChatController {
         }
       }
     });
+    friend.user[0].readDate = friendReadDate;
     return friend;
   }
 

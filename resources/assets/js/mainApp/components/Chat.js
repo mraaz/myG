@@ -7,6 +7,7 @@ import ChatInput from './ChatInput';
 import { fetchInfoAction, sendMessageAction, editMessageAction, updateChatAction, updateChatStateAction, clearChatAction } from '../../redux/actions/chatAction';
 import { enrichMessagesWithDates } from '../../common/chat';
 import { encryptMessage, decryptMessage } from '../../integration/encryption';
+import { convertUTCDateToLocalDate, howLongAgo } from '../../common/date';
 
 class Chat extends React.PureComponent {
 
@@ -14,6 +15,7 @@ class Chat extends React.PureComponent {
     super(props);
     this.state = {
       lastMessageId: null,
+      lastFriendRead: new Date(0),
       wasEncrypted: !props.userPrivateKey,
       editing: false,
       settings: false,
@@ -28,11 +30,22 @@ class Chat extends React.PureComponent {
   componentDidUpdate() {
     const lastMessage = this.props.messages[this.props.messages.length - 1] || {};
     const lastMessageId = lastMessage.id;
+    const lastMessageDate = convertUTCDateToLocalDate(new Date(lastMessage.created_at));
+    const lastReadDate = convertUTCDateToLocalDate(new Date(this.props.readDate));
+    const lastFriendRead = convertUTCDateToLocalDate(new Date(this.props.friendReadDate));
     const gotDecrypted = this.state.wasEncrypted && this.props.userPrivateKey;
     const hasNewMessage = this.state.lastMessageId !== lastMessageId;
-    if (hasNewMessage) this.setState({ lastMessageId });
-    if (gotDecrypted) this.setState({ wasEncrypted: false });
-    if (hasNewMessage || gotDecrypted) this.scrollToLastMessage();
+    const hasNewFriendRead = lastFriendRead > this.state.lastFriendRead;
+    if (hasNewFriendRead || hasNewMessage || gotDecrypted) {
+      const state = {};
+      if (hasNewFriendRead) state.lastFriendRead = lastFriendRead;
+      if (hasNewMessage) state.lastMessageId = lastMessageId;
+      if (gotDecrypted) state.wasEncrypted = false;
+      this.setState(state);
+      this.scrollToLastMessage();
+      return;
+    }
+    if (lastMessageDate > lastReadDate) this.props.updateChat(this.props.chatId, { markAsRead: true });
   }
 
   scrollToLastMessage = () => {
@@ -171,12 +184,30 @@ class Chat extends React.PureComponent {
   }
 
   renderBody = () => {
+    const lastMessage = this.props.messages[this.props.messages.length - 1] || {};
+    const lastMessageDate = convertUTCDateToLocalDate(new Date(lastMessage.created_at));
+    const lastFriendRead = convertUTCDateToLocalDate(new Date(this.props.friendReadDate));
+    const lastMessageWasMine = parseInt(lastMessage.user_id) === this.props.userId;
+    const friendHasRead = lastMessageWasMine && lastFriendRead >= lastMessageDate;
     return (
       <div
         className="chat-component-body"
         ref={this.messageListRef}
       >
         {this.props.messages.map(this.renderMessage)}
+        {friendHasRead && this.renderReadIndicator(howLongAgo(lastFriendRead))}
+      </div>
+    );
+  }
+
+  renderReadIndicator(timestamp) {
+    return (
+      <div className="chat-component-read-indicator">
+        <div
+          className="chat-component-read-indicator-icon"
+          style={{ backgroundImage: `url('${this.props.icon}')` }}
+        />
+        <p className="chat-component-read-indicator-label">read {timestamp}</p>
       </div>
     );
   }
@@ -262,6 +293,8 @@ function mapStateToProps(state, props) {
     subtitle: chat.subtitle || '',
     blocked: chat.blocked || false,
     muted: chat.muted || false,
+    readDate: chat.readDate || new Date(0),
+    friendReadDate: chat.friendReadDate || new Date(0),
     maximised: chat.maximised || false,
     minimised: chat.minimised || false,
     friendId: chat.friendId,

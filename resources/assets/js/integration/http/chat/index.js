@@ -17,7 +17,7 @@ export function createChat(members) {
 }
 
 export function updateChat(chatId, payload) {
-  logger.log('CHAT', 'HTTP', `Updating Chat ${chatId} -> ${payload}`);
+  logger.log('CHAT', 'HTTP', `Updating Chat ${chatId} -> ${JSON.stringify(payload)}`);
   return axios.put(`/api/chat/${chatId}`, payload);
 }
 

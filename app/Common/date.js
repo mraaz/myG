@@ -34,12 +34,14 @@ function howLongAgo(date) {
 }
 
 function toSQLDateTime(date) {
-  const day = date.getDate();
-  const month = date.getMonth() + 1;
-  const year = date.getFullYear();
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-  const seconds = date.getSeconds();
+  const isoDate = new Date(date).toISOString();
+  const utcDate = new Date(isoDate.replace("T", " ").split('.')[0]);
+  const day = utcDate.getDate();
+  const month = utcDate.getMonth() + 1;
+  const year = utcDate.getFullYear();
+  const hours = utcDate.getHours();
+  const minutes = utcDate.getMinutes();
+  const seconds = utcDate.getSeconds();
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
