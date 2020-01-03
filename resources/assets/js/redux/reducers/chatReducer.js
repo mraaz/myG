@@ -31,6 +31,8 @@ export default function reducer(state = {
       chat.friendId = action.payload.friendId;
       chat.muted = action.payload.muted;
       chat.blocked = action.payload.blocked;
+      chat.readDate = action.payload.readDate;
+      chat.friendReadDate = action.payload.friendReadDate;
       chat.clearedDate = action.payload.clearedDate;
       chat.messages = chat.blocked ? chat.messages || [] : messages;
       return {
@@ -69,7 +71,7 @@ export default function reducer(state = {
       logger.log('CHAT', `Redux -> New Chat: `, action.payload);
       const chats = JSON.parse(JSON.stringify(state.chats));
       chats.push(action.payload.chat);
-      monitorMessages(action.payload.chat.chatId, action.payload.userId);
+      monitorMessages(action.payload.chat.chatId, action.payload.chat.userId);
       return {
         ...state,
         chats,
@@ -113,14 +115,13 @@ export default function reducer(state = {
     }
 
     case "UPDATE_CHAT_FULFILLED": {
-      logger.log('CHAT', `Redux -> Deleted Message: `, action.meta);
-      const chatId = action.meta.chatId;
-      const muted = action.meta.muted;
-      const blocked = action.meta.blocked;
+      logger.log('CHAT', `Redux -> Chat Updated: `, action.meta);
+      const { chatId, muted, blocked, markAsRead } = action.meta;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (blocked !== undefined) chat.blocked = blocked;
       if (muted !== undefined) chat.muted = muted;
+      if (markAsRead) chat.readDate = new Date().toISOString().replace("T", " ").split('.')[0];
       return {
         ...state,
         chats,
@@ -156,12 +157,19 @@ export default function reducer(state = {
 
     case "INFO_UPDATED": {
       const { chatId, userId: thisUserId } = action.meta;
-      const { subtitle, userId: updatedUserId } = action.payload;
+      const { subtitle, readDate, friendReadDate, userId: updatedUserId } = action.payload;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
-      if (updatedUserId === thisUserId) return state;
-      logger.log('CHAT', `Redux -> Info Updated: `, action.payload);
-      chat.subtitle = subtitle;
+      if (parseInt(updatedUserId) === parseInt(thisUserId)) {
+        if (readDate) chat.readDate = readDate;
+        return {
+          ...state,
+          chats,
+        };
+      }
+      logger.log('CHAT', `Redux -> Info Updated: `, action.meta, action.payload);
+      if (subtitle) chat.subtitle = subtitle;
+      if (friendReadDate) chat.friendReadDate = friendReadDate;
       return {
         ...state,
         chats,
@@ -174,7 +182,7 @@ export default function reducer(state = {
       const { userId: updatedUserId, publicKey } = action.payload;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
-      if (updatedUserId === thisUserId) return state;
+      if (parseInt(updatedUserId) === parseInt(thisUserId)) return state;
       chat.publicKey = publicKey;
       return {
         ...state,

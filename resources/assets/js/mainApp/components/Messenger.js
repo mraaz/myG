@@ -76,6 +76,19 @@ class Messenger extends React.PureComponent {
     const m2 = (f2.chat.messages || [])[(f2.chat.messages || []).length - 1] || { created_at: 0 };
     return new Date(m2.created_at) - new Date(m1.created_at);
   }
+  
+  countUnreadMessages = (lastRead, messages) => {
+    let unreadCount = 0;
+    messages.reverse().some(message => {
+      const messageDate = convertUTCDateToLocalDate(new Date(message.created_at));
+      if (messageDate > lastRead) {
+        ++unreadCount;
+        return false;
+      }
+      return true;
+    });
+    return unreadCount;
+  }
 
   renderChats = () => {
     return (
@@ -167,7 +180,11 @@ class Messenger extends React.PureComponent {
   }
 
   renderFriend = (friend) => {
-    const lastMessage = (friend.chat.messages || [])[(friend.chat.messages || []).length - 1];
+    const messages = (friend.chat.messages || []).slice(0);
+    const lastMessage = messages[messages.length - 1];
+    const lastRead = convertUTCDateToLocalDate(new Date(friend.chat.readDate));
+    const receivedMessages = messages.filter(message => parseInt(message.user_id) !== this.props.userId);
+    const unreadCount = this.countUnreadMessages(lastRead, receivedMessages);
     return (
       <div
         key={friend.id}
@@ -198,7 +215,7 @@ class Messenger extends React.PureComponent {
           )}
           <div className="messenger-contact-info-unread">
             <p className="messenger-contact-info-unread-count">
-              {(friend.chat.messages || []).filter(message => message.isUnread).length}
+              {unreadCount}
             </p>
           </div>
         </div>
@@ -273,16 +290,16 @@ class Messenger extends React.PureComponent {
     return (
       <div className="messenger-settings-status">
         <p className="messenger-settings-status-indicator messenger-settings-status-option clickable messenger-footer-status-online"
-          onClick={() => this.setStatus('online')}
+          onMouseDown={() => this.setStatus('online')}
         >online</p>
         <p className="messenger-settings-status-indicator messenger-settings-status-option clickable messenger-footer-status-playing"
-          onClick={() => this.setStatus('playing')}
+          onMouseDown={() => this.setStatus('playing')}
         >playing</p>
         <p className="messenger-settings-status-indicator messenger-settings-status-option clickable messenger-footer-status-afk"
-          onClick={() => this.setStatus('afk')}
+          onMouseDown={() => this.setStatus('afk')}
         >afk</p>
         <p className="messenger-settings-status-indicator messenger-settings-status-option clickable messenger-footer-status-offline"
-          onClick={() => this.setStatus('offline')}
+          onMouseDown={() => this.setStatus('offline')}
         >offline</p>
       </div>
     );
@@ -302,7 +319,7 @@ class Messenger extends React.PureComponent {
               tabIndex={0}
               className={`messenger-footer-status-indicator messenger-footer-status-${this.props.status} clickable`}
               onClick={() => this.setState(previous => ({ changingStatus: !previous.changingStatus }))}
-              onBlur={() => this.setState({ changingStatus: false })}
+              onBlur={() => setTimeout(() => this.setState({ changingStatus: false }), 100)}
             >
               {this.props.status}
             </div>
