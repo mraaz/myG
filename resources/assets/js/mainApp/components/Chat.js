@@ -28,10 +28,13 @@ class Chat extends React.PureComponent {
   }
 
   componentDidUpdate() {
+    const scrolled = this.scrollToLastMessage();
+    if (!scrolled) this.markAsRead();
+  }
+
+  scrollToLastMessage = () => {
     const lastMessage = this.props.messages[this.props.messages.length - 1] || {};
     const lastMessageId = lastMessage.id;
-    const lastMessageDate = convertUTCDateToLocalDate(new Date(lastMessage.created_at));
-    const lastReadDate = convertUTCDateToLocalDate(new Date(this.props.readDate));
     const lastFriendRead = convertUTCDateToLocalDate(new Date(this.props.friendReadDate));
     const gotDecrypted = this.state.wasEncrypted && this.props.userPrivateKey;
     const hasNewMessage = this.state.lastMessageId !== lastMessageId;
@@ -42,14 +45,17 @@ class Chat extends React.PureComponent {
       if (hasNewMessage) state.lastMessageId = lastMessageId;
       if (gotDecrypted) state.wasEncrypted = false;
       this.setState(state);
-      this.scrollToLastMessage();
-      return;
+      if (this.messageListRef.current) this.messageListRef.current.scrollTo(0, this.messageListRef.current.scrollHeight);
+      return true;
     }
-    if (lastMessageDate > lastReadDate) this.props.updateChat(this.props.chatId, { markAsRead: true });
   }
 
-  scrollToLastMessage = () => {
-    if (this.messageListRef.current) this.messageListRef.current.scrollTo(0, this.messageListRef.current.scrollHeight);
+  markAsRead = () => {
+    const lastReadDate = convertUTCDateToLocalDate(new Date(this.props.readDate));
+    const receivedMessages = this.props.messages.filter(message => parseInt(message.userId) !== parseInt(this.props.userId));
+    const lastReceivedMessage = receivedMessages[receivedMessages.length - 1] || {};
+    const lastReceivedMessageDate = convertUTCDateToLocalDate(new Date(lastReceivedMessage.created_at));
+    if (lastReceivedMessageDate > lastReadDate) this.props.updateChat(this.props.chatId, { markAsRead: true });
   }
 
   sendMessage = (input) => {
@@ -68,13 +74,13 @@ class Chat extends React.PureComponent {
   }
 
   decryptMessage = (message) => {
-    const origin = parseInt(message.user_id) === this.props.userId ? 'sent' : 'received';
+    const origin = parseInt(message.user_id) === parseInt(this.props.userId) ? 'sent' : 'received';
     const content = decryptMessage(origin === 'sent' ? message.backup : message.content, this.props.userPrivateKey);
     return { ...message, content };
   }
 
   editLastMessage = () => {
-    const sentMessages = this.props.messages.filter(message => parseInt(message.user_id) === this.props.userId && !message.deleted);
+    const sentMessages = this.props.messages.filter(message => parseInt(message.user_id) === parseInt(this.props.userId) && !message.deleted);
     const lastSentMessage = sentMessages[sentMessages.length - 1];
     if (!lastSentMessage) return;
     this.setState({ editing: lastSentMessage.id });
@@ -187,7 +193,7 @@ class Chat extends React.PureComponent {
     const lastMessage = this.props.messages[this.props.messages.length - 1] || {};
     const lastMessageDate = convertUTCDateToLocalDate(new Date(lastMessage.created_at));
     const lastFriendRead = convertUTCDateToLocalDate(new Date(this.props.friendReadDate));
-    const lastMessageWasMine = parseInt(lastMessage.user_id) === this.props.userId;
+    const lastMessageWasMine = parseInt(lastMessage.user_id) === parseInt(this.props.userId);
     const friendHasRead = lastMessageWasMine && lastFriendRead >= lastMessageDate;
     return (
       <div

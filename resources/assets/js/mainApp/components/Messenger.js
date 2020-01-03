@@ -290,16 +290,16 @@ class Messenger extends React.PureComponent {
     return (
       <div className="messenger-settings-status">
         <p className="messenger-settings-status-indicator messenger-settings-status-option clickable messenger-footer-status-online"
-          onClick={() => this.setStatus('online')}
+          onMouseDown={() => this.setStatus('online')}
         >online</p>
         <p className="messenger-settings-status-indicator messenger-settings-status-option clickable messenger-footer-status-playing"
-          onClick={() => this.setStatus('playing')}
+          onMouseDown={() => this.setStatus('playing')}
         >playing</p>
         <p className="messenger-settings-status-indicator messenger-settings-status-option clickable messenger-footer-status-afk"
-          onClick={() => this.setStatus('afk')}
+          onMouseDown={() => this.setStatus('afk')}
         >afk</p>
         <p className="messenger-settings-status-indicator messenger-settings-status-option clickable messenger-footer-status-offline"
-          onClick={() => this.setStatus('offline')}
+          onMouseDown={() => this.setStatus('offline')}
         >offline</p>
       </div>
     );
