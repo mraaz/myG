@@ -13,7 +13,7 @@ class GroupsSchema extends Schema {
       table.integer('type').unsigned().notNullable().defaultTo(1)
       table.string('group_img', 254).notNullable().defaultTo("https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/samuel-67197_1280.jpg")
       table.integer('all_accept').unsigned().notNullable().defaultTo(1)
-      table.integer('aws_key_id').unsigned().notNullable()
+      table.integer('aws_key_id').unsigned().nullable()
       table.foreign('aws_key_id').references('aws_keys.id').onDelete('cascade')
       table.timestamps()
     })
