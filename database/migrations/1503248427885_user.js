@@ -26,6 +26,8 @@ class UserSchema extends Schema {
       table.boolean('status_locked').notNullable().defaultTo(false)
       table.datetime('last_seen').nullable()
       table.string('public_key', 172).nullable()
+      table.integer('aws_key_id').unsigned().notNullable()
+      table.foreign('aws_key_id').references('aws_keys.id').onDelete('cascade')
       table.timestamps()
     })
   }

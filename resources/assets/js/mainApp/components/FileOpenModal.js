@@ -15,6 +15,7 @@ export default class FileOpenModal extends Component {
       file_key: '',
       store_files: [],
       lock: false,
+      uploading: false,
     }
 
     this.closeModal = this.closeModal.bind(this)
@@ -75,6 +76,7 @@ export default class FileOpenModal extends Component {
 
   async doUploadS3(file, name) {
     var instance = this
+    this.state.uploading = true
 
     const formData = new FormData()
     formData.append('upload_file', file)
@@ -93,6 +95,7 @@ export default class FileOpenModal extends Component {
     } catch (error) {
       toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
     }
+    this.state.uploading = false
   }
 
   getUploadParams = async ({ file, meta: { id, name } }) => {
@@ -108,7 +111,10 @@ export default class FileOpenModal extends Component {
   }
 
   handleSubmit = (files, allFiles) => {
-    this.props.callbackConfirm(this.state.file_src)
+    if (this.state.uploading == true) {
+      return
+    }
+    this.props.callbackConfirm(this.state.file_src, this.state.file_key)
 
     this.setState({
       store_files: [],
