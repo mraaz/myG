@@ -102,7 +102,7 @@ class ChatController {
 
     const messages = (await chat.messages().fetch()).toJSON() || [];
     const now = new Date(new Date().toISOString().replace("T", " ").split('.')[0]).getTime();
-    const timer = 10000;
+    const timer = 1000 * 60 * 60 * 24;
     const toDelete = [];
 
     messages
