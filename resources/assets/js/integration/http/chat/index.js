@@ -21,14 +21,19 @@ export function updateChat(chatId, payload) {
   return axios.put(`/api/chat/${chatId}`, payload);
 }
 
+export function checkSelfDestruct(chatId) {
+  logger.log('CHAT', 'HTTP', `Checking Self Destruct for Chat ${chatId}`);
+  return axios.delete(`/api/chat/${chatId}/selfDestruct`);
+}
+
 export function clearChat(chatId) {
   logger.log('CHAT', 'HTTP', `Clearing Chat ${chatId}`);
   return axios.delete(`/api/chat/${chatId}`);
 }
 
-export function sendMessage(chatId, userId, encrypted) {
+export function sendMessage(chatId, userId, encrypted, selfDestruct) {
   logger.log('CHAT', 'HTTP', `Sending Message from User ${userId} to Chat ${chatId}`);
-  return axios.post(`/api/chat/${chatId}/message/`, { userId, encrypted });
+  return axios.post(`/api/chat/${chatId}/message/`, { userId, encrypted, selfDestruct });
 }
 
 export function editMessage(chatId, messageId, encrypted) {

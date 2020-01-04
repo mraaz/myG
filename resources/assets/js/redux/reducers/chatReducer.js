@@ -31,6 +31,7 @@ export default function reducer(state = {
       chat.friendId = action.payload.friendId;
       chat.muted = action.payload.muted;
       chat.blocked = action.payload.blocked;
+      chat.selfDestruct = action.payload.selfDestruct;
       chat.readDate = action.payload.readDate;
       chat.friendReadDate = action.payload.friendReadDate;
       chat.clearedDate = action.payload.clearedDate;
@@ -114,13 +115,32 @@ export default function reducer(state = {
       };
     }
 
+    case "ON_MESSAGES_DELETED": {
+      logger.log('CHAT', `Redux -> On Messages Deleted: `, action.payload);
+      const chatId = action.meta.chatId;
+      const messages = action.payload.messages;
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => candidate.chatId === chatId);
+      if (chat.blocked) return state;
+      messages.forEach(message => {
+        const toDelete = chat.messages.find(candidate => candidate.id === message.id);
+        const index = chat.messages.indexOf(toDelete);
+        chat.messages.splice(index, 1);
+      });
+      return {
+        ...state,
+        chats,
+      };
+    }
+
     case "UPDATE_CHAT_FULFILLED": {
       logger.log('CHAT', `Redux -> Chat Updated: `, action.meta);
-      const { chatId, muted, blocked, markAsRead } = action.meta;
+      const { chatId, muted, blocked, markAsRead, selfDestruct } = action.meta;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (blocked !== undefined) chat.blocked = blocked;
       if (muted !== undefined) chat.muted = muted;
+      if (selfDestruct !== undefined) chat.selfDestruct = selfDestruct;
       if (markAsRead) chat.readDate = new Date().toISOString().replace("T", " ").split('.')[0];
       return {
         ...state,
@@ -157,10 +177,11 @@ export default function reducer(state = {
 
     case "INFO_UPDATED": {
       const { chatId, userId: thisUserId } = action.meta;
-      const { subtitle, readDate, friendReadDate, userId: updatedUserId } = action.payload;
+      const { subtitle, selfDestruct, readDate, friendReadDate, userId: updatedUserId } = action.payload;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (parseInt(updatedUserId) === parseInt(thisUserId)) {
+        if (selfDestruct) chat.selfDestruct = selfDestruct;
         if (readDate) chat.readDate = readDate;
         return {
           ...state,

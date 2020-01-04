@@ -61,6 +61,14 @@
   background-color: #303030 !important;
 }
 
+.chat-component-message-self-destruct {
+  background-color: #503030 !important;
+}
+
+.chat-component-message-self-destruct::before {
+  background-color: #503030 !important;
+}
+
 .chat-component-message-container {
   display: flex;
   justify-content: space-between;

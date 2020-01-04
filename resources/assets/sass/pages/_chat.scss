@@ -26,6 +26,10 @@
   border-top-left-radius: 12px;
 }
 
+.chat-component-header-self-destruct {
+  background-color: #502326 !important;
+}
+
 .chat-component-header-icon {
   background-color: #2D363A;
   background-repeat: no-repeat;
@@ -49,7 +53,6 @@
 }
 
 .chat-component-header-settings {
-  background-color: #2D363A;
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;

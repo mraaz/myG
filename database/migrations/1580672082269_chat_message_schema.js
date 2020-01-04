@@ -15,6 +15,7 @@ class ChatMessageSchema extends Schema {
       table.text('backup').notNullable()
       table.boolean('deleted').notNullable().defaultTo(false)
       table.boolean('edited').notNullable().defaultTo(false)
+      table.boolean('self_destruct').notNullable().defaultTo(false)
       table.timestamps()
     })
   }

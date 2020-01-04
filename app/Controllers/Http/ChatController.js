@@ -31,12 +31,14 @@ class ChatController {
     const chat = await Chat.find(params.chatId);
     if (!chat) return response.notFound(`Chat ${params.chatId} was not found.`);
 
-    const data = request.only(['name', 'encrypted', 'userId']);
+    const data = request.only(['name', 'encrypted', 'userId', 'selfDestruct']);
     data.user_id = data.userId;
+    data.self_destruct = data.selfDestruct;
     data.content = data.encrypted.content;
     data.backup = data.encrypted.backup;
     delete data.encrypted;
     delete data.userId;
+    delete data.selfDestruct;
 
     const message = await chat.messages().create(data);
     message.userId = message.user_id;
@@ -92,6 +94,40 @@ class ChatController {
     return message;
 
   }
+
+  async checkSelfDestruct({ params, response }) {
+
+    const chat = await Chat.find(params.chatId);
+    if (!chat) return response.notFound(`Chat ${params.chatId} was not found.`);
+
+    const messages = (await chat.messages().fetch()).toJSON() || [];
+    const now = new Date(new Date().toISOString().replace("T", " ").split('.')[0]).getTime();
+    const timer = 10000;
+    const toDelete = [];
+
+    messages
+      .filter(message => message.self_destruct)
+      .reverse()
+      .some((message, index) => {
+        const dateDelta = now - new Date(message.created_at).getTime();
+        if (dateDelta > timer) {
+          toDelete.push({ index, id: message.id });
+          return false;
+        }
+        return true;
+      });
+
+    const toDeletePromises = [];
+    toDelete.forEach(async ({ index, id }) => {
+      messages.splice(index, 1);
+      toDeletePromises.push(ChatMessage.query().where('id', id).delete());
+    });
+    await Promise.all(toDeletePromises);
+
+    broadcast('chat:*', `chat:${params.chatId}`, 'chat:deleteMessages', toDelete);
+
+  }
+
 }
 
 module.exports = ChatController;
