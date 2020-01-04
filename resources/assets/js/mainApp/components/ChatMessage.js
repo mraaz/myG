@@ -110,13 +110,14 @@ class ChatMessage extends React.Component {
     const { message } = this.props;
     const origin = parseInt(message.user_id) === this.props.userId ? 'sent' : 'received';
     const deletedStyle = message.deleted && 'chat-component-message-deleted';
+    const selfDestructStyle = message.self_destruct && 'chat-component-message-self-destruct';
     if (this.state.editing) return this.renderInput();
     if (message.isDateDivisor) return this.renderDateDivisor();
     return (
       <div
         key={message.id}
         ref={this.messageRef}
-        className={`chat-component-message chat-component-message-${origin} ${deletedStyle}`}
+        className={`chat-component-message chat-component-message-${origin} ${deletedStyle} ${selfDestructStyle}`}
         onMouseEnter={() => this.setState({ showOptionsButton: true })}
         onMouseLeave={() => this.setState({ showOptionsButton: false, showOptionsMenu: false })}
       >

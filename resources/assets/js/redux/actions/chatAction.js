@@ -1,4 +1,4 @@
-import { fetchChats, fetchInfo, createChat, updateChat, clearChat, sendMessage, editMessage, deleteMessage } from '../../integration/http/chat';
+import { fetchChats, fetchInfo, createChat, updateChat, checkSelfDestruct, clearChat, sendMessage, editMessage, deleteMessage } from '../../integration/http/chat';
 
 export function onNewChatAction(chat, userId) {
     return {
@@ -20,6 +20,14 @@ export function onUpdateMessageAction(message, chatId) {
     return {
         type: 'UPDATE_MESSAGE',
         payload: { message },
+        meta: { chatId },
+    }
+}
+
+export function onDeleteMessagesAction(messages, chatId) {
+    return {
+        type: 'ON_MESSAGES_DELETED',
+        payload: { messages },
         meta: { chatId },
     }
 }
@@ -79,6 +87,14 @@ export function updateChatAction(chatId, payload) {
     }
 }
 
+export function checkSelfDestructAction(chatId) {
+    return {
+        type: 'CHECK_SELF_DESTRUCT',
+        payload: checkSelfDestruct(chatId),
+        meta: { chatId },
+    }
+}
+
 export function clearChatAction(chatId) {
     return {
         type: 'CLEAR_CHAT',
@@ -101,10 +117,10 @@ export function closeChatAction(chatId) {
     }
 }
 
-export function sendMessageAction(chatId, userId, encrypted) {
+export function sendMessageAction(chatId, userId, encrypted, selfDestruct) {
     return {
         type: 'SEND_MESSAGE',
-        payload: sendMessage(chatId, userId, encrypted),
+        payload: sendMessage(chatId, userId, encrypted, selfDestruct),
         meta: { chatId },
     }
 }

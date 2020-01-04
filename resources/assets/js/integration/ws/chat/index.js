@@ -1,5 +1,5 @@
 import { store } from '../../../redux/Store';
-import { onNewChatAction, onNewMessageAction, onUpdateMessageAction, onInfoUpdatedAction, onPublicKeyUpdatedAction } from '../../../redux/actions/chatAction';
+import { onNewChatAction, onNewMessageAction, onUpdateMessageAction, onDeleteMessagesAction, onInfoUpdatedAction, onPublicKeyUpdatedAction } from '../../../redux/actions/chatAction';
 import socket from '../../../common/socket';
 import logger from '../../../common/logger';
 
@@ -30,6 +30,7 @@ export function monitorMessages(chatId, userId) {
     logger.log('CHAT', 'WS', `New "${event.type}" Event Received`, event.data);
     if (event.type === "chat:newMessage") return store.dispatch(onNewMessageAction(event.data, chatId, userId));
     if (event.type === "chat:updateMessage") return store.dispatch(onUpdateMessageAction(event.data, chatId, userId));
+    if (event.type === "chat:deleteMessages") return store.dispatch(onDeleteMessagesAction(event.data, chatId, userId));
     if (event.type === "chat:info") return store.dispatch(onInfoUpdatedAction(event.data, chatId, userId));
     if (event.type === "chat:encryption") return store.dispatch(onPublicKeyUpdatedAction(event.data, chatId, userId));
   });

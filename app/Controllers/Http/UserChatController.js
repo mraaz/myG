@@ -24,8 +24,9 @@ class UserChatController {
   }
 
   async update({ params, request, auth }) {
-    const data = request.only(['muted', 'blocked', 'markAsRead']);
+    const data = request.only(['muted', 'blocked', 'markAsRead', 'selfDestruct']);
     if (data.markAsRead) return this.markAsRead({ params, auth });
+    if (data.selfDestruct !== undefined) return this.setSelfDestruct({ params, auth }, data.selfDestruct);
     const chat = await this.fetchChat(params.chatId, auth.user.id);
     if (data.muted !== undefined) chat.muted = data.muted;
     if (data.blocked !== undefined) chat.blocked = data.blocked;
@@ -75,6 +76,17 @@ class UserChatController {
     return chat;
   }
 
+  async setSelfDestruct({ params, auth }, selfDestruct) {
+    const chat = await this.fetchChat(params.chatId, auth.user.id);
+    chat.self_destruct = selfDestruct;
+    await chat.save();
+    broadcast('chat:*', `chat:${chat.toJSON().chat_id}`, 'chat:info', {
+      userId: auth.user.id,
+      selfDestruct: chat.toJSON().self_destruct,
+    });
+    return chat;
+  }
+
   async deleteMessages({ params, auth }) {
     const chat = await this.fetchChat(params.chatId, auth.user.id);
     chat.cleared_date = toSQLDateTime(new Date());
@@ -113,6 +125,7 @@ class UserChatController {
     const muted = chat.toJSON().muted;
     const blocked = chat.toJSON().blocked;
     const status = chat.toJSON().status;
+    const selfDestruct = chat.toJSON().self_destruct;
 
     const clearedDate = new Date(chat.toJSON().cleared_date);
     const readDate = new Date(chat.toJSON().read_date);
@@ -129,6 +142,7 @@ class UserChatController {
       friendId,
       muted,
       blocked,
+      selfDestruct,
       clearedDate,
       readDate,
       friendReadDate,

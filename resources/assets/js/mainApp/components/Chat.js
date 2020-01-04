@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
 
-import { fetchInfoAction, sendMessageAction, editMessageAction, updateChatAction, updateChatStateAction, clearChatAction } from '../../redux/actions/chatAction';
+import { fetchInfoAction, sendMessageAction, editMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction } from '../../redux/actions/chatAction';
 import { enrichMessagesWithDates } from '../../common/chat';
 import { encryptMessage, decryptMessage } from '../../integration/encryption';
 import { convertUTCDateToLocalDate, howLongAgo } from '../../common/date';
@@ -25,6 +25,7 @@ class Chat extends React.PureComponent {
 
   componentDidMount() {
     this.props.fetchInfo(this.props.chatId);
+    setTimeout(() => this.props.checkSelfDestruct(this.props.chatId), 1000);
   }
 
   componentDidUpdate() {
@@ -60,7 +61,7 @@ class Chat extends React.PureComponent {
 
   sendMessage = (input) => {
     if (!input) return;
-    this.props.sendMessage(this.props.chatId, this.props.userId, this.encryptInput(input));
+    this.props.sendMessage(this.props.chatId, this.props.userId, this.encryptInput(input), this.props.selfDestruct);
   }
 
   editMessage = (chatId, messageId, input) => {
@@ -107,7 +108,7 @@ class Chat extends React.PureComponent {
             className="chat-component-header-settings-option-icon"
             style={{ backgroundImage: `url(/assets/svg/ic_chat_block.svg)` }}
           />
-          block
+          {this.props.blocked ? 'unblock' : 'block'}
         </div>
 
         <div
@@ -121,7 +122,21 @@ class Chat extends React.PureComponent {
             className="chat-component-header-settings-option-icon"
             style={{ backgroundImage: `url(/assets/svg/ic_chat_mute.svg)` }}
           />
-          mute
+          {this.props.muted ? 'unmute' : 'mute'}
+        </div>
+
+        <div
+          className={`chat-component-header-settings-option clickable ${this.props.selfDestruct && inactiveStyle}`}
+          onClick={() => {
+            this.setState({ settings: false });
+            this.props.updateChat(this.props.chatId, { selfDestruct: !this.props.selfDestruct });
+          }}
+        >
+          <div
+            className="chat-component-header-settings-option-icon"
+            style={{ backgroundImage: `url(/assets/svg/ic_chat_self_destruct.svg)` }}
+          />
+          {this.props.selfDestruct ? 'disable' : 'enable'} self destruct
         </div>
 
         <div
@@ -143,8 +158,9 @@ class Chat extends React.PureComponent {
   }
 
   renderHeader = () => {
+    const selfDestructStyle = this.props.selfDestruct && 'chat-component-header-self-destruct';
     return (
-      <div className="chat-component-header">
+      <div className={`chat-component-header ${selfDestructStyle}`}>
 
         <div
           className="chat-component-header-icon clickable"
@@ -299,6 +315,7 @@ function mapStateToProps(state, props) {
     subtitle: chat.subtitle || '',
     blocked: chat.blocked || false,
     muted: chat.muted || false,
+    selfDestruct: chat.selfDestruct || false,
     readDate: chat.readDate || new Date(0),
     friendReadDate: chat.friendReadDate || new Date(0),
     maximised: chat.maximised || false,
@@ -312,11 +329,12 @@ function mapStateToProps(state, props) {
 
 function mapDispatchToProps(dispatch) {
   return ({
-    sendMessage: (chatId, userId, content) => dispatch(sendMessageAction(chatId, userId, content)),
+    sendMessage: (chatId, userId, content, selfDestruct) => dispatch(sendMessageAction(chatId, userId, content, selfDestruct)),
     editMessage: (chatId, messageId, content) => dispatch(editMessageAction(chatId, messageId, content)),
     fetchInfo: (chatId) => dispatch(fetchInfoAction(chatId)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     updateChatState: (chatId, state) => dispatch(updateChatStateAction(chatId, state)),
+    checkSelfDestruct: (chatId) => dispatch(checkSelfDestructAction(chatId)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
   });
 }

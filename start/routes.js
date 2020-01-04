@@ -275,5 +275,6 @@ Route.delete('/api/chat/:chatId', 'UserChatController.deleteMessages');
 Route.post('/api/chat/:chatId/message', 'ChatController.createMessage');
 Route.put('/api/chat/:chatId/message/:messageId', 'ChatController.updateMessage');
 Route.delete('/api/chat/:chatId/message/:messageId', 'ChatController.deleteMessage');
+Route.delete('/api/chat/:chatId/selfDestruct', 'ChatController.checkSelfDestruct');
 
 Route.any('*', ({ view }) => view.render('pages/react'))

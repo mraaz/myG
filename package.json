@@ -8,6 +8,7 @@
     "start": "node server.js",
     "test": "node ace test",
     "dev": "npm run build && npm run start",
+    "reset": "adonis migration:reset && adonis migration:run && python ./scripts/database.py",
     "production": "./node_modules/.bin/webpack -p",
     "watch": "gulp",
     "server": "adonis serve",

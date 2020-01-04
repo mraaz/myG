@@ -35,15 +35,22 @@
 }
 section#content-container {
   background-color: #0b0f14;
+  width: 65%;
+  margin: 0px 20% 0px 15%;
 }
 .app-container.home-page {
   position: relative;
   display: grid;
-  grid-template-columns: 15% 65% 20%;
   #left-menu {
     background: #151b26;
     border-right: 2px solid #222b37;
     color: white;
+    position: fixed;
+    width: 15%;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    z-index: 100;
     .account-dropdown {
       display: grid;
       grid-template-columns: 1fr 3fr 1fr;

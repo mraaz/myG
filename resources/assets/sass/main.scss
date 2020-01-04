@@ -50,8 +50,8 @@ h4 {
 }
 .app-container {
   width: 100%;
+  min-height: 100vh;
   background: $backgroundContent2;
-  min-height: calc(100vh - 10vh);
   overflow: hidden;
   border-radius: 5px;
   margin: 0 auto;
