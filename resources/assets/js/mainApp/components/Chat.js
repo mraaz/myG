@@ -7,7 +7,7 @@ import ChatInput from './ChatInput';
 import { fetchInfoAction, sendMessageAction, editMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction } from '../../redux/actions/chatAction';
 import { enrichMessagesWithDates } from '../../common/chat';
 import { encryptMessage, decryptMessage } from '../../integration/encryption';
-import { convertUTCDateToLocalDate, howLongAgo } from '../../common/date';
+import { convertUTCDateToLocalDate } from '../../common/date';
 
 class Chat extends React.PureComponent {
 
@@ -52,6 +52,7 @@ class Chat extends React.PureComponent {
   }
 
   markAsRead = () => {
+    if (this.props.minimised) return;
     const lastReadDate = convertUTCDateToLocalDate(new Date(this.props.readDate));
     const receivedMessages = this.props.messages.filter(message => parseInt(message.userId) !== parseInt(this.props.userId));
     const lastReceivedMessage = receivedMessages[receivedMessages.length - 1] || {};
@@ -199,6 +200,9 @@ class Chat extends React.PureComponent {
             style={{ backgroundImage: `url('/assets/svg/ic_chat_settings.svg')` }}
             onClick={() => this.setState(previous => ({ settings: !previous.settings }))}
           />
+          <div className="chat-component-header-settings-popup-container">
+            {this.renderSettings()}
+          </div>
         </div>
 
       </div>
@@ -217,19 +221,20 @@ class Chat extends React.PureComponent {
         ref={this.messageListRef}
       >
         {this.props.messages.map(this.renderMessage)}
-        {friendHasRead && this.renderReadIndicator(howLongAgo(lastFriendRead))}
+        {friendHasRead && this.renderReadIndicator()}
       </div>
     );
   }
 
-  renderReadIndicator(timestamp) {
+  renderReadIndicator() {
     return (
       <div className="chat-component-read-indicator">
-        <div
-          className="chat-component-read-indicator-icon"
-          style={{ backgroundImage: `url('${this.props.icon}')` }}
-        />
-        <p className="chat-component-read-indicator-label">read {timestamp}</p>
+        <div className="chat-component-read-indicator-icon">
+          <img
+            className="chat-component-read-indicator-icon-image"
+            src={this.props.icon}
+          />
+        </div>
       </div>
     );
   }
@@ -260,6 +265,7 @@ class Chat extends React.PureComponent {
           <div className="chat-component-attach-button-divider" />
         </div>
         <ChatInput
+          connected={this.props.connected}
           blocked={this.props.blocked}
           userPrivateKey={this.props.userPrivateKey}
           sendMessage={this.sendMessage}
@@ -275,7 +281,6 @@ class Chat extends React.PureComponent {
         key={this.props.chatId}
         className="chat-component-base"
       >
-        {this.renderSettings()}
         {this.renderHeader()}
         <div className="chat-component-encryption-warning">
           Please inform your encryption key to read the contents of this chat.
@@ -295,7 +300,6 @@ class Chat extends React.PureComponent {
         key={this.props.chatId}
         className={`chat-component-base ${extraClass}`}
       >
-        {this.renderSettings()}
         {this.renderHeader()}
         {!this.props.minimised && this.renderBody()}
         {!this.props.minimised && <div className="chat-component-footer-divider" />}
@@ -324,6 +328,7 @@ function mapStateToProps(state, props) {
     friendPublicKey: chat.publicKey,
     userPublicKey: state.encryption.publicKey,
     userPrivateKey: state.encryption.privateKey,
+    connected: state.socket.connected,
   }
 }
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 import { withRouter, Link } from 'react-router-dom'
+import { connect } from 'react-redux';
+import { logoutAction } from '../../redux/actions/userAction';
 
 class LeftMenu extends Component {
   constructor() {
@@ -89,7 +90,7 @@ class LeftMenu extends Component {
             <div className={`dropdown ${this.state.dropdown ? 'active' : ''}`}>
               <nav>
                 <a href='/mySettings'>mySettings</a>
-                <a href='/logout'>Logout</a>
+                <a href='/logout' onClick={() => this.props.logout()}>Logout</a>
               </nav>
             </div>
           </div>
@@ -193,5 +194,10 @@ class LeftMenu extends Component {
   }
 }
 
-const app = document.getElementById('app')
-export default withRouter(LeftMenu)
+function mapDispatchToProps(dispatch) {
+  return ({
+    logout: () => dispatch(logoutAction())
+  });
+}
+
+export default connect(null, mapDispatchToProps)(withRouter(LeftMenu));

@@ -7,15 +7,18 @@ import chat from './reducers/chatReducer';
 import user from './reducers/userReducer';
 import friend from './reducers/friendReducer';
 import encryption from './reducers/encryptionReducer';
+import socket from './reducers/socketReducer';
 
 const appReducer = combineReducers({
     user,
     chat,
     friend,
     encryption,
+    socket,
 });
 
 const rootReducer = (state, action) => {
+    if (action.type === 'USER_LOGOUT') state = undefined;
     return appReducer(state, action);
 }
 

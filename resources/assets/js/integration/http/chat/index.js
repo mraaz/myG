@@ -13,7 +13,7 @@ export function fetchInfo(chatId) {
 
 export function createChat(members) {
   logger.log('CHAT', 'HTTP', `Creating Chat for Members`, members);
-  return axios.post(`/api/chat/`, { members });
+  return axios.post(`/api/chat/`, { members }).then(response => response.data);
 }
 
 export function updateChat(chatId, payload) {
