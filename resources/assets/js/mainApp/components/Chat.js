@@ -52,6 +52,7 @@ class Chat extends React.PureComponent {
   }
 
   markAsRead = () => {
+    if (this.props.minimised) return;
     const lastReadDate = convertUTCDateToLocalDate(new Date(this.props.readDate));
     const receivedMessages = this.props.messages.filter(message => parseInt(message.userId) !== parseInt(this.props.userId));
     const lastReceivedMessage = receivedMessages[receivedMessages.length - 1] || {};
@@ -217,19 +218,20 @@ class Chat extends React.PureComponent {
         ref={this.messageListRef}
       >
         {this.props.messages.map(this.renderMessage)}
-        {friendHasRead && this.renderReadIndicator(howLongAgo(lastFriendRead))}
+        {friendHasRead && this.renderReadIndicator()}
       </div>
     );
   }
 
-  renderReadIndicator(timestamp) {
+  renderReadIndicator() {
     return (
       <div className="chat-component-read-indicator">
-        <div
-          className="chat-component-read-indicator-icon"
-          style={{ backgroundImage: `url('${this.props.icon}')` }}
-        />
-        <p className="chat-component-read-indicator-label">read {timestamp}</p>
+        <div className="chat-component-read-indicator-icon">
+          <img
+            className="chat-component-read-indicator-icon-image"
+            src={this.props.icon}
+          />
+        </div>
       </div>
     );
   }
