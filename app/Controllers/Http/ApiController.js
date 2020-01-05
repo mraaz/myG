@@ -101,6 +101,23 @@ class ApiController {
     )
   }
 
+  async deleteFile_server({ auth, request, response }) {
+    console.log(request.params.key)
+    s3.deleteObject(
+      {
+        Bucket: S3_BUCKET_DELETE,
+        Key: request.params.key,
+      },
+      function(err, data) {
+        if (data) {
+          return response.status(200).json({ success: true })
+        } else {
+          return response.status(400).send(err)
+        }
+      }
+    )
+  }
+
   async deleteFiles({ auth, request, response }) {
     var files = request.input('files')
     var bFailed = false

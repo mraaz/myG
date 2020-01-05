@@ -2,6 +2,7 @@
 
 const Post = use('App/Models/Post')
 const Database = use('Database')
+const AwsKeyController = use('./AwsKeyController')
 
 class PostController {
   async store({ auth, request, response }) {
@@ -127,15 +128,16 @@ class PostController {
   async destroy({ auth, request, response }) {
     if (auth.user) {
       try {
+        let delete_files = new AwsKeyController()
+        await delete_files.deletePostKey({ auth, request, response })
+
         const delete_post = await Database.table('posts')
           .where({
             id: request.params.id,
           })
           .delete()
 
-        return {
-          myid: request.params.id,
-        }
+        return 'Deleted successfully'
       } catch (error) {
         console.log(error)
       }
@@ -163,6 +165,11 @@ class PostController {
       type: 'photo',
       group_id: request.input('groups_id'),
     })
+
+    let update_key = new AwsKeyController()
+    request.params.post_id = newPost.id
+    update_key.addPostKey({ auth, request, response })
+
     return 'Saved item'
   }
 
@@ -174,6 +181,10 @@ class PostController {
       type: 'video',
       group_id: request.input('groups_id'),
     })
+
+    let update_key = new AwsKeyController()
+    request.params.post_id = newPost.id
+    update_key.addPostKey({ auth, request, response })
     return 'Saved item'
   }
 }

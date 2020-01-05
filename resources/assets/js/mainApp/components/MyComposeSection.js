@@ -24,9 +24,7 @@ export default class MyComposeSection extends Component {
 
     this.openVideoPost = this.openVideoPost.bind(this)
     this.callbackPostFileModalClose = this.callbackPostFileModalClose.bind(this)
-    this.callbackPostFileModalConfirm = this.callbackPostFileModalConfirm.bind(
-      this
-    )
+    this.callbackPostFileModalConfirm = this.callbackPostFileModalConfirm.bind(this)
   }
 
   callbackPostFileModalClose() {
@@ -35,7 +33,7 @@ export default class MyComposeSection extends Component {
     })
   }
 
-  callbackPostFileModalConfirm = async (data) => {
+  callbackPostFileModalConfirm = async (data, keys) => {
     this.setState({
       bFileModalOpen: false,
     })
@@ -50,7 +48,6 @@ export default class MyComposeSection extends Component {
       url = '/api/postphoto'
     }
 
-    //console.log('data:', data);
     if (data.media_url.length == 0 && data.content == '') {
       return
     }
@@ -61,11 +58,13 @@ export default class MyComposeSection extends Component {
           media_url: JSON.stringify(data.media_url),
           content: data.content,
           groups_id: this.props.groups_id.params.id,
+          file_keys: keys,
         })
       } else {
         const post = await axios.post(url, {
           media_url: JSON.stringify(data.media_url),
           content: data.content,
+          file_keys: keys,
         })
       }
 
@@ -125,10 +124,7 @@ export default class MyComposeSection extends Component {
   }
   handleChange = (event) => {
     const name = event.target.name
-    const value =
-      event.target.type == 'checkbox'
-        ? event.target.checked
-        : event.target.value
+    const value = event.target.type == 'checkbox' ? event.target.checked : event.target.value
     this.setState({
       [name]: value,
     })
@@ -137,13 +133,7 @@ export default class MyComposeSection extends Component {
   showLatestPosts = () => {
     if (this.state.myPosts != undefined) {
       return this.state.myPosts.map((item, index) => {
-        return (
-          <IndividualPost
-            post={item}
-            key={index}
-            user={this.props.initialData}
-          />
-        )
+        return <IndividualPost post={item} key={index} user={this.props.initialData} />
       })
     }
   }
@@ -160,13 +150,10 @@ export default class MyComposeSection extends Component {
         for (i = 0; i < myPosts.data.myPosts.length; i++) {
           myLikes = await axios.get(`/api/likes/${myPosts.data.myPosts[i].id}`)
           myPosts.data.myPosts[i].total = myLikes.data.number_of_likes[0].total
-          myPosts.data.myPosts[i].no_of_comments =
-            myLikes.data.no_of_comments[0].no_of_comments
+          myPosts.data.myPosts[i].no_of_comments = myLikes.data.no_of_comments[0].no_of_comments
           if (myLikes.data.number_of_likes[0].total != 0) {
-            myPosts.data.myPosts[i].admirer_first_name =
-              myLikes.data.admirer_UserInfo.first_name
-            myPosts.data.myPosts[i].admirer_last_name =
-              myLikes.data.admirer_UserInfo.last_name
+            myPosts.data.myPosts[i].admirer_first_name = myLikes.data.admirer_UserInfo.first_name
+            myPosts.data.myPosts[i].admirer_last_name = myLikes.data.admirer_UserInfo.last_name
           } else {
             myPosts.data.myPosts[i].admirer_first_name = ''
             myPosts.data.myPosts[i].admirer_last_name = ''
@@ -222,13 +209,8 @@ export default class MyComposeSection extends Component {
     })
 
     const getGroupDetails = async function() {
-      const mygroup_details = await axios.get(
-        `/api/usergroup/mygroup_details/${self.props.groups_id.params.id}`
-      )
-      if (
-        mygroup_details.data.mygroup_details.length == 0 ||
-        mygroup_details.data.mygroup_details[0].permission_level == 42
-      ) {
+      const mygroup_details = await axios.get(`/api/usergroup/mygroup_details/${self.props.groups_id.params.id}`)
+      if (mygroup_details.data.mygroup_details.length == 0 || mygroup_details.data.mygroup_details[0].permission_level == 42) {
         self.setState({
           no_show: true,
         })
@@ -284,18 +266,12 @@ export default class MyComposeSection extends Component {
               bOpen={this.state.bFileModalOpen}
               fileType={this.state.fileType}
               callbackClose={this.callbackPostFileModalClose}
-              callbackConfirm={
-                this.callbackPostFileModalConfirm
-              }></PostFileModal>
+              callbackConfirm={this.callbackPostFileModalConfirm}></PostFileModal>
             <div className='buttons'>
-              <div
-                className='button photo-btn'
-                onClick={() => this.openPhotoPost()}>
+              <div className='button photo-btn' onClick={() => this.openPhotoPost()}>
                 <i className='far fa-images' />
               </div>
-              <div
-                className='button video-btn'
-                onClick={() => this.openVideoPost()}>
+              <div className='button video-btn' onClick={() => this.openVideoPost()}>
                 <i className='far fa-play-circle' />
               </div>
               <div className='button send-btn' onClick={this.submitForm}>
@@ -304,9 +280,7 @@ export default class MyComposeSection extends Component {
             </div>
           </div>
         )}
-        <section id='posts'>
-          {this.state.show_post && this.showLatestPosts()}
-        </section>
+        <section id='posts'>{this.state.show_post && this.showLatestPosts()}</section>
       </section>
     )
   }

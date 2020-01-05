@@ -22,9 +22,7 @@ export default class ComposeSection extends Component {
 
     this.openVideoPost = this.openVideoPost.bind(this)
     this.callbackPostFileModalClose = this.callbackPostFileModalClose.bind(this)
-    this.callbackPostFileModalConfirm = this.callbackPostFileModalConfirm.bind(
-      this
-    )
+    this.callbackPostFileModalConfirm = this.callbackPostFileModalConfirm.bind(this)
   }
 
   callbackPostFileModalClose() {
@@ -33,7 +31,7 @@ export default class ComposeSection extends Component {
     })
   }
 
-  callbackPostFileModalConfirm = async (data) => {
+  callbackPostFileModalConfirm = async (data, keys) => {
     this.setState({
       bFileModalOpen: false,
     })
@@ -56,6 +54,7 @@ export default class ComposeSection extends Component {
       const post = await axios.post(url, {
         media_url: JSON.stringify(data.media_url),
         content: data.content,
+        file_keys: keys,
       })
 
       this.setState({
@@ -111,10 +110,7 @@ export default class ComposeSection extends Component {
 
   handleChange = (event) => {
     const name = event.target.name
-    const value =
-      event.target.type == 'checkbox'
-        ? event.target.checked
-        : event.target.value
+    const value = event.target.type == 'checkbox' ? event.target.checked : event.target.value
     this.setState({
       [name]: value,
     })
@@ -127,13 +123,7 @@ export default class ComposeSection extends Component {
   showLatestPosts = () => {
     if (this.state.myPosts != undefined) {
       return this.state.myPosts.map((item, index) => {
-        return (
-          <IndividualPost
-            post={item}
-            key={index}
-            user={this.props.initialData}
-          />
-        )
+        return <IndividualPost post={item} key={index} user={this.props.initialData} />
       })
     }
   }
@@ -151,13 +141,10 @@ export default class ComposeSection extends Component {
         for (i = 0; i < myPosts.data.myPosts.length; i++) {
           myLikes = await axios.get(`/api/likes/${myPosts.data.myPosts[i].id}`)
           myPosts.data.myPosts[i].total = myLikes.data.number_of_likes[0].total
-          myPosts.data.myPosts[i].no_of_comments =
-            myLikes.data.no_of_comments[0].no_of_comments
+          myPosts.data.myPosts[i].no_of_comments = myLikes.data.no_of_comments[0].no_of_comments
           if (myLikes.data.number_of_likes[0].total != 0) {
-            myPosts.data.myPosts[i].admirer_first_name =
-              myLikes.data.admirer_UserInfo.first_name
-            myPosts.data.myPosts[i].admirer_last_name =
-              myLikes.data.admirer_UserInfo.last_name
+            myPosts.data.myPosts[i].admirer_first_name = myLikes.data.admirer_UserInfo.first_name
+            myPosts.data.myPosts[i].admirer_last_name = myLikes.data.admirer_UserInfo.last_name
           } else {
             myPosts.data.myPosts[i].admirer_first_name = ''
             myPosts.data.myPosts[i].admirer_last_name = ''
@@ -243,14 +230,10 @@ export default class ComposeSection extends Component {
             callbackClose={this.callbackPostFileModalClose}
             callbackConfirm={this.callbackPostFileModalConfirm}></PostFileModal>
           <div className='buttons'>
-            <div
-              className=' button photo-btn'
-              onClick={() => this.openPhotoPost()}>
+            <div className=' button photo-btn' onClick={() => this.openPhotoPost()}>
               <i className='far fa-images' />
             </div>
-            <div
-              className='button video-btn'
-              onClick={() => this.openVideoPost()}>
+            <div className='button video-btn' onClick={() => this.openVideoPost()}>
               <i className='far fa-play-circle' />
             </div>
             <div className='button send-btn' onClick={this.submitForm}>
@@ -258,9 +241,7 @@ export default class ComposeSection extends Component {
             </div>
           </div>
         </div>
-        <section id='posts'>
-          {this.state.show_post && this.showLatestPosts()}
-        </section>
+        <section id='posts'>{this.state.show_post && this.showLatestPosts()}</section>
       </section>
     )
   }
