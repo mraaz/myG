@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 import { Redirect } from 'react-router'
 import axios from 'axios'
 import ToggleButton from 'react-toggle-button'
 import SweetAlert from 'react-bootstrap-sweetalert'
+import { connect } from 'react-redux';
+import { logoutAction } from '../../redux/actions/userAction';
 
-export default class MySettings extends Component {
+class MySettings extends Component {
   constructor() {
     super()
     this.state = {
@@ -94,7 +95,9 @@ export default class MySettings extends Component {
 
   render() {
     if (this.state.redirect_) {
-      return <Redirect push to='/logout' />
+      this.props.logout();
+      window.location.replace('/logout');
+      return null;
     }
     return (
       <section id='mySettings-page'>
@@ -141,3 +144,11 @@ export default class MySettings extends Component {
     )
   }
 }
+
+function mapDispatchToProps(dispatch) {
+  return ({
+    logout: () => dispatch(logoutAction())
+  });
+}
+
+export default connect(null, mapDispatchToProps)(MySettings);
