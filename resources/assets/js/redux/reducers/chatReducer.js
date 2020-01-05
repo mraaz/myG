@@ -12,8 +12,9 @@ export default function reducer(state = {
       const findChat = chatId => state.chats.find(candidate => candidate.chatId === chatId) || {};
       const chats = action.payload.chats.map(chat => ({ ...chat, ...findChat(chat.chatId) }));
       chats.forEach(chat => monitorMessages(chat.chatId, action.meta.userId));
+      chats.forEach(chat => chat.closed = (chat.messages || []).length === 0);
       const openChats = chats.filter(candidate => !candidate.closed);
-      if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => openChats[index].closed = true );
+      if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => openChats[index].closed = true);
       return {
         ...state,
         chats,
@@ -53,7 +54,7 @@ export default function reducer(state = {
       chat.minimised = false;
       chat.maximised = false;
       const openChats = chats.filter(candidate => !candidate.closed);
-      if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => openChats[index].closed = true );
+      if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => openChats[index].closed = true);
       return {
         ...state,
         chats,
@@ -72,13 +73,33 @@ export default function reducer(state = {
       }
     }
 
+    case "CREATE_CHAT_FULFILLED": {
+      logger.log('CHAT', `Redux -> Created Chat: `, action.payload);
+      const created = action.payload.chat;
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      if (!chats.map(chat => chat.chatId).includes(created.chatId)) chats.push(created);
+      const chat = chats.find(candidate => candidate.chatId === created.chatId);
+      chat.closed = false;
+      chat.minimised = false;
+      chat.maximised = false;
+      const openChats = chats.filter(candidate => !candidate.closed);
+      if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => openChats[index].closed = true);
+      monitorMessages(chat.chatId, chat.userId);
+      return {
+        ...state,
+        chats,
+      };
+    }
+
     case "NEW_CHAT": {
       logger.log('CHAT', `Redux -> New Chat: `, action.payload);
+      const { chat } = action.payload;
+      chat.closed = (chat.messages || []).length === 0;
       const chats = JSON.parse(JSON.stringify(state.chats));
-      chats.push(action.payload.chat);
+      if (!chats.map(chat => chat.chatId).includes(chat.chatId)) chats.push(chat);
       const openChats = chats.filter(candidate => !candidate.closed);
-      if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => openChats[index].closed = true );
-      monitorMessages(action.payload.chat.chatId, action.payload.chat.userId);
+      if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => openChats[index].closed = true);
+      monitorMessages(chat.chatId, chat.userId);
       return {
         ...state,
         chats,
@@ -97,7 +118,7 @@ export default function reducer(state = {
       if (!chat.muted) {
         chat.closed = false;
         const openChats = chats.filter(candidate => !candidate.closed);
-        if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => openChats[index].closed = true );
+        if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => openChats[index].closed = true);
       }
       if (!chat.messages) chat.messages = [];
       chat.messages.push(message);

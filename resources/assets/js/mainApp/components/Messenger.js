@@ -57,7 +57,8 @@ class Messenger extends React.PureComponent {
   }
 
   openChat = (friend) => {
-    const chat = this.props.chats.find(chat => chat.friendId === friend.friend_id);
+    if (!this.props.connected) return;
+    const chat = this.props.chats.find(chat => chat.friendId === friend.friend_id || chat.userId === friend.friend_id);
     if (chat) return this.props.openChat(chat.chatId);
     this.props.createChat([this.props.userId, friend.friend_id]);
   }
@@ -166,9 +167,6 @@ class Messenger extends React.PureComponent {
   }
 
   renderChat = (chat) => {
-    const hasMessages = !!(chat.messages || []).length;
-    const wasCleared = new Date(chat.clearedDate).getFullYear() > 1970;
-    if ((!hasMessages && !wasCleared) && chat.userId !== this.props.userId) return;
     return (
       <Chat
         key={chat.chatId}

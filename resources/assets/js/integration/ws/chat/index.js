@@ -1,5 +1,5 @@
 import { store } from '../../../redux/Store';
-import { onNewChatAction, onNewMessageAction, onUpdateMessageAction, onDeleteMessagesAction, onInfoUpdatedAction, onPublicKeyUpdatedAction } from '../../../redux/actions/chatAction';
+import { onNewChatAction, onNewMessageAction, onUpdateMessageAction, onDeleteMessagesAction, onInfoUpdatedAction, onPublicKeyUpdatedAction, fetchChatsAction } from '../../../redux/actions/chatAction';
 import { onConnectionStateChangedAction } from '../../../redux/actions/socketAction';
 import socket from '../../../common/socket';
 import logger from '../../../common/logger';
@@ -16,8 +16,9 @@ export function attemptSocketConnection() {
 
   ws.on('open', () => {
     store.dispatch(onConnectionStateChangedAction(true));
-    if (!hasDisconnected || !currentUserId) return;
+    if (!hasDisconnected) return;
     ws = socket.connect().ws;
+    store.dispatch(fetchChatsAction(currentUserId));
     monitorChats(currentUserId);
     currentChats.forEach(chatId => monitorMessages(chatId, currentUserId));
     hasDisconnected = false;

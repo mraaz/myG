@@ -9,18 +9,32 @@ const { broadcast } = require('../../Common/socket');
 
 class UserChatController {
 
-  async create({ auth, request }) {
+  async create({ auth, request, response }) {
+
+    const members = request.only(['members']).members;
+    const friend = members.find(member => member !== auth.user.id);
+
+    const existingChatId = await this.findChatIdWithFriend(auth.user.id, friend);
+    if (existingChatId) {
+      const existingChat = { chatId: existingChatId, userId: auth.user.id, friendId: friend };
+      members.forEach(id => broadcast('user_chat:*', `user_chat:${id}`, 'user_chat:newChat', existingChat));
+      return response.send({ chat: existingChat });
+    }
+
     const chat = await new ChatController().create();
-    const data = request.only(['members']);
-    data.members.forEach(async id => {
-      const userChat = new UserChat();
-      userChat.chat_id = chat.id;
-      userChat.user_id = id;
-      userChat.deleted_messages = '[]';
-      await userChat.save();
-      broadcast('user_chat:*', `user_chat:${id}`, 'user_chat:newChat', { chatId: chat.id, userId: auth.user.id });
-    });
-    return chat;
+    await this.createUserChat(chat.id, members[0], auth.user.id, members[1]);
+    await this.createUserChat(chat.id, members[1], auth.user.id, members[0]);
+    return response.send({ chat: { chatId: chat.id, userId: auth.user.id, friendId: friend } });
+
+  }
+
+  async createUserChat(chatId, userId, ownerId, friendId) {
+    const userChat = new UserChat();
+    userChat.chat_id = chatId;
+    userChat.user_id = userId;
+    userChat.deleted_messages = '[]';
+    await userChat.save();
+    broadcast('user_chat:*', `user_chat:${userId}`, 'user_chat:newChat', { chatId: chatId, userId: ownerId, friendId: friendId });
   }
 
   async update({ params, request, auth }) {
@@ -174,6 +188,19 @@ class UserChatController {
 
   getSubtitle(status, lastSeen) {
     return status === 'offline' ? `${formatDateTime(lastSeen)}` : `${status}`;
+  }
+
+  async findChatIdWithFriend(userId, friendId) {
+    const userChatIds = (await this.findChatsFromUser(userId)).toJSON().map(chat => chat.chat_id);
+    const friendChatIds = (await this.findChatsFromUser(friendId)).toJSON().map(chat => chat.chat_id);
+    return userChatIds.find(chatId => friendChatIds.includes(chatId));
+  }
+
+  findChatsFromUser(userId) {
+    return UserChat
+      .query()
+      .where('user_id', userId)
+      .fetch();
   }
 
   fetchChat(chatId, userId) {
