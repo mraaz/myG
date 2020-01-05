@@ -180,8 +180,8 @@ export default function reducer(state = {
       const { subtitle, selfDestruct, readDate, friendReadDate, userId: updatedUserId } = action.payload;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
+      if (selfDestruct !== undefined) chat.selfDestruct = selfDestruct;
       if (parseInt(updatedUserId) === parseInt(thisUserId)) {
-        if (selfDestruct) chat.selfDestruct = selfDestruct;
         if (readDate) chat.readDate = readDate;
         return {
           ...state,

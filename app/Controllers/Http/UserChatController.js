@@ -78,8 +78,11 @@ class UserChatController {
 
   async setSelfDestruct({ params, auth }, selfDestruct) {
     const chat = await this.fetchChat(params.chatId, auth.user.id);
+    const friendChat = await this.fetchFriendChat(params.chatId, auth.user.id);
     chat.self_destruct = selfDestruct;
+    friendChat.self_destruct = selfDestruct;
     await chat.save();
+    await friendChat.save();
     broadcast('chat:*', `chat:${chat.toJSON().chat_id}`, 'chat:info', {
       userId: auth.user.id,
       selfDestruct: chat.toJSON().self_destruct,
