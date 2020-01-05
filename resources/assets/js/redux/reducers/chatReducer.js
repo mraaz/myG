@@ -12,6 +12,8 @@ export default function reducer(state = {
       const findChat = chatId => state.chats.find(candidate => candidate.chatId === chatId) || {};
       const chats = action.payload.chats.map(chat => ({ ...chat, ...findChat(chat.chatId) }));
       chats.forEach(chat => monitorMessages(chat.chatId, action.meta.userId));
+      const openChats = chats.filter(candidate => !candidate.closed);
+      if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => openChats[index].closed = true );
       return {
         ...state,
         chats,
@@ -50,6 +52,8 @@ export default function reducer(state = {
       chat.closed = false;
       chat.minimised = false;
       chat.maximised = false;
+      const openChats = chats.filter(candidate => !candidate.closed);
+      if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => openChats[index].closed = true );
       return {
         ...state,
         chats,
@@ -72,6 +76,8 @@ export default function reducer(state = {
       logger.log('CHAT', `Redux -> New Chat: `, action.payload);
       const chats = JSON.parse(JSON.stringify(state.chats));
       chats.push(action.payload.chat);
+      const openChats = chats.filter(candidate => !candidate.closed);
+      if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => openChats[index].closed = true );
       monitorMessages(action.payload.chat.chatId, action.payload.chat.userId);
       return {
         ...state,
@@ -88,7 +94,11 @@ export default function reducer(state = {
       if (chat.blocked) return state;
       if (!chat.muted && !window.document.hasFocus()) new Audio('/assets/sound/notification.ogg').play();
       if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
-      if (!chat.muted) chat.closed = false;
+      if (!chat.muted) {
+        chat.closed = false;
+        const openChats = chats.filter(candidate => !candidate.closed);
+        if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => openChats[index].closed = true );
+      }
       if (!chat.messages) chat.messages = [];
       chat.messages.push(message);
       return {

@@ -30,13 +30,18 @@ export default class Chat extends React.PureComponent {
   }
 
   render() {
+    const disabled = !this.props.connected || !!this.props.blocked || !this.props.userPrivateKey;
+    const placeholderText =
+      !this.props.connected ? 'You seem to be offline...' :
+        this.props.blocked ? 'Unblock to send messages' :
+          'Type your message here';
     return (
       <div className="chat-component-input-container">
         <textarea
           rows={1}
           className="chat-component-input"
-          disabled={this.props.blocked || !this.props.userPrivateKey}
-          placeholder={`${this.props.blocked ? 'Unblock to send messages' : 'Type your message here'}`}
+          disabled={disabled}
+          placeholder={placeholderText}
           value={this.state.input}
           onChange={event => this.setState({ input: event.target.value })}
           onKeyPress={this.onKeyPressed}
@@ -45,7 +50,7 @@ export default class Chat extends React.PureComponent {
         </textarea>
         <div className="chat-component-send-button clickable"
           style={{ backgroundImage: `url(/assets/svg/ic_chat_send.svg)` }}
-          onClick={() => this.sendMessage()}
+          onClick={() => !disabled && this.sendMessage()}
         />
       </div>
     );

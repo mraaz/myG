@@ -52,7 +52,6 @@
 }
 
 .chat-component-header-settings {
-  position: relative;
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
@@ -69,6 +68,12 @@
   width: 16px;
   height: 16px;
   margin-right: 4px;
+}
+
+.chat-component-header-settings-popup-container { 
+  position: relative;
+  width: 0;
+  height: 0;
 }
 
 .chat-component-header-settings-popup {

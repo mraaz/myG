@@ -7,7 +7,7 @@ import ChatInput from './ChatInput';
 import { fetchInfoAction, sendMessageAction, editMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction } from '../../redux/actions/chatAction';
 import { enrichMessagesWithDates } from '../../common/chat';
 import { encryptMessage, decryptMessage } from '../../integration/encryption';
-import { convertUTCDateToLocalDate, howLongAgo } from '../../common/date';
+import { convertUTCDateToLocalDate } from '../../common/date';
 
 class Chat extends React.PureComponent {
 
@@ -199,7 +199,8 @@ class Chat extends React.PureComponent {
             className="chat-component-header-settings clickable"
             style={{ backgroundImage: `url('/assets/svg/ic_chat_settings.svg')` }}
             onClick={() => this.setState(previous => ({ settings: !previous.settings }))}
-          >
+          />
+          <div className="chat-component-header-settings-popup-container">
             {this.renderSettings()}
           </div>
         </div>
@@ -264,6 +265,7 @@ class Chat extends React.PureComponent {
           <div className="chat-component-attach-button-divider" />
         </div>
         <ChatInput
+          connected={this.props.connected}
           blocked={this.props.blocked}
           userPrivateKey={this.props.userPrivateKey}
           sendMessage={this.sendMessage}
@@ -326,6 +328,7 @@ function mapStateToProps(state, props) {
     friendPublicKey: chat.publicKey,
     userPublicKey: state.encryption.publicKey,
     userPrivateKey: state.encryption.privateKey,
+    connected: state.socket.connected,
   }
 }
 

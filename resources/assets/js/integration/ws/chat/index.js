@@ -1,34 +1,37 @@
 import { store } from '../../../redux/Store';
 import { onNewChatAction, onNewMessageAction, onUpdateMessageAction, onDeleteMessagesAction, onInfoUpdatedAction, onPublicKeyUpdatedAction } from '../../../redux/actions/chatAction';
+import { onConnectionStateChangedAction } from '../../../redux/actions/socketAction';
 import socket from '../../../common/socket';
 import logger from '../../../common/logger';
 
 let currentUserId = null;
 let currentChats = [];
-let disconnected = false;
+let hasDisconnected = false;
 let ws = null;
 let subscriptions = {};
 
-function handleSocketConnection() {
+export function attemptSocketConnection() {
 
   ws = socket.connect().ws;
 
   ws.on('open', () => {
-    if (!disconnected || !currentUserId) return;
+    store.dispatch(onConnectionStateChangedAction(true));
+    if (!hasDisconnected || !currentUserId) return;
     ws = socket.connect().ws;
     monitorChats(currentUserId);
     currentChats.forEach(chatId => monitorMessages(chatId, currentUserId));
-    disconnected = false;
+    hasDisconnected = false;
   });
 
   ws.on('close', () => {
-    disconnected = true;
+    store.dispatch(onConnectionStateChangedAction(false));
+    hasDisconnected = true;
     closeSubscriptions();
   });
 
 }
 
-handleSocketConnection();
+attemptSocketConnection();
 
 export function closeSubscriptions() {
   Object.keys(subscriptions).forEach(subscriptionKey => subscriptions[`${subscriptionKey}`].close());
