@@ -3,8 +3,32 @@ import { onNewChatAction, onNewMessageAction, onUpdateMessageAction, onDeleteMes
 import socket from '../../../common/socket';
 import logger from '../../../common/logger';
 
-socket.connect();
+let currentUserId = null;
+let currentChats = [];
+let disconnected = false;
+let ws = null;
 let subscriptions = {};
+
+function handleSocketConnection() {
+
+  ws = socket.connect().ws;
+
+  ws.on('open', () => {
+    if (!disconnected || !currentUserId) return;
+    ws = socket.connect().ws;
+    monitorChats(currentUserId);
+    currentChats.forEach(chatId => monitorMessages(chatId, currentUserId));
+    disconnected = false;
+  });
+
+  ws.on('close', () => {
+    disconnected = true;
+    closeSubscriptions();
+  });
+
+}
+
+handleSocketConnection();
 
 export function closeSubscriptions() {
   Object.keys(subscriptions).forEach(subscriptionKey => subscriptions[`${subscriptionKey}`].close());
@@ -12,6 +36,7 @@ export function closeSubscriptions() {
 }
 
 export function monitorChats(userId) {
+  currentUserId = userId;
   const subscriptionKey = `user_chat:${userId}`;
   if (subscriptions[`${subscriptionKey}`]) return;
   logger.log('CHAT', `WS`, `Monitoring ${subscriptionKey}`);
@@ -23,6 +48,7 @@ export function monitorChats(userId) {
 }
 
 export function monitorMessages(chatId, userId) {
+  if (currentChats.indexOf(chatId) === -1) currentChats.push(chatId);
   const subscriptionKey = `chat:${chatId}`;
   if (subscriptions[`${subscriptionKey}`]) return;
   logger.log('CHAT', `WS`, `Monitoring ${subscriptionKey}`);
