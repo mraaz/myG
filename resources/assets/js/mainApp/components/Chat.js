@@ -199,7 +199,9 @@ class Chat extends React.PureComponent {
             className="chat-component-header-settings clickable"
             style={{ backgroundImage: `url('/assets/svg/ic_chat_settings.svg')` }}
             onClick={() => this.setState(previous => ({ settings: !previous.settings }))}
-          />
+          >
+            {this.renderSettings()}
+          </div>
         </div>
 
       </div>
@@ -277,7 +279,6 @@ class Chat extends React.PureComponent {
         key={this.props.chatId}
         className="chat-component-base"
       >
-        {this.renderSettings()}
         {this.renderHeader()}
         <div className="chat-component-encryption-warning">
           Please inform your encryption key to read the contents of this chat.
@@ -297,7 +298,6 @@ class Chat extends React.PureComponent {
         key={this.props.chatId}
         className={`chat-component-base ${extraClass}`}
       >
-        {this.renderSettings()}
         {this.renderHeader()}
         {!this.props.minimised && this.renderBody()}
         {!this.props.minimised && <div className="chat-component-footer-divider" />}
