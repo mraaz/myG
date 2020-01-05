@@ -140,6 +140,14 @@ export default class PostFileModal extends Component {
     })
   }
 
+  handleChange = (event) => {
+    const name = event.target.name
+    const value = event.target.type == 'checkbox' ? event.target.checked : event.target.value
+    this.setState({
+      [name]: value,
+    })
+  }
+
   render() {
     var class_modal_status = ''
 

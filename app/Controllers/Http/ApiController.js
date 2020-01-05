@@ -57,6 +57,7 @@ class ApiController {
   }
 
   async uploadFile({ auth, request, response }) {
+    console.log('tmpfilepath');
     var file = request.file('upload_file')
     var filename = request.input('filename')
 
@@ -78,10 +79,12 @@ class ApiController {
       const timestamp = Date.now().toString()
       //const fileName = timestamp + '_' + generateRandomString(6) + '_' + filename
       const data = await uploadFile(buffer, tmpfilename, type)
+      fs.unlinkSync(tmpfilepath)
       return response.status(200).json(data)
     } catch (error) {
       return response.status(400).json(error)
     }
+
   }
 
   async deleteFile({ auth, request, response }) {
