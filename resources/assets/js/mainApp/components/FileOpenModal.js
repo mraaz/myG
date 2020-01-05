@@ -34,7 +34,7 @@ export default class FileOpenModal extends Component {
           },
         })
       } catch (error) {
-        toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
+        toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again'} />)
       }
     }
   }
@@ -93,7 +93,7 @@ export default class FileOpenModal extends Component {
         file_key: post.data.Key,
       })
     } catch (error) {
-      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
+      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again'} />)
     }
     this.state.uploading = false
   }

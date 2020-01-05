@@ -404,7 +404,6 @@ export default class IndividualPost extends Component {
       if (post.type == 'photo' || post.type == 'video') {
         media_urls = JSON.parse(post.media_url)
       }
-
       return (
         <div className='update-container'>
           {this.state.alert}
@@ -472,11 +471,11 @@ export default class IndividualPost extends Component {
                 )}
                 {media_urls.map(function(data, index) {
                   if (post.type == 'photo') {
-                    return <img className='post-photo' src={data.src} key={data.key}></img>
+                    return <img className='post-photo' src={data}></img>
                   } else if (post.type == 'video') {
                     return (
-                      <video className='post-video' key={data.key} controls>
-                        <source src={data.src} key={data.key}></source>
+                      <video className='post-video' controls>
+                        <source src={data}></source>
                       </video>
                     )
                   }

@@ -14,8 +14,6 @@ class PostsSchema extends Schema {
       table.foreign('user_id').references('users.id').onDelete('cascade')
       table.integer('group_id').unsigned().nullable()
       table.foreign('group_id').references('groups.id').onDelete('cascade')
-      table.integer('aws_key_id').unsigned().nullable()
-      table.foreign('aws_key_id').references('aws_keys.id').onDelete('cascade')
       table.timestamps()
 
     })

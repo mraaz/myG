@@ -4,6 +4,7 @@ const Database = use('Database')
 const User = use('App/Models/User')
 const UserChat = use('App/Models/UserChat')
 const { broadcast } = require('../../Common/socket')
+const AwsKeyController = use('./AwsKeyController')
 
 class UserController {
   async profile({ auth, request, response }) {
@@ -125,16 +126,18 @@ class UserController {
   }
 
   async changeProfile({ auth, request, response }) {
-    console.log(request.input('aws_key'))
-    console.log('here')
     if (auth.user) {
       try {
+        let update_key = new AwsKeyController()
+        request.params.type = 1
+        update_key.addUserKey({ auth, request, response })
+
         const saveUser = await User.query()
           .where('id', '=', auth.user.id)
-          .update({ profile_img: request.input('profile_img'), aws_key: request.input('aws_key') })
+          .update({ profile_img: request.input('profile_img') })
+
         return response.status(200).json({ success: true })
       } catch (error) {
-        console.log(saveUser)
         return response.status(200).json({ success: false })
       }
     } else {
@@ -143,15 +146,17 @@ class UserController {
   }
 
   async changeProfileBg({ auth, request, response }) {
-    console.log('here')
     if (auth.user) {
       try {
+        let update_key = new AwsKeyController()
+        request.params.type = 2
+        update_key.addUserKey({ auth, request, response })
+
         const saveUser = await User.query()
           .where('id', '=', auth.user.id)
           .update({ profile_bg: request.input('profile_bg') })
         return response.status(200).json({ success: true })
       } catch (error) {
-        console.log(saveUser)
         return response.status(200).json({ success: false })
       }
     } else {

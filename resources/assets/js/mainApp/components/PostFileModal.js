@@ -16,6 +16,7 @@ export default class PostFileModal extends Component {
       post_content: '',
       store_files: [],
       lock: false,
+      uploading: false,
     }
 
     this.closeModal = this.closeModal.bind(this)
@@ -35,7 +36,7 @@ export default class PostFileModal extends Component {
             },
           })
         } catch (error) {
-          toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
+          toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again'} />)
         }
         this.state.preview_files.splice(i, 1)
         break
@@ -70,6 +71,7 @@ export default class PostFileModal extends Component {
 
   async doUploadS3(file, id, name) {
     var instance = this
+    this.state.uploading = true
 
     const formData = new FormData()
     formData.append('upload_file', file)
@@ -91,8 +93,9 @@ export default class PostFileModal extends Component {
         preview_files: new_preview_files,
       })
     } catch (error) {
-      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
+      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again'} />)
     }
+    this.state.uploading = false
   }
 
   getUploadParams = async ({ file, meta: { id, name } }) => {
@@ -108,12 +111,28 @@ export default class PostFileModal extends Component {
   }
 
   handleSubmit = (files, allFiles) => {
-    this.props.callbackConfirm({
-      media_url: this.state.preview_files,
-      content: this.state.post_content,
-    })
+    if (this.state.uploading == true) {
+      return
+    }
+    var tmp = []
+    var keys = []
 
+    for (var i = 0; i < this.state.preview_files.length; i++) {
+      tmp.push(this.state.preview_files[i].src)
+      keys.push(this.state.preview_files[i].key)
+    }
+
+    this.props.callbackConfirm(
+      {
+        media_url: tmp,
+        content: this.state.post_content,
+      },
+      keys
+    )
+
+    this.state.lock = true
     allFiles.forEach((f) => f.remove())
+    this.state.lock = false
 
     this.setState({
       preview_files: [],
