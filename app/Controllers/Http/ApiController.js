@@ -57,12 +57,12 @@ class ApiController {
   }
 
   async uploadFile({ auth, request, response }) {
-    console.log('tmpfilepath');
+    console.log('tmpfilepath')
     var file = request.file('upload_file')
     var filename = request.input('filename')
 
     const timestamp_OG = Date.now().toString()
-    var tmpfilename = timestamp_OG + '_' + generateRandomString(6) + '_' + filename
+    var tmpfilename = auth.user.id + '_' + timestamp_OG + '_' + generateRandomString(6) + '_' + filename
     //var tmpfilepath = Helpers.tmpPath('uploads') + '\\' + tmpfilename; FOR WINDOWS ONLY
     var tmpfilepath = Helpers.tmpPath('uploads') + '/' + tmpfilename
 
@@ -84,7 +84,6 @@ class ApiController {
     } catch (error) {
       return response.status(400).json(error)
     }
-
   }
 
   async deleteFile({ auth, request, response }) {
