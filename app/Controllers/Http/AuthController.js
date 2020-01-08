@@ -38,10 +38,8 @@ class AuthController {
             alias: request.input('alias'),
             first_name: request.input('firstName'),
             last_name: request.input('lastName'),
-            profile_img:
-              'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png',
-            profile_bg:
-              'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/universe.jpg',
+            profile_img: 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png',
+            profile_bg: 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/universe.jpg',
           })
 
           var newUserSettings = await Settings.create({
@@ -53,8 +51,7 @@ class AuthController {
             .withErrors([
               {
                 field: 'alias',
-                message:
-                  'Opps, there was an error with the Database, please try again later',
+                message: 'Opps, there was an error with the Database, please try again later',
               },
             ])
 
@@ -62,7 +59,7 @@ class AuthController {
 
           return response.redirect('back')
         }
-        session.flash({ notification: 'Welcome to myGame!!!' })
+        //session.flash({ notification: 'Welcome to myGame!!!' })
 
         const user = await User.query()
           .where('email', request.input('email'))
@@ -97,15 +94,12 @@ class AuthController {
       .first()
     if (user) {
       //Verfiy the Password
-      const passwordVerified = await Hash.verify(
-        postData.password,
-        user.password
-      )
+      const passwordVerified = await Hash.verify(postData.password, user.password)
 
       if (passwordVerified) {
         // Login the user
         await auth.remember(true).login(user)
-        session.flash({ notification: 'Welcome back!!!' })
+        //session.flash({ notification: 'Welcome back!!!' })
         return response.redirect('/')
       } else {
         session
@@ -167,10 +161,7 @@ class AuthController {
         return response.redirect('back')
       } else {
         const postData = request.post()
-        const passwordVerified = await Hash.verify(
-          postData.currpassword,
-          auth.user.password
-        )
+        const passwordVerified = await Hash.verify(postData.currpassword, auth.user.password)
 
         if (passwordVerified) {
           try {
@@ -186,8 +177,7 @@ class AuthController {
               .withErrors([
                 {
                   field: 'alias',
-                  message:
-                    'Opps, there was an error with the Database, please try again later',
+                  message: 'Opps, there was an error with the Database, please try again later',
                 },
               ])
 

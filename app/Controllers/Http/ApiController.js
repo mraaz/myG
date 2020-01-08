@@ -57,90 +57,96 @@ class ApiController {
   }
 
   async uploadFile({ auth, request, response }) {
-    console.log('tmpfilepath')
-    var file = request.file('upload_file')
-    var filename = request.input('filename')
+    if (auth.user) {
+      var file = request.file('upload_file')
+      var filename = request.input('filename')
 
-    const timestamp_OG = Date.now().toString()
-    var tmpfilename = auth.user.id + '_' + timestamp_OG + '_' + generateRandomString(6) + '_' + filename
-    //var tmpfilepath = Helpers.tmpPath('uploads') + '\\' + tmpfilename; FOR WINDOWS ONLY
-    var tmpfilepath = Helpers.tmpPath('uploads') + '/' + tmpfilename
+      const timestamp_OG = Date.now().toString()
+      var tmpfilename = auth.user.id + '_' + timestamp_OG + '_' + generateRandomString(6) + '_' + filename
+      //var tmpfilepath = Helpers.tmpPath('uploads') + '\\' + tmpfilename; FOR WINDOWS ONLY
+      var tmpfilepath = Helpers.tmpPath('uploads') + '/' + tmpfilename
 
-    if (fs.existsSync(tmpfilepath)) {
-      fs.unlinkSync(tmpfilepath)
-    }
+      if (fs.existsSync(tmpfilepath)) {
+        fs.unlinkSync(tmpfilepath)
+      }
 
-    await file.move(Helpers.tmpPath('uploads'), {
-      name: tmpfilename,
-    })
-    try {
-      const buffer = fs.readFileSync(tmpfilepath)
-      const type = fileType(buffer)
-      const timestamp = Date.now().toString()
-      //const fileName = timestamp + '_' + generateRandomString(6) + '_' + filename
-      const data = await uploadFile(buffer, tmpfilename, type)
-      fs.unlinkSync(tmpfilepath)
-      return response.status(200).json(data)
-    } catch (error) {
-      return response.status(400).json(error)
+      await file.move(Helpers.tmpPath('uploads'), {
+        name: tmpfilename,
+      })
+      try {
+        const buffer = fs.readFileSync(tmpfilepath)
+        const type = fileType(buffer)
+        const timestamp = Date.now().toString()
+        //const fileName = timestamp + '_' + generateRandomString(6) + '_' + filename
+        const data = await uploadFile(buffer, tmpfilename, type)
+        fs.unlinkSync(tmpfilepath)
+        return response.status(200).json(data)
+      } catch (error) {
+        return response.status(400).json(error)
+      }
     }
   }
 
   async deleteFile({ auth, request, response }) {
-    var key = request.input('key')
-    s3.deleteObject(
-      {
-        Bucket: S3_BUCKET_DELETE,
-        Key: key,
-      },
-      function(err, data) {
-        if (data) {
-          return response.status(200).json({ success: true })
-        } else {
-          return response.status(400).send(err)
-        }
-      }
-    )
-  }
-
-  async deleteFile_server({ auth, request, response }) {
-    console.log(request.params.key)
-    s3.deleteObject(
-      {
-        Bucket: S3_BUCKET_DELETE,
-        Key: request.params.key,
-      },
-      function(err, data) {
-        if (data) {
-          return response.status(200).json({ success: true })
-        } else {
-          return response.status(400).send(err)
-        }
-      }
-    )
-  }
-
-  async deleteFiles({ auth, request, response }) {
-    var files = request.input('files')
-    var bFailed = false
-    for (var findex = 0; findex < files.length; findex++) {
+    if (auth.user) {
+      var key = request.input('key')
       s3.deleteObject(
         {
           Bucket: S3_BUCKET_DELETE,
-          Key: files[findex].key,
+          Key: key,
         },
         function(err, data) {
-          if (!data) {
-            bFailed = true
+          if (data) {
+            return response.status(200).json({ success: true })
+          } else {
+            return response.status(400).send(err)
           }
         }
       )
     }
+  }
 
-    if (bFailed) {
-      return response.status(400).json({ success: false })
-    } else {
-      return response.status(200).json({ success: true })
+  async deleteFile_server({ auth, request, response }) {
+    if (auth.user) {
+      s3.deleteObject(
+        {
+          Bucket: S3_BUCKET_DELETE,
+          Key: request.params.key,
+        },
+        function(err, data) {
+          if (data) {
+            return response.status(200).json({ success: true })
+          } else {
+            return response.status(400).send(err)
+          }
+        }
+      )
+    }
+  }
+
+  async deleteFiles({ auth, request, response }) {
+    if (auth.user) {
+      var files = request.input('files')
+      var bFailed = false
+      for (var findex = 0; findex < files.length; findex++) {
+        s3.deleteObject(
+          {
+            Bucket: S3_BUCKET_DELETE,
+            Key: files[findex].key,
+          },
+          function(err, data) {
+            if (!data) {
+              bFailed = true
+            }
+          }
+        )
+      }
+
+      if (bFailed) {
+        return response.status(400).json({ success: false })
+      } else {
+        return response.status(200).json({ success: true })
+      }
     }
   }
 }

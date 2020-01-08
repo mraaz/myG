@@ -211,16 +211,26 @@ export default class MyComposeSection extends Component {
     const getGroupDetails = async function() {
       const mygroup_details = await axios.get(`/api/usergroup/mygroup_details/${self.props.groups_id.params.id}`)
       if (mygroup_details.data.mygroup_details.length == 0 || mygroup_details.data.mygroup_details[0].permission_level == 42) {
-        self.setState({
-          no_show: true,
-        })
+        try {
+          const getOwner = await axios.get(`/api/groups/show_owner/${self.props.groups_id.params.id}`)
+
+          if (getOwner.data.show_owner[0].user_id != self.props.initialData.userInfo.id) {
+            self.setState({
+              no_show: true,
+            })
+          }
+        } catch (error) {
+          console.log(error)
+        }
       }
     }
 
     try {
       if (this.props.groups_id.params.id != undefined) {
-        this.state.groups_post = true
-        getGroupDetails()
+        if (this.props.initialData.userInfo != undefined) {
+          this.state.groups_post = true
+          getGroupDetails()
+        }
       }
     } catch (e) {
       this.state.groups_post = false
