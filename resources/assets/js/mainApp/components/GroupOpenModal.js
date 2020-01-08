@@ -28,6 +28,7 @@ export default class GroupOpenModal extends Component {
       redirect_groups: false,
       groups_id: '',
       uploading: '',
+      submitButtonContent: 'Submit',
     }
 
     this.closeModal = this.closeModal.bind(this)
@@ -46,7 +47,7 @@ export default class GroupOpenModal extends Component {
           },
         })
       } catch (error) {
-        toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
+        toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again'} />)
       }
     }
   }
@@ -162,7 +163,10 @@ export default class GroupOpenModal extends Component {
 
   async doUploadS3(file, name) {
     var instance = this
-    this.setState({ uploading: true })
+    this.state.submitButtonContent = 'Uploading...'
+    this.setState({
+      uploading: true,
+    })
 
     const formData = new FormData()
     formData.append('upload_file', file)
@@ -179,9 +183,13 @@ export default class GroupOpenModal extends Component {
         file_key: post.data.Key,
       })
     } catch (error) {
-      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
+      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again'} />)
     }
-    this.setState({ uploading: false })
+
+    this.state.submitButtonContent = 'Submit'
+    this.setState({
+      uploading: false,
+    })
   }
 
   getUploadParams = async ({ file, meta: { id, name } }) => {
@@ -285,6 +293,7 @@ export default class GroupOpenModal extends Component {
               maxSizeBytes={26214400}
               submitButtonDisabled={true}
               submitButtonContent={null}
+              submitButtonContent={this.state.submitButtonContent}
             />
             <div className={this.state.uploading ? 'save-btn btn--disable' : 'save-btn'} onClick={() => this.clickSave()}>
               Create Group
