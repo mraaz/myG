@@ -97,12 +97,6 @@ export default class ComposeSection extends Component {
         myPosts: undefined,
       })
       await this.get_posts()
-
-      this.setState({
-        show_post: true,
-        post_content: '',
-      })
-      this.forceUpdate()
     } catch (error) {
       console.log(error)
     }
@@ -158,6 +152,8 @@ export default class ComposeSection extends Component {
 
         self.setState({
           myPosts: myPosts.data.myPosts,
+          show_post: true,
+          post_content: '',
         })
       } catch (error) {
         console.log(error)
