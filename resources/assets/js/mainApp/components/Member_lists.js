@@ -19,35 +19,27 @@ export default class Member_lists extends Component {
 
     const getMembers = async function() {
       try {
-        const getMembers = await axios.get(
-          `/api/usergroup/member_lists/${self.props.routeProps.match.params.id}`
-        )
+        const getMembers = await axios.get(`/api/usergroup/member_lists/${self.props.routeProps.match.params.id}`)
 
-        const getOwner = await axios.get(
-          `/api/groups/show_owner/${self.props.routeProps.match.params.id}`
-        )
+        const getOwner = await axios.get(`/api/groups/show_owner/${self.props.routeProps.match.params.id}`)
 
         if (getMembers.data.all_group_members.length == 0) {
+          getOwner.data.show_owner[0].usergroups_user_id = getOwner.data.show_owner[0].id
           self.setState({
             allGroupies: getOwner.data.show_owner,
           })
           return
         }
-        getMembers.data.all_group_members.push(getOwner.data.show_owner[0])
 
+        getOwner.data.show_owner[0].usergroups_user_id = getOwner.data.show_owner[0].id
+        getMembers.data.all_group_members.push(getOwner.data.show_owner[0])
         //0=Owner, 1=Admin, 2=Moderator, 3=User, 42=Pending, -1=Not a member
-        if (
-          self.props.initialData.userInfo.id ==
-          getMembers.data.all_group_members[0].user_id
-        ) {
+        if (self.props.initialData.userInfo.id == getMembers.data.all_group_members[0].user_id) {
           self.state.current_user_permission = 0
         } else {
-          const current_member = await axios.get(
-            `/api/usergroup/current_member/${getMembers.data.all_group_members[0].group_id}`
-          )
+          const current_member = await axios.get(`/api/usergroup/current_member/${getMembers.data.all_group_members[0].group_id}`)
           if (current_member.data.current_member.length > 0) {
-            self.state.current_user_permission =
-              current_member.data.current_member[0].permission_level
+            self.state.current_user_permission = current_member.data.current_member[0].permission_level
           } else {
             self.setState({
               allGroupies: getMembers.data.all_group_members,
@@ -55,11 +47,7 @@ export default class Member_lists extends Component {
             return
           }
         }
-        if (
-          self.state.current_user_permission == 0 ||
-          self.state.current_user_permission == 1 ||
-          self.state.current_user_permission == 2
-        ) {
+        if (self.state.current_user_permission == 0 || self.state.current_user_permission == 1 || self.state.current_user_permission == 2) {
           self.setState({
             show_settings: true,
           })
@@ -75,9 +63,7 @@ export default class Member_lists extends Component {
 
     const getGroupInfo = async function() {
       try {
-        const getGroupInfo = await axios.get(
-          `/api/groups/${self.props.routeProps.match.params.id}`
-        )
+        const getGroupInfo = await axios.get(`/api/groups/${self.props.routeProps.match.params.id}`)
         self.setState({
           value_all_accept_setting: getGroupInfo.data.group[0].all_accept,
         })
@@ -104,14 +90,7 @@ export default class Member_lists extends Component {
         if (rowLen === index + 1) {
           lastRow = true
         }
-        return (
-          <IndividualMember
-            member={item}
-            key={index}
-            lastRow={lastRow}
-            user_permission={this.state.current_user_permission}
-          />
-        )
+        return <IndividualMember member={item} key={index} lastRow={lastRow} user_permission={this.state.current_user_permission} />
       })
     }
   }
@@ -141,8 +120,7 @@ export default class Member_lists extends Component {
             </div>
             {this.state.show_settings && (
               <div className='group-settings'>
-                All members can accept this groups' invitations
-                &nbsp;&nbsp;&nbsp;
+                All members can accept this groups' invitations &nbsp;&nbsp;&nbsp;
                 <ToggleButton
                   value={this.state.value_all_accept_setting || false}
                   onToggle={(value_all_accept_setting) => {
