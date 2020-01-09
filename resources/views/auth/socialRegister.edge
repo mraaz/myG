@@ -1,7 +1,7 @@
 @layout('layouts/empty')
 
 @section('title')
-  myGame - Register
+  myG - Register
 @endsection
 
 @section('current-class')
@@ -14,7 +14,7 @@
 
 @section('content')
 <div class="auth-form">
-  <h1>myGame</h1>
+  <h1>myG</h1>
   <form action="/user/save" method="POST" class="default-form">
     {{ csrfField() }}
     <div class="error-box
@@ -40,12 +40,21 @@
     </div>
     <div class="form-group">
       <label for="email">Email: (Unqiue! Can't be changed later!)</label>
+      @if(email === '')
       <input type="text" name="email" value="{{email}}" class="text
+
+      @if(hasErrorFor('email'))
+        error
+      @endif
+      "  required="">
+      @else
+        <input type="text" name="email" value="{{email}}" class="text
 
         @if(hasErrorFor('email'))
           error
         @endif
-      "  required="" readonly>
+        "  required="" readonly>
+      @endif
     </div>
     <div class="form-group">
       <label for="firstName">First Name:</label>

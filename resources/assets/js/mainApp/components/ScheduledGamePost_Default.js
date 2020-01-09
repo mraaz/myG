@@ -49,6 +49,7 @@ export default class ScheduledGamePost_Default extends Component {
       redirect_Approvals: false,
       redirect_PlayerList: false,
       alert: null,
+      redirect_scheduledGames: false,
     }
 
     this.callbackPostFileModalClose = this.callbackPostFileModalClose.bind(this)
@@ -479,11 +480,13 @@ export default class ScheduledGamePost_Default extends Component {
       try {
         const tmp = null
         const mysch = axios.get(`/api/ScheduleGame/delete/${this.props.props.schedule_game.id}/${tmp}`)
-        location.reload()
       } catch (error) {
         console.log(error)
       }
     }
+    this.setState({
+      redirect_scheduledGames: true,
+    })
   }
 
   render() {
@@ -496,6 +499,9 @@ export default class ScheduledGamePost_Default extends Component {
     if (this.state.redirect_Approvals === true) {
       var tmp = `/scheduledGamesApprovals/${this.props.props.schedule_game.schedule_games_GUID}`
       return <Redirect push to={tmp} />
+    }
+    if (this.state.redirect_scheduledGames === true) {
+      return <Redirect push to={'/scheduledGames'} />
     }
 
     return (
