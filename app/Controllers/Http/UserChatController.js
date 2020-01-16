@@ -141,7 +141,7 @@ class UserChatController {
     const publicKey = friend.user[0].public_key;
     const muted = chat.toJSON().muted;
     const blocked = chat.toJSON().blocked;
-    const status = chat.toJSON().status;
+    const status = friend.user[0].status;
     const selfDestruct = chat.toJSON().self_destruct;
 
     const clearedDate = new Date(chat.toJSON().cleared_date);

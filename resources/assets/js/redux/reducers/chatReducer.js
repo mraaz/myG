@@ -30,6 +30,7 @@ export default function reducer(state = {
       chat.icon = action.payload.icon;
       chat.title = action.payload.title;
       chat.subtitle = action.payload.subtitle;
+      chat.status = action.payload.status;
       chat.publicKey = action.payload.publicKey;
       chat.friendId = action.payload.friendId;
       chat.muted = action.payload.muted;

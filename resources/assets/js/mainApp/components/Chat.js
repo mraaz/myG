@@ -168,6 +168,7 @@ class Chat extends React.PureComponent {
           onClick={() => window.location.replace(`/profile/${this.props.friendId}`)}
           style={{ backgroundImage: `url('${this.props.icon}')` }}
         />
+        <div className={`chat-component-header-status-indicator chat-component-header-status-indicator-${this.props.status}`} />
 
         <div className="chat-component-header-info clickable"
           onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}
@@ -317,6 +318,7 @@ function mapStateToProps(state, props) {
     icon: chat.icon || '',
     title: chat.title || '',
     subtitle: chat.subtitle || '',
+    status: chat.status || 'offline',
     blocked: chat.blocked || false,
     muted: chat.muted || false,
     selfDestruct: chat.selfDestruct || false,
