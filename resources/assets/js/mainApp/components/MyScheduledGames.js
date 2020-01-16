@@ -49,13 +49,7 @@ export default class MyScheduledGames extends Component {
   showLatestPosts = () => {
     if (this.state.myScheduledGames != undefined) {
       return this.state.myScheduledGames.map((item, index) => {
-        return (
-          <ScheduledGamePost
-            schedule_game={item}
-            key={index}
-            user={this.props.initialData}
-          />
-        )
+        return <ScheduledGamePost schedule_game={item} key={index} user={this.props.initialData} />
       })
     }
   }
@@ -66,9 +60,7 @@ export default class MyScheduledGames extends Component {
       this.setState({
         myScheduledGames: [],
       })
-      const myScheduledGames = await axios.get(
-        `/api/myScheduledGames/${this.state.db_row_counter}/${this.state.isChecked}`
-      )
+      const myScheduledGames = await axios.get(`/api/myScheduledGames/${this.state.db_row_counter}/${this.state.isChecked}`)
       if (myScheduledGames.data.myScheduledGames.data.length > 10) {
         this.setState({
           show_more: true,
@@ -108,11 +100,7 @@ export default class MyScheduledGames extends Component {
               <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/headers/headers_v1-19.png' />
             </div>
             <div className='full-game'>
-              <input
-                type='checkbox'
-                defaultChecked={this.state.isChecked}
-                onChange={this.toggleChange}
-              />
+              <input type='checkbox' defaultChecked={this.state.isChecked} onChange={this.toggleChange} />
               &nbsp;Exclude Expired Games?
             </div>
             <div className='da-gap'></div>

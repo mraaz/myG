@@ -73,7 +73,7 @@ Route.get('/api/getpost/:id', 'PostController.showpost')
 Route.post('/api/user', 'UserController.store')
 Route.post('/api/userprofile', 'UserController.changeProfile')
 Route.post('/api/userprofilebg', 'UserController.changeProfileBg')
-Route.put('/api/user/status', 'UserChatController.updateStatus');
+Route.put('/api/user/status', 'UserChatController.updateStatus')
 Route.put('/api/user/publicKey', 'UserController.storePublicKey')
 Route.get('/api/user/delete', 'UserController.destroy')
 Route.get('/api/user/:id', 'UserController.profile')
@@ -92,7 +92,7 @@ Route.post('/api/GameExperiences/gameExpSearchResults', 'GameExperienceControlle
 
 Route.post('/api/ScheduleGame', 'ScheduleGameController.store')
 Route.get('/api/ScheduleGame/delete/:id/:reason', 'ScheduleGameController.destroy')
-Route.get('/api/ScheduleGame', 'ScheduleGameController.show')
+//Route.get('/api/ScheduleGame', 'ScheduleGameController.show')
 Route.get('/api/ScheduleGame/:id', 'ScheduleGameController.show_one')
 Route.post('/api/ScheduleGame/update_vacany', 'ScheduleGameController.update_vacany')
 
@@ -265,16 +265,16 @@ Route.get('/api/usergroup/promote_member/:id/:usergrp_id', 'UsergroupController.
 Route.get('/api/usergroup/demote_member/:id/:usergrp_id', 'UsergroupController.demote_member')
 Route.get('/api/usergroup/current_member/:id', 'UsergroupController.current_member')
 
-Route.get('/api/chat/', 'UserChatController.fetchChats');
-Route.get('/api/chat/:chatId', 'UserChatController.fetchChatInfo');
+Route.get('/api/chat/', 'UserChatController.fetchChats')
+Route.get('/api/chat/:chatId', 'UserChatController.fetchChatInfo')
 
-Route.post('/api/chat/', 'UserChatController.create');
-Route.put('/api/chat/:chatId', 'UserChatController.update');
-Route.delete('/api/chat/:chatId', 'UserChatController.deleteMessages');
+Route.post('/api/chat/', 'UserChatController.create')
+Route.put('/api/chat/:chatId', 'UserChatController.update')
+Route.delete('/api/chat/:chatId', 'UserChatController.deleteMessages')
 
-Route.post('/api/chat/:chatId/message', 'ChatController.createMessage');
-Route.put('/api/chat/:chatId/message/:messageId', 'ChatController.updateMessage');
-Route.delete('/api/chat/:chatId/message/:messageId', 'ChatController.deleteMessage');
-Route.delete('/api/chat/:chatId/selfDestruct', 'ChatController.checkSelfDestruct');
+Route.post('/api/chat/:chatId/message', 'ChatController.createMessage')
+Route.put('/api/chat/:chatId/message/:messageId', 'ChatController.updateMessage')
+Route.delete('/api/chat/:chatId/message/:messageId', 'ChatController.deleteMessage')
+Route.delete('/api/chat/:chatId/selfDestruct', 'ChatController.checkSelfDestruct')
 
 Route.any('*', ({ view }) => view.render('pages/react'))

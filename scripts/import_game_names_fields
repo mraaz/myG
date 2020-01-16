@@ -1,0 +1,4 @@
+insert into game_name_fields(game_names_id, in_game_field, created_at, updated_at) values (999, 'dota2_medal_ranks', '1988-08-08', '1988-08-08');
+insert into game_name_fields(game_names_id, in_game_field, created_at, updated_at) values (999, 'dota2_server_regions', '1988-08-08', '1988-08-08');
+insert into game_name_fields(game_names_id, in_game_field, created_at, updated_at) values (999, 'dota2_roles', '1988-08-08', '1988-08-08');
+insert into game_name_fields(game_names_id, in_game_field, created_at, updated_at) values (1016, 'clash_royale_trophies', '1988-08-08', '1988-08-08');
