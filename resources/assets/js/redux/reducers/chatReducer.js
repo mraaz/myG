@@ -13,8 +13,8 @@ export default function reducer(state = {
       const chats = action.payload.chats.map(chat => ({ ...chat, ...findChat(chat.chatId) }));
       chats.forEach(chat => monitorMessages(chat.chatId, action.meta.userId));
       chats.forEach(chat => chat.closed = (chat.messages || []).length === 0);
-      const openChats = chats.filter(candidate => !candidate.closed);
-      if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => openChats[index].closed = true);
+      const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== chatId);
+      if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
       return {
         ...state,
         chats,
@@ -54,8 +54,8 @@ export default function reducer(state = {
       chat.closed = false;
       chat.minimised = false;
       chat.maximised = false;
-      const openChats = chats.filter(candidate => !candidate.closed);
-      if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => openChats[index].closed = true);
+      const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== chatId);
+      if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
       return {
         ...state,
         chats,
@@ -83,8 +83,8 @@ export default function reducer(state = {
       chat.closed = false;
       chat.minimised = false;
       chat.maximised = false;
-      const openChats = chats.filter(candidate => !candidate.closed);
-      if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => openChats[index].closed = true);
+      const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== created.chatId);
+      if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
       monitorMessages(chat.chatId, chat.userId);
       return {
         ...state,
@@ -98,8 +98,8 @@ export default function reducer(state = {
       chat.closed = (chat.messages || []).length === 0;
       const chats = JSON.parse(JSON.stringify(state.chats));
       if (!chats.map(chat => chat.chatId).includes(chat.chatId)) chats.push(chat);
-      const openChats = chats.filter(candidate => !candidate.closed);
-      if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => openChats[index].closed = true);
+      const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== chat.chatId);
+      if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
       monitorMessages(chat.chatId, chat.userId);
       return {
         ...state,
@@ -118,8 +118,8 @@ export default function reducer(state = {
       if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
       if (!chat.muted) {
         chat.closed = false;
-        const openChats = chats.filter(candidate => !candidate.closed);
-        if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => openChats[index].closed = true);
+        const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== chatId);
+        if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
       }
       if (!chat.messages) chat.messages = [];
       chat.messages.push(message);
