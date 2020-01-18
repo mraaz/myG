@@ -4,6 +4,7 @@ const Chat = use('App/Models/Chat');
 const UserChat = use('App/Models/UserChat');
 const ChatMessage = use('App/Models/ChatMessage');
 const { broadcast } = require('../../Common/socket');
+const { convertUTCDateToLocalDate } = require('../../Common/date');
 
 class ChatController {
 
@@ -54,11 +55,12 @@ class ChatController {
 
     const message = await ChatMessage.find(params.messageId);
     if (!message) return response.notFound(`Message ${params.messageId} was not found.`);
+    message.created_at = convertUTCDateToLocalDate(message.created_at);
 
-    const data = request.only(['encrypted']);
+    const data = request.only(['encrypted', 'reEncrypting']);
     message.content = data.encrypted.content;
     message.backup = data.encrypted.backup;
-    message.edited = true;
+    message.edited = !data.reEncrypting;
     await message.save();
 
     broadcast('chat:*', `chat:${params.chatId}`, 'chat:updateMessage', message);

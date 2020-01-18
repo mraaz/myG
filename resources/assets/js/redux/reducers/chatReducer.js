@@ -1,6 +1,8 @@
 
 import { monitorMessages } from '../../integration/ws/chat'
 import logger from '../../common/logger';
+import { convertUTCDateToLocalDate } from '../../common/date';
+import { reEncryptMessages } from '../../common/encryption';
 
 export default function reducer(state = {
   chats: [],
@@ -13,8 +15,8 @@ export default function reducer(state = {
       const chats = action.payload.chats.map(chat => ({ ...chat, ...findChat(chat.chatId) }));
       chats.forEach(chat => monitorMessages(chat.chatId, action.meta.userId));
       chats.forEach(chat => chat.closed = (chat.messages || []).length === 0);
-      const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== chatId);
-      if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
+      const openChats = chats.filter(candidate => !candidate.closed);
+      if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => openChats[index].closed = true);
       return {
         ...state,
         chats,
@@ -85,7 +87,7 @@ export default function reducer(state = {
       chat.maximised = false;
       const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== created.chatId);
       if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
-      monitorMessages(chat.chatId, chat.userId);
+      monitorMessages(chat.chatId, action.meta.userId);
       return {
         ...state,
         chats,
@@ -100,7 +102,7 @@ export default function reducer(state = {
       if (!chats.map(chat => chat.chatId).includes(chat.chatId)) chats.push(chat);
       const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== chat.chatId);
       if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
-      monitorMessages(chat.chatId, chat.userId);
+      monitorMessages(chat.chatId, action.meta.userId);
       return {
         ...state,
         chats,
@@ -137,10 +139,15 @@ export default function reducer(state = {
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (chat.blocked) return state;
       const updated = chat.messages.find(candidate => candidate.id === message.id);
-      updated.content = message.content;
-      updated.backup = message.backup;
-      updated.edited = message.edited;
-      updated.deleted = message.deleted;
+      if (updated) {
+        updated.content = message.content;
+        updated.backup = message.backup;
+        updated.edited = message.edited;
+        updated.deleted = message.deleted;
+      }
+      else {
+        chat.messages.push(message);
+      }
       return {
         ...state,
         chats,
@@ -230,13 +237,25 @@ export default function reducer(state = {
     }
 
     case "PUBLIC_KEY_UPDATED": {
-      logger.log('CHAT', `Redux -> Public Key Updated: `, action.payload);
+      logger.log('CHAT', `Redux -> Public Key Updated: `, action.payload, action.meta);
       const { userId: thisUserId, chatId } = action.meta;
       const { userId: updatedUserId, publicKey } = action.payload;
+      const { privateKey } = state;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (parseInt(updatedUserId) === parseInt(thisUserId)) return state;
       chat.publicKey = publicKey;
+      const lastFriendRead = convertUTCDateToLocalDate(new Date(chat.friendReadDate));
+      const unreadMessages = [];
+      chat.messages.slice(0).reverse().some(message => {
+        const messageDate = convertUTCDateToLocalDate(new Date(message.created_at));
+        if (messageDate > lastFriendRead && message.userId === thisUserId) {
+          unreadMessages.push(message);
+          return false;
+        }
+        return true;
+      });
+      reEncryptMessages(unreadMessages, publicKey, privateKey);
       return {
         ...state,
         chats,
@@ -255,6 +274,20 @@ export default function reducer(state = {
       return {
         ...state,
         chats,
+      };
+    }
+
+    case "GENERATE_KEYS": {
+      return {
+        ...state,
+        privateKey: action.payload.privateKey,
+      };
+    }
+
+    case "VALIDATE_PIN": {
+      return {
+        ...state,
+        privateKey: action.payload.privateKey,
       };
     }
 

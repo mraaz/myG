@@ -62,7 +62,7 @@ class Messenger extends React.PureComponent {
     if (this.props.disconnected) return;
     const chat = this.props.chats.find(chat => chat.friendId === friend.friend_id || chat.userId === friend.friend_id);
     if (chat) return this.props.openChat(chat.chatId);
-    this.props.createChat([this.props.userId, friend.friend_id]);
+    this.props.createChat([this.props.userId, friend.friend_id], this.props.userId);
   }
 
   closeChat = (chatId) => {
@@ -409,7 +409,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return ({
-    createChat: members => dispatch(createChatAction(members)),
+    createChat: (members, userId) => dispatch(createChatAction(members, userId)),
     openChat: chatId => dispatch(openChatAction(chatId)),
     closeChat: chatId => dispatch(closeChatAction(chatId)),
     fetchChats: userId => dispatch(fetchChatsAction(userId)),

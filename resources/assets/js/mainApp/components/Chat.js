@@ -52,11 +52,12 @@ class Chat extends React.PureComponent {
   }
 
   markAsRead = () => {
-    if (this.props.minimised) return;
+    if (this.props.minimised || !this.props.userPrivateKey) return;
     const lastReadDate = convertUTCDateToLocalDate(new Date(this.props.readDate));
     const receivedMessages = this.props.messages.filter(message => parseInt(message.userId) !== parseInt(this.props.userId));
     const lastReceivedMessage = receivedMessages[receivedMessages.length - 1] || {};
     const lastReceivedMessageDate = convertUTCDateToLocalDate(new Date(lastReceivedMessage.created_at));
+    if (lastReceivedMessageDate > lastReadDate) console.log(lastReceivedMessageDate, lastReadDate, lastReceivedMessage.created_at, this.props.readDate)
     if (lastReceivedMessageDate > lastReadDate) this.props.updateChat(this.props.chatId, { markAsRead: true });
   }
 
@@ -266,7 +267,7 @@ class Chat extends React.PureComponent {
           <div className="chat-component-attach-button-divider" />
         </div>
         <ChatInput
-          connected={this.props.connected}
+          connected={!this.props.disconnected}
           blocked={this.props.blocked}
           userPrivateKey={this.props.userPrivateKey}
           sendMessage={this.sendMessage}
@@ -330,7 +331,7 @@ function mapStateToProps(state, props) {
     friendPublicKey: chat.publicKey,
     userPublicKey: state.encryption.publicKey,
     userPrivateKey: state.encryption.privateKey,
-    connected: state.socket.connected,
+    disconnected: state.socket.disconnected,
   }
 }
 
