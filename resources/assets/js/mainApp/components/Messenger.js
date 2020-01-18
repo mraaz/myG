@@ -59,7 +59,7 @@ class Messenger extends React.PureComponent {
   }
 
   openChat = (friend) => {
-    if (!this.props.connected) return;
+    if (this.props.disconnected) return;
     const chat = this.props.chats.find(chat => chat.friendId === friend.friend_id || chat.userId === friend.friend_id);
     if (chat) return this.props.openChat(chat.chatId);
     this.props.createChat([this.props.userId, friend.friend_id]);
@@ -183,7 +183,7 @@ class Messenger extends React.PureComponent {
   }
 
   renderConnectionWarning = () => {
-    if (this.props.connected) return;
+    if (!this.props.disconnected) return;
     return (
       <div
         className="messenger-connection-warning clickable"
@@ -403,7 +403,7 @@ function mapStateToProps(state) {
     pin: state.encryption.pin,
     invalidPin: state.encryption.invalidPin,
     privateKey: state.encryption.privateKey,
-    connected: state.socket.connected,
+    disconnected: state.socket.disconnected,
   }
 }
 

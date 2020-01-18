@@ -15,7 +15,7 @@ export function attemptSocketConnection() {
   ws = socket.connect().ws;
 
   ws.on('open', () => {
-    store.dispatch(onConnectionStateChangedAction(true));
+    store.dispatch(onConnectionStateChangedAction(false));
     if (!hasDisconnected) return;
     ws = socket.connect().ws;
     store.dispatch(fetchChatsAction(currentUserId));
@@ -25,7 +25,7 @@ export function attemptSocketConnection() {
   });
 
   ws.on('close', () => {
-    store.dispatch(onConnectionStateChangedAction(false));
+    store.dispatch(onConnectionStateChangedAction(true));
     hasDisconnected = true;
     closeSubscriptions();
   });
