@@ -8,7 +8,7 @@ import StatusTimerWrapper from './StatusTimerWrapper';
 import { attemptSocketConnection, monitorChats, closeSubscriptions } from '../../integration/ws/chat';
 import { fetchChatsAction, createChatAction, openChatAction, closeChatAction, clearChatAction } from '../../redux/actions/chatAction';
 import { fetchFriendsAction } from '../../redux/actions/friendAction';
-import { updateStatusAction } from '../../redux/actions/userAction';
+import { fetchStatusAction, updateStatusAction } from '../../redux/actions/userAction';
 import { generateKeysAction, validatePinAction } from '../../redux/actions/encryptionAction';
 import { decryptMessage } from '../../integration/encryption';
 import { formatAMPM, convertUTCDateToLocalDate } from '../../common/date';
@@ -43,6 +43,7 @@ class Messenger extends React.PureComponent {
       if (this.props.pin) this.props.generateKeys(this.props.pin);
       this.props.fetchChats(this.props.userId);
       this.props.fetchFriends();
+      this.props.fetchStatus();
       this.setState({ loaded: true });
     }
   }
@@ -413,6 +414,7 @@ function mapDispatchToProps(dispatch) {
     closeChat: chatId => dispatch(closeChatAction(chatId)),
     fetchChats: userId => dispatch(fetchChatsAction(userId)),
     fetchFriends: () => dispatch(fetchFriendsAction()),
+    fetchStatus: () => dispatch(fetchStatusAction()),
     generateKeys: pin => dispatch(generateKeysAction(pin)),
     validatePin: (pin, publicKey) => dispatch(validatePinAction(pin, publicKey)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),

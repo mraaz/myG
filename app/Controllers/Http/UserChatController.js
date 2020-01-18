@@ -53,10 +53,17 @@ class UserChatController {
     const user = await User.query().where('id', '=', userId).first();
     const status = request.only ? request.only(['status']).status : request.status;
     const forceStatus = request.only ? request.only(['forceStatus']).forceStatus : request.forceStatus;
+    const currentStatus = user.toJSON().status;
     const status_locked = user.toJSON().status_locked;
+    if (status === currentStatus) {
+      return {
+        status: currentStatus,
+        isStatusLocked: status_locked,
+      };
+    }
     if (status !== 'offline' && !forceStatus && status_locked) {
       return {
-        status: user.toJSON().status,
+        status: currentStatus,
         isStatusLocked: !!status_locked,
       };
     }

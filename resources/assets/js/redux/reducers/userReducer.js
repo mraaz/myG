@@ -7,6 +7,16 @@ export default function reducer(state = {
 }, action) {
   switch (action.type) {
 
+    case "FETCH_STATUS_FULFILLED": {
+      logger.log('USER', `Redux -> Fetch Status: `, action.payload);
+      const { status, isStatusLocked } = action.payload;
+      return {
+        ...state,
+        status: status === 'offline' && !isStatusLocked ? 'online' : status,
+        isStatusLocked,
+      };
+    }
+
     case "UPDATE_STATUS_FULFILLED": {
       logger.log('USER', `Redux -> Update Status: `, action.payload);
       return {
