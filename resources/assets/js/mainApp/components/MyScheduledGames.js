@@ -2,48 +2,21 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import axios from 'axios'
 import ScheduledGamePost from './ScheduledGamePost'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 export default class MyScheduledGames extends Component {
   constructor() {
     super()
     this.state = {
-      db_row_counter: 0,
-      show_prev: false,
-      show_more: false,
+      counter: 0,
+      moreplease: true,
       isChecked: true,
+      myScheduledGames: [],
     }
   }
 
-  componentWillMount() {
-    this.fetchMoreData()
-  }
-
-  fetchMoreData = () => {
-    this.setState(
-      {
-        db_row_counter: this.state.db_row_counter + 1,
-      },
-      () => {
-        this.pullData()
-        if (this.state.db_row_counter > 1) {
-          this.setState({ show_prev: true })
-        }
-      }
-    )
-  }
-
-  fetchPrevData = () => {
-    this.setState(
-      {
-        db_row_counter: this.state.db_row_counter - 1,
-      },
-      () => {
-        this.pullData()
-        if (this.state.db_row_counter < 2) {
-          this.setState({ show_prev: false })
-        }
-      }
-    )
+  componentDidMount() {
+    this.pullData()
   }
 
   showLatestPosts = () => {
@@ -54,25 +27,26 @@ export default class MyScheduledGames extends Component {
     }
   }
 
-  async pullData() {
-    try {
-      //BUG: Without this, it keeps old posts. not sure why, so doing a hard reset, as a added bonus, it scrolls up to the top. for some reason window.scollTo isn't working
+  pullData = async () => {
+    this.state.counter = this.state.counter + 1
+
+    if (this.state.counter != 1) {
       this.setState({
-        myScheduledGames: [],
+        show_top_btn: true,
       })
-      const myScheduledGames = await axios.get(`/api/myScheduledGames/${this.state.db_row_counter}/${this.state.isChecked}`)
-      if (myScheduledGames.data.myScheduledGames.data.length > 10) {
+    }
+    try {
+      const myScheduledGames = await axios.get(`/api/myScheduledGames/${this.state.counter}/${this.state.isChecked}`)
+
+      if (myScheduledGames.data.myScheduledGames.data.length == 0) {
         this.setState({
-          show_more: true,
+          moreplease: false,
         })
-        myScheduledGames.data.myScheduledGames.data.pop()
-      } else {
-        this.setState({
-          show_more: false,
-        })
+        return
       }
+
       this.setState({
-        myScheduledGames: myScheduledGames.data.myScheduledGames.data,
+        myScheduledGames: this.state.myScheduledGames.concat(myScheduledGames.data.myScheduledGames.data),
       })
     } catch (error) {
       console.log(error)
@@ -83,7 +57,7 @@ export default class MyScheduledGames extends Component {
     this.setState(
       {
         isChecked: !this.state.isChecked,
-        db_row_counter: 1,
+        counter: 0,
       },
       () => {
         this.pullData()
@@ -104,17 +78,9 @@ export default class MyScheduledGames extends Component {
               &nbsp;Exclude Expired Games?
             </div>
             <div className='da-gap'></div>
-            {this.showLatestPosts()}
-            {this.state.show_prev && (
-              <div className='prev_pls' onClick={this.fetchPrevData}>
-                {'<'}- Previous
-              </div>
-            )}
-            {this.state.show_more && (
-              <div className='more_pls' onClick={this.fetchMoreData}>
-                Next ->
-              </div>
-            )}
+            <InfiniteScroll dataLength={this.state.myScheduledGames.length} next={this.pullData} hasMore={this.state.moreplease}>
+              {this.showLatestPosts()}
+            </InfiniteScroll>
           </div>
         </section>
       )

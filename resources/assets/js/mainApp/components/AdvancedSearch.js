@@ -94,6 +94,7 @@ export default class AdvancedSearch extends Component<*, State> {
       counter: 0,
       moreplease: true,
       allGameExperiences: [],
+      myG_lock: false,
     }
   }
 
@@ -231,6 +232,10 @@ export default class AdvancedSearch extends Component<*, State> {
       console.log(error)
     }
 
+    this.setState({
+      myG_lock: false,
+    })
+
     if (allGameExperiences.data.latestGameExperiences.data.length == 0) {
       this.setState({
         moreplease: false,
@@ -248,6 +253,7 @@ export default class AdvancedSearch extends Component<*, State> {
       {
         game_name_box: value,
         counter: 0,
+        allGameExperiences: [],
       },
       () => {
         this.pullData()
@@ -261,6 +267,7 @@ export default class AdvancedSearch extends Component<*, State> {
       {
         value_tags,
         counter: 0,
+        allGameExperiences: [],
       },
       () => {
         this.pullData()
@@ -274,6 +281,7 @@ export default class AdvancedSearch extends Component<*, State> {
         selected_table,
         value_tags: '',
         counter: 0,
+        allGameExperiences: [],
       },
       () => {
         this.pullData()
@@ -286,6 +294,7 @@ export default class AdvancedSearch extends Component<*, State> {
       {
         selected_experience,
         counter: 0,
+        allGameExperiences: [],
       },
       () => {
         this.pullData()
@@ -298,6 +307,7 @@ export default class AdvancedSearch extends Component<*, State> {
       {
         status_box,
         counter: 0,
+        allGameExperiences: [],
       },
       () => {
         this.pullData()
@@ -310,6 +320,7 @@ export default class AdvancedSearch extends Component<*, State> {
       {
         played_box,
         counter: 0,
+        allGameExperiences: [],
       },
       () => {
         this.pullData()
@@ -322,6 +333,7 @@ export default class AdvancedSearch extends Component<*, State> {
       {
         ratings_box,
         counter: 0,
+        allGameExperiences: [],
       },
       () => {
         this.pullData()
@@ -334,6 +346,7 @@ export default class AdvancedSearch extends Component<*, State> {
       {
         commendation_box,
         counter: 0,
+        allGameExperiences: [],
       },
       () => {
         this.pullData()
@@ -346,6 +359,7 @@ export default class AdvancedSearch extends Component<*, State> {
       {
         country_: val,
         counter: 0,
+        allGameExperiences: [],
       },
       () => {
         this.pullData()
@@ -358,6 +372,7 @@ export default class AdvancedSearch extends Component<*, State> {
       {
         eStatus_box,
         counter: 0,
+        allGameExperiences: [],
       },
       () => {
         this.pullData()
@@ -366,27 +381,42 @@ export default class AdvancedSearch extends Component<*, State> {
   }
 
   handleChange_role_title = (e) => {
-    this.setState(
-      {
+    if (this.state.myG_lock == false) {
+      this.setState(
+        {
+          role_title_box: e.target.value,
+          counter: 0,
+          allGameExperiences: [],
+          myG_lock: true,
+        },
+        () => {
+          this.pullData()
+        }
+      )
+    } else {
+      this.setState({
         role_title_box: e.target.value,
-        counter: 0,
-      },
-      () => {
-        this.pullData()
-      }
-    )
+      })
+    }
   }
 
   handleChange_team_name = (e) => {
-    this.setState(
-      {
+    if (this.state.myG_lock == false) {
+      this.setState(
+        {
+          team_name_box: e.target.value,
+          counter: 0,
+          allGameExperiences: [],
+        },
+        () => {
+          this.pullData()
+        }
+      )
+    } else {
+      this.setState({
         team_name_box: e.target.value,
-        counter: 0,
-      },
-      () => {
-        this.pullData()
-      }
-    )
+      })
+    }
   }
 
   handleChange_Time_role = (time_role_box) => {
@@ -394,6 +424,7 @@ export default class AdvancedSearch extends Component<*, State> {
       {
         time_role_box,
         counter: 0,
+        allGameExperiences: [],
       },
       () => {
         this.pullData()
