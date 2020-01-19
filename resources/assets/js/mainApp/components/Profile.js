@@ -23,6 +23,7 @@ export default class Profile extends Component {
       redirect_: false,
       redirect_link: '',
       alert: null,
+      esportsBioData: undefined
     }
 
     this.callbackFileModalClose = this.callbackFileModalClose.bind(this)
@@ -172,6 +173,7 @@ export default class Profile extends Component {
           esportsBioData: esportsBio.data,
         })
         if (esportsBio.data.myProfile.length != 0) {
+          //console.log(esportsBio);
           if (esportsBio.data.myProfile[0].games_of_ardour != '') {
             self.setState({
               show_bio: true,
@@ -384,24 +386,26 @@ export default class Profile extends Component {
         if (country != null && country.trim() != '') {
           show_location = true
         }
+        if(this.state.esportsBioData.myProfile.length>0){
+          if (this.state.show_bio) {
+            if (
+              this.state.esportsBioData.myProfile[0].games_of_ardour != undefined && this.state.esportsBioData.myProfile[0].games_of_ardour != ''
 
-        if (this.state.show_bio) {
-          if (
-            this.state.esportsBioData.myProfile[0].games_of_ardour != '' &&
-            this.state.esportsBioData.myProfile[0].games_of_ardour != undefined
-          ) {
-            games_of_ardour = this.state.esportsBioData.myProfile[0].games_of_ardour
-            show_ardour = true
-          }
+            ) {
+              games_of_ardour = this.state.esportsBioData.myProfile[0].games_of_ardour
+              show_ardour = true
+            }
 
-          if (
-            this.state.esportsBioData.myProfile[0].career_highlights != '' &&
-            this.state.esportsBioData.myProfile[0].career_highlights != undefined
-          ) {
-            career_highlights = this.state.esportsBioData.myProfile[0].career_highlights
-            show_highlights = true
+            if (
+              this.state.esportsBioData.myProfile[0].career_highlights != '' &&
+              this.state.esportsBioData.myProfile[0].career_highlights != undefined
+            ) {
+              career_highlights = this.state.esportsBioData.myProfile[0].career_highlights
+              show_highlights = true
+            }
           }
         }
+
 
         return (
           <section id='profile-page'>
