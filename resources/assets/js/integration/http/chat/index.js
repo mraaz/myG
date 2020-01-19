@@ -36,9 +36,9 @@ export function sendMessage(chatId, userId, encrypted, selfDestruct) {
   return axios.post(`/api/chat/${chatId}/message/`, { userId, encrypted, selfDestruct });
 }
 
-export function editMessage(chatId, messageId, encrypted) {
+export function editMessage(chatId, messageId, encrypted, reEncrypting) {
   logger.log('CHAT', 'HTTP', `Editing Message ${messageId} on Chat ${chatId}`);
-  return axios.put(`/api/chat/${chatId}/message/${messageId}`, { encrypted });
+  return axios.put(`/api/chat/${chatId}/message/${messageId}`, { encrypted, reEncrypting });
 }
 
 export function deleteMessage(chatId, messageId) {

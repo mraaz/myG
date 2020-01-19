@@ -8,7 +8,7 @@ import StatusTimerWrapper from './StatusTimerWrapper';
 import { attemptSocketConnection, monitorChats, closeSubscriptions } from '../../integration/ws/chat';
 import { fetchChatsAction, createChatAction, openChatAction, closeChatAction, clearChatAction } from '../../redux/actions/chatAction';
 import { fetchFriendsAction } from '../../redux/actions/friendAction';
-import { updateStatusAction } from '../../redux/actions/userAction';
+import { fetchStatusAction, updateStatusAction } from '../../redux/actions/userAction';
 import { generateKeysAction, validatePinAction } from '../../redux/actions/encryptionAction';
 import { decryptMessage } from '../../integration/encryption';
 import { formatAMPM, convertUTCDateToLocalDate } from '../../common/date';
@@ -24,6 +24,7 @@ class Messenger extends React.PureComponent {
     searchInput: '',
     pin: '',
     sectionExpanded: {
+      recent: true,
       [STATUS_ENUM.ONLINE]: true,
       [STATUS_ENUM.PLAYING]: false,
       [STATUS_ENUM.AFK]: false,
@@ -42,6 +43,7 @@ class Messenger extends React.PureComponent {
       if (this.props.pin) this.props.generateKeys(this.props.pin);
       this.props.fetchChats(this.props.userId);
       this.props.fetchFriends();
+      this.props.fetchStatus();
       this.setState({ loaded: true });
     }
   }
@@ -57,10 +59,10 @@ class Messenger extends React.PureComponent {
   }
 
   openChat = (friend) => {
-    if (!this.props.connected) return;
+    if (this.props.disconnected) return;
     const chat = this.props.chats.find(chat => chat.friendId === friend.friend_id || chat.userId === friend.friend_id);
     if (chat) return this.props.openChat(chat.chatId);
-    this.props.createChat([this.props.userId, friend.friend_id]);
+    this.props.createChat([this.props.userId, friend.friend_id], this.props.userId);
   }
 
   closeChat = (chatId) => {
@@ -102,26 +104,29 @@ class Messenger extends React.PureComponent {
   renderFriends = () => {
 
     const sections = {};
+    const friends = this.props.friends.slice(0)
+      .sort((f1, f2) => compareStatus(f1.status, f2.status))
+      .sort((f1, f2) => this.compareLastMessages(f1, f2));
 
     if (this.state.searchInput) {
       const search = (name) => name.toLowerCase().includes(this.state.searchInput.toLowerCase());
-      sections['suggestions'] = this.props.friends.slice(0)
+      sections['suggestions'] = friends.slice(0)
         .filter(friend => search(`${friend.first_name} ${friend.last_name}`))
-        .sort((f1, f2) => this.compareLastMessages(f1, f2))
         .slice(0, 18);
     }
 
     else {
-      const friends = this.props.friends.slice(0).sort((f1, f2) => compareStatus(f1.status, f2.status));
-      sections[STATUS_ENUM.ONLINE] = friends.filter(friend => friend.status === STATUS_ENUM.ONLINE).sort((f1, f2) => this.compareLastMessages(f1, f2));
-      sections[STATUS_ENUM.PLAYING] = friends.filter(friend => friend.status === STATUS_ENUM.PLAYING).sort((f1, f2) => this.compareLastMessages(f1, f2));
-      sections[STATUS_ENUM.AFK] = friends.filter(friend => friend.status === STATUS_ENUM.AFK).sort((f1, f2) => this.compareLastMessages(f1, f2));
-      sections[STATUS_ENUM.OFFLINE] = friends.filter(friend => friend.status === STATUS_ENUM.OFFLINE).sort((f1, f2) => this.compareLastMessages(f1, f2));
+      sections['recent'] = friends.filter(friend => (friend.chat.messages || []).length).slice(0, 8);
+      sections[STATUS_ENUM.ONLINE] = friends.filter(friend => friend.status === STATUS_ENUM.ONLINE);
+      sections[STATUS_ENUM.PLAYING] = friends.filter(friend => friend.status === STATUS_ENUM.PLAYING);
+      sections[STATUS_ENUM.AFK] = friends.filter(friend => friend.status === STATUS_ENUM.AFK);
+      sections[STATUS_ENUM.OFFLINE] = friends.filter(friend => friend.status === STATUS_ENUM.OFFLINE);
     }
 
     return (
       <div className="messenger-body">
         {!!this.state.searchInput && this.renderSection('suggestions', sections['suggestions'].length, sections['suggestions'], true)}
+        {!this.state.searchInput && this.renderSection('recent', sections['recent'].length, sections['recent'], this.state.sectionExpanded['recent'])}
         {!this.state.searchInput && this.renderSection(STATUS_ENUM.ONLINE, sections[STATUS_ENUM.ONLINE].length, sections[STATUS_ENUM.ONLINE], this.state.sectionExpanded[STATUS_ENUM.ONLINE])}
         {!this.state.searchInput && this.renderSection(STATUS_ENUM.PLAYING, sections[STATUS_ENUM.PLAYING].length, sections[STATUS_ENUM.PLAYING], this.state.sectionExpanded[STATUS_ENUM.PLAYING])}
         {!this.state.searchInput && this.renderSection(STATUS_ENUM.AFK, sections[STATUS_ENUM.AFK].length, sections[STATUS_ENUM.AFK], this.state.sectionExpanded[STATUS_ENUM.AFK])}
@@ -178,7 +183,7 @@ class Messenger extends React.PureComponent {
   }
 
   renderConnectionWarning = () => {
-    if (this.props.connected) return;
+    if (!this.props.disconnected) return;
     return (
       <div
         className="messenger-connection-warning clickable"
@@ -398,17 +403,18 @@ function mapStateToProps(state) {
     pin: state.encryption.pin,
     invalidPin: state.encryption.invalidPin,
     privateKey: state.encryption.privateKey,
-    connected: state.socket.connected,
+    disconnected: state.socket.disconnected,
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return ({
-    createChat: members => dispatch(createChatAction(members)),
+    createChat: (members, userId) => dispatch(createChatAction(members, userId)),
     openChat: chatId => dispatch(openChatAction(chatId)),
     closeChat: chatId => dispatch(closeChatAction(chatId)),
     fetchChats: userId => dispatch(fetchChatsAction(userId)),
     fetchFriends: () => dispatch(fetchFriendsAction()),
+    fetchStatus: () => dispatch(fetchStatusAction()),
     generateKeys: pin => dispatch(generateKeysAction(pin)),
     validatePin: (pin, publicKey) => dispatch(validatePinAction(pin, publicKey)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),

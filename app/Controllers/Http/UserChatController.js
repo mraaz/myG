@@ -53,10 +53,17 @@ class UserChatController {
     const user = await User.query().where('id', '=', userId).first();
     const status = request.only ? request.only(['status']).status : request.status;
     const forceStatus = request.only ? request.only(['forceStatus']).forceStatus : request.forceStatus;
+    const currentStatus = user.toJSON().status;
     const status_locked = user.toJSON().status_locked;
+    if (status === currentStatus) {
+      return {
+        status: currentStatus,
+        isStatusLocked: status_locked,
+      };
+    }
     if (status !== 'offline' && !forceStatus && status_locked) {
       return {
-        status: user.toJSON().status,
+        status: currentStatus,
         isStatusLocked: !!status_locked,
       };
     }
@@ -141,7 +148,7 @@ class UserChatController {
     const publicKey = friend.user[0].public_key;
     const muted = chat.toJSON().muted;
     const blocked = chat.toJSON().blocked;
-    const status = chat.toJSON().status;
+    const status = friend.user[0].status;
     const selfDestruct = chat.toJSON().self_destruct;
 
     const clearedDate = new Date(chat.toJSON().cleared_date);

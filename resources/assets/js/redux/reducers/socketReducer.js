@@ -2,15 +2,15 @@
 import logger from '../../common/logger';
 
 export default function reducer(state = {
-  connected: false,
+  disconnected: false,
 }, action) {
   switch (action.type) {
 
     case "SOCKET_CONNECTION_STATE_CHANGED": {
-      logger.log('SOCKET', `Redux -> Socket ${action.payload.connected ? 'Connected' : 'Disconnected'}`);
+      logger.log('SOCKET', `Redux -> Socket ${action.payload.disconnected ? 'Disconnected' : 'Connected'}`);
       return {
         ...state,
-        connected: action.payload.connected,
+        disconnected: action.payload.disconnected,
       };
     }
 

@@ -164,6 +164,23 @@ class UserController {
     }
   }
 
+  async fetchStatus({ auth, response }) {
+    if (auth.user) {
+      try {
+        const user = await User.query()
+          .where('id', '=', auth.user.id)
+          .first()
+        const status = user.toJSON().status;
+        const isStatusLocked = user.toJSON().status_locked;
+        return response.status(200).json({ status, isStatusLocked });
+      } catch (error) {
+        return response.status(200).json({ status: 'online', isStatusLocked: false });
+      }
+    } else {
+      return response.status(200).json({ status: 'online', isStatusLocked: false });
+    }
+  }
+
   async storePublicKey({ auth, request, response }) {
     if (auth.user) {
       try {

@@ -40,6 +40,30 @@
   margin-right: 12px;
 }
 
+.chat-component-header-status-indicator {
+  position: absolute;
+  top: 43px;
+  border-radius: 6px;
+  width: 12px;
+  height: 12px;
+}
+
+.chat-component-header-status-indicator-online {
+  background-color: #309030;
+}
+
+.chat-component-header-status-indicator-playing {
+  background-color: #903030;
+}
+
+.chat-component-header-status-indicator-afk {
+  background-color: #909030;
+}
+
+.chat-component-header-status-indicator-offline {
+  background-color: #303030;
+}
+
 .chat-component-header-options {
   display: flex;
   flex-direction: column;

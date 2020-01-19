@@ -72,10 +72,11 @@ export function fetchInfoAction(chatId) {
     }
 }
 
-export function createChatAction(members) {
+export function createChatAction(members, userId) {
     return {
         type: 'CREATE_CHAT',
         payload: createChat(members),
+        meta: { userId }
     }
 }
 

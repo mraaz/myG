@@ -52,11 +52,12 @@ class Chat extends React.PureComponent {
   }
 
   markAsRead = () => {
-    if (this.props.minimised) return;
+    if (this.props.minimised || !this.props.userPrivateKey) return;
     const lastReadDate = convertUTCDateToLocalDate(new Date(this.props.readDate));
     const receivedMessages = this.props.messages.filter(message => parseInt(message.userId) !== parseInt(this.props.userId));
     const lastReceivedMessage = receivedMessages[receivedMessages.length - 1] || {};
     const lastReceivedMessageDate = convertUTCDateToLocalDate(new Date(lastReceivedMessage.created_at));
+    if (lastReceivedMessageDate > lastReadDate) console.log(lastReceivedMessageDate, lastReadDate, lastReceivedMessage.created_at, this.props.readDate)
     if (lastReceivedMessageDate > lastReadDate) this.props.updateChat(this.props.chatId, { markAsRead: true });
   }
 
@@ -168,6 +169,7 @@ class Chat extends React.PureComponent {
           onClick={() => window.location.replace(`/profile/${this.props.friendId}`)}
           style={{ backgroundImage: `url('${this.props.icon}')` }}
         />
+        <div className={`chat-component-header-status-indicator chat-component-header-status-indicator-${this.props.status}`} />
 
         <div className="chat-component-header-info clickable"
           onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}
@@ -265,7 +267,7 @@ class Chat extends React.PureComponent {
           <div className="chat-component-attach-button-divider" />
         </div>
         <ChatInput
-          connected={this.props.connected}
+          connected={!this.props.disconnected}
           blocked={this.props.blocked}
           userPrivateKey={this.props.userPrivateKey}
           sendMessage={this.sendMessage}
@@ -317,6 +319,7 @@ function mapStateToProps(state, props) {
     icon: chat.icon || '',
     title: chat.title || '',
     subtitle: chat.subtitle || '',
+    status: chat.status || 'offline',
     blocked: chat.blocked || false,
     muted: chat.muted || false,
     selfDestruct: chat.selfDestruct || false,
@@ -328,7 +331,7 @@ function mapStateToProps(state, props) {
     friendPublicKey: chat.publicKey,
     userPublicKey: state.encryption.publicKey,
     userPrivateKey: state.encryption.privateKey,
-    connected: state.socket.connected,
+    disconnected: state.socket.disconnected,
   }
 }
 
