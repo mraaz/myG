@@ -5,14 +5,62 @@ const Database = use('Database')
 
 class GameNameController {
   async store({ auth, request, response }) {
-    try {
-      const newGameName = await GameNames.create({
-        game_name: request.input('game_name'),
-        created_by: auth.user.id,
-      })
-      return newGameName
-    } catch (error) {
-      console.log(error)
+    if (auth.user) {
+      try {
+        const newGameName = await GameNames.create({
+          game_name: request.input('game_name'),
+          created_by: auth.user.id,
+        })
+        return newGameName
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+
+  async createGame({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        const createGame = await GameNames.create({
+          game_name: request.params.game_name,
+          created_by: auth.user.id,
+        })
+        return createGame
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async incrementGameCounter({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        const incrementGameCounter = await GameNames.query()
+          .where({ id: request.params.game_names_id })
+          .increment('counter', 1)
+        return 'Updated successfully'
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async decrementGameCounter({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        const decrementGameCounter = await GameNames.query()
+          .where({ id: request.params.game_names_id })
+          .decrement('counter', 1)
+        return 'Updated successfully'
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
     }
   }
 
@@ -49,9 +97,7 @@ class GameNameController {
       inputValue = inputValue.replace(/%25/g, '\\')
       inputValue = "'%" + inputValue + "%'"
 
-      const gameSearchResults = await Database.schema.raw(
-        'select * from game_names WHERE game_name LIKE ' + inputValue
-      )
+      const gameSearchResults = await Database.schema.raw('select * from game_names WHERE game_name LIKE ' + inputValue)
 
       // WORKS!!!! const gameSearchResults = await Database.schema.raw("select * from game_names WHERE game_name LIKE " + "'%the\%Alien%'")
 

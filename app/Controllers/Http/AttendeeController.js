@@ -20,11 +20,7 @@ class AttendeeController {
 
       if (request.input('notify') == true) {
         const all_pending_attendees = await Database.from('attendees')
-          .innerJoin(
-            'schedule_games',
-            'schedule_games.id',
-            'attendees.schedule_games_id'
-          )
+          .innerJoin('schedule_games', 'schedule_games.id', 'attendees.schedule_games_id')
           .select('schedule_games.user_id')
           .where({
             schedule_games_id: request.input('schedule_games_id'),
@@ -104,45 +100,35 @@ class AttendeeController {
 
   async show_game_positions({ auth, request, response }) {
     try {
-      const game_position_of_dota_2_position_ones = await Database.from(
-        'attendees'
-      )
+      const game_position_of_dota_2_position_ones = await Database.from('attendees')
         .where({
           schedule_games_id: request.params.id,
           type: 1,
           dota_2_position_one: 1,
         })
         .count('* as no_of_dota_2_position_ones')
-      const game_position_of_dota_2_position_twos = await Database.from(
-        'attendees'
-      )
+      const game_position_of_dota_2_position_twos = await Database.from('attendees')
         .where({
           schedule_games_id: request.params.id,
           type: 1,
           dota_2_position_two: 1,
         })
         .count('* as no_of_dota_2_position_twos')
-      const game_position_of_dota_2_position_threes = await Database.from(
-        'attendees'
-      )
+      const game_position_of_dota_2_position_threes = await Database.from('attendees')
         .where({
           schedule_games_id: request.params.id,
           type: 1,
           dota_2_position_three: 1,
         })
         .count('* as no_of_dota_2_position_threes')
-      const game_position_of_dota_2_position_fours = await Database.from(
-        'attendees'
-      )
+      const game_position_of_dota_2_position_fours = await Database.from('attendees')
         .where({
           schedule_games_id: request.params.id,
           type: 1,
           dota_2_position_four: 1,
         })
         .count('* as no_of_dota_2_position_fours')
-      const game_position_of_dota_2_position_fives = await Database.from(
-        'attendees'
-      )
+      const game_position_of_dota_2_position_fives = await Database.from('attendees')
         .where({
           schedule_games_id: request.params.id,
           type: 1,
@@ -182,12 +168,7 @@ class AttendeeController {
     try {
       const role_call_ALL = await Database.from('attendees')
         .innerJoin('users', 'users.id', 'attendees.user_id')
-        .select(
-          'users.id as user_id',
-          'users.profile_img',
-          'users.first_name',
-          'users.last_name'
-        )
+        .select('users.id as user_id', 'users.profile_img', 'users.first_name', 'users.last_name')
         .where({ schedule_games_id: request.params.id, type: 1 })
 
       return {
@@ -202,11 +183,7 @@ class AttendeeController {
     if (auth.user) {
       try {
         const attendees = await Database.from('attendees')
-          .innerJoin(
-            'schedule_games',
-            'schedule_games.id',
-            'attendees.schedule_games_id'
-          )
+          .innerJoin('schedule_games', 'schedule_games.id', 'attendees.schedule_games_id')
           .innerJoin('users', 'users.id', 'schedule_games.user_id')
           .where({ schedule_games_id: request.params.id, type: 1 })
           .where('attendees.user_id', '=', auth.user.id)
@@ -239,17 +216,15 @@ class AttendeeController {
     try {
       var getScheduleGameInvites = await Database.from('attendees')
         .innerJoin('users', 'users.id', 'attendees.user_id')
-        .innerJoin(
-          'schedule_games',
-          'schedule_games.id',
-          'attendees.schedule_games_id'
-        )
+        .innerJoin('schedule_games', 'schedule_games.id', 'attendees.schedule_games_id')
         .where({ schedule_games_GUID: request.params.id, type: 3 })
         .options({ nestTables: true })
 
       if (getScheduleGameInvites.length == 0) {
         getScheduleGameInvites = await Database.from('schedule_games')
           .where({ schedule_games_GUID: request.params.id })
+          .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+          .select('*', 'schedule_games.id')
           .options({ nestTables: true })
       }
 

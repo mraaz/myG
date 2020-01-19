@@ -64,6 +64,7 @@ export default class ScheduledGamesApprovals extends Component {
 
   render() {
     if (this.state.myInvites != undefined) {
+      console.log(this.state.myInvites[0])
       return (
         <section id='scheduledGamesApprovals-page'>
           <div className='content-area scheduledGamesApprovals-page'>
@@ -74,7 +75,7 @@ export default class ScheduledGamesApprovals extends Component {
                     myApprovals for{' '}
                     <Link to={`/scheduledGames/${this.state.myInvites[0].schedule_games.id}`} style={{ textDecoration: 'none' }}>
                       {' '}
-                      {this.state.myInvites[0].schedule_games.game_name}
+                      {this.state.myInvites[0].game_names.game_name}
                     </Link>{' '}
                     on this date: {this.state.start_date}
                   </h3>
