@@ -64,7 +64,6 @@ export default class ScheduledGamesApprovals extends Component {
 
   render() {
     if (this.state.myInvites != undefined) {
-      console.log(this.state.myInvites[0])
       return (
         <section id='scheduledGamesApprovals-page'>
           <div className='content-area scheduledGamesApprovals-page'>
