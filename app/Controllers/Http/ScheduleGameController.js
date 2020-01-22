@@ -312,8 +312,6 @@ class ScheduleGameController {
   async scheduleSearchResults({ auth, request, response }) {
     //WHEN PUTTING IN TRY AND CATCH, WE GET 500 ERROR :(, WHEREAS REMOVING IT WORKS? WTF!!!!
 
-    console.log(request.input('region'))
-
     const latestScheduledGames = await Database.from('schedule_games')
       .innerJoin('users', 'users.id', 'schedule_games.user_id')
       .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
@@ -376,14 +374,11 @@ class ScheduleGameController {
       .orderBy('schedule_games.created_at', 'desc')
       .select('*', 'schedule_games.id', 'users.id as user_id')
 
-    console.log('step 1')
-
     //RAAAZ BROKEN!!!!! https://github.com/mraaz/myGame/issues/157
     //NEED TO REVIST ONCE paginate is implemented.
     //console.log(latestScheduledGames.length)
 
     for (var i = 0; i < latestScheduledGames.length; i++) {
-      console.log('step 2')
       var myScheduledTrans = await Database.from('schedule_games_transactions')
         .innerJoin('game_name_fields', 'game_name_fields.id', 'schedule_games_transactions.game_name_fields_id')
         .where({ schedule_games_id: latestScheduledGames[i].id })
@@ -408,7 +403,6 @@ class ScheduleGameController {
         })
 
       for (var x = 0; x < myScheduledTrans.length; x++) {
-        console.log('step 3')
         switch (myScheduledTrans[x].in_game_field) {
           case 'dota2_medal_ranks':
             latestScheduledGames[i].dota2_medal_ranks = myScheduledTrans[x].values
@@ -425,7 +419,6 @@ class ScheduleGameController {
         }
       }
     }
-    console.log(latestScheduledGames)
 
     return {
       latestScheduledGames,
