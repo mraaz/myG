@@ -86,6 +86,37 @@ class EsportsExperienceController {
   }
 
   async esportsSearchResults({ auth, request, response }) {
+    var arrTags = ''
+    var skill_1 = null,
+      skill_2 = null,
+      skill_3 = null,
+      skill_4 = null,
+      skill_5 = null
+
+    if (request.input('skills') != null && request.input('skills') != '') {
+      arrTags = request.input('skills').split(',')
+
+      for (var i = 0; i < arrTags.length; i++) {
+        switch (i) {
+          case 0:
+            skill_1 = arrTags[i]
+            break
+          case 1:
+            skill_2 = arrTags[i]
+            break
+          case 2:
+            skill_3 = arrTags[i]
+            break
+          case 3:
+            skill_4 = arrTags[i]
+            break
+          case 4:
+            skill_5 = arrTags[i]
+            break
+        }
+      }
+    }
+
     try {
       const latestGameExperiences = await Database.from('esports_experiences')
         .innerJoin('users', 'users.id', 'esports_experiences.user_id')
@@ -98,7 +129,15 @@ class EsportsExperienceController {
 
           if (request.input('duration') != null) builder.where('duration', request.input('duration'))
 
-          if (request.input('skills') != null) builder.where('skills', 'like', '%' + request.input('skills') + '%')
+          if (skill_1 != null) builder.where('skills', 'like', '%' + skill_1 + '%')
+
+          if (skill_2 != null) builder.where('skills', 'like', '%' + skill_2 + '%')
+
+          if (skill_3 != null) builder.where('skills', 'like', '%' + skill_3 + '%')
+
+          if (skill_4 != null) builder.where('skills', 'like', '%' + skill_4 + '%')
+
+          if (skill_5 != null) builder.where('skills', 'like', '%' + skill_5 + '%')
 
           if (request.input('country') != null) builder.where('country', request.input('country'))
         })

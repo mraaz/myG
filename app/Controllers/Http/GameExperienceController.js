@@ -112,6 +112,37 @@ class GameExperienceController {
   }
 
   async gameExpSearchResults({ auth, request, response }) {
+    var arrTags = ''
+    var skill_1 = null,
+      skill_2 = null,
+      skill_3 = null,
+      skill_4 = null,
+      skill_5 = null
+
+    if (request.input('tags') != null && request.input('tags') != '') {
+      arrTags = request.input('tags').split(',')
+
+      for (var i = 0; i < arrTags.length; i++) {
+        switch (i) {
+          case 0:
+            skill_1 = arrTags[i]
+            break
+          case 1:
+            skill_2 = arrTags[i]
+            break
+          case 2:
+            skill_3 = arrTags[i]
+            break
+          case 3:
+            skill_4 = arrTags[i]
+            break
+          case 4:
+            skill_5 = arrTags[i]
+            break
+        }
+      }
+    }
+
     try {
       const latestGameExperiences = await Database.from('game_experiences')
         .innerJoin('users', 'users.id', 'game_experiences.user_id')
@@ -126,7 +157,15 @@ class GameExperienceController {
 
           if (request.input('commendation') != null) builder.where('commendation', 'like', '%' + request.input('commendation') + '%')
 
-          if (request.input('tags') != null) builder.where('tags', 'like', '%' + request.input('tags') + '%')
+          if (skill_1 != null) builder.where('tags', 'like', '%' + skill_1 + '%')
+
+          if (skill_2 != null) builder.where('tags', 'like', '%' + skill_2 + '%')
+
+          if (skill_3 != null) builder.where('tags', 'like', '%' + skill_3 + '%')
+
+          if (skill_4 != null) builder.where('tags', 'like', '%' + skill_4 + '%')
+
+          if (skill_5 != null) builder.where('tags', 'like', '%' + skill_5 + '%')
 
           if (request.input('country') != null) builder.where('country', request.input('country'))
         })
