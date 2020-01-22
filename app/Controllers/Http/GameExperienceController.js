@@ -102,7 +102,6 @@ class GameExperienceController {
           })
           .delete()
 
-        console.log(delete_game_exp)
         return 'Deleted successfully'
       } catch (error) {
         console.log(error)
