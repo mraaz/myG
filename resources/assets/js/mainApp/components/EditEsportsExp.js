@@ -206,6 +206,9 @@ export default class EditEsportsExp extends Component<*, State> {
     }
 
     if (this.state.value_ardour !== null && this.state.value_ardour.length !== 0) {
+      if (myardour == null) {
+        myardour = ''
+      }
       for (var i = 0; i < this.state.value_ardour.length; i++) {
         myardour += this.state.value_ardour[i].label + '; '
       }
@@ -294,6 +297,9 @@ export default class EditEsportsExp extends Component<*, State> {
     }
 
     if (this.state.value_tags !== null && this.state.value_tags.length !== 0) {
+      if (myTags == null) {
+        myTags = ''
+      }
       for (var i = 0; i < this.state.value_tags.length; i++) {
         myTags += this.state.value_tags[i].label + '; '
       }

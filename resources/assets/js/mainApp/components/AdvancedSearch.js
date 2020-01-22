@@ -181,6 +181,9 @@ export default class AdvancedSearch extends Component<*, State> {
     }
 
     if (this.state.value_tags !== null && this.state.value_tags.length !== 0) {
+      if (myTags == null) {
+        myTags = ''
+      }
       for (var i = 0; i < this.state.value_tags.length; i++) {
         myTags += this.state.value_tags[i].label + '; '
       }
@@ -243,9 +246,15 @@ export default class AdvancedSearch extends Component<*, State> {
       return
     }
 
-    this.setState({
-      allGameExperiences: this.state.allGameExperiences.concat(allGameExperiences.data.latestGameExperiences.data),
-    })
+    if (this.state.counter == 1) {
+      this.setState({
+        allGameExperiences: allGameExperiences.data.latestGameExperiences.data,
+      })
+    } else {
+      this.setState({
+        allGameExperiences: this.state.allGameExperiences.concat(allGameExperiences.data.latestGameExperiences.data),
+      })
+    }
   }
 
   handleChange_GameName = (value: any) => {
@@ -381,6 +390,7 @@ export default class AdvancedSearch extends Component<*, State> {
   }
 
   handleChange_role_title = (e) => {
+    //TODO: https://github.com/mraaz/myGame/issues/181
     if (this.state.myG_lock == false) {
       this.setState(
         {
@@ -593,7 +603,14 @@ export default class AdvancedSearch extends Component<*, State> {
                     <div className='tag_txtBox'>
                       <CreatableSelect
                         onChange={this.handleChange3}
-                        options={this.state.options_tags}
+                        options={this.state.value_tags.length === 5 ? [] : this.state.options_tags}
+                        noOptionsMessage={() => {
+                          return this.state.value_tags == null
+                            ? false
+                            : this.state.value_tags.length === 5
+                            ? "You've reached the max number of options."
+                            : 'No options available'
+                        }}
                         onCreateOption={this.handleCreate2}
                         isClearable
                         value={this.state.value_tags}
@@ -652,7 +669,14 @@ export default class AdvancedSearch extends Component<*, State> {
                     <div className='skill-txtBox'>
                       <CreatableSelect
                         onChange={this.handleChange3}
-                        options={this.state.options_tags}
+                        options={this.state.value_tags.length === 5 ? [] : this.state.options_tags}
+                        noOptionsMessage={() => {
+                          return this.state.value_tags == null
+                            ? false
+                            : this.state.value_tags.length === 5
+                            ? "You've reached the max number of options."
+                            : 'No options available'
+                        }}
                         onCreateOption={this.handleCreate2}
                         isClearable
                         value={this.state.value_tags}
