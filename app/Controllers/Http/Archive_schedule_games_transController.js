@@ -32,22 +32,3 @@ class Archive_schedule_games_transController {
 }
 
 module.exports = Archive_schedule_games_transController
-
-// const allGameNameFields = await Database.from('game_name_fields').where({
-//   game_names_id: request.params.game_names_id,
-// })
-//
-// var insert_archive_GameNameFields, create_archive_GameNameField
-// for (var i = 0; i < allGameNameFields.length; i++) {
-//   check_archive_GameNameFields = await Database.from('archive_game_name_fields').where({
-//     game_names_id: allGameNameFields[i].id,
-//     in_game_field: allGameNameFields[i].in_game_field,
-//   })
-//
-//   if (check_archive_GameNameFields.length == 0) {
-//     create_archive_GameNameField = await Archive_GameNameField.create({
-//       game_names_id: allGameNameFields[i].game_names_id,
-//       in_game_field: allGameNameFields[i].in_game_field,
-//     })
-//   }
-// }

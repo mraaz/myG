@@ -3,7 +3,6 @@
 const Database = use('Database')
 
 //We still need to ammend any new fields to create and search, everything else is here:
-
 const find_InGame_Fields = async (myScheduledGames) => {
   for (var i = 0; i < myScheduledGames.data.length; i++) {
     var myScheduledTrans = await Database.from('schedule_games_transactions')
@@ -57,7 +56,6 @@ const find_InGame_Fields_NOT_paginate = async (myScheduledGames) => {
 }
 
 const find_Archived_InGame_Fields = async (myScheduledGames) => {
-  console.log('Made it here')
   for (var i = 0; i < myScheduledGames.length; i++) {
     var myScheduledTrans = await Database.from('archive_schedule_games_trans')
       .innerJoin('game_name_fields', 'game_name_fields.id', 'archive_schedule_games_trans.game_name_fields_id')
@@ -86,7 +84,3 @@ const find_Archived_InGame_Fields = async (myScheduledGames) => {
 exports.find_InGame_Fields = find_InGame_Fields
 exports.find_InGame_Fields_NOT_paginate = find_InGame_Fields_NOT_paginate
 exports.find_Archived_InGame_Fields = find_Archived_InGame_Fields
-
-// exports.getName = getName;
-// exports.getLocation = getLocation;
-// exports.dob = dateOfBirth;
