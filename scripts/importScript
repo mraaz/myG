@@ -5,7 +5,7 @@ def main():
     for line in fd:
         line = line.replace("\n", "")
         line = line.replace("'", "''")
-        print("insert into game_names (game_name, created_by, verified, created_at, updated_at) values ('%s', 1, 1, '1988-08-08', '1988-08-08');" % (line) )
+        print("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('%s', 1, 1, '1988-08-08', '1988-08-08');" % (line) )
 
 if __name__ == "__main__":
     main()

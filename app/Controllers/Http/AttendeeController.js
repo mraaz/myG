@@ -217,7 +217,9 @@ class AttendeeController {
       var getScheduleGameInvites = await Database.from('attendees')
         .innerJoin('users', 'users.id', 'attendees.user_id')
         .innerJoin('schedule_games', 'schedule_games.id', 'attendees.schedule_games_id')
+        .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
         .where({ schedule_games_GUID: request.params.id, type: 3 })
+        .select('*', 'schedule_games.id')
         .options({ nestTables: true })
 
       if (getScheduleGameInvites.length == 0) {
