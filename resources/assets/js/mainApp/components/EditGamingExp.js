@@ -164,7 +164,7 @@ export default class EditGamingExp extends Component<*, State> {
       return
     } else {
       if (this.state.value.value != null) {
-        myGame_name = this.state.value.value
+        myGame_name = this.state.value.label
       } else {
         myGame_name = this.state.value
       }
@@ -266,6 +266,7 @@ export default class EditGamingExp extends Component<*, State> {
     if (!this.state.just_one_time) {
       return
     }
+    return
     this.state.just_one_time = false
 
     try {

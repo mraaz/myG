@@ -9,7 +9,7 @@ class GameNameController {
       try {
         const newGameName = await GameNames.create({
           game_name: request.input('game_name'),
-          created_by: auth.user.id,
+          user_id: auth.user.id,
         })
         return newGameName
       } catch (error) {
@@ -23,7 +23,7 @@ class GameNameController {
       try {
         const createGame = await GameNames.create({
           game_name: request.params.game_name,
-          created_by: auth.user.id,
+          user_id: auth.user.id,
         })
         return createGame
       } catch (error) {

@@ -215,6 +215,9 @@ export default class AddGamingExp extends Component<*, State> {
     }
 
     if (self.state.value_tags !== null && self.state.value_tags.length !== 0) {
+      if (myTags == null) {
+        myTags = ''
+      }
       for (var i = 0; i < self.state.value_tags.length; i++) {
         myTags += self.state.value_tags[i].label + '; '
       }

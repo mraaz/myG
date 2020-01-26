@@ -8,8 +8,8 @@ class GameNamesSchema extends Schema {
     this.create('game_names', (table) => {
       table.increments()
       table.string('game_name', 254).notNullable().unique().index()
-      table.integer('created_by').unsigned().notNullable()
-      table.foreign('created_by').references('users.id').onDelete('cascade')
+      table.integer('user_id').unsigned().notNullable()
+      table.foreign('user_id').references('users.id').onDelete('cascade')
       table.integer('counter').unsigned().nullable().defaultTo(1)
       table.integer('verified').unsigned().notNullable().defaultTo(0)
       table.string('game_img', 254).nullable()

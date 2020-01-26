@@ -206,6 +206,9 @@ export default class EditEsportsExp extends Component<*, State> {
     }
 
     if (this.state.value_ardour !== null && this.state.value_ardour.length !== 0) {
+      if (myardour == null) {
+        myardour = ''
+      }
       for (var i = 0; i < this.state.value_ardour.length; i++) {
         myardour += this.state.value_ardour[i].label + '; '
       }
@@ -294,6 +297,9 @@ export default class EditEsportsExp extends Component<*, State> {
     }
 
     if (this.state.value_tags !== null && this.state.value_tags.length !== 0) {
+      if (myTags == null) {
+        myTags = ''
+      }
       for (var i = 0; i < this.state.value_tags.length; i++) {
         myTags += this.state.value_tags[i].label + '; '
       }
@@ -372,7 +378,7 @@ export default class EditEsportsExp extends Component<*, State> {
           const { match } = this.props.routeProps
           const update_exp = await axios.post(`/api/esports_experiences/update/${match.params.esportsExp_id}`, {
             role_title: this.state.role_title_box,
-            game_name: newGame_name == '' ? this.state.value_game_name.value : newGame_name,
+            game_name: newGame_name == '' ? this.state.value_game_name.label : newGame_name,
             team_name: this.state.team_name_box,
             duration: myPlayed,
             achievements: this.state.achievements_box,
