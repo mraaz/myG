@@ -24,11 +24,15 @@ class Messenger extends React.PureComponent {
     pin: '',
     sectionExpanded: {
       recent: true,
-      [STATUS_ENUM.ONLINE]: true,
+      [STATUS_ENUM.ONLINE]: false,
       [STATUS_ENUM.PLAYING]: false,
       [STATUS_ENUM.AFK]: false,
       [STATUS_ENUM.OFFLINE]: false,
     },
+    dividerExpanded: {
+      friends: true,
+      groups: false,
+    }
   }
 
   static getDerivedStateFromProps(props) {
@@ -57,6 +61,10 @@ class Messenger extends React.PureComponent {
 
   closeChat = (chatId) => {
     this.props.closeChat(chatId);
+  }
+
+  createGroup = () => {
+    
   }
 
   setStatus = (status) => {
@@ -97,38 +105,49 @@ class Messenger extends React.PureComponent {
   }
 
   renderContacts = () => {
+    return this.renderDivider('friends', this.state.dividerExpanded.friends, () => {
 
-    const sections = {};
-    const contacts = this.props.contacts.slice(0)
-      .sort((f1, f2) => compareStatus(f1.status, f2.status))
-      .sort((f1, f2) => this.compareLastMessages(f1, f2));
+      if (!this.props.contacts.length) {
+        return (
+          <div className="messenger-empty-message-container">
+            <p className="messenger-empty-message">You haven't added any friends yet :(</p>
+            <p className="messenger-empty-message">Try searching for players</p>
+          </div>
+        );
+      }
 
-    if (this.state.searchInput) {
-      const search = (name) => name.toLowerCase().includes(this.state.searchInput.toLowerCase());
-      sections['suggestions'] = contacts.slice(0)
-        .filter(contact => search(contact.name))
-        .slice(0, 18);
-    }
+      const sections = {};
+      const contacts = this.props.contacts.slice(0)
+        .sort((f1, f2) => compareStatus(f1.status, f2.status))
+        .sort((f1, f2) => this.compareLastMessages(f1, f2));
 
-    else {
-      sections['recent'] = contacts.filter(contact => (contact.chat.messages || []).length).slice(0, 8);
-      sections[STATUS_ENUM.ONLINE] = contacts.filter(contact => contact.status === STATUS_ENUM.ONLINE);
-      sections[STATUS_ENUM.PLAYING] = contacts.filter(contact => contact.status === STATUS_ENUM.PLAYING);
-      sections[STATUS_ENUM.AFK] = contacts.filter(contact => contact.status === STATUS_ENUM.AFK);
-      sections[STATUS_ENUM.OFFLINE] = contacts.filter(contact => contact.status === STATUS_ENUM.OFFLINE);
-    }
+      if (this.state.searchInput) {
+        const search = (name) => name.toLowerCase().includes(this.state.searchInput.toLowerCase());
+        sections['suggestions'] = contacts.slice(0)
+          .filter(contact => search(contact.name))
+          .slice(0, 18);
+      }
 
-    return (
-      <div className="messenger-body">
-        {!!this.state.searchInput && this.renderSection('suggestions', sections['suggestions'].length, sections['suggestions'], true)}
-        {!this.state.searchInput && this.renderSection('recent', sections['recent'].length, sections['recent'], this.state.sectionExpanded['recent'])}
-        {!this.state.searchInput && this.renderSection(STATUS_ENUM.ONLINE, sections[STATUS_ENUM.ONLINE].length, sections[STATUS_ENUM.ONLINE], this.state.sectionExpanded[STATUS_ENUM.ONLINE])}
-        {!this.state.searchInput && this.renderSection(STATUS_ENUM.PLAYING, sections[STATUS_ENUM.PLAYING].length, sections[STATUS_ENUM.PLAYING], this.state.sectionExpanded[STATUS_ENUM.PLAYING])}
-        {!this.state.searchInput && this.renderSection(STATUS_ENUM.AFK, sections[STATUS_ENUM.AFK].length, sections[STATUS_ENUM.AFK], this.state.sectionExpanded[STATUS_ENUM.AFK])}
-        {!this.state.searchInput && this.renderSection(STATUS_ENUM.OFFLINE, sections[STATUS_ENUM.OFFLINE].length, sections[STATUS_ENUM.OFFLINE], this.state.sectionExpanded[STATUS_ENUM.OFFLINE])}
-      </div>
-    );
+      else {
+        sections['recent'] = contacts.filter(contact => (contact.chat.messages || []).length).slice(0, 8);
+        sections[STATUS_ENUM.ONLINE] = contacts.filter(contact => contact.status === STATUS_ENUM.ONLINE);
+        sections[STATUS_ENUM.PLAYING] = contacts.filter(contact => contact.status === STATUS_ENUM.PLAYING);
+        sections[STATUS_ENUM.AFK] = contacts.filter(contact => contact.status === STATUS_ENUM.AFK);
+        sections[STATUS_ENUM.OFFLINE] = contacts.filter(contact => contact.status === STATUS_ENUM.OFFLINE);
+      }
 
+      return (
+        <div className="messenger-body">
+          {!!this.state.searchInput && this.renderSection('suggestions', sections['suggestions'].length, sections['suggestions'], true)}
+          {!this.state.searchInput && this.renderSection('recent', sections['recent'].length, sections['recent'], this.state.sectionExpanded['recent'])}
+          {!this.state.searchInput && this.renderSection(STATUS_ENUM.ONLINE, sections[STATUS_ENUM.ONLINE].length, sections[STATUS_ENUM.ONLINE], this.state.sectionExpanded[STATUS_ENUM.ONLINE])}
+          {!this.state.searchInput && this.renderSection(STATUS_ENUM.PLAYING, sections[STATUS_ENUM.PLAYING].length, sections[STATUS_ENUM.PLAYING], this.state.sectionExpanded[STATUS_ENUM.PLAYING])}
+          {!this.state.searchInput && this.renderSection(STATUS_ENUM.AFK, sections[STATUS_ENUM.AFK].length, sections[STATUS_ENUM.AFK], this.state.sectionExpanded[STATUS_ENUM.AFK])}
+          {!this.state.searchInput && this.renderSection(STATUS_ENUM.OFFLINE, sections[STATUS_ENUM.OFFLINE].length, sections[STATUS_ENUM.OFFLINE], this.state.sectionExpanded[STATUS_ENUM.OFFLINE])}
+        </div>
+      );
+
+    });
   }
 
   renderSection(name, count, contacts, expanded) {
@@ -207,6 +226,60 @@ class Messenger extends React.PureComponent {
     );
   }
 
+  renderGroups = () => {
+    return this.renderDivider('groups', this.state.dividerExpanded.groups, () => {
+
+      if (!this.props.groups.length) {
+        return (
+          <div>
+            <div className="messenger-new-group-button clickable" onClick={this.createGroup}>new group</div>
+            <div className="messenger-empty-message-container">
+              <p className="messenger-empty-message">You aren't part of any group yet :(</p>
+              <p className="messenger-empty-message">
+                {this.props.contacts.length ?
+                  'Try adding some of your friends to a group' :
+                  'You can find groups through matchmaking'
+                }
+              </p>
+            </div>
+          </div>
+        );
+      }
+
+    });
+  }
+
+  renderDivider(name, expanded, renderFunction) {
+    const chevronType = expanded ? 'down' : 'right';
+    return (
+      <div className="messenger-body-section">
+        <div className="messenger-body-section-header-light clickable"
+          onClick={() => this.setState(previous => ({
+            dividerExpanded: {
+              ...{
+                friends: false,
+                groups: false,
+              },
+              [name]: !previous.dividerExpanded[name],
+            }
+          }))}
+        >
+          <p className="messenger-body-section-header-name">{name}</p>
+          <div className="messenger-body-section-header-info">
+            <div
+              className="messenger-body-section-header-icon"
+              style={{ backgroundImage: `url('/assets/svg/ic_messenger_chevron_${chevronType}.svg')` }}
+            />
+          </div>
+        </div>
+        {expanded && (
+          <div className="messenger-body-divider-content">
+            {renderFunction()}
+          </div>
+        )}
+      </div >
+    );
+  }
 
   renderFooter() {
     return (
@@ -355,14 +428,23 @@ class Messenger extends React.PureComponent {
     );
   }
 
+  renderBody = () => {
+    return (
+      <div className="messenger-body">
+        {this.renderConnectionWarning()}
+        {this.renderContacts()}
+        {this.renderGroups()}
+      </div>
+    );
+  }
+
   render() {
     return (
       <section id="messenger">
 
-        {this.renderConnectionWarning()}
-        {this.renderContacts()}
+        {this.renderBody()}
         {this.renderFooter()}
-
+        
         {this.renderChats()}
 
         <StatusTimerWrapper {...{
@@ -393,6 +475,7 @@ function mapStateToProps(state) {
     isStatusLocked: state.user.isStatusLocked,
     chats: state.chat.chats,
     contacts: state.user.contacts,
+    groups: [],
     pin: state.encryption.pin,
     invalidPin: state.encryption.invalidPin,
     privateKey: state.encryption.privateKey,
