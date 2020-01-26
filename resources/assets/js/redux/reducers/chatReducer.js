@@ -343,17 +343,17 @@ export default function reducer(state = {
       };
     }
 
-    case "GENERATE_KEYS": {
+    case "GENERATE_KEYS_FULFILLED": {
       return {
         ...state,
-        privateKey: action.payload.privateKey,
+        privateKey: action.payload.encryption.privateKey,
       };
     }
 
-    case "VALIDATE_PIN": {
+    case "VALIDATE_PIN_FULFILLED": {
       return {
         ...state,
-        privateKey: action.payload.privateKey,
+        privateKey: action.payload.encryption.privateKey,
       };
     }
 
