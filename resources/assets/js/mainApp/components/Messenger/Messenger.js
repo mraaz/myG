@@ -3,22 +3,21 @@ import React from "react";
 import { connect } from 'react-redux';
 
 import Chat from './Chat';
-import StatusTimerWrapper from './StatusTimerWrapper';
-import WindowFocusHandler from './WindowFocusHandler';
+import StatusTimerWrapper from '../StatusTimerWrapper';
+import WindowFocusHandler from '../WindowFocusHandler';
 
-import { attemptSocketConnection, monitorChats, closeSubscription } from '../../integration/ws/chat';
-import { fetchChatsAction, createChatAction, openChatAction, closeChatAction, clearChatAction } from '../../redux/actions/chatAction';
-import { fetchContactsAction, fetchStatusAction, updateStatusAction } from '../../redux/actions/userAction';
-import { generateKeysAction, validatePinAction } from '../../redux/actions/encryptionAction';
-import { decryptMessage } from '../../integration/encryption';
-import { formatAMPM, convertUTCDateToLocalDate } from '../../common/date';
-import { copyToClipboard } from '../../common/clipboard';
-import { STATUS_ENUM, compareStatus } from '../../common/status';
+import { attemptSocketConnection, monitorChats, closeSubscription } from '../../../integration/ws/chat';
+import { createChatAction, openChatAction, closeChatAction, clearChatAction } from '../../../redux/actions/chatAction';
+import { updateStatusAction } from '../../../redux/actions/userAction';
+import { generateKeysAction, validatePinAction } from '../../../redux/actions/encryptionAction';
+import { decryptMessage } from '../../../integration/encryption';
+import { formatAMPM, convertUTCDateToLocalDate } from '../../../common/date';
+import { copyToClipboard } from '../../../common/clipboard';
+import { STATUS_ENUM, compareStatus } from '../../../common/status';
 
 class Messenger extends React.PureComponent {
 
   state = {
-    loaded: false,
     showingSettings: false,
     changingStatus: false,
     searchInput: '',
@@ -36,16 +35,8 @@ class Messenger extends React.PureComponent {
     return { invalidPin: props.invalidPin }
   }
 
-  componentDidUpdate() {
-    if (!this.state.loaded && !this.props.loading) {
-      monitorChats(this.props.userId);
-      if (!this.props.publicKey) this.props.generateKeys();
-      if (this.props.pin) this.props.generateKeys(this.props.pin);
-      this.props.fetchChats();
-      this.props.fetchContacts();
-      this.props.fetchStatus();
-      this.setState({ loaded: true });
-    }
+  componentDidMount() {
+    monitorChats(this.props.userId);
   }
 
   componentWillUnmount() {
@@ -92,10 +83,15 @@ class Messenger extends React.PureComponent {
     return unreadCount;
   }
 
-  renderChats = () => {
+  renderConnectionWarning = () => {
+    if (!this.props.disconnected) return;
     return (
-      <div className="messenger-chat-bar">
-        {this.props.chats.filter(chat => !chat.closed).map(this.renderChat)}
+      <div
+        className="messenger-connection-warning clickable"
+        onClick={() => attemptSocketConnection()}
+      >
+        <p className="messenger-connection-warning-label">It seems you are offline...</p>
+        <p className="messenger-connection-warning-hint">Click to Reconnect</p>
       </div>
     );
   }
@@ -170,31 +166,6 @@ class Messenger extends React.PureComponent {
     );
   }
 
-  renderChat = (chat) => {
-    return (
-      <Chat
-        key={chat.chatId}
-        userId={this.props.userId}
-        chatId={chat.chatId}
-        onClose={chatId => this.closeChat(chatId)}
-        windowFocused={this.state.windowFocused}
-      />
-    );
-  }
-
-  renderConnectionWarning = () => {
-    if (!this.props.disconnected) return;
-    return (
-      <div
-        className="messenger-connection-warning clickable"
-        onClick={() => attemptSocketConnection()}
-      >
-        <p className="messenger-connection-warning-label">It seems you are offline...</p>
-        <p className="messenger-connection-warning-hint">Click to Reconnect</p>
-      </div>
-    );
-  }
-
   renderContact = (contact) => {
     const messages = (contact.chat.messages || []).slice(0);
     const lastMessage = messages[messages.length - 1];
@@ -231,6 +202,52 @@ class Messenger extends React.PureComponent {
               {unreadCount}
             </p>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+
+  renderFooter() {
+    return (
+      <div className="messenger-footer-container">
+        {this.renderEncryptionSettings()}
+        <div className="messenger-footer">
+          <div className="messenger-footer-icon-container">
+            <div
+              className="messenger-footer-icon"
+              style={{ backgroundImage: `url('${this.props.profileImage}')` }}
+            />
+            <div
+              tabIndex={0}
+              className={`messenger-footer-status-indicator messenger-footer-status-${this.props.status} clickable`}
+              onClick={() => this.setState(previous => ({ changingStatus: !previous.changingStatus }))}
+              onBlur={() => setTimeout(() => this.setState({ changingStatus: false }), 100)}
+            >
+              {this.props.status}
+            </div>
+            <div className="messenger-settings-status-container">
+              {this.renderStatusSettings()}
+            </div>
+          </div>
+          <div className="messenger-footer-search-bar">
+            <input
+              className="messenger-settings-search-field"
+              type="text"
+              placeholder="Search"
+              value={this.state.searchInput}
+              onChange={event => this.setState({ searchInput: event.target.value })}
+            />
+            <div className="messenger-settings-search-button clickable"
+              style={{ backgroundImage: `url(/assets/svg/ic_messenger_search.svg)` }}
+              onClick={() => this.filterContacts()}
+            />
+          </div>
+          <div
+            className="messenger-footer-settings-button clickable"
+            style={{ backgroundImage: `url(/assets/svg/ic_messenger_settings.svg)` }}
+            onClick={() => this.setState(previous => ({ showingSettings: !previous.showingSettings }))}
+          ></div>
         </div>
       </div>
     );
@@ -318,60 +335,35 @@ class Messenger extends React.PureComponent {
     );
   }
 
-  renderFooter() {
+  renderChats = () => {
     return (
-      <div className="messenger-footer-container">
-        {this.renderEncryptionSettings()}
-        <div className="messenger-footer">
-          <div className="messenger-footer-icon-container">
-            <div
-              className="messenger-footer-icon"
-              style={{ backgroundImage: `url('${this.props.profileImage}')` }}
-            />
-            <div
-              tabIndex={0}
-              className={`messenger-footer-status-indicator messenger-footer-status-${this.props.status} clickable`}
-              onClick={() => this.setState(previous => ({ changingStatus: !previous.changingStatus }))}
-              onBlur={() => setTimeout(() => this.setState({ changingStatus: false }), 100)}
-            >
-              {this.props.status}
-            </div>
-            <div className="messenger-settings-status-container">
-              {this.renderStatusSettings()}
-            </div>
-          </div>
-          <div className="messenger-footer-search-bar">
-            <input
-              className="messenger-settings-search-field"
-              type="text"
-              placeholder="Search"
-              value={this.state.searchInput}
-              onChange={event => this.setState({ searchInput: event.target.value })}
-            />
-            <div className="messenger-settings-search-button clickable"
-              style={{ backgroundImage: `url(/assets/svg/ic_messenger_search.svg)` }}
-              onClick={() => this.filterContacts()}
-            />
-          </div>
-          <div
-            className="messenger-footer-settings-button clickable"
-            style={{ backgroundImage: `url(/assets/svg/ic_messenger_settings.svg)` }}
-            onClick={() => this.setState(previous => ({ showingSettings: !previous.showingSettings }))}
-          ></div>
-        </div>
+      <div className="messenger-chat-bar">
+        {this.props.chats.filter(chat => !chat.closed).map(this.renderChat)}
       </div>
     );
   }
 
+  renderChat = (chat) => {
+    return (
+      <Chat
+        key={chat.chatId}
+        userId={this.props.userId}
+        chatId={chat.chatId}
+        onClose={chatId => this.closeChat(chatId)}
+        windowFocused={this.state.windowFocused}
+      />
+    );
+  }
+
   render() {
-    if (!this.state.loaded) return null;
     return (
       <section id="messenger">
 
-        {this.renderChats()}
         {this.renderConnectionWarning()}
         {this.renderContacts()}
         {this.renderFooter()}
+
+        {this.renderChats()}
 
         <StatusTimerWrapper {...{
           status: this.props.status,
@@ -391,10 +383,10 @@ class Messenger extends React.PureComponent {
 }
 
 function mapStateToProps(state) {
-  const chats = state.chat.chats;
-  const contacts = state.user.contacts;
+  const chats = state.chat.chats || [];
+  const contacts = state.user.contacts || [];
   const contactsWithChats = {};
-  chats.forEach(chat => chat.contacts.forEach(contactId => contactsWithChats[contactId] = chat));
+  chats.forEach(chat => (chat.contacts || []).forEach(contactId => contactsWithChats[contactId] = chat));
   contacts.forEach(contact => contact.chat = contactsWithChats[contact.contactId] || {});
   return {
     status: state.user.status,
@@ -413,10 +405,7 @@ function mapDispatchToProps(dispatch) {
     createChat: (contacts, userId) => dispatch(createChatAction(contacts, userId)),
     openChat: chatId => dispatch(openChatAction(chatId)),
     closeChat: chatId => dispatch(closeChatAction(chatId)),
-    fetchChats: () => dispatch(fetchChatsAction()),
-    fetchContacts: () => dispatch(fetchContactsAction()),
-    fetchStatus: () => dispatch(fetchStatusAction()),
-    generateKeys: pin => dispatch(generateKeysAction(pin)),
+    generateKeys: () => dispatch(generateKeysAction()),
     validatePin: (pin, publicKey) => dispatch(validatePinAction(pin, publicKey)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
     updateStatus: (status, forcedStatus) => dispatch(updateStatusAction(status, forcedStatus)),

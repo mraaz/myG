@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { deleteMessageAction } from '../../redux/actions/chatAction';
-import { formatAMPM, formatDate, convertUTCDateToLocalDate } from '../../common/date';
-import { copyToClipboard } from '../../common/clipboard';
+import { deleteMessageAction } from '../../../redux/actions/chatAction';
+import { formatAMPM, formatDate, convertUTCDateToLocalDate } from '../../../common/date';
+import { copyToClipboard } from '../../../common/clipboard';
 
 class ChatMessage extends React.Component {
 

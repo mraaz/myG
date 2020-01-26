@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class Chat extends React.PureComponent {
+export default class ChatInput extends React.PureComponent {
 
   state = {
     input: '',

@@ -11,6 +11,20 @@ export default function reducer(state = {
 }, action) {
   switch (action.type) {
 
+    case "PREPARE_MESSENGER_FULFILLED": {
+      if (!action.payload.encryption) return state;
+      logger.log('USER', `Redux -> Messenger Ready (Encryption): `, action.payload);
+      const { pin, publicKey, privateKey } = action.payload.encryption;
+      storePublicKey(publicKey);
+      return {
+        ...state,
+        pin,
+        publicKey,
+        privateKey,
+        invalidPin: false,
+      };
+    }
+
     case "GENERATE_KEYS": {
       logger.log('USER', `Redux -> Keys Generated: `, action.payload);
       storePublicKey(action.payload.publicKey);

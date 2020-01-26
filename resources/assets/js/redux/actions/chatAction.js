@@ -1,4 +1,6 @@
 import { fetchChats, fetchChat, createChat, updateChat, clearChat, checkSelfDestruct, fetchMessages, sendMessage, editMessage, deleteMessage } from '../../integration/http/chat';
+import { fetchContacts, fetchContact, fetchStatus } from '../../integration/http/user';
+import { generateKeys } from '../../integration/encryption';
 
 export function onNewChatAction(chat, userId) {
     return {
@@ -58,6 +60,30 @@ export function updateChatStateAction(chatId, state) {
         type: 'CHAT_STATE_UPDATED',
         payload: state,
         meta: { chatId },
+    }
+}
+
+export function prepareMessengerAction(encryptionPin, newKeys) {
+    const chatsRequest = fetchChats();
+    const contactsRequest = fetchContacts();
+    const statusRequest = fetchStatus();
+    const encryptionRequest = (encryptionPin || newKeys) ? generateKeys(encryptionPin) : Promise.resolve({});
+    const requests = [chatsRequest, contactsRequest, statusRequest, encryptionRequest];
+    return {
+        type: 'PREPARE_MESSENGER',
+        payload: Promise.all(requests).then(([chats, contacts, status, encryption]) => ({ ...chats, ...contacts, ...status, ...encryption })),
+    }
+}
+
+export function prepareChatAction(chatId, contactId) {
+    const chatRequest = fetchChat(chatId);
+    const messagesRequest = fetchMessages(chatId);
+    const contactRequest = contactId ? fetchContact(contactId) : Promise.resolve({});
+    const requests = [chatRequest, messagesRequest, contactRequest];
+    return {
+        type: 'PREPARE_CHAT',
+        payload: Promise.all(requests).then(([chat, messages, contact]) => ({ ...chat, ...messages, ...contact })),
+        meta: { chatId, contactId }
     }
 }
 

@@ -29,7 +29,7 @@ import Profile from "./components/Profile"
 import ScheduleGames from "./components/ScheduleGames"
 import MyScheduledGames from "./components/MyScheduledGames"
 import LeftMenu from "./components/LeftMenu"
-import Messenger from "./components/Messenger"
+import MessengerLoader from "./components/Messenger/MessengerLoader"
 import SearchHeader from "./components/SearchHeader"
 import ComposeSection from "./components/ComposeSection"
 import Posts from "./components/Posts"
@@ -218,7 +218,7 @@ class Layout extends Component {
                   <Route render={() => <h3> Oops! I couldn't find that </h3>} />
                 </Switch>
               </section>
-              <Messenger
+              <MessengerLoader
                 profileImage={this.state.initialData && this.state.initialData.userInfo.profile_img}
                 userId={this.state.initialData && this.state.initialData.userInfo.id}
                 publicKey={this.state.initialData && this.state.initialData.userInfo.public_key}
