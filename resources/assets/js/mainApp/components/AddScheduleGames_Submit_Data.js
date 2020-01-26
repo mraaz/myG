@@ -15,11 +15,7 @@ export async function SubmitDataFunction(myG) {
   var now = moment()
   var end_date = myG.endDate
 
-  if (
-    myG.selected_region != undefined &&
-    myG.selected_region !== null &&
-    myG.selected_region.length !== 0
-  ) {
+  if (myG.selected_region != undefined && myG.selected_region !== null && myG.selected_region.length !== 0) {
     for (var i = 0; i < myG.selected_region.length; i++) {
       myRegion += myG.selected_region[i].value + '; '
     }
@@ -31,11 +27,7 @@ export async function SubmitDataFunction(myG) {
     myRegion = myRegion.replace(/,/g, ', ')
   }
 
-  if (
-    myG.selected_experience !== undefined &&
-    myG.selected_experience !== null &&
-    myG.selected_experience.length !== 0
-  ) {
+  if (myG.selected_experience !== undefined && myG.selected_experience !== null && myG.selected_experience.length !== 0) {
     for (var i = 0; i < myG.selected_experience.length; i++) {
       myExperience += myG.selected_experience[i].value + '; '
     }
@@ -47,11 +39,7 @@ export async function SubmitDataFunction(myG) {
     myExperience = myExperience.replace(/,/g, ', ')
   }
 
-  if (
-    myG.selected_platform !== undefined &&
-    myG.selected_platform !== null &&
-    myG.selected_platform.length !== 0
-  ) {
+  if (myG.selected_platform !== undefined && myG.selected_platform !== null && myG.selected_platform.length !== 0) {
     for (var i = 0; i < myG.selected_platform.length; i++) {
       myPlatform += myG.selected_platform[i].value + '; '
     }
@@ -85,11 +73,7 @@ export async function SubmitDataFunction(myG) {
     myClash_royale_trophies = myG.clash_royale_trophy.value
   }
 
-  if (
-    myG.dota2_medal_ranks !== undefined &&
-    myG.dota2_medal_ranks !== null &&
-    myG.dota2_medal_ranks.length !== 0
-  ) {
+  if (myG.dota2_medal_ranks !== undefined && myG.dota2_medal_ranks !== null && myG.dota2_medal_ranks.length !== 0) {
     for (var i = 0; i < myG.dota2_medal_ranks.length; i++) {
       myDota2_medal_ranks += myG.dota2_medal_ranks[i].value + '; '
     }
@@ -101,11 +85,7 @@ export async function SubmitDataFunction(myG) {
     myDota2_medal_ranks = myDota2_medal_ranks.replace(/,/g, ', ')
   }
 
-  if (
-    myG.dota2_server_regions !== undefined &&
-    myG.dota2_server_regions !== null &&
-    myG.dota2_server_regions.length !== 0
-  ) {
+  if (myG.dota2_server_regions !== undefined && myG.dota2_server_regions !== null && myG.dota2_server_regions.length !== 0) {
     for (var i = 0; i < myG.dota2_server_regions.length; i++) {
       myDota2_server_regions += myG.dota2_server_regions[i].value + '; '
     }
@@ -117,11 +97,7 @@ export async function SubmitDataFunction(myG) {
     myDota2_server_regions = myDota2_server_regions.replace(/,/g, ', ')
   }
 
-  if (
-    myG.dota2_roles !== undefined &&
-    myG.dota2_roles !== null &&
-    myG.dota2_roles.length !== 0
-  ) {
+  if (myG.dota2_roles !== undefined && myG.dota2_roles !== null && myG.dota2_roles.length !== 0) {
     for (var i = 0; i < myG.dota2_roles.length; i++) {
       myDota2_roles += myG.dota2_roles[i].value + '; '
     }
@@ -138,7 +114,7 @@ export async function SubmitDataFunction(myG) {
 
   try {
     const post = axios.post('/api/ScheduleGame', {
-      game_name_box: myG.game_name_box.value,
+      game_name_box: myG.game_name_box.label,
       selected_region: myRegion,
       selected_experience: myExperience,
       start_date_time: myG.startDate,

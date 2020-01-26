@@ -28,6 +28,9 @@ class ScheduleGameController {
         if (getGameName.length == 0) {
           request.params.game_name = request.input('game_name_box')
           let tmp = await gameface.createGame({ auth, request, response })
+          if (tmp == false) {
+            return
+          }
           gameNameID = tmp.id
         } else {
           gameNameID = getGameName[0].id

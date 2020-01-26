@@ -50,7 +50,7 @@ type State = {
 
 const createOption = (label: string, game_names_id: string) => ({
   label,
-  value: label.toLowerCase().replace(/\W/g, ''),
+  value: label,
   game_names_id,
 })
 
@@ -156,18 +156,11 @@ export default class EditGamingExp extends Component<*, State> {
     var myPlayed = ''
     var myRatings = ''
     var myTags = ''
-    var myGame_name = ''
     var myStatus = ''
 
     if (this.state.value == '' || this.state.value == null) {
       toast.success(<Toast_style text={'Sorry mate! Game Name can not be blank'} />)
       return
-    } else {
-      if (this.state.value.value != null) {
-        myGame_name = this.state.value.label
-      } else {
-        myGame_name = this.state.value
-      }
     }
 
     if (this.state.status_box == '' && this.state.status_box == null) {
@@ -179,6 +172,11 @@ export default class EditGamingExp extends Component<*, State> {
       } else {
         myStatus = this.state.status_box
       }
+    }
+
+    if (/['/.%#$,;`\\]/.test(this.state.value.value)) {
+      toast.success(<Toast_style text={'Sorry mate! Game name can not have invalid fields'} />)
+      return
     }
 
     if (this.state.experience_box != null && this.state.experience_box != undefined && this.state.experience_box.length != 0) {
@@ -249,6 +247,9 @@ export default class EditGamingExp extends Component<*, State> {
     }
 
     if (self.state.value_tags !== null && self.state.value_tags.length !== 0) {
+      if (myTags == null) {
+        myTags = ''
+      }
       for (var i = 0; i < self.state.value_tags.length; i++) {
         myTags += self.state.value_tags[i].label + '; '
       }
@@ -266,13 +267,12 @@ export default class EditGamingExp extends Component<*, State> {
     if (!this.state.just_one_time) {
       return
     }
-    return
     this.state.just_one_time = false
 
     try {
       const { match } = this.props.routeProps
       const post = await axios.post(`/api/GameExperiences/${match.params.id}/${match.params.game_id}`, {
-        game_name: myGame_name,
+        game_name: this.state.value.value,
         experience: myExperience,
         comments: this.state.comments_box,
         status: myStatus,
@@ -288,32 +288,26 @@ export default class EditGamingExp extends Component<*, State> {
   }
 
   handleCreate = (inputValue: any) => {
-    this.setState({ isLoading: true })
     setTimeout(() => {
-      const { options, value, newValueCreated } = this.state
+      const { value, newValueCreated } = this.state
       const newOption = createOption(inputValue, null)
-      this.setState({ isLoading: false })
-      this.setState({ options: [...options, newOption] })
       this.setState({ value: newOption })
       this.setState({ value_tags: '' })
       this.setState({ newValueCreated: [...newValueCreated, newOption.label] })
       this.setState({ newValueCreated_tags: [] })
-      this.setState({ options_tags: '' })
-    }, 1000)
+    }, 300)
   }
 
   handleCreate2 = (inputValue: any) => {
-    this.setState({ isLoading_tags: true })
     setTimeout(() => {
       const { options_tags, value_tags, newValueCreated_tags } = this.state
       const newOption = createOption(inputValue, null)
-      this.setState({ isLoading_tags: false })
       this.setState({ options_tags: [...options_tags, newOption] })
       this.setState({ value_tags: [...value_tags, newOption] })
       this.setState({
         newValueCreated_tags: [...newValueCreated_tags, newOption.label],
       })
-    }, 1000)
+    }, 300)
   }
 
   componentWillMount() {
@@ -536,6 +530,7 @@ export default class EditGamingExp extends Component<*, State> {
                 onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
                 defaultValue={[{ label: game_name, value: game_name }]}
                 onKeyDown={this.onKeyDown}
+                value={this.state.value}
               />
             </div>
             <div className='status'>

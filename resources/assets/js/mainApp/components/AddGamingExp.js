@@ -50,7 +50,7 @@ type State = {
 
 const createOption = (label: string, game_names_id: string) => ({
   label,
-  value: label.toLowerCase().replace(/\W/g, ''),
+  value: label,
   game_names_id,
 })
 
@@ -156,6 +156,11 @@ export default class AddGamingExp extends Component<*, State> {
       return
     }
 
+    if (/['/.%#$,;`\\]/.test(this.state.value.value)) {
+      toast.success(<Toast_style text={'Sorry mate! Game name can not have invalid fields'} />)
+      return
+    }
+
     if (this.state.experience_box != null || this.state.experience_box != undefined) {
       myExperience = this.state.experience_box.value
     }
@@ -177,6 +182,10 @@ export default class AddGamingExp extends Component<*, State> {
             const post = await axios.post('/api/GameNames', {
               game_name: this.state.value.value,
             })
+            if (post.data == false) {
+              toast.success(<Toast_style text={'Sorry mate! Game name can not be created. Close window and try again'} />)
+              return
+            }
             newGameID = post.data.id
           } catch (error) {
             console.log(error)
@@ -242,7 +251,7 @@ export default class AddGamingExp extends Component<*, State> {
         game_name: this.state.value.value,
         experience: myExperience,
         comments: this.state.comments_box,
-        status: this.state.status_box.label,
+        status: this.state.status_box.value,
         played: myPlayed,
         link: this.state.link_box,
         ratings: myRatings,

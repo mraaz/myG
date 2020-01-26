@@ -43,9 +43,12 @@ export function Disable_keys(e) {
     e.keyCode === 191 ||
     e.keyCode === 190 ||
     e.keyCode === 220 ||
-    e.keyCode === 53 ||
-    e.keyCode === 51 ||
-    e.keyCode === 191
+    (e.keyCode === 53 && e.shiftKey) ||
+    (e.keyCode === 51 && e.shiftKey) ||
+    (e.keyCode === 52 && e.shiftKey) ||
+    e.keyCode === 192 ||
+    e.keyCode === 188 ||
+    e.keyCode === 186
   ) {
     e.preventDefault()
     e.stopPropagation()

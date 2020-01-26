@@ -9,6 +9,10 @@ import AddScheduleGames_Clash_Royale from './AddScheduleGames_Clash_Royale'
 
 import { Game_name_values, Disable_keys } from './Utility_Function'
 
+import { toast } from 'react-toastify'
+
+import { Toast_style } from './Utility_Function'
+
 const createOption = (label: string, game_names_id: string) => ({
   label,
   value: label,
@@ -49,13 +53,23 @@ export default class AddScheduleGames extends Component {
   }
 
   handleCreate_game_name = (inputValue: any) => {
+    if (/['/.%#$,;`\\]/.test(inputValue)) {
+      toast.success(<Toast_style text={'Sorry mate! Game name can not have invalid fields'} />)
+      return
+    }
     setTimeout(() => {
       const newOption = createOption(inputValue, null)
       this.setState({ game_name_box: newOption })
+      console.log(this.state.game_name_box)
     }, 300)
   }
 
   handleChange_game_name = (entered_name) => {
+    if (/['/.%#$,;`\\]/.test(entered_name)) {
+      toast.success(<Toast_style text={'Sorry mate! Game name can not have invalid fields'} />)
+      return
+    }
+
     this.setState(
       {
         game_name_box: entered_name,
@@ -64,7 +78,7 @@ export default class AddScheduleGames extends Component {
       },
       () => {
         if (entered_name) {
-          switch (entered_name.value) {
+          switch (entered_name.label) {
             case 'Dota 2':
               this.setState({ games: true })
               break

@@ -6,14 +6,19 @@ const Database = use('Database')
 class GameNameController {
   async store({ auth, request, response }) {
     if (auth.user) {
+      if (/['/.%#$,;`\\]/.test(request.input('game_name'))) {
+        return false
+      }
       try {
         const newGameName = await GameNames.create({
           game_name: request.input('game_name'),
           user_id: auth.user.id,
         })
+
         return newGameName
       } catch (error) {
         console.log(error)
+        return false
       }
     }
   }
@@ -21,13 +26,19 @@ class GameNameController {
   async createGame({ auth, request, response }) {
     if (auth.user) {
       try {
+        if (/['/.%#$,;`\\]/.test(request.params.game_name)) {
+          return false
+        }
+
         const createGame = await GameNames.create({
           game_name: request.params.game_name,
           user_id: auth.user.id,
         })
+
         return createGame
       } catch (error) {
         console.log(error)
+        return false
       }
     } else {
       return 'You are not Logged In!'
