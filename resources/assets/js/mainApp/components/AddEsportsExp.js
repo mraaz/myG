@@ -42,7 +42,7 @@ type State = {
 
 const createOption = (label: string, game_names_id: string) => ({
   label,
-  value: label.toLowerCase().replace(/\W/g, ''),
+  value: label,
   game_names_id,
 })
 
@@ -191,6 +191,11 @@ export default class AddEsportsExp extends Component<*, State> {
       return
     }
 
+    if (/['/.%#$,;`\\]/.test(this.state.value_game_name.value)) {
+      toast.success(<Toast_style text={'Sorry mate! Game name can not have invalid fields'} />)
+      return
+    }
+
     if (this.state.value_ardour !== null && this.state.value_ardour.length !== 0) {
       if (myardour == null) {
         myardour = ''
@@ -214,6 +219,10 @@ export default class AddEsportsExp extends Component<*, State> {
       for (i = 0; i < this.state.newValueCreated_ardour.length; i++) {
         for (j = 0; j < this.state.value_ardour.length; j++) {
           if (this.state.value_ardour[j].value == this.state.newValueCreated_ardour[i]) {
+            if (/['/.%#$,;`\\]/.test(this.state.newValueCreated_ardour[i])) {
+              toast.success(<Toast_style text={'Sorry mate! Games of ardour can not have invalid fields'} />)
+              return
+            }
             try {
               const post = await axios.post('/api/GameNames', {
                 game_name: this.state.newValueCreated_ardour[i],
@@ -245,6 +254,10 @@ export default class AddEsportsExp extends Component<*, State> {
             const post = await axios.post('/api/GameNames', {
               game_name: this.state.value_game_name.value,
             })
+            if (post.data == false) {
+              toast.success(<Toast_style text={'Sorry mate! Game name can not be created. Close window and try again'} />)
+              return
+            }
             newGame_name = post.data.game_name
             newGameID = post.data.id
           } catch (error) {
@@ -268,9 +281,13 @@ export default class AddEsportsExp extends Component<*, State> {
       for (i = 0; i < this.state.newValueCreated_tags.length; i++) {
         for (j = 0; j < this.state.value_tags.length; j++) {
           if (this.state.value_tags[j].label == this.state.newValueCreated_tags[i]) {
+            if (/['/.%#$,;`\\]/.test(this.state.newValueCreated_tags[i])) {
+              toast.success(<Toast_style text={'Sorry mate! Skills can not have invalid fields'} />)
+              return
+            }
             try {
               if (tmpnewGameID != '') {
-                const post = await axios.post('/api/Tags', {
+                const post = axios.post('/api/Tags', {
                   game_names_id: tmpnewGameID,
                   tag: this.state.newValueCreated_tags[i],
                 })
@@ -363,11 +380,9 @@ export default class AddEsportsExp extends Component<*, State> {
   }
 
   handleCreate_ardour = (inputValue: any) => {
-    this.setState({ isLoading_ardour: true })
     setTimeout(() => {
       const { options_ardour, value_ardour, newValueCreated_ardour } = this.state
       const newOption = createOption(inputValue, null)
-      this.setState({ isLoading_ardour: false })
       this.setState({ options_ardour: [...options_ardour, newOption] })
       this.setState({ value_ardour: newOption })
       this.setState({ value_ardour: [...value_ardour, newOption] })
@@ -385,7 +400,7 @@ export default class AddEsportsExp extends Component<*, State> {
       this.setState({ value_game_name: newOption })
       this.setState({ value_tags: '' })
       this.setState({
-        newValueCreated_game_name: [...newValueCreated_game_name, newOption.value],
+        newValueCreated_game_name: [...newValueCreated_game_name, newOption.label],
       })
       this.setState({ newValueCreated_tags: [] })
       this.setState({ options_tags: '' })
@@ -393,11 +408,9 @@ export default class AddEsportsExp extends Component<*, State> {
   }
 
   handleCreate3 = (inputValue: any) => {
-    this.setState({ isLoading_tags: true })
     setTimeout(() => {
       const { options_tags, value_tags, newValueCreated_tags } = this.state
       const newOption = createOption(inputValue, null)
-      this.setState({ isLoading_tags: false })
       this.setState({ options_tags: [...options_tags, newOption] })
       this.setState({ value_tags: [...value_tags, newOption] })
       this.setState({
@@ -673,6 +686,7 @@ export default class AddEsportsExp extends Component<*, State> {
                 className='tag_name_box'
                 isMulti
                 onInputChange={(inputValue) => (inputValue.length <= 250 ? inputValue : inputValue.substr(0, 250))}
+                onKeyDown={this.onKeyDown}
               />
             </div>
             <div></div>

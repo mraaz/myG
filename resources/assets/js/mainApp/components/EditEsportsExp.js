@@ -205,6 +205,11 @@ export default class EditEsportsExp extends Component<*, State> {
       return
     }
 
+    if (/['/.%#$,;`\\]/.test(this.state.value_game_name.value)) {
+      toast.success(<Toast_style text={'Sorry mate! Game name can not have invalid fields'} />)
+      return
+    }
+
     if (this.state.value_ardour !== null && this.state.value_ardour.length !== 0) {
       if (myardour == null) {
         myardour = ''
@@ -247,16 +252,19 @@ export default class EditEsportsExp extends Component<*, State> {
     }
 
     //If you created a new game and you have selected it then and only then will we save this to the DB
-
     var newGame_name = ''
     var newGameID = ''
     if (this.state.newValueCreated_game_name != '' && ardourNgame_name_same_same == false) {
       var i
       for (i = 0; i < this.state.newValueCreated_game_name.length; i++) {
         if (this.state.value_game_name.value == this.state.newValueCreated_game_name[i]) {
+          if (/['/.%#$,;`\\]/.test(this.state.newValueCreated_ardour[i])) {
+            toast.success(<Toast_style text={'Sorry mate! Games of ardour can not have invalid fields'} />)
+            return
+          }
           try {
             const post = await axios.post('/api/GameNames', {
-              game_name: this.state.value_game_name.value,
+              game_name: this.state.newValueCreated_ardour[i],
             })
             newGame_name = post.data.game_name
             newGameID = post.data
@@ -280,9 +288,13 @@ export default class EditEsportsExp extends Component<*, State> {
       for (i = 0; i < this.state.newValueCreated_tags.length; i++) {
         for (j = 0; j < this.state.value_tags.length; j++) {
           if (this.state.value_tags[j].label == this.state.newValueCreated_tags[i]) {
+            if (/['/.%#$,;`\\]/.test(this.state.newValueCreated_tags[i])) {
+              toast.success(<Toast_style text={'Sorry mate! Skills can not have invalid fields'} />)
+              return
+            }
             try {
               if (tmpnewGameID != '') {
-                const post = await axios.post('/api/Tags', {
+                const post = axios.post('/api/Tags', {
                   game_names_id: tmpnewGameID,
                   tag: this.state.newValueCreated_tags[i],
                 })
@@ -378,7 +390,7 @@ export default class EditEsportsExp extends Component<*, State> {
           const { match } = this.props.routeProps
           const update_exp = await axios.post(`/api/esports_experiences/update/${match.params.esportsExp_id}`, {
             role_title: this.state.role_title_box,
-            game_name: newGame_name == '' ? this.state.value_game_name.label : newGame_name,
+            game_name: newGame_name == '' ? this.state.value_game_name.value : newGame_name,
             team_name: this.state.team_name_box,
             duration: myPlayed,
             achievements: this.state.achievements_box,
@@ -393,31 +405,27 @@ export default class EditEsportsExp extends Component<*, State> {
   }
 
   handleCreate_ardour = (inputValue: any) => {
-    this.setState({ isLoading_ardour: true })
     setTimeout(() => {
       const { options_ardour, value_ardour, newValueCreated_ardour } = this.state
       const newOption = createOption(inputValue, null)
-      this.setState({ isLoading_ardour: false })
       this.setState({ options_ardour: [...options_ardour, newOption] })
       this.setState({ value_ardour: newOption })
       this.setState({ value_ardour: [...value_ardour, newOption] })
       this.setState({ newValueCreated_ardour: [...newValueCreated_ardour, newOption.label] })
-    }, 1000)
+    }, 300)
   }
 
   handleCreate_game_name = (inputValue: any) => {
-    this.setState({ isLoading_game_name: true })
     setTimeout(() => {
       const { options_game_name, value_game_name, newValueCreated_game_name } = this.state
       const newOption = createOption(inputValue, null)
-      this.setState({ isLoading_game_name: false })
       this.setState({ options_game_name: [...options_game_name, newOption] })
       this.setState({ value_game_name: newOption })
       this.setState({ value_tags: '' })
       this.setState({ newValueCreated_game_name: [...newValueCreated_game_name, newOption.label] })
       this.setState({ newValueCreated_tags: [] })
       this.setState({ options_tags: '' })
-    }, 1000)
+    }, 300)
   }
 
   handleCreate3 = (inputValue: any) => {
@@ -429,7 +437,7 @@ export default class EditEsportsExp extends Component<*, State> {
       this.setState({ options_tags: [...options_tags, newOption] })
       this.setState({ value_tags: [...value_tags, newOption] })
       this.setState({ newValueCreated_tags: [...newValueCreated_tags, newOption.label] })
-    }, 1000)
+    }, 300)
   }
 
   componentWillMount() {
@@ -785,6 +793,7 @@ export default class EditEsportsExp extends Component<*, State> {
                   className='game_name_box2'
                   placeholder='Your Game'
                   onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
+                  onKeyDown={this.onKeyDown}
                 />
               </div>
               <div className='team-name'>
@@ -845,6 +854,7 @@ export default class EditEsportsExp extends Component<*, State> {
                   className='tag_name_box'
                   isMulti
                   onInputChange={(inputValue) => (inputValue.length <= 250 ? inputValue : inputValue.substr(0, 250))}
+                  onKeyDown={this.onKeyDown}
                 />
               </div>
               <div></div>

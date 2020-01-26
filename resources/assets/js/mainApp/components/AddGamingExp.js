@@ -50,7 +50,7 @@ type State = {
 
 const createOption = (label: string, game_names_id: string) => ({
   label,
-  value: label.toLowerCase().replace(/\W/g, ''),
+  value: label,
   game_names_id,
 })
 
@@ -156,6 +156,11 @@ export default class AddGamingExp extends Component<*, State> {
       return
     }
 
+    if (/['/.%#$,;`\\]/.test(this.state.value.value)) {
+      toast.success(<Toast_style text={'Sorry mate! Game name can not have invalid fields'} />)
+      return
+    }
+
     if (this.state.experience_box != null || this.state.experience_box != undefined) {
       myExperience = this.state.experience_box.value
     }
@@ -177,6 +182,10 @@ export default class AddGamingExp extends Component<*, State> {
             const post = await axios.post('/api/GameNames', {
               game_name: this.state.value.value,
             })
+            if (post.data == false) {
+              toast.success(<Toast_style text={'Sorry mate! Game name can not be created. Close window and try again'} />)
+              return
+            }
             newGameID = post.data.id
           } catch (error) {
             console.log(error)
@@ -198,9 +207,13 @@ export default class AddGamingExp extends Component<*, State> {
       for (i = 0; i < this.state.newValueCreated_tags.length; i++) {
         for (j = 0; j < this.state.value_tags.length; j++) {
           if (this.state.value_tags[j].label == this.state.newValueCreated_tags[i]) {
+            if (/['/.%#$,;`\\]/.test(this.state.newValueCreated_tags[i])) {
+              toast.success(<Toast_style text={'Sorry mate! Tags can not have invalid fields'} />)
+              return
+            }
             try {
               if (tmpnewGameID != '') {
-                const post = await axios.post('/api/Tags', {
+                const post = axios.post('/api/Tags', {
                   game_names_id: tmpnewGameID,
                   tag: this.state.newValueCreated_tags[i],
                 })
@@ -242,7 +255,7 @@ export default class AddGamingExp extends Component<*, State> {
         game_name: this.state.value.value,
         experience: myExperience,
         comments: this.state.comments_box,
-        status: this.state.status_box.label,
+        status: this.state.status_box.value,
         played: myPlayed,
         link: this.state.link_box,
         ratings: myRatings,
@@ -430,6 +443,7 @@ export default class AddGamingExp extends Component<*, State> {
               className='tag_name_box'
               isMulti
               onInputChange={(inputValue) => (inputValue.length <= 250 ? inputValue : inputValue.substr(0, 250))}
+              onKeyDown={this.onKeyDown}
             />
           </div>
           {this.state.link_chkbox == false ? (
