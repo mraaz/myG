@@ -66,6 +66,19 @@ class GameNameController {
         const decrementGameCounter = await GameNames.query()
           .where({ id: request.params.game_names_id })
           .decrement('counter', 1)
+
+        const game_names = await Database.table('game_names').where({
+          id: request.params.game_names_id,
+        })
+
+        if (game_names[0].verified == 0 && game_names[0].counter == 0) {
+          const delete_game = await Database.table('game_names')
+            .where({
+              id: request.params.game_names_id,
+            })
+            .delete()
+        }
+
         return 'Updated successfully'
       } catch (error) {
         console.log(error)

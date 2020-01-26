@@ -1,11 +1,15 @@
 'use strict'
 
-const EsportsExperience = use('App/Models/EsportsExperience')
 const Database = use('Database')
+const EsportsExperience = use('App/Models/EsportsExperience')
+const GameNameController = use('./GameNameController')
 
 class EsportsExperienceController {
   async store({ auth, request, response }) {
     if (auth.user) {
+      if (/['/.%#$;`\\]/.test(request.input('skills'))) {
+        return false
+      }
       try {
         const newEsportsExp = await EsportsExperience.create({
           user_id: auth.user.id,
@@ -16,6 +20,14 @@ class EsportsExperienceController {
           achievements: request.input('achievements'),
           skills: request.input('skills'),
         })
+        let gameface = new GameNameController()
+
+        const mygame = await Database.table('game_names').where({
+          game_name: request.input('game_name'),
+        })
+
+        request.params.game_names_id = mygame[0].id
+        gameface.incrementGameCounter({ auth, request, response })
         return 'Saved item'
       } catch (error) {
         console.log(error)
@@ -37,26 +49,66 @@ class EsportsExperienceController {
   }
 
   async update({ auth, request, response }) {
-    try {
-      const updateesports_Exp = await EsportsExperience.query()
-        .where({ id: request.params.id })
-        .update({
-          role_title: request.input('role_title'),
-          game_name: request.input('game_name'),
-          team_name: request.input('team_name'),
-          duration: request.input('duration'),
-          achievements: request.input('achievements'),
-          skills: request.input('skills'),
+    if (auth.user) {
+      if (/['/.%#$;`\\]/.test(request.input('skills'))) {
+        return false
+      }
+      try {
+        const game_experiences = await Database.table('esports_experiences').where({
+          id: request.params.id,
         })
-      return 'Saved successfully'
-    } catch (error) {
-      console.log(updateesports_Exp)
+
+        if (game_experiences[0].game_name !== request.input('game_name')) {
+          let gameface = new GameNameController()
+
+          let mygame = await Database.table('game_names').where({
+            game_name: game_experiences[0].game_name,
+          })
+
+          request.params.game_names_id = mygame[0].id
+          gameface.decrementGameCounter({ auth, request, response })
+
+          mygame = await Database.table('game_names').where({
+            game_name: request.input('game_name'),
+          })
+
+          request.params.game_names_id = mygame[0].id
+          gameface.incrementGameCounter({ auth, request, response })
+        }
+
+        const updateesports_Exp = await EsportsExperience.query()
+          .where({ id: request.params.id })
+          .update({
+            role_title: request.input('role_title'),
+            game_name: request.input('game_name'),
+            team_name: request.input('team_name'),
+            duration: request.input('duration'),
+            achievements: request.input('achievements'),
+            skills: request.input('skills'),
+          })
+        return 'Saved successfully'
+      } catch (error) {
+        console.log(updateesports_Exp)
+      }
     }
   }
 
   async destroy({ auth, request, response }) {
     if (auth.user) {
       try {
+        let gameface = new GameNameController()
+
+        const game_experiences = await Database.table('esports_experiences').where({
+          id: request.params.id,
+        })
+
+        const mygame = await Database.table('game_names').where({
+          game_name: game_experiences[0].game_name,
+        })
+
+        request.params.game_names_id = mygame[0].id
+        gameface.decrementGameCounter({ auth, request, response })
+
         const delete_esport_exp = await Database.table('esports_experiences')
           .where({
             id: request.params.id,
@@ -144,110 +196,6 @@ class EsportsExperienceController {
         .orderBy('esports_experiences.created_at', 'desc')
         .select('*', 'esports_experiences.id', 'users.id as user_id')
         .paginate(parseInt(request.input('counter')), 10)
-
-      return {
-        latestGameExperiences,
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  async esportsSearchResults2({ auth, request, response }) {
-    try {
-      var counter = 0
-      var mySQL = ''
-
-      var inputValueGameName = request.params.gameNamestr.replace(/1981%60%5E/g, '')
-      if (inputValueGameName != '') {
-        if (counter == 0) {
-          mySQL = mySQL + ' WHERE esports_experiences.game_name Like '
-        } else {
-          mySQL = mySQL + ' AND esports_experiences.game_name Like '
-        }
-        counter = counter + 1
-        inputValueGameName = inputValueGameName.replace(/%20/g, '%')
-        inputValueGameName = inputValueGameName.replace(/%25/g, '\\')
-        inputValueGameName = "'%" + inputValueGameName + "%'"
-        mySQL = mySQL + inputValueGameName
-      }
-
-      var inputValueExp = request.params.rolestr.replace(/1981%60%5E/g, '')
-      if (inputValueExp != '') {
-        if (counter == 0) {
-          mySQL = mySQL + ' WHERE esports_experiences.role_title Like '
-        } else {
-          mySQL = mySQL + ' AND esports_experiences.role_title Like '
-        }
-        counter = counter + 1
-        inputValueExp = inputValueExp.replace(/%20/g, '%')
-        inputValueExp = inputValueExp.replace(/%25/g, '\\')
-        inputValueExp = "'%" + inputValueExp + "%'"
-        mySQL = mySQL + inputValueExp
-      }
-
-      var inputValuePlatform = request.params.teamstr.replace(/1981%60%5E/g, '')
-      if (inputValuePlatform != '') {
-        if (counter == 0) {
-          mySQL = mySQL + ' WHERE esports_experiences.team_name Like '
-        } else {
-          mySQL = mySQL + ' AND esports_experiences.team_name Like '
-        }
-        counter = counter + 1
-        inputValuePlatform = inputValuePlatform.replace(/%20/g, '%')
-        inputValuePlatform = inputValuePlatform.replace(/%25/g, '\\')
-        inputValuePlatform = "'%" + inputValuePlatform + "%'"
-        mySQL = mySQL + inputValuePlatform
-      }
-
-      var inputValueDesc = request.params.time_role.replace(/1981%60%5E/g, '')
-      if (inputValueDesc != '') {
-        if (counter == 0) {
-          mySQL = mySQL + ' WHERE esports_experiences.duration = '
-        } else {
-          mySQL = mySQL + ' AND esports_experiences.duration = '
-        }
-        counter = counter + 1
-        inputValueDesc = inputValueDesc.replace(/%20/g, '%')
-        inputValueDesc = inputValueDesc.replace(/%25/g, '\\')
-        //inputValueDesc = "'%" + inputValueDesc + "%'"
-        mySQL = mySQL + inputValueDesc
-      }
-
-      var inputValueOther = request.params.tags.replace(/1981%60%5E/g, '')
-      if (inputValueOther != '') {
-        if (counter == 0) {
-          mySQL = mySQL + ' WHERE esports_experiences.skills Like '
-        } else {
-          mySQL = mySQL + ' AND esports_experiences.skills Like '
-        }
-        counter = counter + 1
-        inputValueOther = inputValueOther.replace(/%20/g, '%')
-        inputValueOther = inputValueOther.replace(/%25/g, '\\')
-        inputValueOther = "'%" + inputValueOther + "%'"
-        mySQL = mySQL + inputValueOther
-      }
-
-      var inputValueCountry = request.params.countrystr.replace(/1981%60%5E/g, '')
-      if (inputValueCountry != '') {
-        if (counter == 0) {
-          mySQL = mySQL + ' WHERE users.country Like '
-        } else {
-          mySQL = mySQL + ' AND users.country Like '
-        }
-        counter = counter + 1
-        inputValueCountry = inputValueCountry.replace(/%20/g, '%')
-        inputValueCountry = inputValueCountry.replace(/%25/g, '\\')
-        inputValueCountry = "'%" + inputValueCountry + "%'"
-        mySQL = mySQL + inputValueCountry
-      }
-
-      mySQL = mySQL + ' Limit 188'
-
-      const latestGameExperiences = await Database.schema.raw(
-        'select users.id AS user_id, users.alias, users.profile_img, esports_experiences.id, esports_experiences.game_name, esports_experiences.role_title, esports_experiences.team_name, esports_experiences.duration, esports_experiences.skills from esports_experiences Inner Join users ON esports_experiences.user_id = users.id' +
-          mySQL
-      )
 
       return {
         latestGameExperiences,

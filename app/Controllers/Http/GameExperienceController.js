@@ -2,12 +2,14 @@
 
 const Database = use('Database')
 const GameExperiences = use('App/Models/GameExperience')
-
 const GameNameController = use('./GameNameController')
 
 class GameExperienceController {
   async store({ auth, request, response }) {
     if (auth.user) {
+      if (/['/.%#$;`\\]/.test(request.input('tags'))) {
+        return false
+      }
       try {
         const newGameExp = await GameExperiences.create({
           game_name: request.input('game_name'),
@@ -76,55 +78,62 @@ class GameExperienceController {
   }
 
   async update({ auth, request, response }) {
-    try {
-      const game_experiences = await Database.table('game_experiences').where({
-        id: request.params.game_id,
-      })
-
-      if (game_experiences[0].game_name !== request.input('game_name')) {
-        let gameface = new GameNameController()
-
-        let mygame = await Database.table('game_names').where({
-          game_name: game_experiences[0].game_name,
-        })
-
-        request.params.game_names_id = mygame[0].id
-        gameface.decrementGameCounter({ auth, request, response })
-
-        mygame = await Database.table('game_names').where({
-          game_name: request.input('game_name'),
-        })
-
-        request.params.game_names_id = mygame[0].id
-        gameface.incrementGameCounter({ auth, request, response })
+    if (auth.user) {
+      if (/['/.%#$;`\\]/.test(request.input('tags'))) {
+        return false
       }
-
-      const updateGame_Exp = await GameExperiences.query()
-        .where({ id: request.params.game_id })
-        .update({
-          game_name: request.input('game_name'),
-          experience: request.input('experience'),
-          comments: request.input('comments'),
-          status: request.input('status'),
-          played: request.input('played'),
-          link: request.input('link'),
-          ratings: request.input('ratings'),
-          tags: request.input('tags'),
+      try {
+        const game_experiences = await Database.table('game_experiences').where({
+          id: request.params.game_id,
         })
-      return 'Saved successfully'
-    } catch (error) {
-      console.log(error)
+
+        if (game_experiences[0].game_name !== request.input('game_name')) {
+          let gameface = new GameNameController()
+
+          let mygame = await Database.table('game_names').where({
+            game_name: game_experiences[0].game_name,
+          })
+
+          request.params.game_names_id = mygame[0].id
+          gameface.decrementGameCounter({ auth, request, response })
+
+          mygame = await Database.table('game_names').where({
+            game_name: request.input('game_name'),
+          })
+
+          request.params.game_names_id = mygame[0].id
+          gameface.incrementGameCounter({ auth, request, response })
+        }
+
+        const updateGame_Exp = await GameExperiences.query()
+          .where({ id: request.params.game_id })
+          .update({
+            game_name: request.input('game_name'),
+            experience: request.input('experience'),
+            comments: request.input('comments'),
+            status: request.input('status'),
+            played: request.input('played'),
+            link: request.input('link'),
+            ratings: request.input('ratings'),
+            tags: request.input('tags'),
+          })
+        return 'Saved successfully'
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 
   async updateCommend({ auth, request, response }) {
-    try {
-      const updateGame_ExpCommend = await GameExperiences.query()
-        .where({ id: request.params.game_exp_id })
-        .update({ commendation: request.input('commendation') })
-      return 'Saved successfully'
-    } catch (error) {
-      console.log(error)
+    if (auth.user) {
+      try {
+        const updateGame_ExpCommend = await GameExperiences.query()
+          .where({ id: request.params.game_exp_id })
+          .update({ commendation: request.input('commendation') })
+        return 'Saved successfully'
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 
