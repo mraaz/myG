@@ -1,4 +1,4 @@
-import { fetchChats, fetchInfo, createChat, updateChat, checkSelfDestruct, clearChat, sendMessage, editMessage, deleteMessage } from '../../integration/http/chat';
+import { fetchChats, fetchChat, createChat, updateChat, clearChat, checkSelfDestruct, fetchMessages, sendMessage, editMessage, deleteMessage } from '../../integration/http/chat';
 
 export function onNewChatAction(chat, userId) {
     return {
@@ -8,43 +8,48 @@ export function onNewChatAction(chat, userId) {
     }
 }
 
-export function onNewMessageAction(message, chatId) {
+export function onNewMessageAction(message) {
     return {
         type: 'NEW_MESSAGE',
         payload: { message },
-        meta: { chatId },
     }
 }
 
-export function onUpdateMessageAction(message, chatId) {
+export function onUpdateMessageAction(message) {
     return {
         type: 'UPDATE_MESSAGE',
         payload: { message },
-        meta: { chatId },
     }
 }
 
-export function onDeleteMessagesAction(messages, chatId) {
+export function onDeleteMessagesAction(payload) {
     return {
         type: 'ON_MESSAGES_DELETED',
-        payload: { messages },
-        meta: { chatId },
+        payload,
     }
 }
 
-export function onInfoUpdatedAction(activity, chatId, userId) {
+export function onMarkAsReadAction(payload, userId) {
     return {
-        type: 'INFO_UPDATED',
-        payload: activity,
-        meta: { chatId, userId },
+        type: 'MARK_AS_READ',
+        payload,
+        meta: { userId },
     }
 }
 
-export function onPublicKeyUpdatedAction(payload, chatId, userId) {
+export function onSelfDestructAction(payload, userId) {
+    return {
+        type: 'SELF_DESTRUCT',
+        payload,
+        meta: { userId },
+    }
+}
+
+export function onPublicKeyUpdatedAction(payload, userId) {
     return {
         type: 'PUBLIC_KEY_UPDATED',
         payload: payload,
-        meta: { chatId, userId },
+        meta: { userId },
     }
 }
 
@@ -56,26 +61,25 @@ export function updateChatStateAction(chatId, state) {
     }
 }
 
-export function fetchChatsAction(userId) {
+export function fetchChatsAction() {
     return {
         type: 'FETCH_CHATS',
-        payload: fetchChats(userId),
-        meta: { userId },
+        payload: fetchChats()
     }
 }
 
-export function fetchInfoAction(chatId) {
+export function fetchChatAction(chatId) {
     return {
-        type: 'FETCH_CHAT_INFO',
-        payload: fetchInfo(chatId),
+        type: 'FETCH_CHAT',
+        payload: fetchChat(chatId),
         meta: { chatId },
     }
 }
 
-export function createChatAction(members, userId) {
+export function createChatAction(contacts, userId) {
     return {
         type: 'CREATE_CHAT',
-        payload: createChat(members),
+        payload: createChat(contacts),
         meta: { userId }
     }
 }
@@ -115,6 +119,14 @@ export function closeChatAction(chatId) {
     return {
         type: 'CLOSE_CHAT',
         payload: { chatId },
+    }
+}
+
+export function fetchMessagesAction(chatId) {
+    return {
+        type: 'FETCH_CHAT_MESSAGES',
+        payload: fetchMessages(chatId),
+        meta: { chatId },
     }
 }
 

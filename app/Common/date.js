@@ -46,6 +46,8 @@ function toSQLDateTime(date) {
 }
 
 function convertUTCDateToLocalDate(date) {
+  if (!date) return new Date(0);
+  if (!date.getFullYear) date = new Date(date);
   return new Date(
     Date.UTC(date.getFullYear(),
       date.getMonth(),
@@ -58,6 +60,8 @@ function convertUTCDateToLocalDate(date) {
 }
 
 function formatDateTime(date) {
+  if (!date) return new Date(0);
+  if (!date.getHours) date = new Date(date);
   const hours = formatAMPM(date);
   if (isToday(date)) return hours;
   if (isYesterday(date)) return `Yesterday ${hours}`;
@@ -68,6 +72,8 @@ function formatDateTime(date) {
 }
 
 function formatAMPM(date) {
+  if (!date) return new Date(0);
+  if (!date.getHours) date = new Date(date);
   let hours = date.getHours();
   let minutes = date.getMinutes();
   const ampm = hours >= 12 ? 'pm' : 'am';
@@ -78,6 +84,8 @@ function formatAMPM(date) {
 }
 
 function isToday(someDate) {
+  if (!someDate) return new Date(0);
+  if (!someDate.getHours) someDate = new Date(someDate);
   const today = new Date()
   return someDate.getDate() == today.getDate() &&
     someDate.getMonth() == today.getMonth() &&
@@ -85,6 +93,8 @@ function isToday(someDate) {
 }
 
 function isYesterday(someDate) {
+  if (!someDate) return new Date(0);
+  if (!someDate.getHours) someDate = new Date(someDate);
   const yesterday = new Date(new Date().setDate(new Date().getDate() - 1));
   return someDate.getDate() == yesterday.getDate() &&
     someDate.getMonth() == yesterday.getMonth() &&

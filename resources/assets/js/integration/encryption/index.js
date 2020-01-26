@@ -3,7 +3,7 @@ import cryptico from 'cryptico';
 import logger from '../../common/logger';
 
 export function generateKeys(pin) {
-  logger.log('ENCRYPTION', 'Generating Keys for Pin', pin);
+  logger.log('USER', 'Generating Keys for Pin', pin);
   if (!pin) pin = generatePin(12);
   const privateKey = cryptico.generateRSAKey(pin, 1024);
   const publicKey = cryptico.publicKeyString(privateKey);

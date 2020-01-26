@@ -1,14 +1,14 @@
 import { store } from '../../../redux/Store';
-import { onNewChatAction, onNewMessageAction, onUpdateMessageAction, onDeleteMessagesAction, onInfoUpdatedAction, onPublicKeyUpdatedAction, fetchChatsAction } from '../../../redux/actions/chatAction';
+import { onNewChatAction, onNewMessageAction, onUpdateMessageAction, onDeleteMessagesAction, onMarkAsReadAction, onSelfDestructAction, onPublicKeyUpdatedAction, fetchChatsAction } from '../../../redux/actions/chatAction';
+import { onStatusChangedAction } from '../../../redux/actions/userAction';
 import { onConnectionStateChangedAction } from '../../../redux/actions/socketAction';
 import socket from '../../../common/socket';
 import logger from '../../../common/logger';
 
 let currentUserId = null;
-let currentChats = [];
 let hasDisconnected = false;
 let ws = null;
-let subscriptions = {};
+let subscription = null;
 
 export function attemptSocketConnection() {
 
@@ -18,52 +18,40 @@ export function attemptSocketConnection() {
     store.dispatch(onConnectionStateChangedAction(false));
     if (!hasDisconnected) return;
     ws = socket.connect().ws;
-    store.dispatch(fetchChatsAction(currentUserId));
+    store.dispatch(fetchChatsAction());
     monitorChats(currentUserId);
-    currentChats.forEach(chatId => monitorMessages(chatId, currentUserId));
     hasDisconnected = false;
   });
 
   ws.on('close', () => {
     store.dispatch(onConnectionStateChangedAction(true));
     hasDisconnected = true;
-    closeSubscriptions();
+    closeSubscription();
   });
 
 }
 
 attemptSocketConnection();
 
-export function closeSubscriptions() {
-  Object.keys(subscriptions).forEach(subscriptionKey => subscriptions[`${subscriptionKey}`].close());
-  subscriptions = {};
+export function closeSubscription() {
+  if (subscription !== null) subscription.close();
+  subscription = null;
 }
 
 export function monitorChats(userId) {
   currentUserId = userId;
-  const subscriptionKey = `user_chat:${userId}`;
-  if (subscriptions[`${subscriptionKey}`]) return;
-  logger.log('CHAT', `WS`, `Monitoring ${subscriptionKey}`);
-  const subscription = socket.subscribe(subscriptionKey, event => {
+  if (subscription !== null) return;
+  logger.log('CHAT', `WS`, `Monitoring Chats for User ${userId}`);
+  subscription = socket.subscribe(`chat:${userId}`, event => {
     logger.log('CHAT', 'WS', `New "${event.type}" Event Received`, event.data);
-    store.dispatch(onNewChatAction(event.data, userId));
+    if (event.type === "chat:newChat") return store.dispatch(onNewChatAction(event.data, userId));
+    if (event.type === "chat:newMessage") return store.dispatch(onNewMessageAction(event.data, userId));
+    if (event.type === "chat:updateMessage") return store.dispatch(onUpdateMessageAction(event.data, userId));
+    if (event.type === "chat:deleteMessages") return store.dispatch(onDeleteMessagesAction(event.data, userId));
+    if (event.type === "chat:markAsRead") return store.dispatch(onMarkAsReadAction(event.data, userId));
+    if (event.type === "chat:selfDestruct") return store.dispatch(onSelfDestructAction(event.data, userId));
+    if (event.type === "chat:encryption") return store.dispatch(onPublicKeyUpdatedAction(event.data, userId));
+    if (event.type === "chat:status") return store.dispatch(onStatusChangedAction(event.data, userId));
   });
-  subscriptions[`${subscriptionKey}`] = subscription;
-}
-
-export function monitorMessages(chatId, userId) {
-  if (currentChats.indexOf(chatId) === -1) currentChats.push(chatId);
-  const subscriptionKey = `chat:${chatId}`;
-  if (subscriptions[`${subscriptionKey}`]) return;
-  logger.log('CHAT', `WS`, `Monitoring ${subscriptionKey}`);
-  const subscription = socket.subscribe(subscriptionKey, event => {
-    logger.log('CHAT', 'WS', `New "${event.type}" Event Received`, event.data);
-    if (event.type === "chat:newMessage") return store.dispatch(onNewMessageAction(event.data, chatId, userId));
-    if (event.type === "chat:updateMessage") return store.dispatch(onUpdateMessageAction(event.data, chatId, userId));
-    if (event.type === "chat:deleteMessages") return store.dispatch(onDeleteMessagesAction(event.data, chatId, userId));
-    if (event.type === "chat:info") return store.dispatch(onInfoUpdatedAction(event.data, chatId, userId));
-    if (event.type === "chat:encryption") return store.dispatch(onPublicKeyUpdatedAction(event.data, chatId, userId));
-  });
-  subscriptions[`${subscriptionKey}`] = subscription;
 }
 

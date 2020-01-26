@@ -2,8 +2,6 @@
 
 const Database = use('Database')
 const User = use('App/Models/User')
-const UserChat = use('App/Models/UserChat')
-const { broadcast } = require('../../Common/socket')
 const AwsKeyController = use('./AwsKeyController')
 
 class UserController {
@@ -155,51 +153,6 @@ class UserController {
         const saveUser = await User.query()
           .where('id', '=', auth.user.id)
           .update({ profile_bg: request.input('profile_bg') })
-        return response.status(200).json({ success: true })
-      } catch (error) {
-        return response.status(200).json({ success: false })
-      }
-    } else {
-      return 'You are not Logged In!'
-    }
-  }
-
-  async fetchStatus({ auth, response }) {
-    if (auth.user) {
-      try {
-        const user = await User.query()
-          .where('id', '=', auth.user.id)
-          .first()
-        const status = user.toJSON().status;
-        const isStatusLocked = user.toJSON().status_locked;
-        return response.status(200).json({ status, isStatusLocked });
-      } catch (error) {
-        return response.status(200).json({ status: 'online', isStatusLocked: false });
-      }
-    } else {
-      return response.status(200).json({ status: 'online', isStatusLocked: false });
-    }
-  }
-
-  async storePublicKey({ auth, request, response }) {
-    if (auth.user) {
-      try {
-        const user = await User.query()
-          .where('id', '=', auth.user.id)
-          .first()
-        const publicKey = request.input('publicKey')
-        const previousKey = user.toJSON().public_key
-        if (previousKey !== publicKey) {
-          const chats = await UserChat.query()
-            .where('user_id', auth.user.id)
-            .fetch()
-          chats.toJSON().forEach((chat) => {
-            broadcast('chat:*', `chat:${chat.chat_id}`, 'chat:encryption', { publicKey, userId: auth.user.id })
-          })
-        }
-        await User.query()
-          .where('id', '=', auth.user.id)
-          .update({ public_key: publicKey })
         return response.status(200).json({ success: true })
       } catch (error) {
         return response.status(200).json({ success: false })

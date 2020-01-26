@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 
 import Chat from './Chat';
 import StatusTimerWrapper from './StatusTimerWrapper';
+import WindowFocusHandler from './WindowFocusHandler';
 
-import { attemptSocketConnection, monitorChats, closeSubscriptions } from '../../integration/ws/chat';
+import { attemptSocketConnection, monitorChats, closeSubscription } from '../../integration/ws/chat';
 import { fetchChatsAction, createChatAction, openChatAction, closeChatAction, clearChatAction } from '../../redux/actions/chatAction';
-import { fetchFriendsAction } from '../../redux/actions/friendAction';
-import { fetchStatusAction, updateStatusAction } from '../../redux/actions/userAction';
+import { fetchContactsAction, fetchStatusAction, updateStatusAction } from '../../redux/actions/userAction';
 import { generateKeysAction, validatePinAction } from '../../redux/actions/encryptionAction';
 import { decryptMessage } from '../../integration/encryption';
 import { formatAMPM, convertUTCDateToLocalDate } from '../../common/date';
@@ -41,28 +41,27 @@ class Messenger extends React.PureComponent {
       monitorChats(this.props.userId);
       if (!this.props.publicKey) this.props.generateKeys();
       if (this.props.pin) this.props.generateKeys(this.props.pin);
-      this.props.fetchChats(this.props.userId);
-      this.props.fetchFriends();
+      this.props.fetchChats();
+      this.props.fetchContacts();
       this.props.fetchStatus();
       this.setState({ loaded: true });
     }
   }
 
   componentWillUnmount() {
-    closeSubscriptions();
+    closeSubscription();
   }
 
   decryptMessage = (message) => {
-    const origin = parseInt(message.user_id) === this.props.userId ? 'sent' : 'received';
+    const origin = parseInt(message.senderId) === this.props.userId ? 'sent' : 'received';
     const content = decryptMessage(origin === 'sent' ? message.backup : message.content, this.props.privateKey);
     return { ...message, content };
   }
 
-  openChat = (friend) => {
+  openChat = (contact) => {
     if (this.props.disconnected) return;
-    const chat = this.props.chats.find(chat => chat.friendId === friend.friend_id || chat.userId === friend.friend_id);
-    if (chat) return this.props.openChat(chat.chatId);
-    this.props.createChat([this.props.userId, friend.friend_id], this.props.userId);
+    if (contact.chat.chatId) return this.props.openChat(contact.chat.chatId);
+    this.props.createChat([contact.contactId], this.props.userId);
   }
 
   closeChat = (chatId) => {
@@ -75,15 +74,15 @@ class Messenger extends React.PureComponent {
   }
 
   compareLastMessages = (f1, f2) => {
-    const m1 = (f1.chat.messages || [])[(f1.chat.messages || []).length - 1] || { created_at: 0 };
-    const m2 = (f2.chat.messages || [])[(f2.chat.messages || []).length - 1] || { created_at: 0 };
-    return new Date(m2.created_at) - new Date(m1.created_at);
+    const m1 = (f1.chat.messages || [])[(f1.chat.messages || []).length - 1] || { createdAt: 0 };
+    const m2 = (f2.chat.messages || [])[(f2.chat.messages || []).length - 1] || { createdAt: 0 };
+    return new Date(m2.createdAt) - new Date(m1.createdAt);
   }
 
   countUnreadMessages = (lastRead, messages) => {
     let unreadCount = 0;
     messages.reverse().some(message => {
-      const messageDate = convertUTCDateToLocalDate(new Date(message.created_at));
+      const messageDate = convertUTCDateToLocalDate(new Date(message.createdAt));
       if (messageDate > lastRead) {
         ++unreadCount;
         return false;
@@ -101,26 +100,26 @@ class Messenger extends React.PureComponent {
     );
   }
 
-  renderFriends = () => {
+  renderContacts = () => {
 
     const sections = {};
-    const friends = this.props.friends.slice(0)
+    const contacts = this.props.contacts.slice(0)
       .sort((f1, f2) => compareStatus(f1.status, f2.status))
       .sort((f1, f2) => this.compareLastMessages(f1, f2));
 
     if (this.state.searchInput) {
       const search = (name) => name.toLowerCase().includes(this.state.searchInput.toLowerCase());
-      sections['suggestions'] = friends.slice(0)
-        .filter(friend => search(`${friend.first_name} ${friend.last_name}`))
+      sections['suggestions'] = contacts.slice(0)
+        .filter(contact => search(contact.name))
         .slice(0, 18);
     }
 
     else {
-      sections['recent'] = friends.filter(friend => (friend.chat.messages || []).length).slice(0, 8);
-      sections[STATUS_ENUM.ONLINE] = friends.filter(friend => friend.status === STATUS_ENUM.ONLINE);
-      sections[STATUS_ENUM.PLAYING] = friends.filter(friend => friend.status === STATUS_ENUM.PLAYING);
-      sections[STATUS_ENUM.AFK] = friends.filter(friend => friend.status === STATUS_ENUM.AFK);
-      sections[STATUS_ENUM.OFFLINE] = friends.filter(friend => friend.status === STATUS_ENUM.OFFLINE);
+      sections['recent'] = contacts.filter(contact => (contact.chat.messages || []).length).slice(0, 8);
+      sections[STATUS_ENUM.ONLINE] = contacts.filter(contact => contact.status === STATUS_ENUM.ONLINE);
+      sections[STATUS_ENUM.PLAYING] = contacts.filter(contact => contact.status === STATUS_ENUM.PLAYING);
+      sections[STATUS_ENUM.AFK] = contacts.filter(contact => contact.status === STATUS_ENUM.AFK);
+      sections[STATUS_ENUM.OFFLINE] = contacts.filter(contact => contact.status === STATUS_ENUM.OFFLINE);
     }
 
     return (
@@ -136,8 +135,8 @@ class Messenger extends React.PureComponent {
 
   }
 
-  renderSection(name, count, friends, expanded) {
-    const chevronType = (friends.length && expanded) ? 'down' : 'right';
+  renderSection(name, count, contacts, expanded) {
+    const chevronType = (contacts.length && expanded) ? 'down' : 'right';
     return (
       <div className="messenger-body-section">
         <div className="messenger-body-section-header clickable"
@@ -162,9 +161,9 @@ class Messenger extends React.PureComponent {
             />
           </div>
         </div>
-        {!!friends.length && expanded && (
+        {!!contacts.length && expanded && (
           <div className="messenger-body-section-content">
-            {friends.map(this.renderFriend)}
+            {contacts.map(this.renderContact)}
           </div>
         )}
       </div >
@@ -178,6 +177,7 @@ class Messenger extends React.PureComponent {
         userId={this.props.userId}
         chatId={chat.chatId}
         onClose={chatId => this.closeChat(chatId)}
+        windowFocused={this.state.windowFocused}
       />
     );
   }
@@ -195,28 +195,25 @@ class Messenger extends React.PureComponent {
     );
   }
 
-  renderFriend = (friend) => {
-    const messages = (friend.chat.messages || []).slice(0);
+  renderContact = (contact) => {
+    const messages = (contact.chat.messages || []).slice(0);
     const lastMessage = messages[messages.length - 1];
-    const lastRead = convertUTCDateToLocalDate(new Date(friend.chat.readDate));
-    const receivedMessages = messages.filter(message => parseInt(message.user_id) !== this.props.userId);
-    const unreadCount = this.countUnreadMessages(lastRead, receivedMessages);
+    const receivedMessages = messages.filter(message => message.senderId !== this.props.userId);
+    const unreadCount = this.countUnreadMessages(contact.chat.readDate, receivedMessages);
     return (
       <div
-        key={friend.id}
+        key={contact.contactId}
         className="messenger-contact"
-        onClick={() => this.openChat(friend)}
+        onClick={() => this.openChat(contact)}
       >
         <div
           className="messenger-contact-icon"
-          style={{ backgroundImage: `url('${friend.profile_img}')` }}
+          style={{ backgroundImage: `url('${contact.icon}')` }}
         >
           <div className="messenger-contact-online-indicator" />
         </div>
         <div className="messenger-contact-body">
-          <p className="messenger-contact-body-title">
-            {friend.first_name} {friend.last_name}
-          </p>
+          <p className="messenger-contact-body-title">{contact.name}</p>
           {lastMessage && (
             <p className="messenger-contact-body-subtitle">
               {this.decryptMessage(lastMessage).content}
@@ -226,7 +223,7 @@ class Messenger extends React.PureComponent {
         <div className="messenger-contact-info">
           {lastMessage && (
             <p className="messenger-contact-info-last-seen">
-              {formatAMPM(convertUTCDateToLocalDate(new Date(lastMessage.created_at)))}
+              {formatAMPM(convertUTCDateToLocalDate(new Date(lastMessage.createdAt)))}
             </p>
           )}
           <div className="messenger-contact-info-unread">
@@ -245,7 +242,7 @@ class Messenger extends React.PureComponent {
       <div className="messenger-settings-encryption-container">
         <p className="messenger-settings-encryption-title">Encrypted Chat Key</p>
         <p className="messenger-settings-encryption-subtitle">
-          Your messages cannot be read by anyone other than you and your friends.<br /><br />
+          Your messages cannot be read by anyone other than you and your contacts.<br /><br />
           Because of this, we cannot store your encryption key in our servers.<br /><br />
           {this.props.pin ?
             `Please keep this key somewhere safe, you'll need it when logging in on another device.` :
@@ -353,7 +350,7 @@ class Messenger extends React.PureComponent {
             />
             <div className="messenger-settings-search-button clickable"
               style={{ backgroundImage: `url(/assets/svg/ic_messenger_search.svg)` }}
-              onClick={() => this.filterFriends()}
+              onClick={() => this.filterContacts()}
             />
           </div>
           <div
@@ -373,7 +370,7 @@ class Messenger extends React.PureComponent {
 
         {this.renderChats()}
         {this.renderConnectionWarning()}
-        {this.renderFriends()}
+        {this.renderContacts()}
         {this.renderFooter()}
 
         <StatusTimerWrapper {...{
@@ -381,6 +378,11 @@ class Messenger extends React.PureComponent {
           isStatusLocked: this.props.isStatusLocked,
           updateStatus: this.props.updateStatus,
         }} />
+
+        <WindowFocusHandler
+          onFocus={() => this.setState({ windowFocused: true })}
+          onBlur={() => this.setState({ windowFocused: false })}
+        />
 
       </section>
     );
@@ -390,16 +392,15 @@ class Messenger extends React.PureComponent {
 
 function mapStateToProps(state) {
   const chats = state.chat.chats;
-  const friends = state.friend.friends;
-  friends.forEach(friend => {
-    const chat = chats.find(chat => chat.friendId === friend.friend_id) || {};
-    friend.chat = chat;
-  });
+  const contacts = state.user.contacts;
+  const contactsWithChats = {};
+  chats.forEach(chat => chat.contacts.forEach(contactId => contactsWithChats[contactId] = chat));
+  contacts.forEach(contact => contact.chat = contactsWithChats[contact.contactId] || {});
   return {
     status: state.user.status,
     isStatusLocked: state.user.isStatusLocked,
     chats: state.chat.chats,
-    friends: state.friend.friends,
+    contacts: state.user.contacts,
     pin: state.encryption.pin,
     invalidPin: state.encryption.invalidPin,
     privateKey: state.encryption.privateKey,
@@ -409,11 +410,11 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return ({
-    createChat: (members, userId) => dispatch(createChatAction(members, userId)),
+    createChat: (contacts, userId) => dispatch(createChatAction(contacts, userId)),
     openChat: chatId => dispatch(openChatAction(chatId)),
     closeChat: chatId => dispatch(closeChatAction(chatId)),
-    fetchChats: userId => dispatch(fetchChatsAction(userId)),
-    fetchFriends: () => dispatch(fetchFriendsAction()),
+    fetchChats: () => dispatch(fetchChatsAction()),
+    fetchContacts: () => dispatch(fetchContactsAction()),
     fetchStatus: () => dispatch(fetchStatusAction()),
     generateKeys: pin => dispatch(generateKeysAction(pin)),
     validatePin: (pin, publicKey) => dispatch(validatePinAction(pin, publicKey)),

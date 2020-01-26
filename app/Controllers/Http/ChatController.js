@@ -1,133 +1,93 @@
 'use strict';
 
-const Chat = use('App/Models/Chat');
-const UserChat = use('App/Models/UserChat');
-const ChatMessage = use('App/Models/ChatMessage');
-const { broadcast } = require('../../Common/socket');
-const { convertUTCDateToLocalDate } = require('../../Common/date');
+const { log } = require('../../Common/logger');
+const ChatRepository = require('../../Repositories/Chat');
 
 class ChatController {
 
-  async fetchMessages(chatId) {
-
-    const chat = await Chat
-      .query()
-      .where('id', chatId)
-      .with('messages')
-      .first();
-
-    if (!chat) return [];
-    return chat.toJSON().messages;
-
+  async fetchChats({ auth, response }) {
+    const requestingUserId = auth.user.id;
+    log('CHAT', `User ${requestingUserId} requesting Chats`);
+    const { chats } = await ChatRepository.fetchChats({ requestingUserId });
+    return response.send({ chats });
   }
 
-  async create() {
-    const chat = new Chat();
-    await chat.save();
-    return Chat.find(chat.id);
+  async fetchChat({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    log('CHAT', `User ${requestingUserId} requesting Chat ${requestedChatId}`);
+    const { chat } = await ChatRepository.fetchChat({ requestingUserId, requestedChatId });
+    return response.send({ chat });
   }
 
-  async createMessage({ params, request, response }) {
-
-    const chat = await Chat.find(params.chatId);
-    if (!chat) return response.notFound(`Chat ${params.chatId} was not found.`);
-
-    const data = request.only(['name', 'encrypted', 'userId', 'selfDestruct']);
-    data.user_id = data.userId;
-    data.self_destruct = data.selfDestruct;
-    data.content = data.encrypted.content;
-    data.backup = data.encrypted.backup;
-    delete data.encrypted;
-    delete data.userId;
-    delete data.selfDestruct;
-
-    const message = await chat.messages().create(data);
-    message.userId = message.user_id;
-    delete message.user_id;
-
-    broadcast('chat:*', `chat:${chat.id}`, 'chat:newMessage', message);
-
-    return message;
-
+  async createChat({ auth, request, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedFriendIds = request.only(['friendIds']).friendIds;
+    log('CHAT', `User ${requestingUserId} creating Chat with Friends ${JSON.stringify(requestedFriendIds)}`);
+    const { chat } = await ChatRepository.createChat({ requestingUserId, requestedFriendIds });
+    return response.send({ chat });
   }
 
-  async updateMessage({ params, request, response }) {
+  async updateChat({ auth, params, request, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    const { muted, blocked, markAsRead, selfDestruct } = request.only(['muted', 'blocked', 'markAsRead', 'selfDestruct']);
+    log('CHAT', `User ${requestingUserId} updating Chat ${requestedChatId} with ${JSON.stringify({ muted, blocked, markAsRead, selfDestruct })}`);
+    const result = await ChatRepository.updateChat({ requestingUserId, requestedChatId, muted, blocked, markAsRead, selfDestruct });
+    return response.send(result);
+  }
 
-    const message = await ChatMessage.find(params.messageId);
-    if (!message) return response.notFound(`Message ${params.messageId} was not found.`);
-    message.created_at = convertUTCDateToLocalDate(message.created_at);
+  async clearChat({ auth, params, response }) {
+    const requestingUserId = auth.user.id; 
+    const requestedChatId = params.chatId;
+    log('CHAT', `User ${requestingUserId} clearing Chat ${requestedChatId}`);
+    const result = await ChatRepository.clearChat({ requestingUserId, requestedChatId });
+    return response.send(result);
+  }
 
-    const data = request.only(['encrypted', 'reEncrypting']);
-    message.content = data.encrypted.content;
-    message.backup = data.encrypted.backup;
-    message.edited = !data.reEncrypting;
-    await message.save();
+  async checkChatDestruction({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    log('CHAT', `User ${requestingUserId} checking destruction for Chat ${requestedChatId}`);
+    const result = await ChatRepository.checkChatDestruction({ requestedChatId });
+    return response.send(result);
+  }
 
-    broadcast('chat:*', `chat:${params.chatId}`, 'chat:updateMessage', message);
+  async fetchMessages({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    log('CHAT', `User ${requestingUserId} requesting Messages for Chat ${requestedChatId}`);
+    const { messages } = await ChatRepository.fetchMessages({ requestingUserId, requestedChatId });
+    return response.send({ messages });
+  }
 
-    return message;
+  async sendMessage({ auth, params, request, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    const { backup, content } = request.only('encryptedContent').encryptedContent;
+    log('CHAT', `User ${requestingUserId} sending encrypted Message for Chat ${requestedChatId}`);
+    const { message } = await ChatRepository.sendMessage({ requestingUserId, requestedChatId, backup, content });
+    return response.send({ message });
+  }
 
+  async editMessage({ auth, params, request, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    const requestedMessageId = params.messageId;
+    const { backup, content } = request.only('encryptedContent').encryptedContent;
+    const reEncrypting = request.only('reEncrypting').reEncrypting;
+    log('CHAT', `User ${requestingUserId} ${reEncrypting ? 're-encrypting' : 'editing'} Message ${requestedMessageId} for Chat ${requestedChatId}`);
+    const { message } = await ChatRepository.editMessage({ requestingUserId, requestedChatId, requestedMessageId, backup, content, reEncrypting });
+    return response.send({ message });
   }
 
   async deleteMessage({ auth, params, response }) {
-
-    const [chat, message] = await Promise.all([
-      UserChat.query().where('chat_id', params.chatId).andWhere('user_id', auth.user.id).first(),
-      ChatMessage.find(params.messageId)
-    ]);
-    if (!chat) return response.notFound(`Chat ${params.chatId} was not found.`);
-    if (!message) return response.notFound(`Message ${params.messageId} was not found.`);
-
-    message.content = '';
-    message.deleted = true;
-
-    if (message.user_id === auth.user.id) {
-      await message.save();
-      broadcast('chat:*', `chat:${params.chatId}`, 'chat:updateMessage', message);
-    }
-
-    else {
-      const deletedMessages = JSON.parse(chat.toJSON().deleted_messages);
-      deletedMessages.push(params.messageId);
-      chat.deleted_messages = JSON.stringify(deletedMessages);
-      await chat.save();
-    }
-
-    return message;
-
-  }
-
-  async checkSelfDestruct({ params, response }) {
-
-    const chat = await Chat.find(params.chatId);
-    if (!chat) return response.notFound(`Chat ${params.chatId} was not found.`);
-
-    const messages = (await chat.messages().fetch()).toJSON() || [];
-    const now = new Date(new Date().toISOString().replace("T", " ").split('.')[0]).getTime();
-    const timer = 1000 * 60 * 60 * 24;
-    const toDelete = [];
-
-    messages
-      .filter(message => message.self_destruct)
-      .reverse()
-      .some((message, index) => {
-        const dateDelta = now - new Date(message.created_at).getTime();
-        if (dateDelta > timer) {
-          toDelete.push({ index, id: message.id });
-          return false;
-        }
-        return true;
-      });
-
-    const toDeletePromises = [];
-    toDelete.forEach(async ({ index, id }) => {
-      messages.splice(index, 1);
-      toDeletePromises.push(ChatMessage.query().where('id', id).delete());
-    });
-    await Promise.all(toDeletePromises);
-
-    broadcast('chat:*', `chat:${params.chatId}`, 'chat:deleteMessages', toDelete);
-
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    const requestedMessageId = params.messageId;
+    log('CHAT', `User ${requestingUserId} deleting Message ${requestedMessageId} for Chat ${requestedChatId}`);
+    const { message } = await ChatRepository.deleteMessage({ requestingUserId, requestedChatId, requestedMessageId });
+    return response.send({ message });
   }
 
 }

@@ -5,14 +5,12 @@ import storage from 'redux-persist/lib/storage';
 
 import chat from './reducers/chatReducer';
 import user from './reducers/userReducer';
-import friend from './reducers/friendReducer';
 import encryption from './reducers/encryptionReducer';
 import socket from './reducers/socketReducer';
 
 const appReducer = combineReducers({
     user,
     chat,
-    friend,
     encryption,
     socket,
 });
