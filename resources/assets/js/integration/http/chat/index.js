@@ -1,47 +1,52 @@
 import axios from 'axios';
 import logger from '../../../common/logger';
 
-export function fetchChats(userId) {
-  logger.log('CHAT', 'HTTP', `Fetching Chats for User ${userId}`);
-  return axios.get(`/api/chat`).then(response => ({ chats: response.data }));
+export function fetchChats() {
+  logger.log('CHAT', 'HTTP', `Fetching Chats`);
+  return axios.get(`/api/chat`).then(response => response.data);
 }
 
-export function fetchInfo(chatId) {
-  logger.log('CHAT', 'HTTP', `Fetching Info for Chat ${chatId}`);
+export function fetchChat(chatId) {
+  logger.log('CHAT', 'HTTP', `Fetching Chat ${chatId}`);
   return axios.get(`/api/chat/${chatId}`).then(response => response.data);
 }
 
-export function createChat(members) {
-  logger.log('CHAT', 'HTTP', `Creating Chat for Members`, members);
-  return axios.post(`/api/chat/`, { members }).then(response => response.data);
+export function createChat(friendIds) {
+  logger.log('CHAT', 'HTTP', `Creating Chat for Members`, friendIds);
+  return axios.post(`/api/chat/`, { friendIds }).then(response => response.data);
 }
 
 export function updateChat(chatId, payload) {
   logger.log('CHAT', 'HTTP', `Updating Chat ${chatId} -> ${JSON.stringify(payload)}`);
-  return axios.put(`/api/chat/${chatId}`, payload);
-}
-
-export function checkSelfDestruct(chatId) {
-  logger.log('CHAT', 'HTTP', `Checking Self Destruct for Chat ${chatId}`);
-  return axios.delete(`/api/chat/${chatId}/selfDestruct`);
+  return axios.put(`/api/chat/${chatId}`, payload).then(response => response.data);
 }
 
 export function clearChat(chatId) {
   logger.log('CHAT', 'HTTP', `Clearing Chat ${chatId}`);
-  return axios.delete(`/api/chat/${chatId}`);
+  return axios.delete(`/api/chat/${chatId}`).then(response => response.data);
 }
 
-export function sendMessage(chatId, userId, encrypted, selfDestruct) {
+export function checkSelfDestruct(chatId) {
+  logger.log('CHAT', 'HTTP', `Checking Self Destruct for Chat ${chatId}`);
+  return axios.delete(`/api/chat/${chatId}/destruction`).then(response => response.data);
+}
+
+export function fetchMessages(chatId) {
+  logger.log('CHAT', 'HTTP', `Fetching Messages for Chat ${chatId}`);
+  return axios.get(`/api/chat/${chatId}/message/`).then(response => response.data);
+}
+
+export function sendMessage(chatId, userId, encryptedContent) {
   logger.log('CHAT', 'HTTP', `Sending Message from User ${userId} to Chat ${chatId}`);
-  return axios.post(`/api/chat/${chatId}/message/`, { userId, encrypted, selfDestruct });
+  return axios.post(`/api/chat/${chatId}/message/`, { encryptedContent }).then(response => response.data);
 }
 
-export function editMessage(chatId, messageId, encrypted, reEncrypting) {
+export function editMessage(chatId, messageId, encryptedContent, reEncrypting) {
   logger.log('CHAT', 'HTTP', `Editing Message ${messageId} on Chat ${chatId}`);
-  return axios.put(`/api/chat/${chatId}/message/${messageId}`, { encrypted, reEncrypting });
+  return axios.put(`/api/chat/${chatId}/message/${messageId}`, { encryptedContent, reEncrypting }).then(response => response.data);
 }
 
 export function deleteMessage(chatId, messageId) {
   logger.log('CHAT', 'HTTP', `Deleting Message ${messageId} from Chat ${chatId}`);
-  return axios.delete(`/api/chat/${chatId}/message/${messageId}`);
+  return axios.delete(`/api/chat/${chatId}/message/${messageId}`).then(response => response.data);
 }

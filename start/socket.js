@@ -16,6 +16,5 @@
 const Ws = use('Ws')
 
 Ws.channel('chat:*', 'ChatRealtimeController')
-Ws.channel('user_chat:*', 'UserChatRealtimeController')
 
 

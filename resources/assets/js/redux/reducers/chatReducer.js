@@ -1,5 +1,4 @@
 
-import { monitorMessages } from '../../integration/ws/chat'
 import logger from '../../common/logger';
 import { convertUTCDateToLocalDate } from '../../common/date';
 import { reEncryptMessages } from '../../common/encryption';
@@ -11,10 +10,17 @@ export default function reducer(state = {
 
     case "FETCH_CHATS_FULFILLED": {
       logger.log('CHAT', `Redux -> Fetched Chats: `, action.payload);
-      const findChat = chatId => state.chats.find(candidate => candidate.chatId === chatId) || {};
-      const chats = action.payload.chats.map(chat => ({ ...chat, ...findChat(chat.chatId) }));
-      chats.forEach(chat => monitorMessages(chat.chatId, action.meta.userId));
-      chats.forEach(chat => chat.closed = (chat.messages || []).length === 0);
+      const chats = action.payload.chats.map(chat => {
+        const previousChat = state.chats.find(candidate => candidate.chatId === chat.chatId) || {};
+        const previousMessages = previousChat.messages || [];
+        return {
+          ...chat,
+          ...previousChat,
+          messages: previousMessages,
+          closed: previousChat.closed || !previousMessages.length,
+          deletedMessages: chat.deletedMessages,
+        }
+      });
       const openChats = chats.filter(candidate => !candidate.closed);
       if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => openChats[index].closed = true);
       return {
@@ -23,25 +29,30 @@ export default function reducer(state = {
       };
     }
 
-    case "FETCH_CHAT_INFO_FULFILLED": {
-      logger.log('CHAT', `Redux -> Fetched Chat Info: `, action.payload);
+    case "FETCH_CHAT_FULFILLED": {
+      logger.log('CHAT', `Redux -> Fetched Chat: `, action.payload);
       const chatId = action.meta.chatId;
-      const messages = action.payload.messages;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
-      chat.icon = action.payload.icon;
-      chat.title = action.payload.title;
-      chat.subtitle = action.payload.subtitle;
-      chat.status = action.payload.status;
-      chat.publicKey = action.payload.publicKey;
-      chat.friendId = action.payload.friendId;
-      chat.muted = action.payload.muted;
-      chat.blocked = action.payload.blocked;
-      chat.selfDestruct = action.payload.selfDestruct;
-      chat.readDate = action.payload.readDate;
-      chat.friendReadDate = action.payload.friendReadDate;
-      chat.clearedDate = action.payload.clearedDate;
-      chat.messages = chat.blocked ? chat.messages || [] : messages;
+      if (chat.blocked) delete action.payload.messages;
+      Object.assign(chat, action.payload.chat);
+      return {
+        ...state,
+        chats,
+      };
+    }
+
+    case "FETCH_CHAT_MESSAGES_FULFILLED": {
+      logger.log('CHAT', `Redux -> Fetched Chat Messages: `, action.payload);
+      const chatId = action.meta.chatId;
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => candidate.chatId === chatId);
+      if (chat.blocked) return state;
+      const messages = action.payload.messages
+        .filter(message => new Date(message.updatedAt) >= new Date(chat.clearedDate))
+        .filter(message => !chat.deletedMessages.includes(message.messageId))
+        .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId));
+      chat.messages = messages;
       return {
         ...state,
         chats,
@@ -87,7 +98,6 @@ export default function reducer(state = {
       chat.maximised = false;
       const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== created.chatId);
       if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
-      monitorMessages(chat.chatId, action.meta.userId);
       return {
         ...state,
         chats,
@@ -102,7 +112,6 @@ export default function reducer(state = {
       if (!chats.map(chat => chat.chatId).includes(chat.chatId)) chats.push(chat);
       const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== chat.chatId);
       if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
-      monitorMessages(chat.chatId, action.meta.userId);
       return {
         ...state,
         chats,
@@ -111,12 +120,12 @@ export default function reducer(state = {
 
     case "NEW_MESSAGE": {
       logger.log('CHAT', `Redux -> New Message: `, action.payload);
-      const chatId = action.meta.chatId;
       const message = action.payload.message;
+      const chatId = message.chatId;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (chat.blocked) return state;
-      if (!chat.muted && !window.document.hasFocus()) new Audio('/assets/sound/notification.ogg').play();
+      if (!chat.muted && !window.focused) new Audio('/assets/sound/notification.mp3').play();
       if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
       if (!chat.muted) {
         chat.closed = false;
@@ -133,12 +142,12 @@ export default function reducer(state = {
 
     case "UPDATE_MESSAGE": {
       logger.log('CHAT', `Redux -> Update Message: `, action.payload);
-      const chatId = action.meta.chatId;
       const message = action.payload.message;
+      const chatId = message.chatId;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (chat.blocked) return state;
-      const updated = chat.messages.find(candidate => candidate.id === message.id);
+      const updated = chat.messages.find(candidate => candidate.messageId === message.messageId);
       if (updated) {
         updated.content = message.content;
         updated.backup = message.backup;
@@ -148,6 +157,7 @@ export default function reducer(state = {
       else {
         chat.messages.push(message);
       }
+      chat.messages = chat.messages.sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId));
       return {
         ...state,
         chats,
@@ -156,13 +166,13 @@ export default function reducer(state = {
 
     case "ON_MESSAGES_DELETED": {
       logger.log('CHAT', `Redux -> On Messages Deleted: `, action.payload);
-      const chatId = action.meta.chatId;
+      const chatId = parseInt(action.payload.chatId);
       const messages = action.payload.messages;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (chat.blocked) return state;
       messages.forEach(message => {
-        const toDelete = chat.messages.find(candidate => candidate.id === message.id);
+        const toDelete = chat.messages.find(candidate => candidate.messageId === message.messageId);
         const index = chat.messages.indexOf(toDelete);
         chat.messages.splice(index, 1);
       });
@@ -201,25 +211,23 @@ export default function reducer(state = {
 
     case "DELETE_MESSAGE_FULFILLED": {
       logger.log('CHAT', `Redux -> Deleted Message: `, action.meta);
-      const chatId = action.meta.chatId;
-      const messageId = action.meta.messageId;
-      const origin = action.meta.origin;
+      const { chatId, messageId, origin } = action.meta;
       if (origin === 'sent') return state;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
-      chat.messages = chat.messages.filter(message => message.id !== messageId);
+      chat.messages = chat.messages.filter(message => message.messageId !== messageId);
       return {
         ...state,
         chats,
       };
     }
 
-    case "INFO_UPDATED": {
-      const { chatId, userId: thisUserId } = action.meta;
-      const { subtitle, selfDestruct, readDate, friendReadDate, userId: updatedUserId } = action.payload;
+    case "MARK_AS_READ": {
+      logger.log('CHAT', `Redux -> Mark As Read: `, action.meta, action.payload);
+      const { userId: thisUserId } = action.meta;
+      const { userId: updatedUserId, chatId, readDate, friendReadDate } = action.payload;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
-      if (selfDestruct !== undefined) chat.selfDestruct = selfDestruct;
       if (parseInt(updatedUserId) === parseInt(thisUserId)) {
         if (readDate) chat.readDate = readDate;
         return {
@@ -227,8 +235,6 @@ export default function reducer(state = {
           chats,
         };
       }
-      logger.log('CHAT', `Redux -> Info Updated: `, action.meta, action.payload);
-      if (subtitle) chat.subtitle = subtitle;
       if (friendReadDate) chat.friendReadDate = friendReadDate;
       return {
         ...state,
@@ -236,20 +242,31 @@ export default function reducer(state = {
       };
     }
 
+    case "SELF_DESTRUCT": {
+      logger.log('CHAT', `Redux -> Self Destruct: `, action.payload);
+      const { chatId, selfDestruct } = action.payload;
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => candidate.chatId === chatId);
+      chat.selfDestruct = selfDestruct;
+      return {
+        ...state,
+        chats,
+      };
+    }
+
     case "PUBLIC_KEY_UPDATED": {
-      logger.log('CHAT', `Redux -> Public Key Updated: `, action.payload, action.meta);
-      const { userId: thisUserId, chatId } = action.meta;
-      const { userId: updatedUserId, publicKey } = action.payload;
+      logger.log('CHAT', `Redux -> Public Key Updated (Chat): `, action.payload, action.meta);
+      const { userId: thisUserId } = action.meta;
+      const { userId: updatedUserId, chatId, publicKey } = action.payload;
       const { privateKey } = state;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (parseInt(updatedUserId) === parseInt(thisUserId)) return state;
-      chat.publicKey = publicKey;
       const lastFriendRead = convertUTCDateToLocalDate(new Date(chat.friendReadDate));
       const unreadMessages = [];
       chat.messages.slice(0).reverse().some(message => {
-        const messageDate = convertUTCDateToLocalDate(new Date(message.created_at));
-        if (messageDate > lastFriendRead && message.userId === thisUserId) {
+        const messageDate = convertUTCDateToLocalDate(new Date(message.createdAt));
+        if (messageDate > lastFriendRead && message.senderId === thisUserId) {
           unreadMessages.push(message);
           return false;
         }

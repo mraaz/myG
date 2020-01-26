@@ -23,6 +23,7 @@ class UserSchema extends Schema {
       table.string('provider_id', 254).nullable()
       table.string('provider', 254).nullable()
       table.enu('status', ['online', 'playing', 'afk', 'offline']).notNullable().defaultTo('offline')
+      table.enu('last_status', ['online', 'playing', 'afk', 'offline']).notNullable().defaultTo('offline')
       table.boolean('status_locked').notNullable().defaultTo(false)
       table.datetime('last_seen').nullable()
       table.string('public_key', 172).nullable()

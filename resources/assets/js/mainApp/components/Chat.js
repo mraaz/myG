@@ -4,10 +4,11 @@ import { connect } from 'react-redux';
 import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
 
-import { fetchInfoAction, sendMessageAction, editMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction } from '../../redux/actions/chatAction';
+import { fetchChatAction, fetchMessagesAction, sendMessageAction, editMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction } from '../../redux/actions/chatAction';
+import { fetchContactAction } from '../../redux/actions/userAction';
 import { enrichMessagesWithDates } from '../../common/chat';
 import { encryptMessage, decryptMessage } from '../../integration/encryption';
-import { convertUTCDateToLocalDate } from '../../common/date';
+import { convertUTCDateToLocalDate, formatDateTime } from '../../common/date';
 
 class Chat extends React.PureComponent {
 
@@ -24,7 +25,9 @@ class Chat extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.props.fetchInfo(this.props.chatId);
+    this.props.fetchChat(this.props.chatId);
+    this.props.fetchMessages(this.props.chatId);
+    if (this.props.contactId) this.props.fetchContact(this.props.contactId);
     setTimeout(() => this.props.checkSelfDestruct(this.props.chatId), 1000);
   }
 
@@ -35,7 +38,7 @@ class Chat extends React.PureComponent {
 
   scrollToLastMessage = () => {
     const lastMessage = this.props.messages[this.props.messages.length - 1] || {};
-    const lastMessageId = lastMessage.id;
+    const lastMessageId = lastMessage.messageId;
     const lastFriendRead = convertUTCDateToLocalDate(new Date(this.props.friendReadDate));
     const gotDecrypted = this.state.wasEncrypted && this.props.userPrivateKey;
     const hasNewMessage = this.state.lastMessageId !== lastMessageId;
@@ -52,12 +55,11 @@ class Chat extends React.PureComponent {
   }
 
   markAsRead = () => {
-    if (this.props.minimised || !this.props.userPrivateKey) return;
+    if (this.props.minimised || !this.props.userPrivateKey || !this.props.windowFocused) return;
     const lastReadDate = convertUTCDateToLocalDate(new Date(this.props.readDate));
-    const receivedMessages = this.props.messages.filter(message => parseInt(message.userId) !== parseInt(this.props.userId));
+    const receivedMessages = this.props.messages.filter(message => parseInt(message.userId) !== parseInt(this.props.userId) && !message.deleted);
     const lastReceivedMessage = receivedMessages[receivedMessages.length - 1] || {};
-    const lastReceivedMessageDate = convertUTCDateToLocalDate(new Date(lastReceivedMessage.created_at));
-    if (lastReceivedMessageDate > lastReadDate) console.log(lastReceivedMessageDate, lastReadDate, lastReceivedMessage.created_at, this.props.readDate)
+    const lastReceivedMessageDate = convertUTCDateToLocalDate(new Date(lastReceivedMessage.createdAt));
     if (lastReceivedMessageDate > lastReadDate) this.props.updateChat(this.props.chatId, { markAsRead: true });
   }
 
@@ -77,16 +79,16 @@ class Chat extends React.PureComponent {
   }
 
   decryptMessage = (message) => {
-    const origin = parseInt(message.user_id) === parseInt(this.props.userId) ? 'sent' : 'received';
+    const origin = parseInt(message.senderId) === parseInt(this.props.userId) ? 'sent' : 'received';
     const content = decryptMessage(origin === 'sent' ? message.backup : message.content, this.props.userPrivateKey);
     return { ...message, content };
   }
 
   editLastMessage = () => {
-    const sentMessages = this.props.messages.filter(message => parseInt(message.user_id) === parseInt(this.props.userId) && !message.deleted);
+    const sentMessages = this.props.messages.filter(message => parseInt(message.senderId) === parseInt(this.props.userId) && !message.deleted);
     const lastSentMessage = sentMessages[sentMessages.length - 1];
     if (!lastSentMessage) return;
-    this.setState({ editing: lastSentMessage.id });
+    this.setState({ editing: lastSentMessage.messageId });
   }
 
   onEdit = () => {
@@ -166,7 +168,7 @@ class Chat extends React.PureComponent {
 
         <div
           className="chat-component-header-icon clickable"
-          onClick={() => window.location.replace(`/profile/${this.props.friendId}`)}
+          onClick={() => window.location.replace(`/profile/${this.props.contactId}`)}
           style={{ backgroundImage: `url('${this.props.icon}')` }}
         />
         <div className={`chat-component-header-status-indicator chat-component-header-status-indicator-${this.props.status}`} />
@@ -213,9 +215,9 @@ class Chat extends React.PureComponent {
 
   renderBody = () => {
     const lastMessage = this.props.messages[this.props.messages.length - 1] || {};
-    const lastMessageDate = convertUTCDateToLocalDate(new Date(lastMessage.created_at));
+    const lastMessageDate = convertUTCDateToLocalDate(new Date(lastMessage.createdAt));
     const lastFriendRead = convertUTCDateToLocalDate(new Date(this.props.friendReadDate));
-    const lastMessageWasMine = parseInt(lastMessage.user_id) === parseInt(this.props.userId);
+    const lastMessageWasMine = parseInt(lastMessage.senderId) === parseInt(this.props.userId);
     const friendHasRead = lastMessageWasMine && lastFriendRead >= lastMessageDate;
     return (
       <div
@@ -244,13 +246,13 @@ class Chat extends React.PureComponent {
   renderMessage = (message) => {
     return (
       <ChatMessage
-        key={message.id}
+        key={message.messageId}
         message={this.decryptMessage(message)}
         userId={this.props.userId}
         chatId={this.props.chatId}
-        messageId={message.id}
+        messageId={message.messageId}
         messageListRef={this.messageListRef}
-        editing={this.state.editing === message.id}
+        editing={this.state.editing === message.messageId}
         onEdit={this.onEdit}
         editMessage={this.editMessage}
       />
@@ -314,12 +316,18 @@ class Chat extends React.PureComponent {
 function mapStateToProps(state, props) {
   const chat = state.chat.chats.find(chat => chat.chatId === props.chatId) || {};
   const messages = enrichMessagesWithDates(chat.messages || []);
+  const contacts = chat.contacts.filter(contactId => contactId !== props.userId);
+  const contactId = contacts.length === 1 && contacts[0];
+  const contact = (contactId && state.user.contacts.find(contact => contact.contactId === contactId)) || {};
+  const contactSubtitle = contact.status && contact.status === 'offline' ? `${formatDateTime(contact.lastSeen)}` : `${contact.status}`;
   return {
     messages,
-    icon: chat.icon || '',
-    title: chat.title || '',
-    subtitle: chat.subtitle || '',
-    status: chat.status || 'offline',
+    contacts,
+    contactId,
+    icon: chat.icon || contact.icon || '',
+    title: chat.title || contact.name || '',
+    subtitle: chat.subtitle || contactSubtitle || '',
+    status: chat.status || contact.status || 'offline',
     blocked: chat.blocked || false,
     muted: chat.muted || false,
     selfDestruct: chat.selfDestruct || false,
@@ -327,8 +335,7 @@ function mapStateToProps(state, props) {
     friendReadDate: chat.friendReadDate || new Date(0),
     maximised: chat.maximised || false,
     minimised: chat.minimised || false,
-    friendId: chat.friendId,
-    friendPublicKey: chat.publicKey,
+    friendPublicKey: contact.publicKey,
     userPublicKey: state.encryption.publicKey,
     userPrivateKey: state.encryption.privateKey,
     disconnected: state.socket.disconnected,
@@ -337,9 +344,11 @@ function mapStateToProps(state, props) {
 
 function mapDispatchToProps(dispatch) {
   return ({
+    fetchChat: (chatId) => dispatch(fetchChatAction(chatId)),
+    fetchMessages: (chatId) => dispatch(fetchMessagesAction(chatId)),
+    fetchContact: (chatId) => dispatch(fetchContactAction(chatId)),
     sendMessage: (chatId, userId, content, selfDestruct) => dispatch(sendMessageAction(chatId, userId, content, selfDestruct)),
     editMessage: (chatId, messageId, content) => dispatch(editMessageAction(chatId, messageId, content)),
-    fetchInfo: (chatId) => dispatch(fetchInfoAction(chatId)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     updateChatState: (chatId, state) => dispatch(updateChatStateAction(chatId, state)),
     checkSelfDestruct: (chatId) => dispatch(checkSelfDestructAction(chatId)),

@@ -47,7 +47,7 @@ class ChatMessage extends React.Component {
 
   renderOptions = () => {
     if (!this.state.showOptionsMenu || this.props.message.deleted) return;
-    const origin = parseInt(this.props.message.user_id) === this.props.userId ? 'sent' : 'received';
+    const origin = parseInt(this.props.message.senderId) === this.props.userId ? 'sent' : 'received';
     const sentStyle = 'chat-component-message-options-menu-sent';
     const receivedStyle = 'chat-component-message-options-menu-received';
     const directionStyle = `chat-component-message-options-menu-${this.shouldRenderOptionsUpwards() ? 'upwards' : 'downwards'}`;
@@ -80,7 +80,7 @@ class ChatMessage extends React.Component {
     const { message } = this.props;
     return (
       <div
-        key={message.id}
+        key={message.messageId}
         className="chat-component-message chat-component-message-sent"
       >
         <textarea
@@ -108,14 +108,14 @@ class ChatMessage extends React.Component {
 
   render() {
     const { message } = this.props;
-    const origin = parseInt(message.user_id) === this.props.userId ? 'sent' : 'received';
+    const origin = parseInt(message.senderId) === this.props.userId ? 'sent' : 'received';
     const deletedStyle = message.deleted && 'chat-component-message-deleted';
-    const selfDestructStyle = message.self_destruct && 'chat-component-message-self-destruct';
+    const selfDestructStyle = message.selfDestruct && 'chat-component-message-self-destruct';
     if (this.state.editing) return this.renderInput();
     if (message.isDateDivisor) return this.renderDateDivisor();
     return (
       <div
-        key={message.id}
+        key={message.messageId}
         ref={this.messageRef}
         className={`chat-component-message chat-component-message-${origin} ${deletedStyle} ${selfDestructStyle}`}
         onMouseEnter={() => this.setState({ showOptionsButton: true })}
@@ -152,7 +152,7 @@ class ChatMessage extends React.Component {
             <div className="chat-component-message-side-container">
               {!!message.edited && !message.deleted && <p className="chat-component-message-edited">edited</p>}
               <p className="chat-component-message-date">
-                {formatAMPM(convertUTCDateToLocalDate(new Date(message.created_at)))}
+                {formatAMPM(convertUTCDateToLocalDate(new Date(message.createdAt)))}
               </p>
             </div>
           </div>

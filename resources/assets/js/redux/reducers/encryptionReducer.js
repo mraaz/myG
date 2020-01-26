@@ -1,7 +1,7 @@
 
 
 import logger from '../../common/logger';
-import { storePublicKey } from '../../integration/http/encryption';
+import { storePublicKey } from '../../integration/http/user';
 
 export default function reducer(state = {
   pin: null,
@@ -12,7 +12,7 @@ export default function reducer(state = {
   switch (action.type) {
 
     case "GENERATE_KEYS": {
-      logger.log('ENCRYPTION', `Redux -> Keys Generated: `, action.payload);
+      logger.log('USER', `Redux -> Keys Generated: `, action.payload);
       storePublicKey(action.payload.publicKey);
       return {
         ...state,
@@ -24,7 +24,7 @@ export default function reducer(state = {
     }
 
     case "VALIDATE_PIN": {
-      logger.log('ENCRYPTION', `Redux -> Validating Pin: ${action.meta.pin}`, action.payload);
+      logger.log('USER', `Redux -> Validating Pin: ${action.meta.pin}`, action.payload);
       if (action.meta.publicKey !== action.payload.publicKey) return { ...state, invalidPin: true }
       storePublicKey(action.payload.publicKey);
       return {

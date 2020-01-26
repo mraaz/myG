@@ -4,12 +4,35 @@ import logger from '../../common/logger';
 export default function reducer(state = {
   status: 'online',
   isStatusLocked: false,
+  contacts: [],
 }, action) {
   switch (action.type) {
 
+    case "FETCH_CONTACTS_FULFILLED": {
+      logger.log('USER', `Redux -> Fetch Contacts: `, action.payload);
+      const { contacts } = action.payload;
+      return {
+        ...state,
+        contacts,
+      };
+    }
+
+    case "FETCH_CONTACT_FULFILLED": {
+      logger.log('USER', `Redux -> Fetch Contact: `, action.payload);
+      const { contact: newContact } = action.payload;
+      const contacts = JSON.parse(JSON.stringify(state.contacts));
+      const contact = contacts.find(contact => contact.contactId === newContact.contactId);
+      if (contact) Object.assign(contact, newContact);
+      else contacts.push(contact);
+      return {
+        ...state,
+        contacts,
+      };
+    }
+
     case "FETCH_STATUS_FULFILLED": {
       logger.log('USER', `Redux -> Fetch Status: `, action.payload);
-      const { status, isStatusLocked } = action.payload;
+      const { value: status, locked: isStatusLocked } = action.payload.status;
       return {
         ...state,
         status: status === 'offline' && !isStatusLocked ? 'online' : status,
@@ -19,19 +42,37 @@ export default function reducer(state = {
 
     case "UPDATE_STATUS_FULFILLED": {
       logger.log('USER', `Redux -> Update Status: `, action.payload);
+      const { value: status, locked: isStatusLocked } = action.payload.status;
       return {
         ...state,
-        status: action.payload.status,
-        isStatusLocked: action.payload.isStatusLocked,
+        status,
+        isStatusLocked,
       };
     }
 
-    case "ON_UPDATE_STATUS": {
-      logger.log('USER', `Redux -> On Update Status: `, action.payload);
+    case "ON_STATUS_CHANGED": {
+      logger.log('USER', `Redux -> On Status Changed: `, action.payload);
+      const { contactId, status, lastSeen } = action.payload;
+      const contacts = JSON.parse(JSON.stringify(state.contacts));
+      const contact = contacts.find(contact => contact.contactId === contactId);
+      if (contact) Object.assign(contact, { status, lastSeen });
       return {
         ...state,
-        status: action.payload.status,
-        isStatusLocked: action.payload.isStatusLocked,
+        contacts,
+      };
+    }
+
+    case "PUBLIC_KEY_UPDATED": {
+      logger.log('CHAT', `Redux -> Public Key Updated (User): `, action.payload, action.meta);
+      const { userId: thisUserId } = action.meta;
+      const { userId: updatedUserId, publicKey } = action.payload;
+      const contacts = JSON.parse(JSON.stringify(state.contacts));
+      const contact = contacts.find(contact => contact.contactId === updatedUserId);
+      if (parseInt(updatedUserId) === parseInt(thisUserId)) return state;
+      contact.publicKey = publicKey;
+      return {
+        ...state,
+        contacts,
       };
     }
 
