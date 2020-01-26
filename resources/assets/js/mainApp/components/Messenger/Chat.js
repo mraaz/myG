@@ -4,11 +4,10 @@ import { connect } from 'react-redux';
 import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
 
-import { fetchChatAction, fetchMessagesAction, sendMessageAction, editMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction } from '../../redux/actions/chatAction';
-import { fetchContactAction } from '../../redux/actions/userAction';
-import { enrichMessagesWithDates } from '../../common/chat';
-import { encryptMessage, decryptMessage } from '../../integration/encryption';
-import { convertUTCDateToLocalDate, formatDateTime } from '../../common/date';
+import { prepareChatAction, sendMessageAction, editMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction } from '../../../redux/actions/chatAction';
+import { enrichMessagesWithDates } from '../../../common/chat';
+import { encryptMessage, decryptMessage } from '../../../integration/encryption';
+import { convertUTCDateToLocalDate, formatDateTime } from '../../../common/date';
 
 class Chat extends React.PureComponent {
 
@@ -25,9 +24,7 @@ class Chat extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.props.fetchChat(this.props.chatId);
-    this.props.fetchMessages(this.props.chatId);
-    if (this.props.contactId) this.props.fetchContact(this.props.contactId);
+    this.props.prepareChat(this.props.chatId, this.props.contactId);;
     setTimeout(() => this.props.checkSelfDestruct(this.props.chatId), 1000);
   }
 
@@ -344,9 +341,7 @@ function mapStateToProps(state, props) {
 
 function mapDispatchToProps(dispatch) {
   return ({
-    fetchChat: (chatId) => dispatch(fetchChatAction(chatId)),
-    fetchMessages: (chatId) => dispatch(fetchMessagesAction(chatId)),
-    fetchContact: (chatId) => dispatch(fetchContactAction(chatId)),
+    prepareChat: (chatId, contactId) => dispatch(prepareChatAction(chatId, contactId)),
     sendMessage: (chatId, userId, content, selfDestruct) => dispatch(sendMessageAction(chatId, userId, content, selfDestruct)),
     editMessage: (chatId, messageId, content) => dispatch(editMessageAction(chatId, messageId, content)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),

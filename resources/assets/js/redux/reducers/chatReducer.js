@@ -5,8 +5,57 @@ import { reEncryptMessages } from '../../common/encryption';
 
 export default function reducer(state = {
   chats: [],
+  preparingMessenger: false,
 }, action) {
   switch (action.type) {
+
+    case "PREPARE_MESSENGER_PENDING": {
+      return {
+        ...state,
+        preparingMessenger: true,
+      };
+    }
+
+    case "PREPARE_MESSENGER_FULFILLED": {
+      logger.log('CHAT', `Redux -> Messenger Ready (Chat): `, action.payload);
+      const chats = action.payload.chats.map(chat => {
+        const previousChat = state.chats.find(candidate => candidate.chatId === chat.chatId) || {};
+        const previousMessages = previousChat.messages || [];
+        return {
+          ...chat,
+          ...previousChat,
+          messages: previousMessages,
+          closed: previousChat.closed || !previousMessages.length,
+          deletedMessages: chat.deletedMessages,
+        }
+      });
+      const openChats = chats.filter(candidate => !candidate.closed);
+      if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => openChats[index].closed = true);
+      return {
+        ...state,
+        chats,
+        preparingMessenger: false,
+      };
+    }
+
+    case "PREPARE_CHAT_FULFILLED": {
+      logger.log('CHAT', `Redux -> Chat ${action.meta.chatId} Ready (Chat): `, action.payload);
+      const { chatId } = action.meta;
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => candidate.chatId === chatId);
+      const messages = action.payload.messages
+        .filter(message => new Date(message.updatedAt) >= new Date(chat.clearedDate))
+        .filter(message => !chat.deletedMessages.includes(message.messageId))
+        .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId));
+      if (!chat.blocked) {
+        Object.assign(chat, action.payload.chat);
+        chat.messages = messages;
+      }
+      return {
+        ...state,
+        chats,
+      };
+    }
 
     case "FETCH_CHATS_FULFILLED": {
       logger.log('CHAT', `Redux -> Fetched Chats: `, action.payload);
@@ -34,7 +83,7 @@ export default function reducer(state = {
       const chatId = action.meta.chatId;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
-      if (chat.blocked) delete action.payload.messages;
+      if (chat.blocked) delete action.payload.chat.messages;
       Object.assign(chat, action.payload.chat);
       return {
         ...state,

@@ -8,6 +8,33 @@ export default function reducer(state = {
 }, action) {
   switch (action.type) {
 
+    case "PREPARE_MESSENGER_FULFILLED": {
+      logger.log('CHAT', `Redux -> Messenger Ready (User): `, action.payload);
+      const { contacts } = action.payload;
+      const { value: currentStatus, locked: isStatusLocked } = action.payload.status;
+      const status = currentStatus === 'offline' && !isStatusLocked ? 'online' : currentStatus;
+      return {
+        ...state,
+        contacts,
+        status, 
+        isStatusLocked,
+      };
+    }
+
+    case "PREPARE_CHAT_FULFILLED": {
+      if (!action.payload.contact) return state;
+      logger.log('CHAT', `Redux -> Chat ${action.meta.chatId} Ready (User): `, action.payload);
+      const { contact: newContact } = action.payload;
+      const contacts = JSON.parse(JSON.stringify(state.contacts));
+      const contact = contacts.find(contact => contact.contactId === newContact.contactId);
+      if (contact) Object.assign(contact, newContact);
+      else contacts.push(newContact);
+      return {
+        ...state,
+        contacts,
+      };
+    }
+
     case "FETCH_CONTACTS_FULFILLED": {
       logger.log('USER', `Redux -> Fetch Contacts: `, action.payload);
       const { contacts } = action.payload;

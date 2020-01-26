@@ -3,11 +3,15 @@ import cryptico from 'cryptico';
 import logger from '../../common/logger';
 
 export function generateKeys(pin) {
-  logger.log('USER', 'Generating Keys for Pin', pin);
-  if (!pin) pin = generatePin(12);
-  const privateKey = cryptico.generateRSAKey(pin, 1024);
-  const publicKey = cryptico.publicKeyString(privateKey);
-  return { pin, privateKey, publicKey };
+  return new Promise(resolve => {
+    setTimeout(() => {
+      logger.log('USER', 'Generating Keys for Pin', pin);
+      if (!pin) pin = generatePin(12);
+      const privateKey = cryptico.generateRSAKey(pin, 1024);
+      const publicKey = cryptico.publicKeyString(privateKey);
+      resolve({ encryption: { pin, privateKey, publicKey } });
+    });
+  });
 }
 
 export function encryptMessage(message, publicKey, privateKey) {
@@ -22,7 +26,7 @@ export function decryptMessage(message, privateKey) {
 
 function generatePin(length) {
   const getInt = () => Math.floor(Math.random() * 10);
-  const getChar = () => (Math.random().toString(36)+'00000000000000000').slice(2, 3);
+  const getChar = () => (Math.random().toString(36) + '00000000000000000').slice(2, 3);
   const isLower = () => Math.random() >= 0.5;
   const isInt = () => Math.random() >= 0.8;
   const getPin = () => isInt() ? getInt() : isLower() ? getChar() : getChar().toUpperCase();

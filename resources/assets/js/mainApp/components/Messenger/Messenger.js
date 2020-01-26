@@ -3,22 +3,21 @@ import React from "react";
 import { connect } from 'react-redux';
 
 import Chat from './Chat';
-import StatusTimerWrapper from './StatusTimerWrapper';
-import WindowFocusHandler from './WindowFocusHandler';
+import StatusTimerWrapper from '../StatusTimerWrapper';
+import WindowFocusHandler from '../WindowFocusHandler';
 
-import { attemptSocketConnection, monitorChats, closeSubscription } from '../../integration/ws/chat';
-import { fetchChatsAction, createChatAction, openChatAction, closeChatAction, clearChatAction } from '../../redux/actions/chatAction';
-import { fetchContactsAction, fetchStatusAction, updateStatusAction } from '../../redux/actions/userAction';
-import { generateKeysAction, validatePinAction } from '../../redux/actions/encryptionAction';
-import { decryptMessage } from '../../integration/encryption';
-import { formatAMPM, convertUTCDateToLocalDate } from '../../common/date';
-import { copyToClipboard } from '../../common/clipboard';
-import { STATUS_ENUM, compareStatus } from '../../common/status';
+import { attemptSocketConnection, monitorChats, closeSubscription } from '../../../integration/ws/chat';
+import { createChatAction, openChatAction, closeChatAction, clearChatAction } from '../../../redux/actions/chatAction';
+import { updateStatusAction } from '../../../redux/actions/userAction';
+import { generateKeysAction, validatePinAction } from '../../../redux/actions/encryptionAction';
+import { decryptMessage } from '../../../integration/encryption';
+import { formatAMPM, convertUTCDateToLocalDate } from '../../../common/date';
+import { copyToClipboard } from '../../../common/clipboard';
+import { STATUS_ENUM, compareStatus } from '../../../common/status';
 
 class Messenger extends React.PureComponent {
 
   state = {
-    loaded: false,
     showingSettings: false,
     changingStatus: false,
     searchInput: '',
@@ -36,16 +35,8 @@ class Messenger extends React.PureComponent {
     return { invalidPin: props.invalidPin }
   }
 
-  componentDidUpdate() {
-    if (!this.state.loaded && !this.props.loading) {
-      monitorChats(this.props.userId);
-      if (!this.props.publicKey) this.props.generateKeys();
-      if (this.props.pin) this.props.generateKeys(this.props.pin);
-      this.props.fetchChats();
-      this.props.fetchContacts();
-      this.props.fetchStatus();
-      this.setState({ loaded: true });
-    }
+  componentDidMount() {
+    monitorChats(this.props.userId);
   }
 
   componentWillUnmount() {
@@ -364,7 +355,6 @@ class Messenger extends React.PureComponent {
   }
 
   render() {
-    if (!this.state.loaded) return null;
     return (
       <section id="messenger">
 
@@ -413,10 +403,7 @@ function mapDispatchToProps(dispatch) {
     createChat: (contacts, userId) => dispatch(createChatAction(contacts, userId)),
     openChat: chatId => dispatch(openChatAction(chatId)),
     closeChat: chatId => dispatch(closeChatAction(chatId)),
-    fetchChats: () => dispatch(fetchChatsAction()),
-    fetchContacts: () => dispatch(fetchContactsAction()),
-    fetchStatus: () => dispatch(fetchStatusAction()),
-    generateKeys: pin => dispatch(generateKeysAction(pin)),
+    generateKeys: () => dispatch(generateKeysAction()),
     validatePin: (pin, publicKey) => dispatch(validatePinAction(pin, publicKey)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
     updateStatus: (status, forcedStatus) => dispatch(updateStatusAction(status, forcedStatus)),
