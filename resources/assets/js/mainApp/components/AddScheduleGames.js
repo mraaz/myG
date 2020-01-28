@@ -65,10 +65,11 @@ export default class AddScheduleGames extends Component {
   }
 
   handleChange_game_name = (entered_name) => {
-    if (/['/.%#$,;`\\]/.test(entered_name)) {
+    if (/['/.%#$,;`\\]/.test(entered_name.value)) {
       toast.success(<Toast_style text={'Sorry mate! Game name can not have invalid fields'} />)
       return
     }
+    console.log(entered_name)
 
     this.setState(
       {
@@ -78,7 +79,7 @@ export default class AddScheduleGames extends Component {
       },
       () => {
         if (entered_name) {
-          switch (entered_name.label) {
+          switch (entered_name.value) {
             case 'Dota 2':
               this.setState({ games: true })
               break

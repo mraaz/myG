@@ -114,7 +114,7 @@ export async function SubmitDataFunction(myG) {
 
   try {
     const post = axios.post('/api/ScheduleGame', {
-      game_name_box: myG.game_name_box.label,
+      game_name_box: myG.game_name_box.value,
       selected_region: myRegion,
       selected_experience: myExperience,
       start_date_time: myG.startDate,

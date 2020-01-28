@@ -11,8 +11,6 @@ export default class ScheduledGamePost extends Component {
     this.state = {}
   }
 
-  componentWillMount() {}
-
   showPost = () => {
     switch (this.props.schedule_game.game_name) {
       case 'Dota 2':

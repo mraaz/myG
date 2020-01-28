@@ -560,12 +560,12 @@ export default class ScheduledGamePost_Default extends Component {
               callbackConfirm={this.callbackPostFileModalConfirm}></DeleteScheduleGameModal>
             <div className='expiry-info'>Expiry:&nbsp;{this.state.duration}</div>
             <div className='myFields'>
-              {this.state.region && <div> Region/s: {schedule_game.region} </div>}
+              {this.state.show_region && <div> Region/s: {schedule_game.region} </div>}
               <div> Start Time: {this.state.start_date.format('Do MMM YY, h:mm a')} </div>
               <div> End Time: {this.state.end_date.format('Do MMM YY, h:mm a')} </div>
-              {this.state.experience && <div> Experience: {schedule_game.experience} </div>}
-              {this.state.platform && <div> Platform: {schedule_game.platform} </div>}
-              {this.state.other && <div> Other: {schedule_game.other} </div>}
+              {this.state.show_experience && <div> Experience: {schedule_game.experience} </div>}
+              {this.state.show_platform && <div> Platform: {schedule_game.platform} </div>}
+              {this.state.show_other && <div> Other: {schedule_game.other} </div>}
               {!this.state.visibility_hidden_lnk && <div> Visibility: {this.state.visibility} </div>}
               {this.state.visibility_hidden_lnk && (
                 <div>
@@ -574,7 +574,7 @@ export default class ScheduledGamePost_Default extends Component {
                   inorder to join this game){' '}
                 </div>
               )}
-              {this.state.description && <div> Description: {schedule_game.description} </div>}
+              {this.state.show_description && <div> Description: {schedule_game.description} </div>}
             </div>
           </div>
           <div className='invitation-panel'>

@@ -377,7 +377,6 @@ class ScheduleGameController {
   }
 
   async show_one({ auth, request, response }) {
-    console.log('show_one')
     try {
       var getOne = await Database.from('schedule_games')
         .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
