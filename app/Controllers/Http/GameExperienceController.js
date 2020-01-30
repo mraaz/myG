@@ -3,6 +3,7 @@
 const Database = use('Database')
 const GameExperiences = use('App/Models/GameExperience')
 const GameNameController = use('./GameNameController')
+const TagController = use('./TagController')
 
 class GameExperienceController {
   async store({ auth, request, response }) {
@@ -10,9 +11,44 @@ class GameExperienceController {
       if (/['/.%#$;`\\]/.test(request.input('tags'))) {
         return false
       }
+      if (/['/.%#$;`\\]/.test(request.input('game_name'))) {
+        return false
+      }
+
+      let gameface = new GameNameController()
+
+      const mygame = await Database.table('game_names').where({
+        game_name: request.input('game_name'),
+      })
+
+      if (mygame.length == 0) {
+        var results = await gameface.store({ auth, request, response })
+        if (results == false) {
+          return
+        }
+        request.params.game_names_id = results.id
+      } else {
+        request.params.game_names_id = mygame[0].id
+      }
+
+      let tagme = new TagController()
+
+      var arrTags = request.input('tags').split(',')
+
+      for (var i = 0; i < arrTags.length; i++) {
+        var current_tag = await Database.table('tags').where({
+          game_names_id: request.params.game_names_id,
+          tag: arrTags[i],
+        })
+        if (current_tag.length == 0) {
+          request.params.tag = arrTags[i]
+          tagme.store_backend({ auth, request, response })
+        }
+      }
+
       try {
         const newGameExp = await GameExperiences.create({
-          game_name: request.input('game_name'),
+          game_names_id: request.params.game_names_id,
           user_id: auth.user.id,
           experience: request.input('experience'),
           comments: request.input('comments'),
@@ -23,13 +59,6 @@ class GameExperienceController {
           tags: request.input('tags'),
         })
 
-        let gameface = new GameNameController()
-
-        const mygame = await Database.table('game_names').where({
-          game_name: request.input('game_name'),
-        })
-
-        request.params.game_names_id = mygame[0].id
         gameface.incrementGameCounter({ auth, request, response })
       } catch (error) {
         console.log(error)

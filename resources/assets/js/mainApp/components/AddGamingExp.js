@@ -171,61 +171,6 @@ export default class AddGamingExp extends Component<*, State> {
     if (this.state.ratings_box != null || this.state.ratings_box != undefined) {
       myRatings = this.state.ratings_box.value
     }
-    //If you created a new game and you have selected it then and only then will we save this to the DB
-
-    var newGameID = ''
-    if (this.state.newValueCreated != '') {
-      var i
-      for (i = 0; i < this.state.newValueCreated.length; i++) {
-        if (this.state.value.value == this.state.newValueCreated[i]) {
-          try {
-            const post = await axios.post('/api/GameNames', {
-              game_name: this.state.value.value,
-            })
-            if (post.data == false) {
-              toast.success(<Toast_style text={'Sorry mate! Game name can not be created. Close window and try again'} />)
-              return
-            }
-            newGameID = post.data.id
-          } catch (error) {
-            console.log(error)
-          }
-          break
-        }
-      }
-    }
-    //If you created a new tag and you have selected it then and only then will we save this to the DB
-    if (this.state.newValueCreated_tags != '') {
-      var i
-      var j
-      var tmpnewGameID = ''
-      if (this.state.value.game_names_id == null) {
-        tmpnewGameID = newGameID
-      } else {
-        tmpnewGameID = this.state.value.game_names_id
-      }
-      for (i = 0; i < this.state.newValueCreated_tags.length; i++) {
-        for (j = 0; j < this.state.value_tags.length; j++) {
-          if (this.state.value_tags[j].label == this.state.newValueCreated_tags[i]) {
-            if (/['/.%#$,;`\\]/.test(this.state.newValueCreated_tags[i])) {
-              toast.success(<Toast_style text={'Sorry mate! Tags can not have invalid fields'} />)
-              return
-            }
-            try {
-              if (tmpnewGameID != '') {
-                const post = axios.post('/api/Tags', {
-                  game_names_id: tmpnewGameID,
-                  tag: this.state.newValueCreated_tags[i],
-                })
-              }
-            } catch (error) {
-              console.log(error)
-            }
-            break
-          }
-        }
-      }
-    }
 
     if (self.state.value_tags !== null && self.state.value_tags.length !== 0) {
       if (myTags == null) {
