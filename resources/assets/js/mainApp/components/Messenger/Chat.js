@@ -6,7 +6,7 @@ import ChatInput from './ChatInput';
 
 import { prepareChatAction, sendMessageAction, editMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction } from '../../../redux/actions/chatAction';
 import { enrichMessagesWithDates } from '../../../common/chat';
-import { encryptMessage, decryptMessage } from '../../../integration/encryption';
+import { encryptMessage, decryptMessage, deserializeKey } from '../../../integration/encryption';
 import { convertUTCDateToLocalDate, formatDateTime } from '../../../common/date';
 
 class Chat extends React.PureComponent {
@@ -16,7 +16,7 @@ class Chat extends React.PureComponent {
     this.state = {
       lastMessageId: null,
       lastFriendRead: new Date(0),
-      wasEncrypted: !props.userPrivateKey,
+      wasEncrypted: !props.privateKey,
       editing: false,
       settings: false,
     };
@@ -24,7 +24,7 @@ class Chat extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.props.prepareChat(this.props.chatId, this.props.contactId);;
+    this.props.prepareChat(this.props.chatId, this.props.contactId);
     setTimeout(() => this.props.checkSelfDestruct(this.props.chatId), 1000);
   }
 
@@ -37,7 +37,7 @@ class Chat extends React.PureComponent {
     const lastMessage = this.props.messages[this.props.messages.length - 1] || {};
     const lastMessageId = lastMessage.messageId;
     const lastFriendRead = convertUTCDateToLocalDate(new Date(this.props.friendReadDate));
-    const gotDecrypted = this.state.wasEncrypted && this.props.userPrivateKey;
+    const gotDecrypted = this.state.wasEncrypted && this.props.privateKey;
     const hasNewMessage = this.state.lastMessageId !== lastMessageId;
     const hasNewFriendRead = lastFriendRead > this.state.lastFriendRead;
     if (hasNewFriendRead || hasNewMessage || gotDecrypted) {
@@ -52,7 +52,7 @@ class Chat extends React.PureComponent {
   }
 
   markAsRead = () => {
-    if (this.props.minimised || !this.props.userPrivateKey || !this.props.windowFocused) return;
+    if (this.props.minimised || !this.props.privateKey || !this.props.windowFocused) return;
     const lastReadDate = convertUTCDateToLocalDate(new Date(this.props.readDate));
     const receivedMessages = this.props.messages.filter(message => parseInt(message.userId) !== parseInt(this.props.userId) && !message.deleted);
     const lastReceivedMessage = receivedMessages[receivedMessages.length - 1] || {};
@@ -70,14 +70,16 @@ class Chat extends React.PureComponent {
   }
 
   encryptInput = (input) => {
-    const content = encryptMessage(input, this.props.friendPublicKey, this.props.userPrivateKey);
+    const content = encryptMessage(input, this.props.publicKey, this.props.privateKey);
     const backup = encryptMessage(input, this.props.userPublicKey, this.props.userPrivateKey);
     return { content, backup }
   }
 
   decryptMessage = (message) => {
-    const origin = parseInt(message.senderId) === parseInt(this.props.userId) ? 'sent' : 'received';
-    const content = decryptMessage(origin === 'sent' ? message.backup : message.content, this.props.userPrivateKey);
+    const isSent = parseInt(message.senderId) === parseInt(this.props.userId);
+    const encryptedContent = isSent ? message.backup : message.content;
+    const privateKey = isSent ? this.props.userPrivateKey : this.props.privateKey;
+    const content = decryptMessage(encryptedContent, privateKey);
     return { ...message, content };
   }
 
@@ -165,10 +167,13 @@ class Chat extends React.PureComponent {
 
         <div
           className="chat-component-header-icon clickable"
-          onClick={() => window.location.replace(`/profile/${this.props.contactId}`)}
+          onClick={() => !this.props.isGroup && window.location.replace(`/profile/${this.props.contactId}`)}
           style={{ backgroundImage: `url('${this.props.icon}')` }}
         />
-        <div className={`chat-component-header-status-indicator chat-component-header-status-indicator-${this.props.status}`} />
+
+        {!this.props.isGroup && (
+          <div className={`chat-component-header-status-indicator chat-component-header-status-indicator-${this.props.status}`} />
+        )}
 
         <div className="chat-component-header-info clickable"
           onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}
@@ -176,9 +181,11 @@ class Chat extends React.PureComponent {
           <div className="chat-component-header-title">
             {this.props.title}
           </div>
-          <div className="chat-component-header-subtitle">
-            {this.props.subtitle}
-          </div>
+          {this.props.subtitle && (
+            <div className="chat-component-header-subtitle">
+              {this.props.subtitle}
+            </div>
+          )}
         </div>
 
         <div className="chat-component-header-options">
@@ -268,7 +275,7 @@ class Chat extends React.PureComponent {
         <ChatInput
           connected={!this.props.disconnected}
           blocked={this.props.blocked}
-          userPrivateKey={this.props.userPrivateKey}
+          isDecryptable={this.props.privateKey}
           sendMessage={this.sendMessage}
           editLastMessage={this.editLastMessage}
         />
@@ -292,7 +299,7 @@ class Chat extends React.PureComponent {
   }
 
   render() {
-    if (!this.props.userPrivateKey) return this.renderEncryptedChat();
+    if (!this.props.privateKey) return this.renderEncryptedChat();
     let extraClass = "";
     if (this.props.maximised) extraClass += "chat-maximised";
     if (this.props.minimised) extraClass += "chat-minimised";
@@ -316,11 +323,14 @@ function mapStateToProps(state, props) {
   const contacts = chat.contacts.filter(contactId => contactId !== props.userId);
   const contactId = contacts.length === 1 && contacts[0];
   const contact = (contactId && state.user.contacts.find(contact => contact.contactId === contactId)) || {};
-  const contactSubtitle = contact.status && contact.status === 'offline' ? `${formatDateTime(contact.lastSeen)}` : `${contact.status}`;
+  const contactSubtitle = contact.status && contact.status === 'offline' ? `${formatDateTime(contact.lastSeen)}` : contact.status && `${contact.status}`;
+  const isGroup = contacts.length > 1;
+  chat.privateKey = deserializeKey(chat.privateKey);
   return {
     messages,
     contacts,
     contactId,
+    isGroup,
     icon: chat.icon || contact.icon || '',
     title: chat.title || contact.name || '',
     subtitle: chat.subtitle || contactSubtitle || '',
@@ -332,9 +342,10 @@ function mapStateToProps(state, props) {
     friendReadDate: chat.friendReadDate || new Date(0),
     maximised: chat.maximised || false,
     minimised: chat.minimised || false,
-    friendPublicKey: contact.publicKey,
     userPublicKey: state.encryption.publicKey,
     userPrivateKey: state.encryption.privateKey,
+    publicKey: isGroup ? chat.publicKey : contact.publicKey,
+    privateKey: isGroup ? chat.privateKey : state.encryption.privateKey,
     disconnected: state.socket.disconnected,
   }
 }

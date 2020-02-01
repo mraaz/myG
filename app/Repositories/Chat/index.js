@@ -89,23 +89,29 @@ class ChatRepository {
     return { messages };
   }
 
-  async createChat({ requestingUserId, requestedFriendIds }) {
-    const contacts = [requestingUserId, ...requestedFriendIds].sort();
+  async createChat({ requestingUserId, contacts, title, icon, publicKey }) {
+    contacts = [requestingUserId, ...contacts].sort();
     const { chats } = await this.fetchChats({ requestingUserId });
 
-    const existingChat = chats.find(chat => chat.contacts.every((id, index) => id === contacts[index]));
-    if (existingChat) {
-      contacts.forEach(userId => this._notifyChatEvent({ userId, action: 'newChat', payload: existingChat }));
-      return { chat: existingChat };
-    }
+    const existingChat = chats.find(chat =>
+      contacts.length === chat.contacts.length &&
+      contacts.every((id, index) => id === chat.contacts[index])
+    );
+    if (existingChat) return { chat: existingChat };
 
     const chat = new Chat();
+    if (title) chat.title = title;
+    if (icon) chat.icon = icon;
+    if (publicKey) chat.public_key = publicKey;
     chat.contacts = JSON.stringify(contacts);
     await chat.save();
 
     const chatSchema = new ChatSchema({
       chatId: chat.id,
-      contacts: contacts,
+      contacts,
+      title,
+      icon,
+      publicKey,
       createdAt: chat.created_at,
       updatedAt: chat.updated_at,
     });

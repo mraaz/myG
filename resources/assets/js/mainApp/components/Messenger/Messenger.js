@@ -10,7 +10,7 @@ import { attemptSocketConnection, monitorChats, closeSubscription } from '../../
 import { createChatAction, openChatAction, closeChatAction, clearChatAction } from '../../../redux/actions/chatAction';
 import { updateStatusAction } from '../../../redux/actions/userAction';
 import { generateKeysAction, validatePinAction } from '../../../redux/actions/encryptionAction';
-import { decryptMessage } from '../../../integration/encryption';
+import { decryptMessage, generateKeysSync as generateGroupKeys } from '../../../integration/encryption';
 import { formatAMPM, convertUTCDateToLocalDate } from '../../../common/date';
 import { copyToClipboard } from '../../../common/clipboard';
 import { STATUS_ENUM, compareStatus } from '../../../common/status';
@@ -47,9 +47,12 @@ class Messenger extends React.PureComponent {
     closeSubscription();
   }
 
-  decryptMessage = (message) => {
-    const origin = parseInt(message.senderId) === this.props.userId ? 'sent' : 'received';
-    const content = decryptMessage(origin === 'sent' ? message.backup : message.content, this.props.privateKey);
+  decryptMessage = (message, userPrivateKey, chatPrivateKey) => {
+    const isSent = parseInt(message.senderId) === parseInt(this.props.userId);
+    const content = decryptMessage(
+      isSent ? message.backup : message.content,
+      isSent ? userPrivateKey : chatPrivateKey
+    );
     return { ...message, content };
   }
 
@@ -64,7 +67,12 @@ class Messenger extends React.PureComponent {
   }
 
   createGroup = () => {
-    
+    if (!this.props.contacts[0] || !this.props.contacts[1]) return alert("For now, you need to have at least two friends to create a group");
+    const contacts = [this.props.contacts[0].contactId, this.props.contacts[1].contactId];
+    const title = "Group Name";
+    const icon = "https://i.pinimg.com/originals/d5/e1/d4/d5e1d4fb60a1b8b1d6182cc9b1ff2376.jpg";
+    const { encryption } = generateGroupKeys();
+    this.props.createChat(contacts, this.props.userId, title, icon, encryption);
   }
 
   setStatus = (status) => {
@@ -206,7 +214,7 @@ class Messenger extends React.PureComponent {
           <p className="messenger-contact-body-title">{contact.name}</p>
           {lastMessage && (
             <p className="messenger-contact-body-subtitle">
-              {this.decryptMessage(lastMessage).content}
+              {this.decryptMessage(lastMessage, this.props.privateKey, this.props.privateKey).content}
             </p>
           )}
         </div>
@@ -246,7 +254,53 @@ class Messenger extends React.PureComponent {
         );
       }
 
+      return (
+        <div className="messenger-body-section-content">
+          {this.props.groups.map(this.renderGroup)}
+        </div>
+      );
+
     });
+  }
+
+  renderGroup = (group) => {
+    const messages = (group.messages || []).slice(0);
+    const lastMessage = messages[messages.length - 1];
+    const unreadCount = 0;
+    return (
+      <div
+        key={`group-${group.chatId}`}
+        className="messenger-contact"
+        onClick={() => this.props.openChat(group.chatId)}
+      >
+        <div
+          className="messenger-contact-icon"
+          style={{ backgroundImage: `url('${group.icon}')` }}
+        >
+          <div className="messenger-contact-online-indicator" />
+        </div>
+        <div className="messenger-contact-body">
+          <p className="messenger-contact-body-title">{group.title}</p>
+          {lastMessage && (
+            <p className="messenger-contact-body-subtitle">
+              {this.decryptMessage(lastMessage, this.props.privateKey, group.privateKey).content}
+            </p>
+          )}
+        </div>
+        <div className="messenger-contact-info">
+          {lastMessage && (
+            <p className="messenger-contact-info-last-seen">
+              {formatAMPM(convertUTCDateToLocalDate(new Date(lastMessage.createdAt)))}
+            </p>
+          )}
+          <div className="messenger-contact-info-unread">
+            <p className="messenger-contact-info-unread-count">
+              {unreadCount}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   renderDivider(name, expanded, renderFunction) {
@@ -444,7 +498,7 @@ class Messenger extends React.PureComponent {
 
         {this.renderBody()}
         {this.renderFooter()}
-        
+
         {this.renderChats()}
 
         <StatusTimerWrapper {...{
@@ -467,15 +521,21 @@ class Messenger extends React.PureComponent {
 function mapStateToProps(state) {
   const chats = state.chat.chats || [];
   const contacts = state.user.contacts || [];
+  const groups = [];
   const contactsWithChats = {};
-  chats.forEach(chat => (chat.contacts || []).forEach(contactId => contactsWithChats[contactId] = chat));
+  chats.forEach(chat => {
+    const contacts = (chat.contacts || []);
+    const isGroup = contacts.length > 2;
+    if (isGroup) groups.push(chat);
+    else contacts.forEach(contactId => contactsWithChats[contactId] = chat)
+  });
   contacts.forEach(contact => contact.chat = contactsWithChats[contact.contactId] || {});
   return {
     status: state.user.status,
     isStatusLocked: state.user.isStatusLocked,
     chats: state.chat.chats,
     contacts: state.user.contacts,
-    groups: [],
+    groups,
     pin: state.encryption.pin,
     invalidPin: state.encryption.invalidPin,
     privateKey: state.encryption.privateKey,
@@ -485,7 +545,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return ({
-    createChat: (contacts, userId) => dispatch(createChatAction(contacts, userId)),
+    createChat: (contacts, userId, title, icon, encryption) => dispatch(createChatAction(contacts, userId, title, icon, encryption)),
     openChat: chatId => dispatch(openChatAction(chatId)),
     closeChat: chatId => dispatch(closeChatAction(chatId)),
     generateKeys: () => dispatch(generateKeysAction()),

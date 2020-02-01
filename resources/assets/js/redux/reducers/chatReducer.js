@@ -137,14 +137,17 @@ export default function reducer(state = {
     }
 
     case "CREATE_CHAT_FULFILLED": {
-      logger.log('CHAT', `Redux -> Created Chat: `, action.payload);
+      logger.log('CHAT', `Redux -> Created Chat: `, action.payload, action.meta);
+      const encryption = action.meta.encryption || {};
       const created = action.payload.chat;
       const chats = JSON.parse(JSON.stringify(state.chats));
-      if (!chats.map(chat => chat.chatId).includes(created.chatId)) chats.push(created);
+      const chatAlreadyExists = chats.map(chat => parseInt(chat.chatId)).includes(parseInt(created.chatId));
+      if (!chatAlreadyExists) chats.push(created);
       const chat = chats.find(candidate => candidate.chatId === created.chatId);
       chat.closed = false;
       chat.minimised = false;
       chat.maximised = false;
+      Object.assign(chat, encryption);
       const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== created.chatId);
       if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
       return {

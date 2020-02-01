@@ -30,7 +30,7 @@ export default class ChatInput extends React.PureComponent {
   }
 
   render() {
-    const disabled = !this.props.connected || !!this.props.blocked || !this.props.userPrivateKey;
+    const disabled = !this.props.connected || !!this.props.blocked || !this.props.isDecryptable;
     const placeholderText =
       !this.props.connected ? 'You seem to be offline...' :
         this.props.blocked ? 'Unblock to send messages' :

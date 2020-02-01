@@ -22,9 +22,10 @@ class ChatController {
 
   async createChat({ auth, request, response }) {
     const requestingUserId = auth.user.id;
-    const requestedFriendIds = request.only(['friendIds']).friendIds;
-    log('CHAT', `User ${requestingUserId} creating Chat with Friends ${JSON.stringify(requestedFriendIds)}`);
-    const { chat } = await ChatRepository.createChat({ requestingUserId, requestedFriendIds });
+    const payload = request.only(['contacts', 'title', 'icon', 'publicKey']);
+    const { contacts, title, icon, publicKey } = payload;
+    log('CHAT', `User ${requestingUserId} creating Chat with ${JSON.stringify(payload)}`);
+    const { chat } = await ChatRepository.createChat({ requestingUserId, contacts, title, icon, publicKey });
     return response.send({ chat });
   }
 

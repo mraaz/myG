@@ -11,9 +11,9 @@ export function fetchChat(chatId) {
   return axios.get(`/api/chat/${chatId}`).then(response => response.data);
 }
 
-export function createChat(friendIds) {
-  logger.log('CHAT', 'HTTP', `Creating Chat for Members`, friendIds);
-  return axios.post(`/api/chat/`, { friendIds }).then(response => response.data);
+export function createChat(contacts, title, icon, publicKey) {
+  logger.log('CHAT', 'HTTP', `Creating Chat: `, { contacts, title, icon, publicKey });
+  return axios.post(`/api/chat/`, { contacts, title, icon, publicKey }).then(response => response.data);
 }
 
 export function updateChat(chatId, payload) {
