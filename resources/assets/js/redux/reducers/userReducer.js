@@ -35,28 +35,6 @@ export default function reducer(state = {
       };
     }
 
-    case "FETCH_CONTACTS_FULFILLED": {
-      logger.log('USER', `Redux -> Fetch Contacts: `, action.payload);
-      const { contacts } = action.payload;
-      return {
-        ...state,
-        contacts,
-      };
-    }
-
-    case "FETCH_CONTACT_FULFILLED": {
-      logger.log('USER', `Redux -> Fetch Contact: `, action.payload);
-      const { contact: newContact } = action.payload;
-      const contacts = JSON.parse(JSON.stringify(state.contacts));
-      const contact = contacts.find(contact => contact.contactId === newContact.contactId);
-      if (contact) Object.assign(contact, newContact);
-      else contacts.push(contact);
-      return {
-        ...state,
-        contacts,
-      };
-    }
-
     case "FETCH_STATUS_FULFILLED": {
       logger.log('USER', `Redux -> Fetch Status: `, action.payload);
       const { value: status, locked: isStatusLocked } = action.payload.status;
