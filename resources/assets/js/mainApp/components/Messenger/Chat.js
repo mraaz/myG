@@ -24,7 +24,7 @@ class Chat extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.props.prepareChat(this.props.chatId, this.props.contactId);
+    this.props.prepareChat(this.props.chatId, this.props.contactId, this.props.userId);
     setTimeout(() => this.props.checkSelfDestruct(this.props.chatId), 1000);
   }
 
@@ -352,7 +352,7 @@ function mapStateToProps(state, props) {
 
 function mapDispatchToProps(dispatch) {
   return ({
-    prepareChat: (chatId, contactId) => dispatch(prepareChatAction(chatId, contactId)),
+    prepareChat: (chatId, contactId, userId) => dispatch(prepareChatAction(chatId, contactId, userId)),
     sendMessage: (chatId, userId, content) => dispatch(sendMessageAction(chatId, userId, content)),
     editMessage: (chatId, messageId, content) => dispatch(editMessageAction(chatId, messageId, content)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),

@@ -10,7 +10,7 @@ import { attemptSocketConnection, monitorChats, closeSubscription } from '../../
 import { createChatAction, openChatAction, closeChatAction, clearChatAction } from '../../../redux/actions/chatAction';
 import { updateStatusAction } from '../../../redux/actions/userAction';
 import { generateKeysAction, validatePinAction } from '../../../redux/actions/encryptionAction';
-import { decryptMessage, generateKeysSync as generateGroupKeys } from '../../../integration/encryption';
+import { deserializeKey, decryptMessage, generateKeysSync as generateGroupKeys } from '../../../integration/encryption';
 import { formatAMPM, convertUTCDateToLocalDate } from '../../../common/date';
 import { copyToClipboard } from '../../../common/clipboard';
 import { STATUS_ENUM, compareStatus } from '../../../common/status';
@@ -51,7 +51,7 @@ class Messenger extends React.PureComponent {
     const isSent = parseInt(message.senderId) === parseInt(this.props.userId);
     const content = decryptMessage(
       isSent ? message.backup : message.content,
-      isSent ? userPrivateKey : chatPrivateKey
+      isSent ? userPrivateKey : deserializeKey(chatPrivateKey)
     );
     return { ...message, content };
   }

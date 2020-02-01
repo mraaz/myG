@@ -78,6 +78,7 @@ class ChatRepository {
       messageId: message.id,
       chatId: message.chat_id,
       senderId: message.sender_id,
+      keyReceiver: message.key_receiver,
       content: message.content,
       backup: message.backup,
       deleted: message.deleted,

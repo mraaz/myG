@@ -10,10 +10,11 @@ export function onNewChatAction(chat, userId) {
   }
 }
 
-export function onNewMessageAction(message) {
+export function onNewMessageAction(message, userId) {
   return {
     type: 'NEW_MESSAGE',
     payload: { message },
+    meta: { userId },
   }
 }
 
@@ -79,7 +80,7 @@ export function prepareMessengerAction(pin, privateKey, publicKey) {
   }
 }
 
-export function prepareChatAction(chatId, contactId) {
+export function prepareChatAction(chatId, contactId, userId) {
   const chatRequest = fetchChat(chatId);
   const messagesRequest = fetchMessages(chatId);
   const contactRequest = contactId ? fetchContact(contactId) : Promise.resolve({});
@@ -87,7 +88,7 @@ export function prepareChatAction(chatId, contactId) {
   return {
     type: 'PREPARE_CHAT',
     payload: Promise.all(requests).then(([chat, messages, contact]) => ({ ...chat, ...messages, ...contact })),
-    meta: { chatId, contactId }
+    meta: { chatId, contactId, userId }
   }
 }
 
