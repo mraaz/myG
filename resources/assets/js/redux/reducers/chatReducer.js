@@ -35,6 +35,7 @@ export default function reducer(state = {
         ...state,
         chats,
         preparingMessenger: false,
+        privateKey: (action.payload.encryption || {}).privateKey,
       };
     }
 

@@ -171,10 +171,11 @@ class ChatRepository {
     return new DefaultSchema({ success: true });
   }
 
-  async sendMessage({ requestingUserId, requestedChatId, backup, content }) {
+  async sendMessage({ requestingUserId, requestedChatId, backup, content, keyReceiver }) {
     const { chat } = await this.fetchChat({ requestingUserId, requestedChatId });
     const messageData = {
       sender_id: requestingUserId,
+      key_receiver: keyReceiver,
       backup: backup,
       content: content,
       self_destruct: chat.selfDestruct,
@@ -184,6 +185,7 @@ class ChatRepository {
       messageId: message.id,
       chatId: requestedChatId,
       senderId: requestingUserId,
+      keyReceiver: message.key_receiver,
       content: message.content,
       backup: message.backup,
       deleted: message.deleted,

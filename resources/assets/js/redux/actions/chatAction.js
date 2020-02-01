@@ -160,10 +160,10 @@ export function fetchMessagesAction(chatId) {
   }
 }
 
-export function sendMessageAction(chatId, userId, encrypted, selfDestruct) {
+export function sendMessageAction(chatId, userId, encrypted) {
   return {
     type: 'SEND_MESSAGE',
-    payload: sendMessage(chatId, userId, encrypted, selfDestruct),
+    payload: sendMessage(chatId, userId, encrypted),
     meta: { chatId },
   }
 }

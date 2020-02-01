@@ -36,9 +36,9 @@ export function fetchMessages(chatId) {
   return axios.get(`/api/chat/${chatId}/message/`).then(response => response.data);
 }
 
-export function sendMessage(chatId, userId, encryptedContent) {
+export function sendMessage(chatId, userId, encryptedContent, keyReceiver) {
   logger.log('CHAT', 'HTTP', `Sending Message from User ${userId} to Chat ${chatId}`);
-  return axios.post(`/api/chat/${chatId}/message/`, { encryptedContent }).then(response => response.data);
+  return axios.post(`/api/chat/${chatId}/message/`, { encryptedContent, keyReceiver }).then(response => response.data);
 }
 
 export function editMessage(chatId, messageId, encryptedContent, reEncrypting) {

@@ -11,6 +11,7 @@ class ChatMessageSchema extends Schema {
       table.integer('sender_id').unsigned().notNullable()
       table.foreign('chat_id').references('id').inTable('chats').onDelete('CASCADE')
       table.foreign('sender_id').references('id').inTable('users').onDelete('CASCADE')
+      table.integer('key_receiver').unsigned();
       table.text('content').notNullable()
       table.text('backup').notNullable()
       table.boolean('deleted').notNullable().defaultTo(false)

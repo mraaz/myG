@@ -62,7 +62,7 @@ class Chat extends React.PureComponent {
 
   sendMessage = (input) => {
     if (!input) return;
-    this.props.sendMessage(this.props.chatId, this.props.userId, this.encryptInput(input), this.props.selfDestruct);
+    this.props.sendMessage(this.props.chatId, this.props.userId, this.encryptInput(input));
   }
 
   editMessage = (chatId, messageId, input) => {
@@ -353,7 +353,7 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
   return ({
     prepareChat: (chatId, contactId) => dispatch(prepareChatAction(chatId, contactId)),
-    sendMessage: (chatId, userId, content, selfDestruct) => dispatch(sendMessageAction(chatId, userId, content, selfDestruct)),
+    sendMessage: (chatId, userId, content) => dispatch(sendMessageAction(chatId, userId, content)),
     editMessage: (chatId, messageId, content) => dispatch(editMessageAction(chatId, messageId, content)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     updateChatState: (chatId, state) => dispatch(updateChatStateAction(chatId, state)),
