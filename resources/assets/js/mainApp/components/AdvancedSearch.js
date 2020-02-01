@@ -93,12 +93,12 @@ export default class AdvancedSearch extends Component<*, State> {
       time_role_box: '',
       counter: 0,
       moreplease: true,
-      allGameExperiences: [],
+      allGameExperiences: undefined,
       myG_lock: false,
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { match } = this.props.routeProps
 
     this.state.selected_table = {
@@ -116,7 +116,6 @@ export default class AdvancedSearch extends Component<*, State> {
       }
       return
     }
-
     this.pullData()
   }
 
@@ -239,7 +238,7 @@ export default class AdvancedSearch extends Component<*, State> {
       myG_lock: false,
     })
 
-    if (allGameExperiences.data.latestGameExperiences.data.length == 0) {
+    if (allGameExperiences.data.latestGameExperiences.data.length == 0 && this.state.counter != 1) {
       this.setState({
         moreplease: false,
       })
@@ -513,7 +512,7 @@ export default class AdvancedSearch extends Component<*, State> {
   }
 
   render() {
-    if (this.state.allGameExperiences !== undefined) {
+    if (this.state.allGameExperiences != undefined) {
       var show_gaming_exp = true
 
       if (this.state.selected_table.label == 'Esports Experience') {
