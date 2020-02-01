@@ -1,10 +1,11 @@
 
 import logger from '../../common/logger';
 import { convertUTCDateToLocalDate } from '../../common/date';
-import { reEncryptMessages } from '../../common/encryption';
+import { reEncryptMessages, sendGroupKeys } from '../../common/encryption';
 
 export default function reducer(state = {
   chats: [],
+  contacts: [],
   preparingMessenger: false,
 }, action) {
   switch (action.type) {
@@ -34,7 +35,9 @@ export default function reducer(state = {
       return {
         ...state,
         chats,
+        contacts: action.payload.contacts,
         preparingMessenger: false,
+        publicKey: (action.payload.encryption || {}).publicKey,
         privateKey: (action.payload.encryption || {}).privateKey,
       };
     }
@@ -149,6 +152,7 @@ export default function reducer(state = {
       chat.minimised = false;
       chat.maximised = false;
       Object.assign(chat, encryption);
+      prepareGroupKeysToSend(chat, parseInt(action.meta.userId), state.contacts, state.publicKey, state.privateKey);
       const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== created.chatId);
       if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
       return {
@@ -350,6 +354,7 @@ export default function reducer(state = {
     case "GENERATE_KEYS_FULFILLED": {
       return {
         ...state,
+        publicKey: action.payload.encryption.publicKey,
         privateKey: action.payload.encryption.privateKey,
       };
     }
@@ -357,11 +362,22 @@ export default function reducer(state = {
     case "VALIDATE_PIN_FULFILLED": {
       return {
         ...state,
+        publicKey: action.payload.encryption.publicKey,
         privateKey: action.payload.encryption.privateKey,
       };
     }
 
     default: return state;
 
+  }
+}
+
+function prepareGroupKeysToSend(group, userId, userContacts, userPublicKey, userPrivateKey) {
+  if (group.contacts.length > 2) {
+    const chatContacts = group.contacts.filter(contactId => userId !== parseInt(contactId));
+    const getContact = contactId => userContacts.find(contact => parseInt(contact.contactId) === parseInt(contactId));
+    const contacts = chatContacts.map(contactId => getContact(contactId));
+    contacts.push({ contactId: userId, publicKey: userPublicKey });
+    sendGroupKeys(group.chatId, userId, contacts, group.privateKey, userPrivateKey);
   }
 }
