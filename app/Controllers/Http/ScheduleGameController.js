@@ -381,9 +381,7 @@ class ScheduleGameController {
       var getOne = await Database.from('schedule_games')
         .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
         .select('*', 'schedule_games.id', 'schedule_games.created_at', 'schedule_games.updated_at')
-        .where({
-          id: request.params.id,
-        })
+        .where('schedule_games.id', '=', request.params.id)
 
       getOne = await InGame_fieldsController.find_InGame_Fields_NOT_paginate(getOne)
 

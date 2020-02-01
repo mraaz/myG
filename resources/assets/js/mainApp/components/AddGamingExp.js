@@ -177,7 +177,11 @@ export default class AddGamingExp extends Component<*, State> {
         myTags = ''
       }
       for (var i = 0; i < self.state.value_tags.length; i++) {
-        myTags += self.state.value_tags[i].label + '; '
+        if (/['/.%#$,;`\\]/.test(this.state.value_tags[i].label)) {
+          toast.success(<Toast_style text={'Sorry mate! Tags can not have invalid fields'} />)
+          return
+        }
+        myTags += this.state.value_tags[i].label + '; '
       }
       myTags = myTags
         .trim()
