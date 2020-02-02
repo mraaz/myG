@@ -97,12 +97,12 @@ class GroupController {
     let current_user_permission = -1
 
     try {
-      const permission_query_current_user = await Database.from(
-        'usergroups'
-      ).where({ user_id: auth.user.id, group_id: request.input('group_id') })
+      const permission_query_current_user = await Database.from('usergroups').where({
+        user_id: auth.user.id,
+        group_id: request.input('group_id'),
+      })
       if (permission_query_current_user.length > 0) {
-        current_user_permission =
-          permission_query_current_user[0].permission_level
+        current_user_permission = permission_query_current_user[0].permission_level
       } else {
         const owner_query = await Database.from('groups').where({
           user_id: auth.user.id,
@@ -113,11 +113,7 @@ class GroupController {
         }
       }
 
-      if (
-        current_user_permission == 3 ||
-        current_user_permission == 42 ||
-        current_user_permission == -1
-      ) {
+      if (current_user_permission == 3 || current_user_permission == 42 || current_user_permission == -1) {
         return
       }
 
@@ -126,7 +122,7 @@ class GroupController {
         .update({ group_img: request.input('group_img') })
       return 'Saved successfully'
     } catch (error) {
-      console.log(update_img)
+      console.log(error)
     }
   }
 
@@ -134,12 +130,12 @@ class GroupController {
     let current_user_permission = -1
 
     try {
-      const permission_query_current_user = await Database.from(
-        'usergroups'
-      ).where({ user_id: auth.user.id, group_id: request.input('group_id') })
+      const permission_query_current_user = await Database.from('usergroups').where({
+        user_id: auth.user.id,
+        group_id: request.input('group_id'),
+      })
       if (permission_query_current_user.length > 0) {
-        current_user_permission =
-          permission_query_current_user[0].permission_level
+        current_user_permission = permission_query_current_user[0].permission_level
       } else {
         const owner_query = await Database.from('groups').where({
           user_id: auth.user.id,
@@ -150,11 +146,7 @@ class GroupController {
         }
       }
 
-      if (
-        current_user_permission == 3 ||
-        current_user_permission == 42 ||
-        current_user_permission == -1
-      ) {
+      if (current_user_permission == 3 || current_user_permission == 42 || current_user_permission == -1) {
         return
       }
 
@@ -163,7 +155,7 @@ class GroupController {
         .update({ all_accept: request.input('all_accept') })
       return 'Saved successfully'
     } catch (error) {
-      console.log(update_all_accept)
+      console.log(error)
     }
   }
 
@@ -171,12 +163,9 @@ class GroupController {
     let current_user_permission = -1
 
     try {
-      const permission_query_current_user = await Database.from(
-        'usergroups'
-      ).where({ user_id: auth.user.id, group_id: request.params.id })
+      const permission_query_current_user = await Database.from('usergroups').where({ user_id: auth.user.id, group_id: request.params.id })
       if (permission_query_current_user.length > 0) {
-        current_user_permission =
-          permission_query_current_user[0].permission_level
+        current_user_permission = permission_query_current_user[0].permission_level
       } else {
         const owner_query = await Database.from('groups').where({
           user_id: auth.user.id,
@@ -187,11 +176,7 @@ class GroupController {
         }
       }
 
-      if (
-        current_user_permission == 3 ||
-        current_user_permission == 42 ||
-        current_user_permission == -1
-      ) {
+      if (current_user_permission == 3 || current_user_permission == 42 || current_user_permission == -1) {
         return
       }
 
@@ -200,7 +185,7 @@ class GroupController {
         .update({ type: request.params.group_type })
       return 'Saved successfully'
     } catch (error) {
-      console.log(update_group_type)
+      console.log(error)
     }
   }
 }
