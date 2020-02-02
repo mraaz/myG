@@ -385,7 +385,6 @@ export default class AdvancedSearch extends Component<*, State> {
   }
 
   handleChange_role_title = (e) => {
-    //TODO: https://github.com/mraaz/myGame/issues/181
     this.setState({ role_title_box: e.target.value })
 
     if (this.timeout) clearTimeout(this.timeout)
