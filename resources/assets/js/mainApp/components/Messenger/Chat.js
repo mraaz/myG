@@ -97,7 +97,13 @@ class Chat extends React.PureComponent {
 
   renderSettings = () => {
     if (!this.state.settings) return;
-    if (this.props.isGroup) return <GroupOptions group={this.props.group} groupContacts={this.props.contacts} />
+    if (this.props.isGroup) return (
+      <GroupOptions
+        userId={this.props.userId}
+        group={this.props.group}
+        groupContacts={this.props.contacts}
+      />
+    );
     const inactiveStyle = 'chat-component-header-settings-option-inactive';
     return (
       <div className="chat-component-header-settings-popup">

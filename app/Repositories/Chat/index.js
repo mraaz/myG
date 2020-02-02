@@ -69,29 +69,6 @@ class ChatRepository {
     return { chat: chatSchema };
   }
 
-  async fetchChatContacts({ requestingUserId, requestedChatId }) {
-    const chat = (await Chat
-      .query()
-      .where('id', requestedChatId)
-      .first()).toJSON();
-    const contactIds = JSON.parse(chat.contacts || '[]');
-    if (!Array.isArray(contactIds)) return { contacts: [] };
-    const contactsQuery = contactIds.filter(contactId => parseInt(contactId) !== parseInt(requestingUserId));
-    const rawContacts = (await Database
-      .from('users')
-      .where('id', 'in', contactsQuery)
-    );
-    const contacts = rawContacts.map(contact => new ContactSchema({
-      contactId: contact.id,
-      icon: contact.profile_img,
-      name: `${contact.first_name} ${contact.last_name}`,
-      status: contact.status,
-      lastSeen: contact.last_seen,
-      publicKey: contact.public_key,
-    }));
-    return { contacts };
-  }
-
   async fetchMessages({ requestedChatId }) {
     const chat = (await Chat
       .query()
@@ -194,6 +171,54 @@ class ChatRepository {
 
     this._notifyChatEvent({ chatId: requestedChatId, action: 'deleteMessages', payload: { messages: toDelete, chatId: requestedChatId } });
     return new DefaultSchema({ success: true });
+  }
+
+  async fetchChatContacts({ requestingUserId, requestedChatId }) {
+    const chat = (await Chat
+      .query()
+      .where('id', requestedChatId)
+      .first()).toJSON();
+    const contactIds = JSON.parse(chat.contacts || '[]');
+    if (!Array.isArray(contactIds)) return { contacts: [] };
+    const contactsQuery = contactIds.filter(contactId => parseInt(contactId) !== parseInt(requestingUserId));
+    const rawContacts = (await Database
+      .from('users')
+      .where('id', 'in', contactsQuery)
+    );
+    const contacts = rawContacts.map(contact => new ContactSchema({
+      contactId: contact.id,
+      icon: contact.profile_img,
+      name: `${contact.first_name} ${contact.last_name}`,
+      status: contact.status,
+      lastSeen: contact.last_seen,
+      publicKey: contact.public_key,
+    }));
+    return { contacts };
+  }
+
+  async addContactsToChat({ requestingUserId, requestedChatId, contacts }) {
+    const { chat } = await this.fetchChat({ requestingUserId, requestedChatId });
+    if (chat.contacts.length < 3) throw new Error('Cannot add users to a normal chat.');
+    contacts.forEach(contactId => !chat.contacts.includes(contactId) && chat.contacts.push(contactId));
+    contacts.forEach(async userId => {
+      const userChat = new UserChat();
+      userChat.chat_id = chat.chatId;
+      userChat.user_id = userId;
+      userChat.deleted_messages = '[]';
+      await userChat.save();
+      this._notifyChatEvent({ userId, action: 'newChat', payload: chat });
+    });
+    await Chat.query().where('id', requestedChatId).update({ contacts: JSON.stringify(chat.contacts) });
+    const rawContacts = (await Database.from('users').where('id', 'in', contacts));
+    const fullContacts = rawContacts.map(contact => new ContactSchema({
+      contactId: contact.id,
+      icon: contact.profile_img,
+      name: `${contact.first_name} ${contact.last_name}`,
+      status: contact.status,
+      lastSeen: contact.last_seen,
+      publicKey: contact.public_key,
+    }));
+    return { contacts: fullContacts };
   }
 
   async sendMessage({ requestingUserId, requestedChatId, backup, content, keyReceiver }) {

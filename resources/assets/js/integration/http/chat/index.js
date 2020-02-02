@@ -11,11 +11,6 @@ export function fetchChat(chatId) {
   return axios.get(`/api/chat/${chatId}`).then(response => response.data);
 }
 
-export function fetchChatContacts(chatId) {
-  logger.log('CHAT', 'HTTP', `Fetching Chat ${chatId}`);
-  return axios.get(`/api/chat/${chatId}/contacts`).then(response => response.data);
-}
-
 export function createChat(contacts, title, icon, publicKey) {
   logger.log('CHAT', 'HTTP', `Creating Chat: `, { contacts, title, icon, publicKey });
   return axios.post(`/api/chat/`, { contacts, title, icon, publicKey }).then(response => response.data);
@@ -34,6 +29,16 @@ export function clearChat(chatId) {
 export function checkSelfDestruct(chatId) {
   logger.log('CHAT', 'HTTP', `Checking Self Destruct for Chat ${chatId}`);
   return axios.delete(`/api/chat/${chatId}/destruction`).then(response => response.data);
+}
+
+export function fetchChatContacts(chatId) {
+  logger.log('CHAT', 'HTTP', `Fetching Chat ${chatId}`);
+  return axios.get(`/api/chat/${chatId}/contacts`).then(response => response.data);
+}
+
+export function addContactsToChat(chatId, contacts) {
+  logger.log('CHAT', 'HTTP', `Adding Contacts To Chat ${chatId}: `, contacts);
+  return axios.put(`/api/chat/${chatId}/contacts`, { contacts }).then(response => response.data);
 }
 
 export function fetchMessages(chatId) {

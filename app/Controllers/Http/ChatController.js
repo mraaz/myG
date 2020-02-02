@@ -20,14 +20,6 @@ class ChatController {
     return response.send({ chat });
   }
 
-  async fetchChatContacts({ auth, params, response }) {
-    const requestingUserId = auth.user.id;
-    const requestedChatId = params.chatId;
-    log('CHAT', `User ${requestingUserId} requesting Chat Contacts for ${requestedChatId}`);
-    const { contacts } = await ChatRepository.fetchChatContacts({ requestingUserId, requestedChatId });
-    return response.send({ contacts });
-  }
-
   async createChat({ auth, request, response }) {
     const requestingUserId = auth.user.id;
     const payload = request.only(['contacts', 'title', 'icon', 'publicKey']);
@@ -60,6 +52,23 @@ class ChatController {
     log('CHAT', `User ${requestingUserId} checking destruction for Chat ${requestedChatId}`);
     const result = await ChatRepository.checkChatDestruction({ requestedChatId });
     return response.send(result);
+  }
+
+  async fetchChatContacts({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    log('CHAT', `User ${requestingUserId} requesting Chat Contacts for ${requestedChatId}`);
+    const { contacts } = await ChatRepository.fetchChatContacts({ requestingUserId, requestedChatId });
+    return response.send({ contacts });
+  }
+
+  async addContactsToChat({ auth, params, request, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    const requestedContacts = request.only(['contacts']).contacts;
+    log('CHAT', `User ${requestingUserId} adding ${JSON.stringify(requestedContacts)} to Chat ${requestedChatId}`);
+    const { contacts } = await ChatRepository.addContactsToChat({ requestingUserId, requestedChatId, contacts: requestedContacts });
+    return response.send({ contacts });
   }
 
   async fetchMessages({ auth, params, response }) {

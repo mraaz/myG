@@ -211,6 +211,21 @@ export default function reducer(state = {
       };
     }
 
+    case "ADD_CONTACTS_TO_CHAT_FULFILLED": {
+      logger.log('CHAT', `Redux -> Contacts Added: `, action.payload, action.meta);
+      const { userId, chatId } = action.meta;
+      const { contacts } = action.payload;
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => candidate.chatId === chatId);
+      chat.contacts = [...chat.contacts, ...contacts.map(contact => contact.contactId)];
+      chat.fullContacts = [...chat.fullContacts, ...contacts];
+      sendGroupKeys(chatId, parseInt(userId), contacts, chat.privateKey, state.privateKey);
+      return {
+        ...state,
+        chats,
+      };
+    }
+
     case "CLEAR_CHAT_FULFILLED": {
       logger.log('CHAT', `Redux -> Chat Cleared: ${action.meta.chatId}`);
       const chatId = action.meta.chatId;

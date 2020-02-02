@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import GroupInvitation from './GroupInvitation';
 
-import { updateChatAction, clearChatAction } from '../../../redux/actions/chatAction';
+import { addContactsToChatAction, updateChatAction, clearChatAction } from '../../../redux/actions/chatAction';
 import { addAsFriendAction } from '../../../redux/actions/userAction';
 
 class GroupOptions extends React.PureComponent {
@@ -28,7 +28,8 @@ class GroupOptions extends React.PureComponent {
 
   onInvitation = (contacts) => {
     this.setState({ invitingToGroup: false })
-    console.log(`Inviting ${contacts}`);
+    if (!contacts || !contacts.length) return;
+    this.props.addContactsToChat(this.props.userId, this.props.group.chatId, contacts);
   }
 
   renderGroupHeader = () => {
@@ -88,14 +89,14 @@ class GroupOptions extends React.PureComponent {
         <div
           className={`chat-group-options-header-options-option clickable`}
           onClick={() => {
-            console.log(`Edit Group Icon`);
+            console.log(`Edit Icon`);
           }}
         >
           <div
             className="chat-group-options-header-options-option-icon"
             style={{ backgroundImage: `url(/assets/svg/ic_chat_group_edit.svg)` }}
           />
-          edit Group icon
+          edit icon
         </div>
 
         <div
@@ -142,7 +143,7 @@ class GroupOptions extends React.PureComponent {
             className="chat-group-options-contact-icon"
             style={{ backgroundImage: `url('${contact.icon}')` }}
           >
-            <div className={`chat-component-header-status-indicator chat-component-header-status-indicator-${contact.status}`} />
+            <div className={`chat-component-header-status-indicator-static chat-component-header-status-indicator-${contact.status}`} />
           </div>
           <div className="chat-group-options-contact-name">{contact.name}</div>
         </div>
@@ -222,6 +223,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return ({
     addAsFriend: (friendId) => dispatch(addAsFriendAction(friendId)),
+    addContactsToChat: (userId, chatId, contacts) => dispatch(addContactsToChatAction(userId, chatId, contacts)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
   });
