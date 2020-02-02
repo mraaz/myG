@@ -196,6 +196,16 @@ export default function reducer(state = {
       };
     }
 
+    case "ON_CHAT_DELETED": {
+      logger.log('CHAT', `Redux -> On Chat Deleted: `, action.payload);
+      const chatId = parseInt(action.payload.chatId);
+      const chats = JSON.parse(JSON.stringify(state.chats)).filter(chat => parseInt(chat.chatId) !== parseInt(chatId));
+      return {
+        ...state,
+        chats,
+      };
+    }
+
     case "UPDATE_CHAT_FULFILLED": {
       logger.log('CHAT', `Redux -> Chat Updated: `, action.meta);
       const { chatId, muted, blocked, markAsRead, selfDestruct } = action.meta;

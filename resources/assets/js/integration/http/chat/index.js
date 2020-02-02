@@ -31,6 +31,11 @@ export function checkSelfDestruct(chatId) {
   return axios.delete(`/api/chat/${chatId}/destruction`).then(response => response.data);
 }
 
+export function deleteChat(chatId) {
+  logger.log('CHAT', 'HTTP', `Deleting Chat ${chatId}`);
+  return axios.delete(`/api/chat/${chatId}/delete`).then(response => response.data);
+}
+
 export function fetchChatContacts(chatId) {
   logger.log('CHAT', 'HTTP', `Fetching Chat ${chatId}`);
   return axios.get(`/api/chat/${chatId}/contacts`).then(response => response.data);

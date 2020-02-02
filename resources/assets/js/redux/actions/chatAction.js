@@ -1,4 +1,4 @@
-import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, createChat, updateChat, clearChat, checkSelfDestruct, fetchMessages, sendMessage, editMessage, deleteMessage } from '../../integration/http/chat';
+import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, createChat, updateChat, clearChat, deleteChat, checkSelfDestruct, fetchMessages, sendMessage, editMessage, deleteMessage } from '../../integration/http/chat';
 import { fetchContacts, fetchContact, fetchStatus } from '../../integration/http/user';
 import { generateKeys, deserializeKey } from '../../integration/encryption';
 
@@ -28,6 +28,13 @@ export function onUpdateMessageAction(message) {
 export function onDeleteMessagesAction(payload) {
   return {
     type: 'ON_MESSAGES_DELETED',
+    payload,
+  }
+}
+
+export function onDeleteChatAction(payload) {
+  return {
+    type: 'ON_CHAT_DELETED',
     payload,
   }
 }
@@ -136,6 +143,14 @@ export function clearChatAction(chatId) {
   return {
     type: 'CLEAR_CHAT',
     payload: clearChat(chatId),
+    meta: { chatId },
+  }
+}
+
+export function deleteChatAction(chatId) {
+  return {
+    type: 'DELETE_CHAT',
+    payload: deleteChat(chatId),
     meta: { chatId },
   }
 }

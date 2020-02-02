@@ -181,10 +181,7 @@ class ChatRepository {
   }
 
   async fetchChatContacts({ requestingUserId, requestedChatId }) {
-    const chat = (await Chat
-      .query()
-      .where('id', requestedChatId)
-      .first()).toJSON();
+    const chat = (await Chat.query().where('id', requestedChatId).first()).toJSON();
     const contactIds = JSON.parse(chat.contacts || '[]');
     if (!Array.isArray(contactIds)) return { contacts: [] };
     const contactsQuery = contactIds.filter(contactId => parseInt(contactId) !== parseInt(requestingUserId));
@@ -201,6 +198,17 @@ class ChatRepository {
       publicKey: contact.public_key,
     }));
     return { contacts };
+  }
+
+  async deleteChat({ requestingUserId, requestedChatId }) {
+    const chatModel = (await Chat.query().where('id', requestedChatId).first());
+    const chat = chatModel.toJSON();
+    const contacts = JSON.parse(chat.contacts || '[]');
+    const owners = JSON.parse(chat.owners || '[]');
+    if (!owners.includes(requestingUserId)) throw new Error('Only Owners can Delete Chat');
+    await chatModel.delete();
+    contacts.forEach(userId => this._notifyChatEvent({ userId, action: 'deleteChat', payload: { chatId: requestedChatId } }));
+    return new DefaultSchema({ success: true });
   }
 
   async addContactsToChat({ requestingUserId, requestedChatId, contacts }) {

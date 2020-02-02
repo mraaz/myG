@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import GroupInvitation from './GroupInvitation';
 
-import { addContactsToChatAction, updateChatAction, clearChatAction } from '../../../redux/actions/chatAction';
+import { addContactsToChatAction, updateChatAction, clearChatAction, deleteChatAction } from '../../../redux/actions/chatAction';
 import { addAsFriendAction } from '../../../redux/actions/userAction';
 
 class GroupOptions extends React.PureComponent {
@@ -180,12 +180,20 @@ class GroupOptions extends React.PureComponent {
     );
   }
 
-  renderInviteButton = () => {
+  renderGroupFooter = () => {
+    if (!this.props.group.owners.includes(this.props.userId)) return null;
     return (
-      <div className="chat-group-invite-button clickable"
-        onClick={() => this.setState({ invitingToGroup: true })}
-      >
-        Invite to Group
+      <div className="chat-group-options-footer">
+        <div className="chat-group-delete-button clickable"
+          onClick={() => this.props.deleteChat(this.props.group.chatId)}
+        >
+          Delete Group
+        </div>
+        <div className="chat-group-invite-button clickable"
+          onClick={() => this.setState({ invitingToGroup: true })}
+        >
+          Invite to Group
+        </div>
       </div>
     );
   }
@@ -206,7 +214,7 @@ class GroupOptions extends React.PureComponent {
       <div className="chat-group-options-container">
         {this.renderGroupHeader()}
         {this.renderContactsInfo()}
-        {this.renderInviteButton()}
+        {this.renderGroupFooter()}
         {this.renderInviteWindow()}
       </div>
     );
@@ -226,6 +234,7 @@ function mapDispatchToProps(dispatch) {
     addContactsToChat: (userId, chatId, contacts) => dispatch(addContactsToChatAction(userId, chatId, contacts)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
+    deleteChat: (chatId) => dispatch(deleteChatAction(chatId)),
   });
 }
 

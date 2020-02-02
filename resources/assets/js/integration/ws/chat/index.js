@@ -1,5 +1,5 @@
 import { store } from '../../../redux/Store';
-import { onNewChatAction, onNewMessageAction, onUpdateMessageAction, onDeleteMessagesAction, onMarkAsReadAction, onSelfDestructAction, onPublicKeyUpdatedAction, fetchChatsAction } from '../../../redux/actions/chatAction';
+import { onNewChatAction, onNewMessageAction, onUpdateMessageAction, onDeleteMessagesAction, onDeleteChatAction, onMarkAsReadAction, onSelfDestructAction, onPublicKeyUpdatedAction, fetchChatsAction } from '../../../redux/actions/chatAction';
 import { onStatusChangedAction } from '../../../redux/actions/userAction';
 import { onConnectionStateChangedAction } from '../../../redux/actions/socketAction';
 import socket from '../../../common/socket';
@@ -48,6 +48,7 @@ export function monitorChats(userId) {
     if (event.type === "chat:newMessage") return store.dispatch(onNewMessageAction(event.data, userId));
     if (event.type === "chat:updateMessage") return store.dispatch(onUpdateMessageAction(event.data, userId));
     if (event.type === "chat:deleteMessages") return store.dispatch(onDeleteMessagesAction(event.data, userId));
+    if (event.type === "chat:deleteChat") return store.dispatch(onDeleteChatAction(event.data, userId));
     if (event.type === "chat:markAsRead") return store.dispatch(onMarkAsReadAction(event.data, userId));
     if (event.type === "chat:selfDestruct") return store.dispatch(onSelfDestructAction(event.data, userId));
     if (event.type === "chat:encryption") return store.dispatch(onPublicKeyUpdatedAction(event.data, userId));

@@ -178,6 +178,12 @@
   margin-left: 2px;
 }
 
+.chat-group-options-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .chat-group-invite-button {
   background-color: #2D363A;
   color: #FAFAFA;
@@ -188,5 +194,18 @@
   align-items: center;
   justify-content: center;
   align-self: flex-end;
+  margin: 8px;
+}
+
+.chat-group-delete-button {
+  background-color: #80363A;
+  color: #FAFAFA;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
   margin: 8px;
 }

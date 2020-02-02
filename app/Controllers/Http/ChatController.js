@@ -54,6 +54,14 @@ class ChatController {
     return response.send(result);
   }
 
+  async deleteChat({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    log('CHAT', `User ${requestingUserId} deleting Chat ${requestedChatId}`);
+    const result = await ChatRepository.deleteChat({ requestingUserId, requestedChatId });
+    return response.send(result);
+  }
+
   async fetchChatContacts({ auth, params, response }) {
     const requestingUserId = auth.user.id;
     const requestedChatId = params.chatId;
