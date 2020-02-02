@@ -60,7 +60,6 @@ export default class AddScheduleGames extends Component {
     setTimeout(() => {
       const newOption = createOption(inputValue, null)
       this.setState({ game_name_box: newOption })
-      console.log(this.state.game_name_box)
     }, 300)
   }
 
@@ -69,7 +68,6 @@ export default class AddScheduleGames extends Component {
       toast.success(<Toast_style text={'Sorry mate! Game name can not have invalid fields'} />)
       return
     }
-    console.log(entered_name)
 
     this.setState(
       {
