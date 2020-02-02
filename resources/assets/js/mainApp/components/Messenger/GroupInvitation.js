@@ -2,6 +2,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { MAXIMUM_GROUP_SIZE } from './GroupCreation';
+
 class GroupInvitation extends React.Component {
 
   state = {
@@ -15,10 +17,16 @@ class GroupInvitation extends React.Component {
     this.setState({ contactInput: name, matchingContacts });
   }
 
+  onAddContact = (contact) => {
+    if (this.state.addedContacts.length >= MAXIMUM_GROUP_SIZE) return;;
+    this.setState(previous => ({ addedContacts: [...previous.addedContacts, contact.contactId] }));
+  }
+
   renderInviteHint = () => {
     return (
       <div className="chat-group-creation-invite-hint-container">
         <p className="chat-group-creation-invite-hint">Invite</p>
+        {this.renderContactLimitWarning()}
       </div>
     );
   }
@@ -67,7 +75,7 @@ class GroupInvitation extends React.Component {
             ) :
             (
               <div className="chat-group-creation-contact-invite-button clickable"
-                onClick={() => this.setState(previous => ({ addedContacts: [...previous.addedContacts, contact.contactId] }))}
+                onClick={() => this.onAddContact(contact)}
               >
                 Invite
               </div>
@@ -89,6 +97,15 @@ class GroupInvitation extends React.Component {
           Save
         </div>
 
+      </div>
+    );
+  }
+
+  renderContactLimitWarning = () => {
+    if (this.state.addedContacts.length < MAXIMUM_GROUP_SIZE) return null;
+    return (
+      <div className="chat-group-creation-contact-error">
+        Maximum Group size reached!
       </div>
     );
   }

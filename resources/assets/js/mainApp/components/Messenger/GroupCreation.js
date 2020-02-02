@@ -2,6 +2,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+export const MAXIMUM_GROUP_SIZE = 37;
+
 class GroupCreation extends React.Component {
 
   state = {
@@ -24,6 +26,11 @@ class GroupCreation extends React.Component {
     if (!title) return this.setState({ titleError: true });
     if (addedContacts.length < 2) return this.setState({ contactsError: true });
     this.props.onCreate(icon, title, addedContacts);
+  }
+
+  onAddContact = (contact) => {
+    if (this.state.addedContacts.length >= MAXIMUM_GROUP_SIZE) return;;
+    this.setState(previous => ({ addedContacts: [...previous.addedContacts, contact.contactId] }));
   }
 
   renderHeader = () => {
@@ -55,6 +62,7 @@ class GroupCreation extends React.Component {
         <p className="chat-group-creation-invite-hint">Invite</p>
         {this.renderTitleError()}
         {this.renderContactsError()}
+        {this.renderContactLimitWarning()}
       </div>
     );
   }
@@ -105,7 +113,7 @@ class GroupCreation extends React.Component {
             ) :
             (
               <div className="chat-group-creation-contact-invite-button clickable"
-                onClick={() => this.setState(previous => ({ addedContacts: [...previous.addedContacts, contact.contactId] }))}
+                onClick={() => this.onAddContact(contact)}
               >
                 Add
               </div>
@@ -145,6 +153,15 @@ class GroupCreation extends React.Component {
     return (
       <div className="chat-group-creation-contact-error">
         Please add 2+ friends to the group
+      </div>
+    );
+  }
+
+  renderContactLimitWarning = () => {
+    if (this.state.titleError || this.state.addedContacts.length < MAXIMUM_GROUP_SIZE) return null;
+    return (
+      <div className="chat-group-creation-contact-error">
+        Maximum Group size reached!
       </div>
     );
   }

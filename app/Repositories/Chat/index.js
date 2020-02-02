@@ -13,6 +13,8 @@ const { broadcast } = require('../../Common/socket');
 const { toSQLDateTime, convertUTCDateToLocalDate } = require('../../Common/date');
 const { log } = require('../../Common/logger');
 
+const MAXIMUM_GROUP_SIZE = 37;
+
 class ChatRepository {
 
   async fetchChats({ requestingUserId }) {
@@ -92,6 +94,7 @@ class ChatRepository {
   }
 
   async createChat({ requestingUserId, contacts, title, icon, publicKey }) {
+    if (contacts.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
     contacts = [requestingUserId, ...contacts].sort();
     const { chats } = await this.fetchChats({ requestingUserId });
 
@@ -200,6 +203,7 @@ class ChatRepository {
     const { chat } = await this.fetchChat({ requestingUserId, requestedChatId });
     if (chat.contacts.length < 3) throw new Error('Cannot add users to a normal chat.');
     contacts.forEach(contactId => !chat.contacts.includes(contactId) && chat.contacts.push(contactId));
+    if (chat.contacts.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
     contacts.forEach(async userId => {
       const userChat = new UserChat();
       userChat.chat_id = chat.chatId;
