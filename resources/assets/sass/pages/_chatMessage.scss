@@ -72,11 +72,26 @@
 .chat-component-message-container {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .chat-component-message-content-body {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.chat-component-message-sender-name {
+  font-weight: 1000;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  color: #FFFFFF;
+  word-break: break-word;
+  white-space: pre-wrap;
+  font-size: 10px;
+  margin-right: 4px;
+  margin-bottom: 4px;
 }
 
 .chat-component-message-content-info {

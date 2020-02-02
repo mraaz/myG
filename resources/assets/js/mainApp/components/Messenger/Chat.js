@@ -254,6 +254,7 @@ class Chat extends React.PureComponent {
         message={this.decryptMessage(message)}
         userId={this.props.userId}
         chatId={this.props.chatId}
+        senderName={(this.props.contactsMap[message.senderId] || {}).name}
         messageId={message.messageId}
         messageListRef={this.messageListRef}
         editing={this.state.editing === message.messageId}
@@ -326,17 +327,18 @@ function mapStateToProps(state, props) {
   const contactSubtitle = contact.status && contact.status === 'offline' ? `${formatDateTime(contact.lastSeen)}` : contact.status && `${contact.status}`;
   const isGroup = contacts.length > 1;
   let chatSubtitle = null;
+  const contactsMap = {};
+  state.user.contacts.forEach(contact => contactsMap[contact.contactId] = contact);
   if (isGroup) {
-    const onlineContactsMap = {};
-    state.user.contacts.forEach(contact => onlineContactsMap[contact.contactId] = contact.status === 'online');
     const memberCount = contacts.length;
-    const onlineCount = contacts.filter(contactId => onlineContactsMap[contactId]).length;
+    const onlineCount = contacts.filter(contactId => (contactsMap[contactId] || {}).status === 'online').length;
     chatSubtitle = `${onlineCount}/${memberCount} online`;
   }
   chat.privateKey = deserializeKey(chat.privateKey);
   return {
     messages,
     contacts: state.user.contacts,
+    contactsMap,
     contactId,
     isGroup,
     icon: chat.icon || contact.icon || '',
