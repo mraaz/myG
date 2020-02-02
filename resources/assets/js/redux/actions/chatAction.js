@@ -111,7 +111,7 @@ export function fetchChatAction(chatId) {
 export function createChatAction(contacts, userId, title, icon, encryption) {
   return {
     type: 'CREATE_CHAT',
-    payload: createChat(contacts, title, icon, encryption && encryption.publicKey),
+    payload: createChat(contacts, [userId], title, icon, encryption && encryption.publicKey),
     meta: { userId, encryption }
   }
 }

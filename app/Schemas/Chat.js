@@ -16,6 +16,7 @@ class Chat {
     this.lastMessage = forceString(data.lastMessage);
     this.publicKey = forceString(data.publicKey);
     this.contacts = forceArray(data.contacts);
+    this.owners = forceArray(data.owners);
     this.messages = forceArray(data.messages);
     this.createdAt = forceDate(data.createdAt);
     this.updatedAt = forceDate(data.updatedAt);

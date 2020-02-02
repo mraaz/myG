@@ -19,7 +19,7 @@ class ChatRepository {
 
   async fetchChats({ requestingUserId }) {
     const chats = (await Database
-      .select('user_chats.chat_id', ' user_chats.user_id', ' user_chats.muted', ' user_chats.blocked', ' user_chats.self_destruct', ' user_chats.deleted_messages', ' user_chats.cleared_date', ' user_chats.read_date', ' user_chats.created_at', ' user_chats.updated_at', ' chats.icon', ' chats.title', ' chats.last_message', ' chats.public_key', ' chats.contacts')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.cleared_date', 'user_chats.read_date', 'user_chats.created_at', 'user_chats.updated_at', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .where('user_id', requestingUserId))
@@ -36,6 +36,7 @@ class ChatRepository {
         lastMessage: chat.last_message,
         publicKey: chat.public_key,
         contacts: chat.contacts,
+        owners: chat.owners,
         messages: chat.messages,
         createdAt: chat.created_at,
         updatedAt: chat.updated_at,
@@ -45,7 +46,7 @@ class ChatRepository {
 
   async fetchChat({ requestingUserId, requestedChatId }) {
     const chat = (await Database
-      .select('user_chats.chat_id', ' user_chats.user_id', ' user_chats.muted', ' user_chats.blocked', ' user_chats.self_destruct', ' user_chats.deleted_messages', ' user_chats.cleared_date', ' user_chats.read_date', ' user_chats.created_at', ' user_chats.updated_at', ' chats.icon', ' chats.title', ' chats.last_message', ' chats.public_key', ' chats.contacts')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.cleared_date', 'user_chats.read_date', 'user_chats.created_at', 'user_chats.updated_at', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .where('user_id', requestingUserId)
@@ -64,6 +65,7 @@ class ChatRepository {
       lastMessage: chat.last_message,
       publicKey: chat.public_key,
       contacts: chat.contacts,
+      owners: chat.owners,
       messages: chat.messages,
       createdAt: chat.created_at,
       updatedAt: chat.updated_at,
@@ -93,7 +95,7 @@ class ChatRepository {
     return { messages };
   }
 
-  async createChat({ requestingUserId, contacts, title, icon, publicKey }) {
+  async createChat({ requestingUserId, contacts, owners, title, icon, publicKey }) {
     if (contacts.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
     contacts = [requestingUserId, ...contacts].sort();
     const { chats } = await this.fetchChats({ requestingUserId });
@@ -108,12 +110,14 @@ class ChatRepository {
     if (title) chat.title = title;
     if (icon) chat.icon = icon;
     if (publicKey) chat.public_key = publicKey;
-    chat.contacts = JSON.stringify(contacts);
+    chat.contacts = JSON.stringify(contacts || []);
+    chat.owners = JSON.stringify(owners || []);
     await chat.save();
 
     const chatSchema = new ChatSchema({
       chatId: chat.id,
       contacts,
+      owners,
       title,
       icon,
       publicKey,

@@ -12,6 +12,7 @@ class ChatSchema extends Schema {
       table.text('last_message')
       table.text('public_key')
       table.text('contacts').notNullable().defaultTo('[]')
+      table.text('owners').notNullable().defaultTo('[]')
       table.timestamps()
     })
   }

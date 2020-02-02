@@ -22,10 +22,10 @@ class ChatController {
 
   async createChat({ auth, request, response }) {
     const requestingUserId = auth.user.id;
-    const payload = request.only(['contacts', 'title', 'icon', 'publicKey']);
-    const { contacts, title, icon, publicKey } = payload;
+    const payload = request.only(['contacts', 'owners', 'title', 'icon', 'publicKey']);
+    const { contacts, owners, title, icon, publicKey } = payload;
     log('CHAT', `User ${requestingUserId} creating Chat with ${JSON.stringify(payload)}`);
-    const { chat } = await ChatRepository.createChat({ requestingUserId, contacts, title, icon, publicKey });
+    const { chat } = await ChatRepository.createChat({ requestingUserId, contacts, owners, title, icon, publicKey });
     return response.send({ chat });
   }
 
