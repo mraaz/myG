@@ -302,7 +302,7 @@ class Chat extends React.PureComponent {
   }
 
   render() {
-    if (!this.props.privateKey) return this.renderEncryptedChat();
+    if (!this.props.minimised && !this.props.privateKey) return this.renderEncryptedChat();
     let extraClass = "";
     if (this.props.maximised) extraClass += "chat-maximised";
     if (this.props.minimised) extraClass += "chat-minimised";
