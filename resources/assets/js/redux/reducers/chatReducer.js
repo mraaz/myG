@@ -48,6 +48,7 @@ export default function reducer(state = {
       const { chatId } = action.meta;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
+      chat.fullContacts = action.payload.contacts;
       const messages = action.payload.messages
         .filter(message => new Date(message.updatedAt) >= new Date(chat.clearedDate))
         .filter(message => !chat.deletedMessages.includes(message.messageId))

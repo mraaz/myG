@@ -24,7 +24,7 @@ class Chat extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.props.prepareChat(this.props.chatId, this.props.contactId, this.props.userId);
+    this.props.prepareChat(this.props.chatId, this.props.contactId, this.props.isGroup, this.props.userId);
     setTimeout(() => this.props.checkSelfDestruct(this.props.chatId), 1000);
   }
 
@@ -322,13 +322,14 @@ function mapStateToProps(state, props) {
   const chat = state.chat.chats.find(chat => chat.chatId === props.chatId) || {};
   const messages = enrichMessagesWithDates(chat.messages || []);
   const contacts = chat.contacts.filter(contactId => contactId !== props.userId);
+  const fullContacts = chat.fullContacts || [];
   const contactId = contacts.length === 1 && contacts[0];
   const contact = (contactId && state.user.contacts.find(contact => contact.contactId === contactId)) || {};
   const contactSubtitle = contact.status && contact.status === 'offline' ? `${formatDateTime(contact.lastSeen)}` : contact.status && `${contact.status}`;
   const isGroup = contacts.length > 1;
   let chatSubtitle = null;
   const contactsMap = {};
-  state.user.contacts.forEach(contact => contactsMap[contact.contactId] = contact);
+  fullContacts.forEach(contact => contactsMap[contact.contactId] = contact);
   if (isGroup) {
     const memberCount = contacts.length;
     const onlineCount = contacts.filter(contactId => (contactsMap[contactId] || {}).status === 'online').length;
@@ -337,9 +338,10 @@ function mapStateToProps(state, props) {
   chat.privateKey = deserializeKey(chat.privateKey);
   return {
     messages,
-    contacts: state.user.contacts,
-    contactsMap,
+    contacts: fullContacts,
     contactId,
+    contactIds: contacts,
+    contactsMap,
     isGroup,
     icon: chat.icon || contact.icon || '',
     title: chat.title || contact.name || '',
@@ -362,7 +364,7 @@ function mapStateToProps(state, props) {
 
 function mapDispatchToProps(dispatch) {
   return ({
-    prepareChat: (chatId, contactId, userId) => dispatch(prepareChatAction(chatId, contactId, userId)),
+    prepareChat: (chatId, contactId, contactIds, userId) => dispatch(prepareChatAction(chatId, contactId, contactIds, userId)),
     sendMessage: (chatId, userId, content) => dispatch(sendMessageAction(chatId, userId, content)),
     editMessage: (chatId, messageId, content) => dispatch(editMessageAction(chatId, messageId, content)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),

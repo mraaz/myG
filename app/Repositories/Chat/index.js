@@ -7,6 +7,7 @@ const ChatMessage = use('App/Models/ChatMessage');
 const ChatSchema = require('../../Schemas/Chat');
 const MessageSchema = require('../../Schemas/Message');
 const DefaultSchema = require('../../Schemas/Default');
+const ContactSchema = require('../../Schemas/Contact');
 
 const { broadcast } = require('../../Common/socket');
 const { toSQLDateTime, convertUTCDateToLocalDate } = require('../../Common/date');
@@ -66,6 +67,29 @@ class ChatRepository {
       updatedAt: chat.updated_at,
     });
     return { chat: chatSchema };
+  }
+
+  async fetchChatContacts({ requestingUserId, requestedChatId }) {
+    const chat = (await Chat
+      .query()
+      .where('id', requestedChatId)
+      .first()).toJSON();
+    const contactIds = JSON.parse(chat.contacts || '[]');
+    if (!Array.isArray(contactIds)) return { contacts: [] };
+    const contactsQuery = contactIds.filter(contactId => parseInt(contactId) !== parseInt(requestingUserId));
+    const rawContacts = (await Database
+      .from('users')
+      .where('id', 'in', contactsQuery)
+    );
+    const contacts = rawContacts.map(contact => new ContactSchema({
+      contactId: contact.id,
+      icon: contact.profile_img,
+      name: `${contact.first_name} ${contact.last_name}`,
+      status: contact.status,
+      lastSeen: contact.last_seen,
+      publicKey: contact.public_key,
+    }));
+    return { contacts };
   }
 
   async fetchMessages({ requestedChatId }) {

@@ -266,6 +266,7 @@ Route.get('/api/usergroup/current_member/:id', 'UsergroupController.current_memb
 // Chat Feature - https://docs.google.com/spreadsheets/d/1AR9P3MLQw6J6eoRqgTbOVROFxmPE215yXzsqD59wy2o
 Route.get('/api/chat/', 'ChatController.fetchChats')
 Route.get('/api/chat/:chatId', 'ChatController.fetchChat')
+Route.get('/api/chat/:chatId/contacts', 'ChatController.fetchChatContacts')
 Route.post('/api/chat/', 'ChatController.createChat')
 Route.put('/api/chat/:chatId', 'ChatController.updateChat')
 Route.delete('/api/chat/:chatId', 'ChatController.clearChat')

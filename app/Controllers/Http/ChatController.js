@@ -20,6 +20,14 @@ class ChatController {
     return response.send({ chat });
   }
 
+  async fetchChatContacts({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    log('CHAT', `User ${requestingUserId} requesting Chat Contacts for ${requestedChatId}`);
+    const { contacts } = await ChatRepository.fetchChatContacts({ requestingUserId, requestedChatId });
+    return response.send({ contacts });
+  }
+
   async createChat({ auth, request, response }) {
     const requestingUserId = auth.user.id;
     const payload = request.only(['contacts', 'title', 'icon', 'publicKey']);

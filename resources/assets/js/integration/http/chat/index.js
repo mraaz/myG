@@ -11,6 +11,11 @@ export function fetchChat(chatId) {
   return axios.get(`/api/chat/${chatId}`).then(response => response.data);
 }
 
+export function fetchChatContacts(chatId) {
+  logger.log('CHAT', 'HTTP', `Fetching Chat ${chatId}`);
+  return axios.get(`/api/chat/${chatId}/contacts`).then(response => response.data);
+}
+
 export function createChat(contacts, title, icon, publicKey) {
   logger.log('CHAT', 'HTTP', `Creating Chat: `, { contacts, title, icon, publicKey });
   return axios.post(`/api/chat/`, { contacts, title, icon, publicKey }).then(response => response.data);
