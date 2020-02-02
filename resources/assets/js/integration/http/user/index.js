@@ -25,3 +25,8 @@ export function updateStatus(status, forceStatus) {
   logger.log('USER', 'HTTP', `${forceStatus ? 'Forcing' : 'Setting'} Status ${status}`);
   return axios.put(`/api/user_chat/status/`, { status, forceStatus }).then((response => response.data));
 }
+
+export function addAsFriend(friendId) {
+  logger.log('USER', 'HTTP', `User adding ${friendId} as Friend.`);
+  return axios.post(`/api/notifications/addFriend`, { other_user_id: friendId }).then((response => response.data));
+}

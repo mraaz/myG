@@ -351,5 +351,6 @@ function receiveGroupKey(group, messages, userId, userPrivateKey) {
   const message = messages.find(message => parseInt(message.keyReceiver) === parseInt(userId));
   if (!message || !message.content) return;
   const privateKey = decryptMessage(message.content, userPrivateKey);
+  if (!privateKey) return;
   return deserializeKey(JSON.parse(privateKey));
 }

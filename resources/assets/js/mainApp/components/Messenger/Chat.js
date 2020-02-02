@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
+import GroupOptions from './GroupOptions';
 
 import { prepareChatAction, sendMessageAction, editMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction } from '../../../redux/actions/chatAction';
 import { enrichMessagesWithDates } from '../../../common/chat';
@@ -96,6 +97,7 @@ class Chat extends React.PureComponent {
 
   renderSettings = () => {
     if (!this.state.settings) return;
+    if (this.props.isGroup) return <GroupOptions group={this.props.group} groupContacts={this.props.contacts} />
     const inactiveStyle = 'chat-component-header-settings-option-inactive';
     return (
       <div className="chat-component-header-settings-popup">
@@ -343,6 +345,7 @@ function mapStateToProps(state, props) {
     contactIds: contacts,
     contactsMap,
     isGroup,
+    group: chat,
     icon: chat.icon || contact.icon || '',
     title: chat.title || contact.name || '',
     subtitle: chatSubtitle || contactSubtitle || '',
