@@ -30,7 +30,7 @@ class Chat extends React.PureComponent {
 
   componentDidUpdate() {
     const scrolled = this.scrollToLastMessage();
-    if (!scrolled) this.markAsRead();
+    // if (!scrolled) this.markAsRead();
   }
 
   scrollToLastMessage = () => {
