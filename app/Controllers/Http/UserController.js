@@ -93,8 +93,10 @@ class UserController {
   async playerSearchResults({ auth, request, response }) {
     try {
       const playerSearchResults = await User.query()
-        .where('first_name', 'like', '%' + request.params.str + '%')
+        .whereNot({ id: auth.user.id })
+        .andWhere('first_name', 'like', '%' + request.params.str + '%')
         .orWhere('last_name', 'like', '%' + request.params.str + '%')
+        .whereNot({ id: auth.user.id })
         .select('first_name as first', 'last_name as last', 'profile_img', 'id')
         .fetch()
 
