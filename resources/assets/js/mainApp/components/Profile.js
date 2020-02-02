@@ -91,11 +91,11 @@ export default class Profile extends Component {
   }
   componentDidUpdate(prevProps) {
     if (this.props.routeProps.location.pathname !== prevProps.routeProps.location.pathname) {
-      this.componentWillMount()
+      this.componentDidMount()
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const self = this
     const { match } = this.props.routeProps
     const { initialData } = this.props
