@@ -250,7 +250,15 @@ class Messenger extends React.PureComponent {
   renderGroupButton = () => {
     return (
       <div>
-        <div className="messenger-new-group-button clickable" onClick={() => this.setState({ showingGroupCreation: true })}>new group</div>
+        <div className="messenger-new-group-button clickable"
+          onClick={() => this.setState({ showingGroupCreation: true })}
+        >
+          <div
+            className="messenger-new-group-button-icon"
+            style={{ backgroundImage: `url(/assets/svg/ic_chat_group_create.svg)` }}
+          />
+          Create Group
+        </div>
         {!this.props.groups.length && (
           <div className="messenger-empty-message-container">
             <p className="messenger-empty-message">You aren't part of any group yet :(</p>

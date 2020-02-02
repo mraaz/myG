@@ -394,6 +394,16 @@
     color: #A0A0A0;
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+  }
+
+  .messenger-new-group-button-icon {
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+    margin-top: -4px;
   }
 
   .messenger-empty-message-container {

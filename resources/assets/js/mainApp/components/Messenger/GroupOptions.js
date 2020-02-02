@@ -2,12 +2,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import GroupInvitation from './GroupInvitation';
+
 import { updateChatAction, clearChatAction } from '../../../redux/actions/chatAction';
 import { addAsFriendAction } from '../../../redux/actions/userAction';
 
 class GroupOptions extends React.PureComponent {
 
   state = {
+    invitingToGroup: false,
     editingTitle: false,
     titleInput: '',
     friendRequests: [],
@@ -21,6 +24,11 @@ class GroupOptions extends React.PureComponent {
   onTitleChange = () => {
     this.setState({ editingTitle: false });
     console.log(`Setting Group Name to ${titleInput}`);
+  }
+
+  onInvitation = (contacts) => {
+    this.setState({ invitingToGroup: false })
+    console.log(`Inviting ${contacts}`);
   }
 
   renderGroupHeader = () => {
@@ -141,17 +149,17 @@ class GroupOptions extends React.PureComponent {
         <div className="chat-group-options-contact-buttons">
           <div
             className="chat-group-options-option-icon clickable"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_group_remove.svg)` }}
+            style={{ backgroundImage: `url(/assets/svg/ic_chat_group_remove.svg)`, filter: `contrast(1)` }}
             onClick={() => console.log(`Remove From Group: ${contact.contactId}`)}
           />
           <div
             className="chat-group-options-option-icon clickable"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_mute.svg)` }}
+            style={{ backgroundImage: `url(/assets/svg/ic_chat_mute.svg)`, filter: `contrast(0)` }}
             onClick={() => console.log(`Mute User: ${contact.contactId}`)}
           />
           <div
             className="chat-group-options-option-icon clickable"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_block.svg)` }}
+            style={{ backgroundImage: `url(/assets/svg/ic_chat_block.svg)`, filter: `contrast(0)` }}
             onClick={() => console.log(`Block User: ${contact.contactId}`)}
           />
           {!isAdded && !isRequested && (
@@ -171,11 +179,34 @@ class GroupOptions extends React.PureComponent {
     );
   }
 
+  renderInviteButton = () => {
+    return (
+      <div className="chat-group-invite-button clickable"
+        onClick={() => this.setState({ invitingToGroup: true })}
+      >
+        Invite to Group
+      </div>
+    );
+  }
+
+  renderInviteWindow = () => {
+    if (!this.state.invitingToGroup) return;
+    return (
+      <GroupInvitation
+        group={this.props.group}
+        onCancel={() => this.setState({ invitingToGroup: false })}
+        onInvite={this.onInvitation}
+      />
+    );
+  }
+
   render() {
     return (
       <div className="chat-group-options-container">
         {this.renderGroupHeader()}
         {this.renderContactsInfo()}
+        {this.renderInviteButton()}
+        {this.renderInviteWindow()}
       </div>
     );
   }
