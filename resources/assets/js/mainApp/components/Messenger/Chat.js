@@ -325,15 +325,23 @@ function mapStateToProps(state, props) {
   const contact = (contactId && state.user.contacts.find(contact => contact.contactId === contactId)) || {};
   const contactSubtitle = contact.status && contact.status === 'offline' ? `${formatDateTime(contact.lastSeen)}` : contact.status && `${contact.status}`;
   const isGroup = contacts.length > 1;
+  let chatSubtitle = null;
+  if (isGroup) {
+    const onlineContactsMap = {};
+    state.user.contacts.forEach(contact => onlineContactsMap[contact.contactId] = contact.status === 'online');
+    const memberCount = contacts.length;
+    const onlineCount = contacts.filter(contactId => onlineContactsMap[contactId]).length;
+    chatSubtitle = `${onlineCount}/${memberCount} online`;
+  }
   chat.privateKey = deserializeKey(chat.privateKey);
   return {
     messages,
-    contacts,
+    contacts: state.user.contacts,
     contactId,
     isGroup,
     icon: chat.icon || contact.icon || '',
     title: chat.title || contact.name || '',
-    subtitle: chat.subtitle || contactSubtitle || '',
+    subtitle: chatSubtitle || contactSubtitle || '',
     status: chat.status || contact.status || 'offline',
     blocked: chat.blocked || false,
     muted: chat.muted || false,
