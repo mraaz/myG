@@ -3,6 +3,7 @@ import React from "react";
 import { connect } from 'react-redux';
 
 import Chat from './Chat';
+import GroupCreation from './GroupCreation';
 import StatusTimerWrapper from '../StatusTimerWrapper';
 import WindowFocusHandler from '../WindowFocusHandler';
 
@@ -19,6 +20,7 @@ class Messenger extends React.PureComponent {
 
   state = {
     showingSettings: false,
+    showingGroupCreation: false,
     changingStatus: false,
     searchInput: '',
     pin: '',
@@ -66,13 +68,10 @@ class Messenger extends React.PureComponent {
     this.props.closeChat(chatId);
   }
 
-  createGroup = () => {
-    if (!this.props.contacts[0] || !this.props.contacts[1]) return alert("For now, you need to have at least two friends to create a group");
-    const contacts = [this.props.contacts[0].contactId, this.props.contacts[1].contactId];
-    const title = "Group Name";
-    const icon = "https://i.pinimg.com/originals/d5/e1/d4/d5e1d4fb60a1b8b1d6182cc9b1ff2376.jpg";
+  createGroup = (icon, title, contacts) => {
     const { encryption } = generateGroupKeys();
     this.props.createChat(contacts, this.props.userId, title, icon, encryption);
+    this.setState({ showingGroupCreation: false });
   }
 
   setStatus = (status) => {
@@ -236,31 +235,41 @@ class Messenger extends React.PureComponent {
 
   renderGroups = () => {
     return this.renderDivider('groups', this.state.dividerExpanded.groups, () => {
-
-      if (!this.props.groups.length) {
-        return (
-          <div>
-            <div className="messenger-new-group-button clickable" onClick={this.createGroup}>new group</div>
-            <div className="messenger-empty-message-container">
-              <p className="messenger-empty-message">You aren't part of any group yet :(</p>
-              <p className="messenger-empty-message">
-                {this.props.contacts.length ?
-                  'Try adding some of your friends to a group' :
-                  'You can find groups through matchmaking'
-                }
-              </p>
-            </div>
-          </div>
-        );
-      }
-
+      if (!this.props.groups.length) return this.renderGroupButton();
       return (
-        <div className="messenger-body-section-content">
-          {this.props.groups.map(this.renderGroup)}
+        <div>
+          {this.renderGroupButton()}
+          <div className="messenger-body-section-content">
+            {this.props.groups.map(this.renderGroup)}
+          </div>
         </div>
       );
-
     });
+  }
+
+  renderGroupButton = () => {
+    return (
+      <div>
+        <div className="messenger-new-group-button clickable" onClick={() => this.setState({ showingGroupCreation: true })}>new group</div>
+        {!this.props.groups.length && (
+          <div className="messenger-empty-message-container">
+            <p className="messenger-empty-message">You aren't part of any group yet :(</p>
+            <p className="messenger-empty-message">
+              {this.props.contacts.length ?
+                'Try adding some of your friends to a group' :
+                'You can find groups through matchmaking'
+              }
+            </p>
+          </div>
+        )}
+        {this.state.showingGroupCreation && (
+          <GroupCreation
+            onCreate={this.createGroup}
+            onCancel={() => this.setState({ showingGroupCreation: false })}
+          />
+        )}
+      </div>
+    );
   }
 
   renderGroup = (group) => {
