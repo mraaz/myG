@@ -23,7 +23,8 @@ class GroupOptions extends React.PureComponent {
 
   onTitleChange = () => {
     this.setState({ editingTitle: false });
-    console.log(`Setting Group Name to ${titleInput}`);
+    if (!this.state.titleInput.trim()) return;
+    this.props.updateChat(this.props.group.chatId, { title: this.state.titleInput.trim() });
   }
 
   onInvitation = (contacts) => {

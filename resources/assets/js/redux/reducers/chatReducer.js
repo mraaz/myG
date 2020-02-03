@@ -208,13 +208,29 @@ export default function reducer(state = {
 
     case "UPDATE_CHAT_FULFILLED": {
       logger.log('CHAT', `Redux -> Chat Updated: `, action.meta);
-      const { chatId, muted, blocked, markAsRead, selfDestruct } = action.meta;
+      const { chatId, muted, blocked, title, icon, markAsRead, selfDestruct } = action.meta;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (blocked !== undefined) chat.blocked = blocked;
       if (muted !== undefined) chat.muted = muted;
+      if (title !== undefined) chat.title = title;
+      if (icon !== undefined) chat.icon = icon;
       if (selfDestruct !== undefined) chat.selfDestruct = selfDestruct;
       if (markAsRead) chat.readDate = new Date().toISOString().replace("T", " ").split('.')[0];
+      return {
+        ...state,
+        chats,
+      };
+    }
+
+    case "ON_CHAT_UPDATED": {
+      logger.log('CHAT', `Redux -> On Chat Updated: `, action.payload, action.meta);
+      const { chatId, title, icon, owners } = action.payload.chat;
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => candidate.chatId === chatId);
+      if (title !== undefined) chat.title = title;
+      if (icon !== undefined) chat.icon = icon;
+      if (owners !== undefined) chat.owners = owners;
       return {
         ...state,
         chats,

@@ -10,6 +10,14 @@ export function onNewChatAction(chat, userId) {
   }
 }
 
+export function onChatUpdatedAction(chat, userId) {
+  return {
+    type: 'ON_CHAT_UPDATED',
+    payload: { chat },
+    meta: { userId },
+  }
+}
+
 export function onNewMessageAction(message, userId) {
   return {
     type: 'NEW_MESSAGE',

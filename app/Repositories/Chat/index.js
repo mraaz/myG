@@ -137,11 +137,15 @@ class ChatRepository {
     return { chat: chatSchema };
   }
 
-  async updateChat({ requestingUserId, requestedChatId, muted, blocked, markAsRead, selfDestruct }) {
+  async updateChat({ requestingUserId, requestedChatId, icon, title, owners, muted, blocked, markAsRead, selfDestruct }) {
     if (markAsRead) await this._markAsRead({ requestingUserId, requestedChatId });
     if (selfDestruct !== undefined) await this._setSelfDestruct({ requestingUserId, requestedChatId, selfDestruct });
     if (muted !== undefined) await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', requestingUserId).update({ muted });
     if (blocked !== undefined) await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', requestingUserId).update({ blocked });
+    if (icon !== undefined) await Chat.query().where('id', requestedChatId).update({ icon });
+    if (title !== undefined) await Chat.query().where('id', requestedChatId).update({ title });
+    if (owners !== undefined) await Chat.query().where('id', requestedChatId).update({ owners });
+    if (icon || title || owners) this._notifyChatUpdated({ requestedChatId });
     return new DefaultSchema({ success: true });
   }
 
@@ -358,6 +362,18 @@ class ChatRepository {
   async _fetchContactReadDate({ contactId, requestedChatId }) {
     const contactChat = await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', contactId).first();
     return contactChat.toJSON().read_date;
+  }
+
+  async _notifyChatUpdated({ requestedChatId }) {
+    const chat = (await Chat.query().where('id', requestedChatId).first()).toJSON();
+    const chatSchema = new ChatSchema({
+      chatId: chat.id,
+      icon: chat.icon,
+      title: chat.title,
+      contacts: chat.contacts,
+      owners: chat.owners,
+    });
+    chatSchema.contacts.forEach(userId => this._notifyChatEvent({ userId, action: 'chatUpdated', payload: chatSchema }));
   }
 
   async _notifyChatEvent({ userId, chatId, contactId, action, payload }) {
