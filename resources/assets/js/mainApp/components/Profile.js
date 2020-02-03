@@ -23,7 +23,7 @@ export default class Profile extends Component {
       redirect_: false,
       redirect_link: '',
       alert: null,
-      esportsBioData: undefined
+      esportsBioData: undefined,
     }
 
     this.callbackFileModalClose = this.callbackFileModalClose.bind(this)
@@ -91,11 +91,11 @@ export default class Profile extends Component {
   }
   componentDidUpdate(prevProps) {
     if (this.props.routeProps.location.pathname !== prevProps.routeProps.location.pathname) {
-      this.componentWillMount()
+      this.componentDidMount()
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const self = this
     const { match } = this.props.routeProps
     const { initialData } = this.props
@@ -386,11 +386,11 @@ export default class Profile extends Component {
         if (country != null && country.trim() != '') {
           show_location = true
         }
-        if(this.state.esportsBioData.myProfile.length>0){
+        if (this.state.esportsBioData.myProfile.length > 0) {
           if (this.state.show_bio) {
             if (
-              this.state.esportsBioData.myProfile[0].games_of_ardour != undefined && this.state.esportsBioData.myProfile[0].games_of_ardour != ''
-
+              this.state.esportsBioData.myProfile[0].games_of_ardour != undefined &&
+              this.state.esportsBioData.myProfile[0].games_of_ardour != ''
             ) {
               games_of_ardour = this.state.esportsBioData.myProfile[0].games_of_ardour
               show_ardour = true
@@ -405,7 +405,6 @@ export default class Profile extends Component {
             }
           }
         }
-
 
         return (
           <section id='profile-page'>

@@ -3,6 +3,7 @@
 const Database = use('Database')
 const EsportsExperience = use('App/Models/EsportsExperience')
 const GameNameController = use('./GameNameController')
+const TagController = use('./TagController')
 
 class EsportsExperienceController {
   async store({ auth, request, response }) {
@@ -10,23 +11,61 @@ class EsportsExperienceController {
       if (/['/.%#$;`\\]/.test(request.input('skills'))) {
         return false
       }
+      if (/['/.%#$;`\\]/.test(request.input('game_name'))) {
+        return false
+      }
+      if (/['/.%#$;`\\]/.test(request.input('duration'))) {
+        return false
+      }
+
+      let gameface = new GameNameController()
+
+      const mygame = await Database.table('game_names').where({
+        game_name: request.input('game_name'),
+      })
+
+      if (mygame.length == 0) {
+        var results = await gameface.store({ auth, request, response })
+        if (results == false) {
+          return
+        }
+        request.params.game_names_id = results.id
+      } else {
+        request.params.game_names_id = mygame[0].id
+      }
+
+      let tagme = new TagController()
+
+      var arrTags = request.input('skills').split(',')
+
+      for (var i = 0; i < arrTags.length; i++) {
+        var current_tag = await Database.table('tags').where({
+          game_names_id: request.params.game_names_id,
+          tag: arrTags[i],
+        })
+        if (current_tag.length == 0) {
+          request.params.tag = arrTags[i]
+          tagme.store_backend({ auth, request, response })
+        }
+      }
+
       try {
         const newEsportsExp = await EsportsExperience.create({
           user_id: auth.user.id,
           role_title: request.input('role_title'),
-          game_name: request.input('game_name'),
+          game_names_id: request.params.game_names_id,
           team_name: request.input('team_name'),
           duration: request.input('duration'),
           achievements: request.input('achievements'),
           skills: request.input('skills'),
         })
-        let gameface = new GameNameController()
+        // let gameface = new GameNameController()
+        //
+        // const mygame = await Database.table('game_names').where({
+        //   game_name: request.input('game_name'),
+        // })
 
-        const mygame = await Database.table('game_names').where({
-          game_name: request.input('game_name'),
-        })
-
-        request.params.game_names_id = mygame[0].id
+        //request.params.game_names_id = mygame[0].id
         gameface.incrementGameCounter({ auth, request, response })
         return 'Saved item'
       } catch (error) {
@@ -37,9 +76,15 @@ class EsportsExperienceController {
 
   async show_exp({ auth, request, response }) {
     try {
-      const myesportsExperience = await EsportsExperience.query()
-        .where({ id: request.params.esportsExp_id })
-        .fetch()
+      // const myesportsExperience = await EsportsExperience.query()
+      //   .where({ id: request.params.esportsExp_id })
+      //   .fetch()
+
+      const myesportsExperience = await Database.table('esports_experiences')
+        .innerJoin('game_names', 'game_names.id', 'esports_experiences.game_names_id')
+        .where('esports_experiences.id', '=', request.params.esportsExp_id)
+        .select('esports_experiences.*', 'game_names.game_name')
+
       return {
         myesportsExperience,
       }
@@ -49,46 +94,73 @@ class EsportsExperienceController {
   }
 
   async update({ auth, request, response }) {
+    console.log(request.params.id)
     if (auth.user) {
       if (/['/.%#$;`\\]/.test(request.input('skills'))) {
         return false
       }
       try {
-        const game_experiences = await Database.table('esports_experiences').where({
-          id: request.params.id,
+        const game_experiences = await Database.table('esports_experiences')
+          .innerJoin('game_names', 'game_names.id', 'esports_experiences.game_names_id')
+          .where('esports_experiences.id', '=', request.params.id)
+          .select('esports_experiences.*', 'game_names.game_name')
+
+        if (game_experiences.length == 0) {
+          return
+        }
+
+        let gameface = new GameNameController()
+
+        const mygame = await Database.table('game_names').where({
+          game_name: request.input('game_name'),
         })
 
-        if (game_experiences[0].game_name !== request.input('game_name')) {
-          let gameface = new GameNameController()
-
-          let mygame = await Database.table('game_names').where({
-            game_name: game_experiences[0].game_name,
-          })
-
+        if (mygame.length == 0) {
+          var results = await gameface.store({ auth, request, response })
+          if (results == false) {
+            return
+          }
+          request.params.game_names_id = results.id
+        } else {
           request.params.game_names_id = mygame[0].id
-          gameface.decrementGameCounter({ auth, request, response })
+        }
 
-          mygame = await Database.table('game_names').where({
-            game_name: request.input('game_name'),
+        let tagme = new TagController()
+
+        var arrTags = request.input('skills').split(',')
+
+        for (var i = 0; i < arrTags.length; i++) {
+          var current_tag = await Database.table('tags').where({
+            game_names_id: request.params.game_names_id,
+            tag: arrTags[i],
           })
-
-          request.params.game_names_id = mygame[0].id
-          gameface.incrementGameCounter({ auth, request, response })
+          if (current_tag.length == 0) {
+            request.params.tag = arrTags[i]
+            tagme.store_backend({ auth, request, response })
+          }
         }
 
         const updateesports_Exp = await EsportsExperience.query()
           .where({ id: request.params.id })
           .update({
             role_title: request.input('role_title'),
-            game_name: request.input('game_name'),
+            game_names_id: request.params.game_names_id,
             team_name: request.input('team_name'),
             duration: request.input('duration'),
             achievements: request.input('achievements'),
             skills: request.input('skills'),
           })
+
+        if (game_experiences[0].game_name !== request.input('game_name')) {
+          gameface.incrementGameCounter({ auth, request, response })
+
+          request.params.game_names_id = game_experiences[0].game_names_id
+          gameface.decrementGameCounter({ auth, request, response })
+        }
+
         return 'Saved successfully'
       } catch (error) {
-        console.log(updateesports_Exp)
+        console.log(error)
       }
     }
   }
@@ -102,11 +174,11 @@ class EsportsExperienceController {
           id: request.params.id,
         })
 
-        const mygame = await Database.table('game_names').where({
-          game_name: game_experiences[0].game_name,
-        })
+        // const mygame = await Database.table('game_names').where({
+        //   game_name: game_experiences[0].game_name,
+        // })
 
-        request.params.game_names_id = mygame[0].id
+        request.params.game_names_id = game_experiences[0].game_names_id
         gameface.decrementGameCounter({ auth, request, response })
 
         const delete_esport_exp = await Database.table('esports_experiences')
@@ -126,9 +198,15 @@ class EsportsExperienceController {
 
   async show({ auth, request, response }) {
     try {
-      const esportsExperience = await EsportsExperience.query()
-        .where({ user_id: request.params.id })
-        .fetch()
+      // const esportsExperience = await EsportsExperience.query()
+      //   .where({ user_id: request.params.id })
+      //   .fetch()
+
+      const esportsExperience = await Database.table('esports_experiences')
+        .innerJoin('game_names', 'game_names.id', 'esports_experiences.game_names_id')
+        .where('esports_experiences.user_id', '=', request.params.id)
+        .select('esports_experiences.*', 'game_names.game_name')
+
       return {
         esportsExperience,
       }
@@ -172,6 +250,7 @@ class EsportsExperienceController {
     try {
       const latestGameExperiences = await Database.from('esports_experiences')
         .innerJoin('users', 'users.id', 'esports_experiences.user_id')
+        .innerJoin('game_names', 'game_names.id', 'esports_experiences.game_names_id')
         .where((builder) => {
           if (request.input('game_name') != null) builder.where('game_name', 'like', '%' + request.input('game_name') + '%')
 
@@ -195,6 +274,7 @@ class EsportsExperienceController {
         })
         .orderBy('esports_experiences.created_at', 'desc')
         .select('*', 'esports_experiences.id', 'users.id as user_id')
+        .select('esports_experiences.*', 'esports_experiences.id', 'users.id as user_id', 'users.profile_img', 'game_names.game_name')
         .paginate(parseInt(request.input('counter')), 10)
 
       return {

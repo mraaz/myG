@@ -6,6 +6,7 @@ import axios from 'axios'
 import Modal from 'react-modal'
 import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
+import scriptLoader from 'react-async-script-loader'
 
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete'
 
@@ -23,7 +24,7 @@ const relationship_status_options = [
   },
 ]
 
-export default class Dossier extends Component {
+class Dossier extends Component {
   constructor() {
     super()
     this.state = {
@@ -41,6 +42,16 @@ export default class Dossier extends Component {
       just_one_time: true,
       redirect_: false,
       relationship_status_box: '',
+      scriptLoader_loading: false,
+    }
+  }
+
+  componentWillReceiveProps({ isScriptLoaded, isScriptLoadSucceed }) {
+    if (isScriptLoaded && !this.props.isScriptLoaded) {
+      // load finished
+      if (isScriptLoadSucceed) {
+        this.setState({ scriptLoader_loading: true })
+      } else this.props.onError()
     }
   }
 
@@ -163,7 +174,7 @@ export default class Dossier extends Component {
       return <Redirect push to={tmp} />
     }
 
-    if (this.state.userProfile !== undefined) {
+    if (this.state.userProfile !== undefined && this.state.scriptLoader_loading) {
       const { country_, region_ } = this.state
       const {
         first_name,
@@ -354,3 +365,6 @@ export default class Dossier extends Component {
     }
   }
 }
+const GoogleMapsUrl = `https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyC3_pe0RevMHBu1JhLAwJCNR_cQyec-X70`
+
+export default scriptLoader([GoogleMapsUrl])(Dossier)

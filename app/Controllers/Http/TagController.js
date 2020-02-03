@@ -17,6 +17,20 @@ class TagController {
     }
   }
 
+  async store_backend({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        const newGameTag = await Tags.create({
+          game_names_id: request.params.game_names_id,
+          tag: request.params.tag,
+        })
+        return newGameTag
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+
   async show({ auth, request, response }) {
     try {
       const allTags = await Tags.query().fetch()

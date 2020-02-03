@@ -200,7 +200,12 @@ export default class AddEsportsExp extends Component<*, State> {
       if (myardour == null) {
         myardour = ''
       }
+
       for (var i = 0; i < this.state.value_ardour.length; i++) {
+        if (/['/.%#$,;`\\]/.test(this.state.value_ardour[i].value)) {
+          toast.success(<Toast_style text={'Sorry mate! Games of ardour can not have invalid fields'} />)
+          return
+        }
         myardour += this.state.value_ardour[i].value + '; '
       }
       myardour = myardour
@@ -211,101 +216,15 @@ export default class AddEsportsExp extends Component<*, State> {
       myardour = myardour.replace(/,/g, ', ')
     }
 
-    //If you created a new game and you have selected it then and only then will we save this to the DB
-
-    if (this.state.newValueCreated_ardour != '') {
-      var i
-      var j
-      for (i = 0; i < this.state.newValueCreated_ardour.length; i++) {
-        for (j = 0; j < this.state.value_ardour.length; j++) {
-          if (this.state.value_ardour[j].value == this.state.newValueCreated_ardour[i]) {
-            if (/['/.%#$,;`\\]/.test(this.state.newValueCreated_ardour[i])) {
-              toast.success(<Toast_style text={'Sorry mate! Games of ardour can not have invalid fields'} />)
-              return
-            }
-            try {
-              const post = await axios.post('/api/GameNames', {
-                game_name: this.state.newValueCreated_ardour[i],
-              })
-              if (this.state.newValueCreated_ardour[i] == this.state.value_game_name.value) {
-                ardourNgame_name_same_same = true
-                newGame_name = post.data.game_name
-                newGameID = post.data.id
-              }
-            } catch (error) {
-              console.log(error)
-            }
-            break
-          }
-        }
-      }
-    }
-
-    //If you created a new game and you have selected it then and only then will we save this to the DB
-
-    var newGame_name = ''
-    var newGameID = ''
-
-    if (this.state.newValueCreated_game_name != '' && ardourNgame_name_same_same == false) {
-      var i
-      for (i = 0; i < this.state.newValueCreated_game_name.length; i++) {
-        if (this.state.value_game_name.value == this.state.newValueCreated_game_name[i]) {
-          try {
-            const post = await axios.post('/api/GameNames', {
-              game_name: this.state.value_game_name.value,
-            })
-            if (post.data == false) {
-              toast.success(<Toast_style text={'Sorry mate! Game name can not be created. Close window and try again'} />)
-              return
-            }
-            newGame_name = post.data.game_name
-            newGameID = post.data.id
-          } catch (error) {
-            console.log(error)
-          }
-          break
-        }
-      }
-    }
-
-    //If you created a new tag and you have selected it then and only then will we save this to the DB
-    if (this.state.newValueCreated_tags != '') {
-      var i
-      var j
-      var tmpnewGameID = ''
-      if (this.state.value_game_name.game_names_id == null) {
-        tmpnewGameID = newGameID
-      } else {
-        tmpnewGameID = this.state.value_game_name.game_names_id
-      }
-      for (i = 0; i < this.state.newValueCreated_tags.length; i++) {
-        for (j = 0; j < this.state.value_tags.length; j++) {
-          if (this.state.value_tags[j].label == this.state.newValueCreated_tags[i]) {
-            if (/['/.%#$,;`\\]/.test(this.state.newValueCreated_tags[i])) {
-              toast.success(<Toast_style text={'Sorry mate! Skills can not have invalid fields'} />)
-              return
-            }
-            try {
-              if (tmpnewGameID != '') {
-                const post = axios.post('/api/Tags', {
-                  game_names_id: tmpnewGameID,
-                  tag: this.state.newValueCreated_tags[i],
-                })
-              }
-            } catch (error) {
-              console.log(error)
-            }
-            break
-          }
-        }
-      }
-    }
-
     if (this.state.value_tags !== null && this.state.value_tags.length !== 0) {
       if (myTags == null) {
         myTags = ''
       }
       for (var i = 0; i < this.state.value_tags.length; i++) {
+        if (/['/.%#$,;`\\]/.test(this.state.value_tags[i].label)) {
+          toast.success(<Toast_style text={'Sorry mate! Skills can not have invalid fields'} />)
+          return
+        }
         myTags += this.state.value_tags[i].label + '; '
       }
       myTags = myTags
@@ -366,7 +285,7 @@ export default class AddEsportsExp extends Component<*, State> {
       try {
         const post_role = await axios.post('/api/esports_experiences/create', {
           role_title: this.state.role_title_box,
-          game_name: newGame_name == '' ? this.state.value_game_name.value : newGame_name,
+          game_name: this.state.value_game_name.value,
           team_name: this.state.team_name_box,
           duration: myPlayed,
           achievements: this.state.achievements_box,

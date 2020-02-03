@@ -629,6 +629,7 @@ export default class ScheduledGamePost_Dota2 extends Component {
 
   render() {
     const { schedule_game } = this.props.props
+    console.log(schedule_game)
 
     if (this.state.redirect_PlayerList === true) {
       var tmp = `/playerList/${this.props.props.schedule_game.id}`
@@ -695,12 +696,12 @@ export default class ScheduledGamePost_Dota2 extends Component {
               callbackConfirm={this.callbackPostFileModalConfirm}></DeleteScheduleGameModal>
             <div className='expiry-info'>Expiry:&nbsp;{this.state.duration}</div>
             <div className='myFields'>
-              {this.state.region && <div> Region/s: {schedule_game.region} </div>}
+              {this.state.show_region && <div> Region/s: {schedule_game.region} </div>}
               <div> Start Time: {this.state.start_date.format('Do MMM YY, h:mm a')} </div>
               <div> End Time: {this.state.end_date.format('Do MMM YY, h:mm a')} </div>
-              {this.state.experience && <div> Experience: {schedule_game.experience} </div>}
-              {this.state.platform && <div> Platform: {schedule_game.platform} </div>}
-              {this.state.other && <div> Other: {schedule_game.other} </div>}
+              {this.state.show_experience && <div> Experience: {schedule_game.experience} </div>}
+              {this.state.show_platform && <div> Platform: {schedule_game.platform} </div>}
+              {this.state.show_other && <div> Other: {schedule_game.other} </div>}
               {this.state.show_dota2_medal_ranks && <div>Medal Ranks: {schedule_game.dota2_medal_ranks} </div>}
               {this.state.show_dota2_server_regions && <div>Server Regions: {schedule_game.dota2_server_regions} </div>}
               {this.state.show_dota2_roles && <div>Roles: {schedule_game.dota2_roles} </div>}
@@ -712,7 +713,7 @@ export default class ScheduledGamePost_Dota2 extends Component {
                   inorder to join this game){' '}
                 </div>
               )}
-              {this.state.description && <div> Description: {schedule_game.description} </div>}
+              {this.state.show_description && <div> Description: {schedule_game.description} </div>}
             </div>
           </div>
           <div className='invitation-panel'>

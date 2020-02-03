@@ -72,6 +72,7 @@ const createOption = (label: string, game_names_id: string) => ({
 export default class AdvancedSearch extends Component<*, State> {
   constructor() {
     super()
+    this.timeout = 0
     this.state = {
       selected_table: '',
       selected_experience: null,
@@ -93,12 +94,11 @@ export default class AdvancedSearch extends Component<*, State> {
       time_role_box: '',
       counter: 0,
       moreplease: true,
-      allGameExperiences: [],
-      myG_lock: false,
+      allGameExperiences: undefined,
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { match } = this.props.routeProps
 
     this.state.selected_table = {
@@ -116,7 +116,6 @@ export default class AdvancedSearch extends Component<*, State> {
       }
       return
     }
-
     this.pullData()
   }
 
@@ -235,11 +234,7 @@ export default class AdvancedSearch extends Component<*, State> {
       console.log(error)
     }
 
-    this.setState({
-      myG_lock: false,
-    })
-
-    if (allGameExperiences.data.latestGameExperiences.data.length == 0) {
+    if (allGameExperiences.data.latestGameExperiences.data.length == 0 && this.state.counter != 1) {
       this.setState({
         moreplease: false,
       })
@@ -390,31 +385,29 @@ export default class AdvancedSearch extends Component<*, State> {
   }
 
   handleChange_role_title = (e) => {
-    //TODO: https://github.com/mraaz/myGame/issues/181
-    if (this.state.myG_lock == false) {
+    this.setState({ role_title_box: e.target.value })
+
+    if (this.timeout) clearTimeout(this.timeout)
+    this.timeout = setTimeout(() => {
       this.setState(
         {
-          role_title_box: e.target.value,
           counter: 0,
           allGameExperiences: [],
-          myG_lock: true,
         },
         () => {
           this.pullData()
         }
       )
-    } else {
-      this.setState({
-        role_title_box: e.target.value,
-      })
-    }
+    }, 300)
   }
 
   handleChange_team_name = (e) => {
-    if (this.state.myG_lock == false) {
+    this.setState({ team_name_box: e.target.value })
+
+    if (this.timeout) clearTimeout(this.timeout)
+    this.timeout = setTimeout(() => {
       this.setState(
         {
-          team_name_box: e.target.value,
           counter: 0,
           allGameExperiences: [],
         },
@@ -422,11 +415,7 @@ export default class AdvancedSearch extends Component<*, State> {
           this.pullData()
         }
       )
-    } else {
-      this.setState({
-        team_name_box: e.target.value,
-      })
-    }
+    }, 300)
   }
 
   handleChange_Time_role = (time_role_box) => {
@@ -513,7 +502,7 @@ export default class AdvancedSearch extends Component<*, State> {
   }
 
   render() {
-    if (this.state.allGameExperiences !== undefined) {
+    if (this.state.allGameExperiences != undefined) {
       var show_gaming_exp = true
 
       if (this.state.selected_table.label == 'Esports Experience') {
