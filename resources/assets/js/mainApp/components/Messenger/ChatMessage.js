@@ -100,10 +100,15 @@ class ChatMessage extends React.Component {
   renderDateDivisor() {
     const { message } = this.props;
     return (
-      <div className="chat-component-message-date-divisor">
+      <div key={Math.random()} className="chat-component-message-date-divisor">
         <p>{message.isYesterday ? 'Yesterday' : formatDate(message.date)}</p>
       </div>
     );
+  }
+
+  colorMessage = (id) => {
+    const colors = ['#F99', '#9F9', '#99F', '#FF9', '#9FF', '#F9F'];
+    return colors[parseInt(id % colors.length)];
   }
 
   render() {
@@ -124,6 +129,14 @@ class ChatMessage extends React.Component {
         <div className="chat-component-message-container">
 
           <div className="chat-component-message-content-body">
+            {this.props.senderName && (
+              <p
+                style={{ color: this.colorMessage(parseInt(message.senderId)) }}
+                className={`chat-component-message-sender-name`}
+              >
+                {this.props.senderName}
+              </p>
+            )}
             <p className={`chat-component-message-content`}>
               {
                 message.deleted ?

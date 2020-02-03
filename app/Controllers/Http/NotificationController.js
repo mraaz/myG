@@ -1238,6 +1238,20 @@ class NotificationController {
       return 'You are not Logged In!'
     }
   }
+
+  // Trying to avoid conflicts, should move this function up later.
+  async outgoingFriendRequests({ auth }) {
+    try {
+      const friendRequests = await Database
+        .select('user_id', 'other_user_id', 'activity_type')
+        .from('notifications')
+        .where({ user_id: auth.user.id, activity_type: 1 });
+      return { friendRequests };
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
 }
 
 module.exports = NotificationController

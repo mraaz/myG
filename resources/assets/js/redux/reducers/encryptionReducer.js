@@ -25,27 +25,29 @@ export default function reducer(state = {
       };
     }
 
-    case "GENERATE_KEYS": {
+    case "GENERATE_KEYS_FULFILLED": {
       logger.log('USER', `Redux -> Keys Generated: `, action.payload);
-      storePublicKey(action.payload.publicKey);
+      const { pin, publicKey, privateKey } = action.payload.encryption;
+      storePublicKey(publicKey);
       return {
         ...state,
-        pin: action.payload.pin,
-        publicKey: action.payload.publicKey,
-        privateKey: action.payload.privateKey,
+        pin,
+        publicKey,
+        privateKey,
         invalidPin: false,
       };
     }
 
-    case "VALIDATE_PIN": {
+    case "VALIDATE_PIN_FULFILLED": {
       logger.log('USER', `Redux -> Validating Pin: ${action.meta.pin}`, action.payload);
-      if (action.meta.publicKey !== action.payload.publicKey) return { ...state, invalidPin: true }
-      storePublicKey(action.payload.publicKey);
+      const { pin, publicKey, privateKey } = action.payload.encryption;
+      if (action.meta.publicKey !== publicKey) return { ...state, invalidPin: true }
+      storePublicKey(publicKey);
       return {
         ...state,
-        pin: action.payload.pin,
-        publicKey: action.payload.publicKey,
-        privateKey: action.payload.privateKey,
+        pin,
+        publicKey,
+        privateKey,
         invalidPin: false,
       };
     }

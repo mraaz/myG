@@ -22,18 +22,19 @@ class ChatController {
 
   async createChat({ auth, request, response }) {
     const requestingUserId = auth.user.id;
-    const requestedFriendIds = request.only(['friendIds']).friendIds;
-    log('CHAT', `User ${requestingUserId} creating Chat with Friends ${JSON.stringify(requestedFriendIds)}`);
-    const { chat } = await ChatRepository.createChat({ requestingUserId, requestedFriendIds });
+    const payload = request.only(['contacts', 'owners', 'title', 'icon', 'publicKey']);
+    const { contacts, owners, title, icon, publicKey } = payload;
+    log('CHAT', `User ${requestingUserId} creating Chat with ${JSON.stringify(payload)}`);
+    const { chat } = await ChatRepository.createChat({ requestingUserId, contacts, owners, title, icon, publicKey });
     return response.send({ chat });
   }
 
   async updateChat({ auth, params, request, response }) {
     const requestingUserId = auth.user.id;
     const requestedChatId = params.chatId;
-    const { muted, blocked, markAsRead, selfDestruct } = request.only(['muted', 'blocked', 'markAsRead', 'selfDestruct']);
-    log('CHAT', `User ${requestingUserId} updating Chat ${requestedChatId} with ${JSON.stringify({ muted, blocked, markAsRead, selfDestruct })}`);
-    const result = await ChatRepository.updateChat({ requestingUserId, requestedChatId, muted, blocked, markAsRead, selfDestruct });
+    const { muted, blocked, icon, title, owners, markAsRead, selfDestruct } = request.only(['muted', 'blocked', 'icon', 'title', 'owners', 'markAsRead', 'selfDestruct']);
+    log('CHAT', `User ${requestingUserId} updating Chat ${requestedChatId} with ${JSON.stringify({ muted, blocked, icon, title, owners, markAsRead, selfDestruct })}`);
+    const result = await ChatRepository.updateChat({ requestingUserId, requestedChatId, muted, blocked, icon, title, owners, markAsRead, selfDestruct });
     return response.send(result);
   }
 
@@ -53,6 +54,48 @@ class ChatController {
     return response.send(result);
   }
 
+  async deleteChat({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    log('CHAT', `User ${requestingUserId} deleting Chat ${requestedChatId}`);
+    const result = await ChatRepository.deleteChat({ requestingUserId, requestedChatId });
+    return response.send(result);
+  }
+
+  async exitGroup({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    log('CHAT', `User ${requestingUserId} exiting Group ${requestedChatId}`);
+    const result = await ChatRepository.exitGroup({ requestingUserId, requestedChatId });
+    return response.send(result);
+  }
+
+  async removeFromGroup({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedUserId = params.userId;
+    const requestedChatId = params.chatId;
+    log('CHAT', `User ${requestedUserId} being removed from Group ${requestedChatId} by User ${requestingUserId}`);
+    const result = await ChatRepository.exitGroup({ requestingUserId, requestedChatId, requestedUserId });
+    return response.send(result);
+  }
+
+  async fetchChatContacts({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    log('CHAT', `User ${requestingUserId} requesting Chat Contacts for ${requestedChatId}`);
+    const { contacts } = await ChatRepository.fetchChatContacts({ requestingUserId, requestedChatId });
+    return response.send({ contacts });
+  }
+
+  async addContactsToChat({ auth, params, request, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    const requestedContacts = request.only(['contacts']).contacts;
+    log('CHAT', `User ${requestingUserId} adding ${JSON.stringify(requestedContacts)} to Chat ${requestedChatId}`);
+    const { contacts } = await ChatRepository.addContactsToChat({ requestingUserId, requestedChatId, contacts: requestedContacts });
+    return response.send({ contacts });
+  }
+
   async fetchMessages({ auth, params, response }) {
     const requestingUserId = auth.user.id;
     const requestedChatId = params.chatId;
@@ -65,8 +108,9 @@ class ChatController {
     const requestingUserId = auth.user.id;
     const requestedChatId = params.chatId;
     const { backup, content } = request.only('encryptedContent').encryptedContent;
-    log('CHAT', `User ${requestingUserId} sending encrypted Message for Chat ${requestedChatId}`);
-    const { message } = await ChatRepository.sendMessage({ requestingUserId, requestedChatId, backup, content });
+    const keyReceiver = request.only('keyReceiver').keyReceiver;
+    log('CHAT', `User ${requestingUserId} sending encrypted ${keyReceiver ? 'Key' : 'Message'} for Chat ${requestedChatId}`);
+    const { message } = await ChatRepository.sendMessage({ requestingUserId, requestedChatId, keyReceiver, backup, content });
     return response.send({ message });
   }
 

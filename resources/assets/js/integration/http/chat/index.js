@@ -11,9 +11,9 @@ export function fetchChat(chatId) {
   return axios.get(`/api/chat/${chatId}`).then(response => response.data);
 }
 
-export function createChat(friendIds) {
-  logger.log('CHAT', 'HTTP', `Creating Chat for Members`, friendIds);
-  return axios.post(`/api/chat/`, { friendIds }).then(response => response.data);
+export function createChat(contacts, owners, title, icon, publicKey) {
+  logger.log('CHAT', 'HTTP', `Creating Chat: `, { contacts, owners, title, icon, publicKey });
+  return axios.post(`/api/chat/`, { contacts, owners, title, icon, publicKey }).then(response => response.data);
 }
 
 export function updateChat(chatId, payload) {
@@ -31,14 +31,39 @@ export function checkSelfDestruct(chatId) {
   return axios.delete(`/api/chat/${chatId}/destruction`).then(response => response.data);
 }
 
+export function deleteChat(chatId) {
+  logger.log('CHAT', 'HTTP', `Deleting Chat ${chatId}`);
+  return axios.delete(`/api/chat/${chatId}/delete`).then(response => response.data);
+}
+
+export function exitGroup(chatId) {
+  logger.log('CHAT', 'HTTP', `Exiting Group ${chatId}`);
+  return axios.delete(`/api/chat/${chatId}/exit`).then(response => response.data);
+}
+
+export function removeFromGroup(chatId, userId) {
+  logger.log('CHAT', 'HTTP', `Removing User ${userId} from Group ${chatId}`);
+  return axios.delete(`/api/chat/${chatId}/exit/${userId}`).then(response => response.data);
+}
+
+export function fetchChatContacts(chatId) {
+  logger.log('CHAT', 'HTTP', `Fetching Chat ${chatId}`);
+  return axios.get(`/api/chat/${chatId}/contacts`).then(response => response.data);
+}
+
+export function addContactsToChat(chatId, contacts) {
+  logger.log('CHAT', 'HTTP', `Adding Contacts To Chat ${chatId}: `, contacts);
+  return axios.put(`/api/chat/${chatId}/contacts`, { contacts }).then(response => response.data);
+}
+
 export function fetchMessages(chatId) {
   logger.log('CHAT', 'HTTP', `Fetching Messages for Chat ${chatId}`);
   return axios.get(`/api/chat/${chatId}/message/`).then(response => response.data);
 }
 
-export function sendMessage(chatId, userId, encryptedContent) {
+export function sendMessage(chatId, userId, encryptedContent, keyReceiver) {
   logger.log('CHAT', 'HTTP', `Sending Message from User ${userId} to Chat ${chatId}`);
-  return axios.post(`/api/chat/${chatId}/message/`, { encryptedContent }).then(response => response.data);
+  return axios.post(`/api/chat/${chatId}/message/`, { encryptedContent, keyReceiver }).then(response => response.data);
 }
 
 export function editMessage(chatId, messageId, encryptedContent, reEncrypting) {

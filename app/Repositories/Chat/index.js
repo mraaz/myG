@@ -7,16 +7,19 @@ const ChatMessage = use('App/Models/ChatMessage');
 const ChatSchema = require('../../Schemas/Chat');
 const MessageSchema = require('../../Schemas/Message');
 const DefaultSchema = require('../../Schemas/Default');
+const ContactSchema = require('../../Schemas/Contact');
 
 const { broadcast } = require('../../Common/socket');
 const { toSQLDateTime, convertUTCDateToLocalDate } = require('../../Common/date');
 const { log } = require('../../Common/logger');
 
+const MAXIMUM_GROUP_SIZE = 37;
+
 class ChatRepository {
 
   async fetchChats({ requestingUserId }) {
     const chats = (await Database
-      .select('user_chats.chat_id', ' user_chats.user_id', ' user_chats.muted', ' user_chats.blocked', ' user_chats.self_destruct', ' user_chats.deleted_messages', ' user_chats.cleared_date', ' user_chats.read_date', ' user_chats.created_at', ' user_chats.updated_at', ' chats.icon', ' chats.title', ' chats.last_message', ' chats.public_key', ' chats.contacts')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.cleared_date', 'user_chats.read_date', 'user_chats.created_at', 'user_chats.updated_at', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .where('user_id', requestingUserId))
@@ -33,6 +36,7 @@ class ChatRepository {
         lastMessage: chat.last_message,
         publicKey: chat.public_key,
         contacts: chat.contacts,
+        owners: chat.owners,
         messages: chat.messages,
         createdAt: chat.created_at,
         updatedAt: chat.updated_at,
@@ -42,7 +46,7 @@ class ChatRepository {
 
   async fetchChat({ requestingUserId, requestedChatId }) {
     const chat = (await Database
-      .select('user_chats.chat_id', ' user_chats.user_id', ' user_chats.muted', ' user_chats.blocked', ' user_chats.self_destruct', ' user_chats.deleted_messages', ' user_chats.cleared_date', ' user_chats.read_date', ' user_chats.created_at', ' user_chats.updated_at', ' chats.icon', ' chats.title', ' chats.last_message', ' chats.public_key', ' chats.contacts')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.cleared_date', 'user_chats.read_date', 'user_chats.created_at', 'user_chats.updated_at', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .where('user_id', requestingUserId)
@@ -61,6 +65,7 @@ class ChatRepository {
       lastMessage: chat.last_message,
       publicKey: chat.public_key,
       contacts: chat.contacts,
+      owners: chat.owners,
       messages: chat.messages,
       createdAt: chat.created_at,
       updatedAt: chat.updated_at,
@@ -78,6 +83,7 @@ class ChatRepository {
       messageId: message.id,
       chatId: message.chat_id,
       senderId: message.sender_id,
+      keyReceiver: message.key_receiver,
       content: message.content,
       backup: message.backup,
       deleted: message.deleted,
@@ -89,23 +95,32 @@ class ChatRepository {
     return { messages };
   }
 
-  async createChat({ requestingUserId, requestedFriendIds }) {
-    const contacts = [requestingUserId, ...requestedFriendIds].sort();
+  async createChat({ requestingUserId, contacts, owners, title, icon, publicKey }) {
+    if (contacts.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
+    contacts = [requestingUserId, ...contacts].sort();
     const { chats } = await this.fetchChats({ requestingUserId });
 
-    const existingChat = chats.find(chat => chat.contacts.every((id, index) => id === contacts[index]));
-    if (existingChat) {
-      contacts.forEach(userId => this._notifyChatEvent({ userId, action: 'newChat', payload: existingChat }));
-      return { chat: existingChat };
-    }
+    const existingChat = chats.find(chat =>
+      contacts.length === chat.contacts.length &&
+      contacts.every((id, index) => id === chat.contacts[index])
+    );
+    if (existingChat) return { chat: existingChat };
 
     const chat = new Chat();
-    chat.contacts = JSON.stringify(contacts);
+    if (title) chat.title = title;
+    if (icon) chat.icon = icon;
+    if (publicKey) chat.public_key = publicKey;
+    chat.contacts = JSON.stringify(contacts || []);
+    chat.owners = JSON.stringify(owners || []);
     await chat.save();
 
     const chatSchema = new ChatSchema({
       chatId: chat.id,
-      contacts: contacts,
+      contacts,
+      owners,
+      title,
+      icon,
+      publicKey,
       createdAt: chat.created_at,
       updatedAt: chat.updated_at,
     });
@@ -122,11 +137,15 @@ class ChatRepository {
     return { chat: chatSchema };
   }
 
-  async updateChat({ requestingUserId, requestedChatId, muted, blocked, markAsRead, selfDestruct }) {
+  async updateChat({ requestingUserId, requestedChatId, icon, title, owners, muted, blocked, markAsRead, selfDestruct }) {
     if (markAsRead) await this._markAsRead({ requestingUserId, requestedChatId });
     if (selfDestruct !== undefined) await this._setSelfDestruct({ requestingUserId, requestedChatId, selfDestruct });
     if (muted !== undefined) await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', requestingUserId).update({ muted });
     if (blocked !== undefined) await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', requestingUserId).update({ blocked });
+    if (icon !== undefined) await Chat.query().where('id', requestedChatId).update({ icon });
+    if (title !== undefined) await Chat.query().where('id', requestedChatId).update({ title });
+    if (owners !== undefined) await Chat.query().where('id', requestedChatId).update({ owners });
+    if (icon || title || owners) this._notifyChatUpdated({ requestedChatId });
     return new DefaultSchema({ success: true });
   }
 
@@ -165,10 +184,80 @@ class ChatRepository {
     return new DefaultSchema({ success: true });
   }
 
-  async sendMessage({ requestingUserId, requestedChatId, backup, content }) {
+  async fetchChatContacts({ requestingUserId, requestedChatId }) {
+    const chat = (await Chat.query().where('id', requestedChatId).first()).toJSON();
+    const contactIds = JSON.parse(chat.contacts || '[]');
+    if (!Array.isArray(contactIds)) return { contacts: [] };
+    const contactsQuery = contactIds.filter(contactId => parseInt(contactId) !== parseInt(requestingUserId));
+    const rawContacts = (await Database
+      .from('users')
+      .where('id', 'in', contactsQuery)
+    );
+    const contacts = rawContacts.map(contact => new ContactSchema({
+      contactId: contact.id,
+      icon: contact.profile_img,
+      name: `${contact.first_name} ${contact.last_name}`,
+      status: contact.status,
+      lastSeen: contact.last_seen,
+      publicKey: contact.public_key,
+    }));
+    return { contacts };
+  }
+
+  async deleteChat({ requestingUserId, requestedChatId }) {
+    const chatModel = (await Chat.query().where('id', requestedChatId).first());
+    const chat = chatModel.toJSON();
+    const contacts = JSON.parse(chat.contacts || '[]');
+    const owners = JSON.parse(chat.owners || '[]');
+    if (!owners.includes(requestingUserId)) throw new Error('Only Owners can Delete Chat');
+    await chatModel.delete();
+    contacts.forEach(userId => this._notifyChatEvent({ userId, action: 'deleteChat', payload: { chatId: requestedChatId } }));
+    return new DefaultSchema({ success: true });
+  }
+
+  async exitGroup({ requestingUserId, requestedChatId, requestedUserId }) {
+    const userToRemove = requestedUserId || requestingUserId;
+    const chatModel = (await Chat.query().where('id', requestedChatId).first());
+    const chat = chatModel.toJSON();
+    if (requestedUserId && !JSON.parse(chat.owners || '[]').includes(parseInt(requestingUserId))) throw new Error('Only Owners can Kick Users.');
+    const contacts = JSON.parse(chat.contacts || '[]').filter(contactId => parseInt(contactId) !== parseInt(userToRemove));
+    await Chat.query().where('id', requestedChatId).update({ contacts: JSON.stringify(contacts) });
+    await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', userToRemove).delete();
+    JSON.parse(chat.contacts || '[]').forEach(userId => this._notifyChatEvent({ userId, action: 'userLeft', payload: { userId: userToRemove, chatId: requestedChatId } }));
+    return new DefaultSchema({ success: true });
+  }
+
+  async addContactsToChat({ requestingUserId, requestedChatId, contacts }) {
+    const { chat } = await this.fetchChat({ requestingUserId, requestedChatId });
+    if (chat.contacts.length < 3) throw new Error('Cannot add users to a normal chat.');
+    contacts.forEach(contactId => !chat.contacts.includes(contactId) && chat.contacts.push(contactId));
+    if (chat.contacts.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
+    contacts.forEach(async userId => {
+      const userChat = new UserChat();
+      userChat.chat_id = chat.chatId;
+      userChat.user_id = userId;
+      userChat.deleted_messages = '[]';
+      await userChat.save();
+      this._notifyChatEvent({ userId, action: 'newChat', payload: chat });
+    });
+    await Chat.query().where('id', requestedChatId).update({ contacts: JSON.stringify(chat.contacts) });
+    const rawContacts = (await Database.from('users').where('id', 'in', contacts));
+    const fullContacts = rawContacts.map(contact => new ContactSchema({
+      contactId: contact.id,
+      icon: contact.profile_img,
+      name: `${contact.first_name} ${contact.last_name}`,
+      status: contact.status,
+      lastSeen: contact.last_seen,
+      publicKey: contact.public_key,
+    }));
+    return { contacts: fullContacts };
+  }
+
+  async sendMessage({ requestingUserId, requestedChatId, backup, content, keyReceiver }) {
     const { chat } = await this.fetchChat({ requestingUserId, requestedChatId });
     const messageData = {
       sender_id: requestingUserId,
+      key_receiver: keyReceiver,
       backup: backup,
       content: content,
       self_destruct: chat.selfDestruct,
@@ -178,6 +267,7 @@ class ChatRepository {
       messageId: message.id,
       chatId: requestedChatId,
       senderId: requestingUserId,
+      keyReceiver: message.key_receiver,
       content: message.content,
       backup: message.backup,
       deleted: message.deleted,
@@ -284,6 +374,18 @@ class ChatRepository {
   async _fetchContactReadDate({ contactId, requestedChatId }) {
     const contactChat = await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', contactId).first();
     return contactChat.toJSON().read_date;
+  }
+
+  async _notifyChatUpdated({ requestedChatId }) {
+    const chat = (await Chat.query().where('id', requestedChatId).first()).toJSON();
+    const chatSchema = new ChatSchema({
+      chatId: chat.id,
+      icon: chat.icon,
+      title: chat.title,
+      contacts: chat.contacts,
+      owners: chat.owners,
+    });
+    chatSchema.contacts.forEach(userId => this._notifyChatEvent({ userId, action: 'chatUpdated', payload: chatSchema }));
   }
 
   async _notifyChatEvent({ userId, chatId, contactId, action, payload }) {

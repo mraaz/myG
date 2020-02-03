@@ -1,4 +1,4 @@
-import { fetchContacts, fetchContact, fetchStatus, updateStatus } from '../../integration/http/user';
+import { fetchContacts, fetchContact, fetchStatus, updateStatus, fetchFriendRequests, addAsFriend } from '../../integration/http/user';
 
 export function logoutAction() {
   return {
@@ -40,5 +40,19 @@ export function onStatusChangedAction(payload, userId) {
     type: 'ON_STATUS_CHANGED',
     payload,
     meta: { userId },
+  }
+}
+
+export function fetchFriendRequestsAction() {
+  return {
+    type: 'FETCH_FRIEND_REQUESTS',
+    payload: fetchFriendRequests(),
+  }
+}
+
+export function addAsFriendAction(friendId) {
+  return {
+    type: 'ADD_AS_FRIEND',
+    payload: addAsFriend(friendId)
   }
 }

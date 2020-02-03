@@ -263,6 +263,9 @@ Route.get('/api/usergroup/promote_member/:id/:usergrp_id', 'UsergroupController.
 Route.get('/api/usergroup/demote_member/:id/:usergrp_id', 'UsergroupController.demote_member')
 Route.get('/api/usergroup/current_member/:id', 'UsergroupController.current_member')
 
+// Trying to avoid conflicts, should move this route up later.
+Route.get('/api/notifications/outgoingFriendRequests', 'NotificationController.outgoingFriendRequests')
+
 // Chat Feature - https://docs.google.com/spreadsheets/d/1AR9P3MLQw6J6eoRqgTbOVROFxmPE215yXzsqD59wy2o
 Route.get('/api/chat/', 'ChatController.fetchChats')
 Route.get('/api/chat/:chatId', 'ChatController.fetchChat')
@@ -270,6 +273,11 @@ Route.post('/api/chat/', 'ChatController.createChat')
 Route.put('/api/chat/:chatId', 'ChatController.updateChat')
 Route.delete('/api/chat/:chatId', 'ChatController.clearChat')
 Route.delete('/api/chat/:chatId/destruction', 'ChatController.checkChatDestruction')
+Route.delete('/api/chat/:chatId/delete', 'ChatController.deleteChat')
+Route.delete('/api/chat/:chatId/exit', 'ChatController.exitGroup')
+Route.delete('/api/chat/:chatId/exit/:userId', 'ChatController.removeFromGroup')
+Route.get('/api/chat/:chatId/contacts', 'ChatController.fetchChatContacts')
+Route.put('/api/chat/:chatId/contacts', 'ChatController.addContactsToChat')
 Route.get('/api/chat/:chatId/message/', 'ChatController.fetchMessages')
 Route.post('/api/chat/:chatId/message/', 'ChatController.sendMessage')
 Route.put('/api/chat/:chatId/message/:messageId', 'ChatController.editMessage')

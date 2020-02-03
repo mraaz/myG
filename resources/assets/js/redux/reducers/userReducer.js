@@ -5,6 +5,7 @@ export default function reducer(state = {
   status: 'online',
   isStatusLocked: false,
   contacts: [],
+  friendRequests: [],
 }, action) {
   switch (action.type) {
 
@@ -29,28 +30,6 @@ export default function reducer(state = {
       const contact = contacts.find(contact => contact.contactId === newContact.contactId);
       if (contact) Object.assign(contact, newContact);
       else contacts.push(newContact);
-      return {
-        ...state,
-        contacts,
-      };
-    }
-
-    case "FETCH_CONTACTS_FULFILLED": {
-      logger.log('USER', `Redux -> Fetch Contacts: `, action.payload);
-      const { contacts } = action.payload;
-      return {
-        ...state,
-        contacts,
-      };
-    }
-
-    case "FETCH_CONTACT_FULFILLED": {
-      logger.log('USER', `Redux -> Fetch Contact: `, action.payload);
-      const { contact: newContact } = action.payload;
-      const contacts = JSON.parse(JSON.stringify(state.contacts));
-      const contact = contacts.find(contact => contact.contactId === newContact.contactId);
-      if (contact) Object.assign(contact, newContact);
-      else contacts.push(contact);
       return {
         ...state,
         contacts,
@@ -100,6 +79,15 @@ export default function reducer(state = {
       return {
         ...state,
         contacts,
+      };
+    }
+
+    case "FETCH_FRIEND_REQUESTS_FULFILLED": {
+      logger.log('CHAT', `Redux -> Fetched Friend Requests: `, action.payload);
+      const friendRequests = (action.payload.friendRequests || []).map(request => request.other_user_id);
+      return {
+        ...state,
+        friendRequests,
       };
     }
 

@@ -1,0 +1,186 @@
+
+.chat-group-creation-container {
+  position: fixed;
+  right: 300px;
+  top: 60px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  background-color: #171A1C;
+  border-radius: 16px;
+  width: 400px;
+  overflow: hidden;
+}
+
+.chat-group-creation-header {
+  display: flex;
+  padding: 8px;
+  margin-top: 4px;
+  margin-bottom: -8px;
+}
+
+.chat-group-creation-header-icon {
+  background-color: #2D363A;
+  background-repeat: no-repeat;
+  background-position: center center;
+  border-radius: 20px;
+  width: 40px;
+  height: 40px;
+  margin-right: 8px;
+  margin-left: 8px;
+}
+
+.chat-group-creation-title-input-container {
+  display: flex;
+  flex: 1;
+  margin-right: 8px;
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.chat-group-creation-title-input {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  border: none;
+  background-color: #1D2326;
+  color: #93A4A5;
+  padding: 8px 2px 8px 16px;
+  font-size: 16px;
+}
+
+.chat-group-creation-invite-hint-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.chat-group-creation-invite-hint {
+  color: #F0F0F0;
+  font-weight: 1000;
+  padding: 8px;
+  font-size: 14px;
+  margin-left: 8px;
+}
+
+.chat-group-creation-contact-input-container {
+  display: flex;
+  padding: 8px;
+}
+
+.chat-group-creation-contact-input {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  border: none;
+  background-color: #1D2326;
+  color: #93A4A5;
+  padding: 8px 2px 8px 16px;
+  font-size: 14px;
+  border-radius: 20px;
+  margin: 0 8px;
+}
+
+.chat-group-creation-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 12px 16px 12px 0;
+  background-color: #1D2326;
+}
+
+.chat-group-creation-footer-button {
+  background-color: #2D363A;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #FAFAFA;
+  margin-left: 8px;
+}
+
+.chat-group-creation-title-error {
+  font-size: 12px;
+  width: 90%;
+  text-align: end;
+  margin-right: 20px;
+  align-self: center;
+  color: #D07070;
+}
+
+.chat-group-creation-contact-error {
+  font-size: 12px;
+  width: 90%;
+  text-align: end;
+  margin-right: 20px;
+  align-self: center;
+  color: #D07070;
+}
+
+.chat-group-creation-contacts {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  overflow-y: scroll;
+  height: 180px;
+}
+
+.chat-group-creation-contact {
+  display: flex;
+  padding: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chat-group-creation-contact-info {
+  display: flex;
+  align-items: center;
+}
+
+.chat-group-creation-contact-icon {
+  background-color: #2D363A;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  border-radius: 20px;
+  width: 40px;
+  height: 40px;
+  margin-right: 4px;
+}
+
+.chat-group-creation-contact-name {
+  color: #FFF;
+  font-weight: 1000;
+  padding: 8px;
+}
+
+.chat-group-creation-contact-invite-button {
+  background-color: #2D363A;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #FAFAFA;
+  margin-left: 8px;
+  height: min-content;
+}
+
+.chat-group-creation-contact-invite-button-inactive {
+  background-color: #2D363A;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #C0C0C0;
+  margin-left: 8px;
+  height: min-content;
+}
+
+.chat-group-creation-contact-remove-button {
+  background-color: #2D363A;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #D07070;
+  margin-left: 8px;
+  height: min-content;
+}

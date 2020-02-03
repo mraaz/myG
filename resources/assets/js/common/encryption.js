@@ -1,6 +1,7 @@
 
 import { editMessage } from '../integration/http/chat';
 import { encryptMessage, decryptMessage } from '../integration/encryption';
+import { sendMessage } from '../integration/http/chat';
 import logger from './logger';
 
 export function reEncryptMessages(messages, publicKey, privateKey) {
@@ -10,5 +11,15 @@ export function reEncryptMessages(messages, publicKey, privateKey) {
     const decrypted = decryptMessage(message.backup, privateKey);
     const encrypted = encryptMessage(decrypted, publicKey, privateKey);
     editMessage(message.chatId, message.messageId, { content: encrypted, backup: message.backup }, true);
+  });
+}
+
+export function sendGroupKeys(chatId, userId, contacts, groupPrivateKey, userPrivateKey) {
+  logger.log('CHAT', `Sending Group Keys for Chat ${chatId} to Contacts ${contacts.map(contact => contact.contactId)}`);
+  const serializedKey = JSON.stringify(groupPrivateKey);
+  contacts.forEach(contact => {
+    const { contactId, publicKey } = contact;
+    const content = encryptMessage(serializedKey, publicKey, userPrivateKey);
+    sendMessage(chatId, userId, { content, backup: '' }, contactId);
   });
 }
