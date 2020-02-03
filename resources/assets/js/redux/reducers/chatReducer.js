@@ -277,6 +277,38 @@ export default function reducer(state = {
       };
     }
 
+    case "EXIT_GROUP_FULFILLED": {
+      logger.log('CHAT', `Redux -> User Exited Group: `, action.meta);
+      const { chatId } = action.meta;
+      const chats = JSON.parse(JSON.stringify(state.chats)).filter(chat => parseInt(chat.chatId) !== parseInt(chatId));
+      return {
+        ...state,
+        chats,
+      };
+    }
+
+    case "ON_USER_LEFT": {
+      logger.log('CHAT', `Redux -> User Left Group: `, action.payload, action.meta);
+      const { chatId, userId } = action.payload;
+      const { userId: thisUserId } = action.meta;
+      if (parseInt(userId) === parseInt(thisUserId)) {
+        const chats = JSON.parse(JSON.stringify(state.chats)).filter(chat => parseInt(chat.chatId) !== parseInt(chatId));
+        return {
+          ...state,
+          chats,
+        };
+      }
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => candidate.chatId === chatId);
+      if (!chat) return state;
+      chat.contacts = chat.contacts.filter(contactId => parseInt(contactId) !== parseInt(userId));
+      chat.fullContacts = chat.fullContacts.filter(contact => parseInt(contact.contactId) !== parseInt(userId));
+      return {
+        ...state,
+        chats,
+      };
+    }
+
     case "MARK_AS_READ": {
       logger.log('CHAT', `Redux -> Mark As Read: `, action.meta, action.payload);
       const { userId: thisUserId } = action.meta;

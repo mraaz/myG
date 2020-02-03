@@ -215,6 +215,18 @@ class ChatRepository {
     return new DefaultSchema({ success: true });
   }
 
+  async exitGroup({ requestingUserId, requestedChatId, requestedUserId }) {
+    const userToRemove = requestedUserId || requestingUserId;
+    const chatModel = (await Chat.query().where('id', requestedChatId).first());
+    const chat = chatModel.toJSON();
+    if (requestedUserId && !JSON.parse(chat.owners || '[]').includes(parseInt(requestingUserId))) throw new Error('Only Owners can Kick Users.');
+    const contacts = JSON.parse(chat.contacts || '[]').filter(contactId => parseInt(contactId) !== parseInt(userToRemove));
+    await Chat.query().where('id', requestedChatId).update({ contacts: JSON.stringify(contacts) });
+    await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', userToRemove).delete();
+    JSON.parse(chat.contacts || '[]').forEach(userId => this._notifyChatEvent({ userId, action: 'userLeft', payload: { userId: userToRemove, chatId: requestedChatId } }));
+    return new DefaultSchema({ success: true });
+  }
+
   async addContactsToChat({ requestingUserId, requestedChatId, contacts }) {
     const { chat } = await this.fetchChat({ requestingUserId, requestedChatId });
     if (chat.contacts.length < 3) throw new Error('Cannot add users to a normal chat.');

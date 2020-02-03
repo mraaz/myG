@@ -100,7 +100,7 @@ class ChatMessage extends React.Component {
   renderDateDivisor() {
     const { message } = this.props;
     return (
-      <div className="chat-component-message-date-divisor">
+      <div key={Math.random()} className="chat-component-message-date-divisor">
         <p>{message.isYesterday ? 'Yesterday' : formatDate(message.date)}</p>
       </div>
     );

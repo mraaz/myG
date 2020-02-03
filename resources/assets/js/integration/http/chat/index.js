@@ -36,6 +36,16 @@ export function deleteChat(chatId) {
   return axios.delete(`/api/chat/${chatId}/delete`).then(response => response.data);
 }
 
+export function exitGroup(chatId) {
+  logger.log('CHAT', 'HTTP', `Exiting Group ${chatId}`);
+  return axios.delete(`/api/chat/${chatId}/exit`).then(response => response.data);
+}
+
+export function removeFromGroup(chatId, userId) {
+  logger.log('CHAT', 'HTTP', `Removing User ${userId} from Group ${chatId}`);
+  return axios.delete(`/api/chat/${chatId}/exit/${userId}`).then(response => response.data);
+}
+
 export function fetchChatContacts(chatId) {
   logger.log('CHAT', 'HTTP', `Fetching Chat ${chatId}`);
   return axios.get(`/api/chat/${chatId}/contacts`).then(response => response.data);

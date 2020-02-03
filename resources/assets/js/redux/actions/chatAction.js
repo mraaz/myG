@@ -1,4 +1,4 @@
-import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, createChat, updateChat, clearChat, deleteChat, checkSelfDestruct, fetchMessages, sendMessage, editMessage, deleteMessage } from '../../integration/http/chat';
+import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, createChat, updateChat, clearChat, deleteChat, exitGroup, removeFromGroup, checkSelfDestruct, fetchMessages, sendMessage, editMessage, deleteMessage } from '../../integration/http/chat';
 import { fetchContacts, fetchContact, fetchStatus } from '../../integration/http/user';
 import { generateKeys, deserializeKey } from '../../integration/encryption';
 
@@ -44,6 +44,14 @@ export function onDeleteChatAction(payload) {
   return {
     type: 'ON_CHAT_DELETED',
     payload,
+  }
+}
+
+export function onUserLeftGroupAction(payload, userId) {
+  return {
+    type: 'ON_USER_LEFT',
+    payload,
+    meta: { userId },
   }
 }
 
@@ -160,6 +168,22 @@ export function deleteChatAction(chatId) {
     type: 'DELETE_CHAT',
     payload: deleteChat(chatId),
     meta: { chatId },
+  }
+}
+
+export function exitGroupAction(chatId) {
+  return {
+    type: 'EXIT_GROUP',
+    payload: exitGroup(chatId),
+    meta: { chatId },
+  }
+}
+
+export function removeFromGroupAction(chatId, userId) {
+  return {
+    type: 'REMOVE_FROM_GROUP',
+    payload: removeFromGroup(chatId, userId),
+    meta: { chatId, userId },
   }
 }
 

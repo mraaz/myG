@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import GroupInvitation from './GroupInvitation';
 
-import { addContactsToChatAction, updateChatAction, clearChatAction, deleteChatAction } from '../../../redux/actions/chatAction';
+import { addContactsToChatAction, updateChatAction, clearChatAction, deleteChatAction, exitGroupAction, removeFromGroupAction } from '../../../redux/actions/chatAction';
 import { addAsFriendAction, fetchFriendRequestsAction } from '../../../redux/actions/userAction';
 
 class GroupOptions extends React.PureComponent {
@@ -88,20 +88,20 @@ class GroupOptions extends React.PureComponent {
 
   renderGroupOptions = () => {
     const inactiveStyle = 'chat-group-options-header-options-option-inactive';
+    const canExitGroup = this.props.group.owners.length > 1 || !this.props.group.owners.includes(this.props.userId);
     return (
       <div className="chat-group-options-header-options-container">
 
         <div
-          className={`chat-group-options-header-options-option clickable`}
-          onClick={() => {
-            console.log(`Edit Icon`);
-          }}
+          className={`chat-group-options-header-options-option ${!canExitGroup && inactiveStyle} clickable`}
+          onClick={() => canExitGroup && this.props.exitGroup(this.props.group.chatId)}
         >
           <div
             className="chat-group-options-header-options-option-icon"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_group_edit.svg)` }}
+            style={{ backgroundImage: `url(/assets/svg/ic_chat_group_exit.svg)` }}
+            onClick={() => this.props.exitGroup(this.props.group.chatId)}
           />
-          edit icon
+          exit group
         </div>
 
         <div
@@ -141,6 +141,7 @@ class GroupOptions extends React.PureComponent {
   renderContact = (contact) => {
     const isAdded = this.props.contacts.map(contact => contact.contactId).includes(contact.contactId);
     const isRequested = this.props.friendRequests.includes(contact.contactId) || this.state.friendRequests.includes(contact.contactId);
+    const isOwner = this.props.group.owners.includes(this.props.userId);
     return (
       <div key={contact.contactId} className="chat-group-options-contact">
         <div className="chat-group-options-contact-info">
@@ -153,11 +154,13 @@ class GroupOptions extends React.PureComponent {
           <div className="chat-group-options-contact-name">{contact.name}</div>
         </div>
         <div className="chat-group-options-contact-buttons">
-          <div
-            className="chat-group-options-option-icon clickable"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_group_remove.svg)`, filter: `contrast(1)` }}
-            onClick={() => console.log(`Remove From Group: ${contact.contactId}`)}
+          {isOwner && (
+            <div
+              className="chat-group-options-option-icon clickable"
+              style={{ backgroundImage: `url(/assets/svg/ic_chat_group_remove.svg)`, filter: `contrast(0)` }}
+              onClick={() => this.props.removeFromGroup(this.props.group.chatId, contact.contactId)}
           />
+          )}
           <div
             className="chat-group-options-option-icon clickable"
             style={{ backgroundImage: `url(/assets/svg/ic_chat_mute.svg)`, filter: `contrast(0)` }}
@@ -242,6 +245,8 @@ function mapDispatchToProps(dispatch) {
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
     deleteChat: (chatId) => dispatch(deleteChatAction(chatId)),
+    removeFromGroup: (chatId, userId) => dispatch(removeFromGroupAction(chatId, userId)),
+    exitGroup: (chatId) => dispatch(exitGroupAction(chatId)),
   });
 }
 

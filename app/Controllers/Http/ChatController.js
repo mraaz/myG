@@ -62,6 +62,23 @@ class ChatController {
     return response.send(result);
   }
 
+  async exitGroup({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    log('CHAT', `User ${requestingUserId} exiting Group ${requestedChatId}`);
+    const result = await ChatRepository.exitGroup({ requestingUserId, requestedChatId });
+    return response.send(result);
+  }
+
+  async removeFromGroup({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedUserId = params.userId;
+    const requestedChatId = params.chatId;
+    log('CHAT', `User ${requestedUserId} being removed from Group ${requestedChatId} by User ${requestingUserId}`);
+    const result = await ChatRepository.exitGroup({ requestingUserId, requestedChatId, requestedUserId });
+    return response.send(result);
+  }
+
   async fetchChatContacts({ auth, params, response }) {
     const requestingUserId = auth.user.id;
     const requestedChatId = params.chatId;
