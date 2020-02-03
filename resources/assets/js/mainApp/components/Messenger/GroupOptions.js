@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import GroupInvitation from './GroupInvitation';
 
 import { addContactsToChatAction, updateChatAction, clearChatAction, deleteChatAction } from '../../../redux/actions/chatAction';
-import { addAsFriendAction } from '../../../redux/actions/userAction';
+import { addAsFriendAction, fetchFriendRequestsAction } from '../../../redux/actions/userAction';
 
 class GroupOptions extends React.PureComponent {
 
@@ -14,6 +14,10 @@ class GroupOptions extends React.PureComponent {
     editingTitle: false,
     titleInput: '',
     friendRequests: [],
+  }
+
+  componentDidMount() {
+    this.props.fetchFriendRequests();
   }
 
   onAddFriendRequest = (contactId) => {
@@ -136,7 +140,7 @@ class GroupOptions extends React.PureComponent {
 
   renderContact = (contact) => {
     const isAdded = this.props.contacts.map(contact => contact.contactId).includes(contact.contactId);
-    const isRequested = this.state.friendRequests.includes(contact.contactId);
+    const isRequested = this.props.friendRequests.includes(contact.contactId) || this.state.friendRequests.includes(contact.contactId);
     return (
       <div key={contact.contactId} className="chat-group-options-contact">
         <div className="chat-group-options-contact-info">
@@ -225,12 +229,14 @@ class GroupOptions extends React.PureComponent {
 
 function mapStateToProps(state) {
   return {
-    contacts: state.user.contacts,
+    contacts: state.user.contacts || [],
+    friendRequests: state.user.friendRequests || [],
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return ({
+    fetchFriendRequests: () => dispatch(fetchFriendRequestsAction()),
     addAsFriend: (friendId) => dispatch(addAsFriendAction(friendId)),
     addContactsToChat: (userId, chatId, contacts) => dispatch(addContactsToChatAction(userId, chatId, contacts)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),

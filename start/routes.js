@@ -263,6 +263,9 @@ Route.get('/api/usergroup/promote_member/:id/:usergrp_id', 'UsergroupController.
 Route.get('/api/usergroup/demote_member/:id/:usergrp_id', 'UsergroupController.demote_member')
 Route.get('/api/usergroup/current_member/:id', 'UsergroupController.current_member')
 
+// Trying to avoid conflicts, should move this route up later.
+Route.get('/api/notifications/outgoingFriendRequests', 'NotificationController.outgoingFriendRequests')
+
 // Chat Feature - https://docs.google.com/spreadsheets/d/1AR9P3MLQw6J6eoRqgTbOVROFxmPE215yXzsqD59wy2o
 Route.get('/api/chat/', 'ChatController.fetchChats')
 Route.get('/api/chat/:chatId', 'ChatController.fetchChat')

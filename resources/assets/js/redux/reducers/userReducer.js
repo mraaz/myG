@@ -5,6 +5,7 @@ export default function reducer(state = {
   status: 'online',
   isStatusLocked: false,
   contacts: [],
+  friendRequests: [],
 }, action) {
   switch (action.type) {
 
@@ -78,6 +79,15 @@ export default function reducer(state = {
       return {
         ...state,
         contacts,
+      };
+    }
+
+    case "FETCH_FRIEND_REQUESTS_FULFILLED": {
+      logger.log('CHAT', `Redux -> Fetched Friend Requests: `, action.payload);
+      const friendRequests = (action.payload.friendRequests || []).map(request => request.other_user_id);
+      return {
+        ...state,
+        friendRequests,
       };
     }
 
