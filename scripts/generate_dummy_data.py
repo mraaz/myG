@@ -27,7 +27,12 @@ class TravelProvider(BaseProvider):
 def main():
   start = 100
   stop = 111
+
+  #Gaming intestests, esportsExp, scheduledGames how many per user
+  mini_start = start
+  mini_stop = 105
   create_celebrity = True
+  adonisJS = True #print out for adonis or False for SQL
 
   answer = choice(['Yes', 'No'])
 
@@ -56,28 +61,43 @@ def main():
   seed(4321)
   shuffle(alias)
 
-
-
   for x in range(start, stop, 1):
+    tmp = mini_stop - mini_start
+    mini_start+=tmp
+    mini_stop+=tmp
+
     #USERS
     if (create_celebrity and x == start):
-      print(".raw(\"INSERT INTO users (id, alias, first_name, last_name, email, password, profile_img, status, last_seen, public_key, country, contact_info, relationship_status, profile_bg, created_at, updated_at) values (%s,'%s','%s','%s','myG@myG.gg','$2a$10$JTLVsD59n1jZPN3yGIn.4OUNR0EBRSiT1JrHllsyL0.pz2hh994hm','https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png','%s', '%s', 'lVxjAuGfXnA3KewnMfxuT91Wnz2nqW5XY1kYxrJWlxY41Nm2wmYcSXdsj+35gUAxFL/n/d7azGuX4uks1h+BsB5Z5d0FGSbAhhOpfKcvlrc7DvHISNEFN3jTh9DDa+ClpmBnQ7mz79fWQS2EzFhzactKpNVteL2xNy9uNK9AHKs=', '%s', 'mnraaz@gmail.com', '%s', 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/universe.jpg', '2019-12-01 00:00:00', '2019-12-01 00:00:00')\")" % (x, alias[x], fake.first_name(), fake.last_name(), random.choice(status), fake.date(pattern='%Y-%m-%d 00:00:00', end_datetime=None), fake.destination(), random.choice(relationship_Status) ))
+      if(adonisJS):
+        print(".raw(\"INSERT INTO users (id, alias, first_name, last_name, email, password, profile_img, status, last_seen, public_key, country, contact_info, relationship_status, profile_bg, created_at, updated_at) values (%s,'%s','%s','%s','myG@myG.gg','$2a$10$JTLVsD59n1jZPN3yGIn.4OUNR0EBRSiT1JrHllsyL0.pz2hh994hm','https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png','%s', '%s', 'lVxjAuGfXnA3KewnMfxuT91Wnz2nqW5XY1kYxrJWlxY41Nm2wmYcSXdsj+35gUAxFL/n/d7azGuX4uks1h+BsB5Z5d0FGSbAhhOpfKcvlrc7DvHISNEFN3jTh9DDa+ClpmBnQ7mz79fWQS2EzFhzactKpNVteL2xNy9uNK9AHKs=', '%s', 'mnraaz@gmail.com', '%s', 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/universe.jpg', '2019-12-01 00:00:00', '2019-12-01 00:00:00')\")" % (x, alias[x], fake.first_name(), fake.last_name(), random.choice(status), fake.date(pattern='%Y-%m-%d 00:00:00', end_datetime=None), fake.destination(), random.choice(relationship_Status) ))
+      else:
+        print("INSERT INTO users (id, alias, first_name, last_name, email, password, profile_img, status, last_seen, public_key, country, contact_info, relationship_status, profile_bg, created_at, updated_at) values (%s,'%s','%s','%s','myG@myG.gg','$2a$10$JTLVsD59n1jZPN3yGIn.4OUNR0EBRSiT1JrHllsyL0.pz2hh994hm','https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png','%s', '%s', 'lVxjAuGfXnA3KewnMfxuT91Wnz2nqW5XY1kYxrJWlxY41Nm2wmYcSXdsj+35gUAxFL/n/d7azGuX4uks1h+BsB5Z5d0FGSbAhhOpfKcvlrc7DvHISNEFN3jTh9DDa+ClpmBnQ7mz79fWQS2EzFhzactKpNVteL2xNy9uNK9AHKs=', '%s', 'mnraaz@gmail.com', '%s', 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/universe.jpg', '2019-12-01 00:00:00', '2019-12-01 00:00:00');" % (x, alias[x], fake.first_name(), fake.last_name(), random.choice(status), fake.date(pattern='%Y-%m-%d 00:00:00', end_datetime=None), fake.destination(), random.choice(relationship_Status) ))
     else:
-      print(".raw(\"INSERT INTO users (id, alias, first_name, last_name, email, password, profile_img, status, last_seen, public_key, country, contact_info, relationship_status, profile_bg, created_at, updated_at) values (%s,'%s','%s','%s','%s','$2a$10$JTLVsD59n1jZPN3yGIn.4OUNR0EBRSiT1JrHllsyL0.pz2hh994hm','https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png','%s', '%s', 'lVxjAuGfXnA3KewnMfxuT91Wnz2nqW5XY1kYxrJWlxY41Nm2wmYcSXdsj+35gUAxFL/n/d7azGuX4uks1h+BsB5Z5d0FGSbAhhOpfKcvlrc7DvHISNEFN3jTh9DDa+ClpmBnQ7mz79fWQS2EzFhzactKpNVteL2xNy9uNK9AHKs=', '%s', 'mnraaz@gmail.com', '%s', 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/universe.jpg', '2019-12-01 00:00:00', '2019-12-01 00:00:00')\")" % (x, alias[x] + str(random.randint(1,88)), fake.first_name(), fake.last_name(), alias[x] + str(random.randint(1,88)) + "@gmail.com" , random.choice(status), fake.date(pattern='%Y-%m-%d 00:00:00', end_datetime=None), fake.destination(), random.choice(relationship_Status)) )
+      if(adonisJS):
+        print(".raw(\"INSERT INTO users (id, alias, first_name, last_name, email, password, profile_img, status, last_seen, public_key, country, contact_info, relationship_status, profile_bg, created_at, updated_at) values (%s,'%s','%s','%s','%s','$2a$10$JTLVsD59n1jZPN3yGIn.4OUNR0EBRSiT1JrHllsyL0.pz2hh994hm','https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png','%s', '%s', 'lVxjAuGfXnA3KewnMfxuT91Wnz2nqW5XY1kYxrJWlxY41Nm2wmYcSXdsj+35gUAxFL/n/d7azGuX4uks1h+BsB5Z5d0FGSbAhhOpfKcvlrc7DvHISNEFN3jTh9DDa+ClpmBnQ7mz79fWQS2EzFhzactKpNVteL2xNy9uNK9AHKs=', '%s', 'mnraaz@gmail.com', '%s', 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/universe.jpg', '2019-12-01 00:00:00', '2019-12-01 00:00:00')\")" % (x, alias[x] + str(random.randint(1,88)), fake.first_name(), fake.last_name(), alias[x] + str(random.randint(1,88)) + "@gmail.com" , random.choice(status), fake.date(pattern='%Y-%m-%d 00:00:00', end_datetime=None), fake.destination(), random.choice(relationship_Status)) )
+      else:
+        print("INSERT INTO users (id, alias, first_name, last_name, email, password, profile_img, status, last_seen, public_key, country, contact_info, relationship_status, profile_bg, created_at, updated_at) values (%s,'%s','%s','%s','%s','$2a$10$JTLVsD59n1jZPN3yGIn.4OUNR0EBRSiT1JrHllsyL0.pz2hh994hm','https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png','%s', '%s', 'lVxjAuGfXnA3KewnMfxuT91Wnz2nqW5XY1kYxrJWlxY41Nm2wmYcSXdsj+35gUAxFL/n/d7azGuX4uks1h+BsB5Z5d0FGSbAhhOpfKcvlrc7DvHISNEFN3jTh9DDa+ClpmBnQ7mz79fWQS2EzFhzactKpNVteL2xNy9uNK9AHKs=', '%s', 'mnraaz@gmail.com', '%s', 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/universe.jpg', '2019-12-01 00:00:00', '2019-12-01 00:00:00');" % (x, alias[x] + str(random.randint(1,88)), fake.first_name(), fake.last_name(), alias[x] + str(random.randint(1,88)) + "@gmail.com" , random.choice(status), fake.date(pattern='%Y-%m-%d 00:00:00', end_datetime=None), fake.destination(), random.choice(relationship_Status)) )
 
     #GAME EXPERIENCES && ESPORTS_EXPERIENCES
     #Game_id: 998 = Dota 2
     #Game_id: 1015 = Clash Royale
     #Game IDs range from 1 to 1037
-    for y in range(5):
-      print(".raw(\"INSERT INTO game_experiences (user_id, game_names_id, experience, comments, played, commendation, status, link, ratings, created_at, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '%s', '%s', %s, '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (x, random.randint(1,1037), random.choice(ge_experience), fake.sentence(), random.choice(ge_played), random.choice(ge_commendation), random.choice(ge_status), fake.image_url(), random.randint(1,5) ) )
-      print(".raw(\"INSERT INTO esports_experiences (user_id, game_names_id, role_title, team_name, duration, achievements, created_at, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (x, random.randint(1,1037), fake.job(), fake.company(), random.choice(ge_played), fake.sentence() ) )
-      #SCHEDULE_GAMES
-      print(".raw(\"INSERT INTO schedule_games (user_id, game_names_id, region, experience, start_date_time, end_date_time, platform, description, other, expiry, visibility, `limit`, accept_msg, schedule_games_GUID, vacancy, created_at, updated_at) values (%s, %s, '%s', '%s', '2019-12-01 00:00:00', '2029-12-01 00:00:00', '%s', '%s', '%s', '2025-08-08 00:00:00', %s, %s, '%s', '%s', %s, '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (x, random.randint(1,1037), random.choice(sg_region), random.choice(ge_experience), random.choice(sg_platform), fake.sentence(), fake.sentence(), random.randint(1,4), random.choice(sg_limit), fake.sentence(), fake.uuid4(), random.randint(0,1) ) )
+    for y in range(mini_start, mini_stop, 1):
+      if(adonisJS):
+        print(".raw(\"INSERT INTO game_experiences (user_id, game_names_id, experience, comments, played, commendation, status, link, ratings, created_at, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '%s', '%s', %s, '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (x, random.randint(1,1037), random.choice(ge_experience), fake.sentence(), random.choice(ge_played), random.choice(ge_commendation), random.choice(ge_status), fake.image_url(), random.randint(1,5) ) )
+        print(".raw(\"INSERT INTO esports_experiences (user_id, game_names_id, role_title, team_name, duration, achievements, created_at, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (x, random.randint(1,1037), fake.job(), fake.company(), random.choice(ge_played), fake.sentence() ) )
+        #SCHEDULE_GAMES
+        print(".raw(\"INSERT INTO schedule_games (id, user_id, game_names_id, region, experience, start_date_time, end_date_time, platform, description, other, expiry, visibility, `limit`, accept_msg, schedule_games_GUID, vacancy, created_at, updated_at) values (%s, %s, %s, '%s', '%s', '2019-12-01 00:00:00', '2029-12-01 00:00:00', '%s', '%s', '%s', '2025-08-08 00:00:00', %s, %s, '%s', '%s', %s, '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (y, x, random.randint(1,1037), random.choice(sg_region), random.choice(ge_experience), random.choice(sg_platform), fake.sentence(), fake.sentence(), random.randint(1,4), random.choice(sg_limit), fake.sentence(), fake.uuid4(), random.randint(0,1) ) )
+      else:
+        print("INSERT INTO game_experiences (user_id, game_names_id, experience, comments, played, commendation, status, link, ratings, created_at, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '%s', '%s', %s, '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (x, random.randint(1,1037), random.choice(ge_experience), fake.sentence(), random.choice(ge_played), random.choice(ge_commendation), random.choice(ge_status), fake.image_url(), random.randint(1,5) ) )
+        print("INSERT INTO esports_experiences (user_id, game_names_id, role_title, team_name, duration, achievements, created_at, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (x, random.randint(1,1037), fake.job(), fake.company(), random.choice(ge_played), fake.sentence() ) )
+        #SCHEDULE_GAMES
+        print("INSERT INTO schedule_games (id, user_id, game_names_id, region, experience, start_date_time, end_date_time, platform, description, other, expiry, visibility, `limit`, accept_msg, schedule_games_GUID, vacancy, created_at, updated_at) values (%s, %s, %s, '%s', '%s', '2019-12-01 00:00:00', '2029-12-01 00:00:00', '%s', '%s', '%s', '2025-08-08 00:00:00', %s, %s, '%s', '%s', %s, '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (y, x, random.randint(1,1037), random.choice(sg_region), random.choice(ge_experience), random.choice(sg_platform), fake.sentence(), fake.sentence(), random.randint(1,4), random.choice(sg_limit), fake.sentence(), fake.uuid4(), random.randint(0,1) ) )
 
-    print(".raw(\"INSERT INTO esports_bios (user_id, status, email_visibility, games_of_ardour, career_highlights, created_at, updated_at) values (%s, '%s', '%s', 'Dota 2, Clash Royale, Secret of Evermore', '%s', '2019-12-01 00:00:00', '2019-12-01 00:00:00')\")" % (x, random.choice(eb_status), answer, fake.sentence() ) )
-
-
+    if(adonisJS):
+      print(".raw(\"INSERT INTO esports_bios (user_id, status, email_visibility, games_of_ardour, career_highlights, created_at, updated_at) values (%s, '%s', '%s', 'Dota 2, Clash Royale, Secret of Evermore', '%s', '2019-12-01 00:00:00', '2019-12-01 00:00:00')\")" % (x, random.choice(eb_status), answer, fake.sentence() ) )
+    else:
+      print("INSERT INTO esports_bios (user_id, status, email_visibility, games_of_ardour, career_highlights, created_at, updated_at) values (%s, '%s', '%s', 'Dota 2, Clash Royale, Secret of Evermore', '%s', '2019-12-01 00:00:00', '2019-12-01 00:00:00');" % (x, random.choice(eb_status), answer, fake.sentence() ) )
 
 
     #FRIENDS
@@ -92,10 +112,25 @@ def main():
 
 
     if(create_celebrity and x != start):
-      print(".raw(\"INSERT INTO friends (user_id, friend_id, created_at, updated_at) values (%s,%s,'2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (start, x) )
+      if(adonisJS):
+        print(".raw(\"INSERT INTO friends (user_id, friend_id, created_at, updated_at) values (%s,%s,'2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (start, x) )
+      else:
+        print("INSERT INTO friends (user_id, friend_id, created_at, updated_at) values (%s,%s,'2019-12-01 00:00:00','2019-12-01 00:00:00');" % (start, x) )
     if (myself == friend or myself == start-1 or friend == start-1):
       continue
-    print(".raw(\"INSERT INTO friends (user_id, friend_id, created_at, updated_at) values (%s,%s,'2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (myself, friend) )
+
+    if(adonisJS):
+      print(".raw(\"INSERT INTO friends (user_id, friend_id, created_at, updated_at) values (%s,%s,'2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (myself, friend) )
+    else:
+      print("INSERT INTO friends (user_id, friend_id, created_at, updated_at) values (%s,%s,'2019-12-01 00:00:00','2019-12-01 00:00:00');" % (myself, friend) )
+
+    for z in range(10):
+      if(adonisJS):
+        print(".raw(\"INSERT INTO attendees (schedule_games_id, user_id, type, created_at, updated_at) values (%s, %s, %s, '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (random.randint(start, mini_stop), myself, random.randint(1,3) ) )
+      else:
+        print("INSERT INTO attendees (schedule_games_id, user_id, type, created_at, updated_at) values (%s, %s, %s, '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (random.randint(start, mini_stop), myself, random.randint(1,3) ) )
+
+
 
 if __name__ == "__main__":
     main()
