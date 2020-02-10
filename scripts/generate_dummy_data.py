@@ -62,9 +62,9 @@ def main():
   shuffle(alias)
 
   for x in range(start, stop, 1):
-    tmp = mini_stop - mini_start
-    mini_start+=tmp
-    mini_stop+=tmp
+    gap = mini_stop - mini_start
+    mini_start+=gap
+    mini_stop+=gap
 
     #USERS
     if (create_celebrity and x == start):
@@ -124,11 +124,11 @@ def main():
     else:
       print("INSERT INTO friends (user_id, friend_id, created_at, updated_at) values (%s,%s,'2019-12-01 00:00:00','2019-12-01 00:00:00');" % (myself, friend) )
 
-    for z in range(10):
+    for z in range(gap):
       if(adonisJS):
-        print(".raw(\"INSERT INTO attendees (schedule_games_id, user_id, type, created_at, updated_at) values (%s, %s, %s, '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (random.randint(start, mini_stop), myself, random.randint(1,3) ) )
+        print(".raw(\"INSERT INTO attendees (schedule_games_id, user_id, type, created_at, updated_at) values (%s, %s, %s, '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (random.randint(start+gap, mini_stop), myself, random.randint(1,3) ) )
       else:
-        print("INSERT INTO attendees (schedule_games_id, user_id, type, created_at, updated_at) values (%s, %s, %s, '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (random.randint(start, mini_stop), myself, random.randint(1,3) ) )
+        print("INSERT INTO attendees (schedule_games_id, user_id, type, created_at, updated_at) values (%s, %s, %s, '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (random.randint(start+gap, mini_stop), myself, random.randint(1,3) ) )
 
 
 
