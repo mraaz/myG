@@ -46,6 +46,7 @@ def main():
   ge_status = ['Actively Gaming', 'Sometimes...', 'Moved On']
   ge_played = [1,2,4,5,42]
   ge_commendation = ['Apprentice', 'Elite', 'Expert', 'Hero', 'Master', 'Grand Master']
+  ge_tags = ['Tags1, Tags2, Tags3, Tag4, Tag5, Tag6, Tags7, Tags8', 'Loooooong Taaaag, This is a long work that needs to be said and if its not said then what the point of all this....myG rulezz, another tag', 'TagMe1, TagMe2, TagMe3, TagMe4', '1', 'Stuff1, Stuff3']
 
   #esports_bio
   eb_status = ['Actively looking for a team', 'Maybe looking for a team', 'Do not disturb please!']
@@ -84,13 +85,14 @@ def main():
     #Game IDs range from 1 to 1037
     for y in range(mini_start, mini_stop, 1):
       if(adonisJS):
-        print(".raw(\"INSERT INTO game_experiences (user_id, game_names_id, experience, comments, played, commendation, status, link, ratings, created_at, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '%s', '%s', %s, '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (x, random.randint(1,1037), random.choice(ge_experience), fake.sentence(), random.choice(ge_played), random.choice(ge_commendation), random.choice(ge_status), fake.image_url(), random.randint(1,5) ) )
-        print(".raw(\"INSERT INTO esports_experiences (user_id, game_names_id, role_title, team_name, duration, achievements, created_at, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (x, random.randint(1,1037), fake.job(), fake.company(), random.choice(ge_played), fake.sentence() ) )
+        print(".raw(\"INSERT INTO game_experiences (user_id, game_names_id, experience, comments, played, commendation, status, link, ratings, tags, created_at, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '%s', '%s', %s, '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (x, random.randint(1,1037), random.choice(ge_experience), fake.sentence(), random.choice(ge_played), random.choice(ge_commendation), random.choice(ge_status), fake.image_url(), random.randint(1,5), random.choice(ge_tags) ) )
+        print(".raw(\"INSERT INTO esports_experiences (user_id, game_names_id, role_title, team_name, duration, achievements, skills, created_at, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (x, random.randint(1,1037), fake.job(), fake.company(), random.choice(ge_played), fake.sentence(), random.choice(ge_tags) ) )
         #SCHEDULE_GAMES
         print(".raw(\"INSERT INTO schedule_games (id, user_id, game_names_id, region, experience, start_date_time, end_date_time, platform, description, other, expiry, visibility, `limit`, accept_msg, schedule_games_GUID, vacancy, created_at, updated_at) values (%s, %s, %s, '%s', '%s', '2019-12-01 00:00:00', '2029-12-01 00:00:00', '%s', '%s', '%s', '2025-08-08 00:00:00', %s, %s, '%s', '%s', %s, '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (y, x, random.randint(1,1037), random.choice(sg_region), random.choice(ge_experience), random.choice(sg_platform), fake.sentence(), fake.sentence(), random.randint(1,4), random.choice(sg_limit), fake.sentence(), fake.uuid4(), random.randint(0,1) ) )
+        #print(".raw(\"INSERT INTO posts (user_id, content, types, media URL, created_at, updated_at) values (%s, '%s', '%s', '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (x, random.randint(1,1037), fake.job(), fake.company(), random.choice(ge_played), fake.sentence(), random.choice(ge_tags) ) )
       else:
-        print("INSERT INTO game_experiences (user_id, game_names_id, experience, comments, played, commendation, status, link, ratings, created_at, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '%s', '%s', %s, '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (x, random.randint(1,1037), random.choice(ge_experience), fake.sentence(), random.choice(ge_played), random.choice(ge_commendation), random.choice(ge_status), fake.image_url(), random.randint(1,5) ) )
-        print("INSERT INTO esports_experiences (user_id, game_names_id, role_title, team_name, duration, achievements, created_at, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (x, random.randint(1,1037), fake.job(), fake.company(), random.choice(ge_played), fake.sentence() ) )
+        print("INSERT INTO game_experiences (user_id, game_names_id, experience, comments, played, commendation, status, link, ratings, created_at, tags, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '%s', '%s', %s, '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (x, random.randint(1,1037), random.choice(ge_experience), fake.sentence(), random.choice(ge_played), random.choice(ge_commendation), random.choice(ge_status), fake.image_url(), random.randint(1,5), random.choice(ge_tags) ) )
+        print("INSERT INTO esports_experiences (user_id, game_names_id, role_title, team_name, duration, achievements, skills, created_at, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (x, random.randint(1,1037), fake.job(), fake.company(), random.choice(ge_played), fake.sentence(), random.choice(ge_tags) ) )
         #SCHEDULE_GAMES
         print("INSERT INTO schedule_games (id, user_id, game_names_id, region, experience, start_date_time, end_date_time, platform, description, other, expiry, visibility, `limit`, accept_msg, schedule_games_GUID, vacancy, created_at, updated_at) values (%s, %s, %s, '%s', '%s', '2019-12-01 00:00:00', '2029-12-01 00:00:00', '%s', '%s', '%s', '2025-08-08 00:00:00', %s, %s, '%s', '%s', %s, '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (y, x, random.randint(1,1037), random.choice(sg_region), random.choice(ge_experience), random.choice(sg_platform), fake.sentence(), fake.sentence(), random.randint(1,4), random.choice(sg_limit), fake.sentence(), fake.uuid4(), random.randint(0,1) ) )
 
@@ -126,9 +128,9 @@ def main():
 
     for z in range(gap):
       if(adonisJS):
-        print(".raw(\"INSERT INTO attendees (schedule_games_id, user_id, type, created_at, updated_at) values (%s, %s, %s, '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (random.randint(start+gap, mini_stop), myself, random.randint(1,3) ) )
+        print(".raw(\"INSERT INTO attendees (schedule_games_id, user_id, type, created_at, updated_at) values (%s, %s, %s, '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (random.randint(start+gap, mini_stop-1), myself, random.randint(1,3) ) )
       else:
-        print("INSERT INTO attendees (schedule_games_id, user_id, type, created_at, updated_at) values (%s, %s, %s, '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (random.randint(start+gap, mini_stop), myself, random.randint(1,3) ) )
+        print("INSERT INTO attendees (schedule_games_id, user_id, type, created_at, updated_at) values (%s, %s, %s, '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (random.randint(start+gap, mini_stop-1), myself, random.randint(1,3) ) )
 
 
 
