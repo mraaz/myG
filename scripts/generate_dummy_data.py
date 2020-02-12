@@ -26,13 +26,13 @@ class TravelProvider(BaseProvider):
 
 def main():
   start = 100
-  stop = 111
+  stop = 1110
 
   #Gaming intestests, esportsExp, scheduledGames how many per user
   mini_start = start
   mini_stop = 105
   create_celebrity = True
-  adonisJS = True #print out for adonis or False for SQL
+  adonisJS = False #print out for adonis or False for SQL
 
   answer = choice(['Yes', 'No'])
 
@@ -127,7 +127,8 @@ def main():
         print("INSERT INTO esports_experiences (user_id, game_names_id, role_title, team_name, duration, achievements, skills, created_at, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (x, random.randint(1,1037), fake.job().replace("'", ""), fake.company().replace("'", ""), random.choice(ge_played), fake.sentence().replace("'", ""), random.choice(ge_tags) ) )
         #SCHEDULE_GAMES
         print("INSERT INTO schedule_games (id, user_id, game_names_id, region, experience, start_date_time, end_date_time, platform, description, other, expiry, visibility, `limit`, accept_msg, schedule_games_GUID, vacancy, created_at, updated_at) values (%s, %s, %s, '%s', '%s', '2019-12-01 00:00:00', '2029-12-01 00:00:00', '%s', '%s', '%s', '2025-08-08 00:00:00', %s, %s, '%s', '%s', %s, '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (y, x, random.randint(1,1037), random.choice(sg_region), random.choice(ge_experience), random.choice(sg_platform), fake.sentence().replace("'", ""), fake.sentence().replace("'", ""), random.randint(1,4), random.choice(sg_limit), fake.sentence().replace("'", ""), fake.uuid4(), random.randint(0,1) ) )
-        print("INSERT INTO posts (id, user_id, content, type, media_url, created_at, updated_at) values (%s, %s, %s, '%s', '%s', '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (y, y, x, fake.sentence().replace("'", ""), random.choice(post_types), random.choice(post_media_URL) ) )
+        #This line is differnet, as it contains Media_urls
+        print("INSERT INTO posts (id, user_id, content, type, media_url, created_at, updated_at) values (%s, %s, '%s', '%s', '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (y, x, fake.sentence().replace("'", ""), random.choice(post_types), random.choice(post_media_URL) ) )
         if (x != start):
           print("INSERT INTO notifications (user_id, other_user_id, activity_type, post_id, created_at, updated_at) values (%s, %s, 2, %s, '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (x, randrange(start, x), y ) )
           print("INSERT INTO notifications (user_id, other_user_id, activity_type, schedule_games_id, created_at, updated_at) values (%s, %s, 10, %s, '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (x, randrange(start, x), y ) )
