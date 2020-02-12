@@ -398,11 +398,19 @@ export default class IndividualPost extends Component {
 
   render() {
     if (this.state.post_deleted != true) {
+      var show_media = true
       let { post } = this.props //destructing of object
 
       var media_urls = []
       if (post.type == 'photo' || post.type == 'video') {
-        media_urls = JSON.parse(post.media_url)
+        try {
+          media_urls = JSON.parse(post.media_url)
+        } catch (error) {
+          console.log('Data error with your post. Delete POST please! ' + post.content)
+        }
+      }
+      if (media_urls == [] || media_urls == null) {
+        show_media = false
       }
       return (
         <div className='update-container'>
@@ -469,17 +477,18 @@ export default class IndividualPost extends Component {
                     </div>
                   </div>
                 )}
-                {media_urls.map(function(data, index) {
-                  if (post.type == 'photo') {
-                    return <img className='post-photo' src={data}></img>
-                  } else if (post.type == 'video') {
-                    return (
-                      <video className='post-video' controls>
-                        <source src={data}></source>
-                      </video>
-                    )
-                  }
-                })}
+                {show_media &&
+                  media_urls.map(function(data, index) {
+                    if (post.type == 'photo') {
+                      return <img className='post-photo' src={data}></img>
+                    } else if (post.type == 'video') {
+                      return (
+                        <video className='post-video' controls>
+                          <source src={data}></source>
+                        </video>
+                      )
+                    }
+                  })}
               </div>
               <div className='update-stats'>
                 <div className='icon-section'>
