@@ -57,13 +57,26 @@ def main():
   sg_visibility = ['Public', 'Friends', 'Group', 'Hidden']
   sg_limit = [5,10,20,25,30,40,50,100,42]
 
+  #posts
+  post_types = ['text', 'photo']
+  #Due to the inverted comma's we can't import this into AdonisJS, so only mySQL will have images.
+  post_media_URL = ['[\"https://myg-test-media-files.s3-ap-southeast-2.amazonaws.com/viber_image_2019-09-26_11-52-23.jpg\", \"https://myg-test-media-files.s3-ap-southeast-2.amazonaws.com/John-Smith.jpg\"]', '[\"https://myg-test-media-files.s3-ap-southeast-2.amazonaws.com/dota_2_background.jpg\"]', '[\"https://myg-test-media-files.s3-ap-southeast-2.amazonaws.com/logo_JPG+(1).jpg\"]', '[\"https://myg-test-media-files.s3-ap-southeast-2.amazonaws.com/mobile.jpg\"]', '[\"https://myg-test-media-files.s3-ap-southeast-2.amazonaws.com/rubick.JPG\"]', '[\"https://myg-test-media-files.s3-ap-southeast-2.amazonaws.com/rubick2.jpg\", \"https://myg-test-media-files.s3-ap-southeast-2.amazonaws.com/viber_image_2019-09-26_10-56-12.jpg\", \"https://myg-test-media-files.s3-ap-southeast-2.amazonaws.com/PB_AWS_logo_RGB_stacked.547f032d90171cdea4dd90c258f47373c5573db5.png\"]']
+
+  #usergroups
+  ug_permission_level = [1,2,3,42]
+
   fake.add_provider(TravelProvider)
   alias = list(set(Provider.first_names))
   seed(4321)
   shuffle(alias)
 
+  tiny_start = mini_start
+  tiny_stop = mini_stop
+
+  gap = mini_stop - mini_start
+  tiny_gap = tiny_stop - tiny_start
+
   for x in range(start, stop, 1):
-    gap = mini_stop - mini_start
     mini_start+=gap
     mini_stop+=gap
 
@@ -79,27 +92,59 @@ def main():
       else:
         print("INSERT INTO users (id, alias, first_name, last_name, email, password, profile_img, status, last_seen, public_key, country, contact_info, relationship_status, profile_bg, created_at, updated_at) values (%s,'%s','%s','%s','%s','$2a$10$JTLVsD59n1jZPN3yGIn.4OUNR0EBRSiT1JrHllsyL0.pz2hh994hm','https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png','%s', '%s', 'lVxjAuGfXnA3KewnMfxuT91Wnz2nqW5XY1kYxrJWlxY41Nm2wmYcSXdsj+35gUAxFL/n/d7azGuX4uks1h+BsB5Z5d0FGSbAhhOpfKcvlrc7DvHISNEFN3jTh9DDa+ClpmBnQ7mz79fWQS2EzFhzactKpNVteL2xNy9uNK9AHKs=', '%s', 'mnraaz@gmail.com', '%s', 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/universe.jpg', '2019-12-01 00:00:00', '2019-12-01 00:00:00');" % (x, alias[x] + str(random.randint(1,88)), fake.first_name(), fake.last_name(), alias[x] + str(random.randint(1,88)) + "@gmail.com" , random.choice(status), fake.date(pattern='%Y-%m-%d 00:00:00', end_datetime=None), fake.destination(), random.choice(relationship_Status)) )
 
+    if(adonisJS):
+      print(".raw(\"INSERT INTO esports_bios (user_id, status, email_visibility, games_of_ardour, career_highlights, created_at, updated_at) values (%s, '%s', '%s', 'Dota 2, Clash Royale, Secret of Evermore', '%s', '2019-12-01 00:00:00', '2019-12-01 00:00:00')\")" % (x, random.choice(eb_status), answer, fake.sentence().replace("'", "") ) )
+      print(".raw(\"INSERT INTO `groups` (id, user_id, name, group_img, type, created_at, updated_at) values (%s, %s, '%s', 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/samuel-67197_1280.jpg', %s, '2019-12-01 00:00:00', '2019-12-01 00:00:00')\")" % (x, x, alias[x], random.randint(1,3) ) )
+    else:
+      print("INSERT INTO esports_bios (user_id, status, email_visibility, games_of_ardour, career_highlights, created_at, updated_at) values (%s, '%s', '%s', 'Dota 2, Clash Royale, Secret of Evermore', '%s', '2019-12-01 00:00:00', '2019-12-01 00:00:00');" % (x, random.choice(eb_status), answer, fake.sentence().replace("'", "") ) )
+      print("INSERT INTO `groups` (id, user_id, name, group_img, type, created_at, updated_at) values (%s, %s, '%s', 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/samuel-67197_1280.jpg', %s, '2019-12-01 00:00:00', '2019-12-01 00:00:00');" % (x, x, alias[x], random.randint(1,3) ) )
+
     #GAME EXPERIENCES && ESPORTS_EXPERIENCES
     #Game_id: 998 = Dota 2
     #Game_id: 1015 = Clash Royale
     #Game IDs range from 1 to 1037
     for y in range(mini_start, mini_stop, 1):
       if(adonisJS):
-        print(".raw(\"INSERT INTO game_experiences (user_id, game_names_id, experience, comments, played, commendation, status, link, ratings, tags, created_at, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '%s', '%s', %s, '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (x, random.randint(1,1037), random.choice(ge_experience), fake.sentence(), random.choice(ge_played), random.choice(ge_commendation), random.choice(ge_status), fake.image_url(), random.randint(1,5), random.choice(ge_tags) ) )
-        print(".raw(\"INSERT INTO esports_experiences (user_id, game_names_id, role_title, team_name, duration, achievements, skills, created_at, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (x, random.randint(1,1037), fake.job(), fake.company(), random.choice(ge_played), fake.sentence(), random.choice(ge_tags) ) )
+        print(".raw(\"INSERT INTO game_experiences (user_id, game_names_id, experience, comments, played, commendation, status, link, ratings, tags, created_at, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '%s', '%s', %s, '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (x, random.randint(1,1037), random.choice(ge_experience), fake.sentence().replace("'", ""), random.choice(ge_played), random.choice(ge_commendation), random.choice(ge_status), fake.image_url(), random.randint(1,5), random.choice(ge_tags) ) )
+        print(".raw(\"INSERT INTO esports_experiences (user_id, game_names_id, role_title, team_name, duration, achievements, skills, created_at, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (x, random.randint(1,1037), fake.job().replace("'", ""), fake.company().replace("'", ""), random.choice(ge_played), fake.sentence().replace("'", ""), random.choice(ge_tags) ) )
         #SCHEDULE_GAMES
-        print(".raw(\"INSERT INTO schedule_games (id, user_id, game_names_id, region, experience, start_date_time, end_date_time, platform, description, other, expiry, visibility, `limit`, accept_msg, schedule_games_GUID, vacancy, created_at, updated_at) values (%s, %s, %s, '%s', '%s', '2019-12-01 00:00:00', '2029-12-01 00:00:00', '%s', '%s', '%s', '2025-08-08 00:00:00', %s, %s, '%s', '%s', %s, '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (y, x, random.randint(1,1037), random.choice(sg_region), random.choice(ge_experience), random.choice(sg_platform), fake.sentence(), fake.sentence(), random.randint(1,4), random.choice(sg_limit), fake.sentence(), fake.uuid4(), random.randint(0,1) ) )
-        #print(".raw(\"INSERT INTO posts (user_id, content, types, media URL, created_at, updated_at) values (%s, '%s', '%s', '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (x, random.randint(1,1037), fake.job(), fake.company(), random.choice(ge_played), fake.sentence(), random.choice(ge_tags) ) )
-      else:
-        print("INSERT INTO game_experiences (user_id, game_names_id, experience, comments, played, commendation, status, link, ratings, created_at, tags, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '%s', '%s', %s, '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (x, random.randint(1,1037), random.choice(ge_experience), fake.sentence(), random.choice(ge_played), random.choice(ge_commendation), random.choice(ge_status), fake.image_url(), random.randint(1,5), random.choice(ge_tags) ) )
-        print("INSERT INTO esports_experiences (user_id, game_names_id, role_title, team_name, duration, achievements, skills, created_at, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (x, random.randint(1,1037), fake.job(), fake.company(), random.choice(ge_played), fake.sentence(), random.choice(ge_tags) ) )
-        #SCHEDULE_GAMES
-        print("INSERT INTO schedule_games (id, user_id, game_names_id, region, experience, start_date_time, end_date_time, platform, description, other, expiry, visibility, `limit`, accept_msg, schedule_games_GUID, vacancy, created_at, updated_at) values (%s, %s, %s, '%s', '%s', '2019-12-01 00:00:00', '2029-12-01 00:00:00', '%s', '%s', '%s', '2025-08-08 00:00:00', %s, %s, '%s', '%s', %s, '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (y, x, random.randint(1,1037), random.choice(sg_region), random.choice(ge_experience), random.choice(sg_platform), fake.sentence(), fake.sentence(), random.randint(1,4), random.choice(sg_limit), fake.sentence(), fake.uuid4(), random.randint(0,1) ) )
+        print(".raw(\"INSERT INTO schedule_games (id, user_id, game_names_id, region, experience, start_date_time, end_date_time, platform, description, other, expiry, visibility, `limit`, accept_msg, schedule_games_GUID, vacancy, created_at, updated_at) values (%s, %s, %s, '%s', '%s', '2019-12-01 00:00:00', '2029-12-01 00:00:00', '%s', '%s', '%s', '2025-08-08 00:00:00', %s, %s, '%s', '%s', %s, '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (y, x, random.randint(1,1037), random.choice(sg_region), random.choice(ge_experience), random.choice(sg_platform), fake.sentence().replace("'", ""), fake.sentence().replace("'", ""), random.randint(1,4), random.choice(sg_limit), fake.sentence().replace("'", ""), fake.uuid4(), random.randint(0,1) ) )
+        print(".raw(\"INSERT INTO posts (id, user_id, content, type, created_at, updated_at) values (%s, %s, '%s', '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (y, x, fake.sentence().replace("'", ""), random.choice(post_types) ) )
+        if (x != start):
+          print(".raw(\"INSERT INTO notifications (user_id, other_user_id, activity_type, post_id, created_at, updated_at) values (%s, %s, 2, %s, '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (x, randrange(start, x), y ) )
+          print(".raw(\"INSERT INTO notifications (user_id, other_user_id, activity_type, schedule_games_id, created_at, updated_at) values (%s, %s, 10, %s, '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (x, randrange(start, x), y ) )
+          print(".raw(\"INSERT INTO notifications (user_id, other_user_id, activity_type, schedule_games_id, created_at, updated_at) values (%s, %s, 16, %s, '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (x, randrange(start, x), y ) )
+          for i in range (tiny_start, tiny_stop, 1):
+            print(".raw(\"INSERT INTO comments (id, post_id, user_id, content, created_at, updated_at) values (%s, %s, %s, '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (i, y, randrange(start, x), fake.sentence().replace("'", "")  ) )
+            for j in range(2):
+              print(".raw(\"INSERT INTO replies (comment_id, user_id, content, created_at, updated_at) values (%s, %s, '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (i, randrange(start, x), fake.sentence().replace("'", "")  ) )
 
-    if(adonisJS):
-      print(".raw(\"INSERT INTO esports_bios (user_id, status, email_visibility, games_of_ardour, career_highlights, created_at, updated_at) values (%s, '%s', '%s', 'Dota 2, Clash Royale, Secret of Evermore', '%s', '2019-12-01 00:00:00', '2019-12-01 00:00:00')\")" % (x, random.choice(eb_status), answer, fake.sentence() ) )
-    else:
-      print("INSERT INTO esports_bios (user_id, status, email_visibility, games_of_ardour, career_highlights, created_at, updated_at) values (%s, '%s', '%s', 'Dota 2, Clash Royale, Secret of Evermore', '%s', '2019-12-01 00:00:00', '2019-12-01 00:00:00');" % (x, random.choice(eb_status), answer, fake.sentence() ) )
+          tiny_start+=tiny_gap
+          tiny_stop+=tiny_gap
+
+      else:
+        print("INSERT INTO game_experiences (user_id, game_names_id, experience, comments, played, commendation, status, link, ratings, created_at, tags, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '%s', '%s', %s, '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (x, random.randint(1,1037), random.choice(ge_experience), fake.sentence().replace("'", ""), random.choice(ge_played), random.choice(ge_commendation), random.choice(ge_status), fake.image_url(), random.randint(1,5), random.choice(ge_tags) ) )
+        print("INSERT INTO esports_experiences (user_id, game_names_id, role_title, team_name, duration, achievements, skills, created_at, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (x, random.randint(1,1037), fake.job().replace("'", ""), fake.company().replace("'", ""), random.choice(ge_played), fake.sentence().replace("'", ""), random.choice(ge_tags) ) )
+        #SCHEDULE_GAMES
+        print("INSERT INTO schedule_games (id, user_id, game_names_id, region, experience, start_date_time, end_date_time, platform, description, other, expiry, visibility, `limit`, accept_msg, schedule_games_GUID, vacancy, created_at, updated_at) values (%s, %s, %s, '%s', '%s', '2019-12-01 00:00:00', '2029-12-01 00:00:00', '%s', '%s', '%s', '2025-08-08 00:00:00', %s, %s, '%s', '%s', %s, '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (y, x, random.randint(1,1037), random.choice(sg_region), random.choice(ge_experience), random.choice(sg_platform), fake.sentence().replace("'", ""), fake.sentence().replace("'", ""), random.randint(1,4), random.choice(sg_limit), fake.sentence().replace("'", ""), fake.uuid4(), random.randint(0,1) ) )
+        print("INSERT INTO posts (id, user_id, content, type, media_url, created_at, updated_at) values (%s, %s, %s, '%s', '%s', '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (y, y, x, fake.sentence().replace("'", ""), random.choice(post_types), random.choice(post_media_URL) ) )
+        if (x != start):
+          print("INSERT INTO notifications (user_id, other_user_id, activity_type, post_id, created_at, updated_at) values (%s, %s, 2, %s, '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (x, randrange(start, x), y ) )
+          print("INSERT INTO notifications (user_id, other_user_id, activity_type, schedule_games_id, created_at, updated_at) values (%s, %s, 10, %s, '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (x, randrange(start, x), y ) )
+          print("INSERT INTO notifications (user_id, other_user_id, activity_type, schedule_games_id, created_at, updated_at) values (%s, %s, 16, %s, '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (x, randrange(start, x), y ) )
+          for i in range (tiny_start, tiny_stop, 1):
+            print("INSERT INTO comments (id, post_id, user_id, content, created_at, updated_at) values (%s, %s, %s, '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (i, y, randrange(start, x), fake.sentence().replace("'", "")  ) )
+            for j in range(2):
+              print("INSERT INTO replies (comment_id, user_id, content, created_at, updated_at) values (%s, %s, '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (i, randrange(start, x), fake.sentence().replace("'", "")  ) )
+          tiny_start+=tiny_gap
+          tiny_stop+=tiny_gap
+
+
+    for d in range(x-start):
+      if(adonisJS):
+        print(".raw(\"INSERT INTO usergroups (group_id, user_id, permission_level, created_at, updated_at) values (%s, %s, %s, '2019-12-01 00:00:00', '2019-12-01 00:00:00')\")" % (x, randrange(start, x), random.choice(ug_permission_level) ) )
+      else:
+        print("INSERT INTO usergroups (group_id, user_id, permission_level, created_at, updated_at) values (%s, %s, %s, '2019-12-01 00:00:00', '2019-12-01 00:00:00');" % (x, randrange(start, x), random.choice(ug_permission_level) ) )
 
 
     #FRIENDS
@@ -132,7 +177,14 @@ def main():
       else:
         print("INSERT INTO attendees (schedule_games_id, user_id, type, created_at, updated_at) values (%s, %s, %s, '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (random.randint(start+gap, mini_stop-1), myself, random.randint(1,3) ) )
 
-
+  #Loop thru all groups
+  for x in range(start, stop, 1):
+    #Each group gets three posts from different users
+    for y in range(gap):
+      if(adonisJS):
+        print(".raw(\"INSERT INTO posts (user_id, group_id, content, type, created_at, updated_at) values (%s, %s, '%s', '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (random.randint(start, stop-1), x, fake.sentence().replace("'", ""), random.choice(post_types) ) )
+      else:
+        print("INSERT INTO posts (user_id, group_id, content, type, created_at, updated_at) values (%s, %s, '%s', '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (random.randint(start, stop-1), x, fake.sentence().replace("'", ""), random.choice(post_types) ) )
 
 if __name__ == "__main__":
     main()
