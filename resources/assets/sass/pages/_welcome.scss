@@ -18,7 +18,7 @@
     border-radius: 8px;
   }
   .button {
-    display: block;
+    display: flex;
     width: 390px;
     height: 42px;
     line-height: 42px;
@@ -29,7 +29,6 @@
   .google-btn {
     background-color: #2a84fc;
     color: #ffffff;
-    text-align: center;
   }
   .steam-btn {
     background-color: #111214;
@@ -39,12 +38,16 @@
   .facebook-btn {
     background-color: #3F5DA6;
     color: #ffffff;
-    text-align: center;
   }
   .discord-btn {
     background-color: #5B6BC0;
     color: #ffffff;
     text-align: center;
+  }
+  .sso-text {
+    display: flex;
+    flex: 1;
+    justify-content: center;
   }
   .seats-header {
     font-size: 23px;
@@ -70,6 +73,15 @@
     top: 15px;
     height: 90px;
     width: 90px;
-    background-color: white;
+  }
+  .logo-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+  .sso-logo {
+    position: relative;
+    top: 11px;
+    left:10px;
   }
 }
