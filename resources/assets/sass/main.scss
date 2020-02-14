@@ -34,10 +34,9 @@
 
 body {
   display: flex;
+  height: 100vh;
   align-items: center;
-  justify-content: center;
-  font-family: 'Roboto', sans-serif;
-  min-height: 100vh;
+  font-family: Montserrat Alternates;
   background: #23272a;
 }
 body,
@@ -51,12 +50,8 @@ h4 {
   width: 100%;
 }
 .app-container {
-  width: 100%;
-  min-height: 100vh;
-  background: $backgroundContent2;
-  overflow: hidden;
-  border-radius: 5px;
-  margin: 0 auto;
+  display: flex;
+  flex: 1;
 }
 input:focus,
 select:focus,
