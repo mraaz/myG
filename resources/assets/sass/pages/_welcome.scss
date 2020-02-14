@@ -1,4 +1,4 @@
-.app-container.welcome-page {
+.login-container.welcome-page {
   .container {
     display: flex;
     flex: 1;
@@ -12,6 +12,7 @@
     justify-content: center;
   }
   .card-round {
+    width: 430px;
     background-color: #1d2326;
     margin-bottom: 10px;
     padding: 20px;
@@ -83,5 +84,10 @@
     position: relative;
     top: 11px;
     left:10px;
+  }
+  .register-message {
+    font-size: 14px;
+    margin-top: 12px;
+    text-align: center;
   }
 }
