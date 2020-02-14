@@ -40,6 +40,14 @@ body {
   min-height: 100vh;
   background: #23272a;
 }
+.login-body {
+  height: 100vh;
+  font-family: Montserrat Alternates;
+}
+.login-container {
+  display: flex;
+  flex: 1;
+}
 body,
 h1,
 h2,
