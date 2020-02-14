@@ -8,48 +8,43 @@
   welcome-page
 @endsection
 
-{{--  @section('custom-style-app-container')
-  background: url('/assets/image/login/login_bg@2x.png'); background-size: cover; background-repeat: none;
-@endsection  --}}
+@section('custom-style-app-container')
+  background: url('https://imgnooz.com/sites/default/files/wallpaper/nature/60886/beautiful-sea-landscape-wallpapers-60886-8495457.jpg'); background-size: cover; background-position: center center; background-repeat: none;
+@endsection
 
 @section('content')
-<div class="container">
-  <div class="logo-container">
-    <img src="/assets/image/login/Logo_FINAL-w_2@2x.png" height="90" width="161"/>
+  <div class="welcome-message">
+    <h1>Welcome to myG</h1>
+    <h3>The gamers social network</h3>
   </div>
-  <div class="card-container">
-      <div class="logo-on-card">
-        <img src="/assets/image/login/Group611@2x.png" height="90" width="90" />
-      </div>
-      <div class="card-round">
-              <a href="loginfacebook" class="button facebook-btn">
-                <img src="/assets/image/login/Facebook@2x.png" class="sso-logo" height="20" width="15"/>
-                <div class="sso-text">Log in with Facebook</div>
-              </a>
-              <a href="logingoogle" class="button google-btn">
-                <img src="/assets/image/login/Google@2x.png" class="sso-logo" height="20" width="15"/>
-                <div class="sso-text">Log in with Google</div>
-              </a>
-              <a href="loginsteam" class="button steam-btn">
-                <img src="/assets/image/login/Steam@2x.png" class="sso-logo" height="20" width="15"/>
-                <div class="sso-text">Log in with Steam</div>
-              </a>
-              <a href="logindiscord" class="button discord-btn">
-                <img src="/assets/image/login/Discord@2x.png" class="sso-logo" height="20" width="15"/>
-                <div class="sso-text">Log in with Discord</div>
-              </a>
-      </div>
-      <div class="card-round">
-        <div class="seats-header">
-          <b>We have currently</b>
-        </div>
-        <div class="seats-desc">
-          <div class="card-seats">
-            <b>104</b>
+    <div class="home-container">
+      <div class="box">
+        <div class="login-buttons">
+          <div class="button google-btn">
+            <a href="/login/google" class="button email-btn">
+              Google
+            </a>
           </div>
-          <b>seats available</b>
+          <div class="button steam-btn">
+            <a href="/login/steam" class="button email-btn">
+              Steam
+            </a>
+          </div>
+          <div class="button facebook-btn">
+            <a href="/login/facebook" class="button email-btn">
+              FaceBook
+            </a>
+          </div>
+          <div class="button discord-btn">
+            <a href="/login/discord" class="button email-btn">
+              Discord
+            </a>
+          </div>
+          <hr>
+          <a href="/login" class="button email-btn">
+            Email
+          </a>
         </div>
       </div>
-  </div>
-</div>
+    </div>
 @endsection
