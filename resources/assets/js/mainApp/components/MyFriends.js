@@ -7,7 +7,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 export default class MyFriends extends Component {
   constructor() {
     super()
-    this.state = { moreplease: true, counter: -10, allMyFriends: [] }
+    this.state = { moreplease: true, counter: -10, allMyFriends: [], total_friends: 0 }
   }
 
   componentDidMount() {
@@ -27,12 +27,19 @@ export default class MyFriends extends Component {
       const getFriends = await axios.post('/api/friends/allmyFriends', {
         counter: this.state.counter,
       })
+      console.log()
 
       if (getFriends.data.showallMyFriends.length == 0) {
         this.setState({
           moreplease: false,
         })
         return
+      }
+
+      if (this.state.total_friends == 0) {
+        this.setState({
+          total_friends: getFriends.data.myFriendsLength[0].total_friends,
+        })
       }
 
       this.setState({
@@ -71,10 +78,7 @@ export default class MyFriends extends Component {
               <div className='invitation-grey-container'>
                 <h3>
                   myFriends - (
-                  {this.state.allMyFriends.length == 1
-                    ? this.state.allMyFriends.length + ' friend'
-                    : this.state.allMyFriends.length + ' friends'}
-                  )
+                  {this.state.allMyFriends.length == 1 ? this.state.total_friends + ' friend' : this.state.total_friends + ' friends'})
                 </h3>
                 <div className='padding-container'></div>
                 <div className='invitation-container'>
