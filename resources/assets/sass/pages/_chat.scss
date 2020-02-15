@@ -171,11 +171,18 @@
   padding: 12px;
 }
 
+.chat-component-read-indicator-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+
 .chat-component-read-indicator {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
   padding: 4px;
+  margin-right: -8px;
 }
 
 .chat-component-read-indicator-icon {
@@ -192,11 +199,6 @@
   width: 20px;
   height: 20px;
   opacity: 0.6;
-}
-
-.chat-component-read-indicator-label {
-  font-size: 12px;
-  color: #808080;
 }
 
 .chat-component-footer-divider {

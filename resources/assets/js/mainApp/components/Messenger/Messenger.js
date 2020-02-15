@@ -88,8 +88,7 @@ class Messenger extends React.PureComponent {
   countUnreadMessages = (lastRead, messages) => {
     let unreadCount = 0;
     messages.reverse().some(message => {
-      const messageDate = convertUTCDateToLocalDate(new Date(message.createdAt));
-      if (messageDate > lastRead) {
+      if (message.messageId > lastRead) {
         ++unreadCount;
         return false;
       }
@@ -196,7 +195,7 @@ class Messenger extends React.PureComponent {
     const messages = (contact.chat.messages || []).slice(0);
     const lastMessage = messages[messages.length - 1];
     const receivedMessages = messages.filter(message => message.senderId !== this.props.userId);
-    const unreadCount = this.countUnreadMessages(contact.chat.readDate, receivedMessages);
+    const unreadCount = this.countUnreadMessages(contact.chat.lastRead, receivedMessages);
     return (
       <div
         key={contact.contactId}

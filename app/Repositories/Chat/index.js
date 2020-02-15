@@ -3,6 +3,8 @@ const Database = use('Database');
 const Chat = use('App/Models/Chat');
 const UserChat = use('App/Models/UserChat');
 const ChatMessage = use('App/Models/ChatMessage');
+const ChatLastCleared = use('App/Models/ChatLastCleared');
+const ChatLastRead = use('App/Models/ChatLastRead');
 
 const ChatSchema = require('../../Schemas/Chat');
 const MessageSchema = require('../../Schemas/Message');
@@ -10,7 +12,7 @@ const DefaultSchema = require('../../Schemas/Default');
 const ContactSchema = require('../../Schemas/Contact');
 
 const { broadcast } = require('../../Common/socket');
-const { toSQLDateTime, convertUTCDateToLocalDate } = require('../../Common/date');
+const { convertUTCDateToLocalDate } = require('../../Common/date');
 const { log } = require('../../Common/logger');
 
 const MAXIMUM_GROUP_SIZE = 37;
@@ -19,18 +21,20 @@ class ChatRepository {
 
   async fetchChats({ requestingUserId }) {
     const chats = (await Database
-      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.cleared_date', 'user_chats.read_date', 'user_chats.created_at', 'user_chats.updated_at', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', ' chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
-      .where('user_id', requestingUserId))
+      .leftJoin('chat_last_reads', function () { this.on('chat_last_reads.chat_id', 'user_chats.chat_id').andOn('chat_last_reads.user_id', 'user_chats.user_id') })
+      .leftJoin('chat_last_cleareds', function () { this.on('chat_last_cleareds.chat_id', 'user_chats.chat_id').andOn('chat_last_cleareds.user_id', 'user_chats.user_id') })
+      .where('user_chats.user_id', requestingUserId))
       .map(chat => new ChatSchema({
         chatId: chat.chat_id,
         muted: chat.muted,
         blocked: chat.blocked,
         selfDestruct: chat.self_destruct,
         deletedMessages: chat.deleted_messages,
-        clearedDate: chat.cleared_date,
-        readDate: chat.read_date,
+        lastRead: chat.last_read_message_id,
+        lastCleared: chat.last_cleared_message_id,
         icon: chat.icon,
         title: chat.title,
         lastMessage: chat.last_message,
@@ -46,20 +50,26 @@ class ChatRepository {
 
   async fetchChat({ requestingUserId, requestedChatId }) {
     const chat = (await Database
-      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.cleared_date', 'user_chats.read_date', 'user_chats.created_at', 'user_chats.updated_at', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', ' chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
-      .where('user_id', requestingUserId)
-      .andWhere('chat_id', requestedChatId)
+      .leftJoin('chat_last_reads', function () { this.on('chat_last_reads.chat_id', 'user_chats.chat_id').andOn('chat_last_reads.user_id', 'user_chats.user_id') })
+      .leftJoin('chat_last_cleareds', function () { this.on('chat_last_cleareds.chat_id', 'user_chats.chat_id').andOn('chat_last_cleareds.user_id', 'user_chats.user_id') })
+      .where('user_chats.user_id', requestingUserId)
+      .andWhere('user_chats.chat_id', requestedChatId)
       .first());
+    const lastReadsRaw = (await ChatLastRead.query().where('user_id', '!=', requestingUserId).andWhere('chat_id', requestedChatId).fetch()).toJSON();
+    const lastReadsObject = {};
+    lastReadsRaw.forEach(lastRead => lastReadsObject[lastRead.user_id] = lastRead.last_read_message_id);
     const chatSchema = new ChatSchema({
       chatId: chat.chat_id,
       muted: chat.muted,
       blocked: chat.blocked,
       selfDestruct: chat.self_destruct,
       deletedMessages: chat.deleted_messages,
-      clearedDate: chat.cleared_date,
-      readDate: chat.read_date,
+      lastRead: chat.last_read_message_id,
+      lastCleared: chat.last_cleared_message_id,
+      lastReads: lastReadsObject,
       icon: chat.icon,
       title: chat.title,
       lastMessage: chat.last_message,
@@ -150,8 +160,14 @@ class ChatRepository {
   }
 
   async clearChat({ requestingUserId, requestedChatId }) {
-    const clearedDate = toSQLDateTime(new Date());
-    await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', requestingUserId).update({ cleared_date: clearedDate });
+    const lastMessageId = await this._fetchLastMessageId({ requestedChatId });
+    if (!lastMessageId) return new DefaultSchema({ success: false });
+    const existingLastCleared = (await ChatLastCleared.query().where('chat_id', requestedChatId).andWhere('user_id', requestingUserId).first());
+    const lastCleared = existingLastCleared || new ChatLastCleared();
+    lastCleared.user_id = requestingUserId;
+    lastCleared.chat_id = requestedChatId;
+    lastCleared.last_cleared_message_id = lastMessageId;
+    await lastCleared.save();
     return new DefaultSchema({ success: true });
   }
 
@@ -172,6 +188,8 @@ class ChatRepository {
         }
         return true;
       });
+
+    if (!toDelete.length) return new DefaultSchema({ success: false });
 
     const toDeletePromises = [];
     toDelete.forEach(async ({ index, id }) => {
@@ -336,20 +354,30 @@ class ChatRepository {
     return { message: messageSchema };
   }
 
+  async _fetchLastMessageId({ requestedChatId }) {
+    const result = await Database
+      .max('id as last_id')
+      .from('chat_messages')
+      .where('chat_id', requestedChatId);
+    return result ? result[0] ? result[0].last_id : null : null;
+  }
+
   async _markAsRead({ requestingUserId, requestedChatId }) {
-    const readDate = toSQLDateTime(new Date());
-    await UserChat
-      .query()
-      .where('chat_id', requestedChatId)
-      .andWhere('user_id', requestingUserId)
-      .update({ read_date: readDate });
+    const lastMessageId = await this._fetchLastMessageId({ requestedChatId });
+    if (!lastMessageId) return new DefaultSchema({ success: false });
+    const existingLastRead = (await ChatLastRead.query().where('chat_id', requestedChatId).andWhere('user_id', requestingUserId).first());
+    const lastRead = existingLastRead || new ChatLastRead();
+    lastRead.user_id = requestingUserId;
+    lastRead.chat_id = requestedChatId;
+    lastRead.last_read_message_id = lastMessageId;
+    await lastRead.save();
     const payload = {
       userId: requestingUserId,
       chatId: requestedChatId,
-      readDate,
-      friendReadDate: readDate,
+      lastRead: lastMessageId,
     };
     this._notifyChatEvent({ chatId: requestedChatId, action: 'markAsRead', payload });
+    return new DefaultSchema({ success: true });
   }
 
   async _setSelfDestruct({ requestingUserId, requestedChatId, selfDestruct }) {
@@ -369,11 +397,6 @@ class ChatRepository {
       selfDestruct,
     };
     this._notifyChatEvent({ chatId: requestedChatId, action: 'selfDestruct', payload });
-  }
-
-  async _fetchContactReadDate({ contactId, requestedChatId }) {
-    const contactChat = await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', contactId).first();
-    return contactChat.toJSON().read_date;
   }
 
   async _notifyChatUpdated({ requestedChatId }) {

@@ -9,8 +9,9 @@ class Chat {
     this.blocked = forceBoolean(data.blocked);
     this.selfDestruct = forceBoolean(data.selfDestruct);
     this.deletedMessages = forceArray(data.deletedMessages);
-    this.clearedDate = forceDate(data.clearedDate);
-    this.readDate = forceDate(data.readDate);
+    this.lastCleared = forceInt(data.lastCleared);
+    this.lastRead = forceInt(data.lastRead);
+    this.lastReads = data.lastReads;
     this.icon = forceString(data.icon);
     this.title = forceString(data.title);
     this.lastMessage = forceString(data.lastMessage);
