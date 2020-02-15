@@ -30,6 +30,9 @@ export default class GroupHeader extends Component {
     const getGroupHeader = async function() {
       try {
         const getGroupHeader = await axios.get(`/api/groups/${self.props.groups_id.params.id}`)
+        if (getGroupHeader.data.group.length == 0) {
+          return
+        }
         if (getGroupHeader.data.group[0].user_id != self.props.initialData.userInfo.id) {
           const getGroupPermissions = await axios.get(`/api/usergroup/mygroup_details/${self.props.groups_id.params.id}`)
           if (getGroupPermissions.data.mygroup_details.length > 0) {
