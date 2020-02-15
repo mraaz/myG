@@ -75,3 +75,8 @@ export function deleteMessage(chatId, messageId) {
   logger.log('CHAT', 'HTTP', `Deleting Message ${messageId} from Chat ${chatId}`);
   return axios.delete(`/api/chat/${chatId}/message/${messageId}`).then(response => response.data);
 }
+
+export function setTyping(chatId, isTyping) {
+  logger.log('CHAT', 'HTTP', `Setting as ${isTyping ? 'Typing' : 'Not Typing'} for Chat ${chatId}`);
+  return axios.put(`/api/chat/${chatId}/typing`, { isTyping }).then(response => response.data);
+}

@@ -5,10 +5,11 @@ import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
 import GroupOptions from './GroupOptions';
 
-import { prepareChatAction, sendMessageAction, editMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction } from '../../../redux/actions/chatAction';
+import { prepareChatAction, sendMessageAction, editMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction, setTypingAction } from '../../../redux/actions/chatAction';
 import { enrichMessagesWithDates } from '../../../common/chat';
 import { encryptMessage, decryptMessage, deserializeKey } from '../../../integration/encryption';
-import { convertUTCDateToLocalDate, formatDateTime } from '../../../common/date';
+import { formatDateTime } from '../../../common/date';
+import ChatMessageList from './ChatMessageList';
 
 class Chat extends React.PureComponent {
 
@@ -19,6 +20,7 @@ class Chat extends React.PureComponent {
       lastRead: 0,
       lastReads: {},
       wasEncrypted: !props.privateKey,
+      currentlyTyping: '',
       editing: false,
       settings: false,
     };
@@ -37,11 +39,14 @@ class Chat extends React.PureComponent {
   }
 
   scrollToLastMessage = (lastMessageId) => {
+    const typing = JSON.stringify(this.props.typing);
+    const isTyping = typing !== this.state.currentlyTyping;
     const hasNewReadIndicators = JSON.stringify(this.props.lastReads) !== JSON.stringify(this.state.lastReads);
     const hasNewMessage = this.state.lastMessageId !== lastMessageId;
     const gotDecrypted = this.state.wasEncrypted && this.props.privateKey;
-    if (hasNewReadIndicators || hasNewMessage || gotDecrypted) {
+    if (isTyping || hasNewReadIndicators || hasNewMessage || gotDecrypted) {
       const state = {};
+      if (isTyping) state.currentlyTyping = typing;
       if (hasNewReadIndicators) state.lastReads = this.props.lastReads;
       if (hasNewMessage) state.lastMessageId = lastMessageId;
       if (gotDecrypted) state.wasEncrypted = false;
@@ -231,7 +236,18 @@ class Chat extends React.PureComponent {
         className="chat-component-body"
         ref={this.messageListRef}
       >
-        {this.props.messages.map(this.renderMessage)}
+        <ChatMessageList 
+          userId={this.props.userId}
+          chatId={this.props.chatId}
+          messages={this.props.messages}
+          contactsMap={this.props.contactsMap}
+          messageListRef={this.messageListRef}
+          editing={this.state.editing}
+          onEdit={this.onEdit}
+          editMessage={this.editMessage}
+          decryptMessage={this.decryptMessage}
+        />
+        {this.renderTypingIndicator()}
         {this.renderReadIndicators(lastMessageId, lastMessageSender)}
       </div>
     );
@@ -258,6 +274,19 @@ class Chat extends React.PureComponent {
             className="chat-component-read-indicator-icon-image"
             src={icon}
           />
+        </div>
+      </div>
+    );
+  }
+
+  renderTypingIndicator() {
+    if (!this.props.typing.length) return;
+    return (
+      <div key={'typing'}
+        className={`chat-component-message chat-component-message-received chat-component-message-short`}
+      >
+        <div className="chat-component-message-container">
+          <div className="dot-flashing" />
         </div>
       </div>
     );
@@ -295,6 +324,7 @@ class Chat extends React.PureComponent {
           isDecryptable={this.props.privateKey}
           sendMessage={this.sendMessage}
           editLastMessage={this.editLastMessage}
+          setTyping={isTyping => this.props.setTyping(this.props.chatId, isTyping)}
         />
       </div>
     );
@@ -369,6 +399,7 @@ function mapStateToProps(state, props) {
     selfDestruct: chat.selfDestruct || false,
     lastRead: chat.lastRead,
     lastReads: chat.lastReads,
+    typing: chat.typing || [],
     maximised: chat.maximised || false,
     minimised: chat.minimised || false,
     userPublicKey: state.encryption.publicKey,
@@ -388,6 +419,7 @@ function mapDispatchToProps(dispatch) {
     updateChatState: (chatId, state) => dispatch(updateChatStateAction(chatId, state)),
     checkSelfDestruct: (chatId) => dispatch(checkSelfDestructAction(chatId)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
+    setTyping: (chatId, isTyping) => dispatch(setTypingAction(chatId, isTyping)),
   });
 }
 

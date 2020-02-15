@@ -354,6 +354,11 @@ class ChatRepository {
     return { message: messageSchema };
   }
 
+  async setTyping({ requestingUserId, requestedChatId, isTyping }) {
+    this._notifyChatEvent({ chatId: requestedChatId, action: 'typing', payload: { userId: requestingUserId, chatId: requestedChatId, isTyping } });
+    return new DefaultSchema({ success: true });
+  }
+
   async _fetchLastMessageId({ requestedChatId }) {
     const result = await Database
       .max('id as last_id')

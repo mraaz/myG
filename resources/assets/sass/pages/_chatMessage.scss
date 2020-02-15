@@ -4,6 +4,10 @@
   border-bottom-left-radius: 12px;
 }
 
+.chat-component-message-short {
+  width: fit-content;
+}
+
 .chat-component-message::before {
   content: "\00a0";
   display: block;

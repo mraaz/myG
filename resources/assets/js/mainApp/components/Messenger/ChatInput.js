@@ -4,6 +4,8 @@ export default class ChatInput extends React.PureComponent {
 
   state = {
     input: '',
+    isTyping: false,
+    lastTyped: 0,
   };
 
   onKeyPressed = event => {
@@ -26,7 +28,21 @@ export default class ChatInput extends React.PureComponent {
 
   sendMessage = () => {
     this.props.sendMessage(this.state.input.trim());
+    this.props.setTyping(false);
     this.setState({ input: '' });
+  }
+
+  onTyping = (input) => {
+    if (!this.state.isTyping) this.props.setTyping(true);
+    this.setState({ input, isTyping: true, lastTyped: Date.now() });
+    setTimeout(() => this.clearTyping(), 2000);
+  }
+
+  clearTyping = () => {
+    if (!this.state.isTyping) return;
+    if ((Date.now() - this.state.lastTyped) < 1900) return;
+    this.props.setTyping(false);
+    this.setState({ isTyping: false });
   }
 
   render() {
@@ -43,7 +59,7 @@ export default class ChatInput extends React.PureComponent {
           disabled={disabled}
           placeholder={placeholderText}
           value={this.state.input}
-          onChange={event => this.setState({ input: event.target.value })}
+          onChange={event => this.onTyping(event.target.value)}
           onKeyPress={this.onKeyPressed}
           onKeyDown={this.onKeyDown}
         >

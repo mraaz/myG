@@ -277,6 +277,26 @@ export default function reducer(state = {
       };
     }
 
+    case "ON_TYPING": {
+      logger.log('CHAT', `Redux -> Typing: `, action.meta, action.payload);
+      const { chatId, userId, isTyping } = action.payload;
+      const { userId: thisUserId } = action.meta;
+      if (userId === thisUserId) return state;
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => candidate.chatId === chatId);
+      if (!chat.typing) chat.typing = [];
+      const userTypingIndex = chat.typing.indexOf(userId);
+      const isUserAlreadyTyping = userTypingIndex !== -1;
+      if (isTyping && isUserAlreadyTyping) return state;
+      if (!isTyping && !isUserAlreadyTyping) return state;
+      if (isTyping && !isUserAlreadyTyping) chat.typing.push(userId);
+      if (!isTyping && isUserAlreadyTyping) chat.typing.splice(userTypingIndex, 1);
+      return {
+        ...state,
+        chats,
+      };
+    }
+
     case "EXIT_GROUP_FULFILLED": {
       logger.log('CHAT', `Redux -> User Exited Group: `, action.meta);
       const { chatId } = action.meta;
