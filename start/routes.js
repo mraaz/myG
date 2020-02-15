@@ -202,7 +202,7 @@ Route.get('/api/notifications/getunread_group/:id/:activity_type', 'Notification
 Route.post('/api/notifications/addGameApproved', 'NotificationController.addGameApproved')
 
 Route.post('/api/friends/create', 'FriendController.store')
-Route.get('/api/friends/allmyFriends', 'FriendController.showallmyFriends')
+Route.post('/api/friends/allmyFriends', 'FriendController.showallmyFriends')
 
 Route.get('/api/settings', 'SettingController.show')
 Route.post('/api/settings', 'SettingController.store')

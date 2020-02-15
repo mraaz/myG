@@ -24,11 +24,14 @@ class FriendController {
     }
   }
   async showallmyFriends({ auth, request, response }) {
+    console.log(request.input('counter'))
     try {
       const showallMyFriends = await Database.from('friends')
         .innerJoin('users', 'users.id', 'friends.friend_id')
         .where({ user_id: auth.user.id })
         .orderBy('friends.created_at', 'desc')
+        .limit(20)
+        .offset(parseInt(request.input('counter'), 10))
 
       return {
         showallMyFriends: showallMyFriends,
