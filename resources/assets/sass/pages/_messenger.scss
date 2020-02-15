@@ -246,19 +246,19 @@
   }
 
   .messenger-footer-status-online {
-    background-color: #309030;
+    background-color: #68BD45;
   }
 
   .messenger-footer-status-playing {
-    background-color: #903030;
+    background-color: #FD323C;
   }
 
   .messenger-footer-status-afk {
-    background-color: #909030;
+    background-color: #D8BD43
   }
 
   .messenger-footer-status-offline {
-    background-color: #303030;
+    background-color: #08507D;
   }
   
   .messenger-footer-search-bar {
@@ -384,7 +384,13 @@
 
   .messenger-settings-status-option {
     font-size: 10px;
-    padding: 4px;
+    color: #FFF;
+    padding: 6px 12px;
+    font-weight: 1000;
+    text-align: center;
+    width: min-content;
+    margin: 2px;
+    border-radius: 10px;
   }
 
   .messenger-new-group-button {

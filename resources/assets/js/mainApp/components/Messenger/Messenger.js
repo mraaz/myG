@@ -367,7 +367,7 @@ class Messenger extends React.PureComponent {
               onClick={() => this.setState(previous => ({ changingStatus: !previous.changingStatus }))}
               onBlur={() => setTimeout(() => this.setState({ changingStatus: false }), 100)}
             >
-              {this.props.status}
+              {this.props.status === 'offline' ? 'invisible' : this.props.status}
             </div>
             <div className="messenger-settings-status-container">
               {this.renderStatusSettings()}
@@ -473,7 +473,7 @@ class Messenger extends React.PureComponent {
         >afk</p>
         <p className="messenger-settings-status-indicator messenger-settings-status-option clickable messenger-footer-status-offline"
           onMouseDown={() => this.setStatus('offline')}
-        >offline</p>
+        >invisible</p>
       </div>
     );
   }
