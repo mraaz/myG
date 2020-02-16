@@ -451,7 +451,7 @@ export default class IndividualComment extends Component {
                 }}></Link>
             )}
             <div className='comment-info'>
-              <Link to={`/profile/${comment.user_id}`}>{`${comment.first_name} ${comment.last_name}`}</Link>
+              <Link to={`/profile/${comment.user_id}`}>{`${comment.alias}`}</Link>
             </div>
             {this.state.show_comment_options && (
               <div className='comment-options'>

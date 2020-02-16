@@ -9,14 +9,12 @@ export default class Invitation extends Component {
     this.state = {}
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const self = this
 
     const getFriendnoti = async function() {
       try {
-        const getFriendnoti = await axios.get(
-          '/api/notifications/allmyFriendRequests'
-        )
+        const getFriendnoti = await axios.get('/api/notifications/allmyFriendRequests')
         self.setState({
           myFriendRequests: getFriendnoti.data.allMyFriends,
         })
@@ -38,13 +36,7 @@ export default class Invitation extends Component {
         if (rowLen === index + 1) {
           lastRow = true
         }
-        return (
-          <IndividualInvitation
-            invitation={item}
-            key={index}
-            lastRow={lastRow}
-          />
-        )
+        return <IndividualInvitation invitation={item} key={index} lastRow={lastRow} />
       })
     }
   }
@@ -57,9 +49,7 @@ export default class Invitation extends Component {
             <div className='invitation-grey-container'>
               <h3>myInvitations</h3>
               <div className='padding-container'></div>
-              <div className='invitation-container'>
-                {this.showInvitations()}
-              </div>
+              <div className='invitation-container'>{this.showInvitations()}</div>
             </div>
           </div>
         </div>

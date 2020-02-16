@@ -92,13 +92,11 @@ class UserController {
   }
   async playerSearchResults({ auth, request, response }) {
     try {
-      const playerSearchResults = await User.query()
+      const playerSearchResults = await Database.table('users')
         .whereNot({ id: auth.user.id })
-        .andWhere('first_name', 'like', '%' + request.params.str + '%')
-        .orWhere('last_name', 'like', '%' + request.params.str + '%')
-        .whereNot({ id: auth.user.id })
-        .select('first_name as first', 'last_name as last', 'profile_img', 'id')
-        .fetch()
+        .andWhere('alias', 'like', '%' + request.input('alias') + '%')
+        .select('alias as first', 'profile_img', 'id')
+        .limit(8)
 
       return {
         playerSearchResults,

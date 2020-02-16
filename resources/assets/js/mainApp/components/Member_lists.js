@@ -14,7 +14,7 @@ export default class Member_lists extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const self = this
 
     const getMembers = async function() {

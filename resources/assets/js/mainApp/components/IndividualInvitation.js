@@ -114,9 +114,7 @@ export default class IndividualInvitation extends Component {
               backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/unknown_user.svg')`,
             }}></Link>
         )}
-        <div className='user-info'>
-          {`${invitation.first_name}`} {`${invitation.last_name}`}
-        </div>
+        <div className='user-info'>{`${invitation.alias}`}</div>
         <div className='invitiation-options'>
           {this.state.actionClicked && (
             <div className='invitation-accept' onClick={this.clickedAccept}>
@@ -128,12 +126,8 @@ export default class IndividualInvitation extends Component {
               Deny&nbsp;&nbsp;
             </div>
           )}
-          {this.state.actionClickedAccept && (
-            <div className='invitation-accepted'>Accepted! &nbsp;&nbsp;</div>
-          )}
-          {this.state.actionClickedDeny && (
-            <div className='invitation-denied'>Denied! &nbsp;&nbsp;</div>
-          )}
+          {this.state.actionClickedAccept && <div className='invitation-accepted'>Accepted! &nbsp;&nbsp;</div>}
+          {this.state.actionClickedDeny && <div className='invitation-denied'>Denied! &nbsp;&nbsp;</div>}
         </div>
         {!lastRow && (
           <div className='line-break'>

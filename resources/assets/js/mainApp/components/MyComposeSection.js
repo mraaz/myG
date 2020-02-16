@@ -152,11 +152,9 @@ export default class MyComposeSection extends Component {
           myPosts.data.myPosts[i].total = myLikes.data.number_of_likes[0].total
           myPosts.data.myPosts[i].no_of_comments = myLikes.data.no_of_comments[0].no_of_comments
           if (myLikes.data.number_of_likes[0].total != 0) {
-            myPosts.data.myPosts[i].admirer_first_name = myLikes.data.admirer_UserInfo.first_name
-            myPosts.data.myPosts[i].admirer_last_name = myLikes.data.admirer_UserInfo.last_name
+            myPosts.data.myPosts[i].admirer_first_name = myLikes.data.admirer_UserInfo.alias
           } else {
             myPosts.data.myPosts[i].admirer_first_name = ''
-            myPosts.data.myPosts[i].admirer_last_name = ''
           }
           if (myLikes.data.do_I_like_it[0].myOpinion != 0) {
             myPosts.data.myPosts[i].do_I_like_it = true
@@ -197,7 +195,7 @@ export default class MyComposeSection extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const self = this
 
     var now = moment()

@@ -168,7 +168,7 @@ class AttendeeController {
     try {
       const role_call_ALL = await Database.from('attendees')
         .innerJoin('users', 'users.id', 'attendees.user_id')
-        .select('users.id as user_id', 'users.profile_img', 'users.first_name', 'users.last_name')
+        .select('users.id as user_id', 'users.profile_img', 'users.alias')
         .where({ schedule_games_id: request.params.id, type: 1 })
 
       return {

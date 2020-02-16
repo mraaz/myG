@@ -34,9 +34,7 @@ export default class IndividualPlayer extends Component {
               backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/default_user/new-user-profile-picture.png')`,
             }}></Link>
         )}
-        <div className='user-info'>
-          {`${attendee.first_name}`} {`${attendee.last_name}`}
-        </div>
+        <div className='user-info'>{`${attendee.alias}`}</div>
         {!lastRow && (
           <div className='line-break'>
             <hr />

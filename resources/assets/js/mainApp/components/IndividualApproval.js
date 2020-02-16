@@ -135,9 +135,9 @@ export default class IndividualApproval extends Component {
       }
 
       if (this.state.not_dota_2) {
-        var str = approvals.users.first_name + ' ' + approvals.users.last_name + ' was approved'
+        var str = approvals.users.alias + ' was approved'
       } else {
-        var str = approvals.users.first_name + ' ' + approvals.users.last_name + ' was approved for position/s: ' + strposition
+        var str = approvals.users.alias + ' was approved for position/s: ' + strposition
       }
 
       const post = axios.post('/api/comments/', {
@@ -305,9 +305,7 @@ export default class IndividualApproval extends Component {
               backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/unknown_user.svg')`,
             }}></Link>
         )}
-        <div className='user-info'>
-          {`${approvals.users.first_name}`} {`${approvals.users.last_name}`}
-        </div>
+        <div className='user-info'>{`${approvals.users.alias}`}</div>
         {this.state.dota_2_show_position && <div className='dota_2_position'>Positions: </div>}
         {!this.state.dota_2_position_one && <div className='dota_2_position_dummy'></div>}
         {this.state.dota_2_position_one && (
