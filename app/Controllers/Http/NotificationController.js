@@ -367,7 +367,7 @@ class NotificationController {
       const allMyFriends = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id, activity_type: 1 })
-        .select('*', 'notifications.id')
+        .select('notifications.*', 'users.profile_img', 'users.alias')
 
       return {
         allMyFriends: allMyFriends,
@@ -407,8 +407,7 @@ class NotificationController {
           'notifications.schedule_games_id',
           'notifications.post_id',
           'notifications.activity_type',
-          'users.first_name',
-          'users.last_name',
+          'users.alias',
           'users.profile_img',
           'users.id',
           'notifications.created_at'
@@ -425,8 +424,7 @@ class NotificationController {
           'notifications.schedule_games_id',
           'notifications.post_id',
           'notifications.activity_type',
-          'users.first_name',
-          'users.last_name',
+          'users.alias',
           'users.profile_img',
           'users.id',
           'notifications.created_at'
@@ -443,8 +441,7 @@ class NotificationController {
           'notifications.schedule_games_id',
           'notifications.post_id',
           'notifications.activity_type',
-          'users.first_name',
-          'users.last_name',
+          'users.alias',
           'users.profile_img',
           'users.id',
           'notifications.created_at'
@@ -461,8 +458,7 @@ class NotificationController {
           'notifications.schedule_games_id',
           'notifications.post_id',
           'notifications.activity_type',
-          'users.first_name',
-          'users.last_name',
+          'users.alias',
           'users.profile_img',
           'users.id',
           'notifications.created_at'
@@ -479,8 +475,7 @@ class NotificationController {
           'notifications.schedule_games_id',
           'notifications.post_id',
           'notifications.activity_type',
-          'users.first_name',
-          'users.last_name',
+          'users.alias',
           'users.profile_img',
           'users.id',
           'notifications.created_at'
@@ -495,8 +490,7 @@ class NotificationController {
         .select(
           'notifications.schedule_games_id',
           'notifications.activity_type',
-          'users.first_name',
-          'users.last_name',
+          'users.alias',
           'users.profile_img',
           'users.id',
           'notifications.created_at'
@@ -529,8 +523,7 @@ class NotificationController {
         .select(
           'notifications.group_id',
           'notifications.activity_type',
-          'users.first_name',
-          'users.last_name',
+          'users.alias',
           'users.profile_img',
           'users.id',
           'notifications.created_at',
@@ -580,8 +573,7 @@ class NotificationController {
         .select(
           'notifications.schedule_games_id',
           'notifications.activity_type',
-          'users.first_name',
-          'users.last_name',
+          'users.alias',
           'users.profile_img',
           'users.id',
           'notifications.created_at'
@@ -596,8 +588,7 @@ class NotificationController {
         .select(
           'notifications.group_id',
           'notifications.activity_type',
-          'users.first_name',
-          'users.last_name',
+          'users.alias',
           'users.profile_img',
           'users.id',
           'notifications.created_at'
@@ -637,14 +628,7 @@ class NotificationController {
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id })
         .where({ post_id: request.params.id, activity_type: 2 })
-        .select(
-          'notifications.post_id',
-          'notifications.activity_type',
-          'users.first_name',
-          'users.last_name',
-          'users.profile_img',
-          'users.id'
-        )
+        .select('notifications.post_id', 'notifications.activity_type', 'users.alias', 'users.profile_img', 'users.id')
         .orderBy('notifications.created_at')
         .limit(3)
       const getAllNotiLike_postCount = await Database.from('notifications')
@@ -674,14 +658,7 @@ class NotificationController {
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id })
         .where({ post_id: request.params.id, activity_type: 3 })
-        .select(
-          'notifications.post_id',
-          'notifications.activity_type',
-          'users.first_name',
-          'users.last_name',
-          'users.profile_img',
-          'users.id'
-        )
+        .select('notifications.post_id', 'notifications.activity_type', 'users.alias', 'users.profile_img', 'users.id')
         .orderBy('notifications.created_at')
         .limit(3)
       const getAllNotiLike_commentCount = await Database.from('notifications')
@@ -711,14 +688,7 @@ class NotificationController {
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id })
         .where({ post_id: request.params.id, activity_type: 4 })
-        .select(
-          'notifications.post_id',
-          'notifications.activity_type',
-          'users.first_name',
-          'users.last_name',
-          'users.profile_img',
-          'users.id'
-        )
+        .select('notifications.post_id', 'notifications.activity_type', 'users.alias', 'users.profile_img', 'users.id')
         .orderBy('notifications.created_at')
         .limit(3)
       const getAllNotiLike_replyCount = await Database.from('notifications')
@@ -748,14 +718,7 @@ class NotificationController {
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id })
         .where({ post_id: request.params.id, activity_type: 5 })
-        .select(
-          'notifications.post_id',
-          'notifications.activity_type',
-          'users.first_name',
-          'users.last_name',
-          'users.profile_img',
-          'users.id'
-        )
+        .select('notifications.post_id', 'notifications.activity_type', 'users.alias', 'users.profile_img', 'users.id')
         .orderBy('notifications.created_at')
         .limit(3)
       const getAllNotiCommentCount = await Database.from('notifications')
@@ -785,14 +748,7 @@ class NotificationController {
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id })
         .where({ post_id: request.params.id, activity_type: 6 })
-        .select(
-          'notifications.post_id',
-          'notifications.activity_type',
-          'users.first_name',
-          'users.last_name',
-          'users.profile_img',
-          'users.id'
-        )
+        .select('notifications.post_id', 'notifications.activity_type', 'users.alias', 'users.profile_img', 'users.id')
         .orderBy('notifications.created_at')
         .limit(3)
       const getAllNotiReplyCount = await Database.from('notifications')
@@ -824,14 +780,7 @@ class NotificationController {
           schedule_games_id: request.params.schedule_games_id,
           activity_type: 16,
         })
-        .select(
-          'notifications.schedule_games_id',
-          'notifications.activity_type',
-          'users.first_name',
-          'users.last_name',
-          'users.profile_img',
-          'users.id'
-        )
+        .select('notifications.schedule_games_id', 'notifications.activity_type', 'users.alias', 'users.profile_img', 'users.id')
         .orderBy('notifications.created_at')
         .limit(3)
       const getAllNotiScheduleGamesAttendeesCount = await Database.from('notifications')
@@ -1242,16 +1191,14 @@ class NotificationController {
   // Trying to avoid conflicts, should move this function up later.
   async outgoingFriendRequests({ auth }) {
     try {
-      const friendRequests = await Database
-        .select('user_id', 'other_user_id', 'activity_type')
+      const friendRequests = await Database.select('user_id', 'other_user_id', 'activity_type')
         .from('notifications')
-        .where({ user_id: auth.user.id, activity_type: 1 });
-      return { friendRequests };
+        .where({ user_id: auth.user.id, activity_type: 1 })
+      return { friendRequests }
     } catch (error) {
       console.log(error)
     }
   }
-
 }
 
 module.exports = NotificationController

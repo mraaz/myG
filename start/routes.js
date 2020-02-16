@@ -77,7 +77,7 @@ Route.get('/api/user/delete', 'UserController.destroy')
 Route.get('/api/user/:id', 'UserController.profile')
 Route.get('/api/user/:id/addFriend', 'UserController.addFriend')
 Route.get('/api/user/:id/unfriend', 'UserController.unfriend')
-Route.get('/api/user/:str/playerSearchResults', 'UserController.playerSearchResults')
+Route.post('/api/user/playerSearchResults', 'UserController.playerSearchResults')
 
 Route.post('/api/GameExperiences/commend/:game_exp_id', 'GameExperienceController.updateCommend')
 Route.get('/api/GameExperiences/exp/:id', 'GameExperienceController.myShow')
@@ -202,7 +202,7 @@ Route.get('/api/notifications/getunread_group/:id/:activity_type', 'Notification
 Route.post('/api/notifications/addGameApproved', 'NotificationController.addGameApproved')
 
 Route.post('/api/friends/create', 'FriendController.store')
-Route.get('/api/friends/allmyFriends', 'FriendController.showallmyFriends')
+Route.post('/api/friends/allmyFriends', 'FriendController.showallmyFriends')
 
 Route.get('/api/settings', 'SettingController.show')
 Route.post('/api/settings', 'SettingController.store')

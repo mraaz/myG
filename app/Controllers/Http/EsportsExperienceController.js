@@ -274,7 +274,14 @@ class EsportsExperienceController {
         })
         .orderBy('esports_experiences.created_at', 'desc')
         .select('*', 'esports_experiences.id', 'users.id as user_id')
-        .select('esports_experiences.*', 'esports_experiences.id', 'users.id as user_id', 'users.profile_img', 'game_names.game_name')
+        .select(
+          'esports_experiences.*',
+          'esports_experiences.id',
+          'users.id as user_id',
+          'users.alias',
+          'users.profile_img',
+          'game_names.game_name'
+        )
         .paginate(parseInt(request.input('counter')), 10)
 
       return {

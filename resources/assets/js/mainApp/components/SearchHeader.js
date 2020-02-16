@@ -5,6 +5,7 @@ import { withRouter, Link } from 'react-router-dom'
 import Autosuggest from 'react-autosuggest'
 import AutosuggestHighlightMatch from 'autosuggest-highlight/match'
 import AutosuggestHighlightParse from 'autosuggest-highlight/parse'
+import { Disable_keys } from './Utility_Function'
 
 var playersDB = []
 
@@ -25,11 +26,11 @@ function getSuggestions(value) {
 }
 
 function getSuggestionValue(suggestion) {
-  return `${suggestion.first} ${suggestion.last}`
+  return `${suggestion.first}`
 }
 
 function renderSuggestion(suggestion, { query }) {
-  const suggestionText = `${suggestion.first} ${suggestion.last}`
+  const suggestionText = `${suggestion.first}`
   const matches = AutosuggestHighlightMatch(suggestionText, query)
   const parts = AutosuggestHighlightParse(suggestionText, matches)
 
@@ -67,7 +68,7 @@ class SearchHeader extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const self = this
 
     const getFriendnoti = async function() {
@@ -116,8 +117,16 @@ class SearchHeader extends Component {
 
     const getPlayerInfo = async function() {
       try {
-        const getPlayerInfo = await axios.get(`/api/user/${value}/playerSearchResults`)
+        const getPlayerInfo = await axios.post('/api/user/playerSearchResults', {
+          alias: value,
+        })
         playersDB = getPlayerInfo.data.playerSearchResults
+        playersDB.push({
+          first: 'See all results for ' + `${value}`,
+          last: `${value}`,
+          profile_img: 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png',
+          id: -1,
+        })
         self.setState({
           suggestions: getSuggestions(value),
         })
@@ -135,32 +144,23 @@ class SearchHeader extends Component {
   }
 
   onSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
-    const tmp = suggestion.id
     this.setState({
       suggestions: [],
       value: '',
     })
-    this.props.history.push(`/profile/${tmp}`)
+    if (suggestion.id == -1) {
+      this.props.history.push(`/invitation/${suggestion.last}`)
+    } else {
+      this.props.history.push(`/profile/${suggestion.id}`)
+    }
   }
 
   onKeyDown = (e) => {
-    if (
-      e.keyCode === 222 ||
-      e.keyCode === 191 ||
-      e.keyCode === 190 ||
-      e.keyCode === 220 ||
-      e.keyCode === 53 ||
-      e.keyCode === 51 ||
-      e.keyCode === 191
-    ) {
-      e.preventDefault()
-      e.stopPropagation()
-    }
+    Disable_keys(e)
   }
 
   render() {
     const { value, suggestions } = this.state
-    //console.log(this.props)
 
     // Autosuggest will pass through all these props to the input.
     const inputProps = {

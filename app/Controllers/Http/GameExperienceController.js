@@ -304,7 +304,14 @@ class GameExperienceController {
           if (request.input('country') != null) builder.where('country', request.input('country'))
         })
         .orderBy('game_experiences.created_at', 'desc')
-        .select('game_experiences.*', 'game_experiences.id', 'users.id as user_id', 'users.profile_img', 'game_names.game_name')
+        .select(
+          'game_experiences.*',
+          'game_experiences.id',
+          'users.id as user_id',
+          'users.alias',
+          'users.profile_img',
+          'game_names.game_name'
+        )
         .paginate(parseInt(request.input('counter')), 10)
 
       return {

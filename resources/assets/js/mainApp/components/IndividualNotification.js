@@ -28,9 +28,7 @@ export default class IndividualNotification extends Component {
   clickedAccept = () => {
     let { notification } = this.props
     try {
-      const deleteNoti = axios.get(
-        `/api/notifications/delete/${notification.id}`
-      )
+      const deleteNoti = axios.get(`/api/notifications/delete/${notification.id}`)
     } catch (error) {
       console.log(error)
     }
@@ -52,9 +50,7 @@ export default class IndividualNotification extends Component {
   clickedDenied = () => {
     let { notification } = this.props
     try {
-      const deleteNoti = axios.get(
-        `/api/notifications/delete/${notification.id}`
-      )
+      const deleteNoti = axios.get(`/api/notifications/delete/${notification.id}`)
     } catch (error) {
       console.log(error)
     }
@@ -74,353 +70,209 @@ export default class IndividualNotification extends Component {
       try {
         switch (notification.activity_type) {
           case 2:
-            const getLikePost = await axios.get(
-              `/api/notifications/getAllNotiLike_post/${notification.post_id}`
-            )
-            if (
-              getLikePost.data.getAllNotiLike_unreadCount[0].no_of_my_unread > 0
-            ) {
+            const getLikePost = await axios.get(`/api/notifications/getAllNotiLike_post/${notification.post_id}`)
+            if (getLikePost.data.getAllNotiLike_unreadCount[0].no_of_my_unread > 0) {
               self.state.unread = true
             }
-            switch (
-              getLikePost.data.getAllNotiLike_postCount[0].no_of_my_notis
-            ) {
+            switch (getLikePost.data.getAllNotiLike_postCount[0].no_of_my_notis) {
               case 1:
-                self.state.notification_str =
-                  getLikePost.data.getAllNotiLike_post[0].first_name +
-                  ' ' +
-                  getLikePost.data.getAllNotiLike_post[0].last_name +
-                  ' liked your post'
+                self.state.notification_str = getLikePost.data.getAllNotiLike_post[0].alias + ' liked your post'
                 break
               case 2:
                 self.state.notification_str =
-                  getLikePost.data.getAllNotiLike_post[0].first_name +
-                  ' ' +
-                  getLikePost.data.getAllNotiLike_post[0].last_name +
+                  getLikePost.data.getAllNotiLike_post[0].alias +
                   ' and ' +
-                  getLikePost.data.getAllNotiLike_post[1].first_name +
-                  ' ' +
-                  getLikePost.data.getAllNotiLike_post[1].last_name +
+                  getLikePost.data.getAllNotiLike_post[1].alias +
                   ' liked your post'
                 break
               case 3:
                 self.state.notification_str =
-                  getLikePost.data.getAllNotiLike_post[0].first_name +
-                  ' ' +
-                  getLikePost.data.getAllNotiLike_post[0].last_name +
+                  getLikePost.data.getAllNotiLike_post[0].alias +
                   ',  ' +
-                  getLikePost.data.getAllNotiLike_post[1].first_name +
-                  ' ' +
-                  getLikePost.data.getAllNotiLike_post[1].last_name +
+                  getLikePost.data.getAllNotiLike_post[1].alias +
                   ' and ' +
-                  getLikePost.data.getAllNotiLike_post[2].first_name +
-                  ' ' +
-                  getLikePost.data.getAllNotiLike_post[2].last_name +
+                  getLikePost.data.getAllNotiLike_post[2].alias +
                   ' liked your post'
                 break
               default:
                 self.state.notification_str =
-                  getLikePost.data.getAllNotiLike_post[0].first_name +
-                  ' ' +
-                  getLikePost.data.getAllNotiLike_post[0].last_name +
+                  getLikePost.data.getAllNotiLike_post[0].alias +
                   ' and ' +
                   getLikePost.data.getAllNotiLike_postCount[0].no_of_my_notis +
                   ' other people liked your post'
             }
-            self.props.notification.profile_img =
-              getLikePost.data.getAllNotiLike_post[0].profile_img
+            self.props.notification.profile_img = getLikePost.data.getAllNotiLike_post[0].profile_img
             break
           case 3:
-            const getLikeComment = await axios.get(
-              `/api/notifications/getAllNotiLike_comment/${notification.post_id}`
-            )
-            if (
-              getLikeComment.data.getAllNotiLike_unreadCount[0]
-                .no_of_my_unread > 0
-            ) {
+            const getLikeComment = await axios.get(`/api/notifications/getAllNotiLike_comment/${notification.post_id}`)
+            if (getLikeComment.data.getAllNotiLike_unreadCount[0].no_of_my_unread > 0) {
               self.state.unread = true
             }
-            switch (
-              getLikeComment.data.getAllNotiLike_commentCount[0].no_of_my_notis
-            ) {
+            switch (getLikeComment.data.getAllNotiLike_commentCount[0].no_of_my_notis) {
               case 1:
-                self.state.notification_str =
-                  getLikeComment.data.getAllNotiLike_comment[0].first_name +
-                  ' ' +
-                  getLikeComment.data.getAllNotiLike_comment[0].last_name +
-                  ' liked your comment'
+                self.state.notification_str = getLikeComment.data.getAllNotiLike_comment[0].alias + ' liked your comment'
                 break
               case 2:
                 self.state.notification_str =
-                  getLikeComment.data.getAllNotiLike_comment[0].first_name +
-                  ' ' +
-                  getLikeComment.data.getAllNotiLike_comment[0].last_name +
+                  getLikeComment.data.getAllNotiLike_comment[0].alias +
                   ' and ' +
-                  getLikeComment.data.getAllNotiLike_comment[1].first_name +
-                  ' ' +
-                  getLikeComment.data.getAllNotiLike_comment[1].last_name +
+                  getLikeComment.data.getAllNotiLike_comment[1].alias +
                   ' liked your comment'
                 break
               case 3:
                 self.state.notification_str =
-                  getLikeComment.data.getAllNotiLike_comment[0].first_name +
-                  ' ' +
-                  getLikeComment.data.getAllNotiLike_comment[0].last_name +
+                  getLikeComment.data.getAllNotiLike_comment[0].alias +
                   ',  ' +
-                  getLikeComment.data.getAllNotiLike_comment[1].first_name +
-                  ' ' +
-                  getLikeComment.data.getAllNotiLike_comment[1].last_name +
+                  getLikeComment.data.getAllNotiLike_comment[1].alias +
                   ' and ' +
-                  getLikeComment.data.getAllNotiLike_comment[2].first_name +
-                  ' ' +
-                  getLikeComment.data.getAllNotiLike_comment[2].last_name +
+                  getLikeComment.data.getAllNotiLike_comment[2].alias +
                   ' liked your comment'
                 break
               default:
                 self.state.notification_str =
-                  getLikeComment.data.getAllNotiLike_comment[0].first_name +
-                  ' ' +
-                  getLikeComment.data.getAllNotiLike_comment[0].last_name +
+                  getLikeComment.data.getAllNotiLike_comment[0].alias +
                   ' and ' +
-                  getLikeComment.data.getAllNotiLike_commentCount[0]
-                    .no_of_my_notis +
+                  getLikeComment.data.getAllNotiLike_commentCount[0].no_of_my_notis +
                   ' other people liked your comment'
             }
-            self.props.notification.profile_img =
-              getLikeComment.data.getAllNotiLike_comment[0].profile_img
+            self.props.notification.profile_img = getLikeComment.data.getAllNotiLike_comment[0].profile_img
             break
           case 4:
-            const getLikeReply = await axios.get(
-              `/api/notifications/getAllNotiLike_reply/${notification.post_id}`
-            )
-            if (
-              getLikeReply.data.getAllNotiLike_unreadCount[0].no_of_my_unread >
-              0
-            ) {
+            const getLikeReply = await axios.get(`/api/notifications/getAllNotiLike_reply/${notification.post_id}`)
+            if (getLikeReply.data.getAllNotiLike_unreadCount[0].no_of_my_unread > 0) {
               self.state.unread = true
             }
-            switch (
-              getLikeReply.data.getAllNotiLike_replyCount[0].no_of_my_notis
-            ) {
+            switch (getLikeReply.data.getAllNotiLike_replyCount[0].no_of_my_notis) {
               case 1:
-                self.state.notification_str =
-                  getLikeReply.data.getAllNotiLike_reply[0].first_name +
-                  ' ' +
-                  getLikeReply.data.getAllNotiLike_reply[0].last_name +
-                  ' liked your reply'
+                self.state.notification_str = getLikeReply.data.getAllNotiLike_reply[0].alias + ' liked your reply'
                 break
               case 2:
                 self.state.notification_str =
-                  getLikeReply.data.getAllNotiLike_reply[0].first_name +
-                  ' ' +
-                  getLikeReply.data.getAllNotiLike_reply[0].last_name +
+                  getLikeReply.data.getAllNotiLike_reply[0].alias +
                   ' and ' +
-                  getLikeReply.data.getAllNotiLike_reply[1].first_name +
-                  ' ' +
-                  getLikeReply.data.getAllNotiLike_reply[1].last_name +
+                  getLikeReply.data.getAllNotiLike_reply[1].alias +
                   ' liked your reply'
                 break
               case 3:
                 self.state.notification_str =
-                  getLikeReply.data.getAllNotiLike_reply[0].first_name +
-                  ' ' +
-                  getLikeReply.data.getAllNotiLike_reply[0].last_name +
+                  getLikeReply.data.getAllNotiLike_reply[0].alias +
                   ',  ' +
-                  getLikeReply.data.getAllNotiLike_reply[1].first_name +
-                  ' ' +
-                  getLikeReply.data.getAllNotiLike_reply[1].last_name +
+                  getLikeReply.data.getAllNotiLike_reply[1].alias +
                   ' and ' +
-                  getLikeReply.data.getAllNotiLike_reply[2].first_name +
-                  ' ' +
-                  getLikeReply.data.getAllNotiLike_reply[2].last_name +
+                  getLikeReply.data.getAllNotiLike_reply[2].alias +
                   ' liked your reply'
                 break
               default:
                 self.state.notification_str =
-                  getLikeReply.data.getAllNotiLike_reply[0].first_name +
-                  ' ' +
-                  getLikeReply.data.getAllNotiLike_reply[0].last_name +
+                  getLikeReply.data.getAllNotiLike_reply[0].alias +
                   ' and ' +
-                  getLikeReply.data.getAllNotiLike_replyCount[0]
-                    .no_of_my_notis +
+                  getLikeReply.data.getAllNotiLike_replyCount[0].no_of_my_notis +
                   ' other people liked your reply'
             }
-            self.props.notification.profile_img =
-              getLikeReply.data.getAllNotiLike_reply[0].profile_img
+            self.props.notification.profile_img = getLikeReply.data.getAllNotiLike_reply[0].profile_img
             break
           case 5:
-            const getComment = await axios.get(
-              `/api/notifications/getAllNotiComment/${notification.post_id}`
-            )
-            if (
-              getComment.data.getAllNotiCommentCount_unreadCount[0]
-                .no_of_my_unread > 0
-            ) {
+            const getComment = await axios.get(`/api/notifications/getAllNotiComment/${notification.post_id}`)
+            if (getComment.data.getAllNotiCommentCount_unreadCount[0].no_of_my_unread > 0) {
               self.state.unread = true
             }
             switch (getComment.data.getAllNotiCommentCount[0].no_of_my_notis) {
               case 1:
-                self.state.notification_str =
-                  getComment.data.getAllNotiComment[0].first_name +
-                  ' ' +
-                  getComment.data.getAllNotiComment[0].last_name +
-                  ' commented on your post'
+                self.state.notification_str = getComment.data.getAllNotiComment[0].alias + ' commented on your post'
                 break
               case 2:
                 self.state.notification_str =
-                  getComment.data.getAllNotiComment[0].first_name +
-                  ' ' +
-                  getComment.data.getAllNotiComment[0].last_name +
+                  getComment.data.getAllNotiComment[0].alias +
                   ' and ' +
-                  getComment.data.getAllNotiComment[1].first_name +
-                  ' ' +
-                  getComment.data.getAllNotiComment[1].last_name +
+                  getComment.data.getAllNotiComment[1].alias +
                   ' commented on your post'
                 break
               case 3:
                 self.state.notification_str =
-                  getComment.data.getAllNotiComment[0].first_name +
-                  ' ' +
-                  getComment.data.getAllNotiComment[0].last_name +
+                  getComment.data.getAllNotiComment[0].alias +
                   ',  ' +
-                  getComment.data.getAllNotiComment[1].first_name +
-                  ' ' +
-                  getComment.data.getAllNotiComment[1].last_name +
+                  getComment.data.getAllNotiComment[1].alias +
                   ' and ' +
-                  getComment.data.getAllNotiComment[2].first_name +
-                  ' ' +
-                  getComment.data.getAllNotiComment[2].last_name +
+                  getComment.data.getAllNotiComment[2].alias +
                   ' commented on your post'
                 break
               default:
                 self.state.notification_str =
-                  getComment.data.getAllNotiComment[0].first_name +
-                  ' ' +
-                  getComment.data.getAllNotiComment[0].last_name +
+                  getComment.data.getAllNotiComment[0].alias +
                   ' and ' +
                   getComment.data.getAllNotiCommentCount[0].no_of_my_notis +
                   ' other people commented on your post'
             }
-            self.props.notification.profile_img =
-              getComment.data.getAllNotiComment[0].profile_img
+            self.props.notification.profile_img = getComment.data.getAllNotiComment[0].profile_img
             break
           case 6:
-            const getReply = await axios.get(
-              `/api/notifications/getAllNotiReply/${notification.post_id}`
-            )
-            if (
-              getReply.data.getAllNotiReplyCount_unreadCount[0]
-                .no_of_my_unread > 0
-            ) {
+            const getReply = await axios.get(`/api/notifications/getAllNotiReply/${notification.post_id}`)
+            if (getReply.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0) {
               self.state.unread = true
             }
             switch (getReply.data.getAllNotiReplyCount[0].no_of_my_notis) {
               case 1:
-                self.state.notification_str =
-                  getReply.data.getAllNotiReply[0].first_name +
-                  ' ' +
-                  getReply.data.getAllNotiReply[0].last_name +
-                  ' replied to your comment'
+                self.state.notification_str = getReply.data.getAllNotiReply[0].alias + ' replied to your comment'
                 break
               case 2:
                 self.state.notification_str =
-                  getReply.data.getAllNotiReply[0].first_name +
-                  ' ' +
-                  getReply.data.getAllNotiReply[0].last_name +
-                  ' and ' +
-                  getReply.data.getAllNotiReply[1].first_name +
-                  ' ' +
-                  getReply.data.getAllNotiReply[1].last_name +
-                  ' replied to your comment'
+                  getReply.data.getAllNotiReply[0].alias + ' and ' + getReply.data.getAllNotiReply[1].alias + ' replied to your comment'
                 break
               case 3:
                 self.state.notification_str =
-                  getReply.data.getAllNotiReply[0].first_name +
-                  ' ' +
-                  getReply.data.getAllNotiReply[0].last_name +
+                  getReply.data.getAllNotiReply[0].alias +
                   ',  ' +
-                  getReply.data.getAllNotiReply[1].first_name +
-                  ' ' +
-                  getReply.data.getAllNotiReply[1].last_name +
+                  getReply.data.getAllNotiReply[1].alias +
                   ' and ' +
-                  getReply.data.getAllNotiReply[2].first_name +
-                  ' ' +
-                  getReply.data.getAllNotiReply[2].last_name +
+                  getReply.data.getAllNotiReply[2].alias +
                   ' replied to your comment'
                 break
               default:
                 self.state.notification_str =
-                  getReply.data.getAllNotiReply[0].first_name +
-                  ' ' +
-                  getReply.data.getAllNotiReply[0].last_name +
+                  getReply.data.getAllNotiReply[0].alias +
                   ' and ' +
                   getReply.data.getAllNotiReplyCount[0].no_of_my_notis +
                   ' other people replied to your comment'
             }
-            self.props.notification.profile_img =
-              getReply.data.getAllNotiReply[0].profile_img
+            self.props.notification.profile_img = getReply.data.getAllNotiReply[0].profile_img
             break
           case 11:
             const getunread = await axios.get(
               `/api/notifications/getunread_schedule_game/${notification.schedule_games_id}/${notification.activity_type}`
             )
-            if (
-              getunread.data.getAllNotiReplyCount_unreadCount[0]
-                .no_of_my_unread > 0
-            ) {
+            if (getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0) {
               self.state.unread = true
             }
-            const myScheduledGame2 = await axios.get(
-              `/api/ScheduleGame/${notification.schedule_games_id}`
-            )
-            var myStartDateTime2 = moment(
-              myScheduledGame2.data.getOne[0].start_date_time,
-              'YYYY-MM-DD HH:mm:ssZ'
-            ).local()
+            const myScheduledGame2 = await axios.get(`/api/ScheduleGame/${notification.schedule_games_id}`)
+            var myStartDateTime2 = moment(myScheduledGame2.data.getOne[0].start_date_time, 'YYYY-MM-DD HH:mm:ssZ').local()
 
             self.state.notification_str =
               'Woot! A new player joined, you need to accept their invite: ' +
               myScheduledGame2.data.getOne[0].game_name +
               '. Start date is ' +
               myStartDateTime2.format('Do MMM YY - h:mm a')
-            notification.schedule_games_GUID =
-              myScheduledGame2.data.getOne[0].schedule_games_GUID
+            notification.schedule_games_GUID = myScheduledGame2.data.getOne[0].schedule_games_GUID
 
             break
           case 16:
             const getunread2 = await axios.get(
               `/api/notifications/getunread_schedule_game/${notification.schedule_games_id}/${notification.activity_type}`
             )
-            if (
-              getunread2.data.getAllNotiReplyCount_unreadCount[0]
-                .no_of_my_unread > 0
-            ) {
+            if (getunread2.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0) {
               self.state.unread = true
             }
             const getschedulegameInfo = await axios.get(
               `/api/notifications/getAllNotiScheduleGamesAttendees/${notification.schedule_games_id}`
             )
 
-            const myScheduledGame = await axios.get(
-              `/api/ScheduleGame/${notification.schedule_games_id}`
-            )
-            var myStartDateTime = moment(
-              myScheduledGame.data.getOne[0].start_date_time,
-              'YYYY-MM-DD HH:mm:ssZ'
-            ).local()
+            const myScheduledGame = await axios.get(`/api/ScheduleGame/${notification.schedule_games_id}`)
+            var myStartDateTime = moment(myScheduledGame.data.getOne[0].start_date_time, 'YYYY-MM-DD HH:mm:ssZ').local()
 
-            switch (
-              getschedulegameInfo.data.getAllNotiScheduleGamesAttendeesCount[0]
-                .no_of_my_notis
-            ) {
+            switch (getschedulegameInfo.data.getAllNotiScheduleGamesAttendeesCount[0].no_of_my_notis) {
               case 1:
                 self.state.notification_str =
                   'Sigh! ' +
-                  getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[0]
-                    .first_name +
-                  ' ' +
-                  getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[0]
-                    .last_name +
+                  getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[0].alias +
                   ' has left ' +
                   myScheduledGame.data.getOne[0].game_name +
                   '. This game is planned to start ' +
@@ -429,17 +281,9 @@ export default class IndividualNotification extends Component {
               case 2:
                 self.state.notification_str =
                   'Sigh! ' +
-                  getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[0]
-                    .first_name +
-                  ' ' +
-                  getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[0]
-                    .last_name +
+                  getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[0].alias +
                   ' and ' +
-                  getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[1]
-                    .first_name +
-                  ' ' +
-                  getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[1]
-                    .last_name +
+                  getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[1].alias +
                   ' has left ' +
                   myScheduledGame.data.getOne[0].game_name +
                   '. This game is planned to start ' +
@@ -448,23 +292,11 @@ export default class IndividualNotification extends Component {
               case 3:
                 self.state.notification_str =
                   'Sigh! ' +
-                  getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[0]
-                    .first_name +
-                  ' ' +
-                  getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[0]
-                    .last_name +
+                  getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[0].alias +
                   ',  ' +
-                  getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[1]
-                    .first_name +
-                  ' ' +
-                  getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[1]
-                    .last_name +
+                  getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[1].alias +
                   ' and ' +
-                  getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[2]
-                    .first_name +
-                  ' ' +
-                  getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[2]
-                    .last_name +
+                  getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[2].alias +
                   ' has left ' +
                   myScheduledGame.data.getOne[0].game_name +
                   '. This game is planned to start ' +
@@ -473,21 +305,15 @@ export default class IndividualNotification extends Component {
               default:
                 self.state.notification_str =
                   'Sigh! ' +
-                  getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[0]
-                    .first_name +
-                  ' ' +
-                  getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[0]
-                    .last_name +
+                  getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[0].alias +
                   ' and ' +
-                  getschedulegameInfo.data
-                    .getAllNotiScheduleGamesAttendeesCount[0].no_of_my_notis +
+                  getschedulegameInfo.data.getAllNotiScheduleGamesAttendeesCount[0].no_of_my_notis +
                   ' has left ' +
                   myScheduledGame.data.getOne[0].game_name +
                   '. This game is planned to start ' +
                   myStartDateTime.format('Do MMM YY - h:mm a')
             }
-            self.props.notification.profile_img =
-              getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[0].profile_img
+            self.props.notification.profile_img = getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[0].profile_img
             break
         }
       } catch (error) {
@@ -499,14 +325,9 @@ export default class IndividualNotification extends Component {
     const getinitialData = async function() {
       if (notification.no_of_my_notis == 1) {
         try {
-          const getunread = await axios.get(
-            `/api/notifications/getunread/${notification.post_id}/${notification.activity_type}`
-          )
+          const getunread = await axios.get(`/api/notifications/getunread/${notification.post_id}/${notification.activity_type}`)
 
-          if (
-            getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread >
-            0
-          ) {
+          if (getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0) {
             self.state.unread = true
           }
         } catch (error) {
@@ -532,12 +353,7 @@ export default class IndividualNotification extends Component {
         }
 
         self.setState({
-          notification_str:
-            notification.first_name +
-            ' ' +
-            notification.last_name +
-            ' ' +
-            activity_type,
+          notification_str: notification.alias + ' ' + activity_type,
         })
       } else {
         getMoreNoti()
@@ -549,30 +365,18 @@ export default class IndividualNotification extends Component {
         const getunread = await axios.get(
           `/api/notifications/getunread_schedule_game/${notification.schedule_games_id}/${notification.activity_type}`
         )
-        if (
-          getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0
-        ) {
+        if (getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0) {
           self.state.unread = true
         }
 
-        const myScheduledGame = await axios.get(
-          `/api/ScheduleGame/${notification.schedule_games_id}`
-        )
+        const myScheduledGame = await axios.get(`/api/ScheduleGame/${notification.schedule_games_id}`)
 
-        var myStartDateTime = moment(
-          myScheduledGame.data.getOne[0].start_date_time,
-          'YYYY-MM-DD HH:mm:ssZ'
-        ).local()
-        var myEndDateTime = moment(
-          myScheduledGame.data.getOne[0].end_date_time,
-          'YYYY-MM-DD HH:mm:ssZ'
-        ).local()
+        var myStartDateTime = moment(myScheduledGame.data.getOne[0].start_date_time, 'YYYY-MM-DD HH:mm:ssZ').local()
+        var myEndDateTime = moment(myScheduledGame.data.getOne[0].end_date_time, 'YYYY-MM-DD HH:mm:ssZ').local()
 
         self.setState({
           notification_str:
-            notification.first_name +
-            ' ' +
-            notification.last_name +
+            notification.alias +
             ' created a game - ' +
             myScheduledGame.data.getOne[0].game_name +
             ' (' +
@@ -588,32 +392,18 @@ export default class IndividualNotification extends Component {
 
     const getGroupData = async function() {
       try {
-        const getunread = await axios.get(
-          `/api/notifications/getunread_group/${notification.group_id}/${notification.activity_type}`
-        )
-        if (
-          getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0
-        ) {
+        const getunread = await axios.get(`/api/notifications/getunread_group/${notification.group_id}/${notification.activity_type}`)
+        if (getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0) {
           self.state.unread = true
         }
         if (notification.activity_type == 12) {
           self.setState({
-            notification_str:
-              notification.name +
-              ' - ' +
-              notification.first_name +
-              ' ' +
-              notification.last_name +
-              ' wants to join this group. What ya reckon?',
+            notification_str: notification.name + ' - ' + notification.alias + ' wants to join this group. What ya reckon?',
           })
         } else if (notification.activity_type == 17) {
-          const getGroupInfo = await axios.get(
-            `/api/groups/${notification.group_id}`
-          )
+          const getGroupInfo = await axios.get(`/api/groups/${notification.group_id}`)
           self.setState({
-            notification_str:
-              'Epic! You have been accepted to group: ' +
-              getGroupInfo.data.group[0].name,
+            notification_str: 'Epic! You have been accepted to group: ' + getGroupInfo.data.group[0].name,
           })
         }
       } catch (error) {
@@ -626,15 +416,11 @@ export default class IndividualNotification extends Component {
         const getunread = await axios.get(
           `/api/notifications/getunread_schedule_game/${notification.schedule_games_id}/${notification.activity_type}`
         )
-        if (
-          getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0
-        ) {
+        if (getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0) {
           self.state.unread = true
         }
 
-        const myScheduledGame = await axios.get(
-          `/api/ScheduleGame/${notification.schedule_games_id}`
-        )
+        const myScheduledGame = await axios.get(`/api/ScheduleGame/${notification.schedule_games_id}`)
 
         self.setState({
           notification_str:
@@ -655,20 +441,13 @@ export default class IndividualNotification extends Component {
         const getunread = await axios.get(
           `/api/notifications/getunread_archive_schedule_game/${notification.archive_schedule_game_id}/${notification.activity_type}`
         )
-        if (
-          getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0
-        ) {
+        if (getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0) {
           self.state.unread = true
         }
 
-        const myArchiveScheduledGame = await axios.get(
-          `/api/ArchiveScheduleGame/${notification.archive_schedule_game_id}`
-        )
+        const myArchiveScheduledGame = await axios.get(`/api/ArchiveScheduleGame/${notification.archive_schedule_game_id}`)
 
-        var myStartDateTime = moment(
-          myArchiveScheduledGame.data.getOne[0].start_date_time,
-          'YYYY-MM-DD HH:mm:ssZ'
-        ).local()
+        var myStartDateTime = moment(myArchiveScheduledGame.data.getOne[0].start_date_time, 'YYYY-MM-DD HH:mm:ssZ').local()
 
         self.setState({
           notification_str:
@@ -688,15 +467,9 @@ export default class IndividualNotification extends Component {
 
     if (notification.activity_type == 10) {
       getschedulegameData()
-    } else if (
-      notification.activity_type == 11 ||
-      notification.activity_type == 16
-    ) {
+    } else if (notification.activity_type == 11 || notification.activity_type == 16) {
       getMoreNoti()
-    } else if (
-      notification.activity_type == 12 ||
-      notification.activity_type == 17
-    ) {
+    } else if (notification.activity_type == 12 || notification.activity_type == 17) {
       getGroupData()
     } else if (notification.activity_type == 14) {
       getGameApprovalData()
@@ -790,24 +563,18 @@ export default class IndividualNotification extends Component {
     if (
       notification.activity_type == 10 ||
       notification.activity_type == 14 ||
-      (notification.post_id == null &&
-        notification.activity_type != 15 &&
-        notification.group_id == null)
+      (notification.post_id == null && notification.activity_type != 15 && notification.group_id == null)
     ) {
       this.state.post = false
       this.state.archive_schedule_game = false
       this.state.group_post = false
       this.state.schedule_game = true
       if (notification.activity_type == 11) {
-        str_href =
-          '/scheduledGamesApprovals/' + notification.schedule_games_GUID
+        str_href = '/scheduledGamesApprovals/' + notification.schedule_games_GUID
       } else {
         str_href = '/scheduledGames/' + notification.schedule_games_id
       }
-    } else if (
-      notification.activity_type == 12 ||
-      notification.activity_type == 17
-    ) {
+    } else if (notification.activity_type == 12 || notification.activity_type == 17) {
       this.state.post = false
       this.state.archive_schedule_game = false
       this.state.schedule_game = false
@@ -852,9 +619,7 @@ export default class IndividualNotification extends Component {
           </div>
         )}
         {this.state.post && this.state.unread && (
-          <div
-            className='user-info-unread'
-            onClick={() => this.updateRead_Status()}>
+          <div className='user-info-unread' onClick={() => this.updateRead_Status()}>
             {this.state.notification_str}
           </div>
         )}
@@ -865,9 +630,7 @@ export default class IndividualNotification extends Component {
           </div>
         )}
         {this.state.schedule_game && this.state.unread && (
-          <div
-            className='user-info-unread'
-            onClick={() => this.updateRead_Status_schedule_game(str_href)}>
+          <div className='user-info-unread' onClick={() => this.updateRead_Status_schedule_game(str_href)}>
             {this.state.notification_str}
           </div>
         )}
@@ -878,9 +641,7 @@ export default class IndividualNotification extends Component {
           </div>
         )}
         {this.state.group_post && this.state.unread && (
-          <div
-            className='user-info-unread'
-            onClick={() => this.updateRead_Status_groups()}>
+          <div className='user-info-unread' onClick={() => this.updateRead_Status_groups()}>
             {this.state.notification_str}
           </div>
         )}
@@ -891,9 +652,7 @@ export default class IndividualNotification extends Component {
           </div>
         )}
         {this.state.archive_schedule_game && this.state.unread && (
-          <div
-            className='user-info-unread'
-            onClick={() => this.updateRead_Status_archive_schedule_game()}>
+          <div className='user-info-unread' onClick={() => this.updateRead_Status_archive_schedule_game()}>
             {this.state.notification_str}
           </div>
         )}
