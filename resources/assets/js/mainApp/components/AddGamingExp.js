@@ -228,11 +228,13 @@ export default class AddGamingExp extends Component<*, State> {
   }
 
   handleCreate2 = (inputValue: any) => {
-    this.setState({ isLoading_tags: true })
+    if (inputValue.length > 88) {
+      toast.success(<Toast_style text={'Sorry mate! Tag length is too long.'} />)
+      return
+    }
     setTimeout(() => {
       const { options_tags, value_tags, newValueCreated_tags } = this.state
       const newOption = createOption(inputValue, null)
-      this.setState({ isLoading_tags: false })
       this.setState({ options_tags: [...options_tags, newOption] })
       this.setState({ value_tags: [...value_tags, newOption] })
       this.setState({

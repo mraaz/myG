@@ -14,20 +14,14 @@ export default class Posts extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.fetchMoreData()
   }
 
   showLatestPosts = () => {
     if (this.state.myPosts != undefined) {
       return this.state.myPosts.map((item, index) => {
-        return (
-          <IndividualPost
-            post={item}
-            key={index}
-            user={this.props.initialData}
-          />
-        )
+        return <IndividualPost post={item} key={index} user={this.props.initialData} />
       })
     }
   }
@@ -54,21 +48,13 @@ export default class Posts extends Component {
         }
 
         for (i = 0; i < myPosts.data.myPosts.data.length; i++) {
-          myLikes = await axios.get(
-            `/api/likes/${myPosts.data.myPosts.data[i].id}`
-          )
-          myPosts.data.myPosts.data[i].total =
-            myLikes.data.number_of_likes[0].total
-          myPosts.data.myPosts.data[i].no_of_comments =
-            myLikes.data.no_of_comments[0].no_of_comments
+          myLikes = await axios.get(`/api/likes/${myPosts.data.myPosts.data[i].id}`)
+          myPosts.data.myPosts.data[i].total = myLikes.data.number_of_likes[0].total
+          myPosts.data.myPosts.data[i].no_of_comments = myLikes.data.no_of_comments[0].no_of_comments
           if (myLikes.data.number_of_likes[0].total != 0) {
-            myPosts.data.myPosts.data[i].admirer_first_name =
-              myLikes.data.admirer_UserInfo.first_name
-            myPosts.data.myPosts.data[i].admirer_last_name =
-              myLikes.data.admirer_UserInfo.last_name
+            myPosts.data.myPosts.data[i].admirer_first_name = myLikes.data.admirer_UserInfo.alias
           } else {
             myPosts.data.myPosts.data[i].admirer_first_name = ''
-            myPosts.data.myPosts.data[i].admirer_last_name = ''
           }
           if (myLikes.data.do_I_like_it[0].myOpinion != 0) {
             myPosts.data.myPosts.data[i].do_I_like_it = true
@@ -91,10 +77,7 @@ export default class Posts extends Component {
     if (this.state.myPosts != undefined) {
       return (
         <section id='posts'>
-          <InfiniteScroll
-            dataLength={this.state.myPosts.length}
-            next={this.fetchMoreData}
-            hasMore={this.state.moreplease}>
+          <InfiniteScroll dataLength={this.state.myPosts.length} next={this.fetchMoreData} hasMore={this.state.moreplease}>
             {this.showLatestPosts()}
           </InfiniteScroll>
         </section>

@@ -26,7 +26,7 @@ class LikeController {
       const name_of_1st_admirer = await Database.from('likes')
         .innerJoin('users', 'users.id', 'likes.user_id')
         .where('likes.post_id', '=', request.params.id)
-        .select('likes.id', 'users.first_name', 'users.last_name')
+        .select('likes.id', 'users.alias')
         .orderBy('likes.id', 'asc')
         .first()
 
@@ -149,11 +149,7 @@ class LikeController {
 
   async getthisLike({ auth, request, response }) {
     try {
-      const getthisLike = await Database.from('likes').where(
-        'id',
-        '=',
-        request.params.id
-      )
+      const getthisLike = await Database.from('likes').where('id', '=', request.params.id)
 
       return {
         getthisLike,

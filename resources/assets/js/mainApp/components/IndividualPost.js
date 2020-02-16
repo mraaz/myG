@@ -17,7 +17,6 @@ export default class IndividualPost extends Component {
       show_more_comments: false,
       show_profile_img: false,
       admirer_first_name: '',
-      admirer_last_name: '',
       pull_once: true,
       value: '',
       value2: '',
@@ -74,11 +73,7 @@ export default class IndividualPost extends Component {
     }
     if (this.state.total == 0) {
       this.setState({
-        admirer_first_name: this.props.user.userInfo.first_name,
-      })
-
-      this.setState({
-        admirer_last_name: this.props.user.userInfo.last_name,
+        admirer_first_name: this.props.user.userInfo.alias,
       })
     }
     this.setState({
@@ -116,11 +111,10 @@ export default class IndividualPost extends Component {
     })
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.setState({ like: this.props.post.do_I_like_it })
     this.setState({ total: this.props.post.total })
     this.setState({ admirer_first_name: this.props.post.admirer_first_name })
-    this.setState({ admirer_last_name: this.props.post.admirer_last_name })
 
     var post_timestamp = moment(this.props.post.updated_at, 'YYYY-MM-DD HH:mm:ssZ')
     this.setState({ post_time: post_timestamp.local().fromNow() })
@@ -435,7 +429,7 @@ export default class IndividualPost extends Component {
                     }}></Link>
                 )}
                 <div className='info'>
-                  <Link to={`/profile/${post.user_id}`}>{`${post.first_name} ${post.last_name}`}</Link> shared a{' '}
+                  <Link to={`/profile/${post.user_id}`}>{`${post.alias}`}</Link> shared a{' '}
                   <Link to={`/profile/${post.user_id}`}>{post.type == 'text' ? 'story' : 'image'}</Link>
                 </div>
                 {this.state.show_post_options && (
@@ -499,8 +493,8 @@ export default class IndividualPost extends Component {
                 {this.state.show_like && (
                   <div className='other-users'>
                     {this.state.total > 1
-                      ? `${post.admirer_first_name} ${post.admirer_last_name} and ${this.state.total} others liked this update`
-                      : `${this.state.admirer_first_name} ${this.state.admirer_last_name} liked this update`}
+                      ? `${post.admirer_first_name} and ${this.state.total} others liked this update`
+                      : `${this.state.admirer_first_name} liked this update`}
                   </div>
                 )}
                 {!this.state.show_like && <div className='other-users'>Be the first to like this!</div>}

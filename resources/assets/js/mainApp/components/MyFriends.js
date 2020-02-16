@@ -2,27 +2,52 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import axios from 'axios'
 import IndividualFriend from './IndividualFriend'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 export default class MyFriends extends Component {
   constructor() {
     super()
-    this.state = {}
+    this.state = { moreplease: true, counter: -10, allMyFriends: [], total_friends: 0 }
   }
 
-  componentWillMount() {
-    const self = this
+  componentDidMount() {
+    this.pullData()
+  }
 
-    const getFriends = async function() {
-      try {
-        const getFriends = await axios.get('/api/friends/allmyFriends')
-        self.setState({
-          allMyFriends: getFriends.data.showallMyFriends,
-        })
-      } catch (error) {
-        console.log(error)
-      }
+  pullData = async () => {
+    this.state.counter = this.state.counter + 10
+
+    if (this.state.counter != 1) {
+      this.setState({
+        show_top_btn: true,
+      })
     }
-    getFriends()
+
+    try {
+      const getFriends = await axios.post('/api/friends/allmyFriends', {
+        counter: this.state.counter,
+      })
+      console.log()
+
+      if (getFriends.data.showallMyFriends.length == 0) {
+        this.setState({
+          moreplease: false,
+        })
+        return
+      }
+
+      if (this.state.total_friends == 0) {
+        this.setState({
+          total_friends: getFriends.data.myFriendsLength[0].total_friends,
+        })
+      }
+
+      this.setState({
+        allMyFriends: this.state.allMyFriends.concat(getFriends.data.showallMyFriends),
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   showFriends = () => {
@@ -53,13 +78,14 @@ export default class MyFriends extends Component {
               <div className='invitation-grey-container'>
                 <h3>
                   myFriends - (
-                  {this.state.allMyFriends.length == 1
-                    ? this.state.allMyFriends.length + ' friend'
-                    : this.state.allMyFriends.length + ' friends'}
-                  )
+                  {this.state.allMyFriends.length == 1 ? this.state.total_friends + ' friend' : this.state.total_friends + ' friends'})
                 </h3>
                 <div className='padding-container'></div>
-                <div className='invitation-container'>{this.showFriends()}</div>
+                <div className='invitation-container'>
+                  <InfiniteScroll dataLength={this.state.allMyFriends.length} next={this.pullData} hasMore={this.state.moreplease}>
+                    {this.showFriends()}
+                  </InfiniteScroll>
+                </div>
               </div>
             </div>
           </div>

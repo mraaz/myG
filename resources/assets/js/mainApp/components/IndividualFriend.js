@@ -35,7 +35,7 @@ export default class IndividualFriend extends Component {
             }}></Link>
         )}
         <div className='user-info'>
-          {`${friend.first_name}`} {`${friend.last_name}`}
+          {`${friend.first_name}`} {`${friend.last_name}`} ({`${friend.alias}`})
         </div>
         {!lastRow && (
           <div className='line-break'>
