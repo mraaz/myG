@@ -214,7 +214,7 @@ class ChatRepository {
     const contacts = rawContacts.map(contact => new ContactSchema({
       contactId: contact.id,
       icon: contact.profile_img,
-      name: `${contact.first_name} ${contact.last_name}`,
+      name: contact.alias,
       status: contact.status,
       lastSeen: contact.last_seen,
       publicKey: contact.public_key,
@@ -263,7 +263,7 @@ class ChatRepository {
     const fullContacts = rawContacts.map(contact => new ContactSchema({
       contactId: contact.id,
       icon: contact.profile_img,
-      name: `${contact.first_name} ${contact.last_name}`,
+      name: contact.alias,
       status: contact.status,
       lastSeen: contact.last_seen,
       publicKey: contact.public_key,
