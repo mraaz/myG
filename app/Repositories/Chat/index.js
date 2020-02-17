@@ -83,13 +83,13 @@ class ChatRepository {
     return { chat: chatSchema };
   }
 
-  async fetchMessages({ requestedChatId }) {
-    const chat = (await Chat
+  async fetchMessages({ requestedChatId, requestedPage }) {
+    const result = (await ChatMessage
       .query()
-      .where('id', requestedChatId)
-      .with('messages')
-      .first()).toJSON();
-    const messages = ((chat || {}).messages || []).map(message => new MessageSchema({
+      .where('chat_id', requestedChatId)
+      .orderBy('id', 'desc')
+      .paginate(requestedPage || 1, 10)).toJSON();
+    const messages = result.data.map(message => new MessageSchema({
       messageId: message.id,
       chatId: message.chat_id,
       senderId: message.sender_id,
@@ -214,7 +214,7 @@ class ChatRepository {
     const contacts = rawContacts.map(contact => new ContactSchema({
       contactId: contact.id,
       icon: contact.profile_img,
-      name: `${contact.first_name} ${contact.last_name}`,
+      name: contact.alias,
       status: contact.status,
       lastSeen: contact.last_seen,
       publicKey: contact.public_key,
@@ -263,7 +263,7 @@ class ChatRepository {
     const fullContacts = rawContacts.map(contact => new ContactSchema({
       contactId: contact.id,
       icon: contact.profile_img,
-      name: `${contact.first_name} ${contact.last_name}`,
+      name: contact.alias,
       status: contact.status,
       lastSeen: contact.last_seen,
       publicKey: contact.public_key,

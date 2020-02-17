@@ -18,7 +18,6 @@ export function attemptSocketConnection() {
     store.dispatch(onConnectionStateChangedAction(false));
     if (!hasDisconnected) return;
     ws = socket.connect().ws;
-    store.dispatch(fetchChatsAction());
     monitorChats(currentUserId);
     hasDisconnected = false;
   });

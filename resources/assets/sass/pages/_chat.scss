@@ -171,6 +171,18 @@
   padding: 12px;
 }
 
+.chat-component-loading-indicator {
+  background-color: #2D363A;
+  color: #707070;
+  text-align: center;
+  font-size: 12px;
+  width: 108%;
+  padding: 4px;
+  margin-top: -5%;
+  margin-left: -4%;
+  margin-bottom: 2%;
+}
+
 .chat-component-read-indicator-container {
   display: flex;
   flex-direction: row;

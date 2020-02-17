@@ -96,11 +96,12 @@ class ChatController {
     return response.send({ contacts });
   }
 
-  async fetchMessages({ auth, params, response }) {
+  async fetchMessages({ auth, params, request, response }) {
     const requestingUserId = auth.user.id;
     const requestedChatId = params.chatId;
+    const requestedPage = request.only(['page']).page || 1;
     log('CHAT', `User ${requestingUserId} requesting Messages for Chat ${requestedChatId}`);
-    const { messages } = await ChatRepository.fetchMessages({ requestingUserId, requestedChatId });
+    const { messages } = await ChatRepository.fetchMessages({ requestingUserId, requestedChatId, requestedPage });
     return response.send({ messages });
   }
 

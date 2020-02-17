@@ -56,9 +56,9 @@ export function addContactsToChat(chatId, contacts) {
   return axios.put(`/api/chat/${chatId}/contacts`, { contacts }).then(response => response.data);
 }
 
-export function fetchMessages(chatId) {
+export function fetchMessages(chatId, page) {
   logger.log('CHAT', 'HTTP', `Fetching Messages for Chat ${chatId}`);
-  return axios.get(`/api/chat/${chatId}/message/`).then(response => response.data);
+  return axios.get(`/api/chat/${chatId}/message?page=${page || 1}`).then(response => response.data);
 }
 
 export function sendMessage(chatId, userId, encryptedContent, keyReceiver) {

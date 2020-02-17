@@ -49,6 +49,8 @@ export default function reducer(state = {
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       chat.fullContacts = action.payload.contacts;
+      chat.noMoreMessages = false;
+      chat.loadingMessages = false;
       const messages = action.payload.messages
         .filter(message => message.messageId > action.payload.chat.lastCleared)
         .filter(message => !action.payload.chat.deletedMessages.includes(message.messageId))
@@ -60,6 +62,39 @@ export default function reducer(state = {
         Object.assign(chat, action.payload.chat);
         chat.messages = messages;
       }
+      return {
+        ...state,
+        chats,
+      };
+    }
+
+    case "FETCH_CHAT_MESSAGES_PENDING": {
+      logger.log('CHAT', `Redux -> Loading More Messages: `, action.payload, action.meta);
+      const { chatId } = action.meta;
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => candidate.chatId === chatId);
+      chat.loadingMessages = true;
+      return {
+        ...state,
+        chats,
+      };
+    }
+
+    case "FETCH_CHAT_MESSAGES_FULFILLED": {
+      logger.log('CHAT', `Redux -> Loaded More Messages: `, action.payload, action.meta);
+      const { chatId } = action.meta;
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => candidate.chatId === chatId);
+      const chatMessages = chat.messages.map(message => message.messageId);
+      const nextMessages = action.payload.messages.filter(message => !chatMessages.includes(message.messageId));
+      const messages = [...nextMessages, ...chat.messages]
+        .filter(message => message.messageId > chat.lastCleared)
+        .filter(message => !chat.deletedMessages.includes(message.messageId))
+        .filter(message => !message.keyReceiver)
+        .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId));
+      chat.noMoreMessages = !action.payload.messages.length;
+      chat.loadingMessages = false;
+      chat.messages = messages;
       return {
         ...state,
         chats,
