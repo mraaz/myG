@@ -30,7 +30,12 @@ class AuthController {
 
         return response.redirect('back')
       } else {
+        if (/['/.%#$;`\\]/.test(request.input('alias'))) {
+          session.withErrors("Alias has invalid characters")
+          return response.redirect('back')
+        }
         var newUser
+
         try {
           newUser = await User.create({
             email: request.input('email'),
