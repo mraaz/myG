@@ -209,11 +209,11 @@ export function closeChatAction(chatId) {
   }
 }
 
-export function fetchMessagesAction(chatId) {
+export function fetchMessagesAction(chatId, page) {
   return {
     type: 'FETCH_CHAT_MESSAGES',
-    payload: fetchMessages(chatId),
-    meta: { chatId },
+    payload: fetchMessages(chatId, page),
+    meta: { chatId, page },
   }
 }
 

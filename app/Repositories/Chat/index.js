@@ -83,13 +83,13 @@ class ChatRepository {
     return { chat: chatSchema };
   }
 
-  async fetchMessages({ requestedChatId }) {
-    const chat = (await Chat
+  async fetchMessages({ requestedChatId, requestedPage }) {
+    const result = (await ChatMessage
       .query()
-      .where('id', requestedChatId)
-      .with('messages')
-      .first()).toJSON();
-    const messages = ((chat || {}).messages || []).map(message => new MessageSchema({
+      .where('chat_id', requestedChatId)
+      .orderBy('id', 'desc')
+      .paginate(requestedPage || 1, 10)).toJSON();
+    const messages = result.data.map(message => new MessageSchema({
       messageId: message.id,
       chatId: message.chat_id,
       senderId: message.sender_id,

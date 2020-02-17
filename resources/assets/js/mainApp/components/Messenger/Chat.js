@@ -5,7 +5,7 @@ import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
 import GroupOptions from './GroupOptions';
 
-import { prepareChatAction, sendMessageAction, editMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction, setTypingAction } from '../../../redux/actions/chatAction';
+import { prepareChatAction, fetchMessagesAction, sendMessageAction, editMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction, setTypingAction } from '../../../redux/actions/chatAction';
 import { enrichMessagesWithDates } from '../../../common/chat';
 import { encryptMessage, decryptMessage, deserializeKey } from '../../../integration/encryption';
 import { formatDateTime } from '../../../common/date';
@@ -23,13 +23,31 @@ class Chat extends React.PureComponent {
       currentlyTyping: '',
       editing: false,
       settings: false,
+      messagePaginationPage: 1,
     };
     this.messageListRef = React.createRef();
   }
 
   componentDidMount() {
+    document.addEventListener("scroll", this.handleMessageListScroll, { passive: true });
+    document.addEventListener("wheel", this.handleMessageListScroll, { passive: true });
     this.props.prepareChat(this.props.chatId, this.props.contactId, this.props.isGroup, this.props.userId);
     setTimeout(() => this.props.checkSelfDestruct(this.props.chatId), 1000);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("scroll", this.handleMessageListScroll, false);
+    document.removeEventListener("wheel", this.handleMessageListScroll, false);
+  }
+
+  handleMessageListScroll = () => {
+    const messageList = this.messageListRef.current;
+    if (!messageList) return;
+    if (messageList.scrollTop !== 0 || this.props.loadingMessages || this.props.noMoreMessages) return;
+    const nextPage = this.state.messagePaginationPage + 1;
+    this.props.fetchMessages(this.props.chatId, nextPage);
+    this.setState({ messagePaginationPage: nextPage });
+    this.messageListRef.current.scrollTo(0, 4);
   }
 
   componentDidUpdate() {
@@ -236,7 +254,8 @@ class Chat extends React.PureComponent {
         className="chat-component-body"
         ref={this.messageListRef}
       >
-        <ChatMessageList 
+        {this.renderLoadingIndicator()}
+        <ChatMessageList
           userId={this.props.userId}
           chatId={this.props.chatId}
           messages={this.props.messages}
@@ -250,6 +269,13 @@ class Chat extends React.PureComponent {
         {this.renderTypingIndicator()}
         {this.renderReadIndicators(lastMessageId, lastMessageSender)}
       </div>
+    );
+  }
+
+  renderLoadingIndicator() {
+    if (!this.props.loadingMessages) return null;
+    return (
+      <p className="chat-component-loading-indicator">loading messages ...</p>
     );
   }
 
@@ -384,6 +410,8 @@ function mapStateToProps(state, props) {
   chat.privateKey = deserializeKey(chat.privateKey);
   return {
     messages,
+    loadingMessages: chat.loadingMessages,
+    noMoreMessages: chat.noMoreMessages,
     contacts: fullContacts,
     contactId,
     contactIds: contacts,
@@ -413,6 +441,7 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
   return ({
     prepareChat: (chatId, contactId, contactIds, userId) => dispatch(prepareChatAction(chatId, contactId, contactIds, userId)),
+    fetchMessages: (chatId, page) => dispatch(fetchMessagesAction(chatId, page)),
     sendMessage: (chatId, userId, content) => dispatch(sendMessageAction(chatId, userId, content)),
     editMessage: (chatId, messageId, content) => dispatch(editMessageAction(chatId, messageId, content)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
