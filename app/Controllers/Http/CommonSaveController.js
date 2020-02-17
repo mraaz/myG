@@ -29,6 +29,13 @@ class CommonSaveController {
       return response.redirect('back')
     } else {
       console.log('validation True')
+      console.log(request.input('alias'));
+
+      if (/['/.%#$;`\\]/.test(request.input('alias'))) {
+        session.withErrors("Alias has invalid characters")
+        return response.redirect('back')
+      }
+
       const user = new User()
       user.first_name = request.input('firstName')
       user.last_name = request.input('lastName')
@@ -53,7 +60,7 @@ class CommonSaveController {
         secure: true, // use TLS
         auth: {
           user: 'teamraaz@gmail.com',
-          pass: 'Password123!123',
+          pass: 'Raaz1988!',
         },
         tls: {
           // do not fail on invalid certs
