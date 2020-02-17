@@ -56,19 +56,19 @@
 }
 
 .chat-component-header-status-indicator-online {
-  background-color: #309030;
+  background-color: #68BD45;
 }
 
 .chat-component-header-status-indicator-playing {
-  background-color: #903030;
+  background-color: #FD323C;
 }
 
 .chat-component-header-status-indicator-afk {
-  background-color: #909030;
+  background-color: #D8BD43
 }
 
 .chat-component-header-status-indicator-offline {
-  background-color: #303030;
+  background-color: #08507D;
 }
 
 .chat-component-header-options {
@@ -171,11 +171,18 @@
   padding: 12px;
 }
 
+.chat-component-read-indicator-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+
 .chat-component-read-indicator {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
   padding: 4px;
+  margin-right: -8px;
 }
 
 .chat-component-read-indicator-icon {
@@ -192,11 +199,6 @@
   width: 20px;
   height: 20px;
   opacity: 0.6;
-}
-
-.chat-component-read-indicator-label {
-  font-size: 12px;
-  color: #808080;
 }
 
 .chat-component-footer-divider {
@@ -282,4 +284,56 @@
   margin-bottom: auto;
   color: #FAFAFA;
   font-size: 12px;
+}
+
+.dot-flashing {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  margin-left: 12px;
+  margin-right: 14px;
+  border-radius: 5px;
+  background-color: #F0F0F0;
+  color: #F0F0F0;
+  animation: dotFlashing 1s infinite linear alternate;
+  animation-delay: .5s;
+}
+
+.dot-flashing::before, .dot-flashing::after {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  top: 0;
+}
+
+.dot-flashing::before {
+  left: -13px;
+  width: 8px;
+  height: 8px;
+  border-radius: 5px;
+  background-color: #F0F0F0;
+  color: #F0F0F0;
+  animation: dotFlashing 1s infinite alternate;
+  animation-delay: 0s;
+}
+
+.dot-flashing::after {
+  left: 13px;
+  width: 8px;
+  height: 8px;
+  border-radius: 5px;
+  background-color: #F0F0F0;
+  color: #F0F0F0;
+  animation: dotFlashing 1s infinite alternate;
+  animation-delay: 1s;
+}
+
+@keyframes dotFlashing {
+  0% {
+    background-color: #F0F0F0;
+  }
+  50%,
+  100% {
+    background-color: #A0A0A0;
+  }
 }

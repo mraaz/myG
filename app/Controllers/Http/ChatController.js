@@ -134,6 +134,15 @@ class ChatController {
     return response.send({ message });
   }
 
+  async setTyping({ auth, params, request, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    const isTyping = request.only('isTyping').isTyping;
+    log('CHAT', `User ${requestingUserId} ${isTyping ? 'Is Typing' : 'Stopped Typing'} on Chat ${requestedChatId}`);
+    const result = await ChatRepository.setTyping({ requestingUserId, requestedChatId, isTyping });
+    return response.send(result);
+  }
+
 }
 
 module.exports = ChatController;
