@@ -30,8 +30,13 @@ class AuthController {
 
         return response.redirect('back')
       } else {
-        if (/['/.%#$;`\\]/.test(request.input('alias'))) {
-          session.withErrors("Alias has invalid characters")
+        if (request.input('alias').charAt(0) == '.') {
+          session.withErrors(validation.messages()).flashExcept(['password'])
+          return response.redirect('back')
+        }
+
+        if (/[' /.%#$;`=&_-+,<>\\]/.test(request.input('alias'))) {
+          session.withErrors(validation.messages()).flashExcept(['password'])
           return response.redirect('back')
         }
         var newUser

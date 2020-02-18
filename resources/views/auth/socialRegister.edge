@@ -25,13 +25,19 @@
       @if(hasErrorFor('alias'))
         {{getErrorFor('alias')}}
       @endif
+      @if(hasErrorFor('email'))
+        {{getErrorFor('email')}}
+      @endif
+      @if(hasErrorFor('password'))
+        {{getErrorFor('password')}}
+      @endif
       @if(hasErrorFor('database'))
         {{getErrorFor('database')}}
       @endif
     </div>
     <div class="form-group">
       <label for="alias">Alias: (Unqiue! Can't be changed later!)</label>
-      <input type="text" name="alias" value="{{alias}}" class="text
+      <input type="text" name="alias" value="{{ old ('alias', '')}}" class="text
 
         @if(hasErrorFor('alias'))
           error
@@ -41,14 +47,14 @@
     <div class="form-group">
       <label for="email">Email: (Unqiue! Can't be changed later!)</label>
       @if(email === '')
-      <input type="text" name="email" value="{{email}}" class="text
+      <input type="text" name="email" value="{{ old ('email', '')}}" class="text
 
       @if(hasErrorFor('email'))
         error
       @endif
       "  required="">
       @else
-        <input type="text" name="email" value="{{email}}" class="text
+        <input type="text" name="email" value="{{ old ('email', '')}}" class="text
 
         @if(hasErrorFor('email'))
           error
