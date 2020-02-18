@@ -16,7 +16,7 @@ class CommonSaveController {
 
   async saveuser({ ally, auth, request, session, response, view }) {
     const rules = {
-      alias: 'required|unique:users,alias|min:4',
+      alias: 'required|unique:users,alias|min:4|max:30',
       email: 'required|email|unique:users',
       firstName: 'required',
       lastName: 'required',
@@ -29,12 +29,18 @@ class CommonSaveController {
       return response.redirect('back')
     } else {
       console.log('validation True')
-      console.log(request.input('alias'));
 
-      if (/['/.%#$;`\\]/.test(request.input('alias'))) {
-        session.withErrors("Alias has invalid characters")
+
+      if (request.input('alias').charAt(0) == "."){
+        session.withErrors(validation.messages()).flashExcept(['password'])
         return response.redirect('back')
       }
+
+      if (/[' /.%#$;`=&_-+,<>\\]/.test(request.input('alias'))) {
+        session.withErrors(validation.messages()).flashExcept(['password'])
+        return response.redirect('back')
+      }
+      return
 
       const user = new User()
       user.first_name = request.input('firstName')
