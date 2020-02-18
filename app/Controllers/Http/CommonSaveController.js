@@ -1,6 +1,6 @@
 'use strict'
 
-const { validate, sanitize } = use('Validator')
+const { validate } = use('Validator')
 const User = use('App/Models/User')
 const Settings = use('App/Models/Setting')
 var nodemailer = require('nodemailer')
@@ -15,6 +15,10 @@ class CommonSaveController {
   }
 
   async saveuser({ ally, auth, request, session, response, view }) {
+    if (auth.user != null) {
+      await auth.logout()
+    }
+
     const rules = {
       alias: 'required|unique:users,alias|min:4|max:30',
       email: 'required|email|unique:users',
@@ -22,25 +26,39 @@ class CommonSaveController {
       lastName: 'required',
     }
 
-    const validation = await validate(request.all(), rules)
+    const messages = {
+      required: 'Required field',
+      email: 'Enter valid email address',
+      min: 'Not enough characters - Min 4',
+      max: 'Wow! Too many characters - Max 30',
+      unique: 'Sorry, this field is not unique. Try again please.',
+    }
+
+    const validation = await validate(request.all(), rules, messages)
     if (validation.fails()) {
-      console.log('validation False')
-      session.withErrors(validation.messages())
+      console.log(validation.messages())
+      session.withErrors(validation.messages()).flashAll()
       return response.redirect('back')
     } else {
       console.log('validation True')
+      var strMsg =
+        "Special characters:\r\nUsernames can contain letters (a-z), numbers (0-9), and periods (.).\r\nUsernames cannot contain an ampersand (&), equals sign (=), underscore (_), apostrophe ('), dash (-), plus sign (+), comma (,), brackets (<,>), backtick (`), dollar sign ($), single and double quotes (') (\"). Usernames can begin or end with non-alphanumeric characters except periods (.)."
 
+      try {
+        if (request.input('alias').charAt(0) == '.' || request.input('alias').includes('_')) {
+          session.withErrors([{ field: 'alias', message: strMsg }]).flashAll()
+          return response.redirect('back')
+        }
 
-      if (request.input('alias').charAt(0) == "."){
-        session.withErrors(validation.messages()).flashExcept(['password'])
+        if (/[' /.%#$;`=&-+,<>\\]/.test(request.input('alias'))) {
+          session.withErrors([{ field: 'alias', message: strMsg }]).flashAll()
+          return response.redirect('back')
+        }
+      } catch (error) {
+        console.log(error)
+        session.withErrors(validation.messages()).flashAll()
         return response.redirect('back')
       }
-
-      if (/[' /.%#$;`=&_-+,<>\\]/.test(request.input('alias'))) {
-        session.withErrors(validation.messages()).flashExcept(['password'])
-        return response.redirect('back')
-      }
-      return
 
       const user = new User()
       user.first_name = request.input('firstName')
