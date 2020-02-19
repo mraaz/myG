@@ -143,8 +143,13 @@ class AuthController {
   async forgotPassword({ response, request, view }) {
     return view.render('auth/forgotPassword')
   }
-  async logout({ response, request, view, auth }) {
+  async logout({ response, request, view, auth, session }) {
     try {
+      session.put('alias', null)
+      session.put('email', null)
+      session.put('profile_img', null)
+      session.put('provider', null)
+      session.put('provider_id', null)
       await auth.logout()
       return response.redirect('/')
     } catch (error) {
