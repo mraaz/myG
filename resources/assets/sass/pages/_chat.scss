@@ -92,49 +92,6 @@
   margin-top: 4px;
 }
 
-.chat-component-header-settings-option-icon {
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
-  width: 16px;
-  height: 16px;
-  margin-right: 4px;
-}
-
-.chat-component-header-settings-popup-container { 
-  position: relative;
-  width: 0;
-  height: 0;
-}
-
-.chat-component-header-settings-popup {
-  position: absolute;
-  z-index: 10;
-  top: -130px;
-  right: -180px;
-  padding: 8px;
-  border-radius: 8px;
-  background-color: #171A1C;
-}
-
-.chat-component-header-settings-option {
-  display: flex;
-  align-items: center;
-  margin-top: 4px;
-  margin-bottom: 4px;
-  border-radius: 4px;
-  background-color: #2D363A;
-  color: #FAFAFA;
-  padding: 4px 8px 4px 4px;
-  font-size: 12px;
-  width: fit-content;
-}
-
-.chat-component-header-settings-option-inactive {
-  background-color: #161D20 !important;
-  color: #627176 !important;
-}
-
 .chat-component-header-info {
   display: flex;
   flex: 1;

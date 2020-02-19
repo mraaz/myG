@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
+import ChatOptions from './ChatOptions';
 import GroupOptions from './GroupOptions';
 
 import { prepareChatAction, fetchMessagesAction, sendMessageAction, editMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction, setTypingAction } from '../../../redux/actions/chatAction';
@@ -116,7 +117,6 @@ class Chat extends React.PureComponent {
   }
 
   renderSettings = () => {
-    if (!this.state.settings) return;
     if (this.props.isGroup) return (
       <GroupOptions
         userId={this.props.userId}
@@ -124,67 +124,13 @@ class Chat extends React.PureComponent {
         groupContacts={this.props.contacts}
       />
     );
-    const inactiveStyle = 'chat-component-header-settings-option-inactive';
     return (
-      <div className="chat-component-header-settings-popup">
-
-        <div
-          className={`chat-component-header-settings-option clickable ${this.props.blocked && inactiveStyle}`}
-          onClick={() => {
-            this.setState({ settings: false });
-            this.props.updateChat(this.props.chatId, { blocked: !this.props.blocked });
-          }}
-        >
-          <div
-            className="chat-component-header-settings-option-icon"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_block.svg)` }}
-          />
-          {this.props.blocked ? 'unblock' : 'block'}
-        </div>
-
-        <div
-          className={`chat-component-header-settings-option clickable ${this.props.muted && inactiveStyle}`}
-          onClick={() => {
-            this.setState({ settings: false });
-            this.props.updateChat(this.props.chatId, { muted: !this.props.muted });
-          }}
-        >
-          <div
-            className="chat-component-header-settings-option-icon"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_mute.svg)` }}
-          />
-          {this.props.muted ? 'unmute' : 'mute'}
-        </div>
-
-        <div
-          className={`chat-component-header-settings-option clickable ${this.props.selfDestruct && inactiveStyle}`}
-          onClick={() => {
-            this.setState({ settings: false });
-            this.props.updateChat(this.props.chatId, { selfDestruct: !this.props.selfDestruct });
-          }}
-        >
-          <div
-            className="chat-component-header-settings-option-icon"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_self_destruct.svg)` }}
-          />
-          {this.props.selfDestruct ? 'disable' : 'enable'} self destruct
-        </div>
-
-        <div
-          className={`chat-component-header-settings-option clickable ${!this.props.messages.length && inactiveStyle}`}
-          onClick={() => {
-            this.setState({ settings: false });
-            this.props.clearChat(this.props.chatId);
-          }}
-        >
-          <div
-            className="chat-component-header-settings-option-icon"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_delete.svg)` }}
-          />
-          delete all messages
-        </div>
-
-      </div>
+      <ChatOptions
+        {...this.props.group}
+        messages={this.props.messages}
+        contactId={this.props.contactId}
+        contactAlias={this.props.title}
+      />
     );
   }
 
@@ -236,9 +182,6 @@ class Chat extends React.PureComponent {
             style={{ backgroundImage: `url('/assets/svg/ic_chat_settings.svg')` }}
             onClick={() => this.setState(previous => ({ settings: !previous.settings }))}
           />
-          <div className="chat-component-header-settings-popup-container">
-            {this.renderSettings()}
-          </div>
         </div>
 
       </div>
@@ -382,9 +325,10 @@ class Chat extends React.PureComponent {
         className={`chat-component-base ${extraClass}`}
       >
         {this.renderHeader()}
-        {!this.props.minimised && this.renderBody()}
-        {!this.props.minimised && <div className="chat-component-footer-divider" />}
-        {!this.props.minimised && this.renderFooter()}
+        {this.state.settings && this.renderSettings()}
+        {!this.state.settings && !this.props.minimised && this.renderBody()}
+        {!this.state.settings && !this.props.minimised && <div className="chat-component-footer-divider" />}
+        {!this.state.settings && !this.props.minimised && this.renderFooter()}
       </div>
     );
   }

@@ -1,0 +1,50 @@
+.chat-component-options-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #1D2326;
+  padding-bottom: 4px;
+}
+
+.chat-component-options-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.chat-component-options-option {
+  background-color: #171A1C;
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  margin: 4px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.chat-component-options-toggle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  margin: 4px;
+  font-size: 14px;
+}
+
+.chat-component-options-option-inactive {
+  background-color: #253338 !important;
+  color: #616E6F !important;
+}
+
+.chat-component-options-option-icon {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+}
