@@ -128,7 +128,7 @@ class Layout extends Component {
                   <Route exact path="/" component={(props) => <Home routeProps={props}
                     initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
 
-                  <Route exact path="/profile/:id" component={(props) => <Profile routeProps={props}
+                  <Route exact path="/profile/:alias" component={(props) => <Profile routeProps={props}
                     initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
 
                   <Route exact path="/myPosts/" component={(props) => <MyHome routeProps={props}
@@ -149,16 +149,16 @@ class Layout extends Component {
                   <Route exact path="/profile/:id/upload/img_profile" component={(props) => <UploadPic routeProps={props}
                     initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
 
-                  <Route exact path="/profile/:id/add/gamingexp" component={(props) => <AddGamingExp routeProps={props}
+                  <Route exact path="/profile/:alias/add/gamingexp" component={(props) => <AddGamingExp routeProps={props}
                     initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
 
-                  <Route exact path="/profile/:id/edit/gamingexp/:game_id" component={(props) => <EditGamingExp routeProps={props}
+                  <Route exact path="/profile/:alias/edit/gamingexp/:game_id" component={(props) => <EditGamingExp routeProps={props}
                     initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
 
-                  <Route exact path="/profile/:id/add/esportsExp" component={(props) => <AddEsportsExp routeProps={props}
+                  <Route exact path="/profile/:alias/add/esportsExp" component={(props) => <AddEsportsExp routeProps={props}
                     initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
 
-                  <Route exact path="/profile/:id/edit/esportsExp/:esportsExp_id" component={(props) => <EditEsportsExp routeProps={props}
+                  <Route exact path="/profile/:alias/edit/esportsExp/:esportsExp_id" component={(props) => <EditEsportsExp routeProps={props}
                     initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
 
                   <Route exact path="/scheduledGames" component={(props) => <ScheduleGames routeProps={props}

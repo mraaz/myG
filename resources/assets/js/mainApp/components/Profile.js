@@ -100,11 +100,28 @@ export default class Profile extends Component {
     const { match } = this.props.routeProps
     const { initialData } = this.props
 
-    if (initialData != 'loading') {
-      if (initialData.userInfo.id == match.params.id) {
-        this.setState({ myPage: true })
+    const getID = async function() {
+      try {
+        const convertAliastoID = await axios.get(`/api/user/alias/${match.params.alias}`)
+        if (convertAliastoID.data.length != 0) {
+          self.props.routeProps.match.params.id = convertAliastoID.data[0].id
+
+          if (initialData != 'loading') {
+            if (initialData.userInfo.id == match.params.id) {
+              self.setState({ myPage: true })
+            }
+          }
+
+          getUser()
+          getGameExperiences()
+          getEsportsExperiences()
+          getEsportsBio()
+        }
+      } catch (error) {
+        console.log(error)
       }
     }
+
     const getUser = async function() {
       try {
         const userProfile = await axios.get(`/api/user/${match.params.id}`)
@@ -189,10 +206,7 @@ export default class Profile extends Component {
       }
     }
 
-    getUser()
-    getGameExperiences()
-    getEsportsExperiences()
-    getEsportsBio()
+    getID()
   }
 
   addFriend = () => {
@@ -349,11 +363,11 @@ export default class Profile extends Component {
           return <Redirect push to={tmp} />
           break
         case 'addGamingExp':
-          tmp = `/profile/${match.params.id}/add/gamingexp`
+          tmp = `/profile/${match.params.alias}/add/gamingexp`
           return <Redirect push to={tmp} />
           break
         case 'addEsportsExp':
-          tmp = `/profile/${match.params.id}/add/esportsExp`
+          tmp = `/profile/${match.params.alias}/add/esportsExp`
           return <Redirect push to={tmp} />
           break
       }
@@ -533,7 +547,7 @@ export default class Profile extends Component {
         return <div className='content-area profile-page'>Loading</div>
       }
     } else {
-      return <div className='content-area profile-page'>Loading</div>
+      return <div className='content-area profile-page'>This profile was not found</div>
     }
   }
 }
