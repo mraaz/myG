@@ -150,6 +150,7 @@ class AuthController {
       session.put('profile_img', null)
       session.put('provider', null)
       session.put('provider_id', null)
+      session.clear()
       await auth.logout()
       return response.redirect('/')
     } catch (error) {
