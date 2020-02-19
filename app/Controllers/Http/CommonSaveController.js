@@ -15,8 +15,23 @@ class CommonSaveController {
   }
 
   async saveuser({ ally, auth, request, session, response, view }) {
+
+    //117703502811656157640
+    //https://myg.gg/user/register#
+
     if (auth.user != null) {
+      session.put('alias', null)
+      session.put('email', null)
+      session.put('profile_img', null)
+      session.put('provider', null)
+      session.put('provider_id', null)
       await auth.logout()
+    }
+
+    if (session.get('provider_id') == null){
+      console.log("Security Error! Unable to authenticate against your social.")
+      session.withErrors([{ field: 'alias', message: "Security Error! Unable to authenticate against your social. Please clear cache and try again." }]).flashAll()
+      return response.redirect('back')
     }
 
     const rules = {
@@ -40,7 +55,6 @@ class CommonSaveController {
       session.withErrors(validation.messages()).flashAll()
       return response.redirect('back')
     } else {
-      console.log('validation True')
       var strMsg =
         "Special characters:\r\nUsernames can contain letters (a-z), numbers (0-9), and periods (.).\r\nUsernames cannot contain an ampersand (&), equals sign (=), underscore (_), apostrophe ('), dash (-), plus sign (+), comma (,), brackets (<,>), backtick (`), dollar sign ($), single and double quotes (') (\"). Usernames can begin or end with non-alphanumeric characters except periods (.)."
 
