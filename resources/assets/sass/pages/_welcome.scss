@@ -20,8 +20,6 @@
   }
   .button {
     display: flex;
-    width: 390px;
-    height: 42px;
     line-height: 42px;
     margin-bottom: 22px;
     border-radius: 8px;
@@ -89,5 +87,11 @@
     font-size: 14px;
     margin-top: 12px;
     text-align: center;
+  }
+
+  @media only screen and (max-width: 1000px) {
+    .card-round {
+      width: 743px;
+    }
   }
 }
