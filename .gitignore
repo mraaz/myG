@@ -15,3 +15,4 @@ public/js/*
 # The development sqlite file
 database/development.sqlite
 scripts/dummy_data
+.idea

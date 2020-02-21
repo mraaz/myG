@@ -1,7 +1,7 @@
 
 const path = require('path');
 const webpack = require('webpack')
-
+const TerserPlugin = require('terser-webpack-plugin');
 const VENDOR_LIBS = [
   'redux', 'react-redux', 'react-dom'
 ]
@@ -53,10 +53,15 @@ module.exports = {
                 sourceMap: true
             }
         }],
-        
+
 
       }
     ]
+  },
+  mode: 'production',
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin({ test: /\.js(\?.*)?$/i, })],
   },
   plugins: [
             new webpack.optimize.CommonsChunkPlugin({
