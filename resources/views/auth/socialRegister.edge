@@ -1,4 +1,4 @@
-@layout('layouts/empty')
+@layout('layouts/register-layout')
 
 @section('title')
   myG - Register
@@ -13,80 +13,109 @@
 @endsection
 
 @section('content')
-<div class="auth-form">
-  <h1>myG</h1>
-  <form action="/user/save" method="POST" class="default-form">
-    {{ csrfField() }}
-    <div class="error-box
-      @if( hasErrorFor('email') || hasErrorFor('password') || hasErrorFor('alias') )
-        active
-      @endif
-    ">
-      @if(hasErrorFor('alias'))
-        {{getErrorFor('alias')}}
-      @endif
-      @if(hasErrorFor('email'))
-        {{getErrorFor('email')}}
-      @endif
-      @if(hasErrorFor('password'))
-        {{getErrorFor('password')}}
-      @endif
-      @if(hasErrorFor('database'))
-        {{getErrorFor('database')}}
-      @endif
+<div class="container">
+    <div class="logo-container">
+        <a href="/">
+        <img src="https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Login+Screen/Logo_FINAL%402x.png"
+            height="90" width="161" /> </a>
     </div>
-    <div class="form-group">
-      <label for="alias">Alias: (Unqiue! Can't be changed later!)</label>
-      <input type="text" name="alias" value="{{ old ('alias', '')}}" class="text
+    <div class="card-container">
+        <div class="logo-on-card">
+            <img src="https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Login+Screen/Card_Logo.svg"
+                height="90" width="90" />
+        </div>
+        <div class="card-round">
+          <div class="seats-header">
+            <b>Welcome to myG!</b>
+          </div>
+          <div class="registration-desc">
+            We are excited to have you <b>onboard!</b>
+          </div>
 
-        @if(hasErrorFor('alias'))
-          error
+          <form action="/user/save" method="POST" class="default-form">
+        {{ csrfField() }}
+        <div class="error-box
+        @if( hasErrorFor('email') || hasErrorFor('password') || hasErrorFor('alias') )
+          active
         @endif
-      "  required="" onkeypress="return checkKeyPress(this)">
-    </div>
-    <div class="form-group">
-      <label for="email">Email: (Unqiue! Can't be changed later!)</label>
-      @if(email === '')
-      <input type="text" name="email" value="{{ old ('email', '')}}" class="text
+      ">
+            @if(hasErrorFor('alias'))
+            {{getErrorFor('alias')}}
+            @endif
+            @if(hasErrorFor('email'))
+            {{getErrorFor('email')}}
+            @endif
+            @if(hasErrorFor('password'))
+            {{getErrorFor('password')}}
+            @endif
+            @if(hasErrorFor('database'))
+            {{getErrorFor('database')}}
+            @endif
+        </div>
+        <div class="form-group">
+            <input class="input-common" placeholder="ALIAS *" type="text" name="alias" value="{{ old ('alias', '')}}" class="text
 
-      @if(hasErrorFor('email'))
-        error
-      @endif
-      "  required="">
-      @else
-        <input type="text" name="email" value="{{ old ('email', '')}}" class="text
+          @if(hasErrorFor('alias'))
+            error
+          @endif
+        " required="" onkeypress="return checkKeyPress(this)">
+        </div>
+        <div class="form-group">
+            @if(email === '')
+            <input class="input-common" placeholder="EMAIL *" type="text" name="email" value="{{ old ('email', '')}}" class="text
 
         @if(hasErrorFor('email'))
           error
         @endif
-        "  required="" readonly>
-      @endif
-    </div>
-    <div class="form-group">
-      <label for="firstName">First Name:</label>
-      <input type="text" name="firstName" value="{{ old ('firstName', '')}}" class="text
+        " required="">
+            @else
+            <input class="input-common" placeholder="ALIAS *" type="text" name="email" value="{{ old ('email', '')}}" class="text
 
-        @if(hasErrorFor('firstName'))
-          error
-        @endif
-      " required="">
-    </div>
-    <div class="form-group">
-      <label for="lastName">Last Name:</label>
-      <input type="text" name="lastName" value="{{ old ('lastName', '')}}" class="text
+          @if(hasErrorFor('email'))
+            error
+          @endif
+          " required="" readonly>
+            @endif
+        </div>
+        <div class="form-group">
+            <input class="input-common" placeholder="FIRST NAME" type="text" name="firstName" value="{{ old ('firstName', '')}}" class="text
 
-        @if(hasErrorFor('lastName'))
-          error
-        @endif
-      " required="">
+          @if(hasErrorFor('firstName'))
+            error
+          @endif
+        " required="">
+        </div>
+        <div class="form-group">
+            <input class="input-common" placeholder="LAST NAME" type="text" name="lastName" value="{{ old ('lastName', '')}}" class="text
+
+          @if(hasErrorFor('lastName'))
+            error
+          @endif
+        " required="">
+        </div>
+        <div class="form-group">
+            <button class="button-common" type="submit">REGISTER</button>
+        </div>
+        <form>
+        <div class="registration-disclaimer">
+        * Field must be unique. Choose carefully, it can not be changed later!
+        </div>
+        </div>
+        <div class="card-round">
+            <div class="seats-header">
+                <b>We have currently</b>
+            </div>
+            <div class="seats-desc">
+                <div class="card-seats">
+                    <b>104</b>
+                </div>
+                <b>seats available</b>
+            </div>
+            <div class="register-message"><b>Register</b> while there's still time!</div>
+        </div>
     </div>
-    <div class="form-group">
-      <button type="submit">Register</button>
-    </div>
-  <form>
 </div>
-<div class="side-image">
-</div>
+
 <script>
   function checkKeyPress(ele){
     console.log(event.keyCode);
