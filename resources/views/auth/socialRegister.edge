@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-@layout('layouts/empty')
-=======
 @layout('layouts/register-layout')
->>>>>>> 04435d859c8a2cdac3cbe5f068e169aca8df90f7
 
 @section('title')
   myG - Register
@@ -17,44 +13,6 @@
 @endsection
 
 @section('content')
-<<<<<<< HEAD
-<div class="auth-form">
-  <h1>myG</h1>
-  <form action="/user/save" method="POST" class="default-form">
-    {{ csrfField() }}
-    <div class="error-box
-      @if( hasErrorFor('email') || hasErrorFor('password') || hasErrorFor('alias') )
-        active
-      @endif
-    ">
-      @if(hasErrorFor('alias'))
-        {{getErrorFor('alias')}}
-      @endif
-      @if(hasErrorFor('database'))
-        {{getErrorFor('database')}}
-      @endif
-    </div>
-    <div class="form-group">
-      <label for="alias">Alias: (Unqiue! Can't be changed later!)</label>
-      <input type="text" name="alias" value="{{alias}}" class="text
-
-        @if(hasErrorFor('alias'))
-          error
-        @endif
-      "  required="" onkeypress="return checkKeyPress(this)">
-    </div>
-    <div class="form-group">
-      <label for="email">Email: (Unqiue! Can't be changed later!)</label>
-      @if(email === '')
-      <input type="text" name="email" value="{{email}}" class="text
-
-      @if(hasErrorFor('email'))
-        error
-      @endif
-      "  required="">
-      @else
-        <input type="text" name="email" value="{{email}}" class="text
-=======
 <div class="container">
     <div class="logo-container">
         <a href="/">
@@ -116,49 +74,9 @@
         <div class="form-group">
             @if(email === '')
             <input class="input-common" placeholder="EMAIL *" type="text" name="email" value="{{email}}" class="text
->>>>>>> 04435d859c8a2cdac3cbe5f068e169aca8df90f7
-
         @if(hasErrorFor('email'))
           error
         @endif
-<<<<<<< HEAD
-        "  required="" readonly>
-      @endif
-    </div>
-    <div class="form-group">
-      <label for="firstName">First Name:</label>
-      <input type="text" name="firstName" value="{{ old ('firstName', '')}}" class="text
-
-        @if(hasErrorFor('firstName'))
-          error
-        @endif
-      " required="">
-    </div>
-    <div class="form-group">
-      <label for="lastName">Last Name:</label>
-      <input type="text" name="lastName" value="{{ old ('lastName', '')}}" class="text
-
-        @if(hasErrorFor('lastName'))
-          error
-        @endif
-      " required="">
-    </div>
-    <div class="form-group">
-      <button type="submit">Register</button>
-    </div>
-    <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
-  <form>
-</div>
-<div class="side-image">
-</div>
-<script src="https://www.google.com/recaptcha/api.js?render=6Ldl_tkUAAAAADhRDWqjwInC58op1EpdhMxJFaCl"></script>
-<script>
-  var securityKey = '6Ldl_tkUAAAAADhRDWqjwInC58op1EpdhMxJFaCl'
-  function checkKeyPress(ele){
-    console.log(event.keyCode);
-
-    if(event.keyCode == 32 || event.keyCode == 38 || event.keyCode == 61 || event.keyCode == 62 || event.keyCode == 60 || event.keyCode == 43 || event.keyCode == 44){
-=======
         " required="">
             @else
             <input class="input-common" placeholder="EMAIL *" type="text" name="email" value="{{email}}" class="text
@@ -216,7 +134,6 @@
     console.log(event.keyCode);
 
     if(event.keyCode == 32 || event.keyCode == 38 || event.keyCode == 61 || event.keyCode == 62 || event.keyCode == 60 || event.keyCode == 43 || event.keyCode == 44 || event.keyCode == 96 || event.keyCode == 36 || event.keyCode == 37 || event.keyCode == 40 || event.keyCode == 41 || event.keyCode == 39 || event.keyCode == 34 || event.keyCode == 47 || event.keyCode == 92 || event.keyCode == 35 || event.keyCode == 59){
->>>>>>> 04435d859c8a2cdac3cbe5f068e169aca8df90f7
       return false;
     }
 
