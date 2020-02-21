@@ -123,43 +123,43 @@ class CommonSaveController {
         user.profile_bg = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/universe.jpg'
         user.provider = session.get('provider')
         await user.save()
+
+        var transporter = nodemailer.createTransport({
+          host: 'smtp.gmail.com',
+          port: 465,
+          secure: true, // use TLS
+          auth: {
+            user: 'teamraaz@gmail.com',
+            pass: 'Raaz1988!',
+          },
+          tls: {
+            // do not fail on invalid certs
+            rejectUnauthorized: false,
+          },
+        })
+
+        // const mailOptions = {
+        //   from: 'teamraaz@gmail.com', // sender address
+        //   to: request.input('email'), // list of receivers
+        //   subject: 'My Game Welcome Email', // Subject line
+        //   html:
+        //     '<h1>Hello,' +
+        //     request.input('firstName') +
+        //     ' ' +
+        //     request.input('lastName') +
+        //     ' .</h1><p>Welcome to the My Game, here is your getting started guide</p>',
+        // }
+        //
+        // transporter.sendMail(mailOptions, function(err, info) {
+        //   if (err) console.log(err)
+        //   else console.log(info)
+        // })
+
+        session.forget('provider')
+        session.forget('provider_id')
+        await auth.loginViaId(user.id)
+        return response.redirect('/')
       }
-
-      var transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true, // use TLS
-        auth: {
-          user: 'teamraaz@gmail.com',
-          pass: 'Raaz1988!',
-        },
-        tls: {
-          // do not fail on invalid certs
-          rejectUnauthorized: false,
-        },
-      })
-
-      const mailOptions = {
-        from: 'teamraaz@gmail.com', // sender address
-        to: request.input('email'), // list of receivers
-        subject: 'My Game Welcome Email', // Subject line
-        html:
-          '<h1>Hello,' +
-          request.input('firstName') +
-          ' ' +
-          request.input('lastName') +
-          ' .</h1><p>Welcome to the My Game, here is your getting started guide</p>',
-      }
-
-      transporter.sendMail(mailOptions, function(err, info) {
-        if (err) console.log(err)
-        else console.log(info)
-      })
-
-      session.forget('provider')
-      session.forget('provider_id')
-      await auth.loginViaId(user.id)
-      return response.redirect('/')
     }
   }
 
