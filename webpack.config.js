@@ -58,11 +58,6 @@ module.exports = {
       }
     ]
   },
-  mode: 'production',
-  optimization: {
-    minimize: true,
-    minimizer: [new TerserPlugin({ test: /\.js(\?.*)?$/i, })],
-  },
   plugins: [
             new webpack.optimize.CommonsChunkPlugin({
                 name: 'vendor',
