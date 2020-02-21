@@ -84,45 +84,35 @@ class Archive_AttendeeController {
 
   async show_game_positions({ auth, request, response }) {
     try {
-      const game_position_of_dota_2_position_ones = await Database.from(
-        'archive_attendees'
-      )
+      const game_position_of_dota_2_position_ones = await Database.from('archive_attendees')
         .where({
           schedule_games_id: request.params.id,
           type: 1,
           dota_2_position_one: 1,
         })
         .count('* as no_of_dota_2_position_ones')
-      const game_position_of_dota_2_position_twos = await Database.from(
-        'archive_attendees'
-      )
+      const game_position_of_dota_2_position_twos = await Database.from('archive_attendees')
         .where({
           schedule_games_id: request.params.id,
           type: 1,
           dota_2_position_two: 1,
         })
         .count('* as no_of_dota_2_position_twos')
-      const game_position_of_dota_2_position_threes = await Database.from(
-        'archive_attendees'
-      )
+      const game_position_of_dota_2_position_threes = await Database.from('archive_attendees')
         .where({
           schedule_games_id: request.params.id,
           type: 1,
           dota_2_position_three: 1,
         })
         .count('* as no_of_dota_2_position_threes')
-      const game_position_of_dota_2_position_fours = await Database.from(
-        'archive_attendees'
-      )
+      const game_position_of_dota_2_position_fours = await Database.from('archive_attendees')
         .where({
           schedule_games_id: request.params.id,
           type: 1,
           dota_2_position_four: 1,
         })
         .count('* as no_of_dota_2_position_fours')
-      const game_position_of_dota_2_position_fives = await Database.from(
-        'archive_attendees'
-      )
+      const game_position_of_dota_2_position_fives = await Database.from('archive_attendees')
         .where({
           schedule_games_id: request.params.id,
           type: 1,
@@ -146,7 +136,7 @@ class Archive_AttendeeController {
     try {
       const role_call = await Database.from('archive_attendees')
         .innerJoin('users', 'users.id', 'archive_attendees.user_id')
-        .select('users.id as user_id', 'users.profile_img')
+        .select('users.id as user_id', 'users.profile_img', 'users.alias')
         .where({ archive_schedule_game_id: request.params.id, type: 1 })
         .limit(6)
 
@@ -162,12 +152,7 @@ class Archive_AttendeeController {
     try {
       const role_call_ALL = await Database.from('archive_attendees')
         .innerJoin('users', 'users.id', 'archive_attendees.user_id')
-        .select(
-          'users.id as user_id',
-          'users.profile_img',
-          'users.first_name',
-          'users.last_name'
-        )
+        .select('users.id as user_id', 'users.profile_img', 'users.first_name', 'users.last_name')
         .where({ archive_schedule_game_id: request.params.id, type: 1 })
 
       return {
@@ -201,11 +186,7 @@ class Archive_AttendeeController {
     try {
       const getScheduleGameInvites = await Database.from('archive_attendees')
         .innerJoin('users', 'users.id', 'attendees.user_id')
-        .innerJoin(
-          'schedule_games',
-          'schedule_games.id',
-          'attendees.schedule_games_id'
-        )
+        .innerJoin('schedule_games', 'schedule_games.id', 'attendees.schedule_games_id')
         .where({ schedule_games_GUID: request.params.id, type: 3 })
         .options({ nestTables: true })
 

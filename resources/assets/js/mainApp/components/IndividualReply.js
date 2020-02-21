@@ -291,7 +291,7 @@ export default class IndividualReply extends Component {
           {this.state.alert}
           {this.state.show_profile_img && (
             <Link
-              to={`/profile/${reply.user_id}`}
+              to={`/profile/${reply.alias}`}
               className='user-img-reply'
               style={{
                 backgroundImage: `url('${reply.profile_img}')`,
@@ -299,7 +299,7 @@ export default class IndividualReply extends Component {
           )}
           {!this.state.show_profile_img && (
             <Link
-              to={`/profile/${reply.user_id}`}
+              to={`/profile/${reply.alias}`}
               className='user-img-reply'
               style={{
                 backgroundImage: `url('https://image.flaticon.com/icons/svg/149/149071.svg')`,

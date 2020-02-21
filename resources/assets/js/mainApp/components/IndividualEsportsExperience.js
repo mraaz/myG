@@ -99,7 +99,7 @@ export default class IndividualEsportsExperience extends Component {
   render() {
     if (this.state.redirect_esportsExp) {
       const { match } = this.props.routeProps
-      var tmp = `/profile/${match.params.id}/edit/esportsExp/${this.state.tmp_id}`
+      var tmp = `/profile/${match.params.alias}/edit/esportsExp/${this.state.tmp_id}`
       return <Redirect push to={tmp} />
     }
 

@@ -429,7 +429,7 @@ export default class EditGamingExp extends Component<*, State> {
   render() {
     if (this.state.redirect_) {
       const { match } = this.props.routeProps
-      var tmp = `/profile/${match.params.id}`
+      var tmp = `/profile/${match.params.alias}`
       return <Redirect push to={tmp} />
     }
     if (this.state.myGame !== undefined) {
