@@ -15,8 +15,9 @@
 @section('content')
 <div class="container">
     <div class="logo-container">
+        <a href="/">
         <img src="https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Login+Screen/Logo_FINAL%402x.png"
-            height="90" width="161" />
+            height="90" width="161" /> </a>
     </div>
     <div class="card-container">
         <div class="logo-on-card">
@@ -30,7 +31,7 @@
           <div class="registration-desc">
             We are excited to have you <b>onboard!</b>
           </div>
-          
+
           <form action="/user/save" method="POST" class="default-form">
         {{ csrfField() }}
         <div class="error-box
@@ -53,7 +54,7 @@
         </div>
         <div class="form-group">
             <input class="input-common" placeholder="ALIAS *" type="text" name="alias" value="{{ old ('alias', '')}}" class="text
-  
+
           @if(hasErrorFor('alias'))
             error
           @endif
@@ -62,14 +63,14 @@
         <div class="form-group">
             @if(email === '')
             <input class="input-common" placeholder="EMAIL *" type="text" name="email" value="{{ old ('email', '')}}" class="text
-  
+
         @if(hasErrorFor('email'))
           error
         @endif
         " required="">
             @else
             <input class="input-common" placeholder="ALIAS *" type="text" name="email" value="{{ old ('email', '')}}" class="text
-  
+
           @if(hasErrorFor('email'))
             error
           @endif
@@ -78,7 +79,7 @@
         </div>
         <div class="form-group">
             <input class="input-common" placeholder="FIRST NAME" type="text" name="firstName" value="{{ old ('firstName', '')}}" class="text
-  
+
           @if(hasErrorFor('firstName'))
             error
           @endif
@@ -86,7 +87,7 @@
         </div>
         <div class="form-group">
             <input class="input-common" placeholder="LAST NAME" type="text" name="lastName" value="{{ old ('lastName', '')}}" class="text
-  
+
           @if(hasErrorFor('lastName'))
             error
           @endif
@@ -97,7 +98,7 @@
         </div>
         <form>
         <div class="registration-disclaimer">
-        * Choose carefully, It can’t be changed later!
+        * Field must be unique. Choose carefully, it can not be changed later!
         </div>
         </div>
         <div class="card-round">
@@ -110,7 +111,7 @@
                 </div>
                 <b>seats available</b>
             </div>
-            <div class="register-message"><b>Register</b> while still time and guarantee yours!</div>
+            <div class="register-message"><b>Register</b> while there's still time!</div>
         </div>
     </div>
 </div>
