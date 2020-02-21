@@ -4,6 +4,8 @@ const { validate } = use('Validator')
 const User = use('App/Models/User')
 const Settings = use('App/Models/Setting')
 var nodemailer = require('nodemailer')
+const axios = use('axios')
+const querystring = use('querystring')
 
 class CommonSaveController {
   async register({ view, session }) {
@@ -93,23 +95,35 @@ class CommonSaveController {
         return response.redirect('back')
       }
 
-      const user = new User()
-      user.first_name = request.input('firstName')
-      user.last_name = request.input('lastName')
-      user.alias = request.input('alias')
-      user.email = request.input('email')
-      user.provider_id = session.get('provider_id')
-      user.profile_img = session.get('profile_img')
-      user.profile_bg = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/universe.jpg'
-      user.provider = session.get('provider')
-      await user.save()
-
       // await Mail.send('emails.welcome', user.toJSON(), (message) => {
       //   message
       //     .to(user.email)
       //     .from('admin@mygame.com')
       //     .subject('Welcome to My Game')
       // })
+      const token = request.input('g-recaptcha-response')
+      const secretKey = '6LcQ89oUAAAAANbH8jJfsuII9ciMYAoFLxlkS2R5'
+      console.log(token)
+      const data_request = await axios.post(
+        'https://www.google.com/recaptcha/api/siteverify',
+        querystring.stringify({ secret: secretKey, response: token })
+      )
+      if (!data_request.data.success) {
+        console.log('Google Recaptcha Verification Fail' + data_request.data)
+        return response.redirect('/')
+      } else {
+        console.log('Google Recaptcha Verification Success' + data_request.data)
+        const user = new User()
+        user.first_name = request.input('firstName')
+        user.last_name = request.input('lastName')
+        user.alias = request.input('alias')
+        user.email = request.input('email')
+        user.provider_id = session.get('provider_id')
+        user.profile_img = session.get('profile_img')
+        user.profile_bg = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/universe.jpg'
+        user.provider = session.get('provider')
+        await user.save()
+      }
 
       var transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
