@@ -30,7 +30,17 @@ class AuthController {
 
         return response.redirect('back')
       } else {
+        if (request.input('alias').charAt(0) == '.') {
+          session.withErrors(validation.messages()).flashExcept(['password'])
+          return response.redirect('back')
+        }
+
+        if (/[' /.%#$;`=&_-+,<>\\]/.test(request.input('alias'))) {
+          session.withErrors(validation.messages()).flashExcept(['password'])
+          return response.redirect('back')
+        }
         var newUser
+
         try {
           newUser = await User.create({
             email: request.input('email'),
@@ -133,8 +143,14 @@ class AuthController {
   async forgotPassword({ response, request, view }) {
     return view.render('auth/forgotPassword')
   }
-  async logout({ response, request, view, auth }) {
+  async logout({ response, request, view, auth, session }) {
     try {
+      session.put('alias', null)
+      session.put('email', null)
+      session.put('profile_img', null)
+      session.put('provider', null)
+      session.put('provider_id', null)
+      session.clear()
       await auth.logout()
       return response.redirect('/')
     } catch (error) {

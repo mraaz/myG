@@ -7,6 +7,12 @@ class Chat extends Model {
   messages() {
     return this.hasMany('App/Models/ChatMessage')
   }
+  lastRead() {
+    return this.hasMany('App/Models/ChatLastRead')
+  }
+  lastCleared() {
+    return this.hasMany('App/Models/ChatLastCleared')
+  }
 }
 
 module.exports = Chat

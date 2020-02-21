@@ -88,8 +88,7 @@ class Messenger extends React.PureComponent {
   countUnreadMessages = (lastRead, messages) => {
     let unreadCount = 0;
     messages.reverse().some(message => {
-      const messageDate = convertUTCDateToLocalDate(new Date(message.createdAt));
-      if (messageDate > lastRead) {
+      if (message.messageId > lastRead) {
         ++unreadCount;
         return false;
       }
@@ -196,7 +195,7 @@ class Messenger extends React.PureComponent {
     const messages = (contact.chat.messages || []).slice(0);
     const lastMessage = messages[messages.length - 1];
     const receivedMessages = messages.filter(message => message.senderId !== this.props.userId);
-    const unreadCount = this.countUnreadMessages(contact.chat.readDate, receivedMessages);
+    const unreadCount = this.countUnreadMessages(contact.chat.lastRead, receivedMessages);
     return (
       <div
         key={contact.contactId}
@@ -368,7 +367,7 @@ class Messenger extends React.PureComponent {
               onClick={() => this.setState(previous => ({ changingStatus: !previous.changingStatus }))}
               onBlur={() => setTimeout(() => this.setState({ changingStatus: false }), 100)}
             >
-              {this.props.status}
+              {this.props.status === 'offline' ? 'invisible' : this.props.status}
             </div>
             <div className="messenger-settings-status-container">
               {this.renderStatusSettings()}
@@ -474,7 +473,7 @@ class Messenger extends React.PureComponent {
         >afk</p>
         <p className="messenger-settings-status-indicator messenger-settings-status-option clickable messenger-footer-status-offline"
           onMouseDown={() => this.setStatus('offline')}
-        >offline</p>
+        >invisible</p>
       </div>
     );
   }

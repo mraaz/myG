@@ -11,14 +11,12 @@ export default class Notifications extends Component {
     this.state = { alert: null, moreplease: true, counter: -10, myNoti: [] }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.pullData()
   }
 
   pullData = async () => {
-    console.log('pulling')
     this.state.counter = this.state.counter + 10
-    console.log(this.state.counter)
 
     if (this.state.counter != 1) {
       this.setState({

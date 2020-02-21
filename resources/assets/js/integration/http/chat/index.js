@@ -56,9 +56,9 @@ export function addContactsToChat(chatId, contacts) {
   return axios.put(`/api/chat/${chatId}/contacts`, { contacts }).then(response => response.data);
 }
 
-export function fetchMessages(chatId) {
+export function fetchMessages(chatId, page) {
   logger.log('CHAT', 'HTTP', `Fetching Messages for Chat ${chatId}`);
-  return axios.get(`/api/chat/${chatId}/message/`).then(response => response.data);
+  return axios.get(`/api/chat/${chatId}/message?page=${page || 1}`).then(response => response.data);
 }
 
 export function sendMessage(chatId, userId, encryptedContent, keyReceiver) {
@@ -74,4 +74,9 @@ export function editMessage(chatId, messageId, encryptedContent, reEncrypting) {
 export function deleteMessage(chatId, messageId) {
   logger.log('CHAT', 'HTTP', `Deleting Message ${messageId} from Chat ${chatId}`);
   return axios.delete(`/api/chat/${chatId}/message/${messageId}`).then(response => response.data);
+}
+
+export function setTyping(chatId, isTyping) {
+  logger.log('CHAT', 'HTTP', `Setting as ${isTyping ? 'Typing' : 'Not Typing'} for Chat ${chatId}`);
+  return axios.put(`/api/chat/${chatId}/typing`, { isTyping }).then(response => response.data);
 }

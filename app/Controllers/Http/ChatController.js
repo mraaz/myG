@@ -96,11 +96,12 @@ class ChatController {
     return response.send({ contacts });
   }
 
-  async fetchMessages({ auth, params, response }) {
+  async fetchMessages({ auth, params, request, response }) {
     const requestingUserId = auth.user.id;
     const requestedChatId = params.chatId;
+    const requestedPage = request.only(['page']).page || 1;
     log('CHAT', `User ${requestingUserId} requesting Messages for Chat ${requestedChatId}`);
-    const { messages } = await ChatRepository.fetchMessages({ requestingUserId, requestedChatId });
+    const { messages } = await ChatRepository.fetchMessages({ requestingUserId, requestedChatId, requestedPage });
     return response.send({ messages });
   }
 
@@ -132,6 +133,15 @@ class ChatController {
     log('CHAT', `User ${requestingUserId} deleting Message ${requestedMessageId} for Chat ${requestedChatId}`);
     const { message } = await ChatRepository.deleteMessage({ requestingUserId, requestedChatId, requestedMessageId });
     return response.send({ message });
+  }
+
+  async setTyping({ auth, params, request, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    const isTyping = request.only('isTyping').isTyping;
+    log('CHAT', `User ${requestingUserId} ${isTyping ? 'Is Typing' : 'Stopped Typing'} on Chat ${requestedChatId}`);
+    const result = await ChatRepository.setTyping({ requestingUserId, requestedChatId, isTyping });
+    return response.send(result);
   }
 
 }

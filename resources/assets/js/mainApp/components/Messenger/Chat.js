@@ -5,10 +5,11 @@ import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
 import GroupOptions from './GroupOptions';
 
-import { prepareChatAction, sendMessageAction, editMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction } from '../../../redux/actions/chatAction';
+import { prepareChatAction, fetchMessagesAction, sendMessageAction, editMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction, setTypingAction } from '../../../redux/actions/chatAction';
 import { enrichMessagesWithDates } from '../../../common/chat';
 import { encryptMessage, decryptMessage, deserializeKey } from '../../../integration/encryption';
-import { convertUTCDateToLocalDate, formatDateTime } from '../../../common/date';
+import { formatDateTime } from '../../../common/date';
+import ChatMessageList from './ChatMessageList';
 
 class Chat extends React.PureComponent {
 
@@ -16,34 +17,55 @@ class Chat extends React.PureComponent {
     super(props);
     this.state = {
       lastMessageId: null,
-      lastFriendRead: new Date(0),
+      lastRead: 0,
+      lastReads: {},
       wasEncrypted: !props.privateKey,
+      currentlyTyping: '',
       editing: false,
       settings: false,
+      messagePaginationPage: 1,
     };
     this.messageListRef = React.createRef();
   }
 
   componentDidMount() {
+    document.addEventListener("scroll", this.handleMessageListScroll, { passive: true });
+    document.addEventListener("wheel", this.handleMessageListScroll, { passive: true });
     this.props.prepareChat(this.props.chatId, this.props.contactId, this.props.isGroup, this.props.userId);
     setTimeout(() => this.props.checkSelfDestruct(this.props.chatId), 1000);
   }
 
-  componentDidUpdate() {
-    const scrolled = this.scrollToLastMessage();
-    // if (!scrolled) this.markAsRead();
+  componentWillUnmount() {
+    document.removeEventListener("scroll", this.handleMessageListScroll, false);
+    document.removeEventListener("wheel", this.handleMessageListScroll, false);
   }
 
-  scrollToLastMessage = () => {
-    const lastMessage = this.props.messages[this.props.messages.length - 1] || {};
-    const lastMessageId = lastMessage.messageId;
-    const lastFriendRead = convertUTCDateToLocalDate(new Date(this.props.friendReadDate));
-    const gotDecrypted = this.state.wasEncrypted && this.props.privateKey;
+  handleMessageListScroll = () => {
+    const messageList = this.messageListRef.current;
+    if (!messageList) return;
+    if (messageList.scrollTop !== 0 || this.props.loadingMessages || this.props.noMoreMessages) return;
+    const nextPage = this.state.messagePaginationPage + 1;
+    this.props.fetchMessages(this.props.chatId, nextPage);
+    this.setState({ messagePaginationPage: nextPage });
+    this.messageListRef.current.scrollTo(0, 4);
+  }
+
+  componentDidUpdate() {
+    const lastMessageId = (this.props.messages[this.props.messages.length - 1] || {}).messageId;
+    this.markAsRead(lastMessageId);
+    this.scrollToLastMessage(lastMessageId);
+  }
+
+  scrollToLastMessage = (lastMessageId) => {
+    const typing = JSON.stringify(this.props.typing);
+    const isTyping = typing !== this.state.currentlyTyping;
+    const hasNewReadIndicators = JSON.stringify(this.props.lastReads) !== JSON.stringify(this.state.lastReads);
     const hasNewMessage = this.state.lastMessageId !== lastMessageId;
-    const hasNewFriendRead = lastFriendRead > this.state.lastFriendRead;
-    if (hasNewFriendRead || hasNewMessage || gotDecrypted) {
+    const gotDecrypted = this.state.wasEncrypted && this.props.privateKey;
+    if (isTyping || hasNewReadIndicators || hasNewMessage || gotDecrypted) {
       const state = {};
-      if (hasNewFriendRead) state.lastFriendRead = lastFriendRead;
+      if (isTyping) state.currentlyTyping = typing;
+      if (hasNewReadIndicators) state.lastReads = this.props.lastReads;
       if (hasNewMessage) state.lastMessageId = lastMessageId;
       if (gotDecrypted) state.wasEncrypted = false;
       this.setState(state);
@@ -52,13 +74,11 @@ class Chat extends React.PureComponent {
     }
   }
 
-  markAsRead = () => {
+  markAsRead = (lastMessageId) => {
     if (this.props.minimised || !this.props.privateKey || !this.props.windowFocused) return;
-    const lastReadDate = convertUTCDateToLocalDate(new Date(this.props.readDate));
-    const receivedMessages = this.props.messages.filter(message => parseInt(message.userId) !== parseInt(this.props.userId) && !message.deleted);
-    const lastReceivedMessage = receivedMessages[receivedMessages.length - 1] || {};
-    const lastReceivedMessageDate = convertUTCDateToLocalDate(new Date(lastReceivedMessage.createdAt));
-    if (lastReceivedMessageDate > lastReadDate) this.props.updateChat(this.props.chatId, { markAsRead: true });
+    if (!lastMessageId || lastMessageId <= this.props.lastRead || lastMessageId <= this.state.lastRead) return;
+    this.setState({ lastRead: lastMessageId });
+    this.props.updateChat(this.props.chatId, { markAsRead: true });
   }
 
   sendMessage = (input) => {
@@ -226,30 +246,73 @@ class Chat extends React.PureComponent {
   }
 
   renderBody = () => {
-    const lastMessage = this.props.messages[this.props.messages.length - 1] || {};
-    const lastMessageDate = convertUTCDateToLocalDate(new Date(lastMessage.createdAt));
-    const lastFriendRead = convertUTCDateToLocalDate(new Date(this.props.friendReadDate));
-    const lastMessageWasMine = parseInt(lastMessage.senderId) === parseInt(this.props.userId);
-    const friendHasRead = lastMessageWasMine && lastFriendRead >= lastMessageDate;
+    const lastMessage = (this.props.messages[this.props.messages.length - 1] || {});
+    const lastMessageId = lastMessage.messageId;
+    const lastMessageSender = lastMessage.senderId;
     return (
       <div
         className="chat-component-body"
         ref={this.messageListRef}
       >
-        {this.props.messages.map(this.renderMessage)}
-        {friendHasRead && this.renderReadIndicator()}
+        {this.renderLoadingIndicator()}
+        <ChatMessageList
+          userId={this.props.userId}
+          chatId={this.props.chatId}
+          messages={this.props.messages}
+          contactsMap={this.props.contactsMap}
+          messageListRef={this.messageListRef}
+          editing={this.state.editing}
+          onEdit={this.onEdit}
+          editMessage={this.editMessage}
+          decryptMessage={this.decryptMessage}
+        />
+        {this.renderTypingIndicator()}
+        {this.renderReadIndicators(lastMessageId, lastMessageSender)}
       </div>
     );
   }
 
-  renderReadIndicator() {
+  renderLoadingIndicator() {
+    if (!this.props.loadingMessages) return null;
     return (
-      <div className="chat-component-read-indicator">
+      <p className="chat-component-loading-indicator">loading messages ...</p>
+    );
+  }
+
+  renderReadIndicators(lastMessageId, lastMessageSender) {
+    const { contactsMap, lastReads } = this.props;
+    const contacts = this.props.isGroup ? contactsMap : { [this.props.contactId]: { contactId: this.props.contactId, icon: this.props.icon } };
+    const contactsWithRead = Object.keys(lastReads).map(contactId => ({ ...contacts[contactId], lastRead: lastReads[contactId] }));
+    const contactsThatRead = contactsWithRead.filter(contact => contact.contactId !== lastMessageSender && contact.lastRead >= lastMessageId);
+    if (!contactsThatRead.length) return null;
+    return (
+      <div className="chat-component-read-indicator-container">
+        {contactsThatRead.map(contact => this.renderReadIndicator(contact.contactId, contact.icon))}
+      </div>
+    );
+  }
+
+  renderReadIndicator(key, icon) {
+    return (
+      <div key={key} className="chat-component-read-indicator">
         <div className="chat-component-read-indicator-icon">
           <img
             className="chat-component-read-indicator-icon-image"
-            src={this.props.icon}
+            src={icon}
           />
+        </div>
+      </div>
+    );
+  }
+
+  renderTypingIndicator() {
+    if (!this.props.typing.length) return;
+    return (
+      <div key={'typing'}
+        className={`chat-component-message chat-component-message-received chat-component-message-short`}
+      >
+        <div className="chat-component-message-container">
+          <div className="dot-flashing" />
         </div>
       </div>
     );
@@ -287,6 +350,7 @@ class Chat extends React.PureComponent {
           isDecryptable={this.props.privateKey}
           sendMessage={this.sendMessage}
           editLastMessage={this.editLastMessage}
+          setTyping={isTyping => this.props.setTyping(this.props.chatId, isTyping)}
         />
       </div>
     );
@@ -346,6 +410,8 @@ function mapStateToProps(state, props) {
   chat.privateKey = deserializeKey(chat.privateKey);
   return {
     messages,
+    loadingMessages: chat.loadingMessages,
+    noMoreMessages: chat.noMoreMessages,
     contacts: fullContacts,
     contactId,
     contactIds: contacts,
@@ -359,8 +425,9 @@ function mapStateToProps(state, props) {
     blocked: chat.blocked || false,
     muted: chat.muted || false,
     selfDestruct: chat.selfDestruct || false,
-    readDate: chat.readDate || new Date(0),
-    friendReadDate: chat.friendReadDate || new Date(0),
+    lastRead: chat.lastRead || 0,
+    lastReads: chat.lastReads || {},
+    typing: chat.typing || [],
     maximised: chat.maximised || false,
     minimised: chat.minimised || false,
     userPublicKey: state.encryption.publicKey,
@@ -374,12 +441,14 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
   return ({
     prepareChat: (chatId, contactId, contactIds, userId) => dispatch(prepareChatAction(chatId, contactId, contactIds, userId)),
+    fetchMessages: (chatId, page) => dispatch(fetchMessagesAction(chatId, page)),
     sendMessage: (chatId, userId, content) => dispatch(sendMessageAction(chatId, userId, content)),
     editMessage: (chatId, messageId, content) => dispatch(editMessageAction(chatId, messageId, content)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     updateChatState: (chatId, state) => dispatch(updateChatStateAction(chatId, state)),
     checkSelfDestruct: (chatId) => dispatch(checkSelfDestructAction(chatId)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
+    setTyping: (chatId, isTyping) => dispatch(setTypingAction(chatId, isTyping)),
   });
 }
 

@@ -306,7 +306,7 @@ export default class IndividualReply extends Component {
               }}></Link>
           )}
           <div className='reply-author-info'>
-            {reply.first_name} {reply.last_name}
+            {reply.alias}
             {this.state.show_reply_options && (
               <div className='reply-options'>
                 <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}></i>

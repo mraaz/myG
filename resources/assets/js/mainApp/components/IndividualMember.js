@@ -190,9 +190,7 @@ export default class IndividualMember extends Component {
               backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/default_user/new-user-profile-picture.png')`,
             }}></Link>
         )}
-        <div className='user-info'>
-          {`${member.first_name}`} {`${member.last_name}`}
-        </div>
+        <div className='user-info'>{`${member.alias}`}</div>
         {this.state.show_controls && (
           <div className='member-controls'>
             {this.state.show_promoted_icon && (

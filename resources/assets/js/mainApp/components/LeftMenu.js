@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter, Link } from 'react-router-dom'
-import { connect } from 'react-redux';
-import { logoutAction } from '../../redux/actions/userAction';
+import { connect } from 'react-redux'
+import { logoutAction } from '../../redux/actions/userAction'
 
 class LeftMenu extends Component {
   constructor() {
@@ -67,7 +67,7 @@ class LeftMenu extends Component {
     if (this.props.initialData.userInfo == undefined) {
       return <div>Loading</div>
     } else {
-      const { first_name, last_name, id } = this.props.initialData.userInfo
+      const { alias } = this.props.initialData.userInfo
       return (
         <section id='left-menu'>
           <div className='account-dropdown'>
@@ -81,7 +81,7 @@ class LeftMenu extends Component {
               </div>
             </Link>
             <div className='name' onClick={this.clickedDropdown}>
-              {`${first_name} ${last_name}`}
+              {`${alias}`}
             </div>
             <div className='icon' onClick={this.clickedDropdown}>
               <i className='fas fa-chevron-down' />
@@ -90,7 +90,9 @@ class LeftMenu extends Component {
             <div className={`dropdown ${this.state.dropdown ? 'active' : ''}`}>
               <nav>
                 <a href='/mySettings'>mySettings</a>
-                <a href='/logout' onClick={() => this.props.logout()}>Logout</a>
+                <a href='/logout' onClick={() => this.props.logout()}>
+                  Logout
+                </a>
               </nav>
             </div>
           </div>
@@ -195,9 +197,12 @@ class LeftMenu extends Component {
 }
 
 function mapDispatchToProps(dispatch) {
-  return ({
-    logout: () => dispatch(logoutAction())
-  });
+  return {
+    logout: () => dispatch(logoutAction()),
+  }
 }
 
-export default connect(null, mapDispatchToProps)(withRouter(LeftMenu));
+export default connect(
+  null,
+  mapDispatchToProps
+)(withRouter(LeftMenu))

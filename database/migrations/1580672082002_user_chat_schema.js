@@ -15,8 +15,6 @@ class UserChatSchema extends Schema {
       table.boolean('blocked').notNullable().defaultTo(false)
       table.boolean('self_destruct').notNullable().defaultTo(false)
       table.text('deleted_messages').notNullable().defaultTo('[]')
-      table.datetime('cleared_date').notNullable().defaultTo(new Date(0).toISOString().slice(0, 19).replace('T', ' '))
-      table.datetime('read_date').notNullable().defaultTo(new Date(0).toISOString().slice(0, 19).replace('T', ' '))
       table.timestamps()
     })
   }

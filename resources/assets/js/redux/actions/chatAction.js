@@ -1,4 +1,4 @@
-import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, createChat, updateChat, clearChat, deleteChat, exitGroup, removeFromGroup, checkSelfDestruct, fetchMessages, sendMessage, editMessage, deleteMessage } from '../../integration/http/chat';
+import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, createChat, updateChat, clearChat, deleteChat, exitGroup, removeFromGroup, checkSelfDestruct, fetchMessages, sendMessage, editMessage, deleteMessage, setTyping } from '../../integration/http/chat';
 import { fetchContacts, fetchContact, fetchStatus } from '../../integration/http/user';
 import { generateKeys, deserializeKey } from '../../integration/encryption';
 
@@ -44,6 +44,14 @@ export function onDeleteChatAction(payload) {
   return {
     type: 'ON_CHAT_DELETED',
     payload,
+  }
+}
+
+export function onTypingAction(payload, userId) {
+  return {
+    type: 'ON_TYPING',
+    payload,
+    meta: { userId },
   }
 }
 
@@ -201,11 +209,11 @@ export function closeChatAction(chatId) {
   }
 }
 
-export function fetchMessagesAction(chatId) {
+export function fetchMessagesAction(chatId, page) {
   return {
     type: 'FETCH_CHAT_MESSAGES',
-    payload: fetchMessages(chatId),
-    meta: { chatId },
+    payload: fetchMessages(chatId, page),
+    meta: { chatId, page },
   }
 }
 
@@ -230,6 +238,14 @@ export function deleteMessageAction(chatId, messageId, origin) {
     type: 'DELETE_MESSAGE',
     payload: deleteMessage(chatId, messageId),
     meta: { chatId, messageId, origin },
+  }
+}
+
+export function setTypingAction(chatId, isTyping) {
+  return {
+    type: 'DELETE_MESSAGE',
+    payload: setTyping(chatId, isTyping),
+    meta: { chatId, isTyping },
   }
 }
 

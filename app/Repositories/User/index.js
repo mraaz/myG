@@ -29,7 +29,7 @@ class UserRepository {
     const contacts = friends.map(friend => new ContactSchema({
       contactId: friend.friend_id,
       icon: friend.profile_img,
-      name: `${friend.first_name} ${friend.last_name}`,
+      name: friend.alias,
       status: friend.status,
       lastSeen: friend.last_seen,
       publicKey: friend.public_key,
@@ -42,7 +42,7 @@ class UserRepository {
     const contactSchema = new ContactSchema({
       contactId: requestedContactId,
       icon: contact.profile_img,
-      name: `${contact.first_name} ${contact.last_name}`,
+      name: contact.alias,
       status: contact.status,
       lastSeen: contact.last_seen,
       publicKey: contact.public_key,
