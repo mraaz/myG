@@ -24,6 +24,27 @@ class UserController {
       console.log(error)
     }
   }
+
+  async profile_with_alias({ auth, request, response }) {
+    try {
+      const user = await Database.from('users')
+        .where('alias', '=', request.params.alias)
+        .first()
+      const friend = await Database.from('friends').where({
+        user_id: auth.user.id,
+        friend_id: user.id,
+      })
+
+      return {
+        user: user,
+
+        friend: friend === undefined || friend.length == 0 ? false : true,
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   async store({ auth, request, response }) {
     if (auth.user) {
       try {

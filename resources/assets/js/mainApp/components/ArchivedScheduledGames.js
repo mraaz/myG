@@ -9,16 +9,14 @@ export default class ArchivedScheduledGames extends Component {
     this.state = {}
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const self = this
 
     const { match } = this.props.routeProps
 
     const getExactData = async function() {
       try {
-        const myArchiveScheduledGame = await axios.get(
-          `/api/ArchiveScheduleGame/filtered_by_one/${match.params.id}`
-        )
+        const myArchiveScheduledGame = await axios.get(`/api/ArchiveScheduleGame/filtered_by_one/${match.params.id}`)
         self.setState({
           myScheduledGames: myArchiveScheduledGame.data.latestScheduledGames,
         })
@@ -39,13 +37,7 @@ export default class ArchivedScheduledGames extends Component {
   showLatestPosts = () => {
     if (this.state.myScheduledGames != undefined) {
       return this.state.myScheduledGames.map((item, index) => {
-        return (
-          <ArchivedScheduledGamePost
-            schedule_game={item}
-            key={index}
-            user={this.props.initialData}
-          />
-        )
+        return <ArchivedScheduledGamePost schedule_game={item} key={index} user={this.props.initialData} />
       })
     }
   }

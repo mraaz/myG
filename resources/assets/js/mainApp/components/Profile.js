@@ -359,7 +359,7 @@ export default class Profile extends Component {
       var tmp
       switch (this.state.redirect_link) {
         case 'editDossier':
-          tmp = `/profile/${match.params.id}/edit/dossier`
+          tmp = `/profile/${match.params.alias}/edit/dossier`
           return <Redirect push to={tmp} />
           break
         case 'addGamingExp':

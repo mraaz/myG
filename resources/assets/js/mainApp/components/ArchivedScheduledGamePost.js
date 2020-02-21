@@ -63,14 +63,11 @@ export default class ArchivedScheduledGamePost extends Component {
 
     const getCommentsCount = async function() {
       try {
-        const myCommentsCount = await axios.get(
-          `/api/archive_comments/scheduled_gamesCount/${schedule_game.archive_schedule_game_id}`
-        )
+        const myCommentsCount = await axios.get(`/api/archive_comments/scheduled_gamesCount/${schedule_game.archive_schedule_game_id}`)
         if (myCommentsCount.data.no_of_comments[0].no_of_comments != 0) {
           self.setState({
             zero_comments: true,
-            comment_total:
-              myCommentsCount.data.no_of_comments[0].no_of_comments,
+            comment_total: myCommentsCount.data.no_of_comments[0].no_of_comments,
           })
         }
       } catch (error) {
@@ -80,9 +77,7 @@ export default class ArchivedScheduledGamePost extends Component {
 
     const checkWhosPost = async function() {
       try {
-        const checkWhosPost = await axios.get(
-          `/api/ArchivemyScheduledGamesCount/${schedule_game.id}`
-        )
+        const checkWhosPost = await axios.get(`/api/ArchivemyScheduledGamesCount/${schedule_game.id}`)
         if (checkWhosPost.data.myScheduledGamesCount[0].no_of_my_posts != 0) {
           self.setState({
             myPost: true,
@@ -97,22 +92,13 @@ export default class ArchivedScheduledGamePost extends Component {
       try {
         if (schedule_game.limit != 42) {
           self.state.show_attendees = true
-          const getNumberofAttendees = await axios.get(
-            `/api/archive_attendees/attending/${schedule_game.archive_schedule_game_id}`
-          )
-          if (
-            getNumberofAttendees.data.allAttendees[0].no_of_allAttendees != 0
-          ) {
-            self.state.attendees_count =
-              getNumberofAttendees.data.allAttendees[0].no_of_allAttendees
+          const getNumberofAttendees = await axios.get(`/api/archive_attendees/attending/${schedule_game.archive_schedule_game_id}`)
+          if (getNumberofAttendees.data.allAttendees[0].no_of_allAttendees != 0) {
+            self.state.attendees_count = getNumberofAttendees.data.allAttendees[0].no_of_allAttendees
 
-            const getwhoisAttending = await axios.get(
-              `/api/archive_attendees/role_call/${schedule_game.archive_schedule_game_id}`
-            )
+            const getwhoisAttending = await axios.get(`/api/archive_attendees/role_call/${schedule_game.archive_schedule_game_id}`)
             for (var i = 0; i < getwhoisAttending.data.role_call.length; i++) {
-              self.state.attendees_profiles.push(
-                getwhoisAttending.data.role_call[i]
-              )
+              self.state.attendees_profiles.push(getwhoisAttending.data.role_call[i])
               switch (i) {
                 case 0:
                   self.setState({ show_one_profile: true })
@@ -137,13 +123,9 @@ export default class ArchivedScheduledGamePost extends Component {
           }
         } else {
           try {
-            const getwhoisAttending = await axios.get(
-              `/api/archive_attendees/role_call/${schedule_game.archive_schedule_game_id}`
-            )
+            const getwhoisAttending = await axios.get(`/api/archive_attendees/role_call/${schedule_game.archive_schedule_game_id}`)
             for (var i = 0; i < getwhoisAttending.data.role_call.length; i++) {
-              self.state.attendees_profiles.push(
-                getwhoisAttending.data.role_call[i]
-              )
+              self.state.attendees_profiles.push(getwhoisAttending.data.role_call[i])
               switch (i) {
                 case 0:
                   self.setState({ show_one_profile: true })
@@ -186,9 +168,7 @@ export default class ArchivedScheduledGamePost extends Component {
 
     const getComments = async function() {
       try {
-        const myComments = await axios.get(
-          `/api/archive_comments/scheduled_games/${schedule_game.archive_schedule_game_id}`
-        )
+        const myComments = await axios.get(`/api/archive_comments/scheduled_games/${schedule_game.archive_schedule_game_id}`)
         self.setState({
           myComments: myComments.data.allComments,
           value: '',
@@ -204,13 +184,7 @@ export default class ArchivedScheduledGamePost extends Component {
   showComment = () => {
     if (this.state.myComments != undefined) {
       return this.state.myComments.map((item, index) => {
-        return (
-          <IndividualComment
-            comment={item}
-            key={index}
-            user={this.props.user}
-          />
-        )
+        return <IndividualComment comment={item} key={index} user={this.props.user} />
       })
     }
   }
@@ -263,16 +237,10 @@ export default class ArchivedScheduledGamePost extends Component {
       other = true
     }
 
-    if (
-      schedule_game.dota2_medal_ranks != '' &&
-      schedule_game.dota2_medal_ranks != null
-    ) {
+    if (schedule_game.dota2_medal_ranks != '' && schedule_game.dota2_medal_ranks != null) {
       dota2_medal_ranks = true
     }
-    if (
-      schedule_game.dota2_server_regions != '' &&
-      schedule_game.dota2_server_regions != null
-    ) {
+    if (schedule_game.dota2_server_regions != '' && schedule_game.dota2_server_regions != null) {
       dota2_server_regions = true
     }
     if (schedule_game.dota2_roles != '' && schedule_game.dota2_roles != null) {
@@ -303,14 +271,8 @@ export default class ArchivedScheduledGamePost extends Component {
       var duration = moment.duration(myExpiry.diff(now)).humanize()
     }
 
-    var myStartDateTime = moment(
-      schedule_game.start_date_time,
-      'YYYY-MM-DD HH:mm:ssZ'
-    ).local()
-    var myEndDateTime = moment(
-      schedule_game.end_date_time,
-      'YYYY-MM-DD HH:mm:ssZ'
-    ).local()
+    var myStartDateTime = moment(schedule_game.start_date_time, 'YYYY-MM-DD HH:mm:ssZ').local()
+    var myEndDateTime = moment(schedule_game.end_date_time, 'YYYY-MM-DD HH:mm:ssZ').local()
 
     return (
       <div className='gamesPosts'>
@@ -323,15 +285,11 @@ export default class ArchivedScheduledGamePost extends Component {
                   {this.state.zero_comments && (
                     <div className='comments-statz' onClick={this.onChange}>
                       {' '}
-                      {this.state.comment_total > 1
-                        ? `${this.state.comment_total} comments`
-                        : `${this.state.comment_total} comment`}{' '}
+                      {this.state.comment_total > 1 ? `${this.state.comment_total} comments` : `${this.state.comment_total} comment`}{' '}
                     </div>
                   )}
                   {!this.state.zero_comments && (
-                    <div
-                      className='comments-statz'
-                      onClick={this.focusTextInput}>
+                    <div className='comments-statz' onClick={this.focusTextInput}>
                       {' '}
                       No comments
                     </div>
@@ -340,9 +298,7 @@ export default class ArchivedScheduledGamePost extends Component {
                 {!this.state.myPost && (
                   <h6>
                     {' '}
-                    <Link
-                      to={`/profile/${schedule_game.user_id}`}
-                      style={{ textDecoration: 'none', color: 'white' }}>
+                    <Link to={`/profile/${schedule_game.alias}`} style={{ textDecoration: 'none', color: 'white' }}>
                       {' '}
                       Posted by {schedule_game.alias}
                     </Link>
@@ -352,41 +308,18 @@ export default class ArchivedScheduledGamePost extends Component {
               <div className='expiry-info'>Expiry:&nbsp;{duration}</div>
               <div className='myFields'>
                 {region && <div> Region/s: {schedule_game.region} </div>}
-                <div>
-                  {' '}
-                  Start Time: {myStartDateTime.format('Do MMM YY, h:mm a')}{' '}
-                </div>
-                <div>
-                  {' '}
-                  End Time: {myEndDateTime.format('Do MMM YY, h:mm a')}{' '}
-                </div>
-                {experience && (
-                  <div> Experience: {schedule_game.experience} </div>
-                )}
+                <div> Start Time: {myStartDateTime.format('Do MMM YY, h:mm a')} </div>
+                <div> End Time: {myEndDateTime.format('Do MMM YY, h:mm a')} </div>
+                {experience && <div> Experience: {schedule_game.experience} </div>}
                 {platform && <div> Platform: {schedule_game.platform} </div>}
                 {other && <div> Other: {schedule_game.other} </div>}
-                {dota2_medal_ranks && (
-                  <div>Medal Ranks: {schedule_game.dota2_medal_ranks} </div>
-                )}
-                {dota2_server_regions && (
-                  <div>
-                    Server Regions: {schedule_game.dota2_server_regions}{' '}
-                  </div>
-                )}
+                {dota2_medal_ranks && <div>Medal Ranks: {schedule_game.dota2_medal_ranks} </div>}
+                {dota2_server_regions && <div>Server Regions: {schedule_game.dota2_server_regions} </div>}
                 {dota2_roles && <div>Roles: {schedule_game.dota2_roles} </div>}
-                {this.state.clash_royale_field && (
-                  <div>
-                    {' '}
-                    Royale Trophies: {schedule_game.clash_royale_trophies}{' '}
-                  </div>
-                )}
+                {this.state.clash_royale_field && <div> Royale Trophies: {schedule_game.clash_royale_trophies} </div>}
                 <div> Visibility: {visibility} </div>
-                {description && (
-                  <div> Description: {schedule_game.description} </div>
-                )}
-                <div>
-                  Reason for Cancelling: {schedule_game.reason_for_cancel}{' '}
-                </div>
+                {description && <div> Description: {schedule_game.description} </div>}
+                <div>Reason for Cancelling: {schedule_game.reason_for_cancel} </div>
               </div>
             </div>
             <div className='invitation-panel'>
@@ -397,67 +330,46 @@ export default class ArchivedScheduledGamePost extends Component {
                     <div className='dota_2_position_one_text'>
                       {' '}
                       1
-                      <div
-                        className={`noti-number ${
-                          this.state.dota_2_pos_one_count > 0 ? 'active' : ''
-                        }`}>
+                      <div className={`noti-number ${this.state.dota_2_pos_one_count > 0 ? 'active' : ''}`}>
                         {' '}
                         {this.state.dota_2_pos_one_count}
                       </div>{' '}
                     </div>
                   )}
 
-                  {this.state.show_dota_2_pos_one &&
-                    this.state.show_dota_2_pos_two && (
-                      <div className='dot-sep'>,</div>
-                    )}
+                  {this.state.show_dota_2_pos_one && this.state.show_dota_2_pos_two && <div className='dot-sep'>,</div>}
                   {this.state.show_dota_2_pos_two && (
                     <div className='dota_2_position_two_text'>
                       {' '}
                       2
-                      <div
-                        className={`noti-number ${
-                          this.state.dota_2_pos_two_count > 0 ? 'active' : ''
-                        }`}>
+                      <div className={`noti-number ${this.state.dota_2_pos_two_count > 0 ? 'active' : ''}`}>
                         {' '}
                         {this.state.dota_2_pos_two_count}
                       </div>
                     </div>
                   )}
 
-                  {(this.state.show_dota_2_pos_one ||
-                    this.state.show_dota_2_pos_two) &&
-                    this.state.show_dota_2_pos_three && (
-                      <div className='dot-sep'>,</div>
-                    )}
+                  {(this.state.show_dota_2_pos_one || this.state.show_dota_2_pos_two) && this.state.show_dota_2_pos_three && (
+                    <div className='dot-sep'>,</div>
+                  )}
                   {this.state.show_dota_2_pos_three && (
                     <div className='dota_2_position_three_text'>
                       {' '}
                       3
-                      <div
-                        className={`noti-number ${
-                          this.state.dota_2_pos_three_count > 0 ? 'active' : ''
-                        }`}>
+                      <div className={`noti-number ${this.state.dota_2_pos_three_count > 0 ? 'active' : ''}`}>
                         {' '}
                         {this.state.dota_2_pos_three_count}
                       </div>{' '}
                     </div>
                   )}
 
-                  {(this.state.show_dota_2_pos_one ||
-                    this.state.show_dota_2_pos_two ||
-                    this.state.show_dota_2_pos_three) &&
-                    this.state.show_dota_2_pos_four && (
-                      <div className='dot-sep'>,</div>
-                    )}
+                  {(this.state.show_dota_2_pos_one || this.state.show_dota_2_pos_two || this.state.show_dota_2_pos_three) &&
+                    this.state.show_dota_2_pos_four && <div className='dot-sep'>,</div>}
                   {this.state.show_dota_2_pos_four && (
                     <div className='dota_2_position_four_text'>
                       {' '}
                       4
-                      <div
-                        className={`noti-number ${
-                          this.state.dota_2_pos_four_count > 0 ? 'active' : ''
-                        }`}>
+                      <div className={`noti-number ${this.state.dota_2_pos_four_count > 0 ? 'active' : ''}`}>
                         {' '}
                         {this.state.dota_2_pos_four_count}
                       </div>{' '}
@@ -468,17 +380,12 @@ export default class ArchivedScheduledGamePost extends Component {
                     this.state.show_dota_2_pos_two ||
                     this.state.show_dota_2_pos_three ||
                     this.state.show_dota_2_pos_four) &&
-                    this.state.show_dota_2_pos_five && (
-                      <div className='dot-sep'>,</div>
-                    )}
+                    this.state.show_dota_2_pos_five && <div className='dot-sep'>,</div>}
                   {this.state.show_dota_2_pos_five && (
                     <div className='dota_2_position_five_text'>
                       {' '}
                       5
-                      <div
-                        className={`noti-number ${
-                          this.state.dota_2_pos_five_count > 0 ? 'active' : ''
-                        }`}>
+                      <div className={`noti-number ${this.state.dota_2_pos_five_count > 0 ? 'active' : ''}`}>
                         {' '}
                         {this.state.dota_2_pos_five_count}
                       </div>
@@ -489,7 +396,7 @@ export default class ArchivedScheduledGamePost extends Component {
               {this.state.show_one_profile && (
                 <div className='attendees-one'>
                   <Link
-                    to={`/profile/${this.state.attendees_profiles[0].user_id}`}
+                    to={`/profile/${this.state.attendees_profiles[0].alias}`}
                     className='user-img'
                     style={{
                       backgroundImage: `url('${this.state.attendees_profiles[0].profile_img}')`,
@@ -499,7 +406,7 @@ export default class ArchivedScheduledGamePost extends Component {
               {this.state.show_two_profile && (
                 <div className='attendees-two'>
                   <Link
-                    to={`/profile/${this.state.attendees_profiles[1].user_id}`}
+                    to={`/profile/${this.state.attendees_profiles[1].alias}`}
                     className='user-img'
                     style={{
                       backgroundImage: `url('${this.state.attendees_profiles[1].profile_img}')`,
@@ -509,7 +416,7 @@ export default class ArchivedScheduledGamePost extends Component {
               {this.state.show_three_profile && (
                 <div className='attendees-three'>
                   <Link
-                    to={`/profile/${this.state.attendees_profiles[2].user_id}`}
+                    to={`/profile/${this.state.attendees_profiles[2].alias}`}
                     className='user-img'
                     style={{
                       backgroundImage: `url('${this.state.attendees_profiles[2].profile_img}')`,
@@ -519,7 +426,7 @@ export default class ArchivedScheduledGamePost extends Component {
               {this.state.show_four_profile && (
                 <div className='attendees-four'>
                   <Link
-                    to={`/profile/${this.state.attendees_profiles[3].user_id}`}
+                    to={`/profile/${this.state.attendees_profiles[3].alias}`}
                     className='user-img'
                     style={{
                       backgroundImage: `url('${this.state.attendees_profiles[3].profile_img}')`,
@@ -531,7 +438,7 @@ export default class ArchivedScheduledGamePost extends Component {
               {this.state.show_five_profile && (
                 <div className='attendees-five'>
                   <Link
-                    to={`/profile/${this.state.attendees_profiles[4].user_id}`}
+                    to={`/profile/${this.state.attendees_profiles[4].alias}`}
                     className='user-img'
                     style={{
                       backgroundImage: `url('${this.state.attendees_profiles[4].profile_img}')`,
@@ -555,9 +462,7 @@ export default class ArchivedScheduledGamePost extends Component {
                   {this.state.attendees_count} out of {schedule_game.limit}
                 </div>
               )}
-              {!this.state.show_attendees && (
-                <div className='attendees-count'>Unlimited</div>
-              )}
+              {!this.state.show_attendees && <div className='attendees-count'>Unlimited</div>}
             </div>
             <div className='compose-comment'>
               <textarea
@@ -575,11 +480,7 @@ export default class ArchivedScheduledGamePost extends Component {
               </div>
             </div>
             <div className='comments'>
-              {this.state.show_more_comments && (
-                <div className='show-individual-comments'>
-                  {this.showComment()}
-                </div>
-              )}
+              {this.state.show_more_comments && <div className='show-individual-comments'>{this.showComment()}</div>}
             </div>
           </div>
         </div>

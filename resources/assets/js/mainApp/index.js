@@ -137,16 +137,16 @@ class Layout extends Component {
                   <Route exact path="/post/:id" component={(props) => <SinglePost routeProps={props}
                     initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
 
-                  <Route exact path="/profile/:id/edit/dossier" component={(props) => <Dossier routeProps={props}
+                  <Route exact path="/profile/:alias/edit/dossier" component={(props) => <Dossier routeProps={props}
                     initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
 
-                  <Route exact path="/profile/:id/upload/profile" component={(props) => <UploadPic routeProps={props}
+                  <Route exact path="/profile/:alias/upload/profile" component={(props) => <UploadPic routeProps={props}
                     initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
 
-                  <Route exact path="/profile/:id/upload/bg_profile" component={(props) => <UploadPic routeProps={props}
+                  <Route exact path="/profile/:alias/upload/bg_profile" component={(props) => <UploadPic routeProps={props}
                     initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
 
-                  <Route exact path="/profile/:id/upload/img_profile" component={(props) => <UploadPic routeProps={props}
+                  <Route exact path="/profile/:alias/upload/img_profile" component={(props) => <UploadPic routeProps={props}
                     initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
 
                   <Route exact path="/profile/:alias/add/gamingexp" component={(props) => <AddGamingExp routeProps={props}

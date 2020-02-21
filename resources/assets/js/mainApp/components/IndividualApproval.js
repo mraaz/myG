@@ -291,7 +291,7 @@ export default class IndividualApproval extends Component {
         {this.state.alert}{' '}
         {show_profile_img && (
           <Link
-            to={`/profile/${approvals.attendees.user_id}`}
+            to={`/profile/${approvals.users.alias}`}
             className='user-img'
             style={{
               backgroundImage: `url('${approvals.users.profile_img}')`,
@@ -299,7 +299,7 @@ export default class IndividualApproval extends Component {
         )}
         {!show_profile_img && (
           <Link
-            to={`/profile/${approvals.attendees.user_id}`}
+            to={`/profile/${approvals.users.alias}`}
             className='user-img'
             style={{
               backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/unknown_user.svg')`,

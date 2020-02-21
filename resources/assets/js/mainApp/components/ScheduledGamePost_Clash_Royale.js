@@ -535,7 +535,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
               {!this.state.myPost && (
                 <h6>
                   {' '}
-                  <Link to={`/profile/${schedule_game.user_id}`} style={{ textDecoration: 'none', color: 'white' }}>
+                  <Link to={`/profile/${schedule_game.alias}`} style={{ textDecoration: 'none', color: 'white' }}>
                     {' '}
                     Posted by {schedule_game.alias}
                   </Link>
@@ -609,7 +609,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
             {this.state.show_one_profile && (
               <div className='attendees-one'>
                 <Link
-                  to={`/profile/${this.state.attendees_profiles[0].user_id}`}
+                  to={`/profile/${this.state.attendees_profiles[0].alias}`}
                   className='user-img'
                   style={{
                     backgroundImage: `url('${this.state.attendees_profiles[0].profile_img}')`,
@@ -619,7 +619,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
             {this.state.show_two_profile && (
               <div className='attendees-two'>
                 <Link
-                  to={`/profile/${this.state.attendees_profiles[1].user_id}`}
+                  to={`/profile/${this.state.attendees_profiles[1].alias}`}
                   className='user-img'
                   style={{
                     backgroundImage: `url('${this.state.attendees_profiles[1].profile_img}')`,
@@ -629,7 +629,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
             {this.state.show_three_profile && (
               <div className='attendees-three'>
                 <Link
-                  to={`/profile/${this.state.attendees_profiles[2].user_id}`}
+                  to={`/profile/${this.state.attendees_profiles[2].alias}`}
                   className='user-img'
                   style={{
                     backgroundImage: `url('${this.state.attendees_profiles[2].profile_img}')`,
@@ -639,7 +639,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
             {this.state.show_four_profile && (
               <div className='attendees-four'>
                 <Link
-                  to={`/profile/${this.state.attendees_profiles[3].user_id}`}
+                  to={`/profile/${this.state.attendees_profiles[3].alias}`}
                   className='user-img'
                   style={{
                     backgroundImage: `url('${this.state.attendees_profiles[3].profile_img}')`,
@@ -649,7 +649,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
             {this.state.show_five_profile && (
               <div className='attendees-five'>
                 <Link
-                  to={`/profile/${this.state.attendees_profiles[4].user_id}`}
+                  to={`/profile/${this.state.attendees_profiles[4].alias}`}
                   className='user-img'
                   style={{
                     backgroundImage: `url('${this.state.attendees_profiles[4].profile_img}')`,
