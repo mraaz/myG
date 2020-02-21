@@ -1,6 +1,8 @@
 'use strict'
 
 const { validate, sanitize } = use('Validator')
+const axios = use('axios')
+const querystring = use('querystring')
 const User = use('App/Models/User')
 const Settings = use('App/Models/Setting')
 var nodemailer = require('nodemailer')
@@ -29,16 +31,27 @@ class CommonSaveController {
       return response.redirect('back')
     } else {
       console.log('validation True')
-      const user = new User()
-      user.first_name = request.input('firstName')
-      user.last_name = request.input('lastName')
-      user.alias = request.input('alias')
-      user.email = request.input('email')
-      user.provider_id = session.get('provider_id')
-      user.profile_img = session.get('profile_img')
-      user.profile_bg = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/universe.jpg'
-      user.provider = session.get('provider')
-      await user.save()
+      const token = request.input('g-recaptcha-response')
+      const secretKey = '6Ldl_tkUAAAAACWHF6N7odX6ygm4ndj0uNw08yAd'
+      console.log(token)
+      const data_request = await axios.post('https://www.google.com/recaptcha/api/siteverify', querystring.stringify({ secret: secretKey, response: token }))
+      if (!data_request.data.success) {
+        console.log('Google Recaptcha Verification Fail' + data_request.data)
+        return response.redirect('/')
+      }
+      else {
+        console.log('Google Recaptcha Verification Success' + data_request.data)
+        const user = new User()
+        user.first_name = request.input('firstName')
+        user.last_name = request.input('lastName')
+        user.alias = request.input('alias')
+        user.email = request.input('email')
+        user.provider_id = session.get('provider_id')
+        user.profile_img = session.get('profile_img')
+        user.profile_bg = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/universe.jpg'
+        user.provider = session.get('provider')
+        await user.save()
+      }
 
       // await Mail.send('emails.welcome', user.toJSON(), (message) => {
       //   message
