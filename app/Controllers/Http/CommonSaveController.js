@@ -15,7 +15,6 @@ class CommonSaveController {
   }
 
   async saveuser({ ally, auth, request, session, response, view }) {
-
     //117703502811656157640
     //https://myg.gg/user/register#
 
@@ -28,9 +27,13 @@ class CommonSaveController {
       await auth.logout()
     }
 
-    if (session.get('provider_id') == null){
-      console.log("Security Error! Unable to authenticate against your social.")
-      session.withErrors([{ field: 'alias', message: "Security Error! Unable to authenticate against your social. Please clear cache and try again." }]).flashAll()
+    if (session.get('provider_id') == null) {
+      console.log('Security Error! Unable to authenticate against your social.')
+      session
+        .withErrors([
+          { field: 'alias', message: 'Security Error! Unable to authenticate against your social. Please clear cache and try again.' },
+        ])
+        .flashAll()
       return response.redirect('back')
     }
 
@@ -44,19 +47,35 @@ class CommonSaveController {
     const messages = {
       required: 'Required field',
       email: 'Enter valid email address',
-      min: 'Not enough characters - Min 4',
-      max: 'Wow! Too many characters - Max 30',
+      min: 'Not enough characters for Alias- Min 4',
+      max: 'Wow! Too many characters for Alias - Max 30',
       unique: 'Sorry, this field is not unique. Try again please.',
     }
 
     const validation = await validate(request.all(), rules, messages)
+    var tmp
     if (validation.fails()) {
       console.log(validation.messages())
-      session.withErrors(validation.messages()).flashAll()
-      return response.redirect('back')
+      var tmp = validation.messages()
+
+      switch (tmp[0].validation) {
+        case 'unique':
+          var newMsg = 'Sorry, ' + tmp[0].field + '  is not unique. Please try again.'
+          session.withErrors([{ field: 'alias', message: newMsg }]).flashAll()
+          return response.redirect('back')
+          break
+        case 'required':
+          var newMsg = 'Sorry, ' + tmp[0].field + '  is required. Please try again.'
+          session.withErrors([{ field: 'alias', message: newMsg }]).flashAll()
+          return response.redirect('back')
+          break
+        default:
+          session.withErrors(validation.messages()).flashAll()
+          return response.redirect('back')
+      }
     } else {
       var strMsg =
-        "Special characters:\r\nUsernames can contain letters (a-z), numbers (0-9), and periods (.).\r\nUsernames cannot contain an ampersand (&), equals sign (=), underscore (_), apostrophe ('), dash (-), plus sign (+), comma (,), brackets (<,>), backtick (`), dollar sign ($), single and double quotes (') (\"). Usernames can begin or end with non-alphanumeric characters except periods (.)."
+        "Special characters:\r\nAlias can contain letters (a-z), numbers (0-9), and periods (.).\r\nAlias cannot contain an ampersand (&), equals sign (=), underscore (_), apostrophe ('), dash (-), plus sign (+), comma (,), brackets (<,>), backtick (`), dollar sign ($), single and double quotes (') (\"). Alias can begin or end with non-alphanumeric characters except periods (.)."
 
       try {
         if (request.input('alias').charAt(0) == '.' || request.input('alias').includes('_')) {

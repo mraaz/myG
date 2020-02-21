@@ -35,25 +35,36 @@
           <form action="/user/save" method="POST" class="default-form">
         {{ csrfField() }}
         <div class="error-box
-        @if( hasErrorFor('email') || hasErrorFor('password') || hasErrorFor('alias') )
+        @if( hasErrorFor('email') || hasErrorFor('password') || hasErrorFor('alias') || hasErrorFor('firstName') || hasErrorFor('lastName') || hasErrorFor('database'))
           active
         @endif
       ">
             @if(hasErrorFor('alias'))
-            {{getErrorFor('alias')}}
+              {{getErrorFor('alias')}}
             @endif
+
             @if(hasErrorFor('email'))
-            {{getErrorFor('email')}}
+              {{getErrorFor('email')}}
             @endif
+
             @if(hasErrorFor('password'))
-            {{getErrorFor('password')}}
+              {{getErrorFor('password')}}
             @endif
+
+            @if(hasErrorFor('firstName'))
+              {{getErrorFor('firstName')}}
+            @endif
+
+            @if(hasErrorFor('lastName'))
+              {{getErrorFor('lastName')}}
+            @endif
+
             @if(hasErrorFor('database'))
-            {{getErrorFor('database')}}
+              {{getErrorFor('database')}}
             @endif
         </div>
         <div class="form-group">
-            <input class="input-common" placeholder="ALIAS *" type="text" name="alias" value="{{ old ('alias', '')}}" class="text
+            <input class="input-common" placeholder="ALIAS *" type="text" name="alias" value="{{alias}}" class="text
 
           @if(hasErrorFor('alias'))
             error
@@ -62,14 +73,14 @@
         </div>
         <div class="form-group">
             @if(email === '')
-            <input class="input-common" placeholder="EMAIL *" type="text" name="email" value="{{ old ('email', '')}}" class="text
+            <input class="input-common" placeholder="EMAIL *" type="text" name="email" value="{{email}}" class="text
 
         @if(hasErrorFor('email'))
           error
         @endif
         " required="">
             @else
-            <input class="input-common" placeholder="EMAIL *" type="text" name="email" value="{{ old ('email', '')}}" class="text
+            <input class="input-common" placeholder="EMAIL *" type="text" name="email" value="{{email}}" class="text
 
           @if(hasErrorFor('email'))
             error
