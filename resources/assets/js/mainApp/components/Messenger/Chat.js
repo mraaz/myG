@@ -120,6 +120,7 @@ class Chat extends React.PureComponent {
     if (this.props.isGroup) return (
       <GroupOptions
         userId={this.props.userId}
+        messages={this.props.messages}
         group={this.props.group}
         groupContacts={this.props.contacts}
       />
@@ -319,13 +320,14 @@ class Chat extends React.PureComponent {
     let extraClass = "";
     if (this.props.maximised) extraClass += "chat-maximised";
     if (this.props.minimised) extraClass += "chat-minimised";
+    if (!this.props.minimised && this.state.settings) extraClass = "chat-settings";
     return (
       <div
         key={this.props.chatId}
         className={`chat-component-base ${extraClass}`}
       >
         {this.renderHeader()}
-        {this.state.settings && this.renderSettings()}
+        {this.state.settings && !this.props.minimised && this.renderSettings()}
         {!this.state.settings && !this.props.minimised && this.renderBody()}
         {!this.state.settings && !this.props.minimised && <div className="chat-component-footer-divider" />}
         {!this.state.settings && !this.props.minimised && this.renderFooter()}
