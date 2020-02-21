@@ -6,6 +6,7 @@ const Settings = use('App/Models/Setting')
 var nodemailer = require('nodemailer')
 const axios = use('axios')
 const querystring = use('querystring')
+const Env = use('Env')
 
 class CommonSaveController {
   async register({ view, session }) {
@@ -78,7 +79,6 @@ class CommonSaveController {
     } else {
       var strMsg =
         "Special characters:\r\nAlias can contain letters (a-z), numbers (0-9), and periods (.).\r\nAlias cannot contain an ampersand (&), equals sign (=), underscore (_), apostrophe ('), dash (-), plus sign (+), comma (,), brackets (<,>), backtick (`), dollar sign ($), single and double quotes (') (\"). Alias can begin or end with non-alphanumeric characters except periods (.)."
-
       try {
         if (request.input('alias').charAt(0) == '.' || request.input('alias').includes('_')) {
           session.withErrors([{ field: 'alias', message: strMsg }]).flashAll()
@@ -102,11 +102,10 @@ class CommonSaveController {
       //     .subject('Welcome to My Game')
       // })
       const token = request.input('g-recaptcha-response')
-      const secretKey = '6LcQ89oUAAAAANbH8jJfsuII9ciMYAoFLxlkS2R5'
       console.log(token)
       const data_request = await axios.post(
         'https://www.google.com/recaptcha/api/siteverify',
-        querystring.stringify({ secret: secretKey, response: token })
+        querystring.stringify({ secret: Env.get('SECRET_KEY'), response: token })
       )
       if (!data_request.data.success) {
         console.log('Google Recaptcha Verification Fail' + data_request.data)
