@@ -6,6 +6,7 @@ const Settings = use('App/Models/Setting')
 var nodemailer = require('nodemailer')
 const axios = use('axios')
 const querystring = use('querystring')
+const Env = use('Env')
 
 class CommonSaveController {
   async register({ view, session }) {
@@ -101,11 +102,10 @@ class CommonSaveController {
       //     .subject('Welcome to My Game')
       // })
       const token = request.input('g-recaptcha-response')
-      const secretKey = '6LcQ89oUAAAAANbH8jJfsuII9ciMYAoFLxlkS2R5'
       console.log(token)
       const data_request = await axios.post(
         'https://www.google.com/recaptcha/api/siteverify',
-        querystring.stringify({ secret: secretKey, response: token })
+        querystring.stringify({ secret: Env.get('SECRET_KEY'), response: token })
       )
       if (!data_request.data.success) {
         console.log('Google Recaptcha Verification Fail' + data_request.data)

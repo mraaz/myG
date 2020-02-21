@@ -107,7 +107,7 @@
             <button class="button-common" type="submit">REGISTER</button>
         </div>
         <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
-        <form>
+      </form>
         <div class="registration-disclaimer">
         * Field must be unique. Choose carefully, it can not be changed later!
         </div>
@@ -126,9 +126,8 @@
         </div>
     </div>
 </div>
-<script src="https://www.google.com/recaptcha/api.js?render=6LcQ89oUAAAAAO2xsYOupSGcJv0SZ0Hjgyu4wJbb"></script>
+<script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_sitekey() }}" ></script>
 <script>
-  var securityKey = '6LcQ89oUAAAAAO2xsYOupSGcJv0SZ0Hjgyu4wJbb'
 
   function checkKeyPress(ele){
     console.log(event.keyCode);
@@ -142,7 +141,7 @@
     }
   }
   grecaptcha.ready(function() {
-      grecaptcha.execute(securityKey, {action: 'homepage'})
+      grecaptcha.execute('{{ recaptcha_sitekey() }}', {action: 'homepage'})
       .then(function(token) {
         document.getElementById('g-recaptcha-response').value = token;
       });
