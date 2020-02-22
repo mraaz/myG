@@ -1,17 +1,19 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import FileOpenModal from '../FileOpenModal';
 
 export const MAXIMUM_GROUP_SIZE = 37;
 
 class GroupCreation extends React.Component {
 
   state = {
-    icon: "https://i.pinimg.com/originals/d5/e1/d4/d5e1d4fb60a1b8b1d6182cc9b1ff2376.jpg",
+    icon: '',
     title: '',
     contactInput: '',
     matchingContacts: [],
     addedContacts: [],
+    uploadingPhoto: false,
     titleError: false,
     contactsError: false,
   }
@@ -33,13 +35,26 @@ class GroupCreation extends React.Component {
     this.setState(previous => ({ addedContacts: [...previous.addedContacts, contact.contactId] }));
   }
 
+  onUploadPhoto = (icon) => {
+    this.setState({ icon, uploadingPhoto: false });
+  }
+
   renderHeader = () => {
     return (
       <div className="chat-group-creation-header">
 
+        <FileOpenModal
+          bOpen={this.state.uploadingPhoto}
+          callbackClose={() => this.setState({ uploadingPhoto: false })}
+          callbackConfirm={this.onUploadPhoto}
+        />
+
         <div className="chat-group-creation-header-icon clickable"
-          style={{ backgroundImage: `url(/assets/svg/ic_chat_group_icon.svg)` }}
-          onClick={() => console.log('Upload Image')}
+          style={{
+            backgroundImage: `url(${this.state.icon || '/assets/svg/ic_chat_group_icon.svg'})`,
+            backgroundSize: this.state.icon ? 'cover' : 'inherit',
+          }}
+          onClick={() => this.setState({ uploadingPhoto: true })}
         />
 
         <div className="chat-group-creation-title-input-container">

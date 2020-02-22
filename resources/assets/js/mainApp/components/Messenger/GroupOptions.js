@@ -1,253 +1,242 @@
-
 import React from 'react';
 import { connect } from 'react-redux';
-
-import GroupInvitation from './GroupInvitation';
-
-import { addContactsToChatAction, updateChatAction, clearChatAction, deleteChatAction, exitGroupAction, removeFromGroupAction } from '../../../redux/actions/chatAction';
-import { addAsFriendAction, fetchFriendRequestsAction } from '../../../redux/actions/userAction';
+import ToggleButton from 'react-toggle-button'
+import GroupMemberOptions from './GroupMemberOptions';
+import Popup from '../Popup';
+import FileOpenModal from '../FileOpenModal';
+import { WithTooltip } from '../Tooltip';
+import { updateChatAction, clearChatAction, deleteChatAction, exitGroupAction } from '../../../redux/actions/chatAction';
 
 class GroupOptions extends React.PureComponent {
 
   state = {
-    invitingToGroup: false,
-    editingTitle: false,
-    titleInput: '',
-    friendRequests: [],
+    title: '',
+    showingMembers: false,
+    exitingGroup: false,
+    uploadingPhoto: false,
   }
 
-  componentDidMount() {
-    this.props.fetchFriendRequests();
+  onSaveTitle() {
+    if (!this.state.title.trim()) return;
+    this.props.updateChat(this.props.group.chatId, { title: this.state.title.trim() });
+    this.setState({ title: '' });
   }
 
-  onAddFriendRequest = (contactId) => {
-    this.setState(previous => ({ friendRequests: [...previous.friendRequests, contactId] }));
-    this.props.addAsFriend(contactId);
+  onKeyPress = event => {
+    const code = event.keyCode || event.which;
+    const enterKeyCode = 13;
+    if (code === enterKeyCode) {
+      event.preventDefault();
+      this.onSaveTitle();
+    }
   }
 
-  onTitleChange = () => {
-    this.setState({ editingTitle: false });
-    if (!this.state.titleInput.trim()) return;
-    this.props.updateChat(this.props.group.chatId, { title: this.state.titleInput.trim() });
+  onKeyDown = event => {
+    const code = event.keyCode || event.which;
+    const escKeyCode = 27;
+    if (code === escKeyCode) return this.setState({ title: '' });
   }
 
-  onInvitation = (contacts) => {
-    this.setState({ invitingToGroup: false })
-    if (!contacts || !contacts.length) return;
-    this.props.addContactsToChat(this.props.userId, this.props.group.chatId, contacts);
+  onUploadPhoto = (icon) => {
+    this.props.updateChat(this.props.group.chatId, { icon });
+    this.setState({ uploadingPhoto: false });
   }
 
-  renderGroupHeader = () => {
+  exitOrDeleteGroup = () => {
+    this.setState({ exitingGroup: false });
+    const isGroupOwner = this.props.group.owners.length && this.props.group.owners.includes(this.props.userId);
+    if (!isGroupOwner) return this.props.exitGroup(this.props.group.chatId);
+    return this.props.deleteChat(this.props.group.chatId);
+  }
+
+  renderGroupMemberOptions() {
+    if (!this.state.showingMembers) return null;
     return (
-      <div className="chat-group-options-header-container">
-        {this.renderGroupInfo()}
-        {this.renderGroupOptions()}
-      </div>
-    );
-  }
-
-  renderGroupInfo = () => {
-    return (
-      <div className="chat-group-options-header-info-container">
-        <div
-          className="chat-group-options-header-info-group-icon"
-          style={{ backgroundImage: `url('${this.props.group.icon}')` }}
+      <div className="chat-group-members-container">
+        <GroupMemberOptions
+          userId={this.props.userId}
+          group={this.props.group}
+          groupContacts={this.props.groupContacts}
         />
-        <div>
-          {this.state.editingTitle ?
-            (
-              <div>
-                <input
-                  className="chat-group-options-header-info-name-input"
-                  placeholder={"Group Name"}
-                  value={this.state.titleInput}
-                  autoFocus={true}
-                  onChange={event => this.setState({ titleInput: event.target.value })}
-                  onKeyDown={event =>
-                    event.keyCode === 13 && this.onTitleChange() ||
-                    event.keyCode === 27 && this.setState({ editingTitle: false })
-                  }
-                >
-                </input>
-              </div>
-            ) :
-            (
-              <div className="chat-group-options-header-info-name-container">
-                <div className="chat-group-options-header-info-name">{this.props.group.title}</div>
-                <div className="chat-group-options-header-info-name-button"
-                  style={{ backgroundImage: `url(/assets/svg/ic_chat_group_edit.svg)` }}
-                  onClick={() => this.setState({ editingTitle: true, titleInput: this.props.group.title })}
-                />
-              </div>
-            )
-          }
-        </div>
-      </div >
-    );
-  }
-
-  renderGroupOptions = () => {
-    const inactiveStyle = 'chat-group-options-header-options-option-inactive';
-    const canExitGroup = this.props.group.owners.length > 1 || !this.props.group.owners.includes(this.props.userId);
-    return (
-      <div className="chat-group-options-header-options-container">
-
-        <div
-          className={`chat-group-options-header-options-option ${!canExitGroup && inactiveStyle} clickable`}
-          onClick={() => canExitGroup && this.props.exitGroup(this.props.group.chatId)}
-        >
-          <div
-            className="chat-group-options-header-options-option-icon"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_group_exit.svg)` }}
-            onClick={() => this.props.exitGroup(this.props.group.chatId)}
-          />
-          exit group
-        </div>
-
-        <div
-          className={`chat-group-options-header-options-option clickable ${this.props.group.muted && inactiveStyle}`}
-          onClick={() => this.props.updateChat(this.props.group.chatId, { muted: !this.props.group.muted })}
-        >
-          <div
-            className="chat-group-options-header-options-option-icon"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_mute.svg)` }}
-          />
-          {this.props.group.muted ? 'unmute group' : 'mute group'}
-        </div>
-
-        <div
-          className={`chat-group-options-header-options-option clickable ${!this.props.group.messages.length && inactiveStyle}`}
-          onClick={() => this.props.clearChat(this.props.group.chatId)}
-        >
-          <div
-            className="chat-group-options-header-options-option-icon"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_delete.svg)` }}
-          />
-          clear messages
-        </div>
-
       </div>
-    );
-  }
-
-  renderContactsInfo = () => {
-    return (
-      <div className="chat-group-options-contacts-container">
-        {this.props.groupContacts.map(this.renderContact)}
-      </div>
-    );
-  }
-
-  renderContact = (contact) => {
-    const isAdded = this.props.contacts.map(contact => contact.contactId).includes(contact.contactId);
-    const isRequested = this.props.friendRequests.includes(contact.contactId) || this.state.friendRequests.includes(contact.contactId);
-    const isOwner = this.props.group.owners.includes(this.props.userId);
-    return (
-      <div key={contact.contactId} className="chat-group-options-contact">
-        <div className="chat-group-options-contact-info">
-          <div
-            className="chat-group-options-contact-icon"
-            style={{ backgroundImage: `url('${contact.icon}')` }}
-          >
-            <div className={`chat-component-header-status-indicator-static chat-component-header-status-indicator-${contact.status}`} />
-          </div>
-          <div className="chat-group-options-contact-name">{contact.name}</div>
-        </div>
-        <div className="chat-group-options-contact-buttons">
-          {isOwner && (
-            <div
-              className="chat-group-options-option-icon clickable"
-              style={{ backgroundImage: `url(/assets/svg/ic_chat_group_remove.svg)`, filter: `contrast(0)` }}
-              onClick={() => this.props.removeFromGroup(this.props.group.chatId, contact.contactId)}
-          />
-          )}
-          <div
-            className="chat-group-options-option-icon clickable"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_mute.svg)`, filter: `contrast(0)` }}
-            onClick={() => console.log(`Mute User: ${contact.contactId}`)}
-          />
-          <div
-            className="chat-group-options-option-icon clickable"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_block.svg)`, filter: `contrast(0)` }}
-            onClick={() => console.log(`Block User: ${contact.contactId}`)}
-          />
-          {!isAdded && !isRequested && (
-            <div className="chat-group-options-contact-add-button clickable"
-              onClick={() => this.onAddFriendRequest(contact.contactId)}
-            >
-              add friend
-          </div>
-          )}
-          {!isAdded && isRequested && (
-            <div className="chat-group-options-contact-added-button">
-              request sent
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  renderGroupFooter = () => {
-    if (!this.props.group.owners.includes(this.props.userId)) return null;
-    return (
-      <div className="chat-group-options-footer">
-        <div className="chat-group-delete-button clickable"
-          onClick={() => this.props.deleteChat(this.props.group.chatId)}
-        >
-          Delete Group
-        </div>
-        <div className="chat-group-invite-button clickable"
-          onClick={() => this.setState({ invitingToGroup: true })}
-        >
-          Invite to Group
-        </div>
-      </div>
-    );
-  }
-
-  renderInviteWindow = () => {
-    if (!this.state.invitingToGroup) return;
-    return (
-      <GroupInvitation
-        group={this.props.group}
-        onCancel={() => this.setState({ invitingToGroup: false })}
-        onInvite={this.onInvitation}
-      />
     );
   }
 
   render() {
+    const isGroupOwner = this.props.group.owners.length && this.props.group.owners.includes(this.props.userId);
+    const isGroupModerator = this.props.group.moderators.length && this.props.group.moderators.includes(this.props.userId);
+    const inactiveStyle = 'chat-component-options-option-inactive';
     return (
-      <div className="chat-group-options-container">
-        {this.renderGroupHeader()}
-        {this.renderContactsInfo()}
-        {this.renderGroupFooter()}
-        {this.renderInviteWindow()}
+      <div className="chat-component-options-container">
+
+        <FileOpenModal
+          bOpen={this.state.uploadingPhoto}
+          callbackClose={() => this.setState({ uploadingPhoto: false })}
+          callbackConfirm={this.onUploadPhoto}
+        />
+
+        {isGroupModerator && (
+          <div className="chat-component-options-row">
+
+            <div className="chat-component-options-group-icon clickable"
+              style={{ backgroundImage: `url(/assets/svg/ic_chat_group_icon.svg)` }}
+              onClick={() => this.setState({ uploadingPhoto: true })}
+            />
+
+            <div className="chat-component-group-title-input-container">
+              <input
+                className="chat-component-group-title-input"
+                placeholder={"Type new Group name..."}
+                value={this.state.title}
+                onKeyPress={this.onKeyPress}
+                onKeyDown={this.onKeyDown}
+                onChange={event => this.setState({ title: event.target.value, titleError: false })}
+              >
+              </input>
+            </div>
+
+            <div className={`chat-component-group-button clickable ${!this.state.title.trim() && inactiveStyle}`}
+              onClick={() => this.onSaveTitle()}
+            >
+              save
+          </div>
+
+          </div>
+        )}
+
+        <div className="chat-component-group-content-divider" />
+
+        <div className="chat-component-options-row">
+
+          <div
+            className={`chat-component-options-option clickable ${!this.props.messages.length && inactiveStyle}`}
+            onClick={() => this.props.clearChat(this.props.group.chatId)}
+          >
+            <div
+              className="chat-component-options-option-icon"
+              style={{ backgroundImage: `url(/assets/svg/ic_chat_delete.svg)` }}
+            />
+            clear
+          </div>
+
+          <div
+            className={`chat-component-options-option clickable ${this.props.group.muted && inactiveStyle}`}
+            onClick={() => this.props.updateChat(this.props.group.chatId, { muted: !this.props.group.muted })}
+          >
+            <div
+              className="chat-component-options-option-icon"
+              style={{ backgroundImage: `url(/assets/svg/ic_chat_mute.svg)` }}
+            />
+            {this.props.group.muted ? 'unmute' : 'mute'}
+          </div>
+
+        </div>
+
+        <div
+          className={`chat-component-options-option clickable`}
+          onClick={() => this.setState(previous => ({ showingMembers: !previous.showingMembers }))}
+        >
+          <div
+            className="chat-component-options-option-icon"
+            style={{ backgroundImage: `url(/assets/svg/ic_chat_group_members.svg)` }}
+          />
+          {isGroupModerator ? 'manage group members' : 'check group members'}
+        </div>
+
+        {this.renderGroupMemberOptions()}
+
+        <div className="chat-component-group-content-divider" />
+
+        <p className="chat-component-group-hint">Share this link below to invite your friends</p>
+
+        <div className="chat-component-options-row">
+
+          <div className="chat-component-group-title-link-container">
+            <div className="chat-component-group-title-link">
+              myg.gg/not-implemented-yet
+            </div>
+          </div>
+
+          <div className={`chat-component-group-button chat-component-group-button-smaller clickable`}
+            onClick={() => console.log('edit')}
+          >
+            edit
+          </div>
+
+          <div className={`chat-component-group-button chat-component-group-button-smaller clickable`}
+            onClick={() => console.log('copy')}
+          >
+            copy
+          </div>
+
+        </div>
+
+        <div className="chat-component-group-content-divider" />
+
+        {isGroupModerator && (
+          <div className="chat-component-options-toggle">
+            Make it Private
+            <WithTooltip position={{ bottom: '-6px', left: '58px' }} text={'Let all players find your group'}>
+              <ToggleButton
+                value={this.props.group.isPrivate || false}
+                onToggle={isPrivate => this.props.updateChat(this.props.group.chatId, { isPrivate: !isPrivate })}
+              />
+            </WithTooltip>
+          </div>
+        )}
+
+        {isGroupModerator && (
+          <div className="chat-component-options-toggle">
+            Self destruct mode
+            <WithTooltip position={{ bottom: '-6px', left: '58px' }} text={'Switch this on to never save\nany messages on this chat'}>
+              <ToggleButton
+                value={this.props.group.selfDestruct || false}
+                onToggle={selfDestruct => this.props.updateChat(this.props.group.chatId, { selfDestruct: !selfDestruct })}
+              />
+            </WithTooltip>
+          </div>
+        )}
+
+        <div
+          className={`chat-component-options-option clickable ${this.props.group.blocked && inactiveStyle}`}
+          onClick={() => {
+            this.props.updateChat(this.props.group.chatId, { blocked: !this.props.group.blocked });
+          }}
+        >
+          <div
+            className="chat-component-options-option-icon"
+            style={{ backgroundImage: `url(/assets/svg/ic_chat_block.svg)` }}
+          />
+          {this.props.group.blocked ? 'unblock group' : 'block group'}
+        </div>
+
+        <div
+          className={`chat-component-options-option clickable chat-component-options-option-warning`}
+          onClick={() => this.setState({ exitingGroup: true })}
+        >
+          {isGroupOwner ? 'delete group' : 'leave group'}
+        </div>
+
+        <Popup
+          show={this.state.exitingGroup}
+          position={{ bottom: '48px', left: '-12px' }}
+          header={`Are you sure you want to ${isGroupOwner ? 'delete' : 'leave'} this group?`}
+          confirmAction={this.exitOrDeleteGroup}
+          denyAction={() => this.setState({ exitingGroup: false })}
+        />
+
       </div>
     );
-  }
-
-}
-
-function mapStateToProps(state) {
-  return {
-    contacts: state.user.contacts || [],
-    friendRequests: state.user.friendRequests || [],
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return ({
-    fetchFriendRequests: () => dispatch(fetchFriendRequestsAction()),
-    addAsFriend: (friendId) => dispatch(addAsFriendAction(friendId)),
-    addContactsToChat: (userId, chatId, contacts) => dispatch(addContactsToChatAction(userId, chatId, contacts)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
-    deleteChat: (chatId) => dispatch(deleteChatAction(chatId)),
-    removeFromGroup: (chatId, userId) => dispatch(removeFromGroupAction(chatId, userId)),
     exitGroup: (chatId) => dispatch(exitGroupAction(chatId)),
+    deleteChat: (chatId) => dispatch(deleteChatAction(chatId)),
   });
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GroupOptions);
+export default connect(null, mapDispatchToProps)(GroupOptions);

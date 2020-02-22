@@ -1,0 +1,135 @@
+
+.chat-group-members-container {
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+.chat-group-members {
+  position: absolute;
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  bottom: 12px;
+  right: -24px;
+  background-color: #1D2326;
+  padding: 16px 8px;
+  min-width: 320px;
+  border-radius: 12px;
+  z-index: 1;
+}
+
+.chat-group-members-header {
+  text-align: center;
+  font-size: 14px;
+  color: #E0E0E0;
+}
+
+.chat-group-member-list-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #1D2326;
+  max-height: 132px;
+  overflow-y: scroll;
+  padding: 8px;
+}
+
+.chat-group-member {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  margin-top: 8px;
+}
+
+.chat-group-member-info {
+  display: flex;
+  align-items: center;
+}
+
+.chat-group-member-icon {
+  background-color: #2D363A;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  border-radius: 16px;
+  width: 32px;
+  height: 32px;
+  margin-right: 8px;
+}
+
+.chat-group-member-name {
+  color: #F0F0F0;
+  font-size: 16px;
+}
+
+.chat-group-member-buttons {
+  display: flex;
+  align-items: center;
+}
+
+.chat-group-member-add-button {
+  background-color: #2D363A;
+  color: #FAFAFA;
+  padding: 6px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  margin-left: 4px;
+}
+
+.chat-group-member-added-button {
+  background-color: #2D363A;
+  color: #627176;
+  padding: 6px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  margin-left: 4px;
+}
+
+.chat-group-ownership {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  padding: 0 8px;
+}
+
+.chat-group-ownership-hint {
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.chat-group-ownership-input-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.chat-group-ownership-input-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-left: 4px;
+}
+
+.chat-group-ownership-input {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  border: none;
+  background-color: #171A1C;
+  border-radius: 24px;
+  color: #93A4A5;
+  padding: 8px 8px 8px 12px;
+  font-size: 10px;
+}
+
+.chat-group-ownership-input-hint {
+  font-size: 12px;
+}
+
+.chat-group-ownership-dropdown-container {
+  position: relative;
+  width: 0;
+  height: 0;
+}
