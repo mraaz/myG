@@ -116,7 +116,7 @@ export default class ScheduledGamePost_Default extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const self = this
     const { schedule_game } = this.props.props
 

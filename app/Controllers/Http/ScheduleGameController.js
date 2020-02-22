@@ -249,7 +249,7 @@ class ScheduleGameController {
         .where('schedule_games.user_id', '=', auth.user.id)
         .orWhereIn('schedule_games.id', subquery)
 
-        .select('*', 'schedule_games.id')
+        .select('*', 'schedule_games.id', 'schedule_games.user_id')
         .orderBy('schedule_games.created_at', 'desc')
         .paginate(request.params.limitstr, 10)
 

@@ -37,6 +37,7 @@ export default class MyScheduledGames extends Component {
     }
     try {
       const myScheduledGames = await axios.get(`/api/myScheduledGames/${this.state.counter}/${this.state.isChecked}`)
+      console.log(myScheduledGames)
 
       if (myScheduledGames.data.myScheduledGames.data.length == 0) {
         this.setState({

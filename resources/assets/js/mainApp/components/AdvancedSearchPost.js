@@ -136,8 +136,6 @@ export default class AdvancedSearchPost extends Component {
 
   render() {
     const { game_experience } = this.props
-    console.log('game_experience')
-    console.log(game_experience)
     var show_profile_img = false
     var arrTags = ''
 
