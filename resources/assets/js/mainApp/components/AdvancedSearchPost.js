@@ -136,6 +136,8 @@ export default class AdvancedSearchPost extends Component {
 
   render() {
     const { game_experience } = this.props
+    console.log('game_experience')
+    console.log(game_experience)
     var show_profile_img = false
     var arrTags = ''
 
@@ -238,7 +240,7 @@ export default class AdvancedSearchPost extends Component {
                 <div className='author-info'>
                   {show_profile_img && (
                     <Link
-                      to={`/profile/${game_experience.user_id}`}
+                      to={`/profile/${game_experience.alias}`}
                       className='user-img'
                       style={{
                         backgroundImage: `url('${game_experience.profile_img}')`,
@@ -246,14 +248,14 @@ export default class AdvancedSearchPost extends Component {
                   )}
                   {!show_profile_img && (
                     <Link
-                      to={`/profile/${game_experience.user_id}`}
+                      to={`/profile/${game_experience.alias}`}
                       className='user-img'
                       style={{
                         backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png')`,
                       }}></Link>
                   )}
                   <div className='info'>
-                    <Link to={`/profile/${game_experience.user_id}`}>{game_experience.alias}</Link>
+                    <Link to={`/profile/${game_experience.alias}`}>{game_experience.alias}</Link>
                   </div>
                 </div>
                 <div className='game-name'> {game_experience.game_name} </div>
@@ -285,7 +287,7 @@ export default class AdvancedSearchPost extends Component {
                 <div className='author-info'>
                   {show_profile_img && (
                     <Link
-                      to={`/profile/${game_experience.user_id}`}
+                      to={`/profile/${game_experience.alias}`}
                       className='user-img'
                       style={{
                         backgroundImage: `url('${game_experience.profile_img}')`,
@@ -293,14 +295,14 @@ export default class AdvancedSearchPost extends Component {
                   )}
                   {!show_profile_img && (
                     <Link
-                      to={`/profile/${game_experience.user_id}`}
+                      to={`/profile/${game_experience.alias}`}
                       className='user-img'
                       style={{
                         backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png')`,
                       }}></Link>
                   )}
                   <div className='info'>
-                    <Link to={`/profile/${game_experience.user_id}`}>{game_experience.alias}</Link>
+                    <Link to={`/profile/${game_experience.alias}`}>{game_experience.alias}</Link>
                   </div>
                 </div>
                 <div className='game-name'> {game_experience.game_name} </div>

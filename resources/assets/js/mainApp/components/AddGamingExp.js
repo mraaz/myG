@@ -288,7 +288,7 @@ export default class AddGamingExp extends Component<*, State> {
   render() {
     if (this.state.redirect_profile) {
       const { match } = this.props.routeProps
-      var tmp = `/profile/${match.params.id}`
+      var tmp = `/profile/${match.params.alias}`
       return <Redirect push to={tmp} />
     }
 

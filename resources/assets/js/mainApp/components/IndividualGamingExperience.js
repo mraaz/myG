@@ -267,7 +267,7 @@ export default class IndividualGamingExperience extends Component {
   render() {
     if (this.state.redirect_GamingExp) {
       const { match } = this.props.routeProps
-      var tmp = `/profile/${match.params.id}/edit/gamingexp/${this.state.tmp_id}`
+      var tmp = `/profile/${match.params.alias}/edit/gamingexp/${this.state.tmp_id}`
       return <Redirect push to={tmp} />
     }
 

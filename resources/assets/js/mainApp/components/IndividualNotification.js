@@ -598,7 +598,7 @@ export default class IndividualNotification extends Component {
       <div className='notification-info'>
         {show_profile_img && (
           <Link
-            to={`/profile/${notification.id}`}
+            to={`/profile/${notification.alias}`}
             className='user-img'
             style={{
               backgroundImage: `url('${notification.profile_img}')`,
@@ -606,7 +606,7 @@ export default class IndividualNotification extends Component {
         )}
         {!show_profile_img && (
           <Link
-            to={`/profile/${notification.id}`}
+            to={`/profile/${notification.alias}`}
             className='user-img'
             style={{
               backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/unknown_user.svg')`,

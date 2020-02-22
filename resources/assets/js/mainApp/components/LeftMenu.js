@@ -123,7 +123,7 @@ class LeftMenu extends Component {
                   className='advancedSearch'
                   style={{ backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/v1_Icon_03.png')` }}></div>
               </Link>
-              <Link to={`/profile/${this.props.initialData.userInfo.id}`}>
+              <Link to={`/profile/${this.props.initialData.userInfo.alias}`}>
                 <div
                   className='profile'
                   style={{ backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/v2_Icon-11.png')` }}></div>
@@ -134,7 +134,7 @@ class LeftMenu extends Component {
                 </Link>
               </div>
               <div className='groups-caption'>
-                <Link to={`/profile/${this.props.initialData.userInfo.id}`} style={{ textDecoration: 'none', color: 'white' }}>
+                <Link to={`/profile/${this.props.initialData.userInfo.alias}`} style={{ textDecoration: 'none', color: 'white' }}>
                   Profile
                 </Link>
               </div>

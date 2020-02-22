@@ -342,7 +342,7 @@ export default class AddEsportsExp extends Component<*, State> {
     }, 300)
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const self = this
 
     const getEsports_bio = async function() {
@@ -426,7 +426,7 @@ export default class AddEsportsExp extends Component<*, State> {
   render() {
     if (this.state.redirect_profile) {
       const { match } = this.props.routeProps
-      var tmp = `/profile/${match.params.id}`
+      var tmp = `/profile/${match.params.alias}`
       return <Redirect push to={tmp} />
     }
 

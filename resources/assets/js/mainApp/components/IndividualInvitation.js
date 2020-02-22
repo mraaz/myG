@@ -100,7 +100,7 @@ export default class IndividualInvitation extends Component {
       <div className='invitation-info'>
         {show_profile_img && (
           <Link
-            to={`/profile/${invitation.user_id}`}
+            to={`/profile/${invitation.alias}`}
             className='user-img'
             style={{
               backgroundImage: `url('${invitation.profile_img}')`,
@@ -108,7 +108,7 @@ export default class IndividualInvitation extends Component {
         )}
         {!show_profile_img && (
           <Link
-            to={`/profile/${invitation.user_id}`}
+            to={`/profile/${invitation.alias}`}
             className='user-img'
             style={{
               backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/unknown_user.svg')`,

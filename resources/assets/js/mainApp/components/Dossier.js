@@ -55,13 +55,13 @@ class Dossier extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { match } = this.props.routeProps
     const self = this
 
     const getUser = async function() {
       try {
-        const userProfile = await axios.get(`/api/user/${match.params.id}`)
+        const userProfile = await axios.get(`/api/user/getProfile/${match.params.alias}`)
         self.setState({
           userProfile: userProfile.data.user[0],
         })
@@ -170,7 +170,7 @@ class Dossier extends Component {
   render() {
     if (this.state.redirect_) {
       const { match } = this.props.routeProps
-      var tmp = `/profile/${match.params.id}`
+      var tmp = `/profile/${match.params.alias}`
       return <Redirect push to={tmp} />
     }
 

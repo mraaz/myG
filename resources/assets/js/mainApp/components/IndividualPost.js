@@ -414,7 +414,7 @@ export default class IndividualPost extends Component {
               <div className='author-info'>
                 {this.state.show_profile_img && (
                   <Link
-                    to={`/profile/${post.user_id}`}
+                    to={`/profile/${post.alias}`}
                     className='user-img'
                     style={{
                       backgroundImage: `url('${post.profile_img}')`,
@@ -422,15 +422,15 @@ export default class IndividualPost extends Component {
                 )}
                 {!this.state.show_profile_img && (
                   <Link
-                    to={`/profile/${post.user_id}`}
+                    to={`/profile/${post.alias}`}
                     className='user-img'
                     style={{
                       backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png')`,
                     }}></Link>
                 )}
                 <div className='info'>
-                  <Link to={`/profile/${post.user_id}`}>{`${post.alias}`}</Link> shared a{' '}
-                  <Link to={`/profile/${post.user_id}`}>{post.type == 'text' ? 'story' : 'image'}</Link>
+                  <Link to={`/profile/${post.alias}`}>{`${post.alias}`}</Link> shared a{' '}
+                  <Link to={`/profile/${post.alias}`}>{post.type == 'text' ? 'story' : 'image'}</Link>
                 </div>
                 {this.state.show_post_options && (
                   <div className='post-options'>

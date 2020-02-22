@@ -20,7 +20,7 @@ export default class UploadPic extends Component {
     this.handleCloseModal = this.handleCloseModal.bind(this)
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const self = this
     self.setState({
       userProfile: 1,
@@ -35,7 +35,7 @@ export default class UploadPic extends Component {
   render() {
     if (this.state.redirect_) {
       const { match } = this.props.routeProps
-      var tmp = `/profile/${match.params.id}`
+      var tmp = `/profile/${match.params.alias}`
       return <Redirect push to={tmp} />
     }
     if (this.state.userProfile !== undefined) {

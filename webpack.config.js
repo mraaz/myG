@@ -1,7 +1,7 @@
 
 const path = require('path');
 const webpack = require('webpack')
-
+const TerserPlugin = require('terser-webpack-plugin');
 const VENDOR_LIBS = [
   'redux', 'react-redux', 'react-dom'
 ]
@@ -53,7 +53,7 @@ module.exports = {
                 sourceMap: true
             }
         }],
-        
+
 
       }
     ]
