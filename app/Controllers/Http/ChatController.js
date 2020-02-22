@@ -32,9 +32,9 @@ class ChatController {
   async updateChat({ auth, params, request, response }) {
     const requestingUserId = auth.user.id;
     const requestedChatId = params.chatId;
-    const { muted, blocked, isPrivate, icon, title, owners, moderators, markAsRead, selfDestruct } = request.only(['muted', 'blocked', 'isPrivate', 'icon', 'title', 'owners', 'moderators', 'markAsRead', 'selfDestruct']);
-    log('CHAT', `User ${requestingUserId} updating Chat ${requestedChatId} with ${JSON.stringify({ muted, blocked, isPrivate, icon, title, owners, moderators, markAsRead, selfDestruct })}`);
-    const result = await ChatRepository.updateChat({ requestingUserId, requestedChatId, muted, blocked, isPrivate, icon, title, owners, moderators, markAsRead, selfDestruct });
+    const { muted, blocked, blockedUsers, isPrivate, icon, title, owners, moderators, markAsRead, selfDestruct } = request.only(['muted', 'blocked', 'blockedUsers', 'isPrivate', 'icon', 'title', 'owners', 'moderators', 'markAsRead', 'selfDestruct']);
+    log('CHAT', `User ${requestingUserId} updating Chat ${requestedChatId} with ${JSON.stringify({ muted, blocked, blockedUsers, isPrivate, icon, title, owners, moderators, markAsRead, selfDestruct })}`);
+    const result = await ChatRepository.updateChat({ requestingUserId, requestedChatId, muted, blocked, blockedUsers, isPrivate, icon, title, owners, moderators, markAsRead, selfDestruct });
     return response.send(result);
   }
 

@@ -7,6 +7,7 @@ class Chat {
     this.chatId = forceInt(data.chatId);
     this.muted = forceBoolean(data.muted);
     this.blocked = forceBoolean(data.blocked);
+    this.blockedUsers = forceArray(data.blockedUsers);
     this.isPrivate = forceBoolean(data.isPrivate);
     this.selfDestruct = forceBoolean(data.selfDestruct);
     this.deletedMessages = forceArray(data.deletedMessages);

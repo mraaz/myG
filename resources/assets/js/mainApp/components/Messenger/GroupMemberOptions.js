@@ -45,6 +45,13 @@ class GroupMemberOptions extends React.PureComponent {
     this.props.updateChat(this.props.group.chatId, { moderators });
   }
 
+  toggleUserBlock = (contactId) => {
+    const blockedUsers = this.props.group.blockedUsers;
+    if (blockedUsers.indexOf(contactId) !== -1) blockedUsers.splice(blockedUsers.indexOf(contactId), 1);
+    else blockedUsers.push(contactId);
+    this.props.updateChat(this.props.group.chatId, { blockedUsers });
+  }
+
   kickUser = () => {
     this.props.removeFromGroup(this.props.group.chatId, this.state.kickingUser.contactId);
     this.setState({ kickingUser: false });
@@ -63,6 +70,7 @@ class GroupMemberOptions extends React.PureComponent {
     const isRequested = this.props.friendRequests.includes(contact.contactId) || this.state.friendRequests.includes(contact.contactId);
     const isContactOwner = this.props.group.owners.length && this.props.group.owners.includes(contact.contactId);
     const isContactModerator = this.props.group.moderators.length && this.props.group.moderators.includes(contact.contactId);
+    const isContactBlocked = this.props.group.blockedUsers.length && this.props.group.blockedUsers.includes(contact.contactId);
     return (
       <div key={contact.contactId} className="chat-group-member">
         <div className="chat-group-member-info">
@@ -91,8 +99,8 @@ class GroupMemberOptions extends React.PureComponent {
           )}
           <div
             className="chat-group-options-option-icon clickable"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_block.svg)`, filter: `contrast(0)` }}
-            onClick={() => console.log(`Block User: ${contact.contactId}`)}
+            style={{ backgroundImage: `url(/assets/svg/ic_chat_block.svg)`, filter: `contrast(${isContactBlocked ? '1' : '0'})` }}
+            onClick={() => this.toggleUserBlock(contact.contactId)}
           />
           {!isAdded && !isRequested && (
             <div className="chat-group-member-add-button clickable"

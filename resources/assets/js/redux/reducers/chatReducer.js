@@ -55,6 +55,7 @@ export default function reducer(state = {
         .filter(message => message.messageId > action.payload.chat.lastCleared)
         .filter(message => !action.payload.chat.deletedMessages.includes(message.messageId))
         .filter(message => !message.keyReceiver)
+        .filter(message => !chat.blockedUsers.includes(message.senderId))
         .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId));
       const privateKey = receiveGroupKey(chat, action.payload.messages, action.meta.userId, state.privateKey);
       if (privateKey) chat.privateKey = privateKey;
@@ -91,6 +92,7 @@ export default function reducer(state = {
         .filter(message => message.messageId > chat.lastCleared)
         .filter(message => !chat.deletedMessages.includes(message.messageId))
         .filter(message => !message.keyReceiver)
+        .filter(message => !chat.blockedUsers.includes(message.senderId))
         .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId));
       chat.noMoreMessages = !action.payload.messages.length;
       chat.loadingMessages = false;
@@ -172,6 +174,7 @@ export default function reducer(state = {
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (chat.blocked) return state;
+      if (chat.blockedUsers.includes(message.senderId)) return state;
       if (!chat.muted && !window.focused && parseInt(message.senderId) !== parseInt(userId)) playMessageSound();
       if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
       if (!chat.muted) {
@@ -243,8 +246,8 @@ export default function reducer(state = {
 
     case "UPDATE_CHAT_FULFILLED": {
       logger.log('CHAT', `Redux -> Chat Updated: `, action.meta);
-      const { chatId, muted, isPrivate, blocked, title, icon, selfDestruct } = action.meta;
-      if (blocked === undefined && muted === undefined && title === undefined && icon === undefined && selfDestruct === undefined) return state;
+      const { chatId, muted, isPrivate, blocked, blockedUsers, title, icon, selfDestruct } = action.meta;
+      if (blocked === undefined && muted === undefined && title === undefined && icon === undefined && selfDestruct === undefined && isPrivate === undefined && blockedUsers === undefined) return state;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (blocked !== undefined) chat.blocked = blocked;
@@ -253,6 +256,7 @@ export default function reducer(state = {
       if (title !== undefined) chat.title = title;
       if (icon !== undefined) chat.icon = icon;
       if (selfDestruct !== undefined) chat.selfDestruct = selfDestruct;
+      if (blockedUsers !== undefined) chat.blockedUsers = blockedUsers;
       return {
         ...state,
         chats,
