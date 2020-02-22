@@ -37,8 +37,9 @@ class GroupOptions extends React.PureComponent {
     if (code === escKeyCode) return this.setState({ title: '' });
   }
 
-  onUploadPhoto = () => {
-
+  onUploadPhoto = (icon) => {
+    this.props.updateChat(this.props.group.chatId, { icon });
+    this.setState({ uploadingPhoto: false });
   }
 
   exitOrDeleteGroup = () => {
