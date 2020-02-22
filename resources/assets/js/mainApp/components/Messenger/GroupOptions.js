@@ -1,12 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import ToggleButton from 'react-toggle-button'
+import GroupMemberOptions from './GroupMemberOptions';
 import { updateChatAction, clearChatAction, exitGroupAction } from '../../../redux/actions/chatAction';
 
 class GroupOptions extends React.PureComponent {
 
   state = {
     title: '',
+    showingMembers: false,
   }
 
   onSaveTitle() {
@@ -34,8 +36,21 @@ class GroupOptions extends React.PureComponent {
 
   }
 
+  renderGroupMemberOptions() {
+    if (!this.state.showingMembers) return null;
+    return (
+      <div className="chat-group-members-container">
+        <GroupMemberOptions
+          userId={this.props.userId}
+          group={this.props.group}
+          groupContacts={this.props.groupContacts}
+        />
+      </div>
+    );
+  }
+
   render() {
-    const isGroupOwner = this.props.group.owners.length > 1 && this.props.group.owners.includes(this.props.userId);
+    const isGroupOwner = this.props.group.owners.length && this.props.group.owners.includes(this.props.userId);
     const inactiveStyle = 'chat-component-options-option-inactive';
     return (
       <div className="chat-component-options-container">
@@ -97,14 +112,16 @@ class GroupOptions extends React.PureComponent {
 
         <div
           className={`chat-component-options-option clickable`}
-          onClick={() => console.log('check group members')}
+          onClick={() => this.setState(previous => ({ showingMembers: !previous.showingMembers }))}
         >
           <div
             className="chat-component-options-option-icon"
             style={{ backgroundImage: `url(/assets/svg/ic_chat_group_members.svg)` }}
           />
-          check group members
+          {isGroupOwner ? 'manage group members' : 'check group members'}
         </div>
+
+        {this.renderGroupMemberOptions()}
 
         <div className="chat-component-group-content-divider" />
 
