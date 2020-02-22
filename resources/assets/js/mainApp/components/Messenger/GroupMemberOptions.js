@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import Dropdown from '../Dropdown';
 import Popup from '../Popup';
-import { addContactsToChatAction, updateChatAction, clearChatAction, deleteChatAction, exitGroupAction, removeFromGroupAction } from '../../../redux/actions/chatAction';
+import { addContactsToChatAction, updateChatAction, clearChatAction, exitGroupAction, removeFromGroupAction } from '../../../redux/actions/chatAction';
 import { addAsFriendAction, fetchFriendRequestsAction } from '../../../redux/actions/userAction';
 
 class GroupMemberOptions extends React.PureComponent {
@@ -28,6 +28,21 @@ class GroupMemberOptions extends React.PureComponent {
 
   changeOwnership = () => {
     this.setState({ settingAsOwner: false });
+    const contactId = this.props.groupContacts.find(contact => contact.name === this.state.ownerInput).contactId;
+    const owners = this.props.group.owners;
+    const moderators = this.props.group.moderators;
+    if (moderators.indexOf(contactId) === -1) moderators.push(contactId);
+    owners.splice(owners.indexOf(this.props.userId), 1);
+    owners.push(contactId);
+    this.props.updateChat(this.props.group.chatId, { owners });
+    this.props.updateChat(this.props.group.chatId, { moderators });
+  }
+
+  toggleModerator = (contactId) => {
+    const moderators = this.props.group.moderators;
+    if (moderators.indexOf(contactId) !== -1) moderators.splice(moderators.indexOf(contactId), 1);
+    else moderators.push(contactId);
+    this.props.updateChat(this.props.group.chatId, { moderators });
   }
 
   kickUser = () => {
@@ -35,17 +50,19 @@ class GroupMemberOptions extends React.PureComponent {
     this.setState({ kickingUser: false });
   }
 
-  renderMembers = (isGroupOwner) => {
+  renderMembers = (isGroupModerator) => {
     return (
       <div className="chat-group-member-list-container">
-        {this.props.groupContacts.map(contact => this.renderMember(contact, isGroupOwner))}
+        {this.props.groupContacts.map(contact => this.renderMember(contact, isGroupModerator))}
       </div>
     );
   }
 
-  renderMember = (contact, isGroupOwner) => {
+  renderMember = (contact, isGroupModerator) => {
     const isAdded = this.props.contacts.map(contact => contact.contactId).includes(contact.contactId);
     const isRequested = this.props.friendRequests.includes(contact.contactId) || this.state.friendRequests.includes(contact.contactId);
+    const isContactOwner = this.props.group.owners.length && this.props.group.owners.includes(contact.contactId);
+    const isContactModerator = this.props.group.moderators.length && this.props.group.moderators.includes(contact.contactId);
     return (
       <div key={contact.contactId} className="chat-group-member">
         <div className="chat-group-member-info">
@@ -58,14 +75,14 @@ class GroupMemberOptions extends React.PureComponent {
           <div className="chat-group-member-name">{contact.name}</div>
         </div>
         <div className="chat-group-member-buttons">
-          {isGroupOwner && (
+          {isGroupModerator && !isContactOwner && (
             <div
               className="chat-group-options-option-icon clickable"
-              style={{ backgroundImage: `url(/assets/svg/ic_chat_group_moderator.svg)`, filter: `contrast(0)` }}
-              onClick={() => console.log(`Make Moderator: ${contact.contactId}`)}
+              style={{ backgroundImage: `url(/assets/svg/ic_chat_group_${isContactModerator ? 'moderator' : 'not_moderator'}.svg)`, filter: `contrast(0)` }}
+              onClick={() => this.toggleModerator(contact.contactId)}
             />
           )}
-          {isGroupOwner && (
+          {isGroupModerator && !isContactOwner && (
             <div
               className="chat-group-options-option-icon clickable"
               style={{ backgroundImage: `url(/assets/svg/ic_chat_group_remove.svg)`, filter: `contrast(0)` }}
@@ -140,6 +157,7 @@ class GroupMemberOptions extends React.PureComponent {
 
   render() {
     const isGroupOwner = this.props.group.owners.length && this.props.group.owners.includes(this.props.userId);
+    const isGroupModerator = this.props.group.moderators.length && this.props.group.moderators.includes(this.props.userId);
     return (
       <div className="chat-group-members">
         <Popup
@@ -150,7 +168,7 @@ class GroupMemberOptions extends React.PureComponent {
           denyAction={() => this.setState({ kickingUser: false })}
         />
         <p className="chat-group-members-header">Group members</p>
-        {this.renderMembers(isGroupOwner)}
+        {this.renderMembers(isGroupModerator)}
         {this.renderGroupOwnership(isGroupOwner)}
       </div>
     );
@@ -172,7 +190,6 @@ function mapDispatchToProps(dispatch) {
     addContactsToChat: (userId, chatId, contacts) => dispatch(addContactsToChatAction(userId, chatId, contacts)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
-    deleteChat: (chatId) => dispatch(deleteChatAction(chatId)),
     removeFromGroup: (chatId, userId) => dispatch(removeFromGroupAction(chatId, userId)),
     exitGroup: (chatId) => dispatch(exitGroupAction(chatId)),
   });

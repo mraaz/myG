@@ -243,12 +243,13 @@ export default function reducer(state = {
 
     case "UPDATE_CHAT_FULFILLED": {
       logger.log('CHAT', `Redux -> Chat Updated: `, action.meta);
-      const { chatId, muted, blocked, title, icon, selfDestruct } = action.meta;
+      const { chatId, muted, isPrivate, blocked, title, icon, selfDestruct } = action.meta;
       if (blocked === undefined && muted === undefined && title === undefined && icon === undefined && selfDestruct === undefined) return state;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (blocked !== undefined) chat.blocked = blocked;
       if (muted !== undefined) chat.muted = muted;
+      if (isPrivate !== undefined) chat.isPrivate = isPrivate;
       if (title !== undefined) chat.title = title;
       if (icon !== undefined) chat.icon = icon;
       if (selfDestruct !== undefined) chat.selfDestruct = selfDestruct;
@@ -260,12 +261,14 @@ export default function reducer(state = {
 
     case "ON_CHAT_UPDATED": {
       logger.log('CHAT', `Redux -> On Chat Updated: `, action.payload, action.meta);
-      const { chatId, title, icon, owners } = action.payload.chat;
+      const { chatId, title, icon, owners, moderators, isPrivate } = action.payload.chat;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (title !== undefined) chat.title = title;
       if (icon !== undefined) chat.icon = icon;
       if (owners !== undefined) chat.owners = owners;
+      if (moderators !== undefined) chat.moderators = moderators;
+      if (isPrivate !== undefined) chat.isPrivate = isPrivate;
       return {
         ...state,
         chats,
