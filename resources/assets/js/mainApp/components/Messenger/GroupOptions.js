@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import ToggleButton from 'react-toggle-button'
 import GroupMemberOptions from './GroupMemberOptions';
 import Popup from '../Popup';
+import FileOpenModal from '../FileOpenModal';
 import { WithTooltip } from '../Tooltip';
 import { updateChatAction, clearChatAction, exitGroupAction } from '../../../redux/actions/chatAction';
 
@@ -12,6 +13,7 @@ class GroupOptions extends React.PureComponent {
     title: '',
     showingMembers: false,
     exitingGroup: false,
+    uploadingPhoto: false,
   }
 
   onSaveTitle() {
@@ -33,6 +35,10 @@ class GroupOptions extends React.PureComponent {
     const code = event.keyCode || event.which;
     const escKeyCode = 27;
     if (code === escKeyCode) return this.setState({ title: '' });
+  }
+
+  onUploadPhoto = () => {
+
   }
 
   exitOrDeleteGroup = () => {
@@ -58,32 +64,40 @@ class GroupOptions extends React.PureComponent {
     return (
       <div className="chat-component-options-container">
 
-        <div className="chat-component-options-row">
+        <FileOpenModal
+          bOpen={this.state.uploadingPhoto}
+          callbackClose={() => this.setState({ uploadingPhoto: false })}
+          callbackConfirm={this.onUploadPhoto}
+        />
 
-          <div className="chat-component-options-group-icon clickable"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_group_icon.svg)` }}
-            onClick={() => console.log('Upload Image')}
-          />
+        {isGroupOwner && (
+          <div className="chat-component-options-row">
 
-          <div className="chat-component-group-title-input-container">
-            <input
-              className="chat-component-group-title-input"
-              placeholder={"Type new Group name..."}
-              value={this.state.title}
-              onKeyPress={this.onKeyPress}
-              onKeyDown={this.onKeyDown}
-              onChange={event => this.setState({ title: event.target.value, titleError: false })}
+            <div className="chat-component-options-group-icon clickable"
+              style={{ backgroundImage: `url(/assets/svg/ic_chat_group_icon.svg)` }}
+              onClick={() => this.setState({ uploadingPhoto: true })}
+            />
+
+            <div className="chat-component-group-title-input-container">
+              <input
+                className="chat-component-group-title-input"
+                placeholder={"Type new Group name..."}
+                value={this.state.title}
+                onKeyPress={this.onKeyPress}
+                onKeyDown={this.onKeyDown}
+                onChange={event => this.setState({ title: event.target.value, titleError: false })}
+              >
+              </input>
+            </div>
+
+            <div className={`chat-component-group-button clickable ${!this.state.title.trim() && inactiveStyle}`}
+              onClick={() => this.onSaveTitle()}
             >
-            </input>
+              save
           </div>
 
-          <div className={`chat-component-group-button clickable ${!this.state.title.trim() && inactiveStyle}`}
-            onClick={() => this.onSaveTitle()}
-          >
-            save
           </div>
-
-        </div>
+        )}
 
         <div className="chat-component-group-content-divider" />
 
@@ -154,25 +168,29 @@ class GroupOptions extends React.PureComponent {
 
         <div className="chat-component-group-content-divider" />
 
-        <div className="chat-component-options-toggle">
-          Make it Private
+        {isGroupOwner && (
+          <div className="chat-component-options-toggle">
+            Make it Private
           <WithTooltip position={{ bottom: '-6px', left: '58px' }} text={'Let all players find your group'}>
-            <ToggleButton
-              value={this.state.isPrivate || false}
-              onToggle={value => this.setState({ isPrivate: !value })}
-            />
-          </WithTooltip>
-        </div>
+              <ToggleButton
+                value={this.state.isPrivate || false}
+                onToggle={value => this.setState({ isPrivate: !value })}
+              />
+            </WithTooltip>
+          </div>
+        )}
 
-        <div className="chat-component-options-toggle">
-          Self destruct mode
-          <WithTooltip position={{ bottom: '-6px', left: '58px' }} text={'Switch this on to never save\nany messages on this chat'}>
-            <ToggleButton
-              value={this.props.group.selfDestruct || false}
-              onToggle={selfDestruct => this.props.updateChat(this.props.group.chatId, { selfDestruct: !selfDestruct })}
-            />
-          </WithTooltip>
-        </div>
+        {isGroupOwner && (
+          <div className="chat-component-options-toggle">
+            Self destruct mode
+                  <WithTooltip position={{ bottom: '-6px', left: '58px' }} text={'Switch this on to never save\nany messages on this chat'}>
+              <ToggleButton
+                value={this.props.group.selfDestruct || false}
+                onToggle={selfDestruct => this.props.updateChat(this.props.group.chatId, { selfDestruct: !selfDestruct })}
+              />
+            </WithTooltip>
+          </div>
+        )}
 
         <div
           className={`chat-component-options-option clickable ${this.props.group.blocked && inactiveStyle}`}
