@@ -63,7 +63,7 @@ class Dossier extends Component {
       try {
         const userProfile = await axios.get(`/api/user/getProfile/${match.params.alias}`)
         self.setState({
-          userProfile: userProfile.data.user[0],
+          userProfile: userProfile.data.user,
         })
       } catch (error) {
         console.log(error)
