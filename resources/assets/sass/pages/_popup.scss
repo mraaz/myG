@@ -1,0 +1,59 @@
+.popup-component {
+
+  position: relative;
+  width: 0;
+  height: 0;
+
+  .container {
+    position: absolute;
+    background-color: #253338;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+    width: max-content;
+    border-radius: 8px;
+  }
+
+  .header {
+    font-size: 12px;
+    text-align: center;
+    color: #E0E0E0;
+    margin-bottom: 4px;
+  }
+
+  .buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: -8px;
+  }
+
+  .button {
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: #E0E0E0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px;
+    font-size: 12px;
+  }
+
+  .confirm {
+    background-color: #446F62;
+  }
+
+  .deny {
+    background-color: #804545;
+  }
+
+  .footer {
+    font-size: 10px;
+    text-align: center;
+    color: #E0E0E0;
+    margin-top: 12px;
+  }
+
+}

@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import ToggleButton from 'react-toggle-button'
 import GroupMemberOptions from './GroupMemberOptions';
+import Popup from '../Popup';
+import { WithTooltip } from '../Tooltip';
 import { updateChatAction, clearChatAction, exitGroupAction } from '../../../redux/actions/chatAction';
 
 class GroupOptions extends React.PureComponent {
@@ -9,6 +11,7 @@ class GroupOptions extends React.PureComponent {
   state = {
     title: '',
     showingMembers: false,
+    exitingGroup: false,
   }
 
   onSaveTitle() {
@@ -32,8 +35,8 @@ class GroupOptions extends React.PureComponent {
     if (code === escKeyCode) return this.setState({ title: '' });
   }
 
-  exitOrDeleteGroup() {
-
+  exitOrDeleteGroup = () => {
+    this.setState({ exitingGroup: false })
   }
 
   renderGroupMemberOptions() {
@@ -153,18 +156,22 @@ class GroupOptions extends React.PureComponent {
 
         <div className="chat-component-options-toggle">
           Make it Private
-          <ToggleButton
-            value={this.state.isPrivate || false}
-            onToggle={value => this.setState({ isPrivate: !value })}
-          />
+          <WithTooltip position={{ bottom: '-6px', left: '58px' }} text={'Let all players find your group'}>
+            <ToggleButton
+              value={this.state.isPrivate || false}
+              onToggle={value => this.setState({ isPrivate: !value })}
+            />
+          </WithTooltip>
         </div>
 
         <div className="chat-component-options-toggle">
           Self destruct mode
-          <ToggleButton
-            value={this.props.group.selfDestruct || false}
-            onToggle={selfDestruct => this.props.updateChat(this.props.group.chatId, { selfDestruct: !selfDestruct })}
-          />
+          <WithTooltip position={{ bottom: '-6px', left: '58px' }} text={'Switch this on to never save\nany messages on this chat'}>
+            <ToggleButton
+              value={this.props.group.selfDestruct || false}
+              onToggle={selfDestruct => this.props.updateChat(this.props.group.chatId, { selfDestruct: !selfDestruct })}
+            />
+          </WithTooltip>
         </div>
 
         <div
@@ -182,10 +189,18 @@ class GroupOptions extends React.PureComponent {
 
         <div
           className={`chat-component-options-option clickable chat-component-options-option-warning`}
-          onClick={() => this.exitOrDeleteGroup()}
+          onClick={() => this.setState({ exitingGroup: true })}
         >
           {isGroupOwner ? 'delete group' : 'leave group'}
         </div>
+
+        <Popup
+          show={this.state.exitingGroup}
+          position={{ bottom: '48px', left: '-12px' }}
+          header={`Are you sure you want to ${isGroupOwner ? 'delete' : 'leave'} this group?`}
+          confirmAction={this.exitOrDeleteGroup}
+          denyAction={() => this.setState({ exitingGroup: false })}
+        />
 
       </div>
     );

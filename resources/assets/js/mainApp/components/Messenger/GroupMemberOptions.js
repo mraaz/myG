@@ -2,6 +2,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import Dropdown from '../Dropdown';
+import Popup from '../Popup';
 import { addContactsToChatAction, updateChatAction, clearChatAction, deleteChatAction, exitGroupAction, removeFromGroupAction } from '../../../redux/actions/chatAction';
 import { addAsFriendAction, fetchFriendRequestsAction } from '../../../redux/actions/userAction';
 
@@ -9,6 +11,9 @@ class GroupMemberOptions extends React.PureComponent {
 
   state = {
     ownerInput: '',
+    validOwner: false,
+    settingAsOwner: false,
+    kickingUser: false,
     friendRequests: [],
   }
 
@@ -19,6 +24,15 @@ class GroupMemberOptions extends React.PureComponent {
   onAddFriendRequest = (contactId) => {
     this.setState(previous => ({ friendRequests: [...previous.friendRequests, contactId] }));
     this.props.addAsFriend(contactId);
+  }
+
+  changeOwnership = () => {
+    this.setState({ settingAsOwner: false });
+  }
+
+  kickUser = () => {
+    this.props.removeFromGroup(this.props.group.chatId, this.state.kickingUser.contactId);
+    this.setState({ kickingUser: false });
   }
 
   renderMembers = (isGroupOwner) => {
@@ -55,7 +69,7 @@ class GroupMemberOptions extends React.PureComponent {
             <div
               className="chat-group-options-option-icon clickable"
               style={{ backgroundImage: `url(/assets/svg/ic_chat_group_remove.svg)`, filter: `contrast(0)` }}
-              onClick={() => this.props.removeFromGroup(this.props.group.chatId, contact.contactId)}
+              onClick={() => this.setState({ kickingUser: contact })}
             />
           )}
           <div
@@ -82,29 +96,44 @@ class GroupMemberOptions extends React.PureComponent {
 
   renderGroupOwnership(isGroupOwner) {
     if (!isGroupOwner) return null;
+    const matchingContacts = this.props.groupContacts
+      .filter(contact => contact.name.toLowerCase().includes(this.state.ownerInput.toLowerCase()))
+      .map(contact => contact.name);
     return (
       <div className="chat-group-ownership">
         <p className="chat-group-ownership-hint">Set a new group owner</p>
         <div className="chat-group-ownership-input-row">
           <div className="chat-group-ownership-input-hint">Find</div>
-          <div className="chat-group-ownership-dropdown-container">
-
-          </div>
           <div className="chat-group-ownership-input-container">
             <input
               className="chat-group-ownership-input"
-              placeholder={"Type member alias"}
+              placeholder={"Search for members"}
               value={this.state.ownerInput}
-              onChange={event => this.setState({ ownerInput: event.target.value })}
+              onChange={event => this.setState({ ownerInput: event.target.value, validOwner: false, settingAsOwner: false })}
             >
             </input>
+            <Dropdown
+              show={this.state.ownerInput && !this.state.validOwner}
+              position={{ top: '-12px', zIndex: '-1' }}
+              items={matchingContacts}
+              onItemClick={item => this.setState({ ownerInput: item, validOwner: true })}
+              emptyMessage={"no members found"}
+            />
           </div>
-          <div className={`chat-component-group-button clickable`}
-            onClick={() => console.log('save')}
+          <div className={`chat-component-group-button clickable ${!this.state.validOwner && 'chat-component-group-button-inactive'}`}
+            onClick={() => this.setState({ settingAsOwner: true })}
           >
             save
           </div>
         </div>
+        <Popup
+          show={this.state.settingAsOwner}
+          position={{ top: 0, left: '-45px' }}
+          header={`Are you sure you want to transfer the ownership to ${this.state.ownerInput}?`}
+          footer={'* After the transfer you will be demoted to moderator'}
+          confirmAction={this.changeOwnership}
+          denyAction={() => this.setState({ settingAsOwner: false })}
+        />
       </div>
     );
   }
@@ -113,6 +142,13 @@ class GroupMemberOptions extends React.PureComponent {
     const isGroupOwner = this.props.group.owners.length && this.props.group.owners.includes(this.props.userId);
     return (
       <div className="chat-group-members">
+        <Popup
+          show={this.state.kickingUser}
+          position={{ bottom: '20px', left: '30px' }}
+          header={`Are you sure you want to kick ${this.state.kickingUser && this.state.kickingUser.name}?`}
+          confirmAction={this.kickUser}
+          denyAction={() => this.setState({ kickingUser: false })}
+        />
         <p className="chat-group-members-header">Group members</p>
         {this.renderMembers(isGroupOwner)}
         {this.renderGroupOwnership(isGroupOwner)}

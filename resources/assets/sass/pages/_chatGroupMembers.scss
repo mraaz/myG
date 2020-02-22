@@ -106,10 +106,9 @@
 
 .chat-group-ownership-input-container {
   display: flex;
+  flex-direction: column;
   flex: 1;
-  border-radius: 24px;
   margin-left: 4px;
-  overflow: hidden;
 }
 
 .chat-group-ownership-input {
@@ -119,6 +118,7 @@
   width: 100%;
   border: none;
   background-color: #171A1C;
+  border-radius: 24px;
   color: #93A4A5;
   padding: 8px 8px 8px 12px;
   font-size: 10px;
