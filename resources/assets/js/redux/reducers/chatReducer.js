@@ -419,6 +419,11 @@ export default function reducer(state = {
         return true;
       });
       reEncryptMessages(unreadMessages, publicKey, privateKey);
+      if (chat.contacts.length > 2) {
+        const updatedUser = chat.fullContacts.find(contact => parseInt(contact.contactId) === parseInt(updatedUserId));
+        updatedUser.publicKey = publicKey;
+        sendGroupKeys(chat.chatId, thisUserId, [updatedUser], chat.privateKey, privateKey);
+      }
       return {
         ...state,
         chats,
