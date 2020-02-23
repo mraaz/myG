@@ -17,8 +17,7 @@ function isValidNewOption(inputValue, selectValue, selectOptions) {
 }
 
 const compareOption = (inputValue, option) => {
-  const candidate =
-    typeof inputValue === 'string' ? inputValue.toLowerCase() : inputValue
+  const candidate = typeof inputValue === 'string' ? inputValue.toLowerCase() : inputValue
   if (typeof option.value === 'string') {
     if (option.value.toLowerCase() === candidate) {
       return true
@@ -42,8 +41,6 @@ export default class ScheduleGames extends Component {
       just_one_time: true,
     }
   }
-
-  componentWillMount() {}
 
   handleChange_game_name = (entered_name) => {
     this.setState(
@@ -74,41 +71,19 @@ export default class ScheduleGames extends Component {
   showHeaders = () => {
     if (this.state.just_one_time) {
       this.state.just_one_time = false
-      return (
-        <ScheduleGames_Header
-          game_name_box={this.state.game_name_box}
-          show_single={true}
-          props={this.props}
-        />
-      )
+      return <ScheduleGames_Header game_name_box={this.state.game_name_box} show_single={true} props={this.props} />
     } else {
-      return (
-        <ScheduleGames_Header
-          game_name_box={this.state.game_name_box}
-          show_single={false}
-          props={this.props}
-        />
-      )
+      return <ScheduleGames_Header game_name_box={this.state.game_name_box} show_single={false} props={this.props} />
     }
   }
 
   showGames = () => {
     switch (this.state.game_name_box.value) {
       case 'Dota 2':
-        return (
-          <ScheduleGames_Dota2
-            game_name_box={this.state.game_name_box}
-            props={this.props}
-          />
-        )
+        return <ScheduleGames_Dota2 game_name_box={this.state.game_name_box} props={this.props} />
         break
       case 'Clash Royale':
-        return (
-          <ScheduleGames_Clash_Royale
-            game_name_box={this.state.game_name_box}
-            props={this.props}
-          />
-        )
+        return <ScheduleGames_Clash_Royale game_name_box={this.state.game_name_box} props={this.props} />
         break
     }
   }
@@ -140,11 +115,7 @@ export default class ScheduleGames extends Component {
                 value={this.state.game_name_box}
                 className='game-name-box'
                 placeholder='Enter Game name'
-                onInputChange={(inputValue) =>
-                  inputValue.length <= 88
-                    ? inputValue
-                    : inputValue.substr(0, 88)
-                }
+                onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
                 onKeyDown={this.onKeyDown}
               />
             </div>
