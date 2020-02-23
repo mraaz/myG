@@ -368,6 +368,7 @@ class NotificationController {
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id, activity_type: 1 })
         .select('notifications.*', 'users.profile_img', 'users.alias')
+        .paginate(request.input('counter'), 10)
 
       return {
         allMyFriends: allMyFriends,

@@ -149,7 +149,7 @@ Route.post('/api/notifications/getAllNoti', 'NotificationController.getAllNotifi
 Route.post('/api/notifications/addFriend', 'NotificationController.addFriend')
 Route.get('/api/notifications/friend/:id', 'NotificationController.checkFriend')
 Route.get('/api/notifications/myFriendRequests/', 'NotificationController.myFriendRequests')
-Route.get('/api/notifications/allmyFriendRequests/', 'NotificationController.allmyFriendRequests')
+Route.post('/api/notifications/allmyFriendRequests/', 'NotificationController.allmyFriendRequests')
 Route.get('/api/notifications/myFriendRequest/:id', 'NotificationController.myFriendRequest')
 Route.get('/api/notifications/delete/:id', 'NotificationController.destroy')
 Route.get('/api/notifications/getAllNotiLike_post/:id', 'NotificationController.getAllNotiLike_post')

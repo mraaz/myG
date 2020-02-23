@@ -54,7 +54,7 @@ export default class AddScheduleGames extends Component {
 
   handleCreate_game_name = (inputValue: any) => {
     if (/['/.%#$,;`\\]/.test(inputValue)) {
-      toast.success(<Toast_style text={'Sorry mate! Game name can not have invalid fields'} />)
+      toast.success(<Toast_style text={'Sorry mate! Game title can not have invalid fields'} />)
       return
     }
     setTimeout(() => {
@@ -64,8 +64,12 @@ export default class AddScheduleGames extends Component {
   }
 
   handleChange_game_name = (entered_name) => {
+    if (entered_name == null) {
+      this.setState({ game_name_box: '' })
+      return
+    }
     if (/['/.%#$,;`\\]/.test(entered_name.value)) {
-      toast.success(<Toast_style text={'Sorry mate! Game name can not have invalid fields'} />)
+      toast.success(<Toast_style text={'Sorry mate! Game title can not have invalid fields'} />)
       return
     }
 
@@ -127,7 +131,7 @@ export default class AddScheduleGames extends Component {
           <div className='game-name'>
             <div>
               <label>
-                Game Name: <span style={{ color: 'red' }}>*</span>
+                Game title: <span style={{ color: 'red' }}>*</span>
               </label>
             </div>
             <AsyncCreatableSelect
@@ -140,7 +144,7 @@ export default class AddScheduleGames extends Component {
               isClearable
               value={this.state.game_name_box}
               className='game_name_box'
-              placeholder='Enter Game name'
+              placeholder='Enter Game title'
               onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
               onKeyDown={this.onKeyDown}
             />
