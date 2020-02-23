@@ -27,7 +27,6 @@ export default class MyFriends extends Component {
       const getFriends = await axios.post('/api/friends/allmyFriends', {
         counter: this.state.counter,
       })
-      console.log()
 
       if (getFriends.data.showallMyFriends.length == 0) {
         this.setState({
