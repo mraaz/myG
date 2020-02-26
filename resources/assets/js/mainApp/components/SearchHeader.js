@@ -149,7 +149,7 @@ class SearchHeader extends Component {
       value: '',
     })
     if (suggestion.id == -1) {
-      this.props.history.push(`/invitation/${suggestion.last}`)
+      this.props.history.push(`/search/${suggestion.last}`)
     } else {
       this.props.history.push(`/profile/${suggestion.first}`)
     }

@@ -67,6 +67,8 @@ import GroupHome from "./components/GroupHome"
 import MyApprovals from "./components/MyApprovals"
 import Member_lists from "./components/Member_lists"
 import ArchivedScheduledGames from "./components/ArchivedScheduledGames"
+import AllSearchResults from "./components/AllSearchResults"
+
 
 class Layout extends Component {
   constructor() {
@@ -213,6 +215,9 @@ class Layout extends Component {
                     initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
 
                   <Route exact path="/archived_scheduledGames/:id" component={(props) => <ArchivedScheduledGames routeProps={props}
+                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+                  <Route exact path="/search/:keywords" component={(props) => <AllSearchResults routeProps={props}
                     initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
 
                   <Route render={() => <h3> Oops! I couldn't find that </h3>} />

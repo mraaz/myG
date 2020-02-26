@@ -302,7 +302,7 @@ export default class IndividualApproval extends Component {
             to={`/profile/${approvals.users.alias}`}
             className='user-img'
             style={{
-              backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/unknown_user.svg')`,
+              backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/default_user/new-user-profile-picture.png')`,
             }}></Link>
         )}
         <div className='user-info'>{`${approvals.users.alias}`}</div>
