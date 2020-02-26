@@ -134,7 +134,7 @@ class UserController {
         .whereNot({ id: auth.user.id })
         .andWhere('alias', 'like', '%' + request.input('keywords') + '%')
         .select('alias', 'profile_img', 'id')
-        .paginate(request.input('counter'), 10)
+        .paginate(request.input('counter'), 88)
 
       return {
         playerSearchResults,
