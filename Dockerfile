@@ -18,4 +18,5 @@ RUN npm run build
 # Run app
 EXPOSE 3333
 # CMD [ "npm", "start"]
-ENTRYPOINT ["npm run watch", "npm run watch-server"]
+#ENTRYPOINT ["npm run watch", "npm run watch-server"]
+CMD [ "npm", "run", "watch; watch-server" ]
