@@ -12,7 +12,7 @@ class ChatOptions extends React.PureComponent {
 
         <div
           className={`chat-component-options-option clickable`}
-          onClick={() => window.location.replace(`/profile/${this.props.contactId}`)}
+          onClick={() => window.location.replace(`/profile/${this.props.contactAlias}`)}
         >
           <div
             className="chat-component-options-option-icon"

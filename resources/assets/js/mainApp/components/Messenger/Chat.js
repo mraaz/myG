@@ -142,7 +142,7 @@ class Chat extends React.PureComponent {
 
         <div
           className="chat-component-header-icon clickable"
-          onClick={() => !this.props.isGroup && window.location.replace(`/profile/${this.props.contactId}`)}
+          onClick={() => !this.props.isGroup && window.location.replace(`/profile/${this.props.title}`)}
           style={{ backgroundImage: `url('${this.props.icon}')` }}
         />
 
