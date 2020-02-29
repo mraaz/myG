@@ -405,9 +405,10 @@ export default function reducer(state = {
       const { userId: thisUserId } = action.meta;
       const { userId: updatedUserId, chatId, publicKey } = action.payload;
       const { privateKey } = state;
+      if (parseInt(updatedUserId) === parseInt(thisUserId)) return state;
+      if (!chatId) return contactPublicKeyUpdated(state, updatedUserId, publicKey);
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
-      if (parseInt(updatedUserId) === parseInt(thisUserId)) return state;
       const lastFriendRead = convertUTCDateToLocalDate(new Date(chat.friendReadDate));
       const unreadMessages = [];
       chat.messages.slice(0).reverse().some(message => {
@@ -419,7 +420,7 @@ export default function reducer(state = {
         return true;
       });
       reEncryptMessages(unreadMessages, publicKey, privateKey);
-      if (chat.contacts.length > 2) {
+      if (chat.fullContacts && chat.contacts.length > 2) {
         const updatedUser = chat.fullContacts.find(contact => parseInt(contact.contactId) === parseInt(updatedUserId));
         updatedUser.publicKey = publicKey;
         sendGroupKeys(chat.chatId, thisUserId, [updatedUser], chat.privateKey, privateKey);
@@ -490,4 +491,11 @@ function receiveGroupKey(group, messages, userId, userPrivateKey) {
   const privateKey = decryptMessage(message.content, userPrivateKey);
   if (!privateKey) return;
   return deserializeKey(JSON.parse(privateKey));
+}
+
+function contactPublicKeyUpdated(state, contactId, publicKey) {
+  const contacts = JSON.parse(JSON.stringify(state.contacts));
+  const contact = contacts.find(contact => parseInt(contact.contactId) === parseInt(contactId));
+  if (contact) contact.publicKey = publicKey;
+  return { ...state, contacts };
 }

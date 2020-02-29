@@ -14,7 +14,11 @@ class UserRepository {
   async storePublicKey({ requestingUserId, publicKey }) {
     const { public_key: previousKey } = (await User.query().where('id', '=', requestingUserId).first()).toJSON();
     if (previousKey !== publicKey) {
-      const chats = (await UserChat.query().where('user_id', requestingUserId).fetch()).toJSON();
+      const [{ contacts }, chats] = await Promise.all([
+        this.fetchContacts({ requestingUserId }),
+        UserChat.query().where('user_id', requestingUserId).fetch().then(response => response.toJSON())
+      ]);
+      contacts.forEach(contact => ChatRepository._notifyChatEvent({ userId: contact.contactId, action: 'encryption', payload: { publicKey, userId: requestingUserId } }));
       chats.forEach(chat => ChatRepository._notifyChatEvent({ chatId: chat.chat_id, action: 'encryption', payload: { publicKey, userId: requestingUserId, chatId: chat.chat_id } }));
     }
     await User.query().where('id', '=', requestingUserId).update({ public_key: publicKey })
