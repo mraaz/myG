@@ -111,6 +111,7 @@ class UserController {
       return 'You are not Logged In!'
     }
   }
+
   async playerSearchResults({ auth, request, response }) {
     try {
       const playerSearchResults = await Database.table('users')
@@ -126,6 +127,23 @@ class UserController {
       console.log(error)
     }
   }
+
+  async keywordSearchResults({ auth, request, response }) {
+    try {
+      const playerSearchResults = await Database.table('users')
+        .whereNot({ id: auth.user.id })
+        .andWhere('alias', 'like', '%' + request.input('keywords') + '%')
+        .select('alias', 'profile_img', 'id')
+        .paginate(request.input('counter'), 88)
+
+      return {
+        playerSearchResults,
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   async destroy({ auth, request, response }) {
     if (auth.user) {
       try {
