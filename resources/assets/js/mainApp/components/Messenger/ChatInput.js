@@ -27,6 +27,7 @@ export default class ChatInput extends React.PureComponent {
   }
 
   sendMessage = () => {
+    if (!this.state.input.trim()) return;
     this.props.sendMessage(this.state.input.trim());
     this.props.setTyping(false);
     this.setState({ input: '' });
