@@ -225,6 +225,24 @@ class NotificationController {
     }
   }
 
+  async inviteToGroup({ auth, request }) {
+    if (auth.user) {
+      try {
+        await Notification.create({
+          other_user_id: request.params.userId,
+          user_id: auth.user.id,
+          activity_type: 18,
+          chat_id: request.params.chatId,
+        })
+        return 'Saved item'
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
   async checkFriend({ auth, request, response }) {
     try {
       const checkFriend = await Database.from('notifications').where({
@@ -322,6 +340,11 @@ class NotificationController {
         .where({ activity_type: 17, read_status: 0 })
         .groupBy('notifications.schedule_games_id')
         .select('id')
+      const group_invite = await Database.from('notifications')
+        .where({ other_user_id: auth.user.id })
+        .where({ activity_type: 18, read_status: 0 })
+        .groupBy('notifications.chat_id')
+        .select('id')
 
       var singleArr = [
         ...allMylike_posts,
@@ -336,6 +359,7 @@ class NotificationController {
         ...allMyarchived_schedulegames,
         ...dropped_out_attendees,
         ...group_member_approved,
+        ...group_invite,
       ]
       const number_of_notis = singleArr.length
       // 10,11,14,16 = schedule_games

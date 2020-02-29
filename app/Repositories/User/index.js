@@ -75,6 +75,20 @@ class UserRepository {
     return { status: new StatusSchema({ value: requestedStatus, locked: shouldLockStatus }) };
   }
 
+  async searchUsers({ requestingUserId, query }) {
+    const users = (await User.query().where('alias', 'like', '%' + query + '%').fetch()).toJSON()
+      .filter(user => parseInt(user.id) !== parseInt(requestingUserId))
+      .map(user => new ContactSchema({
+        contactId: user.id,
+        icon: user.profile_img,
+        name: user.alias,
+        status: user.status,
+        lastSeen: user.last_seen,
+        publicKey: user.public_key,
+      }));
+    return { users };
+  }
+
 }
 
 module.exports = new UserRepository();

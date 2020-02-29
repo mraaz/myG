@@ -57,6 +57,7 @@ class GroupOptions extends React.PureComponent {
           userId={this.props.userId}
           group={this.props.group}
           groupContacts={this.props.groupContacts}
+          onClose={() => this.setState({ showingMembers: false })}
         />
       </div>
     );
@@ -74,6 +75,8 @@ class GroupOptions extends React.PureComponent {
           callbackClose={() => this.setState({ uploadingPhoto: false })}
           callbackConfirm={this.onUploadPhoto}
         />
+
+        {this.renderGroupMemberOptions()}
 
         {isGroupModerator && (
           <div className="chat-component-options-row">
@@ -142,8 +145,6 @@ class GroupOptions extends React.PureComponent {
           />
           {isGroupModerator ? 'manage group members' : 'check group members'}
         </div>
-
-        {this.renderGroupMemberOptions()}
 
         <div className="chat-component-group-content-divider" />
 

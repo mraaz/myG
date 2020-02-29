@@ -6,6 +6,7 @@ export default function reducer(state = {
   isStatusLocked: false,
   contacts: [],
   friendRequests: [],
+  foundUsers: [],
 }, action) {
   switch (action.type) {
 
@@ -69,7 +70,7 @@ export default function reducer(state = {
     }
 
     case "PUBLIC_KEY_UPDATED": {
-      logger.log('CHAT', `Redux -> Public Key Updated (User): `, action.payload, action.meta);
+      logger.log('USER', `Redux -> Public Key Updated (User): `, action.payload, action.meta);
       const { userId: thisUserId } = action.meta;
       const { userId: updatedUserId, publicKey } = action.payload;
       const contacts = JSON.parse(JSON.stringify(state.contacts));
@@ -83,11 +84,19 @@ export default function reducer(state = {
     }
 
     case "FETCH_FRIEND_REQUESTS_FULFILLED": {
-      logger.log('CHAT', `Redux -> Fetched Friend Requests: `, action.payload);
+      logger.log('USER', `Redux -> Fetched Friend Requests: `, action.payload);
       const friendRequests = (action.payload.friendRequests || []).map(request => request.other_user_id);
       return {
         ...state,
         friendRequests,
+      };
+    }
+
+    case "SEARCH_USERS_FULFILLED": {
+      logger.log('USER', `Redux -> Found Users: `, action.payload);
+      return {
+        ...state,
+        foundUsers: action.payload.users,
       };
     }
 

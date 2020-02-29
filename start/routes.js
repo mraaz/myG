@@ -203,6 +203,7 @@ Route.post('/api/notifications/add_vip_to_Group', 'NotificationController.add_vi
 Route.get('/api/notifications/delete_group/:id', 'NotificationController.delete_group')
 Route.get('/api/notifications/getunread_group/:id/:activity_type', 'NotificationController.getunread_group')
 Route.post('/api/notifications/addGameApproved', 'NotificationController.addGameApproved')
+Route.put('/api/notifications/inviteToGroup', 'NotificationController.inviteToGroup')
 
 Route.post('/api/friends/create', 'FriendController.store')
 Route.post('/api/friends/allmyFriends', 'FriendController.showallmyFriends')
@@ -289,6 +290,7 @@ Route.put('/api/chat/:chatId/typing', 'ChatController.setTyping')
 Route.put('/api/user_chat/publicKey/', 'UserChatController.storePublicKey')
 Route.get('/api/user_chat/contact/', 'UserChatController.fetchContacts')
 Route.get('/api/user_chat/contact/:contactId', 'UserChatController.fetchContact')
+Route.get('/api/user_chat/search/', 'UserChatController.searchUsers')
 Route.get('/api/user_chat/status/', 'UserChatController.fetchStatus')
 Route.put('/api/user_chat/status/', 'UserChatController.updateStatus')
 

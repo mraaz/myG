@@ -56,6 +56,11 @@ export function addContactsToChat(chatId, contacts) {
   return axios.put(`/api/chat/${chatId}/contacts`, { contacts }).then(response => response.data);
 }
 
+export function inviteUserToGroup(userId, chatId) {
+  logger.log('CHAT', 'HTTP', `Invite User ${userId} To Group ${chatId}`);
+  return axios.put(`/api/notifications/inviteToGroup`, { userId, chatId }).then(response => response.data);
+}
+
 export function fetchMessages(chatId, page) {
   logger.log('CHAT', 'HTTP', `Fetching Messages for Chat ${chatId}`);
   return axios.get(`/api/chat/${chatId}/message?page=${page || 1}`).then(response => response.data);

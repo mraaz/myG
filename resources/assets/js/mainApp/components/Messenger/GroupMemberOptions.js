@@ -4,14 +4,16 @@ import { connect } from 'react-redux';
 
 import Dropdown from '../Dropdown';
 import Popup from '../Popup';
-import { addContactsToChatAction, updateChatAction, clearChatAction, exitGroupAction, removeFromGroupAction } from '../../../redux/actions/chatAction';
-import { addAsFriendAction, fetchFriendRequestsAction } from '../../../redux/actions/userAction';
+import { addContactsToChatAction, inviteUserToGroupAction, updateChatAction, clearChatAction, exitGroupAction, removeFromGroupAction } from '../../../redux/actions/chatAction';
+import { searchUsersAction, addAsFriendAction, fetchFriendRequestsAction } from '../../../redux/actions/userAction';
 
 class GroupMemberOptions extends React.PureComponent {
 
   state = {
     ownerInput: '',
+    inviteInput: '',
     validOwner: false,
+    validInvite: false,
     settingAsOwner: false,
     kickingUser: false,
     friendRequests: [],
@@ -55,6 +57,32 @@ class GroupMemberOptions extends React.PureComponent {
   kickUser = () => {
     this.props.removeFromGroup(this.props.group.chatId, this.state.kickingUser.contactId);
     this.setState({ kickingUser: false });
+  }
+
+  onUserSearchRequest(input) {
+    if (input.length >= 2) this.props.searchUsers(input);
+    this.setState({ inviteInput: input, validInvite: false });
+  }
+
+  inviteUser = () => {
+    if (!this.state.validInvite) return;
+    const contact = this.props.foundUsers.find(contact => contact.name === this.state.inviteInput);
+    const isFriend = this.props.contacts.find(friend => friend.contactId === contact.contactId);
+    if (isFriend) this.props.addContactsToChat(this.props.userId, this.props.group.chatId, [contact.contactId]);
+    else this.props.inviteUserToGroup(contact.contactId, this.props.group.chatId);
+    this.setState({ inviteInput: '', validInvite: false });
+  }
+
+  renderHeader = () => {
+    return (
+      <div className="chat-group-members-header">
+        <p className="chat-group-members-header-title">Group members</p>
+        <div className="chat-group-members-header-close-button clickable"
+          style={{ backgroundImage: `url(/assets/svg/ic_chat_close.svg)` }}
+          onClick={() => this.props.onClose()}
+        />
+      </div>
+    );
   }
 
   renderMembers = (isGroupModerator) => {
@@ -119,6 +147,39 @@ class GroupMemberOptions extends React.PureComponent {
     );
   }
 
+  renderGroupInvitation(isGroupModerator) {
+    if (!isGroupModerator) return null;
+    const contactIds = this.props.groupContacts.map(contact => contact.contactId);
+    return (
+      <div className="chat-group-ownership">
+        <div className="chat-group-ownership-input-row">
+          <div className="chat-group-ownership-input-hint">Invite</div>
+          <div className="chat-group-ownership-input-container">
+            <input
+              className="chat-group-ownership-input"
+              placeholder={"Find new group member"}
+              value={this.state.inviteInput}
+              onChange={event => this.onUserSearchRequest(event.target.value)}
+            >
+            </input>
+            <Dropdown
+              show={this.state.inviteInput && !this.state.validInvite}
+              position={{ top: '-6px' }}
+              items={this.props.foundUsers.filter(contact => !contactIds.includes(contact.contactId)).map(contact => contact.name)}
+              onItemClick={item => this.setState({ inviteInput: item, validInvite: true })}
+              emptyMessage={"no users found"}
+            />
+          </div>
+          <div className={`chat-component-group-button clickable ${!this.state.validInvite && 'chat-component-group-button-inactive'}`}
+            onClick={() => this.inviteUser()}
+          >
+            add
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   renderGroupOwnership(isGroupOwner) {
     if (!isGroupOwner) return null;
     const matchingContacts = this.props.groupContacts
@@ -139,14 +200,14 @@ class GroupMemberOptions extends React.PureComponent {
             </input>
             <Dropdown
               show={this.state.ownerInput && !this.state.validOwner}
-              position={{ top: '-12px', zIndex: '-1' }}
+              position={{ top: '-6px' }}
               items={matchingContacts}
               onItemClick={item => this.setState({ ownerInput: item, validOwner: true })}
               emptyMessage={"no members found"}
             />
           </div>
           <div className={`chat-component-group-button clickable ${!this.state.validOwner && 'chat-component-group-button-inactive'}`}
-            onClick={() => this.setState({ settingAsOwner: true })}
+            onClick={() => this.state.validOwner && this.setState({ settingAsOwner: true })}
           >
             save
           </div>
@@ -175,7 +236,8 @@ class GroupMemberOptions extends React.PureComponent {
           confirmAction={this.kickUser}
           denyAction={() => this.setState({ kickingUser: false })}
         />
-        <p className="chat-group-members-header">Group members</p>
+        {this.renderHeader()}
+        {this.renderGroupInvitation(isGroupModerator)}
         {this.renderMembers(isGroupModerator)}
         {this.renderGroupOwnership(isGroupOwner)}
       </div>
@@ -188,14 +250,17 @@ function mapStateToProps(state) {
   return {
     contacts: state.user.contacts || [],
     friendRequests: state.user.friendRequests || [],
+    foundUsers: state.user.foundUsers || [],
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return ({
+    searchUsers: (input) => dispatch(searchUsersAction(input)),
     fetchFriendRequests: () => dispatch(fetchFriendRequestsAction()),
     addAsFriend: (friendId) => dispatch(addAsFriendAction(friendId)),
     addContactsToChat: (userId, chatId, contacts) => dispatch(addContactsToChatAction(userId, chatId, contacts)),
+    inviteUserToGroup: (userId, chatId) => dispatch(inviteUserToGroupAction(userId, chatId)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
     removeFromGroup: (chatId, userId) => dispatch(removeFromGroupAction(chatId, userId)),
