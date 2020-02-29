@@ -86,7 +86,7 @@ class GroupOptions extends React.PureComponent {
             <div className="chat-component-group-title-input-container">
               <input
                 className="chat-component-group-title-input"
-                placeholder={"Type new Group name..."}
+                placeholder={"Type in new group name"}
                 value={this.state.title}
                 onKeyPress={this.onKeyPress}
                 onKeyDown={this.onKeyDown}

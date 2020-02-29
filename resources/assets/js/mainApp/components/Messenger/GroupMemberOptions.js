@@ -132,7 +132,7 @@ class GroupMemberOptions extends React.PureComponent {
           <div className="chat-group-ownership-input-container">
             <input
               className="chat-group-ownership-input"
-              placeholder={"Search for members"}
+              placeholder={"Assign new owner"}
               value={this.state.ownerInput}
               onChange={event => this.setState({ ownerInput: event.target.value, validOwner: false, settingAsOwner: false })}
             >
