@@ -63,6 +63,14 @@ export function onUserLeftGroupAction(payload, userId) {
   }
 }
 
+export function onUserJoinedGroupAction(payload, userId) {
+  return {
+    type: 'ON_USER_JOINED',
+    payload,
+    meta: { userId },
+  }
+}
+
 export function onMarkAsReadAction(payload, userId) {
   return {
     type: 'MARK_AS_READ',
@@ -249,18 +257,18 @@ export function setTypingAction(chatId, isTyping) {
   }
 }
 
-export function addContactsToChatAction(userId, chatId, contacts) {
+export function addContactsToChatAction(userId, chatId, contacts, publicKey, privateKey, userPrivateKey) {
   return {
     type: 'ADD_CONTACTS_TO_CHAT',
-    payload: addContactsToChat(chatId, contacts),
+    payload: addContactsToChat(userId, chatId, contacts, publicKey, privateKey, userPrivateKey),
     meta: { userId, chatId },
   }
 }
 
-export function inviteUserToGroupAction(userId, chatId) {
+export function inviteUserToGroupAction(userId, chatId, contacts, publicKey, privateKey, userPrivateKey) {
   return {
     type: 'INVITE_USER_TO_GROUP',
-    payload: inviteUserToGroup(userId, chatId),
+    payload: inviteUserToGroup(userId, chatId, contacts, publicKey, privateKey, userPrivateKey),
     meta: { userId, chatId },
   }
 }

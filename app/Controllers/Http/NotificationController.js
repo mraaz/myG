@@ -229,14 +229,15 @@ class NotificationController {
     if (auth.user) {
       try {
         await Notification.create({
-          other_user_id: request.params.userId,
+          other_user_id: request.input('userId'),
           user_id: auth.user.id,
           activity_type: 18,
-          chat_id: request.params.chatId,
+          chat_id: request.input('chatId'),
         })
         return 'Saved item'
       } catch (error) {
         console.log(error)
+        return error;
       }
     } else {
       return 'You are not Logged In!'
@@ -621,6 +622,22 @@ class NotificationController {
         .orderBy('notifications.created_at')
         .limit(10)
         .offset(parseInt(request.input('counter'), 10))
+      const chat_group_invite = await Database.from('notifications')
+        .innerJoin('users', 'users.id', 'notifications.user_id')
+        .where({ other_user_id: auth.user.id, activity_type: 18 })
+        .groupBy('notifications.schedule_games_id')
+        .select(
+          'notifications.group_id',
+          'notifications.activity_type',
+          'notifications.chat_id',
+          'users.alias',
+          'users.profile_img',
+          'users.id',
+          'notifications.created_at'
+        )
+        .orderBy('notifications.created_at')
+        .limit(10)
+        .offset(parseInt(request.input('counter'), 10))
 
       var singleArr = [
         ...allMylike_posts,
@@ -635,6 +652,7 @@ class NotificationController {
         ...allMyarchived_schedulegames,
         ...dropped_out_attendees,
         ...group_member_approved,
+        ...chat_group_invite,
       ]
 
       if (singleArr.length == 0) {

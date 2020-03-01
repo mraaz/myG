@@ -144,6 +144,14 @@ class ChatController {
     return response.send(result);
   }
 
+  async fetchChatInfo({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    log('CHAT', `User ${requestingUserId} requesting Group Info for Chat ${requestedChatId}`);
+    const { chat } = await ChatRepository.fetchChatInfo({ requestingUserId, requestedChatId });
+    return response.send({ chat });
+  }
+
 }
 
 module.exports = ChatController;

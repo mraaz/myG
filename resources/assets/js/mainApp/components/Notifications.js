@@ -55,7 +55,12 @@ export default class Notifications extends Component {
         if (rowLen === index + 1) {
           lastRow = true
         }
-        return <IndividualNotification notification={item} key={index} lastRow={lastRow} />
+        return <IndividualNotification
+          userId={this.props.initialData.userInfo.id}
+          notification={item}
+          key={index}
+          lastRow={lastRow}
+        />
       })
     }
   }

@@ -285,8 +285,8 @@ export default function reducer(state = {
       const { contacts } = action.payload;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
-      chat.contacts = [...chat.contacts, ...contacts.map(contact => contact.contactId)];
-      chat.fullContacts = [...chat.fullContacts, ...contacts];
+      if (!chat.contacts.includes(contacts[0].contactId)) chat.contacts.push(contacts[0].contactId);
+      if (!chat.fullContacts.map(contact => contact.contactId).includes(contacts[0].contactId)) chat.fullContacts.push(contacts[0]);
       sendGroupKeys(chatId, parseInt(userId), contacts, chat.privateKey, state.privateKey);
       return {
         ...state,
@@ -365,6 +365,22 @@ export default function reducer(state = {
       if (!chat) return state;
       chat.contacts = chat.contacts.filter(contactId => parseInt(contactId) !== parseInt(userId));
       chat.fullContacts = chat.fullContacts.filter(contact => parseInt(contact.contactId) !== parseInt(userId));
+      return {
+        ...state,
+        chats,
+      };
+    }
+
+    case "ON_USER_JOINED": {
+      logger.log('CHAT', `Redux -> User Joined Group: `, action.payload, action.meta);
+      const { chatId, contacts } = action.payload;
+      const { userId: thisUserId } = action.meta;
+      if (contacts.includes(parseInt(thisUserId))) return state;
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => candidate.chatId === chatId);
+      if (!chat) return state;
+      if (!chat.contacts.includes(contacts[0].contactId)) chat.contacts.push(contacts[0].contactId);
+      if (!chat.fullContacts.map(contact => contact.contactId).includes(contacts[0].contactId)) chat.fullContacts.push(contacts[0]);
       return {
         ...state,
         chats,

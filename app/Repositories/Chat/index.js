@@ -258,8 +258,8 @@ class ChatRepository {
     return new DefaultSchema({ success: true });
   }
 
-  async addContactsToChat({ requestingUserId, requestedChatId, contacts }) {
-    const { chat } = await this.fetchChat({ requestingUserId, requestedChatId });
+  async addContactsToChat({ requestedChatId, contacts }) {
+    const { chat } = await this.fetchChatInfo({ requestedChatId });
     if (chat.contacts.length < 3) throw new Error('Cannot add users to a normal chat.');
     contacts.forEach(contactId => !chat.contacts.includes(contactId) && chat.contacts.push(contactId));
     if (chat.contacts.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
@@ -282,6 +282,7 @@ class ChatRepository {
       lastSeen: contact.last_seen,
       publicKey: contact.public_key,
     }));
+    chat.contacts.forEach(userId => this._notifyChatEvent({ userId, action: 'userJoined', payload: { contacts: fullContacts, chatId: requestedChatId } }));
     return { contacts: fullContacts };
   }
 
@@ -371,6 +372,25 @@ class ChatRepository {
   async setTyping({ requestingUserId, requestedChatId, isTyping }) {
     this._notifyChatEvent({ chatId: requestedChatId, action: 'typing', payload: { userId: requestingUserId, chatId: requestedChatId, isTyping } });
     return new DefaultSchema({ success: true });
+  }
+
+  async fetchChatInfo({ requestedChatId }) {
+    const chat = await Chat.find(requestedChatId);
+    const chatSchema = new ChatSchema({
+      chatId: chat.id,
+      blocked: chat.blocked,
+      isPrivate: chat.isPrivate,
+      icon: chat.icon,
+      title: chat.title,
+      lastMessage: chat.last_message,
+      publicKey: chat.public_key,
+      contacts: chat.contacts,
+      owners: chat.owners,
+      moderators: chat.moderators,
+      createdAt: chat.created_at,
+      updatedAt: chat.updated_at,
+    });
+    return { chat: chatSchema };
   }
 
   async _fetchLastMessageId({ requestedChatId }) {

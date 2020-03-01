@@ -68,8 +68,8 @@ class GroupMemberOptions extends React.PureComponent {
     if (!this.state.validInvite) return;
     const contact = this.props.foundUsers.find(contact => contact.name === this.state.inviteInput);
     const isFriend = this.props.contacts.find(friend => friend.contactId === contact.contactId);
-    if (isFriend) this.props.addContactsToChat(this.props.userId, this.props.group.chatId, [contact.contactId]);
-    else this.props.inviteUserToGroup(contact.contactId, this.props.group.chatId);
+    if (isFriend) this.props.addContactsToChat(this.props.userId, this.props.group.chatId, [contact.contactId], contact.publicKey, this.props.group.privateKey, this.props.userPrivateKey);
+    else this.props.inviteUserToGroup(this.props.userId, this.props.group.chatId, [contact.contactId], contact.publicKey, this.props.group.privateKey, this.props.userPrivateKey);
     this.setState({ inviteInput: '', validInvite: false });
   }
 
@@ -251,6 +251,7 @@ function mapStateToProps(state) {
     contacts: state.user.contacts || [],
     friendRequests: state.user.friendRequests || [],
     foundUsers: state.user.foundUsers || [],
+    userPrivateKey: state.encryption.privateKey,
   }
 }
 
@@ -259,8 +260,8 @@ function mapDispatchToProps(dispatch) {
     searchUsers: (input) => dispatch(searchUsersAction(input)),
     fetchFriendRequests: () => dispatch(fetchFriendRequestsAction()),
     addAsFriend: (friendId) => dispatch(addAsFriendAction(friendId)),
-    addContactsToChat: (userId, chatId, contacts) => dispatch(addContactsToChatAction(userId, chatId, contacts)),
-    inviteUserToGroup: (userId, chatId) => dispatch(inviteUserToGroupAction(userId, chatId)),
+    addContactsToChat: (userId, chatId, contacts, publicKey, privateKey, userPrivateKey) => dispatch(addContactsToChatAction(userId, chatId, contacts, publicKey, privateKey, userPrivateKey)),
+    inviteUserToGroup: (userId, chatId, contacts, publicKey, privateKey, userPrivateKey) => dispatch(inviteUserToGroupAction(userId, chatId, contacts, publicKey, privateKey, userPrivateKey)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
     removeFromGroup: (chatId, userId) => dispatch(removeFromGroupAction(chatId, userId)),
