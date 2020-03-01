@@ -1,4 +1,4 @@
-import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, inviteUserToGroup, createChat, updateChat, clearChat, deleteChat, exitGroup, removeFromGroup, checkSelfDestruct, fetchMessages, fetchLinks, sendMessage, editMessage, deleteMessage, setTyping } from '../../integration/http/chat';
+import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, inviteUserToGroup, createChat, updateChat, clearChat, deleteChat, exitGroup, removeFromGroup, checkSelfDestruct, fetchMessages, fetchLinks, updateLink, sendMessage, editMessage, deleteMessage, setTyping } from '../../integration/http/chat';
 import { fetchContacts, fetchContact, fetchStatus } from '../../integration/http/user';
 import { generateKeys, deserializeKey } from '../../integration/encryption';
 
@@ -271,5 +271,13 @@ export function inviteUserToGroupAction(userId, chatId, contacts, publicKey, pri
     type: 'INVITE_USER_TO_GROUP',
     payload: inviteUserToGroup(userId, chatId, contacts, publicKey, privateKey, userPrivateKey),
     meta: { userId, chatId },
+  }
+}
+
+export function updateLinkAction(chatId, uuid, expiry, expire) {
+  return {
+    type: 'UPDATE_LINK',
+    payload: updateLink(chatId, uuid, expiry, expire),
+    meta: { chatId, uuid },
   }
 }

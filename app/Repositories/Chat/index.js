@@ -13,7 +13,7 @@ const MessageSchema = require('../../Schemas/Message');
 const DefaultSchema = require('../../Schemas/Default');
 const ContactSchema = require('../../Schemas/Contact');
 
-const uuidv1 = require('uuid/v1');
+const uuidv4 = require('uuid/v4');
 const { broadcast } = require('../../Common/socket');
 const { convertUTCDateToLocalDate } = require('../../Common/date');
 const { log } = require('../../Common/logger');
@@ -114,18 +114,6 @@ class ChatRepository {
     return { messages };
   }
 
-  async fetchLinks({ requestedChatId }) {
-    const rawLinks = (await ChatLink.query().where('chat_id', requestedChatId).fetch()).toJSON();
-    const links = rawLinks.map(link => new ChatLinkSchema({
-      chatId: link.chat_id,
-      uuid: link.uuid,
-      expiry: link.expiry,
-      createdAt: link.created_at,
-      updatedAt: link.updated_at,
-    }));
-    return { links };
-  }
-
   async createChat({ requestingUserId, contacts, owners, title, icon, publicKey }) {
     if (contacts.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
     contacts = [requestingUserId, ...contacts].sort();
@@ -172,7 +160,7 @@ class ChatRepository {
       [1, 2, 3].forEach(async () => {
         const link = new ChatLink();
         link.chat_id = chat.id;
-        link.uuid = uuidv1();
+        link.uuid = uuidv4();
         link.expiry = null;
         await link.save();
       });
@@ -416,6 +404,34 @@ class ChatRepository {
       updatedAt: chat.updated_at,
     });
     return { chat: chatSchema };
+  }
+
+  async fetchLinks({ requestedChatId }) {
+    const rawLinks = (await ChatLink.query().where('chat_id', requestedChatId).fetch()).toJSON();
+    const links = rawLinks.map(link => new ChatLinkSchema({
+      chatId: link.chat_id,
+      uuid: link.uuid,
+      expiry: link.expiry,
+      createdAt: link.created_at,
+      updatedAt: link.updated_at,
+    }));
+    return { links };
+  }
+
+  async updateLink({ requestedChatId, requestedLinkUuid, expiry, expire }) {
+    const link = (await ChatLink.query().where('chat_id', requestedChatId).andWhere('uuid', requestedLinkUuid).first()).toJSON();
+    if (expiry !== undefined) {
+      await ChatLink.query().where('id', link.id).update({ expiry });
+      link.expiry = expiry;
+      return { link };
+    }
+    if (expire) {
+      const uuid = uuidv4();
+      await ChatLink.query().where('id', link.id).update({ uuid, expiry: null });
+      link.uuid = uuid;
+      link.expiry = null;
+      return { link };
+    }
   }
 
   async _fetchLastMessageId({ requestedChatId }) {

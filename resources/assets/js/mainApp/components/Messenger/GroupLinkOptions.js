@@ -1,7 +1,8 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { copyToClipboard } from '../../../common/clipboard'
+import { copyToClipboard } from '../../../common/clipboard';
+import { updateLinkAction } from '../../../redux/actions/chatAction';
 
 class GroupLinkOptions extends React.PureComponent {
 
@@ -64,23 +65,23 @@ class GroupLinkOptions extends React.PureComponent {
     return (
       <div className="chat-group-links-ruler-container">
         <div className="chat-group-links-ruler" />
-        <div className="chat-group-links-ruler-option clickable" onClick={() => console.log('option 1 selected')}>
+        <div className="chat-group-links-ruler-option clickable" onClick={() => this.props.updateLink(this.props.group.chatId, link.uuid, null, false)}>
           <div className={`chat-group-links-ruler-option-inside ${link.expiry === null && selectedOptionStyle}`}/>
           <div className={`chat-group-links-ruler-option-text ${link.expiry === null && selectedTextStyle}`}>Unlimited</div>
         </div>
-        <div className="chat-group-links-ruler-option clickable" onClick={() => console.log('option 2 selected')}>
+        <div className="chat-group-links-ruler-option clickable" onClick={() => this.props.updateLink(this.props.group.chatId, link.uuid, 3, false)}>
           <div className={`chat-group-links-ruler-option-inside ${link.expiry === 3 && selectedOptionStyle}`}/>
           <div className={`chat-group-links-ruler-option-text ${link.expiry === 3 && selectedTextStyle}`}>Lasts 3hrs</div>
         </div>
-        <div className="chat-group-links-ruler-option clickable" onClick={() => console.log('option 3 selected')}>
+        <div className="chat-group-links-ruler-option clickable" onClick={() => this.props.updateLink(this.props.group.chatId, link.uuid, 6, false)}>
           <div className={`chat-group-links-ruler-option-inside ${link.expiry === 6 && selectedOptionStyle}`}/>
           <div className={`chat-group-links-ruler-option-text ${link.expiry === 6 && selectedTextStyle}`}>Lasts 6hrs</div>
         </div>
-        <div className="chat-group-links-ruler-option clickable" onClick={() => console.log('option 4 selected')}>
+        <div className="chat-group-links-ruler-option clickable" onClick={() => this.props.updateLink(this.props.group.chatId, link.uuid, 12, false)}>
           <div className={`chat-group-links-ruler-option-inside ${link.expiry === 12 && selectedOptionStyle}`}/>
           <div className={`chat-group-links-ruler-option-text ${link.expiry === 12 && selectedTextStyle}`}>Lasts 12hrs</div>
         </div>
-        <div className="chat-group-links-ruler-option clickable" onClick={() => console.log('option 5 selected')}>
+        <div className="chat-group-links-ruler-option clickable" onClick={() => this.props.updateLink(this.props.group.chatId, link.uuid, 24, false)}>
           <div className={`chat-group-links-ruler-option-inside ${link.expiry === 24 && selectedOptionStyle}`}/>
           <div className={`chat-group-links-ruler-option-text ${link.expiry === 24 && selectedTextStyle}`}>Lasts 24hrs</div>
         </div>
@@ -89,8 +90,9 @@ class GroupLinkOptions extends React.PureComponent {
   }
 
   renderExpireButton = () => {
+    const link = this.props.group.links[this.state.currentTab];
     return (
-      <div className="chat-group-links-expire-link-button clickable" onClick={() => console.log('expire')}>
+      <div className="chat-group-links-expire-link-button clickable" onClick={() => this.props.updateLink(this.props.group.chatId, link.uuid, undefined, true)}>
           expire link
       </div>
     );
@@ -118,7 +120,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return ({
-
+    updateLink: (chatId, uuid, expiry, expire) => dispatch(updateLinkAction(chatId, uuid, expiry, expire))
   });
 }
 

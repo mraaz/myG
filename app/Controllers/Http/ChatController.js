@@ -105,14 +105,6 @@ class ChatController {
     return response.send({ messages });
   }
 
-  async fetchLinks({ auth, params, response }) {
-    const requestingUserId = auth.user.id;
-    const requestedChatId = params.chatId;
-    log('CHAT', `User ${requestingUserId} requesting Links for Chat ${requestedChatId}`);
-    const { links } = await ChatRepository.fetchLinks({ requestingUserId, requestedChatId });
-    return response.send({ links });
-  }
-
   async sendMessage({ auth, params, request, response }) {
     const requestingUserId = auth.user.id;
     const requestedChatId = params.chatId;
@@ -158,6 +150,24 @@ class ChatController {
     log('CHAT', `User ${requestingUserId} requesting Group Info for Chat ${requestedChatId}`);
     const { chat } = await ChatRepository.fetchChatInfo({ requestingUserId, requestedChatId });
     return response.send({ chat });
+  }
+
+  async fetchLinks({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    log('CHAT', `User ${requestingUserId} requesting Links for Chat ${requestedChatId}`);
+    const { links } = await ChatRepository.fetchLinks({ requestingUserId, requestedChatId });
+    return response.send({ links });
+  }
+
+  async updateLink({ auth, params, request, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    const requestedLinkUuid = params.uuid;
+    const { expiry, expire } = request.only(['expiry', 'expire']);
+    log('CHAT', `User ${requestingUserId} updating link ${requestedLinkUuid} for Chat ${requestedChatId} - ${expiry} / ${expire}`);
+    const { link } = await ChatRepository.updateLink({ requestedChatId, requestedLinkUuid, expiry, expire });
+    return response.send({ link });
   }
 
 }

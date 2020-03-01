@@ -214,6 +214,20 @@ export default function reducer(state = {
       };
     }
 
+    case "UPDATE_LINK_FULFILLED": {
+      logger.log('CHAT', `Redux -> Link Updated: `, action.payload, action.meta);
+      const chatId = parseInt(action.meta.chatId);
+      const uuid = action.meta.uuid;
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => candidate.chatId === chatId);
+      const index = chat.links.indexOf(chat.links.find(link => link.uuid === uuid));
+      chat.links.splice(index, 1, action.payload.link);
+      return {
+        ...state,
+        chats,
+      };
+    }
+
     case "ON_MESSAGES_DELETED": {
       logger.log('CHAT', `Redux -> On Messages Deleted: `, action.payload);
       const chatId = parseInt(action.payload.chatId);
