@@ -87,6 +87,11 @@ export function setTyping(chatId, isTyping) {
   return axios.put(`/api/chat/${chatId}/typing`, { isTyping }).then(response => response.data);
 }
 
+export function fetchLinks(chatId) {
+  logger.log('CHAT', 'HTTP', `Fetching Links for Chat ${chatId}`);
+  return axios.get(`/api/chat/${chatId}/links`).then(response => response.data);
+}
+
 function sendGroupPrivateKey(userId, chatId, contacts, publicKey, privateKey, userPrivateKey) {
   const serializedKey = JSON.stringify(privateKey);
   contacts.forEach(contactId => {

@@ -83,7 +83,7 @@ class Layout extends Component {
       try {
         const initialData = await axios.get('/api/initialApp')
 
-        if (initialData.data.userInfo == 1981) {
+        if (initialData.data.userInfo == 1981 && !window.location.href.includes('/link')) {
           window.location.href = "/"
         }
 
@@ -111,6 +111,7 @@ class Layout extends Component {
   }
 
   render() {
+    const isLink = window.location.href.includes('/link');
     return (
       <Provider store={store}>
         <PersistGate persistor={persistor}>

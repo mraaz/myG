@@ -5,12 +5,15 @@ const UserChat = use('App/Models/UserChat');
 const ChatMessage = use('App/Models/ChatMessage');
 const ChatLastCleared = use('App/Models/ChatLastCleared');
 const ChatLastRead = use('App/Models/ChatLastRead');
+const ChatLink = use('App/Models/ChatLink');
 
 const ChatSchema = require('../../Schemas/Chat');
+const ChatLinkSchema = require('../../Schemas/ChatLink');
 const MessageSchema = require('../../Schemas/Message');
 const DefaultSchema = require('../../Schemas/Default');
 const ContactSchema = require('../../Schemas/Contact');
 
+const uuidv1 = require('uuid/v1');
 const { broadcast } = require('../../Common/socket');
 const { convertUTCDateToLocalDate } = require('../../Common/date');
 const { log } = require('../../Common/logger');
@@ -111,6 +114,18 @@ class ChatRepository {
     return { messages };
   }
 
+  async fetchLinks({ requestedChatId }) {
+    const rawLinks = (await ChatLink.query().where('chat_id', requestedChatId).fetch()).toJSON();
+    const links = rawLinks.map(link => new ChatLinkSchema({
+      chatId: link.chat_id,
+      uuid: link.uuid,
+      expiry: link.expiry,
+      createdAt: link.created_at,
+      updatedAt: link.updated_at,
+    }));
+    return { links };
+  }
+
   async createChat({ requestingUserId, contacts, owners, title, icon, publicKey }) {
     if (contacts.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
     contacts = [requestingUserId, ...contacts].sort();
@@ -152,6 +167,16 @@ class ChatRepository {
       await userChat.save();
       this._notifyChatEvent({ userId, action: 'newChat', payload: chatSchema });
     });
+
+    if (contacts.length > 2) {
+      [1, 2, 3].forEach(async () => {
+        const link = new ChatLink();
+        link.chat_id = chat.id;
+        link.uuid = uuidv1();
+        link.expiry = null;
+        await link.save();
+      });
+    }
 
     return { chat: chatSchema };
   }

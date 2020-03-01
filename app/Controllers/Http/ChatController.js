@@ -105,6 +105,14 @@ class ChatController {
     return response.send({ messages });
   }
 
+  async fetchLinks({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    log('CHAT', `User ${requestingUserId} requesting Links for Chat ${requestedChatId}`);
+    const { links } = await ChatRepository.fetchLinks({ requestingUserId, requestedChatId });
+    return response.send({ links });
+  }
+
   async sendMessage({ auth, params, request, response }) {
     const requestingUserId = auth.user.id;
     const requestedChatId = params.chatId;

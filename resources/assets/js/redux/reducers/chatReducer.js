@@ -49,6 +49,7 @@ export default function reducer(state = {
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       chat.fullContacts = action.payload.contacts;
+      chat.links = action.payload.links;
       chat.noMoreMessages = false;
       chat.loadingMessages = false;
       const messages = action.payload.messages
@@ -59,10 +60,7 @@ export default function reducer(state = {
         .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId));
       const privateKey = receiveGroupKey(chat, action.payload.messages, action.meta.userId, state.privateKey);
       if (privateKey) chat.privateKey = privateKey;
-      if (!chat.blocked) {
-        Object.assign(chat, action.payload.chat);
-        chat.messages = messages;
-      }
+      if (!chat.blocked) chat.messages = messages;
       return {
         ...state,
         chats,
