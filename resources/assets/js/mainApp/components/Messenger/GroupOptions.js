@@ -2,10 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import ToggleButton from 'react-toggle-button'
 import GroupMemberOptions from './GroupMemberOptions';
+import GroupLinkOptions from './GroupLinkOptions';
 import Popup from '../Popup';
 import FileOpenModal from '../FileOpenModal';
 import { WithTooltip } from '../Tooltip';
 import { updateChatAction, clearChatAction, deleteChatAction, exitGroupAction } from '../../../redux/actions/chatAction';
+import { copyToClipboard } from '../../../common/clipboard'
 
 class GroupOptions extends React.PureComponent {
 
@@ -63,7 +65,21 @@ class GroupOptions extends React.PureComponent {
     );
   }
 
+  renderGroupLinkOptions() {
+    if (!this.state.showingLinks) return null;
+    return (
+      <div className="chat-group-links-container">
+        <GroupLinkOptions
+          userId={this.props.userId}
+          group={this.props.group}
+          onClose={() => this.setState({ showingLinks: false })}
+        />
+      </div>
+    );
+  }
+
   render() {
+    const mainLink = window.location.protocol + '//' + window.location.host + '/link/' + this.props.group.links[0].uuid;
     const isGroupOwner = this.props.group.owners.length && this.props.group.owners.includes(this.props.userId);
     const isGroupModerator = this.props.group.moderators.length && this.props.group.moderators.includes(this.props.userId);
     const inactiveStyle = 'chat-component-options-option-inactive';
@@ -77,6 +93,7 @@ class GroupOptions extends React.PureComponent {
         />
 
         {this.renderGroupMemberOptions()}
+        {this.renderGroupLinkOptions()}
 
         {isGroupModerator && (
           <div className="chat-component-options-row">
@@ -154,18 +171,18 @@ class GroupOptions extends React.PureComponent {
 
           <div className="chat-component-group-title-link-container">
             <div className="chat-component-group-title-link">
-              myg.gg/not-implemented-yet
+              {mainLink}
             </div>
           </div>
 
           <div className={`chat-component-group-button chat-component-group-button-smaller clickable`}
-            onClick={() => console.log('edit')}
+            onClick={() => this.setState(previous => ({ showingLinks: !previous.showingLinks }))}
           >
             edit
           </div>
 
           <div className={`chat-component-group-button chat-component-group-button-smaller clickable`}
-            onClick={() => console.log('copy')}
+            onClick={() => copyToClipboard(mainLink)}
           >
             copy
           </div>
