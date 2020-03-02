@@ -292,6 +292,7 @@ export default function reducer(state = {
     }
 
     case "ADD_CONTACTS_TO_CHAT_FULFILLED": {
+      if (action.payload.error) return state;
       logger.log('CHAT', `Redux -> Contacts Added: `, action.payload, action.meta);
       const { userId, chatId } = action.meta;
       const { contacts } = action.payload;

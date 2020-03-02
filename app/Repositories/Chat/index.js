@@ -274,6 +274,8 @@ class ChatRepository {
   async addContactsToChat({ requestedChatId, contacts }) {
     const { chat } = await this.fetchChatInfo({ requestedChatId });
     if (chat.contacts.length < 3) throw new Error('Cannot add users to a normal chat.');
+    const diffContacts = contacts.filter(contactId => !chat.contacts.includes(contactId));
+    if (!diffContacts.length) return { error: 'Contacts are Already in Chat.' };
     contacts.forEach(contactId => !chat.contacts.includes(contactId) && chat.contacts.push(contactId));
     if (chat.contacts.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
     contacts.forEach(async userId => {
@@ -406,6 +408,20 @@ class ChatRepository {
     return { chat: chatSchema };
   }
 
+  async fetchLink({ requestedLinkUuid }) {
+    const response = (await ChatLink.query().where('uuid', requestedLinkUuid).first());
+    if (!response) return { link: null };
+    const rawLink = response.toJSON();
+    const link = new ChatLinkSchema({
+      chatId: rawLink.chat_id,
+      uuid: rawLink.uuid,
+      expiry: rawLink.expiry,
+      createdAt: rawLink.created_at,
+      updatedAt: rawLink.updated_at,
+    });
+    return { link };
+  }
+
   async fetchLinks({ requestedChatId }) {
     const rawLinks = (await ChatLink.query().where('chat_id', requestedChatId).fetch()).toJSON();
     const links = rawLinks.map(link => new ChatLinkSchema({
@@ -419,15 +435,22 @@ class ChatRepository {
   }
 
   async updateLink({ requestedChatId, requestedLinkUuid, expiry, expire }) {
-    const link = (await ChatLink.query().where('chat_id', requestedChatId).andWhere('uuid', requestedLinkUuid).first()).toJSON();
+    const rawLink = (await ChatLink.query().where('chat_id', requestedChatId).andWhere('uuid', requestedLinkUuid).first()).toJSON();
+    const link = new ChatLinkSchema({
+      chatId: rawLink.chat_id,
+      uuid: rawLink.uuid,
+      expiry: rawLink.expiry,
+      createdAt: rawLink.created_at,
+      updatedAt: rawLink.updated_at,
+    });
     if (expiry !== undefined) {
-      await ChatLink.query().where('id', link.id).update({ expiry });
+      await ChatLink.query().where('id', rawLink.id).update({ expiry });
       link.expiry = expiry;
       return { link };
     }
     if (expire) {
       const uuid = uuidv4();
-      await ChatLink.query().where('id', link.id).update({ uuid, expiry: null });
+      await ChatLink.query().where('id', rawLink.id).update({ uuid, expiry: null });
       link.uuid = uuid;
       link.expiry = null;
       return { link };

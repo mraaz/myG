@@ -92,12 +92,18 @@ export function fetchLinks(chatId) {
   return axios.get(`/api/chat/${chatId}/links`).then(response => response.data);
 }
 
+export function fetchLink(uuid) {
+  logger.log('CHAT', 'HTTP', `Fetching Link ${uuid}`);
+  return axios.get(`/api/chat-link/${uuid}`).then(response => response.data);
+}
+
 export function updateLink(chatId, uuid, expiry, expire) {
   logger.log('CHAT', 'HTTP', `Updating Link ${uuid} for Chat ${chatId} - ${expiry} / ${expire}`);
   return axios.put(`/api/chat/${chatId}/links/${uuid}`, { expiry, expire }).then(response => response.data);
 }
 
 function sendGroupPrivateKey(userId, chatId, contacts, publicKey, privateKey, userPrivateKey) {
+  if (!publicKey || !privateKey || !userPrivateKey) return Promise.resolve();
   const serializedKey = JSON.stringify(privateKey);
   contacts.forEach(contactId => {
     const content = encryptMessage(serializedKey, publicKey, userPrivateKey);

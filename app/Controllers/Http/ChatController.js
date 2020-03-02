@@ -92,8 +92,8 @@ class ChatController {
     const requestedChatId = params.chatId;
     const requestedContacts = request.only(['contacts']).contacts;
     log('CHAT', `User ${requestingUserId} adding ${JSON.stringify(requestedContacts)} to Chat ${requestedChatId}`);
-    const { contacts } = await ChatRepository.addContactsToChat({ requestingUserId, requestedChatId, contacts: requestedContacts });
-    return response.send({ contacts });
+    const { contacts, error } = await ChatRepository.addContactsToChat({ requestingUserId, requestedChatId, contacts: requestedContacts });
+    return response.send({ contacts, error });
   }
 
   async fetchMessages({ auth, params, request, response }) {
@@ -158,6 +158,13 @@ class ChatController {
     log('CHAT', `User ${requestingUserId} requesting Links for Chat ${requestedChatId}`);
     const { links } = await ChatRepository.fetchLinks({ requestingUserId, requestedChatId });
     return response.send({ links });
+  }
+
+  async fetchLink({ params, response }) {
+    const requestedLinkUuid = params.uuid;
+    log('CHAT', `User requesting Link ${requestedLinkUuid}`);
+    const { link } = await ChatRepository.fetchLink({ requestedLinkUuid });
+    return response.send({ link });
   }
 
   async updateLink({ auth, params, request, response }) {

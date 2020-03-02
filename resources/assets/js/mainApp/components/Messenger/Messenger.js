@@ -1,6 +1,7 @@
 
 import React from "react";
 import { connect } from 'react-redux';
+import { toast } from 'react-toastify';
 
 import Chat from './Chat';
 import GroupCreation from './GroupCreation';
@@ -15,6 +16,7 @@ import { deserializeKey, decryptMessage, generateKeysSync as generateGroupKeys }
 import { formatAMPM, convertUTCDateToLocalDate } from '../../../common/date';
 import { copyToClipboard } from '../../../common/clipboard';
 import { STATUS_ENUM, compareStatus } from '../../../common/status';
+import { fetchLink, addContactsToChat } from "../../../integration/http/chat";
 
 class Messenger extends React.PureComponent {
 
@@ -43,10 +45,28 @@ class Messenger extends React.PureComponent {
 
   componentDidMount() {
     monitorChats(this.props.userId);
+    if (window.location.href.includes('/link')) this.fetchLink();
   }
 
   componentWillUnmount() {
     closeSubscription();
+  }
+
+  fetchLink = () => {
+    const uuidMatcher = new RegExp(/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}/);
+    const url = window.location.href;
+    const uuid = Array.isArray(url.match(uuidMatcher)) ? url.match(uuidMatcher)[0] : null;
+    fetchLink(uuid).then(({ link }) => {
+      if (!link) return toast.error('The Group for this Link was not found :(');
+      const isValid = !link.expiry || ((new Date(link.updatedAt).getTime() + (link.expiry * 60 * 60 * 1000)) >= Date.now());
+      if (!isValid) return toast.error('This Link has expired :(');
+      const userId = this.props.userId;
+      const chatId = link.chatId;
+      addContactsToChat(userId, chatId, [userId]).then(response => {
+        if (response.error === 'Contacts are Already in Chat.') return toast.warn('You are already in this Group!');;
+        return toast.success('You have been added to this Group!!');
+      });
+    });
   }
 
   decryptMessage = (message, userPrivateKey, chatPrivateKey) => {
