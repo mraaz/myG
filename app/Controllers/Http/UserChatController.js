@@ -44,6 +44,14 @@ class UserChatController {
     return response.send({ status });
   }
 
+  async searchUsers({ auth, request, response }) {
+    const requestingUserId = auth.user.id;
+    const query = request.only('query').query;
+    log('USER', `User ${requestingUserId} searching for other users with ${query}`);
+    const { users } = await UserRepository.searchUsers({ requestingUserId, query });
+    return response.send({ users });
+  }
+
 }
 
 module.exports = UserChatController;

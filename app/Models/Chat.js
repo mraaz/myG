@@ -13,6 +13,9 @@ class Chat extends Model {
   lastCleared() {
     return this.hasMany('App/Models/ChatLastCleared')
   }
+  links() {
+    return this.hasMany('App/Models/ChatLink')
+  }
 }
 
 module.exports = Chat

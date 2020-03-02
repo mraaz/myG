@@ -1,5 +1,6 @@
 import axios from 'axios';
 import logger from '../../../common/logger';
+import { encryptMessage } from '../../encryption';
 
 export function fetchChats() {
   logger.log('CHAT', 'HTTP', `Fetching Chats`);
@@ -51,9 +52,14 @@ export function fetchChatContacts(chatId) {
   return axios.get(`/api/chat/${chatId}/contacts`).then(response => response.data);
 }
 
-export function addContactsToChat(chatId, contacts) {
+export function addContactsToChat(userId, chatId, contacts, publicKey, privateKey, userPrivateKey) {
   logger.log('CHAT', 'HTTP', `Adding Contacts To Chat ${chatId}: `, contacts);
-  return axios.put(`/api/chat/${chatId}/contacts`, { contacts }).then(response => response.data);
+  return axios.put(`/api/chat/${chatId}/contacts`, { contacts }).then(response => sendGroupPrivateKey(userId, chatId, contacts, publicKey, privateKey, userPrivateKey).then(() => response.data));
+}
+
+export function inviteUserToGroup(userId, chatId, contacts, publicKey, privateKey, userPrivateKey) {
+  logger.log('CHAT', 'HTTP', `Invite Users ${JSON.stringify(contacts)} To Group ${chatId}`);
+  return axios.put(`/api/notifications/inviteToGroup`, { userId: contacts[0], chatId }).then(response => sendGroupPrivateKey(userId, chatId, contacts, publicKey, privateKey, userPrivateKey).then(() => response.data));
 }
 
 export function fetchMessages(chatId, page) {
@@ -79,4 +85,29 @@ export function deleteMessage(chatId, messageId) {
 export function setTyping(chatId, isTyping) {
   logger.log('CHAT', 'HTTP', `Setting as ${isTyping ? 'Typing' : 'Not Typing'} for Chat ${chatId}`);
   return axios.put(`/api/chat/${chatId}/typing`, { isTyping }).then(response => response.data);
+}
+
+export function fetchLinks(chatId) {
+  logger.log('CHAT', 'HTTP', `Fetching Links for Chat ${chatId}`);
+  return axios.get(`/api/chat/${chatId}/links`).then(response => response.data);
+}
+
+export function fetchLink(uuid) {
+  logger.log('CHAT', 'HTTP', `Fetching Link ${uuid}`);
+  return axios.get(`/api/chat-link/${uuid}`).then(response => response.data);
+}
+
+export function updateLink(chatId, uuid, expiry, expire) {
+  logger.log('CHAT', 'HTTP', `Updating Link ${uuid} for Chat ${chatId} - ${expiry} / ${expire}`);
+  return axios.put(`/api/chat/${chatId}/links/${uuid}`, { expiry, expire }).then(response => response.data);
+}
+
+function sendGroupPrivateKey(userId, chatId, contacts, publicKey, privateKey, userPrivateKey) {
+  if (!publicKey || !privateKey || !userPrivateKey) return Promise.resolve();
+  const serializedKey = JSON.stringify(privateKey);
+  contacts.forEach(contactId => {
+    const content = encryptMessage(serializedKey, publicKey, userPrivateKey);
+    sendMessage(chatId, userId, { content, backup: '' }, contactId);
+  });
+  return Promise.resolve();
 }

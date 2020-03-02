@@ -22,6 +22,7 @@ class Chat {
     this.owners = forceArray(data.owners);
     this.moderators = forceArray(data.moderators);
     this.messages = forceArray(data.messages);
+    this.links = forceArray(data.links);
     this.createdAt = forceDate(data.createdAt);
     this.updatedAt = forceDate(data.updatedAt);
   }

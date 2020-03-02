@@ -5,12 +5,15 @@ const UserChat = use('App/Models/UserChat');
 const ChatMessage = use('App/Models/ChatMessage');
 const ChatLastCleared = use('App/Models/ChatLastCleared');
 const ChatLastRead = use('App/Models/ChatLastRead');
+const ChatLink = use('App/Models/ChatLink');
 
 const ChatSchema = require('../../Schemas/Chat');
+const ChatLinkSchema = require('../../Schemas/ChatLink');
 const MessageSchema = require('../../Schemas/Message');
 const DefaultSchema = require('../../Schemas/Default');
 const ContactSchema = require('../../Schemas/Contact');
 
+const uuidv4 = require('uuid/v4');
 const { broadcast } = require('../../Common/socket');
 const { convertUTCDateToLocalDate } = require('../../Common/date');
 const { log } = require('../../Common/logger');
@@ -153,6 +156,16 @@ class ChatRepository {
       this._notifyChatEvent({ userId, action: 'newChat', payload: chatSchema });
     });
 
+    if (contacts.length > 2) {
+      [1, 2, 3].forEach(async () => {
+        const link = new ChatLink();
+        link.chat_id = chat.id;
+        link.uuid = uuidv4();
+        link.expiry = null;
+        await link.save();
+      });
+    }
+
     return { chat: chatSchema };
   }
 
@@ -258,9 +271,11 @@ class ChatRepository {
     return new DefaultSchema({ success: true });
   }
 
-  async addContactsToChat({ requestingUserId, requestedChatId, contacts }) {
-    const { chat } = await this.fetchChat({ requestingUserId, requestedChatId });
+  async addContactsToChat({ requestedChatId, contacts }) {
+    const { chat } = await this.fetchChatInfo({ requestedChatId });
     if (chat.contacts.length < 3) throw new Error('Cannot add users to a normal chat.');
+    const diffContacts = contacts.filter(contactId => !chat.contacts.includes(contactId));
+    if (!diffContacts.length) return { error: 'Contacts are Already in Chat.' };
     contacts.forEach(contactId => !chat.contacts.includes(contactId) && chat.contacts.push(contactId));
     if (chat.contacts.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
     contacts.forEach(async userId => {
@@ -282,6 +297,7 @@ class ChatRepository {
       lastSeen: contact.last_seen,
       publicKey: contact.public_key,
     }));
+    chat.contacts.forEach(userId => this._notifyChatEvent({ userId, action: 'userJoined', payload: { contacts: fullContacts, chatId: requestedChatId } }));
     return { contacts: fullContacts };
   }
 
@@ -371,6 +387,74 @@ class ChatRepository {
   async setTyping({ requestingUserId, requestedChatId, isTyping }) {
     this._notifyChatEvent({ chatId: requestedChatId, action: 'typing', payload: { userId: requestingUserId, chatId: requestedChatId, isTyping } });
     return new DefaultSchema({ success: true });
+  }
+
+  async fetchChatInfo({ requestedChatId }) {
+    const chat = await Chat.find(requestedChatId);
+    const chatSchema = new ChatSchema({
+      chatId: chat.id,
+      blocked: chat.blocked,
+      isPrivate: chat.isPrivate,
+      icon: chat.icon,
+      title: chat.title,
+      lastMessage: chat.last_message,
+      publicKey: chat.public_key,
+      contacts: chat.contacts,
+      owners: chat.owners,
+      moderators: chat.moderators,
+      createdAt: chat.created_at,
+      updatedAt: chat.updated_at,
+    });
+    return { chat: chatSchema };
+  }
+
+  async fetchLink({ requestedLinkUuid }) {
+    const response = (await ChatLink.query().where('uuid', requestedLinkUuid).first());
+    if (!response) return { link: null };
+    const rawLink = response.toJSON();
+    const link = new ChatLinkSchema({
+      chatId: rawLink.chat_id,
+      uuid: rawLink.uuid,
+      expiry: rawLink.expiry,
+      createdAt: rawLink.created_at,
+      updatedAt: rawLink.updated_at,
+    });
+    return { link };
+  }
+
+  async fetchLinks({ requestedChatId }) {
+    const rawLinks = (await ChatLink.query().where('chat_id', requestedChatId).fetch()).toJSON();
+    const links = rawLinks.map(link => new ChatLinkSchema({
+      chatId: link.chat_id,
+      uuid: link.uuid,
+      expiry: link.expiry,
+      createdAt: link.created_at,
+      updatedAt: link.updated_at,
+    }));
+    return { links };
+  }
+
+  async updateLink({ requestedChatId, requestedLinkUuid, expiry, expire }) {
+    const rawLink = (await ChatLink.query().where('chat_id', requestedChatId).andWhere('uuid', requestedLinkUuid).first()).toJSON();
+    const link = new ChatLinkSchema({
+      chatId: rawLink.chat_id,
+      uuid: rawLink.uuid,
+      expiry: rawLink.expiry,
+      createdAt: rawLink.created_at,
+      updatedAt: rawLink.updated_at,
+    });
+    if (expiry !== undefined) {
+      await ChatLink.query().where('id', rawLink.id).update({ expiry });
+      link.expiry = expiry;
+      return { link };
+    }
+    if (expire) {
+      const uuid = uuidv4();
+      await ChatLink.query().where('id', rawLink.id).update({ uuid, expiry: null });
+      link.uuid = uuid;
+      link.expiry = null;
+      return { link };
+    }
   }
 
   async _fetchLastMessageId({ requestedChatId }) {

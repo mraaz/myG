@@ -92,8 +92,8 @@ class ChatController {
     const requestedChatId = params.chatId;
     const requestedContacts = request.only(['contacts']).contacts;
     log('CHAT', `User ${requestingUserId} adding ${JSON.stringify(requestedContacts)} to Chat ${requestedChatId}`);
-    const { contacts } = await ChatRepository.addContactsToChat({ requestingUserId, requestedChatId, contacts: requestedContacts });
-    return response.send({ contacts });
+    const { contacts, error } = await ChatRepository.addContactsToChat({ requestingUserId, requestedChatId, contacts: requestedContacts });
+    return response.send({ contacts, error });
   }
 
   async fetchMessages({ auth, params, request, response }) {
@@ -142,6 +142,39 @@ class ChatController {
     log('CHAT', `User ${requestingUserId} ${isTyping ? 'Is Typing' : 'Stopped Typing'} on Chat ${requestedChatId}`);
     const result = await ChatRepository.setTyping({ requestingUserId, requestedChatId, isTyping });
     return response.send(result);
+  }
+
+  async fetchChatInfo({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    log('CHAT', `User ${requestingUserId} requesting Group Info for Chat ${requestedChatId}`);
+    const { chat } = await ChatRepository.fetchChatInfo({ requestingUserId, requestedChatId });
+    return response.send({ chat });
+  }
+
+  async fetchLinks({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    log('CHAT', `User ${requestingUserId} requesting Links for Chat ${requestedChatId}`);
+    const { links } = await ChatRepository.fetchLinks({ requestingUserId, requestedChatId });
+    return response.send({ links });
+  }
+
+  async fetchLink({ params, response }) {
+    const requestedLinkUuid = params.uuid;
+    log('CHAT', `User requesting Link ${requestedLinkUuid}`);
+    const { link } = await ChatRepository.fetchLink({ requestedLinkUuid });
+    return response.send({ link });
+  }
+
+  async updateLink({ auth, params, request, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedChatId = params.chatId;
+    const requestedLinkUuid = params.uuid;
+    const { expiry, expire } = request.only(['expiry', 'expire']);
+    log('CHAT', `User ${requestingUserId} updating link ${requestedLinkUuid} for Chat ${requestedChatId} - ${expiry} / ${expire}`);
+    const { link } = await ChatRepository.updateLink({ requestedChatId, requestedLinkUuid, expiry, expire });
+    return response.send({ link });
   }
 
 }

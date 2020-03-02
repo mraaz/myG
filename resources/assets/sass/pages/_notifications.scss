@@ -72,7 +72,24 @@
       color: #0000ee;
       cursor: pointer;
     }
-
+    .group-invitation {
+      display: flex;
+      position: relative;
+      margin-left: 48px;
+      color: #0000EE;
+      font-weight: bold;
+      align-items: center;
+      justify-content: space-between;
+      padding-right: 16px;
+    }
+    .group-invitation-button {
+      background-color: #2D963A;
+      color: #FAFAFA;
+      padding: 6px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      margin-left: 4px;
+    }
     .notification-options {
       display: inline-block;
       position: absolute;
