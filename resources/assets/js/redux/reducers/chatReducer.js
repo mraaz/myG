@@ -3,6 +3,7 @@ import logger from '../../common/logger';
 import { convertUTCDateToLocalDate } from '../../common/date';
 import { reEncryptMessages, sendGroupKeys } from '../../common/encryption';
 import { decryptMessage, deserializeKey } from '../../integration/encryption';
+import { toast } from 'react-toastify';
 
 export default function reducer(state = {
   chats: [],
@@ -294,13 +295,12 @@ export default function reducer(state = {
     case "ADD_CONTACTS_TO_CHAT_FULFILLED": {
       if (action.payload.error) return state;
       logger.log('CHAT', `Redux -> Contacts Added: `, action.payload, action.meta);
-      const { userId, chatId } = action.meta;
+      const { chatId } = action.meta;
       const { contacts } = action.payload;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (!chat.contacts.includes(contacts[0].contactId)) chat.contacts.push(contacts[0].contactId);
       if (!chat.fullContacts.map(contact => contact.contactId).includes(contacts[0].contactId)) chat.fullContacts.push(contacts[0]);
-      sendGroupKeys(chatId, parseInt(userId), contacts, chat.privateKey, state.privateKey);
       return {
         ...state,
         chats,
@@ -388,12 +388,15 @@ export default function reducer(state = {
       logger.log('CHAT', `Redux -> User Joined Group: `, action.payload, action.meta);
       const { chatId, contacts } = action.payload;
       const { userId: thisUserId } = action.meta;
-      if (contacts.includes(parseInt(thisUserId))) return state;
+      if (contacts.map(contact => contact.contactId).includes(parseInt(thisUserId))) return state;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (!chat) return state;
-      if (!chat.contacts.includes(contacts[0].contactId)) chat.contacts.push(contacts[0].contactId);
-      if (!chat.fullContacts.map(contact => contact.contactId).includes(contacts[0].contactId)) chat.fullContacts.push(contacts[0]);
+      const contact = contacts[0];
+      toast.success(`${contact.name} has joined Group ${chat.title}!`);
+      if (!chat.contacts.includes(contact.contactId)) chat.contacts.push(contact.contactId);
+      if (!chat.fullContacts.map(contact => contact.contactId).includes(contact.contactId)) chat.fullContacts.push(contact);
+      sendGroupKeys(chatId, parseInt(thisUserId), contacts, chat.privateKey, state.privateKey);
       return {
         ...state,
         chats,
