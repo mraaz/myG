@@ -76,7 +76,9 @@ class UserRepository {
   }
 
   async searchUsers({ requestingUserId, query }) {
-    const users = (await User.query().where('alias', 'like', '%' + query + '%').fetch()).toJSON()
+    const response = await User.query().where('alias', 'like', '%' + query + '%').fetch();
+    if (!response) return { users: [] };
+    const users = response.toJSON()
       .filter(user => parseInt(user.id) !== parseInt(requestingUserId))
       .map(user => new ContactSchema({
         contactId: user.id,
