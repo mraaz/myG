@@ -20,7 +20,7 @@ export default class IndividualFriend extends Component {
       <div className='invitation-info'>
         {show_profile_img && (
           <Link
-            to={`/profile/${friend.friend_id}`}
+            to={`/profile/${friend.alias}`}
             className='user-img'
             style={{
               backgroundImage: `url('${friend.profile_img}')`,
@@ -28,7 +28,7 @@ export default class IndividualFriend extends Component {
         )}
         {!show_profile_img && (
           <Link
-            to={`/profile/${friend.friend_id}`}
+            to={`/profile/${friend.alias}`}
             className='user-img'
             style={{
               backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/default_user/new-user-profile-picture.png')`,

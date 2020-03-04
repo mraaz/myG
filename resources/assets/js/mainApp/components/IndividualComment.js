@@ -436,7 +436,7 @@ export default class IndividualComment extends Component {
           <div className='author-info'>
             {this.state.show_profile_img && (
               <Link
-                to={`/profile/${comment.user_id}`}
+                to={`/profile/${comment.alias}`}
                 className='user-img'
                 style={{
                   backgroundImage: `url('${comment.profile_img}')`,
@@ -444,14 +444,14 @@ export default class IndividualComment extends Component {
             )}
             {!this.state.show_profile_img && (
               <Link
-                to={`/profile/${comment.user_id}`}
+                to={`/profile/${comment.alias}`}
                 className='user-img'
                 style={{
                   backgroundImage: `url('https://image.flaticon.com/icons/svg/149/149071.svg')`,
                 }}></Link>
             )}
             <div className='comment-info'>
-              <Link to={`/profile/${comment.user_id}`}>{`${comment.alias}`}</Link>
+              <Link to={`/profile/${comment.alias}`}>{`${comment.alias}`}</Link>
             </div>
             {this.state.show_comment_options && (
               <div className='comment-options'>

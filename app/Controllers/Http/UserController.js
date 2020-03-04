@@ -24,6 +24,27 @@ class UserController {
       console.log(error)
     }
   }
+
+  async profile_with_alias({ auth, request, response }) {
+    try {
+      const user = await Database.from('users')
+        .where('alias', '=', request.params.alias)
+        .first()
+      const friend = await Database.from('friends').where({
+        user_id: auth.user.id,
+        friend_id: user.id,
+      })
+
+      return {
+        user: user,
+
+        friend: friend === undefined || friend.length == 0 ? false : true,
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   async store({ auth, request, response }) {
     if (auth.user) {
       try {
@@ -90,6 +111,7 @@ class UserController {
       return 'You are not Logged In!'
     }
   }
+
   async playerSearchResults({ auth, request, response }) {
     try {
       const playerSearchResults = await Database.table('users')
@@ -105,6 +127,23 @@ class UserController {
       console.log(error)
     }
   }
+
+  async keywordSearchResults({ auth, request, response }) {
+    try {
+      const playerSearchResults = await Database.table('users')
+        .whereNot({ id: auth.user.id })
+        .andWhere('alias', 'like', '%' + request.input('keywords') + '%')
+        .select('alias', 'profile_img', 'id')
+        .paginate(request.input('counter'), 88)
+
+      return {
+        playerSearchResults,
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   async destroy({ auth, request, response }) {
     if (auth.user) {
       try {
@@ -156,6 +195,24 @@ class UserController {
         return response.status(200).json({ success: true })
       } catch (error) {
         return response.status(200).json({ success: false })
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async convertAliastoID({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        const aliasConverted = await Database.table('users')
+          .where({
+            alias: request.params.alias,
+          })
+          .select('id')
+
+        return aliasConverted
+      } catch (error) {
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'

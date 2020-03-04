@@ -15,7 +15,7 @@ export default class IndividualInvitation extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     let { type } = this.props
 
     if (type == 'group_approvals') {
@@ -100,7 +100,7 @@ export default class IndividualInvitation extends Component {
       <div className='invitation-info'>
         {show_profile_img && (
           <Link
-            to={`/profile/${invitation.user_id}`}
+            to={`/profile/${invitation.alias}`}
             className='user-img'
             style={{
               backgroundImage: `url('${invitation.profile_img}')`,
@@ -108,10 +108,10 @@ export default class IndividualInvitation extends Component {
         )}
         {!show_profile_img && (
           <Link
-            to={`/profile/${invitation.user_id}`}
+            to={`/profile/${invitation.alias}`}
             className='user-img'
             style={{
-              backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/unknown_user.svg')`,
+              backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/default_user/new-user-profile-picture.png')`,
             }}></Link>
         )}
         <div className='user-info'>{`${invitation.alias}`}</div>

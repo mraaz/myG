@@ -241,7 +241,7 @@ export default class MyComposeSection extends Component {
       if (this.props.initialData.userInfo != undefined) {
         this.setState({
           profile_img: this.props.initialData.userInfo.profile_img,
-          user_id: this.props.initialData.userInfo.id,
+          alias: this.props.initialData.userInfo.alias,
         })
       }
     }
@@ -265,7 +265,7 @@ export default class MyComposeSection extends Component {
             />
             <div className='user-img' />
             <Link
-              to={`/profile/${this.state.user_id}`}
+              to={`/profile/${this.state.alias}`}
               className='user-img'
               style={{
                 backgroundImage: `url('${this.state.profile_img}')`,

@@ -62,7 +62,7 @@ export default class ScheduleGames_Header extends Component {
     window.location.href = '/addscheduleGames'
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const self = this
 
     const { match } = this.props.props.routeProps

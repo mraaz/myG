@@ -30,6 +30,7 @@ import ScheduleGames from "./components/ScheduleGames"
 import MyScheduledGames from "./components/MyScheduledGames"
 import LeftMenu from "./components/LeftMenu"
 import MessengerLoader from "./components/Messenger/MessengerLoader"
+import GuestMessengerLink from "./components/Messenger/GuestLink"
 import SearchHeader from "./components/SearchHeader"
 import ComposeSection from "./components/ComposeSection"
 import Posts from "./components/Posts"
@@ -67,6 +68,8 @@ import GroupHome from "./components/GroupHome"
 import MyApprovals from "./components/MyApprovals"
 import Member_lists from "./components/Member_lists"
 import ArchivedScheduledGames from "./components/ArchivedScheduledGames"
+import AllSearchResults from "./components/AllSearchResults"
+
 
 class Layout extends Component {
   constructor() {
@@ -81,7 +84,7 @@ class Layout extends Component {
       try {
         const initialData = await axios.get('/api/initialApp')
 
-        if (initialData.data.userInfo == 1981) {
+        if (initialData.data.userInfo == 1981 && !window.location.href.includes('/link')) {
           window.location.href = "/"
         }
 
@@ -108,124 +111,147 @@ class Layout extends Component {
     window.document.title = 'myG';
   }
 
+  renderRouter = () => {
+    return (
+      <Router>
+        <div className="app-container home-page">
+          <LeftMenu initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} />
+          <section id="content-container">
+            <SearchHeader />
+            <ToastContainer
+              autoClose={8000}
+              draggablePercent={60}
+              hideProgressBar={false}
+              className='toast-container'
+              toastClassName='dark-toast'
+            />
+            <Switch>
+              <Route exact path="/" component={(props) => <Home routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/link/:uuid" component={(props) => <Home routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/profile/:alias" component={(props) => <Profile routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/myPosts/" component={(props) => <MyHome routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/post/:id" component={(props) => <SinglePost routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/profile/:alias/edit/dossier" component={(props) => <Dossier routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/profile/:alias/upload/profile" component={(props) => <UploadPic routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/profile/:alias/upload/bg_profile" component={(props) => <UploadPic routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/profile/:alias/upload/img_profile" component={(props) => <UploadPic routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/profile/:alias/add/gamingexp" component={(props) => <AddGamingExp routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/profile/:alias/edit/gamingexp/:game_id" component={(props) => <EditGamingExp routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/profile/:alias/add/esportsExp" component={(props) => <AddEsportsExp routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/profile/:alias/edit/esportsExp/:esportsExp_id" component={(props) => <EditEsportsExp routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/scheduledGames" component={(props) => <ScheduleGames routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/scheduledGames/:id" component={(props) => <ScheduleGames routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/myScheduledGames" component={(props) => <MyScheduledGames routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/addScheduleGames" component={(props) => <AddScheduleGames routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/invitation" component={(props) => <Invitation routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/notifications" component={(props) => <Notifications routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/myFriends" component={(props) => <MyFriends routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/mySettings" component={(props) => <MySettings routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/advancedSearch" component={(props) => <AdvancedSearch routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/advancedSearch/:id/:table" component={(props) => <AdvancedSearch routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/playerList/:id" component={(props) => <PlayerList routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/archive_playerList/:archive_id" component={(props) => <PlayerList routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/groups/" component={(props) => <GroupMain routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/groups/:id" component={(props) => <GroupHome routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/scheduledGamesApprovals/:id" component={(props) => <ScheduledGamesApprovals routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/myApprovals/:id" component={(props) => <MyApprovals routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/groups/:id/members" component={(props) => <Member_lists routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/archived_scheduledGames/:id" component={(props) => <ArchivedScheduledGames routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/search/:keywords" component={(props) => <AllSearchResults routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route render={() => <h3> Oops! I couldn't find that </h3>} />
+            </Switch>
+          </section>
+          <MessengerLoader
+            profileImage={this.state.initialData && this.state.initialData.userInfo.profile_img}
+            userId={this.state.initialData && this.state.initialData.userInfo.id}
+            publicKey={this.state.initialData && this.state.initialData.userInfo.public_key}
+            loading={!this.state.initialData}
+          />
+        </div>
+      </Router>
+    );
+  }
+
+  renderGuestMessengerLink = () => {
+    const uuidMatcher = new RegExp(/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}/);
+    const url = window.location.href;
+    const uuid = Array.isArray(url.match(uuidMatcher)) ? url.match(uuidMatcher)[0] : null;
+    return (
+      <GuestMessengerLink uuid={uuid} />
+    );
+  }
+
   render() {
+    const guestLink = this.state.initialData && window.location.href.includes('/link') && this.state.initialData.userInfo === 1981;
     return (
       <Provider store={store}>
         <PersistGate persistor={persistor}>
-          <Router>
-            <div className="app-container home-page">
-              <LeftMenu initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} />
-              <section id="content-container">
-                <SearchHeader />
-                <ToastContainer
-                  autoClose={8000}
-                  draggablePercent={60}
-                  hideProgressBar={false}
-                  className='toast-container'
-                  toastClassName='dark-toast'
-                />
-                <Switch>
-                  <Route exact path="/" component={(props) => <Home routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/profile/:id" component={(props) => <Profile routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/myPosts/" component={(props) => <MyHome routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/post/:id" component={(props) => <SinglePost routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/profile/:id/edit/dossier" component={(props) => <Dossier routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/profile/:id/upload/profile" component={(props) => <UploadPic routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/profile/:id/upload/bg_profile" component={(props) => <UploadPic routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/profile/:id/upload/img_profile" component={(props) => <UploadPic routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/profile/:id/add/gamingexp" component={(props) => <AddGamingExp routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/profile/:id/edit/gamingexp/:game_id" component={(props) => <EditGamingExp routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/profile/:id/add/esportsExp" component={(props) => <AddEsportsExp routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/profile/:id/edit/esportsExp/:esportsExp_id" component={(props) => <EditEsportsExp routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/scheduledGames" component={(props) => <ScheduleGames routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/scheduledGames/:id" component={(props) => <ScheduleGames routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/myScheduledGames" component={(props) => <MyScheduledGames routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/addScheduleGames" component={(props) => <AddScheduleGames routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/invitation" component={(props) => <Invitation routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/notifications" component={(props) => <Notifications routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/myFriends" component={(props) => <MyFriends routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/mySettings" component={(props) => <MySettings routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/advancedSearch" component={(props) => <AdvancedSearch routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/advancedSearch/:id/:table" component={(props) => <AdvancedSearch routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/playerList/:id" component={(props) => <PlayerList routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/archive_playerList/:archive_id" component={(props) => <PlayerList routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/groups/" component={(props) => <GroupMain routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/groups/:id" component={(props) => <GroupHome routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/scheduledGamesApprovals/:id" component={(props) => <ScheduledGamesApprovals routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/myApprovals/:id" component={(props) => <MyApprovals routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/groups/:id/members" component={(props) => <Member_lists routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route exact path="/archived_scheduledGames/:id" component={(props) => <ArchivedScheduledGames routeProps={props}
-                    initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
-
-                  <Route render={() => <h3> Oops! I couldn't find that </h3>} />
-                </Switch>
-              </section>
-              <MessengerLoader
-                profileImage={this.state.initialData && this.state.initialData.userInfo.profile_img}
-                userId={this.state.initialData && this.state.initialData.userInfo.id}
-                publicKey={this.state.initialData && this.state.initialData.userInfo.public_key}
-                loading={!this.state.initialData}
-              />
-            </div>
-          </Router>
+          {!guestLink && this.renderRouter()}
+          {guestLink && this.renderGuestMessengerLink()}
         </PersistGate>
       </Provider>
     )

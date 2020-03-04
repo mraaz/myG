@@ -5,12 +5,15 @@ const UserChat = use('App/Models/UserChat');
 const ChatMessage = use('App/Models/ChatMessage');
 const ChatLastCleared = use('App/Models/ChatLastCleared');
 const ChatLastRead = use('App/Models/ChatLastRead');
+const ChatLink = use('App/Models/ChatLink');
 
 const ChatSchema = require('../../Schemas/Chat');
+const ChatLinkSchema = require('../../Schemas/ChatLink');
 const MessageSchema = require('../../Schemas/Message');
 const DefaultSchema = require('../../Schemas/Default');
 const ContactSchema = require('../../Schemas/Contact');
 
+const uuidv4 = require('uuid/v4');
 const { broadcast } = require('../../Common/socket');
 const { convertUTCDateToLocalDate } = require('../../Common/date');
 const { log } = require('../../Common/logger');
@@ -21,7 +24,7 @@ class ChatRepository {
 
   async fetchChats({ requestingUserId }) {
     const chats = (await Database
-      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', ' chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.blocked_users', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', ' chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .leftJoin('chat_last_reads', function () { this.on('chat_last_reads.chat_id', 'user_chats.chat_id').andOn('chat_last_reads.user_id', 'user_chats.user_id') })
@@ -31,6 +34,8 @@ class ChatRepository {
         chatId: chat.chat_id,
         muted: chat.muted,
         blocked: chat.blocked,
+        blockedUsers: chat.blocked_users,
+        isPrivate: chat.isPrivate,
         selfDestruct: chat.self_destruct,
         deletedMessages: chat.deleted_messages,
         lastRead: chat.last_read_message_id,
@@ -41,6 +46,7 @@ class ChatRepository {
         publicKey: chat.public_key,
         contacts: chat.contacts,
         owners: chat.owners,
+        moderators: chat.moderators,
         messages: chat.messages,
         createdAt: chat.created_at,
         updatedAt: chat.updated_at,
@@ -50,7 +56,7 @@ class ChatRepository {
 
   async fetchChat({ requestingUserId, requestedChatId }) {
     const chat = (await Database
-      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', ' chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.blocked_users', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', ' chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .leftJoin('chat_last_reads', function () { this.on('chat_last_reads.chat_id', 'user_chats.chat_id').andOn('chat_last_reads.user_id', 'user_chats.user_id') })
@@ -65,6 +71,8 @@ class ChatRepository {
       chatId: chat.chat_id,
       muted: chat.muted,
       blocked: chat.blocked,
+      blockedUsers: chat.blocked_users,
+      isPrivate: chat.isPrivate,
       selfDestruct: chat.self_destruct,
       deletedMessages: chat.deleted_messages,
       lastRead: chat.last_read_message_id,
@@ -76,6 +84,7 @@ class ChatRepository {
       publicKey: chat.public_key,
       contacts: chat.contacts,
       owners: chat.owners,
+      moderators: chat.moderators,
       messages: chat.messages,
       createdAt: chat.created_at,
       updatedAt: chat.updated_at,
@@ -122,12 +131,14 @@ class ChatRepository {
     if (publicKey) chat.public_key = publicKey;
     chat.contacts = JSON.stringify(contacts || []);
     chat.owners = JSON.stringify(owners || []);
+    chat.moderators = JSON.stringify(owners || []);
     await chat.save();
 
     const chatSchema = new ChatSchema({
       chatId: chat.id,
       contacts,
       owners,
+      moderators: owners,
       title,
       icon,
       publicKey,
@@ -140,22 +151,36 @@ class ChatRepository {
       userChat.chat_id = chat.id;
       userChat.user_id = userId;
       userChat.deleted_messages = '[]';
+      userChat.blocked_users = '[]';
       await userChat.save();
       this._notifyChatEvent({ userId, action: 'newChat', payload: chatSchema });
     });
 
+    if (contacts.length > 2) {
+      [1, 2, 3].forEach(async () => {
+        const link = new ChatLink();
+        link.chat_id = chat.id;
+        link.uuid = uuidv4();
+        link.expiry = null;
+        await link.save();
+      });
+    }
+
     return { chat: chatSchema };
   }
 
-  async updateChat({ requestingUserId, requestedChatId, icon, title, owners, muted, blocked, markAsRead, selfDestruct }) {
+  async updateChat({ requestingUserId, requestedChatId, icon, title, owners, moderators, muted, blocked, blockedUsers, isPrivate, markAsRead, selfDestruct }) {
     if (markAsRead) await this._markAsRead({ requestingUserId, requestedChatId });
     if (selfDestruct !== undefined) await this._setSelfDestruct({ requestingUserId, requestedChatId, selfDestruct });
     if (muted !== undefined) await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', requestingUserId).update({ muted });
     if (blocked !== undefined) await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', requestingUserId).update({ blocked });
+    if (blockedUsers !== undefined) await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', requestingUserId).update({ blocked_users: JSON.stringify(blockedUsers) });
+    if (isPrivate !== undefined) await Chat.query().where('id', requestedChatId).update({ isPrivate });
     if (icon !== undefined) await Chat.query().where('id', requestedChatId).update({ icon });
     if (title !== undefined) await Chat.query().where('id', requestedChatId).update({ title });
-    if (owners !== undefined) await Chat.query().where('id', requestedChatId).update({ owners });
-    if (icon || title || owners) this._notifyChatUpdated({ requestedChatId });
+    if (owners !== undefined) await Chat.query().where('id', requestedChatId).update({ owners: JSON.stringify(owners) });
+    if (moderators !== undefined) await Chat.query().where('id', requestedChatId).update({ moderators: JSON.stringify(moderators) });
+    if (icon || title || owners || moderators || isPrivate !== undefined) this._notifyChatUpdated({ requestedChatId });
     return new DefaultSchema({ success: true });
   }
 
@@ -237,17 +262,20 @@ class ChatRepository {
     const userToRemove = requestedUserId || requestingUserId;
     const chatModel = (await Chat.query().where('id', requestedChatId).first());
     const chat = chatModel.toJSON();
-    if (requestedUserId && !JSON.parse(chat.owners || '[]').includes(parseInt(requestingUserId))) throw new Error('Only Owners can Kick Users.');
+    if (requestedUserId && !JSON.parse(chat.moderators || '[]').includes(parseInt(requestingUserId))) throw new Error('Only Moderators can Kick Users.');
     const contacts = JSON.parse(chat.contacts || '[]').filter(contactId => parseInt(contactId) !== parseInt(userToRemove));
-    await Chat.query().where('id', requestedChatId).update({ contacts: JSON.stringify(contacts) });
+    const moderators = JSON.parse(chat.moderators || '[]').filter(contactId => parseInt(contactId) !== parseInt(userToRemove));
+    await Chat.query().where('id', requestedChatId).update({ contacts: JSON.stringify(contacts), moderators: JSON.stringify(moderators) });
     await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', userToRemove).delete();
     JSON.parse(chat.contacts || '[]').forEach(userId => this._notifyChatEvent({ userId, action: 'userLeft', payload: { userId: userToRemove, chatId: requestedChatId } }));
     return new DefaultSchema({ success: true });
   }
 
-  async addContactsToChat({ requestingUserId, requestedChatId, contacts }) {
-    const { chat } = await this.fetchChat({ requestingUserId, requestedChatId });
+  async addContactsToChat({ requestedChatId, contacts }) {
+    const { chat } = await this.fetchChatInfo({ requestedChatId });
     if (chat.contacts.length < 3) throw new Error('Cannot add users to a normal chat.');
+    const diffContacts = contacts.filter(contactId => !chat.contacts.includes(contactId));
+    if (!diffContacts.length) return { error: 'Contacts are Already in Chat.' };
     contacts.forEach(contactId => !chat.contacts.includes(contactId) && chat.contacts.push(contactId));
     if (chat.contacts.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
     contacts.forEach(async userId => {
@@ -255,6 +283,7 @@ class ChatRepository {
       userChat.chat_id = chat.chatId;
       userChat.user_id = userId;
       userChat.deleted_messages = '[]';
+      userChat.blocked_users = '[]';
       await userChat.save();
       this._notifyChatEvent({ userId, action: 'newChat', payload: chat });
     });
@@ -268,6 +297,7 @@ class ChatRepository {
       lastSeen: contact.last_seen,
       publicKey: contact.public_key,
     }));
+    chat.contacts.forEach(userId => this._notifyChatEvent({ userId, action: 'userJoined', payload: { contacts: fullContacts, chatId: requestedChatId } }));
     return { contacts: fullContacts };
   }
 
@@ -359,6 +389,74 @@ class ChatRepository {
     return new DefaultSchema({ success: true });
   }
 
+  async fetchChatInfo({ requestedChatId }) {
+    const chat = await Chat.find(requestedChatId);
+    const chatSchema = new ChatSchema({
+      chatId: chat.id,
+      blocked: chat.blocked,
+      isPrivate: chat.isPrivate,
+      icon: chat.icon,
+      title: chat.title,
+      lastMessage: chat.last_message,
+      publicKey: chat.public_key,
+      contacts: chat.contacts,
+      owners: chat.owners,
+      moderators: chat.moderators,
+      createdAt: chat.created_at,
+      updatedAt: chat.updated_at,
+    });
+    return { chat: chatSchema };
+  }
+
+  async fetchLink({ requestedLinkUuid }) {
+    const response = (await ChatLink.query().where('uuid', requestedLinkUuid).first());
+    if (!response) return { link: null };
+    const rawLink = response.toJSON();
+    const link = new ChatLinkSchema({
+      chatId: rawLink.chat_id,
+      uuid: rawLink.uuid,
+      expiry: rawLink.expiry,
+      createdAt: rawLink.created_at,
+      updatedAt: rawLink.updated_at,
+    });
+    return { link };
+  }
+
+  async fetchLinks({ requestedChatId }) {
+    const rawLinks = (await ChatLink.query().where('chat_id', requestedChatId).fetch()).toJSON();
+    const links = rawLinks.map(link => new ChatLinkSchema({
+      chatId: link.chat_id,
+      uuid: link.uuid,
+      expiry: link.expiry,
+      createdAt: link.created_at,
+      updatedAt: link.updated_at,
+    }));
+    return { links };
+  }
+
+  async updateLink({ requestedChatId, requestedLinkUuid, expiry, expire }) {
+    const rawLink = (await ChatLink.query().where('chat_id', requestedChatId).andWhere('uuid', requestedLinkUuid).first()).toJSON();
+    const link = new ChatLinkSchema({
+      chatId: rawLink.chat_id,
+      uuid: rawLink.uuid,
+      expiry: rawLink.expiry,
+      createdAt: rawLink.created_at,
+      updatedAt: rawLink.updated_at,
+    });
+    if (expiry !== undefined) {
+      await ChatLink.query().where('id', rawLink.id).update({ expiry });
+      link.expiry = expiry;
+      return { link };
+    }
+    if (expire) {
+      const uuid = uuidv4();
+      await ChatLink.query().where('id', rawLink.id).update({ uuid, expiry: null });
+      link.uuid = uuid;
+      link.expiry = null;
+      return { link };
+    }
+  }
+
   async _fetchLastMessageId({ requestedChatId }) {
     const result = await Database
       .max('id as last_id')
@@ -412,6 +510,8 @@ class ChatRepository {
       title: chat.title,
       contacts: chat.contacts,
       owners: chat.owners,
+      moderators: chat.moderators,
+      isPrivate: chat.isPrivate,
     });
     chatSchema.contacts.forEach(userId => this._notifyChatEvent({ userId, action: 'chatUpdated', payload: chatSchema }));
   }

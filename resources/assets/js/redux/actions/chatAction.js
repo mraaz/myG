@@ -1,4 +1,4 @@
-import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, createChat, updateChat, clearChat, deleteChat, exitGroup, removeFromGroup, checkSelfDestruct, fetchMessages, sendMessage, editMessage, deleteMessage, setTyping } from '../../integration/http/chat';
+import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, inviteUserToGroup, createChat, updateChat, clearChat, deleteChat, exitGroup, removeFromGroup, checkSelfDestruct, fetchMessages, fetchLinks, updateLink, sendMessage, editMessage, deleteMessage, setTyping } from '../../integration/http/chat';
 import { fetchContacts, fetchContact, fetchStatus } from '../../integration/http/user';
 import { generateKeys, deserializeKey } from '../../integration/encryption';
 
@@ -63,6 +63,14 @@ export function onUserLeftGroupAction(payload, userId) {
   }
 }
 
+export function onUserJoinedGroupAction(payload, userId) {
+  return {
+    type: 'ON_USER_JOINED',
+    payload,
+    meta: { userId },
+  }
+}
+
 export function onMarkAsReadAction(payload, userId) {
   return {
     type: 'MARK_AS_READ',
@@ -114,12 +122,13 @@ export function prepareMessengerAction(pin, privateKey, publicKey) {
 export function prepareChatAction(chatId, contactId, fetchContacts, userId) {
   const chatRequest = fetchChat(chatId);
   const messagesRequest = fetchMessages(chatId);
+  const linksRequest = fetchLinks(chatId);
   const contactRequest = contactId ? fetchContact(contactId) : Promise.resolve({});
   const contactsRequest = fetchContacts ? fetchChatContacts(chatId) : Promise.resolve({});
-  const requests = [chatRequest, messagesRequest, contactRequest, contactsRequest];
+  const requests = [chatRequest, messagesRequest, linksRequest, contactRequest, contactsRequest];
   return {
     type: 'PREPARE_CHAT',
-    payload: Promise.all(requests).then(([chat, messages, contact, contacts]) => ({ ...chat, ...messages, ...contact, ...contacts })),
+    payload: Promise.all(requests).then(([chat, messages, links, contact, contacts]) => ({ ...chat, ...messages, ...links, ...contact, ...contacts })),
     meta: { chatId, contactId, userId }
   }
 }
@@ -249,10 +258,26 @@ export function setTypingAction(chatId, isTyping) {
   }
 }
 
-export function addContactsToChatAction(userId, chatId, contacts) {
+export function addContactsToChatAction(userId, chatId, contacts, publicKey, privateKey, userPrivateKey) {
   return {
     type: 'ADD_CONTACTS_TO_CHAT',
-    payload: addContactsToChat(chatId, contacts),
+    payload: addContactsToChat(userId, chatId, contacts, publicKey, privateKey, userPrivateKey),
     meta: { userId, chatId },
+  }
+}
+
+export function inviteUserToGroupAction(userId, chatId, contacts, publicKey, privateKey, userPrivateKey) {
+  return {
+    type: 'INVITE_USER_TO_GROUP',
+    payload: inviteUserToGroup(userId, chatId, contacts, publicKey, privateKey, userPrivateKey),
+    meta: { userId, chatId },
+  }
+}
+
+export function updateLinkAction(chatId, uuid, expiry, expire) {
+  return {
+    type: 'UPDATE_LINK',
+    payload: updateLink(chatId, uuid, expiry, expire),
+    meta: { chatId, uuid },
   }
 }

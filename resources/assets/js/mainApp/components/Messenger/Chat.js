@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
+import ChatOptions from './ChatOptions';
 import GroupOptions from './GroupOptions';
 
 import { prepareChatAction, fetchMessagesAction, sendMessageAction, editMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction, setTypingAction } from '../../../redux/actions/chatAction';
@@ -116,75 +117,21 @@ class Chat extends React.PureComponent {
   }
 
   renderSettings = () => {
-    if (!this.state.settings) return;
     if (this.props.isGroup) return (
       <GroupOptions
         userId={this.props.userId}
+        messages={this.props.messages}
         group={this.props.group}
         groupContacts={this.props.contacts}
       />
     );
-    const inactiveStyle = 'chat-component-header-settings-option-inactive';
     return (
-      <div className="chat-component-header-settings-popup">
-
-        <div
-          className={`chat-component-header-settings-option clickable ${this.props.blocked && inactiveStyle}`}
-          onClick={() => {
-            this.setState({ settings: false });
-            this.props.updateChat(this.props.chatId, { blocked: !this.props.blocked });
-          }}
-        >
-          <div
-            className="chat-component-header-settings-option-icon"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_block.svg)` }}
-          />
-          {this.props.blocked ? 'unblock' : 'block'}
-        </div>
-
-        <div
-          className={`chat-component-header-settings-option clickable ${this.props.muted && inactiveStyle}`}
-          onClick={() => {
-            this.setState({ settings: false });
-            this.props.updateChat(this.props.chatId, { muted: !this.props.muted });
-          }}
-        >
-          <div
-            className="chat-component-header-settings-option-icon"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_mute.svg)` }}
-          />
-          {this.props.muted ? 'unmute' : 'mute'}
-        </div>
-
-        <div
-          className={`chat-component-header-settings-option clickable ${this.props.selfDestruct && inactiveStyle}`}
-          onClick={() => {
-            this.setState({ settings: false });
-            this.props.updateChat(this.props.chatId, { selfDestruct: !this.props.selfDestruct });
-          }}
-        >
-          <div
-            className="chat-component-header-settings-option-icon"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_self_destruct.svg)` }}
-          />
-          {this.props.selfDestruct ? 'disable' : 'enable'} self destruct
-        </div>
-
-        <div
-          className={`chat-component-header-settings-option clickable ${!this.props.messages.length && inactiveStyle}`}
-          onClick={() => {
-            this.setState({ settings: false });
-            this.props.clearChat(this.props.chatId);
-          }}
-        >
-          <div
-            className="chat-component-header-settings-option-icon"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_delete.svg)` }}
-          />
-          delete all messages
-        </div>
-
-      </div>
+      <ChatOptions
+        {...this.props.group}
+        messages={this.props.messages}
+        contactId={this.props.contactId}
+        contactAlias={this.props.title}
+      />
     );
   }
 
@@ -195,7 +142,7 @@ class Chat extends React.PureComponent {
 
         <div
           className="chat-component-header-icon clickable"
-          onClick={() => !this.props.isGroup && window.location.replace(`/profile/${this.props.contactId}`)}
+          onClick={() => !this.props.isGroup && window.location.replace(`/profile/${this.props.title}`)}
           style={{ backgroundImage: `url('${this.props.icon}')` }}
         />
 
@@ -217,28 +164,27 @@ class Chat extends React.PureComponent {
         </div>
 
         <div className="chat-component-header-options">
-          <div className="chat-component-header-top-buttons">
-            <div className="chat-component-header-button clickable"
-              style={{ backgroundImage: `url(/assets/svg/ic_chat_minimise.svg)` }}
-              onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}
-            />
-            <div className="chat-component-header-button clickable"
-              style={{ backgroundImage: `url(/assets/svg/ic_chat_maximise.svg)` }}
-              onClick={() => this.props.updateChatState(this.props.chatId, { maximised: !this.props.maximised, minimised: false })}
-            />
-            <div className="chat-component-header-button clickable"
-              style={{ backgroundImage: `url(/assets/svg/ic_chat_close.svg)` }}
-              onClick={() => this.props.onClose(this.props.chatId)}
-            />
-          </div>
+          {(!this.state.settings || this.props.minimised) && (
+            <div className="chat-component-header-top-buttons">
+              <div className="chat-component-header-button clickable"
+                style={{ backgroundImage: `url(/assets/svg/ic_chat_minimise.svg)` }}
+                onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}
+              />
+              <div className="chat-component-header-button clickable"
+                style={{ backgroundImage: `url(/assets/svg/ic_chat_maximise.svg)` }}
+                onClick={() => this.props.updateChatState(this.props.chatId, { maximised: !this.props.maximised, minimised: false })}
+              />
+              <div className="chat-component-header-button clickable"
+                style={{ backgroundImage: `url(/assets/svg/ic_chat_close.svg)` }}
+                onClick={() => this.props.onClose(this.props.chatId)}
+              />
+            </div>
+          )}
           <div
             className="chat-component-header-settings clickable"
             style={{ backgroundImage: `url('/assets/svg/ic_chat_settings.svg')` }}
             onClick={() => this.setState(previous => ({ settings: !previous.settings }))}
           />
-          <div className="chat-component-header-settings-popup-container">
-            {this.renderSettings()}
-          </div>
         </div>
 
       </div>
@@ -376,15 +322,17 @@ class Chat extends React.PureComponent {
     let extraClass = "";
     if (this.props.maximised) extraClass += "chat-maximised";
     if (this.props.minimised) extraClass += "chat-minimised";
+    if (!this.props.minimised && this.state.settings) extraClass = "chat-settings";
     return (
       <div
         key={this.props.chatId}
         className={`chat-component-base ${extraClass}`}
       >
         {this.renderHeader()}
-        {!this.props.minimised && this.renderBody()}
-        {!this.props.minimised && <div className="chat-component-footer-divider" />}
-        {!this.props.minimised && this.renderFooter()}
+        {this.state.settings && !this.props.minimised && this.renderSettings()}
+        {!this.state.settings && !this.props.minimised && this.renderBody()}
+        {!this.state.settings && !this.props.minimised && <div className="chat-component-footer-divider" />}
+        {!this.state.settings && !this.props.minimised && this.renderFooter()}
       </div>
     );
   }

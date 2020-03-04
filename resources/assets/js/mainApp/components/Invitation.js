@@ -2,21 +2,48 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import axios from 'axios'
 import IndividualInvitation from './IndividualInvitation'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 export default class Invitation extends Component {
   constructor() {
     super()
-    this.state = {}
+    this.state = {
+      counter: 0,
+      myFriendRequests: [],
+      moreplease: true,
+    }
   }
 
   componentDidMount() {
+    this.fetchMoreData()
+  }
+
+  fetchMoreData = () => {
+    var myCounter = this.state.counter
+    this.setState({
+      counter: this.state.counter + 1,
+    })
+    if (myCounter != 1) {
+      this.setState({
+        show_top_btn: true,
+      })
+    }
+
     const self = this
 
     const getFriendnoti = async function() {
       try {
-        const getFriendnoti = await axios.get('/api/notifications/allmyFriendRequests')
+        const getFriendnoti = await axios.post('/api/notifications/allmyFriendRequests', {
+          counter: self.state.counter,
+        })
+
+        if (getFriendnoti.data.allMyFriends.data.length == 0) {
+          self.state.moreplease = false
+          return
+        }
+
         self.setState({
-          myFriendRequests: getFriendnoti.data.allMyFriends,
+          myFriendRequests: self.state.myFriendRequests.concat(getFriendnoti.data.allMyFriends.data),
         })
       } catch (error) {
         console.log(error)
@@ -49,7 +76,11 @@ export default class Invitation extends Component {
             <div className='invitation-grey-container'>
               <h3>myInvitations</h3>
               <div className='padding-container'></div>
-              <div className='invitation-container'>{this.showInvitations()}</div>
+              <div className='invitation-container'>
+                <InfiniteScroll dataLength={this.state.myFriendRequests.length} next={this.fetchMoreData} hasMore={this.state.moreplease}>
+                  {this.showInvitations()}
+                </InfiniteScroll>
+              </div>
             </div>
           </div>
         </div>

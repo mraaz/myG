@@ -8,13 +8,13 @@ export default class IndividualGroup extends Component {
   constructor() {
     super()
     this.state = {
-      counter: 1,
+      counter: 0,
       myPosts: [],
       moreplease: true,
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if (this.props.initialData.userInfo != undefined) {
       this.fetchMoreData()
     }
