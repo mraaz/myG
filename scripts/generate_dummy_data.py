@@ -26,13 +26,14 @@ class TravelProvider(BaseProvider):
 
 def main():
   start = 100
-  stop = 1110
+  stop = 110 #120 = Maximum call stack size exceeded
+
 
   #Gaming intestests, esportsExp, scheduledGames how many per user
   mini_start = start
   mini_stop = 105
   create_celebrity = True
-  adonisJS = False #print out for adonis or False for SQL
+  adonisJS = True #print out for adonis or False for SQL
 
   answer = choice(['Yes', 'No'])
 

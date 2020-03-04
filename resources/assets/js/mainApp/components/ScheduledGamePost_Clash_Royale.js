@@ -116,7 +116,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const self = this
     const { schedule_game } = this.props.props
 
