@@ -113,8 +113,7 @@
     "@adonisjs/cli": "^4.0.12",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-stage-0": "^6.24.1",
-    "terser-webpack-plugin": "^2.3.5"
+    "babel-preset-stage-0": "^6.24.1"
   },
   "autoload": {
     "App": "./app"
