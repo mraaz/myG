@@ -143,7 +143,7 @@ export default class ScheduledGamePost_Dota2 extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const self = this
     const { schedule_game } = this.props.props
 
