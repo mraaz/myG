@@ -20,7 +20,7 @@ class PostController {
     var subquery
 
     //Change it so that it is 7 days in the past.
-    var pastDate = ourDate.getDate() - 7
+    var pastDate = ourDate.getDate() - 2007
     ourDate.setDate(pastDate)
     try {
       //const myPosts = await Post.query().where('user_id', '=', request.params.id).fetch() //for myPost
