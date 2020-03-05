@@ -16,6 +16,12 @@ class PostController {
   }
 
   async show({ auth, request, response }) {
+    var ourDate = new Date()
+    var subquery
+
+    //Change it so that it is 7 days in the past.
+    var pastDate = ourDate.getDate() - 7
+    ourDate.setDate(pastDate)
     try {
       //const myPosts = await Post.query().where('user_id', '=', request.params.id).fetch() //for myPost
       //const myPosts = await Post.query().innerJoin('friends', 'user_id', 'post.user_id').options({nestTables:true}).fetch()
@@ -26,10 +32,36 @@ class PostController {
       //const myPosts = await Database.from('posts').whereIn('user_id', subquery).orderBy('created_at', 'desc').innerJoin('users', 'users_id', 'posts.user_id').options({nestTables:true}).fetch()
 
       //const myPosts = await Database.table('posts').innerJoin('users', 'users.id', 'posts.user_id')
-
-      const subquery = Database.select('friend_id')
+      const check_no_of_friends = await Database.select('friend_id')
         .from('friends')
-        .where({ user_id: auth.user.id })
+        .where('friends.user_id', '=', auth.user.id)
+        .count('* as no_of_my_friends')
+
+      if (check_no_of_friends[0].no_of_my_friends > 100) {
+        const get_no_of_friends = await Database.select('friend_id')
+          .from('friends')
+          .innerJoin('posts', 'posts.user_id', 'friends.user_id')
+          .where('friends.user_id', '=', auth.user.id)
+          .where('posts.created_at', '>=', ourDate)
+          .count('* as no_of_my_friends')
+
+        if (get_no_of_friends[0].no_of_my_friends == 0) {
+          pastDate = ourDate.getDate() - 30
+          ourDate.setDate(pastDate)
+        }
+
+        subquery = Database.select('friend_id')
+          .from('friends')
+          .innerJoin('posts', 'posts.user_id', 'friends.user_id')
+          .where('friends.user_id', '=', auth.user.id)
+          .where('posts.created_at', '>=', ourDate)
+      } else {
+        subquery = Database.select('friend_id')
+          .from('friends')
+          .innerJoin('posts', 'posts.user_id', 'friends.user_id')
+          .where('friends.user_id', '=', auth.user.id)
+      }
+
       const myPosts = await Database.from('posts')
         .innerJoin('users', 'users.id', 'posts.user_id')
         .whereIn('posts.user_id', subquery)
