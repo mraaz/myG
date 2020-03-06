@@ -83,7 +83,7 @@ export default class GroupMain extends Component {
     this.callbackFileModalConfirm = this.callbackFileModalConfirm.bind(this)
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const self = this
 
     const getmyGroups = async function() {
