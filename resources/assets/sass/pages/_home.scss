@@ -211,12 +211,6 @@ section#content-container {
   #content-container {
     //overflow: hidden;
     //height: 900px; Hide the scroll bars, decided against it
-    .toast-container {
-      font-size: 12px;
-    }
-    .dark-toast {
-      background: $myG-black;
-    }
     .content-area {
       width: 100%;
       height: calc(100% - 53px);

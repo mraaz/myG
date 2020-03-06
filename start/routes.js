@@ -298,4 +298,7 @@ Route.get('/api/user_chat/search/', 'UserChatController.searchUsers')
 Route.get('/api/user_chat/status/', 'UserChatController.fetchStatus')
 Route.put('/api/user_chat/status/', 'UserChatController.updateStatus')
 
+// Guests
+Route.post('/api/guest/', 'GuestController.register')
+
 Route.any('*', ({ view }) => view.render('pages/react'))
