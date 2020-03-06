@@ -145,6 +145,8 @@ class PostController {
   }
 
   async showmyposts({ auth, request, response }) {
+    let likeController = new LikeController()
+
     try {
       const myPosts = await Database.from('posts')
         .innerJoin('users', 'users.id', 'posts.user_id')
@@ -152,6 +154,24 @@ class PostController {
         .select('*', 'posts.id', 'posts.updated_at')
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.paginateNo, 10)
+
+      for (var i = 0; i < myPosts.data.length; i++) {
+        request.params.id = myPosts.data[i].id
+        var myLikes = await likeController.show({ auth, request, response })
+
+        myPosts.data[i].total = myLikes.number_of_likes[0].total
+        myPosts.data[i].no_of_comments = myLikes.no_of_comments[0].no_of_comments
+        if (myLikes.number_of_likes[0].total != 0) {
+          myPosts.data[i].admirer_first_name = myLikes.admirer_UserInfo.alias
+        } else {
+          myPosts.data[i].admirer_first_name = ''
+        }
+        if (myLikes.do_I_like_it[0].myOpinion != 0) {
+          myPosts.data[i].do_I_like_it = true
+        } else {
+          myPosts.data[i].do_I_like_it = false
+        }
+      }
 
       return {
         myPosts,
