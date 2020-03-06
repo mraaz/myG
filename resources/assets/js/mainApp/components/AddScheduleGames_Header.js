@@ -4,11 +4,14 @@ import ReactDOM from 'react-dom'
 import { Redirect } from 'react-router'
 import DatePicker from 'react-datepicker'
 import moment from 'moment'
+import AsyncSelect from 'react-select/lib/Async'
+import axios from 'axios'
+
 import 'react-datepicker/dist/react-datepicker.css'
 import { toast } from 'react-toastify'
 
 import { SubmitDataFunction } from './AddScheduleGames_Submit_Data'
-import { Toast_style } from './Utility_Function'
+import { Toast_style, Disable_keys } from './Utility_Function'
 
 const region_options = [
   { value: 'North America', label: 'North America' },
@@ -36,12 +39,7 @@ const platform_options = [
   { value: 'Tabletop', label: 'Tabletop' },
 ]
 
-const visibility_options = [
-  { value: 1, label: 'Public' },
-  { value: 2, label: 'Friends' },
-  { value: 3, label: 'Group' },
-  { value: 4, label: 'Hidden' },
-]
+const visibility_options = [{ value: 1, label: 'Public' }, { value: 2, label: 'Friends' }, { value: 4, label: 'Hidden' }]
 const limit_options = [
   { value: 5, label: '5' },
   { value: 10, label: '10' },
@@ -53,6 +51,11 @@ const limit_options = [
   { value: 100, label: '100' },
   { value: 42, label: 'Unlimited' },
 ]
+
+const createOption = (label: string) => ({
+  label,
+  value: label,
+})
 
 export default class AddScheduleGames_Headers extends Component {
   constructor() {
@@ -74,6 +77,8 @@ export default class AddScheduleGames_Headers extends Component {
       just_one_time: true,
       redirect_ScheduleGames: false,
       redirect_myScheduleGames: false,
+      invitation_box: '',
+      invitation_group_box: '',
     }
   }
 
@@ -116,6 +121,88 @@ export default class AddScheduleGames_Headers extends Component {
     }
   }
 
+  onKeyDown = (e) => {
+    Disable_keys(e)
+  }
+
+  getOptions = async (inputValue) => {
+    inputValue = inputValue.trimStart()
+    if (inputValue == '' || inputValue == undefined) {
+      return []
+    }
+
+    try {
+      const getPlayerInfo = await axios.post('/api/user/playerSearchResults', {
+        alias: inputValue,
+      })
+
+      var results = getPlayerInfo.data.playerSearchResults.filter((i) => i.first.toLowerCase().includes(inputValue.toLowerCase()))
+      var newArr = []
+      var i, newOption
+      if (results.length != 0) {
+        for (i = 0; i < results.length; i++) {
+          if (results[i].profile_img != '' && results[i].profile_img != null) {
+            newOption = createOption(results[i].first, results[i].id)
+            newOption.label = (
+              <div className='record-set'>
+                {' '}
+                <img className='profile-img' src={results[i].profile_img} alt={results[i].first} />
+                <div className='profile-name'>{results[i].first}</div>
+              </div>
+            )
+          } else {
+            newOption = createOption(results[i].first, results[i].id)
+          }
+          newArr.push(newOption)
+        }
+      } else {
+        return []
+      }
+
+      return newArr
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  getOptions_groups = async (inputValue) => {
+    inputValue = inputValue.trimStart()
+    if (inputValue == '' || inputValue == undefined) {
+      return []
+    }
+
+    try {
+      const groupSearchResults = await axios.get(`/api/groups/${inputValue}/groupSearchResults`)
+
+      var results = groupSearchResults.data.groupSearchResults.filter((i) => i.name.toLowerCase().includes(inputValue.toLowerCase()))
+      var newArr = []
+      var i, newOption
+      if (results.length != 0) {
+        for (i = 0; i < results.length; i++) {
+          if (results[i].group_img != '' && results[i].group_img != null) {
+            newOption = createOption(results[i].name, results[i].id)
+            newOption.label = (
+              <div className='record-set'>
+                {' '}
+                <img className='profile-img' src={results[i].group_img} alt={results[i].name} />
+                <div className='profile-name'>{results[i].name}</div>
+              </div>
+            )
+          } else {
+            newOption = createOption(results[i].name, results[i].id)
+          }
+          newArr.push(newOption)
+        }
+      } else {
+        return []
+      }
+
+      return newArr
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   handleChange_Region = (selected_region) => {
     this.setState({ selected_region })
   }
@@ -146,6 +233,14 @@ export default class AddScheduleGames_Headers extends Component {
 
   handleChange_txtArea = (e) => {
     this.setState({ txtAreaValue: e.target.value })
+  }
+
+  handleChange_invitation_box = (value) => {
+    this.setState({ invitation_box: value })
+  }
+
+  handleChange_invitation_group_box = (value) => {
+    this.setState({ invitation_group_box: value })
   }
 
   render() {
@@ -294,6 +389,36 @@ export default class AddScheduleGames_Headers extends Component {
               value={this.state.txtAreaValue}
               onChange={this.handleChange_txtArea}
               maxLength='254'
+            />
+          </div>
+          <div className='invitation-box'>
+            <AsyncSelect
+              cacheOptions
+              defaultOptions
+              loadOptions={this.getOptions}
+              isClearable
+              isMulti
+              onChange={this.handleChange_invitation_box}
+              value={this.state.invitation_box}
+              className='invitation_box'
+              placeholder='Search for gamers by alias'
+              onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
+              onKeyDown={this.onKeyDown}
+            />
+          </div>
+          <div className='invitation-group-box'>
+            <AsyncSelect
+              cacheOptions
+              defaultOptions
+              loadOptions={this.getOptions_groups}
+              isClearable
+              isMulti
+              onChange={this.handleChange_invitation_group_box}
+              value={this.state.invitation_group_box}
+              className='invitation_group_box'
+              placeholder='Search for groups to invite'
+              onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
+              onKeyDown={this.onKeyDown}
             />
           </div>
           <div className='buttons'>

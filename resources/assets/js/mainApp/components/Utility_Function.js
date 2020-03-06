@@ -1,18 +1,17 @@
 import React from 'react'
 import axios from 'axios'
 
-const createOption = (label: string, game_names_id: string) => ({
+const createOption = (label: string) => ({
   label,
   value: label,
-  game_names_id,
 })
 
 export async function Game_name_values(inputValue) {
+  inputValue = inputValue.trimStart()
   if (inputValue == '' || inputValue == undefined) {
     return []
   }
   try {
-    inputValue = inputValue.trimStart()
     const getGameName = await axios.get(`/api/GameNames/${inputValue}/gameSearchResults`)
     var results = getGameName.data.gameSearchResults[0].filter((i) => i.game_name.toLowerCase().includes(inputValue.toLowerCase()))
     var newArr = []
