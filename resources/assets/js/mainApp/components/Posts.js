@@ -37,30 +37,11 @@ export default class Posts extends Component {
       try {
         const myPosts = await axios.get(`/api/post/${myCounter}`)
 
-        var i
-        var myLikes
-
         if (myPosts.data.myPosts.data.length == 0) {
           self.setState({
             moreplease: false,
           })
           return
-        }
-
-        for (i = 0; i < myPosts.data.myPosts.data.length; i++) {
-          myLikes = await axios.get(`/api/likes/${myPosts.data.myPosts.data[i].id}`)
-          myPosts.data.myPosts.data[i].total = myLikes.data.number_of_likes[0].total
-          myPosts.data.myPosts.data[i].no_of_comments = myLikes.data.no_of_comments[0].no_of_comments
-          if (myLikes.data.number_of_likes[0].total != 0) {
-            myPosts.data.myPosts.data[i].admirer_first_name = myLikes.data.admirer_UserInfo.alias
-          } else {
-            myPosts.data.myPosts.data[i].admirer_first_name = ''
-          }
-          if (myLikes.data.do_I_like_it[0].myOpinion != 0) {
-            myPosts.data.myPosts.data[i].do_I_like_it = true
-          } else {
-            myPosts.data.myPosts.data[i].do_I_like_it = false
-          }
         }
 
         self.setState({

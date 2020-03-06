@@ -3,6 +3,7 @@
 const Post = use('App/Models/Post')
 const Database = use('Database')
 const AwsKeyController = use('./AwsKeyController')
+const LikeController = use('./LikeController')
 
 class PostController {
   async store({ auth, request, response }) {
@@ -16,13 +17,14 @@ class PostController {
   }
 
   async show({ auth, request, response }) {
-    var ourDate = new Date()
-    var subquery
-
-    //Change it so that it is 7 days in the past.
-    var pastDate = ourDate.getDate() - 2007
-    ourDate.setDate(pastDate)
+    // var ourDate = new Date()
+    // var subquery
+    //
+    // //Change it so that it is 7 days in the past.
+    // var pastDate = ourDate.getDate() - 2007
+    // ourDate.setDate(pastDate)
     try {
+      let likeController = new LikeController()
       //const myPosts = await Post.query().where('user_id', '=', request.params.id).fetch() //for myPost
       //const myPosts = await Post.query().innerJoin('friends', 'user_id', 'post.user_id').options({nestTables:true}).fetch()
       //const following = await Database.from('friends').where({user_id: 1, friend_id: request.params.id})
@@ -32,42 +34,75 @@ class PostController {
       //const myPosts = await Database.from('posts').whereIn('user_id', subquery).orderBy('created_at', 'desc').innerJoin('users', 'users_id', 'posts.user_id').options({nestTables:true}).fetch()
 
       //const myPosts = await Database.table('posts').innerJoin('users', 'users.id', 'posts.user_id')
-      const check_no_of_friends = await Database.select('friend_id')
+
+      const myPosts = await Database.select('*', 'posts.id', 'posts.updated_at')
         .from('friends')
+        .innerJoin('posts', 'posts.user_id', 'friends.friend_id')
+        .innerJoin('users', 'users.id', 'posts.user_id')
         .where('friends.user_id', '=', auth.user.id)
-        .count('* as no_of_my_friends')
+        .orderBy('posts.created_at', 'desc')
+        .limit(588)
+        .paginate(request.params.paginateNo, 10)
 
-      if (check_no_of_friends[0].no_of_my_friends > 100) {
-        const get_no_of_friends = await Database.select('friend_id')
-          .from('friends')
-          .innerJoin('posts', 'posts.user_id', 'friends.user_id')
-          .where('friends.user_id', '=', auth.user.id)
-          .where('posts.created_at', '>=', ourDate)
-          .count('* as no_of_my_friends')
+      for (var i = 0; i < myPosts.data.length; i++) {
+        request.params.id = myPosts.data[i].id
+        var myLikes = await likeController.show({ auth, request, response })
 
-        if (get_no_of_friends[0].no_of_my_friends == 0) {
-          pastDate = ourDate.getDate() - 30
-          ourDate.setDate(pastDate)
+        myPosts.data[i].total = myLikes.number_of_likes[0].total
+        myPosts.data[i].no_of_comments = myLikes.no_of_comments[0].no_of_comments
+        if (myLikes.number_of_likes[0].total != 0) {
+          myPosts.data[i].admirer_first_name = myLikes.admirer_UserInfo.alias
+        } else {
+          myPosts.data[i].admirer_first_name = ''
         }
-
-        subquery = Database.select('friend_id')
-          .from('friends')
-          .innerJoin('posts', 'posts.user_id', 'friends.user_id')
-          .where('friends.user_id', '=', auth.user.id)
-          .where('posts.created_at', '>=', ourDate)
-      } else {
-        subquery = Database.select('friend_id')
-          .from('friends')
-          .innerJoin('posts', 'posts.user_id', 'friends.user_id')
-          .where('friends.user_id', '=', auth.user.id)
+        if (myLikes.do_I_like_it[0].myOpinion != 0) {
+          myPosts.data[i].do_I_like_it = true
+        } else {
+          myPosts.data[i].do_I_like_it = false
+        }
       }
 
-      const myPosts = await Database.from('posts')
-        .innerJoin('users', 'users.id', 'posts.user_id')
-        .whereIn('posts.user_id', subquery)
-        .select('*', 'posts.id', 'posts.updated_at')
-        .orderBy('posts.created_at', 'desc')
-        .paginate(request.params.paginateNo, 10)
+      // let array = []
+      // for (var i = 0; i < get_no_of_friends.length; i++) {
+      //   array.push(get_no_of_friends[i].friend_id)
+      // }
+      // let uniqueArray = [...new Set(array)]
+
+      //console.log(uniqueArray)
+      //.orderBy(posts.created_at, desc)
+
+      // if (check_no_of_friends[0].no_of_my_friends > 100) {
+      //   const get_no_of_friends = await Database.select('friend_id')
+      //     .from('friends')
+      //     .innerJoin('posts', 'posts.user_id', 'friends.user_id')
+      //     .where('friends.user_id', '=', auth.user.id)
+      //     .where('posts.created_at', '>=', ourDate)
+      //     .count('* as no_of_my_friends')
+      //
+      //   if (get_no_of_friends[0].no_of_my_friends == 0) {
+      //     pastDate = ourDate.getDate() - 30
+      //     ourDate.setDate(pastDate)
+      //   }
+      //
+      //   subquery = Database.select('friend_id')
+      //     .from('friends')
+      //     .innerJoin('posts', 'posts.user_id', 'friends.user_id')
+      //     .where('friends.user_id', '=', auth.user.id)
+      //     .where('posts.created_at', '>=', ourDate)
+      // } else {
+      // const subquery = await Database.select('friend_id')
+      //   .from('friends')
+      //   .whereIn('id', uniqueArray)
+      //
+      // console.log(subquery)
+      //
+      // return
+      // const myPosts = await Database.from('posts')
+      //   .innerJoin('users', 'users.id', 'posts.user_id')
+      //   .whereIn('posts.user_id', uniqueArray)
+      //   .select('*', 'posts.id', 'posts.updated_at')
+      //   .orderBy('posts.created_at', 'desc')
+      //   .paginate(request.params.paginateNo, 10)
 
       return {
         myPosts,
