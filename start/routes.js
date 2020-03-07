@@ -300,5 +300,6 @@ Route.put('/api/user_chat/status/', 'UserChatController.updateStatus')
 
 // Guests
 Route.post('/api/guest/', 'GuestController.register')
+Route.delete('/api/guest/:guestId/chat/:chatId', 'GuestController.unregister')
 
 Route.any('*', ({ view }) => view.render('pages/react'))

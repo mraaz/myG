@@ -45,6 +45,7 @@ class ChatRepository {
         lastMessage: chat.last_message,
         publicKey: chat.public_key,
         contacts: chat.contacts,
+        guests: chat.guests,
         owners: chat.owners,
         moderators: chat.moderators,
         messages: chat.messages,
@@ -83,6 +84,7 @@ class ChatRepository {
       lastMessage: chat.last_message,
       publicKey: chat.public_key,
       contacts: chat.contacts,
+      guests: chat.guests,
       owners: chat.owners,
       moderators: chat.moderators,
       messages: chat.messages,
@@ -118,6 +120,7 @@ class ChatRepository {
     if (contacts.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
     contacts = [requestingUserId, ...contacts].sort();
     const { chats } = await this.fetchChats({ requestingUserId });
+    const guests = [];
 
     const existingChat = chats.find(chat =>
       contacts.length === chat.contacts.length &&
@@ -130,6 +133,7 @@ class ChatRepository {
     if (icon) chat.icon = icon;
     if (publicKey) chat.public_key = publicKey;
     chat.contacts = JSON.stringify(contacts || []);
+    chat.guests = JSON.stringify(guests || []);
     chat.owners = JSON.stringify(owners || []);
     chat.moderators = JSON.stringify(owners || []);
     await chat.save();
@@ -137,6 +141,7 @@ class ChatRepository {
     const chatSchema = new ChatSchema({
       chatId: chat.id,
       contacts,
+      guests,
       owners,
       moderators: owners,
       title,
@@ -400,6 +405,7 @@ class ChatRepository {
       lastMessage: chat.last_message,
       publicKey: chat.public_key,
       contacts: chat.contacts,
+      guests: chat.guests,
       owners: chat.owners,
       moderators: chat.moderators,
       createdAt: chat.created_at,
@@ -509,6 +515,7 @@ class ChatRepository {
       icon: chat.icon,
       title: chat.title,
       contacts: chat.contacts,
+      guests: chat.guests,
       owners: chat.owners,
       moderators: chat.moderators,
       isPrivate: chat.isPrivate,

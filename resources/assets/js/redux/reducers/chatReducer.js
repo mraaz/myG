@@ -362,6 +362,25 @@ export default function reducer(state = {
       };
     }
 
+    case "ON_USER_JOINED": {
+      logger.log('CHAT', `Redux -> User Joined Group: `, action.payload, action.meta);
+      const { chatId, contacts } = action.payload;
+      const { userId: thisUserId } = action.meta;
+      if (contacts.map(contact => contact.contactId).includes(parseInt(thisUserId))) return state;
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => candidate.chatId === chatId);
+      if (!chat) return state;
+      const contact = contacts[0];
+      toast.success(`${contact.name} has joined Group ${chat.title}!`);
+      if (!chat.contacts.includes(contact.contactId)) chat.contacts.push(contact.contactId);
+      if (!chat.fullContacts.map(contact => contact.contactId).includes(contact.contactId)) chat.fullContacts.push(contact);
+      sendGroupKeys(chatId, parseInt(thisUserId), contacts, chat.privateKey, state.privateKey);
+      return {
+        ...state,
+        chats,
+      };
+    }
+
     case "ON_USER_LEFT": {
       logger.log('CHAT', `Redux -> User Left Group: `, action.payload, action.meta);
       const { chatId, userId } = action.payload;
@@ -384,19 +403,29 @@ export default function reducer(state = {
       };
     }
 
-    case "ON_USER_JOINED": {
-      logger.log('CHAT', `Redux -> User Joined Group: `, action.payload, action.meta);
-      const { chatId, contacts } = action.payload;
+    case "ON_GUEST_JOINED": {
+      logger.log('CHAT', `Redux -> Guest Joined Group: `, action.payload, action.meta);
+      const { chatId, guest } = action.payload;
       const { userId: thisUserId } = action.meta;
-      if (contacts.map(contact => contact.contactId).includes(parseInt(thisUserId))) return state;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (!chat) return state;
-      const contact = contacts[0];
-      toast.success(`${contact.name} has joined Group ${chat.title}!`);
-      if (!chat.contacts.includes(contact.contactId)) chat.contacts.push(contact.contactId);
-      if (!chat.fullContacts.map(contact => contact.contactId).includes(contact.contactId)) chat.fullContacts.push(contact);
-      sendGroupKeys(chatId, parseInt(thisUserId), contacts, chat.privateKey, state.privateKey);
+      toast.success(`${guest.id} has joined Group ${chat.title}!`);
+      if (!chat.guests.includes(guest.id)) chat.guests.push(guest.id);
+      sendGroupKeys(chatId, thisUserId, [guest.id], chat.privateKey, state.privateKey);
+      return {
+        ...state,
+        chats,
+      };
+    }
+
+    case "ON_GUEST_LEFT": {
+      logger.log('CHAT', `Redux -> Guest Left Group: `, action.payload, action.meta);
+      const { chatId, guest } = action.payload;
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => candidate.chatId === chatId);
+      if (!chat) return state;
+      chat.guests = chat.guests.filter(guestId => guestId !== guest.id);
       return {
         ...state,
         chats,

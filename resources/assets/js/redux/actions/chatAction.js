@@ -55,6 +55,14 @@ export function onTypingAction(payload, userId) {
   }
 }
 
+export function onUserJoinedGroupAction(payload, userId) {
+  return {
+    type: 'ON_USER_JOINED',
+    payload,
+    meta: { userId },
+  }
+}
+
 export function onUserLeftGroupAction(payload, userId) {
   return {
     type: 'ON_USER_LEFT',
@@ -63,9 +71,17 @@ export function onUserLeftGroupAction(payload, userId) {
   }
 }
 
-export function onUserJoinedGroupAction(payload, userId) {
+export function onGuestJoinedGroupAction(payload, userId) {
   return {
-    type: 'ON_USER_JOINED',
+    type: 'ON_GUEST_JOINED',
+    payload,
+    meta: { userId },
+  }
+}
+
+export function onGuestLeftGroupAction(payload, userId) {
+  return {
+    type: 'ON_GUEST_LEFT',
     payload,
     meta: { userId },
   }
