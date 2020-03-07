@@ -60,3 +60,19 @@ export const Toast_style = (props) => (
     <div>{props.text}</div>
   </div>
 )
+
+export function Convert_to_comma_delimited_value(array_to_convert) {
+  var convert = ''
+
+  for (var i = 0; i < array_to_convert.length; i++) {
+    convert += array_to_convert[i].value + '; '
+  }
+  convert = convert
+    .trim()
+    .replace(/; /g, ',')
+    .trim()
+  convert = convert.replace(/;/g, '')
+  convert = convert.replace(/,/g, ', ')
+
+  return convert
+}

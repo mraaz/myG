@@ -94,17 +94,17 @@ class ScheduleGameController {
           }
         }
 
-        if (parseInt(request.input('visibility'), 10) == 2) {
-          const getFriends = await Database.from('friends')
-            .where({ user_id: auth.user.id })
-            .select('friend_id')
-          let noti = new NotificationController()
-          for (var i = 0; i < getFriends.length; i++) {
-            request.params.other_user_id = getFriends[i].friend_id
-            request.params.schedule_games_id = newScheduleGame.id
-            noti.addScheduleGame({ auth, request, response })
-          }
-        }
+        // if (parseInt(request.input('visibility'), 10) == 2) {
+        //   const getFriends = await Database.from('friends')
+        //     .where({ user_id: auth.user.id })
+        //     .select('friend_id')
+        //   let noti = new NotificationController()
+        //   for (var i = 0; i < getFriends.length; i++) {
+        //     request.params.other_user_id = getFriends[i].friend_id
+        //     request.params.schedule_games_id = newScheduleGame.id
+        //     noti.addScheduleGame({ auth, request, response })
+        //   }
+        // }
 
         return newScheduleGame
       } catch (error) {

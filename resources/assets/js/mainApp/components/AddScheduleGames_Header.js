@@ -11,7 +11,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { toast } from 'react-toastify'
 
 import { SubmitDataFunction } from './AddScheduleGames_Submit_Data'
-import { Toast_style, Disable_keys } from './Utility_Function'
+import { Toast_style, Disable_keys, Convert_to_comma_delimited_value } from './Utility_Function'
 
 const region_options = [
   { value: 'North America', label: 'North America' },
@@ -39,7 +39,7 @@ const platform_options = [
   { value: 'Tabletop', label: 'Tabletop' },
 ]
 
-const visibility_options = [{ value: 1, label: 'Public' }, { value: 2, label: 'Friends' }, { value: 4, label: 'Hidden' }]
+const visibility_options = [{ value: 1, label: 'Public' }, { value: 4, label: 'Private' }]
 const limit_options = [
   { value: 5, label: '5' },
   { value: 10, label: '10' },
@@ -82,6 +82,18 @@ export default class AddScheduleGames_Headers extends Component {
     }
   }
 
+  submitInvitation = () => {
+    if (this.state.invitation_group_box.length == 0 && this.state.invitation_box.length == 0) {
+      return
+    }
+    var invitation_group_box, invitation_box
+
+    invitation_group_box = Convert_to_comma_delimited_value(this.state.invitation_group_box)
+    invitation_box = Convert_to_comma_delimited_value(this.state.invitation_box)
+    //Do axios for notifications for friends
+    //Do axios for posts to be created for communites
+  }
+
   submitForm = (e) => {
     this.state.game_name_box = this.props.game_name_box
 
@@ -110,7 +122,7 @@ export default class AddScheduleGames_Headers extends Component {
       if (
         this.state.selected_visibility != null &&
         this.state.selected_visibility != undefined &&
-        (this.state.selected_visibility.value == 2 || this.state.selected_visibility.value == 4)
+        this.state.selected_visibility.value == 4
       ) {
         this.setState({ redirect_myScheduleGames: true })
       } else {
@@ -416,7 +428,7 @@ export default class AddScheduleGames_Headers extends Component {
               onChange={this.handleChange_invitation_group_box}
               value={this.state.invitation_group_box}
               className='invitation_group_box'
-              placeholder='Search for groups to invite'
+              placeholder='Search for communites to invite'
               onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
               onKeyDown={this.onKeyDown}
             />
@@ -428,6 +440,9 @@ export default class AddScheduleGames_Headers extends Component {
             &nbsp;
             <button className='save-create' type='button' onClick={() => this.submitForm(false)}>
               Save & Create Another
+            </button>
+            <button className='save-invitations' type='button' onClick={() => this.submitInvitation()}>
+              Send Invitations
             </button>
           </div>
         </div>

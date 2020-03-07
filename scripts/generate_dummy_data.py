@@ -55,7 +55,7 @@ def main():
   #schedule_games
   sg_region = ['North America', 'Europe', 'Asia', 'Russia', 'South America', 'Oceania', 'Middle East', 'Africa', 'Central America']
   sg_platform = ['PC', 'XB', 'PS', 'Nintendo', 'Mobile', 'Tabletop']
-  sg_visibility = ['Public', 'Friends', 'Group', 'Hidden']
+  sg_visibility = ['Public', 'Private']
   sg_limit = [5,10,20,25,30,40,50,100,42]
 
   #posts

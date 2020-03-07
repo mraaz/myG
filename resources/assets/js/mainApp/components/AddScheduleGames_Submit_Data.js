@@ -1,3 +1,5 @@
+import { Convert_to_comma_delimited_value } from './Utility_Function'
+
 import axios from 'axios'
 import moment from 'moment'
 import uuid from 'uuid'
@@ -16,39 +18,15 @@ export async function SubmitDataFunction(myG) {
   var end_date = myG.endDate
 
   if (myG.selected_region != undefined && myG.selected_region !== null && myG.selected_region.length !== 0) {
-    for (var i = 0; i < myG.selected_region.length; i++) {
-      myRegion += myG.selected_region[i].value + '; '
-    }
-    myRegion = myRegion
-      .trim()
-      .replace(/; /g, ',')
-      .trim()
-    myRegion = myRegion.replace(/;/g, '')
-    myRegion = myRegion.replace(/,/g, ', ')
+    myRegion = Convert_to_comma_delimited_value(myG.selected_region)
   }
 
   if (myG.selected_experience !== undefined && myG.selected_experience !== null && myG.selected_experience.length !== 0) {
-    for (var i = 0; i < myG.selected_experience.length; i++) {
-      myExperience += myG.selected_experience[i].value + '; '
-    }
-    myExperience = myExperience
-      .trim()
-      .replace(/; /g, ',')
-      .trim()
-    myExperience = myExperience.replace(/;/g, '')
-    myExperience = myExperience.replace(/,/g, ', ')
+    myExperience = Convert_to_comma_delimited_value(myG.selected_experience)
   }
 
   if (myG.selected_platform !== undefined && myG.selected_platform !== null && myG.selected_platform.length !== 0) {
-    for (var i = 0; i < myG.selected_platform.length; i++) {
-      myPlatform += myG.selected_platform[i].value + '; '
-    }
-    myPlatform = myPlatform
-      .trim()
-      .replace(/; /g, ',')
-      .trim()
-    myPlatform = myPlatform.replace(/;/g, '')
-    myPlatform = myPlatform.replace(/,/g, ', ')
+    myPlatform = Convert_to_comma_delimited_value(myG.selected_platform)
   }
 
   if (myG.endDate != null || myG.endDate != undefined) {
@@ -74,39 +52,15 @@ export async function SubmitDataFunction(myG) {
   }
 
   if (myG.dota2_medal_ranks !== undefined && myG.dota2_medal_ranks !== null && myG.dota2_medal_ranks.length !== 0) {
-    for (var i = 0; i < myG.dota2_medal_ranks.length; i++) {
-      myDota2_medal_ranks += myG.dota2_medal_ranks[i].value + '; '
-    }
-    myDota2_medal_ranks = myDota2_medal_ranks
-      .trim()
-      .replace(/; /g, ',')
-      .trim()
-    myDota2_medal_ranks = myDota2_medal_ranks.replace(/;/g, '')
-    myDota2_medal_ranks = myDota2_medal_ranks.replace(/,/g, ', ')
+    myDota2_medal_ranks = Convert_to_comma_delimited_value(myG.dota2_medal_ranks)
   }
 
   if (myG.dota2_server_regions !== undefined && myG.dota2_server_regions !== null && myG.dota2_server_regions.length !== 0) {
-    for (var i = 0; i < myG.dota2_server_regions.length; i++) {
-      myDota2_server_regions += myG.dota2_server_regions[i].value + '; '
-    }
-    myDota2_server_regions = myDota2_server_regions
-      .trim()
-      .replace(/; /g, ',')
-      .trim()
-    myDota2_server_regions = myDota2_server_regions.replace(/;/g, '')
-    myDota2_server_regions = myDota2_server_regions.replace(/,/g, ', ')
+    myDota2_server_regions = Convert_to_comma_delimited_value(myG.dota2_server_regions)
   }
 
   if (myG.dota2_roles !== undefined && myG.dota2_roles !== null && myG.dota2_roles.length !== 0) {
-    for (var i = 0; i < myG.dota2_roles.length; i++) {
-      myDota2_roles += myG.dota2_roles[i].value + '; '
-    }
-    myDota2_roles = myDota2_roles
-      .trim()
-      .replace(/; /g, ',')
-      .trim()
-    myDota2_roles = myDota2_roles.replace(/;/g, '')
-    myDota2_roles = myDota2_roles.replace(/,/g, ', ')
+    myDota2_roles = Convert_to_comma_delimited_value(myG.dota2_roles)
   }
 
   const uuidv1 = require('uuid/v1')
