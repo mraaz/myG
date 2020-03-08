@@ -129,12 +129,12 @@ class ChatMessage extends React.Component {
         <div className="chat-component-message-container">
 
           <div className="chat-component-message-content-body">
-            {this.props.senderName && (
+            {message.senderId !== this.props.userId && this.props.isGroup && (
               <p
                 style={{ color: this.colorMessage(parseInt(message.senderId)) }}
                 className={`chat-component-message-sender-name`}
               >
-                {this.props.senderName}
+                {message.senderName}
               </p>
             )}
             <p className={`chat-component-message-content`}>

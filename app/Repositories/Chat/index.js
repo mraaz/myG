@@ -56,8 +56,7 @@ class ChatRepository {
   }
 
   async fetchChat({ requestingUserId, requestedChatId }) {
-    const guestChatRequest = !requestingUserId && Chat.find(requestedChatId);
-    const userChatRequest = requestingUserId && Database
+    const chat = (await Database
       .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.blocked_users', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', ' chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
@@ -65,15 +64,12 @@ class ChatRepository {
       .leftJoin('chat_last_cleareds', function () { this.on('chat_last_cleareds.chat_id', 'user_chats.chat_id').andOn('chat_last_cleareds.user_id', 'user_chats.user_id') })
       .where('user_chats.user_id', requestingUserId)
       .andWhere('user_chats.chat_id', requestedChatId)
-      .first();
-    const chat = requestingUserId ? await userChatRequest : (await guestChatRequest).toJSON();
+      .first());
     const lastReadsObject = {};
-    if (requestingUserId) {
-      const lastReadsRaw = (await ChatLastRead.query().where('user_id', '!=', requestingUserId).andWhere('chat_id', requestedChatId).fetch()).toJSON();
-      lastReadsRaw.forEach(lastRead => lastReadsObject[lastRead.user_id] = lastRead.last_read_message_id);
-    }
+    const lastReadsRaw = (await ChatLastRead.query().where('user_id', '!=', requestingUserId).andWhere('chat_id', requestedChatId).fetch()).toJSON();
+    lastReadsRaw.forEach(lastRead => lastReadsObject[lastRead.user_id] = lastRead.last_read_message_id);
     const chatSchema = new ChatSchema({
-      chatId: chat.chat_id || chat.id,
+      chatId: chat.chat_id,
       muted: chat.muted,
       blocked: chat.blocked,
       blockedUsers: chat.blocked_users,
@@ -163,7 +159,6 @@ class ChatRepository {
       userChat.deleted_messages = '[]';
       userChat.blocked_users = '[]';
       await userChat.save();
-      this._notifyChatEvent({ userId, action: 'newChat', payload: chatSchema });
     });
 
     if (contacts.length > 2) {
@@ -176,6 +171,7 @@ class ChatRepository {
       });
     }
 
+    this._notifyChatEvent({ chatId: chat.id, action: 'newChat', payload: chatSchema });
     return { chat: chatSchema };
   }
 
@@ -295,7 +291,6 @@ class ChatRepository {
       userChat.deleted_messages = '[]';
       userChat.blocked_users = '[]';
       await userChat.save();
-      this._notifyChatEvent({ userId, action: 'newChat', payload: chat });
     });
     await Chat.query().where('id', requestedChatId).update({ contacts: JSON.stringify(chat.contacts) });
     const rawContacts = (await Database.from('users').where('id', 'in', contacts));
@@ -307,7 +302,8 @@ class ChatRepository {
       lastSeen: contact.last_seen,
       publicKey: contact.public_key,
     }));
-    chat.contacts.forEach(userId => this._notifyChatEvent({ userId, action: 'userJoined', payload: { contacts: fullContacts, chatId: requestedChatId } }));
+    this._notifyChatEvent({ chatId: requestedChatId, action: 'newChat', payload: chat });
+    this._notifyChatEvent({ chatId: requestedChatId, action: 'userJoined', payload: { contacts: fullContacts, chatId: requestedChatId } });
     return { contacts: fullContacts };
   }
 
@@ -529,7 +525,7 @@ class ChatRepository {
       moderators: chat.moderators,
       isPrivate: chat.isPrivate,
     });
-    chatSchema.contacts.forEach(userId => this._notifyChatEvent({ userId, action: 'chatUpdated', payload: chatSchema }));
+    this._notifyChatEvent({ chatId: requestedChatId, action: 'chatUpdated', payload: chatSchema });
   }
 
   async _notifyChatEvent({ userId, chatId, contactId, action, payload }) {
@@ -544,7 +540,7 @@ class ChatRepository {
       const contacts = JSON.parse(chat.contacts);
       const guests = JSON.parse(chat.guests);
       contacts.forEach(contactId => broadcast('chat:*', `chat:${contactId}`, `chat:${action}`, payload));
-      guests.forEach(guestId => broadcast('chat:*', `chat:${guestId}`, `chat:${action}`, payload));
+      guests.forEach(guestId => broadcast('chat:*', `chat:${guestId}:guest`, `chat:${action}`, payload));
       return;
     }
     if (contactId) {

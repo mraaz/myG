@@ -1,8 +1,11 @@
 
 const Guest = use('App/Models/Guest');
 const Chat = use('App/Models/Chat');
+const ChatLink = use('App/Models/ChatLink');
 const ChatRepository = require('../Chat');
 const GuestSchema = require('../../Schemas/Guest');
+const ChatLinkSchema = require('../../Schemas/ChatLink');
+const MessageSchema = require('../../Schemas/Message');
 const DefaultSchema = require('../../Schemas/Default');
 
 const MAXIMUM_GROUP_SIZE = 37;
@@ -22,9 +25,9 @@ class GuestRepository {
 
   async unregister({ requestingGuestId }) {
     const guest = await Guest.find(requestingGuestId);
-    const chat = await this.removeGuestFromChat({ requestingGuestId, requestedChatId: guest.chat_id });
+    await this.removeGuestFromChat({ requestingGuestId, requestedChatId: guest.chat_id });
     await guest.delete();
-    return new DefaultSchema({ success: true, chat });
+    return new DefaultSchema({ success: true });
   }
 
   async addGuestToChat({ requestingGuestId, requestedChatId, publicKey }) {
@@ -34,21 +37,59 @@ class GuestRepository {
     chat.guests.push(guest.guestId);
     if (chat.contacts.length + chat.guests.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
     await Chat.query().where('id', requestedChatId).update({ guests: JSON.stringify(chat.guests) });
-    ChatRepository._notifyChatEvent({ userId: guest.guestId, action: 'newChat', payload: chat });
-    chat.contacts.forEach(userId => ChatRepository._notifyChatEvent({ userId, action: 'guestJoined', payload: { guest, chatId: requestedChatId } }));
-    chat.guests.forEach(userId => ChatRepository._notifyChatEvent({ userId, action: 'guestJoined', payload: { guest, chatId: requestedChatId } }));
+    ChatRepository._notifyChatEvent({ chatId: requestedChatId, action: 'newChat', payload: chat });
+    ChatRepository._notifyChatEvent({ chatId: requestedChatId, action: 'guestJoined', payload: { guest, chatId: requestedChatId } });
     return { chat };
   }
 
   async removeGuestFromChat({ requestedChatId, requestingGuestId }) {
-    const guest = new GuestSchema({ guestId: requestingGuestId });
     const { chat } = await ChatRepository.fetchChatInfo({ requestedChatId });
-    if (!chat.guests.includes(guest.id)) return { error: 'Guest was not in Chat.' };
-    chat.guests = chat.guests.filter(guestId => guestId !== guest.id);
+    if (!chat.guests.includes(requestingGuestId)) return { error: 'Guest was not in Chat.' };
+    chat.guests = chat.guests.filter(guestId => guestId !== requestingGuestId);
+    ChatRepository._notifyChatEvent({ chatId: requestedChatId, action: 'guestLeft', payload: { guestId: requestingGuestId, chatId: requestedChatId } });
     await Chat.query().where('id', requestedChatId).update({ guests: JSON.stringify(chat.guests) });
-    chat.contacts.forEach(userId => ChatRepository._notifyChatEvent({ userId, action: 'guestLeft', payload: { guest, chatId: requestedChatId } }));
-    chat.guests.forEach(userId => ChatRepository._notifyChatEvent({ userId, action: 'guestLeft', payload: { guest, chatId: requestedChatId } }));
-    return { chat };
+  }
+
+  async fetchLink({ requestedLinkUuid }) {
+    const response = (await ChatLink.query().where('uuid', requestedLinkUuid).first());
+    if (!response) return { link: null };
+    const rawLink = response.toJSON();
+    const link = new ChatLinkSchema({
+      chatId: rawLink.chat_id,
+      uuid: rawLink.uuid,
+      expiry: rawLink.expiry,
+      createdAt: rawLink.created_at,
+      updatedAt: rawLink.updated_at,
+    });
+    return { link };
+  }
+
+  async sendMessage({ requestedChatId, senderName, guestId, backup, content }) {
+    const messageData = {
+      sender_id: guestId,
+      key_receiver: keyReceiver,
+      sender_name: senderName,
+      backup: backup,
+      content: content,
+      self_destruct: true,
+    };
+    const message = await Chat.find(requestedChatId).then(chat => chat.messages().create(messageData));
+    const messageSchema = new MessageSchema({
+      messageId: message.id,
+      chatId: requestedChatId,
+      senderId: requestingUserId,
+      keyReceiver: message.key_receiver,
+      senderName: message.sender_name,
+      content: message.content,
+      backup: message.backup,
+      deleted: message.deleted,
+      edited: message.edited,
+      selfDestruct: message.self_destruct,
+      createdAt: message.created_at,
+      updatedAt: message.updated_at,
+    });
+    ChatRepository._notifyChatEvent({ chatId: requestedChatId, action: 'newMessage', payload: messageSchema });
+    return { message: messageSchema };
   }
 
 }

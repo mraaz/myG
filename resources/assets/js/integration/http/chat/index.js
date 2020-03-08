@@ -58,7 +58,7 @@ export function addContactsToChat(userId, chatId, contacts, publicKey, privateKe
 }
 
 export function inviteUserToGroup(userId, chatId, contactId, publicKey, privateKey, userPrivateKey) {
-  logger.log('CHAT', 'HTTP', `Invite Users ${JSON.stringify(contacts)} To Group ${chatId}`);
+  logger.log('CHAT', 'HTTP', `Invite User ${contactId} To Group ${chatId}`);
   return axios.put(`/api/notifications/inviteToGroup`, { userId: contactId, chatId }).then(response => sendGroupPrivateKey(userId, chatId, contacts, publicKey, privateKey, userPrivateKey).then(() => response.data));
 }
 

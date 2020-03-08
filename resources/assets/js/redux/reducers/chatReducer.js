@@ -158,7 +158,8 @@ export default function reducer(state = {
       const { chat } = action.payload;
       chat.closed = (chat.messages || []).length === 0;
       const chats = JSON.parse(JSON.stringify(state.chats));
-      if (!chats.map(chat => chat.chatId).includes(chat.chatId)) chats.push(chat);
+      if (chats.map(chat => chat.chatId).includes(chat.chatId)) return state;
+      chats.push(chat);
       const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== chat.chatId);
       if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
       return {
@@ -174,6 +175,7 @@ export default function reducer(state = {
       const chatId = message.chatId;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
+      if (!chat) return state;
       if (chat.blocked) return state;
       if (chat.blockedUsers.includes(message.senderId)) return state;
       if (!chat.muted && !window.focused && message.senderId !== userId) playMessageSound();
@@ -368,7 +370,7 @@ export default function reducer(state = {
       logger.log('CHAT', `Redux -> User Joined Group: `, action.payload, action.meta);
       const { chatId, contacts } = action.payload;
       const { userId: thisUserId } = action.meta;
-      if (contacts.map(contact => contact.contactId).includes(parseInt(thisUserId))) return state;
+      if (contacts.map(contact => contact.contactId).includes(thisUserId)) return state;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (!chat) return state;
@@ -412,7 +414,7 @@ export default function reducer(state = {
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (!chat) return state;
-      toast.success(`${guest.guestId} has joined Group ${chat.title}!`);
+      toast.success(`Guest #${guest.guestId} has joined Group ${chat.title}!`);
       if (!chat.guests.includes(guest.guestId)) chat.guests.push(guest.guestId);
       sendGroupKeys(chatId, thisUserId, [guest], chat.privateKey, state.privateKey);
       return {
@@ -423,11 +425,12 @@ export default function reducer(state = {
 
     case "ON_GUEST_LEFT": {
       logger.log('CHAT', `Redux -> Guest Left Group: `, action.payload, action.meta);
-      const { chatId, guest } = action.payload;
+      const { chatId, guestId } = action.payload;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (!chat) return state;
-      chat.guests = chat.guests.filter(guestId => guestId !== guest.id);
+      toast.success(`Guest #${guestId} has left Group ${chat.title}!`);
+      chat.guests = chat.guests.filter(guestId => guestId !== guestId);
       return {
         ...state,
         chats,

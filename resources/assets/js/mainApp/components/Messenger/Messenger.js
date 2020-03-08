@@ -44,7 +44,7 @@ class Messenger extends React.PureComponent {
   }
 
   componentDidMount() {
-    monitorChats(this.props.userId);
+    monitorChats(this.props.userId, false);
     if (window.location.href.includes('/link')) this.fetchLink();
   }
 

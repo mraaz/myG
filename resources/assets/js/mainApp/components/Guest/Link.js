@@ -1,9 +1,9 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { registerGuestAction } from '../../../redux/actions/guestAction';
+import { registerGuestAction, sendMessageAction } from '../../../redux/actions/guestAction';
 import { logoutAction } from '../../../redux/actions/userAction';
-import { fetchLink } from "../../../integration/http/chat";
+import { fetchLink } from "../../../integration/http/guest";
 import { monitorChats, closeSubscription } from '../../../integration/ws/chat';
 import { toast } from 'react-toastify';
 import Chat from '../Messenger/Chat';
@@ -31,7 +31,7 @@ class GuestLink extends React.PureComponent {
 
   componentDidUpdate() {
     if (!this.props.guestId || this.state.loaded) return;
-    monitorChats(this.props.guestId);
+    monitorChats(this.props.guestId, true);
     this.setState({ loaded: true });
   }
 
@@ -45,6 +45,8 @@ class GuestLink extends React.PureComponent {
             key={chatId}
             userId={guestId}
             chatId={chatId}
+            isGuest={true}
+            sendGuestMessage={this.props.sendMessage}
           />
         </div>
       </div>
@@ -75,6 +77,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return ({
     registerGuest: (chatId) => dispatch(registerGuestAction(chatId)),
+    sendMessage: (chatId, userId, content) => dispatch(sendMessageAction(chatId, userId, content)),
     logout: () => dispatch(logoutAction()),
   });
 }

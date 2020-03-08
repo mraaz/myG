@@ -84,6 +84,7 @@ class Chat extends React.PureComponent {
 
   sendMessage = (input) => {
     if (!input) return;
+    if (this.props.isGuest) return this.props.sendGuestMessage(this.props.chatId, this.props.userId, this.encryptInput(input))
     this.props.sendMessage(this.props.chatId, this.props.userId, this.props.alias, this.encryptInput(input));
   }
 
@@ -211,6 +212,7 @@ class Chat extends React.PureComponent {
           onEdit={this.onEdit}
           editMessage={this.editMessage}
           decryptMessage={this.decryptMessage}
+          isGroup={this.props.isGroup}
         />
         {this.renderTypingIndicator()}
         {this.renderReadIndicators(lastMessageId, lastMessageSender)}
@@ -393,7 +395,7 @@ function mapDispatchToProps(dispatch) {
   return ({
     prepareChat: (chatId, contactId, contactIds, userId) => dispatch(prepareChatAction(chatId, contactId, contactIds, userId)),
     fetchMessages: (chatId, page) => dispatch(fetchMessagesAction(chatId, page)),
-    sendMessage: (chatId, userId, content, alias) => dispatch(sendMessageAction(chatId, userId, content, alias)),
+    sendMessage: (chatId, userId, alias, content) => dispatch(sendMessageAction(chatId, userId, alias, content)),
     editMessage: (chatId, messageId, content) => dispatch(editMessageAction(chatId, messageId, content)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     updateChatState: (chatId, state) => dispatch(updateChatStateAction(chatId, state)),

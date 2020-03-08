@@ -37,27 +37,29 @@ export function closeSubscription() {
   subscription = null;
 }
 
-export function monitorChats(userId) {
+export function monitorChats(userId, isGuest) {
   currentUserId = userId;
   if (subscription !== null) return;
   logger.log('CHAT', `WS`, `Monitoring Chats for User ${userId}`);
-  subscription = socket.subscribe(`chat:${userId}`, event => {
-    logger.log('CHAT', 'WS', `New "${event.type}" Event Received`, event.data);
-    if (event.type === "chat:newChat") return store.dispatch(onNewChatAction(event.data, userId));
-    if (event.type === "chat:chatUpdated") return store.dispatch(onChatUpdatedAction(event.data, userId));
-    if (event.type === "chat:newMessage") return store.dispatch(onNewMessageAction(event.data, userId));
-    if (event.type === "chat:updateMessage") return store.dispatch(onUpdateMessageAction(event.data, userId));
-    if (event.type === "chat:deleteMessages") return store.dispatch(onDeleteMessagesAction(event.data, userId));
-    if (event.type === "chat:deleteChat") return store.dispatch(onDeleteChatAction(event.data, userId));
-    if (event.type === "chat:typing") return store.dispatch(onTypingAction(event.data, userId));
-    if (event.type === "chat:userJoined") return store.dispatch(onUserJoinedGroupAction(event.data, userId));
-    if (event.type === "chat:userLeft") return store.dispatch(onUserLeftGroupAction(event.data, userId));
-    if (event.type === "chat:guestJoined") return store.dispatch(onGuestJoinedGroupAction(event.data, userId));
-    if (event.type === "chat:guestLeft") return store.dispatch(onGuestLeftGroupAction(event.data, userId));
-    if (event.type === "chat:markAsRead") return store.dispatch(onMarkAsReadAction(event.data, userId));
-    if (event.type === "chat:selfDestruct") return store.dispatch(onSelfDestructAction(event.data, userId));
-    if (event.type === "chat:encryption") return store.dispatch(onPublicKeyUpdatedAction(event.data, userId));
-    if (event.type === "chat:status") return store.dispatch(onStatusChangedAction(event.data, userId));
-  });
+  const subscriptionKey = `chat:${userId}${isGuest ? ':guest' : ''}`;
+  subscription = socket.subscribe(subscriptionKey, event => handleEvent(event, userId));
 }
 
+function handleEvent(event, userId) {
+  logger.log('CHAT', 'WS', `New "${event.type}" Event Received`, event.data);
+  if (event.type === "chat:newChat") return store.dispatch(onNewChatAction(event.data, userId));
+  if (event.type === "chat:chatUpdated") return store.dispatch(onChatUpdatedAction(event.data, userId));
+  if (event.type === "chat:newMessage") return store.dispatch(onNewMessageAction(event.data, userId));
+  if (event.type === "chat:updateMessage") return store.dispatch(onUpdateMessageAction(event.data, userId));
+  if (event.type === "chat:deleteMessages") return store.dispatch(onDeleteMessagesAction(event.data, userId));
+  if (event.type === "chat:deleteChat") return store.dispatch(onDeleteChatAction(event.data, userId));
+  if (event.type === "chat:typing") return store.dispatch(onTypingAction(event.data, userId));
+  if (event.type === "chat:userJoined") return store.dispatch(onUserJoinedGroupAction(event.data, userId));
+  if (event.type === "chat:userLeft") return store.dispatch(onUserLeftGroupAction(event.data, userId));
+  if (event.type === "chat:guestJoined") return store.dispatch(onGuestJoinedGroupAction(event.data, userId));
+  if (event.type === "chat:guestLeft") return store.dispatch(onGuestLeftGroupAction(event.data, userId));
+  if (event.type === "chat:markAsRead") return store.dispatch(onMarkAsReadAction(event.data, userId));
+  if (event.type === "chat:selfDestruct") return store.dispatch(onSelfDestructAction(event.data, userId));
+  if (event.type === "chat:encryption") return store.dispatch(onPublicKeyUpdatedAction(event.data, userId));
+  if (event.type === "chat:status") return store.dispatch(onStatusChangedAction(event.data, userId));
+}

@@ -71,7 +71,7 @@ class UserRepository {
     if (forceStatus) changes.last_status = requestedStatus;
     if (requestedStatus === 'offline') changes.last_seen = new Date();
     await User.query().where('id', '=', requestingUserId).update(changes);
-    ChatRepository._notifyChatEvent({ contactId: requestingUserId, action: 'status', payload: { contactId: requestingUserId, status: requestedStatus, lastSeen: changes.last_seen } })
+    ChatRepository._notifyChatEvent({ contactId: requestingUserId, action: 'status', payload: { contactId: requestingUserId, status: requestedStatus, lastSeen: changes.last_seen } });
     return { status: new StatusSchema({ value: requestedStatus, locked: shouldLockStatus }) };
   }
 

@@ -13,7 +13,7 @@ export default function reducer(state = {
 
     case "REGISTER_GUEST_FULFILLED": {
       logger.log('GUEST', `Redux -> Guest Registered: `, action.payload, action.meta);
-      const { guestId, chat, chat: { chatId } } = action.payload;
+      const { guest: { guestId }, chat, chat: { chatId } } = action.payload;
       const { publicKey, privateKey } = action.meta;
       return {
         ...state,
