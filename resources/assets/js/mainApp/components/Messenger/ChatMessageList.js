@@ -15,6 +15,7 @@ export default class ChatMessageList extends React.PureComponent {
         editing={this.props.editing === message.messageId}
         onEdit={this.props.onEdit}
         editMessage={this.props.editMessage}
+        deleteMessage={this.props.deleteMessage}
       />
     );
   }

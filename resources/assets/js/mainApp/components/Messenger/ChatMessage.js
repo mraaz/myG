@@ -1,11 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
-import { deleteMessageAction } from '../../../redux/actions/chatAction';
 import { formatAMPM, formatDate, convertUTCDateToLocalDate } from '../../../common/date';
 import { copyToClipboard } from '../../../common/clipboard';
 
-class ChatMessage extends React.Component {
+export default class ChatMessage extends React.Component {
 
   constructor(props) {
     super(props);
@@ -175,17 +173,3 @@ class ChatMessage extends React.Component {
     );
   }
 }
-
-function mapStateToProps(state, props) {
-  return {
-
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return ({
-    deleteMessage: (chatId, messageId, origin) => dispatch(deleteMessageAction(chatId, messageId, origin)),
-  });
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ChatMessage);

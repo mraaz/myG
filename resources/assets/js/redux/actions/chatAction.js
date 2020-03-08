@@ -135,12 +135,12 @@ export function prepareMessengerAction(pin, privateKey, publicKey) {
   }
 }
 
-export function prepareChatAction(chatId, contactId, fetchContacts, userId) {
+export function prepareChatAction(chatId, contactId, isGroup, userId) {
   const chatRequest = fetchChat(chatId);
   const messagesRequest = fetchMessages(chatId);
   const linksRequest = fetchLinks(chatId);
   const contactRequest = contactId ? fetchContact(contactId) : Promise.resolve({});
-  const contactsRequest = fetchContacts ? fetchChatContacts(chatId) : Promise.resolve({});
+  const contactsRequest = isGroup ? fetchChatContacts(chatId) : Promise.resolve({});
   const requests = [chatRequest, messagesRequest, linksRequest, contactRequest, contactsRequest];
   return {
     type: 'PREPARE_CHAT',

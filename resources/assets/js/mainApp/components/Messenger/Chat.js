@@ -1,16 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import ChatMessage from './ChatMessage';
+import ChatMessageList from './ChatMessageList';
 import ChatInput from './ChatInput';
 import ChatOptions from './ChatOptions';
 import GroupOptions from './GroupOptions';
 
-import { prepareChatAction, fetchMessagesAction, sendMessageAction, editMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction, setTypingAction } from '../../../redux/actions/chatAction';
+import { prepareChatAction, fetchMessagesAction, sendMessageAction, editMessageAction, deleteMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction, setTypingAction } from '../../../redux/actions/chatAction';
 import { enrichMessagesWithDates } from '../../../common/chat';
 import { encryptMessage, decryptMessage, deserializeKey } from '../../../integration/encryption';
 import { formatDateTime } from '../../../common/date';
-import ChatMessageList from './ChatMessageList';
 
 class Chat extends React.PureComponent {
 
@@ -211,6 +210,7 @@ class Chat extends React.PureComponent {
           editing={this.state.editing}
           onEdit={this.onEdit}
           editMessage={this.editMessage}
+          deleteMessage={this.props.deleteMessage}
           decryptMessage={this.decryptMessage}
           isGroup={this.props.isGroup}
         />
@@ -263,26 +263,6 @@ class Chat extends React.PureComponent {
           <div className="dot-flashing" />
         </div>
       </div>
-    );
-  }
-
-  renderMessage = (message) => {
-    const contact = (this.props.contactsMap[message.senderId] || {});
-    const isGuest = `${message.senderId}`.includes('Guest');
-    const senderName = isGuest ? message.senderId : contact.name;
-    return (
-      <ChatMessage
-        key={message.messageId}
-        message={this.decryptMessage(message)}
-        userId={this.props.userId}
-        chatId={this.props.chatId}
-        senderName={senderName}
-        messageId={message.messageId}
-        messageListRef={this.messageListRef}
-        editing={this.state.editing === message.messageId}
-        onEdit={this.onEdit}
-        editMessage={this.editMessage}
-      />
     );
   }
 
@@ -367,7 +347,6 @@ function mapStateToProps(state, props) {
     noMoreMessages: chat.noMoreMessages,
     contacts: fullContacts,
     contactId,
-    contactIds: contacts,
     contactsMap,
     isGroup,
     group: chat,
@@ -393,10 +372,11 @@ function mapStateToProps(state, props) {
 
 function mapDispatchToProps(dispatch) {
   return ({
-    prepareChat: (chatId, contactId, contactIds, userId) => dispatch(prepareChatAction(chatId, contactId, contactIds, userId)),
+    prepareChat: (chatId, contactId, isGroup, userId) => dispatch(prepareChatAction(chatId, contactId, isGroup, userId)),
     fetchMessages: (chatId, page) => dispatch(fetchMessagesAction(chatId, page)),
     sendMessage: (chatId, userId, alias, content) => dispatch(sendMessageAction(chatId, userId, alias, content)),
     editMessage: (chatId, messageId, content) => dispatch(editMessageAction(chatId, messageId, content)),
+    deleteMessage: (chatId, messageId, origin) => dispatch(deleteMessageAction(chatId, messageId, origin)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     updateChatState: (chatId, state) => dispatch(updateChatStateAction(chatId, state)),
     checkSelfDestruct: (chatId) => dispatch(checkSelfDestructAction(chatId)),
