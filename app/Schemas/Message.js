@@ -8,6 +8,7 @@ class Message {
     this.chatId = forceInt(data.chatId);
     this.senderId = forceInt(data.senderId);
     this.keyReceiver = forceInt(data.keyReceiver);
+    this.senderName = forceString(data.senderName);
     this.content = forceString(data.content);
     this.backup = forceString(data.backup);
     this.deleted = forceBoolean(data.deleted);

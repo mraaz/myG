@@ -47,7 +47,7 @@ class ChatMessage extends React.Component {
 
   renderOptions = () => {
     if (!this.state.showOptionsMenu || this.props.message.deleted) return;
-    const origin = parseInt(this.props.message.senderId) === this.props.userId ? 'sent' : 'received';
+    const origin = this.props.message.senderId === this.props.userId ? 'sent' : 'received';
     const sentStyle = 'chat-component-message-options-menu-sent';
     const receivedStyle = 'chat-component-message-options-menu-received';
     const directionStyle = `chat-component-message-options-menu-${this.shouldRenderOptionsUpwards() ? 'upwards' : 'downwards'}`;
@@ -113,7 +113,7 @@ class ChatMessage extends React.Component {
 
   render() {
     const { message } = this.props;
-    const origin = parseInt(message.senderId) === this.props.userId ? 'sent' : 'received';
+    const origin = message.senderId === this.props.userId ? 'sent' : 'received';
     const deletedStyle = message.deleted && 'chat-component-message-deleted';
     const selfDestructStyle = message.selfDestruct && 'chat-component-message-self-destruct';
     if (this.state.editing) return this.renderInput();

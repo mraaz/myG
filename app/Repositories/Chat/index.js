@@ -56,7 +56,8 @@ class ChatRepository {
   }
 
   async fetchChat({ requestingUserId, requestedChatId }) {
-    const chat = (await Database
+    const guestChatRequest = !requestingUserId && Chat.find(requestedChatId);
+    const userChatRequest = requestingUserId && Database
       .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.blocked_users', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', ' chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
@@ -64,12 +65,15 @@ class ChatRepository {
       .leftJoin('chat_last_cleareds', function () { this.on('chat_last_cleareds.chat_id', 'user_chats.chat_id').andOn('chat_last_cleareds.user_id', 'user_chats.user_id') })
       .where('user_chats.user_id', requestingUserId)
       .andWhere('user_chats.chat_id', requestedChatId)
-      .first());
-    const lastReadsRaw = (await ChatLastRead.query().where('user_id', '!=', requestingUserId).andWhere('chat_id', requestedChatId).fetch()).toJSON();
+      .first();
+    const chat = requestingUserId ? await userChatRequest : (await guestChatRequest).toJSON();
     const lastReadsObject = {};
-    lastReadsRaw.forEach(lastRead => lastReadsObject[lastRead.user_id] = lastRead.last_read_message_id);
+    if (requestingUserId) {
+      const lastReadsRaw = (await ChatLastRead.query().where('user_id', '!=', requestingUserId).andWhere('chat_id', requestedChatId).fetch()).toJSON();
+      lastReadsRaw.forEach(lastRead => lastReadsObject[lastRead.user_id] = lastRead.last_read_message_id);
+    }
     const chatSchema = new ChatSchema({
-      chatId: chat.chat_id,
+      chatId: chat.chat_id || chat.id,
       muted: chat.muted,
       blocked: chat.blocked,
       blockedUsers: chat.blocked_users,
@@ -105,6 +109,7 @@ class ChatRepository {
       chatId: message.chat_id,
       senderId: message.sender_id,
       keyReceiver: message.key_receiver,
+      senderName: message.sender_name,
       content: message.content,
       backup: message.backup,
       deleted: message.deleted,
@@ -236,7 +241,7 @@ class ChatRepository {
     const chat = (await Chat.query().where('id', requestedChatId).first()).toJSON();
     const contactIds = JSON.parse(chat.contacts || '[]');
     if (!Array.isArray(contactIds)) return { contacts: [] };
-    const contactsQuery = contactIds.filter(contactId => parseInt(contactId) !== parseInt(requestingUserId));
+    const contactsQuery = contactIds.filter(contactId => contactId !== requestingUserId);
     const rawContacts = (await Database
       .from('users')
       .where('id', 'in', contactsQuery)
@@ -306,11 +311,12 @@ class ChatRepository {
     return { contacts: fullContacts };
   }
 
-  async sendMessage({ requestingUserId, requestedChatId, backup, content, keyReceiver }) {
+  async sendMessage({ requestingUserId, requestedChatId, senderName, backup, content, keyReceiver }) {
     const { chat } = await this.fetchChat({ requestingUserId, requestedChatId });
     const messageData = {
       sender_id: requestingUserId,
       key_receiver: keyReceiver,
+      sender_name: senderName,
       backup: backup,
       content: content,
       self_destruct: chat.selfDestruct,
@@ -321,6 +327,7 @@ class ChatRepository {
       chatId: requestedChatId,
       senderId: requestingUserId,
       keyReceiver: message.key_receiver,
+      senderName: message.sender_name,
       content: message.content,
       backup: message.backup,
       deleted: message.deleted,
@@ -344,6 +351,7 @@ class ChatRepository {
       messageId: message.id,
       chatId: requestedChatId,
       senderId: requestingUserId,
+      senderName: message.sender_name,
       content: message.content,
       backup: message.backup,
       deleted: message.deleted,
@@ -367,6 +375,7 @@ class ChatRepository {
       messageId: message.id,
       chatId: requestedChatId,
       senderId: message.sender_id,
+      senderName: message.sender_name,
       content: message.content,
       backup: message.backup,
       deleted: message.deleted,
@@ -533,7 +542,9 @@ class ChatRepository {
     if (chatId) {
       const chat = (await Chat.find(chatId)).toJSON();
       const contacts = JSON.parse(chat.contacts);
+      const guests = JSON.parse(chat.guests);
       contacts.forEach(contactId => broadcast('chat:*', `chat:${contactId}`, `chat:${action}`, payload));
+      guests.forEach(guestId => broadcast('chat:*', `chat:${guestId}`, `chat:${action}`, payload));
       return;
     }
     if (contactId) {

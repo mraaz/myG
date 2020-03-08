@@ -84,7 +84,7 @@ class Chat extends React.PureComponent {
 
   sendMessage = (input) => {
     if (!input) return;
-    this.props.sendMessage(this.props.chatId, this.props.userId, this.encryptInput(input));
+    this.props.sendMessage(this.props.chatId, this.props.userId, this.props.alias, this.encryptInput(input));
   }
 
   editMessage = (chatId, messageId, input) => {
@@ -98,7 +98,7 @@ class Chat extends React.PureComponent {
   }
 
   decryptMessage = (message) => {
-    const isSent = parseInt(message.senderId) === parseInt(this.props.userId);
+    const isSent = message.senderId == this.props.userId;
     const encryptedContent = isSent ? message.backup : message.content;
     const privateKey = isSent ? this.props.userPrivateKey : this.props.privateKey;
     const content = decryptMessage(encryptedContent, privateKey);
@@ -106,7 +106,7 @@ class Chat extends React.PureComponent {
   }
 
   editLastMessage = () => {
-    const sentMessages = this.props.messages.filter(message => parseInt(message.senderId) === parseInt(this.props.userId) && !message.deleted);
+    const sentMessages = this.props.messages.filter(message =>  message.senderId == this.props.userId && !message.deleted);
     const lastSentMessage = sentMessages[sentMessages.length - 1];
     if (!lastSentMessage) return;
     this.setState({ editing: lastSentMessage.messageId });
@@ -229,7 +229,7 @@ class Chat extends React.PureComponent {
     const { contactsMap, lastReads } = this.props;
     const contacts = this.props.isGroup ? contactsMap : { [this.props.contactId]: { contactId: this.props.contactId, icon: this.props.icon } };
     const contactsWithRead = Object.keys(lastReads).map(contactId => ({ ...contacts[contactId], lastRead: lastReads[contactId] }));
-    const contactsThatRead = contactsWithRead.filter(contact => contact.contactId !== lastMessageSender && contact.lastRead >= lastMessageId);
+    const contactsThatRead = contactsWithRead.filter(contact => contact.contactId !== lastMessageSender && contact.lastRead >= lastMessageId && contact.icon);
     if (!contactsThatRead.length) return null;
     return (
       <div className="chat-component-read-indicator-container">
@@ -265,13 +265,16 @@ class Chat extends React.PureComponent {
   }
 
   renderMessage = (message) => {
+    const contact = (this.props.contactsMap[message.senderId] || {});
+    const isGuest = `${message.senderId}`.includes('Guest');
+    const senderName = isGuest ? message.senderId : contact.name;
     return (
       <ChatMessage
         key={message.messageId}
         message={this.decryptMessage(message)}
         userId={this.props.userId}
         chatId={this.props.chatId}
-        senderName={(this.props.contactsMap[message.senderId] || {}).name}
+        senderName={senderName}
         messageId={message.messageId}
         messageListRef={this.messageListRef}
         editing={this.state.editing === message.messageId}
@@ -339,7 +342,7 @@ class Chat extends React.PureComponent {
 }
 
 function mapStateToProps(state, props) {
-  const chat = state.chat.chats.find(chat => chat.chatId === props.chatId) || {};
+  const chat = state.chat.chats.find(chat => chat.chatId === props.chatId) || { contacts: [] };
   const messages = enrichMessagesWithDates(chat.messages || []);
   const contacts = chat.contacts.filter(contactId => contactId !== props.userId);
   const fullContacts = chat.fullContacts || [];
@@ -390,7 +393,7 @@ function mapDispatchToProps(dispatch) {
   return ({
     prepareChat: (chatId, contactId, contactIds, userId) => dispatch(prepareChatAction(chatId, contactId, contactIds, userId)),
     fetchMessages: (chatId, page) => dispatch(fetchMessagesAction(chatId, page)),
-    sendMessage: (chatId, userId, content) => dispatch(sendMessageAction(chatId, userId, content)),
+    sendMessage: (chatId, userId, content, alias) => dispatch(sendMessageAction(chatId, userId, content, alias)),
     editMessage: (chatId, messageId, content) => dispatch(editMessageAction(chatId, messageId, content)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     updateChatState: (chatId, state) => dispatch(updateChatStateAction(chatId, state)),

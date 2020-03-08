@@ -20,6 +20,6 @@ export function sendGroupKeys(chatId, userId, contacts, groupPrivateKey, userPri
   contacts.forEach(contact => {
     const { contactId, publicKey } = contact;
     const content = encryptMessage(serializedKey, publicKey, userPrivateKey);
-    sendMessage(chatId, userId, { content, backup: '' }, contactId);
+    sendMessage(chatId, userId, '', { content, backup: '' }, contactId);
   });
 }

@@ -57,9 +57,9 @@ export function addContactsToChat(userId, chatId, contacts, publicKey, privateKe
   return axios.put(`/api/chat/${chatId}/contacts`, { contacts }).then(response => sendGroupPrivateKey(userId, chatId, contacts, publicKey, privateKey, userPrivateKey).then(() => response.data));
 }
 
-export function inviteUserToGroup(userId, chatId, contacts, publicKey, privateKey, userPrivateKey) {
+export function inviteUserToGroup(userId, chatId, contactId, publicKey, privateKey, userPrivateKey) {
   logger.log('CHAT', 'HTTP', `Invite Users ${JSON.stringify(contacts)} To Group ${chatId}`);
-  return axios.put(`/api/notifications/inviteToGroup`, { userId: contacts[0], chatId }).then(response => sendGroupPrivateKey(userId, chatId, contacts, publicKey, privateKey, userPrivateKey).then(() => response.data));
+  return axios.put(`/api/notifications/inviteToGroup`, { userId: contactId, chatId }).then(response => sendGroupPrivateKey(userId, chatId, contacts, publicKey, privateKey, userPrivateKey).then(() => response.data));
 }
 
 export function fetchMessages(chatId, page) {
@@ -67,9 +67,9 @@ export function fetchMessages(chatId, page) {
   return axios.get(`/api/chat/${chatId}/message?page=${page || 1}`).then(response => response.data);
 }
 
-export function sendMessage(chatId, userId, encryptedContent, keyReceiver) {
+export function sendMessage(chatId, userId, senderName, encryptedContent, keyReceiver) {
   logger.log('CHAT', 'HTTP', `Sending Message from User ${userId} to Chat ${chatId}`);
-  return axios.post(`/api/chat/${chatId}/message/`, { encryptedContent, keyReceiver }).then(response => response.data);
+  return axios.post(`/api/chat/${chatId}/message/`, { encryptedContent, keyReceiver, senderName }).then(response => response.data);
 }
 
 export function editMessage(chatId, messageId, encryptedContent, reEncrypting) {
@@ -107,7 +107,7 @@ function sendGroupPrivateKey(userId, chatId, contacts, publicKey, privateKey, us
   const serializedKey = JSON.stringify(privateKey);
   contacts.forEach(contactId => {
     const content = encryptMessage(serializedKey, publicKey, userPrivateKey);
-    sendMessage(chatId, userId, { content, backup: '' }, contactId);
+    sendMessage(chatId, userId, '', { content, backup: '' }, contactId);
   });
   return Promise.resolve();
 }

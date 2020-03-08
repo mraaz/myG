@@ -48,7 +48,9 @@ export default function reducer(state = {
       logger.log('CHAT', `Redux -> Chat ${action.meta.chatId} Ready (Chat): `, action.payload, action.meta);
       const { chatId } = action.meta;
       const chats = JSON.parse(JSON.stringify(state.chats));
-      const chat = chats.find(candidate => candidate.chatId === chatId);
+      const existingChat = chats.find(candidate => candidate.chatId === chatId);
+      const chat = existingChat || action.payload.chat;
+      if (!existingChat) chats.push(chat);
       chat.fullContacts = action.payload.contacts;
       chat.links = action.payload.links;
       chat.noMoreMessages = false;
@@ -174,7 +176,7 @@ export default function reducer(state = {
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (chat.blocked) return state;
       if (chat.blockedUsers.includes(message.senderId)) return state;
-      if (!chat.muted && !window.focused && parseInt(message.senderId) !== parseInt(userId)) playMessageSound();
+      if (!chat.muted && !window.focused && message.senderId !== userId) playMessageSound();
       if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
       if (!chat.muted) {
         chat.closed = false;
@@ -410,9 +412,9 @@ export default function reducer(state = {
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (!chat) return state;
-      toast.success(`${guest.id} has joined Group ${chat.title}!`);
-      if (!chat.guests.includes(guest.id)) chat.guests.push(guest.id);
-      sendGroupKeys(chatId, thisUserId, [guest.id], chat.privateKey, state.privateKey);
+      toast.success(`${guest.guestId} has joined Group ${chat.title}!`);
+      if (!chat.guests.includes(guest.guestId)) chat.guests.push(guest.guestId);
+      sendGroupKeys(chatId, thisUserId, [guest], chat.privateKey, state.privateKey);
       return {
         ...state,
         chats,
@@ -507,6 +509,16 @@ export default function reducer(state = {
       };
     }
 
+    case "REGISTER_GUEST_FULFILLED": {
+      logger.log('GUEST', `Redux -> Guest Registered (Chat): `, action.payload, action.meta);
+      const { publicKey, privateKey } = action.meta;
+      return {
+        ...state,
+        publicKey,
+        privateKey,
+      };
+    }
+
     case "GENERATE_KEYS_FULFILLED": {
       return {
         ...state,
@@ -547,7 +559,7 @@ function prepareGroupKeysToSend(group, userId, userContacts, userPublicKey, user
 
 function receiveGroupKey(group, messages, userId, userPrivateKey) {
   if (group.contacts.length <= 2) return;
-  const message = messages.find(message => parseInt(message.keyReceiver) === parseInt(userId));
+  const message = messages.find(message => message.keyReceiver === userId);
   if (!message || !message.content) return;
   const privateKey = decryptMessage(message.content, userPrivateKey);
   if (!privateKey) return;

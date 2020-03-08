@@ -242,10 +242,10 @@ export function fetchMessagesAction(chatId, page) {
   }
 }
 
-export function sendMessageAction(chatId, userId, encrypted) {
+export function sendMessageAction(chatId, userId, alias, encrypted) {
   return {
     type: 'SEND_MESSAGE',
-    payload: sendMessage(chatId, userId, encrypted),
+    payload: sendMessage(chatId, userId, alias, encrypted),
     meta: { chatId },
   }
 }
@@ -282,10 +282,10 @@ export function addContactsToChatAction(userId, chatId, contacts, publicKey, pri
   }
 }
 
-export function inviteUserToGroupAction(userId, chatId, contacts, publicKey, privateKey, userPrivateKey) {
+export function inviteUserToGroupAction(userId, chatId, contactId, publicKey, privateKey, userPrivateKey) {
   return {
     type: 'INVITE_USER_TO_GROUP',
-    payload: inviteUserToGroup(userId, chatId, contacts, publicKey, privateKey, userPrivateKey),
+    payload: inviteUserToGroup(userId, chatId, contactId, publicKey, privateKey, userPrivateKey),
     meta: { userId, chatId },
   }
 }

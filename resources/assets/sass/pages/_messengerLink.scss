@@ -1,8 +1,15 @@
-.messenger-link-guest-container {
+#guest-container {
   display: flex;
   width: 100vw;
   height: 100vh;
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
+
+
+  .messenger-container {
+    background-color: transparent !important;
+    border-left: none !important;
+  }
+
 }

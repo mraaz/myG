@@ -69,7 +69,7 @@ class GroupMemberOptions extends React.PureComponent {
     const contact = this.props.foundUsers.find(contact => contact.name === this.state.inviteInput);
     const isFriend = this.props.contacts.find(friend => friend.contactId === contact.contactId);
     if (isFriend) this.props.addContactsToChat(this.props.userId, this.props.group.chatId, [contact.contactId], contact.publicKey, this.props.group.privateKey, this.props.userPrivateKey);
-    else this.props.inviteUserToGroup(this.props.userId, this.props.group.chatId, [contact.contactId], contact.publicKey, this.props.group.privateKey, this.props.userPrivateKey);
+    else this.props.inviteUserToGroup(this.props.userId, this.props.group.chatId, contact.contactId, contact.publicKey, this.props.group.privateKey, this.props.userPrivateKey);
     this.setState({ inviteInput: '', validInvite: false });
   }
 
@@ -261,7 +261,7 @@ function mapDispatchToProps(dispatch) {
     fetchFriendRequests: () => dispatch(fetchFriendRequestsAction()),
     addAsFriend: (friendId) => dispatch(addAsFriendAction(friendId)),
     addContactsToChat: (userId, chatId, contacts, publicKey, privateKey, userPrivateKey) => dispatch(addContactsToChatAction(userId, chatId, contacts, publicKey, privateKey, userPrivateKey)),
-    inviteUserToGroup: (userId, chatId, contacts, publicKey, privateKey, userPrivateKey) => dispatch(inviteUserToGroupAction(userId, chatId, contacts, publicKey, privateKey, userPrivateKey)),
+    inviteUserToGroup: (userId, chatId, contactId, publicKey, privateKey, userPrivateKey) => dispatch(inviteUserToGroupAction(userId, chatId, contactId, publicKey, privateKey, userPrivateKey)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
     removeFromGroup: (chatId, userId) => dispatch(removeFromGroupAction(chatId, userId)),

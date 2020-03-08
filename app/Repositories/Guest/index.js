@@ -5,7 +5,6 @@ const ChatRepository = require('../Chat');
 const GuestSchema = require('../../Schemas/Guest');
 const DefaultSchema = require('../../Schemas/Default');
 
-const extractGuestId = guestId => parseInt(guestId.replace('Guest #', ''));
 const MAXIMUM_GROUP_SIZE = 37;
 
 class GuestRepository {
@@ -13,16 +12,18 @@ class GuestRepository {
   async register({ requestedChatId, publicKey }) {
     const guestEntry = new Guest();
     guestEntry.public_key = publicKey;
+    guestEntry.chat_id = requestedChatId;
     await guestEntry.save();
     const guest = new GuestSchema({ publicKey, guestId: guestEntry.id });
     const requestingGuestId = guest.guestId;
     const { chat } = await this.addGuestToChat({ requestingGuestId, requestedChatId, publicKey });
-    return { guestId: requestingGuestId, chat };
+    return { guest, chat };
   }
 
-  async unregister({ requestingGuestId, requestedChatId }) {
-    const chat = await this.removeGuestFromChat({ requestingGuestId, requestedChatId });
-    await Guest.find(extractGuestId(requestingGuestId)).delete();
+  async unregister({ requestingGuestId }) {
+    const guest = await Guest.find(requestingGuestId);
+    const chat = await this.removeGuestFromChat({ requestingGuestId, requestedChatId: guest.chat_id });
+    await guest.delete();
     return new DefaultSchema({ success: true, chat });
   }
 

@@ -70,7 +70,7 @@ class Messenger extends React.PureComponent {
   }
 
   decryptMessage = (message, userPrivateKey, chatPrivateKey) => {
-    const isSent = parseInt(message.senderId) === parseInt(this.props.userId);
+    const isSent = message.senderId === this.props.userId;
     const content = decryptMessage(
       isSent ? message.backup : message.content,
       isSent ? userPrivateKey : deserializeKey(chatPrivateKey)
@@ -511,6 +511,7 @@ class Messenger extends React.PureComponent {
       <Chat
         key={chat.chatId}
         userId={this.props.userId}
+        alias={this.props.alias}
         chatId={chat.chatId}
         onClose={chatId => this.closeChat(chatId)}
         windowFocused={this.state.windowFocused}
