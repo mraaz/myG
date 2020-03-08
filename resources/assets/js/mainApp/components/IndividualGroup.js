@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import IndividualPost from './IndividualPost'
+
+import GroupsProcessing from './GroupsProcessing'
 
 export default class IndividualGroup extends Component {
   constructor() {
@@ -23,26 +24,26 @@ export default class IndividualGroup extends Component {
   showLatestPosts = () => {
     if (this.state.myPosts != undefined) {
       return this.state.myPosts.map((item, index) => {
-        return <IndividualPost post={item} key={index} user={this.props.initialData} />
+        return <GroupsProcessing post={item} key={index} user={this.props.initialData} />
       })
     }
   }
 
-  fetchMoreData = () => {
-    var myCounter = this.state.counter
-    this.setState({
-      counter: this.state.counter + 1,
-    })
-    if (myCounter != 1) {
-      this.setState({
-        show_top_btn: true,
-      })
-    }
+  // showScheduledGamePost = async (item, index) => {
+  //   try {
+  //     const onescheduledGames = await axios.get(`/api/ScheduleGame/filtered_by_one/${item.schedule_games_id}`)
+  //     return <ScheduledGamePost schedule_game={onescheduledGames.data.latestScheduledGames[0]} key={index} user={this.props.initialData} />
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
 
+  fetchMoreData = () => {
     const self = this
+
     const getPosts = async function() {
       try {
-        const myPosts = await axios.get(`/api/get_group_posts/${self.props.groups_id.params.id}/${myCounter}`)
+        const myPosts = await axios.get(`/api/get_group_posts/${self.props.groups_id.params.id}/${self.state.counter}`)
 
         var i
         var myLikes
@@ -52,24 +53,6 @@ export default class IndividualGroup extends Component {
             moreplease: false,
           })
           return
-        }
-
-        for (i = 0; i < myPosts.data.groupPosts.data.length; i++) {
-          myLikes = await axios.get(`/api/likes/${myPosts.data.groupPosts.data[i].id}`)
-          myPosts.data.groupPosts.data[i].total = myLikes.data.number_of_likes[0].total
-          myPosts.data.groupPosts.data[i].no_of_comments = myLikes.data.no_of_comments[0].no_of_comments
-          if (myLikes.data.number_of_likes[0].total != 0) {
-            myPosts.data.groupPosts.data[i].admirer_first_name = myLikes.data.admirer_UserInfo.first_name
-            myPosts.data.groupPosts.data[i].admirer_last_name = myLikes.data.admirer_UserInfo.last_name
-          } else {
-            myPosts.data.groupPosts.data[i].admirer_first_name = ''
-            myPosts.data.groupPosts.data[i].admirer_last_name = ''
-          }
-          if (myLikes.data.do_I_like_it[0].myOpinion != 0) {
-            myPosts.data.groupPosts.data[i].do_I_like_it = true
-          } else {
-            myPosts.data.groupPosts.data[i].do_I_like_it = false
-          }
         }
 
         if (myPosts.data.groupPosts.data.length == 0) {
@@ -84,7 +67,22 @@ export default class IndividualGroup extends Component {
         console.log(error)
       }
     }
-    getPosts()
+
+    var myCounter = this.state.counter
+    this.setState(
+      {
+        counter: this.state.counter + 1,
+      },
+      () => {
+        getPosts()
+      }
+    )
+
+    if (myCounter != 1) {
+      this.setState({
+        show_top_btn: true,
+      })
+    }
   }
 
   render() {

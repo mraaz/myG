@@ -1,6 +1,7 @@
 'use strict'
 
 const Notification = use('App/Models/Notification')
+const Post = use('App/Models/Post')
 const Usergroup = use('App/Models/Usergroup')
 const Database = use('Database')
 
@@ -237,7 +238,7 @@ class NotificationController {
         return 'Saved item'
       } catch (error) {
         console.log(error)
-        return error;
+        return error
       }
     } else {
       return 'You are not Logged In!'
@@ -1118,6 +1119,68 @@ class NotificationController {
           activity_type: 10,
           schedule_games_id: request.params.schedule_games_id,
         })
+        return 'Saved item'
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async invitations({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        if (request.input('schedule_games_id') == '' || request.input('schedule_games_id') == null) {
+          return
+        }
+
+        var arrInvite_user = request.input('invitation_box').split(',')
+        var arrInvite_group = request.input('invitation_group_box').split(',')
+
+        if (arrInvite_user != '') {
+          for (var i = 0; i < arrInvite_user.length; i++) {
+            const findUser = await Database.table('users')
+              .where({
+                alias: arrInvite_user[i],
+              })
+              .select('id')
+
+            if (findUser.length == 0) {
+              return
+            }
+
+            const addScheduleGame = await Notification.create({
+              other_user_id: findUser[0].id,
+              user_id: auth.user.id,
+              activity_type: 10,
+              schedule_games_id: request.input('schedule_games_id'),
+            })
+          }
+        }
+
+        if (arrInvite_group != '') {
+          for (var i = 0; i < arrInvite_group.length; i++) {
+            const findGroup = await Database.table('groups')
+              .where({
+                name: arrInvite_group[i],
+              })
+              .select('id')
+
+            if (findGroup.length == 0) {
+              return
+            }
+
+            const newPost = await Post.create({
+              user_id: auth.user.id,
+              type: 'text',
+              group_id: findGroup[0].id,
+              schedule_games_id: request.input('schedule_games_id'),
+            })
+            console.log(newPost)
+          }
+        }
+
         return 'Saved item'
       } catch (error) {
         console.log(error)

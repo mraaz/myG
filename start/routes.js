@@ -204,6 +204,7 @@ Route.get('/api/notifications/delete_group/:id', 'NotificationController.delete_
 Route.get('/api/notifications/getunread_group/:id/:activity_type', 'NotificationController.getunread_group')
 Route.post('/api/notifications/addGameApproved', 'NotificationController.addGameApproved')
 Route.put('/api/notifications/inviteToGroup', 'NotificationController.inviteToGroup')
+Route.post('/api/notifications/invitations', 'NotificationController.invitations')
 
 Route.post('/api/friends/create', 'FriendController.store')
 Route.post('/api/friends/allmyFriends', 'FriendController.showallmyFriends')

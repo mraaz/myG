@@ -82,16 +82,25 @@ export default class AddScheduleGames_Headers extends Component {
     }
   }
 
-  submitInvitation = () => {
+  submitInvitation = async () => {
     if (this.state.invitation_group_box.length == 0 && this.state.invitation_box.length == 0) {
       return
     }
+    //const { match } = this.props.routeProps
     var invitation_group_box, invitation_box
 
     invitation_group_box = Convert_to_comma_delimited_value(this.state.invitation_group_box)
     invitation_box = Convert_to_comma_delimited_value(this.state.invitation_box)
-    //Do axios for notifications for friends
-    //Do axios for posts to be created for communites
+
+    try {
+      const sendInvitationInfo = axios.post('/api/notifications/invitations', {
+        invitation_group_box: invitation_group_box,
+        invitation_box: invitation_box,
+        schedule_games_id: 120, //match.params.schedule_games_id
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   submitForm = (e) => {
