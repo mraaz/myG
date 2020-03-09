@@ -24,7 +24,7 @@ export default class GroupHeader extends Component {
     this.callbackFileModalClose = this.callbackFileModalClose.bind(this)
     this.callbackFileModalConfirm = this.callbackFileModalConfirm.bind(this)
   }
-  componentWillMount() {
+  componentDidMount() {
     const self = this
 
     const getGroupHeader = async function() {

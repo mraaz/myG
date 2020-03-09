@@ -19,16 +19,6 @@ export default class Invitation extends Component {
   }
 
   fetchMoreData = () => {
-    var myCounter = this.state.counter
-    this.setState({
-      counter: this.state.counter + 1,
-    })
-    if (myCounter != 1) {
-      this.setState({
-        show_top_btn: true,
-      })
-    }
-
     const self = this
 
     const getFriendnoti = async function() {
@@ -49,7 +39,22 @@ export default class Invitation extends Component {
         console.log(error)
       }
     }
-    getFriendnoti()
+
+    var myCounter = this.state.counter
+    this.setState(
+      {
+        counter: this.state.counter + 1,
+      },
+      () => {
+        getFriendnoti()
+      }
+    )
+
+    if (myCounter != 1) {
+      this.setState({
+        show_top_btn: true,
+      })
+    }
   }
 
   showInvitations = () => {

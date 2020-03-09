@@ -445,12 +445,12 @@ section#content-container {
       .grey-container {
         z-index: 1;
         position: relative;
-        top: -50px;
+        //top: -50px;
         padding: 50px 20px;
         background: $backgroundContent;
-        -webkit-box-shadow: 0 21px 48px -21px rgba(59, 71, 99, 0.5);
-        -moz-box-shadow: 0 21px 48px -21px rgba(59, 71, 99, 0.5);
-        box-shadow: 0 21px 48px -21px rgba(59, 71, 99, 0.5);
+        // -webkit-box-shadow: 0 21px 48px -21px rgba(59, 71, 99, 0.5);
+        // -moz-box-shadow: 0 21px 48px -21px rgba(59, 71, 99, 0.5);
+        // box-shadow: 0 21px 48px -21px rgba(59, 71, 99, 0.5);
         margin-bottom: 1rem;
         border-radius: 10px;
 

@@ -1,6 +1,7 @@
 'use strict'
 
 const Notification = use('App/Models/Notification')
+const Post = use('App/Models/Post')
 const Usergroup = use('App/Models/Usergroup')
 const Database = use('Database')
 
@@ -237,7 +238,7 @@ class NotificationController {
         return 'Saved item'
       } catch (error) {
         console.log(error)
-        return error;
+        return error
       }
     } else {
       return 'You are not Logged In!'
@@ -423,6 +424,7 @@ class NotificationController {
   }
 
   async getAllNotifications({ auth, request, response }) {
+    var set_limit = 10
     try {
       const allMylike_posts = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
@@ -438,9 +440,8 @@ class NotificationController {
           'users.id',
           'notifications.created_at'
         )
-        .orderBy('notifications.created_at')
-        .limit(10)
-        .offset(parseInt(request.input('counter'), 10))
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
       const allMylike_comments = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id, activity_type: 3 })
@@ -455,9 +456,8 @@ class NotificationController {
           'users.id',
           'notifications.created_at'
         )
-        .orderBy('notifications.created_at')
-        .limit(10)
-        .offset(parseInt(request.input('counter'), 10))
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
       const allMylike_replies = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id, activity_type: 4 })
@@ -472,9 +472,8 @@ class NotificationController {
           'users.id',
           'notifications.created_at'
         )
-        .orderBy('notifications.created_at')
-        .limit(10)
-        .offset(parseInt(request.input('counter'), 10))
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
       const allMycomments = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id, activity_type: 5 })
@@ -489,9 +488,8 @@ class NotificationController {
           'users.id',
           'notifications.created_at'
         )
-        .orderBy('notifications.created_at')
-        .limit(10)
-        .offset(parseInt(request.input('counter'), 10))
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
       const allMyreplies = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id, activity_type: 6 })
@@ -506,24 +504,22 @@ class NotificationController {
           'users.id',
           'notifications.created_at'
         )
-        .orderBy('notifications.created_at')
-        .limit(10)
-        .offset(parseInt(request.input('counter'), 10))
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
       const allMyschedulegames = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id, activity_type: 10 })
-        .groupBy('notifications.schedule_games_id')
         .select(
           'notifications.schedule_games_id',
           'notifications.activity_type',
           'users.alias',
           'users.profile_img',
           'users.id',
-          'notifications.created_at'
+          'notifications.created_at',
+          'notifications.read_status'
         )
-        .orderBy('notifications.created_at')
-        .limit(10)
-        .offset(parseInt(request.input('counter'), 10))
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
       const myschedulegames_attendees = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id, activity_type: 11 })
@@ -538,9 +534,8 @@ class NotificationController {
           'users.id',
           'notifications.created_at'
         )
-        .orderBy('notifications.created_at')
-        .limit(10)
-        .offset(parseInt(request.input('counter'), 10))
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
       const mygroups = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .innerJoin('groups', 'groups.id', 'notifications.group_id')
@@ -555,9 +550,8 @@ class NotificationController {
           'notifications.created_at',
           'groups.name'
         )
-        .orderBy('notifications.created_at')
-        .limit(10)
-        .offset(parseInt(request.input('counter'), 10))
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
       const myschedulegames_approvals = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id, activity_type: 14 })
@@ -572,9 +566,8 @@ class NotificationController {
           'users.id',
           'notifications.created_at'
         )
-        .orderBy('notifications.created_at')
-        .limit(10)
-        .offset(parseInt(request.input('counter'), 10))
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
       const allMyarchived_schedulegames = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id, activity_type: 15 })
@@ -589,9 +582,8 @@ class NotificationController {
           'users.id',
           'notifications.created_at'
         )
-        .orderBy('notifications.created_at')
-        .limit(10)
-        .offset(parseInt(request.input('counter'), 10))
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
       const dropped_out_attendees = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id, activity_type: 16 })
@@ -604,9 +596,8 @@ class NotificationController {
           'users.id',
           'notifications.created_at'
         )
-        .orderBy('notifications.created_at')
-        .limit(10)
-        .offset(parseInt(request.input('counter'), 10))
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
       const group_member_approved = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id, activity_type: 17 })
@@ -619,9 +610,8 @@ class NotificationController {
           'users.id',
           'notifications.created_at'
         )
-        .orderBy('notifications.created_at')
-        .limit(10)
-        .offset(parseInt(request.input('counter'), 10))
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
       const chat_group_invite = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id, activity_type: 18 })
@@ -635,24 +625,23 @@ class NotificationController {
           'users.id',
           'notifications.created_at'
         )
-        .orderBy('notifications.created_at')
-        .limit(10)
-        .offset(parseInt(request.input('counter'), 10))
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
 
       var singleArr = [
-        ...allMylike_posts,
-        ...allMylike_comments,
-        ...allMylike_replies,
-        ...allMycomments,
-        ...allMyreplies,
-        ...allMyschedulegames,
-        ...myschedulegames_attendees,
-        ...mygroups,
-        ...myschedulegames_approvals,
-        ...allMyarchived_schedulegames,
-        ...dropped_out_attendees,
-        ...group_member_approved,
-        ...chat_group_invite,
+        ...allMylike_posts.data,
+        ...allMylike_comments.data,
+        ...allMylike_replies.data,
+        ...allMycomments.data,
+        ...allMyreplies.data,
+        ...allMyschedulegames.data,
+        ...myschedulegames_attendees.data,
+        ...mygroups.data,
+        ...myschedulegames_approvals.data,
+        ...allMyarchived_schedulegames.data,
+        ...dropped_out_attendees.data,
+        ...group_member_approved.data,
+        ...chat_group_invite.data,
       ]
 
       if (singleArr.length == 0) {
@@ -672,7 +661,7 @@ class NotificationController {
         .where({ other_user_id: auth.user.id })
         .where({ post_id: request.params.id, activity_type: 2 })
         .select('notifications.post_id', 'notifications.activity_type', 'users.alias', 'users.profile_img', 'users.id')
-        .orderBy('notifications.created_at')
+        .orderBy('notifications.created_at', 'desc')
         .limit(3)
       const getAllNotiLike_postCount = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
@@ -702,7 +691,7 @@ class NotificationController {
         .where({ other_user_id: auth.user.id })
         .where({ post_id: request.params.id, activity_type: 3 })
         .select('notifications.post_id', 'notifications.activity_type', 'users.alias', 'users.profile_img', 'users.id')
-        .orderBy('notifications.created_at')
+        .orderBy('notifications.created_at', 'desc')
         .limit(3)
       const getAllNotiLike_commentCount = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
@@ -732,7 +721,7 @@ class NotificationController {
         .where({ other_user_id: auth.user.id })
         .where({ post_id: request.params.id, activity_type: 4 })
         .select('notifications.post_id', 'notifications.activity_type', 'users.alias', 'users.profile_img', 'users.id')
-        .orderBy('notifications.created_at')
+        .orderBy('notifications.created_at', 'desc')
         .limit(3)
       const getAllNotiLike_replyCount = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
@@ -762,7 +751,7 @@ class NotificationController {
         .where({ other_user_id: auth.user.id })
         .where({ post_id: request.params.id, activity_type: 5 })
         .select('notifications.post_id', 'notifications.activity_type', 'users.alias', 'users.profile_img', 'users.id')
-        .orderBy('notifications.created_at')
+        .orderBy('notifications.created_at', 'desc')
         .limit(3)
       const getAllNotiCommentCount = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
@@ -792,7 +781,7 @@ class NotificationController {
         .where({ other_user_id: auth.user.id })
         .where({ post_id: request.params.id, activity_type: 6 })
         .select('notifications.post_id', 'notifications.activity_type', 'users.alias', 'users.profile_img', 'users.id')
-        .orderBy('notifications.created_at')
+        .orderBy('notifications.created_at', 'desc')
         .limit(3)
       const getAllNotiReplyCount = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
@@ -824,7 +813,7 @@ class NotificationController {
           activity_type: 16,
         })
         .select('notifications.schedule_games_id', 'notifications.activity_type', 'users.alias', 'users.profile_img', 'users.id')
-        .orderBy('notifications.created_at')
+        .orderBy('notifications.created_at', 'desc')
         .limit(3)
       const getAllNotiScheduleGamesAttendeesCount = await Database.from('notifications')
         .where({
@@ -1118,6 +1107,68 @@ class NotificationController {
           activity_type: 10,
           schedule_games_id: request.params.schedule_games_id,
         })
+        return 'Saved item'
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async invitations({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        if (request.input('schedule_games_id') == '' || request.input('schedule_games_id') == null) {
+          return
+        }
+
+        var arrInvite_user = request.input('invitation_box').split(',')
+        var arrInvite_group = request.input('invitation_group_box').split(',')
+
+        if (arrInvite_user != '') {
+          for (var i = 0; i < arrInvite_user.length; i++) {
+            const findUser = await Database.table('users')
+              .where({
+                alias: arrInvite_user[i],
+              })
+              .select('id')
+
+            if (findUser.length == 0) {
+              return
+            }
+
+            const addScheduleGame = await Notification.create({
+              other_user_id: findUser[0].id,
+              user_id: auth.user.id,
+              activity_type: 10,
+              schedule_games_id: request.input('schedule_games_id'),
+            })
+          }
+        }
+
+        if (arrInvite_group != '') {
+          for (var i = 0; i < arrInvite_group.length; i++) {
+            const findGroup = await Database.table('groups')
+              .where({
+                name: arrInvite_group[i],
+              })
+              .select('id')
+
+            if (findGroup.length == 0) {
+              return
+            }
+
+            const newPost = await Post.create({
+              user_id: auth.user.id,
+              type: 'text',
+              group_id: findGroup[0].id,
+              schedule_games_id: request.input('schedule_games_id'),
+            })
+            console.log(newPost)
+          }
+        }
+
         return 'Saved item'
       } catch (error) {
         console.log(error)

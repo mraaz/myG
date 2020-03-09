@@ -8,13 +8,13 @@ export default class MyPosts extends Component {
   constructor() {
     super()
     this.state = {
-      counter: 1,
+      counter: 0,
       myPosts: [],
       moreplease: true,
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.fetchMoreData()
   }
 
@@ -27,20 +27,11 @@ export default class MyPosts extends Component {
   }
 
   fetchMoreData = () => {
-    var myCounter = this.state.counter
-    this.setState({
-      counter: this.state.counter + 1,
-    })
-    if (myCounter != 1) {
-      this.setState({
-        show_top_btn: true,
-      })
-    }
-
     const self = this
+
     const getPosts = async function() {
       try {
-        const myPosts = await axios.get(`/api/getmypost/${myCounter}`)
+        const myPosts = await axios.get(`/api/getmypost/${self.state.counter}`)
 
         if (myPosts.data.myPosts.data.length == 0) {
           self.setState({
@@ -56,7 +47,22 @@ export default class MyPosts extends Component {
         console.log(error)
       }
     }
-    getPosts()
+
+    var myCounter = this.state.counter
+    this.setState(
+      {
+        counter: this.state.counter + 1,
+      },
+      () => {
+        getPosts()
+      }
+    )
+
+    if (myCounter != 1) {
+      this.setState({
+        show_top_btn: true,
+      })
+    }
   }
 
   render() {

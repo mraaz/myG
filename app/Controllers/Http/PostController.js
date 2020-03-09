@@ -41,7 +41,6 @@ class PostController {
         .innerJoin('users', 'users.id', 'posts.user_id')
         .where('friends.user_id', '=', auth.user.id)
         .orderBy('posts.created_at', 'desc')
-        .limit(588)
         .paginate(request.params.paginateNo, 10)
 
       for (var i = 0; i < myPosts.data.length; i++) {
@@ -182,6 +181,7 @@ class PostController {
   }
 
   async get_group_posts({ auth, request, response }) {
+    let likeController = new LikeController()
     try {
       const groupPosts = await Database.from('posts')
         .innerJoin('users', 'users.id', 'posts.user_id')
@@ -189,6 +189,24 @@ class PostController {
         .select('*', 'posts.id', 'posts.updated_at')
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.paginateNo, 10)
+
+      for (var i = 0; i < groupPosts.data.length; i++) {
+        request.params.id = groupPosts.data[i].id
+        var myLikes = await likeController.show({ auth, request, response })
+
+        groupPosts.data[i].total = myLikes.number_of_likes[0].total
+        groupPosts.data[i].no_of_comments = myLikes.no_of_comments[0].no_of_comments
+        if (myLikes.number_of_likes[0].total != 0) {
+          groupPosts.data[i].admirer_first_name = myLikes.admirer_UserInfo.alias
+        } else {
+          groupPosts.data[i].admirer_first_name = ''
+        }
+        if (myLikes.do_I_like_it[0].myOpinion != 0) {
+          groupPosts.data[i].do_I_like_it = true
+        } else {
+          groupPosts.data[i].do_I_like_it = false
+        }
+      }
 
       return {
         groupPosts,

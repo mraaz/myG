@@ -247,14 +247,8 @@ export default class ScheduledGamePost_Default extends Component {
       case 1:
         this.state.visibility = 'Public'
         break
-      case 2:
-        this.state.visibility = 'Friends'
-        break
-      case 3:
-        this.state.visibility = 'Group'
-        break
       case 4:
-        this.state.visibility = 'Hidden'
+        this.state.visibility = 'Private'
         break
     }
 
