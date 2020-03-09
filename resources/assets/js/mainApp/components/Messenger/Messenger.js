@@ -16,7 +16,7 @@ import { deserializeKey, decryptMessage, generateKeysSync as generateGroupKeys }
 import { formatAMPM, convertUTCDateToLocalDate } from '../../../common/date';
 import { copyToClipboard } from '../../../common/clipboard';
 import { STATUS_ENUM, compareStatus } from '../../../common/status';
-import { fetchLink, addContactsToChat } from "../../../integration/http/chat";
+import { fetchLink, acceptInvitation } from "../../../integration/http/chat";
 
 class Messenger extends React.PureComponent {
 
@@ -44,7 +44,7 @@ class Messenger extends React.PureComponent {
   }
 
   componentDidMount() {
-    monitorChats(this.props.userId);
+    monitorChats(this.props.userId, false);
     if (window.location.href.includes('/link')) this.fetchLink();
   }
 
@@ -62,7 +62,7 @@ class Messenger extends React.PureComponent {
       if (!isValid) return toast.error('This Link has expired :(');
       const userId = this.props.userId;
       const chatId = link.chatId;
-      addContactsToChat(userId, chatId, [userId]).then(response => {
+      acceptInvitation(chatId, [userId]).then(response => {
         if (response.error === 'Contacts are Already in Chat.') return toast.warn('You are already in this Group!');;
         return toast.success('You have been added to this Group!!');
       });
@@ -70,7 +70,7 @@ class Messenger extends React.PureComponent {
   }
 
   decryptMessage = (message, userPrivateKey, chatPrivateKey) => {
-    const isSent = parseInt(message.senderId) === parseInt(this.props.userId);
+    const isSent = message.senderId === this.props.userId;
     const content = decryptMessage(
       isSent ? message.backup : message.content,
       isSent ? userPrivateKey : deserializeKey(chatPrivateKey)
@@ -511,6 +511,7 @@ class Messenger extends React.PureComponent {
       <Chat
         key={chat.chatId}
         userId={this.props.userId}
+        alias={this.props.alias}
         chatId={chat.chatId}
         onClose={chatId => this.closeChat(chatId)}
         windowFocused={this.state.windowFocused}

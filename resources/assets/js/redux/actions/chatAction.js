@@ -1,4 +1,4 @@
-import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, inviteUserToGroup, createChat, updateChat, clearChat, deleteChat, exitGroup, removeFromGroup, checkSelfDestruct, fetchMessages, fetchLinks, updateLink, sendMessage, editMessage, deleteMessage, setTyping } from '../../integration/http/chat';
+import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, inviteUserToGroup, createChat, updateChat, clearChat, deleteChat, exitGroup, removeFromGroup, checkSelfDestruct, fetchMessages, fetchLinks, updateLink, fetchEntryLogs, sendMessage, editMessage, deleteMessage, setTyping } from '../../integration/http/chat';
 import { fetchContacts, fetchContact, fetchStatus } from '../../integration/http/user';
 import { generateKeys, deserializeKey } from '../../integration/encryption';
 
@@ -55,6 +55,14 @@ export function onTypingAction(payload, userId) {
   }
 }
 
+export function onUserJoinedGroupAction(payload, userId) {
+  return {
+    type: 'ON_USER_JOINED',
+    payload,
+    meta: { userId },
+  }
+}
+
 export function onUserLeftGroupAction(payload, userId) {
   return {
     type: 'ON_USER_LEFT',
@@ -63,9 +71,17 @@ export function onUserLeftGroupAction(payload, userId) {
   }
 }
 
-export function onUserJoinedGroupAction(payload, userId) {
+export function onGuestJoinedGroupAction(payload, userId) {
   return {
-    type: 'ON_USER_JOINED',
+    type: 'ON_GUEST_JOINED',
+    payload,
+    meta: { userId },
+  }
+}
+
+export function onGuestLeftGroupAction(payload, userId) {
+  return {
+    type: 'ON_GUEST_LEFT',
     payload,
     meta: { userId },
   }
@@ -119,16 +135,17 @@ export function prepareMessengerAction(pin, privateKey, publicKey) {
   }
 }
 
-export function prepareChatAction(chatId, contactId, fetchContacts, userId) {
+export function prepareChatAction(chatId, contactId, isGroup, userId) {
   const chatRequest = fetchChat(chatId);
   const messagesRequest = fetchMessages(chatId);
   const linksRequest = fetchLinks(chatId);
+  const entryLogsRequest = fetchEntryLogs(chatId);
   const contactRequest = contactId ? fetchContact(contactId) : Promise.resolve({});
-  const contactsRequest = fetchContacts ? fetchChatContacts(chatId) : Promise.resolve({});
-  const requests = [chatRequest, messagesRequest, linksRequest, contactRequest, contactsRequest];
+  const contactsRequest = isGroup ? fetchChatContacts(chatId) : Promise.resolve({});
+  const requests = [chatRequest, messagesRequest, linksRequest, entryLogsRequest, contactRequest, contactsRequest];
   return {
     type: 'PREPARE_CHAT',
-    payload: Promise.all(requests).then(([chat, messages, links, contact, contacts]) => ({ ...chat, ...messages, ...links, ...contact, ...contacts })),
+    payload: Promise.all(requests).then(([chat, messages, links, entryLogs, contact, contacts]) => ({ ...chat, ...messages, ...links, ...entryLogs, ...contact, ...contacts })),
     meta: { chatId, contactId, userId }
   }
 }
@@ -226,10 +243,10 @@ export function fetchMessagesAction(chatId, page) {
   }
 }
 
-export function sendMessageAction(chatId, userId, encrypted) {
+export function sendMessageAction(chatId, userId, alias, encrypted) {
   return {
     type: 'SEND_MESSAGE',
-    payload: sendMessage(chatId, userId, encrypted),
+    payload: sendMessage(chatId, userId, alias, encrypted),
     meta: { chatId },
   }
 }
@@ -266,10 +283,10 @@ export function addContactsToChatAction(userId, chatId, contacts, publicKey, pri
   }
 }
 
-export function inviteUserToGroupAction(userId, chatId, contacts, publicKey, privateKey, userPrivateKey) {
+export function inviteUserToGroupAction(userId, chatId, contactId, publicKey, privateKey, userPrivateKey) {
   return {
     type: 'INVITE_USER_TO_GROUP',
-    payload: inviteUserToGroup(userId, chatId, contacts, publicKey, privateKey, userPrivateKey),
+    payload: inviteUserToGroup(userId, chatId, contactId, publicKey, privateKey, userPrivateKey),
     meta: { userId, chatId },
   }
 }

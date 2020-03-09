@@ -292,11 +292,22 @@ Route.get('/api/chat/:chatId/info', 'ChatController.fetchChatInfo')
 Route.get('/api/chat/:chatId/links/', 'ChatController.fetchLinks')
 Route.get('/api/chat-link/:uuid', 'ChatController.fetchLink')
 Route.put('/api/chat/:chatId/links/:uuid', 'ChatController.updateLink')
+Route.get('/api/chat/:chatId/entryLogs', 'ChatController.fetchEntryLogs')
 Route.put('/api/user_chat/publicKey/', 'UserChatController.storePublicKey')
 Route.get('/api/user_chat/contact/', 'UserChatController.fetchContacts')
 Route.get('/api/user_chat/contact/:contactId', 'UserChatController.fetchContact')
 Route.get('/api/user_chat/search/', 'UserChatController.searchUsers')
 Route.get('/api/user_chat/status/', 'UserChatController.fetchStatus')
 Route.put('/api/user_chat/status/', 'UserChatController.updateStatus')
+
+// Guests
+Route.post('/api/guest/', 'GuestController.register')
+Route.delete('/api/guest/:guestId/chat/:chatId', 'GuestController.unregister')
+Route.get('/api/guest/link/:uuid', 'GuestController.fetchLink')
+Route.get('/api/guest/chat/:chatId', 'GuestController.fetchChat')
+Route.get('/api/guest/chat/:chatId/message', 'GuestController.fetchMessages')
+Route.post('/api/guest/:guestId/chat/:chatId', 'GuestController.sendMessage')
+Route.get('/api/guest/chat/:chatId/entryLogs', 'GuestController.fetchEntryLogs')
+
 
 Route.any('*', ({ view }) => view.render('pages/react'))

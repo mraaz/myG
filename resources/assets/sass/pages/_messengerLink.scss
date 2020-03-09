@@ -1,8 +1,27 @@
-.messenger-link-guest-container {
+#guest-container {
   display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100vw;
   height: 100vh;
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
+
+
+  .messenger-container {
+    background-color: transparent !important;
+    border-left: none !important;
+  }
+
+  .kicked {
+    display: flex;
+    height: fit-content;
+    background-color: #603030;
+    color: #FFF;
+    font-size: 18px;
+    padding: 24px;
+    border-radius: 4px;
+  }
+
 }

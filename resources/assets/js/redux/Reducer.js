@@ -5,12 +5,14 @@ import storage from 'redux-persist/lib/storage';
 
 import chat from './reducers/chatReducer';
 import user from './reducers/userReducer';
+import guest from './reducers/guestReducer';
 import encryption from './reducers/encryptionReducer';
 import socket from './reducers/socketReducer';
 
 const appReducer = combineReducers({
     user,
     chat,
+    guest,
     encryption,
     socket,
 });
@@ -23,5 +25,5 @@ const rootReducer = (state, action) => {
 export default persistReducer({
     key: 'root',
     storage: storage,
-    whitelist: ['user', 'chat', 'encryption']
+    whitelist: ['user', 'guest', 'chat', 'encryption']
 }, rootReducer);

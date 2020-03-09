@@ -30,7 +30,7 @@ import ScheduleGames from "./components/ScheduleGames"
 import MyScheduledGames from "./components/MyScheduledGames"
 import LeftMenu from "./components/LeftMenu"
 import MessengerLoader from "./components/Messenger/MessengerLoader"
-import GuestMessengerLink from "./components/Messenger/GuestLink"
+import GuestLink from "./components/Guest/Link"
 import SearchHeader from "./components/SearchHeader"
 import ComposeSection from "./components/ComposeSection"
 import Posts from "./components/Posts"
@@ -118,13 +118,6 @@ class Layout extends Component {
           <LeftMenu initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} />
           <section id="content-container">
             <SearchHeader />
-            <ToastContainer
-              autoClose={8000}
-              draggablePercent={60}
-              hideProgressBar={false}
-              className='toast-container'
-              toastClassName='dark-toast'
-            />
             <Switch>
               <Route exact path="/" component={(props) => <Home routeProps={props}
                 initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
@@ -228,6 +221,7 @@ class Layout extends Component {
           <MessengerLoader
             profileImage={this.state.initialData && this.state.initialData.userInfo.profile_img}
             userId={this.state.initialData && this.state.initialData.userInfo.id}
+            alias={this.state.initialData && this.state.initialData.userInfo.alias}
             publicKey={this.state.initialData && this.state.initialData.userInfo.public_key}
             loading={!this.state.initialData}
           />
@@ -236,12 +230,12 @@ class Layout extends Component {
     );
   }
 
-  renderGuestMessengerLink = () => {
+  renderGuestLink = () => {
     const uuidMatcher = new RegExp(/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}/);
     const url = window.location.href;
     const uuid = Array.isArray(url.match(uuidMatcher)) ? url.match(uuidMatcher)[0] : null;
     return (
-      <GuestMessengerLink uuid={uuid} />
+      <GuestLink uuid={uuid} />
     );
   }
 
@@ -250,8 +244,15 @@ class Layout extends Component {
     return (
       <Provider store={store}>
         <PersistGate persistor={persistor}>
+          <ToastContainer
+            autoClose={8000}
+            draggablePercent={60}
+            hideProgressBar={false}
+            className='toast-container'
+            toastClassName='dark-toast'
+          />
           {!guestLink && this.renderRouter()}
-          {guestLink && this.renderGuestMessengerLink()}
+          {guestLink && this.renderGuestLink()}
         </PersistGate>
       </Provider>
     )

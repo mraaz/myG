@@ -192,6 +192,12 @@ textarea {
   //   );
   // }
 }
+.toast-container {
+  font-size: 12px !important;
+}
+.dark-toast {
+  background: $myG-black !important;
+}
 .notifications {
   display: none;
   &.welcome {

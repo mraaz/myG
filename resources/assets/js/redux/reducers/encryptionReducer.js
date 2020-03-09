@@ -52,6 +52,16 @@ export default function reducer(state = {
       };
     }
 
+    case "REGISTER_GUEST_FULFILLED": {
+      logger.log('GUEST', `Redux -> Guest Registered (Encryption): `, action.payload, action.meta);
+      const { publicKey, privateKey } = action.meta;
+      return {
+        ...state,
+        publicKey,
+        privateKey,
+      };
+    }
+
     default: return state;
 
   }

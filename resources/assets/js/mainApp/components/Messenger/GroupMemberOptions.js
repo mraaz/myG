@@ -69,7 +69,7 @@ class GroupMemberOptions extends React.PureComponent {
     const contact = this.props.foundUsers.find(contact => contact.name === this.state.inviteInput);
     const isFriend = this.props.contacts.find(friend => friend.contactId === contact.contactId);
     if (isFriend) this.props.addContactsToChat(this.props.userId, this.props.group.chatId, [contact.contactId], contact.publicKey, this.props.group.privateKey, this.props.userPrivateKey);
-    else this.props.inviteUserToGroup(this.props.userId, this.props.group.chatId, [contact.contactId], contact.publicKey, this.props.group.privateKey, this.props.userPrivateKey);
+    else this.props.inviteUserToGroup(this.props.userId, this.props.group.chatId, contact.contactId, contact.publicKey, this.props.group.privateKey, this.props.userPrivateKey);
     this.setState({ inviteInput: '', validInvite: false });
   }
 
@@ -89,6 +89,7 @@ class GroupMemberOptions extends React.PureComponent {
     return (
       <div className="chat-group-member-list-container">
         {this.props.groupContacts.map(contact => this.renderMember(contact, isGroupModerator))}
+        {this.props.group.guests.map(this.renderGuest)}
       </div>
     );
   }
@@ -142,6 +143,28 @@ class GroupMemberOptions extends React.PureComponent {
               request sent
             </div>
           )}
+        </div>
+      </div>
+    );
+  }
+
+  renderGuest = (guestId) => {
+    const guestAlias = `Guest #${guestId}`;
+    return (
+      <div key={guestAlias} className="chat-group-member">
+        <div className="chat-group-member-info">
+          <div
+            className="chat-group-guest-icon"
+            style={{ backgroundImage: `url(/assets/svg/ic_guest_icon.svg)` }}
+          />
+          <div className="chat-group-member-name">{guestAlias}</div>
+        </div>
+        <div className="chat-group-member-buttons">
+          <div
+            className="chat-group-options-option-icon clickable"
+            style={{ backgroundImage: `url(/assets/svg/ic_chat_group_remove.svg)`, filter: `contrast(0)` }}
+            onClick={() => this.setState({ kickingUser: { contactId: guestId, name: guestAlias } })}
+          />
         </div>
       </div>
     );
@@ -261,7 +284,7 @@ function mapDispatchToProps(dispatch) {
     fetchFriendRequests: () => dispatch(fetchFriendRequestsAction()),
     addAsFriend: (friendId) => dispatch(addAsFriendAction(friendId)),
     addContactsToChat: (userId, chatId, contacts, publicKey, privateKey, userPrivateKey) => dispatch(addContactsToChatAction(userId, chatId, contacts, publicKey, privateKey, userPrivateKey)),
-    inviteUserToGroup: (userId, chatId, contacts, publicKey, privateKey, userPrivateKey) => dispatch(inviteUserToGroupAction(userId, chatId, contacts, publicKey, privateKey, userPrivateKey)),
+    inviteUserToGroup: (userId, chatId, contactId, publicKey, privateKey, userPrivateKey) => dispatch(inviteUserToGroupAction(userId, chatId, contactId, publicKey, privateKey, userPrivateKey)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
     removeFromGroup: (chatId, userId) => dispatch(removeFromGroupAction(chatId, userId)),

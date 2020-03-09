@@ -57,9 +57,14 @@ export function addContactsToChat(userId, chatId, contacts, publicKey, privateKe
   return axios.put(`/api/chat/${chatId}/contacts`, { contacts }).then(response => sendGroupPrivateKey(userId, chatId, contacts, publicKey, privateKey, userPrivateKey).then(() => response.data));
 }
 
-export function inviteUserToGroup(userId, chatId, contacts, publicKey, privateKey, userPrivateKey) {
-  logger.log('CHAT', 'HTTP', `Invite Users ${JSON.stringify(contacts)} To Group ${chatId}`);
-  return axios.put(`/api/notifications/inviteToGroup`, { userId: contacts[0], chatId }).then(response => sendGroupPrivateKey(userId, chatId, contacts, publicKey, privateKey, userPrivateKey).then(() => response.data));
+export function acceptInvitation(chatId, contacts) {
+  logger.log('CHAT', 'HTTP', `Accepting Invitation To Chat ${chatId}: `, contacts);
+  return axios.put(`/api/chat/${chatId}/contacts`, { contacts, fromLink: true }).then(() => response.data);
+}
+
+export function inviteUserToGroup(userId, chatId, contactId, publicKey, privateKey, userPrivateKey) {
+  logger.log('CHAT', 'HTTP', `Invite User ${contactId} To Group ${chatId}`);
+  return axios.put(`/api/notifications/inviteToGroup`, { userId: contactId, chatId }).then(response => sendGroupPrivateKey(userId, chatId, contacts, publicKey, privateKey, userPrivateKey).then(() => response.data));
 }
 
 export function fetchMessages(chatId, page) {
@@ -67,9 +72,9 @@ export function fetchMessages(chatId, page) {
   return axios.get(`/api/chat/${chatId}/message?page=${page || 1}`).then(response => response.data);
 }
 
-export function sendMessage(chatId, userId, encryptedContent, keyReceiver) {
+export function sendMessage(chatId, userId, senderName, encryptedContent, keyReceiver) {
   logger.log('CHAT', 'HTTP', `Sending Message from User ${userId} to Chat ${chatId}`);
-  return axios.post(`/api/chat/${chatId}/message/`, { encryptedContent, keyReceiver }).then(response => response.data);
+  return axios.post(`/api/chat/${chatId}/message/`, { encryptedContent, keyReceiver, senderName }).then(response => response.data);
 }
 
 export function editMessage(chatId, messageId, encryptedContent, reEncrypting) {
@@ -102,12 +107,17 @@ export function updateLink(chatId, uuid, expiry, expire) {
   return axios.put(`/api/chat/${chatId}/links/${uuid}`, { expiry, expire }).then(response => response.data);
 }
 
+export function fetchEntryLogs(chatId) {
+  logger.log('CHAT', 'HTTP', `Fetching Entry Logs for ${chatId}`);
+  return axios.get(`/api/chat/${chatId}/entryLogs`).then(response => response.data);
+}
+
 function sendGroupPrivateKey(userId, chatId, contacts, publicKey, privateKey, userPrivateKey) {
   if (!publicKey || !privateKey || !userPrivateKey) return Promise.resolve();
   const serializedKey = JSON.stringify(privateKey);
   contacts.forEach(contactId => {
     const content = encryptMessage(serializedKey, publicKey, userPrivateKey);
-    sendMessage(chatId, userId, { content, backup: '' }, contactId);
+    sendMessage(chatId, userId, '', { content, backup: '' }, contactId);
   });
   return Promise.resolve();
 }
