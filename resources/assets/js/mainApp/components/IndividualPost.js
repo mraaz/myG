@@ -30,6 +30,7 @@ export default class IndividualPost extends Component {
       post_time: '',
       alert: null,
       media_urls: [],
+      images: [],
     }
     this.textInput = null
 
@@ -124,12 +125,12 @@ export default class IndividualPost extends Component {
       }
     }
 
-    // if (post.type == 'photo') {
-    //   for (var i = 0; i < this.state.media_urls.length; i++) {
-    //     var myStruct = { original: this.state.media_urls[i] }
-    //     this.state.images.push(myStruct)
-    //   }
-    // }
+    if (post.type == 'photo') {
+      for (var i = 0; i < this.state.media_urls.length; i++) {
+        var myStruct = { original: this.state.media_urls[i], thumbnail: this.state.media_urls[i], }
+        this.state.images.push(myStruct)
+      }
+    }
 
     this.setState({ like: this.props.post.do_I_like_it })
     this.setState({ total: this.props.post.total })
@@ -483,18 +484,17 @@ export default class IndividualPost extends Component {
                     </div>
                   </div>
                 )}
-                {show_media &&
-                  this.state.media_urls.map(function(data, index) {
-                    if (post.type == 'photo') {
-                      return <img className='post-photo' src={data}></img>
-                    } else if (post.type == 'video') {
-                      return (
-                        <video className='post-video' controls>
-                          <source src={data}></source>
-                        </video>
-                      )
-                    }
-                  })}
+                {show_media && post.type == 'photo' && (
+                  <ImageGallery items={this.state.images} />
+                )}
+                {show_media && post.type == 'video' &&
+                  this.state.media_urls.map(function (data, index) {
+                    return (
+                      <video className='post-video' controls>
+                        <source src={data}></source>
+                      </video>
+                    )
+                })}
               </div>
               <div className='update-stats'>
                 <div className='icon-section'>

@@ -45,7 +45,7 @@
     "@babel/polyfill": "^7.7.0",
     "autosuggest-highlight": "^3.1.1",
     "aws-sdk": "^2.437.0",
-    "axios": "^0.16.1",
+    "axios": "^0.19.2",
     "babel-core": "^6.24.1",
     "babel-loader": "^6.4.1",
     "babel-preset-env": "^1.4.0",
