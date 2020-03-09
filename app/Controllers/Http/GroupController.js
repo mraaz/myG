@@ -37,11 +37,11 @@ class GroupController {
 
   async groupSearchResults({ auth, request, response }) {
     try {
-      const groupSearchResults = await Group.query()
+      const groupSearchResults = await Database.from('groups')
         .where('name', 'like', '%' + request.params.str + '%')
         .whereNot('type', 3)
         .select('name', 'group_img', 'id', 'type')
-        .fetch()
+        .limit(10)
 
       return {
         groupSearchResults,
