@@ -31,6 +31,10 @@ export default class IndividualPost extends Component {
       alert: null,
       media_urls: [],
       images: [],
+      showBullets: true,
+      autoPlay: true,
+      isRTL: false,
+      disableSwipe : true,
     }
     this.textInput = null
 
@@ -485,7 +489,7 @@ export default class IndividualPost extends Component {
                   </div>
                 )}
                 {show_media && post.type == 'photo' && (
-                  <ImageGallery items={this.state.images} />
+                  <ImageGallery items={this.state.images} showBullets={this.state.showBullets} autoPlay={this.state.autoPlay} isRTL={this.state.isRTL} disableSwipe={this.state.disableSwipe} />
                 )}
                 {show_media && post.type == 'video' &&
                   this.state.media_urls.map(function (data, index) {
