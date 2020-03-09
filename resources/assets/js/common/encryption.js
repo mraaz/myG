@@ -18,8 +18,8 @@ export function sendGroupKeys(chatId, userId, contacts, groupPrivateKey, userPri
   logger.log('CHAT', `Sending Group Keys for Chat ${chatId} to Contacts ${contacts.map(contact => contact.contactId)}`);
   const serializedKey = JSON.stringify(groupPrivateKey);
   contacts.forEach(contact => {
-    const { contactId, publicKey } = contact;
+    const { contactId, publicKey, guestId } = contact;
     const content = encryptMessage(serializedKey, publicKey, userPrivateKey);
-    sendMessage(chatId, userId, '', { content, backup: '' }, contactId);
+    sendMessage(chatId, userId, '', { content, backup: '' }, contactId || guestId);
   });
 }

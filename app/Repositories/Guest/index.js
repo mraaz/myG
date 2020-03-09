@@ -75,7 +75,6 @@ class GuestRepository {
   async sendMessage({ requestedChatId, senderName, guestId, backup, content }) {
     const messageData = {
       sender_id: guestId,
-      key_receiver: keyReceiver,
       sender_name: senderName,
       backup: backup,
       content: content,
@@ -85,7 +84,7 @@ class GuestRepository {
     const messageSchema = new MessageSchema({
       messageId: message.id,
       chatId: requestedChatId,
-      senderId: requestingUserId,
+      senderId: message.sender_id,
       keyReceiver: message.key_receiver,
       senderName: message.sender_name,
       content: message.content,
