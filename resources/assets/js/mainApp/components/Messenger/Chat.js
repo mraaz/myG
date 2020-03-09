@@ -11,7 +11,7 @@ import { enrichMessagesWithDates } from '../../../common/chat';
 import { encryptMessage, decryptMessage, deserializeKey } from '../../../integration/encryption';
 import { formatDateTime } from '../../../common/date';
 
-class Chat extends React.PureComponent {
+export class Chat extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -32,7 +32,7 @@ class Chat extends React.PureComponent {
     document.addEventListener("scroll", this.handleMessageListScroll, { passive: true });
     document.addEventListener("wheel", this.handleMessageListScroll, { passive: true });
     this.props.prepareChat(this.props.chatId, this.props.contactId, this.props.isGroup, this.props.userId);
-    setTimeout(() => this.props.checkSelfDestruct(this.props.chatId), 1000);
+    if (!this.props.isGuest) this.props.checkSelfDestruct(this.props.chatId);
   }
 
   componentWillUnmount() {
@@ -75,6 +75,7 @@ class Chat extends React.PureComponent {
   }
 
   markAsRead = (lastMessageId) => {
+    if (this.props.isGuest) return;
     if (this.props.minimised || !this.props.privateKey || !this.props.windowFocused) return;
     if (!lastMessageId || lastMessageId <= this.props.lastRead || lastMessageId <= this.state.lastRead) return;
     this.setState({ lastRead: lastMessageId });
@@ -83,7 +84,6 @@ class Chat extends React.PureComponent {
 
   sendMessage = (input) => {
     if (!input) return;
-    if (this.props.isGuest) return this.props.sendGuestMessage(this.props.chatId, this.props.userId, this.encryptInput(input))
     this.props.sendMessage(this.props.chatId, this.props.userId, this.props.alias, this.encryptInput(input));
   }
 
@@ -106,7 +106,7 @@ class Chat extends React.PureComponent {
   }
 
   editLastMessage = () => {
-    const sentMessages = this.props.messages.filter(message =>  message.senderId == this.props.userId && !message.deleted);
+    const sentMessages = this.props.messages.filter(message => message.senderId == this.props.userId && !message.deleted);
     const lastSentMessage = sentMessages[sentMessages.length - 1];
     if (!lastSentMessage) return;
     this.setState({ editing: lastSentMessage.messageId });
@@ -180,11 +180,13 @@ class Chat extends React.PureComponent {
               />
             </div>
           )}
-          <div
-            className="chat-component-header-settings clickable"
-            style={{ backgroundImage: `url('/assets/svg/ic_chat_settings.svg')` }}
-            onClick={() => this.setState(previous => ({ settings: !previous.settings }))}
-          />
+          {!this.props.isGuest && (
+            <div
+              className="chat-component-header-settings clickable"
+              style={{ backgroundImage: `url('/assets/svg/ic_chat_settings.svg')` }}
+              onClick={() => this.setState(previous => ({ settings: !previous.settings }))}
+            />
+          )}
         </div>
 
       </div>
@@ -204,15 +206,15 @@ class Chat extends React.PureComponent {
         <ChatMessageList
           userId={this.props.userId}
           chatId={this.props.chatId}
+          isGroup={this.props.isGroup}
+          isGuest={this.props.isGuest}
           messages={this.props.messages}
-          contactsMap={this.props.contactsMap}
           messageListRef={this.messageListRef}
           editing={this.state.editing}
           onEdit={this.onEdit}
           editMessage={this.editMessage}
           deleteMessage={this.props.deleteMessage}
           decryptMessage={this.decryptMessage}
-          isGroup={this.props.isGroup}
         />
         {this.renderTypingIndicator()}
         {this.renderReadIndicators(lastMessageId, lastMessageSender)}
@@ -228,6 +230,7 @@ class Chat extends React.PureComponent {
   }
 
   renderReadIndicators(lastMessageId, lastMessageSender) {
+    if (this.props.isGuest) return;
     const { contactsMap, lastReads } = this.props;
     const contacts = this.props.isGroup ? contactsMap : { [this.props.contactId]: { contactId: this.props.contactId, icon: this.props.icon } };
     const contactsWithRead = Object.keys(lastReads).map(contactId => ({ ...contacts[contactId], lastRead: lastReads[contactId] }));
@@ -281,7 +284,7 @@ class Chat extends React.PureComponent {
           isDecryptable={this.props.privateKey}
           sendMessage={this.sendMessage}
           editLastMessage={this.editLastMessage}
-          setTyping={isTyping => this.props.setTyping(this.props.chatId, isTyping)}
+          setTyping={isTyping => !this.props.isGuest && this.props.setTyping(this.props.chatId, isTyping)}
         />
       </div>
     );
@@ -323,7 +326,7 @@ class Chat extends React.PureComponent {
   }
 }
 
-function mapStateToProps(state, props) {
+export function mapStateToProps(state, props) {
   const chat = state.chat.chats.find(chat => chat.chatId === props.chatId) || { contacts: [] };
   const messages = enrichMessagesWithDates(chat.messages || []);
   const contacts = chat.contacts.filter(contactId => contactId !== props.userId);

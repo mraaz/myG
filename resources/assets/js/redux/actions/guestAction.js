@@ -1,6 +1,6 @@
 
 import { generateKeysSync } from '../../integration/encryption';
-import { register, unregister, sendMessage } from '../../integration/http/guest';
+import { register, unregister, fetchChat, fetchMessages, sendMessage } from '../../integration/http/guest';
 
 export function registerGuestAction(chatId) {
   const { encryption: { publicKey, privateKey } } = generateKeysSync();
@@ -19,10 +19,37 @@ export function unregisterGuestAction(guestId, chatId) {
   }
 }
 
-export function sendMessageAction(chatId, guestId, encrypted) {
+export function prepareChatAction(chatId, userId) {
+  const chatRequest = fetchChat(chatId);
+  const messagesRequest = fetchMessages(chatId, 1);
+  const requests = [chatRequest, messagesRequest];
+  return {
+    type: 'PREPARE_CHAT',
+    payload: Promise.all(requests).then(([chat, messages]) => ({ ...chat, ...messages })),
+    meta: { chatId, userId }
+  }
+}
+
+export function fetchMessagesAction(chatId, page) {
+  return {
+    type: 'FETCH_CHAT_MESSAGES',
+    payload: fetchMessages(chatId, page),
+    meta: { chatId, page },
+  }
+}
+
+export function sendMessageAction(chatId, userId, alias, encrypted) {
   return {
     type: 'SEND_MESSAGE',
-    payload: sendMessage(chatId, guestId, `Guest #${guestId}`, encrypted),
+    payload: sendMessage(chatId, userId, alias, encrypted),
+    meta: { chatId },
+  }
+}
+
+export function updateChatStateAction(chatId, state) {
+  return {
+    type: 'CHAT_STATE_UPDATED',
+    payload: state,
     meta: { chatId },
   }
 }

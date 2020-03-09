@@ -16,6 +16,16 @@ export function fetchLink(uuid) {
   return axios.get(`/api/guest/link/${uuid}`).then(response => response.data);
 }
 
+export function fetchChat(chatId) {
+  logger.log('GUEST', 'HTTP', `Fetching Chat ${chatId}`);
+  return axios.get(`/api/guest/chat/${chatId}`).then(response => response.data);
+}
+
+export function fetchMessages(chatId, page) {
+  logger.log('GUEST', 'HTTP', `Fetching Page ${page} of Messages for Chat ${chatId}`);
+  return axios.get(`/api/guest/chat/${chatId}/message?page=${page || 1}`).then(response => response.data);
+}
+
 export function sendMessage(chatId, guestId, senderName, encryptedContent) {
   logger.log('GUEST', 'HTTP', `Sending Message from GUEST ${guestId} to Chat ${chatId}`);
   return axios.post(`/api/guest/${guestId}/chat/${chatId}`, { encryptedContent, senderName }).then(response => response.data);

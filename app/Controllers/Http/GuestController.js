@@ -20,6 +20,21 @@ class GuestController {
     return response.send({ link });
   }
 
+  async fetchChat({ params, response }) {
+    const requestedChatId = params.chatId;
+    log('CHAT', `Guest requesting Chat ${requestedChatId}`);
+    const { chat } = await GuestRepository.fetchChat({ requestedChatId });
+    return response.send({ chat });
+  }
+
+  async fetchMessages({ params, request, response }) {
+    const requestedChatId = params.chatId;
+    const requestedPage = request.only(['page']).page || 1;
+    log('CHAT', `Guestrequesting Messages for Chat ${requestedChatId}`);
+    const { messages } = await GuestRepository.fetchMessages({ requestedChatId, requestedPage });
+    return response.send({ messages });
+  }
+
   async sendMessage({ params, request, response }) {
     const requestedChatId = params.chatId;
     const guestId = params.guestId;

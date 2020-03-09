@@ -24,6 +24,7 @@ export default class ChatMessage extends React.Component {
 
   handleKeyPress = (event) => {
     if (event.keyCode == 13) {
+      if (this.props.isGuest) return;
       this.props.editMessage(this.props.chatId, this.props.messageId, this.state.input);
       this.setState({ editing: false });
       this.props.onEdit();
@@ -44,6 +45,7 @@ export default class ChatMessage extends React.Component {
   }
 
   renderOptions = () => {
+    if (this.props.isGuest) return;
     if (!this.state.showOptionsMenu || this.props.message.deleted) return;
     const origin = this.props.message.senderId === this.props.userId ? 'sent' : 'received';
     const sentStyle = 'chat-component-message-options-menu-sent';

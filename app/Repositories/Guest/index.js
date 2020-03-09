@@ -64,6 +64,14 @@ class GuestRepository {
     return { link };
   }
 
+  async fetchChat({ requestedChatId }) {
+    return ChatRepository.fetchChatInfo({ requestedChatId });
+  }
+
+  async fetchMessages({ requestedChatId, requestedPage }) {
+    return ChatRepository.fetchMessages({ requestedChatId, requestedPage });
+  }
+
   async sendMessage({ requestedChatId, senderName, guestId, backup, content }) {
     const messageData = {
       sender_id: guestId,

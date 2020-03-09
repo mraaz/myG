@@ -302,6 +302,8 @@ Route.put('/api/user_chat/status/', 'UserChatController.updateStatus')
 Route.post('/api/guest/', 'GuestController.register')
 Route.delete('/api/guest/:guestId/chat/:chatId', 'GuestController.unregister')
 Route.get('/api/guest/link/:uuid', 'GuestController.fetchLink')
+Route.get('/api/guest/chat/:chatId', 'GuestController.fetchChat')
+Route.get('/api/guest/chat/:chatId/message', 'GuestController.fetchMessages')
 Route.post('/api/guest/:guestId/chat/:chatId', 'GuestController.sendMessage')
 
 Route.any('*', ({ view }) => view.render('pages/react'))
