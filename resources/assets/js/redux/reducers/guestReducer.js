@@ -8,6 +8,7 @@ export default function reducer(state = {
   publicKey: null,
   privateKey: null,
   chat: null,
+  kicked: false,
 }, action) {
   switch (action.type) {
 
@@ -22,6 +23,20 @@ export default function reducer(state = {
         publicKey,
         privateKey,
         chat,
+      };
+    }
+
+    case "ON_GUEST_LEFT": {
+      logger.log('GUEST', `Redux -> Kicked from Group: `, action.payload, action.meta);
+      const { guestId } = action.payload;
+      if (parseInt(guestId) !== parseInt(state.guestId)) return state;
+      return {
+        guestId: null,
+        chatId: null,
+        publicKey: null,
+        privateKey: null,
+        chat: null,
+        kicked: true,
       };
     }
 

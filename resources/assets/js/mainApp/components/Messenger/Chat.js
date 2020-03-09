@@ -330,6 +330,7 @@ export function mapStateToProps(state, props) {
   const chat = state.chat.chats.find(chat => chat.chatId === props.chatId) || { contacts: [] };
   const messages = enrichMessagesWithDates(chat.messages || []);
   const contacts = chat.contacts.filter(contactId => contactId !== props.userId);
+  const guests = chat.guests.filter(contactId => contactId !== props.userId);
   const fullContacts = chat.fullContacts || [];
   const contactId = contacts.length === 1 && contacts[0];
   const contact = (contactId && state.user.contacts.find(contact => contact.contactId === contactId)) || {};
@@ -339,8 +340,8 @@ export function mapStateToProps(state, props) {
   const contactsMap = {};
   fullContacts.forEach(contact => contactsMap[contact.contactId] = contact);
   if (isGroup) {
-    const memberCount = contacts.length;
-    const onlineCount = contacts.filter(contactId => (contactsMap[contactId] || {}).status === 'online').length;
+    const memberCount = contacts.length + guests.length;
+    const onlineCount = contacts.filter(contactId => (contactsMap[contactId] || {}).status === 'online').length + guests.length;
     chatSubtitle = `${onlineCount}/${memberCount} online`;
   }
   chat.privateKey = deserializeKey(chat.privateKey);

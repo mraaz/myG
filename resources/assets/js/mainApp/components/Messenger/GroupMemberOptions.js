@@ -89,6 +89,7 @@ class GroupMemberOptions extends React.PureComponent {
     return (
       <div className="chat-group-member-list-container">
         {this.props.groupContacts.map(contact => this.renderMember(contact, isGroupModerator))}
+        {this.props.group.guests.map(this.renderGuest)}
       </div>
     );
   }
@@ -142,6 +143,28 @@ class GroupMemberOptions extends React.PureComponent {
               request sent
             </div>
           )}
+        </div>
+      </div>
+    );
+  }
+
+  renderGuest = (guestId) => {
+    const guestAlias = `Guest #${guestId}`;
+    return (
+      <div key={guestAlias} className="chat-group-member">
+        <div className="chat-group-member-info">
+          <div
+            className="chat-group-guest-icon"
+            style={{ backgroundImage: `url(/assets/svg/ic_guest_icon.svg)` }}
+          />
+          <div className="chat-group-member-name">{guestAlias}</div>
+        </div>
+        <div className="chat-group-member-buttons">
+          <div
+            className="chat-group-options-option-icon clickable"
+            style={{ backgroundImage: `url(/assets/svg/ic_chat_group_remove.svg)`, filter: `contrast(0)` }}
+            onClick={() => this.setState({ kickingUser: { contactId: guestId, name: guestAlias } })}
+          />
         </div>
       </div>
     );

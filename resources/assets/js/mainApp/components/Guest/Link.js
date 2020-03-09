@@ -41,8 +41,9 @@ class GuestLink extends React.PureComponent {
   }
 
   renderChat = () => {
-    const { guestId, chatId } = this.props;
-    if (!guestId || !chatId || !this.state.loaded || !this.state.validLink) return null;
+    const { guestId, chatId, kicked } = this.props;
+    const { loaded, validLink } = this.state;
+    if (!guestId || !chatId || kicked || !loaded || !validLink) return null;
     return (
       <div id="messenger" className="messenger-container">
         <div className="messenger-chat-bar">
@@ -58,12 +59,22 @@ class GuestLink extends React.PureComponent {
     );
   }
 
+  renderKicked() {
+    if (!this.props.kicked) return null;
+    return (
+      <div className="kicked">
+        You have been kicked from this Group
+      </div>
+    );
+  }
+
   render() {
     return (
       <div id="guest-container"
         style={{ backgroundImage: `url(/assets/image/img/guest_background.jpg)` }}
       >
         {this.renderChat()}
+        {this.renderKicked()}
       </div>
     );
   }
@@ -76,6 +87,7 @@ function mapStateToProps(state) {
     chatId: state.guest.chatId,
     publicKey: state.guest.publicKey,
     privateKey: state.guest.privateKey,
+    kicked: state.guest.kicked,
   }
 }
 

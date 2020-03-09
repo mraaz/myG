@@ -3,7 +3,6 @@ import logger from '../../common/logger';
 import { convertUTCDateToLocalDate } from '../../common/date';
 import { reEncryptMessages, sendGroupKeys } from '../../common/encryption';
 import { decryptMessage, deserializeKey } from '../../integration/encryption';
-import { toast } from 'react-toastify';
 
 export default function reducer(state = {
   chats: [],
@@ -55,6 +54,9 @@ export default function reducer(state = {
       chat.links = action.payload.links;
       chat.noMoreMessages = false;
       chat.loadingMessages = false;
+      chat.owners = action.payload.chat.owners;
+      chat.moderators = action.payload.chat.moderators;
+      chat.guests = action.payload.chat.guests;
       const messages = action.payload.messages
         .filter(message => message.messageId > action.payload.chat.lastCleared)
         .filter(message => !action.payload.chat.deletedMessages.includes(message.messageId))
@@ -289,6 +291,7 @@ export default function reducer(state = {
       if (icon !== undefined) chat.icon = icon;
       if (owners !== undefined) chat.owners = owners;
       if (moderators !== undefined) chat.moderators = moderators;
+      if (guests !== undefined) chat.guests = guests;
       if (isPrivate !== undefined) chat.isPrivate = isPrivate;
       return {
         ...state,
@@ -375,7 +378,6 @@ export default function reducer(state = {
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (!chat) return state;
       const contact = contacts[0];
-      toast.success(`${contact.name} has joined Group ${chat.title}!`);
       if (!chat.contacts.includes(contact.contactId)) chat.contacts.push(contact.contactId);
       if (!chat.fullContacts.map(contact => contact.contactId).includes(contact.contactId)) chat.fullContacts.push(contact);
       sendGroupKeys(chatId, parseInt(thisUserId), contacts, chat.privateKey, state.privateKey);
@@ -414,7 +416,6 @@ export default function reducer(state = {
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (!chat) return state;
-      toast.success(`Guest #${guest.guestId} has joined Group ${chat.title}!`);
       if (!chat.guests.includes(guest.guestId)) chat.guests.push(guest.guestId);
       sendGroupKeys(chatId, thisUserId, [guest], chat.privateKey, state.privateKey);
       return {
@@ -427,10 +428,9 @@ export default function reducer(state = {
       logger.log('CHAT', `Redux -> Guest Left Group: `, action.payload, action.meta);
       const { chatId, guestId } = action.payload;
       const chats = JSON.parse(JSON.stringify(state.chats));
-      const chat = chats.find(candidate => candidate.chatId === chatId);
+      const chat = chats.find(candidate => parseInt(candidate.chatId) === parseInt(chatId));
       if (!chat) return state;
-      toast.success(`Guest #${guestId} has left Group ${chat.title}!`);
-      chat.guests = chat.guests.filter(guestId => guestId !== guestId);
+      chat.guests = chat.guests.filter(thisGuestId => thisGuestId !== guestId);
       return {
         ...state,
         chats,
@@ -514,11 +514,17 @@ export default function reducer(state = {
 
     case "REGISTER_GUEST_FULFILLED": {
       logger.log('GUEST', `Redux -> Guest Registered (Chat): `, action.payload, action.meta);
+      const { guest: { guestId }, chat, chat: { chatId } } = action.payload;
       const { publicKey, privateKey } = action.meta;
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const existingChat = chats.find(candidate => candidate.chatId === chatId);
+      if (!existingChat) chats.push(chat);
       return {
         ...state,
+        guestId,
         publicKey,
         privateKey,
+        chats,
       };
     }
 

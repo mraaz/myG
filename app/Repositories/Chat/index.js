@@ -24,7 +24,7 @@ class ChatRepository {
 
   async fetchChats({ requestingUserId }) {
     const chats = (await Database
-      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.blocked_users', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', ' chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.blocked_users', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', ' chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .leftJoin('chat_last_reads', function () { this.on('chat_last_reads.chat_id', 'user_chats.chat_id').andOn('chat_last_reads.user_id', 'user_chats.user_id') })
@@ -57,7 +57,7 @@ class ChatRepository {
 
   async fetchChat({ requestingUserId, requestedChatId }) {
     const chat = (await Database
-      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.blocked_users', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', ' chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.blocked_users', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', ' chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .leftJoin('chat_last_reads', function () { this.on('chat_last_reads.chat_id', 'user_chats.chat_id').andOn('chat_last_reads.user_id', 'user_chats.user_id') })
@@ -265,15 +265,17 @@ class ChatRepository {
   }
 
   async exitGroup({ requestingUserId, requestedChatId, requestedUserId }) {
-    const userToRemove = requestedUserId || requestingUserId;
-    const chatModel = (await Chat.query().where('id', requestedChatId).first());
-    const chat = chatModel.toJSON();
-    if (requestedUserId && !JSON.parse(chat.moderators || '[]').includes(parseInt(requestingUserId))) throw new Error('Only Moderators can Kick Users.');
-    const contacts = JSON.parse(chat.contacts || '[]').filter(contactId => parseInt(contactId) !== parseInt(userToRemove));
-    const moderators = JSON.parse(chat.moderators || '[]').filter(contactId => parseInt(contactId) !== parseInt(userToRemove));
-    await Chat.query().where('id', requestedChatId).update({ contacts: JSON.stringify(contacts), moderators: JSON.stringify(moderators) });
-    await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', userToRemove).delete();
-    JSON.parse(chat.contacts || '[]').forEach(userId => this._notifyChatEvent({ userId, action: 'userLeft', payload: { userId: userToRemove, chatId: requestedChatId } }));
+    const userToRemove = parseInt(requestedUserId || requestingUserId);
+    const { chat } = await this.fetchChatInfo({ requestedChatId });
+    const isKickingGuest = chat.guests.includes(userToRemove);
+    if (requestedUserId && !isKickingGuest && !chat.moderators.includes(parseInt(requestingUserId))) throw new Error('Only Moderators can Kick Users.');
+    const contacts = chat.contacts.filter(contactId => parseInt(contactId) !== parseInt(userToRemove));
+    const moderators = chat.moderators.filter(contactId => parseInt(contactId) !== parseInt(userToRemove));
+    const guests = chat.guests.filter(contactId => parseInt(contactId) !== parseInt(userToRemove));
+    await Chat.query().where('id', requestedChatId).update({ contacts: JSON.stringify(contacts), moderators: JSON.stringify(moderators), guests: JSON.stringify(guests) });
+    !isKickingGuest && await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', userToRemove).delete();
+    chat.contacts.forEach(userId => this._notifyChatEvent({ userId, action: isKickingGuest ? 'guestLeft' : 'userLeft', payload: { userId: userToRemove, guestId: userToRemove, chatId: requestedChatId } }));
+    chat.guests.forEach(guestId => this._notifyChatEvent({ guestId, action: isKickingGuest ? 'guestLeft' : 'userLeft', payload: { userId: userToRemove, guestId: userToRemove, chatId: requestedChatId } }));
     return new DefaultSchema({ success: true });
   }
 
@@ -528,13 +530,14 @@ class ChatRepository {
     this._notifyChatEvent({ chatId: requestedChatId, action: 'chatUpdated', payload: chatSchema });
   }
 
-  async _notifyChatEvent({ userId, chatId, contactId, action, payload }) {
+  async _notifyChatEvent({ userId, guestId, chatId, contactId, action, payload }) {
     if (payload.userId) payload.userId = parseInt(payload.userId);
     if (payload.chatId) payload.chatId = parseInt(payload.chatId);
     if (payload.contactId) payload.contactId = parseInt(payload.contactId);
     const logKey = (userId && `User ${userId}`) || (chatId && `Chat ${chatId}`) || (contactId && `Contacts from User ${contactId}`);
     log('CHAT', `Broadcasting ${action} event to ${logKey} with Payload: ${JSON.stringify(payload)}`);
     if (userId) return broadcast('chat:*', `chat:${userId}`, `chat:${action}`, payload);
+    if (guestId) return broadcast('chat:*', `chat:${guestId}:guest`, `chat:${action}`, payload);
     if (chatId) {
       const chat = (await Chat.find(chatId)).toJSON();
       const contacts = JSON.parse(chat.contacts);
