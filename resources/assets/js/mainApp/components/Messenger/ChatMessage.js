@@ -106,6 +106,19 @@ export default class ChatMessage extends React.Component {
     );
   }
 
+  renderEntryLog() {
+    const { message } = this.props;
+    const invitedText = message.invited && `${message.alias} was invited`;
+    const linkText = message.link && `${message.alias} has joined through a link`;
+    const kickedText = message.kicked && `${message.alias} was kicked`;
+    const leftText = message.left && `${message.alias} has left`;
+    return (
+      <div key={Math.random()} className="chat-component-message-date-divisor">
+        <p>{invitedText || linkText || kickedText || leftText}</p>
+      </div>
+    );
+  }
+
   colorMessage = (id) => {
     const colors = ['#F99', '#9F9', '#99F', '#FF9', '#9FF', '#F9F'];
     return colors[parseInt(id % colors.length)];
@@ -118,6 +131,7 @@ export default class ChatMessage extends React.Component {
     const selfDestructStyle = message.selfDestruct && 'chat-component-message-self-destruct';
     if (this.state.editing) return this.renderInput();
     if (message.isDateDivisor) return this.renderDateDivisor();
+    if (message.isEntryLog) return this.renderEntryLog();
     return (
       <div
         key={message.messageId}

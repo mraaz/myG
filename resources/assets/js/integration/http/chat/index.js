@@ -57,6 +57,11 @@ export function addContactsToChat(userId, chatId, contacts, publicKey, privateKe
   return axios.put(`/api/chat/${chatId}/contacts`, { contacts }).then(response => sendGroupPrivateKey(userId, chatId, contacts, publicKey, privateKey, userPrivateKey).then(() => response.data));
 }
 
+export function acceptInvitation(chatId, contacts) {
+  logger.log('CHAT', 'HTTP', `Accepting Invitation To Chat ${chatId}: `, contacts);
+  return axios.put(`/api/chat/${chatId}/contacts`, { contacts, fromLink: true }).then(() => response.data);
+}
+
 export function inviteUserToGroup(userId, chatId, contactId, publicKey, privateKey, userPrivateKey) {
   logger.log('CHAT', 'HTTP', `Invite User ${contactId} To Group ${chatId}`);
   return axios.put(`/api/notifications/inviteToGroup`, { userId: contactId, chatId }).then(response => sendGroupPrivateKey(userId, chatId, contacts, publicKey, privateKey, userPrivateKey).then(() => response.data));
@@ -100,6 +105,11 @@ export function fetchLink(uuid) {
 export function updateLink(chatId, uuid, expiry, expire) {
   logger.log('CHAT', 'HTTP', `Updating Link ${uuid} for Chat ${chatId} - ${expiry} / ${expire}`);
   return axios.put(`/api/chat/${chatId}/links/${uuid}`, { expiry, expire }).then(response => response.data);
+}
+
+export function fetchEntryLogs(chatId) {
+  logger.log('CHAT', 'HTTP', `Fetching Entry Logs for ${chatId}`);
+  return axios.get(`/api/chat/${chatId}/entryLogs`).then(response => response.data);
 }
 
 function sendGroupPrivateKey(userId, chatId, contacts, publicKey, privateKey, userPrivateKey) {

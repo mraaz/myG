@@ -102,8 +102,9 @@ class ChatController {
     if (!requestingUserId) throw new Error('Auth Error');
     const requestedChatId = params.chatId;
     const requestedContacts = request.only(['contacts']).contacts;
+    const fromLink = request.only(['fromLink']).fromLink;
     log('CHAT', `User ${requestingUserId} adding ${JSON.stringify(requestedContacts)} to Chat ${requestedChatId}`);
-    const { contacts, error } = await ChatRepository.addContactsToChat({ requestingUserId, requestedChatId, contacts: requestedContacts });
+    const { contacts, error } = await ChatRepository.addContactsToChat({ requestingUserId, requestedChatId, contacts: requestedContacts, fromLink });
     return response.send({ contacts, error });
   }
 
@@ -183,7 +184,7 @@ class ChatController {
     const requestingUserId = auth.user.id;
     if (!requestingUserId)  throw new Error('Auth Error');
     const requestedLinkUuid = params.uuid;
-    log('CHAT', `User requesting Link ${requestedLinkUuid}`);
+    log('CHAT', `User ${requestingUserId} requesting Link ${requestedLinkUuid}`);
     const { link } = await ChatRepository.fetchLink({ requestedLinkUuid });
     return response.send({ link });
   }
@@ -197,6 +198,15 @@ class ChatController {
     log('CHAT', `User ${requestingUserId} updating link ${requestedLinkUuid} for Chat ${requestedChatId} - ${expiry} / ${expire}`);
     const { link } = await ChatRepository.updateLink({ requestedChatId, requestedLinkUuid, expiry, expire });
     return response.send({ link });
+  }
+
+  async fetchEntryLogs({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    if (!requestingUserId)  throw new Error('Auth Error');
+    const requestedChatId = params.chatId;
+    log('CHAT', `User ${requestingUserId} requesting Entry Logs for Chat ${requestedChatId}`);
+    const { entryLogs } = await ChatRepository.fetchEntryLogs({ requestedChatId });
+    return response.send({ entryLogs });
   }
 
 }

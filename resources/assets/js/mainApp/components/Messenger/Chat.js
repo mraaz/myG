@@ -7,7 +7,7 @@ import ChatOptions from './ChatOptions';
 import GroupOptions from './GroupOptions';
 
 import { prepareChatAction, fetchMessagesAction, sendMessageAction, editMessageAction, deleteMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction, setTypingAction } from '../../../redux/actions/chatAction';
-import { enrichMessagesWithDates } from '../../../common/chat';
+import { withDatesAndLogs } from '../../../common/chat';
 import { encryptMessage, decryptMessage, deserializeKey } from '../../../integration/encryption';
 import { formatDateTime } from '../../../common/date';
 
@@ -328,7 +328,7 @@ export class Chat extends React.PureComponent {
 
 export function mapStateToProps(state, props) {
   const chat = state.chat.chats.find(chat => chat.chatId === props.chatId) || { contacts: [] };
-  const messages = enrichMessagesWithDates(chat.messages || []);
+  const messages = withDatesAndLogs(chat.messages || [], chat.entryLogs || []);
   const contacts = chat.contacts.filter(contactId => contactId !== props.userId);
   const guests = chat.guests.filter(contactId => contactId !== props.userId);
   const fullContacts = chat.fullContacts || [];

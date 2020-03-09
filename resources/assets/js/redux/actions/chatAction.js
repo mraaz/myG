@@ -1,4 +1,4 @@
-import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, inviteUserToGroup, createChat, updateChat, clearChat, deleteChat, exitGroup, removeFromGroup, checkSelfDestruct, fetchMessages, fetchLinks, updateLink, sendMessage, editMessage, deleteMessage, setTyping } from '../../integration/http/chat';
+import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, inviteUserToGroup, createChat, updateChat, clearChat, deleteChat, exitGroup, removeFromGroup, checkSelfDestruct, fetchMessages, fetchLinks, updateLink, fetchEntryLogs, sendMessage, editMessage, deleteMessage, setTyping } from '../../integration/http/chat';
 import { fetchContacts, fetchContact, fetchStatus } from '../../integration/http/user';
 import { generateKeys, deserializeKey } from '../../integration/encryption';
 
@@ -139,12 +139,13 @@ export function prepareChatAction(chatId, contactId, isGroup, userId) {
   const chatRequest = fetchChat(chatId);
   const messagesRequest = fetchMessages(chatId);
   const linksRequest = fetchLinks(chatId);
+  const entryLogsRequest = fetchEntryLogs(chatId);
   const contactRequest = contactId ? fetchContact(contactId) : Promise.resolve({});
   const contactsRequest = isGroup ? fetchChatContacts(chatId) : Promise.resolve({});
-  const requests = [chatRequest, messagesRequest, linksRequest, contactRequest, contactsRequest];
+  const requests = [chatRequest, messagesRequest, linksRequest, entryLogsRequest, contactRequest, contactsRequest];
   return {
     type: 'PREPARE_CHAT',
-    payload: Promise.all(requests).then(([chat, messages, links, contact, contacts]) => ({ ...chat, ...messages, ...links, ...contact, ...contacts })),
+    payload: Promise.all(requests).then(([chat, messages, links, entryLogs, contact, contacts]) => ({ ...chat, ...messages, ...links, ...entryLogs, ...contact, ...contacts })),
     meta: { chatId, contactId, userId }
   }
 }

@@ -1,6 +1,6 @@
 
 import { generateKeysSync } from '../../integration/encryption';
-import { register, unregister, fetchChat, fetchMessages, sendMessage } from '../../integration/http/guest';
+import { register, unregister, fetchChat, fetchMessages, sendMessage, fetchEntryLogs } from '../../integration/http/guest';
 
 export function registerGuestAction(chatId) {
   const { encryption: { publicKey, privateKey } } = generateKeysSync();
@@ -22,10 +22,11 @@ export function unregisterGuestAction(guestId, chatId) {
 export function prepareChatAction(chatId, userId) {
   const chatRequest = fetchChat(chatId);
   const messagesRequest = fetchMessages(chatId, 1);
-  const requests = [chatRequest, messagesRequest];
+  const entryLogsRequest = fetchEntryLogs(chatId);
+  const requests = [chatRequest, messagesRequest, entryLogsRequest];
   return {
     type: 'PREPARE_CHAT',
-    payload: Promise.all(requests).then(([chat, messages]) => ({ ...chat, ...messages })),
+    payload: Promise.all(requests).then(([chat, messages, entryLogs]) => ({ ...chat, ...messages, ...entryLogs })),
     meta: { chatId, userId }
   }
 }

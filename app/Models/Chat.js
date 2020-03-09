@@ -16,6 +16,9 @@ class Chat extends Model {
   links() {
     return this.hasMany('App/Models/ChatLink')
   }
+  entryLogs() {
+    return this.hasMany('App/Models/ChatEntryLog')
+  }
 }
 
 module.exports = Chat

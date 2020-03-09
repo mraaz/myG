@@ -30,3 +30,8 @@ export function sendMessage(chatId, guestId, senderName, encryptedContent) {
   logger.log('GUEST', 'HTTP', `Sending Message from GUEST ${guestId} to Chat ${chatId}`);
   return axios.post(`/api/guest/${guestId}/chat/${chatId}`, { encryptedContent, senderName }).then(response => response.data);
 }
+
+export function fetchEntryLogs(chatId) {
+  logger.log('CHAT', 'HTTP', `Fetching Entry Logs for ${chatId}`);
+  return axios.get(`/api/guest/chat/${chatId}/entryLogs`).then(response => response.data);
+}

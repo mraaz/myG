@@ -1,14 +1,17 @@
 
 const Database = use('Database');
+const User = use('App/Models/User');
 const Chat = use('App/Models/Chat');
 const UserChat = use('App/Models/UserChat');
 const ChatMessage = use('App/Models/ChatMessage');
 const ChatLastCleared = use('App/Models/ChatLastCleared');
 const ChatLastRead = use('App/Models/ChatLastRead');
 const ChatLink = use('App/Models/ChatLink');
+const ChatEntryLog = use('App/Models/ChatEntryLog');
 
 const ChatSchema = require('../../Schemas/Chat');
 const ChatLinkSchema = require('../../Schemas/ChatLink');
+const ChatEntryLogSchema = require('../../Schemas/ChatEntryLog');
 const MessageSchema = require('../../Schemas/Message');
 const DefaultSchema = require('../../Schemas/Default');
 const ContactSchema = require('../../Schemas/Contact');
@@ -274,12 +277,14 @@ class ChatRepository {
     const guests = chat.guests.filter(contactId => parseInt(contactId) !== parseInt(userToRemove));
     await Chat.query().where('id', requestedChatId).update({ contacts: JSON.stringify(contacts), moderators: JSON.stringify(moderators), guests: JSON.stringify(guests) });
     !isKickingGuest && await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', userToRemove).delete();
-    chat.contacts.forEach(userId => this._notifyChatEvent({ userId, action: isKickingGuest ? 'guestLeft' : 'userLeft', payload: { userId: userToRemove, guestId: userToRemove, chatId: requestedChatId } }));
-    chat.guests.forEach(guestId => this._notifyChatEvent({ guestId, action: isKickingGuest ? 'guestLeft' : 'userLeft', payload: { userId: userToRemove, guestId: userToRemove, chatId: requestedChatId } }));
+    const alias = isKickingGuest ? `Guest #${userToRemove}` : (await User.query().where('id', '=', userToRemove).first()).toJSON().alias;
+    const entryLog = await this._insertEntryLog(requestedChatId, alias, !!requestedUserId, !requestedUserId, false, false);
+    chat.contacts.forEach(userId => this._notifyChatEvent({ userId, action: isKickingGuest ? 'guestLeft' : 'userLeft', payload: { userId: userToRemove, guestId: userToRemove, chatId: requestedChatId, entryLog } }));
+    chat.guests.forEach(guestId => this._notifyChatEvent({ guestId, action: isKickingGuest ? 'guestLeft' : 'userLeft', payload: { userId: userToRemove, guestId: userToRemove, chatId: requestedChatId, entryLog } }));
     return new DefaultSchema({ success: true });
   }
 
-  async addContactsToChat({ requestedChatId, contacts }) {
+  async addContactsToChat({ requestedChatId, contacts, fromLink }) {
     const { chat } = await this.fetchChatInfo({ requestedChatId });
     if (chat.contacts.length < 3) throw new Error('Cannot add users to a normal chat.');
     const diffContacts = contacts.filter(contactId => !chat.contacts.includes(contactId));
@@ -304,8 +309,12 @@ class ChatRepository {
       lastSeen: contact.last_seen,
       publicKey: contact.public_key,
     }));
+    const joinedUsers = fullContacts.filter(contact => contacts.includes(contact.contactId));
+    const logRequests = joinedUsers.map(contact => this._insertEntryLog(requestedChatId, contact.name, false, false, !fromLink, fromLink));
+    const entryLogs = await Promise.all(logRequests);
+    chat.entryLogs = [...chat.entryLogs, entryLogs];
     this._notifyChatEvent({ chatId: requestedChatId, action: 'newChat', payload: chat });
-    this._notifyChatEvent({ chatId: requestedChatId, action: 'userJoined', payload: { contacts: fullContacts, chatId: requestedChatId } });
+    this._notifyChatEvent({ chatId: requestedChatId, action: 'userJoined', payload: { contacts: fullContacts, chatId: requestedChatId, entryLog: entryLogs[0] } });
     return { contacts: fullContacts };
   }
 
@@ -468,6 +477,44 @@ class ChatRepository {
       link.expiry = null;
       return { link };
     }
+  }
+
+  async fetchEntryLogs({ requestedChatId }) {
+    const rawEntryLogs = (await ChatEntryLog.query('chat_id', requestedChatId).fetch()).toJSON();
+    const entryLogs = rawEntryLogs.map(entryLog => new ChatEntryLogSchema({
+      id: entryLog.id,
+      chatId: entryLog.chat_id,
+      alias: entryLog.alias,
+      kicked: entryLog.kicked,
+      left: entryLog.left,
+      invited: entryLog.invited,
+      link: entryLog.link,
+      createdAt: entryLog.created_at,
+      updatedAt: entryLog.updated_at,
+    }));
+    return { entryLogs };
+  }
+
+  async _insertEntryLog(requestedChatId, alias, kicked, left, invited, link) {
+    const entryLog = new ChatEntryLog();
+    entryLog.chat_id = requestedChatId;
+    entryLog.alias = alias;
+    entryLog.kicked = kicked;
+    entryLog.left = left;
+    entryLog.invited = invited;
+    entryLog.link = link;
+    await entryLog.save();
+    return new ChatEntryLogSchema({
+      id: entryLog.id,
+      chatId: entryLog.chat_id,
+      alias: entryLog.alias,
+      kicked: entryLog.kicked,
+      left: entryLog.left,
+      invited: entryLog.invited,
+      link: entryLog.link,
+      createdAt: entryLog.created_at,
+      updatedAt: entryLog.updated_at,
+    });
   }
 
   async _fetchLastMessageId({ requestedChatId }) {

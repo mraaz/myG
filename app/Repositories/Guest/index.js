@@ -37,8 +37,9 @@ class GuestRepository {
     chat.guests.push(guest.guestId);
     if (chat.contacts.length + chat.guests.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
     await Chat.query().where('id', requestedChatId).update({ guests: JSON.stringify(chat.guests) });
+    const entryLog = await ChatRepository._insertEntryLog(requestedChatId, `Guest #${requestingGuestId}`, false, false, false, true);
     ChatRepository._notifyChatEvent({ chatId: requestedChatId, action: 'newChat', payload: chat });
-    ChatRepository._notifyChatEvent({ chatId: requestedChatId, action: 'guestJoined', payload: { guest, chatId: requestedChatId } });
+    ChatRepository._notifyChatEvent({ chatId: requestedChatId, action: 'guestJoined', payload: { guest, chatId: requestedChatId, entryLog } });
     return { chat };
   }
 
@@ -46,8 +47,9 @@ class GuestRepository {
     const { chat } = await ChatRepository.fetchChatInfo({ requestedChatId });
     if (!chat.guests.includes(requestingGuestId)) return { error: 'Guest was not in Chat.' };
     chat.guests = chat.guests.filter(guestId => guestId !== requestingGuestId);
-    ChatRepository._notifyChatEvent({ chatId: requestedChatId, action: 'guestLeft', payload: { guestId: requestingGuestId, chatId: requestedChatId } });
     await Chat.query().where('id', requestedChatId).update({ guests: JSON.stringify(chat.guests) });
+    const entryLog = await ChatRepository._insertEntryLog(requestedChatId, `Guest #${requestingGuestId}`, false, true, false, false);
+    ChatRepository._notifyChatEvent({ chatId: requestedChatId, action: 'guestLeft', payload: { guestId: requestingGuestId, chatId: requestedChatId, entryLog } });
   }
 
   async fetchLink({ requestedLinkUuid }) {
@@ -97,6 +99,10 @@ class GuestRepository {
     });
     ChatRepository._notifyChatEvent({ chatId: requestedChatId, action: 'newMessage', payload: messageSchema });
     return { message: messageSchema };
+  }
+
+  async fetchEntryLogs({ requestedChatId }) {
+    return ChatRepository.fetchEntryLogs({ requestedChatId });
   }
 
 }
