@@ -11,33 +11,38 @@ import Chat from './Chat';
 class GuestLink extends React.PureComponent {
 
   state = {
+    validLink: false,
     loaded: false,
   }
 
   componentDidMount() {
     this.props.logout();
+    localStorage.clear();
     fetchLink(this.props.uuid).then(({ link }) => {
       if (!link) return toast.error('The Group for this Link was not found :(');
       const isValid = !link.expiry || ((new Date(link.updatedAt).getTime() + (link.expiry * 60 * 60 * 1000)) >= Date.now());
       if (!isValid) return toast.error('This Link has expired :(');
       const chatId = link.chatId;
       this.props.registerGuest(chatId);
+      this.setState({ validLink: true });
     });
   }
 
   componentWillUnmount() {
+    this.props.logout();
+    localStorage.clear();
     closeSubscription();
   }
 
   componentDidUpdate() {
-    if (!this.props.guestId || this.state.loaded) return;
+    if (!this.props.guestId || this.state.loaded || !this.state.validLink) return;
     monitorChats(this.props.guestId, true);
     this.setState({ loaded: true });
   }
 
   renderChat = () => {
     const { guestId, chatId } = this.props;
-    if (!guestId || !chatId) return null;
+    if (!guestId || !chatId || !this.state.loaded || !this.state.validLink) return null;
     return (
       <div id="messenger" className="messenger-container">
         <div className="messenger-chat-bar">
