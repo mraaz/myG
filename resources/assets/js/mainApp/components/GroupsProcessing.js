@@ -41,6 +41,6 @@ export default class GroupsProcessing extends Component {
   }
 
   render() {
-    return <div className='groupsProcessing'> {this.showPost()}</div>
+    return <div className='content-area scheduleGames-page'>{this.showPost()}</div>
   }
 }
