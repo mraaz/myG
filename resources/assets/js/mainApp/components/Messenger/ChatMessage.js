@@ -1,11 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
-import { deleteMessageAction } from '../../../redux/actions/chatAction';
 import { formatAMPM, formatDate, convertUTCDateToLocalDate } from '../../../common/date';
 import { copyToClipboard } from '../../../common/clipboard';
 
-class ChatMessage extends React.Component {
+export default class ChatMessage extends React.Component {
 
   constructor(props) {
     super(props);
@@ -26,6 +24,7 @@ class ChatMessage extends React.Component {
 
   handleKeyPress = (event) => {
     if (event.keyCode == 13) {
+      if (this.props.isGuest) return;
       this.props.editMessage(this.props.chatId, this.props.messageId, this.state.input);
       this.setState({ editing: false });
       this.props.onEdit();
@@ -46,8 +45,9 @@ class ChatMessage extends React.Component {
   }
 
   renderOptions = () => {
+    if (this.props.isGuest) return;
     if (!this.state.showOptionsMenu || this.props.message.deleted) return;
-    const origin = parseInt(this.props.message.senderId) === this.props.userId ? 'sent' : 'received';
+    const origin = this.props.message.senderId === this.props.userId ? 'sent' : 'received';
     const sentStyle = 'chat-component-message-options-menu-sent';
     const receivedStyle = 'chat-component-message-options-menu-received';
     const directionStyle = `chat-component-message-options-menu-${this.shouldRenderOptionsUpwards() ? 'upwards' : 'downwards'}`;
@@ -106,6 +106,19 @@ class ChatMessage extends React.Component {
     );
   }
 
+  renderEntryLog() {
+    const { message } = this.props;
+    const invitedText = message.invited && `${message.alias} was invited`;
+    const linkText = message.link && `${message.alias} has joined through a link`;
+    const kickedText = message.kicked && `${message.alias} was kicked`;
+    const leftText = message.left && `${message.alias} has left`;
+    return (
+      <div key={Math.random()} className="chat-component-message-date-divisor">
+        <p>{invitedText || linkText || kickedText || leftText}</p>
+      </div>
+    );
+  }
+
   colorMessage = (id) => {
     const colors = ['#F99', '#9F9', '#99F', '#FF9', '#9FF', '#F9F'];
     return colors[parseInt(id % colors.length)];
@@ -113,11 +126,12 @@ class ChatMessage extends React.Component {
 
   render() {
     const { message } = this.props;
-    const origin = parseInt(message.senderId) === this.props.userId ? 'sent' : 'received';
+    const origin = message.senderId === this.props.userId ? 'sent' : 'received';
     const deletedStyle = message.deleted && 'chat-component-message-deleted';
     const selfDestructStyle = message.selfDestruct && 'chat-component-message-self-destruct';
     if (this.state.editing) return this.renderInput();
     if (message.isDateDivisor) return this.renderDateDivisor();
+    if (message.isEntryLog) return this.renderEntryLog();
     return (
       <div
         key={message.messageId}
@@ -129,12 +143,12 @@ class ChatMessage extends React.Component {
         <div className="chat-component-message-container">
 
           <div className="chat-component-message-content-body">
-            {this.props.senderName && (
+            {message.senderId !== this.props.userId && this.props.isGroup && (
               <p
                 style={{ color: this.colorMessage(parseInt(message.senderId)) }}
                 className={`chat-component-message-sender-name`}
               >
-                {this.props.senderName}
+                {message.senderName}
               </p>
             )}
             <p className={`chat-component-message-content`}>
@@ -175,17 +189,3 @@ class ChatMessage extends React.Component {
     );
   }
 }
-
-function mapStateToProps(state, props) {
-  return {
-
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return ({
-    deleteMessage: (chatId, messageId, origin) => dispatch(deleteMessageAction(chatId, messageId, origin)),
-  });
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ChatMessage);

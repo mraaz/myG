@@ -8,78 +8,36 @@ export default class MyPosts extends Component {
   constructor() {
     super()
     this.state = {
-      counter: 1,
+      counter: 0,
       myPosts: [],
       moreplease: true,
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.fetchMoreData()
   }
 
   showLatestPosts = () => {
     if (this.state.myPosts != undefined) {
       return this.state.myPosts.map((item, index) => {
-        return (
-          <IndividualPost
-            post={item}
-            key={index}
-            user={this.props.initialData}
-          />
-        )
+        return <IndividualPost post={item} key={index} user={this.props.initialData} />
       })
     }
   }
 
   fetchMoreData = () => {
-    var myCounter = this.state.counter
-    this.setState({
-      counter: this.state.counter + 1,
-    })
-    if (myCounter != 1) {
-      this.setState({
-        show_top_btn: true,
-      })
-    }
-
     const self = this
+
     const getPosts = async function() {
       try {
-        const myPosts = await axios.get(`/api/getmypost/${myCounter}`)
-
-        var i
-        var myLikes
+        const myPosts = await axios.get(`/api/getmypost/${self.state.counter}`)
 
         if (myPosts.data.myPosts.data.length == 0) {
           self.setState({
             moreplease: false,
           })
           return
-        }
-
-        for (i = 0; i < myPosts.data.myPosts.data.length; i++) {
-          myLikes = await axios.get(
-            `/api/likes/${myPosts.data.myPosts.data[i].id}`
-          )
-          myPosts.data.myPosts.data[i].total =
-            myLikes.data.number_of_likes[0].total
-          myPosts.data.myPosts.data[i].no_of_comments =
-            myLikes.data.no_of_comments[0].no_of_comments
-          if (myLikes.data.number_of_likes[0].total != 0) {
-            myPosts.data.myPosts.data[i].admirer_first_name =
-              myLikes.data.admirer_UserInfo.first_name
-            myPosts.data.myPosts.data[i].admirer_last_name =
-              myLikes.data.admirer_UserInfo.last_name
-          } else {
-            myPosts.data.myPosts.data[i].admirer_first_name = ''
-            myPosts.data.myPosts.data[i].admirer_last_name = ''
-          }
-          if (myLikes.data.do_I_like_it[0].myOpinion != 0) {
-            myPosts.data.myPosts.data[i].do_I_like_it = true
-          } else {
-            myPosts.data.myPosts.data[i].do_I_like_it = false
-          }
         }
 
         self.setState({
@@ -89,17 +47,29 @@ export default class MyPosts extends Component {
         console.log(error)
       }
     }
-    getPosts()
+
+    var myCounter = this.state.counter
+    this.setState(
+      {
+        counter: this.state.counter + 1,
+      },
+      () => {
+        getPosts()
+      }
+    )
+
+    if (myCounter != 1) {
+      this.setState({
+        show_top_btn: true,
+      })
+    }
   }
 
   render() {
     if (this.state.myPosts != undefined) {
       return (
         <section id='posts'>
-          <InfiniteScroll
-            dataLength={this.state.myPosts.length}
-            next={this.fetchMoreData}
-            hasMore={this.state.moreplease}>
+          <InfiniteScroll dataLength={this.state.myPosts.length} next={this.fetchMoreData} hasMore={this.state.moreplease}>
             {this.showLatestPosts()}
           </InfiniteScroll>
         </section>

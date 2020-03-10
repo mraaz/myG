@@ -324,7 +324,7 @@ export default class AddGamingExp extends Component<*, State> {
               className='game_name_box'
               onCreateOption={this.handleCreate}
               onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
-              placeholder='Enter in a Game name'
+              placeholder='Enter in a Game title'
               onKeyDown={this.onKeyDown}
             />
           </div>

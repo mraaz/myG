@@ -1,18 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import ChatMessage from './ChatMessage';
+import ChatMessageList from './ChatMessageList';
 import ChatInput from './ChatInput';
 import ChatOptions from './ChatOptions';
 import GroupOptions from './GroupOptions';
 
-import { prepareChatAction, fetchMessagesAction, sendMessageAction, editMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction, setTypingAction } from '../../../redux/actions/chatAction';
-import { enrichMessagesWithDates } from '../../../common/chat';
+import { prepareChatAction, fetchMessagesAction, sendMessageAction, editMessageAction, deleteMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction, setTypingAction } from '../../../redux/actions/chatAction';
+import { withDatesAndLogs } from '../../../common/chat';
 import { encryptMessage, decryptMessage, deserializeKey } from '../../../integration/encryption';
 import { formatDateTime } from '../../../common/date';
-import ChatMessageList from './ChatMessageList';
 
-class Chat extends React.PureComponent {
+export class Chat extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -33,7 +32,7 @@ class Chat extends React.PureComponent {
     document.addEventListener("scroll", this.handleMessageListScroll, { passive: true });
     document.addEventListener("wheel", this.handleMessageListScroll, { passive: true });
     this.props.prepareChat(this.props.chatId, this.props.contactId, this.props.isGroup, this.props.userId);
-    setTimeout(() => this.props.checkSelfDestruct(this.props.chatId), 1000);
+    if (!this.props.isGuest) this.props.checkSelfDestruct(this.props.chatId);
   }
 
   componentWillUnmount() {
@@ -76,6 +75,7 @@ class Chat extends React.PureComponent {
   }
 
   markAsRead = (lastMessageId) => {
+    if (this.props.isGuest) return;
     if (this.props.minimised || !this.props.privateKey || !this.props.windowFocused) return;
     if (!lastMessageId || lastMessageId <= this.props.lastRead || lastMessageId <= this.state.lastRead) return;
     this.setState({ lastRead: lastMessageId });
@@ -84,7 +84,7 @@ class Chat extends React.PureComponent {
 
   sendMessage = (input) => {
     if (!input) return;
-    this.props.sendMessage(this.props.chatId, this.props.userId, this.encryptInput(input));
+    this.props.sendMessage(this.props.chatId, this.props.userId, this.props.alias, this.encryptInput(input));
   }
 
   editMessage = (chatId, messageId, input) => {
@@ -98,7 +98,7 @@ class Chat extends React.PureComponent {
   }
 
   decryptMessage = (message) => {
-    const isSent = parseInt(message.senderId) === parseInt(this.props.userId);
+    const isSent = message.senderId == this.props.userId;
     const encryptedContent = isSent ? message.backup : message.content;
     const privateKey = isSent ? this.props.userPrivateKey : this.props.privateKey;
     const content = decryptMessage(encryptedContent, privateKey);
@@ -106,7 +106,7 @@ class Chat extends React.PureComponent {
   }
 
   editLastMessage = () => {
-    const sentMessages = this.props.messages.filter(message => parseInt(message.senderId) === parseInt(this.props.userId) && !message.deleted);
+    const sentMessages = this.props.messages.filter(message => message.senderId == this.props.userId && !message.deleted);
     const lastSentMessage = sentMessages[sentMessages.length - 1];
     if (!lastSentMessage) return;
     this.setState({ editing: lastSentMessage.messageId });
@@ -142,7 +142,7 @@ class Chat extends React.PureComponent {
 
         <div
           className="chat-component-header-icon clickable"
-          onClick={() => !this.props.isGroup && window.location.replace(`/profile/${this.props.contactId}`)}
+          onClick={() => !this.props.isGroup && window.location.replace(`/profile/${this.props.title}`)}
           style={{ backgroundImage: `url('${this.props.icon}')` }}
         />
 
@@ -164,25 +164,29 @@ class Chat extends React.PureComponent {
         </div>
 
         <div className="chat-component-header-options">
-          <div className="chat-component-header-top-buttons">
-            <div className="chat-component-header-button clickable"
-              style={{ backgroundImage: `url(/assets/svg/ic_chat_minimise.svg)` }}
-              onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}
+          {(!this.state.settings || this.props.minimised) && (
+            <div className="chat-component-header-top-buttons">
+              <div className="chat-component-header-button clickable"
+                style={{ backgroundImage: `url(/assets/svg/ic_chat_minimise.svg)` }}
+                onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}
+              />
+              <div className="chat-component-header-button clickable"
+                style={{ backgroundImage: `url(/assets/svg/ic_chat_maximise.svg)` }}
+                onClick={() => this.props.updateChatState(this.props.chatId, { maximised: !this.props.maximised, minimised: false })}
+              />
+              <div className="chat-component-header-button clickable"
+                style={{ backgroundImage: `url(/assets/svg/ic_chat_close.svg)` }}
+                onClick={() => this.props.onClose(this.props.chatId)}
+              />
+            </div>
+          )}
+          {!this.props.isGuest && (
+            <div
+              className="chat-component-header-settings clickable"
+              style={{ backgroundImage: `url('/assets/svg/ic_chat_settings.svg')` }}
+              onClick={() => this.setState(previous => ({ settings: !previous.settings }))}
             />
-            <div className="chat-component-header-button clickable"
-              style={{ backgroundImage: `url(/assets/svg/ic_chat_maximise.svg)` }}
-              onClick={() => this.props.updateChatState(this.props.chatId, { maximised: !this.props.maximised, minimised: false })}
-            />
-            <div className="chat-component-header-button clickable"
-              style={{ backgroundImage: `url(/assets/svg/ic_chat_close.svg)` }}
-              onClick={() => this.props.onClose(this.props.chatId)}
-            />
-          </div>
-          <div
-            className="chat-component-header-settings clickable"
-            style={{ backgroundImage: `url('/assets/svg/ic_chat_settings.svg')` }}
-            onClick={() => this.setState(previous => ({ settings: !previous.settings }))}
-          />
+          )}
         </div>
 
       </div>
@@ -202,12 +206,14 @@ class Chat extends React.PureComponent {
         <ChatMessageList
           userId={this.props.userId}
           chatId={this.props.chatId}
+          isGroup={this.props.isGroup}
+          isGuest={this.props.isGuest}
           messages={this.props.messages}
-          contactsMap={this.props.contactsMap}
           messageListRef={this.messageListRef}
           editing={this.state.editing}
           onEdit={this.onEdit}
           editMessage={this.editMessage}
+          deleteMessage={this.props.deleteMessage}
           decryptMessage={this.decryptMessage}
         />
         {this.renderTypingIndicator()}
@@ -224,10 +230,11 @@ class Chat extends React.PureComponent {
   }
 
   renderReadIndicators(lastMessageId, lastMessageSender) {
+    if (this.props.isGuest) return;
     const { contactsMap, lastReads } = this.props;
     const contacts = this.props.isGroup ? contactsMap : { [this.props.contactId]: { contactId: this.props.contactId, icon: this.props.icon } };
     const contactsWithRead = Object.keys(lastReads).map(contactId => ({ ...contacts[contactId], lastRead: lastReads[contactId] }));
-    const contactsThatRead = contactsWithRead.filter(contact => contact.contactId !== lastMessageSender && contact.lastRead >= lastMessageId);
+    const contactsThatRead = contactsWithRead.filter(contact => contact.contactId !== lastMessageSender && contact.lastRead >= lastMessageId && contact.icon);
     if (!contactsThatRead.length) return null;
     return (
       <div className="chat-component-read-indicator-container">
@@ -262,23 +269,6 @@ class Chat extends React.PureComponent {
     );
   }
 
-  renderMessage = (message) => {
-    return (
-      <ChatMessage
-        key={message.messageId}
-        message={this.decryptMessage(message)}
-        userId={this.props.userId}
-        chatId={this.props.chatId}
-        senderName={(this.props.contactsMap[message.senderId] || {}).name}
-        messageId={message.messageId}
-        messageListRef={this.messageListRef}
-        editing={this.state.editing === message.messageId}
-        onEdit={this.onEdit}
-        editMessage={this.editMessage}
-      />
-    );
-  }
-
   renderFooter = () => {
     return (
       <div className="chat-component-footer">
@@ -294,7 +284,7 @@ class Chat extends React.PureComponent {
           isDecryptable={this.props.privateKey}
           sendMessage={this.sendMessage}
           editLastMessage={this.editLastMessage}
-          setTyping={isTyping => this.props.setTyping(this.props.chatId, isTyping)}
+          setTyping={isTyping => !this.props.isGuest && this.props.setTyping(this.props.chatId, isTyping)}
         />
       </div>
     );
@@ -336,10 +326,11 @@ class Chat extends React.PureComponent {
   }
 }
 
-function mapStateToProps(state, props) {
-  const chat = state.chat.chats.find(chat => chat.chatId === props.chatId) || {};
-  const messages = enrichMessagesWithDates(chat.messages || []);
+export function mapStateToProps(state, props) {
+  const chat = state.chat.chats.find(chat => chat.chatId === props.chatId) || { contacts: [] };
+  const messages = withDatesAndLogs(chat.messages || [], chat.entryLogs || []);
   const contacts = chat.contacts.filter(contactId => contactId !== props.userId);
+  const guests = chat.guests.filter(contactId => contactId !== props.userId);
   const fullContacts = chat.fullContacts || [];
   const contactId = contacts.length === 1 && contacts[0];
   const contact = (contactId && state.user.contacts.find(contact => contact.contactId === contactId)) || {};
@@ -349,8 +340,8 @@ function mapStateToProps(state, props) {
   const contactsMap = {};
   fullContacts.forEach(contact => contactsMap[contact.contactId] = contact);
   if (isGroup) {
-    const memberCount = contacts.length;
-    const onlineCount = contacts.filter(contactId => (contactsMap[contactId] || {}).status === 'online').length;
+    const memberCount = contacts.length + guests.length;
+    const onlineCount = contacts.filter(contactId => (contactsMap[contactId] || {}).status === 'online').length + guests.length;
     chatSubtitle = `${onlineCount}/${memberCount} online`;
   }
   chat.privateKey = deserializeKey(chat.privateKey);
@@ -360,7 +351,6 @@ function mapStateToProps(state, props) {
     noMoreMessages: chat.noMoreMessages,
     contacts: fullContacts,
     contactId,
-    contactIds: contacts,
     contactsMap,
     isGroup,
     group: chat,
@@ -386,10 +376,11 @@ function mapStateToProps(state, props) {
 
 function mapDispatchToProps(dispatch) {
   return ({
-    prepareChat: (chatId, contactId, contactIds, userId) => dispatch(prepareChatAction(chatId, contactId, contactIds, userId)),
+    prepareChat: (chatId, contactId, isGroup, userId) => dispatch(prepareChatAction(chatId, contactId, isGroup, userId)),
     fetchMessages: (chatId, page) => dispatch(fetchMessagesAction(chatId, page)),
-    sendMessage: (chatId, userId, content) => dispatch(sendMessageAction(chatId, userId, content)),
+    sendMessage: (chatId, userId, alias, content) => dispatch(sendMessageAction(chatId, userId, alias, content)),
     editMessage: (chatId, messageId, content) => dispatch(editMessageAction(chatId, messageId, content)),
+    deleteMessage: (chatId, messageId, origin) => dispatch(deleteMessageAction(chatId, messageId, origin)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     updateChatState: (chatId, state) => dispatch(updateChatStateAction(chatId, state)),
     checkSelfDestruct: (chatId) => dispatch(checkSelfDestructAction(chatId)),

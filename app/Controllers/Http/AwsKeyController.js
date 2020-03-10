@@ -61,6 +61,7 @@ class AwsKeyController {
           let addAwsKey = await AwsKey.create({
             aws_key: tmp_keys[i],
             post_id: request.params.post_id,
+            type: 3,
           })
         }
       } catch (error) {

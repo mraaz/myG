@@ -26,13 +26,14 @@ class TravelProvider(BaseProvider):
 
 def main():
   start = 100
-  stop = 1110
+  stop = 110 #120 = Maximum call stack size exceeded
+
 
   #Gaming intestests, esportsExp, scheduledGames how many per user
   mini_start = start
   mini_stop = 105
   create_celebrity = True
-  adonisJS = False #print out for adonis or False for SQL
+  adonisJS = True #print out for adonis or False for SQL
 
   answer = choice(['Yes', 'No'])
 
@@ -54,7 +55,7 @@ def main():
   #schedule_games
   sg_region = ['North America', 'Europe', 'Asia', 'Russia', 'South America', 'Oceania', 'Middle East', 'Africa', 'Central America']
   sg_platform = ['PC', 'XB', 'PS', 'Nintendo', 'Mobile', 'Tabletop']
-  sg_visibility = ['Public', 'Friends', 'Group', 'Hidden']
+  sg_visibility = ['Public', 'Private']
   sg_limit = [5,10,20,25,30,40,50,100,42]
 
   #posts

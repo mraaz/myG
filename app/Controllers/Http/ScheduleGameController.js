@@ -94,17 +94,17 @@ class ScheduleGameController {
           }
         }
 
-        if (parseInt(request.input('visibility'), 10) == 2) {
-          const getFriends = await Database.from('friends')
-            .where({ user_id: auth.user.id })
-            .select('friend_id')
-          let noti = new NotificationController()
-          for (var i = 0; i < getFriends.length; i++) {
-            request.params.other_user_id = getFriends[i].friend_id
-            request.params.schedule_games_id = newScheduleGame.id
-            noti.addScheduleGame({ auth, request, response })
-          }
-        }
+        // if (parseInt(request.input('visibility'), 10) == 2) {
+        //   const getFriends = await Database.from('friends')
+        //     .where({ user_id: auth.user.id })
+        //     .select('friend_id')
+        //   let noti = new NotificationController()
+        //   for (var i = 0; i < getFriends.length; i++) {
+        //     request.params.other_user_id = getFriends[i].friend_id
+        //     request.params.schedule_games_id = newScheduleGame.id
+        //     noti.addScheduleGame({ auth, request, response })
+        //   }
+        // }
 
         return newScheduleGame
       } catch (error) {
@@ -305,11 +305,10 @@ class ScheduleGameController {
       .limit(11)
       .offset(parseInt(request.input('limit_clause'), 10))
       .orderBy('schedule_games.created_at', 'desc')
-      .select('*', 'schedule_games.id', 'users.id as user_id')
+      .select('*', 'schedule_games.region', 'schedule_games.id', 'users.id as user_id')
 
     //TODO BROKEN!!!!! https://github.com/mraaz/myGame/issues/157
     //NEED TO REVIST ONCE paginate is implemented.
-    //console.log(latestScheduledGames.length)
 
     for (var i = 0; i < latestScheduledGames.length; i++) {
       var myScheduledTrans = await Database.from('schedule_games_transactions')

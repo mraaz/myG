@@ -29,9 +29,11 @@
 @import 'pages/chatGroupCreation';
 @import 'pages/chatGroupOptions';
 @import 'pages/chatGroupMembers';
+@import 'pages/chatGroupLinks';
 @import 'pages/messenger';
-
+@import 'pages/messengerLink';
 @import 'auth/auth';
+@import '../../../node_modules/react-image-gallery/styles/scss/image-gallery';
 
 * {
   box-sizing: border-box;
@@ -193,6 +195,12 @@ textarea {
   //     rgba(183, 222, 237, 1) 100%
   //   );
   // }
+}
+.toast-container {
+  font-size: 12px !important;
+}
+.dark-toast {
+  background: $myG-black !important;
 }
 .notifications {
   display: none;

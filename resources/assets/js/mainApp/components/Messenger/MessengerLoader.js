@@ -37,6 +37,7 @@ class MessengerLoader extends React.PureComponent {
     return <Messenger
       profileImage={this.props.profileImage}
       userId={this.props.userId}
+      alias={this.props.alias}
       publicKey={this.props.publicKey}
     />;
   }

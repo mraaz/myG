@@ -251,14 +251,8 @@ export default class ArchivedScheduledGamePost extends Component {
       case 1:
         visibility = 'Public'
         break
-      case 2:
-        visibility = 'Friends'
-        break
-      case 3:
-        visibility = 'Group'
-        break
       case 4:
-        visibility = 'Hidden'
+        visibility = 'Private'
         break
     }
 

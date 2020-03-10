@@ -19,6 +19,7 @@ export default class IndividualNotification extends Component {
       schedule_game: false,
       group_post: false,
       archive_schedule_game: false,
+      chat: null,
       redirect_: false,
       redirect_link: '',
       redirect_tmp: '',
@@ -57,6 +58,15 @@ export default class IndividualNotification extends Component {
     this.setState({
       actionClicked: false,
       actionClickedDeny: true,
+    })
+  }
+
+  acceptGroupInvite = () => {
+    if (!this.state.chat) return
+    const contacts = [this.props.userId]
+    axios.put(`/api/chat/${this.state.chat.chatId}/contacts`, { contacts }).then(() => {
+      axios.get(`/api/notifications/delete/${this.props.notification.id}`)
+      this.setState({ chat: null })
     })
   }
 
@@ -362,12 +372,14 @@ export default class IndividualNotification extends Component {
 
     const getschedulegameData = async function() {
       try {
-        const getunread = await axios.get(
-          `/api/notifications/getunread_schedule_game/${notification.schedule_games_id}/${notification.activity_type}`
-        )
-        if (getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0) {
+        // const getunread = await axios.get(
+        //   `/api/notifications/getunread_schedule_game/${notification.schedule_games_id}/${notification.activity_type}`
+        // )
+        if (notification.read_status == 0) {
           self.state.unread = true
         }
+        // if (getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0) {
+        // }
 
         const myScheduledGame = await axios.get(`/api/ScheduleGame/${notification.schedule_games_id}`)
 
@@ -465,6 +477,13 @@ export default class IndividualNotification extends Component {
       }
     }
 
+    const getGroupInvitationData = async () => {
+      const { chat } = await axios.get(`/api/chat/${notification.chat_id}/info`).then((response) => response.data)
+      let notification_str = 'Something went wrong :('
+      if (chat) notification_str = `${notification.alias} has invited you to join his Chat Group ${chat.title}!`
+      this.setState({ chat, notification_str })
+    }
+
     if (notification.activity_type == 10) {
       getschedulegameData()
     } else if (notification.activity_type == 11 || notification.activity_type == 16) {
@@ -475,6 +494,8 @@ export default class IndividualNotification extends Component {
       getGameApprovalData()
     } else if (notification.activity_type == 15) {
       getArchive_scheduled_game_Data()
+    } else if (notification.activity_type === 18) {
+      getGroupInvitationData()
     } else {
       getinitialData()
     }
@@ -555,6 +576,8 @@ export default class IndividualNotification extends Component {
     let { notification, lastRow } = this.props
     var str_href
 
+    if (notification.activity_type === 18 && !this.state.chat) return null
+
     var show_profile_img = false
     if (notification.profile_img != null) {
       show_profile_img = true
@@ -563,7 +586,10 @@ export default class IndividualNotification extends Component {
     if (
       notification.activity_type == 10 ||
       notification.activity_type == 14 ||
-      (notification.post_id == null && notification.activity_type != 15 && notification.group_id == null)
+      (notification.post_id == null &&
+        notification.activity_type != 15 &&
+        notification.activity_type != 18 &&
+        notification.group_id == null)
     ) {
       this.state.post = false
       this.state.archive_schedule_game = false
@@ -586,7 +612,7 @@ export default class IndividualNotification extends Component {
       this.state.schedule_game = false
       this.state.archive_schedule_game = true
       str_href = `/archived_scheduledGames/${this.props.notification.archive_schedule_game_id}`
-    } else {
+    } else if (notification.activity_type !== 18) {
       this.state.post = true
       this.state.group_post = false
       this.state.schedule_game = false
@@ -654,6 +680,14 @@ export default class IndividualNotification extends Component {
         {this.state.archive_schedule_game && this.state.unread && (
           <div className='user-info-unread' onClick={() => this.updateRead_Status_archive_schedule_game()}>
             {this.state.notification_str}
+          </div>
+        )}
+        {notification.activity_type === 18 && (
+          <div className='group-invitation'>
+            {this.state.notification_str}
+            <div className='group-invitation-button clickable' onClick={this.acceptGroupInvite}>
+              Accept
+            </div>
           </div>
         )}
 

@@ -1,18 +1,17 @@
 import React from 'react'
 import axios from 'axios'
 
-const createOption = (label: string, game_names_id: string) => ({
+const createOption = (label: string) => ({
   label,
   value: label,
-  game_names_id,
 })
 
 export async function Game_name_values(inputValue) {
+  inputValue = inputValue.trimStart()
   if (inputValue == '' || inputValue == undefined) {
     return []
   }
   try {
-    inputValue = inputValue.trimStart()
     const getGameName = await axios.get(`/api/GameNames/${inputValue}/gameSearchResults`)
     var results = getGameName.data.gameSearchResults[0].filter((i) => i.game_name.toLowerCase().includes(inputValue.toLowerCase()))
     var newArr = []
@@ -61,3 +60,19 @@ export const Toast_style = (props) => (
     <div>{props.text}</div>
   </div>
 )
+
+export function Convert_to_comma_delimited_value(array_to_convert) {
+  var convert = ''
+
+  for (var i = 0; i < array_to_convert.length; i++) {
+    convert += array_to_convert[i].value + '; '
+  }
+  convert = convert
+    .trim()
+    .replace(/; /g, ',')
+    .trim()
+  convert = convert.replace(/;/g, '')
+  convert = convert.replace(/,/g, ', ')
+
+  return convert
+}

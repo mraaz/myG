@@ -2,10 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import ToggleButton from 'react-toggle-button'
 import GroupMemberOptions from './GroupMemberOptions';
+import GroupLinkOptions from './GroupLinkOptions';
 import Popup from '../Popup';
 import FileOpenModal from '../FileOpenModal';
 import { WithTooltip } from '../Tooltip';
 import { updateChatAction, clearChatAction, deleteChatAction, exitGroupAction } from '../../../redux/actions/chatAction';
+import { copyToClipboard } from '../../../common/clipboard'
 
 class GroupOptions extends React.PureComponent {
 
@@ -57,12 +59,27 @@ class GroupOptions extends React.PureComponent {
           userId={this.props.userId}
           group={this.props.group}
           groupContacts={this.props.groupContacts}
+          onClose={() => this.setState({ showingMembers: false })}
+        />
+      </div>
+    );
+  }
+
+  renderGroupLinkOptions() {
+    if (!this.state.showingLinks) return null;
+    return (
+      <div className="chat-group-links-container">
+        <GroupLinkOptions
+          userId={this.props.userId}
+          group={this.props.group}
+          onClose={() => this.setState({ showingLinks: false })}
         />
       </div>
     );
   }
 
   render() {
+    const mainLink = window.location.protocol + '//' + window.location.host + '/link/' + this.props.group.links[0].uuid;
     const isGroupOwner = this.props.group.owners.length && this.props.group.owners.includes(this.props.userId);
     const isGroupModerator = this.props.group.moderators.length && this.props.group.moderators.includes(this.props.userId);
     const inactiveStyle = 'chat-component-options-option-inactive';
@@ -75,6 +92,9 @@ class GroupOptions extends React.PureComponent {
           callbackConfirm={this.onUploadPhoto}
         />
 
+        {this.renderGroupMemberOptions()}
+        {this.renderGroupLinkOptions()}
+
         {isGroupModerator && (
           <div className="chat-component-options-row">
 
@@ -86,7 +106,7 @@ class GroupOptions extends React.PureComponent {
             <div className="chat-component-group-title-input-container">
               <input
                 className="chat-component-group-title-input"
-                placeholder={"Type new Group name..."}
+                placeholder={"Type in new group name"}
                 value={this.state.title}
                 onKeyPress={this.onKeyPress}
                 onKeyDown={this.onKeyDown}
@@ -143,8 +163,6 @@ class GroupOptions extends React.PureComponent {
           {isGroupModerator ? 'manage group members' : 'check group members'}
         </div>
 
-        {this.renderGroupMemberOptions()}
-
         <div className="chat-component-group-content-divider" />
 
         <p className="chat-component-group-hint">Share this link below to invite your friends</p>
@@ -153,18 +171,18 @@ class GroupOptions extends React.PureComponent {
 
           <div className="chat-component-group-title-link-container">
             <div className="chat-component-group-title-link">
-              myg.gg/not-implemented-yet
+              {mainLink}
             </div>
           </div>
 
           <div className={`chat-component-group-button chat-component-group-button-smaller clickable`}
-            onClick={() => console.log('edit')}
+            onClick={() => this.setState(previous => ({ showingLinks: !previous.showingLinks }))}
           >
             edit
           </div>
 
           <div className={`chat-component-group-button chat-component-group-button-smaller clickable`}
-            onClick={() => console.log('copy')}
+            onClick={() => copyToClipboard(mainLink)}
           >
             copy
           </div>

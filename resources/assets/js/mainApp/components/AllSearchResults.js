@@ -19,16 +19,6 @@ export default class AllSearchResults extends Component {
   }
 
   fetchMoreData = () => {
-    var myCounter = this.state.counter
-    this.setState({
-      counter: this.state.counter + 1,
-    })
-    if (myCounter != 1) {
-      this.setState({
-        show_top_btn: true,
-      })
-    }
-
     const self = this
     const { match } = this.props.routeProps
 
@@ -51,7 +41,22 @@ export default class AllSearchResults extends Component {
         console.log(error)
       }
     }
-    getKeywordSearchResults()
+
+    var myCounter = this.state.counter
+    this.setState(
+      {
+        counter: this.state.counter + 1,
+      },
+      () => {
+        getKeywordSearchResults()
+      }
+    )
+
+    if (myCounter != 1) {
+      this.setState({
+        show_top_btn: true,
+      })
+    }
   }
 
   showInvitations = () => {

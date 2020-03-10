@@ -6,15 +6,17 @@ export default class ChatMessageList extends React.PureComponent {
     return (
       <ChatMessage
         key={message.messageId}
-        message={this.props.decryptMessage(message)}
         userId={this.props.userId}
         chatId={this.props.chatId}
-        senderName={(this.props.contactsMap[message.senderId] || {}).name}
+        isGroup={this.props.isGroup}
+        isGuest={this.props.isGuest}
         messageId={message.messageId}
         messageListRef={this.props.messageListRef}
         editing={this.props.editing === message.messageId}
         onEdit={this.props.onEdit}
+        message={this.props.decryptMessage(message)}
         editMessage={this.props.editMessage}
+        deleteMessage={this.props.deleteMessage}
       />
     );
   }

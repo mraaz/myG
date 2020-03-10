@@ -14,7 +14,7 @@ class LikeController {
       })
       return 'Saved successfully'
     } catch (error) {
-      console.log(newLike)
+      console.log(error)
     }
   }
   async show({ auth, request, response }) {

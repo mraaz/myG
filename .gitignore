@@ -16,3 +16,5 @@ public/js/*
 database/development.sqlite
 scripts/dummy_data
 .idea
+scripts/small_dummy_data
+.vscode

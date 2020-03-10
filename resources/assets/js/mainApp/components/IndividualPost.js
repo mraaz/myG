@@ -5,6 +5,7 @@ import axios from 'axios'
 import IndividualComment from './IndividualComment'
 import moment from 'moment'
 import SweetAlert from 'react-bootstrap-sweetalert'
+import ImageGallery from 'react-image-gallery'
 
 export default class IndividualPost extends Component {
   constructor() {
@@ -28,6 +29,12 @@ export default class IndividualPost extends Component {
       content: '',
       post_time: '',
       alert: null,
+      media_urls: [],
+      images: [],
+      showBullets: true,
+      autoPlay: false,
+      isRTL: false,
+      disableSwipe: false,
     }
     this.textInput = null
 
@@ -112,6 +119,25 @@ export default class IndividualPost extends Component {
   }
 
   componentDidMount() {
+    let { post } = this.props
+
+    if (post.type == 'photo' || post.type == 'video') {
+      try {
+        this.state.media_urls = JSON.parse(post.media_url)
+      } catch (error) {
+        console.log('Data error with your post. Delete POST please! ' + post.content)
+      }
+    }
+
+    if (post.type == 'photo') {
+      if (this.state.media_urls != null) {
+        for (var i = 0; i < this.state.media_urls.length; i++) {
+          var myStruct = { original: this.state.media_urls[i], thumbnail: this.state.media_urls[i] }
+          this.state.images.push(myStruct)
+        }
+      }
+    }
+
     this.setState({ like: this.props.post.do_I_like_it })
     this.setState({ total: this.props.post.total })
     this.setState({ admirer_first_name: this.props.post.admirer_first_name })
@@ -392,20 +418,13 @@ export default class IndividualPost extends Component {
 
   render() {
     if (this.state.post_deleted != true) {
-      var show_media = true
+      var show_media = false
       let { post } = this.props //destructing of object
 
-      var media_urls = []
-      if (post.type == 'photo' || post.type == 'video') {
-        try {
-          media_urls = JSON.parse(post.media_url)
-        } catch (error) {
-          console.log('Data error with your post. Delete POST please! ' + post.content)
-        }
+      if (this.state.media_urls != [] && this.state.media_urls != null) {
+        show_media = true
       }
-      if (media_urls == [] || media_urls == null) {
-        show_media = false
-      }
+
       return (
         <div className='update-container'>
           {this.state.alert}
@@ -471,17 +490,23 @@ export default class IndividualPost extends Component {
                     </div>
                   </div>
                 )}
+                {show_media && post.type == 'photo' && (
+                  <ImageGallery
+                    items={this.state.images}
+                    showBullets={this.state.showBullets}
+                    autoPlay={this.state.autoPlay}
+                    isRTL={this.state.isRTL}
+                    disableSwipe={this.state.disableSwipe}
+                  />
+                )}
                 {show_media &&
-                  media_urls.map(function(data, index) {
-                    if (post.type == 'photo') {
-                      return <img className='post-photo' src={data}></img>
-                    } else if (post.type == 'video') {
-                      return (
-                        <video className='post-video' controls>
-                          <source src={data}></source>
-                        </video>
-                      )
-                    }
+                  post.type == 'video' &&
+                  this.state.media_urls.map(function(data, index) {
+                    return (
+                      <video className='post-video' controls>
+                        <source src={data}></source>
+                      </video>
+                    )
                   })}
               </div>
               <div className='update-stats'>

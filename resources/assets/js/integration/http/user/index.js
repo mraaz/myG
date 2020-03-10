@@ -35,3 +35,8 @@ export function addAsFriend(friendId) {
   logger.log('USER', 'HTTP', `User adding ${friendId} as Friend.`);
   return axios.post(`/api/notifications/addFriend`, { other_user_id: friendId }).then((response => response.data));
 }
+
+export function searchUsers(input) {
+  logger.log('USER', 'HTTP', `User searching other users with ${input} as Input.`);
+  return axios.get(`/api/user_chat/search?query=${input}`).then((response => response.data));
+}

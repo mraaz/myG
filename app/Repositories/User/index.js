@@ -14,7 +14,11 @@ class UserRepository {
   async storePublicKey({ requestingUserId, publicKey }) {
     const { public_key: previousKey } = (await User.query().where('id', '=', requestingUserId).first()).toJSON();
     if (previousKey !== publicKey) {
-      const chats = (await UserChat.query().where('user_id', requestingUserId).fetch()).toJSON();
+      const [{ contacts }, chats] = await Promise.all([
+        this.fetchContacts({ requestingUserId }),
+        UserChat.query().where('user_id', requestingUserId).fetch().then(response => response.toJSON())
+      ]);
+      contacts.forEach(contact => ChatRepository._notifyChatEvent({ userId: contact.contactId, action: 'encryption', payload: { publicKey, userId: requestingUserId } }));
       chats.forEach(chat => ChatRepository._notifyChatEvent({ chatId: chat.chat_id, action: 'encryption', payload: { publicKey, userId: requestingUserId, chatId: chat.chat_id } }));
     }
     await User.query().where('id', '=', requestingUserId).update({ public_key: publicKey })
@@ -67,8 +71,24 @@ class UserRepository {
     if (forceStatus) changes.last_status = requestedStatus;
     if (requestedStatus === 'offline') changes.last_seen = new Date();
     await User.query().where('id', '=', requestingUserId).update(changes);
-    ChatRepository._notifyChatEvent({ contactId: requestingUserId, action: 'status', payload: { contactId: requestingUserId, status: requestedStatus, lastSeen: changes.last_seen } })
+    ChatRepository._notifyChatEvent({ contactId: requestingUserId, action: 'status', payload: { contactId: requestingUserId, status: requestedStatus, lastSeen: changes.last_seen } });
     return { status: new StatusSchema({ value: requestedStatus, locked: shouldLockStatus }) };
+  }
+
+  async searchUsers({ requestingUserId, query }) {
+    const response = await User.query().where('alias', 'like', '%' + query + '%').fetch();
+    if (!response) return { users: [] };
+    const users = response.toJSON()
+      .filter(user => parseInt(user.id) !== parseInt(requestingUserId))
+      .map(user => new ContactSchema({
+        contactId: user.id,
+        icon: user.profile_img,
+        name: user.alias,
+        status: user.status,
+        lastSeen: user.last_seen,
+        publicKey: user.public_key,
+      }));
+    return { users };
   }
 
 }

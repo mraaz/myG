@@ -13,6 +13,12 @@ class Chat extends Model {
   lastCleared() {
     return this.hasMany('App/Models/ChatLastCleared')
   }
+  links() {
+    return this.hasMany('App/Models/ChatLink')
+  }
+  entryLogs() {
+    return this.hasMany('App/Models/ChatEntryLog')
+  }
 }
 
 module.exports = Chat

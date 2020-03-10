@@ -47,10 +47,17 @@ export default function reducer(state = {
       logger.log('CHAT', `Redux -> Chat ${action.meta.chatId} Ready (Chat): `, action.payload, action.meta);
       const { chatId } = action.meta;
       const chats = JSON.parse(JSON.stringify(state.chats));
-      const chat = chats.find(candidate => candidate.chatId === chatId);
+      const existingChat = chats.find(candidate => candidate.chatId === chatId);
+      const chat = existingChat || action.payload.chat;
+      if (!existingChat) chats.push(chat);
       chat.fullContacts = action.payload.contacts;
+      chat.links = action.payload.links;
+      chat.entryLogs = action.payload.entryLogs;
       chat.noMoreMessages = false;
       chat.loadingMessages = false;
+      chat.owners = action.payload.chat.owners;
+      chat.moderators = action.payload.chat.moderators;
+      chat.guests = action.payload.chat.guests;
       const messages = action.payload.messages
         .filter(message => message.messageId > action.payload.chat.lastCleared)
         .filter(message => !action.payload.chat.deletedMessages.includes(message.messageId))
@@ -59,10 +66,7 @@ export default function reducer(state = {
         .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId));
       const privateKey = receiveGroupKey(chat, action.payload.messages, action.meta.userId, state.privateKey);
       if (privateKey) chat.privateKey = privateKey;
-      if (!chat.blocked) {
-        Object.assign(chat, action.payload.chat);
-        chat.messages = messages;
-      }
+      if (!chat.blocked) chat.messages = messages;
       return {
         ...state,
         chats,
@@ -157,7 +161,8 @@ export default function reducer(state = {
       const { chat } = action.payload;
       chat.closed = (chat.messages || []).length === 0;
       const chats = JSON.parse(JSON.stringify(state.chats));
-      if (!chats.map(chat => chat.chatId).includes(chat.chatId)) chats.push(chat);
+      if (chats.map(chat => chat.chatId).includes(chat.chatId)) return state;
+      chats.push(chat);
       const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== chat.chatId);
       if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
       return {
@@ -173,9 +178,10 @@ export default function reducer(state = {
       const chatId = message.chatId;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
+      if (!chat) return state;
       if (chat.blocked) return state;
       if (chat.blockedUsers.includes(message.senderId)) return state;
-      if (!chat.muted && !window.focused && parseInt(message.senderId) !== parseInt(userId)) playMessageSound();
+      if (!chat.muted && !window.focused && message.senderId !== userId) playMessageSound();
       if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
       if (!chat.muted) {
         chat.closed = false;
@@ -210,6 +216,20 @@ export default function reducer(state = {
         chat.messages.push(message);
       }
       chat.messages = chat.messages.sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId));
+      return {
+        ...state,
+        chats,
+      };
+    }
+
+    case "UPDATE_LINK_FULFILLED": {
+      logger.log('CHAT', `Redux -> Link Updated: `, action.payload, action.meta);
+      const chatId = parseInt(action.meta.chatId);
+      const uuid = action.meta.uuid;
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => candidate.chatId === chatId);
+      const index = chat.links.indexOf(chat.links.find(link => link.uuid === uuid));
+      chat.links.splice(index, 1, action.payload.link);
       return {
         ...state,
         chats,
@@ -272,6 +292,7 @@ export default function reducer(state = {
       if (icon !== undefined) chat.icon = icon;
       if (owners !== undefined) chat.owners = owners;
       if (moderators !== undefined) chat.moderators = moderators;
+      if (guests !== undefined) chat.guests = guests;
       if (isPrivate !== undefined) chat.isPrivate = isPrivate;
       return {
         ...state,
@@ -280,14 +301,14 @@ export default function reducer(state = {
     }
 
     case "ADD_CONTACTS_TO_CHAT_FULFILLED": {
+      if (action.payload.error) return state;
       logger.log('CHAT', `Redux -> Contacts Added: `, action.payload, action.meta);
-      const { userId, chatId } = action.meta;
+      const { chatId } = action.meta;
       const { contacts } = action.payload;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
-      chat.contacts = [...chat.contacts, ...contacts.map(contact => contact.contactId)];
-      chat.fullContacts = [...chat.fullContacts, ...contacts];
-      sendGroupKeys(chatId, parseInt(userId), contacts, chat.privateKey, state.privateKey);
+      if (!chat.contacts.includes(contacts[0].contactId)) chat.contacts.push(contacts[0].contactId);
+      if (!chat.fullContacts.map(contact => contact.contactId).includes(contacts[0].contactId)) chat.fullContacts.push(contacts[0]);
       return {
         ...state,
         chats,
@@ -349,9 +370,29 @@ export default function reducer(state = {
       };
     }
 
+    case "ON_USER_JOINED": {
+      logger.log('CHAT', `Redux -> User Joined Group: `, action.payload, action.meta);
+      const { chatId, contacts, entryLog } = action.payload;
+      const { userId: thisUserId } = action.meta;
+      if (contacts.map(contact => contact.contactId).includes(thisUserId)) return state;
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => candidate.chatId === chatId);
+      if (!chat) return state;
+      const contact = contacts[0];
+      if (!chat.entryLogs) chat.entryLogs = [];
+      chat.entryLogs.push(entryLog);
+      if (!chat.contacts.includes(contact.contactId)) chat.contacts.push(contact.contactId);
+      if (!chat.fullContacts.map(contact => contact.contactId).includes(contact.contactId)) chat.fullContacts.push(contact);
+      sendGroupKeys(chatId, parseInt(thisUserId), contacts, chat.privateKey, state.privateKey);
+      return {
+        ...state,
+        chats,
+      };
+    }
+
     case "ON_USER_LEFT": {
       logger.log('CHAT', `Redux -> User Left Group: `, action.payload, action.meta);
-      const { chatId, userId } = action.payload;
+      const { chatId, userId, entryLog } = action.payload;
       const { userId: thisUserId } = action.meta;
       if (parseInt(userId) === parseInt(thisUserId)) {
         const chats = JSON.parse(JSON.stringify(state.chats)).filter(chat => parseInt(chat.chatId) !== parseInt(chatId));
@@ -363,8 +404,42 @@ export default function reducer(state = {
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (!chat) return state;
+      if (!chat.entryLogs) chat.entryLogs = [];
+      chat.entryLogs.push(entryLog);
       chat.contacts = chat.contacts.filter(contactId => parseInt(contactId) !== parseInt(userId));
       chat.fullContacts = chat.fullContacts.filter(contact => parseInt(contact.contactId) !== parseInt(userId));
+      return {
+        ...state,
+        chats,
+      };
+    }
+
+    case "ON_GUEST_JOINED": {
+      logger.log('CHAT', `Redux -> Guest Joined Group: `, action.payload, action.meta);
+      const { chatId, guest, entryLog } = action.payload;
+      const { userId: thisUserId } = action.meta;
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => candidate.chatId === chatId);
+      if (!chat) return state;
+      if (!chat.guests.includes(guest.guestId)) chat.guests.push(guest.guestId);
+      if (!chat.entryLogs) chat.entryLogs = [];
+      chat.entryLogs.push(entryLog);
+      sendGroupKeys(chatId, thisUserId, [guest], chat.privateKey, state.privateKey);
+      return {
+        ...state,
+        chats,
+      };
+    }
+
+    case "ON_GUEST_LEFT": {
+      logger.log('CHAT', `Redux -> Guest Left Group: `, action.payload, action.meta);
+      const { chatId, guestId, entryLog } = action.payload;
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => parseInt(candidate.chatId) === parseInt(chatId));
+      if (!chat) return state;
+      if (!chat.entryLogs) chat.entryLogs = [];
+      chat.entryLogs.push(entryLog);
+      chat.guests = chat.guests.filter(thisGuestId => thisGuestId !== guestId);
       return {
         ...state,
         chats,
@@ -405,9 +480,10 @@ export default function reducer(state = {
       const { userId: thisUserId } = action.meta;
       const { userId: updatedUserId, chatId, publicKey } = action.payload;
       const { privateKey } = state;
+      if (parseInt(updatedUserId) === parseInt(thisUserId)) return state;
+      if (!chatId) return contactPublicKeyUpdated(state, updatedUserId, publicKey);
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
-      if (parseInt(updatedUserId) === parseInt(thisUserId)) return state;
       const lastFriendRead = convertUTCDateToLocalDate(new Date(chat.friendReadDate));
       const unreadMessages = [];
       chat.messages.slice(0).reverse().some(message => {
@@ -419,7 +495,7 @@ export default function reducer(state = {
         return true;
       });
       reEncryptMessages(unreadMessages, publicKey, privateKey);
-      if (chat.contacts.length > 2) {
+      if (chat.fullContacts && chat.contacts.length > 2) {
         const updatedUser = chat.fullContacts.find(contact => parseInt(contact.contactId) === parseInt(updatedUserId));
         updatedUser.publicKey = publicKey;
         sendGroupKeys(chat.chatId, thisUserId, [updatedUser], chat.privateKey, privateKey);
@@ -441,6 +517,22 @@ export default function reducer(state = {
       if (maximised !== undefined) chat.maximised = maximised;
       return {
         ...state,
+        chats,
+      };
+    }
+
+    case "REGISTER_GUEST_FULFILLED": {
+      logger.log('GUEST', `Redux -> Guest Registered (Chat): `, action.payload, action.meta);
+      const { guest: { guestId }, chat, chat: { chatId } } = action.payload;
+      const { publicKey, privateKey } = action.meta;
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const existingChat = chats.find(candidate => candidate.chatId === chatId);
+      if (!existingChat) chats.push(chat);
+      return {
+        ...state,
+        guestId,
+        publicKey,
+        privateKey,
         chats,
       };
     }
@@ -485,9 +577,16 @@ function prepareGroupKeysToSend(group, userId, userContacts, userPublicKey, user
 
 function receiveGroupKey(group, messages, userId, userPrivateKey) {
   if (group.contacts.length <= 2) return;
-  const message = messages.find(message => parseInt(message.keyReceiver) === parseInt(userId));
+  const message = messages.find(message => message.keyReceiver === userId);
   if (!message || !message.content) return;
   const privateKey = decryptMessage(message.content, userPrivateKey);
   if (!privateKey) return;
   return deserializeKey(JSON.parse(privateKey));
+}
+
+function contactPublicKeyUpdated(state, contactId, publicKey) {
+  const contacts = JSON.parse(JSON.stringify(state.contacts));
+  const contact = contacts.find(contact => parseInt(contact.contactId) === parseInt(contactId));
+  if (contact) contact.publicKey = publicKey;
+  return { ...state, contacts };
 }

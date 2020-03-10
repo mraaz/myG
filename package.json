@@ -45,7 +45,7 @@
     "@babel/polyfill": "^7.7.0",
     "autosuggest-highlight": "^3.1.1",
     "aws-sdk": "^2.437.0",
-    "axios": "^0.16.1",
+    "axios": "^0.19.2",
     "babel-core": "^6.24.1",
     "babel-loader": "^6.4.1",
     "babel-preset-env": "^1.4.0",
@@ -74,7 +74,6 @@
     "moment": "^2.22.2",
     "multiparty": "^4.2.1",
     "mysql": "^2.16.0",
-    "node": "^13.5.0",
     "node-fetch": "^2.6.0",
     "node-sass": "^4.5.2",
     "nodemailer": "^6.2.1",
@@ -90,6 +89,7 @@
     "react-dropzone": "^6.2.4",
     "react-dropzone-uploader": "^2.11.0",
     "react-idle-timer": "^4.2.12",
+    "react-image-gallery": "^1.0.6",
     "react-infinite-scroll-component": "^4.3.0",
     "react-modal": "^3.6.1",
     "react-places-autocomplete": "^7.2.1",
@@ -111,10 +111,10 @@
     "webpack-stream": "^3.2.0"
   },
   "devDependencies": {
+    "@adonisjs/cli": "^4.0.12",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-stage-0": "^6.24.1",
-    "terser-webpack-plugin": "^2.3.5"
+    "babel-preset-stage-0": "^6.24.1"
   },
   "autoload": {
     "App": "./app"

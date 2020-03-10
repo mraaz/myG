@@ -8,10 +8,10 @@ class ChatMessageSchema extends Schema {
     this.create('chat_messages', (table) => {
       table.increments()
       table.integer('chat_id').unsigned().notNullable()
-      table.integer('sender_id').unsigned().notNullable()
       table.foreign('chat_id').references('id').inTable('chats').onDelete('CASCADE')
-      table.foreign('sender_id').references('id').inTable('users').onDelete('CASCADE')
+      table.integer('sender_id').unsigned().notNullable()
       table.integer('key_receiver').unsigned();
+      table.text('sender_name').notNullable()
       table.text('content').notNullable()
       table.text('backup').notNullable()
       table.boolean('deleted').notNullable().defaultTo(false)
