@@ -1,0 +1,114 @@
+.my-left-menu {
+  &__container {
+    height: 100%;
+    width: 245px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #1d2326;
+    overflow-x: hidden;
+    transition: 0.5s;
+    color: #fff;
+  }
+  &__menu-collapsed {
+    width: 64px;
+  }
+  &__item-box {
+    padding-left: 17px;
+    height: 79px;
+    border-bottom: 0.1px #384952;
+    border-style: solid;
+    line-height: 79px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  &__internal-item-box {
+    background-color: #171a1c;
+    padding-left: 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+  &__user-details-box {
+    background-color: #171a1c;
+    padding: 40px;
+    border-top: 0.1px #384952;
+    border-bottom: 0.1px #384952;
+    border-style: solid;
+  }
+  &__user-details-box-collapsed {
+    padding: 19px;
+  }
+  &__sidebar-item-text {
+    position: fixed;
+    display: inline;
+    margin-left: 16px;
+  }
+  &__sidebar-item-icon {
+    margin-right: 16px;
+  }
+  &__logout {
+    position: absolute;
+    border-top: 0.1px #384952;
+    border-style: solid;
+    bottom: 0px;
+    width: 100%;
+  }
+  &__sub-item-container {
+    background-color: #171a1c;
+    padding-top: 25px;
+    padding-left: 20px;
+    padding-bottom: 20px;
+    transition: 0.5s;
+  }
+  &__sub-item-text {
+    margin-bottom: 15px;
+    cursor: pointer;
+  }
+  &__logo-section-container {
+    height: 134px;
+  }
+  &__toggle-button {
+    position: absolute;
+    right: 6px;
+  }
+  &__notification-icon {
+    margin-right: 10px;
+  }
+  &__notification-icon-collapsed {
+    margin-bottom: 10px;
+  }
+  &__notification_container {
+    display: flex;
+  }
+  &__notification-container-collapsed {
+    flex-direction: column;
+  }
+  &__user-info {
+    vertical-align: middle;
+    margin-bottom: 20px;
+  }
+  &__user-alias {
+    display: inline;
+  }
+  &__user-dp {
+    height: 40px;
+    width: 40px;
+    background-color: #ff00ff;
+    border-radius: 40px;
+    margin-right: 10px;
+  }
+  &__logo-collapsed {
+    margin-top: 24px;
+    margin-left: 15px;
+  }
+  &__settings-icon {
+    position: absolute;
+    right: 10px;
+    top: 22px;
+  }
+  &__toggle-icon {
+    border-top: 0.1px #384952;
+    border-style: solid;
+  }
+}
