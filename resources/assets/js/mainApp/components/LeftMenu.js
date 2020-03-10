@@ -1,198 +1,184 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { withRouter, Link } from 'react-router-dom'
 import { connect } from 'react-redux'
+import classNames from 'classnames'
+import PropTypes from 'prop-types'
+
 import { logoutAction } from '../../redux/actions/userAction'
+import '../styles/LeftMenuStyles.scss'
+import { styles, sideBarItems, sideBarItemsOrder, logoutButton } from '../static/LeftMenu'
+import { throws } from 'assert'
 
 class LeftMenu extends Component {
-  constructor() {
-    super()
-    this.state = {
-      dropdown: false,
-      show_top_btn: false,
-    }
-  }
-  clickedDropdown = () => {
-    this.setState({
-      dropdown: !this.state.dropdown,
-    })
+  static propTypes = {
+    initialData: PropTypes.object.isRequired,
   }
 
-  componentDidMount() {
-    window.addEventListener('scroll', this.handleScroll)
-
-    window.onscroll = (event) => {
-      if (window.pageYOffset < 1) {
-        this.setState({
-          show_top_btn: false,
-        })
-      }
-    }
-  }
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll)
-    window.onscroll = null
+  state = {
+    dropdown: false,
+    show_top_btn: false,
+    isExpanded: true,
+    sideBarData: sideBarItems,
   }
 
-  handleScroll = (event) => {
-    let scrollTop = event.srcElement.body.scrollTop,
-      itemTranslate = Math.min(0, scrollTop / 3 - 60)
-
-    this.setState({
-      show_top_btn: true,
-    })
+  onMenuToggle = () => {
+    this.setState((currentState) => ({
+      isExpanded: !currentState.isExpanded,
+      sideBarData: sideBarItems,
+    }))
   }
 
-  moveTop = () => {
-    window.scrollTo(0, 0)
+  onItemClick = (itemKey) => {
+    this.setState((prevState) => ({
+      sideBarData: {
+        ...prevState.sideBarData,
+        [itemKey]: {
+          ...prevState.sideBarData[itemKey],
+          expanded: !prevState.sideBarData[itemKey].expanded,
+        },
+      },
+    }))
   }
 
-  redirect_groups = () => {
-    this.props.history.push('/groups')
+  getLogoSection = () => {
+    const children = this.state.isExpanded ? (
+      <Fragment>
+        <img
+          src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Login+Screen/Logo_FINAL%402x.png'
+          height='107'
+          width='191'
+        />
+        <div className={styles.logoButton} onClick={this.onMenuToggle}>
+          <img
+            src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/toggle_menu_collapsed.svg'
+            height='20'
+            width='20'
+          />
+        </div>
+      </Fragment>
+    ) : (
+      <img
+        src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/logo.svg'
+        className={styles.logoCollapsed}
+        height='32'
+        width='32'
+      />
+    )
+
+    return <div className={styles.logoSectionContainer}>{children}</div>
   }
-  redirect_feed = () => {
-    this.props.history.push('/')
+
+  getToggleButton = () => {
+    return this.state.isExpanded ? null : (
+      <div className={classNames([styles.itemBox, styles.toggleIcon])} onClick={this.onMenuToggle}>
+        <img
+          src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/toggle_menu_collapsed.svg'
+          height='24'
+          width='24'
+        />
+      </div>
+    )
   }
-  redirect_games = () => {
-    this.props.history.push('/myScheduledGames')
+
+  getUserSection = () => {
+    const alias = this.props.initialData === 'loading' ? '' : this.props.initialData.userInfo.alias
+    const { isExpanded } = this.state
+
+    return (
+      <div className={classNames([styles.userDetailsBox, isExpanded ? '' : styles.userDetailsBoxCollapsed])}>
+        {isExpanded && (
+          <div className={styles.userInfo}>
+            <img className={styles.userDp} />
+            <div className={styles.userAlias}>@{alias}</div>
+          </div>
+        )}
+        <div className={classNames([styles.notificationContainer, isExpanded ? '' : styles.notificationContainerCollapsed])}>
+          <img
+            src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/toggle_menu_collapsed.svg'
+            height='24'
+            width='24'
+            className={classNames([styles.notificationIcon, isExpanded ? '' : styles.notificationIconCollapsed])}
+          />
+          <div />
+          <img
+            src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/toggle_menu_collapsed.svg'
+            height='24'
+            width='24'
+            className={classNames([styles.notificationIcon, isExpanded ? '' : styles.notificationIconCollapsed])}
+          />
+          <img
+            src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/toggle_menu_collapsed.svg'
+            height='24'
+            width='24'
+            className={classNames([styles.notificationIcon, isExpanded ? '' : styles.notificationIconCollapsed])}
+          />
+        </div>
+      </div>
+    )
   }
-  redirect_friends = () => {
-    this.props.history.push('/myFriends')
+
+  getSubItems = (subItems) => {
+    return (
+      <div className={styles.subItemContainer}>
+        {subItems.map((item) => (
+          <div className={styles.subItemText} dangerouslySetInnerHTML={{ __html: item.header }} />
+        ))}
+      </div>
+    )
   }
-  redirect_myPosts = () => {
-    this.props.history.push('/myPosts')
+
+  getSideBarItems = () => {
+    const { sideBarData, isExpanded } = this.state
+
+    return (
+      <Fragment>
+        {sideBarItemsOrder.map((itemKey) => {
+          const { icon, header, expanded, subItems } = sideBarData[itemKey]
+          return (
+            <Fragment>
+              <div>
+                <div className={styles.itemBox}>
+                  <img src={icon} height='24' width='24' />
+                  {isExpanded && <div className={styles.sidebarItemText}>{header}</div>}
+                </div>
+              </div>
+              {expanded && subItems && this.getSubItems(subItems)}
+            </Fragment>
+          )
+        })}
+      </Fragment>
+    )
+  }
+
+  getLogout = () => {
+    return (
+      <Fragment>
+        <div className={classNames([styles.itemBox, styles.logout])}>
+          <img src={logoutButton.icon} height='24' width='24' className={styles.sideBarItemIcon} />
+          {this.state.isExpanded && <div className={styles.sidebarItemText}>{logoutButton.header}</div>}
+          {this.state.isExpanded && (
+            <img
+              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Settings_Chat_Window.svg'
+              height='24'
+              width='24'
+              className={styles.settingsIcon}
+            />
+          )}
+        </div>
+      </Fragment>
+    )
   }
 
   render() {
-    var left_icon = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/v1_Logo.png'
-    if (this.props.initialData.userInfo == undefined) {
-      return <div>Loading</div>
-    } else {
-      const { alias } = this.props.initialData.userInfo
-      return (
-        <section id='left-menu'>
-          <div className='account-dropdown'>
-            <Link to='/'>
-              <div className='logo'>
-                <div
-                  className='logo-img'
-                  style={{
-                    backgroundImage: `url('${left_icon}')`,
-                  }}></div>
-              </div>
-            </Link>
-            <div className='name' onClick={this.clickedDropdown}>
-              {`${alias}`}
-            </div>
-            <div className='icon' onClick={this.clickedDropdown}>
-              <i className='fas fa-chevron-down' />
-            </div>
-
-            <div className={`dropdown ${this.state.dropdown ? 'active' : ''}`}>
-              <nav>
-                <a href='/mySettings'>mySettings</a>
-                <a href='/logout' onClick={() => this.props.logout()}>
-                  Logout
-                </a>
-              </nav>
-            </div>
-          </div>
-          <div className='groups'>
-            <div className='menu'>
-              <Link to='/addScheduleGames'>
-                <div
-                  className='add-ScheduleGames'
-                  style={{ backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/v1_Icon_01.png')` }}></div>
-              </Link>
-              <Link to='/scheduledGames'>
-                <div
-                  className='view-ScheduleGames'
-                  style={{ backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/v1_Icon_02.png')` }}></div>
-              </Link>
-              <div className='add-ScheduleGames-caption'>
-                <Link to='/addScheduleGames' style={{ textDecoration: 'none', color: 'white' }}>
-                  Add Game
-                </Link>
-              </div>
-              <div className='view-ScheduleGames-caption'>
-                <Link to='/scheduledGames' style={{ textDecoration: 'none', color: 'white' }}>
-                  View Game
-                </Link>
-              </div>
-              <Link to='/advancedSearch'>
-                <div
-                  className='advancedSearch'
-                  style={{ backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/v1_Icon_03.png')` }}></div>
-              </Link>
-              <Link to={`/profile/${this.props.initialData.userInfo.alias}`}>
-                <div
-                  className='profile'
-                  style={{ backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/v2_Icon-11.png')` }}></div>
-              </Link>
-              <div className='advancedSearch-caption'>
-                <Link to='/advancedSearch' style={{ textDecoration: 'none', color: 'white' }}>
-                  Search
-                </Link>
-              </div>
-              <div className='groups-caption'>
-                <Link to={`/profile/${this.props.initialData.userInfo.alias}`} style={{ textDecoration: 'none', color: 'white' }}>
-                  Profile
-                </Link>
-              </div>
-            </div>
-          </div>
-          <div className='myMenu'>
-            <div className='title'>Menu</div>
-            <div id='item-list'>
-              <div className='icon-list'>
-                <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/v1_Icon_05.png' />
-              </div>
-              <div className='text-list' onClick={this.redirect_feed}>
-                Feed
-              </div>
-            </div>
-            <div id='item-list'>
-              <div className='icon-list'>
-                <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/v2_Icon-10.png' />
-              </div>
-              <div className='text-list' onClick={this.redirect_groups}>
-                Groups
-              </div>
-            </div>
-            <div id='item-list'>
-              <div className='icon-list'>
-                <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/v1_Icon_07.png' />
-              </div>
-              <div className='text-list' onClick={this.redirect_games}>
-                Games
-              </div>
-            </div>
-            <div id='item-list'>
-              <div className='icon-list'>
-                <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/v1_Icon_08.png' />
-              </div>
-              <div className='text-list' onClick={this.redirect_friends}>
-                Friends
-              </div>
-            </div>
-            <div id='item-list'>
-              <div className='icon-list'>
-                <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/v1_Icon_05.png' />
-              </div>
-              <div className='text-list' onClick={this.redirect_myPosts}>
-                myPosts
-              </div>
-            </div>
-          </div>
-          {this.state.show_top_btn && (
-            <div className='top-btn'>
-              <button className='top' type='button' onClick={this.moveTop}>
-                Top
-              </button>
-            </div>
-          )}
-        </section>
-      )
-    }
+    return (
+      <div className={classNames([styles.container, !this.state.isExpanded ? styles.menuCollapsed : ''])}>
+        {this.getLogoSection()}
+        {this.getToggleButton()}
+        {this.getUserSection()}
+        {this.getSideBarItems()}
+        {this.getLogout()}
+      </div>
+    )
   }
 }
 
@@ -202,7 +188,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(withRouter(LeftMenu))
+export default connect(null, mapDispatchToProps)(withRouter(LeftMenu))
