@@ -130,9 +130,11 @@ export default class IndividualPost extends Component {
     }
 
     if (post.type == 'photo') {
-      for (var i = 0; i < this.state.media_urls.length; i++) {
-        var myStruct = { original: this.state.media_urls[i], thumbnail: this.state.media_urls[i], }
-        this.state.images.push(myStruct)
+      if(this.state.media_urls != null) {
+        for (var i = 0; i < this.state.media_urls.length; i++) {
+          var myStruct = { original: this.state.media_urls[i], thumbnail: this.state.media_urls[i], }
+          this.state.images.push(myStruct)
+        }
       }
     }
 
