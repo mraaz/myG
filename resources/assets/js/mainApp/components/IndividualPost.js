@@ -497,6 +497,7 @@ export default class IndividualPost extends Component {
                     autoPlay={this.state.autoPlay}
                     isRTL={this.state.isRTL}
                     disableSwipe={this.state.disableSwipe}
+                    y
                   />
                 )}
                 {show_media &&

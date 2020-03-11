@@ -101,6 +101,11 @@ export default class AddScheduleGames_Headers extends Component {
     } catch (error) {
       console.log(error)
     }
+
+    this.setState({
+      invitation_group_box: '',
+      invitation_box: '',
+    })
   }
 
   submitForm = (e) => {
