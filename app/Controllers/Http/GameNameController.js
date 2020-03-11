@@ -82,6 +82,7 @@ class GameNameController {
         return 'Updated successfully'
       } catch (error) {
         console.log(error)
+        return false
       }
     } else {
       return 'You are not Logged In!'
