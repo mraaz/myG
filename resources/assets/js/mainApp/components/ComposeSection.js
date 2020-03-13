@@ -16,6 +16,8 @@ export default class ComposeSection extends Component {
       post_content: '',
       bFileModalOpen: false,
       fileType: 'photo',
+      myPosts: [],
+      masterList: [],
     }
 
     this.openPhotoPost = this.openPhotoPost.bind(this)
@@ -94,9 +96,9 @@ export default class ComposeSection extends Component {
         type: 'text',
       })
       this.setState({
-        myPosts: undefined,
+        myPosts: [],
       })
-      await this.get_posts()
+      await this.get_posts(post)
     } catch (error) {
       console.log(error)
     }
@@ -115,43 +117,23 @@ export default class ComposeSection extends Component {
   }
 
   showLatestPosts = () => {
-    if (this.state.myPosts != undefined) {
+    if (this.state.myPosts != []) {
       return this.state.myPosts.map((item, index) => {
         return <IndividualPost post={item} key={index} user={this.props.initialData} />
       })
     }
   }
 
-  get_posts = () => {
+  get_posts = (post) => {
     const self = this
 
     const getPosts = async function() {
       try {
-        const myPosts = await axios.get(`/api/mypost/${self.state.myDate}`)
-
-        var i
-        var myLikes
-
-        for (i = 0; i < myPosts.data.myPosts.length; i++) {
-          myLikes = await axios.get(`/api/likes/${myPosts.data.myPosts[i].id}`)
-          myPosts.data.myPosts[i].total = myLikes.data.number_of_likes[0].total
-          myPosts.data.myPosts[i].no_of_comments = myLikes.data.no_of_comments[0].no_of_comments
-          if (myLikes.data.number_of_likes[0].total != 0) {
-            myPosts.data.myPosts[i].admirer_first_name = myLikes.data.admirer_UserInfo.first_name
-            myPosts.data.myPosts[i].admirer_last_name = myLikes.data.admirer_UserInfo.last_name
-          } else {
-            myPosts.data.myPosts[i].admirer_first_name = ''
-            myPosts.data.myPosts[i].admirer_last_name = ''
-          }
-          if (myLikes.data.do_I_like_it[0].myOpinion != 0) {
-            myPosts.data.myPosts[i].do_I_like_it = true
-          } else {
-            myPosts.data.myPosts[i].do_I_like_it = false
-          }
-        }
+        const myPosts = await axios.get(`/api/mypost/${post.data}`)
+        self.state.masterList = self.state.masterList.concat(myPosts.data.myPosts)
 
         self.setState({
-          myPosts: myPosts.data.myPosts,
+          myPosts: self.state.masterList.reverse(),
           show_post: true,
           post_content: '',
         })
@@ -163,6 +145,13 @@ export default class ComposeSection extends Component {
   }
 
   detectKey = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      e.stopPropagation()
+      this.submitForm()
+      return false
+    }
+
     if (e.key === 'Enter' && e.shiftKey) {
       return
     }
@@ -172,12 +161,6 @@ export default class ComposeSection extends Component {
         edit_post: false,
         value2: '',
       })
-    }
-
-    if (e.key === 'Enter') {
-      event.preventDefault()
-      event.stopPropagation()
-      this.submitForm()
     }
   }
 
@@ -209,7 +192,7 @@ export default class ComposeSection extends Component {
             defaultValue={''}
             onChange={this.handleChange_txtArea}
             value={this.state.post_content}
-            onKeyUp={this.detectKey}
+            onKeyDown={this.detectKey}
             maxLength='254'
             placeholder="What's up..."
           />

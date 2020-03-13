@@ -13,7 +13,7 @@ class PostController {
       type: 'text',
       group_id: request.input('groups_id'),
     })
-    return 'Saved item'
+    return newPost.id
   }
 
   async show({ auth, request, response }) {
@@ -112,13 +112,40 @@ class PostController {
   }
 
   async myshow({ auth, request, response }) {
+    let likeController = new LikeController()
     try {
+      // const myPosts = await Database.from('posts')
+      //   .innerJoin('users', 'users.id', 'posts.user_id')
+      //   .where('posts.user_id', '=', auth.user.id)
+      //   .andWhere('posts.created_at', '>=', request.params.myDate)
+      //   .select('*', 'posts.id', 'posts.created_at', 'posts.updated_at')
+      //   .orderBy('posts.created_at', 'desc')
+      //   .limit(1)
+
       const myPosts = await Database.from('posts')
         .innerJoin('users', 'users.id', 'posts.user_id')
-        .where('posts.user_id', '=', auth.user.id)
-        .andWhere('posts.created_at', '>=', request.params.myDate)
+        .where('posts.id', '=', request.params.myDate)
         .select('*', 'posts.id', 'posts.created_at', 'posts.updated_at')
         .orderBy('posts.created_at', 'desc')
+        .limit(1)
+
+      for (var i = 0; i < myPosts.length; i++) {
+        request.params.id = myPosts[i].id
+        var myLikes = await likeController.show({ auth, request, response })
+
+        myPosts[i].total = myLikes.number_of_likes[0].total
+        myPosts[i].no_of_comments = myLikes.no_of_comments[0].no_of_comments
+        if (myLikes.number_of_likes[0].total != 0) {
+          myPosts[i].admirer_first_name = myLikes.admirer_UserInfo.alias
+        } else {
+          myPosts[i].admirer_first_name = ''
+        }
+        if (myLikes.do_I_like_it[0].myOpinion != 0) {
+          myPosts[i].do_I_like_it = true
+        } else {
+          myPosts[i].do_I_like_it = false
+        }
+      }
 
       return {
         myPosts,

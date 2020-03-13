@@ -241,8 +241,8 @@ export default class IndividualComment extends Component {
     }
 
     if (e.key === 'Enter') {
-      event.preventDefault()
-      event.stopPropagation()
+      e.preventDefault()
+      e.stopPropagation()
       this.insert_reply()
     }
   }
@@ -512,7 +512,7 @@ export default class IndividualComment extends Component {
                 id='reply_name_box'
                 className='reply-name-box'
                 placeholder='Add a reply...'
-                onKeyUp={this.detectKey}
+                onKeyDown={this.detectKey}
                 ref={this.setTextInputRef}
                 onChange={this.handleChange}
                 value={this.state.value}
@@ -525,7 +525,7 @@ export default class IndividualComment extends Component {
                 type='text'
                 id='reply_name_box'
                 className='reply-name-box'
-                onKeyUp={this.detectKey2}
+                onKeyDown={this.detectKey2}
                 ref={this.setTextInputRef}
                 onChange={this.handleChange2}
                 value={this.state.value2}

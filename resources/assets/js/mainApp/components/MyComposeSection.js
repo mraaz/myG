@@ -189,8 +189,8 @@ export default class MyComposeSection extends Component {
     }
 
     if (e.key === 'Enter') {
-      event.preventDefault()
-      event.stopPropagation()
+      e.preventDefault()
+      e.stopPropagation()
       this.submitForm()
     }
   }
@@ -259,7 +259,7 @@ export default class MyComposeSection extends Component {
               defaultValue={''}
               onChange={this.handleChange}
               value={this.state.post_content}
-              onKeyUp={this.detectKey}
+              onKeyDown={this.detectKey}
               maxLength='254'
               placeholder="What's up..."
             />
