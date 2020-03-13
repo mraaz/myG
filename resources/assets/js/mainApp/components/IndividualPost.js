@@ -317,8 +317,8 @@ export default class IndividualPost extends Component {
     }
 
     if (e.key === 'Enter') {
-      event.preventDefault()
-      event.stopPropagation()
+      e.preventDefault()
+      e.stopPropagation()
       this.insert_comment()
     }
   }
@@ -484,7 +484,7 @@ export default class IndividualPost extends Component {
                         value={this.state.value2}
                         onChange={this.handleChange2}
                         maxLength='254'
-                        onKeyUp={this.detectKey2}
+                        onKeyDown={this.detectKey2}
                         ref={this.setTextInputRef2}
                       />
                     </div>
@@ -560,7 +560,7 @@ export default class IndividualPost extends Component {
                   value={this.state.value}
                   onChange={this.handleChange}
                   maxLength='254'
-                  onKeyUp={this.detectKey}
+                  onKeyDown={this.detectKey}
                   ref={this.setTextInputRef}
                 />
                 <div className='buttons'>

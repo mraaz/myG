@@ -92,8 +92,8 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
     }
 
     if (e.key === 'Enter') {
-      event.preventDefault()
-      event.stopPropagation()
+      e.preventDefault()
+      e.stopPropagation()
       this.insert_comment()
     }
   }
@@ -684,7 +684,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
               value={this.state.value}
               onChange={this.handleChange}
               maxLength='254'
-              onKeyUp={this.detectKey}
+              onKeyDown={this.detectKey}
               ref={this.setTextInputRef}
               onFocus={this.onFocus}
             />
