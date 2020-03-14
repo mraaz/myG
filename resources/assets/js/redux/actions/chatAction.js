@@ -1,6 +1,6 @@
 import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, inviteUserToGroup, createChat, updateChat, clearChat, deleteChat, exitGroup, removeFromGroup, checkSelfDestruct, fetchMessages, fetchLinks, updateLink, fetchEntryLogs, sendMessage, editMessage, deleteMessage, setTyping } from '../../integration/http/chat';
 import { fetchContacts, fetchContact, fetchStatus } from '../../integration/http/user';
-import { generateKeys, deserializeKey } from '../../integration/encryption';
+import { generateKeys, deserializeKey, getPublicKey } from '../../integration/encryption';
 
 export function onNewChatAction(chat, userId) {
   return {
@@ -125,7 +125,7 @@ export function prepareMessengerAction(pin, privateKey, publicKey) {
   const statusRequest = fetchStatus();
   let encryptionRequest = Promise.resolve({});
   if (privateKey) privateKey = deserializeKey(privateKey);
-  if (privateKey) encryptionRequest = Promise.resolve({ encryption: { pin, privateKey, publicKey } });
+  if (privateKey) encryptionRequest = Promise.resolve({ encryption: { pin, privateKey, publicKey: getPublicKey(privateKey) } });
   else if (pin) encryptionRequest = generateKeys(pin);
   else if (!publicKey) encryptionRequest = generateKeys();
   const requests = [chatsRequest, contactsRequest, statusRequest, encryptionRequest];
