@@ -1,7 +1,7 @@
 .my-left-menu {
   &__container {
     height: 100%;
-    width: 245px;
+    width: 233px;
     position: fixed;
     z-index: 1;
     top: 0;
@@ -22,6 +22,8 @@
     line-height: 79px;
     font-weight: bold;
     cursor: pointer;
+    display: flex;
+    align-items: center;
   }
   &__internal-item-box {
     background-color: #171a1c;
@@ -40,9 +42,8 @@
     padding: 19px;
   }
   &__sidebar-item-text {
+    margin-left: 41px;
     position: fixed;
-    display: inline;
-    margin-left: 16px;
   }
   &__sidebar-item-icon {
     margin-right: 16px;
@@ -73,10 +74,10 @@
     right: 6px;
   }
   &__notification-icon {
-    margin-right: 10px;
+    display: flex;
   }
   &__notification-icon-collapsed {
-    margin-bottom: 10px;
+    margin-bottom: 24px;
   }
   &__notification_container {
     display: flex;
@@ -85,7 +86,8 @@
     flex-direction: column;
   }
   &__user-info {
-    vertical-align: middle;
+    display: flex;
+    align-items: center;
     margin-bottom: 20px;
   }
   &__user-alias {
@@ -110,5 +112,24 @@
   &__toggle-icon {
     border-top: 0.1px #384952;
     border-style: solid;
+  }
+  &__clickable {
+    cursor: pointer;
+  }
+  &__line {
+    width: 1px;
+    margin: 0 6px;
+    background-color: #384952;
+  }
+  &__notification-area {
+    border: 1px #384952;
+    border-style: solid;
+    position: relative;
+    top: 11px;
+    background-color: #1d2326;
+    left: -8px;
+    border-radius: 8px;
+    height: fit-content;
+    font-size: 13px;
   }
 }
