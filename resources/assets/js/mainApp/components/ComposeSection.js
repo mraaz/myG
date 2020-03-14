@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import IndividualPost from './IndividualPost'
-import moment from 'moment'
 import PostFileModal from './PostFileModal'
 
 export default class ComposeSection extends Component {
@@ -11,7 +10,6 @@ export default class ComposeSection extends Component {
     super()
     this.state = {
       show_post: false,
-      myDate: moment(),
       profile_img: '',
       post_content: '',
       bFileModalOpen: false,
@@ -60,9 +58,9 @@ export default class ComposeSection extends Component {
       })
 
       this.setState({
-        myPosts: undefined,
+        myPosts: [],
       })
-      await this.get_posts()
+      await this.get_posts(post)
     } catch (error) {
       console.log(error)
     }
@@ -119,7 +117,7 @@ export default class ComposeSection extends Component {
   showLatestPosts = () => {
     if (this.state.myPosts != []) {
       return this.state.myPosts.map((item, index) => {
-        return <IndividualPost post={item} key={index} user={this.props.initialData} />
+        return <IndividualPost post={item} key={item.id} user={this.props.initialData} />
       })
     }
   }
@@ -165,13 +163,6 @@ export default class ComposeSection extends Component {
   }
 
   componentDidMount() {
-    var now = moment()
-      .subtract(5, 'seconds')
-      .utc()
-      .format('YYYY-MM-DDTHH:mm:ss')
-    this.setState({
-      myDate: now,
-    })
     if (this.props != undefined) {
       if (this.props.initialData.userInfo != undefined) {
         this.setState({
@@ -191,7 +182,6 @@ export default class ComposeSection extends Component {
             cols={80}
             defaultValue={''}
             onChange={this.handleChange_txtArea}
-            value={this.state.post_content}
             onKeyDown={this.detectKey}
             maxLength='254'
             placeholder="What's up..."

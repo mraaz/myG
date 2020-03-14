@@ -57,7 +57,7 @@ export default class ArchivedScheduledGamePost extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const self = this
     const { schedule_game } = this.props
 

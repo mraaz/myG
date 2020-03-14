@@ -8,32 +8,25 @@ export default class MyHome extends Component {
     super()
     this.state = {
       name: 'Raaz',
+      initialData: undefined,
     }
   }
-  componentWillMount() {
+  componentDidMount() {
     this.setState({
       initialData: this.props.initialData,
     })
   }
 
   render() {
-    return (
-      <div className='content-area'>
-        <MyComposeSection
-          initialData={
-            this.state.initialData == undefined
-              ? 'loading'
-              : this.state.initialData
-          }
-        />
-        <MyPosts
-          initialData={
-            this.state.initialData == undefined
-              ? 'loading'
-              : this.state.initialData
-          }
-        />
-      </div>
-    )
+    if (this.state.initialData != undefined) {
+      return (
+        <div className='content-area'>
+          <MyComposeSection initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData} />
+          <MyPosts initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData} />
+        </div>
+      )
+    } else {
+      return <div className='content-area'>Loading</div>
+    }
   }
 }

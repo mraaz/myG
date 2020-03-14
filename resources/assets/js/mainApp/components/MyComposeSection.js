@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import IndividualPost from './IndividualPost'
-import moment from 'moment'
 import PostFileModal from './PostFileModal'
 
 export default class MyComposeSection extends Component {
@@ -11,11 +10,12 @@ export default class MyComposeSection extends Component {
     super()
     this.state = {
       show_post: false,
-      myDate: moment(),
       profile_img: '',
       post_content: '',
       bFileModalOpen: false,
       fileType: 'photo',
+      myPosts: [],
+      masterList: [],
       groups_post: false,
       no_show: false,
     }
@@ -51,17 +51,17 @@ export default class MyComposeSection extends Component {
     if (data.media_url.length == 0 && data.content == '') {
       return
     }
-
+    var post
     try {
       if (this.state.groups_post) {
-        const post = await axios.post(url, {
+        post = await axios.post(url, {
           media_url: JSON.stringify(data.media_url),
           content: data.content,
           groups_id: this.props.groups_id.params.id,
           file_keys: keys,
         })
       } else {
-        const post = await axios.post(url, {
+        post = await axios.post(url, {
           media_url: JSON.stringify(data.media_url),
           content: data.content,
           file_keys: keys,
@@ -69,9 +69,9 @@ export default class MyComposeSection extends Component {
       }
 
       this.setState({
-        myPosts: undefined,
+        myPosts: [],
       })
-      await this.get_posts()
+      await this.get_posts(post)
     } catch (error) {
       console.log(error)
     }
@@ -99,15 +99,16 @@ export default class MyComposeSection extends Component {
       return
     }
     try {
+      var post
       if (this.state.groups_post) {
-        const post = await axios.post('/api/post', {
+        post = await axios.post('/api/post', {
           content: this.state.post_content.trim(),
           user_id: this.props.initialData.userInfo.id,
           type: 'text',
           groups_id: this.props.groups_id.params.id,
         })
       } else {
-        const post = await axios.post('/api/post', {
+        post = await axios.post('/api/post', {
           content: this.state.post_content.trim(),
           user_id: this.props.initialData.userInfo.id,
           type: 'text',
@@ -115,9 +116,9 @@ export default class MyComposeSection extends Component {
       }
 
       this.setState({
-        myPosts: undefined,
+        myPosts: [],
       })
-      await this.get_posts()
+      await this.get_posts(post)
     } catch (error) {
       console.log(error)
     }
@@ -133,42 +134,23 @@ export default class MyComposeSection extends Component {
   showLatestPosts = () => {
     if (this.state.myPosts != undefined) {
       return this.state.myPosts.map((item, index) => {
-        return <IndividualPost post={item} key={index} user={this.props.initialData} />
+        return <IndividualPost post={item} key={item.id} user={this.props.initialData} />
       })
     }
   }
 
-  get_posts = () => {
+  get_posts = (post) => {
     const self = this
     const getPosts = async function() {
       try {
-        const myPosts = await axios.get(`/api/mypost/${self.state.myDate}`)
-
-        var i
-        var myLikes
-
-        for (i = 0; i < myPosts.data.myPosts.length; i++) {
-          myLikes = await axios.get(`/api/likes/${myPosts.data.myPosts[i].id}`)
-          myPosts.data.myPosts[i].total = myLikes.data.number_of_likes[0].total
-          myPosts.data.myPosts[i].no_of_comments = myLikes.data.no_of_comments[0].no_of_comments
-          if (myLikes.data.number_of_likes[0].total != 0) {
-            myPosts.data.myPosts[i].admirer_first_name = myLikes.data.admirer_UserInfo.alias
-          } else {
-            myPosts.data.myPosts[i].admirer_first_name = ''
-          }
-          if (myLikes.data.do_I_like_it[0].myOpinion != 0) {
-            myPosts.data.myPosts[i].do_I_like_it = true
-          } else {
-            myPosts.data.myPosts[i].do_I_like_it = false
-          }
-        }
+        const myPosts = await axios.get(`/api/mypost/${post.data}`)
+        self.state.masterList = self.state.masterList.concat(myPosts.data.myPosts)
 
         self.setState({
-          myPosts: myPosts.data.myPosts,
+          myPosts: self.state.masterList.reverse(),
           show_post: true,
           post_content: '',
         })
-        //self.forceUpdate()
       } catch (error) {
         console.log(error)
       }
@@ -177,6 +159,13 @@ export default class MyComposeSection extends Component {
   }
 
   detectKey = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      e.stopPropagation()
+      this.submitForm()
+      return false
+    }
+
     if (e.key === 'Enter' && e.shiftKey) {
       return
     }
@@ -187,24 +176,10 @@ export default class MyComposeSection extends Component {
         value2: '',
       })
     }
-
-    if (e.key === 'Enter') {
-      e.preventDefault()
-      e.stopPropagation()
-      this.submitForm()
-    }
   }
 
   componentDidMount() {
     const self = this
-
-    var now = moment()
-      .subtract(5, 'seconds')
-      .utc()
-      .format('YYYY-MM-DDTHH:mm:ss')
-    this.setState({
-      myDate: now,
-    })
 
     const getGroupDetails = async function() {
       const mygroup_details = await axios.get(`/api/usergroup/mygroup_details/${self.props.groups_id.params.id}`)
@@ -234,9 +209,6 @@ export default class MyComposeSection extends Component {
       this.state.groups_post = false
     }
 
-    //const now = moment.utc()
-    //var now = moment().utc().format('YYYY-MM-DDTHH:mm:ss')
-
     if (this.props != undefined) {
       if (this.props.initialData.userInfo != undefined) {
         this.setState({
@@ -258,7 +230,6 @@ export default class MyComposeSection extends Component {
               cols={80}
               defaultValue={''}
               onChange={this.handleChange}
-              value={this.state.post_content}
               onKeyDown={this.detectKey}
               maxLength='254'
               placeholder="What's up..."

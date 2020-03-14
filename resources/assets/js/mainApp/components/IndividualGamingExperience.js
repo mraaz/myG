@@ -18,7 +18,7 @@ export default class IndividualGamingExperience extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { match } = this.props.routeProps
     const { initialData } = this.props
     let { item } = this.props

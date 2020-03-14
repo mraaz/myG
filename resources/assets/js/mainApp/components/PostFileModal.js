@@ -187,7 +187,6 @@ export default class PostFileModal extends Component {
               cols={80}
               defaultValue={''}
               onChange={this.handleChange}
-              value={this.state.post_content}
               maxLength='254'
               placeholder="What's up..."
             />

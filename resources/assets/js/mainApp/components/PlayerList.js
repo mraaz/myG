@@ -9,15 +9,13 @@ export default class PlayerList extends Component {
     this.state = {}
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const self = this
     const { match } = this.props.routeProps
 
     const getAttendees = async function() {
       try {
-        const getAttendees = await axios.get(
-          `/api/attendees/role_call_ALL/${match.params.id}`
-        )
+        const getAttendees = await axios.get(`/api/attendees/role_call_ALL/${match.params.id}`)
         self.setState({
           allMyFriends: getAttendees.data.role_call_ALL,
         })
@@ -28,9 +26,7 @@ export default class PlayerList extends Component {
 
     const getArchive_Attendees = async function() {
       try {
-        const getAttendees = await axios.get(
-          `/api/archive_attendees/role_call_ALL/${match.params.archive_id}`
-        )
+        const getAttendees = await axios.get(`/api/archive_attendees/role_call_ALL/${match.params.archive_id}`)
         self.setState({
           allMyFriends: getAttendees.data.role_call_ALL,
         })
@@ -39,10 +35,7 @@ export default class PlayerList extends Component {
       }
     }
 
-    if (
-      match.params.archive_id != undefined ||
-      match.params.archive_id != null
-    ) {
+    if (match.params.archive_id != undefined || match.params.archive_id != null) {
       getArchive_Attendees()
     } else {
       getAttendees()
@@ -60,9 +53,7 @@ export default class PlayerList extends Component {
         if (rowLen === index + 1) {
           lastRow = true
         }
-        return (
-          <IndividualPlayer attendee={item} key={index} lastRow={lastRow} />
-        )
+        return <IndividualPlayer attendee={item} key={index} lastRow={lastRow} />
       })
     }
   }

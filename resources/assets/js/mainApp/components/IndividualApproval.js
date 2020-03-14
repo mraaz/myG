@@ -30,7 +30,7 @@ export default class IndividualApproval extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     let { approvals } = this.props
 
     if (approvals.attendees.dota_2_position_one != '' && approvals.attendees.dota_2_position_one != null) {

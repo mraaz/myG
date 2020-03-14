@@ -78,7 +78,7 @@ class Layout extends Component {
       name: "Raaz",
     }
   }
-  componentWillMount() {
+  componentDidMount() {
     const self = this
     const getInitialData = async function () {
       try {
@@ -97,10 +97,9 @@ class Layout extends Component {
       }
     }
     getInitialData()
-  }
 
-  componentDidMount() {
     window.addEventListener("focus", this.onFocus);
+
   }
 
   componentWilUnmount() {

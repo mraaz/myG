@@ -46,7 +46,7 @@ class Dossier extends Component {
     }
   }
 
-  componentWillReceiveProps({ isScriptLoaded, isScriptLoadSucceed }) {
+  UNSAFE_componentWillReceiveProps({ isScriptLoaded, isScriptLoadSucceed }) {
     if (isScriptLoaded && !this.props.isScriptLoaded) {
       // load finished
       if (isScriptLoadSucceed) {

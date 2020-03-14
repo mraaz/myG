@@ -66,11 +66,7 @@ const date_options = [
   { value: '14 days', label: '14 days' },
 ]
 
-const visibility_options = [
-  { value: 1, label: 'Public' },
-  { value: 2, label: 'Friends' },
-  { value: 3, label: 'Group' },
-]
+const visibility_options = [{ value: 1, label: 'Public' }, { value: 2, label: 'Friends' }, { value: 3, label: 'Group' }]
 
 export default class ScheduleGames_Dota2 extends Component {
   constructor() {
@@ -96,7 +92,7 @@ export default class ScheduleGames_Dota2 extends Component {
     window.location.href = '/addscheduleGames'
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.state.game_name_box = this.props.game_name_box
     this.call_PullDataFunc()
   }
@@ -253,13 +249,7 @@ export default class ScheduleGames_Dota2 extends Component {
   showLatestPosts = () => {
     if (this.state.allscheduledGames != undefined) {
       return this.state.allscheduledGames.map((item, index) => {
-        return (
-          <ScheduledGamePost
-            schedule_game={item}
-            key={index}
-            user={this.props.props.initialData}
-          />
-        )
+        return <ScheduledGamePost schedule_game={item} key={index} user={this.props.props.initialData} />
       })
     }
   }
@@ -306,13 +296,7 @@ export default class ScheduleGames_Dota2 extends Component {
               />
             </div>
             <div className='date-time'>
-              <Select
-                onChange={this.handleChange_time}
-                options={date_options}
-                placeholder='Start Date?'
-                name='date-time-box'
-                isClearable
-              />
+              <Select onChange={this.handleChange_time} options={date_options} placeholder='Start Date?' name='date-time-box' isClearable />
             </div>
             <div className='description'>
               <input
@@ -346,11 +330,7 @@ export default class ScheduleGames_Dota2 extends Component {
                 <i className='fas fa-plus' />
               </div>
               <div className='full-game'>
-                <input
-                  type='checkbox'
-                  defaultChecked={this.state.isChecked}
-                  onChange={this.toggleChange}
-                />
+                <input type='checkbox' defaultChecked={this.state.isChecked} onChange={this.toggleChange} />
                 &nbsp;Exclude Full Games?
               </div>
             </div>

@@ -270,7 +270,7 @@ export default class EditGamingExp extends Component<*, State> {
     }, 300)
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { match } = this.props.routeProps
     const self = this
 

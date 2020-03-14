@@ -40,7 +40,7 @@ export default class IndividualComment extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if (this.props.comment.profile_img != null) {
       this.setState({ show_profile_img: true })
     }
