@@ -5,7 +5,7 @@ import { registerGuestAction } from '../../../redux/actions/guestAction';
 import { logoutAction } from '../../../redux/actions/userAction';
 import { fetchLink } from "../../../integration/http/guest";
 import { monitorChats, closeSubscription } from '../../../integration/ws/chat';
-import { toast } from 'react-toastify';
+import notifyToast from '../../../common/toast';
 import Chat from './Chat';
 
 class GuestLink extends React.PureComponent {
@@ -19,9 +19,9 @@ class GuestLink extends React.PureComponent {
     this.props.logout();
     localStorage.clear();
     fetchLink(this.props.uuid).then(({ link }) => {
-      if (!link) return toast.error('The Group for this Link was not found :(');
+      if (!link) return notifyToast('The Group for this Link was not found :(');
       const isValid = !link.expiry || ((new Date(link.updatedAt).getTime() + (link.expiry * 60 * 60 * 1000)) >= Date.now());
-      if (!isValid) return toast.error('This Link has expired :(');
+      if (!isValid) return notifyToast('This Link has expired :(');
       const chatId = link.chatId;
       this.props.registerGuest(chatId);
       this.setState({ validLink: true });

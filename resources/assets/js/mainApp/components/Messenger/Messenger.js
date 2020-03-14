@@ -1,7 +1,7 @@
 
 import React from "react";
 import { connect } from 'react-redux';
-import { toast } from 'react-toastify';
+import notifyToast from '../../../common/toast';
 
 import Chat from './Chat';
 import GroupCreation from './GroupCreation';
@@ -57,14 +57,14 @@ class Messenger extends React.PureComponent {
     const url = window.location.href;
     const uuid = Array.isArray(url.match(uuidMatcher)) ? url.match(uuidMatcher)[0] : null;
     fetchLink(uuid).then(({ link }) => {
-      if (!link) return toast.error('The Group for this Link was not found :(');
+      if (!link) return notifyToast('The Group for this Link was not found :(');
       const isValid = !link.expiry || ((new Date(link.updatedAt).getTime() + (link.expiry * 60 * 60 * 1000)) >= Date.now());
-      if (!isValid) return toast.error('This Link has expired :(');
+      if (!isValid) return notifyToast('This Link has expired :(');
       const userId = this.props.userId;
       const chatId = link.chatId;
       acceptInvitation(chatId, [userId]).then(response => {
-        if (response.error === 'Contacts are Already in Chat.') return toast.warn('You are already in this Group!');;
-        return toast.success('You have been added to this Group!!');
+        if (response.error === 'Contacts are Already in Chat.') return notifyToast('You are already in this Group!');;
+        return notifyToast('You have been added to this Group!!');
       });
     });
   }
