@@ -121,12 +121,13 @@ class ChatRepository {
   }
 
   async createChat({ requestingUserId, contacts, owners, title, icon, publicKey }) {
-    if (contacts.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
     contacts = [requestingUserId, ...contacts].sort();
+    if (contacts.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
     const { chats } = await this.fetchChats({ requestingUserId });
     const guests = [];
 
-    const existingChat = chats.find(chat =>
+    const isGroup = contacts.length > 2;
+    const existingChat = !isGroup && chats.find(chat =>
       contacts.length === chat.contacts.length &&
       contacts.every((id, index) => id === chat.contacts[index])
     );
