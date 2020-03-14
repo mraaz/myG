@@ -7,13 +7,15 @@ const LikeController = use('./LikeController')
 
 class PostController {
   async store({ auth, request, response }) {
-    const newPost = await Post.create({
-      content: request.input('content'),
-      user_id: auth.user.id,
-      type: 'text',
-      group_id: request.input('groups_id'),
-    })
-    return newPost.id
+    if (auth.user) {
+      const newPost = await Post.create({
+        content: request.input('content'),
+        user_id: auth.user.id,
+        type: 'text',
+        group_id: request.input('groups_id'),
+      })
+      return newPost.id
+    }
   }
 
   async show({ auth, request, response }) {
@@ -162,6 +164,24 @@ class PostController {
         .where('posts.id', '=', request.params.id)
         .select('*', 'posts.id', 'posts.created_at', 'posts.updated_at')
 
+      for (var i = 0; i < myPosts.length; i++) {
+        request.params.id = myPosts[i].id
+        var myLikes = await likeController.show({ auth, request, response })
+
+        myPosts[i].total = myLikes.number_of_likes[0].total
+        myPosts[i].no_of_comments = myLikes.no_of_comments[0].no_of_comments
+        if (myLikes.number_of_likes[0].total != 0) {
+          myPosts[i].admirer_first_name = myLikes.admirer_UserInfo.alias
+        } else {
+          myPosts[i].admirer_first_name = ''
+        }
+        if (myLikes.do_I_like_it[0].myOpinion != 0) {
+          myPosts[i].do_I_like_it = true
+        } else {
+          myPosts[i].do_I_like_it = false
+        }
+      }
+
       return {
         myPost,
       }
@@ -279,45 +299,60 @@ class PostController {
   }
 
   async update({ auth, request, response }) {
-    try {
-      const updatePost = await Post.query()
-        .where({ id: request.params.id })
-        .update({ content: request.input('content') })
-      return 'Saved successfully'
-    } catch (error) {
-      console.log(updatePost)
+    if (auth.user) {
+      try {
+        const updatePost = await Post.query()
+          .where({ id: request.params.id })
+          .update({ content: request.input('content') })
+        return 'Saved successfully'
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 
   async storephoto({ auth, request, response }) {
-    const newPost = await Post.create({
-      content: request.input('content'),
-      media_url: request.input('media_url'),
-      user_id: auth.user.id,
-      type: 'photo',
-      group_id: request.input('groups_id'),
-    })
+    if (auth.user) {
+      try {
+        const newPost = await Post.create({
+          content: request.input('content'),
+          media_url: request.input('media_url'),
+          user_id: auth.user.id,
+          type: 'photo',
+          group_id: request.input('groups_id'),
+        })
 
-    let update_key = new AwsKeyController()
-    request.params.post_id = newPost.id
-    update_key.addPostKey({ auth, request, response })
+        let update_key = new AwsKeyController()
+        request.params.post_id = newPost.id
+        update_key.addPostKey({ auth, request, response })
 
-    return 'Saved item'
+        return newPost.id
+      } catch (error) {
+        console.log(error)
+      }
+    }
   }
 
   async storevideo({ auth, request, response }) {
-    const newPost = await Post.create({
-      content: request.input('content'),
-      media_url: request.input('media_url'),
-      user_id: auth.user.id,
-      type: 'video',
-      group_id: request.input('groups_id'),
-    })
+    if (auth.user) {
+      try {
+        const newPost = await Post.create({
+          content: request.input('content'),
+          media_url: request.input('media_url'),
+          user_id: auth.user.id,
+          type: 'video',
+          group_id: request.input('groups_id'),
+        })
 
-    let update_key = new AwsKeyController()
-    request.params.post_id = newPost.id
-    update_key.addPostKey({ auth, request, response })
-    return 'Saved item'
+        let update_key = new AwsKeyController()
+        request.params.post_id = newPost.id
+        update_key.addPostKey({ auth, request, response })
+
+        return newPost.id
+      } catch (error) {
+        console.log(error)
+      }
+    }
   }
 }
 

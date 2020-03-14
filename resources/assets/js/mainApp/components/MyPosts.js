@@ -19,9 +19,9 @@ export default class MyPosts extends Component {
   }
 
   showLatestPosts = () => {
-    if (this.state.myPosts != undefined) {
+    if (this.state.myPosts != []) {
       return this.state.myPosts.map((item, index) => {
-        return <IndividualPost post={item} key={index} user={this.props.initialData} />
+        return <IndividualPost post={item} key={item.id} user={this.props.initialData} />
       })
     }
   }
@@ -66,7 +66,7 @@ export default class MyPosts extends Component {
   }
 
   render() {
-    if (this.state.myPosts != undefined) {
+    if (this.state.myPosts != []) {
       return (
         <section id='posts'>
           <InfiniteScroll dataLength={this.state.myPosts.length} next={this.fetchMoreData} hasMore={this.state.moreplease}>

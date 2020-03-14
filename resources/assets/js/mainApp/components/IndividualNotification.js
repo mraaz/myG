@@ -70,7 +70,7 @@ export default class IndividualNotification extends Component {
     })
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const self = this
     let { notification } = this.props
     var activity_type

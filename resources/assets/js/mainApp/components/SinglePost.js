@@ -11,36 +11,13 @@ export default class SinglePost extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const self = this
     const { match } = this.props.routeProps
-    var i
-    var myLikes
 
     const getPost = async function() {
       try {
         const myPost = await axios.get(`/api/getpost/${match.params.id}`)
-
-        for (i = 0; i < myPost.data.myPost.length; i++) {
-          myLikes = await axios.get(`/api/likes/${myPost.data.myPost[i].id}`)
-          myPost.data.myPost[i].total = myLikes.data.number_of_likes[0].total
-          myPost.data.myPost[i].no_of_comments =
-            myLikes.data.no_of_comments[0].no_of_comments
-          if (myLikes.data.number_of_likes[0].total != 0) {
-            myPost.data.myPost[i].admirer_first_name =
-              myLikes.data.admirer_UserInfo.first_name
-            myPost.data.myPost[i].admirer_last_name =
-              myLikes.data.admirer_UserInfo.last_name
-          } else {
-            myPost.data.myPost[i].admirer_first_name = ''
-            myPost.data.myPost[i].admirer_last_name = ''
-          }
-          if (myLikes.data.do_I_like_it[0].myOpinion != 0) {
-            myPost.data.myPost[i].do_I_like_it = true
-          } else {
-            myPost.data.myPost[i].do_I_like_it = false
-          }
-        }
 
         self.setState({
           myPost: self.state.myPost.concat(myPost.data.myPost),
@@ -53,21 +30,15 @@ export default class SinglePost extends Component {
   }
 
   showLatestPost = () => {
-    if (this.state.myPost != undefined) {
+    if (this.state.myPost != []) {
       return this.state.myPost.map((item, index) => {
-        return (
-          <IndividualPost
-            post={item}
-            key={index}
-            user={this.props.initialData}
-          />
-        )
+        return <IndividualPost post={item} key={index} user={this.props.initialData} />
       })
     }
   }
 
   render() {
-    if (this.state.myPost != undefined) {
+    if (this.state.myPost != []) {
       return (
         <section id='posts'>
           <div className='startofSinglePage'></div>

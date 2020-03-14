@@ -450,7 +450,7 @@ export default class EditEsportsExp extends Component<*, State> {
     }, 300)
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const self = this
     const { match } = this.props.routeProps
 

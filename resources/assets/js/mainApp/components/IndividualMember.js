@@ -20,7 +20,7 @@ export default class IndividualMember extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     //0=Owner, 1=Admin, 2=Moderator, 3=User, 42=Pending, -1=Not a member
     if (this.props.member.permission_level == 0 || this.props.member.permission_level == 42) {
       this.setState({ show_controls: false })
