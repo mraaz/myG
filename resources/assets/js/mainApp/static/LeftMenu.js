@@ -22,6 +22,9 @@ const styles = {
   logoCollapsed: 'my-left-menu__logo-collapsed',
   settingsIcon: 'my-left-menu__settings-icon',
   toggleIcon: 'my-left-menu__toggle-icon',
+  clickable: 'my-left-menu__clickable',
+  line: 'my-left-menu__line',
+  notificationArea: 'my-left-menu__notification-area',
 }
 
 const sideBarItems = {
@@ -74,7 +77,7 @@ const sideBarItems = {
     id: 'PROFILE',
     header: 'Profile',
     icon: 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_Profile.svg',
-    cta: '',
+    cta: '/profile/logged',
     expanded: false,
   },
   NETWORK: {
@@ -179,7 +182,7 @@ const sideBarItemsList = [
 const logoutButton = {
   header: 'Logout',
   cta: '',
-  icon: 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_Network.svg',
+  icon: 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Logout_Icon.svg',
   isExpandable: false,
   subItems: [
     {
