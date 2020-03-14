@@ -147,7 +147,7 @@ class Messenger extends React.PureComponent {
         .sort((f1, f2) => compareStatus(f1.status, f2.status))
         .sort((f1, f2) => this.compareLastMessages(f1, f2));
 
-      if (this.state.searchInput) {
+      if (this.state.searchInput.trim()) {
         const search = (name) => name.toLowerCase().includes(this.state.searchInput.toLowerCase());
         sections['suggestions'] = contacts.slice(0)
           .filter(contact => search(contact.name))
@@ -253,13 +253,16 @@ class Messenger extends React.PureComponent {
   }
 
   renderGroups = () => {
+    const isSearching = this.state.searchInput.trim();
+    const search = (name) => isSearching ? name.toLowerCase().includes(this.state.searchInput.toLowerCase()) : true;
+    const groups = this.props.groups.slice(0).filter(group => search(group.title));
     return this.renderDivider('groups', this.state.dividerExpanded.groups, () => {
       if (!this.props.groups.length) return this.renderGroupButton();
       return (
         <div>
           {this.renderGroupButton()}
           <div className="messenger-body-section-content">
-            {this.props.groups.map(this.renderGroup)}
+            {groups.map(this.renderGroup)}
           </div>
         </div>
       );
@@ -401,9 +404,8 @@ class Messenger extends React.PureComponent {
               value={this.state.searchInput}
               onChange={event => this.setState({ searchInput: event.target.value })}
             />
-            <div className="messenger-settings-search-button clickable"
+            <div className="messenger-settings-search-button"
               style={{ backgroundImage: `url(/assets/svg/ic_messenger_search.svg)` }}
-              onClick={() => this.filterContacts()}
             />
           </div>
           <div
