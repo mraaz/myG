@@ -188,6 +188,7 @@ export default class PostFileModal extends Component {
               defaultValue={''}
               onChange={this.handleChange}
               maxLength='254'
+              value={this.state.post_content}
               placeholder="What's up..."
             />
             <Dropzone

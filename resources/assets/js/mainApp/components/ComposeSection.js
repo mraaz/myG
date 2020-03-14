@@ -184,6 +184,7 @@ export default class ComposeSection extends Component {
             onChange={this.handleChange_txtArea}
             onKeyDown={this.detectKey}
             maxLength='254'
+            value={this.state.post_content}
             placeholder="What's up..."
           />
           <div className='user-img' />
