@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import Dropdown from '../Dropdown';
 import Popup from '../Popup';
-import { addContactsToChatAction, inviteUserToGroupAction, updateChatAction, clearChatAction, exitGroupAction, removeFromGroupAction } from '../../../redux/actions/chatAction';
+import { addContactsToChatAction, inviteUserToGroupAction, updateChatAction, clearChatAction, removeFromGroupAction } from '../../../redux/actions/chatAction';
 import { searchUsersAction, addAsFriendAction, fetchFriendRequestsAction } from '../../../redux/actions/userAction';
 
 class GroupMemberOptions extends React.PureComponent {
@@ -288,7 +288,6 @@ function mapDispatchToProps(dispatch) {
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
     removeFromGroup: (chatId, userId) => dispatch(removeFromGroupAction(chatId, userId)),
-    exitGroup: (chatId) => dispatch(exitGroupAction(chatId)),
   });
 }
 

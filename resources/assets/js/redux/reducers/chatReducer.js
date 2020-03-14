@@ -61,10 +61,9 @@ export default function reducer(state = {
       const messages = action.payload.messages
         .filter(message => message.messageId > action.payload.chat.lastCleared)
         .filter(message => !action.payload.chat.deletedMessages.includes(message.messageId))
-        .filter(message => !message.keyReceiver)
         .filter(message => !chat.blockedUsers.includes(message.senderId))
         .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId));
-      const privateKey = receiveGroupKey(chat, action.payload.messages, action.meta.userId, state.privateKey);
+      const privateKey = receiveGroupKey(chat, action.payload.encryptionMessages, action.meta.userId, state.privateKey);
       if (privateKey) chat.privateKey = privateKey;
       if (!chat.blocked) chat.messages = messages;
       return {
@@ -577,8 +576,8 @@ function prepareGroupKeysToSend(group, userId, userContacts, userPublicKey, user
 
 function receiveGroupKey(group, messages, userId, userPrivateKey) {
   if (group.contacts.length <= 2) return;
-  const message = messages.find(message => message.keyReceiver === userId);
-  if (!message || !message.content) return;
+  const message = messages[0];
+  if (!message || !message.content || message.keyReceiver !== userId) return;
   const privateKey = decryptMessage(message.content, userPrivateKey);
   if (!privateKey) return;
   return deserializeKey(JSON.parse(privateKey));

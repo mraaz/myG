@@ -30,9 +30,17 @@ class GuestController {
   async fetchMessages({ params, request, response }) {
     const requestedChatId = params.chatId;
     const requestedPage = request.only(['page']).page || 1;
-    log('GUEST', `Guestrequesting Messages for Chat ${requestedChatId}`);
+    log('GUEST', `Guest requesting Messages for Chat ${requestedChatId}`);
     const { messages } = await GuestRepository.fetchMessages({ requestedChatId, requestedPage });
     return response.send({ messages });
+  }
+
+  async fetchEncryptionMessages({ params, response }) {
+    const requestingGuestId = params.guestId;
+    const requestedChatId = params.chatId;
+    log('GUEST', `Guest ${requestingGuestId} requesting Messages for Chat ${requestedChatId}`);
+    const { encryptionMessages } = await GuestRepository.fetchEncryptionMessages({ requestingGuestId, requestedChatId });
+    return response.send({ encryptionMessages });
   }
 
   async sendMessage({ params, request, response }) {

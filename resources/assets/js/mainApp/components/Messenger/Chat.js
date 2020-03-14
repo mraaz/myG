@@ -98,7 +98,8 @@ export class Chat extends React.PureComponent {
   }
 
   decryptMessage = (message) => {
-    const isSent = message.senderId == this.props.userId;
+    if (!message.content && !message.backup) return message;
+    const isSent = !this.props.isGroup && message.senderId == this.props.userId;
     const encryptedContent = isSent ? message.backup : message.content;
     const privateKey = isSent ? this.props.userPrivateKey : this.props.privateKey;
     const content = decryptMessage(encryptedContent, privateKey);

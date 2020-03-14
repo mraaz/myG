@@ -118,6 +118,15 @@ class ChatController {
     return response.send({ messages });
   }
 
+  async fetchEncryptionMessages({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    if (!requestingUserId) throw new Error('Auth Error');
+    const requestedChatId = params.chatId;
+    log('CHAT', `User ${requestingUserId} requesting Encryption Messages for Chat ${requestedChatId}`);
+    const { encryptionMessages } = await ChatRepository.fetchEncryptionMessages({ requestingUserId, requestedChatId });
+    return response.send({ encryptionMessages });
+  }
+
   async sendMessage({ auth, params, request, response }) {
     const requestingUserId = auth.user.id;
     if (!requestingUserId) throw new Error('Auth Error');

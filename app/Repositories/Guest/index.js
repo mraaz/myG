@@ -74,6 +74,10 @@ class GuestRepository {
     return ChatRepository.fetchMessages({ requestedChatId, requestedPage });
   }
 
+  async fetchEncryptionMessages({ requestingGuestId, requestedChatId }) {
+    return ChatRepository.fetchEncryptionMessages({ requestingUserId: requestingGuestId, requestedChatId });
+  }
+
   async sendMessage({ requestedChatId, senderName, guestId, backup, content }) {
     const messageData = {
       sender_id: guestId,

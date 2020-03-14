@@ -101,6 +101,7 @@ class ChatRepository {
     const result = (await ChatMessage
       .query()
       .where('chat_id', requestedChatId)
+      .andWhere('key_receiver', null)
       .orderBy('id', 'desc')
       .paginate(requestedPage || 1, 10)).toJSON();
     const messages = result.data.map(message => new MessageSchema({
@@ -118,6 +119,30 @@ class ChatRepository {
       updatedAt: message.updated_at,
     }));
     return { messages };
+  }
+
+  async fetchEncryptionMessages({ requestingUserId, requestedChatId }) {
+    const result = (await ChatMessage
+      .query()
+      .where('chat_id', requestedChatId)
+      .andWhere('key_receiver', requestingUserId)
+      .orderBy('id', 'desc')
+      .fetch()).toJSON();
+    const encryptionMessages = result.map(message => new MessageSchema({
+      messageId: message.id,
+      chatId: message.chat_id,
+      senderId: message.sender_id,
+      keyReceiver: message.key_receiver,
+      senderName: message.sender_name,
+      content: message.content,
+      backup: message.backup,
+      deleted: message.deleted,
+      edited: message.edited,
+      selfDestruct: message.self_destruct,
+      createdAt: message.created_at,
+      updatedAt: message.updated_at,
+    }));
+    return { encryptionMessages };
   }
 
   async createChat({ requestingUserId, contacts, owners, title, icon, publicKey }) {
@@ -481,7 +506,7 @@ class ChatRepository {
   }
 
   async fetchEntryLogs({ requestedChatId }) {
-    const rawEntryLogs = (await ChatEntryLog.query('chat_id', requestedChatId).fetch()).toJSON();
+    const rawEntryLogs = (await ChatEntryLog.query().where('chat_id', requestedChatId).fetch()).toJSON();
     const entryLogs = rawEntryLogs.map(entryLog => new ChatEntryLogSchema({
       id: entryLog.id,
       chatId: entryLog.chat_id,
