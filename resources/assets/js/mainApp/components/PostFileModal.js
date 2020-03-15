@@ -185,7 +185,6 @@ export default class PostFileModal extends Component {
               name='post_content'
               rows={8}
               cols={80}
-              defaultValue={''}
               onChange={this.handleChange}
               maxLength='254'
               value={this.state.post_content}

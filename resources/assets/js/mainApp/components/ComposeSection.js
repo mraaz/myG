@@ -180,7 +180,6 @@ export default class ComposeSection extends Component {
           <textarea
             rows={8}
             cols={80}
-            defaultValue={''}
             onChange={this.handleChange_txtArea}
             onKeyDown={this.detectKey}
             maxLength='254'
