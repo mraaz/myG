@@ -287,10 +287,12 @@ class ChatRepository {
     const chatModel = (await Chat.query().where('id', requestedChatId).first());
     const chat = chatModel.toJSON();
     const contacts = JSON.parse(chat.contacts || '[]');
+    const guests = JSON.parse(chat.guests || '[]');
     const owners = JSON.parse(chat.owners || '[]');
     if (!owners.includes(requestingUserId)) throw new Error('Only Owners can Delete Chat');
     await chatModel.delete();
     contacts.forEach(userId => this._notifyChatEvent({ userId, action: 'deleteChat', payload: { chatId: requestedChatId } }));
+    guests.forEach(guestId => this._notifyChatEvent({ guestId, action: 'deleteChat', payload: { chatId: requestedChatId } }));
     return new DefaultSchema({ success: true });
   }
 

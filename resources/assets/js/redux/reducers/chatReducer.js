@@ -3,6 +3,7 @@ import logger from '../../common/logger';
 import { reEncryptMessages, sendGroupKeys } from '../../common/encryption';
 import { decryptMessage, deserializeKey } from '../../integration/encryption';
 import { requestGroupPrivateKey, confirmGroupPrivateKey } from '../../integration/http/guest';
+import notifyToast from '../../common/toast';
 
 export default function reducer(state = {
   chats: [],
@@ -267,6 +268,7 @@ export default function reducer(state = {
       logger.log('CHAT', `Redux -> On Chat Deleted: `, action.payload);
       const chatId = parseInt(action.payload.chatId);
       const chats = JSON.parse(JSON.stringify(state.chats)).filter(chat => parseInt(chat.chatId) !== parseInt(chatId));
+      if (state.guestId) notifyToast('This Group has been deleted.');
       return {
         ...state,
         chats,

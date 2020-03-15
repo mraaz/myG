@@ -73,7 +73,7 @@ class GuestLink extends React.PureComponent {
       <div id="guest-container"
         style={{ backgroundImage: `url(/assets/image/img/guest_background.jpg)` }}
       >
-        {this.renderChat()}
+        {this.props.hasChat && this.renderChat()}
         {this.renderKicked()}
       </div>
     );
@@ -82,7 +82,9 @@ class GuestLink extends React.PureComponent {
 }
 
 function mapStateToProps(state) {
+  const hasChat = state.chat.chats.length;
   return {
+    hasChat,
     guestId: state.guest.guestId,
     chatId: state.guest.chatId,
     publicKey: state.guest.publicKey,

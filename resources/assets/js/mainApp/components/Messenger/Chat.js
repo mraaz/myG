@@ -332,7 +332,7 @@ export class Chat extends React.PureComponent {
 }
 
 export function mapStateToProps(state, props) {
-  const chat = state.chat.chats.find(chat => chat.chatId === props.chatId) || { contacts: [] };
+  const chat = state.chat.chats.find(chat => chat.chatId === props.chatId) || { contacts: [], guests: [] };
   const messages = withDatesAndLogs(chat.messages || [], chat.entryLogs || []);
   const contacts = chat.contacts.filter(contactId => contactId !== props.userId);
   const guests = chat.guests.filter(contactId => contactId !== props.userId);
