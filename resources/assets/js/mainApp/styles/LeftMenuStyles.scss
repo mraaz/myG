@@ -118,7 +118,7 @@
   }
   &__line {
     width: 1px;
-    margin: 0 6px;
+    margin: 0 10px;
     background-color: #384952;
   }
   &__notification-area {
@@ -131,5 +131,10 @@
     border-radius: 8px;
     height: fit-content;
     font-size: 13px;
+  }
+  &__logout-area {
+    height: 79px;
+    display: flex;
+    align-items: center;
   }
 }
