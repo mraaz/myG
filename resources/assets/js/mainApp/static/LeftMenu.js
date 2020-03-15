@@ -25,6 +25,7 @@ const styles = {
   clickable: 'my-left-menu__clickable',
   line: 'my-left-menu__line',
   notificationArea: 'my-left-menu__notification-area',
+  logoutArea: 'my-left-menu__logout-area',
 }
 
 const sideBarItems = {
@@ -32,7 +33,7 @@ const sideBarItems = {
     id: 'SEARCH',
     header: 'Search',
     icon: 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_Search.svg',
-    cta: '',
+    cta: '/advancedSearch',
     expanded: false,
     subItems: [
       {
@@ -53,7 +54,7 @@ const sideBarItems = {
     id: 'NEW_GAME',
     header: 'New Game',
     icon: 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_New_Game.svg',
-    cta: '',
+    cta: '/addScheduleGames',
     expanded: false,
     subItems: [
       {
@@ -77,7 +78,7 @@ const sideBarItems = {
     id: 'PROFILE',
     header: 'Profile',
     icon: 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_Profile.svg',
-    cta: '/profile/logged',
+    cta: '${alias}',
     expanded: false,
   },
   NETWORK: {

@@ -132,4 +132,9 @@
     height: fit-content;
     font-size: 13px;
   }
+  &__logout-area {
+    height: 79px;
+    display: flex;
+    align-items: center;
+  }
 }
