@@ -65,7 +65,7 @@ export default class AddScheduleGames extends Component {
 
   handleChange_game_name = (entered_name) => {
     if (entered_name == null) {
-      this.setState({ game_name_box: '' })
+      this.setState({ game_name_box: '', default: true, games: false })
       return
     }
     if (/['/.%#$,;`\\]/.test(entered_name.value)) {
