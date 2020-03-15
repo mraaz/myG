@@ -109,6 +109,18 @@ class GuestRepository {
     return ChatRepository.fetchEntryLogs({ requestedChatId });
   }
 
+  async fetchGroupPrivateKeyRequests({ chatId }) {
+    return ChatRepository.fetchGroupPrivateKeyRequests({ chatId });
+  }
+
+  async requestGroupPrivateKey({ userId, chatId, publicKey }) {
+    return ChatRepository.requestGroupPrivateKey({ userId, chatId, publicKey });
+  }
+
+  async confirmGroupPrivateKey({ userId, chatId }) {
+    return ChatRepository.confirmGroupPrivateKey({ userId, chatId });
+  }
+
 }
 
 module.exports = new GuestRepository();

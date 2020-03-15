@@ -310,6 +310,9 @@ Route.get('/api/guest/chat/:chatId/message', 'GuestController.fetchMessages')
 Route.get('/api/guest/:guestId/chat/:chatId/message/encryption', 'GuestController.fetchEncryptionMessages')
 Route.post('/api/guest/:guestId/chat/:chatId', 'GuestController.sendMessage')
 Route.get('/api/guest/chat/:chatId/entryLogs', 'GuestController.fetchEntryLogs')
+Route.get('/api/guest/privateKey/:chatId', 'GuestController.fetchGroupPrivateKeyRequests')
+Route.post('/api/guest/privateKey/:userId/:chatId', 'GuestController.requestGroupPrivateKey')
+Route.delete('/api/guest/privateKey/:userId/:chatId', 'GuestController.confirmGroupPrivateKey')
 
 
 Route.any('*', ({ view }) => view.render('pages/react'))

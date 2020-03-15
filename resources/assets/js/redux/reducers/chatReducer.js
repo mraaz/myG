@@ -2,6 +2,7 @@
 import logger from '../../common/logger';
 import { reEncryptMessages, sendGroupKeys } from '../../common/encryption';
 import { decryptMessage, deserializeKey } from '../../integration/encryption';
+import { requestGroupPrivateKey, confirmGroupPrivateKey } from '../../integration/http/guest';
 
 export default function reducer(state = {
   chats: [],
@@ -44,7 +45,7 @@ export default function reducer(state = {
 
     case "PREPARE_CHAT_FULFILLED": {
       logger.log('CHAT', `Redux -> Chat ${action.meta.chatId} Ready (Chat): `, action.payload, action.meta);
-      const { chatId } = action.meta;
+      const { chatId, userId } = action.meta;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const existingChat = chats.find(candidate => candidate.chatId === chatId);
       const chat = existingChat || action.payload.chat;
@@ -62,9 +63,17 @@ export default function reducer(state = {
         .filter(message => !action.payload.chat.deletedMessages.includes(message.messageId))
         .filter(message => !chat.blockedUsers.includes(message.senderId))
         .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId));
-      const privateKey = receiveGroupKey(chat, action.payload.encryptionMessages, action.meta.userId, state.privateKey);
-      if (privateKey) chat.privateKey = privateKey;
       if (!chat.blocked) chat.messages = messages;
+      const isGroup = action.payload.chat.contacts && action.payload.chat.contacts.length > 2;
+      if (isGroup) {
+        const privateKey = receiveGroupKey(chat, action.payload.encryptionMessages, userId, state.privateKey);
+        if (privateKey) {
+          chat.privateKey = privateKey;
+          const privateKeyRequests = action.payload.requests || [];
+          if (privateKeyRequests.length) sendGroupKeys(chatId, userId, privateKeyRequests, privateKey, state.privateKey);
+        }
+        else requestGroupPrivateKey(userId, chatId, state.publicKey);
+      }
       return {
         ...state,
         chats,
@@ -188,8 +197,10 @@ export default function reducer(state = {
       }
       if (!chat.messages) chat.messages = [];
       if (!message.keyReceiver) chat.messages.push(message);
-      const privateKey = receiveGroupKey(chat, [message], userId, state.privateKey);
-      if (privateKey) chat.privateKey = privateKey;
+      if (message.keyReceiver === userId) {
+        const privateKey = receiveGroupKey(chat, [message], userId, state.privateKey);
+        if (privateKey) chat.privateKey = privateKey;
+      }
       return {
         ...state,
         chats,
@@ -579,6 +590,7 @@ function receiveGroupKey(group, messages, userId, userPrivateKey) {
   if (!message || !message.content || message.keyReceiver !== userId) return;
   const privateKey = decryptMessage(message.content, userPrivateKey);
   if (!privateKey) return;
+  confirmGroupPrivateKey(userId, group.chatId);
   return deserializeKey(JSON.parse(privateKey));
 }
 

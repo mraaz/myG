@@ -1,6 +1,6 @@
 
 import { generateKeysSync } from '../../integration/encryption';
-import { register, unregister, fetchChat, fetchMessages, fetchEncryptionMessages, sendMessage, fetchEntryLogs } from '../../integration/http/guest';
+import { register, unregister, fetchChat, fetchMessages, fetchEncryptionMessages, fetchGroupPrivateKeyRequests,sendMessage, fetchEntryLogs } from '../../integration/http/guest';
 
 export function registerGuestAction(chatId) {
   const { encryption: { publicKey, privateKey } } = generateKeysSync();
@@ -23,11 +23,12 @@ export function prepareChatAction(chatId, userId) {
   const chatRequest = fetchChat(chatId);
   const messagesRequest = fetchMessages(chatId, 1);
   const encryptionMessagesRequest = fetchEncryptionMessages(userId, chatId);
+  const privateKeyRequestsRequest = fetchGroupPrivateKeyRequests(chatId);
   const entryLogsRequest = fetchEntryLogs(chatId);
-  const requests = [chatRequest, messagesRequest, encryptionMessagesRequest, entryLogsRequest];
+  const requests = [chatRequest, messagesRequest, encryptionMessagesRequest, privateKeyRequestsRequest, entryLogsRequest];
   return {
     type: 'PREPARE_CHAT',
-    payload: Promise.all(requests).then(([chat, messages, encryptionMessages, entryLogs]) => ({ ...chat, ...messages, ...encryptionMessages, ...entryLogs })),
+    payload: Promise.all(requests).then(([chat, messages, encryptionMessages, privateKeyRequests, entryLogs]) => ({ ...chat, ...messages, ...encryptionMessages, ...privateKeyRequests, ...entryLogs })),
     meta: { chatId, userId }
   }
 }

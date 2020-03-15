@@ -8,6 +8,7 @@ const ChatLastCleared = use('App/Models/ChatLastCleared');
 const ChatLastRead = use('App/Models/ChatLastRead');
 const ChatLink = use('App/Models/ChatLink');
 const ChatEntryLog = use('App/Models/ChatEntryLog');
+const ChatPrivateKeyRequest = use('App/Models/ChatPrivateKeyRequest');
 
 const ChatSchema = require('../../Schemas/Chat');
 const ChatLinkSchema = require('../../Schemas/ChatLink');
@@ -15,6 +16,7 @@ const ChatEntryLogSchema = require('../../Schemas/ChatEntryLog');
 const MessageSchema = require('../../Schemas/Message');
 const DefaultSchema = require('../../Schemas/Default');
 const ContactSchema = require('../../Schemas/Contact');
+const ChatPrivateKeyRequestSchema = require('../../Schemas/ChatPrivateKeyRequest');
 
 const uuidv4 = require('uuid/v4');
 const { broadcast } = require('../../Common/socket');
@@ -517,6 +519,32 @@ class ChatRepository {
       updatedAt: entryLog.updated_at,
     }));
     return { entryLogs };
+  }
+
+  async fetchGroupPrivateKeyRequests({ chatId }) {
+    const rawRequests = (await ChatPrivateKeyRequest.query().where('chat_id', chatId).fetch()).toJSON();
+    const requests = rawRequests.map(request => new ChatPrivateKeyRequestSchema({
+      chatId: request.chat_id,
+      userId: request.user_id,
+      publicKey: request.public_key,
+      createdAt: request.created_at,
+      updatedAt: request.updated_at,
+    }));
+    return { requests };
+  }
+
+  async requestGroupPrivateKey({ userId, chatId, publicKey }) {
+    const request = new ChatPrivateKeyRequest();
+    request.user_id = userId;
+    request.chat_id = chatId;
+    request.public_key = publicKey;
+    await request.save();
+    return new DefaultSchema({ success: true });
+  }
+
+  async confirmGroupPrivateKey({ userId, chatId }) {
+    await ChatPrivateKeyRequest.query().where('user_id', userId).andWhere('chat_id', chatId).delete();
+    return new DefaultSchema({ success: true });
   }
 
   async _insertEntryLog(requestedChatId, alias, kicked, left, invited, link) {

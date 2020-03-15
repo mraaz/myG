@@ -15,11 +15,12 @@ export function reEncryptMessages(messages, publicKey, privateKey) {
 }
 
 export function sendGroupKeys(chatId, userId, contacts, groupPrivateKey, userPrivateKey) {
-  logger.log('CHAT', `Sending Group Keys for Chat ${chatId} to Contacts ${contacts.map(contact => contact.contactId)}`);
+  if (!groupPrivateKey) return;
+  logger.log('CHAT', `Sending Group Keys for Chat ${chatId} to Contacts ${JSON.stringify(contacts.map(contact => contact.contactId || contact.guestId || contact.userId))}`);
   const serializedKey = JSON.stringify(groupPrivateKey);
   contacts.forEach(contact => {
     const { contactId, publicKey, guestId } = contact;
     const content = encryptMessage(serializedKey, publicKey, userPrivateKey);
-    sendMessage(chatId, userId, '', { content, backup: '' }, contactId || guestId);
+    sendMessage(chatId, userId, '', { content, backup: '' }, contactId || guestId || contact.userId);
   });
 }

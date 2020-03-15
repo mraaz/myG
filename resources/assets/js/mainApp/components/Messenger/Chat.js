@@ -31,7 +31,7 @@ export class Chat extends React.PureComponent {
   componentDidMount() {
     document.addEventListener("scroll", this.handleMessageListScroll, { passive: true });
     document.addEventListener("wheel", this.handleMessageListScroll, { passive: true });
-    this.props.prepareChat(this.props.chatId, this.props.contactId, this.props.isGroup, this.props.userId);
+    this.props.prepareChat(this.props.chatId, this.props.userId, this.props.contactId, this.props.isGroup);
     if (!this.props.isGuest) this.props.checkSelfDestruct(this.props.chatId);
   }
 
@@ -293,6 +293,9 @@ export class Chat extends React.PureComponent {
   }
 
   renderEncryptedChat() {
+    const isGroupWithoutKey = this.props.isGroup && !this.props.privateKey;
+    const noUserKeyText = "Please inform your encryption key to read the contents of this chat.";
+    const noGroupKeyText = "Wait for another member to come online.";
     return (
       <div
         key={this.props.chatId}
@@ -300,7 +303,7 @@ export class Chat extends React.PureComponent {
       >
         {this.renderHeader()}
         <div className="chat-component-encryption-warning">
-          Please inform your encryption key to read the contents of this chat.
+          {isGroupWithoutKey ? noGroupKeyText : noUserKeyText}
         </div>
         {this.renderFooter()}
       </div>
@@ -378,7 +381,7 @@ export function mapStateToProps(state, props) {
 
 function mapDispatchToProps(dispatch) {
   return ({
-    prepareChat: (chatId, contactId, isGroup, userId) => dispatch(prepareChatAction(chatId, contactId, isGroup, userId)),
+    prepareChat: (chatId, userId, contactId, isGroup) => dispatch(prepareChatAction(chatId, userId, contactId, isGroup)),
     fetchMessages: (chatId, page) => dispatch(fetchMessagesAction(chatId, page)),
     sendMessage: (chatId, userId, alias, content) => dispatch(sendMessageAction(chatId, userId, alias, content)),
     editMessage: (chatId, messageId, content) => dispatch(editMessageAction(chatId, messageId, content)),

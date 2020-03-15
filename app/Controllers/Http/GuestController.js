@@ -60,6 +60,28 @@ class GuestController {
     return response.send({ entryLogs });
   }
 
+  async fetchGroupPrivateKeyRequests({ params, response }) {
+    const { chatId } = params;
+    log('CHAT', `Fetching Private Key Requests for Group ${chatId}`);
+    const { requests } = await GuestRepository.fetchGroupPrivateKeyRequests({ chatId });
+    return response.send({ requests });
+  }
+
+  async requestGroupPrivateKey({ params, request, response }) {
+    const { userId, chatId } = params;
+    const { publicKey } = request.only(['publicKey']);
+    log('CHAT', `User ${userId} requesting Group ${chatId} Private Key`);
+    const { success, error } = await GuestRepository.requestGroupPrivateKey({ userId, chatId, publicKey });
+    return response.send({ success, error });
+  }
+
+  async confirmGroupPrivateKey({ params, response }) {
+    const { userId, chatId } = params;
+    log('CHAT', `User ${userId} confirming Group ${chatId} Private Key`);
+    const { success, error } = await GuestRepository.confirmGroupPrivateKey({ userId, chatId });
+    return response.send({ success, error });
+  }
+
 }
 
 module.exports = GuestController;
