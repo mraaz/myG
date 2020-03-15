@@ -13,7 +13,7 @@ import { createChatAction, openChatAction, closeChatAction, clearChatAction } fr
 import { updateStatusAction } from '../../../redux/actions/userAction';
 import { generateKeysAction, validatePinAction } from '../../../redux/actions/encryptionAction';
 import { deserializeKey, decryptMessage, generateKeysSync as generateGroupKeys } from '../../../integration/encryption';
-import { formatAMPM, convertUTCDateToLocalDate } from '../../../common/date';
+import { formatAMPM } from '../../../common/date';
 import { copyToClipboard } from '../../../common/clipboard';
 import { STATUS_ENUM, compareStatus } from '../../../common/status';
 import { fetchLink, acceptInvitation } from "../../../integration/http/chat";
@@ -239,7 +239,7 @@ class Messenger extends React.PureComponent {
         <div className="messenger-contact-info">
           {lastMessage && (
             <p className="messenger-contact-info-last-seen">
-              {formatAMPM(convertUTCDateToLocalDate(new Date(lastMessage.createdAt)))}
+              {formatAMPM(new Date(lastMessage.createdAt))}
             </p>
           )}
           <div className="messenger-contact-info-unread">
@@ -329,7 +329,7 @@ class Messenger extends React.PureComponent {
         <div className="messenger-contact-info">
           {lastMessage && (
             <p className="messenger-contact-info-last-seen">
-              {formatAMPM(convertUTCDateToLocalDate(new Date(lastMessage.createdAt)))}
+              {formatAMPM(new Date(lastMessage.createdAt))}
             </p>
           )}
           <div className="messenger-contact-info-unread">

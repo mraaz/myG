@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { formatAMPM, formatDate, convertUTCDateToLocalDate } from '../../../common/date';
+import { formatAMPM, formatDate } from '../../../common/date';
 import { copyToClipboard } from '../../../common/clipboard';
 
 export default class ChatMessage extends React.Component {
@@ -179,7 +179,7 @@ export default class ChatMessage extends React.Component {
             <div className="chat-component-message-side-container">
               {!!message.edited && !message.deleted && <p className="chat-component-message-edited">edited</p>}
               <p className="chat-component-message-date">
-                {formatAMPM(convertUTCDateToLocalDate(new Date(message.createdAt)))}
+                {formatAMPM(new Date(message.createdAt))}
               </p>
             </div>
           </div>

@@ -18,7 +18,6 @@ const ContactSchema = require('../../Schemas/Contact');
 
 const uuidv4 = require('uuid/v4');
 const { broadcast } = require('../../Common/socket');
-const { convertUTCDateToLocalDate } = require('../../Common/date');
 const { log } = require('../../Common/logger');
 
 const MAXIMUM_GROUP_SIZE = 37;
@@ -375,7 +374,6 @@ class ChatRepository {
 
   async editMessage({ requestingUserId, requestedChatId, requestedMessageId, backup, content, reEncrypting }) {
     const message = await ChatMessage.find(requestedMessageId);
-    message.created_at = convertUTCDateToLocalDate(message.created_at);
     message.content = content;
     message.backup = backup;
     message.edited = !reEncrypting;

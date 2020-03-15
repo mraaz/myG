@@ -1,5 +1,5 @@
 
-import { isOneDayBehind, isYesterday, convertUTCDateToLocalDate } from './date';
+import { isOneDayBehind, isYesterday } from './date';
 
 export function withDatesAndLogs(messages, entryLogs) {
   entryLogs = entryLogs.sort((e1, e2) => e1.createdAt - e2.createdAt);
@@ -8,8 +8,8 @@ export function withDatesAndLogs(messages, entryLogs) {
   const reversedMessages = messages.slice().reverse();
   const reversedEntryLogs = entryLogs.slice().reverse();
   reversedMessages.forEach(message => {
-    if (isOneDayBehind(lastDate, convertUTCDateToLocalDate(new Date(message.createdAt)))) {
-      lastDate = convertUTCDateToLocalDate(new Date(message.createdAt));
+    if (isOneDayBehind(lastDate, new Date(message.createdAt))) {
+      lastDate = new Date(message.createdAt);
       enrichedMessages.push({ 
         id: lastDate.getTime(), 
         date: lastDate,

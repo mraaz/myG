@@ -1,6 +1,5 @@
 
 import logger from '../../common/logger';
-import { convertUTCDateToLocalDate } from '../../common/date';
 import { reEncryptMessages, sendGroupKeys } from '../../common/encryption';
 import { decryptMessage, deserializeKey } from '../../integration/encryption';
 
@@ -483,10 +482,10 @@ export default function reducer(state = {
       if (!chatId) return contactPublicKeyUpdated(state, updatedUserId, publicKey);
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
-      const lastFriendRead = convertUTCDateToLocalDate(new Date(chat.friendReadDate));
+      const lastFriendRead = new Date(chat.friendReadDate);
       const unreadMessages = [];
       chat.messages.slice(0).reverse().some(message => {
-        const messageDate = convertUTCDateToLocalDate(new Date(message.createdAt));
+        const messageDate = new Date(message.createdAt);
         if (messageDate > lastFriendRead && message.senderId === thisUserId) {
           unreadMessages.push(message);
           return false;
