@@ -54,6 +54,7 @@ class GameNameController {
         return 'Updated successfully'
       } catch (error) {
         console.log(error)
+        return false
       }
     } else {
       return 'You are not Logged In!'
@@ -120,9 +121,13 @@ class GameNameController {
     try {
       var inputValue = request.params.int.replace(/%20/g, '%')
       inputValue = inputValue.replace(/%25/g, '\\')
-      inputValue = "'%" + inputValue + "%'"
+      // inputValue = "'%" + inputValue + "%'"
+      //
+      // const gameSearchResults = await Database.schema.raw('select * from game_names WHERE game_name LIKE ' + inputValue)
 
-      const gameSearchResults = await Database.schema.raw('select * from game_names WHERE game_name LIKE ' + inputValue)
+      const gameSearchResults = await Database.table('game_names')
+        .where('game_name', 'like', '%' + inputValue + '%')
+        .limit(88)
 
       // WORKS!!!! const gameSearchResults = await Database.schema.raw("select * from game_names WHERE game_name LIKE " + "'%the\%Alien%'")
 

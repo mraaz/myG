@@ -94,98 +94,107 @@ class GroupController {
   }
 
   async update_img({ auth, request, response }) {
-    let current_user_permission = -1
+    if (auth.user) {
+      let current_user_permission = -1
 
-    try {
-      const permission_query_current_user = await Database.from('usergroups').where({
-        user_id: auth.user.id,
-        group_id: request.input('group_id'),
-      })
-      if (permission_query_current_user.length > 0) {
-        current_user_permission = permission_query_current_user[0].permission_level
-      } else {
-        const owner_query = await Database.from('groups').where({
+      try {
+        const permission_query_current_user = await Database.from('usergroups').where({
           user_id: auth.user.id,
-          id: request.input('group_id'),
+          group_id: request.input('group_id'),
         })
-        if (owner_query.length > 0) {
-          current_user_permission = 0
+        if (permission_query_current_user.length > 0) {
+          current_user_permission = permission_query_current_user[0].permission_level
+        } else {
+          const owner_query = await Database.from('groups').where({
+            user_id: auth.user.id,
+            id: request.input('group_id'),
+          })
+          if (owner_query.length > 0) {
+            current_user_permission = 0
+          }
         }
-      }
 
-      if (current_user_permission == 3 || current_user_permission == 42 || current_user_permission == -1) {
-        return
-      }
+        if (current_user_permission == 3 || current_user_permission == 42 || current_user_permission == -1) {
+          return
+        }
 
-      const update_img = await Group.query()
-        .where({ id: request.input('group_id') })
-        .update({ group_img: request.input('group_img') })
-      return 'Saved successfully'
-    } catch (error) {
-      console.log(error)
+        const update_img = await Group.query()
+          .where({ id: request.input('group_id') })
+          .update({ group_img: request.input('group_img') })
+        return 'Saved successfully'
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 
   async update_all_accept({ auth, request, response }) {
-    let current_user_permission = -1
+    if (auth.user) {
+      let current_user_permission = -1
 
-    try {
-      const permission_query_current_user = await Database.from('usergroups').where({
-        user_id: auth.user.id,
-        group_id: request.input('group_id'),
-      })
-      if (permission_query_current_user.length > 0) {
-        current_user_permission = permission_query_current_user[0].permission_level
-      } else {
-        const owner_query = await Database.from('groups').where({
+      try {
+        const permission_query_current_user = await Database.from('usergroups').where({
           user_id: auth.user.id,
-          id: request.input('group_id'),
+          group_id: request.input('group_id'),
         })
-        if (owner_query.length > 0) {
-          current_user_permission = 0
+        if (permission_query_current_user.length > 0) {
+          current_user_permission = permission_query_current_user[0].permission_level
+        } else {
+          const owner_query = await Database.from('groups').where({
+            user_id: auth.user.id,
+            id: request.input('group_id'),
+          })
+          if (owner_query.length > 0) {
+            current_user_permission = 0
+          }
         }
-      }
 
-      if (current_user_permission == 3 || current_user_permission == 42 || current_user_permission == -1) {
-        return
-      }
+        if (current_user_permission == 3 || current_user_permission == 42 || current_user_permission == -1) {
+          return
+        }
 
-      const update_all_accept = await Group.query()
-        .where({ id: request.input('group_id') })
-        .update({ all_accept: request.input('all_accept') })
-      return 'Saved successfully'
-    } catch (error) {
-      console.log(error)
+        const update_all_accept = await Group.query()
+          .where({ id: request.input('group_id') })
+          .update({ all_accept: request.input('all_accept') })
+        return 'Saved successfully'
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 
   async update_type({ auth, request, response }) {
-    let current_user_permission = -1
+    if (auth.user) {
+      let current_user_permission = -1
 
-    try {
-      const permission_query_current_user = await Database.from('usergroups').where({ user_id: auth.user.id, group_id: request.params.id })
-      if (permission_query_current_user.length > 0) {
-        current_user_permission = permission_query_current_user[0].permission_level
-      } else {
-        const owner_query = await Database.from('groups').where({
+      try {
+        const permission_query_current_user = await Database.from('usergroups').where({
           user_id: auth.user.id,
-          id: request.params.id,
+          group_id: request.params.id,
         })
-        if (owner_query.length > 0) {
-          current_user_permission = 0
+        if (permission_query_current_user.length > 0) {
+          current_user_permission = permission_query_current_user[0].permission_level
+        } else {
+          const owner_query = await Database.from('groups').where({
+            user_id: auth.user.id,
+            id: request.params.id,
+          })
+          if (owner_query.length > 0) {
+            current_user_permission = 0
+          }
         }
-      }
 
-      if (current_user_permission == 3 || current_user_permission == 42 || current_user_permission == -1) {
-        return
-      }
+        if (current_user_permission == 3 || current_user_permission == 42 || current_user_permission == -1) {
+          return
+        }
 
-      const update_group_type = await Group.query()
-        .where({ id: request.params.id })
-        .update({ type: request.params.group_type })
-      return 'Saved successfully'
-    } catch (error) {
-      console.log(error)
+        const update_group_type = await Group.query()
+          .where({ id: request.params.id })
+          .update({ type: request.params.group_type })
+        return 'Saved successfully'
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 }

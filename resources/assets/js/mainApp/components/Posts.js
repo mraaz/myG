@@ -21,7 +21,7 @@ export default class Posts extends Component {
   showLatestPosts = () => {
     if (this.state.myPosts != undefined) {
       return this.state.myPosts.map((item, index) => {
-        return <IndividualPost post={item} key={index} user={this.props.initialData} />
+        return <IndividualPost post={item} key={index} user={this.props.initialData} source={'news_feed'} />
       })
     }
   }
