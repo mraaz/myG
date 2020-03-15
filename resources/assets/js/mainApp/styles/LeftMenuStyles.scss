@@ -12,7 +12,7 @@
     color: #fff;
   }
   &__menu-collapsed {
-    width: 64px;
+    width: 71px;
   }
   &__item-box {
     padding-left: 17px;
@@ -118,7 +118,7 @@
   }
   &__line {
     width: 1px;
-    margin: 0 10px;
+    margin: 0 6px;
     background-color: #384952;
   }
   &__notification-area {
@@ -131,6 +131,7 @@
     border-radius: 8px;
     height: fit-content;
     font-size: 13px;
+    padding: 5px;
   }
   &__logout-area {
     height: 79px;
