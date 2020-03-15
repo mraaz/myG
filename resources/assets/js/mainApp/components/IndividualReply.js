@@ -36,7 +36,7 @@ export default class IndividualReply extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if (this.props.reply.profile_img != null) {
       this.setState({ show_profile_img: true })
     }

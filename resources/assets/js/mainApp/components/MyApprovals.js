@@ -10,7 +10,7 @@ export default class MyApprovals extends Component {
     this.state = {}
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const self = this
 
     const get_group_approvals = async function() {

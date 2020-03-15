@@ -14,7 +14,7 @@ export default class ScheduledGamesApprovals extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const self = this
     const { match } = this.props.routeProps
 

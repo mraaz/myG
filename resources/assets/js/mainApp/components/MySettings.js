@@ -3,8 +3,8 @@ import { Redirect } from 'react-router'
 import axios from 'axios'
 import ToggleButton from 'react-toggle-button'
 import SweetAlert from 'react-bootstrap-sweetalert'
-import { connect } from 'react-redux';
-import { logoutAction } from '../../redux/actions/userAction';
+import { connect } from 'react-redux'
+import { logoutAction } from '../../redux/actions/userAction'
 
 class MySettings extends Component {
   constructor() {
@@ -17,7 +17,7 @@ class MySettings extends Component {
       alert: null,
     }
   }
-  componentWillMount() {
+  componentDidMount() {
     const self = this
 
     const getSettings = async function() {
@@ -95,9 +95,9 @@ class MySettings extends Component {
 
   render() {
     if (this.state.redirect_) {
-      this.props.logout();
-      window.location.replace('/logout');
-      return null;
+      this.props.logout()
+      window.location.replace('/logout')
+      return null
     }
     return (
       <section id='mySettings-page'>
@@ -146,9 +146,12 @@ class MySettings extends Component {
 }
 
 function mapDispatchToProps(dispatch) {
-  return ({
-    logout: () => dispatch(logoutAction())
-  });
+  return {
+    logout: () => dispatch(logoutAction()),
+  }
 }
 
-export default connect(null, mapDispatchToProps)(MySettings);
+export default connect(
+  null,
+  mapDispatchToProps
+)(MySettings)

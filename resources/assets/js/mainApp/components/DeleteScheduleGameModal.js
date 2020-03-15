@@ -54,8 +54,6 @@ export default class DeleteScheduleGameModal extends Component<*, State> {
     }
   }
 
-  componentWillMount() {}
-
   closeModal() {
     this.state.value = ''
     this.props.callbackClose()
