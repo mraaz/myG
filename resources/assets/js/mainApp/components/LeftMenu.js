@@ -100,7 +100,7 @@ class LeftMenu extends Component {
           </Link>
         )}
         <div className={classNames([styles.notificationContainer, isExpanded ? '' : styles.notificationContainerCollapsed])}>
-          <Link to=''>
+          <Link to='/invitation'>
             <div className={styles.notificationIcon}>
               <img
                 src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/ntfo_Friendship_Icon.svg'
@@ -124,7 +124,7 @@ class LeftMenu extends Component {
               {isExpanded && <div className={styles.line} />}
             </div>
           </Link>
-          <Link to='invitation'>
+          <Link to='/'>
             <div className={styles.notificationIcon}>
               <img
                 src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Chat_Icon.svg'
@@ -157,8 +157,13 @@ class LeftMenu extends Component {
       <Fragment>
         {sideBarItemsOrder.map((itemKey) => {
           const { icon, header, expanded, subItems, cta } = sideBarData[itemKey]
+          let tileCta = cta
+          if (header === 'Profile') {
+            const alias = this.props.initialData === 'loading' ? '' : this.props.initialData.userInfo.alias
+            tileCta = tileCta + `/${alias}`
+          }
           return (
-            <Link key={itemKey} to={cta}>
+            <Link key={itemKey} to={tileCta}>
               <div className={styles.itemBox}>
                 <img src={icon} height='24' width='24' />
                 {isExpanded && <div className={styles.sidebarItemText}>{header}</div>}

@@ -71,14 +71,14 @@ const sideBarItems = {
     id: 'FEED',
     header: 'Feed',
     icon: 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_Feed.svg',
-    cta: '',
+    cta: '/',
     expanded: false,
   },
   PROFILE: {
     id: 'PROFILE',
     header: 'Profile',
     icon: 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_Profile.svg',
-    cta: '${alias}',
+    cta: '/profile',
     expanded: false,
   },
   NETWORK: {
