@@ -72,6 +72,11 @@ export function fetchMessages(chatId, page) {
   return axios.get(`/api/chat/${chatId}/message?page=${page || 1}`).then(response => response.data);
 }
 
+export function fetchUnreadMessages() {
+  logger.log('CHAT', 'HTTP', `Fetching Unread Messages`);
+  return axios.get(`/api/chat/message/unread`).then(response => response.data);
+}
+
 export function fetchEncryptionMessages(chatId) {
   logger.log('CHAT', 'HTTP', `Fetching Encryption Messages for Chat ${chatId}`);
   return axios.get(`/api/chat/${chatId}/message/encryption`).then(response => response.data);

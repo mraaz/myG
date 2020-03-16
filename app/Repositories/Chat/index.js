@@ -122,6 +122,22 @@ class ChatRepository {
     return { messages };
   }
 
+  async fetchUnreadMessages({ requestingUserId }) {
+    const lastReads = (await ChatLastRead.query().where('user_id', requestingUserId).fetch()).toJSON();
+    const unreadMessages = [];
+    const requests = lastReads.map(async lastRead => ({ lastReadId: lastRead.last_read_message_id, message: await this.fetchLastMessage({ requestedChatId: lastRead.chat_id }) }));
+    const responses = await Promise.all(requests);
+    responses.forEach(response => {
+      const { lastReadId, message } = response;
+      if (parseInt(message.id) > parseInt(lastReadId)) unreadMessages.push(message);
+    });
+    return { unreadMessages };
+  }
+
+  async fetchLastMessage({ requestedChatId }) {
+    return (await ChatMessage.query().where('chat_id', requestedChatId).orderBy('id', 'desc').limit(1).first()).toJSON();
+  }
+
   async fetchEncryptionMessages({ requestingUserId, requestedChatId }) {
     const result = (await ChatMessage
       .query()

@@ -8,6 +8,7 @@ import notifyToast from '../../common/toast';
 export default function reducer(state = {
   chats: [],
   contacts: [],
+  unreadMessages: [],
   preparingMessenger: false,
 }, action) {
   switch (action.type) {
@@ -115,6 +116,17 @@ export default function reducer(state = {
       };
     }
 
+    case "FETCH_UNREAD_MESSAGES_FULFILLED": {
+      logger.log('CHAT', `Redux -> Unread Messages: `, action.payload);
+      const { unreadMessages: newUnreadMessages } = action.payload;
+      const unreadMessages = JSON.parse(JSON.stringify(state.unreadMessages));
+      newUnreadMessages.forEach(message => !unreadMessages.find(unread => unread.messageId === message.messageId) && unreadMessages.push(message));
+      return {
+        ...state,
+        unreadMessages,
+      };
+    }
+
     case "OPEN_CHAT": {
       logger.log('CHAT', `Redux -> Open Chat: `, action.payload);
       const chatId = action.payload.chatId;
@@ -171,8 +183,10 @@ export default function reducer(state = {
       const chats = JSON.parse(JSON.stringify(state.chats));
       if (chats.map(chat => chat.chatId).includes(chat.chatId)) return state;
       chats.push(chat);
-      const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== chat.chatId);
-      if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
+      if (!chat.closed) {
+        const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== chat.chatId);
+        if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
+      }
       return {
         ...state,
         chats,
@@ -186,15 +200,16 @@ export default function reducer(state = {
       const chatId = message.chatId;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
+      const unreadMessages = JSON.parse(JSON.stringify(state.unreadMessages));
       if (!chat) return state;
       if (chat.blocked) return state;
       if (chat.blockedUsers.includes(message.senderId)) return state;
       if (!chat.muted && !window.focused && message.senderId !== userId) playMessageSound();
       if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
       if (!chat.muted) {
-        chat.closed = false;
         const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== chatId);
-        if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
+        if (openChats.length <= 3) chat.closed = false;
+        else unreadMessages.push(message);
       }
       if (!chat.messages) chat.messages = [];
       if (!message.keyReceiver) chat.messages.push(message);
@@ -205,6 +220,7 @@ export default function reducer(state = {
       return {
         ...state,
         chats,
+        unreadMessages,
       };
     }
 

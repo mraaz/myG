@@ -118,6 +118,14 @@ class ChatController {
     return response.send({ messages });
   }
 
+  async fetchUnreadMessages({ auth, response }) {
+    const requestingUserId = auth.user.id;
+    if (!requestingUserId) throw new Error('Auth Error');
+    log('CHAT', `User ${requestingUserId} requesting Unread Messages`);
+    const { unreadMessages } = await ChatRepository.fetchUnreadMessages({ requestingUserId });
+    return response.send({ unreadMessages });
+  }
+
   async fetchEncryptionMessages({ auth, params, response }) {
     const requestingUserId = auth.user.id;
     if (!requestingUserId) throw new Error('Auth Error');
