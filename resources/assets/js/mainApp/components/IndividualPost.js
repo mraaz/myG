@@ -35,6 +35,8 @@ export default class IndividualPost extends Component {
       autoPlay: false,
       isRTL: false,
       disableSwipe: false,
+      show_group_name: false,
+      group_name: '',
     }
     this.textInput = null
 
@@ -121,6 +123,8 @@ export default class IndividualPost extends Component {
   componentDidMount() {
     let { post } = this.props
 
+    const self = this
+
     if (post.type == 'photo' || post.type == 'video') {
       try {
         this.state.media_urls = JSON.parse(post.media_url)
@@ -164,7 +168,6 @@ export default class IndividualPost extends Component {
     }
 
     var post_id = this.props.post.id
-    const self = this
 
     const getmyPostCount = async function() {
       try {
@@ -181,7 +184,31 @@ export default class IndividualPost extends Component {
         console.log(error)
       }
     }
+
+    const getGroup_info = async function() {
+      try {
+        var i
+
+        const myPostCount = await axios.get(`/api/groups/${post.group_id}`)
+
+        if (myPostCount.data.group.length != 0) {
+          self.setState({
+            group_name: myPostCount.data.group[0].name,
+          })
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
     getmyPostCount()
+
+    if (post.group_id != null && post.group_id != '') {
+      if ((post.source = 'news_feed')) {
+        this.state.show_group_name = true
+        getGroup_info()
+      }
+    }
   }
 
   pullComments = () => {
@@ -419,6 +446,7 @@ export default class IndividualPost extends Component {
   render() {
     if (this.state.post_deleted != true) {
       var show_media = false
+
       let { post } = this.props //destructing of object
 
       if (this.state.media_urls != [] && this.state.media_urls != null) {
@@ -448,8 +476,8 @@ export default class IndividualPost extends Component {
                     }}></Link>
                 )}
                 <div className='info'>
-                  <Link to={`/profile/${post.alias}`}>{`${post.alias}`}</Link> shared a{' '}
-                  <Link to={`/profile/${post.alias}`}>{post.type == 'text' ? 'story' : 'image'}</Link>
+                  <Link to={`/profile/${post.alias}`}>{`${post.alias}`}</Link> shared a {post.type == 'text' ? 'story' : 'image'}
+                  {this.state.show_group_name && <Link to={`/groups/${post.group_id}`}>from community: {this.state.group_name}</Link>}
                 </div>
                 {this.state.show_post_options && (
                   <div className='post-options'>

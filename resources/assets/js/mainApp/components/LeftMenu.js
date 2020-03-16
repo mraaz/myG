@@ -11,7 +11,7 @@ import { throws } from 'assert'
 
 class LeftMenu extends Component {
   static propTypes = {
-    initialData: PropTypes.object.isRequired,
+    initialData: PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired,
   }
 
   state = {
@@ -86,48 +86,55 @@ class LeftMenu extends Component {
 
   getUserSection = () => {
     const alias = this.props.initialData === 'loading' ? '' : this.props.initialData.userInfo.alias
+    const profileImage = this.props.initialData === 'loading' ? '' : this.props.initialData.userInfo.profile_img
     const { isExpanded } = this.state
 
     return (
       <div className={classNames([styles.userDetailsBox, isExpanded ? '' : styles.userDetailsBoxCollapsed])}>
         {isExpanded && (
-          <Link to='/profile/logged'>
+          <Link to={`/profile/${alias}`}>
             <div className={styles.userInfo}>
-              <img className={styles.userDp} />
+              <img src={profileImage} className={styles.userDp} />
               <div className={styles.userAlias}>@{alias}</div>
             </div>
           </Link>
         )}
         <div className={classNames([styles.notificationContainer, isExpanded ? '' : styles.notificationContainerCollapsed])}>
-          <div class={styles.notificationIcon}>
-            <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/ntfo_Friendship_Icon.svg'
-              height='22'
-              width='22'
-              className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
-            />
-            <div className={styles.notificationArea}>123</div>
-            {isExpanded && <div className={styles.line} />}
-          </div>
-          <div class={styles.notificationIcon}>
-            <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Bell_Icon.svg'
-              height='22'
-              width='22'
-              className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
-            />
-            <div className={styles.notificationArea}>123</div>
-            {isExpanded && <div className={styles.line} />}
-          </div>
-          <div class={styles.notificationIcon}>
-            <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Chat_Icon.svg'
-              height='22'
-              width='22'
-              className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
-            />
-            <div className={styles.notificationArea}>123</div>
-          </div>
+          <Link to='/invitation'>
+            <div className={styles.notificationIcon}>
+              <img
+                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/ntfo_Friendship_Icon.svg'
+                height='22'
+                width='22'
+                className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
+              />
+              <div className={styles.notificationArea}>123</div>
+              {isExpanded && <div className={styles.line} />}
+            </div>
+          </Link>
+          <Link to='/notifications'>
+            <div className={styles.notificationIcon}>
+              <img
+                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Bell_Icon.svg'
+                height='22'
+                width='22'
+                className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
+              />
+              <div className={styles.notificationArea}>123</div>
+              {isExpanded && <div className={styles.line} />}
+            </div>
+          </Link>
+          <Link to='/'>
+            <div className={styles.notificationIcon}>
+              <img
+                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Chat_Icon.svg'
+                height='22'
+                width='22'
+                className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
+              />
+              <div className={styles.notificationArea}>123</div>
+            </div>
+          </Link>
         </div>
       </div>
     )
@@ -150,8 +157,13 @@ class LeftMenu extends Component {
       <Fragment>
         {sideBarItemsOrder.map((itemKey) => {
           const { icon, header, expanded, subItems, cta } = sideBarData[itemKey]
+          let tileCta = cta
+          if (header === 'Profile') {
+            const alias = this.props.initialData === 'loading' ? '' : this.props.initialData.userInfo.alias
+            tileCta = tileCta + `/${alias}`
+          }
           return (
-            <Link key={itemKey} to={cta}>
+            <Link key={itemKey} to={tileCta}>
               <div className={styles.itemBox}>
                 <img src={icon} height='24' width='24' />
                 {isExpanded && <div className={styles.sidebarItemText}>{header}</div>}
@@ -168,15 +180,19 @@ class LeftMenu extends Component {
     return (
       <Fragment>
         <div className={classNames([styles.itemBox, styles.logout])}>
-          <img src={logoutButton.icon} height='24' width='24' className={styles.sideBarItemIcon} />
-          {this.state.isExpanded && <div className={styles.sidebarItemText}>{logoutButton.header}</div>}
+          <div onClick={this.props.logout} className={styles.logoutArea}>
+            <img src={logoutButton.icon} height='24' width='24' className={styles.sideBarItemIcon} />
+            {this.state.isExpanded && <div className={styles.sidebarItemText}>{logoutButton.header}</div>}
+          </div>
           {this.state.isExpanded && (
-            <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Settings_Chat_Window.svg'
-              height='31'
-              width='31'
-              className={styles.settingsIcon}
-            />
+            <Link to='/mySettings'>
+              <img
+                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Settings_Chat_Window.svg'
+                height='31'
+                width='31'
+                className={styles.settingsIcon}
+              />
+            </Link>
           )}
         </div>
       </Fragment>

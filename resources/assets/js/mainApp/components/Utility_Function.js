@@ -13,7 +13,7 @@ export async function Game_name_values(inputValue) {
   }
   try {
     const getGameName = await axios.get(`/api/GameNames/${inputValue}/gameSearchResults`)
-    var results = getGameName.data.gameSearchResults[0].filter((i) => i.game_name.toLowerCase().includes(inputValue.toLowerCase()))
+    var results = getGameName.data.gameSearchResults.filter((i) => i.game_name.toLowerCase().includes(inputValue.toLowerCase()))
     var newArr = []
     var i, newOption
     if (results.length != 0) {
