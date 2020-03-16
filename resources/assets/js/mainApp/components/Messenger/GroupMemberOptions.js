@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import Dropdown from '../Dropdown';
 import Popup from '../Popup';
-import { addContactsToChatAction, inviteUserToGroupAction, updateChatAction, clearChatAction, exitGroupAction, removeFromGroupAction } from '../../../redux/actions/chatAction';
+import { addContactsToChatAction, inviteUserToGroupAction, updateChatAction, clearChatAction, removeFromGroupAction } from '../../../redux/actions/chatAction';
 import { searchUsersAction, addAsFriendAction, fetchFriendRequestsAction } from '../../../redux/actions/userAction';
 
 class GroupMemberOptions extends React.PureComponent {
@@ -250,14 +250,18 @@ class GroupMemberOptions extends React.PureComponent {
   render() {
     const isGroupOwner = this.props.group.owners.length && this.props.group.owners.includes(this.props.userId);
     const isGroupModerator = this.props.group.moderators.length && this.props.group.moderators.includes(this.props.userId);
+    const canKickMore = this.props.groupContacts.length > 2;
+    const canKickText = `Are you sure you want to kick ${this.state.kickingUser && this.state.kickingUser.name}?`;
+    const cannotKickText = `Groups needs at least three gamers, no one else can be kicked.`;
     return (
       <div className="chat-group-members">
         <Popup
           show={this.state.kickingUser}
-          position={{ bottom: '20px', left: '30px' }}
-          header={`Are you sure you want to kick ${this.state.kickingUser && this.state.kickingUser.name}?`}
-          confirmAction={this.kickUser}
-          denyAction={() => this.setState({ kickingUser: false })}
+          position={{ bottom: '20px', left: canKickMore ? '30px' : '-50px' }}
+          header={canKickMore ? canKickText : cannotKickText}
+          confirmText={canKickMore ? 'Yes' : 'Ok'}
+          confirmAction={canKickMore ? this.kickUser : (() => this.setState({ kickingUser: false }))}
+          denyAction={canKickMore && (() => this.setState({ kickingUser: false }))}
         />
         {this.renderHeader()}
         {this.renderGroupInvitation(isGroupModerator)}
@@ -288,7 +292,6 @@ function mapDispatchToProps(dispatch) {
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
     removeFromGroup: (chatId, userId) => dispatch(removeFromGroupAction(chatId, userId)),
-    exitGroup: (chatId) => dispatch(exitGroupAction(chatId)),
   });
 }
 

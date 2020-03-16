@@ -6,6 +6,7 @@ import Autosuggest from 'react-autosuggest'
 import AutosuggestHighlightMatch from 'autosuggest-highlight/match'
 import AutosuggestHighlightParse from 'autosuggest-highlight/parse'
 import { Disable_keys } from './Utility_Function'
+import ChatIndicator from './Messenger/ChatIndicator';
 
 var playersDB = []
 
@@ -189,10 +190,7 @@ class SearchHeader extends Component {
               </Link>
               <div className={`noti-number ${this.state.myRequests > 0 ? 'active' : ''}`}> {this.state.myRequests}</div>
             </div>
-            <div className='comments'>
-              <i className='fas fa-comment' />
-              <div className='noti-number'>3</div>
-            </div>
+            <ChatIndicator />
             <div className='user'>
               <Link to='/invitation'>
                 <i className='fas fa-user' />

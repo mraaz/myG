@@ -74,6 +74,10 @@ class GuestRepository {
     return ChatRepository.fetchMessages({ requestedChatId, requestedPage });
   }
 
+  async fetchEncryptionMessages({ requestingGuestId, requestedChatId }) {
+    return ChatRepository.fetchEncryptionMessages({ requestingUserId: requestingGuestId, requestedChatId });
+  }
+
   async sendMessage({ requestedChatId, senderName, guestId, backup, content }) {
     const messageData = {
       sender_id: guestId,
@@ -103,6 +107,18 @@ class GuestRepository {
 
   async fetchEntryLogs({ requestedChatId }) {
     return ChatRepository.fetchEntryLogs({ requestedChatId });
+  }
+
+  async fetchGroupPrivateKeyRequests({ chatId }) {
+    return ChatRepository.fetchGroupPrivateKeyRequests({ chatId });
+  }
+
+  async requestGroupPrivateKey({ userId, chatId, publicKey }) {
+    return ChatRepository.requestGroupPrivateKey({ userId, chatId, publicKey });
+  }
+
+  async confirmGroupPrivateKey({ userId, chatId }) {
+    return ChatRepository.confirmGroupPrivateKey({ userId, chatId });
   }
 
 }

@@ -30,9 +30,17 @@ class GuestController {
   async fetchMessages({ params, request, response }) {
     const requestedChatId = params.chatId;
     const requestedPage = request.only(['page']).page || 1;
-    log('GUEST', `Guestrequesting Messages for Chat ${requestedChatId}`);
+    log('GUEST', `Guest requesting Messages for Chat ${requestedChatId}`);
     const { messages } = await GuestRepository.fetchMessages({ requestedChatId, requestedPage });
     return response.send({ messages });
+  }
+
+  async fetchEncryptionMessages({ params, response }) {
+    const requestingGuestId = params.guestId;
+    const requestedChatId = params.chatId;
+    log('GUEST', `Guest ${requestingGuestId} requesting Messages for Chat ${requestedChatId}`);
+    const { encryptionMessages } = await GuestRepository.fetchEncryptionMessages({ requestingGuestId, requestedChatId });
+    return response.send({ encryptionMessages });
   }
 
   async sendMessage({ params, request, response }) {
@@ -50,6 +58,28 @@ class GuestController {
     log('GUEST', `Guest requesting Entry Logs for Chat ${requestedChatId}`);
     const { entryLogs } = await GuestRepository.fetchEntryLogs({ requestedChatId });
     return response.send({ entryLogs });
+  }
+
+  async fetchGroupPrivateKeyRequests({ params, response }) {
+    const { chatId } = params;
+    log('CHAT', `Fetching Private Key Requests for Group ${chatId}`);
+    const { requests } = await GuestRepository.fetchGroupPrivateKeyRequests({ chatId });
+    return response.send({ requests });
+  }
+
+  async requestGroupPrivateKey({ params, request, response }) {
+    const { userId, chatId } = params;
+    const { publicKey } = request.only(['publicKey']);
+    log('CHAT', `User ${userId} requesting Group ${chatId} Private Key`);
+    const { success, error } = await GuestRepository.requestGroupPrivateKey({ userId, chatId, publicKey });
+    return response.send({ success, error });
+  }
+
+  async confirmGroupPrivateKey({ params, response }) {
+    const { userId, chatId } = params;
+    log('CHAT', `User ${userId} confirming Group ${chatId} Private Key`);
+    const { success, error } = await GuestRepository.confirmGroupPrivateKey({ userId, chatId });
+    return response.send({ success, error });
   }
 
 }

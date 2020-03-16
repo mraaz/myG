@@ -8,6 +8,7 @@ const ChatLastCleared = use('App/Models/ChatLastCleared');
 const ChatLastRead = use('App/Models/ChatLastRead');
 const ChatLink = use('App/Models/ChatLink');
 const ChatEntryLog = use('App/Models/ChatEntryLog');
+const ChatPrivateKeyRequest = use('App/Models/ChatPrivateKeyRequest');
 
 const ChatSchema = require('../../Schemas/Chat');
 const ChatLinkSchema = require('../../Schemas/ChatLink');
@@ -15,10 +16,10 @@ const ChatEntryLogSchema = require('../../Schemas/ChatEntryLog');
 const MessageSchema = require('../../Schemas/Message');
 const DefaultSchema = require('../../Schemas/Default');
 const ContactSchema = require('../../Schemas/Contact');
+const ChatPrivateKeyRequestSchema = require('../../Schemas/ChatPrivateKeyRequest');
 
 const uuidv4 = require('uuid/v4');
 const { broadcast } = require('../../Common/socket');
-const { convertUTCDateToLocalDate } = require('../../Common/date');
 const { log } = require('../../Common/logger');
 
 const MAXIMUM_GROUP_SIZE = 37;
@@ -101,6 +102,7 @@ class ChatRepository {
     const result = (await ChatMessage
       .query()
       .where('chat_id', requestedChatId)
+      .andWhere('key_receiver', null)
       .orderBy('id', 'desc')
       .paginate(requestedPage || 1, 10)).toJSON();
     const messages = result.data.map(message => new MessageSchema({
@@ -120,13 +122,70 @@ class ChatRepository {
     return { messages };
   }
 
+  async fetchUnreadMessages({ requestingUserId }) {
+    const { chats } = await this.fetchChats({ requestingUserId });
+    const lastReads = (await ChatLastRead.query().where('user_id', requestingUserId).fetch()).toJSON();
+    const lastReadId = (chatId) => (lastReads.find(lastRead => lastRead.chat_id === chatId) || {}).last_read_message_id;
+    const unreadMessages = [];
+    const requests = chats.map(async chat => ({ lastReadId: lastReadId(chat.chatId), message: await this.fetchLastMessage({ requestedChatId: chat.chatId }) }));
+    const responses = await Promise.all(requests);
+    responses.forEach(response => {
+      const { lastReadId, message } = response;
+      if (!lastReadId || (parseInt(message.id) > parseInt(lastReadId))) unreadMessages.push(new MessageSchema({
+        messageId: message.id,
+        chatId: message.chat_id,
+        senderId: message.sender_id,
+        keyReceiver: message.key_receiver,
+        senderName: message.sender_name,
+        content: message.content,
+        backup: message.backup,
+        deleted: message.deleted,
+        edited: message.edited,
+        selfDestruct: message.self_destruct,
+        createdAt: message.created_at,
+        updatedAt: message.updated_at,
+      }));
+    });
+    
+    return { unreadMessages };
+  }
+
+  async fetchLastMessage({ requestedChatId }) {
+    return (await ChatMessage.query().where('chat_id', requestedChatId).orderBy('id', 'desc').limit(1).first()).toJSON();
+  }
+
+  async fetchEncryptionMessages({ requestingUserId, requestedChatId }) {
+    const result = (await ChatMessage
+      .query()
+      .where('chat_id', requestedChatId)
+      .andWhere('key_receiver', requestingUserId)
+      .orderBy('id', 'desc')
+      .fetch()).toJSON();
+    const encryptionMessages = result.map(message => new MessageSchema({
+      messageId: message.id,
+      chatId: message.chat_id,
+      senderId: message.sender_id,
+      keyReceiver: message.key_receiver,
+      senderName: message.sender_name,
+      content: message.content,
+      backup: message.backup,
+      deleted: message.deleted,
+      edited: message.edited,
+      selfDestruct: message.self_destruct,
+      createdAt: message.created_at,
+      updatedAt: message.updated_at,
+    }));
+    return { encryptionMessages };
+  }
+
   async createChat({ requestingUserId, contacts, owners, title, icon, publicKey }) {
-    if (contacts.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
     contacts = [requestingUserId, ...contacts].sort();
+    if (contacts.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
     const { chats } = await this.fetchChats({ requestingUserId });
     const guests = [];
 
-    const existingChat = chats.find(chat =>
+    const isGroup = contacts.length > 2;
+    const existingChat = !isGroup && chats.find(chat =>
       contacts.length === chat.contacts.length &&
       contacts.every((id, index) => id === chat.contacts[index])
     );
@@ -260,10 +319,12 @@ class ChatRepository {
     const chatModel = (await Chat.query().where('id', requestedChatId).first());
     const chat = chatModel.toJSON();
     const contacts = JSON.parse(chat.contacts || '[]');
+    const guests = JSON.parse(chat.guests || '[]');
     const owners = JSON.parse(chat.owners || '[]');
     if (!owners.includes(requestingUserId)) throw new Error('Only Owners can Delete Chat');
     await chatModel.delete();
     contacts.forEach(userId => this._notifyChatEvent({ userId, action: 'deleteChat', payload: { chatId: requestedChatId } }));
+    guests.forEach(guestId => this._notifyChatEvent({ guestId, action: 'deleteChat', payload: { chatId: requestedChatId } }));
     return new DefaultSchema({ success: true });
   }
 
@@ -349,7 +410,6 @@ class ChatRepository {
 
   async editMessage({ requestingUserId, requestedChatId, requestedMessageId, backup, content, reEncrypting }) {
     const message = await ChatMessage.find(requestedMessageId);
-    message.created_at = convertUTCDateToLocalDate(message.created_at);
     message.content = content;
     message.backup = backup;
     message.edited = !reEncrypting;
@@ -480,7 +540,7 @@ class ChatRepository {
   }
 
   async fetchEntryLogs({ requestedChatId }) {
-    const rawEntryLogs = (await ChatEntryLog.query('chat_id', requestedChatId).fetch()).toJSON();
+    const rawEntryLogs = (await ChatEntryLog.query().where('chat_id', requestedChatId).fetch()).toJSON();
     const entryLogs = rawEntryLogs.map(entryLog => new ChatEntryLogSchema({
       id: entryLog.id,
       chatId: entryLog.chat_id,
@@ -493,6 +553,32 @@ class ChatRepository {
       updatedAt: entryLog.updated_at,
     }));
     return { entryLogs };
+  }
+
+  async fetchGroupPrivateKeyRequests({ chatId }) {
+    const rawRequests = (await ChatPrivateKeyRequest.query().where('chat_id', chatId).fetch()).toJSON();
+    const requests = rawRequests.map(request => new ChatPrivateKeyRequestSchema({
+      chatId: request.chat_id,
+      userId: request.user_id,
+      publicKey: request.public_key,
+      createdAt: request.created_at,
+      updatedAt: request.updated_at,
+    }));
+    return { requests };
+  }
+
+  async requestGroupPrivateKey({ userId, chatId, publicKey }) {
+    const request = new ChatPrivateKeyRequest();
+    request.user_id = userId;
+    request.chat_id = chatId;
+    request.public_key = publicKey;
+    await request.save();
+    return new DefaultSchema({ success: true });
+  }
+
+  async confirmGroupPrivateKey({ userId, chatId }) {
+    await ChatPrivateKeyRequest.query().where('user_id', userId).andWhere('chat_id', chatId).delete();
+    return new DefaultSchema({ success: true });
   }
 
   async _insertEntryLog(requestedChatId, alias, kicked, left, invited, link) {

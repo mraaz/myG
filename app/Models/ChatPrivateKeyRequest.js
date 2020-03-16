@@ -3,10 +3,10 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model')
 
-class ChatMessage extends Model {
+class ChatPrivateKeyRequest extends Model {
   chat() {
     return this.belongsTo('App/Models/Chat')
   }
 }
 
-module.exports = ChatMessage
+module.exports = ChatPrivateKeyRequest

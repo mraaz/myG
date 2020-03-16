@@ -1,7 +1,7 @@
 
 import React from "react";
 import { connect } from 'react-redux';
-import { toast } from 'react-toastify';
+import notifyToast from '../../../common/toast';
 
 import Chat from './Chat';
 import GroupCreation from './GroupCreation';
@@ -13,7 +13,7 @@ import { createChatAction, openChatAction, closeChatAction, clearChatAction } fr
 import { updateStatusAction } from '../../../redux/actions/userAction';
 import { generateKeysAction, validatePinAction } from '../../../redux/actions/encryptionAction';
 import { deserializeKey, decryptMessage, generateKeysSync as generateGroupKeys } from '../../../integration/encryption';
-import { formatAMPM, convertUTCDateToLocalDate } from '../../../common/date';
+import { formatAMPM } from '../../../common/date';
 import { copyToClipboard } from '../../../common/clipboard';
 import { STATUS_ENUM, compareStatus } from '../../../common/status';
 import { fetchLink, acceptInvitation } from "../../../integration/http/chat";
@@ -57,14 +57,14 @@ class Messenger extends React.PureComponent {
     const url = window.location.href;
     const uuid = Array.isArray(url.match(uuidMatcher)) ? url.match(uuidMatcher)[0] : null;
     fetchLink(uuid).then(({ link }) => {
-      if (!link) return toast.error('The Group for this Link was not found :(');
+      if (!link) return notifyToast('The Group for this Link was not found :(');
       const isValid = !link.expiry || ((new Date(link.updatedAt).getTime() + (link.expiry * 60 * 60 * 1000)) >= Date.now());
-      if (!isValid) return toast.error('This Link has expired :(');
+      if (!isValid) return notifyToast('This Link has expired :(');
       const userId = this.props.userId;
       const chatId = link.chatId;
       acceptInvitation(chatId, [userId]).then(response => {
-        if (response.error === 'Contacts are Already in Chat.') return toast.warn('You are already in this Group!');;
-        return toast.success('You have been added to this Group!!');
+        if (response.error === 'Contacts are Already in Chat.') return notifyToast('You are already in this Group!');;
+        return notifyToast('You have been added to this Group!!');
       });
     });
   }
@@ -147,7 +147,7 @@ class Messenger extends React.PureComponent {
         .sort((f1, f2) => compareStatus(f1.status, f2.status))
         .sort((f1, f2) => this.compareLastMessages(f1, f2));
 
-      if (this.state.searchInput) {
+      if (this.state.searchInput.trim()) {
         const search = (name) => name.toLowerCase().includes(this.state.searchInput.toLowerCase());
         sections['suggestions'] = contacts.slice(0)
           .filter(contact => search(contact.name))
@@ -239,7 +239,7 @@ class Messenger extends React.PureComponent {
         <div className="messenger-contact-info">
           {lastMessage && (
             <p className="messenger-contact-info-last-seen">
-              {formatAMPM(convertUTCDateToLocalDate(new Date(lastMessage.createdAt)))}
+              {formatAMPM(new Date(lastMessage.createdAt))}
             </p>
           )}
           <div className="messenger-contact-info-unread">
@@ -253,13 +253,16 @@ class Messenger extends React.PureComponent {
   }
 
   renderGroups = () => {
+    const isSearching = this.state.searchInput.trim();
+    const search = (name) => isSearching ? name.toLowerCase().includes(this.state.searchInput.toLowerCase()) : true;
+    const groups = this.props.groups.slice(0).filter(group => search(group.title));
     return this.renderDivider('groups', this.state.dividerExpanded.groups, () => {
       if (!this.props.groups.length) return this.renderGroupButton();
       return (
         <div>
           {this.renderGroupButton()}
           <div className="messenger-body-section-content">
-            {this.props.groups.map(this.renderGroup)}
+            {groups.map(this.renderGroup)}
           </div>
         </div>
       );
@@ -326,7 +329,7 @@ class Messenger extends React.PureComponent {
         <div className="messenger-contact-info">
           {lastMessage && (
             <p className="messenger-contact-info-last-seen">
-              {formatAMPM(convertUTCDateToLocalDate(new Date(lastMessage.createdAt)))}
+              {formatAMPM(new Date(lastMessage.createdAt))}
             </p>
           )}
           <div className="messenger-contact-info-unread">
@@ -401,9 +404,8 @@ class Messenger extends React.PureComponent {
               value={this.state.searchInput}
               onChange={event => this.setState({ searchInput: event.target.value })}
             />
-            <div className="messenger-settings-search-button clickable"
+            <div className="messenger-settings-search-button"
               style={{ backgroundImage: `url(/assets/svg/ic_messenger_search.svg)` }}
-              onClick={() => this.filterContacts()}
             />
           </div>
           <div

@@ -31,7 +31,7 @@ export class Chat extends React.PureComponent {
   componentDidMount() {
     document.addEventListener("scroll", this.handleMessageListScroll, { passive: true });
     document.addEventListener("wheel", this.handleMessageListScroll, { passive: true });
-    this.props.prepareChat(this.props.chatId, this.props.contactId, this.props.isGroup, this.props.userId);
+    this.props.prepareChat(this.props.chatId, this.props.userId, this.props.contactId, this.props.isGroup);
     if (!this.props.isGuest) this.props.checkSelfDestruct(this.props.chatId);
   }
 
@@ -98,7 +98,8 @@ export class Chat extends React.PureComponent {
   }
 
   decryptMessage = (message) => {
-    const isSent = message.senderId == this.props.userId;
+    if (!message.content && !message.backup) return message;
+    const isSent = !this.props.isGroup && message.senderId == this.props.userId;
     const encryptedContent = isSent ? message.backup : message.content;
     const privateKey = isSent ? this.props.userPrivateKey : this.props.privateKey;
     const content = decryptMessage(encryptedContent, privateKey);
@@ -137,11 +138,12 @@ export class Chat extends React.PureComponent {
 
   renderHeader = () => {
     const selfDestructStyle = this.props.selfDestruct && 'chat-component-header-self-destruct';
+    const iconClickableStyle = !this.props.isGroup && 'clickable';
     return (
       <div className={`chat-component-header ${selfDestructStyle}`}>
 
         <div
-          className="chat-component-header-icon clickable"
+          className={`chat-component-header-icon ${iconClickableStyle}`}
           onClick={() => !this.props.isGroup && window.location.replace(`/profile/${this.props.title}`)}
           style={{ backgroundImage: `url('${this.props.icon}')` }}
         />
@@ -291,6 +293,9 @@ export class Chat extends React.PureComponent {
   }
 
   renderEncryptedChat() {
+    const isGroupWithoutKey = this.props.isGroup && !this.props.privateKey;
+    const noUserKeyText = "Please inform your encryption key to read the contents of this chat.";
+    const noGroupKeyText = "Wait for another member to come online.";
     return (
       <div
         key={this.props.chatId}
@@ -298,7 +303,7 @@ export class Chat extends React.PureComponent {
       >
         {this.renderHeader()}
         <div className="chat-component-encryption-warning">
-          Please inform your encryption key to read the contents of this chat.
+          {isGroupWithoutKey ? noGroupKeyText : noUserKeyText}
         </div>
         {this.renderFooter()}
       </div>
@@ -327,7 +332,7 @@ export class Chat extends React.PureComponent {
 }
 
 export function mapStateToProps(state, props) {
-  const chat = state.chat.chats.find(chat => chat.chatId === props.chatId) || { contacts: [] };
+  const chat = state.chat.chats.find(chat => chat.chatId === props.chatId) || { contacts: [], guests: [] };
   const messages = withDatesAndLogs(chat.messages || [], chat.entryLogs || []);
   const contacts = chat.contacts.filter(contactId => contactId !== props.userId);
   const guests = chat.guests.filter(contactId => contactId !== props.userId);
@@ -376,7 +381,7 @@ export function mapStateToProps(state, props) {
 
 function mapDispatchToProps(dispatch) {
   return ({
-    prepareChat: (chatId, contactId, isGroup, userId) => dispatch(prepareChatAction(chatId, contactId, isGroup, userId)),
+    prepareChat: (chatId, userId, contactId, isGroup) => dispatch(prepareChatAction(chatId, userId, contactId, isGroup)),
     fetchMessages: (chatId, page) => dispatch(fetchMessagesAction(chatId, page)),
     sendMessage: (chatId, userId, alias, content) => dispatch(sendMessageAction(chatId, userId, alias, content)),
     editMessage: (chatId, messageId, content) => dispatch(editMessageAction(chatId, messageId, content)),

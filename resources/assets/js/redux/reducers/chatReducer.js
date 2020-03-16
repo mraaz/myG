@@ -1,12 +1,14 @@
 
 import logger from '../../common/logger';
-import { convertUTCDateToLocalDate } from '../../common/date';
 import { reEncryptMessages, sendGroupKeys } from '../../common/encryption';
 import { decryptMessage, deserializeKey } from '../../integration/encryption';
+import { requestGroupPrivateKey, confirmGroupPrivateKey } from '../../integration/http/guest';
+import notifyToast from '../../common/toast';
 
 export default function reducer(state = {
   chats: [],
   contacts: [],
+  unreadMessages: [],
   preparingMessenger: false,
 }, action) {
   switch (action.type) {
@@ -45,7 +47,7 @@ export default function reducer(state = {
 
     case "PREPARE_CHAT_FULFILLED": {
       logger.log('CHAT', `Redux -> Chat ${action.meta.chatId} Ready (Chat): `, action.payload, action.meta);
-      const { chatId } = action.meta;
+      const { chatId, userId } = action.meta;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const existingChat = chats.find(candidate => candidate.chatId === chatId);
       const chat = existingChat || action.payload.chat;
@@ -61,12 +63,19 @@ export default function reducer(state = {
       const messages = action.payload.messages
         .filter(message => message.messageId > action.payload.chat.lastCleared)
         .filter(message => !action.payload.chat.deletedMessages.includes(message.messageId))
-        .filter(message => !message.keyReceiver)
         .filter(message => !chat.blockedUsers.includes(message.senderId))
         .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId));
-      const privateKey = receiveGroupKey(chat, action.payload.messages, action.meta.userId, state.privateKey);
-      if (privateKey) chat.privateKey = privateKey;
       if (!chat.blocked) chat.messages = messages;
+      const isGroup = action.payload.chat.contacts && action.payload.chat.contacts.length > 2;
+      if (isGroup) {
+        const privateKey = receiveGroupKey(chat, action.payload.encryptionMessages, userId, state.privateKey);
+        if (privateKey) {
+          chat.privateKey = privateKey;
+          const privateKeyRequests = action.payload.requests || [];
+          if (privateKeyRequests.length) sendGroupKeys(chatId, userId, privateKeyRequests, privateKey, state.privateKey);
+        }
+        else requestGroupPrivateKey(userId, chatId, state.publicKey);
+      }
       return {
         ...state,
         chats,
@@ -104,6 +113,27 @@ export default function reducer(state = {
       return {
         ...state,
         chats,
+      };
+    }
+
+    case "FETCH_UNREAD_MESSAGES_FULFILLED": {
+      logger.log('CHAT', `Redux -> Unread Messages: `, action.payload);
+      const { unreadMessages: newUnreadMessages } = action.payload;
+      const unreadMessages = JSON.parse(JSON.stringify(state.unreadMessages));
+      newUnreadMessages.forEach(message => !unreadMessages.find(unread => unread.messageId === message.messageId) && unreadMessages.push(message));
+      return {
+        ...state,
+        unreadMessages,
+      };
+    }
+
+    case "CLEAR_UNREAD_INDICATOR": {
+      logger.log('CHAT', `Redux -> Clearing Unread Indicator`);
+      const unreadMessages = JSON.parse(JSON.stringify(state.unreadMessages));
+      unreadMessages.forEach(unreadMessage => unreadMessage.read = true);
+      return {
+        ...state,
+        unreadMessages,
       };
     }
 
@@ -163,8 +193,10 @@ export default function reducer(state = {
       const chats = JSON.parse(JSON.stringify(state.chats));
       if (chats.map(chat => chat.chatId).includes(chat.chatId)) return state;
       chats.push(chat);
-      const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== chat.chatId);
-      if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
+      if (!chat.closed) {
+        const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== chat.chatId);
+        if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
+      }
       return {
         ...state,
         chats,
@@ -178,23 +210,27 @@ export default function reducer(state = {
       const chatId = message.chatId;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
+      const unreadMessages = JSON.parse(JSON.stringify(state.unreadMessages));
       if (!chat) return state;
       if (chat.blocked) return state;
       if (chat.blockedUsers.includes(message.senderId)) return state;
       if (!chat.muted && !window.focused && message.senderId !== userId) playMessageSound();
       if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
       if (!chat.muted) {
-        chat.closed = false;
         const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== chatId);
-        if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
+        if (openChats.length <= 3) chat.closed = false;
+        else unreadMessages.push(message);
       }
       if (!chat.messages) chat.messages = [];
       if (!message.keyReceiver) chat.messages.push(message);
-      const privateKey = receiveGroupKey(chat, [message], userId, state.privateKey);
-      if (privateKey) chat.privateKey = privateKey;
+      if (message.keyReceiver === userId) {
+        const privateKey = receiveGroupKey(chat, [message], userId, state.privateKey);
+        if (privateKey) chat.privateKey = privateKey;
+      }
       return {
         ...state,
         chats,
+        unreadMessages,
       };
     }
 
@@ -258,6 +294,7 @@ export default function reducer(state = {
       logger.log('CHAT', `Redux -> On Chat Deleted: `, action.payload);
       const chatId = parseInt(action.payload.chatId);
       const chats = JSON.parse(JSON.stringify(state.chats)).filter(chat => parseInt(chat.chatId) !== parseInt(chatId));
+      if (state.guestId) notifyToast('This Group has been deleted.');
       return {
         ...state,
         chats,
@@ -484,10 +521,10 @@ export default function reducer(state = {
       if (!chatId) return contactPublicKeyUpdated(state, updatedUserId, publicKey);
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
-      const lastFriendRead = convertUTCDateToLocalDate(new Date(chat.friendReadDate));
+      const lastFriendRead = new Date(chat.friendReadDate);
       const unreadMessages = [];
       chat.messages.slice(0).reverse().some(message => {
-        const messageDate = convertUTCDateToLocalDate(new Date(message.createdAt));
+        const messageDate = new Date(message.createdAt);
         if (messageDate > lastFriendRead && message.senderId === thisUserId) {
           unreadMessages.push(message);
           return false;
@@ -577,10 +614,11 @@ function prepareGroupKeysToSend(group, userId, userContacts, userPublicKey, user
 
 function receiveGroupKey(group, messages, userId, userPrivateKey) {
   if (group.contacts.length <= 2) return;
-  const message = messages.find(message => message.keyReceiver === userId);
-  if (!message || !message.content) return;
+  const message = messages[0];
+  if (!message || !message.content || message.keyReceiver !== userId) return;
   const privateKey = decryptMessage(message.content, userPrivateKey);
   if (!privateKey) return;
+  confirmGroupPrivateKey(userId, group.chatId);
   return deserializeKey(JSON.parse(privateKey));
 }
 

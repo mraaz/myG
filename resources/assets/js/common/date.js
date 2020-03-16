@@ -102,17 +102,3 @@ export function isOneDayBehind(date1, date2) {
   compareDate.setDate(compareDate.getDate() - 1);
   return comparingDate <= compareDate;
 }
-
-export function convertUTCDateToLocalDate(date) {
-  if (!date) return new Date(0);
-  if (!date.getFullYear) date = new Date(date);
-  return new Date(
-    Date.UTC(date.getFullYear(),
-      date.getMonth(),
-      date.getDate(),
-      date.getHours(),
-      date.getMinutes(),
-      date.getSeconds()
-    )
-  );
-}

@@ -16,6 +16,10 @@ export function generateKeysSync(pin) {
   return { encryption: { pin, privateKey, publicKey } };
 }
 
+export function getPublicKey(privateKey) {
+  return cryptico.publicKeyString(privateKey);
+}
+
 export function deserializeKey(key) {
   if (!key) return null;
   if (key instanceof RSAKey) return key;

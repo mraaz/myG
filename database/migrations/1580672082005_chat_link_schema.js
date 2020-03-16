@@ -7,7 +7,7 @@ class ChatLastReadSchema extends Schema {
   up () {
     this.create('chat_links', (table) => {
       table.increments()
-      table.integer('chat_id').unsigned().notNullable()
+      table.integer('chat_id').unsigned().notNullable().index()
       table.foreign('chat_id').references('id').inTable('chats').onDelete('CASCADE')
       table.string('uuid', 36).notNullable()
       table.integer('expiry').unsigned()

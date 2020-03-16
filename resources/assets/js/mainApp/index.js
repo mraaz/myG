@@ -30,6 +30,7 @@ import ScheduleGames from "./components/ScheduleGames"
 import MyScheduledGames from "./components/MyScheduledGames"
 import LeftMenu from "./components/LeftMenu"
 import MessengerLoader from "./components/Messenger/MessengerLoader"
+import ChatUnreadMessages from "./components/Messenger/ChatUnreadMessages"
 import GuestLink from "./components/Guest/Link"
 import SearchHeader from "./components/SearchHeader"
 import ComposeSection from "./components/ComposeSection"
@@ -173,6 +174,9 @@ class Layout extends Component {
                 initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
 
               <Route exact path="/notifications" component={(props) => <Notifications routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
+              <Route exact path="/unread" component={(props) => <ChatUnreadMessages routeProps={props}
                 initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
 
               <Route exact path="/myFriends" component={(props) => <MyFriends routeProps={props}

@@ -7,10 +7,6 @@ class ChatEntryLog extends Model {
   chat() {
     return this.belongsTo('App/Models/Chat')
   }
-  static formatDates(field, value) {
-    const isoDate = new Date(value).toISOString();
-    return isoDate.replace("T", " ").split('.')[0];
-  }
 }
 
 module.exports = ChatEntryLog

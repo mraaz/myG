@@ -45,20 +45,6 @@ function toSQLDateTime(date) {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
-function convertUTCDateToLocalDate(date) {
-  if (!date) return new Date(0);
-  if (!date.getFullYear) date = new Date(date);
-  return new Date(
-    Date.UTC(date.getFullYear(),
-      date.getMonth(),
-      date.getDate(),
-      date.getHours(),
-      date.getMinutes(),
-      date.getSeconds()
-    )
-  );
-}
-
 function formatDateTime(date) {
   if (!date) return new Date(0);
   if (!date.getHours) date = new Date(date);
@@ -101,4 +87,4 @@ function isYesterday(someDate) {
     someDate.getFullYear() == yesterday.getFullYear()
 }
 
-module.exports = { howLongAgo, toSQLDateTime, convertUTCDateToLocalDate, formatDateTime, formatAMPM, isToday }
+module.exports = { howLongAgo, toSQLDateTime, formatDateTime, formatAMPM, isToday }
