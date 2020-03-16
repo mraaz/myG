@@ -180,7 +180,12 @@ class LeftMenu extends Component {
     return (
       <Fragment>
         <div className={classNames([styles.itemBox, styles.logout])}>
-          <div onClick={this.props.logout} className={styles.logoutArea}>
+          <div
+            onClick={() => {
+              this.props.logout()
+              window.location.href = '/logout'
+            }}
+            className={styles.logoutArea}>
             <img src={logoutButton.icon} height='24' width='24' className={styles.sideBarItemIcon} />
             {this.state.isExpanded && <div className={styles.sidebarItemText}>{logoutButton.header}</div>}
           </div>

@@ -85,7 +85,7 @@ const sideBarItems = {
     id: 'NETWORK',
     header: 'Network',
     icon: 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_Network.svg',
-    cta: '',
+    cta: '/groups',
     expanded: false,
   },
 }
