@@ -127,6 +127,16 @@ export default function reducer(state = {
       };
     }
 
+    case "CLEAR_UNREAD_INDICATOR": {
+      logger.log('CHAT', `Redux -> Clearing Unread Indicator`);
+      const unreadMessages = JSON.parse(JSON.stringify(state.unreadMessages));
+      unreadMessages.forEach(unreadMessage => unreadMessage.read = true);
+      return {
+        ...state,
+        unreadMessages,
+      };
+    }
+
     case "OPEN_CHAT": {
       logger.log('CHAT', `Redux -> Open Chat: `, action.payload);
       const chatId = action.payload.chatId;

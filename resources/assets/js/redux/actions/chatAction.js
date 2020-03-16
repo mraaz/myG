@@ -1,4 +1,4 @@
-import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, inviteUserToGroup, createChat, updateChat, clearChat, deleteChat, exitGroup, removeFromGroup, checkSelfDestruct, fetchMessages, fetchUnreadMessages, fetchEncryptionMessages,fetchLinks, updateLink, fetchEntryLogs, sendMessage, editMessage, deleteMessage, setTyping } from '../../integration/http/chat';
+import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, inviteUserToGroup, createChat, updateChat, clearChat, deleteChat, exitGroup, removeFromGroup, checkSelfDestruct, fetchMessages, fetchUnreadMessages, fetchEncryptionMessages, fetchLinks, updateLink, fetchEntryLogs, sendMessage, editMessage, deleteMessage, setTyping } from '../../integration/http/chat';
 import { fetchGroupPrivateKeyRequests } from '../../integration/http/guest';
 import { fetchContacts, fetchContact, fetchStatus } from '../../integration/http/user';
 import { generateKeys, deserializeKey, getPublicKey } from '../../integration/encryption';
@@ -251,6 +251,10 @@ export function fetchUnreadMessagesAction() {
     type: 'FETCH_UNREAD_MESSAGES',
     payload: fetchUnreadMessages(),
   }
+}
+
+export function clearUnreadIndicatorAction() {
+  return { type: 'CLEAR_UNREAD_INDICATOR' };
 }
 
 export function sendMessageAction(chatId, userId, alias, encrypted) {

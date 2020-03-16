@@ -123,14 +123,30 @@ class ChatRepository {
   }
 
   async fetchUnreadMessages({ requestingUserId }) {
+    const { chats } = await this.fetchChats({ requestingUserId });
     const lastReads = (await ChatLastRead.query().where('user_id', requestingUserId).fetch()).toJSON();
+    const lastReadId = (chatId) => (lastReads.find(lastRead => lastRead.chat_id === chatId) || {}).last_read_message_id;
     const unreadMessages = [];
-    const requests = lastReads.map(async lastRead => ({ lastReadId: lastRead.last_read_message_id, message: await this.fetchLastMessage({ requestedChatId: lastRead.chat_id }) }));
+    const requests = chats.map(async chat => ({ lastReadId: lastReadId(chat.chatId), message: await this.fetchLastMessage({ requestedChatId: chat.chatId }) }));
     const responses = await Promise.all(requests);
     responses.forEach(response => {
       const { lastReadId, message } = response;
-      if (parseInt(message.id) > parseInt(lastReadId)) unreadMessages.push(message);
+      if (!lastReadId || (parseInt(message.id) > parseInt(lastReadId))) unreadMessages.push(new MessageSchema({
+        messageId: message.id,
+        chatId: message.chat_id,
+        senderId: message.sender_id,
+        keyReceiver: message.key_receiver,
+        senderName: message.sender_name,
+        content: message.content,
+        backup: message.backup,
+        deleted: message.deleted,
+        edited: message.edited,
+        selfDestruct: message.self_destruct,
+        createdAt: message.created_at,
+        updatedAt: message.updated_at,
+      }));
     });
+    
     return { unreadMessages };
   }
 

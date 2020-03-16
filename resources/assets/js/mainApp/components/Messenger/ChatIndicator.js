@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
+import { withRouter, Link } from 'react-router-dom'
 import { fetchUnreadMessagesAction } from '../../../redux/actions/chatAction';
 
 class ChatIndicator extends React.PureComponent {
@@ -13,7 +13,9 @@ class ChatIndicator extends React.PureComponent {
     const active = this.props.unreadMessagesCount && 'active';
     return (
       <div className='comments'>
-        <i className='fas fa-comment' />
+        <Link to='/unread'>
+          <i className='fas fa-comment' />
+        </Link>
         <div className={`noti-number ${active}`}>{this.props.unreadMessagesCount}</div>
       </div>
     );
@@ -24,7 +26,7 @@ class ChatIndicator extends React.PureComponent {
 export function mapStateToProps(state) {
   const unreadMessages = state.chat.unreadMessages || [];
   return {
-    unreadMessagesCount: unreadMessages.length,
+    unreadMessagesCount: unreadMessages.filter(message => !message.read).length,
   }
 }
 
@@ -34,4 +36,4 @@ function mapDispatchToProps(dispatch) {
   });
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ChatIndicator);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ChatIndicator));
