@@ -9,7 +9,14 @@ class LoginController {
 
   async callback({ ally, auth, response, view, session }) {
     const provider = 'google'
-    const userData = await ally.driver(provider).getUser()
+    var userData
+    try {
+      userData = await ally.driver(provider).getUser()
+    } catch (e) {
+      console.log(e)
+      return response.redirect('/')
+    }
+
     try {
       const authUser = await User.query()
         .where({
@@ -17,7 +24,6 @@ class LoginController {
           provider_id: userData.getId(),
         })
         .first()
-      console.log(authUser)
       if (!(authUser === null)) {
         await auth.loginViaId(authUser.id)
         return response.redirect('/')
