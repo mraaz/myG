@@ -182,7 +182,8 @@ class LeftMenu extends Component {
         <div className={classNames([styles.itemBox, styles.logout])}>
           <div
             onClick={() => {
-              this.props.logout()((window.location.href = '/logout'))
+              this.props.logout()
+              window.location.href = '/logout'
             }}
             className={styles.logoutArea}>
             <img src={logoutButton.icon} height='24' width='24' className={styles.sideBarItemIcon} />
