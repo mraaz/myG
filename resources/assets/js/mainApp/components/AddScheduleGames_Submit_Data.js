@@ -16,6 +16,7 @@ export async function SubmitDataFunction(myG) {
   var myClash_royale_trophies = ''
   var now = moment()
   var end_date = myG.endDate
+  var allow_comments = true
 
   if (myG.selected_region != undefined && myG.selected_region !== null && myG.selected_region.length !== 0) {
     myRegion = Convert_to_comma_delimited_value(myG.selected_region)
@@ -85,6 +86,7 @@ export async function SubmitDataFunction(myG) {
       dota2_roles: myDota2_roles,
       schedule_games_GUID: tmp,
       clash_royale_trophies: myClash_royale_trophies,
+      allow_comments: allow_comments,
     })
   } catch (error) {
     console.log(error)

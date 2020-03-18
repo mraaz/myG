@@ -465,7 +465,7 @@ export default class ArchivedScheduledGamePost extends Component {
                 cols={80}
                 placeholder='No more comments, this game is cancelled.'
                 value={this.state.value}
-                disabled={true}
+                disabled={'disabled'}
               />
               <div className='buttons'>
                 <div className='repost-btn'>
