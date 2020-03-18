@@ -53,6 +53,7 @@ class ScheduleGameController {
           limit: request.input('limit'),
           accept_msg: request.input('accept_msg'),
           schedule_games_GUID: request.input('schedule_games_GUID'),
+          allow_comments: request.input('allow_comments'),
         })
 
         if (getGameName.length != 0) {
