@@ -115,7 +115,8 @@ Route.post('/api/GameNames', 'GameNameController.store')
 Route.get('/api/GameNames/:int/gameSearchResults', 'GameNameController.gameSearchResults')
 
 Route.get('/api/Tags', 'TagController.show')
-Route.get('/api/Tags/:id', 'TagController.show2')
+Route.post('/api/Tags/getTagsforGames', 'TagController.getTagsforGames')
+Route.post('/api/Tags/getTopTagsforGames', 'TagController.getTopTagsforGames')
 Route.post('/api/Tags', 'TagController.store')
 
 Route.post('/api/likes/', 'LikeController.store')
@@ -314,6 +315,5 @@ Route.get('/api/guest/chat/:chatId/entryLogs', 'GuestController.fetchEntryLogs')
 Route.get('/api/guest/privateKey/:chatId', 'GuestController.fetchGroupPrivateKeyRequests')
 Route.post('/api/guest/privateKey/:userId/:chatId', 'GuestController.requestGroupPrivateKey')
 Route.delete('/api/guest/privateKey/:userId/:chatId', 'GuestController.confirmGroupPrivateKey')
-
 
 Route.any('*', ({ view }) => view.render('pages/react'))

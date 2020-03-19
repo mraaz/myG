@@ -8,7 +8,7 @@ import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import Modal from 'react-modal'
 import { toast } from 'react-toastify'
 import SweetAlert from 'react-bootstrap-sweetalert'
-import { Game_name_values, Disable_keys, Toast_style } from './Utility_Function'
+import { Game_name_values, Disable_keys, Toast_style, Game_name_Tags } from './Utility_Function'
 
 Modal.setAppElement('#app')
 
@@ -57,7 +57,7 @@ const createOption = (label: string, game_names_id: string) => ({
 export default class EditGamingExp extends Component<*, State> {
   constructor() {
     super()
-    self = this
+
     this.state = {
       shouldCloseOnOverlayClick_: true,
       game_name_box: '',
@@ -131,8 +131,14 @@ export default class EditGamingExp extends Component<*, State> {
     this.setState({ shouldCloseOnOverlayClick_: false })
   }
   handleChange2 = (value: any) => {
-    self.setState({ value })
-    this.onBlur_game_name(value)
+    this.setState(
+      {
+        value,
+      },
+      () => {
+        this.loadDefaultValues(value)
+      }
+    )
     this.setState({ shouldCloseOnOverlayClick_: false })
   }
   handleChange3 = (value_tags: any) => {
@@ -283,19 +289,6 @@ export default class EditGamingExp extends Component<*, State> {
         const gameName = await axios.get(`/api/GameName/${self.state.edit_game_name}`)
         const game_newOption = createOption(myGame.data.myGameExperience[0].game_name, gameName.data.getOne[0].id)
 
-        var allTags
-        allTags = await axios.get(`/api/Tags/${gameName.data.getOne[0].id}`)
-
-        var x
-        for (x = 0; x < allTags.data.allTags.length; x++) {
-          const anotherOption = createOption(allTags.data.allTags[x].tag)
-          let { options_tags } = self.state
-          if (x == 0) {
-            options_tags = ''
-          }
-          self.state.options_tags = [...options_tags, anotherOption]
-        }
-
         self.state.myGame = myGame.data.myGameExperience[0]
 
         switch (myGame.data.myGameExperience[0].played) {
@@ -345,7 +338,15 @@ export default class EditGamingExp extends Component<*, State> {
             self.state.value_tags = tmp
           }
         }
-        self.setState({ value: game_newOption })
+
+        self.setState(
+          {
+            value: game_newOption,
+          },
+          () => {
+            self.getOptions_tags()
+          }
+        )
       } catch (error) {
         console.log(error)
       }
@@ -353,42 +354,39 @@ export default class EditGamingExp extends Component<*, State> {
     getGamingExp()
   }
 
-  onBlur_game_name = (value) => {
-    const getInitialData = async function() {
-      try {
-        var allTags
-        self.setState({ options_tags: '' })
-        self.setState({ value_tags: '' })
-        if (value != null) {
-          if (value.game_names_id != null && value.game_names_id != undefined) {
-            allTags = await axios.get(`/api/Tags/${value.game_names_id}`)
-          } else {
-            return
-          }
-        } else {
-          return
+  loadDefaultValues = async () => {
+    try {
+      if (this.state.value != null) {
+        if (this.state.value.game_names_id != null && this.state.value.game_names_id != undefined && this.state.value.game_names_id != '') {
+          var results = await Game_name_Tags('', this.state.value.game_names_id)
+          this.setState({ options_tags: results })
         }
-
-        var i
-        for (i = 0; i < allTags.data.allTags.length; i++) {
-          const newOption = createOption(allTags.data.allTags[i].tag)
-          let { options_tags } = self.state
-          if (i == 0) {
-            options_tags = ''
-          }
-          self.setState({
-            options_tags: [...options_tags, newOption],
-          })
-        }
-      } catch (error) {
-        console.log(error)
       }
+    } catch (error) {
+      console.log(error)
     }
-    getInitialData()
   }
 
   getOptions(inputValue) {
     return Game_name_values(inputValue)
+  }
+
+  getOptions_tags = (inputValue) => {
+    const self = this
+    const getInitialData = async function(inputValue) {
+      try {
+        var results = await Game_name_Tags(inputValue, self.state.value.game_names_id)
+        self.setState({ options_tags: results })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    if (this.state.value != null) {
+      if (this.state.value.game_names_id != null && this.state.value.game_names_id != undefined && this.state.value.game_names_id != '') {
+        getInitialData(inputValue)
+      }
+    }
   }
 
   onKeyDown = (e) => {
@@ -565,9 +563,10 @@ export default class EditGamingExp extends Component<*, State> {
                 isLoading={isLoading_tags}
                 className='tag_name_box'
                 isMulti
-                onInputChange={(inputValue) => (inputValue.length <= 250 ? inputValue : inputValue.substr(0, 250))}
                 value={value_tags}
                 onKeyDown={this.onKeyDown}
+                onInputChange={this.getOptions_tags}
+                placeholder='Search, Select or create Tags'
               />
             </div>
             {this.state.link_chkbox == false ? (
