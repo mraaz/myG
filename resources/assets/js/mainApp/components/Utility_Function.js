@@ -1,9 +1,10 @@
 import React from 'react'
 import axios from 'axios'
 
-const createOption = (label: string) => ({
+const createOption = (label: string, game_names_id: string) => ({
   label,
   value: label,
+  game_names_id,
 })
 
 export async function Game_name_values(inputValue) {
@@ -30,6 +31,39 @@ export async function Game_name_values(inputValue) {
       return []
     }
 
+    return newArr
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export async function Game_name_Tags(inputValue, game_names_id) {
+  if (inputValue != undefined) {
+    inputValue = inputValue.trimStart()
+    if (inputValue.length <= 250) {
+      inputValue = inputValue.substr(0, 250)
+    }
+  }
+
+  var allTags
+  if (inputValue == '' || inputValue == undefined) {
+    allTags = await axios.post('/api/Tags/getTopTagsforGames', {
+      game_names_id: game_names_id,
+    })
+  } else {
+    allTags = await axios.post('/api/Tags/getTagsforGames', {
+      inputValue: inputValue,
+      game_names_id: game_names_id,
+    })
+  }
+  try {
+    var newArr = []
+    var i, newOption
+
+    for (i = 0; i < allTags.data.allTags.length; i++) {
+      newOption = createOption(allTags.data.allTags[i].tag, allTags.data.allTags[i].id)
+      newArr.push(newOption)
+    }
     return newArr
   } catch (error) {
     console.log(error)

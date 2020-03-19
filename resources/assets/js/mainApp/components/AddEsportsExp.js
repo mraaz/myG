@@ -7,7 +7,7 @@ import CreatableSelect from 'react-select/lib/Creatable'
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import Modal from 'react-modal'
 import { toast } from 'react-toastify'
-import { Game_name_values, Disable_keys, Toast_style } from './Utility_Function'
+import { Game_name_values, Disable_keys, Toast_style, Game_name_Tags } from './Utility_Function'
 
 Modal.setAppElement('#app')
 
@@ -136,8 +136,15 @@ export default class AddEsportsExp extends Component<*, State> {
     this.setState({ shouldCloseOnOverlayClick_: false })
   }
   handleChange_game_name = (value_game_name: any) => {
-    this.setState({ value_game_name })
-    this.onBlur_game_name(value_game_name)
+    this.setState(
+      {
+        value_game_name,
+      },
+      () => {
+        this.loadDefaultValues(value_game_name)
+      }
+    )
+
     this.setState({ shouldCloseOnOverlayClick_: false })
   }
   handleChange3 = (value_tags: any) => {
@@ -381,42 +388,81 @@ export default class AddEsportsExp extends Component<*, State> {
     getEsports_bio()
   }
 
-  onBlur_game_name = (value) => {
-    const getInitialData = async function() {
-      try {
-        var allTags
-        self.setState({ options_tags: '' })
-        self.setState({ value_tags: '' })
-        if (value != null) {
-          if (value.game_names_id != null && value.game_names_id != undefined) {
-            allTags = await axios.get(`/api/Tags/${value.game_names_id}`)
-          } else {
-            return
-          }
-        } else {
-          return
-        }
+  // onBlur_game_name = (value) => {
+  //   const getInitialData = async function() {
+  //     try {
+  //       var allTags
+  //       self.setState({ options_tags: '' })
+  //       self.setState({ value_tags: '' })
+  //       if (value != null) {
+  //         if (value.game_names_id != null && value.game_names_id != undefined) {
+  //           allTags = await axios.get(`/api/Tags/${value.game_names_id}`)
+  //         } else {
+  //           return
+  //         }
+  //       } else {
+  //         return
+  //       }
+  //
+  //       var i
+  //       for (i = 0; i < allTags.data.allTags.length; i++) {
+  //         const newOption = createOption(allTags.data.allTags[i].tag)
+  //         let { options_tags } = self.state
+  //         if (i == 0) {
+  //           options_tags = ''
+  //         }
+  //         self.setState({
+  //           options_tags: [...options_tags, newOption],
+  //         })
+  //       }
+  //     } catch (error) {
+  //       console.log(error)
+  //     }
+  //   }
+  //   getInitialData()
+  // }
 
-        var i
-        for (i = 0; i < allTags.data.allTags.length; i++) {
-          const newOption = createOption(allTags.data.allTags[i].tag)
-          let { options_tags } = self.state
-          if (i == 0) {
-            options_tags = ''
-          }
-          self.setState({
-            options_tags: [...options_tags, newOption],
-          })
+  loadDefaultValues = async () => {
+    try {
+      if (this.state.value_game_name != null) {
+        if (
+          this.state.value_game_name.game_names_id != null &&
+          this.state.value_game_name.game_names_id != undefined &&
+          this.state.value_game_name.game_names_id != ''
+        ) {
+          var results = await Game_name_Tags('', this.state.value_game_name.game_names_id)
+          this.setState({ options_tags: results })
         }
-      } catch (error) {
-        console.log(error)
       }
+    } catch (error) {
+      console.log(error)
     }
-    getInitialData()
   }
 
   async getOptions(inputValue) {
     return Game_name_values(inputValue)
+  }
+
+  getOptions_tags = (inputValue) => {
+    const self = this
+    const getInitialData = async function(inputValue) {
+      try {
+        var results = await Game_name_Tags(inputValue, self.state.value_game_name.game_names_id)
+        self.setState({ options_tags: results })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    if (this.state.value_game_name != null) {
+      if (
+        this.state.value_game_name.game_names_id != null &&
+        this.state.value_game_name.game_names_id != undefined &&
+        this.state.value_game_name.game_names_id != ''
+      ) {
+        getInitialData(inputValue)
+      }
+    }
   }
 
   onKeyDown = (e) => {
@@ -608,8 +654,9 @@ export default class AddEsportsExp extends Component<*, State> {
                 value={value_tags}
                 className='tag_name_box'
                 isMulti
-                onInputChange={(inputValue) => (inputValue.length <= 250 ? inputValue : inputValue.substr(0, 250))}
                 onKeyDown={this.onKeyDown}
+                onInputChange={this.getOptions_tags}
+                placeholder='Search, Select or create Tags'
               />
             </div>
             <div></div>
