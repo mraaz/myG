@@ -649,8 +649,6 @@ export default class AddEsportsExp extends Component<*, State> {
                 options={options_tags}
                 onCreateOption={this.handleCreate3}
                 isClearable
-                isDisabled={isLoading_tags}
-                isLoading={isLoading_tags}
                 value={value_tags}
                 className='tag_name_box'
                 isMulti

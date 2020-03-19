@@ -559,8 +559,6 @@ export default class EditGamingExp extends Component<*, State> {
                 options={options_tags}
                 onCreateOption={this.handleCreate2}
                 isClearable
-                isDisabled={isLoading_tags}
-                isLoading={isLoading_tags}
                 className='tag_name_box'
                 isMulti
                 value={value_tags}

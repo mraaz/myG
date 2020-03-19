@@ -69,11 +69,8 @@ export default class AddGamingExp extends Component<*, State> {
       ratings_box: '',
       comments_box: '',
       link_box: '',
-      isLoading_tags: false,
       options_tags: '',
       value_tags: [],
-      newValueCreated_tags: [],
-      isLoading: false,
       options: '',
       value: [],
       newValueCreated: [],
@@ -81,7 +78,6 @@ export default class AddGamingExp extends Component<*, State> {
       link_chkbox: false,
       just_one_time: true,
       redirect_profile: false,
-      key: 1,
     }
   }
 
@@ -242,11 +238,10 @@ export default class AddGamingExp extends Component<*, State> {
       this.setState({ value: newOption })
       this.setState({ value_tags: '' })
       this.setState({ newValueCreated: [...newValueCreated, newOption.label] })
-      this.setState({ newValueCreated_tags: [] })
     }, 300)
   }
 
-  handleCreate2 = (inputValue: any) => {
+  handleCreate3 = (inputValue: any) => {
     if (inputValue.length > 88) {
       toast.success(<Toast_style text={'Sorry mate! Tag length is too long.'} />)
       return
@@ -256,9 +251,6 @@ export default class AddGamingExp extends Component<*, State> {
       const newOption = createOption(inputValue, null)
       this.setState({ options_tags: [...options_tags, newOption] })
       this.setState({ value_tags: [...value_tags, newOption] })
-      this.setState({
-        newValueCreated_tags: [...newValueCreated_tags, newOption.label],
-      })
     }, 300)
   }
 
@@ -295,7 +287,7 @@ export default class AddGamingExp extends Component<*, State> {
       return <Redirect push to={tmp} />
     }
 
-    const { isLoading, options, value, options_tags, value_tags } = this.state
+    const { options, value, options_tags, value_tags } = this.state
     return (
       <div className='content-area addGamingExp-page'>
         <Modal
@@ -388,6 +380,7 @@ export default class AddGamingExp extends Component<*, State> {
             <CreatableSelect
               onChange={this.handleChange3}
               options={this.state.options_tags}
+              onCreateOption={this.handleCreate3}
               isClearable
               value={value_tags}
               className='tag_name_box'
