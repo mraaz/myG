@@ -8,7 +8,7 @@ import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import Modal from 'react-modal'
 import { toast } from 'react-toastify'
 
-import { Game_name_values, Disable_keys, Toast_style } from './Utility_Function'
+import { Game_name_values, Disable_keys, Toast_style, Game_name_Tags } from './Utility_Function'
 
 Modal.setAppElement('#app')
 
@@ -57,7 +57,6 @@ const createOption = (label: string, game_names_id: string) => ({
 export default class AddGamingExp extends Component<*, State> {
   constructor() {
     super()
-    self = this
     this.state = {
       shouldCloseOnOverlayClick_: true,
       show_info_box: false,
@@ -70,11 +69,8 @@ export default class AddGamingExp extends Component<*, State> {
       ratings_box: '',
       comments_box: '',
       link_box: '',
-      isLoading_tags: false,
       options_tags: '',
       value_tags: [],
-      newValueCreated_tags: [],
-      isLoading: false,
       options: '',
       value: [],
       newValueCreated: [],
@@ -131,13 +127,32 @@ export default class AddGamingExp extends Component<*, State> {
     this.setState({ shouldCloseOnOverlayClick_: false })
   }
   handleChange2 = (value: any) => {
-    self.setState({ value })
-    this.onBlur_game_name(value)
+    this.setState(
+      {
+        value,
+      },
+      () => {
+        this.loadDefaultValues(value)
+      }
+    )
     this.setState({ shouldCloseOnOverlayClick_: false })
   }
   handleChange3 = (value_tags: any) => {
     this.setState({ value_tags })
     this.setState({ shouldCloseOnOverlayClick_: false })
+  }
+
+  loadDefaultValues = async () => {
+    try {
+      if (this.state.value != null) {
+        if (this.state.value.game_names_id != null && this.state.value.game_names_id != undefined && this.state.value.game_names_id != '') {
+          var results = await Game_name_Tags('', this.state.value.game_names_id)
+          this.setState({ options_tags: results })
+        }
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   submitForm = async () => {
@@ -172,16 +187,16 @@ export default class AddGamingExp extends Component<*, State> {
       myRatings = this.state.ratings_box.value
     }
 
-    if (self.state.value_tags !== null && self.state.value_tags.length !== 0) {
+    if (this.state.value_tags !== null && this.state.value_tags.length !== 0) {
       if (myTags == null) {
         myTags = ''
       }
-      for (var i = 0; i < self.state.value_tags.length; i++) {
+      for (var i = 0; i < this.state.value_tags.length; i++) {
         if (/['/.%#$,;`\\]/.test(this.state.value_tags[i].label)) {
           toast.success(<Toast_style text={'Sorry mate! Tags can not have invalid fields'} />)
           return
         }
-        myTags += this.state.value_tags[i].label + '; '
+        myTags += this.state.value_tags[i].label.trim() + '; '
       }
       myTags = myTags
         .trim()
@@ -223,11 +238,10 @@ export default class AddGamingExp extends Component<*, State> {
       this.setState({ value: newOption })
       this.setState({ value_tags: '' })
       this.setState({ newValueCreated: [...newValueCreated, newOption.label] })
-      this.setState({ newValueCreated_tags: [] })
     }, 300)
   }
 
-  handleCreate2 = (inputValue: any) => {
+  handleCreate3 = (inputValue: any) => {
     if (inputValue.length > 88) {
       toast.success(<Toast_style text={'Sorry mate! Tag length is too long.'} />)
       return
@@ -237,48 +251,29 @@ export default class AddGamingExp extends Component<*, State> {
       const newOption = createOption(inputValue, null)
       this.setState({ options_tags: [...options_tags, newOption] })
       this.setState({ value_tags: [...value_tags, newOption] })
-      this.setState({
-        newValueCreated_tags: [...newValueCreated_tags, newOption.label],
-      })
     }, 300)
-  }
-
-  onBlur_game_name = (value) => {
-    const getInitialData = async function() {
-      try {
-        var allTags
-        self.setState({ options_tags: '' })
-        self.setState({ value_tags: '' })
-        if (value != null) {
-          if (value.game_names_id != null && value.game_names_id != undefined) {
-            allTags = await axios.get(`/api/Tags/${value.game_names_id}`)
-          } else {
-            return
-          }
-        } else {
-          return
-        }
-
-        var i
-        for (i = 0; i < allTags.data.allTags.length; i++) {
-          const newOption = createOption(allTags.data.allTags[i].tag)
-          let { options_tags } = self.state
-          if (i == 0) {
-            options_tags = ''
-          }
-          self.setState({
-            options_tags: [...options_tags, newOption],
-          })
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    getInitialData()
   }
 
   getOptions(inputValue) {
     return Game_name_values(inputValue)
+  }
+
+  getOptions_tags = (inputValue) => {
+    const self = this
+    const getInitialData = async function(inputValue) {
+      try {
+        var results = await Game_name_Tags(inputValue, self.state.value.game_names_id)
+        self.setState({ options_tags: results })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    if (this.state.value != null) {
+      if (this.state.value.game_names_id != null && this.state.value.game_names_id != undefined && this.state.value.game_names_id != '') {
+        getInitialData(inputValue)
+      }
+    }
   }
 
   onKeyDown = (e) => {
@@ -292,7 +287,7 @@ export default class AddGamingExp extends Component<*, State> {
       return <Redirect push to={tmp} />
     }
 
-    const { isLoading, options, value, isLoading_tags, options_tags, value_tags } = this.state
+    const { options, value, options_tags, value_tags } = this.state
     return (
       <div className='content-area addGamingExp-page'>
         <Modal
@@ -316,7 +311,6 @@ export default class AddGamingExp extends Component<*, State> {
             </p>
             <AsyncCreatableSelect
               cacheOptions
-              defaultOptions
               loadOptions={this.getOptions}
               isClearable
               onChange={this.handleChange2}
@@ -385,16 +379,15 @@ export default class AddGamingExp extends Component<*, State> {
             </p>
             <CreatableSelect
               onChange={this.handleChange3}
-              options={options_tags}
-              onCreateOption={this.handleCreate2}
+              options={this.state.options_tags}
+              onCreateOption={this.handleCreate3}
               isClearable
-              isDisabled={isLoading_tags}
-              isLoading={isLoading_tags}
               value={value_tags}
               className='tag_name_box'
               isMulti
-              onInputChange={(inputValue) => (inputValue.length <= 250 ? inputValue : inputValue.substr(0, 250))}
               onKeyDown={this.onKeyDown}
+              onInputChange={this.getOptions_tags}
+              placeholder='Search, Select or create Tags'
             />
           </div>
           {this.state.link_chkbox == false ? (

@@ -50,6 +50,7 @@ export default class ScheduledGamePost_Default extends Component {
       redirect_PlayerList: false,
       alert: null,
       redirect_scheduledGames: false,
+      allow_comments: true,
     }
 
     this.callbackPostFileModalClose = this.callbackPostFileModalClose.bind(this)
@@ -263,6 +264,12 @@ export default class ScheduledGamePost_Default extends Component {
 
     this.state.start_date = moment(schedule_game.start_date_time, 'YYYY-MM-DD HH:mm:ssZ').local()
     this.state.end_date = moment(schedule_game.end_date_time, 'YYYY-MM-DD HH:mm:ssZ').local()
+
+    if (schedule_game.allow_comments == 0) {
+      this.setState({
+        allow_comments: false,
+      })
+    }
 
     getCommentsCount()
     getNumberofAttendees()
@@ -676,13 +683,14 @@ export default class ScheduledGamePost_Default extends Component {
               name='name'
               rows={8}
               cols={80}
-              placeholder='Write a comment...'
+              placeholder={this.state.allow_comments ? 'Write a comment...' : 'Disabled'}
               value={this.state.value}
               onChange={this.handleChange}
               maxLength='254'
               onKeyDown={this.detectKey}
               ref={this.setTextInputRef}
               onFocus={this.onFocus}
+              disabled={this.state.allow_comments ? '' : 'disabled'}
             />
             <div className='buttons'>
               <div className='repost-btn' onClick={this.insert_comment}>

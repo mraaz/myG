@@ -5,13 +5,14 @@ import { Redirect } from 'react-router'
 import DatePicker from 'react-datepicker'
 import moment from 'moment'
 import AsyncSelect from 'react-select/lib/Async'
+import CreatableSelect from 'react-select/lib/Creatable'
 import axios from 'axios'
 
 import 'react-datepicker/dist/react-datepicker.css'
 import { toast } from 'react-toastify'
 
 import { SubmitDataFunction } from './AddScheduleGames_Submit_Data'
-import { Toast_style, Disable_keys, Convert_to_comma_delimited_value } from './Utility_Function'
+import { Toast_style, Disable_keys, Convert_to_comma_delimited_value, Game_name_Tags } from './Utility_Function'
 
 const region_options = [
   { value: 'North America', label: 'North America' },
@@ -52,9 +53,17 @@ const limit_options = [
   { value: 42, label: 'Unlimited' },
 ]
 
-const createOption = (label: string) => ({
+type State = {
+  options: [{ [string]: string }],
+  options_tags: [{ [string]: string }],
+  value: string | void,
+  value_tags: string | void,
+}
+
+const createOption = (label: string, game_names_id: string) => ({
   label,
   value: label,
+  game_names_id,
 })
 
 export default class AddScheduleGames_Headers extends Component {
@@ -79,6 +88,8 @@ export default class AddScheduleGames_Headers extends Component {
       redirect_myScheduleGames: false,
       invitation_box: '',
       invitation_group_box: '',
+      options_tags: '',
+      value_tags: [],
     }
   }
 
@@ -269,6 +280,48 @@ export default class AddScheduleGames_Headers extends Component {
     this.setState({ invitation_group_box: value })
   }
 
+  handleChange3 = (value_tags: any) => {
+    this.setState({ value_tags })
+  }
+
+  handleCreate3 = (inputValue: any) => {
+    if (inputValue.length > 88) {
+      toast.success(<Toast_style text={'Sorry mate! Skill length is too long.'} />)
+      return
+    }
+    setTimeout(() => {
+      const { options_tags, value_tags, newValueCreated_tags } = this.state
+      const newOption = createOption(inputValue, null)
+      this.setState({ options_tags: [...options_tags, newOption] })
+      this.setState({ value_tags: [...value_tags, newOption] })
+      this.setState({
+        newValueCreated_tags: [...newValueCreated_tags, newOption.label],
+      })
+    }, 300)
+  }
+
+  getOptions_tags = (inputValue) => {
+    const self = this
+    const getInitialData = async function(inputValue) {
+      try {
+        var results = await Game_name_Tags(inputValue, self.props.game_name_box.game_names_id)
+        self.setState({ options_tags: results })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    if (this.props.game_name_box != null) {
+      if (
+        this.props.game_name_box.game_names_id != null &&
+        this.props.game_name_box.game_names_id != undefined &&
+        this.props.game_name_box.game_names_id != ''
+      ) {
+        getInitialData(inputValue)
+      }
+    }
+  }
+
   render() {
     if (this.state.redirect_ScheduleGames === true) {
       return <Redirect push to='/scheduledGames' />
@@ -445,6 +498,31 @@ export default class AddScheduleGames_Headers extends Component {
               placeholder='Search for communites to invite'
               onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
               onKeyDown={this.onKeyDown}
+            />
+          </div>
+          <div className='tag_txtBox'>
+            <p>
+              <span style={{ color: 'green' }}>S</span>
+              <span style={{ color: 'dodgerblue' }}>k</span>
+              <span style={{ color: 'red' }}>i</span>
+              <span style={{ color: 'gold' }}>l</span>
+              <span style={{ color: 'green' }}>l</span>
+              <span style={{ color: 'dodgerblue' }}>s</span> (Keywords that identify <span style={{ color: 'green' }}>y</span>
+              <span style={{ color: 'dodgerblue' }}>o</span>
+              <span style={{ color: 'red' }}>u</span>
+              <span style={{ color: 'gold' }}>r</span> expertise with this role. Max 250 chars)
+            </p>
+            <CreatableSelect
+              onChange={this.handleChange3}
+              options={this.state.options_tags}
+              onCreateOption={this.handleCreate3}
+              isClearable
+              value={this.state.value_tags}
+              className='tag_name_box'
+              isMulti
+              onKeyDown={this.onKeyDown}
+              onInputChange={this.getOptions_tags}
+              placeholder='Search, Select or create Tags'
             />
           </div>
           <div className='buttons'>
