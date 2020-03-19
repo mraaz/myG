@@ -36,7 +36,7 @@ import SearchHeader from "./components/SearchHeader"
 import ComposeSection from "./components/ComposeSection"
 import Posts from "./components/Posts"
 import LoadingComp from "./components/LoadingComp"
-import AddScheduleGames from "./components/AddScheduleGames"
+import AddScheduleGames from "./components/AddGame/AddGameContainer"
 import Dossier from "./components/Dossier"
 import AddGamingExp from "./components/AddGamingExp"
 import EditGamingExp from "./components/EditGamingExp"
@@ -115,9 +115,10 @@ class Layout extends Component {
     return (
       <Router>
         <div className="app-container home-page">
+          <div className="dashboard-main-container">
           <LeftMenu initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} />
           <section id="content-container">
-            <SearchHeader />
+            {/* <SearchHeader /> */}
             <Switch>
               <Route exact path="/" component={(props) => <Home routeProps={props}
                 initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
@@ -228,6 +229,7 @@ class Layout extends Component {
             publicKey={this.state.initialData && this.state.initialData.userInfo.public_key}
             loading={!this.state.initialData}
           />
+          </div>
         </div>
       </Router>
     );

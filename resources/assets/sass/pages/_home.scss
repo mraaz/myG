@@ -35,8 +35,11 @@
 }
 section#content-container {
   background-color: #0b0f14;
-  width: 65%;
-  margin: 0px 20% 0px 15%;
+  display: flex;
+  flex: 1;
+}
+.dashboard-main-container {
+  display: flex;
 }
 .app-container.home-page {
   position: relative;
