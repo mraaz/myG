@@ -164,12 +164,12 @@ class CommonSaveController {
 
   async sampleemailsend({ view, session }) {
     var transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
+      host: 'email-smtp.us-east-1.amazonaws.com',
       port: 465,
       secure: true, // use TLS
       auth: {
-        user: 'teamraaz@gmail.com',
-        pass: 'Password123!123',
+        user: 'AKIAWV72ZDUVC2AHKOGV',
+        pass: 'BAxplJMdrCr6QcF/CgX1Mbf7/BL1yHUcqAInLg367HNt',
       },
       tls: {
         // do not fail on invalid certs
@@ -178,7 +178,7 @@ class CommonSaveController {
     })
 
     const mailOptions = {
-      from: 'teamraaz@gmail.com', // sender address
+      from: 'levelup@myG.gg', // sender address
       to: 'mnraaz@gmail.com', // list of receivers
       subject: 'test mail', // Subject line
       html: '<h1>this is a test mail.</h1>', // plain text body
