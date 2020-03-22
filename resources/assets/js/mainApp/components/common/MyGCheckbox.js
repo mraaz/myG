@@ -1,25 +1,25 @@
 import React from 'react'
 
-import '../../styles/common/MyGCheckboxStyles.scss'
-
-const MyGCheckbox = ({ checked, onChange, labelText }) => {
-  const styles = {}
+const MyGCheckbox = ({ checked, onClick, labelText }) => {
+  const styles = {
+    container: {
+      marginBottom: '10px',
+      cursor: 'pointer',
+    },
+    labelText: {
+      marginLeft: '10px',
+      fontWeight: 'bold',
+    },
+  }
+  const checked_svg = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/checkbox_checked.svg'
+  const unchecked_svg = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/checkbox_uncheked.svg'
 
   return (
-    <label class='my-g-checkbox__container'>
-      <input type='checkbox' checked='checked' />
-      <span class='my-g-checkbox__checkmark'></span>
-      One
-    </label>
+    <div style={styles.container} onClick={() => onClick(!checked)}>
+      <img src={checked ? checked_svg : unchecked_svg} height='15' width='15' />
+      <span style={styles.labelText}>{labelText}</span>
+    </div>
   )
-
-  //   return (
-  //     <div className='my-g-checkbox__container'>
-  //       <input type='checkbox' checked={checked} onChange={checked} />
-  //       <span class='my-g-checkbox__checkmark'></span>
-  //       <div>{labelText}</div>
-  //     </div>
-  //   )
 }
 
 export default MyGCheckbox
