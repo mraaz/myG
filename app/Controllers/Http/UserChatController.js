@@ -13,6 +13,38 @@ class UserChatController {
     return response.send({ success, error });
   }
 
+  async fetchGames({ auth, response }) {
+    const requestingUserIds = [auth.user.id];
+    log('USER', `User ${requestingUserIds} requesting Games`);
+    const { games } = await UserRepository.fetchGames({ requestingUserIds });
+    return response.send({ games });
+  }
+
+  async favoriteGame({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedGameId = params.gameId;
+    log('USER', `User ${requestingUserId} favoriting Game ${requestedGameId}`);
+    const { success, error } = await UserRepository.favoriteGame({ requestingUserId, requestedGameId });
+    return response.send({ success, error });
+  }
+
+  async unfavoriteGame({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedGameId = params.gameId;
+    log('USER', `User ${requestingUserId} unfavoriting Game ${requestedGameId}`);
+    const { success, error } = await UserRepository.unfavoriteGame({ requestingUserId, requestedGameId });
+    return response.send({ success, error });
+  }
+
+  async updateGameIcon({ auth, params, request, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedGameId = params.gameId;
+    const icon = request.only(['icon']).icon;
+    log('USER', `User ${requestingUserId} updating Icon for Game ${requestedGameId}`);
+    const { success, error } = await UserRepository.updateGameIcon({ requestingUserId, requestedGameId, icon });
+    return response.send({ success, error });
+  }
+
   async fetchContacts({ auth, response }) {
     const requestingUserId = auth.user.id;
     log('USER', `User ${requestingUserId} requesting Contacts`);
