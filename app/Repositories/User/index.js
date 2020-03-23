@@ -28,18 +28,18 @@ class UserRepository {
 
   async fetchGames({ requestingUserIds }) {
     const rawGames = await Database
-      .select('game_experiences.user_id', 'game_names_id', 'game_name')
+      .select('game_experiences.user_id', 'game_names_id', 'game_name', 'game_img')
       .from('game_experiences')
       .leftJoin('game_names', 'game_names.id', 'game_experiences.game_names_id')
       .where('game_experiences.user_id', 'in', requestingUserIds)
       .union([
         Database
-          .select('esports_experiences.user_id', 'game_names_id', 'game_name')
+          .select('esports_experiences.user_id', 'game_names_id', 'game_name', 'game_img')
           .from('esports_experiences')
           .leftJoin('game_names', 'game_names.id', 'esports_experiences.game_names_id')
           .where('esports_experiences.user_id', 'in', requestingUserIds)
       ]);
-    const games = rawGames.map(game => new GameSchema({ gameId: game.game_names_id, userId: game.user_id, name: game.game_name }));
+    const games = rawGames.map(game => new GameSchema({ gameId: game.game_names_id, userId: game.user_id, name: game.game_name, icon: game.game_img }));
     const byUserIds = requestingUserIds.map(userId => ({ userId, games: this._uniqBy(games.filter(game => game.userId === userId), game => game.gameId) }));
     const gameMap = {};
     byUserIds.forEach(game => gameMap[game.userId] = game.games);

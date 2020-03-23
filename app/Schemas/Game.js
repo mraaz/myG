@@ -7,6 +7,7 @@ class Game {
     this.gameId = forceInt(data.gameId);
     this.userId = forceInt(data.userId);
     this.name = forceString(data.name);
+    this.icon = forceString(data.icon);
   }
 
 }

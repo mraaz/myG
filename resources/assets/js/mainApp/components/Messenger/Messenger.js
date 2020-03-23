@@ -574,6 +574,7 @@ function mapStateToProps(state) {
     isStatusLocked: state.user.isStatusLocked,
     chats: state.chat.chats,
     contacts: state.user.contacts,
+    games: state.user.games,
     groups,
     pin: state.encryption.pin,
     invalidPin: state.encryption.invalidPin,

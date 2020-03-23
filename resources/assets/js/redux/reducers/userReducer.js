@@ -5,6 +5,7 @@ export default function reducer(state = {
   status: 'online',
   isStatusLocked: false,
   contacts: [],
+  games: [],
   friendRequests: [],
   foundUsers: [],
 }, action) {
@@ -12,12 +13,13 @@ export default function reducer(state = {
 
     case "PREPARE_MESSENGER_FULFILLED": {
       logger.log('CHAT', `Redux -> Messenger Ready (User): `, action.payload);
-      const { contacts } = action.payload;
+      const { contacts, games } = action.payload;
       const { value: currentStatus, locked: isStatusLocked } = action.payload.status;
       const status = currentStatus === 'offline' && !isStatusLocked ? 'online' : currentStatus;
       return {
         ...state,
         contacts,
+        games,
         status, 
         isStatusLocked,
       };
