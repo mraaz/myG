@@ -6,6 +6,7 @@ const UserChat = use('App/Models/UserChat');
 const StatusSchema = require('../../Schemas/Status');
 const ContactSchema = require('../../Schemas/Contact');
 const DefaultSchema = require('../../Schemas/Default');
+const GameSchema = require('../../Schemas/Game');
 
 const ChatRepository = require('../Chat');
 
@@ -25,6 +26,26 @@ class UserRepository {
     return new DefaultSchema({ success: true });
   }
 
+  async fetchGames({ requestingUserIds }) {
+    const rawGames = await Database
+      .select('game_experiences.user_id', 'game_names_id', 'game_name')
+      .from('game_experiences')
+      .leftJoin('game_names', 'game_names.id', 'game_experiences.game_names_id')
+      .where('game_experiences.user_id', 'in', requestingUserIds)
+      .union([
+        Database
+          .select('esports_experiences.user_id', 'game_names_id', 'game_name')
+          .from('esports_experiences')
+          .leftJoin('game_names', 'game_names.id', 'esports_experiences.game_names_id')
+          .where('esports_experiences.user_id', 'in', requestingUserIds)
+      ]);
+    const games = rawGames.map(game => new GameSchema({ gameId: game.game_names_id, userId: game.user_id, name: game.game_name }));
+    const byUserIds = requestingUserIds.map(userId => ({ userId, games: this._uniqBy(games.filter(game => game.userId === userId), game => game.gameId) }));
+    const gameMap = {};
+    byUserIds.forEach(game => gameMap[game.userId] = game.games);
+    return { games: gameMap };
+  }
+
   async fetchContacts({ requestingUserId }) {
     const friends = (await Database.from('friends')
       .innerJoin('users', 'users.id', 'friends.friend_id')
@@ -38,6 +59,9 @@ class UserRepository {
       lastSeen: friend.last_seen,
       publicKey: friend.public_key,
     }));
+    const requestingUserIds = contacts.map(contact => contact.contactId);
+    const { games } = await this.fetchGames({ requestingUserIds });
+    contacts.forEach(contact => contact.games = games[contact.contactId] || []);
     return { contacts };
   }
 
@@ -89,6 +113,14 @@ class UserRepository {
         publicKey: user.public_key,
       }));
     return { users };
+  }
+
+  _uniqBy(a, key) {
+    var seen = {};
+    return a.filter(function (item) {
+      var k = key(item);
+      return seen.hasOwnProperty(k) ? false : (seen[k] = true);
+    })
   }
 
 }

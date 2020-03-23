@@ -13,6 +13,13 @@ class UserChatController {
     return response.send({ success, error });
   }
 
+  async fetchGames({ auth, response }) {
+    const requestingUserIds = [auth.user.id];
+    log('USER', `User ${requestingUserIds} requesting Games`);
+    const { games } = await UserRepository.fetchGames({ requestingUserIds });
+    return response.send({ games });
+  }
+
   async fetchContacts({ auth, response }) {
     const requestingUserId = auth.user.id;
     log('USER', `User ${requestingUserId} requesting Contacts`);
