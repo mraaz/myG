@@ -126,6 +126,18 @@ export default function reducer(state = {
       };
     }
 
+    case "UPDATE_GAME_ICON_FULFILLED": {
+      logger.log('USER', `Redux -> Updated Game Icon: `, action.payload, action.meta);
+      const games = JSON.parse(JSON.stringify(state.games));
+      const game = games.find(game => game.gameId === action.meta.gameId);
+      if (!game) return state;
+      game.icon = action.meta.icon;
+      return {
+        ...state,
+        games,
+      };
+    }
+
     default: return state;
 
   }

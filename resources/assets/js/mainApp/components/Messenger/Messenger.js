@@ -7,10 +7,11 @@ import Chat from './Chat';
 import GroupCreation from './GroupCreation';
 import StatusTimerWrapper from '../StatusTimerWrapper';
 import WindowFocusHandler from '../WindowFocusHandler';
+import FileOpenModal from '../FileOpenModal';
 
 import { attemptSocketConnection, monitorChats, closeSubscription } from '../../../integration/ws/chat';
 import { createChatAction, openChatAction, closeChatAction, clearChatAction } from '../../../redux/actions/chatAction';
-import { favoriteGameAction, unfavoriteGameAction, updateStatusAction } from '../../../redux/actions/userAction';
+import { favoriteGameAction, unfavoriteGameAction, updateGameIconAction, updateStatusAction } from '../../../redux/actions/userAction';
 import { generateKeysAction, validatePinAction } from '../../../redux/actions/encryptionAction';
 import { deserializeKey, decryptMessage, generateKeysSync as generateGroupKeys } from '../../../integration/encryption';
 import { formatAMPM } from '../../../common/date';
@@ -38,7 +39,8 @@ class Messenger extends React.PureComponent {
       games: false,
       friends: true,
       groups: false,
-    }
+    },
+    uploadingPhoto: null,
   }
 
   static getDerivedStateFromProps(props) {
@@ -117,6 +119,11 @@ class Messenger extends React.PureComponent {
       return true;
     });
     return unreadCount;
+  }
+
+  onUploadPhoto = (icon) => {
+    this.props.updateGameIcon(this.state.uploadingPhoto, icon);
+    this.setState({ uploadingPhoto: null });
   }
 
   renderConnectionWarning = () => {
@@ -456,8 +463,9 @@ class Messenger extends React.PureComponent {
   }
 
   renderFooter() {
+    const fullFooter = this.state.showingSettings && 'messenger-footer-container-full';
     return (
-      <div className="messenger-footer-container">
+      <div className={`messenger-footer-container ${fullFooter}`}>
         {this.renderSettings()}
         <div className="messenger-footer">
           <div className="messenger-footer-icon-container">
@@ -539,13 +547,22 @@ class Messenger extends React.PureComponent {
 
   renderGameSelection = game => {
     const isFavorite = this.props.favoriteGames.find(favorite => favorite.gameId === game.gameId);
+    const isOwner = parseInt(this.props.userId) === parseInt(game.ownerId);
     return(
       <div key={game.gameId} className="messenger-footer-favorite-game">
         <div className="messenger-body-game-section">
-            <div
-              className="messenger-game-icon"
-              style={{ backgroundImage: `url('${game.icon}')` }}
-            />
+            {!isOwner && (
+              <div
+                className="messenger-game-icon"
+                style={{ backgroundImage: `url('${game.icon}')` }}
+              />
+            )}
+            {isOwner && (
+              <div className="messenger-change-game-icon-button clickable"
+                style={{ backgroundImage: `url(/assets/svg/ic_chat_group_icon.svg)` }}
+                onClick={() => this.setState({ uploadingPhoto: game.gameId })}
+              />
+            )}
             <p className="messenger-body-section-header-name">{game.name}</p>
         </div>
         <div className="messenger-footer-favorite-game-button clickable"
@@ -675,6 +692,12 @@ class Messenger extends React.PureComponent {
     return (
       <section id="messenger">
 
+        <FileOpenModal
+          bOpen={this.state.uploadingPhoto !== null}
+          callbackClose={() => this.setState({ uploadingPhoto: null })}
+          callbackConfirm={this.onUploadPhoto}
+        />
+
         {this.renderBody()}
         {this.renderFooter()}
 
@@ -734,6 +757,7 @@ function mapDispatchToProps(dispatch) {
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
     favoriteGame: gameId => dispatch(favoriteGameAction(gameId)),
     unfavoriteGame: gameId => dispatch(unfavoriteGameAction(gameId)),
+    updateGameIcon: (gameId, icon) => dispatch(updateGameIconAction(gameId, icon)),
     updateStatus: (status, forcedStatus) => dispatch(updateStatusAction(status, forcedStatus)),
   });
 }

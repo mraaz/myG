@@ -12,13 +12,18 @@ export function fetchGames(userId) {
 }
 
 export function favoriteGame(gameId) {
-  logger.log('USER', 'HTTP', `Fetching Games`);
+  logger.log('USER', 'HTTP', `Favoriting Game ${gameId}`);
   return axios.put(`/api/user_chat/game/${gameId}`).then(response => response.data);
 }
 
 export function unfavoriteGame(gameId) {
-  logger.log('USER', 'HTTP', `Fetching Games`);
+  logger.log('USER', 'HTTP', `Unfavoriting Game ${gameId}`);
   return axios.delete(`/api/user_chat/game/${gameId}`).then(response => response.data);
+}
+
+export function updateGameIcon(gameId, icon) {
+  logger.log('USER', 'HTTP', `Updating Game Icon`);
+  return axios.put(`/api/user_chat/game/${gameId}/icon`, { icon }).then(response => response.data);
 }
 
 export function fetchContacts() {

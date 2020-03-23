@@ -3,6 +3,7 @@ const Database = use('Database');
 const User = use('App/Models/User');
 const UserChat = use('App/Models/UserChat');
 const FavoriteGame = use('App/Models/FavoriteGame');
+const GameName = use('App/Models/GameName');
 
 const StatusSchema = require('../../Schemas/Status');
 const ContactSchema = require('../../Schemas/Contact');
@@ -29,18 +30,18 @@ class UserRepository {
 
   async fetchGames({ requestingUserIds }) {
     const rawGames = await Database
-      .select('game_experiences.user_id', 'game_names_id', 'game_name', 'game_img')
+      .select('game_experiences.user_id', 'game_names.user_id as owner_id', 'game_names_id', 'game_name', 'game_img')
       .from('game_experiences')
       .leftJoin('game_names', 'game_names.id', 'game_experiences.game_names_id')
       .where('game_experiences.user_id', 'in', requestingUserIds)
       .union([
         Database
-          .select('esports_experiences.user_id', 'game_names_id', 'game_name', 'game_img')
+          .select('esports_experiences.user_id', 'game_names.user_id as owner_id', 'game_names_id', 'game_name', 'game_img')
           .from('esports_experiences')
           .leftJoin('game_names', 'game_names.id', 'esports_experiences.game_names_id')
           .where('esports_experiences.user_id', 'in', requestingUserIds)
       ]);
-    const games = rawGames.map(game => new GameSchema({ gameId: game.game_names_id, userId: game.user_id, name: game.game_name, icon: game.game_img }));
+    const games = rawGames.map(game => new GameSchema({ gameId: game.game_names_id, userId: game.user_id, ownerId: game.owner_id, name: game.game_name, icon: game.game_img }));
     const byUserIds = requestingUserIds.map(userId => ({ userId, games: this._uniqBy(games.filter(game => game.userId === userId), game => game.gameId) }));
     const gameMap = {};
     byUserIds.forEach(game => gameMap[game.userId] = game.games);
@@ -63,6 +64,14 @@ class UserRepository {
 
   async unfavoriteGame({ requestingUserId, requestedGameId }) {
     await FavoriteGame.query().where('user_id', requestingUserId).andWhere('game_names_id', requestedGameId).delete();
+    return new DefaultSchema({ success: true });
+  }
+
+  async updateGameIcon({ requestingUserId, requestedGameId, icon }) {
+    const game = await GameName.query().where('id', requestedGameId).first();
+    if (!game || parseInt(game.toJSON().user_id) !== requestingUserId) return new DefaultSchema({ success: false });
+    game.game_img = icon;
+    await game.save();
     return new DefaultSchema({ success: true });
   }
 

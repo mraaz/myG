@@ -99,6 +99,17 @@
     margin-right: 12px;
   }
 
+  .messenger-change-game-icon-button {
+    background-color: #171A1C;
+    background-repeat: no-repeat;
+    background-position: center center;
+    border-radius: 16px;
+    width: 32px;
+    height: 32px;
+    margin-left: 8px;
+    margin-right: 4px;
+  }
+
   .messenger-contact-online-indicator {
     width: 12px;
     height: 12px;
@@ -223,6 +234,10 @@
     flex-direction: column;
   }
 
+  .messenger-footer-container-full {
+    height: 100%;
+  }
+
   .messenger-footer {
     display: flex;
     background-color: #151b26;
@@ -309,6 +324,7 @@
   .messenger-settings-container {
     display: flex;
     flex-direction: column;
+    height: 100%;
   }
 
   .messenger-settings-title {
