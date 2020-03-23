@@ -34,6 +34,7 @@ class Messenger extends React.PureComponent {
       [STATUS_ENUM.OFFLINE]: false,
     },
     dividerExpanded: {
+      games: false,
       friends: true,
       groups: false,
     }
@@ -130,6 +131,54 @@ class Messenger extends React.PureComponent {
     );
   }
 
+  renderGames = () => {
+    return this.renderDivider('games', this.state.dividerExpanded.games, () => {
+
+      if (!this.props.games.length) {
+        return (
+          <div className="messenger-empty-message-container">
+            <p className="messenger-empty-message">You haven't added any ganes yet :(</p>
+          </div>
+        );
+      }
+
+      const sections = [];
+      let games = this.props.games.slice(0);
+      const contacts = this.props.contacts.slice(0)
+        .sort((f1, f2) => compareStatus(f1.status, f2.status))
+        .sort((f1, f2) => this.compareLastMessages(f1, f2));
+
+      if (this.state.searchInput.trim()) {
+        const search = (name) => name.toLowerCase().includes(this.state.searchInput.toLowerCase());
+        games = games.slice(0)
+          .filter(game => search(game.name))
+          .slice(0, 10);
+      }
+
+      const colors = ['#399', '#939', '#993', '#339', '#933', '#393', '#699', '#969', '#996', '#669', '#966', '#696'];
+      games.slice(0, 10).forEach((game, index) => {
+        const gameContacts = contacts.filter(contact => contact.games.find(contactGame => contactGame.gameId === game.gameId));
+        const onlineCount = gameContacts.filter(contact => contact.status === STATUS_ENUM.ONLINE).length;
+        const onlineInfo = `${onlineCount}/${gameContacts.length} online`;
+        sections.push({
+          id: game.gameId,
+          name: game.name,
+          icon: game.icon, 
+          color: colors[index],
+          contacts: gameContacts,
+          onlineInfo,
+        })
+      });
+      
+      return (
+        <div className="messenger-body">
+          {sections.map(section => this.renderGame(section.id, section.name, section.icon, section.color, section.onlineInfo, section.contacts, this.state.expandedGame === section.name))}
+        </div>
+      );
+
+    });
+  }
+
   renderContacts = () => {
     return this.renderDivider('friends', this.state.dividerExpanded.friends, () => {
 
@@ -211,6 +260,37 @@ class Messenger extends React.PureComponent {
     );
   }
 
+  renderGame(id, name, icon, color, onlineInfo, contacts, expanded) {
+    const chevronType = (contacts.length && expanded) ? 'down' : 'right';
+    return (
+      <div key={id} className="messenger-body-section" style={{ backgroundColor: color }}>
+        <div className="messenger-body-section-header clickable" style={{ backgroundColor: color }}
+          onClick={() => this.setState(previous => ({ expandedGame: previous.expandedGame === name ? null : name }))}
+        >
+          <div className="messenger-body-game-section" style={{ backgroundColor: color }}>
+            <div
+              className="messenger-game-icon"
+              style={{ backgroundImage: `url('${icon}')` }}
+            />
+            <p className="messenger-body-section-header-name">{name}</p>
+          </div>
+          <div className="messenger-body-section-header-info">
+            <p className="messenger-body-section-online-count">{onlineInfo}</p>
+            <div
+              className="messenger-body-section-header-icon"
+              style={{ backgroundImage: `url('/assets/svg/ic_messenger_chevron_${chevronType}.svg')` }}
+            />
+          </div>
+        </div>
+        {!!contacts.length && expanded && (
+          <div className="messenger-body-section-content">
+            {contacts.map(this.renderContact)}
+          </div>
+        )}
+      </div >
+    );
+  }
+
   renderContact = (contact) => {
     const messages = (contact.chat.messages || []).slice(0);
     const lastMessage = messages[messages.length - 1];
@@ -226,7 +306,7 @@ class Messenger extends React.PureComponent {
           className="messenger-contact-icon"
           style={{ backgroundImage: `url('${contact.icon}')` }}
         >
-          <div className="messenger-contact-online-indicator" />
+          <div className={`messenger-contact-online-indicator chat-component-header-status-indicator-${contact.status}`} />
         </div>
         <div className="messenger-contact-body">
           <p className="messenger-contact-body-title">{contact.name}</p>
@@ -315,9 +395,7 @@ class Messenger extends React.PureComponent {
         <div
           className="messenger-contact-icon"
           style={{ backgroundImage: `url('${group.icon}')` }}
-        >
-          <div className="messenger-contact-online-indicator" />
-        </div>
+        />
         <div className="messenger-contact-body">
           <p className="messenger-contact-body-title">{group.title}</p>
           {lastMessage && (
@@ -525,6 +603,7 @@ class Messenger extends React.PureComponent {
     return (
       <div className="messenger-body">
         {this.renderConnectionWarning()}
+        {this.renderGames()}
         {this.renderContacts()}
         {this.renderGroups()}
       </div>
