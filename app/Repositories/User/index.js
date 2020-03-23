@@ -2,6 +2,7 @@
 const Database = use('Database');
 const User = use('App/Models/User');
 const UserChat = use('App/Models/UserChat');
+const FavoriteGame = use('App/Models/FavoriteGame');
 
 const StatusSchema = require('../../Schemas/Status');
 const ContactSchema = require('../../Schemas/Contact');
@@ -43,7 +44,26 @@ class UserRepository {
     const byUserIds = requestingUserIds.map(userId => ({ userId, games: this._uniqBy(games.filter(game => game.userId === userId), game => game.gameId) }));
     const gameMap = {};
     byUserIds.forEach(game => gameMap[game.userId] = game.games);
+    if (requestingUserIds.length === 1) {
+      const favoriteGamesRaw = await FavoriteGame.query().where('user_id', requestingUserIds[0]).fetch();
+      const favoriteGames = (favoriteGamesRaw && favoriteGamesRaw.toJSON()) || [];
+      gameMap[requestingUserIds[0]].forEach(game => game.isFavorite = favoriteGames.find(favorite => favorite.game_names_id === game.gameId));
+    }
     return { games: gameMap };
+  }
+
+  async favoriteGame({ requestingUserId, requestedGameId }) {
+    await this.unfavoriteGame({ requestingUserId, requestedGameId });
+    const favoriteGame = new FavoriteGame();
+    favoriteGame.user_id = requestingUserId;
+    favoriteGame.game_names_id = requestedGameId;
+    await favoriteGame.save();
+    return new DefaultSchema({ success: true });
+  }
+
+  async unfavoriteGame({ requestingUserId, requestedGameId }) {
+    await FavoriteGame.query().where('user_id', requestingUserId).andWhere('game_names_id', requestedGameId).delete();
+    return new DefaultSchema({ success: true });
   }
 
   async fetchContacts({ requestingUserId }) {

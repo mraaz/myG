@@ -11,6 +11,16 @@ export function fetchGames(userId) {
   return axios.get(`/api/user_chat/game/`).then(response => ({ games: ((response.data || {}).games || {})[userId] }));
 }
 
+export function favoriteGame(gameId) {
+  logger.log('USER', 'HTTP', `Fetching Games`);
+  return axios.put(`/api/user_chat/game/${gameId}`).then(response => response.data);
+}
+
+export function unfavoriteGame(gameId) {
+  logger.log('USER', 'HTTP', `Fetching Games`);
+  return axios.delete(`/api/user_chat/game/${gameId}`).then(response => response.data);
+}
+
 export function fetchContacts() {
   logger.log('USER', 'HTTP', `Fetching Contacts`);
   return axios.get(`/api/user_chat/contact/`).then(response => response.data);

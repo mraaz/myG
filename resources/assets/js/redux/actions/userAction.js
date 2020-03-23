@@ -1,8 +1,24 @@
-import { fetchContacts, fetchContact, fetchStatus, updateStatus, fetchFriendRequests, addAsFriend, searchUsers } from '../../integration/http/user';
+import { favoriteGame, unfavoriteGame, fetchContacts, fetchContact, fetchStatus, updateStatus, fetchFriendRequests, addAsFriend, searchUsers } from '../../integration/http/user';
 
 export function logoutAction() {
   return {
     type: 'USER_LOGOUT'
+  }
+}
+
+export function favoriteGameAction(gameId) {
+  return {
+    type: 'FAVORITE_GAME',
+    payload: favoriteGame(gameId),
+    meta: { gameId },
+  }
+}
+
+export function unfavoriteGameAction(gameId) {
+  return {
+    type: 'UNFAVORITE_GAME',
+    payload: unfavoriteGame(gameId),
+    meta: { gameId },
   }
 }
 

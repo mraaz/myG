@@ -1,5 +1,5 @@
 
-const { forceInt, forceString } = require('./Primitives');
+const { forceInt, forceString, forceBoolean } = require('./Primitives');
 
 class Game {
 
@@ -8,6 +8,7 @@ class Game {
     this.userId = forceInt(data.userId);
     this.name = forceString(data.name);
     this.icon = forceString(data.icon);
+    this.isFavorite = forceBoolean(data.isFavorite);
   }
 
 }

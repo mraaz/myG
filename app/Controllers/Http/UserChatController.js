@@ -20,6 +20,22 @@ class UserChatController {
     return response.send({ games });
   }
 
+  async favoriteGame({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedGameId = params.gameId;
+    log('USER', `User ${requestingUserId} favoriting Game ${requestedGameId}`);
+    const { success, error } = await UserRepository.favoriteGame({ requestingUserId, requestedGameId });
+    return response.send({ success, error });
+  }
+
+  async unfavoriteGame({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    const requestedGameId = params.gameId;
+    log('USER', `User ${requestingUserId} unfavoriting Game ${requestedGameId}`);
+    const { success, error } = await UserRepository.unfavoriteGame({ requestingUserId, requestedGameId });
+    return response.send({ success, error });
+  }
+
   async fetchContacts({ auth, response }) {
     const requestingUserId = auth.user.id;
     log('USER', `User ${requestingUserId} requesting Contacts`);

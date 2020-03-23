@@ -10,7 +10,7 @@ import WindowFocusHandler from '../WindowFocusHandler';
 
 import { attemptSocketConnection, monitorChats, closeSubscription } from '../../../integration/ws/chat';
 import { createChatAction, openChatAction, closeChatAction, clearChatAction } from '../../../redux/actions/chatAction';
-import { updateStatusAction } from '../../../redux/actions/userAction';
+import { favoriteGameAction, unfavoriteGameAction, updateStatusAction } from '../../../redux/actions/userAction';
 import { generateKeysAction, validatePinAction } from '../../../redux/actions/encryptionAction';
 import { deserializeKey, decryptMessage, generateKeysSync as generateGroupKeys } from '../../../integration/encryption';
 import { formatAMPM } from '../../../common/date';
@@ -25,6 +25,7 @@ class Messenger extends React.PureComponent {
     showingGroupCreation: false,
     changingStatus: false,
     searchInput: '',
+    favoriteGameInput: '',
     pin: '',
     sectionExpanded: {
       recent: true,
@@ -143,7 +144,9 @@ class Messenger extends React.PureComponent {
       }
 
       const sections = [];
-      let games = this.props.games.slice(0);
+      let games = this.props.games.slice(0)
+        .sort((g1, g2) => g1.name.localeCompare(g2.name))
+        .sort((g1, g2) => g1.isFavorite === g2.isFavorite ? 0 : g1.isFavorite ? -1 : 1);
       const contacts = this.props.contacts.slice(0)
         .sort((f1, f2) => compareStatus(f1.status, f2.status))
         .sort((f1, f2) => this.compareLastMessages(f1, f2));
@@ -455,7 +458,7 @@ class Messenger extends React.PureComponent {
   renderFooter() {
     return (
       <div className="messenger-footer-container">
-        {this.renderEncryptionSettings()}
+        {this.renderSettings()}
         <div className="messenger-footer">
           <div className="messenger-footer-icon-container">
             <div
@@ -496,8 +499,65 @@ class Messenger extends React.PureComponent {
     );
   }
 
-  renderEncryptionSettings() {
+  renderSettings = () => {
     if (!this.state.showingSettings) return;
+    return(
+      <div className="messenger-settings-container">
+        <p className="messenger-settings-title">Settings</p>
+        {this.renderEncryptionSettings()}
+        {this.renderGamesSettings()}
+      </div>
+    );
+  }
+
+  renderGamesSettings = () => {
+    const search = (name) => name.toLowerCase().includes(this.state.favoriteGameInput.toLowerCase());
+    const maxedOut = this.props.favoriteGames.length >= 10;
+    const games = maxedOut ? 
+      this.props.games.slice(0).sort((g1, g2) => g1.isFavorite === g2.isFavorite ? 0 : g1.isFavorite ? -1 : 1).slice(0, 10) :
+      this.props.games.slice(0).filter(game => search(game.name));
+    return (
+      <div className="messenger-settings-encryption-container">
+        <p className="messenger-settings-encryption-title">Edit your favorite games</p>
+        <p className="messenger-settings-encryption-subtitle">
+          type in your favorite games to be view on your top list
+        </p>
+        <input
+          className="messenger-settings-encryption-key"
+          type="text"
+          placeholder={`${maxedOut ? 'Maximum of 10 favorited games' : 'Type here to search...'}`}
+          disabled={maxedOut}
+          value={this.state.favoriteGameInput}
+          onChange={event => this.setState({ favoriteGameInput: event.target.value })}
+        />
+        <div className="messenger-footer-favorite-games">
+          {games.map(this.renderGameSelection)}
+        </div>
+      </div>
+    );
+  }
+
+  renderGameSelection = game => {
+    const isFavorite = this.props.favoriteGames.find(favorite => favorite.gameId === game.gameId);
+    return(
+      <div key={game.gameId} className="messenger-footer-favorite-game">
+        <div className="messenger-body-game-section">
+            <div
+              className="messenger-game-icon"
+              style={{ backgroundImage: `url('${game.icon}')` }}
+            />
+            <p className="messenger-body-section-header-name">{game.name}</p>
+        </div>
+        <div className="messenger-footer-favorite-game-button clickable"
+          onClick={() => isFavorite ? this.props.unfavoriteGame(game.gameId) : this.props.favoriteGame(game.gameId)}
+        >
+          {isFavorite ? `unfavorite` : `favorite`}
+        </div>
+      </div>
+    );
+  }
+
+  renderEncryptionSettings() {
     return (
       <div className="messenger-settings-encryption-container">
         <p className="messenger-settings-encryption-title">Encrypted Chat Key</p>
@@ -600,6 +660,7 @@ class Messenger extends React.PureComponent {
   }
 
   renderBody = () => {
+    if (this.state.showingSettings) return;
     return (
       <div className="messenger-body">
         {this.renderConnectionWarning()}
@@ -654,6 +715,7 @@ function mapStateToProps(state) {
     chats: state.chat.chats,
     contacts: state.user.contacts,
     games: state.user.games,
+    favoriteGames: state.user.games.filter(game => game.isFavorite),
     groups,
     pin: state.encryption.pin,
     invalidPin: state.encryption.invalidPin,
@@ -670,6 +732,8 @@ function mapDispatchToProps(dispatch) {
     generateKeys: () => dispatch(generateKeysAction()),
     validatePin: (pin, publicKey) => dispatch(validatePinAction(pin, publicKey)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
+    favoriteGame: gameId => dispatch(favoriteGameAction(gameId)),
+    unfavoriteGame: gameId => dispatch(unfavoriteGameAction(gameId)),
     updateStatus: (status, forcedStatus) => dispatch(updateStatusAction(status, forcedStatus)),
   });
 }

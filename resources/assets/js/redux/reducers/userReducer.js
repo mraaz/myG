@@ -102,6 +102,30 @@ export default function reducer(state = {
       };
     }
 
+    case "FAVORITE_GAME_FULFILLED": {
+      logger.log('USER', `Redux -> Favorited Game: `, action.payload, action.meta);
+      const games = JSON.parse(JSON.stringify(state.games));
+      const game = games.find(game => game.gameId === action.meta.gameId);
+      if (!game) return state;
+      game.isFavorite = true;
+      return {
+        ...state,
+        games,
+      };
+    }
+
+    case "UNFAVORITE_GAME_FULFILLED": {
+      logger.log('USER', `Redux -> Favorited Game: `, action.payload, action.meta);
+      const games = JSON.parse(JSON.stringify(state.games));
+      const game = games.find(game => game.gameId === action.meta.gameId);
+      if (!game) return state;
+      game.isFavorite = false;
+      return {
+        ...state,
+        games,
+      };
+    }
+
     default: return state;
 
   }
