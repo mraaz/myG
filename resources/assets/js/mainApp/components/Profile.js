@@ -15,6 +15,7 @@ export default class Profile extends Component {
       collapseesports: true,
       friendStatus: 0, //0: Not friend, 1: Friends, 2:Friend request pending,
       friendTxt: '',
+      followTxt: false,
       myPage: false,
       bFileModalOpen: false,
       profile_attr: '',
@@ -129,6 +130,13 @@ export default class Profile extends Component {
           initialData: self.props.initialData,
           userProfile: userProfile.data.user[0],
         })
+
+        if (userProfile.data.following) {
+          self.setState({
+            followTxt: true,
+          })
+        }
+
         if (userProfile.data.friend) {
           self.setState({
             friendTxt: 'Remove Friend',
@@ -207,6 +215,14 @@ export default class Profile extends Component {
     }
 
     getID()
+  }
+
+  doFollow = () => {
+    if (this.state.followTxt) {
+      //Create follow entry
+    } else {
+      //Remove follow entry
+    }
   }
 
   addFriend = () => {
@@ -469,6 +485,12 @@ export default class Profile extends Component {
                       <div className='follow-btn' onClick={this.addFriend}>
                         {' '}
                         {this.state.friendTxt}{' '}
+                      </div>
+                    )}
+                    {!this.state.myPage && (
+                      <div className='follow-btn' onClick={this.doFollow}>
+                        {' '}
+                        {this.state.followTxt ? 'Unfollow' : 'Follow'}{' '}
                       </div>
                     )}
                   </div>

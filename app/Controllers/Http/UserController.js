@@ -6,19 +6,28 @@ const AwsKeyController = use('./AwsKeyController')
 
 class UserController {
   async profile({ auth, request, response }) {
+    var friend = undefined,
+      following = undefined
     try {
       const user = await User.query()
         .where('id', '=', request.params.id)
         .fetch()
-      const friend = await Database.from('friends').where({
-        user_id: auth.user.id,
-        friend_id: request.params.id,
-      })
+      if (auth.user.id != request.params.id) {
+        friend = await Database.from('friends').where({
+          user_id: auth.user.id,
+          friend_id: request.params.id,
+        })
+
+        following = await Database.from('followers').where({
+          user_id: auth.user.id,
+          follower_id: request.params.id,
+        })
+      }
 
       return {
         user: user.toJSON(),
-
         friend: friend === undefined || friend.length == 0 ? false : true,
+        following: following === undefined || following.length == 0 ? false : true,
       }
     } catch (error) {
       console.log(error)
