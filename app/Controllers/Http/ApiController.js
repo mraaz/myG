@@ -1,6 +1,7 @@
 'use strict'
 
 const AWS = require('aws-sdk')
+const Env = use('Env')
 const fs = require('fs')
 const Helpers = use('Helpers')
 const fileType = require('file-type')
@@ -8,8 +9,10 @@ const bluebird = require('bluebird')
 
 const S3_BUCKET = 'mygame-media/user_files'
 const S3_BUCKET_DELETE = 'mygame-media'
-const AWS_ACCESS_KEY_ID = 'AKIAJNVULTAMH7XPCXRA'
-const AWS_SECRET_ACCESS_KEY = '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'
+
+const AWS_ACCESS_KEY_ID = Env.get('AWS_ACCESS_KEY_ID')
+const AWS_SECRET_ACCESS_KEY = Env.get('AWS_SECRET_ACCESS_KEY')
+
 // configure the keys for accessing AWS
 AWS.config.update({
   accessKeyId: AWS_ACCESS_KEY_ID,

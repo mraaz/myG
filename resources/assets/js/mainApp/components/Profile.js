@@ -354,8 +354,9 @@ export default class Profile extends Component {
   }
 
   render() {
+    const { match } = this.props.routeProps
+    var redirect_to_profile = false
     if (this.state.redirect_) {
-      const { match } = this.props.routeProps
       var tmp
       switch (this.state.redirect_link) {
         case 'editDossier':
@@ -372,6 +373,13 @@ export default class Profile extends Component {
           break
       }
     }
+    //Redirect to logged in user if an Alias is not provided
+    if (this.props.initialData != 'loading') {
+      if (typeof match.params.alias == 'undefined') {
+        redirect_to_profile = true
+      }
+    }
+
     if (this.state.userProfile !== undefined) {
       if (this.state.esportsBioData !== undefined) {
         const {
@@ -547,7 +555,12 @@ export default class Profile extends Component {
         return <div className='content-area profile-page'>Loading</div>
       }
     } else {
-      return <div className='content-area profile-page'>This profile was not found</div>
+      if (redirect_to_profile) {
+        var tmp = `/profile/${this.props.initialData.userInfo.alias}`
+        return <Redirect push to={tmp} />
+      } else {
+        return <div className='content-area profile-page'>This profile was not found</div>
+      }
     }
   }
 }

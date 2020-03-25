@@ -3,14 +3,15 @@
 const { validate } = use('Validator')
 const User = use('App/Models/User')
 const Settings = use('App/Models/Setting')
-var nodemailer = require('nodemailer')
+//var nodemailer = require('nodemailer')
 const axios = use('axios')
 const querystring = use('querystring')
 const Env = use('Env')
 
+const AWSEmailController = use('./AWSEmailController')
+
 class CommonSaveController {
   async register({ view, session }) {
-    console.log(session.get('email'))
     return view.render('auth/socialRegister', {
       alias: session.get('alias'),
       email: session.get('email'),
@@ -18,9 +19,6 @@ class CommonSaveController {
   }
 
   async saveuser({ ally, auth, request, session, response, view }) {
-    //117703502811656157640
-    //https://myg.gg/user/register#
-
     if (auth.user != null) {
       session.put('alias', null)
       session.put('email', null)
@@ -122,36 +120,45 @@ class CommonSaveController {
         user.provider = session.get('provider')
         await user.save()
 
-        var transporter = nodemailer.createTransport({
-          host: 'email-smtp.us-east-1.amazonaws.com',
-          port: 465,
-          secure: true, // use TLS
-          auth: {
-            user: 'AKIAWV72ZDUVC2AHKOGV',
-            pass: 'BAxplJMdrCr6QcF/CgX1Mbf7/BL1yHUcqAInLg367HNt',
-          },
-          tls: {
-            // do not fail on invalid certs
-            rejectUnauthorized: false,
-          },
-        })
+        // var transporter = nodemailer.createTransport({
+        //   host: '',
+        //   port: 465,
+        //   secure: true, // use TLS
+        //   auth: {
+        //     user: '',
+        //     pass: '',
+        //   },
+        //   tls: {
+        //     // do not fail on invalid certs
+        //     rejectUnauthorized: false,
+        //   },
+        // })
+        //
+        // const mailOptions = {
+        //   from: 'levelup@myG.gg', // sender address
+        //   to: request.input('email'), // list of receivers
+        //   subject: 'myG - Welcome Email', // Subject line
+        //   html:
+        //     '<h1>Hello,' +
+        //     request.input('firstName') +
+        //     ' ' +
+        //     request.input('lastName') +
+        //     ' .</h1><p>Welcome to the myG, here is your getting started guide</p>',
+        // }
+        //
+        // transporter.sendMail(mailOptions, function(err, info) {
+        //   if (err) console.log(err)
+        //   else console.log(info)
+        // })
 
-        const mailOptions = {
-          from: 'levelup@myG.gg', // sender address
-          to: request.input('email'), // list of receivers
-          subject: 'myG - Welcome Email', // Subject line
-          html:
-            '<h1>Hello,' +
-            request.input('firstName') +
-            ' ' +
-            request.input('lastName') +
-            ' .</h1><p>Welcome to the myG, here is your getting started guide</p>',
-        }
+        let email = new AWSEmailController()
+        let subject = "Welcome to myG - The Gamer's platform"
+        let body =
+          "<p>Hi,<br /><br /> This will most likely be the first and last email from myG. That's because email is turned off by default. Ofcourse you can update this in the <a href='https://myG.gg/mySettings'>Settings</a>.<br /><br /> myG's vision is to improve gamers performance, knowledge and experience and we're going to do that by becoming a kick ass gaming platform, allowing gamers to connect, share and improve.<br /><br />Update your <a href='https://myG.gg/profile'>Profile</a>, create/join games, reach out to other gamers! <br /><br />P.S If you wish to report bugs or feature requests you can here at our public Trello board.<br /><br />GLHF<br /><br />Raaz<br /><br /><img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/myGame_Logo_black_text.png' alt='myG Logo' width='119' height='67' /></p>"
 
-        transporter.sendMail(mailOptions, function(err, info) {
-          if (err) console.log(err)
-          else console.log(info)
-        })
+        //https://html-online.com/editor/
+
+        email.createEmailnSend(request.input('email'), subject, body)
 
         session.forget('provider')
         session.forget('provider_id')
