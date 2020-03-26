@@ -13,6 +13,7 @@ class PostController {
         user_id: auth.user.id,
         type: 'text',
         group_id: request.input('groups_id'),
+        visibility: request.input('visibility'),
       })
       return newPost.id
     }
@@ -41,7 +42,11 @@ class PostController {
         .from('friends')
         .innerJoin('posts', 'posts.user_id', 'friends.friend_id')
         .innerJoin('users', 'users.id', 'posts.user_id')
+        .innerJoin('followers', 'users.id', 'followers.user_id')
         .where('friends.user_id', '=', auth.user.id)
+        .orWhere(function() {
+          this.where('followers.user_id', '=', auth.user.id).andWhere('posts.visibility', '=', 1)
+        })
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.paginateNo, 10)
 

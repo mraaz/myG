@@ -218,10 +218,22 @@ export default class Profile extends Component {
   }
 
   doFollow = () => {
-    if (this.state.followTxt) {
-      //Create follow entry
+    if (!this.state.followTxt) {
+      try {
+        const createFollower = axios.post('/api/followers/create', {
+          follower_id: this.props.routeProps.match.params.id,
+        })
+        this.setState({ followTxt: true })
+      } catch (error) {
+        console.log(error)
+      }
     } else {
-      //Remove follow entry
+      try {
+        const deleteFollower = axios.delete(`/api/followers/${this.props.routeProps.match.params.id}/delete`)
+        this.setState({ followTxt: false })
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 
@@ -482,7 +494,7 @@ export default class Profile extends Component {
                 <div className='bottom-container'>
                   <div className='follow_btn'>
                     {!this.state.myPage && (
-                      <div className='follow-btn' onClick={this.addFriend}>
+                      <div className='addFriend-btn' onClick={this.addFriend}>
                         {' '}
                         {this.state.friendTxt}{' '}
                       </div>
