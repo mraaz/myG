@@ -33,7 +33,7 @@ export default class Posts extends Component {
       try {
         const myPosts = await axios.get(`/api/post/${self.state.counter}`)
 
-        if (myPosts.data.myPosts.data.length == 0) {
+        if (myPosts.data.myPosts.length == 0) {
           self.setState({
             moreplease: false,
           })
@@ -41,7 +41,7 @@ export default class Posts extends Component {
         }
 
         self.setState({
-          myPosts: self.state.myPosts.concat(myPosts.data.myPosts.data),
+          myPosts: self.state.myPosts.concat(myPosts.data.myPosts),
         })
       } catch (error) {
         console.log(error)
