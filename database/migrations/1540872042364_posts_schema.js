@@ -16,8 +16,8 @@ class PostsSchema extends Schema {
       table.foreign('group_id').references('groups.id').onDelete('cascade')
       table.integer('schedule_games_id').unsigned().nullable()
       table.foreign('schedule_games_id').references('schedule_games.id').onDelete('cascade')
+      table.integer('visibility').defaultTo(1)
       table.timestamps()
-
     })
   }
 

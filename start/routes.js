@@ -269,6 +269,9 @@ Route.get('/api/usergroup/promote_member/:id/:usergrp_id', 'UsergroupController.
 Route.get('/api/usergroup/demote_member/:id/:usergrp_id', 'UsergroupController.demote_member')
 Route.get('/api/usergroup/current_member/:id', 'UsergroupController.current_member')
 
+Route.post('/api/followers/create', 'FollowerController.store')
+Route.delete('/api/followers/:follower_id/delete', 'FollowerController.delete')
+
 // Trying to avoid conflicts, should move this route up later.
 Route.get('/api/notifications/outgoingFriendRequests', 'NotificationController.outgoingFriendRequests')
 

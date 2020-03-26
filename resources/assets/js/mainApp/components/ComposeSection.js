@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 import IndividualPost from './IndividualPost'
 import PostFileModal from './PostFileModal'
+import Select from 'react-select'
+
+const visibility_options = [{ value: 1, label: 'Everyone' }, { value: 2, label: 'Friends' }, { value: 0, label: 'Only me' }]
 
 export default class ComposeSection extends Component {
   constructor() {
@@ -16,6 +19,7 @@ export default class ComposeSection extends Component {
       fileType: 'photo',
       myPosts: [],
       masterList: [],
+      visibility_box: [{ label: 'Everyone', value: 1 }],
     }
 
     this.openPhotoPost = this.openPhotoPost.bind(this)
@@ -92,6 +96,7 @@ export default class ComposeSection extends Component {
         content: this.state.post_content.trim(),
         user_id: this.props.initialData.userInfo.id,
         type: 'text',
+        visibility: this.state.visibility_box.value,
       })
       this.setState({
         myPosts: [],
@@ -173,6 +178,10 @@ export default class ComposeSection extends Component {
     }
   }
 
+  handleChange_visibility = (visibility_box) => {
+    this.setState({ visibility_box })
+  }
+
   render() {
     return (
       <section className='compose-area'>
@@ -185,6 +194,13 @@ export default class ComposeSection extends Component {
             maxLength='254'
             value={this.state.post_content}
             placeholder="What's up..."
+          />
+          <Select
+            onChange={this.handleChange_visibility}
+            options={visibility_options}
+            placeholder='Who should see this?'
+            className='visibility_box'
+            defaultValue={[{ label: 'Everyone', value: 1 }]}
           />
           <div className='user-img' />
           <Link
