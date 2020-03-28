@@ -66,8 +66,7 @@ export default function reducer(state = {
         .filter(message => !chat.blockedUsers.includes(message.senderId))
         .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId));
       if (!chat.blocked) chat.messages = messages;
-      const isGroup = action.payload.chat.contacts && action.payload.chat.contacts.length > 2;
-      if (isGroup) {
+      if (action.payload.chat.isGroup) {
         const privateKey = receiveGroupKey(chat, action.payload.encryptionMessages, userId, state.privateKey);
         if (privateKey) {
           chat.privateKey = privateKey;
@@ -532,7 +531,7 @@ export default function reducer(state = {
         return true;
       });
       reEncryptMessages(unreadMessages, publicKey, privateKey);
-      if (chat.fullContacts && chat.contacts.length > 2) {
+      if (chat.isGroup && chat.fullContacts) {
         const updatedUser = chat.fullContacts.find(contact => parseInt(contact.contactId) === parseInt(updatedUserId));
         updatedUser.publicKey = publicKey;
         sendGroupKeys(chat.chatId, thisUserId, [updatedUser], chat.privateKey, privateKey);
@@ -604,7 +603,7 @@ function playMessageSound() {
 }
 
 function prepareGroupKeysToSend(group, userId, userContacts, userPublicKey, userPrivateKey) {
-  if (group.contacts.length <= 2) return;
+  if (!group.isGroup) return;
   const chatContacts = group.contacts.filter(contactId => userId !== parseInt(contactId));
   const getContact = contactId => userContacts.find(contact => parseInt(contact.contactId) === parseInt(contactId));
   const contacts = chatContacts.map(contactId => getContact(contactId));
@@ -613,7 +612,7 @@ function prepareGroupKeysToSend(group, userId, userContacts, userPublicKey, user
 }
 
 function receiveGroupKey(group, messages, userId, userPrivateKey) {
-  if (group.contacts.length <= 2) return;
+  if (!group.isGroup) return;
   const message = messages[0];
   if (!message || !message.content || message.keyReceiver !== userId) return;
   const privateKey = decryptMessage(message.content, userPrivateKey);

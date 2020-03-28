@@ -16,6 +16,7 @@ class ChatSchema extends Schema {
       table.text('owners').notNullable().defaultTo('[]')
       table.text('moderators').notNullable().defaultTo('[]')
       table.boolean('isPrivate').notNullable().defaultTo(false)
+      table.boolean('isGroup').notNullable().defaultTo(false)
       table.timestamps()
     })
   }

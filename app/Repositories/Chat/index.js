@@ -40,6 +40,7 @@ class ChatRepository {
         blocked: chat.blocked,
         blockedUsers: chat.blocked_users,
         isPrivate: chat.isPrivate,
+        isGroup: chat.isGroup,
         selfDestruct: chat.self_destruct,
         deletedMessages: chat.deleted_messages,
         lastRead: chat.last_read_message_id,
@@ -78,6 +79,7 @@ class ChatRepository {
       blocked: chat.blocked,
       blockedUsers: chat.blocked_users,
       isPrivate: chat.isPrivate,
+      isGroup: chat.isGroup,
       selfDestruct: chat.self_destruct,
       deletedMessages: chat.deleted_messages,
       lastRead: chat.last_read_message_id,
@@ -146,7 +148,7 @@ class ChatRepository {
         updatedAt: message.updated_at,
       }));
     });
-    
+
     return { unreadMessages };
   }
 
@@ -178,23 +180,20 @@ class ChatRepository {
     return { encryptionMessages };
   }
 
-  async createChat({ requestingUserId, contacts, owners, title, icon, publicKey }) {
+  async createChat({ requestingUserId, contacts, owners, title, icon, publicKey, isGroup }) {
     contacts = [requestingUserId, ...contacts].sort();
     if (contacts.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
     const { chats } = await this.fetchChats({ requestingUserId });
     const guests = [];
 
-    const isGroup = contacts.length > 2;
-    const existingChat = !isGroup && chats.find(chat =>
-      contacts.length === chat.contacts.length &&
-      contacts.every((id, index) => id === chat.contacts[index])
-    );
+    const existingChat = !isGroup && chats.find(chat => contacts.every((id, index) => id === chat.contacts[index]));
     if (existingChat) return { chat: existingChat };
 
     const chat = new Chat();
     if (title) chat.title = title;
     if (icon) chat.icon = icon;
     if (publicKey) chat.public_key = publicKey;
+    chat.isGroup = isGroup;
     chat.contacts = JSON.stringify(contacts || []);
     chat.guests = JSON.stringify(guests || []);
     chat.owners = JSON.stringify(owners || []);
@@ -210,6 +209,7 @@ class ChatRepository {
       title,
       icon,
       publicKey,
+      isGroup,
       createdAt: chat.created_at,
       updatedAt: chat.updated_at,
     });
@@ -223,7 +223,7 @@ class ChatRepository {
       await userChat.save();
     });
 
-    if (contacts.length > 2) {
+    if (isGroup) {
       [1, 2, 3].forEach(async () => {
         const link = new ChatLink();
         link.chat_id = chat.id;
@@ -347,7 +347,7 @@ class ChatRepository {
 
   async addContactsToChat({ requestedChatId, contacts, fromLink }) {
     const { chat } = await this.fetchChatInfo({ requestedChatId });
-    if (chat.contacts.length < 3) throw new Error('Cannot add users to a normal chat.');
+    if (!chat.isGroup) throw new Error('Cannot add users to a normal chat.');
     const diffContacts = contacts.filter(contactId => !chat.contacts.includes(contactId));
     if (!diffContacts.length) return { error: 'Contacts are Already in Chat.' };
     contacts.forEach(contactId => !chat.contacts.includes(contactId) && chat.contacts.push(contactId));
@@ -476,6 +476,7 @@ class ChatRepository {
       chatId: chat.id,
       blocked: chat.blocked,
       isPrivate: chat.isPrivate,
+      isGroup: chat.isGroup,
       icon: chat.icon,
       title: chat.title,
       lastMessage: chat.last_message,
@@ -659,6 +660,7 @@ class ChatRepository {
       owners: chat.owners,
       moderators: chat.moderators,
       isPrivate: chat.isPrivate,
+      isGroup: chat.isGroup,
     });
     this._notifyChatEvent({ chatId: requestedChatId, action: 'chatUpdated', payload: chatSchema });
   }

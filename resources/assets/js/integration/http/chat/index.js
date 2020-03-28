@@ -12,9 +12,9 @@ export function fetchChat(chatId) {
   return axios.get(`/api/chat/${chatId}`).then(response => response.data);
 }
 
-export function createChat(contacts, owners, title, icon, publicKey) {
-  logger.log('CHAT', 'HTTP', `Creating Chat: `, { contacts, owners, title, icon, publicKey });
-  return axios.post(`/api/chat/`, { contacts, owners, title, icon, publicKey }).then(response => response.data);
+export function createChat(contacts, owners, title, icon, publicKey, isGroup) {
+  logger.log('CHAT', 'HTTP', `Creating Chat: `, { contacts, owners, title, icon, publicKey, isGroup });
+  return axios.post(`/api/chat/`, { contacts, owners, title, icon, publicKey, isGroup }).then(response => response.data);
 }
 
 export function updateChat(chatId, payload) {

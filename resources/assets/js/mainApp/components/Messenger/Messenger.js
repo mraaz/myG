@@ -94,7 +94,7 @@ class Messenger extends React.PureComponent {
 
   createGroup = (icon, title, contacts) => {
     const { encryption } = generateGroupKeys();
-    this.props.createChat(contacts, this.props.userId, title, icon, encryption);
+    this.props.createChat(contacts, this.props.userId, title, icon, encryption, true);
     this.setState({ showingGroupCreation: false });
   }
 
@@ -727,8 +727,7 @@ function mapStateToProps(state) {
   const contactsWithChats = {};
   chats.forEach(chat => {
     const contacts = (chat.contacts || []);
-    const isGroup = contacts.length > 2;
-    if (isGroup) groups.push(chat);
+    if (chat.isGroup) groups.push(chat);
     else contacts.forEach(contactId => contactsWithChats[contactId] = chat)
   });
   contacts.forEach(contact => contact.chat = contactsWithChats[contact.contactId] || {});
@@ -749,7 +748,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return ({
-    createChat: (contacts, userId, title, icon, encryption) => dispatch(createChatAction(contacts, userId, title, icon, encryption)),
+    createChat: (contacts, userId, title, icon, encryption, isGroup) => dispatch(createChatAction(contacts, userId, title, icon, encryption, isGroup)),
     openChat: chatId => dispatch(openChatAction(chatId)),
     closeChat: chatId => dispatch(closeChatAction(chatId)),
     generateKeys: () => dispatch(generateKeysAction()),
