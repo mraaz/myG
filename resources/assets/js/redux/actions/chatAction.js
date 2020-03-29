@@ -134,6 +134,7 @@ export function prepareMessengerAction(userId, pin, privateKey, publicKey) {
   return {
     type: 'PREPARE_MESSENGER',
     payload: Promise.all(requests).then(([chats, contacts, games, status, encryption]) => ({ ...chats, ...contacts, ...games, ...status, ...encryption })),
+    meta: { userId },
   }
 }
 
@@ -169,10 +170,10 @@ export function fetchChatAction(chatId) {
   }
 }
 
-export function createChatAction(contacts, userId, title, icon, encryption, isGroup) {
+export function createChatAction(contacts, userId, title, icon, encryption, isGroup, gameId) {
   return {
     type: 'CREATE_CHAT',
-    payload: createChat(contacts, [userId], title, icon, encryption && encryption.publicKey, isGroup),
+    payload: createChat(contacts, [userId], title, icon, encryption && encryption.publicKey, isGroup, gameId),
     meta: { userId, encryption }
   }
 }

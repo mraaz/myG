@@ -41,6 +41,7 @@ class ChatRepository {
         blockedUsers: chat.blocked_users,
         isPrivate: chat.isPrivate,
         isGroup: chat.isGroup,
+        gameId: chat.gameId,
         selfDestruct: chat.self_destruct,
         deletedMessages: chat.deleted_messages,
         lastRead: chat.last_read_message_id,
@@ -80,6 +81,7 @@ class ChatRepository {
       blockedUsers: chat.blocked_users,
       isPrivate: chat.isPrivate,
       isGroup: chat.isGroup,
+      gameId: chat.gameId,
       selfDestruct: chat.self_destruct,
       deletedMessages: chat.deleted_messages,
       lastRead: chat.last_read_message_id,
@@ -153,7 +155,11 @@ class ChatRepository {
   }
 
   async fetchLastMessage({ requestedChatId }) {
-    return (await ChatMessage.query().where('chat_id', requestedChatId).orderBy('id', 'desc').limit(1).first()).toJSON();
+    return (await ChatMessage.query()
+      .whereNull('key_receiver')
+      .andWhere('chat_id', requestedChatId)
+      .orderBy('id', 'desc')
+      .limit(1).first()).toJSON();
   }
 
   async fetchEncryptionMessages({ requestingUserId, requestedChatId }) {
@@ -180,7 +186,7 @@ class ChatRepository {
     return { encryptionMessages };
   }
 
-  async createChat({ requestingUserId, contacts, owners, title, icon, publicKey, isGroup }) {
+  async createChat({ requestingUserId, contacts, owners, title, icon, publicKey, isGroup, gameId }) {
     contacts = [requestingUserId, ...contacts].sort();
     if (contacts.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
     const { chats } = await this.fetchChats({ requestingUserId });
@@ -194,6 +200,7 @@ class ChatRepository {
     if (icon) chat.icon = icon;
     if (publicKey) chat.public_key = publicKey;
     chat.isGroup = isGroup;
+    chat.gameId = gameId;
     chat.contacts = JSON.stringify(contacts || []);
     chat.guests = JSON.stringify(guests || []);
     chat.owners = JSON.stringify(owners || []);
@@ -210,6 +217,7 @@ class ChatRepository {
       icon,
       publicKey,
       isGroup,
+      gameId,
       createdAt: chat.created_at,
       updatedAt: chat.updated_at,
     });
@@ -477,6 +485,7 @@ class ChatRepository {
       blocked: chat.blocked,
       isPrivate: chat.isPrivate,
       isGroup: chat.isGroup,
+      gameId: chat.gameId,
       icon: chat.icon,
       title: chat.title,
       lastMessage: chat.last_message,
@@ -661,6 +670,7 @@ class ChatRepository {
       moderators: chat.moderators,
       isPrivate: chat.isPrivate,
       isGroup: chat.isGroup,
+      gameId: chat.gameId,
     });
     this._notifyChatEvent({ chatId: requestedChatId, action: 'chatUpdated', payload: chatSchema });
   }

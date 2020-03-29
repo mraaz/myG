@@ -25,10 +25,10 @@ class ChatController {
   async createChat({ auth, request, response }) {
     const requestingUserId = auth.user.id;
     if (!requestingUserId) throw new Error('Auth Error');
-    const payload = request.only(['contacts', 'owners', 'title', 'icon', 'publicKey', 'isGroup']);
-    const { contacts, owners, title, icon, publicKey, isGroup } = payload;
+    const payload = request.only(['contacts', 'owners', 'title', 'icon', 'publicKey', 'isGroup', 'gameId']);
+    const { contacts, owners, title, icon, publicKey, isGroup, gameId } = payload;
     log('CHAT', `User ${requestingUserId} creating ${isGroup ? 'Group' : 'Chat'} with ${JSON.stringify(payload)}`);
-    const { chat } = await ChatRepository.createChat({ requestingUserId, contacts, owners, title, icon, publicKey, isGroup });
+    const { chat } = await ChatRepository.createChat({ requestingUserId, contacts, owners, title, icon, publicKey, isGroup, gameId });
     return response.send({ chat });
   }
 

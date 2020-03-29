@@ -172,13 +172,15 @@ export default function reducer(state = {
       const chatAlreadyExists = chats.map(chat => parseInt(chat.chatId)).includes(parseInt(created.chatId));
       if (!chatAlreadyExists) chats.push(created);
       const chat = chats.find(candidate => candidate.chatId === created.chatId);
-      chat.closed = false;
+      chat.closed = !!chat.gameId;
       chat.minimised = false;
       chat.maximised = false;
       Object.assign(chat, encryption);
       prepareGroupKeysToSend(chat, parseInt(action.meta.userId), state.contacts, state.publicKey, state.privateKey);
-      const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== created.chatId);
-      if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
+      if (!chat.closed) {
+        const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== created.chatId);
+        if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
+      }
       return {
         ...state,
         chats,
@@ -215,7 +217,7 @@ export default function reducer(state = {
       if (chat.blockedUsers.includes(message.senderId)) return state;
       if (!chat.muted && !window.focused && message.senderId !== userId) playMessageSound();
       if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
-      if (!chat.muted) {
+      if (!chat.muted && !message.keyReceiver) {
         const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== chatId);
         if (openChats.length <= 3) chat.closed = false;
         else unreadMessages.push(message);
