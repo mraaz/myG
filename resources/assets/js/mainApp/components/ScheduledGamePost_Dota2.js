@@ -10,6 +10,7 @@ import DeleteScheduleGameModal from './DeleteScheduleGameModal'
 import { toast } from 'react-toastify'
 import SweetAlert from 'react-bootstrap-sweetalert'
 import { Toast_style } from './Utility_Function'
+import { exitGameGroup } from '../../common/group';
 
 const createOption = (label: string, value: int) => ({
   label,
@@ -540,6 +541,7 @@ export default class ScheduledGamePost_Dota2 extends Component {
   disenrollinGame = () => {
     try {
       const getNumberofAttendees = axios.get(`/api/attendees/removeattending/${this.props.props.schedule_game.id}`)
+      exitGameGroup(this.props.props.schedule_game.id);
       this.setState({
         show_invite: true,
         show_attending: false,
