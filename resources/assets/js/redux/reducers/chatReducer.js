@@ -6,6 +6,7 @@ import { requestGroupPrivateKey, confirmGroupPrivateKey } from '../../integratio
 import notifyToast from '../../common/toast';
 
 export default function reducer(state = {
+  userId: null,
   chats: [],
   contacts: [],
   unreadMessages: [],
@@ -22,6 +23,7 @@ export default function reducer(state = {
 
     case "PREPARE_MESSENGER_FULFILLED": {
       logger.log('CHAT', `Redux -> Messenger Ready (Chat): `, action.payload);
+      const { userId } = action.meta;
       const chats = action.payload.chats.map(chat => {
         const previousChat = state.chats.find(candidate => candidate.chatId === chat.chatId) || {};
         const previousMessages = previousChat.messages || [];
@@ -37,6 +39,7 @@ export default function reducer(state = {
       if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => openChats[index].closed = true);
       return {
         ...state,
+        userId,
         chats,
         contacts: action.payload.contacts,
         preparingMessenger: false,
@@ -190,7 +193,8 @@ export default function reducer(state = {
     case "NEW_CHAT": {
       logger.log('CHAT', `Redux -> New Chat: `, action.payload);
       const { chat } = action.payload;
-      chat.closed = (chat.messages || []).length === 0;
+      const isGameGroupInvite = chat.gameId && !(chat.owners || []).includes(state.userId);
+      chat.closed = !isGameGroupInvite && (chat.messages || []).length === 0;
       const chats = JSON.parse(JSON.stringify(state.chats));
       if (chats.map(chat => chat.chatId).includes(chat.chatId)) return state;
       chats.push(chat);
@@ -420,7 +424,7 @@ export default function reducer(state = {
       if (!chat.entryLogs) chat.entryLogs = [];
       chat.entryLogs.push(entryLog);
       if (!chat.contacts.includes(contact.contactId)) chat.contacts.push(contact.contactId);
-      if (!chat.fullContacts.map(contact => contact.contactId).includes(contact.contactId)) chat.fullContacts.push(contact);
+      if (chat.fullContacts && !chat.fullContacts.map(contact => contact.contactId).includes(contact.contactId)) chat.fullContacts.push(contact);
       sendGroupKeys(chatId, parseInt(thisUserId), contacts, chat.privateKey, state.privateKey);
       return {
         ...state,

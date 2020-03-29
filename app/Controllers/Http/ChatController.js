@@ -226,6 +226,16 @@ class ChatController {
     return response.send({ entryLogs });
   }
 
+  async acceptGameGroupInvitation({ auth, params, request, response }) {
+    const requestingUserId = auth.user.id;
+    if (!requestingUserId)  throw new Error('Auth Error');
+    const requestedUserId = request.only(['userId']).userId;
+    const requestedGameId = params.gameId;
+    log('CHAT', `User ${requestingUserId} accepting to join Game Group ${requestedGameId}`);
+    const { success, error } = await ChatRepository.acceptGameGroupInvitation({ requestedUserId, requestedGameId });
+    return response.send({ success, error });
+  }
+
 }
 
 module.exports = ChatController;

@@ -41,7 +41,7 @@ class ChatRepository {
         blockedUsers: chat.blocked_users,
         isPrivate: chat.isPrivate,
         isGroup: chat.isGroup,
-        gameId: chat.gameId,
+        gameId: chat.game_id,
         selfDestruct: chat.self_destruct,
         deletedMessages: chat.deleted_messages,
         lastRead: chat.last_read_message_id,
@@ -81,7 +81,7 @@ class ChatRepository {
       blockedUsers: chat.blocked_users,
       isPrivate: chat.isPrivate,
       isGroup: chat.isGroup,
-      gameId: chat.gameId,
+      gameId: chat.game_id,
       selfDestruct: chat.self_destruct,
       deletedMessages: chat.deleted_messages,
       lastRead: chat.last_read_message_id,
@@ -200,7 +200,7 @@ class ChatRepository {
     if (icon) chat.icon = icon;
     if (publicKey) chat.public_key = publicKey;
     chat.isGroup = isGroup;
-    chat.gameId = gameId;
+    chat.game_id = gameId;
     chat.contacts = JSON.stringify(contacts || []);
     chat.guests = JSON.stringify(guests || []);
     chat.owners = JSON.stringify(owners || []);
@@ -485,7 +485,7 @@ class ChatRepository {
       blocked: chat.blocked,
       isPrivate: chat.isPrivate,
       isGroup: chat.isGroup,
-      gameId: chat.gameId,
+      gameId: chat.game_id,
       icon: chat.icon,
       title: chat.title,
       lastMessage: chat.last_message,
@@ -591,6 +591,34 @@ class ChatRepository {
     return new DefaultSchema({ success: true });
   }
 
+  async acceptGameGroupInvitation({ requestedUserId, requestedGameId }) {
+    const { chat } = await this.fetchChatByGameId({ requestedGameId });
+    await this.addContactsToChat({ requestedChatId: chat.chatId, contacts: [requestedUserId] });
+    return new DefaultSchema({ success: true });
+  }
+
+  async fetchChatByGameId({ requestedGameId }) {
+    const chat = (await Chat.query().where('game_id', requestedGameId).first()).toJSON();
+    const chatSchema = new ChatSchema({
+      chatId: chat.id,
+      blocked: chat.blocked,
+      isPrivate: chat.isPrivate,
+      isGroup: chat.isGroup,
+      gameId: chat.game_id,
+      icon: chat.icon,
+      title: chat.title,
+      lastMessage: chat.last_message,
+      publicKey: chat.public_key,
+      contacts: chat.contacts,
+      guests: chat.guests,
+      owners: chat.owners,
+      moderators: chat.moderators,
+      createdAt: chat.created_at,
+      updatedAt: chat.updated_at,
+    });
+    return { chat: chatSchema };
+  }
+
   async _insertEntryLog(requestedChatId, alias, kicked, left, invited, link) {
     const entryLog = new ChatEntryLog();
     entryLog.chat_id = requestedChatId;
@@ -670,7 +698,7 @@ class ChatRepository {
       moderators: chat.moderators,
       isPrivate: chat.isPrivate,
       isGroup: chat.isGroup,
-      gameId: chat.gameId,
+      gameId: chat.game_id,
     });
     this._notifyChatEvent({ chatId: requestedChatId, action: 'chatUpdated', payload: chatSchema });
   }

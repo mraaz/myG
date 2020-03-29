@@ -7,7 +7,7 @@ class ChatSchema extends Schema {
   up () {
     this.create('chats', (table) => {
       table.increments()
-      table.integer('gameId').unsigned().index()
+      table.integer('game_id').unsigned().index()
       table.text('icon')
       table.text('title')
       table.text('last_message')

@@ -62,6 +62,11 @@ export function acceptInvitation(chatId, contacts) {
   return axios.put(`/api/chat/${chatId}/contacts`, { contacts, fromLink: true }).then(() => response.data);
 }
 
+export function acceptGameGroupInvitation(gameId, userId) {
+  logger.log('CHAT', 'HTTP', `Accepting Invitation To Game Group ${gameId}: `, userId);
+  return axios.post(`/api/chat/game/${gameId}`, { userId }).then(() => response.data);
+}
+
 export function inviteUserToGroup(userId, chatId, contactId, publicKey, privateKey, userPrivateKey) {
   logger.log('CHAT', 'HTTP', `Invite User ${contactId} To Group ${chatId}`);
   return axios.put(`/api/notifications/inviteToGroup`, { userId: contactId, chatId }).then(response => sendGroupPrivateKey(userId, chatId, contacts, publicKey, privateKey, userPrivateKey).then(() => response.data));
