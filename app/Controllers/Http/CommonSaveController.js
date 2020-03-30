@@ -152,7 +152,7 @@ class CommonSaveController {
         // })
 
         let send_email = new EmailController()
-        email.welcome_email(request.input('email'))
+        send_email.welcome_email(request.input('email'))
 
         session.forget('provider')
         session.forget('provider_id')
