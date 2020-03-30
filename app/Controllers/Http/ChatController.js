@@ -25,10 +25,10 @@ class ChatController {
   async createChat({ auth, request, response }) {
     const requestingUserId = auth.user.id;
     if (!requestingUserId) throw new Error('Auth Error');
-    const payload = request.only(['contacts', 'owners', 'title', 'icon', 'publicKey']);
-    const { contacts, owners, title, icon, publicKey } = payload;
-    log('CHAT', `User ${requestingUserId} creating Chat with ${JSON.stringify(payload)}`);
-    const { chat } = await ChatRepository.createChat({ requestingUserId, contacts, owners, title, icon, publicKey });
+    const payload = request.only(['contacts', 'owners', 'title', 'icon', 'publicKey', 'isGroup', 'gameId', 'gameSchedule']);
+    const { contacts, owners, title, icon, publicKey, isGroup, gameId, gameSchedule } = payload;
+    log('CHAT', `User ${requestingUserId} creating ${isGroup ? 'Group' : 'Chat'} with ${JSON.stringify(payload)}`);
+    const { chat } = await ChatRepository.createChat({ requestingUserId, contacts, owners, title, icon, publicKey, isGroup, gameId, gameSchedule });
     return response.send({ chat });
   }
 
@@ -224,6 +224,16 @@ class ChatController {
     log('CHAT', `User ${requestingUserId} requesting Entry Logs for Chat ${requestedChatId}`);
     const { entryLogs } = await ChatRepository.fetchEntryLogs({ requestedChatId });
     return response.send({ entryLogs });
+  }
+
+  async acceptGameGroupInvitation({ auth, params, request, response }) {
+    const requestingUserId = auth.user.id;
+    if (!requestingUserId)  throw new Error('Auth Error');
+    const requestedUserId = request.only(['userId']).userId;
+    const requestedGameId = params.gameId;
+    log('CHAT', `User ${requestingUserId} accepting to join Game Group ${requestedGameId}`);
+    const { success, error } = await ChatRepository.acceptGameGroupInvitation({ requestedUserId, requestedGameId });
+    return response.send({ success, error });
   }
 
 }
