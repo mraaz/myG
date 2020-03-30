@@ -19,6 +19,14 @@ export function onChatUpdatedAction(chat, userId) {
   }
 }
 
+export function onGameStartingAction(chatId, userId) {
+  return {
+    type: 'ON_GAME_STARTING',
+    payload: { chatId },
+    meta: { userId },
+  }
+}
+
 export function onNewMessageAction(message, userId) {
   return {
     type: 'NEW_MESSAGE',

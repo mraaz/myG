@@ -1,7 +1,7 @@
 
 import logger from '../../common/logger';
 import { reEncryptMessages, sendGroupKeys } from '../../common/encryption';
-import { decryptMessage, deserializeKey } from '../../integration/encryption';
+import { encryptMessage, decryptMessage, deserializeKey } from '../../integration/encryption';
 import { requestGroupPrivateKey, confirmGroupPrivateKey } from '../../integration/http/guest';
 import notifyToast from '../../common/toast';
 
@@ -69,6 +69,7 @@ export default function reducer(state = {
         .filter(message => !chat.blockedUsers.includes(message.senderId))
         .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId));
       if (!chat.blocked) chat.messages = messages;
+      if (chat.gameStarting) chat.messages.push(chat.gameStarting);
       if (action.payload.chat.isGroup) {
         const privateKey = receiveGroupKey(chat, action.payload.encryptionMessages, userId, state.privateKey);
         if (privateKey) {
@@ -482,6 +483,43 @@ export default function reducer(state = {
       if (!chat.entryLogs) chat.entryLogs = [];
       chat.entryLogs.push(entryLog);
       chat.guests = chat.guests.filter(thisGuestId => thisGuestId !== guestId);
+      return {
+        ...state,
+        chats,
+      };
+    }
+
+    case "ON_GAME_STARTING": {
+      logger.log('CHAT', `Redux -> Game Starting: `, action.payload, action.meta);
+      const chatId = action.payload.chatId;
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => candidate.chatId === chatId);
+      if (!chat) return state;
+      playMessageSound();
+      if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
+      chat.closed = false;
+      chat.minimised = false;
+      chat.maximised = false;
+      const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== chatId);
+      if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
+      if (!chat.messages) chat.messages = [];
+      const message = "This game is about to start.";
+      const gameStarting = {
+        messageId: "GAME_STARTING",
+        chatId: chatId,
+        senderId: null,
+        keyReceiver: null,
+        senderName: "myG",
+        content: encryptMessage(message, chat.publicKey, deserializeKey(chat.privateKey)),
+        backup: null,
+        deleted: false,
+        edited: false,
+        selfDestruct: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      chat.messages.push(gameStarting);
+      chat.gameStarting = gameStarting;
       return {
         ...state,
         chats,

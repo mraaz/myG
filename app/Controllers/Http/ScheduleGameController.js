@@ -311,6 +311,8 @@ class ScheduleGameController {
     //TODO BROKEN!!!!! https://github.com/mraaz/myGame/issues/157
     //NEED TO REVIST ONCE paginate is implemented.
 
+    console.log('latestScheduledGames', JSON.stringify(latestScheduledGames));
+
     for (var i = 0; i < latestScheduledGames.length; i++) {
       var myScheduledTrans = await Database.from('schedule_games_transactions')
         .innerJoin('game_name_fields', 'game_name_fields.id', 'schedule_games_transactions.game_name_fields_id')

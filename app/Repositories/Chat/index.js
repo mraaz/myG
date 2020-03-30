@@ -131,13 +131,16 @@ class ChatRepository {
 
   async fetchUnreadMessages({ requestingUserId }) {
     const { chats } = await this.fetchChats({ requestingUserId });
-    const lastReads = (await ChatLastRead.query().where('user_id', requestingUserId).fetch()).toJSON();
+    const lastReadsRaw = await ChatLastRead.query().where('user_id', requestingUserId).fetch();
+    if (!lastReadsRaw) return { unreadMessages: [] };
+    const lastReads = lastReadsRaw.toJSON();
     const lastReadId = (chatId) => (lastReads.find(lastRead => lastRead.chat_id === chatId) || {}).last_read_message_id;
     const unreadMessages = [];
     const requests = chats.map(async chat => ({ lastReadId: lastReadId(chat.chatId), message: await this.fetchLastMessage({ requestedChatId: chat.chatId }) }));
     const responses = await Promise.all(requests);
     responses.forEach(response => {
       const { lastReadId, message } = response;
+      if (!message) return;
       if (!lastReadId || (parseInt(message.id) > parseInt(lastReadId))) unreadMessages.push(new MessageSchema({
         messageId: message.id,
         chatId: message.chat_id,
@@ -158,11 +161,12 @@ class ChatRepository {
   }
 
   async fetchLastMessage({ requestedChatId }) {
-    return (await ChatMessage.query()
+    const lastMessageRaw = await ChatMessage.query()
       .whereNull('key_receiver')
       .andWhere('chat_id', requestedChatId)
       .orderBy('id', 'desc')
-      .limit(1).first()).toJSON();
+      .limit(1).first();
+    return lastMessageRaw && lastMessageRaw.toJSON();
   }
 
   async fetchEncryptionMessages({ requestingUserId, requestedChatId }) {
@@ -209,7 +213,6 @@ class ChatRepository {
     chat.owners = JSON.stringify(owners || []);
     chat.moderators = JSON.stringify(owners || []);
     await chat.save();
-    if (gameId) await this.scheduleGameMessage({ chatId: chat.id, schedule: gameSchedule });
 
     const chatSchema = new ChatSchema({
       chatId: chat.id,
@@ -243,6 +246,11 @@ class ChatRepository {
         link.expiry = null;
         await link.save();
       });
+    }
+
+    if (gameId) {
+      await this.scheduleGameMessage({ chatId: chat.id, schedule: gameSchedule });
+      await this._setSelfDestruct({ requestedChatId: chat.id, selfDestruct: true });
     }
 
     this._notifyChatEvent({ chatId: chat.id, action: 'newChat', payload: chatSchema });
@@ -649,6 +657,7 @@ class ChatRepository {
   async sendGameMessages(messagesToSend) {
     log('CRON', `Sending Game Messages for ${JSON.stringify(messagesToSend)}`);
     const chatIds = messagesToSend.map(message => message.chatId);
+    chatIds.forEach(chatId => this._notifyChatEvent({ chatId, action: 'gameStarting', payload: chatId }))
     await RedisRepository.clearGameMessageSchedule({ chatIds });
     await this.clearGameMessageSchedule({ chatIds });
   }
@@ -701,22 +710,9 @@ class ChatRepository {
     return new DefaultSchema({ success: true });
   }
 
-  async _setSelfDestruct({ requestingUserId, requestedChatId, selfDestruct }) {
-    await UserChat
-      .query()
-      .where('chat_id', requestedChatId)
-      .andWhere('user_id', requestingUserId)
-      .update({ self_destruct: selfDestruct });
-    await UserChat
-      .query()
-      .where('chat_id', requestedChatId)
-      .andWhere('user_id', '!=', requestingUserId)
-      .update({ self_destruct: selfDestruct });
-    const payload = {
-      userId: requestingUserId,
-      chatId: requestedChatId,
-      selfDestruct,
-    };
+  async _setSelfDestruct({ requestedChatId, selfDestruct }) {
+    await UserChat.query().where('chat_id', requestedChatId).update({ self_destruct: selfDestruct });
+    const payload = { chatId: requestedChatId, selfDestruct };
     this._notifyChatEvent({ chatId: requestedChatId, action: 'selfDestruct', payload });
   }
 
