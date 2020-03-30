@@ -378,6 +378,7 @@ class ChatRepository {
       userChat.user_id = userId;
       userChat.deleted_messages = '[]';
       userChat.blocked_users = '[]';
+      if (chat.gameId) userChat.self_destruct = true;
       await userChat.save();
     });
     await Chat.query().where('id', requestedChatId).update({ contacts: JSON.stringify(chat.contacts) });
