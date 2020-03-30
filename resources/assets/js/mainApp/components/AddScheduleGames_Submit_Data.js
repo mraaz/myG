@@ -6,9 +6,6 @@ import uuid from 'uuid'
 import { createGameGroup } from '../../common/group';
 
 export async function SubmitDataFunction(myG) {
-
-  console.log('SubmitDataFunction', myG);
-
   var myRegion = ''
   var myExperience = ''
   var myPlatform = ''
@@ -92,8 +89,8 @@ export async function SubmitDataFunction(myG) {
       clash_royale_trophies: myClash_royale_trophies,
       allow_comments: allow_comments,
     }).then(response => {
-      const { id } = response.data;
-      if (id) createGameGroup(id, `${myG.game_name_box.value} (${myG.startDate.format('YYYY-MM-DD HH:mm:ss')})`);
+      const { id, start_date_time: schedule } = response.data;
+      if (id) createGameGroup(id, schedule, `${myG.game_name_box.value} (${myG.startDate.format('YYYY-MM-DD HH:mm:ss')})`);
     });
   } catch (error) {
     console.log(error)

@@ -9,6 +9,9 @@ const ChatLastRead = use('App/Models/ChatLastRead');
 const ChatLink = use('App/Models/ChatLink');
 const ChatEntryLog = use('App/Models/ChatEntryLog');
 const ChatPrivateKeyRequest = use('App/Models/ChatPrivateKeyRequest');
+const ChatGameMessageSchedule = use('App/Models/ChatGameMessageSchedule');
+
+const RedisRepository = require('../../Repositories/Redis');
 
 const ChatSchema = require('../../Schemas/Chat');
 const ChatLinkSchema = require('../../Schemas/ChatLink');
@@ -186,7 +189,7 @@ class ChatRepository {
     return { encryptionMessages };
   }
 
-  async createChat({ requestingUserId, contacts, owners, title, icon, publicKey, isGroup, gameId }) {
+  async createChat({ requestingUserId, contacts, owners, title, icon, publicKey, isGroup, gameId, gameSchedule }) {
     contacts = [requestingUserId, ...contacts].sort();
     if (contacts.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
     const { chats } = await this.fetchChats({ requestingUserId });
@@ -206,6 +209,7 @@ class ChatRepository {
     chat.owners = JSON.stringify(owners || []);
     chat.moderators = JSON.stringify(owners || []);
     await chat.save();
+    if (gameId) await this.scheduleGameMessage({ chatId: chat.id, schedule: gameSchedule });
 
     const chatSchema = new ChatSchema({
       chatId: chat.id,
@@ -617,6 +621,36 @@ class ChatRepository {
       updatedAt: chat.updated_at,
     });
     return { chat: chatSchema };
+  }
+
+  async scheduleGameMessage({ chatId, schedule }) {
+    const gameMessageSchedule = new ChatGameMessageSchedule();
+    gameMessageSchedule.chat_id = chatId;
+    gameMessageSchedule.schedule = schedule;
+    await gameMessageSchedule.save();
+    await RedisRepository.updateGameMessageSchedule({ chatId, schedule });
+  }
+
+  async clearGameMessageSchedule({ chatIds }) {
+    await ChatGameMessageSchedule.query('chat_id', 'in', chatIds).delete();
+  }
+
+  async handleGameMessages() {
+    log('CRON', `START - HANDLE GAME MESSAGES`);
+    const lock = await RedisRepository.lock('HANDLE_GAME_MESSAGES', 1000 * 45);
+    if (!lock) return log('CRON', 'Failed to Acquire HANDLE_GAME_MESSAGES lock');
+    const { schedule } = await RedisRepository.getGameMessageSchedule();
+    const oneHourFromNow = Date.now() + 1000 * 60 * 60;
+    const messagesToSend = schedule.filter(entry => new Date(entry.schedule).getTime() < oneHourFromNow);
+    if (messagesToSend.length) await this.sendGameMessages(messagesToSend);
+    log('CRON', `END - HANDLE GAME MESSAGES`);
+  }
+
+  async sendGameMessages(messagesToSend) {
+    log('CRON', `Sending Game Messages for ${JSON.stringify(messagesToSend)}`);
+    const chatIds = messagesToSend.map(message => message.chatId);
+    await RedisRepository.clearGameMessageSchedule({ chatIds });
+    await this.clearGameMessageSchedule({ chatIds });
   }
 
   async _insertEntryLog(requestedChatId, alias, kicked, left, invited, link) {
