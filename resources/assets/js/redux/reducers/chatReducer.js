@@ -505,7 +505,7 @@ export default function reducer(state = {
       if (!chat.messages) chat.messages = [];
       const message = "This game is about to start.";
       const gameStarting = {
-        messageId: "GAME_STARTING",
+        messageId: Number.MAX_SAFE_INTEGER,
         chatId: chatId,
         senderId: null,
         keyReceiver: null,

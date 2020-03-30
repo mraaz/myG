@@ -3,7 +3,7 @@
 const ALLOWED_LOGS = ['USER', 'CHAT', 'GUEST', 'CRON'];
 
 function log(context, args) {
-  if (ALLOWED_LOGS.includes(context)) console.log(args);
+  if (ALLOWED_LOGS.includes(context)) console.log(context, args);
 }
 
 module.exports = { log };
