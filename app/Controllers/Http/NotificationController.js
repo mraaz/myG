@@ -275,6 +275,20 @@ class NotificationController {
     }
   }
 
+  async getmyFriendRequests(id) {
+    try {
+      const checkMyFriends = await Database.from('notifications')
+        .where({ other_user_id: id, activity_type: 1 })
+        .count('* as no_of_my_notiFriends')
+
+      return {
+        checkMyFriends: checkMyFriends,
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   async myRequests({ auth, request, response }) {
     try {
       //We need group-by so that each noti isn't being counted, instead each line is counted
