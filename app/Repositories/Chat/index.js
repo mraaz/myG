@@ -650,7 +650,7 @@ class ChatRepository {
     if (!lock) return log('CRON', 'Failed to Acquire HANDLE_GAME_MESSAGES lock');
     const { schedule } = await RedisRepository.getGameMessageSchedule();
     const oneHourFromNow = Date.now() + 1000 * 60 * 60;
-    const messagesToSend = schedule.filter(entry => new Date(entry.schedule).getTime() < oneHourFromNow);
+    const messagesToSend = (schedule || []).filter(entry => new Date(entry.schedule).getTime() < oneHourFromNow);
     if (messagesToSend.length) await this.sendGameMessages(messagesToSend);
     log('CRON', `END - HANDLE GAME MESSAGES`);
   }
