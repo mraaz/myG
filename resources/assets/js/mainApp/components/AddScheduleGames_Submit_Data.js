@@ -89,6 +89,6 @@ export async function SubmitDataFunction(myG) {
       allow_comments: allow_comments,
     })
   } catch (error) {
-    console.log(error)
+    throw error
   }
 }

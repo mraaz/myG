@@ -3,39 +3,22 @@ import classNames from 'classnames'
 import Slider, { Range } from 'rc-slider'
 import 'rc-slider/assets/index.css'
 
-import { SETTINGS_ENUMS, styles, EXPERIENCE_OPTIONS, REGION_OPTIONS } from '../../static/AddGame'
+import { SETTINGS_ENUMS, styles, EXPERIENCE_OPTIONS, REGION_OPTIONS, PLATFORM_OPTIONS } from '../../static/AddGame'
 import { MyGCheckbox, MyGInput, MyGTextarea, MyGAsyncSelect, MyGSelect, MyGDatePicker } from '../common'
 import { Game_name_values } from '../Utility_Function'
 
 const SliderWithTooltip = Slider.createSliderWithTooltip(Slider)
 
-const AddGame = () => {
-  // State
-  const [state, updateComponentState] = useState({ selectedSettings: SETTINGS_ENUMS.MAIN })
-  const [advancedSettingsState, updateAdvancedSettingsState] = useState({
-    experience: null,
-    tags: null,
-    description: '',
-    acceptMessage: '',
-  })
-  const [mainSettingsState, updateMainSettingsState] = useState({
-    gameTitlesList: [],
-    gameTitle: null,
-    startTime: null,
-    endTime: null,
-    isEndGameFieldSelected: false,
-    isRepeatFieldSelected: false,
-    numberOfPlayers: null,
-    isCommentsAllowed: false,
-    isPublicGame: false,
-    sliderValue: 0,
-  })
-  const [optionalFieldsState, updateOptionalFieldsState] = useState({
-    modalRank: null,
-    serverRegion: null,
-    roleNeeded: null,
-  })
-
+const AddGame = ({
+  state,
+  updateComponentState,
+  advancedSettingsState,
+  updateAdvancedSettingsState,
+  mainSettingsState,
+  updateMainSettingsState,
+  optionalFieldsState,
+  updateOptionalFieldsState,
+}) => {
   // Handlers
   const updateMainSettings = (stateUpdates) => {
     updateMainSettingsState((currentState) => ({
@@ -94,40 +77,45 @@ const AddGame = () => {
     return (
       <div>
         <div className={styles.fieldTitle}>Number of Players</div>
-        <SliderWithTooltip
-          value={mainSettingsState.sliderValue}
-          style={{
-            margin: '42px 0',
-          }}
-          onChange={(value) => {
-            updateMainSettings({ sliderValue: value })
-          }}
-          marks={{
-            0: { label: 0, style: numberStyle },
-            25: { label: 25, style: numberStyle },
-            50: { label: 50, style: numberStyle },
-            75: { label: 75, style: numberStyle },
-            100: { label: 100, style: numberStyle },
-          }}
-          dotStyle={dotStyle}
-          min={0}
-          max={100}
-          railStyle={railStyle}
-          handleStyle={handleStyle}
-          trackStyle={trackStyle}
-          tipProps={{
-            placement: 'top',
-            prefixCls: 'rc-slider-tooltip',
-            align: {
-              offset: [0, -5],
-            },
-          }}
-          tipFormatter={(value) => value + ' Players'}
-        />
+        {!mainSettingsState.isUnlimitedPlayers && (
+          <SliderWithTooltip
+            value={mainSettingsState.numberOfPlayers}
+            style={{
+              margin: '42px 7px',
+            }}
+            onChange={(value) => {
+              updateMainSettings({ numberOfPlayers: value })
+            }}
+            marks={{
+              0: { label: 0, style: numberStyle },
+              25: { label: 25, style: numberStyle },
+              50: { label: 50, style: numberStyle },
+              75: { label: 75, style: numberStyle },
+              100: { label: 100, style: numberStyle },
+            }}
+            dotStyle={dotStyle}
+            min={0}
+            max={100}
+            railStyle={railStyle}
+            handleStyle={handleStyle}
+            trackStyle={trackStyle}
+            tipProps={{
+              placement: 'top',
+              prefixCls: 'rc-slider-tooltip',
+              align: {
+                offset: [0, -5],
+              },
+            }}
+            tipFormatter={(value) => value + ' Players'}
+          />
+        )}
         <MyGCheckbox
-          checked={mainSettingsState.numberOfPlayers}
+          checked={mainSettingsState.isUnlimitedPlayers}
           onClick={(value) => {
-            updateMainSettings({ numberOfPlayers: value })
+            updateMainSettings({
+              isUnlimitedPlayers: value,
+              numberOfPlayers: value ? 42 : 0,
+            })
           }}
           labelText='Unlimited'
         />
@@ -165,8 +153,20 @@ const AddGame = () => {
           onChange={(value) => {
             updateMainSettings({ endTime: value })
           }}
-          selected={mainSettingsState.endTime}
-        />
+          selected={mainSettingsState.endTime}>
+          <img
+            style={{ margin: '0 10px' }}
+            src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/X+icon.svg'
+            height='20'
+            width='20'
+            onClick={() => {
+              updateMainSettingsState({
+                isEndGameFieldSelected: false,
+                endTime: null,
+              })
+            }}
+          />
+        </MyGDatePicker>
       </Fragment>
     )
   }
@@ -259,6 +259,24 @@ const AddGame = () => {
           }}
           value={advancedSettingsState.tags}
           placeholder='Enter relevant tags to your game'
+        />
+        <div className={styles.fieldTitle}>Platform</div>
+        <MyGSelect
+          options={PLATFORM_OPTIONS}
+          onChange={(value) => {
+            updateAdvancedSettings({ platform: value })
+          }}
+          value={advancedSettingsState.platform}
+          placeholder='Select platform'
+        />
+        <div className={styles.fieldTitle}>Region</div>
+        <MyGSelect
+          onChange={(value) => {
+            updateAdvancedSettings({ region: value })
+          }}
+          value={advancedSettingsState.region}
+          options={REGION_OPTIONS}
+          placeholder='Select region'
         />
         <div className={styles.fieldTitle}>Description</div>
         <MyGTextarea

@@ -5,6 +5,8 @@ import MyGTextarea from './MyGTextarea';
 import MyGAsyncSelect from './MyGAsyncSelect';
 import MyGSelect from './MyGSelect';
 import MyGDatePicker from './MyGDatePicker';
+import MyGButton from './MyGButton';
+import MyGModal from './MyGModal';
 
 export {
     PageHeader,
@@ -14,4 +16,6 @@ export {
     MyGAsyncSelect,
     MyGSelect,
     MyGDatePicker,
+    MyGButton,
+    MyGModal,
 };
