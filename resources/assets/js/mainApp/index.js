@@ -135,6 +135,9 @@ class Layout extends Component {
               <Route exact path="/post/:id" component={(props) => <SinglePost routeProps={props}
                 initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
 
+              <Route exact path="/profile/" component={(props) => <Profile routeProps={props}
+                initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
+
               <Route exact path="/profile/:alias/edit/dossier" component={(props) => <Dossier routeProps={props}
                 initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
 

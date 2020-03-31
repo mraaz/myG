@@ -78,23 +78,45 @@
   }
 
   .messenger-contact-icon {
-    background-color: #2D363A;
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
     border-radius: 20px;
+    position: relative;
     width: 40px;
     height: 40px;
     margin-right: 12px;
   }
 
+  .messenger-game-icon {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain;
+    border-radius: 20px;
+    position: relative;
+    width: 40px;
+    height: 40px;
+    margin-right: 12px;
+  }
+
+  .messenger-change-game-icon-button {
+    background-color: #171A1C;
+    background-repeat: no-repeat;
+    background-position: center center;
+    border-radius: 16px;
+    width: 32px;
+    height: 32px;
+    margin-left: 8px;
+    margin-right: 4px;
+  }
+
   .messenger-contact-online-indicator {
     width: 12px;
     height: 12px;
-    border-radius: 6px;
-    position: relative;
+    border-radius: 100px;
+    position: absolute;
     bottom: 0;
-    left: 0;
+    right: 0;
   }
 
   .messenger-contact-body {
@@ -154,6 +176,7 @@
     flex-direction: column;
     align-self: flex-end;
     margin: 12px;
+    width: 94%;
   }
 
   .messenger-settings-encryption-title {
@@ -177,6 +200,7 @@
     font-size: 16px;
     width: 90%;
     margin-top: 14px;
+    margin-bottom: 8px;
     align-self: center;
     color: #A0A0A0;
   }
@@ -208,6 +232,10 @@
   .messenger-footer-container {
     display: flex;
     flex-direction: column;
+  }
+
+  .messenger-footer-container-full {
+    height: 100%;
   }
 
   .messenger-footer {
@@ -268,6 +296,46 @@
     margin: 0px 4px;
   }
 
+  .messenger-footer-favorite-games {
+    display: flex;
+    flex-direction: column;
+    background-color: #151b26;
+    max-height: 240px;
+    overflow-y: scroll;
+    padding: 4px;
+  }
+
+  .messenger-footer-favorite-game {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .messenger-footer-favorite-game-button {
+    background-color: #2D363A;
+    color: #FAFAFA;
+    padding: 6px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    margin-left: 4px;
+  }
+
+  .messenger-settings-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .messenger-settings-title {
+    width: 100%;
+    font-size: 18px;
+    font-weight: 900;
+    text-align: center;
+    padding: 8px;
+    margin-top: 8px;
+  }
+
   .messenger-settings-search-field {
     display: flex;
     flex: 1;
@@ -306,6 +374,11 @@
     flex-direction: column;
   }
 
+  .messenger-body-game-section {
+    display: flex;
+    align-items: center;
+  }
+
   .messenger-body-section-header {
     display: flex;
     align-items: center;
@@ -336,6 +409,11 @@
   .messenger-body-section-header-count {
     font-size: 12px;
     color: #909090;
+  }
+
+  .messenger-body-section-online-count {
+    font-size: 12px;
+    color: #F0F0F0;
   }
 
   .messenger-body-section-header-icon {

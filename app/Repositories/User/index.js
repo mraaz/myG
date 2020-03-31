@@ -2,10 +2,13 @@
 const Database = use('Database');
 const User = use('App/Models/User');
 const UserChat = use('App/Models/UserChat');
+const FavoriteGame = use('App/Models/FavoriteGame');
+const GameName = use('App/Models/GameName');
 
 const StatusSchema = require('../../Schemas/Status');
 const ContactSchema = require('../../Schemas/Contact');
 const DefaultSchema = require('../../Schemas/Default');
+const GameSchema = require('../../Schemas/Game');
 
 const ChatRepository = require('../Chat');
 
@@ -25,6 +28,53 @@ class UserRepository {
     return new DefaultSchema({ success: true });
   }
 
+  async fetchGames({ requestingUserIds }) {
+    const rawGames = await Database
+      .select('game_experiences.user_id', 'game_names.user_id as owner_id', 'game_names_id', 'game_name', 'game_img')
+      .from('game_experiences')
+      .leftJoin('game_names', 'game_names.id', 'game_experiences.game_names_id')
+      .where('game_experiences.user_id', 'in', requestingUserIds)
+      .union([
+        Database
+          .select('esports_experiences.user_id', 'game_names.user_id as owner_id', 'game_names_id', 'game_name', 'game_img')
+          .from('esports_experiences')
+          .leftJoin('game_names', 'game_names.id', 'esports_experiences.game_names_id')
+          .where('esports_experiences.user_id', 'in', requestingUserIds)
+      ]);
+    const games = rawGames.map(game => new GameSchema({ gameId: game.game_names_id, userId: game.user_id, ownerId: game.owner_id, name: game.game_name, icon: game.game_img }));
+    const byUserIds = requestingUserIds.map(userId => ({ userId, games: this._uniqBy(games.filter(game => game.userId === userId), game => game.gameId) }));
+    const gameMap = {};
+    byUserIds.forEach(game => gameMap[game.userId] = game.games);
+    if (requestingUserIds.length === 1) {
+      const favoriteGamesRaw = await FavoriteGame.query().where('user_id', requestingUserIds[0]).fetch();
+      const favoriteGames = (favoriteGamesRaw && favoriteGamesRaw.toJSON()) || [];
+      gameMap[requestingUserIds[0]].forEach(game => game.isFavorite = favoriteGames.find(favorite => favorite.game_names_id === game.gameId));
+    }
+    return { games: gameMap };
+  }
+
+  async favoriteGame({ requestingUserId, requestedGameId }) {
+    await this.unfavoriteGame({ requestingUserId, requestedGameId });
+    const favoriteGame = new FavoriteGame();
+    favoriteGame.user_id = requestingUserId;
+    favoriteGame.game_names_id = requestedGameId;
+    await favoriteGame.save();
+    return new DefaultSchema({ success: true });
+  }
+
+  async unfavoriteGame({ requestingUserId, requestedGameId }) {
+    await FavoriteGame.query().where('user_id', requestingUserId).andWhere('game_names_id', requestedGameId).delete();
+    return new DefaultSchema({ success: true });
+  }
+
+  async updateGameIcon({ requestingUserId, requestedGameId, icon }) {
+    const game = await GameName.query().where('id', requestedGameId).first();
+    if (!game || parseInt(game.toJSON().user_id) !== requestingUserId) return new DefaultSchema({ success: false });
+    game.game_img = icon;
+    await game.save();
+    return new DefaultSchema({ success: true });
+  }
+
   async fetchContacts({ requestingUserId }) {
     const friends = (await Database.from('friends')
       .innerJoin('users', 'users.id', 'friends.friend_id')
@@ -38,6 +88,9 @@ class UserRepository {
       lastSeen: friend.last_seen,
       publicKey: friend.public_key,
     }));
+    const requestingUserIds = contacts.map(contact => contact.contactId);
+    const { games } = await this.fetchGames({ requestingUserIds });
+    contacts.forEach(contact => contact.games = games[contact.contactId] || []);
     return { contacts };
   }
 
@@ -89,6 +142,14 @@ class UserRepository {
         publicKey: user.public_key,
       }));
     return { users };
+  }
+
+  _uniqBy(a, key) {
+    var seen = {};
+    return a.filter(function (item) {
+      var k = key(item);
+      return seen.hasOwnProperty(k) ? false : (seen[k] = true);
+    })
   }
 
 }

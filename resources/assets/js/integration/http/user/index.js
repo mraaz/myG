@@ -6,6 +6,26 @@ export function storePublicKey(publicKey) {
   return axios.put(`/api/user_chat/publicKey/`, { publicKey }).then(response => response.data);
 }
 
+export function fetchGames(userId) {
+  logger.log('USER', 'HTTP', `Fetching Games`);
+  return axios.get(`/api/user_chat/game/`).then(response => ({ games: ((response.data || {}).games || {})[userId] }));
+}
+
+export function favoriteGame(gameId) {
+  logger.log('USER', 'HTTP', `Favoriting Game ${gameId}`);
+  return axios.put(`/api/user_chat/game/${gameId}`).then(response => response.data);
+}
+
+export function unfavoriteGame(gameId) {
+  logger.log('USER', 'HTTP', `Unfavoriting Game ${gameId}`);
+  return axios.delete(`/api/user_chat/game/${gameId}`).then(response => response.data);
+}
+
+export function updateGameIcon(gameId, icon) {
+  logger.log('USER', 'HTTP', `Updating Game Icon`);
+  return axios.put(`/api/user_chat/game/${gameId}/icon`, { icon }).then(response => response.data);
+}
+
 export function fetchContacts() {
   logger.log('USER', 'HTTP', `Fetching Contacts`);
   return axios.get(`/api/user_chat/contact/`).then(response => response.data);

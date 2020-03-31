@@ -13,6 +13,7 @@ class PostController {
         user_id: auth.user.id,
         type: 'text',
         group_id: request.input('groups_id'),
+        visibility: request.input('visibility'),
       })
       return newPost.id
     }
@@ -37,29 +38,47 @@ class PostController {
 
       //const myPosts = await Database.table('posts').innerJoin('users', 'users.id', 'posts.user_id')
 
-      const myPosts = await Database.select('*', 'posts.id', 'posts.updated_at')
+      // .orWhere(function() {
+      //   this.where('followers.user_id', '=', auth.user.id).andWhere('posts.visibility', '=', 1)
+      // })
+
+      const myFriendsPosts = await Database.select('*', 'posts.id', 'posts.updated_at')
         .from('friends')
         .innerJoin('posts', 'posts.user_id', 'friends.friend_id')
         .innerJoin('users', 'users.id', 'posts.user_id')
         .where('friends.user_id', '=', auth.user.id)
+        .whereNot('posts.visibility', '=', 0)
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.paginateNo, 10)
 
-      for (var i = 0; i < myPosts.data.length; i++) {
-        request.params.id = myPosts.data[i].id
+      const ppl_im_following_Posts = await Database.select('*', 'posts.id', 'posts.updated_at')
+        .from('followers')
+        .innerJoin('posts', 'posts.user_id', 'followers.follower_id')
+        .innerJoin('users', 'users.id', 'posts.user_id')
+        .where('followers.user_id', '=', auth.user.id)
+        .where('posts.visibility', '=', 1)
+        .orderBy('posts.created_at', 'desc')
+        .paginate(request.params.paginateNo, 5)
+
+      const _1stpass = [...myFriendsPosts.data, ...ppl_im_following_Posts.data]
+      const uniqueSet = new Set(_1stpass)
+      const myPosts = [...uniqueSet]
+
+      for (var i = 0; i < myPosts.length; i++) {
+        request.params.id = myPosts[i].id
         var myLikes = await likeController.show({ auth, request, response })
 
-        myPosts.data[i].total = myLikes.number_of_likes[0].total
-        myPosts.data[i].no_of_comments = myLikes.no_of_comments[0].no_of_comments
+        myPosts[i].total = myLikes.number_of_likes[0].total
+        myPosts[i].no_of_comments = myLikes.no_of_comments[0].no_of_comments
         if (myLikes.number_of_likes[0].total != 0) {
-          myPosts.data[i].admirer_first_name = myLikes.admirer_UserInfo.alias
+          myPosts[i].admirer_first_name = myLikes.admirer_UserInfo.alias
         } else {
-          myPosts.data[i].admirer_first_name = ''
+          myPosts[i].admirer_first_name = ''
         }
         if (myLikes.do_I_like_it[0].myOpinion != 0) {
-          myPosts.data[i].do_I_like_it = true
+          myPosts[i].do_I_like_it = true
         } else {
-          myPosts.data[i].do_I_like_it = false
+          myPosts[i].do_I_like_it = false
         }
       }
 

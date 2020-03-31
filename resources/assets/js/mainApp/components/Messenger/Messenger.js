@@ -7,10 +7,11 @@ import Chat from './Chat';
 import GroupCreation from './GroupCreation';
 import StatusTimerWrapper from '../StatusTimerWrapper';
 import WindowFocusHandler from '../WindowFocusHandler';
+import FileOpenModal from '../FileOpenModal';
 
 import { attemptSocketConnection, monitorChats, closeSubscription } from '../../../integration/ws/chat';
 import { createChatAction, openChatAction, closeChatAction, clearChatAction } from '../../../redux/actions/chatAction';
-import { updateStatusAction } from '../../../redux/actions/userAction';
+import { favoriteGameAction, unfavoriteGameAction, updateGameIconAction, updateStatusAction } from '../../../redux/actions/userAction';
 import { generateKeysAction, validatePinAction } from '../../../redux/actions/encryptionAction';
 import { deserializeKey, decryptMessage, generateKeysSync as generateGroupKeys } from '../../../integration/encryption';
 import { formatAMPM } from '../../../common/date';
@@ -25,6 +26,7 @@ class Messenger extends React.PureComponent {
     showingGroupCreation: false,
     changingStatus: false,
     searchInput: '',
+    favoriteGameInput: '',
     pin: '',
     sectionExpanded: {
       recent: true,
@@ -34,9 +36,11 @@ class Messenger extends React.PureComponent {
       [STATUS_ENUM.OFFLINE]: false,
     },
     dividerExpanded: {
+      games: false,
       friends: true,
       groups: false,
-    }
+    },
+    uploadingPhoto: null,
   }
 
   static getDerivedStateFromProps(props) {
@@ -90,7 +94,7 @@ class Messenger extends React.PureComponent {
 
   createGroup = (icon, title, contacts) => {
     const { encryption } = generateGroupKeys();
-    this.props.createChat(contacts, this.props.userId, title, icon, encryption);
+    this.props.createChat(contacts, this.props.userId, title, icon, encryption, true);
     this.setState({ showingGroupCreation: false });
   }
 
@@ -117,6 +121,11 @@ class Messenger extends React.PureComponent {
     return unreadCount;
   }
 
+  onUploadPhoto = (icon) => {
+    this.props.updateGameIcon(this.state.uploadingPhoto, icon);
+    this.setState({ uploadingPhoto: null });
+  }
+
   renderConnectionWarning = () => {
     if (!this.props.disconnected) return;
     return (
@@ -128,6 +137,56 @@ class Messenger extends React.PureComponent {
         <p className="messenger-connection-warning-hint">Click to Reconnect</p>
       </div>
     );
+  }
+
+  renderGames = () => {
+    return this.renderDivider('games', this.state.dividerExpanded.games, () => {
+
+      if (!this.props.games.length) {
+        return (
+          <div className="messenger-empty-message-container">
+            <p className="messenger-empty-message">You haven't added any ganes yet :(</p>
+          </div>
+        );
+      }
+
+      const sections = [];
+      let games = this.props.games.slice(0)
+        .sort((g1, g2) => g1.name.localeCompare(g2.name))
+        .sort((g1, g2) => g1.isFavorite === g2.isFavorite ? 0 : g1.isFavorite ? -1 : 1);
+      const contacts = this.props.contacts.slice(0)
+        .sort((f1, f2) => compareStatus(f1.status, f2.status))
+        .sort((f1, f2) => this.compareLastMessages(f1, f2));
+
+      if (this.state.searchInput.trim()) {
+        const search = (name) => name.toLowerCase().includes(this.state.searchInput.toLowerCase());
+        games = games.slice(0)
+          .filter(game => search(game.name))
+          .slice(0, 10);
+      }
+
+      const colors = ['#399', '#939', '#993', '#339', '#933', '#393', '#699', '#969', '#996', '#669', '#966', '#696'];
+      games.slice(0, 10).forEach((game, index) => {
+        const gameContacts = contacts.filter(contact => contact.games.find(contactGame => contactGame.gameId === game.gameId));
+        const onlineCount = gameContacts.filter(contact => contact.status === STATUS_ENUM.ONLINE).length;
+        const onlineInfo = `${onlineCount}/${gameContacts.length} online`;
+        sections.push({
+          id: game.gameId,
+          name: game.name,
+          icon: game.icon, 
+          color: colors[index],
+          contacts: gameContacts,
+          onlineInfo,
+        })
+      });
+      
+      return (
+        <div className="messenger-body">
+          {sections.map(section => this.renderGame(section.id, section.name, section.icon, section.color, section.onlineInfo, section.contacts, this.state.expandedGame === section.name))}
+        </div>
+      );
+
+    });
   }
 
   renderContacts = () => {
@@ -211,6 +270,37 @@ class Messenger extends React.PureComponent {
     );
   }
 
+  renderGame(id, name, icon, color, onlineInfo, contacts, expanded) {
+    const chevronType = (contacts.length && expanded) ? 'down' : 'right';
+    return (
+      <div key={id} className="messenger-body-section" style={{ backgroundColor: color }}>
+        <div className="messenger-body-section-header clickable" style={{ backgroundColor: color }}
+          onClick={() => this.setState(previous => ({ expandedGame: previous.expandedGame === name ? null : name }))}
+        >
+          <div className="messenger-body-game-section" style={{ backgroundColor: color }}>
+            <div
+              className="messenger-game-icon"
+              style={{ backgroundImage: `url('${icon}')` }}
+            />
+            <p className="messenger-body-section-header-name">{name}</p>
+          </div>
+          <div className="messenger-body-section-header-info">
+            <p className="messenger-body-section-online-count">{onlineInfo}</p>
+            <div
+              className="messenger-body-section-header-icon"
+              style={{ backgroundImage: `url('/assets/svg/ic_messenger_chevron_${chevronType}.svg')` }}
+            />
+          </div>
+        </div>
+        {!!contacts.length && expanded && (
+          <div className="messenger-body-section-content">
+            {contacts.map(this.renderContact)}
+          </div>
+        )}
+      </div >
+    );
+  }
+
   renderContact = (contact) => {
     const messages = (contact.chat.messages || []).slice(0);
     const lastMessage = messages[messages.length - 1];
@@ -226,7 +316,7 @@ class Messenger extends React.PureComponent {
           className="messenger-contact-icon"
           style={{ backgroundImage: `url('${contact.icon}')` }}
         >
-          <div className="messenger-contact-online-indicator" />
+          <div className={`messenger-contact-online-indicator chat-component-header-status-indicator-${contact.status}`} />
         </div>
         <div className="messenger-contact-body">
           <p className="messenger-contact-body-title">{contact.name}</p>
@@ -315,9 +405,7 @@ class Messenger extends React.PureComponent {
         <div
           className="messenger-contact-icon"
           style={{ backgroundImage: `url('${group.icon}')` }}
-        >
-          <div className="messenger-contact-online-indicator" />
-        </div>
+        />
         <div className="messenger-contact-body">
           <p className="messenger-contact-body-title">{group.title}</p>
           {lastMessage && (
@@ -375,9 +463,10 @@ class Messenger extends React.PureComponent {
   }
 
   renderFooter() {
+    const fullFooter = this.state.showingSettings && 'messenger-footer-container-full';
     return (
-      <div className="messenger-footer-container">
-        {this.renderEncryptionSettings()}
+      <div className={`messenger-footer-container ${fullFooter}`}>
+        {this.renderSettings()}
         <div className="messenger-footer">
           <div className="messenger-footer-icon-container">
             <div
@@ -418,8 +507,74 @@ class Messenger extends React.PureComponent {
     );
   }
 
-  renderEncryptionSettings() {
+  renderSettings = () => {
     if (!this.state.showingSettings) return;
+    return(
+      <div className="messenger-settings-container">
+        <p className="messenger-settings-title">Settings</p>
+        {this.renderEncryptionSettings()}
+        {this.renderGamesSettings()}
+      </div>
+    );
+  }
+
+  renderGamesSettings = () => {
+    const search = (name) => name.toLowerCase().includes(this.state.favoriteGameInput.toLowerCase());
+    const maxedOut = this.props.favoriteGames.length >= 10;
+    const games = maxedOut ? 
+      this.props.games.slice(0).sort((g1, g2) => g1.isFavorite === g2.isFavorite ? 0 : g1.isFavorite ? -1 : 1).slice(0, 10) :
+      this.props.games.slice(0).filter(game => search(game.name));
+    return (
+      <div className="messenger-settings-encryption-container">
+        <p className="messenger-settings-encryption-title">Edit your favorite games</p>
+        <p className="messenger-settings-encryption-subtitle">
+          type in your favorite games to be view on your top list
+        </p>
+        <input
+          className="messenger-settings-encryption-key"
+          type="text"
+          placeholder={`${maxedOut ? 'Maximum of 10 favorited games' : 'Type here to search...'}`}
+          disabled={maxedOut}
+          value={this.state.favoriteGameInput}
+          onChange={event => this.setState({ favoriteGameInput: event.target.value })}
+        />
+        <div className="messenger-footer-favorite-games">
+          {games.map(this.renderGameSelection)}
+        </div>
+      </div>
+    );
+  }
+
+  renderGameSelection = game => {
+    const isFavorite = this.props.favoriteGames.find(favorite => favorite.gameId === game.gameId);
+    const isOwner = parseInt(this.props.userId) === parseInt(game.ownerId);
+    return(
+      <div key={game.gameId} className="messenger-footer-favorite-game">
+        <div className="messenger-body-game-section">
+            {!isOwner && (
+              <div
+                className="messenger-game-icon"
+                style={{ backgroundImage: `url('${game.icon}')` }}
+              />
+            )}
+            {isOwner && (
+              <div className="messenger-change-game-icon-button clickable"
+                style={{ backgroundImage: `url(/assets/svg/ic_chat_group_icon.svg)` }}
+                onClick={() => this.setState({ uploadingPhoto: game.gameId })}
+              />
+            )}
+            <p className="messenger-body-section-header-name">{game.name}</p>
+        </div>
+        <div className="messenger-footer-favorite-game-button clickable"
+          onClick={() => isFavorite ? this.props.unfavoriteGame(game.gameId) : this.props.favoriteGame(game.gameId)}
+        >
+          {isFavorite ? `unfavorite` : `favorite`}
+        </div>
+      </div>
+    );
+  }
+
+  renderEncryptionSettings() {
     return (
       <div className="messenger-settings-encryption-container">
         <p className="messenger-settings-encryption-title">Encrypted Chat Key</p>
@@ -522,9 +677,11 @@ class Messenger extends React.PureComponent {
   }
 
   renderBody = () => {
+    if (this.state.showingSettings) return;
     return (
       <div className="messenger-body">
         {this.renderConnectionWarning()}
+        {this.renderGames()}
         {this.renderContacts()}
         {this.renderGroups()}
       </div>
@@ -534,6 +691,12 @@ class Messenger extends React.PureComponent {
   render() {
     return (
       <section id="messenger">
+
+        <FileOpenModal
+          bOpen={this.state.uploadingPhoto !== null}
+          callbackClose={() => this.setState({ uploadingPhoto: null })}
+          callbackConfirm={this.onUploadPhoto}
+        />
 
         {this.renderBody()}
         {this.renderFooter()}
@@ -564,8 +727,7 @@ function mapStateToProps(state) {
   const contactsWithChats = {};
   chats.forEach(chat => {
     const contacts = (chat.contacts || []);
-    const isGroup = contacts.length > 2;
-    if (isGroup) groups.push(chat);
+    if (chat.isGroup) groups.push(chat);
     else contacts.forEach(contactId => contactsWithChats[contactId] = chat)
   });
   contacts.forEach(contact => contact.chat = contactsWithChats[contact.contactId] || {});
@@ -574,6 +736,8 @@ function mapStateToProps(state) {
     isStatusLocked: state.user.isStatusLocked,
     chats: state.chat.chats,
     contacts: state.user.contacts,
+    games: state.user.games,
+    favoriteGames: state.user.games.filter(game => game.isFavorite),
     groups,
     pin: state.encryption.pin,
     invalidPin: state.encryption.invalidPin,
@@ -584,12 +748,15 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return ({
-    createChat: (contacts, userId, title, icon, encryption) => dispatch(createChatAction(contacts, userId, title, icon, encryption)),
+    createChat: (contacts, userId, title, icon, encryption, isGroup) => dispatch(createChatAction(contacts, userId, title, icon, encryption, isGroup)),
     openChat: chatId => dispatch(openChatAction(chatId)),
     closeChat: chatId => dispatch(closeChatAction(chatId)),
     generateKeys: () => dispatch(generateKeysAction()),
     validatePin: (pin, publicKey) => dispatch(validatePinAction(pin, publicKey)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
+    favoriteGame: gameId => dispatch(favoriteGameAction(gameId)),
+    unfavoriteGame: gameId => dispatch(unfavoriteGameAction(gameId)),
+    updateGameIcon: (gameId, icon) => dispatch(updateGameIconAction(gameId, icon)),
     updateStatus: (status, forcedStatus) => dispatch(updateStatusAction(status, forcedStatus)),
   });
 }

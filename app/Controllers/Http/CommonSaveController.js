@@ -3,14 +3,15 @@
 const { validate } = use('Validator')
 const User = use('App/Models/User')
 const Settings = use('App/Models/Setting')
-var nodemailer = require('nodemailer')
+//var nodemailer = require('nodemailer')
 const axios = use('axios')
 const querystring = use('querystring')
 const Env = use('Env')
 
+const EmailController = use('./EmailController')
+
 class CommonSaveController {
   async register({ view, session }) {
-    console.log(session.get('email'))
     return view.render('auth/socialRegister', {
       alias: session.get('alias'),
       email: session.get('email'),
@@ -18,9 +19,6 @@ class CommonSaveController {
   }
 
   async saveuser({ ally, auth, request, session, response, view }) {
-    //117703502811656157640
-    //https://myg.gg/user/register#
-
     if (auth.user != null) {
       session.put('alias', null)
       session.put('email', null)
@@ -108,10 +106,9 @@ class CommonSaveController {
         querystring.stringify({ secret: Env.get('SECRET_KEY'), response: token })
       )
       if (!data_request.data.success) {
-        console.log('Google Recaptcha Verification Fail' + data_request.data)
+        console.log('Google Recaptcha Verification Fail: ' + data_request.data)
         return response.redirect('/')
       } else {
-        console.log('Google Recaptcha Verification Success' + data_request.data)
         const user = new User()
         user.first_name = request.input('firstName')
         user.last_name = request.input('lastName')
@@ -123,36 +120,39 @@ class CommonSaveController {
         user.provider = session.get('provider')
         await user.save()
 
-        var transporter = nodemailer.createTransport({
-          host: 'smtp.gmail.com',
-          port: 465,
-          secure: true, // use TLS
-          auth: {
-            user: 'teamraaz@gmail.com',
-            pass: 'Raaz1988!',
-          },
-          tls: {
-            // do not fail on invalid certs
-            rejectUnauthorized: false,
-          },
-        })
-
+        // var transporter = nodemailer.createTransport({
+        //   host: '',
+        //   port: 465,
+        //   secure: true, // use TLS
+        //   auth: {
+        //     user: '',
+        //     pass: '',
+        //   },
+        //   tls: {
+        //     // do not fail on invalid certs
+        //     rejectUnauthorized: false,
+        //   },
+        // })
+        //
         // const mailOptions = {
-        //   from: 'teamraaz@gmail.com', // sender address
+        //   from: 'levelup@myG.gg', // sender address
         //   to: request.input('email'), // list of receivers
-        //   subject: 'My Game Welcome Email', // Subject line
+        //   subject: 'myG - Welcome Email', // Subject line
         //   html:
         //     '<h1>Hello,' +
         //     request.input('firstName') +
         //     ' ' +
         //     request.input('lastName') +
-        //     ' .</h1><p>Welcome to the My Game, here is your getting started guide</p>',
+        //     ' .</h1><p>Welcome to the myG, here is your getting started guide</p>',
         // }
         //
         // transporter.sendMail(mailOptions, function(err, info) {
         //   if (err) console.log(err)
         //   else console.log(info)
         // })
+
+        let send_email = new EmailController()
+        send_email.welcome_email(request.input('email'))
 
         session.forget('provider')
         session.forget('provider_id')
@@ -162,33 +162,33 @@ class CommonSaveController {
     }
   }
 
-  async sampleemailsend({ view, session }) {
-    var transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true, // use TLS
-      auth: {
-        user: 'teamraaz@gmail.com',
-        pass: 'Password123!123',
-      },
-      tls: {
-        // do not fail on invalid certs
-        rejectUnauthorized: false,
-      },
-    })
-
-    const mailOptions = {
-      from: 'teamraaz@gmail.com', // sender address
-      to: 'mnraaz@gmail.com', // list of receivers
-      subject: 'test mail', // Subject line
-      html: '<h1>this is a test mail.</h1>', // plain text body
-    }
-
-    transporter.sendMail(mailOptions, function(err, info) {
-      if (err) console.log(err)
-      else console.log(info)
-    })
-  }
+  // async sampleemailsend({ view, session }) {
+  //   var transporter = nodemailer.createTransport({
+  //     host: 'email-smtp.us-east-1.amazonaws.com',
+  //     port: 465,
+  //     secure: true, // use TLS
+  //     auth: {
+  //       user: '',
+  //       pass: '',
+  //     },
+  //     tls: {
+  //       // do not fail on invalid certs
+  //       rejectUnauthorized: false,
+  //     },
+  //   })
+  //
+  //   const mailOptions = {
+  //     from: 'levelup@myG.gg', // sender address
+  //     to: 'mnraaz@gmail.com', // list of receivers
+  //     subject: 'test mail', // Subject line
+  //     html: '<h1>this is a test mail.</h1>', // plain text body
+  //   }
+  //
+  //   transporter.sendMail(mailOptions, function(err, info) {
+  //     if (err) console.log(err)
+  //     else console.log(info)
+  //   })
+  // }
 }
 
 module.exports = CommonSaveController

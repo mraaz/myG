@@ -15,6 +15,7 @@ export default class Profile extends Component {
       collapseesports: true,
       friendStatus: 0, //0: Not friend, 1: Friends, 2:Friend request pending,
       friendTxt: '',
+      followTxt: false,
       myPage: false,
       bFileModalOpen: false,
       profile_attr: '',
@@ -129,6 +130,13 @@ export default class Profile extends Component {
           initialData: self.props.initialData,
           userProfile: userProfile.data.user[0],
         })
+
+        if (userProfile.data.following) {
+          self.setState({
+            followTxt: true,
+          })
+        }
+
         if (userProfile.data.friend) {
           self.setState({
             friendTxt: 'Remove Friend',
@@ -207,6 +215,26 @@ export default class Profile extends Component {
     }
 
     getID()
+  }
+
+  doFollow = () => {
+    if (!this.state.followTxt) {
+      try {
+        const createFollower = axios.post('/api/followers/create', {
+          follower_id: this.props.routeProps.match.params.id,
+        })
+        this.setState({ followTxt: true })
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      try {
+        const deleteFollower = axios.delete(`/api/followers/${this.props.routeProps.match.params.id}/delete`)
+        this.setState({ followTxt: false })
+      } catch (error) {
+        console.log(error)
+      }
+    }
   }
 
   addFriend = () => {
@@ -354,8 +382,9 @@ export default class Profile extends Component {
   }
 
   render() {
+    const { match } = this.props.routeProps
+    var redirect_to_profile = false
     if (this.state.redirect_) {
-      const { match } = this.props.routeProps
       var tmp
       switch (this.state.redirect_link) {
         case 'editDossier':
@@ -372,6 +401,13 @@ export default class Profile extends Component {
           break
       }
     }
+    //Redirect to logged in user if an Alias is not provided
+    if (this.props.initialData != 'loading') {
+      if (typeof match.params.alias == 'undefined') {
+        redirect_to_profile = true
+      }
+    }
+
     if (this.state.userProfile !== undefined) {
       if (this.state.esportsBioData !== undefined) {
         const {
@@ -458,9 +494,15 @@ export default class Profile extends Component {
                 <div className='bottom-container'>
                   <div className='follow_btn'>
                     {!this.state.myPage && (
-                      <div className='follow-btn' onClick={this.addFriend}>
+                      <div className='addFriend-btn' onClick={this.addFriend}>
                         {' '}
                         {this.state.friendTxt}{' '}
+                      </div>
+                    )}
+                    {!this.state.myPage && (
+                      <div className='follow-btn' onClick={this.doFollow}>
+                        {' '}
+                        {this.state.followTxt ? 'Unfollow' : 'Follow'}{' '}
                       </div>
                     )}
                   </div>
@@ -547,7 +589,12 @@ export default class Profile extends Component {
         return <div className='content-area profile-page'>Loading</div>
       }
     } else {
-      return <div className='content-area profile-page'>This profile was not found</div>
+      if (redirect_to_profile) {
+        var tmp = `/profile/${this.props.initialData.userInfo.alias}`
+        return <Redirect push to={tmp} />
+      } else {
+        return <div className='content-area profile-page'>This profile was not found</div>
+      }
     }
   }
 }

@@ -2,9 +2,11 @@
 import logger from '../../common/logger';
 
 export default function reducer(state = {
+  userId: null,
   status: 'online',
   isStatusLocked: false,
   contacts: [],
+  games: [],
   friendRequests: [],
   foundUsers: [],
 }, action) {
@@ -12,14 +14,17 @@ export default function reducer(state = {
 
     case "PREPARE_MESSENGER_FULFILLED": {
       logger.log('CHAT', `Redux -> Messenger Ready (User): `, action.payload);
-      const { contacts } = action.payload;
+      const { contacts, games } = action.payload;
+      const { userId } = action.meta;
       const { value: currentStatus, locked: isStatusLocked } = action.payload.status;
       const status = currentStatus === 'offline' && !isStatusLocked ? 'online' : currentStatus;
       return {
         ...state,
         contacts,
+        games,
         status, 
         isStatusLocked,
+        userId,
       };
     }
 
@@ -97,6 +102,42 @@ export default function reducer(state = {
       return {
         ...state,
         foundUsers: action.payload.users,
+      };
+    }
+
+    case "FAVORITE_GAME_FULFILLED": {
+      logger.log('USER', `Redux -> Favorited Game: `, action.payload, action.meta);
+      const games = JSON.parse(JSON.stringify(state.games));
+      const game = games.find(game => game.gameId === action.meta.gameId);
+      if (!game) return state;
+      game.isFavorite = true;
+      return {
+        ...state,
+        games,
+      };
+    }
+
+    case "UNFAVORITE_GAME_FULFILLED": {
+      logger.log('USER', `Redux -> Favorited Game: `, action.payload, action.meta);
+      const games = JSON.parse(JSON.stringify(state.games));
+      const game = games.find(game => game.gameId === action.meta.gameId);
+      if (!game) return state;
+      game.isFavorite = false;
+      return {
+        ...state,
+        games,
+      };
+    }
+
+    case "UPDATE_GAME_ICON_FULFILLED": {
+      logger.log('USER', `Redux -> Updated Game Icon: `, action.payload, action.meta);
+      const games = JSON.parse(JSON.stringify(state.games));
+      const game = games.find(game => game.gameId === action.meta.gameId);
+      if (!game) return state;
+      game.icon = action.meta.icon;
+      return {
+        ...state,
+        games,
       };
     }
 

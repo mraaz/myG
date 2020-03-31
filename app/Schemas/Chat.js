@@ -5,10 +5,12 @@ class Chat {
 
   constructor(data) {
     this.chatId = forceInt(data.chatId);
+    this.gameId = forceInt(data.gameId);
     this.muted = forceBoolean(data.muted);
     this.blocked = forceBoolean(data.blocked);
     this.blockedUsers = forceArray(data.blockedUsers);
     this.isPrivate = forceBoolean(data.isPrivate);
+    this.isGroup = forceBoolean(data.isGroup);
     this.selfDestruct = forceBoolean(data.selfDestruct);
     this.deletedMessages = forceArray(data.deletedMessages);
     this.lastCleared = forceInt(data.lastCleared);

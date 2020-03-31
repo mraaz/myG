@@ -88,11 +88,25 @@
       position: absolute;
       .follow_btn {
         width: 220px;
-        .follow-btn {
+        .addFriend-btn {
           text-align: center;
           width: 76%; //36
           bottom: 123px;
           left: 208px;
+          position: absolute;
+          //padding-left: 23px;
+          padding-top: 15px;
+          padding-bottom: 15px;
+          //border-radius: 4px;
+          border: 1px solid rgba(0, 0, 0, 0.2);
+          //background: $primarybuttonBG;
+          cursor: pointer;
+        }
+        .follow-btn {
+          text-align: center;
+          width: 76%; //36
+          bottom: 123px;
+          left: 508px;
           position: absolute;
           //padding-left: 23px;
           padding-top: 15px;

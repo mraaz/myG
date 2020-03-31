@@ -269,6 +269,9 @@ Route.get('/api/usergroup/promote_member/:id/:usergrp_id', 'UsergroupController.
 Route.get('/api/usergroup/demote_member/:id/:usergrp_id', 'UsergroupController.demote_member')
 Route.get('/api/usergroup/current_member/:id', 'UsergroupController.current_member')
 
+Route.post('/api/followers/create', 'FollowerController.store')
+Route.delete('/api/followers/:follower_id/delete', 'FollowerController.delete')
+
 // Trying to avoid conflicts, should move this route up later.
 Route.get('/api/notifications/outgoingFriendRequests', 'NotificationController.outgoingFriendRequests')
 
@@ -296,7 +299,12 @@ Route.get('/api/chat/:chatId/links/', 'ChatController.fetchLinks')
 Route.get('/api/chat-link/:uuid', 'ChatController.fetchLink')
 Route.put('/api/chat/:chatId/links/:uuid', 'ChatController.updateLink')
 Route.get('/api/chat/:chatId/entryLogs', 'ChatController.fetchEntryLogs')
+Route.post('/api/chat/game/:gameId', 'ChatController.acceptGameGroupInvitation')
 Route.put('/api/user_chat/publicKey/', 'UserChatController.storePublicKey')
+Route.get('/api/user_chat/game/', 'UserChatController.fetchGames')
+Route.put('/api/user_chat/game/:gameId', 'UserChatController.favoriteGame')
+Route.delete('/api/user_chat/game/:gameId', 'UserChatController.unfavoriteGame')
+Route.put('/api/user_chat/game/:gameId/icon', 'UserChatController.updateGameIcon')
 Route.get('/api/user_chat/contact/', 'UserChatController.fetchContacts')
 Route.get('/api/user_chat/contact/:contactId', 'UserChatController.fetchContact')
 Route.get('/api/user_chat/search/', 'UserChatController.searchUsers')

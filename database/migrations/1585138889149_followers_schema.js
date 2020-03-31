@@ -3,22 +3,21 @@
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use('Schema')
 
-class SettingsSchema extends Schema {
+class FollowersSchema extends Schema {
   up () {
-    this.create('settings', (table) => {
+    this.create('followers', (table) => {
       table.increments()
       table.integer('user_id').unsigned().notNullable()
       table.foreign('user_id').references('users.id').onDelete('cascade')
-      table.boolean('email_notification').defaultTo(0)
-      table.boolean('email_daily').defaultTo(0)
-      table.boolean('email_weekly').defaultTo(0)
+      table.integer('follower_id').unsigned().notNullable()
+      table.foreign('follower_id').references('users.id').onDelete('cascade')
       table.timestamps()
     })
   }
 
   down () {
-    this.drop('settings')
+    this.drop('followers')
   }
 }
 
-module.exports = SettingsSchema
+module.exports = FollowersSchema

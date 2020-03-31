@@ -3,6 +3,7 @@ import { Convert_to_comma_delimited_value } from './Utility_Function'
 import axios from 'axios'
 import moment from 'moment'
 import uuid from 'uuid'
+import { createGameGroup } from '../../common/group';
 
 export async function SubmitDataFunction(myG) {
   var myRegion = ''
@@ -87,7 +88,10 @@ export async function SubmitDataFunction(myG) {
       schedule_games_GUID: tmp,
       clash_royale_trophies: myClash_royale_trophies,
       allow_comments: allow_comments,
-    })
+    }).then(response => {
+      const { id, start_date_time: schedule } = response.data;
+      if (id) createGameGroup(id, schedule, `${myG.game_name_box.value} (${myG.startDate.format('YYYY-MM-DD HH:mm:ss')})`);
+    });
   } catch (error) {
     throw error
   }
