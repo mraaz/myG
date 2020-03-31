@@ -1050,6 +1050,9 @@ class Import_game_names_Schema extends Schema {
     .raw("update game_names set game_img = \"https://mygame-media.s3-ap-southeast-2.amazonaws.com/game_icons/dota_2_img.jpg\" where game_name = \"Dota 2\"")
     .raw("update game_names set game_img = \"https://mygame-media.s3-ap-southeast-2.amazonaws.com/game_icons/clash_royale_img.png\" where game_name = \"Clash Royale\"")
 
+    .raw("update game_names set game_name_fields = 1 where game_name = \"Dota 2\"")
+    .raw("update game_names set game_name_fields = 1 where game_name = \"Clash Royale\"")
+
 
     .raw("insert into game_name_fields(game_names_id, in_game_field, created_at, updated_at) values (998, 'dota2_medal_ranks', '1988-08-08', '1988-08-08')")
     .raw("insert into game_name_fields(game_names_id, in_game_field, created_at, updated_at) values (998, 'dota2_server_regions', '1988-08-08', '1988-08-08')")
