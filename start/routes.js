@@ -272,6 +272,8 @@ Route.get('/api/usergroup/current_member/:id', 'UsergroupController.current_memb
 Route.post('/api/followers/create', 'FollowerController.store')
 Route.delete('/api/followers/:follower_id/delete', 'FollowerController.delete')
 
+Route.get('/api/email/summary_email', 'EmailController.summary_email')
+
 // Trying to avoid conflicts, should move this route up later.
 Route.get('/api/notifications/outgoingFriendRequests', 'NotificationController.outgoingFriendRequests')
 

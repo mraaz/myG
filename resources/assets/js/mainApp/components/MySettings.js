@@ -93,6 +93,10 @@ class MySettings extends Component {
     }
   }
 
+  sendEmail = () => {
+    const post = axios.get('/api/email/summary_email')
+  }
+
   render() {
     if (this.state.redirect_) {
       this.props.logout()
@@ -105,7 +109,10 @@ class MySettings extends Component {
           {this.state.alert}
           <div className='padding-container'>
             <div className='invitation-grey-container'>
-              <h3>mySettings</h3>
+              <h3>mySettings!</h3>
+              <button className='save' onClick={this.sendEmail}>
+                Send Email
+              </button>
               <div className='padding-container'></div>
               <div className='mySettings-container'>
                 <div className='email-notification'>
