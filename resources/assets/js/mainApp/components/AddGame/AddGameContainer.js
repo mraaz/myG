@@ -42,6 +42,7 @@ const AddGameContainer = () => {
     roleNeeded: null,
     trophies: null,
   })
+  const gameLinkRef = useRef(null)
 
   const onAddGameSubmit = async () => {
     updateIsSubmitting(false)
