@@ -15,18 +15,16 @@ class GroupCreation extends React.Component {
     addedContacts: [],
     uploadingPhoto: false,
     titleError: false,
-    contactsError: false,
   }
 
   onContactSearch = (name) => {
     const matchingContacts = this.props.contacts.filter(contact => contact.name.toLowerCase().includes(name.toLowerCase()));
-    this.setState({ contactInput: name, matchingContacts, contactsError: false });
+    this.setState({ contactInput: name, matchingContacts });
   }
 
   onCreate = () => {
     const { icon, title, addedContacts } = this.state;
     if (!title) return this.setState({ titleError: true });
-    if (addedContacts.length < 2) return this.setState({ contactsError: true });
     this.props.onCreate(icon, title, addedContacts);
   }
 
@@ -76,7 +74,6 @@ class GroupCreation extends React.Component {
       <div className="chat-group-creation-invite-hint-container">
         <p className="chat-group-creation-invite-hint">Invite</p>
         {this.renderTitleError()}
-        {this.renderContactsError()}
         {this.renderContactLimitWarning()}
       </div>
     );
@@ -159,15 +156,6 @@ class GroupCreation extends React.Component {
     return (
       <div className="chat-group-creation-title-error">
         Please inform a name for the group
-      </div>
-    );
-  }
-
-  renderContactsError = () => {
-    if (!this.state.contactsError) return null;
-    return (
-      <div className="chat-group-creation-contact-error">
-        Please add 2+ friends to the group
       </div>
     );
   }

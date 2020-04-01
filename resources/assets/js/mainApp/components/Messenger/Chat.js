@@ -333,14 +333,14 @@ export class Chat extends React.PureComponent {
 
 export function mapStateToProps(state, props) {
   const chat = state.chat.chats.find(chat => chat.chatId === props.chatId) || { contacts: [], guests: [] };
+  const isGroup = chat.isGroup;
   const messages = withDatesAndLogs(chat.messages || [], chat.entryLogs || []);
   const contacts = chat.contacts.filter(contactId => contactId !== props.userId);
   const guests = chat.guests.filter(contactId => contactId !== props.userId);
   const fullContacts = chat.fullContacts || [];
-  const contactId = contacts.length === 1 && contacts[0];
+  const contactId = !isGroup && contacts[0];
   const contact = (contactId && state.user.contacts.find(contact => contact.contactId === contactId)) || {};
   const contactSubtitle = contact.status && contact.status === 'offline' ? `${formatDateTime(contact.lastSeen)}` : contact.status && `${contact.status}`;
-  const isGroup = contacts.length > 1;
   let chatSubtitle = null;
   const contactsMap = {};
   fullContacts.forEach(contact => contactsMap[contact.contactId] = contact);

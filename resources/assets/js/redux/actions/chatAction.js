@@ -19,6 +19,14 @@ export function onChatUpdatedAction(chat, userId) {
   }
 }
 
+export function onGameStartingAction(chatId, userId) {
+  return {
+    type: 'ON_GAME_STARTING',
+    payload: { chatId },
+    meta: { userId },
+  }
+}
+
 export function onNewMessageAction(message, userId) {
   return {
     type: 'NEW_MESSAGE',
@@ -134,6 +142,7 @@ export function prepareMessengerAction(userId, pin, privateKey, publicKey) {
   return {
     type: 'PREPARE_MESSENGER',
     payload: Promise.all(requests).then(([chats, contacts, games, status, encryption]) => ({ ...chats, ...contacts, ...games, ...status, ...encryption })),
+    meta: { userId },
   }
 }
 
@@ -169,10 +178,10 @@ export function fetchChatAction(chatId) {
   }
 }
 
-export function createChatAction(contacts, userId, title, icon, encryption) {
+export function createChatAction(contacts, userId, title, icon, encryption, isGroup, gameId, gameSchedule) {
   return {
     type: 'CREATE_CHAT',
-    payload: createChat(contacts, [userId], title, icon, encryption && encryption.publicKey),
+    payload: createChat(contacts, [userId], title, icon, encryption && encryption.publicKey, isGroup, gameId, gameSchedule),
     meta: { userId, encryption }
   }
 }

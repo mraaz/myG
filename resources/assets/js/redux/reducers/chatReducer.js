@@ -1,11 +1,12 @@
 
 import logger from '../../common/logger';
 import { reEncryptMessages, sendGroupKeys } from '../../common/encryption';
-import { decryptMessage, deserializeKey } from '../../integration/encryption';
+import { encryptMessage, decryptMessage, deserializeKey } from '../../integration/encryption';
 import { requestGroupPrivateKey, confirmGroupPrivateKey } from '../../integration/http/guest';
 import notifyToast from '../../common/toast';
 
 export default function reducer(state = {
+  userId: null,
   chats: [],
   contacts: [],
   unreadMessages: [],
@@ -22,6 +23,7 @@ export default function reducer(state = {
 
     case "PREPARE_MESSENGER_FULFILLED": {
       logger.log('CHAT', `Redux -> Messenger Ready (Chat): `, action.payload);
+      const { userId } = action.meta;
       const chats = action.payload.chats.map(chat => {
         const previousChat = state.chats.find(candidate => candidate.chatId === chat.chatId) || {};
         const previousMessages = previousChat.messages || [];
@@ -37,6 +39,7 @@ export default function reducer(state = {
       if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => openChats[index].closed = true);
       return {
         ...state,
+        userId,
         chats,
         contacts: action.payload.contacts,
         preparingMessenger: false,
@@ -66,8 +69,8 @@ export default function reducer(state = {
         .filter(message => !chat.blockedUsers.includes(message.senderId))
         .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId));
       if (!chat.blocked) chat.messages = messages;
-      const isGroup = action.payload.chat.contacts && action.payload.chat.contacts.length > 2;
-      if (isGroup) {
+      if (chat.gameStarting) chat.messages.push(chat.gameStarting);
+      if (action.payload.chat.isGroup) {
         const privateKey = receiveGroupKey(chat, action.payload.encryptionMessages, userId, state.privateKey);
         if (privateKey) {
           chat.privateKey = privateKey;
@@ -173,13 +176,15 @@ export default function reducer(state = {
       const chatAlreadyExists = chats.map(chat => parseInt(chat.chatId)).includes(parseInt(created.chatId));
       if (!chatAlreadyExists) chats.push(created);
       const chat = chats.find(candidate => candidate.chatId === created.chatId);
-      chat.closed = false;
+      chat.closed = !!chat.gameId;
       chat.minimised = false;
       chat.maximised = false;
       Object.assign(chat, encryption);
       prepareGroupKeysToSend(chat, parseInt(action.meta.userId), state.contacts, state.publicKey, state.privateKey);
-      const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== created.chatId);
-      if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
+      if (!chat.closed) {
+        const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== created.chatId);
+        if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
+      }
       return {
         ...state,
         chats,
@@ -189,7 +194,8 @@ export default function reducer(state = {
     case "NEW_CHAT": {
       logger.log('CHAT', `Redux -> New Chat: `, action.payload);
       const { chat } = action.payload;
-      chat.closed = (chat.messages || []).length === 0;
+      const isGameGroupInvite = chat.gameId && !(chat.owners || []).includes(state.userId);
+      chat.closed = !isGameGroupInvite && (chat.messages || []).length === 0;
       const chats = JSON.parse(JSON.stringify(state.chats));
       if (chats.map(chat => chat.chatId).includes(chat.chatId)) return state;
       chats.push(chat);
@@ -216,7 +222,7 @@ export default function reducer(state = {
       if (chat.blockedUsers.includes(message.senderId)) return state;
       if (!chat.muted && !window.focused && message.senderId !== userId) playMessageSound();
       if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
-      if (!chat.muted) {
+      if (!chat.muted && !message.keyReceiver) {
         const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== chatId);
         if (openChats.length <= 3) chat.closed = false;
         else unreadMessages.push(message);
@@ -419,7 +425,7 @@ export default function reducer(state = {
       if (!chat.entryLogs) chat.entryLogs = [];
       chat.entryLogs.push(entryLog);
       if (!chat.contacts.includes(contact.contactId)) chat.contacts.push(contact.contactId);
-      if (!chat.fullContacts.map(contact => contact.contactId).includes(contact.contactId)) chat.fullContacts.push(contact);
+      if (chat.fullContacts && !chat.fullContacts.map(contact => contact.contactId).includes(contact.contactId)) chat.fullContacts.push(contact);
       sendGroupKeys(chatId, parseInt(thisUserId), contacts, chat.privateKey, state.privateKey);
       return {
         ...state,
@@ -483,6 +489,43 @@ export default function reducer(state = {
       };
     }
 
+    case "ON_GAME_STARTING": {
+      logger.log('CHAT', `Redux -> Game Starting: `, action.payload, action.meta);
+      const chatId = action.payload.chatId;
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => candidate.chatId === chatId);
+      if (!chat) return state;
+      playMessageSound();
+      if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
+      chat.closed = false;
+      chat.minimised = false;
+      chat.maximised = false;
+      const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== chatId);
+      if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
+      if (!chat.messages) chat.messages = [];
+      const message = "This game is about to start.";
+      const gameStarting = {
+        messageId: Number.MAX_SAFE_INTEGER,
+        chatId: chatId,
+        senderId: null,
+        keyReceiver: null,
+        senderName: "myG",
+        content: encryptMessage(message, chat.publicKey, deserializeKey(chat.privateKey)),
+        backup: null,
+        deleted: false,
+        edited: false,
+        selfDestruct: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      chat.messages.push(gameStarting);
+      chat.gameStarting = gameStarting;
+      return {
+        ...state,
+        chats,
+      };
+    }
+
     case "MARK_AS_READ": {
       logger.log('CHAT', `Redux -> Mark As Read: `, action.meta, action.payload);
       const { userId: thisUserId } = action.meta;
@@ -532,7 +575,7 @@ export default function reducer(state = {
         return true;
       });
       reEncryptMessages(unreadMessages, publicKey, privateKey);
-      if (chat.fullContacts && chat.contacts.length > 2) {
+      if (chat.isGroup && chat.fullContacts) {
         const updatedUser = chat.fullContacts.find(contact => parseInt(contact.contactId) === parseInt(updatedUserId));
         updatedUser.publicKey = publicKey;
         sendGroupKeys(chat.chatId, thisUserId, [updatedUser], chat.privateKey, privateKey);
@@ -604,7 +647,7 @@ function playMessageSound() {
 }
 
 function prepareGroupKeysToSend(group, userId, userContacts, userPublicKey, userPrivateKey) {
-  if (group.contacts.length <= 2) return;
+  if (!group.isGroup) return;
   const chatContacts = group.contacts.filter(contactId => userId !== parseInt(contactId));
   const getContact = contactId => userContacts.find(contact => parseInt(contact.contactId) === parseInt(contactId));
   const contacts = chatContacts.map(contactId => getContact(contactId));
@@ -613,7 +656,7 @@ function prepareGroupKeysToSend(group, userId, userContacts, userPublicKey, user
 }
 
 function receiveGroupKey(group, messages, userId, userPrivateKey) {
-  if (group.contacts.length <= 2) return;
+  if (!group.isGroup) return;
   const message = messages[0];
   if (!message || !message.content || message.keyReceiver !== userId) return;
   const privateKey = decryptMessage(message.content, userPrivateKey);

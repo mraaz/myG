@@ -1,5 +1,6 @@
 'use strict'
 const { hooks } = require('@adonisjs/ignitor')
+const { scheduleAutomaticGameMessages } = require('../app/Common/scheduler');
 
 hooks.after.providersBooted(() => {
   const Env = use('Env')
@@ -8,4 +9,8 @@ hooks.after.providersBooted(() => {
   View.global('recaptcha_sitekey', function () {
     return Env.get('SITE_KEY')
   })
+})
+
+hooks.after.httpServer(() => {
+  scheduleAutomaticGameMessages();
 })

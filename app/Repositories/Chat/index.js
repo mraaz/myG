@@ -9,6 +9,9 @@ const ChatLastRead = use('App/Models/ChatLastRead');
 const ChatLink = use('App/Models/ChatLink');
 const ChatEntryLog = use('App/Models/ChatEntryLog');
 const ChatPrivateKeyRequest = use('App/Models/ChatPrivateKeyRequest');
+const ChatGameMessageSchedule = use('App/Models/ChatGameMessageSchedule');
+
+const RedisRepository = require('../../Repositories/Redis');
 
 const ChatSchema = require('../../Schemas/Chat');
 const ChatLinkSchema = require('../../Schemas/ChatLink');
@@ -40,6 +43,8 @@ class ChatRepository {
         blocked: chat.blocked,
         blockedUsers: chat.blocked_users,
         isPrivate: chat.isPrivate,
+        isGroup: chat.isGroup,
+        gameId: chat.game_id,
         selfDestruct: chat.self_destruct,
         deletedMessages: chat.deleted_messages,
         lastRead: chat.last_read_message_id,
@@ -78,6 +83,8 @@ class ChatRepository {
       blocked: chat.blocked,
       blockedUsers: chat.blocked_users,
       isPrivate: chat.isPrivate,
+      isGroup: chat.isGroup,
+      gameId: chat.game_id,
       selfDestruct: chat.self_destruct,
       deletedMessages: chat.deleted_messages,
       lastRead: chat.last_read_message_id,
@@ -124,13 +131,16 @@ class ChatRepository {
 
   async fetchUnreadMessages({ requestingUserId }) {
     const { chats } = await this.fetchChats({ requestingUserId });
-    const lastReads = (await ChatLastRead.query().where('user_id', requestingUserId).fetch()).toJSON();
+    const lastReadsRaw = await ChatLastRead.query().where('user_id', requestingUserId).fetch();
+    if (!lastReadsRaw) return { unreadMessages: [] };
+    const lastReads = lastReadsRaw.toJSON();
     const lastReadId = (chatId) => (lastReads.find(lastRead => lastRead.chat_id === chatId) || {}).last_read_message_id;
     const unreadMessages = [];
     const requests = chats.map(async chat => ({ lastReadId: lastReadId(chat.chatId), message: await this.fetchLastMessage({ requestedChatId: chat.chatId }) }));
     const responses = await Promise.all(requests);
     responses.forEach(response => {
       const { lastReadId, message } = response;
+      if (!message) return;
       if (!lastReadId || (parseInt(message.id) > parseInt(lastReadId))) unreadMessages.push(new MessageSchema({
         messageId: message.id,
         chatId: message.chat_id,
@@ -146,12 +156,17 @@ class ChatRepository {
         updatedAt: message.updated_at,
       }));
     });
-    
+
     return { unreadMessages };
   }
 
   async fetchLastMessage({ requestedChatId }) {
-    return (await ChatMessage.query().where('chat_id', requestedChatId).orderBy('id', 'desc').limit(1).first()).toJSON();
+    const lastMessageRaw = await ChatMessage.query()
+      .whereNull('key_receiver')
+      .andWhere('chat_id', requestedChatId)
+      .orderBy('id', 'desc')
+      .limit(1).first();
+    return lastMessageRaw && lastMessageRaw.toJSON();
   }
 
   async fetchEncryptionMessages({ requestingUserId, requestedChatId }) {
@@ -178,23 +193,21 @@ class ChatRepository {
     return { encryptionMessages };
   }
 
-  async createChat({ requestingUserId, contacts, owners, title, icon, publicKey }) {
+  async createChat({ requestingUserId, contacts, owners, title, icon, publicKey, isGroup, gameId, gameSchedule }) {
     contacts = [requestingUserId, ...contacts].sort();
     if (contacts.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
     const { chats } = await this.fetchChats({ requestingUserId });
     const guests = [];
 
-    const isGroup = contacts.length > 2;
-    const existingChat = !isGroup && chats.find(chat =>
-      contacts.length === chat.contacts.length &&
-      contacts.every((id, index) => id === chat.contacts[index])
-    );
+    const existingChat = !isGroup && chats.find(chat => contacts.every((id, index) => id === chat.contacts[index]));
     if (existingChat) return { chat: existingChat };
 
     const chat = new Chat();
     if (title) chat.title = title;
     if (icon) chat.icon = icon;
     if (publicKey) chat.public_key = publicKey;
+    chat.isGroup = isGroup;
+    chat.game_id = gameId;
     chat.contacts = JSON.stringify(contacts || []);
     chat.guests = JSON.stringify(guests || []);
     chat.owners = JSON.stringify(owners || []);
@@ -210,6 +223,8 @@ class ChatRepository {
       title,
       icon,
       publicKey,
+      isGroup,
+      gameId,
       createdAt: chat.created_at,
       updatedAt: chat.updated_at,
     });
@@ -223,7 +238,7 @@ class ChatRepository {
       await userChat.save();
     });
 
-    if (contacts.length > 2) {
+    if (isGroup) {
       [1, 2, 3].forEach(async () => {
         const link = new ChatLink();
         link.chat_id = chat.id;
@@ -231,6 +246,11 @@ class ChatRepository {
         link.expiry = null;
         await link.save();
       });
+    }
+
+    if (gameId) {
+      await this.scheduleGameMessage({ chatId: chat.id, schedule: gameSchedule });
+      await this._setSelfDestruct({ requestedChatId: chat.id, selfDestruct: true });
     }
 
     this._notifyChatEvent({ chatId: chat.id, action: 'newChat', payload: chatSchema });
@@ -347,7 +367,7 @@ class ChatRepository {
 
   async addContactsToChat({ requestedChatId, contacts, fromLink }) {
     const { chat } = await this.fetchChatInfo({ requestedChatId });
-    if (chat.contacts.length < 3) throw new Error('Cannot add users to a normal chat.');
+    if (!chat.isGroup) throw new Error('Cannot add users to a normal chat.');
     const diffContacts = contacts.filter(contactId => !chat.contacts.includes(contactId));
     if (!diffContacts.length) return { error: 'Contacts are Already in Chat.' };
     contacts.forEach(contactId => !chat.contacts.includes(contactId) && chat.contacts.push(contactId));
@@ -358,6 +378,7 @@ class ChatRepository {
       userChat.user_id = userId;
       userChat.deleted_messages = '[]';
       userChat.blocked_users = '[]';
+      if (chat.gameId) userChat.self_destruct = true;
       await userChat.save();
     });
     await Chat.query().where('id', requestedChatId).update({ contacts: JSON.stringify(chat.contacts) });
@@ -476,6 +497,8 @@ class ChatRepository {
       chatId: chat.id,
       blocked: chat.blocked,
       isPrivate: chat.isPrivate,
+      isGroup: chat.isGroup,
+      gameId: chat.game_id,
       icon: chat.icon,
       title: chat.title,
       lastMessage: chat.last_message,
@@ -581,6 +604,65 @@ class ChatRepository {
     return new DefaultSchema({ success: true });
   }
 
+  async acceptGameGroupInvitation({ requestedUserId, requestedGameId }) {
+    const { chat } = await this.fetchChatByGameId({ requestedGameId });
+    await this.addContactsToChat({ requestedChatId: chat.chatId, contacts: [requestedUserId] });
+    return new DefaultSchema({ success: true });
+  }
+
+  async fetchChatByGameId({ requestedGameId }) {
+    const chat = (await Chat.query().where('game_id', requestedGameId).first()).toJSON();
+    const chatSchema = new ChatSchema({
+      chatId: chat.id,
+      blocked: chat.blocked,
+      isPrivate: chat.isPrivate,
+      isGroup: chat.isGroup,
+      gameId: chat.game_id,
+      icon: chat.icon,
+      title: chat.title,
+      lastMessage: chat.last_message,
+      publicKey: chat.public_key,
+      contacts: chat.contacts,
+      guests: chat.guests,
+      owners: chat.owners,
+      moderators: chat.moderators,
+      createdAt: chat.created_at,
+      updatedAt: chat.updated_at,
+    });
+    return { chat: chatSchema };
+  }
+
+  async scheduleGameMessage({ chatId, schedule }) {
+    const gameMessageSchedule = new ChatGameMessageSchedule();
+    gameMessageSchedule.chat_id = chatId;
+    gameMessageSchedule.schedule = schedule;
+    await gameMessageSchedule.save();
+    await RedisRepository.updateGameMessageSchedule({ chatId, schedule });
+  }
+
+  async clearGameMessageSchedule({ chatIds }) {
+    await ChatGameMessageSchedule.query('chat_id', 'in', chatIds).delete();
+  }
+
+  async handleGameMessages() {
+    log('CRON', `START - HANDLE GAME MESSAGES`);
+    const lock = await RedisRepository.lock('HANDLE_GAME_MESSAGES', 1000 * 45);
+    if (!lock) return log('CRON', 'Failed to Acquire HANDLE_GAME_MESSAGES lock');
+    const { schedule } = await RedisRepository.getGameMessageSchedule();
+    const oneHourFromNow = Date.now() + 1000 * 60 * 60;
+    const messagesToSend = (schedule || []).filter(entry => new Date(entry.schedule).getTime() < oneHourFromNow);
+    if (messagesToSend.length) await this.sendGameMessages(messagesToSend);
+    log('CRON', `END - HANDLE GAME MESSAGES`);
+  }
+
+  async sendGameMessages(messagesToSend) {
+    log('CRON', `Sending Game Messages for ${JSON.stringify(messagesToSend)}`);
+    const chatIds = messagesToSend.map(message => message.chatId);
+    chatIds.forEach(chatId => this._notifyChatEvent({ chatId, action: 'gameStarting', payload: chatId }))
+    await RedisRepository.clearGameMessageSchedule({ chatIds });
+    await this.clearGameMessageSchedule({ chatIds });
+  }
+
   async _insertEntryLog(requestedChatId, alias, kicked, left, invited, link) {
     const entryLog = new ChatEntryLog();
     entryLog.chat_id = requestedChatId;
@@ -629,22 +711,9 @@ class ChatRepository {
     return new DefaultSchema({ success: true });
   }
 
-  async _setSelfDestruct({ requestingUserId, requestedChatId, selfDestruct }) {
-    await UserChat
-      .query()
-      .where('chat_id', requestedChatId)
-      .andWhere('user_id', requestingUserId)
-      .update({ self_destruct: selfDestruct });
-    await UserChat
-      .query()
-      .where('chat_id', requestedChatId)
-      .andWhere('user_id', '!=', requestingUserId)
-      .update({ self_destruct: selfDestruct });
-    const payload = {
-      userId: requestingUserId,
-      chatId: requestedChatId,
-      selfDestruct,
-    };
+  async _setSelfDestruct({ requestedChatId, selfDestruct }) {
+    await UserChat.query().where('chat_id', requestedChatId).update({ self_destruct: selfDestruct });
+    const payload = { chatId: requestedChatId, selfDestruct };
     this._notifyChatEvent({ chatId: requestedChatId, action: 'selfDestruct', payload });
   }
 
@@ -659,6 +728,8 @@ class ChatRepository {
       owners: chat.owners,
       moderators: chat.moderators,
       isPrivate: chat.isPrivate,
+      isGroup: chat.isGroup,
+      gameId: chat.game_id,
     });
     this._notifyChatEvent({ chatId: requestedChatId, action: 'chatUpdated', payload: chatSchema });
   }
