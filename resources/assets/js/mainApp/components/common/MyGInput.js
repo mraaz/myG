@@ -1,12 +1,13 @@
 import React from 'react'
 
-const MyGInput = ({ placeholder, value, onChange }) => {
+const MyGInput = ({ containerStyles, inputStyles, placeholder, value, onChange, children, refInput, ...props }) => {
   const styles = {
     container: {
       backgroundColor: '#2D363A',
       padding: '0 7px',
       width: 'fit-content',
       borderRadius: '4px',
+      display: 'flex',
     },
     inputContainer: {
       width: '400px',
@@ -18,11 +19,26 @@ const MyGInput = ({ placeholder, value, onChange }) => {
     },
   }
 
+  console.log('props received: ', props)
+
   return (
-    <div style={styles.container}>
-      <input style={styles.inputContainer} placeholder={placeholder} value={value} onChange={onChange} />
+    <div style={{ ...styles.container, ...containerStyles }}>
+      <input
+        style={{ ...styles.inputContainer, ...inputStyles }}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        ref={refInput}
+        {...props}
+      />
+      {children}
     </div>
   )
+}
+
+MyGInput.defaultProps = {
+  containerStyles: {},
+  inputStyles: {},
 }
 
 export default MyGInput

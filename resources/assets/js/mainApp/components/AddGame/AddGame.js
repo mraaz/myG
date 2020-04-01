@@ -2,10 +2,23 @@ import React, { Fragment, useState } from 'react'
 import classNames from 'classnames'
 import Slider, { Range } from 'rc-slider'
 import 'rc-slider/assets/index.css'
+import { toast } from 'react-toastify'
 
-import { SETTINGS_ENUMS, styles, EXPERIENCE_OPTIONS, REGION_OPTIONS, PLATFORM_OPTIONS } from '../../static/AddGame'
-import { MyGCheckbox, MyGInput, MyGTextarea, MyGAsyncSelect, MyGSelect, MyGDatePicker } from '../common'
-import { Game_name_values } from '../Utility_Function'
+import { Toast_style } from '../Utility_Function'
+
+import {
+  SETTINGS_ENUMS,
+  styles,
+  EXPERIENCE_OPTIONS,
+  REGION_OPTIONS,
+  PLATFORM_OPTIONS,
+  CLASH_ROYAL_TROPHY,
+  DOTA2_MEDAL_RANKS,
+  DOTA2_ROLES,
+  DOTA2_SERVER_REGIONS,
+} from '../../static/AddGame'
+import { MyGCheckbox, MyGTextarea, MyGAsyncSelect, MyGSelect, MyGDatePicker } from '../common'
+import { Game_name_values, Game_name_Tags, Disable_keys } from '../Utility_Function'
 
 const SliderWithTooltip = Slider.createSliderWithTooltip(Slider)
 
@@ -18,6 +31,7 @@ const AddGame = ({
   updateMainSettingsState,
   optionalFieldsState,
   updateOptionalFieldsState,
+  isGameNameField,
 }) => {
   // Handlers
   const updateMainSettings = (stateUpdates) => {
@@ -41,9 +55,54 @@ const AddGame = ({
     }))
   }
 
+  const updateOptionalSettings = (stateUpdates) => {
+    updateOptionalFieldsState((currentState) => ({
+      ...currentState,
+      ...stateUpdates,
+    }))
+  }
+
   const onGameTitleChange = async (value) => {
     const updatedGameList = await Game_name_values(value)
-    updateMainSettings({ gameTitlesList: updatedGameList })
+    return updatedGameList
+  }
+
+  const createOption = (label, game_names_id) => ({
+    label,
+    value: label,
+    game_names_id,
+  })
+
+  const handleCreateTags = (inputValue) => {
+    if (inputValue.length > 88) {
+      toast.success(<Toast_style text={'Sorry mate! Skill length is too long.'} />)
+      return
+    }
+    setTimeout(() => {
+      const { optionTags, tags, newCreatedTags } = advancedSettingsState
+      const newOption = createOption(inputValue, null)
+      updateAdvancedSettings({
+        optionTags: [...optionTags, newOption],
+        tags: [...tags, newOption],
+        newCreatedTags: [...newCreatedTags, newOption.label],
+      })
+    }, 300)
+  }
+
+  // api calls
+  const getOptionsTags = (inputValue) => {
+    const getInitialData = async function(inputValue) {
+      try {
+        var results = await Game_name_Tags(inputValue, self.props.game_name_box.game_names_id)
+        updateAdvancedSettings({ optionTags: results })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    if (mainSettingsState.gameTitle && mainSettingsState.gameTitle.game_names_id) {
+      getInitialData(inputValue)
+    }
   }
 
   // Views
@@ -114,7 +173,7 @@ const AddGame = ({
           onClick={(value) => {
             updateMainSettings({
               isUnlimitedPlayers: value,
-              numberOfPlayers: value ? 42 : 0,
+              numberOfPlayers: value ? -42 : 0,
             })
           }}
           labelText='Unlimited'
@@ -221,6 +280,8 @@ const AddGame = ({
           loadOptions={onGameTitleChange}
           onChange={(value) => {
             updateMainSettings({ gameTitle: value })
+            value && !value.isGameNameField && updateOptionalSettings({ serverRegion: null })
+            updateState({ isGameNameField: value ? value.isGameNameField : false })
           }}
           value={mainSettingsState.gameTitle}
           placeholder='Enter Game Title'
@@ -251,14 +312,22 @@ const AddGame = ({
           }}
           value={advancedSettingsState.experience}
           placeholder='Select experience level'
+          isMulti
         />
         <div className={styles.fieldTitle}>Tags</div>
-        <MyGSelect
+        <MyGAsyncSelect
+          isClearable
+          isMulti
+          onCreateOption={handleCreateTags}
+          onInputChange={getOptionsTags}
+          loadOptions={onGameTitleChange}
           onChange={(value) => {
             updateAdvancedSettings({ tags: value })
           }}
           value={advancedSettingsState.tags}
           placeholder='Enter relevant tags to your game'
+          options={advancedSettingsState.optionTags}
+          onKeyDown={Disable_keys}
         />
         <div className={styles.fieldTitle}>Platform</div>
         <MyGSelect
@@ -268,28 +337,34 @@ const AddGame = ({
           }}
           value={advancedSettingsState.platform}
           placeholder='Select platform'
+          isMulti
         />
-        <div className={styles.fieldTitle}>Region</div>
-        <MyGSelect
-          onChange={(value) => {
-            updateAdvancedSettings({ region: value })
-          }}
-          value={advancedSettingsState.region}
-          options={REGION_OPTIONS}
-          placeholder='Select region'
-        />
+        {(!mainSettingsState.gameTitle || mainSettingsState.gameTitle.value !== 'Dota 2') && (
+          <Fragment>
+            <div className={styles.fieldTitle}>Region</div>
+            <MyGSelect
+              onChange={(value) => {
+                updateAdvancedSettings({ region: value })
+              }}
+              value={advancedSettingsState.region}
+              options={REGION_OPTIONS}
+              placeholder='Select region'
+              isMulti
+            />
+          </Fragment>
+        )}
         <div className={styles.fieldTitle}>Description</div>
         <MyGTextarea
-          onChange={(value) => {
-            updateAdvancedSettings({ acceptMessage: value })
+          onChange={(event) => {
+            updateAdvancedSettings({ description: event.target.value })
           }}
           value={advancedSettingsState.description}
           placeholder='Enter a description for your game'
         />
         <div className={styles.fieldTitle}>Accept Message</div>
         <MyGTextarea
-          onChange={(value) => {
-            updateAdvancedSettings({ acceptMessage: value })
+          onChange={(event) => {
+            updateAdvancedSettings({ acceptMessage: event.target.value })
           }}
           value={advancedSettingsState.acceptMessage}
           placeholder='Create a message for those who join & accept your game'
@@ -300,42 +375,77 @@ const AddGame = ({
 
   // ToDo: update modal rank and roles needs options
   const getOptionalGameFieldsView = () => {
+    const imageTempUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Game+Images/DOTA2.png'
     return (
-      <Fragment>
+      <div
+        style={{ backgroundImage: `url(${imageTempUrl})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}
+        className={styles.optionalViewContainer}>
         <div className={styles.optionalHeaderContainer}>
           <span>DOTA 2 In-Game Fields </span>
           <span>(Optional)</span>
         </div>
         <div className={styles.optionalViewFields}>
-          <div className={styles.fieldTitle}>Medal Rank</div>
-          <MyGSelect
-            options={EXPERIENCE_OPTIONS}
-            onChange={(value) => {
-              updateOptionalFieldsState({ modalRank: value })
-            }}
-            value={optionalFieldsState.modalRank}
-            placeholder='Select medal rank'
-          />
-          <div className={styles.fieldTitle}>Server Regions</div>
-          <MyGSelect
-            options={REGION_OPTIONS}
-            onChange={(value) => {
-              updateOptionalFieldsState({ serverRegion: value })
-            }}
-            value={optionalFieldsState.serverRegion}
-            placeholder='Select server regions'
-          />
-          <div className={styles.fieldTitle}>Roles Needed</div>
-          <MyGSelect
-            options={EXPERIENCE_OPTIONS}
-            onChange={(value) => {
-              updateOptionalFieldsState({ roleNeeded: value })
-            }}
-            value={optionalFieldsState.roleNeeded}
-            placeholder='Select roles needed'
-          />
+          {mainSettingsState.gameTitle.value !== 'Clash Royale' && (
+            <Fragment>
+              <div className={styles.fieldTitle}>Medal Rank</div>
+              <MyGSelect
+                options={DOTA2_MEDAL_RANKS}
+                onChange={(value) => {
+                  updateOptionalSettings({ modalRank: value })
+                }}
+                value={optionalFieldsState.modalRank}
+                placeholder='Select medal rank'
+                isMulti
+              />
+            </Fragment>
+          )}
+
+          {mainSettingsState.gameTitle.value !== 'Clash Royale' && (
+            <Fragment>
+              <div className={styles.fieldTitle}>Server Regions</div>
+              <MyGSelect
+                options={DOTA2_SERVER_REGIONS}
+                onChange={(value) => {
+                  updateOptionalSettings({ serverRegion: value })
+                }}
+                value={optionalFieldsState.serverRegion}
+                placeholder='Select server regions'
+                isMulti
+              />
+            </Fragment>
+          )}
+
+          {mainSettingsState.gameTitle.value !== 'Clash Royale' && (
+            <Fragment>
+              <div className={styles.fieldTitle}>Roles Needed</div>
+              <MyGSelect
+                options={DOTA2_ROLES}
+                onChange={(value) => {
+                  updateOptionalSettings({ roleNeeded: value })
+                }}
+                value={optionalFieldsState.roleNeeded}
+                placeholder='Select roles needed'
+                isMulti
+              />
+            </Fragment>
+          )}
+
+          {mainSettingsState.gameTitle.value === 'Clash Royale' && (
+            <Fragment>
+              <div className={styles.fieldTitle}>Trophies</div>
+              <MyGSelect
+                options={CLASH_ROYAL_TROPHY}
+                onChange={(value) => {
+                  updateOptionalSettings({ trophies: value })
+                }}
+                value={optionalFieldsState.trophies}
+                placeholder='Select trophies'
+                isMulti
+              />
+            </Fragment>
+          )}
         </div>
-      </Fragment>
+      </div>
     )
   }
 
@@ -376,7 +486,7 @@ const AddGame = ({
         {getSettingsMenu()}
         {getGameSettingsView()}
       </div>
-      <div className={styles.optionalViewContainer}>{getOptionalGameFieldsView()}</div>
+      {state.isGameNameField && getOptionalGameFieldsView()}
     </div>
   )
 }

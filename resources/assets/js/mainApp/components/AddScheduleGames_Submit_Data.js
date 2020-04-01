@@ -3,7 +3,7 @@ import { Convert_to_comma_delimited_value } from './Utility_Function'
 import axios from 'axios'
 import moment from 'moment'
 import uuid from 'uuid'
-import { createGameGroup } from '../../common/group';
+import { createGameGroup } from '../../common/group'
 
 export async function SubmitDataFunction(myG) {
   var myRegion = ''
@@ -17,7 +17,6 @@ export async function SubmitDataFunction(myG) {
   var myClash_royale_trophies = ''
   var now = moment()
   var end_date = myG.endDate
-  var allow_comments = true
 
   if (myG.selected_region != undefined && myG.selected_region !== null && myG.selected_region.length !== 0) {
     myRegion = Convert_to_comma_delimited_value(myG.selected_region)
@@ -69,29 +68,30 @@ export async function SubmitDataFunction(myG) {
   var tmp = uuidv1()
 
   try {
-    const post = axios.post('/api/ScheduleGame', {
-      game_name_box: myG.game_name_box.value,
-      selected_region: myRegion,
-      selected_experience: myExperience,
-      start_date_time: myG.startDate,
-      end_date_time: end_date,
-      selected_platform: myPlatform,
-      description_box: myG.description_box,
-      other_box: myG.other_box,
-      selected_expiry: now,
-      visibility: myVisibility,
-      limit: myLimit,
-      accept_msg: myG.txtAreaValue.trim(),
-      dota2_medal_ranks: myDota2_medal_ranks,
-      dota2_server_regions: myDota2_server_regions,
-      dota2_roles: myDota2_roles,
-      schedule_games_GUID: tmp,
-      clash_royale_trophies: myClash_royale_trophies,
-      allow_comments: allow_comments,
-    }).then(response => {
-      const { id, start_date_time: schedule } = response.data;
-      if (id) createGameGroup(id, schedule, `${myG.game_name_box.value} (${myG.startDate.format('YYYY-MM-DD HH:mm:ss')})`);
-    });
+    const post = axios
+      .post('/api/ScheduleGame', {
+        game_name_box: myG.game_name_box.value,
+        selected_region: myRegion,
+        selected_experience: myExperience,
+        start_date_time: myG.startDate,
+        end_date_time: end_date,
+        selected_platform: myPlatform,
+        description_box: myG.description_box,
+        selected_expiry: now,
+        visibility: myVisibility,
+        limit: myLimit,
+        accept_msg: myG.txtAreaValue.trim(),
+        dota2_medal_ranks: myDota2_medal_ranks,
+        dota2_server_regions: myDota2_server_regions,
+        dota2_roles: myDota2_roles,
+        schedule_games_GUID: tmp,
+        clash_royale_trophies: myClash_royale_trophies,
+        allow_comments: myG.allow_comments,
+      })
+      .then((response) => {
+        const { id, start_date_time: schedule } = response.data
+        if (id) createGameGroup(id, schedule, `${myG.game_name_box.value} (${myG.startDate.format('YYYY-MM-DD HH:mm:ss')})`)
+      })
   } catch (error) {
     throw error
   }

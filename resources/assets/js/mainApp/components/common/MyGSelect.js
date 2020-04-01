@@ -1,7 +1,7 @@
 import React from 'react'
 import Select from 'react-select'
 
-const MyGSelect = ({ defaultValue, isSearchable, options, onChange, value, placeholder, onInputChange }) => {
+const MyGSelect = ({ defaultValue, isSearchable, options, onChange, value, placeholder, onInputChange, ...props }) => {
   const customStyles = {
     container: (provided) => ({
       ...provided,
@@ -12,7 +12,7 @@ const MyGSelect = ({ defaultValue, isSearchable, options, onChange, value, place
       backgroundColor: '#2D363A',
       border: 'none',
       width: '422px',
-      height: '38px',
+      minHeight: '38px',
       color: '#fff',
     }),
     menuList: (provided) => ({
@@ -44,6 +44,7 @@ const MyGSelect = ({ defaultValue, isSearchable, options, onChange, value, place
       onChange={onChange}
       placeholder={placeholder}
       onInputChange={onInputChange}
+      {...props}
     />
   )
 }
