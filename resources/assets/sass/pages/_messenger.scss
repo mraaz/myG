@@ -1,12 +1,12 @@
 #messenger {
-  
-  position: fixed;
+
+  position: relative;
   width: 20%;
   top: 0;
   bottom: 0;
   right: 0;
   z-index: 100;
-  
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -14,12 +14,12 @@
   border-left: 2px solid #222b37;
   overflow: hidden;
   font-family: 'Montserrat Alternates', sans-serif;
-  
+
   .messenger-body {
     display: flex;
     flex-direction: column;
   }
-  
+
   .messenger-chat-bar {
     pointer-events: none;
     display: flex;
@@ -71,7 +71,7 @@
     margin-bottom: 8px;
     &:active { opacity: 0.3 };
     cursor: pointer;
-    -webkit-user-select: none;        
+    -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
@@ -244,12 +244,12 @@
     margin: 4px;
     align-items: center;
   }
-  
+
   .messenger-footer-icon-container {
     display: flex;
     height: 100%;
   }
-  
+
   .messenger-footer-icon {
     background-color: #2D363A;
     background-repeat: no-repeat;
@@ -260,7 +260,7 @@
     height: 32px;
     margin: 4px 12px 4px 4px;
   }
-  
+
   .messenger-footer-status-indicator {
     position: absolute;
     min-width: 30px;
@@ -288,7 +288,7 @@
   .messenger-footer-status-offline {
     background-color: #08507D;
   }
-  
+
   .messenger-footer-search-bar {
     display: flex;
     flex: 1;
@@ -296,7 +296,7 @@
     margin: 0px 4px;
   }
 
-  .messenger-footer-favorite-games { 
+  .messenger-footer-favorite-games {
     display: flex;
     flex-direction: column;
     background-color: #151b26;
@@ -320,7 +320,7 @@
     font-size: 10px;
     margin-left: 4px;
   }
-  
+
   .messenger-settings-container {
     display: flex;
     flex-direction: column;
@@ -350,7 +350,7 @@
     border-top-left-radius: 14px;
     border-bottom-left-radius: 14px;
   }
-  
+
   .messenger-settings-search-button {
     background-color: #2D363A;
     background-size: 28px;
@@ -361,7 +361,7 @@
     border-top-right-radius: 14px;
     border-bottom-right-radius: 14px;
   }
-  
+
   .messenger-footer-settings-button {
     width: 32px;
     height: 32px;
