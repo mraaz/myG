@@ -93,7 +93,7 @@ const AddGame = ({
   const getOptionsTags = (inputValue) => {
     const getInitialData = async function(inputValue) {
       try {
-        var results = await Game_name_Tags(inputValue, self.props.game_name_box.game_names_id)
+        var results = await Game_name_Tags(inputValue, mainSettingsState.gameTitle.game_names_id)
         updateAdvancedSettings({ optionTags: results })
       } catch (error) {
         console.log(error)
@@ -269,106 +269,118 @@ const AddGame = ({
 
   const getMainSettingsView = () => {
     return (
-      <div>
-        <div className={styles.fieldTitle}>Game Title</div>
-        <MyGAsyncSelect
-          cacheOptions
-          defaultOptions
-          isClearable
-          isValidNewOption={() => false}
-          onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
-          loadOptions={onGameTitleChange}
-          onChange={(value) => {
-            updateMainSettings({ gameTitle: value })
-            value && !value.isGameNameField && updateOptionalSettings({ serverRegion: null })
-            updateState({ isGameNameField: value ? value.isGameNameField : false })
-          }}
-          value={mainSettingsState.gameTitle}
-          placeholder='Enter Game Title'
-          options={mainSettingsState.gameTitlesList}
-        />
-        <div className={styles.fieldTitle}>Start Time</div>
-        <MyGDatePicker
-          onChange={(value) => {
-            updateMainSettings({ startTime: value })
-          }}
-          selected={mainSettingsState.startTime}
-        />
-        {getOptionalMainSettingsView()}
-        {getPlayersNumberView()}
-        {getCommentPrivaryView()}
+      <div style={{ display: 'flex' }}>
+        <div className={styles.sideLineContainer}>
+          <div className={styles.sideBall} />
+          <div className={styles.sideLine} />
+        </div>
+        <div>
+          <div className={styles.fieldTitle}>Game Title</div>
+          <MyGAsyncSelect
+            cacheOptions
+            defaultOptions
+            isClearable
+            isValidNewOption={() => false}
+            onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
+            loadOptions={onGameTitleChange}
+            onChange={(value) => {
+              updateMainSettings({ gameTitle: value })
+              value && !value.isGameNameField && updateOptionalSettings({ serverRegion: null })
+              updateState({ isGameNameField: value ? value.isGameNameField : false })
+            }}
+            value={mainSettingsState.gameTitle}
+            placeholder='Enter Game Title'
+            options={mainSettingsState.gameTitlesList}
+          />
+          <div className={styles.fieldTitle}>Start Time</div>
+          <MyGDatePicker
+            onChange={(value) => {
+              updateMainSettings({ startTime: value })
+            }}
+            selected={mainSettingsState.startTime}
+          />
+          {getOptionalMainSettingsView()}
+          {getPlayersNumberView()}
+          {getCommentPrivaryView()}
+        </div>
       </div>
     )
   }
 
   const getAdvancedSettingsView = () => {
     return (
-      <div>
-        <div className={styles.fieldTitle}>Experience</div>
-        <MyGSelect
-          options={EXPERIENCE_OPTIONS}
-          onChange={(value) => {
-            updateAdvancedSettings({ experience: value })
-          }}
-          value={advancedSettingsState.experience}
-          placeholder='Select experience level'
-          isMulti
-        />
-        <div className={styles.fieldTitle}>Tags</div>
-        <MyGAsyncSelect
-          isClearable
-          isMulti
-          onCreateOption={handleCreateTags}
-          onInputChange={getOptionsTags}
-          loadOptions={onGameTitleChange}
-          onChange={(value) => {
-            updateAdvancedSettings({ tags: value })
-          }}
-          value={advancedSettingsState.tags}
-          placeholder='Enter relevant tags to your game'
-          options={advancedSettingsState.optionTags}
-          onKeyDown={Disable_keys}
-        />
-        <div className={styles.fieldTitle}>Platform</div>
-        <MyGSelect
-          options={PLATFORM_OPTIONS}
-          onChange={(value) => {
-            updateAdvancedSettings({ platform: value })
-          }}
-          value={advancedSettingsState.platform}
-          placeholder='Select platform'
-          isMulti
-        />
-        {(!mainSettingsState.gameTitle || mainSettingsState.gameTitle.value !== 'Dota 2') && (
-          <Fragment>
-            <div className={styles.fieldTitle}>Region</div>
-            <MyGSelect
-              onChange={(value) => {
-                updateAdvancedSettings({ region: value })
-              }}
-              value={advancedSettingsState.region}
-              options={REGION_OPTIONS}
-              placeholder='Select region'
-              isMulti
-            />
-          </Fragment>
-        )}
-        <div className={styles.fieldTitle}>Description</div>
-        <MyGTextarea
-          onChange={(event) => {
-            updateAdvancedSettings({ description: event.target.value })
-          }}
-          value={advancedSettingsState.description}
-          placeholder='Enter a description for your game'
-        />
-        <div className={styles.fieldTitle}>Accept Message</div>
-        <MyGTextarea
-          onChange={(event) => {
-            updateAdvancedSettings({ acceptMessage: event.target.value })
-          }}
-          value={advancedSettingsState.acceptMessage}
-          placeholder='Create a message for those who join & accept your game'
-        />
+      <div style={{ display: 'flex' }}>
+        <div className={styles.sideLineContainer}>
+          <div className={styles.sideBall} />
+          <div className={styles.sideLine} />
+        </div>
+        <div>
+          <div className={styles.fieldTitle}>Experience</div>
+          <MyGSelect
+            options={EXPERIENCE_OPTIONS}
+            onChange={(value) => {
+              updateAdvancedSettings({ experience: value })
+            }}
+            value={advancedSettingsState.experience}
+            placeholder='Select experience level'
+            isMulti
+          />
+          <div className={styles.fieldTitle}>Tags</div>
+          <MyGAsyncSelect
+            isClearable
+            isMulti
+            onCreateOption={handleCreateTags}
+            onInputChange={getOptionsTags}
+            loadOptions={onGameTitleChange}
+            onChange={(value) => {
+              updateAdvancedSettings({ tags: value })
+            }}
+            value={advancedSettingsState.tags}
+            placeholder='Enter relevant tags to your game'
+            options={advancedSettingsState.optionTags}
+            onKeyDown={Disable_keys}
+          />
+          <div className={styles.fieldTitle}>Platform</div>
+          <MyGSelect
+            options={PLATFORM_OPTIONS}
+            onChange={(value) => {
+              updateAdvancedSettings({ platform: value })
+            }}
+            value={advancedSettingsState.platform}
+            placeholder='Select platform'
+            isMulti
+          />
+          {(!mainSettingsState.gameTitle || mainSettingsState.gameTitle.value !== 'Dota 2') && (
+            <Fragment>
+              <div className={styles.fieldTitle}>Region</div>
+              <MyGSelect
+                onChange={(value) => {
+                  updateAdvancedSettings({ region: value })
+                }}
+                value={advancedSettingsState.region}
+                options={REGION_OPTIONS}
+                placeholder='Select region'
+                isMulti
+              />
+            </Fragment>
+          )}
+          <div className={styles.fieldTitle}>Description</div>
+          <MyGTextarea
+            onChange={(event) => {
+              updateAdvancedSettings({ description: event.target.value })
+            }}
+            value={advancedSettingsState.description}
+            placeholder='Enter a description for your game'
+          />
+          <div className={styles.fieldTitle}>Accept Message</div>
+          <MyGTextarea
+            onChange={(event) => {
+              updateAdvancedSettings({ acceptMessage: event.target.value })
+            }}
+            value={advancedSettingsState.acceptMessage}
+            placeholder='Create a message for those who join & accept your game'
+          />
+        </div>
       </div>
     )
   }
