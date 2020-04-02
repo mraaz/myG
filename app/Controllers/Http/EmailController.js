@@ -71,7 +71,6 @@ class EmailController {
     ) {
       return
     }
-    return
 
     let subject = "myG - The Gamer's platform - Summary"
     let body =
