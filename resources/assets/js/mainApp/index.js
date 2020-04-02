@@ -180,7 +180,7 @@ class Layout extends Component {
               <Route exact path="/notifications" component={(props) => <Notifications routeProps={props}
                 initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
 
-              <Route exact path="/unread" component={(props) => <ChatUnreadMessages routeProps={props}
+              <Route exact path="/messages" component={(props) => <ChatUnreadMessages routeProps={props}
                 initialData={(this.state.initialData == undefined) ? 'loading' : this.state.initialData} key={Math.random()} />} />
 
               <Route exact path="/myFriends" component={(props) => <MyFriends routeProps={props}
