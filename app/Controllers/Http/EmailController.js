@@ -72,7 +72,7 @@ class EmailController {
       return
     }
 
-    let subject = "myG - The Gamer's platform - Summary"
+    let subject = "myG - The Gamer's platform - Summary: " + new Date(Date.now()).toDateString()
     let body =
       "<p>Hi mate,</p><p>Here is what you've missed:</p><p>Number of friend <a title='myG' href='https://myG.gg/invitation' target='_blank' rel='noopener'>requests</a>:&nbsp;" +
       myFriendRequests.checkMyFriends[0].no_of_my_notiFriends +
