@@ -9,7 +9,7 @@ function scheduleEmails() {
   const EmailController = require('../Controllers/Http/EmailController')
   let email = new EmailController()
 
-  cron.schedule('1 * * * * *', () => email.dailyEmails())
+  // cron.schedule('1 * * * * *', () => email.dailyEmails())
   // cron.schedule('* 0 18 * * *', () => email.dailyEmails())
   // cron.schedule('* 0 19 * * 5', () => email.weeklyEmails())
 }
