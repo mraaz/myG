@@ -1,9 +1,24 @@
 const path = require('path')
+const webpack = require('webpack')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 const mode = 'production' // process.env.NODE_ENV == 'production' ? process.env.NODE_ENV : 'development'
-const VENDOR_LIBS = ['redux', 'react-redux', 'react-dom']
+const VENDOR_LIBS = [
+  'redux',
+  'react-redux',
+  'redux-persist',
+  'react-dom',
+  'react',
+  'react-router',
+  'core-js',
+  'elliptic',
+  'axios',
+  'react-select',
+  'react-toastify',
+  'readable-stream',
+]
 const outputPath = path.resolve(__dirname, 'public/js/components')
 
 module.exports = {
@@ -71,7 +86,17 @@ module.exports = {
       },
     ],
   },
-  plugins: [],
+  plugins: [
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new CompressionPlugin({
+      include: ['mainApp', 'vendor'],
+      algorithm: 'gzip',
+      test: /\.js$|\.jsx$|\.css$|\.html$|\.eot?.+$|\.ttf?.+$|\.woff?.+$|\.svg?.+$/,
+      threshold: 10240,
+      minRatio: 0.8,
+      compressionOptions: { level: 9 },
+    }),
+  ],
   optimization: {
     moduleIds: 'hashed',
     runtimeChunk: 'single',
