@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import IndividualPost from './IndividualPost'
 import PostFileModal from './PostFileModal'
 import Select from 'react-select'
 
-const visibility_options = [{ value: 1, label: 'Everyone' }, { value: 2, label: 'Friends' }, { value: 0, label: 'Only me' }]
+const visibility_options = [
+  { value: 1, label: 'Everyone' },
+  { value: 2, label: 'Friends' },
+  { value: 0, label: 'Only me' },
+]
 
 export default class ComposeSection extends Component {
   constructor() {

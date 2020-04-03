@@ -1,9 +1,8 @@
 const path = require('path')
-const webpack = require('webpack')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
 
-const mode = process.env.NODE_ENV == 'production' ? process.env.NODE_ENV : 'development'
+const mode = 'production' // process.env.NODE_ENV == 'production' ? process.env.NODE_ENV : 'development'
 const VENDOR_LIBS = ['redux', 'react-redux', 'react-dom']
 const outputPath = path.resolve(__dirname, 'public/js/components')
 
@@ -15,6 +14,7 @@ module.exports = {
   output: {
     filename: '[name].js',
     path: outputPath,
+    publicPath: `/js/components/`,
   },
   devtool: mode == 'development' ? 'source-map' : '',
   module: {
@@ -22,7 +22,12 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         exclude: [/node_modules/],
-        use: 'babel-loader',
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [['es2015', { modules: false }], 'stage-0', 'react'],
+          },
+        },
       },
       {
         test: /\.scss$/,
@@ -66,16 +71,7 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    new CompressionPlugin({
-      include: /\/includes/,
-      algorithm: 'gzip',
-      test: /\.js$|\.jsx$|\.css$|\.html$|\.eot?.+$|\.ttf?.+$|\.woff?.+$|\.svg?.+$/,
-      threshold: 10240,
-      minRatio: 0.8,
-      compressionOptions: { level: 9 },
-    }),
-  ],
+  plugins: [],
   optimization: {
     moduleIds: 'hashed',
     runtimeChunk: 'single',
@@ -83,7 +79,7 @@ module.exports = {
     splitChunks: {
       cacheGroups: {
         vendor: {
-          test: /node_modules/,
+          test: 'vendor',
           chunks: 'all',
           priority: 1,
           name: 'vendor',
