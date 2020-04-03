@@ -15,7 +15,6 @@ module.exports = {
   output: {
     filename: '[name].js',
     path: outputPath,
-    chunkFilename: '[id].[chunkhash].chunk.js',
   },
   devtool: mode == 'development' ? 'source-map' : '',
   module: {
@@ -68,11 +67,10 @@ module.exports = {
     ],
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
     new CompressionPlugin({
       include: /\/includes/,
       algorithm: 'gzip',
-      test: /\.js$|\.css$|\.html$|\.eot?.+$|\.ttf?.+$|\.woff?.+$|\.svg?.+$/,
+      test: /\.js$|\.jsx$|\.css$|\.html$|\.eot?.+$|\.ttf?.+$|\.woff?.+$|\.svg?.+$/,
       threshold: 10240,
       minRatio: 0.8,
       compressionOptions: { level: 9 },
