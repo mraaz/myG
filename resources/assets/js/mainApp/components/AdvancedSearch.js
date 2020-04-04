@@ -116,24 +116,30 @@ export default class AdvancedSearch extends Component<*, State> {
       }
       return
     }
-    this.pullData()
+    if (!this.state.allGameExperiences) {
+      window.scrollTo(0, 200)
+      this.pullData()
+    }
   }
 
   pullData = async () => {
-    var myTable = ''
+    if (this.state.allGameExperiences) {
+      window.scrollTo(0, document.documentElement.offsetHeight - 4000)
+    }
+    let myTable = ''
 
-    var myGame_name_box = null
-    var myStatus = null
-    var myExperience = null
-    var myPlayed = null
-    var myRatings = null
-    var myTags = null
-    var myCommendation = null
-    var myCountry = null
-    var myRole_title = null
-    var myTeam_name = null
-    var myTime_role = null
-    var allGameExperiences = []
+    let myGame_name_box = null
+    let myStatus = null
+    let myExperience = null
+    let myPlayed = null
+    let myRatings = null
+    let myTags = null
+    let myCommendation = null
+    let myCountry = null
+    let myRole_title = null
+    let myTeam_name = null
+    let myTime_role = null
+    let allGameExperiences = []
 
     this.state.counter = this.state.counter + 1
 
@@ -186,10 +192,7 @@ export default class AdvancedSearch extends Component<*, State> {
       for (var i = 0; i < this.state.value_tags.length; i++) {
         myTags += this.state.value_tags[i].label + '; '
       }
-      myTags = myTags
-        .trim()
-        .replace(/; /g, ',')
-        .trim()
+      myTags = myTags.trim().replace(/; /g, ',').trim()
       myTags = myTags.replace(/;/g, '')
       myTags = myTags.replace(/,/g, ', ')
     }
@@ -468,7 +471,7 @@ export default class AdvancedSearch extends Component<*, State> {
   onBlur_game_name = (value) => {
     const self = this
 
-    const getInitialData = async function() {
+    const getInitialData = async function () {
       try {
         var allTags
         self.setState({ options_tags: '' })
@@ -690,9 +693,15 @@ export default class AdvancedSearch extends Component<*, State> {
                 </div>
               )}
             </div>
-            <InfiniteScroll dataLength={this.state.allGameExperiences.length} next={this.pullData} hasMore={this.state.moreplease}>
-              {this.showLatestPosts()}
-            </InfiniteScroll>
+            {this.state.allGameExperiences.length > 0 && (
+              <InfiniteScroll
+                dataLength={this.state.allGameExperiences.length}
+                next={this.pullData}
+                hasMore={this.state.moreplease}
+                scrollThreshold='200px'>
+                {this.showLatestPosts()}
+              </InfiniteScroll>
+            )}
           </div>
         </section>
       )
