@@ -48,7 +48,7 @@
     "aws-sdk": "^2.437.0",
     "axios": "^0.19.2",
     "babel-core": "^6.24.1",
-    "babel-loader": "^6.4.1",
+    "babel-loader": "^7.0.0",
     "babel-preset-env": "^1.4.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
@@ -56,6 +56,7 @@
     "bluebird": "^3.5.4",
     "browser-sync": "^2.18.8",
     "classnames": "^2.2.6",
+    "compression-webpack-plugin": "^3.1.0",
     "cryptico": "^1.0.2",
     "css-loader": "^1.0.1",
     "file-type": "^10.11.0",
@@ -71,7 +72,7 @@
     "gulp-shell": "^0.6.3",
     "gulp-uglify": "^2.0.0",
     "gulp-watch": "^4.3.9",
-    "html-webpack-plugin": "^2.28.0",
+    "html-webpack-plugin": "^2.30.1",
     "moment": "^2.22.2",
     "multiparty": "^4.2.1",
     "mysql": "^2.16.0",
@@ -94,6 +95,7 @@
     "react-idle-timer": "^4.2.12",
     "react-image-gallery": "^1.0.6",
     "react-infinite-scroll-component": "^4.3.0",
+    "react-loadable": "^5.5.0",
     "react-modal": "^3.6.1",
     "react-places-autocomplete": "^7.2.1",
     "react-redux": "^5.1.2",
@@ -111,15 +113,18 @@
     "standard": "^10.0.2",
     "style-loader": "^0.23.1",
     "superagent": "^4.1.0",
+    "uglifyjs-webpack-plugin": "^2.2.0",
     "uuid": "^3.3.2",
-    "webpack": "^2.5.1",
+    "webpack": "^4.42.1",
     "webpack-stream": "^3.2.0"
   },
   "devDependencies": {
     "@adonisjs/cli": "^4.0.12",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-stage-0": "^6.24.1"
+    "babel-preset-stage-0": "^6.24.1",
+    "webpack-bundle-analyzer": "^3.6.1",
+    "webpack-cli": "^3.3.11"
   },
   "autoload": {
     "App": "./app"
