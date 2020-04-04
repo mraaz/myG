@@ -693,7 +693,7 @@ export default class AdvancedSearch extends Component<*, State> {
                 </div>
               )}
             </div>
-            {this.state.allGameExperiences.length > 0 && (
+            {this.state.allGameExperiences && (
               <InfiniteScroll
                 dataLength={this.state.allGameExperiences.length}
                 next={this.pullData}
