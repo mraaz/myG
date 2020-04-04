@@ -7,7 +7,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 export default class MyFriends extends Component {
   constructor() {
     super()
-    this.state = { moreplease: true, counter: -10, allMyFriends: [], total_friends: 0 }
+    this.state = { moreplease: true, counter: 0, allMyFriends: [], total_friends: 0 }
   }
 
   componentDidMount() {
@@ -15,20 +15,14 @@ export default class MyFriends extends Component {
   }
 
   pullData = async () => {
-    this.state.counter = this.state.counter + 10
-
-    if (this.state.counter != 1) {
-      this.setState({
-        show_top_btn: true,
-      })
-    }
+    this.state.counter = this.state.counter + 1
 
     try {
       const getFriends = await axios.post('/api/friends/allmyFriends', {
         counter: this.state.counter,
       })
 
-      if (getFriends.data.showallMyFriends.length == 0) {
+      if (getFriends.data.showallMyFriends.data.length == 0) {
         this.setState({
           moreplease: false,
         })
@@ -42,7 +36,7 @@ export default class MyFriends extends Component {
       }
 
       this.setState({
-        allMyFriends: this.state.allMyFriends.concat(getFriends.data.showallMyFriends),
+        allMyFriends: this.state.allMyFriends.concat(getFriends.data.showallMyFriends.data),
       })
     } catch (error) {
       console.log(error)
