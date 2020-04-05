@@ -60,6 +60,7 @@ export default class Contacts extends React.PureComponent {
   renderContact = (contact) => {
     return <Contact 
       contact={contact}
+      messages={(contact.chat || {}).messages || []}
       userId={this.props.userId}
       privateKey={this.props.privateKey}
       disconnected={this.props.disconnected}

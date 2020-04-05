@@ -17,7 +17,11 @@ export default class Contact extends React.PureComponent {
   }
 
   decryptMessage = (message) => {
-    const content = decryptMessage(message.backup, this.props.privateKey);
+    const isSent = message.senderId === this.props.userId;
+    const content = decryptMessage(
+      isSent ? message.backup : message.content,
+      this.props.privateKey
+    );
     return { ...message, content };
   }
 
@@ -40,11 +44,11 @@ export default class Contact extends React.PureComponent {
   }
 
   render() {
-    const { contact } = this.props;
-    const messages = (contact.chat.messages || []).slice(0);
+    const { contact, messages } = this.props;
     const lastMessage = messages[messages.length - 1];
     const receivedMessages = messages.filter(message => message.senderId !== this.props.userId);
     const unreadCount = this.countUnreadMessages(contact.chat.lastRead, receivedMessages);
+    console.log('Render Contact', lastMessage);
     return (
       <div
         key={contact.contactId}

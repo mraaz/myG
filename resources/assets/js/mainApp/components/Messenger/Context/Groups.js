@@ -66,7 +66,7 @@ export default class Groups extends React.PureComponent {
   }
 
   renderGroup = (group) => {
-    const messages = (group.messages || []).slice(0);
+    const messages = (group.messages || []);
     const lastMessage = messages[messages.length - 1];
     const unreadCount = 0;
     return (
