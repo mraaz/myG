@@ -84,6 +84,13 @@ class EmailController {
 
     email.createEmailnSend('mnraaz@gmail.com', subject, body)
   }
+
+  async encryption_email(email, pin) {
+    const awsEmailController = new AWSEmailController();
+    const subject = "myG - The Gamer's platform - New Encryption";
+    const body = `<p>Hi mate,</p><p>Here is your encryption secret: ${pin}</p><p>Keep it safe!</p>`;
+    return awsEmailController.createEmailnSend(email, subject, body);
+  }
 }
 
 module.exports = EmailController

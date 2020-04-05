@@ -220,7 +220,6 @@ class ChatRepository {
         .where('schedule_games.id', gameId)
         .first()
       if (!game) throw new Error('Game not found!');
-      console.log(game, game.game_name, game.start_date_time);
       const gameName = game.game_name;
       gameSchedule = game.start_date_time;
       title = `${gameName} (${moment(gameSchedule).format('YYYY-MM-DD HH:mm:ss')})`;

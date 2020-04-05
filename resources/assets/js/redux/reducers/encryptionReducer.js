@@ -1,7 +1,7 @@
 
 
 import logger from '../../common/logger';
-import { storePublicKey } from '../../integration/http/user';
+import { storePublicKey, sendEncryptionEmail } from '../../integration/http/user';
 
 export default function reducer(state = {
   pin: null,
@@ -16,6 +16,7 @@ export default function reducer(state = {
       logger.log('USER', `Redux -> Messenger Ready (Encryption): `, action.payload);
       const { pin, publicKey, privateKey } = action.payload.encryption;
       storePublicKey(publicKey);
+      sendEncryptionEmail(publicKey, pin);
       return {
         ...state,
         pin,
@@ -29,6 +30,7 @@ export default function reducer(state = {
       logger.log('USER', `Redux -> Keys Generated: `, action.payload);
       const { pin, publicKey, privateKey } = action.payload.encryption;
       storePublicKey(publicKey);
+      sendEncryptionEmail(publicKey, pin);
       return {
         ...state,
         pin,
