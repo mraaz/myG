@@ -295,7 +295,7 @@ export class Chat extends React.PureComponent {
   renderEncryptedChat() {
     const isGroupWithoutKey = this.props.isGroup && !this.props.privateKey;
     const noUserKeyText = "Please inform your encryption key to read the contents of this chat.";
-    const noGroupKeyText = "Wait for another member to come online.";
+    const noGroupKeyText = "Waiting to join... You'll join the chat when someone else jumps in. Alternatively, create an account @ myG.gg";
     return (
       <div
         key={this.props.chatId}
