@@ -16,6 +16,7 @@ export default class MyScheduledGames extends Component {
   }
 
   componentDidMount() {
+    window.scrollTo(0, 0)
     this.pullData()
   }
 
@@ -28,6 +29,9 @@ export default class MyScheduledGames extends Component {
   }
 
   pullData = async () => {
+    if (this.state.myScheduledGames.length > 0) {
+      window.scrollTo(0, document.documentElement.offsetHeight - 4000)
+    }
     this.state.counter = this.state.counter + 1
 
     if (this.state.counter != 1) {
