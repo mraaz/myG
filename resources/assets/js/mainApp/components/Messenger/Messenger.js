@@ -8,6 +8,7 @@ import Groups from './Context/Groups';
 import Chats from "./Context/Chats";
 import Footer from './Context/Footer';
 import Settings from './Context/Settings';
+import EncryptionLogin from './Context/EncryptionLogin';
 import ConnectionWarning from './Context/ConnectionWarning';
 import StatusTimerWrapper from '../StatusTimerWrapper';
 import WindowFocusHandler from '../WindowFocusHandler';
@@ -52,6 +53,7 @@ class Messenger extends React.PureComponent {
   }
 
   renderBody = () => {
+    if (!this.props.pin) return null;
     if (this.state.showingSettings) return null;
     return (
       <div className="messenger-body">
@@ -64,6 +66,7 @@ class Messenger extends React.PureComponent {
   }
 
   renderFooter = () => {
+    if (!this.props.pin) return null;
     return <Footer
       search={this.state.searchInput}
       updateStatus={this.props.updateStatus}
@@ -75,6 +78,7 @@ class Messenger extends React.PureComponent {
   }
 
   renderSettings = () => {
+    if (!this.props.pin) return null;
     if (!this.state.showingSettings) return null;
     return <Settings
       games={this.props.games}
@@ -84,8 +88,18 @@ class Messenger extends React.PureComponent {
       generateKeys={this.props.generateKeys}
       chats={this.props.chats}
       unfavoriteGame={this.props.unfavoriteGame}
-      validatePin={this.props.validatePin}
+      clearChat={this.props.clearChat}
       onUploadPhoto={gameId => this.setState({ uploadingPhoto: gameId })}
+    />
+  }
+
+  renderEncryptionLogin = () => {
+    if (this.props.pin) return null; 
+    return <EncryptionLogin
+      userId={this.props.userId}
+      generateKeys={this.props.generateKeys}
+      validatePin={this.props.validatePin}
+      publicKey={this.props.publicKey}
     />
   }
 
@@ -134,6 +148,7 @@ class Messenger extends React.PureComponent {
   }
 
   renderChats = () => {
+    if (!this.props.pin) return null;
     return <Chats
       userId={this.props.userId}
       chats={this.props.chats}
@@ -175,9 +190,12 @@ class Messenger extends React.PureComponent {
   render() {
     return (
       <section id="messenger">
-        {this.renderBody()}
-        {this.renderFooter()}
-        {this.renderSettings()}
+        <div class="messenger-content">
+          {this.renderBody()}
+          {this.renderSettings()}
+          {this.renderFooter()}
+          {this.renderEncryptionLogin()}
+        </div>
         {this.renderChats()}
         {this.renderUploadModal()}
         {this.renderStatusMonitor()}
@@ -219,7 +237,7 @@ function mapDispatchToProps(dispatch) {
     createChat: (contacts, userId, title, icon, encryption, isGroup) => dispatch(createChatAction(contacts, userId, title, icon, encryption, isGroup)),
     openChat: chatId => dispatch(openChatAction(chatId)),
     closeChat: chatId => dispatch(closeChatAction(chatId)),
-    generateKeys: () => dispatch(generateKeysAction()),
+    generateKeys: (pin) => dispatch(generateKeysAction(pin)),
     validatePin: (pin, publicKey) => dispatch(validatePinAction(pin, publicKey)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
     favoriteGame: gameId => dispatch(favoriteGameAction(gameId)),

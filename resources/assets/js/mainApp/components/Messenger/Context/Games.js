@@ -104,7 +104,7 @@ export default class Games extends React.PureComponent {
         });
 
         return (
-          <div className="messenger-body">
+          <div className="messenger-body-section">
             {sections.map(section => this.renderGame(section.id, section.name, section.icon, section.color, section.onlineInfo, section.contacts, this.state.expandedGame === section.name))}
           </div>
         );

@@ -106,7 +106,7 @@ export default class Contacts extends React.PureComponent {
         }
 
         return (
-          <div className="messenger-body">
+          <div className="messenger-body-section">
             {!!this.props.search && this.renderSection('suggestions', sections['suggestions'].length, sections['suggestions'], true)}
             {!this.props.search && this.renderSection('recent', sections['recent'].length, sections['recent'], this.state.sectionExpanded['recent'])}
             {!this.props.search && this.renderSection(STATUS_ENUM.ONLINE, sections[STATUS_ENUM.ONLINE].length, sections[STATUS_ENUM.ONLINE], this.state.sectionExpanded[STATUS_ENUM.ONLINE])}
