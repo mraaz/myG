@@ -59,11 +59,6 @@ export default class IndividualGroup extends Component {
           return
         }
 
-        if (myPosts.data.groupPosts.data.length == 0) {
-          this.state.moreplease = false
-          return
-        }
-
         self.setState({
           myPosts: self.state.myPosts.concat(myPosts.data.groupPosts.data),
         })

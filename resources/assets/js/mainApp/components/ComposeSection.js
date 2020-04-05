@@ -171,6 +171,8 @@ export default class ComposeSection extends Component {
   }
 
   componentDidMount() {
+    const self = this
+
     if (this.props != undefined) {
       if (this.props.initialData.userInfo != undefined) {
         this.setState({
@@ -179,6 +181,16 @@ export default class ComposeSection extends Component {
         })
       }
     }
+
+    const getGamers_you_might_know = async function() {
+      try {
+        const gamers_you_might_know = await axios.get('/api/user/gamers_you_might_know')
+        console.log(gamers_you_might_know)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getGamers_you_might_know()
   }
 
   handleChange_visibility = (visibility_box) => {
