@@ -4,7 +4,9 @@ import { connect } from 'react-redux';
 import notifyToast from '../../../common/toast';
 
 import Chat from './Chat';
-import GroupCreation from './GroupCreation';
+import Contacts from './Context/Contacts';
+import Games from './Context/Games';
+import Groups from './Context/Groups';
 import StatusTimerWrapper from '../StatusTimerWrapper';
 import WindowFocusHandler from '../WindowFocusHandler';
 import FileOpenModal from '../FileOpenModal';
@@ -13,28 +15,17 @@ import { attemptSocketConnection, monitorChats, closeSubscription } from '../../
 import { createChatAction, openChatAction, closeChatAction, clearChatAction } from '../../../redux/actions/chatAction';
 import { favoriteGameAction, unfavoriteGameAction, updateGameIconAction, updateStatusAction } from '../../../redux/actions/userAction';
 import { generateKeysAction, validatePinAction } from '../../../redux/actions/encryptionAction';
-import { deserializeKey, decryptMessage, generateKeysSync as generateGroupKeys } from '../../../integration/encryption';
-import { formatAMPM } from '../../../common/date';
 import { copyToClipboard } from '../../../common/clipboard';
-import { STATUS_ENUM, compareStatus } from '../../../common/status';
 import { fetchLink, acceptInvitation } from "../../../integration/http/chat";
 
 class Messenger extends React.PureComponent {
 
   state = {
     showingSettings: false,
-    showingGroupCreation: false,
     changingStatus: false,
     searchInput: '',
     favoriteGameInput: '',
     pin: '',
-    sectionExpanded: {
-      recent: true,
-      [STATUS_ENUM.ONLINE]: false,
-      [STATUS_ENUM.PLAYING]: false,
-      [STATUS_ENUM.AFK]: false,
-      [STATUS_ENUM.OFFLINE]: false,
-    },
     dividerExpanded: {
       games: false,
       friends: true,
@@ -73,52 +64,13 @@ class Messenger extends React.PureComponent {
     });
   }
 
-  decryptMessage = (message, userPrivateKey, chatPrivateKey) => {
-    const isSent = message.senderId === this.props.userId;
-    const content = decryptMessage(
-      isSent ? message.backup : message.content,
-      isSent ? userPrivateKey : deserializeKey(chatPrivateKey)
-    );
-    return { ...message, content };
-  }
-
-  openChat = (contact) => {
-    if (this.props.disconnected) return;
-    if (contact.chat.chatId) return this.props.openChat(contact.chat.chatId);
-    this.props.createChat([contact.contactId], this.props.userId);
-  }
-
   closeChat = (chatId) => {
     this.props.closeChat(chatId);
-  }
-
-  createGroup = (icon, title, contacts) => {
-    const { encryption } = generateGroupKeys();
-    this.props.createChat(contacts, this.props.userId, title, icon, encryption, true);
-    this.setState({ showingGroupCreation: false });
   }
 
   setStatus = (status) => {
     this.props.updateStatus(status, true);
     this.setState({ changingStatus: false });
-  }
-
-  compareLastMessages = (f1, f2) => {
-    const m1 = (f1.chat.messages || [])[(f1.chat.messages || []).length - 1] || { createdAt: 0 };
-    const m2 = (f2.chat.messages || [])[(f2.chat.messages || []).length - 1] || { createdAt: 0 };
-    return new Date(m2.createdAt) - new Date(m1.createdAt);
-  }
-
-  countUnreadMessages = (lastRead, messages) => {
-    let unreadCount = 0;
-    messages.reverse().some(message => {
-      if (message.messageId > lastRead) {
-        ++unreadCount;
-        return false;
-      }
-      return true;
-    });
-    return unreadCount;
   }
 
   onUploadPhoto = (icon) => {
@@ -140,326 +92,47 @@ class Messenger extends React.PureComponent {
   }
 
   renderGames = () => {
-    return this.renderDivider('games', this.state.dividerExpanded.games, () => {
-
-      if (!this.props.games.length) {
-        return (
-          <div className="messenger-empty-message-container">
-            <p className="messenger-empty-message">You haven't added any ganes yet :(</p>
-          </div>
-        );
-      }
-
-      const sections = [];
-      let games = this.props.games.slice(0)
-        .sort((g1, g2) => g1.name.localeCompare(g2.name))
-        .sort((g1, g2) => g1.isFavorite === g2.isFavorite ? 0 : g1.isFavorite ? -1 : 1);
-      const contacts = this.props.contacts.slice(0)
-        .sort((f1, f2) => compareStatus(f1.status, f2.status))
-        .sort((f1, f2) => this.compareLastMessages(f1, f2));
-
-      if (this.state.searchInput.trim()) {
-        const search = (name) => name.toLowerCase().includes(this.state.searchInput.toLowerCase());
-        games = games.slice(0)
-          .filter(game => search(game.name))
-          .slice(0, 10);
-      }
-
-      const colors = ['#399', '#939', '#993', '#339', '#933', '#393', '#699', '#969', '#996', '#669', '#966', '#696'];
-      games.slice(0, 10).forEach((game, index) => {
-        const gameContacts = contacts.filter(contact => contact.games.find(contactGame => contactGame.gameId === game.gameId));
-        const onlineCount = gameContacts.filter(contact => contact.status === STATUS_ENUM.ONLINE).length;
-        const onlineInfo = `${onlineCount}/${gameContacts.length} online`;
-        sections.push({
-          id: game.gameId,
-          name: game.name,
-          icon: game.icon, 
-          color: colors[index],
-          contacts: gameContacts,
-          onlineInfo,
-        })
-      });
-      
-      return (
-        <div className="messenger-body">
-          {sections.map(section => this.renderGame(section.id, section.name, section.icon, section.color, section.onlineInfo, section.contacts, this.state.expandedGame === section.name))}
-        </div>
-      );
-
-    });
+    return <Games 
+      userId={this.props.userId}
+      privateKey={this.props.privateKey}
+      contacts={this.props.contacts}
+      games={this.props.games}
+      search={this.state.searchInput}
+      disconnected={this.props.disconnected}
+      openChat={this.props.openChat}
+      createChat={this.props.createChat}
+      expanded={this.state.dividerExpanded.games}
+      onExpand={(expanded) => this.setState({ dividerExpanded: { games: !expanded, friends: false, groups: false } })}
+    />
   }
 
   renderContacts = () => {
-    return this.renderDivider('friends', this.state.dividerExpanded.friends, () => {
-
-      if (!this.props.contacts.length) {
-        return (
-          <div className="messenger-empty-message-container">
-            <p className="messenger-empty-message">You haven't added any friends yet :(</p>
-            <p className="messenger-empty-message">Try searching for players</p>
-          </div>
-        );
-      }
-
-      const sections = {};
-      const contacts = this.props.contacts.slice(0)
-        .sort((f1, f2) => compareStatus(f1.status, f2.status))
-        .sort((f1, f2) => this.compareLastMessages(f1, f2));
-
-      if (this.state.searchInput.trim()) {
-        const search = (name) => name.toLowerCase().includes(this.state.searchInput.toLowerCase());
-        sections['suggestions'] = contacts.slice(0)
-          .filter(contact => search(contact.name))
-          .slice(0, 18);
-      }
-
-      else {
-        sections['recent'] = contacts.filter(contact => (contact.chat.messages || []).length).slice(0, 8);
-        sections[STATUS_ENUM.ONLINE] = contacts.filter(contact => contact.status === STATUS_ENUM.ONLINE);
-        sections[STATUS_ENUM.PLAYING] = contacts.filter(contact => contact.status === STATUS_ENUM.PLAYING);
-        sections[STATUS_ENUM.AFK] = contacts.filter(contact => contact.status === STATUS_ENUM.AFK);
-        sections[STATUS_ENUM.OFFLINE] = contacts.filter(contact => contact.status === STATUS_ENUM.OFFLINE);
-      }
-
-      return (
-        <div className="messenger-body">
-          {!!this.state.searchInput && this.renderSection('suggestions', sections['suggestions'].length, sections['suggestions'], true)}
-          {!this.state.searchInput && this.renderSection('recent', sections['recent'].length, sections['recent'], this.state.sectionExpanded['recent'])}
-          {!this.state.searchInput && this.renderSection(STATUS_ENUM.ONLINE, sections[STATUS_ENUM.ONLINE].length, sections[STATUS_ENUM.ONLINE], this.state.sectionExpanded[STATUS_ENUM.ONLINE])}
-          {!this.state.searchInput && this.renderSection(STATUS_ENUM.PLAYING, sections[STATUS_ENUM.PLAYING].length, sections[STATUS_ENUM.PLAYING], this.state.sectionExpanded[STATUS_ENUM.PLAYING])}
-          {!this.state.searchInput && this.renderSection(STATUS_ENUM.AFK, sections[STATUS_ENUM.AFK].length, sections[STATUS_ENUM.AFK], this.state.sectionExpanded[STATUS_ENUM.AFK])}
-          {!this.state.searchInput && this.renderSection(STATUS_ENUM.OFFLINE, sections[STATUS_ENUM.OFFLINE].length, sections[STATUS_ENUM.OFFLINE], this.state.sectionExpanded[STATUS_ENUM.OFFLINE])}
-        </div>
-      );
-
-    });
-  }
-
-  renderSection(name, count, contacts, expanded) {
-    const chevronType = (contacts.length && expanded) ? 'down' : 'right';
-    return (
-      <div className="messenger-body-section">
-        <div className="messenger-body-section-header clickable"
-          onClick={() => this.setState(previous => ({
-            sectionExpanded: {
-              ...{
-                [STATUS_ENUM.ONLINE]: false,
-                [STATUS_ENUM.PLAYING]: false,
-                [STATUS_ENUM.AFK]: false,
-                [STATUS_ENUM.OFFLINE]: false,
-              },
-              [name]: !previous.sectionExpanded[name]
-            }
-          }))}
-        >
-          <p className="messenger-body-section-header-name">{name}</p>
-          <div className="messenger-body-section-header-info">
-            <p className="messenger-body-section-header-count">{`(${count})`}</p>
-            <div
-              className="messenger-body-section-header-icon"
-              style={{ backgroundImage: `url('/assets/svg/ic_messenger_chevron_${chevronType}.svg')` }}
-            />
-          </div>
-        </div>
-        {!!contacts.length && expanded && (
-          <div className="messenger-body-section-content">
-            {contacts.map(this.renderContact)}
-          </div>
-        )}
-      </div >
-    );
-  }
-
-  renderGame(id, name, icon, color, onlineInfo, contacts, expanded) {
-    const chevronType = (contacts.length && expanded) ? 'down' : 'right';
-    return (
-      <div key={id} className="messenger-body-section" style={{ backgroundColor: color }}>
-        <div className="messenger-body-section-header clickable" style={{ backgroundColor: color }}
-          onClick={() => this.setState(previous => ({ expandedGame: previous.expandedGame === name ? null : name }))}
-        >
-          <div className="messenger-body-game-section" style={{ backgroundColor: color }}>
-            <div
-              className="messenger-game-icon"
-              style={{ backgroundImage: `url('${icon}')` }}
-            />
-            <p className="messenger-body-section-header-name">{name}</p>
-          </div>
-          <div className="messenger-body-section-header-info">
-            <p className="messenger-body-section-online-count">{onlineInfo}</p>
-            <div
-              className="messenger-body-section-header-icon"
-              style={{ backgroundImage: `url('/assets/svg/ic_messenger_chevron_${chevronType}.svg')` }}
-            />
-          </div>
-        </div>
-        {!!contacts.length && expanded && (
-          <div className="messenger-body-section-content">
-            {contacts.map(this.renderContact)}
-          </div>
-        )}
-      </div >
-    );
-  }
-
-  renderContact = (contact) => {
-    const messages = (contact.chat.messages || []).slice(0);
-    const lastMessage = messages[messages.length - 1];
-    const receivedMessages = messages.filter(message => message.senderId !== this.props.userId);
-    const unreadCount = this.countUnreadMessages(contact.chat.lastRead, receivedMessages);
-    return (
-      <div
-        key={contact.contactId}
-        className="messenger-contact"
-        onClick={() => this.openChat(contact)}
-      >
-        <div
-          className="messenger-contact-icon"
-          style={{ backgroundImage: `url('${contact.icon}')` }}
-        >
-          <div className={`messenger-contact-online-indicator chat-component-header-status-indicator-${contact.status}`} />
-        </div>
-        <div className="messenger-contact-body">
-          <p className="messenger-contact-body-title">{contact.name}</p>
-          {lastMessage && (
-            <p className="messenger-contact-body-subtitle">
-              {this.decryptMessage(lastMessage, this.props.privateKey, this.props.privateKey).content}
-            </p>
-          )}
-        </div>
-        <div className="messenger-contact-info">
-          {lastMessage && (
-            <p className="messenger-contact-info-last-seen">
-              {formatAMPM(new Date(lastMessage.createdAt))}
-            </p>
-          )}
-          <div className="messenger-contact-info-unread">
-            <p className="messenger-contact-info-unread-count">
-              {unreadCount}
-            </p>
-          </div>
-        </div>
-      </div>
-    );
+    return <Contacts 
+      userId={this.props.userId}
+      privateKey={this.props.privateKey}
+      contacts={this.props.contacts}
+      search={this.state.searchInput}
+      disconnected={this.props.disconnected}
+      openChat={this.props.openChat}
+      createChat={this.props.createChat}
+      expanded={this.state.dividerExpanded.friends}
+      onExpand={(expanded) => this.setState({ dividerExpanded: { games: false, friends: !expanded, groups: false } })}
+    />
   }
 
   renderGroups = () => {
-    const isSearching = this.state.searchInput.trim();
-    const search = (name) => isSearching ? name.toLowerCase().includes(this.state.searchInput.toLowerCase()) : true;
-    const groups = this.props.groups.slice(0).filter(group => search(group.title));
-    return this.renderDivider('groups', this.state.dividerExpanded.groups, () => {
-      if (!this.props.groups.length) return this.renderGroupButton();
-      return (
-        <div>
-          {this.renderGroupButton()}
-          <div className="messenger-body-section-content">
-            {groups.map(this.renderGroup)}
-          </div>
-        </div>
-      );
-    });
-  }
-
-  renderGroupButton = () => {
-    return (
-      <div>
-        <div className="messenger-new-group-button clickable"
-          onClick={() => this.setState({ showingGroupCreation: true })}
-        >
-          <div
-            className="messenger-new-group-button-icon"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_group_create.svg)` }}
-          />
-          Create Group
-        </div>
-        {!this.props.groups.length && (
-          <div className="messenger-empty-message-container">
-            <p className="messenger-empty-message">You aren't part of any group yet :(</p>
-            <p className="messenger-empty-message">
-              {this.props.contacts.length ?
-                'Try adding some of your friends to a group' :
-                'You can find groups through matchmaking'
-              }
-            </p>
-          </div>
-        )}
-        {this.state.showingGroupCreation && (
-          <GroupCreation
-            onCreate={this.createGroup}
-            onCancel={() => this.setState({ showingGroupCreation: false })}
-          />
-        )}
-      </div>
-    );
-  }
-
-  renderGroup = (group) => {
-    const messages = (group.messages || []).slice(0);
-    const lastMessage = messages[messages.length - 1];
-    const unreadCount = 0;
-    return (
-      <div
-        key={`group-${group.chatId}`}
-        className="messenger-contact"
-        onClick={() => this.props.openChat(group.chatId)}
-      >
-        <div
-          className="messenger-contact-icon"
-          style={{ backgroundImage: `url('${group.icon}')` }}
-        />
-        <div className="messenger-contact-body">
-          <p className="messenger-contact-body-title">{group.title}</p>
-          {lastMessage && (
-            <p className="messenger-contact-body-subtitle">
-              {this.decryptMessage(lastMessage, this.props.privateKey, group.privateKey).content}
-            </p>
-          )}
-        </div>
-        <div className="messenger-contact-info">
-          {lastMessage && (
-            <p className="messenger-contact-info-last-seen">
-              {formatAMPM(new Date(lastMessage.createdAt))}
-            </p>
-          )}
-          <div className="messenger-contact-info-unread">
-            <p className="messenger-contact-info-unread-count">
-              {unreadCount}
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  renderDivider(name, expanded, renderFunction) {
-    const chevronType = expanded ? 'down' : 'right';
-    return (
-      <div className="messenger-body-section">
-        <div className="messenger-body-section-header-light clickable"
-          onClick={() => this.setState(previous => ({
-            dividerExpanded: {
-              ...{
-                friends: false,
-                groups: false,
-              },
-              [name]: !previous.dividerExpanded[name],
-            }
-          }))}
-        >
-          <p className="messenger-body-section-header-name">{name}</p>
-          <div className="messenger-body-section-header-info">
-            <div
-              className="messenger-body-section-header-icon"
-              style={{ backgroundImage: `url('/assets/svg/ic_messenger_chevron_${chevronType}.svg')` }}
-            />
-          </div>
-        </div>
-        {expanded && (
-          <div className="messenger-body-divider-content">
-            {renderFunction()}
-          </div>
-        )}
-      </div >
-    );
+    return <Groups 
+      userId={this.props.userId}
+      privateKey={this.props.privateKey}
+      contacts={this.props.contacts}
+      groups={this.props.groups}
+      search={this.state.searchInput}
+      disconnected={this.props.disconnected}
+      openChat={this.props.openChat}
+      createChat={this.props.createChat}
+      expanded={this.state.dividerExpanded.groups}
+      onExpand={(expanded) => this.setState({ dividerExpanded: { games: false, friends: false, groups: !expanded } })}
+    />
   }
 
   renderFooter() {
