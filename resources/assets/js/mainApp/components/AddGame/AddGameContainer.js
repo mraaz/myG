@@ -68,7 +68,7 @@ const AddGameContainer = () => {
         game_name_box: mainSettingsState.gameTitle,
         selected_region: advancedSettingsState.region,
         selected_experience: advancedSettingsState.experience,
-        start_date_time: mainSettingsState.startTime,
+        startDate: mainSettingsState.startTime,
         endDate: mainSettingsState.endTime,
         selected_platform: advancedSettingsState.platform,
         description_box: advancedSettingsState.description,

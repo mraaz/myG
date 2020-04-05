@@ -3,7 +3,7 @@
 import mysql.connector
 
 mydb = mysql.connector.connect(
-    host="127.0.0.1",
+    host="192.168.64.10",
     user="root",
     passwd="root",
     database="mygame"

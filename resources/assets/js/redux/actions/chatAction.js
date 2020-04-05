@@ -178,10 +178,10 @@ export function fetchChatAction(chatId) {
   }
 }
 
-export function createChatAction(contacts, userId, title, icon, encryption, isGroup, gameId, gameSchedule) {
+export function createChatAction(contacts, userId, title, icon, encryption, isGroup, gameId) {
   return {
     type: 'CREATE_CHAT',
-    payload: createChat(contacts, [userId], title, icon, encryption && encryption.publicKey, isGroup, gameId, gameSchedule),
+    payload: createChat(contacts, [userId], title, icon, encryption && encryption.publicKey, isGroup, gameId),
     meta: { userId, encryption }
   }
 }

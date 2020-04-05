@@ -12,9 +12,9 @@ export function fetchChat(chatId) {
   return axios.get(`/api/chat/${chatId}`).then(response => response.data);
 }
 
-export function createChat(contacts, owners, title, icon, publicKey, isGroup, gameId, gameSchedule) {
-  logger.log('CHAT', 'HTTP', `Creating Chat: `, { contacts, owners, title, icon, publicKey, isGroup, gameId, gameSchedule });
-  return axios.post(`/api/chat/`, { contacts, owners, title, icon, publicKey, isGroup, gameId, gameSchedule }).then(response => response.data);
+export function createChat(contacts, owners, title, icon, publicKey, isGroup, gameId) {
+  logger.log('CHAT', 'HTTP', `Creating Chat: `, { contacts, owners, title, icon, publicKey, isGroup, gameId });
+  return axios.post(`/api/chat/`, { contacts, owners, title, icon, publicKey, isGroup, gameId }).then(response => response.data);
 }
 
 export function updateChat(chatId, payload) {
@@ -60,11 +60,6 @@ export function addContactsToChat(userId, chatId, contacts, publicKey, privateKe
 export function acceptInvitation(chatId, contacts) {
   logger.log('CHAT', 'HTTP', `Accepting Invitation To Chat ${chatId}: `, contacts);
   return axios.put(`/api/chat/${chatId}/contacts`, { contacts, fromLink: true }).then(() => response.data);
-}
-
-export function acceptGameGroupInvitation(gameId, userId) {
-  logger.log('CHAT', 'HTTP', `Accepting Invitation To Game Group ${gameId}: `, userId);
-  return axios.post(`/api/chat/game/${gameId}`, { userId }).then(() => response.data);
 }
 
 export function inviteUserToGroup(userId, chatId, contactId, publicKey, privateKey, userPrivateKey) {
