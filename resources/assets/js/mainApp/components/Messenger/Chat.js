@@ -340,7 +340,7 @@ export function mapStateToProps(state, props) {
   const fullContacts = chat.fullContacts || [];
   const contactId = !isGroup && contacts[0];
   const contact = (contactId && state.user.contacts.find(contact => contact.contactId === contactId)) || {};
-  const contactSubtitle = contact.status && contact.status === 'offline' ? `${formatDateTime(contact.lastSeen)}` : contact.status && `${contact.status}`;
+  const contactSubtitle = contact.status && contact.status === 'offline' ? `Last seen ${formatDateTime(contact.lastSeen)}` : contact.status && `${contact.status}`;
   let chatSubtitle = null;
   const contactsMap = {};
   fullContacts.forEach(contact => contactsMap[contact.contactId] = contact);

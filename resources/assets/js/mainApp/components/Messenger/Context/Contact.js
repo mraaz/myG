@@ -23,7 +23,7 @@ export default class Contact extends React.PureComponent {
 
   openChat = (contact) => {
     if (this.props.disconnected) return;
-    if (contact.chat.chatId) return this.props.openChat(contact.chat.chatId);
+    if (contact.chat && contact.chat.chatId) return this.props.openChat(contact.chat.chatId);
     this.props.createChat([contact.contactId], this.props.userId);
   }
 
