@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
@@ -17,6 +16,7 @@ export default class IndividualGroup extends Component {
 
   componentDidMount() {
     if (this.props.initialData.userInfo != undefined) {
+      window.scrollTo(0, 0)
       this.fetchMoreData()
     }
   }
@@ -39,9 +39,12 @@ export default class IndividualGroup extends Component {
   // }
 
   fetchMoreData = () => {
+    if (this.state.myPosts.length > 0) {
+      window.scrollTo(0, document.documentElement.offsetHeight - 4000)
+    }
     const self = this
 
-    const getPosts = async function() {
+    const getPosts = async function () {
       try {
         const myPosts = await axios.get(`/api/get_group_posts/${self.props.groups_id.params.id}/${self.state.counter}`)
 

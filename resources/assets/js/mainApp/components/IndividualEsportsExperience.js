@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import Select from 'react-select'
-import ReactDOM from 'react-dom'
 import { Redirect } from 'react-router'
 import axios from 'axios'
 

@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 import axios from 'axios'
 import IndividualFriend from './IndividualFriend'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -11,10 +10,14 @@ export default class MyFriends extends Component {
   }
 
   componentDidMount() {
+    window.scrollTo(0, 0)
     this.pullData()
   }
 
   pullData = async () => {
+    if (this.state.allMyFriends.length > 0) {
+      window.scrollTo(0, document.documentElement.offsetHeight - 4000)
+    }
     this.state.counter = this.state.counter + 1
 
     try {

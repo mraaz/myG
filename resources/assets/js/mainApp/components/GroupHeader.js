@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 import { Redirect } from 'react-router'
 import { BrowserRouter as Router, Route, NavLink, Link } from 'react-router-dom'
 import axios from 'axios'

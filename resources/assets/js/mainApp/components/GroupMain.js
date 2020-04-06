@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 import { Redirect } from 'react-router'
 import axios from 'axios'
 import IndividualGroups from './IndividualGroups'

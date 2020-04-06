@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 import axios from 'axios'
 import IndividualInvitation from './IndividualInvitation'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -15,13 +14,17 @@ export default class Invitation extends Component {
   }
 
   componentDidMount() {
+    window.scrollTo(0, 0)
     this.fetchMoreData()
   }
 
   fetchMoreData = () => {
+    if (this.state.myFriendRequests.length > 0) {
+      window.scrollTo(0, document.documentElement.offsetHeight - 4000)
+    }
     const self = this
 
-    const getFriendnoti = async function() {
+    const getFriendnoti = async function () {
       try {
         const getFriendnoti = await axios.post('/api/notifications/allmyFriendRequests', {
           counter: self.state.counter,
