@@ -163,7 +163,7 @@ export class Chat extends React.PureComponent {
               (
                 <WithTooltip position={{ bottom: '24px', left: '-12px' }} text={this.props.title}>
                   <div className="chat-component-header-title">
-                    {this.props.title.slice(0, 20) + '...'}
+                    {this.props.title.slice(0, 17) + '...'}
                   </div>
                 </WithTooltip>
               ) :

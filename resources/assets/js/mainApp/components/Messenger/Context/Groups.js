@@ -86,7 +86,7 @@ export default class Groups extends React.PureComponent {
             titleTooLong ?
               (
                 <WithTooltip position={{ bottom: '24px', left: '-12px' }} text={group.title}>
-                  <p className="messenger-contact-body-title">{group.title.slice(0, 20) + '...'}</p>
+                  <p className="messenger-contact-body-title">{group.title.slice(0, 17) + '...'}</p>
                 </WithTooltip>
               ) :
               (
