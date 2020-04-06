@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 import axios from 'axios'
 import { withRouter, Link } from 'react-router-dom'
 import Autosuggest from 'react-autosuggest'
 import AutosuggestHighlightMatch from 'autosuggest-highlight/match'
 import AutosuggestHighlightParse from 'autosuggest-highlight/parse'
 import { Disable_keys } from './Utility_Function'
-import ChatIndicator from './Messenger/ChatIndicator';
+import ChatIndicator from './Messenger/ChatIndicator'
 
 var playersDB = []
 

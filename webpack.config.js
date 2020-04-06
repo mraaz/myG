@@ -4,7 +4,7 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
-const mode = 'production' // process.env.NODE_ENV == 'production' ? process.env.NODE_ENV : 'development'
+const mode = process.env.NODE_ENV == 'production' ? process.env.NODE_ENV : 'development'
 const VENDOR_LIBS = [
   'redux',
   'react-redux',

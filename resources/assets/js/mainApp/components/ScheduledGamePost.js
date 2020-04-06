@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 
 import ScheduledGamePost_Default from './ScheduledGamePost_Default'
 import ScheduledGamePost_Dota2 from './ScheduledGamePost_Dota2'
