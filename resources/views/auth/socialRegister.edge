@@ -64,7 +64,7 @@
             @endif
         </div>
         <div class="form-group">
-            <input class="input-common" placeholder="ALIAS *" type="text" name="alias" value="{{alias}}" class="text
+            <input placeholder="ALIAS *" type="text" name="alias" value="{{alias}}" class="input-common
 
           @if(hasErrorFor('alias'))
             error
@@ -73,13 +73,13 @@
         </div>
         <div class="form-group">
             @if(email === '')
-            <input class="input-common" placeholder="EMAIL *" type="text" name="email" value="{{email}}" class="text
+            <input placeholder="EMAIL *" type="text" name="email" value="{{email}}" class="input-common
         @if(hasErrorFor('email'))
           error
         @endif
         " required="">
             @else
-            <input class="input-common" placeholder="EMAIL *" type="text" name="email" value="{{email}}" class="text
+            <input placeholder="EMAIL *" type="text" name="email" value="{{email}}" class="input-common
 
           @if(hasErrorFor('email'))
             error
@@ -88,7 +88,7 @@
             @endif
         </div>
         <div class="form-group">
-            <input class="input-common" placeholder="FIRST NAME" type="text" name="firstName" value="{{ old ('firstName', '')}}" class="text
+            <input placeholder="FIRST NAME" type="text" name="firstName" value="{{ old ('firstName', '')}}" class="input-common
 
           @if(hasErrorFor('firstName'))
             error
@@ -96,7 +96,7 @@
         " required="">
         </div>
         <div class="form-group">
-            <input class="input-common" placeholder="LAST NAME" type="text" name="lastName" value="{{ old ('lastName', '')}}" class="text
+            <input placeholder="LAST NAME" type="text" name="lastName" value="{{ old ('lastName', '')}}" class="input-common
 
           @if(hasErrorFor('lastName'))
             error
