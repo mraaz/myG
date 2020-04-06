@@ -31,44 +31,45 @@ const MAXIMUM_GROUP_SIZE = 37;
 
 class ChatRepository {
 
-  async fetchChats({ requestingUserId }) {
-    const chats = (await Database
-      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.blocked_users', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.game_id', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
+  async fetchChats({ requestingUserId, onlyGroups }) {
+    const chatsQuery = Database
+      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.blocked_users', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.game_id', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .leftJoin('chat_last_reads', function () { this.on('chat_last_reads.chat_id', 'user_chats.chat_id').andOn('chat_last_reads.user_id', 'user_chats.user_id') })
       .leftJoin('chat_last_cleareds', function () { this.on('chat_last_cleareds.chat_id', 'user_chats.chat_id').andOn('chat_last_cleareds.user_id', 'user_chats.user_id') })
-      .where('user_chats.user_id', requestingUserId))
-      .map(chat => new ChatSchema({
-        chatId: chat.chat_id,
-        muted: chat.muted,
-        blocked: chat.blocked,
-        blockedUsers: chat.blocked_users,
-        isPrivate: chat.isPrivate,
-        isGroup: chat.isGroup,
-        gameId: chat.game_id,
-        selfDestruct: chat.self_destruct,
-        deletedMessages: chat.deleted_messages,
-        lastRead: chat.last_read_message_id,
-        lastCleared: chat.last_cleared_message_id,
-        icon: chat.icon,
-        title: chat.title,
-        lastMessage: chat.last_message,
-        publicKey: chat.public_key,
-        contacts: chat.contacts,
-        guests: chat.guests,
-        owners: chat.owners,
-        moderators: chat.moderators,
-        messages: chat.messages,
-        createdAt: chat.created_at,
-        updatedAt: chat.updated_at,
-      }));
+      .where('user_chats.user_id', requestingUserId);
+    if (onlyGroups) chatsQuery.andWhere('chats.isGroup', true);
+    const chats = await chatsQuery.map(chat => new ChatSchema({
+      chatId: chat.chat_id,
+      muted: chat.muted,
+      blocked: chat.blocked,
+      blockedUsers: chat.blocked_users,
+      isPrivate: chat.isPrivate,
+      isGroup: chat.isGroup,
+      gameId: chat.game_id,
+      selfDestruct: chat.self_destruct,
+      deletedMessages: chat.deleted_messages,
+      lastRead: chat.last_read_message_id,
+      lastCleared: chat.last_cleared_message_id,
+      icon: chat.icon,
+      title: chat.title,
+      lastMessage: chat.last_message,
+      publicKey: chat.public_key,
+      contacts: chat.contacts,
+      guests: chat.guests,
+      owners: chat.owners,
+      moderators: chat.moderators,
+      messages: chat.messages,
+      createdAt: chat.created_at,
+      updatedAt: chat.updated_at,
+    }));
     return { chats };
   }
 
   async fetchChat({ requestingUserId, requestedChatId }) {
     const chat = (await Database
-      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.blocked_users', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.game_id', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.blocked_users', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.game_id', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .leftJoin('chat_last_reads', function () { this.on('chat_last_reads.chat_id', 'user_chats.chat_id').andOn('chat_last_reads.user_id', 'user_chats.user_id') })
@@ -207,7 +208,7 @@ class ChatRepository {
     const existingGameChat = gameId && chats.find(chat => chat.gameId === gameId);
     if (existingGameChat) {
       const requestedChatId = existingGameChat.chatId;
-      const { contacts: fullContacts} = await this.addContactsToChat({ requestedChatId, contacts });
+      const { contacts: fullContacts } = await this.addContactsToChat({ requestedChatId, contacts });
       existingGameChat.fullContacts = fullContacts;
       existingGameChat.contacts = [...new Set([...existingGameChat.contacts, ...contacts])].sort();
       return { chat: existingGameChat }

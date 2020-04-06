@@ -4,6 +4,7 @@ import Divider from './Divider';
 import GroupCreation from '../GroupCreation';
 import { deserializeKey, decryptMessage, generateKeysSync as generateGroupKeys } from '../../../../integration/encryption';
 import { formatAMPM } from '../../../../common/date';
+import { WithTooltip } from '../../Tooltip';
 
 export default class Groups extends React.PureComponent {
 
@@ -69,6 +70,7 @@ export default class Groups extends React.PureComponent {
     const messages = (group.messages || []);
     const lastMessage = messages[messages.length - 1];
     const unreadCount = 0;
+    const titleTooLong = group.title.length > 20;
     return (
       <div
         key={`group-${group.chatId}`}
@@ -80,7 +82,17 @@ export default class Groups extends React.PureComponent {
           style={{ backgroundImage: `url('${group.icon}')` }}
         />
         <div className="messenger-contact-body">
-          <p className="messenger-contact-body-title">{group.title}</p>
+          {
+            titleTooLong ?
+              (
+                <WithTooltip position={{ bottom: '24px', left: '-12px' }} text={group.title}>
+                  <p className="messenger-contact-body-title">{group.title.slice(0, 20) + '...'}</p>
+                </WithTooltip>
+              ) :
+              (
+                <p className="messenger-contact-body-title">{group.title}</p>
+              )
+          }
           {lastMessage && (
             <p className="messenger-contact-body-subtitle">
               {this.decryptMessage(lastMessage, this.props.privateKey, group.privateKey).content}

@@ -5,6 +5,7 @@ import ChatMessageList from './ChatMessageList';
 import ChatInput from './ChatInput';
 import ChatOptions from './ChatOptions';
 import GroupOptions from './GroupOptions';
+import { WithTooltip } from '../Tooltip';
 
 import { prepareChatAction, fetchMessagesAction, sendMessageAction, editMessageAction, deleteMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction, setTypingAction } from '../../../redux/actions/chatAction';
 import { withDatesAndLogs } from '../../../common/chat';
@@ -139,6 +140,7 @@ export class Chat extends React.PureComponent {
   renderHeader = () => {
     const selfDestructStyle = this.props.selfDestruct && 'chat-component-header-self-destruct';
     const iconClickableStyle = !this.props.isGroup && 'clickable';
+    const titleTooLong = this.props.title.length > 20;
     return (
       <div className={`chat-component-header ${selfDestructStyle}`}>
 
@@ -155,9 +157,23 @@ export class Chat extends React.PureComponent {
         <div className="chat-component-header-info clickable"
           onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}
         >
-          <div className="chat-component-header-title">
-            {this.props.title}
-          </div>
+
+          {
+            titleTooLong ?
+              (
+                <WithTooltip position={{ bottom: '24px', left: '-12px' }} text={this.props.title}>
+                  <div className="chat-component-header-title">
+                    {this.props.title.slice(0, 20) + '...'}
+                  </div>
+                </WithTooltip>
+              ) :
+              (
+                <div className="chat-component-header-title">
+                  {this.props.title}
+                </div>
+              )
+          }
+
           {this.props.subtitle && (
             <div className="chat-component-header-subtitle">
               {this.props.subtitle}
@@ -345,8 +361,8 @@ export function mapStateToProps(state, props) {
   const contactsMap = {};
   fullContacts.forEach(contact => contactsMap[contact.contactId] = contact);
   if (isGroup) {
-    const memberCount = contacts.length + guests.length;
-    const onlineCount = contacts.filter(contactId => (contactsMap[contactId] || {}).status === 'online').length + guests.length;
+    const memberCount = contacts.length + guests.length + 1;
+    const onlineCount = contacts.filter(contactId => (contactsMap[contactId] || {}).status === 'online').length + guests.length + 1;
     chatSubtitle = `${onlineCount}/${memberCount} online`;
   }
   chat.privateKey = deserializeKey(chat.privateKey);

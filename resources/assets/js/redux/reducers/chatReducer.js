@@ -328,7 +328,7 @@ export default function reducer(state = {
 
     case "ON_CHAT_UPDATED": {
       logger.log('CHAT', `Redux -> On Chat Updated: `, action.payload, action.meta);
-      const { chatId, title, icon, owners, moderators, isPrivate } = action.payload.chat;
+      const { chatId, title, icon, owners, moderators, guests, isPrivate } = action.payload.chat;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (title !== undefined) chat.title = title;

@@ -5,11 +5,12 @@ const ChatRepository = require('../../Repositories/Chat');
 
 class ChatController {
 
-  async fetchChats({ auth, response }) {
+  async fetchChats({ auth, request, response }) {
     const requestingUserId = auth.user.id;
     if (!requestingUserId) throw new Error('Auth Error');
-    log('CHAT', `User ${requestingUserId} requesting Chats`);
-    const { chats } = await ChatRepository.fetchChats({ requestingUserId });
+    const onlyGroups = request.only('onlyGroups').onlyGroups;
+    log('CHAT', `User ${requestingUserId} requesting ${onlyGroups ? 'Groups' : 'Chats'}`);
+    const { chats } = await ChatRepository.fetchChats({ requestingUserId, onlyGroups });
     return response.send({ chats });
   }
 
