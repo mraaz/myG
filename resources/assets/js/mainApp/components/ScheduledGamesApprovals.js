@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 import axios from 'axios'
 import IndividualApproval from './IndividualApproval'
 import { Link } from 'react-router-dom'

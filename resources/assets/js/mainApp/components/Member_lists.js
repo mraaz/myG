@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 import axios from 'axios'
 import IndividualMember from './IndividualMember'
 import ToggleButton from 'react-toggle-button'

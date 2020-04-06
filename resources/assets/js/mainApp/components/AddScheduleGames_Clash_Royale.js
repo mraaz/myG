@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import Select from 'react-select'
-import ReactDOM from 'react-dom'
 import { Redirect } from 'react-router'
 import DatePicker from 'react-datepicker'
 import moment from 'moment'

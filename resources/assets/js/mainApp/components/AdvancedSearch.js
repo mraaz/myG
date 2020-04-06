@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import Select from 'react-select'
-import ReactDOM from 'react-dom'
 import axios from 'axios'
 import AsyncSelect from 'react-select/lib/Async'
 import CreatableSelect from 'react-select/lib/Creatable'
