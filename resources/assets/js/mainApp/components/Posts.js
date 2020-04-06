@@ -14,6 +14,7 @@ export default class Posts extends Component {
   }
 
   componentDidMount() {
+    window.scrollTo(0, 0)
     this.fetchMoreData()
   }
 
@@ -26,9 +27,12 @@ export default class Posts extends Component {
   }
 
   fetchMoreData = () => {
+    if (this.state.myPosts.length > 0) {
+      window.scrollTo(0, document.documentElement.offsetHeight - 4000)
+    }
     const self = this
 
-    const getPosts = async function() {
+    const getPosts = async function () {
       try {
         const myPosts = await axios.get(`/api/post/${self.state.counter}`)
 
