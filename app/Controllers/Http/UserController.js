@@ -227,23 +227,6 @@ class UserController {
       return 'You are not Logged In!'
     }
   }
-
-  async gamers_you_might_know({ auth, request, response }) {
-    if (auth.user) {
-      try {
-        // const aliasConverted = await Database.table('users')
-        //   .where({
-        //     alias: request.params.alias,
-        //   })
-        //   .select('id')
-        //return aliasConverted
-      } catch (error) {
-        console.log(error)
-      }
-    } else {
-      return 'You are not Logged In!'
-    }
-  }
 }
 
 module.exports = UserController
