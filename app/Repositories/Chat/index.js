@@ -1,4 +1,6 @@
 
+const moment = require('moment');
+
 const Database = use('Database');
 const User = use('App/Models/User');
 const Chat = use('App/Models/Chat');
@@ -29,44 +31,45 @@ const MAXIMUM_GROUP_SIZE = 37;
 
 class ChatRepository {
 
-  async fetchChats({ requestingUserId }) {
-    const chats = (await Database
-      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.blocked_users', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', ' chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
+  async fetchChats({ requestingUserId, onlyGroups }) {
+    const chatsQuery = Database
+      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.blocked_users', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.game_id', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .leftJoin('chat_last_reads', function () { this.on('chat_last_reads.chat_id', 'user_chats.chat_id').andOn('chat_last_reads.user_id', 'user_chats.user_id') })
       .leftJoin('chat_last_cleareds', function () { this.on('chat_last_cleareds.chat_id', 'user_chats.chat_id').andOn('chat_last_cleareds.user_id', 'user_chats.user_id') })
-      .where('user_chats.user_id', requestingUserId))
-      .map(chat => new ChatSchema({
-        chatId: chat.chat_id,
-        muted: chat.muted,
-        blocked: chat.blocked,
-        blockedUsers: chat.blocked_users,
-        isPrivate: chat.isPrivate,
-        isGroup: chat.isGroup,
-        gameId: chat.game_id,
-        selfDestruct: chat.self_destruct,
-        deletedMessages: chat.deleted_messages,
-        lastRead: chat.last_read_message_id,
-        lastCleared: chat.last_cleared_message_id,
-        icon: chat.icon,
-        title: chat.title,
-        lastMessage: chat.last_message,
-        publicKey: chat.public_key,
-        contacts: chat.contacts,
-        guests: chat.guests,
-        owners: chat.owners,
-        moderators: chat.moderators,
-        messages: chat.messages,
-        createdAt: chat.created_at,
-        updatedAt: chat.updated_at,
-      }));
+      .where('user_chats.user_id', requestingUserId);
+    if (onlyGroups) chatsQuery.andWhere('chats.isGroup', true);
+    const chats = await chatsQuery.map(chat => new ChatSchema({
+      chatId: chat.chat_id,
+      muted: chat.muted,
+      blocked: chat.blocked,
+      blockedUsers: chat.blocked_users,
+      isPrivate: chat.isPrivate,
+      isGroup: chat.isGroup,
+      gameId: chat.game_id,
+      selfDestruct: chat.self_destruct,
+      deletedMessages: chat.deleted_messages,
+      lastRead: chat.last_read_message_id,
+      lastCleared: chat.last_cleared_message_id,
+      icon: chat.icon,
+      title: chat.title,
+      lastMessage: chat.last_message,
+      publicKey: chat.public_key,
+      contacts: chat.contacts,
+      guests: chat.guests,
+      owners: chat.owners,
+      moderators: chat.moderators,
+      messages: chat.messages,
+      createdAt: chat.created_at,
+      updatedAt: chat.updated_at,
+    }));
     return { chats };
   }
 
   async fetchChat({ requestingUserId, requestedChatId }) {
     const chat = (await Database
-      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.blocked_users', 'user_chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', ' chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.blocked_users', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.game_id', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .leftJoin('chat_last_reads', function () { this.on('chat_last_reads.chat_id', 'user_chats.chat_id').andOn('chat_last_reads.user_id', 'user_chats.user_id') })
@@ -194,13 +197,34 @@ class ChatRepository {
   }
 
   async createChat({ requestingUserId, contacts, owners, title, icon, publicKey, isGroup, gameId, gameSchedule }) {
-    contacts = [requestingUserId, ...contacts].sort();
+    contacts = [...new Set([requestingUserId, ...contacts])].sort();
     if (contacts.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
     const { chats } = await this.fetchChats({ requestingUserId });
     const guests = [];
 
     const existingChat = !isGroup && chats.find(chat => contacts.every((id, index) => id === chat.contacts[index]));
     if (existingChat) return { chat: existingChat };
+
+    const existingGameChat = gameId && chats.find(chat => chat.gameId === gameId);
+    if (existingGameChat) {
+      const requestedChatId = existingGameChat.chatId;
+      const { contacts: fullContacts } = await this.addContactsToChat({ requestedChatId, contacts });
+      existingGameChat.fullContacts = fullContacts;
+      existingGameChat.contacts = [...new Set([...existingGameChat.contacts, ...contacts])].sort();
+      return { chat: existingGameChat }
+    }
+
+    if (gameId) {
+      const game = await Database.select('schedule_games.id', 'schedule_games.start_date_time', 'schedule_games.game_names_id', 'game_names.id', 'game_names.game_name')
+        .from('schedule_games')
+        .leftJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+        .where('schedule_games.id', gameId)
+        .first()
+      if (!game) throw new Error('Game not found!');
+      const gameName = game.game_name;
+      gameSchedule = game.start_date_time;
+      title = `${gameName} (${moment(gameSchedule).format('YYYY-MM-DD HH:mm:ss')})`;
+    }
 
     const chat = new Chat();
     if (title) chat.title = title;
@@ -212,6 +236,7 @@ class ChatRepository {
     chat.guests = JSON.stringify(guests || []);
     chat.owners = JSON.stringify(owners || []);
     chat.moderators = JSON.stringify(owners || []);
+    chat.self_destruct = !!gameId;
     await chat.save();
 
     const chatSchema = new ChatSchema({
@@ -335,13 +360,13 @@ class ChatRepository {
     return { contacts };
   }
 
-  async deleteChat({ requestingUserId, requestedChatId }) {
+  async deleteChat({ requestingUserId, requestedChatId, forceDelete }) {
     const chatModel = (await Chat.query().where('id', requestedChatId).first());
     const chat = chatModel.toJSON();
     const contacts = JSON.parse(chat.contacts || '[]');
     const guests = JSON.parse(chat.guests || '[]');
     const owners = JSON.parse(chat.owners || '[]');
-    if (!owners.includes(requestingUserId)) throw new Error('Only Owners can Delete Chat');
+    if (!forceDelete && !owners.includes(requestingUserId)) throw new Error('Only Owners can Delete Chat');
     await chatModel.delete();
     contacts.forEach(userId => this._notifyChatEvent({ userId, action: 'deleteChat', payload: { chatId: requestedChatId } }));
     guests.forEach(guestId => this._notifyChatEvent({ guestId, action: 'deleteChat', payload: { chatId: requestedChatId } }));
@@ -354,9 +379,14 @@ class ChatRepository {
     const isKickingGuest = chat.guests.includes(userToRemove);
     if (requestedUserId && !isKickingGuest && !chat.moderators.includes(parseInt(requestingUserId))) throw new Error('Only Moderators can Kick Users.');
     const contacts = chat.contacts.filter(contactId => parseInt(contactId) !== parseInt(userToRemove));
+    if (!contacts.length) return this.deleteChat({ requestingUserId, requestedChatId, forceDelete: true });
+    const isOwner = chat.owners.find(contactId => parseInt(contactId) === parseInt(userToRemove));
+    const owners = chat.owners.filter(contactId => parseInt(contactId) !== parseInt(userToRemove));
     const moderators = chat.moderators.filter(contactId => parseInt(contactId) !== parseInt(userToRemove));
     const guests = chat.guests.filter(contactId => parseInt(contactId) !== parseInt(userToRemove));
-    await Chat.query().where('id', requestedChatId).update({ contacts: JSON.stringify(contacts), moderators: JSON.stringify(moderators), guests: JSON.stringify(guests) });
+    if (isOwner) owners.push(moderators[0] || contacts[0]);
+    if (isOwner && !moderators.includes(owners[0])) moderators.push(owners[0]);
+    await Chat.query().where('id', requestedChatId).update({ contacts: JSON.stringify(contacts), moderators: JSON.stringify(moderators), guests: JSON.stringify(guests), owners: JSON.stringify(owners) });
     !isKickingGuest && await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', userToRemove).delete();
     const alias = isKickingGuest ? `Guest #${userToRemove}` : (await User.query().where('id', '=', userToRemove).first()).toJSON().alias;
     const entryLog = await this._insertEntryLog(requestedChatId, alias, !!requestedUserId, !requestedUserId, false, false);
@@ -370,15 +400,14 @@ class ChatRepository {
     if (!chat.isGroup) throw new Error('Cannot add users to a normal chat.');
     const diffContacts = contacts.filter(contactId => !chat.contacts.includes(contactId));
     if (!diffContacts.length) return { error: 'Contacts are Already in Chat.' };
-    contacts.forEach(contactId => !chat.contacts.includes(contactId) && chat.contacts.push(contactId));
+    diffContacts.forEach(contactId => !chat.contacts.includes(contactId) && chat.contacts.push(contactId));
     if (chat.contacts.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
-    contacts.forEach(async userId => {
+    diffContacts.forEach(async userId => {
       const userChat = new UserChat();
       userChat.chat_id = chat.chatId;
       userChat.user_id = userId;
       userChat.deleted_messages = '[]';
       userChat.blocked_users = '[]';
-      if (chat.gameId) userChat.self_destruct = true;
       await userChat.save();
     });
     await Chat.query().where('id', requestedChatId).update({ contacts: JSON.stringify(chat.contacts) });
@@ -391,7 +420,7 @@ class ChatRepository {
       lastSeen: contact.last_seen,
       publicKey: contact.public_key,
     }));
-    const joinedUsers = fullContacts.filter(contact => contacts.includes(contact.contactId));
+    const joinedUsers = fullContacts.filter(contact => diffContacts.includes(contact.contactId));
     const logRequests = joinedUsers.map(contact => this._insertEntryLog(requestedChatId, contact.name, false, false, !fromLink, fromLink));
     const entryLogs = await Promise.all(logRequests);
     chat.entryLogs = [...chat.entryLogs, entryLogs];
@@ -712,7 +741,7 @@ class ChatRepository {
   }
 
   async _setSelfDestruct({ requestedChatId, selfDestruct }) {
-    await UserChat.query().where('chat_id', requestedChatId).update({ self_destruct: selfDestruct });
+    await Chat.query().where('id', requestedChatId).update({ self_destruct: selfDestruct });
     const payload = { chatId: requestedChatId, selfDestruct };
     this._notifyChatEvent({ chatId: requestedChatId, action: 'selfDestruct', payload });
   }

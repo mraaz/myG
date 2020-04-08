@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 import axios from 'axios'
 import IndividualSearchResults from './IndividualSearchResults'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -15,14 +14,18 @@ export default class AllSearchResults extends Component {
   }
 
   componentDidMount() {
+    window.scrollTo(0, 0)
     this.fetchMoreData()
   }
 
   fetchMoreData = () => {
+    if (this.state.getKeywordSearchResults.length > 0) {
+      window.scrollTo(0, document.documentElement.offsetHeight - 4000)
+    }
     const self = this
     const { match } = this.props.routeProps
 
-    const getKeywordSearchResults = async function() {
+    const getKeywordSearchResults = async function () {
       try {
         const getKeywordSearchResults = await axios.post('/api/user/keywordSearchResults', {
           keywords: match.params.keywords,

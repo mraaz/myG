@@ -1015,6 +1015,7 @@ class NotificationController {
     try {
       const markAllNoti = await Notification.query()
         .where({ other_user_id: auth.user.id })
+        .whereIn('activity_type', [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17])
         .update({ read_status: 1 })
       return 'Saved successfully'
     } catch (error) {
@@ -1028,6 +1029,7 @@ class NotificationController {
         .where({
           other_user_id: auth.user.id,
         })
+        .whereIn('activity_type', [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17])
         .delete()
 
       return 'Saved successfully'

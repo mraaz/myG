@@ -124,7 +124,7 @@ class LeftMenu extends Component {
               {isExpanded && <div className={styles.line} />}
             </div>
           </Link>
-          <Link to='/'>
+          <Link to='/messages'>
             <div className={styles.notificationIcon}>
               <img
                 src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Chat_Icon.svg'

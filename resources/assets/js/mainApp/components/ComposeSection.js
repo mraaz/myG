@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import IndividualPost from './IndividualPost'
 import PostFileModal from './PostFileModal'
 import Select from 'react-select'
 
-const visibility_options = [{ value: 1, label: 'Everyone' }, { value: 2, label: 'Friends' }, { value: 0, label: 'Only me' }]
+const visibility_options = [
+  { value: 1, label: 'Everyone' },
+  { value: 2, label: 'Friends' },
+  { value: 0, label: 'Only me' },
+]
 
 export default class ComposeSection extends Component {
   constructor() {
@@ -168,6 +171,8 @@ export default class ComposeSection extends Component {
   }
 
   componentDidMount() {
+    const self = this
+
     if (this.props != undefined) {
       if (this.props.initialData.userInfo != undefined) {
         this.setState({
@@ -176,6 +181,16 @@ export default class ComposeSection extends Component {
         })
       }
     }
+
+    const getGamers_you_might_know = async function() {
+      try {
+        const gamers_you_might_know = await axios.get('/api/user/gamers_you_might_know')
+        console.log(gamers_you_might_know)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getGamers_you_might_know()
   }
 
   handleChange_visibility = (visibility_box) => {

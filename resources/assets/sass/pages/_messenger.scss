@@ -7,6 +7,10 @@
   right: 0;
   z-index: 100;
 
+  input {
+    border: none;
+  }
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -18,6 +22,17 @@
   .messenger-body {
     display: flex;
     flex-direction: column;
+    height: 95vh;
+    overflow-y: scroll;
+  }
+
+  .messenger-content {
+    position: fixed;
+    bottom: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    width: 20%;
   }
 
   .messenger-chat-bar {
@@ -52,14 +67,6 @@
   .messenger-connection-warning-hint {
     font-size: 12px;
     color: #707070;
-  }
-
-  .messenger-body {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    height: 100%;
-    overflow-y: scroll;
   }
 
   .messenger-contact {
@@ -222,11 +229,14 @@
   }
 
   .messenger-settings-encryption-footer-button {
-    background-color: #2D363A;
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 12px;
-    color: #FAFAFA;
+    background-color: #E7BB30;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bolder;
+    width: 90%;
+    text-align: center;
+    color: #0A0A0A;
   }
 
   .messenger-footer-container {
@@ -532,6 +542,88 @@
     justify-content: center;
     align-items: center;
     filter: invert(100%);
+  }
+
+  .messenger-encryption-login-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #1D2326;
+    margin: auto 24px;
+    padding: 12px;
+  }
+
+  .messenger-encryption-login-icon-container {
+    position: relative;
+    margin: 0 auto;
+    width: 0;
+    height: 0;
+  }
+
+  .messenger-encryption-login-icon {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    top: -32px;
+    left: -28px;
+    position: absolute;
+    width: 43px;
+    height: 40px;
+  }
+
+  .messenger-encryption-login-title {
+    margin-top: 12px;
+    color: #FAFAFA;
+    font-size: 16px;
+    text-align: center;
+  }
+
+  .messenger-encryption-login-input {
+    background-color: #2D363A;
+    padding: 4px;
+    text-align: center;
+    border-radius: 12px;
+    font-size: 16px;
+    width: 90%;
+    margin: 8px 0;
+    align-self: center;
+    color: #A0A0A0;
+  }
+
+  .messenger-encryption-login-validate-button {
+    background-color: #E7BB30;
+    margin: 8px auto;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bolder;
+    width: 90%;
+    text-align: center;
+    color: #0A0A0A;
+  }
+
+  .messenger-encryption-login-generate-button {
+    background-color: #2D363A;
+    margin: 8px auto;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bolder;
+    width: 90%;
+    text-align: center;
+    color: #FAFAFA;
+  }
+
+  .messenger-encryption-login-divider {
+    margin: 8px 0;
+    width: 100%;
+    height: 1px;
+    background-color: #999999;
+  }
+
+  .messenger-encryption-login-hint {
+    margin-top: 12px;
+    color: #FAFAFA;
+    font-size: 10px;
   }
 
 }

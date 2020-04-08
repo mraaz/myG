@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 import ComposeSection from './ComposeSection'
 import Posts from './Posts'
 

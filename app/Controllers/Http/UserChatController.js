@@ -13,6 +13,14 @@ class UserChatController {
     return response.send({ success, error });
   }
 
+  async sendEncryptionEmail({ auth, request, response }) {
+    const requestingUserId = auth.user.id;
+    const { publicKey, pin} = request.only(['publicKey', 'pin']);
+    log('USER', `User ${requestingUserId} requesting Encryption Email for ${pin}`);
+    const { success, error } = await UserRepository.sendEncryptionEmail({ requestingUserId, publicKey, pin });
+    return response.send({ success, error });
+  }
+
   async fetchGames({ auth, response }) {
     const requestingUserIds = [auth.user.id];
     log('USER', `User ${requestingUserIds} requesting Games`);

@@ -30,8 +30,7 @@ class FriendController {
         .where({ user_id: auth.user.id })
         .orderBy('friends.created_at', 'desc')
         .select('friends.friend_id', 'users.first_name', 'users.last_name', 'users.alias', 'users.profile_img')
-        .limit(28)
-        .offset(parseInt(request.input('counter'), 10))
+        .paginate(request.input('counter'), 10)
 
       const showCountallMyFriends = await Database.from('friends')
         .where({ user_id: auth.user.id })

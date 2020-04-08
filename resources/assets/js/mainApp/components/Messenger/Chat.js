@@ -5,6 +5,7 @@ import ChatMessageList from './ChatMessageList';
 import ChatInput from './ChatInput';
 import ChatOptions from './ChatOptions';
 import GroupOptions from './GroupOptions';
+import { WithTooltip } from '../Tooltip';
 
 import { prepareChatAction, fetchMessagesAction, sendMessageAction, editMessageAction, deleteMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction, setTypingAction } from '../../../redux/actions/chatAction';
 import { withDatesAndLogs } from '../../../common/chat';
@@ -139,6 +140,7 @@ export class Chat extends React.PureComponent {
   renderHeader = () => {
     const selfDestructStyle = this.props.selfDestruct && 'chat-component-header-self-destruct';
     const iconClickableStyle = !this.props.isGroup && 'clickable';
+    const titleTooLong = this.props.title.length > 20;
     return (
       <div className={`chat-component-header ${selfDestructStyle}`}>
 
@@ -155,9 +157,23 @@ export class Chat extends React.PureComponent {
         <div className="chat-component-header-info clickable"
           onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}
         >
-          <div className="chat-component-header-title">
-            {this.props.title}
-          </div>
+
+          {
+            titleTooLong ?
+              (
+                <WithTooltip position={{ bottom: '24px', left: '-12px' }} text={this.props.title}>
+                  <div className="chat-component-header-title">
+                    {this.props.title.slice(0, 17) + '...'}
+                  </div>
+                </WithTooltip>
+              ) :
+              (
+                <div className="chat-component-header-title">
+                  {this.props.title}
+                </div>
+              )
+          }
+
           {this.props.subtitle && (
             <div className="chat-component-header-subtitle">
               {this.props.subtitle}
@@ -295,7 +311,7 @@ export class Chat extends React.PureComponent {
   renderEncryptedChat() {
     const isGroupWithoutKey = this.props.isGroup && !this.props.privateKey;
     const noUserKeyText = "Please inform your encryption key to read the contents of this chat.";
-    const noGroupKeyText = "Wait for another member to come online.";
+    const noGroupKeyText = `Waiting to join... You'll join the chat when someone else jumps in.${this.props.isGuest ? "Alternatively, create an account @ myG.gg" : ""}`;
     return (
       <div
         key={this.props.chatId}
@@ -340,13 +356,13 @@ export function mapStateToProps(state, props) {
   const fullContacts = chat.fullContacts || [];
   const contactId = !isGroup && contacts[0];
   const contact = (contactId && state.user.contacts.find(contact => contact.contactId === contactId)) || {};
-  const contactSubtitle = contact.status && contact.status === 'offline' ? `${formatDateTime(contact.lastSeen)}` : contact.status && `${contact.status}`;
+  const contactSubtitle = contact.status && contact.status === 'offline' ? `Last seen ${formatDateTime(contact.lastSeen)}` : contact.status && `${contact.status}`;
   let chatSubtitle = null;
   const contactsMap = {};
   fullContacts.forEach(contact => contactsMap[contact.contactId] = contact);
   if (isGroup) {
-    const memberCount = contacts.length + guests.length;
-    const onlineCount = contacts.filter(contactId => (contactsMap[contactId] || {}).status === 'online').length + guests.length;
+    const memberCount = contacts.length + guests.length + 1;
+    const onlineCount = contacts.filter(contactId => (contactsMap[contactId] || {}).status === 'online').length + guests.length + 1;
     chatSubtitle = `${onlineCount}/${memberCount} online`;
   }
   chat.privateKey = deserializeKey(chat.privateKey);
