@@ -10,6 +10,8 @@ const PageHeader = ({ headerText }) => {
       lineHeight: '77px',
       color: '#fff',
       fontWeight: 'bold',
+      borderBottom: '2px solid #344953',
+      borderLeft: '1px solid #344953',
     },
   }
 

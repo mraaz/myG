@@ -7,10 +7,12 @@ import '../../styles/AddGame/AddGameStyles.scss'
 import AddGame from './AddGame'
 import { Toast_style } from '../Utility_Function'
 import { SubmitDataFunction } from '../AddScheduleGames_Submit_Data'
+import InvitePlayers from './InvitePlayers'
 
 const AddGameContainer = () => {
   // State
   const [isGameListedModalOpen, toggleGameListedModal] = useState(false)
+  const [isInviteModalOpen, toggleInviteModal] = useState(true)
   const [isSubmitting, updateIsSubmitting] = useState(false)
   const [state, updateComponentState] = useState({ selectedSettings: SETTINGS_ENUMS.MAIN, isGameNameField: false })
   const [advancedSettingsState, updateAdvancedSettingsState] = useState({
@@ -33,8 +35,8 @@ const AddGameContainer = () => {
     isRepeatFieldSelected: false,
     numberOfPlayers: -42,
     isUnlimitedPlayers: true,
-    isCommentsAllowed: false,
-    isPublicGame: false,
+    isCommentsAllowed: true,
+    isPublicGame: true,
   })
   const [optionalFieldsState, updateOptionalFieldsState] = useState({
     modalRank: null,
@@ -146,6 +148,7 @@ const AddGameContainer = () => {
       />
       {getPageFooter()}
       {getGameListedModal()}
+      <InvitePlayers isOpen={isInviteModalOpen} />
     </div>
   )
 }

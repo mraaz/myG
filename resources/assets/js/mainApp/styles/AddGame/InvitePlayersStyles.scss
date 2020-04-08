@@ -1,0 +1,92 @@
+.invite-players {
+  &__container {
+    width: 819px;
+  }
+  &__header-container {
+    display: flex;
+    padding: 20px;
+    background-color: #1d2326;
+  }
+  &__header-text {
+    flex: 1;
+    text-align: center;
+    color: #fff;
+    font-weight: bold;
+  }
+  &__footer-container {
+    background-color: #1d2326;
+    padding: 25px;
+    flex-direction: row-reverse;
+    display: flex;
+  }
+  &__menu-container {
+    padding: 36px;
+    border-bottom: 1px solid #1d2326;
+  }
+  &__player-profile-container {
+    display: flex;
+    align-items: center;
+    padding: 19px 35px;
+    background-color: #1d2326;
+    margin-bottom: 10px;
+  }
+  &__player-profile {
+    display: flex;
+    flex: 1;
+    align-items: center;
+  }
+  &__player-image {
+    border-radius: 30px;
+    margin-right: 16px;
+  }
+  &__player-alias {
+    color: #fff;
+    font-size: 18px;
+  }
+  &__content-container {
+    height: 520px;
+    display: flex;
+  }
+  &__search-area-container {
+    flex: 1;
+  }
+  &__invites-area-container {
+    width: 246px;
+    background-color: #1d2326;
+  }
+  &__invites-header-container {
+    padding: 15px 18px;
+    color: #fff;
+    background-color: #283034;
+    cursor: pointer;
+    display: flex;
+  }
+  &__invites-header {
+    flex: 1;
+  }
+  &__invites-header-right {
+    display: flex;
+  }
+  &__invites-header-right-count {
+    margin-right: 8px;
+    font-size: 14px;
+  }
+  &__invites-header-arrow {
+    transition: 0.5s;
+  }
+  &__invites-header-arrow-down {
+    transform: rotate(90deg);
+  }
+  &__player-list-container {
+    background-color: #1d2326;
+    padding: 20px 28px;
+    transition: 0.5s;
+  }
+  &__player-list-text {
+    margin-bottom: 10px;
+    color: #fff;
+  }
+  &__player-list-hidden {
+    display: none;
+  }
+}
