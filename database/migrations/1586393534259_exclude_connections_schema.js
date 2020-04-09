@@ -3,22 +3,21 @@
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use('Schema')
 
-class ConnectionsSchema extends Schema {
+class ExcludeConnectionsSchema extends Schema {
   up () {
-    this.create('connections', (table) => {
+    this.create('exclude_connections', (table) => {
       table.increments()
       table.integer('user_id').unsigned().notNullable()
       table.foreign('user_id').references('users.id').onDelete('cascade')
       table.integer('other_user_id').unsigned().notNullable()
       table.foreign('other_user_id').references('users.id').onDelete('cascade')
-      table.integer('total_score').defaultTo(0)
       table.timestamps()
     })
   }
 
   down () {
-    this.drop('connections')
+    this.drop('exclude_connections')
   }
 }
 
-module.exports = ConnectionsSchema
+module.exports = ExcludeConnectionsSchema

@@ -81,7 +81,6 @@ Route.get('/api/user/:id/addFriend', 'UserController.addFriend')
 Route.get('/api/user/:id/unfriend', 'UserController.unfriend')
 Route.post('/api/user/playerSearchResults', 'UserController.playerSearchResults')
 Route.post('/api/user/keywordSearchResults', 'UserController.keywordSearchResults')
-Route.get('/api/user/gamers_you_might_know', 'UserController.gamers_you_might_know')
 
 Route.post('/api/GameExperiences/commend/:game_exp_id', 'GameExperienceController.updateCommend')
 Route.get('/api/GameExperiences/exp/:id', 'GameExperienceController.myShow')
@@ -326,5 +325,7 @@ Route.get('/api/guest/chat/:chatId/entryLogs', 'GuestController.fetchEntryLogs')
 Route.get('/api/guest/privateKey/:chatId', 'GuestController.fetchGroupPrivateKeyRequests')
 Route.post('/api/guest/privateKey/:userId/:chatId', 'GuestController.requestGroupPrivateKey')
 Route.delete('/api/guest/privateKey/:userId/:chatId', 'GuestController.confirmGroupPrivateKey')
+
+Route.get('/api/connection/master_controller', 'ConnectionController.master_controller')
 
 Route.any('*', ({ view }) => view.render('pages/react'))
