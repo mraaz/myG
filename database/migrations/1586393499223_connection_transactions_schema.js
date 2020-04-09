@@ -11,7 +11,7 @@ class ConnectionTransactionsSchema extends Schema {
       table.foreign('connections_id').references('connections.id').onDelete('cascade')
       table.integer('connection_criterias_id').unsigned().notNullable()
       table.foreign('connection_criterias_id').references('connection_criterias.id').onDelete('cascade')
-      table.string('value', 1024)
+      table.string('values', 1024)
       table.timestamps()
     })
   }
