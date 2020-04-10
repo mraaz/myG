@@ -20,7 +20,8 @@ class ConnectionController {
     if (auth.user) {
       //if we ran this in the last 24 hours, DONT run again!!!!
 
-      this.check_if_same_games_profile({ auth, request, response })
+      //this.check_if_same_games_in_profile({ auth, request, response })
+      this.check_if_in_same_communities({ auth, request, response })
       return 'Got here: Master'
     } else {
       return 'You are not Logged In!'
@@ -74,7 +75,61 @@ class ConnectionController {
     }
   }
 
-  async check_if_same_games_profile({ auth, request, response }) {
+  async check_if_in_same_communities({ auth, request, response }) {
+    //find gamers with the same communities as the ones I'm in, orderby Level and limit to 88
+
+    if (auth.user) {
+      const all_my_groups = await Database.from('usergroups')
+        .where('usergroups.user_id', '=', auth.user.id)
+        .whereNot('usergroups.permission_level', 42)
+        .select('user_id as user_id')
+        .union([
+          Database.from('groups')
+            .where({
+              user_id: auth.user.id,
+            })
+            .select('user_id as user_id'),
+        ])
+
+      console.log(all_my_groups)
+
+      //Don't include your friends
+      const showallMyFriends = Database.from('friends')
+        .where({ user_id: auth.user.id })
+        .select('friends.friend_id as user_id')
+      //Don't include gamers who have rejected you and gamers who you have rejected
+      const showallMyEnemies = Database.from('exclude_connections')
+        .where({ user_id: auth.user.id })
+        .select('other_user_id as user_id')
+
+      //Don't include gamers who you already have checked
+      const check_all_my_Connections = Database.from('connection_transactions')
+        .innerJoin('connections', 'connections.id', 'connection_transactions.connections_id')
+        .innerJoin('connection_criterias', 'connection_criterias.id', 'connection_transactions.connection_criterias_id')
+        .where({ user_id: auth.user.id, criteria: 'check_if_same_games_in_profile', values: true })
+        .select('other_user_id as user_id')
+
+      for (var i = 0; i < all_my_groups.length; i++) {
+        const gamerSearchResults = await Database.from('game_experiences')
+          .innerJoin('users', 'users.id', 'game_experiences.user_id')
+          .select('game_experiences.user_id')
+          .whereNot('game_experiences.user_id', '=', auth.user.id)
+          .where('game_experiences.game_names_id', '=', rawGames[i].game_names_id)
+          .whereNotIn('game_experiences.user_id', showallMyFriends)
+          .whereNotIn('game_experiences.user_id', showallMyEnemies)
+          .whereNotIn('game_experiences.user_id', check_all_my_Connections)
+          .orderBy('users.created_at', 'desc')
+          .limit(88)
+      }
+
+      try {
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+
+  async check_if_same_games_in_profile({ auth, request, response }) {
     //find gamers with the same games as whats in your profile, orderby level and limit to 88
 
     if (auth.user) {
@@ -91,12 +146,20 @@ class ConnectionController {
               .where('esports_experiences.user_id', '=', auth.user.id),
           ])
 
+        //Don't include your friends
         const showallMyFriends = Database.from('friends')
           .where({ user_id: auth.user.id })
           .select('friends.friend_id as user_id')
-
+        //Don't include gamers who have rejected you and gamers who you have rejected
         const showallMyEnemies = Database.from('exclude_connections')
           .where({ user_id: auth.user.id })
+          .select('other_user_id as user_id')
+
+        //Don't include gamers who you already have checked
+        const check_all_my_Connections = Database.from('connection_transactions')
+          .innerJoin('connections', 'connections.id', 'connection_transactions.connections_id')
+          .innerJoin('connection_criterias', 'connection_criterias.id', 'connection_transactions.connection_criterias_id')
+          .where({ user_id: auth.user.id, criteria: 'check_if_same_games_in_profile', values: true })
           .select('other_user_id as user_id')
 
         for (var i = 0; i < rawGames.length; i++) {
@@ -107,6 +170,7 @@ class ConnectionController {
             .where('game_experiences.game_names_id', '=', rawGames[i].game_names_id)
             .whereNotIn('game_experiences.user_id', showallMyFriends)
             .whereNotIn('game_experiences.user_id', showallMyEnemies)
+            .whereNotIn('game_experiences.user_id', check_all_my_Connections)
             .orderBy('users.created_at', 'desc')
             .limit(88)
 
@@ -117,16 +181,16 @@ class ConnectionController {
               .first()
 
             if (getConnection != undefined) {
-              const check_this_Connection = await Database.from('connection_transactions')
-                .innerJoin('connection_criterias', 'connection_criterias.id', 'connection_transactions.connection_criterias_id')
-                .where({ connections_id: getConnection.id, criteria: 'check_if_same_games_in_profile' })
-                .select('values')
-                .first()
-              if (check_this_Connection != undefined) {
-                if (check_this_Connection.values == true) {
-                  continue
-                }
-              }
+              // const check_this_Connection = await Database.from('connection_transactions')
+              //   .innerJoin('connection_criterias', 'connection_criterias.id', 'connection_transactions.connection_criterias_id')
+              //   .where({ connections_id: getConnection.id, criteria: 'check_if_same_games_in_profile' })
+              //   .select('values')
+              //   .first()
+              // if (check_this_Connection != undefined) {
+              //   if (check_this_Connection.values == true) {
+              //     continue
+              //   }
+              // }
               this.calculate_score(auth.user.id, gamerSearchResults[x].user_id, {
                 criteria: 'check_if_same_games_in_profile',
                 value: true,

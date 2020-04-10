@@ -7,7 +7,7 @@ class Import_game_names_Schema extends Schema {
   up () {
     this
     .raw(" insert into connection_criterias (criteria, score, created_at, updated_at) values ('check_if_same_games_in_profile', 10, '1981-03-19', '1981-03-19')")
-    .raw(" insert into connection_criterias (criteria, score, created_at, updated_at) values ('check_if_in_same_communites', 10, '1981-03-19', '1981-03-19')")
+    .raw(" insert into connection_criterias (criteria, score, created_at, updated_at) values ('check_if_in_same_communities', 10, '1981-03-19', '1981-03-19')")
     .raw(" insert into connection_criterias (criteria, score, created_at, updated_at) values ('check_if_in_same_location', 10, '1981-03-19', '1981-03-19')")
     .raw(" insert into connection_criterias (criteria, score, created_at, updated_at) values ('myCommon_friends', 10, '1981-03-19', '1981-03-19')")
     .raw(" insert into connection_criterias (criteria, score, created_at, updated_at) values ('have_we_played_together', 10, '1981-03-19', '1981-03-19')")
