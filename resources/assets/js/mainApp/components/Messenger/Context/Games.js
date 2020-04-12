@@ -89,7 +89,7 @@ export default class Games extends React.PureComponent {
             .slice(0, 10);
         }
 
-        const colors = ['#399', '#939', '#993', '#339', '#933', '#393', '#699', '#969', '#996', '#669', '#966', '#696'];
+        const colors = ['#EB333D', '#AF093F', '#A82DB1', '#162B84', '#3E57C1', '#029EBC', '#118137', '#05BC45', '#CE9003', '#8D7514'];
         games.slice(0, 10).forEach((game, index) => {
           const gameContacts = contacts.filter(contact => contact.games.find(contactGame => contactGame.gameId === game.gameId));
           const onlineCount = gameContacts.filter(contact => contact.status === STATUS_ENUM.ONLINE).length;
