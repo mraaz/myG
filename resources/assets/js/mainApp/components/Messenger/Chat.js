@@ -44,6 +44,8 @@ export class Chat extends React.PureComponent {
   handleMessageListScroll = () => {
     const messageList = this.messageListRef.current;
     if (!messageList) return;
+    const hasScrolledEnough = messageList.scrollHeight - messageList.scrollTop > 500;
+    this.setState({ oldMessages: hasScrolledEnough });
     if (messageList.scrollTop !== 0 || this.props.loadingMessages || this.props.noMoreMessages) return;
     const nextPage = this.state.messagePaginationPage + 1;
     this.props.fetchMessages(this.props.chatId, nextPage);
@@ -287,6 +289,20 @@ export class Chat extends React.PureComponent {
     );
   }
 
+  renderScrollToEndIndicator() {
+    if (!this.state.oldMessages) return <div className="chat-component-footer-divider" />;
+    return (
+      <div key={'scroll'} className="chat-component-scroll-to-bottom clickable"
+        onClick={() => {
+          this.setState({ oldMessages: false });
+          this.messageListRef.current.scrollTo(0, this.messageListRef.current.scrollHeight);
+        }}
+      >
+        You are viewing old messages, jump to recent ones?
+      </div>
+    );
+  }
+
   renderFooter = () => {
     return (
       <div className="chat-component-footer">
@@ -341,7 +357,7 @@ export class Chat extends React.PureComponent {
         {this.renderHeader()}
         {this.state.settings && !this.props.minimised && this.renderSettings()}
         {!this.state.settings && !this.props.minimised && this.renderBody()}
-        {!this.state.settings && !this.props.minimised && <div className="chat-component-footer-divider" />}
+        {!this.state.settings && !this.props.minimised && this.renderScrollToEndIndicator()}
         {!this.state.settings && !this.props.minimised && this.renderFooter()}
       </div>
     );
