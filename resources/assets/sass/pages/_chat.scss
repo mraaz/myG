@@ -22,6 +22,12 @@
   height: auto !important;
 }
 
+.chat-guest {
+  height: 400px !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+}
+
 .chat-component-header {
   display: flex;
   background-color: #1D2326;

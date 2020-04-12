@@ -8,20 +8,175 @@
   background-position: center center;
   background-size: cover;
 
+  input {
+    border: none;
+  }
 
   .messenger-container {
     background-color: transparent !important;
     border-left: none !important;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
   }
 
   .kicked {
     display: flex;
     height: fit-content;
-    background-color: #603030;
+    background-color: #E7BB30;
     color: #FFF;
     font-size: 18px;
     padding: 24px;
     border-radius: 4px;
+  }
+
+  .alias-container {
+
+    background-color: #1D2326;
+    padding: 24px;
+    width: 20%;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+   
+    .hint {
+      color: #FFF;
+      font-size: 18px;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+
+    .input {
+      background-color: #2D363A;
+      padding: 4px;
+      text-align: center;
+      border-radius: 12px;
+      font-size: 16px;
+      width: 90%;
+      margin: 20px 0;
+      align-self: center;
+      color: #A0A0A0;
+    }
+
+    .error {
+      box-shadow: 0 0 3pt 2pt red;
+    }
+
+    .join {
+      background-color: #E7BB30;
+      margin: 8px auto;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bolder;
+      width: 90%;
+      text-align: center;
+      color: #0A0A0A;
+    }
+  
+    .register {
+      background-color: #2D363A;
+      margin: 8px auto;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      width: 90%;
+      text-align: center;
+      color: #FAFAFA;
+    }
+
+  }
+
+  .register-hint-container {
+    display: flex;
+    flex-direction: column;
+    margin: 24px;
+  }
+
+  .register-hint-title {
+    color: #FFF;
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .register-hint-subtitle {
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .card-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 90px;
+  }
+  
+  .card-round {
+    width: 430px;
+    height: 400px;
+    background-color: #1d2326;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  .button {
+    display: flex;
+    line-height: 42px;
+    margin-bottom: 22px;
+    border-radius: 8px;
+    text-decoration: none;
+  }
+  
+  .google-btn {
+    background-color: #2a84fc;
+    color: #ffffff;
+  }
+  
+  .steam-btn {
+    background-color: #111214;
+    color: #ffffff;
+    text-align: center;
+  }
+  
+  .facebook-btn {
+    background-color: #3F5DA6;
+    color: #ffffff;
+  }
+  
+  .discord-btn {
+    background-color: #5B6BC0;
+    color: #ffffff;
+    text-align: center;
+  }
+  
+  .sso-text {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .logo-on-card {
+    position: relative;
+    top: 15px;
+    height: 90px;
+    width: 90px;
+  }
+  
+  .logo-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+  
+  .sso-logo {
+    position: relative;
+    top: 9px;
+    left:10px;
   }
 
 }

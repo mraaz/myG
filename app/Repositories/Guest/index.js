@@ -12,14 +12,14 @@ const MAXIMUM_GROUP_SIZE = 37;
 
 class GuestRepository {
 
-  async register({ requestedChatId, publicKey }) {
+  async register({ requestedChatId, requestedAlias, publicKey }) {
     const guestEntry = new Guest();
     guestEntry.public_key = publicKey;
     guestEntry.chat_id = requestedChatId;
     await guestEntry.save();
     const guest = new GuestSchema({ publicKey, guestId: guestEntry.id });
     const requestingGuestId = guest.guestId;
-    const { chat } = await this.addGuestToChat({ requestingGuestId, requestedChatId, publicKey });
+    const { chat } = await this.addGuestToChat({ requestingGuestId, requestedChatId, requestedAlias, publicKey });
     return { guest, chat };
   }
 
@@ -30,14 +30,14 @@ class GuestRepository {
     return new DefaultSchema({ success: true });
   }
 
-  async addGuestToChat({ requestingGuestId, requestedChatId, publicKey }) {
-    const guest = new GuestSchema({ publicKey, guestId: requestingGuestId });
+  async addGuestToChat({ requestingGuestId, requestedChatId, requestedAlias, publicKey }) {
+    const guest = new GuestSchema({ publicKey, guestId: requestingGuestId, guestAlias: requestedAlias });
     const { chat } = await ChatRepository.fetchChatInfo({ requestedChatId });
     if (chat.guests.includes(guest.guestId)) return { error: 'Guest is Already in Chat.' };
     chat.guests.push(guest.guestId);
     if (chat.contacts.length + chat.guests.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
     await Chat.query().where('id', requestedChatId).update({ guests: JSON.stringify(chat.guests) });
-    const entryLog = await ChatRepository._insertEntryLog(requestedChatId, `Guest #${requestingGuestId}`, false, false, false, true);
+    const entryLog = await ChatRepository._insertEntryLog(requestedChatId, `${guest.guestName}`, false, false, false, true);
     ChatRepository._notifyChatEvent({ chatId: requestedChatId, action: 'newChat', payload: chat });
     ChatRepository._notifyChatEvent({ chatId: requestedChatId, action: 'guestJoined', payload: { guest, chatId: requestedChatId, entryLog } });
     return { chat };
