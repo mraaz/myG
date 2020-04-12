@@ -76,7 +76,7 @@ class GuestLink extends React.PureComponent {
   }
 
   renderAlias() {
-    if (!this.state.validLink || this.props.loaded) return null;
+    if (!this.state.validLink || this.state.loaded) return null;
     return (
       <div className="alias-container">
         <p className="hint">Create an Alias</p>

@@ -70,6 +70,15 @@ class ChatController {
     return response.send(result);
   }
 
+  async searchGroup({ auth, request, response }) {
+    const requestingUserId = auth.user.id;
+    if (!requestingUserId) throw new Error('Auth Error');
+    const groupName = request.only('groupName').groupName;
+    log('CHAT', `User ${requestingUserId} searching for Groups with ${groupName}`);
+    const { groups } = await ChatRepository.searchGroup({ groupName });
+    return response.send({ groups });
+  }
+
   async exitGroup({ auth, params, response }) {
     const requestingUserId = auth.user.id;
     if (!requestingUserId) throw new Error('Auth Error');

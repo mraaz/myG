@@ -373,6 +373,31 @@ class ChatRepository {
     return new DefaultSchema({ success: true });
   }
 
+  async searchGroup({ groupName }) {
+    const query = Chat.query().where('isGroup', true);
+    if (groupName) query.andWhere('title', 'like', '%' + groupName + '%');
+    const results = await query.fetch();
+    if (!results) return { groups: [] };
+    const groups = results.toJSON().map(chat => new ChatSchema({
+      chatId: chat.id,
+      blocked: chat.blocked,
+      isPrivate: chat.isPrivate,
+      isGroup: chat.isGroup,
+      gameId: chat.game_id,
+      icon: chat.icon,
+      title: chat.title,
+      lastMessage: chat.last_message,
+      publicKey: chat.public_key,
+      contacts: chat.contacts,
+      guests: chat.guests,
+      owners: chat.owners,
+      moderators: chat.moderators,
+      createdAt: chat.created_at,
+      updatedAt: chat.updated_at,
+    }));
+    return { groups };
+  }
+
   async exitGroup({ requestingUserId, requestedChatId, requestedUserId }) {
     const userToRemove = parseInt(requestedUserId || requestingUserId);
     const { chat } = await this.fetchChatInfo({ requestedChatId });

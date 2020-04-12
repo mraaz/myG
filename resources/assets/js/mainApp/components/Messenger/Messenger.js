@@ -190,7 +190,7 @@ class Messenger extends React.PureComponent {
   render() {
     return (
       <section id="messenger">
-        <div class="messenger-content">
+        <div className="messenger-content">
           {this.renderBody()}
           {this.renderSettings()}
           {this.renderFooter()}
