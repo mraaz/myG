@@ -1,6 +1,6 @@
 
 import React from "react";
-import Contact from './Contact';
+import Game from './Game';
 import { STATUS_ENUM, compareStatus } from '../../../../common/status';
 
 export default class Games extends React.PureComponent {
@@ -15,12 +15,14 @@ export default class Games extends React.PureComponent {
     return new Date(m2.createdAt) - new Date(m1.createdAt);
   }
 
-  renderGame(id, name, icon, color, onlineInfo, contacts, expanded) {
+  renderGame(id, name, icon, color, onlineInfo, contacts, groups, expanded) {
     const chevronType = (contacts.length && expanded) ? 'down' : 'right';
     return (
       <div key={id} className="messenger-body-section" style={{ backgroundColor: color }}>
         <div className="messenger-body-section-header clickable" style={{ backgroundColor: color }}
-          onClick={() => this.setState(previous => ({ expandedGame: previous.expandedGame === name ? null : name }))}
+          onClick={() => this.setState(previous => ({ expandedGame: previous.expandedGame === name ? null : name }),
+            () => this.props.onExpand(this.state.expandedGame ? false : this.props.expanded))
+          }
         >
           <div className="messenger-body-game-section" style={{ backgroundColor: color }}>
             <div
@@ -37,25 +39,18 @@ export default class Games extends React.PureComponent {
             />
           </div>
         </div>
-        {!!contacts.length && expanded && (
-          <div className="messenger-body-section-content">
-            {contacts.map(this.renderContact)}
-          </div>
-        )}
+        {this.props.expanded && expanded && <Game
+          userId={this.props.userId}
+          privateKey={this.props.privateKey}
+          contacts={contacts}
+          groups={groups}
+          search={this.props.search}
+          disconnected={this.props.disconnected}
+          openChat={this.props.openChat}
+          createChat={this.props.createChat}
+        />}
       </div >
     );
-  }
-
-  renderContact = (contact) => {
-    return <Contact
-      contact={contact}
-      messages={(contact.chat || {}).messages || []}
-      userId={this.props.userId}
-      privateKey={this.props.privateKey}
-      disconnected={this.props.disconnected}
-      openChat={this.props.openChat}
-      createChat={this.props.createChat}
-    />
   }
 
   render() {
@@ -67,6 +62,7 @@ export default class Games extends React.PureComponent {
       .sort((g1, g2) => g1.name.localeCompare(g2.name))
       .sort((g1, g2) => g1.isFavorite === g2.isFavorite ? 0 : g1.isFavorite ? -1 : 1);
 
+    const groups = this.props.groups;
     const contacts = this.props.contacts.slice(0)
       .sort((f1, f2) => compareStatus(f1.status, f2.status))
       .sort((f1, f2) => this.compareLastMessages(f1, f2));
@@ -81,6 +77,7 @@ export default class Games extends React.PureComponent {
     const colors = ['#EB333D', '#AF093F', '#A82DB1', '#162B84', '#3E57C1', '#029EBC', '#118137', '#05BC45', '#CE9003', '#8D7514'];
     games.slice(0, 10).forEach((game, index) => {
       const gameContacts = contacts.filter(contact => contact.games.find(contactGame => contactGame.gameId === game.gameId));
+      const gameGroups = groups.filter(groups => groups.gameId === game.gameId);
       const onlineCount = gameContacts.filter(contact => contact.status === STATUS_ENUM.ONLINE).length;
       const onlineInfo = `${onlineCount}/${gameContacts.length} online`;
       sections.push({
@@ -89,13 +86,14 @@ export default class Games extends React.PureComponent {
         icon: game.icon,
         color: colors[index],
         contacts: gameContacts,
+        groups: gameGroups,
         onlineInfo,
       })
     });
 
     return (
       <div className="messenger-body-section">
-        {sections.map(section => this.renderGame(section.id, section.name, section.icon, section.color, section.onlineInfo, section.contacts, this.state.expandedGame === section.name))}
+        {sections.map(section => this.renderGame(section.id, section.name, section.icon, section.color, section.onlineInfo, section.contacts, section.groups, this.state.expandedGame === section.name))}
       </div>
     );
   }

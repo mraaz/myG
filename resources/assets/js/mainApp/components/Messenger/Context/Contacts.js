@@ -79,7 +79,7 @@ export default class Contacts extends React.PureComponent {
         if (!this.props.contacts.length) {
           return (
             <div className="messenger-empty-message-container">
-              <p className="messenger-empty-message">You haven't added any friends yet :(</p>
+              <p className="messenger-empty-message">You haven't added any friends{this.props.inGame ? ' that play this game' : ''} yet :(</p>
               <p className="messenger-empty-message">Try searching for players</p>
             </div>
           );
