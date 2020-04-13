@@ -11,6 +11,7 @@ export default function reducer(state = {
   contacts: [],
   unreadMessages: [],
   preparingMessenger: false,
+  guestLink: null,
 }, action) {
   switch (action.type) {
 
@@ -195,7 +196,7 @@ export default function reducer(state = {
       logger.log('CHAT', `Redux -> New Chat: `, action.payload);
       const { chat } = action.payload;
       const isGameGroupInvite = chat.individualGameId && !(chat.owners || []).includes(state.userId);
-      chat.closed = !isGameGroupInvite && (chat.messages || []).length === 0;
+      chat.closed = !isGameGroupInvite && !chat.isGroup && (chat.messages || []).length === 0;
       const chats = JSON.parse(JSON.stringify(state.chats));
       if (chats.map(chat => chat.chatId).includes(chat.chatId)) return state;
       chats.push(chat);
@@ -417,15 +418,15 @@ export default function reducer(state = {
       logger.log('CHAT', `Redux -> User Joined Group: `, action.payload, action.meta);
       const { chatId, contacts, entryLog } = action.payload;
       const { userId: thisUserId } = action.meta;
+      const contact = contacts.filter(contact => contact.contactId !== thisUserId)[0];
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (!chat) return state;
-      const contact = contacts.filter(contact => contact.contactId !== thisUserId)[0];
-      if (!chat.entryLogs) chat.entryLogs = [];
-      chat.entryLogs.push(entryLog);
-      if (!chat.contacts.includes(contact.contactId)) chat.contacts.push(contact.contactId);
-      if (chat.fullContacts && !chat.fullContacts.map(contact => contact.contactId).includes(contact.contactId)) chat.fullContacts.push(contact);
-      sendGroupKeys(chatId, parseInt(thisUserId), contacts, chat.privateKey, state.privateKey);
+      if (entryLog && !chat.entryLogs) chat.entryLogs = [];
+      if (entryLog) chat.entryLogs.push(entryLog);
+      if (contact && !chat.contacts.includes(contact.contactId)) chat.contacts.push(contact.contactId);
+      if (contact && chat.fullContacts && !chat.fullContacts.map(contact => contact.contactId).includes(contact.contactId)) chat.fullContacts.push(contact);
+      if (contact) sendGroupKeys(chatId, parseInt(thisUserId), contacts, chat.privateKey, state.privateKey);
       return {
         ...state,
         chats,
@@ -617,18 +618,30 @@ export default function reducer(state = {
     }
 
     case "GENERATE_KEYS_FULFILLED": {
+      if (state.guestLink) setTimeout(() => window.location.replace(state.guestLink));
       return {
         ...state,
+        guestLink: null,
         publicKey: action.payload.encryption.publicKey,
         privateKey: action.payload.encryption.privateKey,
       };
     }
 
     case "VALIDATE_PIN_FULFILLED": {
+      if (state.guestLink) setTimeout(() => window.location.replace(state.guestLink));
       return {
         ...state,
+        guestLink: null,
         publicKey: action.payload.encryption.publicKey,
         privateKey: action.payload.encryption.privateKey,
+      };
+    }
+
+    case "SET_GUEST_LINK": {
+      logger.log('CHAT', `Redux -> Setting Guest Link: `, action.payload);
+      return {
+        ...state,
+        guestLink: action.payload
       };
     }
 

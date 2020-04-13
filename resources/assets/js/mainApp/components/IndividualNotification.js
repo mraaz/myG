@@ -64,7 +64,7 @@ export default class IndividualNotification extends Component {
     if (!this.state.chat) return
     const contacts = [this.props.userId]
     axios.put(`/api/chat/${this.state.chat.chatId}/contacts`, { contacts }).then(() => {
-      axios.get(`/api/notifications/delete/${this.props.notification.id}`)
+      axios.get(`/api/notifications/delete/${this.props.notification.notificationId}`)
       this.setState({ chat: null })
     })
   }
