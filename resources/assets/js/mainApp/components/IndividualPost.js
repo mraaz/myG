@@ -453,10 +453,10 @@ export default class IndividualPost extends Component {
       }
 
       return (
-        <div className="post__container">
+        <div className='post__container'>
           {this.state.alert}
-          <div className="post__body">
-            <div className="profile__image">
+          <div className='post__body'>
+            <div className='profile__image'>
               {this.state.show_profile_img && (
                 <Link
                   to={`/profile/${post.alias}`}
@@ -473,16 +473,15 @@ export default class IndividualPost extends Component {
                     backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png')`,
                   }}></Link>
               )}
-              <div className="online__status"></div>
+              <div className='online__status'></div>
             </div>
-            <div className="clearfix">
-              <div className="author__username">
+            <div className='clearfix'>
+              <div className='author__username'>
                 <Link to={`/profile/${post.alias}`}>{`@${post.alias} `}</Link> shared a {post.type == 'text' ? 'story' : 'image'}
-                {"  from community: "}{this.state.show_group_name && <Link to={`/groups/${post.group_id}`}>@{this.state.group_name}</Link>}
+                {'  from community: '}
+                {this.state.show_group_name && <Link to={`/groups/${post.group_id}`}>@{this.state.group_name}</Link>}
               </div>
-              <div className="post__time">
-                {this.state.post_time}
-              </div>
+              <div className='post__time'>{this.state.post_time}</div>
             </div>
             <div className='post__content'>
               <p>{this.state.content}</p>
@@ -547,18 +546,18 @@ export default class IndividualPost extends Component {
             {this.state.like && (
               <div className='like-btn' onClick={() => this.click_unlike_btn(post.id)}>
                 <i className='fas fa-thumbs-up' />
-                    &nbsp;Like
+                &nbsp;Like
               </div>
             )}
             {!this.state.like && (
               <div className='like-btn' onClick={() => this.click_like_btn(post.id)}>
                 <i className='far fa-thumbs-up' />
-                    &nbsp;Like
+                &nbsp;Like
               </div>
             )}
             {this.state.zero_comments && (
               <div className='comments-stats' onClick={this.onChange}>
-                <i class="far fa-comment-alt"></i>
+                <i class='far fa-comment-alt'></i>
                 {' comments'}
                 {/* {this.state.comment_total > 1 ? `${this.state.comment_total} comments` : `${this.state.comment_total} comment`}{' '} */}
               </div>
@@ -566,13 +565,12 @@ export default class IndividualPost extends Component {
             {!this.state.zero_comments && (
               <div className='comments-stats' onClick={this.focusTextInput}>
                 {' '}
-                    No comments
+                No comments
               </div>
             )}
-            <div className='comments'>
-              {this.state.show_more_comments && <div className='show-individual-comments'>{this.showComment()}</div>}
-            </div>
-
+          </div>
+          <div className='comments'>
+            {this.state.show_more_comments && <div className='show-individual-comments'>{this.showComment()}</div>}
           </div>
           <div className='compose-comment'>
             <textarea
@@ -583,16 +581,32 @@ export default class IndividualPost extends Component {
               maxLength='254'
               onKeyDown={this.detectKey}
               ref={this.setTextInputRef}
-
             />
-            <div className='buttons'>
+            {/* <div className='buttons'>
               <div className='repost-btn' onClick={this.insert_comment}>
                 <i className='fas fa-reply' />
               </div>
+            </div> */}
+            <div className='profile__image'>
+              {this.state.show_profile_img && (
+                <Link
+                  to={`/profile/${post.alias}`}
+                  className='user-img'
+                  style={{
+                    backgroundImage: `url('${post.profile_img}')`,
+                  }}></Link>
+              )}
+              {!this.state.show_profile_img && (
+                <Link
+                  to={`/profile/${post.alias}`}
+                  className='user-img'
+                  style={{
+                    backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png')`,
+                  }}></Link>
+              )}
+              <div className='online__status'></div>
             </div>
           </div>
-
-
 
           {/*<div className='update-container'>
           {this.state.alert}
