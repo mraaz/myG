@@ -2,12 +2,12 @@
 import { generateKeysSync } from '../../integration/encryption';
 import { register, unregister, fetchChat, fetchMessages, fetchEncryptionMessages, fetchGroupPrivateKeyRequests,sendMessage, fetchEntryLogs } from '../../integration/http/guest';
 
-export function registerGuestAction(chatId) {
+export function registerGuestAction(chatId, alias) {
   const { encryption: { publicKey, privateKey } } = generateKeysSync();
   return {
     type: 'REGISTER_GUEST',
-    payload: register(publicKey, chatId),
-    meta: { publicKey, privateKey, chatId }
+    payload: register(publicKey, chatId, alias),
+    meta: { publicKey, privateKey, chatId, alias }
   }
 }
 

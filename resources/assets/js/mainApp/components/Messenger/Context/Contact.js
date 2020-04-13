@@ -48,7 +48,6 @@ export default class Contact extends React.PureComponent {
     const lastMessage = messages[messages.length - 1];
     const receivedMessages = messages.filter(message => message.senderId !== this.props.userId);
     const unreadCount = this.countUnreadMessages(contact.chat.lastRead, receivedMessages);
-    console.log('Render Contact', lastMessage);
     return (
       <div
         key={contact.contactId}

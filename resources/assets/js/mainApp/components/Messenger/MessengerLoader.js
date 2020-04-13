@@ -13,7 +13,7 @@ class MessengerLoader extends React.PureComponent {
 
   componentDidMount() {
     if (!this.state.loaded && !this.props.loading) {
-      this.props.prepareMessenger(this.props.userId, this.props.pin, this.props.privateKey, this.props.publicKey)
+      this.props.prepareMessenger(this.props.userId, this.props.alias, this.props.pin, this.props.privateKey, this.props.publicKey)
       this.setState({ loaded: true })
     }
   }
@@ -53,7 +53,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    prepareMessenger: (userId, pin, privateKey, publicKey) => dispatch(prepareMessengerAction(userId, pin, privateKey, publicKey)),
+    prepareMessenger: (userId, alias, pin, privateKey, publicKey) => dispatch(prepareMessengerAction(userId, alias, pin, privateKey, publicKey)),
   }
 }
 

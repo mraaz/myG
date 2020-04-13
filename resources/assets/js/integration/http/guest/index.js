@@ -1,9 +1,9 @@
 import axios from 'axios';
 import logger from '../../../common/logger';
 
-export function register(publicKey, chatId) {
-  logger.log('GUEST', 'HTTP', `Registering Guest in Chat ${chatId}`);
-  return axios.post(`/api/guest/`, { publicKey, chatId }).then(response => response.data);
+export function register(publicKey, chatId, alias) {
+  logger.log('GUEST', 'HTTP', `Registering Guest in Chat ${chatId, alias}`);
+  return axios.post(`/api/guest/`, { publicKey, chatId, alias }).then(response => response.data);
 }
 
 export function unregister(guestId, chatId) {

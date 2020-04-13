@@ -44,6 +44,8 @@ export class Chat extends React.PureComponent {
   handleMessageListScroll = () => {
     const messageList = this.messageListRef.current;
     if (!messageList) return;
+    const hasScrolledEnough = messageList.scrollHeight - messageList.scrollTop > 500;
+    this.setState({ oldMessages: hasScrolledEnough });
     if (messageList.scrollTop !== 0 || this.props.loadingMessages || this.props.noMoreMessages) return;
     const nextPage = this.state.messagePaginationPage + 1;
     this.props.fetchMessages(this.props.chatId, nextPage);
@@ -181,31 +183,31 @@ export class Chat extends React.PureComponent {
           )}
         </div>
 
-        <div className="chat-component-header-options">
-          {(!this.state.settings || this.props.minimised) && (
-            <div className="chat-component-header-top-buttons">
-              <div className="chat-component-header-button clickable"
-                style={{ backgroundImage: `url(/assets/svg/ic_chat_minimise.svg)` }}
-                onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}
-              />
-              <div className="chat-component-header-button clickable"
-                style={{ backgroundImage: `url(/assets/svg/ic_chat_maximise.svg)` }}
-                onClick={() => this.props.updateChatState(this.props.chatId, { maximised: !this.props.maximised, minimised: false })}
-              />
-              <div className="chat-component-header-button clickable"
-                style={{ backgroundImage: `url(/assets/svg/ic_chat_close.svg)` }}
-                onClick={() => this.props.onClose(this.props.chatId)}
-              />
-            </div>
-          )}
-          {!this.props.isGuest && (
+        {!this.props.isGuest && (
+          <div className="chat-component-header-options">
+            {(!this.state.settings || this.props.minimised) && (
+              <div className="chat-component-header-top-buttons">
+                <div className="chat-component-header-button clickable"
+                  style={{ backgroundImage: `url(/assets/svg/ic_chat_minimise.svg)` }}
+                  onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}
+                />
+                <div className="chat-component-header-button clickable"
+                  style={{ backgroundImage: `url(/assets/svg/ic_chat_maximise.svg)` }}
+                  onClick={() => this.props.updateChatState(this.props.chatId, { maximised: !this.props.maximised, minimised: false })}
+                />
+                <div className="chat-component-header-button clickable"
+                  style={{ backgroundImage: `url(/assets/svg/ic_chat_close.svg)` }}
+                  onClick={() => this.props.onClose(this.props.chatId)}
+                />
+              </div>
+            )}
             <div
               className="chat-component-header-settings clickable"
               style={{ backgroundImage: `url('/assets/svg/ic_chat_settings.svg')` }}
               onClick={() => this.setState(previous => ({ settings: !previous.settings }))}
             />
-          )}
-        </div>
+          </div>
+        )}
 
       </div>
     );
@@ -287,6 +289,20 @@ export class Chat extends React.PureComponent {
     );
   }
 
+  renderScrollToEndIndicator() {
+    if (!this.state.oldMessages) return <div className="chat-component-footer-divider" />;
+    return (
+      <div key={'scroll'} className="chat-component-scroll-to-bottom clickable"
+        onClick={() => {
+          this.setState({ oldMessages: false });
+          this.messageListRef.current.scrollTo(0, this.messageListRef.current.scrollHeight);
+        }}
+      >
+        You are viewing old messages, jump to recent ones?
+      </div>
+    );
+  }
+
   renderFooter = () => {
     return (
       <div className="chat-component-footer">
@@ -332,6 +348,7 @@ export class Chat extends React.PureComponent {
     if (this.props.maximised) extraClass += "chat-maximised";
     if (this.props.minimised) extraClass += "chat-minimised";
     if (!this.props.minimised && this.state.settings) extraClass = "chat-settings";
+    if (this.props.isGuest) extraClass = "chat-guest";
     return (
       <div
         key={this.props.chatId}
@@ -340,7 +357,7 @@ export class Chat extends React.PureComponent {
         {this.renderHeader()}
         {this.state.settings && !this.props.minimised && this.renderSettings()}
         {!this.state.settings && !this.props.minimised && this.renderBody()}
-        {!this.state.settings && !this.props.minimised && <div className="chat-component-footer-divider" />}
+        {!this.state.settings && !this.props.minimised && this.renderScrollToEndIndicator()}
         {!this.state.settings && !this.props.minimised && this.renderFooter()}
       </div>
     );

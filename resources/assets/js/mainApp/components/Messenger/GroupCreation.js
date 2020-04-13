@@ -2,6 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import FileOpenModal from '../FileOpenModal';
+import notifyToast from '../../../common/toast';
 
 export const MAXIMUM_GROUP_SIZE = 37;
 
@@ -14,7 +15,6 @@ class GroupCreation extends React.Component {
     matchingContacts: [],
     addedContacts: [],
     uploadingPhoto: false,
-    titleError: false,
   }
 
   onContactSearch = (name) => {
@@ -23,13 +23,16 @@ class GroupCreation extends React.Component {
   }
 
   onCreate = () => {
-    const { icon, title, addedContacts } = this.state;
-    if (!title) return this.setState({ titleError: true });
+    const { icon, addedContacts } = this.state;
+    const contactAliases = addedContacts.map(contactId => this.props.contacts.find(contact => contact.contactId === contactId).name);
+    const firstAlias = contactAliases[0] ?  `, ${contactAliases[0]}` : '';
+    const secondAlias = contactAliases[1] ?  `, ${contactAliases[1]}` : '';
+    const title = this.state.title || `${this.props.alias}` + firstAlias + secondAlias;
     this.props.onCreate(icon, title, addedContacts);
   }
 
   onAddContact = (contact) => {
-    if (this.state.addedContacts.length >= MAXIMUM_GROUP_SIZE) return;;
+    if (this.state.addedContacts.length >= MAXIMUM_GROUP_SIZE) return notifyToast('Maximum Group size reached!');
     this.setState(previous => ({ addedContacts: [...previous.addedContacts, contact.contactId] }));
   }
 
@@ -60,7 +63,7 @@ class GroupCreation extends React.Component {
             className="chat-group-creation-title-input"
             placeholder={"Group Name"}
             value={this.state.title}
-            onChange={event => this.setState({ title: event.target.value, titleError: false })}
+            onChange={event => this.setState({ title: event.target.value })}
           >
           </input>
         </div>
@@ -73,8 +76,6 @@ class GroupCreation extends React.Component {
     return (
       <div className="chat-group-creation-invite-hint-container">
         <p className="chat-group-creation-invite-hint">Invite</p>
-        {this.renderTitleError()}
-        {this.renderContactLimitWarning()}
       </div>
     );
   }
@@ -151,24 +152,6 @@ class GroupCreation extends React.Component {
     );
   }
 
-  renderTitleError = () => {
-    if (!this.state.titleError) return null;
-    return (
-      <div className="chat-group-creation-title-error">
-        Please inform a name for the group
-      </div>
-    );
-  }
-
-  renderContactLimitWarning = () => {
-    if (this.state.titleError || this.state.addedContacts.length < MAXIMUM_GROUP_SIZE) return null;
-    return (
-      <div className="chat-group-creation-contact-error">
-        Maximum Group size reached!
-      </div>
-    );
-  }
-
   render() {
     return (
       <div className="chat-group-creation-container">
@@ -185,6 +168,7 @@ class GroupCreation extends React.Component {
 
 function mapStateToProps(state) {
   return {
+    alias: state.user.alias,
     contacts: state.user.contacts,
   }
 }

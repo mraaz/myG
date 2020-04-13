@@ -22,6 +22,12 @@
   height: auto !important;
 }
 
+.chat-guest {
+  height: 400px !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+}
+
 .chat-component-header {
   display: flex;
   background-color: #1D2326;
@@ -143,6 +149,13 @@
   margin-top: -5%;
   margin-left: -4%;
   margin-bottom: 2%;
+}
+
+.chat-component-scroll-to-bottom {
+  font-size: 12px;
+  text-align: center;
+  background-color: #2D363A;
+  padding: 8px;
 }
 
 .chat-component-read-indicator-container {

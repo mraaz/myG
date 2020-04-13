@@ -9,7 +9,7 @@ class ChatSchema extends Schema {
       table.increments()
       table.integer('game_id').unsigned().index()
       table.text('icon')
-      table.text('title')
+      table.text('title').index()
       table.text('last_message')
       table.text('public_key')
       table.text('contacts').notNullable().defaultTo('[]')
@@ -18,7 +18,7 @@ class ChatSchema extends Schema {
       table.text('moderators').notNullable().defaultTo('[]')
       table.boolean('self_destruct').notNullable().defaultTo(false)
       table.boolean('isPrivate').notNullable().defaultTo(false)
-      table.boolean('isGroup').notNullable().defaultTo(false)
+      table.boolean('isGroup').notNullable().defaultTo(false).index()
       table.timestamps()
     })
   }

@@ -2,9 +2,8 @@
 import React from "react";
 import { connect } from 'react-redux';
 
-import Contacts from './Context/Contacts';
+import General from './Context/General';
 import Games from './Context/Games';
-import Groups from './Context/Groups';
 import Chats from "./Context/Chats";
 import Footer from './Context/Footer';
 import Settings from './Context/Settings';
@@ -27,9 +26,8 @@ class Messenger extends React.PureComponent {
     searchInput: '',
     uploadingPhoto: null,
     dividerExpanded: {
+      general: true,
       games: false,
-      friends: true,
-      groups: false,
     },
   }
 
@@ -58,9 +56,8 @@ class Messenger extends React.PureComponent {
     return (
       <div className="messenger-body">
         {this.renderConnectionWarning()}
+        {this.renderGeneral()}
         {this.renderGames()}
-        {this.renderContacts()}
-        {this.renderGroups()}
       </div>
     );
   }
@@ -94,12 +91,27 @@ class Messenger extends React.PureComponent {
   }
 
   renderEncryptionLogin = () => {
-    if (this.props.pin) return null; 
+    if (this.props.pin) return null;
     return <EncryptionLogin
       userId={this.props.userId}
       generateKeys={this.props.generateKeys}
       validatePin={this.props.validatePin}
       publicKey={this.props.publicKey}
+    />
+  }
+
+  renderGeneral = () => {
+    return <General
+      userId={this.props.userId}
+      privateKey={this.props.privateKey}
+      contacts={this.props.contacts}
+      groups={this.props.groups}
+      search={this.state.searchInput}
+      disconnected={this.props.disconnected}
+      openChat={this.props.openChat}
+      createChat={this.props.createChat}
+      expanded={this.state.dividerExpanded.general}
+      onExpand={(expanded) => this.setState({ dividerExpanded: { general: !expanded, games: false } })}
     />
   }
 
@@ -109,44 +121,16 @@ class Messenger extends React.PureComponent {
       privateKey={this.props.privateKey}
       contacts={this.props.contacts}
       games={this.props.games}
-      search={this.state.searchInput}
-      disconnected={this.props.disconnected}
-      openChat={this.props.openChat}
-      createChat={this.props.createChat}
-      expanded={this.state.dividerExpanded.games}
-      onExpand={(expanded) => this.setState({ dividerExpanded: { games: !expanded, friends: false, groups: false } })}
-    />
-  }
-
-  renderContacts = () => {
-    return <Contacts
-      userId={this.props.userId}
-      privateKey={this.props.privateKey}
-      contacts={this.props.contacts}
-      search={this.state.searchInput}
-      disconnected={this.props.disconnected}
-      openChat={this.props.openChat}
-      createChat={this.props.createChat}
-      expanded={this.state.dividerExpanded.friends}
-      onExpand={(expanded) => this.setState({ dividerExpanded: { games: false, friends: !expanded, groups: false } })}
-    />
-  }
-
-  renderGroups = () => {
-    return <Groups
-      userId={this.props.userId}
-      privateKey={this.props.privateKey}
-      contacts={this.props.contacts}
       groups={this.props.groups}
       search={this.state.searchInput}
       disconnected={this.props.disconnected}
       openChat={this.props.openChat}
       createChat={this.props.createChat}
-      expanded={this.state.dividerExpanded.groups}
-      onExpand={(expanded) => this.setState({ dividerExpanded: { games: false, friends: false, groups: !expanded } })}
+      expanded={this.state.dividerExpanded.games}
+      onExpand={(expanded) => this.setState({ dividerExpanded: { general: false, games: !expanded } })}
     />
   }
-
+  
   renderChats = () => {
     if (!this.props.pin) return null;
     return <Chats
@@ -190,7 +174,7 @@ class Messenger extends React.PureComponent {
   render() {
     return (
       <section id="messenger">
-        <div class="messenger-content">
+        <div className="messenger-content">
           {this.renderBody()}
           {this.renderSettings()}
           {this.renderFooter()}
