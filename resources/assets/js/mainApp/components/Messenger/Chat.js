@@ -319,7 +319,11 @@ export class Chat extends React.PureComponent {
   renderAttachWindow = () => {
     return <AttachWindow
       show={this.state.showAttachWindow}
-      onEmoji={emoji => console.log('Attaching Emoji: ' + emoji)}
+      onEmoji={emoji => {
+        this.setState({ showAttachWindow: false, selectedEmoji: emoji.native }, () => {
+          setTimeout(() => this.setState({ selectedEmoji: null }));
+        });
+      }}
       onImage={image => console.log('Attaching Image: ' + image)}
       onVideo={video => console.log('Attaching Video: ' + video)}
       onSound={sound => console.log('Attaching Sound: ' + sound)}
@@ -341,6 +345,7 @@ export class Chat extends React.PureComponent {
           connected={!this.props.disconnected}
           blocked={this.props.blocked}
           isDecryptable={this.props.privateKey}
+          selectedEmoji={this.state.selectedEmoji}
           sendMessage={this.sendMessage}
           editLastMessage={this.editLastMessage}
           setTyping={isTyping => !this.props.isGuest && this.props.setTyping(this.props.chatId, isTyping)}
