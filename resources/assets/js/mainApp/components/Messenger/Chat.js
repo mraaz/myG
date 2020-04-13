@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import ChatMessageList from './ChatMessageList';
 import ChatInput from './ChatInput';
+import AttachWindow from './AttachWindow';
 import ChatOptions from './ChatOptions';
 import GroupOptions from './GroupOptions';
 import { WithTooltip } from '../Tooltip';
@@ -24,6 +25,7 @@ export class Chat extends React.PureComponent {
       currentlyTyping: '',
       editing: false,
       settings: false,
+      showAttachWindow: false,
       messagePaginationPage: 1,
     };
     this.messageListRef = React.createRef();
@@ -314,11 +316,23 @@ export class Chat extends React.PureComponent {
     );
   }
 
+  renderAttachWindow = () => {
+    return <AttachWindow
+      show={this.state.showAttachWindow}
+      onEmoji={emoji => console.log('Attaching Emoji: ' + emoji)}
+      onImage={image => console.log('Attaching Image: ' + image)}
+      onVideo={video => console.log('Attaching Video: ' + video)}
+      onSound={sound => console.log('Attaching Sound: ' + sound)}
+    />;
+  }
+
   renderFooter = () => {
+    const rotatedStyle = this.state.showAttachWindow ? 'chat-component-attach-button-rotated' : '';
     return (
       <div className="chat-component-footer">
         <div className="chat-component-attach-button-container">
-          <div className="chat-component-attach-button clickable"
+          <div className={`chat-component-attach-button clickable ${rotatedStyle}`}
+            onClick={() => this.setState(previous => ({ showAttachWindow: !previous.showAttachWindow }))}
             style={{ backgroundImage: `url(/assets/svg/ic_chat_attach.svg)` }}
           />
           <div className="chat-component-attach-button-divider" />
@@ -369,6 +383,7 @@ export class Chat extends React.PureComponent {
         {this.state.settings && !this.props.minimised && this.renderSettings()}
         {!this.state.settings && !this.props.minimised && this.renderBody()}
         {!this.state.settings && !this.props.minimised && this.renderScrollToEndIndicator()}
+        {!this.state.settings && !this.props.minimised && this.renderAttachWindow()}
         {!this.state.settings && !this.props.minimised && this.renderFooter()}
       </div>
     );
