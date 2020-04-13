@@ -223,6 +223,7 @@ export class Chat extends React.PureComponent {
         ref={this.messageListRef}
       >
         {this.renderLoadingIndicator()}
+        {this.renderEmptyChatMessage()}
         <ChatMessageList
           userId={this.props.userId}
           chatId={this.props.chatId}
@@ -246,6 +247,16 @@ export class Chat extends React.PureComponent {
     if (!this.props.loadingMessages) return null;
     return (
       <p className="chat-component-loading-indicator">loading messages ...</p>
+    );
+  }
+
+  renderEmptyChatMessage() {
+    if (this.props.messages.length) return;
+    return (
+      <div className="chat-component-empty-chat-message">
+        <p>Messages you send to this chat are secured with end-to-end encryption.</p>
+        <p>Please remember your encryption key, otherwise you will lose your chat history.</p>
+      </div>
     );
   }
 

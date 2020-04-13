@@ -158,6 +158,15 @@
   padding: 8px;
 }
 
+.chat-component-empty-chat-message {
+  display: flex;
+  flex-direction: column;
+  background-color: #2D363A;
+  padding: 8px;
+  font-size: 12px;
+  text-align: center;
+}
+
 .chat-component-read-indicator-container {
   display: flex;
   flex-direction: row;
