@@ -8,8 +8,9 @@ class ChatSchema extends Schema {
     this.create('chats', (table) => {
       table.increments()
       table.integer('game_id').unsigned().index()
+      table.integer('individual_game_id').unsigned().index()
       table.text('icon')
-      table.text('title').index()
+      table.string('title', 64).index()
       table.text('last_message')
       table.text('public_key')
       table.text('contacts').notNullable().defaultTo('[]')

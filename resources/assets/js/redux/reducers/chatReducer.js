@@ -176,7 +176,7 @@ export default function reducer(state = {
       const chatAlreadyExists = chats.map(chat => parseInt(chat.chatId)).includes(parseInt(created.chatId));
       if (!chatAlreadyExists) chats.push(created);
       const chat = chats.find(candidate => candidate.chatId === created.chatId);
-      chat.closed = !!chat.gameId;
+      chat.closed = !!chat.individualGameId;
       chat.minimised = false;
       chat.maximised = false;
       if (!chatAlreadyExists) Object.assign(chat, encryption);
@@ -194,7 +194,7 @@ export default function reducer(state = {
     case "NEW_CHAT": {
       logger.log('CHAT', `Redux -> New Chat: `, action.payload);
       const { chat } = action.payload;
-      const isGameGroupInvite = chat.gameId && !(chat.owners || []).includes(state.userId);
+      const isGameGroupInvite = chat.individualGameId && !(chat.owners || []).includes(state.userId);
       chat.closed = !isGameGroupInvite && (chat.messages || []).length === 0;
       const chats = JSON.parse(JSON.stringify(state.chats));
       if (chats.map(chat => chat.chatId).includes(chat.chatId)) return state;

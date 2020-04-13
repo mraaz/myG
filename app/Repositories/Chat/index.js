@@ -33,7 +33,7 @@ class ChatRepository {
 
   async fetchChats({ requestingUserId, onlyGroups }) {
     const chatsQuery = Database
-      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.blocked_users', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.game_id', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.blocked_users', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .leftJoin('chat_last_reads', function () { this.on('chat_last_reads.chat_id', 'user_chats.chat_id').andOn('chat_last_reads.user_id', 'user_chats.user_id') })
@@ -48,6 +48,7 @@ class ChatRepository {
       isPrivate: chat.isPrivate,
       isGroup: chat.isGroup,
       gameId: chat.game_id,
+      individualGameId: chat.individual_game_id,
       selfDestruct: chat.self_destruct,
       deletedMessages: chat.deleted_messages,
       lastRead: chat.last_read_message_id,
@@ -69,7 +70,7 @@ class ChatRepository {
 
   async fetchChat({ requestingUserId, requestedChatId }) {
     const chat = (await Database
-      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.blocked_users', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.game_id', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.blocked_users', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .leftJoin('chat_last_reads', function () { this.on('chat_last_reads.chat_id', 'user_chats.chat_id').andOn('chat_last_reads.user_id', 'user_chats.user_id') })
@@ -88,6 +89,7 @@ class ChatRepository {
       isPrivate: chat.isPrivate,
       isGroup: chat.isGroup,
       gameId: chat.game_id,
+      individualGameId: chat.individual_game_id,
       selfDestruct: chat.self_destruct,
       deletedMessages: chat.deleted_messages,
       lastRead: chat.last_read_message_id,
@@ -196,7 +198,7 @@ class ChatRepository {
     return { encryptionMessages };
   }
 
-  async createChat({ requestingUserId, contacts, owners, title, icon, publicKey, isGroup, gameId, gameSchedule }) {
+  async createChat({ requestingUserId, contacts, owners, title, icon, publicKey, isGroup, individualGameId, gameId, gameSchedule }) {
     contacts = [...new Set([requestingUserId, ...contacts])].sort();
     if (contacts.length > MAXIMUM_GROUP_SIZE) throw new Error('Maximum Group Size Reached!');
     const { chats } = await this.fetchChats({ requestingUserId });
@@ -205,7 +207,7 @@ class ChatRepository {
     const existingChat = !isGroup && chats.find(chat => contacts.every((id, index) => id === chat.contacts[index]));
     if (existingChat) return { chat: existingChat };
 
-    const existingGameChat = gameId && chats.find(chat => chat.gameId === gameId);
+    const existingGameChat = individualGameId && chats.find(chat => chat.individualGameId === individualGameId);
     if (existingGameChat) {
       const requestedChatId = existingGameChat.chatId;
       const { contacts: fullContacts } = await this.addContactsToChat({ requestedChatId, contacts });
@@ -214,11 +216,11 @@ class ChatRepository {
       return { chat: existingGameChat }
     }
 
-    if (gameId) {
+    if (individualGameId) {
       const game = await Database.select('schedule_games.id', 'schedule_games.start_date_time', 'schedule_games.game_names_id', 'game_names.id', 'game_names.game_name')
         .from('schedule_games')
         .leftJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
-        .where('schedule_games.id', gameId)
+        .where('schedule_games.id', individualGameId)
         .first()
       if (!game) throw new Error('Game not found!');
       const gameName = game.game_name;
@@ -231,12 +233,13 @@ class ChatRepository {
     if (icon) chat.icon = icon;
     if (publicKey) chat.public_key = publicKey;
     chat.isGroup = isGroup;
+    chat.individual_game_id = individualGameId;
     chat.game_id = gameId;
     chat.contacts = JSON.stringify(contacts || []);
     chat.guests = JSON.stringify(guests || []);
     chat.owners = JSON.stringify(owners || []);
     chat.moderators = JSON.stringify(owners || []);
-    chat.self_destruct = !!gameId;
+    chat.self_destruct = !!individualGameId;
     await chat.save();
 
     const chatSchema = new ChatSchema({
@@ -249,6 +252,7 @@ class ChatRepository {
       icon,
       publicKey,
       isGroup,
+      individualGameId,
       gameId,
       createdAt: chat.created_at,
       updatedAt: chat.updated_at,
@@ -273,7 +277,7 @@ class ChatRepository {
       });
     }
 
-    if (gameId) {
+    if (individualGameId) {
       await this.scheduleGameMessage({ chatId: chat.id, schedule: gameSchedule });
       await this._setSelfDestruct({ requestedChatId: chat.id, selfDestruct: true });
     }
@@ -384,6 +388,7 @@ class ChatRepository {
       isPrivate: chat.isPrivate,
       isGroup: chat.isGroup,
       gameId: chat.game_id,
+      individualGameId: chat.individual_game_id,
       icon: chat.icon,
       title: chat.title,
       lastMessage: chat.last_message,
@@ -553,6 +558,7 @@ class ChatRepository {
       isPrivate: chat.isPrivate,
       isGroup: chat.isGroup,
       gameId: chat.game_id,
+      individualGameId: chat.individual_game_id,
       icon: chat.icon,
       title: chat.title,
       lastMessage: chat.last_message,
@@ -672,6 +678,7 @@ class ChatRepository {
       isPrivate: chat.isPrivate,
       isGroup: chat.isGroup,
       gameId: chat.game_id,
+      individualGameId: chat.individual_game_id,
       icon: chat.icon,
       title: chat.title,
       lastMessage: chat.last_message,
@@ -784,6 +791,7 @@ class ChatRepository {
       isPrivate: chat.isPrivate,
       isGroup: chat.isGroup,
       gameId: chat.game_id,
+      individualGameId: chat.individual_game_id,
     });
     this._notifyChatEvent({ chatId: requestedChatId, action: 'chatUpdated', payload: chatSchema });
   }

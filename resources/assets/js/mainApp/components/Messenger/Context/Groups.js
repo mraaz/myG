@@ -27,9 +27,9 @@ export default class Groups extends React.PureComponent {
     this.props.createChat([contact.contactId], this.props.userId);
   }
 
-  createGroup = (icon, title, contacts) => {
+  createGroup = (icon, title, contacts, gameId) => {
     const { encryption } = generateGroupKeys();
-    this.props.createChat(contacts, this.props.userId, title, icon, encryption, true);
+    this.props.createChat(contacts, this.props.userId, title, icon, encryption, true, null, gameId);
     this.setState({ showingGroupCreation: false });
   }
 
