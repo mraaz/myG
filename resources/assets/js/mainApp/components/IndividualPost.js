@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import IndividualComment from './IndividualComment'
@@ -169,7 +168,7 @@ export default class IndividualPost extends Component {
 
     var post_id = this.props.post.id
 
-    const getmyPostCount = async function() {
+    const getmyPostCount = async function () {
       try {
         var i
 
@@ -185,7 +184,7 @@ export default class IndividualPost extends Component {
       }
     }
 
-    const getGroup_info = async function() {
+    const getGroup_info = async function () {
       try {
         var i
 
@@ -215,7 +214,7 @@ export default class IndividualPost extends Component {
     var post_id = this.props.post.id
     const self = this
 
-    const getComments = async function() {
+    const getComments = async function () {
       try {
         const myComments = await axios.get(`/api/comments/${post_id}`)
         self.setState({
@@ -279,7 +278,7 @@ export default class IndividualPost extends Component {
     this.onFocus()
     const self = this
 
-    const saveComment = async function() {
+    const saveComment = async function () {
       try {
         const postComment = await axios.post('/api/comments', {
           content: self.state.value.trim(),
@@ -321,7 +320,7 @@ export default class IndividualPost extends Component {
     const self = this
     var post_id = this.props.post.id
 
-    const editPost = async function() {
+    const editPost = async function () {
       try {
         const myEditPost = await axios.post(`/api/post/update/${post_id}`, {
           content: self.state.value2,
@@ -390,7 +389,7 @@ export default class IndividualPost extends Component {
       dropdown: false,
     })
     setTimeout(
-      function() {
+      function () {
         //Start the timer
         this.focusTextInput2()
       }.bind(this),
@@ -454,7 +453,148 @@ export default class IndividualPost extends Component {
       }
 
       return (
-        <div className='update-container'>
+        <div className="post__container">
+          {this.state.alert}
+          <div className="post__body">
+            <div className="profile__image">
+              {this.state.show_profile_img && (
+                <Link
+                  to={`/profile/${post.alias}`}
+                  className='user-img'
+                  style={{
+                    backgroundImage: `url('${post.profile_img}')`,
+                  }}></Link>
+              )}
+              {!this.state.show_profile_img && (
+                <Link
+                  to={`/profile/${post.alias}`}
+                  className='user-img'
+                  style={{
+                    backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png')`,
+                  }}></Link>
+              )}
+              <div className="online__status"></div>
+            </div>
+            <div className="clearfix">
+              <div className="author__username">
+                <Link to={`/profile/${post.alias}`}>{`@${post.alias} `}</Link> shared a {post.type == 'text' ? 'story' : 'image'}
+                {"  from community: "}{this.state.show_group_name && <Link to={`/groups/${post.group_id}`}>@{this.state.group_name}</Link>}
+              </div>
+              <div className="post__time">
+                {this.state.post_time}
+              </div>
+            </div>
+            <div className='post__content'>
+              <p>{this.state.content}</p>
+              {this.state.show_post_options && (
+                <div className='post-options'>
+                  <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}></i>
+                </div>
+              )}
+            </div>
+          </div>
+          <div className='media'>
+            {this.state.edit_post && (
+              <div className='update-info'>
+                <div className='compose-comment'>
+                  <textarea
+                    name='name2'
+                    rows={8}
+                    cols={80}
+                    value={this.state.value2}
+                    onChange={this.handleChange2}
+                    maxLength='254'
+                    onKeyDown={this.detectKey2}
+                    ref={this.setTextInputRef2}
+                  />
+                </div>
+              </div>
+            )}
+            {show_media && post.type == 'photo' && (
+              <ImageGallery
+                items={this.state.images}
+                showBullets={this.state.showBullets}
+                autoPlay={this.state.autoPlay}
+                isRTL={this.state.isRTL}
+                disableSwipe={this.state.disableSwipe}
+                y
+              />
+            )}
+            {show_media &&
+              post.type == 'video' &&
+              this.state.media_urls.map(function (data, index) {
+                return (
+                  <video className='post-video' controls>
+                    <source src={data}></source>
+                  </video>
+                )
+              })}
+          </div>
+          <div className='update-stats'>
+            <div className='icon-section'>
+              <div className='like-circle'>
+                <i className='fas fa-thumbs-up' />
+              </div>
+            </div>
+            {this.state.show_like && (
+              <div className='other-users'>
+                {this.state.total > 1
+                  ? `${post.admirer_first_name} and ${this.state.total} others liked this update`
+                  : `${this.state.admirer_first_name} liked this update`}
+              </div>
+            )}
+            {!this.state.show_like && <div className='other-users'>Be the first to like this!</div>}
+            {this.state.like && (
+              <div className='like-btn' onClick={() => this.click_unlike_btn(post.id)}>
+                <i className='fas fa-thumbs-up' />
+                    &nbsp;Like
+              </div>
+            )}
+            {!this.state.like && (
+              <div className='like-btn' onClick={() => this.click_like_btn(post.id)}>
+                <i className='far fa-thumbs-up' />
+                    &nbsp;Like
+              </div>
+            )}
+            {this.state.zero_comments && (
+              <div className='comments-stats' onClick={this.onChange}>
+                <i class="far fa-comment-alt"></i>
+                {' comments'}
+                {/* {this.state.comment_total > 1 ? `${this.state.comment_total} comments` : `${this.state.comment_total} comment`}{' '} */}
+              </div>
+            )}
+            {!this.state.zero_comments && (
+              <div className='comments-stats' onClick={this.focusTextInput}>
+                {' '}
+                    No comments
+              </div>
+            )}
+            <div className='comments'>
+              {this.state.show_more_comments && <div className='show-individual-comments'>{this.showComment()}</div>}
+            </div>
+
+          </div>
+          <div className='compose-comment'>
+            <textarea
+              name='name'
+              placeholder='Make a comment...'
+              value={this.state.value}
+              onChange={this.handleChange}
+              maxLength='254'
+              onKeyDown={this.detectKey}
+              ref={this.setTextInputRef}
+
+            />
+            <div className='buttons'>
+              <div className='repost-btn' onClick={this.insert_comment}>
+                <i className='fas fa-reply' />
+              </div>
+            </div>
+          </div>
+
+
+
+          {/*<div className='update-container'>
           {this.state.alert}
           <div className='padding-container'>
             <div className='grey-container'>
@@ -530,7 +670,7 @@ export default class IndividualPost extends Component {
                 )}
                 {show_media &&
                   post.type == 'video' &&
-                  this.state.media_urls.map(function(data, index) {
+                  this.state.media_urls.map(function (data, index) {
                     return (
                       <video className='post-video' controls>
                         <source src={data}></source>
@@ -602,6 +742,7 @@ export default class IndividualPost extends Component {
               </div>
             </div>
           </div>
+                </div>*/}
         </div>
       )
     } else {
