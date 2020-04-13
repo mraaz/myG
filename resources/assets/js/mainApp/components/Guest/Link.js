@@ -58,7 +58,7 @@ class GuestLink extends React.PureComponent {
           key={chatId}
           userId={guestId}
           chatId={chatId}
-          alias={`${this.state.alias} #${guestId}`}
+          alias={`${this.state.alias} (Guest #${guestId})`}
           isGuest={true}
         />
         <Register />

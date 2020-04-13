@@ -3,6 +3,7 @@ import logger from '../../common/logger';
 
 export default function reducer(state = {
   userId: null,
+  alias: null,
   status: 'online',
   isStatusLocked: false,
   contacts: [],
@@ -15,7 +16,7 @@ export default function reducer(state = {
     case "PREPARE_MESSENGER_FULFILLED": {
       logger.log('CHAT', `Redux -> Messenger Ready (User): `, action.payload);
       const { contacts, games } = action.payload;
-      const { userId } = action.meta;
+      const { userId, alias } = action.meta;
       const { value: currentStatus, locked: isStatusLocked } = action.payload.status;
       const status = currentStatus === 'offline' && !isStatusLocked ? 'online' : currentStatus;
       return {
@@ -24,7 +25,8 @@ export default function reducer(state = {
         games,
         status, 
         isStatusLocked,
-        userId,
+        userId, 
+        alias,
       };
     }
 

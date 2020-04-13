@@ -25,7 +25,7 @@ export default class Contacts extends React.PureComponent {
   renderSection(name, count, contacts, expanded) {
     const chevronType = (contacts.length && expanded) ? 'down' : 'right';
     return (
-      <div className="messenger-body-section">
+      <div className="messenger-body-section" key={name}>
         <div className="messenger-body-section-header clickable"
           onClick={() => this.setState(previous => ({
             sectionExpanded: {

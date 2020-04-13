@@ -128,7 +128,7 @@ export function updateChatStateAction(chatId, state) {
   }
 }
 
-export function prepareMessengerAction(userId, pin, privateKey, publicKey) {
+export function prepareMessengerAction(userId, alias, pin, privateKey, publicKey) {
   const chatsRequest = fetchChats();
   const gamesRequest = fetchGames(userId);
   const contactsRequest = fetchContacts();
@@ -142,7 +142,7 @@ export function prepareMessengerAction(userId, pin, privateKey, publicKey) {
   return {
     type: 'PREPARE_MESSENGER',
     payload: Promise.all(requests).then(([chats, contacts, games, status, encryption]) => ({ ...chats, ...contacts, ...games, ...status, ...encryption })),
-    meta: { userId },
+    meta: { userId, alias },
   }
 }
 
