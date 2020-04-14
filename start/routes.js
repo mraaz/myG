@@ -81,7 +81,6 @@ Route.get('/api/user/:id/addFriend', 'UserController.addFriend')
 Route.get('/api/user/:id/unfriend', 'UserController.unfriend')
 Route.post('/api/user/playerSearchResults', 'UserController.playerSearchResults')
 Route.post('/api/user/keywordSearchResults', 'UserController.keywordSearchResults')
-Route.get('/api/user/gamers_you_might_know', 'UserController.gamers_you_might_know')
 
 Route.post('/api/GameExperiences/commend/:game_exp_id', 'GameExperienceController.updateCommend')
 Route.get('/api/GameExperiences/exp/:id', 'GameExperienceController.myShow')
@@ -275,8 +274,12 @@ Route.delete('/api/followers/:follower_id/delete', 'FollowerController.delete')
 
 Route.get('/api/email/summary_email', 'EmailController.summary_email')
 
+Route.post('/api/connections/gamers_you_might_know', 'ConnectionController.gamers_you_might_know')
+
 // Trying to avoid conflicts, should move this route up later.
 Route.get('/api/notifications/outgoingFriendRequests', 'NotificationController.outgoingFriendRequests')
+
+Route.get('/api/userStatTransaction/total_number_of_friends/:id', 'UserStatTransactionController.update_total_number_of_friends')
 
 // Chat Feature - https://docs.google.com/spreadsheets/d/1AR9P3MLQw6J6eoRqgTbOVROFxmPE215yXzsqD59wy2o
 Route.get('/api/chat/', 'ChatController.fetchChats')
@@ -328,5 +331,7 @@ Route.get('/api/guest/chat/:chatId/entryLogs', 'GuestController.fetchEntryLogs')
 Route.get('/api/guest/privateKey/:chatId', 'GuestController.fetchGroupPrivateKeyRequests')
 Route.post('/api/guest/privateKey/:userId/:chatId', 'GuestController.requestGroupPrivateKey')
 Route.delete('/api/guest/privateKey/:userId/:chatId', 'GuestController.confirmGroupPrivateKey')
+
+Route.get('/api/connection/master_controller', 'ConnectionController.master_controller')
 
 Route.any('*', ({ view }) => view.render('pages/react'))
