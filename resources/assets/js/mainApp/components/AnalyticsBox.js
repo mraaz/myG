@@ -110,7 +110,7 @@ export default class AnalyticsBox extends Component {
           </div>
 
           <div class='suggestions-box-reset'>
-            <a href='#;'>
+            <a href='javascript:;' onClick={(e) => alert('API is not integrated.')}>
               <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/reset.png' class='' />
             </a>
           </div>

@@ -1,7 +1,11 @@
 import React, { Component } from 'react'
 import ComposeSection from './ComposeSection'
 import Posts from './Posts'
+import Notifications from './Notifications'
+import MyPosts from './MyPosts'
+import MyScheduledGames from './MyScheduledGames'
 import AnalyticsBox from './AnalyticsBox'
+import GroupHome from './GroupHome'
 import { Link } from 'react-router-dom'
 
 export default class Home extends Component {
@@ -50,10 +54,10 @@ export default class Home extends Component {
             </div>
           </div>
           {tabName == 'home' && <Posts initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData} />}
-          {tabName == 'communities' && <h1>communities</h1>}
-          {tabName == 'notifications' && <h1>notifications</h1>}
-          {tabName == 'mygames' && <h1>mygames</h1>}
-          {tabName == 'myposts' && <h1>myposts</h1>}
+          {tabName == 'communities' && <GroupHome />}
+          {tabName == 'notifications' && <Notifications />}
+          {tabName == 'mygames' && <MyScheduledGames />}
+          {tabName == 'myposts' && <MyPosts />}
         </div>
       )
     } else {
