@@ -948,13 +948,17 @@ section#content-container {
       }
       .image-gallery-left-nav,
       .image-gallery-right-nav {
-        right: 40px;
+        right: 20px;
         bottom: 0;
         padding: 0;
+        margin: 0;
         .image-gallery-svg {
           height: 30px;
           width: 19px;
         }
+      }
+      .image-gallery-left-nav {
+        right: 40px;
       }
       .image-gallery-right-nav {
         right: 20;
@@ -1037,7 +1041,7 @@ section#content-container {
           padding-right: 50px;
           .individual-comment-container {
             .comment__section {
-              margin-bottom: 10px;
+              margin-bottom: 30px;
               position: relative;
               background: #1d2326;
               clear: both;
