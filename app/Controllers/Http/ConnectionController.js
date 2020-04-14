@@ -7,7 +7,37 @@ class ConnectionController {
   async gamers_you_might_know({ auth, request, response }) {
     if (auth.user) {
       try {
-        //pull data from table, limit to 8
+        var getConnections = await Database.from('connections')
+          .innerJoin('users', 'users.id', 'connections.other_user_id')
+          .select('alias', 'level', 'users.id as id', 'profile_img')
+          .where({ user_id: 1 })
+          .orderBy('connections.total_score', 'desc')
+          .paginate(request.input('counter'), 10)
+
+        if (getConnections.data.length < 11 && parseInt(request.input('counter')) == 1) {
+          const showallMyFriends = Database.from('friends')
+            .where({ user_id: auth.user.id })
+            .select('friends.friend_id as user_id')
+          //Don't include gamers who have rejected you and gamers who you have rejected
+          const showallMyEnemies = Database.from('exclude_connections')
+            .where({ user_id: auth.user.id })
+            .select('other_user_id as user_id')
+
+          const showPending = Database.from('notifications')
+            .where({ user_id: auth.user.id, activity_type: 1 })
+            .select('other_user_id as user_id')
+
+          getConnections = await Database.table('users')
+            .select('alias', 'level', 'id', 'profile_img')
+            .whereNot({ id: auth.user.id })
+            .whereNotIn('users.id', showallMyFriends)
+            .whereNotIn('users.id', showallMyEnemies)
+            .whereNotIn('users.id', showPending)
+            .orderBy('users.level', 'desc')
+            .paginate(request.input('counter'), 10)
+        }
+
+        return getConnections
       } catch (error) {
         console.log(error)
       }
@@ -20,8 +50,15 @@ class ConnectionController {
     if (auth.user) {
       //if we ran this in the last 24 hours, DONT run again!!!!
 
-      //this.check_if_same_games_in_profile({ auth, request, response })
-      //this.check_if_in_same_communities({ auth, request, response })
+      var getConnections = await Database.from('settings')
+        .innerJoin('users', 'users.id', 'connections.other_user_id')
+        .select('alias', 'level', 'users.id as id', 'profile_img')
+        .where({ user_id: 1 })
+        .orderBy('connections.total_score', 'desc')
+        .paginate(request.input('counter'), 10)
+
+      this.check_if_same_games_in_profile({ auth, request, response })
+      this.check_if_in_same_communities({ auth, request, response })
       this.check_if_in_same_location({ auth, request, response })
 
       return 'Got here: Master'
@@ -108,6 +145,10 @@ class ConnectionController {
             .where({ user_id: auth.user.id })
             .select('other_user_id as user_id')
 
+          const showPending = Database.from('notifications')
+            .where({ user_id: auth.user.id, activity_type: 1 })
+            .select('other_user_id as user_id')
+
           //Don't include gamers who you already have checked
           const check_all_my_Connections = Database.from('connection_transactions')
             .innerJoin('connections', 'connections.id', 'connection_transactions.connections_id')
@@ -121,6 +162,7 @@ class ConnectionController {
             .where({ country: mySearchResults.country })
             .whereNotIn('users.id', showallMyFriends)
             .whereNotIn('users.id', showallMyEnemies)
+            .whereNotIn('users.id', showPending)
             .whereNotIn('users.id', check_all_my_Connections)
             .orderBy('users.created_at', 'desc')
             .limit(88)
@@ -179,6 +221,10 @@ class ConnectionController {
           .where({ user_id: auth.user.id })
           .select('other_user_id as user_id')
 
+        const showPending = Database.from('notifications')
+          .where({ user_id: auth.user.id, activity_type: 1 })
+          .select('other_user_id as user_id')
+
         //Don't include gamers who you already have checked
         const check_all_my_Connections = Database.from('connection_transactions')
           .innerJoin('connections', 'connections.id', 'connection_transactions.connections_id')
@@ -194,6 +240,7 @@ class ConnectionController {
             .where('usergroups.group_id', '=', all_my_groups[i].id)
             .whereNotIn('usergroups.user_id', showallMyFriends)
             .whereNotIn('usergroups.user_id', showallMyEnemies)
+            .whereNotIn('users.id', showPending)
             .whereNotIn('usergroups.user_id', check_all_my_Connections)
             .orderBy('users.created_at', 'desc')
             .limit(88)
@@ -205,6 +252,7 @@ class ConnectionController {
             .where('groups.id', '=', all_my_groups[i].id)
             .whereNotIn('groups.user_id', showallMyFriends)
             .whereNotIn('groups.user_id', showallMyEnemies)
+            .whereNotIn('groups.id', showPending)
             .whereNotIn('groups.user_id', check_all_my_Connections)
             .orderBy('users.created_at', 'desc')
             .limit(88)
@@ -285,6 +333,10 @@ class ConnectionController {
           .where({ user_id: auth.user.id })
           .select('other_user_id as user_id')
 
+        const showPending = Database.from('notifications')
+          .where({ user_id: auth.user.id, activity_type: 1 })
+          .select('other_user_id as user_id')
+
         //Don't include gamers who you already have checked
         const check_all_my_Connections = Database.from('connection_transactions')
           .innerJoin('connections', 'connections.id', 'connection_transactions.connections_id')
@@ -300,6 +352,7 @@ class ConnectionController {
             .where('game_experiences.game_names_id', '=', rawGames[i].game_names_id)
             .whereNotIn('game_experiences.user_id', showallMyFriends)
             .whereNotIn('game_experiences.user_id', showallMyEnemies)
+            .whereNotIn('game_experiences.user_id', showPending)
             .whereNotIn('game_experiences.user_id', check_all_my_Connections)
             .orderBy('users.created_at', 'desc')
             .limit(88)
