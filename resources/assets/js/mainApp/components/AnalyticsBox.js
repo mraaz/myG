@@ -33,35 +33,38 @@ export default class AnalyticsBox extends Component {
           </div>
 
           <div class='social-box'>
-            <img src='./images/connection.png' class='social-box-img' />
+            <img
+              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/connection.png'
+              class='social-box-img'
+            />
             <p class='social-box-count'>251</p>
             <p class='social-box-text'>connections</p>
             <p class='social-box-month'>Last month: 21</p>
           </div>
 
           <div class='social-box'>
-            <img src='./images/follower.png' class='social-box-img' />
+            <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/follower.png' class='social-box-img' />
             <p class='social-box-count'>300</p>
             <p class='social-box-text'>followers</p>
             <p class='social-box-month'>Last month: 21</p>
           </div>
 
           <div class='social-box'>
-            <img src='./images/games.png' class='social-box-img' />
+            <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/games.png' class='social-box-img' />
             <p class='social-box-count'>24</p>
             <p class='social-box-text'>games</p>
             <p class='social-box-month'>Last month: 21</p>
           </div>
 
           <div class='social-box'>
-            <img src='./images/games.png' class='social-box-img' />
+            <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/games.png' class='social-box-img' />
             <p class='social-box-count'>5124</p>
             <p class='social-box-text'>likes</p>
             <p class='social-box-month'>Last month: 21</p>
           </div>
 
           <div class='social-box'>
-            <img src='./images/reviews.png' class='social-box-img' />
+            <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/reviews.png' class='social-box-img' />
             <p class='social-box-count'>25</p>
             <p class='social-box-text'>reviews</p>
             <p class='social-box-month'>Last month: 21</p>
@@ -108,7 +111,7 @@ export default class AnalyticsBox extends Component {
 
           <div class='suggestions-box-reset'>
             <a href='#;'>
-              <img src='./images/reset.png' class='' />
+              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/reset.png' class='' />
             </a>
           </div>
         </div>
