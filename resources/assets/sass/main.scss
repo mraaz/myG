@@ -229,10 +229,11 @@ label {
 .links {
   display: flex;
   justify-content: center;
-  a {
+  div {
     font-size: 14px;
     padding: 6px 30px;
     padding-bottom: 15px;
+    cursor: pointer;
     &:hover {
       border-bottom: 1px solid #e5c746;
     }
