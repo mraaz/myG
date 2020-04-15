@@ -2,8 +2,33 @@
 
 const Database = use('Database')
 const Connection = use('App/Models/Connection')
+const UserStatTransactionController = use('./UserStatTransactionController')
 
 class ConnectionController {
+  async master_controller({ auth, request, response }) {
+    if (auth.user) {
+      //if we ran this in the last 24 hours, DONT run again!!!!
+      let userStatController = new UserStatTransactionController()
+      userStatController.update_total_number_of({ auth, request, response }, 'great_communities')
+      return
+
+      var getConnections = await Database.from('settings')
+        .innerJoin('users', 'users.id', 'connections.other_user_id')
+        .select('alias', 'level', 'users.id as id', 'profile_img')
+        .where({ user_id: 1 })
+        .orderBy('connections.total_score', 'desc')
+        .paginate(request.input('counter'), 10)
+
+      this.check_if_same_games_in_profile({ auth, request, response })
+      this.check_if_in_same_communities({ auth, request, response })
+      this.check_if_in_same_location({ auth, request, response })
+
+      return 'Got here: Master'
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
   async gamers_you_might_know({ auth, request, response }) {
     if (auth.user) {
       try {
@@ -41,27 +66,6 @@ class ConnectionController {
       } catch (error) {
         console.log(error)
       }
-    } else {
-      return 'You are not Logged In!'
-    }
-  }
-
-  async master_controller({ auth, request, response }) {
-    if (auth.user) {
-      //if we ran this in the last 24 hours, DONT run again!!!!
-
-      var getConnections = await Database.from('settings')
-        .innerJoin('users', 'users.id', 'connections.other_user_id')
-        .select('alias', 'level', 'users.id as id', 'profile_img')
-        .where({ user_id: 1 })
-        .orderBy('connections.total_score', 'desc')
-        .paginate(request.input('counter'), 10)
-
-      this.check_if_same_games_in_profile({ auth, request, response })
-      this.check_if_in_same_communities({ auth, request, response })
-      this.check_if_in_same_location({ auth, request, response })
-
-      return 'Got here: Master'
     } else {
       return 'You are not Logged In!'
     }

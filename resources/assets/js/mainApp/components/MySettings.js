@@ -103,6 +103,7 @@ class MySettings extends Component {
     //const post = axios.get('/api/email/summary_email')
     const getGamers_you_might_know = async function() {
       try {
+        console.log('test')
         const master_controller = await axios.get('/api/connection/master_controller')
         console.log(master_controller)
       } catch (error) {
