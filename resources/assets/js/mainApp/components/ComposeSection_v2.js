@@ -3,11 +3,10 @@
  * github  : realnit
  */
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
 import axios from 'axios'
 import IndividualPost from './IndividualPost'
 import PostFileModal from './PostFileModal'
-import Select from 'react-select'
+import Dropzone from 'react-dropzone'
 
 const visibility_options = [
   { value: 1, label: 'Everyone' },
@@ -89,6 +88,12 @@ export default class ComposeSection extends Component {
     this.setState({
       bFileModalOpen: true,
       fileType: 'video',
+    })
+  }
+  openAudioPost() {
+    this.setState({
+      bFileModalOpen: true,
+      fileType: 'audio',
     })
   }
 
@@ -232,7 +237,37 @@ export default class ComposeSection extends Component {
             />
           </div>
         )}
-        {!open_compose_textTab && <div className='media__container'>video / image tab</div>}
+        {!open_compose_textTab && (
+          <div className='media__container'>
+            <Dropzone onDrop={(acceptedFiles) => console.log(acceptedFiles)}>
+              {(props) => {
+                console.log(props)
+                return (
+                  <section className='custom__html'>
+                    <span className=' button photo-btn'>
+                      <i className='far fa-images' />
+                    </span>
+                    <span className='button video-btn'>
+                      <i className='far fa-play-circle' />
+                    </span>
+                    <span className='button video-btn'>
+                      <i className='far fa-volume-up' />
+                    </span>
+                  </section>
+                )
+              }}
+            </Dropzone>
+            {/* <div className=' button photo-btn' onClick={() => this.openPhotoPost()}>
+              <i className='far fa-images' />
+            </div>
+            <div className='button video-btn' onClick={() => this.openVideoPost()}>
+              <i className='far fa-play-circle' />
+            </div>
+            <div className='button video-btn' onClick={() => this.openAudioPost()}>
+              <i className='far fa-volume-up' />
+            </div> */}
+          </div>
+        )}
         <div className='compose__people__section'>
           <div className='label'>Post on: </div>
           <div className='people_selected_container'>
@@ -255,6 +290,11 @@ export default class ComposeSection extends Component {
             Post
           </button>
         </div>
+        <PostFileModal
+          bOpen={this.state.bFileModalOpen}
+          fileType={this.state.fileType}
+          callbackClose={this.callbackPostFileModalClose}
+          callbackConfirm={this.callbackPostFileModalConfirm}></PostFileModal>
 
         {/* <section className='compose-area'>
         <div className='compose-section'>

@@ -1280,5 +1280,20 @@ section#content-container {
     justify-content: center;
     min-height: 160px;
     padding: 30px;
+    div {
+      border: none !important;
+      width: 100% !important;
+      height: 100% !important;
+    }
+    .custom__html {
+      display: flex;
+      justify-content: center;
+    }
+    .button {
+      width: 50px;
+      margin-right: 10px;
+      height: 50px;
+      cursor: pointer;
+    }
   }
 }
