@@ -234,6 +234,16 @@ export default class PostFileModal extends Component {
             )}
             {!open_compose_textTab && (
               <div className='media__container'>
+                <div className='text__editor__section'>
+                  <textarea
+                    onChange={this.handleChange}
+                    onKeyDown={this.detectKey}
+                    maxLength='254'
+                    name='post_content'
+                    value={this.state.post_content}
+                    placeholder='What in your mind?'
+                  />
+                </div>
                 <Dropzone onDrop={(acceptedFiles) => this.handleAcceptedFiles(acceptedFiles)}>
                   {(props) => {
                     return (
