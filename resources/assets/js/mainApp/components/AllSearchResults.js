@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 import axios from 'axios'
 import IndividualSearchResults from './IndividualSearchResults'
 import InfiniteScroll from 'react-infinite-scroll-component'

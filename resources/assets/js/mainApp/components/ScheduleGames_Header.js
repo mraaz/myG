@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import Select from 'react-select'
-import ReactDOM from 'react-dom'
 import axios from 'axios'
 
 import ScheduledGamePost from './ScheduledGamePost'

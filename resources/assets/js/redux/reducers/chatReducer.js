@@ -179,8 +179,8 @@ export default function reducer(state = {
       chat.closed = !!chat.gameId;
       chat.minimised = false;
       chat.maximised = false;
-      Object.assign(chat, encryption);
-      prepareGroupKeysToSend(chat, parseInt(action.meta.userId), state.contacts, state.publicKey, state.privateKey);
+      if (!chatAlreadyExists) Object.assign(chat, encryption);
+      if (!chatAlreadyExists) prepareGroupKeysToSend(chat, parseInt(action.meta.userId), state.contacts, state.publicKey, state.privateKey);
       if (!chat.closed) {
         const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== created.chatId);
         if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);
@@ -328,7 +328,7 @@ export default function reducer(state = {
 
     case "ON_CHAT_UPDATED": {
       logger.log('CHAT', `Redux -> On Chat Updated: `, action.payload, action.meta);
-      const { chatId, title, icon, owners, moderators, isPrivate } = action.payload.chat;
+      const { chatId, title, icon, owners, moderators, guests, isPrivate } = action.payload.chat;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (title !== undefined) chat.title = title;
@@ -417,11 +417,10 @@ export default function reducer(state = {
       logger.log('CHAT', `Redux -> User Joined Group: `, action.payload, action.meta);
       const { chatId, contacts, entryLog } = action.payload;
       const { userId: thisUserId } = action.meta;
-      if (contacts.map(contact => contact.contactId).includes(thisUserId)) return state;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (!chat) return state;
-      const contact = contacts[0];
+      const contact = contacts.filter(contact => contact.contactId !== thisUserId)[0];
       if (!chat.entryLogs) chat.entryLogs = [];
       chat.entryLogs.push(entryLog);
       if (!chat.contacts.includes(contact.contactId)) chat.contacts.push(contact.contactId);

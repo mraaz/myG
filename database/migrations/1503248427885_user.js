@@ -27,6 +27,8 @@ class UserSchema extends Schema {
       table.boolean('status_locked').notNullable().defaultTo(false)
       table.datetime('last_seen').nullable()
       table.string('public_key', 172).nullable()
+      table.integer('level').unsigned().defaultTo(0)
+      table.integer('experience_points').unsigned().defaultTo(0)
       table.timestamps()
     })
   }

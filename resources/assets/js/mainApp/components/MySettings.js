@@ -26,6 +26,12 @@ class MySettings extends Component {
         self.setState({
           value_email: getSettings.data.mySettings[0].email_notification,
         })
+
+        const getGamers_you_might_know = await axios.post('/api/connections/gamers_you_might_know', {
+          counter: 1,
+        })
+
+        console.log(getGamers_you_might_know)
       } catch (error) {
         console.log(error)
       }
@@ -94,7 +100,29 @@ class MySettings extends Component {
   }
 
   sendEmail = () => {
-    const post = axios.get('/api/email/summary_email')
+    //const post = axios.get('/api/email/summary_email')
+    const getGamers_you_might_know = async function() {
+      try {
+        console.log('test')
+        const master_controller = await axios.get('/api/connection/master_controller')
+        console.log(master_controller)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getGamers_you_might_know()
+  }
+
+  fire_off_calculations = () => {
+    const total_number_of_friends = async function() {
+      try {
+        const get_stats = await axios.get('/api/userStatTransaction/master_controller')
+        console.log(get_stats)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    total_number_of_friends()
   }
 
   render() {
@@ -112,6 +140,9 @@ class MySettings extends Component {
               <h3>mySettings!</h3>
               <button className='save' onClick={this.sendEmail}>
                 Send Email
+              </button>
+              <button className='save' onClick={this.fire_off_calculations}>
+                Fire off calcs
               </button>
               <div className='padding-container'></div>
               <div className='mySettings-container'>

@@ -2,6 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import notifyToast from '../../../common/toast';
 import Dropdown from '../Dropdown';
 import Popup from '../Popup';
 import { addContactsToChatAction, inviteUserToGroupAction, updateChatAction, clearChatAction, removeFromGroupAction } from '../../../redux/actions/chatAction';
@@ -38,10 +39,14 @@ class GroupMemberOptions extends React.PureComponent {
     owners.push(contactId);
     this.props.updateChat(this.props.group.chatId, { owners });
     this.props.updateChat(this.props.group.chatId, { moderators });
+    const contact = this.props.groupContacts.find(contact => contact.contactId === contactId) || {};
+    if (contact.name) notifyToast(`You have given this chat's ownership to ${contact.name}.`);
   }
 
   toggleModerator = (contactId) => {
     const moderators = this.props.group.moderators;
+    const contact = this.props.groupContacts.find(contact => contact.contactId === contactId) || {};
+    if (contact.name) notifyToast(`You have ${moderators.indexOf(contactId) !== -1 ? 'removed' : 'given'} Moderator Rights ${moderators.indexOf(contactId) !== -1 ? 'from' : 'to'} ${contact.name}.`);
     if (moderators.indexOf(contactId) !== -1) moderators.splice(moderators.indexOf(contactId), 1);
     else moderators.push(contactId);
     this.props.updateChat(this.props.group.chatId, { moderators });
@@ -49,12 +54,16 @@ class GroupMemberOptions extends React.PureComponent {
 
   toggleUserBlock = (contactId) => {
     const blockedUsers = this.props.group.blockedUsers;
+    const contact = this.props.groupContacts.find(contact => contact.contactId === contactId) || {};
+    if (contact.name) notifyToast(`You have ${blockedUsers.indexOf(contactId) !== -1 ? 'Unblocked' : 'Blocked'} ${contact.name}.`);
     if (blockedUsers.indexOf(contactId) !== -1) blockedUsers.splice(blockedUsers.indexOf(contactId), 1);
     else blockedUsers.push(contactId);
     this.props.updateChat(this.props.group.chatId, { blockedUsers });
   }
 
   kickUser = () => {
+    const contact = this.props.groupContacts.find(contact => contact.contactId === this.state.kickingUser.contactId) || {};
+    if (contact.name) notifyToast(`You have kicked ${contact.name}.`);
     this.props.removeFromGroup(this.props.group.chatId, this.state.kickingUser.contactId);
     this.setState({ kickingUser: false });
   }
@@ -71,6 +80,7 @@ class GroupMemberOptions extends React.PureComponent {
     if (isFriend) this.props.addContactsToChat(this.props.userId, this.props.group.chatId, [contact.contactId], contact.publicKey, this.props.group.privateKey, this.props.userPrivateKey);
     else this.props.inviteUserToGroup(this.props.userId, this.props.group.chatId, contact.contactId, contact.publicKey, this.props.group.privateKey, this.props.userPrivateKey);
     this.setState({ inviteInput: '', validInvite: false });
+    if (contact.name) notifyToast(`You have invited ${contact.name} to this chat.`);
   }
 
   renderHeader = () => {

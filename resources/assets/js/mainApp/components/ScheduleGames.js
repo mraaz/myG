@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import ScheduleGames_Header from './ScheduleGames_Header'

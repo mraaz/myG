@@ -11,6 +11,7 @@ const DefaultSchema = require('../../Schemas/Default');
 const GameSchema = require('../../Schemas/Game');
 
 const ChatRepository = require('../Chat');
+const EmailController = require('../../Controllers/Http/EmailController');
 
 class UserRepository {
 
@@ -25,6 +26,14 @@ class UserRepository {
       chats.forEach(chat => ChatRepository._notifyChatEvent({ chatId: chat.chat_id, action: 'encryption', payload: { publicKey, userId: requestingUserId, chatId: chat.chat_id } }));
     }
     await User.query().where('id', '=', requestingUserId).update({ public_key: publicKey })
+    return new DefaultSchema({ success: true });
+  }
+
+  async sendEncryptionEmail({ requestingUserId, publicKey, pin }) {
+    const user = (await User.query().where('id', '=', requestingUserId).first()).toJSON();
+    if (user.public_key === publicKey) return new DefaultSchema({ success: false, error: "Key is the same." });
+    if (!user.email) return new DefaultSchema({ success: false, error: "User doesn't have an email" });
+    await new EmailController().encryption_email(user.email, pin);
     return new DefaultSchema({ success: true });
   }
 

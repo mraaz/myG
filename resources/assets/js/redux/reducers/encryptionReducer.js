@@ -1,7 +1,8 @@
 
 
 import logger from '../../common/logger';
-import { storePublicKey } from '../../integration/http/user';
+import notifyToast from '../../common/toast';
+import { storePublicKey, sendEncryptionEmail } from '../../integration/http/user';
 
 export default function reducer(state = {
   pin: null,
@@ -16,6 +17,7 @@ export default function reducer(state = {
       logger.log('USER', `Redux -> Messenger Ready (Encryption): `, action.payload);
       const { pin, publicKey, privateKey } = action.payload.encryption;
       storePublicKey(publicKey);
+      sendEncryptionEmail(publicKey, pin);
       return {
         ...state,
         pin,
@@ -29,6 +31,7 @@ export default function reducer(state = {
       logger.log('USER', `Redux -> Keys Generated: `, action.payload);
       const { pin, publicKey, privateKey } = action.payload.encryption;
       storePublicKey(publicKey);
+      sendEncryptionEmail(publicKey, pin);
       return {
         ...state,
         pin,
@@ -41,7 +44,10 @@ export default function reducer(state = {
     case "VALIDATE_PIN_FULFILLED": {
       logger.log('USER', `Redux -> Validating Pin: ${action.meta.pin}`, action.payload);
       const { pin, publicKey, privateKey } = action.payload.encryption;
-      if (action.meta.publicKey !== publicKey) return { ...state, invalidPin: true }
+      if (action.meta.publicKey !== publicKey) {
+        notifyToast(`The Encryption Key you've entered is not valid.`);
+        return state;
+      }
       storePublicKey(publicKey);
       return {
         ...state,

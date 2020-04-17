@@ -1,8 +1,5 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
-
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
-
 import AddScheduleGames_Headers from './AddScheduleGames_Header'
 import AddScheduleGames_Dota2 from './AddScheduleGames_Dota2'
 import AddScheduleGames_Clash_Royale from './AddScheduleGames_Clash_Royale'

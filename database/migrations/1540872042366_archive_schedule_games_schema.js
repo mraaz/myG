@@ -7,7 +7,7 @@ class ArchiveScheduleGamesSchema extends Schema {
   up () {
     this.create('archive_schedule_games', (table) => {
       table.increments()
-      table.integer('archive_schedule_game_id').unsigned().notNullable().unique()
+      table.integer('archive_schedule_game_id').unsigned().notNullable().unique().index()
       table.integer('user_id').unsigned().notNullable()
       table.foreign('user_id').references('users.id').onDelete('cascade')
       table.integer('game_names_id').unsigned().notNullable()

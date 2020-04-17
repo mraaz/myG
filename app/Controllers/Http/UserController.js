@@ -3,6 +3,7 @@
 const Database = use('Database')
 const User = use('App/Models/User')
 const AwsKeyController = use('./AwsKeyController')
+const UserStatTransactionController = use('./UserStatTransactionController')
 
 class UserController {
   async profile({ auth, request, response }) {
@@ -77,24 +78,26 @@ class UserController {
       return 'You are not Logged In!'
     }
   }
-  async follow({ auth, request, response }) {
-    if (auth.user) {
-      try {
-        const followedUser = await Database.table('friends').insert({
-          user_id: auth.user.id,
-          friend_id: request.params.id,
-        })
-        //const vicevesa = await Database.table('friends').insert({user_id:request.params.id , friend_id: auth.user.id})
-
-        console.log(followedUser)
-        return 'Saved successfully'
-      } catch (error) {
-        console.log(error)
-      }
-    } else {
-      return 'You are not Logged In!'
-    }
-  }
+  // async follow({ auth, request, response }) {
+  //   if (auth.user) {
+  //     try {
+  //       const followedUser = await Database.table('friends').insert({
+  //         user_id: auth.user.id,
+  //         friend_id: request.params.id,
+  //       })
+  //       //const vicevesa = await Database.table('friends').insert({user_id:request.params.id , friend_id: auth.user.id})
+  //
+  //       let userStatController = new UserStatTransactionController()
+  //       userStatController.update_total_number_of({ auth, request, response }, 'total_number_of_followers')
+  //
+  //       return 'Saved successfully'
+  //     } catch (error) {
+  //       console.log(error)
+  //     }
+  //   } else {
+  //     return 'You are not Logged In!'
+  //   }
+  // }
   async unfriend({ auth, request, response }) {
     if (auth.user) {
       try {
@@ -111,6 +114,10 @@ class UserController {
             friend_id: auth.user.id,
           })
           .delete()
+
+        let userStatController = new UserStatTransactionController()
+        userStatController.update_total_number_of(auth.user.id, 'total_number_of_friends')
+        userStatController.update_total_number_of(request.params.id, 'total_number_of_friends')
 
         return 'Deleted successfully'
       } catch (error) {
@@ -220,23 +227,6 @@ class UserController {
           .select('id')
 
         return aliasConverted
-      } catch (error) {
-        console.log(error)
-      }
-    } else {
-      return 'You are not Logged In!'
-    }
-  }
-
-  async gamers_you_might_know({ auth, request, response }) {
-    if (auth.user) {
-      try {
-        // const aliasConverted = await Database.table('users')
-        //   .where({
-        //     alias: request.params.alias,
-        //   })
-        //   .select('id')
-        //return aliasConverted
       } catch (error) {
         console.log(error)
       }

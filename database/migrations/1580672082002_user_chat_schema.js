@@ -13,7 +13,6 @@ class UserChatSchema extends Schema {
       table.foreign('user_id').references('id').inTable('users').onDelete('CASCADE')
       table.boolean('muted').notNullable().defaultTo(false)
       table.boolean('blocked').notNullable().defaultTo(false)
-      table.boolean('self_destruct').notNullable().defaultTo(false)
       table.text('deleted_messages').notNullable().defaultTo('[]')
       table.text('blocked_users').notNullable().defaultTo('[]')
       table.timestamps()

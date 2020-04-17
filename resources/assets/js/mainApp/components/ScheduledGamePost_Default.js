@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 import { Redirect } from 'react-router'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
@@ -9,7 +8,7 @@ import DeleteScheduleGameModal from './DeleteScheduleGameModal'
 import { toast } from 'react-toastify'
 import SweetAlert from 'react-bootstrap-sweetalert'
 import { Toast_style } from './Utility_Function'
-import { exitGameGroup } from '../../common/group';
+import { exitGameGroup } from '../../common/group'
 
 export default class ScheduledGamePost_Default extends Component {
   constructor() {
@@ -407,7 +406,7 @@ export default class ScheduledGamePost_Default extends Component {
   disenrollinGame = () => {
     try {
       const getNumberofAttendees = axios.get(`/api/attendees/removeattending/${this.props.props.schedule_game.id}`)
-      exitGameGroup(this.props.props.schedule_game.id);
+      exitGameGroup(this.props.props.schedule_game.id)
       this.setState({
         show_invite: true,
         show_attending: false,
