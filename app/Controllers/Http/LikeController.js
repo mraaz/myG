@@ -2,19 +2,58 @@
 
 const Database = use('Database')
 const Like = use('App/Models/Like')
+const UserStatTransactionController = use('./UserStatTransactionController')
 
 class LikeController {
   async store({ auth, request, response }) {
-    try {
-      const newLike = await Like.create({
-        user_id: auth.user.id,
-        post_id: request.input('post_id'),
-        comment_id: request.input('comment_id'),
-        reply_id: request.input('reply_id'),
-      })
-      return 'Saved successfully'
-    } catch (error) {
-      console.log(error)
+    if (auth.user) {
+      try {
+        const newLike = await Like.create({
+          user_id: auth.user.id,
+          post_id: request.input('post_id'),
+          comment_id: request.input('comment_id'),
+          reply_id: request.input('reply_id'),
+        })
+
+        let userStatController = new UserStatTransactionController()
+
+        if (request.input('post_id') != undefined) {
+          const post_owner = await Database.from('posts')
+            .where({ id: request.input('post_id') })
+            .select('user_id')
+            .first()
+
+          if (post_owner != undefined) {
+            userStatController.update_total_number_of(post_owner.user_id, 'total_number_of_likes')
+          }
+        }
+
+        if (request.input('comment_id') != undefined) {
+          const comment_owner = await Database.from('comments')
+            .where({ id: request.input('comment_id') })
+            .select('user_id')
+            .first()
+
+          if (comment_owner != undefined) {
+            userStatController.update_total_number_of(comment_owner.user_id, 'total_number_of_likes')
+          }
+        }
+
+        if (request.input('reply_id') != undefined) {
+          const reply_owner = await Database.from('replies')
+            .where({ id: request.input('reply_id') })
+            .select('user_id')
+            .first()
+
+          if (reply_owner != undefined) {
+            userStatController.update_total_number_of(reply_owner.user_id, 'total_number_of_likes')
+          }
+        }
+
+        return 'Saved successfully'
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
   async show({ auth, request, response }) {
@@ -98,7 +137,17 @@ class LikeController {
           })
           .delete()
 
-        console.log(delete_like)
+        let userStatController = new UserStatTransactionController()
+
+        const post_owner = await Database.from('posts')
+          .where({ id: request.params.id })
+          .select('user_id')
+          .first()
+
+        if (post_owner != undefined) {
+          userStatController.update_total_number_of(post_owner.user_id, 'total_number_of_likes')
+        }
+
         return 'Deleted successfully'
       } catch (error) {
         console.log(error)
@@ -118,7 +167,17 @@ class LikeController {
           })
           .delete()
 
-        console.log(delete_like)
+        let userStatController = new UserStatTransactionController()
+
+        const comment_owner = await Database.from('comments')
+          .where({ id: request.params.id })
+          .select('user_id')
+          .first()
+
+        if (comment_owner != undefined) {
+          userStatController.update_total_number_of(comment_owner.user_id, 'total_number_of_likes')
+        }
+
         return 'Deleted successfully'
       } catch (error) {
         console.log(error)
@@ -137,6 +196,17 @@ class LikeController {
             user_id: auth.user.id,
           })
           .delete()
+
+        let userStatController = new UserStatTransactionController()
+
+        const reply_owner = await Database.from('replies')
+          .where({ id: request.params.id })
+          .select('user_id')
+          .first()
+
+        if (reply_owner != undefined) {
+          userStatController.update_total_number_of(reply_owner.user_id, 'total_number_of_likes')
+        }
 
         return 'Deleted successfully'
       } catch (error) {

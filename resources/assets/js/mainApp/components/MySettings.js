@@ -116,8 +116,8 @@ class MySettings extends Component {
   fire_off_calculations = () => {
     const total_number_of_friends = async function() {
       try {
-        const get_total_number_of_friends = await axios.get(`/api/userStatTransaction/total_number_of_friends/${100}`)
-        console.log(get_total_number_of_friends)
+        const get_stats = await axios.get('/api/userStatTransaction/master_controller')
+        console.log(get_stats)
       } catch (error) {
         console.log(error)
       }

@@ -12,6 +12,8 @@ class Import_user_stats_Schema extends Schema {
     .raw(" insert into user_stats (criteria, created_at, updated_at) values ('total_number_of_followers', '1981-03-19', '1981-03-19')")
     .raw(" insert into user_stats (criteria, created_at, updated_at) values ('total_number_of_games_hosted', '1981-03-19', '1981-03-19')")
     .raw(" insert into user_stats (criteria, created_at, updated_at) values ('total_number_of_games_played', '1981-03-19', '1981-03-19')")
+    .raw(" insert into user_stats (criteria, created_at, updated_at) values ('total_number_of_great_games_hosted', '1981-03-19', '1981-03-19')")
+    .raw(" insert into user_stats (criteria, created_at, updated_at) values ('total_number_of_great_games_played', '1981-03-19', '1981-03-19')")
     .raw(" insert into user_stats (criteria, created_at, updated_at) values ('total_number_of_likes', '1981-03-19', '1981-03-19')")
     .raw(" insert into user_stats (criteria, created_at, updated_at) values ('total_number_of_commendations', '1981-03-19', '1981-03-19')")
 

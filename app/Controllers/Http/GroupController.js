@@ -2,6 +2,7 @@
 
 const Group = use('App/Models/Group')
 const Database = use('Database')
+const UserStatTransactionController = use('./UserStatTransactionController')
 
 class GroupController {
   async store({ auth, request, response }) {
@@ -14,6 +15,10 @@ class GroupController {
           type: request.input('type'),
           all_accept: request.input('all_accept'),
         })
+
+        let userStatController = new UserStatTransactionController()
+        userStatController.update_total_number_of(auth.user.id, 'total_number_of_communities')
+
         return newGroup
       } catch (error) {
         console.log(error)

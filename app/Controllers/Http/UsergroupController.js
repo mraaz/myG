@@ -4,18 +4,22 @@ const Usergroup = use('App/Models/Usergroup')
 const Group = use('App/Models/Group')
 const Database = use('Database')
 const NotificationController = use('./NotificationController')
+const UserStatTransactionController = use('./UserStatTransactionController')
 
 class UsergroupController {
   async store({ auth, request, response }) {
-    try {
-      const newaddition = await Usergroup.create({
-        group_id: request.input('group_id'),
-        user_id: auth.user.id,
-        permission_level: 42,
-      })
-      return newaddition
-    } catch (error) {
-      console.log(error)
+    if (auth.user) {
+      try {
+        const newaddition = await Usergroup.create({
+          group_id: request.input('group_id'),
+          user_id: auth.user.id,
+          permission_level: 42,
+        })
+
+        return newaddition
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 
@@ -77,6 +81,9 @@ class UsergroupController {
             user_id: auth.user.id,
           })
           .delete()
+
+        let userStatController = new UserStatTransactionController()
+        userStatController.update_total_number_of(auth.user.id, 'total_number_of_communities')
 
         return 'Remove entry'
       } catch (error) {
@@ -205,10 +212,14 @@ class UsergroupController {
           .innerJoin('users', 'users.id', 'usergroups.user_id')
           .where('usergroups.id', '=', request.params.usergrp_id)
           .select('users.id')
+
         let noti = new NotificationController()
         request.params.group_id = request.params.id
         request.params.other_user_id = query_for_user[0].id
         noti.add_approved_group_attendee({ auth, request, response })
+
+        let userStatController = new UserStatTransactionController()
+        userStatController.update_total_number_of(query_for_user[0].id, 'total_number_of_communities')
 
         return 'Saved successfully'
       }
@@ -314,6 +325,10 @@ class UsergroupController {
           id: request.params.usergrp_id,
         })
         .delete()
+
+      let userStatController = new UserStatTransactionController()
+      userStatController.update_total_number_of(permission_query_to_be_deleted_user[0].user_id, 'total_number_of_communities')
+
       return 'Removed successfully'
     } catch (error) {
       console.log(error)

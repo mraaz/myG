@@ -3,6 +3,7 @@
 const Database = use('Database')
 const Attendee = use('App/Models/Attendee')
 const NotificationController = use('./NotificationController')
+const UserStatTransactionController = use('./UserStatTransactionController')
 
 class AttendeeController {
   async savemySpot({ auth, request, response }) {
@@ -203,6 +204,15 @@ class AttendeeController {
           })
           .delete()
 
+        let userStatController = new UserStatTransactionController()
+
+        const get_host = await Database.from('schedule_games')
+          .select('user_id')
+          .where({ id: request.params.id })
+
+        userStatController.update_total_number_of(get_host[0].user_id, 'total_number_of_games_hosted')
+        userStatController.update_total_number_of(auth.user.id, 'total_number_of_games_played')
+
         return 'Remove entry'
       } catch (error) {
         console.log(error)
@@ -258,23 +268,44 @@ class AttendeeController {
   }
 
   async up_invite({ auth, request, response }) {
-    try {
-      const up_invite = await Attendee.query()
-        .where({
-          schedule_games_id: request.params.schedule_game_id,
-          user_id: request.params.id,
-        })
-        .update({
-          type: 1,
-          dota_2_position_one: request.input('dota_2_position_one'),
-          dota_2_position_two: request.input('dota_2_position_two'),
-          dota_2_position_three: request.input('dota_2_position_three'),
-          dota_2_position_four: request.input('dota_2_position_four'),
-          dota_2_position_five: request.input('dota_2_position_five'),
-        })
-      return up_invite
-    } catch (error) {
-      console.log(up_invite)
+    if (auth.user) {
+      let userStatController = new UserStatTransactionController()
+
+      try {
+        const up_invite = await Attendee.query()
+          .where({
+            schedule_games_id: request.params.schedule_game_id,
+            user_id: request.params.id,
+          })
+          .update({
+            type: 1,
+            dota_2_position_one: request.input('dota_2_position_one'),
+            dota_2_position_two: request.input('dota_2_position_two'),
+            dota_2_position_three: request.input('dota_2_position_three'),
+            dota_2_position_four: request.input('dota_2_position_four'),
+            dota_2_position_five: request.input('dota_2_position_five'),
+          })
+
+        const get_all_attendees = await Database.from('attendees')
+          .select('user_id')
+          .where({ schedule_games_id: request.params.schedule_game_id, type: 1 })
+
+        if (get_all_attendees.length > 1) {
+          const get_host = await Database.from('schedule_games')
+            .select('user_id')
+            .where({ id: request.params.schedule_game_id })
+
+          userStatController.update_total_number_of(get_host[0].user_id, 'total_number_of_games_hosted')
+        }
+
+        for (var i = 0; i < get_all_attendees.length; i++) {
+          userStatController.update_total_number_of(get_all_attendees[i].user_id, 'total_number_of_games_played')
+        }
+
+        return up_invite
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 }
