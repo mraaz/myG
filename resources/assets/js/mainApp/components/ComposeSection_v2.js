@@ -7,6 +7,7 @@ import axios from 'axios'
 import IndividualPost from './IndividualPost'
 import PostFileModal from './PostFileModal'
 import Dropzone from 'react-dropzone'
+const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
 
 const visibility_options = [
   { value: 1, label: 'Everyone' },
@@ -97,8 +98,9 @@ export default class ComposeSection extends Component {
     })
   }
 
-  submitForm = async () => {
-    if (this.state.post_content.trim() == '') {
+  submitForm = async (data = '') => {
+    const content = data ? data : this.state.post_content.trim()
+    if (content == '') {
       this.setState({
         post_content: '',
       })
@@ -106,13 +108,14 @@ export default class ComposeSection extends Component {
     }
     try {
       const post = await axios.post('/api/post', {
-        content: this.state.post_content.trim(),
+        content: content,
         user_id: this.props.initialData.userInfo.id,
         type: 'text',
         visibility: this.state.visibility_box.value,
       })
       this.setState({
         myPosts: [],
+        bFileModalOpen: false,
       })
       await this.get_posts(post)
     } catch (error) {
@@ -129,7 +132,9 @@ export default class ComposeSection extends Component {
   }
 
   handleChange_txtArea = (event) => {
-    this.setState({ post_content: event.target.value })
+    this.setState({ open_compose_textTab: true }, () => {
+      this.setState({ bFileModalOpen: true })
+    })
   }
 
   showLatestPosts = () => {
@@ -211,25 +216,32 @@ export default class ComposeSection extends Component {
     if (label == 'media') {
       open_compose_textTab = false
     }
-    this.setState({ open_compose_textTab })
+    this.setState({ open_compose_textTab }, () => {
+      this.setState({ bFileModalOpen: true })
+    })
+  }
+
+  handleAcceptedFiles = (Files) => {
+    console.log(acceptedFiles)
   }
 
   render() {
-    const { open_compose_textTab } = this.state
+    const { open_compose_textTab, bFileModalOpen } = this.state
+
     return (
       <section className='postCompose__container'>
         <div className='compose__type__section'>
           <div className={`share__thought ${open_compose_textTab ? 'active' : ''}`} onClick={(e) => this.togglePostTypeTab('text')}>
             {`Share your thoughts ...`}
           </div>
-          <div className={`add__post__image ${open_compose_textTab ? 'active' : ''}`} onClick={(e) => this.togglePostTypeTab('media')}>
+          <div className={`add__post__image ${open_compose_textTab ? '' : 'active'}`} onClick={(e) => this.togglePostTypeTab('media')}>
             {` Add video or photos`}
           </div>
         </div>
         {open_compose_textTab && (
           <div className='text__editor__section'>
             <textarea
-              onChange={this.handleChange_txtArea}
+              onFocus={this.handleChange_txtArea}
               onKeyDown={this.detectKey}
               maxLength='254'
               value={this.state.post_content}
@@ -239,20 +251,24 @@ export default class ComposeSection extends Component {
         )}
         {!open_compose_textTab && (
           <div className='media__container'>
-            <Dropzone onDrop={(acceptedFiles) => console.log(acceptedFiles)}>
+            <Dropzone onDrop={(acceptedFiles) => this.handleAcceptedFiles(acceptedFiles)}>
               {(props) => {
-                console.log(props)
                 return (
                   <section className='custom__html'>
-                    <span className=' button photo-btn'>
-                      <i className='far fa-images' />
-                    </span>
-                    <span className='button video-btn'>
-                      <i className='far fa-play-circle' />
-                    </span>
-                    <span className='button video-btn'>
-                      <i className='far fa-volume-up' />
-                    </span>
+                    <div className='images'>
+                      <span className=' button photo-btn'>
+                        <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
+                      </span>
+                      <span className='button video-btn'>
+                        <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Video.svg`} />
+                      </span>
+                      <span className='button video-btn'>
+                        <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Audio.svg`} />
+                      </span>
+                    </div>
+                    <div className='text'>
+                      Or <span>click here </span> to select
+                    </div>
                   </section>
                 )
               }}
@@ -290,11 +306,15 @@ export default class ComposeSection extends Component {
             Post
           </button>
         </div>
-        <PostFileModal
-          bOpen={this.state.bFileModalOpen}
-          fileType={this.state.fileType}
-          callbackClose={this.callbackPostFileModalClose}
-          callbackConfirm={this.callbackPostFileModalConfirm}></PostFileModal>
+        {bFileModalOpen && (
+          <PostFileModal
+            bOpen={bFileModalOpen}
+            callbackClose={this.callbackPostFileModalClose}
+            callbackConfirm={this.callbackPostFileModalConfirm}
+            callbackContentConfirm={this.submitForm}
+            open_compose_textTab={open_compose_textTab}
+          />
+        )}
 
         {/* <section className='compose-area'>
         <div className='compose-section'>
