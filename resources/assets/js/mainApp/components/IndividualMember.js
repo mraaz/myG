@@ -61,7 +61,7 @@ export default class IndividualMember extends Component {
 
   promote_member = () => {
     try {
-      const delete_member = axios.get(`/api/usergroup/promote_member/${this.props.member.group_id}/${this.props.member.id}`)
+      const promote_member = axios.get(`/api/usergroup/promote_member/${this.props.member.group_id}/${this.props.member.id}`)
     } catch (error) {
       console.log(error)
     }
@@ -75,7 +75,7 @@ export default class IndividualMember extends Component {
 
   demote_member = () => {
     try {
-      const delete_member = axios.get(`/api/usergroup/demote_member/${this.props.member.group_id}/${this.props.member.id}`)
+      const demote_member = axios.get(`/api/usergroup/demote_member/${this.props.member.group_id}/${this.props.member.id}`)
     } catch (error) {
       console.log(error)
     }

@@ -4,6 +4,7 @@ const Database = use('Database')
 const GameExperiences = use('App/Models/GameExperience')
 const GameNameController = use('./GameNameController')
 const TagController = use('./TagController')
+const UserStatTransactionController = use('./UserStatTransactionController')
 
 class GameExperienceController {
   async store({ auth, request, response }) {
@@ -202,6 +203,20 @@ class GameExperienceController {
         const updateGame_ExpCommend = await GameExperiences.query()
           .where({ id: request.params.game_exp_id })
           .update({ commendation: request.input('commendation') })
+
+        let userStatController = new UserStatTransactionController()
+
+        const game_experiences_owner = await Database.table('game_experiences')
+          .where({
+            id: request.params.game_exp_id,
+          })
+          .select('user_id')
+          .first()
+
+        if (game_experiences_owner != undefined) {
+          userStatController.update_total_number_of(game_experiences_owner.user_id, 'total_number_of_commendations')
+        }
+
         return 'Saved successfully'
       } catch (error) {
         console.log(error)

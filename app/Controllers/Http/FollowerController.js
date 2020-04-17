@@ -2,6 +2,7 @@
 
 const Follower = use('App/Models/Follower')
 const Database = use('Database')
+const UserStatTransactionController = use('./UserStatTransactionController')
 
 class FollowerController {
   async store({ auth, request, response }) {
@@ -11,6 +12,10 @@ class FollowerController {
           follower_id: request.input('follower_id'),
           user_id: auth.user.id,
         })
+
+        let userStatController = new UserStatTransactionController()
+        userStatController.update_total_number_of(request.input('follower_id'), 'total_number_of_followers')
+
         return 'Saved'
       } catch (error) {
         console.log(error)
@@ -27,6 +32,9 @@ class FollowerController {
             follower_id: request.params.follower_id,
           })
           .delete()
+
+        let userStatController = new UserStatTransactionController()
+        userStatController.update_total_number_of(request.params.follower_id, 'total_number_of_followers')
 
         return 'Deleted successfully'
       } catch (error) {

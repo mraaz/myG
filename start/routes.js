@@ -279,7 +279,7 @@ Route.post('/api/connections/gamers_you_might_know', 'ConnectionController.gamer
 // Trying to avoid conflicts, should move this route up later.
 Route.get('/api/notifications/outgoingFriendRequests', 'NotificationController.outgoingFriendRequests')
 
-Route.get('/api/userStatTransaction/total_number_of_friends/:id', 'UserStatTransactionController.update_total_number_of_friends')
+Route.get('/api/userStatTransaction/master_controller', 'UserStatTransactionController.master_controller')
 
 // Chat Feature - https://docs.google.com/spreadsheets/d/1AR9P3MLQw6J6eoRqgTbOVROFxmPE215yXzsqD59wy2o
 Route.get('/api/chat/', 'ChatController.fetchChats')

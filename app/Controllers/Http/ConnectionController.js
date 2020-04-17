@@ -9,7 +9,7 @@ class ConnectionController {
     if (auth.user) {
       //if we ran this in the last 24 hours, DONT run again!!!!
       let userStatController = new UserStatTransactionController()
-      userStatController.update_total_number_of({ auth, request, response }, 'great_communities')
+      userStatController.update_total_number_of(auth.user.id, 'total_number_of_commendations')
       return
 
       var getConnections = await Database.from('settings')
