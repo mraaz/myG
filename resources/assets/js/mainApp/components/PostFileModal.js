@@ -264,9 +264,10 @@ export default class PostFileModal extends Component {
                         </div>
                         {preview_files.length > 0 && (
                           <div className='files__preview'>
-                            {preview_files.map((url) => (
+                            {preview_files.slice(0, 3).map((url) => (
                               <img src={url} />
                             ))}
+                            ({preview_files.length})...
                           </div>
                         )}
                       </section>
