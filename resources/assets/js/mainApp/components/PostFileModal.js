@@ -21,6 +21,7 @@ export default class PostFileModal extends Component {
       uploading: false,
       submitButtonContent: 'Submit',
       open_compose_textTab: props.open_compose_textTab,
+      add_group_toggle: false,
     }
 
     this.closeModal = this.closeModal.bind(this)
@@ -167,17 +168,32 @@ export default class PostFileModal extends Component {
     })
   }
   handleAcceptedFiles = (Files) => {
-    console.log(acceptedFiles)
+    let preview_files = []
+    for (var i = 0; i < Files.length; i++) {
+      let preview = Files[i].preview
+      preview_files[i] = preview
+    }
+    this.setState({
+      preview_files: preview_files,
+    })
   }
 
   submitForm = () => {
     this.props.callbackContentConfirm(this.state.post_content)
   }
 
+  addGroupToggle = () => {
+    this.setState({ add_group_toggle: !this.state.add_group_toggle })
+  }
+  addGroupToggleForm = () => {
+    console.log('addGroupToggleForm called')
+    this.addGroupToggle()
+  }
+
   render() {
-    const { open_compose_textTab } = this.state
+    const { open_compose_textTab, add_group_toggle, preview_files } = this.state
     var class_modal_status = ''
-    console.log(open_compose_textTab)
+    console.log(preview_files)
     if (this.props.bOpen) {
       class_modal_status = 'modal--show'
     }
@@ -236,6 +252,13 @@ export default class PostFileModal extends Component {
                         <div className='text'>
                           Or <span>click here </span> to select
                         </div>
+                        {preview_files.length > 0 && (
+                          <div className='files__preview'>
+                            {preview_files.map((url) => (
+                              <img src={url} />
+                            ))}
+                          </div>
+                        )}
                       </section>
                     )
                   }}
@@ -251,7 +274,7 @@ export default class PostFileModal extends Component {
                 </div>
               </div>
               <div className='add_more_people'>
-                <button type='button' className='add__people'>
+                <button type='button' className='add__people' onClick={this.addGroupToggle}>
                   Add
                 </button>
               </div>
@@ -297,6 +320,39 @@ export default class PostFileModal extends Component {
             />
           </div>*/}
           </section>
+          {add_group_toggle && (
+            <div className='people_group_list'>
+              <div className='search__box'>
+                <label for='searchInput'>Search</label>
+                <input type='text' id='searchInput' value='' placeholder='' />
+              </div>
+              <div className='people_group_list_box'></div>
+              <div className='people_group_actions'>
+                <div className='post__privacy_select'>
+                  <div>
+                    <input type='checkbox' id='Everyone' /> <label for='Everyone'>Everyone</label>
+                  </div>
+                  <div>
+                    <input type='checkbox' id='Friends' /> <label for='Friends'>Friends</label>
+                  </div>
+                  <div>
+                    <input type='checkbox' id='Followers' /> <label for='Followers'>Followers</label>
+                  </div>
+                  <div>
+                    <input type='checkbox' id='Private' /> <label for='Private'>Private</label>
+                  </div>
+                </div>
+                <div className='actions'>
+                  <button type='button' className='cancel' onClick={this.addGroupToggle}>
+                    Cancel
+                  </button>
+                  <button type='button' className='add__post' onClick={this.addGroupToggleForm}>
+                    Post
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
         <div className='modal-overlay' onClick={this.closeModal}></div>
       </div>
