@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { registerGuestAction } from '../../../redux/actions/guestAction';
+import { registerGuestAction, setGuestLinkAction } from '../../../redux/actions/guestAction';
 import { logoutAction } from '../../../redux/actions/userAction';
 import { fetchLink } from "../../../integration/http/guest";
 import { monitorChats, closeSubscription } from '../../../integration/ws/chat';
@@ -27,6 +27,7 @@ class GuestLink extends React.PureComponent {
       const isValid = !link.expiry || ((new Date(link.updatedAt).getTime() + (link.expiry * 60 * 60 * 1000)) >= Date.now());
       if (!isValid) return notifyToast('This Link has expired :(');
       const chatId = link.chatId;
+      this.props.setGuestLink(`/link/${this.props.uuid}`);
       this.setState({ chatId, validLink: true });
     });
   }
@@ -121,6 +122,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return ({
+    setGuestLink: (guestLink) => dispatch(setGuestLinkAction(guestLink)),
     registerGuest: (chatId, alias) => dispatch(registerGuestAction(chatId, alias)),
     logout: () => dispatch(logoutAction()),
   });

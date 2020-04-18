@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import ChatMessageList from './ChatMessageList';
 import ChatInput from './ChatInput';
+import AttachWindow from './AttachWindow';
 import ChatOptions from './ChatOptions';
 import GroupOptions from './GroupOptions';
 import { WithTooltip } from '../Tooltip';
@@ -24,6 +25,7 @@ export class Chat extends React.PureComponent {
       currentlyTyping: '',
       editing: false,
       settings: false,
+      showAttachWindow: false,
       messagePaginationPage: 1,
     };
     this.messageListRef = React.createRef();
@@ -223,6 +225,7 @@ export class Chat extends React.PureComponent {
         ref={this.messageListRef}
       >
         {this.renderLoadingIndicator()}
+        {this.renderEmptyChatMessage()}
         <ChatMessageList
           userId={this.props.userId}
           chatId={this.props.chatId}
@@ -246,6 +249,16 @@ export class Chat extends React.PureComponent {
     if (!this.props.loadingMessages) return null;
     return (
       <p className="chat-component-loading-indicator">loading messages ...</p>
+    );
+  }
+
+  renderEmptyChatMessage() {
+    if (this.props.messages.length) return;
+    return (
+      <div className="chat-component-empty-chat-message">
+        <p>Messages you send to this chat are secured with end-to-end encryption.</p>
+        <p>Please remember your encryption key, otherwise you will lose your chat history.</p>
+      </div>
     );
   }
 
@@ -303,11 +316,27 @@ export class Chat extends React.PureComponent {
     );
   }
 
+  renderAttachWindow = () => {
+    return <AttachWindow
+      show={this.state.showAttachWindow}
+      onEmoji={emoji => {
+        this.setState({ showAttachWindow: false, selectedEmoji: emoji.native }, () => {
+          setTimeout(() => this.setState({ selectedEmoji: null }));
+        });
+      }}
+      onImage={image => console.log('Attaching Image: ' + image)}
+      onVideo={video => console.log('Attaching Video: ' + video)}
+      onSound={sound => console.log('Attaching Sound: ' + sound)}
+    />;
+  }
+
   renderFooter = () => {
+    const rotatedStyle = this.state.showAttachWindow ? 'chat-component-attach-button-rotated' : '';
     return (
       <div className="chat-component-footer">
         <div className="chat-component-attach-button-container">
-          <div className="chat-component-attach-button clickable"
+          <div className={`chat-component-attach-button clickable ${rotatedStyle}`}
+            onClick={() => this.setState(previous => ({ showAttachWindow: !previous.showAttachWindow }))}
             style={{ backgroundImage: `url(/assets/svg/ic_chat_attach.svg)` }}
           />
           <div className="chat-component-attach-button-divider" />
@@ -316,6 +345,7 @@ export class Chat extends React.PureComponent {
           connected={!this.props.disconnected}
           blocked={this.props.blocked}
           isDecryptable={this.props.privateKey}
+          selectedEmoji={this.state.selectedEmoji}
           sendMessage={this.sendMessage}
           editLastMessage={this.editLastMessage}
           setTyping={isTyping => !this.props.isGuest && this.props.setTyping(this.props.chatId, isTyping)}
@@ -358,6 +388,7 @@ export class Chat extends React.PureComponent {
         {this.state.settings && !this.props.minimised && this.renderSettings()}
         {!this.state.settings && !this.props.minimised && this.renderBody()}
         {!this.state.settings && !this.props.minimised && this.renderScrollToEndIndicator()}
+        {!this.state.settings && !this.props.minimised && this.renderAttachWindow()}
         {!this.state.settings && !this.props.minimised && this.renderFooter()}
       </div>
     );

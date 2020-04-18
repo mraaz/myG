@@ -2,6 +2,13 @@
 import { generateKeysSync } from '../../integration/encryption';
 import { register, unregister, fetchChat, fetchMessages, fetchEncryptionMessages, fetchGroupPrivateKeyRequests,sendMessage, fetchEntryLogs } from '../../integration/http/guest';
 
+export function setGuestLinkAction(guestLink) {
+  return {
+    type: 'SET_GUEST_LINK',
+    payload: guestLink,
+  }
+}
+
 export function registerGuestAction(chatId, alias) {
   const { encryption: { publicKey, privateKey } } = generateKeysSync();
   return {

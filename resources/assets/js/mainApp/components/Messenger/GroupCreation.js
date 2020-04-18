@@ -2,7 +2,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import FileOpenModal from '../FileOpenModal';
+import Dropdown from '../Dropdown';
 import notifyToast from '../../../common/toast';
+import { searchGameAction } from '../../../redux/actions/gameAction';
 
 export const MAXIMUM_GROUP_SIZE = 37;
 
@@ -11,6 +13,8 @@ class GroupCreation extends React.Component {
   state = {
     icon: '',
     title: '',
+    gameInput: '',
+    selectedGame: null,
     contactInput: '',
     matchingContacts: [],
     addedContacts: [],
@@ -22,13 +26,18 @@ class GroupCreation extends React.Component {
     this.setState({ contactInput: name, matchingContacts });
   }
 
+  onGameSearch = (game) => {
+    this.setState({ gameInput: game, selectedGame: null });
+    if (game.length > 3) this.props.searchGame(game);
+  }
+
   onCreate = () => {
-    const { icon, addedContacts } = this.state;
+    const { icon, addedContacts, selectedGame } = this.state;
     const contactAliases = addedContacts.map(contactId => this.props.contacts.find(contact => contact.contactId === contactId).name);
-    const firstAlias = contactAliases[0] ?  `, ${contactAliases[0]}` : '';
-    const secondAlias = contactAliases[1] ?  `, ${contactAliases[1]}` : '';
+    const firstAlias = contactAliases[0] ? `, ${contactAliases[0]}` : '';
+    const secondAlias = contactAliases[1] ? `, ${contactAliases[1]}` : '';
     const title = this.state.title || `${this.props.alias}` + firstAlias + secondAlias;
-    this.props.onCreate(icon, title, addedContacts);
+    this.props.onCreate(icon, title, addedContacts, selectedGame && selectedGame.gameId);
   }
 
   onAddContact = (contact) => {
@@ -72,6 +81,36 @@ class GroupCreation extends React.Component {
     );
   }
 
+  renderGameHint = () => {
+    return (
+      <div className="chat-group-creation-invite-hint-container">
+        <p className="chat-group-creation-invite-hint">Select a Game for this Group</p>
+      </div>
+    );
+  }
+
+  renderGameInput = () => {
+    const selectedStyle = 'chat-group-creation-contact-input-selected';
+    return (
+      <div className="chat-group-creation-contact-input-container">
+        <input
+          className={`chat-group-creation-contact-input ${selectedStyle}`}
+          placeholder={"Game Name"}
+          value={this.state.selectedGame ? this.state.selectedGame.name : this.state.gameInput}
+          onChange={event => this.onGameSearch(event.target.value)}
+        >
+        </input>
+        <Dropdown
+          show={this.state.gameInput.length > 3}
+          position={{ top: '-6px' }}
+          items={this.props.foundGames.map(game => game.name)}
+          onItemClick={item => this.setState({ selectedGame: this.props.foundGames.find(game => game.name === item), gameInput: '' })}
+          emptyMessage={"no games found"}
+        />
+      </div>
+    );
+  }
+
   renderInviteHint = () => {
     return (
       <div className="chat-group-creation-invite-hint-container">
@@ -80,7 +119,7 @@ class GroupCreation extends React.Component {
     );
   }
 
-  renderContactInput = () => {
+  renderInviteInput = () => {
     return (
       <div className="chat-group-creation-contact-input-container">
         <input
@@ -156,8 +195,10 @@ class GroupCreation extends React.Component {
     return (
       <div className="chat-group-creation-container">
         {this.renderHeader()}
+        {this.renderGameHint()}
+        {this.renderGameInput()}
         {this.renderInviteHint()}
-        {this.renderContactInput()}
+        {this.renderInviteInput()}
         {this.renderContacts()}
         {this.renderFooter()}
       </div>
@@ -170,7 +211,14 @@ function mapStateToProps(state) {
   return {
     alias: state.user.alias,
     contacts: state.user.contacts,
+    foundGames: state.game.foundGames,
   }
 }
 
-export default connect(mapStateToProps)(GroupCreation);
+function mapDispatchToProps(dispatch) {
+  return {
+    searchGame: (name) => dispatch(searchGameAction(name)),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(GroupCreation);
