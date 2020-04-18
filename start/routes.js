@@ -318,6 +318,7 @@ Route.get('/api/user_chat/contact/:contactId', 'UserChatController.fetchContact'
 Route.get('/api/user_chat/search/', 'UserChatController.searchUsers')
 Route.get('/api/user_chat/status/', 'UserChatController.fetchStatus')
 Route.put('/api/user_chat/status/', 'UserChatController.updateStatus')
+Route.get('/api/game/', 'GameController.searchGames')
 
 // Guests
 Route.post('/api/guest/', 'GuestController.register')

@@ -631,6 +631,7 @@ class NotificationController {
         .where({ other_user_id: auth.user.id, activity_type: 18 })
         .groupBy('notifications.schedule_games_id')
         .select(
+          'notifications.id as notificationId',
           'notifications.group_id',
           'notifications.activity_type',
           'notifications.chat_id',

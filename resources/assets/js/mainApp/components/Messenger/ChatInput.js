@@ -1,4 +1,5 @@
 import React from 'react';
+import { convertEmojisToColons } from '../../../common/emoji';
 
 export default class ChatInput extends React.PureComponent {
 
@@ -7,6 +8,15 @@ export default class ChatInput extends React.PureComponent {
     isTyping: false,
     lastTyped: 0,
   };
+
+  static getDerivedStateFromProps(props, state) {
+    if (props.selectedEmoji && props.selectedEmoji !== state.selectedEmoji) {
+      return {
+        input: state.input + props.selectedEmoji,
+        selectedEmoji: props.selectedEmoji,
+      }
+    }
+  }
 
   onKeyPressed = event => {
     const code = event.keyCode || event.which;
@@ -28,7 +38,7 @@ export default class ChatInput extends React.PureComponent {
 
   sendMessage = () => {
     if (!this.state.input.trim()) return;
-    this.props.sendMessage(this.state.input.trim());
+    this.props.sendMessage(convertEmojisToColons(this.state.input.trim()));
     this.props.setTyping(false);
     this.setState({ input: '' });
   }

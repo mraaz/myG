@@ -2,6 +2,7 @@ import React from 'react';
 
 import { formatAMPM, formatDate } from '../../../common/date';
 import { copyToClipboard } from '../../../common/clipboard';
+import { convertColonsToEmojis } from '../../../common/emoji';
 
 export default class ChatMessage extends React.Component {
 
@@ -158,7 +159,7 @@ export default class ChatMessage extends React.Component {
                     'You deleted this message' :
                     'This message was deleted'
                   :
-                  message.content
+                  convertColonsToEmojis(message.content)
               }
             </p>
           </div>

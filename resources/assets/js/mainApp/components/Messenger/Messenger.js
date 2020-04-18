@@ -218,7 +218,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return ({
-    createChat: (contacts, userId, title, icon, encryption, isGroup) => dispatch(createChatAction(contacts, userId, title, icon, encryption, isGroup)),
+    createChat: (contacts, userId, title, icon, encryption, isGroup, individualGameId, gameId) => dispatch(createChatAction(contacts, userId, title, icon, encryption, isGroup, individualGameId, gameId)),
     openChat: chatId => dispatch(openChatAction(chatId)),
     closeChat: chatId => dispatch(closeChatAction(chatId)),
     generateKeys: (pin) => dispatch(generateKeysAction(pin)),

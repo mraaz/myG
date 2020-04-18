@@ -158,6 +158,15 @@
   padding: 8px;
 }
 
+.chat-component-empty-chat-message {
+  display: flex;
+  flex-direction: column;
+  background-color: #2D363A;
+  padding: 8px;
+  font-size: 12px;
+  text-align: center;
+}
+
 .chat-component-read-indicator-container {
   display: flex;
   flex-direction: row;
@@ -202,6 +211,45 @@
   justify-content: space-between;
   background-color: #171A1C;
   padding: 4px;
+}
+
+.chat-component-attach-window-showing {
+  max-height: 200px !important;
+}
+
+.chat-component-attach-window {
+  display: flex;
+  flex-direction: row;
+  align-self: center;
+  justify-content: space-around;
+  width: 85%;
+  max-height: 0;
+  background-color: #2D363A;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+
+  .buttons {
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+    justify-content: space-around;
+  }
+
+  .attach-icon {
+    background-color: #171A1C;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: inherit;
+    border-radius: 20px;
+    width: 40px;
+    height: 40px;
+    margin: 8px;
+  }
+
 }
 
 .chat-component-input-container {
@@ -250,6 +298,18 @@
   background-repeat: no-repeat;
   width: 32px;
   height: 100%;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+}
+
+.chat-component-attach-button-rotated {
+  -webkit-transform: rotate(45deg); 
+  -moz-transform: rotate(45deg); 
+  -ms-transform: rotate(45deg); 
+  -o-transform: rotate(45deg); 
+  transform: rotate(45deg); 
 }
 
 .chat-component-attach-button-divider {

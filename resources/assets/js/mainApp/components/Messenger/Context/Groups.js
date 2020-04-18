@@ -27,9 +27,9 @@ export default class Groups extends React.PureComponent {
     this.props.createChat([contact.contactId], this.props.userId);
   }
 
-  createGroup = (icon, title, contacts) => {
+  createGroup = (icon, title, contacts, gameId) => {
     const { encryption } = generateGroupKeys();
-    this.props.createChat(contacts, this.props.userId, title, icon, encryption, true);
+    this.props.createChat(contacts, this.props.userId, title, icon, encryption, true, null, gameId);
     this.setState({ showingGroupCreation: false });
   }
 
@@ -47,7 +47,7 @@ export default class Groups extends React.PureComponent {
         </div>
         {!this.props.groups.length && (
           <div className="messenger-empty-message-container">
-            <p className="messenger-empty-message">You aren't part of any group yet :(</p>
+            <p className="messenger-empty-message">You aren't part of any group{this.props.inGame ? ' for this game' : ''} yet :(</p>
             <p className="messenger-empty-message">
               {this.props.contacts.length ?
                 'Try adding some of your friends to a group' :
