@@ -1,7 +1,31 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 
 export default class AnalyticsBox extends Component {
+  state = {
+    userTransactionStates: {},
+  }
+
+  async componentDidMount() {
+    const get_stats = await axios.get('/api/userStatTransaction/master_controller')
+    this.setState({ userTransactionStates: { ...get_stats } })
+  }
+
   render() {
+    const { userTransactionStates = {} } = this.state
+    const {
+      connections = 0,
+      last_month_connections = 0,
+      followers = 0,
+      last_month_followers = 0,
+      games = 0,
+      last_month_games = 0,
+      likes = 0,
+      last_month_likes = 0,
+      commendations = 0,
+      last_month_commendations = 0,
+    } = this.state
+
     return (
       <section class='social'>
         <div class='social__content'>
@@ -37,37 +61,37 @@ export default class AnalyticsBox extends Component {
               src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/connection.png'
               class='social-box-img'
             />
-            <p class='social-box-count'>251</p>
+            <p class='social-box-count'>{connections}</p>
             <p class='social-box-text'>connections</p>
-            <p class='social-box-month'>Last month: 21</p>
+            <p class='social-box-month'>Last month: {last_month_connections}</p>
           </div>
 
           <div class='social-box'>
             <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/follower.png' class='social-box-img' />
-            <p class='social-box-count'>300</p>
+            <p class='social-box-count'>{followers}</p>
             <p class='social-box-text'>followers</p>
-            <p class='social-box-month'>Last month: 21</p>
+            <p class='social-box-month'>Last month: {last_month_followers}</p>
           </div>
 
           <div class='social-box'>
             <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/games.png' class='social-box-img' />
-            <p class='social-box-count'>24</p>
+            <p class='social-box-count'>{games}</p>
             <p class='social-box-text'>games</p>
-            <p class='social-box-month'>Last month: 21</p>
+            <p class='social-box-month'>Last month: {last_month_games}</p>
           </div>
 
           <div class='social-box'>
             <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/games.png' class='social-box-img' />
-            <p class='social-box-count'>5124</p>
+            <p class='social-box-count'>{likes}</p>
             <p class='social-box-text'>likes</p>
-            <p class='social-box-month'>Last month: 21</p>
+            <p class='social-box-month'>Last month: {last_month_likes}</p>
           </div>
 
           <div class='social-box'>
             <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/reviews.png' class='social-box-img' />
-            <p class='social-box-count'>25</p>
+            <p class='social-box-count'>{commendations}</p>
             <p class='social-box-text'>reviews</p>
-            <p class='social-box-month'>Last month: 21</p>
+            <p class='social-box-month'>Last month: {last_month_commendations}</p>
           </div>
         </div>
 
