@@ -20,6 +20,16 @@ class UserStatTransactionController {
         .innerJoin('user_stats', 'user_stats.id', 'user_stat_transactions.user_stat_id')
         .where({ user_id: auth.user.id })
 
+      const getGamerLevels = await Database.from('users')
+        .where({ id: auth.user.id })
+        .select('level', 'experience_points', 'xp_negative_balance')
+        .first()
+
+      const getNextLevel = await Database.from('user_levels')
+        .where({ level: parseInt(getGamerLevels.level) })
+        .select('max_points')
+        .first()
+
       let total_number_of_friends = 0,
         total_number_of_communities = 0,
         total_number_of_great_communities = 0,
@@ -106,6 +116,10 @@ class UserStatTransactionController {
         last_month_likes: last_months_total_number_of_likes,
         commendations: total_number_of_commendations,
         last_month_commendations: last_months_total_number_of_commendations,
+        user_level: getGamerLevels.level,
+        user_experience: getGamerLevels.experience_points,
+        user_xp_negative_balance: getGamerLevels.xp_negative_balance,
+        level_max_points: getNextLevel.max_points,
       }
     } else {
       return 'You are not Logged In!'
