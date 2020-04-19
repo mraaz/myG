@@ -24,7 +24,11 @@ export default class AnalyticsBox extends Component {
       last_month_likes = 0,
       commendations = 0,
       last_month_commendations = 0,
-    } = this.state
+      user_level = 0,
+      user_experience = '0',
+      user_xp_negative_balance = 0,
+      level_max_points = 0,
+    } = userTransactionStates
 
     return (
       <section class='social'>
@@ -42,7 +46,7 @@ export default class AnalyticsBox extends Component {
                   <div class='inside-circle'>
                     <span class='inside-circle-level'>level</span>
                     <br />
-                    <span class='inside-circle-value'>99</span>
+                    <span class='inside-circle-value'>{user_level}</span>
                   </div>
                 </div>
               </div>
@@ -50,9 +54,9 @@ export default class AnalyticsBox extends Component {
             <div class='ratings'>
               <p class='social-box-text'>Avg Rating</p>
               <p class='social-box-count'>4.66/5</p>
-              <p class='social-box-text review bottom-border'>556 reviews</p>
+              <p class='social-box-text review bottom-border'>{user_experience} reviews</p>
               <p class='social-box-text'>Experience Pts.</p>
-              <p class='social-box-count'>893.6K</p>
+              <p class='social-box-count'>{level_max_points}</p>
             </div>
           </div>
 

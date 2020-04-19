@@ -1158,9 +1158,7 @@ section#content-container {
 .postCompose__container {
   background-color: #1d2326;
   border: 1px solid #273137;
-
-  width: 800px;
-  margin: 0 auto;
+  margin: 0 100px;
   margin-bottom: 24px;
   .compose__type__section {
     display: flex;
@@ -1330,9 +1328,13 @@ section#content-container {
   .modal-wrap {
     min-height: 200px;
     height: auto !important;
-    width: 100%;
+    width: 100% !important;
     background: none !important;
     z-index: 10;
+    .postCompose__container {
+      margin: 0 auto;
+      width: 100% !important;
+    }
     .people_group_list {
       position: absolute;
       top: -80px;
