@@ -27,6 +27,10 @@
   &__menu-text {
     font-size: 20px;
     padding: 0 32px;
+    cursor: pointer;
+  }
+  &__menu-text-selected {
+    color: #fff;
   }
   &__menu_line {
     margin-top: 8px;
@@ -57,7 +61,7 @@
     margin: 0 10px;
   }
   &__footer-container {
-    height: 97px;
+    height: 79px;
     width: 100%;
     background-color: #1d2326;
     line-height: 77px;

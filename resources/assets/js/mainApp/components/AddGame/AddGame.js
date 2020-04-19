@@ -91,9 +91,9 @@ const AddGame = ({
 
   // api calls
   const getOptionsTags = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
-        var results = await Game_name_Tags(inputValue, mainSettingsState.gameTitle.game_names_id)
+        let results = await Game_name_Tags(inputValue, mainSettingsState.gameTitle.game_names_id)
         updateAdvancedSettings({ optionTags: results })
       } catch (error) {
         console.log(error)

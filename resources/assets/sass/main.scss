@@ -226,6 +226,10 @@ label {
   }
 }
 
+::-webkit-scrollbar {
+  width: 0;
+}
+
 .links {
   display: flex;
   justify-content: center;
