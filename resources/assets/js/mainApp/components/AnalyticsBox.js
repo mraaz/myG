@@ -52,11 +52,11 @@ export default class AnalyticsBox extends Component {
               </div>
             </section>
             <div class='ratings'>
-              <p class='social-box-text'>Avg Rating</p>
+              {/* <p class='social-box-text'>Avg Rating</p>
               <p class='social-box-count'>4.66/5</p>
-              <p class='social-box-text review bottom-border'>{user_experience} reviews</p>
+              <p class='social-box-text review bottom-border'>{user_experience} reviews</p> */}
               <p class='social-box-text'>Experience Pts.</p>
-              <p class='social-box-count'>{level_max_points}</p>
+              <p class='social-box-count'>{user_experience}</p>
             </div>
           </div>
 
