@@ -1,6 +1,7 @@
 'use strict'
 
 const Database = use('Database')
+const User = use('App/Models/User')
 const UserStatTransaction = use('App/Models/UserStatTransaction')
 
 const GREAT_COMMUNITY_SIZE = 100
@@ -54,7 +55,7 @@ class UserStatTransactionController {
       for (var i = 0; i < getmyStats.length; i++) {
         switch (getmyStats[i].criteria) {
           case 'total_number_of_friends':
-            total_number_of_friends = parseInt(parseInt(getmyStats[i].values))
+            total_number_of_friends = parseInt(getmyStats[i].values)
             last_months_total_number_of_friends = parseInt(getmyStats[i].last_month_values)
             break
           case 'total_number_of_communities':
@@ -379,10 +380,10 @@ class UserStatTransactionController {
         default:
       }
       if (criteria == 'total_number_of_games_played' || criteria == 'total_number_of_great_games_played') {
-        this.process_update(my_user_id, 'total_number_of_games_played', value_to_be_updated)
+        await this.process_update(my_user_id, 'total_number_of_games_played', value_to_be_updated)
         this.process_update(my_user_id, 'total_number_of_great_games_played', great_value_to_be_updated)
       } else if (criteria == 'total_number_of_games_hosted' || criteria == 'total_number_of_great_games_hosted') {
-        this.process_update(my_user_id, 'total_number_of_games_hosted', value_to_be_updated)
+        await this.process_update(my_user_id, 'total_number_of_games_hosted', value_to_be_updated)
         this.process_update(my_user_id, 'total_number_of_great_games_hosted', great_value_to_be_updated)
       } else {
         this.process_update(my_user_id, criteria, value_to_be_updated)
@@ -438,6 +439,67 @@ class UserStatTransactionController {
           })
       }
     }
+    this.reCalculate_xp(my_user_id, criteria, value_to_be_updated)
+  }
+
+  async reCalculate_xp(my_user_id, criteria, value_to_be_updated) {
+    const getmyStats = await Database.from('user_stat_transactions')
+      .innerJoin('user_stats', 'user_stats.id', 'user_stat_transactions.user_stat_id')
+      .where({ user_id: my_user_id })
+
+    let xp = 0
+
+    for (var i = 0; i < getmyStats.length; i++) {
+      xp = xp + parseInt(getmyStats[i].values) * getmyStats[i].xp_per_tick
+    }
+
+    const getGamerLevels = await Database.from('users')
+      .where({ id: my_user_id })
+      .select('level', 'experience_points', 'xp_negative_balance')
+      .first()
+
+    let xp_neg_balance = false
+
+    if (xp < parseInt(getGamerLevels.experience_points)) {
+      xp_neg_balance = true
+      if (parseInt(getGamerLevels.level) == 1) {
+        xp = 0
+      } else {
+        const getprevLevel = await Database.from('user_levels')
+          .where({ level: parseInt(getGamerLevels.level) - 1 })
+          .select('max_points')
+          .first()
+
+        if (getprevLevel == undefined) {
+          const get1stLevel = await Database.from('user_levels')
+            .where({ level: 1 })
+            .select('max_points')
+            .first()
+          xp = get1stLevel.max_points + 1
+        } else {
+          xp = getprevLevel + 1
+        }
+      }
+    } else {
+      const getMax = await Database.from('user_levels').max('level as max_level')
+      while (true) {
+        const getmyLevel = await Database.from('user_levels')
+          .where({ level: parseInt(getGamerLevels.level) })
+          .select('max_points', 'level')
+          .first()
+
+        if (xp > parseInt(getmyLevel.max_points) && parseInt(getGamerLevels.level) < getMax[0].max_level) {
+          getGamerLevels.level = getGamerLevels.level + 1
+          //TODO: Add noti
+        } else {
+          break
+        }
+      }
+    }
+
+    const update_xp = await User.query()
+      .where({ id: my_user_id })
+      .update({ level: getGamerLevels.level, experience_points: xp, xp_negative_balance: xp_neg_balance })
   }
 }
 

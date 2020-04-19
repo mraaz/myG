@@ -8,7 +8,7 @@ class UserLevelsSchema extends Schema {
     this.create('user_levels', (table) => {
       table.increments()
       table.integer('level').notNullable().defaultTo(0)
-      table.string('max_points', 50).defaultTo('0')
+      table.integer('max_points').notNullable().defaultTo(0)
       table.timestamps()
     })
   }
