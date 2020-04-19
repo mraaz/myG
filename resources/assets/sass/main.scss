@@ -223,3 +223,7 @@ label {
     opacity: 0.3;
   }
 }
+
+::-webkit-scrollbar {
+  width: 0;
+}

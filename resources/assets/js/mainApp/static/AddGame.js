@@ -9,6 +9,7 @@ const styles = {
   mainContainer: 'add-game__main-container',
   menuContainer: 'add-game__menu-container',
   menuText: 'add-game__menu-text',
+  menuTextSelected: 'add-game__menu-text-selected',
   menuLine: 'add-game__menu_line',
   menuLineHighlighted: 'add-game__menu_line_highlighted',
   optionalMainContainer: 'add-game__optional-main-container',

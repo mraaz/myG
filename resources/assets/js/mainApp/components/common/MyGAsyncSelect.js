@@ -10,12 +10,14 @@ const MyGAsyncSelect = ({
   placeholder,
   onInputChang,
   onInputChange,
+  styles,
   ...otherProps
 }) => {
   const customStyles = {
     container: (provided) => ({
       ...provided,
       width: '422px',
+      ...styles.container,
     }),
     control: (provided) => ({
       ...provided,
@@ -24,6 +26,7 @@ const MyGAsyncSelect = ({
       width: '422px',
       minHeight: '38px',
       color: '#fff',
+      ...styles.control,
     }),
     menuList: (provided) => ({
       ...provided,
@@ -68,6 +71,10 @@ const MyGAsyncSelect = ({
       {...otherProps}
     />
   )
+}
+
+MyGAsyncSelect.defaultProps = {
+  styles: {},
 }
 
 export default MyGAsyncSelect
