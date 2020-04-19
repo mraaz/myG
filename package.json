@@ -1,5 +1,5 @@
 {
-  "name": "myGame",
+  "name": "mygame",
   "version": "4.1.0",
   "adonis-version": "4.1.0",
   "description": "This is a Social Network Site",
@@ -15,7 +15,7 @@
     "server": "adonis serve",
     "watch-server": "adonis serve --dev",
     "sass": "gulp styles",
-    "js": "gulp webpack",
+    "js": "gulp webpack --watch",
     "build": "npm run sass && npm run js",
     "foreverstart": "forever start --minUptime 500 --spinSleepTime 1000 server.js",
     "foreverstop": "forever stopall"

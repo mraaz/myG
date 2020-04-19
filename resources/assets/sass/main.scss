@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,400i,500,500i,700|Sofadi+One');
 @import url('https://fonts.googleapis.com/css?family=Montserrat+Alternates&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
 @import 'reset';
 @import 'variables';
 @import 'pages/welcome';
@@ -34,6 +35,7 @@
 @import 'pages/messenger';
 @import 'pages/messengerLink';
 @import 'auth/auth';
+@import 'pages/analytics';
 @import '../../../node_modules/react-image-gallery/styles/scss/image-gallery';
 
 * {
@@ -226,4 +228,21 @@ label {
 
 ::-webkit-scrollbar {
   width: 0;
+}
+
+.links {
+  display: flex;
+  justify-content: center;
+  div {
+    font-size: 14px;
+    padding: 6px 30px;
+    padding-bottom: 15px;
+    cursor: pointer;
+    &:hover {
+      border-bottom: 1px solid #e5c746;
+    }
+    &.active {
+      border-bottom: 1px solid #e5c746;
+    }
+  }
 }

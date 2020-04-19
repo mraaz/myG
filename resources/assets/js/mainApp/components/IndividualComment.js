@@ -54,7 +54,7 @@ export default class IndividualComment extends Component {
     const self = this
     let comment = this.props
 
-    const getCommentLike = async function() {
+    const getCommentLike = async function () {
       try {
         var i
 
@@ -76,7 +76,7 @@ export default class IndividualComment extends Component {
       }
     }
 
-    const getCommentReplies = async function() {
+    const getCommentReplies = async function () {
       try {
         var i
 
@@ -96,7 +96,7 @@ export default class IndividualComment extends Component {
       }
     }
 
-    const getmyCommentCount = async function() {
+    const getmyCommentCount = async function () {
       try {
         var i
 
@@ -120,7 +120,7 @@ export default class IndividualComment extends Component {
     var comment_id = this.props.comment.id
     const self = this
 
-    const getComments = async function() {
+    const getComments = async function () {
       try {
         const myCommentReplies = await axios.get(`/api/replies/${comment_id}`)
         self.setState({
@@ -208,7 +208,7 @@ export default class IndividualComment extends Component {
 
     if (!this.state.show_add_reply) {
       setTimeout(
-        function() {
+        function () {
           //Start the timer
           this.focusTextInput()
         }.bind(this),
@@ -279,7 +279,7 @@ export default class IndividualComment extends Component {
     const self = this
     var comment_id = this.props.comment.id
 
-    const saveComment = async function() {
+    const saveComment = async function () {
       try {
         const mysaveComment = await axios.post(`/api/comments/update/${comment_id}`, {
           content: self.state.value2,
@@ -311,7 +311,7 @@ export default class IndividualComment extends Component {
     const self = this
     var postReply
 
-    const saveReply = async function() {
+    const saveReply = async function () {
       try {
         postReply = await axios.post('/api/replies', {
           content: self.state.value.trim(),
@@ -432,26 +432,16 @@ export default class IndividualComment extends Component {
       return (
         <div className='individual-comment-container'>
           {this.state.alert}
-          <div className='author-info'>
-            {this.state.show_profile_img && (
-              <Link
-                to={`/profile/${comment.alias}`}
-                className='user-img'
-                style={{
-                  backgroundImage: `url('${comment.profile_img}')`,
-                }}></Link>
-            )}
-            {!this.state.show_profile_img && (
-              <Link
-                to={`/profile/${comment.alias}`}
-                className='user-img'
-                style={{
-                  backgroundImage: `url('https://image.flaticon.com/icons/svg/149/149071.svg')`,
-                }}></Link>
-            )}
+          <div className='comment__section'>
             <div className='comment-info'>
-              <Link to={`/profile/${comment.alias}`}>{`${comment.alias}`}</Link>
+              <Link to={`/profile/${comment.alias}`}>{`@${comment.alias}`}</Link>
+              {'  '}
+              <div className='comment-content'>
+                <p>{this.state.content}</p>
+              </div>
             </div>
+
+            {/* comment option start  */}
             {this.state.show_comment_options && (
               <div className='comment-options'>
                 <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}></i>
@@ -468,70 +458,166 @@ export default class IndividualComment extends Component {
                 &nbsp;
               </nav>
             </div>
+            {/* comment option end  */}
+
+            {/* profile section start  */}
+            <div className='profile__image'>
+              {this.state.show_profile_img && (
+                <Link
+                  to={`/profile/${comment.alias}`}
+                  className='user-img'
+                  style={{
+                    backgroundImage: `url('${comment.profile_img}')`,
+                  }}></Link>
+              )}
+              {!this.state.show_profile_img && (
+                <Link
+                  to={`/profile/${comment.alias}`}
+                  className='user-img'
+                  style={{
+                    backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png')`,
+                  }}></Link>
+              )}
+              <div className='online__status'></div>
+            </div>
+            {/* profile section end  */}
+            <div className='reply__comment_section'>
+              <div className='comment-panel-reply' onClick={this.toggleReply}>
+                Reply
+              </div>
+              {this.state.like && (
+                <div className='comment-panel-liked' onClick={() => this.click_unlike_btn(comment.id)}>
+                  Unlike
+                </div>
+              )}
+              {!this.state.like && (
+                <div className='comment-panel-like' onClick={() => this.click_like_btn(comment.id)}>
+                  Like
+                </div>
+              )}
+            </div>
           </div>
-          <div className='comment-content'>
-            <p>{this.state.content}</p>
-          </div>
+          {/* comment reply start */}
           <div className='comment-panel'>
-            {this.state.like && (
-              <div className='comment-panel-liked' onClick={() => this.click_unlike_btn(comment.id)}>
-                Like
+            {this.state.show_more_replies && this.showReplies()}
+            {this.state.show_add_reply && (
+              <div className='add-reply'>
+                <input
+                  type='text'
+                  id='reply_name_box'
+                  className='reply-name-box'
+                  placeholder='Add a reply...'
+                  onKeyDown={this.detectKey}
+                  ref={this.setTextInputRef}
+                  onChange={this.handleChange}
+                  value={this.state.value}
+                />
               </div>
             )}
-            {!this.state.like && (
-              <div className='comment-panel-like' onClick={() => this.click_like_btn(comment.id)}>
-                Like
-              </div>
-            )}
-            <div className='comment-panel-reply' onClick={this.toggleReply}>
-              Reply
-            </div>
-            {(this.state.show_like || this.state.show_reply) && <div className='divider'>|</div>}
-            {this.state.show_like && (
-              <div className='no-likes'>
-                {this.state.total} {this.state.total > 1 ? 'Likes' : 'Like'}{' '}
-              </div>
-            )}
-            {this.state.show_reply && this.state.show_like && <div className='colon'>:</div>}
-            {this.state.show_reply && (
-              <div className='no-reply'>
-                {' '}
-                {this.state.reply_total} {this.state.reply_total > 1 ? 'Replies' : 'Reply'}
-              </div>
-            )}
-            <div className='comment-time'>
-              <i className='fas fa-circle'></i> {this.state.comment_time}
-            </div>
           </div>
-          {this.state.show_more_replies && this.showReplies()}
-          {this.state.show_add_reply && (
-            <div className='add-reply'>
-              <input
-                type='text'
-                id='reply_name_box'
-                className='reply-name-box'
-                placeholder='Add a reply...'
-                onKeyDown={this.detectKey}
-                ref={this.setTextInputRef}
-                onChange={this.handleChange}
-                value={this.state.value}
-              />
-            </div>
-          )}
-          {this.state.show_edit_comment && (
-            <div className='add-reply'>
-              <input
-                type='text'
-                id='reply_name_box'
-                className='reply-name-box'
-                onKeyDown={this.detectKey2}
-                ref={this.setTextInputRef}
-                onChange={this.handleChange2}
-                value={this.state.value2}
-              />
-            </div>
-          )}
         </div>
+        // <div className='individual-comment-container'>
+        //   {this.state.alert}
+        //   <div className='author-info'>
+        //     {this.state.show_profile_img && (
+        //       <Link
+        //         to={`/profile/${comment.alias}`}
+        //         className='user-img'
+        //         style={{
+        //           backgroundImage: `url('${comment.profile_img}')`,
+        //         }}></Link>
+        //     )}
+        //     {!this.state.show_profile_img && (
+        //       <Link
+        //         to={`/profile/${comment.alias}`}
+        //         className='user-img'
+        //         style={{
+        //           backgroundImage: `url('https://image.flaticon.com/icons/svg/149/149071.svg')`,
+        //         }}></Link>
+        //     )}
+        //     <div className='comment-info'>
+        //       <Link to={`/profile/${comment.alias}`}>{`${comment.alias}`}</Link>
+        //     </div>
+        //     {this.state.show_comment_options && (
+        //       <div className='comment-options'>
+        //         <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}></i>
+        //       </div>
+        //     )}
+        // <div className={`dropdown ${this.state.dropdown ? 'active' : ''}`}>
+        //   <nav>
+        //     <div className='edit' onClick={this.clickedEdit}>
+        //       Edit &nbsp;
+        //     </div>
+        //     <div className='delete' onClick={() => this.showAlert()}>
+        //       Delete
+        //     </div>
+        //     &nbsp;
+        //   </nav>
+        // </div>
+        //   </div>
+        //   <div className='comment-content'>
+        //     <p>{this.state.content}</p>
+        //   </div>
+        //   <div className='comment-panel'>
+        // {this.state.like && (
+        //   <div className='comment-panel-liked' onClick={() => this.click_unlike_btn(comment.id)}>
+        //     Like
+        //   </div>
+        // )}
+        // {!this.state.like && (
+        //   <div className='comment-panel-like' onClick={() => this.click_like_btn(comment.id)}>
+        //     Like
+        //   </div>
+        // )}
+        // <div className='comment-panel-reply' onClick={this.toggleReply}>
+        //   Reply
+        // </div>
+        //     {(this.state.show_like || this.state.show_reply) && <div className='divider'>|</div>}
+        //     {this.state.show_like && (
+        //       <div className='no-likes'>
+        //         {this.state.total} {this.state.total > 1 ? 'Likes' : 'Like'}{' '}
+        //       </div>
+        //     )}
+        //     {this.state.show_reply && this.state.show_like && <div className='colon'>:</div>}
+        //     {this.state.show_reply && (
+        //       <div className='no-reply'>
+        //         {' '}
+        //         {this.state.reply_total} {this.state.reply_total > 1 ? 'Replies' : 'Reply'}
+        //       </div>
+        //     )}
+        //     <div className='comment-time'>
+        //       <i className='fas fa-circle'></i> {this.state.comment_time}
+        //     </div>
+        //   </div>
+        //   {this.state.show_more_replies && this.showReplies()}
+        // {this.state.show_add_reply && (
+        //   <div className='add-reply'>
+        //     <input
+        //       type='text'
+        //       id='reply_name_box'
+        //       className='reply-name-box'
+        //       placeholder='Add a reply...'
+        //       onKeyDown={this.detectKey}
+        //       ref={this.setTextInputRef}
+        //       onChange={this.handleChange}
+        //       value={this.state.value}
+        //     />
+        //   </div>
+        // )}
+        //   {this.state.show_edit_comment && (
+        //     <div className='add-reply'>
+        //       <input
+        //         type='text'
+        //         id='reply_name_box'
+        //         className='reply-name-box'
+        //         onKeyDown={this.detectKey2}
+        //         ref={this.setTextInputRef}
+        //         onChange={this.handleChange2}
+        //         value={this.state.value2}
+        //       />
+        //     </div>
+        //   )}
+        // </div>
       )
     } else {
       return <div className='individual-comment-container'></div>

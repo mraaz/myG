@@ -4,12 +4,14 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
 
-import 'react-dropzone-uploader/dist/styles.css'
-import Dropzone from 'react-dropzone-uploader'
+// import 'react-dropzone-uploader/dist/styles.css'
+// import Dropzone from 'react-dropzone-uploader'
+import Dropzone from 'react-dropzone'
+const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
 
 export default class PostFileModal extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
 
     this.state = {
       preview_files: [],
@@ -18,10 +20,20 @@ export default class PostFileModal extends Component {
       lock: false,
       uploading: false,
       submitButtonContent: 'Submit',
+      open_compose_textTab: props.open_compose_textTab,
+      add_group_toggle: false,
     }
 
     this.closeModal = this.closeModal.bind(this)
     this.doUploadS3 = this.doUploadS3.bind(this)
+  }
+
+  togglePostTypeTab = (label) => {
+    let open_compose_textTab = true
+    if (label == 'media') {
+      open_compose_textTab = false
+    }
+    this.setState({ open_compose_textTab })
   }
 
   removeIndivdualfromAWS(id) {
@@ -155,10 +167,33 @@ export default class PostFileModal extends Component {
       [name]: value,
     })
   }
+  handleAcceptedFiles = (Files) => {
+    let preview_files = []
+    for (var i = 0; i < Files.length; i++) {
+      let preview = Files[i].preview
+      preview_files[i] = preview
+    }
+    this.setState({
+      preview_files: preview_files,
+    })
+  }
+
+  submitForm = () => {
+    this.props.callbackContentConfirm(this.state.post_content)
+  }
+
+  addGroupToggle = () => {
+    this.setState({ add_group_toggle: !this.state.add_group_toggle })
+  }
+  addGroupToggleForm = () => {
+    console.log('addGroupToggleForm called')
+    this.addGroupToggle()
+  }
 
   render() {
+    const { open_compose_textTab, add_group_toggle, preview_files } = this.state
     var class_modal_status = ''
-
+    console.log(preview_files)
     if (this.props.bOpen) {
       class_modal_status = 'modal--show'
     }
@@ -175,6 +210,95 @@ export default class PostFileModal extends Component {
     var instance = this
     return (
       <div className={'modal-container ' + class_modal_status}>
+        <div className='modal-wrap'>
+          <section className='postCompose__container'>
+            <div className='compose__type__section'>
+              <div className={`share__thought ${open_compose_textTab ? 'active' : ''}`} onClick={(e) => this.togglePostTypeTab('text')}>
+                {`Share your thoughts ...`}
+              </div>
+              <div className={`add__post__image ${open_compose_textTab ? '' : 'active'}`} onClick={(e) => this.togglePostTypeTab('media')}>
+                {` Add video or photos`}
+              </div>
+            </div>
+            {open_compose_textTab && (
+              <div className='text__editor__section'>
+                <textarea
+                  onChange={this.handleChange}
+                  onKeyDown={this.detectKey}
+                  maxLength='254'
+                  name='post_content'
+                  value={this.state.post_content}
+                  placeholder='What in your mind?'
+                />
+              </div>
+            )}
+            {!open_compose_textTab && (
+              <div className='media__container'>
+                <div className='text__editor__section'>
+                  <textarea
+                    onChange={this.handleChange}
+                    onKeyDown={this.detectKey}
+                    maxLength='254'
+                    name='post_content'
+                    value={this.state.post_content}
+                    placeholder='What in your mind?'
+                  />
+                </div>
+                <Dropzone onDrop={(acceptedFiles) => this.handleAcceptedFiles(acceptedFiles)}>
+                  {(props) => {
+                    return (
+                      <section className='custom__html'>
+                        <div className='images'>
+                          <span className=' button photo-btn'>
+                            <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
+                          </span>
+                          <span className='button video-btn'>
+                            <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Video.svg`} />
+                          </span>
+                          <span className='button video-btn'>
+                            <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Audio.svg`} />
+                          </span>
+                        </div>
+                        <div className='text'>
+                          Or <span>click here </span> to select
+                        </div>
+                        {preview_files.length > 0 && (
+                          <div className='files__preview'>
+                            {preview_files.slice(0, 3).map((url) => (
+                              <img src={url} />
+                            ))}
+                            ({preview_files.length})...
+                          </div>
+                        )}
+                      </section>
+                    )
+                  }}
+                </Dropzone>
+              </div>
+            )}
+            <div className='compose__people__section'>
+              <div className='label'>Post on: </div>
+              <div className='people_selected_container'>
+                <div className='people_selected_list'>
+                  <div className='default_circle'></div>
+                  <div className='people_label'>Your Feed</div>
+                </div>
+              </div>
+              <div className='add_more_people'>
+                <button type='button' className='add__people' onClick={this.addGroupToggle}>
+                  Add
+                </button>
+              </div>
+            </div>
+            <div className='compose__button'>
+              <button type='button' className='cancel' onClick={this.closeModal}>
+                Cancel
+              </button>
+              <button type='button' className='add__post' onClick={this.submitForm}>
+                Post
+              </button>
+            </div>
+            {/* <div className={'modal-container ' + class_modal_status}>
         <div className='modal-wrap'>
           <div className='modal-header'>{this.props.fileType == 'photo' ? 'Upload Photos' : 'Upload Videos'}</div>
           <div className='modal-close-btn' onClick={() => this.closeModal()}>
@@ -205,8 +329,43 @@ export default class PostFileModal extends Component {
               maxSizeBytes={26214400}
               submitButtonContent={this.state.submitButtonContent}
             />
-          </div>
+          </div>*/}
+          </section>
+          {add_group_toggle && (
+            <div className='people_group_list'>
+              <div className='search__box'>
+                <label for='searchInput'>Search</label>
+                <input type='text' id='searchInput' value='' placeholder='' />
+              </div>
+              <div className='people_group_list_box'></div>
+              <div className='people_group_actions'>
+                <div className='post__privacy_select'>
+                  <div>
+                    <input type='checkbox' id='Everyone' /> <label for='Everyone'>Everyone</label>
+                  </div>
+                  <div>
+                    <input type='checkbox' id='Friends' /> <label for='Friends'>Friends</label>
+                  </div>
+                  <div>
+                    <input type='checkbox' id='Followers' /> <label for='Followers'>Followers</label>
+                  </div>
+                  <div>
+                    <input type='checkbox' id='Private' /> <label for='Private'>Private</label>
+                  </div>
+                </div>
+                <div className='actions'>
+                  <button type='button' className='cancel' onClick={this.addGroupToggle}>
+                    Cancel
+                  </button>
+                  <button type='button' className='add__post' onClick={this.addGroupToggleForm}>
+                    Post
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
+        <div className='modal-overlay' onClick={this.closeModal}></div>
       </div>
     )
   }
