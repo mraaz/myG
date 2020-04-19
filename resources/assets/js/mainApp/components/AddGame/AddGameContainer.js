@@ -11,8 +11,9 @@ import InvitePlayers from './InvitePlayers'
 
 const AddGameContainer = () => {
   // State
-  const [isGameListedModalOpen, toggleGameListedModal] = useState(false)
-  const [isInviteModalOpen, toggleInviteModal] = useState(true)
+  const [isGameListedModalOpen, updateIsGameListedModalOpen] = useState(false)
+  const [isInviteModalOpen, updateIsInviteModalOpen] = useState(false)
+  const [isInvitesSentsModalOpen, updateIsInvitesSentsModalOpen] = useState(false)
   const [isSubmitting, updateIsSubmitting] = useState(false)
   const [state, updateComponentState] = useState({ selectedSettings: SETTINGS_ENUMS.MAIN, isGameNameField: false })
   const [advancedSettingsState, updateAdvancedSettingsState] = useState({
@@ -83,7 +84,7 @@ const AddGameContainer = () => {
         clash_royale_trophies: optionalFieldsState.trophies,
         allow_comments: mainSettingsState.isCommentsAllowed,
       })
-      // toggleGameListedModal(true)
+      updateIsGameListedModalOpen(true)
     } catch (err) {
       console.log('error on submit: ', err)
       updateIsSubmitting(false)
@@ -105,6 +106,16 @@ const AddGameContainer = () => {
     document.execCommand('copy')
   }
 
+  const onInviteFriendsClick = () => {
+    updateIsGameListedModalOpen(false)
+    updateIsInviteModalOpen(true)
+  }
+
+  const onInvitationSent = () => {
+    updateIsInviteModalOpen(false)
+    updateIsInvitesSentsModalOpen(true)
+  }
+
   const getGameListedModal = () => {
     return (
       <MyGModal isOpen={isGameListedModalOpen}>
@@ -122,10 +133,25 @@ const AddGameContainer = () => {
             </div>
           </MyGInput>
           <div className={styles.listedOrText}>OR</div>
-          <MyGButton customStyles={{ color: '#E5C746', border: '2px solid' }} text='Invite Friends' />
+          <MyGButton customStyles={{ color: '#E5C746', border: '2px solid' }} text='Invite Friends' onClick={onInviteFriendsClick} />
         </div>
         <div className={styles.listedBottomContentContainer}>
-          <MyGButton customStyles={{ color: '#fff', border: '2px solid' }} text='Done' />
+          <MyGButton customStyles={{ color: '#fff', border: '2px solid' }} text='Done' onClick={() => {}} />
+        </div>
+      </MyGModal>
+    )
+  }
+
+  const getInvitesSentModal = () => {
+    return (
+      <MyGModal isOpen={isInvitesSentsModalOpen}>
+        <div className={styles.listedTopContentContainer}>
+          <div className={styles.listedHeader}>Invites sent!</div>
+          <div className={styles.listedShareText}>Invites have been sent out successfully!</div>
+          <MyGButton customStyles={{ color: '#E5C746', border: '2px solid' }} text='View Game' onClick={() => {}} />
+        </div>
+        <div className={styles.listedBottomContentContainer}>
+          <MyGButton customStyles={{ color: '#fff', border: '2px solid' }} text='Done' onClick={() => {}} />
         </div>
       </MyGModal>
     )
@@ -148,7 +174,8 @@ const AddGameContainer = () => {
       />
       {getPageFooter()}
       {getGameListedModal()}
-      <InvitePlayers isOpen={isInviteModalOpen} />
+      {getInvitesSentModal()}
+      <InvitePlayers isOpen={isInviteModalOpen} onInvitationSent={onInvitationSent} />
     </div>
   )
 }

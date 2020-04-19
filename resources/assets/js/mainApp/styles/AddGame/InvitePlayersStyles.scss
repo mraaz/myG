@@ -44,7 +44,7 @@
     font-size: 18px;
   }
   &__content-container {
-    height: 520px;
+    height: 560px;
     display: flex;
   }
   &__search-area-container {
@@ -53,6 +53,13 @@
   &__invites-area-container {
     width: 246px;
     background-color: #1d2326;
+    display: flex;
+    flex-direction: column;
+  }
+  &__invites-area-tile-container {
+    display: flex;
+    flex-direction: column;
+    overflow: scroll;
   }
   &__invites-header-container {
     padding: 15px 18px;
@@ -79,8 +86,9 @@
   }
   &__player-list-container {
     background-color: #1d2326;
-    padding: 20px 28px;
     transition: 0.5s;
+    overflow: scroll;
+    max-height: 128px;
   }
   &__player-list-text {
     margin-bottom: 10px;
@@ -88,5 +96,19 @@
   }
   &__player-list-hidden {
     display: none;
+  }
+  &__player-list-element {
+    display: flex;
+    justify-content: space-between;
+    padding: 13px 24px;
+  }
+  &__player-list-element-hovered {
+    background-color: #2d363a66;
+  }
+  &__player-list-element-delete {
+    display: none;
+  }
+  &__player-list-element-delete-hoverred {
+    cursor: pointer;
   }
 }
