@@ -43,6 +43,11 @@ export default class Contact extends React.PureComponent {
     return unreadCount;
   }
 
+  renderMessage = (content) => {
+    if (content.includes('myg-image')) return "Sent an Image";
+    return content;
+  }
+
   render() {
     const { contact, messages } = this.props;
     const lastMessage = messages[messages.length - 1];
@@ -64,7 +69,7 @@ export default class Contact extends React.PureComponent {
           <p className="messenger-contact-body-title">{contact.name}</p>
           {lastMessage && (
             <p className="messenger-contact-body-subtitle">
-              {this.decryptMessage(lastMessage).content}
+              {this.renderMessage(this.decryptMessage(lastMessage).content)}
             </p>
           )}
         </div>

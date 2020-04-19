@@ -7,6 +7,7 @@ const Helpers = use('Helpers')
 const fileType = require('file-type')
 const bluebird = require('bluebird')
 
+const S3_BUCKET_CHAT = "mygame-media/myG chat/chat_images";
 const S3_BUCKET = 'mygame-media/user_files'
 const S3_BUCKET_DELETE = 'mygame-media'
 
@@ -25,11 +26,11 @@ AWS.config.setPromisesDependency(bluebird)
 // create S3 instance
 const s3 = new AWS.S3()
 
-const uploadFile = (buffer, name, type) => {
+const uploadFile = (bucket, buffer, name, type) => {
   const params = {
     ACL: 'public-read',
     Body: buffer,
-    Bucket: S3_BUCKET,
+    Bucket: bucket,
     ContentType: type.mime,
     Key: name,
   }
@@ -63,6 +64,8 @@ class ApiController {
     if (auth.user) {
       var file = request.file('upload_file')
       var filename = request.input('filename')
+      const isChat = !!request.input('chat');
+      const bucket = isChat ? S3_BUCKET_CHAT : S3_BUCKET;
 
       const timestamp_OG = Date.now().toString()
       var tmpfilename = auth.user.id + '_' + timestamp_OG + '_' + generateRandomString(6) + '_' + filename
@@ -81,7 +84,7 @@ class ApiController {
         const type = fileType(buffer)
         const timestamp = Date.now().toString()
         //const fileName = timestamp + '_' + generateRandomString(6) + '_' + filename
-        const data = await uploadFile(buffer, tmpfilename, type)
+        const data = await uploadFile(bucket, buffer, tmpfilename, type)
         fs.unlinkSync(tmpfilepath)
         return response.status(200).json(data)
       } catch (error) {

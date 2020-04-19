@@ -69,7 +69,7 @@ export default class AttachWindow extends React.PureComponent {
 
   renderUploader = () => {
     if (!this.state.choosingImage && !this.state.choosingSound && !this.state.choosingVideo) return null;
-    return <AttachUploader onFinish={() => this.setState({ choosingEmoji: false, choosingImage: false, choosingSound: false, choosingVideo: false })} />
+    return <AttachUploader sendMessage={this.props.sendMessage} onFinish={() => this.setState({ choosingEmoji: false, choosingImage: false, choosingSound: false, choosingVideo: false })} />
   }
 
   render() {

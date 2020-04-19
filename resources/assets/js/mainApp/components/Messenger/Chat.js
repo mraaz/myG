@@ -88,8 +88,8 @@ export class Chat extends React.PureComponent {
   }
 
   sendMessage = (input) => {
-    if (!input) return;
-    this.props.sendMessage(this.props.chatId, this.props.userId, this.props.alias, this.encryptInput(input));
+    if (!input) return Promise.resolve();
+    return this.props.sendMessage(this.props.chatId, this.props.userId, this.props.alias, this.encryptInput(input));
   }
 
   editMessage = (chatId, messageId, input) => {
@@ -318,6 +318,7 @@ export class Chat extends React.PureComponent {
 
   renderAttachWindow = () => {
     return <AttachWindow
+      sendMessage={this.sendMessage}
       show={this.state.showAttachWindow}
       onEmoji={emoji => {
         this.setState({ showAttachWindow: false, selectedEmoji: emoji.native }, () => {

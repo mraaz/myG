@@ -125,6 +125,18 @@ export default class ChatMessage extends React.Component {
     return colors[parseInt(id % colors.length)];
   }
 
+  renderMessage = (content) => {
+    if (!content.includes('myg-image|')) return convertColonsToEmojis(content);
+    const url = content.split('myg-image|')[1];
+    return (
+      <div
+        className={`chat-component-message-image clickable`}
+        onClick={() => {}}
+        style={{ backgroundImage: `url('${url}')` }}
+      />
+    );
+  }
+
   render() {
     const { message } = this.props;
     const origin = message.senderId === this.props.userId ? 'sent' : 'received';
@@ -159,7 +171,7 @@ export default class ChatMessage extends React.Component {
                     'You deleted this message' :
                     'This message was deleted'
                   :
-                  convertColonsToEmojis(message.content)
+                  this.renderMessage(message.content)
               }
             </p>
           </div>

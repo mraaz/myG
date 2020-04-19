@@ -1,47 +1,49 @@
 import 'react-dropzone-uploader/dist/styles.css';
 import React from 'react';
 import Dropzone from 'react-dropzone-uploader';
+import axios from 'axios'
+import LoadingIndicator from '../LoadingIndicator';
+import notifyToast from '../../../common/toast';
 
 export default class AttachUploader extends React.PureComponent {
 
-  getUploadParams = async ({ file, meta: { id, name } }) => {
-    console.log(`Get Upload Params: ${id} | ${name} - ${file}`);
-    // this.doUploadS3(file, name)
-    return { url: 'https://httpbin.org/post' }
+  state = {
+    loading: false
   }
 
-  handleChangeStatus = ({ meta }, status, allFiles) => {
-    console.log(`handleChangeStatus: ${status} - ${allFiles}`);
-    // this.state.store_files = allFiles
-    // if (status == 'removed' && this.state.lock == false) {
-    //   this.removeIndivdualfromAWS()
-    // }
-  }
+  handleSubmit = async (_, allFiles) => {
+    this.setState({ loading: true });
 
-  handleSubmit = (files, allFiles) => {
-    console.log(`handleChangeStatus: ${allFiles}`);
+    const formData = new FormData()
+    formData.append('upload_file', allFiles[0].file);
+    formData.append('filename', allFiles[0].meta.name);
+    formData.append('chat', true);
+
+    try {
+      const post = await axios.post('/api/uploadFile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      await this.props.sendMessage(`myg-image|${post.data.Location}`);
+    } catch (error) {
+      notifyToast('Oops, something went wrong. Unable to upload your file. Please try again.');
+    }
+
     this.props.onFinish();
-    // if (this.state.uploading == true) {
-    //   return
-    // }
-    // this.props.callbackConfirm(this.state.file_src, this.state.file_key)
-
-    // this.setState({
-    //   store_files: [],
-    //   file_key: '',
-    //   file_src: '',
-    // })
-
-    // this.state.lock = true
-    // allFiles.forEach((f) => f.remove())
-    // this.state.lock = false
   }
 
   render() {
+    if (this.state.loading) {
+      return(
+        <div className="chat-component-attach-window-loading">
+          <p className="chat-component-attach-window-loading-hint">Uploading Your File...</p>
+          <LoadingIndicator color={'#F0F0F0'} />
+        </div>
+      );
+    }
     return (
       <Dropzone
-        getUploadParams={this.getUploadParams}
-        onChangeStatus={this.handleChangeStatus}
         onSubmit={this.handleSubmit}
         accept="image/*,audio/*,video/*"
         maxFiles={1}
@@ -71,7 +73,8 @@ export default class AttachUploader extends React.PureComponent {
             fontWeight: 400,
             color: '#FAFAFA',
             position: 'relative',
-            margin: 0,
+            margin: '15px 0 0 0',
+            padding: '40px 0',
           },
         }}
       />

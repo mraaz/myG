@@ -218,6 +218,19 @@
   display: flex !important;
 }
 
+
+.chat-component-attach-window-loading {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-component-attach-window-loading-hint {
+  margin-bottom: 16px;
+}
+
 .chat-component-attach-window {
   display: none;
   flex-direction: row;
