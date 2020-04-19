@@ -37,7 +37,7 @@ export default class Home extends Component {
         <div className='content-area'>
           <AnalyticsBox />
           <ComposeSection initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData} />
-          {/* <div className='links'>
+          <div className='links'>
             <div className={`${tabName == 'home' ? 'active' : ''}`} onClick={(e) => this.tabToggle('home')}>
               Home
             </div>
@@ -58,7 +58,7 @@ export default class Home extends Component {
           {tabName == 'communities' && <GroupHome />}
           {tabName == 'notifications' && <Notifications />}
           {tabName == 'mygames' && <MyScheduledGames />}
-          {tabName == 'myposts' && <MyPosts />} */}
+          {tabName == 'myposts' && <MyPosts />}
         </div>
       )
     } else {
