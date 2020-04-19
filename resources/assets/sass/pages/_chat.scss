@@ -215,10 +215,11 @@
 
 .chat-component-attach-window-showing {
   max-height: 200px !important;
+  display: flex !important;
 }
 
 .chat-component-attach-window {
-  display: flex;
+  display: none;
   flex-direction: row;
   align-self: center;
   justify-content: space-around;
