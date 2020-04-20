@@ -321,6 +321,7 @@ export class Chat extends React.PureComponent {
   renderAttachWindow = () => {
     return <AttachWindow
       sendMessage={this.sendMessage}
+      isGuest={this.props.isGuest}
       show={this.state.showAttachWindow}
       onEmoji={emoji => {
         this.setState({ showAttachWindow: false, selectedEmoji: emoji.native }, () => {

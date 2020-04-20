@@ -76,9 +76,10 @@ export default class AttachWindow extends React.PureComponent {
     const showStyle = this.props.show ? 'chat-component-attach-window-showing' : '';
     return (
       <div className={`chat-component-attach-window ${showStyle}`}>
-        {this.renderEmojiPicker()}
-        {this.renderButtons()}
-        {this.renderUploader()}
+        {this.props.isGuest && <p className="chat-component-attach-window-members-only">Sorry mate, members only.</p>}
+        {!this.props.isGuest && this.renderEmojiPicker()}
+        {!this.props.isGuest && this.renderButtons()}
+        {!this.props.isGuest && this.renderUploader()}
       </div>
     );
   }
