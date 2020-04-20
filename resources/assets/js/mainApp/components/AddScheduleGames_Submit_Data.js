@@ -67,26 +67,25 @@ export async function SubmitDataFunction(myG) {
   var tmp = uuidv1()
 
   try {
-    const post = axios
-      .post('/api/ScheduleGame', {
-        game_name_box: myG.game_name_box.value,
-        selected_region: myRegion,
-        selected_experience: myExperience,
-        start_date_time: myG.startDate,
-        end_date_time: end_date,
-        selected_platform: myPlatform,
-        description_box: myG.description_box,
-        selected_expiry: now,
-        visibility: myVisibility,
-        limit: myLimit,
-        accept_msg: myG.txtAreaValue.trim(),
-        dota2_medal_ranks: myDota2_medal_ranks,
-        dota2_server_regions: myDota2_server_regions,
-        dota2_roles: myDota2_roles,
-        schedule_games_GUID: tmp,
-        clash_royale_trophies: myClash_royale_trophies,
-        allow_comments: myG.allow_comments,
-      })
+    const post = axios.post('/api/ScheduleGame', {
+      game_name_box: myG.game_name_box.value,
+      selected_region: myRegion,
+      selected_experience: myExperience,
+      start_date_time: myG.startDate.format('YYYY-MM-DD HH:mm:ssZ'),
+      end_date_time: end_date.format('YYYY-MM-DD HH:mm:ssZ'),
+      selected_platform: myPlatform,
+      description_box: myG.description_box,
+      selected_expiry: now.format('YYYY-MM-DD HH:mm:ssZ'),
+      visibility: myVisibility,
+      limit: myLimit,
+      accept_msg: myG.txtAreaValue.trim(),
+      dota2_medal_ranks: myDota2_medal_ranks,
+      dota2_server_regions: myDota2_server_regions,
+      dota2_roles: myDota2_roles,
+      schedule_games_GUID: tmp,
+      clash_royale_trophies: myClash_royale_trophies,
+      allow_comments: myG.allow_comments,
+    })
   } catch (error) {
     throw error
   }

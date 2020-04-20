@@ -30,9 +30,6 @@ Route.get('/logout', 'AuthController.logout')
 Route.get('/changepwd', 'AuthController.changepwd')
 Route.post('/changepwd', 'AuthController.updatepwd')
 
-//Sample Email Send
-Route.get('/sampleemailsend', 'CommonSaveController.sampleemailsend')
-
 //Google Authentication
 Route.get('login/google', 'GoogleLoginController.redirect')
 Route.get('user/register', 'CommonSaveController.register')

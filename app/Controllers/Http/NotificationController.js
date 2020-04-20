@@ -1136,12 +1136,16 @@ class NotificationController {
   async invitations({ auth, request, response }) {
     if (auth.user) {
       try {
-        if (request.input('schedule_games_id') == '' || request.input('schedule_games_id') == null) {
+        if (
+          request.input('schedule_games_id') == undefined ||
+          request.input('schedule_games_id') == null ||
+          request.input('schedule_games_id') == ''
+        ) {
           return
         }
 
-        var arrInvite_user = request.input('invitation_box').split(',')
-        var arrInvite_group = request.input('invitation_group_box').split(',')
+        var arrInvite_user = request.input('gamers').split(',')
+        var arrInvite_group = request.input('communities').split(',')
 
         if (arrInvite_user != '') {
           for (var i = 0; i < arrInvite_user.length; i++) {
@@ -1182,7 +1186,6 @@ class NotificationController {
               group_id: findGroup[0].id,
               schedule_games_id: request.input('schedule_games_id'),
             })
-            console.log(newPost)
           }
         }
 
