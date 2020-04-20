@@ -27,6 +27,7 @@ export class Chat extends React.PureComponent {
       settings: false,
       showAttachWindow: false,
       messagePaginationPage: 1,
+      attachment: null,
     };
     this.messageListRef = React.createRef();
   }
@@ -87,9 +88,9 @@ export class Chat extends React.PureComponent {
     this.props.updateChat(this.props.chatId, { markAsRead: true });
   }
 
-  sendMessage = (input) => {
-    if (!input) return;
-    this.props.sendMessage(this.props.chatId, this.props.userId, this.props.alias, this.encryptInput(input));
+  sendMessage = (input, attachment) => {
+    if (!input) return Promise.resolve();
+    return this.props.sendMessage(this.props.chatId, this.props.userId, this.props.alias, this.encryptInput(input), attachment);
   }
 
   editMessage = (chatId, messageId, input) => {
@@ -238,6 +239,7 @@ export class Chat extends React.PureComponent {
           editMessage={this.editMessage}
           deleteMessage={this.props.deleteMessage}
           decryptMessage={this.decryptMessage}
+          showAttachment={attachment => this.setState({ attachment })}
         />
         {this.renderTypingIndicator()}
         {this.renderReadIndicators(lastMessageId, lastMessageSender)}
@@ -318,6 +320,8 @@ export class Chat extends React.PureComponent {
 
   renderAttachWindow = () => {
     return <AttachWindow
+      sendMessage={this.sendMessage}
+      isGuest={this.props.isGuest}
       show={this.state.showAttachWindow}
       onEmoji={emoji => {
         this.setState({ showAttachWindow: false, selectedEmoji: emoji.native }, () => {
@@ -328,6 +332,25 @@ export class Chat extends React.PureComponent {
       onVideo={video => console.log('Attaching Video: ' + video)}
       onSound={sound => console.log('Attaching Sound: ' + sound)}
     />;
+  }
+
+  renderAttachment = () => {
+    const { image, video } = this.state.attachment;
+    return (
+      <div className="chat-component-attachment-modal"
+        onClick={() => this.setState({ attachment: null })}
+      >
+        {image && (
+          <div
+            className={`chat-component-attachment`}
+            style={{ backgroundImage: `url('${image}')` }}
+          />
+        )}
+        {video && (
+          <video src={video} autoPlay type="video/mp4"></video>
+        )}
+      </div>
+    );
   }
 
   renderFooter = () => {
@@ -385,6 +408,7 @@ export class Chat extends React.PureComponent {
         className={`chat-component-base ${extraClass}`}
       >
         {this.renderHeader()}
+        {this.state.attachment && this.renderAttachment()}
         {this.state.settings && !this.props.minimised && this.renderSettings()}
         {!this.state.settings && !this.props.minimised && this.renderBody()}
         {!this.state.settings && !this.props.minimised && this.renderScrollToEndIndicator()}
@@ -447,7 +471,7 @@ function mapDispatchToProps(dispatch) {
   return ({
     prepareChat: (chatId, userId, contactId, isGroup) => dispatch(prepareChatAction(chatId, userId, contactId, isGroup)),
     fetchMessages: (chatId, page) => dispatch(fetchMessagesAction(chatId, page)),
-    sendMessage: (chatId, userId, alias, content) => dispatch(sendMessageAction(chatId, userId, alias, content)),
+    sendMessage: (chatId, userId, alias, content, attachment) => dispatch(sendMessageAction(chatId, userId, alias, content, attachment)),
     editMessage: (chatId, messageId, content) => dispatch(editMessageAction(chatId, messageId, content)),
     deleteMessage: (chatId, messageId, origin) => dispatch(deleteMessageAction(chatId, messageId, origin)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),

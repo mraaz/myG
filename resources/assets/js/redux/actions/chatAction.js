@@ -267,10 +267,10 @@ export function clearUnreadIndicatorAction() {
   return { type: 'CLEAR_UNREAD_INDICATOR' };
 }
 
-export function sendMessageAction(chatId, userId, alias, encrypted) {
+export function sendMessageAction(chatId, userId, alias, encrypted, attachment) {
   return {
     type: 'SEND_MESSAGE',
-    payload: sendMessage(chatId, userId, alias, encrypted),
+    payload: sendMessage(chatId, userId, alias, encrypted, null, attachment),
     meta: { chatId },
   }
 }

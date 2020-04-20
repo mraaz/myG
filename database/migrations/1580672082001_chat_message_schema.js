@@ -14,9 +14,11 @@ class ChatMessageSchema extends Schema {
       table.text('sender_name').notNullable()
       table.text('content').notNullable()
       table.text('backup').notNullable()
+      table.text('attachment')
       table.boolean('deleted').notNullable().defaultTo(false)
       table.boolean('edited').notNullable().defaultTo(false)
       table.boolean('self_destruct').notNullable().defaultTo(false)
+      table.boolean('is_attachment').notNullable().defaultTo(false).index()
       table.timestamps()
     })
   }

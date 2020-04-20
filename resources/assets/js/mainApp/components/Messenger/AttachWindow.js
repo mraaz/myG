@@ -1,5 +1,6 @@
 import 'emoji-mart/css/emoji-mart.css'
 import React from 'react';
+import AttachUploader from './AttachUploader';
 import { Picker } from 'emoji-mart'
 
 export default class AttachWindow extends React.PureComponent {
@@ -9,6 +10,18 @@ export default class AttachWindow extends React.PureComponent {
     choosingImage: false,
     choosingVideo: false,
     choosingSound: false,
+  }
+
+  static getDerivedStateFromProps(props) {
+    if (!props.show) {
+      return {
+        choosingEmoji: false,
+        choosingImage: false,
+        choosingVideo: false,
+        choosingSound: false,
+      };
+    }
+    return null;
   }
 
   renderEmojiPicker = () => {
@@ -27,7 +40,7 @@ export default class AttachWindow extends React.PureComponent {
   }
 
   renderButtons = () => {
-    if (this.state.choosingEmoji) return null;
+    if (this.state.choosingEmoji || this.state.choosingImage || this.state.choosingSound || this.state.choosingVideo) return null;
     return (
       <div className="buttons">
         <div
@@ -54,12 +67,19 @@ export default class AttachWindow extends React.PureComponent {
     );
   }
 
+  renderUploader = () => {
+    if (!this.state.choosingImage && !this.state.choosingSound && !this.state.choosingVideo) return null;
+    return <AttachUploader sendMessage={this.props.sendMessage} onFinish={() => this.setState({ choosingEmoji: false, choosingImage: false, choosingSound: false, choosingVideo: false })} />
+  }
+
   render() {
     const showStyle = this.props.show ? 'chat-component-attach-window-showing' : '';
     return (
       <div className={`chat-component-attach-window ${showStyle}`}>
-        {this.renderEmojiPicker()}
-        {this.renderButtons()}
+        {this.props.isGuest && <p className="chat-component-attach-window-members-only">Sorry mate, members only.</p>}
+        {!this.props.isGuest && this.renderEmojiPicker()}
+        {!this.props.isGuest && this.renderButtons()}
+        {!this.props.isGuest && this.renderUploader()}
       </div>
     );
   }
