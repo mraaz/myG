@@ -13,6 +13,7 @@ const ChatEntryLog = use('App/Models/ChatEntryLog');
 const ChatPrivateKeyRequest = use('App/Models/ChatPrivateKeyRequest');
 const ChatGameMessageSchedule = use('App/Models/ChatGameMessageSchedule');
 
+const ApiController = use('App/Controllers/Http/ApiController');
 const RedisRepository = require('../../Repositories/Redis');
 
 const ChatSchema = require('../../Schemas/Chat');
@@ -730,6 +731,20 @@ class ChatRepository {
     chatIds.forEach(chatId => this._notifyChatEvent({ chatId, action: 'gameStarting', payload: chatId }))
     await RedisRepository.clearGameMessageSchedule({ chatIds });
     await this.clearGameMessageSchedule({ chatIds });
+  }
+
+  async handleExpiredAttachments() {
+    log('CRON', `START - HANDLE EXPIRED ATTACHMENTS`);
+    const fiveDaysAgo = new Date();
+    fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
+    const expiredAttachmentsRaw = await ChatMessage.query().where('is_attachment', true).andWhere('created_at', '<=', fiveDaysAgo).fetch();
+    const expiredAttachments = expiredAttachmentsRaw && expiredAttachmentsRaw.toJSON() || [];
+    const s3Controller = new ApiController();
+    for (const message of expiredAttachments) {
+      await ChatMessage.query().where('id', message.id).delete();
+      await s3Controller._deleteFile(message.attachment);
+    }
+    log('CRON', `END - HANDLE EXPIRED ATTACHMENTS - DELETED ${expiredAttachments.length} ATTACHMENTS`);
   }
 
   async _insertEntryLog(requestedChatId, alias, kicked, left, invited, link) {

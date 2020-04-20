@@ -88,9 +88,8 @@ export class Chat extends React.PureComponent {
     this.props.updateChat(this.props.chatId, { markAsRead: true });
   }
 
-  sendMessage = (input, isAttachment) => {
+  sendMessage = (input, attachment) => {
     if (!input) return Promise.resolve();
-    const attachment = isAttachment ? input : null;
     return this.props.sendMessage(this.props.chatId, this.props.userId, this.props.alias, this.encryptInput(input), attachment);
   }
 

@@ -7,7 +7,7 @@ const Helpers = use('Helpers')
 const fileType = require('file-type')
 const bluebird = require('bluebird')
 
-const S3_BUCKET_CHAT = "mygame-media/myG chat/chat_images";
+const S3_BUCKET_CHAT = Env.get('AWS_S3_BUCKET_CHAT');
 const S3_BUCKET = 'mygame-media/user_files'
 const S3_BUCKET_DELETE = 'mygame-media'
 
@@ -110,6 +110,23 @@ class ApiController {
         }
       )
     }
+  }
+
+  async _deleteFile(key) {
+    return new Promise((resolve, reject) => {
+      s3.deleteObject(
+        {
+          Bucket: S3_BUCKET_DELETE,
+          Key: key,
+        },
+        function (err, data) {
+          if (data) {
+            resolve();
+          } else {
+            reject();
+          }
+        });
+    });
   }
 
   async deleteFile_server({ auth, request, response }) {
