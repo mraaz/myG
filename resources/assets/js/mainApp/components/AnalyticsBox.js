@@ -47,6 +47,7 @@ export default class AnalyticsBox extends Component {
                     <span class='inside-circle-level'>level</span>
                     <br />
                     <span class='inside-circle-value'>{user_level}</span>
+                    <span class='inside-circle-value'>{level_max_points}</span>
                   </div>
                 </div>
               </div>
