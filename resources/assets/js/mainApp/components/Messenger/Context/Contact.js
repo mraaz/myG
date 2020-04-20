@@ -45,6 +45,8 @@ export default class Contact extends React.PureComponent {
 
   renderMessage = (content) => {
     if (content.includes('myg-image')) return "Sent an Image";
+    if (content.includes('myg-video')) return "Sent a Video";
+    if (content.includes('myg-sound')) return "Sent an Audio File";
     return content;
   }
 
