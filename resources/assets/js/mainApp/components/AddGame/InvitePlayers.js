@@ -65,7 +65,7 @@ const InvitePlayers = ({ isOpen, onInvitationSent }) => {
   const getHeader = () => {
     return (
       <div className='invite-players__header-container'>
-        <div className='invite-players__header-text'>InvitePlayers</div>
+        <div className='invite-players__header-text'>Invite Gamers</div>
       </div>
     )
   }
@@ -127,7 +127,7 @@ const InvitePlayers = ({ isOpen, onInvitationSent }) => {
         <div className={styles.menuContainer}>
           <div onClick={() => updateSelectedMenu(MENU_OPTIONS.PLAYERS)}>
             <div className={classNames([styles.menuText, selectedMenu === MENU_OPTIONS.PLAYERS ? styles.menuTextSelected : null])}>
-              Players
+              Gamers
             </div>
             <div className={classNames([styles.menuLine, selectedMenu === MENU_OPTIONS.PLAYERS ? styles.menuLineHighlighted : null])} />
           </div>
@@ -151,7 +151,7 @@ const InvitePlayers = ({ isOpen, onInvitationSent }) => {
 
   const fetchMoreData = async () => {
     await updateCounter(counter + 10)
-    const getKeywordSearchResults = async function () {
+    const getKeywordSearchResults = async function() {
       try {
         const response = await axios.post('/api/friends/allmyFriends', {
           counter,
@@ -174,7 +174,7 @@ const InvitePlayers = ({ isOpen, onInvitationSent }) => {
   }
 
   const fetchCommunitiesData = async () => {
-    const getmyGroups = async function () {
+    const getmyGroups = async function() {
       try {
         const {
           data: { myGroups },
@@ -186,7 +186,7 @@ const InvitePlayers = ({ isOpen, onInvitationSent }) => {
       }
     }
 
-    const getGroups_im_in = async function () {
+    const getGroups_im_in = async function() {
       try {
         const {
           data: { groups_im_in },
