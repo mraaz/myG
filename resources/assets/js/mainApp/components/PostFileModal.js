@@ -22,6 +22,8 @@ export default class PostFileModal extends Component {
       submitButtonContent: 'Submit',
       open_compose_textTab: props.open_compose_textTab,
       add_group_toggle: false,
+      selected_group: [],
+      selectedGroup: [],
     }
 
     this.closeModal = this.closeModal.bind(this)
@@ -173,6 +175,7 @@ export default class PostFileModal extends Component {
       {
         media_url: tmp,
         content: this.state.post_content,
+        selected_group: this.state.selected_group,
       },
       keys
     )
@@ -226,19 +229,47 @@ export default class PostFileModal extends Component {
   }
 
   submitForm = () => {
-    this.props.callbackContentConfirm(this.state.post_content)
+    this.props.callbackContentConfirm(this.state.post_content, this.state.selectedGroup)
   }
 
   addGroupToggle = () => {
     this.setState({ add_group_toggle: !this.state.add_group_toggle })
   }
+  cancelGroupToggle = () => {
+    this.setState({ selected_group: [] })
+  }
   addGroupToggleForm = () => {
-    console.log('addGroupToggleForm called')
+    const { selected_group, groups_im_in } = this.state
+
+    const selectedGroup = groups_im_in.filter((g) => selected_group.includes(g.id))
+    this.setState({ selectedGroup })
     this.addGroupToggle()
   }
 
+  handleGroupCheck = (e, id) => {
+    let selected_group = [...this.state.selected_group]
+    const value = event.target.checked
+    if (value) {
+      selected_group.push(id)
+    } else {
+      selected_group = selected_group.filter((gid) => gid != id)
+    }
+    this.setState({ selected_group })
+  }
+
   render() {
-    const { open_compose_textTab, add_group_toggle, preview_files, onlyme, followers, friend, everyone, groups_im_in } = this.state
+    const {
+      open_compose_textTab,
+      add_group_toggle,
+      preview_files,
+      onlyme,
+      followers,
+      friend,
+      everyone,
+      groups_im_in,
+      selected_group,
+      selectedGroup,
+    } = this.state
     var class_modal_status = ''
     if (this.props.bOpen) {
       class_modal_status = 'modal--show'
@@ -323,6 +354,14 @@ export default class PostFileModal extends Component {
                   <div className='default_circle'></div>
                   <div className='people_label'>Your Feed</div>
                 </div>
+                {selectedGroup.splice(0, 3).map((g) => {
+                  return (
+                    <div className='people_selected_list'>
+                      <div className='default_circle'></div>
+                      <div className='people_label'>{g.name}</div>
+                    </div>
+                  )
+                })}
               </div>
               <div className='add_more_people'>
                 <button type='button' className='add__people' onClick={this.addGroupToggle}>
@@ -387,7 +426,12 @@ export default class PostFileModal extends Component {
                           </div>
                           <div className='groupName'>{group_in.name}</div>
                           <div className='action'>
-                            <input type='checkbox' onChange={(e) => this.handleChange(e, group_in.id)} value={1} />
+                            <input
+                              type='checkbox'
+                              checked={selected_group.includes(group_in.id)}
+                              onChange={(e) => this.handleGroupCheck(e, group_in.id)}
+                              value={1}
+                            />
                           </div>
                         </div>
                       )
@@ -427,7 +471,7 @@ export default class PostFileModal extends Component {
                     </div>
                   </div>
                   <div className='actions'>
-                    <button type='button' className='cancel' onClick={this.addGroupToggle}>
+                    <button type='button' className='cancel' onClick={this.cancelGroupToggle}>
                       Cancel
                     </button>
                     <button type='button' className='add__post' onClick={this.addGroupToggleForm}>
