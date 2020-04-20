@@ -14,9 +14,14 @@ export default class AttachUploader extends React.PureComponent {
   handleSubmit = async (_, allFiles) => {
     this.setState({ loading: true });
 
+    const file = allFiles[0].file;
+    const name = allFiles[0].meta.name;
+    const type = allFiles[0].meta.type;
+    const mygType = type.includes('image') ?  'image' : type.includes('video') ? 'video' : 'sound';
+
     const formData = new FormData()
-    formData.append('upload_file', allFiles[0].file);
-    formData.append('filename', allFiles[0].meta.name);
+    formData.append('upload_file', file);
+    formData.append('filename', name);
     formData.append('chat', true);
 
     try {
@@ -25,7 +30,7 @@ export default class AttachUploader extends React.PureComponent {
           'Content-Type': 'multipart/form-data',
         },
       });
-      await this.props.sendMessage(`myg-image|${post.data.Location}`, post.data.Key);
+      await this.props.sendMessage(`myg-${mygType}|${post.data.Location}`, post.data.Key);
     } catch (error) {
       const message = error && error.response && error.response.data;
       if (message === "CHAT_UPLOAD_DISABLED") notifyToast("Sorry mate, file uploading is currently disabled.");

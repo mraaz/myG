@@ -13,6 +13,7 @@ export default class ChatMessage extends React.Component {
       showOptionsMenu: false,
       lastEditing: false,
       editing: false,
+      audio: null,
       input: props.message.content,
     };
     this.messageRef = React.createRef();
@@ -128,17 +129,74 @@ export default class ChatMessage extends React.Component {
   }
 
   renderMessage = (content) => {
-    if (!content.includes('myg-image|')) return convertColonsToEmojis(content);
-    const url = content.split('myg-image|')[1];
+    const isImage = content.includes('myg-image');
+    const isSound = content.includes('myg-sound');
+    const isVideo = content.includes('myg-video');
     const expirationDate = new Date(this.props.message.createdAt);
     expirationDate.setDate(expirationDate.getDate() + 5);
+    if (isImage) return this.renderImage(content, expirationDate);
+    if (isSound) return this.renderSound(content, expirationDate);
+    if (isVideo) return this.renderVideo(content, expirationDate);
+    return convertColonsToEmojis(content);
+  }
+
+  renderImage = (content, expirationDate) => {
+    const image = content.split('myg-image|')[1];
     return (
       <div className="chat-component-message-image-container">
         <div
           className={`chat-component-message-image clickable`}
-          onClick={() => this.props.showAttachment(content)}
-          style={{ backgroundImage: `url('${url}')` }}
+          onClick={() => this.props.showAttachment({ image })}
+          style={{ backgroundImage: `url('${image}')` }}
         />
+        <p className="chat-component-message-image-expiry">
+          This file will expire on {formatDate(expirationDate)}
+        </p>
+      </div>
+    );
+  }
+
+  renderSound = (content, expirationDate) => {
+    const audio = new Audio(content.split('myg-sound|')[1]);
+    const icon = !this.state.audio ? '/assets/svg/ic_chat_play.svg' : '/assets/svg/ic_chat_pause.svg';
+    return (
+      <div className="chat-component-message-image-container">
+        <div className="chat-component-message-attachment-container">
+          <div
+            className={`chat-component-message-sound clickable`}
+            onClick={() => {
+              if (this.state.audio) {
+                this.state.audio.pause();
+                this.setState({ audio: null });
+              }
+              else {
+                audio.play();
+                this.setState({ audio });
+              }
+            }}
+            style={{ backgroundImage: `url(${icon})` }}
+          />
+          <div>Audio</div>
+        </div>
+        <p className="chat-component-message-image-expiry">
+          This file will expire on {formatDate(expirationDate)}
+        </p>
+      </div>
+    );
+  }
+
+  renderVideo = (content, expirationDate) => {
+    const video = content.split('myg-video|')[1];
+    return (
+      <div className="chat-component-message-image-container">
+        <div className="chat-component-message-attachment-container">
+          <div
+            className={`chat-component-message-video clickable`}
+            onClick={() => this.props.showAttachment({ video })}
+            style={{ backgroundImage: `url(/assets/svg/ic_chat_play.svg)` }}
+          />
+          <div>Video</div>
+        </div>
         <p className="chat-component-message-image-expiry">
           This file will expire on {formatDate(expirationDate)}
         </p>
@@ -173,7 +231,7 @@ export default class ChatMessage extends React.Component {
                 {message.senderName}
               </p>
             )}
-            <p className={`chat-component-message-content`}>
+            <div className={`chat-component-message-content`}>
               {
                 message.deleted ?
                   origin === 'sent' ?
@@ -182,7 +240,7 @@ export default class ChatMessage extends React.Component {
                   :
                   this.renderMessage(message.content)
               }
-            </p>
+            </div>
           </div>
 
           <div className="chat-component-message-content-info">

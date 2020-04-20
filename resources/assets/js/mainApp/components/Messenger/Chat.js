@@ -335,15 +335,20 @@ export class Chat extends React.PureComponent {
   }
 
   renderAttachment = () => {
-    const url = this.state.attachment.split('myg-image|')[1];
+    const { image, video } = this.state.attachment;
     return (
       <div className="chat-component-attachment-modal"
         onClick={() => this.setState({ attachment: null })}
       >
-        <div
-          className={`chat-component-attachment`}
-          style={{ backgroundImage: `url('${url}')` }}
-        />
+        {image && (
+          <div
+            className={`chat-component-attachment`}
+            style={{ backgroundImage: `url('${image}')` }}
+          />
+        )}
+        {video && (
+          <video src={video} autoPlay type="video/mp4"></video>
+        )}
       </div>
     );
   }
