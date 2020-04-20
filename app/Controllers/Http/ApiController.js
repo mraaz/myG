@@ -8,6 +8,7 @@ const fileType = require('file-type')
 const bluebird = require('bluebird')
 const User = use('App/Models/User')
 const ChatMessage = use('App/Models/ChatMessage')
+const NodeClam = require('clamscan')
 
 const S3_BUCKET_CHAT = 'mygame-media/myG chat/chat_images';
 const S3_BUCKET = 'mygame-media/user_files'
@@ -94,6 +95,10 @@ class ApiController {
       await file.move(Helpers.tmpPath('uploads'), {
         name: tmpfilename,
       })
+
+      const isFileInfected = await this.isFileInfected(tmpfilepath);
+      if (isFileInfected) return response.status(500).json("FILE_INFECTED");
+
       try {
         const buffer = fs.readFileSync(tmpfilepath)
         const type = fileType(buffer)
@@ -187,6 +192,18 @@ class ApiController {
       }
     }
   }
+
+  async isFileInfected(file) {
+    try {
+      const clamscan = await new NodeClam().init();
+      const { is_infected } = await clamscan.is_infected(file);
+      return is_infected;
+    } catch (error) {
+      console.error(`Failure to Scan File: ${file} - ${error}`);
+      return false;
+    }
+  }
+
 }
 
 module.exports = ApiController
