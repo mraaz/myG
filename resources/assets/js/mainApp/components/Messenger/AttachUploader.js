@@ -25,7 +25,7 @@ export default class AttachUploader extends React.PureComponent {
           'Content-Type': 'multipart/form-data',
         },
       });
-      await this.props.sendMessage(`myg-image|${post.data.Location}`);
+      await this.props.sendMessage(`myg-image|${post.data.Location}`, true);
     } catch (error) {
       notifyToast('Oops, something went wrong. Unable to upload your file. Please try again.');
     }

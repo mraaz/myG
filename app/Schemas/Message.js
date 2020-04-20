@@ -14,6 +14,7 @@ class Message {
     this.deleted = forceBoolean(data.deleted);
     this.edited = forceBoolean(data.edited);
     this.selfDestruct = forceBoolean(data.selfDestruct);
+    this.isAttachment = forceBoolean(data.isAttachment);
     this.createdAt = forceDate(data.createdAt);
     this.updatedAt = forceDate(data.updatedAt);
   }

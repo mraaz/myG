@@ -27,6 +27,7 @@ export class Chat extends React.PureComponent {
       settings: false,
       showAttachWindow: false,
       messagePaginationPage: 1,
+      attachment: null,
     };
     this.messageListRef = React.createRef();
   }
@@ -87,9 +88,10 @@ export class Chat extends React.PureComponent {
     this.props.updateChat(this.props.chatId, { markAsRead: true });
   }
 
-  sendMessage = (input) => {
+  sendMessage = (input, isAttachment) => {
     if (!input) return Promise.resolve();
-    return this.props.sendMessage(this.props.chatId, this.props.userId, this.props.alias, this.encryptInput(input));
+    const attachment = isAttachment ? input : null;
+    return this.props.sendMessage(this.props.chatId, this.props.userId, this.props.alias, this.encryptInput(input), attachment);
   }
 
   editMessage = (chatId, messageId, input) => {
@@ -238,6 +240,7 @@ export class Chat extends React.PureComponent {
           editMessage={this.editMessage}
           deleteMessage={this.props.deleteMessage}
           decryptMessage={this.decryptMessage}
+          showAttachment={attachment => this.setState({ attachment })}
         />
         {this.renderTypingIndicator()}
         {this.renderReadIndicators(lastMessageId, lastMessageSender)}
@@ -331,6 +334,20 @@ export class Chat extends React.PureComponent {
     />;
   }
 
+  renderAttachment = () => {
+    const url = this.state.attachment.split('myg-image|')[1];
+    return (
+      <div className="chat-component-attachment-modal"
+        onClick={() => this.setState({ attachment: null })}
+      >
+        <div
+          className={`chat-component-attachment`}
+          style={{ backgroundImage: `url('${url}')` }}
+        />
+      </div>
+    );
+  }
+
   renderFooter = () => {
     const rotatedStyle = this.state.showAttachWindow ? 'chat-component-attach-button-rotated' : '';
     return (
@@ -386,6 +403,7 @@ export class Chat extends React.PureComponent {
         className={`chat-component-base ${extraClass}`}
       >
         {this.renderHeader()}
+        {this.state.attachment && this.renderAttachment()}
         {this.state.settings && !this.props.minimised && this.renderSettings()}
         {!this.state.settings && !this.props.minimised && this.renderBody()}
         {!this.state.settings && !this.props.minimised && this.renderScrollToEndIndicator()}
@@ -448,7 +466,7 @@ function mapDispatchToProps(dispatch) {
   return ({
     prepareChat: (chatId, userId, contactId, isGroup) => dispatch(prepareChatAction(chatId, userId, contactId, isGroup)),
     fetchMessages: (chatId, page) => dispatch(fetchMessagesAction(chatId, page)),
-    sendMessage: (chatId, userId, alias, content) => dispatch(sendMessageAction(chatId, userId, alias, content)),
+    sendMessage: (chatId, userId, alias, content, attachment) => dispatch(sendMessageAction(chatId, userId, alias, content, attachment)),
     editMessage: (chatId, messageId, content) => dispatch(editMessageAction(chatId, messageId, content)),
     deleteMessage: (chatId, messageId, origin) => dispatch(deleteMessageAction(chatId, messageId, origin)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),

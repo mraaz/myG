@@ -54,18 +54,20 @@ export default class ChatMessage extends React.Component {
     const directionStyle = `chat-component-message-options-menu-${this.shouldRenderOptionsUpwards() ? 'upwards' : 'downwards'}`;
     return (
       <div className={`chat-component-message-options-menu ${origin === "sent" ? sentStyle : receivedStyle} ${directionStyle}`}>
-        <div
-          className="chat-component-message-options-row clickable"
-          onClick={() => {
-            if (origin === 'sent') this.setState({ editing: true, showOptionsMenu: false, input: this.props.message.content });
-            else {
-              this.setState({ showOptionsMenu: false });
-              copyToClipboard(this.props.message.content);
-            }
-          }}
-        >
-          <p className="chat-component-message-options-label">{origin === 'sent' ? 'edit' : 'copy'}</p>
-        </div>
+        {!this.props.message.isAttachment &&
+            <div
+              className="chat-component-message-options-row clickable"
+              onClick={() => {
+                if (origin === 'sent') this.setState({ editing: true, showOptionsMenu: false, input: this.props.message.content });
+                else {
+                  this.setState({ showOptionsMenu: false });
+                  copyToClipboard(this.props.message.content);
+                }
+              }}
+            >
+              <p className="chat-component-message-options-label">{origin === 'sent' ? 'edit' : 'copy'}</p>
+            </div>
+        }
         <div className={`chat-component-message-options-row-divider ${origin === "received" ? sentStyle : receivedStyle}`} />
         <div
           className="chat-component-message-options-row clickable"
@@ -131,7 +133,7 @@ export default class ChatMessage extends React.Component {
     return (
       <div
         className={`chat-component-message-image clickable`}
-        onClick={() => {}}
+        onClick={() => this.props.showAttachment(content)}
         style={{ backgroundImage: `url('${url}')` }}
       />
     );

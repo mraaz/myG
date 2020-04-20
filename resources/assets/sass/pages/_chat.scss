@@ -266,6 +266,25 @@
 
 }
 
+.chat-component-attachment-modal {
+  position: fixed;
+  bottom: 0; left: 0; right: 0; top: 0;
+  background-color: rgba(0,0,0,0.8);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.chat-component-attachment {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+  width: 50vw;
+  height: 50vh;
+}
+
 .chat-component-input-container {
   display: flex;
   flex: 1;
