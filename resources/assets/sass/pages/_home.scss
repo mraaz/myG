@@ -1334,14 +1334,14 @@ section#content-container {
       width: 100% !important;
     }
     .people_group_list {
-      position: absolute;
-      top: -80px;
+      position: fixed;
+      top: 10%;
       font: Bold 16px/14px Montserrat;
       color: #ffffff;
       background: #1d2326;
       border: 1px solid #273137;
-      min-height: 400px;
-      width: 820px;
+      height: 250px;
+      width: 520px;
       .search__box {
         padding: 30px;
         display: flex;
@@ -1363,8 +1363,33 @@ section#content-container {
         }
       }
       .people_group_list_box {
-        min-height: 300px;
         background: #171a1c;
+        height: 250px;
+        overflow: scroll;
+        .list__item {
+          display: flex;
+          align-items: center;
+          padding: 10px 30px;
+          margin-right: 10px;
+          .default_circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #ff00ff;
+            margin-right: 10px;
+            img {
+              height: 100%;
+              width: 100%;
+              border-radius: 50%;
+            }
+          }
+          .action {
+            margin-left: auto;
+            input {
+              margin: 0;
+            }
+          }
+        }
       }
       .people_group_actions {
         background: #1d2326;
