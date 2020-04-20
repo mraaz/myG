@@ -55,18 +55,18 @@ export default class ChatMessage extends React.Component {
     return (
       <div className={`chat-component-message-options-menu ${origin === "sent" ? sentStyle : receivedStyle} ${directionStyle}`}>
         {!this.props.message.isAttachment &&
-            <div
-              className="chat-component-message-options-row clickable"
-              onClick={() => {
-                if (origin === 'sent') this.setState({ editing: true, showOptionsMenu: false, input: this.props.message.content });
-                else {
-                  this.setState({ showOptionsMenu: false });
-                  copyToClipboard(this.props.message.content);
-                }
-              }}
-            >
-              <p className="chat-component-message-options-label">{origin === 'sent' ? 'edit' : 'copy'}</p>
-            </div>
+          <div
+            className="chat-component-message-options-row clickable"
+            onClick={() => {
+              if (origin === 'sent') this.setState({ editing: true, showOptionsMenu: false, input: this.props.message.content });
+              else {
+                this.setState({ showOptionsMenu: false });
+                copyToClipboard(this.props.message.content);
+              }
+            }}
+          >
+            <p className="chat-component-message-options-label">{origin === 'sent' ? 'edit' : 'copy'}</p>
+          </div>
         }
         <div className={`chat-component-message-options-row-divider ${origin === "received" ? sentStyle : receivedStyle}`} />
         <div
@@ -130,12 +130,19 @@ export default class ChatMessage extends React.Component {
   renderMessage = (content) => {
     if (!content.includes('myg-image|')) return convertColonsToEmojis(content);
     const url = content.split('myg-image|')[1];
+    const expirationDate = new Date(this.props.message.createdAt);
+    expirationDate.setDate(expirationDate.getDate() + 5);
     return (
-      <div
-        className={`chat-component-message-image clickable`}
-        onClick={() => this.props.showAttachment(content)}
-        style={{ backgroundImage: `url('${url}')` }}
-      />
+      <div className="chat-component-message-image-container">
+        <div
+          className={`chat-component-message-image clickable`}
+          onClick={() => this.props.showAttachment(content)}
+          style={{ backgroundImage: `url('${url}')` }}
+        />
+        <p className="chat-component-message-image-expiry">
+          This file will expire on {formatDate(expirationDate)}
+        </p>
+      </div>
     );
   }
 

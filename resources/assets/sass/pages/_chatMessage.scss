@@ -231,3 +231,13 @@
   width: 164px;
   height: 80px;
 }
+
+.chat-component-message-image-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-component-message-image-expiry {
+  font-size: 9px;
+  margin-top: 8px;
+}
