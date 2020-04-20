@@ -6,8 +6,10 @@ const fs = require('fs')
 const Helpers = use('Helpers')
 const fileType = require('file-type')
 const bluebird = require('bluebird')
+const User = use('App/Models/User')
+const ChatMessage = use('App/Models/ChatMessage')
 
-const S3_BUCKET_CHAT = Env.get('AWS_S3_BUCKET_CHAT');
+const S3_BUCKET_CHAT = 'mygame-media/myG chat/chat_images';
 const S3_BUCKET = 'mygame-media/user_files'
 const S3_BUCKET_DELETE = 'mygame-media'
 
@@ -62,9 +64,22 @@ class ApiController {
 
   async uploadFile({ auth, request, response }) {
     if (auth.user) {
+
+      const isChat = !!request.input('chat');
+
+      if (isChat) {
+        if (Env.get("CHAT_UPLOAD_DISABLED")) return response.status(500).json("CHAT_UPLOAD_DISABLED");
+        const user = (await User.find(auth.user.id)).toJSON();
+        const today = new Date();
+        today.setDate(today.getDate() - 1);
+        const isRecentUser = new Date(user.created_at) > today;
+        const attachmentsToday = await ChatMessage.query().where('sender_id', auth.user.id).andWhere('is_attachment', true).andWhere('created_at', '>', today).fetch();
+        if (attachmentsToday && attachmentsToday.toJSON().length >= 10) return response.status(500).json("MAX_UPLOAD_REACHED");
+        if (isRecentUser) return response.status(500).json("USER_CREATION");
+      }
+
       var file = request.file('upload_file')
       var filename = request.input('filename')
-      const isChat = !!request.input('chat');
       const bucket = isChat ? S3_BUCKET_CHAT : S3_BUCKET;
 
       const timestamp_OG = Date.now().toString()
@@ -101,7 +116,7 @@ class ApiController {
           Bucket: S3_BUCKET_DELETE,
           Key: key,
         },
-        function(err, data) {
+        function (err, data) {
           if (data) {
             return response.status(200).json({ success: true })
           } else {
@@ -136,7 +151,7 @@ class ApiController {
           Bucket: S3_BUCKET_DELETE,
           Key: request.params.key,
         },
-        function(err, data) {
+        function (err, data) {
           if (data) {
             return response.status(200).json({ success: true })
           } else {
@@ -157,7 +172,7 @@ class ApiController {
             Bucket: S3_BUCKET_DELETE,
             Key: files[findex].key,
           },
-          function(err, data) {
+          function (err, data) {
             if (!data) {
               bFailed = true
             }
