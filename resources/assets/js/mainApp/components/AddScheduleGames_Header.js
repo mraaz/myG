@@ -104,8 +104,9 @@ export default class AddScheduleGames_Headers extends Component {
 
     try {
       const sendInvitationInfo = axios.post('/api/notifications/invitations', {
-        invitation_group_box: invitation_group_box,
-        invitation_box: invitation_box,
+        gamers: invitation_box,
+        groups: 0,
+        communities: invitation_group_box,
         schedule_games_id: 120, //match.params.schedule_games_id
       })
     } catch (error) {

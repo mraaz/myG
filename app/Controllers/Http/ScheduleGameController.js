@@ -38,6 +38,12 @@ class ScheduleGameController {
           gameface.incrementGameCounter({ auth, request, response })
         }
 
+        let end_date_time
+
+        if (request.input('end_date_time') != undefined) {
+          end_date_time = new Date(request.input('end_date_time')).toISOString().replace('T', ' ')
+        }
+
         const newScheduleGame = await ScheduleGame.create({
           game_names_id: parseInt(gameNameID, 10),
           user_id: auth.user.id,
