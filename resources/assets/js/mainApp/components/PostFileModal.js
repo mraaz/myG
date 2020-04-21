@@ -115,7 +115,6 @@ export default class PostFileModal extends Component {
   async doUploadS3(file, id = '', name) {
     var instance = this
 
-    this.state.submitButtonContent = 'Uploading...'
     this.setState({
       uploading: true,
     })
@@ -142,7 +141,6 @@ export default class PostFileModal extends Component {
     } catch (error) {
       toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again'} />)
     }
-    this.state.submitButtonContent = 'Submit'
     this.setState({
       uploading: false,
     })
@@ -160,7 +158,7 @@ export default class PostFileModal extends Component {
     }
   }
 
-  handleSubmit = (files, allFiles) => {
+  handleSubmit = () => {
     if (this.state.uploading == true) {
       return
     }
@@ -180,10 +178,6 @@ export default class PostFileModal extends Component {
       },
       keys
     )
-
-    this.state.lock = true
-    allFiles.forEach((f) => f.remove())
-    this.state.lock = false
 
     this.setState({
       preview_files: [],
@@ -217,20 +211,18 @@ export default class PostFileModal extends Component {
   }
 
   handleAcceptedFiles = (Files) => {
-    let preview_files = []
     for (var i = 0; i < Files.length; i++) {
       let name = `post_image_${+new Date()}`
       this.doUploadS3(Files[i], name, name)
-      let preview = Files[i].preview
-      preview_files[i] = preview
     }
-    this.setState({
-      preview_files: preview_files,
-    })
   }
 
   submitForm = () => {
-    this.props.callbackContentConfirm(this.state.post_content, this.state.selectedGroup)
+    if (this.state.preview_files.length > 0) {
+      this.handleSubmit()
+    } else {
+      this.props.callbackContentConfirm(this.state.post_content, this.state.selectedGroup)
+    }
   }
 
   addGroupToggle = () => {
@@ -316,7 +308,8 @@ export default class PostFileModal extends Component {
                   accept='image/*,video/*'
                   minSize={0}
                   maxSize={5242880}
-                  multiple>
+                  multiple
+                  disabled={this.state.uploading}>
                   {(props) => {
                     return (
                       <section className='custom__html'>
@@ -334,12 +327,17 @@ export default class PostFileModal extends Component {
                         <div className='text'>
                           Or <span>click here </span> to select
                         </div>
+                        {this.state.uploading && (
+                          <div className='text'>
+                            <span>Uploading... </span>
+                          </div>
+                        )}
                         {preview_files.length > 0 && (
                           <div className='files__preview'>
-                            {preview_files.slice(0, 3).map((url) => (
-                              <img src={url} />
+                            {preview_files.slice(0, 3).map((file) => (
+                              <img src={file.src} />
                             ))}
-                            ({preview_files.length})...
+                            {preview_files.length > 3 ? `(${preview_files.length})...` : ''}
                           </div>
                         )}
                       </section>
@@ -374,7 +372,7 @@ export default class PostFileModal extends Component {
               <button type='button' className='cancel' onClick={this.closeModal}>
                 Cancel
               </button>
-              <button type='button' className='add__post' onClick={this.submitForm}>
+              <button type='button' className='add__post' disabled={this.state.uploading} onClick={this.submitForm}>
                 Post
               </button>
             </div>
