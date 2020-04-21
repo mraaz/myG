@@ -22,10 +22,40 @@ export default class PostFileModal extends Component {
       submitButtonContent: 'Submit',
       open_compose_textTab: props.open_compose_textTab,
       add_group_toggle: false,
+      selected_group: [],
+      selectedGroup: [],
+      groups_im_in: [],
     }
 
     this.closeModal = this.closeModal.bind(this)
     this.doUploadS3 = this.doUploadS3.bind(this)
+  }
+
+  componentDidMount() {
+    const getmyGroups = async () => {
+      try {
+        const getmyGroups = await axios.get('/api/groups/view')
+        this.setState({
+          myGroups: getmyGroups.data.myGroups,
+        })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    const getGroups_im_in = async () => {
+      try {
+        const getGroups_im_in = await axios.get('/api/usergroup/view')
+        this.setState({
+          groups_im_in: getGroups_im_in.data.groups_im_in,
+        })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    getGroups_im_in()
+    getmyGroups()
   }
 
   togglePostTypeTab = (label) => {
@@ -82,7 +112,7 @@ export default class PostFileModal extends Component {
     })
   }
 
-  async doUploadS3(file, id, name) {
+  async doUploadS3(file, id = '', name) {
     var instance = this
 
     this.state.submitButtonContent = 'Uploading...'
@@ -146,6 +176,7 @@ export default class PostFileModal extends Component {
       {
         media_url: tmp,
         content: this.state.post_content,
+        selected_group: this.state.selected_group,
       },
       keys
     )
@@ -167,9 +198,29 @@ export default class PostFileModal extends Component {
       [name]: value,
     })
   }
+  handleVisibityChange = (event) => {
+    const name = event.target.name
+    const value = event.target.type == 'checkbox' ? event.target.checked : event.target.value
+    if (name == 'everyone') {
+      this.setState({
+        [name]: value,
+        onlyme: false,
+        followers: false,
+        friend: false,
+      })
+    } else {
+      this.setState({
+        [name]: value,
+        everyone: false,
+      })
+    }
+  }
+
   handleAcceptedFiles = (Files) => {
     let preview_files = []
     for (var i = 0; i < Files.length; i++) {
+      let name = `post_image_${+new Date()}`
+      this.doUploadS3(Files[i], name, name)
       let preview = Files[i].preview
       preview_files[i] = preview
     }
@@ -179,35 +230,51 @@ export default class PostFileModal extends Component {
   }
 
   submitForm = () => {
-    this.props.callbackContentConfirm(this.state.post_content)
+    this.props.callbackContentConfirm(this.state.post_content, this.state.selectedGroup)
   }
 
   addGroupToggle = () => {
     this.setState({ add_group_toggle: !this.state.add_group_toggle })
   }
+  cancelGroupToggle = () => {
+    this.setState({ selected_group: [] })
+  }
   addGroupToggleForm = () => {
-    console.log('addGroupToggleForm called')
+    const { selected_group, groups_im_in } = this.state
+
+    const selectedGroup = groups_im_in.filter((g) => selected_group.includes(g.id))
+    this.setState({ selectedGroup })
     this.addGroupToggle()
   }
 
+  handleGroupCheck = (e, id) => {
+    let selected_group = [...this.state.selected_group]
+    const value = event.target.checked
+    if (value) {
+      selected_group.push(id)
+    } else {
+      selected_group = selected_group.filter((gid) => gid != id)
+    }
+    this.setState({ selected_group })
+  }
+
   render() {
-    const { open_compose_textTab, add_group_toggle, preview_files } = this.state
+    const {
+      open_compose_textTab,
+      add_group_toggle,
+      preview_files,
+      onlyme,
+      followers,
+      friend,
+      everyone,
+      groups_im_in,
+      selected_group,
+      selectedGroup,
+    } = this.state
     var class_modal_status = ''
-    console.log(preview_files)
     if (this.props.bOpen) {
       class_modal_status = 'modal--show'
     }
-
-    var accept = ''
-
-    if (this.props.fileType == 'photo') {
-      accept = 'image/*'
-    } else {
-      accept = 'video/*'
-    }
-
-    var filepath = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/blank-profile-picture-973460_1280.png'
-    var instance = this
     return (
       <div className={'modal-container ' + class_modal_status}>
         <div className='modal-wrap'>
@@ -244,7 +311,12 @@ export default class PostFileModal extends Component {
                     placeholder='What in your mind?'
                   />
                 </div>
-                <Dropzone onDrop={(acceptedFiles) => this.handleAcceptedFiles(acceptedFiles)}>
+                <Dropzone
+                  onDrop={(acceptedFiles) => this.handleAcceptedFiles(acceptedFiles)}
+                  accept='image/*,video/*'
+                  minSize={0}
+                  maxSize={5242880}
+                  multiple>
                   {(props) => {
                     return (
                       <section className='custom__html'>
@@ -255,9 +327,9 @@ export default class PostFileModal extends Component {
                           <span className='button video-btn'>
                             <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Video.svg`} />
                           </span>
-                          <span className='button video-btn'>
+                          {/* <span className='button video-btn'>
                             <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Audio.svg`} />
-                          </span>
+                          </span> */}
                         </div>
                         <div className='text'>
                           Or <span>click here </span> to select
@@ -283,6 +355,14 @@ export default class PostFileModal extends Component {
                   <div className='default_circle'></div>
                   <div className='people_label'>Your Feed</div>
                 </div>
+                {selectedGroup.splice(0, 3).map((g) => {
+                  return (
+                    <div className='people_selected_list'>
+                      <div className='default_circle'></div>
+                      <div className='people_label'>{g.name}</div>
+                    </div>
+                  )
+                })}
               </div>
               <div className='add_more_people'>
                 <button type='button' className='add__people' onClick={this.addGroupToggle}>
@@ -330,40 +410,79 @@ export default class PostFileModal extends Component {
               submitButtonContent={this.state.submitButtonContent}
             />
           </div>*/}
+
+            {add_group_toggle && (
+              <div className='people_group_list'>
+                <div className='search__box'>
+                  <label for='searchInput'>Search</label>
+                  <input type='text' id='searchInput' value='' placeholder='' />
+                </div>
+                <div className='people_group_list_box'>
+                  {groups_im_in.length > 0 &&
+                    groups_im_in.map((group_in, index) => {
+                      return (
+                        <div className='list__item' key={`${group_in.name}_${group_in.id}_${index}`}>
+                          <div className='default_circle'>
+                            <img src={group_in.group_img} className='groupImage' />
+                          </div>
+                          <div className='groupName'>{group_in.name}</div>
+                          <div className='action'>
+                            <input
+                              type='checkbox'
+                              checked={selected_group.includes(group_in.id)}
+                              onChange={(e) => this.handleGroupCheck(e, group_in.id)}
+                              value={1}
+                            />
+                          </div>
+                        </div>
+                      )
+                    })}
+                </div>
+                <div className='people_group_actions'>
+                  <div className='post__privacy_select'>
+                    <div>
+                      <input
+                        type='checkbox'
+                        name='everyone'
+                        checked={everyone}
+                        onChange={this.handleVisibityChange}
+                        id='Everyone'
+                        value={1}
+                      />{' '}
+                      <label for='Everyone'>Everyone</label>
+                    </div>
+                    <div>
+                      <input type='checkbox' name='friend' checked={friend} onChange={this.handleVisibityChange} id='Friends' value={2} />{' '}
+                      <label for='Friends'>Friends</label>
+                    </div>
+                    <div>
+                      <input
+                        type='checkbox'
+                        name='followers'
+                        checked={followers}
+                        onChange={this.handleVisibityChange}
+                        id='Followers'
+                        value={3}
+                      />{' '}
+                      <label for='Followers'>Followers</label>
+                    </div>
+                    <div>
+                      <input type='checkbox' name='onlyme' checked={onlyme} onChange={this.handleVisibityChange} id='Private' value={0} />{' '}
+                      <label for='Private'>Private</label>
+                    </div>
+                  </div>
+                  <div className='actions'>
+                    <button type='button' className='cancel' onClick={this.cancelGroupToggle}>
+                      Cancel
+                    </button>
+                    <button type='button' className='add__post' onClick={this.addGroupToggleForm}>
+                      Add
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </section>
-          {add_group_toggle && (
-            <div className='people_group_list'>
-              <div className='search__box'>
-                <label for='searchInput'>Search</label>
-                <input type='text' id='searchInput' value='' placeholder='' />
-              </div>
-              <div className='people_group_list_box'></div>
-              <div className='people_group_actions'>
-                <div className='post__privacy_select'>
-                  <div>
-                    <input type='checkbox' id='Everyone' /> <label for='Everyone'>Everyone</label>
-                  </div>
-                  <div>
-                    <input type='checkbox' id='Friends' /> <label for='Friends'>Friends</label>
-                  </div>
-                  <div>
-                    <input type='checkbox' id='Followers' /> <label for='Followers'>Followers</label>
-                  </div>
-                  <div>
-                    <input type='checkbox' id='Private' /> <label for='Private'>Private</label>
-                  </div>
-                </div>
-                <div className='actions'>
-                  <button type='button' className='cancel' onClick={this.addGroupToggle}>
-                    Cancel
-                  </button>
-                  <button type='button' className='add__post' onClick={this.addGroupToggleForm}>
-                    Post
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
         <div className='modal-overlay' onClick={this.closeModal}></div>
       </div>

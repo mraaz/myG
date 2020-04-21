@@ -17,6 +17,7 @@ export default class ChatMessageList extends React.PureComponent {
         message={this.props.decryptMessage(message)}
         editMessage={this.props.editMessage}
         deleteMessage={this.props.deleteMessage}
+        showAttachment={this.props.showAttachment}
       />
     );
   }

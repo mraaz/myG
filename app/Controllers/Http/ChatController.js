@@ -152,8 +152,9 @@ class ChatController {
     const { backup, content } = request.only('encryptedContent').encryptedContent;
     const senderName = request.only('senderName').senderName;
     const keyReceiver = request.only('keyReceiver').keyReceiver;
+    const attachment = request.only('attachment').attachment;
     log('CHAT', `User ${requestingUserId} sending encrypted ${keyReceiver ? 'Key' : 'Message'} for Chat ${requestedChatId}`);
-    const { message } = await ChatRepository.sendMessage({ requestingUserId, requestedChatId, senderName, keyReceiver, backup, content });
+    const { message } = await ChatRepository.sendMessage({ requestingUserId, requestedChatId, senderName, keyReceiver, backup, content, attachment });
     return response.send({ message });
   }
 
