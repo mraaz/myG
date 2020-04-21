@@ -4,15 +4,24 @@ import axios from 'axios'
 export default class AnalyticsBox extends Component {
   state = {
     userTransactionStates: {},
+    youMayKnowUser: [],
   }
 
   async componentDidMount() {
     const get_stats = await axios.get('/api/userStatTransaction/master_controller')
-    this.setState({ userTransactionStates: { ...get_stats } })
+    const getGamers_you_might_know = await axios.post('/api/connections/gamers_you_might_know', { counter: 1 })
+    const youMayKnowUser = getGamers_you_might_know.data.user
+    this.setState({ userTransactionStates: { ...get_stats }, youMayKnowUser })
+  }
+
+  refreshSuggestedUser = async () => {
+    const getGamers_you_might_know = await axios.post('/api/connections/gamers_you_might_know', { counter: 1 })
+    const youMayKnowUser = getGamers_you_might_know.data.user
+    this.setState({ youMayKnowUser })
   }
 
   render() {
-    const { userTransactionStates = {} } = this.state
+    const { userTransactionStates = {}, youMayKnowUser } = this.state
     const {
       connections = 0,
       last_month_connections = 0,
@@ -100,50 +109,32 @@ export default class AnalyticsBox extends Component {
           </div>
         </div>
 
-        <div class='suggestion'>
-          <div class='suggestion-box'>
-            <p class='suggestion-box-text'>connections</p>
-            <h2 class='suggestion-box-head'>Suggestions</h2>
-          </div>
+        {youMayKnowUser.length > 0 && (
+          <div class='suggestion'>
+            <div class='suggestion-box'>
+              <p class='suggestion-box-text'>connections</p>
+              <h2 class='suggestion-box-head'>Suggestions</h2>
+            </div>
 
-          <div class='suggestion-box'>
-            <input type='text' value='@playerone' disabled class='suggestion-box-input' />
-            <div class='input-outer'>
-              <p class='input-outer-label'>level</p>
-              <p class='input-outer-count'>99</p>
+            {youMayKnowUser.map((user) => {
+              return (
+                <div class='suggestion-box'>
+                  <input type='text' value={`@${user.username}`} disabled class='suggestion-box-input' />
+                  <div class='input-outer'>
+                    <p class='input-outer-label'>level</p>
+                    <p class='input-outer-count'>{user.user_level}</p>
+                  </div>
+                </div>
+              )
+            })}
+
+            <div class='suggestions-box-reset'>
+              <a href='javascript:;' onClick={(e) => this.refreshSuggestedUser()}>
+                <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/reset.png' class='' />
+              </a>
             </div>
           </div>
-
-          <div class='suggestion-box'>
-            <input type='text' value='@playeronetool' disabled class='suggestion-box-input' />
-            <div class='input-outer'>
-              <p class='input-outer-label'>level</p>
-              <p class='input-outer-count'>99</p>
-            </div>
-          </div>
-
-          <div class='suggestion-box'>
-            <input type='text' value='@playerone' disabled class='suggestion-box-input' />
-            <div class='input-outer'>
-              <p class='input-outer-label'>level</p>
-              <p class='input-outer-count'>99</p>
-            </div>
-          </div>
-
-          <div class='suggestion-box'>
-            <input type='text' value='@playeronetool' disabled class='suggestion-box-input' />
-            <div class='input-outer'>
-              <p class='input-outer-label'>level</p>
-              <p class='input-outer-count'>99</p>
-            </div>
-          </div>
-
-          <div class='suggestions-box-reset'>
-            <a href='javascript:;' onClick={(e) => alert('API is not integrated.')}>
-              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/reset.png' class='' />
-            </a>
-          </div>
-        </div>
+        )}
       </section>
     )
   }
