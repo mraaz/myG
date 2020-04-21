@@ -24,6 +24,7 @@ export default class PostFileModal extends Component {
       add_group_toggle: false,
       selected_group: [],
       selectedGroup: [],
+      groups_im_in: [],
     }
 
     this.closeModal = this.closeModal.bind(this)
