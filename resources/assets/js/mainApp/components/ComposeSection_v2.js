@@ -66,7 +66,7 @@ export default class ComposeSection extends Component {
       const post = await axios.post(url, {
         media_url: JSON.stringify(data.media_url),
         content: data.content,
-        groups_id: data.selected_group,
+        group_id: data.selected_group.toString(),
         file_keys: keys,
       })
 
@@ -99,7 +99,7 @@ export default class ComposeSection extends Component {
     })
   }
 
-  submitForm = async (data = '', groups_id) => {
+  submitForm = async (data = '', group_id) => {
     const content = data ? data : this.state.post_content.trim()
     if (content == '') {
       this.setState({
@@ -113,7 +113,7 @@ export default class ComposeSection extends Component {
         user_id: this.props.initialData.userInfo.id,
         type: 'text',
         visibility: this.state.visibility_box.value,
-        groups_id,
+        group_id: group_id.toString(),
       })
       this.setState({
         myPosts: [],
