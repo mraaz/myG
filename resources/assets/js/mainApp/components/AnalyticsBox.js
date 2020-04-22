@@ -109,7 +109,7 @@ export default class AnalyticsBox extends Component {
           </div>
         </div>
 
-        {youMayKnowUser.length > 0 && (
+        {youMayKnowUser && youMayKnowUser.length > 0 && (
           <div class='suggestion'>
             <div class='suggestion-box'>
               <p class='suggestion-box-text'>connections</p>

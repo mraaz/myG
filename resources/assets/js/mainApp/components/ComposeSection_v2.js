@@ -308,15 +308,14 @@ export default class ComposeSection extends Component {
             Post
           </button>
         </div>
-        {bFileModalOpen && (
-          <PostFileModal
-            bOpen={bFileModalOpen}
-            callbackClose={this.callbackPostFileModalClose}
-            callbackConfirm={this.callbackPostFileModalConfirm}
-            callbackContentConfirm={this.submitForm}
-            open_compose_textTab={open_compose_textTab}
-          />
-        )}
+
+        <PostFileModal
+          bOpen={bFileModalOpen}
+          callbackClose={this.callbackPostFileModalClose}
+          callbackConfirm={this.callbackPostFileModalConfirm}
+          callbackContentConfirm={this.submitForm}
+          open_compose_textTab={open_compose_textTab}
+        />
 
         {/* <section className='compose-area'>
         <div className='compose-section'>
