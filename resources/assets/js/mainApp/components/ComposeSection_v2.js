@@ -98,6 +98,11 @@ export default class ComposeSection extends Component {
       fileType: 'audio',
     })
   }
+  handleClear = () => {
+    this.setState({
+      post_content: '',
+    })
+  }
 
   submitForm = async (data = '', group_id) => {
     const content = data ? data : this.state.post_content.trim()
@@ -301,8 +306,8 @@ export default class ComposeSection extends Component {
           </div>
         </div> */}
         <div className='compose__button'>
-          <button type='button' className='cancel'>
-            Cancel
+          <button type='button' className='cancel' onClick={this.handleClear}>
+            Clear
           </button>
           <button type='button' className='add__post' onClick={this.submitForm}>
             Post
