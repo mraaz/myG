@@ -78,7 +78,6 @@ class CommonSaveController {
       var strMsg =
         "Special characters:\r\nAlias can contain letters (a-z), numbers (0-9), and periods (.).\r\nAlias cannot contain an ampersand (&), equals sign (=), underscore (_), apostrophe ('), dash (-), plus sign (+), comma (,), brackets (<,>), backtick (`), dollar sign ($), single and double quotes ('), question marks (?) or vertical bars (|) (\"). Alias can begin or end with non-alphanumeric characters except periods (.)."
       try {
-        console.log(request.input('alias').charAt(request.input('alias').length - 1))
         if (request.input('alias').charAt(0) == '.' || request.input('alias').charAt(request.input('alias').length - 1) == '.') {
           session.withErrors([{ field: 'alias', message: strMsg }]).flashAll()
           return response.redirect('back')
