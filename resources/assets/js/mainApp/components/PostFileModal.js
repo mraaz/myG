@@ -25,6 +25,7 @@ export default class PostFileModal extends Component {
       selected_group: [],
       selectedGroup: [],
       groups_im_in: [],
+      everyone: true,
     }
 
     this.closeModal = this.closeModal.bind(this)
@@ -295,21 +296,21 @@ export default class PostFileModal extends Component {
                 {` Add video or photos`}
               </div>
             </div>
-            {open_compose_textTab && (
-              <div className='text__editor__section'>
-                <textarea
-                  onChange={this.handleChange}
-                  onKeyDown={this.detectKey}
-                  maxLength='254'
-                  name='post_content'
-                  value={this.state.post_content}
-                  placeholder='What in your mind?'
-                />
-              </div>
-            )}
+
+            <div className='text__editor__section'>
+              <textarea
+                onChange={this.handleChange}
+                onKeyDown={this.detectKey}
+                maxLength='254'
+                name='post_content'
+                value={this.state.post_content}
+                placeholder='What in your mind?'
+              />
+            </div>
+
             {!open_compose_textTab && (
               <div className='media__container'>
-                <div className='text__editor__section'>
+                {/* <div className='text__editor__section'>
                   <textarea
                     onChange={this.handleChange}
                     onKeyDown={this.detectKey}
@@ -318,7 +319,7 @@ export default class PostFileModal extends Component {
                     value={this.state.post_content}
                     placeholder='What in your mind?'
                   />
-                </div>
+                </div> */}
                 <Dropzone
                   onDrop={(acceptedFiles) => this.handleAcceptedFiles(acceptedFiles)}
                   accept='image/*,video/*'

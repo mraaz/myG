@@ -252,8 +252,8 @@ export default class ComposeSection extends Component {
           </div>
         )}
         {!open_compose_textTab && (
-          <div className='media__container'>
-            <Dropzone onDrop={(acceptedFiles) => this.handleAcceptedFiles(acceptedFiles)}>
+          <div className='media__container' onClick={(e) => this.togglePostTypeTab('media')}>
+            <Dropzone onDrop={(acceptedFiles) => this.handleAcceptedFiles(acceptedFiles)} disabled={true}>
               {(props) => {
                 return (
                   <section className='custom__html'>
@@ -286,7 +286,7 @@ export default class ComposeSection extends Component {
             </div> */}
           </div>
         )}
-        <div className='compose__people__section'>
+        {/* <div className='compose__people__section'>
           <div className='label'>Post on: </div>
           <div className='people_selected_container'>
             <div className='people_selected_list'>
@@ -299,7 +299,7 @@ export default class ComposeSection extends Component {
               Add
             </button>
           </div>
-        </div>
+        </div> */}
         <div className='compose__button'>
           <button type='button' className='cancel'>
             Cancel
