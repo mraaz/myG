@@ -55,8 +55,8 @@ export default class Home extends Component {
             </div>
           </div>
           {tabName == 'home' && <Posts initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData} />}
-          {tabName == 'communities' && <GroupHome />}
-          {tabName == 'notifications' && <Notifications />}
+          {tabName == 'communities' && <GroupHome routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
+          {tabName == 'notifications' && <Notifications routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
           {tabName == 'mygames' && <MyScheduledGames />}
           {tabName == 'myposts' && <MyPosts />}
         </div>
