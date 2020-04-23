@@ -5,6 +5,11 @@ function scheduleAutomaticGameMessages() {
   cron.schedule('* * * * *', () => ChatRepository.handleGameMessages())
 }
 
+function scheduleAttachmentExpiration() {
+  const ChatRepository = require('../Repositories/Chat')
+  cron.schedule('0 0 * * *', () => ChatRepository.handleExpiredAttachments())
+}
+
 function scheduleEmails() {
   const EmailController = require('../Controllers/Http/EmailController')
   let email = new EmailController()
@@ -16,5 +21,6 @@ function scheduleEmails() {
 
 module.exports = {
   scheduleAutomaticGameMessages,
+  scheduleAttachmentExpiration,
   scheduleEmails,
 }

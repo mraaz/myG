@@ -16,6 +16,7 @@ export default class ChatInput extends React.PureComponent {
         selectedEmoji: props.selectedEmoji,
       }
     }
+    return null;
   }
 
   onKeyPressed = event => {

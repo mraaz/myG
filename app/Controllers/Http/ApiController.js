@@ -6,7 +6,11 @@ const fs = require('fs')
 const Helpers = use('Helpers')
 const fileType = require('file-type')
 const bluebird = require('bluebird')
+const User = use('App/Models/User')
+const ChatMessage = use('App/Models/ChatMessage')
+const NodeClam = require('clamscan')
 
+const S3_BUCKET_CHAT = 'mygame-media/myG chat/chat_images';
 const S3_BUCKET = 'mygame-media/user_files'
 const S3_BUCKET_DELETE = 'mygame-media'
 
@@ -25,11 +29,11 @@ AWS.config.setPromisesDependency(bluebird)
 // create S3 instance
 const s3 = new AWS.S3()
 
-const uploadFile = (buffer, name, type) => {
+const uploadFile = (bucket, buffer, name, type) => {
   const params = {
     ACL: 'public-read',
     Body: buffer,
-    Bucket: S3_BUCKET,
+    Bucket: bucket,
     ContentType: type.mime,
     Key: name,
   }
@@ -61,8 +65,23 @@ class ApiController {
 
   async uploadFile({ auth, request, response }) {
     if (auth.user) {
+
+      const isChat = !!request.input('chat');
+
+      if (isChat) {
+        if (Env.get("CHAT_UPLOAD_DISABLED")) return response.status(500).json("CHAT_UPLOAD_DISABLED");
+        const user = (await User.find(auth.user.id)).toJSON();
+        const today = new Date();
+        today.setDate(today.getDate() - 1);
+        const isRecentUser = new Date(user.created_at) > today;
+        const attachmentsToday = await ChatMessage.query().where('sender_id', auth.user.id).andWhere('is_attachment', true).andWhere('created_at', '>', today).fetch();
+        if (attachmentsToday && attachmentsToday.toJSON().length >= 10) return response.status(500).json("MAX_UPLOAD_REACHED");
+        if (isRecentUser) return response.status(500).json("USER_CREATION");
+      }
+
       var file = request.file('upload_file')
       var filename = request.input('filename')
+      const bucket = isChat ? S3_BUCKET_CHAT : S3_BUCKET;
 
       const timestamp_OG = Date.now().toString()
       var tmpfilename = auth.user.id + '_' + timestamp_OG + '_' + generateRandomString(6) + '_' + filename
@@ -76,12 +95,16 @@ class ApiController {
       await file.move(Helpers.tmpPath('uploads'), {
         name: tmpfilename,
       })
+
+      const isFileInfected = await this.isFileInfected(tmpfilepath);
+      if (isFileInfected) return response.status(500).json("FILE_INFECTED");
+
       try {
         const buffer = fs.readFileSync(tmpfilepath)
         const type = fileType(buffer)
         const timestamp = Date.now().toString()
         //const fileName = timestamp + '_' + generateRandomString(6) + '_' + filename
-        const data = await uploadFile(buffer, tmpfilename, type)
+        const data = await uploadFile(bucket, buffer, tmpfilename, type)
         fs.unlinkSync(tmpfilepath)
         return response.status(200).json(data)
       } catch (error) {
@@ -98,7 +121,7 @@ class ApiController {
           Bucket: S3_BUCKET_DELETE,
           Key: key,
         },
-        function(err, data) {
+        function (err, data) {
           if (data) {
             return response.status(200).json({ success: true })
           } else {
@@ -109,6 +132,23 @@ class ApiController {
     }
   }
 
+  async _deleteFile(key) {
+    return new Promise((resolve, reject) => {
+      s3.deleteObject(
+        {
+          Bucket: S3_BUCKET_DELETE,
+          Key: key,
+        },
+        function (err, data) {
+          if (data) {
+            resolve();
+          } else {
+            reject();
+          }
+        });
+    });
+  }
+
   async deleteFile_server({ auth, request, response }) {
     if (auth.user) {
       s3.deleteObject(
@@ -116,7 +156,7 @@ class ApiController {
           Bucket: S3_BUCKET_DELETE,
           Key: request.params.key,
         },
-        function(err, data) {
+        function (err, data) {
           if (data) {
             return response.status(200).json({ success: true })
           } else {
@@ -137,7 +177,7 @@ class ApiController {
             Bucket: S3_BUCKET_DELETE,
             Key: files[findex].key,
           },
-          function(err, data) {
+          function (err, data) {
             if (!data) {
               bFailed = true
             }
@@ -152,6 +192,18 @@ class ApiController {
       }
     }
   }
+
+  async isFileInfected(file) {
+    try {
+      const clamscan = await new NodeClam().init();
+      const { is_infected } = await clamscan.is_infected(file);
+      return is_infected;
+    } catch (error) {
+      console.error(`Failure to Scan File: ${file} - ${error}`);
+      return false;
+    }
+  }
+
 }
 
 module.exports = ApiController

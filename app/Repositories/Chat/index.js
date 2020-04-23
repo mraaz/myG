@@ -13,6 +13,7 @@ const ChatEntryLog = use('App/Models/ChatEntryLog');
 const ChatPrivateKeyRequest = use('App/Models/ChatPrivateKeyRequest');
 const ChatGameMessageSchedule = use('App/Models/ChatGameMessageSchedule');
 
+const ApiController = use('App/Controllers/Http/ApiController');
 const RedisRepository = require('../../Repositories/Redis');
 
 const ChatSchema = require('../../Schemas/Chat');
@@ -128,6 +129,7 @@ class ChatRepository {
       deleted: message.deleted,
       edited: message.edited,
       selfDestruct: message.self_destruct,
+      isAttachment: message.is_attachment,
       createdAt: message.created_at,
       updatedAt: message.updated_at,
     }));
@@ -157,6 +159,7 @@ class ChatRepository {
         deleted: message.deleted,
         edited: message.edited,
         selfDestruct: message.self_destruct,
+        isAttachment: message.is_attachment,
         createdAt: message.created_at,
         updatedAt: message.updated_at,
       }));
@@ -192,6 +195,7 @@ class ChatRepository {
       deleted: message.deleted,
       edited: message.edited,
       selfDestruct: message.self_destruct,
+      isAttachment: message.is_attachment,
       createdAt: message.created_at,
       updatedAt: message.updated_at,
     }));
@@ -459,7 +463,7 @@ class ChatRepository {
     return { contacts: fullContacts };
   }
 
-  async sendMessage({ requestingUserId, requestedChatId, senderName, backup, content, keyReceiver }) {
+  async sendMessage({ requestingUserId, requestedChatId, senderName, backup, content, keyReceiver, attachment }) {
     const { chat } = await this.fetchChat({ requestingUserId, requestedChatId });
     const messageData = {
       sender_id: requestingUserId,
@@ -467,6 +471,8 @@ class ChatRepository {
       sender_name: senderName,
       backup: backup,
       content: content,
+      attachment: attachment,
+      is_attachment: !!attachment,
       self_destruct: chat.selfDestruct,
     };
     const message = await Chat.find(requestedChatId).then(chat => chat.messages().create(messageData));
@@ -481,6 +487,7 @@ class ChatRepository {
       deleted: message.deleted,
       edited: message.edited,
       selfDestruct: message.self_destruct,
+      isAttachment: message.is_attachment,
       createdAt: message.created_at,
       updatedAt: message.updated_at,
     });
@@ -504,6 +511,7 @@ class ChatRepository {
       deleted: message.deleted,
       edited: message.edited,
       selfDestruct: message.selfDestruct,
+      isAttachment: message.is_attachment,
       createdAt: message.created_at,
       updatedAt: message.updated_at,
     });
@@ -528,6 +536,7 @@ class ChatRepository {
       deleted: message.deleted,
       edited: message.edited,
       selfDestruct: message.self_destruct,
+      isAttachment: message.is_attachment,
       createdAt: message.created_at,
       updatedAt: message.updated_at,
     });
@@ -722,6 +731,20 @@ class ChatRepository {
     chatIds.forEach(chatId => this._notifyChatEvent({ chatId, action: 'gameStarting', payload: chatId }))
     await RedisRepository.clearGameMessageSchedule({ chatIds });
     await this.clearGameMessageSchedule({ chatIds });
+  }
+
+  async handleExpiredAttachments() {
+    log('CRON', `START - HANDLE EXPIRED ATTACHMENTS`);
+    const fiveDaysAgo = new Date();
+    fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
+    const expiredAttachmentsRaw = await ChatMessage.query().where('is_attachment', true).andWhere('created_at', '<=', fiveDaysAgo).fetch();
+    const expiredAttachments = expiredAttachmentsRaw && expiredAttachmentsRaw.toJSON() || [];
+    const s3Controller = new ApiController();
+    for (const message of expiredAttachments) {
+      await ChatMessage.query().where('id', message.id).delete();
+      await s3Controller._deleteFile(message.attachment);
+    }
+    log('CRON', `END - HANDLE EXPIRED ATTACHMENTS - DELETED ${expiredAttachments.length} ATTACHMENTS`);
   }
 
   async _insertEntryLog(requestedChatId, alias, kicked, left, invited, link) {

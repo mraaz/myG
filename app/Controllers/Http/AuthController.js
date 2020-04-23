@@ -55,17 +55,25 @@ class AuthController {
       return response.redirect('back')
     } else {
       var strMsg =
-        "Special characters:\r\nUsernames can contain letters (a-z), numbers (0-9), and periods (.).\r\nUsernames cannot contain an ampersand (&), equals sign (=), underscore (_), apostrophe ('), dash (-), plus sign (+), comma (,), brackets (<,>), backtick (`), dollar sign ($), single and double quotes (') (\"). Usernames can begin or end with non-alphanumeric characters except periods (.)."
+        'Special characters:\r\nUsernames can only contain letters (a-z), numbers (0-9), and periods (.).\r\nUsernames can begin or end with non-alphanumeric characters except periods (.) and they can not have multiple periods.'
 
       try {
-        if (request.input('alias').charAt(0) == '.' || request.input('alias').includes('_')) {
+        if (request.input('alias').charAt(0) == '.' || request.input('alias').charAt(request.input('alias').length - 1) == '.') {
           session.withErrors([{ field: 'alias', message: strMsg }]).flashAll()
           return response.redirect('back')
         }
 
-        if (/[' /.%#$;`=&-+,<>\\]/.test(request.input('alias'))) {
+        if (/[' *(){}\[\]/%#|+^$?:;_`~=&-+,<>\\]/.test(request.input('alias'))) {
           session.withErrors([{ field: 'alias', message: strMsg }]).flashAll()
           return response.redirect('back')
+        }
+
+        var x = request.input('alias').toString()
+        for (var i = 0; i < x.length; i++) {
+          if (x.charCodeAt(i) > 122 || x.charCodeAt(i) < 46) {
+            session.withErrors([{ field: 'alias', message: strMsg }]).flashAll()
+            return response.redirect('back')
+          }
         }
       } catch (error) {
         console.log(error)
