@@ -93,6 +93,7 @@ Route.get('/api/ScheduleGame/delete/:id/:reason', 'ScheduleGameController.destro
 //Route.get('/api/ScheduleGame', 'ScheduleGameController.show')
 Route.get('/api/ScheduleGame/:id', 'ScheduleGameController.show_one')
 Route.post('/api/ScheduleGame/update_vacany', 'ScheduleGameController.update_vacany')
+Route.post('/api/ScheduleGame/getAdmin', 'ScheduleGameController.getAdmin')
 
 Route.get('/api/ArchiveScheduleGame/:id', 'Archive_ScheduleGameController.show_one')
 Route.get('/api/ArchiveScheduleGame/filtered_by_one/:id', 'Archive_ScheduleGameController.filtered_by_one')

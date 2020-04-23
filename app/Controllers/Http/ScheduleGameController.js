@@ -3,6 +3,7 @@
 const Database = use('Database')
 const ScheduleGame = use('App/Models/ScheduleGame')
 const ScheduleGamesTransaction = use('App/Models/ScheduleGamesTransaction')
+const CoHost = use('App/Models/CoHost')
 
 const NotificationController = use('./NotificationController')
 const Archive_AttendeeController = use('./Archive_AttendeeController')
@@ -11,7 +12,7 @@ const Archive_CommentController = use('./Archive_CommentController')
 const Archive_ReplyController = use('./Archive_ReplyController')
 const Archive_schedule_games_transController = use('./Archive_schedule_games_transController')
 const GameNameController = use('./GameNameController')
-
+const Attendee = use('App/Models/Attendee')
 const InGame_fieldsController = use('./InGame_fieldsController')
 
 class ScheduleGameController {
@@ -97,6 +98,27 @@ class ScheduleGameController {
                 game_name_fields_id: getGameNameFields[i].id,
                 values: tmpValues,
               })
+            }
+          }
+        }
+        if (request.input('autoJoin') == true) {
+          const autoJoining = await Attendee.create({
+            schedule_games_id: newScheduleGame.id,
+            user_id: auth.user.id,
+            type: 1,
+          })
+        }
+
+        if (request.input('co_hosts') != null) {
+          var arrCo_hosts = request.input('co_hosts').split(',')
+
+          if (arrCo_hosts != '') {
+            for (var i = 0; i < arrCo_hosts.length; i++) {
+              console.log(arrCo_hosts[i])
+              // const create_co_hosts = await CoHost.create({
+              //   schedule_games_id: newScheduleGame.id,
+              //   user_id: arrCo_hosts[i],
+              // })
             }
           }
         }
@@ -405,6 +427,36 @@ class ScheduleGameController {
         .where({ id: request.input('id') })
         .update({ vacancy: request.input('vacancy') })
       return 'Saved successfully'
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async getAdmin({ auth, request, response }) {
+    let isAdmin = false
+    try {
+      const getAdmin = await Database.from('schedule_games')
+        .where({ schedule_games_GUID: request.input('schedule_games_GUID'), user_id: auth.user.id })
+        .select('id')
+
+      if (getAdmin.length == 0) {
+        const getID = await Database.from('schedule_games')
+          .where({ schedule_games_GUID: request.input('schedule_games_GUID') })
+          .select('id')
+          .first()
+
+        const checkCo_host = await Database.from('co_hosts')
+          .where({ schedule_games_id: getID.id, user_id: auth.user.id })
+          .select('id')
+
+        if (checkCo_host.length > 0) {
+          isAdmin = true
+        }
+      } else {
+        isAdmin = true
+      }
+
+      return isAdmin
     } catch (error) {
       console.log(error)
     }

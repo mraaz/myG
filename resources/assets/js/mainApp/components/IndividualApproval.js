@@ -4,7 +4,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import SweetAlert from 'react-bootstrap-sweetalert'
 import { Toast_style } from './Utility_Function'
-import { joinGameGroup } from '../../common/group';
+import { joinGameGroup } from '../../common/group'
 import { acceptGameGroupInvitation } from '../../integration/http/chat'
 
 export default class IndividualApproval extends Component {
@@ -28,11 +28,12 @@ export default class IndividualApproval extends Component {
       dota_2_position_selected: false,
       not_dota_2: false,
       alert: null,
+      show_controls: false,
     }
   }
 
   componentDidMount() {
-    let { approvals } = this.props
+    let { approvals, admin } = this.props
 
     if (approvals.attendees.dota_2_position_one != '' && approvals.attendees.dota_2_position_one != null) {
       this.state.dota_2_position_one = true
@@ -57,6 +58,9 @@ export default class IndividualApproval extends Component {
     if (!this.state.dota_2_show_position) {
       this.state.not_dota_2 = true
     }
+    if (admin) {
+      this.setState({ show_controls: true })
+    }
   }
 
   clickedAccept = () => {
@@ -76,9 +80,8 @@ export default class IndividualApproval extends Component {
           `/api/attendees/update_invite/${approvals.attendees.schedule_games_id}/${approvals.attendees.user_id}`
         )
 
-        joinGameGroup(approvals.attendees.schedule_games_id, approvals.attendees.user_id);
+        joinGameGroup(approvals.attendees.schedule_games_id, approvals.attendees.user_id)
         acceptGameGroupInvitation(approvals.attendees.schedule_games_id, approvals.attendees.user_id)
-
       } else {
         const accepted_invite = axios.post(
           `/api/attendees/update_invite/${approvals.attendees.schedule_games_id}/${approvals.attendees.user_id}`,
@@ -91,9 +94,8 @@ export default class IndividualApproval extends Component {
           }
         )
 
-        joinGameGroup(approvals.attendees.schedule_games_id, approvals.attendees.user_id);
+        joinGameGroup(approvals.attendees.schedule_games_id, approvals.attendees.user_id)
         acceptGameGroupInvitation(approvals.attendees.schedule_games_id, approvals.attendees.user_id)
-
       }
       if (approvals.schedule_games.limit != 42) {
         const getNumberofAttendees = await axios.get(`/api/attendees/attending/${approvals.attendees.schedule_games_id}`)
@@ -295,129 +297,154 @@ export default class IndividualApproval extends Component {
       show_profile_img = true
     }
 
-    return (
-      <div className='scheduledGamesApprovals-info'>
-        {this.state.alert}{' '}
-        {show_profile_img && (
-          <Link
-            to={`/profile/${approvals.users.alias}`}
-            className='user-img'
-            style={{
-              backgroundImage: `url('${approvals.users.profile_img}')`,
-            }}></Link>
-        )}
-        {!show_profile_img && (
-          <Link
-            to={`/profile/${approvals.users.alias}`}
-            className='user-img'
-            style={{
-              backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/default_user/new-user-profile-picture.png')`,
-            }}></Link>
-        )}
-        <div className='user-info'>{`${approvals.users.alias}`}</div>
-        {this.state.dota_2_show_position && <div className='dota_2_position'>Positions: </div>}
-        {!this.state.dota_2_position_one && <div className='dota_2_position_dummy'></div>}
-        {this.state.dota_2_position_one && (
-          <div className='dota_2_position_one' onClick={() => this.clickUpdatePosition(1)}>
-            <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-one-key-first-3-512.png'
-              height='40'
-              width='40'></img>
-          </div>
-        )}
-        {this.state.dota_2_position_one_ticked && (
-          <div className='dota_2_position_one' onClick={() => this.clickUpdatePosition(-1)}>
-            <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-one-key-first-3-512-Ticked.png'
-              height='40'
-              width='40'></img>{' '}
-          </div>
-        )}
-        {this.state.dota_2_position_two && (
-          <div className='dota_2_position_two' onClick={() => this.clickUpdatePosition(2)}>
-            <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-two-key-3-512.png'
-              height='40'
-              width='40'></img>{' '}
-          </div>
-        )}
-        {this.state.dota_2_position_two_ticked && (
-          <div className='dota_2_position_two' onClick={() => this.clickUpdatePosition(-2)}>
-            <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-two-key-3-512-Ticked.png'
-              height='40'
-              width='40'></img>{' '}
-          </div>
-        )}
-        {this.state.dota_2_position_three && (
-          <div className='dota_2_position_three' onClick={() => this.clickUpdatePosition(3)}>
-            <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-three-keyboard-3-512.png'
-              height='40'
-              width='40'></img>{' '}
-          </div>
-        )}
-        {this.state.dota_2_position_three_ticked && (
-          <div className='dota_2_position_three' onClick={() => this.clickUpdatePosition(-3)}>
-            <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-three-keyboard-3-512-Ticked.png'
-              height='40'
-              width='40'></img>{' '}
-          </div>
-        )}
-        {this.state.dota_2_position_four && (
-          <div className='dota_2_position_four' onClick={() => this.clickUpdatePosition(4)}>
-            <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-four-keyboard-3-512.png'
-              height='40'
-              width='40'></img>{' '}
-          </div>
-        )}
-        {this.state.dota_2_position_four_ticked && (
-          <div className='dota_2_position_four' onClick={() => this.clickUpdatePosition(-4)}>
-            <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-four-keyboard-3-512-Ticked.png'
-              height='40'
-              width='40'></img>{' '}
-          </div>
-        )}
-        {this.state.dota_2_position_five && (
-          <div className='dota_2_position_five' onClick={() => this.clickUpdatePosition(5)}>
-            <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-five-keyboard-3-512.png'
-              height='40'
-              width='40'></img>{' '}
-          </div>
-        )}
-        {this.state.dota_2_position_five_ticked && (
-          <div className='dota_2_position_five' onClick={() => this.clickUpdatePosition(-5)}>
-            <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-five-keyboard-3-512-Ticked.png'
-              height='40'
-              width='40'></img>{' '}
-          </div>
-        )}
-        <div className='invitiation-options'>
-          {this.state.actionClicked && (
-            <div className='invitation-accept' onClick={this.clickedAccept}>
-              Accept &nbsp;&nbsp;
+    if (this.state.show_controls) {
+      return (
+        <div className='scheduledGamesApprovals-info'>
+          {this.state.alert}{' '}
+          {show_profile_img && (
+            <Link
+              to={`/profile/${approvals.users.alias}`}
+              className='user-img'
+              style={{
+                backgroundImage: `url('${approvals.users.profile_img}')`,
+              }}></Link>
+          )}
+          {!show_profile_img && (
+            <Link
+              to={`/profile/${approvals.users.alias}`}
+              className='user-img'
+              style={{
+                backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/default_user/new-user-profile-picture.png')`,
+              }}></Link>
+          )}
+          <div className='user-info'>{`${approvals.users.alias}`}</div>
+          {this.state.dota_2_show_position && <div className='dota_2_position'>Positions: </div>}
+          {!this.state.dota_2_position_one && <div className='dota_2_position_dummy'></div>}
+          {this.state.dota_2_position_one && (
+            <div className='dota_2_position_one' onClick={() => this.clickUpdatePosition(1)}>
+              <img
+                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-one-key-first-3-512.png'
+                height='40'
+                width='40'></img>
             </div>
           )}
-          {this.state.actionClicked && (
-            <div className='invitation-deny' onClick={this.clickedDenied}>
-              Deny&nbsp;&nbsp;
+          {this.state.dota_2_position_one_ticked && (
+            <div className='dota_2_position_one' onClick={() => this.clickUpdatePosition(-1)}>
+              <img
+                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-one-key-first-3-512-Ticked.png'
+                height='40'
+                width='40'></img>{' '}
             </div>
           )}
-          {this.state.actionClickedAccept && <div className='invitation-accepted'>Accepted! &nbsp;&nbsp;</div>}
-          {this.state.actionClickedDeny && <div className='invitation-denied'>Denied! &nbsp;&nbsp;</div>}
+          {this.state.dota_2_position_two && (
+            <div className='dota_2_position_two' onClick={() => this.clickUpdatePosition(2)}>
+              <img
+                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-two-key-3-512.png'
+                height='40'
+                width='40'></img>{' '}
+            </div>
+          )}
+          {this.state.dota_2_position_two_ticked && (
+            <div className='dota_2_position_two' onClick={() => this.clickUpdatePosition(-2)}>
+              <img
+                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-two-key-3-512-Ticked.png'
+                height='40'
+                width='40'></img>{' '}
+            </div>
+          )}
+          {this.state.dota_2_position_three && (
+            <div className='dota_2_position_three' onClick={() => this.clickUpdatePosition(3)}>
+              <img
+                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-three-keyboard-3-512.png'
+                height='40'
+                width='40'></img>{' '}
+            </div>
+          )}
+          {this.state.dota_2_position_three_ticked && (
+            <div className='dota_2_position_three' onClick={() => this.clickUpdatePosition(-3)}>
+              <img
+                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-three-keyboard-3-512-Ticked.png'
+                height='40'
+                width='40'></img>{' '}
+            </div>
+          )}
+          {this.state.dota_2_position_four && (
+            <div className='dota_2_position_four' onClick={() => this.clickUpdatePosition(4)}>
+              <img
+                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-four-keyboard-3-512.png'
+                height='40'
+                width='40'></img>{' '}
+            </div>
+          )}
+          {this.state.dota_2_position_four_ticked && (
+            <div className='dota_2_position_four' onClick={() => this.clickUpdatePosition(-4)}>
+              <img
+                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-four-keyboard-3-512-Ticked.png'
+                height='40'
+                width='40'></img>{' '}
+            </div>
+          )}
+          {this.state.dota_2_position_five && (
+            <div className='dota_2_position_five' onClick={() => this.clickUpdatePosition(5)}>
+              <img
+                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-five-keyboard-3-512.png'
+                height='40'
+                width='40'></img>{' '}
+            </div>
+          )}
+          {this.state.dota_2_position_five_ticked && (
+            <div className='dota_2_position_five' onClick={() => this.clickUpdatePosition(-5)}>
+              <img
+                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-five-keyboard-3-512-Ticked.png'
+                height='40'
+                width='40'></img>{' '}
+            </div>
+          )}
+          <div className='invitiation-options'>
+            {this.state.actionClicked && (
+              <div className='invitation-accept' onClick={this.clickedAccept}>
+                Accept &nbsp;&nbsp;
+              </div>
+            )}
+            {this.state.actionClicked && (
+              <div className='invitation-deny' onClick={this.clickedDenied}>
+                Deny&nbsp;&nbsp;
+              </div>
+            )}
+            {this.state.actionClickedAccept && <div className='invitation-accepted'>Accepted! &nbsp;&nbsp;</div>}
+            {this.state.actionClickedDeny && <div className='invitation-denied'>Denied! &nbsp;&nbsp;</div>}
+          </div>
+          {!lastRow && (
+            <div className='line-break'>
+              <hr />
+            </div>
+          )}
+          {lastRow && <div className='last-row'></div>}
         </div>
-        {!lastRow && (
-          <div className='line-break'>
-            <hr />
-          </div>
-        )}
-        {lastRow && <div className='last-row'></div>}
-      </div>
-    )
+      )
+    } else {
+      return (
+        <div className='scheduledGamesApprovals-info'>
+          {this.state.alert}{' '}
+          {show_profile_img && (
+            <Link
+              to={`/profile/${approvals.users.alias}`}
+              className='user-img'
+              style={{
+                backgroundImage: `url('${approvals.users.profile_img}')`,
+              }}></Link>
+          )}
+          {!show_profile_img && (
+            <Link
+              to={`/profile/${approvals.users.alias}`}
+              className='user-img'
+              style={{
+                backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/default_user/new-user-profile-picture.png')`,
+              }}></Link>
+          )}
+          <div className='user-info'>{`${approvals.users.alias}`}</div>
+        </div>
+      )
+    }
   }
 }
