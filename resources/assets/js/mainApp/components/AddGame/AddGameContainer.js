@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { toast } from 'react-toastify'
+import moment from 'moment'
 
 import { PageHeader, MyGButton, MyGModal, MyGInput } from '../common'
 import { styles, SETTINGS_ENUMS } from '../../static/AddGame'
@@ -30,7 +31,7 @@ const AddGameContainer = () => {
   const [mainSettingsState, updateMainSettingsState] = useState({
     gameTitlesList: [],
     gameTitle: null,
-    startTime: null,
+    startTime: moment(),
     endTime: null,
     isEndGameFieldSelected: false,
     isRepeatFieldSelected: false,

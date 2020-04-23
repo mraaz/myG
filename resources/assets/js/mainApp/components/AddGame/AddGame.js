@@ -1,6 +1,8 @@
 import React, { Fragment, useState } from 'react'
 import classNames from 'classnames'
 import Slider, { Range } from 'rc-slider'
+import moment from 'moment'
+
 import 'rc-slider/assets/index.css'
 import { toast } from 'react-toastify'
 
@@ -219,7 +221,7 @@ const AddGame = ({
             height='20'
             width='20'
             onClick={() => {
-              updateMainSettingsState({
+              updateMainSettings({
                 isEndGameFieldSelected: false,
                 endTime: null,
               })
@@ -237,8 +239,11 @@ const AddGame = ({
           <div className={styles.optionalEndContainer}>
             <div
               className={styles.optionalText}
-              onClick={(value) => {
-                updateMainSettings({ isEndGameFieldSelected: true })
+              onClick={() => {
+                updateMainSettings({
+                  isEndGameFieldSelected: true,
+                  endTime: moment(mainSettingsState.startTime).add(2, 'days'),
+                })
               }}>
               Add End Time
             </div>
