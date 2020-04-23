@@ -10,6 +10,8 @@ export default class ScheduledGamesApprovals extends Component {
     this.state = {
       start_date: '',
       show_game_header: false,
+      admin: false,
+      stupid_state_to_force_re_render: false,
     }
   }
 
@@ -38,6 +40,29 @@ export default class ScheduledGamesApprovals extends Component {
         console.log(error)
       }
     }
+
+    const getAdmins = async function() {
+      try {
+        const getScheduleGameAdmins = await axios.post('/api/ScheduleGame/getAdmin', {
+          schedule_games_GUID: match.params.id,
+        })
+
+        if (getScheduleGameAdmins.data) {
+          self.setState({
+            admin: true,
+            stupid_state_to_force_re_render: true,
+          })
+        } else {
+          self.setState({
+            stupid_state_to_force_re_render: true,
+          })
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    getAdmins()
     getScheduleGameInvites()
   }
 
@@ -56,7 +81,7 @@ export default class ScheduledGamesApprovals extends Component {
         if (this.state.myInvites.length === index + 1) {
           lastRow = true
         }
-        return <IndividualApproval approvals={item} key={index} lastRow={lastRow} />
+        return <IndividualApproval approvals={item} key={index} lastRow={lastRow} admin={this.state.admin} />
       })
     }
   }
@@ -80,7 +105,9 @@ export default class ScheduledGamesApprovals extends Component {
                 )}
                 {!this.state.show_game_header && <h3>myApprovals</h3>}
                 <div className='padding-container'></div>
-                <div className='scheduledGamesApprovals-container'>{this.showApprovals()}</div>
+                <div className='scheduledGamesApprovals-container'>
+                  {this.state.stupid_state_to_force_re_render && this.showApprovals()}
+                </div>
               </div>
             </div>
           </div>

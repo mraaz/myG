@@ -8,7 +8,6 @@ export async function SubmitDataFunction(myG) {
   var myRegion = ''
   var myExperience = ''
   var myPlatform = ''
-  var myVisibility = 1
   var myLimit = 42
   var myDota2_medal_ranks = ''
   var myDota2_server_regions = ''
@@ -16,6 +15,10 @@ export async function SubmitDataFunction(myG) {
   var myClash_royale_trophies = ''
   var now = moment()
   var end_date = myG.endDate
+  let autoJoin = true,
+    co_hosts2 = [101, 103, 102],
+    repeat_game = undefined,
+    co_hosts = null
 
   if (myG.selected_region != undefined && myG.selected_region !== null && myG.selected_region.length !== 0) {
     myRegion = Convert_to_comma_delimited_value(myG.selected_region)
@@ -29,6 +32,10 @@ export async function SubmitDataFunction(myG) {
     myPlatform = Convert_to_comma_delimited_value(myG.selected_platform)
   }
 
+  if (co_hosts2 !== undefined && co_hosts2 !== null && co_hosts2.length !== 0) {
+    co_hosts = Convert_to_comma_delimited_value(co_hosts2)
+  }
+
   if (myG.endDate != null || myG.endDate != undefined) {
     now = moment(myG.endDate)
     now.add(8, 'hour')
@@ -37,10 +44,6 @@ export async function SubmitDataFunction(myG) {
     end_date = moment(now)
     end_date.add(18, 'hour')
     now.add(18, 'hour')
-  }
-
-  if (myG.selected_visibility != null || myG.selected_visibility != undefined) {
-    myVisibility = myG.selected_visibility.value
   }
 
   if (myG.selected_limit != null || myG.selected_limit != undefined) {
@@ -63,11 +66,15 @@ export async function SubmitDataFunction(myG) {
     myDota2_roles = Convert_to_comma_delimited_value(myG.dota2_roles)
   }
 
+  if (myG.autoJoin != null || myG.autoJoin != undefined) {
+    autoJoin = myG.autoJoin.value
+  }
+
   const uuidv1 = require('uuid/v1')
   var tmp = uuidv1()
 
   try {
-    const post = axios.post('/api/ScheduleGame', {
+    const post = await axios.post('/api/ScheduleGame', {
       game_name_box: myG.game_name_box.value,
       selected_region: myRegion,
       selected_experience: myExperience,
@@ -76,8 +83,8 @@ export async function SubmitDataFunction(myG) {
       selected_platform: myPlatform,
       description_box: myG.description_box,
       selected_expiry: now.format('YYYY-MM-DD HH:mm:ssZ'),
-      visibility: myVisibility,
-      limit: myLimit,
+      visibility: myG.selected_visibility,
+      limit: 2,
       accept_msg: myG.txtAreaValue.trim(),
       dota2_medal_ranks: myDota2_medal_ranks,
       dota2_server_regions: myDota2_server_regions,
@@ -85,7 +92,12 @@ export async function SubmitDataFunction(myG) {
       schedule_games_GUID: tmp,
       clash_royale_trophies: myClash_royale_trophies,
       allow_comments: myG.allow_comments,
+      autoJoin: autoJoin,
+      co_hosts: co_hosts,
+      repeat_game: repeat_game,
     })
+    console.log(post)
+    return post
   } catch (error) {
     throw error
   }
