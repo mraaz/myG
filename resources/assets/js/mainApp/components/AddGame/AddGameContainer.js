@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react'
 import { toast } from 'react-toastify'
 import moment from 'moment'
+import classNames from 'classnames'
 
 import { PageHeader, MyGButton, MyGModal, MyGInput } from '../common'
 import { styles, SETTINGS_ENUMS } from '../../static/AddGame'
@@ -48,24 +49,38 @@ const AddGameContainer = () => {
   })
   const gameLinkRef = useRef(null)
 
+  // Handlers
+  const isButtonDisabled = () => {
+    return (
+      mainSettingsState.gameTitle == null ||
+      mainSettingsState.startTime == null ||
+      mainSettingsState.startTime.isSameOrAfter(mainSettingsState.endTime)
+    )
+  }
+
+  const onCancelInviteClick = () => {
+    updateIsInviteModalOpen(false)
+    updateIsGameListedModalOpen(true)
+  }
+
   const onAddGameSubmit = async () => {
     updateIsSubmitting(false)
-    if (mainSettingsState.gameTitle == null) {
-      toast.success(<Toast_style text={'Sorry mate! Game name can not be blank'} />)
-      updateIsSubmitting(false)
-      return
-    }
-    if (mainSettingsState.startTime == null) {
-      toast.success(<Toast_style text={'Sorry mate! Start date can not be empty'} />)
-      updateIsSubmitting(false)
-      return
-    }
+    // if (mainSettingsState.gameTitle == null) {
+    //   toast.success(<Toast_style text={'Sorry mate! Game name can not be blank'} />)
+    //   updateIsSubmitting(false)
+    //   return
+    // }
+    // if (mainSettingsState.startTime == null) {
+    //   toast.success(<Toast_style text={'Sorry mate! Start date can not be empty'} />)
+    //   updateIsSubmitting(false)
+    //   return
+    // }
 
-    if (mainSettingsState.startTime.isSameOrAfter(mainSettingsState.endTime)) {
-      toast.success(<Toast_style text={'Sorry mate! End date needs to be AFTER start date'} />)
-      updateIsSubmitting(false)
-      return
-    }
+    // if (mainSettingsState.startTime.isSameOrAfter(mainSettingsState.endTime)) {
+    //   toast.success(<Toast_style text={'Sorry mate! End date needs to be AFTER start date'} />)
+    //   updateIsSubmitting(false)
+    //   return
+    // }
 
     try {
       await SubmitDataFunction({
@@ -87,7 +102,6 @@ const AddGameContainer = () => {
       })
       updateIsGameListedModalOpen(true)
     } catch (err) {
-      console.log('error on submit: ', err)
       updateIsSubmitting(false)
     }
   }
@@ -95,7 +109,9 @@ const AddGameContainer = () => {
   const getPageFooter = () => {
     return (
       <div className={styles.footerContainer}>
-        <div className={styles.footerSubmitButton} onClick={isSubmitting ? null : onAddGameSubmit}>
+        <div
+          className={classNames([styles.footerSubmitButton, isButtonDisabled() ? styles.footerSubmitButtonLight : ''])}
+          onClick={isSubmitting ? null : onAddGameSubmit}>
           Add Game
         </div>
       </div>
@@ -117,9 +133,10 @@ const AddGameContainer = () => {
     updateIsInvitesSentsModalOpen(true)
   }
 
+  // Views
   const getGameListedModal = () => {
     return (
-      <MyGModal isOpen={isGameListedModalOpen}>
+      <MyGModal isOpen ariaHideApp={false}>
         <div className={styles.listedTopContentContainer}>
           <div className={styles.listedHeader}>Your Game is now listed!</div>
           <div className={styles.listedShareText}>Share the below link or invite players directly</div>
@@ -128,7 +145,7 @@ const AddGameContainer = () => {
             containerStyles={{ width: '237px' }}
             inputStyles={{ width: '100%', outline: 'none' }}
             refInput={gameLinkRef}
-            readonly>
+            readOnly>
             <div style={{ marginTop: '9px', marginLeft: '15px', cursor: 'pointer' }} onClick={copyToClipboard}>
               <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Link.svg' height='18' width='18' />
             </div>
@@ -145,7 +162,7 @@ const AddGameContainer = () => {
 
   const getInvitesSentModal = () => {
     return (
-      <MyGModal isOpen={isInvitesSentsModalOpen}>
+      <MyGModal isOpen ariaHideApp={false}>
         <div className={styles.listedTopContentContainer}>
           <div className={styles.listedHeader}>Invites sent!</div>
           <div className={styles.listedShareText}>Invites have been sent out successfully!</div>
@@ -174,9 +191,9 @@ const AddGameContainer = () => {
         updateIsSubmitting={updateIsSubmitting}
       />
       {getPageFooter()}
-      {getGameListedModal()}
-      {getInvitesSentModal()}
-      <InvitePlayers isOpen={isInviteModalOpen} onInvitationSent={onInvitationSent} />
+      {isGameListedModalOpen && getGameListedModal()}
+      {isInvitesSentsModalOpen && getInvitesSentModal()}
+      {isInviteModalOpen && <InvitePlayers onInvitationSent={onInvitationSent} onCancelInviteClick={onCancelInviteClick} />}
     </div>
   )
 }

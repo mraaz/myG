@@ -24,10 +24,10 @@ const MENU_OPTIONS = {
   COMMUNITIES: 'COMMUNITIES',
 }
 
-const InvitePlayers = ({ isOpen, onInvitationSent }) => {
+const InvitePlayers = ({ onInvitationSent, onCancelInviteClick }) => {
   const [selectedMenu, updateSelectedMenu] = useState(MENU_OPTIONS.PLAYERS)
   const [showOptions, updateShowOptions] = useState({
-    'Selected Players': false,
+    'Selected Gamers': false,
     'Selected Groups': false,
     'Selected Communities': false,
   })
@@ -43,7 +43,7 @@ const InvitePlayers = ({ isOpen, onInvitationSent }) => {
   // Groups
   const [groupsKeywordSearchResults, updateGroupsKeywordSearchResults] = useState({
     searchResults: {},
-    groupList: [],
+    groupsList: [],
     totalGroups: 0,
   })
   const [selectedGroups, updateSelectedGroups] = useState({})
@@ -116,7 +116,7 @@ const InvitePlayers = ({ isOpen, onInvitationSent }) => {
     return (
       <div className='invite-players__footer-container'>
         <MyGButton customStyles={{ color: '#000', backgroundColor: '#E5C746' }} text='Invite' onClick={submitInvitation} />
-        <MyGButton customStyles={{ color: '#E5C746', border: '2px solid' }} text='Cancel' />
+        <MyGButton customStyles={{ color: '#E5C746', border: '2px solid' }} text='Cancel' onClick={onCancelInviteClick} />
       </div>
     )
   }
@@ -151,7 +151,7 @@ const InvitePlayers = ({ isOpen, onInvitationSent }) => {
 
   const fetchMoreData = async () => {
     await updateCounter(counter + 10)
-    const getKeywordSearchResults = async function() {
+    const getKeywordSearchResults = async function () {
       try {
         const response = await axios.post('/api/friends/allmyFriends', {
           counter,
@@ -174,7 +174,7 @@ const InvitePlayers = ({ isOpen, onInvitationSent }) => {
   }
 
   const fetchCommunitiesData = async () => {
-    const getmyGroups = async function() {
+    const getmyGroups = async function () {
       try {
         const {
           data: { myGroups },
@@ -186,7 +186,7 @@ const InvitePlayers = ({ isOpen, onInvitationSent }) => {
       }
     }
 
-    const getGroups_im_in = async function() {
+    const getGroups_im_in = async function () {
       try {
         const {
           data: { groups_im_in },
@@ -234,6 +234,7 @@ const InvitePlayers = ({ isOpen, onInvitationSent }) => {
         }
       })
     } else {
+      console.log('updateSelected: ', playerId)
       updateSelectedPlayers((currentData) => ({
         ...currentData,
         [playerId]: keywordSearchResults.searchResults[playerId],
@@ -322,7 +323,8 @@ const InvitePlayers = ({ isOpen, onInvitationSent }) => {
       const {
         data: { groupSearchResults },
       } = await axios.get(`/api/groups?groupName=${value}`)
-      updateGroupsSuggestions(groupSearchResults)
+      const parsedData = parseGroupsToSelectData(groupSearchResults)
+      return parsedData
     } catch (error) {
       console.log(error)
     }
@@ -472,13 +474,16 @@ const InvitePlayers = ({ isOpen, onInvitationSent }) => {
           selectedCommunities={selectedCommunities}
           updateShowOptions={updateShowOptions}
           showOptions={showOptions}
+          onCommunityClick={onCommunityClick}
+          onGroupClick={onGroupClick}
+          onPlayerClick={onPlayerClick}
         />
       </div>
     )
   }
 
   return (
-    <MyGModal isOpen={isOpen}>
+    <MyGModal isOpen ariaHideApp={false}>
       <div className='invite-players__container'>
         {getHeader()}
         {getContent()}
