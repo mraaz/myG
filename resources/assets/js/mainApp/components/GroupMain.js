@@ -86,10 +86,11 @@ export default class GroupMain extends Component {
     const self = this
 
     const getmyGroups = async function() {
+      var counter = 1
       try {
-        const getmyGroups = await axios.get('/api/groups/view')
+        const getmyGroups = await axios.get(`/api/groups/view/${counter}`)
         self.setState({
-          myGroups: getmyGroups.data.myGroups,
+          myGroups: getmyGroups.data.myGroups.data,
         })
       } catch (error) {
         console.log(error)
@@ -97,10 +98,11 @@ export default class GroupMain extends Component {
     }
 
     const getGroups_im_in = async function() {
+      var counter = 1
       try {
-        const getGroups_im_in = await axios.get('/api/usergroup/view')
+        const getGroups_im_in = await axios.get(`/api/usergroup/view/${counter}`)
         self.setState({
-          groups_im_in: getGroups_im_in.data.groups_im_in,
+          groups_im_in: getGroups_im_in.data.groups_im_in.data,
         })
       } catch (error) {
         console.log(error)

@@ -58,9 +58,11 @@ class GroupController {
 
   async myshow({ auth, request, response }) {
     try {
-      const myGroups = await Database.from('groups').where({
-        user_id: auth.user.id,
-      })
+      const myGroups = await Database.from('groups')
+        .where({
+          user_id: auth.user.id,
+        })
+        .paginate(request.params.counter, 10)
 
       return {
         myGroups,
