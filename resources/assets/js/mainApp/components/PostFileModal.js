@@ -401,7 +401,8 @@ export default class PostFileModal extends Component {
                 <input type='text' id='searchInput' onChange={this.getSearchGroup} value={searchText} placeholder='Search here ...' />
               </div>
               <div className='people_group_list_box'>
-                {groups_im_in.length > 0 &&
+                {groups_im_in &&
+                  groups_im_in.length > 0 &&
                   groups_im_in.map((group_in, index) => {
                     return (
                       <div className='list__item' key={`${group_in.name}_${group_in.id}_${index}`}>
