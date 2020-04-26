@@ -55,6 +55,7 @@ export default class ChatMessage extends React.Component {
     const directionStyle = `chat-component-message-options-menu-${this.shouldRenderOptionsUpwards() ? 'upwards' : 'downwards'}`;
     return (
       <div className={`chat-component-message-options-menu ${origin === "sent" ? sentStyle : receivedStyle} ${directionStyle}`}>
+        
         {!this.props.message.isAttachment &&
           <div
             className="chat-component-message-options-row clickable"
@@ -69,13 +70,25 @@ export default class ChatMessage extends React.Component {
             <p className="chat-component-message-options-label">{origin === 'sent' ? 'edit' : 'copy'}</p>
           </div>
         }
+
+        {this.props.message.isAttachment &&
+          <div
+            className="chat-component-message-options-row clickable"
+            onClick={() => window.open(this.getAttachment(this.props.message.content))}
+          >
+            <p className="chat-component-message-options-label">download</p>
+          </div>
+        }
+
         <div className={`chat-component-message-options-row-divider ${origin === "received" ? sentStyle : receivedStyle}`} />
+        
         <div
           className="chat-component-message-options-row clickable"
           onClick={() => this.props.deleteMessage(this.props.chatId, this.props.messageId, origin)}
         >
           <p className="chat-component-message-options-label">delete</p>
         </div>
+
       </div>
     )
   }
@@ -126,6 +139,10 @@ export default class ChatMessage extends React.Component {
   colorMessage = (id) => {
     const colors = ['#F99', '#9F9', '#99F', '#FF9', '#9FF', '#F9F'];
     return colors[parseInt(id % colors.length)];
+  }
+
+  getAttachment = (content) => {
+    return content.split('myg-image|')[1] || content.split('myg-sound|')[1] || content.split('myg-video|')[1] || null;
   }
 
   renderMessage = (content) => {
