@@ -114,11 +114,10 @@ class ScheduleGameController {
 
           if (arrCo_hosts != '') {
             for (var i = 0; i < arrCo_hosts.length; i++) {
-              console.log(arrCo_hosts[i])
-              // const create_co_hosts = await CoHost.create({
-              //   schedule_games_id: newScheduleGame.id,
-              //   user_id: arrCo_hosts[i],
-              // })
+              const create_co_hosts = await CoHost.create({
+                schedule_games_id: newScheduleGame.id,
+                user_id: arrCo_hosts[i],
+              })
             }
           }
         }

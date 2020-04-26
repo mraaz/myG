@@ -16,7 +16,6 @@ export async function SubmitDataFunction(myG) {
   var now = moment()
   var end_date = myG.endDate
   let autoJoin = true,
-    co_hosts2 = [101, 103, 102],
     repeat_game = undefined,
     co_hosts = null
 
@@ -32,8 +31,8 @@ export async function SubmitDataFunction(myG) {
     myPlatform = Convert_to_comma_delimited_value(myG.selected_platform)
   }
 
-  if (co_hosts2 !== undefined && co_hosts2 !== null && co_hosts2.length !== 0) {
-    co_hosts = Convert_to_comma_delimited_value(co_hosts2)
+  if (co_hosts !== undefined && co_hosts !== null && co_hosts.length !== 0) {
+    co_hosts = Convert_to_comma_delimited_value(co_hosts)
   }
 
   if (myG.endDate != null || myG.endDate != undefined) {
@@ -84,7 +83,7 @@ export async function SubmitDataFunction(myG) {
       description_box: myG.description_box,
       selected_expiry: now.format('YYYY-MM-DD HH:mm:ssZ'),
       visibility: myG.selected_visibility,
-      limit: 2,
+      limit: myLimit,
       accept_msg: myG.txtAreaValue.trim(),
       dota2_medal_ranks: myDota2_medal_ranks,
       dota2_server_regions: myDota2_server_regions,
@@ -96,7 +95,6 @@ export async function SubmitDataFunction(myG) {
       co_hosts: co_hosts,
       repeat_game: repeat_game,
     })
-    console.log(post)
     return post
   } catch (error) {
     throw error
