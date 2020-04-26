@@ -741,7 +741,7 @@ class ChatRepository {
     const expiredAttachments = expiredAttachmentsRaw && expiredAttachmentsRaw.toJSON() || [];
     const s3Controller = new ApiController();
     for (const message of expiredAttachments) {
-      await ChatMessage.query().where('id', message.id).delete();
+      await this.deleteMessage({ requestingUserId: message.sender_id, requestedChatId: message.chat_id, requestedMessageId: message.id });
       await s3Controller._deleteFile(message.attachment);
     }
     log('CRON', `END - HANDLE EXPIRED ATTACHMENTS - DELETED ${expiredAttachments.length} ATTACHMENTS`);

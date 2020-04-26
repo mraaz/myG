@@ -145,6 +145,11 @@ export default class ChatMessage extends React.Component {
     return content.split('myg-image|')[1] || content.split('myg-sound|')[1] || content.split('myg-video|')[1] || null;
   }
 
+  getAttachmentName = (content) => {
+    const attachment = this.getAttachment(content);
+    return attachment.split('chat_images/')[1];
+  }
+
   renderMessage = (content) => {
     const isImage = content.includes('myg-image');
     const isSound = content.includes('myg-sound');
@@ -251,6 +256,7 @@ export default class ChatMessage extends React.Component {
             <div className={`chat-component-message-content`}>
               {
                 message.deleted ?
+                  message.isAttachment ? `The file ${this.getAttachmentName(message.content)} was automatically deleted.` :
                   origin === 'sent' ?
                     'You deleted this message' :
                     'This message was deleted'

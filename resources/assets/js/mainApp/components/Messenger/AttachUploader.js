@@ -11,15 +11,17 @@ export default class AttachUploader extends React.PureComponent {
     loading: false
   }
 
-  handleSubmit = async (_, allFiles) => {
+  handleSubmit = async (_, status, allFiles) => {
+    if (status !== "done") return;
+
     this.setState({ loading: true });
 
     const file = allFiles[0].file;
     const name = allFiles[0].meta.name;
     const type = allFiles[0].meta.type;
-    const mygType = type.includes('image') ?  'image' : type.includes('video') ? 'video' : 'sound';
+    const mygType = type.includes('image') ? 'image' : type.includes('video') ? 'video' : 'sound';
 
-    const formData = new FormData()
+    const formData = new FormData();
     formData.append('upload_file', file);
     formData.append('filename', name);
     formData.append('chat', true);
@@ -44,7 +46,7 @@ export default class AttachUploader extends React.PureComponent {
 
   render() {
     if (this.state.loading) {
-      return(
+      return (
         <div className="chat-component-attach-window-loading">
           <p className="chat-component-attach-window-loading-hint">Uploading Your File...</p>
           <LoadingIndicator color={'#F0F0F0'} />
@@ -53,10 +55,11 @@ export default class AttachUploader extends React.PureComponent {
     }
     return (
       <Dropzone
-        onSubmit={this.handleSubmit}
         accept="image/*,audio/*,video/*"
         maxFiles={1}
         maxSizeBytes={10485760}
+        PreviewComponent={null}
+        onChangeStatus={this.handleSubmit}
         styles={{
           dropzone: {
             justifyContent: 'center',
