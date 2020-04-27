@@ -20,6 +20,7 @@ const styles = {
   footerContainer: 'add-game__footer-container',
   footerCancelButton: 'add-game__footer-cancel-button',
   footerSubmitButton: 'add-game__footer-submit-button',
+  footerSubmitButtonLight: 'add-game__footer-submit-button-light',
   mainViewContainer: 'add-game__main-view-container',
   optionalViewContainer: 'add-game__optional-view-container',
   optionalHeaderContainer: 'add-game__optional-header-container',

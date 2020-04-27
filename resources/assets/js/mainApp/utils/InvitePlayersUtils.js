@@ -1,3 +1,5 @@
+import React from 'react'
+
 const normalizePlayersData = (data) => {
   const itemsArray = []
   const dataObj = {}
@@ -76,7 +78,12 @@ const parsePlayersToSelectData = (data) => {
   if (data && data.length) {
     data.forEach((player) => {
       selectData.push({
-        label: player.first,
+        label: (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <img style={{ display: 'inline', marginRight: '10px', borderRadius: '30px' }} src={player.profile_img} height={20} width={20} />
+            <div style={{ display: 'inline' }}>{player.first}</div>
+          </div>
+        ),
         id: player.id,
         value: player.first,
       })
@@ -91,7 +98,17 @@ const parseCommunitiesToSelectData = (data) => {
   if (data && data.length) {
     data.forEach((community) => {
       selectData.push({
-        label: community.name,
+        label: (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <img
+              style={{ display: 'inline', marginRight: '10px', borderRadius: '30px' }}
+              src={community.group_img}
+              height={20}
+              width={20}
+            />
+            <div style={{ display: 'inline' }}>{community.name}</div>
+          </div>
+        ),
         id: community.id,
         value: community.name,
       })
@@ -101,4 +118,31 @@ const parseCommunitiesToSelectData = (data) => {
   return selectData
 }
 
-export { normalizePlayersData, normalizeCommunitiesData, normalizeGroupsData, parseCommunitiesToSelectData, parsePlayersToSelectData }
+const parseGroupsToSelectData = (data) => {
+  const selectData = []
+  if (data && data.length) {
+    data.forEach((group) => {
+      selectData.push({
+        label: (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <img style={{ display: 'inline', marginRight: '10px', borderRadius: '30px' }} src={group.icon} height={20} width={20} />
+            <div style={{ display: 'inline' }}>{group.title}</div>
+          </div>
+        ),
+        id: group.chatId,
+        value: group.title,
+      })
+    })
+  }
+
+  return selectData
+}
+
+export {
+  normalizePlayersData,
+  normalizeCommunitiesData,
+  normalizeGroupsData,
+  parseCommunitiesToSelectData,
+  parsePlayersToSelectData,
+  parseGroupsToSelectData,
+}
