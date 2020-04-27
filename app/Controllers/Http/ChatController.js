@@ -180,6 +180,28 @@ class ChatController {
     return response.send({ message });
   }
 
+  async addReaction({ auth, params, request, response }) {
+    const requestingUserId = auth.user.id;
+    if (!requestingUserId) throw new Error('Auth Error');
+    const chatId = params.chatId;
+    const messageId = params.messageId;
+    const reactionId = request.only('reactionId').reactionId;
+    log('CHAT', `User ${requestingUserId} adding Reaction ${reactionId} to Message ${messageId} for Chat ${chatId}`);
+    const { success, error } = await ChatRepository.addReaction({ requestingUserId, chatId, messageId, reactionId });
+    return response.send({ success, error });
+  }
+
+  async removeReaction({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    if (!requestingUserId) throw new Error('Auth Error');
+    const chatId = params.chatId;
+    const messageId = params.messageId;
+    const reactionId = params.reactionId;
+    log('CHAT', `User ${requestingUserId} removing Reaction ${reactionId} to Message ${messageId} for Chat ${chatId}`);
+    const { success, error } = await ChatRepository.removeReaction({ requestingUserId, chatId, messageId, reactionId });
+    return response.send({ success, error });
+  }
+
   async setTyping({ auth, params, request, response }) {
     const requestingUserId = auth.user.id;
     if (!requestingUserId) throw new Error('Auth Error');

@@ -1,4 +1,4 @@
-import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, inviteUserToGroup, createChat, updateChat, clearChat, deleteChat, exitGroup, removeFromGroup, checkSelfDestruct, fetchMessages, fetchUnreadMessages, fetchEncryptionMessages, fetchLinks, updateLink, fetchEntryLogs, sendMessage, editMessage, deleteMessage, setTyping } from '../../integration/http/chat';
+import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, inviteUserToGroup, createChat, updateChat, clearChat, deleteChat, exitGroup, removeFromGroup, checkSelfDestruct, fetchMessages, fetchUnreadMessages, fetchEncryptionMessages, fetchLinks, updateLink, fetchEntryLogs, sendMessage, editMessage, deleteMessage, addReaction, removeReaction,setTyping } from '../../integration/http/chat';
 import { fetchGroupPrivateKeyRequests } from '../../integration/http/guest';
 import { fetchGames, fetchContacts, fetchContact, fetchStatus } from '../../integration/http/user';
 import { generateKeys, deserializeKey, getPublicKey } from '../../integration/encryption';
@@ -290,6 +290,23 @@ export function deleteMessageAction(chatId, messageId, origin) {
     meta: { chatId, messageId, origin },
   }
 }
+
+export function addReactionAction(chatId, messageId, reactionId) {
+  return {
+    type: 'ADD_REACTION',
+    payload: addReaction(chatId, messageId, reactionId),
+    meta: { chatId, messageId, reactionId },
+  }
+}
+
+export function removeReactionAction(chatId, messageId, reactionId) {
+  return {
+    type: 'REMOVE_REACTION',
+    payload: removeReaction(chatId, messageId, reactionId),
+    meta: { chatId, messageId, reactionId },
+  }
+}
+
 
 export function setTypingAction(chatId, isTyping) {
   return {

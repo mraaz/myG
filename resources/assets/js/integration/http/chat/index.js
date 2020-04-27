@@ -97,6 +97,16 @@ export function deleteMessage(chatId, messageId) {
   return axios.delete(`/api/chat/${chatId}/message/${messageId}`).then(response => response.data);
 }
 
+export function addReaction(chatId, messageId, reactionId) {
+  logger.log('CHAT', 'HTTP', `Adding Reaction ${reactionId} to Message ${messageId} in Chat ${chatId}`);
+  return axios.post(`/api/chat/${chatId}/message/${messageId}/reaction`, { reactionId }).then(response => response.data);
+}
+
+export function removeReaction(chatId, messageId, reactionId) {
+  logger.log('CHAT', 'HTTP', `Removing Reaction ${reactionId} to Message ${messageId} in Chat ${chatId}`);
+  return axios.delete(`/api/chat/${chatId}/message/${messageId}/reaction/${reactionId}`).then(response => response.data);
+}
+
 export function setTyping(chatId, isTyping) {
   logger.log('CHAT', 'HTTP', `Setting as ${isTyping ? 'Typing' : 'Not Typing'} for Chat ${chatId}`);
   return axios.put(`/api/chat/${chatId}/typing`, { isTyping }).then(response => response.data);

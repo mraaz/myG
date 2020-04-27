@@ -136,6 +136,79 @@
   text-align: end;
 }
 
+.chat-component-message-reactions { 
+  display: flex;
+  flex-direction: row;
+  width: fit-content;
+  margin-top: 4px;
+  border-radius: 8px;
+}
+
+.chat-component-message-reaction-container  {
+  background-color: #171A1C;
+  border-radius: 4px;
+  margin: 2px;
+  display: flex;
+}
+
+.chat-component-message-reaction {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+  width: 16px;
+  height: 16px;
+  margin: 4px;
+}
+
+.chat-component-message-reaction-senders-container {
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+.chat-component-message-reaction-senders {
+  display: flex;
+  flex-direction: row;
+  margin: 2px;
+  position: absolute;
+  top: 24px;
+  left: -30px;
+  border-radius: 4px;
+  padding: 4px;
+  border: solid 1px black;
+  background-color: #171A1C;
+}
+
+.chat-component-message-reaction-sender {
+  font-size: 12px;
+  margin: 2px;
+}
+
+
+.chat-component-message-reaction-count {
+  font-size: 8px;
+  margin: 4px 4px 0 0;
+}
+
+.chat-component-message-reaction-options { 
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  background-color: #425156;
+  right: 20px;
+  top: -30px;
+  z-index: 10;
+}
+
+.chat-component-message-reaction-options-item {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+  width: 20px;
+  height: 20px;
+  margin: 4px;
+}
+
 .chat-component-message-options-button {
   width: 20px;
   height: 20px;

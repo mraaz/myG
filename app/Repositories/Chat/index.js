@@ -6,6 +6,7 @@ const User = use('App/Models/User');
 const Chat = use('App/Models/Chat');
 const UserChat = use('App/Models/UserChat');
 const ChatMessage = use('App/Models/ChatMessage');
+const ChatMessageReaction = use('App/Models/ChatMessageReaction');
 const ChatLastCleared = use('App/Models/ChatLastCleared');
 const ChatLastRead = use('App/Models/ChatLastRead');
 const ChatLink = use('App/Models/ChatLink');
@@ -20,6 +21,7 @@ const ChatSchema = require('../../Schemas/Chat');
 const ChatLinkSchema = require('../../Schemas/ChatLink');
 const ChatEntryLogSchema = require('../../Schemas/ChatEntryLog');
 const MessageSchema = require('../../Schemas/Message');
+const ReactionSchema = require('../../Schemas/Reaction');
 const DefaultSchema = require('../../Schemas/Default');
 const ContactSchema = require('../../Schemas/Contact');
 const ChatPrivateKeyRequestSchema = require('../../Schemas/ChatPrivateKeyRequest');
@@ -112,27 +114,40 @@ class ChatRepository {
   }
 
   async fetchMessages({ requestedChatId, requestedPage }) {
-    const result = (await ChatMessage
-      .query()
-      .where('chat_id', requestedChatId)
-      .andWhere('key_receiver', null)
-      .orderBy('id', 'desc')
+    const result = (await ChatMessage.query()
+      .where('chat_messages.chat_id', requestedChatId)
+      .andWhere('chat_messages.key_receiver', null)
+      .orderBy('chat_messages.id', 'desc')
       .paginate(requestedPage || 1, 10)).toJSON();
-    const messages = result.data.map(message => new MessageSchema({
-      messageId: message.id,
-      chatId: message.chat_id,
-      senderId: message.sender_id,
-      keyReceiver: message.key_receiver,
-      senderName: message.sender_name,
-      content: message.content,
-      backup: message.backup,
-      deleted: message.deleted,
-      edited: message.edited,
-      selfDestruct: message.self_destruct,
-      isAttachment: message.is_attachment,
-      createdAt: message.created_at,
-      updatedAt: message.updated_at,
-    }));
+    const reactionData = await ChatMessageReaction.query().where('chat_id', requestedChatId).fetch();
+    const chatReactions = reactionData ? reactionData.toJSON() : [];
+    const messages = result.data.map(message => {
+      const messageReactions = chatReactions
+        .filter(reaction => reaction.message_id === message.id)
+        .map(reaction => new ReactionSchema({
+          chatId: message.chat_id,
+          messageId: message.id,
+          reactionId: reaction.reaction_id,
+          senderId: reaction.sender_id,
+          senderName: reaction.sender_name,
+        }));
+      return new MessageSchema({
+        messageId: message.id,
+        chatId: message.chat_id,
+        senderId: message.sender_id,
+        keyReceiver: message.key_receiver,
+        senderName: message.sender_name,
+        content: message.content,
+        backup: message.backup,
+        deleted: message.deleted,
+        edited: message.edited,
+        selfDestruct: message.self_destruct,
+        isAttachment: message.is_attachment,
+        reactions: messageReactions,
+        createdAt: message.created_at,
+        updatedAt: message.updated_at,
+      })
+    });
     return { messages };
   }
 
@@ -552,6 +567,36 @@ class ChatRepository {
       await chat.save();
     }
     return { message: messageSchema };
+  }
+
+  async fetchReaction({ requestingUserId, messageId, reactionId }) {
+    return ChatMessageReaction.query().where('message_id', messageId).andWhere('sender_id', requestingUserId).andWhere('reaction_id', reactionId).first();
+  }
+
+  async addReaction({ requestingUserId, chatId, messageId, reactionId }) {
+    const existingReaction = await this.fetchReaction({ requestingUserId, messageId, reactionId });
+    if (existingReaction) return new DefaultSchema({ success: false, error: 'REACTION_ALREADY_PRESENT' });
+    const senderName = (await User.query().where('id', '=', requestingUserId).first()).toJSON().alias;
+    const reactionData = new ChatMessageReaction();
+    reactionData.chat_id = chatId;
+    reactionData.message_id = messageId;
+    reactionData.reaction_id = reactionId;
+    reactionData.sender_name = senderName;
+    reactionData.sender_id = requestingUserId;
+    reactionData.save();
+    const reaction = new ReactionSchema({ chatId, messageId, reactionId, senderName, senderId: requestingUserId });
+    this._notifyChatEvent({ chatId, action: 'reactionAdded', payload: reaction });
+    return new DefaultSchema({ success: true });
+  }
+
+  async removeReaction({ requestingUserId, chatId, messageId, reactionId }) {
+    const existingReaction = await this.fetchReaction({ requestingUserId, messageId, reactionId });
+    if (!existingReaction) return new DefaultSchema({ success: false, error: 'REACTION_NOT_PRESENT' });
+    await existingReaction.delete();
+    const reactionData = existingReaction.toJSON();
+    const reaction = new ReactionSchema({ chatId, messageId, reactionId, senderName: reactionData.sender_name, senderId: requestingUserId });
+    this._notifyChatEvent({ chatId, action: 'reactionRemoved', payload: reaction });
+    return new DefaultSchema({ success: true });
   }
 
   async setTyping({ requestingUserId, requestedChatId, isTyping }) {

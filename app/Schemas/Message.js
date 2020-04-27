@@ -1,5 +1,5 @@
 
-const { forceInt, forceString, forceBoolean, forceDate } = require('./Primitives');
+const { forceInt, forceString, forceBoolean, forceDate, forceArray } = require('./Primitives');
 
 class Message {
 
@@ -13,6 +13,7 @@ class Message {
     this.backup = forceString(data.backup);
     this.deleted = forceBoolean(data.deleted);
     this.edited = forceBoolean(data.edited);
+    this.reactions = forceArray(data.reactions);
     this.selfDestruct = forceBoolean(data.selfDestruct);
     this.isAttachment = forceBoolean(data.isAttachment);
     this.createdAt = forceDate(data.createdAt);
