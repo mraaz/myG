@@ -144,6 +144,10 @@ class ChatRepository {
         edited: message.edited,
         selfDestruct: message.self_destruct,
         isAttachment: message.is_attachment,
+        isReply: !!message.replyId,
+        replyId: message.reply_id, 
+        replyContent: message.reply_content, 
+        replyBackup: message.reply_backup,
         reactions: messageReactions,
         createdAt: message.created_at,
         updatedAt: message.updated_at,
@@ -176,6 +180,10 @@ class ChatRepository {
         edited: message.edited,
         selfDestruct: message.self_destruct,
         isAttachment: message.is_attachment,
+        isReply: !!message.replyId,
+        replyId: message.reply_id, 
+        replyContent: message.reply_content, 
+        replyBackup: message.reply_backup,
         createdAt: message.created_at,
         updatedAt: message.updated_at,
       }));
@@ -212,6 +220,10 @@ class ChatRepository {
       edited: message.edited,
       selfDestruct: message.self_destruct,
       isAttachment: message.is_attachment,
+      isReply: !!message.replyId,
+      replyId: message.reply_id, 
+      replyContent: message.reply_content, 
+      replyBackup: message.reply_backup,
       createdAt: message.created_at,
       updatedAt: message.updated_at,
     }));
@@ -479,7 +491,7 @@ class ChatRepository {
     return { contacts: fullContacts };
   }
 
-  async sendMessage({ requestingUserId, requestedChatId, senderName, backup, content, keyReceiver, attachment }) {
+  async sendMessage({ requestingUserId, requestedChatId, senderName, backup, content, keyReceiver, attachment, replyId, replyContent, replyBackup }) {
     const { chat } = await this.fetchChat({ requestingUserId, requestedChatId });
     const messageData = {
       sender_id: requestingUserId,
@@ -488,8 +500,11 @@ class ChatRepository {
       backup: backup,
       content: content,
       attachment: attachment,
-      is_attachment: !!attachment,
       self_destruct: chat.selfDestruct,
+      is_attachment: !!attachment,
+      reply_id: replyId, 
+      reply_content: replyContent, 
+      reply_backup: replyBackup,
     };
     const message = await Chat.find(requestedChatId).then(chat => chat.messages().create(messageData));
     const messageSchema = new MessageSchema({
@@ -504,6 +519,10 @@ class ChatRepository {
       edited: message.edited,
       selfDestruct: message.self_destruct,
       isAttachment: message.is_attachment,
+      isReply: !!message.replyId,
+      replyId: message.reply_id, 
+      replyContent: message.reply_content, 
+      replyBackup: message.reply_backup,
       createdAt: message.created_at,
       updatedAt: message.updated_at,
     });
@@ -528,6 +547,10 @@ class ChatRepository {
       edited: message.edited,
       selfDestruct: message.selfDestruct,
       isAttachment: message.is_attachment,
+      isReply: !!message.replyId,
+      replyId: message.reply_id, 
+      replyContent: message.reply_content, 
+      replyBackup: message.reply_backup,
       createdAt: message.created_at,
       updatedAt: message.updated_at,
     });
@@ -553,6 +576,10 @@ class ChatRepository {
       edited: message.edited,
       selfDestruct: message.self_destruct,
       isAttachment: message.is_attachment,
+      isReply: !!message.replyId,
+      replyId: message.reply_id, 
+      replyContent: message.reply_content, 
+      replyBackup: message.reply_backup,
       createdAt: message.created_at,
       updatedAt: message.updated_at,
     });

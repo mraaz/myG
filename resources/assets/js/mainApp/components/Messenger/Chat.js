@@ -24,6 +24,7 @@ export class Chat extends React.PureComponent {
       wasEncrypted: !props.privateKey,
       currentlyTyping: '',
       editing: false,
+      replyingTo: null,
       settings: false,
       showAttachWindow: false,
       messagePaginationPage: 1,
@@ -80,6 +81,11 @@ export class Chat extends React.PureComponent {
     }
   }
 
+  scrollToMessage = (messageId) => {
+    const messageIndex = this.props.messages.findIndex(message => message.messageId === messageId);
+    if (this.messageListRef.current) this.messageListRef.current.scrollTo(0, messageIndex * 40);
+  }
+
   markAsRead = (lastMessageId) => {
     if (this.props.isGuest) return;
     if (this.props.minimised || !this.props.privateKey || !this.props.windowFocused) return;
@@ -90,7 +96,10 @@ export class Chat extends React.PureComponent {
 
   sendMessage = (input, attachment) => {
     if (!input) return Promise.resolve();
-    return this.props.sendMessage(this.props.chatId, this.props.userId, this.props.alias, this.encryptInput(input), attachment);
+    const { messageId: replyId, content } = this.state.replyingTo ? this.decryptMessage(this.state.replyingTo) || {} : {};
+    const { content: replyContent, backup: replyBackup } = content ? this.encryptInput(content) : {};
+    if (this.state.replyingTo) this.setState({ replyingTo: false });
+    return this.props.sendMessage(this.props.chatId, this.props.userId, this.props.alias, this.encryptInput(input), attachment, replyId, replyContent, replyBackup);
   }
 
   editMessage = (chatId, messageId, input) => {
@@ -107,9 +116,11 @@ export class Chat extends React.PureComponent {
     if (!message.content && !message.backup) return message;
     const isSent = !this.props.isGroup && message.senderId == this.props.userId;
     const encryptedContent = isSent ? message.backup : message.content;
+    const encryptedReplyContent = isSent ? message.replyBackup : message.replyContent;
     const privateKey = isSent ? this.props.userPrivateKey : this.props.privateKey;
     const content = decryptMessage(encryptedContent, privateKey);
-    return { ...message, content };
+    const replyContent = encryptedReplyContent && decryptMessage(encryptedReplyContent, privateKey);
+    return { ...message, content, replyContent };
   }
 
   editLastMessage = () => {
@@ -239,6 +250,9 @@ export class Chat extends React.PureComponent {
           addReaction={this.props.addReaction}
           removeReaction={this.props.removeReaction}
           editMessage={this.editMessage}
+          replyingTo={this.state.replyingTo}
+          replyToMessage={message => this.setState({ replyingTo: message })}
+          scrollToMessage={this.scrollToMessage}
           deleteMessage={this.props.deleteMessage}
           decryptMessage={this.decryptMessage}
           showAttachment={attachment => this.setState({ attachment })}
@@ -367,12 +381,14 @@ export class Chat extends React.PureComponent {
           <div className="chat-component-attach-button-divider" />
         </div>
         <ChatInput
+          replyingTo={this.state.replyingTo && this.decryptMessage(this.state.replyingTo)}
           connected={!this.props.disconnected}
           blocked={this.props.blocked}
           isDecryptable={this.props.privateKey}
           selectedEmoji={this.state.selectedEmoji}
           sendMessage={this.sendMessage}
           editLastMessage={this.editLastMessage}
+          onBlur={() => this.setState({ replyingTo: null })}
           setTyping={isTyping => !this.props.isGuest && this.props.setTyping(this.props.chatId, isTyping)}
         />
       </div>
@@ -473,7 +489,7 @@ function mapDispatchToProps(dispatch) {
   return ({
     prepareChat: (chatId, userId, contactId, isGroup) => dispatch(prepareChatAction(chatId, userId, contactId, isGroup)),
     fetchMessages: (chatId, page) => dispatch(fetchMessagesAction(chatId, page)),
-    sendMessage: (chatId, userId, alias, content, attachment) => dispatch(sendMessageAction(chatId, userId, alias, content, attachment)),
+    sendMessage: (chatId, userId, alias, content, attachment, replyId, replyContent, replyBackup) => dispatch(sendMessageAction(chatId, userId, alias, content, attachment, replyId, replyContent, replyBackup)),
     editMessage: (chatId, messageId, content) => dispatch(editMessageAction(chatId, messageId, content)),
     deleteMessage: (chatId, messageId, origin) => dispatch(deleteMessageAction(chatId, messageId, origin)),
     addReaction: (chatId, messageId, reactionId) => dispatch(addReactionAction(chatId, messageId, reactionId)),

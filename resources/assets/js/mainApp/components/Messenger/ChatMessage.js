@@ -168,6 +168,19 @@ export default class ChatMessage extends React.Component {
           </div>
         }
 
+        {!this.props.message.isAttachment && <div className={`chat-component-message-options-row-divider ${origin === "received" ? sentStyle : receivedStyle}`} />}
+
+        {origin !== 'sent' &&
+          <div
+            className="chat-component-message-options-row clickable"
+            onClick={() => this.props.replyToMessage(this.props.encryptedMessage)}
+          >
+            <p className="chat-component-message-options-label">reply</p>
+          </div>
+        }
+
+        {origin !== 'sent' && <div className={`chat-component-message-options-row-divider ${origin === "received" ? sentStyle : receivedStyle}`} />}
+
         {this.props.message.isAttachment &&
           <div
             className="chat-component-message-options-row clickable"
@@ -177,7 +190,7 @@ export default class ChatMessage extends React.Component {
           </div>
         }
 
-        <div className={`chat-component-message-options-row-divider ${origin === "received" ? sentStyle : receivedStyle}`} />
+        {this.props.message.isAttachment && <div className={`chat-component-message-options-row-divider ${origin === "received" ? sentStyle : receivedStyle}`} />}
 
         <div
           className="chat-component-message-options-row clickable"
@@ -350,6 +363,11 @@ export default class ChatMessage extends React.Component {
               >
                 {message.senderName}
               </p>
+            )}
+            {message.replyContent && (
+              <div className={`chat-component-message-reply clickable`} onClick={() => this.props.scrollToMessage(message.messageId)}>
+                {this.renderMessage(message.replyContent)}
+              </div>
             )}
             <div className={`chat-component-message-content`}>
               {

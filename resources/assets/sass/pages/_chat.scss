@@ -289,6 +289,13 @@
   height: 50vh;
 }
 
+.chat-component-input-with-reply-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+}
+
 .chat-component-input-container {
   display: flex;
   flex: 1;

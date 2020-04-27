@@ -45,7 +45,7 @@ class ChatController {
 
   async clearChat({ auth, params, response }) {
     const requestingUserId = auth.user.id;
-    if (!requestingUserId)  throw new Error('Auth Error');
+    if (!requestingUserId) throw new Error('Auth Error');
     const requestedChatId = params.chatId;
     log('CHAT', `User ${requestingUserId} clearing Chat ${requestedChatId}`);
     const result = await ChatRepository.clearChat({ requestingUserId, requestedChatId });
@@ -150,11 +150,12 @@ class ChatController {
     if (!requestingUserId) throw new Error('Auth Error');
     const requestedChatId = params.chatId;
     const { backup, content } = request.only('encryptedContent').encryptedContent;
+    const { replyId, replyContent, replyBackup } = request.only(['replyId', 'replyContent', 'replyBackup']);
     const senderName = request.only('senderName').senderName;
     const keyReceiver = request.only('keyReceiver').keyReceiver;
     const attachment = request.only('attachment').attachment;
     log('CHAT', `User ${requestingUserId} sending encrypted ${keyReceiver ? 'Key' : 'Message'} for Chat ${requestedChatId}`);
-    const { message } = await ChatRepository.sendMessage({ requestingUserId, requestedChatId, senderName, keyReceiver, backup, content, attachment });
+    const { message } = await ChatRepository.sendMessage({ requestingUserId, requestedChatId, senderName, keyReceiver, backup, content, attachment, replyId, replyContent, replyBackup });
     return response.send({ message });
   }
 
@@ -232,7 +233,7 @@ class ChatController {
 
   async fetchLink({ auth, params, response }) {
     const requestingUserId = auth.user.id;
-    if (!requestingUserId)  throw new Error('Auth Error');
+    if (!requestingUserId) throw new Error('Auth Error');
     const requestedLinkUuid = params.uuid;
     log('CHAT', `User ${requestingUserId} requesting Link ${requestedLinkUuid}`);
     const { link } = await ChatRepository.fetchLink({ requestedLinkUuid });
@@ -252,7 +253,7 @@ class ChatController {
 
   async fetchEntryLogs({ auth, params, response }) {
     const requestingUserId = auth.user.id;
-    if (!requestingUserId)  throw new Error('Auth Error');
+    if (!requestingUserId) throw new Error('Auth Error');
     const requestedChatId = params.chatId;
     log('CHAT', `User ${requestingUserId} requesting Entry Logs for Chat ${requestedChatId}`);
     const { entryLogs } = await ChatRepository.fetchEntryLogs({ requestedChatId });
@@ -261,7 +262,7 @@ class ChatController {
 
   async acceptGameGroupInvitation({ auth, params, request, response }) {
     const requestingUserId = auth.user.id;
-    if (!requestingUserId)  throw new Error('Auth Error');
+    if (!requestingUserId) throw new Error('Auth Error');
     const requestedUserId = request.only(['userId']).userId;
     const requestedGameId = params.gameId;
     log('CHAT', `User ${requestingUserId} accepting to join Game Group ${requestedGameId}`);

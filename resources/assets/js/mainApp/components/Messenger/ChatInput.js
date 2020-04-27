@@ -3,11 +3,19 @@ import { convertEmojisToColons } from '../../../common/emoji';
 
 export default class ChatInput extends React.PureComponent {
 
-  state = {
-    input: '',
-    isTyping: false,
-    lastTyped: 0,
-  };
+  constructor() {
+    super();
+    this.state = {
+      input: '',
+      isTyping: false,
+      lastTyped: 0,
+    };
+    this.input = React.createRef();
+  }
+
+  componentDidUpdate() {
+    if (this.props.replyingTo) this.input.current.focus();
+  }
 
   static getDerivedStateFromProps(props, state) {
     if (props.selectedEmoji && props.selectedEmoji !== state.selectedEmoji) {
@@ -64,22 +72,27 @@ export default class ChatInput extends React.PureComponent {
         this.props.blocked ? 'Unblock to send messages' :
           'Type your message here';
     return (
-      <div className="chat-component-input-container">
-        <textarea
-          rows={1}
-          className="chat-component-input"
-          disabled={disabled}
-          placeholder={placeholderText}
-          value={this.state.input}
-          onChange={event => this.onTyping(event.target.value)}
-          onKeyPress={this.onKeyPressed}
-          onKeyDown={this.onKeyDown}
-        >
-        </textarea>
-        <div className="chat-component-send-button clickable"
-          style={{ backgroundImage: `url(/assets/svg/ic_chat_send.svg)` }}
-          onClick={() => !disabled && this.sendMessage()}
-        />
+      <div className="chat-component-input-with-reply-container">
+        {this.props.replyingTo && <p className="chat-component-message-reply-no-margin">replying to: {this.props.replyingTo.content}</p>}
+        <div className="chat-component-input-container">
+          <textarea
+            ref={this.input}
+            rows={1}
+            className="chat-component-input"
+            disabled={disabled}
+            placeholder={placeholderText}
+            value={this.state.input}
+            onChange={event => this.onTyping(event.target.value)}
+            onKeyPress={this.onKeyPressed}
+            onKeyDown={this.onKeyDown}
+            onBlur={this.props.onBlur}
+          >
+          </textarea>
+          <div className="chat-component-send-button clickable"
+            style={{ backgroundImage: `url(/assets/svg/ic_chat_send.svg)` }}
+            onClick={() => !disabled && this.sendMessage()}
+          />
+        </div>
       </div>
     );
   }

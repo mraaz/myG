@@ -136,6 +136,25 @@
   text-align: end;
 }
 
+.chat-component-message-reply {
+  font-size: 12px;
+  border-left: solid 2px #e5c746;
+  padding: 4px;
+  margin-bottom: 4px;
+  color: #C0C0C0;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+.chat-component-message-reply-no-margin {
+  font-size: 12px;
+  border-left: solid 2px #e5c746;
+  padding: 4px;
+  color: #C0C0C0;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
 .chat-component-message-reactions { 
   display: flex;
   flex-direction: row;

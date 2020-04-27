@@ -14,6 +14,10 @@ class Message {
     this.deleted = forceBoolean(data.deleted);
     this.edited = forceBoolean(data.edited);
     this.reactions = forceArray(data.reactions);
+    this.isReply = forceInt(data.isReply);
+    this.replyId = forceInt(data.replyId);
+    this.replyContent = forceString(data.replyContent);
+    this.replyBackup = forceString(data.replyBackup);
     this.selfDestruct = forceBoolean(data.selfDestruct);
     this.isAttachment = forceBoolean(data.isAttachment);
     this.createdAt = forceDate(data.createdAt);
