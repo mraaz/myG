@@ -61,7 +61,7 @@ export default class ChatMessage extends React.Component {
           const reaction = reactionGroups.get(reactionId);
           if (!reaction) return null;
           return (
-            <div key={reactionId} className="chat-component-message-reaction-container clickable"
+            <div key={reactionId} className={`chat-component-message-reaction-container${hasReaction(reactionId) ? '-sent' : ''} clickable`}
               onMouseEnter={() => this.setState({ reaction: reactionId })}
               onMouseLeave={() => this.setState({ reaction: null })}
               onClick={() => hasReaction(reactionId) ?

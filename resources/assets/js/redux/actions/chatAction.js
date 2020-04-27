@@ -49,6 +49,20 @@ export function onDeleteMessagesAction(payload) {
   }
 }
 
+export function onReactionAddedAction(payload) {
+  return {
+    type: 'ON_REACTION_ADDED',
+    payload,
+  }
+}
+
+export function onReactionRemovedAction(payload) {
+  return {
+    type: 'ON_REACTION_REMOVED',
+    payload,
+  }
+}
+
 export function onDeleteChatAction(payload) {
   return {
     type: 'ON_CHAT_DELETED',

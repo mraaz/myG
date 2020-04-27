@@ -297,6 +297,32 @@ export default function reducer(state = {
       };
     }
 
+    case "ON_REACTION_ADDED": {
+      logger.log('CHAT', `Redux -> On Reaction Added: `, action.payload);
+      const chatId = parseInt(action.payload.chatId);
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => candidate.chatId === chatId);
+      const message = chat.messages.find(message => message.messageId === action.payload.messageId);
+      if (message) message.reactions.push(action.payload);
+      return {
+        ...state,
+        chats,
+      };
+    }
+
+    case "ON_REACTION_REMOVED": {
+      logger.log('CHAT', `Redux -> On Reaction Removed: `, action.payload);
+      const chatId = parseInt(action.payload.chatId);
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => candidate.chatId === chatId);
+      const message = chat.messages.find(message => message.messageId === action.payload.messageId);
+      if (message) message.reactions = message.reactions.filter(reaction => reaction.id !== action.payload.id);
+      return {
+        ...state,
+        chats,
+      };
+    }
+
     case "ON_CHAT_DELETED": {
       logger.log('CHAT', `Redux -> On Chat Deleted: `, action.payload);
       const chatId = parseInt(action.payload.chatId);

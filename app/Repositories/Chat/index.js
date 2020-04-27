@@ -125,6 +125,7 @@ class ChatRepository {
       const messageReactions = chatReactions
         .filter(reaction => reaction.message_id === message.id)
         .map(reaction => new ReactionSchema({
+          id: reaction.id,
           chatId: message.chat_id,
           messageId: message.id,
           reactionId: reaction.reaction_id,
@@ -583,8 +584,8 @@ class ChatRepository {
     reactionData.reaction_id = reactionId;
     reactionData.sender_name = senderName;
     reactionData.sender_id = requestingUserId;
-    reactionData.save();
-    const reaction = new ReactionSchema({ chatId, messageId, reactionId, senderName, senderId: requestingUserId });
+    await reactionData.save();
+    const reaction = new ReactionSchema({ id: reactionData.id, chatId, messageId, reactionId, senderName, senderId: requestingUserId });
     this._notifyChatEvent({ chatId, action: 'reactionAdded', payload: reaction });
     return new DefaultSchema({ success: true });
   }
@@ -594,7 +595,7 @@ class ChatRepository {
     if (!existingReaction) return new DefaultSchema({ success: false, error: 'REACTION_NOT_PRESENT' });
     await existingReaction.delete();
     const reactionData = existingReaction.toJSON();
-    const reaction = new ReactionSchema({ chatId, messageId, reactionId, senderName: reactionData.sender_name, senderId: requestingUserId });
+    const reaction = new ReactionSchema({ id: reactionData.id, chatId, messageId, reactionId, senderName: reactionData.sender_name, senderId: requestingUserId });
     this._notifyChatEvent({ chatId, action: 'reactionRemoved', payload: reaction });
     return new DefaultSchema({ success: true });
   }
