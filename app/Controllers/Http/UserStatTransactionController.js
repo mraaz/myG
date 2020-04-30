@@ -3,6 +3,7 @@
 const Database = use('Database')
 const User = use('App/Models/User')
 const UserStatTransaction = use('App/Models/UserStatTransaction')
+const NotificationController = use('./NotificationController')
 
 const GREAT_COMMUNITY_SIZE = 100
 const CUT_OFF_FOR_ATTENDEES_FOR_GAME = 1 //2 OR MORE
@@ -475,9 +476,9 @@ class UserStatTransactionController {
             .where({ level: 1 })
             .select('max_points')
             .first()
-          xp = get1stLevel.max_points + 1
+          xp = parseInt(get1stLevel.max_points) + 1
         } else {
-          xp = getprevLevel + 1
+          xp = parseInt(getprevLevel.max_points) + 1
         }
       }
     } else {
@@ -490,7 +491,8 @@ class UserStatTransactionController {
 
         if (xp > parseInt(getmyLevel.max_points) && parseInt(getGamerLevels.level) < getMax[0].max_level) {
           getGamerLevels.level = getGamerLevels.level + 1
-          //TODO: Add noti
+          let noti = new NotificationController()
+          noti.ding(my_user_id)
         } else {
           break
         }

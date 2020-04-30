@@ -114,15 +114,24 @@ class MySettings extends Component {
   }
 
   fire_off_calculations = () => {
-    const total_number_of_friends = async function() {
+    // const total_number_of_friends = async function() {
+    //   try {
+    //     const get_stats = await axios.get('/api/userStatTransaction/master_controller')
+    //     console.log(get_stats)
+    //   } catch (error) {
+    //     console.log(error)
+    //   }
+    // }
+    // total_number_of_friends()
+    const callMasterControllerforConnections = async function() {
       try {
-        const get_stats = await axios.get('/api/userStatTransaction/master_controller')
+        const get_stats = await axios.get('/api/connection/master_controller')
         console.log(get_stats)
       } catch (error) {
         console.log(error)
       }
     }
-    total_number_of_friends()
+    callMasterControllerforConnections()
   }
 
   render() {

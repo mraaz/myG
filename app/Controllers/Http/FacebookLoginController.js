@@ -1,6 +1,7 @@
 'use strict'
 
 const User = use('App/Models/User')
+const ConnectionController = use('./ConnectionController')
 
 class FacebookLoginController {
   async redirect({ ally }) {
@@ -22,6 +23,8 @@ class FacebookLoginController {
           .first()
         if (!(authUser === null)) {
           await auth.loginViaId(authUser.id)
+          let connections = new ConnectionController()
+          connections.master_controller({ auth })
           return response.redirect('/')
         } else {
           session.put('provider', 'facebook')

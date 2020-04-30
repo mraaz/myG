@@ -328,6 +328,12 @@ class UsergroupController {
         })
         .delete()
 
+      let noti = new NotificationController()
+      request.params.group_id = request.params.id
+      request.params.other_user_id = permission_query_to_be_deleted_user[0].user_id
+
+      noti.kicked_from_group({ auth, request, response })
+
       let userStatController = new UserStatTransactionController()
       userStatController.update_total_number_of(permission_query_to_be_deleted_user[0].user_id, 'total_number_of_communities')
 

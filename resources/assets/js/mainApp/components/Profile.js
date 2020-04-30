@@ -161,6 +161,7 @@ export default class Profile extends Component {
                 friendTxt: 'Add Friend',
                 friendStatus: 0,
               })
+              const send_off_im_looking = axios.get(`/api/connections/i_am_viewing_this_profile/${match.params.id}`)
             }
           }
         }

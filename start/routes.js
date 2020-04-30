@@ -190,6 +190,7 @@ Route.post(
   '/api/notifications/updateRead_Status_groups/:group_id/:activity_type/:user_id',
   'NotificationController.updateRead_Status_groups'
 )
+Route.post('/api/notifications/updateRead_Status_ding/', 'NotificationController.updateRead_Status_ding')
 Route.get(
   '/api/notifications/getAllNotiScheduleGamesAttendees/:schedule_games_id',
   'NotificationController.getAllNotiScheduleGamesAttendees'
@@ -204,6 +205,7 @@ Route.get('/api/notifications/getunread_group/:id/:activity_type', 'Notification
 Route.post('/api/notifications/addGameApproved', 'NotificationController.addGameApproved')
 Route.put('/api/notifications/inviteToGroup', 'NotificationController.inviteToGroup')
 Route.post('/api/notifications/invitations', 'NotificationController.invitations')
+Route.get('/api/notifications/getunread_dings', 'NotificationController.getunread_dings')
 
 Route.post('/api/friends/create', 'FriendController.store')
 Route.post('/api/friends/allmyFriends', 'FriendController.showallmyFriends')
@@ -273,6 +275,9 @@ Route.delete('/api/followers/:follower_id/delete', 'FollowerController.delete')
 Route.get('/api/email/summary_email', 'EmailController.summary_email')
 
 Route.post('/api/connections/gamers_you_might_know', 'ConnectionController.gamers_you_might_know')
+Route.get('/api/connections/i_am_viewing_this_profile/:other_user_id', 'ConnectionController.have_I_viewed_this_profile')
+
+Route.post('/api/invited_users_for_schedule_games/create', 'InvitedUsersForScheduleGameController.store')
 
 // Trying to avoid conflicts, should move this route up later.
 Route.get('/api/notifications/outgoingFriendRequests', 'NotificationController.outgoingFriendRequests')
