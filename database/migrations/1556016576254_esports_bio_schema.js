@@ -13,7 +13,7 @@ class EsportsBioSchema extends Schema {
       table.string('email_visibility', 254).notNullable()
       table.string('games_of_ardour', 254).nullable()
       table.string('career_highlights', 254).nullable()
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

@@ -9,7 +9,7 @@ class UserLevelsSchema extends Schema {
       table.increments()
       table.integer('level').notNullable().defaultTo(0)
       table.integer('max_points').notNullable().defaultTo(0)
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

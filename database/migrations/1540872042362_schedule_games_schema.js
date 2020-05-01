@@ -25,7 +25,7 @@ class ScheduleGamesSchema extends Schema {
       table.boolean('vacancy').defaultTo(1)
       table.string('schedule_games_GUID', 254).notNullable().unique().index()
       table.boolean('allow_comments').defaultTo(1)
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

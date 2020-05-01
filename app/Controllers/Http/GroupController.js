@@ -62,10 +62,15 @@ class GroupController {
         .where({
           user_id: auth.user.id,
         })
-        .paginate(request.params.counter, 10)
+        .paginate(request.params.counter, 50)
+
+      const total_number_of_my_communities = await Database.from('groups')
+        .where({ user_id: auth.user.id })
+        .count('id as total_number_of_my_communities')
 
       return {
         myGroups,
+        total_number_of_my_communities: total_number_of_my_communities,
       }
     } catch (error) {
       console.log(error)

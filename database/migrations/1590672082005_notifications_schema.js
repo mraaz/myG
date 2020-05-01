@@ -27,7 +27,7 @@ class NotificationsSchema extends Schema {
       table.integer('chat_id').unsigned().nullable()
       table.foreign('chat_id').references('chats.id').onDelete('cascade')
       table.integer('read_status').unsigned().nullable().defaultTo(0)
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

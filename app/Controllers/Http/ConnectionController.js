@@ -17,6 +17,10 @@ class ConnectionController {
       if (getRunTime == undefined) {
         var newUserSettings = await Settings.create({
           user_id: auth.user.id,
+          gamer_connection_last_runtime: new Date()
+            .toISOString()
+            .slice(0, 19)
+            .replace('T', ' '),
         })
       }
 
@@ -422,8 +426,6 @@ class ConnectionController {
     //everytime I look at a profile to whom I'm not friends/pending with it should increase the points
     // trigger in the profile, if this profile is not mine and we're not friends
     // get the gamer viewed, check if we viewed this in the past 4 hours, if not then add points.
-    console.log('in have_I_viewed_this_profile')
-
     if (auth.user) {
       try {
         const getConnection = await Database.from('connections')
@@ -461,9 +463,7 @@ class ConnectionController {
           }
 
           let myTime = new Date(new Date(Date.now()).getTime() - 60 * 60 * 4 * 1000)
-          console.log('checking')
           if (check_all_my_Connections.updated_at < myTime) {
-            console.log('Doing 2')
             let mysql_friendly_date = new Date()
               .toISOString()
               .slice(0, 19)

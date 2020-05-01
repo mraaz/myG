@@ -9,7 +9,7 @@ class MemoisationSchema extends Schema {
       table.increments()
       table.string('memoisation', 254).unique()
       table.json('value').nullable()
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

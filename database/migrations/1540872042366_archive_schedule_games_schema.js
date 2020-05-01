@@ -27,7 +27,7 @@ class ArchiveScheduleGamesSchema extends Schema {
       table.boolean('vacancy').defaultTo(1)
       table.timestamp('og_created_at').notNullable()
       table.string('reason_for_cancel', 254).nullable()
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

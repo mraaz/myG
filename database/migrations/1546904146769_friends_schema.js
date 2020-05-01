@@ -11,7 +11,7 @@ class FriendsSchema extends Schema {
       table.foreign('user_id').references('users.id').onDelete('cascade')
       table.integer('friend_id').unsigned().notNullable()
       table.foreign('friend_id').references('users.id').onDelete('cascade')
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

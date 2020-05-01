@@ -12,7 +12,7 @@ class ScheduleGamesTransactionsSchema extends Schema {
       table.integer('game_name_fields_id').unsigned()
       table.foreign('game_name_fields_id').references('game_name_fields.id').onDelete('cascade')
       table.string('values', 254).nullable()
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

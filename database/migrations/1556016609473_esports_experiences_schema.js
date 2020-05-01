@@ -16,7 +16,7 @@ class EsportsExperiencesSchema extends Schema {
       table.integer('duration').unsigned().nullable().defaultTo(1)
       table.string('achievements', 254).nullable()
       table.string('skills', 254).nullable()
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

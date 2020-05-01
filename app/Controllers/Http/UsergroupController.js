@@ -34,11 +34,19 @@ class UsergroupController {
         .where('usergroups.user_id', '=', auth.user.id)
         .whereNot('usergroups.permission_level', 42)
         .whereNotIn('usergroups.group_id', subquery)
-        .paginate(request.params.counter, 10)
+        .paginate(request.params.counter, 50)
+
+      const total_number_of_communities = await Database.from('usergroups')
+        .innerJoin('groups', 'groups.id', 'usergroups.group_id')
+        .where('usergroups.user_id', '=', auth.user.id)
+        .whereNot('usergroups.permission_level', 42)
+        .whereNotIn('usergroups.group_id', subquery)
+        .count('usergroups.id as total_number_of_communities')
 
       //const myPosts = await Database.from('posts').innerJoin('users', 'users.id', 'posts.user_id').where('posts.user_id', '=', auth.user.id).andWhere('posts.created_at', '>=', request.params.myDate).select('*', 'posts.id', 'posts.created_at','posts.updated_at').orderBy('posts.created_at', 'desc')
       return {
         groups_im_in,
+        total_number_of_communities: total_number_of_communities,
       }
     } catch (error) {
       console.log(error)

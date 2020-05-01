@@ -19,7 +19,7 @@ class ChatMessageSchema extends Schema {
       table.boolean('edited').notNullable().defaultTo(false)
       table.boolean('self_destruct').notNullable().defaultTo(false)
       table.boolean('is_attachment').notNullable().defaultTo(false).index()
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

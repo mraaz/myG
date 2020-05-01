@@ -9,7 +9,7 @@ class PasswordResetsSchema extends Schema {
       table.increments()
       table.string('email')
       table.string('token')
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

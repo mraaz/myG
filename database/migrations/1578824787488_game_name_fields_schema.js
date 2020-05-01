@@ -10,7 +10,7 @@ class GameNameFieldsSchema extends Schema {
       table.integer('game_names_id').unsigned().notNullable()
       table.foreign('game_names_id').references('game_names.id').onDelete('cascade')
       table.string('in_game_field', 254).notNullable()
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

@@ -15,7 +15,7 @@ class CommentsSchema extends Schema {
       table.foreign('archive_schedule_game_id').references('archive_schedule_games.archive_schedule_game_id').onDelete('cascade')
       table.timestamp('og_created_at').notNullable()
       table.timestamp('og_updated_at').notNullable()
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

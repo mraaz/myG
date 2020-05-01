@@ -12,7 +12,7 @@ class TagsSchema extends Schema {
       table.string('tag', 250).notNullable().index()
       table.integer('counter').unsigned().nullable().defaultTo(1)
       table.integer('verified').unsigned().notNullable().defaultTo(0)
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

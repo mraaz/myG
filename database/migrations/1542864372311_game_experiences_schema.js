@@ -20,7 +20,7 @@ class GameExperiencesSchema extends Schema {
       table.string('link', 254).nullable().defaultTo("")
       table.text('tags').nullable()
       table.integer('ratings').unsigned().nullable().defaultTo(0)
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 
