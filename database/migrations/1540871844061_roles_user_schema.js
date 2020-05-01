@@ -9,7 +9,7 @@ class RolesUserSchema extends Schema {
       table.increments()
       table.integer('user_id').unsigned().notNullable().references('id').inTable('users')
       table.integer('role_id').unsigned().notNullable().references('id').inTable('roles')
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

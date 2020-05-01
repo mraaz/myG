@@ -483,6 +483,38 @@ export default class IndividualNotification extends Component {
       this.setState({ chat, notification_str })
     }
 
+    const getGroupKickedData = async function() {
+      try {
+        const getunread = await axios.get(`/api/notifications/getunread_group/${notification.group_id}/${notification.activity_type}`)
+        if (getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0) {
+          self.state.unread = true
+        }
+
+        const groupInfo = await axios.get(`/api/groups/${notification.group_id}`)
+
+        self.setState({
+          notification_str: 'Sorry mate! You were kicked from this community: ' + groupInfo.data.group[0].name,
+        })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    const getDingInfo = async function() {
+      try {
+        const getunread = await axios.get('/api/notifications/getunread_dings/')
+        if (getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0) {
+          self.state.unread = true
+        }
+
+        self.setState({
+          notification_str: 'Ding! Congratz, you reached a new level!',
+        })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
     if (notification.activity_type == 10) {
       getschedulegameData()
     } else if (notification.activity_type == 11 || notification.activity_type == 16) {
@@ -495,6 +527,10 @@ export default class IndividualNotification extends Component {
       getArchive_scheduled_game_Data()
     } else if (notification.activity_type === 18) {
       getGroupInvitationData()
+    } else if (notification.activity_type === 19) {
+      getGroupKickedData()
+    } else if (notification.activity_type === 20) {
+      getDingInfo()
     } else {
       getinitialData()
     }
@@ -550,6 +586,16 @@ export default class IndividualNotification extends Component {
     this.setState({ redirect_: true })
   }
 
+  updateRead_Status_ding() {
+    try {
+      const updateRead_Status_ding = axios.post('/api/notifications/updateRead_Status_ding/')
+    } catch (error) {
+      console.log(error)
+    }
+    this.state.redirect_link = 'updateRead_Status_ding'
+    this.setState({ redirect_: true })
+  }
+
   render() {
     if (this.state.redirect_) {
       var tmp
@@ -567,6 +613,10 @@ export default class IndividualNotification extends Component {
           break
         case 'updateRead_Status_archive_schedule_game':
           tmp = `/archived_scheduledGames/${this.props.notification.archive_schedule_game_id}`
+          return <Redirect push to={tmp} />
+          break
+        case 'updateRead_Status_ding':
+          tmp = '/'
           return <Redirect push to={tmp} />
           break
       }
@@ -588,6 +638,7 @@ export default class IndividualNotification extends Component {
       (notification.post_id == null &&
         notification.activity_type != 15 &&
         notification.activity_type != 18 &&
+        notification.activity_type != 20 &&
         notification.group_id == null)
     ) {
       this.state.post = false
@@ -599,7 +650,7 @@ export default class IndividualNotification extends Component {
       } else {
         str_href = '/scheduledGames/' + notification.schedule_games_id
       }
-    } else if (notification.activity_type == 12 || notification.activity_type == 17) {
+    } else if (notification.activity_type == 12 || notification.activity_type == 17 || notification.activity_type == 19) {
       this.state.post = false
       this.state.archive_schedule_game = false
       this.state.schedule_game = false
@@ -611,6 +662,12 @@ export default class IndividualNotification extends Component {
       this.state.schedule_game = false
       this.state.archive_schedule_game = true
       str_href = `/archived_scheduledGames/${this.props.notification.archive_schedule_game_id}`
+    } else if (notification.activity_type == 20) {
+      this.state.post = false
+      this.state.group_post = false
+      this.state.schedule_game = false
+      this.state.archive_schedule_game = false
+      str_href = '/'
     } else if (notification.activity_type !== 18) {
       this.state.post = true
       this.state.group_post = false
@@ -687,6 +744,18 @@ export default class IndividualNotification extends Component {
             <div className='group-invitation-button clickable' onClick={this.acceptGroupInvite}>
               Accept
             </div>
+          </div>
+        )}
+
+        {notification.activity_type === 20 && !this.state.unread && (
+          <div className='user-info-read'>
+            <Link to={str_href}>{this.state.notification_str}</Link>
+          </div>
+        )}
+
+        {notification.activity_type === 20 && this.state.unread && (
+          <div className='user-info-unread' onClick={() => this.updateRead_Status_ding()}>
+            {this.state.notification_str}
           </div>
         )}
 

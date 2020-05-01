@@ -15,7 +15,7 @@ class UserStatTransactionsSchema extends Schema {
       table.string('values', 1024)
       table.string('last_month_values', 1024)
       table.datetime('last_month_updated_at').defaultTo(Database.raw("CURRENT_TIMESTAMP"))
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

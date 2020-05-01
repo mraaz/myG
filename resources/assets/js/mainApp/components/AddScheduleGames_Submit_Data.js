@@ -46,7 +46,11 @@ export async function SubmitDataFunction(myG) {
   }
 
   if (myG.selected_limit != null || myG.selected_limit != undefined) {
-    myLimit = myG.selected_limit.value
+    if (parseInt(myG.selected_limit) <= 0) {
+      myLimit = 0
+    } else {
+      myLimit = myG.selected_limit
+    }
   }
 
   if (myG.clash_royale_trophy != null || myG.clash_royale_trophy != undefined) {

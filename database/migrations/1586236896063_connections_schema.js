@@ -12,7 +12,7 @@ class ConnectionsSchema extends Schema {
       table.integer('other_user_id').unsigned().notNullable()
       table.foreign('other_user_id').references('users.id').onDelete('cascade')
       table.integer('total_score').defaultTo(0)
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

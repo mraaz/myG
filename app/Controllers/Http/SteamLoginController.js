@@ -1,6 +1,7 @@
 'use strict'
 
 const User = use('App/Models/User')
+const ConnectionController = use('./ConnectionController')
 
 const fetch = require('node-fetch')
 class SteamLoginController {
@@ -31,6 +32,8 @@ class SteamLoginController {
             .first()
           if (!(authUser === null)) {
             await auth.loginViaId(authUser.id)
+            let connections = new ConnectionController()
+            connections.master_controller({ auth })
             return response.redirect('/')
           } else {
             session.put('provider', 'steam')

@@ -11,7 +11,7 @@ class FavoriteGameSchema extends Schema {
       table.integer('user_id').unsigned().notNullable().index()
       table.foreign('game_names_id').references('game_names.id').onDelete('cascade')
       table.foreign('user_id').references('id').inTable('users').onDelete('CASCADE')
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

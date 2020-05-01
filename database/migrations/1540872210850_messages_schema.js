@@ -11,7 +11,7 @@ class MessagesSchema extends Schema {
       table.integer('receiver_id').unsigned().notNullable().references('id').inTable('users')
       table.text('content').notNullable()
       table.timestamp('read_at')
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

@@ -150,8 +150,8 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick }) => {
   }
 
   const fetchMoreData = async () => {
-    await updateCounter(counter + 10)
-    const getKeywordSearchResults = async function () {
+    await updateCounter(counter + 1)
+    const getKeywordSearchResults = async function() {
       try {
         const response = await axios.post('/api/friends/allmyFriends', {
           counter,
@@ -174,7 +174,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick }) => {
   }
 
   const fetchCommunitiesData = async () => {
-    const getmyGroups = async function () {
+    const getmyGroups = async function() {
       try {
         const {
           data: { myGroups },
@@ -186,7 +186,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick }) => {
       }
     }
 
-    const getGroups_im_in = async function () {
+    const getGroups_im_in = async function() {
       try {
         const {
           data: { groups_im_in },

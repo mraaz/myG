@@ -9,7 +9,7 @@ class WatchersSchema extends Schema {
       table.increments()
       table.integer('user_id').unsigned().references('id').inTable('users')
       table.integer('schedule_games_id').unsigned().references('id').inTable('schedule_games')
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

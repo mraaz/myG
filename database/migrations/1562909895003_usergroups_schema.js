@@ -12,7 +12,7 @@ class UsergroupsSchema extends Schema {
       table.integer('group_id').unsigned().notNullable()
       table.foreign('group_id').references('groups.id').onDelete('cascade')
       table.integer('permission_level').unsigned().notNullable().defaultTo(1)      
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

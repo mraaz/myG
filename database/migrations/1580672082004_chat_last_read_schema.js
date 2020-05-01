@@ -13,7 +13,7 @@ class ChatLastReadSchema extends Schema {
       table.foreign('user_id').references('id').inTable('users').onDelete('CASCADE')
       table.foreign('chat_id').references('id').inTable('chats').onDelete('CASCADE')
       table.foreign('last_read_message_id').references('id').inTable('chat_messages').onDelete('CASCADE')
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

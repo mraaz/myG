@@ -2,28 +2,49 @@
 
 const Database = use('Database')
 const Connection = use('App/Models/Connection')
-const UserStatTransactionController = use('./UserStatTransactionController')
+const Settings = use('App/Models/Setting')
 
 class ConnectionController {
-  async master_controller({ auth, request, response }) {
+  async master_controller({ auth }) {
     if (auth.user) {
       //if we ran this in the last 24 hours, DONT run again!!!!
-      let userStatController = new UserStatTransactionController()
-      userStatController.update_total_number_of(auth.user.id, 'total_number_of_commendations')
+
+      const getRunTime = await Database.from('settings')
+        .select('gamer_connection_last_runtime', 'id')
+        .where({ user_id: auth.user.id })
+        .first()
+
+      if (getRunTime == undefined) {
+        var newUserSettings = await Settings.create({
+          user_id: auth.user.id,
+          gamer_connection_last_runtime: new Date()
+            .toISOString()
+            .slice(0, 19)
+            .replace('T', ' '),
+        })
+      }
+
+      //clean up Connection transactions
+      this.cleanUpTime({ auth })
+
+      if (Date.now() > new Date(new Date(getRunTime.gamer_connection_last_runtime).getTime() + 60 * 60 * 24 * 1000)) {
+        let mysql_friendly_date = new Date()
+          .toISOString()
+          .slice(0, 19)
+          .replace('T', ' ')
+
+        const updateRead_Status = await Settings.query()
+          .where({
+            id: getRunTime.id,
+          })
+          .update({ gamer_connection_last_runtime: mysql_friendly_date })
+
+        this.check_if_same_games_in_profile({ auth })
+        this.check_if_in_same_communities({ auth })
+        this.check_if_in_same_location({ auth })
+      }
+
       return
-
-      var getConnections = await Database.from('settings')
-        .innerJoin('users', 'users.id', 'connections.other_user_id')
-        .select('alias', 'level', 'users.id as id', 'profile_img')
-        .where({ user_id: 1 })
-        .orderBy('connections.total_score', 'desc')
-        .paginate(request.input('counter'), 10)
-
-      this.check_if_same_games_in_profile({ auth, request, response })
-      this.check_if_in_same_communities({ auth, request, response })
-      this.check_if_in_same_location({ auth, request, response })
-
-      return 'Got here: Master'
     } else {
       return 'You are not Logged In!'
     }
@@ -35,7 +56,7 @@ class ConnectionController {
         var getConnections = await Database.from('connections')
           .innerJoin('users', 'users.id', 'connections.other_user_id')
           .select('alias', 'level', 'users.id as id', 'profile_img')
-          .where({ user_id: 1 })
+          .where({ user_id: auth.user.id })
           .orderBy('connections.total_score', 'desc')
           .paginate(request.input('counter'), 10)
 
@@ -76,6 +97,10 @@ class ConnectionController {
     //attr.type: 1 = Record in connections table exist but not in connection_transactions
     //attr.type: 2 = connection_transactions exists but we need to update it
 
+    if (gamerA_id == gamerB_id) {
+      return
+    }
+
     try {
       const findConnection_criteria = await Database.from('connection_criterias')
         .select('id', 'score')
@@ -113,23 +138,20 @@ class ConnectionController {
 
         return
       }
+
+      if (attr.type == 2) {
+        const update_vacany = await Connection.query()
+          .where({ id: attr.connection_id })
+          .increment('total_score', findConnection_criteria.score)
+
+        return
+      }
     } catch (error) {
       console.log(error)
     }
   }
 
-  // async check_if_in_same_communities({ auth, request, response }) {
-  //   //find gamers with the same communities as the ones I'm in, orderby Level and limit to 88
-  //
-  //   if (auth.user) {
-  //     try {
-  //     } catch (error) {
-  //       console.log(error)
-  //     }
-  //   }
-  // }
-
-  async check_if_in_same_location({ auth, request, response }) {
+  async check_if_in_same_location({ auth }) {
     //find gamers with the same locations as me, orderby Level and limit to 88
 
     if (auth.user) {
@@ -199,7 +221,7 @@ class ConnectionController {
     }
   }
 
-  async check_if_in_same_communities({ auth, request, response }) {
+  async check_if_in_same_communities({ auth }) {
     //find gamers with the same communities as the ones I'm in, orderby Level and limit to 88
 
     if (auth.user) {
@@ -311,7 +333,7 @@ class ConnectionController {
     }
   }
 
-  async check_if_same_games_in_profile({ auth, request, response }) {
+  async check_if_same_games_in_profile({ auth }) {
     //find gamers with the same games as whats in your profile, orderby level and limit to 88
 
     if (auth.user) {
@@ -398,6 +420,98 @@ class ConnectionController {
       }
     } else {
       return 'You are not Logged In!'
+    }
+  }
+  async have_I_viewed_this_profile({ auth, request, response }) {
+    //everytime I look at a profile to whom I'm not friends/pending with it should increase the points
+    // trigger in the profile, if this profile is not mine and we're not friends
+    // get the gamer viewed, check if we viewed this in the past 4 hours, if not then add points.
+    if (auth.user) {
+      try {
+        const getConnection = await Database.from('connections')
+          .where({ user_id: auth.user.id, other_user_id: request.params.other_user_id })
+          .select('id')
+          .first()
+
+        if (getConnection == undefined) {
+          this.calculate_score(auth.user.id, request.params.other_user_id, {
+            criteria: 'have_I_viewed_this_profile',
+            value: true,
+            type: 0,
+          })
+        } else {
+          const check_all_my_Connections = await Database.from('connection_transactions')
+            .innerJoin('connections', 'connections.id', 'connection_transactions.connections_id')
+            .innerJoin('connection_criterias', 'connection_criterias.id', 'connection_transactions.connection_criterias_id')
+            .where({
+              user_id: auth.user.id,
+              other_user_id: request.params.other_user_id,
+              criteria: 'have_I_viewed_this_profile',
+              values: true,
+            })
+            .select('connection_transactions.id as id', 'connection_transactions.updated_at as updated_at')
+            .first()
+
+          if (check_all_my_Connections == undefined) {
+            this.calculate_score(auth.user.id, request.params.other_user_id, {
+              criteria: 'have_I_viewed_this_profile',
+              value: true,
+              type: 1,
+              connection_id: getConnection.id,
+            })
+            return
+          }
+
+          let myTime = new Date(new Date(Date.now()).getTime() - 60 * 60 * 4 * 1000)
+          if (check_all_my_Connections.updated_at < myTime) {
+            let mysql_friendly_date = new Date()
+              .toISOString()
+              .slice(0, 19)
+              .replace('T', ' ')
+
+            const update_my_Connections = await Database.from('connection_transactions')
+              .where({
+                id: check_all_my_Connections.id,
+              })
+              .update({ updated_at: mysql_friendly_date })
+
+            this.calculate_score(auth.user.id, request.params.other_user_id, {
+              criteria: 'have_I_viewed_this_profile',
+              value: true,
+              type: 2,
+              connection_id: getConnection.id,
+            })
+          }
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+
+  async cleanUpTime({ auth }) {
+    // var today = new Date()
+    // var priorDate = new Date().setDate(today.getDate() - 90)
+    // const cutOff_date = new Date(priorDate)
+    try {
+      //Don't include your friends
+      const showallMyFriends = Database.from('friends')
+        .where({ user_id: auth.user.id })
+        .select('friends.friend_id as user_id')
+      //Don't include gamers who have rejected you and gamers who you have rejected
+      const showallMyEnemies = Database.from('exclude_connections')
+        .where({ user_id: auth.user.id })
+        .select('other_user_id as user_id')
+
+      const delete_noti = await Database.table('connections')
+        .where({
+          user_id: auth.user.id,
+        })
+        .whereIn('other_user_id', showallMyFriends)
+        .orWhereIn('other_user_id', showallMyEnemies)
+        .delete()
+    } catch (error) {
+      console.log(error)
     }
   }
 }
