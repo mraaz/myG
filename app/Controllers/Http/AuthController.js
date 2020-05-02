@@ -4,6 +4,7 @@ const { validate, sanitize } = use('Validator')
 const Hash = use('Hash')
 const User = use('App/Models/User')
 const Settings = use('App/Models/Setting')
+const ConnectionController = use('./ConnectionController')
 
 class AuthController {
   async register({ response, request, view }) {
@@ -151,6 +152,8 @@ class AuthController {
         // Login the user
         await auth.remember(true).login(user)
         //session.flash({ notification: 'Welcome back!!!' })
+        let connections = new ConnectionController()
+        connections.master_controller({ auth })
         return response.redirect('/')
       } else {
         session

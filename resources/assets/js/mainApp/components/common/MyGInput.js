@@ -19,8 +19,6 @@ const MyGInput = ({ containerStyles, inputStyles, placeholder, value, onChange, 
     },
   }
 
-  console.log('props received: ', props)
-
   return (
     <div style={{ ...styles.container, ...containerStyles }}>
       <input

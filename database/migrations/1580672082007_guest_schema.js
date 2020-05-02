@@ -10,7 +10,7 @@ class GuestSchema extends Schema {
       table.string('public_key', 172).nullable()
       table.integer('chat_id').unsigned().notNullable().index()
       table.foreign('chat_id').references('id').inTable('chats').onDelete('CASCADE')
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

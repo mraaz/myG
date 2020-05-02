@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,400i,500,500i,700|Sofadi+One');
 @import url('https://fonts.googleapis.com/css?family=Montserrat+Alternates&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Montserrat');
+@import '../../../node_modules/react-image-gallery/styles/scss/image-gallery';
 @import 'reset';
 @import 'variables';
 @import 'pages/welcome';
@@ -36,7 +37,6 @@
 @import 'pages/messengerLink';
 @import 'auth/auth';
 @import 'pages/analytics';
-@import '../../../node_modules/react-image-gallery/styles/scss/image-gallery';
 
 * {
   box-sizing: border-box;

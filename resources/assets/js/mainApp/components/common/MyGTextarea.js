@@ -1,6 +1,6 @@
 import React from 'react'
 
-const MyGTextarea = ({ placeholder, value, onChange }) => {
+const MyGTextarea = ({ placeholder, value, onChange, ...props }) => {
   const styles = {
     container: {
       backgroundColor: '#2D363A',
@@ -22,7 +22,7 @@ const MyGTextarea = ({ placeholder, value, onChange }) => {
 
   return (
     <div style={styles.container}>
-      <textarea style={styles.inputContainer} placeholder={placeholder} onChange={onChange} value={value} />
+      <textarea style={styles.inputContainer} placeholder={placeholder} onChange={onChange} value={value} {...props} />
     </div>
   )
 }

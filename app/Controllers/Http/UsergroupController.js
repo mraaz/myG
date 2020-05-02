@@ -34,11 +34,19 @@ class UsergroupController {
         .where('usergroups.user_id', '=', auth.user.id)
         .whereNot('usergroups.permission_level', 42)
         .whereNotIn('usergroups.group_id', subquery)
-        .paginate(request.params.counter, 10)
+        .paginate(request.params.counter, 50)
+
+      const total_number_of_communities = await Database.from('usergroups')
+        .innerJoin('groups', 'groups.id', 'usergroups.group_id')
+        .where('usergroups.user_id', '=', auth.user.id)
+        .whereNot('usergroups.permission_level', 42)
+        .whereNotIn('usergroups.group_id', subquery)
+        .count('usergroups.id as total_number_of_communities')
 
       //const myPosts = await Database.from('posts').innerJoin('users', 'users.id', 'posts.user_id').where('posts.user_id', '=', auth.user.id).andWhere('posts.created_at', '>=', request.params.myDate).select('*', 'posts.id', 'posts.created_at','posts.updated_at').orderBy('posts.created_at', 'desc')
       return {
         groups_im_in,
+        total_number_of_communities: total_number_of_communities,
       }
     } catch (error) {
       console.log(error)
@@ -327,6 +335,12 @@ class UsergroupController {
           id: request.params.usergrp_id,
         })
         .delete()
+
+      let noti = new NotificationController()
+      request.params.group_id = request.params.id
+      request.params.other_user_id = permission_query_to_be_deleted_user[0].user_id
+
+      noti.kicked_from_group({ auth, request, response })
 
       let userStatController = new UserStatTransactionController()
       userStatController.update_total_number_of(permission_query_to_be_deleted_user[0].user_id, 'total_number_of_communities')

@@ -1,7 +1,7 @@
 import React from 'react'
 import Modal from 'react-modal'
 
-const MyGModal = ({ isOpen, children }) => {
+const MyGModal = ({ isOpen, children, ...props }) => {
   const styles = {
     overlay: {
       zIndex: 1000,
@@ -22,7 +22,7 @@ const MyGModal = ({ isOpen, children }) => {
   }
 
   return (
-    <Modal isOpen={isOpen} style={styles}>
+    <Modal isOpen={isOpen} style={styles} {...props}>
       {children}
     </Modal>
   )

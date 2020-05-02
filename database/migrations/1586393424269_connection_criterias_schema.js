@@ -9,7 +9,7 @@ class ConnectionCriteriasSchema extends Schema {
       table.increments()
       table.string('criteria', 1024).notNullable()
       table.integer('score').defaultTo(0)
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

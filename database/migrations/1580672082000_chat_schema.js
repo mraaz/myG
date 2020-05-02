@@ -20,7 +20,7 @@ class ChatSchema extends Schema {
       table.boolean('self_destruct').notNullable().defaultTo(false)
       table.boolean('isPrivate').notNullable().defaultTo(false)
       table.boolean('isGroup').notNullable().defaultTo(false).index()
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

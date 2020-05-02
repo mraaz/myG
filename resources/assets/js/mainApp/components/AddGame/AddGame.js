@@ -1,6 +1,8 @@
 import React, { Fragment, useState } from 'react'
 import classNames from 'classnames'
 import Slider, { Range } from 'rc-slider'
+import moment from 'moment'
+
 import 'rc-slider/assets/index.css'
 import { toast } from 'react-toastify'
 
@@ -135,7 +137,7 @@ const AddGame = ({
 
     return (
       <div>
-        <div className={styles.fieldTitle}>Number of Players</div>
+        <div className={styles.fieldTitle}>Number of Gamers</div>
         {!mainSettingsState.isUnlimitedPlayers && (
           <SliderWithTooltip
             value={mainSettingsState.numberOfPlayers}
@@ -146,14 +148,14 @@ const AddGame = ({
               updateMainSettings({ numberOfPlayers: value })
             }}
             marks={{
-              0: { label: 0, style: numberStyle },
+              1: { label: 1, style: numberStyle },
               25: { label: 25, style: numberStyle },
               50: { label: 50, style: numberStyle },
               75: { label: 75, style: numberStyle },
               100: { label: 100, style: numberStyle },
             }}
             dotStyle={dotStyle}
-            min={0}
+            min={1}
             max={100}
             railStyle={railStyle}
             handleStyle={handleStyle}
@@ -165,7 +167,7 @@ const AddGame = ({
                 offset: [0, -5],
               },
             }}
-            tipFormatter={(value) => value + ' Players'}
+            tipFormatter={(value) => value + ' Gamers'}
           />
         )}
         <MyGCheckbox
@@ -219,7 +221,7 @@ const AddGame = ({
             height='20'
             width='20'
             onClick={() => {
-              updateMainSettingsState({
+              updateMainSettings({
                 isEndGameFieldSelected: false,
                 endTime: null,
               })
@@ -237,8 +239,11 @@ const AddGame = ({
           <div className={styles.optionalEndContainer}>
             <div
               className={styles.optionalText}
-              onClick={(value) => {
-                updateMainSettings({ isEndGameFieldSelected: true })
+              onClick={() => {
+                updateMainSettings({
+                  isEndGameFieldSelected: true,
+                  endTime: moment(mainSettingsState.startTime).add(2, 'days'),
+                })
               }}>
               Add End Time
             </div>
@@ -371,6 +376,7 @@ const AddGame = ({
             }}
             value={advancedSettingsState.description}
             placeholder='Enter a description for your game'
+            maxLength={250}
           />
           <div className={styles.fieldTitle}>Accept Message</div>
           <MyGTextarea
@@ -379,6 +385,7 @@ const AddGame = ({
             }}
             value={advancedSettingsState.acceptMessage}
             placeholder='Create a message for those who join & accept your game'
+            maxLength={250}
           />
         </div>
       </div>

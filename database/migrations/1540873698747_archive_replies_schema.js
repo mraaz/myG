@@ -14,7 +14,7 @@ class RepliesSchema extends Schema {
       table.text('content').notNullable()
       table.timestamp('og_created_at').notNullable()
       table.timestamp('og_updated_at').notNullable()
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 
