@@ -432,6 +432,13 @@ section#content-container {
   }
 
   #posts {
+    visibility: hidden;
+    opacity: 0;
+    transition: all 1s ease-in-out;
+    &.active {
+      visibility: visible;
+      opacity: 1;
+    }
     .startofSinglePage {
       padding: 50px 20px;
     }
@@ -1040,6 +1047,16 @@ section#content-container {
           padding-left: 100px;
           padding-right: 50px;
           .individual-comment-container {
+            .comment__shape {
+              width: 0px;
+              height: 0px;
+              border-top: 14px solid transparent;
+              border-bottom: 14px solid transparent;
+              border-right: 30px solid #1d2326;
+              position: absolute;
+              top: 0;
+              left: -20px;
+            }
             .comment__section {
               margin-bottom: 30px;
               position: relative;
@@ -1094,8 +1111,8 @@ section#content-container {
               }
               .profile__image {
                 position: absolute;
-                left: -35px;
-                top: 5px;
+                left: -50px;
+                top: 2px;
                 background: #ff00ff;
                 width: 35px;
                 height: 35px;
@@ -1585,4 +1602,12 @@ section#content-container {
       content: '';
     }
   }
+}
+
+.arrowShape-right {
+  width: 0px;
+  height: 0px;
+  border-top: 14px solid transparent;
+  border-bottom: 14px solid transparent;
+  border-right: 30px solid #1d2326;
 }

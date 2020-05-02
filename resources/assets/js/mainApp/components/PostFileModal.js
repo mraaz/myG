@@ -88,7 +88,11 @@ export default class PostFileModal extends Component {
     }
   }
 
-  closeModal() {
+  closeModal(outsideClick = false) {
+    if (outsideClick && !this.state.uploading) {
+      this.props.callbackClose()
+      return
+    }
     this.props.callbackClose()
     if (this.state.preview_files.length != 0) {
       axios
@@ -468,7 +472,7 @@ export default class PostFileModal extends Component {
             </div>
           </section>
         </div>
-        <div className='modal-overlay' onClick={this.closeModal}></div>
+        <div className='modal-overlay' onClick={(e) => this.closeModal(true)}></div>
       </div>
     )
   }

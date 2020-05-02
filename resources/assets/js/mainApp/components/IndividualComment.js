@@ -440,6 +440,7 @@ export default class IndividualComment extends Component {
                 <p>{this.state.content}</p>
               </div>
             </div>
+            <div className='comment__shape'></div>
 
             {/* comment option start  */}
             {this.state.show_comment_options && (

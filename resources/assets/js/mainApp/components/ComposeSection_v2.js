@@ -73,7 +73,7 @@ export default class ComposeSection extends Component {
       this.setState({
         myPosts: [],
       })
-      await this.get_posts(post)
+      // await this.get_posts(post)
     } catch (error) {
       console.log(error)
     }
@@ -120,11 +120,16 @@ export default class ComposeSection extends Component {
         visibility: this.state.visibility_box.value,
         group_id: group_id.toString(),
       })
-      this.setState({
-        myPosts: [],
-        bFileModalOpen: false,
-      })
-      await this.get_posts(post)
+      this.setState(
+        {
+          myPosts: [],
+          bFileModalOpen: false,
+        },
+        () => {
+          this.props.successCallback()
+        }
+      )
+      // await this.get_posts(post)
     } catch (error) {
       console.log(error)
     }

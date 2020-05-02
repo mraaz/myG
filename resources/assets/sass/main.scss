@@ -233,9 +233,12 @@ label {
 .links {
   display: flex;
   justify-content: center;
+  margin-bottom: 30px;
   div {
-    font-size: 14px;
-    padding: 6px 30px;
+    font: Medium 14px/14px Montserrat;
+    border: 0;
+    border-bottom: 1px solid #384952;
+    padding: 10px 50px;
     padding-bottom: 15px;
     cursor: pointer;
     &:hover {

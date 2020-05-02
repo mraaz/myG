@@ -36,7 +36,7 @@ export default class Home extends Component {
       return (
         <div className='content-area'>
           <AnalyticsBox />
-          <ComposeSection initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData} />
+          {/* <ComposeSection initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData} /> */}
           <div className='links'>
             <div className={`${tabName == 'home' ? 'active' : ''}`} onClick={(e) => this.tabToggle('home')}>
               Home
