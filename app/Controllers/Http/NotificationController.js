@@ -1258,11 +1258,27 @@ class NotificationController {
               return
             }
 
+            const findGame = await Database.table('schedule_games')
+              .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+              .where('schedule_games.id', '=', request.input('schedule_games_id'))
+              .select('game_names.game_name', 'schedule_games.start_date_time')
+              .first()
+
+            if (findGame == undefined) {
+              return
+            }
+
             const newPost = await Post.create({
               user_id: auth.user.id,
               type: 'text',
+              content:
+                'Heya! A new ' +
+                findGame.game_name +
+                ' game has been created! It is scheduled to start: ' +
+                findGame.start_date_time +
+                '. Find out more here: https://myG.gg/scheduled_games/' +
+                request.input('schedule_games_id'),
               group_id: findGroup[0].id,
-              schedule_games_id: request.input('schedule_games_id'),
             })
           }
         }
