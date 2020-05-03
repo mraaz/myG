@@ -276,6 +276,7 @@ Route.get('/api/email/summary_email', 'EmailController.summary_email')
 
 Route.post('/api/connections/gamers_you_might_know', 'ConnectionController.gamers_you_might_know')
 Route.get('/api/connections/i_am_viewing_this_profile/:other_user_id', 'ConnectionController.have_I_viewed_this_profile')
+Route.get('/api/connections/communities_you_might_know', 'ConnectionController.communities_you_might_know')
 
 Route.post('/api/invited_users_for_schedule_games/create', 'InvitedUsersForScheduleGameController.store')
 
@@ -335,7 +336,5 @@ Route.get('/api/guest/chat/:chatId/entryLogs', 'GuestController.fetchEntryLogs')
 Route.get('/api/guest/privateKey/:chatId', 'GuestController.fetchGroupPrivateKeyRequests')
 Route.post('/api/guest/privateKey/:userId/:chatId', 'GuestController.requestGroupPrivateKey')
 Route.delete('/api/guest/privateKey/:userId/:chatId', 'GuestController.confirmGroupPrivateKey')
-
-Route.get('/api/connection/master_controller', 'ConnectionController.master_controller')
 
 Route.any('*', ({ view }) => view.render('pages/react'))

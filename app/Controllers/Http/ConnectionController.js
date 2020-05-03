@@ -3,6 +3,7 @@
 const Database = use('Database')
 const Connection = use('App/Models/Connection')
 const Settings = use('App/Models/Setting')
+const GroupConnectionController = use('./GroupConnectionController')
 
 class ConnectionController {
   async master_controller({ auth }) {
@@ -42,6 +43,7 @@ class ConnectionController {
         this.check_if_same_games_in_profile({ auth })
         this.check_if_in_same_communities({ auth })
         this.check_if_in_same_location({ auth })
+        this.calc_communities_you_might_know({ auth })
       }
 
       return
@@ -90,6 +92,140 @@ class ConnectionController {
     } else {
       return 'You are not Logged In!'
     }
+  }
+
+  async communities_you_might_know({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        var getCommunities = await Database.from('group_connections')
+          .innerJoin('groups', 'groups.id', 'group_connections.group_id')
+          .where({ type: 1 })
+          .where('group_connections.user_id', '=', auth.user.id)
+          .paginate(request.input('counter'), 10)
+
+        return getCommunities
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async calc_communities_you_might_know({ auth }) {
+    // Find Public communities which are the most populated and ofc which I'm not in
+    // Find public communities which my friends are in and ofc which I'm not in
+
+    //ToDO: https://github.com/mraaz/myGame/issues/241
+
+    if (auth.user) {
+      try {
+        const subquery = Database.select('id')
+          .from('groups')
+          .where({ user_id: auth.user.id })
+
+        const showallMyFriends = Database.from('friends')
+          .where({ user_id: auth.user.id })
+          .select('friends.friend_id as user_id')
+
+        let groups_my_friends_are_in = await Database.from('usergroups')
+          .innerJoin('groups', 'groups.id', 'usergroups.group_id')
+          .where('groups.type', '=', 1)
+          .whereNot('usergroups.user_id', '=', auth.user.id)
+          .whereNot('usergroups.permission_level', 42)
+          .whereNotIn('usergroups.group_id', subquery)
+          .whereIn('usergroups.user_id', showallMyFriends)
+          .groupBy('group_id')
+          .select('group_id')
+          .count('* as no_of_members')
+          .orderBy('no_of_members', 'desc')
+          .limit(888)
+
+        let popin_groups = await Database.from('usergroups')
+          .innerJoin('groups', 'groups.id', 'usergroups.group_id')
+          .where('groups.type', '=', 1)
+          .whereNot('usergroups.user_id', '=', auth.user.id)
+          .whereNot('usergroups.permission_level', 42)
+          .whereNotIn('usergroups.group_id', subquery)
+          .groupBy('group_id')
+          .select('group_id')
+          .count('* as no_of_members')
+          .orderBy('no_of_members', 'desc')
+          .limit(288)
+
+        let tmp_popin_groups = popin_groups
+        let popin_groups_size = 0
+
+        //Let's do 80/20 split groups_my_friends_are_in for 80.
+
+        if (groups_my_friends_are_in.length > 200) {
+          let tmpVal = 0
+          if (groups_my_friends_are_in.length * 0.8 > 250) {
+            tmpVal = 250
+          } else {
+            tmpVal = groups_my_friends_are_in.length * 0.8
+          }
+          groups_my_friends_are_in = groups_my_friends_are_in.slice(0, tmpVal)
+          if (popin_groups.length > 50) {
+            popin_groups = popin_groups.slice(0, 50)
+            popin_groups_size = 50
+          }
+        } else {
+          popin_groups = popin_groups.slice(0, 250 - groups_my_friends_are_in.length)
+          popin_groups_size = 250 - groups_my_friends_are_in.length
+        }
+
+        const _1stpass = [...groups_my_friends_are_in, ...popin_groups]
+
+        var mySet = new Set()
+        for (var i = 0; i < _1stpass.length; i++) {
+          mySet.add(_1stpass[i])
+        }
+
+        if (mySet.size < 250) {
+          for (var x = popin_groups_size; mySet.size < 250; x++) {
+            if (x < tmp_popin_groups.length) {
+              mySet.add(tmp_popin_groups[x])
+            } else {
+              break
+            }
+          }
+        }
+
+        let myArr = [...mySet]
+        myArr = await this.shuffle(myArr)
+
+        let groupConnectionController = new GroupConnectionController()
+
+        for (var i = 0; i < myArr.length; i++) {
+          groupConnectionController.store({ auth }, myArr[i].group_id, myArr[i].no_of_members)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async shuffle(array) {
+    var currentIndex = array.length,
+      temporaryValue,
+      randomIndex
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex)
+      currentIndex -= 1
+
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex]
+      array[currentIndex] = array[randomIndex]
+      array[randomIndex] = temporaryValue
+    }
+
+    return array
   }
 
   async calculate_score(gamerA_id, gamerB_id, attr) {
