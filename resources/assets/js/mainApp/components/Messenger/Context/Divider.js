@@ -4,7 +4,7 @@ import React from 'react';
 export default function Divider(name, expanded, onClick, renderFunction) {
   const chevronType = expanded ? 'down' : 'right';
   return (
-    <div className="messenger-body-section">
+    <div key={name} className="messenger-body-section">
       <div className="messenger-body-section-header-light clickable"
         onClick={onClick}
       >
