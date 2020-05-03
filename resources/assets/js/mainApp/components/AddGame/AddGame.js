@@ -166,6 +166,7 @@ const AddGame = ({
               align: {
                 offset: [0, -5],
               },
+              visible: true,
             }}
             tipFormatter={(value) => value + ' Gamers'}
           />
@@ -175,7 +176,7 @@ const AddGame = ({
           onClick={(value) => {
             updateMainSettings({
               isUnlimitedPlayers: value,
-              numberOfPlayers: value ? -42 : 0,
+              numberOfPlayers: value ? -42 : 1,
             })
           }}
           labelText='Unlimited'

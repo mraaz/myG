@@ -224,7 +224,8 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick }) => {
     }
   }
 
-  const onPlayerClick = (playerId) => {
+  const onPlayerClick = (playerId, value) => {
+    console.log('value: ', value)
     if (selectedPlayers[playerId]) {
       updateSelectedPlayers((currentData) => {
         let dataClone = Object.assign({}, currentData)
@@ -346,7 +347,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick }) => {
         }}
         loadOptions={onPlayersSuggestionFetch}
         onChange={(value) => {
-          onPlayerClick(value.id)
+          onPlayerClick(value.id, value)
         }}
         placeholder='Search'
         value={null}

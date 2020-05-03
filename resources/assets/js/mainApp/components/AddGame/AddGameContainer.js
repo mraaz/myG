@@ -10,6 +10,7 @@ import AddGame from './AddGame'
 import { Toast_style } from '../Utility_Function'
 import { SubmitDataFunction } from '../AddScheduleGames_Submit_Data'
 import InvitePlayers from './InvitePlayers'
+import { Link } from 'react-router-dom'
 
 const AddGameContainer = () => {
   // State
@@ -47,6 +48,7 @@ const AddGameContainer = () => {
     roleNeeded: null,
     trophies: null,
   })
+  const [gameLink, updateGameLink] = useState('')
   const gameLinkRef = useRef(null)
 
   // Handlers
@@ -65,25 +67,25 @@ const AddGameContainer = () => {
 
   const onAddGameSubmit = async () => {
     updateIsSubmitting(false)
-    // if (mainSettingsState.gameTitle == null) {
-    //   toast.success(<Toast_style text={'Sorry mate! Game name can not be blank'} />)
-    //   updateIsSubmitting(false)
-    //   return
-    // }
-    // if (mainSettingsState.startTime == null) {
-    //   toast.success(<Toast_style text={'Sorry mate! Start date can not be empty'} />)
-    //   updateIsSubmitting(false)
-    //   return
-    // }
+    if (mainSettingsState.gameTitle == null) {
+      toast.success(<Toast_style text={'Sorry mate! Game name can not be blank'} />)
+      updateIsSubmitting(false)
+      return
+    }
+    if (mainSettingsState.startTime == null) {
+      toast.success(<Toast_style text={'Sorry mate! Start date can not be empty'} />)
+      updateIsSubmitting(false)
+      return
+    }
 
-    // if (mainSettingsState.startTime.isSameOrAfter(mainSettingsState.endTime)) {
-    //   toast.success(<Toast_style text={'Sorry mate! End date needs to be AFTER start date'} />)
-    //   updateIsSubmitting(false)
-    //   return
-    // }
+    if (mainSettingsState.startTime.isSameOrAfter(mainSettingsState.endTime)) {
+      toast.success(<Toast_style text={'Sorry mate! End date needs to be AFTER start date'} />)
+      updateIsSubmitting(false)
+      return
+    }
 
     try {
-      await SubmitDataFunction({
+      const { data } = await SubmitDataFunction({
         game_name_box: mainSettingsState.gameTitle,
         selected_region: advancedSettingsState.region,
         selected_experience: advancedSettingsState.experience,
@@ -100,8 +102,10 @@ const AddGameContainer = () => {
         clash_royale_trophies: optionalFieldsState.trophies,
         allow_comments: mainSettingsState.isCommentsAllowed,
       })
+      updateGameLink(data.id)
       updateIsGameListedModalOpen(true)
     } catch (err) {
+      console.log('err: ', err)
       updateIsSubmitting(false)
     }
   }
@@ -141,8 +145,8 @@ const AddGameContainer = () => {
           <div className={styles.listedHeader}>Your Game is now listed!</div>
           <div className={styles.listedShareText}>Share the below link or invite players directly</div>
           <MyGInput
-            value='www.myg/game/3304939340'
-            containerStyles={{ width: '237px' }}
+            value={`https://myG.gg/scheduledGames/${gameLink}`}
+            containerStyles={{ width: '248px' }}
             inputStyles={{ width: '100%', outline: 'none' }}
             refInput={gameLinkRef}
             readOnly>
@@ -154,7 +158,13 @@ const AddGameContainer = () => {
           <MyGButton customStyles={{ color: '#E5C746', border: '2px solid' }} text='Invite Friends' onClick={onInviteFriendsClick} />
         </div>
         <div className={styles.listedBottomContentContainer}>
-          <MyGButton customStyles={{ color: '#fff', border: '2px solid' }} text='Done' onClick={() => {}} />
+          <MyGButton
+            customStyles={{ color: '#fff', border: '2px solid' }}
+            text='Done'
+            onClick={() => {
+              window.location.reload(false)
+            }}
+          />
         </div>
       </MyGModal>
     )
@@ -166,10 +176,18 @@ const AddGameContainer = () => {
         <div className={styles.listedTopContentContainer}>
           <div className={styles.listedHeader}>Invites sent!</div>
           <div className={styles.listedShareText}>Invites have been sent out successfully!</div>
-          <MyGButton customStyles={{ color: '#E5C746', border: '2px solid' }} text='View Game' onClick={() => {}} />
+          <Link to='/scheduledGames'>
+            <MyGButton customStyles={{ color: '#E5C746', border: '2px solid' }} text='View Game' />
+          </Link>
         </div>
         <div className={styles.listedBottomContentContainer}>
-          <MyGButton customStyles={{ color: '#fff', border: '2px solid' }} text='Done' onClick={() => {}} />
+          <MyGButton
+            customStyles={{ color: '#fff', border: '2px solid' }}
+            text='Done'
+            onClick={() => {
+              window.location.reload(false)
+            }}
+          />
         </div>
       </MyGModal>
     )
