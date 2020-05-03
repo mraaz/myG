@@ -5,6 +5,7 @@ import IndividualComment from './IndividualComment'
 import moment from 'moment'
 import SweetAlert from 'react-bootstrap-sweetalert'
 import ImageGallery from 'react-image-gallery'
+const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
 
 export default class IndividualPost extends Component {
   constructor() {
@@ -263,6 +264,9 @@ export default class IndividualPost extends Component {
       show_more_comments: true,
     })
   }
+  insert_image_comment = () => {
+    alert('Image Insert')
+  }
 
   insert_comment = () => {
     if (this.state.value == '') {
@@ -475,7 +479,7 @@ export default class IndividualPost extends Component {
               )}
               <div className='online__status'></div>
             </div>
-            <div className='clearfix'>
+            <div className='user__details'>
               <div className='author__username'>
                 <Link to={`/profile/${post.alias}`}>{`@${post.alias} `}</Link> shared a {post.type == 'text' ? 'story' : 'image'}
                 {'  from community: '}
@@ -490,6 +494,17 @@ export default class IndividualPost extends Component {
                   <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}></i>
                 </div>
               )}
+              <div className={`post-dropdown ${this.state.dropdown == true ? 'active' : ''}`}>
+                <nav>
+                  <div className='edit' onClick={this.clickedEdit}>
+                    Edit &nbsp;
+                  </div>
+                  <div className='delete' onClick={() => this.showAlert()}>
+                    Delete
+                  </div>
+                  &nbsp;
+                </nav>
+              </div>
             </div>
           </div>
           <div className='media'>
@@ -582,11 +597,9 @@ export default class IndividualPost extends Component {
               onKeyDown={this.detectKey}
               ref={this.setTextInputRef}
             />
-            {/* <div className='buttons'>
-              <div className='repost-btn' onClick={this.insert_comment}>
-                <i className='fas fa-reply' />
-              </div>
-            </div> */}
+            <div className='insert__images' onClick={this.insert_image_comment}>
+              <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
+            </div>
             <div className='profile__image'>
               {this.state.show_profile_img && (
                 <Link

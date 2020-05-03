@@ -296,6 +296,7 @@ export default class IndividualReply extends Component {
                 <p>{this.state.content}</p>
               </div>
             </div>
+            <div className='comment__shape'></div>
 
             {/* comment option start  */}
             {this.state.show_reply_options && (
