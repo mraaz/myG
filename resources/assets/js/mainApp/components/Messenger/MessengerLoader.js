@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import Messenger from './Messenger'
 import LoadingIndicator from '../LoadingIndicator'
 
-import { prepareMessengerAction } from '../../../redux/actions/chatAction'
+import { prepareMessengerAction, fetchBlockedUsersAction } from '../../../redux/actions/chatAction'
 
 class MessengerLoader extends React.PureComponent {
   state = {
@@ -13,8 +13,9 @@ class MessengerLoader extends React.PureComponent {
 
   componentDidMount() {
     if (!this.state.loaded && !this.props.loading) {
-      this.props.prepareMessenger(this.props.userId, this.props.alias, this.props.pin, this.props.privateKey, this.props.publicKey)
-      this.setState({ loaded: true })
+      this.props.prepareMessenger(this.props.userId, this.props.alias, this.props.pin, this.props.privateKey, this.props.publicKey);
+      this.props.fetchBlockedUsers();
+      this.setState({ loaded: true });
     }
   }
 
@@ -54,6 +55,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     prepareMessenger: (userId, alias, pin, privateKey, publicKey) => dispatch(prepareMessengerAction(userId, alias, pin, privateKey, publicKey)),
+    fetchBlockedUsers: () => dispatch(fetchBlockedUsersAction()),
   }
 }
 

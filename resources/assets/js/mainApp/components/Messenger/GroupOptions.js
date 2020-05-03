@@ -216,19 +216,6 @@ class GroupOptions extends React.PureComponent {
         )}
 
         <div
-          className={`chat-component-options-option clickable ${this.props.group.blocked && inactiveStyle}`}
-          onClick={() => {
-            this.props.updateChat(this.props.group.chatId, { blocked: !this.props.group.blocked });
-          }}
-        >
-          <div
-            className="chat-component-options-option-icon"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_block.svg)` }}
-          />
-          {this.props.group.blocked ? 'unblock group' : 'block group'}
-        </div>
-
-        <div
           className={`chat-component-options-option clickable chat-component-options-option-warning`}
           onClick={() => this.setState({ exitingGroup: true })}
         >

@@ -15,7 +15,7 @@ import FileOpenModal from '../FileOpenModal';
 
 import { handleLink } from "../../../common/link";
 import { monitorChats, closeSubscription } from '../../../integration/ws/chat';
-import { createChatAction, openChatAction, closeChatAction, clearChatAction } from '../../../redux/actions/chatAction';
+import { createChatAction, openChatAction, closeChatAction, clearChatAction, blockUserAction, unblockUserAction } from '../../../redux/actions/chatAction';
 import { favoriteGameAction, unfavoriteGameAction, updateGameIconAction, updateStatusAction } from '../../../redux/actions/userAction';
 import { generateKeysAction, validatePinAction } from '../../../redux/actions/encryptionAction';
 
@@ -84,6 +84,9 @@ class Messenger extends React.PureComponent {
       pin={this.props.pin}
       generateKeys={this.props.generateKeys}
       chats={this.props.chats}
+      blockedUsers={this.props.blockedUsers}
+      blockUser={this.props.blockUser}
+      unblockUser={this.props.unblockUser}
       unfavoriteGame={this.props.unfavoriteGame}
       clearChat={this.props.clearChat}
       onUploadPhoto={gameId => this.setState({ uploadingPhoto: gameId })}
@@ -209,6 +212,7 @@ function mapStateToProps(state) {
     games: state.user.games,
     contacts,
     groups,
+    blockedUsers: state.chat.blockedUsers,
     pin: state.encryption.pin,
     invalidPin: state.encryption.invalidPin,
     privateKey: state.encryption.privateKey,
@@ -226,6 +230,8 @@ function mapDispatchToProps(dispatch) {
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
     favoriteGame: gameId => dispatch(favoriteGameAction(gameId)),
     unfavoriteGame: gameId => dispatch(unfavoriteGameAction(gameId)),
+    blockUser: (blockedUserId) => dispatch(blockUserAction(blockedUserId)),
+    unblockUser: (blockedUserId) => dispatch(unblockUserAction(blockedUserId)),
     updateGameIcon: (gameId, icon) => dispatch(updateGameIconAction(gameId, icon)),
     updateStatus: (status, forcedStatus) => dispatch(updateStatusAction(status, forcedStatus)),
   });

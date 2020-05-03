@@ -12,6 +12,7 @@ export default function reducer(state = {
   unreadMessages: [],
   preparingMessenger: false,
   guestLink: null,
+  blockedUsers: [],
 }, action) {
   switch (action.type) {
 
@@ -350,6 +351,33 @@ export default function reducer(state = {
       return {
         ...state,
         chats,
+      };
+    }
+
+    case "FETCH_BLOCKED_USERS_FULFILLED": {
+      logger.log('CHAT', `Redux -> Blocked Users Updated: `, action.payload);
+      const blockedUsers = action.payload.blockedUsers;
+      return {
+        ...state,
+        blockedUsers,
+      };
+    }
+
+    case "BLOCK_USER_FULFILLED": {
+      logger.log('CHAT', `Redux -> Blocked User - `, action.payload);
+      const blockedUsers = action.payload.blockedUsers;
+      return {
+        ...state,
+        blockedUsers,
+      };
+    }
+
+    case "UNBLOCK_USER_FULFILLED": {
+      logger.log('CHAT', `Redux -> Unblocked User - `, action.payload);
+      const blockedUsers = action.payload.blockedUsers;
+      return {
+        ...state,
+        blockedUsers,
       };
     }
 

@@ -50,7 +50,8 @@ class ChatOptions extends React.PureComponent {
         <div
           className={`chat-component-options-option clickable ${this.props.blocked && inactiveStyle}`}
           onClick={() => {
-            this.props.updateChat(this.props.chatId, { blocked: !this.props.blocked });
+            if (!this.props.blocked) this.props.blockUser(this.props.contactId);
+            else this.props.unblockUser(this.props.contactId);
           }}
         >
           <div

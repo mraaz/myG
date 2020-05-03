@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import notifyToast from '../../../common/toast';
 import Dropdown from '../Dropdown';
 import Popup from '../Popup';
-import { addContactsToChatAction, inviteUserToGroupAction, updateChatAction, clearChatAction, removeFromGroupAction } from '../../../redux/actions/chatAction';
+import { addContactsToChatAction, inviteUserToGroupAction, updateChatAction, clearChatAction, removeFromGroupAction, blockUserAction, unblockUserAction } from '../../../redux/actions/chatAction';
 import { searchUsersAction, addAsFriendAction, fetchFriendRequestsAction } from '../../../redux/actions/userAction';
 
 class GroupMemberOptions extends React.PureComponent {
@@ -53,12 +53,11 @@ class GroupMemberOptions extends React.PureComponent {
   }
 
   toggleUserBlock = (contactId) => {
-    const blockedUsers = this.props.group.blockedUsers;
+    const blockedUsers = this.props.blockedUsers.map(user => user.userId);
     const contact = this.props.groupContacts.find(contact => contact.contactId === contactId) || {};
     if (contact.name) notifyToast(`You have ${blockedUsers.indexOf(contactId) !== -1 ? 'Unblocked' : 'Blocked'} ${contact.name}.`);
-    if (blockedUsers.indexOf(contactId) !== -1) blockedUsers.splice(blockedUsers.indexOf(contactId), 1);
-    else blockedUsers.push(contactId);
-    this.props.updateChat(this.props.group.chatId, { blockedUsers });
+    if (blockedUsers.indexOf(contactId) !== -1) this.props.unblockUser(contactId);
+    else this.props.blockUser(contactId);
   }
 
   kickUser = () => {
@@ -109,7 +108,7 @@ class GroupMemberOptions extends React.PureComponent {
     const isRequested = this.props.friendRequests.includes(contact.contactId) || this.state.friendRequests.includes(contact.contactId);
     const isContactOwner = this.props.group.owners.length && this.props.group.owners.includes(contact.contactId);
     const isContactModerator = this.props.group.moderators.length && this.props.group.moderators.includes(contact.contactId);
-    const isContactBlocked = this.props.group.blockedUsers.length && this.props.group.blockedUsers.includes(contact.contactId);
+    const isContactBlocked = this.props.blockedUsers.length && this.props.blockedUsers.map(user => user.userId).includes(contact.contactId);
     return (
       <div key={contact.contactId} className="chat-group-member">
         <div className="chat-group-member-info">
@@ -284,6 +283,7 @@ function mapStateToProps(state) {
     contacts: state.user.contacts || [],
     friendRequests: state.user.friendRequests || [],
     foundUsers: state.user.foundUsers || [],
+    blockedUsers: state.chat.blockedUsers || [],
     userPrivateKey: state.encryption.privateKey,
   }
 }
@@ -298,6 +298,8 @@ function mapDispatchToProps(dispatch) {
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
     removeFromGroup: (chatId, userId) => dispatch(removeFromGroupAction(chatId, userId)),
+    blockUser: (blockedUserId) => dispatch(blockUserAction(blockedUserId)),
+    unblockUser: (blockedUserId) => dispatch(unblockUserAction(blockedUserId)),
   });
 }
 

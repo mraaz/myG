@@ -37,9 +37,9 @@ class ChatController {
     const requestingUserId = auth.user.id;
     if (!requestingUserId) throw new Error('Auth Error');
     const requestedChatId = params.chatId;
-    const { muted, blocked, blockedUsers, isPrivate, icon, title, owners, moderators, markAsRead, selfDestruct } = request.only(['muted', 'blocked', 'blockedUsers', 'isPrivate', 'icon', 'title', 'owners', 'moderators', 'markAsRead', 'selfDestruct']);
-    log('CHAT', `User ${requestingUserId} updating Chat ${requestedChatId} with ${JSON.stringify({ muted, blocked, blockedUsers, isPrivate, icon, title, owners, moderators, markAsRead, selfDestruct })}`);
-    const result = await ChatRepository.updateChat({ requestingUserId, requestedChatId, muted, blocked, blockedUsers, isPrivate, icon, title, owners, moderators, markAsRead, selfDestruct });
+    const { muted, isPrivate, icon, title, owners, moderators, markAsRead, selfDestruct } = request.only(['muted', 'isPrivate', 'icon', 'title', 'owners', 'moderators', 'markAsRead', 'selfDestruct']);
+    log('CHAT', `User ${requestingUserId} updating Chat ${requestedChatId} with ${JSON.stringify({ muted, isPrivate, icon, title, owners, moderators, markAsRead, selfDestruct })}`);
+    const result = await ChatRepository.updateChat({ requestingUserId, requestedChatId, muted, isPrivate, icon, title, owners, moderators, markAsRead, selfDestruct });
     return response.send(result);
   }
 
@@ -220,6 +220,32 @@ class ChatController {
     log('CHAT', `User ${requestingUserId} requesting Group Info for Chat ${requestedChatId}`);
     const { chat } = await ChatRepository.fetchChatInfo({ requestingUserId, requestedChatId });
     return response.send({ chat });
+  }
+
+  async fetchBlockedUsers({ auth, response }) {
+    const requestingUserId = auth.user.id;
+    if (!requestingUserId) throw new Error('Auth Error');
+    log('CHAT', `User ${requestingUserId} requesting Blocked Users`);
+    const { blockedUsers } = await ChatRepository.fetchBlockedUsers({ requestingUserId });
+    return response.send({ blockedUsers });
+  }
+
+  async blockUser({ auth, request, response }) {
+    const requestingUserId = auth.user.id;
+    if (!requestingUserId) throw new Error('Auth Error');
+    const requestedUserId = request.only('blockedUserId').blockedUserId;
+    log('CHAT', `User ${requestingUserId} blocking User ${requestedUserId}`);
+    const { blockedUsers } = await ChatRepository.blockUser({ requestingUserId, requestedUserId});
+    return response.send({ blockedUsers });
+  }
+
+  async unblockUser({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    if (!requestingUserId) throw new Error('Auth Error');
+    const requestedUserId = params.blockedUserId;
+    log('CHAT', `User ${requestingUserId} unblocking User ${requestedUserId}`);
+    const { blockedUsers } = await ChatRepository.unblockUser({ requestingUserId, requestedUserId});
+    return response.send({ blockedUsers });
   }
 
   async fetchLinks({ auth, params, response }) {

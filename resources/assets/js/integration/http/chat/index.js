@@ -107,6 +107,21 @@ export function removeReaction(chatId, messageId, reactionId) {
   return axios.delete(`/api/chat/${chatId}/message/${messageId}/reaction/${reactionId}`).then(response => response.data);
 }
 
+export function fetchBlockedUsers() {
+  logger.log('CHAT', 'HTTP', `Requesting Blocked Users`);
+  return axios.get(`/api/chat/users/blocked`).then(response => response.data);
+}
+
+export function blockUser(blockedUserId) {
+  logger.log('CHAT', 'HTTP', `Blocking User ${blockedUserId}`);
+  return axios.post(`/api/chat/users/blocked`, { blockedUserId }).then(response => response.data);
+}
+
+export function unblockUser(blockedUserId) {
+  logger.log('CHAT', 'HTTP', `Unblocking User ${blockedUserId}`);
+  return axios.delete(`/api/chat/users/blocked/${blockedUserId}`).then(response => response.data);
+}
+
 export function setTyping(chatId, isTyping) {
   logger.log('CHAT', 'HTTP', `Setting as ${isTyping ? 'Typing' : 'Not Typing'} for Chat ${chatId}`);
   return axios.put(`/api/chat/${chatId}/typing`, { isTyping }).then(response => response.data);

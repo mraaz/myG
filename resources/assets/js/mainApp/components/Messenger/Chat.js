@@ -8,7 +8,7 @@ import ChatOptions from './ChatOptions';
 import GroupOptions from './GroupOptions';
 import { WithTooltip } from '../Tooltip';
 
-import { prepareChatAction, fetchMessagesAction, sendMessageAction, editMessageAction, deleteMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction, setTypingAction, addReactionAction, removeReactionAction } from '../../../redux/actions/chatAction';
+import { prepareChatAction, fetchMessagesAction, sendMessageAction, editMessageAction, deleteMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction, setTypingAction, addReactionAction, removeReactionAction, blockUserAction, unblockUserAction } from '../../../redux/actions/chatAction';
 import { withDatesAndLogs } from '../../../common/chat';
 import { encryptMessage, decryptMessage, deserializeKey } from '../../../integration/encryption';
 import { formatDateTime } from '../../../common/date';
@@ -146,9 +146,12 @@ export class Chat extends React.PureComponent {
     return (
       <ChatOptions
         {...this.props.group}
+        blocked={!this.props.isGroup && this.props.blockedUsers.map(user => user.userId).includes(this.props.contactId)}
         messages={this.props.messages}
         contactId={this.props.contactId}
         contactAlias={this.props.title}
+        blockUser={this.props.blockUser}
+        unblockUser={this.props.unblockUser}
       />
     );
   }
@@ -383,7 +386,7 @@ export class Chat extends React.PureComponent {
         <ChatInput
           replyingTo={this.state.replyingTo && this.decryptMessage(this.state.replyingTo)}
           connected={!this.props.disconnected}
-          blocked={this.props.blocked}
+          blocked={!this.props.isGroup && this.props.blockedUsers.map(user => user.userId).includes(this.props.contactId)}
           isDecryptable={this.props.privateKey}
           selectedEmoji={this.state.selectedEmoji}
           sendMessage={this.sendMessage}
@@ -469,11 +472,11 @@ export function mapStateToProps(state, props) {
     title: chat.title || contact.name || '',
     subtitle: chatSubtitle || contactSubtitle || '',
     status: chat.status || contact.status || 'offline',
-    blocked: chat.blocked || false,
     muted: chat.muted || false,
     selfDestruct: chat.selfDestruct || false,
     lastRead: chat.lastRead || 0,
     lastReads: chat.lastReads || {},
+    blockedUsers: state.chat.blockedUsers || [],
     typing: chat.typing || [],
     maximised: chat.maximised || false,
     minimised: chat.minimised || false,
@@ -496,6 +499,8 @@ function mapDispatchToProps(dispatch) {
     removeReaction: (chatId, messageId, reactionId) => dispatch(removeReactionAction(chatId, messageId, reactionId)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     updateChatState: (chatId, state) => dispatch(updateChatStateAction(chatId, state)),
+    blockUser: (blockedUserId) => dispatch(blockUserAction(blockedUserId)),
+    unblockUser: (blockedUserId) => dispatch(unblockUserAction(blockedUserId)),
     checkSelfDestruct: (chatId) => dispatch(checkSelfDestructAction(chatId)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
     setTyping: (chatId, isTyping) => dispatch(setTypingAction(chatId, isTyping)),

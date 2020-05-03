@@ -1,4 +1,4 @@
-import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, inviteUserToGroup, createChat, updateChat, clearChat, deleteChat, exitGroup, removeFromGroup, checkSelfDestruct, fetchMessages, fetchUnreadMessages, fetchEncryptionMessages, fetchLinks, updateLink, fetchEntryLogs, sendMessage, editMessage, deleteMessage, addReaction, removeReaction,setTyping } from '../../integration/http/chat';
+import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, inviteUserToGroup, createChat, updateChat, clearChat, deleteChat, exitGroup, removeFromGroup, checkSelfDestruct, fetchMessages, fetchUnreadMessages, fetchEncryptionMessages, fetchLinks, updateLink, fetchEntryLogs, sendMessage, editMessage, deleteMessage, addReaction, removeReaction, fetchBlockedUsers, blockUser, unblockUser, setTyping } from '../../integration/http/chat';
 import { fetchGroupPrivateKeyRequests } from '../../integration/http/guest';
 import { fetchGames, fetchContacts, fetchContact, fetchStatus } from '../../integration/http/user';
 import { generateKeys, deserializeKey, getPublicKey } from '../../integration/encryption';
@@ -321,6 +321,26 @@ export function removeReactionAction(chatId, messageId, reactionId) {
   }
 }
 
+export function fetchBlockedUsersAction() {
+  return {
+    type: 'FETCH_BLOCKED_USERS',
+    payload: fetchBlockedUsers(),
+  }
+}
+
+export function blockUserAction(blockedUserId) {
+  return {
+    type: 'BLOCK_USER',
+    payload: blockUser(blockedUserId),
+  }
+}
+
+export function unblockUserAction(blockedUserId) {
+  return {
+    type: 'UNBLOCK_USER',
+    payload: unblockUser(blockedUserId),
+  }
+}
 
 export function setTypingAction(chatId, isTyping) {
   return {

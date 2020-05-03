@@ -3,7 +3,7 @@
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use('Schema')
 
-class ChatMessageSchema extends Schema {
+class ChatMessageReactionSchema extends Schema {
   up () {
     this.create('chat_message_reactions', (table) => {
       table.increments()
@@ -23,4 +23,4 @@ class ChatMessageSchema extends Schema {
   }
 }
 
-module.exports = ChatMessageSchema
+module.exports = ChatMessageReactionSchema

@@ -1,6 +1,7 @@
 
 import React from "react";
 import EncryptionSettings from './EncryptionSettings';
+import BlockedUsers from './BlockedUsers';
 
 export default class Settings extends React.PureComponent {
 
@@ -75,12 +76,21 @@ export default class Settings extends React.PureComponent {
     />
   }
 
+  renderBlockedUsers() {
+    return <BlockedUsers
+      blockedUsers={this.props.blockedUsers}
+      blockUser={this.props.blockUser}
+      unblockUser={this.props.unblockUser}
+    />
+  }
+
   render() {
     return (
       <div className="messenger-settings-container">
         <p className="messenger-settings-title">Settings</p>
         {this.renderEncryptionSettings()}
         {this.renderGamesSettings()}
+        {this.renderBlockedUsers()}
       </div>
     );
   }
