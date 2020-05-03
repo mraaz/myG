@@ -24,7 +24,7 @@ const MENU_OPTIONS = {
   COMMUNITIES: 'COMMUNITIES',
 }
 
-const InvitePlayers = ({ onInvitationSent, onCancelInviteClick }) => {
+const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
   const [selectedMenu, updateSelectedMenu] = useState(MENU_OPTIONS.PLAYERS)
   const [showOptions, updateShowOptions] = useState({
     'Selected Gamers': false,
@@ -75,39 +75,48 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick }) => {
     if (false) {
       return
     }
-    const players = ''
-    const communities = ''
-    const groups = ''
-    var invitation_group_box, invitation_box
+    var gamers = '',
+      groups = '',
+      communities = ''
+    console.log('selectedPlayers: ', selectedPlayers)
     Object.keys(selectedPlayers).forEach((playerKey, index) => {
       if (index === 0) {
-        players.concat(`${selectedPlayers[playerKey].name}`)
+        gamers = gamers.concat(`${selectedPlayers[playerKey].name}`)
         return
       }
-      players.concat(`, ${selectedPlayers[playerKey].name}`)
+      gamers = gamers.concat(`, ${selectedPlayers[playerKey].name}`)
+      console.log('index x')
+      console.log('gamers: ', gamers)
     })
     Object.keys(selectedCommunities).forEach((communityKey, index) => {
       if (index === 0) {
-        communities.concat(`${selectedCommunities[communityKey].name}`)
+        communities = communities.concat(`${selectedCommunities[communityKey].name}`)
         return
       }
-      communities.concat(`, ${selectedCommunities[communityKey].name}`)
+      communities = communities.concat(`, ${selectedCommunities[communityKey].name}`)
     })
-    console.log('players: ', players)
+    Object.keys(selectedGroups).forEach((groupKey, index) => {
+      if (index === 0) {
+        groups = groups.concat(`${selectedGroups[groupKey].name}`)
+        return
+      }
+      groups = groups.concat(`, ${selectedGroups[groupKey].name}`)
+    })
+
     console.log('communities: ', communities)
+    console.log('gamers: ', gamers)
+    console.log('groups: ', groups)
 
-    invitation_group_box = Convert_to_comma_delimited_value(selectedCommunities)
-    invitation_box = Convert_to_comma_delimited_value(selectedPlayers)
-
-    // try {
-    //   const sendInvitationInfo = axios.post('/api/notifications/invitations', {
-    //     invitation_group_box: invitation_group_box,
-    //     invitation_box: invitation_box,
-    //     schedule_games_id: 120, //match.params.schedule_games_id
-    //   })
-    // } catch (error) {
-    //   console.log(error)
-    // }
+    try {
+      await axios.post('/api/notifications/invitations', {
+        communities,
+        gamers,
+        groups,
+        schedule_games_id: gameId,
+      })
+    } catch (error) {
+      console.log(error)
+    }
 
     onInvitationSent()
   }

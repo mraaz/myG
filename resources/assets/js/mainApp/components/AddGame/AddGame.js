@@ -290,6 +290,7 @@ const AddGame = ({
             onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
             loadOptions={onGameTitleChange}
             onChange={(value) => {
+              console.log('value: ', value)
               updateMainSettings({ gameTitle: value })
               value && !value.isGameNameField && updateOptionalSettings({ serverRegion: null })
               updateState({ isGameNameField: value ? value.isGameNameField : false })

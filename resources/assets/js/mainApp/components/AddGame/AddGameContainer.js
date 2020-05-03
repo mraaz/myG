@@ -146,7 +146,7 @@ const AddGameContainer = () => {
           <div className={styles.listedShareText}>Share the below link or invite players directly</div>
           <MyGInput
             value={`https://myG.gg/scheduledGames/${gameLink}`}
-            containerStyles={{ width: '248px' }}
+            containerStyles={{ width: '318px' }}
             inputStyles={{ width: '100%', outline: 'none' }}
             refInput={gameLinkRef}
             readOnly>
@@ -211,7 +211,13 @@ const AddGameContainer = () => {
       {getPageFooter()}
       {isGameListedModalOpen && getGameListedModal()}
       {isInvitesSentsModalOpen && getInvitesSentModal()}
-      {isInviteModalOpen && <InvitePlayers onInvitationSent={onInvitationSent} onCancelInviteClick={onCancelInviteClick} />}
+      {isInviteModalOpen && (
+        <InvitePlayers
+          onInvitationSent={onInvitationSent}
+          onCancelInviteClick={onCancelInviteClick}
+          gameId={mainSettingsState.gameTitle.game_names_id}
+        />
+      )}
     </div>
   )
 }
