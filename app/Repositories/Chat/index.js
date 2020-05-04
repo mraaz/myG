@@ -15,7 +15,7 @@ const ChatPrivateKeyRequest = use('App/Models/ChatPrivateKeyRequest');
 const ChatGameMessageSchedule = use('App/Models/ChatGameMessageSchedule');
 const ChatBlockedUser = use('App/Models/ChatBlockedUser');
 
-const ApiController = use('App/Controllers/Http/ApiController');
+const AwsKeyController = use('App/Controllers/Http/AwsKeyController');
 const RedisRepository = require('../../Repositories/Redis');
 
 const UserSchema = require('../../Schemas/User');
@@ -428,6 +428,7 @@ class ChatRepository {
     const guests = JSON.parse(chat.guests || '[]');
     const owners = JSON.parse(chat.owners || '[]');
     if (!forceDelete && !owners.includes(requestingUserId)) throw new Error('Only Owners can Delete Chat');
+    await new AwsKeyController().removeChatGroupProfileKey(requestedChatId);
     await chatModel.delete();
     contacts.forEach(userId => this._notifyChatEvent({ userId, action: 'deleteChat', payload: { chatId: requestedChatId } }));
     guests.forEach(guestId => this._notifyChatEvent({ guestId, action: 'deleteChat', payload: { chatId: requestedChatId } }));
@@ -530,6 +531,7 @@ class ChatRepository {
       reply_backup: replyBackup,
     };
     const message = await Chat.find(requestedChatId).then(chat => chat.messages().create(messageData));
+    if (attachment) await new AwsKeyController().addChatAttachmentKey(requestedChatId, message.id, attachment);
     const messageSchema = new MessageSchema({
       messageId: message.id,
       chatId: requestedChatId,
@@ -833,10 +835,10 @@ class ChatRepository {
     fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
     const expiredAttachmentsRaw = await ChatMessage.query().where('is_attachment', true).andWhere('created_at', '<=', fiveDaysAgo).fetch();
     const expiredAttachments = expiredAttachmentsRaw && expiredAttachmentsRaw.toJSON() || [];
-    const s3Controller = new ApiController();
+    const keyController = new AwsKeyController();
     for (const message of expiredAttachments) {
+      await keyController.removeChatAttachmentKey(message.chat_id, message.id, message.attachment);
       await this.deleteMessage({ requestingUserId: message.sender_id, requestedChatId: message.chat_id, requestedMessageId: message.id });
-      await s3Controller._deleteFile(message.attachment);
     }
     log('CRON', `END - HANDLE EXPIRED ATTACHMENTS - DELETED ${expiredAttachments.length} ATTACHMENTS`);
   }

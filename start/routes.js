@@ -279,6 +279,10 @@ Route.get('/api/notifications/outgoingFriendRequests', 'NotificationController.o
 
 Route.get('/api/userStatTransaction/master_controller', 'UserStatTransactionController.master_controller')
 
+// Aws Key Upload
+Route.post('/api/chat/:chatId/icon', 'AwsKeyController.addChatGroupProfileKey')
+Route.post('/api/game/:gameId/icon', 'AwsKeyController.addGameIconKey')
+
 // Chat Feature - https://docs.google.com/spreadsheets/d/1AR9P3MLQw6J6eoRqgTbOVROFxmPE215yXzsqD59wy2o
 Route.get('/api/chat/', 'ChatController.fetchChats')
 Route.get('/api/chat/:chatId', 'ChatController.fetchChat')

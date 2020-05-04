@@ -18,6 +18,7 @@ import { monitorChats, closeSubscription } from '../../../integration/ws/chat';
 import { createChatAction, openChatAction, closeChatAction, clearChatAction, blockUserAction, unblockUserAction } from '../../../redux/actions/chatAction';
 import { favoriteGameAction, unfavoriteGameAction, updateGameIconAction, updateStatusAction } from '../../../redux/actions/userAction';
 import { generateKeysAction, validatePinAction } from '../../../redux/actions/encryptionAction';
+import { uploadGameIcon } from "../../../integration/http/chat";
 
 class Messenger extends React.PureComponent {
 
@@ -41,8 +42,9 @@ class Messenger extends React.PureComponent {
     closeSubscription();
   }
 
-  onUploadPhoto = (icon) => {
+  onUploadPhoto = async (icon, key) => {
     this.props.updateGameIcon(this.state.uploadingPhoto, icon);
+    await uploadGameIcon(this.state.uploadingPhoto, key);
     this.setState({ uploadingPhoto: null });
   }
 

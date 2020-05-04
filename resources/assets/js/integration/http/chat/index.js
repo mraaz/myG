@@ -22,6 +22,16 @@ export function updateChat(chatId, payload) {
   return axios.put(`/api/chat/${chatId}`, payload).then(response => response.data);
 }
 
+export function uploadGroupIcon(chatId, awsKey) {
+  logger.log('CHAT', 'HTTP', `Uploading Group Icon for ${chatId} -> ${awsKey}`);
+  return axios.post(`/api/chat/${chatId}/icon`, { awsKey }).then(response => response.data);
+}
+
+export function uploadGameIcon(gameId, awsKey) {
+  logger.log('CHAT', 'HTTP', `Uploading Game Icon for ${gameId} -> ${awsKey}`);
+  return axios.post(`/api/game/${gameId}/icon`, { awsKey }).then(response => response.data);
+}
+
 export function clearChat(chatId) {
   logger.log('CHAT', 'HTTP', `Clearing Chat ${chatId}`);
   return axios.delete(`/api/chat/${chatId}`).then(response => response.data);

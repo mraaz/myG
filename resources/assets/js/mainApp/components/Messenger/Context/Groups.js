@@ -5,6 +5,7 @@ import GroupCreation from '../GroupCreation';
 import { deserializeKey, decryptMessage, generateKeysSync as generateGroupKeys } from '../../../../integration/encryption';
 import { formatAMPM } from '../../../../common/date';
 import { WithTooltip } from '../../Tooltip';
+import { uploadGroupIcon } from '../../../../integration/http/chat';
 
 export default class Groups extends React.PureComponent {
 
@@ -27,10 +28,11 @@ export default class Groups extends React.PureComponent {
     this.props.createChat([contact.contactId], this.props.userId);
   }
 
-  createGroup = (icon, title, contacts, gameId) => {
+  createGroup = async (icon, key, title, contacts, gameId) => {
     const { encryption } = generateGroupKeys();
-    this.props.createChat(contacts, this.props.userId, title, icon, encryption, true, null, gameId);
     this.setState({ showingGroupCreation: false });
+    const { value: { chat: { chatId } } } = await this.props.createChat(contacts, this.props.userId, title, icon, encryption, true, null, gameId);
+    await uploadGroupIcon(chatId, key);
   }
 
   renderGroupButton = () => {

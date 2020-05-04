@@ -32,12 +32,12 @@ class GroupCreation extends React.Component {
   }
 
   onCreate = () => {
-    const { icon, addedContacts, selectedGame } = this.state;
+    const { icon, key, addedContacts, selectedGame } = this.state;
     const contactAliases = addedContacts.map(contactId => this.props.contacts.find(contact => contact.contactId === contactId).name);
     const firstAlias = contactAliases[0] ? `, ${contactAliases[0]}` : '';
     const secondAlias = contactAliases[1] ? `, ${contactAliases[1]}` : '';
     const title = this.state.title || `${this.props.alias}` + firstAlias + secondAlias;
-    this.props.onCreate(icon, title, addedContacts, selectedGame && selectedGame.gameId);
+    this.props.onCreate(icon, key, title, addedContacts, selectedGame && selectedGame.gameId);
   }
 
   onAddContact = (contact) => {
@@ -45,8 +45,8 @@ class GroupCreation extends React.Component {
     this.setState(previous => ({ addedContacts: [...previous.addedContacts, contact.contactId] }));
   }
 
-  onUploadPhoto = (icon) => {
-    this.setState({ icon, uploadingPhoto: false });
+  onUploadPhoto = (icon, key) => {
+    this.setState({ icon, key, uploadingPhoto: false });
   }
 
   renderHeader = () => {
