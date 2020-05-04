@@ -12,6 +12,7 @@ export default class EncryptionSettings extends React.PureComponent {
     pinInput: '',
     editingPin: false,
     pinError: false,
+    showKey: false,
     reEncryptingMessages: false,
     reEncryptionState: '',
   }
@@ -29,7 +30,6 @@ export default class EncryptionSettings extends React.PureComponent {
     this.props.toggleSettings();
 
     const chats = JSON.parse(JSON.stringify(this.props.chats));
-    const contacts = this.props.contacts;
     chats.forEach(chat => {
       if (!chat.messages) chat.messages = [];
     })
@@ -96,7 +96,8 @@ export default class EncryptionSettings extends React.PureComponent {
     logger.log('CHAT', `Re-Encryption - Finished for ${this.props.chats.length} Chats`);
 
     this.props.toggleSettings();
-    this.setState({ editingPin: false, pinInput: '', pinError: false, reEncryptingMessages: false, reEncryptingState: '' })
+    this.setState({ editingPin: false, pinInput: '', pinError: false, reEncryptingMessages: false, reEncryptingState: '' });
+    notifyToast("Woot! Encryption key changed, an email with this new key has been sent.");
   }
 
   decryptMessage = (message, chatPrivateKey) => {
@@ -116,6 +117,16 @@ export default class EncryptionSettings extends React.PureComponent {
 
   renderEncryptionInput = () => {
     if (this.state.reEncryptingMessages) return null;
+    if (!this.state.showKey && !this.state.editingPin) {
+      return (
+        <div
+          className="messenger-settings-encryption-show-button clickable"
+          onClick={() => this.setState({ showKey: true })}
+        >
+          SHOW KEY
+        </div>
+      );
+    }
     return (
       <input
         className="messenger-settings-encryption-key"

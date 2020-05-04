@@ -230,6 +230,18 @@ export class Chat extends React.PureComponent {
     );
   }
 
+  renderMuteBanner = () => {
+    if (!this.props.muted) return null;
+    return (
+      <div className="chat-component-muted-banner">
+        This chat is currently muted
+        <div className="chat-component-muted-button clickable" onClick={() => this.props.updateChat(this.props.chatId, { muted: false })}>
+          Unmute
+        </div>
+      </div>
+    );
+  }
+
   renderBody = () => {
     const lastMessage = (this.props.messages[this.props.messages.length - 1] || {});
     const lastMessageId = lastMessage.messageId;
@@ -429,6 +441,7 @@ export class Chat extends React.PureComponent {
         className={`chat-component-base ${extraClass}`}
       >
         {this.renderHeader()}
+        {!this.state.settings && !this.props.minimised && this.renderMuteBanner()}
         {this.state.attachment && this.renderAttachment()}
         {this.state.settings && !this.props.minimised && this.renderSettings()}
         {!this.state.settings && !this.props.minimised && this.renderBody()}

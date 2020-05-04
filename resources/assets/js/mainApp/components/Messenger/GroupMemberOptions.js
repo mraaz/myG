@@ -121,23 +121,29 @@ class GroupMemberOptions extends React.PureComponent {
           <div className="chat-group-member-name">{contact.name}</div>
         </div>
         <div className="chat-group-member-buttons">
+          {isContactOwner && (
+            <div
+              className="chat-group-options-option-icon"
+              style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_owner.png)` }}
+            />
+          )}
           {isGroupModerator && !isContactOwner && (
             <div
               className="chat-group-options-option-icon clickable"
-              style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_${isContactModerator ? 'moderator' : 'not_moderator'}.svg)`, filter: `contrast(0)` }}
+              style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_${isContactModerator ? 'moderator' : 'member'}.png)` }}
               onClick={() => this.toggleModerator(contact.contactId)}
             />
           )}
           {isGroupModerator && !isContactOwner && (
             <div
               className="chat-group-options-option-icon clickable"
-              style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_remove.svg)`, filter: `contrast(0)` }}
+              style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_remove.png)` }}
               onClick={() => this.setState({ kickingUser: contact })}
             />
           )}
           <div
             className="chat-group-options-option-icon clickable"
-            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_block.svg)`, filter: `contrast(${isContactBlocked ? '1' : '0'})` }}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_${isContactBlocked ? 'muted' : 'unmuted'}.png)` }}
             onClick={() => this.toggleUserBlock(contact.contactId)}
           />
           {!isAdded && !isRequested && (
@@ -145,7 +151,7 @@ class GroupMemberOptions extends React.PureComponent {
               onClick={() => this.onAddFriendRequest(contact.contactId)}
             >
               add friend
-          </div>
+            </div>
           )}
           {!isAdded && isRequested && (
             <div className="chat-group-member-added-button">

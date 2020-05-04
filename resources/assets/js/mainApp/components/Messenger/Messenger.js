@@ -1,6 +1,7 @@
 
 import React from "react";
 import { connect } from 'react-redux';
+import SweetAlert from 'react-bootstrap-sweetalert';
 
 import General from './Context/General';
 import Games from './Context/Games';
@@ -140,7 +141,7 @@ class Messenger extends React.PureComponent {
       onExpand={(expanded) => this.setState({ dividerExpanded: { general: false, games: !expanded } })}
     />
   }
-  
+
   renderChats = () => {
     if (!this.props.pin) return null;
     return <Chats
@@ -181,6 +182,24 @@ class Messenger extends React.PureComponent {
     )
   }
 
+  renderSweetAlert = () => {
+    if (!this.props.alert) return;
+    return (
+      <SweetAlert
+        info
+        showCancel
+        confirmBtnText={window.messengerSweetAlert.confirmText}
+        confirmBtnBsStyle='info'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={true}
+        onConfirm={() => window.messengerSweetAlert.onConfirm()}
+        onCancel={() => window.messengerSweetAlert.onCancel()}>
+        {window.messengerSweetAlert.label}
+      </SweetAlert>
+    );
+  }
+
   render() {
     return (
       <section id="messenger">
@@ -194,6 +213,7 @@ class Messenger extends React.PureComponent {
         {this.renderUploadModal()}
         {this.renderStatusMonitor()}
         {this.renderFocusMonitor()}
+        {this.renderSweetAlert()}
       </section>
     );
   }
@@ -212,6 +232,7 @@ function mapStateToProps(state) {
   });
   contacts.forEach(contact => contact.chat = contactsWithChats[contact.contactId] || {});
   return {
+    alert: state.alert.show,
     status: state.user.status,
     isStatusLocked: state.user.isStatusLocked,
     chats: state.chat.chats,

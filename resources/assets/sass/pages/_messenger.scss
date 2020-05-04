@@ -28,6 +28,7 @@
 
   .messenger-content {
     position: fixed;
+    z-index: 200;
     bottom: 0;
     height: 100vh;
     display: flex;
@@ -276,6 +277,19 @@
     width: 90%;
     text-align: center;
     color: #0a0a0a;
+  }
+
+  .messenger-settings-encryption-show-button {
+    background-color: #2d363A;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bolder;
+    width: 90%;
+    align-self: center;
+    margin: 14px 0 8px 0;
+    text-align: center;
+    color: #FAFAFA;
   }
 
   .messenger-footer-container {
