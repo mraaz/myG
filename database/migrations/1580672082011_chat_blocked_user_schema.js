@@ -11,7 +11,7 @@ class ChatBlockedUserSchema extends Schema {
       table.foreign('user_id').references('id').inTable('users').onDelete('CASCADE')
       table.integer('blocked_user_id').unsigned().notNullable().index()
       table.foreign('blocked_user_id').references('id').inTable('users').onDelete('CASCADE')
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

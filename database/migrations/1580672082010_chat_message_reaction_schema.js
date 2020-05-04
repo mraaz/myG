@@ -14,7 +14,7 @@ class ChatMessageReactionSchema extends Schema {
       table.integer('reaction_id').unsigned().notNullable()
       table.integer('sender_id').unsigned().notNullable()
       table.text('sender_name').notNullable()
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

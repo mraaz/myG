@@ -12,6 +12,7 @@ class CommentController {
           post_id: request.input('post_id'),
           schedule_games_id: request.input('schedule_games_id'),
           user_id: auth.user.id,
+          media_url: request.input('media_url'),
         })
         return newComment
       } catch (error) {

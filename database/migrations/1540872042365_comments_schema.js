@@ -14,6 +14,7 @@ class CommentsSchema extends Schema {
       table.foreign('post_id').references('posts.id').onDelete('cascade')
       table.integer('schedule_games_id').unsigned()
       table.foreign('schedule_games_id').references('schedule_games.id').onDelete('cascade')
+      table.string('media_url', 600).nullable()
       table.timestamps(true,true)
     })
   }
