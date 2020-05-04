@@ -11,6 +11,7 @@ class ReplyController {
           user_id: auth.user.id,
           comment_id: request.input('comment_id'),
           content: request.input('content'),
+          media_url: request.input('media_url'),
         })
         return newReply
       } catch (error) {
@@ -42,11 +43,7 @@ class ReplyController {
 
   async show_reply({ auth, request, response }) {
     try {
-      const this_reply = await Database.from('replies').where(
-        'id',
-        '=',
-        request.params.id
-      )
+      const this_reply = await Database.from('replies').where('id', '=', request.params.id)
 
       return {
         this_reply,
