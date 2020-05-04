@@ -15,7 +15,7 @@ export default class IndividualPost extends Component {
       total: 0,
       comment_total: 0,
       show_like: true,
-      show_more_comments: false,
+      show_comments: false,
       show_profile_img: false,
       admirer_first_name: '',
       pull_once: true,
@@ -37,6 +37,7 @@ export default class IndividualPost extends Component {
       disableSwipe: false,
       show_group_name: false,
       group_name: '',
+      show_more_comments: false,
     }
     this.textInput = null
 
@@ -238,19 +239,25 @@ export default class IndividualPost extends Component {
     this.setState({ value2: e.target.value })
   }
 
-  onChange = () => {
-    let tmpState = this.state.show_more_comments
+  show_more_comments = () => {
+    const { show_comments, show_more_comments } = this.state
+    this.setState({
+      show_comments: false,
+      show_more_comments: true,
+    })
+  }
 
-    if (!this.state.show_more_comments) {
+  onChange = () => {
+    const { show_comments } = this.state
+
+    if (!show_comments) {
       this.pullComments()
     }
-    // this.setState({
-    //   pull_once: false
-    // })
     this.setState({
-      show_more_comments: !this.state.show_more_comments,
+      show_comments: !show_comments,
+      show_more_comments: false,
     })
-    if (!tmpState) {
+    if (!show_comments) {
       this.focusTextInput()
     }
   }
@@ -261,7 +268,7 @@ export default class IndividualPost extends Component {
     }
     this.setState({
       pull_once: false,
-      show_more_comments: true,
+      show_comments: true,
     })
   }
   insert_image_comment = () => {
@@ -372,12 +379,28 @@ export default class IndividualPost extends Component {
     }
   }
 
-  showComment = () => {
-    if (this.state.myComments != undefined) {
-      return this.state.myComments.map((item, index) => {
+  showMoreComment = () => {
+    const { myComments = [] } = this.state
+    const comments = [...myComments]
+    return (
+      comments.length > 0 &&
+      comments.map((item, index) => {
         return <IndividualComment comment={item} key={index} user={this.props.user} />
       })
-    }
+    )
+  }
+  showComment = () => {
+    const { myComments = [] } = this.state
+    const comments = [...myComments]
+    const commentArr = comments.length > 3 ? comments.slice(3) : comments
+    console.log(commentArr, 'commentArr')
+
+    return (
+      commentArr.length > 0 &&
+      commentArr.map((item, index) => {
+        return <IndividualComment comment={item} key={index} user={this.props.user} />
+      })
+    )
   }
 
   clickedDropdown = () => {
@@ -447,21 +470,23 @@ export default class IndividualPost extends Component {
   }
 
   render() {
-    if (this.state.post_deleted != true) {
+    const { myComments = [], media_urls, post_deleted, alert, show_profile_img, show_comments, show_more_comments } = this.state
+    if (post_deleted != true) {
       var show_media = false
 
       let { post } = this.props //destructing of object
+      //destructing of object
 
-      if (this.state.media_urls != [] && this.state.media_urls != null) {
+      if (media_urls != [] && media_urls != null) {
         show_media = true
       }
 
       return (
         <div className='post__container'>
-          {this.state.alert}
+          {alert}
           <div className='post__body'>
             <div className='profile__image'>
-              {this.state.show_profile_img && (
+              {show_profile_img && (
                 <Link
                   to={`/profile/${post.alias}`}
                   className='user-img'
@@ -584,8 +609,12 @@ export default class IndividualPost extends Component {
               </div>
             )}
           </div>
+          {show_comments && myComments.length > 3 && (
+            <div className='show__comments_count' onClick={this.show_more_comments}>{`View all (${myComments.length}) comments`}</div>
+          )}
           <div className='comments'>
-            {this.state.show_more_comments && <div className='show-individual-comments'>{this.showComment()}</div>}
+            {show_comments && <div className='show-individual-comments'>{this.showComment()}</div>}
+            {show_more_comments && <div className='show-individual-comments'>{this.showMoreComment()}</div>}
           </div>
           <div className='compose-comment'>
             <textarea
