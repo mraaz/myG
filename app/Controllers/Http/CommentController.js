@@ -2,6 +2,7 @@
 
 const Comment = use('App/Models/Comment')
 const Database = use('Database')
+const AwsKeyController = use('./AwsKeyController')
 
 class CommentController {
   async store({ auth, request, response }) {
@@ -14,6 +15,11 @@ class CommentController {
           user_id: auth.user.id,
           media_url: request.input('media_url'),
         })
+
+        let update_key = new AwsKeyController()
+        request.params.comment_id = newComment.id
+        update_key.addCommentKey({ auth, request, response })
+
         return newComment
       } catch (error) {
         console.log(error)
@@ -82,11 +88,16 @@ class CommentController {
   async destroy({ auth, request, response }) {
     if (auth.user) {
       try {
+        let delete_files = new AwsKeyController()
+        await delete_files.deleteCommentKey({ auth, request, response })
+
         const delete_comment = await Database.table('comments')
           .where({
             id: request.params.id,
           })
           .delete()
+
+        deleteCommentKey
 
         return delete_comment
       } catch (error) {

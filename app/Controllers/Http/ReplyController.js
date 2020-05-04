@@ -2,6 +2,7 @@
 
 const Database = use('Database')
 const Reply = use('App/Models/Reply')
+const AwsKeyController = use('./AwsKeyController')
 
 class ReplyController {
   async store({ auth, request, response }) {
@@ -13,6 +14,11 @@ class ReplyController {
           content: request.input('content'),
           media_url: request.input('media_url'),
         })
+
+        let update_key = new AwsKeyController()
+        request.params.reply_id = newReply.id
+        update_key.addReplyKey({ auth, request, response })
+
         return newReply
       } catch (error) {
         console.log(error)
@@ -70,6 +76,9 @@ class ReplyController {
   async destroy({ auth, request, response }) {
     if (auth.user) {
       try {
+        let delete_files = new AwsKeyController()
+        await delete_files.deleteReplyKey({ auth, request, response })
+
         const delete_reply = await Database.table('replies')
           .where({
             id: request.params.id,
