@@ -1035,6 +1035,18 @@ section#content-container {
       .image-gallery-play-button {
         display: none;
       }
+      .preview__image {
+        padding-left: 40px;
+        position: relative;
+        top: -20px;
+        width: 120px;
+        height: 80px;
+        padding-left: 40px;
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
       .compose-comment {
         display: flex;
         justify-content: center;
@@ -1061,6 +1073,9 @@ section#content-container {
           top: -18px;
           z-index: 2;
           cursor: pointer;
+          input {
+            display: none;
+          }
           img {
             height: 35px;
           }

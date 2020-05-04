@@ -6,6 +6,8 @@ import moment from 'moment'
 import SweetAlert from 'react-bootstrap-sweetalert'
 import ImageGallery from 'react-image-gallery'
 const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
+import { toast } from 'react-toastify'
+import { Toast_style } from './Utility_Function'
 
 export default class IndividualPost extends Component {
   constructor() {
@@ -38,6 +40,7 @@ export default class IndividualPost extends Component {
       show_group_name: false,
       group_name: '',
       show_more_comments: false,
+      preview_file: '',
     }
     this.textInput = null
 
@@ -60,6 +63,9 @@ export default class IndividualPost extends Component {
       // Focus the text input using the raw DOM API
       if (this.textInput2) this.textInput2.focus()
     }
+
+    this.fileInputRef = React.createRef()
+    this.doUploadS3 = this.doUploadS3.bind(this)
   }
 
   click_like_btn = async (post_id) => {
@@ -272,7 +278,38 @@ export default class IndividualPost extends Component {
     })
   }
   insert_image_comment = () => {
-    alert('Image Insert')
+    if (!this.state.uploading) {
+      this.fileInputRef.current.click()
+    }
+  }
+  handleSelectFile = (e) => {
+    const fileList = e.target.files
+    let name = `comment_image_${+new Date()}`
+    this.doUploadS3(fileList[0], name, name)
+  }
+
+  doUploadS3 = async (file, id = '', name) => {
+    this.setState({
+      uploading: true,
+    })
+    const formData = new FormData()
+    formData.append('upload_file', file)
+    formData.append('filename', name)
+    try {
+      const post = await axios.post('/api/uploadFile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      this.setState({
+        preview_file: post.data.Location,
+      })
+    } catch (error) {
+      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again'} />)
+    }
+    this.setState({
+      uploading: false,
+    })
   }
 
   insert_comment = () => {
@@ -285,30 +322,28 @@ export default class IndividualPost extends Component {
       })
       return
     }
-
     this.onFocus()
-    const self = this
-
-    const saveComment = async function () {
+    const saveComment = async () => {
       try {
         const postComment = await axios.post('/api/comments', {
-          content: self.state.value.trim(),
-          post_id: self.props.post.id,
+          content: this.state.value.trim(),
+          post_id: this.props.post.id,
+          media_url: this.state.preview_file,
         })
-        let { post, user } = self.props
+        let { post, user } = this.props
         if (post.user_id != user.userInfo.id) {
           const addPostLike = axios.post('/api/notifications/addComment', {
             other_user_id: post.user_id,
-            post_id: self.props.post.id,
+            post_id: this.props.post.id,
             comment_id: postComment.data.id,
           })
         }
-        self.setState({
+        this.setState({
           myComments: [],
         })
-        self.pullComments()
-        self.setState({
-          comment_total: self.state.comment_total + 1,
+        this.pullComments()
+        this.setState({
+          comment_total: this.state.comment_total + 1,
           zero_comments: true,
         })
       } catch (error) {
@@ -627,8 +662,10 @@ export default class IndividualPost extends Component {
               ref={this.setTextInputRef}
             />
             <div className='insert__images' onClick={this.insert_image_comment}>
+              <input type='file' ref={this.fileInputRef} onChange={this.handleSelectFile} name='insert__images' />
               <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
             </div>
+
             <div className='profile__image'>
               {this.state.show_profile_img && (
                 <Link
@@ -649,6 +686,11 @@ export default class IndividualPost extends Component {
               <div className='online__status'></div>
             </div>
           </div>
+          {this.state.preview_file && (
+            <div className='preview__image'>
+              <img src={`${this.state.preview_file}`} />
+            </div>
+          )}
 
           {/*<div className='update-container'>
           {this.state.alert}
