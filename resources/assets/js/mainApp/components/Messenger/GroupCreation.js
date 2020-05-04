@@ -61,7 +61,7 @@ class GroupCreation extends React.Component {
 
         <div className="chat-group-creation-header-icon clickable"
           style={{
-            backgroundImage: `url(${this.state.icon || '/assets/svg/ic_chat_group_icon.svg'})`,
+            backgroundImage: `url(${this.state.icon || 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_icon.svg'})`,
             backgroundSize: this.state.icon ? 'cover' : 'inherit',
           }}
           onClick={() => this.setState({ uploadingPhoto: true })}

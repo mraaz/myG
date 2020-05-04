@@ -89,7 +89,7 @@ export default class ChatInput extends React.PureComponent {
           >
           </textarea>
           <div className="chat-component-send-button clickable"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_send.svg)` }}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_send.svg)` }}
             onClick={() => !disabled && this.sendMessage()}
           />
         </div>

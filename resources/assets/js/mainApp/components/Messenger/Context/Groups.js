@@ -43,7 +43,7 @@ export default class Groups extends React.PureComponent {
         >
           <div
             className="messenger-new-group-button-icon"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_group_create.svg)` }}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_create.svg)` }}
           />
           Create Group
         </div>

@@ -71,7 +71,7 @@ export default class ChatMessage extends React.Component {
             >
               <div
                 className="chat-component-message-reaction"
-                style={{ backgroundImage: `url(/assets/image/img/ic_reaction_${reactionId}.png)` }}
+                style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_reaction_${reactionId}.png)` }}
               />
               {reaction.length > 1 && <div className="chat-component-message-reaction-count">{reaction.length}</div>}
               {this.state.reaction === reactionId && (
@@ -100,42 +100,42 @@ export default class ChatMessage extends React.Component {
           <div
             className="chat-component-message-reaction-options-item clickable"
             onClick={() => this.props.addReaction(this.props.chatId, this.props.messageId, 1)}
-            style={{ backgroundImage: `url(/assets/image/img/ic_reaction_1.png)` }}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_reaction_1.png)` }}
           />
         )}
         {!hasReaction(2) && (
           <div
             className="chat-component-message-reaction-options-item clickable"
             onClick={() => this.props.addReaction(this.props.chatId, this.props.messageId, 2)}
-            style={{ backgroundImage: `url(/assets/image/img/ic_reaction_2.png)` }}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_reaction_2.png)` }}
           />
         )}
         {!hasReaction(3) && (
           <div
             className="chat-component-message-reaction-options-item clickable"
             onClick={() => this.props.addReaction(this.props.chatId, this.props.messageId, 3)}
-            style={{ backgroundImage: `url(/assets/image/img/ic_reaction_3.png)` }}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_reaction_3.png)` }}
           />
         )}
         {!hasReaction(4) && (
           <div
             className="chat-component-message-reaction-options-item clickable"
             onClick={() => this.props.addReaction(this.props.chatId, this.props.messageId, 4)}
-            style={{ backgroundImage: `url(/assets/image/img/ic_reaction_4.png)` }}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_reaction_4.png)` }}
           />
         )}
         {!hasReaction(5) && (
           <div
             className="chat-component-message-reaction-options-item clickable"
             onClick={() => this.props.addReaction(this.props.chatId, this.props.messageId, 5)}
-            style={{ backgroundImage: `url(/assets/image/img/ic_reaction_5.png)` }}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_reaction_5.png)` }}
           />
         )}
         {!hasReaction(6) && (
           <div
             className="chat-component-message-reaction-options-item clickable"
             onClick={() => this.props.addReaction(this.props.chatId, this.props.messageId, 6)}
-            style={{ backgroundImage: `url(/assets/image/img/ic_reaction_6.png)` }}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_reaction_6.png)` }}
           />
         )}
       </div>
@@ -289,7 +289,7 @@ export default class ChatMessage extends React.Component {
 
   renderSound = (content, expirationDate) => {
     const audio = new Audio(content.split('myg-sound|')[1]);
-    const icon = !this.state.audio ? '/assets/svg/ic_chat_play.svg' : '/assets/svg/ic_chat_pause.svg';
+    const icon = !this.state.audio ? 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_play.svg' : 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_pause.svg';
     return (
       <div className="chat-component-message-image-container">
         <div className="chat-component-message-attachment-container">
@@ -324,7 +324,7 @@ export default class ChatMessage extends React.Component {
           <div
             className={`chat-component-message-video clickable`}
             onClick={() => this.props.showAttachment({ video })}
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_play.svg)` }}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_play.svg)` }}
           />
           <div>Video</div>
         </div>
@@ -385,7 +385,7 @@ export default class ChatMessage extends React.Component {
               <div
                 onClick={() => this.setState({ showOptionsMenu: true })}
                 className={`chat-component-message-options-button ${!this.state.showOptionsMenu && !this.props.message.deleted && 'clickable'}`}
-                style={{ backgroundImage: this.state.showOptionsButton && !this.props.message.deleted && `url(/assets/svg/ic_chat_options.svg)` }}
+                style={{ backgroundImage: this.state.showOptionsButton && !this.props.message.deleted && `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_options.svg)` }}
               />
               <div className="chat-component-message-options-menu-container">
                 <div className="chat-component-message-options-menu-inner-container">

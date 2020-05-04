@@ -701,7 +701,7 @@ export default function reducer(state = {
 
 function playMessageSound() {
   try {
-    new Audio('/assets/sound/notification.mp3').play();
+    new Audio('https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/notification.mp3').play();
   } catch (error) {
     console.error('Error While Playing Message Notification:', error);
   }

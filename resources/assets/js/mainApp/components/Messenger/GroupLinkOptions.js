@@ -15,7 +15,7 @@ class GroupLinkOptions extends React.PureComponent {
       <div className="chat-group-links-header">
         <p className="chat-group-links-header-title">Invite link settings</p>
         <div className="chat-group-links-header-close-button clickable"
-          style={{ backgroundImage: `url(/assets/svg/ic_chat_close.svg)` }}
+          style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_close.svg)` }}
           onClick={() => this.props.onClose()}
         />
       </div>

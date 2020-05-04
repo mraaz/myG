@@ -87,7 +87,7 @@ class GuestLink extends React.PureComponent {
 
   render() {
     return (
-      <div id='guest-container' style={{ backgroundImage: `url(/assets/image/img/guest_background.jpg)` }}>
+      <div id='guest-container' style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/guest_background.jpg)` }}>
         {!!this.props.hasChat && this.renderChat()}
         {this.renderKicked()}
         {this.renderAlias()}

@@ -42,12 +42,12 @@ export default class AttachWindow extends React.PureComponent {
         <div
           className={`attach-icon clickable`}
           onClick={() => this.setState({ choosingEmoji: true, choosingAttachment: false })}
-          style={{ backgroundImage: `url(/assets/svg/ic_chat_action_emoji.svg)` }}
+          style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_action_emoji.svg)` }}
         />
         <div
           className={`attach-icon clickable`}
           onClick={() => this.setState({ choosingAttachment: true, choosingEmoji: false })}
-          style={{ backgroundImage: `url(/assets/svg/ic_chat_action_image.svg)` }}
+          style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_action_image.svg)` }}
         />
       </div>
     );

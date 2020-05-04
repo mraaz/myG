@@ -50,7 +50,7 @@ export default class Settings extends React.PureComponent {
           )}
           {isOwner && (
             <div className="messenger-change-game-icon-button clickable"
-              style={{ backgroundImage: `url(/assets/svg/ic_chat_group_icon.svg)` }}
+              style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_icon.svg)` }}
               onClick={() => this.props.onUploadPhoto(game.gameId)}
             />
           )}

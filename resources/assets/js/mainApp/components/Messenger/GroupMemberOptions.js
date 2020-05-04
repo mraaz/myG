@@ -87,7 +87,7 @@ class GroupMemberOptions extends React.PureComponent {
       <div className="chat-group-members-header">
         <p className="chat-group-members-header-title">Group members</p>
         <div className="chat-group-members-header-close-button clickable"
-          style={{ backgroundImage: `url(/assets/svg/ic_chat_close.svg)` }}
+          style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_close.svg)` }}
           onClick={() => this.props.onClose()}
         />
       </div>
@@ -124,20 +124,20 @@ class GroupMemberOptions extends React.PureComponent {
           {isGroupModerator && !isContactOwner && (
             <div
               className="chat-group-options-option-icon clickable"
-              style={{ backgroundImage: `url(/assets/svg/ic_chat_group_${isContactModerator ? 'moderator' : 'not_moderator'}.svg)`, filter: `contrast(0)` }}
+              style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_${isContactModerator ? 'moderator' : 'not_moderator'}.svg)`, filter: `contrast(0)` }}
               onClick={() => this.toggleModerator(contact.contactId)}
             />
           )}
           {isGroupModerator && !isContactOwner && (
             <div
               className="chat-group-options-option-icon clickable"
-              style={{ backgroundImage: `url(/assets/svg/ic_chat_group_remove.svg)`, filter: `contrast(0)` }}
+              style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_remove.svg)`, filter: `contrast(0)` }}
               onClick={() => this.setState({ kickingUser: contact })}
             />
           )}
           <div
             className="chat-group-options-option-icon clickable"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_block.svg)`, filter: `contrast(${isContactBlocked ? '1' : '0'})` }}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_block.svg)`, filter: `contrast(${isContactBlocked ? '1' : '0'})` }}
             onClick={() => this.toggleUserBlock(contact.contactId)}
           />
           {!isAdded && !isRequested && (
@@ -164,14 +164,14 @@ class GroupMemberOptions extends React.PureComponent {
         <div className="chat-group-member-info">
           <div
             className="chat-group-guest-icon"
-            style={{ backgroundImage: `url(/assets/svg/ic_guest_icon.svg)` }}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_guest_icon.svg)` }}
           />
           <div className="chat-group-member-name">{guestAlias}</div>
         </div>
         <div className="chat-group-member-buttons">
           <div
             className="chat-group-options-option-icon clickable"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_group_remove.svg)`, filter: `contrast(0)` }}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_remove.svg)`, filter: `contrast(0)` }}
             onClick={() => this.setState({ kickingUser: { contactId: guestId, name: guestAlias } })}
           />
         </div>
