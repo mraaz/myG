@@ -626,9 +626,6 @@ class ConnectionController {
   }
 
   async cleanUpTime({ auth }) {
-    // var today = new Date()
-    // var priorDate = new Date().setDate(today.getDate() - 90)
-    // const cutOff_date = new Date(priorDate)
     try {
       //Don't include your friends
       const showallMyFriends = Database.from('friends')
@@ -646,6 +643,21 @@ class ConnectionController {
         .whereIn('other_user_id', showallMyFriends)
         .orWhereIn('other_user_id', showallMyEnemies)
         .delete()
+
+      const group_connections = await Database.from('group_connections')
+        .where({ user_id: auth.user.id })
+        .count('* as no_of_group_connections')
+
+      if (group_connections[0].no_of_group_connections > 288) {
+        var today = new Date()
+        var priorDate = new Date().setDate(today.getDate() - 30)
+        const cutOff_date = new Date(priorDate)
+
+        const get_stale_group_connections = await Database.from('group_connections')
+          .where({ user_id: auth.user.id })
+          .where('updated_at', '<', cutOff_date)
+          .delete()
+      }
     } catch (error) {
       console.log(error)
     }

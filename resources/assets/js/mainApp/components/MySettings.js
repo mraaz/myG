@@ -145,7 +145,9 @@ class MySettings extends Component {
     // total_number_of_friends()
     const callMasterControllerforConnections = async function() {
       try {
-        const get_stats = await axios.get('/api/connections/communities_you_might_know')
+        const get_stats = await axios.post('/api/connections/communities_you_might_know', {
+          counter: 1,
+        })
         console.log(get_stats)
       } catch (error) {
         console.log(error)

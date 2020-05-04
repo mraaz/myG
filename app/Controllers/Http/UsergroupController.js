@@ -5,6 +5,7 @@ const Group = use('App/Models/Group')
 const Database = use('Database')
 const NotificationController = use('./NotificationController')
 const UserStatTransactionController = use('./UserStatTransactionController')
+const GroupConnectionController = use('./GroupConnectionController')
 
 class UsergroupController {
   async store({ auth, request, response }) {
@@ -15,6 +16,9 @@ class UsergroupController {
           user_id: auth.user.id,
           permission_level: 42,
         })
+
+        let myGroupConnectionController = new GroupConnectionController()
+        myGroupConnectionController.destroy({ auth, request, response })
 
         return newaddition
       } catch (error) {

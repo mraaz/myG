@@ -1,5 +1,6 @@
 'use strict'
 const GroupConnection = use('App/Models/GroupConnection')
+const Database = use('Database')
 
 class GroupConnectionController {
   //Decided not find duplicates myself and instead let the DB figure it out.
@@ -17,6 +18,25 @@ class GroupConnectionController {
         }
         console.log(error)
       }
+    }
+  }
+
+  async destroy({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        const deleteRegistration = await Database.table('group_connections')
+          .where({
+            group_id: request.input('group_id'),
+            user_id: auth.user.id,
+          })
+          .delete()
+
+        return 'Remove entry'
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
     }
   }
 }
