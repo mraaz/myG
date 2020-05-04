@@ -276,7 +276,7 @@ Route.get('/api/email/summary_email', 'EmailController.summary_email')
 
 Route.post('/api/connections/gamers_you_might_know', 'ConnectionController.gamers_you_might_know')
 Route.get('/api/connections/i_am_viewing_this_profile/:other_user_id', 'ConnectionController.have_I_viewed_this_profile')
-Route.get('/api/connections/communities_you_might_know', 'ConnectionController.communities_you_might_know')
+Route.post('/api/connections/communities_you_might_know', 'ConnectionController.communities_you_might_know')
 
 Route.post('/api/invited_users_for_schedule_games/create', 'InvitedUsersForScheduleGameController.store')
 
