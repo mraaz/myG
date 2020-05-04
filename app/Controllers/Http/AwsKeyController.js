@@ -91,6 +91,61 @@ class AwsKeyController {
       return 'You are not Logged In!'
     }
   }
+
+  async addChatGroupProfileKey({ auth, request }) {
+    if (auth.user) {
+      try {
+        const chat_id = request.params.chatId;
+        const aws_key = request.only('awsKey').awsKey;
+        const type = 4;
+        await AwsKey.create({ aws_key, chat_id, type });
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async addGameIconKey({ auth, request }) {
+    if (auth.user) {
+      try {
+        const game_name_id = request.params.gameId;
+        const aws_key = request.only('awsKey').awsKey;
+        const type = 6;
+        await AwsKey.create({ aws_key, game_name_id, type });
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async removeChatGroupProfileKey(chat_id) {
+    try {
+      const type = 4;
+      const { aws_key } = await Database.from('aws_keys').where({ chat_id, type });
+      await Database.table('aws_keys').where({ chat_id, type }).delete();
+      await new ApiController()._deleteFile(aws_key);
+      return Promise.resolve();
+    } catch (error) {
+      console.log(error)
+      return Promise.resolve();
+    }
+  }
+
+  async addChatAttachmentKey(chat_id, chat_message_id, aws_key) {
+    const type = 5;
+    await AwsKey.create({ aws_key, chat_id, chat_message_id, type });
+  }
+
+  async removeChatAttachmentKey(chat_id, chat_message_id, aws_key) {
+    const type = 5;
+    await Database.table('aws_keys').where({ chat_id, chat_message_id, type }).delete();
+    await new ApiController()._deleteFile(aws_key);
+  }
+
 }
 
 module.exports = AwsKeyController

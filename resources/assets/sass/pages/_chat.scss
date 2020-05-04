@@ -130,6 +130,28 @@
   cursor: pointer;
 }
 
+.chat-component-muted-banner {
+  display: flex;
+  flex-direction: row;
+  background-color: #e7bb30;
+  color: #253338;
+  align-items: center;
+  font-size: 12px;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+  justify-content: space-around;
+  padding: 2px;
+}
+
+.chat-component-muted-button {
+  background-color: #253338;
+  color: #FAFAFA;
+  padding: 6px;
+  font-size: 10px;
+  border-radius: 4px;
+  margin: 4px;
+}
+
 .chat-component-body {
   display: flex;
   flex-direction: column;
@@ -287,6 +309,13 @@
   background-size: contain;
   width: 50vw;
   height: 50vh;
+}
+
+.chat-component-input-with-reply-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
 }
 
 .chat-component-input-container {

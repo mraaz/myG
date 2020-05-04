@@ -3,6 +3,7 @@ import React from 'react';
 import { formatAMPM, formatDate } from '../../../common/date';
 import { copyToClipboard } from '../../../common/clipboard';
 import { convertColonsToEmojis } from '../../../common/emoji';
+import { groupBy } from '../../../common/array';
 
 export default class ChatMessage extends React.Component {
 
@@ -14,6 +15,7 @@ export default class ChatMessage extends React.Component {
       lastEditing: false,
       editing: false,
       audio: null,
+      reaction: null,
       input: props.message.content,
     };
     this.messageRef = React.createRef();
@@ -46,15 +48,111 @@ export default class ChatMessage extends React.Component {
     return messagePosition > -approximateOptionMenuHeight;
   }
 
+  renderReactions = () => {
+    if (this.props.isGuest) return;
+    if (this.props.message.deleted) return;
+    if (!this.props.message.reactions.length) return;
+    const hasReaction = reactionId => this.props.message.reactions.find(reaction => reactionId === reaction.reactionId && this.props.userId === reaction.senderId);
+    const reactionGroups = groupBy(this.props.message.reactions, reaction => reaction.reactionId);
+    const reactions = [1, 2, 3, 4, 5, 6];
+    return (
+      <div className="chat-component-message-reactions">
+        {reactions.map(reactionId => {
+          const reaction = reactionGroups.get(reactionId);
+          if (!reaction) return null;
+          return (
+            <div key={reactionId} className={`chat-component-message-reaction-container${hasReaction(reactionId) ? '-sent' : ''} clickable`}
+              onMouseEnter={() => this.setState({ reaction: reactionId })}
+              onMouseLeave={() => this.setState({ reaction: null })}
+              onClick={() => hasReaction(reactionId) ?
+                this.props.removeReaction(this.props.chatId, this.props.messageId, reactionId) :
+                this.props.addReaction(this.props.chatId, this.props.messageId, reactionId)
+              }
+            >
+              <div
+                className="chat-component-message-reaction"
+                style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_reaction_${reactionId}.png)` }}
+              />
+              {reaction.length > 1 && <div className="chat-component-message-reaction-count">{reaction.length}</div>}
+              {this.state.reaction === reactionId && (
+                <div className="chat-component-message-reaction-senders-container">
+                  <div className="chat-component-message-reaction-senders">
+                    {reaction.map(({ senderName }) => (<div className="chat-component-message-reaction-sender" key={senderName}>{senderName}</div>))}
+                  </div>
+                </div>
+              )
+              }
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  renderReactionOptions = () => {
+    if (this.props.isGuest) return;
+    if (!this.state.showOptionsButton) return;
+    if (this.props.message.deleted) return;
+    const hasReaction = reactionId => this.props.message.reactions.find(reaction => reactionId === reaction.reactionId && this.props.userId === reaction.senderId);
+    return (
+      <div className="chat-component-message-reaction-options">
+        {!hasReaction(1) && (
+          <div
+            className="chat-component-message-reaction-options-item clickable"
+            onClick={() => this.props.addReaction(this.props.chatId, this.props.messageId, 1)}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_reaction_1.png)` }}
+          />
+        )}
+        {!hasReaction(2) && (
+          <div
+            className="chat-component-message-reaction-options-item clickable"
+            onClick={() => this.props.addReaction(this.props.chatId, this.props.messageId, 2)}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_reaction_2.png)` }}
+          />
+        )}
+        {!hasReaction(3) && (
+          <div
+            className="chat-component-message-reaction-options-item clickable"
+            onClick={() => this.props.addReaction(this.props.chatId, this.props.messageId, 3)}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_reaction_3.png)` }}
+          />
+        )}
+        {!hasReaction(4) && (
+          <div
+            className="chat-component-message-reaction-options-item clickable"
+            onClick={() => this.props.addReaction(this.props.chatId, this.props.messageId, 4)}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_reaction_4.png)` }}
+          />
+        )}
+        {!hasReaction(5) && (
+          <div
+            className="chat-component-message-reaction-options-item clickable"
+            onClick={() => this.props.addReaction(this.props.chatId, this.props.messageId, 5)}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_reaction_5.png)` }}
+          />
+        )}
+        {!hasReaction(6) && (
+          <div
+            className="chat-component-message-reaction-options-item clickable"
+            onClick={() => this.props.addReaction(this.props.chatId, this.props.messageId, 6)}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_reaction_6.png)` }}
+          />
+        )}
+      </div>
+    );
+  }
+
   renderOptions = () => {
     if (this.props.isGuest) return;
-    if (!this.state.showOptionsMenu || this.props.message.deleted) return;
+    if (!this.state.showOptionsMenu) return;
+    if (this.props.message.deleted) return;
     const origin = this.props.message.senderId === this.props.userId ? 'sent' : 'received';
     const sentStyle = 'chat-component-message-options-menu-sent';
     const receivedStyle = 'chat-component-message-options-menu-received';
     const directionStyle = `chat-component-message-options-menu-${this.shouldRenderOptionsUpwards() ? 'upwards' : 'downwards'}`;
     return (
       <div className={`chat-component-message-options-menu ${origin === "sent" ? sentStyle : receivedStyle} ${directionStyle}`}>
+
         {!this.props.message.isAttachment &&
           <div
             className="chat-component-message-options-row clickable"
@@ -69,13 +167,36 @@ export default class ChatMessage extends React.Component {
             <p className="chat-component-message-options-label">{origin === 'sent' ? 'edit' : 'copy'}</p>
           </div>
         }
+
+        {!this.props.message.isAttachment && <div className={`chat-component-message-options-row-divider ${origin === "received" ? sentStyle : receivedStyle}`} />}
+
+        <div
+          className="chat-component-message-options-row clickable"
+          onClick={() => this.props.replyToMessage(this.props.encryptedMessage)}
+        >
+          <p className="chat-component-message-options-label">reply</p>
+        </div>
+
         <div className={`chat-component-message-options-row-divider ${origin === "received" ? sentStyle : receivedStyle}`} />
+
+        {this.props.message.isAttachment &&
+          <div
+            className="chat-component-message-options-row clickable"
+            onClick={() => window.open(this.getAttachment(this.props.message.content))}
+          >
+            <p className="chat-component-message-options-label">download</p>
+          </div>
+        }
+
+        {this.props.message.isAttachment && <div className={`chat-component-message-options-row-divider ${origin === "received" ? sentStyle : receivedStyle}`} />}
+
         <div
           className="chat-component-message-options-row clickable"
           onClick={() => this.props.deleteMessage(this.props.chatId, this.props.messageId, origin)}
         >
           <p className="chat-component-message-options-label">delete</p>
         </div>
+
       </div>
     )
   }
@@ -128,7 +249,17 @@ export default class ChatMessage extends React.Component {
     return colors[parseInt(id % colors.length)];
   }
 
+  getAttachment = (content) => {
+    return content.split('myg-image|')[1] || content.split('myg-sound|')[1] || content.split('myg-video|')[1] || null;
+  }
+
+  getAttachmentName = (content) => {
+    const attachment = this.getAttachment(content);
+    return attachment.split('chat_images/')[1];
+  }
+
   renderMessage = (content) => {
+    if (!content) return null;
     const isImage = content.includes('myg-image');
     const isSound = content.includes('myg-sound');
     const isVideo = content.includes('myg-video');
@@ -158,7 +289,7 @@ export default class ChatMessage extends React.Component {
 
   renderSound = (content, expirationDate) => {
     const audio = new Audio(content.split('myg-sound|')[1]);
-    const icon = !this.state.audio ? '/assets/svg/ic_chat_play.svg' : '/assets/svg/ic_chat_pause.svg';
+    const icon = !this.state.audio ? 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_play.svg' : 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_pause.svg';
     return (
       <div className="chat-component-message-image-container">
         <div className="chat-component-message-attachment-container">
@@ -193,7 +324,7 @@ export default class ChatMessage extends React.Component {
           <div
             className={`chat-component-message-video clickable`}
             onClick={() => this.props.showAttachment({ video })}
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_play.svg)` }}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_play.svg)` }}
           />
           <div>Video</div>
         </div>
@@ -231,12 +362,18 @@ export default class ChatMessage extends React.Component {
                 {message.senderName}
               </p>
             )}
+            {message.replyContent && (
+              <div className={`chat-component-message-reply clickable`} onClick={() => this.props.scrollToMessage(message.messageId)}>
+                {this.renderMessage(message.replyContent)}
+              </div>
+            )}
             <div className={`chat-component-message-content`}>
               {
                 message.deleted ?
-                  origin === 'sent' ?
-                    'You deleted this message' :
-                    'This message was deleted'
+                  message.isAttachment ? `The file ${this.getAttachmentName(message.content)} was automatically deleted.` :
+                    origin === 'sent' ?
+                      'You deleted this message' :
+                      'This message was deleted'
                   :
                   this.renderMessage(message.content)
               }
@@ -248,8 +385,13 @@ export default class ChatMessage extends React.Component {
               <div
                 onClick={() => this.setState({ showOptionsMenu: true })}
                 className={`chat-component-message-options-button ${!this.state.showOptionsMenu && !this.props.message.deleted && 'clickable'}`}
-                style={{ backgroundImage: this.state.showOptionsButton && !this.props.message.deleted && `url(/assets/svg/ic_chat_options.svg)` }}
+                style={{ backgroundImage: this.state.showOptionsButton && !this.props.message.deleted && `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_options.svg)` }}
               />
+              <div className="chat-component-message-options-menu-container">
+                <div className="chat-component-message-options-menu-inner-container">
+                  {this.renderReactionOptions()}
+                </div>
+              </div>
               <div className="chat-component-message-options-menu-container">
                 <div className="chat-component-message-options-menu-inner-container">
                   {this.renderOptions()}
@@ -265,6 +407,9 @@ export default class ChatMessage extends React.Component {
           </div>
 
         </div>
+
+        {this.renderReactions()}
+
       </div>
     );
   }

@@ -1,6 +1,7 @@
 
 import React from "react";
 import { connect } from 'react-redux';
+import SweetAlert from 'react-bootstrap-sweetalert';
 
 import General from './Context/General';
 import Games from './Context/Games';
@@ -15,9 +16,10 @@ import FileOpenModal from '../FileOpenModal';
 
 import { handleLink } from "../../../common/link";
 import { monitorChats, closeSubscription } from '../../../integration/ws/chat';
-import { createChatAction, openChatAction, closeChatAction, clearChatAction } from '../../../redux/actions/chatAction';
+import { createChatAction, openChatAction, closeChatAction, clearChatAction, blockUserAction, unblockUserAction } from '../../../redux/actions/chatAction';
 import { favoriteGameAction, unfavoriteGameAction, updateGameIconAction, updateStatusAction } from '../../../redux/actions/userAction';
 import { generateKeysAction, validatePinAction } from '../../../redux/actions/encryptionAction';
+import { uploadGameIcon } from "../../../integration/http/chat";
 
 class Messenger extends React.PureComponent {
 
@@ -25,6 +27,7 @@ class Messenger extends React.PureComponent {
     showingSettings: false,
     searchInput: '',
     uploadingPhoto: null,
+    blockSettings: false,
     dividerExpanded: {
       general: true,
       games: false,
@@ -40,8 +43,9 @@ class Messenger extends React.PureComponent {
     closeSubscription();
   }
 
-  onUploadPhoto = (icon) => {
+  onUploadPhoto = async (icon, key) => {
     this.props.updateGameIcon(this.state.uploadingPhoto, icon);
+    await uploadGameIcon(this.state.uploadingPhoto, key);
     this.setState({ uploadingPhoto: null });
   }
 
@@ -70,7 +74,7 @@ class Messenger extends React.PureComponent {
       profileImage={this.props.profileImage}
       status={this.props.status}
       onSearch={searchInput => this.setState({ searchInput })}
-      onSettingsClicked={() => this.setState(previous => ({ showingSettings: !previous.showingSettings }))}
+      onSettingsClicked={() => !this.state.blockSettings && this.setState(previous => ({ showingSettings: !previous.showingSettings }))}
     />
   }
 
@@ -82,10 +86,17 @@ class Messenger extends React.PureComponent {
       favoriteGames={this.props.favoriteGames}
       userId={this.props.userId}
       pin={this.props.pin}
+      privateKey={this.props.privateKey}
+      publicKey={this.props.publicKey}
       generateKeys={this.props.generateKeys}
       chats={this.props.chats}
+      contacts={this.props.contacts}
+      blockedUsers={this.props.blockedUsers}
+      blockUser={this.props.blockUser}
+      unblockUser={this.props.unblockUser}
       unfavoriteGame={this.props.unfavoriteGame}
       clearChat={this.props.clearChat}
+      toggleSettings={() => this.setState(previous => ({ blockSettings: !previous.blockSettings }))}
       onUploadPhoto={gameId => this.setState({ uploadingPhoto: gameId })}
     />
   }
@@ -130,7 +141,7 @@ class Messenger extends React.PureComponent {
       onExpand={(expanded) => this.setState({ dividerExpanded: { general: false, games: !expanded } })}
     />
   }
-  
+
   renderChats = () => {
     if (!this.props.pin) return null;
     return <Chats
@@ -171,6 +182,24 @@ class Messenger extends React.PureComponent {
     )
   }
 
+  renderSweetAlert = () => {
+    if (!this.props.alert) return;
+    return (
+      <SweetAlert
+        info
+        showCancel
+        confirmBtnText={window.messengerSweetAlert.confirmText}
+        confirmBtnBsStyle='info'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={true}
+        onConfirm={() => window.messengerSweetAlert.onConfirm()}
+        onCancel={() => window.messengerSweetAlert.onCancel()}>
+        {window.messengerSweetAlert.label}
+      </SweetAlert>
+    );
+  }
+
   render() {
     return (
       <section id="messenger">
@@ -184,6 +213,7 @@ class Messenger extends React.PureComponent {
         {this.renderUploadModal()}
         {this.renderStatusMonitor()}
         {this.renderFocusMonitor()}
+        {this.renderSweetAlert()}
       </section>
     );
   }
@@ -202,6 +232,7 @@ function mapStateToProps(state) {
   });
   contacts.forEach(contact => contact.chat = contactsWithChats[contact.contactId] || {});
   return {
+    alert: state.alert.show,
     status: state.user.status,
     isStatusLocked: state.user.isStatusLocked,
     chats: state.chat.chats,
@@ -209,6 +240,7 @@ function mapStateToProps(state) {
     games: state.user.games,
     contacts,
     groups,
+    blockedUsers: state.chat.blockedUsers,
     pin: state.encryption.pin,
     invalidPin: state.encryption.invalidPin,
     privateKey: state.encryption.privateKey,
@@ -226,6 +258,8 @@ function mapDispatchToProps(dispatch) {
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
     favoriteGame: gameId => dispatch(favoriteGameAction(gameId)),
     unfavoriteGame: gameId => dispatch(unfavoriteGameAction(gameId)),
+    blockUser: (blockedUserId) => dispatch(blockUserAction(blockedUserId)),
+    unblockUser: (blockedUserId) => dispatch(unblockUserAction(blockedUserId)),
     updateGameIcon: (gameId, icon) => dispatch(updateGameIconAction(gameId, icon)),
     updateStatus: (status, forcedStatus) => dispatch(updateStatusAction(status, forcedStatus)),
   });

@@ -285,6 +285,10 @@ Route.get('/api/notifications/outgoingFriendRequests', 'NotificationController.o
 
 Route.get('/api/userStatTransaction/master_controller', 'UserStatTransactionController.master_controller')
 
+// Aws Key Upload
+Route.post('/api/chat/:chatId/icon', 'AwsKeyController.addChatGroupProfileKey')
+Route.post('/api/game/:gameId/icon', 'AwsKeyController.addGameIconKey')
+
 // Chat Feature - https://docs.google.com/spreadsheets/d/1AR9P3MLQw6J6eoRqgTbOVROFxmPE215yXzsqD59wy2o
 Route.get('/api/chat/', 'ChatController.fetchChats')
 Route.get('/api/chat/:chatId', 'ChatController.fetchChat')
@@ -304,8 +308,13 @@ Route.get('/api/groups', 'ChatController.searchGroup')
 Route.post('/api/chat/:chatId/message/', 'ChatController.sendMessage')
 Route.put('/api/chat/:chatId/message/:messageId', 'ChatController.editMessage')
 Route.delete('/api/chat/:chatId/message/:messageId', 'ChatController.deleteMessage')
+Route.post('/api/chat/:chatId/message/:messageId/reaction', 'ChatController.addReaction')
+Route.delete('/api/chat/:chatId/message/:messageId/reaction/:reactionId', 'ChatController.removeReaction')
 Route.put('/api/chat/:chatId/typing', 'ChatController.setTyping')
 Route.get('/api/chat/:chatId/info', 'ChatController.fetchChatInfo')
+Route.get('/api/chat/users/blocked', 'ChatController.fetchBlockedUsers')
+Route.post('/api/chat/users/blocked', 'ChatController.blockUser')
+Route.delete('/api/chat/users/blocked/:blockedUserId', 'ChatController.unblockUser')
 Route.get('/api/chat/:chatId/links/', 'ChatController.fetchLinks')
 Route.get('/api/chat-link/:uuid', 'ChatController.fetchLink')
 Route.put('/api/chat/:chatId/links/:uuid', 'ChatController.updateLink')

@@ -12,6 +12,7 @@ export default function reducer(state = {
   unreadMessages: [],
   preparingMessenger: false,
   guestLink: null,
+  blockedUsers: [],
 }, action) {
   switch (action.type) {
 
@@ -67,9 +68,9 @@ export default function reducer(state = {
       const messages = action.payload.messages
         .filter(message => message.messageId > action.payload.chat.lastCleared)
         .filter(message => !action.payload.chat.deletedMessages.includes(message.messageId))
-        .filter(message => !chat.blockedUsers.includes(message.senderId))
+        .filter(message => !state.blockedUsers.includes(message.senderId))
         .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId));
-      if (!chat.blocked) chat.messages = messages;
+      chat.messages = messages;
       if (chat.gameStarting) chat.messages.push(chat.gameStarting);
       if (action.payload.chat.isGroup) {
         const privateKey = receiveGroupKey(chat, action.payload.encryptionMessages, userId, state.privateKey);
@@ -109,7 +110,7 @@ export default function reducer(state = {
         .filter(message => message.messageId > chat.lastCleared)
         .filter(message => !chat.deletedMessages.includes(message.messageId))
         .filter(message => !message.keyReceiver)
-        .filter(message => !chat.blockedUsers.includes(message.senderId))
+        .filter(message => !state.blockedUsers.includes(message.senderId))
         .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId));
       chat.noMoreMessages = !action.payload.messages.length;
       chat.loadingMessages = false;
@@ -219,8 +220,7 @@ export default function reducer(state = {
       const chat = chats.find(candidate => candidate.chatId === chatId);
       const unreadMessages = JSON.parse(JSON.stringify(state.unreadMessages));
       if (!chat) return state;
-      if (chat.blocked) return state;
-      if (chat.blockedUsers.includes(message.senderId)) return state;
+      if (state.blockedUsers.includes(message.senderId)) return state;
       if (!chat.muted && !window.focused && message.senderId !== userId) playMessageSound();
       if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
       if (!chat.muted && !message.keyReceiver) {
@@ -247,7 +247,6 @@ export default function reducer(state = {
       const chatId = message.chatId;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
-      if (chat.blocked) return state;
       const updated = chat.messages.find(candidate => candidate.messageId === message.messageId);
       if (updated) {
         updated.content = message.content;
@@ -285,12 +284,37 @@ export default function reducer(state = {
       const messages = action.payload.messages;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
-      if (chat.blocked) return state;
       messages.forEach(message => {
         const toDelete = chat.messages.find(candidate => candidate.messageId === message.messageId);
         const index = chat.messages.indexOf(toDelete);
         chat.messages.splice(index, 1);
       });
+      return {
+        ...state,
+        chats,
+      };
+    }
+
+    case "ON_REACTION_ADDED": {
+      logger.log('CHAT', `Redux -> On Reaction Added: `, action.payload);
+      const chatId = parseInt(action.payload.chatId);
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => candidate.chatId === chatId);
+      const message = chat.messages.find(message => message.messageId === action.payload.messageId);
+      if (message) message.reactions.push(action.payload);
+      return {
+        ...state,
+        chats,
+      };
+    }
+
+    case "ON_REACTION_REMOVED": {
+      logger.log('CHAT', `Redux -> On Reaction Removed: `, action.payload);
+      const chatId = parseInt(action.payload.chatId);
+      const chats = JSON.parse(JSON.stringify(state.chats));
+      const chat = chats.find(candidate => candidate.chatId === chatId);
+      const message = chat.messages.find(message => message.messageId === action.payload.messageId);
+      if (message) message.reactions = message.reactions.filter(reaction => reaction.id !== action.payload.id);
       return {
         ...state,
         chats,
@@ -310,20 +334,45 @@ export default function reducer(state = {
 
     case "UPDATE_CHAT_FULFILLED": {
       logger.log('CHAT', `Redux -> Chat Updated: `, action.meta);
-      const { chatId, muted, isPrivate, blocked, blockedUsers, title, icon, selfDestruct } = action.meta;
-      if (blocked === undefined && muted === undefined && title === undefined && icon === undefined && selfDestruct === undefined && isPrivate === undefined && blockedUsers === undefined) return state;
+      const { chatId, muted, isPrivate, title, icon, selfDestruct } = action.meta;
+      if (muted === undefined && title === undefined && icon === undefined && selfDestruct === undefined && isPrivate === undefined) return state;
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
-      if (blocked !== undefined) chat.blocked = blocked;
       if (muted !== undefined) chat.muted = muted;
       if (isPrivate !== undefined) chat.isPrivate = isPrivate;
       if (title !== undefined) chat.title = title;
       if (icon !== undefined) chat.icon = icon;
       if (selfDestruct !== undefined) chat.selfDestruct = selfDestruct;
-      if (blockedUsers !== undefined) chat.blockedUsers = blockedUsers;
       return {
         ...state,
         chats,
+      };
+    }
+
+    case "FETCH_BLOCKED_USERS_FULFILLED": {
+      logger.log('CHAT', `Redux -> Blocked Users Updated: `, action.payload);
+      const blockedUsers = action.payload.blockedUsers;
+      return {
+        ...state,
+        blockedUsers,
+      };
+    }
+
+    case "BLOCK_USER_FULFILLED": {
+      logger.log('CHAT', `Redux -> Blocked User - `, action.payload);
+      const blockedUsers = action.payload.blockedUsers;
+      return {
+        ...state,
+        blockedUsers,
+      };
+    }
+
+    case "UNBLOCK_USER_FULFILLED": {
+      logger.log('CHAT', `Redux -> Unblocked User - `, action.payload);
+      const blockedUsers = action.payload.blockedUsers;
+      return {
+        ...state,
+        blockedUsers,
       };
     }
 
@@ -652,7 +701,7 @@ export default function reducer(state = {
 
 function playMessageSound() {
   try {
-    new Audio('/assets/sound/notification.mp3').play();
+    new Audio('https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/notification.mp3').play();
   } catch (error) {
     console.error('Error While Playing Message Notification:', error);
   }

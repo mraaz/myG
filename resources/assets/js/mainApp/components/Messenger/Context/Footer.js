@@ -62,12 +62,12 @@ export default class Footer extends React.PureComponent {
               onChange={event => this.props.onSearch(event.target.value)}
             />
             <div className="messenger-settings-search-button"
-              style={{ backgroundImage: `url(/assets/svg/ic_messenger_search.svg)` }}
+              style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_messenger_search.svg)` }}
             />
           </div>
           <div
             className="messenger-footer-settings-button clickable"
-            style={{ backgroundImage: `url(/assets/svg/ic_messenger_settings.svg)` }}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_messenger_settings.svg)` }}
             onClick={this.props.onSettingsClicked}
           ></div>
         </div>

@@ -1,5 +1,6 @@
 
 import React from "react";
+import { showMessengerAlert } from "../../../../common/alert";
 
 export default class EncryptionLogin extends React.PureComponent {
 
@@ -29,7 +30,7 @@ export default class EncryptionLogin extends React.PureComponent {
         </div>
         <div
           className="messenger-encryption-login-generate-button clickable"
-          onClick={() => this.props.generateKeys()}
+          onClick={() => showMessengerAlert("WARNING!!! Are you sure you wish to create a new key. ALL your chat history will be lost. Check your email for your encryption key.", () => this.props.generateKeys())}
         >
           generate new key *
         </div>

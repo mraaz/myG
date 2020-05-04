@@ -22,6 +22,16 @@ export function updateChat(chatId, payload) {
   return axios.put(`/api/chat/${chatId}`, payload).then(response => response.data);
 }
 
+export function uploadGroupIcon(chatId, awsKey) {
+  logger.log('CHAT', 'HTTP', `Uploading Group Icon for ${chatId} -> ${awsKey}`);
+  return axios.post(`/api/chat/${chatId}/icon`, { awsKey }).then(response => response.data);
+}
+
+export function uploadGameIcon(gameId, awsKey) {
+  logger.log('CHAT', 'HTTP', `Uploading Game Icon for ${gameId} -> ${awsKey}`);
+  return axios.post(`/api/game/${gameId}/icon`, { awsKey }).then(response => response.data);
+}
+
 export function clearChat(chatId) {
   logger.log('CHAT', 'HTTP', `Clearing Chat ${chatId}`);
   return axios.delete(`/api/chat/${chatId}`).then(response => response.data);
@@ -82,9 +92,9 @@ export function fetchEncryptionMessages(chatId) {
   return axios.get(`/api/chat/${chatId}/message/encryption`).then(response => response.data);
 }
 
-export function sendMessage(chatId, userId, senderName, encryptedContent, keyReceiver, attachment) {
+export function sendMessage(chatId, userId, senderName, encryptedContent, keyReceiver, attachment, replyId, replyContent, replyBackup) {
   logger.log('CHAT', 'HTTP', `Sending Message from User ${userId} to Chat ${chatId}`);
-  return axios.post(`/api/chat/${chatId}/message/`, { encryptedContent, keyReceiver, attachment, senderName }).then(response => response.data);
+  return axios.post(`/api/chat/${chatId}/message/`, { encryptedContent, keyReceiver, attachment, senderName, replyId, replyContent, replyBackup }).then(response => response.data);
 }
 
 export function editMessage(chatId, messageId, encryptedContent, reEncrypting) {
@@ -95,6 +105,31 @@ export function editMessage(chatId, messageId, encryptedContent, reEncrypting) {
 export function deleteMessage(chatId, messageId) {
   logger.log('CHAT', 'HTTP', `Deleting Message ${messageId} from Chat ${chatId}`);
   return axios.delete(`/api/chat/${chatId}/message/${messageId}`).then(response => response.data);
+}
+
+export function addReaction(chatId, messageId, reactionId) {
+  logger.log('CHAT', 'HTTP', `Adding Reaction ${reactionId} to Message ${messageId} in Chat ${chatId}`);
+  return axios.post(`/api/chat/${chatId}/message/${messageId}/reaction`, { reactionId }).then(response => response.data);
+}
+
+export function removeReaction(chatId, messageId, reactionId) {
+  logger.log('CHAT', 'HTTP', `Removing Reaction ${reactionId} to Message ${messageId} in Chat ${chatId}`);
+  return axios.delete(`/api/chat/${chatId}/message/${messageId}/reaction/${reactionId}`).then(response => response.data);
+}
+
+export function fetchBlockedUsers() {
+  logger.log('CHAT', 'HTTP', `Requesting Blocked Users`);
+  return axios.get(`/api/chat/users/blocked`).then(response => response.data);
+}
+
+export function blockUser(blockedUserId) {
+  logger.log('CHAT', 'HTTP', `Blocking User ${blockedUserId}`);
+  return axios.post(`/api/chat/users/blocked`, { blockedUserId }).then(response => response.data);
+}
+
+export function unblockUser(blockedUserId) {
+  logger.log('CHAT', 'HTTP', `Unblocking User ${blockedUserId}`);
+  return axios.delete(`/api/chat/users/blocked/${blockedUserId}`).then(response => response.data);
 }
 
 export function setTyping(chatId, isTyping) {

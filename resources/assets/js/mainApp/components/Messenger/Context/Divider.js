@@ -4,7 +4,7 @@ import React from 'react';
 export default function Divider(name, expanded, onClick, renderFunction) {
   const chevronType = expanded ? 'down' : 'right';
   return (
-    <div className="messenger-body-section">
+    <div key={name} className="messenger-body-section">
       <div className="messenger-body-section-header-light clickable"
         onClick={onClick}
       >
@@ -12,7 +12,7 @@ export default function Divider(name, expanded, onClick, renderFunction) {
         <div className="messenger-body-section-header-info">
           <div
             className="messenger-body-section-header-icon"
-            style={{ backgroundImage: `url('/assets/svg/ic_messenger_chevron_${chevronType}.svg')` }}
+            style={{ backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_messenger_chevron_${chevronType}.svg')` }}
           />
         </div>
       </div>

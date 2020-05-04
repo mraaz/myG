@@ -6,20 +6,24 @@ const User = use('App/Models/User');
 const Chat = use('App/Models/Chat');
 const UserChat = use('App/Models/UserChat');
 const ChatMessage = use('App/Models/ChatMessage');
+const ChatMessageReaction = use('App/Models/ChatMessageReaction');
 const ChatLastCleared = use('App/Models/ChatLastCleared');
 const ChatLastRead = use('App/Models/ChatLastRead');
 const ChatLink = use('App/Models/ChatLink');
 const ChatEntryLog = use('App/Models/ChatEntryLog');
 const ChatPrivateKeyRequest = use('App/Models/ChatPrivateKeyRequest');
 const ChatGameMessageSchedule = use('App/Models/ChatGameMessageSchedule');
+const ChatBlockedUser = use('App/Models/ChatBlockedUser');
 
-const ApiController = use('App/Controllers/Http/ApiController');
+const AwsKeyController = use('App/Controllers/Http/AwsKeyController');
 const RedisRepository = require('../../Repositories/Redis');
 
+const UserSchema = require('../../Schemas/User');
 const ChatSchema = require('../../Schemas/Chat');
 const ChatLinkSchema = require('../../Schemas/ChatLink');
 const ChatEntryLogSchema = require('../../Schemas/ChatEntryLog');
 const MessageSchema = require('../../Schemas/Message');
+const ReactionSchema = require('../../Schemas/Reaction');
 const DefaultSchema = require('../../Schemas/Default');
 const ContactSchema = require('../../Schemas/Contact');
 const ChatPrivateKeyRequestSchema = require('../../Schemas/ChatPrivateKeyRequest');
@@ -34,7 +38,7 @@ class ChatRepository {
 
   async fetchChats({ requestingUserId, onlyGroups }) {
     const chatsQuery = Database
-      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.blocked_users', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .leftJoin('chat_last_reads', function () { this.on('chat_last_reads.chat_id', 'user_chats.chat_id').andOn('chat_last_reads.user_id', 'user_chats.user_id') })
@@ -44,8 +48,6 @@ class ChatRepository {
     const chats = await chatsQuery.map(chat => new ChatSchema({
       chatId: chat.chat_id,
       muted: chat.muted,
-      blocked: chat.blocked,
-      blockedUsers: chat.blocked_users,
       isPrivate: chat.isPrivate,
       isGroup: chat.isGroup,
       gameId: chat.game_id,
@@ -71,7 +73,7 @@ class ChatRepository {
 
   async fetchChat({ requestingUserId, requestedChatId }) {
     const chat = (await Database
-      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'user_chats.blocked', 'user_chats.blocked_users', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .leftJoin('chat_last_reads', function () { this.on('chat_last_reads.chat_id', 'user_chats.chat_id').andOn('chat_last_reads.user_id', 'user_chats.user_id') })
@@ -85,8 +87,6 @@ class ChatRepository {
     const chatSchema = new ChatSchema({
       chatId: chat.chat_id,
       muted: chat.muted,
-      blocked: chat.blocked,
-      blockedUsers: chat.blocked_users,
       isPrivate: chat.isPrivate,
       isGroup: chat.isGroup,
       gameId: chat.game_id,
@@ -112,27 +112,47 @@ class ChatRepository {
   }
 
   async fetchMessages({ requestedChatId, requestedPage }) {
-    const result = (await ChatMessage
-      .query()
-      .where('chat_id', requestedChatId)
-      .andWhere('key_receiver', null)
-      .orderBy('id', 'desc')
-      .paginate(requestedPage || 1, 10)).toJSON();
-    const messages = result.data.map(message => new MessageSchema({
-      messageId: message.id,
-      chatId: message.chat_id,
-      senderId: message.sender_id,
-      keyReceiver: message.key_receiver,
-      senderName: message.sender_name,
-      content: message.content,
-      backup: message.backup,
-      deleted: message.deleted,
-      edited: message.edited,
-      selfDestruct: message.self_destruct,
-      isAttachment: message.is_attachment,
-      createdAt: message.created_at,
-      updatedAt: message.updated_at,
-    }));
+    let query = ChatMessage.query()
+      .where('chat_messages.chat_id', requestedChatId)
+      .andWhere('chat_messages.key_receiver', null)
+      .orderBy('chat_messages.id', 'desc');
+    if (requestedPage === "ALL") query = query.fetch();
+    else query = query.paginate(requestedPage || 1, 10);
+    const result = (await query).toJSON();
+    const reactionData = await ChatMessageReaction.query().where('chat_id', requestedChatId).fetch();
+    const chatReactions = reactionData ? reactionData.toJSON() : [];
+    const messages = (result.data ? result.data : result).map(message => {
+      const messageReactions = chatReactions
+        .filter(reaction => reaction.message_id === message.id)
+        .map(reaction => new ReactionSchema({
+          id: reaction.id,
+          chatId: message.chat_id,
+          messageId: message.id,
+          reactionId: reaction.reaction_id,
+          senderId: reaction.sender_id,
+          senderName: reaction.sender_name,
+        }));
+      return new MessageSchema({
+        messageId: message.id,
+        chatId: message.chat_id,
+        senderId: message.sender_id,
+        keyReceiver: message.key_receiver,
+        senderName: message.sender_name,
+        content: message.content,
+        backup: message.backup,
+        deleted: message.deleted,
+        edited: message.edited,
+        selfDestruct: message.self_destruct,
+        isAttachment: message.is_attachment,
+        isReply: !!message.replyId,
+        replyId: message.reply_id,
+        replyContent: message.reply_content,
+        replyBackup: message.reply_backup,
+        reactions: messageReactions,
+        createdAt: message.created_at,
+        updatedAt: message.updated_at,
+      })
+    });
     return { messages };
   }
 
@@ -160,6 +180,10 @@ class ChatRepository {
         edited: message.edited,
         selfDestruct: message.self_destruct,
         isAttachment: message.is_attachment,
+        isReply: !!message.replyId,
+        replyId: message.reply_id,
+        replyContent: message.reply_content,
+        replyBackup: message.reply_backup,
         createdAt: message.created_at,
         updatedAt: message.updated_at,
       }));
@@ -196,6 +220,10 @@ class ChatRepository {
       edited: message.edited,
       selfDestruct: message.self_destruct,
       isAttachment: message.is_attachment,
+      isReply: !!message.replyId,
+      replyId: message.reply_id,
+      replyContent: message.reply_content,
+      replyBackup: message.reply_backup,
       createdAt: message.created_at,
       updatedAt: message.updated_at,
     }));
@@ -267,7 +295,6 @@ class ChatRepository {
       userChat.chat_id = chat.id;
       userChat.user_id = userId;
       userChat.deleted_messages = '[]';
-      userChat.blocked_users = '[]';
       await userChat.save();
     });
 
@@ -290,12 +317,38 @@ class ChatRepository {
     return { chat: chatSchema };
   }
 
-  async updateChat({ requestingUserId, requestedChatId, icon, title, owners, moderators, muted, blocked, blockedUsers, isPrivate, markAsRead, selfDestruct }) {
+  async fetchBlockedUsers({ requestingUserId }) {
+    const blockedUsersRaw = await Database
+      .select('blocked_user_id', 'alias')
+      .from('chat_blocked_users')
+      .leftJoin('users', 'chat_blocked_users.blocked_user_id', 'users.id')
+      .where('user_id', requestingUserId);
+    if (!blockedUsersRaw) return { blockedUsers: [] };
+    const blockedUsers = blockedUsersRaw.map(user => new UserSchema({ userId: user.blocked_user_id, alias: user.alias }));
+    return { blockedUsers };
+  }
+
+  async blockUser({ requestingUserId, requestedUserId }) {
+    const existingBlockedUser = await ChatBlockedUser.query().where('user_id', requestingUserId).andWhere('blocked_user_id', requestedUserId).first();
+    if (existingBlockedUser) return this.fetchBlockedUsers({ requestingUserId });
+    const blockedUser = new ChatBlockedUser();
+    blockedUser.user_id = requestingUserId;
+    blockedUser.blocked_user_id = requestedUserId;
+    await blockedUser.save();
+    return this.fetchBlockedUsers({ requestingUserId });
+  }
+
+  async unblockUser({ requestingUserId, requestedUserId }) {
+    const existingBlockedUser = await ChatBlockedUser.query().where('user_id', requestingUserId).andWhere('blocked_user_id', requestedUserId).first();
+    if (!existingBlockedUser) return this.fetchBlockedUsers({ requestingUserId });
+    await existingBlockedUser.delete();
+    return this.fetchBlockedUsers({ requestingUserId });
+  }
+
+  async updateChat({ requestingUserId, requestedChatId, icon, title, owners, moderators, muted, isPrivate, markAsRead, selfDestruct }) {
     if (markAsRead) await this._markAsRead({ requestingUserId, requestedChatId });
     if (selfDestruct !== undefined) await this._setSelfDestruct({ requestingUserId, requestedChatId, selfDestruct });
     if (muted !== undefined) await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', requestingUserId).update({ muted });
-    if (blocked !== undefined) await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', requestingUserId).update({ blocked });
-    if (blockedUsers !== undefined) await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', requestingUserId).update({ blocked_users: JSON.stringify(blockedUsers) });
     if (isPrivate !== undefined) await Chat.query().where('id', requestedChatId).update({ isPrivate });
     if (icon !== undefined) await Chat.query().where('id', requestedChatId).update({ icon });
     if (title !== undefined) await Chat.query().where('id', requestedChatId).update({ title });
@@ -375,6 +428,7 @@ class ChatRepository {
     const guests = JSON.parse(chat.guests || '[]');
     const owners = JSON.parse(chat.owners || '[]');
     if (!forceDelete && !owners.includes(requestingUserId)) throw new Error('Only Owners can Delete Chat');
+    await new AwsKeyController().removeChatGroupProfileKey(requestedChatId);
     await chatModel.delete();
     contacts.forEach(userId => this._notifyChatEvent({ userId, action: 'deleteChat', payload: { chatId: requestedChatId } }));
     guests.forEach(guestId => this._notifyChatEvent({ guestId, action: 'deleteChat', payload: { chatId: requestedChatId } }));
@@ -388,7 +442,6 @@ class ChatRepository {
     if (!results) return { groups: [] };
     const groups = results.toJSON().map(chat => new ChatSchema({
       chatId: chat.id,
-      blocked: chat.blocked,
       isPrivate: chat.isPrivate,
       isGroup: chat.isGroup,
       gameId: chat.game_id,
@@ -441,7 +494,6 @@ class ChatRepository {
       userChat.chat_id = chat.chatId;
       userChat.user_id = userId;
       userChat.deleted_messages = '[]';
-      userChat.blocked_users = '[]';
       await userChat.save();
     });
     await Chat.query().where('id', requestedChatId).update({ contacts: JSON.stringify(chat.contacts) });
@@ -463,7 +515,7 @@ class ChatRepository {
     return { contacts: fullContacts };
   }
 
-  async sendMessage({ requestingUserId, requestedChatId, senderName, backup, content, keyReceiver, attachment }) {
+  async sendMessage({ requestingUserId, requestedChatId, senderName, backup, content, keyReceiver, attachment, replyId, replyContent, replyBackup }) {
     const { chat } = await this.fetchChat({ requestingUserId, requestedChatId });
     const messageData = {
       sender_id: requestingUserId,
@@ -472,10 +524,14 @@ class ChatRepository {
       backup: backup,
       content: content,
       attachment: attachment,
-      is_attachment: !!attachment,
       self_destruct: chat.selfDestruct,
+      is_attachment: !!attachment,
+      reply_id: replyId,
+      reply_content: replyContent,
+      reply_backup: replyBackup,
     };
     const message = await Chat.find(requestedChatId).then(chat => chat.messages().create(messageData));
+    if (attachment) await new AwsKeyController().addChatAttachmentKey(requestedChatId, message.id, attachment);
     const messageSchema = new MessageSchema({
       messageId: message.id,
       chatId: requestedChatId,
@@ -488,6 +544,10 @@ class ChatRepository {
       edited: message.edited,
       selfDestruct: message.self_destruct,
       isAttachment: message.is_attachment,
+      isReply: !!message.replyId,
+      replyId: message.reply_id,
+      replyContent: message.reply_content,
+      replyBackup: message.reply_backup,
       createdAt: message.created_at,
       updatedAt: message.updated_at,
     });
@@ -497,8 +557,8 @@ class ChatRepository {
 
   async editMessage({ requestingUserId, requestedChatId, requestedMessageId, backup, content, reEncrypting }) {
     const message = await ChatMessage.find(requestedMessageId);
-    message.content = content;
-    message.backup = backup;
+    if (content) message.content = content;
+    if (backup) message.backup = backup;
     message.edited = !reEncrypting;
     await message.save();
     const messageSchema = new MessageSchema({
@@ -512,6 +572,10 @@ class ChatRepository {
       edited: message.edited,
       selfDestruct: message.selfDestruct,
       isAttachment: message.is_attachment,
+      isReply: !!message.replyId,
+      replyId: message.reply_id,
+      replyContent: message.reply_content,
+      replyBackup: message.reply_backup,
       createdAt: message.created_at,
       updatedAt: message.updated_at,
     });
@@ -537,6 +601,10 @@ class ChatRepository {
       edited: message.edited,
       selfDestruct: message.self_destruct,
       isAttachment: message.is_attachment,
+      isReply: !!message.replyId,
+      replyId: message.reply_id,
+      replyContent: message.reply_content,
+      replyBackup: message.reply_backup,
       createdAt: message.created_at,
       updatedAt: message.updated_at,
     });
@@ -554,6 +622,36 @@ class ChatRepository {
     return { message: messageSchema };
   }
 
+  async fetchReaction({ requestingUserId, messageId, reactionId }) {
+    return ChatMessageReaction.query().where('message_id', messageId).andWhere('sender_id', requestingUserId).andWhere('reaction_id', reactionId).first();
+  }
+
+  async addReaction({ requestingUserId, chatId, messageId, reactionId }) {
+    const existingReaction = await this.fetchReaction({ requestingUserId, messageId, reactionId });
+    if (existingReaction) return new DefaultSchema({ success: false, error: 'REACTION_ALREADY_PRESENT' });
+    const senderName = (await User.query().where('id', '=', requestingUserId).first()).toJSON().alias;
+    const reactionData = new ChatMessageReaction();
+    reactionData.chat_id = chatId;
+    reactionData.message_id = messageId;
+    reactionData.reaction_id = reactionId;
+    reactionData.sender_name = senderName;
+    reactionData.sender_id = requestingUserId;
+    await reactionData.save();
+    const reaction = new ReactionSchema({ id: reactionData.id, chatId, messageId, reactionId, senderName, senderId: requestingUserId });
+    this._notifyChatEvent({ chatId, action: 'reactionAdded', payload: reaction });
+    return new DefaultSchema({ success: true });
+  }
+
+  async removeReaction({ requestingUserId, chatId, messageId, reactionId }) {
+    const existingReaction = await this.fetchReaction({ requestingUserId, messageId, reactionId });
+    if (!existingReaction) return new DefaultSchema({ success: false, error: 'REACTION_NOT_PRESENT' });
+    await existingReaction.delete();
+    const reactionData = existingReaction.toJSON();
+    const reaction = new ReactionSchema({ id: reactionData.id, chatId, messageId, reactionId, senderName: reactionData.sender_name, senderId: requestingUserId });
+    this._notifyChatEvent({ chatId, action: 'reactionRemoved', payload: reaction });
+    return new DefaultSchema({ success: true });
+  }
+
   async setTyping({ requestingUserId, requestedChatId, isTyping }) {
     this._notifyChatEvent({ chatId: requestedChatId, action: 'typing', payload: { userId: requestingUserId, chatId: requestedChatId, isTyping } });
     return new DefaultSchema({ success: true });
@@ -563,7 +661,6 @@ class ChatRepository {
     const chat = await Chat.find(requestedChatId);
     const chatSchema = new ChatSchema({
       chatId: chat.id,
-      blocked: chat.blocked,
       isPrivate: chat.isPrivate,
       isGroup: chat.isGroup,
       gameId: chat.game_id,
@@ -683,7 +780,6 @@ class ChatRepository {
     const chat = (await Chat.query().where('game_id', requestedGameId).first()).toJSON();
     const chatSchema = new ChatSchema({
       chatId: chat.id,
-      blocked: chat.blocked,
       isPrivate: chat.isPrivate,
       isGroup: chat.isGroup,
       gameId: chat.game_id,
@@ -739,10 +835,10 @@ class ChatRepository {
     fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
     const expiredAttachmentsRaw = await ChatMessage.query().where('is_attachment', true).andWhere('created_at', '<=', fiveDaysAgo).fetch();
     const expiredAttachments = expiredAttachmentsRaw && expiredAttachmentsRaw.toJSON() || [];
-    const s3Controller = new ApiController();
+    const keyController = new AwsKeyController();
     for (const message of expiredAttachments) {
-      await ChatMessage.query().where('id', message.id).delete();
-      await s3Controller._deleteFile(message.attachment);
+      await keyController.removeChatAttachmentKey(message.chat_id, message.id, message.attachment);
+      await this.deleteMessage({ requestingUserId: message.sender_id, requestedChatId: message.chat_id, requestedMessageId: message.id });
     }
     log('CRON', `END - HANDLE EXPIRED ATTACHMENTS - DELETED ${expiredAttachments.length} ATTACHMENTS`);
   }

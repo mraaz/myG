@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import notifyToast from '../../../common/toast';
 import Dropdown from '../Dropdown';
 import Popup from '../Popup';
-import { addContactsToChatAction, inviteUserToGroupAction, updateChatAction, clearChatAction, removeFromGroupAction } from '../../../redux/actions/chatAction';
+import { addContactsToChatAction, inviteUserToGroupAction, updateChatAction, clearChatAction, removeFromGroupAction, blockUserAction, unblockUserAction } from '../../../redux/actions/chatAction';
 import { searchUsersAction, addAsFriendAction, fetchFriendRequestsAction } from '../../../redux/actions/userAction';
 
 class GroupMemberOptions extends React.PureComponent {
@@ -53,12 +53,11 @@ class GroupMemberOptions extends React.PureComponent {
   }
 
   toggleUserBlock = (contactId) => {
-    const blockedUsers = this.props.group.blockedUsers;
+    const blockedUsers = this.props.blockedUsers.map(user => user.userId);
     const contact = this.props.groupContacts.find(contact => contact.contactId === contactId) || {};
     if (contact.name) notifyToast(`You have ${blockedUsers.indexOf(contactId) !== -1 ? 'Unblocked' : 'Blocked'} ${contact.name}.`);
-    if (blockedUsers.indexOf(contactId) !== -1) blockedUsers.splice(blockedUsers.indexOf(contactId), 1);
-    else blockedUsers.push(contactId);
-    this.props.updateChat(this.props.group.chatId, { blockedUsers });
+    if (blockedUsers.indexOf(contactId) !== -1) this.props.unblockUser(contactId);
+    else this.props.blockUser(contactId);
   }
 
   kickUser = () => {
@@ -88,7 +87,7 @@ class GroupMemberOptions extends React.PureComponent {
       <div className="chat-group-members-header">
         <p className="chat-group-members-header-title">Group members</p>
         <div className="chat-group-members-header-close-button clickable"
-          style={{ backgroundImage: `url(/assets/svg/ic_chat_close.svg)` }}
+          style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_close.svg)` }}
           onClick={() => this.props.onClose()}
         />
       </div>
@@ -109,7 +108,7 @@ class GroupMemberOptions extends React.PureComponent {
     const isRequested = this.props.friendRequests.includes(contact.contactId) || this.state.friendRequests.includes(contact.contactId);
     const isContactOwner = this.props.group.owners.length && this.props.group.owners.includes(contact.contactId);
     const isContactModerator = this.props.group.moderators.length && this.props.group.moderators.includes(contact.contactId);
-    const isContactBlocked = this.props.group.blockedUsers.length && this.props.group.blockedUsers.includes(contact.contactId);
+    const isContactBlocked = this.props.blockedUsers.length && this.props.blockedUsers.map(user => user.userId).includes(contact.contactId);
     return (
       <div key={contact.contactId} className="chat-group-member">
         <div className="chat-group-member-info">
@@ -122,23 +121,29 @@ class GroupMemberOptions extends React.PureComponent {
           <div className="chat-group-member-name">{contact.name}</div>
         </div>
         <div className="chat-group-member-buttons">
+          {isContactOwner && (
+            <div
+              className="chat-group-options-option-icon"
+              style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_owner.png)` }}
+            />
+          )}
           {isGroupModerator && !isContactOwner && (
             <div
               className="chat-group-options-option-icon clickable"
-              style={{ backgroundImage: `url(/assets/svg/ic_chat_group_${isContactModerator ? 'moderator' : 'not_moderator'}.svg)`, filter: `contrast(0)` }}
+              style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_${isContactModerator ? 'moderator' : 'member'}.png)` }}
               onClick={() => this.toggleModerator(contact.contactId)}
             />
           )}
           {isGroupModerator && !isContactOwner && (
             <div
               className="chat-group-options-option-icon clickable"
-              style={{ backgroundImage: `url(/assets/svg/ic_chat_group_remove.svg)`, filter: `contrast(0)` }}
+              style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_remove.png)` }}
               onClick={() => this.setState({ kickingUser: contact })}
             />
           )}
           <div
             className="chat-group-options-option-icon clickable"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_block.svg)`, filter: `contrast(${isContactBlocked ? '1' : '0'})` }}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_${isContactBlocked ? 'muted' : 'unmuted'}.png)` }}
             onClick={() => this.toggleUserBlock(contact.contactId)}
           />
           {!isAdded && !isRequested && (
@@ -146,7 +151,7 @@ class GroupMemberOptions extends React.PureComponent {
               onClick={() => this.onAddFriendRequest(contact.contactId)}
             >
               add friend
-          </div>
+            </div>
           )}
           {!isAdded && isRequested && (
             <div className="chat-group-member-added-button">
@@ -165,14 +170,14 @@ class GroupMemberOptions extends React.PureComponent {
         <div className="chat-group-member-info">
           <div
             className="chat-group-guest-icon"
-            style={{ backgroundImage: `url(/assets/svg/ic_guest_icon.svg)` }}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_guest_icon.svg)` }}
           />
           <div className="chat-group-member-name">{guestAlias}</div>
         </div>
         <div className="chat-group-member-buttons">
           <div
             className="chat-group-options-option-icon clickable"
-            style={{ backgroundImage: `url(/assets/svg/ic_chat_group_remove.svg)`, filter: `contrast(0)` }}
+            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_remove.svg)`, filter: `contrast(0)` }}
             onClick={() => this.setState({ kickingUser: { contactId: guestId, name: guestAlias } })}
           />
         </div>
@@ -284,6 +289,7 @@ function mapStateToProps(state) {
     contacts: state.user.contacts || [],
     friendRequests: state.user.friendRequests || [],
     foundUsers: state.user.foundUsers || [],
+    blockedUsers: state.chat.blockedUsers || [],
     userPrivateKey: state.encryption.privateKey,
   }
 }
@@ -298,6 +304,8 @@ function mapDispatchToProps(dispatch) {
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
     removeFromGroup: (chatId, userId) => dispatch(removeFromGroupAction(chatId, userId)),
+    blockUser: (blockedUserId) => dispatch(blockUserAction(blockedUserId)),
+    unblockUser: (blockedUserId) => dispatch(unblockUserAction(blockedUserId)),
   });
 }
 

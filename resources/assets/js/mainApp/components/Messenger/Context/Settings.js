@@ -1,6 +1,7 @@
 
 import React from "react";
 import EncryptionSettings from './EncryptionSettings';
+import BlockedUsers from './BlockedUsers';
 
 export default class Settings extends React.PureComponent {
 
@@ -49,8 +50,8 @@ export default class Settings extends React.PureComponent {
           )}
           {isOwner && (
             <div className="messenger-change-game-icon-button clickable"
-              style={{ backgroundImage: `url(/assets/svg/ic_chat_group_icon.svg)` }}
-              onClick={this.props.onUploadPhoto(game.gameId)}
+              style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_icon.svg)` }}
+              onClick={() => this.props.onUploadPhoto(game.gameId)}
             />
           )}
           <p className="messenger-body-section-header-name">{game.name}</p>
@@ -68,10 +69,22 @@ export default class Settings extends React.PureComponent {
     return <EncryptionSettings
       userId={this.props.userId}
       chats={this.props.chats}
+      contacts={this.props.contacts}
       pin={this.props.pin}
+      privateKey={this.props.privateKey}
+      publicKey={this.props.publicKey}
+      toggleSettings={this.props.toggleSettings}
       generateKeys={this.props.generateKeys}
       validatePin={this.props.validatePin}
       clearChat={this.props.clearChat}
+    />
+  }
+
+  renderBlockedUsers() {
+    return <BlockedUsers
+      blockedUsers={this.props.blockedUsers}
+      blockUser={this.props.blockUser}
+      unblockUser={this.props.unblockUser}
     />
   }
 
@@ -81,6 +94,7 @@ export default class Settings extends React.PureComponent {
         <p className="messenger-settings-title">Settings</p>
         {this.renderEncryptionSettings()}
         {this.renderGamesSettings()}
+        {this.renderBlockedUsers()}
       </div>
     );
   }

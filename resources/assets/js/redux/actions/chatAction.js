@@ -1,4 +1,4 @@
-import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, inviteUserToGroup, createChat, updateChat, clearChat, deleteChat, exitGroup, removeFromGroup, checkSelfDestruct, fetchMessages, fetchUnreadMessages, fetchEncryptionMessages, fetchLinks, updateLink, fetchEntryLogs, sendMessage, editMessage, deleteMessage, setTyping } from '../../integration/http/chat';
+import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, inviteUserToGroup, createChat, updateChat, clearChat, deleteChat, exitGroup, removeFromGroup, checkSelfDestruct, fetchMessages, fetchUnreadMessages, fetchEncryptionMessages, fetchLinks, updateLink, fetchEntryLogs, sendMessage, editMessage, deleteMessage, addReaction, removeReaction, fetchBlockedUsers, blockUser, unblockUser, setTyping } from '../../integration/http/chat';
 import { fetchGroupPrivateKeyRequests } from '../../integration/http/guest';
 import { fetchGames, fetchContacts, fetchContact, fetchStatus } from '../../integration/http/user';
 import { generateKeys, deserializeKey, getPublicKey } from '../../integration/encryption';
@@ -45,6 +45,20 @@ export function onUpdateMessageAction(message) {
 export function onDeleteMessagesAction(payload) {
   return {
     type: 'ON_MESSAGES_DELETED',
+    payload,
+  }
+}
+
+export function onReactionAddedAction(payload) {
+  return {
+    type: 'ON_REACTION_ADDED',
+    payload,
+  }
+}
+
+export function onReactionRemovedAction(payload) {
+  return {
+    type: 'ON_REACTION_REMOVED',
     payload,
   }
 }
@@ -267,10 +281,10 @@ export function clearUnreadIndicatorAction() {
   return { type: 'CLEAR_UNREAD_INDICATOR' };
 }
 
-export function sendMessageAction(chatId, userId, alias, encrypted, attachment) {
+export function sendMessageAction(chatId, userId, alias, encrypted, attachment, replyId, replyContent, replyBackup) {
   return {
     type: 'SEND_MESSAGE',
-    payload: sendMessage(chatId, userId, alias, encrypted, null, attachment),
+    payload: sendMessage(chatId, userId, alias, encrypted, null, attachment, replyId, replyContent, replyBackup),
     meta: { chatId },
   }
 }
@@ -288,6 +302,43 @@ export function deleteMessageAction(chatId, messageId, origin) {
     type: 'DELETE_MESSAGE',
     payload: deleteMessage(chatId, messageId),
     meta: { chatId, messageId, origin },
+  }
+}
+
+export function addReactionAction(chatId, messageId, reactionId) {
+  return {
+    type: 'ADD_REACTION',
+    payload: addReaction(chatId, messageId, reactionId),
+    meta: { chatId, messageId, reactionId },
+  }
+}
+
+export function removeReactionAction(chatId, messageId, reactionId) {
+  return {
+    type: 'REMOVE_REACTION',
+    payload: removeReaction(chatId, messageId, reactionId),
+    meta: { chatId, messageId, reactionId },
+  }
+}
+
+export function fetchBlockedUsersAction() {
+  return {
+    type: 'FETCH_BLOCKED_USERS',
+    payload: fetchBlockedUsers(),
+  }
+}
+
+export function blockUserAction(blockedUserId) {
+  return {
+    type: 'BLOCK_USER',
+    payload: blockUser(blockedUserId),
+  }
+}
+
+export function unblockUserAction(blockedUserId) {
+  return {
+    type: 'UNBLOCK_USER',
+    payload: unblockUser(blockedUserId),
   }
 }
 
