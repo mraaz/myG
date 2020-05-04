@@ -56,7 +56,6 @@ export default class IndividualMember extends Component {
       show_delete: true,
       show_demoted: false,
     })
-    //NEED to do notifications
   }
 
   promote_member = () => {

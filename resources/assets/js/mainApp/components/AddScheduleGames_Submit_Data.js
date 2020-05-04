@@ -19,6 +19,8 @@ export async function SubmitDataFunction(myG) {
     repeat_game = undefined,
     co_hosts = null
 
+  console.log(myG)
+
   if (myG.selected_region != undefined && myG.selected_region !== null && myG.selected_region.length !== 0) {
     myRegion = Convert_to_comma_delimited_value(myG.selected_region)
   }
@@ -46,7 +48,11 @@ export async function SubmitDataFunction(myG) {
   }
 
   if (myG.selected_limit != null || myG.selected_limit != undefined) {
-    myLimit = myG.selected_limit.value
+    if (parseInt(myG.selected_limit) <= 0) {
+      myLimit = 0
+    } else {
+      myLimit = myG.selected_limit
+    }
   }
 
   if (myG.clash_royale_trophy != null || myG.clash_royale_trophy != undefined) {

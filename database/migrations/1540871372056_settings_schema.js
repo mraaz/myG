@@ -14,7 +14,7 @@ class SettingsSchema extends Schema {
       table.boolean('email_daily').defaultTo(0)
       table.boolean('email_weekly').defaultTo(0)
       table.datetime('gamer_connection_last_runtime').defaultTo(Database.raw("CURRENT_TIMESTAMP"))
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

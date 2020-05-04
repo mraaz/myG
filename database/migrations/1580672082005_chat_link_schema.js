@@ -11,7 +11,7 @@ class ChatLastReadSchema extends Schema {
       table.foreign('chat_id').references('id').inTable('chats').onDelete('CASCADE')
       table.string('uuid', 36).notNullable()
       table.integer('expiry').unsigned()
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

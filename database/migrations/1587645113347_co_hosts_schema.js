@@ -11,7 +11,7 @@ class CoHostsSchema extends Schema {
       table.foreign('user_id').references('users.id').onDelete('cascade')
       table.integer('schedule_games_id').unsigned().notNullable()
       table.foreign('schedule_games_id').references('schedule_games.id').onDelete('cascade')
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

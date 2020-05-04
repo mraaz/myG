@@ -17,7 +17,7 @@ class AttendeesSchema extends Schema {
       table.boolean('dota_2_position_three').defaultTo(0)
       table.boolean('dota_2_position_four').defaultTo(0)
       table.boolean('dota_2_position_five').defaultTo(0)
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

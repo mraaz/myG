@@ -2,6 +2,8 @@
 
 const User = use('App/Models/User')
 const fetch = require('node-fetch')
+const ConnectionController = use('./ConnectionController')
+
 class DiscordLoginController {
   async redirect({ ally, response }) {
     return response.redirect(
@@ -49,6 +51,8 @@ class DiscordLoginController {
           .first()
         if (!(authUser === null)) {
           await auth.loginViaId(authUser.id)
+          let connections = new ConnectionController()
+          connections.master_controller({ auth })
           return response.redirect('/')
         } else {
           session.put('provider', 'discord')

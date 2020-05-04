@@ -13,7 +13,7 @@ class ExperiencePointsSchema extends Schema {
       table.foreign('user_stat_id').references('user_stats.id').onDelete('cascade')
       table.integer('highest_value').defaultTo(0)
       table.integer('current_value').defaultTo(0)
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

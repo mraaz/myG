@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Redirect } from 'react-router'
+import { Link } from 'react-router-dom'
 import axios from 'axios'
 import ToggleButton from 'react-toggle-button'
 import SweetAlert from 'react-bootstrap-sweetalert'
@@ -113,16 +114,44 @@ class MySettings extends Component {
     getGamers_you_might_know()
   }
 
+  report = () => {
+    // ;<Link
+    //   to='route'
+    //   target='_blank'
+    //   onClick={(event) => {
+    //     event.preventDefault()
+    //     window.open(this.makeHref('route'))
+    //   }}
+    // />
+    // ;<Link
+    //   to='https://github.com/mraaz/myG_RoadMap'
+    //   target='_blank'
+    //   onClick={(event) => {
+    //     event.preventDefault()
+    //     window.open(this.makeHref('route'))
+    //   }}
+    // />
+  }
+
   fire_off_calculations = () => {
-    const total_number_of_friends = async function() {
+    // const total_number_of_friends = async function() {
+    //   try {
+    //     const get_stats = await axios.get('/api/userStatTransaction/master_controller')
+    //     console.log(get_stats)
+    //   } catch (error) {
+    //     console.log(error)
+    //   }
+    // }
+    // total_number_of_friends()
+    const callMasterControllerforConnections = async function() {
       try {
-        const get_stats = await axios.get('/api/userStatTransaction/master_controller')
+        const get_stats = await axios.get('/api/connections/communities_you_might_know')
         console.log(get_stats)
       } catch (error) {
         console.log(error)
       }
     }
-    total_number_of_friends()
+    callMasterControllerforConnections()
   }
 
   render() {
@@ -144,6 +173,9 @@ class MySettings extends Component {
               <button className='save' onClick={this.fire_off_calculations}>
                 Fire off calcs
               </button>
+              <a rel='noopener noreferrer' href='https://github.com/mraaz/myG_RoadMap' target='_blank'>
+                Report bugs, request feature, help improve myG :)
+              </a>
               <div className='padding-container'></div>
               <div className='mySettings-container'>
                 <div className='email-notification'>

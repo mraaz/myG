@@ -15,7 +15,7 @@ class LikesSchema extends Schema {
       table.foreign('comment_id').references('comments.id').onDelete('cascade')
       table.integer('reply_id').unsigned().nullable()
       table.foreign('reply_id').references('replies.id').onDelete('cascade')
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

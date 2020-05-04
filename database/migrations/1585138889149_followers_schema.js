@@ -11,7 +11,7 @@ class FollowersSchema extends Schema {
       table.foreign('user_id').references('users.id').onDelete('cascade')
       table.integer('follower_id').unsigned().notNullable()
       table.foreign('follower_id').references('users.id').onDelete('cascade')
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

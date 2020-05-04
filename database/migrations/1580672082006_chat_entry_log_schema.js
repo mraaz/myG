@@ -14,7 +14,7 @@ class ChatLastReadSchema extends Schema {
       table.boolean('left').notNullable().defaultTo(false)
       table.boolean('invited').notNullable().defaultTo(false)
       table.boolean('link').notNullable().defaultTo(false)
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

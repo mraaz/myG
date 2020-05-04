@@ -362,6 +362,18 @@ class NotificationController {
         .groupBy('notifications.chat_id')
         .select('id')
 
+      const group_member_kicked = await Database.from('notifications')
+        .where({ other_user_id: auth.user.id })
+        .where({ activity_type: 19, read_status: 0 })
+        .groupBy('notifications.group_id')
+        .select('id')
+
+      const user_ding = await Database.from('notifications')
+        .where({ other_user_id: auth.user.id })
+        .where({ activity_type: 20, read_status: 0 })
+        .groupBy('notifications.user_id')
+        .select('id')
+
       var singleArr = [
         ...allMylike_posts,
         ...allMylike_comments,
@@ -376,6 +388,8 @@ class NotificationController {
         ...dropped_out_attendees,
         ...group_member_approved,
         ...group_invite,
+        ...group_member_kicked,
+        ...user_ding,
       ]
       const number_of_notis = singleArr.length
       // 10,11,14,16 = schedule_games
@@ -642,6 +656,34 @@ class NotificationController {
         )
         .orderBy('notifications.created_at', 'desc')
         .paginate(request.input('counter'), set_limit)
+      const group_member_kicked = await Database.from('notifications')
+        .innerJoin('users', 'users.id', 'notifications.user_id')
+        .where({ other_user_id: auth.user.id, activity_type: 19 })
+        .groupBy('notifications.schedule_games_id')
+        .select(
+          'notifications.group_id',
+          'notifications.activity_type',
+          'users.alias',
+          'users.profile_img',
+          'users.id',
+          'notifications.created_at'
+        )
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
+      const user_ding = await Database.from('notifications')
+        .innerJoin('users', 'users.id', 'notifications.user_id')
+        .where({ other_user_id: auth.user.id, activity_type: 20 })
+        .groupBy('notifications.schedule_games_id')
+        .select(
+          'notifications.group_id',
+          'notifications.activity_type',
+          'users.alias',
+          'users.profile_img',
+          'users.id',
+          'notifications.created_at'
+        )
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
 
       var singleArr = [
         ...allMylike_posts.data,
@@ -656,7 +698,9 @@ class NotificationController {
         ...allMyarchived_schedulegames.data,
         ...dropped_out_attendees.data,
         ...group_member_approved.data,
+        ...group_member_kicked.data,
         ...chat_group_invite.data,
+        ...user_ding.data,
       ]
 
       if (singleArr.length == 0) {
@@ -1012,11 +1056,27 @@ class NotificationController {
     }
   }
 
+  async updateRead_Status_ding({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        const updateRead_Status_ding = await Notification.query()
+          .where({
+            other_user_id: auth.user.id,
+            activity_type: 20,
+          })
+          .update({ read_status: 1 })
+        return 'Saved successfully'
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+
   async markAllNoti({ auth, request, response }) {
     try {
       const markAllNoti = await Notification.query()
         .where({ other_user_id: auth.user.id })
-        .whereIn('activity_type', [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17])
+        .whereIn('activity_type', [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 19, 20])
         .update({ read_status: 1 })
       return 'Saved successfully'
     } catch (error) {
@@ -1030,7 +1090,7 @@ class NotificationController {
         .where({
           other_user_id: auth.user.id,
         })
-        .whereIn('activity_type', [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17])
+        .whereIn('activity_type', [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20])
         .delete()
 
       return 'Saved successfully'
@@ -1115,6 +1175,24 @@ class NotificationController {
     }
   }
 
+  async getunread_dings({ auth, request, response }) {
+    try {
+      const getAllNotiReplyCount_unreadCount = await Database.from('notifications')
+        .where({ other_user_id: auth.user.id })
+        .where({
+          activity_type: 20,
+          read_status: 0,
+        })
+        .count('* as no_of_my_unread')
+
+      return {
+        getAllNotiReplyCount_unreadCount: getAllNotiReplyCount_unreadCount,
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   async addScheduleGame({ auth, request, response }) {
     if (auth.user) {
       try {
@@ -1180,11 +1258,27 @@ class NotificationController {
               return
             }
 
+            const findGame = await Database.table('schedule_games')
+              .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+              .where('schedule_games.id', '=', request.input('schedule_games_id'))
+              .select('game_names.game_name', 'schedule_games.start_date_time')
+              .first()
+
+            if (findGame == undefined) {
+              return
+            }
+
             const newPost = await Post.create({
               user_id: auth.user.id,
               type: 'text',
+              content:
+                'Heya! A new ' +
+                findGame.game_name +
+                ' game has been created! It is scheduled to start: ' +
+                findGame.start_date_time +
+                '. Find out more here: https://myG.gg/scheduled_games/' +
+                request.input('schedule_games_id'),
               group_id: findGroup[0].id,
-              schedule_games_id: request.input('schedule_games_id'),
             })
           }
         }
@@ -1309,6 +1403,37 @@ class NotificationController {
         .from('notifications')
         .where({ user_id: auth.user.id, activity_type: 1 })
       return { friendRequests }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async kicked_from_group({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        const kicked_from_group = await Notification.create({
+          other_user_id: request.params.other_user_id,
+          user_id: auth.user.id,
+          activity_type: 19,
+          group_id: request.params.group_id,
+        })
+        return 'Saved item'
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async ding(my_user_id) {
+    try {
+      const kicked_from_group = await Notification.create({
+        other_user_id: my_user_id,
+        user_id: my_user_id,
+        activity_type: 20,
+      })
+      return 'Saved item'
     } catch (error) {
       console.log(error)
     }

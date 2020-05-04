@@ -18,7 +18,7 @@ class ArchiveAttendeesSchema extends Schema {
       table.boolean('dota_2_position_four').defaultTo(0)
       table.boolean('dota_2_position_five').defaultTo(0)
       table.timestamp('og_created_at').notNullable()
-      table.timestamps()
+      table.timestamps(true,true)
     })
   }
 

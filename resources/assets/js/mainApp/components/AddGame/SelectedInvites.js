@@ -1,14 +1,27 @@
 import React, { useState } from 'react'
 import classNames from 'classnames'
 
-// ToDo: add profile image
-const SelectedInvites = ({ selectedPlayers, selectedGroups, selectedCommunities, updateShowOptions, showOptions }) => {
+const SelectedInvites = ({
+  selectedPlayers,
+  selectedGroups,
+  selectedCommunities,
+  updateShowOptions,
+  showOptions,
+  onCommunityClick,
+  onGroupClick,
+  onPlayerClick,
+}) => {
   const [hoveredElements, updateHoveredElements] = useState({})
   const GROUP_LIST = ['Selected Players', 'Selected Groups', 'Selected Communities']
   const groupData = {
     'Selected Players': selectedPlayers,
     'Selected Groups': selectedGroups,
     'Selected Communities': selectedCommunities,
+  }
+  const groupUpdate = {
+    'Selected Players': onPlayerClick,
+    'Selected Groups': onGroupClick,
+    'Selected Communities': onCommunityClick,
   }
 
   const handleMouseHover = (key) => {
@@ -53,6 +66,7 @@ const SelectedInvites = ({ selectedPlayers, selectedGroups, selectedCommunities,
 
   const getInvitesListView = (group) => {
     const data = groupData[group]
+    const onClickHandler = groupUpdate[group]
     console.log('data: ', data)
 
     return (
@@ -71,8 +85,10 @@ const SelectedInvites = ({ selectedPlayers, selectedGroups, selectedCommunities,
                 'invite-players__player-list-element',
                 hoveredElements[key] ? '' : 'invite-players__player-list-element-hovered',
               ])}>
-              <img src={data[key].img} height={20} width={20} className='invite-players__player-image' />
-              <div className='invite-players__player-list-text'>{data[key].name}</div>
+              <div style={{ display: 'flex' }}>
+                <img src={data[key].img} height={20} width={20} className='invite-players__player-image' />
+                <div className='invite-players__player-list-text'>{data[key].name}</div>
+              </div>
               <img
                 className={
                   hoveredElements[key]
@@ -82,6 +98,7 @@ const SelectedInvites = ({ selectedPlayers, selectedGroups, selectedCommunities,
                 src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/X+icon.svg'
                 height={20}
                 width={20}
+                onClick={() => onClickHandler(key)}
               />
             </div>
           )
