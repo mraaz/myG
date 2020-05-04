@@ -112,14 +112,16 @@ class ChatRepository {
   }
 
   async fetchMessages({ requestedChatId, requestedPage }) {
-    const result = (await ChatMessage.query()
+    let query = ChatMessage.query()
       .where('chat_messages.chat_id', requestedChatId)
       .andWhere('chat_messages.key_receiver', null)
-      .orderBy('chat_messages.id', 'desc')
-      .paginate(requestedPage || 1, 10)).toJSON();
+      .orderBy('chat_messages.id', 'desc');
+    if (requestedPage === "ALL") query = query.fetch();
+    else query = query.paginate(requestedPage || 1, 10);
+    const result = (await query).toJSON();
     const reactionData = await ChatMessageReaction.query().where('chat_id', requestedChatId).fetch();
     const chatReactions = reactionData ? reactionData.toJSON() : [];
-    const messages = result.data.map(message => {
+    const messages = (result.data ? result.data : result).map(message => {
       const messageReactions = chatReactions
         .filter(reaction => reaction.message_id === message.id)
         .map(reaction => new ReactionSchema({
@@ -143,8 +145,8 @@ class ChatRepository {
         selfDestruct: message.self_destruct,
         isAttachment: message.is_attachment,
         isReply: !!message.replyId,
-        replyId: message.reply_id, 
-        replyContent: message.reply_content, 
+        replyId: message.reply_id,
+        replyContent: message.reply_content,
         replyBackup: message.reply_backup,
         reactions: messageReactions,
         createdAt: message.created_at,
@@ -179,8 +181,8 @@ class ChatRepository {
         selfDestruct: message.self_destruct,
         isAttachment: message.is_attachment,
         isReply: !!message.replyId,
-        replyId: message.reply_id, 
-        replyContent: message.reply_content, 
+        replyId: message.reply_id,
+        replyContent: message.reply_content,
         replyBackup: message.reply_backup,
         createdAt: message.created_at,
         updatedAt: message.updated_at,
@@ -219,8 +221,8 @@ class ChatRepository {
       selfDestruct: message.self_destruct,
       isAttachment: message.is_attachment,
       isReply: !!message.replyId,
-      replyId: message.reply_id, 
-      replyContent: message.reply_content, 
+      replyId: message.reply_id,
+      replyContent: message.reply_content,
       replyBackup: message.reply_backup,
       createdAt: message.created_at,
       updatedAt: message.updated_at,
@@ -523,8 +525,8 @@ class ChatRepository {
       attachment: attachment,
       self_destruct: chat.selfDestruct,
       is_attachment: !!attachment,
-      reply_id: replyId, 
-      reply_content: replyContent, 
+      reply_id: replyId,
+      reply_content: replyContent,
       reply_backup: replyBackup,
     };
     const message = await Chat.find(requestedChatId).then(chat => chat.messages().create(messageData));
@@ -541,8 +543,8 @@ class ChatRepository {
       selfDestruct: message.self_destruct,
       isAttachment: message.is_attachment,
       isReply: !!message.replyId,
-      replyId: message.reply_id, 
-      replyContent: message.reply_content, 
+      replyId: message.reply_id,
+      replyContent: message.reply_content,
       replyBackup: message.reply_backup,
       createdAt: message.created_at,
       updatedAt: message.updated_at,
@@ -553,8 +555,8 @@ class ChatRepository {
 
   async editMessage({ requestingUserId, requestedChatId, requestedMessageId, backup, content, reEncrypting }) {
     const message = await ChatMessage.find(requestedMessageId);
-    message.content = content;
-    message.backup = backup;
+    if (content) message.content = content;
+    if (backup) message.backup = backup;
     message.edited = !reEncrypting;
     await message.save();
     const messageSchema = new MessageSchema({
@@ -569,8 +571,8 @@ class ChatRepository {
       selfDestruct: message.selfDestruct,
       isAttachment: message.is_attachment,
       isReply: !!message.replyId,
-      replyId: message.reply_id, 
-      replyContent: message.reply_content, 
+      replyId: message.reply_id,
+      replyContent: message.reply_content,
       replyBackup: message.reply_backup,
       createdAt: message.created_at,
       updatedAt: message.updated_at,
@@ -598,8 +600,8 @@ class ChatRepository {
       selfDestruct: message.self_destruct,
       isAttachment: message.is_attachment,
       isReply: !!message.replyId,
-      replyId: message.reply_id, 
-      replyContent: message.reply_content, 
+      replyId: message.reply_id,
+      replyContent: message.reply_content,
       replyBackup: message.reply_backup,
       createdAt: message.created_at,
       updatedAt: message.updated_at,

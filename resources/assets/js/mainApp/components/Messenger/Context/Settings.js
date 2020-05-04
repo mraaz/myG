@@ -69,7 +69,11 @@ export default class Settings extends React.PureComponent {
     return <EncryptionSettings
       userId={this.props.userId}
       chats={this.props.chats}
+      contacts={this.props.contacts}
       pin={this.props.pin}
+      privateKey={this.props.privateKey}
+      publicKey={this.props.publicKey}
+      toggleSettings={this.props.toggleSettings}
       generateKeys={this.props.generateKeys}
       validatePin={this.props.validatePin}
       clearChat={this.props.clearChat}

@@ -25,6 +25,7 @@ class Messenger extends React.PureComponent {
     showingSettings: false,
     searchInput: '',
     uploadingPhoto: null,
+    blockSettings: false,
     dividerExpanded: {
       general: true,
       games: false,
@@ -70,7 +71,7 @@ class Messenger extends React.PureComponent {
       profileImage={this.props.profileImage}
       status={this.props.status}
       onSearch={searchInput => this.setState({ searchInput })}
-      onSettingsClicked={() => this.setState(previous => ({ showingSettings: !previous.showingSettings }))}
+      onSettingsClicked={() => !this.state.blockSettings && this.setState(previous => ({ showingSettings: !previous.showingSettings }))}
     />
   }
 
@@ -82,13 +83,17 @@ class Messenger extends React.PureComponent {
       favoriteGames={this.props.favoriteGames}
       userId={this.props.userId}
       pin={this.props.pin}
+      privateKey={this.props.privateKey}
+      publicKey={this.props.publicKey}
       generateKeys={this.props.generateKeys}
       chats={this.props.chats}
+      contacts={this.props.contacts}
       blockedUsers={this.props.blockedUsers}
       blockUser={this.props.blockUser}
       unblockUser={this.props.unblockUser}
       unfavoriteGame={this.props.unfavoriteGame}
       clearChat={this.props.clearChat}
+      toggleSettings={() => this.setState(previous => ({ blockSettings: !previous.blockSettings }))}
       onUploadPhoto={gameId => this.setState({ uploadingPhoto: gameId })}
     />
   }
