@@ -57,6 +57,10 @@ class AwsKeyController {
         //   .delete()
         var tmp_keys = request.input('file_keys')
 
+        if (tmp_keys.length == undefined) {
+          return
+        }
+
         for (var i = 0; i < tmp_keys.length; i++) {
           let addAwsKey = await AwsKey.create({
             aws_key: tmp_keys[i],
@@ -97,6 +101,10 @@ class AwsKeyController {
       try {
         var tmp_keys = request.input('file_keys')
 
+        if (tmp_keys.length == undefined) {
+          return
+        }
+
         for (var i = 0; i < tmp_keys.length; i++) {
           let addAwsKey = await AwsKey.create({
             aws_key: tmp_keys[i],
@@ -136,6 +144,10 @@ class AwsKeyController {
     if (auth.user) {
       try {
         var tmp_keys = request.input('file_keys')
+
+        if (tmp_keys.length == undefined) {
+          return
+        }
 
         for (var i = 0; i < tmp_keys.length; i++) {
           let addAwsKey = await AwsKey.create({
