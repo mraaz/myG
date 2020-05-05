@@ -401,7 +401,7 @@ export default class PostFileModal extends Component {
             {/* add group section  */}
             <div className={`people_group_list ${add_group_toggle ? 'active' : ''}`}>
               <div className='search__box'>
-                <label for='searchInput'>Search</label>
+                <label htmlFor='searchInput'>Search</label>
                 <input type='text' id='searchInput' onChange={this.getSearchGroup} value={searchText} placeholder='Search here ...' />
               </div>
               <div className='people_group_list_box'>

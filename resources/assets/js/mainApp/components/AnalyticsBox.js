@@ -40,97 +40,109 @@ export default class AnalyticsBox extends Component {
     } = userTransactionStates
 
     return (
-      <section class='social'>
-        <div class='social__content'>
-          <div class='level-container'>
-            <section class='level-container-img'>
-              <div class='circle-wrap'>
-                <div class='circle'>
-                  <div class='mask full'>
-                    <div class='fill'></div>
+      <section className='social'>
+        <div className='social__content'>
+          <div className='level-container'>
+            <section className='level-container-img'>
+              <div className='circle-wrap'>
+                <div className='circle'>
+                  <div className='mask full'>
+                    <div className='fill'></div>
                   </div>
-                  <div class='mask half'>
-                    <div class='fill'></div>
+                  <div className='mask half'>
+                    <div className='fill'></div>
                   </div>
-                  <div class='inside-circle'>
-                    <span class='inside-circle-level'>level</span>
+                  <div className='inside-circle'>
+                    <span className='inside-circle-level'>level</span>
                     <br />
-                    <span class='inside-circle-value'>{user_level}</span>
-                    <span class='inside-circle-value'>{level_max_points}</span>
+                    <span className='inside-circle-value'>{user_level}</span>
+                    <span className='inside-circle-value'>{level_max_points}</span>
                   </div>
                 </div>
               </div>
             </section>
-            <div class='ratings'>
-              {/* <p class='social-box-text'>Avg Rating</p>
-              <p class='social-box-count'>4.66/5</p>
-              <p class='social-box-text review bottom-border'>{user_experience} reviews</p> */}
-              <p class='social-box-text'>Experience Pts.</p>
-              <p class='social-box-count'>{user_experience}</p>
+            <div className='ratings'>
+              {/* <p className='social-box-text'>Avg Rating</p>
+              <p className='social-box-count'>4.66/5</p>
+              <p className='social-box-text review bottom-border'>{user_experience} reviews</p> */}
+              <p className='social-box-text'>Experience Pts.</p>
+              <p className='social-box-count'>{user_experience}</p>
             </div>
           </div>
 
-          <div class='social-box'>
+          <div className='social-box'>
             <img
               src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/connection.png'
-              class='social-box-img'
+              className='social-box-img'
             />
-            <p class='social-box-count'>{connections}</p>
-            <p class='social-box-text'>connections</p>
-            <p class='social-box-month'>Last month: {last_month_connections}</p>
+            <p className='social-box-count'>{connections}</p>
+            <p className='social-box-text'>connections</p>
+            <p className='social-box-month'>Last month: {last_month_connections}</p>
           </div>
 
-          <div class='social-box'>
-            <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/follower.png' class='social-box-img' />
-            <p class='social-box-count'>{followers}</p>
-            <p class='social-box-text'>followers</p>
-            <p class='social-box-month'>Last month: {last_month_followers}</p>
+          <div className='social-box'>
+            <img
+              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/follower.png'
+              className='social-box-img'
+            />
+            <p className='social-box-count'>{followers}</p>
+            <p className='social-box-text'>followers</p>
+            <p className='social-box-month'>Last month: {last_month_followers}</p>
           </div>
 
-          <div class='social-box'>
-            <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/games.png' class='social-box-img' />
-            <p class='social-box-count'>{games}</p>
-            <p class='social-box-text'>games</p>
-            <p class='social-box-month'>Last month: {last_month_games}</p>
+          <div className='social-box'>
+            <img
+              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/games.png'
+              className='social-box-img'
+            />
+            <p className='social-box-count'>{games}</p>
+            <p className='social-box-text'>games</p>
+            <p className='social-box-month'>Last month: {last_month_games}</p>
           </div>
 
-          <div class='social-box'>
-            <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/games.png' class='social-box-img' />
-            <p class='social-box-count'>{likes}</p>
-            <p class='social-box-text'>likes</p>
-            <p class='social-box-month'>Last month: {last_month_likes}</p>
+          <div className='social-box'>
+            <img
+              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/games.png'
+              className='social-box-img'
+            />
+            <p className='social-box-count'>{likes}</p>
+            <p className='social-box-text'>likes</p>
+            <p className='social-box-month'>Last month: {last_month_likes}</p>
           </div>
 
-          <div class='social-box'>
-            <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/reviews.png' class='social-box-img' />
-            <p class='social-box-count'>{commendations}</p>
-            <p class='social-box-text'>reviews</p>
-            <p class='social-box-month'>Last month: {last_month_commendations}</p>
+          <div className='social-box'>
+            <img
+              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/reviews.png'
+              className='social-box-img'
+            />
+            <p className='social-box-count'>{commendations}</p>
+            <p className='social-box-text'>reviews</p>
+            <p className='social-box-month'>Last month: {last_month_commendations}</p>
           </div>
         </div>
 
         {youMayKnowUser && youMayKnowUser.length > 0 && (
-          <div class='suggestion'>
-            <div class='suggestion-box'>
-              <p class='suggestion-box-text'>connections</p>
-              <h2 class='suggestion-box-head'>Suggestions</h2>
+          <div className='suggestion'>
+            <div className='suggestion-box'>
+              <p className='suggestion-box-text'>connections</p>
+              <h2 className='suggestion-box-head'>Suggestions</h2>
             </div>
 
             {youMayKnowUser.map((user) => {
               return (
-                <div class='suggestion-box'>
-                  <input type='text' value={`@${user.username}`} disabled class='suggestion-box-input' />
-                  <div class='input-outer'>
-                    <p class='input-outer-label'>level</p>
-                    <p class='input-outer-count'>{user.user_level}</p>
+                <div className='suggestion-box'>
+                  <input type='text' value={`@${user.username}`} disabled className='suggestion-box-input' />
+                  <div className='input-outer'>
+                    <p className='input-outer-label'>level</p>
+                    <p className='input-outer-count'>{user.user_level}</p>
                   </div>
                 </div>
               )
             })}
 
-            <div class='suggestions-box-reset'>
+            <div className='suggestions-box-reset'>
               <a href='javascript:;' onClick={(e) => this.refreshSuggestedUser()}>
-                <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/reset.png' class='' />
+                <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/reset.png' className='' />
               </a>
             </div>
           </div>
