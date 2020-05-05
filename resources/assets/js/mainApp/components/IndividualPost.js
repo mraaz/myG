@@ -327,34 +327,30 @@ export default class IndividualPost extends Component {
     this.onFocus()
     const saveComment = async () => {
       try {
-        if (!this.state.uploading) {
-          const postComment = await axios.post('/api/comments', {
-            content: this.state.value.trim(),
+        const postComment = await axios.post('/api/comments', {
+          content: this.state.value.trim(),
+          post_id: this.props.post.id,
+          media_url: this.state.preview_file,
+          file_keys: this.state.file_keys,
+        })
+        let { post, user } = this.props
+        if (post.user_id != user.userInfo.id) {
+          const addPostLike = axios.post('/api/notifications/addComment', {
+            other_user_id: post.user_id,
             post_id: this.props.post.id,
-            media_url: this.state.preview_file,
-            file_keys: this.state.file_keys,
+            comment_id: postComment.data.id,
           })
-          let { post, user } = this.props
-          if (post.user_id != user.userInfo.id) {
-            const addPostLike = axios.post('/api/notifications/addComment', {
-              other_user_id: post.user_id,
-              post_id: this.props.post.id,
-              comment_id: postComment.data.id,
-            })
-          }
-          this.setState({
-            myComments: [],
-            preview_file: [],
-            file_keys: '',
-          })
-          this.pullComments()
-          this.setState({
-            comment_total: this.state.comment_total + 1,
-            zero_comments: true,
-          })
-        } else {
-          toast.warn(<Toast_style text={'Opps,Image is uploading Please Wait...'} />)
         }
+        this.setState({
+          myComments: [],
+          preview_file: [],
+          file_keys: '',
+        })
+        this.pullComments()
+        this.setState({
+          comment_total: this.state.comment_total + 1,
+          zero_comments: true,
+        })
       } catch (error) {
         console.log(error)
       }
@@ -400,7 +396,11 @@ export default class IndividualPost extends Component {
     if (e.key === 'Enter') {
       e.preventDefault()
       e.stopPropagation()
-      this.insert_comment()
+      if (!this.state.uploading) {
+        this.insert_comment()
+      } else {
+        toast.warn(<Toast_style text={'Opps,Image is uploading Please Wait...'} />)
+      }
     }
   }
 
