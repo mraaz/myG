@@ -85,7 +85,6 @@ class ReplyController {
           })
           .delete()
 
-        console.log(delete_reply)
         return delete_reply
       } catch (error) {
         console.log(error)

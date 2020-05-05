@@ -97,8 +97,6 @@ class CommentController {
           })
           .delete()
 
-        deleteCommentKey
-
         return delete_comment
       } catch (error) {
         console.log(error)
