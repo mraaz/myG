@@ -23,6 +23,7 @@ class ConnectionController {
             .slice(0, 19)
             .replace('T', ' '),
         })
+        return
       }
 
       //clean up Connection transactions
