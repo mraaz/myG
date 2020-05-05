@@ -327,30 +327,34 @@ export default class IndividualPost extends Component {
     this.onFocus()
     const saveComment = async () => {
       try {
-        const postComment = await axios.post('/api/comments', {
-          content: this.state.value.trim(),
-          post_id: this.props.post.id,
-          media_url: this.state.preview_file,
-          file_keys: this.state.file_keys,
-        })
-        let { post, user } = this.props
-        if (post.user_id != user.userInfo.id) {
-          const addPostLike = axios.post('/api/notifications/addComment', {
-            other_user_id: post.user_id,
+        if (!this.state.uploading) {
+          const postComment = await axios.post('/api/comments', {
+            content: this.state.value.trim(),
             post_id: this.props.post.id,
-            comment_id: postComment.data.id,
+            media_url: this.state.preview_file,
+            file_keys: this.state.file_keys,
           })
+          let { post, user } = this.props
+          if (post.user_id != user.userInfo.id) {
+            const addPostLike = axios.post('/api/notifications/addComment', {
+              other_user_id: post.user_id,
+              post_id: this.props.post.id,
+              comment_id: postComment.data.id,
+            })
+          }
+          this.setState({
+            myComments: [],
+            preview_file: [],
+            file_keys: '',
+          })
+          this.pullComments()
+          this.setState({
+            comment_total: this.state.comment_total + 1,
+            zero_comments: true,
+          })
+        } else {
+          toast.warn(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again'} />)
         }
-        this.setState({
-          myComments: [],
-          preview_file: [],
-          file_keys: '',
-        })
-        this.pullComments()
-        this.setState({
-          comment_total: this.state.comment_total + 1,
-          zero_comments: true,
-        })
       } catch (error) {
         console.log(error)
       }
