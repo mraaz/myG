@@ -5,6 +5,9 @@ import IndividualComment from './IndividualComment'
 import moment from 'moment'
 import SweetAlert from 'react-bootstrap-sweetalert'
 import ImageGallery from 'react-image-gallery'
+const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
+import { toast } from 'react-toastify'
+import { Toast_style } from './Utility_Function'
 
 export default class IndividualPost extends Component {
   constructor() {
@@ -14,7 +17,7 @@ export default class IndividualPost extends Component {
       total: 0,
       comment_total: 0,
       show_like: true,
-      show_more_comments: false,
+      show_comments: false,
       show_profile_img: false,
       admirer_first_name: '',
       pull_once: true,
@@ -36,6 +39,8 @@ export default class IndividualPost extends Component {
       disableSwipe: false,
       show_group_name: false,
       group_name: '',
+      show_more_comments: false,
+      preview_file: '',
     }
     this.textInput = null
 
@@ -58,6 +63,9 @@ export default class IndividualPost extends Component {
       // Focus the text input using the raw DOM API
       if (this.textInput2) this.textInput2.focus()
     }
+
+    this.fileInputRef = React.createRef()
+    this.doUploadS3 = this.doUploadS3.bind(this)
   }
 
   click_like_btn = async (post_id) => {
@@ -237,19 +245,25 @@ export default class IndividualPost extends Component {
     this.setState({ value2: e.target.value })
   }
 
-  onChange = () => {
-    let tmpState = this.state.show_more_comments
+  show_more_comments = () => {
+    const { show_comments, show_more_comments } = this.state
+    this.setState({
+      show_comments: false,
+      show_more_comments: true,
+    })
+  }
 
-    if (!this.state.show_more_comments) {
+  onChange = () => {
+    const { show_comments } = this.state
+
+    if (!show_comments) {
       this.pullComments()
     }
-    // this.setState({
-    //   pull_once: false
-    // })
     this.setState({
-      show_more_comments: !this.state.show_more_comments,
+      show_comments: !show_comments,
+      show_more_comments: false,
     })
-    if (!tmpState) {
+    if (!show_comments) {
       this.focusTextInput()
     }
   }
@@ -260,7 +274,41 @@ export default class IndividualPost extends Component {
     }
     this.setState({
       pull_once: false,
-      show_more_comments: true,
+      show_comments: true,
+    })
+  }
+  insert_image_comment = () => {
+    if (!this.state.uploading) {
+      this.fileInputRef.current.click()
+    }
+  }
+  handleSelectFile = (e) => {
+    const fileList = e.target.files
+    let name = `comment_image_${+new Date()}`
+    this.doUploadS3(fileList[0], name, name)
+  }
+
+  doUploadS3 = async (file, id = '', name) => {
+    this.setState({
+      uploading: true,
+    })
+    const formData = new FormData()
+    formData.append('upload_file', file)
+    formData.append('filename', name)
+    try {
+      const post = await axios.post('/api/uploadFile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      this.setState({
+        preview_file: post.data.Location,
+      })
+    } catch (error) {
+      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again'} />)
+    }
+    this.setState({
+      uploading: false,
     })
   }
 
@@ -274,30 +322,28 @@ export default class IndividualPost extends Component {
       })
       return
     }
-
     this.onFocus()
-    const self = this
-
-    const saveComment = async function () {
+    const saveComment = async () => {
       try {
         const postComment = await axios.post('/api/comments', {
-          content: self.state.value.trim(),
-          post_id: self.props.post.id,
+          content: this.state.value.trim(),
+          post_id: this.props.post.id,
+          media_url: this.state.preview_file,
         })
-        let { post, user } = self.props
+        let { post, user } = this.props
         if (post.user_id != user.userInfo.id) {
           const addPostLike = axios.post('/api/notifications/addComment', {
             other_user_id: post.user_id,
-            post_id: self.props.post.id,
+            post_id: this.props.post.id,
             comment_id: postComment.data.id,
           })
         }
-        self.setState({
+        this.setState({
           myComments: [],
         })
-        self.pullComments()
-        self.setState({
-          comment_total: self.state.comment_total + 1,
+        this.pullComments()
+        this.setState({
+          comment_total: this.state.comment_total + 1,
           zero_comments: true,
         })
       } catch (error) {
@@ -368,12 +414,28 @@ export default class IndividualPost extends Component {
     }
   }
 
-  showComment = () => {
-    if (this.state.myComments != undefined) {
-      return this.state.myComments.map((item, index) => {
+  showMoreComment = () => {
+    const { myComments = [] } = this.state
+    const comments = [...myComments]
+    return (
+      comments.length > 0 &&
+      comments.map((item, index) => {
         return <IndividualComment comment={item} key={index} user={this.props.user} />
       })
-    }
+    )
+  }
+  showComment = () => {
+    const { myComments = [] } = this.state
+    const comments = [...myComments]
+    const commentArr = comments.length > 3 ? comments.slice(3) : comments
+    console.log(commentArr, 'commentArr')
+
+    return (
+      commentArr.length > 0 &&
+      commentArr.map((item, index) => {
+        return <IndividualComment comment={item} key={index} user={this.props.user} />
+      })
+    )
   }
 
   clickedDropdown = () => {
@@ -443,21 +505,23 @@ export default class IndividualPost extends Component {
   }
 
   render() {
-    if (this.state.post_deleted != true) {
+    const { myComments = [], media_urls, post_deleted, alert, show_profile_img, show_comments, show_more_comments } = this.state
+    if (post_deleted != true) {
       var show_media = false
 
       let { post } = this.props //destructing of object
+      //destructing of object
 
-      if (this.state.media_urls != [] && this.state.media_urls != null) {
+      if (media_urls != [] && media_urls != null) {
         show_media = true
       }
 
       return (
         <div className='post__container'>
-          {this.state.alert}
+          {alert}
           <div className='post__body'>
             <div className='profile__image'>
-              {this.state.show_profile_img && (
+              {show_profile_img && (
                 <Link
                   to={`/profile/${post.alias}`}
                   className='user-img'
@@ -475,7 +539,7 @@ export default class IndividualPost extends Component {
               )}
               <div className='online__status'></div>
             </div>
-            <div className='clearfix'>
+            <div className='user__details'>
               <div className='author__username'>
                 <Link to={`/profile/${post.alias}`}>{`@${post.alias} `}</Link> shared a {post.type == 'text' ? 'story' : 'image'}
                 {'  from community: '}
@@ -490,6 +554,17 @@ export default class IndividualPost extends Component {
                   <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}></i>
                 </div>
               )}
+              <div className={`post-dropdown ${this.state.dropdown == true ? 'active' : ''}`}>
+                <nav>
+                  <div className='edit' onClick={this.clickedEdit}>
+                    Edit &nbsp;
+                  </div>
+                  <div className='delete' onClick={() => this.showAlert()}>
+                    Delete
+                  </div>
+                  &nbsp;
+                </nav>
+              </div>
             </div>
           </div>
           <div className='media'>
@@ -569,8 +644,12 @@ export default class IndividualPost extends Component {
               </div>
             )}
           </div>
+          {show_comments && myComments.length > 3 && (
+            <div className='show__comments_count' onClick={this.show_more_comments}>{`View all (${myComments.length}) comments`}</div>
+          )}
           <div className='comments'>
-            {this.state.show_more_comments && <div className='show-individual-comments'>{this.showComment()}</div>}
+            {show_comments && <div className='show-individual-comments'>{this.showComment()}</div>}
+            {show_more_comments && <div className='show-individual-comments'>{this.showMoreComment()}</div>}
           </div>
           <div className='compose-comment'>
             <textarea
@@ -582,11 +661,11 @@ export default class IndividualPost extends Component {
               onKeyDown={this.detectKey}
               ref={this.setTextInputRef}
             />
-            {/* <div className='buttons'>
-              <div className='repost-btn' onClick={this.insert_comment}>
-                <i className='fas fa-reply' />
-              </div>
-            </div> */}
+            <div className='insert__images' onClick={this.insert_image_comment}>
+              <input type='file' ref={this.fileInputRef} onChange={this.handleSelectFile} name='insert__images' />
+              <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
+            </div>
+
             <div className='profile__image'>
               {this.state.show_profile_img && (
                 <Link
@@ -607,6 +686,11 @@ export default class IndividualPost extends Component {
               <div className='online__status'></div>
             </div>
           </div>
+          {this.state.preview_file && (
+            <div className='preview__image'>
+              <img src={`${this.state.preview_file}`} />
+            </div>
+          )}
 
           {/*<div className='update-container'>
           {this.state.alert}

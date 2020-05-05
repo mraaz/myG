@@ -73,7 +73,7 @@ export default class ComposeSection extends Component {
       this.setState({
         myPosts: [],
       })
-      await this.get_posts(post)
+      // await this.get_posts(post)
     } catch (error) {
       console.log(error)
     }
@@ -98,6 +98,11 @@ export default class ComposeSection extends Component {
       fileType: 'audio',
     })
   }
+  handleClear = () => {
+    this.setState({
+      post_content: '',
+    })
+  }
 
   submitForm = async (data = '', group_id) => {
     const content = data ? data : this.state.post_content.trim()
@@ -115,11 +120,16 @@ export default class ComposeSection extends Component {
         visibility: this.state.visibility_box.value,
         group_id: group_id.toString(),
       })
-      this.setState({
-        myPosts: [],
-        bFileModalOpen: false,
-      })
-      await this.get_posts(post)
+      this.setState(
+        {
+          myPosts: [],
+          bFileModalOpen: false,
+        },
+        () => {
+          this.props.successCallback()
+        }
+      )
+      // await this.get_posts(post)
     } catch (error) {
       console.log(error)
     }
@@ -252,8 +262,8 @@ export default class ComposeSection extends Component {
           </div>
         )}
         {!open_compose_textTab && (
-          <div className='media__container'>
-            <Dropzone onDrop={(acceptedFiles) => this.handleAcceptedFiles(acceptedFiles)}>
+          <div className='media__container' onClick={(e) => this.togglePostTypeTab('media')}>
+            <Dropzone onDrop={(acceptedFiles) => this.handleAcceptedFiles(acceptedFiles)} disabled={true}>
               {(props) => {
                 return (
                   <section className='custom__html'>
@@ -286,7 +296,7 @@ export default class ComposeSection extends Component {
             </div> */}
           </div>
         )}
-        <div className='compose__people__section'>
+        {/* <div className='compose__people__section'>
           <div className='label'>Post on: </div>
           <div className='people_selected_container'>
             <div className='people_selected_list'>
@@ -299,24 +309,23 @@ export default class ComposeSection extends Component {
               Add
             </button>
           </div>
-        </div>
+        </div> */}
         <div className='compose__button'>
-          <button type='button' className='cancel'>
-            Cancel
+          <button type='button' className='cancel' onClick={this.handleClear}>
+            Clear
           </button>
           <button type='button' className='add__post' onClick={this.submitForm}>
             Post
           </button>
         </div>
-        {bFileModalOpen && (
-          <PostFileModal
-            bOpen={bFileModalOpen}
-            callbackClose={this.callbackPostFileModalClose}
-            callbackConfirm={this.callbackPostFileModalConfirm}
-            callbackContentConfirm={this.submitForm}
-            open_compose_textTab={open_compose_textTab}
-          />
-        )}
+
+        <PostFileModal
+          bOpen={bFileModalOpen}
+          callbackClose={this.callbackPostFileModalClose}
+          callbackConfirm={this.callbackPostFileModalConfirm}
+          callbackContentConfirm={this.submitForm}
+          open_compose_textTab={open_compose_textTab}
+        />
 
         {/* <section className='compose-area'>
         <div className='compose-section'>

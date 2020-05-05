@@ -6,7 +6,7 @@ import Notifications from './Notifications'
 import MyPosts from './MyPosts'
 import MyScheduledGames from './MyScheduledGames'
 import AnalyticsBox from './AnalyticsBox'
-import GroupHome from './GroupHome'
+import GroupMain from './GroupMain'
 import { Link } from 'react-router-dom'
 
 export default class Home extends Component {
@@ -36,7 +36,7 @@ export default class Home extends Component {
       return (
         <div className='content-area'>
           <AnalyticsBox />
-          <ComposeSection initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData} />
+          {/* <ComposeSection initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData} /> */}
           <div className='links'>
             <div className={`${tabName == 'home' ? 'active' : ''}`} onClick={(e) => this.tabToggle('home')}>
               Home
@@ -54,11 +54,11 @@ export default class Home extends Component {
               My Posts
             </div>
           </div>
-          {tabName == 'home' && <Posts initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData} />}
-          {tabName == 'communities' && <GroupHome />}
-          {tabName == 'notifications' && <Notifications />}
-          {tabName == 'mygames' && <MyScheduledGames />}
-          {tabName == 'myposts' && <MyPosts />}
+          {tabName == 'home' && <Posts initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData} />}
+          {tabName == 'communities' && <GroupMain routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
+          {tabName == 'notifications' && <Notifications routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
+          {tabName == 'mygames' && <MyScheduledGames routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
+          {tabName == 'myposts' && <MyPosts routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
         </div>
       )
     } else {

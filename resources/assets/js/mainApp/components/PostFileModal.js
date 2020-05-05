@@ -25,6 +25,7 @@ export default class PostFileModal extends Component {
       selected_group: [],
       selectedGroup: [],
       groups_im_in: [],
+      everyone: true,
     }
 
     this.closeModal = this.closeModal.bind(this)
@@ -87,7 +88,11 @@ export default class PostFileModal extends Component {
     }
   }
 
-  closeModal() {
+  closeModal(outsideClick = false) {
+    if (outsideClick && !this.state.uploading) {
+      this.props.callbackClose()
+      return
+    }
     this.props.callbackClose()
     if (this.state.preview_files.length != 0) {
       axios
@@ -229,7 +234,7 @@ export default class PostFileModal extends Component {
     this.setState({ add_group_toggle: !this.state.add_group_toggle })
   }
   cancelGroupToggle = () => {
-    this.setState({ selected_group: [] })
+    this.setState({ add_group_toggle: !this.state.add_group_toggle, selected_group: [] })
   }
   addGroupToggleForm = () => {
     const { selected_group, groups_im_in } = this.state
@@ -237,6 +242,21 @@ export default class PostFileModal extends Component {
     const selectedGroup = groups_im_in.filter((g) => selected_group.includes(g.id))
     this.setState({ selectedGroup })
     this.addGroupToggle()
+  }
+
+  getSearchGroup = async (e) => {
+    const searchText = e.target.value
+    const groups = [...this.state.groups_im_in]
+    if (searchText != '') {
+      const groups_im_in = groups.filter((g) => g.name.includes(searchText))
+      this.setState({ groups_im_in, searchText })
+    } else {
+      const getGroups_im_in = await axios.get('/api/usergroup/view')
+      this.setState({
+        groups_im_in: getGroups_im_in.data.groups_im_in,
+        searchText,
+      })
+    }
   }
 
   handleGroupCheck = (e, id) => {
@@ -262,6 +282,7 @@ export default class PostFileModal extends Component {
       groups_im_in,
       selected_group,
       selectedGroup,
+      searchText = '',
     } = this.state
     var class_modal_status = ''
     if (this.props.bOpen) {
@@ -279,21 +300,21 @@ export default class PostFileModal extends Component {
                 {` Add video or photos`}
               </div>
             </div>
-            {open_compose_textTab && (
-              <div className='text__editor__section'>
-                <textarea
-                  onChange={this.handleChange}
-                  onKeyDown={this.detectKey}
-                  maxLength='254'
-                  name='post_content'
-                  value={this.state.post_content}
-                  placeholder='What in your mind?'
-                />
-              </div>
-            )}
+
+            <div className='text__editor__section'>
+              <textarea
+                onChange={this.handleChange}
+                onKeyDown={this.detectKey}
+                maxLength='254'
+                name='post_content'
+                value={this.state.post_content}
+                placeholder='What in your mind?'
+              />
+            </div>
+
             {!open_compose_textTab && (
               <div className='media__container'>
-                <div className='text__editor__section'>
+                {/* <div className='text__editor__section'>
                   <textarea
                     onChange={this.handleChange}
                     onKeyDown={this.detectKey}
@@ -302,7 +323,7 @@ export default class PostFileModal extends Component {
                     value={this.state.post_content}
                     placeholder='What in your mind?'
                   />
-                </div>
+                </div> */}
                 <Dropzone
                   onDrop={(acceptedFiles) => this.handleAcceptedFiles(acceptedFiles)}
                   accept='image/*,video/*'
@@ -376,113 +397,82 @@ export default class PostFileModal extends Component {
                 Post
               </button>
             </div>
-            {/* <div className={'modal-container ' + class_modal_status}>
-        <div className='modal-wrap'>
-          <div className='modal-header'>{this.props.fileType == 'photo' ? 'Upload Photos' : 'Upload Videos'}</div>
-          <div className='modal-close-btn' onClick={() => this.closeModal()}>
-            <i className='fas fa-times'></i>
-          </div>
-          <div className='modal-content'>
-            <textarea
-              name='post_content'
-              rows={8}
-              cols={80}
-              onChange={this.handleChange}
-              maxLength='254'
-              value={this.state.post_content}
-              placeholder="What's up..."
-            />
-            <Dropzone
-              getUploadParams={this.getUploadParams}
-              onChangeStatus={this.handleChangeStatus}
-              onSubmit={this.handleSubmit}
-              accept={accept}
-              inputContent={(files, extra) => (extra.reject ? 'Image or video files only' : 'Drag Files or Click to Browse')}
-              styles={{
-                dropzone: { minHeight: 200, maxHeight: 250 },
-                dropzoneReject: { borderColor: 'red', backgroundColor: '#DAA' },
-                inputLabel: (files, extra) => (extra.reject ? { color: 'red' } : {}),
-              }}
-              maxFiles={4}
-              maxSizeBytes={26214400}
-              submitButtonContent={this.state.submitButtonContent}
-            />
-          </div>*/}
 
-            {add_group_toggle && (
-              <div className='people_group_list'>
-                <div className='search__box'>
-                  <label for='searchInput'>Search</label>
-                  <input type='text' id='searchInput' value='' placeholder='' />
-                </div>
-                <div className='people_group_list_box'>
-                  {groups_im_in.length > 0 &&
-                    groups_im_in.map((group_in, index) => {
-                      return (
-                        <div className='list__item' key={`${group_in.name}_${group_in.id}_${index}`}>
-                          <div className='default_circle'>
-                            <img src={group_in.group_img} className='groupImage' />
-                          </div>
-                          <div className='groupName'>{group_in.name}</div>
-                          <div className='action'>
+            {/* add group section  */}
+            <div className={`people_group_list ${add_group_toggle ? 'active' : ''}`}>
+              <div className='search__box'>
+                <label for='searchInput'>Search</label>
+                <input type='text' id='searchInput' onChange={this.getSearchGroup} value={searchText} placeholder='Search here ...' />
+              </div>
+              <div className='people_group_list_box'>
+                {groups_im_in &&
+                  groups_im_in.length > 0 &&
+                  groups_im_in.map((group_in, index) => {
+                    return (
+                      <div className='list__item' key={`${group_in.name}_${group_in.id}_${index}`}>
+                        <div className='default_circle'>
+                          <img src={group_in.group_img} className='groupImage' />
+                        </div>
+                        <div className='groupName'>{group_in.name}</div>
+                        <div className='action'>
+                          <label class='container'>
                             <input
                               type='checkbox'
                               checked={selected_group.includes(group_in.id)}
                               onChange={(e) => this.handleGroupCheck(e, group_in.id)}
                               value={1}
                             />
-                          </div>
+                            <span class='checkmark'></span>
+                          </label>
                         </div>
-                      )
-                    })}
+                      </div>
+                    )
+                  })}
+              </div>
+              <div className='people_group_actions'>
+                <div className='post__privacy_select'>
+                  <div>
+                    <label class='container'>
+                      Everyone
+                      <input type='checkbox' name='everyone' checked={everyone} onChange={this.handleVisibityChange} value={1} />
+                      <span class='checkmark'></span>
+                    </label>
+                  </div>
+                  <div>
+                    <label class='container'>
+                      Friends
+                      <input type='checkbox' name='friend' checked={friend} onChange={this.handleVisibityChange} value={1} />
+                      <span class='checkmark'></span>
+                    </label>
+                  </div>
+                  <div>
+                    <label class='container'>
+                      Followers
+                      <input type='checkbox' name='followers' checked={followers} onChange={this.handleVisibityChange} value={1} />
+                      <span class='checkmark'></span>
+                    </label>
+                  </div>
+                  <div>
+                    <label class='container'>
+                      Private
+                      <input type='checkbox' name='onlyme' checked={onlyme} onChange={this.handleVisibityChange} value={1} />
+                      <span class='checkmark'></span>
+                    </label>
+                  </div>
                 </div>
-                <div className='people_group_actions'>
-                  <div className='post__privacy_select'>
-                    <div>
-                      <input
-                        type='checkbox'
-                        name='everyone'
-                        checked={everyone}
-                        onChange={this.handleVisibityChange}
-                        id='Everyone'
-                        value={1}
-                      />{' '}
-                      <label for='Everyone'>Everyone</label>
-                    </div>
-                    <div>
-                      <input type='checkbox' name='friend' checked={friend} onChange={this.handleVisibityChange} id='Friends' value={2} />{' '}
-                      <label for='Friends'>Friends</label>
-                    </div>
-                    <div>
-                      <input
-                        type='checkbox'
-                        name='followers'
-                        checked={followers}
-                        onChange={this.handleVisibityChange}
-                        id='Followers'
-                        value={3}
-                      />{' '}
-                      <label for='Followers'>Followers</label>
-                    </div>
-                    <div>
-                      <input type='checkbox' name='onlyme' checked={onlyme} onChange={this.handleVisibityChange} id='Private' value={0} />{' '}
-                      <label for='Private'>Private</label>
-                    </div>
-                  </div>
-                  <div className='actions'>
-                    <button type='button' className='cancel' onClick={this.cancelGroupToggle}>
-                      Cancel
-                    </button>
-                    <button type='button' className='add__post' onClick={this.addGroupToggleForm}>
-                      Add
-                    </button>
-                  </div>
+                <div className='actions'>
+                  <button type='button' className='cancel' onClick={this.cancelGroupToggle}>
+                    Cancel
+                  </button>
+                  <button type='button' className='add__post' onClick={this.addGroupToggleForm}>
+                    Add
+                  </button>
                 </div>
               </div>
-            )}
+            </div>
           </section>
         </div>
-        <div className='modal-overlay' onClick={this.closeModal}></div>
+        <div className='modal-overlay' onClick={(e) => this.closeModal(true)}></div>
       </div>
     )
   }

@@ -432,6 +432,13 @@ section#content-container {
   }
 
   #posts {
+    visibility: hidden;
+    opacity: 0;
+    transition: all 1s ease-in-out;
+    &.active {
+      visibility: visible;
+      opacity: 1;
+    }
     .startofSinglePage {
       padding: 50px 20px;
     }
@@ -866,10 +873,50 @@ section#content-container {
       border-top: 1px solid #384952;
       padding-left: 80px;
       font-family: 'Montserrat';
+      .post__content {
+        .post-dropdown {
+          visibility: hidden;
+          display: flex;
+          position: absolute;
+          justify-content: flex-start;
+          right: 0;
+          top: 20px;
+          z-index: 10;
+          background: #1d2326 0% 0% no-repeat padding-box;
+          transition: all 0.5s ease-in-out;
+          opacity: 0;
+
+          &.active {
+            visibility: visible;
+            opacity: 1;
+          }
+          nav {
+            .edit {
+              display: block;
+              padding: 10px 15px;
+              color: $white;
+              cursor: pointer;
+            }
+            .delete {
+              display: block;
+              padding: 10px 15px;
+              color: $white;
+              cursor: pointer;
+            }
+          }
+        }
+        .post-options {
+          position: absolute;
+          right: 15px;
+          top: 12px;
+          cursor: pointer;
+          color: #fff;
+        }
+      }
       .post__body,
       .update-stats {
         background: #171a1c;
-        padding: 27px 20px 27px 60px;
+        padding: 12px 40px 12px 60px;
         font-size: 12px;
         color: #93a4a5;
         position: relative;
@@ -901,21 +948,35 @@ section#content-container {
             left: 0px;
           }
         }
-        .author__username {
-          font-size: 14px;
-          font-weight: bold;
-          color: #fff;
-          float: left;
-          a:hover {
-            color: #0178ff;
+        .user__details {
+          margin-bottom: 20px;
+          margin-top: 20px;
+          display: flex;
+          .author__username {
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+            a:hover {
+              color: #0178ff;
+            }
+          }
+          .post__time {
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+            margin-left: auto;
           }
         }
-        .post__time {
-          font-size: 14px;
-          font-weight: bold;
-          color: #fff;
-          float: right;
-        }
+      }
+      .show__comments_count {
+        background: #171a1c;
+        padding: 12px 12px 12px 60px;
+        font-size: 12px;
+        color: #93a4a5;
+        position: relative;
+        display: flex;
+        border-top: 1px solid #4d565a;
+        cursor: pointer;
       }
       .image-gallery-thumbnails-wrapper {
         display: none;
@@ -959,6 +1020,7 @@ section#content-container {
       .image-gallery-left-nav {
         right: 40px;
       }
+
       .image-gallery-right-nav {
         right: 20;
       }
@@ -972,6 +1034,18 @@ section#content-container {
       }
       .image-gallery-play-button {
         display: none;
+      }
+      .preview__image {
+        padding-left: 40px;
+        position: relative;
+        top: -20px;
+        width: 120px;
+        height: 80px;
+        padding-left: 40px;
+        img {
+          width: 100%;
+          height: 100%;
+        }
       }
       .compose-comment {
         display: flex;
@@ -992,6 +1066,19 @@ section#content-container {
           font-size: 12px;
           padding: 8px 20px;
           top: -20px;
+        }
+        .insert__images {
+          position: absolute;
+          right: 40px;
+          top: -18px;
+          z-index: 2;
+          cursor: pointer;
+          input {
+            display: none;
+          }
+          img {
+            height: 35px;
+          }
         }
         .profile__image {
           position: absolute;
@@ -1035,10 +1122,22 @@ section#content-container {
       .comments {
         background: #171a1c;
         padding-bottom: 40px;
+        border-top: 1px solid #101214;
+        padding-top: 20px;
         .show-individual-comments {
           padding-left: 100px;
           padding-right: 50px;
           .individual-comment-container {
+            .comment__shape {
+              width: 0px;
+              height: 0px;
+              border-top: 14px solid transparent;
+              border-bottom: 14px solid transparent;
+              border-right: 30px solid #1d2326;
+              position: absolute;
+              top: 0;
+              left: -20px;
+            }
             .comment__section {
               margin-bottom: 30px;
               position: relative;
@@ -1093,8 +1192,8 @@ section#content-container {
               }
               .profile__image {
                 position: absolute;
-                left: -35px;
-                top: 5px;
+                left: -50px;
+                top: 2px;
                 background: #ff00ff;
                 width: 35px;
                 height: 35px;
@@ -1136,6 +1235,13 @@ section#content-container {
             }
             .comment-panel {
               margin-left: 20px;
+              width: 90%;
+              display: flex;
+              margin-left: auto;
+              flex-direction: column;
+              .individual-comment-container {
+                width: 100%;
+              }
               .add-reply input {
                 width: 100%;
                 background: #ffffff 0% 0% no-repeat padding-box;
@@ -1329,11 +1435,19 @@ section#content-container {
     width: 100% !important;
     background: none !important;
     z-index: 10;
+    transition: 1s all ease;
     .postCompose__container {
       margin: 0 auto;
       width: 100% !important;
     }
     .people_group_list {
+      &.active {
+        visibility: visible;
+        opacity: 1;
+      }
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0s, opacity 0.3s ease-in;
       position: fixed;
       top: 10%;
       font: Bold 16px/14px Montserrat;
@@ -1356,6 +1470,9 @@ section#content-container {
           border-radius: 14px;
           text-align: left;
           font: Regular 12px/14px Montserrat;
+          letter-spacing: -0.65px;
+          color: #93a4a5;
+          padding: 0 14px;
           height: 28px;
           width: 330px;
           border: none;
@@ -1366,10 +1483,11 @@ section#content-container {
         background: #171a1c;
         height: 250px;
         overflow: scroll;
+        transition: 1s all ease;
         .list__item {
           display: flex;
           align-items: center;
-          padding: 10px 30px;
+          padding: 10px 0px 10px 18px;
           margin-right: 10px;
           .default_circle {
             width: 30px;
@@ -1383,6 +1501,11 @@ section#content-container {
               border-radius: 50%;
             }
           }
+          .groupName {
+            font: Bold 18px/22px Montserrat;
+            letter-spacing: 0px;
+            color: #ffffff;
+          }
           .action {
             margin-left: auto;
             input {
@@ -1390,7 +1513,64 @@ section#content-container {
             }
           }
         }
+        .container {
+          display: block;
+          position: relative;
+          padding-left: 22px;
+          margin-bottom: 12px;
+          cursor: pointer;
+          font-size: 14px;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+
+          /* Create a custom checkbox */
+          .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 16px;
+            width: 16px;
+            border: 2px solid yellow;
+            border-radius: 4px;
+          }
+          /* Hide the browser's default checkbox */
+          input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+          }
+
+          /* Style the checkmark/indicator */
+          .checkmark:after {
+            left: 3px;
+            top: -1px;
+            width: 4px;
+            height: 10px;
+            border: solid yellow;
+            border-width: 0 2px 2px 0;
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+          }
+
+          /* Create the checkmark/indicator (hidden when not checked) */
+          .checkmark:after {
+            content: '';
+            position: absolute;
+            display: none;
+          }
+
+          /* Show the checkmark when checked */
+          input:checked ~ .checkmark:after {
+            display: block;
+          }
+        }
       }
+
       .people_group_actions {
         background: #1d2326;
         padding: 20px;
@@ -1409,6 +1589,8 @@ section#content-container {
           .cancel {
             border: 2px solid #ffffff;
             border-radius: 8px;
+            font: Bold 16px/14px Montserrat;
+            letter-spacing: 0px;
             color: #ffffff;
             margin-right: 35px;
             background: transparent;
@@ -1427,10 +1609,73 @@ section#content-container {
             margin: 0;
           }
         }
+        .container {
+          display: block;
+          position: relative;
+          padding-left: 22px;
+          margin-bottom: 12px;
+          cursor: pointer;
+          font-size: 14px;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+
+          /* Create a custom checkbox */
+          .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 16px;
+            width: 16px;
+            border: 2px solid yellow;
+            border-radius: 4px;
+          }
+          /* Hide the browser's default checkbox */
+          input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+          }
+
+          /* Style the checkmark/indicator */
+          .checkmark:after {
+            left: 3px;
+            top: -1px;
+            width: 4px;
+            height: 10px;
+            border: solid yellow;
+            border-width: 0 2px 2px 0;
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+          }
+
+          /* Create the checkmark/indicator (hidden when not checked) */
+          .checkmark:after {
+            content: '';
+            position: absolute;
+            display: none;
+          }
+
+          /* Show the checkmark when checked */
+          input:checked ~ .checkmark:after {
+            display: block;
+          }
+        }
       }
     }
   }
   .modal-container {
+    &.modal--show {
+      visibility: visible;
+      opacity: 1;
+    }
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.3s ease-in;
     .modal-overlay {
       position: absolute;
       top: 0;
@@ -1445,4 +1690,12 @@ section#content-container {
       content: '';
     }
   }
+}
+
+.arrowShape-right {
+  width: 0px;
+  height: 0px;
+  border-top: 14px solid transparent;
+  border-bottom: 14px solid transparent;
+  border-right: 30px solid #1d2326;
 }
