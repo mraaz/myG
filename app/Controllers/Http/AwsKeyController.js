@@ -104,7 +104,6 @@ class AwsKeyController {
         if (tmp_keys.length == undefined) {
           return
         }
-
         for (var i = 0; i < tmp_keys.length; i++) {
           let addAwsKey = await AwsKey.create({
             aws_key: tmp_keys[i],
