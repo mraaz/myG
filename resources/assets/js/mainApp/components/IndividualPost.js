@@ -41,6 +41,7 @@ export default class IndividualPost extends Component {
       group_name: '',
       show_more_comments: false,
       preview_file: '',
+      aws_key: '',
     }
     this.textInput = null
 
@@ -302,7 +303,8 @@ export default class IndividualPost extends Component {
         },
       })
       this.setState({
-        preview_file: post.data.Location,
+        preview_file: [post.data.Location],
+        file_keys: [post.data.Key],
       })
     } catch (error) {
       toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again'} />)
@@ -329,6 +331,7 @@ export default class IndividualPost extends Component {
           content: this.state.value.trim(),
           post_id: this.props.post.id,
           media_url: this.state.preview_file,
+          file_keys: this.state.file_keys,
         })
         let { post, user } = this.props
         if (post.user_id != user.userInfo.id) {
@@ -686,9 +689,9 @@ export default class IndividualPost extends Component {
               <div className='online__status'></div>
             </div>
           </div>
-          {this.state.preview_file && (
+          {this.state.preview_file.length > 0 && (
             <div className='preview__image'>
-              <img src={`${this.state.preview_file}`} />
+              <img src={`${this.state.preview_file[0]}`} />
             </div>
           )}
 

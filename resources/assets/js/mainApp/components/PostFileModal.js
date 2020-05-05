@@ -237,9 +237,9 @@ export default class PostFileModal extends Component {
     this.setState({ add_group_toggle: !this.state.add_group_toggle, selected_group: [] })
   }
   addGroupToggleForm = () => {
-    const { selected_group, groups_im_in } = this.state
+    const { selected_group, groups_im_in = [] } = this.state
 
-    const selectedGroup = groups_im_in.filter((g) => selected_group.includes(g.id))
+    const selectedGroup = groups_im_in.length > 0 ? groups_im_in.filter((g) => selected_group.includes(g.id)) : []
     this.setState({ selectedGroup })
     this.addGroupToggle()
   }
@@ -401,7 +401,7 @@ export default class PostFileModal extends Component {
             {/* add group section  */}
             <div className={`people_group_list ${add_group_toggle ? 'active' : ''}`}>
               <div className='search__box'>
-                <label for='searchInput'>Search</label>
+                <label htmlFor='searchInput'>Search</label>
                 <input type='text' id='searchInput' onChange={this.getSearchGroup} value={searchText} placeholder='Search here ...' />
               </div>
               <div className='people_group_list_box'>
