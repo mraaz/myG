@@ -353,7 +353,7 @@ export default class IndividualPost extends Component {
             zero_comments: true,
           })
         } else {
-          toast.warn(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again'} />)
+          toast.warn(<Toast_style text={'Opps,Image is uploading Please Wait...'} />)
         }
       } catch (error) {
         console.log(error)
