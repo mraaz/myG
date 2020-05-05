@@ -239,7 +239,7 @@ export default class PostFileModal extends Component {
   addGroupToggleForm = () => {
     const { selected_group, groups_im_in } = this.state
 
-    const selectedGroup = groups_im_in.filter((g) => selected_group.includes(g.id))
+    const selectedGroup = groups_im_in.length > 0 ? groups_im_in.filter((g) => selected_group.includes(g.id)) : []
     this.setState({ selectedGroup })
     this.addGroupToggle()
   }
