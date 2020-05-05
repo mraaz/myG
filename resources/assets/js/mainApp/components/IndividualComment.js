@@ -438,6 +438,9 @@ export default class IndividualComment extends Component {
               {'  '}
               <div className='comment-content'>
                 <p>{this.state.content}</p>
+                <div className='show__comment__image'>
+                  <img src={comment.media_url} />
+                </div>
               </div>
             </div>
             <div className='comment__shape'></div>

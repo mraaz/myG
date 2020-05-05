@@ -343,6 +343,8 @@ export default class IndividualPost extends Component {
         }
         this.setState({
           myComments: [],
+          preview_file: [],
+          file_keys: '',
         })
         this.pullComments()
         this.setState({
