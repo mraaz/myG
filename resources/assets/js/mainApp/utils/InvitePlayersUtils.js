@@ -75,6 +75,7 @@ const normalizeGroupsData = (data) => {
 
 const parsePlayersToSelectData = (data) => {
   const selectData = []
+  console.log('data:', data)
   if (data && data.length) {
     data.forEach((player) => {
       selectData.push({
@@ -86,6 +87,8 @@ const parsePlayersToSelectData = (data) => {
         ),
         id: player.id,
         value: player.first,
+        name: player.alias,
+        img: player.profile_img,
       })
     })
   }
