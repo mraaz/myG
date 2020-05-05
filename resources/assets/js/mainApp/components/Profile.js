@@ -125,6 +125,7 @@ export default class Profile extends Component {
     const getUser = async function() {
       try {
         const userProfile = await axios.get(`/api/user/${match.params.id}`)
+        console.log(userProfile)
         self.setState({
           initialData: self.props.initialData,
           userProfile: userProfile.data.user[0],
