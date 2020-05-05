@@ -343,6 +343,8 @@ export default class IndividualPost extends Component {
         }
         this.setState({
           myComments: [],
+          preview_file: [],
+          file_keys: '',
         })
         this.pullComments()
         this.setState({
@@ -394,7 +396,11 @@ export default class IndividualPost extends Component {
     if (e.key === 'Enter') {
       e.preventDefault()
       e.stopPropagation()
-      this.insert_comment()
+      if (!this.state.uploading) {
+        this.insert_comment()
+      } else {
+        toast.warn(<Toast_style text={'Opps,Image is uploading Please Wait...'} />)
+      }
     }
   }
 
@@ -665,7 +671,7 @@ export default class IndividualPost extends Component {
               ref={this.setTextInputRef}
             />
             <div className='insert__images' onClick={this.insert_image_comment}>
-              <input type='file' ref={this.fileInputRef} onChange={this.handleSelectFile} name='insert__images' />
+              <input type='file' accept='image/*' ref={this.fileInputRef} onChange={this.handleSelectFile} name='insert__images' />
               <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
             </div>
 
