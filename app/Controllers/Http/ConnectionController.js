@@ -34,7 +34,6 @@ class ConnectionController {
           .toISOString()
           .slice(0, 19)
           .replace('T', ' ')
-
         const updateRead_Status = await Settings.query()
           .where({
             id: getRunTime.id,
@@ -45,6 +44,7 @@ class ConnectionController {
         this.check_if_in_same_communities({ auth })
         this.check_if_in_same_location({ auth })
         this.calc_communities_you_might_know({ auth })
+        this.have_we_played_together({ auth })
       }
 
       return
@@ -559,6 +559,7 @@ class ConnectionController {
       return 'You are not Logged In!'
     }
   }
+
   async have_I_viewed_this_profile({ auth, request, response }) {
     //everytime I look at a profile to whom I'm not friends/pending with it should increase the points
     // trigger in the profile, if this profile is not mine and we're not friends
@@ -626,6 +627,87 @@ class ConnectionController {
     }
   }
 
+  async have_we_played_together({ auth }) {
+    //Loop thru all completed games for this user since the last run date(created and partcipated), find all players in that game and increment points
+    //last run date will be: get one record from connections for this user orderBy updated desc. user this date to get all games played.
+    if (auth.user) {
+      try {
+        let myLastrunDate = ''
+
+        const getLastrunConnection = await Database.from('connection_transactions')
+          .innerJoin('connections', 'connections.id', 'connection_transactions.connections_id')
+          .innerJoin('connection_criterias', 'connection_criterias.id', 'connection_transactions.connection_criterias_id')
+          .where({ user_id: auth.user.id, criteria: 'have_we_played_together', values: true })
+          .select('connection_transactions.updated_at')
+          .orderBy('connection_transactions.updated_at', 'desc')
+          .first()
+
+        if (getLastrunConnection == undefined) {
+          myLastrunDate = '1981-03-19 00:00:00'
+        } else {
+          myLastrunDate = getLastrunConnection.updated_at
+        }
+        let mysql_friendly_date = new Date()
+          .toISOString()
+          .slice(0, 19)
+          .replace('T', ' ')
+
+        const get_all_my_games = Database.from('attendees')
+          .innerJoin('schedule_games', 'schedule_games.id', 'attendees.schedule_games_id')
+          .select('schedule_games.id')
+          .where('attendees.user_id', '=', auth.user.id, 'type', '=', 1)
+          .where('schedule_games.end_date_time', '<=', mysql_friendly_date)
+          .where('schedule_games.end_date_time', '>', myLastrunDate)
+
+        //Don't include your friends
+        const showallMyFriends = Database.from('friends')
+          .where({ user_id: auth.user.id })
+          .select('friends.friend_id as user_id')
+        //Don't include gamers who have rejected you and gamers who you have rejected
+        const showallMyEnemies = Database.from('exclude_connections')
+          .where({ user_id: auth.user.id })
+          .select('other_user_id as user_id')
+
+        const showPending = Database.from('notifications')
+          .where({ user_id: auth.user.id, activity_type: 1 })
+          .select('other_user_id as user_id')
+
+        const gamers_in_these_games = await Database.from('attendees')
+          .where({ type: 1 })
+          .whereIn('attendees.schedule_games_id', get_all_my_games)
+          .select('user_id')
+          .whereNot({ user_id: auth.user.id })
+          .whereNotIn('user_id', showallMyFriends)
+          .whereNotIn('user_id', showallMyEnemies)
+          .whereNotIn('user_id', showPending)
+
+        for (var x = 0; x < gamers_in_these_games.length; x++) {
+          const getConnection = await Database.from('connections')
+            .where({ user_id: auth.user.id, other_user_id: gamers_in_these_games[x].user_id })
+            .select('id')
+            .first()
+
+          if (getConnection != undefined) {
+            this.calculate_score(auth.user.id, gamers_in_these_games[x].user_id, {
+              criteria: 'have_we_played_together',
+              value: true,
+              type: 1,
+              connection_id: getConnection.id,
+            })
+          } else {
+            this.calculate_score(auth.user.id, gamers_in_these_games[x].user_id, {
+              criteria: 'have_we_played_together',
+              value: true,
+              type: 0,
+            })
+          }
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+
   async cleanUpTime({ auth }) {
     try {
       //Don't include your friends
@@ -637,6 +719,7 @@ class ConnectionController {
         .where({ user_id: auth.user.id })
         .select('other_user_id as user_id')
 
+      //Delete friends and exluded connections
       const delete_noti = await Database.table('connections')
         .where({
           user_id: auth.user.id,
@@ -645,6 +728,38 @@ class ConnectionController {
         .orWhereIn('other_user_id', showallMyEnemies)
         .delete()
 
+      //Cleam up connections, we don't want more than 500
+      var today = new Date()
+      var priorDate = new Date().setDate(today.getDate() - 60)
+      const cutOff_date = new Date(priorDate)
+
+      const total_connections = await Database.table('connections')
+        .where('updated_at', '<', cutOff_date)
+        .where({
+          user_id: auth.user.id,
+        })
+        .count('* as total_count')
+
+      if (total_connections[0].total_count > 288) {
+        const get_connection = await Database.table('connections')
+          .where({
+            user_id: auth.user.id,
+          })
+          .where('updated_at', '<', cutOff_date)
+          .select('updated_at')
+          .orderBy('updated_at', 'desc')
+          .limit(1)
+          .offset(287)
+
+        const delete_connections = await Database.table('connections')
+          .where({
+            user_id: auth.user.id,
+          })
+          .where('updated_at', '<', get_connection[0].updated_at)
+          .delete()
+      }
+
+      //Cleam up group connections, we don't want more than 288
       const group_connections = await Database.from('group_connections')
         .where({ user_id: auth.user.id })
         .count('* as no_of_group_connections')
