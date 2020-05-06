@@ -217,6 +217,7 @@ export default class IndividualPost extends Component {
         getGroup_info()
       }
     }
+    this.pullComments()
   }
 
   pullComments = () => {
@@ -518,7 +519,7 @@ export default class IndividualPost extends Component {
   }
 
   render() {
-    const { myComments = [], media_urls, post_deleted, alert, show_profile_img, show_comments, show_more_comments } = this.state
+    const { myComments = [], media_urls, post_deleted, alert, show_profile_img, show_comments, show_more_comments = false } = this.state
     if (post_deleted != true) {
       var show_media = false
 
@@ -618,14 +619,6 @@ export default class IndividualPost extends Component {
               })}
           </div>
           <div className='update-stats'>
-            {this.state.show_like && (
-              <div className='other-users'>
-                {this.state.total > 1
-                  ? `${post.admirer_first_name} and ${this.state.total} others liked this update`
-                  : `${this.state.admirer_first_name} liked this update`}
-              </div>
-            )}
-
             {this.state.like && (
               <div className='like-btn' onClick={() => this.click_unlike_btn(post.id)}>
                 <i className='fas fa-thumbs-up' />
@@ -636,6 +629,13 @@ export default class IndividualPost extends Component {
               <div className='like-btn' onClick={() => this.click_like_btn(post.id)}>
                 <i className='far fa-thumbs-up' />
                 &nbsp;Like
+              </div>
+            )}
+            {this.state.show_like && (
+              <div className='other-users'>
+                {this.state.total > 1
+                  ? `${post.admirer_first_name} and ${this.state.total} others liked this update`
+                  : `${this.state.admirer_first_name} liked this update`}
               </div>
             )}
             {!this.state.show_like && <div className='other-users'>Be the first to like this!</div>}
@@ -654,7 +654,7 @@ export default class IndividualPost extends Component {
               )}
             </div> */}
           </div>
-          {myComments.length > 3 && (
+          {!show_more_comments && myComments.length > 3 && (
             <div className='show__comments_count' onClick={this.show_more_comments}>{`View all (${myComments.length}) comments`}</div>
           )}
           <div className='comments'>

@@ -921,7 +921,6 @@ section#content-container {
         color: #93a4a5;
         position: relative;
         padding-bottom: 70px;
-        display: flex;
         .clearfix:after {
           visibility: hidden;
           display: block;
@@ -968,6 +967,9 @@ section#content-container {
             margin-left: auto;
           }
         }
+      }
+      .update-stats {
+        display: flex;
       }
       .show__comments_count {
         background: #171a1c;
