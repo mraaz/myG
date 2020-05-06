@@ -41,6 +41,11 @@ export function fetchEntryLogs(chatId) {
   return axios.get(`/api/guest/chat/${chatId}/entryLogs`).then(response => response.data);
 }
 
+export function fetchChatContacts(chatId) {
+  logger.log('CHAT', 'HTTP', `Fetching Entry Logs for ${chatId}`);
+  return axios.get(`/api/guest/chat/${chatId}/contacts`).then(response => response.data);
+}
+
 export function fetchGroupPrivateKeyRequests(chatId) {
   logger.log('GUEST', 'HTTP', `Fetching Private Key Requests for Group ${chatId}`);
   return axios.get(`/api/guest/privateKey/${chatId}`).then(response => response.data);
