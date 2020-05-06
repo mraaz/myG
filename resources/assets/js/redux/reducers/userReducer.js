@@ -143,6 +143,17 @@ export default function reducer(state = {
       };
     }
 
+    case "SET_AS_FRIEND": {
+      logger.log('USER', `Redux -> Set As Friend: `, action.payload);
+      const contacts = JSON.parse(JSON.stringify(state.contacts));
+      if (contacts.find(contact => contact.contactId === action.payload)) return state;
+      contacts.push({ contactId: action.payload });
+      return {
+        ...state,
+        contacts
+      };
+    }
+
     default: return state;
 
   }

@@ -81,6 +81,13 @@ export function addAsFriendAction(friendId) {
   }
 }
 
+export function setAsFriendAction(friendId) {
+  return {
+    type: 'SET_AS_FRIEND',
+    payload: friendId,
+  }
+}
+
 export function searchUsersAction(input) {
   return {
     type: 'SEARCH_USERS',
