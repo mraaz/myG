@@ -49,21 +49,10 @@ export default class AnalyticsBox extends Component {
         <div className='social__content'>
           <div className='level-container'>
             <section className='level-container-img'>
-              <div className='circle-wrap'>
-                <div className='circle'>
-                  <div className='mask full'>
-                    <div className='fill'></div>
-                  </div>
-                  <div className='mask half'>
-                    <div className='fill'></div>
-                  </div>
-                  <div className='inside-circle'>
-                    <span className='inside-circle-level'>level</span>
-                    <br />
-                    <span className='inside-circle-value'>{user_level}</span>
-                    <span className='inside-circle-value'>{level_max_points}</span>
-                  </div>
-                </div>
+              <div class={`circle-wrap ${user_xp_negative_balance ? 'yellow' : 'red'}`}>
+                <div class='inside-circle-level'>Level</div>
+                <div class='inside-circle-value'>{user_level}</div>
+                {/* <div class='inside-circle-value'>{level_max_points}</div> */}
               </div>
             </section>
             <div className='ratings'>

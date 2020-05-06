@@ -154,59 +154,23 @@
 .circle-wrap {
   width: 130px;
   height: 130px;
-  background: #e6e2e7;
-  border-radius: 50%;
-}
-
-.circle-wrap .circle .mask,
-.circle-wrap .circle .fill {
-  width: 130px;
-  height: 130px;
-  position: absolute;
-  border-radius: 50%;
-}
-
-.circle-wrap .circle .mask {
-  clip: rect(0px, 130px, 130px, 65px);
-}
-
-.circle-wrap .circle .mask .fill {
-  clip: rect(0px, 65px, 130px, 0px);
-  background-color: #c0a841;
-}
-
-.circle-wrap .circle .mask.full,
-.circle-wrap .circle .fill {
-  animation: fill ease-in-out 3s;
-  transform: rotate(126deg);
-}
-
-@keyframes fill {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(126deg);
-  }
-}
-
-.circle-wrap .inside-circle {
-  width: 130px;
-  height: 130px;
-  border-radius: 50%;
   background: #1d2326;
-  text-align: center;
-  margin-top: 5px;
-  margin-left: 5px;
-  position: absolute;
-  z-index: 100;
-  font-weight: 700;
-  font-size: 2em;
-  color: #fff;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  &.yellow {
+    border-color: #9b8b3a;
+  }
+  &.red {
+    border-color: #d70f46;
+  }
 }
+
 .inside-circle-level {
   font-weight: 100;
-  margin-top: 35px;
-  display: inline-block;
+  display: block;
   font-size: 18px;
 }
