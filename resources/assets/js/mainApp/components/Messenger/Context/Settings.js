@@ -36,6 +36,7 @@ export default class Settings extends React.PureComponent {
   renderGameSelection = (game) => {
     const isFavorite = this.props.favoriteGames.find((favorite) => favorite.gameId === game.gameId)
     const isOwner = parseInt(this.props.userId) === parseInt(game.ownerId)
+    if (!isFavorite && !this.state.favoriteGameInput) return null;
     return (
       <div key={game.gameId} className='messenger-footer-favorite-game'>
         <div className='messenger-body-game-section'>
