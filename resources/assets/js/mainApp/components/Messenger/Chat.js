@@ -355,10 +355,11 @@ export class Chat extends React.PureComponent {
       isGuest={this.props.isGuest}
       show={this.state.showAttachWindow}
       onEmoji={emoji => {
-        this.setState({ showAttachWindow: false, selectedEmoji: emoji.native }, () => {
+        this.setState({ showAttachWindow: false, selectedEmoji: emoji.colons.includes('flag') ? emoji.colons : emoji.native }, () => {
           setTimeout(() => this.setState({ selectedEmoji: null }));
         });
       }}
+      onFinish={() => this.setState({ showAttachWindow: false })}
       onImage={image => console.log('Attaching Image: ' + image)}
       onVideo={video => console.log('Attaching Video: ' + video)}
       onSound={sound => console.log('Attaching Sound: ' + sound)}
