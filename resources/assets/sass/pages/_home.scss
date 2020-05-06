@@ -1060,12 +1060,15 @@ section#content-container {
         display: flex;
         justify-content: center;
         position: relative;
+        width: 90%;
+        align-items: center;
+        margin: 0 auto;
         textarea {
           position: relative;
           z-index: 2;
           border: none;
           height: 40px;
-          width: 90%;
+          width: 100%;
           border: 1px solid #273136;
           border-radius: 10px;
           background: #1d2326 0% 0% no-repeat padding-box;
@@ -1078,7 +1081,7 @@ section#content-container {
         }
         .insert__images {
           position: absolute;
-          right: 40px;
+          right: 5px;
           top: -18px;
           z-index: 2;
           cursor: pointer;
@@ -1091,7 +1094,7 @@ section#content-container {
         }
         .profile__image {
           position: absolute;
-          left: 15px;
+          left: -20px;
           top: -15px;
           background: #ff00ff;
           width: 30px;
