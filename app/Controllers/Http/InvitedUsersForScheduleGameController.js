@@ -5,8 +5,6 @@ const InvitedUsersForScheduleGame = use('App/Models/InvitedUsersForScheduleGame'
 class InvitedUsersForScheduleGameController {
   async store({ auth, request, response }) {
     if (auth.user) {
-      console.log("i'm here")
-      return
       try {
         const addEntry = await InvitedUsersForScheduleGame.create({
           schedule_games_id: request.input('schedule_games_id'),

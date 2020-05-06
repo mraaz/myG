@@ -60,7 +60,7 @@ class EsportsBioController {
         })
       return 'Saved successfully'
     } catch (error) {
-      console.log(updateEsports_Exp)
+      console.log(error)
     }
   }
 }

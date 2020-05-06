@@ -57,7 +57,6 @@ const MyGAsyncSelect = ({
     }),
   }
 
-  console.log('options: ', options)
   return (
     <Select
       styles={customStyles}

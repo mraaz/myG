@@ -72,7 +72,7 @@ class UserController {
           })
         return 'Saved successfully'
       } catch (error) {
-        console.log(saveUser)
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'

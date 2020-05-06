@@ -308,7 +308,7 @@ export default class PostFileModal extends Component {
                 maxLength='254'
                 name='post_content'
                 value={this.state.post_content}
-                placeholder='What in your mind?'
+                placeholder="What's up..."
               />
             </div>
 
@@ -321,7 +321,7 @@ export default class PostFileModal extends Component {
                     maxLength='254'
                     name='post_content'
                     value={this.state.post_content}
-                    placeholder='What in your mind?'
+                    placeholder="Whats up..."
                   />
                 </div> */}
                 <Dropzone

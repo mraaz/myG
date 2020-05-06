@@ -94,7 +94,6 @@ class EsportsExperienceController {
   }
 
   async update({ auth, request, response }) {
-    console.log(request.params.id)
     if (auth.user) {
       if (/['/.%#$;`\\]/.test(request.input('skills'))) {
         return false
