@@ -5,7 +5,6 @@ import { toast } from 'react-toastify'
 import SweetAlert from 'react-bootstrap-sweetalert'
 import { Toast_style } from './Utility_Function'
 import { joinGameGroup } from '../../common/group'
-import { acceptGameGroupInvitation } from '../../integration/http/chat'
 
 export default class IndividualApproval extends Component {
   constructor() {
@@ -81,7 +80,6 @@ export default class IndividualApproval extends Component {
         )
 
         joinGameGroup(approvals.attendees.schedule_games_id, approvals.attendees.user_id)
-        acceptGameGroupInvitation(approvals.attendees.schedule_games_id, approvals.attendees.user_id)
       } else {
         const accepted_invite = axios.post(
           `/api/attendees/update_invite/${approvals.attendees.schedule_games_id}/${approvals.attendees.user_id}`,
@@ -95,7 +93,6 @@ export default class IndividualApproval extends Component {
         )
 
         joinGameGroup(approvals.attendees.schedule_games_id, approvals.attendees.user_id)
-        acceptGameGroupInvitation(approvals.attendees.schedule_games_id, approvals.attendees.user_id)
       }
       if (approvals.schedule_games.limit != 42) {
         const getNumberofAttendees = await axios.get(`/api/attendees/attending/${approvals.attendees.schedule_games_id}`)

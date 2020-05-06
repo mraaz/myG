@@ -5,6 +5,7 @@ import IndividualGamingExperience from './IndividualGamingExperience'
 import IndividualEsportsExperience from './IndividualEsportsExperience'
 import FileOpenModal from './FileOpenModal'
 import SweetAlert from 'react-bootstrap-sweetalert'
+import { setAsFriendRedux } from '../../common/friend'
 
 export default class Profile extends Component {
   constructor() {
@@ -69,7 +70,7 @@ export default class Profile extends Component {
             'Content-Type': 'application/json',
           },
         })
-        .then(function(resp) {})
+        .then(function (resp) { })
         .catch((error) => {
           // handle your error
         })
@@ -100,7 +101,7 @@ export default class Profile extends Component {
     const { match } = this.props.routeProps
     const { initialData } = this.props
 
-    const getID = async function() {
+    const getID = async function () {
       try {
         const convertAliastoID = await axios.get(`/api/user/alias/${match.params.alias}`)
         if (convertAliastoID.data.length != 0) {
@@ -122,7 +123,7 @@ export default class Profile extends Component {
       }
     }
 
-    const getUser = async function() {
+    const getUser = async function () {
       try {
         const userProfile = await axios.get(`/api/user/${match.params.id}`)
         console.log(userProfile)
@@ -170,7 +171,7 @@ export default class Profile extends Component {
         console.log(error)
       }
     }
-    const getGameExperiences = async function() {
+    const getGameExperiences = async function () {
       try {
         const gameExperience = await axios.get(`/api/GameExperiences/${match.params.id}`)
         self.setState({
@@ -181,7 +182,7 @@ export default class Profile extends Component {
       }
     }
 
-    const getEsportsExperiences = async function() {
+    const getEsportsExperiences = async function () {
       try {
         const esportsExperience = await axios.get(`/api/esports_experiences/${match.params.id}`)
         self.setState({
@@ -192,7 +193,7 @@ export default class Profile extends Component {
       }
     }
 
-    const getEsportsBio = async function() {
+    const getEsportsBio = async function () {
       try {
         const esportsBio = await axios.get(`/api/esports_bio/show_bio/${match.params.id}`)
         self.setState({
@@ -248,6 +249,7 @@ export default class Profile extends Component {
 
     if (this.state.friendStatus === 3) {
       try {
+        setAsFriendRedux(match.params.id)
         const deleteNoti = axios.get(`/api/notifications/delete/${this.state.noti_id}`)
         const createFriend = axios.post('/api/friends/create', {
           friend_id: match.params.id,

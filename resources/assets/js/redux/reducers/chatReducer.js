@@ -221,7 +221,7 @@ export default function reducer(state = {
       const unreadMessages = JSON.parse(JSON.stringify(state.unreadMessages));
       if (!chat) return state;
       if (state.blockedUsers.includes(message.senderId)) return state;
-      if (!chat.muted && !window.focused && message.senderId !== userId) playMessageSound();
+      if (!chat.muted && !window.focused && message.senderId !== userId && !message.keyReceiver) playMessageSound();
       if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
       if (!chat.muted && !message.keyReceiver) {
         const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== chatId);
@@ -701,6 +701,7 @@ export default function reducer(state = {
 
 function playMessageSound() {
   try {
+    logger.log('CHAT', 'Redux -> Playing Notification Sound');
     new Audio('https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/notification.mp3').play();
   } catch (error) {
     console.error('Error While Playing Message Notification:', error);

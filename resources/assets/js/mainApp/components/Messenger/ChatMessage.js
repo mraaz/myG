@@ -348,7 +348,7 @@ export default class ChatMessage extends React.Component {
         key={message.messageId}
         ref={this.messageRef}
         className={`chat-component-message chat-component-message-${origin} ${deletedStyle} ${selfDestructStyle}`}
-        onMouseEnter={() => this.setState({ showOptionsButton: true })}
+        onMouseEnter={() => this.setState({ showOptionsButton: !this.props.isGuest })}
         onMouseLeave={() => this.setState({ showOptionsButton: false, showOptionsMenu: false })}
       >
         <div className="chat-component-message-container">
@@ -384,7 +384,7 @@ export default class ChatMessage extends React.Component {
             <div className="chat-component-message-side-container">
               <div
                 onClick={() => this.setState({ showOptionsMenu: true })}
-                className={`chat-component-message-options-button ${!this.state.showOptionsMenu && !this.props.message.deleted && 'clickable'}`}
+                className={`chat-component-message-options-button ${!this.state.showOptionsMenu && !this.props.message.deleted && `${!!this.state.showOptionsButton && 'clickable'}`}`}
                 style={{ backgroundImage: this.state.showOptionsButton && !this.props.message.deleted && `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_options.svg)` }}
               />
               <div className="chat-component-message-options-menu-container">

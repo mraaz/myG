@@ -63,7 +63,7 @@ class ChatOptions extends React.PureComponent {
 
         <div className="chat-component-options-toggle">
           Self destruct mode
-          <WithTooltip position={{ bottom: '-6px', left: '58px' }} text={'Switch this on to never save\nany messages on this chat'}>
+          <WithTooltip position={{ bottom: '-6px', right: '10px' }} text={'Switch this on to never save\nany messages on this chat'}>
             <ToggleButton
               value={this.props.selfDestruct || false}
               onToggle={(selfDestruct) => this.props.updateChat(this.props.chatId, { selfDestruct: !selfDestruct })}

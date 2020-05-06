@@ -14,6 +14,7 @@ const ChatEntryLog = use('App/Models/ChatEntryLog');
 const ChatPrivateKeyRequest = use('App/Models/ChatPrivateKeyRequest');
 const ChatGameMessageSchedule = use('App/Models/ChatGameMessageSchedule');
 const ChatBlockedUser = use('App/Models/ChatBlockedUser');
+const Notification = use('App/Models/Notification');
 
 const AwsKeyController = use('App/Controllers/Http/AwsKeyController');
 const RedisRepository = require('../../Repositories/Redis');
@@ -430,6 +431,7 @@ class ChatRepository {
     if (!forceDelete && !owners.includes(requestingUserId)) throw new Error('Only Owners can Delete Chat');
     await new AwsKeyController().removeChatGroupProfileKey(requestedChatId);
     await chatModel.delete();
+    await Notification.query().where('chat_id', requestedChatId).delete();
     contacts.forEach(userId => this._notifyChatEvent({ userId, action: 'deleteChat', payload: { chatId: requestedChatId } }));
     guests.forEach(guestId => this._notifyChatEvent({ guestId, action: 'deleteChat', payload: { chatId: requestedChatId } }));
     return new DefaultSchema({ success: true });

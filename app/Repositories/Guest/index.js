@@ -109,6 +109,10 @@ class GuestRepository {
     return ChatRepository.fetchEntryLogs({ requestedChatId });
   }
 
+  async fetchChatContacts({ requestedChatId }) {
+    return ChatRepository.fetchChatContacts({ requestedChatId });
+  }
+
   async fetchGroupPrivateKeyRequests({ chatId }) {
     return ChatRepository.fetchGroupPrivateKeyRequests({ chatId });
   }

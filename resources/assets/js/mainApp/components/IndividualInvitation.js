@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Select from 'react-select'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
+import { setAsFriendRedux } from '../../common/friend';
 
 export default class IndividualInvitation extends Component {
   constructor() {
@@ -72,6 +73,7 @@ export default class IndividualInvitation extends Component {
     }
 
     try {
+      setAsFriendRedux(invitation.user_id)
       const createFriend = axios.post('/api/friends/create', {
         friend_id: invitation.user_id,
       })
