@@ -90,52 +90,65 @@
   display: flex;
   margin-top: 20px;
 }
-.suggestion-box {
-  width: 20%;
-  position: relative;
-  margin-right: 30px;
-}
-.suggestion-box:first-child {
+.suggestion-box-text {
   width: 15%;
   border-right: 1px solid #a3a9a9;
 }
-.suggestion-box-text {
-  color: #555e5f;
-}
-.suggestion-box-head {
-  margin: 0;
-  color: #fff;
-  font-size: 20px;
-  font-weight: 300;
-  margin-right: 20px;
-}
-.suggestions-box-reset {
-  width: 5%;
-}
-.suggestion-box-input {
-  background: #1d2326;
-  padding: 12px 15px;
-  border-radius: 6px 0 0 6px;
-  border: 1px solid #555e5f;
-  width: 70%;
-  color: #fff;
-}
-.input-outer {
-  position: absolute;
-  right: 10px;
-  top: 0;
-  border-radius: 0 6px 6px 0;
-  border: 1px solid #555e5f;
-  padding: 6px 10px;
-  color: #fff;
-  text-align: center;
-  background: #1d2326;
-}
-.input-outer-label {
-  font-size: 10px;
-}
-.input-outer-count {
-  font-size: 15px;
+.show__user__suggestion {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  margin-left: 10px;
+  max-width: 760px;
+  overflow: scroll;
+  .suggestion-box {
+    min-width: 150px;
+    margin-right: 14px;
+    display: inline-block;
+    clear: both;
+    overflow: auto;
+    cursor: pointer;
+  }
+
+  .suggestion-box-text {
+    color: #555e5f;
+  }
+  .suggestion-box-head {
+    margin: 0;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 300;
+    margin-right: 20px;
+  }
+  .suggestions-box-reset {
+    width: 5%;
+    cursor: pointer;
+  }
+  .suggestion-box-input {
+    background: #1d2326;
+    padding: 12px 12px;
+    border-radius: 6px 0 0 6px;
+    border: 1px solid #555e5f;
+    font-size: 12px;
+    float: left;
+    min-width: 100px;
+    border-right: none;
+    color: #fff;
+  }
+  .input-outer {
+    border-radius: 0 6px 6px 0;
+    border: 1px solid #555e5f;
+    padding: 5px 12px;
+    color: #fff;
+    text-align: center;
+    background: #1d2326;
+    float: left;
+  }
+  .input-outer-label {
+    font-size: 10px;
+  }
+  .input-outer-count {
+    font-size: 15px;
+  }
 }
 
 .circle-wrap {
