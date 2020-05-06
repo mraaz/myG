@@ -21,6 +21,8 @@ import {
 } from '../../static/AddGame'
 import { MyGCheckbox, MyGTextarea, MyGAsyncSelect, MyGSelect, MyGDatePicker } from '../common'
 import { Game_name_values, Game_name_Tags, Disable_keys } from '../Utility_Function'
+import Axios from 'axios'
+import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
 
 const SliderWithTooltip = Slider.createSliderWithTooltip(Slider)
 
@@ -92,18 +94,33 @@ const AddGame = ({
   }
 
   // api calls
-  const getOptionsTags = (inputValue) => {
+  const getOptionsTags = async (inputValue) => {
     const getInitialData = async function (inputValue) {
       try {
         let results = await Game_name_Tags(inputValue, mainSettingsState.gameTitle.game_names_id)
-        updateAdvancedSettings({ optionTags: results })
+        // updateAdvancedSettings({ optionTags: results })
+        return results
       } catch (error) {
-        console.log(error)
+        // Error get option tags
       }
     }
 
     if (mainSettingsState.gameTitle && mainSettingsState.gameTitle.game_names_id) {
-      getInitialData(inputValue)
+      await getInitialData(inputValue)
+    }
+  }
+
+  const onPlayersSuggestionFetch = async (value) => {
+    try {
+      const {
+        data: { playerSearchResults },
+      } = await Axios.post(`/api/user/playerSearchResults`, {
+        alias: value,
+      })
+      const parsedData = parsePlayersToSelectData(playerSearchResults)
+      return parsedData
+    } catch (error) {
+      // error player suggestion fetch
     }
   }
 
@@ -203,6 +220,13 @@ const AddGame = ({
           }}
           labelText='List Game as Public Game'
         />
+        <MyGCheckbox
+          checked={mainSettingsState.autoAccept}
+          onClick={(value) => {
+            updateMainSettings({ autoAccept: value })
+          }}
+          labelText='Auto-Accept Gamers to join'
+        />
       </div>
     )
   }
@@ -290,7 +314,6 @@ const AddGame = ({
             onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
             loadOptions={onGameTitleChange}
             onChange={(value) => {
-              console.log('value: ', value)
               updateMainSettings({ gameTitle: value })
               value && !value.isGameNameField && updateOptionalSettings({ serverRegion: null })
               updateState({ isGameNameField: value ? value.isGameNameField : false })
@@ -337,8 +360,8 @@ const AddGame = ({
             isClearable
             isMulti
             onCreateOption={handleCreateTags}
-            onInputChange={getOptionsTags}
-            loadOptions={onGameTitleChange}
+            // onInputChange={getOptionsTags}
+            loadOptions={getOptionsTags}
             onChange={(value) => {
               updateAdvancedSettings({ tags: value })
             }}
@@ -388,6 +411,21 @@ const AddGame = ({
             value={advancedSettingsState.acceptMessage}
             placeholder='Create a message for those who join & accept your game'
             maxLength={250}
+          />
+          <div className={styles.fieldTitle}>Co-host</div>
+          <MyGAsyncSelect
+            isClearable
+            isMulti
+            isValidNewOption={() => {
+              return
+            }}
+            loadOptions={onPlayersSuggestionFetch}
+            onChange={(value) => {
+              updateAdvancedSettings({ coHosts: value })
+            }}
+            value={advancedSettingsState.coHosts}
+            placeholder='Enter your Friend’s name to set him as a co-host'
+            onKeyDown={Disable_keys}
           />
         </div>
       </div>

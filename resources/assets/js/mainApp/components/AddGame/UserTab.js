@@ -23,7 +23,6 @@ const UserTab = ({ dataList, dataObject, selectedItemsObject, onClick }) => {
       </div>
     )
   }
-  console.log('selectedItemsObject: ', selectedItemsObject)
 
   return dataList.map((key, index) => getIndividualSearchTab(dataObject[key], index, selectedItemsObject, onClick))
 }
