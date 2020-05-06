@@ -43,11 +43,7 @@ class Archive_ReplyController {
 
   async show_reply({ auth, request, response }) {
     try {
-      const this_reply = await Database.from('replies').where(
-        'id',
-        '=',
-        request.params.id
-      )
+      const this_reply = await Database.from('replies').where('id', '=', request.params.id)
 
       return {
         this_reply,
@@ -80,7 +76,6 @@ class Archive_ReplyController {
           })
           .delete()
 
-        console.log(delete_reply)
         return delete_reply
       } catch (error) {
         console.log(error)
@@ -97,7 +92,7 @@ class Archive_ReplyController {
         .update({ content: request.input('content') })
       return 'Saved successfully'
     } catch (error) {
-      console.log(updateGame_Exp)
+      console.log(error)
     }
   }
 }

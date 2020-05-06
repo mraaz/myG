@@ -53,11 +53,7 @@ class Archive_CommentController {
 
   async show_comment({ auth, request, response }) {
     try {
-      const this_comment = await Database.from('comments').where(
-        'id',
-        '=',
-        request.params.id
-      )
+      const this_comment = await Database.from('comments').where('id', '=', request.params.id)
 
       return {
         this_comment,
@@ -92,7 +88,6 @@ class Archive_CommentController {
           })
           .delete()
 
-        console.log(delete_comment)
         return delete_comment
       } catch (error) {
         console.log(error)
@@ -109,7 +104,7 @@ class Archive_CommentController {
         .update({ content: request.input('content') })
       return 'Saved successfully'
     } catch (error) {
-      console.log(updateGame_Exp)
+      console.log(error)
     }
   }
 
@@ -123,7 +118,7 @@ class Archive_CommentController {
         no_of_comments,
       }
     } catch (error) {
-      console.log(no_of_comments)
+      console.log(error)
     }
   }
 }

@@ -149,6 +149,7 @@ class MySettings extends Component {
           counter: 1,
         })
         console.log(get_stats)
+        //console.log('Raaz-inside')
       } catch (error) {
         console.log(error)
       }
