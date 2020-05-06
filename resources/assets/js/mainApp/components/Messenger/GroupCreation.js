@@ -28,7 +28,7 @@ class GroupCreation extends React.Component {
 
   onGameSearch = (game) => {
     this.setState({ gameInput: game, selectedGame: null });
-    if (game.length > 3) this.props.searchGame(game);
+    if (game.length) this.props.searchGame(game);
   }
 
   onCreate = () => {
@@ -101,7 +101,7 @@ class GroupCreation extends React.Component {
         >
         </input>
         <Dropdown
-          show={this.state.gameInput.length > 3}
+          show={this.state.gameInput.length}
           position={{ top: '-6px' }}
           items={this.props.foundGames.map(game => game.name)}
           onItemClick={item => this.setState({ selectedGame: this.props.foundGames.find(game => game.name === item), gameInput: '' })}
