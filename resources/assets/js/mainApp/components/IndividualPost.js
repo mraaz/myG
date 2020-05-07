@@ -217,6 +217,7 @@ export default class IndividualPost extends Component {
         getGroup_info()
       }
     }
+    this.pullComments()
   }
 
   pullComments = () => {
@@ -437,8 +438,6 @@ export default class IndividualPost extends Component {
     const { myComments = [] } = this.state
     const comments = [...myComments]
     const commentArr = comments.length > 3 ? comments.slice(3) : comments
-    console.log(commentArr, 'commentArr')
-
     return (
       commentArr.length > 0 &&
       commentArr.map((item, index) => {
@@ -512,9 +511,15 @@ export default class IndividualPost extends Component {
       this.delete_exp()
     }
   }
+  clearPreviewImage = () => {
+    this.setState({
+      preview_file: [],
+      file_keys: '',
+    })
+  }
 
   render() {
-    const { myComments = [], media_urls, post_deleted, alert, show_profile_img, show_comments, show_more_comments } = this.state
+    const { myComments = [], media_urls, post_deleted, alert, show_profile_img, show_comments, show_more_comments = false } = this.state
     if (post_deleted != true) {
       var show_media = false
 
@@ -551,7 +556,7 @@ export default class IndividualPost extends Component {
             <div className='user__details'>
               <div className='author__username'>
                 <Link to={`/profile/${post.alias}`}>{`@${post.alias} `}</Link> shared a {post.type == 'text' ? 'story' : 'image'}
-                {'  from community: '}
+                {'  from : '}
                 {this.state.show_group_name && <Link to={`/groups/${post.group_id}`}>@{this.state.group_name}</Link>}
               </div>
               <div className='post__time'>{this.state.post_time}</div>
@@ -614,19 +619,6 @@ export default class IndividualPost extends Component {
               })}
           </div>
           <div className='update-stats'>
-            <div className='icon-section'>
-              <div className='like-circle'>
-                <i className='fas fa-thumbs-up' />
-              </div>
-            </div>
-            {this.state.show_like && (
-              <div className='other-users'>
-                {this.state.total > 1
-                  ? `${post.admirer_first_name} and ${this.state.total} others liked this update`
-                  : `${this.state.admirer_first_name} liked this update`}
-              </div>
-            )}
-            {!this.state.show_like && <div className='other-users'>Be the first to like this!</div>}
             {this.state.like && (
               <div className='like-btn' onClick={() => this.click_unlike_btn(post.id)}>
                 <i className='fas fa-thumbs-up' />
@@ -639,25 +631,34 @@ export default class IndividualPost extends Component {
                 &nbsp;Like
               </div>
             )}
-            {this.state.zero_comments && (
-              <div className='comments-stats' onClick={this.onChange}>
-                <i class='far fa-comment-alt'></i>
-                {' comments'}
-                {/* {this.state.comment_total > 1 ? `${this.state.comment_total} comments` : `${this.state.comment_total} comment`}{' '} */}
+            {this.state.show_like && (
+              <div className='other-users'>
+                {this.state.total > 1
+                  ? `${post.admirer_first_name} and ${this.state.total} others liked this update`
+                  : `${this.state.admirer_first_name} liked this update`}
               </div>
             )}
-            {!this.state.zero_comments && (
-              <div className='comments-stats' onClick={this.focusTextInput}>
-                {' '}
-                No comments
-              </div>
-            )}
+            {!this.state.show_like && <div className='other-users'>Be the first to like this!</div>}
+            {/* <div>
+              {this.state.zero_comments && (
+                <div className='comments-stats' onClick={this.onChange}>
+                  <i class='far fa-comment-alt'></i>
+                  {' comments'}
+                </div>
+              )}
+              {!this.state.zero_comments && (
+                <div className='comments-stats' onClick={this.focusTextInput}>
+                  {' '}
+                  No comments
+                </div>
+              )}
+            </div> */}
           </div>
-          {show_comments && myComments.length > 3 && (
+          {!show_more_comments && myComments.length > 3 && (
             <div className='show__comments_count' onClick={this.show_more_comments}>{`View all (${myComments.length}) comments`}</div>
           )}
           <div className='comments'>
-            {show_comments && <div className='show-individual-comments'>{this.showComment()}</div>}
+            {!show_more_comments && <div className='show-individual-comments'>{this.showComment()}</div>}
             {show_more_comments && <div className='show-individual-comments'>{this.showMoreComment()}</div>}
           </div>
           <div className='compose-comment'>
@@ -697,7 +698,13 @@ export default class IndividualPost extends Component {
           </div>
           {this.state.preview_file.length > 0 && (
             <div className='preview__image'>
-              <img src={`${this.state.preview_file[0]}`} />
+              <img
+                src={`https://mygame-media.s3.ap-southeast-2.amazonaws.com/user_files/100_1588765073458_r7O6mo_post_image_1588765067033`}
+              />
+              {/* <img src={`${this.state.preview_file[0]}`} /> */}
+              <div className='clear__preview__image' onClick={this.clearPreviewImage}>
+                X
+              </div>
             </div>
           )}
 

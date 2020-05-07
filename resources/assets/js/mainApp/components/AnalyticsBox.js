@@ -5,19 +5,24 @@ export default class AnalyticsBox extends Component {
   state = {
     userTransactionStates: {},
     youMayKnowUser: [],
+    counter: 1,
   }
 
   async componentDidMount() {
     const get_stats = await axios.get('/api/userStatTransaction/master_controller')
     const getGamers_you_might_know = await axios.post('/api/connections/gamers_you_might_know', { counter: 1 })
-    const youMayKnowUser = getGamers_you_might_know.data.user
+    const youMayKnowUser = getGamers_you_might_know.data.data
     this.setState({ userTransactionStates: { ...get_stats }, youMayKnowUser })
   }
 
   refreshSuggestedUser = async () => {
     const getGamers_you_might_know = await axios.post('/api/connections/gamers_you_might_know', { counter: 1 })
-    const youMayKnowUser = getGamers_you_might_know.data.user
-    this.setState({ youMayKnowUser })
+    const youMayKnowUser = getGamers_you_might_know.data.data
+    this.setState({ youMayKnowUser, counter: this.state.counter + 1 })
+  }
+
+  handleUserSuggestion = (username) => {
+    window.location.href = `/profile/${username}`
   }
 
   render() {
@@ -44,21 +49,10 @@ export default class AnalyticsBox extends Component {
         <div className='social__content'>
           <div className='level-container'>
             <section className='level-container-img'>
-              <div className='circle-wrap'>
-                <div className='circle'>
-                  <div className='mask full'>
-                    <div className='fill'></div>
-                  </div>
-                  <div className='mask half'>
-                    <div className='fill'></div>
-                  </div>
-                  <div className='inside-circle'>
-                    <span className='inside-circle-level'>level</span>
-                    <br />
-                    <span className='inside-circle-value'>{user_level}</span>
-                    <span className='inside-circle-value'>{level_max_points}</span>
-                  </div>
-                </div>
+              <div class={`circle-wrap ${user_xp_negative_balance ? 'yellow' : 'red'}`}>
+                <div class='inside-circle-level'>Level</div>
+                <div class='inside-circle-value'>{user_level}</div>
+                {/* <div class='inside-circle-value'>{level_max_points}</div> */}
               </div>
             </section>
             <div className='ratings'>
@@ -123,27 +117,26 @@ export default class AnalyticsBox extends Component {
 
         {youMayKnowUser && youMayKnowUser.length > 0 && (
           <div className='suggestion'>
-            <div className='suggestion-box'>
+            <div className='suggestion-box-text'>
               <p className='suggestion-box-text'>connections</p>
               <h2 className='suggestion-box-head'>Suggestions</h2>
             </div>
-
-            {youMayKnowUser.map((user) => {
-              return (
-                <div className='suggestion-box'>
-                  <input type='text' value={`@${user.username}`} disabled className='suggestion-box-input' />
-                  <div className='input-outer'>
-                    <p className='input-outer-label'>level</p>
-                    <p className='input-outer-count'>{user.user_level}</p>
+            <div className='show__user__suggestion'>
+              {youMayKnowUser.map((user) => {
+                return (
+                  <div className='suggestion-box' onClick={(e) => this.handleUserSuggestion(user.alias)}>
+                    <div className='suggestion-box-input'>{`@${user.alias}`}</div>
+                    <div className='input-outer'>
+                      <p className='input-outer-label'>level</p>
+                      <p className='input-outer-count'>{user.level}</p>
+                    </div>
                   </div>
-                </div>
-              )
-            })}
+                )
+              })}
+            </div>
 
-            <div className='suggestions-box-reset'>
-              <a href='javascript:;' onClick={(e) => this.refreshSuggestedUser()}>
-                <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/reset.png' className='' />
-              </a>
+            <div className='suggestions-box-reset' onClick={(e) => this.refreshSuggestedUser()}>
+              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/reset.png' className='' />
             </div>
           </div>
         )}

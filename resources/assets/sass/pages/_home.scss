@@ -968,6 +968,9 @@ section#content-container {
           }
         }
       }
+      .update-stats {
+        display: flex;
+      }
       .show__comments_count {
         background: #171a1c;
         padding: 12px 12px 12px 60px;
@@ -985,7 +988,6 @@ section#content-container {
         max-height: 400px;
       }
       .like-btn {
-        float: right;
         font-size: 14px;
         cursor: pointer;
         font-weight: bold;
@@ -1003,7 +1005,7 @@ section#content-container {
       }
       .icon-section,
       .other-users {
-        float: left;
+        margin-left: 10px;
         font-size: 12px;
       }
       .image-gallery-left-nav,
@@ -1034,27 +1036,39 @@ section#content-container {
         display: none;
       }
       .preview__image {
-        padding-left: 40px;
         position: relative;
-        top: -20px;
-        width: 120px;
+        top: -15px;
         height: 80px;
-        padding-left: 40px;
+        margin-left: 40px;
+        border: 1px solid;
+        width: 90%;
+        padding: 5px;
         img {
-          width: 100%;
+          width: 120px;
           height: 100%;
+        }
+        .clear__preview__image {
+          position: absolute;
+          right: 4px;
+          top: 4px;
+          font-size: 10px;
+          cursor: pointer;
+          z-index: 5;
         }
       }
       .compose-comment {
         display: flex;
         justify-content: center;
         position: relative;
+        width: 90%;
+        align-items: center;
+        margin: 0 auto;
         textarea {
           position: relative;
           z-index: 2;
           border: none;
           height: 40px;
-          width: 90%;
+          width: 100%;
           border: 1px solid #273136;
           border-radius: 10px;
           background: #1d2326 0% 0% no-repeat padding-box;
@@ -1067,7 +1081,7 @@ section#content-container {
         }
         .insert__images {
           position: absolute;
-          right: 40px;
+          right: 5px;
           top: -18px;
           z-index: 2;
           cursor: pointer;
@@ -1081,7 +1095,7 @@ section#content-container {
         }
         .profile__image {
           position: absolute;
-          left: 15px;
+          left: -20px;
           top: -15px;
           background: #ff00ff;
           width: 30px;
