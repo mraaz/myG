@@ -240,7 +240,7 @@ export default class ScheduleGames_Header extends Component {
 
   render() {
     return (
-      <section id='posts'>
+      <section id='posts_old'>
         <div className='content-area scheduleGames-page'>
           <div className='filterMenu'>
             <div className='region'>

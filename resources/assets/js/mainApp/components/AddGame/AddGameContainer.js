@@ -146,7 +146,7 @@ const AddGameContainer = () => {
       <MyGModal isOpen ariaHideApp={false}>
         <div className={styles.listedTopContentContainer}>
           <div className={styles.listedHeader}>Your Game is now listed!</div>
-          <div className={styles.listedShareText}>Share the below link or invite players directly</div>
+          <div className={styles.listedShareText}>Use this game link for direct access to your game</div>
           <MyGInput
             value={`https://myG.gg/scheduledGames/${gameLink}`}
             containerStyles={{ width: '318px' }}

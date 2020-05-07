@@ -95,7 +95,7 @@ const AddGame = ({
 
   // api calls
   const getOptionsTags = async (inputValue) => {
-    const getInitialData = async function (inputValue) {
+    const getInitialData = async function(inputValue) {
       try {
         let results = await Game_name_Tags(inputValue, mainSettingsState.gameTitle.game_names_id)
         // updateAdvancedSettings({ optionTags: results })
@@ -225,7 +225,7 @@ const AddGame = ({
           onClick={(value) => {
             updateMainSettings({ autoAccept: value })
           }}
-          labelText='Auto-Accept Gamers to join'
+          labelText='Auto Accept Gamers (first-come, first-served)'
         />
       </div>
     )
