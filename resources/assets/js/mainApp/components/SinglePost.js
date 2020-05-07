@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import IndividualPost from './IndividualPost'
+import Old_IndividualPost from './Old_IndividualPost'
 
 export default class SinglePost extends Component {
   constructor() {
@@ -31,7 +31,7 @@ export default class SinglePost extends Component {
   showLatestPost = () => {
     if (this.state.myPost != []) {
       return this.state.myPost.map((item, index) => {
-        return <IndividualPost post={item} key={index} user={this.props.initialData} />
+        return <Old_IndividualPost post={item} key={index} user={this.props.initialData} />
       })
     }
   }
@@ -39,13 +39,13 @@ export default class SinglePost extends Component {
   render() {
     if (this.state.myPost != []) {
       return (
-        <section id='posts'>
+        <section id='posts_old'>
           <div className='startofSinglePage'></div>
           {this.showLatestPost()}
         </section>
       )
     } else {
-      return <section id='posts'></section>
+      return <section id='posts_old'></section>
     }
   }
 }
