@@ -10,9 +10,10 @@ export default class AnalyticsBox extends Component {
 
   async componentDidMount() {
     const get_stats = await axios.get('/api/userStatTransaction/master_controller')
+    console.log(get_stats)
     const getGamers_you_might_know = await axios.post('/api/connections/gamers_you_might_know', { counter: 1 })
     const youMayKnowUser = getGamers_you_might_know.data.data
-    this.setState({ userTransactionStates: { ...get_stats }, youMayKnowUser })
+    this.setState({ userTransactionStates: { ...get_stats.data }, youMayKnowUser })
   }
 
   refreshSuggestedUser = async () => {
@@ -49,7 +50,7 @@ export default class AnalyticsBox extends Component {
         <div className='social__content'>
           <div className='level-container'>
             <section className='level-container-img'>
-              <div class={`circle-wrap ${user_xp_negative_balance ? 'yellow' : 'red'}`}>
+              <div class={`circle-wrap ${user_xp_negative_balance ? 'red' : 'yellow'}`}>
                 <div class='inside-circle-level'>Level</div>
                 <div class='inside-circle-value'>{user_level}</div>
                 {/* <div class='inside-circle-value'>{level_max_points}</div> */}
