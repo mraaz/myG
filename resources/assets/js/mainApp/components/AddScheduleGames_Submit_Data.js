@@ -105,6 +105,7 @@ export async function SubmitDataFunction(myG) {
       repeat_game: repeat_game,
       tags,
     })
+    console.log(post)
     return post
   } catch (error) {
     throw error
