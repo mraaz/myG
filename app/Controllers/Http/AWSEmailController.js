@@ -5,8 +5,8 @@ const AWS = require('aws-sdk')
 
 const SESConfig = {
   apiVersion: '2010-12-01',
-  accessKeyId: Env.get('AWS_SES_SMTP_USERNAME'),
-  accessSecretKey: Env.get('AWS_SES_SMTP_PASSWORD'),
+  accessKeyId: Env.get('AWS_ACCESS_KEY_ID'),
+  accessSecretKey: Env.get('AWS_SECRET_ACCESS_KEY'),
   region: Env.get('AWS_SES_REGION'),
 }
 
