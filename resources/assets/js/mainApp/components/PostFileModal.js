@@ -337,6 +337,7 @@ export default class PostFileModal extends Component {
                   {(props) => {
                     return (
                       <section className='custom__html'>
+                        <div className='text'>Drop your image or video</div>
                         <div className='images'>
                           <span className=' button photo-btn'>
                             <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
