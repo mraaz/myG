@@ -870,10 +870,13 @@ section#content-container {
       margin: 10px 110px;
       margin-top: 0;
       padding: 27px 0;
-      border-top: 1px solid #384952;
       padding-left: 80px;
       font-family: 'Montserrat';
       .post__content {
+        font: Regular 12px/18px Montserrat;
+        letter-spacing: 0px;
+        color: #93a4a5;
+
         .post-dropdown {
           visibility: hidden;
           display: flex;
@@ -913,14 +916,88 @@ section#content-container {
           color: #fff;
         }
       }
-      .post__body,
-      .update-stats {
+      .post__body__wrapper {
+        background: #171a1c;
+      }
+      .post__body {
         background: #171a1c;
         padding: 12px 40px 12px 60px;
         font-size: 12px;
         color: #93a4a5;
         position: relative;
-        padding-bottom: 70px;
+        .clearfix:after {
+          visibility: hidden;
+          display: block;
+          font-size: 0;
+          content: ' ';
+          clear: both;
+          height: 0;
+        }
+        .clearfix {
+          margin-bottom: 20px;
+        }
+        .profile__image {
+          position: absolute;
+          left: -20px;
+          top: -10px;
+          background: #ff00ff;
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          .online__status {
+            border: 7px solid #68bd45;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+          }
+        }
+        .user__details {
+          margin-bottom: 20px;
+          margin-top: 20px;
+          display: flex;
+          .author__username {
+            display: flex;
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+            a:hover {
+              color: #0178ff;
+            }
+            .shared__group {
+              font: Bold 12px/14px Montserrat;
+              letter-spacing: 0px;
+              color: #93a4a5;
+              margin-left: 10px;
+              display: flex;
+              align-items: center;
+              .arrow {
+                width: 0px;
+                height: 0px;
+                border-top: 5px solid transparent;
+                border-bottom: 5px solid transparent;
+                border-left: 8px solid #707070;
+                margin-left: 10px;
+              }
+            }
+          }
+          .post__time {
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+            margin-left: auto;
+          }
+        }
+      }
+      .update-stats {
+        display: flex;
+        background: #171a1c;
+        padding: 12px 40px 15px 0px;
+        font-size: 12px;
+        color: #93a4a5;
+        position: relative;
+        margin-left: 60px;
+        border-top: 1px solid #4d565a;
         .clearfix:after {
           visibility: hidden;
           display: block;
@@ -967,9 +1044,12 @@ section#content-container {
             margin-left: auto;
           }
         }
-      }
-      .update-stats {
-        display: flex;
+        .like-btn {
+          cursor: pointer;
+          font-weight: bold;
+          color: #fff;
+          font: Bold 16px/14px Montserrat;
+        }
       }
       .show__comments_count {
         background: #171a1c;
@@ -1072,19 +1152,19 @@ section#content-container {
           height: 40px;
           width: 100%;
           border: 1px solid #273136;
-          border-radius: 10px;
+          border-radius: 4px;
           background: #1d2326 0% 0% no-repeat padding-box;
           resize: none;
           overflow: auto;
           color: #657172;
           font-size: 12px;
           padding: 8px 20px;
-          top: -20px;
+          top: 20px;
         }
         .insert__images {
           position: absolute;
-          right: 5px;
-          top: -18px;
+          right: 2px;
+          top: 22px;
           z-index: 2;
           cursor: pointer;
           input {
@@ -1097,7 +1177,7 @@ section#content-container {
         .profile__image {
           position: absolute;
           left: -20px;
-          top: -15px;
+          top: 24px;
           background: #ff00ff;
           width: 30px;
           height: 30px;
