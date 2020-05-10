@@ -1340,11 +1340,11 @@ section#content-container {
               }
             }
             .comment-panel {
-              margin-left: 20px;
-              width: 90%;
+              padding-left: 60px;
               display: flex;
-              margin-left: auto;
+              margin-left: 25px;
               flex-direction: column;
+              border: 1px solid #384952;
               .individual-comment-container {
                 width: 100%;
               }
