@@ -90,6 +90,9 @@ export default class PostFileModal extends Component {
 
   closeModal(outsideClick = false) {
     if (outsideClick && !this.state.uploading) {
+      this.setState({
+        post_content: '',
+      })
       this.props.callbackClose()
       return
     }
