@@ -1065,7 +1065,7 @@ section#content-container {
         display: none;
       }
       .image-gallery-slides {
-        max-height: 400px;
+        max-height: 750px;
       }
       .like-btn {
         font-size: 14px;
@@ -1252,8 +1252,8 @@ section#content-container {
                   font-size: 12px;
 
                   .show__comment__image {
-                    min-width: 480px;
-                    max-height: 270px;
+                    width: 480px;
+                    height: 270px;
                     margin-top: 10px;
                     img {
                       width: 100%;
