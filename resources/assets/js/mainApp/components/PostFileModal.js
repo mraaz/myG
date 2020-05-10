@@ -304,16 +304,18 @@ export default class PostFileModal extends Component {
               </div>
             </div>
 
-            <div className='text__editor__section'>
-              <textarea
-                onChange={this.handleChange}
-                onKeyDown={this.detectKey}
-                maxLength='254'
-                name='post_content'
-                value={this.state.post_content}
-                placeholder='What in your mind?'
-              />
-            </div>
+            {open_compose_textTab && (
+              <div className='text__editor__section'>
+                <textarea
+                  onChange={this.handleChange}
+                  onKeyDown={this.detectKey}
+                  maxLength='254'
+                  name='post_content'
+                  value={this.state.post_content}
+                  placeholder='What in your mind?'
+                />
+              </div>
+            )}
 
             {!open_compose_textTab && (
               <div className='media__container'>
