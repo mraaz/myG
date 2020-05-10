@@ -1224,6 +1224,7 @@ section#content-container {
           padding-left: 100px;
           padding-right: 50px;
           .individual-comment-container {
+            margin-bottom: 20px;
             .comment__shape {
               width: 0px;
               height: 0px;
@@ -1344,7 +1345,7 @@ section#content-container {
               display: flex;
               margin-left: 25px;
               flex-direction: column;
-              border: 1px solid #384952;
+              border-left: 1px solid #384952;
               .individual-comment-container {
                 width: 100%;
               }

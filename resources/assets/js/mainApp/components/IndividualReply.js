@@ -286,7 +286,7 @@ export default class IndividualReply extends Component {
     //console.log(reply);
     if (this.state.reply_deleted != true) {
       return (
-        <div className='individual-comment-container'>
+        <div className='individual-reply-container'>
           {this.state.alert}
           <div className='comment__section'>
             <div className='comment-info'>
