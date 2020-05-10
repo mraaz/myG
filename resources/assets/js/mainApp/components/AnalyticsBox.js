@@ -124,7 +124,7 @@ export default class AnalyticsBox extends Component {
             <div className='show__user__suggestion'>
               {youMayKnowUser.map((user) => {
                 return (
-                  <div className='suggestion-box' onClick={(e) => this.handleUserSuggestion(user.alias)}>
+                  <div className='suggestion-box' key={user.alias} onClick={(e) => this.handleUserSuggestion(user.alias)}>
                     <div className='suggestion-box-input'>{`@${user.alias}`}</div>
                     <div className='input-outer'>
                       <p className='input-outer-label'>level</p>
