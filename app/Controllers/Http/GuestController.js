@@ -61,6 +61,13 @@ class GuestController {
     return response.send({ entryLogs });
   }
 
+  async fetchChatContacts({ params, response }) {
+    const requestedChatId = params.chatId;
+    log('GUEST', `Guest requesting Contacts for Chat ${requestedChatId}`);
+    const { contacts } = await GuestRepository.fetchChatContacts({ requestedChatId });
+    return response.send({ contacts });
+  }
+
   async fetchGroupPrivateKeyRequests({ params, response }) {
     const { chatId } = params;
     log('CHAT', `Fetching Private Key Requests for Group ${chatId}`);

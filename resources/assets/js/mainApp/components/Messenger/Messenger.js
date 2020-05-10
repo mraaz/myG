@@ -94,6 +94,7 @@ class Messenger extends React.PureComponent {
       blockedUsers={this.props.blockedUsers}
       blockUser={this.props.blockUser}
       unblockUser={this.props.unblockUser}
+      favoriteGame={this.props.favoriteGame}
       unfavoriteGame={this.props.unfavoriteGame}
       clearChat={this.props.clearChat}
       toggleSettings={() => this.setState(previous => ({ blockSettings: !previous.blockSettings }))}

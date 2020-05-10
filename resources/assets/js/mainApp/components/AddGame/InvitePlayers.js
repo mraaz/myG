@@ -16,7 +16,6 @@ import {
 import '../../styles/AddGame/InvitePlayersStyles.scss'
 import '../../styles/AddGame/AddGameStyles.scss'
 import SelectedInvites from './SelectedInvites'
-import { Convert_to_comma_delimited_value } from '../Utility_Function'
 
 const MENU_OPTIONS = {
   PLAYERS: 'PLAYERS',
@@ -78,15 +77,12 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
     var gamers = '',
       groups = '',
       communities = ''
-    console.log('selectedPlayers: ', selectedPlayers)
     Object.keys(selectedPlayers).forEach((playerKey, index) => {
       if (index === 0) {
         gamers = gamers.concat(`${selectedPlayers[playerKey].name}`)
         return
       }
       gamers = gamers.concat(`, ${selectedPlayers[playerKey].name}`)
-      console.log('index x')
-      console.log('gamers: ', gamers)
     })
     Object.keys(selectedCommunities).forEach((communityKey, index) => {
       if (index === 0) {
@@ -102,11 +98,6 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
       }
       groups = groups.concat(`, ${selectedGroups[groupKey].name}`)
     })
-
-    console.log('communities: ', communities)
-    console.log('gamers: ', gamers)
-    console.log('groups: ', groups)
-
     try {
       await axios.post('/api/notifications/invitations', {
         communities,
@@ -115,7 +106,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
         schedule_games_id: gameId,
       })
     } catch (error) {
-      console.log(error)
+      // error submit invitation
     }
 
     onInvitationSent()
@@ -160,7 +151,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
 
   const fetchMoreData = async () => {
     await updateCounter(counter + 1)
-    const getKeywordSearchResults = async function() {
+    const getKeywordSearchResults = async function () {
       try {
         const response = await axios.post('/api/friends/allmyFriends', {
           counter,
@@ -176,33 +167,33 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
           totalFriends: response.data.myFriendsLength[0].total_friends,
         }))
       } catch (error) {
-        console.log(error)
+        // error fetch more data
       }
     }
     await getKeywordSearchResults()
   }
 
   const fetchCommunitiesData = async () => {
-    const getmyGroups = async function() {
+    const getmyGroups = async function () {
       try {
         const {
           data: { myGroups },
         } = await axios.get('/api/groups/view')
         return myGroups
       } catch (error) {
-        console.log(error)
+        // error fetch communities data
         return null
       }
     }
 
-    const getGroups_im_in = async function() {
+    const getGroups_im_in = async function () {
       try {
         const {
           data: { groups_im_in },
         } = await axios.get('/api/usergroup/view')
         return groups_im_in
       } catch (error) {
-        console.log(error)
+        // error getGroups_im_in
         return null
       }
     }
@@ -212,8 +203,8 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
     const { itemsArray: groupsImInItemsArray, dataObj: groupsImInItemObj } = normalizeCommunitiesData(groupsImIn)
     updateCommunitiesKeywordSearchResults({
       searchResults: { ...myGroupsItemObj, ...groupsImInItemObj },
-      communitiesList: [myGroupsItemsArray, ...groupsImInItemsArray],
-      totalCommunities: myGroups.length + groupsImIn.length,
+      communitiesList: [...myGroupsItemsArray, ...groupsImInItemsArray],
+      totalCommunities: (myGroups ? myGroups.length : 0) + (groupsImIn ? groupsImIn.length : 0),
     })
   }
 
@@ -229,12 +220,11 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
         totalGroups: chats.length,
       })
     } catch (error) {
-      console.log('error getting groups data: ', error)
+      // error getting groups data
     }
   }
 
   const onPlayerClick = (playerId, value) => {
-    console.log('value: ', value)
     if (selectedPlayers[playerId]) {
       updateSelectedPlayers((currentData) => {
         let dataClone = Object.assign({}, currentData)
@@ -244,15 +234,20 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
         }
       })
     } else {
-      console.log('updateSelected: ', playerId)
       updateSelectedPlayers((currentData) => ({
         ...currentData,
-        [playerId]: keywordSearchResults.searchResults[playerId],
+        [playerId]: value
+          ? {
+              id: value.id,
+              img: value.img,
+              name: value.name,
+            }
+          : keywordSearchResults.searchResults[playerId],
       }))
     }
   }
 
-  const onCommunityClick = (communityId) => {
+  const onCommunityClick = (communityId, value) => {
     if (selectedCommunities[communityId]) {
       updateSelectedCommunities((currentData) => {
         let dataClone = Object.assign({}, currentData)
@@ -264,7 +259,13 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
     } else {
       updateSelectedCommunities((currentData) => ({
         ...currentData,
-        [communityId]: communitiesKeywordSearchResults.searchResults[communityId],
+        [communityId]: value
+          ? {
+              id: value.id,
+              name: value.name,
+              img: value.img,
+            }
+          : communitiesKeywordSearchResults.searchResults[communityId],
       }))
     }
   }
@@ -306,13 +307,14 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
     try {
       const {
         data: { playerSearchResults },
-      } = await axios.post(`/api/user/playerSearchResults`, {
-        alias: value,
+      } = await axios.post(`/api/user/keywordSearchResults`, {
+        keywords: value,
+        counter: 1,
       })
-      const parsedData = parsePlayersToSelectData(playerSearchResults)
+      const parsedData = parsePlayersToSelectData(playerSearchResults.data)
       return parsedData
     } catch (error) {
-      console.log(error)
+      // error onPlayersSuggestionFetch
     }
   }
 
@@ -324,7 +326,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
       const parsedData = parseCommunitiesToSelectData(groupSearchResults)
       return parsedData
     } catch (error) {
-      console.log(error)
+      // error onCommunitiesSuggestionFetch
     }
   }
 
@@ -336,7 +338,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
       const parsedData = parseGroupsToSelectData(groupSearchResults)
       return parsedData
     } catch (error) {
-      console.log(error)
+      // error onGroupsSuggestionFetch
     }
   }
 
@@ -405,7 +407,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
         }}
         loadOptions={onCommunitiesSuggestionFetch}
         onChange={(value) => {
-          onCommunityClick(value.id)
+          onCommunityClick(value.id, value)
         }}
         placeholder='Search'
         value={null}

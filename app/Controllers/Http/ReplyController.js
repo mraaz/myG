@@ -85,7 +85,6 @@ class ReplyController {
           })
           .delete()
 
-        console.log(delete_reply)
         return delete_reply
       } catch (error) {
         console.log(error)
@@ -102,7 +101,7 @@ class ReplyController {
         .update({ content: request.input('content') })
       return 'Saved successfully'
     } catch (error) {
-      console.log(updateGame_Exp)
+      console.log(error)
     }
   }
 }

@@ -29,6 +29,7 @@ const AddGameContainer = () => {
     optionTags: null,
     tags: null,
     newCreatedTags: null,
+    coHosts: null,
   })
   const [mainSettingsState, updateMainSettingsState] = useState({
     gameTitlesList: [],
@@ -41,6 +42,7 @@ const AddGameContainer = () => {
     isUnlimitedPlayers: true,
     isCommentsAllowed: true,
     isPublicGame: true,
+    autoAccept: true,
   })
   const [optionalFieldsState, updateOptionalFieldsState] = useState({
     modalRank: null,
@@ -101,11 +103,12 @@ const AddGameContainer = () => {
         dota2_roles: optionalFieldsState.roleNeeded,
         clash_royale_trophies: optionalFieldsState.trophies,
         allow_comments: mainSettingsState.isCommentsAllowed,
+        autoJoin: mainSettingsState.autoAccept,
+        coHosts: advancedSettingsState.coHosts,
       })
       updateGameLink(data.id)
       updateIsGameListedModalOpen(true)
     } catch (err) {
-      console.log('err: ', err)
       updateIsSubmitting(false)
     }
   }
@@ -143,7 +146,7 @@ const AddGameContainer = () => {
       <MyGModal isOpen ariaHideApp={false}>
         <div className={styles.listedTopContentContainer}>
           <div className={styles.listedHeader}>Your Game is now listed!</div>
-          <div className={styles.listedShareText}>Share the below link or invite players directly</div>
+          <div className={styles.listedShareText}>Use this game link for direct access to your game</div>
           <MyGInput
             value={`https://myG.gg/scheduledGames/${gameLink}`}
             containerStyles={{ width: '318px' }}

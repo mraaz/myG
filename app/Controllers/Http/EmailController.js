@@ -28,7 +28,7 @@ class EmailController {
     for (var i = 0; i < userList.length; i++) {
       this.summary_email(userList[0].user_id)
     }
-    console.log('Number of Daily emails: ' + userList.length)
+    //console.log('Number of Daily emails: ' + userList.length)
   }
 
   async weeklyEmails(toAddress) {
@@ -40,7 +40,7 @@ class EmailController {
     for (var i = 0; i < userList.length; i++) {
       this.summary_email(userList[0].user_id)
     }
-    console.log('Number of Weekly emails: ' + userList.length)
+    //console.log('Number of Weekly emails: ' + userList.length)
   }
 
   async summary_email(user_id) {
@@ -86,10 +86,10 @@ class EmailController {
   }
 
   async encryption_email(email, pin) {
-    const awsEmailController = new AWSEmailController();
-    const subject = "myG - The Gamer's platform - New Encryption";
-    const body = `<p>Hi mate,</p><p>Here is your encryption secret: ${pin}</p><p>Keep it safe!</p>`;
-    return awsEmailController.createEmailnSend(email, subject, body);
+    const awsEmailController = new AWSEmailController()
+    const subject = "myG - The Gamer's platform - New Encryption"
+    const body = `<p>Hi mate,</p><p>Here is your encryption secret: ${pin}</p><p>Keep it safe!</p>`
+    return awsEmailController.createEmailnSend(email, subject, body)
   }
 }
 

@@ -25,7 +25,6 @@ const SelectedInvites = ({
   }
 
   const handleMouseHover = (key) => {
-    console.log('key: ', key)
     updateHoveredElements((currentElements) => ({
       ...currentElements,
       [key]: true,
@@ -67,7 +66,6 @@ const SelectedInvites = ({
   const getInvitesListView = (group) => {
     const data = groupData[group]
     const onClickHandler = groupUpdate[group]
-    console.log('data: ', data)
 
     return (
       <div
@@ -75,6 +73,7 @@ const SelectedInvites = ({
         {Object.keys(data).map((key) => {
           return (
             <div
+              key={key}
               onMouseEnter={() => {
                 handleMouseHover(key)
               }}
@@ -111,7 +110,7 @@ const SelectedInvites = ({
     <div className='invite-players__invites-area-container'>
       {GROUP_LIST.map((group) => {
         return (
-          <div className='invite-players__invites-area-tile-container'>
+          <div className='invite-players__invites-area-tile-container' key={group}>
             {getHeaderView(group)}
             {getInvitesListView(group)}
           </div>

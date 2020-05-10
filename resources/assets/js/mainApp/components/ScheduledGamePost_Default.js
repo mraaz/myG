@@ -505,7 +505,6 @@ export default class ScheduledGamePost_Default extends Component {
     if (this.state.redirect_scheduledGames === true) {
       return <Redirect push to={'/scheduledGames'} />
     }
-
     return (
       <div className='padding-container'>
         {this.state.alert}

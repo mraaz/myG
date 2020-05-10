@@ -75,19 +75,18 @@ const normalizeGroupsData = (data) => {
 
 const parsePlayersToSelectData = (data) => {
   const selectData = []
-  console.log('data:', data)
   if (data && data.length) {
     data.forEach((player) => {
       selectData.push({
         label: (
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <img style={{ display: 'inline', marginRight: '10px', borderRadius: '30px' }} src={player.profile_img} height={20} width={20} />
-            <div style={{ display: 'inline' }}>{player.first}</div>
+            <div style={{ display: 'inline' }}>{player.alias || player.first}</div>
           </div>
         ),
         id: player.id,
-        value: player.first,
-        name: player.alias,
+        value: player.id,
+        name: player.alias || player.first,
         img: player.profile_img,
       })
     })
@@ -114,6 +113,8 @@ const parseCommunitiesToSelectData = (data) => {
         ),
         id: community.id,
         value: community.name,
+        name: community.name,
+        img: community.group_img,
       })
     })
   }

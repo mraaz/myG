@@ -97,7 +97,7 @@ export default class ScheduleGames extends Component {
 
   render() {
     return (
-      <section id='posts'>
+      <section id='posts_old'>
         <div className='content-area scheduleGames-page'>
           <div id='header-2'>
             <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/headers/headers_v1-17.png' />

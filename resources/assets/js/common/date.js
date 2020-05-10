@@ -52,10 +52,13 @@ export function formatDateTime(date) {
 export function formatDate(date) {
   if (!date) return new Date(0);
   if (!date.getHours) date = new Date(date);
-  const day = date.getDate();
-  const month = date.getMonth() + 1;
   const year = date.getFullYear();
-  return `${year}-${month}-${day}`;
+  const dateString = date.toLocaleDateString('en-GB', {
+    day : 'numeric',
+    month : 'short',
+    year : 'numeric'
+  }).split(' ').join('-');
+  return dateString.slice(0, dateString.length - 4) + (year - 2000);
 }
 
 export function formatAMPM(date) {

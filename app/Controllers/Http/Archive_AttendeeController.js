@@ -234,7 +234,7 @@ class Archive_AttendeeController {
         })
       return up_invite
     } catch (error) {
-      console.log(up_invite)
+      console.log(error)
     }
   }
 }

@@ -20,6 +20,11 @@ export default class AttachWindow extends React.PureComponent {
     return null;
   }
 
+  onFinish = () => {
+    this.setState({ choosingEmoji: false, choosingAttachment: false });
+    this.props.onFinish();
+  }
+
   renderEmojiPicker = () => {
     if (!this.props.show || !this.state.choosingEmoji) return null;
     return <Picker
@@ -55,7 +60,7 @@ export default class AttachWindow extends React.PureComponent {
 
   renderUploader = () => {
     if (!this.state.choosingAttachment) return null;
-    return <AttachUploader sendMessage={this.props.sendMessage} onFinish={() => this.setState({ choosingEmoji: false, choosingAttachment: false })} />
+    return <AttachUploader sendMessage={this.props.sendMessage} onFinish={this.onFinish} />
   }
 
   render() {

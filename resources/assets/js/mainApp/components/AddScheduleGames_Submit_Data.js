@@ -17,9 +17,8 @@ export async function SubmitDataFunction(myG) {
   var end_date = myG.endDate
   let autoJoin = true,
     repeat_game = undefined,
-    co_hosts = null
-
-  console.log(myG)
+    co_hosts = null,
+    tags = null
 
   if (myG.selected_region != undefined && myG.selected_region !== null && myG.selected_region.length !== 0) {
     myRegion = Convert_to_comma_delimited_value(myG.selected_region)
@@ -33,8 +32,12 @@ export async function SubmitDataFunction(myG) {
     myPlatform = Convert_to_comma_delimited_value(myG.selected_platform)
   }
 
-  if (co_hosts !== undefined && co_hosts !== null && co_hosts.length !== 0) {
-    co_hosts = Convert_to_comma_delimited_value(co_hosts)
+  if (myG.coHosts) {
+    co_hosts = Convert_to_comma_delimited_value(myG.coHosts)
+  }
+
+  if (myG.tags) {
+    tags = Convert_to_comma_delimited_value(myG.tags)
   }
 
   if (myG.endDate != null || myG.endDate != undefined) {
@@ -72,7 +75,7 @@ export async function SubmitDataFunction(myG) {
   }
 
   if (myG.autoJoin != null || myG.autoJoin != undefined) {
-    autoJoin = myG.autoJoin.value
+    autoJoin = myG.autoJoin
   }
 
   const uuidv1 = require('uuid/v1')
@@ -100,6 +103,7 @@ export async function SubmitDataFunction(myG) {
       autoJoin: autoJoin,
       co_hosts: co_hosts,
       repeat_game: repeat_game,
+      tags,
     })
     return post
   } catch (error) {
