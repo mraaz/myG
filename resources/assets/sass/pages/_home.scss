@@ -1252,8 +1252,8 @@ section#content-container {
                   font-size: 12px;
 
                   .show__comment__image {
-                    width: 480px;
-                    height: 270px;
+                    min-width: 480px;
+                    max-height: 270px;
                     margin-top: 10px;
                     img {
                       width: 100%;
