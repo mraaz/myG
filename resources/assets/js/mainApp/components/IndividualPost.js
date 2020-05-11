@@ -710,10 +710,7 @@ export default class IndividualPost extends Component {
             </div>
             {this.state.preview_file.length > 0 && (
               <div className='preview__image'>
-                <img
-                  src={`https://mygame-media.s3.ap-southeast-2.amazonaws.com/user_files/100_1588765073458_r7O6mo_post_image_1588765067033`}
-                />
-                {/* <img src={`${this.state.preview_file[0]}`} /> */}
+                <img src={`${this.state.preview_file[0]}`} />
                 <div className='clear__preview__image' onClick={this.clearPreviewImage}>
                   X
                 </div>
