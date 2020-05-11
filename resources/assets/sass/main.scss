@@ -232,6 +232,7 @@ label {
 
 .links {
   display: flex;
+  margin: 0 100px;
   justify-content: center;
   margin-bottom: 30px;
   div {
@@ -240,6 +241,8 @@ label {
     border-bottom: 1px solid #384952;
     padding: 10px 50px;
     padding-bottom: 15px;
+    width: 20%;
+    text-align: center;
     cursor: pointer;
     &:hover {
       border-bottom: 1px solid #e5c746;
