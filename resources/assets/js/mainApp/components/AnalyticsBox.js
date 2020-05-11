@@ -50,19 +50,19 @@ export default class AnalyticsBox extends Component {
         <div className='social__content'>
           <div className='level-container'>
             <section className='level-container-img'>
-              <div class={`circle-wrap ${user_xp_negative_balance ? 'red' : 'yellow'}`}>
-                <div class='inside-circle-level'>Level</div>
-                <div class='inside-circle-value'>{user_level}</div>
-                {/* <div class='inside-circle-value'>{level_max_points}</div> */}
+              <div className={`circle-wrap ${user_xp_negative_balance ? 'yellow' : 'red'}`}>
+                <div className='inside-circle-level'>Level</div>
+                <div className='inside-circle-value'>{user_level}</div>
+                {/* <div className='inside-circle-value'>{level_max_points}</div> */}
               </div>
-            </section>
-            <div className='ratings'>
-              {/* <p className='social-box-text'>Avg Rating</p>
+              <div className='ratings'>
+                {/* <p className='social-box-text'>Avg Rating</p>
               <p className='social-box-count'>4.66/5</p>
               <p className='social-box-text review bottom-border'>{user_experience} reviews</p> */}
-              <p className='social-box-text'>Experience Pts.</p>
-              <p className='social-box-count'>{user_experience}</p>
-            </div>
+                <p className='social-box-text'>Experience Pts.</p>
+                <p className='social-box-count'>{user_experience}</p>
+              </div>
+            </section>
           </div>
 
           <div className='social-box'>
@@ -119,13 +119,13 @@ export default class AnalyticsBox extends Component {
         {youMayKnowUser && youMayKnowUser.length > 0 && (
           <div className='suggestion'>
             <div className='suggestion-box-text'>
-              <p className='suggestion-box-text'>connections</p>
+              <p className='suggestion-box-head'>connections</p>
               <h2 className='suggestion-box-head'>Suggestions</h2>
             </div>
             <div className='show__user__suggestion'>
               {youMayKnowUser.map((user) => {
                 return (
-                  <div className='suggestion-box' onClick={(e) => this.handleUserSuggestion(user.alias)}>
+                  <div className='suggestion-box' key={user.alias} onClick={(e) => this.handleUserSuggestion(user.alias)}>
                     <div className='suggestion-box-input'>{`@${user.alias}`}</div>
                     <div className='input-outer'>
                       <p className='input-outer-label'>level</p>

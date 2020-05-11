@@ -90,6 +90,9 @@ export default class PostFileModal extends Component {
 
   closeModal(outsideClick = false) {
     if (outsideClick && !this.state.uploading) {
+      this.setState({
+        post_content: '',
+      })
       this.props.callbackClose()
       return
     }
@@ -296,21 +299,24 @@ export default class PostFileModal extends Component {
               <div className={`share__thought ${open_compose_textTab ? 'active' : ''}`} onClick={(e) => this.togglePostTypeTab('text')}>
                 {`Share your thoughts ...`}
               </div>
+              <div className='devider'></div>
               <div className={`add__post__image ${open_compose_textTab ? '' : 'active'}`} onClick={(e) => this.togglePostTypeTab('media')}>
                 {` Add video or photos`}
               </div>
             </div>
 
-            <div className='text__editor__section'>
-              <textarea
-                onChange={this.handleChange}
-                onKeyDown={this.detectKey}
-                maxLength='254'
-                name='post_content'
-                value={this.state.post_content}
-                placeholder="What's up..."
-              />
-            </div>
+            {open_compose_textTab && (
+              <div className='text__editor__section'>
+                <textarea
+                  onChange={this.handleChange}
+                  onKeyDown={this.detectKey}
+                  maxLength='254'
+                  name='post_content'
+                  value={this.state.post_content}
+                  placeholder='What in your mind?'
+                />
+              </div>
+            )}
 
             {!open_compose_textTab && (
               <div className='media__container'>
@@ -334,6 +340,7 @@ export default class PostFileModal extends Component {
                   {(props) => {
                     return (
                       <section className='custom__html'>
+                        <div className='text'>Drop your image or video</div>
                         <div className='images'>
                           <span className=' button photo-btn'>
                             <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />

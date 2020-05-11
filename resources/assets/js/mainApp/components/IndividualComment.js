@@ -426,6 +426,12 @@ export default class IndividualComment extends Component {
     }
   }
 
+  insert_image_comment = () => {
+    if (!this.state.uploading) {
+      this.fileInputRef.current.click()
+    }
+  }
+
   render() {
     let { comment } = this.props
     if (this.state.comment_deleted != true) {
@@ -518,6 +524,10 @@ export default class IndividualComment extends Component {
                   onChange={this.handleChange}
                   value={this.state.value}
                 />
+                <div className='insert__images' onClick={this.insert_image_comment}>
+                  <input type='file' accept='image/*' ref={this.fileInputRef} onChange={this.handleSelectFile} name='insert__images' />
+                  <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
+                </div>
               </div>
             )}
           </div>

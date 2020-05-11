@@ -17,6 +17,10 @@
   justify-content: space-around;
   align-items: center;
   color: #fff;
+  .level-container-img {
+    display: flex;
+    align-items: center;
+  }
 }
 .ratings {
   margin-left: 20px;
@@ -91,13 +95,13 @@
   margin-top: 20px;
 }
 .suggestion-box-text {
-  width: 15%;
+  width: 12%;
   border-right: 1px solid #a3a9a9;
 }
 .show__user__suggestion {
   display: inline-flex;
   flex-wrap: nowrap;
-  margin-left: 10px;
+  margin-left: 15px;
   max-width: 760px;
   overflow: scroll;
   .suggestion-box {
@@ -133,6 +137,8 @@
     min-width: 100px;
     border-right: none;
     color: #fff;
+    max-width: 100px;
+    overflow: hidden;
   }
   .input-outer {
     border-radius: 0 6px 6px 0;

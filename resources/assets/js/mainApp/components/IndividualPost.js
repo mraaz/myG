@@ -250,8 +250,8 @@ export default class IndividualPost extends Component {
   show_more_comments = () => {
     const { show_comments, show_more_comments } = this.state
     this.setState({
-      show_comments: false,
-      show_more_comments: true,
+      show_comments: !show_comments,
+      show_more_comments: !show_more_comments,
     })
   }
 
@@ -533,113 +533,123 @@ export default class IndividualPost extends Component {
       return (
         <div className='post__container'>
           {alert}
-          <div className='post__body'>
-            <div className='profile__image'>
-              {show_profile_img && (
-                <Link
-                  to={`/profile/${post.alias}`}
-                  className='user-img'
-                  style={{
-                    backgroundImage: `url('${post.profile_img}')`,
-                  }}></Link>
-              )}
-              {!this.state.show_profile_img && (
-                <Link
-                  to={`/profile/${post.alias}`}
-                  className='user-img'
-                  style={{
-                    backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png')`,
-                  }}></Link>
-              )}
-              <div className='online__status'></div>
-            </div>
-            <div className='user__details'>
-              <div className='author__username'>
-                <Link to={`/profile/${post.alias}`}>{`@${post.alias} `}</Link> shared a {post.type == 'text' ? 'story' : 'image'}
-                {'  from : '}
-                {this.state.show_group_name && <Link to={`/groups/${post.group_id}`}>@{this.state.group_name}</Link>}
+          <div className='post__body__wrapper'>
+            <div className='post__body'>
+              <div className='profile__image'>
+                {show_profile_img && (
+                  <Link
+                    to={`/profile/${post.alias}`}
+                    className='user-img'
+                    style={{
+                      backgroundImage: `url('${post.profile_img}')`,
+                    }}></Link>
+                )}
+                {!this.state.show_profile_img && (
+                  <Link
+                    to={`/profile/${post.alias}`}
+                    className='user-img'
+                    style={{
+                      backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png')`,
+                    }}></Link>
+                )}
+                <div className='online__status'></div>
               </div>
-              <div className='post__time'>{this.state.post_time}</div>
-            </div>
-            <div className='post__content'>
-              <p>{this.state.content}</p>
-              {this.state.show_post_options && (
-                <div className='post-options'>
-                  <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}></i>
+              <div className='user__details'>
+                <div className='author__username'>
+                  <div className='username'>
+                    <Link to={`/profile/${post.alias}`}>{`@${post.alias} `}</Link>
+                  </div>
+                  {this.state.group_name && (
+                    <div className='shared__group'>
+                      {`shared `}
+                      <div className='arrow'></div>
+                      {this.state.show_group_name && this.state.group_name && (
+                        <Link to={`/groups/${post.group_id}`}>@{this.state.group_name}</Link>
+                      )}
+                    </div>
+                  )}
                 </div>
-              )}
-              <div className={`post-dropdown ${this.state.dropdown == true ? 'active' : ''}`}>
-                <nav>
-                  <div className='edit' onClick={this.clickedEdit}>
-                    Edit &nbsp;
-                  </div>
-                  <div className='delete' onClick={() => this.showAlert()}>
-                    Delete
-                  </div>
-                  &nbsp;
-                </nav>
+                <div className='post__time'>{this.state.post_time}</div>
               </div>
-            </div>
-          </div>
-          <div className='media'>
-            {this.state.edit_post && (
-              <div className='update-info'>
-                <div className='compose-comment'>
-                  <textarea
-                    name='name2'
-                    rows={8}
-                    cols={80}
-                    value={this.state.value2}
-                    onChange={this.handleChange2}
-                    maxLength='254'
-                    onKeyDown={this.detectKey2}
-                    ref={this.setTextInputRef2}
-                  />
+              <div className='post__content'>
+                <p>{this.state.content}</p>
+                {this.state.show_post_options && (
+                  <div className='post-options'>
+                    <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}></i>
+                  </div>
+                )}
+                <div className={`post-dropdown ${this.state.dropdown == true ? 'active' : ''}`}>
+                  <nav>
+                    <div className='edit' onClick={this.clickedEdit}>
+                      Edit &nbsp;
+                    </div>
+                    <div className='delete' onClick={() => this.showAlert()}>
+                      Delete
+                    </div>
+                    &nbsp;
+                  </nav>
                 </div>
               </div>
-            )}
-            {show_media && post.type == 'photo' && (
-              <ImageGallery
-                items={this.state.images}
-                showBullets={this.state.showBullets}
-                autoPlay={this.state.autoPlay}
-                isRTL={this.state.isRTL}
-                disableSwipe={this.state.disableSwipe}
-                y
-              />
-            )}
-            {show_media &&
-              post.type == 'video' &&
-              this.state.media_urls.map(function (data, index) {
-                return (
-                  <video className='post-video' controls>
-                    <source src={data}></source>
-                  </video>
-                )
-              })}
-          </div>
-          <div className='update-stats'>
-            {this.state.like && (
-              <div className='like-btn' onClick={() => this.click_unlike_btn(post.id)}>
-                <i className='fas fa-thumbs-up' />
-                &nbsp;Like
-              </div>
-            )}
-            {!this.state.like && (
-              <div className='like-btn' onClick={() => this.click_like_btn(post.id)}>
-                <i className='far fa-thumbs-up' />
-                &nbsp;Like
-              </div>
-            )}
-            {this.state.show_like && (
-              <div className='other-users'>
-                {this.state.total > 1
-                  ? `${post.admirer_first_name} and ${this.state.total} others liked this update`
-                  : `${this.state.admirer_first_name} liked this update`}
-              </div>
-            )}
-            {!this.state.show_like && <div className='other-users'>Be the first to like this!</div>}
-            {/* <div>
+            </div>
+            <div className='media'>
+              {this.state.edit_post && (
+                <div className='update-info'>
+                  <div className='compose-comment'>
+                    <textarea
+                      name='name2'
+                      rows={8}
+                      cols={80}
+                      value={this.state.value2}
+                      onChange={this.handleChange2}
+                      maxLength='254'
+                      onKeyDown={this.detectKey2}
+                      ref={this.setTextInputRef2}
+                    />
+                  </div>
+                </div>
+              )}
+              {show_media && post.type == 'photo' && (
+                <ImageGallery
+                  items={this.state.images}
+                  showBullets={this.state.showBullets}
+                  autoPlay={this.state.autoPlay}
+                  isRTL={this.state.isRTL}
+                  disableSwipe={this.state.disableSwipe}
+                  y
+                />
+              )}
+              {show_media &&
+                post.type == 'video' &&
+                this.state.media_urls.map(function (data, index) {
+                  return (
+                    <video className='post-video' controls>
+                      <source src={data}></source>
+                    </video>
+                  )
+                })}
+            </div>
+            <div className='update-stats'>
+              {this.state.like && (
+                <div className='like-btn' onClick={() => this.click_unlike_btn(post.id)}>
+                  <i className='fas fa-thumbs-up' />
+                  &nbsp;Like
+                </div>
+              )}
+              {!this.state.like && (
+                <div className='like-btn' onClick={() => this.click_like_btn(post.id)}>
+                  <i className='far fa-thumbs-up' />
+                  &nbsp;Like
+                </div>
+              )}
+              {this.state.show_like && (
+                <div className='other-users'>
+                  {this.state.total > 1
+                    ? `${post.admirer_first_name} and ${this.state.total} others liked this update`
+                    : `${this.state.admirer_first_name} liked this update`}
+                </div>
+              )}
+              {!this.state.show_like && <div className='other-users'>Be the first to like this!</div>}
+              {/* <div>
               {this.state.zero_comments && (
                 <div className='comments-stats' onClick={this.onChange}>
                   <i class='far fa-comment-alt'></i>
@@ -653,62 +663,61 @@ export default class IndividualPost extends Component {
                 </div>
               )}
             </div> */}
-          </div>
-          {!show_more_comments && myComments.length > 3 && (
-            <div className='show__comments_count' onClick={this.show_more_comments}>{`View all (${myComments.length}) comments`}</div>
-          )}
-          <div className='comments'>
-            {!show_more_comments && <div className='show-individual-comments'>{this.showComment()}</div>}
-            {show_more_comments && <div className='show-individual-comments'>{this.showMoreComment()}</div>}
-          </div>
-          <div className='compose-comment'>
-            <textarea
-              name='name'
-              placeholder='Make a comment...'
-              value={this.state.value}
-              onChange={this.handleChange}
-              maxLength='254'
-              onKeyDown={this.detectKey}
-              ref={this.setTextInputRef}
-            />
-            <div className='insert__images' onClick={this.insert_image_comment}>
-              <input type='file' accept='image/*' ref={this.fileInputRef} onChange={this.handleSelectFile} name='insert__images' />
-              <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
             </div>
-
-            <div className='profile__image'>
-              {this.state.show_profile_img && (
-                <Link
-                  to={`/profile/${post.alias}`}
-                  className='user-img'
-                  style={{
-                    backgroundImage: `url('${post.profile_img}')`,
-                  }}></Link>
-              )}
-              {!this.state.show_profile_img && (
-                <Link
-                  to={`/profile/${post.alias}`}
-                  className='user-img'
-                  style={{
-                    backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png')`,
-                  }}></Link>
-              )}
-              <div className='online__status'></div>
+            {myComments.length > 3 && (
+              <div className='show__comments_count' onClick={this.show_more_comments}>{` ${show_more_comments ? 'Hide' : 'View'} all (${
+                myComments.length
+              }) comments`}</div>
+            )}
+            <div className='comments'>
+              {!show_more_comments && <div className='show-individual-comments'>{this.showComment()}</div>}
+              {show_more_comments && <div className='show-individual-comments'>{this.showMoreComment()}</div>}
             </div>
-          </div>
-          {this.state.preview_file.length > 0 && (
-            <div className='preview__image'>
-              <img
-                src={`https://mygame-media.s3.ap-southeast-2.amazonaws.com/user_files/100_1588765073458_r7O6mo_post_image_1588765067033`}
+            <div className='compose-comment'>
+              <textarea
+                name='name'
+                placeholder='Make a comment...'
+                value={this.state.value}
+                onChange={this.handleChange}
+                maxLength='254'
+                onKeyDown={this.detectKey}
+                ref={this.setTextInputRef}
               />
-              {/* <img src={`${this.state.preview_file[0]}`} /> */}
-              <div className='clear__preview__image' onClick={this.clearPreviewImage}>
-                X
+              <div className='insert__images' onClick={this.insert_image_comment}>
+                <input type='file' accept='image/*' ref={this.fileInputRef} onChange={this.handleSelectFile} name='insert__images' />
+                <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
+              </div>
+
+              <div className='profile__image'>
+                {this.state.show_profile_img && (
+                  <Link
+                    to={`/profile/${post.alias}`}
+                    className='user-img'
+                    style={{
+                      backgroundImage: `url('${post.profile_img}')`,
+                    }}></Link>
+                )}
+                {!this.state.show_profile_img && (
+                  <Link
+                    to={`/profile/${post.alias}`}
+                    className='user-img'
+                    style={{
+                      backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png')`,
+                    }}></Link>
+                )}
+                <div className='online__status'></div>
               </div>
             </div>
-          )}
+            {this.state.preview_file.length > 0 && (
+              <div className='preview__image'>
+                <img src={`${this.state.preview_file[0]}`} />
+                <div className='clear__preview__image' onClick={this.clearPreviewImage}>
+                  X
+                </div>
+              </div>
+            )}
 
-          {/*<div className='update-container'>
+            {/*<div className='update-container'>
           {this.state.alert}
           <div className='padding-container'>
             <div className='grey-container'>
@@ -857,6 +866,7 @@ export default class IndividualPost extends Component {
             </div>
           </div>
                 </div>*/}
+          </div>
         </div>
       )
     } else {
