@@ -44,6 +44,10 @@ class ScheduleGameController {
         if (request.input('end_date_time') != undefined) {
           end_date_time = new Date(request.input('end_date_time')).toISOString().replace('T', ' ')
         }
+        console.log(request.input('co_hosts'))
+        console.log(request.input('tags'))
+
+        return
 
         const newScheduleGame = await ScheduleGame.create({
           game_names_id: parseInt(gameNameID, 10),
@@ -102,7 +106,7 @@ class ScheduleGameController {
           }
         }
         if (request.input('autoJoin') == true) {
-          const autoJoining = await Attendee.create({
+          const autoJoining = Attendee.create({
             schedule_games_id: newScheduleGame.id,
             user_id: auth.user.id,
             type: 1,
@@ -121,6 +125,19 @@ class ScheduleGameController {
             }
           }
         }
+
+        // if (request.input('tags') != null) {
+        //   var arrTags = request.input('tags').split(',')
+        //
+        //   if (arrTags != '') {
+        //     for (var i = 0; i < arrTags.length; i++) {
+        //       const create_arrTags = await CoHost.create({
+        //         schedule_games_id: newScheduleGame.id,
+        //         user_id: arrCo_hosts[i],
+        //       })
+        //     }
+        //   }
+        // }
 
         // if (parseInt(request.input('visibility'), 10) == 2) {
         //   const getFriends = await Database.from('friends')

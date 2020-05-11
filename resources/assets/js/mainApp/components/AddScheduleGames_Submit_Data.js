@@ -103,8 +103,9 @@ export async function SubmitDataFunction(myG) {
       autoJoin: autoJoin,
       co_hosts: co_hosts,
       repeat_game: repeat_game,
-      tags,
+      tags: tags,
     })
+    console.log(post)
     return post
   } catch (error) {
     throw error
