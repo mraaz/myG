@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import axios from 'axios';
 import FileOpenModal from '../FileOpenModal';
 import Dropdown from '../Dropdown';
 import notifyToast from '../../../common/toast';
@@ -43,6 +44,19 @@ class GroupCreation extends React.Component {
     const secondAlias = contactAliases[1] ? `, ${contactAliases[1]}` : '';
     const title = this.state.title || `${this.props.alias}` + firstAlias + secondAlias;
     this.props.onCreate(icon, key, title, addedContacts, selectedGame && selectedGame.gameId);
+    
+    // Integration #5: Create Group with Game adds Game
+    // https://trello.com/c/otjkIzGI/187-integration-5-create-group-with-game-adds-game
+    if (selectedGame && !this.props.games.find(game => game.gameId === selectedGame.gameId)) {
+      axios.post('/api/GameExperiences', {
+        game_name: selectedGame.name,
+        comments: "",
+        status: "Actively Gaming",
+        link: "",
+        tags: "",
+      });
+    }
+
   }
 
   onAddContact = (contact) => {
@@ -223,6 +237,7 @@ function mapStateToProps(state) {
   return {
     alias: state.user.alias,
     contacts: state.user.contacts,
+    games: state.user.games,
     foundGames: state.game.foundGames,
   }
 }
