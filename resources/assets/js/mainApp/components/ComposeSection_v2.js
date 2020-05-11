@@ -9,7 +9,11 @@ import PostFileModal from './PostFileModal'
 import Dropzone from 'react-dropzone'
 const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
 
-const visibility_options = [{ value: 1, label: 'Everyone' }, { value: 2, label: 'Friends' }, { value: 0, label: 'Only me' }]
+const visibility_options = [
+  { value: 1, label: 'Everyone' },
+  { value: 2, label: 'Friends' },
+  { value: 0, label: 'Only me' },
+]
 
 export default class ComposeSection extends Component {
   constructor() {
@@ -156,7 +160,7 @@ export default class ComposeSection extends Component {
   get_posts = (post) => {
     const self = this
 
-    const getPosts = async function() {
+    const getPosts = async function () {
       try {
         const myPosts = await axios.get(`/api/mypost/${post.data}`)
         self.state.masterList = self.state.masterList.concat(myPosts.data.myPosts)
@@ -205,10 +209,9 @@ export default class ComposeSection extends Component {
       }
     }
 
-    const getGamers_you_might_know = async function() {
+    const getGamers_you_might_know = async function () {
       try {
         const gamers_you_might_know = await axios.get('/api/user/gamers_you_might_know')
-        console.log(gamers_you_might_know)
       } catch (error) {
         console.log(error)
       }
@@ -253,7 +256,7 @@ export default class ComposeSection extends Component {
               onKeyDown={this.detectKey}
               maxLength='254'
               value={this.state.post_content}
-              placeholder="What's up..."
+              placeholder='What in your mind?'
             />
           </div>
         )}
