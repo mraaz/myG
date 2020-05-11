@@ -631,13 +631,13 @@ export default class IndividualPost extends Component {
             <div className='update-stats'>
               {this.state.like && (
                 <div className='like-btn' onClick={() => this.click_unlike_btn(post.id)}>
-                  <i className='fas fa-thumbs-up' />
-                  &nbsp;Like
+                  <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' />
+                  &nbsp;Liked
                 </div>
               )}
               {!this.state.like && (
                 <div className='like-btn' onClick={() => this.click_like_btn(post.id)}>
-                  <i className='far fa-thumbs-up' />
+                  <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_unLike_Feed.svg' />
                   &nbsp;Like
                 </div>
               )}
