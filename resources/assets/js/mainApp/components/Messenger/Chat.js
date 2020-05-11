@@ -325,11 +325,11 @@ export class Chat extends React.PureComponent {
 
   renderTypingIndicator() {
     if (!this.props.typing.length) return;
-    const usersTyping = this.props.typing.map(userId => (this.props.contacts.find(contact => contact.contactId === userId) || {}).name);
+    const usersTyping = this.props.isGroup ? this.props.typing.map(userId => (this.props.contacts.find(contact => contact.contactId === userId) || {}).name) : [this.props.title];
     const typingHint = usersTyping.length > 1 ? usersTyping.join(', ') + " are typing..." : usersTyping[0] + " is typing...";
     return (
       <div key={'typing'}
-        className={`chat-component-message chat-component-message-received chat-component-message-short`}
+        className={`chat-component-message chat-component-message-received`}
       >
         <div className="chat-component-message-typing-hint">{typingHint}</div>
         <div className="chat-component-message-container">

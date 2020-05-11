@@ -4,6 +4,7 @@ import ToggleButton from 'react-toggle-button'
 import { WithTooltip } from '../Tooltip';
 import { updateChatAction, clearChatAction } from '../../../redux/actions/chatAction';
 import { getAssetUrl } from '../../../common/assets';
+import { showMessengerAlert } from '../../../common/alert';
 
 class ChatOptions extends React.PureComponent {
   render() {
@@ -26,7 +27,7 @@ class ChatOptions extends React.PureComponent {
 
           <div
             className={`chat-component-options-option clickable ${!this.props.messages.length && inactiveStyle}`}
-            onClick={() => this.props.clearChat(this.props.chatId)}
+            onClick={() => showMessengerAlert("Are you sure you wish to clear your chat history?", () => this.props.clearChat(this.props.chatId), null, "Yes")}
           >
             <div
               className="chat-component-options-option-icon"

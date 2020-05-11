@@ -238,7 +238,7 @@ class ChatRepository {
     const guests = [];
 
     const existingChat = !isGroup && chats.find(chat => contacts.every((id, index) => id === chat.contacts[index]));
-    if (existingChat) return { chat: existingChat };
+    if (existingChat && !existingChat.isGroup) return { chat: existingChat };
 
     const existingGameChat = individualGameId && chats.find(chat => chat.individualGameId === individualGameId);
     if (existingGameChat) {

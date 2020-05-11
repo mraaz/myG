@@ -9,6 +9,7 @@ import { WithTooltip } from '../Tooltip';
 import { updateChatAction, clearChatAction, deleteChatAction, exitGroupAction } from '../../../redux/actions/chatAction';
 import { copyToClipboard } from '../../../common/clipboard'
 import { getAssetUrl } from '../../../common/assets';
+import { showMessengerAlert } from '../../../common/alert';
 
 class GroupOptions extends React.PureComponent {
 
@@ -131,7 +132,7 @@ class GroupOptions extends React.PureComponent {
 
           <div
             className={`chat-component-options-option clickable ${!this.props.messages.length && inactiveStyle}`}
-            onClick={() => this.props.clearChat(this.props.group.chatId)}
+            onClick={() => showMessengerAlert("Are you sure you wish to clear your chat history?", () => this.props.clearChat(this.props.group.chatId), null, "Yes")}
           >
             <div
               className="chat-component-options-option-icon"
