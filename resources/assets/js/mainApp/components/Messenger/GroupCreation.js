@@ -11,15 +11,19 @@ export const MAXIMUM_GROUP_SIZE = 37;
 
 class GroupCreation extends React.Component {
 
-  state = {
-    icon: '',
-    title: '',
-    gameInput: '',
-    selectedGame: null,
-    contactInput: '',
-    matchingContacts: [],
-    addedContacts: [],
-    uploadingPhoto: false,
+  constructor(props) {
+    super(props);
+    this.state = {
+      icon: '',
+      title: '',
+      gameInput: '',
+      selectedGame: null,
+      contactInput: '',
+      matchingContacts: [],
+      addedContacts: [],
+      uploadingPhoto: false,
+    }
+    this.inputRef = React.createRef();
   }
 
   onContactSearch = (name) => {
@@ -93,14 +97,21 @@ class GroupCreation extends React.Component {
   renderGameInput = () => {
     const selectedStyle = 'chat-group-creation-contact-input-selected';
     return (
-      <div className="chat-group-creation-contact-input-container">
+      <div className="chat-group-creation-contact-input-container" onClick={() => this.inputRef.current.focus()}>
         <input
+          ref={this.inputRef}
           className={`chat-group-creation-contact-input ${selectedStyle}`}
           placeholder={"Game Name"}
           value={this.state.selectedGame ? this.state.selectedGame.name : this.state.gameInput}
           onChange={event => this.onGameSearch(event.target.value)}
         >
         </input>
+        {this.state.selectedGame && this.state.selectedGame.icon && (
+          <div
+            className='chat-group-creation-game-icon'
+            style={{ backgroundImage: `url(${this.state.selectedGame.icon})` }}
+          />
+        )}
         <Dropdown
           show={this.state.gameInput.length}
           position={{ top: '-6px' }}
