@@ -1498,6 +1498,7 @@ section#content-container {
     justify-content: center;
     min-height: 160px;
     padding: 30px;
+    background: #171a1c;
     div {
       border: none !important;
       width: 100% !important;
@@ -1519,6 +1520,7 @@ section#content-container {
           color: #e5c746;
         }
         margin-bottom: 10px;
+        cursor: pointer;
       }
       .files__preview {
         display: flex;
