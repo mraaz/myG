@@ -65,3 +65,13 @@ export function searchUsers(input) {
   logger.log('USER', 'HTTP', `User searching other users with ${input} as Input.`);
   return axios.get(`/api/user_chat/search?query=${input}`).then((response => response.data));
 }
+
+export function toggleNotificationSounds(disabled) {
+  logger.log('USER', 'HTTP', `Toggling Notification Sounds: ${disabled}`);
+  return axios.put(`/api/user/notification_sounds`, { disabled }).then((response => response.data));
+}
+
+export function toggleAutoSelfDestruct(enabled) {
+  logger.log('USER', 'HTTP', `Toggling Auto Self Destruct: ${enabled}`);
+  return axios.put(`/api/user/auto_self_destruct`, { enabled }).then((response => response.data));
+}

@@ -1,5 +1,6 @@
 
 import React from "react";
+import { getAssetUrl } from "../../../../common/assets";
 
 export default class Footer extends React.PureComponent {
 
@@ -62,12 +63,12 @@ export default class Footer extends React.PureComponent {
               onChange={event => this.props.onSearch(event.target.value)}
             />
             <div className="messenger-settings-search-button"
-              style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_messenger_search.svg)` }}
+              style={{ backgroundImage: `url(${getAssetUrl('ic_messenger_search')})` }}
             />
           </div>
           <div
             className="messenger-footer-settings-button clickable"
-            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_messenger_settings.svg)` }}
+            style={{ backgroundImage: `url(${getAssetUrl('ic_messenger_settings')})` }}
             onClick={this.props.onSettingsClicked}
           ></div>
         </div>

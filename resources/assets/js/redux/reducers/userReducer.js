@@ -4,14 +4,29 @@ import logger from '../../common/logger';
 export default function reducer(state = {
   userId: null,
   alias: null,
+  icon: null,
   status: 'online',
   isStatusLocked: false,
   contacts: [],
   games: [],
   friendRequests: [],
   foundUsers: [],
+  notificationSoundsDisabled: false,
+  autoSelfDestruct: false,
 }, action) {
   switch (action.type) {
+
+    case "LOAD_USER_INFO": {
+      logger.log('User', `Redux -> Loading User Info (User): `, action.payload);
+      return {
+        ...state,
+        userId: action.payload.id,
+        alias: action.payload.alias,
+        icon: action.payload.profile_img,
+        notificationSoundsDisabled: !!action.payload.notification_sounds_disabled,
+        autoSelfDestruct: !!action.payload.chat_auto_self_destruct,
+      };
+    }
 
     case "PREPARE_MESSENGER_FULFILLED": {
       logger.log('CHAT', `Redux -> Messenger Ready (User): `, action.payload);
@@ -152,6 +167,22 @@ export default function reducer(state = {
         ...state,
         contacts
       };
+    }
+
+    case "TOGGLE_NOTIFICATION_SOUNDS_FULFILLED": {
+      logger.log('USER', `Redux -> Toggle Notification Sounds: `, action.meta);
+      return {
+        ...state,
+        notificationSoundsDisabled: action.meta.disabled,
+      }
+    }
+
+    case "TOGGLE_AUTO_SELF_DESTRUCT_FULFILLED": {
+      logger.log('CHAT', `Redux -> Toggle Auto Self Destruct: `, action.meta);
+      return {
+        ...state,
+        autoSelfDestruct: action.meta.enabled,
+      }
     }
 
     default: return state;

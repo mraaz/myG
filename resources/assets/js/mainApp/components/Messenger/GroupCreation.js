@@ -1,24 +1,30 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import axios from 'axios';
 import FileOpenModal from '../FileOpenModal';
 import Dropdown from '../Dropdown';
 import notifyToast from '../../../common/toast';
 import { searchGameAction } from '../../../redux/actions/gameAction';
+import { getAssetUrl } from '../../../common/assets';
 
 export const MAXIMUM_GROUP_SIZE = 37;
 
 class GroupCreation extends React.Component {
 
-  state = {
-    icon: '',
-    title: '',
-    gameInput: '',
-    selectedGame: null,
-    contactInput: '',
-    matchingContacts: [],
-    addedContacts: [],
-    uploadingPhoto: false,
+  constructor(props) {
+    super(props);
+    this.state = {
+      icon: '',
+      title: '',
+      gameInput: '',
+      selectedGame: null,
+      contactInput: '',
+      matchingContacts: [],
+      addedContacts: [],
+      uploadingPhoto: false,
+    }
+    this.inputRef = React.createRef();
   }
 
   onContactSearch = (name) => {
@@ -38,6 +44,19 @@ class GroupCreation extends React.Component {
     const secondAlias = contactAliases[1] ? `, ${contactAliases[1]}` : '';
     const title = this.state.title || `${this.props.alias}` + firstAlias + secondAlias;
     this.props.onCreate(icon, key, title, addedContacts, selectedGame && selectedGame.gameId);
+    
+    // Integration #5: Create Group with Game adds Game
+    // https://trello.com/c/otjkIzGI/187-integration-5-create-group-with-game-adds-game
+    if (selectedGame && !this.props.games.find(game => game.gameId === selectedGame.gameId)) {
+      axios.post('/api/GameExperiences', {
+        game_name: selectedGame.name,
+        comments: "",
+        status: "Actively Gaming",
+        link: "",
+        tags: "",
+      });
+    }
+
   }
 
   onAddContact = (contact) => {
@@ -61,7 +80,7 @@ class GroupCreation extends React.Component {
 
         <div className="chat-group-creation-header-icon clickable"
           style={{
-            backgroundImage: `url(${this.state.icon || 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_icon.svg'})`,
+            backgroundImage: `url(${this.state.icon || getAssetUrl('ic_chat_group_icon')}`,
             backgroundSize: this.state.icon ? 'cover' : 'inherit',
           }}
           onClick={() => this.setState({ uploadingPhoto: true })}
@@ -92,14 +111,21 @@ class GroupCreation extends React.Component {
   renderGameInput = () => {
     const selectedStyle = 'chat-group-creation-contact-input-selected';
     return (
-      <div className="chat-group-creation-contact-input-container">
+      <div className="chat-group-creation-contact-input-container" onClick={() => this.inputRef.current.focus()}>
         <input
+          ref={this.inputRef}
           className={`chat-group-creation-contact-input ${selectedStyle}`}
           placeholder={"Game Name"}
           value={this.state.selectedGame ? this.state.selectedGame.name : this.state.gameInput}
           onChange={event => this.onGameSearch(event.target.value)}
         >
         </input>
+        {this.state.selectedGame && this.state.selectedGame.icon && (
+          <div
+            className='chat-group-creation-game-icon'
+            style={{ backgroundImage: `url(${this.state.selectedGame.icon})` }}
+          />
+        )}
         <Dropdown
           show={this.state.gameInput.length}
           position={{ top: '-6px' }}
@@ -211,6 +237,7 @@ function mapStateToProps(state) {
   return {
     alias: state.user.alias,
     contacts: state.user.contacts,
+    games: state.user.games,
     foundGames: state.game.foundGames,
   }
 }

@@ -2,6 +2,7 @@ import 'emoji-mart/css/emoji-mart.css'
 import React from 'react';
 import AttachUploader from './AttachUploader';
 import { Picker } from 'emoji-mart'
+import { getAssetUrl } from '../../../common/assets';
 
 export default class AttachWindow extends React.PureComponent {
 
@@ -47,12 +48,12 @@ export default class AttachWindow extends React.PureComponent {
         <div
           className={`attach-icon clickable`}
           onClick={() => this.setState({ choosingEmoji: true, choosingAttachment: false })}
-          style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_action_emoji.svg)` }}
+          style={{ backgroundImage: `url(${getAssetUrl('ic_chat_action_emoji')})` }}
         />
         <div
           className={`attach-icon clickable`}
           onClick={() => this.setState({ choosingAttachment: true, choosingEmoji: false })}
-          style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_action_image.svg)` }}
+          style={{ backgroundImage: `url(${getAssetUrl('ic_chat_action_image')})` }}
         />
       </div>
     );

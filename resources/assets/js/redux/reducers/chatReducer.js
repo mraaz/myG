@@ -4,6 +4,7 @@ import { reEncryptMessages, sendGroupKeys } from '../../common/encryption';
 import { encryptMessage, decryptMessage, deserializeKey } from '../../integration/encryption';
 import { requestGroupPrivateKey, confirmGroupPrivateKey } from '../../integration/http/guest';
 import notifyToast from '../../common/toast';
+import { getAssetUrl } from '../../common/assets';
 
 export default function reducer(state = {
   userId: null,
@@ -13,8 +14,22 @@ export default function reducer(state = {
   preparingMessenger: false,
   guestLink: null,
   blockedUsers: [],
+  notificationSoundsDisabled: false,
+  autoSelfDestruct: false,
 }, action) {
   switch (action.type) {
+
+    case "LOAD_USER_INFO": {
+      logger.log('User', `Redux -> Loading User Info (Chat): `, action.payload);
+      return {
+        ...state,
+        userId: action.payload.id,
+        alias: action.payload.alias,
+        icon: action.payload.profile_img,
+        notificationSoundsDisabled: !!action.payload.notification_sounds_disabled,
+        autoSelfDestruct: !!action.payload.chat_auto_self_destruct,
+      };
+    }
 
     case "PREPARE_MESSENGER_PENDING": {
       return {
@@ -65,6 +80,12 @@ export default function reducer(state = {
       chat.owners = action.payload.chat.owners;
       chat.moderators = action.payload.chat.moderators;
       chat.guests = action.payload.chat.guests;
+      chat.selfDestruct = action.payload.chat.selfDestruct;
+      chat.isGroup = action.payload.chat.isGroup;
+      chat.isPrivate = action.payload.chat.isPrivate;
+      chat.muted = action.payload.chat.muted;
+      chat.icon = action.payload.chat.icon;
+      chat.individualGameId = action.payload.chat.individualGameId;
       const messages = action.payload.messages
         .filter(message => message.messageId > action.payload.chat.lastCleared)
         .filter(message => !action.payload.chat.deletedMessages.includes(message.messageId))
@@ -221,7 +242,7 @@ export default function reducer(state = {
       const unreadMessages = JSON.parse(JSON.stringify(state.unreadMessages));
       if (!chat) return state;
       if (state.blockedUsers.includes(message.senderId)) return state;
-      if (!chat.muted && !window.focused && message.senderId !== userId && !message.keyReceiver) playMessageSound();
+      if (!chat.muted && !window.focused && message.senderId !== userId && !message.keyReceiver) playMessageSound(state.notificationSoundsDisabled);
       if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
       if (!chat.muted && !message.keyReceiver) {
         const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== chatId);
@@ -544,7 +565,7 @@ export default function reducer(state = {
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (!chat) return state;
-      playMessageSound();
+      playMessageSound(state.notificationSoundsDisabled);
       if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
       chat.closed = false;
       chat.minimised = false;
@@ -694,15 +715,32 @@ export default function reducer(state = {
       };
     }
 
+    case "TOGGLE_NOTIFICATION_SOUNDS_FULFILLED": {
+      logger.log('CHAT', `Redux -> Toggle Notification Sounds: `, action.meta);
+      return {
+        ...state,
+        notificationSoundsDisabled: action.meta.disabled,
+      }
+    }
+
+    case "TOGGLE_AUTO_SELF_DESTRUCT_FULFILLED": {
+      logger.log('CHAT', `Redux -> Toggle Auto Self Destruct: `, action.meta);
+      return {
+        ...state,
+        autoSelfDestruct: action.meta.enabled,
+      }
+    }
+
     default: return state;
 
   }
 }
 
-function playMessageSound() {
+function playMessageSound(disabled) {
   try {
+    if (disabled) return logger.log('CHAT', 'Redux -> Not Playing Notification Sound due to DISABLED');
     logger.log('CHAT', 'Redux -> Playing Notification Sound');
-    new Audio('https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/notification.mp3').play();
+    new Audio(`${getAssetUrl('sound_notification')}`).play();
   } catch (error) {
     console.error('Error While Playing Message Notification:', error);
   }

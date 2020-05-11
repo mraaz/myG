@@ -238,7 +238,7 @@ class ChatRepository {
     const guests = [];
 
     const existingChat = !isGroup && chats.find(chat => contacts.every((id, index) => id === chat.contacts[index]));
-    if (existingChat) return { chat: existingChat };
+    if (existingChat && !existingChat.isGroup) return { chat: existingChat };
 
     const existingGameChat = individualGameId && chats.find(chat => chat.individualGameId === individualGameId);
     if (existingGameChat) {
@@ -261,6 +261,8 @@ class ChatRepository {
       title = `${gameName} (${moment(gameSchedule).format('YYYY-MM-DD HH:mm:ss')})`;
     }
 
+    const forceSelfDestruct = (await User.query().where('id', '=', requestingUserId).first()).toJSON().chat_auto_self_destruct;
+
     const chat = new Chat();
     if (title) chat.title = title;
     if (icon) chat.icon = icon;
@@ -272,7 +274,7 @@ class ChatRepository {
     chat.guests = JSON.stringify(guests || []);
     chat.owners = JSON.stringify(owners || []);
     chat.moderators = JSON.stringify(owners || []);
-    chat.self_destruct = !!individualGameId;
+    chat.self_destruct = !!forceSelfDestruct || !!individualGameId;
     await chat.save();
 
     const chatSchema = new ChatSchema({
@@ -291,13 +293,13 @@ class ChatRepository {
       updatedAt: chat.updated_at,
     });
 
-    contacts.forEach(async userId => {
+    for (const userId of contacts) {
       const userChat = new UserChat();
       userChat.chat_id = chat.id;
       userChat.user_id = userId;
       userChat.deleted_messages = '[]';
       await userChat.save();
-    });
+    }
 
     if (isGroup) {
       [1, 2, 3].forEach(async () => {
@@ -437,12 +439,14 @@ class ChatRepository {
     return new DefaultSchema({ success: true });
   }
 
-  async searchGroup({ groupName }) {
-    const query = Chat.query().where('isGroup', true);
+  async searchGroup({ groupName, requestedPage }) {
+    let query = Chat.query().where('isGroup', true).andWhere('isPrivate', false);
     if (groupName) query.andWhere('title', 'like', '%' + groupName + '%');
-    const results = await query.fetch();
+    if (requestedPage === "ALL") query = query.fetch();
+    else query = query.paginate(requestedPage || 1, 10);
+    const results = await query;
     if (!results) return { groups: [] };
-    const groups = results.toJSON().map(chat => new ChatSchema({
+    const groups = results.toJSON ? results.toJSON() : results.map(chat => new ChatSchema({
       chatId: chat.id,
       isPrivate: chat.isPrivate,
       isGroup: chat.isGroup,
@@ -655,7 +659,8 @@ class ChatRepository {
   }
 
   async setTyping({ requestingUserId, requestedChatId, isTyping }) {
-    this._notifyChatEvent({ chatId: requestedChatId, action: 'typing', payload: { userId: requestingUserId, chatId: requestedChatId, isTyping } });
+    const senderName = (await User.query().where('id', '=', requestingUserId).first()).toJSON().alias;
+    this._notifyChatEvent({ chatId: requestedChatId, action: 'typing', payload: { userId: requestingUserId, chatId: requestedChatId, isTyping, senderName } });
     return new DefaultSchema({ success: true });
   }
 

@@ -12,6 +12,8 @@ import { prepareChatAction, fetchMessagesAction, sendMessageAction, editMessageA
 import { withDatesAndLogs } from '../../../common/chat';
 import { encryptMessage, decryptMessage, deserializeKey } from '../../../integration/encryption';
 import { formatDateTime } from '../../../common/date';
+import { getAssetUrl } from '../../../common/assets';
+import { showMessengerAlert } from '../../../common/alert';
 
 export class Chat extends React.PureComponent {
 
@@ -194,39 +196,52 @@ export class Chat extends React.PureComponent {
           }
 
           {this.props.subtitle && (
-            <div className="chat-component-header-subtitle">
-              {this.props.subtitle}
-            </div>
+            this.props.isGroup ?
+              (
+                <WithTooltip position={{ bottom: '16px', left: '-12px' }} text={this.props.contacts.slice(0, 10).map(contact => contact.name).join('\n')}>
+                  <div className="chat-component-header-subtitle">
+                    {this.props.subtitle}
+                  </div>
+                </WithTooltip>
+              ) :
+              (
+                <div className="chat-component-header-subtitle">
+                  {this.props.subtitle}
+                </div>
+              )
           )}
+
         </div>
 
-        {!this.props.isGuest && (
-          <div className="chat-component-header-options">
-            {(!this.state.settings || this.props.minimised) && (
-              <div className="chat-component-header-top-buttons">
-                <div className="chat-component-header-button clickable"
-                  style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_minimise.svg)` }}
-                  onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}
-                />
-                <div className="chat-component-header-button clickable"
-                  style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_maximise.svg)` }}
-                  onClick={() => this.props.updateChatState(this.props.chatId, { maximised: !this.props.maximised, minimised: false })}
-                />
-                <div className="chat-component-header-button clickable"
-                  style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_close.svg)` }}
-                  onClick={() => this.props.onClose(this.props.chatId)}
-                />
-              </div>
-            )}
-            <div
-              className="chat-component-header-settings clickable"
-              style={{ backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_settings.svg')` }}
-              onClick={() => this.setState(previous => ({ settings: !previous.settings }))}
-            />
-          </div>
-        )}
+        {
+          !this.props.isGuest && (
+            <div className="chat-component-header-options">
+              {(!this.state.settings || this.props.minimised) && (
+                <div className="chat-component-header-top-buttons">
+                  <div className="chat-component-header-button clickable"
+                    style={{ backgroundImage: `url(${getAssetUrl('ic_chat_minimise')})` }}
+                    onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}
+                  />
+                  <div className="chat-component-header-button clickable"
+                    style={{ backgroundImage: `url(${getAssetUrl('ic_chat_maximise')})` }}
+                    onClick={() => this.props.updateChatState(this.props.chatId, { maximised: !this.props.maximised, minimised: false })}
+                  />
+                  <div className="chat-component-header-button clickable"
+                    style={{ backgroundImage: `url(${getAssetUrl('ic_chat_close')})` }}
+                    onClick={() => this.props.onClose(this.props.chatId)}
+                  />
+                </div>
+              )}
+              <div
+                className="chat-component-header-settings clickable"
+                style={{ backgroundImage: `url(${getAssetUrl('ic_chat_settings')})` }}
+                onClick={() => this.setState(previous => ({ settings: !previous.settings }))}
+              />
+            </div>
+          )
+        }
 
-      </div>
+      </div >
     );
   }
 
@@ -288,9 +303,9 @@ export class Chat extends React.PureComponent {
   renderEmptyChatMessage() {
     if (this.props.messages.length) return;
     return (
-      <div className="chat-component-empty-chat-message">
+      <div className="chat-component-empty-chat-message clickable" onClick={() => showMessengerAlert("Most E2E store a secret key on a device. This means you need a device to access your messages. myG emails you the secret key, which allows you to get E2E without additional gadgets. Only you have access to this key and with it you can decrypt your chat history. With great power, comes great responsibility. If you lose your key unfortunately, you will also lose your chat history, not even the god-like nerds @ myG can recover this.")}>
         <p>Messages you send to this chat are secured with end-to-end encryption.</p>
-        <p>Please remember your encryption key, otherwise you will lose your chat history.</p>
+        <p>Please keep your encryption key safe, otherwise you will LOSE your chat history. Click for more info.</p>
       </div>
     );
   }
@@ -324,10 +339,13 @@ export class Chat extends React.PureComponent {
 
   renderTypingIndicator() {
     if (!this.props.typing.length) return;
+    const usersTyping = this.props.isGroup ? this.props.typing.map(userId => (this.props.contacts.find(contact => contact.contactId === userId) || {}).name) : [this.props.title];
+    const typingHint = usersTyping.length > 1 ? usersTyping.join(', ') + " are typing..." : usersTyping[0] + " is typing...";
     return (
       <div key={'typing'}
-        className={`chat-component-message chat-component-message-received chat-component-message-short`}
+        className={`chat-component-message chat-component-message-received`}
       >
+        <div className="chat-component-message-typing-hint">{typingHint}</div>
         <div className="chat-component-message-container">
           <div className="dot-flashing" />
         </div>
@@ -392,7 +410,7 @@ export class Chat extends React.PureComponent {
         <div className="chat-component-attach-button-container">
           <div className={`chat-component-attach-button clickable ${rotatedStyle}`}
             onClick={() => this.setState(previous => ({ showAttachWindow: !previous.showAttachWindow }))}
-            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_attach.svg)` }}
+            style={{ backgroundImage: `url(${getAssetUrl('ic_chat_attach')})` }}
           />
           <div className="chat-component-attach-button-divider" />
         </div>
