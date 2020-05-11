@@ -1,4 +1,4 @@
-import { favoriteGame, unfavoriteGame, updateGameIcon, fetchContacts, fetchContact, fetchStatus, updateStatus, fetchFriendRequests, addAsFriend, searchUsers, toggleNotificationSounds } from '../../integration/http/user';
+import { favoriteGame, unfavoriteGame, updateGameIcon, fetchContacts, fetchContact, fetchStatus, updateStatus, fetchFriendRequests, addAsFriend, searchUsers, toggleNotificationSounds, toggleAutoSelfDestruct } from '../../integration/http/user';
 
 export function logoutAction() {
   return {
@@ -107,5 +107,13 @@ export function toggleNotificationSoundsAction(disabled) {
     type: 'TOGGLE_NOTIFICATION_SOUNDS',
     payload: toggleNotificationSounds(disabled),
     meta: { disabled },
+  }
+}
+
+export function toggleAutoSelfDestructAction(enabled) {
+  return {
+    type: 'TOGGLE_AUTO_SELF_DESTRUCT',
+    payload: toggleAutoSelfDestruct(enabled),
+    meta: { enabled },
   }
 }

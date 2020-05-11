@@ -12,6 +12,7 @@ export default function reducer(state = {
   friendRequests: [],
   foundUsers: [],
   notificationSoundsDisabled: false,
+  autoSelfDestruct: false,
 }, action) {
   switch (action.type) {
 
@@ -23,6 +24,7 @@ export default function reducer(state = {
         alias: action.payload.alias,
         icon: action.payload.profile_img,
         notificationSoundsDisabled: !!action.payload.notification_sounds_disabled,
+        autoSelfDestruct: !!action.payload.chat_auto_self_destruct,
       };
     }
 
@@ -172,6 +174,14 @@ export default function reducer(state = {
       return {
         ...state,
         notificationSoundsDisabled: action.meta.disabled,
+      }
+    }
+
+    case "TOGGLE_AUTO_SELF_DESTRUCT_FULFILLED": {
+      logger.log('CHAT', `Redux -> Toggle Auto Self Destruct: `, action.meta);
+      return {
+        ...state,
+        autoSelfDestruct: action.meta.enabled,
       }
     }
 

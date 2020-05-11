@@ -15,6 +15,7 @@ export default function reducer(state = {
   guestLink: null,
   blockedUsers: [],
   notificationSoundsDisabled: false,
+  autoSelfDestruct: false,
 }, action) {
   switch (action.type) {
 
@@ -26,6 +27,7 @@ export default function reducer(state = {
         alias: action.payload.alias,
         icon: action.payload.profile_img,
         notificationSoundsDisabled: !!action.payload.notification_sounds_disabled,
+        autoSelfDestruct: !!action.payload.chat_auto_self_destruct,
       };
     }
 
@@ -78,6 +80,12 @@ export default function reducer(state = {
       chat.owners = action.payload.chat.owners;
       chat.moderators = action.payload.chat.moderators;
       chat.guests = action.payload.chat.guests;
+      chat.selfDestruct = action.payload.chat.selfDestruct;
+      chat.isGroup = action.payload.chat.isGroup;
+      chat.isPrivate = action.payload.chat.isPrivate;
+      chat.muted = action.payload.chat.muted;
+      chat.icon = action.payload.chat.icon;
+      chat.individualGameId = action.payload.chat.individualGameId;
       const messages = action.payload.messages
         .filter(message => message.messageId > action.payload.chat.lastCleared)
         .filter(message => !action.payload.chat.deletedMessages.includes(message.messageId))
@@ -712,6 +720,14 @@ export default function reducer(state = {
       return {
         ...state,
         notificationSoundsDisabled: action.meta.disabled,
+      }
+    }
+
+    case "TOGGLE_AUTO_SELF_DESTRUCT_FULFILLED": {
+      logger.log('CHAT', `Redux -> Toggle Auto Self Destruct: `, action.meta);
+      return {
+        ...state,
+        autoSelfDestruct: action.meta.enabled,
       }
     }
 

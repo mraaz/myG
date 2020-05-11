@@ -12,14 +12,29 @@ export default class Settings extends React.PureComponent {
 
   renderNotificationSoundSettings = () => {
     return (
-      <div className="messenger-settings-sound-enabled">
-        <div className="messenger-settings-sound-enabled-hint">
-          <div className="messenger-settings-sound-enabled-title">Sound Alerts</div>
-          <div className="messenger-settings-sound-enabled-subtitle">Receive an alert for messages received.</div>
+      <div className="messenger-settings-toggle">
+        <div className="messenger-settings-toggle-hint">
+          <div className="messenger-settings-toggle-title">Sound Alerts</div>
+          <div className="messenger-settings-toggle-subtitle">Receive an alert for messages received.</div>
         </div>
         <ToggleButton
           value={!this.props.notificationSoundsDisabled}
           onToggle={notificationSoundsDisabled => this.props.toggleNotificationSounds(notificationSoundsDisabled)}
+        />
+      </div>
+    );
+  }
+
+  renderAutoSelfDestructSettings = () => {
+    return (
+      <div className="messenger-settings-toggle">
+        <div className="messenger-settings-toggle-hint">
+          <div className="messenger-settings-toggle-title">Auto Destruct</div>
+          <div className="messenger-settings-toggle-subtitle">Any Chat created will have Self Destruct turned on by default.</div>
+        </div>
+        <ToggleButton
+          value={this.props.autoSelfDestruct}
+          onToggle={autoSelfDestruct => this.props.toggleAutoSelfDestruct(!autoSelfDestruct)}
         />
       </div>
     );
@@ -105,6 +120,7 @@ export default class Settings extends React.PureComponent {
       <div className='messenger-settings-container'>
         <p className='messenger-settings-title'>Settings</p>
         {this.renderNotificationSoundSettings()}
+        {this.renderAutoSelfDestructSettings()}
         {this.renderEncryptionSettings()}
         {this.renderGamesSettings()}
         {this.renderBlockedUsers()}

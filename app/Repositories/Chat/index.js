@@ -261,6 +261,8 @@ class ChatRepository {
       title = `${gameName} (${moment(gameSchedule).format('YYYY-MM-DD HH:mm:ss')})`;
     }
 
+    const forceSelfDestruct = (await User.query().where('id', '=', requestingUserId).first()).toJSON().chat_auto_self_destruct;
+
     const chat = new Chat();
     if (title) chat.title = title;
     if (icon) chat.icon = icon;
@@ -272,7 +274,7 @@ class ChatRepository {
     chat.guests = JSON.stringify(guests || []);
     chat.owners = JSON.stringify(owners || []);
     chat.moderators = JSON.stringify(owners || []);
-    chat.self_destruct = !!individualGameId;
+    chat.self_destruct = !!forceSelfDestruct || !!individualGameId;
     await chat.save();
 
     const chatSchema = new ChatSchema({
@@ -291,13 +293,13 @@ class ChatRepository {
       updatedAt: chat.updated_at,
     });
 
-    contacts.forEach(async userId => {
+    for (const userId of contacts) {
       const userChat = new UserChat();
       userChat.chat_id = chat.id;
       userChat.user_id = userId;
       userChat.deleted_messages = '[]';
       await userChat.save();
-    });
+    }
 
     if (isGroup) {
       [1, 2, 3].forEach(async () => {

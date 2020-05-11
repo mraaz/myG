@@ -251,6 +251,22 @@ class UserController {
     }
   }
 
+  async toggleAutoSelfDestruct({ auth, request }) {
+    if (auth.user) {
+      try {
+        await User.query()
+          .where('id', '=', auth.user.id)
+          .update({
+            chat_auto_self_destruct: request.only('enabled').enabled
+          });
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
 }
 
 module.exports = UserController
