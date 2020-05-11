@@ -437,12 +437,14 @@ class ChatRepository {
     return new DefaultSchema({ success: true });
   }
 
-  async searchGroup({ groupName }) {
-    const query = Chat.query().where('isGroup', true);
+  async searchGroup({ groupName, requestedPage }) {
+    let query = Chat.query().where('isGroup', true).andWhere('isPrivate', false);
     if (groupName) query.andWhere('title', 'like', '%' + groupName + '%');
-    const results = await query.fetch();
+    if (requestedPage === "ALL") query = query.fetch();
+    else query = query.paginate(requestedPage || 1, 10);
+    const results = await query;
     if (!results) return { groups: [] };
-    const groups = results.toJSON().map(chat => new ChatSchema({
+    const groups = results.toJSON ? results.toJSON() : results.map(chat => new ChatSchema({
       chatId: chat.id,
       isPrivate: chat.isPrivate,
       isGroup: chat.isGroup,
