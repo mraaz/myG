@@ -1049,6 +1049,16 @@ section#content-container {
           font-weight: bold;
           color: #fff;
           font: Bold 16px/14px Montserrat;
+          width: 16px;
+          height: 16px;
+          display: flex;
+          img {
+            width: 16px;
+            height: 16px;
+          }
+        }
+        .other-users {
+          margin-left: 55px;
         }
       }
       .show__comments_count {
