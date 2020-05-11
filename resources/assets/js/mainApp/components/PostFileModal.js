@@ -299,6 +299,7 @@ export default class PostFileModal extends Component {
               <div className={`share__thought ${open_compose_textTab ? 'active' : ''}`} onClick={(e) => this.togglePostTypeTab('text')}>
                 {`Share your thoughts ...`}
               </div>
+              <div className='devider'></div>
               <div className={`add__post__image ${open_compose_textTab ? '' : 'active'}`} onClick={(e) => this.togglePostTypeTab('media')}>
                 {` Add video or photos`}
               </div>

@@ -1378,13 +1378,17 @@ section#content-container {
     align-items: center;
     font: Bold 16px/14px Montserrat;
     height: 54px;
+    .devider {
+      border: 1px solid #384952;
+      height: 100%;
+    }
     .share__thought {
-      border-right: 1px solid #101214;
       flex-grow: 5;
       justify-content: center;
       align-items: center;
       display: flex;
       height: 100%;
+      margin: 0 50px;
       &.active {
         border-bottom: 1px solid #e5c746;
       }
@@ -1401,6 +1405,7 @@ section#content-container {
       align-items: center;
       display: flex;
       height: 100%;
+      margin: 0 50px;
       &.active {
         border-bottom: 1px solid #e5c746;
       }
