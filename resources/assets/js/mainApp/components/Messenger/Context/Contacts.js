@@ -3,6 +3,7 @@ import React from "react";
 import Divider from './Divider';
 import Contact from './Contact';
 import { STATUS_ENUM, compareStatus } from '../../../../common/status';
+import { getAssetUrl } from "../../../../common/assets";
 
 export default class Contacts extends React.PureComponent {
 
@@ -44,7 +45,7 @@ export default class Contacts extends React.PureComponent {
             <p className="messenger-body-section-header-count">{`(${count})`}</p>
             <div
               className="messenger-body-section-header-icon"
-              style={{ backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_messenger_chevron_${chevronType}.svg')` }}
+              style={{ backgroundImage: `url('${getAssetUrl(`ic_messenger_chevron_${chevronType}`)}')` }}
             />
           </div>
         </div>

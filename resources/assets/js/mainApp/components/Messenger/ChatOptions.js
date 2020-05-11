@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import ToggleButton from 'react-toggle-button'
 import { WithTooltip } from '../Tooltip';
 import { updateChatAction, clearChatAction } from '../../../redux/actions/chatAction';
+import { getAssetUrl } from '../../../common/assets';
 
 class ChatOptions extends React.PureComponent {
   render() {
@@ -16,7 +17,7 @@ class ChatOptions extends React.PureComponent {
         >
           <div
             className="chat-component-options-option-icon"
-            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_profile.svg)` }}
+            style={{ backgroundImage: `url(${getAssetUrl('ic_chat_profile')})` }}
           />
           {this.props.contactAlias} profile
         </div>
@@ -29,7 +30,7 @@ class ChatOptions extends React.PureComponent {
           >
             <div
               className="chat-component-options-option-icon"
-              style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_delete.svg)` }}
+              style={{ backgroundImage: `url(${getAssetUrl('ic_chat_delete')})` }}
             />
             clear
           </div>
@@ -40,7 +41,7 @@ class ChatOptions extends React.PureComponent {
           >
             <div
               className="chat-component-options-option-icon"
-              style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_mute.svg)` }}
+              style={{ backgroundImage: `url(${getAssetUrl('ic_chat_mute')})` }}
             />
             {this.props.muted ? 'unmute' : 'mute'}
           </div>
@@ -56,7 +57,7 @@ class ChatOptions extends React.PureComponent {
         >
           <div
             className="chat-component-options-option-icon"
-            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_block.svg)` }}
+            style={{ backgroundImage: `url(${getAssetUrl('ic_chat_block')})` }}
           />
           {this.props.blocked ? 'unblock friend' : 'block friend'}
         </div>

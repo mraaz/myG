@@ -7,6 +7,7 @@ import Dropdown from '../Dropdown';
 import Popup from '../Popup';
 import { addContactsToChatAction, inviteUserToGroupAction, updateChatAction, clearChatAction, removeFromGroupAction, blockUserAction, unblockUserAction } from '../../../redux/actions/chatAction';
 import { searchUsersAction, addAsFriendAction, fetchFriendRequestsAction } from '../../../redux/actions/userAction';
+import { getAssetUrl } from '../../../common/assets';
 
 class GroupMemberOptions extends React.PureComponent {
 
@@ -87,7 +88,7 @@ class GroupMemberOptions extends React.PureComponent {
       <div className="chat-group-members-header">
         <p className="chat-group-members-header-title">Group members</p>
         <div className="chat-group-members-header-close-button clickable"
-          style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_close.svg)` }}
+          style={{ backgroundImage: `url(${getAssetUrl('ic_chat_close')})` }}
           onClick={() => this.props.onClose()}
         />
       </div>
@@ -124,26 +125,26 @@ class GroupMemberOptions extends React.PureComponent {
           {isContactOwner && (
             <div
               className="chat-group-options-option-icon"
-              style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_owner.png)` }}
+              style={{ backgroundImage: `url(${getAssetUrl('ic_chat_group_owner')})` }}
             />
           )}
           {isGroupModerator && !isContactOwner && (
             <div
               className="chat-group-options-option-icon clickable"
-              style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_${isContactModerator ? 'moderator' : 'member'}.png)` }}
+              style={{ backgroundImage: `url(${getAssetUrl(`ic_chat_group_${isContactModerator ? 'moderator' : 'member'}`)})` }}
               onClick={() => this.toggleModerator(contact.contactId)}
             />
           )}
           {isGroupModerator && !isContactOwner && (
             <div
               className="chat-group-options-option-icon clickable"
-              style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_remove.png)` }}
+              style={{ backgroundImage: `url(${getAssetUrl('ic_chat_group_remove')})` }}
               onClick={() => this.setState({ kickingUser: contact })}
             />
           )}
           <div
             className="chat-group-options-option-icon clickable"
-            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_${isContactBlocked ? 'muted' : 'unmuted'}.png)` }}
+            style={{ backgroundImage: `url(${getAssetUrl(`ic_chat_group_${isContactBlocked ? 'muted' : 'unmuted'}`)})` }}
             onClick={() => this.toggleUserBlock(contact.contactId)}
           />
           {!isAdded && !isRequested && (
@@ -170,14 +171,14 @@ class GroupMemberOptions extends React.PureComponent {
         <div className="chat-group-member-info">
           <div
             className="chat-group-guest-icon"
-            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_guest_icon.svg)` }}
+            style={{ backgroundImage: `url(${getAssetUrl('ic_guest_icon')})` }}
           />
           <div className="chat-group-member-name">{guestAlias}</div>
         </div>
         <div className="chat-group-member-buttons">
           <div
             className="chat-group-options-option-icon clickable"
-            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_remove.svg)`, filter: `contrast(0)` }}
+            style={{ backgroundImage: `url(${getAssetUrl('ic_chat_group_remove')})`, filter: `contrast(0)` }}
             onClick={() => this.setState({ kickingUser: { contactId: guestId, name: guestAlias } })}
           />
         </div>

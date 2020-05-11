@@ -1,5 +1,6 @@
 import React from 'react';
 import { convertEmojisToColons } from '../../../common/emoji';
+import { getAssetUrl } from '../../../common/assets';
 
 export default class ChatInput extends React.PureComponent {
 
@@ -91,7 +92,7 @@ export default class ChatInput extends React.PureComponent {
           >
           </textarea>
           <div className="chat-component-send-button clickable"
-            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_send.svg)` }}
+            style={{ backgroundImage: `url(${getAssetUrl('ic_chat_send')})` }}
             onClick={() => !disabled && this.sendMessage()}
           />
         </div>

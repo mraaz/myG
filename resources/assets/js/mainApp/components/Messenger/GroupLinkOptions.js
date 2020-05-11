@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { copyToClipboard } from '../../../common/clipboard';
 import { updateLinkAction } from '../../../redux/actions/chatAction';
+import { getAssetUrl } from '../../../common/assets';
 
 class GroupLinkOptions extends React.PureComponent {
 
@@ -15,7 +16,7 @@ class GroupLinkOptions extends React.PureComponent {
       <div className="chat-group-links-header">
         <p className="chat-group-links-header-title">Invite link settings</p>
         <div className="chat-group-links-header-close-button clickable"
-          style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_close.svg)` }}
+          style={{ backgroundImage: `url(${getAssetUrl('ic_chat_close')})` }}
           onClick={() => this.props.onClose()}
         />
       </div>

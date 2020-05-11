@@ -5,6 +5,7 @@ import FileOpenModal from '../FileOpenModal';
 import Dropdown from '../Dropdown';
 import notifyToast from '../../../common/toast';
 import { searchGameAction } from '../../../redux/actions/gameAction';
+import { getAssetUrl } from '../../../common/assets';
 
 export const MAXIMUM_GROUP_SIZE = 37;
 
@@ -61,7 +62,7 @@ class GroupCreation extends React.Component {
 
         <div className="chat-group-creation-header-icon clickable"
           style={{
-            backgroundImage: `url(${this.state.icon || 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_icon.svg'})`,
+            backgroundImage: `url(${this.state.icon || getAssetUrl('ic_chat_group_icon')}`,
             backgroundSize: this.state.icon ? 'cover' : 'inherit',
           }}
           onClick={() => this.setState({ uploadingPhoto: true })}

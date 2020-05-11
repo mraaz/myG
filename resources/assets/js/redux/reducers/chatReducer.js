@@ -4,6 +4,7 @@ import { reEncryptMessages, sendGroupKeys } from '../../common/encryption';
 import { encryptMessage, decryptMessage, deserializeKey } from '../../integration/encryption';
 import { requestGroupPrivateKey, confirmGroupPrivateKey } from '../../integration/http/guest';
 import notifyToast from '../../common/toast';
+import { getAssetUrl } from '../../common/assets';
 
 export default function reducer(state = {
   userId: null,
@@ -702,7 +703,7 @@ export default function reducer(state = {
 function playMessageSound() {
   try {
     logger.log('CHAT', 'Redux -> Playing Notification Sound');
-    new Audio('https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/notification.mp3').play();
+    new Audio(`${getAssetUrl('sound_notification')}`).play();
   } catch (error) {
     console.error('Error While Playing Message Notification:', error);
   }

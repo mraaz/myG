@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { getAssetUrl } from '../../../../common/assets';
 
 export default function Divider(name, expanded, onClick, renderFunction) {
   const chevronType = expanded ? 'down' : 'right';
@@ -12,7 +13,7 @@ export default function Divider(name, expanded, onClick, renderFunction) {
         <div className="messenger-body-section-header-info">
           <div
             className="messenger-body-section-header-icon"
-            style={{ backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_messenger_chevron_${chevronType}.svg')` }}
+            style={{ backgroundImage: `url('${getAssetUrl(`ic_messenger_chevron_${chevronType}`)}')` }}
           />
         </div>
       </div>

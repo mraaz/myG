@@ -1,6 +1,7 @@
 import React from 'react'
 import EncryptionSettings from './EncryptionSettings'
 import BlockedUsers from './BlockedUsers'
+import { getAssetUrl } from '../../../../common/assets'
 
 export default class Settings extends React.PureComponent {
   state = {
@@ -45,7 +46,7 @@ export default class Settings extends React.PureComponent {
             <div
               className='messenger-change-game-icon-button clickable'
               style={{
-                backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_icon.svg)`,
+                backgroundImage: `url(${getAssetUrl('ic_chat_group_icon')})`,
               }}
               onClick={() => this.props.onUploadPhoto(game.gameId)}
             />

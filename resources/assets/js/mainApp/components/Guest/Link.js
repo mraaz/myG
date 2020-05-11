@@ -8,6 +8,7 @@ import { monitorChats, closeSubscription } from '../../../integration/ws/chat';
 import notifyToast from '../../../common/toast';
 import Chat from './Chat';
 import Register from './Register';
+import { getAssetUrl } from '../../../common/assets';
 
 class GuestLink extends React.PureComponent {
 
@@ -99,7 +100,7 @@ class GuestLink extends React.PureComponent {
   render() {
     return (
       <div id="guest-container"
-        style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/guest_background.jpg)` }}
+        style={{ backgroundImage: `url(${getAssetUrl('guest_background')})` }}
       >
         {!!this.props.hasChat && this.renderChat()}
         {this.renderKicked()}

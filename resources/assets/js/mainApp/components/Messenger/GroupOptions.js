@@ -8,6 +8,7 @@ import FileOpenModal from '../FileOpenModal';
 import { WithTooltip } from '../Tooltip';
 import { updateChatAction, clearChatAction, deleteChatAction, exitGroupAction } from '../../../redux/actions/chatAction';
 import { copyToClipboard } from '../../../common/clipboard'
+import { getAssetUrl } from '../../../common/assets';
 
 class GroupOptions extends React.PureComponent {
 
@@ -99,7 +100,7 @@ class GroupOptions extends React.PureComponent {
           <div className="chat-component-options-row">
 
             <div className="chat-component-options-group-icon clickable"
-              style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_icon.svg)` }}
+              style={{ backgroundImage: `url(${getAssetUrl('ic_chat_group_icon')})` }}
               onClick={() => this.setState({ uploadingPhoto: true })}
             />
 
@@ -134,7 +135,7 @@ class GroupOptions extends React.PureComponent {
           >
             <div
               className="chat-component-options-option-icon"
-              style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_delete.svg)` }}
+              style={{ backgroundImage: `url(${getAssetUrl('ic_chat_delete')})` }}
             />
             clear
           </div>
@@ -145,7 +146,7 @@ class GroupOptions extends React.PureComponent {
           >
             <div
               className="chat-component-options-option-icon"
-              style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_mute.svg)` }}
+              style={{ backgroundImage: `url(${getAssetUrl('ic_chat_mute')})` }}
             />
             {this.props.group.muted ? 'unmute' : 'mute'}
           </div>
@@ -158,7 +159,7 @@ class GroupOptions extends React.PureComponent {
         >
           <div
             className="chat-component-options-option-icon"
-            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_group_members.svg)` }}
+            style={{ backgroundImage: `url(${getAssetUrl('ic_chat_group_members')})` }}
           />
           {isGroupModerator ? 'manage group members' : 'check group members'}
         </div>

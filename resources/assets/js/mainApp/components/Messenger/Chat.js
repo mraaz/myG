@@ -12,6 +12,7 @@ import { prepareChatAction, fetchMessagesAction, sendMessageAction, editMessageA
 import { withDatesAndLogs } from '../../../common/chat';
 import { encryptMessage, decryptMessage, deserializeKey } from '../../../integration/encryption';
 import { formatDateTime } from '../../../common/date';
+import { getAssetUrl } from '../../../common/assets';
 
 export class Chat extends React.PureComponent {
 
@@ -205,22 +206,22 @@ export class Chat extends React.PureComponent {
             {(!this.state.settings || this.props.minimised) && (
               <div className="chat-component-header-top-buttons">
                 <div className="chat-component-header-button clickable"
-                  style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_minimise.svg)` }}
+                  style={{ backgroundImage: `url(${getAssetUrl('ic_chat_minimise')})` }}
                   onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}
                 />
                 <div className="chat-component-header-button clickable"
-                  style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_maximise.svg)` }}
+                  style={{ backgroundImage: `url(${getAssetUrl('ic_chat_maximise')})` }}
                   onClick={() => this.props.updateChatState(this.props.chatId, { maximised: !this.props.maximised, minimised: false })}
                 />
                 <div className="chat-component-header-button clickable"
-                  style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_close.svg)` }}
+                  style={{ backgroundImage: `url(${getAssetUrl('ic_chat_close')})` }}
                   onClick={() => this.props.onClose(this.props.chatId)}
                 />
               </div>
             )}
             <div
               className="chat-component-header-settings clickable"
-              style={{ backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_settings.svg')` }}
+              style={{ backgroundImage: `url(${getAssetUrl('ic_chat_settings')})` }}
               onClick={() => this.setState(previous => ({ settings: !previous.settings }))}
             />
           </div>
@@ -392,7 +393,7 @@ export class Chat extends React.PureComponent {
         <div className="chat-component-attach-button-container">
           <div className={`chat-component-attach-button clickable ${rotatedStyle}`}
             onClick={() => this.setState(previous => ({ showAttachWindow: !previous.showAttachWindow }))}
-            style={{ backgroundImage: `url(https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Chat/ic_chat_attach.svg)` }}
+            style={{ backgroundImage: `url(${getAssetUrl('ic_chat_attach')})` }}
           />
           <div className="chat-component-attach-button-divider" />
         </div>
