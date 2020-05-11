@@ -273,9 +273,9 @@ export default class ComposeSection extends Component {
                       <span className='button video-btn'>
                         <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Video.svg`} />
                       </span>
-                      <span className='button video-btn'>
+                      {/* <span className='button video-btn'>
                         <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Audio.svg`} />
-                      </span>
+                      </span> */}
                     </div>
                     <div className='text'>
                       Or <span>click here </span> to select
