@@ -195,39 +195,52 @@ export class Chat extends React.PureComponent {
           }
 
           {this.props.subtitle && (
-            <div className="chat-component-header-subtitle">
-              {this.props.subtitle}
-            </div>
+            this.props.isGroup ?
+              (
+                <WithTooltip position={{ bottom: '16px', left: '-12px' }} text={this.props.contacts.slice(0, 10).map(contact => contact.name).join('\n')}>
+                  <div className="chat-component-header-subtitle">
+                    {this.props.subtitle}
+                  </div>
+                </WithTooltip>
+              ) :
+              (
+                <div className="chat-component-header-subtitle">
+                  {this.props.subtitle}
+                </div>
+              )
           )}
+
         </div>
 
-        {!this.props.isGuest && (
-          <div className="chat-component-header-options">
-            {(!this.state.settings || this.props.minimised) && (
-              <div className="chat-component-header-top-buttons">
-                <div className="chat-component-header-button clickable"
-                  style={{ backgroundImage: `url(${getAssetUrl('ic_chat_minimise')})` }}
-                  onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}
-                />
-                <div className="chat-component-header-button clickable"
-                  style={{ backgroundImage: `url(${getAssetUrl('ic_chat_maximise')})` }}
-                  onClick={() => this.props.updateChatState(this.props.chatId, { maximised: !this.props.maximised, minimised: false })}
-                />
-                <div className="chat-component-header-button clickable"
-                  style={{ backgroundImage: `url(${getAssetUrl('ic_chat_close')})` }}
-                  onClick={() => this.props.onClose(this.props.chatId)}
-                />
-              </div>
-            )}
-            <div
-              className="chat-component-header-settings clickable"
-              style={{ backgroundImage: `url(${getAssetUrl('ic_chat_settings')})` }}
-              onClick={() => this.setState(previous => ({ settings: !previous.settings }))}
-            />
-          </div>
-        )}
+        {
+          !this.props.isGuest && (
+            <div className="chat-component-header-options">
+              {(!this.state.settings || this.props.minimised) && (
+                <div className="chat-component-header-top-buttons">
+                  <div className="chat-component-header-button clickable"
+                    style={{ backgroundImage: `url(${getAssetUrl('ic_chat_minimise')})` }}
+                    onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}
+                  />
+                  <div className="chat-component-header-button clickable"
+                    style={{ backgroundImage: `url(${getAssetUrl('ic_chat_maximise')})` }}
+                    onClick={() => this.props.updateChatState(this.props.chatId, { maximised: !this.props.maximised, minimised: false })}
+                  />
+                  <div className="chat-component-header-button clickable"
+                    style={{ backgroundImage: `url(${getAssetUrl('ic_chat_close')})` }}
+                    onClick={() => this.props.onClose(this.props.chatId)}
+                  />
+                </div>
+              )}
+              <div
+                className="chat-component-header-settings clickable"
+                style={{ backgroundImage: `url(${getAssetUrl('ic_chat_settings')})` }}
+                onClick={() => this.setState(previous => ({ settings: !previous.settings }))}
+              />
+            </div>
+          )
+        }
 
-      </div>
+      </div >
     );
   }
 
