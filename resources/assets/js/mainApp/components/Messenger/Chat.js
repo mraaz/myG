@@ -13,6 +13,7 @@ import { withDatesAndLogs } from '../../../common/chat';
 import { encryptMessage, decryptMessage, deserializeKey } from '../../../integration/encryption';
 import { formatDateTime } from '../../../common/date';
 import { getAssetUrl } from '../../../common/assets';
+import { showMessengerAlert } from '../../../common/alert';
 
 export class Chat extends React.PureComponent {
 
@@ -302,9 +303,9 @@ export class Chat extends React.PureComponent {
   renderEmptyChatMessage() {
     if (this.props.messages.length) return;
     return (
-      <div className="chat-component-empty-chat-message">
+      <div className="chat-component-empty-chat-message clickable" onClick={() => showMessengerAlert("Most E2E store a secret key on a device. This means you need a device to access your messages. myG emails you the secret key, which allows you to get E2E without additional gadgets. Only you have access to this key and with it you can decrypt your chat history. With great power, comes great responsibility. If you lose your key unfortunately, you will also lose your chat history, not even the god-like nerds @ myG can recover this.")}>
         <p>Messages you send to this chat are secured with end-to-end encryption.</p>
-        <p>Please remember your encryption key, otherwise you will lose your chat history.</p>
+        <p>Please keep your encryption key safe, otherwise you will LOSE your chat history. Click for more info.</p>
       </div>
     );
   }
