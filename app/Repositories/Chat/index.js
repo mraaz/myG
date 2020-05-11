@@ -657,7 +657,8 @@ class ChatRepository {
   }
 
   async setTyping({ requestingUserId, requestedChatId, isTyping }) {
-    this._notifyChatEvent({ chatId: requestedChatId, action: 'typing', payload: { userId: requestingUserId, chatId: requestedChatId, isTyping } });
+    const senderName = (await User.query().where('id', '=', requestingUserId).first()).toJSON().alias;
+    this._notifyChatEvent({ chatId: requestedChatId, action: 'typing', payload: { userId: requestingUserId, chatId: requestedChatId, isTyping, senderName } });
     return new DefaultSchema({ success: true });
   }
 
