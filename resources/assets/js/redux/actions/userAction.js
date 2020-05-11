@@ -1,8 +1,15 @@
-import { favoriteGame, unfavoriteGame, updateGameIcon, fetchContacts, fetchContact, fetchStatus, updateStatus, fetchFriendRequests, addAsFriend, searchUsers } from '../../integration/http/user';
+import { favoriteGame, unfavoriteGame, updateGameIcon, fetchContacts, fetchContact, fetchStatus, updateStatus, fetchFriendRequests, addAsFriend, searchUsers, toggleNotificationSounds } from '../../integration/http/user';
 
 export function logoutAction() {
   return {
     type: 'USER_LOGOUT'
+  }
+}
+
+export function loadUserInfoAction(userInfo) {
+  return {
+    type: 'LOAD_USER_INFO',
+    payload: userInfo || {},
   }
 }
 
@@ -92,5 +99,13 @@ export function searchUsersAction(input) {
   return {
     type: 'SEARCH_USERS',
     payload: searchUsers(input)
+  }
+}
+
+export function toggleNotificationSoundsAction(disabled) {
+  return {
+    type: 'TOGGLE_NOTIFICATION_SOUNDS',
+    payload: toggleNotificationSounds(disabled),
+    meta: { disabled },
   }
 }

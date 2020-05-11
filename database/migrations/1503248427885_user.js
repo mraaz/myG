@@ -27,6 +27,7 @@ class UserSchema extends Schema {
       table.boolean('status_locked').notNullable().defaultTo(false)
       table.datetime('last_seen').nullable()
       table.string('public_key', 172).nullable()
+      table.boolean('notification_sounds_disabled').notNullable().defaultTo(false)
       table.integer('level').unsigned().defaultTo(1)
       table.integer('experience_points').notNullable().defaultTo(0)
       table.integer('stashed_experience_points').nullable().defaultTo(0)

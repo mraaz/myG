@@ -78,6 +78,7 @@ Route.get('/api/user/:id/addFriend', 'UserController.addFriend')
 Route.get('/api/user/:id/unfriend', 'UserController.unfriend')
 Route.post('/api/user/playerSearchResults', 'UserController.playerSearchResults')
 Route.post('/api/user/keywordSearchResults', 'UserController.keywordSearchResults')
+Route.put('/api/user/notification_sounds', 'UserController.toggleNotificationSounds')
 
 Route.post('/api/GameExperiences/commend/:game_exp_id', 'GameExperienceController.updateCommend')
 Route.get('/api/GameExperiences/exp/:id', 'GameExperienceController.myShow')

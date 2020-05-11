@@ -197,6 +197,31 @@
     color: #fff;
   }
 
+  .messenger-settings-sound-enabled {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+  }
+
+  .messenger-settings-sound-enabled-hint {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .messenger-settings-sound-enabled-title {
+    color: #FFF;
+    font-size: 16px;
+    font-weight: 1000;
+  }
+
+  .messenger-settings-sound-enabled-subtitle {
+    color: #A0A0A0;
+    font-size: 12px;
+    margin-top: 4px;
+  }
+
   .messenger-settings-encryption-container {
     display: flex;
     flex-direction: column;

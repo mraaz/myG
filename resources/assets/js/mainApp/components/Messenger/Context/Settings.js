@@ -1,11 +1,28 @@
-import React from 'react'
-import EncryptionSettings from './EncryptionSettings'
-import BlockedUsers from './BlockedUsers'
-import { getAssetUrl } from '../../../../common/assets'
+import React from 'react';
+import ToggleButton from 'react-toggle-button';
+import EncryptionSettings from './EncryptionSettings';
+import BlockedUsers from './BlockedUsers';
+import { getAssetUrl } from '../../../../common/assets';
 
 export default class Settings extends React.PureComponent {
+
   state = {
     favoriteGameInput: '',
+  }
+
+  renderNotificationSoundSettings = () => {
+    return (
+      <div className="messenger-settings-sound-enabled">
+        <div className="messenger-settings-sound-enabled-hint">
+          <div className="messenger-settings-sound-enabled-title">Sound Alerts</div>
+          <div className="messenger-settings-sound-enabled-subtitle">Receive an alert for messages received.</div>
+        </div>
+        <ToggleButton
+          value={!this.props.notificationSoundsDisabled}
+          onToggle={notificationSoundsDisabled => this.props.toggleNotificationSounds(notificationSoundsDisabled)}
+        />
+      </div>
+    );
   }
 
   renderGamesSettings = () => {
@@ -13,9 +30,9 @@ export default class Settings extends React.PureComponent {
     const maxedOut = this.props.favoriteGames.length >= 10
     const games = maxedOut
       ? this.props.games
-          .slice(0)
-          .sort((g1, g2) => (g1.isFavorite === g2.isFavorite ? 0 : g1.isFavorite ? -1 : 1))
-          .slice(0, 10)
+        .slice(0)
+        .sort((g1, g2) => (g1.isFavorite === g2.isFavorite ? 0 : g1.isFavorite ? -1 : 1))
+        .slice(0, 10)
       : this.props.games.slice(0).filter((game) => search(game.name))
     return (
       <div className='messenger-settings-encryption-container'>
@@ -87,6 +104,7 @@ export default class Settings extends React.PureComponent {
     return (
       <div className='messenger-settings-container'>
         <p className='messenger-settings-title'>Settings</p>
+        {this.renderNotificationSoundSettings()}
         {this.renderEncryptionSettings()}
         {this.renderGamesSettings()}
         {this.renderBlockedUsers()}

@@ -14,8 +14,20 @@ export default function reducer(state = {
   preparingMessenger: false,
   guestLink: null,
   blockedUsers: [],
+  notificationSoundsDisabled: false,
 }, action) {
   switch (action.type) {
+
+    case "LOAD_USER_INFO": {
+      logger.log('User', `Redux -> Loading User Info (Chat): `, action.payload);
+      return {
+        ...state,
+        userId: action.payload.id,
+        alias: action.payload.alias,
+        icon: action.payload.profile_img,
+        notificationSoundsDisabled: !!action.payload.notification_sounds_disabled,
+      };
+    }
 
     case "PREPARE_MESSENGER_PENDING": {
       return {
@@ -222,7 +234,7 @@ export default function reducer(state = {
       const unreadMessages = JSON.parse(JSON.stringify(state.unreadMessages));
       if (!chat) return state;
       if (state.blockedUsers.includes(message.senderId)) return state;
-      if (!chat.muted && !window.focused && message.senderId !== userId && !message.keyReceiver) playMessageSound();
+      if (!chat.muted && !window.focused && message.senderId !== userId && !message.keyReceiver) playMessageSound(state.notificationSoundsDisabled);
       if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
       if (!chat.muted && !message.keyReceiver) {
         const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== chatId);
@@ -545,7 +557,7 @@ export default function reducer(state = {
       const chats = JSON.parse(JSON.stringify(state.chats));
       const chat = chats.find(candidate => candidate.chatId === chatId);
       if (!chat) return state;
-      playMessageSound();
+      playMessageSound(state.notificationSoundsDisabled);
       if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
       chat.closed = false;
       chat.minimised = false;
@@ -695,13 +707,22 @@ export default function reducer(state = {
       };
     }
 
+    case "TOGGLE_NOTIFICATION_SOUNDS_FULFILLED": {
+      logger.log('CHAT', `Redux -> Toggle Notification Sounds: `, action.meta);
+      return {
+        ...state,
+        notificationSoundsDisabled: action.meta.disabled,
+      }
+    }
+
     default: return state;
 
   }
 }
 
-function playMessageSound() {
+function playMessageSound(disabled) {
   try {
+    if (disabled) return logger.log('CHAT', 'Redux -> Not Playing Notification Sound due to DISABLED');
     logger.log('CHAT', 'Redux -> Playing Notification Sound');
     new Audio(`${getAssetUrl('sound_notification')}`).play();
   } catch (error) {

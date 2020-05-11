@@ -234,6 +234,23 @@ class UserController {
       return 'You are not Logged In!'
     }
   }
+
+  async toggleNotificationSounds({ auth, request }) {
+    if (auth.user) {
+      try {
+        await User.query()
+          .where('id', '=', auth.user.id)
+          .update({
+            notification_sounds_disabled: request.only('disabled').disabled
+          });
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
 }
 
 module.exports = UserController

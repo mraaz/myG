@@ -4,14 +4,27 @@ import logger from '../../common/logger';
 export default function reducer(state = {
   userId: null,
   alias: null,
+  icon: null,
   status: 'online',
   isStatusLocked: false,
   contacts: [],
   games: [],
   friendRequests: [],
   foundUsers: [],
+  notificationSoundsDisabled: false,
 }, action) {
   switch (action.type) {
+
+    case "LOAD_USER_INFO": {
+      logger.log('User', `Redux -> Loading User Info (User): `, action.payload);
+      return {
+        ...state,
+        userId: action.payload.id,
+        alias: action.payload.alias,
+        icon: action.payload.profile_img,
+        notificationSoundsDisabled: !!action.payload.notification_sounds_disabled,
+      };
+    }
 
     case "PREPARE_MESSENGER_FULFILLED": {
       logger.log('CHAT', `Redux -> Messenger Ready (User): `, action.payload);
@@ -152,6 +165,14 @@ export default function reducer(state = {
         ...state,
         contacts
       };
+    }
+
+    case "TOGGLE_NOTIFICATION_SOUNDS_FULFILLED": {
+      logger.log('USER', `Redux -> Toggle Notification Sounds: `, action.meta);
+      return {
+        ...state,
+        notificationSoundsDisabled: action.meta.disabled,
+      }
     }
 
     default: return state;

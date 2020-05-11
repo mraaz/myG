@@ -17,7 +17,7 @@ import FileOpenModal from '../FileOpenModal';
 import { handleLink } from "../../../common/link";
 import { monitorChats, closeSubscription } from '../../../integration/ws/chat';
 import { createChatAction, openChatAction, closeChatAction, clearChatAction, blockUserAction, unblockUserAction } from '../../../redux/actions/chatAction';
-import { favoriteGameAction, unfavoriteGameAction, updateGameIconAction, updateStatusAction } from '../../../redux/actions/userAction';
+import { favoriteGameAction, unfavoriteGameAction, updateGameIconAction, updateStatusAction, toggleNotificationSoundsAction } from '../../../redux/actions/userAction';
 import { generateKeysAction, validatePinAction } from '../../../redux/actions/encryptionAction';
 import { uploadGameIcon } from "../../../integration/http/chat";
 
@@ -91,12 +91,14 @@ class Messenger extends React.PureComponent {
       generateKeys={this.props.generateKeys}
       chats={this.props.chats}
       contacts={this.props.contacts}
+      notificationSoundsDisabled={this.props.notificationSoundsDisabled}
       blockedUsers={this.props.blockedUsers}
       blockUser={this.props.blockUser}
       unblockUser={this.props.unblockUser}
       favoriteGame={this.props.favoriteGame}
       unfavoriteGame={this.props.unfavoriteGame}
       clearChat={this.props.clearChat}
+      toggleNotificationSounds={this.props.toggleNotificationSounds}
       toggleSettings={() => this.setState(previous => ({ blockSettings: !previous.blockSettings }))}
       onUploadPhoto={gameId => this.setState({ uploadingPhoto: gameId })}
     />
@@ -234,6 +236,7 @@ function mapStateToProps(state) {
   contacts.forEach(contact => contact.chat = contactsWithChats[contact.contactId] || {});
   return {
     alert: state.alert.show,
+    notificationSoundsDisabled: state.user.notificationSoundsDisabled,
     status: state.user.status,
     isStatusLocked: state.user.isStatusLocked,
     chats: state.chat.chats,
@@ -263,6 +266,7 @@ function mapDispatchToProps(dispatch) {
     unblockUser: (blockedUserId) => dispatch(unblockUserAction(blockedUserId)),
     updateGameIcon: (gameId, icon) => dispatch(updateGameIconAction(gameId, icon)),
     updateStatus: (status, forcedStatus) => dispatch(updateStatusAction(status, forcedStatus)),
+    toggleNotificationSounds: (disabled) => dispatch(toggleNotificationSoundsAction(disabled)),
   });
 }
 

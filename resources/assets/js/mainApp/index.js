@@ -18,6 +18,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import { store, persistor } from '../redux/Store'
+import { loadUserInfoToReduxStore } from '../common/user';
 
 import {
   Home,
@@ -88,6 +89,9 @@ class Layout extends Component {
         self.setState({
           initialData: initialData.data,
         })
+        
+        loadUserInfoToReduxStore(initialData.data.userInfo);
+
       } catch (error) {
         console.log(error)
       }
