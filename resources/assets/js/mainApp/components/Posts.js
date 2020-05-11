@@ -7,6 +7,8 @@ import ComposeSection from './ComposeSection_v2'
 export default class Posts extends Component {
   constructor() {
     super()
+    const self = this
+
     this.state = {
       counter: 0,
       myPosts: [],
@@ -35,10 +37,8 @@ export default class Posts extends Component {
     if (this.state.myPosts.length > 0) {
       window.scrollTo(0, document.documentElement.offsetHeight - 4000)
     }
-    const self = this
 
-    const getPosts = async function () {
-      const self = this
+    const getPosts = async function() {
       try {
         // const myPosts = await axios.get(`/api/post/${self.state.counter}`)
 
@@ -88,7 +88,7 @@ export default class Posts extends Component {
 
   composeSuccess = async () => {
     const { myPosts = [] } = this.state
-    const self = this
+
     this.setState({
       isFetching: true,
     })
