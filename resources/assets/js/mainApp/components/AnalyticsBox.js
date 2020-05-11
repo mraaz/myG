@@ -55,14 +55,14 @@ export default class AnalyticsBox extends Component {
                 <div className='inside-circle-value'>{user_level}</div>
                 {/* <div className='inside-circle-value'>{level_max_points}</div> */}
               </div>
-            </section>
-            <div className='ratings'>
-              {/* <p className='social-box-text'>Avg Rating</p>
+              <div className='ratings'>
+                {/* <p className='social-box-text'>Avg Rating</p>
               <p className='social-box-count'>4.66/5</p>
               <p className='social-box-text review bottom-border'>{user_experience} reviews</p> */}
-              <p className='social-box-text'>Experience Pts.</p>
-              <p className='social-box-count'>{user_experience}</p>
-            </div>
+                <p className='social-box-text'>Experience Pts.</p>
+                <p className='social-box-count'>{user_experience}</p>
+              </div>
+            </section>
           </div>
 
           <div className='social-box'>
