@@ -9,7 +9,6 @@ Modal.setAppElement('#app')
 export default class UploadPic extends Component {
   constructor() {
     super()
-    self = this
     this.state = {
       shouldCloseOnOverlayClick_: true,
       files: [],
