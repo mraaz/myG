@@ -25,7 +25,7 @@ export default class PostFileModal extends Component {
       selected_group: [],
       selectedGroup: [],
       groups_im_in: [],
-      everyone: true,
+      visibility: 1,
     }
 
     this.closeModal = this.closeModal.bind(this)
@@ -183,6 +183,7 @@ export default class PostFileModal extends Component {
         media_url: tmp,
         content: this.state.post_content,
         selected_group: this.state.selected_group,
+        visibility: this.state.visibility,
       },
       keys
     )
@@ -200,22 +201,12 @@ export default class PostFileModal extends Component {
       [name]: value,
     })
   }
-  handleVisibityChange = (event) => {
+  handleVisibityChange = (event, value) => {
     const name = event.target.name
-    const value = event.target.type == 'checkbox' ? event.target.checked : event.target.value
-    if (name == 'everyone') {
-      this.setState({
-        [name]: value,
-        onlyme: false,
-        followers: false,
-        friend: false,
-      })
-    } else {
-      this.setState({
-        [name]: value,
-        everyone: false,
-      })
-    }
+    // const value = event.target.type == 'checkbox' ? event.target.checked : event.target.value
+    this.setState({
+      visibility: value,
+    })
   }
 
   handleAcceptedFiles = (Files) => {
@@ -445,28 +436,52 @@ export default class PostFileModal extends Component {
                   <div>
                     <label class='container'>
                       Everyone
-                      <input type='checkbox' name='everyone' checked={everyone} onChange={this.handleVisibityChange} value={1} />
+                      <input
+                        type='checkbox'
+                        name='everyone'
+                        checked={this.state.visibility == 1}
+                        onChange={(e) => this.handleVisibityChange(e, 1)}
+                        value={1}
+                      />
                       <span class='checkmark'></span>
                     </label>
                   </div>
                   <div>
                     <label class='container'>
                       Friends
-                      <input type='checkbox' name='friend' checked={friend} onChange={this.handleVisibityChange} value={1} />
+                      <input
+                        type='checkbox'
+                        name='friend'
+                        checked={this.state.visibility == 2}
+                        onChange={(e) => this.handleVisibityChange(e, 2)}
+                        value={2}
+                      />
                       <span class='checkmark'></span>
                     </label>
                   </div>
                   <div>
                     <label class='container'>
                       Followers
-                      <input type='checkbox' name='followers' checked={followers} onChange={this.handleVisibityChange} value={1} />
+                      <input
+                        type='checkbox'
+                        name='followers'
+                        checked={this.state.visibility == 3}
+                        onChange={(e) => this.handleVisibityChange(e, 3)}
+                        value={3}
+                      />
                       <span class='checkmark'></span>
                     </label>
                   </div>
                   <div>
                     <label class='container'>
                       Private
-                      <input type='checkbox' name='onlyme' checked={onlyme} onChange={this.handleVisibityChange} value={1} />
+                      <input
+                        type='checkbox'
+                        name='onlyme'
+                        checked={this.state.visibility == 0}
+                        onChange={(e) => this.handleVisibityChange(e, 0)}
+                        value={0}
+                      />
                       <span class='checkmark'></span>
                     </label>
                   </div>
