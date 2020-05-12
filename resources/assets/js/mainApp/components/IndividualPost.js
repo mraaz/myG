@@ -564,7 +564,7 @@ export default class IndividualPost extends Component {
                       {`shared `}
                       <div className='arrow'></div>
                       {this.state.show_group_name && this.state.group_name && (
-                        <Link to={`/groups/${post.group_id}`}>@{this.state.group_name}</Link>
+                        <Link to={`/groups/${post.group_id}`}>{this.state.group_name}</Link>
                       )}
                     </div>
                   )}
@@ -708,6 +708,7 @@ export default class IndividualPost extends Component {
                 <div className='online__status'></div>
               </div>
             </div>
+            {this.state.uploading && <div className='uploadImage_loading'>Uploading ...</div>}
             {this.state.preview_file.length > 0 && (
               <div className='preview__image'>
                 <img src={`${this.state.preview_file[0]}`} />
