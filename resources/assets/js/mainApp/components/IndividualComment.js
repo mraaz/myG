@@ -28,7 +28,7 @@ export default class IndividualComment extends Component {
       comment_time: '',
       alert: null,
       uploading: false,
-      preview_file: ['https://myg-test-media-files.s3-ap-southeast-2.amazonaws.com/rubick.JPG'],
+      preview_file: [],
       file_keys: [],
     }
     this.textInput = null
