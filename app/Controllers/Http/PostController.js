@@ -7,15 +7,122 @@ const LikeController = use('./LikeController')
 
 class PostController {
   async store({ auth, request, response }) {
+    let arrGroups_id = [],
+      newPost = ''
+
+    if (request.input('groups_id') != null) {
+      arrGroups_id = request.input('groups_id').split(',')
+    }
+
     if (auth.user) {
-      const newPost = await Post.create({
-        content: request.input('content'),
-        user_id: auth.user.id,
-        type: 'text',
-        group_id: request.input('groups_id'),
-        visibility: request.input('visibility'),
-      })
-      return newPost.id
+      if (arrGroups_id.length == 0) {
+        newPost = await Post.create({
+          content: request.input('content'),
+          user_id: auth.user.id,
+          type: 'text',
+          group_id: request.input('groups_id'),
+          visibility: request.input('visibility'),
+          media_url: request.input('media_url'),
+        })
+      } else {
+        for (var i = 0; i < arrGroups_id.length; i++) {
+          newPost = await Post.create({
+            content: request.input('content'),
+            user_id: auth.user.id,
+            type: 'text',
+            group_id: arrGroups_id[i],
+            visibility: request.input('visibility'),
+            media_url: request.input('media_url'),
+          })
+        }
+      }
+
+      return newPost
+    }
+  }
+
+  async storephoto({ auth, request, response }) {
+    let arrGroups_id = [],
+      newPost = ''
+
+    if (request.input('groups_id') != null) {
+      arrGroups_id = request.input('groups_id').split(',')
+    }
+    if (auth.user) {
+      try {
+        if (arrGroups_id.length == 0) {
+          newPost = await Post.create({
+            content: request.input('content'),
+            user_id: auth.user.id,
+            type: 'photo',
+            group_id: request.input('groups_id'),
+            visibility: request.input('visibility'),
+            media_url: request.input('media_url'),
+          })
+        } else {
+          for (var i = 0; i < arrGroups_id.length; i++) {
+            newPost = await Post.create({
+              content: request.input('content'),
+              user_id: auth.user.id,
+              type: 'photo',
+              group_id: arrGroups_id[i],
+              visibility: request.input('visibility'),
+              media_url: request.input('media_url'),
+            })
+          }
+        }
+
+        let update_key = new AwsKeyController()
+        request.params.post_id = newPost.id
+        update_key.addPostKey({ auth, request, response })
+
+        return newPost
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+
+  async storevideo({ auth, request, response }) {
+    let arrGroups_id = [],
+      newPost = ''
+
+    if (request.input('groups_id') != null) {
+      arrGroups_id = request.input('groups_id').split(',')
+    }
+
+    if (auth.user) {
+      try {
+        if (arrGroups_id.length == 0) {
+          newPost = await Post.create({
+            content: request.input('content'),
+            user_id: auth.user.id,
+            type: 'video',
+            group_id: request.input('groups_id'),
+            visibility: request.input('visibility'),
+            media_url: request.input('media_url'),
+          })
+        } else {
+          for (var i = 0; i < arrGroups_id.length; i++) {
+            newPost = await Post.create({
+              content: request.input('content'),
+              user_id: auth.user.id,
+              type: 'video',
+              group_id: arrGroups_id[i],
+              visibility: request.input('visibility'),
+              media_url: request.input('media_url'),
+            })
+          }
+        }
+
+        let update_key = new AwsKeyController()
+        request.params.post_id = newPost.id
+        update_key.addPostKey({ auth, request, response })
+
+        return newPost
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 
@@ -324,50 +431,6 @@ class PostController {
           .where({ id: request.params.id })
           .update({ content: request.input('content') })
         return 'Saved successfully'
-      } catch (error) {
-        console.log(error)
-      }
-    }
-  }
-
-  async storephoto({ auth, request, response }) {
-    if (auth.user) {
-      try {
-        const newPost = await Post.create({
-          content: request.input('content'),
-          media_url: request.input('media_url'),
-          user_id: auth.user.id,
-          type: 'photo',
-          group_id: request.input('groups_id'),
-        })
-
-        let update_key = new AwsKeyController()
-        request.params.post_id = newPost.id
-        update_key.addPostKey({ auth, request, response })
-
-        return newPost.id
-      } catch (error) {
-        console.log(error)
-      }
-    }
-  }
-
-  async storevideo({ auth, request, response }) {
-    if (auth.user) {
-      try {
-        const newPost = await Post.create({
-          content: request.input('content'),
-          media_url: request.input('media_url'),
-          user_id: auth.user.id,
-          type: 'video',
-          group_id: request.input('groups_id'),
-        })
-
-        let update_key = new AwsKeyController()
-        request.params.post_id = newPost.id
-        update_key.addPostKey({ auth, request, response })
-
-        return newPost.id
       } catch (error) {
         console.log(error)
       }

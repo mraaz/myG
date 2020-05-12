@@ -51,7 +51,7 @@ export default class ScheduleGames_Header extends Component {
       visibility_box: null,
       when: null,
       isChecked: true,
-      db_row_counter: 0,
+      db_row_counter: 1,
       show_prev: false,
       show_more: false,
     }
@@ -91,25 +91,25 @@ export default class ScheduleGames_Header extends Component {
       allscheduledGames: [],
     })
 
-    if (tmp_allscheduledGames.data.latestScheduledGames.length > 10) {
+    if (tmp_allscheduledGames.data.latestScheduledGames.data.length > 10) {
       this.setState({
         show_more: true,
       })
-      tmp_allscheduledGames.data.latestScheduledGames.pop()
+      tmp_allscheduledGames.data.latestScheduledGames.data.pop()
     } else {
       this.setState({
         show_more: false,
       })
     }
     this.setState({
-      allscheduledGames: tmp_allscheduledGames.data.latestScheduledGames,
+      allscheduledGames: tmp_allscheduledGames.data.latestScheduledGames.data,
     })
   }
 
   fetchMoreData = () => {
     this.setState(
       {
-        db_row_counter: this.state.db_row_counter + 10,
+        db_row_counter: this.state.db_row_counter + 1,
       },
       () => {
         this.call_PullDataFunc()
@@ -124,7 +124,7 @@ export default class ScheduleGames_Header extends Component {
   fetchPrevData = () => {
     this.setState(
       {
-        db_row_counter: this.state.db_row_counter - 10,
+        db_row_counter: this.state.db_row_counter - 1,
       },
       () => {
         this.call_PullDataFunc()

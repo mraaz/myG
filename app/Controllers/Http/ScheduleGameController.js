@@ -347,18 +347,20 @@ class ScheduleGameController {
 
         if (request.input('visibility') != null) builder.where('visibility', request.input('visibility'))
       })
-      .limit(11)
-      .offset(parseInt(request.input('limit_clause'), 10))
       .orderBy('schedule_games.created_at', 'desc')
       .select('*', 'schedule_games.region', 'schedule_games.id', 'users.id as user_id')
+      .paginate(request.input('limit_clause'), 11)
+
+    //.limit(11)
+    //.offset(parseInt(request.input('limit_clause'), 10))
 
     //TODO BROKEN!!!!! https://github.com/mraaz/myGame/issues/157
     //NEED TO REVIST ONCE paginate is implemented.
 
-    for (var i = 0; i < latestScheduledGames.length; i++) {
+    for (var i = 0; i < latestScheduledGames.data.length; i++) {
       var myScheduledTrans = await Database.from('schedule_games_transactions')
         .innerJoin('game_name_fields', 'game_name_fields.id', 'schedule_games_transactions.game_name_fields_id')
-        .where({ schedule_games_id: latestScheduledGames[i].id })
+        .where({ schedule_games_id: latestScheduledGames.data[i].id })
         .where((builder) => {
           //Dota 2
           if (request.input('dota2_medal_ranks') != null)
@@ -382,16 +384,16 @@ class ScheduleGameController {
       for (var x = 0; x < myScheduledTrans.length; x++) {
         switch (myScheduledTrans[x].in_game_field) {
           case 'dota2_medal_ranks':
-            latestScheduledGames[i].dota2_medal_ranks = myScheduledTrans[x].values
+            latestScheduledGames.data[i].dota2_medal_ranks = myScheduledTrans[x].values
             break
           case 'dota2_server_regions':
-            latestScheduledGames[i].dota2_server_regions = myScheduledTrans[x].values
+            latestScheduledGames.data[i].dota2_server_regions = myScheduledTrans[x].values
             break
           case 'dota2_roles':
-            latestScheduledGames[i].dota2_roles = myScheduledTrans[x].values
+            latestScheduledGames.data[i].dota2_roles = myScheduledTrans[x].values
             break
           case 'clash_royale_trophies':
-            latestScheduledGames[i].clash_royale_trophies = myScheduledTrans[x].values
+            latestScheduledGames.data[i].clash_royale_trophies = myScheduledTrans[x].values
             break
         }
       }

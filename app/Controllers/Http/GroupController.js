@@ -56,6 +56,43 @@ class GroupController {
     }
   }
 
+  async groupSearchResults_Post({ auth, request, response }) {
+    try {
+      const all_groups_im_in = Database.from('usergroups')
+        .innerJoin('groups', 'groups.id', 'usergroups.group_id')
+        .where('usergroups.user_id', '=', auth.user.id)
+        .whereNot('usergroups.permission_level', 42)
+        .orWhere('groups.user_id', '=', auth.user.id)
+        .select('group_id')
+
+      const all_groups_im_in_ish = Database.from('usergroups')
+        .innerJoin('groups', 'groups.id', 'usergroups.group_id')
+        .where('usergroups.user_id', '=', auth.user.id)
+        .orWhere('groups.user_id', '=', auth.user.id)
+        .select('group_id')
+
+      const myGroupSearchResults = await Database.from('groups')
+        .where('name', 'like', '%' + request.params.str + '%')
+        .select('name', 'group_img', 'id', 'type')
+        .whereIn('id', all_groups_im_in)
+        .limit(88)
+
+      const groupSearchResults_im_not_in = await Database.from('groups')
+        .where('name', 'like', '%' + request.params.str + '%')
+        .whereNot('type', 3)
+        .select('name', 'group_img', 'id', 'type')
+        .whereNotIn('id', all_groups_im_in_ish)
+        .limit(18)
+
+      return {
+        myGroupSearchResults,
+        groupSearchResults_im_not_in,
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   async myshow({ auth, request, response }) {
     try {
       const myGroups = await Database.from('groups')
