@@ -27,8 +27,12 @@ export default class IndividualComment extends Component {
       content: '',
       comment_time: '',
       alert: null,
+      uploading: false,
+      preview_file: ['https://myg-test-media-files.s3-ap-southeast-2.amazonaws.com/rubick.JPG'],
+      file_keys: [],
     }
     this.textInput = null
+    this.fileInputRef = React.createRef()
 
     this.setTextInputRef = (element) => {
       this.textInput = element
@@ -243,7 +247,11 @@ export default class IndividualComment extends Component {
     if (e.key === 'Enter') {
       e.preventDefault()
       e.stopPropagation()
-      this.insert_reply()
+      if (!this.state.uploading) {
+        this.insert_reply()
+      } else {
+        toast.warn(<Toast_style text={'Opps,An image is uploading. Please Wait...'} />)
+      }
     }
   }
 
@@ -317,6 +325,8 @@ export default class IndividualComment extends Component {
         postReply = await axios.post('/api/replies', {
           content: self.state.value.trim(),
           comment_id: self.props.comment.id,
+          media_url: this.state.preview_file,
+          file_keys: this.state.file_keys,
         })
 
         let { comment, user } = self.props
@@ -326,12 +336,16 @@ export default class IndividualComment extends Component {
               other_user_id: comment.user_id,
               schedule_games_id: self.props.comment.schedule_games_id,
               reply_id: postReply.data.id,
+              media_url: this.state.preview_file,
+              file_keys: this.state.file_keys,
             })
           } else {
             const addReply = axios.post('/api/notifications/addReply', {
               other_user_id: comment.user_id,
               post_id: comment.post_id,
               reply_id: postReply.data.id,
+              media_url: this.state.preview_file,
+              file_keys: this.state.file_keys,
             })
           }
         }
@@ -433,6 +447,37 @@ export default class IndividualComment extends Component {
     }
   }
 
+  handleSelectFile = (e) => {
+    const fileList = e.target.files
+    let name = `reply_image_${+new Date()}`
+    this.doUploadS3(fileList[0], name, name)
+  }
+
+  doUploadS3 = async (file, id = '', name) => {
+    this.setState({
+      uploading: true,
+    })
+    const formData = new FormData()
+    formData.append('upload_file', file)
+    formData.append('filename', name)
+    try {
+      const post = await axios.post('/api/uploadFile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      this.setState({
+        preview_file: [post.data.Location],
+        file_keys: [post.data.Key],
+      })
+    } catch (error) {
+      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
+    }
+    this.setState({
+      uploading: false,
+    })
+  }
+
   render() {
     let { comment } = this.props
     if (this.state.comment_deleted != true) {
@@ -529,6 +574,15 @@ export default class IndividualComment extends Component {
                   <input type='file' accept='image/*' ref={this.fileInputRef} onChange={this.handleSelectFile} name='insert__images' />
                   <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
                 </div>
+                {this.state.uploading && <div className='uploadImage_loading'>Uploading ...</div>}
+                {this.state.preview_file.length > 0 && (
+                  <div className='preview__image'>
+                    <img src={`${this.state.preview_file[0]}`} />
+                    <div className='clear__preview__image' onClick={this.clearPreviewImage}>
+                      X
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

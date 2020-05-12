@@ -308,7 +308,7 @@ export default class IndividualPost extends Component {
         file_keys: [post.data.Key],
       })
     } catch (error) {
-      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again'} />)
+      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
     }
     this.setState({
       uploading: false,

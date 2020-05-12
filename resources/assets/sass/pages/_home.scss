@@ -1362,14 +1362,59 @@ section#content-container {
               .individual-comment-container {
                 width: 100%;
               }
-              .add-reply input {
-                width: 100%;
-                background: #ffffff 0% 0% no-repeat padding-box;
-                color: #1d2326;
-                padding: 10px;
+              .add-reply {
+                position: relative;
+                box-shadow: none;
                 border: none;
-                margin-bottom: 10px;
-                border-radius: 11px;
+                input {
+                  width: 100%;
+                  background: #ffffff 0% 0% no-repeat padding-box;
+                  color: #1d2326;
+                  padding: 10px;
+                  border: none;
+                  margin-bottom: 10px;
+                  border-radius: 11px;
+                }
+                .insert__images {
+                  position: absolute;
+                  right: -10px;
+                  top: 4px;
+                  z-index: 2;
+                  cursor: pointer;
+                  input {
+                    display: none;
+                  }
+                  img {
+                    padding-right: 18px;
+                    height: 25px;
+                  }
+                }
+                .uploadImage_loading {
+                  position: relative;
+                  top: 0;
+                  font-size: 12px;
+                }
+                .preview__image {
+                  position: relative;
+                  top: 0;
+                  height: 80px;
+                  margin-left: 0;
+                  border: 1px solid;
+                  width: 100%;
+                  padding: 5px;
+                  img {
+                    width: 120px;
+                    height: 100%;
+                  }
+                  .clear__preview__image {
+                    position: absolute;
+                    right: 4px;
+                    top: 4px;
+                    font-size: 10px;
+                    cursor: pointer;
+                    z-index: 5;
+                  }
+                }
               }
             }
           }
@@ -2418,6 +2463,7 @@ section#content-container {
       right: 20;
     }
     .image-gallery-fullscreen-button {
+      top: 0;
       .image-gallery-svg {
         height: 24px;
         width: 24px;
@@ -2662,14 +2708,61 @@ section#content-container {
             .individual-comment-container {
               width: 100%;
             }
-            .add-reply input {
-              width: 100%;
-              background: #ffffff 0% 0% no-repeat padding-box;
-              color: #1d2326;
-              padding: 10px;
+            .add-reply {
+              position: relative;
+              box-shadow: none;
               border: none;
-              margin-bottom: 10px;
-              border-radius: 11px;
+              input {
+                width: 100%;
+                background: #ffffff 0% 0% no-repeat padding-box;
+                color: #1d2326;
+                padding: 10px;
+                border: none;
+                margin-bottom: 10px;
+                border-radius: 11px;
+              }
+              .insert__images {
+                position: absolute;
+                right: 5px;
+                top: -18px;
+                z-index: 2;
+                cursor: pointer;
+                input {
+                  display: none;
+                }
+                img {
+                  padding-right: 18px;
+                  height: 35px;
+                }
+              }
+              .uploadImage_loading {
+                position: relative;
+                top: 23px;
+                width: 90%;
+                font-size: 12px;
+                margin-left: 40px;
+              }
+              .preview__image {
+                position: relative;
+                top: 22px;
+                height: 80px;
+                margin-left: 40px;
+                border: 1px solid;
+                width: 90%;
+                padding: 5px;
+                img {
+                  width: 120px;
+                  height: 100%;
+                }
+                .clear__preview__image {
+                  position: absolute;
+                  right: 4px;
+                  top: 4px;
+                  font-size: 10px;
+                  cursor: pointer;
+                  z-index: 5;
+                }
+              }
             }
           }
         }
