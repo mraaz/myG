@@ -1115,6 +1115,7 @@ section#content-container {
         right: 20 !important;
       }
       .image-gallery-fullscreen-button {
+        top: 0;
         .image-gallery-svg {
           height: 24px;
           width: 24px;
@@ -1125,6 +1126,7 @@ section#content-container {
       }
       .image-gallery-image {
         width: 100% !important;
+        max-height: 100vh !important;
       }
       .uploadImage_loading {
         position: relative;
