@@ -250,6 +250,7 @@ Route.get('/api/archive_attendees/role_call_ALL/:id', 'Archive_AttendeeControlle
 Route.post('/api/groups/create', 'GroupController.store')
 Route.get('/api/groups/groupName/:name', 'GroupController.show_one_name')
 Route.get('/api/groups/:str/groupSearchResults', 'GroupController.groupSearchResults')
+Route.get('/api/groups/:str/groupSearchResults_Post', 'GroupController.groupSearchResults_Post')
 Route.get('/api/groups/view/:counter', 'GroupController.myshow')
 Route.get('/api/groups/:id', 'GroupController.show')
 Route.post('/api/groups/update_img', 'GroupController.update_img')
