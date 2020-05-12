@@ -219,9 +219,13 @@ export default class PostFileModal extends Component {
   }
 
   handleAcceptedFiles = (Files) => {
-    for (var i = 0; i < Files.length; i++) {
-      let name = `post_image_${+new Date()}`
-      this.doUploadS3(Files[i], name, name)
+    if (Files.length > 8) {
+      toast.success(<Toast_style text={`Sorry! Can't upload more than Eight at a time.`} />)
+    } else {
+      for (var i = 0; i < Files.length; i++) {
+        let name = `post_image_${+new Date()}`
+        this.doUploadS3(Files[i], name, name)
+      }
     }
   }
 
