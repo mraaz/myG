@@ -159,7 +159,7 @@ export default class GroupMain extends Component {
 
     const getPlayerInfo = async function() {
       try {
-        const groupSearchResults = await axios.get(`/api/groups/${value}/groupSearchResults`)
+        const groupSearchResults = await axios.get(`/api/groups/${value}/groupSearchResults_Post`)
         playersDB = groupSearchResults.data.groupSearchResults
         self.setState({
           suggestions: getSuggestions(value),
