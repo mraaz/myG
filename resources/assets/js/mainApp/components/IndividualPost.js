@@ -669,14 +669,16 @@ export default class IndividualPost extends Component {
                 myComments.length
               }) comments`}</div>
             )}
-            <div className='comments'>
-              {!show_more_comments && <div className='show-individual-comments'>{this.showComment()}</div>}
-              {show_more_comments && <div className='show-individual-comments'>{this.showMoreComment()}</div>}
-            </div>
+            {myComments.length > 0 && (
+              <div className='comments'>
+                {!show_more_comments && <div className='show-individual-comments'>{this.showComment()}</div>}
+                {show_more_comments && <div className='show-individual-comments'>{this.showMoreComment()}</div>}
+              </div>
+            )}
             <div className='compose-comment'>
               <textarea
                 name='name'
-                placeholder='Make a comment...'
+                placeholder='Write a comment...'
                 value={this.state.value}
                 onChange={this.handleChange}
                 maxLength='254'
