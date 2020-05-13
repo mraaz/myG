@@ -178,14 +178,14 @@ export default class PostFileModal extends Component {
                         </div>
                         <div className='groupName'>{group_in.name}</div>
                         <div className='action'>
-                          <label class='container'>
+                          <label className='container'>
                             <input
                               type='checkbox'
                               checked={selected_group.includes(group_in.id)}
                               onChange={(e) => this.handleGroupCheck(e, group_in.id)}
                               value={1}
                             />
-                            <span class='checkmark'></span>
+                            <span className='checkmark'></span>
                           </label>
                         </div>
                       </div>
@@ -195,7 +195,7 @@ export default class PostFileModal extends Component {
               <div className='people_group_actions'>
                 <div className='post__privacy_select'>
                   <div>
-                    <label class='container'>
+                    <label className='container'>
                       Everyone
                       <input
                         type='checkbox'
@@ -204,11 +204,11 @@ export default class PostFileModal extends Component {
                         onChange={(e) => this.handleVisibityChange(e, 1)}
                         value={1}
                       />
-                      <span class='checkmark'></span>
+                      <span className='checkmark'></span>
                     </label>
                   </div>
                   <div>
-                    <label class='container'>
+                    <label className='container'>
                       Friends
                       <input
                         type='checkbox'
@@ -217,11 +217,11 @@ export default class PostFileModal extends Component {
                         onChange={(e) => this.handleVisibityChange(e, 2)}
                         value={2}
                       />
-                      <span class='checkmark'></span>
+                      <span className='checkmark'></span>
                     </label>
                   </div>
                   <div>
-                    <label class='container'>
+                    <label className='container'>
                       Followers
                       <input
                         type='checkbox'
@@ -230,11 +230,11 @@ export default class PostFileModal extends Component {
                         onChange={(e) => this.handleVisibityChange(e, 3)}
                         value={3}
                       />
-                      <span class='checkmark'></span>
+                      <span className='checkmark'></span>
                     </label>
                   </div>
                   <div>
-                    <label class='container'>
+                    <label className='container'>
                       Private
                       <input
                         type='checkbox'
@@ -243,7 +243,7 @@ export default class PostFileModal extends Component {
                         onChange={(e) => this.handleVisibityChange(e, 0)}
                         value={0}
                       />
-                      <span class='checkmark'></span>
+                      <span className='checkmark'></span>
                     </label>
                   </div>
                 </div>
