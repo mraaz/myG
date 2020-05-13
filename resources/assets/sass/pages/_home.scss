@@ -1431,6 +1431,8 @@ section#content-container {
   border: 1px solid #273137;
   margin: 0 100px;
   margin-bottom: 24px;
+  z-index: 1000;
+  position: inherit;
   .compose__type__section {
     display: flex;
     justify-content: center;
@@ -1625,14 +1627,10 @@ section#content-container {
       visibility: hidden;
       opacity: 0;
       transition: visibility 0s, opacity 0.3s ease-in;
-      position: fixed;
-      top: 10%;
       font: Bold 16px/14px Montserrat;
       color: #ffffff;
       background: #1d2326;
       border: 1px solid #273137;
-      height: 250px;
-      width: 520px;
       .search__box {
         padding: 30px;
         display: flex;
@@ -1867,6 +1865,20 @@ section#content-container {
       opacity: 0.5;
       content: '';
     }
+  }
+}
+.highlight_overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba($color: #000000, $alpha: 0.5);
+  z-index: 999;
+  transition: steps();
+  &.active {
+    display: block;
   }
 }
 
