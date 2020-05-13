@@ -19,8 +19,8 @@ import {
   DOTA2_ROLES,
   DOTA2_SERVER_REGIONS,
 } from '../../static/AddGame'
-import { MyGCheckbox, MyGTextarea, MyGAsyncSelect, MyGSelect, MyGDatePicker } from '../common'
-import { Game_name_values, Game_name_Tags, Disable_keys } from '../Utility_Function'
+import { MyGCheckbox, MyGTextarea, MyGAsyncSelect, MyGCreateableSelect, MyGSelect, MyGDatePicker } from '../common'
+import { Game_name_values, Schedule_Game_Tags, Disable_keys } from '../Utility_Function'
 import Axios from 'axios'
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
 
@@ -94,20 +94,16 @@ const AddGame = ({
   }
 
   // api calls
-  const getOptionsTags = async (inputValue) => {
+  const getOptionsTags = (inputValue) => {
     const getInitialData = async function(inputValue) {
       try {
-        let results = await Game_name_Tags(inputValue, mainSettingsState.gameTitle.game_names_id)
-        // updateAdvancedSettings({ optionTags: results })
-        return results
+        let results = await Schedule_Game_Tags(inputValue)
+        updateAdvancedSettings({ optionTags: results })
       } catch (error) {
         // Error get option tags
       }
     }
-
-    if (mainSettingsState.gameTitle && mainSettingsState.gameTitle.game_names_id) {
-      await getInitialData(inputValue)
-    }
+    getInitialData(inputValue)
   }
 
   const onPlayersSuggestionFetch = async (value) => {
@@ -355,18 +351,18 @@ const AddGame = ({
             placeholder='Select experience level'
             isMulti
           />
-          <div className={styles.fieldTitle}>Tags</div>
-          <MyGAsyncSelect
+          <div className={styles.fieldTitle}>Game Tags</div>
+          <MyGCreateableSelect
             isClearable
             isMulti
             onCreateOption={handleCreateTags}
-            // onInputChange={getOptionsTags}
-            loadOptions={getOptionsTags}
+            onInputChange={getOptionsTags}
+            onInputChange={getOptionsTags}
             onChange={(value) => {
               updateAdvancedSettings({ tags: value })
             }}
             value={advancedSettingsState.tags}
-            placeholder='Enter relevant tags to your game'
+            placeholder='Search, Select or create Game Tags'
             options={advancedSettingsState.optionTags}
             onKeyDown={Disable_keys}
           />
