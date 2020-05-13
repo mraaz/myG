@@ -16,9 +16,11 @@ class CommentController {
           media_url: request.input('media_url'),
         })
 
-        let update_key = new AwsKeyController()
-        request.params.comment_id = newComment.id
-        update_key.addCommentKey({ auth, request, response })
+        if (request.input('file_keys') != undefined) {
+          let update_key = new AwsKeyController()
+          request.params.comment_id = newComment.id
+          update_key.addCommentKey({ auth, request, response })
+        }
 
         return newComment
       } catch (error) {

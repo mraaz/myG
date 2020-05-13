@@ -15,9 +15,11 @@ class ReplyController {
           media_url: request.input('media_url'),
         })
 
-        let update_key = new AwsKeyController()
-        request.params.reply_id = newReply.id
-        update_key.addReplyKey({ auth, request, response })
+        if (request.input('file_keys') != undefined) {
+          let update_key = new AwsKeyController()
+          request.params.reply_id = newReply.id
+          update_key.addReplyKey({ auth, request, response })
+        }
 
         return newReply
       } catch (error) {
