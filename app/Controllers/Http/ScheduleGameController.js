@@ -4,6 +4,8 @@ const Database = use('Database')
 const ScheduleGame = use('App/Models/ScheduleGame')
 const ScheduleGamesTransaction = use('App/Models/ScheduleGamesTransaction')
 const CoHost = use('App/Models/CoHost')
+const GameTags = use('App/Models/GameTag')
+const ScheduleGamesTags = use('App/Models/ScheduleGamesTag')
 
 const NotificationController = use('./NotificationController')
 const Archive_AttendeeController = use('./Archive_AttendeeController')
@@ -44,10 +46,6 @@ class ScheduleGameController {
         if (request.input('end_date_time') != undefined) {
           end_date_time = new Date(request.input('end_date_time')).toISOString().replace('T', ' ')
         }
-        console.log(request.input('co_hosts'))
-        console.log(request.input('tags'))
-
-        return
 
         const newScheduleGame = await ScheduleGame.create({
           game_names_id: parseInt(gameNameID, 10),
@@ -126,18 +124,22 @@ class ScheduleGameController {
           }
         }
 
-        // if (request.input('tags') != null) {
-        //   var arrTags = request.input('tags').split(',')
-        //
-        //   if (arrTags != '') {
-        //     for (var i = 0; i < arrTags.length; i++) {
-        //       const create_arrTags = await CoHost.create({
-        //         schedule_games_id: newScheduleGame.id,
-        //         user_id: arrCo_hosts[i],
-        //       })
-        //     }
-        //   }
-        // }
+        if (request.input('tags') != null) {
+          var arrTags = request.input('tags').split(',')
+
+          if (arrTags != '') {
+            for (var i = 0; i < arrTags.length; i++) {
+              const create_arrTags = await ScheduleGamesTags.create({
+                schedule_games_id: newScheduleGame.id,
+                game_tag_id: arrTags[i],
+              })
+
+              const update_counter = await GameTags.query()
+                .where({ id: arrTags[i] })
+                .increment('counter', 1)
+            }
+          }
+        }
 
         // if (parseInt(request.input('visibility'), 10) == 2) {
         //   const getFriends = await Database.from('friends')

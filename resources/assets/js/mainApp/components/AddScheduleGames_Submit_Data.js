@@ -18,7 +18,9 @@ export async function SubmitDataFunction(myG) {
   let autoJoin = true,
     repeat_game = undefined,
     co_hosts = null,
-    tags = null
+    tags = []
+
+  console.log(myG)
 
   if (myG.selected_region != undefined && myG.selected_region !== null && myG.selected_region.length !== 0) {
     myRegion = Convert_to_comma_delimited_value(myG.selected_region)
@@ -36,9 +38,23 @@ export async function SubmitDataFunction(myG) {
     co_hosts = Convert_to_comma_delimited_value(myG.coHosts)
   }
 
-  if (myG.tags) {
-    tags = Convert_to_comma_delimited_value(myG.tags)
+  if (myG.tags.length != 0 && myG.tags != null) {
+    for (var i = 0; i < myG.tags.length; i++) {
+      if (/['/.%#$,;`\\]/.test(myG.tags[i].value)) {
+        toast.success(<Toast_style text={'Sorry mate! Game tags can not have invalid fields'} />)
+        return
+      }
+      if (myG.tags[i].game_tag_id == null) {
+        const new_GameTags = await axios.post('/api/GameTags', {
+          content: myG.tags[i].value,
+        })
+        tags.push(new_GameTags.data)
+      } else {
+        tags.push(myG.tags[i].game_tag_id)
+      }
+    }
   }
+  tags = tags.toString()
 
   if (myG.endDate != null || myG.endDate != undefined) {
     now = moment(myG.endDate)

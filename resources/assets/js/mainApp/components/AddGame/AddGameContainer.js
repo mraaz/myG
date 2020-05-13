@@ -21,19 +21,18 @@ const AddGameContainer = () => {
   const [state, updateComponentState] = useState({ selectedSettings: SETTINGS_ENUMS.MAIN, isGameNameField: false })
   const [advancedSettingsState, updateAdvancedSettingsState] = useState({
     experience: null,
-    tags: null,
     platform: null,
     region: null,
+    coHosts: null,
+    tags: '',
     description: '',
     acceptMessage: '',
-    optionTags: null,
-    tags: null,
-    newCreatedTags: null,
-    coHosts: null,
+    optionTags: '',
+    newCreatedTags: '',
   })
   const [mainSettingsState, updateMainSettingsState] = useState({
     gameTitlesList: [],
-    gameTitle: null,
+    gameTitle: '',
     startTime: moment(),
     endTime: null,
     isEndGameFieldSelected: false,
@@ -56,6 +55,7 @@ const AddGameContainer = () => {
   // Handlers
   const isButtonDisabled = () => {
     return (
+      mainSettingsState.gameTitle == '' ||
       mainSettingsState.gameTitle == null ||
       mainSettingsState.startTime == null ||
       mainSettingsState.startTime.isSameOrAfter(mainSettingsState.endTime)
@@ -69,7 +69,7 @@ const AddGameContainer = () => {
 
   const onAddGameSubmit = async () => {
     updateIsSubmitting(false)
-    if (mainSettingsState.gameTitle == null) {
+    if (mainSettingsState.gameTitle == '' || mainSettingsState.gameTitle == null) {
       toast.success(<Toast_style text={'Sorry mate! Game name can not be blank'} />)
       updateIsSubmitting(false)
       return
@@ -105,6 +105,8 @@ const AddGameContainer = () => {
         allow_comments: mainSettingsState.isCommentsAllowed,
         autoJoin: mainSettingsState.autoAccept,
         coHosts: advancedSettingsState.coHosts,
+        tags: advancedSettingsState.tags,
+        newCreatedTags: advancedSettingsState.newCreatedTags,
       })
       updateGameLink(data.id)
       updateIsGameListedModalOpen(true)
