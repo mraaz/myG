@@ -329,8 +329,8 @@ export default class IndividualPost extends Component {
         const postComment = await axios.post('/api/comments', {
           content: this.state.value.trim(),
           post_id: this.props.post.id,
-          media_url: this.state.preview_file,
-          file_keys: this.state.file_keys,
+          media_url: this.state.preview_file.length > 0 ? JSON.stringify(this.state.preview_file) : '',
+          file_keys: this.state.file_keys.length > 0 ? this.state.file_keys : '',
         })
         let { post, user } = this.props
         if (post.user_id != user.userInfo.id) {
@@ -342,8 +342,9 @@ export default class IndividualPost extends Component {
         }
         this.setState({
           myComments: [],
-          preview_file: [],
+          preview_file: '',
           file_keys: '',
+          value: '',
         })
         this.pullComments()
         this.setState({
