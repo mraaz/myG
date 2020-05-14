@@ -2,13 +2,12 @@ import React from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import '../../styles/common/MyGDatePickerStyles.scss'
+import moment from 'moment'
 
 const MyGDatePicker = ({
   selected,
   onChange,
   showTimeSelect,
-  onBlur,
-  onFocus,
   timeFormat,
   timeIntervals,
   dateFormat,
@@ -17,6 +16,8 @@ const MyGDatePicker = ({
   todayButton,
   shouldCloseOnSelect,
   children,
+  minDate,
+  maxDate,
 }) => {
   const styles = {
     container: {
@@ -38,8 +39,8 @@ const MyGDatePicker = ({
         className={className}
         todayButton={todayButton}
         shouldCloseOnSelect={shouldCloseOnSelect}
-        onBlur={onBlur}
-        onFocus={onFocus}
+        minDate={minDate}
+        maxDate={maxDate}
       />
       {children}
     </div>
@@ -55,6 +56,8 @@ MyGDatePicker.defaultProps = {
   className: 'start-date-box',
   todayButton: 'Today',
   shouldCloseOnSelect: true,
+  minDate: moment(),
+  maxDate: moment().add(7, 'days'),
 }
 
 export default MyGDatePicker
