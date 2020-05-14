@@ -325,8 +325,8 @@ export default class IndividualComment extends Component {
         postReply = await axios.post('/api/replies', {
           content: self.state.value.trim(),
           comment_id: self.props.comment.id,
-          media_url: this.state.preview_file,
-          file_keys: this.state.file_keys,
+          media_url: self.state.preview_file.length > 0 ? JSON.stringify(self.state.preview_file) : '',
+          file_keys: self.state.file_keys.length > 0 ? self.state.file_keys : '',
         })
 
         let { comment, user } = self.props
@@ -336,8 +336,8 @@ export default class IndividualComment extends Component {
               other_user_id: comment.user_id,
               schedule_games_id: self.props.comment.schedule_games_id,
               reply_id: postReply.data.id,
-              media_url: this.state.preview_file,
-              file_keys: this.state.file_keys,
+              media_url: self.state.preview_file.length > 0 ? JSON.stringify(self.state.preview_file) : '',
+              file_keys: self.state.file_keys.length > 0 ? self.state.file_keys : '',
             })
           } else {
             const addReply = axios.post('/api/notifications/addReply', {
