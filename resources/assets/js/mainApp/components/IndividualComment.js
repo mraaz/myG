@@ -59,7 +59,7 @@ export default class IndividualComment extends Component {
     const self = this
     let comment = this.props
 
-    const getCommentLike = async function () {
+    const getCommentLike = async function() {
       try {
         var i
 
@@ -81,7 +81,7 @@ export default class IndividualComment extends Component {
       }
     }
 
-    const getCommentReplies = async function () {
+    const getCommentReplies = async function() {
       try {
         var i
 
@@ -101,7 +101,7 @@ export default class IndividualComment extends Component {
       }
     }
 
-    const getmyCommentCount = async function () {
+    const getmyCommentCount = async function() {
       try {
         var i
 
@@ -125,7 +125,7 @@ export default class IndividualComment extends Component {
     var comment_id = this.props.comment.id
     const self = this
 
-    const getComments = async function () {
+    const getComments = async function() {
       try {
         const myCommentReplies = await axios.get(`/api/replies/${comment_id}`)
         self.setState({
@@ -213,7 +213,7 @@ export default class IndividualComment extends Component {
 
     if (!this.state.show_add_reply) {
       setTimeout(
-        function () {
+        function() {
           //Start the timer
           this.focusTextInput()
         }.bind(this),
@@ -288,7 +288,7 @@ export default class IndividualComment extends Component {
     const self = this
     var comment_id = this.props.comment.id
 
-    const saveComment = async function () {
+    const saveComment = async function() {
       try {
         const mysaveComment = await axios.post(`/api/comments/update/${comment_id}`, {
           content: self.state.value2,
@@ -320,7 +320,7 @@ export default class IndividualComment extends Component {
     const self = this
     var postReply
 
-    const saveReply = async function () {
+    const saveReply = async function() {
       try {
         postReply = await axios.post('/api/replies', {
           content: self.state.value.trim(),
@@ -344,8 +344,8 @@ export default class IndividualComment extends Component {
               other_user_id: comment.user_id,
               post_id: comment.post_id,
               reply_id: postReply.data.id,
-              media_url: this.state.preview_file,
-              file_keys: this.state.file_keys,
+              media_url: self.state.preview_file.length > 0 ? JSON.stringify(self.state.preview_file) : '',
+              file_keys: self.state.file_keys.length > 0 ? self.state.file_keys : '',
             })
           }
         }
