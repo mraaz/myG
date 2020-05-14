@@ -3,9 +3,9 @@
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use('Schema')
 
-class GameTagsSchema extends Schema {
+class HashTagsSchema extends Schema {
   up () {
-    this.create('game_tags', (table) => {
+    this.create('hash_tags', (table) => {
       table.increments()
       table.string('content', 250).notNullable().unique().index()
       table.integer('user_id').unsigned().notNullable()
@@ -17,8 +17,8 @@ class GameTagsSchema extends Schema {
   }
 
   down () {
-    this.drop('game_tags')
+    this.drop('hash_tags')
   }
 }
 
-module.exports = GameTagsSchema
+module.exports = HashTagsSchema

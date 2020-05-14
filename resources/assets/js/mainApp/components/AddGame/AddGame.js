@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import classNames from 'classnames'
 import Slider, { Range } from 'rc-slider'
 import moment from 'moment'
@@ -37,6 +37,19 @@ const AddGame = ({
   updateOptionalFieldsState,
   isGameNameField,
 }) => {
+  // Similar to componentDidMount and componentDidUpdate:
+  useEffect(() => {
+    // const getInitialData = async function() {
+    //   try {
+    //     let results = await Schedule_Game_Tags()
+    //     updateAdvancedSettings({ optionTags: results })
+    //   } catch (error) {
+    //     // Error get option tags
+    //   }
+    // }
+    // getInitialData()
+  })
+
   // Handlers
   const updateMainSettings = (stateUpdates) => {
     updateMainSettingsState((currentState) => ({
@@ -356,7 +369,6 @@ const AddGame = ({
             isClearable
             isMulti
             onCreateOption={handleCreateTags}
-            onInputChange={getOptionsTags}
             onInputChange={getOptionsTags}
             onChange={(value) => {
               updateAdvancedSettings({ tags: value })

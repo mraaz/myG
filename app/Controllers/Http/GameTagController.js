@@ -12,6 +12,7 @@ class GameTagController {
       try {
         const newGameTag = await GameTags.create({
           content: request.input('content').trim(),
+          user_id: auth.user.id,
         })
         return newGameTag.id
       } catch (error) {
