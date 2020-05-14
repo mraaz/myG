@@ -42,6 +42,7 @@ export default class IndividualPost extends Component {
       show_more_comments: false,
       preview_file: '',
       aws_key: '',
+      file_keys: '',
     }
     this.textInput = null
 
