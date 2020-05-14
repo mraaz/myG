@@ -9,6 +9,9 @@ import PostFileModal from './PostFileModal'
 import Dropzone from 'react-dropzone'
 const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
 
+import { toast } from 'react-toastify'
+import { Toast_style } from './Utility_Function'
+
 export default class ComposeSection extends Component {
   constructor() {
     super()
