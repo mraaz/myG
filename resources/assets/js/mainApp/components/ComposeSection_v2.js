@@ -2,14 +2,12 @@
  * Author : nitin Tyagi
  * github  : realnit
  */
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import axios from 'axios'
 import IndividualPost from './IndividualPost'
 import PostFileModal from './PostFileModal'
 import Dropzone from 'react-dropzone'
 const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
-
-const visibility_options = [{ value: 1, label: 'Everyone' }, { value: 2, label: 'Friends' }, { value: 0, label: 'Only me' }]
 
 export default class ComposeSection extends Component {
   constructor() {
@@ -22,8 +20,15 @@ export default class ComposeSection extends Component {
       fileType: 'photo',
       myPosts: [],
       masterList: [],
-      visibility_box: [{ label: 'Everyone', value: 1 }],
       open_compose_textTab: true,
+      add_group_toggle: false,
+      selected_group: [],
+      selectedGroup: [],
+      groups_im_in: [],
+      preview_files: [],
+      visibility: 1,
+      overlay_active: false,
+      group_id: '',
     }
 
     this.openPhotoPost = this.openPhotoPost.bind(this)
@@ -31,6 +36,7 @@ export default class ComposeSection extends Component {
     this.openVideoPost = this.openVideoPost.bind(this)
     this.callbackPostFileModalClose = this.callbackPostFileModalClose.bind(this)
     this.callbackPostFileModalConfirm = this.callbackPostFileModalConfirm.bind(this)
+    this.doUploadS3 = this.doUploadS3.bind(this)
   }
 
   callbackPostFileModalClose() {
@@ -40,36 +46,12 @@ export default class ComposeSection extends Component {
   }
 
   callbackPostFileModalConfirm = async (data, keys) => {
-    this.setState({
-      bFileModalOpen: false,
-    })
-
-    var url = ''
-
-    if (this.state.fileType == 'photo') {
-      url = '/api/postphoto'
-    } else if (this.state.fileType == 'video') {
-      url = '/api/postvideo'
-    } else {
-      url = '/api/postphoto'
-    }
-
-    if (data.media_url.length == 0 && data.content == '') {
-      return
-    }
-
     try {
-      const post = await axios.post(url, {
-        media_url: JSON.stringify(data.media_url),
-        content: data.content,
-        group_id: data.selected_group.toString(),
-        file_keys: keys,
-      })
-
       this.setState({
-        myPosts: [],
+        bFileModalOpen: false,
+        group_id: data.selected_group.toString(),
+        visibility: data.visibility,
       })
-      // await this.get_posts(post)
     } catch (error) {
       console.log(error)
     }
@@ -100,29 +82,44 @@ export default class ComposeSection extends Component {
     })
   }
 
-  submitForm = async (data = '', group_id) => {
-    const content = data ? data : this.state.post_content.trim()
+  submitForm = async () => {
+    const content = this.state.post_content.trim()
+    console.log('content')
+
+    let media_url = []
+    let keys = []
     if (content == '') {
-      this.setState({
-        post_content: '',
-      })
       return
     }
+    if (this.state.preview_files.length > 0) {
+      for (var i = 0; i < this.state.preview_files.length; i++) {
+        media_url.push(this.state.preview_files[i].src)
+        keys.push(this.state.preview_files[i].key)
+      }
+    }
+
     try {
       const post = await axios.post('/api/post', {
         content: content,
         user_id: this.props.initialData.userInfo.id,
         type: 'text',
-        visibility: this.state.visibility_box.value,
-        group_id: group_id.toString(),
+        visibility: this.state.visibility,
+        group_id: this.state.group_id,
+        media_url: media_url.length > 0 ? media_url : '',
+        keys: keys.length > 0 ? keys : '',
       })
       this.setState(
         {
-          myPosts: [],
           bFileModalOpen: false,
+          post_content: '',
+          media_url: [],
+          keys: [],
+          visibility: 1,
+          overlay_active: false,
         },
         () => {
-          this.props.successCallback()
+          media_url = []
+          keys = []
         }
       )
       // await this.get_posts(post)
@@ -140,9 +137,14 @@ export default class ComposeSection extends Component {
   }
 
   handleChange_txtArea = (event) => {
-    this.setState({ open_compose_textTab: true }, () => {
-      this.setState({ bFileModalOpen: true })
-    })
+    const value = event.target.value
+    this.setState({ post_content: value })
+  }
+  handleFocus_txtArea = () => {
+    this.setState({ overlay_active: true })
+  }
+  handleOverlayClick = () => {
+    this.setState({ overlay_active: !this.state.overlay_active })
   }
 
   showLatestPosts = () => {
@@ -156,7 +158,7 @@ export default class ComposeSection extends Component {
   get_posts = (post) => {
     const self = this
 
-    const getPosts = async function() {
+    const getPosts = async function () {
       try {
         const myPosts = await axios.get(`/api/mypost/${post.data}`)
         self.state.masterList = self.state.masterList.concat(myPosts.data.myPosts)
@@ -205,7 +207,7 @@ export default class ComposeSection extends Component {
       }
     }
 
-    const getGamers_you_might_know = async function() {
+    const getGamers_you_might_know = async function () {
       try {
         const gamers_you_might_know = await axios.get('/api/user/gamers_you_might_know')
       } catch (error) {
@@ -215,73 +217,161 @@ export default class ComposeSection extends Component {
     getGamers_you_might_know()
   }
 
-  handleChange_visibility = (visibility_box) => {
-    this.setState({ visibility_box })
-  }
   togglePostTypeTab = (label) => {
     let open_compose_textTab = true
     if (label == 'media') {
       open_compose_textTab = false
     }
-    this.setState({ open_compose_textTab }, () => {
-      this.setState({ bFileModalOpen: true })
-    })
+    this.setState({ open_compose_textTab })
   }
 
   handleAcceptedFiles = (Files) => {
-    console.log(acceptedFiles)
+    if (Files.length > 8) {
+      toast.success(<Toast_style text={`Sorry! Can't upload more than Eight at a time.`} />)
+    } else {
+      for (var i = 0; i < Files.length; i++) {
+        let name = `post_image_${+new Date()}`
+        this.doUploadS3(Files[i], name, name)
+      }
+    }
+  }
+  async doUploadS3(file, id = '', name) {
+    var instance = this
+
+    this.setState({
+      uploading: true,
+    })
+
+    const formData = new FormData()
+    formData.append('upload_file', file)
+    formData.append('filename', name)
+
+    try {
+      const post = await axios.post('/api/uploadFile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      var new_preview_files = instance.state.preview_files
+      new_preview_files.push({
+        src: post.data.Location,
+        key: post.data.Key,
+        id: id,
+      })
+      instance.setState({
+        preview_files: new_preview_files,
+        uploading: false,
+      })
+    } catch (error) {
+      instance.setState({
+        uploading: false,
+      })
+      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again'} />)
+    }
+  }
+
+  addGroupToggle = () => {
+    this.setState({ bFileModalOpen: !this.state.bFileModalOpen })
+  }
+
+  getSearchGroup = async (e) => {
+    const searchText = e.target.value
+    const groups = [...this.state.groups_im_in]
+    if (searchText != '') {
+      const groups_im_in = groups.filter((g) => g.name.includes(searchText))
+      this.setState({ groups_im_in, searchText })
+    } else {
+      const getGroups_im_in = await axios.get('/api/usergroup/view')
+      this.setState({
+        groups_im_in: getGroups_im_in.data.groups_im_in,
+        searchText,
+      })
+    }
+  }
+
+  handleGroupCheck = (e, id) => {
+    let selected_group = [...this.state.selected_group]
+    const value = event.target.checked
+    if (value) {
+      selected_group.push(id)
+    } else {
+      selected_group = selected_group.filter((gid) => gid != id)
+    }
+    this.setState({ selected_group })
   }
 
   render() {
-    const { open_compose_textTab, bFileModalOpen } = this.state
+    const { open_compose_textTab, bFileModalOpen, preview_files = [], selectedGroup, overlay_active } = this.state
 
     return (
-      <section className='postCompose__container'>
-        <div className='compose__type__section'>
-          <div className={`share__thought ${open_compose_textTab ? 'active' : ''}`} onClick={(e) => this.togglePostTypeTab('text')}>
-            {`Share your thoughts ...`}
+      <Fragment>
+        <section className='postCompose__container' onClick={this.handleFocus_txtArea}>
+          <div className='compose__type__section'>
+            <div className={`share__thought ${open_compose_textTab ? 'active' : ''}`} onClick={(e) => this.togglePostTypeTab('text')}>
+              {`Share your thoughts ...`}
+            </div>
+            <div className='devider'></div>
+            <div className={`add__post__image ${open_compose_textTab ? '' : 'active'}`} onClick={(e) => this.togglePostTypeTab('media')}>
+              {` Add video or photos`}
+            </div>
           </div>
-          <div className='devider'></div>
-          <div className={`add__post__image ${open_compose_textTab ? '' : 'active'}`} onClick={(e) => this.togglePostTypeTab('media')}>
-            {` Add video or photos`}
-          </div>
-        </div>
-        {open_compose_textTab && (
-          <div className='text__editor__section'>
-            <textarea
-              onFocus={this.handleChange_txtArea}
-              onKeyDown={this.detectKey}
-              maxLength='254'
-              value={this.state.post_content}
-              placeholder="What's up... "
-            />
-          </div>
-        )}
-        {!open_compose_textTab && (
-          <div className='media__container' onClick={(e) => this.togglePostTypeTab('media')}>
-            <Dropzone onDrop={(acceptedFiles) => this.handleAcceptedFiles(acceptedFiles)} disabled={true}>
-              {(props) => {
-                return (
-                  <section className='custom__html'>
-                    <div className='images'>
-                      <span className=' button photo-btn'>
-                        <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
-                      </span>
-                      <span className='button video-btn'>
-                        <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Video.svg`} />
-                      </span>
-                      {/* <span className='button video-btn'>
-                        <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Audio.svg`} />
-                      </span> */}
-                    </div>
-                    <div className='text'>
-                      Or <span>click here </span> to select
-                    </div>
-                  </section>
-                )
-              }}
-            </Dropzone>
-            {/* <div className=' button photo-btn' onClick={() => this.openPhotoPost()}>
+          {open_compose_textTab && (
+            <div className='text__editor__section'>
+              <textarea
+                onChange={this.handleChange_txtArea}
+                onFocus={this.handleFocus_txtArea}
+                onKeyDown={this.detectKey}
+                maxLength='254'
+                value={this.state.post_content}
+                placeholder="What's up... "
+              />
+            </div>
+          )}
+          {!open_compose_textTab && (
+            <div className='media__container'>
+              <Dropzone
+                onDrop={(acceptedFiles) => this.handleAcceptedFiles(acceptedFiles)}
+                accept='image/*,video/*'
+                minSize={0}
+                maxSize={5242880}
+                multiple
+                disabled={this.state.uploading}>
+                {(props) => {
+                  return (
+                    <section className='custom__html'>
+                      <div className='text'>Drop your image or video</div>
+                      <div className='images'>
+                        <span className=' button photo-btn'>
+                          <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
+                        </span>
+                        <span className='button video-btn'>
+                          <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Video.svg`} />
+                        </span>
+                        {/* <span className='button video-btn'>
+                            <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Audio.svg`} />
+                          </span> */}
+                      </div>
+                      <div className='text'>
+                        Or <span>click here </span> to select
+                      </div>
+                      {this.state.uploading && (
+                        <div className='text'>
+                          <span>Uploading... </span>
+                        </div>
+                      )}
+                      {preview_files.length > 0 && (
+                        <div className='files__preview'>
+                          {preview_files.slice(0, 3).map((file) => (
+                            <img src={file.src} />
+                          ))}
+                          {preview_files.length > 3 ? `(${preview_files.length})...` : ''}
+                        </div>
+                      )}
+                    </section>
+                  )
+                }}
+              </Dropzone>
+              {/* <div className=' button photo-btn' onClick={() => this.openPhotoPost()}>
               <i className='far fa-images' />
             </div>
             <div className='button video-btn' onClick={() => this.openVideoPost()}>
@@ -290,40 +380,48 @@ export default class ComposeSection extends Component {
             <div className='button video-btn' onClick={() => this.openAudioPost()}>
               <i className='far fa-volume-up' />
             </div> */}
-          </div>
-        )}
-        {/* <div className='compose__people__section'>
-          <div className='label'>Post on: </div>
-          <div className='people_selected_container'>
-            <div className='people_selected_list'>
-              <div className='default_circle'></div>
-              <div className='people_label'>Your Feed</div>
+            </div>
+          )}
+          <div className='compose__people__section'>
+            <div className='label'>Post on: </div>
+            <div className='people_selected_container'>
+              <div className='people_selected_list'>
+                <div className='default_circle'></div>
+                <div className='people_label'>Your Feed</div>
+              </div>
+              {selectedGroup.splice(0, 3).map((g) => {
+                return (
+                  <div className='people_selected_list'>
+                    <div className='default_circle'></div>
+                    <div className='people_label'>{g.name}</div>
+                  </div>
+                )
+              })}
+            </div>
+            <div className='add_more_people'>
+              <button type='button' className='add__people' onClick={this.addGroupToggle}>
+                Add
+              </button>
             </div>
           </div>
-          <div className='add_more_people'>
-            <button type='button' className='add__people'>
-              Add
+          <div className='compose__button'>
+            <button type='button' className='cancel' onClick={this.handleClear}>
+              Clear
+            </button>
+            <button type='button' className='add__post' onClick={this.submitForm}>
+              Post
             </button>
           </div>
-        </div> */}
-        <div className='compose__button'>
-          <button type='button' className='cancel' onClick={this.handleClear}>
-            Clear
-          </button>
-          <button type='button' className='add__post' onClick={this.submitForm}>
-            Post
-          </button>
-        </div>
 
-        <PostFileModal
-          bOpen={bFileModalOpen}
-          callbackClose={this.callbackPostFileModalClose}
-          callbackConfirm={this.callbackPostFileModalConfirm}
-          callbackContentConfirm={this.submitForm}
-          open_compose_textTab={open_compose_textTab}
-        />
+          <PostFileModal
+            bOpen={bFileModalOpen}
+            callbackClose={this.callbackPostFileModalClose}
+            callbackConfirm={this.callbackPostFileModalConfirm}
+            callbackContentConfirm={this.submitForm}
+            open_compose_textTab={open_compose_textTab}
+          />
 
-        {/* <section className='compose-area'>
+          {/* <section className='compose-area'>
         <div className='compose-section'>
           <textarea
             rows={8}
@@ -366,7 +464,9 @@ export default class ComposeSection extends Component {
           </div>
         </div>
       </section> */}
-      </section>
+        </section>
+        <div className={`highlight_overlay ${overlay_active ? 'active' : ''}`} onClick={this.handleOverlayClick}></div>
+      </Fragment>
     )
   }
 }

@@ -294,6 +294,11 @@ export default class IndividualReply extends Component {
               {'  '}
               <div className='comment-content'>
                 <p>{this.state.content}</p>
+                {reply.media_url && (
+                  <div className='show__comment__image'>
+                    <img src={reply.media_url} />
+                  </div>
+                )}
               </div>
             </div>
             <div className='comment__shape'></div>

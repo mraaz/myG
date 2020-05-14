@@ -25,11 +25,10 @@ export default class PostFileModal extends Component {
       selected_group: [],
       selectedGroup: [],
       groups_im_in: [],
-      everyone: true,
+      visibility: 1,
     }
 
     this.closeModal = this.closeModal.bind(this)
-    this.doUploadS3 = this.doUploadS3.bind(this)
   }
 
   componentDidMount() {
@@ -97,154 +96,34 @@ export default class PostFileModal extends Component {
       return
     }
     this.props.callbackClose()
-    if (this.state.preview_files.length != 0) {
-      axios
-        .post('/api/deleteFiles', {
-          files: this.state.preview_files,
-        })
-        .catch((error) => {})
-    }
-
-    const tmparray = [...this.state.store_files]
-    this.state.lock = true
-
-    for (var i = 0; i < tmparray.length; i++) {
-      tmparray[i].remove()
-    }
-    this.state.lock = false
-
-    this.setState({
-      preview_files: [],
-      post_content: '',
-      store_files: [],
-    })
-  }
-
-  async doUploadS3(file, id = '', name) {
-    var instance = this
-
-    this.setState({
-      uploading: true,
-    })
-
-    const formData = new FormData()
-    formData.append('upload_file', file)
-    formData.append('filename', name)
-
-    try {
-      const post = await axios.post('/api/uploadFile', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      var new_preview_files = instance.state.preview_files
-      new_preview_files.push({
-        src: post.data.Location,
-        key: post.data.Key,
-        id: id,
-      })
-      instance.setState({
-        preview_files: new_preview_files,
-      })
-    } catch (error) {
-      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again'} />)
-    }
-    this.setState({
-      uploading: false,
-    })
-  }
-
-  getUploadParams = async ({ file, meta: { id, name } }) => {
-    this.doUploadS3(file, id, name)
-    return { url: 'https://httpbin.org/post' }
-  }
-
-  handleChangeStatus = ({ meta }, status, allFiles) => {
-    this.state.store_files = allFiles
-    if (status == 'removed' && this.state.lock == false) {
-      this.removeIndivdualfromAWS(meta.id)
-    }
   }
 
   handleSubmit = () => {
-    if (this.state.uploading == true) {
-      return
-    }
-    var tmp = []
-    var keys = []
-
-    for (var i = 0; i < this.state.preview_files.length; i++) {
-      tmp.push(this.state.preview_files[i].src)
-      keys.push(this.state.preview_files[i].key)
-    }
-
-    this.props.callbackConfirm(
-      {
-        media_url: tmp,
-        content: this.state.post_content,
-        selected_group: this.state.selected_group,
-      },
-      keys
-    )
+    this.props.callbackConfirm({
+      selected_group: this.state.selected_group,
+      visibility: this.state.visibility,
+    })
 
     this.setState({
       preview_files: [],
-      post_content: '',
     })
   }
 
-  handleChange = (event) => {
-    const name = event.target.name
-    const value = event.target.type == 'checkbox' ? event.target.checked : event.target.value
+  handleVisibityChange = (event, value) => {
     this.setState({
-      [name]: value,
+      visibility: value,
     })
-  }
-  handleVisibityChange = (event) => {
-    const name = event.target.name
-    const value = event.target.type == 'checkbox' ? event.target.checked : event.target.value
-    if (name == 'everyone') {
-      this.setState({
-        [name]: value,
-        onlyme: false,
-        followers: false,
-        friend: false,
-      })
-    } else {
-      this.setState({
-        [name]: value,
-        everyone: false,
-      })
-    }
   }
 
   handleAcceptedFiles = (Files) => {
-    for (var i = 0; i < Files.length; i++) {
-      let name = `post_image_${+new Date()}`
-      this.doUploadS3(Files[i], name, name)
-    }
-  }
-
-  submitForm = () => {
-    if (this.state.preview_files.length > 0) {
-      this.handleSubmit()
+    if (Files.length > 8) {
+      toast.success(<Toast_style text={`Sorry! Can't upload more than Eight at a time.`} />)
     } else {
-      this.props.callbackContentConfirm(this.state.post_content, this.state.selectedGroup)
+      for (var i = 0; i < Files.length; i++) {
+        let name = `post_image_${+new Date()}`
+        this.doUploadS3(Files[i], name, name)
+      }
     }
-  }
-
-  addGroupToggle = () => {
-    this.setState({ add_group_toggle: !this.state.add_group_toggle })
-  }
-  cancelGroupToggle = () => {
-    this.setState({ add_group_toggle: !this.state.add_group_toggle, selected_group: [] })
-  }
-  addGroupToggleForm = () => {
-    const { selected_group, groups_im_in = [] } = this.state
-
-    const selectedGroup = groups_im_in.length > 0 ? groups_im_in.filter((g) => selected_group.includes(g.id)) : []
-    this.setState({ selectedGroup })
-    this.addGroupToggle()
   }
 
   getSearchGroup = async (e) => {
@@ -274,19 +153,7 @@ export default class PostFileModal extends Component {
   }
 
   render() {
-    const {
-      open_compose_textTab,
-      add_group_toggle,
-      preview_files,
-      onlyme,
-      followers,
-      friend,
-      everyone,
-      groups_im_in,
-      selected_group,
-      selectedGroup,
-      searchText = '',
-    } = this.state
+    const { groups_im_in, selected_group, selectedGroup, searchText = '' } = this.state
     var class_modal_status = ''
     if (this.props.bOpen) {
       class_modal_status = 'modal--show'
@@ -295,118 +162,7 @@ export default class PostFileModal extends Component {
       <div className={'modal-container ' + class_modal_status}>
         <div className='modal-wrap'>
           <section className='postCompose__container'>
-            <div className='compose__type__section'>
-              <div className={`share__thought ${open_compose_textTab ? 'active' : ''}`} onClick={(e) => this.togglePostTypeTab('text')}>
-                {`Share your thoughts ...`}
-              </div>
-              <div className='devider'></div>
-              <div className={`add__post__image ${open_compose_textTab ? '' : 'active'}`} onClick={(e) => this.togglePostTypeTab('media')}>
-                {` Add video or photos`}
-              </div>
-            </div>
-
-            {open_compose_textTab && (
-              <div className='text__editor__section'>
-                <textarea
-                  onChange={this.handleChange}
-                  onKeyDown={this.detectKey}
-                  maxLength='254'
-                  name='post_content'
-                  value={this.state.post_content}
-                  placeholder="What's up... "
-                />
-              </div>
-            )}
-
-            {!open_compose_textTab && (
-              <div className='media__container'>
-                {/* <div className='text__editor__section'>
-                  <textarea
-                    onChange={this.handleChange}
-                    onKeyDown={this.detectKey}
-                    maxLength='254'
-                    name='post_content'
-                    value={this.state.post_content}
-                    placeholder="Whats up..."
-                  />
-                </div> */}
-                <Dropzone
-                  onDrop={(acceptedFiles) => this.handleAcceptedFiles(acceptedFiles)}
-                  accept='image/*,video/*'
-                  minSize={0}
-                  maxSize={5242880}
-                  multiple
-                  disabled={this.state.uploading}>
-                  {(props) => {
-                    return (
-                      <section className='custom__html'>
-                        <div className='text'>Drop your image or video</div>
-                        <div className='images'>
-                          <span className=' button photo-btn'>
-                            <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
-                          </span>
-                          <span className='button video-btn'>
-                            <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Video.svg`} />
-                          </span>
-                          {/* <span className='button video-btn'>
-                            <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Audio.svg`} />
-                          </span> */}
-                        </div>
-                        <div className='text'>
-                          Or <span>click here </span> to select
-                        </div>
-                        {this.state.uploading && (
-                          <div className='text'>
-                            <span>Uploading... </span>
-                          </div>
-                        )}
-                        {preview_files.length > 0 && (
-                          <div className='files__preview'>
-                            {preview_files.slice(0, 3).map((file) => (
-                              <img src={file.src} />
-                            ))}
-                            {preview_files.length > 3 ? `(${preview_files.length})...` : ''}
-                          </div>
-                        )}
-                      </section>
-                    )
-                  }}
-                </Dropzone>
-              </div>
-            )}
-            <div className='compose__people__section'>
-              <div className='label'>Post on: </div>
-              <div className='people_selected_container'>
-                <div className='people_selected_list'>
-                  <div className='default_circle'></div>
-                  <div className='people_label'>Your Feed</div>
-                </div>
-                {selectedGroup.splice(0, 3).map((g) => {
-                  return (
-                    <div className='people_selected_list'>
-                      <div className='default_circle'></div>
-                      <div className='people_label'>{g.name}</div>
-                    </div>
-                  )
-                })}
-              </div>
-              <div className='add_more_people'>
-                <button type='button' className='add__people' onClick={this.addGroupToggle}>
-                  Add
-                </button>
-              </div>
-            </div>
-            <div className='compose__button'>
-              <button type='button' className='cancel' onClick={this.closeModal}>
-                Cancel
-              </button>
-              <button type='button' className='add__post' disabled={this.state.uploading} onClick={this.submitForm}>
-                Post
-              </button>
-            </div>
-
-            {/* add group section  */}
-            <div className={`people_group_list ${add_group_toggle ? 'active' : ''}`}>
+            <div className={`people_group_list  active`}>
               <div className='search__box'>
                 <label htmlFor='searchInput'>Search</label>
                 <input type='text' id='searchInput' onChange={this.getSearchGroup} value={searchText} placeholder='Search here ...' />
@@ -422,14 +178,14 @@ export default class PostFileModal extends Component {
                         </div>
                         <div className='groupName'>{group_in.name}</div>
                         <div className='action'>
-                          <label class='container'>
+                          <label className='container'>
                             <input
                               type='checkbox'
                               checked={selected_group.includes(group_in.id)}
                               onChange={(e) => this.handleGroupCheck(e, group_in.id)}
                               value={1}
                             />
-                            <span class='checkmark'></span>
+                            <span className='checkmark'></span>
                           </label>
                         </div>
                       </div>
@@ -439,39 +195,63 @@ export default class PostFileModal extends Component {
               <div className='people_group_actions'>
                 <div className='post__privacy_select'>
                   <div>
-                    <label class='container'>
+                    <label className='container'>
                       Everyone
-                      <input type='checkbox' name='everyone' checked={everyone} onChange={this.handleVisibityChange} value={1} />
-                      <span class='checkmark'></span>
+                      <input
+                        type='checkbox'
+                        name='everyone'
+                        checked={this.state.visibility == 1}
+                        onChange={(e) => this.handleVisibityChange(e, 1)}
+                        value={1}
+                      />
+                      <span className='checkmark'></span>
                     </label>
                   </div>
                   <div>
-                    <label class='container'>
+                    <label className='container'>
                       Friends
-                      <input type='checkbox' name='friend' checked={friend} onChange={this.handleVisibityChange} value={1} />
-                      <span class='checkmark'></span>
+                      <input
+                        type='checkbox'
+                        name='friend'
+                        checked={this.state.visibility == 2}
+                        onChange={(e) => this.handleVisibityChange(e, 2)}
+                        value={2}
+                      />
+                      <span className='checkmark'></span>
                     </label>
                   </div>
                   <div>
-                    <label class='container'>
+                    <label className='container'>
                       Followers
-                      <input type='checkbox' name='followers' checked={followers} onChange={this.handleVisibityChange} value={1} />
-                      <span class='checkmark'></span>
+                      <input
+                        type='checkbox'
+                        name='followers'
+                        checked={this.state.visibility == 3}
+                        onChange={(e) => this.handleVisibityChange(e, 3)}
+                        value={3}
+                      />
+                      <span className='checkmark'></span>
                     </label>
                   </div>
                   <div>
-                    <label class='container'>
+                    <label className='container'>
                       Private
-                      <input type='checkbox' name='onlyme' checked={onlyme} onChange={this.handleVisibityChange} value={1} />
-                      <span class='checkmark'></span>
+                      <input
+                        type='checkbox'
+                        name='onlyme'
+                        checked={this.state.visibility == 0}
+                        onChange={(e) => this.handleVisibityChange(e, 0)}
+                        value={0}
+                      />
+                      <span className='checkmark'></span>
                     </label>
                   </div>
                 </div>
                 <div className='actions'>
-                  <button type='button' className='cancel' onClick={this.cancelGroupToggle}>
+                  <button type='button' className='cancel' onClick={this.closeModal}>
                     Cancel
                   </button>
-                  <button type='button' className='add__post' onClick={this.addGroupToggleForm}>
+                  <button type='button' className='add__post' onClick={this.handleSubmit}>
                     Add
                   </button>
                 </div>

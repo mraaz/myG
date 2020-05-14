@@ -308,7 +308,7 @@ export default class IndividualPost extends Component {
         file_keys: [post.data.Key],
       })
     } catch (error) {
-      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again'} />)
+      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
     }
     this.setState({
       uploading: false,
@@ -564,7 +564,7 @@ export default class IndividualPost extends Component {
                       {`shared `}
                       <div className='arrow'></div>
                       {this.state.show_group_name && this.state.group_name && (
-                        <Link to={`/groups/${post.group_id}`}>@{this.state.group_name}</Link>
+                        <Link to={`/groups/${post.group_id}`}>{this.state.group_name}</Link>
                       )}
                     </div>
                   )}
@@ -669,14 +669,16 @@ export default class IndividualPost extends Component {
                 myComments.length
               }) comments`}</div>
             )}
-            <div className='comments'>
-              {!show_more_comments && <div className='show-individual-comments'>{this.showComment()}</div>}
-              {show_more_comments && <div className='show-individual-comments'>{this.showMoreComment()}</div>}
-            </div>
+            {myComments.length > 0 && (
+              <div className='comments'>
+                {!show_more_comments && <div className='show-individual-comments'>{this.showComment()}</div>}
+                {show_more_comments && <div className='show-individual-comments'>{this.showMoreComment()}</div>}
+              </div>
+            )}
             <div className='compose-comment'>
               <textarea
                 name='name'
-                placeholder='Make a comment...'
+                placeholder='Write a comment...'
                 value={this.state.value}
                 onChange={this.handleChange}
                 maxLength='254'
@@ -708,6 +710,7 @@ export default class IndividualPost extends Component {
                 <div className='online__status'></div>
               </div>
             </div>
+            {this.state.uploading && <div className='uploadImage_loading'>Uploading ...</div>}
             {this.state.preview_file.length > 0 && (
               <div className='preview__image'>
                 <img src={`${this.state.preview_file[0]}`} />
