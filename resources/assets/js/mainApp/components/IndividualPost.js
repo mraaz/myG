@@ -133,7 +133,7 @@ export default class IndividualPost extends Component {
 
     const self = this
 
-    if (post.type == 'photo' || post.type == 'video') {
+    if (post.media_url != null) {
       try {
         this.state.media_urls = JSON.parse(post.media_url)
       } catch (error) {
@@ -141,12 +141,10 @@ export default class IndividualPost extends Component {
       }
     }
 
-    if (post.type == 'photo') {
-      if (this.state.media_urls != null) {
-        for (var i = 0; i < this.state.media_urls.length; i++) {
-          var myStruct = { original: this.state.media_urls[i], thumbnail: this.state.media_urls[i] }
-          this.state.images.push(myStruct)
-        }
+    if (this.state.media_urls != null) {
+      for (var i = 0; i < this.state.media_urls.length; i++) {
+        var myStruct = { original: this.state.media_urls[i], thumbnail: this.state.media_urls[i] }
+        this.state.images.push(myStruct)
       }
     }
 
@@ -177,7 +175,7 @@ export default class IndividualPost extends Component {
 
     var post_id = this.props.post.id
 
-    const getmyPostCount = async function () {
+    const getmyPostCount = async function() {
       try {
         var i
 
@@ -193,7 +191,7 @@ export default class IndividualPost extends Component {
       }
     }
 
-    const getGroup_info = async function () {
+    const getGroup_info = async function() {
       try {
         var i
 
@@ -224,7 +222,7 @@ export default class IndividualPost extends Component {
     var post_id = this.props.post.id
     const self = this
 
-    const getComments = async function () {
+    const getComments = async function() {
       try {
         const myComments = await axios.get(`/api/comments/${post_id}`)
         self.setState({
@@ -372,7 +370,7 @@ export default class IndividualPost extends Component {
     const self = this
     var post_id = this.props.post.id
 
-    const editPost = async function () {
+    const editPost = async function() {
       try {
         const myEditPost = await axios.post(`/api/post/update/${post_id}`, {
           content: self.state.value2,
@@ -459,7 +457,7 @@ export default class IndividualPost extends Component {
       dropdown: false,
     })
     setTimeout(
-      function () {
+      function() {
         //Start the timer
         this.focusTextInput2()
       }.bind(this),
@@ -620,7 +618,7 @@ export default class IndividualPost extends Component {
               )}
               {show_media &&
                 post.type == 'video' &&
-                this.state.media_urls.map(function (data, index) {
+                this.state.media_urls.map(function(data, index) {
                   return (
                     <video className='post-video' controls>
                       <source src={data}></source>
