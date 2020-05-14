@@ -34,7 +34,7 @@ export default class PostFileModal extends Component {
   componentDidMount() {
     const getmyGroups = async () => {
       try {
-        const getmyGroups = await axios.get('/api/groups/view')
+        const getmyGroups = await axios.get('/api/groups/view/1')
         this.setState({
           myGroups: getmyGroups.data.myGroups,
         })
@@ -45,7 +45,7 @@ export default class PostFileModal extends Component {
 
     const getGroups_im_in = async () => {
       try {
-        const getGroups_im_in = await axios.get('/api/usergroup/view')
+        const getGroups_im_in = await axios.get('/api/usergroup/view/1')
         this.setState({
           groups_im_in: getGroups_im_in.data.groups_im_in,
         })
@@ -133,7 +133,7 @@ export default class PostFileModal extends Component {
       const groups_im_in = groups.filter((g) => g.name.includes(searchText))
       this.setState({ groups_im_in, searchText })
     } else {
-      const getGroups_im_in = await axios.get('/api/usergroup/view')
+      const getGroups_im_in = await axios.get('/api/usergroup/view/1')
       this.setState({
         groups_im_in: getGroups_im_in.data.groups_im_in,
         searchText,
