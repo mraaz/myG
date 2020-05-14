@@ -88,9 +88,7 @@ export default class ComposeSection extends Component {
 
     let media_url = []
     let keys = []
-    if (content == '') {
-      return
-    }
+
     if (this.state.preview_files.length > 0) {
       for (var i = 0; i < this.state.preview_files.length; i++) {
         media_url.push(this.state.preview_files[i].src)
@@ -105,8 +103,8 @@ export default class ComposeSection extends Component {
         type: 'text',
         visibility: this.state.visibility,
         group_id: this.state.group_id,
-        media_url: media_url.length > 0 ? media_url : '',
-        keys: keys.length > 0 ? keys : '',
+        media_url: media_url.length > 0 ? JSON.stringify(media_url) : '',
+        file_keys: keys.length > 0 ? keys : '',
       })
       this.setState(
         {
@@ -158,7 +156,7 @@ export default class ComposeSection extends Component {
   get_posts = (post) => {
     const self = this
 
-    const getPosts = async function () {
+    const getPosts = async function() {
       try {
         const myPosts = await axios.get(`/api/mypost/${post.data}`)
         self.state.masterList = self.state.masterList.concat(myPosts.data.myPosts)
@@ -207,7 +205,7 @@ export default class ComposeSection extends Component {
       }
     }
 
-    const getGamers_you_might_know = async function () {
+    const getGamers_you_might_know = async function() {
       try {
         const gamers_you_might_know = await axios.get('/api/user/gamers_you_might_know')
       } catch (error) {

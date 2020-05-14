@@ -10,7 +10,7 @@ class PostController {
     let arrGroups_id = [],
       newPost = ''
 
-    if (request.input('groups_id') != null) {
+    if (request.input('groups_id') != undefined) {
       arrGroups_id = request.input('groups_id').split(',')
     }
 
@@ -35,6 +35,12 @@ class PostController {
             media_url: request.input('media_url'),
           })
         }
+      }
+
+      if (request.input('file_keys') != undefined) {
+        let update_key = new AwsKeyController()
+        request.params.post_id = newPost.id
+        update_key.addPostKey({ auth, request, response })
       }
 
       return newPost
