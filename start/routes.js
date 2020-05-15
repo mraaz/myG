@@ -123,6 +123,10 @@ Route.post('/api/GameTags', 'GameTagController.store')
 Route.get('/api/GameTags/getTopGameTags', 'GameTagController.getTopGameTags')
 Route.post('/api/GameTags/getGameTags', 'GameTagController.getGameTags')
 
+Route.post('/api/HashTags', 'HashTagController.store')
+Route.get('/api/HashTags/getTopHashTags', 'HashTagController.getTopHashTags')
+Route.post('/api/HashTags/getHashTags', 'HashTagController.getHashTags')
+
 Route.post('/api/likes/', 'LikeController.store')
 Route.get('/api/likes/:id', 'LikeController.show')
 Route.get('/api/likes/comment/:id', 'LikeController.show_comments')

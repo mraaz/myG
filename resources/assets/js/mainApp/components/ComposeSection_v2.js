@@ -8,9 +8,17 @@ import IndividualPost from './IndividualPost'
 import PostFileModal from './PostFileModal'
 import Dropzone from 'react-dropzone'
 const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
+import { MyGCreateableSelect } from './common'
+import { Disable_keys, Hash_Tags } from './Utility_Function'
 
 import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
+
+const createOption = (label: string, hash_tag_id: string) => ({
+  label,
+  value: label,
+  hash_tag_id,
+})
 
 export default class ComposeSection extends Component {
   constructor() {
@@ -32,6 +40,8 @@ export default class ComposeSection extends Component {
       visibility: 1,
       overlay_active: false,
       group_id: '',
+      options_tags: '',
+      value_tags: [],
     }
 
     this.openPhotoPost = this.openPhotoPost.bind(this)
@@ -98,6 +108,24 @@ export default class ComposeSection extends Component {
         keys.push(this.state.preview_files[i].key)
       }
     }
+    let hash_tags = []
+    if (this.state.value_tags.length != 0 && this.state.value_tags != null) {
+      for (var i = 0; i < this.state.value_tags.length; i++) {
+        if (/['/.%#$,;`\\]/.test(this.state.value_tags[i].value)) {
+          toast.success(<Toast_style text={'Sorry mate! Hash tags can not have invalid characters'} />)
+          return
+        }
+        if (this.state.value_tags[i].hash_tag_id == null) {
+          const new_HashTags = await axios.post('/api/HashTags', {
+            content: this.state.value_tags[i].value,
+          })
+          hash_tags.push(new_HashTags.data)
+        } else {
+          hash_tags.push(this.state.value_tags[i].hash_tag_id)
+        }
+      }
+    }
+    hash_tags = hash_tags.toString()
 
     try {
       const post = await axios.post('/api/post', {
@@ -108,6 +136,7 @@ export default class ComposeSection extends Component {
         group_id: this.state.group_id,
         media_url: media_url.length > 0 ? JSON.stringify(media_url) : '',
         file_keys: keys.length > 0 ? keys : '',
+        hash_tags: hash_tags,
       })
       this.setState(
         {
@@ -117,6 +146,7 @@ export default class ComposeSection extends Component {
           keys: [],
           visibility: 1,
           overlay_active: false,
+          value_tags: [],
         },
         () => {
           media_url = []
@@ -211,6 +241,10 @@ export default class ComposeSection extends Component {
     const getGamers_you_might_know = async function() {
       try {
         const gamers_you_might_know = await axios.get('/api/user/gamers_you_might_know')
+
+        //Pigybacking on here so we don't have to create a new method
+        let results = await Hash_Tags()
+        self.setState({ options_tags: results })
       } catch (error) {
         console.log(error)
       }
@@ -299,6 +333,35 @@ export default class ComposeSection extends Component {
       selected_group = selected_group.filter((gid) => gid != id)
     }
     this.setState({ selected_group })
+  }
+
+  handleCreateHashTags = (inputValue: any) => {
+    if (inputValue.length > 88) {
+      toast.success(<Toast_style text={'Sorry mate! Tag length is tooo long.'} />)
+      return
+    }
+    const { options_tags, value_tags, newValueCreated_tags } = this.state
+    const newOption = createOption(inputValue, null)
+    this.setState({ options_tags: [...options_tags, newOption] })
+    this.setState({ value_tags: [...value_tags, newOption] })
+  }
+
+  getOptions_tags = (inputValue) => {
+    const self = this
+
+    const getInitialData = async function(inputValue) {
+      try {
+        var results = await Hash_Tags(inputValue)
+        self.setState({ options_tags: results })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getInitialData(inputValue)
+  }
+
+  handleChange_Hash_tags = (value_tags: any) => {
+    this.setState({ value_tags })
   }
 
   render() {
@@ -403,6 +466,18 @@ export default class ComposeSection extends Component {
               <button type='button' className='add__people' onClick={this.addGroupToggle}>
                 Add
               </button>
+              {/* <MyGCreateableSelect
+                isClearable
+                isMulti
+                onKeyDown={Disable_keys}
+                onCreateOption={this.handleCreateHashTags}
+                options={this.state.options_tags}
+                value={this.state.value_tags}
+                onChange={this.handleChange_Hash_tags}
+                onInputChange={this.getOptions_tags}
+                className='hash_tag_name_box'
+                placeholder='Search, Select or create Hash Tags'
+              /> */}
             </div>
           </div>
           <div className='compose__button'>

@@ -4,6 +4,8 @@ const Post = use('App/Models/Post')
 const Database = use('Database')
 const AwsKeyController = use('./AwsKeyController')
 const LikeController = use('./LikeController')
+const HashTags = use('App/Models/HashTag')
+const PostHashTagTransaction = use('App/Models/PostHashTagTransaction')
 
 class PostController {
   async store({ auth, request, response }) {
@@ -41,6 +43,23 @@ class PostController {
         let update_key = new AwsKeyController()
         request.params.post_id = newPost.id
         update_key.addPostKey({ auth, request, response })
+      }
+
+      if (request.input('hash_tags') != null) {
+        var arrTags = request.input('hash_tags').split(',')
+
+        if (arrTags != '') {
+          for (var i = 0; i < arrTags.length; i++) {
+            const create_arrTags = await PostHashTagTransaction.create({
+              post_id: newPost.id,
+              hash_tag_id: arrTags[i],
+            })
+
+            const update_counter = await HashTags.query()
+              .where({ id: arrTags[i] })
+              .increment('counter', 1)
+          }
+        }
       }
 
       return newPost

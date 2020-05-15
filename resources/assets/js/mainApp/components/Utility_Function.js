@@ -15,6 +15,12 @@ const createOption_GameTags = (label, game_tag_id) => ({
   game_tag_id,
 })
 
+const createOption_HashTags = (label, hash_tag_id) => ({
+  label,
+  value: label,
+  hash_tag_id,
+})
+
 export async function Game_name_values(inputValue) {
   inputValue = inputValue.trimStart()
   if (inputValue == '' || inputValue == undefined) {
@@ -101,6 +107,37 @@ export async function Schedule_Game_Tags(inputValue) {
 
     for (i = 0; i < allTags.data.allTags.length; i++) {
       newOption = createOption_GameTags(allTags.data.allTags[i].content, allTags.data.allTags[i].id)
+      newArr.push(newOption)
+    }
+    return newArr
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export async function Hash_Tags(inputValue) {
+  if (inputValue != undefined) {
+    inputValue = inputValue.trimStart()
+    if (inputValue.length <= 88) {
+      inputValue = inputValue.substr(0, 88)
+    }
+  }
+
+  let allTags
+
+  if (inputValue == '' || inputValue == undefined) {
+    allTags = await axios.get('/api/HashTags/getTopHashTags')
+  } else {
+    allTags = await axios.post('/api/HashTags/getHashTags', {
+      content: inputValue,
+    })
+  }
+  try {
+    var newArr = []
+    var i, newOption
+
+    for (i = 0; i < allTags.data.allTags.length; i++) {
+      newOption = createOption_HashTags(allTags.data.allTags[i].content, allTags.data.allTags[i].id)
       newArr.push(newOption)
     }
     return newArr
