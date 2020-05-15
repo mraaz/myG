@@ -216,6 +216,7 @@ Route.post('/api/notifications/addGameApproved', 'NotificationController.addGame
 Route.put('/api/notifications/inviteToGroup', 'NotificationController.inviteToGroup')
 Route.post('/api/notifications/invitations', 'NotificationController.invitations')
 Route.get('/api/notifications/getunread_dings', 'NotificationController.getunread_dings')
+Route.get('/api/notifications/getApprovals_Dashboard', 'NotificationController.getApprovals_Dashboard')
 
 Route.post('/api/friends/create', 'FriendController.store')
 Route.post('/api/friends/allmyFriends', 'FriendController.showallmyFriends')

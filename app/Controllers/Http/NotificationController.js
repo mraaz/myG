@@ -1438,6 +1438,72 @@ class NotificationController {
       console.log(error)
     }
   }
+
+  async getApprovals_Dashboard({ auth, request, response }) {
+    //Return Activity_type: 1, 11, 12
+    var set_limit = 10
+    try {
+      const allMyFriends = await Database.from('notifications')
+        .innerJoin('users', 'users.id', 'notifications.user_id')
+        .where({ other_user_id: auth.user.id, activity_type: 1 })
+        .select(
+          'notifications.schedule_games_id',
+          'notifications.activity_type',
+          'users.alias',
+          'users.first_name',
+          'users.last_name',
+          'users.profile_img',
+          'users.id',
+          'notifications.created_at'
+        )
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
+
+      const myschedulegames_attendees = await Database.from('notifications')
+        .innerJoin('users', 'users.id', 'notifications.user_id')
+        .where({ other_user_id: auth.user.id, activity_type: 11 })
+        .groupBy('notifications.schedule_games_id')
+        .select(
+          'notifications.schedule_games_id',
+          'notifications.activity_type',
+          'users.alias',
+          'users.first_name',
+          'users.last_name',
+          'users.profile_img',
+          'users.id',
+          'notifications.created_at'
+        )
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
+
+      const mygroups = await Database.from('notifications')
+        .innerJoin('users', 'users.id', 'notifications.user_id')
+        .innerJoin('groups', 'groups.id', 'notifications.group_id')
+        .where({ other_user_id: auth.user.id, activity_type: 12 })
+        .groupBy('notifications.group_id')
+        .select(
+          'notifications.group_id',
+          'notifications.activity_type',
+          'users.alias',
+          'users.profile_img',
+          'users.id',
+          'notifications.created_at',
+          'groups.name'
+        )
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
+
+      var singleArr = [...allMyFriends.data, ...myschedulegames_attendees.data, ...mygroups.data]
+
+      if (singleArr.length == 0) {
+        return singleArr
+      } else {
+        return (singleArr = mergeSort(singleArr))
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 }
 
 module.exports = NotificationController
