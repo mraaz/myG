@@ -81,6 +81,32 @@ export default class Notifications extends Component {
     window.location.reload()
   }
 
+  showAlert_Approvals_Dashboard = async () => {
+    //0 = All, 1 = friends, 11 = Games, 12 = Communities
+    try {
+      const getApprovals_Dashboard = await axios.post('/api/notifications_v2/getApprovals_Dashboard', {
+        counter: 1,
+        activity_type: 0,
+      })
+
+      console.log(getApprovals_Dashboard)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  showAlert_UpcomingGames = async () => {
+    try {
+      const getUpcomingGames_Dashboard = await axios.post('/api/ScheduleGame/myScheduledGames_Upcoming_Games', {
+        counter: 1,
+      })
+
+      console.log(getUpcomingGames_Dashboard)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   showAlert() {
     const getAlert = () => (
       <SweetAlert
@@ -150,6 +176,12 @@ export default class Notifications extends Component {
                 <h3>myNotifications</h3>
                 {show_buttons && (
                   <div className='noti-buttons'>
+                    <button className='allread' onClick={() => this.showAlert_UpcomingGames()}>
+                      Upcoming Games
+                    </button>
+                    <button className='allread' onClick={() => this.showAlert_Approvals_Dashboard()}>
+                      Approvals
+                    </button>
                     <button className='allread' onClick={() => this.showAlert()}>
                       Mark all as read
                     </button>
