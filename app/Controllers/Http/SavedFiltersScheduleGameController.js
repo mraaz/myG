@@ -10,8 +10,9 @@ class SavedFiltersScheduleGameController {
       }
       try {
         const newSavedFilter = await SavedFiltersScheduleGame.create({
-          content: request.input('content').trim(),
           user_id: auth.user.id,
+          name: request.input('name').trim(),
+          payload: 'Test',
         })
         return newGameTag.id
       } catch (error) {
