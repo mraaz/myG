@@ -300,6 +300,11 @@ Route.get('/api/notifications/outgoingFriendRequests', 'NotificationController.o
 
 Route.get('/api/userStatTransaction/master_controller', 'UserStatTransactionController.master_controller')
 
+Route.post('/api/SavedFiltersScheduleGameController', 'SavedFiltersScheduleGameController.store')
+Route.post('/api/SavedFiltersScheduleGameController/updateFilter', 'SavedFiltersScheduleGameController.updateFilter')
+Route.post('/api/SavedFiltersScheduleGameController/deleteFilter', 'SavedFiltersScheduleGameController.destroy')
+Route.get('/api/SavedFiltersScheduleGameController/getAllSavedFilters', 'SavedFiltersScheduleGameController.getAllSavedFilters')
+
 // Aws Key Upload
 Route.post('/api/chat/:chatId/icon', 'AwsKeyController.addChatGroupProfileKey')
 Route.post('/api/game/:gameId/icon', 'AwsKeyController.addGameIconKey')
