@@ -45,13 +45,54 @@ class GuestController {
   }
 
   async sendMessage({ params, request, response }) {
-    const requestedChatId = params.chatId;
     const guestId = params.guestId;
+    const requestedChatId = params.chatId;
     const { backup, content } = request.only('encryptedContent').encryptedContent;
+    const { replyId, replyContent, replyBackup } = request.only(['replyId', 'replyContent', 'replyBackup']);
     const senderName = request.only('senderName').senderName;
     log('GUEST', `Guest ${guestId} sending encrypted Message for Chat ${requestedChatId}`);
-    const { message } = await GuestRepository.sendMessage({ requestedChatId, senderName, guestId, backup, content });
+    const { message } = await GuestRepository.sendMessage({ requestedChatId, senderName, guestId, backup, content, replyId, replyContent, replyBackup });
     return response.send({ message });
+  }
+
+  async editMessage({ params, request, response }) {
+    const guestId = params.guestId;
+    const requestedChatId = params.chatId;
+    const requestedMessageId = params.messageId;
+    const { backup, content } = request.only('encryptedContent').encryptedContent;
+    log('GUEST', `Guest ${guestId} editing encrypted Message ${requestedMessageId} for Chat ${requestedChatId}`);
+    const { message } = await GuestRepository.editMessage({ guestId, requestedChatId, requestedMessageId, backup, content });
+    return response.send({ message });
+  }
+
+  async deleteMessage({ params, response }) {
+    const guestId = params.guestId;
+    const requestedChatId = params.chatId;
+    const requestedMessageId = params.messageId;
+    log('GUEST', `Guest ${guestId} deleting Message ${requestedMessageId} for Chat ${requestedChatId}`);
+    const { message } = await GuestRepository.deleteMessage({ guestId, requestedChatId, requestedMessageId });
+    return response.send({ message });
+  }
+
+  async addReaction({ params, request, response }) {
+    const guestId = params.guestId;
+    const chatId = params.chatId;
+    const messageId = params.messageId;
+    const reactionId = request.only('reactionId').reactionId;
+    const senderName = request.only('senderName').senderName;
+    log('GUEST', `Guest ${guestId} adding Reaction ${reactionId} to Message ${messageId} for Chat ${chatId}`);
+    const { success, error } = await GuestRepository.addReaction({ guestId, chatId, messageId, reactionId, senderName });
+    return response.send({ success, error });
+  }
+
+  async removeReaction({ params, response }) {
+    const guestId = params.guestId;
+    const chatId = params.chatId;
+    const messageId = params.messageId;
+    const reactionId = params.reactionId;
+    log('GUEST', `Guest ${guestId} removing Reaction ${reactionId} to Message ${messageId} for Chat ${chatId}`);
+    const { success, error } = await GuestRepository.removeReaction({ guestId, chatId, messageId, reactionId });
+    return response.send({ success, error });
   }
 
   async fetchEntryLogs({ params, response }) {

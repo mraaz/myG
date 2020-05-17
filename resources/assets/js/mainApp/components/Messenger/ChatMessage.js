@@ -29,7 +29,6 @@ export default class ChatMessage extends React.Component {
 
   handleKeyPress = (event) => {
     if (event.keyCode == 13) {
-      if (this.props.isGuest) return;
       this.props.editMessage(this.props.chatId, this.props.messageId, this.state.input);
       this.setState({ editing: false });
       this.props.onEdit();
@@ -50,7 +49,6 @@ export default class ChatMessage extends React.Component {
   }
 
   renderReactions = () => {
-    if (this.props.isGuest) return;
     if (this.props.message.deleted) return;
     if (!this.props.message.reactions.length) return;
     const hasReaction = reactionId => this.props.message.reactions.find(reaction => reactionId === reaction.reactionId && this.props.userId === reaction.senderId);
@@ -66,8 +64,8 @@ export default class ChatMessage extends React.Component {
               onMouseEnter={() => this.setState({ reaction: reactionId })}
               onMouseLeave={() => this.setState({ reaction: null })}
               onClick={() => hasReaction(reactionId) ?
-                this.props.removeReaction(this.props.chatId, this.props.messageId, reactionId) :
-                this.props.addReaction(this.props.chatId, this.props.messageId, reactionId)
+                this.props.removeReaction(this.props.chatId, this.props.userId, this.props.messageId, reactionId) :
+                this.props.addReaction(this.props.chatId, this.props.userId, this.props.messageId, reactionId, this.props.alias)
               }
             >
               <div
@@ -91,7 +89,6 @@ export default class ChatMessage extends React.Component {
   }
 
   renderReactionOptions = () => {
-    if (this.props.isGuest) return;
     if (!this.state.showOptionsButton) return;
     if (this.props.message.deleted) return;
     const hasReaction = reactionId => this.props.message.reactions.find(reaction => reactionId === reaction.reactionId && this.props.userId === reaction.senderId);
@@ -100,42 +97,42 @@ export default class ChatMessage extends React.Component {
         {!hasReaction(1) && (
           <div
             className="chat-component-message-reaction-options-item clickable"
-            onClick={() => this.props.addReaction(this.props.chatId, this.props.messageId, 1)}
+            onClick={() => this.props.addReaction(this.props.chatId, this.props.userId, this.props.messageId, 1, this.props.alias)}
             style={{ backgroundImage: `url(${getAssetUrl('ic_reaction_1')})` }}
           />
         )}
         {!hasReaction(2) && (
           <div
             className="chat-component-message-reaction-options-item clickable"
-            onClick={() => this.props.addReaction(this.props.chatId, this.props.messageId, 2)}
+            onClick={() => this.props.addReaction(this.props.chatId, this.props.userId, this.props.messageId, 2, this.props.alias)}
             style={{ backgroundImage: `url(${getAssetUrl('ic_reaction_2')})` }}
           />
         )}
         {!hasReaction(3) && (
           <div
             className="chat-component-message-reaction-options-item clickable"
-            onClick={() => this.props.addReaction(this.props.chatId, this.props.messageId, 3)}
+            onClick={() => this.props.addReaction(this.props.chatId, this.props.userId, this.props.messageId, 3, this.props.alias)}
             style={{ backgroundImage: `url(${getAssetUrl('ic_reaction_3')})` }}
           />
         )}
         {!hasReaction(4) && (
           <div
             className="chat-component-message-reaction-options-item clickable"
-            onClick={() => this.props.addReaction(this.props.chatId, this.props.messageId, 4)}
+            onClick={() => this.props.addReaction(this.props.chatId, this.props.userId, this.props.messageId, 4, this.props.alias)}
             style={{ backgroundImage: `url(${getAssetUrl('ic_reaction_4')})` }}
           />
         )}
         {!hasReaction(5) && (
           <div
             className="chat-component-message-reaction-options-item clickable"
-            onClick={() => this.props.addReaction(this.props.chatId, this.props.messageId, 5)}
+            onClick={() => this.props.addReaction(this.props.chatId, this.props.userId, this.props.messageId, 5, this.props.alias)}
             style={{ backgroundImage: `url(${getAssetUrl('ic_reaction_5')})` }}
           />
         )}
         {!hasReaction(6) && (
           <div
             className="chat-component-message-reaction-options-item clickable"
-            onClick={() => this.props.addReaction(this.props.chatId, this.props.messageId, 6)}
+            onClick={() => this.props.addReaction(this.props.chatId, this.props.userId, this.props.messageId, 6, this.props.alias)}
             style={{ backgroundImage: `url(${getAssetUrl('ic_reaction_6')})` }}
           />
         )}
@@ -144,7 +141,6 @@ export default class ChatMessage extends React.Component {
   }
 
   renderOptions = () => {
-    if (this.props.isGuest) return;
     if (!this.state.showOptionsMenu) return;
     if (this.props.message.deleted) return;
     const origin = this.props.message.senderId === this.props.userId ? 'sent' : 'received';
@@ -193,7 +189,7 @@ export default class ChatMessage extends React.Component {
 
         <div
           className="chat-component-message-options-row clickable"
-          onClick={() => this.props.deleteMessage(this.props.chatId, this.props.messageId, origin)}
+          onClick={() => this.props.deleteMessage(this.props.chatId, this.props.userId, this.props.messageId, origin)}
         >
           <p className="chat-component-message-options-label">delete</p>
         </div>
@@ -349,7 +345,7 @@ export default class ChatMessage extends React.Component {
         key={message.messageId}
         ref={this.messageRef}
         className={`chat-component-message chat-component-message-${origin} ${deletedStyle} ${selfDestructStyle}`}
-        onMouseEnter={() => this.setState({ showOptionsButton: !this.props.isGuest })}
+        onMouseEnter={() => this.setState({ showOptionsButton: true })}
         onMouseLeave={() => this.setState({ showOptionsButton: false, showOptionsMenu: false })}
       >
         <div className="chat-component-message-container">

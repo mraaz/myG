@@ -105,7 +105,7 @@ export class Chat extends React.PureComponent {
   }
 
   editMessage = (chatId, messageId, input) => {
-    this.props.editMessage(chatId, messageId, this.encryptInput(input));
+    this.props.editMessage(chatId, this.props.userId, messageId, this.encryptInput(input));
   }
 
   encryptInput = (input) => {
@@ -271,6 +271,7 @@ export class Chat extends React.PureComponent {
         <ChatMessageList
           userId={this.props.userId}
           chatId={this.props.chatId}
+          alias={this.props.alias}
           isGroup={this.props.isGroup}
           isGuest={this.props.isGuest}
           messages={this.props.messages}
@@ -525,10 +526,10 @@ function mapDispatchToProps(dispatch) {
     prepareChat: (chatId, userId, contactId, isGroup) => dispatch(prepareChatAction(chatId, userId, contactId, isGroup)),
     fetchMessages: (chatId, page) => dispatch(fetchMessagesAction(chatId, page)),
     sendMessage: (chatId, userId, alias, content, attachment, replyId, replyContent, replyBackup) => dispatch(sendMessageAction(chatId, userId, alias, content, attachment, replyId, replyContent, replyBackup)),
-    editMessage: (chatId, messageId, content) => dispatch(editMessageAction(chatId, messageId, content)),
-    deleteMessage: (chatId, messageId, origin) => dispatch(deleteMessageAction(chatId, messageId, origin)),
-    addReaction: (chatId, messageId, reactionId) => dispatch(addReactionAction(chatId, messageId, reactionId)),
-    removeReaction: (chatId, messageId, reactionId) => dispatch(removeReactionAction(chatId, messageId, reactionId)),
+    editMessage: (chatId, userId, messageId, content) => dispatch(editMessageAction(chatId, userId, messageId, content)),
+    deleteMessage: (chatId, userId, messageId, origin) => dispatch(deleteMessageAction(chatId, userId, messageId, origin)),
+    addReaction: (chatId, userId, messageId, reactionId) => dispatch(addReactionAction(chatId, userId, messageId, reactionId)),
+    removeReaction: (chatId, userId, messageId, reactionId) => dispatch(removeReactionAction(chatId, userId, messageId, reactionId)),
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
     updateChatState: (chatId, state) => dispatch(updateChatStateAction(chatId, state)),
     blockUser: (blockedUserId) => dispatch(blockUserAction(blockedUserId)),
