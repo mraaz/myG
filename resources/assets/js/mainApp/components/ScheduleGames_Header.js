@@ -87,22 +87,23 @@ export default class ScheduleGames_Header extends Component {
   call_PullDataFunc = async () => {
     this.state.game_name_box = this.props.game_name_box
     var tmp_allscheduledGames = await PullDataFunction(this.state)
+    console.log(tmp_allscheduledGames)
     this.setState({
       allscheduledGames: [],
     })
 
-    if (tmp_allscheduledGames.data.latestScheduledGames.data.length > 10) {
+    if (tmp_allscheduledGames.data.latestScheduledGames.length > 10) {
       this.setState({
         show_more: true,
       })
-      tmp_allscheduledGames.data.latestScheduledGames.data.pop()
+      tmp_allscheduledGames.data.latestScheduledGames.pop()
     } else {
       this.setState({
         show_more: false,
       })
     }
     this.setState({
-      allscheduledGames: tmp_allscheduledGames.data.latestScheduledGames.data,
+      allscheduledGames: tmp_allscheduledGames.data.latestScheduledGames,
     })
   }
 
