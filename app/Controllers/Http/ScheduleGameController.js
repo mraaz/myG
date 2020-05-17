@@ -450,9 +450,14 @@ class ScheduleGameController {
           .paginate(request.input('counter'), 10)
       }
 
-      console.log(latestScheduledGames)
-
       for (var i = 0; i < latestScheduledGames.data.length; i++) {
+        let getAllTags = await Database.from('schedule_games_tags')
+          .innerJoin('game_tags', 'game_tags.id', 'schedule_games_tags.game_tag_id')
+          .where({ schedule_games_id: latestScheduledGames.data[i].id })
+          .select('content')
+
+        latestScheduledGames.data[i].tags = getAllTags
+
         var myScheduledTrans = await Database.from('schedule_games_transactions')
           .innerJoin('game_name_fields', 'game_name_fields.id', 'schedule_games_transactions.game_name_fields_id')
           .where({ schedule_games_id: latestScheduledGames.data[i].id })
