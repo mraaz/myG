@@ -5,22 +5,20 @@ import moment from 'moment'
 import uuid from 'uuid'
 
 export async function SubmitDataFunction(myG) {
-  var myRegion = ''
-  var myExperience = ''
-  var myPlatform = ''
-  var myLimit = 42
-  var myDota2_medal_ranks = ''
-  var myDota2_server_regions = ''
-  var myDota2_roles = ''
-  var myClash_royale_trophies = ''
-  var now = moment()
-  var end_date = myG.endDate
-  let autoJoin = true,
+  let myRegion = null,
+    myExperience = null,
+    myPlatform = null,
+    myDota2_medal_ranks = null,
+    myDota2_server_regions = null,
+    myDota2_roles = null,
+    myClash_royale_trophies = null,
+    now = moment(),
+    end_date = myG.endDate,
+    myLimit = 0,
+    autoJoin = true,
     repeat_game = undefined,
     co_hosts = null,
     tags = []
-
-  console.log(myG)
 
   if (myG.selected_region != undefined && myG.selected_region !== null && myG.selected_region.length !== 0) {
     myRegion = Convert_to_comma_delimited_value(myG.selected_region)
@@ -38,7 +36,7 @@ export async function SubmitDataFunction(myG) {
     co_hosts = Convert_to_comma_delimited_value(myG.coHosts)
   }
 
-  if (myG.tags.length != 0 && myG.tags != null) {
+  if (myG.tags != undefined && myG.tags.length != 0 && myG.tags != null) {
     for (var i = 0; i < myG.tags.length; i++) {
       if (/['/.%#$,;`\\]/.test(myG.tags[i].value)) {
         toast.success(<Toast_style text={'Sorry mate! Game tags can not have invalid fields'} />)
@@ -53,8 +51,8 @@ export async function SubmitDataFunction(myG) {
         tags.push(myG.tags[i].game_tag_id)
       }
     }
+    tags = tags.toString()
   }
-  tags = tags.toString()
 
   if (myG.endDate != null || myG.endDate != undefined) {
     now = moment(myG.endDate)

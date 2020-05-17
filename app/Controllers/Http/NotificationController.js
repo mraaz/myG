@@ -1447,13 +1447,11 @@ class NotificationController {
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id, activity_type: 1 })
         .select(
-          'notifications.schedule_games_id',
           'notifications.activity_type',
           'users.alias',
-          'users.first_name',
-          'users.last_name',
           'users.profile_img',
           'users.id',
+          'notifications.id',
           'notifications.created_at'
         )
         .orderBy('notifications.created_at', 'desc')
@@ -1461,16 +1459,18 @@ class NotificationController {
 
       const myschedulegames_attendees = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
+        .innerJoin('schedule_games', 'schedule_games.id', 'notifications.schedule_games_id')
+        .innerJoin('game_names', 'schedule_games.game_names_id', 'game_names.id')
         .where({ other_user_id: auth.user.id, activity_type: 11 })
-        .groupBy('notifications.schedule_games_id')
         .select(
-          'notifications.schedule_games_id',
+          'schedule_games.start_date_time',
+          'schedule_games.id',
+          'game_names.game_name',
           'notifications.activity_type',
           'users.alias',
-          'users.first_name',
-          'users.last_name',
           'users.profile_img',
           'users.id',
+          'notifications.id',
           'notifications.created_at'
         )
         .orderBy('notifications.created_at', 'desc')
@@ -1480,7 +1480,6 @@ class NotificationController {
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .innerJoin('groups', 'groups.id', 'notifications.group_id')
         .where({ other_user_id: auth.user.id, activity_type: 12 })
-        .groupBy('notifications.group_id')
         .select(
           'notifications.group_id',
           'notifications.activity_type',
@@ -1488,6 +1487,7 @@ class NotificationController {
           'users.profile_img',
           'users.id',
           'notifications.created_at',
+          'notifications.id',
           'groups.name'
         )
         .orderBy('notifications.created_at', 'desc')

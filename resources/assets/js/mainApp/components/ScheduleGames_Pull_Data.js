@@ -2,14 +2,12 @@ import axios from 'axios'
 import moment from 'moment'
 
 export async function PullDataFunction(myG) {
-  var myGame_name_box = null,
-    myVisibility = 1,
+  let myGame_name_box = null,
     myRegion = null,
     myExperience = null,
     myPlatform = null,
     myDescription_box = null,
-    myOther_box = null,
-    myLimit = 0,
+    counter = 0,
     check_full_games = true,
     startDate = moment()
       .subtract(5, 'seconds')
@@ -20,11 +18,8 @@ export async function PullDataFunction(myG) {
     dota2_medal_ranks = null,
     dota2_server_regions = null,
     dota2_roles = null,
-    clash_royale_trophies = null
-
-  if (myG.visibility_box != undefined && myG.visibility_box != null && myG.visibility_box != '') {
-    myVisibility = myG.visibility_box.value
-  }
+    clash_royale_trophies = null,
+    tags = null
 
   if (myG.selected_region != undefined && myG.selected_region != null && myG.selected_region != '') {
     myRegion = myG.selected_region.value
@@ -84,7 +79,22 @@ export async function PullDataFunction(myG) {
     myDescription_box = myG.description_box
   }
 
-  myLimit = myG.db_row_counter
+  if (myG.tags != undefined && myG.tags.length != 0 && myG.tags != null) {
+    for (var i = 0; i < myG.tags.length; i++) {
+      if (/['/.%#$,;`\\]/.test(myG.tags[i].value)) {
+        toast.success(<Toast_style text={'Sorry mate! Game tags can not have invalid fields'} />)
+        return
+      }
+      if (myG.tags[i].game_tag_id == null) {
+        continue
+      } else {
+        tags.push(myG.tags[i].game_tag_id)
+      }
+    }
+    tags = tags.toString()
+  }
+
+  counter = myG.counter
 
   try {
     const allscheduledGames = await axios.post('/api/ScheduleGame/scheduleSearchResults', {
@@ -95,14 +105,13 @@ export async function PullDataFunction(myG) {
       end_date_time: endDate,
       platform: myPlatform,
       description: myDescription_box,
-      other: myOther_box,
-      visibility: myVisibility,
-      limit_clause: myLimit,
+      counter: counter,
       vacancy: check_full_games,
       dota2_medal_ranks: dota2_medal_ranks,
       dota2_server_regions: dota2_server_regions,
       dota2_roles: dota2_roles,
       clash_royale_trophies: clash_royale_trophies,
+      tags: tags,
     })
     return allscheduledGames
   } catch (error) {
