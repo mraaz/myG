@@ -61,6 +61,8 @@ class PostController {
           }
         }
       }
+      request.params.id = newPost.id
+      newPost = this.myshow({ auth, request, response })
 
       return newPost
     }
@@ -152,27 +154,8 @@ class PostController {
   }
 
   async show({ auth, request, response }) {
-    // var ourDate = new Date()
-    // var subquery
-    //
-    // //Change it so that it is 7 days in the past.
-    // var pastDate = ourDate.getDate() - 2007
-    // ourDate.setDate(pastDate)
     try {
       let likeController = new LikeController()
-      //const myPosts = await Post.query().where('user_id', '=', request.params.id).fetch() //for myPost
-      //const myPosts = await Post.query().innerJoin('friends', 'user_id', 'post.user_id').options({nestTables:true}).fetch()
-      //const following = await Database.from('friends').where({user_id: 1, friend_id: request.params.id})
-      //const subquery = await Database.from('friends').where({user_id: 1}).select('id').fetch()
-
-      //const latestPosts = await Post.query().innerJoin('users', 'user_id', 'posts.user_id').options({nestTables:true}).fetch()
-      //const myPosts = await Database.from('posts').whereIn('user_id', subquery).orderBy('created_at', 'desc').innerJoin('users', 'users_id', 'posts.user_id').options({nestTables:true}).fetch()
-
-      //const myPosts = await Database.table('posts').innerJoin('users', 'users.id', 'posts.user_id')
-
-      // .orWhere(function() {
-      //   this.where('followers.user_id', '=', auth.user.id).andWhere('posts.visibility', '=', 1)
-      // })
 
       const myFriendsPosts = await Database.select('*', 'posts.id', 'posts.updated_at')
         .from('friends')
@@ -214,48 +197,6 @@ class PostController {
         }
       }
 
-      // let array = []
-      // for (var i = 0; i < get_no_of_friends.length; i++) {
-      //   array.push(get_no_of_friends[i].friend_id)
-      // }
-      // let uniqueArray = [...new Set(array)]
-
-      //console.log(uniqueArray)
-      //.orderBy(posts.created_at, desc)
-
-      // if (check_no_of_friends[0].no_of_my_friends > 100) {
-      //   const get_no_of_friends = await Database.select('friend_id')
-      //     .from('friends')
-      //     .innerJoin('posts', 'posts.user_id', 'friends.user_id')
-      //     .where('friends.user_id', '=', auth.user.id)
-      //     .where('posts.created_at', '>=', ourDate)
-      //     .count('* as no_of_my_friends')
-      //
-      //   if (get_no_of_friends[0].no_of_my_friends == 0) {
-      //     pastDate = ourDate.getDate() - 30
-      //     ourDate.setDate(pastDate)
-      //   }
-      //
-      //   subquery = Database.select('friend_id')
-      //     .from('friends')
-      //     .innerJoin('posts', 'posts.user_id', 'friends.user_id')
-      //     .where('friends.user_id', '=', auth.user.id)
-      //     .where('posts.created_at', '>=', ourDate)
-      // } else {
-      // const subquery = await Database.select('friend_id')
-      //   .from('friends')
-      //   .whereIn('id', uniqueArray)
-      //
-      // console.log(subquery)
-      //
-      // return
-      // const myPosts = await Database.from('posts')
-      //   .innerJoin('users', 'users.id', 'posts.user_id')
-      //   .whereIn('posts.user_id', uniqueArray)
-      //   .select('*', 'posts.id', 'posts.updated_at')
-      //   .orderBy('posts.created_at', 'desc')
-      //   .paginate(request.params.paginateNo, 10)
-
       return {
         myPosts,
       }
@@ -267,17 +208,9 @@ class PostController {
   async myshow({ auth, request, response }) {
     let likeController = new LikeController()
     try {
-      // const myPosts = await Database.from('posts')
-      //   .innerJoin('users', 'users.id', 'posts.user_id')
-      //   .where('posts.user_id', '=', auth.user.id)
-      //   .andWhere('posts.created_at', '>=', request.params.myDate)
-      //   .select('*', 'posts.id', 'posts.created_at', 'posts.updated_at')
-      //   .orderBy('posts.created_at', 'desc')
-      //   .limit(1)
-
       const myPosts = await Database.from('posts')
         .innerJoin('users', 'users.id', 'posts.user_id')
-        .where('posts.id', '=', request.params.myDate)
+        .where('posts.id', '=', request.params.id)
         .select('*', 'posts.id', 'posts.created_at', 'posts.updated_at')
         .orderBy('posts.created_at', 'desc')
         .limit(1)
@@ -309,6 +242,7 @@ class PostController {
   }
 
   async showpost({ auth, request, response }) {
+    let likeController = new LikeController()
     try {
       const myPost = await Database.from('posts')
         .innerJoin('users', 'users.id', 'posts.user_id')

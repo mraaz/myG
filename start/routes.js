@@ -56,7 +56,7 @@ Route.post('/api/deleteFile', 'ApiController.deleteFile')
 Route.post('/api/deleteFiles', 'ApiController.deleteFiles')
 
 Route.get('/api/post/:paginateNo', 'PostController.show')
-Route.get('/api/mypost/:myDate', 'PostController.myshow')
+Route.get('/api/mypost/:id', 'PostController.myshow')
 Route.get('/api/getmypost/:paginateNo', 'PostController.showmyposts')
 Route.get('/api/get_group_posts/:id/:paginateNo', 'PostController.get_group_posts')
 Route.post('/api/post', 'PostController.store')
