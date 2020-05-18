@@ -322,13 +322,9 @@ export default class IndividualPost extends Component {
   }
 
   insert_comment = () => {
-    if (this.state.value == '') {
-      return
-    }
-    if (this.state.value.trim() == '') {
-      this.setState({
-        value: '',
-      })
+    const { value = '', preview_file = [] } = this.state
+
+    if (value.trim() == '' && preview_file.length == 0) {
       return
     }
     this.onFocus()
