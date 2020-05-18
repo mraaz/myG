@@ -221,10 +221,33 @@ export default class IndividualComment extends Component {
       )
     }
   }
+  show_more_replies = () => {
+    this.setState({ show_more_replies: !this.state.show_more_replies })
+  }
 
   showReplies = () => {
-    if (this.state.myReplies != undefined) {
-      return this.state.myReplies.map((item, index) => {
+    const { myReplies = [] } = this.state
+    const replies = [...myReplies]
+    const repliesArr = replies.length > 1 ? replies.slice(1) : replies
+    if (repliesArr.length > 0) {
+      return repliesArr.map((item, index) => {
+        return (
+          <IndividualReply
+            reply={item}
+            key={index}
+            comment_user_id={this.props.comment.user_id}
+            post_id={this.props.comment.post_id}
+            user={this.props.user}
+            schedule_game_id={this.props.comment.schedule_games_id}
+          />
+        )
+      })
+    }
+  }
+  showMoreReplies = () => {
+    const { myReplies = [] } = this.state
+    if (myReplies.length > 0) {
+      return myReplies.map((item, index) => {
         return (
           <IndividualReply
             reply={item}
@@ -479,6 +502,7 @@ export default class IndividualComment extends Component {
 
   render() {
     let { comment } = this.props
+    const { myReplies = [], show_more_replies = false } = this.state
     if (this.state.comment_deleted != true) {
       return (
         <div className='individual-comment-container'>
@@ -570,7 +594,13 @@ export default class IndividualComment extends Component {
           </div>
           {/* comment reply start */}
           <div className='comment-panel'>
-            {this.state.show_more_replies && this.showReplies()}
+            {myReplies.length > 1 && (
+              <div className='show__moreReply' onClick={this.show_more_replies}>{` ${show_more_replies ? 'Hide' : 'View'} all (${
+                myReplies.length
+              }) replies`}</div>
+            )}
+            {!show_more_replies && this.showReplies()}
+            {show_more_replies && this.showMoreReplies()}
 
             {this.state.show_add_reply && (
               <div className='add-reply'>

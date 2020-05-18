@@ -743,6 +743,19 @@ section#content-container {
                 display: flex;
                 align-items: center;
                 margin-bottom: 18px;
+                .show__moreReply {
+                  background: #171a1c;
+                  padding: 5px 5px 5px 0px;
+                  font-size: 10px;
+                  color: #93a4a5;
+                  position: relative;
+                  display: -ms-flexbox;
+                  display: flex;
+                  border-top: 1px solid #4d565a;
+                  border-bottom: 1px solid #4d565a;
+                  cursor: pointer;
+                  margin-bottom: 10px;
+                }
               }
               .comment-panel-liked {
                 margin-right: 18px;
@@ -1376,6 +1389,19 @@ section#content-container {
               margin-left: 25px;
               flex-direction: column;
               border-left: 1px solid #384952;
+              .show__moreReply {
+                background: #171a1c;
+                padding: 5px 5px 5px 0px;
+                font-size: 10px;
+                color: #93a4a5;
+                position: relative;
+                display: -ms-flexbox;
+                display: flex;
+                border-top: 1px solid #4d565a;
+                border-bottom: 1px solid #4d565a;
+                cursor: pointer;
+                margin-bottom: 10px;
+              }
               .individual-comment-container {
                 width: 100%;
               }
@@ -2227,6 +2253,19 @@ section#content-container {
               display: flex;
               align-items: center;
               margin-bottom: 18px;
+              .show__moreReply {
+                background: #171a1c;
+                padding: 5px 5px 5px 0px;
+                font-size: 10px;
+                color: #93a4a5;
+                position: relative;
+                display: -ms-flexbox;
+                display: flex;
+                border-top: 1px solid #4d565a;
+                border-bottom: 1px solid #4d565a;
+                cursor: pointer;
+                margin-bottom: 10px;
+              }
             }
             .comment-panel-liked {
               margin-right: 18px;
@@ -2765,6 +2804,19 @@ section#content-container {
             display: flex;
             margin-left: auto;
             flex-direction: column;
+            .show__moreReply {
+              background: #171a1c;
+              padding: 5px 5px 5px 0px;
+              font-size: 10px;
+              color: #93a4a5;
+              position: relative;
+              display: -ms-flexbox;
+              display: flex;
+              border-top: 1px solid #4d565a;
+              border-bottom: 1px solid #4d565a;
+              cursor: pointer;
+              margin-bottom: 10px;
+            }
             .individual-comment-container {
               width: 100%;
             }
