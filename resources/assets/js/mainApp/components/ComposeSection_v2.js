@@ -156,6 +156,7 @@ export default class ComposeSection extends Component {
         () => {
           media_url = []
           keys = []
+          this.props.successCallback(post)
         }
       )
       console.log(post)

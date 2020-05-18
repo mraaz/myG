@@ -92,36 +92,20 @@ export default class MyPosts extends Component {
     }
   }
 
-  composeSuccess = async () => {
+  composeSuccess = async (data) => {
     const { myPosts = [] } = this.state
-    const self = this
-    this.setState({
-      isFetching: true,
-    })
-    const data = await axios({
-      method: 'GET',
-      url: '/api/getmypost/1',
-      onDownloadProgress: (progressEvent) => {
-        const { loaded = 0, total = 0 } = progressEvent
-        const percentCompleted = Math.round((loaded * 100) / total)
-        self.setState({
-          post_submit_loading: percentCompleted,
-        })
+    this.setState(
+      {
+        isFetching: true,
       },
-    })
-    // const data = await axios.get(`/api/getmypost/1`)
-    if (data.data.myPosts.data.length == 0) {
-      this.setState({
-        myPosts: [...myPosts],
-        moreplease: false,
-        isFetching: false,
-      })
-    }
-    this.setState({
-      myPosts: [...data.data.myPosts.data],
-      moreplease: data.data.myPosts.lastPage == 1 ? false : true,
-      isFetching: false,
-    })
+      () => {
+        this.setState({
+          myPosts: [...data.data.myPosts, ...myPosts],
+          moreplease: data.data.myPosts.lastPage == 1 ? false : true,
+          isFetching: false,
+        })
+      }
+    )
   }
 
   render() {

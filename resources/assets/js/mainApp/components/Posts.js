@@ -24,8 +24,9 @@ export default class Posts extends Component {
   }
 
   showLatestPosts = () => {
-    if (this.state.myPosts != undefined) {
-      return this.state.myPosts.map((item, index) => {
+    const { myPosts = [] } = this.state
+    if (myPosts.length > 0) {
+      return myPosts.map((item, index) => {
         return <IndividualPost post={item} key={index} user={this.props.initialData} source={'news_feed'} />
       })
     }
@@ -37,7 +38,7 @@ export default class Posts extends Component {
     }
     const self = this
 
-    const getPosts = async function() {
+    const getPosts = async function () {
       try {
         // const myPosts = await axios.get(`/api/post/${self.state.counter}`)
 
@@ -85,42 +86,24 @@ export default class Posts extends Component {
     }
   }
 
-  composeSuccess = async () => {
-    const { myPosts = [] } = this.state
-    const self = this
-    this.setState({
-      isFetching: true,
-    })
-    const data = await axios({
-      method: 'GET',
-      url: '/api/post/1',
-      onDownloadProgress: (progressEvent) => {
-        const { loaded = 0, total = 0 } = progressEvent
-        const percentCompleted = Math.round((loaded * 100) / total)
-        self.setState({
-          post_submit_loading: percentCompleted,
-        })
+  composeSuccess = async (data) => {
+    this.setState(
+      {
+        isFetching: true,
       },
-    })
-
-    // const data = await axios.get(`/api/post/1`)
-    if (data.data.myPosts.length == 0) {
-      this.setState({
-        myPosts: [...myPosts],
-        moreplease: false,
-        isFetching: false,
-      })
-    }
-    this.setState({
-      myPosts: [...data.data.myPosts],
-      moreplease: data.data.myPosts.lastPage == 1 ? false : true,
-      isFetching: false,
-    })
+      () => {
+        const { myPosts = [] } = this.state
+        this.setState({
+          myPosts: [...data.data.myPosts, ...myPosts],
+          moreplease: data.data.myPosts.lastPage == 1 ? false : true,
+          isFetching: false,
+        })
+      }
+    )
   }
 
   render() {
     const { myPosts = [], moreplease, isFetching = false, post_submit_loading } = this.state
-
     return (
       <Fragment>
         <ComposeSection

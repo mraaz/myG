@@ -143,13 +143,15 @@ export default class IndividualPost extends Component {
 
     if (media_url.length > 0) {
       for (var i = 0; i < media_url.length; i++) {
-        const splitUrl = media_url[i].split('.')
-        let fileType = splitUrl[splitUrl.length - 1]
-        if (this.imageFileType.includes(fileType)) {
-          let myStruct = { original: media_url[i], thumbnail: media_url[i] }
-          postImages.push(myStruct)
-        } else if (this.videoFileType.includes(fileType)) {
-          postVideos.push(media_url[i])
+        if (media_url[i] && media_url[i] != null) {
+          const splitUrl = media_url[i].split('.')
+          let fileType = splitUrl[splitUrl.length - 1]
+          if (this.imageFileType.includes(fileType)) {
+            let myStruct = { original: media_url[i], thumbnail: media_url[i] }
+            postImages.push(myStruct)
+          } else if (this.videoFileType.includes(fileType)) {
+            postVideos.push(media_url[i])
+          }
         }
       }
     }
