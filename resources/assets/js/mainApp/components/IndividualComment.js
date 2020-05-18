@@ -59,7 +59,7 @@ export default class IndividualComment extends Component {
     const self = this
     let comment = this.props
 
-    const getCommentLike = async function() {
+    const getCommentLike = async function () {
       try {
         var i
 
@@ -81,7 +81,7 @@ export default class IndividualComment extends Component {
       }
     }
 
-    const getCommentReplies = async function() {
+    const getCommentReplies = async function () {
       try {
         var i
 
@@ -101,7 +101,7 @@ export default class IndividualComment extends Component {
       }
     }
 
-    const getmyCommentCount = async function() {
+    const getmyCommentCount = async function () {
       try {
         var i
 
@@ -125,7 +125,7 @@ export default class IndividualComment extends Component {
     var comment_id = this.props.comment.id
     const self = this
 
-    const getComments = async function() {
+    const getComments = async function () {
       try {
         const myCommentReplies = await axios.get(`/api/replies/${comment_id}`)
         self.setState({
@@ -213,7 +213,7 @@ export default class IndividualComment extends Component {
 
     if (!this.state.show_add_reply) {
       setTimeout(
-        function() {
+        function () {
           //Start the timer
           this.focusTextInput()
         }.bind(this),
@@ -288,7 +288,7 @@ export default class IndividualComment extends Component {
     const self = this
     var comment_id = this.props.comment.id
 
-    const saveComment = async function() {
+    const saveComment = async function () {
       try {
         const mysaveComment = await axios.post(`/api/comments/update/${comment_id}`, {
           content: self.state.value2,
@@ -320,7 +320,7 @@ export default class IndividualComment extends Component {
     const self = this
     var postReply
 
-    const saveReply = async function() {
+    const saveReply = async function () {
       try {
         postReply = await axios.post('/api/replies', {
           content: self.state.value.trim(),
@@ -376,15 +376,14 @@ export default class IndividualComment extends Component {
   }
 
   clickedEdit = async () => {
-    var comment_id = this.props.comment.id
-
+    let comment_id = this.props.comment.id
     try {
       const myComment_content = await axios.get(`/api/comments/show_comment/${comment_id}`)
-
+      const content = myComment_content.data.this_comment[0].content
       this.setState({
         show_edit_comment: true,
         dropdown: false,
-        value2: myComment_content.data.this_comment[0].content,
+        value2: content,
       })
     } catch (error) {
       console.log(error)
@@ -392,7 +391,7 @@ export default class IndividualComment extends Component {
   }
 
   delete_exp = () => {
-    var comment_id = this.props.comment.id
+    let comment_id = this.props.comment.id
 
     try {
       const myComment_delete = axios.get(`/api/comments/delete/${comment_id}`)
@@ -499,6 +498,20 @@ export default class IndividualComment extends Component {
             </div>
             <div className='comment__shape'></div>
 
+            {this.state.show_edit_comment && (
+              <div className='edit__comment__input'>
+                <input
+                  type='text'
+                  id='reply_name_box'
+                  className='reply-name-box'
+                  onKeyDown={this.detectKey2}
+                  ref={this.setTextInputRef}
+                  onChange={this.handleChange2}
+                  value={this.state.value2}
+                />
+              </div>
+            )}
+
             {/* comment option start  */}
             {this.state.show_comment_options && (
               <div className='comment-options'>
@@ -558,6 +571,7 @@ export default class IndividualComment extends Component {
           {/* comment reply start */}
           <div className='comment-panel'>
             {this.state.show_more_replies && this.showReplies()}
+
             {this.state.show_add_reply && (
               <div className='add-reply'>
                 <input
@@ -675,19 +689,19 @@ export default class IndividualComment extends Component {
         //     />
         //   </div>
         // )}
-        //   {this.state.show_edit_comment && (
-        //     <div className='add-reply'>
-        //       <input
-        //         type='text'
-        //         id='reply_name_box'
-        //         className='reply-name-box'
-        //         onKeyDown={this.detectKey2}
-        //         ref={this.setTextInputRef}
-        //         onChange={this.handleChange2}
-        //         value={this.state.value2}
-        //       />
-        //     </div>
-        //   )}
+        // {this.state.show_edit_comment && (
+        //   <div className='add-reply'>
+        //     <input
+        //       type='text'
+        //       id='reply_name_box'
+        //       className='reply-name-box'
+        //       onKeyDown={this.detectKey2}
+        //       ref={this.setTextInputRef}
+        //       onChange={this.handleChange2}
+        //       value={this.state.value2}
+        //     />
+        //   </div>
+        // )}
         // </div>
       )
     } else {
