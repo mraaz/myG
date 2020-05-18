@@ -8,6 +8,7 @@ export default class ChatMessageList extends React.PureComponent {
         key={message.messageId}
         userId={this.props.userId}
         chatId={this.props.chatId}
+        alias={this.props.alias}
         isGroup={this.props.isGroup}
         isGuest={this.props.isGuest}
         messageId={message.messageId}

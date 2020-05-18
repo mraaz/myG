@@ -202,8 +202,8 @@ export default function reducer(state = {
       chat.closed = !!chat.individualGameId;
       chat.minimised = false;
       chat.maximised = false;
-      if (!chatAlreadyExists) Object.assign(chat, encryption);
-      if (!chatAlreadyExists) prepareGroupKeysToSend(chat, parseInt(action.meta.userId), state.contacts, state.publicKey, state.privateKey);
+      Object.assign(chat, encryption);
+      prepareGroupKeysToSend(chat, parseInt(action.meta.userId), state.contacts, state.publicKey, state.privateKey);
       if (!chat.closed) {
         const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== created.chatId);
         if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => openChats[index].closed = true);

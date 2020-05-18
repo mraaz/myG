@@ -285,39 +285,39 @@ export function sendMessageAction(chatId, userId, alias, encrypted, attachment, 
   return {
     type: 'SEND_MESSAGE',
     payload: sendMessage(chatId, userId, alias, encrypted, null, attachment, replyId, replyContent, replyBackup),
-    meta: { chatId },
+    meta: { chatId, userId },
   }
 }
 
-export function editMessageAction(chatId, messageId, encrypted) {
+export function editMessageAction(chatId, userId, messageId, encrypted) {
   return {
     type: 'EDIT_MESSAGE',
-    payload: editMessage(chatId, messageId, encrypted),
-    meta: { chatId },
+    payload: editMessage(chatId, userId, messageId, encrypted),
+    meta: { chatId, userId },
   }
 }
 
-export function deleteMessageAction(chatId, messageId, origin) {
+export function deleteMessageAction(chatId, userId, messageId, origin) {
   return {
     type: 'DELETE_MESSAGE',
-    payload: deleteMessage(chatId, messageId),
-    meta: { chatId, messageId, origin },
+    payload: deleteMessage(chatId, userId, messageId),
+    meta: { chatId, userId, messageId, origin },
   }
 }
 
-export function addReactionAction(chatId, messageId, reactionId) {
+export function addReactionAction(chatId, userId, messageId, reactionId) {
   return {
     type: 'ADD_REACTION',
-    payload: addReaction(chatId, messageId, reactionId),
-    meta: { chatId, messageId, reactionId },
+    payload: addReaction(chatId, userId, messageId, reactionId),
+    meta: { chatId, userId, messageId, reactionId },
   }
 }
 
-export function removeReactionAction(chatId, messageId, reactionId) {
+export function removeReactionAction(chatId, userId, messageId, reactionId) {
   return {
     type: 'REMOVE_REACTION',
-    payload: removeReaction(chatId, messageId, reactionId),
-    meta: { chatId, messageId, reactionId },
+    payload: removeReaction(chatId, userId, messageId, reactionId),
+    meta: { chatId, userId, messageId, reactionId },
   }
 }
 

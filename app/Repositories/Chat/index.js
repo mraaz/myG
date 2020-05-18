@@ -632,10 +632,10 @@ class ChatRepository {
     return ChatMessageReaction.query().where('message_id', messageId).andWhere('sender_id', requestingUserId).andWhere('reaction_id', reactionId).first();
   }
 
-  async addReaction({ requestingUserId, chatId, messageId, reactionId }) {
+  async addReaction({ requestingUserId, chatId, messageId, reactionId, senderName }) {
     const existingReaction = await this.fetchReaction({ requestingUserId, messageId, reactionId });
     if (existingReaction) return new DefaultSchema({ success: false, error: 'REACTION_ALREADY_PRESENT' });
-    const senderName = (await User.query().where('id', '=', requestingUserId).first()).toJSON().alias;
+    if (!senderName) senderName = (await User.query().where('id', '=', requestingUserId).first()).toJSON().alias;
     const reactionData = new ChatMessageReaction();
     reactionData.chat_id = chatId;
     reactionData.message_id = messageId;
