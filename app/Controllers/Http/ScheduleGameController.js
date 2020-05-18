@@ -310,6 +310,74 @@ class ScheduleGameController {
     }
   }
 
+  async myScheduledGames_Upcoming_Games({ auth, request, response }) {
+    var myScheduledGames = ''
+
+    let next24hours = new Date(new Date(Date.now()).getTime() + 60 * 60 * 24 * 1000)
+      .toISOString()
+      .slice(0, 19)
+      .replace('T', ' ')
+
+    let last4hours = new Date(new Date(Date.now()).getTime() - 60 * 60 * 4 * 1000)
+      .toISOString()
+      .slice(0, 19)
+      .replace('T', ' ')
+
+    try {
+      const subquery = Database.from('attendees')
+        .innerJoin('schedule_games', 'schedule_games.id', 'attendees.schedule_games_id')
+        .select('attendees.schedule_games_id')
+        .where('attendees.user_id', '=', auth.user.id)
+        .where('attendees.type', '=', 1)
+        .where('schedule_games.expiry', '>', Database.fn.now())
+        .where('schedule_games.start_date_time', '<', next24hours)
+        .where('schedule_games.start_date_time', '>', last4hours)
+
+      myScheduledGames = await Database.from('schedule_games')
+        .innerJoin('users', 'users.id', 'schedule_games.user_id')
+        .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+        .where('expiry', '>', Database.fn.now())
+        .where('schedule_games.user_id', '=', auth.user.id)
+        .where('schedule_games.start_date_time', '<', next24hours)
+        .where('schedule_games.start_date_time', '>', last4hours)
+        .orWhereIn('schedule_games.id', subquery)
+        .select(
+          'users.alias',
+          'game_names.game_name',
+          'game_names.game_img',
+          'schedule_games.*',
+          'schedule_games.id',
+          'schedule_games.user_id'
+        )
+        .orderBy('schedule_games.start_date_time', 'desc')
+        .paginate(request.params.limitstr, 10)
+
+      myScheduledGames = await InGame_fieldsController.find_InGame_Fields(myScheduledGames)
+
+      for (var i = 0; i < myScheduledGames.data.length; i++) {
+        let getAllGamers = await Database.from('attendees')
+          .where({ schedule_games_id: myScheduledGames.data[i].id, type: 1 })
+          .count('* as no_of_gamers')
+
+        let getAllTags = await Database.from('schedule_games_tags')
+          .innerJoin('game_tags', 'game_tags.id', 'schedule_games_tags.game_tag_id')
+          .where({ schedule_games_id: myScheduledGames.data[i].id })
+          .select('content')
+
+        myScheduledGames.data[i].tags = getAllTags
+
+        myScheduledGames.data[i].no_of_gamers = getAllGamers[0].no_of_gamers
+      }
+      myScheduledGames = myScheduledGames.data
+    } catch (error) {
+      console.log(error)
+    }
+
+    return {
+      myScheduledGames,
+    }
+  }
+
   async myScheduledGamesCount({ auth, request, response }) {
     try {
       //const latestScheduledGames = await ScheduleGame.query().innerJoin('users', 'user_id', 'schedule_games.user_id').options({nestTables:true}).fetch()
@@ -325,84 +393,119 @@ class ScheduleGameController {
   }
 
   async scheduleSearchResults({ auth, request, response }) {
-    //WHEN PUTTING IN TRY AND CATCH, WE GET 500 ERROR :(, WHEREAS REMOVING IT WORKS? WTF!!!!
+    try {
+      let arrTags = '',
+        latestScheduledGames
+      if (request.input('tags') != null) {
+        arrTags = request.input('tags').split(',')
+        if (arrTags != '') {
+          latestScheduledGames = await Database.from('schedule_games')
+            .innerJoin('users', 'users.id', 'schedule_games.user_id')
+            .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+            .innerJoin('schedule_games_tags', 'schedule_games.id', 'schedule_games_tags.schedule_games_id')
+            .innerJoin('game_tags', 'game_tags.id', 'schedule_games_tags.game_tag_id')
+            .where({ visibility: 1 })
+            .whereIn('schedule_games_tags.game_tag_id', arrTags)
+            .where((builder) => {
+              if (request.input('game_name') != null) builder.where('game_names.game_name', request.input('game_name'))
 
-    const latestScheduledGames = await Database.from('schedule_games')
-      .innerJoin('users', 'users.id', 'schedule_games.user_id')
-      .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
-      .where((builder) => {
-        if (request.input('game_name') != null) builder.where('game_names.game_name', request.input('game_name'))
+              if (request.input('region') != null) builder.where('schedule_games.region', request.input('region'))
 
-        if (request.input('region') != null) builder.where('schedule_games.region', request.input('region'))
+              if (request.input('experience') != null) builder.where('experience', request.input('experience'))
 
-        if (request.input('experience') != null) builder.where('experience', request.input('experience'))
+              if (request.input('start_date_time') != null) builder.where('start_date_time', '<=', request.input('start_date_time'))
 
-        if (request.input('start_date_time') != null) builder.where('start_date_time', '<=', request.input('start_date_time'))
+              if (request.input('end_date_time') != null) builder.where('end_date_time', '>=', request.input('end_date_time'))
 
-        if (request.input('end_date_time') != null) builder.where('end_date_time', '>=', request.input('end_date_time'))
+              if (request.input('platform') != null) builder.where('platform', request.input('platform'))
 
-        if (request.input('platform') != null) builder.where('platform', request.input('platform'))
+              if (request.input('description') != null) builder.where('description', request.input('description'))
+            })
+            .orderBy('schedule_games.created_at', 'desc')
+            .select('*', 'schedule_games.region', 'schedule_games.id', 'users.id as user_id')
+            .paginate(request.input('counter'), 10)
+        }
+      } else {
+        latestScheduledGames = await Database.from('schedule_games')
+          .innerJoin('users', 'users.id', 'schedule_games.user_id')
+          .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+          .where({ visibility: 1 })
+          .where((builder) => {
+            if (request.input('game_name') != null) builder.where('game_names.game_name', request.input('game_name'))
 
-        if (request.input('description') != null) builder.where('description', request.input('description'))
+            if (request.input('region') != null) builder.where('schedule_games.region', request.input('region'))
 
-        if (request.input('other') != null) builder.where('other', request.input('other'))
+            if (request.input('experience') != null) builder.where('experience', request.input('experience'))
 
-        if (request.input('visibility') != null) builder.where('visibility', request.input('visibility'))
-      })
-      .orderBy('schedule_games.created_at', 'desc')
-      .select('*', 'schedule_games.region', 'schedule_games.id', 'users.id as user_id')
-      .paginate(request.input('limit_clause'), 11)
+            if (request.input('start_date_time') != null) builder.where('start_date_time', '<=', request.input('start_date_time'))
 
-    //.limit(11)
-    //.offset(parseInt(request.input('limit_clause'), 10))
+            if (request.input('end_date_time') != null) builder.where('end_date_time', '>=', request.input('end_date_time'))
 
-    //TODO BROKEN!!!!! https://github.com/mraaz/myGame/issues/157
-    //NEED TO REVIST ONCE paginate is implemented.
+            if (request.input('platform') != null) builder.where('platform', request.input('platform'))
 
-    for (var i = 0; i < latestScheduledGames.data.length; i++) {
-      var myScheduledTrans = await Database.from('schedule_games_transactions')
-        .innerJoin('game_name_fields', 'game_name_fields.id', 'schedule_games_transactions.game_name_fields_id')
-        .where({ schedule_games_id: latestScheduledGames.data[i].id })
-        .where((builder) => {
-          //Dota 2
-          if (request.input('dota2_medal_ranks') != null)
-            builder.where('values', 'like', '%' + request.input('dota2_medal_ranks') + '%').where('in_game_field', '=', 'dota2_medal_ranks')
+            if (request.input('description') != null) builder.where('description', request.input('description'))
+          })
+          .orderBy('schedule_games.created_at', 'desc')
+          .select('*', 'schedule_games.region', 'schedule_games.id', 'users.id as user_id')
+          .paginate(request.input('counter'), 10)
+      }
 
-          if (request.input('dota2_server_regions') != null)
-            builder
-              .where('values', 'like', '%' + request.input('dota2_server_regions') + '%')
-              .where('in_game_field', '=', 'dota2_server_regions')
+      for (var i = 0; i < latestScheduledGames.data.length; i++) {
+        let getAllTags = await Database.from('schedule_games_tags')
+          .innerJoin('game_tags', 'game_tags.id', 'schedule_games_tags.game_tag_id')
+          .where({ schedule_games_id: latestScheduledGames.data[i].id })
+          .select('content')
 
-          if (request.input('dota2_roles') != null)
-            builder.where('values', 'like', '%' + request.input('dota2_roles') + '%').where('in_game_field', '=', 'dota2_roles')
+        latestScheduledGames.data[i].tags = getAllTags
 
-          //Clash Royale
-          if (request.input('clash_royale_trophies') != null)
-            builder
-              .where('values', 'like', '%' + request.input('clash_royale_trophies') + '%')
-              .where('in_game_field', '=', 'clash_royale_trophies')
-        })
+        var myScheduledTrans = await Database.from('schedule_games_transactions')
+          .innerJoin('game_name_fields', 'game_name_fields.id', 'schedule_games_transactions.game_name_fields_id')
+          .where({ schedule_games_id: latestScheduledGames.data[i].id })
+          .where((builder) => {
+            //Dota 2
+            if (request.input('dota2_medal_ranks') != null)
+              builder
+                .where('values', 'like', '%' + request.input('dota2_medal_ranks') + '%')
+                .where('in_game_field', '=', 'dota2_medal_ranks')
 
-      for (var x = 0; x < myScheduledTrans.length; x++) {
-        switch (myScheduledTrans[x].in_game_field) {
-          case 'dota2_medal_ranks':
-            latestScheduledGames.data[i].dota2_medal_ranks = myScheduledTrans[x].values
-            break
-          case 'dota2_server_regions':
-            latestScheduledGames.data[i].dota2_server_regions = myScheduledTrans[x].values
-            break
-          case 'dota2_roles':
-            latestScheduledGames.data[i].dota2_roles = myScheduledTrans[x].values
-            break
-          case 'clash_royale_trophies':
-            latestScheduledGames.data[i].clash_royale_trophies = myScheduledTrans[x].values
-            break
+            if (request.input('dota2_server_regions') != null)
+              builder
+                .where('values', 'like', '%' + request.input('dota2_server_regions') + '%')
+                .where('in_game_field', '=', 'dota2_server_regions')
+
+            if (request.input('dota2_roles') != null)
+              builder.where('values', 'like', '%' + request.input('dota2_roles') + '%').where('in_game_field', '=', 'dota2_roles')
+
+            //Clash Royale
+            if (request.input('clash_royale_trophies') != null)
+              builder
+                .where('values', 'like', '%' + request.input('clash_royale_trophies') + '%')
+                .where('in_game_field', '=', 'clash_royale_trophies')
+          })
+
+        for (var x = 0; x < myScheduledTrans.length; x++) {
+          switch (myScheduledTrans[x].in_game_field) {
+            case 'dota2_medal_ranks':
+              latestScheduledGames.data[i].dota2_medal_ranks = myScheduledTrans[x].values
+              break
+            case 'dota2_server_regions':
+              latestScheduledGames.data[i].dota2_server_regions = myScheduledTrans[x].values
+              break
+            case 'dota2_roles':
+              latestScheduledGames.data[i].dota2_roles = myScheduledTrans[x].values
+              break
+            case 'clash_royale_trophies':
+              latestScheduledGames.data[i].clash_royale_trophies = myScheduledTrans[x].values
+              break
+          }
         }
       }
-    }
-
-    return {
-      latestScheduledGames,
+      latestScheduledGames = latestScheduledGames.data
+      return {
+        latestScheduledGames,
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 

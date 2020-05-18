@@ -56,7 +56,7 @@ Route.post('/api/deleteFile', 'ApiController.deleteFile')
 Route.post('/api/deleteFiles', 'ApiController.deleteFiles')
 
 Route.get('/api/post/:paginateNo', 'PostController.show')
-Route.get('/api/mypost/:myDate', 'PostController.myshow')
+Route.get('/api/mypost/:id', 'PostController.myshow')
 Route.get('/api/getmypost/:paginateNo', 'PostController.showmyposts')
 Route.get('/api/get_group_posts/:id/:paginateNo', 'PostController.get_group_posts')
 Route.post('/api/post', 'PostController.store')
@@ -106,6 +106,8 @@ Route.get('/api/ScheduleGame/filtered_by_one/:id', 'ScheduleGameController.filte
 
 Route.get('/api/myScheduledGames/:limitstr/:exclude_expired', 'ScheduleGameController.myScheduledGames')
 Route.get('/api/myScheduledGamesCount/:id', 'ScheduleGameController.myScheduledGamesCount')
+
+Route.post('/api/ScheduleGame/myScheduledGames_Upcoming_Games/', 'ScheduleGameController.myScheduledGames_Upcoming_Games')
 
 Route.get('/api/ArchivemyScheduledGamesCount/:id', 'Archive_ScheduleGameController.myScheduledGamesCount')
 
@@ -216,6 +218,8 @@ Route.post('/api/notifications/addGameApproved', 'NotificationController.addGame
 Route.put('/api/notifications/inviteToGroup', 'NotificationController.inviteToGroup')
 Route.post('/api/notifications/invitations', 'NotificationController.invitations')
 Route.get('/api/notifications/getunread_dings', 'NotificationController.getunread_dings')
+
+Route.post('/api/notifications_v2/getApprovals_Dashboard', 'NotificationController_v2.getApprovals_Dashboard')
 
 Route.post('/api/friends/create', 'FriendController.store')
 Route.post('/api/friends/allmyFriends', 'FriendController.showallmyFriends')

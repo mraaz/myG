@@ -11,7 +11,7 @@ class AttendeesSchema extends Schema {
       table.foreign('user_id').references('users.id').onDelete('cascade')
       table.integer('schedule_games_id').unsigned().notNullable()
       table.foreign('schedule_games_id').references('schedule_games.id').onDelete('cascade')
-      table.integer('type').unsigned().notNullable()
+      table.integer('type').unsigned().notNullable().index()
       table.boolean('dota_2_position_one').defaultTo(0)
       table.boolean('dota_2_position_two').defaultTo(0)
       table.boolean('dota_2_position_three').defaultTo(0)

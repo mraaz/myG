@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Select from 'react-select'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
-import { setAsFriendRedux } from '../../common/friend';
+import { setAsFriendRedux } from '../../common/friend'
 
 export default class IndividualInvitation extends Component {
   constructor() {
@@ -97,6 +97,8 @@ export default class IndividualInvitation extends Component {
     if (invitation.profile_img != null) {
       show_profile_img = true
     }
+
+    //Jezza wants to connect with you
     return (
       <div className='invitation-info'>
         {show_profile_img && (

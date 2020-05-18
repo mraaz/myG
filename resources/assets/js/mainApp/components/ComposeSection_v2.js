@@ -153,6 +153,7 @@ export default class ComposeSection extends Component {
           keys = []
         }
       )
+      console.log(post)
       // await this.get_posts(post)
     } catch (error) {
       console.log(error)
