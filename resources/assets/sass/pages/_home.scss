@@ -2645,17 +2645,19 @@ section#content-container {
             background: #1d2326;
             clear: both;
             .edit__comment__input {
-              position: relative;
-              height: 40px;
-              width: 100%;
-              border: 1px solid #273136;
-              border-radius: 4px;
-              background: #f0f1f2 0% 0% no-repeat padding-box;
-              resize: none;
-              overflow: auto;
-              color: #657172;
-              font-size: 12px;
-              padding: 8px 20px;
+              input {
+                position: relative;
+                height: 40px;
+                width: 100%;
+                border: 1px solid #273136;
+                border-radius: 4px;
+                background: #f0f1f2 0% 0% no-repeat padding-box;
+                resize: none;
+                overflow: auto;
+                color: #657172;
+                font-size: 12px;
+                padding: 8px 20px;
+              }
             }
             .comment-info {
               display: flex;

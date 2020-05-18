@@ -353,7 +353,7 @@ export default class IndividualComment extends Component {
           myReplies: [],
         })
 
-        self.pullReplies()
+        // self.pullReplies()
 
         self.setState({
           value: '',

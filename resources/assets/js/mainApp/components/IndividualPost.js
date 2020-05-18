@@ -350,7 +350,7 @@ export default class IndividualPost extends Component {
           file_keys: '',
           value: '',
         })
-        this.pullComments()
+        // this.pullComments()
         this.setState({
           comment_total: this.state.comment_total + 1,
           zero_comments: true,
