@@ -36,10 +36,7 @@ export default class ComposeSection extends Component {
       selected_group: [],
       selectedGroup: [],
       groups_im_in: [],
-      preview_files: [
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Google_Images_2015_logo.svg/1200px-Google_Images_2015_logo.svg.png',
-        'https://i.pcmag.com/imagery/reviews/03aizylUVApdyLAIku1AvRV-9.fit_scale.size_1028x578.v_1579708985.png',
-      ],
+      preview_files: [],
       visibility: 1,
       overlay_active: false,
       group_id: '',
