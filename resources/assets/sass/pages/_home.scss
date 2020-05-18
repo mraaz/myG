@@ -1431,8 +1431,11 @@ section#content-container {
   border: 1px solid #273137;
   margin: 0 100px;
   margin-bottom: 24px;
-  z-index: 1000;
+
   position: inherit;
+  &.zI1000 {
+    z-index: 1000;
+  }
   .compose__type__section {
     display: flex;
     justify-content: center;
@@ -1513,6 +1516,10 @@ section#content-container {
       padding: 10px 40px;
       margin: 0;
       border: none;
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
     }
   }
   .compose__people__section {
@@ -1592,11 +1599,20 @@ section#content-container {
         display: flex;
         justify-content: center;
         margin: 0;
+        .image {
+          position: relative;
+        }
         img {
           background: #ff00ff 0% 0% no-repeat padding-box;
           margin-right: 10px;
           width: 160px;
           height: 120px;
+        }
+        .remove__image {
+          position: absolute;
+          top: 2px;
+          right: 12px;
+          cursor: pointer;
         }
       }
     }
