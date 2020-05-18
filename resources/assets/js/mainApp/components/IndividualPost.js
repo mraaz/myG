@@ -290,8 +290,10 @@ export default class IndividualPost extends Component {
   }
   handleSelectFile = (e) => {
     const fileList = e.target.files
-    let name = `comment_image_${+new Date()}`
-    this.doUploadS3(fileList[0], name, name)
+    if (fileList.length > 0) {
+      let name = `comment_image_${+new Date()}`
+      this.doUploadS3(fileList[0], name, name)
+    }
   }
 
   doUploadS3 = async (file, id = '', name) => {
