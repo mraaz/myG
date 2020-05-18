@@ -43,7 +43,11 @@ export default class IndividualPost extends Component {
       preview_file: '',
       aws_key: '',
       file_keys: '',
+      postImages: [],
+      postVideos: [],
     }
+    this.imageFileType = ['jpeg', 'jpg', 'png', 'gif']
+    this.videoFileType = ['mov', 'webm', 'mpg', 'mp4', 'avi', 'ogg']
     this.textInput = null
 
     this.setTextInputRef = (element) => {
@@ -133,28 +137,25 @@ export default class IndividualPost extends Component {
     let { post } = this.props
 
     const self = this
+    const media_url = post.media_url ? JSON.parse(post.media_url) : ''
+    const postImages = []
+    const postVideos = []
 
-    if (post.media_url != null) {
-      try {
-        this.state.media_urls = JSON.parse(post.media_url)
-      } catch (error) {
-        console.log('Data error with your post. Delete POST please! ' + post.content)
+    if (media_url.length > 0) {
+      for (var i = 0; i < media_url.length; i++) {
+        if (media_url[i] && media_url[i] != null) {
+          const splitUrl = media_url[i].split('.')
+          let fileType = splitUrl[splitUrl.length - 1]
+          if (this.imageFileType.includes(fileType)) {
+            let myStruct = { original: media_url[i], thumbnail: media_url[i] }
+            postImages.push(myStruct)
+          } else if (this.videoFileType.includes(fileType)) {
+            postVideos.push(media_url[i])
+          }
+        }
       }
     }
-
-    if (this.state.media_urls != null) {
-      for (var i = 0; i < this.state.media_urls.length; i++) {
-        var myStruct = { original: this.state.media_urls[i], thumbnail: this.state.media_urls[i] }
-        this.state.images.push(myStruct)
-      }
-    }
-
-    this.setState({ like: this.props.post.do_I_like_it })
-    this.setState({ total: this.props.post.total })
-    this.setState({ admirer_first_name: this.props.post.admirer_first_name })
-
-    var post_timestamp = moment(this.props.post.updated_at, 'YYYY-MM-DD HH:mm:ssZ')
-    this.setState({ post_time: post_timestamp.local().fromNow() })
+    let post_timestamp = moment(this.props.post.updated_at, 'YYYY-MM-DD HH:mm:ssZ')
 
     if (this.props.post.total == 0) {
       this.setState({ show_like: false })
@@ -162,11 +163,15 @@ export default class IndividualPost extends Component {
     if (this.props.post.profile_img != null) {
       this.setState({ show_profile_img: true })
     }
-
     this.setState({
+      like: this.props.post.do_I_like_it,
+      total: this.props.post.total,
+      admirer_first_name: this.props.post.admirer_first_name,
+      post_time: post_timestamp.local().fromNow(),
       content: this.props.post.content,
+      postImages,
+      postVideos,
     })
-
     if (this.props.post.no_of_comments != 0) {
       this.setState({
         zero_comments: true,
@@ -176,7 +181,7 @@ export default class IndividualPost extends Component {
 
     var post_id = this.props.post.id
 
-    const getmyPostCount = async function() {
+    const getmyPostCount = async function () {
       try {
         var i
 
@@ -192,7 +197,7 @@ export default class IndividualPost extends Component {
       }
     }
 
-    const getGroup_info = async function() {
+    const getGroup_info = async function () {
       try {
         var i
 
@@ -223,7 +228,7 @@ export default class IndividualPost extends Component {
     var post_id = this.props.post.id
     const self = this
 
-    const getComments = async function() {
+    const getComments = async function () {
       try {
         const myComments = await axios.get(`/api/comments/${post_id}`)
         self.setState({
@@ -285,8 +290,10 @@ export default class IndividualPost extends Component {
   }
   handleSelectFile = (e) => {
     const fileList = e.target.files
-    let name = `comment_image_${+new Date()}`
-    this.doUploadS3(fileList[0], name, name)
+    if (fileList.length > 0) {
+      let name = `comment_image_${+new Date()}`
+      this.doUploadS3(fileList[0], name, name)
+    }
   }
 
   doUploadS3 = async (file, id = '', name) => {
@@ -315,13 +322,9 @@ export default class IndividualPost extends Component {
   }
 
   insert_comment = () => {
-    if (this.state.value == '') {
-      return
-    }
-    if (this.state.value.trim() == '') {
-      this.setState({
-        value: '',
-      })
+    const { value = '', preview_file = [] } = this.state
+
+    if (value.trim() == '' && preview_file.length == 0) {
       return
     }
     this.onFocus()
@@ -347,7 +350,7 @@ export default class IndividualPost extends Component {
           file_keys: '',
           value: '',
         })
-        this.pullComments()
+        // this.pullComments()
         this.setState({
           comment_total: this.state.comment_total + 1,
           zero_comments: true,
@@ -372,7 +375,7 @@ export default class IndividualPost extends Component {
     const self = this
     var post_id = this.props.post.id
 
-    const editPost = async function() {
+    const editPost = async function () {
       try {
         const myEditPost = await axios.post(`/api/post/update/${post_id}`, {
           content: self.state.value2,
@@ -459,7 +462,7 @@ export default class IndividualPost extends Component {
       dropdown: false,
     })
     setTimeout(
-      function() {
+      function () {
         //Start the timer
         this.focusTextInput2()
       }.bind(this),
@@ -519,7 +522,17 @@ export default class IndividualPost extends Component {
   }
 
   render() {
-    const { myComments = [], media_urls, post_deleted, alert, show_profile_img, show_comments, show_more_comments = false } = this.state
+    const {
+      myComments = [],
+      media_urls,
+      post_deleted,
+      alert,
+      show_profile_img,
+      show_comments,
+      show_more_comments = false,
+      postImages,
+      postVideos,
+    } = this.state
     if (post_deleted != true) {
       var show_media = false
 
@@ -608,9 +621,9 @@ export default class IndividualPost extends Component {
                   </div>
                 </div>
               )}
-              {show_media && post.type == 'photo' && (
+              {postImages.length > 0 && (
                 <ImageGallery
-                  items={this.state.images}
+                  items={postImages}
                   showBullets={this.state.showBullets}
                   autoPlay={this.state.autoPlay}
                   isRTL={this.state.isRTL}
@@ -618,9 +631,8 @@ export default class IndividualPost extends Component {
                   y
                 />
               )}
-              {show_media &&
-                post.type == 'video' &&
-                this.state.media_urls.map(function(data, index) {
+              {postVideos.length > 0 &&
+                postVideos.map(function (data, index) {
                   return (
                     <video className='post-video' controls>
                       <source src={data}></source>

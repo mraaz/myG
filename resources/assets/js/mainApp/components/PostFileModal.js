@@ -130,6 +130,7 @@ export default class PostFileModal extends Component {
     const searchText = e.target.value
     const groups = [...this.state.groups_im_in]
     if (searchText != '') {
+      ///api/groups/${value}/groupSearchResults_Post
       const groups_im_in = groups.filter((g) => g.name.includes(searchText))
       this.setState({ groups_im_in, searchText })
     } else {

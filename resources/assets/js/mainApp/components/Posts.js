@@ -24,8 +24,9 @@ export default class Posts extends Component {
   }
 
   showLatestPosts = () => {
-    if (this.state.myPosts != undefined) {
-      return this.state.myPosts.map((item, index) => {
+    const { myPosts = [] } = this.state
+    if (myPosts.length > 0) {
+      return myPosts.map((item, index) => {
         return <IndividualPost post={item} key={index} user={this.props.initialData} source={'news_feed'} />
       })
     }
@@ -37,7 +38,7 @@ export default class Posts extends Component {
     }
     const self = this
 
-    const getPosts = async function() {
+    const getPosts = async function () {
       try {
         // const myPosts = await axios.get(`/api/post/${self.state.counter}`)
 
@@ -85,42 +86,24 @@ export default class Posts extends Component {
     }
   }
 
-  composeSuccess = async () => {
-    const { myPosts = [] } = this.state
-    const self = this
-    this.setState({
-      isFetching: true,
-    })
-    const data = await axios({
-      method: 'GET',
-      url: '/api/post/1',
-      onDownloadProgress: (progressEvent) => {
-        const { loaded = 0, total = 0 } = progressEvent
-        const percentCompleted = Math.round((loaded * 100) / total)
-        self.setState({
-          post_submit_loading: percentCompleted,
-        })
+  composeSuccess = async (data) => {
+    this.setState(
+      {
+        isFetching: true,
       },
-    })
-
-    // const data = await axios.get(`/api/post/1`)
-    if (data.data.myPosts.length == 0) {
-      this.setState({
-        myPosts: [...myPosts],
-        moreplease: false,
-        isFetching: false,
-      })
-    }
-    this.setState({
-      myPosts: [...data.data.myPosts],
-      moreplease: data.data.myPosts.lastPage == 1 ? false : true,
-      isFetching: false,
-    })
+      () => {
+        const { myPosts = [] } = this.state
+        this.setState({
+          myPosts: [...data.data.myPosts, ...myPosts],
+          moreplease: data.data.myPosts.lastPage == 1 ? false : true,
+          isFetching: false,
+        })
+      }
+    )
   }
 
   render() {
     const { myPosts = [], moreplease, isFetching = false, post_submit_loading } = this.state
-
     return (
       <Fragment>
         <ComposeSection
@@ -128,21 +111,21 @@ export default class Posts extends Component {
           initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData}
         />
         {isFetching && (
-          <div class='timeline-item'>
-            <div class='animated-background'>
-              <div class='background-masker header-top'></div>
-              <div class='background-masker header-left'></div>
-              <div class='background-masker header-right'></div>
-              <div class='background-masker header-bottom'></div>
-              <div class='background-masker subheader-left'></div>
-              <div class='background-masker subheader-right'></div>
-              <div class='background-masker subheader-bottom'></div>
-              <div class='background-masker content-top'></div>
-              <div class='background-masker content-first-end'></div>
-              <div class='background-masker content-second-line'></div>
-              <div class='background-masker content-second-end'></div>
-              <div class='background-masker content-third-line'></div>
-              <div class='background-masker content-third-end'></div>
+          <div className='timeline-item'>
+            <div className='animated-background'>
+              <div className='background-masker header-top'></div>
+              <div className='background-masker header-left'></div>
+              <div className='background-masker header-right'></div>
+              <div className='background-masker header-bottom'></div>
+              <div className='background-masker subheader-left'></div>
+              <div className='background-masker subheader-right'></div>
+              <div className='background-masker subheader-bottom'></div>
+              <div className='background-masker content-top'></div>
+              <div className='background-masker content-first-end'></div>
+              <div className='background-masker content-second-line'></div>
+              <div className='background-masker content-second-end'></div>
+              <div className='background-masker content-third-line'></div>
+              <div className='background-masker content-third-end'></div>
             </div>
           </div>
         )}

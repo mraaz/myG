@@ -14,7 +14,7 @@ import { Disable_keys, Hash_Tags } from './Utility_Function'
 import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
 
-const createOption = (label: string, hash_tag_id: string) => ({
+const createOption = (label, hash_tag_id) => ({
   label,
   value: label,
   hash_tag_id,
@@ -92,25 +92,26 @@ export default class ComposeSection extends Component {
   handleClear = () => {
     this.setState({
       post_content: '',
+      preview_files: [],
+      keys: [],
     })
   }
 
   submitForm = async () => {
     const content = this.state.post_content.trim()
-    console.log('content')
 
     let media_url = []
     let keys = []
 
     if (this.state.preview_files.length > 0) {
-      for (var i = 0; i < this.state.preview_files.length; i++) {
+      for (let i = 0; i < this.state.preview_files.length; i++) {
         media_url.push(this.state.preview_files[i].src)
         keys.push(this.state.preview_files[i].key)
       }
     }
     let hash_tags = []
     if (this.state.value_tags.length != 0 && this.state.value_tags != null) {
-      for (var i = 0; i < this.state.value_tags.length; i++) {
+      for (let i = 0; i < this.state.value_tags.length; i++) {
         if (/['/.%#$,;`\\]/.test(this.state.value_tags[i].value)) {
           toast.success(<Toast_style text={'Sorry mate! Hash tags can not have invalid characters'} />)
           return
@@ -143,6 +144,7 @@ export default class ComposeSection extends Component {
           bFileModalOpen: false,
           post_content: '',
           media_url: [],
+          preview_files: [],
           keys: [],
           visibility: 1,
           overlay_active: false,
@@ -151,6 +153,7 @@ export default class ComposeSection extends Component {
         () => {
           media_url = []
           keys = []
+          this.props.successCallback(post)
         }
       )
       console.log(post)
@@ -190,7 +193,7 @@ export default class ComposeSection extends Component {
   get_posts = (post) => {
     const self = this
 
-    const getPosts = async function() {
+    const getPosts = async function () {
       try {
         const myPosts = await axios.get(`/api/mypost/${post.data}`)
         self.state.masterList = self.state.masterList.concat(myPosts.data.myPosts)
@@ -239,7 +242,7 @@ export default class ComposeSection extends Component {
       }
     }
 
-    const getGamers_you_might_know = async function() {
+    const getGamers_you_might_know = async function () {
       try {
         const gamers_you_might_know = await axios.get('/api/user/gamers_you_might_know')
 
@@ -258,11 +261,18 @@ export default class ComposeSection extends Component {
     if (label == 'media') {
       open_compose_textTab = false
     }
+    if (label == 'text') {
+      setTimeout(function () {
+        document.getElementById('composeTextarea').focus()
+      }, 0)
+    }
     this.setState({ open_compose_textTab })
   }
 
   handleAcceptedFiles = (Files) => {
-    if (Files.length > 8) {
+    const { preview_files = [] } = this.state
+    const len = preview_files.length + Files.length
+    if (len > 8) {
       toast.success(<Toast_style text={`Sorry! Can't upload more than Eight at a time.`} />)
     } else {
       for (var i = 0; i < Files.length; i++) {
@@ -336,7 +346,7 @@ export default class ComposeSection extends Component {
     this.setState({ selected_group })
   }
 
-  handleCreateHashTags = (inputValue: any) => {
+  handleCreateHashTags = (inputValue) => {
     if (inputValue.length > 88) {
       toast.success(<Toast_style text={'Sorry mate! Tag length is tooo long.'} />)
       return
@@ -350,7 +360,7 @@ export default class ComposeSection extends Component {
   getOptions_tags = (inputValue) => {
     const self = this
 
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         var results = await Hash_Tags(inputValue)
         self.setState({ options_tags: results })
@@ -365,12 +375,19 @@ export default class ComposeSection extends Component {
     this.setState({ value_tags })
   }
 
+  handlePreviewRemove = (src) => {
+    let preview_files = [...this.state.preview_files]
+    preview_files = preview_files.filter((data) => data.src != src)
+    this.setState({ preview_files })
+  }
+
   render() {
-    const { open_compose_textTab, bFileModalOpen, preview_files = [], selectedGroup, overlay_active } = this.state
+    const { open_compose_textTab, bFileModalOpen, preview_files = [], selectedGroup, overlay_active, post_content = '' } = this.state
+    const isButtonDisable = post_content != '' || preview_files.length > 0 ? true : false
 
     return (
       <Fragment>
-        <section className='postCompose__container' onClick={this.handleFocus_txtArea}>
+        <section className={`postCompose__container ${overlay_active ? 'zI1000' : ''}`} onClick={this.handleFocus_txtArea}>
           <div className='compose__type__section'>
             <div className={`share__thought ${open_compose_textTab ? 'active' : ''}`} onClick={(e) => this.togglePostTypeTab('text')}>
               {`Share your thoughts ...`}
@@ -387,8 +404,9 @@ export default class ComposeSection extends Component {
                 onFocus={this.handleFocus_txtArea}
                 onKeyDown={this.detectKey}
                 maxLength='254'
-                value={this.state.post_content}
+                value={post_content}
                 placeholder="What's up... "
+                id={`composeTextarea`}
               />
             </div>
           )}
@@ -396,7 +414,7 @@ export default class ComposeSection extends Component {
             <div className='media__container'>
               <Dropzone
                 onDrop={(acceptedFiles) => this.handleAcceptedFiles(acceptedFiles)}
-                accept='image/*,video/*'
+                accept='.jpeg,.jpg,.png,.gif,.mov,.webm,.mpg,.mp4,.avi,.ogg'
                 minSize={0}
                 maxSize={5242880}
                 multiple
@@ -427,7 +445,12 @@ export default class ComposeSection extends Component {
                       {preview_files.length > 0 && (
                         <div className='files__preview'>
                           {preview_files.slice(0, 3).map((file) => (
-                            <img src={file.src} />
+                            <span className='image'>
+                              <img src={file.src} key={file.src} />
+                              <span className='remove__image' onClick={(e) => this.handlePreviewRemove(file.src)}>
+                                X
+                              </span>
+                            </span>
                           ))}
                           {preview_files.length > 3 ? `(${preview_files.length})...` : ''}
                         </div>
@@ -485,7 +508,7 @@ export default class ComposeSection extends Component {
             <button type='button' className='cancel' onClick={this.handleClear}>
               Clear
             </button>
-            <button type='button' className='add__post' onClick={this.submitForm}>
+            <button type='button' disabled={!isButtonDisable} className='add__post' onClick={this.submitForm}>
               Post
             </button>
           </div>
