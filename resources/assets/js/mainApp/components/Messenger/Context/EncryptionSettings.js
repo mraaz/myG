@@ -88,7 +88,7 @@ export default class EncryptionSettings extends React.PureComponent {
           ++messagesProcessed;
           this.setState({ reEncryptionState: `(5/5) We are uploading your messages (${chatsProcessed} of ${chats.length} chats \n and ${messagesProcessed} of ${chat.messages.length} messages)...` });
           const { content, backup } = message;
-          await editMessage(chat.chatId, message.messageId, { content, backup }, true);
+          await editMessage(chat.chatId, this.props.userId, message.messageId, { content, backup }, true);
         }
       }
     }
