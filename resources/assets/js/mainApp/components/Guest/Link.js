@@ -92,6 +92,17 @@ class GuestLink extends React.PureComponent {
           onChange={event => this.setState({ alias: event.target.value, aliasEmpty: false })}
         ></input>
         <div className="join clickable" onClick={this.registerGuest}>JOIN CHAT</div>
+        <div className="register clickable" onClick={() => window.location.replace('/')}>
+          <div
+            className="myg-icon"
+            style={{
+              backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/logo.svg')`,
+              backgroundSize: 'inherit',
+              backgroundColor: '#000'
+            }}
+          />
+          Login
+        </div>
         <div className="register clickable" onClick={() => window.location.replace('/')}>Create a new Account</div>
       </div>
     );
