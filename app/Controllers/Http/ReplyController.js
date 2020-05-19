@@ -8,7 +8,7 @@ class ReplyController {
   async store({ auth, request, response }) {
     if (auth.user) {
       try {
-        const newReply = await Reply.create({
+        let newReply = await Reply.create({
           user_id: auth.user.id,
           comment_id: request.input('comment_id'),
           content: request.input('content'),
@@ -20,6 +20,9 @@ class ReplyController {
           request.params.reply_id = newReply.id
           update_key.addReplyKey({ auth, request, response })
         }
+
+        request.params.id = newReply.id
+        newReply = this.show({ auth, request, response })
 
         return newReply
       } catch (error) {

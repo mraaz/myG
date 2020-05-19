@@ -8,7 +8,7 @@ class CommentController {
   async store({ auth, request, response }) {
     if (auth.user) {
       try {
-        const newComment = await Comment.create({
+        let newComment = await Comment.create({
           content: request.input('content'),
           post_id: request.input('post_id'),
           schedule_games_id: request.input('schedule_games_id'),
@@ -21,6 +21,9 @@ class CommentController {
           request.params.comment_id = newComment.id
           update_key.addCommentKey({ auth, request, response })
         }
+
+        request.params.id = newComment.id
+        newComment = this.show({ auth, request, response })
 
         return newComment
       } catch (error) {
