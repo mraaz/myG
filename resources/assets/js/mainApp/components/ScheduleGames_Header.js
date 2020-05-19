@@ -223,6 +223,74 @@ export default class ScheduleGames_Header extends Component {
     )
   }
 
+  saveFilter = async () => {
+    let x = {
+      game_name: true,
+      region: true,
+      experience: false,
+      start_time: true,
+      platform: true,
+      description: false,
+      exclude_full_games: true,
+      tags: true,
+    }
+    try {
+      const saveFilter = await axios.post('/api/SavedFiltersScheduleGameController', {
+        name: 'Test',
+        payload: x,
+      })
+
+      console.log(saveFilter)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  getFilter = async () => {
+    try {
+      const getFilter = await axios.get('/api/SavedFiltersScheduleGameController/getAllSavedFilters')
+      console.log(getFilter)
+      var obj = JSON.parse(getFilter.data.allFilters[0].payload)
+      console.log(obj)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  updateFilter = async () => {
+    let x = {
+      game_name: false,
+      region: false,
+      experience: false,
+      start_time: false,
+      platform: false,
+      description: false,
+      exclude_full_games: false,
+      tags: false,
+    }
+    try {
+      const updateFilter = await axios.post('/api/SavedFiltersScheduleGameController/updateFilter', {
+        name: 'Test',
+        payload: x,
+      })
+
+      console.log(updateFilter)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  deleteFilter = async () => {
+    try {
+      const deleteFilter = await axios.post('/api/SavedFiltersScheduleGameController/deleteFilter', {
+        name: 'Test',
+      })
+      console.log(deleteFilter)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   showLatestPosts = () => {
     if (this.state.allscheduledGames != undefined) {
       return this.state.allscheduledGames.map((item, index) => {
@@ -302,6 +370,18 @@ export default class ScheduleGames_Header extends Component {
               />
             </div>
             <div className='button'>
+              <button className='allread' onClick={() => this.saveFilter()}>
+                Save Filter
+              </button>
+              <button className='allread' onClick={() => this.getFilter()}>
+                Get Filter
+              </button>
+              <button className='allread' onClick={() => this.updateFilter()}>
+                Update Filter
+              </button>
+              <button className='allread' onClick={() => this.deleteFilter()}>
+                Delete Filter
+              </button>
               <div className='plus-button' onClick={this.moveaway}>
                 <i className='fas fa-plus' />
               </div>
