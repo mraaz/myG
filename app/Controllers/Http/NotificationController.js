@@ -1369,7 +1369,7 @@ class NotificationController {
           })
           .delete()
 
-        return delete_noti
+        return 'deleted'
       } catch (error) {
         console.log(error)
       }

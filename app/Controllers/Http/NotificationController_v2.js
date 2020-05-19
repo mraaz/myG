@@ -111,6 +111,114 @@ class NotificationController_v2 {
       console.log(error)
     }
   }
+
+  async destroy({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        const delete_noti = await Database.table('notifications')
+          .where({
+            id: request.params.id,
+          })
+          .delete()
+
+        return 'Deleted'
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  //Notify Owner there is a new request to join this group
+  async notify_owner_new_grp_request({ auth }, grp_owner, grp_id) {
+    if (auth.user) {
+      try {
+        const addGroup = await Notification.create({
+          other_user_id: grp_owner,
+          user_id: auth.user.id,
+          activity_type: 12,
+          group_id: grp_id,
+        })
+        return 'Saved item'
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  //Notify all groupies there is a new request to join this group
+  async new_grp_request({ auth }, grp_id, all_accept) {
+    if (auth.user) {
+      try {
+        let mygroups
+        if (all_accept) {
+          mygroups = await Database.from('usergroups')
+            .where({ group_id: grp_id })
+            .whereNot({ permission_level: 42 })
+        } else {
+          mygroups = await Database.from('usergroups')
+            .where({ group_id: grp_id, permission_level: 1 })
+            .orWhere({ group_id: grp_id, permission_level: 2 })
+        }
+
+        for (var i = 0; i < mygroups.length; i++) {
+          const add_all_to_Group = await Notification.create({
+            other_user_id: mygroups[i].user_id,
+            user_id: auth.user.id,
+            activity_type: 12,
+            group_id: grp_id,
+          })
+        }
+
+        return 'Saved'
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async delete_group_invites({ auth }, grp_id) {
+    if (auth.user) {
+      try {
+        const delete_noti = await Database.table('notifications')
+          .where({
+            group_id: grp_id,
+            user_id: auth.user.id,
+            activity_type: 12,
+          })
+          .delete()
+
+        return 'deleted'
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async add_approved_group_attendee({ auth }, grp_id, other_user_id) {
+    if (auth.user) {
+      try {
+        const add_approved_group_attendee = await Notification.create({
+          other_user_id: other_user_id,
+          user_id: auth.user.id,
+          activity_type: 17,
+          group_id: grp_id,
+        })
+        return 'Saved item'
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
 }
 
 module.exports = NotificationController_v2

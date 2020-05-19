@@ -28,9 +28,9 @@ export default class IndividualInvitation extends Component {
   clickedAccept = () => {
     if (this.state.group_approvals) {
       try {
-        const set_group_approval = axios.get(
-          `/api/usergroup/set_group_approval/${this.props.invitation.group_id}/${this.props.invitation.id}`
-        )
+        // const set_group_approval = axios.get(
+        //   `/api/usergroup/set_group_approval/${this.props.invitation.group_id}/${this.props.invitation.id}`
+        // ) TODO RAAZ TEST
       } catch (error) {
         console.log(error)
       }
@@ -67,7 +67,7 @@ export default class IndividualInvitation extends Component {
     let { invitation } = this.props
 
     try {
-      const deleteNoti = axios.get(`/api/notifications/delete/${invitation.id}`)
+      const deleteNoti = axios.get(`/api/notifications_v2/delete/${invitation.id}`)
     } catch (error) {
       console.log(error)
     }

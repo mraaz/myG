@@ -219,7 +219,11 @@ Route.put('/api/notifications/inviteToGroup', 'NotificationController.inviteToGr
 Route.post('/api/notifications/invitations', 'NotificationController.invitations')
 Route.get('/api/notifications/getunread_dings', 'NotificationController.getunread_dings')
 
+//-----------------------------------------
 Route.post('/api/notifications_v2/getApprovals_Dashboard', 'NotificationController_v2.getApprovals_Dashboard')
+Route.get('/api/notifications_v2/delete/:id', 'NotificationController_v2.destroy')
+
+//-----------------------------------------
 
 Route.post('/api/friends/create', 'FriendController.store')
 Route.post('/api/friends/allmyFriends', 'FriendController.showallmyFriends')
@@ -276,7 +280,7 @@ Route.get('/api/usergroup/view/:counter', 'UsergroupController.myshow')
 Route.get('/api/usergroup/:id', 'UsergroupController.show')
 Route.get('/api/usergroup/mygroup_details/:id', 'UsergroupController.mygroup_details')
 Route.get('/api/usergroup/delete/:id', 'UsergroupController.destroy')
-Route.get('/api/usergroup/set_group_approval/:id/:usergrp_id', 'UsergroupController.set_group_approval')
+Route.get('/api/usergroup/set_group_approval/:grp_id/:user_id', 'UsergroupController.set_group_approval')
 Route.get('/api/usergroup/remove_group_approval/:id/:usergrp_id', 'UsergroupController.remove_group_approval')
 Route.get('/api/usergroup/member_lists/:id', 'UsergroupController.member_lists')
 Route.get('/api/usergroup/delete_member/:id/:usergrp_id', 'UsergroupController.delete_member')
