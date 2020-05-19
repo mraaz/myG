@@ -18,7 +18,7 @@ class GroupCreation extends React.Component {
       icon: '',
       title: '',
       gameInput: '',
-      selectedGame: null,
+      selectedGame: this.props.game || null,
       contactInput: '',
       matchingContacts: [],
       addedContacts: [],
@@ -38,7 +38,7 @@ class GroupCreation extends React.Component {
   handleKeyDown = event => {
     const ENTER_KEY = 13;
     const ESCAPE_KEY = 27;
-    const isFormEmpty = !this.state.icon && !this.state.title && !this.state.gameInput && !this.state.contactInput && !this.state.addedContacts.length;
+    const isFormEmpty = !this.state.icon && !this.state.title && !this.state.gameInput && !this.state.selectedGame && !this.state.contactInput && !this.state.addedContacts.length;
     if (event.keyCode === ENTER_KEY) return this.onCreate();
     if (event.keyCode === ESCAPE_KEY && isFormEmpty) return this.props.onCancel();
   }

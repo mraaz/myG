@@ -30,6 +30,7 @@ export default class Game extends React.PureComponent {
   renderGroups = () => {
     return <Groups
       userId={this.props.userId}
+      game={this.props.game}
       privateKey={this.props.privateKey}
       contacts={this.props.contacts}
       groups={this.props.groups}

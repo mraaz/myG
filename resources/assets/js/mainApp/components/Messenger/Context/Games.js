@@ -42,6 +42,7 @@ export default class Games extends React.PureComponent {
         </div>
         {this.props.expanded && expanded && <Game
           userId={this.props.userId}
+          game={{ gameId: id, name, icon }}
           privateKey={this.props.privateKey}
           contacts={contacts}
           groups={groups}
