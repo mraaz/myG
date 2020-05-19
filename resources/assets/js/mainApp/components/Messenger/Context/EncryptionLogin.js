@@ -1,5 +1,6 @@
 import React from 'react'
 import { showMessengerAlert } from '../../../../common/alert'
+import { fetchUser } from '../../../../integration/http/user'
 
 export default class EncryptionLogin extends React.PureComponent {
   state = {
@@ -25,7 +26,7 @@ export default class EncryptionLogin extends React.PureComponent {
         />
         <div
           className='messenger-encryption-login-validate-button clickable'
-          onClick={() => this.props.validatePin(this.state.pin, this.props.publicKey)}>
+          onClick={() => fetchUser(this.props.userId).then(response => this.props.validatePin(this.state.pin, response.user[0].public_key))}>
           LOGIN
         </div>
         <div
