@@ -187,7 +187,7 @@ class GroupMemberOptions extends React.PureComponent {
   }
 
   renderGroupInvitation(isGroupModerator) {
-    if (!isGroupModerator) return null;
+    if (this.props.group.isPrivate && !isGroupModerator) return null;
     const contactIds = this.props.groupContacts.map(contact => contact.contactId);
     return (
       <div className="chat-group-ownership">

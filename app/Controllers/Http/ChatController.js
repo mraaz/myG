@@ -76,7 +76,7 @@ class ChatController {
     const groupName = request.only('groupName').groupName;
     const requestedPage = request.only(['page']).page || 1;
     log('CHAT', `User ${requestingUserId} searching for Groups for page ${requestedPage || 1} with ${groupName}`);
-    const { groups } = await ChatRepository.searchGroup({ groupName, requestedPage });
+    const { groups } = await ChatRepository.searchGroup({ requestingUserId, groupName, requestedPage });
     return response.send({ groups });
   }
 

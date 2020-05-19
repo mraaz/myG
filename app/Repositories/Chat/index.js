@@ -439,19 +439,28 @@ class ChatRepository {
     return new DefaultSchema({ success: true });
   }
 
-  async searchGroup({ groupName, requestedPage }) {
-    let query = Chat.query().where('isGroup', true).andWhere('isPrivate', false);
+  async searchGroup({ requestingUserId, groupName, requestedPage }) {
+    const query = Database
+      .select('user_chats.chat_id', 'user_chats.user_id', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id')
+      .from('user_chats')
+      .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
+      .where('user_chats.user_id', requestingUserId)
+      .andWhere('chats.isGroup', true);
     if (groupName) query.andWhere('title', 'like', '%' + groupName + '%');
-    if (requestedPage === "ALL") query = query.fetch();
-    else query = query.paginate(requestedPage || 1, 10);
+    if (requestedPage !== "ALL") query.offset((requestedPage || 0) * 10).limit(10);
     const results = await query;
     if (!results) return { groups: [] };
     const groups = results.toJSON ? results.toJSON() : results.map(chat => new ChatSchema({
-      chatId: chat.id,
+      chatId: chat.chat_id,
+      muted: chat.muted,
       isPrivate: chat.isPrivate,
       isGroup: chat.isGroup,
       gameId: chat.game_id,
       individualGameId: chat.individual_game_id,
+      selfDestruct: chat.self_destruct,
+      deletedMessages: chat.deleted_messages,
+      lastRead: chat.last_read_message_id,
+      lastCleared: chat.last_cleared_message_id,
       icon: chat.icon,
       title: chat.title,
       lastMessage: chat.last_message,
@@ -460,6 +469,7 @@ class ChatRepository {
       guests: chat.guests,
       owners: chat.owners,
       moderators: chat.moderators,
+      messages: chat.messages,
       createdAt: chat.created_at,
       updatedAt: chat.updated_at,
     }));

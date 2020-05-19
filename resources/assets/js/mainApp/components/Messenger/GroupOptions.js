@@ -84,6 +84,7 @@ class GroupOptions extends React.PureComponent {
     const mainLink = window.location.protocol + '//' + window.location.host + '/link/' + this.props.group.links[0].uuid;
     const isGroupOwner = this.props.group.owners.length && this.props.group.owners.includes(this.props.userId);
     const isGroupModerator = this.props.group.moderators.length && this.props.group.moderators.includes(this.props.userId);
+    const canShareLink = !this.props.group.isPrivate || isGroupModerator || isGroupOwner;
     const inactiveStyle = 'chat-component-options-option-inactive';
     return (
       <div className="chat-component-options-container">
@@ -167,29 +168,30 @@ class GroupOptions extends React.PureComponent {
 
         <div className="chat-component-group-content-divider" />
 
-        <p className="chat-component-group-hint">Share this link below to invite your friends</p>
+        {canShareLink && <p className="chat-component-group-hint">Share this link below to invite your friends</p>}
+        {canShareLink && (
+          <div className="chat-component-options-row">
 
-        <div className="chat-component-options-row">
-
-          <div className="chat-component-group-title-link-container">
-            <div className="chat-component-group-title-link">
-              {mainLink}
+            <div className="chat-component-group-title-link-container">
+              <div className="chat-component-group-title-link">
+                {mainLink}
+              </div>
             </div>
-          </div>
 
-          <div className={`chat-component-group-button chat-component-group-button-smaller clickable`}
-            onClick={() => this.setState(previous => ({ showingLinks: !previous.showingLinks }))}
-          >
-            edit
-          </div>
+            <div className={`chat-component-group-button chat-component-group-button-smaller clickable`}
+              onClick={() => this.setState(previous => ({ showingLinks: !previous.showingLinks }))}
+            >
+              edit
+            </div>
 
-          <div className={`chat-component-group-button chat-component-group-button-smaller clickable`}
-            onClick={() => copyToClipboard(mainLink)}
-          >
-            copy
-          </div>
+            <div className={`chat-component-group-button chat-component-group-button-smaller clickable`}
+              onClick={() => copyToClipboard(mainLink)}
+            >
+              copy
+            </div>
 
-        </div>
+          </div>
+        )}
 
         <div className="chat-component-group-content-divider" />
 
