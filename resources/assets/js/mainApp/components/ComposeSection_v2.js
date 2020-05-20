@@ -268,7 +268,7 @@ export default class ComposeSection extends Component {
         document.getElementById('composeTextarea').focus()
       }, 0)
     }
-    this.setState({ open_compose_textTab })
+    this.setState({ open_compose_textTab, overlay_active: true })
   }
 
   handleAcceptedFiles = (Files) => {
@@ -389,7 +389,7 @@ export default class ComposeSection extends Component {
 
     return (
       <Fragment>
-        <section className={`postCompose__container ${overlay_active ? 'zI1000' : ''}`} onClick={this.handleFocus_txtArea}>
+        <section className={`postCompose__container ${overlay_active ? 'zI1000' : ''}`}>
           <div className='compose__type__section'>
             <div className={`share__thought ${open_compose_textTab ? 'active' : ''}`} onClick={(e) => this.togglePostTypeTab('text')}>
               {`Share your thoughts ...`}
