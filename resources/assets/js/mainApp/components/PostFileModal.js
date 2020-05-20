@@ -167,6 +167,10 @@ export default class PostFileModal extends Component {
     this.setState({ selected_group })
   }
 
+  joinMe = (gid) => {
+    console.log('gid   ', gid)
+  }
+
   render() {
     const { groups_im_in, selected_group, selectedGroup, searchText = '', groups_im_not_in } = this.state
     var class_modal_status = ''
@@ -194,7 +198,9 @@ export default class PostFileModal extends Component {
                         <div className='groupName'>{group_in.name}</div>
                         <div className='action'>
                           {group_in.im_not_in ? (
-                            'Join me'
+                            <div className='group_join' onClick={(e) => this.joinMe(group_in.id)}>
+                              JOIN ME
+                            </div>
                           ) : (
                             <label className='container'>
                               <input
