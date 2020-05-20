@@ -9,12 +9,12 @@ export function setGuestLinkAction(guestLink) {
   }
 }
 
-export function registerGuestAction(chatId, alias) {
+export function registerGuestAction(chatId, alias, uuid) {
   const { encryption: { publicKey, privateKey } } = generateKeysSync();
   return {
     type: 'REGISTER_GUEST',
-    payload: register(publicKey, chatId, alias),
-    meta: { publicKey, privateKey, chatId, alias }
+    payload: register(publicKey, chatId, alias, uuid),
+    meta: { publicKey, privateKey, chatId, alias, uuid }
   }
 }
 

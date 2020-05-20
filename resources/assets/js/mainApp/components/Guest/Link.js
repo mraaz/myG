@@ -47,7 +47,7 @@ class GuestLink extends React.PureComponent {
 
   registerGuest = () => {
     if (!this.state.alias.trim()) return this.setState({ aliasEmpty: true });
-    this.props.registerGuest(this.state.chatId, this.state.alias);
+    this.props.registerGuest(this.state.chatId, this.state.alias, this.props.uuid);
   }
 
   renderChat = () => {
@@ -137,7 +137,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return ({
     setGuestLink: (guestLink) => dispatch(setGuestLinkAction(guestLink)),
-    registerGuest: (chatId, alias) => dispatch(registerGuestAction(chatId, alias)),
+    registerGuest: (chatId, alias, uuid) => dispatch(registerGuestAction(chatId, alias, uuid)),
     logout: () => dispatch(logoutAction()),
   });
 }

@@ -1,11 +1,9 @@
 
 import React from 'react';
-import { connect } from 'react-redux';
 import { copyToClipboard } from '../../../common/clipboard';
-import { updateLinkAction } from '../../../redux/actions/chatAction';
 import { getAssetUrl } from '../../../common/assets';
 
-class GroupLinkOptions extends React.PureComponent {
+export default class GroupLinkOptions extends React.PureComponent {
 
   state = {
     currentTab: 0,
@@ -112,17 +110,3 @@ class GroupLinkOptions extends React.PureComponent {
   }
 
 }
-
-function mapStateToProps(state) {
-  return {
-
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return ({
-    updateLink: (chatId, uuid, expiry, expire) => dispatch(updateLinkAction(chatId, uuid, expiry, expire))
-  });
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(GroupLinkOptions);

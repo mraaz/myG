@@ -14,6 +14,7 @@ const ChatEntryLog = use('App/Models/ChatEntryLog');
 const ChatPrivateKeyRequest = use('App/Models/ChatPrivateKeyRequest');
 const ChatGameMessageSchedule = use('App/Models/ChatGameMessageSchedule');
 const ChatBlockedUser = use('App/Models/ChatBlockedUser');
+const Guest = use('App/Models/Guest');
 const Notification = use('App/Models/Notification');
 
 const AwsKeyController = use('App/Controllers/Http/AwsKeyController');
@@ -23,6 +24,7 @@ const UserSchema = require('../../Schemas/User');
 const ChatSchema = require('../../Schemas/Chat');
 const ChatLinkSchema = require('../../Schemas/ChatLink');
 const ChatEntryLogSchema = require('../../Schemas/ChatEntryLog');
+const GuestSchema = require('../../Schemas/Guest');
 const MessageSchema = require('../../Schemas/Message');
 const ReactionSchema = require('../../Schemas/Reaction');
 const DefaultSchema = require('../../Schemas/Default');
@@ -495,6 +497,10 @@ class ChatRepository {
     const entryLog = await this._insertEntryLog(requestedChatId, alias, !!requestedUserId, !requestedUserId, false, false);
     chat.contacts.forEach(userId => this._notifyChatEvent({ userId, action: isKickingGuest ? 'guestLeft' : 'userLeft', payload: { userId: userToRemove, guestId: userToRemove, chatId: requestedChatId, entryLog } }));
     chat.guests.forEach(guestId => this._notifyChatEvent({ guestId, action: isKickingGuest ? 'guestLeft' : 'userLeft', payload: { userId: userToRemove, guestId: userToRemove, chatId: requestedChatId, entryLog } }));
+    if (isKickingGuest) {
+      const guest = await Guest.find(userToRemove);
+      return new GuestSchema({ publicKey: guest.public_key, uuid: guest.uuid, guestId: guest.id });
+    }
     return new DefaultSchema({ success: true });
   }
 

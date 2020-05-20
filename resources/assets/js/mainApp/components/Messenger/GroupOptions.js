@@ -6,7 +6,7 @@ import GroupLinkOptions from './GroupLinkOptions';
 import Popup from '../Popup';
 import FileOpenModal from '../FileOpenModal';
 import { WithTooltip } from '../Tooltip';
-import { updateChatAction, clearChatAction, deleteChatAction, exitGroupAction } from '../../../redux/actions/chatAction';
+import { updateChatAction, clearChatAction, deleteChatAction, exitGroupAction, updateLinkAction } from '../../../redux/actions/chatAction';
 import { copyToClipboard } from '../../../common/clipboard'
 import { getAssetUrl } from '../../../common/assets';
 import { showMessengerAlert } from '../../../common/alert';
@@ -61,6 +61,7 @@ class GroupOptions extends React.PureComponent {
           userId={this.props.userId}
           group={this.props.group}
           groupContacts={this.props.groupContacts}
+          expireLink={uuid => this.props.updateLink(this.props.group.chatId, uuid, undefined, true)}
           onClose={() => this.setState({ showingMembers: false })}
         />
       </div>
@@ -74,6 +75,7 @@ class GroupOptions extends React.PureComponent {
         <GroupLinkOptions
           userId={this.props.userId}
           group={this.props.group}
+          updateLink={this.props.updateLink}
           onClose={() => this.setState({ showingLinks: false })}
         />
       </div>
@@ -242,6 +244,7 @@ class GroupOptions extends React.PureComponent {
 function mapDispatchToProps(dispatch) {
   return ({
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
+    updateLink: (chatId, uuid, expiry, expire) => dispatch(updateLinkAction(chatId, uuid, expiry, expire)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
     exitGroup: (chatId) => dispatch(exitGroupAction(chatId)),
     deleteChat: (chatId) => dispatch(deleteChatAction(chatId)),

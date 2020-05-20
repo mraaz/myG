@@ -9,8 +9,9 @@ class GuestController {
     log('GUEST', `Registering Guest`);
     const requestedChatId = request.only(['chatId']).chatId;
     const requestedAlias = request.only(['alias']).alias;
+    const uuid = request.only(['uuid']).uuid;
     const publicKey = request.only(['publicKey']).publicKey;
-    const { guest, chat } = await GuestRepository.register({ requestedChatId, requestedAlias, publicKey });
+    const { guest, chat } = await GuestRepository.register({ requestedChatId, requestedAlias, publicKey, uuid });
     return response.send({ guest, chat });
   }
 
