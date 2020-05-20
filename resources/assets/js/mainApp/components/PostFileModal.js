@@ -126,15 +126,27 @@ export default class PostFileModal extends Component {
     }
   }
 
+  getMergedGroupData = (groups_im_in, groups_im_not_in) => {
+    groups_im_not_in.map((gd) => {
+      gd['im_not_in'] = true
+      groups_im_in.push(gd)
+    })
+
+    return groups_im_in.length > 0 ? groups_im_in.sort((a, b) => ('' + a.name).localeCompare(b.name)) : []
+  }
+
   getSearchGroup = async (e) => {
     const searchText = e.target.value
     const groups = [...this.state.groups_im_in]
     if (searchText != '') {
       const gd = await axios.get(`/api/groups/${searchText}/groupSearchResults_Post`)
-      const groups_im_in = gd.data.myGroupSearchResults
+      let groups_im_in = gd.data.myGroupSearchResults
       const groups_im_not_in = gd.data.groupSearchResults_im_not_in
+      if (groups_im_not_in.length > 0) {
+        groups_im_in = this.getMergedGroupData(groups_im_in, groups_im_not_in)
+      }
 
-      this.setState({ groups_im_in, groups_im_not_in, searchText })
+      this.setState({ groups_im_in, searchText })
     } else {
       const getGroups_im_in = await axios.get('/api/usergroup/view/1')
       this.setState({
@@ -181,15 +193,19 @@ export default class PostFileModal extends Component {
                         </div>
                         <div className='groupName'>{group_in.name}</div>
                         <div className='action'>
-                          <label className='container'>
-                            <input
-                              type='checkbox'
-                              checked={selected_group.includes(group_in.id)}
-                              onChange={(e) => this.handleGroupCheck(e, group_in.id)}
-                              value={1}
-                            />
-                            <span className='checkmark'></span>
-                          </label>
+                          {group_in.im_not_in ? (
+                            'Join me'
+                          ) : (
+                            <label className='container'>
+                              <input
+                                type='checkbox'
+                                checked={selected_group.includes(group_in.id)}
+                                onChange={(e) => this.handleGroupCheck(e, group_in.id)}
+                                value={1}
+                              />
+                              <span className='checkmark'></span>
+                            </label>
+                          )}
                         </div>
                       </div>
                     )
