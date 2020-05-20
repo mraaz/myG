@@ -405,7 +405,7 @@ export default class ComposeSection extends Component {
                 onChange={this.handleChange_txtArea}
                 onFocus={this.handleFocus_txtArea}
                 onKeyDown={this.detectKey}
-                maxLength='254'
+                maxLength='2048'
                 value={post_content}
                 placeholder="What's up... "
                 id={`composeTextarea`}
