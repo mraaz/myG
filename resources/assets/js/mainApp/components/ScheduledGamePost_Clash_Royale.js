@@ -7,7 +7,7 @@ import IndividualComment from './IndividualComment'
 import DeleteScheduleGameModal from './DeleteScheduleGameModal'
 import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
-import SweetAlert from 'react-bootstrap-sweetalert'
+import SweetAlert from './common/MyGSweetAlert';
 import { exitGameGroup } from '../../common/group'
 
 export default class ScheduledGamePost_Clash_Royale extends Component {

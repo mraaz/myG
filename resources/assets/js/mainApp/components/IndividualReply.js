@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import moment from 'moment'
-import SweetAlert from 'react-bootstrap-sweetalert'
+import SweetAlert from './common/MyGSweetAlert';
 
 export default class IndividualReply extends Component {
   constructor() {

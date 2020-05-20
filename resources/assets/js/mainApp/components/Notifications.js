@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import IndividualNotification from './IndividualNotification'
-import SweetAlert from 'react-bootstrap-sweetalert'
+import SweetAlert from './common/MyGSweetAlert';
 import InfiniteScroll from 'react-infinite-scroll-component'
 
 export default class Notifications extends Component {

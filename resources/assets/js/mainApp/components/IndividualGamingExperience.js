@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Select from 'react-select'
 import { Redirect } from 'react-router'
 import axios from 'axios'
-import SweetAlert from 'react-bootstrap-sweetalert'
+import SweetAlert from './common/MyGSweetAlert';
 
 export default class IndividualGamingExperience extends Component {
   constructor() {

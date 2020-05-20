@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 import IndividualComment from './IndividualComment'
 import moment from 'moment'
-import SweetAlert from 'react-bootstrap-sweetalert'
+import SweetAlert from './common/MyGSweetAlert';
 import ImageGallery from 'react-image-gallery'
 
 export default class Old_IndividualPost extends Component {
