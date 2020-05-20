@@ -886,9 +886,11 @@ section#content-container {
       padding-left: 80px;
       font-family: 'Montserrat';
       .post__content {
-        font: Regular 12px/18px Montserrat;
+        font: 12px/18px Montserrat;
         letter-spacing: 0px;
         color: #93a4a5;
+        border-bottom: 1px solid #4d565a;
+        padding-bottom: 10px;
         strong {
           color: #fff;
           font-size: 14px;
@@ -1026,12 +1028,11 @@ section#content-container {
       .update-stats {
         display: flex;
         background: #171a1c;
-        padding: 12px 40px 15px 0px;
+        padding: 0px 40px 15px 0px;
         font-size: 12px;
         color: #93a4a5;
         position: relative;
         margin-left: 60px;
-        border-top: 1px solid #4d565a;
         .clearfix:after {
           visibility: hidden;
           display: block;
