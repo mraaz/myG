@@ -157,7 +157,6 @@ Route.get('/api/replies/show_reply/:id', 'ReplyController.show_reply')
 Route.get('/api/replies/my_count/:id', 'ReplyController.replies_count')
 Route.post('/api/replies/', 'ReplyController.store')
 
-Route.post('/api/notifications/getAllNoti', 'NotificationController.getAllNotifications')
 Route.post('/api/notifications/addFriend', 'NotificationController.addFriend')
 Route.get('/api/notifications/friend/:id', 'NotificationController.checkFriend')
 Route.get('/api/notifications/myFriendRequests/', 'NotificationController.myFriendRequests')
@@ -222,6 +221,7 @@ Route.get('/api/notifications/getunread_dings', 'NotificationController.getunrea
 //-----------------------------------------
 Route.post('/api/notifications_v2/getApprovals_Dashboard', 'NotificationController_v2.getApprovals_Dashboard')
 Route.get('/api/notifications_v2/delete/:id', 'NotificationController_v2.destroy')
+Route.post('/api/notifications_v2/getAllNoti', 'NotificationController_v2.getAllNotifications')
 
 //-----------------------------------------
 
@@ -273,6 +273,8 @@ Route.post('/api/groups/update_img', 'GroupController.update_img')
 Route.post('/api/groups/update/all_accept/', 'GroupController.update_all_accept')
 Route.get('/api/groups/update_type/:id/:group_type', 'GroupController.update_type')
 Route.get('/api/groups/show_owner/:id', 'GroupController.show_owner')
+
+Route.get('/api/groups/get_my_communities/:counter', 'GroupController.get_my_communities')
 
 Route.get('/api/usergroup/get_all_my_group_approvals/:id', 'UsergroupController.get_all_my_group_approvals')
 Route.post('/api/usergroup/create', 'UsergroupController.store')

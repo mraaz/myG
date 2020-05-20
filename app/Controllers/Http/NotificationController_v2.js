@@ -52,7 +52,8 @@ class NotificationController_v2 {
             'users.profile_img',
             'users.id',
             'notifications.id',
-            'notifications.created_at'
+            'notifications.created_at',
+            'notifications.read_status'
           )
           .orderBy('notifications.created_at', 'desc')
           .paginate(request.input('counter'), set_limit)
@@ -67,13 +68,15 @@ class NotificationController_v2 {
           .select(
             'schedule_games.start_date_time',
             'schedule_games.id',
+            'schedule_games.schedule_games_GUID',
             'game_names.game_name',
             'notifications.activity_type',
             'users.alias',
             'users.profile_img',
             'users.id',
             'notifications.id',
-            'notifications.created_at'
+            'notifications.created_at',
+            'notifications.read_status'
           )
           .orderBy('notifications.created_at', 'desc')
           .paginate(request.input('counter'), set_limit)
@@ -94,6 +97,7 @@ class NotificationController_v2 {
             'users.id',
             'notifications.created_at',
             'notifications.id',
+            'notifications.read_status',
             'groups.name'
           )
           .orderBy('notifications.created_at', 'desc')
@@ -217,6 +221,258 @@ class NotificationController_v2 {
       }
     } else {
       return 'You are not Logged In!'
+    }
+  }
+
+  async getAllNotifications({ auth, request, response }) {
+    var set_limit = 10
+    try {
+      const allMylike_posts = await Database.from('notifications')
+        .innerJoin('users', 'users.id', 'notifications.user_id')
+        .where({ other_user_id: auth.user.id, activity_type: 2 })
+        .groupBy('notifications.post_id')
+        .count('* as no_of_my_notis')
+        .select(
+          'notifications.schedule_games_id',
+          'notifications.post_id',
+          'notifications.activity_type',
+          'users.alias',
+          'users.profile_img',
+          'users.id',
+          'notifications.created_at'
+        )
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
+      const allMylike_comments = await Database.from('notifications')
+        .innerJoin('users', 'users.id', 'notifications.user_id')
+        .where({ other_user_id: auth.user.id, activity_type: 3 })
+        .groupBy('notifications.post_id')
+        .count('* as no_of_my_notis')
+        .select(
+          'notifications.schedule_games_id',
+          'notifications.post_id',
+          'notifications.activity_type',
+          'users.alias',
+          'users.profile_img',
+          'users.id',
+          'notifications.created_at'
+        )
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
+      const allMylike_replies = await Database.from('notifications')
+        .innerJoin('users', 'users.id', 'notifications.user_id')
+        .where({ other_user_id: auth.user.id, activity_type: 4 })
+        .groupBy('notifications.post_id')
+        .count('* as no_of_my_notis')
+        .select(
+          'notifications.schedule_games_id',
+          'notifications.post_id',
+          'notifications.activity_type',
+          'users.alias',
+          'users.profile_img',
+          'users.id',
+          'notifications.created_at'
+        )
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
+      const allMycomments = await Database.from('notifications')
+        .innerJoin('users', 'users.id', 'notifications.user_id')
+        .where({ other_user_id: auth.user.id, activity_type: 5 })
+        .groupBy('notifications.post_id')
+        .count('* as no_of_my_notis')
+        .select(
+          'notifications.schedule_games_id',
+          'notifications.post_id',
+          'notifications.activity_type',
+          'users.alias',
+          'users.profile_img',
+          'users.id',
+          'notifications.created_at'
+        )
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
+      const allMyreplies = await Database.from('notifications')
+        .innerJoin('users', 'users.id', 'notifications.user_id')
+        .where({ other_user_id: auth.user.id, activity_type: 6 })
+        .groupBy('notifications.post_id')
+        .count('* as no_of_my_notis')
+        .select(
+          'notifications.schedule_games_id',
+          'notifications.post_id',
+          'notifications.activity_type',
+          'users.alias',
+          'users.profile_img',
+          'users.id',
+          'notifications.created_at'
+        )
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
+      const allMyschedulegames = await Database.from('notifications')
+        .innerJoin('users', 'users.id', 'notifications.user_id')
+        .innerJoin('schedule_games', 'schedule_games.id', 'notifications.schedule_games_id')
+        .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+        .where({ other_user_id: auth.user.id, activity_type: 10 })
+        .select(
+          'notifications.schedule_games_id',
+          'notifications.activity_type',
+          'users.alias',
+          'users.profile_img',
+          'users.id',
+          'notifications.created_at',
+          'notifications.read_status',
+          'schedule_games.start_date_time',
+          'schedule_games.end_date_time',
+          'game_names.game_name'
+        )
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
+
+      const myschedulegames_approvals = await Database.from('notifications')
+        .innerJoin('users', 'users.id', 'notifications.user_id')
+        .innerJoin('schedule_games', 'schedule_games.id', 'notifications.schedule_games_id')
+        .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+        .where({ other_user_id: auth.user.id, activity_type: 14 })
+        .select(
+          'notifications.schedule_games_id',
+          'notifications.activity_type',
+          'users.alias',
+          'users.first_name',
+          'users.last_name',
+          'users.profile_img',
+          'users.id',
+          'notifications.read_status',
+          'notifications.created_at',
+          'game_names.game_name',
+          'schedule_games.accept_msg'
+        )
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
+
+      const allMyarchived_schedulegames = await Database.from('notifications')
+        .innerJoin('users', 'users.id', 'notifications.user_id')
+        .innerJoin('archive_schedule_games', 'archive_schedule_games.archive_schedule_game_id', 'notifications.schedule_games_id')
+        .innerJoin('game_names', 'game_names.id', 'archive_schedule_games.game_names_id')
+        .where({ other_user_id: auth.user.id, activity_type: 15 })
+        .select(
+          'notifications.archive_schedule_game_id',
+          'notifications.activity_type',
+          'notifications.read_status',
+          'users.alias',
+          'users.first_name',
+          'users.last_name',
+          'users.profile_img',
+          'users.id',
+          'game_names.game_name',
+          'archive_schedule_games.start_date_time',
+          'archive_schedule_games.reason_for_cancel',
+          'notifications.created_at'
+        )
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
+      const dropped_out_attendees = await Database.from('notifications')
+        .innerJoin('users', 'users.id', 'notifications.user_id')
+        .innerJoin('schedule_games', 'schedule_games.id', 'notifications.schedule_games_id')
+        .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+        .where({ other_user_id: auth.user.id, activity_type: 16 })
+        .groupBy('notifications.schedule_games_id')
+        .select(
+          'notifications.schedule_games_id',
+          'notifications.activity_type',
+          'users.alias',
+          'users.profile_img',
+          'users.id',
+          'schedule_games.start_date_time',
+          'schedule_games.end_date_time',
+          'game_names.game_name',
+          'notifications.created_at'
+        )
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
+      const group_member_approved = await Database.from('notifications')
+        .innerJoin('users', 'users.id', 'notifications.user_id')
+        .innerJoin('groups', 'groups.id', 'notifications.group_id')
+        .where({ other_user_id: auth.user.id, activity_type: 17 })
+        .select(
+          'notifications.group_id',
+          'notifications.activity_type',
+          'users.alias',
+          'users.profile_img',
+          'users.id',
+          'notifications.created_at',
+          'groups.name',
+          'notifications.read_status'
+        )
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
+      const chat_group_invite = await Database.from('notifications')
+        .innerJoin('users', 'users.id', 'notifications.user_id')
+        .where({ other_user_id: auth.user.id, activity_type: 18 })
+        .groupBy('notifications.schedule_games_id')
+        .select(
+          'notifications.id as notificationId',
+          'notifications.group_id',
+          'notifications.activity_type',
+          'notifications.chat_id',
+          'users.alias',
+          'users.profile_img',
+          'users.id',
+          'notifications.created_at'
+        )
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
+      const group_member_kicked = await Database.from('notifications')
+        .innerJoin('users', 'users.id', 'notifications.user_id')
+        .innerJoin('groups', 'groups.id', 'notifications.group_id')
+        .where({ other_user_id: auth.user.id, activity_type: 19 })
+        .select(
+          'notifications.group_id',
+          'notifications.activity_type',
+          'users.alias',
+          'users.profile_img',
+          'users.id',
+          'notifications.created_at',
+          'groups.name',
+          'notifications.read_status'
+        )
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
+      const user_ding = await Database.from('notifications')
+        .innerJoin('users', 'users.id', 'notifications.user_id')
+        .where({ other_user_id: auth.user.id, activity_type: 20 })
+        .select(
+          'notifications.activity_type',
+          'users.alias',
+          'users.profile_img',
+          'users.id',
+          'notifications.created_at',
+          'notifications.read_status'
+        )
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
+
+      var singleArr = [
+        ...allMylike_posts.data,
+        ...allMylike_comments.data,
+        ...allMylike_replies.data,
+        ...allMycomments.data,
+        ...allMyreplies.data,
+        ...allMyschedulegames.data,
+        ...myschedulegames_approvals.data,
+        ...allMyarchived_schedulegames.data,
+        ...dropped_out_attendees.data,
+        ...group_member_approved.data,
+        ...group_member_kicked.data,
+        ...chat_group_invite.data,
+        ...user_ding.data,
+      ]
+
+      if (singleArr.length == 0) {
+        return singleArr
+      } else {
+        return (singleArr = mergeSort(singleArr))
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 }

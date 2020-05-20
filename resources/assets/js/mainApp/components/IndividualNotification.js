@@ -248,21 +248,18 @@ export default class IndividualNotification extends Component {
             self.props.notification.profile_img = getReply.data.getAllNotiReply[0].profile_img
             break
           case 11:
-            const getunread = await axios.get(
-              `/api/notifications/getunread_schedule_game/${notification.schedule_games_id}/${notification.activity_type}`
-            )
-            if (getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0) {
+            if (notification.read_status == 0) {
               self.state.unread = true
             }
-            const myScheduledGame2 = await axios.get(`/api/ScheduleGame/${notification.schedule_games_id}`)
-            var myStartDateTime2 = moment(myScheduledGame2.data.getOne[0].start_date_time, 'YYYY-MM-DD HH:mm:ssZ').local()
+
+            var myStartDateTime2 = moment(notification.start_date_time, 'YYYY-MM-DD HH:mm:ssZ').local()
 
             self.state.notification_str =
               'Woot! A new player joined, you need to accept their invite: ' +
-              myScheduledGame2.data.getOne[0].game_name +
+              notification.game_name +
               '. Start date is ' +
               myStartDateTime2.format('Do MMM YY - h:mm a')
-            notification.schedule_games_GUID = myScheduledGame2.data.getOne[0].schedule_games_GUID
+            notification.schedule_games_GUID = notification.schedule_games_GUID
 
             break
           case 16:
@@ -319,7 +316,7 @@ export default class IndividualNotification extends Component {
                   getschedulegameInfo.data.getAllNotiScheduleGamesAttendees[0].alias +
                   ' and ' +
                   getschedulegameInfo.data.getAllNotiScheduleGamesAttendeesCount[0].no_of_my_notis +
-                  ' has left ' +
+                  ' gamers has left ' +
                   myScheduledGame.data.getOne[0].game_name +
                   '. This game is planned to start ' +
                   myStartDateTime.format('Do MMM YY - h:mm a')
@@ -373,25 +370,18 @@ export default class IndividualNotification extends Component {
 
     const getschedulegameData = async function() {
       try {
-        // const getunread = await axios.get(
-        //   `/api/notifications/getunread_schedule_game/${notification.schedule_games_id}/${notification.activity_type}`
-        // )
         if (notification.read_status == 0) {
           self.state.unread = true
         }
-        // if (getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0) {
-        // }
 
-        const myScheduledGame = await axios.get(`/api/ScheduleGame/${notification.schedule_games_id}`)
-
-        var myStartDateTime = moment(myScheduledGame.data.getOne[0].start_date_time, 'YYYY-MM-DD HH:mm:ssZ').local()
-        var myEndDateTime = moment(myScheduledGame.data.getOne[0].end_date_time, 'YYYY-MM-DD HH:mm:ssZ').local()
+        let myStartDateTime = moment(notification.start_date_time, 'YYYY-MM-DD HH:mm:ssZ').local()
+        let myEndDateTime = moment(notification.end_date_time, 'YYYY-MM-DD HH:mm:ssZ').local()
 
         self.setState({
           notification_str:
             notification.alias +
             ' created a game - ' +
-            myScheduledGame.data.getOne[0].game_name +
+            notification.game_name +
             ' (' +
             myStartDateTime.format('Do MMM YY - h:mm a') +
             ' - ' +
@@ -405,18 +395,18 @@ export default class IndividualNotification extends Component {
 
     const getGroupData = async function() {
       try {
-        const getunread = await axios.get(`/api/notifications/getunread_group/${notification.group_id}/${notification.activity_type}`)
-        if (getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0) {
+        if (notification.read_status == 0) {
           self.state.unread = true
         }
+
         if (notification.activity_type == 12) {
           self.setState({
             notification_str: notification.name + ' - ' + notification.alias + ' wants to join this group. What ya reckon?',
           })
         } else if (notification.activity_type == 17) {
-          const getGroupInfo = await axios.get(`/api/groups/${notification.group_id}`)
+          //const getGroupInfo = await axios.get(`/api/groups/${notification.group_id}`)
           self.setState({
-            notification_str: 'Epic! You have been accepted to group: ' + getGroupInfo.data.group[0].name,
+            notification_str: 'Epic! You have been accepted to group: ' + notification.name,
           })
         }
       } catch (error) {
@@ -426,23 +416,20 @@ export default class IndividualNotification extends Component {
 
     const getGameApprovalData = async function() {
       try {
-        const getunread = await axios.get(
-          `/api/notifications/getunread_schedule_game/${notification.schedule_games_id}/${notification.activity_type}`
-        )
-        if (getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0) {
+        if (notification.read_status == 0) {
           self.state.unread = true
         }
 
-        const myScheduledGame = await axios.get(`/api/ScheduleGame/${notification.schedule_games_id}`)
+        //const myScheduledGame = await axios.get(`/api/ScheduleGame/${notification.schedule_games_id}`)
 
         self.setState({
           notification_str:
             "Gratz! You're approved for " +
-            myScheduledGame.data.getOne[0].game_name +
+            notification.game_name +
             ' created by ' +
             notification.alias +
             ' --- Accept Msg: ' +
-            myScheduledGame.data.getOne[0].accept_msg,
+            notification.accept_msg,
         })
       } catch (error) {
         console.log(error)
@@ -451,27 +438,31 @@ export default class IndividualNotification extends Component {
 
     const getArchive_scheduled_game_Data = async function() {
       try {
-        const getunread = await axios.get(
-          `/api/notifications/getunread_archive_schedule_game/${notification.archive_schedule_game_id}/${notification.activity_type}`
-        )
-        if (getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0) {
+        // const getunread = await axios.get(
+        //   `/api/notifications/getunread_archive_schedule_game/${notification.archive_schedule_game_id}/${notification.activity_type}`
+        // )
+        // if (getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0) {
+        //   self.state.unread = true
+        // }
+
+        if (notification.read_status == 0) {
           self.state.unread = true
         }
 
-        const myArchiveScheduledGame = await axios.get(`/api/ArchiveScheduleGame/${notification.archive_schedule_game_id}`)
+        //const myArchiveScheduledGame = await axios.get(`/api/ArchiveScheduleGame/${notification.archive_schedule_game_id}`)
 
-        var myStartDateTime = moment(myArchiveScheduledGame.data.getOne[0].start_date_time, 'YYYY-MM-DD HH:mm:ssZ').local()
+        var myStartDateTime = moment(notification.start_date_time, 'YYYY-MM-DD HH:mm:ssZ').local()
 
         self.setState({
           notification_str:
             "Crikey mate! One of your approved game's: " +
-            myArchiveScheduledGame.data.getOne[0].game_name +
+            notification.game_name +
             ", was deleted! :'( This game was created by " +
             notification.alias +
             '. It was meant to start: ' +
             myStartDateTime.format('Do MMM YY - h:mm a') +
             '. Their reason for cancelling was: ' +
-            myArchiveScheduledGame.data.getOne[0].reason_for_cancel,
+            notification.reason_for_cancel,
         })
       } catch (error) {
         console.log(error)
@@ -487,15 +478,13 @@ export default class IndividualNotification extends Component {
 
     const getGroupKickedData = async function() {
       try {
-        const getunread = await axios.get(`/api/notifications/getunread_group/${notification.group_id}/${notification.activity_type}`)
-        if (getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0) {
+        if (notification.read_status == 0) {
           self.state.unread = true
         }
-
-        const groupInfo = await axios.get(`/api/groups/${notification.group_id}`)
+        //const groupInfo = await axios.get(`/api/groups/${notification.group_id}`)
 
         self.setState({
-          notification_str: 'Sorry mate! You were kicked from this community: ' + groupInfo.data.group[0].name,
+          notification_str: 'Sorry mate! You were kicked from this community: ' + notification.name,
         })
       } catch (error) {
         console.log(error)
@@ -504,8 +493,7 @@ export default class IndividualNotification extends Component {
 
     const getDingInfo = async function() {
       try {
-        const getunread = await axios.get('/api/notifications/getunread_dings/')
-        if (getunread.data.getAllNotiReplyCount_unreadCount[0].no_of_my_unread > 0) {
+        if (notification.read_status == 0) {
           self.state.unread = true
         }
 

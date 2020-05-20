@@ -98,7 +98,6 @@ export default class IndividualInvitation extends Component {
       show_profile_img = true
     }
 
-    //Jezza wants to connect with you
     return (
       <div className='invitation-info'>
         {show_profile_img && (

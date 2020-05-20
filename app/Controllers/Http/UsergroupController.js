@@ -39,12 +39,12 @@ class UsergroupController {
         .from('groups')
         .where({ user_id: auth.user.id })
 
-      const groups_im_in = await Database.from('usergroups')
+      let groups_im_in = await Database.from('usergroups')
         .innerJoin('groups', 'groups.id', 'usergroups.group_id')
         .where('usergroups.user_id', '=', auth.user.id)
         .whereNot('usergroups.permission_level', 42)
         .whereNotIn('usergroups.group_id', subquery)
-        .paginate(request.params.counter, 50)
+        .paginate(request.params.counter, 25)
 
       const total_number_of_communities = await Database.from('usergroups')
         .innerJoin('groups', 'groups.id', 'usergroups.group_id')
@@ -53,7 +53,7 @@ class UsergroupController {
         .whereNotIn('usergroups.group_id', subquery)
         .count('usergroups.id as total_number_of_communities')
 
-      //const myPosts = await Database.from('posts').innerJoin('users', 'users.id', 'posts.user_id').where('posts.user_id', '=', auth.user.id).andWhere('posts.created_at', '>=', request.params.myDate).select('*', 'posts.id', 'posts.created_at','posts.updated_at').orderBy('posts.created_at', 'desc')
+      groups_im_in = groups_im_in.data
       return {
         groups_im_in,
         total_number_of_communities: total_number_of_communities,
@@ -223,13 +223,12 @@ class UsergroupController {
           }
         }
       }
-      let noti = new NotificationController_v2()
-
       if (access_granted) {
         const updated_permission = await Usergroup.query()
           .where({ group_id: request.params.grp_id, user_id: request.params.user_id })
           .update({ permission_level: 3 })
 
+        let noti = new NotificationController_v2()
         noti.add_approved_group_attendee({ auth }, request.params.grp_id, request.params.user_id)
 
         let userStatController = new UserStatTransactionController()
