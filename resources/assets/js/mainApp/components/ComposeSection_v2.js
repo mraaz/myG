@@ -94,6 +94,8 @@ export default class ComposeSection extends Component {
       post_content: '',
       preview_files: [],
       keys: [],
+      overlay_active: false,
+      open_compose_textTab: true,
     })
   }
 
