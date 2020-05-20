@@ -499,6 +499,12 @@ export default class IndividualComment extends Component {
       uploading: false,
     })
   }
+  clearPreviewImage = () => {
+    this.setState({
+      preview_file: [],
+      file_keys: [],
+    })
+  }
 
   render() {
     let { comment } = this.props
