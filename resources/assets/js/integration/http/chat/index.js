@@ -97,23 +97,23 @@ export function sendMessage(chatId, userId, senderName, encryptedContent, keyRec
   return axios.post(`/api/chat/${chatId}/message/`, { encryptedContent, keyReceiver, attachment, senderName, replyId, replyContent, replyBackup }).then(response => response.data);
 }
 
-export function editMessage(chatId, messageId, encryptedContent, reEncrypting) {
-  logger.log('CHAT', 'HTTP', `Editing Message ${messageId} on Chat ${chatId}`);
+export function editMessage(chatId, userId, messageId, encryptedContent, reEncrypting) {
+  logger.log('CHAT', 'HTTP', `User ${userId} Editing Message ${messageId} on Chat ${chatId}`);
   return axios.put(`/api/chat/${chatId}/message/${messageId}`, { encryptedContent, reEncrypting }).then(response => response.data);
 }
 
-export function deleteMessage(chatId, messageId) {
-  logger.log('CHAT', 'HTTP', `Deleting Message ${messageId} from Chat ${chatId}`);
+export function deleteMessage(chatId, userId, messageId) {
+  logger.log('CHAT', 'HTTP', `User ${userId} Deleting Message ${messageId} from Chat ${chatId}`);
   return axios.delete(`/api/chat/${chatId}/message/${messageId}`).then(response => response.data);
 }
 
-export function addReaction(chatId, messageId, reactionId) {
-  logger.log('CHAT', 'HTTP', `Adding Reaction ${reactionId} to Message ${messageId} in Chat ${chatId}`);
+export function addReaction(chatId, userId, messageId, reactionId) {
+  logger.log('CHAT', 'HTTP', `User ${userId} Adding Reaction ${reactionId} to Message ${messageId} in Chat ${chatId}`);
   return axios.post(`/api/chat/${chatId}/message/${messageId}/reaction`, { reactionId }).then(response => response.data);
 }
 
-export function removeReaction(chatId, messageId, reactionId) {
-  logger.log('CHAT', 'HTTP', `Removing Reaction ${reactionId} to Message ${messageId} in Chat ${chatId}`);
+export function removeReaction(chatId, userId, messageId, reactionId) {
+  logger.log('CHAT', 'HTTP', `User ${userId} Removing Reaction ${reactionId} to Message ${messageId} in Chat ${chatId}`);
   return axios.delete(`/api/chat/${chatId}/message/${messageId}/reaction/${reactionId}`).then(response => response.data);
 }
 

@@ -31,18 +31,38 @@ export function fetchEncryptionMessages(guestId, chatId) {
   return axios.get(`/api/guest/${guestId}/chat/${chatId}/message/encryption`).then(response => response.data);
 }
 
-export function sendMessage(chatId, guestId, senderName, encryptedContent) {
-  logger.log('GUEST', 'HTTP', `Sending Message from GUEST ${guestId} to Chat ${chatId}`);
-  return axios.post(`/api/guest/${guestId}/chat/${chatId}`, { encryptedContent, senderName }).then(response => response.data);
+export function sendMessage(chatId, guestId, senderName, encryptedContent, keyReceiver, attachment, replyId, replyContent, replyBackup) {
+  logger.log('GUEST', 'HTTP', `Sending Message from Guest ${guestId} to Chat ${chatId}`);
+  return axios.post(`/api/guest/${guestId}/chat/${chatId}/message/`, { encryptedContent, keyReceiver, attachment, senderName, replyId, replyContent, replyBackup }).then(response => response.data);
+}
+
+export function editMessage(chatId, guestId, messageId, encryptedContent, reEncrypting) {
+  logger.log('GUEST', 'HTTP', `Editing Message ${messageId} on Chat ${chatId}`);
+  return axios.put(`/api/guest/${guestId}/chat/${chatId}/message/${messageId}`, { encryptedContent, reEncrypting }).then(response => response.data);
+}
+
+export function deleteMessage(chatId, guestId, messageId) {
+  logger.log('GUEST', 'HTTP', `Deleting Message ${messageId} from Chat ${chatId}`);
+  return axios.delete(`/api/guest/${guestId}/chat/${chatId}/message/${messageId}`).then(response => response.data);
+}
+
+export function addReaction(chatId, guestId, messageId, reactionId, senderName) {
+  logger.log('GUEST', 'HTTP', `Adding Reaction ${reactionId} to Message ${messageId} in Chat ${chatId}`);
+  return axios.post(`/api/guest/${guestId}/chat/${chatId}/message/${messageId}/reaction`, { reactionId, senderName }).then(response => response.data);
+}
+
+export function removeReaction(chatId, guestId, messageId, reactionId) {
+  logger.log('GUEST', 'HTTP', `Removing Reaction ${reactionId} to Message ${messageId} in Chat ${chatId}`);
+  return axios.delete(`/api/guest/${guestId}/chat/${chatId}/message/${messageId}/reaction/${reactionId}`).then(response => response.data);
 }
 
 export function fetchEntryLogs(chatId) {
-  logger.log('CHAT', 'HTTP', `Fetching Entry Logs for ${chatId}`);
+  logger.log('GUEST', 'HTTP', `Fetching Entry Logs for ${chatId}`);
   return axios.get(`/api/guest/chat/${chatId}/entryLogs`).then(response => response.data);
 }
 
 export function fetchChatContacts(chatId) {
-  logger.log('CHAT', 'HTTP', `Fetching Entry Logs for ${chatId}`);
+  logger.log('GUEST', 'HTTP', `Fetching Entry Logs for ${chatId}`);
   return axios.get(`/api/guest/chat/${chatId}/contacts`).then(response => response.data);
 }
 

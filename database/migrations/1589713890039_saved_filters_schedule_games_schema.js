@@ -11,6 +11,7 @@ class SavedFiltersScheduleGamesSchema extends Schema {
       table.foreign('user_id').references('users.id').onDelete('cascade')
       table.string('name', 250).notNullable()
       table.json('payload').nullable()
+      table.unique(['user_id', 'name']);
       table.timestamps(true,true)
     })
   }

@@ -300,6 +300,11 @@ Route.get('/api/notifications/outgoingFriendRequests', 'NotificationController.o
 
 Route.get('/api/userStatTransaction/master_controller', 'UserStatTransactionController.master_controller')
 
+Route.post('/api/SavedFiltersScheduleGameController', 'SavedFiltersScheduleGameController.store')
+Route.post('/api/SavedFiltersScheduleGameController/updateFilter', 'SavedFiltersScheduleGameController.updateFilter')
+Route.post('/api/SavedFiltersScheduleGameController/deleteFilter', 'SavedFiltersScheduleGameController.destroy')
+Route.get('/api/SavedFiltersScheduleGameController/getAllSavedFilters', 'SavedFiltersScheduleGameController.getAllSavedFilters')
+
 // Aws Key Upload
 Route.post('/api/chat/:chatId/icon', 'AwsKeyController.addChatGroupProfileKey')
 Route.post('/api/game/:gameId/icon', 'AwsKeyController.addGameIconKey')
@@ -355,7 +360,11 @@ Route.get('/api/guest/link/:uuid', 'GuestController.fetchLink')
 Route.get('/api/guest/chat/:chatId', 'GuestController.fetchChat')
 Route.get('/api/guest/chat/:chatId/message', 'GuestController.fetchMessages')
 Route.get('/api/guest/:guestId/chat/:chatId/message/encryption', 'GuestController.fetchEncryptionMessages')
-Route.post('/api/guest/:guestId/chat/:chatId', 'GuestController.sendMessage')
+Route.post('/api/guest/:guestId/chat/:chatId/message', 'GuestController.sendMessage')
+Route.put('/api/guest/:guestId/chat/:chatId/message/:messageId', 'GuestController.editMessage')
+Route.delete('/api/guest/:guestId/chat/:chatId/message/:messageId', 'GuestController.deleteMessage')
+Route.post('/api/guest/:guestId/chat/:chatId/message/:messageId/reaction', 'GuestController.addReaction')
+Route.delete('/api/guest/:guestId/chat/:chatId/message/:messageId/reaction/:reactionId', 'GuestController.removeReaction')
 Route.get('/api/guest/chat/:chatId/entryLogs', 'GuestController.fetchEntryLogs')
 Route.get('/api/guest/chat/:chatId/contacts', 'GuestController.fetchChatContacts')
 Route.get('/api/guest/privateKey/:chatId', 'GuestController.fetchGroupPrivateKeyRequests')

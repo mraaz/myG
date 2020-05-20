@@ -1,6 +1,7 @@
 
 const Guest = use('App/Models/Guest');
 const Chat = use('App/Models/Chat');
+const ChatMessage = use('App/Models/ChatMessage');
 const ChatLink = use('App/Models/ChatLink');
 const ChatRepository = require('../Chat');
 const GuestSchema = require('../../Schemas/Guest');
@@ -78,13 +79,16 @@ class GuestRepository {
     return ChatRepository.fetchEncryptionMessages({ requestingUserId: requestingGuestId, requestedChatId });
   }
 
-  async sendMessage({ requestedChatId, senderName, guestId, backup, content }) {
+  async sendMessage({ requestedChatId, senderName, guestId, backup, content, replyId, replyContent, replyBackup }) {
     const messageData = {
       sender_id: guestId,
       sender_name: senderName,
       backup: backup,
       content: content,
       self_destruct: true,
+      reply_id: replyId,
+      reply_content: replyContent,
+      reply_backup: replyBackup,
     };
     const message = await Chat.find(requestedChatId).then(chat => chat.messages().create(messageData));
     const messageSchema = new MessageSchema({
@@ -97,12 +101,56 @@ class GuestRepository {
       backup: message.backup,
       deleted: message.deleted,
       edited: message.edited,
+      replyId: message.reply_id,
+      replyContent: message.reply_content,
+      replyBackup: message.reply_backup,
       selfDestruct: message.self_destruct,
       createdAt: message.created_at,
       updatedAt: message.updated_at,
     });
     ChatRepository._notifyChatEvent({ chatId: requestedChatId, action: 'newMessage', payload: messageSchema });
     return { message: messageSchema };
+  }
+
+  async editMessage({ guestId, requestedChatId, requestedMessageId, backup, content }) {
+    return ChatRepository.editMessage({ requestingUserId: guestId, requestedChatId, requestedMessageId, backup, content });
+  }
+
+  async deleteMessage({ guestId, requestedChatId, requestedMessageId }) {
+    const message = await ChatMessage.find(requestedMessageId);
+    message.content = '';
+    message.deleted = true;
+    const messageSchema = new MessageSchema({
+      messageId: message.id,
+      chatId: requestedChatId,
+      senderId: message.sender_id,
+      senderName: message.sender_name,
+      content: message.content,
+      backup: message.backup,
+      deleted: message.deleted,
+      edited: message.edited,
+      selfDestruct: message.self_destruct,
+      isAttachment: message.is_attachment,
+      isReply: !!message.replyId,
+      replyId: message.reply_id,
+      replyContent: message.reply_content,
+      replyBackup: message.reply_backup,
+      createdAt: message.created_at,
+      updatedAt: message.updated_at,
+    });
+    if (messageSchema.senderId === guestId) {
+      await message.save();
+      ChatRepository._notifyChatEvent({ chatId: requestedChatId, action: 'updateMessage', payload: messageSchema });
+    }
+    return { message: messageSchema };
+  }
+
+  async addReaction({ guestId, chatId, messageId, reactionId, senderName }) {
+    return ChatRepository.addReaction({ requestingUserId: guestId, chatId, messageId, reactionId, senderName });
+  }
+
+  async removeReaction({ guestId, chatId, messageId, reactionId }) {
+    return ChatRepository.removeReaction({ requestingUserId: guestId, chatId, messageId, reactionId });
   }
 
   async fetchEntryLogs({ requestedChatId }) {

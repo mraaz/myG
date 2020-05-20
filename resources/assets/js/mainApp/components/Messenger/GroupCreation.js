@@ -91,6 +91,7 @@ class GroupCreation extends React.Component {
             className="chat-group-creation-title-input"
             placeholder={"Group Name"}
             value={this.state.title}
+            autoFocus={true}
             onChange={event => this.setState({ title: event.target.value })}
           >
           </input>
