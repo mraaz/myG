@@ -143,21 +143,23 @@ export default class GroupHeader extends Component {
     } else if (this.state.statusTxt == 'Join') {
       try {
         const sendInvite = axios.post('/api/usergroup/create', {
+          grp_owner: this.state.group_info.user_id,
           group_id: this.props.groups_id.params.id,
+          all_accept: this.state.group_info.all_accept,
         })
-        const owner_invitation = axios.post('/api/notifications/addGroup', {
-          other_user_id: this.state.group_info.user_id,
-          group_id: this.props.groups_id.params.id,
-        })
-        if (this.state.group_info.all_accept) {
-          const group_invitation = axios.post('/api/notifications/add_all_to_Group', {
-            group_id: this.props.groups_id.params.id,
-          })
-        } else {
-          const group_invitation = axios.post('/api/notifications/add_vip_to_Group', {
-            group_id: this.props.groups_id.params.id,
-          })
-        }
+        // const owner_invitation = axios.post('/api/notifications/addGroup', {
+        //   other_user_id: this.state.group_info.user_id,
+        //   group_id: this.props.groups_id.params.id,
+        // })
+        // if (this.state.group_info.all_accept) {
+        //   const group_invitation = axios.post('/api/notifications/add_all_to_Group', {
+        //     group_id: this.props.groups_id.params.id,
+        //   })
+        // } else {
+        //   const group_invitation = axios.post('/api/notifications/add_vip_to_Group', {
+        //     group_id: this.props.groups_id.params.id,
+        //   })
+        // }
       } catch (error) {
         console.log(error)
       }
@@ -222,19 +224,7 @@ export default class GroupHeader extends Component {
       case 'showAlert_remove_group_true':
         try {
           const deleteRegistration = axios.get(`/api/usergroup/delete/${this.props.groups_id.params.id}`)
-          const killInvite = axios.get(`/api/notifications/delete_group/${this.props.groups_id.params.id}`)
-        } catch (error) {
-          console.log(error)
-        }
-        this.setState({
-          statusTxt: 'Join',
-          show_approvals: false,
-        })
-        break
-      case 'showAlert_remove_group_true':
-        try {
-          const deleteRegistration = axios.get(`/api/usergroup/delete/${this.props.groups_id.params.id}`)
-          const killInvite = axios.get(`/api/notifications/delete_group/${this.props.groups_id.params.id}`)
+          //const killInvite = axios.get(`/api/notifications/delete_group/${this.props.groups_id.params.id}`)
         } catch (error) {
           console.log(error)
         }
