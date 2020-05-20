@@ -188,7 +188,8 @@
 }
 
 .chat-component-message-reaction-container-sent  {
-  background-color: #171A6C;
+  background-color: #1a38b9;
+  filter: invert(1) drop-shadow(2px 4px 6px black) brightness(0.64) contrast(2);
   border-radius: 4px;
   margin: 2px;
   display: flex;
