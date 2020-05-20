@@ -131,8 +131,10 @@ export default class PostFileModal extends Component {
     const groups = [...this.state.groups_im_in]
     if (searchText != '') {
       const gd = await axios.get(`/api/groups/${searchText}/groupSearchResults_Post`)
-      const groups_im_in = gd.data.groupSearchResults
-      // this.setState({ groups_im_in, searchText })
+      const groups_im_in = gd.data.myGroupSearchResults
+      const groups_im_not_in = gd.data.groupSearchResults_im_not_in
+
+      this.setState({ groups_im_in, groups_im_not_in, searchText })
     } else {
       const getGroups_im_in = await axios.get('/api/usergroup/view/1')
       this.setState({
@@ -154,7 +156,7 @@ export default class PostFileModal extends Component {
   }
 
   render() {
-    const { groups_im_in, selected_group, selectedGroup, searchText = '' } = this.state
+    const { groups_im_in, selected_group, selectedGroup, searchText = '', groups_im_not_in } = this.state
     var class_modal_status = ''
     if (this.props.bOpen) {
       class_modal_status = 'modal--show'
