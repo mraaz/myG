@@ -9,7 +9,7 @@ import GroupOptions from './GroupOptions';
 import { WithTooltip } from '../Tooltip';
 
 import { prepareChatAction, fetchMessagesAction, sendMessageAction, editMessageAction, deleteMessageAction, updateChatAction, updateChatStateAction, checkSelfDestructAction, clearChatAction, setTypingAction, addReactionAction, removeReactionAction, blockUserAction, unblockUserAction } from '../../../redux/actions/chatAction';
-import { withDatesAndLogs } from '../../../common/chat';
+import { withDatesAndLogsAndLastReads } from '../../../common/chat';
 import { encryptMessage, decryptMessage, deserializeKey } from '../../../integration/encryption';
 import { formatDateTime } from '../../../common/date';
 import { getAssetUrl } from '../../../common/assets';
@@ -89,8 +89,10 @@ export class Chat extends React.PureComponent {
   }
 
   markAsRead = (lastMessageId) => {
+    console.log('Mark As Read Start');
     if (this.props.isGuest) return;
     if (this.props.minimised || !this.props.privateKey || !this.props.windowFocused) return;
+    console.log('Mark As Read: ', lastMessageId, this.state.lastRead, this.props.lastRead);
     if (!lastMessageId || lastMessageId <= this.props.lastRead || lastMessageId <= this.state.lastRead) return;
     this.setState({ lastRead: lastMessageId });
     this.props.updateChat(this.props.chatId, { markAsRead: true });
@@ -259,8 +261,6 @@ export class Chat extends React.PureComponent {
 
   renderBody = () => {
     const lastMessage = (this.props.messages[this.props.messages.length - 1] || {});
-    const lastMessageId = lastMessage.messageId;
-    const lastMessageSender = lastMessage.senderId;
     return (
       <div
         className="chat-component-body"
@@ -289,7 +289,6 @@ export class Chat extends React.PureComponent {
           showAttachment={attachment => this.setState({ attachment })}
         />
         {this.renderTypingIndicator()}
-        {this.renderReadIndicators(lastMessageId, lastMessageSender)}
       </div>
     );
   }
@@ -307,33 +306,6 @@ export class Chat extends React.PureComponent {
       <div className="chat-component-empty-chat-message clickable" onClick={() => showMessengerAlert("Most E2E store a secret key on a device. This means you need a device to access your messages. myG emails you the secret key, which allows you to get E2E without additional gadgets. Only you have access to this key and with it you can decrypt your chat history. With great power, comes great responsibility. If you lose your key unfortunately, you will also lose your chat history, not even the god-like nerds @ myG can recover this.")}>
         <p>Messages you send to this chat are secured with end-to-end encryption.</p>
         <p>Please keep your encryption key safe, otherwise you will LOSE your chat history. Click for more info.</p>
-      </div>
-    );
-  }
-
-  renderReadIndicators(lastMessageId, lastMessageSender) {
-    if (this.props.isGuest) return;
-    const { contactsMap, lastReads } = this.props;
-    const contacts = this.props.isGroup ? contactsMap : { [this.props.contactId]: { contactId: this.props.contactId, icon: this.props.icon } };
-    const contactsWithRead = Object.keys(lastReads).map(contactId => ({ ...contacts[contactId], lastRead: lastReads[contactId] }));
-    const contactsThatRead = contactsWithRead.filter(contact => contact.contactId !== lastMessageSender && contact.lastRead >= lastMessageId && contact.icon);
-    if (!contactsThatRead.length) return null;
-    return (
-      <div className="chat-component-read-indicator-container">
-        {contactsThatRead.map(contact => this.renderReadIndicator(contact.contactId, contact.icon))}
-      </div>
-    );
-  }
-
-  renderReadIndicator(key, icon) {
-    return (
-      <div key={key} className="chat-component-read-indicator">
-        <div className="chat-component-read-indicator-icon">
-          <img
-            className="chat-component-read-indicator-icon-image"
-            src={icon}
-          />
-        </div>
       </div>
     );
   }
@@ -476,7 +448,6 @@ export class Chat extends React.PureComponent {
 export function mapStateToProps(state, props) {
   const chat = state.chat.chats.find(chat => chat.chatId === props.chatId) || { contacts: [], guests: [] };
   const isGroup = chat.isGroup;
-  const messages = withDatesAndLogs(chat.messages || [], chat.entryLogs || []);
   const contacts = chat.contacts.filter(contactId => contactId !== props.userId);
   const guests = chat.guests.filter(contactId => contactId !== props.userId);
   const fullContacts = chat.fullContacts || [];
@@ -486,12 +457,14 @@ export function mapStateToProps(state, props) {
   let chatSubtitle = null;
   const contactsMap = {};
   fullContacts.forEach(contact => contactsMap[contact.contactId] = contact);
+  if (!isGroup) contactsMap[contactId] = contact;
   if (isGroup) {
     const memberCount = contacts.length + guests.length + 1;
     const onlineCount = contacts.filter(contactId => (contactsMap[contactId] || {}).status === 'online').length + guests.length + 1;
     chatSubtitle = `${onlineCount}/${memberCount} online`;
   }
   chat.privateKey = deserializeKey(chat.privateKey);
+  const messages = withDatesAndLogsAndLastReads(chat.messages || [], chat.entryLogs || [], contactsMap || {}, chat.lastReads || {});
   return {
     messages,
     loadingMessages: chat.loadingMessages,

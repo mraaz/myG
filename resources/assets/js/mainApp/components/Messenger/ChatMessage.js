@@ -244,6 +244,28 @@ export default class ChatMessage extends React.Component {
     );
   }
 
+  renderLastRead() {
+    const contacts = this.props.message.contacts;
+    return (
+      <div key={this.props.message.messageId + "LastRead"} className="chat-component-read-indicator-container">
+        {contacts.map(contact => this.renderReadIndicator(contact.contactId, contact.icon))}
+      </div>
+    );
+  }
+
+  renderReadIndicator(key, icon) {
+    return (
+      <div key={key} className="chat-component-read-indicator">
+        <div className="chat-component-read-indicator-icon">
+          <img
+            className="chat-component-read-indicator-icon-image"
+            src={icon}
+          />
+        </div>
+      </div>
+    );
+  }
+
   colorMessage = (id) => {
     const colors = ['#F99', '#9F9', '#99F', '#FF9', '#9FF', '#F9F'];
     return colors[parseInt(id % colors.length)];
@@ -343,6 +365,7 @@ export default class ChatMessage extends React.Component {
     if (this.state.editing) return this.renderInput();
     if (message.isDateDivisor) return this.renderDateDivisor();
     if (message.isEntryLog) return this.renderEntryLog();
+    if (message.isLastRead) return this.renderLastRead();
     return (
       <div
         key={message.messageId}
