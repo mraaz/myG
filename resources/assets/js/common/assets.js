@@ -2,7 +2,7 @@
 const ASSETS_PATH = "https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_icons/";
 
 const assets = {
-  
+
   background_guest: "guest_background.jpg",
 
   sound_notification: "notification.mp3",
@@ -46,13 +46,17 @@ const assets = {
   ic_messenger_chevron_right: "ic_messenger_chevron_right.svg",
   ic_messenger_search: "ic_messenger_search.svg",
   ic_messenger_settings: "ic_messenger_settings.svg",
+  ic_sweet_alert_info: "ic_sweet_alert_info.svg",
+  ic_sweet_alert_danger: "ic_sweet_alert_danger.svg",
+  ic_sweet_alert_warning: "ic_sweet_alert_warning.svg",
+  ic_sweet_alert_success: "ic_sweet_alert_success.svg",
   ic_reaction_1: "ic_reaction_1.png",
   ic_reaction_2: "ic_reaction_2.png",
   ic_reaction_3: "ic_reaction_3.png",
   ic_reaction_4: "ic_reaction_4.png",
   ic_reaction_5: "ic_reaction_5.png",
-  ic_reaction_6: "ic_reaction_6.png", 
-
+  ic_reaction_6: "ic_reaction_6.png",
+  
 };
 
 export function getAssetUrl(asset) {

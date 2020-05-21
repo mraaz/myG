@@ -13,14 +13,15 @@ const MAXIMUM_GROUP_SIZE = 37;
 
 class GuestRepository {
 
-  async register({ requestedChatId, requestedAlias, publicKey }) {
+  async register({ requestedChatId, requestedAlias, publicKey, uuid }) {
     const guestEntry = new Guest();
     guestEntry.public_key = publicKey;
     guestEntry.chat_id = requestedChatId;
+    guestEntry.uuid = uuid;
     await guestEntry.save();
-    const guest = new GuestSchema({ publicKey, guestId: guestEntry.id });
+    const guest = new GuestSchema({ publicKey, uuid, guestId: guestEntry.id });
     const requestingGuestId = guest.guestId;
-    const { chat } = await this.addGuestToChat({ requestingGuestId, requestedChatId, requestedAlias, publicKey });
+    const { chat } = await this.addGuestToChat({ requestingGuestId, requestedChatId, requestedAlias, publicKey, uuid });
     return { guest, chat };
   }
 
@@ -31,8 +32,8 @@ class GuestRepository {
     return new DefaultSchema({ success: true });
   }
 
-  async addGuestToChat({ requestingGuestId, requestedChatId, requestedAlias, publicKey }) {
-    const guest = new GuestSchema({ publicKey, guestId: requestingGuestId, guestAlias: requestedAlias });
+  async addGuestToChat({ requestingGuestId, requestedChatId, requestedAlias, publicKey, uuid }) {
+    const guest = new GuestSchema({ publicKey, uuid, guestId: requestingGuestId, guestAlias: requestedAlias });
     const { chat } = await ChatRepository.fetchChatInfo({ requestedChatId });
     if (chat.guests.includes(guest.guestId)) return { error: 'Guest is Already in Chat.' };
     chat.guests.push(guest.guestId);

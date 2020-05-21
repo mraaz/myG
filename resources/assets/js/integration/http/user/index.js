@@ -1,6 +1,11 @@
 import axios from 'axios';
 import logger from '../../../common/logger';
 
+export function fetchUser(userId) {
+  logger.log('USER', 'HTTP', `Fetching User`);
+  return axios.get(`/api/user/${userId}`).then(response => response.data);
+}
+
 export function storePublicKey(publicKey) {
   logger.log('USER', 'HTTP', `Storing Public Key`);
   return axios.put(`/api/user_chat/publicKey/`, { publicKey }).then(response => response.data);

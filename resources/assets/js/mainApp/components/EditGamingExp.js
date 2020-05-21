@@ -6,7 +6,7 @@ import CreatableSelect from 'react-select/lib/Creatable'
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import Modal from 'react-modal'
 import { toast } from 'react-toastify'
-import SweetAlert from 'react-bootstrap-sweetalert'
+import SweetAlert from './common/MyGSweetAlert';
 import { Game_name_values, Disable_keys, Toast_style, Game_name_Tags } from './Utility_Function'
 
 Modal.setAppElement('#app')

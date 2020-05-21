@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, NavLink, Link } from 'react-router-dom'
 import axios from 'axios'
 import FileOpenModal from './FileOpenModal'
 import { toast } from 'react-toastify'
-import SweetAlert from 'react-bootstrap-sweetalert'
+import SweetAlert from './common/MyGSweetAlert';
 import { Toast_style } from './Utility_Function'
 
 export default class GroupHeader extends Component {

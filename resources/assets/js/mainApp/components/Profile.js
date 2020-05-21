@@ -4,7 +4,7 @@ import axios from 'axios'
 import IndividualGamingExperience from './IndividualGamingExperience'
 import IndividualEsportsExperience from './IndividualEsportsExperience'
 import FileOpenModal from './FileOpenModal'
-import SweetAlert from 'react-bootstrap-sweetalert'
+import SweetAlert from './common/MyGSweetAlert';
 import { setAsFriendRedux } from '../../common/friend'
 
 export default class Profile extends Component {

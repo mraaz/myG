@@ -1,7 +1,7 @@
 
 import React from "react";
 import { connect } from 'react-redux';
-import SweetAlert from 'react-bootstrap-sweetalert';
+import SweetAlert from '../common/MyGSweetAlert';;
 
 import General from './Context/General';
 import Games from './Context/Games';

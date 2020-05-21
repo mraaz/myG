@@ -51,39 +51,42 @@ export default class ChatMessage extends React.Component {
   renderReactions = () => {
     if (this.props.message.deleted) return;
     if (!this.props.message.reactions.length) return;
+    const origin = this.props.message.senderId === this.props.userId ? 'sent' : 'received';
     const hasReaction = reactionId => this.props.message.reactions.find(reaction => reactionId === reaction.reactionId && this.props.userId === reaction.senderId);
     const reactionGroups = groupBy(this.props.message.reactions, reaction => reaction.reactionId);
     const reactions = [1, 2, 3, 4, 5, 6];
     return (
-      <div className="chat-component-message-reactions">
-        {reactions.map(reactionId => {
-          const reaction = reactionGroups.get(reactionId);
-          if (!reaction) return null;
-          return (
-            <div key={reactionId} className={`chat-component-message-reaction-container${hasReaction(reactionId) ? '-sent' : ''} clickable`}
-              onMouseEnter={() => this.setState({ reaction: reactionId })}
-              onMouseLeave={() => this.setState({ reaction: null })}
-              onClick={() => hasReaction(reactionId) ?
-                this.props.removeReaction(this.props.chatId, this.props.userId, this.props.messageId, reactionId) :
-                this.props.addReaction(this.props.chatId, this.props.userId, this.props.messageId, reactionId, this.props.alias)
-              }
-            >
-              <div
-                className="chat-component-message-reaction"
-                style={{ backgroundImage: `url(${getAssetUrl(`ic_reaction_${reactionId}`)})` }}
-              />
-              {reaction.length > 1 && <div className="chat-component-message-reaction-count">{reaction.length}</div>}
-              {this.state.reaction === reactionId && (
-                <div className="chat-component-message-reaction-senders-container">
-                  <div className="chat-component-message-reaction-senders">
-                    {reaction.map(({ senderName }) => (<div className="chat-component-message-reaction-sender" key={senderName}>{senderName}</div>))}
+      <div className="chat-component-message-reactions-container">
+        <div className={`chat-component-message-reactions chat-component-message-reactions-${origin}`}>
+          {reactions.map(reactionId => {
+            const reaction = reactionGroups.get(reactionId);
+            if (!reaction) return null;
+            return (
+              <div key={reactionId} className={`chat-component-message-reaction-container${hasReaction(reactionId) ? '-sent' : ''} clickable`}
+                onMouseEnter={() => this.setState({ reaction: reactionId })}
+                onMouseLeave={() => this.setState({ reaction: null })}
+                onClick={() => hasReaction(reactionId) ?
+                  this.props.removeReaction(this.props.chatId, this.props.userId, this.props.messageId, reactionId) :
+                  this.props.addReaction(this.props.chatId, this.props.userId, this.props.messageId, reactionId, this.props.alias)
+                }
+              >
+                <div
+                  className="chat-component-message-reaction"
+                  style={{ backgroundImage: `url(${getAssetUrl(`ic_reaction_${reactionId}`)})` }}
+                />
+                {reaction.length > 1 && <div className="chat-component-message-reaction-count">{reaction.length}</div>}
+                {this.state.reaction === reactionId && (
+                  <div className="chat-component-message-reaction-senders-container">
+                    <div className="chat-component-message-reaction-senders">
+                      {reaction.map(({ senderName }) => (<div className="chat-component-message-reaction-sender" key={senderName}>{senderName}</div>))}
+                    </div>
                   </div>
-                </div>
-              )
-              }
-            </div>
-          );
-        })}
+                )
+                }
+              </div>
+            );
+          })}
+        </div>
       </div>
     );
   }
@@ -241,6 +244,28 @@ export default class ChatMessage extends React.Component {
     );
   }
 
+  renderLastRead() {
+    const contacts = this.props.message.contacts;
+    return (
+      <div key={this.props.message.messageId + "LastRead"} className="chat-component-read-indicator-container">
+        {contacts.map(contact => this.renderReadIndicator(contact.contactId, contact.icon))}
+      </div>
+    );
+  }
+
+  renderReadIndicator(key, icon) {
+    return (
+      <div key={key} className="chat-component-read-indicator">
+        <div className="chat-component-read-indicator-icon">
+          <img
+            className="chat-component-read-indicator-icon-image"
+            src={icon}
+          />
+        </div>
+      </div>
+    );
+  }
+
   colorMessage = (id) => {
     const colors = ['#F99', '#9F9', '#99F', '#FF9', '#9FF', '#F9F'];
     return colors[parseInt(id % colors.length)];
@@ -340,6 +365,7 @@ export default class ChatMessage extends React.Component {
     if (this.state.editing) return this.renderInput();
     if (message.isDateDivisor) return this.renderDateDivisor();
     if (message.isEntryLog) return this.renderEntryLog();
+    if (message.isLastRead) return this.renderLastRead();
     return (
       <div
         key={message.messageId}

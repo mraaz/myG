@@ -8,6 +8,7 @@ import Popup from '../Popup';
 import { addContactsToChatAction, inviteUserToGroupAction, updateChatAction, clearChatAction, removeFromGroupAction, blockUserAction, unblockUserAction } from '../../../redux/actions/chatAction';
 import { searchUsersAction, addAsFriendAction, fetchFriendRequestsAction } from '../../../redux/actions/userAction';
 import { getAssetUrl } from '../../../common/assets';
+import { showMessengerAlert } from '../../../common/alert';
 
 class GroupMemberOptions extends React.PureComponent {
 
@@ -64,7 +65,14 @@ class GroupMemberOptions extends React.PureComponent {
   kickUser = () => {
     const contact = this.props.groupContacts.find(contact => contact.contactId === this.state.kickingUser.contactId) || {};
     if (contact.name) notifyToast(`You have kicked ${contact.name}.`);
-    this.props.removeFromGroup(this.props.group.chatId, this.state.kickingUser.contactId);
+    this.props.removeFromGroup(this.props.group.chatId, this.state.kickingUser.contactId).then(response => {
+      const guest = response.value;
+      if (!guest.uuid) return;
+      const link = window.location.protocol + '//' + window.location.host + '/link/' + guest.uuid;
+      showMessengerAlert(`This Guest has joined through a link, do you wish to expire this link (${link})?`, () => {
+        this.props.expireLink(guest.uuid);
+      }, null, "Yes");
+    });
     this.setState({ kickingUser: false });
   }
 
@@ -187,7 +195,7 @@ class GroupMemberOptions extends React.PureComponent {
   }
 
   renderGroupInvitation(isGroupModerator) {
-    if (!isGroupModerator) return null;
+    if (this.props.group.isPrivate && !isGroupModerator) return null;
     const contactIds = this.props.groupContacts.map(contact => contact.contactId);
     return (
       <div className="chat-group-ownership">
