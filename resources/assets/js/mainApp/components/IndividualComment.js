@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 import IndividualReply from './IndividualReply'
 import moment from 'moment'
-import SweetAlert from './common/MyGSweetAlert';
+import SweetAlert from './common/MyGSweetAlert'
 const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
 
 export default class IndividualComment extends Component {
@@ -343,7 +343,8 @@ export default class IndividualComment extends Component {
     const self = this
     var postReply
 
-    const saveReply = async function () {
+    const saveReply = async () => {
+      const { myReplies = [] } = this.state
       try {
         postReply = await axios.post('/api/replies', {
           content: self.state.value.trim(),
@@ -373,7 +374,7 @@ export default class IndividualComment extends Component {
           }
         }
         self.setState({
-          myReplies: [],
+          myReplies: [...myReplies, ...postReply.data],
         })
 
         // self.pullReplies()
@@ -471,7 +472,8 @@ export default class IndividualComment extends Component {
 
   handleSelectFile = (e) => {
     const fileList = e.target.files
-    let name = `reply_image_${+new Date()}_${fileList[0].name}`
+    let type = fileList[0].type.split('/')
+    let name = `reply_${type}_${+new Date()}_${fileList[0].name}`
     this.doUploadS3(fileList[0], name, name)
   }
 
@@ -508,6 +510,7 @@ export default class IndividualComment extends Component {
 
   render() {
     let { comment } = this.props
+    let { profile_img = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png' } = comment
     const { myReplies = [], show_more_replies = false } = this.state
     if (this.state.comment_deleted != true) {
       return (
@@ -517,14 +520,16 @@ export default class IndividualComment extends Component {
             <div className='comment-info'>
               <Link to={`/profile/${comment.alias}`}>{`@${comment.alias}`}</Link>
               {'  '}
-              <div className='comment-content'>
-                <p>{this.state.content}</p>
-                {comment.media_url && (
-                  <div className='show__comment__image'>
-                    <img src={comment.media_url} />
-                  </div>
-                )}
-              </div>
+              {!this.state.show_edit_comment && (
+                <div className='comment-content'>
+                  <p>{this.state.content}</p>
+                  {comment.media_url && (
+                    <div className='show__comment__image'>
+                      <img src={comment.media_url} />
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
             <div className='comment__shape'></div>
 
@@ -562,42 +567,32 @@ export default class IndividualComment extends Component {
             {/* comment option end  */}
 
             {/* profile section start  */}
-            <div className='profile__image'>
-              {this.state.show_profile_img && (
-                <Link
-                  to={`/profile/${comment.alias}`}
-                  className='user-img'
-                  style={{
-                    backgroundImage: `url('${comment.profile_img}')`,
-                  }}></Link>
-              )}
-              {!this.state.show_profile_img && (
-                <Link
-                  to={`/profile/${comment.alias}`}
-                  className='user-img'
-                  style={{
-                    backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png')`,
-                  }}></Link>
-              )}
+            <div
+              className='profile__image'
+              style={{
+                backgroundImage: `url('${profile_img}')`,
+              }}>
+              <Link to={`/profile/${comment.alias}`} className='user-img'></Link>
               <div className='online__status'></div>
             </div>
-            {/* profile section end  */}
-            <div className='reply__comment_section'>
-              <div className='comment-panel-reply' onClick={this.toggleReply}>
-                Reply
-              </div>
-              {this.state.like && (
-                <div className='comment-panel-liked' onClick={() => this.click_unlike_btn(comment.id)}>
-                  Unlike
-                </div>
-              )}
-              {!this.state.like && (
-                <div className='comment-panel-like' onClick={() => this.click_like_btn(comment.id)}>
-                  Like
-                </div>
-              )}
-            </div>
           </div>
+          {/* profile section end  */}
+          <div className='reply__comment_section'>
+            <div className='comment-panel-reply' onClick={this.toggleReply}>
+              Reply
+            </div>
+            {this.state.like && (
+              <div className='comment-panel-liked' onClick={() => this.click_unlike_btn(comment.id)}>
+                Unlike
+              </div>
+            )}
+            {!this.state.like && (
+              <div className='comment-panel-like' onClick={() => this.click_like_btn(comment.id)}>
+                Like
+              </div>
+            )}
+          </div>
+
           {/* comment reply start */}
           <div className='comment-panel'>
             {myReplies.length > 1 && (

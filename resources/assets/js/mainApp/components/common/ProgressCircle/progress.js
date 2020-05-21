@@ -56,6 +56,7 @@ function _Progress({
   style,
   className,
   borderColor,
+  value,
 }) {
   progress = Math.round(progress * 100) / 100
   const width = 200
@@ -66,7 +67,6 @@ function _Progress({
   const r = center - strokeWidth / 2 - ballStrokeWidth / 2
   const circumference = progress * 6.5
   const offset = (circumference * (100 - progress * (1 - reduction))) / 100
-  console.log('circumference   ', circumference)
 
   return React.createElement(
     'div',
@@ -122,7 +122,7 @@ function _Progress({
           fontSize: '50',
           fill: '#ffffff',
         },
-        progress,
+        value,
         ''
       ),
 
