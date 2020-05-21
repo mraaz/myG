@@ -111,7 +111,7 @@ export default class AnalyticsBox extends Component {
 
           <div className='social-box'>
             <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/games.png'
+              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Header_btn_likes.svg'
               className='social-box-img'
             />
             <p className='social-box-count'>{likes}</p>

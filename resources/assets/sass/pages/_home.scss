@@ -1,3 +1,4 @@
+@import url('https://github.com/videojs/video.js/tree/master/src/css');
 .app-container.home-page #left-menu .groups .menu div {
   margin: 5px;
 }
@@ -1028,6 +1029,11 @@ section#content-container {
             color: #fff;
             margin-left: auto;
           }
+        }
+      }
+      .media {
+        .post-video {
+          width: 100%;
         }
       }
       .update-stats {
