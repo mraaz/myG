@@ -568,6 +568,10 @@ class ScheduleGameController {
           .select('id')
           .first()
 
+        if (getID == undefined) {
+          return isAdmin
+        }
+
         const checkCo_host = await Database.from('co_hosts')
           .where({ schedule_games_id: getID.id, user_id: auth.user.id })
           .select('id')
