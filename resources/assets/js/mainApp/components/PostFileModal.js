@@ -168,13 +168,18 @@ export default class PostFileModal extends Component {
     this.setState({ selected_group })
   }
 
-  joinMe = (gid) => {
-    const { gid_request = {} } = this.state
-    const sendInvite = axios.post('/api/usergroup/create', {
-      group_id: gid,
-    })
-    if (sendInvite) {
-      this.setState({ gid_request: { ...gid_request, gid: true } })
+  joinMe = async (gid) => {
+    try {
+      const { gid_request = {} } = this.state
+      const sendInvite = await axios.post('/api/usergroup/create', {
+        group_id: gid,
+      })
+      if (sendInvite.data) {
+        gid_request[gid] = true
+        this.setState({ gid_request })
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 

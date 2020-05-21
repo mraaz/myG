@@ -275,7 +275,11 @@ export default class ComposeSection extends Component {
     const { preview_files = [] } = this.state
     const len = preview_files.length + Files.length
     if (rejectedFiles.length > 0) {
-      toast.error(<Toast_style text={`Sorry! ${rejectedFiles.length} File(s) rejected because of Bad format or file size limit exceed.`} />)
+      toast.error(
+        <Toast_style
+          text={`Sorry! ${rejectedFiles.length} File(s) rejected because of Bad format or file size limit exceed. ex:- image/jpeg,image/jpg,image/png,image/gif,video/mp4,video/webm,video/ogg`}
+        />
+      )
     }
     if (len > 8) {
       toast.success(<Toast_style text={`Sorry! Can't upload more than Eight at a time.`} />)
@@ -420,7 +424,7 @@ export default class ComposeSection extends Component {
             <div className='media__container'>
               <Dropzone
                 onDrop={(acceptedFiles, rejectedFiles) => this.handleAcceptedFiles(acceptedFiles, rejectedFiles)}
-                accept='image/jpeg,image/jpg,image/png,image/gif,video/*'
+                accept='image/jpeg,image/jpg,image/png,image/gif,video/mp4,video/webm,video/ogg'
                 minSize={0}
                 maxSize={52428800}
                 multiple
