@@ -591,7 +591,7 @@ export default class IndividualPost extends Component {
                 )}
                 {!this.state.edit_post && !this.state.showmore && (
                   <p>
-                    {this.state.content.length > 254 ? `${this.state.content.slice(254)}... ` : this.state.content}
+                    {this.state.content.length > 254 ? `${this.state.content.slice(0, 254)}... ` : this.state.content}
                     {this.state.content.length > 254 && <strong onClick={this.toggleShowmore}>See more</strong>}
                   </p>
                 )}
