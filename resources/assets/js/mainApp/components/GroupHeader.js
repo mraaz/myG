@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, NavLink, Link } from 'react-router-dom'
 import axios from 'axios'
 import FileOpenModal from './FileOpenModal'
 import { toast } from 'react-toastify'
-import SweetAlert from './common/MyGSweetAlert';
+import SweetAlert from './common/MyGSweetAlert'
 import { Toast_style } from './Utility_Function'
 
 export default class GroupHeader extends Component {
@@ -143,9 +143,7 @@ export default class GroupHeader extends Component {
     } else if (this.state.statusTxt == 'Join') {
       try {
         const sendInvite = axios.post('/api/usergroup/create', {
-          grp_owner: this.state.group_info.user_id,
           group_id: this.props.groups_id.params.id,
-          all_accept: this.state.group_info.all_accept,
         })
         // const owner_invitation = axios.post('/api/notifications/addGroup', {
         //   other_user_id: this.state.group_info.user_id,

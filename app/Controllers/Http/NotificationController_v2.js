@@ -135,11 +135,16 @@ class NotificationController_v2 {
   }
 
   //Notify Owner there is a new request to join this group
-  async notify_owner_new_grp_request({ auth }, grp_owner, grp_id) {
+  async notify_owner_new_grp_request({ auth }, grp_id) {
     if (auth.user) {
       try {
+        const getOwner = await Database.from('groups')
+          .where({ id: grp_id })
+          .select('user_id')
+          .first()
+
         const addGroup = await Notification.create({
-          other_user_id: grp_owner,
+          other_user_id: getOwner.user_id,
           user_id: auth.user.id,
           activity_type: 12,
           group_id: grp_id,
@@ -154,11 +159,15 @@ class NotificationController_v2 {
   }
 
   //Notify all groupies there is a new request to join this group
-  async new_grp_request({ auth }, grp_id, all_accept) {
+  async new_grp_request({ auth }, grp_id) {
     if (auth.user) {
       try {
         let mygroups
-        if (all_accept) {
+        const getAccept = await Database.from('groups')
+          .where({ id: grp_id })
+          .select('all_accept')
+          .first()
+        if (getAccept.all_accept) {
           mygroups = await Database.from('usergroups')
             .where({ group_id: grp_id })
             .whereNot({ permission_level: 42 })

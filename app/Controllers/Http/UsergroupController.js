@@ -23,8 +23,8 @@ class UsergroupController {
         myGroupConnectionController.destroy({ auth, request, response })
 
         let noti = new NotificationController_v2()
-        noti.notify_owner_new_grp_request({ auth }, request.input('grp_owner'), request.input('group_id'))
-        noti.new_grp_request({ auth }, request.input('group_id'), request.input('all_accept'))
+        noti.notify_owner_new_grp_request({ auth }, request.input('group_id'))
+        noti.new_grp_request({ auth }, request.input('group_id'))
 
         return 'Saved'
       } catch (error) {
