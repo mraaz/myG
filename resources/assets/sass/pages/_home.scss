@@ -953,8 +953,8 @@ section#content-container {
       }
       .post__body__wrapper {
         background: #171a1c;
-        .media{
-          .image-gallery{
+        .media {
+          .image-gallery {
             margin-bottom: 20px;
           }
         }
@@ -1768,6 +1768,19 @@ section#content-container {
             margin-left: auto;
             input {
               margin: 0;
+            }
+            .group_request {
+              text-align: center;
+              font: Bold 12px/10px Montserrat;
+              letter-spacing: 0px;
+              color: #000000;
+              opacity: 1;
+              background: #e5c746;
+              padding: 10px 10px;
+              margin: 0;
+              border: none;
+              border-radius: 4px;
+              opacity: 0.5;
             }
             .group_join {
               text-align: center;

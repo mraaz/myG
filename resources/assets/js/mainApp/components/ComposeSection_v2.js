@@ -377,7 +377,7 @@ export default class ComposeSection extends Component {
     getInitialData(inputValue)
   }
 
-  handleChange_Hash_tags = (value_tags: any) => {
+  handleChange_Hash_tags = (value_tags) => {
     this.setState({ value_tags })
   }
 

@@ -26,6 +26,7 @@ export default class PostFileModal extends Component {
       selectedGroup: [],
       groups_im_in: [],
       visibility: 1,
+      gid_request: {},
     }
 
     this.closeModal = this.closeModal.bind(this)
@@ -168,11 +169,17 @@ export default class PostFileModal extends Component {
   }
 
   joinMe = (gid) => {
-    console.log('gid   ', gid)
+    const { gid_request = {} } = this.state
+    const sendInvite = axios.post('/api/usergroup/create', {
+      group_id: gid,
+    })
+    if (sendInvite) {
+      this.setState({ gid_request: { ...gid_request, gid: true } })
+    }
   }
 
   render() {
-    const { groups_im_in, selected_group, selectedGroup, searchText = '', groups_im_not_in } = this.state
+    const { groups_im_in, selected_group, searchText = '', gid_request } = this.state
     var class_modal_status = ''
     if (this.props.bOpen) {
       class_modal_status = 'modal--show'
@@ -198,9 +205,13 @@ export default class PostFileModal extends Component {
                         <div className='groupName'>{group_in.name}</div>
                         <div className='action'>
                           {group_in.im_not_in ? (
-                            <div className='group_join' onClick={(e) => this.joinMe(group_in.id)}>
-                              JOIN ME
-                            </div>
+                            gid_request[group_in.id] ? (
+                              <div className='group_request-sent'>Sent</div>
+                            ) : (
+                              <div className='group_join' onClick={(e) => this.joinMe(group_in.id)}>
+                                JOIN ME
+                              </div>
+                            )
                           ) : (
                             <label className='container'>
                               <input
