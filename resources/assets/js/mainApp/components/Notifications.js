@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import IndividualNotification from './IndividualNotification'
-import SweetAlert from 'react-bootstrap-sweetalert'
+import SweetAlert from './common/MyGSweetAlert';
 import InfiniteScroll from 'react-infinite-scroll-component'
 
 export default class Notifications extends Component {
@@ -28,7 +28,7 @@ export default class Notifications extends Component {
     }
 
     try {
-      const getnoti = await axios.post('/api/notifications/getAllNoti', {
+      const getnoti = await axios.post('/api/notifications_v2/getAllNoti', {
         counter: this.state.counter,
       })
 
@@ -86,7 +86,7 @@ export default class Notifications extends Component {
     try {
       const getApprovals_Dashboard = await axios.post('/api/notifications_v2/getApprovals_Dashboard', {
         counter: 1,
-        activity_type: 0,
+        activity_type: 11,
       })
 
       console.log(getApprovals_Dashboard)
@@ -102,6 +102,16 @@ export default class Notifications extends Component {
       })
 
       console.log(getUpcomingGames_Dashboard)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  testApproveGroups = async () => {
+    try {
+      const set_group_approval = await axios.get('/api/usergroup/set_group_approval/300/100')
+
+      console.log(set_group_approval)
     } catch (error) {
       console.log(error)
     }
@@ -178,6 +188,9 @@ export default class Notifications extends Component {
                   <div className='noti-buttons'>
                     <button className='allread' onClick={() => this.showAlert_UpcomingGames()}>
                       Upcoming Games
+                    </button>
+                    <button className='allread' onClick={() => this.testApproveGroups()}>
+                      Test Approve Games
                     </button>
                     <button className='allread' onClick={() => this.showAlert_Approvals_Dashboard()}>
                       Approvals

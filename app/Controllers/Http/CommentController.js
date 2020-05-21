@@ -22,8 +22,10 @@ class CommentController {
           update_key.addCommentKey({ auth, request, response })
         }
 
-        request.params.id = newComment.id
-        newComment = this.show({ auth, request, response })
+        newComment = await Database.from('comments')
+          .innerJoin('users', 'users.id', 'comments.user_id')
+          .where('comments.id', '=', newComment.id)
+          .select('comments.*', 'users.alias', 'users.profile_img')
 
         return newComment
       } catch (error) {

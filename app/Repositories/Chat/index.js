@@ -14,6 +14,7 @@ const ChatEntryLog = use('App/Models/ChatEntryLog');
 const ChatPrivateKeyRequest = use('App/Models/ChatPrivateKeyRequest');
 const ChatGameMessageSchedule = use('App/Models/ChatGameMessageSchedule');
 const ChatBlockedUser = use('App/Models/ChatBlockedUser');
+const Guest = use('App/Models/Guest');
 const Notification = use('App/Models/Notification');
 
 const AwsKeyController = use('App/Controllers/Http/AwsKeyController');
@@ -23,6 +24,7 @@ const UserSchema = require('../../Schemas/User');
 const ChatSchema = require('../../Schemas/Chat');
 const ChatLinkSchema = require('../../Schemas/ChatLink');
 const ChatEntryLogSchema = require('../../Schemas/ChatEntryLog');
+const GuestSchema = require('../../Schemas/Guest');
 const MessageSchema = require('../../Schemas/Message');
 const ReactionSchema = require('../../Schemas/Reaction');
 const DefaultSchema = require('../../Schemas/Default');
@@ -439,19 +441,28 @@ class ChatRepository {
     return new DefaultSchema({ success: true });
   }
 
-  async searchGroup({ groupName, requestedPage }) {
-    let query = Chat.query().where('isGroup', true).andWhere('isPrivate', false);
+  async searchGroup({ requestingUserId, groupName, requestedPage }) {
+    const query = Database
+      .select('user_chats.chat_id', 'user_chats.user_id', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id')
+      .from('user_chats')
+      .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
+      .where('user_chats.user_id', requestingUserId)
+      .andWhere('chats.isGroup', true);
     if (groupName) query.andWhere('title', 'like', '%' + groupName + '%');
-    if (requestedPage === "ALL") query = query.fetch();
-    else query = query.paginate(requestedPage || 1, 10);
+    if (requestedPage !== "ALL") query.offset((requestedPage || 0) * 10).limit(10);
     const results = await query;
     if (!results) return { groups: [] };
     const groups = results.toJSON ? results.toJSON() : results.map(chat => new ChatSchema({
-      chatId: chat.id,
+      chatId: chat.chat_id,
+      muted: chat.muted,
       isPrivate: chat.isPrivate,
       isGroup: chat.isGroup,
       gameId: chat.game_id,
       individualGameId: chat.individual_game_id,
+      selfDestruct: chat.self_destruct,
+      deletedMessages: chat.deleted_messages,
+      lastRead: chat.last_read_message_id,
+      lastCleared: chat.last_cleared_message_id,
       icon: chat.icon,
       title: chat.title,
       lastMessage: chat.last_message,
@@ -460,6 +471,7 @@ class ChatRepository {
       guests: chat.guests,
       owners: chat.owners,
       moderators: chat.moderators,
+      messages: chat.messages,
       createdAt: chat.created_at,
       updatedAt: chat.updated_at,
     }));
@@ -485,6 +497,10 @@ class ChatRepository {
     const entryLog = await this._insertEntryLog(requestedChatId, alias, !!requestedUserId, !requestedUserId, false, false);
     chat.contacts.forEach(userId => this._notifyChatEvent({ userId, action: isKickingGuest ? 'guestLeft' : 'userLeft', payload: { userId: userToRemove, guestId: userToRemove, chatId: requestedChatId, entryLog } }));
     chat.guests.forEach(guestId => this._notifyChatEvent({ guestId, action: isKickingGuest ? 'guestLeft' : 'userLeft', payload: { userId: userToRemove, guestId: userToRemove, chatId: requestedChatId, entryLog } }));
+    if (isKickingGuest) {
+      const guest = await Guest.find(userToRemove);
+      return new GuestSchema({ publicKey: guest.public_key, uuid: guest.uuid, guestId: guest.id });
+    }
     return new DefaultSchema({ success: true });
   }
 

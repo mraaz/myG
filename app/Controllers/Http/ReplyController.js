@@ -21,8 +21,10 @@ class ReplyController {
           update_key.addReplyKey({ auth, request, response })
         }
 
-        request.params.id = newReply.id
-        newReply = this.show({ auth, request, response })
+        newReply = await Database.from('replies')
+          .innerJoin('users', 'users.id', 'replies.user_id')
+          .where('replies.id', '=', newReply.id)
+          .select('replies.*', 'users.alias', 'users.profile_img')
 
         return newReply
       } catch (error) {

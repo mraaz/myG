@@ -18,13 +18,29 @@ class GroupCreation extends React.Component {
       icon: '',
       title: '',
       gameInput: '',
-      selectedGame: null,
+      selectedGame: this.props.game || null,
       contactInput: '',
       matchingContacts: [],
       addedContacts: [],
       uploadingPhoto: false,
     }
     this.inputRef = React.createRef();
+  }
+
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyDown);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyDown);
+  }
+
+  handleKeyDown = event => {
+    const ENTER_KEY = 13;
+    const ESCAPE_KEY = 27;
+    const isFormEmpty = !this.state.icon && !this.state.title && !this.state.gameInput && !this.state.selectedGame && !this.state.contactInput && !this.state.addedContacts.length;
+    if (event.keyCode === ENTER_KEY) return this.onCreate();
+    if (event.keyCode === ESCAPE_KEY && isFormEmpty) return this.props.onCancel();
   }
 
   onContactSearch = (name) => {
@@ -110,12 +126,11 @@ class GroupCreation extends React.Component {
   }
 
   renderGameInput = () => {
-    const selectedStyle = 'chat-group-creation-contact-input-selected';
     return (
       <div className="chat-group-creation-contact-input-container" onClick={() => this.inputRef.current.focus()}>
         <input
           ref={this.inputRef}
-          className={`chat-group-creation-contact-input ${selectedStyle}`}
+          className={`chat-group-creation-contact-input`}
           placeholder={"Game Name"}
           value={this.state.selectedGame ? this.state.selectedGame.name : this.state.gameInput}
           onChange={event => this.onGameSearch(event.target.value)}

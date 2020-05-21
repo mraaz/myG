@@ -61,6 +61,7 @@ export default class Groups extends React.PureComponent {
         )}
         {this.state.showingGroupCreation && (
           <GroupCreation
+            game={this.props.game}
             onCreate={this.createGroup}
             onCancel={() => this.setState({ showingGroupCreation: false })}
           />

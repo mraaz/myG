@@ -33,7 +33,10 @@ class UserRepository {
     const user = (await User.query().where('id', '=', requestingUserId).first()).toJSON();
     if (user.public_key === publicKey) return new DefaultSchema({ success: false, error: "Key is the same." });
     if (!user.email) return new DefaultSchema({ success: false, error: "User doesn't have an email" });
-    await new EmailController().encryption_email(user.email, pin);
+    const fifteenMinutesAgo = Date.now() - 1000 * 60 * 15
+    const newUser = new Date(user.created_at).getTime() > fifteenMinutesAgo;
+    if (newUser) await new EmailController().welcome_email(user.email, pin);
+    else await new EmailController().encryption_email(user.email, pin);
     return new DefaultSchema({ success: true });
   }
 

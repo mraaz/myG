@@ -3,7 +3,7 @@ import { Redirect } from 'react-router'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import ToggleButton from 'react-toggle-button'
-import SweetAlert from 'react-bootstrap-sweetalert'
+import SweetAlert from './common/MyGSweetAlert';
 import { connect } from 'react-redux'
 import { logoutAction } from '../../redux/actions/userAction'
 

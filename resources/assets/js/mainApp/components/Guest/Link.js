@@ -47,7 +47,7 @@ class GuestLink extends React.PureComponent {
 
   registerGuest = () => {
     if (!this.state.alias.trim()) return this.setState({ aliasEmpty: true });
-    this.props.registerGuest(this.state.chatId, this.state.alias);
+    this.props.registerGuest(this.state.chatId, this.state.alias, this.props.uuid);
   }
 
   renderChat = () => {
@@ -92,6 +92,17 @@ class GuestLink extends React.PureComponent {
           onChange={event => this.setState({ alias: event.target.value, aliasEmpty: false })}
         ></input>
         <div className="join clickable" onClick={this.registerGuest}>JOIN CHAT</div>
+        <div className="register clickable" onClick={() => window.location.replace('/')}>
+          <div
+            className="myg-icon"
+            style={{
+              backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/logo.svg')`,
+              backgroundSize: 'inherit',
+              backgroundColor: '#000'
+            }}
+          />
+          Login
+        </div>
         <div className="register clickable" onClick={() => window.location.replace('/')}>Create a new Account</div>
       </div>
     );
@@ -126,7 +137,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return ({
     setGuestLink: (guestLink) => dispatch(setGuestLinkAction(guestLink)),
-    registerGuest: (chatId, alias) => dispatch(registerGuestAction(chatId, alias)),
+    registerGuest: (chatId, alias, uuid) => dispatch(registerGuestAction(chatId, alias, uuid)),
     logout: () => dispatch(logoutAction()),
   });
 }

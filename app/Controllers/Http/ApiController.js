@@ -195,7 +195,12 @@ class ApiController {
 
   async isFileInfected(file) {
     try {
-      const clamscan = await new NodeClam().init();
+      const clamscan = await new NodeClam().init({
+        clamdscan: {
+          host: Env.get("CLAMAV_HOST"),
+          port: Env.get("CLAMAV_PORT"),
+        },
+      });
       const { is_infected } = await clamscan.is_infected(file);
       return is_infected;
     } catch (error) {

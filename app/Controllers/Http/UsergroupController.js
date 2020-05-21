@@ -4,6 +4,8 @@ const Usergroup = use('App/Models/Usergroup')
 const Group = use('App/Models/Group')
 const Database = use('Database')
 const NotificationController = use('./NotificationController')
+const NotificationController_v2 = use('./NotificationController_v2')
+
 const UserStatTransactionController = use('./UserStatTransactionController')
 const GroupConnectionController = use('./GroupConnectionController')
 
@@ -20,7 +22,11 @@ class UsergroupController {
         let myGroupConnectionController = new GroupConnectionController()
         myGroupConnectionController.destroy({ auth, request, response })
 
-        return newaddition
+        let noti = new NotificationController_v2()
+        noti.notify_owner_new_grp_request({ auth }, request.input('grp_owner'), request.input('group_id'))
+        noti.new_grp_request({ auth }, request.input('group_id'), request.input('all_accept'))
+
+        return 'Saved'
       } catch (error) {
         console.log(error)
       }
@@ -33,12 +39,12 @@ class UsergroupController {
         .from('groups')
         .where({ user_id: auth.user.id })
 
-      const groups_im_in = await Database.from('usergroups')
+      let groups_im_in = await Database.from('usergroups')
         .innerJoin('groups', 'groups.id', 'usergroups.group_id')
         .where('usergroups.user_id', '=', auth.user.id)
         .whereNot('usergroups.permission_level', 42)
         .whereNotIn('usergroups.group_id', subquery)
-        .paginate(request.params.counter, 50)
+        .paginate(request.params.counter, 25)
 
       const total_number_of_communities = await Database.from('usergroups')
         .innerJoin('groups', 'groups.id', 'usergroups.group_id')
@@ -47,7 +53,7 @@ class UsergroupController {
         .whereNotIn('usergroups.group_id', subquery)
         .count('usergroups.id as total_number_of_communities')
 
-      //const myPosts = await Database.from('posts').innerJoin('users', 'users.id', 'posts.user_id').where('posts.user_id', '=', auth.user.id).andWhere('posts.created_at', '>=', request.params.myDate).select('*', 'posts.id', 'posts.created_at','posts.updated_at').orderBy('posts.created_at', 'desc')
+      groups_im_in = groups_im_in.data
       return {
         groups_im_in,
         total_number_of_communities: total_number_of_communities,
@@ -98,6 +104,9 @@ class UsergroupController {
 
         let userStatController = new UserStatTransactionController()
         userStatController.update_total_number_of(auth.user.id, 'total_number_of_communities')
+
+        let noti = new NotificationController_v2()
+        noti.delete_group_invites({ auth }, request.params.id)
 
         return 'Remove entry'
       } catch (error) {
@@ -182,30 +191,30 @@ class UsergroupController {
         .where({
           user_id: auth.user.id,
           permission_level: 1,
-          group_id: request.params.id,
+          group_id: request.params.grp_id,
         })
         .orWhere({
           user_id: auth.user.id,
           permission_level: 2,
-          group_id: request.params.id,
+          group_id: request.params.grp_id,
         })
       if (permissions_query.length > 0) {
         access_granted = true
       } else {
         const owner_query = await Database.from('groups').where({
           user_id: auth.user.id,
-          id: request.params.id,
+          id: request.params.grp_id,
         })
         if (owner_query.length > 0) {
           access_granted = true
         } else {
           const group_query = await Database.from('groups').where({
-            id: request.params.id,
+            id: request.params.grp_id,
           })
           if (group_query[0].all_accept) {
             const user_query = await Database.from('usergroups').where({
               user_id: auth.user.id,
-              group_id: request.params.id,
+              group_id: request.params.grp_id,
               permission_level: 3,
             })
             if (user_query.length > 0) {
@@ -214,28 +223,30 @@ class UsergroupController {
           }
         }
       }
-
       if (access_granted) {
         const updated_permission = await Usergroup.query()
-          .where({ id: request.params.usergrp_id })
+          .where({ group_id: request.params.grp_id, user_id: request.params.user_id })
           .update({ permission_level: 3 })
 
-        //get user id for other_user_id
-        //update noti with 17 as type
-        const query_for_user = await Database.from('usergroups')
-          .innerJoin('users', 'users.id', 'usergroups.user_id')
-          .where('usergroups.id', '=', request.params.usergrp_id)
-          .select('users.id')
-
-        let noti = new NotificationController()
-        request.params.group_id = request.params.id
-        request.params.other_user_id = query_for_user[0].id
-        noti.add_approved_group_attendee({ auth, request, response })
+        let noti = new NotificationController_v2()
+        noti.add_approved_group_attendee({ auth }, request.params.grp_id, request.params.user_id)
 
         let userStatController = new UserStatTransactionController()
         userStatController.update_total_number_of(query_for_user[0].id, 'total_number_of_communities')
 
+        //delete this notification
+        auth.user.id = request.params.user_id
+        noti.delete_group_invites({ auth }, request.params.grp_id)
+
         return 'Saved successfully'
+      } else {
+        const delete_this_noti = await Database.table('notifications')
+          .where({
+            other_user_id: auth.user.id,
+            group_id: request.params.grp_id,
+            activity_type: 12,
+          })
+          .delete()
       }
     } catch (error) {
       console.log(error)

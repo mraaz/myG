@@ -6,7 +6,7 @@ import GroupLinkOptions from './GroupLinkOptions';
 import Popup from '../Popup';
 import FileOpenModal from '../FileOpenModal';
 import { WithTooltip } from '../Tooltip';
-import { updateChatAction, clearChatAction, deleteChatAction, exitGroupAction } from '../../../redux/actions/chatAction';
+import { updateChatAction, clearChatAction, deleteChatAction, exitGroupAction, updateLinkAction } from '../../../redux/actions/chatAction';
 import { copyToClipboard } from '../../../common/clipboard'
 import { getAssetUrl } from '../../../common/assets';
 import { showMessengerAlert } from '../../../common/alert';
@@ -61,6 +61,7 @@ class GroupOptions extends React.PureComponent {
           userId={this.props.userId}
           group={this.props.group}
           groupContacts={this.props.groupContacts}
+          expireLink={uuid => this.props.updateLink(this.props.group.chatId, uuid, undefined, true)}
           onClose={() => this.setState({ showingMembers: false })}
         />
       </div>
@@ -74,6 +75,7 @@ class GroupOptions extends React.PureComponent {
         <GroupLinkOptions
           userId={this.props.userId}
           group={this.props.group}
+          updateLink={this.props.updateLink}
           onClose={() => this.setState({ showingLinks: false })}
         />
       </div>
@@ -84,6 +86,7 @@ class GroupOptions extends React.PureComponent {
     const mainLink = window.location.protocol + '//' + window.location.host + '/link/' + this.props.group.links[0].uuid;
     const isGroupOwner = this.props.group.owners.length && this.props.group.owners.includes(this.props.userId);
     const isGroupModerator = this.props.group.moderators.length && this.props.group.moderators.includes(this.props.userId);
+    const canShareLink = !this.props.group.isPrivate || isGroupModerator || isGroupOwner;
     const inactiveStyle = 'chat-component-options-option-inactive';
     return (
       <div className="chat-component-options-container">
@@ -167,29 +170,30 @@ class GroupOptions extends React.PureComponent {
 
         <div className="chat-component-group-content-divider" />
 
-        <p className="chat-component-group-hint">Share this link below to invite your friends</p>
+        {canShareLink && <p className="chat-component-group-hint">Share this link below to invite your friends</p>}
+        {canShareLink && (
+          <div className="chat-component-options-row">
 
-        <div className="chat-component-options-row">
-
-          <div className="chat-component-group-title-link-container">
-            <div className="chat-component-group-title-link">
-              {mainLink}
+            <div className="chat-component-group-title-link-container">
+              <div className="chat-component-group-title-link">
+                {mainLink}
+              </div>
             </div>
-          </div>
 
-          <div className={`chat-component-group-button chat-component-group-button-smaller clickable`}
-            onClick={() => this.setState(previous => ({ showingLinks: !previous.showingLinks }))}
-          >
-            edit
-          </div>
+            <div className={`chat-component-group-button chat-component-group-button-smaller clickable`}
+              onClick={() => this.setState(previous => ({ showingLinks: !previous.showingLinks }))}
+            >
+              edit
+            </div>
 
-          <div className={`chat-component-group-button chat-component-group-button-smaller clickable`}
-            onClick={() => copyToClipboard(mainLink)}
-          >
-            copy
-          </div>
+            <div className={`chat-component-group-button chat-component-group-button-smaller clickable`}
+              onClick={() => copyToClipboard(mainLink)}
+            >
+              copy
+            </div>
 
-        </div>
+          </div>
+        )}
 
         <div className="chat-component-group-content-divider" />
 
@@ -240,6 +244,7 @@ class GroupOptions extends React.PureComponent {
 function mapDispatchToProps(dispatch) {
   return ({
     updateChat: (chatId, payload) => dispatch(updateChatAction(chatId, payload)),
+    updateLink: (chatId, uuid, expiry, expire) => dispatch(updateLinkAction(chatId, uuid, expiry, expire)),
     clearChat: (chatId) => dispatch(clearChatAction(chatId)),
     exitGroup: (chatId) => dispatch(exitGroupAction(chatId)),
     deleteChat: (chatId) => dispatch(deleteChatAction(chatId)),

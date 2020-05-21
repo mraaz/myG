@@ -159,9 +159,6 @@ class CommonSaveController {
         //   else console.log(info)
         // })
 
-        let send_email = new EmailController()
-        send_email.welcome_email(request.input('email'))
-
         session.forget('provider')
         session.forget('provider_id')
         await auth.loginViaId(user.id)

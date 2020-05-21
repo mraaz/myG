@@ -33,8 +33,7 @@
   display: flex;
   flex: 1;
   margin-right: 8px;
-  border-radius: 24px;
-  overflow: hidden;
+  font-size: 16px;
 }
 
 .chat-group-creation-title-input {
@@ -45,7 +44,8 @@
   border: none;
   background-color: #1D2326;
   color: #93A4A5;
-  padding: 8px 2px 8px 16px;
+  padding: 0 0 0 12px;
+  border-radius: 24px;
   font-size: 16px;
 }
 
@@ -66,7 +66,7 @@
 
 .chat-group-creation-game-icon {
   position: absolute;
-  left: 30px;
+  left: 20px;
   margin-top: 7px;
   width: 300px;
   height: 20px;
@@ -79,7 +79,9 @@
 .chat-group-creation-contact-input-container {
   display: flex;
   flex-direction: column;
-  padding: 8px;
+  min-height: 32px;
+  font-size: 14px;
+  margin-right: 4px;
 }
 
 .chat-group-creation-contact-input {
@@ -89,7 +91,7 @@
   border: none;
   background-color: #1D2326;
   color: #93A4A5;
-  padding: 8px 2px 8px 16px;
+  padding: 0 0 0 12px;
   font-size: 14px;
   border-radius: 20px;
   margin: 0 8px;
