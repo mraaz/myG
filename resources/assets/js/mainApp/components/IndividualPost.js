@@ -444,7 +444,7 @@ export default class IndividualPost extends Component {
   showComment = () => {
     const { myComments = [] } = this.state
     const comments = [...myComments]
-    const commentArr = comments.length > 3 ? comments.slice(3) : comments
+    const commentArr = comments.length > 3 ? comments.slice(0, 3) : comments
     return (
       commentArr.length > 0 &&
       commentArr.map((item, index) => {

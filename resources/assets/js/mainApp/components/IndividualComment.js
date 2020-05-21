@@ -19,7 +19,7 @@ export default class IndividualComment extends Component {
       reply_total: 0,
       reply_name_box: '',
       value: '',
-      show_more_replies: true,
+      show_more_replies: false,
       dropdown: false,
       comment_deleted: false,
       show_comment_options: false,
@@ -228,7 +228,7 @@ export default class IndividualComment extends Component {
   showReplies = () => {
     const { myReplies = [] } = this.state
     const replies = [...myReplies]
-    const repliesArr = replies.length > 1 ? replies.slice(1) : replies
+    const repliesArr = replies.length > 1 ? replies.slice(0, 1) : replies
     if (repliesArr.length > 0) {
       return repliesArr.map((item, index) => {
         return (
@@ -589,6 +589,11 @@ export default class IndividualComment extends Component {
             {!this.state.like && (
               <div className='comment-panel-like' onClick={() => this.click_like_btn(comment.id)}>
                 Like
+              </div>
+            )}
+            {this.state.show_like && (
+              <div className='no-likes'>
+                {this.state.total} {this.state.total > 1 ? 'Likes' : 'Like'}{' '}
               </div>
             )}
           </div>

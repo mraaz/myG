@@ -349,24 +349,24 @@ export default class IndividualReply extends Component {
               }}>
               <Link to={`/profile/${reply.alias}`} className='user-img'></Link> <div className='online__status'></div>
             </div>
-            {/* profile section end  */}
-            <div className='reply__comment_section'>
-              {this.state.reply_like && (
-                <div className='comment-panel-liked' onClick={() => this.click_reply_unlike_btn(reply.id)}>
-                  Unlike
-                </div>
-              )}
-              {!this.state.reply_like && (
-                <div className='comment-panel-like' onClick={() => this.click_reply_like_btn(reply.id)}>
-                  Like
-                </div>
-              )}
-              {this.state.show_reply_like && (
-                <div className='no-likes'>
-                  {this.state.reply_like_total} {this.state.reply_like_total > 1 ? 'Likes' : 'Like'}{' '}
-                </div>
-              )}
-            </div>
+          </div>
+          {/* profile section end  */}
+          <div className='reply__comment_section'>
+            {this.state.reply_like && (
+              <div className='comment-panel-liked' onClick={() => this.click_reply_unlike_btn(reply.id)}>
+                Unlike
+              </div>
+            )}
+            {!this.state.reply_like && (
+              <div className='comment-panel-like' onClick={() => this.click_reply_like_btn(reply.id)}>
+                Like
+              </div>
+            )}
+            {this.state.show_reply_like && (
+              <div className='no-likes'>
+                {this.state.reply_like_total} {this.state.reply_like_total > 1 ? 'Likes' : 'Like'}{' '}
+              </div>
+            )}
           </div>
         </div>
       )
