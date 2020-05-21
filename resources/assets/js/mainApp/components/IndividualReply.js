@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import moment from 'moment'
-import SweetAlert from './common/MyGSweetAlert';
+import SweetAlert from './common/MyGSweetAlert'
 
 export default class IndividualReply extends Component {
   constructor() {
@@ -283,6 +283,7 @@ export default class IndividualReply extends Component {
 
   render() {
     let { reply } = this.props
+    let { profile_img = 'https://image.flaticon.com/icons/svg/149/149071.svg' } = reply
     //console.log(reply);
     if (this.state.reply_deleted != true) {
       return (
@@ -323,24 +324,12 @@ export default class IndividualReply extends Component {
             {/* comment option end  */}
 
             {/* profile section start  */}
-            <div className='profile__image'>
-              {this.state.show_profile_img && (
-                <Link
-                  to={`/profile/${reply.alias}`}
-                  className='user-img'
-                  style={{
-                    backgroundImage: `url('${reply.profile_img}')`,
-                  }}></Link>
-              )}
-              {!this.state.show_profile_img && (
-                <Link
-                  to={`/profile/${reply.alias}`}
-                  className='user-img'
-                  style={{
-                    backgroundImage: `url('https://image.flaticon.com/icons/svg/149/149071.svg')`,
-                  }}></Link>
-              )}
-              <div className='online__status'></div>
+            <div
+              className='profile__image'
+              style={{
+                backgroundImage: `url('${profile_img}')`,
+              }}>
+              <Link to={`/profile/${reply.alias}`} className='user-img'></Link> <div className='online__status'></div>
             </div>
             {/* profile section end  */}
             <div className='reply__comment_section'>

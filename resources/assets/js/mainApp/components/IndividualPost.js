@@ -544,6 +544,7 @@ export default class IndividualPost extends Component {
       var show_media = false
 
       let { post } = this.props //destructing of object
+      let { profile_img = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png' } = post //destructing of object
       //destructing of object
 
       if (media_urls != [] && media_urls != null) {
@@ -555,23 +556,12 @@ export default class IndividualPost extends Component {
           {alert}
           <div className='post__body__wrapper'>
             <div className='post__body'>
-              <div className='profile__image'>
-                {show_profile_img && (
-                  <Link
-                    to={`/profile/${post.alias}`}
-                    className='user-img'
-                    style={{
-                      backgroundImage: `url('${post.profile_img}')`,
-                    }}></Link>
-                )}
-                {!this.state.show_profile_img && (
-                  <Link
-                    to={`/profile/${post.alias}`}
-                    className='user-img'
-                    style={{
-                      backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png')`,
-                    }}></Link>
-                )}
+              <div
+                className='profile__image'
+                style={{
+                  backgroundImage: `url('${post.profile_img}')`,
+                }}>
+                <Link to={`/profile/${post.alias}`} className='user-img'></Link>
                 <div className='online__status'></div>
               </div>
               <div className='user__details'>

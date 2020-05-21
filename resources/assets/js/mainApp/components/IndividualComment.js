@@ -509,6 +509,7 @@ export default class IndividualComment extends Component {
 
   render() {
     let { comment } = this.props
+    let { profile_img = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png' } = comment
     const { myReplies = [], show_more_replies = false } = this.state
     if (this.state.comment_deleted != true) {
       return (
@@ -563,23 +564,12 @@ export default class IndividualComment extends Component {
             {/* comment option end  */}
 
             {/* profile section start  */}
-            <div className='profile__image'>
-              {this.state.show_profile_img && (
-                <Link
-                  to={`/profile/${comment.alias}`}
-                  className='user-img'
-                  style={{
-                    backgroundImage: `url('${comment.profile_img}')`,
-                  }}></Link>
-              )}
-              {!this.state.show_profile_img && (
-                <Link
-                  to={`/profile/${comment.alias}`}
-                  className='user-img'
-                  style={{
-                    backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png')`,
-                  }}></Link>
-              )}
+            <div
+              className='profile__image'
+              style={{
+                backgroundImage: `url('${profile_img}')`,
+              }}>
+              <Link to={`/profile/${comment.alias}`} className='user-img'></Link>
               <div className='online__status'></div>
             </div>
             {/* profile section end  */}
