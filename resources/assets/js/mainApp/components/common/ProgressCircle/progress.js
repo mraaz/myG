@@ -67,7 +67,6 @@ function _Progress({
   const r = center - strokeWidth / 2 - ballStrokeWidth / 2
   const circumference = progress * 6.5
   const offset = (circumference * (100 - progress * (1 - reduction))) / 100
-  console.log('circumference   ', circumference)
 
   return React.createElement(
     'div',

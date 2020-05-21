@@ -271,14 +271,18 @@ export default class ComposeSection extends Component {
     this.setState({ open_compose_textTab, overlay_active: true })
   }
 
-  handleAcceptedFiles = (Files) => {
+  handleAcceptedFiles = (Files, rejectedFiles) => {
     const { preview_files = [] } = this.state
     const len = preview_files.length + Files.length
+    if (rejectedFiles.length > 0) {
+      toast.error(<Toast_style text={`Sorry! ${rejectedFiles.length} File(s) rejected because of Bad format or file size limit exceed.`} />)
+    }
     if (len > 8) {
       toast.success(<Toast_style text={`Sorry! Can't upload more than Eight at a time.`} />)
     } else {
       for (var i = 0; i < Files.length; i++) {
-        let name = `post_image_${+new Date()}_${Files[i].name}`
+        let type = Files[i].name.split('/')
+        let name = `post_${type[0]}_${+new Date()}_${Files[i].name}`
         this.doUploadS3(Files[i], name, name)
       }
     }
@@ -415,10 +419,10 @@ export default class ComposeSection extends Component {
           {!open_compose_textTab && (
             <div className='media__container'>
               <Dropzone
-                onDrop={(acceptedFiles) => this.handleAcceptedFiles(acceptedFiles)}
-                accept='.jpeg,.jpg,.png,.gif,.mov,.webm,.mpg,.mp4,.avi,.ogg'
+                onDrop={(acceptedFiles, rejectedFiles) => this.handleAcceptedFiles(acceptedFiles, rejectedFiles)}
+                accept='image/jpeg,image/jpg,image/png,image/gif,video/*'
                 minSize={0}
-                maxSize={5242880}
+                maxSize={52428800}
                 multiple
                 disabled={this.state.uploading}>
                 {(props) => {

@@ -147,10 +147,10 @@ export default class IndividualPost extends Component {
         if (media_url[i] && media_url[i] != null) {
           const splitUrl = media_url[i].split('.')
           let fileType = splitUrl[splitUrl.length - 1]
-          if (this.imageFileType.includes(fileType)) {
+          if (media_url[i].includes('image') || this.imageFileType.includes(fileType)) {
             let myStruct = { original: media_url[i], thumbnail: media_url[i] }
             postImages.push(myStruct)
-          } else if (this.videoFileType.includes(fileType)) {
+          } else if (media_url[i].includes('video') || this.videoFileType.includes(fileType)) {
             postVideos.push(media_url[i])
           }
         }
@@ -292,7 +292,8 @@ export default class IndividualPost extends Component {
   handleSelectFile = (e) => {
     const fileList = e.target.files
     if (fileList.length > 0) {
-      let name = `comment_image_${+new Date()}_${fileList[0].name}`
+      let type = fileList[0].type.split('/')
+      let name = `comment_${type}_${+new Date()}_${fileList[0].name}`
       this.doUploadS3(fileList[0], name, name)
     }
   }
