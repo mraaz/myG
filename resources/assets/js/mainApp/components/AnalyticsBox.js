@@ -62,6 +62,7 @@ export default class AnalyticsBox extends Component {
                 className={`circle-wrap`}
                 borderColor={`${user_xp_negative_balance ? '#d70f46' : '#E5C746'}`}
                 progress={progress || 0}
+                value={user_level}
                 subtitle={'Level'}
                 reduction={0}
                 hideBall

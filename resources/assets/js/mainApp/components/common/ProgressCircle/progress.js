@@ -56,6 +56,7 @@ function _Progress({
   style,
   className,
   borderColor,
+  value,
 }) {
   progress = Math.round(progress * 100) / 100
   const width = 200
@@ -122,7 +123,7 @@ function _Progress({
           fontSize: '50',
           fill: '#ffffff',
         },
-        progress,
+        value,
         ''
       ),
 
