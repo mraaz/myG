@@ -560,7 +560,7 @@ export default class IndividualPost extends Component {
               <div
                 className='profile__image'
                 style={{
-                  backgroundImage: `url('${post.profile_img}')`,
+                  backgroundImage: `url('${profile_img}')`,
                 }}>
                 <Link to={`/profile/${post.alias}`} className='user-img'></Link>
                 <div className='online__status'></div>
@@ -711,23 +711,12 @@ export default class IndividualPost extends Component {
                 <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
               </div>
 
-              <div className='profile__image'>
-                {this.state.show_profile_img && (
-                  <Link
-                    to={`/profile/${post.alias}`}
-                    className='user-img'
-                    style={{
-                      backgroundImage: `url('${post.profile_img}')`,
-                    }}></Link>
-                )}
-                {!this.state.show_profile_img && (
-                  <Link
-                    to={`/profile/${post.alias}`}
-                    className='user-img'
-                    style={{
-                      backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png')`,
-                    }}></Link>
-                )}
+              <div
+                className='profile__image'
+                style={{
+                  backgroundImage: `url('${post.profile_img}')`,
+                }}>
+                <Link to={`/profile/${post.alias}`} className='user-img'></Link>
                 <div className='online__status'></div>
               </div>
             </div>

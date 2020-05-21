@@ -575,23 +575,24 @@ export default class IndividualComment extends Component {
               <Link to={`/profile/${comment.alias}`} className='user-img'></Link>
               <div className='online__status'></div>
             </div>
-            {/* profile section end  */}
-            <div className='reply__comment_section'>
-              <div className='comment-panel-reply' onClick={this.toggleReply}>
-                Reply
-              </div>
-              {this.state.like && (
-                <div className='comment-panel-liked' onClick={() => this.click_unlike_btn(comment.id)}>
-                  Unlike
-                </div>
-              )}
-              {!this.state.like && (
-                <div className='comment-panel-like' onClick={() => this.click_like_btn(comment.id)}>
-                  Like
-                </div>
-              )}
-            </div>
           </div>
+          {/* profile section end  */}
+          <div className='reply__comment_section'>
+            <div className='comment-panel-reply' onClick={this.toggleReply}>
+              Reply
+            </div>
+            {this.state.like && (
+              <div className='comment-panel-liked' onClick={() => this.click_unlike_btn(comment.id)}>
+                Unlike
+              </div>
+            )}
+            {!this.state.like && (
+              <div className='comment-panel-like' onClick={() => this.click_like_btn(comment.id)}>
+                Like
+              </div>
+            )}
+          </div>
+
           {/* comment reply start */}
           <div className='comment-panel'>
             {myReplies.length > 1 && (

@@ -1290,7 +1290,6 @@ section#content-container {
               left: -20px;
             }
             .comment__section {
-              margin-bottom: 30px;
               position: relative;
               background: #1d2326;
               clear: both;
@@ -1312,6 +1311,9 @@ section#content-container {
               .comment-info {
                 display: flex;
                 padding: 20px;
+                .reply-panel {
+                  width: 100%;
+                }
                 a {
                   font-size: 16px;
                   margin-right: 10px;
@@ -1320,6 +1322,7 @@ section#content-container {
                 .comment-content {
                   color: #93a4a5;
                   font-size: 12px;
+                  width: 100%;
 
                   .show__comment__image {
                     width: 480px;
@@ -1382,33 +1385,34 @@ section#content-container {
                   left: 0px;
                 }
               }
-              .reply__comment_section {
-                clear: both;
-                overflow: auto;
-                padding: 10px;
-                .comment-panel-like,
-                .comment-panel-liked,
-                .no-likes {
-                  margin-right: 15px;
-                  float: right;
-                  font-size: 12px;
-                }
-                .comment-panel-liked {
-                  padding-left: 15px;
-                  border-left: 1px solid #384952;
-                }
-                .comment-panel-reply {
-                  float: right;
-                  font-size: 12px;
-                  padding-left: 15px;
-                  border-left: 1px solid #384952;
-                }
-                .divider {
-                  margin-left: 10px;
-                  margin-right: 10px;
-                }
+            }
+            .reply__comment_section {
+              clear: both;
+              overflow: auto;
+              padding: 10px;
+              margin-bottom: 10px;
+              .comment-panel-like,
+              .comment-panel-liked,
+              .no-likes {
+                margin-right: 15px;
+                float: right;
+                font-size: 12px;
+              }
+              .comment-panel-liked {
+                padding-left: 15px;
+              }
+              .comment-panel-reply {
+                float: right;
+                font-size: 12px;
+                padding-left: 15px;
+                border-left: 1px solid #384952;
+              }
+              .divider {
+                margin-left: 10px;
+                margin-right: 10px;
               }
             }
+
             .comment-panel {
               padding-left: 60px;
               display: flex;
@@ -1793,6 +1797,7 @@ section#content-container {
               margin: 0;
               border: none;
               border-radius: 4px;
+              cursor: pointer;
             }
           }
         }
@@ -2745,7 +2750,6 @@ section#content-container {
             left: -20px;
           }
           .comment__section {
-            margin-bottom: 30px;
             position: relative;
             background: #1d2326;
             clear: both;
@@ -2775,6 +2779,7 @@ section#content-container {
               .comment-content {
                 color: #93a4a5;
                 font-size: 12px;
+                width: 100%;
 
                 .show__comment__image {
                   width: 480px;
@@ -2837,33 +2842,34 @@ section#content-container {
                 left: 0px;
               }
             }
-            .reply__comment_section {
-              clear: both;
-              overflow: auto;
-              padding: 10px;
-              .comment-panel-like,
-              .comment-panel-liked,
-              .no-likes {
-                margin-right: 15px;
-                float: right;
-                font-size: 12px;
-              }
-              .comment-panel-liked {
-                padding-left: 15px;
-                border-left: 1px solid #384952;
-              }
-              .comment-panel-reply {
-                float: right;
-                font-size: 12px;
-                padding-left: 15px;
-                border-left: 1px solid #384952;
-              }
-              .divider {
-                margin-left: 10px;
-                margin-right: 10px;
-              }
+          }
+          .reply__comment_section {
+            clear: both;
+            overflow: auto;
+            padding: 10px;
+            margin-bottom: 10px;
+            .comment-panel-like,
+            .comment-panel-liked,
+            .no-likes {
+              margin-right: 15px;
+              float: right;
+              font-size: 12px;
+            }
+            .comment-panel-liked {
+              padding-left: 15px;
+            }
+            .comment-panel-reply {
+              float: right;
+              font-size: 12px;
+              padding-left: 15px;
+              border-left: 1px solid #384952;
+            }
+            .divider {
+              margin-left: 10px;
+              margin-right: 10px;
             }
           }
+
           .comment-panel {
             margin-left: 20px;
             width: 90%;
@@ -2884,6 +2890,9 @@ section#content-container {
               margin-bottom: 10px;
             }
             .individual-comment-container {
+              width: 100%;
+            }
+            .reply-panel {
               width: 100%;
             }
             .add-reply {

@@ -303,6 +303,22 @@ export default class IndividualReply extends Component {
                   )}
                 </div>
               )}
+              <div className='reply-panel'>
+                {this.state.show_edit_reply && (
+                  <div className='add-reply'>
+                    <input
+                      type='text'
+                      id='reply_name_box'
+                      className='reply-name-box'
+                      placeholder='Add a reply...'
+                      onKeyDown={this.detectKey}
+                      ref={this.setTextInputRef}
+                      onChange={this.handleChange}
+                      value={this.state.value}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
             <div className='comment__shape'></div>
 
@@ -348,23 +364,6 @@ export default class IndividualReply extends Component {
               {this.state.show_reply_like && (
                 <div className='no-likes'>
                   {this.state.reply_like_total} {this.state.reply_like_total > 1 ? 'Likes' : 'Like'}{' '}
-                </div>
-              )}
-            </div>
-            {/* comment reply start */}
-            <div className='comment-panel'>
-              {this.state.show_edit_reply && (
-                <div className='add-reply'>
-                  <input
-                    type='text'
-                    id='reply_name_box'
-                    className='reply-name-box'
-                    placeholder='Add a reply...'
-                    onKeyDown={this.detectKey}
-                    ref={this.setTextInputRef}
-                    onChange={this.handleChange}
-                    value={this.state.value}
-                  />
                 </div>
               )}
             </div>
