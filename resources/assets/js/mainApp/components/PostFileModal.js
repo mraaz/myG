@@ -14,7 +14,6 @@ export default class PostFileModal extends Component {
     super(props)
 
     this.state = {
-      preview_files: [],
       post_content: '',
       store_files: [],
       lock: false,
@@ -23,7 +22,7 @@ export default class PostFileModal extends Component {
       open_compose_textTab: props.open_compose_textTab,
       add_group_toggle: false,
       selected_group: [],
-      selectedGroup: [],
+      selected_group_data: [],
       groups_im_in: [],
       visibility: 1,
       gid_request: {},
@@ -58,6 +57,14 @@ export default class PostFileModal extends Component {
     getGroups_im_in()
     getmyGroups()
   }
+  componentWillReceiveProps(newProps) {
+    const { selected_group = [], selected_group_data = [] } = newProps
+
+    this.setState({
+      selected_group,
+      selected_group_data,
+    })
+  }
 
   togglePostTypeTab = (label) => {
     let open_compose_textTab = true
@@ -65,27 +72,6 @@ export default class PostFileModal extends Component {
       open_compose_textTab = false
     }
     this.setState({ open_compose_textTab })
-  }
-
-  removeIndivdualfromAWS(id) {
-    for (var i = 0; i < this.state.preview_files.length; i++) {
-      if (this.state.preview_files[i].id == id) {
-        const formData = new FormData()
-        formData.append('key', this.state.preview_files[i].key)
-
-        try {
-          const post = axios.post('/api/deleteFile', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          })
-        } catch (error) {
-          toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again'} />)
-        }
-        this.state.preview_files.splice(i, 1)
-        break
-      }
-    }
   }
 
   closeModal(outsideClick = false) {
@@ -102,11 +88,13 @@ export default class PostFileModal extends Component {
   handleSubmit = () => {
     this.props.callbackConfirm({
       selected_group: this.state.selected_group,
+      selected_group_data: this.state.selected_group_data,
       visibility: this.state.visibility,
     })
 
     this.setState({
-      preview_files: [],
+      selected_group,
+      selected_group_data,
     })
   }
 
@@ -157,15 +145,23 @@ export default class PostFileModal extends Component {
     }
   }
 
-  handleGroupCheck = (e, id) => {
+  handleGroupCheck = (e, { id, name, group_img }) => {
     let selected_group = [...this.state.selected_group]
+    let selected_group_data = [...this.state.selected_group_data]
     const value = event.target.checked
     if (value) {
       selected_group.push(id)
+      selected_group_data.push({
+        name,
+        id,
+        group_img,
+      })
     } else {
       selected_group = selected_group.filter((gid) => gid != id)
+      selected_group_data = selected_group_data.filter((gid) => gid.id != id)
     }
-    this.setState({ selected_group })
+
+    this.setState({ selected_group, selected_group_data })
   }
 
   joinMe = async (gid) => {
@@ -222,7 +218,7 @@ export default class PostFileModal extends Component {
                               <input
                                 type='checkbox'
                                 checked={selected_group.includes(group_in.id)}
-                                onChange={(e) => this.handleGroupCheck(e, group_in.id)}
+                                onChange={(e) => this.handleGroupCheck(e, group_in)}
                                 value={1}
                               />
                               <span className='checkmark'></span>

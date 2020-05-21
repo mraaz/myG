@@ -640,20 +640,11 @@ export default class IndividualPost extends Component {
                   y
                 />
               )}
-              <video
-                src='https://mygame-media.s3.ap-southeast-2.amazonaws.com/user_files/100_1590062089187_UsMgUw_post_file_example_AVI_480_750kB.avi_1590062087623_file_example_AVI_480_750kB.avi'
-                className='post-video'
-                controls>
-                {/* <source src={data}></source> */}
-              </video>
               {postVideos.length > 0 &&
                 postVideos.map(function (data, index) {
                   return (
-                    <video
-                      src='https://mygame-media.s3.ap-southeast-2.amazonaws.com/user_files/100_1590062089187_UsMgUw_post_file_example_AVI_480_750kB.avi_1590062087623_file_example_AVI_480_750kB.avi'
-                      className='post-video'
-                      controls>
-                      {/* <source src={data}></source> */}
+                    <video className='post-video' controls>
+                      <source src={data}></source>
                     </video>
                   )
                 })}

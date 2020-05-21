@@ -34,6 +34,7 @@ export default class ComposeSection extends Component {
       open_compose_textTab: true,
       add_group_toggle: false,
       selected_group: [],
+      selected_group_data: [],
       selectedGroup: [],
       groups_im_in: [],
       preview_files: [],
@@ -60,9 +61,11 @@ export default class ComposeSection extends Component {
 
   callbackPostFileModalConfirm = async (data, keys) => {
     try {
+      console.log('data.selected_group_data   ', data.selected_group_data)
       this.setState({
         bFileModalOpen: false,
         group_id: data.selected_group.toString(),
+        selected_group_data: data.selected_group_data,
         visibility: data.visibility,
       })
     } catch (error) {
@@ -96,6 +99,8 @@ export default class ComposeSection extends Component {
       keys: [],
       overlay_active: false,
       open_compose_textTab: true,
+      selected_group_data: [],
+      selected_group: [],
     })
   }
 
@@ -392,7 +397,7 @@ export default class ComposeSection extends Component {
   }
 
   render() {
-    const { open_compose_textTab, bFileModalOpen, preview_files = [], selectedGroup, overlay_active, post_content = '' } = this.state
+    const { open_compose_textTab, bFileModalOpen, preview_files = [], selected_group_data, overlay_active, post_content = '' } = this.state
     const isButtonDisable = post_content != '' || preview_files.length > 0 ? true : false
 
     return (
@@ -484,13 +489,21 @@ export default class ComposeSection extends Component {
             <div className='label'>Post on: </div>
             <div className='people_selected_container'>
               <div className='people_selected_list'>
-                <div className='default_circle'></div>
+                <div
+                  className='default_circle'
+                  style={{
+                    backgroundImage: `url('${this.state.profile_img}')`,
+                  }}></div>
                 <div className='people_label'>Your Feed</div>
               </div>
-              {selectedGroup.splice(0, 3).map((g) => {
+              {selected_group_data.splice(0, 3).map((g) => {
                 return (
                   <div className='people_selected_list'>
-                    <div className='default_circle'></div>
+                    <div
+                      className='default_circle'
+                      style={{
+                        backgroundImage: `url('${g.group_img}')`,
+                      }}></div>
                     <div className='people_label'>{g.name}</div>
                   </div>
                 )
@@ -523,13 +536,17 @@ export default class ComposeSection extends Component {
             </button>
           </div>
 
-          <PostFileModal
-            bOpen={bFileModalOpen}
-            callbackClose={this.callbackPostFileModalClose}
-            callbackConfirm={this.callbackPostFileModalConfirm}
-            callbackContentConfirm={this.submitForm}
-            open_compose_textTab={open_compose_textTab}
-          />
+          {bFileModalOpen && (
+            <PostFileModal
+              bOpen={bFileModalOpen}
+              callbackClose={this.callbackPostFileModalClose}
+              callbackConfirm={this.callbackPostFileModalConfirm}
+              callbackContentConfirm={this.submitForm}
+              open_compose_textTab={open_compose_textTab}
+              selected_group_data={this.state.selected_group_data}
+              selected_group={this.state.selected_group}
+            />
+          )}
 
           {/* <section className='compose-area'>
         <div className='compose-section'>
