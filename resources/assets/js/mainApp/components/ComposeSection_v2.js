@@ -94,6 +94,8 @@ export default class ComposeSection extends Component {
       post_content: '',
       preview_files: [],
       keys: [],
+      overlay_active: false,
+      open_compose_textTab: true,
     })
   }
 
@@ -266,7 +268,7 @@ export default class ComposeSection extends Component {
         document.getElementById('composeTextarea').focus()
       }, 0)
     }
-    this.setState({ open_compose_textTab })
+    this.setState({ open_compose_textTab, overlay_active: true })
   }
 
   handleAcceptedFiles = (Files) => {
@@ -276,7 +278,7 @@ export default class ComposeSection extends Component {
       toast.success(<Toast_style text={`Sorry! Can't upload more than Eight at a time.`} />)
     } else {
       for (var i = 0; i < Files.length; i++) {
-        let name = `post_image_${+new Date()}`
+        let name = `post_image_${+new Date()}_${Files[i].name}`
         this.doUploadS3(Files[i], name, name)
       }
     }
@@ -387,7 +389,7 @@ export default class ComposeSection extends Component {
 
     return (
       <Fragment>
-        <section className={`postCompose__container ${overlay_active ? 'zI1000' : ''}`} onClick={this.handleFocus_txtArea}>
+        <section className={`postCompose__container ${overlay_active ? 'zI1000' : ''}`}>
           <div className='compose__type__section'>
             <div className={`share__thought ${open_compose_textTab ? 'active' : ''}`} onClick={(e) => this.togglePostTypeTab('text')}>
               {`Share your thoughts ...`}
@@ -403,7 +405,7 @@ export default class ComposeSection extends Component {
                 onChange={this.handleChange_txtArea}
                 onFocus={this.handleFocus_txtArea}
                 onKeyDown={this.detectKey}
-                maxLength='254'
+                maxLength='2048'
                 value={post_content}
                 placeholder="What's up... "
                 id={`composeTextarea`}

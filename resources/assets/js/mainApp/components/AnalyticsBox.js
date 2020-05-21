@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import Progress from './common/ProgressCircle/progress'
 
 export default class AnalyticsBox extends Component {
   state = {
@@ -45,16 +46,28 @@ export default class AnalyticsBox extends Component {
       level_max_points = 0,
     } = userTransactionStates
 
+    const progress = Math.floor((user_experience / level_max_points) * 100)
+
     return (
       <section className='social'>
         <div className='social__content'>
           <div className='level-container'>
             <section className='level-container-img'>
-              <div className={`circle-wrap ${user_xp_negative_balance ? 'red' : 'yellow'}`}>
+              {/* <div className={`circle-wrap ${user_xp_negative_balance ? 'red' : 'yellow'}`}>
                 <div className='inside-circle-level'>Level</div>
                 <div className='inside-circle-value'>{user_level}</div>
-                {/* <div className='inside-circle-value'>{level_max_points}</div> */}
-              </div>
+               <div className='inside-circle-value'>{level_max_points}</div> 
+              </div> */}
+              <Progress
+                className={`circle-wrap`}
+                borderColor={`${user_xp_negative_balance ? '#d70f46' : '#E5C746'}`}
+                progress={progress || 0}
+                subtitle={'Level'}
+                reduction={0}
+                hideBall
+                strokeWidth={8}
+                background={'#ffffff'}
+              />
               <div className='ratings'>
                 {/* <p className='social-box-text'>Avg Rating</p>
               <p className='social-box-count'>4.66/5</p>

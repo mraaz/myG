@@ -471,7 +471,7 @@ export default class IndividualComment extends Component {
 
   handleSelectFile = (e) => {
     const fileList = e.target.files
-    let name = `reply_image_${+new Date()}`
+    let name = `reply_image_${+new Date()}_${fileList[0].name}`
     this.doUploadS3(fileList[0], name, name)
   }
 
@@ -497,6 +497,12 @@ export default class IndividualComment extends Component {
     }
     this.setState({
       uploading: false,
+    })
+  }
+  clearPreviewImage = () => {
+    this.setState({
+      preview_file: [],
+      file_keys: [],
     })
   }
 

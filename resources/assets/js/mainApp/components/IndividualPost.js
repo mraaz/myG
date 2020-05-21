@@ -45,6 +45,7 @@ export default class IndividualPost extends Component {
       file_keys: '',
       postImages: [],
       postVideos: [],
+      showmore: false,
     }
     this.imageFileType = ['jpeg', 'jpg', 'png', 'gif']
     this.videoFileType = ['mov', 'webm', 'mpg', 'mp4', 'avi', 'ogg']
@@ -291,7 +292,7 @@ export default class IndividualPost extends Component {
   handleSelectFile = (e) => {
     const fileList = e.target.files
     if (fileList.length > 0) {
-      let name = `comment_image_${+new Date()}`
+      let name = `comment_image_${+new Date()}_${fileList[0].name}`
       this.doUploadS3(fileList[0], name, name)
     }
   }
@@ -521,6 +522,10 @@ export default class IndividualPost extends Component {
     })
   }
 
+  toggleShowmore = () => {
+    this.setState({ showmore: !this.state.showmore })
+  }
+
   render() {
     const {
       myComments = [],
@@ -585,7 +590,34 @@ export default class IndividualPost extends Component {
                 <div className='post__time'>{this.state.post_time}</div>
               </div>
               <div className='post__content'>
-                <p>{this.state.content}</p>
+                {!this.state.edit_post && this.state.showmore && (
+                  <p>
+                    {this.state.content}
+                    <strong onClick={this.toggleShowmore}>show less</strong>
+                  </p>
+                )}
+                {!this.state.edit_post && !this.state.showmore && (
+                  <p>
+                    {this.state.content.length > 254 ? this.state.content.slice(254) : this.state.content}
+                    {this.state.content.length > 254 && <strong onClick={this.toggleShowmore}>show more</strong>}
+                  </p>
+                )}
+
+                {this.state.edit_post && (
+                  <div className='post_content_editbox'>
+                    <textarea
+                      name='name2'
+                      rows={8}
+                      cols={80}
+                      value={this.state.value2}
+                      onChange={this.handleChange2}
+                      maxLength='254'
+                      onKeyDown={this.detectKey2}
+                      ref={this.setTextInputRef2}
+                    />
+                  </div>
+                )}
+
                 {this.state.show_post_options && (
                   <div className='post-options'>
                     <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}></i>
@@ -605,22 +637,6 @@ export default class IndividualPost extends Component {
               </div>
             </div>
             <div className='media'>
-              {this.state.edit_post && (
-                <div className='update-info'>
-                  <div className='compose-comment'>
-                    <textarea
-                      name='name2'
-                      rows={8}
-                      cols={80}
-                      value={this.state.value2}
-                      onChange={this.handleChange2}
-                      maxLength='254'
-                      onKeyDown={this.detectKey2}
-                      ref={this.setTextInputRef2}
-                    />
-                  </div>
-                </div>
-              )}
               {postImages.length > 0 && (
                 <ImageGallery
                   items={postImages}
