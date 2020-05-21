@@ -182,7 +182,7 @@ export default class IndividualPost extends Component {
 
     var post_id = this.props.post.id
 
-    const getmyPostCount = async function() {
+    const getmyPostCount = async function () {
       try {
         var i
 
@@ -198,7 +198,7 @@ export default class IndividualPost extends Component {
       }
     }
 
-    const getGroup_info = async function() {
+    const getGroup_info = async function () {
       try {
         var i
 
@@ -229,7 +229,7 @@ export default class IndividualPost extends Component {
     var post_id = this.props.post.id
     const self = this
 
-    const getComments = async function() {
+    const getComments = async function () {
       try {
         const myComments = await axios.get(`/api/comments/${post_id}`)
         self.setState({
@@ -330,6 +330,7 @@ export default class IndividualPost extends Component {
     }
     this.onFocus()
     const saveComment = async () => {
+      const { myComments = [] } = this.state
       try {
         const postComment = await axios.post('/api/comments', {
           content: this.state.value.trim(),
@@ -337,8 +338,7 @@ export default class IndividualPost extends Component {
           media_url: this.state.preview_file.length > 0 ? JSON.stringify(this.state.preview_file) : '',
           file_keys: this.state.file_keys.length > 0 ? this.state.file_keys : '',
         })
-        console.log('Testing comment')
-        console.log(postComment)
+
         let { post, user } = this.props
         if (post.user_id != user.userInfo.id) {
           const addPostLike = axios.post('/api/notifications/addComment', {
@@ -348,7 +348,7 @@ export default class IndividualPost extends Component {
           })
         }
         this.setState({
-          myComments: [],
+          myComments: [...myComments, ...postComment.data],
           preview_file: '',
           file_keys: '',
           value: '',
@@ -378,7 +378,7 @@ export default class IndividualPost extends Component {
     const self = this
     var post_id = this.props.post.id
 
-    const editPost = async function() {
+    const editPost = async function () {
       try {
         const myEditPost = await axios.post(`/api/post/update/${post_id}`, {
           content: self.state.value2,
@@ -465,7 +465,7 @@ export default class IndividualPost extends Component {
       dropdown: false,
     })
     setTimeout(
-      function() {
+      function () {
         //Start the timer
         this.focusTextInput2()
       }.bind(this),
@@ -650,7 +650,7 @@ export default class IndividualPost extends Component {
                 />
               )}
               {postVideos.length > 0 &&
-                postVideos.map(function(data, index) {
+                postVideos.map(function (data, index) {
                   return (
                     <video className='post-video' controls>
                       <source src={data}></source>

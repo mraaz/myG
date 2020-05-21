@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 import IndividualReply from './IndividualReply'
 import moment from 'moment'
-import SweetAlert from './common/MyGSweetAlert';
+import SweetAlert from './common/MyGSweetAlert'
 const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
 
 export default class IndividualComment extends Component {
@@ -343,7 +343,8 @@ export default class IndividualComment extends Component {
     const self = this
     var postReply
 
-    const saveReply = async function () {
+    const saveReply = async () => {
+      const { myReplies = [] } = this.state
       try {
         postReply = await axios.post('/api/replies', {
           content: self.state.value.trim(),
@@ -373,7 +374,7 @@ export default class IndividualComment extends Component {
           }
         }
         self.setState({
-          myReplies: [],
+          myReplies: [...myReplies, ...postReply.data],
         })
 
         // self.pullReplies()

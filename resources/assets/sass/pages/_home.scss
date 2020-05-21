@@ -953,6 +953,11 @@ section#content-container {
       }
       .post__body__wrapper {
         background: #171a1c;
+        .media{
+          .image-gallery{
+            margin-bottom: 20px;
+          }
+        }
       }
       .post__body {
         background: #171a1c;
