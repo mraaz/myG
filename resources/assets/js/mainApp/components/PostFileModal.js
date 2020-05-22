@@ -1,13 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-
 import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
-
-// import 'react-dropzone-uploader/dist/styles.css'
-// import Dropzone from 'react-dropzone-uploader'
-import Dropzone from 'react-dropzone'
-const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
 
 export default class PostFileModal extends Component {
   constructor(props) {
@@ -53,13 +47,9 @@ export default class PostFileModal extends Component {
         console.log(error)
       }
     }
-
+    const { selected_group = [], selected_group_data = [] } = this.props
     getGroups_im_in()
     getmyGroups()
-  }
-  componentWillReceiveProps(newProps) {
-    const { selected_group = [], selected_group_data = [] } = newProps
-
     this.setState({
       selected_group,
       selected_group_data,
@@ -91,11 +81,6 @@ export default class PostFileModal extends Component {
       selected_group: selected_group,
       selected_group_data: selected_group_data,
       visibility: visibility,
-    })
-
-    this.setState({
-      selected_group,
-      selected_group_data,
     })
   }
 
@@ -159,7 +144,6 @@ export default class PostFileModal extends Component {
       selected_group = selected_group.filter((gid) => gid != id)
       selected_group_data = selected_group_data.filter((gid) => gid.id != id)
     }
-
     this.setState({ selected_group, selected_group_data })
   }
 

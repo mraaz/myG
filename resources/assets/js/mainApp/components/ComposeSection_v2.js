@@ -60,13 +60,13 @@ export default class ComposeSection extends Component {
   }
 
   callbackPostFileModalConfirm = async (data, keys) => {
+    const callbackData = { ...data }
     try {
-      console.log('data.selected_group_data   ', data.selected_group_data)
       this.setState({
         bFileModalOpen: false,
-        group_id: data.selected_group.toString(),
-        selected_group_data: data.selected_group_data,
-        visibility: data.visibility,
+        group_id: callbackData.selected_group.toString(),
+        selected_group_data: callbackData.selected_group_data,
+        visibility: callbackData.visibility,
       })
     } catch (error) {
       console.log(error)
@@ -382,7 +382,7 @@ export default class ComposeSection extends Component {
   render() {
     const { open_compose_textTab, bFileModalOpen, preview_files = [], selected_group_data, overlay_active, post_content = '' } = this.state
     const isButtonDisable = post_content != '' || preview_files.length > 0 ? true : false
-
+    const groups = [...selected_group_data]
     return (
       <Fragment>
         <section className={`postCompose__container ${overlay_active ? 'zI1000' : ''}`}>
@@ -497,7 +497,7 @@ export default class ComposeSection extends Component {
                   }}></div>
                 <div className='people_label'>Your Feed</div>
               </div>
-              {selected_group_data.splice(0, 3).map((g) => {
+              {groups.splice(0, 3).map((g) => {
                 return (
                   <div className='people_selected_list'>
                     <div
@@ -526,17 +526,15 @@ export default class ComposeSection extends Component {
             </button>
           </div>
 
-          {bFileModalOpen && (
-            <PostFileModal
-              bOpen={bFileModalOpen}
-              callbackClose={this.callbackPostFileModalClose}
-              callbackConfirm={this.callbackPostFileModalConfirm}
-              callbackContentConfirm={this.submitForm}
-              open_compose_textTab={open_compose_textTab}
-              selected_group_data={this.state.selected_group_data}
-              selected_group={this.state.selected_group}
-            />
-          )}
+          <PostFileModal
+            bOpen={bFileModalOpen}
+            callbackClose={this.callbackPostFileModalClose}
+            callbackConfirm={this.callbackPostFileModalConfirm}
+            callbackContentConfirm={this.submitForm}
+            open_compose_textTab={open_compose_textTab}
+            selected_group_data={this.state.selected_group_data}
+            selected_group={this.state.selected_group}
+          />
 
           {/* <section className='compose-area'>
         <div className='compose-section'>
