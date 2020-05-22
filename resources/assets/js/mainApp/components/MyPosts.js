@@ -55,8 +55,8 @@ export default class MyPosts extends Component {
             })
           },
         })
-
-        if (data.data.myPosts.data.length == 0) {
+        console.log(data)
+        if (data.data.myPosts.length == 0) {
           this.setState({
             myPosts: [...myPosts],
             moreplease: false,
@@ -65,7 +65,7 @@ export default class MyPosts extends Component {
           return
         }
         this.setState({
-          myPosts: [...myPosts, ...data.data.myPosts.data],
+          myPosts: [...myPosts, ...data.data.myPosts],
           moreplease: data.data.myPosts.lastPage == counter ? false : true,
           isFetching: false,
         })

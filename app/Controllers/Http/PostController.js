@@ -154,7 +154,6 @@ class PostController {
   }
 
   async show({ auth, request, response }) {
-    console.log('In thewre')
     try {
       const myFriendsPosts = await Database.select('*', 'posts.id', 'posts.updated_at')
         .from('friends')
@@ -232,7 +231,7 @@ class PostController {
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.paginateNo, 10)
 
-      myPosts = await this.get_additional_info({ auth, request, response }, myPosts)
+      myPosts = await this.get_additional_info({ auth, request, response }, myPosts.data)
 
       return {
         myPosts,
@@ -251,7 +250,7 @@ class PostController {
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.paginateNo, 10)
 
-      groupPosts = await this.get_additional_info({ auth, request, response }, groupPosts)
+      groupPosts = await this.get_additional_info({ auth, request, response }, groupPosts.data)
 
       return {
         groupPosts,
