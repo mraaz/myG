@@ -484,6 +484,51 @@ class NotificationController_v2 {
       console.log(error)
     }
   }
+
+  async addGameApproved({ auth }, schedule_games_id, other_user_id) {
+    if (auth.user) {
+      try {
+        const addGameApproved = await Notification.create({
+          other_user_id: other_user_id,
+          user_id: auth.user.id,
+          activity_type: 14,
+          schedule_games_id: schedule_games_id,
+        })
+        return 'Saved item'
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async markAllNoti({ auth, request, response }) {
+    try {
+      const markAllNoti = await Notification.query()
+        .where({ other_user_id: auth.user.id })
+        .whereIn('activity_type', [2, 3, 4, 5, 6, 7, 8, 9, 10, 14, 15, 16, 17, 19, 20])
+        .update({ read_status: 1 })
+      return 'Saved successfully'
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async deleteAllNoti({ auth, request, response }) {
+    try {
+      const deleteAllNoti = await Database.table('notifications')
+        .where({
+          other_user_id: auth.user.id,
+        })
+        .whereIn('activity_type', [2, 3, 4, 5, 6, 7, 8, 9, 10, 14, 15, 16, 17, 18, 19, 20])
+        .delete()
+
+      return 'Saved successfully'
+    } catch (error) {
+      console.log(error)
+    }
+  }
 }
 
 module.exports = NotificationController_v2

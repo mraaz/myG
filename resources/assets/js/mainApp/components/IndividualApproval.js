@@ -75,26 +75,19 @@ export default class IndividualApproval extends Component {
     let { approvals } = this.props
     try {
       if (this.state.not_dota_2) {
-        const accepted_invite = axios.post(
-          `/api/attendees/update_invite/${approvals.attendees.schedule_games_id}/${approvals.attendees.user_id}`
-        )
-
-        joinGameGroup(approvals.attendees.schedule_games_id, approvals.attendees.user_id)
-      } else {
-        const accepted_invite = axios.post(
-          `/api/attendees/update_invite/${approvals.attendees.schedule_games_id}/${approvals.attendees.user_id}`,
-          {
-            dota_2_position_one: this.state.dota_2_position_one_ticked,
-            dota_2_position_two: this.state.dota_2_position_two_ticked,
-            dota_2_position_three: this.state.dota_2_position_three_ticked,
-            dota_2_position_four: this.state.dota_2_position_four_ticked,
-            dota_2_position_five: this.state.dota_2_position_five_ticked,
-          }
-        )
+        const accepted_invite = axios.post('/api/attendees/update_invite/', {
+          schedule_game_id: approvals.attendees.schedule_games_id,
+          user_id: approvals.attendees.user_id,
+          dota_2_position_one: this.state.dota_2_position_one_ticked,
+          dota_2_position_two: this.state.dota_2_position_two_ticked,
+          dota_2_position_three: this.state.dota_2_position_three_ticked,
+          dota_2_position_four: this.state.dota_2_position_four_ticked,
+          dota_2_position_five: this.state.dota_2_position_five_ticked,
+        })
 
         joinGameGroup(approvals.attendees.schedule_games_id, approvals.attendees.user_id)
       }
-      if (approvals.schedule_games.limit != 42) {
+      if (approvals.schedule_games.limit != 0) {
         const getNumberofAttendees = await axios.get(`/api/attendees/attending/${approvals.attendees.schedule_games_id}`)
         if (getNumberofAttendees.data.allAttendees[0].no_of_allAttendees == approvals.schedule_games.limit) {
           const no_vacany = axios.post('/api/ScheduleGame/update_vacany/', {
@@ -150,11 +143,6 @@ export default class IndividualApproval extends Component {
 
       const post = axios.post('/api/comments/', {
         content: str,
-        schedule_games_id: approvals.attendees.schedule_games_id,
-      })
-
-      const post_game = axios.post('/api/notifications/addGameApproved', {
-        other_user_id: approvals.attendees.user_id,
         schedule_games_id: approvals.attendees.schedule_games_id,
       })
     } catch (error) {

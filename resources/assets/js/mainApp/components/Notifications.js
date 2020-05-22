@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import IndividualNotification from './IndividualNotification'
-import SweetAlert from './common/MyGSweetAlert';
+import SweetAlert from './common/MyGSweetAlert'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
 export default class Notifications extends Component {
@@ -65,7 +65,7 @@ export default class Notifications extends Component {
 
   mark_all = () => {
     try {
-      const mark_all = axios.get('/api/notifications/markAllNoti')
+      const mark_all = axios.get('/api/notifications_v2/markAllNoti')
     } catch (error) {
       console.log(error)
     }
@@ -74,7 +74,7 @@ export default class Notifications extends Component {
 
   delete_all = () => {
     try {
-      const delete_all = axios.get('/api/notifications/deleteAllNoti')
+      const delete_all = axios.get('/api/notifications_v2/deleteAllNoti')
     } catch (error) {
       console.log(error)
     }
