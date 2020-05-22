@@ -177,8 +177,7 @@ Route.get('/api/notifications/deleteReplyLike/:id', 'NotificationController.dele
 Route.post('/api/notifications/addComment', 'NotificationController.addComment')
 Route.post('/api/notifications/addReply', 'NotificationController.addReply')
 Route.post('/api/notifications/updateRead_Status/:post_id/:activity_type', 'NotificationController.updateRead_Status')
-Route.get('/api/notifications/markAllNoti', 'NotificationController.markAllNoti')
-Route.get('/api/notifications/deleteAllNoti', 'NotificationController.deleteAllNoti')
+
 Route.get('/api/notifications/getunread/:post_id/:activity_type', 'NotificationController.getRead_Status')
 Route.get(
   '/api/notifications/getunread_schedule_game/:schedule_game_id/:activity_type',
@@ -222,6 +221,8 @@ Route.get('/api/notifications/getunread_dings', 'NotificationController.getunrea
 Route.post('/api/notifications_v2/getApprovals_Dashboard', 'NotificationController_v2.getApprovals_Dashboard')
 Route.get('/api/notifications_v2/delete/:id', 'NotificationController_v2.destroy')
 Route.post('/api/notifications_v2/getAllNoti', 'NotificationController_v2.getAllNotifications')
+Route.get('/api/notifications_v2/markAllNoti', 'NotificationController_v2.markAllNoti')
+Route.get('/api/notifications_v2/deleteAllNoti', 'NotificationController_v2.deleteAllNoti')
 
 //-----------------------------------------
 
@@ -257,7 +258,9 @@ Route.get('/api/attendees/role_call_ALL/:id', 'AttendeeController.role_call_ALL'
 Route.get('/api/attendees/game_positions/:id', 'AttendeeController.show_game_positions')
 Route.get('/api/attendees/getScheduleGameInvites/:id', 'AttendeeController.getScheduleGameInvites')
 Route.get('/api/attendees/delete_myInvite/:schedule_game_id/:id', 'AttendeeController.delete_invite')
-Route.post('/api/attendees/update_invite/:schedule_game_id/:id', 'AttendeeController.up_invite')
+//Route.post('/api/attendees/update_invite/:schedule_game_id/:id', 'AttendeeController.up_invite')
+
+Route.post('/api/attendees/update_invite', 'AttendeeController.up_invite')
 
 Route.get('/api/archive_attendees/attending/:id', 'Archive_AttendeeController.show_attending')
 Route.get('/api/archive_attendees/role_call/:id', 'Archive_AttendeeController.role_call')

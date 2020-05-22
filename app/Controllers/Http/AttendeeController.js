@@ -3,6 +3,7 @@
 const Database = use('Database')
 const Attendee = use('App/Models/Attendee')
 const NotificationController = use('./NotificationController')
+const NotificationController_v2 = use('./NotificationController_v2')
 const UserStatTransactionController = use('./UserStatTransactionController')
 
 class AttendeeController {
@@ -274,8 +275,8 @@ class AttendeeController {
       try {
         const up_invite = await Attendee.query()
           .where({
-            schedule_games_id: request.params.schedule_game_id,
-            user_id: request.params.id,
+            schedule_games_id: request.input('schedule_game_id'),
+            user_id: request.input('user_id'),
           })
           .update({
             type: 1,
@@ -288,12 +289,12 @@ class AttendeeController {
 
         const get_all_attendees = await Database.from('attendees')
           .select('user_id')
-          .where({ schedule_games_id: request.params.schedule_game_id, type: 1 })
+          .where({ schedule_games_id: request.input('schedule_game_id'), type: 1 })
 
         if (get_all_attendees.length > 1) {
           const get_host = await Database.from('schedule_games')
             .select('user_id')
-            .where({ id: request.params.schedule_game_id })
+            .where({ id: request.input('schedule_game_id') })
 
           userStatController.update_total_number_of(get_host[0].user_id, 'total_number_of_games_hosted')
         }
@@ -301,6 +302,8 @@ class AttendeeController {
         for (var i = 0; i < get_all_attendees.length; i++) {
           userStatController.update_total_number_of(get_all_attendees[i].user_id, 'total_number_of_games_played')
         }
+        let noti = new NotificationController_v2()
+        noti.addGameApproved({ auth }, request.input('schedule_game_id'), request.input('user_id'))
 
         return up_invite
       } catch (error) {
