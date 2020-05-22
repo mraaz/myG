@@ -101,6 +101,7 @@ export default class ComposeSection extends Component {
       open_compose_textTab: true,
       selected_group_data: [],
       selected_group: [],
+      value_tags=[]
     })
   }
 
