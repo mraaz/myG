@@ -5,66 +5,85 @@ const Database = use('Database')
 const AwsKeyController = use('./AwsKeyController')
 const LikeController = use('./LikeController')
 const HashTags = use('App/Models/HashTag')
-const PostHashTagTransaction = use('App/Models/PostHashTagTransaction')
+const PostHashTagTransactionController = use('./PostHashTagTransactionController')
 
 class PostController {
   async store({ auth, request, response }) {
-    let arrGroups_id = [],
-      newPost = ''
+    try {
+      let arrGroups_id = [],
+        newPost = ''
 
-    if (request.input('groups_id') != undefined) {
-      arrGroups_id = request.input('groups_id').split(',')
-    }
+      if (request.input('groups_id') != undefined) {
+        arrGroups_id = request.input('groups_id').split(',')
+      }
 
-    if (auth.user) {
-      if (arrGroups_id.length == 0) {
-        newPost = await Post.create({
-          content: request.input('content'),
-          user_id: auth.user.id,
-          type: 'text',
-          group_id: request.input('groups_id'),
-          visibility: request.input('visibility'),
-          media_url: request.input('media_url'),
-        })
-      } else {
-        for (var i = 0; i < arrGroups_id.length; i++) {
+      if (auth.user) {
+        if (arrGroups_id.length == 0) {
           newPost = await Post.create({
             content: request.input('content'),
             user_id: auth.user.id,
             type: 'text',
-            group_id: arrGroups_id[i],
+            group_id: request.input('groups_id'),
             visibility: request.input('visibility'),
             media_url: request.input('media_url'),
           })
-        }
-      }
 
-      if (request.input('file_keys') != undefined) {
-        let update_key = new AwsKeyController()
-        request.params.post_id = newPost.id
-        update_key.addPostKey({ auth, request, response })
-      }
+          if (request.input('hash_tags') != null) {
+            var arrTags = request.input('hash_tags').split(',')
+            if (arrTags != '') {
+              let PHController = new PostHashTagTransactionController()
+              for (var i = 0; i < arrTags.length; i++) {
+                console.log(newPost.id)
+                PHController.store({ auth }, newPost.id, arrTags[i])
 
-      if (request.input('hash_tags') != null) {
-        var arrTags = request.input('hash_tags').split(',')
-
-        if (arrTags != '') {
-          for (var i = 0; i < arrTags.length; i++) {
-            const create_arrTags = await PostHashTagTransaction.create({
-              post_id: newPost.id,
-              hash_tag_id: arrTags[i],
+                const update_counter = await HashTags.query()
+                  .where({ id: arrTags[i] })
+                  .increment('counter', 1)
+              }
+            }
+          }
+        } else {
+          for (var i = 0; i < arrGroups_id.length; i++) {
+            newPost = await Post.create({
+              content: request.input('content'),
+              user_id: auth.user.id,
+              type: 'text',
+              group_id: arrGroups_id[i],
+              visibility: request.input('visibility'),
+              media_url: request.input('media_url'),
             })
 
-            const update_counter = await HashTags.query()
-              .where({ id: arrTags[i] })
-              .increment('counter', 1)
+            if (request.input('hash_tags') != null) {
+              var arrTags = request.input('hash_tags').split(',')
+
+              if (arrTags != '') {
+                let PHController = new PostHashTagTransactionController()
+                for (var i = 0; i < arrTags.length; i++) {
+                  console.log(newPost.id)
+                  PHController.store({ auth }, newPost.id, arrTags[i])
+
+                  const update_counter = await HashTags.query()
+                    .where({ id: arrTags[i] })
+                    .increment('counter', 1)
+                }
+              }
+            }
           }
         }
-      }
-      request.params.id = newPost.id
-      newPost = this.myshow({ auth, request, response })
 
-      return newPost
+        if (request.input('file_keys') != undefined) {
+          let update_key = new AwsKeyController()
+          request.params.post_id = newPost.id
+          update_key.addPostKey({ auth, request, response })
+        }
+
+        request.params.id = newPost.id
+        newPost = this.myshow({ auth, request, response })
+
+        return newPost
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 
