@@ -1557,12 +1557,59 @@ section#content-container {
     }
   }
   .text__editor__section {
+    display: flex;
+    padding: 30px;
+    .media {
+      .image-gallery-fullscreen-button {
+        right: 2px;
+        top: 2px;
+        padding: 0;
+        background: aliceblue;
+        color: #000;
+        .image-gallery-svg {
+          height: 24px;
+          width: 24px;
+        }
+      }
+      button.image-gallery-icon.image-gallery-left-nav {
+        padding: 0;
+        bottom: -10px;
+        right: 55px;
+        width: 32px;
+        height: 32px;
+        margin: 0;
+        background: #2d363a 0% 0% no-repeat padding-box;
+        border-radius: 50%;
+        .image-gallery-svg {
+          width: 32px;
+          height: 32px;
+          transform: none;
+          color: #171a1c;
+        }
+      }
+      button.image-gallery-icon.image-gallery-right-nav {
+        padding: 0;
+        bottom: -10px;
+        right: 15px;
+        width: 32px;
+        height: 32px;
+        margin: 0;
+        background: #2d363a 0% 0% no-repeat padding-box;
+        border-radius: 50%;
+        .image-gallery-svg {
+          width: 32px;
+          height: 32px;
+          transform: none;
+          color: #171a1c;
+        }
+      }
+    }
     textarea {
       background: #171a1c 0% 0% no-repeat padding-box;
       resize: none;
       overflow-y: scroll;
       width: 100%;
-      height: 80px;
+      min-height: 80px;
       border: 1px solid #273137;
       color: #657172;
       padding: 30px;
