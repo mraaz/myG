@@ -14,6 +14,7 @@ import { Disable_keys, Hash_Tags } from './Utility_Function'
 
 import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
+import ImageGallery from 'react-image-gallery'
 
 const createOption = (label, hash_tag_id) => ({
   label,
@@ -38,12 +39,7 @@ export default class ComposeSection extends Component {
       selected_group_data: [],
       selectedGroup: [],
       groups_im_in: [],
-      preview_files: [
-        {
-          src:
-            'https://mygame-media.s3.amazonaws.com/user_files/100_1590149413324_ZDFKgK_post_best-seven-street-food-and-restorant.jpg_1590149412000_best-seven-street-food-and-restorant.jpg',
-        },
-      ],
+      preview_files: [],
       visibility: 1,
       overlay_active: false,
       group_id: '',
@@ -385,12 +381,18 @@ export default class ComposeSection extends Component {
     preview_files = preview_files.filter((data) => data.src != src)
     this.setState({ preview_files })
   }
+  getPreviewImageGallery = (preview_filesData) => {
+    return preview_filesData.map((data) => {
+      return { original: data.src, thumbnail: data.src }
+    })
+  }
 
   render() {
     const { open_compose_textTab, bFileModalOpen, preview_files = [], selected_group_data, overlay_active, post_content = '' } = this.state
     const isButtonDisable = post_content != '' || preview_files.length > 0 ? true : false
     const groups = [...selected_group_data]
     const preview_filesData = [...preview_files]
+    const previewImageGallery = this.getPreviewImageGallery(preview_filesData)
     return (
       <Fragment>
         <section className={`postCompose__container ${overlay_active ? 'zI1000' : ''}`}>
@@ -405,6 +407,11 @@ export default class ComposeSection extends Component {
           </div>
           {open_compose_textTab && (
             <div className='text__editor__section'>
+              <div className='media'>
+                {preview_filesData.length > 0 && (
+                  <ImageGallery items={previewImageGallery} showBullets={false} autoPlay={false} isRTL={false} disableSwipe={false} y />
+                )}
+              </div>
               <textarea
                 onChange={this.handleChange_txtArea}
                 onFocus={this.handleFocus_txtArea}

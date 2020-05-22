@@ -1557,12 +1557,13 @@ section#content-container {
     }
   }
   .text__editor__section {
+    display: flex;
     textarea {
       background: #171a1c 0% 0% no-repeat padding-box;
       resize: none;
       overflow-y: scroll;
       width: 100%;
-      height: 80px;
+      min-height: 80px;
       border: 1px solid #273137;
       color: #657172;
       padding: 30px;
