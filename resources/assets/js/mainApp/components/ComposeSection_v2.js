@@ -38,7 +38,12 @@ export default class ComposeSection extends Component {
       selected_group_data: [],
       selectedGroup: [],
       groups_im_in: [],
-      preview_files: [],
+      preview_files: [
+        {
+          src:
+            'https://mygame-media.s3.amazonaws.com/user_files/100_1590149413324_ZDFKgK_post_best-seven-street-food-and-restorant.jpg_1590149412000_best-seven-street-food-and-restorant.jpg',
+        },
+      ],
       visibility: 1,
       overlay_active: false,
       group_id: '',
@@ -385,6 +390,7 @@ export default class ComposeSection extends Component {
     const { open_compose_textTab, bFileModalOpen, preview_files = [], selected_group_data, overlay_active, post_content = '' } = this.state
     const isButtonDisable = post_content != '' || preview_files.length > 0 ? true : false
     const groups = [...selected_group_data]
+    const preview_filesData = [...preview_files]
     return (
       <Fragment>
         <section className={`postCompose__container ${overlay_active ? 'zI1000' : ''}`}>
@@ -442,9 +448,9 @@ export default class ComposeSection extends Component {
                           <span>Uploading... </span>
                         </div>
                       )}
-                      {preview_files.length > 0 && (
+                      {preview_filesData.length > 0 && (
                         <div className='files__preview'>
-                          {preview_files.slice(0, 3).map((file) => (
+                          {preview_filesData.slice(0, 3).map((file) => (
                             <span className='image'>
                               <img src={file.src} key={file.src} />
                               <span className='remove__image' onClick={(e) => this.handlePreviewRemove(file.src)}>
@@ -452,7 +458,7 @@ export default class ComposeSection extends Component {
                               </span>
                             </span>
                           ))}
-                          {preview_files.length > 3 ? `(${preview_files.length})...` : ''}
+                          {preview_filesData.length > 3 ? `(${preview_filesData.length})...` : ''}
                         </div>
                       )}
                     </section>

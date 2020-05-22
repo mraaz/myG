@@ -144,7 +144,7 @@ export default class IndividualPost extends Component {
     let { post } = this.props
     let media_url = ''
     const self = this
-    if (post.media_url != null) {
+    if (post.media_url) {
       try {
         media_url = post.media_url.length > 0 ? JSON.parse(post.media_url) : ''
       } catch (e) {
