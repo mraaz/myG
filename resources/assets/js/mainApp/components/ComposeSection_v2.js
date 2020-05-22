@@ -163,7 +163,6 @@ export default class ComposeSection extends Component {
           this.props.successCallback(post)
         }
       )
-      console.log(post)
       // await this.get_posts(post)
     } catch (error) {
       console.log(error)
@@ -485,35 +484,10 @@ export default class ComposeSection extends Component {
             </div> */}
             </div>
           )}
-          <div className='compose__people__section'>
-            <div className='label'>Post on: </div>
-            <div className='people_selected_container'>
-              <div className='people_selected_list'>
-                <div
-                  className='default_circle'
-                  style={{
-                    backgroundImage: `url('${this.state.profile_img}')`,
-                  }}></div>
-                <div className='people_label'>Your Feed</div>
-              </div>
-              {selected_group_data.splice(0, 3).map((g) => {
-                return (
-                  <div className='people_selected_list'>
-                    <div
-                      className='default_circle'
-                      style={{
-                        backgroundImage: `url('${g.group_img}')`,
-                      }}></div>
-                    <div className='people_label'>{g.name}</div>
-                  </div>
-                )
-              })}
-            </div>
-            <div className='add_more_people'>
-              <button type='button' className='add__people' onClick={this.addGroupToggle}>
-                Add
-              </button>
-              {/* <MyGCreateableSelect
+          <div className='hashTag_section'>
+            <div className='hashtag_label'>Add Hashtags</div>
+            <div className='hashtag_input'>
+              <MyGCreateableSelect
                 isClearable
                 isMulti
                 onKeyDown={Disable_keys}
@@ -524,7 +498,39 @@ export default class ComposeSection extends Component {
                 onInputChange={this.getOptions_tags}
                 className='hash_tag_name_box'
                 placeholder='Search, Select or create Hash Tags'
-              /> */}
+              />
+            </div>
+          </div>
+          <div className='compose__people__section'>
+            <div className='label'>Post on: </div>
+            <div className='people_selected_container'>
+              <div className='people_selected_list'>
+                <div
+                  className='default_circle'
+                  style={{
+                    backgroundImage: `url('${this.state.profile_img}')`,
+                    backgroundSize: 'cover',
+                  }}></div>
+                <div className='people_label'>Your Feed</div>
+              </div>
+              {selected_group_data.splice(0, 3).map((g) => {
+                return (
+                  <div className='people_selected_list'>
+                    <div
+                      className='default_circle'
+                      style={{
+                        backgroundImage: `url('${g.group_img}')`,
+                        backgroundSize: 'cover',
+                      }}></div>
+                    <div className='people_label'>{g.name}</div>
+                  </div>
+                )
+              })}
+            </div>
+            <div className='add_more_people'>
+              <button type='button' className='add__people' onClick={this.addGroupToggle}>
+                Add
+              </button>
             </div>
           </div>
           <div className='compose__button'>

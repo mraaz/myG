@@ -346,6 +346,7 @@ export default class IndividualReply extends Component {
               className='profile__image'
               style={{
                 backgroundImage: `url('${profile_img}')`,
+                backgroundSize: 'cover',
               }}>
               <Link to={`/profile/${reply.alias}`} className='user-img'></Link> <div className='online__status'></div>
             </div>

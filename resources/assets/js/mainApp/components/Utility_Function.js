@@ -133,16 +133,18 @@ export async function Hash_Tags(inputValue) {
     })
   }
   try {
-    var newArr = []
-    var i, newOption
-
-    for (i = 0; i < allTags.data.allTags.length; i++) {
-      newOption = createOption_HashTags(allTags.data.allTags[i].content, allTags.data.allTags[i].id)
-      newArr.push(newOption)
+    let newArr = []
+    let i, newOption
+    if (allTags.data.allTags) {
+      for (i = 0; i < allTags.data.allTags.length; i++) {
+        newOption = createOption_HashTags(allTags.data.allTags[i].content, allTags.data.allTags[i].id)
+        newArr.push(newOption)
+      }
     }
     return newArr
   } catch (error) {
     console.log(error)
+    return []
   }
 }
 

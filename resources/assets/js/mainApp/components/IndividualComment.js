@@ -571,6 +571,7 @@ export default class IndividualComment extends Component {
               className='profile__image'
               style={{
                 backgroundImage: `url('${profile_img}')`,
+                backgroundSize: 'cover',
               }}>
               <Link to={`/profile/${comment.alias}`} className='user-img'></Link>
               <div className='online__status'></div>

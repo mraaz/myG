@@ -182,7 +182,7 @@ export default class IndividualPost extends Component {
 
     var post_id = this.props.post.id
 
-    const getmyPostCount = async function() {
+    const getmyPostCount = async function () {
       try {
         var i
 
@@ -198,7 +198,7 @@ export default class IndividualPost extends Component {
       }
     }
 
-    const getGroup_info = async function() {
+    const getGroup_info = async function () {
       try {
         var i
 
@@ -229,7 +229,7 @@ export default class IndividualPost extends Component {
     var post_id = this.props.post.id
     const self = this
 
-    const getComments = async function() {
+    const getComments = async function () {
       try {
         const myComments = await axios.get(`/api/comments/${post_id}`)
         self.setState({
@@ -379,7 +379,7 @@ export default class IndividualPost extends Component {
     const self = this
     var post_id = this.props.post.id
 
-    const editPost = async function() {
+    const editPost = async function () {
       try {
         const myEditPost = await axios.post(`/api/post/update/${post_id}`, {
           content: self.state.value2,
@@ -466,7 +466,7 @@ export default class IndividualPost extends Component {
       dropdown: false,
     })
     setTimeout(
-      function() {
+      function () {
         //Start the timer
         this.focusTextInput2()
       }.bind(this),
@@ -529,6 +529,16 @@ export default class IndividualPost extends Component {
     this.setState({ showmore: !this.state.showmore })
   }
 
+  renderHashTags = (hash_tags) => {
+    if (hash_tags.length > 0) {
+      return hash_tags.map((tags) => {
+        return <strong>#{tags}</strong>
+      })
+    } else {
+      return ''
+    }
+  }
+
   render() {
     const {
       myComments = [],
@@ -545,7 +555,10 @@ export default class IndividualPost extends Component {
       var show_media = false
 
       let { post } = this.props //destructing of object
-      let { profile_img = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png' } = post //destructing of object
+      let {
+        profile_img = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png',
+        hash_tags = [],
+      } = post //destructing of object
       //destructing of object
 
       if (media_urls != [] && media_urls != null) {
@@ -561,6 +574,7 @@ export default class IndividualPost extends Component {
                 className='profile__image'
                 style={{
                   backgroundImage: `url('${profile_img}')`,
+                  backgroundSize: 'cover',
                 }}>
                 <Link to={`/profile/${post.alias}`} className='user-img'></Link>
                 <div className='online__status'></div>
@@ -586,7 +600,10 @@ export default class IndividualPost extends Component {
                 {!this.state.edit_post && this.state.showmore && (
                   <p>
                     {this.state.content}
-                    <strong onClick={this.toggleShowmore}>See less</strong>
+                    <strong onClick={this.toggleShowmore}>
+                      {' '}
+                      {this.renderHashTags(hash_tags)} {' ... '}See less
+                    </strong>
                   </p>
                 )}
                 {!this.state.edit_post && !this.state.showmore && (
@@ -641,7 +658,7 @@ export default class IndividualPost extends Component {
                 />
               )}
               {postVideos.length > 0 &&
-                postVideos.map(function(data, index) {
+                postVideos.map(function (data, index) {
                   return (
                     <video className='post-video' controls>
                       <source src={data}></source>
@@ -715,6 +732,7 @@ export default class IndividualPost extends Component {
                 className='profile__image'
                 style={{
                   backgroundImage: `url('${post.profile_img}')`,
+                  backgroundSize: 'cover',
                 }}>
                 <Link to={`/profile/${post.alias}`} className='user-img'></Link>
                 <div className='online__status'></div>

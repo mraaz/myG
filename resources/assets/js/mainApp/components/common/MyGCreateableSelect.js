@@ -57,8 +57,6 @@ const MyGCreateableSelect = ({
       color: '#fff',
     }),
   }
-  console.log('onCreateOption')
-  console.log(onCreateOption)
   return (
     <CreatableSelect
       styles={customStyles}
