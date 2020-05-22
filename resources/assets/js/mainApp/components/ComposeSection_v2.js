@@ -102,7 +102,7 @@ export default class ComposeSection extends Component {
       open_compose_textTab: true,
       selected_group_data: [],
       selected_group: [],
-      value_tags=[]
+      value_tags: [],
     })
   }
 
@@ -200,7 +200,7 @@ export default class ComposeSection extends Component {
   get_posts = (post) => {
     const self = this
 
-    const getPosts = async function () {
+    const getPosts = async function() {
       try {
         const myPosts = await axios.get(`/api/mypost/${post.data}`)
         self.state.masterList = self.state.masterList.concat(myPosts.data.myPosts)
@@ -249,7 +249,7 @@ export default class ComposeSection extends Component {
       }
     }
 
-    const getGamers_you_might_know = async function () {
+    const getGamers_you_might_know = async function() {
       try {
         const gamers_you_might_know = await axios.get('/api/user/gamers_you_might_know')
 
@@ -269,7 +269,7 @@ export default class ComposeSection extends Component {
       open_compose_textTab = false
     }
     if (label == 'text') {
-      setTimeout(function () {
+      setTimeout(function() {
         document.getElementById('composeTextarea').focus()
       }, 0)
     }
@@ -360,7 +360,7 @@ export default class ComposeSection extends Component {
   getOptions_tags = (inputValue) => {
     const self = this
 
-    const getInitialData = async function (inputValue) {
+    const getInitialData = async function(inputValue) {
       try {
         var results = await Hash_Tags(inputValue)
         self.setState({ options_tags: results })
