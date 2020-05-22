@@ -1,3 +1,8 @@
+/*
+ * Author : nitin Tyagi
+ * github  : https://github.com/realinit
+ * Email : nitin.1992tyagi@gmail.com
+ */
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
@@ -139,7 +144,7 @@ export default class IndividualPost extends Component {
     let { post } = this.props
 
     const self = this
-    const media_url = post.media_url ? JSON.parse(post.media_url) : ''
+    const media_url = post.media_url.length > 0 ? JSON.parse(post.media_url) : ''
     const postImages = []
     const postVideos = []
 
@@ -534,7 +539,7 @@ export default class IndividualPost extends Component {
   renderHashTags = (hash_tags) => {
     if (hash_tags.length > 0) {
       return hash_tags.map((tags) => {
-        return <strong>#{tags}</strong>
+        return <strong>#{tags.content}</strong>
       })
     } else {
       return ''
