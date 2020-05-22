@@ -33,7 +33,6 @@ class PostController {
             if (arrTags != '') {
               let PHController = new PostHashTagTransactionController()
               for (var i = 0; i < arrTags.length; i++) {
-                console.log(newPost.id)
                 PHController.store({ auth }, newPost.id, arrTags[i])
 
                 const update_counter = await HashTags.query()
@@ -59,7 +58,6 @@ class PostController {
               if (arrTags != '') {
                 let PHController = new PostHashTagTransactionController()
                 for (var i = 0; i < arrTags.length; i++) {
-                  console.log(newPost.id)
                   PHController.store({ auth }, newPost.id, arrTags[i])
 
                   const update_counter = await HashTags.query()

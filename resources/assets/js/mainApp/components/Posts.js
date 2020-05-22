@@ -27,6 +27,11 @@ export default class Posts extends Component {
     const { myPosts = [] } = this.state
     if (myPosts.length > 0) {
       return myPosts.map((item, index) => {
+        try {
+          let media_url = item.media_url.length > 0 ? JSON.parse(item.media_url) : ''
+        } catch (e) {
+          item.media_url = ''
+        }
         return <IndividualPost post={item} key={index} user={this.props.initialData} source={'news_feed'} />
       })
     }
