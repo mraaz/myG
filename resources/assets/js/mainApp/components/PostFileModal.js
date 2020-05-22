@@ -86,10 +86,11 @@ export default class PostFileModal extends Component {
   }
 
   handleSubmit = () => {
+    const { selected_group = [], selected_group_data = [], visibility } = this.state
     this.props.callbackConfirm({
-      selected_group: this.state.selected_group,
-      selected_group_data: this.state.selected_group_data,
-      visibility: this.state.visibility,
+      selected_group: selected_group,
+      selected_group_data: selected_group_data,
+      visibility: visibility,
     })
 
     this.setState({

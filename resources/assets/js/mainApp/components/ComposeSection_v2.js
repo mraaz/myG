@@ -134,7 +134,6 @@ export default class ComposeSection extends Component {
       }
     }
     hash_tags = hash_tags.toString()
-
     try {
       const post = await axios.post('/api/post', {
         content: content,
