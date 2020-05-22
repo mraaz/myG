@@ -19,7 +19,7 @@ export default class IndividualComment extends Component {
       reply_total: 0,
       reply_name_box: '',
       value: '',
-      show_more_replies: false,
+      show_more_replies: true,
       dropdown: false,
       comment_deleted: false,
       show_comment_options: false,
@@ -30,6 +30,7 @@ export default class IndividualComment extends Component {
       uploading: false,
       preview_file: [],
       file_keys: [],
+      hideReplies: false,
     }
     this.textInput = null
     this.fileInputRef = React.createRef()
@@ -222,7 +223,7 @@ export default class IndividualComment extends Component {
     }
   }
   show_more_replies = () => {
-    this.setState({ show_more_replies: !this.state.show_more_replies })
+    this.setState({ show_more_replies: !this.state.show_more_replies, hideReplies: false })
   }
 
   showReplies = () => {
@@ -508,10 +509,14 @@ export default class IndividualComment extends Component {
     })
   }
 
+  hide_replies = () => {
+    this.setState({ hideReplies: true })
+  }
+
   render() {
     let { comment } = this.props
     let { profile_img = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png' } = comment
-    const { myReplies = [], show_more_replies = false } = this.state
+    const { myReplies = [], show_more_replies = true, hideReplies = false } = this.state
     if (this.state.comment_deleted != true) {
       return (
         <div className='individual-comment-container'>
@@ -571,6 +576,7 @@ export default class IndividualComment extends Component {
               className='profile__image'
               style={{
                 backgroundImage: `url('${profile_img}')`,
+                backgroundSize: 'cover',
               }}>
               <Link to={`/profile/${comment.alias}`} className='user-img'></Link>
               <div className='online__status'></div>
@@ -600,13 +606,14 @@ export default class IndividualComment extends Component {
 
           {/* comment reply start */}
           <div className='comment-panel'>
-            {myReplies.length > 1 && (
-              <div className='show__moreReply' onClick={this.show_more_replies}>{` ${show_more_replies ? 'Hide' : 'View'} all (${
-                myReplies.length
-              }) replies`}</div>
-            )}
-            {!show_more_replies && this.showReplies()}
-            {show_more_replies && this.showMoreReplies()}
+            {myReplies.length > 1 &&
+              (show_more_replies || hideReplies ? (
+                <div className='show__moreReply' onClick={this.show_more_replies}>{` View all (${myReplies.length}) replies`}</div>
+              ) : (
+                <div className='show__moreReply' onClick={this.hide_replies}>{` Hide all (${myReplies.length}) replies`}</div>
+              ))}
+            {show_more_replies && !hideReplies && this.showReplies()}
+            {!show_more_replies && !hideReplies && this.showMoreReplies()}
 
             {this.state.show_add_reply && (
               <div className='add-reply'>
