@@ -409,7 +409,18 @@ export default class ComposeSection extends Component {
             <div className='text__editor__section'>
               <div className='media'>
                 {preview_filesData.length > 0 && (
-                  <ImageGallery items={previewImageGallery} showBullets={false} autoPlay={false} isRTL={false} disableSwipe={false} y />
+                  <ImageGallery
+                    lazyLoad={true}
+                    showThumbnails={false}
+                    showPlayButton={false}
+                    items={previewImageGallery}
+                    showBullets={true}
+                    autoPlay={false}
+                    isRTL={false}
+                    disableSwipe={false}
+                    showNav={true}
+                    showFullscreenButton={false}
+                  />
                 )}
               </div>
               <textarea
