@@ -38,7 +38,7 @@ export default class Posts extends Component {
     }
     const self = this
 
-    const getPosts = async function () {
+    const getPosts = async function() {
       try {
         // const myPosts = await axios.get(`/api/post/${self.state.counter}`)
 
@@ -53,7 +53,7 @@ export default class Posts extends Component {
             })
           },
         })
-
+        console.log(myPosts)
         if (myPosts.data.myPosts.length == 0) {
           self.setState({
             moreplease: false,

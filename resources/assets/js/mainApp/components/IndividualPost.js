@@ -182,7 +182,7 @@ export default class IndividualPost extends Component {
 
     var post_id = this.props.post.id
 
-    const getmyPostCount = async function () {
+    const getmyPostCount = async function() {
       try {
         var i
 
@@ -198,7 +198,7 @@ export default class IndividualPost extends Component {
       }
     }
 
-    const getGroup_info = async function () {
+    const getGroup_info = async function() {
       try {
         var i
 
@@ -229,7 +229,7 @@ export default class IndividualPost extends Component {
     var post_id = this.props.post.id
     const self = this
 
-    const getComments = async function () {
+    const getComments = async function() {
       try {
         const myComments = await axios.get(`/api/comments/${post_id}`)
         self.setState({
@@ -379,7 +379,7 @@ export default class IndividualPost extends Component {
     const self = this
     var post_id = this.props.post.id
 
-    const editPost = async function () {
+    const editPost = async function() {
       try {
         const myEditPost = await axios.post(`/api/post/update/${post_id}`, {
           content: self.state.value2,
@@ -466,7 +466,7 @@ export default class IndividualPost extends Component {
       dropdown: false,
     })
     setTimeout(
-      function () {
+      function() {
         //Start the timer
         this.focusTextInput2()
       }.bind(this),
@@ -641,7 +641,7 @@ export default class IndividualPost extends Component {
                 />
               )}
               {postVideos.length > 0 &&
-                postVideos.map(function (data, index) {
+                postVideos.map(function(data, index) {
                   return (
                     <video className='post-video' controls>
                       <source src={data}></source>

@@ -154,9 +154,8 @@ class PostController {
   }
 
   async show({ auth, request, response }) {
+    console.log('In thewre')
     try {
-      let likeController = new LikeController()
-
       const myFriendsPosts = await Database.select('*', 'posts.id', 'posts.updated_at')
         .from('friends')
         .innerJoin('posts', 'posts.user_id', 'friends.friend_id')
@@ -177,26 +176,9 @@ class PostController {
 
       const _1stpass = [...myFriendsPosts.data, ...ppl_im_following_Posts.data]
       const uniqueSet = new Set(_1stpass)
-      const myPosts = [...uniqueSet]
+      let myPosts = [...uniqueSet]
 
-      for (var i = 0; i < myPosts.length; i++) {
-        request.params.id = myPosts[i].id
-        var myLikes = await likeController.show({ auth, request, response })
-
-        myPosts[i].total = myLikes.number_of_likes[0].total
-        myPosts[i].no_of_comments = myLikes.no_of_comments[0].no_of_comments
-        if (myLikes.number_of_likes[0].total != 0) {
-          myPosts[i].admirer_first_name = myLikes.admirer_UserInfo.alias
-        } else {
-          myPosts[i].admirer_first_name = ''
-        }
-        if (myLikes.do_I_like_it[0].myOpinion != 0) {
-          myPosts[i].do_I_like_it = true
-        } else {
-          myPosts[i].do_I_like_it = false
-        }
-      }
-
+      myPosts = await this.get_additional_info({ auth, request, response }, myPosts)
       return {
         myPosts,
       }
@@ -206,32 +188,15 @@ class PostController {
   }
 
   async myshow({ auth, request, response }) {
-    let likeController = new LikeController()
     try {
-      const myPosts = await Database.from('posts')
+      let myPosts = await Database.from('posts')
         .innerJoin('users', 'users.id', 'posts.user_id')
         .where('posts.id', '=', request.params.id)
         .select('*', 'posts.id', 'posts.created_at', 'posts.updated_at')
         .orderBy('posts.created_at', 'desc')
         .limit(1)
 
-      for (var i = 0; i < myPosts.length; i++) {
-        request.params.id = myPosts[i].id
-        var myLikes = await likeController.show({ auth, request, response })
-
-        myPosts[i].total = myLikes.number_of_likes[0].total
-        myPosts[i].no_of_comments = myLikes.no_of_comments[0].no_of_comments
-        if (myLikes.number_of_likes[0].total != 0) {
-          myPosts[i].admirer_first_name = myLikes.admirer_UserInfo.alias
-        } else {
-          myPosts[i].admirer_first_name = ''
-        }
-        if (myLikes.do_I_like_it[0].myOpinion != 0) {
-          myPosts[i].do_I_like_it = true
-        } else {
-          myPosts[i].do_I_like_it = false
-        }
-      }
+      myPosts = await this.get_additional_info({ auth, request, response }, myPosts)
 
       return {
         myPosts,
@@ -242,30 +207,13 @@ class PostController {
   }
 
   async showpost({ auth, request, response }) {
-    let likeController = new LikeController()
     try {
-      const myPost = await Database.from('posts')
+      let myPost = await Database.from('posts')
         .innerJoin('users', 'users.id', 'posts.user_id')
         .where('posts.id', '=', request.params.id)
         .select('*', 'posts.id', 'posts.created_at', 'posts.updated_at')
 
-      for (var i = 0; i < myPosts.length; i++) {
-        request.params.id = myPosts[i].id
-        var myLikes = await likeController.show({ auth, request, response })
-
-        myPosts[i].total = myLikes.number_of_likes[0].total
-        myPosts[i].no_of_comments = myLikes.no_of_comments[0].no_of_comments
-        if (myLikes.number_of_likes[0].total != 0) {
-          myPosts[i].admirer_first_name = myLikes.admirer_UserInfo.alias
-        } else {
-          myPosts[i].admirer_first_name = ''
-        }
-        if (myLikes.do_I_like_it[0].myOpinion != 0) {
-          myPosts[i].do_I_like_it = true
-        } else {
-          myPosts[i].do_I_like_it = false
-        }
-      }
+      myPost = await this.get_additional_info({ auth, request, response }, myPost)
 
       return {
         myPost,
@@ -276,33 +224,15 @@ class PostController {
   }
 
   async showmyposts({ auth, request, response }) {
-    let likeController = new LikeController()
-
     try {
-      const myPosts = await Database.from('posts')
+      let myPosts = await Database.from('posts')
         .innerJoin('users', 'users.id', 'posts.user_id')
         .where({ user_id: auth.user.id })
         .select('*', 'posts.id', 'posts.updated_at')
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.paginateNo, 10)
 
-      for (var i = 0; i < myPosts.data.length; i++) {
-        request.params.id = myPosts.data[i].id
-        var myLikes = await likeController.show({ auth, request, response })
-
-        myPosts.data[i].total = myLikes.number_of_likes[0].total
-        myPosts.data[i].no_of_comments = myLikes.no_of_comments[0].no_of_comments
-        if (myLikes.number_of_likes[0].total != 0) {
-          myPosts.data[i].admirer_first_name = myLikes.admirer_UserInfo.alias
-        } else {
-          myPosts.data[i].admirer_first_name = ''
-        }
-        if (myLikes.do_I_like_it[0].myOpinion != 0) {
-          myPosts.data[i].do_I_like_it = true
-        } else {
-          myPosts.data[i].do_I_like_it = false
-        }
-      }
+      myPosts = await this.get_additional_info({ auth, request, response }, myPosts)
 
       return {
         myPosts,
@@ -313,32 +243,15 @@ class PostController {
   }
 
   async get_group_posts({ auth, request, response }) {
-    let likeController = new LikeController()
     try {
-      const groupPosts = await Database.from('posts')
+      let groupPosts = await Database.from('posts')
         .innerJoin('users', 'users.id', 'posts.user_id')
         .where({ group_id: request.params.id })
         .select('*', 'posts.id', 'posts.updated_at')
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.paginateNo, 10)
 
-      for (var i = 0; i < groupPosts.data.length; i++) {
-        request.params.id = groupPosts.data[i].id
-        var myLikes = await likeController.show({ auth, request, response })
-
-        groupPosts.data[i].total = myLikes.number_of_likes[0].total
-        groupPosts.data[i].no_of_comments = myLikes.no_of_comments[0].no_of_comments
-        if (myLikes.number_of_likes[0].total != 0) {
-          groupPosts.data[i].admirer_first_name = myLikes.admirer_UserInfo.alias
-        } else {
-          groupPosts.data[i].admirer_first_name = ''
-        }
-        if (myLikes.do_I_like_it[0].myOpinion != 0) {
-          groupPosts.data[i].do_I_like_it = true
-        } else {
-          groupPosts.data[i].do_I_like_it = false
-        }
-      }
+      groupPosts = await this.get_additional_info({ auth, request, response }, groupPosts)
 
       return {
         groupPosts,
@@ -394,6 +307,41 @@ class PostController {
         console.log(error)
       }
     }
+  }
+
+  async get_additional_info({ auth, request, response }, post) {
+    try {
+      let likeController = new LikeController()
+      for (var i = 0; i < post.length; i++) {
+        request.params.id = post[i].id
+        var myLikes = await likeController.show({ auth, request, response })
+
+        post[i].total = myLikes.number_of_likes[0].total
+        post[i].no_of_comments = myLikes.no_of_comments[0].no_of_comments
+        if (myLikes.number_of_likes[0].total != 0) {
+          post[i].admirer_first_name = myLikes.admirer_UserInfo.alias
+        } else {
+          post[i].admirer_first_name = ''
+        }
+        if (myLikes.do_I_like_it[0].myOpinion != 0) {
+          post[i].do_I_like_it = true
+        } else {
+          post[i].do_I_like_it = false
+        }
+
+        const myHashTags = await Database.from('post_hash_tag_transactions')
+          .innerJoin('hash_tags', 'hash_tags.id', 'post_hash_tag_transactions.hash_tag_id')
+          .where('post_hash_tag_transactions.post_id', '=', post[i].id)
+          .select('hash_tags.content', 'hash_tags.id')
+          .orderBy('post_hash_tag_transactions.updated_at', 'desc')
+
+        post[i].hash_tags = myHashTags
+      }
+    } catch (error) {
+      console.log(error)
+    }
+
+    return post
   }
 }
 
