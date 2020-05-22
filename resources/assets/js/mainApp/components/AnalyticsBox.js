@@ -61,7 +61,7 @@ export default class AnalyticsBox extends Component {
               {/* <div className={`circle-wrap ${user_xp_negative_balance ? 'red' : 'yellow'}`}>
                 <div className='inside-circle-level'>Level</div>
                 <div className='inside-circle-value'>{user_level}</div>
-               <div className='inside-circle-value'>{level_max_points}</div> 
+               <div className='inside-circle-value'>{level_max_points}</div>
               </div> */}
               <Progress
                 className={`circle-wrap`}
@@ -86,7 +86,7 @@ export default class AnalyticsBox extends Component {
 
           <div className='social-box'>
             <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/connection.png'
+              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_Network.svg'
               className='social-box-img'
             />
             <p className='social-box-count'>{connections}</p>
@@ -96,7 +96,7 @@ export default class AnalyticsBox extends Component {
 
           <div className='social-box'>
             <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/follower.png'
+              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_followers.svg'
               className='social-box-img'
             />
             <p className='social-box-count'>{followers}</p>
@@ -106,7 +106,7 @@ export default class AnalyticsBox extends Component {
 
           <div className='social-box'>
             <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/games.png'
+              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_games.svg'
               className='social-box-img'
             />
             <p className='social-box-count'>{games}</p>
@@ -126,7 +126,7 @@ export default class AnalyticsBox extends Component {
 
           <div className='social-box'>
             <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/reviews.png'
+              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_reviews.svg'
               className='social-box-img'
             />
             <p className='social-box-count'>{commendations}</p>
