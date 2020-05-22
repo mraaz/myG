@@ -39,13 +39,14 @@ export default class IndividualPost extends Component {
       disableSwipe: false,
       show_group_name: false,
       group_name: '',
-      show_more_comments: false,
+      show_more_comments: true,
       preview_file: '',
       aws_key: '',
       file_keys: '',
       postImages: [],
       postVideos: [],
       showmore: false,
+      hideComments: false,
     }
     this.imageFileType = ['jpeg', 'jpg', 'png', 'gif']
     this.videoFileType = ['mov', 'webm', 'mpg', 'mp4', 'avi', 'ogg']
@@ -257,6 +258,7 @@ export default class IndividualPost extends Component {
     this.setState({
       show_comments: !show_comments,
       show_more_comments: !show_more_comments,
+      hideComments: false,
     })
   }
 
@@ -268,7 +270,7 @@ export default class IndividualPost extends Component {
     }
     this.setState({
       show_comments: !show_comments,
-      show_more_comments: false,
+      show_more_comments: true,
     })
     if (!show_comments) {
       this.focusTextInput()
@@ -539,6 +541,10 @@ export default class IndividualPost extends Component {
     }
   }
 
+  hide_comments = () => {
+    this.setState({ hideComments: true })
+  }
+
   render() {
     const {
       myComments = [],
@@ -550,6 +556,7 @@ export default class IndividualPost extends Component {
       show_more_comments = false,
       postImages,
       postVideos,
+      hideComments,
     } = this.state
     if (post_deleted != true) {
       var show_media = false
@@ -702,15 +709,18 @@ export default class IndividualPost extends Component {
               )}
             </div> */}
             </div>
-            {myComments.length > 3 && (
-              <div className='show__comments_count' onClick={this.show_more_comments}>{` ${show_more_comments ? 'Hide' : 'View'} all (${
-                myComments.length
-              }) comments`}</div>
-            )}
-            {myComments.length > 0 && (
+            {myComments.length > 3 &&
+              (show_more_comments || hideComments ? (
+                <div className='show__comments_count' onClick={this.show_more_comments}>{` View all (${myComments.length}) comments`}</div>
+              ) : (
+                <div className='show__comments_count' onClick={this.hide_comments}>
+                  {` Hide all (${myComments.length}) comments`}
+                </div>
+              ))}
+            {myComments.length > 0 && !hideComments && (
               <div className='comments'>
-                {!show_more_comments && <div className='show-individual-comments'>{this.showComment()}</div>}
-                {show_more_comments && <div className='show-individual-comments'>{this.showMoreComment()}</div>}
+                {show_more_comments && <div className='show-individual-comments'>{this.showComment()}</div>}
+                {!show_more_comments && <div className='show-individual-comments'>{this.showMoreComment()}</div>}
               </div>
             )}
             <div className='compose-comment'>
