@@ -334,21 +334,6 @@ export default class ComposeSection extends Component {
     this.setState({ bFileModalOpen: !this.state.bFileModalOpen })
   }
 
-  getSearchGroup = async (e) => {
-    const searchText = e.target.value
-    const groups = [...this.state.groups_im_in]
-    if (searchText != '') {
-      const groups_im_in = groups.filter((g) => g.name.includes(searchText))
-      this.setState({ groups_im_in, searchText })
-    } else {
-      const getGroups_im_in = await axios.get('/api/usergroup/view')
-      this.setState({
-        groups_im_in: getGroups_im_in.data.groups_im_in,
-        searchText,
-      })
-    }
-  }
-
   handleGroupCheck = (e, id) => {
     let selected_group = [...this.state.selected_group]
     const value = event.target.checked

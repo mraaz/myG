@@ -126,7 +126,6 @@ export default class PostFileModal extends Component {
 
   getSearchGroup = async (e) => {
     const searchText = e.target.value
-    const groups = [...this.state.groups_im_in]
     if (searchText != '') {
       const gd = await axios.get(`/api/groups/${searchText}/groupSearchResults_Post`)
       let groups_im_in = gd.data.myGroupSearchResults
@@ -134,7 +133,6 @@ export default class PostFileModal extends Component {
       if (groups_im_not_in.length > 0) {
         groups_im_in = this.getMergedGroupData(groups_im_in, groups_im_not_in)
       }
-
       this.setState({ groups_im_in, searchText })
     } else {
       const getGroups_im_in = await axios.get('/api/usergroup/view/1')
