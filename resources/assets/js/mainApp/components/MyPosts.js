@@ -17,7 +17,7 @@ export default class MyPosts extends Component {
       myPosts: [],
       moreplease: true,
       isFetching: false,
-      post_submit_loading: 0,
+      post_submit_loading: false,
     }
   }
 
@@ -60,12 +60,11 @@ export default class MyPosts extends Component {
           onDownloadProgress: (progressEvent) => {
             const { loaded = 0, total = 0 } = progressEvent
             const percentCompleted = Math.round((loaded * 100) / total)
-            self.setState({
-              post_submit_loading: percentCompleted,
-            })
+            // self.setState({
+            //   post_submit_loading: percentCompleted,
+            // })
           },
         })
-        console.log(data)
         if (data.data.myPosts.length == 0) {
           this.setState({
             myPosts: [...myPosts],
@@ -106,13 +105,13 @@ export default class MyPosts extends Component {
     const { myPosts = [] } = this.state
     this.setState(
       {
-        isFetching: true,
+        post_submit_loading: true,
       },
       () => {
         this.setState({
           myPosts: [...data.data.myPosts, ...myPosts],
           moreplease: data.data.myPosts.lastPage == 1 ? false : true,
-          isFetching: false,
+          post_submit_loading: false,
         })
       }
     )
@@ -126,7 +125,7 @@ export default class MyPosts extends Component {
           successCallback={this.composeSuccess}
           initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData}
         />
-        {isFetching && (
+        {post_submit_loading && (
           <div className='timeline-item'>
             <div className='animated-background'>
               <div className='background-masker header-top'></div>
@@ -145,7 +144,7 @@ export default class MyPosts extends Component {
             </div>
           </div>
         )}
-        {!isFetching && myPosts.length > 0 && (
+        {myPosts.length > 0 && !post_submit_loading && (
           <section id='posts' className={isFetching ? '' : `active`}>
             <InfiniteScroll dataLength={myPosts.length} next={this.fetchMoreData} hasMore={moreplease}>
               {this.showLatestPosts()}

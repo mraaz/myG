@@ -3,7 +3,7 @@
  * github  : https://github.com/realinit
  * Email : nitin.1992tyagi@gmail.com
  */
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import IndividualComment from './IndividualComment'
@@ -616,19 +616,21 @@ export default class IndividualPost extends Component {
               </div>
               <div className='post__content'>
                 {!this.state.edit_post && this.state.showmore && (
-                  <p>
-                    {this.state.content}
-                    <strong onClick={this.toggleShowmore}>
-                      {' '}
-                      {this.renderHashTags(hash_tags)} {' ... '}See less
-                    </strong>
-                  </p>
+                  <Fragment>
+                    <p>
+                      {`${this.state.content}  `}
+                      {this.renderHashTags(hash_tags)}
+                      <strong onClick={this.toggleShowmore}>{' ... '}See less</strong>
+                    </p>
+                  </Fragment>
                 )}
                 {!this.state.edit_post && !this.state.showmore && (
-                  <p>
-                    {this.state.content.length > 254 ? `${this.state.content.slice(0, 254)}... ` : this.state.content}
-                    {this.state.content.length > 254 && <strong onClick={this.toggleShowmore}>See more</strong>}
-                  </p>
+                  <Fragment>
+                    <p>
+                      {`${this.state.content.slice(0, 254)}  `} {this.renderHashTags(hash_tags)} {' ... '}
+                      {this.state.content.length > 254 && <strong onClick={this.toggleShowmore}>See more</strong>}
+                    </p>
+                  </Fragment>
                 )}
 
                 {this.state.edit_post && (

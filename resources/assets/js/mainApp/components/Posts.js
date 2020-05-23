@@ -11,7 +11,7 @@ export default class Posts extends Component {
       counter: 0,
       myPosts: [],
       moreplease: true,
-      post_submit_loading: 0,
+      post_submit_loading: false,
     }
   }
 
@@ -43,7 +43,7 @@ export default class Posts extends Component {
     }
     const self = this
 
-    const getPosts = async function() {
+    const getPosts = async function () {
       try {
         // const myPosts = await axios.get(`/api/post/${self.state.counter}`)
 
@@ -52,10 +52,6 @@ export default class Posts extends Component {
           url: `/api/post/${self.state.counter}`,
           onDownloadProgress: (progressEvent) => {
             const { loaded = 0, total = 0 } = progressEvent
-            const percentCompleted = Math.round((loaded * 100) / total)
-            self.setState({
-              post_submit_loading: percentCompleted,
-            })
           },
         })
         console.log(myPosts)
@@ -94,28 +90,28 @@ export default class Posts extends Component {
   composeSuccess = async (data) => {
     this.setState(
       {
-        isFetching: true,
+        post_submit_loading: true,
       },
       () => {
         const { myPosts = [] } = this.state
         this.setState({
           myPosts: [...data.data.myPosts, ...myPosts],
           moreplease: data.data.myPosts.lastPage == 1 ? false : true,
-          isFetching: false,
+          post_submit_loading: false,
         })
       }
     )
   }
 
   render() {
-    const { myPosts = [], moreplease, isFetching = false, post_submit_loading } = this.state
+    const { myPosts = [], moreplease, isFetching = false, post_submit_loading = false } = this.state
     return (
       <Fragment>
         <ComposeSection
           successCallback={this.composeSuccess}
           initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData}
         />
-        {isFetching && (
+        {post_submit_loading && (
           <div className='timeline-item'>
             <div className='animated-background'>
               <div className='background-masker header-top'></div>
@@ -134,7 +130,7 @@ export default class Posts extends Component {
             </div>
           </div>
         )}
-        {!isFetching && myPosts.length > 0 && (
+        {myPosts.length > 0 && !post_submit_loading && (
           <section id='posts' className={isFetching ? '' : `active`}>
             <InfiniteScroll dataLength={myPosts.length} next={this.fetchMoreData} hasMore={moreplease}>
               {this.showLatestPosts()}

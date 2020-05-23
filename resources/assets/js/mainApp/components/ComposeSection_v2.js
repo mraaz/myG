@@ -42,7 +42,7 @@ export default class ComposeSection extends Component {
       preview_files: [],
       visibility: 1,
       overlay_active: false,
-      group_id: '',
+      group_id: [],
       options_tags: '',
       value_tags: [],
     }
@@ -66,7 +66,7 @@ export default class ComposeSection extends Component {
     try {
       this.setState({
         bFileModalOpen: false,
-        group_id: callbackData.selected_group.toString(),
+        group_id: callbackData.selected_group,
         selected_group_data: callbackData.selected_group_data,
         visibility: callbackData.visibility,
       })
@@ -102,8 +102,9 @@ export default class ComposeSection extends Component {
       overlay_active: false,
       open_compose_textTab: true,
       selected_group_data: [],
-      selected_group: [],
+      group_id: [],
       value_tags: [],
+      visibility: 1,
     })
   }
 
@@ -143,7 +144,7 @@ export default class ComposeSection extends Component {
         user_id: this.props.initialData.userInfo.id,
         type: 'text',
         visibility: this.state.visibility,
-        group_id: this.state.group_id,
+        group_id: this.state.group_id.toString(),
         media_url: media_url.length > 0 ? JSON.stringify(media_url) : '',
         file_keys: keys.length > 0 ? keys : '',
         hash_tags: hash_tags,
@@ -336,17 +337,6 @@ export default class ComposeSection extends Component {
     this.setState({ bFileModalOpen: !this.state.bFileModalOpen })
   }
 
-  handleGroupCheck = (e, id) => {
-    let selected_group = [...this.state.selected_group]
-    const value = event.target.checked
-    if (value) {
-      selected_group.push(id)
-    } else {
-      selected_group = selected_group.filter((gid) => gid != id)
-    }
-    this.setState({ selected_group })
-  }
-
   handleCreateHashTags = (inputValue) => {
     if (inputValue.length > 88) {
       toast.success(<Toast_style text={'Sorry mate! Tag length is tooo long.'} />)
@@ -376,7 +366,8 @@ export default class ComposeSection extends Component {
     this.setState({ value_tags })
   }
 
-  handlePreviewRemove = (src) => {
+  handlePreviewRemove = (e, src) => {
+    e.preventDefault()
     let preview_files = [...this.state.preview_files]
     preview_files = preview_files.filter((data) => data.src != src)
     this.setState({ preview_files })
@@ -388,11 +379,20 @@ export default class ComposeSection extends Component {
   }
 
   render() {
-    const { open_compose_textTab, bFileModalOpen, preview_files = [], selected_group_data, overlay_active, post_content = '' } = this.state
+    const {
+      open_compose_textTab,
+      bFileModalOpen,
+      preview_files = [],
+      selected_group_data,
+      group_id,
+      overlay_active,
+      post_content = '',
+    } = this.state
     const isButtonDisable = post_content != '' || preview_files.length > 0 ? true : false
     const groups = [...selected_group_data]
     const preview_filesData = [...preview_files]
     const previewImageGallery = this.getPreviewImageGallery(preview_filesData)
+
     return (
       <Fragment>
         <section className={`postCompose__container ${overlay_active ? 'zI1000' : ''}`}>
@@ -471,7 +471,7 @@ export default class ComposeSection extends Component {
                           {preview_filesData.slice(0, 3).map((file) => (
                             <span className='image'>
                               <img src={file.src} key={file.src} />
-                              <span className='remove__image' onClick={(e) => this.handlePreviewRemove(file.src)}>
+                              <span className='remove__image' onClick={(e) => this.handlePreviewRemove(e, file.src)}>
                                 X
                               </span>
                             </span>
@@ -559,54 +559,11 @@ export default class ComposeSection extends Component {
               callbackConfirm={this.callbackPostFileModalConfirm}
               callbackContentConfirm={this.submitForm}
               open_compose_textTab={open_compose_textTab}
-              selected_group_data={this.state.selected_group_data}
-              selected_group={this.state.selected_group}
+              selected_group_data={selected_group_data}
+              selected_group={group_id}
+              visibility={this.state.visibility}
             />
           )}
-
-          {/* <section className='compose-area'>
-        <div className='compose-section'>
-          <textarea
-            rows={8}
-            cols={80}
-            onChange={this.handleChange_txtArea}
-            onKeyDown={this.detectKey}
-            maxLength='254'
-            value={this.state.post_content}
-            placeholder="What's up..."
-          />
-          <Select
-            onChange={this.handleChange_visibility}
-            options={visibility_options}
-            placeholder='Who should see this?'
-            className='visibility_box'
-            defaultValue={[{ label: 'Everyone', value: 1 }]}
-          />
-          <div className='user-img' />
-          <Link
-            to={`/profile/${this.state.alias}`}
-            className='user-img'
-            style={{
-              backgroundImage: `url('${this.state.profile_img}')`,
-            }}></Link>
-          <PostFileModal
-            bOpen={this.state.bFileModalOpen}
-            fileType={this.state.fileType}
-            callbackClose={this.callbackPostFileModalClose}
-            callbackConfirm={this.callbackPostFileModalConfirm}></PostFileModal>
-          <div className='buttons'>
-            <div className=' button photo-btn' onClick={() => this.openPhotoPost()}>
-              <i className='far fa-images' />
-            </div>
-            <div className='button video-btn' onClick={() => this.openVideoPost()}>
-              <i className='far fa-play-circle' />
-            </div>
-            <div className='button send-btn' onClick={this.submitForm}>
-              <i className='far fa-paper-plane' />
-            </div>
-          </div>
-        </div>
-      </section> */}
         </section>
         <div className={`highlight_overlay ${overlay_active ? 'active' : ''}`} onClick={this.handleOverlayClick}></div>
       </Fragment>
