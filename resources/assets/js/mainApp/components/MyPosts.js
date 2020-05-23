@@ -60,9 +60,9 @@ export default class MyPosts extends Component {
           onDownloadProgress: (progressEvent) => {
             const { loaded = 0, total = 0 } = progressEvent
             const percentCompleted = Math.round((loaded * 100) / total)
-            self.setState({
-              post_submit_loading: percentCompleted,
-            })
+            // self.setState({
+            //   post_submit_loading: percentCompleted,
+            // })
           },
         })
         if (data.data.myPosts.length == 0) {
