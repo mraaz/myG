@@ -366,7 +366,8 @@ export default class ComposeSection extends Component {
     this.setState({ value_tags })
   }
 
-  handlePreviewRemove = (src) => {
+  handlePreviewRemove = (e, src) => {
+    e.preventDefault()
     let preview_files = [...this.state.preview_files]
     preview_files = preview_files.filter((data) => data.src != src)
     this.setState({ preview_files })
@@ -470,7 +471,7 @@ export default class ComposeSection extends Component {
                           {preview_filesData.slice(0, 3).map((file) => (
                             <span className='image'>
                               <img src={file.src} key={file.src} />
-                              <span className='remove__image' onClick={(e) => this.handlePreviewRemove(file.src)}>
+                              <span className='remove__image' onClick={(e) => this.handlePreviewRemove(e, file.src)}>
                                 X
                               </span>
                             </span>
