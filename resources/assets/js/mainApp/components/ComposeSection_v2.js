@@ -159,6 +159,9 @@ export default class ComposeSection extends Component {
           visibility: 1,
           overlay_active: false,
           value_tags: [],
+          selected_group_data: [],
+          selected_group: [],
+          group_id: [],
         },
         () => {
           media_url = []

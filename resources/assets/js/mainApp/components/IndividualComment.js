@@ -234,13 +234,14 @@ export default class IndividualComment extends Component {
   showReplies = () => {
     const { myReplies = [] } = this.state
     const replies = [...myReplies]
-    const repliesArr = replies.length > 1 ? replies.slice(0, 1) : replies
+    const len = replies.length
+    const repliesArr = replies.length > 1 ? replies.slice(len - 1, len) : replies
     if (repliesArr.length > 0) {
       return repliesArr.map((item, index) => {
         return (
           <IndividualReply
             reply={item}
-            key={index}
+            key={item.id}
             comment_user_id={this.props.comment.user_id}
             post_id={this.props.comment.post_id}
             user={this.props.user}
