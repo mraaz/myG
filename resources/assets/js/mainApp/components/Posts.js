@@ -43,7 +43,7 @@ export default class Posts extends Component {
     }
     const self = this
 
-    const getPosts = async function() {
+    const getPosts = async function () {
       try {
         // const myPosts = await axios.get(`/api/post/${self.state.counter}`)
 
@@ -134,7 +134,7 @@ export default class Posts extends Component {
             </div>
           </div>
         )}
-        {!isFetching && myPosts.length > 0 && (
+        {myPosts.length > 0 && (
           <section id='posts' className={isFetching ? '' : `active`}>
             <InfiniteScroll dataLength={myPosts.length} next={this.fetchMoreData} hasMore={moreplease}>
               {this.showLatestPosts()}
