@@ -30,7 +30,7 @@ export default class PostFileModal extends Component {
     this.closeModal = this.closeModal.bind(this)
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const getmyGroups = async () => {
       try {
         const getmyGroups = await axios.get('/api/groups/view/1')
@@ -52,12 +52,14 @@ export default class PostFileModal extends Component {
         console.log(error)
       }
     }
-    const { selected_group = [], selected_group_data = [] } = this.props
+    const { selected_group = [], selected_group_data = [], visibility } = this.props
+
     getGroups_im_in()
     getmyGroups()
     this.setState({
       selected_group,
       selected_group_data,
+      visibility,
     })
   }
 
