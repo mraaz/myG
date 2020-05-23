@@ -274,8 +274,12 @@ Route.get('/api/groups/view/:counter', 'GroupController.myshow')
 Route.get('/api/groups/:id', 'GroupController.show')
 Route.post('/api/groups/update_img', 'GroupController.update_img')
 Route.post('/api/groups/update/all_accept/', 'GroupController.update_all_accept')
-Route.get('/api/groups/update_type/:id/:group_type', 'GroupController.update_type')
+Route.post('/api/groups/update_settings/', 'GroupController.update_settings')
 Route.get('/api/groups/show_owner/:id', 'GroupController.show_owner')
+
+Route.post('/api/groups/delete', 'GroupController.destroy')
+
+Route.post('/api/groups/update_name', 'GroupController.update_name')
 
 Route.get('/api/groups/get_my_communities/:counter', 'GroupController.get_my_communities')
 

@@ -126,7 +126,12 @@ export default class GroupHeader extends Component {
         break
     }
     try {
-      const update_group_type = axios.get(`/api/groups/update_type/${this.props.groups_id.params.id}/${this.state.group_info.type}`)
+      //const update_group_type = axios.get(`/api/groups/update_type/${this.props.groups_id.params.id}/${this.state.group_info.type}`)
+      const sendInvite = axios.post('/api/groups/update_settings', {
+        group_id: this.props.groups_id.params.id,
+        privacy: this.state.group_info.type,
+        mApprovals: 1,
+      })
     } catch (error) {
       console.log(error)
     }
@@ -166,6 +171,27 @@ export default class GroupHeader extends Component {
       })
     } else if (this.state.statusTxt == 'Pending Approval') {
       this.showAlert_remove_group()
+    }
+  }
+
+  delete_community = () => {
+    try {
+      const delete_group = axios.post('/api/groups/delete', {
+        group_id: this.props.groups_id.params.id,
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  change_name_community = () => {
+    try {
+      const change_group = axios.post('/api/groups/update_name', {
+        group_id: this.props.groups_id.params.id,
+        name: 'TEST_Raaz',
+      })
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -276,6 +302,12 @@ export default class GroupHeader extends Component {
               <div className='group-status'>
                 <button className='status' onClick={this.statusToggle}>
                   {this.state.statusTxt}
+                </button>
+                <button className='status' onClick={this.delete_community}>
+                  Delete Community
+                </button>
+                <button className='status' onClick={this.change_name_community}>
+                  Change name to TEST_Raaz
                 </button>
               </div>
               <div className='member-list'>
