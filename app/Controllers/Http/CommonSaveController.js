@@ -41,6 +41,7 @@ class CommonSaveController {
     const rules = {
       alias: 'required|unique:users,alias|min:4|max:30',
       email: 'required|email|unique:users',
+      encryption: 'required|min:12|max:30',
       firstName: 'required',
       lastName: 'required',
     }
@@ -48,7 +49,7 @@ class CommonSaveController {
     const messages = {
       required: 'Required field',
       email: 'Enter valid email address',
-      min: 'Not enough characters for Alias- Min 4',
+      min: 'Not enough characters - Min 4 for Alias, 6 for Password and 12 for Encryption Paraphrase',
       max: 'Wow! Too many characters for Alias - Max 30',
       unique: 'Sorry, this field is not unique. Try again please.',
     }
@@ -162,7 +163,7 @@ class CommonSaveController {
         session.forget('provider')
         session.forget('provider_id')
         await auth.loginViaId(user.id)
-        return response.redirect('/')
+        return response.redirect(`/setEncryptionParaphrase/${request.input('encryption')}`);
       }
     }
   }
