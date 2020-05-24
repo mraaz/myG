@@ -103,16 +103,26 @@ class GroupMemberOptions extends React.PureComponent {
     );
   }
 
-  renderMembers = (isGroupModerator) => {
-    return (
-      <div className="chat-group-member-list-container">
-        {this.props.groupContacts.map(contact => this.renderMember(contact, isGroupModerator))}
-        {this.props.group.guests.map(this.renderGuest)}
+  renderTableHeader = () => {
+    return(
+      <div className="chat-group-table-header">
+        <div className="chat-group-table-header-info">Gamers</div>
+        <div className="chat-group-table-header-info">Role</div>
       </div>
     );
   }
 
-  renderMember = (contact, isGroupModerator) => {
+  renderMembers = (isGroupModerator) => {
+    return (
+      <div className="chat-group-member-list-container">
+        {this.props.groupContacts.map(contact => this.renderMember(contact, isGroupModerator, false, null))}
+        {this.props.group.guests.map(guestId => this.renderMember({}, false, true, guestId))}
+      </div>
+    );
+  }
+
+  renderMember = (contact, isGroupModerator, isGuest, guestId) => {
+    const guestAlias = `Guest #${guestId}`;
     const isAdded = this.props.contacts.map(contact => contact.contactId).includes(contact.contactId);
     const isRequested = this.props.friendRequests.includes(contact.contactId) || this.state.friendRequests.includes(contact.contactId);
     const isContactOwner = this.props.group.owners.length && this.props.group.owners.includes(contact.contactId);
@@ -120,76 +130,103 @@ class GroupMemberOptions extends React.PureComponent {
     const isContactBlocked = this.props.blockedUsers.length && this.props.blockedUsers.map(user => user.userId).includes(contact.contactId);
     return (
       <div key={contact.contactId} className="chat-group-member">
-        <div className="chat-group-member-info">
-          <div
-            className="chat-group-member-icon"
-            style={{ backgroundImage: `url('${contact.icon}')` }}
-          >
-            <div className={`chat-component-header-status-indicator-static chat-component-header-status-indicator-${contact.status}`} />
-          </div>
-          <div className="chat-group-member-name">{contact.name}</div>
-        </div>
+        {this.renderMemberInfo(isGuest ? getAssetUrl('ic_guest_icon') : contact.icon, isGuest ? guestAlias : contact.name)}
         <div className="chat-group-member-buttons">
-          {isContactOwner && (
-            <div
-              className="chat-group-options-option-icon"
-              style={{ backgroundImage: `url(${getAssetUrl('ic_chat_group_owner')})` }}
-            />
-          )}
-          {isGroupModerator && !isContactOwner && (
-            <div
-              className="chat-group-options-option-icon clickable"
-              style={{ backgroundImage: `url(${getAssetUrl(`ic_chat_group_${isContactModerator ? 'moderator' : 'member'}`)})` }}
-              onClick={() => this.toggleModerator(contact.contactId)}
-            />
-          )}
-          {isGroupModerator && !isContactOwner && (
-            <div
-              className="chat-group-options-option-icon clickable"
-              style={{ backgroundImage: `url(${getAssetUrl('ic_chat_group_remove')})` }}
-              onClick={() => this.setState({ kickingUser: contact })}
-            />
-          )}
-          <div
-            className="chat-group-options-option-icon clickable"
-            style={{ backgroundImage: `url(${getAssetUrl(`ic_chat_group_${isContactBlocked ? 'muted' : 'unmuted'}`)})` }}
-            onClick={() => this.toggleUserBlock(contact.contactId)}
-          />
-          {!isAdded && !isRequested && (
-            <div className="chat-group-member-add-button clickable"
-              onClick={() => this.onAddFriendRequest(contact.contactId)}
-            >
-              add friend
-            </div>
-          )}
-          {!isAdded && isRequested && (
-            <div className="chat-group-member-added-button">
-              request sent
-            </div>
-          )}
+          <div className="chat-group-member-button">
+            {this.renderMemberRole(contact.contactId, isGroupModerator, isContactOwner, isContactModerator, isGuest)}
+          </div>
+          <div className="chat-group-member-button-divider" />
+          <div className="chat-group-member-button">
+            {this.renderBlockButton(contact.contactId, isContactBlocked)}
+          </div>
+          <div className="chat-group-member-button-divider" />
+          <div className="chat-group-member-button">
+            {this.renderKickButton({ contactId: isGuest ? guestId : contact.contactId, name: isGuest ? guestAlias : contact.name }, isGroupModerator)}
+          </div>
+          <div className="chat-group-member-button-divider" />
+          <div className="chat-group-member-button">
+            {this.renderFriendButton(contact.contactId, isAdded, isRequested, isGuest)}
+          </div>
         </div>
       </div>
     );
   }
 
-  renderGuest = (guestId) => {
-    const guestAlias = `Guest #${guestId}`;
+  renderMemberInfo = (icon, name) => {
     return (
-      <div key={guestAlias} className="chat-group-member">
-        <div className="chat-group-member-info">
-          <div
-            className="chat-group-guest-icon"
-            style={{ backgroundImage: `url(${getAssetUrl('ic_guest_icon')})` }}
-          />
-          <div className="chat-group-member-name">{guestAlias}</div>
-        </div>
-        <div className="chat-group-member-buttons">
-          <div
-            className="chat-group-options-option-icon clickable"
-            style={{ backgroundImage: `url(${getAssetUrl('ic_chat_group_remove')})`, filter: `contrast(0)` }}
-            onClick={() => this.setState({ kickingUser: { contactId: guestId, name: guestAlias } })}
-          />
-        </div>
+      <div className="chat-group-member-info">
+        <div
+          className="chat-group-guest-icon"
+          style={{ backgroundImage: `url(${icon})` }}
+        />
+        <div className="chat-group-member-name">{name}</div>
+      </div>
+    );
+  }
+
+  renderMemberRole = (contactId, canChangeRights, isOwner, isModerator, isGuest) => {
+    if (isOwner) {
+      return (
+        <div
+          className="chat-group-member-option-icon"
+          style={{ backgroundImage: `url(${getAssetUrl('ic_chat_group_owner')})` }}
+        />
+      );
+    }
+    if (isModerator) {
+      return (
+        <div
+          className={`chat-group-member-option-icon ${canChangeRights ? 'clickable' : ''}`}
+          style={{ backgroundImage: `url(${getAssetUrl('ic_chat_group_moderator')})` }}
+          onClick={() => canChangeRights && this.toggleModerator(contactId)}
+        />
+      );
+    }
+    if (isGuest) {
+      return (
+        <div
+          className="chat-group-member-option-icon"
+          style={{ backgroundImage: `url(${getAssetUrl('ic_guest_icon')})` }}
+        />
+      );
+    }
+    return (
+      <div
+        className={`chat-group-member-option-icon ${canChangeRights ? 'clickable' : ''}`}
+        style={{ backgroundImage: `url(${getAssetUrl('ic_chat_group_member')})` }}
+        onClick={() => canChangeRights && this.toggleModerator(contactId)}
+      />
+    );
+  }
+
+  renderBlockButton = (contactId, isContactBlocked) => {
+    return (
+      <div
+        className="chat-group-member-option-icon clickable"
+        style={{ backgroundImage: `url(${getAssetUrl(`ic_chat_group_${isContactBlocked ? 'muted' : 'unmuted'}`)})` }}
+        onClick={() => this.toggleUserBlock(contactId)}
+      />
+    );
+  }
+
+  renderKickButton = (contact, canKick) => {
+    return (
+      <div
+        className={`chat-group-member-${canKick ? 'kick' : 'unkickable'}-button ${canKick ? 'clickable' : ''}`}
+        onClick={() => canKick && this.setState({ kickingUser: contact })}
+      >
+        expel
+      </div>
+    );
+  }
+
+  renderFriendButton = (contactId, isAdded, isRequested, isGuest) => {
+    const canAddFriend = !isAdded && !isGuest && !isRequested;
+    return (
+      <div className={`chat-group-member-${canAddFriend ? 'add' : 'added'}-button ${canAddFriend ? 'clickable' : ''}`}
+        onClick={() => canAddFriend && this.onAddFriendRequest(contactId)}
+      >
+        {isAdded ? 'friend' : isRequested ? 'request sent' : isGuest ? 'guest' : 'add friend'}
       </div>
     );
   }
@@ -285,6 +322,7 @@ class GroupMemberOptions extends React.PureComponent {
         />
         {this.renderHeader()}
         {this.renderGroupInvitation(isGroupModerator)}
+        {this.renderTableHeader()}
         {this.renderMembers(isGroupModerator)}
         {this.renderGroupOwnership(isGroupOwner)}
       </div>
