@@ -7,7 +7,7 @@ class EncryptionParaphraseRegistration extends React.PureComponent {
 
   componentDidMount() {
     const pin = this.props.routeProps.match.params.encryption;
-    this.props.setEncryptionPin(pin);
+    if (!this.props.pin) this.props.setEncryptionPin(pin);
     window.location.replace('/');
   }
 
@@ -17,10 +17,16 @@ class EncryptionParaphraseRegistration extends React.PureComponent {
 
 }
 
+export function mapStateToProps(state) {
+  return {
+    pin: state.encryption.pin,
+  }
+}
+
 function mapDispatchToProps(dispatch) {
   return ({
     setEncryptionPin: (pin) => dispatch(setEncryptionPinAction(pin)),
   });
 }
 
-export default connect(null, mapDispatchToProps)(withRouter(EncryptionParaphraseRegistration));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(EncryptionParaphraseRegistration));
