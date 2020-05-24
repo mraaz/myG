@@ -199,10 +199,11 @@ export default function reducer(state = {
       const chatAlreadyExists = chats.map(chat => parseInt(chat.chatId)).includes(parseInt(created.chatId));
       if (!chatAlreadyExists) chats.push(created);
       const chat = chats.find(candidate => candidate.chatId === created.chatId);
-      chat.closed = !!chat.individualGameId;
+      console.log(`Existing Chat: `, chatAlreadyExists, chat);
+      chat.closed = !chatAlreadyExists && !!chat.individualGameId;
       chat.minimised = false;
       chat.maximised = false;
-      Object.assign(chat, encryption);
+      if (!chat.privateKey) Object.assign(chat, encryption);
       prepareGroupKeysToSend(chat, parseInt(action.meta.userId), state.contacts, state.publicKey, state.privateKey);
       if (!chat.closed) {
         const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== created.chatId);
@@ -221,6 +222,7 @@ export default function reducer(state = {
       chat.closed = !isGameGroupInvite && !chat.isGroup && (chat.messages || []).length === 0;
       const chats = JSON.parse(JSON.stringify(state.chats));
       if (chats.map(chat => chat.chatId).includes(chat.chatId)) return state;
+      console.log(`New Chat Went Through`);
       chats.push(chat);
       if (!chat.closed) {
         const openChats = chats.filter(candidate => !candidate.closed && candidate.chatId !== chat.chatId);
