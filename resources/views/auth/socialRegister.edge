@@ -35,7 +35,7 @@
           <form action="/user/save" method="POST" class="default-form">
         {{ csrfField() }}
         <div class="error-box
-        @if( hasErrorFor('email') || hasErrorFor('password') || hasErrorFor('alias') || hasErrorFor('firstName') || hasErrorFor('lastName') || hasErrorFor('database'))
+        @if( hasErrorFor('email') || hasErrorFor('password') || hasErrorFor('alias') || hasErrorFor('firstName') || hasErrorFor('lastName') || hasErrorFor('database')|| hasErrorFor('encryption') )
           active
         @endif
       ">
@@ -49,6 +49,10 @@
 
             @if(hasErrorFor('password'))
               {{getErrorFor('password')}}
+            @endif
+
+            @if(hasErrorFor('encryption'))
+            {{getErrorFor('encryption')}}
             @endif
 
             @if(hasErrorFor('firstName'))
@@ -67,6 +71,14 @@
             <input placeholder="ALIAS *" type="text" name="alias" value="{{alias}}" class="input-common
 
           @if(hasErrorFor('alias'))
+            error
+          @endif
+        " required="" onkeypress="return checkKeyPress(this)">
+        </div>
+        <div class="form-group">
+          <input placeholder="ENCRYPTION PARAPHRASE *" type="password" name="encryption" value="{{encryption}}" class="input-common
+
+          @if(hasErrorFor('encryption'))
             error
           @endif
         " required="" onkeypress="return checkKeyPress(this)">
