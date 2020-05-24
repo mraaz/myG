@@ -89,10 +89,8 @@ export class Chat extends React.PureComponent {
   }
 
   markAsRead = (lastMessageId) => {
-    console.log('Mark As Read Start');
     if (this.props.isGuest) return;
     if (this.props.minimised || !this.props.privateKey || !this.props.windowFocused) return;
-    console.log('Mark As Read: ', lastMessageId, this.state.lastRead, this.props.lastRead);
     if (!lastMessageId || lastMessageId <= this.props.lastRead || lastMessageId <= this.state.lastRead) return;
     this.setState({ lastRead: lastMessageId });
     this.props.updateChat(this.props.chatId, { markAsRead: true });
@@ -351,9 +349,6 @@ export class Chat extends React.PureComponent {
         });
       }}
       onFinish={() => this.setState({ showAttachWindow: false })}
-      onImage={image => console.log('Attaching Image: ' + image)}
-      onVideo={video => console.log('Attaching Video: ' + video)}
-      onSound={sound => console.log('Attaching Sound: ' + sound)}
     />;
   }
 
