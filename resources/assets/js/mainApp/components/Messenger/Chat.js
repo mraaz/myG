@@ -31,6 +31,7 @@ export class Chat extends React.PureComponent {
       showAttachWindow: false,
       messagePaginationPage: 1,
       attachment: null,
+      loadedAllMessages: false,
     };
     this.messageListRef = React.createRef();
   }
@@ -84,8 +85,15 @@ export class Chat extends React.PureComponent {
   }
 
   scrollToMessage = (messageId) => {
-    const messageIndex = this.props.messages.findIndex(message => message.messageId === messageId);
-    if (this.messageListRef.current) this.messageListRef.current.scrollTo(0, messageIndex * 40);
+    let message = document.querySelector(`[data-message-id="${messageId}"]`);
+    if (message) message.scrollIntoView();
+    else if (!this.state.loadedAllMessages) {
+      this.props.fetchMessages(this.props.chatId, 'ALL').then(() => {
+        this.setState({ loadedAllMessages: true });
+        message = document.querySelector(`[data-message-id="${messageId}"]`);
+        if (message) message.scrollIntoView();
+      });
+    }
   }
 
   markAsRead = (lastMessageId) => {

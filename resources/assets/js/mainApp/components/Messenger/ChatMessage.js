@@ -368,6 +368,7 @@ export default class ChatMessage extends React.Component {
     if (message.isLastRead) return this.renderLastRead();
     return (
       <div
+        data-message-id={message.messageId}
         key={message.messageId}
         ref={this.messageRef}
         className={`chat-component-message chat-component-message-${origin} ${deletedStyle} ${selfDestructStyle}`}
@@ -386,7 +387,7 @@ export default class ChatMessage extends React.Component {
               </p>
             )}
             {message.replyContent && (
-              <div className={`chat-component-message-reply clickable`} onClick={() => this.props.scrollToMessage(message.messageId)}>
+              <div className={`chat-component-message-reply clickable`} onClick={() => this.props.scrollToMessage(message.replyId)}>
                 {this.renderMessage(message.replyContent)}
               </div>
             )}
