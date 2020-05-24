@@ -50,7 +50,7 @@ export default class ChatMessage extends React.Component {
 
   renderReactions = () => {
     if (this.props.message.deleted) return;
-    if (!this.props.message.reactions.length) return;
+    if (!(this.props.message.reactions || []).length) return;
     const origin = this.props.message.senderId === this.props.userId ? 'sent' : 'received';
     const hasReaction = reactionId => this.props.message.reactions.find(reaction => reactionId === reaction.reactionId && this.props.userId === reaction.senderId);
     const reactionGroups = groupBy(this.props.message.reactions, reaction => reaction.reactionId);
@@ -94,7 +94,7 @@ export default class ChatMessage extends React.Component {
   renderReactionOptions = () => {
     if (!this.state.showOptionsButton) return;
     if (this.props.message.deleted) return;
-    const hasReaction = reactionId => this.props.message.reactions.find(reaction => reactionId === reaction.reactionId && this.props.userId === reaction.senderId);
+    const hasReaction = reactionId => (this.props.message.reactions || []).find(reaction => reactionId === reaction.reactionId && this.props.userId === reaction.senderId);
     return (
       <div className="chat-component-message-reaction-options">
         {!hasReaction(1) && (
