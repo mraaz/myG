@@ -51,6 +51,12 @@ const GuestLink = Loadable({
     return null
   },
 })
+const EncryptionParaphraseRegistration = Loadable({
+  loader: () => import('./components/Messenger/EncryptionParaphraseRegistration'),
+  loading: function() {
+    return null
+  },
+})
 const SearchHeader = Loadable({
   loader: () => import('./components/SearchHeader'),
   loading: function() {
@@ -289,6 +295,7 @@ export {
   MessengerLoader,
   ChatUnreadMessages,
   GuestLink,
+  EncryptionParaphraseRegistration,
   SearchHeader,
   ComposeSection,
   Posts,

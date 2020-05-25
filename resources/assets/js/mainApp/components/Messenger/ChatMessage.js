@@ -50,7 +50,7 @@ export default class ChatMessage extends React.Component {
 
   renderReactions = () => {
     if (this.props.message.deleted) return;
-    if (!this.props.message.reactions.length) return;
+    if (!(this.props.message.reactions || []).length) return;
     const origin = this.props.message.senderId === this.props.userId ? 'sent' : 'received';
     const hasReaction = reactionId => this.props.message.reactions.find(reaction => reactionId === reaction.reactionId && this.props.userId === reaction.senderId);
     const reactionGroups = groupBy(this.props.message.reactions, reaction => reaction.reactionId);
@@ -94,7 +94,7 @@ export default class ChatMessage extends React.Component {
   renderReactionOptions = () => {
     if (!this.state.showOptionsButton) return;
     if (this.props.message.deleted) return;
-    const hasReaction = reactionId => this.props.message.reactions.find(reaction => reactionId === reaction.reactionId && this.props.userId === reaction.senderId);
+    const hasReaction = reactionId => (this.props.message.reactions || []).find(reaction => reactionId === reaction.reactionId && this.props.userId === reaction.senderId);
     return (
       <div className="chat-component-message-reaction-options">
         {!hasReaction(1) && (
@@ -368,6 +368,7 @@ export default class ChatMessage extends React.Component {
     if (message.isLastRead) return this.renderLastRead();
     return (
       <div
+        data-message-id={message.messageId}
         key={message.messageId}
         ref={this.messageRef}
         className={`chat-component-message chat-component-message-${origin} ${deletedStyle} ${selfDestructStyle}`}
@@ -386,7 +387,7 @@ export default class ChatMessage extends React.Component {
               </p>
             )}
             {message.replyContent && (
-              <div className={`chat-component-message-reply clickable`} onClick={() => this.props.scrollToMessage(message.messageId)}>
+              <div className={`chat-component-message-reply clickable`} onClick={() => this.props.scrollToMessage(message.replyId)}>
                 {this.renderMessage(message.replyContent)}
               </div>
             )}

@@ -12,10 +12,7 @@ export function withDatesAndLogsAndLastReads(messages, entryLogs, contactsMap, l
     const messageId = lastReads[contactId];
     if (!lastReadContacts[messageId]) lastReadContacts[messageId] = [];
     if (contactsMap[contactId]) lastReadContacts[messageId].push(contactsMap[contactId]);
-  })
-  console.log('lastReads', lastReads);
-  console.log('contactsMap', contactsMap);
-  console.log('lastReadContacts', lastReadContacts);
+  });
   reversedMessages.forEach(message => {
     if (isOneDayBehind(lastDate, new Date(message.createdAt))) {
       lastDate = new Date(message.createdAt);
