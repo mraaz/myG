@@ -394,6 +394,9 @@ class ScheduleGameController {
   async scheduleSearchResults({ auth, request, response }) {
     console.log('Test')
     //DO VACCY CEHCK!! RAAZ
+    // WTF is goin on with ancient games??
+    //Ingame fields are not searchable currently
+
     try {
       let arrTags = '',
         latestScheduledGames
