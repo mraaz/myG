@@ -19,7 +19,7 @@
   <form action="/register" method="POST" class="default-form">
     {{ csrfField() }}
     <div class="error-box
-      @if( hasErrorFor('email') || hasErrorFor('password') || hasErrorFor('alias') )
+      @if( hasErrorFor('email') || hasErrorFor('password') || hasErrorFor('alias') || hasErrorFor('encryption') )
         active
       @endif
     ">
@@ -31,6 +31,9 @@
       @endif
       @if(hasErrorFor('alias'))
         {{getErrorFor('alias')}}
+      @endif
+      @if(hasErrorFor('encryption'))
+        {{getErrorFor('encryption')}}
       @endif
       @if(hasErrorFor('database'))
         {{getErrorFor('database')}}
@@ -68,6 +71,15 @@
       <input type="text" name="alias" value="{{ old ('alias', '')}}" class="text
 
         @if(hasErrorFor('alias'))
+          error
+        @endif
+      ">
+    </div>
+    <div class="form-group">
+      <label for="encryption">Encryption Paraphrase</label>
+      <input type="password" name="encryption" value="{{ old ('encryption', '')}}" class="text
+
+        @if(hasErrorFor('encryption'))
           error
         @endif
       ">

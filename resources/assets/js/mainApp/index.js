@@ -1,6 +1,6 @@
 // --- One way to disable adonis websocket logs.
 const log = console.log
-console.log = function() {
+console.log = function () {
   if (arguments[0] && arguments[0].includes && arguments[0].includes('adonis:websocket')) return
   if (log.apply) log.apply(console, arguments)
   else log(Array.prototype.slice.apply(arguments).join(' '))
@@ -28,6 +28,7 @@ import {
   LeftMenu,
   MessengerLoader,
   ChatUnreadMessages,
+  EncryptionParaphraseRegistration,
   GuestLink,
   SearchHeader,
   ComposeSection,
@@ -78,7 +79,7 @@ class Layout extends Component {
   }
   componentDidMount() {
     const self = this
-    const getInitialData = async function() {
+    const getInitialData = async function () {
       try {
         const initialData = await axios.get('/api/initialApp')
 
@@ -89,7 +90,7 @@ class Layout extends Component {
         self.setState({
           initialData: initialData.data,
         })
-        
+
         loadUserInfoToReduxStore(initialData.data.userInfo);
 
       } catch (error) {
@@ -524,6 +525,12 @@ class Layout extends Component {
                       key={Math.random()}
                     />
                   )}
+                />
+
+                <Route
+                  exact
+                  path='/setEncryptionParaphrase/:encryption'
+                  component={props => <EncryptionParaphraseRegistration routeProps={props} key={Math.random()} />}
                 />
 
                 <Route render={() => <h3> Oops! I couldn't find that </h3>} />

@@ -68,6 +68,13 @@ export default function reducer(state = {
       };
     }
 
+    case "SET_ENCRYPTION_PIN": {
+      return {
+        ...state,
+        pin: action.payload,
+      };
+    }
+
     default: return state;
 
   }

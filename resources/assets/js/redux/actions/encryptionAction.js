@@ -16,3 +16,10 @@ export function validatePinAction(pin, publicKey) {
     meta: { pin, publicKey }
   }
 }
+
+export function setEncryptionPinAction(pin) {
+  return {
+    type: 'SET_ENCRYPTION_PIN',
+    payload: pin,
+  }
+}

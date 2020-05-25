@@ -13,13 +13,28 @@
   height: 120vh;
 }
 
+.chat-group-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 10px;
+  margin-top: 8px;
+}
+
+.chat-group-table-header-info {
+  font-size: 14px;
+  font-weight: 1000;
+  padding-left: 10px;
+  flex: 1;
+}
+
 .chat-group-members {
   width: fit-content;
   display: flex;
   flex-direction: column;
   background-color: #1D2326;
   padding: 16px 8px;
-  min-width: 320px;
+  min-width: 500px;
   border-radius: 12px;
 }
 
@@ -60,7 +75,6 @@
 .chat-group-member {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   margin-bottom: 8px;
   margin-top: 8px;
 }
@@ -68,6 +82,7 @@
 .chat-group-member-info {
   display: flex;
   align-items: center;
+  flex: 1;
 }
 
 .chat-group-member-icon {
@@ -100,24 +115,70 @@
 .chat-group-member-buttons {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+  flex: 1;
+}
+
+.chat-group-member-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-group-member-button-divider {
+  margin-left: 8px;
+  margin-right: 8px;
+  width: 2px;
+  height: 18px;
+  background-color: #273137;
+}
+
+.chat-group-member-option-icon {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
 }
 
 .chat-group-member-add-button {
+  text-align: center;
   background-color: #2D363A;
   color: #FAFAFA;
   padding: 6px 6px;
   border-radius: 4px;
   font-size: 10px;
-  margin-left: 4px;
+  width: 80px;
 }
 
 .chat-group-member-added-button {
+  text-align: center;
   background-color: #2D363A;
   color: #627176;
   padding: 6px 6px;
   border-radius: 4px;
   font-size: 10px;
-  margin-left: 4px;
+  width: 80px;
+}
+
+.chat-group-member-unkickable-button {
+  text-align: center;
+  background-color: #2D363A;
+  color: #627176;
+  padding: 6px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+}
+
+.chat-group-member-kick-button {
+  text-align: center;
+  background-color: #E5C746;
+  color: #000000;
+  padding: 6px 6px;
+  border-radius: 4px;
+  font-size: 10px;
 }
 
 .chat-group-ownership {

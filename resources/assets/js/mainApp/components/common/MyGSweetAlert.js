@@ -41,6 +41,7 @@ export default class MyGSweetAlert extends React.Component {
           boxShadow: null,
           textTransform: "lowercase",
           fontFamily: "Montserrat Alternates",
+          outline: 'none',
         }}
         confirmBtnStyle={{
           backgroundColor: "#E5C746",
@@ -54,6 +55,7 @@ export default class MyGSweetAlert extends React.Component {
           boxShadow: null,
           textTransform: "lowercase",
           fontFamily: "Montserrat Alternates",
+          outline: 'none',
         }}
       >
         {this.props.children}

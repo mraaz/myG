@@ -37,6 +37,7 @@ class AuthController {
       email: 'required|email|unique:users',
       password: 'required|min:6|max:40',
       confirm_password: 'required',
+      encryption: 'required|min:12|max:30',
       firstName: 'required',
       lastName: 'required',
     }
@@ -44,7 +45,7 @@ class AuthController {
     const messages = {
       required: 'Required field',
       email: 'Enter valid email address',
-      min: 'Not enough characters - Min 4',
+      min: 'Not enough characters - Min 4 for Alias, 6 for Password and 12 for Encryption Paraphrase',
       max: 'Wow! Too many characters - Max 30',
       unique: 'Sorry, this field is not unique. Try again please.',
     }
@@ -118,7 +119,7 @@ class AuthController {
         .first()
       await auth.login(user)
 
-      return response.redirect('/')
+      return response.redirect(`/setEncryptionParaphrase/${request.input('encryption')}`)
     }
     // } else {
     //   session
