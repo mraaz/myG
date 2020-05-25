@@ -110,8 +110,7 @@ class ScheduleGameController {
             type: 1,
           })
         }
-
-        if (request.input('co_hosts') != null) {
+        if (request.input('co_hosts') != undefined && request.input('co_hosts').lenght > 0) {
           var arrCo_hosts = request.input('co_hosts').split(',')
 
           if (arrCo_hosts != '') {
@@ -124,7 +123,7 @@ class ScheduleGameController {
           }
         }
 
-        if (request.input('tags') != null) {
+        if (request.input('tags') != undefined && request.input('tags').lenght > 0) {
           var arrTags = request.input('tags').split(',')
 
           if (arrTags != '') {
@@ -393,6 +392,8 @@ class ScheduleGameController {
   }
 
   async scheduleSearchResults({ auth, request, response }) {
+    console.log('Test')
+    //DO VACCY CEHCK!! RAAZ
     try {
       let arrTags = '',
         latestScheduledGames
@@ -422,10 +423,22 @@ class ScheduleGameController {
               if (request.input('description') != null) builder.where('description', request.input('description'))
             })
             .orderBy('schedule_games.created_at', 'desc')
-            .select('*', 'schedule_games.region', 'schedule_games.id', 'users.id as user_id')
+            .select(
+              'game_names.game_artwork',
+              'game_names.game_name',
+              'schedule_games.start_date_time',
+              'users.alias',
+              'users.profile_img',
+              'schedule_games.experience',
+              'schedule_games.schedule_games_GUID',
+              'schedule_games.limit',
+              'schedule_games.id',
+              'users.id as user_id'
+            )
             .paginate(request.input('counter'), 10)
         }
       } else {
+        console.log(request.input('start_date_time'))
         latestScheduledGames = await Database.from('schedule_games')
           .innerJoin('users', 'users.id', 'schedule_games.user_id')
           .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
@@ -437,18 +450,31 @@ class ScheduleGameController {
 
             if (request.input('experience') != null) builder.where('experience', request.input('experience'))
 
-            if (request.input('start_date_time') != null) builder.where('start_date_time', '<=', request.input('start_date_time'))
+            if (request.input('start_date_time') != null)
+              builder.where('schedule_games.start_date_time', '<=', request.input('start_date_time'))
 
-            if (request.input('end_date_time') != null) builder.where('end_date_time', '>=', request.input('end_date_time'))
+            if (request.input('end_date_time') != null) builder.where('schedule_games.end_date_time', '>=', request.input('end_date_time'))
 
             if (request.input('platform') != null) builder.where('platform', request.input('platform'))
 
             if (request.input('description') != null) builder.where('description', request.input('description'))
           })
           .orderBy('schedule_games.created_at', 'desc')
-          .select('*', 'schedule_games.region', 'schedule_games.id', 'users.id as user_id')
+          .select(
+            'game_names.game_artwork',
+            'game_names.game_name',
+            'schedule_games.start_date_time',
+            'users.alias',
+            'users.profile_img',
+            'schedule_games.experience',
+            'schedule_games.schedule_games_GUID',
+            'schedule_games.limit',
+            'schedule_games.id',
+            'users.id as user_id'
+          )
           .paginate(request.input('counter'), 10)
       }
+      console.log(latestScheduledGames)
 
       for (var i = 0; i < latestScheduledGames.data.length; i++) {
         let getAllTags = await Database.from('schedule_games_tags')
@@ -499,10 +525,44 @@ class ScheduleGameController {
               break
           }
         }
+
+        let getAllGamers = await Database.from('attendees')
+          .where({ schedule_games_id: latestScheduledGames.data[i].id, type: 1 })
+          .count('* as no_of_gamers')
+
+        latestScheduledGames.data[i].no_of_gamers = getAllGamers[0].no_of_gamers
       }
       latestScheduledGames = latestScheduledGames.data
       return {
         latestScheduledGames,
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async additional_game_info({ auth, request, response }) {
+    let join_status = 0
+    try {
+      var additional_game_info = await Database.from('schedule_games')
+        .where('schedule_games.id', '=', request.params.id)
+        .select('*')
+
+      const attendees = await Database.from('attendees').where({ schedule_games_id: request.params.id, type: 1 })
+
+      const my_attendance = await Database.from('attendees')
+        .where({ schedule_games_id: request.params.id, user_id: auth.user.id })
+        .select('type')
+        .first()
+
+      if (my_attendance != undefined) {
+        join_status = my_attendance.type
+      }
+
+      return {
+        additional_game_info,
+        gamers,
+        join_status,
       }
     } catch (error) {
       console.log(error)
