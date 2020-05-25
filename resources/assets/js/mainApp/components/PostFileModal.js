@@ -30,7 +30,7 @@ export default class PostFileModal extends Component {
     this.closeModal = this.closeModal.bind(this)
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const getmyGroups = async () => {
       try {
         const getmyGroups = await axios.get('/api/groups/view/1')

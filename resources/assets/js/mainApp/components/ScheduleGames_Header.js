@@ -92,6 +92,11 @@ export default class ScheduleGames_Header extends Component {
       allscheduledGames: [],
     })
 
+    if (!tmp_allscheduledGames.data) {
+      console.log("Endsureing we're not failing on lenght check later")
+      return
+    }
+
     if (tmp_allscheduledGames.data.latestScheduledGames.length > 10) {
       this.setState({
         show_more: true,

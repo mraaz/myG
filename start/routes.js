@@ -274,8 +274,12 @@ Route.get('/api/groups/view/:counter', 'GroupController.myshow')
 Route.get('/api/groups/:id', 'GroupController.show')
 Route.post('/api/groups/update_img', 'GroupController.update_img')
 Route.post('/api/groups/update/all_accept/', 'GroupController.update_all_accept')
-Route.get('/api/groups/update_type/:id/:group_type', 'GroupController.update_type')
+Route.post('/api/groups/update_settings/', 'GroupController.update_settings')
 Route.get('/api/groups/show_owner/:id', 'GroupController.show_owner')
+
+Route.post('/api/groups/delete', 'GroupController.destroy')
+
+Route.post('/api/groups/update_name', 'GroupController.update_name')
 
 Route.get('/api/groups/get_my_communities/:counter', 'GroupController.get_my_communities')
 
@@ -284,7 +288,7 @@ Route.post('/api/usergroup/create', 'UsergroupController.store')
 Route.get('/api/usergroup/view/:counter', 'UsergroupController.myshow')
 Route.get('/api/usergroup/:id', 'UsergroupController.show')
 Route.get('/api/usergroup/mygroup_details/:id', 'UsergroupController.mygroup_details')
-Route.get('/api/usergroup/delete/:id', 'UsergroupController.destroy')
+Route.get('/api/usergroup/delete/:grp_id', 'UsergroupController.destroy')
 Route.get('/api/usergroup/set_group_approval/:grp_id/:user_id', 'UsergroupController.set_group_approval')
 Route.get('/api/usergroup/remove_group_approval/:id/:usergrp_id', 'UsergroupController.remove_group_approval')
 Route.get('/api/usergroup/member_lists/:id', 'UsergroupController.member_lists')

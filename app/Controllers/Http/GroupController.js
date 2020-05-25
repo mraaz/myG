@@ -200,26 +200,10 @@ class GroupController {
 
   async update_img({ auth, request, response }) {
     if (auth.user) {
-      let current_user_permission = -1
+      let current_user_permission = await this.get_permission({ auth }, request.input('group_id'))
 
       try {
-        const permission_query_current_user = await Database.from('usergroups').where({
-          user_id: auth.user.id,
-          group_id: request.input('group_id'),
-        })
-        if (permission_query_current_user.length > 0) {
-          current_user_permission = permission_query_current_user[0].permission_level
-        } else {
-          const owner_query = await Database.from('groups').where({
-            user_id: auth.user.id,
-            id: request.input('group_id'),
-          })
-          if (owner_query.length > 0) {
-            current_user_permission = 0
-          }
-        }
-
-        if (current_user_permission == 3 || current_user_permission == 42 || current_user_permission == -1) {
+        if (current_user_permission != 0 && current_user_permission != 1 && current_user_permission != 2) {
           return
         }
 
@@ -233,34 +217,17 @@ class GroupController {
     }
   }
 
-  async update_all_accept({ auth, request, response }) {
+  async update_settings({ auth, request, response }) {
     if (auth.user) {
-      let current_user_permission = -1
-
       try {
-        const permission_query_current_user = await Database.from('usergroups').where({
-          user_id: auth.user.id,
-          group_id: request.input('group_id'),
-        })
-        if (permission_query_current_user.length > 0) {
-          current_user_permission = permission_query_current_user[0].permission_level
-        } else {
-          const owner_query = await Database.from('groups').where({
-            user_id: auth.user.id,
-            id: request.input('group_id'),
-          })
-          if (owner_query.length > 0) {
-            current_user_permission = 0
-          }
-        }
+        let current_user_permission = await this.get_permission({ auth }, request.input('group_id'))
 
-        if (current_user_permission == 3 || current_user_permission == 42 || current_user_permission == -1) {
+        if (current_user_permission != 0 && current_user_permission != 1 && current_user_permission != 2) {
           return
         }
-
-        const update_all_accept = await Group.query()
+        const update_group_type = await Group.query()
           .where({ id: request.input('group_id') })
-          .update({ all_accept: request.input('all_accept') })
+          .update({ type: request.input('privacy'), all_accept: request.input('mApprovals') })
         return 'Saved successfully'
       } catch (error) {
         console.log(error)
@@ -268,38 +235,76 @@ class GroupController {
     }
   }
 
-  async update_type({ auth, request, response }) {
+  async update_name({ auth, request, response }) {
     if (auth.user) {
-      let current_user_permission = -1
-
       try {
-        const permission_query_current_user = await Database.from('usergroups').where({
-          user_id: auth.user.id,
-          group_id: request.params.id,
-        })
-        if (permission_query_current_user.length > 0) {
-          current_user_permission = permission_query_current_user[0].permission_level
-        } else {
-          const owner_query = await Database.from('groups').where({
-            user_id: auth.user.id,
-            id: request.params.id,
-          })
-          if (owner_query.length > 0) {
-            current_user_permission = 0
-          }
+        if (/['/.%#$,;`\\]/.test(request.input('name'))) {
+          return false
         }
+        let current_user_permission = await this.get_permission({ auth }, request.input('group_id'))
 
-        if (current_user_permission == 3 || current_user_permission == 42 || current_user_permission == -1) {
+        if (current_user_permission != 0 && current_user_permission != 1) {
           return
         }
+        const update_img = await Group.query()
+          .where({ id: request.input('group_id') })
+          .update({ name: request.input('name') })
 
-        const update_group_type = await Group.query()
-          .where({ id: request.params.id })
-          .update({ type: request.params.group_type })
         return 'Saved successfully'
+      } catch (error) {
+        if (error.code == 'ER_DUP_ENTRY') {
+          return
+        }
+        console.log(error)
+      }
+    }
+  }
+
+  async destroy({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        const owner_query = await Database.from('groups').where({
+          user_id: auth.user.id,
+          id: request.input('group_id'),
+        })
+        if (owner_query.length > 0) {
+          const delete_like = await Database.table('groups')
+            .where({
+              id: request.input('group_id'),
+            })
+            .delete()
+        }
+
+        return 'Deleted successfully'
       } catch (error) {
         console.log(error)
       }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async get_permission({ auth }, group_id) {
+    let current_user_permission = -1
+    try {
+      const permission_query_current_user = await Database.from('usergroups').where({
+        user_id: auth.user.id,
+        group_id: group_id,
+      })
+      if (permission_query_current_user.length > 0) {
+        current_user_permission = permission_query_current_user[0].permission_level
+      } else {
+        const owner_query = await Database.from('groups').where({
+          user_id: auth.user.id,
+          id: group_id,
+        })
+        if (owner_query.length > 0) {
+          current_user_permission = 0
+        }
+      }
+      return current_user_permission
+    } catch (error) {
+      console.log(error)
     }
   }
 }

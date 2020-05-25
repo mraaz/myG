@@ -97,7 +97,7 @@ class UsergroupController {
       try {
         const deleteRegistration = await Database.table('usergroups')
           .where({
-            group_id: request.params.id,
+            group_id: request.params.grp_id,
             user_id: auth.user.id,
           })
           .delete()
@@ -106,7 +106,7 @@ class UsergroupController {
         userStatController.update_total_number_of(auth.user.id, 'total_number_of_communities')
 
         let noti = new NotificationController_v2()
-        noti.delete_group_invites({ auth }, request.params.id)
+        noti.delete_group_invites({ auth }, request.params.grp_id)
 
         return 'Remove entry'
       } catch (error) {

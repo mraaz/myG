@@ -14,6 +14,7 @@ class GameNamesSchema extends Schema {
       table.integer('verified').unsigned().notNullable().defaultTo(0)
       table.string('game_img', 254).nullable()
       table.string('game_name_fields_img', 254).nullable()
+      table.string('game_artwork', 254).nullable()
       table.boolean('game_name_fields').defaultTo(0)
       table.timestamps(true,true)
     })
