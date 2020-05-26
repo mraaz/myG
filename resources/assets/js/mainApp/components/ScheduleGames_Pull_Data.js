@@ -8,7 +8,7 @@ export async function PullDataFunction(myG) {
     myPlatform = null,
     myDescription_box = null,
     counter = 0,
-    check_full_games = true,
+    show_full_games = true,
     startDate = moment()
       .subtract(5, 'seconds')
       .utc()
@@ -106,7 +106,7 @@ export async function PullDataFunction(myG) {
       platform: myPlatform,
       description: myDescription_box,
       counter: counter,
-      vacancy: check_full_games,
+      vacancy: show_full_games,
       dota2_medal_ranks: dota2_medal_ranks,
       dota2_server_regions: dota2_server_regions,
       dota2_roles: dota2_roles,

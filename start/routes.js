@@ -90,6 +90,8 @@ Route.post('/api/GameExperiences/:id/:game_id', 'GameExperienceController.update
 Route.get('/api/GameExperiences/:id/:game_id', 'GameExperienceController.show_Game')
 Route.post('/api/GameExperiences/gameExpSearchResults', 'GameExperienceController.gameExpSearchResults')
 
+Route.post('/api/ScheduleGame/test', 'ScheduleGameController.test')
+
 Route.post('/api/ScheduleGame', 'ScheduleGameController.store')
 Route.get('/api/ScheduleGame/delete/:id/:reason', 'ScheduleGameController.destroy')
 //Route.get('/api/ScheduleGame', 'ScheduleGameController.show')
