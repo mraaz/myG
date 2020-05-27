@@ -91,6 +91,7 @@ Route.get('/api/GameExperiences/:id/:game_id', 'GameExperienceController.show_Ga
 Route.post('/api/GameExperiences/gameExpSearchResults', 'GameExperienceController.gameExpSearchResults')
 
 Route.post('/api/ScheduleGame/test', 'ScheduleGameController.test')
+Route.get('/api/ScheduleGame/additional_game_info/:id', 'ScheduleGameController.additional_game_info')
 
 Route.post('/api/ScheduleGame', 'ScheduleGameController.store')
 Route.get('/api/ScheduleGame/delete/:id/:reason', 'ScheduleGameController.destroy')
@@ -256,12 +257,10 @@ Route.get('/api/attendees/myattendance/:id', 'AttendeeController.show_myattendan
 Route.post('/api/attendees/savemySpot', 'AttendeeController.savemySpot')
 Route.get('/api/attendees/removeattending/:id', 'AttendeeController.remove_myattendance')
 Route.get('/api/attendees/role_call/:id', 'AttendeeController.role_call')
-Route.get('/api/attendees/role_call_ALL/:id', 'AttendeeController.role_call_ALL')
 Route.get('/api/attendees/game_positions/:id', 'AttendeeController.show_game_positions')
 Route.get('/api/attendees/getScheduleGameInvites/:id', 'AttendeeController.getScheduleGameInvites')
 Route.get('/api/attendees/delete_myInvite/:schedule_game_id/:id', 'AttendeeController.delete_invite')
-//Route.post('/api/attendees/update_invite/:schedule_game_id/:id', 'AttendeeController.up_invite')
-
+Route.post('/api/attendees/role_call_ALL', 'AttendeeController.role_call_ALL')
 Route.post('/api/attendees/update_invite', 'AttendeeController.up_invite')
 
 Route.get('/api/archive_attendees/attending/:id', 'Archive_AttendeeController.show_attending')

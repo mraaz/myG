@@ -104,7 +104,6 @@ class MySettings extends Component {
     //const post = axios.get('/api/email/summary_email')
     const getGamers_you_might_know = async function() {
       try {
-        console.log('test')
         const master_controller = await axios.get('/api/connection/master_controller')
         console.log(master_controller)
       } catch (error) {
@@ -159,12 +158,9 @@ class MySettings extends Component {
 
   fire_off_test = () => {
     const callMasterControllerforConnections = async function() {
+      let game_id = 110
       try {
-        const get_stats = await axios.post('api/ScheduleGame/test', {
-          dota2_medal_ranks: 123,
-          dota2_server_regions: null,
-          dota2_roles: null,
-        })
+        const get_stats = await axios.get(`api/ScheduleGame/additional_game_info/${game_id}`)
         console.log(get_stats)
         //console.log('Raaz-inside')
       } catch (error) {

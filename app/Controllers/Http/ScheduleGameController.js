@@ -385,9 +385,6 @@ class ScheduleGameController {
 
   async scheduleSearchResults({ auth, request, response }) {
     // WTF is goin on with ancient games??
-    //sort out the archive part aswell
-    //Check out other code now for in_game_fields
-
     try {
       let arrTags = '',
         latestScheduledGames
@@ -460,8 +457,8 @@ class ScheduleGameController {
 
             if (request.input('experience') != null) builder.where('experience', request.input('experience'))
 
-            // if (request.input('start_date_time') != null)
-            //   builder.where('schedule_games.start_date_time', '<=', request.input('start_date_time'))
+            if (request.input('start_date_time') != null)
+              builder.where('schedule_games.start_date_time', '<=', request.input('start_date_time'))
 
             if (request.input('end_date_time') != null) builder.where('schedule_games.end_date_time', '>=', request.input('end_date_time'))
 
@@ -534,9 +531,16 @@ class ScheduleGameController {
       var additional_game_info = await Database.from('schedule_games')
         .leftJoin('schedule_games_transactions', 'schedule_games_transactions.schedule_games_id', 'schedule_games.id')
         .where('schedule_games.id', '=', request.params.id)
-        .select('*')
+        .select(
+          'schedule_games.*',
+          'schedule_games_transactions.value_one',
+          'schedule_games_transactions.value_two',
+          'schedule_games_transactions.value_three',
+          'schedule_games_transactions.value_four',
+          'schedule_games_transactions.value_five'
+        )
 
-      const attendees = await Database.from('attendees')
+      const approved_gamers = await Database.from('attendees')
         .where({ schedule_games_id: request.params.id, type: 1 })
         .limit(4)
 
@@ -551,7 +555,7 @@ class ScheduleGameController {
 
       return {
         additional_game_info,
-        gamers,
+        approved_gamers,
         join_status,
       }
     } catch (error) {
@@ -565,7 +569,7 @@ class ScheduleGameController {
         .innerJoin('users', 'users.id', 'schedule_games.user_id')
         .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
         .where('schedule_games.id', '=', request.params.id)
-        .select('*', 'users.id as user_id', 'schedule_games.id', 'schedule_games.created_at', 'schedule_games.updated_at')
+        .select('*', 'users.id as user_id', 'schedule_games.id as id', 'schedule_games.created_at', 'schedule_games.updated_at')
 
       latestScheduledGames = await InGame_fieldsController.find_InGame_Fields_NOT_paginate(latestScheduledGames)
 
@@ -581,7 +585,7 @@ class ScheduleGameController {
     try {
       var getOne = await Database.from('schedule_games')
         .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
-        .select('*', 'schedule_games.id', 'schedule_games.created_at', 'schedule_games.updated_at')
+        .select('*', 'schedule_games.id as id', 'schedule_games.created_at', 'schedule_games.updated_at')
         .where('schedule_games.id', '=', request.params.id)
 
       getOne = await InGame_fieldsController.find_InGame_Fields_NOT_paginate(getOne)
