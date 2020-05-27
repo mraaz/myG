@@ -15,7 +15,11 @@ class Archive_schedule_games_transController {
           await Archive_schedule_games_trans.create({
             archive_schedule_games_id: request.params.archive_schedule_games_id,
             game_name_fields_id: schedule_games_tranaction[i].game_name_fields_id,
-            values: schedule_games_tranaction[i].values,
+            value_one: schedule_games_tranaction[i].value_one,
+            value_two: schedule_games_tranaction[i].value_two,
+            value_three: schedule_games_tranaction[i].value_three,
+            value_four: schedule_games_tranaction[i].value_four,
+            value_five: schedule_games_tranaction[i].value_five,
           })
         }
       } catch (error) {

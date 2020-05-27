@@ -22,7 +22,6 @@ class ScheduleGameController {
     if (auth.user) {
       try {
         var gameNameID = null
-
         const getGameName = await Database.from('game_names').where({
           game_name: request.input('game_name_box'),
         })
@@ -65,42 +64,46 @@ class ScheduleGameController {
           allow_comments: request.input('allow_comments'),
         })
 
-        if (getGameName.length != 0) {
-          const getGameNameFields = await Database.from('game_name_fields').where({
-            game_names_id: gameNameID,
-          })
-          var tmpValues = ''
-          for (var i = 0; i < getGameNameFields.length; i++) {
-            tmpValues = ''
-            switch (getGameNameFields[i].in_game_field) {
-              case 'dota2_medal_ranks':
-                if (request.input('dota2_medal_ranks') != '') {
-                  tmpValues = request.input('dota2_medal_ranks')
-                }
-                break
-              case 'dota2_server_regions':
-                if (request.input('dota2_server_regions') != '') {
-                  tmpValues = request.input('dota2_server_regions')
-                }
-                break
-              case 'dota2_roles':
-                if (request.input('dota2_roles') != '') {
-                  tmpValues = request.input('dota2_roles')
-                }
-                break
-              case 'clash_royale_trophies':
-                if (request.input('clash_royale_trophies') != '') {
-                  tmpValues = request.input('clash_royale_trophies')
-                }
-                break
+        if (
+          getGameName.length != 0 &&
+          (request.input('dota2_medal_ranks') != null ||
+            request.input('dota2_server_regions') != null ||
+            request.input('dota2_roles') != null ||
+            request.input('clash_royale_trophies') != null)
+        ) {
+          const getGameNameFields = await Database.from('game_name_fields')
+            .where({
+              game_names_id: 998,
+            })
+            .first()
+          if (getGameNameFields != undefined) {
+            let obj = JSON.parse(getGameNameFields.in_game_fields)
+            let value_one = null,
+              value_two = null,
+              value_three = null
+
+            if (request.input('dota2_medal_ranks') != null && obj.value_one == 'dota2_medal_ranks') {
+              value_one = request.input('dota2_medal_ranks')
             }
-            if (tmpValues != '') {
-              await ScheduleGamesTransaction.create({
-                schedule_games_id: newScheduleGame.id,
-                game_name_fields_id: getGameNameFields[i].id,
-                values: tmpValues,
-              })
+
+            if (request.input('dota2_server_regions') != null && obj.value_two == 'dota2_server_regions') {
+              value_two = request.input('dota2_server_regions')
             }
+
+            if (request.input('dota2_roles') != null && obj.value_three == 'dota2_roles') {
+              value_three = request.input('dota2_roles')
+            }
+
+            if (request.input('clash_royale_trophies') != null && obj.value_one == 'clash_royale_trophies') {
+              value_one = request.input('clash_royale_trophies')
+            }
+            await ScheduleGamesTransaction.create({
+              schedule_games_id: newScheduleGame.id,
+              game_name_fields_id: getGameNameFields.id,
+              value_one: value_one,
+              value_two: value_two,
+              value_three: value_three,
+            })
           }
         }
         if (request.input('autoJoin') == true) {
@@ -110,7 +113,7 @@ class ScheduleGameController {
             type: 1,
           })
         }
-        if (request.input('co_hosts') != undefined && request.input('co_hosts').lenght > 0) {
+        if (request.input('co_hosts') != null) {
           var arrCo_hosts = request.input('co_hosts').split(',')
 
           if (arrCo_hosts != '') {
@@ -123,7 +126,7 @@ class ScheduleGameController {
           }
         }
 
-        if (request.input('tags') != undefined && request.input('tags').lenght > 0) {
+        if (request.input('tags') != null && request.input('tags').lenght > 0) {
           var arrTags = request.input('tags').split(',')
 
           if (arrTags != '') {
@@ -140,24 +143,13 @@ class ScheduleGameController {
           }
         }
 
-        // if (parseInt(request.input('visibility'), 10) == 2) {
-        //   const getFriends = await Database.from('friends')
-        //     .where({ user_id: auth.user.id })
-        //     .select('friend_id')
-        //   let noti = new NotificationController()
-        //   for (var i = 0; i < getFriends.length; i++) {
-        //     request.params.other_user_id = getFriends[i].friend_id
-        //     request.params.schedule_games_id = newScheduleGame.id
-        //     noti.addScheduleGame({ auth, request, response })
-        //   }
-        // }
-
         return newScheduleGame
       } catch (error) {
         console.log(error)
       }
     }
   }
+  async test({ auth, request, response }) {}
 
   async destroy({ auth, request, response }) {
     if (auth.user) {
@@ -392,8 +384,7 @@ class ScheduleGameController {
   }
 
   async scheduleSearchResults({ auth, request, response }) {
-    console.log('Test')
-    //DO VACCY CEHCK!! RAAZ
+    // WTF is goin on with ancient games??
     try {
       let arrTags = '',
         latestScheduledGames
@@ -405,6 +396,7 @@ class ScheduleGameController {
             .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
             .innerJoin('schedule_games_tags', 'schedule_games.id', 'schedule_games_tags.schedule_games_id')
             .innerJoin('game_tags', 'game_tags.id', 'schedule_games_tags.game_tag_id')
+            .leftJoin('schedule_games_transactions', 'schedule_games_transactions.schedule_games_id', 'schedule_games.id')
             .where({ visibility: 1 })
             .whereIn('schedule_games_tags.game_tag_id', arrTags)
             .where((builder) => {
@@ -421,6 +413,20 @@ class ScheduleGameController {
               if (request.input('platform') != null) builder.where('platform', request.input('platform'))
 
               if (request.input('description') != null) builder.where('description', request.input('description'))
+
+              if (request.input('vacancy') == false) builder.where('vacancy', 0)
+
+              if (request.input('dota2_medal_ranks') != null)
+                builder.where('schedule_games_transactions.value_one', 'like', '%' + request.input('dota2_medal_ranks') + '%')
+
+              if (request.input('dota2_server_regions') != null)
+                builder.where('schedule_games_transactions.value_two', 'like', '%' + request.input('dota2_server_regions') + '%')
+
+              if (request.input('dota2_roles') != null)
+                builder.where('schedule_games_transactions.value_three', 'like', '%' + request.input('dota2_roles') + '%')
+
+              if (request.input('clash_royale_trophies') != null)
+                builder.where('schedule_games_transactions.value_one', 'like', '%' + request.input('clash_royale_trophies') + '%')
             })
             .orderBy('schedule_games.created_at', 'desc')
             .select(
@@ -433,15 +439,16 @@ class ScheduleGameController {
               'schedule_games.schedule_games_GUID',
               'schedule_games.limit',
               'schedule_games.id',
-              'users.id as user_id'
+              'users.id as user_id',
+              'schedule_games.game_names_id'
             )
             .paginate(request.input('counter'), 10)
         }
       } else {
-        console.log(request.input('start_date_time'))
         latestScheduledGames = await Database.from('schedule_games')
           .innerJoin('users', 'users.id', 'schedule_games.user_id')
           .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+          .leftJoin('schedule_games_transactions', 'schedule_games_transactions.schedule_games_id', 'schedule_games.id')
           .where({ visibility: 1 })
           .where((builder) => {
             if (request.input('game_name') != null) builder.where('game_names.game_name', request.input('game_name'))
@@ -458,6 +465,24 @@ class ScheduleGameController {
             if (request.input('platform') != null) builder.where('platform', request.input('platform'))
 
             if (request.input('description') != null) builder.where('description', request.input('description'))
+
+            if (request.input('vacancy') == false) builder.where('vacancy', 0)
+
+            if (request.input('dota2_medal_ranks') != null)
+              builder.where('schedule_games_transactions.value_one', 'like', '%' + request.input('dota2_medal_ranks') + '%')
+            // .andWhere('game_name_fields.in_game_field', '=', 'dota2_medal_ranks')
+            // .andWhere((qB) => qB.where('game_name_fields.in_game_field', '=', 'dota2_medal_ranks'))
+
+            if (request.input('dota2_server_regions') != null)
+              builder.where('schedule_games_transactions.value_two', 'like', '%' + request.input('dota2_server_regions') + '%')
+
+            if (request.input('dota2_roles') != null)
+              builder.where('schedule_games_transactions.value_three', 'like', '%' + request.input('dota2_roles') + '%')
+            //.andWhere('game_name_fields.in_game_field', '=', 'dota2_roles')
+
+            //Clash Royale
+            if (request.input('clash_royale_trophies') != null)
+              builder.where('schedule_games_transactions.value_one', 'like', '%' + request.input('clash_royale_trophies') + '%')
           })
           .orderBy('schedule_games.created_at', 'desc')
           .select(
@@ -470,12 +495,13 @@ class ScheduleGameController {
             'schedule_games.schedule_games_GUID',
             'schedule_games.limit',
             'schedule_games.id',
-            'users.id as user_id'
+            'users.id as user_id',
+            'schedule_games.game_names_id'
           )
           .paginate(request.input('counter'), 10)
+        // .toSQL()
+        // .toNative()
       }
-      console.log(latestScheduledGames)
-
       for (var i = 0; i < latestScheduledGames.data.length; i++) {
         let getAllTags = await Database.from('schedule_games_tags')
           .innerJoin('game_tags', 'game_tags.id', 'schedule_games_tags.game_tag_id')
@@ -483,48 +509,6 @@ class ScheduleGameController {
           .select('content')
 
         latestScheduledGames.data[i].tags = getAllTags
-
-        var myScheduledTrans = await Database.from('schedule_games_transactions')
-          .innerJoin('game_name_fields', 'game_name_fields.id', 'schedule_games_transactions.game_name_fields_id')
-          .where({ schedule_games_id: latestScheduledGames.data[i].id })
-          .where((builder) => {
-            //Dota 2
-            if (request.input('dota2_medal_ranks') != null)
-              builder
-                .where('values', 'like', '%' + request.input('dota2_medal_ranks') + '%')
-                .where('in_game_field', '=', 'dota2_medal_ranks')
-
-            if (request.input('dota2_server_regions') != null)
-              builder
-                .where('values', 'like', '%' + request.input('dota2_server_regions') + '%')
-                .where('in_game_field', '=', 'dota2_server_regions')
-
-            if (request.input('dota2_roles') != null)
-              builder.where('values', 'like', '%' + request.input('dota2_roles') + '%').where('in_game_field', '=', 'dota2_roles')
-
-            //Clash Royale
-            if (request.input('clash_royale_trophies') != null)
-              builder
-                .where('values', 'like', '%' + request.input('clash_royale_trophies') + '%')
-                .where('in_game_field', '=', 'clash_royale_trophies')
-          })
-
-        for (var x = 0; x < myScheduledTrans.length; x++) {
-          switch (myScheduledTrans[x].in_game_field) {
-            case 'dota2_medal_ranks':
-              latestScheduledGames.data[i].dota2_medal_ranks = myScheduledTrans[x].values
-              break
-            case 'dota2_server_regions':
-              latestScheduledGames.data[i].dota2_server_regions = myScheduledTrans[x].values
-              break
-            case 'dota2_roles':
-              latestScheduledGames.data[i].dota2_roles = myScheduledTrans[x].values
-              break
-            case 'clash_royale_trophies':
-              latestScheduledGames.data[i].clash_royale_trophies = myScheduledTrans[x].values
-              break
-          }
-        }
 
         let getAllGamers = await Database.from('attendees')
           .where({ schedule_games_id: latestScheduledGames.data[i].id, type: 1 })
@@ -545,10 +529,20 @@ class ScheduleGameController {
     let join_status = 0
     try {
       var additional_game_info = await Database.from('schedule_games')
+        .leftJoin('schedule_games_transactions', 'schedule_games_transactions.schedule_games_id', 'schedule_games.id')
         .where('schedule_games.id', '=', request.params.id)
-        .select('*')
+        .select(
+          'schedule_games.*',
+          'schedule_games_transactions.value_one',
+          'schedule_games_transactions.value_two',
+          'schedule_games_transactions.value_three',
+          'schedule_games_transactions.value_four',
+          'schedule_games_transactions.value_five'
+        )
 
-      const attendees = await Database.from('attendees').where({ schedule_games_id: request.params.id, type: 1 })
+      const approved_gamers = await Database.from('attendees')
+        .where({ schedule_games_id: request.params.id, type: 1 })
+        .limit(4)
 
       const my_attendance = await Database.from('attendees')
         .where({ schedule_games_id: request.params.id, user_id: auth.user.id })
@@ -561,7 +555,7 @@ class ScheduleGameController {
 
       return {
         additional_game_info,
-        gamers,
+        approved_gamers,
         join_status,
       }
     } catch (error) {
@@ -575,7 +569,7 @@ class ScheduleGameController {
         .innerJoin('users', 'users.id', 'schedule_games.user_id')
         .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
         .where('schedule_games.id', '=', request.params.id)
-        .select('*', 'users.id as user_id', 'schedule_games.id', 'schedule_games.created_at', 'schedule_games.updated_at')
+        .select('*', 'users.id as user_id', 'schedule_games.id as id', 'schedule_games.created_at', 'schedule_games.updated_at')
 
       latestScheduledGames = await InGame_fieldsController.find_InGame_Fields_NOT_paginate(latestScheduledGames)
 
@@ -591,7 +585,7 @@ class ScheduleGameController {
     try {
       var getOne = await Database.from('schedule_games')
         .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
-        .select('*', 'schedule_games.id', 'schedule_games.created_at', 'schedule_games.updated_at')
+        .select('*', 'schedule_games.id as id', 'schedule_games.created_at', 'schedule_games.updated_at')
         .where('schedule_games.id', '=', request.params.id)
 
       getOne = await InGame_fieldsController.find_InGame_Fields_NOT_paginate(getOne)

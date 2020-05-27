@@ -3,7 +3,7 @@ import { Redirect } from 'react-router'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import ToggleButton from 'react-toggle-button'
-import SweetAlert from './common/MyGSweetAlert';
+import SweetAlert from './common/MyGSweetAlert'
 import { connect } from 'react-redux'
 import { logoutAction } from '../../redux/actions/userAction'
 
@@ -104,7 +104,6 @@ class MySettings extends Component {
     //const post = axios.get('/api/email/summary_email')
     const getGamers_you_might_know = async function() {
       try {
-        console.log('test')
         const master_controller = await axios.get('/api/connection/master_controller')
         console.log(master_controller)
       } catch (error) {
@@ -157,6 +156,20 @@ class MySettings extends Component {
     callMasterControllerforConnections()
   }
 
+  fire_off_test = () => {
+    const callMasterControllerforConnections = async function() {
+      let game_id = 110
+      try {
+        const get_stats = await axios.get(`api/ScheduleGame/additional_game_info/${game_id}`)
+        console.log(get_stats)
+        //console.log('Raaz-inside')
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    callMasterControllerforConnections()
+  }
+
   render() {
     if (this.state.redirect_) {
       this.props.logout()
@@ -175,6 +188,9 @@ class MySettings extends Component {
               </button>
               <button className='save' onClick={this.fire_off_calculations}>
                 Fire off calcs
+              </button>
+              <button className='save' onClick={this.fire_off_test}>
+                Fire off test
               </button>
               <a rel='noopener noreferrer' href='https://github.com/mraaz/myG_RoadMap' target='_blank'>
                 Report bugs, request feature, help improve myG :)

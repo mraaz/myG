@@ -1054,10 +1054,8 @@ class Import_game_names_Schema extends Schema {
     .raw("update game_names set game_name_fields = 1 where game_name = \"Clash Royale\"")
 
 
-    .raw("insert into game_name_fields(game_names_id, in_game_field, created_at, updated_at) values (998, 'dota2_medal_ranks', '1988-08-08', '1988-08-08')")
-    .raw("insert into game_name_fields(game_names_id, in_game_field, created_at, updated_at) values (998, 'dota2_server_regions', '1988-08-08', '1988-08-08')")
-    .raw("insert into game_name_fields(game_names_id, in_game_field, created_at, updated_at) values (998, 'dota2_roles', '1988-08-08', '1988-08-08');")
-    .raw("insert into game_name_fields(game_names_id, in_game_field, created_at, updated_at) values (1015, 'clash_royale_trophies', '1988-08-08', '1988-08-08');")
+    .raw("insert into game_name_fields(game_names_id, in_game_fields, created_at, updated_at) values (998, '{\"value_one\": \"dota2_medal_ranks\", \"value_two\": \"dota2_server_regions\", \"value_three\": \"dota2_roles\"}', '1988-08-08', '1988-08-08')")
+    .raw("insert into game_name_fields(game_names_id, in_game_fields, created_at, updated_at) values (1015, '{\"value_one\": \"clash_royale_trophies\"}', '1988-08-08', '1988-08-08');")
 
   }
 

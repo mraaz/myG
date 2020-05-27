@@ -421,7 +421,7 @@ class Layout extends Component {
 
                 <Route
                   exact
-                  path='/playerList/:id'
+                  path='/playerList/:schedule_games_GUID'
                   component={(props) => (
                     <PlayerList
                       routeProps={props}
