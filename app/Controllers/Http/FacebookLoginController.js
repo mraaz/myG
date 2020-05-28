@@ -5,7 +5,10 @@ const ConnectionController = use('./ConnectionController')
 
 class FacebookLoginController {
   async redirect({ ally }) {
-    await ally.driver('facebook').redirect()
+    await ally
+      .driver('facebook')
+      .stateless()
+      .redirect()
   }
 
   async callback({ ally, auth, request, response, view, session }) {
