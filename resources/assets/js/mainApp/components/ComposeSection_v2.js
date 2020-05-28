@@ -45,6 +45,7 @@ export default class ComposeSection extends Component {
       group_id: [],
       options_tags: '',
       value_tags: [],
+      isShowAllGroup: false,
     }
 
     this.openPhotoPost = this.openPhotoPost.bind(this)
@@ -162,6 +163,7 @@ export default class ComposeSection extends Component {
           selected_group_data: [],
           selected_group: [],
           group_id: [],
+          open_compose_textTab: true,
         },
         () => {
           media_url = []
@@ -380,6 +382,9 @@ export default class ComposeSection extends Component {
       return { original: data.src, thumbnail: data.src }
     })
   }
+  toggleShowAllGroup = () => {
+    this.setState({ isShowAllGroup: !this.state.isShowAllGroup })
+  }
 
   render() {
     const {
@@ -390,9 +395,11 @@ export default class ComposeSection extends Component {
       group_id,
       overlay_active,
       post_content = '',
+      isShowAllGroup = false,
     } = this.state
     const isButtonDisable = post_content != '' || preview_files.length > 0 ? true : false
     const groups = [...selected_group_data]
+    const AllGroups = [...selected_group_data]
     const preview_filesData = [...preview_files]
     const previewImageGallery = this.getPreviewImageGallery(preview_filesData)
 
@@ -539,6 +546,20 @@ export default class ComposeSection extends Component {
                   </div>
                 )
               })}
+              {AllGroups.length > 3 && (
+                <div className='all__selected_groups people_selected_list'>
+                  <span className='more__groups' onClick={this.toggleShowAllGroup}>
+                    ...
+                  </span>
+                  {isShowAllGroup && (
+                    <div className='group__details'>
+                      {AllGroups.splice(3, AllGroups.length).map((group) => {
+                        return <div className='people_label'>{group.name}</div>
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
             <div className='add_more_people'>
               <button type='button' className='add__people' onClick={this.addGroupToggle}>

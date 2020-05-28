@@ -10,7 +10,7 @@ const User = use('App/Models/User')
 const ChatMessage = use('App/Models/ChatMessage')
 const NodeClam = require('clamscan')
 
-const S3_BUCKET_CHAT = 'mygame-media/myG chat/chat_images';
+const S3_BUCKET_CHAT = 'mygame-media/myG chat/chat_images'
 const S3_BUCKET = 'mygame-media/user_files'
 const S3_BUCKET_DELETE = 'mygame-media'
 
@@ -65,23 +65,26 @@ class ApiController {
 
   async uploadFile({ auth, request, response }) {
     if (auth.user) {
-
-      const isChat = !!request.input('chat');
+      const isChat = !!request.input('chat')
 
       if (isChat) {
-        if (Env.get("CHAT_UPLOAD_DISABLED")) return response.status(500).json("CHAT_UPLOAD_DISABLED");
-        const user = (await User.find(auth.user.id)).toJSON();
-        const today = new Date();
-        today.setDate(today.getDate() - 1);
-        const isRecentUser = new Date(user.created_at) > today;
-        const attachmentsToday = await ChatMessage.query().where('sender_id', auth.user.id).andWhere('is_attachment', true).andWhere('created_at', '>', today).fetch();
-        if (attachmentsToday && attachmentsToday.toJSON().length >= 10) return response.status(500).json("MAX_UPLOAD_REACHED");
-        if (isRecentUser) return response.status(500).json("USER_CREATION");
+        if (Env.get('CHAT_UPLOAD_DISABLED')) return response.status(500).json('CHAT_UPLOAD_DISABLED')
+        const user = (await User.find(auth.user.id)).toJSON()
+        const today = new Date()
+        today.setDate(today.getDate() - 1)
+        const isRecentUser = new Date(user.created_at) > today
+        const attachmentsToday = await ChatMessage.query()
+          .where('sender_id', auth.user.id)
+          .andWhere('is_attachment', true)
+          .andWhere('created_at', '>', today)
+          .fetch()
+        if (attachmentsToday && attachmentsToday.toJSON().length >= 10) return response.status(500).json('MAX_UPLOAD_REACHED')
+        if (isRecentUser) return response.status(500).json('USER_CREATION')
       }
 
       var file = request.file('upload_file')
       var filename = request.input('filename')
-      const bucket = isChat ? S3_BUCKET_CHAT : S3_BUCKET;
+      const bucket = isChat ? S3_BUCKET_CHAT : S3_BUCKET
 
       const timestamp_OG = Date.now().toString()
       var tmpfilename = auth.user.id + '_' + timestamp_OG + '_' + generateRandomString(6) + '_' + filename
@@ -96,8 +99,8 @@ class ApiController {
         name: tmpfilename,
       })
 
-      const isFileInfected = await this.isFileInfected(tmpfilepath);
-      if (isFileInfected) return response.status(500).json("FILE_INFECTED");
+      const isFileInfected = await this.isFileInfected(tmpfilepath)
+      if (isFileInfected) return response.status(500).json('FILE_INFECTED')
 
       try {
         const buffer = fs.readFileSync(tmpfilepath)
@@ -141,12 +144,13 @@ class ApiController {
         },
         function (err, data) {
           if (data) {
-            resolve();
+            resolve()
           } else {
-            reject();
+            reject()
           }
-        });
-    });
+        }
+      )
+    })
   }
 
   async deleteFile_server({ auth, request, response }) {
@@ -197,18 +201,17 @@ class ApiController {
     try {
       const clamscan = await new NodeClam().init({
         clamdscan: {
-          host: Env.get("CLAMAV_HOST"),
-          port: Env.get("CLAMAV_PORT"),
+          host: Env.get('CLAMAV_HOST'),
+          port: Env.get('CLAMAV_PORT'),
         },
-      });
-      const { is_infected } = await clamscan.is_infected(file);
-      return is_infected;
+      })
+      const { is_infected } = await clamscan.is_infected(file)
+      return is_infected
     } catch (error) {
-      console.error(`Failure to Scan File: ${file} - ${error}`);
-      return false;
+      console.error(`Failure to Scan File: ${file} - ${error}`)
+      return false
     }
   }
-
 }
 
 module.exports = ApiController

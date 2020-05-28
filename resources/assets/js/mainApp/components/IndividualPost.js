@@ -52,6 +52,7 @@ export default class IndividualPost extends Component {
       postVideos: [],
       showmore: false,
       hideComments: false,
+      commentShowCount: 2,
     }
     this.imageFileType = ['jpeg', 'jpg', 'png', 'gif']
     this.videoFileType = ['mov', 'webm', 'mpg', 'mp4', 'avi', 'ogg']
@@ -455,10 +456,10 @@ export default class IndividualPost extends Component {
     )
   }
   showComment = () => {
-    const { myComments = [] } = this.state
+    const { myComments = [], commentShowCount } = this.state
     const comments = [...myComments]
     const len = comments.length
-    const commentArr = comments.length > 3 ? comments.slice(len - 3, len) : comments
+    const commentArr = comments.length > 3 ? comments.slice(len - commentShowCount, len) : comments
     return (
       commentArr.length > 0 &&
       commentArr.map((item, index) => {
@@ -554,7 +555,8 @@ export default class IndividualPost extends Component {
   }
 
   hide_comments = () => {
-    this.setState({ hideComments: true })
+    const { myComments = [], show_more_comments } = this.state
+    this.setState({ hideComments: true, show_more_comments: !show_more_comments, commentShowCount: myComments.length })
   }
 
   render() {
@@ -723,14 +725,13 @@ export default class IndividualPost extends Component {
               )}
             </div> */}
             </div>
-            {myComments.length > 3 &&
-              (show_more_comments || hideComments ? (
-                <div className='show__comments_count' onClick={this.show_more_comments}>{` View all (${myComments.length}) comments`}</div>
-              ) : (
-                <div className='show__comments_count' onClick={this.hide_comments}>
-                  {` Hide all (${myComments.length}) comments`}
-                </div>
-              ))}
+            {show_more_comments ? (
+              <div className='show__comments_count' onClick={this.show_more_comments}>{` View all (${myComments.length}) comments`}</div>
+            ) : (
+              <div className='show__comments_count' onClick={this.hide_comments}>
+                {` Hide all (${myComments.length}) comments`}
+              </div>
+            )}
             {myComments.length > 0 && !hideComments && (
               <div className='comments'>
                 {show_more_comments && <div className='show-individual-comments'>{this.showComment()}</div>}
@@ -771,7 +772,6 @@ export default class IndividualPost extends Component {
                 </div>
               </div>
             )}
-
             {/*<div className='update-container'>
           {this.state.alert}
           <div className='padding-container'>
