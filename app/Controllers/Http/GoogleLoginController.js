@@ -5,7 +5,10 @@ const ConnectionController = use('./ConnectionController')
 
 class LoginController {
   async redirect({ ally }) {
-    await ally.driver('google').redirect()
+    await ally
+      .driver('google')
+      .stateless()
+      .redirect()
   }
 
   async callback({ ally, auth, response, view, session }) {

@@ -19,6 +19,25 @@ const InGame_fieldsController = use('./InGame_fieldsController')
 
 class ScheduleGameController {
   async store({ auth, request, response }) {
+    let myTime = new Date(new Date(Date.now()).getTime() - 60 * 60 * 1000)
+
+    let newStartdate = new Date(request.input('start_date_time'))
+    if (myTime > newStartdate) {
+      return
+    }
+
+    let end_date_time
+
+    if (request.input('end_date_time') != undefined) {
+      end_date_time = new Date(request.input('end_date_time')).toISOString().replace('T', ' ')
+
+      let newEnddate = new Date(request.input('end_date_time'))
+      let extendedDate = new Date(new Date(request.input('start_date_time')).getTime() + 15 * 60 * 60 * 24 * 1000)
+      if (newEnddate > extendedDate) {
+        return
+      }
+    }
+
     if (auth.user) {
       try {
         var gameNameID = null
@@ -44,6 +63,10 @@ class ScheduleGameController {
 
         if (request.input('end_date_time') != undefined) {
           end_date_time = new Date(request.input('end_date_time')).toISOString().replace('T', ' ')
+          let extendedDate = new Date(new Date(request.input('start_date_time')).getTime() + 15 * 60 * 60 * 24 * 1000)
+          if (end_date_time > extendedDate) {
+            return
+          }
         }
 
         const newScheduleGame = await ScheduleGame.create({
