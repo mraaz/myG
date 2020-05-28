@@ -36,6 +36,7 @@ export default class IndividualComment extends Component {
       preview_file: [],
       file_keys: [],
       hideReplies: false,
+      replyShowCount: 1,
     }
     this.textInput = null
     this.fileInputRef = React.createRef()
@@ -232,10 +233,10 @@ export default class IndividualComment extends Component {
   }
 
   showReplies = () => {
-    const { myReplies = [] } = this.state
+    const { myReplies = [], replyShowCount } = this.state
     const replies = [...myReplies]
     const len = replies.length
-    const repliesArr = replies.length > 1 ? replies.slice(len - 1, len) : replies
+    const repliesArr = replies.length > 1 ? replies.slice(len - replyShowCount, len) : replies
     if (repliesArr.length > 0) {
       return repliesArr.map((item, index) => {
         return (
@@ -516,13 +517,18 @@ export default class IndividualComment extends Component {
   }
 
   hide_replies = () => {
-    this.setState({ hideReplies: true })
+    const { myReplies = [], show_more_replies } = this.state
+    this.setState({ hideReplies: true, show_more_replies: !show_more_replies, replyShowCount: myReplies.length })
   }
 
   render() {
     let { comment } = this.props
-    let { profile_img = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png' } = comment
+    let {
+      profile_img = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png',
+      media_url = '',
+    } = comment
     const { myReplies = [], show_more_replies = true, hideReplies = false } = this.state
+    const media_urls = media_url && media_url.length > 0 ? JSON.parse(media_url) : ''
     if (this.state.comment_deleted != true) {
       return (
         <div className='individual-comment-container'>
@@ -534,9 +540,11 @@ export default class IndividualComment extends Component {
               {!this.state.show_edit_comment && (
                 <div className='comment-content'>
                   <p>{this.state.content}</p>
-                  {comment.media_url && (
+                  {media_urls.length > 0 && (
                     <div className='show__comment__image'>
-                      <img src={comment.media_url} />
+                      {media_urls.map((img) => {
+                        return <img src={img} />
+                      })}
                     </div>
                   )}
                 </div>
@@ -612,12 +620,11 @@ export default class IndividualComment extends Component {
 
           {/* comment reply start */}
           <div className='comment-panel'>
-            {myReplies.length > 1 &&
-              (show_more_replies || hideReplies ? (
-                <div className='show__moreReply' onClick={this.show_more_replies}>{` View all (${myReplies.length}) replies`}</div>
-              ) : (
-                <div className='show__moreReply' onClick={this.hide_replies}>{` Hide all (${myReplies.length}) replies`}</div>
-              ))}
+            {show_more_replies ? (
+              <div className='show__moreReply' onClick={this.show_more_replies}>{` View all (${myReplies.length}) replies`}</div>
+            ) : (
+              <div className='show__moreReply' onClick={this.hide_replies}>{` Hide all (${myReplies.length}) replies`}</div>
+            )}
             {show_more_replies && !hideReplies && this.showReplies()}
             {!show_more_replies && !hideReplies && this.showMoreReplies()}
 

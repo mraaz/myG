@@ -283,8 +283,9 @@ export default class IndividualReply extends Component {
 
   render() {
     let { reply } = this.props
-    let { profile_img = 'https://image.flaticon.com/icons/svg/149/149071.svg' } = reply
+    let { profile_img = 'https://image.flaticon.com/icons/svg/149/149071.svg', media_url = '' } = reply
     //console.log(reply);
+    const media_urls = media_url && media_url.length > 0 ? JSON.parse(media_url) : ''
     if (this.state.reply_deleted != true) {
       return (
         <div className='individual-reply-container'>
@@ -296,9 +297,11 @@ export default class IndividualReply extends Component {
               {!this.state.show_edit_reply && (
                 <div className='comment-content'>
                   <p>{this.state.content}</p>
-                  {reply.media_url && (
+                  {media_urls.length > 0 && (
                     <div className='show__comment__image'>
-                      <img src={reply.media_url} />
+                      {media_urls.map((img) => {
+                        return <img src={img} />
+                      })}
                     </div>
                   )}
                 </div>
