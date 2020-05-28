@@ -339,17 +339,13 @@ export default class IndividualComment extends Component {
   }
 
   insert_reply = (e) => {
-    if (this.state.value == '') {
-      return
-    }
-    if (this.state.value.trim() == '') {
-      this.setState({
-        value: '',
-      })
+    const { value = '', preview_file = [] } = this.state
+
+    if (value.trim() == '' && preview_file.length == 0) {
       return
     }
     const self = this
-    var postReply
+    let postReply
 
     const saveReply = async () => {
       const { myReplies = [] } = this.state
@@ -393,6 +389,7 @@ export default class IndividualComment extends Component {
           show_add_reply: false,
           reply_total: self.state.reply_total + 1,
           show_reply: true,
+          preview_file: [],
         })
       } catch (error) {
         console.log(error)
