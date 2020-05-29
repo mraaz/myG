@@ -2,11 +2,13 @@ import React, { Fragment, useState, useEffect } from 'react'
 import classNames from 'classnames'
 import Slider, { Range } from 'rc-slider'
 import moment from 'moment'
+import CustomCron from '../common/Cron/MyGCron'
 
 import 'rc-slider/assets/index.css'
 import { toast } from 'react-toastify'
 
 import { Toast_style } from '../Utility_Function'
+import '../../styles/AddGame/AddGameStyles.scss'
 
 import {
   SETTINGS_ENUMS,
@@ -108,7 +110,7 @@ const AddGame = ({
 
   // api calls
   const getOptionsTags = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         let results = await Schedule_Game_Tags(inputValue)
         updateAdvancedSettings({ optionTags: results })
@@ -268,23 +270,24 @@ const AddGame = ({
 
   const getOptionalView = () => {
     return (
-      <div className={styles.optionalMainContainer}>
-        {!mainSettingsState.isEndGameFieldSelected && (
-          <div className={styles.optionalEndContainer}>
-            <div
-              className={styles.optionalText}
-              onClick={() => {
-                updateMainSettings({
-                  isEndGameFieldSelected: true,
-                  endTime: moment(mainSettingsState.startTime).add(2, 'days'),
-                })
-              }}>
-              Add End Time
+      <Fragment>
+        <div className={styles.optionalMainContainer}>
+          {!mainSettingsState.isEndGameFieldSelected && (
+            <div className={styles.optionalEndContainer}>
+              <div
+                className={styles.optionalText}
+                onClick={() => {
+                  updateMainSettings({
+                    isEndGameFieldSelected: true,
+                    endTime: moment(mainSettingsState.startTime).add(2, 'days'),
+                  })
+                }}>
+                Add End Time
+              </div>
+              {/* <div className={styles.optionalCircle} /> */}
             </div>
-            <div className={styles.optionalCircle} />
-          </div>
-        )}
-        {!mainSettingsState.isRepeatFieldSelected && (
+          )}
+          {/* {!mainSettingsState.isRepeatFieldSelected && (
           <div
             className={styles.optionalText}
             onClick={(value) => {
@@ -292,8 +295,26 @@ const AddGame = ({
             }}>
             Set To Repeat
           </div>
+        )} */}
+        </div>
+        <MyGCheckbox
+          checked={mainSettingsState.isRepeatFieldSelected}
+          onClick={(value) => {
+            updateMainSettings({ isRepeatFieldSelected: value })
+          }}
+          labelText='Set To Repeat'
+        />
+        {mainSettingsState.isRepeatFieldSelected && (
+          <CustomCron
+            onChange={console.log}
+            tabs={['Daily', 'Weekly', 'Monthly']}
+            hours={2}
+            minutes={15}
+            showResultText={true}
+            showResultCron={true}
+          />
         )}
-      </div>
+      </Fragment>
     )
   }
 
@@ -331,6 +352,7 @@ const AddGame = ({
             placeholder='Enter Game Title'
             options={mainSettingsState.gameTitlesList}
           />
+
           <div className={styles.fieldTitle}>Start Time</div>
           <MyGDatePicker
             onChange={(value) => {
