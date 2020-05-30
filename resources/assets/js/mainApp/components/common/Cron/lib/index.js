@@ -12,8 +12,8 @@ const defaultTabs = ['Once', 'Minutes','Hourly','Daily','Weekly', 'Monthly'] //,
 const date = new Date();
 const defaultTabsVal = {
     Once: [ //Now
-        '0', 
-        '0', 
+        '0',
+        '0',
         (date.getHours() < 23 ? date.getHours() + 1 : 23).toString(),
         date.getDate().toString(),
         (date.getMonth() + 1).toString(),
@@ -32,7 +32,7 @@ export default class CustomCron extends Component {
         super(props);
         this.state = {
         //    selectedTab: tabs[0],
-           
+        occurrence: 26,
         };
         tabs = props.tabs || defaultTabs;
     }
@@ -60,7 +60,7 @@ export default class CustomCron extends Component {
         } else {
             this.state.selectedTab = tabs[0];
         }
-       
+
     }
 
     defaultValue(tab) {
@@ -68,18 +68,18 @@ export default class CustomCron extends Component {
     }
 
     tabChanged(tab) {
-        this.setState({selectedTab:tab, value:this.defaultValue(tab)}); 
+        this.setState({selectedTab:tab, value:this.defaultValue(tab)});
         this.parentChange(this.defaultValue(tab))
     }
     getHeaders() {
-        return tabs.map(d => {  
+        return tabs.map(d => {
             return <li className={this.state.selectedTab === d ? 'active' : ''}><a onClick={this.tabChanged.bind(this,d)}>{d}</a></li>
         })
     }
-    onValueChange(val) {     
+    onValueChange(val) {
         if(val && val.length) {
             this.setState({value:val})
-        } else { 
+        } else {
             this.setState({value:['0','0','00','*','*','?','*']})
             val = ['0','0','00','*','*','?','*'];
         }
@@ -91,7 +91,7 @@ export default class CustomCron extends Component {
         newVal = val.toString().replace(/,/g,' ')
         newVal = newVal.replace(/!/g, ',')
         console.log(newVal);
-        this.props.onChange(newVal) 
+        this.props.onChange(newVal)
     }
     getVal() {
         let val = cronstrue.toString(this.state.value.toString().replace(/,/g,' ').replace(/!/g, ','))
@@ -99,36 +99,42 @@ export default class CustomCron extends Component {
             return val.slice(12);
         }
         return '-'
-        
+
     }
 
     getComponent(tab) {
         switch(tab) {
-            case defaultTabs[0] : 
+            case defaultTabs[0] :
                 return <Once value={this.state.value} hours={this.props.hours} minutes={this.props.minutes} onChange={this.onValueChange.bind(this)}/>
                 break;
-            case defaultTabs[1] : 
+            case defaultTabs[1] :
                 return <Minutes value={this.state.value} onChange={this.onValueChange.bind(this)}/>
                 break;
-            case defaultTabs[2] : 
+            case defaultTabs[2] :
                 return <Hourly value={this.state.value} hours={this.props.hours} minutes={this.props.minutes} onChange={this.onValueChange.bind(this)}/>
                 break;
-            case defaultTabs[3] : 
+            case defaultTabs[3] :
                 return <Daily value={this.state.value} hours={this.props.hours} minutes={this.props.minutes} onChange={this.onValueChange.bind(this)}/>
                 break;
-            case defaultTabs[4] : 
+            case defaultTabs[4] :
                 return <Weekly value={this.state.value} hours={this.props.hours} minutes={this.props.minutes} onChange={this.onValueChange.bind(this)}/>
                 break;
-            case defaultTabs[5] : 
+            case defaultTabs[5] :
                 return <Monthly value={this.state.value} hours={this.props.hours} minutes={this.props.minutes} onChange={this.onValueChange.bind(this)}/>
                 break;
-            case defaultTabs[6] : 
+            case defaultTabs[6] :
                 return <Yearly value={this.state.value} hours={this.props.hours} minutes={this.props.minutes} onChange={this.onValueChange.bind(this)}/>
                 break;
-            default: 
+            default:
                 return
         }
     }
+
+    onOccurenceChange = (e) => {
+        this.setState({
+            occurrence: e.target.value
+        });
+    };
 
     render() {
         console.log('this.state: ', this.state);
@@ -140,8 +146,20 @@ export default class CustomCron extends Component {
                         {this.getHeaders()}
                     </ul>
                     <div className="cron_builder_bordering">{this.getComponent(this.state.selectedTab)}</div>
-                    {this.props.showResultText && <div className="cron-builder-bg">{this.getVal()}</div>}
+                    {this.props.showResultText && <div className="cron-builder-bg" style={{backgroundColor: '#e7bb30', color: '#0a0a0a'}}>{this.getVal()}</div>}
                     {/* {this.props.showResultCron && <div className="cron-builder-bg">{this.state.value.toString().replace(/,/g,' ').replace(/!/g, ',')}</div>} */}
+                    <div>
+                    <input
+                        type='Number'
+                        onChange={this.onOccurenceChange}
+                        value={this.state.occurrence}
+                        style={{ margin: 0, display: 'inline' }}
+                        min={1}
+                        max={26}
+                    />
+                    <span> occurences</span>
+                    </div>
+
                 </div>
             </div>
         )

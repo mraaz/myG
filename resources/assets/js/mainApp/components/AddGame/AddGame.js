@@ -284,35 +284,55 @@ const AddGame = ({
                 }}>
                 Add End Time
               </div>
-              {/* <div className={styles.optionalCircle} /> */}
             </div>
           )}
-          {/* {!mainSettingsState.isRepeatFieldSelected && (
-          <div
-            className={styles.optionalText}
-            onClick={(value) => {
-              updateMainSettings({ isRepeatFieldSelected: true })
-            }}>
-            Set To Repeat
-          </div>
-        )} */}
+          {!mainSettingsState.isRepeatFieldSelected && (
+            <React.Fragment>
+              {!mainSettingsState.isEndGameFieldSelected && <div className={styles.optionalCircle} />}
+              <div
+                className={styles.optionalText}
+                onClick={(value) => {
+                  updateMainSettings({ isRepeatFieldSelected: true })
+                }}>
+                Set To Repeat
+              </div>
+            </React.Fragment>
+          )}
         </div>
-        <MyGCheckbox
+        {/* <MyGCheckbox
           checked={mainSettingsState.isRepeatFieldSelected}
           onClick={(value) => {
             updateMainSettings({ isRepeatFieldSelected: value })
           }}
           labelText='Set To Repeat'
-        />
+        /> */}
         {mainSettingsState.isRepeatFieldSelected && (
-          <CustomCron
-            onChange={console.log}
-            tabs={['Daily', 'Weekly', 'Monthly']}
-            hours={2}
-            minutes={15}
-            showResultText={true}
-            showResultCron={true}
-          />
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}>
+            <CustomCron
+              onChange={console.log}
+              tabs={['Daily', 'Weekly', 'Monthly']}
+              hours={2}
+              minutes={15}
+              showResultText={true}
+              showResultCron={true}
+            />
+            <img
+              style={{ margin: '0 10px' }}
+              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/X+icon.svg'
+              height='20'
+              width='20'
+              onClick={() => {
+                updateMainSettings({
+                  isRepeatFieldSelected: false,
+                  endTime: null,
+                })
+              }}
+            />
+          </div>
         )}
       </Fragment>
     )
