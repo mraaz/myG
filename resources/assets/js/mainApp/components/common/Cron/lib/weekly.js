@@ -3,7 +3,9 @@ import React, { Component } from 'react'
 export default class CustomCron extends Component {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      repeatEvery: 1,
+    }
     this.onAtHourChange = this.onAtHourChange.bind(this)
     this.onAtMinuteChange = this.onAtMinuteChange.bind(this)
     this.onCheck = this.onCheck.bind(this)
@@ -46,6 +48,13 @@ export default class CustomCron extends Component {
 
     this.props.onChange(val)
   }
+
+  onRepeatEveryChange = (e) => {
+    this.setState({
+      repeatEvery: e.target.value,
+    })
+  }
+
   render() {
     this.state.value = this.props.value
     return (
@@ -124,6 +133,17 @@ export default class CustomCron extends Component {
             <select value="DailyMinutes" className="minutes"  onChange={this.onAtMinuteChange} value={this.state.value[1]}>
                 {this.getMinutes()}
             </select> */}
+        <div>
+          <span>Repeat every </span>
+          <input
+            type='Number'
+            onChange={this.onRepeatEveryChange}
+            value={this.state.repeatEvery}
+            style={{ margin: 0, display: 'inline' }}
+            min={1}
+            max={52}
+          />
+        </div>
       </div>
     )
   }

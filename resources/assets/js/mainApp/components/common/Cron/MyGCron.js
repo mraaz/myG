@@ -13,6 +13,7 @@ class App extends Component {
       margin-top: 10px;
       border-radius: 4px;
       border: none;
+      font-family: Roboto, sans-serif;
     }
     .text_align_left > input {
       display: inline;
