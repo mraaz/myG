@@ -32,9 +32,9 @@ class FacebookLoginController {
         } else {
           session.put('provider', 'facebook')
           session.put('provider_id', userData.getId())
-          var alias = userData.getName()
-          alias = alias.replace(' ', '')
-          session.put('alias', alias)
+          // var alias = userData.getName()
+          // alias = alias.replace(' ', '')
+          // session.put('alias', alias)
           session.put('email', userData.getEmail())
           session.put('profile_img', userData.getAvatar())
           return response.redirect('/user/register')

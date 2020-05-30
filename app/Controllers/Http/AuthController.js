@@ -57,7 +57,7 @@ class AuthController {
       return response.redirect('back')
     } else {
       var strMsg =
-        'Special characters:\r\nUsernames can only contain letters (a-z), numbers (0-9), and periods (.).\r\nUsernames can begin or end with non-alphanumeric characters except periods (.) and they can not have multiple periods.'
+        'Special characters:\r\nAlias can only contain letters (a-z), numbers (0-9), and periods (.).\r\nAlias can begin or end with non-alphanumeric characters except periods (.) and they can not have multiple periods.'
 
       try {
         if (request.input('alias').charAt(0) == '.' || request.input('alias').charAt(request.input('alias').length - 1) == '.') {
