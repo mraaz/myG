@@ -14,7 +14,8 @@ import { Disable_keys, Hash_Tags } from './Utility_Function'
 
 import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
-import ImageGallery from 'react-image-gallery'
+import ImageGallery from './common/ImageGallery/ImageGallery.js'
+// import ImageGallery from 'react-image-gallery'
 
 const createOption = (label, hash_tag_id) => ({
   label,
@@ -39,7 +40,15 @@ export default class ComposeSection extends Component {
       selected_group_data: [],
       selectedGroup: [],
       groups_im_in: [],
-      preview_files: [],
+      preview_files: [
+        {
+          src:
+            'https://mygame-media.s3.ap-southeast-2.amazonaws.com/user_files/100_1590936097761_DWZE5d_post_video_1590935985346_1.+Introduction.mp4',
+        },
+        {
+          src: 'https://myg-test-media-files.s3-ap-southeast-2.amazonaws.com/viber_image_2019-09-26_11-52-23.jpg',
+        },
+      ],
       visibility: 1,
       overlay_active: false,
       group_id: [],
@@ -54,6 +63,8 @@ export default class ComposeSection extends Component {
     this.callbackPostFileModalClose = this.callbackPostFileModalClose.bind(this)
     this.callbackPostFileModalConfirm = this.callbackPostFileModalConfirm.bind(this)
     this.doUploadS3 = this.doUploadS3.bind(this)
+    this.imageFileType = ['jpeg', 'jpg', 'png', 'gif']
+    this.videoFileType = ['mov', 'webm', 'mpg', 'mp4', 'avi', 'ogg']
   }
 
   callbackPostFileModalClose() {
@@ -418,22 +429,7 @@ export default class ComposeSection extends Component {
           </div>
           {open_compose_textTab && (
             <div className='text__editor__section'>
-              <div className='media'>
-                {preview_filesData.length > 0 && (
-                  <ImageGallery
-                    lazyLoad={true}
-                    showThumbnails={false}
-                    showPlayButton={false}
-                    items={previewImageGallery}
-                    showBullets={true}
-                    autoPlay={false}
-                    isRTL={false}
-                    disableSwipe={false}
-                    showNav={true}
-                    showFullscreenButton={false}
-                  />
-                )}
-              </div>
+              <div className='media'>{preview_filesData.length > 0 && <ImageGallery items={preview_filesData} />}</div>
               <textarea
                 onChange={this.handleChange_txtArea}
                 onFocus={this.handleFocus_txtArea}
@@ -479,14 +475,30 @@ export default class ComposeSection extends Component {
                       )}
                       {preview_filesData.length > 0 && (
                         <div className='files__preview'>
-                          {preview_filesData.slice(0, 3).map((file) => (
-                            <span className='image'>
-                              <img src={file.src} key={file.src} />
-                              <span className='remove__image' onClick={(e) => this.handlePreviewRemove(e, file.src)}>
-                                X
+                          {preview_filesData.slice(0, 3).map((file) => {
+                            const splitUrl = file.src.split('.')
+                            let fileType = splitUrl[splitUrl.length - 1]
+                            if (file.src.includes('video') || this.videoFileType.includes(fileType)) {
+                              return (
+                                <span className='image' key={file.src}>
+                                  <video className='post-video' controls>
+                                    <source src={file.src}></source>
+                                  </video>
+                                  <span className='remove__image' onClick={(e) => this.handlePreviewRemove(e, file.src)}>
+                                    X
+                                  </span>
+                                </span>
+                              )
+                            }
+                            return (
+                              <span className='image' key={file.src}>
+                                <img src={file.src} key={file.src} />
+                                <span className='remove__image' onClick={(e) => this.handlePreviewRemove(e, file.src)}>
+                                  X
+                                </span>
                               </span>
-                            </span>
-                          ))}
+                            )
+                          })}
                           {preview_filesData.length > 3 ? `(${preview_filesData.length})...` : ''}
                         </div>
                       )}
@@ -580,11 +592,7 @@ export default class ComposeSection extends Component {
             </div>
           )}
           <div className='compose__button'>
-            {overlay_active && (
-              <button type='button' className='cancel' onClick={this.handleClear}>
-                x
-              </button>
-            )}
+            {overlay_active && <button type='button' className='cancel' onClick={this.handleClear}></button>}
             <button type='button' disabled={!isButtonDisable} className='add__post' onClick={this.submitForm}>
               Post
             </button>

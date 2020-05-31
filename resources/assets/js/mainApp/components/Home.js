@@ -47,16 +47,19 @@ export default class Home extends Component {
         this.navRef.current.style.top = '0px'
         this.navRef.current.style.position = 'fixed'
         this.navRef.current.style.zIndex = '1001'
-        if (offsetWidth < 1363) {
-          this.navRef.current.style.width = '65%'
+
+        if (offsetWidth < 1200) {
+          this.navRef.current.style.width = '72%'
           this.navRef.current.style.height = '60px'
           this.navRef.current.style.padding = '10px'
           this.navRef.current.style.paddingBottom = 0
+          this.navRef.current.style.margin = '0 auto'
         } else {
-          this.navRef.current.style.width = '79%'
+          this.navRef.current.style.width = '74%'
           this.navRef.current.style.height = '60px'
           this.navRef.current.style.padding = '10px'
           this.navRef.current.style.paddingBottom = 0
+          this.navRef.current.style.margin = '0 auto'
         }
       } else {
         this.navRef.current.removeAttribute('style')
