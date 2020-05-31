@@ -22,10 +22,45 @@ export default class Home extends Component {
       initialData: undefined,
       tabName: 'home',
     }
+    this.navRef = React.createRef()
+    this.contentAreaRef = React.createRef()
+    window.addEventListener('scroll', this.handleScroll, true)
+    this.lastScrollY = 0
   }
+
   componentDidMount() {
     this.setState({
       initialData: this.props.initialData,
+    })
+    window.addEventListener('scroll', this.handleScroll)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.handleScroll)
+  }
+
+  handleScroll = () => {
+    this.lastScrollY = window.scrollY
+    const offsetWidth = this.contentAreaRef.current.offsetWidth
+    window.requestAnimationFrame(() => {
+      if (this.lastScrollY > 300) {
+        this.navRef.current.style.top = '0px'
+        this.navRef.current.style.position = 'fixed'
+        this.navRef.current.style.zIndex = '1001'
+        if (offsetWidth < 1363) {
+          this.navRef.current.style.width = '65%'
+          this.navRef.current.style.height = '60px'
+          this.navRef.current.style.padding = '10px'
+          this.navRef.current.style.paddingBottom = 0
+        } else {
+          this.navRef.current.style.width = '79%'
+          this.navRef.current.style.height = '60px'
+          this.navRef.current.style.padding = '10px'
+          this.navRef.current.style.paddingBottom = 0
+        }
+      } else {
+        this.navRef.current.removeAttribute('style')
+      }
     })
   }
 
@@ -39,10 +74,10 @@ export default class Home extends Component {
     const { tabName, initialData } = this.state
     if (initialData) {
       return (
-        <div className='content-area'>
+        <div className='content-area' ref={this.contentAreaRef}>
           <AnalyticsBox />
           {/* <ComposeSection initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData} /> */}
-          <div className='links'>
+          <div className='links' ref={this.navRef}>
             <div className={`${tabName == 'home' ? 'active' : ''}`} onClick={(e) => this.tabToggle('home')}>
               Home
             </div>
