@@ -220,6 +220,7 @@ export default class PostFileModal extends Component {
                   })}
               </div>
               <div className='people_group_actions'>
+                <h1>Who can see your post</h1>
                 <div className='post__privacy_select'>
                   <div>
                     <label className='container'>
@@ -276,7 +277,7 @@ export default class PostFileModal extends Component {
                 </div>
                 <div className='actions'>
                   <button type='button' className='cancel' onClick={this.closeModal}>
-                    Cancel
+                    x
                   </button>
                   <button type='button' className='add__post' onClick={this.handleSubmit}>
                     Add
