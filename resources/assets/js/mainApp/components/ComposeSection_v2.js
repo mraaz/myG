@@ -394,6 +394,7 @@ export default class ComposeSection extends Component {
       overlay_active,
       post_content = '',
       isShowAllGroup = false,
+      visibility,
     } = this.state
     const isButtonDisable = post_content != '' || preview_files.length > 0 ? true : false
     const groups = [...selected_group_data]
@@ -502,73 +503,86 @@ export default class ComposeSection extends Component {
             </div> */}
             </div>
           )}
-          <div className='hashTag_section'>
-            <div className='hashtag_label'>Add Hashtags</div>
-            <div className='hashtag_input'>
-              <MyGCreateableSelect
-                isClearable
-                isMulti
-                onKeyDown={Disable_keys}
-                onCreateOption={this.handleCreateHashTags}
-                options={this.state.options_tags}
-                value={this.state.value_tags}
-                onChange={this.handleChange_Hash_tags}
-                onInputChange={this.getOptions_tags}
-                className='hash_tag_name_box'
-                placeholder='Search, Select or create Hash Tags'
-              />
-            </div>
-          </div>
-          <div className='compose__people__section'>
-            <div className='label'>Post on: </div>
-            <div className='people_selected_container'>
-              <div className='people_selected_list'>
-                <div
-                  className='default_circle'
-                  style={{
-                    backgroundImage: `url('${this.state.profile_img}')`,
-                    backgroundSize: 'cover',
-                  }}></div>
-                <div className='people_label'>Your Feed</div>
+          {open_compose_textTab && (
+            <div className='hashTag_section'>
+              <div className='hashtag_label'>Add Hashtags</div>
+              <div className='hashtag_input'>
+                <MyGCreateableSelect
+                  isClearable
+                  isMulti
+                  onKeyDown={Disable_keys}
+                  onCreateOption={this.handleCreateHashTags}
+                  options={this.state.options_tags}
+                  value={this.state.value_tags}
+                  onChange={this.handleChange_Hash_tags}
+                  onInputChange={this.getOptions_tags}
+                  className='hash_tag_name_box'
+                  placeholder='Search, Select or create Hash Tags'
+                />
               </div>
-              {groups.splice(0, 3).map((g) => {
-                return (
-                  <div className='people_selected_list'>
-                    <div
-                      className='default_circle'
-                      style={{
-                        backgroundImage: `url('${g.group_img}')`,
-                        backgroundSize: 'cover',
-                      }}></div>
-                    <div className='people_label'>{g.name}</div>
-                  </div>
-                )
-              })}
-              {AllGroups.length > 3 && (
-                <div className='all__selected_groups people_selected_list'>
-                  <span className='more__groups' onClick={this.toggleShowAllGroup}>
-                    ...
-                  </span>
-                  {isShowAllGroup && (
-                    <div className='group__details'>
-                      {AllGroups.splice(3, AllGroups.length).map((group) => {
-                        return <div className='people_label'>{group.name}</div>
-                      })}
-                    </div>
-                  )}
+            </div>
+          )}
+          {open_compose_textTab && (
+            <div className='compose__people__section'>
+              <div className='label'>Post on: </div>
+              <div className='people_selected_container'>
+                <div className='people_selected_list'>
+                  <div
+                    className='default_circle'
+                    style={{
+                      backgroundImage: `url('${this.state.profile_img}')`,
+                      backgroundSize: 'cover',
+                    }}></div>
+                  <div className='people_label'>Your Feed</div>
                 </div>
-              )}
+                {groups.splice(0, 3).map((g) => {
+                  return (
+                    <div className='people_selected_list'>
+                      <div
+                        className='default_circle'
+                        style={{
+                          backgroundImage: `url('${g.group_img}')`,
+                          backgroundSize: 'cover',
+                        }}></div>
+                      <div className='people_label'>{g.name}</div>
+                    </div>
+                  )
+                })}
+                {AllGroups.length > 3 && (
+                  <div className='all__selected_groups people_selected_list'>
+                    <span className='more__groups' onClick={this.toggleShowAllGroup}>
+                      ...
+                    </span>
+
+                    {isShowAllGroup && (
+                      <div className='group__details'>
+                        {AllGroups.splice(3, AllGroups.length).map((group) => {
+                          return <div className='people_label'>{group.name}</div>
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+              <div className='post_for'>
+                {visibility == 1 && '( Everyone )'}
+                {visibility == 2 && '( Friend )'}
+                {visibility == 3 && '( Followers )'}
+                {visibility == 0 && '( Private )'}
+              </div>
+              <div className='add_more_people'>
+                <button type='button' className='add__people' onClick={this.addGroupToggle}>
+                  +
+                </button>
+              </div>
             </div>
-            <div className='add_more_people'>
-              <button type='button' className='add__people' onClick={this.addGroupToggle}>
-                Add
-              </button>
-            </div>
-          </div>
+          )}
           <div className='compose__button'>
-            <button type='button' className='cancel' onClick={this.handleClear}>
-              Clear
-            </button>
+            {overlay_active && (
+              <button type='button' className='cancel' onClick={this.handleClear}>
+                x
+              </button>
+            )}
             <button type='button' disabled={!isButtonDisable} className='add__post' onClick={this.submitForm}>
               Post
             </button>

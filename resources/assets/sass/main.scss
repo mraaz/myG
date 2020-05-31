@@ -235,6 +235,8 @@ label {
   margin: 0 100px;
   justify-content: center;
   margin-bottom: 30px;
+  z-index: 1001;
+  background: #0b0f14;
   div {
     font: Medium 14px/14px Montserrat;
     border: 0;
@@ -244,6 +246,7 @@ label {
     width: 20%;
     text-align: center;
     cursor: pointer;
+    transition: position 1s ease-out;
     &:hover {
       border-bottom: 1px solid #e5c746;
     }
