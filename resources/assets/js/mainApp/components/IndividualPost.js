@@ -9,10 +9,12 @@ import axios from 'axios'
 import IndividualComment from './IndividualComment'
 import moment from 'moment'
 import SweetAlert from './common/MyGSweetAlert'
-import ImageGallery from 'react-image-gallery'
+// import ImageGallery from 'react-image-gallery'
 const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
 import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
+
+import ImageGallery from './common/ImageGallery/ImageGallery'
 
 export default class IndividualPost extends Component {
   constructor() {
@@ -48,8 +50,7 @@ export default class IndividualPost extends Component {
       preview_file: '',
       aws_key: '',
       file_keys: '',
-      postImages: [],
-      postVideos: [],
+      galleryItems: [],
       showmore: false,
       hideComments: false,
       commentShowCount: 2,
@@ -152,20 +153,11 @@ export default class IndividualPost extends Component {
         media_url = post.media_url ? post.media_url : ''
       }
     }
-    const postImages = []
-    const postVideos = []
-
+    const galleryItems = []
     if (media_url.length > 0) {
       for (var i = 0; i < media_url.length; i++) {
         if (media_url[i] && media_url[i] != null) {
-          const splitUrl = media_url[i].split('.')
-          let fileType = splitUrl[splitUrl.length - 1]
-          if (media_url[i].includes('image') || this.imageFileType.includes(fileType)) {
-            let myStruct = { original: media_url[i], thumbnail: media_url[i] }
-            postImages.push(myStruct)
-          } else if (media_url[i].includes('video') || this.videoFileType.includes(fileType)) {
-            postVideos.push(media_url[i])
-          }
+          galleryItems.push({ src: media_url[i] })
         }
       }
     }
@@ -183,8 +175,7 @@ export default class IndividualPost extends Component {
       admirer_first_name: this.props.post.admirer_first_name,
       post_time: post_timestamp.local().fromNow(),
       content: this.props.post.content,
-      postImages,
-      postVideos,
+      galleryItems,
     })
     if (this.props.post.no_of_comments != 0) {
       this.setState({
@@ -568,8 +559,7 @@ export default class IndividualPost extends Component {
       show_profile_img,
       show_comments,
       show_more_comments = false,
-      postImages,
-      postVideos,
+      galleryItems = [],
       hideComments,
     } = this.state
     if (post_deleted != true) {
@@ -669,26 +659,7 @@ export default class IndividualPost extends Component {
                 </div>
               </div>
             </div>
-            <div className='media'>
-              {postImages.length > 0 && (
-                <ImageGallery
-                  items={postImages}
-                  showBullets={this.state.showBullets}
-                  autoPlay={this.state.autoPlay}
-                  isRTL={this.state.isRTL}
-                  disableSwipe={this.state.disableSwipe}
-                  y
-                />
-              )}
-              {postVideos.length > 0 &&
-                postVideos.map(function (data, index) {
-                  return (
-                    <video className='post-video' controls>
-                      <source src={data}></source>
-                    </video>
-                  )
-                })}
-            </div>
+            <div className='media'>{galleryItems.length > 0 && <ImageGallery items={[...galleryItems]} />}</div>
             <div className='update-stats'>
               {this.state.like && (
                 <div className='like-btn' onClick={() => this.click_unlike_btn(post.id)}>
