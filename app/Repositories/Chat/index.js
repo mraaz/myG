@@ -506,6 +506,7 @@ class ChatRepository {
     !isKickingGuest && await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', userToRemove).delete();
     const alias = isKickingGuest ? `Guest #${userToRemove}` : (await User.query().where('id', '=', userToRemove).first()).toJSON().alias;
     const entryLog = await this._insertEntryLog(requestedChatId, alias, !!requestedUserId, !requestedUserId, false, false);
+    if (requestedUserId) this._addChatNotificationKicked({ requestingUserId, requestedUserId, chat });
     chat.contacts.forEach(userId => this._notifyChatEvent({ userId, action: isKickingGuest ? 'guestLeft' : 'userLeft', payload: { userId: userToRemove, guestId: userToRemove, chatId: requestedChatId, entryLog } }));
     chat.guests.forEach(guestId => this._notifyChatEvent({ guestId, action: isKickingGuest ? 'guestLeft' : 'userLeft', payload: { userId: userToRemove, guestId: userToRemove, chatId: requestedChatId, entryLog } }));
     if (isKickingGuest) {
@@ -878,6 +879,18 @@ class ChatRepository {
     log('CRON', `END - HANDLE EXPIRED ATTACHMENTS - DELETED ${expiredAttachments.length} ATTACHMENTS`);
   }
 
+  async _addChatNotificationKicked({ requestingUserId, requestedUserId, chat }) {
+    const alias = (await User.query().where('id', '=', requestingUserId).first()).toJSON().alias;
+    this._addChatNotification({
+      chatId: chat.chatId,
+      userId: requestedUserId,
+      senderId: requestingUserId,
+      senderAlias: alias,
+      type: "KICKED",
+      content: chat.title,
+    });
+  }
+
   async _addChatNotificationMessage({ requestingUserId, requestedChatId, chat, content }) {
     const otherUserId = chat.contacts.filter(contactId => contactId !== requestingUserId)[0];
     const status = (await User.query().where('id', '=', otherUserId).first()).toJSON().status;
@@ -903,7 +916,9 @@ class ChatRepository {
     notification.type = type;
     notification.content = content;
     await notification.save();
-    await this._notifyChatEvent(({ userId, action: 'chatNotification', payload: new ChatNotificationSchema(notification) }));
+    const payload = new ChatNotificationSchema(notification);
+    log('CHAT', `Adding Chat Notification: ${JSON.stringify(payload)}`);
+    await this._notifyChatEvent(({ userId, action: 'chatNotification', payload }));
   }
 
   async _insertEntryLog(requestedChatId, alias, kicked, left, invited, link) {
