@@ -23,6 +23,17 @@
       opacity: 1;
       font-size: 18px/16px Montserrat;
       margin-right: 20px;
+      input {
+        padding: 0px;
+        border: none;
+        background: #1d2326;
+        font-size: 15px;
+        outline: none;
+        margin: 0;
+        letter-spacing: 0px;
+        color: #657172;
+        height: 18px;
+      }
     }
   }
   .viewGame__filter {
