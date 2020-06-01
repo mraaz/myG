@@ -1,4 +1,5 @@
-
+import { store } from "../redux/Store";
+import { openChatAction } from "../redux/actions/chatAction";
 import { isOneDayBehind, isYesterday } from './date';
 
 export function withDatesAndLogsAndLastReads(messages, entryLogs, contactsMap, lastReads) {
@@ -36,4 +37,8 @@ export function withDatesAndLogsAndLastReads(messages, entryLogs, contactsMap, l
   });
   reversedEntryLogs.forEach(entryLog => enrichedMessages.push({ ...entryLog, isEntryLog: true, messageId: `EntryLog-${entryLog.id}` }));
   return enrichedMessages.reverse();
+}
+
+export function openChat(chatId) {
+  store.dispatch(openChatAction(chatId));
 }

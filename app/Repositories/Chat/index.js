@@ -492,6 +492,11 @@ class ChatRepository {
     return { notifications };
   }
 
+  async deleteChatNotifications({ requestingUserId }) {
+    await UserChatNotification.query().where('user_id', requestingUserId).delete();
+    return new DefaultSchema({ success: true });
+  }
+
   async exitGroup({ requestingUserId, requestedChatId, requestedUserId }) {
     const userToRemove = parseInt(requestedUserId || requestingUserId);
     const { chat } = await this.fetchChatInfo({ requestedChatId });

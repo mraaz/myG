@@ -98,6 +98,14 @@ class ChatController {
     return response.send({ notifications });
   }
 
+  async deleteChatNotifications({ auth, response }) {
+    const requestingUserId = auth.user.id;
+    if (!requestingUserId) throw new Error('Auth Error');
+    log('CHAT', `User ${requestingUserId} clearing Chat Notifications`);
+    const { success } = await ChatRepository.deleteChatNotifications({ requestingUserId });
+    return response.send({ success });
+  }
+
   async exitGroup({ auth, params, response }) {
     const requestingUserId = auth.user.id;
     if (!requestingUserId) throw new Error('Auth Error');
