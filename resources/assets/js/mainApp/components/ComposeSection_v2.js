@@ -40,15 +40,7 @@ export default class ComposeSection extends Component {
       selected_group_data: [],
       selectedGroup: [],
       groups_im_in: [],
-      preview_files: [
-        {
-          src:
-            'https://mygame-media.s3.ap-southeast-2.amazonaws.com/user_files/100_1590936097761_DWZE5d_post_video_1590935985346_1.+Introduction.mp4',
-        },
-        {
-          src: 'https://myg-test-media-files.s3-ap-southeast-2.amazonaws.com/viber_image_2019-09-26_11-52-23.jpg',
-        },
-      ],
+      preview_files: [],
       visibility: 1,
       overlay_active: false,
       group_id: [],
@@ -580,7 +572,7 @@ export default class ComposeSection extends Component {
               </div>
               <div className='post_for'>
                 {visibility == 1 && '( Everyone )'}
-                {visibility == 2 && '( Friend )'}
+                {visibility == 2 && '( Friends )'}
                 {visibility == 3 && '( Followers )'}
                 {visibility == 0 && '( Private )'}
               </div>
