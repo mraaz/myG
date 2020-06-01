@@ -360,7 +360,10 @@ class ChatRepository {
     if (icon !== undefined) await Chat.query().where('id', requestedChatId).update({ icon });
     if (title !== undefined) await Chat.query().where('id', requestedChatId).update({ title });
     if (owners !== undefined) await Chat.query().where('id', requestedChatId).update({ owners: JSON.stringify(owners) });
-    if (moderators !== undefined) await Chat.query().where('id', requestedChatId).update({ moderators: JSON.stringify(moderators) });
+    if (moderators !== undefined) {
+      await this._addChatNotificationModerator({ requestingUserId, requestedChatId, moderators });
+      await Chat.query().where('id', requestedChatId).update({ moderators: JSON.stringify(moderators) });
+    }
     if (icon || title || owners || moderators || isPrivate !== undefined) this._notifyChatUpdated({ requestedChatId });
     return new DefaultSchema({ success: true });
   }
@@ -877,6 +880,24 @@ class ChatRepository {
       await this.deleteMessage({ requestingUserId: message.sender_id, requestedChatId: message.chat_id, requestedMessageId: message.id });
     }
     log('CRON', `END - HANDLE EXPIRED ATTACHMENTS - DELETED ${expiredAttachments.length} ATTACHMENTS`);
+  }
+  async _addChatNotificationModerator({ requestingUserId, requestedChatId, moderators }) {
+
+    const { chat } = await this.fetchChatInfo({ requestedChatId });
+    const alias = (await User.query().where('id', '=', requestingUserId).first()).toJSON().alias;
+    const oldModerators = chat.moderators;
+    const added = moderators.filter(moderator => !oldModerators.includes(moderator));
+    const removed = oldModerators.filter(moderator => !moderators.includes(moderator));
+    console.log(moderators, oldModerators, added, removed)
+    const type = added[0] ? "PROMOTED" : "DEMOTED";
+    this._addChatNotification({
+      chatId: requestedChatId,
+      userId: added[0] || removed[0],
+      senderId: requestingUserId,
+      senderAlias: alias,
+      type,
+      content: chat.title,
+    })
   }
 
   async _addChatNotificationKicked({ requestingUserId, requestedUserId, chat }) {
