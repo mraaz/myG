@@ -1607,9 +1607,10 @@ section#content-container {
         }
       }
       .image-gallery-slides {
-        min-width: 450px;
-        min-height: 274px;
+        min-width: 350px;
+        min-height: 200px;
         max-width: 450px;
+        min-height: 400px;
         .post-video {
           width: 100%;
         }
