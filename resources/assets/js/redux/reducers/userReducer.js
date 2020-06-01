@@ -59,6 +59,18 @@ export default function reducer(state = {
       };
     }
 
+    case "FETCH_CONTACT_FULFILLED": {
+      logger.log('CHAT', `Redux -> Fetched Contacts (User): `, action.payload);
+      const contacts = JSON.parse(JSON.stringify(state.contacts));
+      const contact = contacts.find(contact => contact.contactId === action.payload.contact.contactId);
+      if (contact) Object.assign(contact, action.payload.contact);
+      else contacts.push(action.payload.contact);
+      return {
+        ...state,
+        contacts,
+      };
+    }
+
     case "FETCH_STATUS_FULFILLED": {
       logger.log('USER', `Redux -> Fetch Status: `, action.payload);
       const { value: status, locked: isStatusLocked } = action.payload.status;
@@ -95,6 +107,7 @@ export default function reducer(state = {
       logger.log('USER', `Redux -> Public Key Updated (User): `, action.payload, action.meta);
       const { userId: thisUserId } = action.meta;
       const { userId: updatedUserId, publicKey } = action.payload;
+      if (updatedUserId === state.userId) return state;
       const contacts = JSON.parse(JSON.stringify(state.contacts));
       const contact = contacts.find(contact => contact.contactId === updatedUserId);
       if (parseInt(updatedUserId) === parseInt(thisUserId)) return state;
@@ -166,6 +179,15 @@ export default function reducer(state = {
       return {
         ...state,
         contacts
+      };
+    }
+
+    case "REMOVE_FRIEND": {
+      logger.log('USER', `Redux -> Remove Friend: `, action.payload);
+      const contacts = JSON.parse(JSON.stringify(state.contacts));
+      return {
+        ...state,
+        contacts: contacts.filter(contact => contact.contactId !== action.payload),
       };
     }
 

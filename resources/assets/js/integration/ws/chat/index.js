@@ -1,5 +1,5 @@
 import { store } from '../../../redux/Store';
-import { onNewChatAction, onChatUpdatedAction, onGameStartingAction, onNewMessageAction, onUpdateMessageAction, onDeleteMessagesAction, onReactionAddedAction, onReactionRemovedAction, onTypingAction, onDeleteChatAction, onUserJoinedGroupAction, onUserLeftGroupAction, onGuestJoinedGroupAction, onGuestLeftGroupAction, onMarkAsReadAction, onSelfDestructAction, onPublicKeyUpdatedAction } from '../../../redux/actions/chatAction';
+import { onNewChatAction, onChatUpdatedAction, onGameStartingAction, onNewMessageAction, onUpdateMessageAction, onDeleteMessagesAction, onChatNotification, onReactionAddedAction, onReactionRemovedAction, onTypingAction, onDeleteChatAction, onUserJoinedGroupAction, onUserLeftGroupAction, onGuestJoinedGroupAction, onGuestLeftGroupAction, onMarkAsReadAction, onSelfDestructAction, onPublicKeyUpdatedAction } from '../../../redux/actions/chatAction';
 import { onStatusChangedAction } from '../../../redux/actions/userAction';
 import { onConnectionStateChangedAction } from '../../../redux/actions/socketAction';
 import socket from '../../../common/socket';
@@ -54,6 +54,7 @@ function handleEvent(event, userId) {
   if (event.type === "chat:updateMessage") return store.dispatch(onUpdateMessageAction(event.data, userId));
   if (event.type === "chat:deleteMessages") return store.dispatch(onDeleteMessagesAction(event.data, userId));
   if (event.type === "chat:deleteChat") return store.dispatch(onDeleteChatAction(event.data, userId));
+  if (event.type === "chat:chatNotification") return store.dispatch(onChatNotification(event.data, userId));
   if (event.type === "chat:reactionAdded") return store.dispatch(onReactionAddedAction(event.data, userId));
   if (event.type === "chat:reactionRemoved") return store.dispatch(onReactionRemovedAction(event.data, userId));
   if (event.type === "chat:typing") return store.dispatch(onTypingAction(event.data, userId));

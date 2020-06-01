@@ -70,6 +70,15 @@ class ChatController {
     return response.send(result);
   }
 
+  async forceDeleteChat({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    if (!requestingUserId) throw new Error('Auth Error');
+    const requestedChatId = params.chatId;
+    log('CHAT', `User ${requestingUserId} force deleting Chat ${requestedChatId}`);
+    const result = await ChatRepository.deleteChat({ requestingUserId, requestedChatId, forceDelete: true });
+    return response.send(result);
+  }
+
   async searchGroup({ auth, request, response }) {
     const requestingUserId = auth.user.id;
     if (!requestingUserId) throw new Error('Auth Error');
@@ -78,6 +87,23 @@ class ChatController {
     log('CHAT', `User ${requestingUserId} searching for Groups for page ${requestedPage || 1} with ${groupName}`);
     const { groups } = await ChatRepository.searchGroup({ requestingUserId, groupName, requestedPage });
     return response.send({ groups });
+  }
+
+  async fetchChatNotifications({ auth, request, response }) {
+    const requestingUserId = auth.user.id;
+    if (!requestingUserId) throw new Error('Auth Error');
+    const requestedPage = request.only(['page']).page || 1;
+    log('CHAT', `User ${requestingUserId} requesting Chat Notifications`);
+    const { notifications } = await ChatRepository.fetchChatNotifications({ requestingUserId, requestedPage });
+    return response.send({ notifications });
+  }
+
+  async deleteChatNotifications({ auth, response }) {
+    const requestingUserId = auth.user.id;
+    if (!requestingUserId) throw new Error('Auth Error');
+    log('CHAT', `User ${requestingUserId} clearing Chat Notifications`);
+    const { success } = await ChatRepository.deleteChatNotifications({ requestingUserId });
+    return response.send({ success });
   }
 
   async exitGroup({ auth, params, response }) {

@@ -89,7 +89,7 @@ export default function reducer(state = {
       const messages = action.payload.messages
         .filter(message => message.messageId > action.payload.chat.lastCleared)
         .filter(message => !action.payload.chat.deletedMessages.includes(message.messageId))
-        .filter(message => !state.blockedUsers.includes(message.senderId))
+        .filter(message => !state.blockedUsers.find(user => user.userId === message.senderId))
         .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId));
       chat.messages = messages;
       if (chat.gameStarting) chat.messages.push(chat.gameStarting);
@@ -131,7 +131,7 @@ export default function reducer(state = {
         .filter(message => message.messageId > chat.lastCleared)
         .filter(message => !chat.deletedMessages.includes(message.messageId))
         .filter(message => !message.keyReceiver)
-        .filter(message => !state.blockedUsers.includes(message.senderId))
+        .filter(message => !state.blockedUsers.find(user => user.userId === message.senderId))
         .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId));
       chat.noMoreMessages = !action.payload.messages.length;
       chat.loadingMessages = false;
@@ -150,6 +150,18 @@ export default function reducer(state = {
       return {
         ...state,
         unreadMessages,
+      };
+    }
+
+    case "FETCH_CONTACT_FULFILLED": {
+      logger.log('CHAT', `Redux -> Fetched Contacts (Chat): `, action.payload);
+      const contacts = JSON.parse(JSON.stringify(state.contacts));
+      const contact = contacts.find(contact => contact.contactId === action.payload.contact.contactId);
+      if (contact) Object.assign(contact, action.payload.contact);
+      else contacts.push(action.payload.contact);
+      return {
+        ...state,
+        contacts,
       };
     }
 
@@ -241,7 +253,7 @@ export default function reducer(state = {
       const chat = chats.find(candidate => candidate.chatId === chatId);
       const unreadMessages = JSON.parse(JSON.stringify(state.unreadMessages));
       if (!chat) return state;
-      if (state.blockedUsers.includes(message.senderId)) return state;
+      if (state.blockedUsers.find(user => user.userId === message.senderId)) return state;
       if (!chat.muted && !window.focused && message.senderId !== userId && !message.keyReceiver) playMessageSound(state.notificationSoundsDisabled);
       if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
       if (!chat.muted && !message.keyReceiver) {
@@ -629,6 +641,7 @@ export default function reducer(state = {
       logger.log('CHAT', `Redux -> Public Key Updated (Chat): `, action.payload, action.meta);
       const { userId: thisUserId } = action.meta;
       const { userId: updatedUserId, chatId, publicKey } = action.payload;
+      if (updatedUserId === state.userId) return state;
       const { privateKey } = state;
       if (parseInt(updatedUserId) === parseInt(thisUserId)) return state;
       if (!chatId) return contactPublicKeyUpdated(state, updatedUserId, publicKey);

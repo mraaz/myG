@@ -38,6 +38,7 @@ export default class AttachUploader extends React.PureComponent {
       if (message === "CHAT_UPLOAD_DISABLED") notifyToast("Sorry mate, file uploading is currently disabled.");
       else if (message === "MAX_UPLOAD_REACHED") notifyToast("Sorry mate, you have reached your upload limit for the day.");
       else if (message === "USER_CREATION") notifyToast("Sorry mate, you need to be a member for at least one day to upload files.");
+      else if (message === "FILE_INFECTED") notifyToast("TODO: Raaz");
       else notifyToast('Oops, something went wrong. Unable to upload your file. Please try again.');
     }
 

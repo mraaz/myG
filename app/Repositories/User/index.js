@@ -22,6 +22,7 @@ class UserRepository {
         this.fetchContacts({ requestingUserId }),
         UserChat.query().where('user_id', requestingUserId).fetch().then(response => response.toJSON())
       ]);
+      ChatRepository._notifyChatEvent({ userId: requestingUserId, action: 'encryption', payload: { publicKey, userId: requestingUserId } });
       contacts.forEach(contact => ChatRepository._notifyChatEvent({ userId: contact.contactId, action: 'encryption', payload: { publicKey, userId: requestingUserId } }));
       chats.forEach(chat => ChatRepository._notifyChatEvent({ chatId: chat.chat_id, action: 'encryption', payload: { publicKey, userId: requestingUserId, chatId: chat.chat_id } }));
     }
