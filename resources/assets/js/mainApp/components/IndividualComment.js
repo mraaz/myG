@@ -617,9 +617,10 @@ export default class IndividualComment extends Component {
 
           {/* comment reply start */}
           <div className='comment-panel'>
-            {show_more_replies ? (
+            {show_more_replies && myReplies.length > 0 && (
               <div className='show__moreReply' onClick={this.show_more_replies}>{` View all (${myReplies.length}) replies`}</div>
-            ) : (
+            )}
+            {!show_more_replies && myReplies.length > 0 && (
               <div className='show__moreReply' onClick={this.hide_replies}>{` Hide all (${myReplies.length}) replies`}</div>
             )}
             {show_more_replies && !hideReplies && this.showReplies()}

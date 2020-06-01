@@ -620,8 +620,8 @@ export default class IndividualPost extends Component {
                 {!this.state.edit_post && !this.state.showmore && (
                   <Fragment>
                     <p>
-                      {`${this.state.content.slice(0, 254)}  `} {this.renderHashTags(hash_tags)} {' ... '}
-                      {this.state.content.length > 254 && <strong onClick={this.toggleShowmore}>See more</strong>}
+                      {`${this.state.content.slice(0, 254)}  `} {this.renderHashTags(hash_tags)}
+                      {this.state.content.length > 254 && <strong onClick={this.toggleShowmore}> {' ... '} See more</strong>}
                     </p>
                   </Fragment>
                 )}
@@ -696,9 +696,10 @@ export default class IndividualPost extends Component {
               )}
             </div> */}
             </div>
-            {show_more_comments ? (
+            {show_more_comments && myComments.length > 0 && (
               <div className='show__comments_count' onClick={this.show_more_comments}>{` View all (${myComments.length}) comments`}</div>
-            ) : (
+            )}
+            {!show_more_comments && myComments.length > 0 && (
               <div className='show__comments_count' onClick={this.hide_comments}>
                 {` Hide all (${myComments.length}) comments`}
               </div>
