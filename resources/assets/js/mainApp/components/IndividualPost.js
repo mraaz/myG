@@ -696,9 +696,10 @@ export default class IndividualPost extends Component {
               )}
             </div> */}
             </div>
-            {show_more_comments ? (
+            {show_more_comments && myComments.length > 0 && (
               <div className='show__comments_count' onClick={this.show_more_comments}>{` View all (${myComments.length}) comments`}</div>
-            ) : (
+            )}
+            {!show_more_comments && myComments.length > 0 && (
               <div className='show__comments_count' onClick={this.hide_comments}>
                 {` Hide all (${myComments.length}) comments`}
               </div>
