@@ -1606,6 +1606,14 @@ section#content-container {
           color: #171a1c;
         }
       }
+      .image-gallery-slides {
+        min-width: 450px;
+        min-height: 274px;
+        max-width: 450px;
+        .post-video {
+          width: 100%;
+        }
+      }
     }
     textarea {
       background: #171a1c 0% 0% no-repeat padding-box;
@@ -1664,7 +1672,8 @@ section#content-container {
       letter-spacing: 0px;
       color: #1d2326;
       opacity: 1;
-      background: #686c6e;
+      background: url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Settings_Chat_Window.svg') 0% 0%
+        no-repeat padding-box;
       border: none;
       border-radius: 50%;
       width: 32px;
@@ -1674,7 +1683,16 @@ section#content-container {
       position: absolute;
       top: -15px;
       right: -15px;
+      outline: none;
       &:focus {
+        margin: 0;
+        outline: none;
+      }
+      &:active {
+        margin: 0;
+        outline: none;
+      }
+      &:visited {
         margin: 0;
         outline: none;
       }
@@ -1737,7 +1755,17 @@ section#content-container {
           padding: 18px 5px;
           top: 30px;
           min-width: 100px;
+          max-width: 200px;
           font-size: 10px;
+          z-index: 2;
+          .people_label {
+            margin-bottom: 5px;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+          }
         }
       }
       .all__selected_groups {
@@ -1770,6 +1798,18 @@ section#content-container {
         height: 32px;
         cursor: pointer;
         padding: 7px;
+        &:focus {
+          margin: 0;
+          outline: none;
+        }
+        &:active {
+          margin: 0;
+          outline: none;
+        }
+        &:visited {
+          margin: 0;
+          outline: none;
+        }
       }
     }
   }
@@ -1808,6 +1848,12 @@ section#content-container {
         margin: 0;
         .image {
           position: relative;
+          .post-video {
+            background: #ff00ff 0% 0% no-repeat padding-box;
+            margin-right: 10px;
+            width: 160px;
+            height: 120px;
+          }
         }
         img {
           background: #ff00ff 0% 0% no-repeat padding-box;
@@ -1834,6 +1880,7 @@ section#content-container {
   .modal-wrap {
     min-height: 200px;
     height: auto !important;
+    max-width: 500px !important;
     width: 100% !important;
     background: none !important;
     z-index: 10;
@@ -1847,6 +1894,13 @@ section#content-container {
         visibility: visible;
         opacity: 1;
       }
+      h1 {
+        font: Bold 16px/14px Montserrat;
+        letter-spacing: 0px;
+        color: #ffffff;
+        opacity: 1;
+        margin-bottom: 20px;
+      }
       visibility: hidden;
       opacity: 0;
       transition: visibility 0s, opacity 0.3s ease-in;
@@ -1858,7 +1912,8 @@ section#content-container {
         padding: 30px;
         display: flex;
         justify-content: center;
-        align-items: center;
+        align-items: flex-start;
+        flex-direction: column;
         label {
           margin-top: 10px;
           margin-right: 10px;
@@ -1997,18 +2052,19 @@ section#content-container {
 
       .people_group_actions {
         background: #1d2326;
-        padding: 20px;
+
         h1 {
           font: Bold 16px/14px Montserrat;
           letter-spacing: 0px;
           color: #ffffff;
           opacity: 1;
           margin-bottom: 10px;
+          padding: 20px;
         }
         .post__privacy_select {
           display: flex;
           justify-content: center;
-          padding: 20px 20px;
+          margin: 20px 20px;
           div {
             flex-grow: 2;
             display: flex;
@@ -2017,9 +2073,12 @@ section#content-container {
         .actions {
           display: flex;
           justify-content: center;
+          border-top: 1px solid #384952;
           .cancel {
             font: 20px/0px Montserrat;
             letter-spacing: 0px;
+            background: url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Settings_Chat_Window.svg') 0% 0%
+              no-repeat padding-box;
             color: #1d2326;
             opacity: 1;
             background: #686c6e;
@@ -2032,7 +2091,16 @@ section#content-container {
             position: absolute;
             top: -15px;
             right: -15px;
+            outline: none;
             &:focus {
+              margin: 0;
+              outline: none;
+            }
+            &:active {
+              margin: 0;
+              outline: none;
+            }
+            &:visited {
               margin: 0;
               outline: none;
             }
@@ -2047,6 +2115,7 @@ section#content-container {
             padding: 10px 40px;
             margin: 0;
             border: none;
+            margin: 20px;
           }
         }
         .container {
@@ -2778,6 +2847,10 @@ section#content-container {
     }
     .image-gallery-play-button {
       display: none;
+    }
+    .image-gallery-slides {
+      min-width: 400px;
+      min-height: 300px;
     }
     .uploadImage_loading {
       position: relative;

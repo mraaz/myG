@@ -181,8 +181,11 @@ export default class PostFileModal extends Component {
           <section className='postCompose__container'>
             <div className={`people_group_list  active`}>
               <div className='search__box'>
-                <label htmlFor='searchInput'>Search</label>
-                <input type='text' id='searchInput' onChange={this.getSearchGroup} value={searchText} placeholder='Search here ...' />
+                <h1>Add communities feed</h1>
+                <div style={{ display: 'flex' }}>
+                  <label htmlFor='searchInput'>Search</label>
+                  <input type='text' id='searchInput' onChange={this.getSearchGroup} value={searchText} placeholder='Search here ...' />
+                </div>
               </div>
               <div className='people_group_list_box'>
                 {groups_im_in &&
@@ -276,9 +279,7 @@ export default class PostFileModal extends Component {
                   </div>
                 </div>
                 <div className='actions'>
-                  <button type='button' className='cancel' onClick={this.closeModal}>
-                    x
-                  </button>
+                  <button type='button' className='cancel' onClick={this.closeModal}></button>
                   <button type='button' className='add__post' onClick={this.handleSubmit}>
                     Add
                   </button>
