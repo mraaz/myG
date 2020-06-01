@@ -421,7 +421,11 @@ export default class ComposeSection extends Component {
           </div>
           {open_compose_textTab && (
             <div className='text__editor__section'>
-              <div className='media'>{preview_filesData.length > 0 && <ImageGallery items={preview_filesData} />}</div>
+              <div className='media'>
+                {preview_filesData.length > 0 && (
+                  <ImageGallery items={preview_filesData} showFullscreenButton={false} showGalleryFullscreenButton={false} />
+                )}
+              </div>
               <textarea
                 onChange={this.handleChange_txtArea}
                 onFocus={this.handleFocus_txtArea}
