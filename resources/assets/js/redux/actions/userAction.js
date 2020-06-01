@@ -95,6 +95,13 @@ export function setAsFriendAction(friendId) {
   }
 }
 
+export function removeFriendAction(friendId) {
+  return {
+    type: 'REMOVE_FRIEND',
+    payload: friendId,
+  }
+}
+
 export function searchUsersAction(input) {
   return {
     type: 'SEARCH_USERS',

@@ -47,6 +47,11 @@ export function deleteChat(chatId) {
   return axios.delete(`/api/chat/${chatId}/delete`).then(response => response.data);
 }
 
+export function forceDeleteChat(chatId) {
+  logger.log('CHAT', 'HTTP', `Deleting Chat ${chatId}`);
+  return axios.delete(`/api/chat/${chatId}/forceDelete`).then(response => response.data);
+}
+
 export function exitGroup(chatId) {
   logger.log('CHAT', 'HTTP', `Exiting Group ${chatId}`);
   return axios.delete(`/api/chat/${chatId}/exit`).then(response => response.data);

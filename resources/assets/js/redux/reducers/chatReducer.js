@@ -153,6 +153,18 @@ export default function reducer(state = {
       };
     }
 
+    case "FETCH_CONTACT_FULFILLED": {
+      logger.log('CHAT', `Redux -> Fetched Contacts (Chat): `, action.payload);
+      const contacts = JSON.parse(JSON.stringify(state.contacts));
+      const contact = contacts.find(contact => contact.contactId === action.payload.contact.contactId);
+      if (contact) Object.assign(contact, action.payload.contact);
+      else contacts.push(action.payload.contact);
+      return {
+        ...state,
+        contacts,
+      };
+    }
+
     case "CLEAR_UNREAD_INDICATOR": {
       logger.log('CHAT', `Redux -> Clearing Unread Indicator`);
       const unreadMessages = JSON.parse(JSON.stringify(state.unreadMessages));

@@ -70,6 +70,15 @@ class ChatController {
     return response.send(result);
   }
 
+  async forceDeleteChat({ auth, params, response }) {
+    const requestingUserId = auth.user.id;
+    if (!requestingUserId) throw new Error('Auth Error');
+    const requestedChatId = params.chatId;
+    log('CHAT', `User ${requestingUserId} force deleting Chat ${requestedChatId}`);
+    const result = await ChatRepository.deleteChat({ requestingUserId, requestedChatId, forceDelete: true });
+    return response.send(result);
+  }
+
   async searchGroup({ auth, request, response }) {
     const requestingUserId = auth.user.id;
     if (!requestingUserId) throw new Error('Auth Error');
