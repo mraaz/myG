@@ -80,8 +80,8 @@ export default class CustomImageGallery extends React.Component {
             isRTL={false}
             disableSwipe={false}
             showNav={true}
-            showFullscreenButton={true}
-            showGalleryFullscreenButton={true}
+            showFullscreenButton={this.props.showFullscreenButton}
+            showGalleryFullscreenButton={this.props.showGalleryFullscreenButton}
           />
         </section>
       )

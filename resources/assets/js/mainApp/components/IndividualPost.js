@@ -659,7 +659,11 @@ export default class IndividualPost extends Component {
                 </div>
               </div>
             </div>
-            <div className='media'>{galleryItems.length > 0 && <ImageGallery items={[...galleryItems]} />}</div>
+            <div className='media'>
+              {galleryItems.length > 0 && (
+                <ImageGallery items={[...galleryItems]} showFullscreenButton={true} showGalleryFullscreenButton={true} />
+              )}
+            </div>
             <div className='update-stats'>
               {this.state.like && (
                 <div className='like-btn' onClick={() => this.click_unlike_btn(post.id)}>
