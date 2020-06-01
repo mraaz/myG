@@ -89,7 +89,7 @@ export default function reducer(state = {
       const messages = action.payload.messages
         .filter(message => message.messageId > action.payload.chat.lastCleared)
         .filter(message => !action.payload.chat.deletedMessages.includes(message.messageId))
-        .filter(message => !state.blockedUsers.includes(message.senderId))
+        .filter(message => !state.blockedUsers.find(user => user.userId === message.senderId))
         .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId));
       chat.messages = messages;
       if (chat.gameStarting) chat.messages.push(chat.gameStarting);
@@ -131,7 +131,7 @@ export default function reducer(state = {
         .filter(message => message.messageId > chat.lastCleared)
         .filter(message => !chat.deletedMessages.includes(message.messageId))
         .filter(message => !message.keyReceiver)
-        .filter(message => !state.blockedUsers.includes(message.senderId))
+        .filter(message => !state.blockedUsers.find(user => user.userId === message.senderId))
         .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId));
       chat.noMoreMessages = !action.payload.messages.length;
       chat.loadingMessages = false;
@@ -241,7 +241,7 @@ export default function reducer(state = {
       const chat = chats.find(candidate => candidate.chatId === chatId);
       const unreadMessages = JSON.parse(JSON.stringify(state.unreadMessages));
       if (!chat) return state;
-      if (state.blockedUsers.includes(message.senderId)) return state;
+      if (state.blockedUsers.find(user => user.userId === message.senderId)) return state;
       if (!chat.muted && !window.focused && message.senderId !== userId && !message.keyReceiver) playMessageSound(state.notificationSoundsDisabled);
       if (window.document.hidden) window.document.title = `(${parseInt(((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0)) + 1}) myG`;
       if (!chat.muted && !message.keyReceiver) {
