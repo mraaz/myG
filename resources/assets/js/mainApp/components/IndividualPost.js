@@ -620,8 +620,8 @@ export default class IndividualPost extends Component {
                 {!this.state.edit_post && !this.state.showmore && (
                   <Fragment>
                     <p>
-                      {`${this.state.content.slice(0, 254)}  `} {this.renderHashTags(hash_tags)} {' ... '}
-                      {this.state.content.length > 254 && <strong onClick={this.toggleShowmore}>See more</strong>}
+                      {`${this.state.content.slice(0, 254)}  `} {this.renderHashTags(hash_tags)}
+                      {this.state.content.length > 254 && <strong onClick={this.toggleShowmore}> {' ... '} See more</strong>}
                     </p>
                   </Fragment>
                 )}
