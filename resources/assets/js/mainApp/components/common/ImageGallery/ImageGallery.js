@@ -1,9 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-
 import ImageGallery from 'react-image-gallery'
-
-const PREFIX_URL = 'https://raw.githubusercontent.com/xiaolin/react-image-gallery/master/static/'
 
 export default class CustomImageGallery extends React.Component {
   constructor() {
@@ -83,7 +80,8 @@ export default class CustomImageGallery extends React.Component {
             isRTL={false}
             disableSwipe={false}
             showNav={true}
-            showFullscreenButton={false}
+            showFullscreenButton={true}
+            showGalleryFullscreenButton={true}
           />
         </section>
       )
