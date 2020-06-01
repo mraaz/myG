@@ -89,6 +89,15 @@ class ChatController {
     return response.send({ groups });
   }
 
+  async fetchChatNotifications({ auth, request, response }) {
+    const requestingUserId = auth.user.id;
+    if (!requestingUserId) throw new Error('Auth Error');
+    const requestedPage = request.only(['page']).page || 1;
+    log('CHAT', `User ${requestingUserId} requesting Chat Notifications`);
+    const { notifications } = await ChatRepository.fetchChatNotifications({ requestingUserId, requestedPage });
+    return response.send({ notifications });
+  }
+
   async exitGroup({ auth, params, response }) {
     const requestingUserId = auth.user.id;
     if (!requestingUserId) throw new Error('Auth Error');

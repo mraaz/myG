@@ -5,6 +5,7 @@ const Database = use('Database');
 const User = use('App/Models/User');
 const Chat = use('App/Models/Chat');
 const UserChat = use('App/Models/UserChat');
+const UserChatNotification = use('App/Models/UserChatNotification');
 const ChatMessage = use('App/Models/ChatMessage');
 const ChatMessageReaction = use('App/Models/ChatMessageReaction');
 const ChatLastCleared = use('App/Models/ChatLastCleared');
@@ -30,6 +31,7 @@ const ReactionSchema = require('../../Schemas/Reaction');
 const DefaultSchema = require('../../Schemas/Default');
 const ContactSchema = require('../../Schemas/Contact');
 const ChatPrivateKeyRequestSchema = require('../../Schemas/ChatPrivateKeyRequest');
+const ChatNotificationSchema = require('../../Schemas/ChatNotification');
 
 const uuidv4 = require('uuid/v4');
 const { broadcast } = require('../../Common/socket');
@@ -478,6 +480,15 @@ class ChatRepository {
     return { groups };
   }
 
+  async fetchChatNotifications({ requestingUserId, requestedPage }) {
+    let query = UserChatNotification.query().where('user_id', requestingUserId);
+    if (requestedPage === "ALL") query = query.fetch();
+    else query = query.paginate(requestedPage || 1, 10);
+    const result = (await query).toJSON();
+    const notifications = (result.data ? result.data : result).map(notification => new ChatNotificationSchema(notification));
+    return { notifications };
+  }
+
   async exitGroup({ requestingUserId, requestedChatId, requestedUserId }) {
     const userToRemove = parseInt(requestedUserId || requestingUserId);
     const { chat } = await this.fetchChatInfo({ requestedChatId });
@@ -574,6 +585,7 @@ class ChatRepository {
       updatedAt: message.updated_at,
     });
     this._notifyChatEvent({ chatId: requestedChatId, action: 'newMessage', payload: messageSchema });
+    if (!chat.isGroup) this._addChatNotificationMessage({ requestingUserId, requestedChatId, chat, content });
     return { message: messageSchema };
   }
 
@@ -864,6 +876,34 @@ class ChatRepository {
       await this.deleteMessage({ requestingUserId: message.sender_id, requestedChatId: message.chat_id, requestedMessageId: message.id });
     }
     log('CRON', `END - HANDLE EXPIRED ATTACHMENTS - DELETED ${expiredAttachments.length} ATTACHMENTS`);
+  }
+
+  async _addChatNotificationMessage({ requestingUserId, requestedChatId, chat, content }) {
+    const otherUserId = chat.contacts.filter(contactId => contactId !== requestingUserId)[0];
+    const status = (await User.query().where('id', '=', otherUserId).first()).toJSON().status;
+    if (status === "offline") {
+      const alias = (await User.query().where('id', '=', requestingUserId).first()).toJSON().alias;
+      this._addChatNotification({
+        chatId: requestedChatId,
+        userId: otherUserId,
+        senderId: requestingUserId,
+        senderAlias: alias,
+        type: "MESSAGE",
+        content: content,
+      });
+    }
+  }
+
+  async _addChatNotification({ chatId, userId, senderId, senderAlias, type, content }) {
+    const notification = new UserChatNotification();
+    notification.chat_id = chatId;
+    notification.user_id = userId;
+    notification.sender_id = senderId;
+    notification.sender_alias = senderAlias;
+    notification.type = type;
+    notification.content = content;
+    await notification.save();
+    await this._notifyChatEvent(({ userId, action: 'chatNotification', payload: new ChatNotificationSchema(notification) }));
   }
 
   async _insertEntryLog(requestedChatId, alias, kicked, left, invited, link) {

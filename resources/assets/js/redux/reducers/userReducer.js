@@ -107,7 +107,7 @@ export default function reducer(state = {
       logger.log('USER', `Redux -> Public Key Updated (User): `, action.payload, action.meta);
       const { userId: thisUserId } = action.meta;
       const { userId: updatedUserId, publicKey } = action.payload;
-      if (thisUserId === state.userId) return state;
+      if (updatedUserId === state.userId) return state;
       const contacts = JSON.parse(JSON.stringify(state.contacts));
       const contact = contacts.find(contact => contact.contactId === updatedUserId);
       if (parseInt(updatedUserId) === parseInt(thisUserId)) return state;

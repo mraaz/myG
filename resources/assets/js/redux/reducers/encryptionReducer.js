@@ -86,9 +86,8 @@ export default function reducer(state = {
 
     case "PUBLIC_KEY_UPDATED": {
       logger.log('USER', `Redux -> Public Key Updated (Encryption): `, action.payload, action.meta);
-      const { userId: thisUserId } = action.meta;
-      const { publicKey } = action.payload;
-      if (thisUserId !== state.userId) return state;
+      const { userId: updatedUserId, publicKey } = action.payload;
+      if (updatedUserId !== state.userId) return state;
       if (publicKey === state.publicKey) return state;
       notifyToast(`Your Encryption Passphrase changed, please enter it again.`);
       logger.log('USER', `Redux -> Key Changed Elsewhere, Logging Out...`);

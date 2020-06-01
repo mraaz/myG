@@ -49,6 +49,13 @@ export function onDeleteMessagesAction(payload) {
   }
 }
 
+export function onChatNotification(payload) {
+  return {
+    type: 'ON_CHAT_NOTIFICATION',
+    payload,
+  }
+}
+
 export function onReactionAddedAction(payload) {
   return {
     type: 'ON_REACTION_ADDED',
