@@ -71,6 +71,13 @@ export default class ScheduleGames extends Component {
     Disable_keys(e)
   }
 
+  handleClearFilterClick = () => {
+    alert('Clear option clicked!')
+  }
+  handleSaveFilterClick = () => {
+    alert('Save option clicked!')
+  }
+
   render() {
     if (this.props.initialData == 'loading') {
       return <h1>Loading</h1>
@@ -100,7 +107,16 @@ export default class ScheduleGames extends Component {
                 placeholder='All Games'
                 onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
                 onKeyDown={this.onKeyDown}
+                isSearchable={true}
               />
+            </div>
+            <div className='saveFilterAction__section'>
+              <button type='button' className='saveFilter__button' onClick={this.handleSaveFilterClick}>
+                Save Filter
+              </button>
+              <div className='clearFilter' onClick={this.handleClearFilterClick}>
+                Clear
+              </div>
             </div>
           </div>
         </div>
