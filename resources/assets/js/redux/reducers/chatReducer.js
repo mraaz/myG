@@ -641,6 +641,7 @@ export default function reducer(state = {
       logger.log('CHAT', `Redux -> Public Key Updated (Chat): `, action.payload, action.meta);
       const { userId: thisUserId } = action.meta;
       const { userId: updatedUserId, chatId, publicKey } = action.payload;
+      if (thisUserId === state.userId) return state;
       const { privateKey } = state;
       if (parseInt(updatedUserId) === parseInt(thisUserId)) return state;
       if (!chatId) return contactPublicKeyUpdated(state, updatedUserId, publicKey);
