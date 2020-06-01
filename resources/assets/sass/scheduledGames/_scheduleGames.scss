@@ -1,0 +1,130 @@
+.viewGame__container {
+  min-width: 100%;
+  background: #0b0f14 0% 0% no-repeat padding-box;
+  .viewGame__header {
+    height: 77px;
+    background: #1d2326 0% 0% no-repeat padding-box;
+    opacity: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px solid #344953;
+    .title {
+      margin-left: auto;
+      padding: 0;
+      font: Bold 20px/14px Montserrat;
+      letter-spacing: 0px;
+      color: #ffffff;
+    }
+    .search__results {
+      margin-left: auto;
+      letter-spacing: 0px;
+      color: #657172;
+      opacity: 1;
+      font-size: 18px/16px Montserrat;
+      margin-right: 20px;
+    }
+  }
+  .viewGame__filter {
+    margin: 20px;
+    border-left: 2px solid #344953;
+    position: relative;
+    padding: 20px;
+    &::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      background: #e6c846 0% 0% no-repeat padding-box;
+      opacity: 1;
+      position: absolute;
+      top: 0;
+      left: -4px;
+    }
+    .filter__label {
+      text-align: left;
+      font: 20px/14px Montserrat;
+      letter-spacing: 0px;
+      color: #ffffff;
+      opacity: 1;
+    }
+    .viewGame__label {
+      text-align: left;
+      font: 16px/12px Montserrat;
+      letter-spacing: 0px;
+      color: #ffffff;
+      opacity: 1;
+      margin-bottom: 10px;
+    }
+    .viewGame__filter-section {
+      padding: 20px 0;
+      display: flex;
+      .viewGame__name {
+        width: 450px;
+        height: 71px;
+        margin: 0;
+        &:focus {
+          margin: 0;
+        }
+
+        .css-bg1rzq-control,
+        .css-1szy77t-control {
+          background-color: #4d565a;
+          border: none;
+          padding: 0;
+          height: 38px;
+        }
+        .css-bgvzuu-indicatorSeparator {
+          background: none;
+        }
+        .css-1hwfws3 {
+          padding: 2px;
+          .css-151xaom-placeholder {
+            color: #ffffff;
+          }
+          .css-1g6gooi {
+            margin: 0;
+            padding: 2px;
+            color: #ffffff;
+          }
+          .css-dvua67-singleValue {
+            color: #ffffff;
+          }
+          .css-16pqwjk-indicatorContainer {
+            color: #ffffff;
+          }
+        }
+        .css-kj6f9i-menu {
+          top: 50px;
+          background-color: #4d565a;
+          color: #ffffff;
+          border-radius: 4px;
+          margin-bottom: 8px;
+          margin-top: 8px;
+          position: absolute;
+          width: 100%;
+          z-index: 1;
+          box-sizing: border-box;
+        }
+        .css-dpec0i-option {
+          background-color: #000000;
+          color: inherit;
+          cursor: default;
+          display: block;
+          font-size: inherit;
+          padding: 8px 12px;
+          width: 100%;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+          box-sizing: border-box;
+          &:hover {
+            background-color: rgba(0, 0, 0, 0);
+            color: #ffffff;
+          }
+        }
+      }
+    }
+  }
+}
