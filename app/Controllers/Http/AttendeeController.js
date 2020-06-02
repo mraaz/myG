@@ -197,6 +197,16 @@ class AttendeeController {
           request.params.schedule_games_id = request.params.id
           request.params.other_user_id = attendees[0].id
           noti.add_approved_attendee_left({ auth, request, response })
+
+          //look up co hosts and notify aswell
+          const co_hosts = await Database.from('co_hosts')
+            .where({ schedule_games_id: request.params.id })
+            .select('user_id')
+
+          for (var i = 0; i < co_hosts.length; i++) {
+            request.params.other_user_id = co_hosts[i].user_id
+            noti.add_approved_attendee_left({ auth, request, response })
+          }
         }
 
         const delete_attendance = await Database.table('attendees')
