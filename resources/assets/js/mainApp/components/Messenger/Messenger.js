@@ -45,7 +45,7 @@ class Messenger extends React.PureComponent {
 
   onUploadPhoto = async (icon, key) => {
     this.props.updateGameIcon(this.state.uploadingPhoto, icon);
-    await uploadGameIcon(this.state.uploadingPhoto, key);
+    if (key) await uploadGameIcon(this.state.uploadingPhoto, key);
     this.setState({ uploadingPhoto: null });
   }
 

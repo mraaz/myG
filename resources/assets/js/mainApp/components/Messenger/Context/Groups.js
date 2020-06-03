@@ -33,7 +33,7 @@ export default class Groups extends React.PureComponent {
     const { encryption } = generateGroupKeys();
     this.setState({ showingGroupCreation: false });
     const { value: { chat: { chatId } } } = await this.props.createChat(contacts, this.props.userId, title, icon, encryption, true, null, gameId);
-    await uploadGroupIcon(chatId, key);
+    if (key) await uploadGroupIcon(chatId, key);
   }
 
   renderGroupButton = () => {
