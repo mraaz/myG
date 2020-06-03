@@ -159,13 +159,34 @@ export default class ScheduleGames extends Component {
             </div>
             <div className='gameList__box'>
               <div className='mygames'>
-                <div className='gameImage'></div>
-              </div>
-              <div className='mygames'>
-                <div className='gameImage'></div>
-              </div>
-              <div className='mygames'>
-                <div className='gameImage'></div>
+                <div className='gameImage'>
+                  <img src='https://scontent.fdel20-1.fna.fbcdn.net/v/t1.0-9/101379557_1122093438157270_4919549497542967296_n.jpg?_nc_cat=100&_nc_sid=730e14&_nc_ohc=TFifTmgEhSMAX9hMl7s&_nc_ht=scontent.fdel20-1.fna&oh=00403f8d95cce0121f5996fbc96d61cd&oe=5EFB813E' />
+                </div>
+                <div className='game__attributes'>
+                  <div className='first__row'>
+                    <h1 className='game__name'>DOTA 2</h1>
+                    <div className='game__playerList'>
+                      <img src='https://lh3.googleusercontent.com/proxy/8A3Cv9HRzoGwPztTS3GoyOU878URYz0KasLidFJ5q77FjpCBcshrcUdzbaaK2wkkNmKAix0LBXmjC7FT36ScHq5OFuhvFurXdx73lu3fg1WOA7LZYqDYLd48EA' />
+                      <div className='playerName'>DAV1D_90</div>
+                    </div>
+                  </div>
+                  <div className='second__row'>
+                    <div className='gamer__count'>
+                      <img src='https://lh3.googleusercontent.com/proxy/8A3Cv9HRzoGwPztTS3GoyOU878URYz0KasLidFJ5q77FjpCBcshrcUdzbaaK2wkkNmKAix0LBXmjC7FT36ScHq5OFuhvFurXdx73lu3fg1WOA7LZYqDYLd48EA' />
+                      <span>0 / 3 Gamers</span>
+                    </div>
+                    <div className='game__timestamp'>
+                      <img src='https://lh3.googleusercontent.com/proxy/8A3Cv9HRzoGwPztTS3GoyOU878URYz0KasLidFJ5q77FjpCBcshrcUdzbaaK2wkkNmKAix0LBXmjC7FT36ScHq5OFuhvFurXdx73lu3fg1WOA7LZYqDYLd48EA' />
+                      <span>February 8, 10pm</span>
+                    </div>
+                  </div>
+                  <div className='third__row'>
+                    <div className='game__tags'>
+                      <div className='game__tag'>Initiator</div>
+                    </div>
+                    <div className='game__level'>Semi-Pro</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
