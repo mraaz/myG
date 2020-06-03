@@ -1,20 +1,18 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React from 'react'
+import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { setEncryptionPinAction } from '../../../redux/actions/encryptionAction';
+import { setEncryptionPinAction } from '../../../redux/actions/encryptionAction'
 
 class EncryptionParaphraseRegistration extends React.PureComponent {
-
   componentDidMount() {
-    const pin = this.props.routeProps.match.params.encryption;
-    if (!this.props.pin) this.props.setEncryptionPin(pin);
-    window.location.replace('/');
+    const pin = this.props.routeProps.match.params.encryption
+    if (!this.props.pin) this.props.setEncryptionPin(pin)
+    window.location.replace('/')
   }
 
   render() {
-    return null;
+    return null
   }
-
 }
 
 export function mapStateToProps(state) {
@@ -24,9 +22,9 @@ export function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return ({
+  return {
     setEncryptionPin: (pin) => dispatch(setEncryptionPinAction(pin)),
-  });
+  }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(EncryptionParaphraseRegistration));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(EncryptionParaphraseRegistration))

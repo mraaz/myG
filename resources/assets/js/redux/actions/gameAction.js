@@ -1,5 +1,4 @@
-
-import { searchGame } from '../../integration/http/game';
+import { searchGame } from '../../integration/http/game'
 
 export function searchGameAction(name) {
   return {

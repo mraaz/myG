@@ -1,5 +1,5 @@
-import React from 'react';
-import ChatMessage from './ChatMessage';
+import React from 'react'
+import ChatMessage from './ChatMessage'
 
 export default class ChatMessageList extends React.PureComponent {
   renderMessage = (message) => {
@@ -25,10 +25,10 @@ export default class ChatMessageList extends React.PureComponent {
         deleteMessage={this.props.deleteMessage}
         showAttachment={this.props.showAttachment}
       />
-    );
+    )
   }
 
   render() {
-    return this.props.messages.map(this.renderMessage);
+    return this.props.messages.map(this.renderMessage)
   }
 }

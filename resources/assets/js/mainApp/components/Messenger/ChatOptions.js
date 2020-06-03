@@ -74,7 +74,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(ChatOptions)
+export default connect(null, mapDispatchToProps)(ChatOptions)

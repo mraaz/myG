@@ -26,7 +26,9 @@ export default class EncryptionLogin extends React.PureComponent {
         />
         <div
           className='messenger-encryption-login-validate-button clickable'
-          onClick={() => fetchUser(this.props.userId).then(response => this.props.validatePin(this.state.pin, response.user[0].public_key))}>
+          onClick={() =>
+            fetchUser(this.props.userId).then((response) => this.props.validatePin(this.state.pin, response.user[0].public_key))
+          }>
           LOGIN
         </div>
         <div
