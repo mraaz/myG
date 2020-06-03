@@ -206,7 +206,13 @@ export class Chat extends React.PureComponent {
           {this.props.subtitle && (
             this.props.isGroup ?
               (
-                <WithTooltip position={{ bottom: '16px', left: '-12px' }} text={this.props.contacts.slice(0, 10).map(contact => contact.name).join('\n')}>
+                <WithTooltip position={{ bottom: '16px', left: '-12px' }} text={
+                  [
+                    ...this.props.contacts.slice(0, 10).map(contact => contact.name),
+                    ...(this.props.group.guests || []).map(id => `Guest #${id}`)
+                  ]
+                    .join('\n')
+                }>
                   <div className="chat-component-header-subtitle">
                     {this.props.subtitle}
                   </div>
@@ -249,6 +255,23 @@ export class Chat extends React.PureComponent {
           )
         }
 
+        {
+          this.props.isGuest && (
+            <div className="chat-component-header-options">
+              <div className="chat-component-header-top-buttons">
+                <div className="chat-component-header-button clickable"
+                  style={{ backgroundImage: `url(${getAssetUrl('ic_chat_minimise')})` }}
+                  onClick={() => this.setState({ guestChatExpanded: false })}
+                />
+                <div className="chat-component-header-button clickable"
+                  style={{ backgroundImage: `url(${getAssetUrl('ic_chat_maximise')})` }}
+                  onClick={() => this.setState({ guestChatExpanded: true })}
+                />
+              </div>
+            </div>
+          )
+        }
+
       </div >
     );
   }
@@ -266,7 +289,6 @@ export class Chat extends React.PureComponent {
   }
 
   renderBody = () => {
-    const lastMessage = (this.props.messages[this.props.messages.length - 1] || {});
     return (
       <div
         className="chat-component-body"
@@ -430,6 +452,7 @@ export class Chat extends React.PureComponent {
     if (this.props.minimised) extraClass += "chat-minimised";
     if (!this.props.minimised && this.state.settings) extraClass = "chat-settings";
     if (this.props.isGuest) extraClass = "chat-guest";
+    if (this.state.guestChatExpanded) extraClass += "-expanded";
     return (
       <div
         key={this.props.chatId}

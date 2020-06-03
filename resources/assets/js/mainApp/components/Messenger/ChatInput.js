@@ -14,6 +14,10 @@ export default class ChatInput extends React.PureComponent {
     this.input = React.createRef();
   }
 
+  componentDidMount() {
+    this.input.current.focus();
+  }
+
   componentDidUpdate() {
     if (this.props.replyingTo) this.input.current.focus();
   }

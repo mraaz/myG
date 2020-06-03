@@ -104,7 +104,7 @@ class GroupMemberOptions extends React.PureComponent {
   }
 
   renderTableHeader = () => {
-    return(
+    return (
       <div className="chat-group-table-header">
         <div className="chat-group-table-header-info">Gamers</div>
         <div className="chat-group-table-header-info">Role</div>
@@ -116,7 +116,7 @@ class GroupMemberOptions extends React.PureComponent {
     return (
       <div className="chat-group-member-list-container">
         {this.props.groupContacts.map(contact => this.renderMember(contact, isGroupModerator, false, null))}
-        {this.props.group.guests.map(guestId => this.renderMember({}, false, true, guestId))}
+        {this.props.group.guests.map(guestId => this.renderMember({}, isGroupModerator, true, guestId))}
       </div>
     );
   }
@@ -137,7 +137,7 @@ class GroupMemberOptions extends React.PureComponent {
           </div>
           <div className="chat-group-member-button-divider" />
           <div className="chat-group-member-button">
-            {this.renderBlockButton(contact.contactId, isContactBlocked)}
+            {this.renderBlockButton(contact.contactId, isContactBlocked, isGuest)}
           </div>
           <div className="chat-group-member-button-divider" />
           <div className="chat-group-member-button">
@@ -199,12 +199,12 @@ class GroupMemberOptions extends React.PureComponent {
     );
   }
 
-  renderBlockButton = (contactId, isContactBlocked) => {
+  renderBlockButton = (contactId, isContactBlocked, isGuest) => {
     return (
       <div
-        className="chat-group-member-option-icon clickable"
+        className={`chat-group-member-option-icon ${isGuest ? 'gray-scaled' : 'clickable'}`}
         style={{ backgroundImage: `url(${getAssetUrl(`ic_chat_group_${isContactBlocked ? 'muted' : 'unmuted'}`)})` }}
-        onClick={() => this.toggleUserBlock(contactId)}
+        onClick={() => !isGuest && this.toggleUserBlock(contactId)}
       />
     );
   }
@@ -321,9 +321,9 @@ class GroupMemberOptions extends React.PureComponent {
           denyAction={() => this.setState({ kickingUser: false })}
         />
         {this.renderHeader()}
-        {this.renderGroupInvitation(isGroupModerator)}
+        {this.renderGroupInvitation(isGroupOwner || isGroupModerator)}
         {this.renderTableHeader()}
-        {this.renderMembers(isGroupModerator)}
+        {this.renderMembers(isGroupOwner || isGroupModerator)}
         {this.renderGroupOwnership(isGroupOwner)}
       </div>
     );

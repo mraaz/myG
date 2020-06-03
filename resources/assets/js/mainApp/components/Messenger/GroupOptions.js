@@ -200,7 +200,7 @@ class GroupOptions extends React.PureComponent {
         {isGroupModerator && (
           <div className="chat-component-options-toggle">
             Make it Private
-            <WithTooltip position={{ bottom: '-6px', left: '58px' }} text={'Let all players find your group'}>
+            <WithTooltip position={{ bottom: '-6px', left: '58px' }} text={'Only moderators and owners can invite to this group.'}>
               <ToggleButton
                 value={this.props.group.isPrivate || false}
                 onToggle={isPrivate => this.props.updateChat(this.props.group.chatId, { isPrivate: !isPrivate })}
