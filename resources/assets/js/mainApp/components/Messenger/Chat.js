@@ -248,19 +248,6 @@ export class Chat extends React.PureComponent {
               )
           )}
 
-          {this.props.subtitle &&
-            (this.props.isGroup ? (
-              <WithTooltip
-                position={{ bottom: '16px', left: '-12px' }}
-                text={this.props.contacts
-                  .slice(0, 10)
-                  .map((contact) => contact.name)
-                  .join('\n')}>
-                <div className='chat-component-header-subtitle'>{this.props.subtitle}</div>
-              </WithTooltip>
-            ) : (
-                <div className='chat-component-header-subtitle'>{this.props.subtitle}</div>
-              ))}
         </div>
 
         {
