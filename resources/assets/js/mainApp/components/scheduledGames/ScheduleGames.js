@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
+import Select from 'react-select'
 import { Game_name_values, Disable_keys } from '../Utility_Function'
 
 function isValidNewOption(inputValue, selectValue, selectOptions) {
@@ -37,6 +38,10 @@ export default class ScheduleGames extends Component {
     }
   }
 
+  componentDidMount() {
+    // this.getFilter()
+  }
+
   handleChange_game_name = (entered_name) => {
     this.setState(
       {
@@ -67,6 +72,16 @@ export default class ScheduleGames extends Component {
     return Game_name_values(inputValue)
   }
 
+  getFilter = async () => {
+    try {
+      const getAllSavedFilters = await axios.get('/api/SavedFiltersScheduleGameController/getAllSavedFilters')
+      const getAllSavedFiltersObj = JSON.parse(getAllSavedFilters.data.allFilters[0].payload)
+      console.log('getFilter >>>> ', getAllSavedFiltersObj)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   onKeyDown = (e) => {
     Disable_keys(e)
   }
@@ -78,7 +93,15 @@ export default class ScheduleGames extends Component {
     alert('Save option clicked!')
   }
 
+  handleSavedFilterChange = (savedFilter) => {
+    this.setState({ savedFilter })
+  }
+  handleAddFilterChange = (addFilter) => {
+    this.setState({ addFilter })
+  }
+
   render() {
+    const { savedFilter, addFilter } = this.state
     if (this.props.initialData == 'loading') {
       return <h1>Loading</h1>
     }
@@ -119,6 +142,34 @@ export default class ScheduleGames extends Component {
               </div>
             </div>
           </div>
+        </div>
+        <div className='viewGame__addMoreFilter'>
+          <div className='savedFilter__option'>
+            <div className='filter__header'>Saved Filter</div>
+          </div>
+          <div className='addFilter__option'>
+            <div className='filter__header'>Add Filter</div>
+          </div>
+        </div>
+        <div className='gameList__section'>
+          <div className='gameList'>
+            <div className='gameList_head__option'>
+              <div className='gameResult__count'> 3 Results</div>
+              <div className='gameResult__fillView'> Show full games</div>
+            </div>
+            <div className='gameList__box'>
+              <div className='mygames'>
+                <div className='gameImage'></div>
+              </div>
+              <div className='mygames'>
+                <div className='gameImage'></div>
+              </div>
+              <div className='mygames'>
+                <div className='gameImage'></div>
+              </div>
+            </div>
+          </div>
+          <div className='gameDetails'>my games details</div>
         </div>
       </section>
     )
