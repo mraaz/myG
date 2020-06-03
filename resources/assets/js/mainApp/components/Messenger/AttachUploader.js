@@ -1,62 +1,61 @@
-import 'react-dropzone-uploader/dist/styles.css';
-import React from 'react';
-import Dropzone from 'react-dropzone-uploader';
+import 'react-dropzone-uploader/dist/styles.css'
+import React from 'react'
+import Dropzone from 'react-dropzone-uploader'
 import axios from 'axios'
-import LoadingIndicator from '../LoadingIndicator';
-import notifyToast from '../../../common/toast';
+import LoadingIndicator from '../LoadingIndicator'
+import notifyToast from '../../../common/toast'
 
 export default class AttachUploader extends React.PureComponent {
-
   state = {
-    loading: false
+    loading: false,
   }
 
   handleSubmit = async (_, status, allFiles) => {
-    if (status !== "done") return;
+    if (status !== 'done') return
 
-    this.setState({ loading: true });
+    this.setState({ loading: true })
 
-    const file = allFiles[0].file;
-    const name = allFiles[0].meta.name;
-    const type = allFiles[0].meta.type;
-    const mygType = type.includes('image') ? 'image' : type.includes('video') ? 'video' : 'sound';
+    const file = allFiles[0].file
+    const name = allFiles[0].meta.name
+    const type = allFiles[0].meta.type
+    const mygType = type.includes('image') ? 'image' : type.includes('video') ? 'video' : 'sound'
 
-    const formData = new FormData();
-    formData.append('upload_file', file);
-    formData.append('filename', name);
-    formData.append('chat', true);
+    const formData = new FormData()
+    formData.append('upload_file', file)
+    formData.append('filename', name)
+    formData.append('chat', true)
 
     try {
       const post = await axios.post('/api/uploadFile', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-      });
-      await this.props.sendMessage(`myg-${mygType}|${post.data.Location}`, post.data.Key);
+      })
+      await this.props.sendMessage(`myg-${mygType}|${post.data.Location}`, post.data.Key)
     } catch (error) {
-      const message = error && error.response && error.response.data;
-      if (message === "CHAT_UPLOAD_DISABLED") notifyToast("Sorry mate, file uploading is currently disabled.");
-      else if (message === "MAX_UPLOAD_REACHED") notifyToast("Sorry mate, you have reached your upload limit for the day.");
-      else if (message === "USER_CREATION") notifyToast("Sorry mate, you need to be a member for at least one day to upload files.");
-      else if (message === "FILE_INFECTED") notifyToast("TODO: Raaz");
-      else notifyToast('Oops, something went wrong. Unable to upload your file. Please try again.');
+      const message = error && error.response && error.response.data
+      if (message === 'CHAT_UPLOAD_DISABLED') notifyToast('Sorry mate, file uploading is currently disabled.')
+      else if (message === 'MAX_UPLOAD_REACHED') notifyToast('Sorry mate, you have reached your upload limit for the day.')
+      else if (message === 'USER_CREATION') notifyToast('Sorry mate, you need to be a member for at least one day to upload files.')
+      else if (message === 'FILE_INFECTED') notifyToast('Fair dinkum! Mate this file is infected! Deleting this off our servers!')
+      else notifyToast('Oops, something went wrong. Unable to upload your file. Please try again.')
     }
 
-    this.props.onFinish();
+    this.props.onFinish()
   }
 
   render() {
     if (this.state.loading) {
       return (
-        <div className="chat-component-attach-window-loading">
-          <p className="chat-component-attach-window-loading-hint">Uploading Your File...</p>
+        <div className='chat-component-attach-window-loading'>
+          <p className='chat-component-attach-window-loading-hint'>Uploading Your File...</p>
           <LoadingIndicator color={'#F0F0F0'} />
         </div>
-      );
+      )
     }
     return (
       <Dropzone
-        accept="image/*,audio/*,video/*"
+        accept='image/*,audio/*,video/*'
         maxFiles={1}
         maxSizeBytes={10485760}
         PreviewComponent={null}
@@ -91,7 +90,6 @@ export default class AttachUploader extends React.PureComponent {
           },
         }}
       />
-    );
+    )
   }
-
 }
