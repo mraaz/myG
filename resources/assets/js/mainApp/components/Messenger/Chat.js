@@ -222,6 +222,7 @@ export class Chat extends React.PureComponent {
               <WithTooltip
                 position={{ bottom: '16px', left: '-12px' }}
                 text={[
+                  'You',
                   ...this.props.contacts.slice(0, 10).map((contact) => contact.name),
                   ...(this.props.group.guests || []).map((id) => `Guest #${id}`),
                 ].join('\n')}>
@@ -431,7 +432,7 @@ export class Chat extends React.PureComponent {
   renderEncryptedChat() {
     const isGroupWithoutKey = this.props.isGroup && !this.props.privateKey
     const noUserKeyText = 'Please inform your encryption key to read the contents of this chat.'
-    const noGroupKeyText = `Unable to retreive E2E key from an active member. Please wait for a chat member to come online.${
+    const noGroupKeyText = `Unable to retrieve E2E key from an active member. Please wait for a chat member to come online.${
       this.props.isGuest ? 'Alternatively, create an account @ myG.gg' : ''
     }`
     return (
@@ -444,7 +445,7 @@ export class Chat extends React.PureComponent {
   }
 
   render() {
-    if (!this.props.minimised && !this.props.privateKey) return this.renderEncryptedChat()
+    if (!this.state.settings && !this.props.minimised && !this.props.privateKey) return this.renderEncryptedChat()
     let extraClass = ''
     if (this.props.maximised) extraClass += 'chat-maximised'
     if (this.props.minimised) extraClass += 'chat-minimised'
