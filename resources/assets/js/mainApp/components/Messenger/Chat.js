@@ -29,8 +29,14 @@ import { encryptMessage, decryptMessage, deserializeKey } from '../../../integra
 import { formatDateTime } from '../../../common/date'
 import { getAssetUrl } from '../../../common/assets'
 import { showMessengerAlert } from '../../../common/alert'
+import logger from '../../../common/logger'
+import { ignoreFunctions } from '../../../common/render'
 
-export class Chat extends React.PureComponent {
+export class Chat extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   constructor(props) {
     super(props)
     this.state = {
@@ -221,10 +227,11 @@ export class Chat extends React.PureComponent {
             (this.props.isGroup ? (
               <WithTooltip
                 position={{ bottom: '16px', left: '-12px' }}
-                text={this.props.contacts
-                  .slice(0, 10)
-                  .map((contact) => contact.name)
-                  .join('\n')}>
+                text={[
+                  'You',
+                  ...this.props.contacts.slice(0, 10).map((contact) => contact.name),
+                  ...(this.props.group.guests || []).map((id) => `Guest #${id}`),
+                ].join('\n')}>
                 <div className='chat-component-header-subtitle'>{this.props.subtitle}</div>
               </WithTooltip>
             ) : (
@@ -260,6 +267,23 @@ export class Chat extends React.PureComponent {
             />
           </div>
         )}
+
+        {this.props.isGuest && (
+          <div className='chat-component-header-options'>
+            <div className='chat-component-header-top-buttons'>
+              <div
+                className='chat-component-header-button clickable'
+                style={{ backgroundImage: `url(${getAssetUrl('ic_chat_minimise')})` }}
+                onClick={() => this.setState({ guestChatExpanded: false })}
+              />
+              <div
+                className='chat-component-header-button clickable'
+                style={{ backgroundImage: `url(${getAssetUrl('ic_chat_maximise')})` }}
+                onClick={() => this.setState({ guestChatExpanded: true })}
+              />
+            </div>
+          </div>
+        )}
       </div>
     )
   }
@@ -277,7 +301,6 @@ export class Chat extends React.PureComponent {
   }
 
   renderBody = () => {
-    const lastMessage = this.props.messages[this.props.messages.length - 1] || {}
     return (
       <div className='chat-component-body' ref={this.messageListRef}>
         {this.renderLoadingIndicator()}
@@ -415,7 +438,7 @@ export class Chat extends React.PureComponent {
   renderEncryptedChat() {
     const isGroupWithoutKey = this.props.isGroup && !this.props.privateKey
     const noUserKeyText = 'Please inform your encryption key to read the contents of this chat.'
-    const noGroupKeyText = `Unable to retreive E2E key from an active member. Please wait for a chat member to come online.${
+    const noGroupKeyText = `Unable to retrieve E2E key from an active member. Please wait for a chat member to come online.${
       this.props.isGuest ? 'Alternatively, create an account @ myG.gg' : ''
     }`
     return (
@@ -428,12 +451,14 @@ export class Chat extends React.PureComponent {
   }
 
   render() {
-    if (!this.props.minimised && !this.props.privateKey) return this.renderEncryptedChat()
+    logger.log("RENDER", "ChatComponent");
+    if (!this.state.settings && !this.props.minimised && !this.props.privateKey) return this.renderEncryptedChat()
     let extraClass = ''
     if (this.props.maximised) extraClass += 'chat-maximised'
     if (this.props.minimised) extraClass += 'chat-minimised'
     if (!this.props.minimised && this.state.settings) extraClass = 'chat-settings'
     if (this.props.isGuest) extraClass = 'chat-guest'
+    if (this.state.guestChatExpanded) extraClass += '-expanded'
     return (
       <div key={this.props.chatId} className={`chat-component-base ${extraClass}`}>
         {this.renderHeader()}
@@ -519,7 +544,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Chat)
+export default connect(mapStateToProps, mapDispatchToProps)(Chat)

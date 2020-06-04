@@ -1,13 +1,10 @@
-
-const { forceInt, forceString } = require('./Primitives');
+const { forceInt, forceString } = require('./Primitives')
 
 class User {
-
   constructor(data) {
-    this.userId = forceInt(data.userId);
-    this.alias = forceString(data.alias);
+    this.userId = forceInt(data.userId)
+    this.alias = forceString(data.alias)
   }
-
 }
 
-module.exports = User;
+module.exports = User

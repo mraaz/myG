@@ -1,17 +1,18 @@
-
-export default function reducer(state = {
-  show: false,
-}, action) {
+export default function reducer(
+  state = {
+    show: false,
+  },
+  action
+) {
   switch (action.type) {
-
-    case "ALERT": {
+    case 'ALERT': {
       return {
         ...state,
         show: action.payload,
-      };
+      }
     }
 
-    default: return state;
-
+    default:
+      return state
   }
 }

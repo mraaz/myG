@@ -1,10 +1,14 @@
-import React from 'react';
-import ToggleButton from 'react-toggle-button';
-import EncryptionSettings from './EncryptionSettings';
-import BlockedUsers from './BlockedUsers';
-import { getAssetUrl } from '../../../../common/assets';
+import React from 'react'
+import ToggleButton from 'react-toggle-button'
+import EncryptionSettings from './EncryptionSettings'
+import BlockedUsers from './BlockedUsers'
+import { getAssetUrl } from '../../../../common/assets'
+import { ignoreFunctions } from '../../../../common/render'
 
-export default class Settings extends React.PureComponent {
+export default class Settings extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
 
   state = {
     favoriteGameInput: '',
@@ -12,32 +16,32 @@ export default class Settings extends React.PureComponent {
 
   renderNotificationSoundSettings = () => {
     return (
-      <div className="messenger-settings-toggle">
-        <div className="messenger-settings-toggle-hint">
-          <div className="messenger-settings-toggle-title">Sound Alerts</div>
-          <div className="messenger-settings-toggle-subtitle">Receive an alert for messages received.</div>
+      <div className='messenger-settings-toggle'>
+        <div className='messenger-settings-toggle-hint'>
+          <div className='messenger-settings-toggle-title'>Sound Alerts</div>
+          <div className='messenger-settings-toggle-subtitle'>Receive an alert for messages received.</div>
         </div>
         <ToggleButton
           value={!this.props.notificationSoundsDisabled}
-          onToggle={notificationSoundsDisabled => this.props.toggleNotificationSounds(notificationSoundsDisabled)}
+          onToggle={(notificationSoundsDisabled) => this.props.toggleNotificationSounds(notificationSoundsDisabled)}
         />
       </div>
-    );
+    )
   }
 
   renderAutoSelfDestructSettings = () => {
     return (
-      <div className="messenger-settings-toggle">
-        <div className="messenger-settings-toggle-hint">
-          <div className="messenger-settings-toggle-title">Auto Destruct</div>
-          <div className="messenger-settings-toggle-subtitle">Any Chat created will have Self Destruct turned on by default.</div>
+      <div className='messenger-settings-toggle'>
+        <div className='messenger-settings-toggle-hint'>
+          <div className='messenger-settings-toggle-title'>Auto Destruct</div>
+          <div className='messenger-settings-toggle-subtitle'>Any Chat created will have Self Destruct turned on by default.</div>
         </div>
         <ToggleButton
           value={this.props.autoSelfDestruct}
-          onToggle={autoSelfDestruct => this.props.toggleAutoSelfDestruct(!autoSelfDestruct)}
+          onToggle={(autoSelfDestruct) => this.props.toggleAutoSelfDestruct(!autoSelfDestruct)}
         />
       </div>
-    );
+    )
   }
 
   renderGamesSettings = () => {
@@ -45,9 +49,9 @@ export default class Settings extends React.PureComponent {
     const maxedOut = this.props.favoriteGames.length >= 10
     const games = maxedOut
       ? this.props.games
-        .slice(0)
-        .sort((g1, g2) => (g1.isFavorite === g2.isFavorite ? 0 : g1.isFavorite ? -1 : 1))
-        .slice(0, 10)
+          .slice(0)
+          .sort((g1, g2) => (g1.isFavorite === g2.isFavorite ? 0 : g1.isFavorite ? -1 : 1))
+          .slice(0, 10)
       : this.props.games.slice(0).filter((game) => search(game.name))
     return (
       <div className='messenger-settings-encryption-container'>
@@ -69,7 +73,7 @@ export default class Settings extends React.PureComponent {
   renderGameSelection = (game) => {
     const isFavorite = this.props.favoriteGames.find((favorite) => favorite.gameId === game.gameId)
     const isOwner = parseInt(this.props.userId) === parseInt(game.ownerId)
-    if (!isFavorite && !this.state.favoriteGameInput) return null;
+    if (!isFavorite && !this.state.favoriteGameInput) return null
     return (
       <div key={game.gameId} className='messenger-footer-favorite-game'>
         <div className='messenger-body-game-section'>

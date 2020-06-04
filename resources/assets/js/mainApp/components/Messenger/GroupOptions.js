@@ -10,8 +10,13 @@ import { updateChatAction, clearChatAction, deleteChatAction, exitGroupAction, u
 import { copyToClipboard } from '../../../common/clipboard'
 import { getAssetUrl } from '../../../common/assets'
 import { showMessengerAlert } from '../../../common/alert'
+import { ignoreFunctions } from '../../../common/render'
 
-class GroupOptions extends React.PureComponent {
+class GroupOptions extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   state = {
     title: '',
     showingMembers: false,
@@ -184,7 +189,7 @@ class GroupOptions extends React.PureComponent {
         {isGroupModerator && (
           <div className='chat-component-options-toggle'>
             Make it Private
-            <WithTooltip position={{ bottom: '-6px', left: '58px' }} text={'Let all players find your group'}>
+            <WithTooltip position={{ bottom: '-6px', left: '58px' }} text={'Only moderators and owners can invite to this group.'}>
               <ToggleButton
                 value={this.props.group.isPrivate || false}
                 onToggle={(isPrivate) => this.props.updateChat(this.props.group.chatId, { isPrivate: !isPrivate })}
@@ -235,7 +240,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(GroupOptions)
+export default connect(null, mapDispatchToProps)(GroupOptions)

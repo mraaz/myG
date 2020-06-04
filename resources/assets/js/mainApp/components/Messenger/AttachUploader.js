@@ -4,8 +4,13 @@ import Dropzone from 'react-dropzone-uploader'
 import axios from 'axios'
 import LoadingIndicator from '../LoadingIndicator'
 import notifyToast from '../../../common/toast'
+import { ignoreFunctions } from '../../../common/render'
 
-export default class AttachUploader extends React.PureComponent {
+export default class AttachUploader extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   state = {
     loading: false,
   }

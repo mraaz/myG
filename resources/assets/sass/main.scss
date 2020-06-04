@@ -225,7 +225,9 @@ label {
     opacity: 0.3;
   }
 }
-
+.gray-scaled {
+  filter: grayscale(1);
+}
 ::-webkit-scrollbar {
   width: 0;
 }
