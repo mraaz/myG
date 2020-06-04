@@ -12,6 +12,19 @@ export default class EncryptionLogin extends React.Component {
     pin: '',
   }
 
+  onKeyPressed = (event) => {
+    const code = event.keyCode || event.which
+    const enterKeyCode = 13
+    if (code === enterKeyCode) {
+      event.preventDefault()
+      this.validateKey()
+    }
+  }
+
+  validateKey = () => {
+    fetchUser(this.props.userId).then((response) => this.props.validatePin(this.state.pin, response.user[0].public_key));
+  }
+
   render() {
     return (
       <div className='messenger-encryption-login-container'>
@@ -21,19 +34,18 @@ export default class EncryptionLogin extends React.Component {
             style={{ backgroundImage: `url("https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/logo.svg")` }}
           />
         </div>
-        <p className='messenger-encryption-login-title'>Enter Encryption Key</p>
+        <p className='messenger-encryption-login-title'>Enter Chat Password</p>
         <input
           className='messenger-encryption-login-input'
           type='text'
-          placeholder='Encryption Key'
+          placeholder='Chat Password'
           value={this.state.pin}
+          onKeyPress={this.onKeyPressed}
           onChange={(event) => this.setState({ pin: event.target.value })}
         />
         <div
           className='messenger-encryption-login-validate-button clickable'
-          onClick={() =>
-            fetchUser(this.props.userId).then((response) => this.props.validatePin(this.state.pin, response.user[0].public_key))
-          }>
+          onClick={this.validateKey}>
           LOGIN
         </div>
         <div

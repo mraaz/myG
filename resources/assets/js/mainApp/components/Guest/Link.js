@@ -48,6 +48,15 @@ class GuestLink extends React.Component {
     this.setState({ loaded: true })
   }
 
+  onKeyPressed = (event) => {
+    const code = event.keyCode || event.which
+    const enterKeyCode = 13
+    if (code === enterKeyCode) {
+      event.preventDefault()
+      this.registerGuest()
+    }
+  }
+
   registerGuest = () => {
     if (!this.state.alias.trim()) return this.setState({ aliasEmpty: true })
     this.props.registerGuest(this.state.chatId, this.state.alias, this.props.uuid)
@@ -90,7 +99,8 @@ class GuestLink extends React.Component {
           placeholder='e.g. Star-Lord'
           type='text'
           value={this.state.alias}
-          onChange={(event) => this.setState({ alias: event.target.value, aliasEmpty: false })}></input>
+          onChange={(event) => this.setState({ alias: event.target.value, aliasEmpty: false })}
+          onKeyPress={this.onKeyPressed}></input>
         <div className='join clickable' onClick={this.registerGuest}>
           JOIN CHAT
         </div>
