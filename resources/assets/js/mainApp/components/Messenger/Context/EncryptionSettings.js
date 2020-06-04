@@ -156,7 +156,7 @@ export default class EncryptionSettings extends React.Component {
         <div
           className='messenger-settings-encryption-footer-button clickable'
           onClick={() => (this.state.editingPin ? this.confirmPinEdit() : this.requestPinEdit())}>
-          {this.state.editingPin ? 'SAVE YOUR KEY' : 'CHANGE YOUR KEY'}
+          {this.state.editingPin ? 'SAVE YOUR CHAT PASSWORD' : 'CHANGE YOUR CHAT PASSWORD'}
         </div>
       </div>
     )

@@ -44,7 +44,7 @@ export default class EncryptionLogin extends React.Component {
               () => this.props.generateKeys()
             )
           }>
-          generate new key *
+          generate new chat password *
         </div>
         <div className='messenger-encryption-login-divider' />
         <p className='messenger-encryption-login-hint'>* This will allow a new access, but your chat history will be lost.</p>
