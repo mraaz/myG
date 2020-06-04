@@ -13,11 +13,11 @@ export default class GameDetails extends Component {
           <div className='gameName'>
             <h1 className='game__name'>DOTA 2</h1>
             <div className='gamer__count'>
-              <img src='https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png' />
+              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/little_green_man.svg' />
               <span>0 / 3 Gamers</span>
             </div>
             <div className='game__timestamp'>
-              <img src='https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png' />
+              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/clock.svg' />
               <span>February 8, 10pm</span>
             </div>
             <div className='game__level'>Semi-Pro</div>

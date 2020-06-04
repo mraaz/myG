@@ -33,7 +33,7 @@ export default class GameList extends Component {
                   <span>0 / 3 Gamers</span>
                 </div>
                 <div className='game__timestamp'>
-                  <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/little_green_man.svg' />
+                  <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/clock.svg' />
                   <span>February 8, 10pm</span>
                 </div>
               </div>
