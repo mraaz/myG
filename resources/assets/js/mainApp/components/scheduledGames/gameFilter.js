@@ -58,8 +58,20 @@ export default class ScheduleGames extends Component {
   }
 
   handleDropDownChange = (entered_name, name) => {
-    console.log('entered_name  ', entered_name)
-    console.log('name  ', name)
+    this.setState(
+      {
+        game_name_box: entered_name,
+        default: false,
+        games: false,
+      },
+      () => {
+        this.props.handleChange({
+          game_name_box: entered_name,
+          default: false,
+          games: false,
+        })
+      }
+    )
   }
 
   async getOptions(inputValue) {
