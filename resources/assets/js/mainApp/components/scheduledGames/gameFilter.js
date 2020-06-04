@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react'
+import axios from 'axios'
 
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import Select from 'react-select'
@@ -36,6 +37,8 @@ export default class ScheduleGames extends Component {
       games: false,
       just_one_time: true,
       filterName: '',
+      showSaveFilterInput: false,
+      filterArray: ['gameName'],
     }
   }
 
@@ -43,30 +46,9 @@ export default class ScheduleGames extends Component {
     // this.getFilter()
   }
 
-  handleChange_game_name = (entered_name) => {
-    this.setState(
-      {
-        game_name_box: entered_name,
-        default: false,
-        games: false,
-      },
-      () => {
-        if (entered_name) {
-          switch (entered_name.value) {
-            case 'Dota 2':
-              this.setState({ games: true })
-              break
-            case 'Clash Royale':
-              this.setState({ games: true })
-              break
-            default:
-              this.setState({ default: true })
-          }
-        } else {
-          this.setState({ default: true })
-        }
-      }
-    )
+  handleDropDownChange = (entered_name, name) => {
+    console.log('entered_name  ', entered_name)
+    console.log('name  ', name)
   }
 
   async getOptions(inputValue) {
@@ -90,11 +72,47 @@ export default class ScheduleGames extends Component {
   handleClearFilterClick = () => {
     alert('Clear option clicked!')
   }
-  handleSaveFilterClick = () => {
-    alert('Save option clicked!')
+
+  handleSaveFilterClick = async () => {
+    const { filterName = '', isRequesting = false } = this.state
+    if (!filterName) {
+      alert('Please enter filter name first.')
+      return
+    }
+    if (isRequesting) {
+      alert('Please wait.')
+      return
+    }
+    this.setState({ isRequesting: true })
+    const payload = {
+      game_name: true,
+      region: true,
+      experience: false,
+      start_time: true,
+      platform: true,
+      description: false,
+      exclude_full_games: true,
+      tags: true,
+    }
+    try {
+      const saveFilter = await axios.post('/api/SavedFiltersScheduleGameController', {
+        name: filterName,
+        payload,
+      })
+      if (saveFilter) {
+        this.setState({ showSaveFilterInput: false, isRequesting: false, filterName: '' })
+      }
+    } catch (error) {
+      this.setState({ isRequesting: false })
+      console.log(error)
+    }
   }
-  handleSaveFilterDropdown = () => {
-    alert(' saved  filter Dropdown clicked!')
+
+  handleSaveFilterAction = () => {
+    this.setState({ showSaveFilterInput: true })
+  }
+  handleCloseSaveFilterInput = () => {
+    this.setState({ showSaveFilterInput: false })
   }
 
   handleSavedFilterChange = (savedFilter) => {
@@ -105,11 +123,18 @@ export default class ScheduleGames extends Component {
   }
   handleSaveFilterName = (e) => {
     const filterName = e.target.value
-    this.setState({ filterName })
+    const isVaid = /['/.%#$,;`\\]/.test(filterName)
+    if (!isVaid) {
+      if (filterName.length < 250) {
+        this.setState({ filterName })
+      }
+    } else {
+      alert('Please enter a valid Filter Name.')
+    }
   }
 
   render() {
-    const { savedFilter, addFilter, filterName = '' } = this.state
+    const { savedFilter, addFilter, filterName = '', showSaveFilterInput } = this.state
     if (this.props.initialData == 'loading') {
       return <h1>Loading</h1>
     }
@@ -131,7 +156,7 @@ export default class ScheduleGames extends Component {
                 defaultOptions
                 isValidNewOption={isValidNewOption}
                 loadOptions={this.getOptions}
-                onChange={this.handleChange_game_name}
+                onChange={(data) => this.handleDropDownChange(data, 'gamename')}
                 isClearable
                 value={this.state.game_name_box}
                 className='viewGame__name'
@@ -142,19 +167,29 @@ export default class ScheduleGames extends Component {
               />
             </div>
             <div className='saveFilterAction__section'>
-              <button type='button' className='saveFilter__button' onClick={this.handleSaveFilterDropdown}>
+              <button type='button' className='saveFilter__button' onClick={this.handleSaveFilterAction}>
                 Save Filter
               </button>
-              <div className='saveFilterInput__container'>
-                <div className='input_name'>
-                  <div className='input__label'>Filter Name</div>
-                  <input type='text' value={filterName} placeholder='Name your filter' onChange={this.handleSaveFilterName} />
+              {showSaveFilterInput && (
+                <div className='saveFilterInput__container'>
+                  <div className='input_name'>
+                    <div className='input__label'>Filter Name</div>
+                    <input
+                      type='text'
+                      value={filterName}
+                      placeholder='Name your filter'
+                      onChange={this.handleSaveFilterName}
+                      autoComplete='off'
+                    />
+                  </div>
+                  <button type='button' className='filter__save_button' onClick={this.handleSaveFilterClick}>
+                    Save
+                  </button>
+                  <div className='filterInput__close' onClick={this.handleCloseSaveFilterInput}>
+                    X
+                  </div>
                 </div>
-                <button type='button' className='filter__save_button' onClick={this.handleSaveFilterClick}>
-                  Save
-                </button>
-                <div className='filterInput__close'>X</div>
-              </div>
+              )}
               <div className='clearFilter' onClick={this.handleClearFilterClick}>
                 Clear
               </div>
