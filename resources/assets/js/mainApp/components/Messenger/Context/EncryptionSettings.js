@@ -25,7 +25,7 @@ export default class EncryptionSettings extends React.Component {
   }
 
   confirmPinEdit = async () => {
-    if (this.state.pinInput.trim().length < 12) return notifyToast('Your Encryption Key must have at least 12 characters.')
+    if (this.state.pinInput.trim().length < 7) return notifyToast('Your Encryption Key must have at least 7 characters.')
 
     logger.log('CHAT', `Re-Encryption - Starting for ${this.props.chats.length} Chats`)
 
