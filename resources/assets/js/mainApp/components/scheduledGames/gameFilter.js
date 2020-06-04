@@ -38,7 +38,18 @@ export default class ScheduleGames extends Component {
       just_one_time: true,
       filterName: '',
       showSaveFilterInput: false,
-      filterArray: ['gameName'],
+      filterTypeArray: ['game_name'],
+      showFilterType: false,
+    }
+    this.filterGroup = {
+      game_name: 'Game Name',
+      region: 'Region',
+      experience: 'Experience Level',
+      start_time: 'Start Time',
+      platform: 'Platform',
+      description: 'Description',
+      exclude_full_games: 'Exclude Full Game',
+      tags: 'Tags',
     }
   }
 
@@ -70,7 +81,7 @@ export default class ScheduleGames extends Component {
   }
 
   handleClearFilterClick = () => {
-    alert('Clear option clicked!')
+    this.setState({ filterTypeArray: ['game_name'] })
   }
 
   handleSaveFilterClick = async () => {
@@ -119,7 +130,7 @@ export default class ScheduleGames extends Component {
     this.setState({ savedFilter })
   }
   handleAddFilterChange = (addFilter) => {
-    this.setState({ addFilter })
+    this.setState({ showFilterType: !this.state.showFilterType })
   }
   handleSaveFilterName = (e) => {
     const filterName = e.target.value
@@ -132,9 +143,19 @@ export default class ScheduleGames extends Component {
       alert('Please enter a valid Filter Name.')
     }
   }
+  handleFilterTypeClick = (k) => {
+    const { filterTypeArray = [], showFilterType } = this.state
+    if (!filterTypeArray.includes(k)) {
+      filterTypeArray.push(k)
+      this.setState({ filterTypeArray, showFilterType: !showFilterType })
+    } else {
+      const filterType = filterTypeArray.filter((name) => name != k)
+      this.setState({ filterTypeArray: filterType, showFilterType: !showFilterType })
+    }
+  }
 
   render() {
-    const { savedFilter, addFilter, filterName = '', showSaveFilterInput } = this.state
+    const { savedFilter, addFilter, filterName = '', showSaveFilterInput, isRequesting = '', filterTypeArray, showFilterType } = this.state
     if (this.props.initialData == 'loading') {
       return <h1>Loading</h1>
     }
@@ -149,25 +170,30 @@ export default class ScheduleGames extends Component {
         <div className='viewGame__filter'>
           <div className='filter__label'>Filter by</div>
           <div className='viewGame__filter-section'>
-            <div className='viewGame__gameName'>
-              <div className='viewGame__label'>Game Name</div>
-              <AsyncCreatableSelect
-                cacheOptions
-                defaultOptions
-                isValidNewOption={isValidNewOption}
-                loadOptions={this.getOptions}
-                onChange={(data) => this.handleDropDownChange(data, 'gamename')}
-                isClearable
-                value={this.state.game_name_box}
-                className='viewGame__name'
-                placeholder='All Games'
-                onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
-                onKeyDown={this.onKeyDown}
-                isSearchable={true}
-              />
-            </div>
+            {filterTypeArray.map((k) => {
+              return (
+                <div className='viewGame__gameName'>
+                  <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                  <AsyncCreatableSelect
+                    cacheOptions
+                    defaultOptions
+                    isValidNewOption={isValidNewOption}
+                    loadOptions={this.getOptions}
+                    onChange={(data) => this.handleDropDownChange(data, k)}
+                    isClearable
+                    value={this.state.game_name_box}
+                    className='viewGame__name'
+                    placeholder={this.filterGroup[k]}
+                    onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
+                    onKeyDown={this.onKeyDown}
+                    isSearchable={true}
+                  />
+                </div>
+              )
+            })}
+
             <div className='saveFilterAction__section'>
-              <button type='button' className='saveFilter__button' onClick={this.handleSaveFilterAction}>
+              <button type='button' disabled={isRequesting} className='saveFilter__button' onClick={this.handleSaveFilterAction}>
                 Save Filter
               </button>
               {showSaveFilterInput && (
@@ -182,7 +208,7 @@ export default class ScheduleGames extends Component {
                       autoComplete='off'
                     />
                   </div>
-                  <button type='button' className='filter__save_button' onClick={this.handleSaveFilterClick}>
+                  <button type='button' disabled={isRequesting} className='filter__save_button' onClick={this.handleSaveFilterClick}>
                     Save
                   </button>
                   <div className='filterInput__close' onClick={this.handleCloseSaveFilterInput}>
@@ -201,7 +227,26 @@ export default class ScheduleGames extends Component {
             <div className='filter__header'>Saved Filter</div>
           </div>
           <div className='addFilter__option'>
-            <div className='filter__header'>Add Filter</div>
+            <div className='filter__header' onClick={this.handleAddFilterChange}>
+              Add Filter
+            </div>
+            {showFilterType && (
+              <div className='filterType__group'>
+                <div className='filterType__head'>Add Filters</div>
+                <div className='filterType__body'>
+                  {Object.keys(this.filterGroup).map((k) => {
+                    return (
+                      <div
+                        className={`filterType__name  ${filterTypeArray.includes(k) ? 'selected' : ''}`}
+                        key={k}
+                        onClick={(e) => this.handleFilterTypeClick(k)}>
+                        {this.filterGroup[k]}
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </Fragment>

@@ -77,6 +77,11 @@
       padding: 20px 0;
       display: flex;
       padding-bottom: 0;
+      flex-wrap: wrap;
+      .viewGame__gameName {
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
       .viewGame__name {
         width: 450px;
         height: 38px;
@@ -150,7 +155,6 @@
         justify-content: center;
         position: relative;
         top: 10px;
-        margin-left: 10px;
         position: relative;
         .saveFilter__button {
           width: 116px;
@@ -252,11 +256,58 @@
       font: Bold 14px/14px Montserrat;
       letter-spacing: 0px;
       color: #e5c746;
+      position: relative;
       .filter__header {
         color: inherit;
         font: Bold 14px/14px Montserrat;
         letter-spacing: 0px;
         cursor: pointer;
+      }
+      .filterType__group {
+        position: absolute;
+        top: 20px;
+        width: 182px;
+        height: 178px;
+        background: #171a1c 0% 0% no-repeat padding-box;
+        border: 1px solid #384952;
+        opacity: 1;
+        border-radius: 4px;
+        z-index: 2;
+        .filterType__head {
+          width: 182px;
+          height: 31px;
+          background: #1d2326 0% 0% no-repeat padding-box;
+          border-bottom: 1px solid #384952;
+          border-radius: 4px 4px 0px 0px;
+          opacity: 1;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font: 12px/14px Montserrat;
+          letter-spacing: 0px;
+          color: #ffffff;
+          font-weight: bold;
+        }
+        .filterType__body {
+          width: 182px;
+          min-height: 178px;
+          background: #171a1c 0% 0% no-repeat padding-box;
+          border: 1px solid #384952;
+          opacity: 1;
+          .filterType__name {
+            text-align: left;
+            font: 12px/14px Montserrat;
+            letter-spacing: 0px;
+            color: #ffffff;
+            font-weight: bold;
+            padding: 9px;
+            cursor: pointer;
+            &:hover,
+            &.selected {
+              background: #4d565a;
+            }
+          }
+        }
       }
     }
     .addFilter__option {
