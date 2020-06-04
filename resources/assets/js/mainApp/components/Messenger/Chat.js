@@ -29,8 +29,14 @@ import { encryptMessage, decryptMessage, deserializeKey } from '../../../integra
 import { formatDateTime } from '../../../common/date'
 import { getAssetUrl } from '../../../common/assets'
 import { showMessengerAlert } from '../../../common/alert'
+import logger from '../../../common/logger'
+import { ignoreFunctions } from '../../../common/render'
 
-export class Chat extends React.PureComponent {
+export class Chat extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   constructor(props) {
     super(props)
     this.state = {
@@ -445,6 +451,7 @@ export class Chat extends React.PureComponent {
   }
 
   render() {
+    logger.log("RENDER", "ChatComponent");
     if (!this.state.settings && !this.props.minimised && !this.props.privateKey) return this.renderEncryptedChat()
     let extraClass = ''
     if (this.props.maximised) extraClass += 'chat-maximised'

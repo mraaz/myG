@@ -1,6 +1,11 @@
 import React from 'react'
+import { ignoreFunctions } from '../../../../common/render'
 
-export default class BlockedUsers extends React.PureComponent {
+export default class BlockedUsers extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   unblockUser = (user) => {
     this.props.unblockUser(user.userId)
   }

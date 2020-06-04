@@ -8,8 +8,13 @@ import notifyToast from '../../../common/toast'
 import Chat from './Chat'
 import Register from './Register'
 import { getAssetUrl } from '../../../common/assets'
+import { ignoreFunctions } from '../../../common/render'
 
-class GuestLink extends React.PureComponent {
+class GuestLink extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   state = {
     chatId: null,
     validLink: false,

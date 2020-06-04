@@ -1,7 +1,12 @@
 import React from 'react'
 import Chat from '../Chat'
+import { ignoreFunctions } from '../../../../common/render'
 
-export default class Chats extends React.PureComponent {
+export default class Chats extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   renderChat = (chat) => {
     return (
       <Chat

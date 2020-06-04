@@ -2,8 +2,13 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter, Link } from 'react-router-dom'
 import { fetchUnreadMessagesAction } from '../../../redux/actions/chatAction'
+import { ignoreFunctions } from '../../../common/render'
 
-class ChatIndicator extends React.PureComponent {
+class ChatIndicator extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   componentDidMount() {
     this.props.fetchUnreadMessages()
   }

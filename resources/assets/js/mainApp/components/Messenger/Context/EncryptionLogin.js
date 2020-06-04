@@ -1,8 +1,13 @@
 import React from 'react'
 import { showMessengerAlert } from '../../../../common/alert'
 import { fetchUser } from '../../../../integration/http/user'
+import { ignoreFunctions } from '../../../../common/render'
 
-export default class EncryptionLogin extends React.PureComponent {
+export default class EncryptionLogin extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   state = {
     pin: '',
   }

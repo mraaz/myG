@@ -6,10 +6,15 @@ import Dropdown from '../Dropdown'
 import notifyToast from '../../../common/toast'
 import { searchGameAction } from '../../../redux/actions/gameAction'
 import { getAssetUrl } from '../../../common/assets'
+import { ignoreFunctions } from '../../../common/render'
 
 export const MAXIMUM_GROUP_SIZE = 37
 
 class GroupCreation extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   constructor(props) {
     super(props)
     this.state = {

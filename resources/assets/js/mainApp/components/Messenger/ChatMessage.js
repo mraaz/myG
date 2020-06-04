@@ -5,8 +5,14 @@ import { copyToClipboard } from '../../../common/clipboard'
 import { convertColonsToEmojis } from '../../../common/emoji'
 import { groupBy } from '../../../common/array'
 import { getAssetUrl } from '../../../common/assets'
+import logger from '../../../common/logger'
+import { ignoreFunctions } from '../../../common/render'
 
 export default class ChatMessage extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   constructor(props) {
     super(props)
     this.state = {
@@ -347,6 +353,7 @@ export default class ChatMessage extends React.Component {
   }
 
   render() {
+    logger.log('RENDER', `ChatMessage: ${this.props.message.messageId}`)
     const { message } = this.props
     const origin = message.senderId === this.props.userId ? 'sent' : 'received'
     const deletedStyle = message.deleted && 'chat-component-message-deleted'

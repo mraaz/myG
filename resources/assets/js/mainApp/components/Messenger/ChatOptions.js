@@ -5,8 +5,13 @@ import { WithTooltip } from '../Tooltip'
 import { updateChatAction, clearChatAction } from '../../../redux/actions/chatAction'
 import { getAssetUrl } from '../../../common/assets'
 import { showMessengerAlert } from '../../../common/alert'
+import { ignoreFunctions } from '../../../common/render'
 
-class ChatOptions extends React.PureComponent {
+class ChatOptions extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   render() {
     const inactiveStyle = 'chat-component-options-option-inactive'
     return (

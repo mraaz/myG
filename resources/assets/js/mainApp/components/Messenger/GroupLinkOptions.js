@@ -1,8 +1,13 @@
 import React from 'react'
 import { copyToClipboard } from '../../../common/clipboard'
 import { getAssetUrl } from '../../../common/assets'
+import { ignoreFunctions } from '../../../common/render'
 
-export default class GroupLinkOptions extends React.PureComponent {
+export default class GroupLinkOptions extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   state = {
     currentTab: 0,
   }

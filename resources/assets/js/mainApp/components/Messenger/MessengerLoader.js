@@ -5,8 +5,13 @@ import Messenger from './Messenger'
 import LoadingIndicator from '../LoadingIndicator'
 
 import { prepareMessengerAction, fetchBlockedUsersAction } from '../../../redux/actions/chatAction'
+import { ignoreFunctions } from '../../../common/render'
 
-class MessengerLoader extends React.PureComponent {
+class MessengerLoader extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   state = {
     loaded: false,
   }

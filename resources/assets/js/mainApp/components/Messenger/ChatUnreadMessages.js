@@ -4,8 +4,13 @@ import { connect } from 'react-redux'
 import { clearUnreadIndicatorAction, openChatAction } from '../../../redux/actions/chatAction'
 import { decryptMessage, deserializeKey } from '../../../integration/encryption'
 import { formatAMPM } from '../../../common/date'
+import { ignoreFunctions } from '../../../common/render'
 
-class ChatUnreadMessages extends React.PureComponent {
+class ChatUnreadMessages extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   componentDidMount() {
     this.props.clearUnreadIndicator()
   }

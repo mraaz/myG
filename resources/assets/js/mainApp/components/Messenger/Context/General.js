@@ -3,8 +3,13 @@ import Contacts from './Contacts'
 import Groups from './Groups'
 import { STATUS_ENUM } from '../../../../common/status'
 import { getAssetUrl } from '../../../../common/assets'
+import { ignoreFunctions } from '../../../../common/render'
 
-export default class General extends React.PureComponent {
+export default class General extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   state = {
     dividerExpanded: {
       friends: true,

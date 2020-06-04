@@ -16,8 +16,13 @@ import {
 import { searchUsersAction, addAsFriendAction, fetchFriendRequestsAction } from '../../../redux/actions/userAction'
 import { getAssetUrl } from '../../../common/assets'
 import { showMessengerAlert } from '../../../common/alert'
+import { ignoreFunctions } from '../../../common/render'
 
-class GroupMemberOptions extends React.PureComponent {
+class GroupMemberOptions extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   state = {
     ownerInput: '',
     inviteInput: '',

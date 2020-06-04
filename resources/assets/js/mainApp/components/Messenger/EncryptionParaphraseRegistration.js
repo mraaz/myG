@@ -2,8 +2,13 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { setEncryptionPinAction } from '../../../redux/actions/encryptionAction'
+import { ignoreFunctions } from '../../../common/render'
 
-class EncryptionParaphraseRegistration extends React.PureComponent {
+class EncryptionParaphraseRegistration extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   componentDidMount() {
     const pin = this.props.routeProps.match.params.encryption
     if (!this.props.pin) this.props.setEncryptionPin(pin)

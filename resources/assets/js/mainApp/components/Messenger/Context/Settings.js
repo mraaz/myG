@@ -3,8 +3,13 @@ import ToggleButton from 'react-toggle-button'
 import EncryptionSettings from './EncryptionSettings'
 import BlockedUsers from './BlockedUsers'
 import { getAssetUrl } from '../../../../common/assets'
+import { ignoreFunctions } from '../../../../common/render'
 
-export default class Settings extends React.PureComponent {
+export default class Settings extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   state = {
     favoriteGameInput: '',
   }

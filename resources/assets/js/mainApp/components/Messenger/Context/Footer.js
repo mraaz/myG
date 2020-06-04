@@ -1,7 +1,13 @@
 import React from 'react'
 import { getAssetUrl } from '../../../../common/assets'
+import logger from '../../../../common/logger'
+import { ignoreFunctions } from '../../../../common/render'
 
-export default class Footer extends React.PureComponent {
+export default class Footer extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   state = {
     changingStatus: false,
   }
@@ -40,6 +46,7 @@ export default class Footer extends React.PureComponent {
   }
 
   render() {
+    logger.log('RENDER', 'Footer')
     return (
       <div className={`messenger-footer-container`}>
         <div className='messenger-footer'>

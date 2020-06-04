@@ -10,8 +10,13 @@ import { updateChatAction, clearChatAction, deleteChatAction, exitGroupAction, u
 import { copyToClipboard } from '../../../common/clipboard'
 import { getAssetUrl } from '../../../common/assets'
 import { showMessengerAlert } from '../../../common/alert'
+import { ignoreFunctions } from '../../../common/render'
 
-class GroupOptions extends React.PureComponent {
+class GroupOptions extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   state = {
     title: '',
     showingMembers: false,

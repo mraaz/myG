@@ -33,8 +33,14 @@ import {
 } from '../../../redux/actions/userAction'
 import { generateKeysAction, validatePinAction } from '../../../redux/actions/encryptionAction'
 import { uploadGameIcon } from '../../../integration/http/chat'
+import logger from '../../../common/logger'
+import { ignoreFunctions } from '../../../common/render'
 
-class Messenger extends React.PureComponent {
+class Messenger extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   state = {
     showingSettings: false,
     searchInput: '',
@@ -229,6 +235,7 @@ class Messenger extends React.PureComponent {
   }
 
   render() {
+    logger.log('RENDER', 'Messenger')
     return (
       <section id='messenger'>
         <div className='messenger-content'>

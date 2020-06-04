@@ -6,8 +6,13 @@ import { formatAMPM } from '../../../../common/date'
 import { WithTooltip } from '../../Tooltip'
 import { uploadGroupIcon } from '../../../../integration/http/chat'
 import { getAssetUrl } from '../../../../common/assets'
+import { ignoreFunctions } from '../../../../common/render'
 
-export default class Groups extends React.PureComponent {
+export default class Groups extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   state = {
     showingGroupCreation: false,
   }

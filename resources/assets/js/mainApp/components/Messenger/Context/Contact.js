@@ -2,8 +2,13 @@ import React from 'react'
 import { decryptMessage } from '../../../../integration/encryption'
 import { formatAMPM } from '../../../../common/date'
 import { STATUS_ENUM } from '../../../../common/status'
+import { ignoreFunctions } from '../../../../common/render'
 
-export default class Contact extends React.PureComponent {
+export default class Contact extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   state = {
     sectionExpanded: {
       recent: true,

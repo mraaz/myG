@@ -4,8 +4,13 @@ import LoadingIndicator from '../../LoadingIndicator'
 import { fetchMessages, editMessage } from '../../../../integration/http/chat'
 import { decryptMessage, encryptMessage } from '../../../../integration/encryption'
 import logger from '../../../../common/logger'
+import { ignoreFunctions } from '../../../../common/render'
 
-export default class EncryptionSettings extends React.PureComponent {
+export default class EncryptionSettings extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   state = {
     pinInput: '',
     editingPin: false,

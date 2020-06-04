@@ -3,8 +3,13 @@ import React from 'react'
 import AttachUploader from './AttachUploader'
 import { Picker } from 'emoji-mart'
 import { getAssetUrl } from '../../../common/assets'
+import { ignoreFunctions } from '../../../common/render'
 
-export default class AttachWindow extends React.PureComponent {
+export default class AttachWindow extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   state = {
     choosingEmoji: false,
     choosingAttachment: false,

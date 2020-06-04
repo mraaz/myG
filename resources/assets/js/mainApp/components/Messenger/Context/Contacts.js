@@ -3,8 +3,14 @@ import Divider from './Divider'
 import Contact from './Contact'
 import { STATUS_ENUM, compareStatus } from '../../../../common/status'
 import { getAssetUrl } from '../../../../common/assets'
+import logger from '../../../../common/logger'
+import { ignoreFunctions } from '../../../../common/render'
 
-export default class Contacts extends React.PureComponent {
+export default class Contacts extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   state = {
     sectionExpanded: {
       recent: true,
@@ -69,6 +75,7 @@ export default class Contacts extends React.PureComponent {
   }
 
   render() {
+  logger.log('RENDER', 'Contacts')
     return Divider(
       'friends',
       this.props.expanded,

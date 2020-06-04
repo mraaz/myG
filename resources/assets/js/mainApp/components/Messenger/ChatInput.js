@@ -1,8 +1,14 @@
 import React from 'react'
 import { convertEmojisToColons } from '../../../common/emoji'
 import { getAssetUrl } from '../../../common/assets'
+import logger from '../../../common/logger'
+import { ignoreFunctions } from '../../../common/render'
 
-export default class ChatInput extends React.PureComponent {
+export default class ChatInput extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   constructor() {
     super()
     this.state = {
@@ -72,6 +78,7 @@ export default class ChatInput extends React.PureComponent {
   }
 
   render() {
+    logger.log('RENDER', 'ChatInput')
     const disabled = !this.props.connected || !!this.props.blocked || !this.props.isDecryptable
     const placeholderText = !this.props.connected
       ? 'You seem to be offline...'

@@ -1,6 +1,11 @@
 import React from 'react'
+import { ignoreFunctions } from '../../../common/render'
 
-export default class GuestRegister extends React.PureComponent {
+export default class GuestRegister extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   render() {
     return (
       <div className='card-container'>

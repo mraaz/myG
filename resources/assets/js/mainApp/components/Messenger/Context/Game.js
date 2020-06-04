@@ -1,8 +1,13 @@
 import React from 'react'
 import Contacts from './Contacts'
 import Groups from './Groups'
+import { ignoreFunctions } from '../../../../common/render'
 
-export default class Game extends React.PureComponent {
+export default class Game extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   state = {
     dividerExpanded: {
       friends: true,

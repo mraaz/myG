@@ -2,8 +2,13 @@ import React from 'react'
 import Game from './Game'
 import { STATUS_ENUM, compareStatus } from '../../../../common/status'
 import { getAssetUrl } from '../../../../common/assets'
+import { ignoreFunctions } from '../../../../common/render'
 
-export default class Games extends React.PureComponent {
+export default class Games extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   state = {
     expandedGame: null,
   }
