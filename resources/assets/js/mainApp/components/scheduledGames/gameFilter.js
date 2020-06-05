@@ -255,6 +255,69 @@ export default class ScheduleGames extends Component {
     this.setState({ filterTypeArray, showFilters: false })
   }
 
+  handleEditFilterType = (e, id, inputValue) => {
+    e.preventDefault()
+    const showFilterTypeInput = {}
+    showFilterTypeInput[id] = true
+    this.setState({ showFilterTypeInput, inputValue })
+  }
+  handleSavefilterInputChnage = (e, id, value) => {
+    const inputValue = e.target.value
+    this.setState({ inputValue, filterId: id })
+  }
+
+  handleInputKeyDown = (e) => {
+    if (e.key === 'Enter' && e.shiftKey) {
+      return
+    }
+    if (e.key === 'Escape') {
+      this.setState({
+        showFilterTypeInput: {},
+        inputValue: '',
+      })
+    }
+
+    if (e.key === 'Enter') {
+      event.preventDefault()
+      event.stopPropagation()
+      this.update_Filter_Name()
+    }
+  }
+
+  update_Filter_Name = async () => {
+    const { inputValue = '', filterId = '' } = this.state
+    if (!inputValue) {
+      alert('Please enter filter name first.')
+      return
+    }
+    try {
+      const saveFilter = await axios.post('/api/SavedFiltersScheduleGameController', {
+        name: inputValue,
+      })
+      if (saveFilter) {
+        this.setState({ showFilterTypeInput: {}, inputValue: '' })
+        this.getFilter()
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  handleDeleteFilterType = async (e, name) => {
+    e.preventDefault()
+    try {
+      const deleteFilter = await axios.post('/api/SavedFiltersScheduleGameController/deleteFilter', {
+        name,
+      })
+      if (deleteFilter) {
+        this.setState({ showFilters: false })
+        this.getFilter()
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   render() {
     const {
       savedFilter,
@@ -266,6 +329,8 @@ export default class ScheduleGames extends Component {
       showFilterType,
       showFilters,
       savedFiltersObj = [],
+      showFilterTypeInput = [],
+      inputValue = '',
     } = this.state
     if (this.props.initialData == 'loading') {
       return <h1>Loading</h1>
@@ -443,8 +508,29 @@ export default class ScheduleGames extends Component {
                   {savedFiltersObj.length > 0 &&
                     savedFiltersObj.map((k) => {
                       return (
-                        <div className={`filterType__name`} key={`${k.id}_${k.name}`} onClick={(e) => this.handleSavedFilterClick(k)}>
-                          {k.name}
+                        <div className={`filterType__name`} key={`${k.id}_${k.name}`}>
+                          {!showFilterTypeInput[k.id] ? (
+                            <span onClick={(e) => this.handleSavedFilterClick(k)}>{k.name}</span>
+                          ) : (
+                            <input
+                              type='text'
+                              className='filter__Input'
+                              onChange={(e) => this.handleSavefilterInputChnage(e, k.id)}
+                              value={inputValue}
+                              onKeyDown={this.handleInputKeyDown}
+                            />
+                          )}
+                          {!showFilterTypeInput[k.id] && (
+                            <div className='editFilter' onClick={(e) => this.handleEditFilterType(e, k.id, k.name)}>
+                              E
+                            </div>
+                          )}
+
+                          {!showFilterTypeInput[k.id] && (
+                            <div className='deleteFilter' onClick={(e) => this.handleDeleteFilterType(e, k.name)}>
+                              D
+                            </div>
+                          )}
                         </div>
                       )
                     })}

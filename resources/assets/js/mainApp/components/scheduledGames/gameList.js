@@ -16,7 +16,12 @@ export default class GameList extends Component {
       <div className='gameList'>
         <div className='gameList_head__option'>
           <div className='gameResult__count'> {len} Results</div>
-          <div className='gameResult__fillView'> Show full games</div>
+          <div className='gameResult__fillView'>
+            <span>Show full games </span>{' '}
+            <div class='button-switch'>
+              <input type='checkbox' id='switch-orange' class='switch' />
+            </div>
+          </div>
         </div>
         <div className='gameList__box'>
           {/* My game list start here */}

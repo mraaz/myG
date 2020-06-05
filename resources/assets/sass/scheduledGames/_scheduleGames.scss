@@ -319,9 +319,38 @@
             font-weight: bold;
             padding: 9px;
             cursor: pointer;
+            span {
+              font: inherit;
+            }
             &:hover,
             &.selected {
               background: #4d565a;
+            }
+            position: relative;
+            .filter__Input,
+            .filter__Input:focus {
+              height: 27px;
+              width: 100%;
+              background: #1d2326;
+              border: none;
+              color: #fff;
+              outline: none;
+              font-size: 12px;
+              margin: 0;
+            }
+            .editFilter {
+              position: absolute;
+              top: 0;
+              right: 10px;
+              width: 14px;
+              height: 14px;
+            }
+            .deleteFilter {
+              position: absolute;
+              top: 0;
+              right: 24px;
+              width: 14px;
+              height: 14px;
             }
           }
         }
@@ -699,6 +728,68 @@
             }
           }
         }
+      }
+    }
+  }
+}
+
+$height: 15 / 16 * 1em;
+$width: 35 / 16 * 1em;
+$color-silver: #ffe98b;
+$color-peter-river: #ffe98b;
+$color-carrot: #ffe98b;
+$transition-default: 0.25s ease-out 0.1s;
+.button-switch {
+  font-size: 1.5em;
+  height: $height;
+  position: relative;
+  width: $width;
+  margin-left: 10px;
+  .switch {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    // --
+    height: 0;
+    font-size: 1em;
+    left: 0;
+    line-height: 0;
+    outline: none;
+    position: absolute;
+    top: -2px;
+    width: 0;
+
+    &:before,
+    &:after {
+      content: '';
+      font-size: 1em;
+      position: absolute;
+    }
+
+    &:before {
+      border-radius: 20 / 16 * 1em;
+      background: $color-silver;
+      height: $height;
+      left: 4 / 16 * -1em;
+      top: 3 / 16 * -1em;
+      transition: background-color $transition-default;
+      width: $width;
+    }
+
+    &:after {
+      border-radius: 50%;
+      background: #1d2326;
+      height: 14 / 18 * 1em;
+      transform: translate(0, 0);
+      transition: transform $transition-default;
+      width: 14 / 18 * 1em;
+      top: -2px;
+      left: -2px;
+    }
+
+    &:checked {
+      &:after {
+        transform: translate(20 / 18 * 1em, 0);
       }
     }
   }
