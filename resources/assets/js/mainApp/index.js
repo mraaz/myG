@@ -304,7 +304,7 @@ class Layout extends Component {
                   exact
                   path='/scheduledGames/:id'
                   component={(props) => (
-                    <ScheduleGames
+                    <ScheduleGamesView
                       routeProps={props}
                       initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
                       key={Math.random()}
