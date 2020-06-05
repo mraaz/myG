@@ -7,6 +7,7 @@ export default class GameList extends Component {
   }
 
   render() {
+    const { scheduleGames = [] } = this.state
     return (
       <div className='gameList'>
         <div className='gameList_head__option'>

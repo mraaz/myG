@@ -40,6 +40,7 @@ export default class ScheduleGames extends Component {
       showSaveFilterInput: false,
       filterTypeArray: ['game_name'],
       showFilterType: false,
+      showFilters: false,
     }
     this.filterGroup = {
       game_name: 'Game Name',
@@ -54,7 +55,7 @@ export default class ScheduleGames extends Component {
   }
 
   componentDidMount() {
-    // this.getFilter()
+    this.getFilter()
   }
 
   handleDropDownChange = (entered_name, name) => {
@@ -81,8 +82,8 @@ export default class ScheduleGames extends Component {
   getFilter = async () => {
     try {
       const getAllSavedFilters = await axios.get('/api/SavedFiltersScheduleGameController/getAllSavedFilters')
-      const getAllSavedFiltersObj = JSON.parse(getAllSavedFilters.data.allFilters[0].payload)
-      console.log('getFilter >>>> ', getAllSavedFiltersObj)
+      const savedFiltersObj = getAllSavedFilters.data.allFilters
+      this.setState({ savedFiltersObj })
     } catch (error) {
       console.log(error)
     }
@@ -97,7 +98,7 @@ export default class ScheduleGames extends Component {
   }
 
   handleSaveFilterClick = async () => {
-    const { filterName = '', isRequesting = false } = this.state
+    const { filterName = '', isRequesting = false, filterTypeArray = [] } = this.state
     if (!filterName) {
       alert('Please enter filter name first.')
       return
@@ -107,16 +108,10 @@ export default class ScheduleGames extends Component {
       return
     }
     this.setState({ isRequesting: true })
-    const payload = {
-      game_name: true,
-      region: true,
-      experience: false,
-      start_time: true,
-      platform: true,
-      description: false,
-      exclude_full_games: true,
-      tags: true,
-    }
+    const payload = {}
+    filterTypeArray.forEach((key) => {
+      payload[key] = true
+    })
     try {
       const saveFilter = await axios.post('/api/SavedFiltersScheduleGameController', {
         name: filterName,
@@ -124,6 +119,7 @@ export default class ScheduleGames extends Component {
       })
       if (saveFilter) {
         this.setState({ showSaveFilterInput: false, isRequesting: false, filterName: '' })
+        this.getFilter()
       }
     } catch (error) {
       this.setState({ isRequesting: false })
@@ -138,11 +134,11 @@ export default class ScheduleGames extends Component {
     this.setState({ showSaveFilterInput: false })
   }
 
-  handleSavedFilterChange = (savedFilter) => {
-    this.setState({ savedFilter })
+  handleSavedFilterChange = () => {
+    this.setState({ showFilters: !this.state.showFilters, showFilterType: false })
   }
-  handleAddFilterChange = (addFilter) => {
-    this.setState({ showFilterType: !this.state.showFilterType })
+  handleAddFilterChange = () => {
+    this.setState({ showFilterType: !this.state.showFilterType, showFilters: false })
   }
   handleSaveFilterName = (e) => {
     const filterName = e.target.value
@@ -166,8 +162,30 @@ export default class ScheduleGames extends Component {
     }
   }
 
+  handleSavedFilterClick = (data) => {
+    const { payload = {} } = data
+    const JsonPayload = JSON.parse(payload)
+    const filterTypeArray = []
+    Object.keys(JsonPayload).map((key) => {
+      if (JsonPayload[key] == true) {
+        filterTypeArray.push(key)
+      }
+    })
+    this.setState({ filterTypeArray })
+  }
+
   render() {
-    const { savedFilter, addFilter, filterName = '', showSaveFilterInput, isRequesting = '', filterTypeArray, showFilterType } = this.state
+    const {
+      savedFilter,
+      addFilter,
+      filterName = '',
+      showSaveFilterInput,
+      isRequesting = '',
+      filterTypeArray,
+      showFilterType,
+      showFilters,
+      savedFiltersObj = [],
+    } = this.state
     if (this.props.initialData == 'loading') {
       return <h1>Loading</h1>
     }
@@ -236,7 +254,24 @@ export default class ScheduleGames extends Component {
         </div>
         <div className='viewGame__addMoreFilter'>
           <div className='savedFilter__option'>
-            <div className='filter__header'>Saved Filter</div>
+            <div className='filter__header' onClick={this.handleSavedFilterChange}>
+              Saved Filter
+            </div>
+            {showFilters && (
+              <div className='filterType__group'>
+                <div className='filterType__head'>Saved Filters</div>
+                <div className='filterType__body'>
+                  {savedFiltersObj.length > 0 &&
+                    savedFiltersObj.map((k) => {
+                      return (
+                        <div className={`filterType__name`} key={`${k.id}_${k.name}`} onClick={(e) => this.handleSavedFilterClick(k)}>
+                          {k.name}
+                        </div>
+                      )
+                    })}
+                </div>
+              </div>
+            )}
           </div>
           <div className='addFilter__option'>
             <div className='filter__header' onClick={this.handleAddFilterChange}>
