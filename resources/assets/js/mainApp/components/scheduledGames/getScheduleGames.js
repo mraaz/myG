@@ -7,7 +7,7 @@ export async function PullDataFunction(myG) {
     myExperience = null,
     myPlatform = null,
     myDescription_box = null,
-    counter = 0,
+    counter = 1,
     show_full_games = true,
     startDate = moment().utc(),
     tmp_startDate = moment().utc(),
@@ -91,7 +91,9 @@ export async function PullDataFunction(myG) {
     tags = tags.toString()
   }
 
-  counter = myG.counter
+  if (myG.counter != undefined) {
+    counter = myG.counter
+  }
 
   try {
     const allscheduledGames = await axios.post('/api/ScheduleGame/scheduleSearchResults', {
@@ -110,6 +112,7 @@ export async function PullDataFunction(myG) {
       clash_royale_trophies: clash_royale_trophies,
       tags: tags,
     })
+    console.log(allscheduledGames)
     return allscheduledGames
   } catch (error) {
     console.log(error)
