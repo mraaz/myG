@@ -68,6 +68,7 @@ import {
   Member_lists,
   ArchivedScheduledGames,
   AllSearchResults,
+  ScheduleGamesView
 } from './AsyncComponent'
 
 class Layout extends Component {
@@ -291,7 +292,7 @@ class Layout extends Component {
                   exact
                   path='/scheduledGames'
                   component={(props) => (
-                    <ScheduleGames
+                    <ScheduleGamesView
                       routeProps={props}
                       initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
                       key={Math.random()}
@@ -303,7 +304,7 @@ class Layout extends Component {
                   exact
                   path='/scheduledGames/:id'
                   component={(props) => (
-                    <ScheduleGames
+                    <ScheduleGamesView
                       routeProps={props}
                       initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
                       key={Math.random()}
