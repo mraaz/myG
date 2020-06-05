@@ -35,9 +35,8 @@ export default class ScheduleGames extends Component {
   }
   ScheduleGames = async () => {
     const scheduleGames = await getScheduleGames(this.state)
-    console.log(this.state, 'scheduleGames', scheduleGames)
-    if (scheduleGames.data.length > 0) {
-      this.setState({ scheduleGames: scheduleGames.data })
+    if (scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
+      this.setState({ scheduleGames: scheduleGames.data.latestScheduledGames })
     }
   }
 

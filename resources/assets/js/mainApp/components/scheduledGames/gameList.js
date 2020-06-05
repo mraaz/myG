@@ -10,12 +10,11 @@ export default class GameList extends Component {
   render() {
     const { scheduleGames = [] } = this.props
     const len = scheduleGames.length
-    console.log(scheduleGames, 'scheduleGames')
 
     return (
       <div className='gameList'>
         <div className='gameList_head__option'>
-          <div className='gameResult__count'> {len} Results</div>
+          {/* <div className='gameResult__count'> {len} Results</div> */}
           <div className='gameResult__fillView'>
             <span>Show full games </span>{' '}
             <div class='button-switch'>
