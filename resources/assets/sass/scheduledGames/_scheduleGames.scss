@@ -82,6 +82,23 @@
         margin-right: 10px;
         margin-bottom: 10px;
       }
+      .viewGame__name__input {
+        width: 450px;
+        height: 38px;
+        margin: 0;
+        background-color: #4d565a;
+        border: none;
+        padding: 0;
+        height: 38px;
+        color: #fff;
+        padding: 10px;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: 500;
+        &::placeholder {
+          color: #fff;
+        }
+      }
       .viewGame__name {
         width: 450px;
         height: 38px;

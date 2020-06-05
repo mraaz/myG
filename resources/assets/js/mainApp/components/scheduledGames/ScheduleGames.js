@@ -10,15 +10,20 @@ export default class ScheduleGames extends Component {
     this.state = {}
   }
 
-  componentDidMount() {}
-  handleChange = async (data) => {
-    this.setState({ ...data }, () => {
-      this.ScheduleGames()
-    })
+  handleChange = async (data, name) => {
+    if (name == 'game_name') {
+      this.setState({ ...data }, () => {
+        this.ScheduleGames()
+      })
+    } else {
+      this.setState({ ...data }, () => {
+        this.ScheduleGames()
+      })
+    }
   }
   ScheduleGames = async () => {
     const scheduleGames = await getScheduleGames(this.state)
-    console.log('scheduleGames', scheduleGames)
+    console.log(this.state, 'scheduleGames', scheduleGames)
     if (scheduleGames.data.length > 0) {
       this.setState({ scheduleGames: scheduleGames.data })
     }

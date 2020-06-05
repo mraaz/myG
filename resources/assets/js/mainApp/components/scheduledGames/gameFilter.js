@@ -5,6 +5,8 @@ import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import Select from 'react-select'
 import { Game_name_values, Disable_keys } from '../Utility_Function'
 
+import { region_options, visibility_options, date_options, platform_options, experience_options } from './option'
+
 function isValidNewOption(inputValue, selectValue, selectOptions) {
   return !(
     !inputValue ||
@@ -66,11 +68,90 @@ export default class ScheduleGames extends Component {
         games: false,
       },
       () => {
-        this.props.handleChange({
-          game_name_box: entered_name,
-          default: false,
-          games: false,
-        })
+        this.props.handleChange(
+          {
+            game_name_box: entered_name,
+            default: false,
+            games: false,
+          },
+          name
+        )
+      }
+    )
+  }
+  handleChange_region = (selected_region, name) => {
+    this.setState(
+      {
+        selected_region,
+      },
+      () => {
+        this.props.handleChange({ selected_region }, name)
+      }
+    )
+  }
+
+  handleChange_experience = (selected_experience, name) => {
+    this.setState(
+      {
+        selected_experience,
+      },
+      () => {
+        this.props.handleChange({ selected_experience }, name)
+      }
+    )
+  }
+  handleChange_platform = (selected_platform, name) => {
+    this.setState(
+      {
+        selected_platform,
+      },
+      () => {
+        this.props.handleChange({ selected_platform }, name)
+      }
+    )
+  }
+  handleChange_time = (when, name) => {
+    this.setState(
+      {
+        when,
+      },
+      () => {
+        this.props.handleChange({ when }, name)
+      }
+    )
+  }
+
+  handleChange_description = (e, name) => {
+    const description_box = e.target.value
+    this.setState(
+      {
+        description_box,
+      },
+      () => {
+        this.props.handleChange({ description_box }, name)
+      }
+    )
+  }
+
+  handleChange_other = (e, name) => {
+    const other_box = e.target.value
+    this.setState(
+      {
+        other_box,
+      },
+      () => {
+        this.props.handleChange({ other_box }, name)
+      }
+    )
+  }
+
+  handleChange_visibility = (visibility_box, name) => {
+    this.setState(
+      {
+        visibility_box,
+      },
+      () => {
+        this.props.handleChange({ visibility_box }, name)
       }
     )
   }
@@ -171,7 +252,7 @@ export default class ScheduleGames extends Component {
         filterTypeArray.push(key)
       }
     })
-    this.setState({ filterTypeArray })
+    this.setState({ filterTypeArray, showFilters: false })
   }
 
   render() {
@@ -201,25 +282,123 @@ export default class ScheduleGames extends Component {
           <div className='filter__label'>Filter by</div>
           <div className='viewGame__filter-section'>
             {filterTypeArray.map((k) => {
-              return (
-                <div className='viewGame__gameName'>
-                  <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                  <AsyncCreatableSelect
-                    cacheOptions
-                    defaultOptions
-                    isValidNewOption={isValidNewOption}
-                    loadOptions={this.getOptions}
-                    onChange={(data) => this.handleDropDownChange(data, k)}
-                    isClearable
-                    value={this.state.game_name_box}
-                    className='viewGame__name'
-                    placeholder={this.filterGroup[k]}
-                    onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
-                    onKeyDown={this.onKeyDown}
-                    isSearchable={true}
-                  />
-                </div>
-              )
+              if (k == 'game_name') {
+                return (
+                  <div className='viewGame__gameName'>
+                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                    <AsyncCreatableSelect
+                      cacheOptions
+                      defaultOptions
+                      isValidNewOption={isValidNewOption}
+                      loadOptions={this.getOptions}
+                      onChange={(data) => this.handleDropDownChange(data, k)}
+                      isClearable
+                      value={this.state.game_name_box}
+                      className='viewGame__name'
+                      placeholder={this.filterGroup[k]}
+                      onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
+                      onKeyDown={this.onKeyDown}
+                      isSearchable={true}
+                    />
+                  </div>
+                )
+              } else if (k == 'region') {
+                return (
+                  <div className='viewGame__gameName'>
+                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                    <Select
+                      onChange={(data) => this.handleChange_region(data, 'region')}
+                      options={region_options}
+                      placeholder='Select your region'
+                      name='region-box'
+                      isClearable
+                      className='viewGame__name'
+                    />
+                  </div>
+                )
+              } else if (k == 'experience') {
+                return (
+                  <div className='viewGame__gameName'>
+                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                    <Select
+                      onChange={this.handleChange_experience}
+                      options={experience_options}
+                      placeholder='Select experience level'
+                      name='experience-box'
+                      isClearable
+                      className='viewGame__name'
+                    />
+                  </div>
+                )
+              } else if (k == 'platform') {
+                return (
+                  <div className='viewGame__gameName'>
+                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                    <Select
+                      onChange={this.handleChange_platform}
+                      options={platform_options}
+                      placeholder='Select which platform'
+                      name='platform-box'
+                      isClearable
+                      className='viewGame__name'
+                    />
+                  </div>
+                )
+              } else if (k == 'start_time') {
+                return (
+                  <div className='viewGame__gameName'>
+                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                    <Select
+                      onChange={this.handleChange_time}
+                      options={date_options}
+                      placeholder='Start Date?'
+                      name='date-time-box'
+                      isClearable
+                      className='viewGame__name'
+                    />
+                  </div>
+                )
+              } else if (k == 'description') {
+                return (
+                  <div className='viewGame__gameName'>
+                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                    <input
+                      type='text'
+                      className='viewGame__name__input'
+                      onChange={this.handleChange_description}
+                      value={this.state.description_box}
+                      placeholder='Description'
+                    />
+                  </div>
+                )
+              } else if (k == 'other') {
+                return (
+                  <div className='viewGame__gameName'>
+                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                    <input
+                      type='text'
+                      className='viewGame__name__input'
+                      onChange={this.handleChange_other}
+                      value={this.state.other_box}
+                      placeholder='Any Other stuff'
+                    />
+                  </div>
+                )
+              } else if (k == 'visibility') {
+                return (
+                  <div className='viewGame__gameName'>
+                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                    <Select
+                      onChange={this.handleChange_visibility}
+                      options={visibility_options}
+                      placeholder='Select visibility'
+                      name='visibility-box'
+                      isClearable
+                      className='viewGame__name'
+                    />
+                  </div>
+                )
+              }
             })}
 
             <div className='saveFilterAction__section'>
