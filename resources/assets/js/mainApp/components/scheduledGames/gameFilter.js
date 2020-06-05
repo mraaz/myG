@@ -520,15 +520,15 @@ export default class ScheduleGames extends Component {
                               onKeyDown={this.handleInputKeyDown}
                             />
                           )}
-                          {!showFilterTypeInput[k.id] && (
-                            <div className='editFilter' onClick={(e) => this.handleEditFilterType(e, k.id, k.name)}>
-                              E
-                            </div>
-                          )}
 
                           {!showFilterTypeInput[k.id] && (
                             <div className='deleteFilter' onClick={(e) => this.handleDeleteFilterType(e, k.name)}>
-                              D
+                              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/View+Game/X+icon.svg' />
+                            </div>
+                          )}
+                          {!showFilterTypeInput[k.id] && (
+                            <div className='editFilter' onClick={(e) => this.handleEditFilterType(e, k.id, k.name)}>
+                              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/View+Game/edit-tools.svg' />
                             </div>
                           )}
                         </div>

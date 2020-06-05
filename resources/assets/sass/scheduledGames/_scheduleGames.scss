@@ -326,6 +326,12 @@
             &.selected {
               background: #4d565a;
             }
+            &:hover {
+              .editFilter,
+              .deleteFilter {
+                display: block;
+              }
+            }
             position: relative;
             .filter__Input,
             .filter__Input:focus {
@@ -340,15 +346,17 @@
             }
             .editFilter {
               position: absolute;
-              top: 0;
-              right: 10px;
+              top: 8px;
+              right: 30px;
               width: 14px;
               height: 14px;
+              display: none;
             }
             .deleteFilter {
+              display: none;
               position: absolute;
-              top: 0;
-              right: 24px;
+              top: 8px;
+              right: 10px;
               width: 14px;
               height: 14px;
             }
