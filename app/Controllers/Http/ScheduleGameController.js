@@ -621,12 +621,12 @@ class ScheduleGameController {
     }
   }
 
-  async update_vacany({ auth, request, response }) {
+  async update_vacany({ auth }, schedule_game_id, vacancy) {
     try {
       const update_vacany = await ScheduleGame.query()
-        .where({ id: request.input('id') })
-        .update({ vacancy: request.input('vacancy') })
-      return 'Saved successfully'
+        .where({ id: schedule_game_id })
+        .update({ vacancy: vacancy })
+      return
     } catch (error) {
       console.log(error)
     }

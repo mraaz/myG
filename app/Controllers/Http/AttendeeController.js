@@ -5,6 +5,7 @@ const Attendee = use('App/Models/Attendee')
 const NotificationController = use('./NotificationController')
 const NotificationController_v2 = use('./NotificationController_v2')
 const UserStatTransactionController = use('./UserStatTransactionController')
+const ScheduleGameController = use('./ScheduleGameController')
 
 class AttendeeController {
   async savemySpot({ auth, request, response }) {
@@ -225,6 +226,9 @@ class AttendeeController {
         userStatController.update_total_number_of(get_host[0].user_id, 'total_number_of_games_hosted')
         userStatController.update_total_number_of(auth.user.id, 'total_number_of_games_played')
 
+        let scheduleGameController = new ScheduleGameController()
+        scheduleGameController.update_vacany({ auth }, request.params.id, true)
+
         return 'Remove entry'
       } catch (error) {
         console.log(error)
@@ -315,6 +319,14 @@ class AttendeeController {
         }
         let noti = new NotificationController_v2()
         noti.addGameApproved({ auth }, request.input('schedule_game_id'), request.input('user_id'))
+
+        const co_hosts = await Database.from('co_hosts')
+          .where({ schedule_games_id: request.input('schedule_game_id') })
+          .select('user_id')
+
+        for (var i = 0; i < co_hosts.length; i++) {
+          noti.addGameApproved({ auth }, request.input('schedule_game_id'), co_hosts[i].user_id)
+        }
 
         return up_invite
       } catch (error) {

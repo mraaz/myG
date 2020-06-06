@@ -87,6 +87,7 @@ export default class IndividualApproval extends Component {
 
         joinGameGroup(approvals.attendees.schedule_games_id, approvals.attendees.user_id)
       }
+      //Todo: RAAZ Move this over to backend
       if (approvals.schedule_games.limit != 0) {
         const getNumberofAttendees = await axios.get(`/api/attendees/attending/${approvals.attendees.schedule_games_id}`)
         if (getNumberofAttendees.data.allAttendees[0].no_of_allAttendees == approvals.schedule_games.limit) {
