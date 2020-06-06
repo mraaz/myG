@@ -2,11 +2,13 @@ import React, { Fragment, useState, useEffect } from 'react'
 import classNames from 'classnames'
 import Slider, { Range } from 'rc-slider'
 import moment from 'moment'
+import CustomCron from '../common/Cron/MyGCron'
 
 import 'rc-slider/assets/index.css'
 import { toast } from 'react-toastify'
 
 import { Toast_style } from '../Utility_Function'
+import '../../styles/AddGame/AddGameStyles.scss'
 
 import {
   SETTINGS_ENUMS,
@@ -108,7 +110,7 @@ const AddGame = ({
 
   // api calls
   const getOptionsTags = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         let results = await Schedule_Game_Tags(inputValue)
         updateAdvancedSettings({ optionTags: results })
@@ -268,32 +270,71 @@ const AddGame = ({
 
   const getOptionalView = () => {
     return (
-      <div className={styles.optionalMainContainer}>
-        {!mainSettingsState.isEndGameFieldSelected && (
-          <div className={styles.optionalEndContainer}>
-            <div
-              className={styles.optionalText}
+      <Fragment>
+        <div className={styles.optionalMainContainer}>
+          {!mainSettingsState.isEndGameFieldSelected && (
+            <div className={styles.optionalEndContainer}>
+              <div
+                className={styles.optionalText}
+                onClick={() => {
+                  updateMainSettings({
+                    isEndGameFieldSelected: true,
+                    endTime: moment(mainSettingsState.startTime).add(2, 'days'),
+                  })
+                }}>
+                Add End Time
+              </div>
+            </div>
+          )}
+          {!mainSettingsState.isRepeatFieldSelected && (
+            <React.Fragment>
+              {!mainSettingsState.isEndGameFieldSelected && <div className={styles.optionalCircle} />}
+              <div
+                className={styles.optionalText}
+                onClick={(value) => {
+                  updateMainSettings({ isRepeatFieldSelected: true })
+                }}>
+                Set To Repeat
+              </div>
+            </React.Fragment>
+          )}
+        </div>
+        {/* <MyGCheckbox
+          checked={mainSettingsState.isRepeatFieldSelected}
+          onClick={(value) => {
+            updateMainSettings({ isRepeatFieldSelected: value })
+          }}
+          labelText='Set To Repeat'
+        /> */}
+        {mainSettingsState.isRepeatFieldSelected && (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}>
+            <CustomCron
+              onChange={console.log}
+              tabs={['Daily', 'Weekly', 'Monthly']}
+              hours={2}
+              minutes={15}
+              showResultText={true}
+              showResultCron={true}
+            />
+            <img
+              style={{ margin: '0 10px' }}
+              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/X+icon.svg'
+              height='20'
+              width='20'
               onClick={() => {
                 updateMainSettings({
-                  isEndGameFieldSelected: true,
-                  endTime: moment(mainSettingsState.startTime).add(2, 'days'),
+                  isRepeatFieldSelected: false,
+                  endTime: null,
                 })
-              }}>
-              Add End Time
-            </div>
-            <div className={styles.optionalCircle} />
+              }}
+            />
           </div>
         )}
-        {!mainSettingsState.isRepeatFieldSelected && (
-          <div
-            className={styles.optionalText}
-            onClick={(value) => {
-              updateMainSettings({ isRepeatFieldSelected: true })
-            }}>
-            Set To Repeat
-          </div>
-        )}
-      </div>
+      </Fragment>
     )
   }
 
@@ -331,6 +372,7 @@ const AddGame = ({
             placeholder='Enter Game Title'
             options={mainSettingsState.gameTitlesList}
           />
+
           <div className={styles.fieldTitle}>Start Time</div>
           <MyGDatePicker
             onChange={(value) => {

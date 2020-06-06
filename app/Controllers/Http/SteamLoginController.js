@@ -38,9 +38,9 @@ class SteamLoginController {
           } else {
             session.put('provider', 'steam')
             session.put('provider_id', json.response.players[0].steamid)
-            var alias = json.response.players[0].personaname
-            alias = alias.replace(' ', '')
-            session.put('alias', alias)
+            // var alias = json.response.players[0].personaname
+            // alias = alias.replace(' ', '')
+            // session.put('alias', alias)
             session.put('email', '')
             session.put('profile_img', json.response.players[0].avatar)
             return response.redirect('/user/register')

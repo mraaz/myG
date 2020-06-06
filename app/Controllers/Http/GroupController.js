@@ -95,22 +95,78 @@ class GroupController {
 
   async myshow({ auth, request, response }) {
     try {
-      const myGroups = await Database.from('groups')
+      let myGroups = await Database.from('groups')
         .where({
           user_id: auth.user.id,
         })
-        .paginate(request.params.counter, 50)
+        .paginate(request.params.counter, 20)
 
       const total_number_of_my_communities = await Database.from('groups')
         .where({ user_id: auth.user.id })
         .count('id as total_number_of_my_communities')
 
+      myGroups = myGroups.data
       return {
         myGroups,
         total_number_of_my_communities: total_number_of_my_communities,
       }
     } catch (error) {
       console.log(error)
+    }
+  }
+
+  async get_my_communities({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        let myGroups = await Database.from('groups')
+          .where({
+            user_id: auth.user.id,
+          })
+          .select('id', 'name')
+          .paginate(request.params.counter, 20)
+
+        const total_number_of_communities = await Database.from('usergroups')
+          .innerJoin('groups', 'groups.id', 'usergroups.group_id')
+          .where('usergroups.user_id', '=', auth.user.id)
+          .whereNot('usergroups.permission_level', 42)
+          .orWhere('groups.user_id', '=', auth.user.id)
+          .count('groups.id as total_number_of_communities')
+
+        myGroups = myGroups.data
+
+        const subquery = Database.select('id')
+          .from('groups')
+          .where({ user_id: auth.user.id })
+
+        let groups_im_in = await Database.from('usergroups')
+          .innerJoin('groups', 'groups.id', 'usergroups.group_id')
+          .where('usergroups.user_id', '=', auth.user.id)
+          .whereNot('usergroups.permission_level', 42)
+          .whereNotIn('usergroups.group_id', subquery)
+          .groupBy('usergroups.group_id')
+          .select('groups.id', 'groups.name')
+          .paginate(request.params.counter, 25)
+
+        groups_im_in = groups_im_in.data
+        let all_my_communities = [...myGroups, ...groups_im_in]
+
+        for (var i = 0; i < all_my_communities.length; i++) {
+          const myPeeps = await Database.from('usergroups')
+            .where({
+              group_id: all_my_communities[i].id,
+            })
+            .count('* as no_of_peeps')
+
+          all_my_communities[i].no_of_peeps = myPeeps[0].no_of_peeps
+        }
+
+        return {
+          all_my_communities,
+          total_number_of_communities: total_number_of_communities,
+        }
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 
@@ -144,26 +200,10 @@ class GroupController {
 
   async update_img({ auth, request, response }) {
     if (auth.user) {
-      let current_user_permission = -1
+      let current_user_permission = await this.get_permission({ auth }, request.input('group_id'))
 
       try {
-        const permission_query_current_user = await Database.from('usergroups').where({
-          user_id: auth.user.id,
-          group_id: request.input('group_id'),
-        })
-        if (permission_query_current_user.length > 0) {
-          current_user_permission = permission_query_current_user[0].permission_level
-        } else {
-          const owner_query = await Database.from('groups').where({
-            user_id: auth.user.id,
-            id: request.input('group_id'),
-          })
-          if (owner_query.length > 0) {
-            current_user_permission = 0
-          }
-        }
-
-        if (current_user_permission == 3 || current_user_permission == 42 || current_user_permission == -1) {
+        if (current_user_permission != 0 && current_user_permission != 1 && current_user_permission != 2) {
           return
         }
 
@@ -177,34 +217,17 @@ class GroupController {
     }
   }
 
-  async update_all_accept({ auth, request, response }) {
+  async update_settings({ auth, request, response }) {
     if (auth.user) {
-      let current_user_permission = -1
-
       try {
-        const permission_query_current_user = await Database.from('usergroups').where({
-          user_id: auth.user.id,
-          group_id: request.input('group_id'),
-        })
-        if (permission_query_current_user.length > 0) {
-          current_user_permission = permission_query_current_user[0].permission_level
-        } else {
-          const owner_query = await Database.from('groups').where({
-            user_id: auth.user.id,
-            id: request.input('group_id'),
-          })
-          if (owner_query.length > 0) {
-            current_user_permission = 0
-          }
-        }
+        let current_user_permission = await this.get_permission({ auth }, request.input('group_id'))
 
-        if (current_user_permission == 3 || current_user_permission == 42 || current_user_permission == -1) {
+        if (current_user_permission != 0 && current_user_permission != 1 && current_user_permission != 2) {
           return
         }
-
-        const update_all_accept = await Group.query()
+        const update_group_type = await Group.query()
           .where({ id: request.input('group_id') })
-          .update({ all_accept: request.input('all_accept') })
+          .update({ type: request.input('privacy'), all_accept: request.input('mApprovals') })
         return 'Saved successfully'
       } catch (error) {
         console.log(error)
@@ -212,38 +235,76 @@ class GroupController {
     }
   }
 
-  async update_type({ auth, request, response }) {
+  async update_name({ auth, request, response }) {
     if (auth.user) {
-      let current_user_permission = -1
-
       try {
-        const permission_query_current_user = await Database.from('usergroups').where({
-          user_id: auth.user.id,
-          group_id: request.params.id,
-        })
-        if (permission_query_current_user.length > 0) {
-          current_user_permission = permission_query_current_user[0].permission_level
-        } else {
-          const owner_query = await Database.from('groups').where({
-            user_id: auth.user.id,
-            id: request.params.id,
-          })
-          if (owner_query.length > 0) {
-            current_user_permission = 0
-          }
+        if (/['/.%#$,;`\\]/.test(request.input('name'))) {
+          return false
         }
+        let current_user_permission = await this.get_permission({ auth }, request.input('group_id'))
 
-        if (current_user_permission == 3 || current_user_permission == 42 || current_user_permission == -1) {
+        if (current_user_permission != 0 && current_user_permission != 1) {
           return
         }
+        const update_img = await Group.query()
+          .where({ id: request.input('group_id') })
+          .update({ name: request.input('name') })
 
-        const update_group_type = await Group.query()
-          .where({ id: request.params.id })
-          .update({ type: request.params.group_type })
         return 'Saved successfully'
+      } catch (error) {
+        if (error.code == 'ER_DUP_ENTRY') {
+          return
+        }
+        console.log(error)
+      }
+    }
+  }
+
+  async destroy({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        const owner_query = await Database.from('groups').where({
+          user_id: auth.user.id,
+          id: request.input('group_id'),
+        })
+        if (owner_query.length > 0) {
+          const delete_like = await Database.table('groups')
+            .where({
+              id: request.input('group_id'),
+            })
+            .delete()
+        }
+
+        return 'Deleted successfully'
       } catch (error) {
         console.log(error)
       }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async get_permission({ auth }, group_id) {
+    let current_user_permission = -1
+    try {
+      const permission_query_current_user = await Database.from('usergroups').where({
+        user_id: auth.user.id,
+        group_id: group_id,
+      })
+      if (permission_query_current_user.length > 0) {
+        current_user_permission = permission_query_current_user[0].permission_level
+      } else {
+        const owner_query = await Database.from('groups').where({
+          user_id: auth.user.id,
+          id: group_id,
+        })
+        if (owner_query.length > 0) {
+          current_user_permission = 0
+        }
+      }
+      return current_user_permission
+    } catch (error) {
+      console.log(error)
     }
   }
 }

@@ -1,7 +1,13 @@
-import React from 'react';
-import ChatMessage from './ChatMessage';
+import React from 'react'
+import ChatMessage from './ChatMessage'
+import logger from '../../../common/logger'
+import { ignoreFunctions } from '../../../common/render'
 
-export default class ChatMessageList extends React.PureComponent {
+export default class ChatMessageList extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
   renderMessage = (message) => {
     return (
       <ChatMessage
@@ -25,10 +31,11 @@ export default class ChatMessageList extends React.PureComponent {
         deleteMessage={this.props.deleteMessage}
         showAttachment={this.props.showAttachment}
       />
-    );
+    )
   }
 
   render() {
-    return this.props.messages.map(this.renderMessage);
+    logger.log('RENDER', 'ChatMessageList')
+    return this.props.messages.map(this.renderMessage)
   }
 }

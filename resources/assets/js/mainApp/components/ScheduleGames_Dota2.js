@@ -98,6 +98,7 @@ export default class ScheduleGames_Dota2 extends Component {
 
   call_PullDataFunc = async () => {
     var tmp_allscheduledGames = await PullDataFunction(this.state)
+    console.log(tmp_allscheduledGames)
     this.setState({
       allscheduledGames: [],
     })
@@ -255,7 +256,7 @@ export default class ScheduleGames_Dota2 extends Component {
 
   render() {
     return (
-      <section id='posts'>
+      <section id='posts_old'>
         <div className='content-area scheduleGames-page'>
           <div className='filterMenu'>
             <div className='dota2_medal_ranks'>

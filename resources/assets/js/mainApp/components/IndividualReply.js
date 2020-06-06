@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import moment from 'moment'
-import SweetAlert from 'react-bootstrap-sweetalert'
+import SweetAlert from './common/MyGSweetAlert'
 
 export default class IndividualReply extends Component {
   constructor() {
@@ -283,7 +283,9 @@ export default class IndividualReply extends Component {
 
   render() {
     let { reply } = this.props
+    let { profile_img = 'https://image.flaticon.com/icons/svg/149/149071.svg', media_url = '' } = reply
     //console.log(reply);
+    const media_urls = media_url && media_url.length > 0 ? JSON.parse(media_url) : ''
     if (this.state.reply_deleted != true) {
       return (
         <div className='individual-reply-container'>
@@ -292,11 +294,31 @@ export default class IndividualReply extends Component {
             <div className='comment-info'>
               <Link to={`/profile/${reply.alias}`}>{`@${reply.alias}`}</Link>
               {'  '}
-              <div className='comment-content'>
-                <p>{this.state.content}</p>
-                {reply.media_url && (
-                  <div className='show__comment__image'>
-                    <img src={reply.media_url} />
+              {!this.state.show_edit_reply && (
+                <div className='comment-content'>
+                  <p>{this.state.content}</p>
+                  {media_urls.length > 0 && (
+                    <div className='show__comment__image'>
+                      {media_urls.map((img) => {
+                        return <img src={img} />
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
+              <div className='reply-panel'>
+                {this.state.show_edit_reply && (
+                  <div className='add-reply'>
+                    <input
+                      type='text'
+                      id='reply_name_box'
+                      className='reply-name-box'
+                      placeholder='Add a reply...'
+                      onKeyDown={this.detectKey}
+                      ref={this.setTextInputRef}
+                      onChange={this.handleChange}
+                      value={this.state.value}
+                    />
                   </div>
                 )}
               </div>
@@ -323,60 +345,32 @@ export default class IndividualReply extends Component {
             {/* comment option end  */}
 
             {/* profile section start  */}
-            <div className='profile__image'>
-              {this.state.show_profile_img && (
-                <Link
-                  to={`/profile/${reply.alias}`}
-                  className='user-img'
-                  style={{
-                    backgroundImage: `url('${reply.profile_img}')`,
-                  }}></Link>
-              )}
-              {!this.state.show_profile_img && (
-                <Link
-                  to={`/profile/${reply.alias}`}
-                  className='user-img'
-                  style={{
-                    backgroundImage: `url('https://image.flaticon.com/icons/svg/149/149071.svg')`,
-                  }}></Link>
-              )}
-              <div className='online__status'></div>
+            <div
+              className='profile__image'
+              style={{
+                backgroundImage: `url('${profile_img}')`,
+                backgroundSize: 'cover',
+              }}>
+              <Link to={`/profile/${reply.alias}`} className='user-img'></Link> <div className='online__status'></div>
             </div>
-            {/* profile section end  */}
-            <div className='reply__comment_section'>
-              {this.state.reply_like && (
-                <div className='comment-panel-liked' onClick={() => this.click_reply_unlike_btn(reply.id)}>
-                  Unlike
-                </div>
-              )}
-              {!this.state.reply_like && (
-                <div className='comment-panel-like' onClick={() => this.click_reply_like_btn(reply.id)}>
-                  Like
-                </div>
-              )}
-              {this.state.show_reply_like && (
-                <div className='no-likes'>
-                  {this.state.reply_like_total} {this.state.reply_like_total > 1 ? 'Likes' : 'Like'}{' '}
-                </div>
-              )}
-            </div>
-            {/* comment reply start */}
-            <div className='comment-panel'>
-              {this.state.show_edit_reply && (
-                <div className='add-reply'>
-                  <input
-                    type='text'
-                    id='reply_name_box'
-                    className='reply-name-box'
-                    placeholder='Add a reply...'
-                    onKeyDown={this.detectKey}
-                    ref={this.setTextInputRef}
-                    onChange={this.handleChange}
-                    value={this.state.value}
-                  />
-                </div>
-              )}
-            </div>
+          </div>
+          {/* profile section end  */}
+          <div className='reply__comment_section'>
+            {this.state.reply_like && (
+              <div className='comment-panel-liked' onClick={() => this.click_reply_unlike_btn(reply.id)}>
+                Unlike
+              </div>
+            )}
+            {!this.state.reply_like && (
+              <div className='comment-panel-like' onClick={() => this.click_reply_like_btn(reply.id)}>
+                Like
+              </div>
+            )}
+            {this.state.show_reply_like && (
+              <div className='no-likes'>
+                {this.state.reply_like_total} {this.state.reply_like_total > 1 ? 'Likes' : 'Like'}{' '}
+              </div>
+            )}
           </div>
         </div>
       )

@@ -1,13 +1,20 @@
-import React, { Component } from 'react'
+/*
+ * Author : nitin Tyagi
+ * github  : https://github.com/realinit
+ * Email : nitin.1992tyagi@gmail.com
+ */
+import React, { Component, Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import IndividualComment from './IndividualComment'
 import moment from 'moment'
-import SweetAlert from 'react-bootstrap-sweetalert'
-import ImageGallery from 'react-image-gallery'
+import SweetAlert from './common/MyGSweetAlert'
+// import ImageGallery from 'react-image-gallery'
 const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
 import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
+
+import ImageGallery from './common/ImageGallery/ImageGallery'
 
 export default class IndividualPost extends Component {
   constructor() {
@@ -39,12 +46,14 @@ export default class IndividualPost extends Component {
       disableSwipe: false,
       show_group_name: false,
       group_name: '',
-      show_more_comments: false,
+      show_more_comments: true,
       preview_file: '',
       aws_key: '',
       file_keys: '',
-      postImages: [],
-      postVideos: [],
+      galleryItems: [],
+      showmore: false,
+      hideComments: false,
+      commentShowCount: 2,
     }
     this.imageFileType = ['jpeg', 'jpg', 'png', 'gif']
     this.videoFileType = ['mov', 'webm', 'mpg', 'mp4', 'avi', 'ogg']
@@ -135,23 +144,20 @@ export default class IndividualPost extends Component {
 
   componentDidMount() {
     let { post } = this.props
-
+    let media_url = ''
     const self = this
-    const media_url = post.media_url ? JSON.parse(post.media_url) : ''
-    const postImages = []
-    const postVideos = []
-
+    if (post.media_url) {
+      try {
+        media_url = post.media_url.length > 0 ? JSON.parse(post.media_url) : ''
+      } catch (e) {
+        media_url = post.media_url ? post.media_url : ''
+      }
+    }
+    const galleryItems = []
     if (media_url.length > 0) {
       for (var i = 0; i < media_url.length; i++) {
         if (media_url[i] && media_url[i] != null) {
-          const splitUrl = media_url[i].split('.')
-          let fileType = splitUrl[splitUrl.length - 1]
-          if (this.imageFileType.includes(fileType)) {
-            let myStruct = { original: media_url[i], thumbnail: media_url[i] }
-            postImages.push(myStruct)
-          } else if (this.videoFileType.includes(fileType)) {
-            postVideos.push(media_url[i])
-          }
+          galleryItems.push({ src: media_url[i] })
         }
       }
     }
@@ -169,8 +175,7 @@ export default class IndividualPost extends Component {
       admirer_first_name: this.props.post.admirer_first_name,
       post_time: post_timestamp.local().fromNow(),
       content: this.props.post.content,
-      postImages,
-      postVideos,
+      galleryItems,
     })
     if (this.props.post.no_of_comments != 0) {
       this.setState({
@@ -256,6 +261,7 @@ export default class IndividualPost extends Component {
     this.setState({
       show_comments: !show_comments,
       show_more_comments: !show_more_comments,
+      hideComments: false,
     })
   }
 
@@ -267,7 +273,7 @@ export default class IndividualPost extends Component {
     }
     this.setState({
       show_comments: !show_comments,
-      show_more_comments: false,
+      show_more_comments: true,
     })
     if (!show_comments) {
       this.focusTextInput()
@@ -291,7 +297,8 @@ export default class IndividualPost extends Component {
   handleSelectFile = (e) => {
     const fileList = e.target.files
     if (fileList.length > 0) {
-      let name = `comment_image_${+new Date()}`
+      let type = fileList[0].type.split('/')
+      let name = `comment_${type}_${+new Date()}_${fileList[0].name}`
       this.doUploadS3(fileList[0], name, name)
     }
   }
@@ -329,6 +336,7 @@ export default class IndividualPost extends Component {
     }
     this.onFocus()
     const saveComment = async () => {
+      const { myComments = [] } = this.state
       try {
         const postComment = await axios.post('/api/comments', {
           content: this.state.value.trim(),
@@ -336,6 +344,7 @@ export default class IndividualPost extends Component {
           media_url: this.state.preview_file.length > 0 ? JSON.stringify(this.state.preview_file) : '',
           file_keys: this.state.file_keys.length > 0 ? this.state.file_keys : '',
         })
+
         let { post, user } = this.props
         if (post.user_id != user.userInfo.id) {
           const addPostLike = axios.post('/api/notifications/addComment', {
@@ -345,7 +354,7 @@ export default class IndividualPost extends Component {
           })
         }
         this.setState({
-          myComments: [],
+          myComments: [...myComments, ...postComment.data],
           preview_file: '',
           file_keys: '',
           value: '',
@@ -438,13 +447,14 @@ export default class IndividualPost extends Component {
     )
   }
   showComment = () => {
-    const { myComments = [] } = this.state
+    const { myComments = [], commentShowCount } = this.state
     const comments = [...myComments]
-    const commentArr = comments.length > 3 ? comments.slice(3) : comments
+    const len = comments.length
+    const commentArr = comments.length > 3 ? comments.slice(len - commentShowCount, len) : comments
     return (
       commentArr.length > 0 &&
       commentArr.map((item, index) => {
-        return <IndividualComment comment={item} key={index} user={this.props.user} />
+        return <IndividualComment comment={item} key={item.id} user={this.props.user} />
       })
     )
   }
@@ -521,6 +531,25 @@ export default class IndividualPost extends Component {
     })
   }
 
+  toggleShowmore = () => {
+    this.setState({ showmore: !this.state.showmore })
+  }
+
+  renderHashTags = (hash_tags) => {
+    if (hash_tags.length > 0) {
+      return hash_tags.map((tags) => {
+        return <strong>#{tags.content}</strong>
+      })
+    } else {
+      return ''
+    }
+  }
+
+  hide_comments = () => {
+    const { myComments = [], show_more_comments } = this.state
+    this.setState({ hideComments: true, show_more_comments: !show_more_comments, commentShowCount: myComments.length })
+  }
+
   render() {
     const {
       myComments = [],
@@ -530,13 +559,17 @@ export default class IndividualPost extends Component {
       show_profile_img,
       show_comments,
       show_more_comments = false,
-      postImages,
-      postVideos,
+      galleryItems = [],
+      hideComments,
     } = this.state
     if (post_deleted != true) {
       var show_media = false
 
       let { post } = this.props //destructing of object
+      let {
+        profile_img = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png',
+        hash_tags = [],
+      } = post //destructing of object
       //destructing of object
 
       if (media_urls != [] && media_urls != null) {
@@ -548,23 +581,13 @@ export default class IndividualPost extends Component {
           {alert}
           <div className='post__body__wrapper'>
             <div className='post__body'>
-              <div className='profile__image'>
-                {show_profile_img && (
-                  <Link
-                    to={`/profile/${post.alias}`}
-                    className='user-img'
-                    style={{
-                      backgroundImage: `url('${post.profile_img}')`,
-                    }}></Link>
-                )}
-                {!this.state.show_profile_img && (
-                  <Link
-                    to={`/profile/${post.alias}`}
-                    className='user-img'
-                    style={{
-                      backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png')`,
-                    }}></Link>
-                )}
+              <div
+                className='profile__image'
+                style={{
+                  backgroundImage: `url('${profile_img}')`,
+                  backgroundSize: 'cover',
+                }}>
+                <Link to={`/profile/${post.alias}`} className='user-img'></Link>
                 <div className='online__status'></div>
               </div>
               <div className='user__details'>
@@ -585,7 +608,39 @@ export default class IndividualPost extends Component {
                 <div className='post__time'>{this.state.post_time}</div>
               </div>
               <div className='post__content'>
-                <p>{this.state.content}</p>
+                {!this.state.edit_post && this.state.showmore && (
+                  <Fragment>
+                    <p>
+                      {`${this.state.content}  `}
+                      {this.renderHashTags(hash_tags)}
+                      <strong onClick={this.toggleShowmore}>{' ... '}See less</strong>
+                    </p>
+                  </Fragment>
+                )}
+                {!this.state.edit_post && !this.state.showmore && (
+                  <Fragment>
+                    <p>
+                      {`${this.state.content.slice(0, 254)}  `} {this.renderHashTags(hash_tags)}
+                      {this.state.content.length > 254 && <strong onClick={this.toggleShowmore}> {' ... '} See more</strong>}
+                    </p>
+                  </Fragment>
+                )}
+
+                {this.state.edit_post && (
+                  <div className='post_content_editbox'>
+                    <textarea
+                      name='name2'
+                      rows={8}
+                      cols={80}
+                      value={this.state.value2}
+                      onChange={this.handleChange2}
+                      maxLength='254'
+                      onKeyDown={this.detectKey2}
+                      ref={this.setTextInputRef2}
+                    />
+                  </div>
+                )}
+
                 {this.state.show_post_options && (
                   <div className='post-options'>
                     <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}></i>
@@ -605,40 +660,9 @@ export default class IndividualPost extends Component {
               </div>
             </div>
             <div className='media'>
-              {this.state.edit_post && (
-                <div className='update-info'>
-                  <div className='compose-comment'>
-                    <textarea
-                      name='name2'
-                      rows={8}
-                      cols={80}
-                      value={this.state.value2}
-                      onChange={this.handleChange2}
-                      maxLength='254'
-                      onKeyDown={this.detectKey2}
-                      ref={this.setTextInputRef2}
-                    />
-                  </div>
-                </div>
+              {galleryItems.length > 0 && (
+                <ImageGallery items={[...galleryItems]} showFullscreenButton={true} showGalleryFullscreenButton={true} />
               )}
-              {postImages.length > 0 && (
-                <ImageGallery
-                  items={postImages}
-                  showBullets={this.state.showBullets}
-                  autoPlay={this.state.autoPlay}
-                  isRTL={this.state.isRTL}
-                  disableSwipe={this.state.disableSwipe}
-                  y
-                />
-              )}
-              {postVideos.length > 0 &&
-                postVideos.map(function (data, index) {
-                  return (
-                    <video className='post-video' controls>
-                      <source src={data}></source>
-                    </video>
-                  )
-                })}
             </div>
             <div className='update-stats'>
               {this.state.like && (
@@ -676,15 +700,18 @@ export default class IndividualPost extends Component {
               )}
             </div> */}
             </div>
-            {myComments.length > 3 && (
-              <div className='show__comments_count' onClick={this.show_more_comments}>{` ${show_more_comments ? 'Hide' : 'View'} all (${
-                myComments.length
-              }) comments`}</div>
+            {show_more_comments && myComments.length > 0 && (
+              <div className='show__comments_count' onClick={this.show_more_comments}>{` View all (${myComments.length}) comments`}</div>
             )}
-            {myComments.length > 0 && (
+            {!show_more_comments && myComments.length > 0 && (
+              <div className='show__comments_count' onClick={this.hide_comments}>
+                {` Hide all (${myComments.length}) comments`}
+              </div>
+            )}
+            {myComments.length > 0 && !hideComments && (
               <div className='comments'>
-                {!show_more_comments && <div className='show-individual-comments'>{this.showComment()}</div>}
-                {show_more_comments && <div className='show-individual-comments'>{this.showMoreComment()}</div>}
+                {show_more_comments && <div className='show-individual-comments'>{this.showComment()}</div>}
+                {!show_more_comments && <div className='show-individual-comments'>{this.showMoreComment()}</div>}
               </div>
             )}
             <div className='compose-comment'>
@@ -702,23 +729,13 @@ export default class IndividualPost extends Component {
                 <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
               </div>
 
-              <div className='profile__image'>
-                {this.state.show_profile_img && (
-                  <Link
-                    to={`/profile/${post.alias}`}
-                    className='user-img'
-                    style={{
-                      backgroundImage: `url('${post.profile_img}')`,
-                    }}></Link>
-                )}
-                {!this.state.show_profile_img && (
-                  <Link
-                    to={`/profile/${post.alias}`}
-                    className='user-img'
-                    style={{
-                      backgroundImage: `url('https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png')`,
-                    }}></Link>
-                )}
+              <div
+                className='profile__image'
+                style={{
+                  backgroundImage: `url('${post.profile_img}')`,
+                  backgroundSize: 'cover',
+                }}>
+                <Link to={`/profile/${post.alias}`} className='user-img'></Link>
                 <div className='online__status'></div>
               </div>
             </div>
@@ -731,7 +748,6 @@ export default class IndividualPost extends Component {
                 </div>
               </div>
             )}
-
             {/*<div className='update-container'>
           {this.state.alert}
           <div className='padding-container'>

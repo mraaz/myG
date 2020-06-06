@@ -133,16 +133,18 @@ export async function Hash_Tags(inputValue) {
     })
   }
   try {
-    var newArr = []
-    var i, newOption
-
-    for (i = 0; i < allTags.data.allTags.length; i++) {
-      newOption = createOption_HashTags(allTags.data.allTags[i].content, allTags.data.allTags[i].id)
-      newArr.push(newOption)
+    let newArr = []
+    let i, newOption
+    if (allTags.data.allTags) {
+      for (i = 0; i < allTags.data.allTags.length; i++) {
+        newOption = createOption_HashTags(allTags.data.allTags[i].content, allTags.data.allTags[i].id)
+        newArr.push(newOption)
+      }
     }
     return newArr
   } catch (error) {
     console.log(error)
+    return []
   }
 }
 
@@ -172,14 +174,9 @@ export const Toast_style = (props) => (
 )
 
 export function Convert_to_comma_delimited_value(array_to_convert) {
-  return array_to_convert.toString()
-  // for (var i = 0; i < array_to_convert.length; i++) {
-  //   convert += array_to_convert[i].value + '; '
-  // }
-  // convert = convert
-  //   .trim()
-  //   .replace(/; /g, ',')
-  //   .trim()
-  // convert = convert.replace(/;/g, '')
-  // convert = convert.replace(/,/g, ', ')
+  var newArr = []
+  for (var i = 0; i < array_to_convert.length; i++) {
+    newArr.push(array_to_convert[i].value)
+  }
+  return newArr.toString()
 }

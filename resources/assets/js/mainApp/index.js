@@ -1,6 +1,6 @@
 // --- One way to disable adonis websocket logs.
 const log = console.log
-console.log = function() {
+console.log = function () {
   if (arguments[0] && arguments[0].includes && arguments[0].includes('adonis:websocket')) return
   if (log.apply) log.apply(console, arguments)
   else log(Array.prototype.slice.apply(arguments).join(' '))
@@ -28,6 +28,7 @@ import {
   LeftMenu,
   MessengerLoader,
   ChatUnreadMessages,
+  EncryptionParaphraseRegistration,
   GuestLink,
   SearchHeader,
   ComposeSection,
@@ -67,6 +68,7 @@ import {
   Member_lists,
   ArchivedScheduledGames,
   AllSearchResults,
+  ScheduleGamesView
 } from './AsyncComponent'
 
 class Layout extends Component {
@@ -78,7 +80,7 @@ class Layout extends Component {
   }
   componentDidMount() {
     const self = this
-    const getInitialData = async function() {
+    const getInitialData = async function () {
       try {
         const initialData = await axios.get('/api/initialApp')
 
@@ -89,7 +91,7 @@ class Layout extends Component {
         self.setState({
           initialData: initialData.data,
         })
-        
+
         loadUserInfoToReduxStore(initialData.data.userInfo);
 
       } catch (error) {
@@ -290,7 +292,7 @@ class Layout extends Component {
                   exact
                   path='/scheduledGames'
                   component={(props) => (
-                    <ScheduleGames
+                    <ScheduleGamesView
                       routeProps={props}
                       initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
                       key={Math.random()}
@@ -302,7 +304,7 @@ class Layout extends Component {
                   exact
                   path='/scheduledGames/:id'
                   component={(props) => (
-                    <ScheduleGames
+                    <ScheduleGamesView
                       routeProps={props}
                       initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
                       key={Math.random()}
@@ -420,7 +422,7 @@ class Layout extends Component {
 
                 <Route
                   exact
-                  path='/playerList/:id'
+                  path='/playerList/:schedule_games_GUID'
                   component={(props) => (
                     <PlayerList
                       routeProps={props}
@@ -524,6 +526,12 @@ class Layout extends Component {
                       key={Math.random()}
                     />
                   )}
+                />
+
+                <Route
+                  exact
+                  path='/setEncryptionParaphrase/:encryption'
+                  component={props => <EncryptionParaphraseRegistration routeProps={props} key={Math.random()} />}
                 />
 
                 <Route render={() => <h3> Oops! I couldn't find that </h3>} />

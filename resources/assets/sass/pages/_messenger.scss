@@ -8,6 +8,18 @@
 
   input {
     border: none;
+    outline: none;
+  }
+
+  input:focus,
+  select:focus,
+  button:focus {
+    font-size: inherit;
+    font-weight: inherit;
+    margin-bottom: inherit;
+    display: inherit;
+    outline: none;
+    box-shadow: 0 0 1pt 1pt #1515FF;
   }
 
   display: flex;

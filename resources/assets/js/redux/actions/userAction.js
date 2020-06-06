@@ -1,8 +1,21 @@
-import { favoriteGame, unfavoriteGame, updateGameIcon, fetchContacts, fetchContact, fetchStatus, updateStatus, fetchFriendRequests, addAsFriend, searchUsers, toggleNotificationSounds, toggleAutoSelfDestruct } from '../../integration/http/user';
+import {
+  favoriteGame,
+  unfavoriteGame,
+  updateGameIcon,
+  fetchContacts,
+  fetchContact,
+  fetchStatus,
+  updateStatus,
+  fetchFriendRequests,
+  addAsFriend,
+  searchUsers,
+  toggleNotificationSounds,
+  toggleAutoSelfDestruct,
+} from '../../integration/http/user'
 
 export function logoutAction() {
   return {
-    type: 'USER_LOGOUT'
+    type: 'USER_LOGOUT',
   }
 }
 
@@ -65,7 +78,6 @@ export function updateStatusAction(status, forceStatus) {
   }
 }
 
-
 export function onStatusChangedAction(payload, userId) {
   return {
     type: 'ON_STATUS_CHANGED',
@@ -84,7 +96,7 @@ export function fetchFriendRequestsAction() {
 export function addAsFriendAction(friendId) {
   return {
     type: 'ADD_AS_FRIEND',
-    payload: addAsFriend(friendId)
+    payload: addAsFriend(friendId),
   }
 }
 
@@ -95,10 +107,17 @@ export function setAsFriendAction(friendId) {
   }
 }
 
+export function removeFriendAction(friendId) {
+  return {
+    type: 'REMOVE_FRIEND',
+    payload: friendId,
+  }
+}
+
 export function searchUsersAction(input) {
   return {
     type: 'SEARCH_USERS',
-    payload: searchUsers(input)
+    payload: searchUsers(input),
   }
 }
 

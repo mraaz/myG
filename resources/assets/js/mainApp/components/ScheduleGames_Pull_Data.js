@@ -8,12 +8,9 @@ export async function PullDataFunction(myG) {
     myPlatform = null,
     myDescription_box = null,
     counter = 0,
-    check_full_games = true,
-    startDate = moment()
-      .subtract(5, 'seconds')
-      .utc()
-      .format('YYYY-MM-DDTHH:mm:ss'),
-    tmp_endDate = moment().utc(),
+    show_full_games = true,
+    startDate = moment().utc(),
+    tmp_startDate = moment().utc(),
     endDate = moment().utc(),
     dota2_medal_ranks = null,
     dota2_server_regions = null,
@@ -52,22 +49,22 @@ export async function PullDataFunction(myG) {
   if (myG.when != undefined && myG.when != null) {
     switch (myG.when.value) {
       case 'Now-ish':
-        endDate = tmp_endDate.add(4, 'hour').format('YYYY-MM-DDTHH:mm:ss')
+        startDate = tmp_startDate.add(4, 'hour').format('YYYY-MM-DDTHH:mm:ss')
         break
       case '8 hours':
-        endDate = tmp_endDate.add(8, 'hour').format('YYYY-MM-DDTHH:mm:ss')
+        startDate = tmp_startDate.add(8, 'hour').format('YYYY-MM-DDTHH:mm:ss')
         break
       case '2 days':
-        endDate = tmp_endDate.add(2, 'day').format('YYYY-MM-DDTHH:mm:ss')
+        startDate = tmp_startDate.add(2, 'day').format('YYYY-MM-DDTHH:mm:ss')
         break
       case '7 days':
-        endDate = tmp_endDate.add(7, 'day').format('YYYY-MM-DDTHH:mm:ss')
+        startDate = tmp_startDate.add(7, 'day').format('YYYY-MM-DDTHH:mm:ss')
         break
       case '14 days':
-        endDate = tmp_endDate.add(14, 'day').format('YYYY-MM-DDTHH:mm:ss')
+        startDate = tmp_startDate.add(14, 'day').format('YYYY-MM-DDTHH:mm:ss')
         break
       default:
-        endDate = tmp_endDate.add(2000, 'years').format('YYYY-MM-DDTHH:mm:ss')
+        startDate = tmp_startDate.add(2000, 'years').format('YYYY-MM-DDTHH:mm:ss')
     }
   }
 
@@ -106,7 +103,7 @@ export async function PullDataFunction(myG) {
       platform: myPlatform,
       description: myDescription_box,
       counter: counter,
-      vacancy: check_full_games,
+      vacancy: show_full_games,
       dota2_medal_ranks: dota2_medal_ranks,
       dota2_server_regions: dota2_server_regions,
       dota2_roles: dota2_roles,

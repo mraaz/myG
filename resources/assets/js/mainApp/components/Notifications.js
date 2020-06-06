@@ -16,18 +16,19 @@ export default class Notifications extends Component {
     }
   }
 
-  changeContentTab = tab => {
+  changeContentTab = (tab) => {
     this.setState({
       activeTab: tab,
     })
   }
 
-  isActive = tab => {
+
+  isActive = (tab) => {
     return this.state.activeTab === tab
   }
 
   componentDidMount() {
-    window.scrollTo(0, 0);
+    window.scrollTo(0, 0)
   }
 
   render() {
@@ -46,6 +47,6 @@ export default class Notifications extends Component {
           </div>
         </div>
       </section>
-    );
+    )
   }
 }

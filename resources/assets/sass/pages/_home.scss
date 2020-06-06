@@ -1,3 +1,4 @@
+@import url('https://github.com/videojs/video.js/tree/master/src/css');
 .app-container.home-page #left-menu .groups .menu div {
   margin: 5px;
 }
@@ -871,7 +872,8 @@ section#content-container {
                 text-indent: 3em;
                 .reply-name-box {
                   font-size: 0.72rem;
-                  background: $backgroundContent2;
+                  background: #1d2326 0% 0% no-repeat padding-box;
+                  color: #657172;
                 }
               }
             }
@@ -886,9 +888,32 @@ section#content-container {
       padding-left: 80px;
       font-family: 'Montserrat';
       .post__content {
-        font: Regular 12px/18px Montserrat;
+        font: 12px/18px Montserrat;
         letter-spacing: 0px;
         color: #93a4a5;
+        border-bottom: 1px solid #4d565a;
+        padding-bottom: 10px;
+        strong {
+          color: #fff;
+          font: 12px/18px Montserrat;
+          cursor: pointer;
+          margin-left: 5px;
+        }
+
+        .post_content_editbox {
+          textarea {
+            height: 50px;
+            width: 100%;
+            border: 1px solid #273136;
+            border-radius: 4px;
+            background: #1d2326 0% 0% no-repeat padding-box;
+            resize: none;
+            overflow: auto;
+            color: #657172;
+            font-size: 12px;
+            padding: 8px 20px;
+          }
+        }
 
         .post-dropdown {
           visibility: hidden;
@@ -931,6 +956,11 @@ section#content-container {
       }
       .post__body__wrapper {
         background: #171a1c;
+        .media {
+          .image-gallery {
+            margin-bottom: 20px;
+          }
+        }
       }
       .post__body {
         background: #171a1c;
@@ -1003,15 +1033,19 @@ section#content-container {
           }
         }
       }
+      .media {
+        .post-video {
+          width: 100%;
+        }
+      }
       .update-stats {
         display: flex;
         background: #171a1c;
-        padding: 12px 40px 15px 0px;
+        padding: 0px 40px 15px 0px;
         font-size: 12px;
         color: #93a4a5;
         position: relative;
         margin-left: 60px;
-        border-top: 1px solid #4d565a;
         .clearfix:after {
           visibility: hidden;
           display: block;
@@ -1128,7 +1162,8 @@ section#content-container {
         right: 20 !important;
       }
       .image-gallery-fullscreen-button {
-        top: 0;
+        //top: 0;
+        height: 10px;
         .image-gallery-svg {
           height: 24px;
           width: 24px;
@@ -1264,7 +1299,6 @@ section#content-container {
               left: -20px;
             }
             .comment__section {
-              margin-bottom: 30px;
               position: relative;
               background: #1d2326;
               clear: both;
@@ -1286,6 +1320,9 @@ section#content-container {
               .comment-info {
                 display: flex;
                 padding: 20px;
+                .reply-panel {
+                  width: 100%;
+                }
                 a {
                   font-size: 16px;
                   margin-right: 10px;
@@ -1294,6 +1331,7 @@ section#content-container {
                 .comment-content {
                   color: #93a4a5;
                   font-size: 12px;
+                  width: 100%;
 
                   .show__comment__image {
                     width: 480px;
@@ -1356,33 +1394,34 @@ section#content-container {
                   left: 0px;
                 }
               }
-              .reply__comment_section {
-                clear: both;
-                overflow: auto;
-                padding: 10px;
-                .comment-panel-like,
-                .comment-panel-liked,
-                .no-likes {
-                  margin-right: 15px;
-                  float: right;
-                  font-size: 12px;
-                }
-                .comment-panel-liked {
-                  padding-left: 15px;
-                  border-left: 1px solid #384952;
-                }
-                .comment-panel-reply {
-                  float: right;
-                  font-size: 12px;
-                  padding-left: 15px;
-                  border-left: 1px solid #384952;
-                }
-                .divider {
-                  margin-left: 10px;
-                  margin-right: 10px;
-                }
+            }
+            .reply__comment_section {
+              clear: both;
+              overflow: auto;
+              padding: 10px;
+              margin-bottom: 10px;
+              .comment-panel-like,
+              .comment-panel-liked,
+              .no-likes {
+                margin-right: 15px;
+                float: right;
+                font-size: 12px;
+              }
+              .comment-panel-liked {
+                padding-left: 15px;
+              }
+              .comment-panel-reply {
+                float: right;
+                font-size: 12px;
+                padding-left: 15px;
+                border-left: 1px solid #384952;
+              }
+              .divider {
+                margin-left: 10px;
+                margin-right: 10px;
               }
             }
+
             .comment-panel {
               padding-left: 60px;
               display: flex;
@@ -1411,8 +1450,8 @@ section#content-container {
                 border: none;
                 input {
                   width: 100%;
-                  background: #ffffff 0% 0% no-repeat padding-box;
-                  color: #1d2326;
+                  background: #1d2326 0% 0% no-repeat padding-box;
+                  color: #657172;
                   padding: 10px;
                   border: none;
                   margin-bottom: 10px;
@@ -1485,7 +1524,7 @@ section#content-container {
     height: 54px;
     .devider {
       border: 1px solid #384952;
-      height: 100%;
+      height: 70%;
     }
     .share__thought {
       flex-grow: 5;
@@ -1520,16 +1559,110 @@ section#content-container {
     }
   }
   .text__editor__section {
+    display: flex;
+    padding-bottom: 10px;
+    .media {
+      padding: 0.5px;
+      .image-gallery-fullscreen-button {
+        right: 2px;
+        top: 2px;
+        padding: 7px;
+        background: #2d363a;
+        color: #05070a;
+        height: 32px;
+        border-radius: 50%;
+        width: 32px;
+        .image-gallery-svg {
+          height: 18px;
+          width: 18px;
+        }
+      }
+      button.image-gallery-icon.image-gallery-left-nav {
+        padding: 0;
+        bottom: -10px;
+        right: 55px;
+        width: 32px;
+        height: 32px;
+        margin: 0;
+        background: #2d363a 0% 0% no-repeat padding-box;
+        border-radius: 50%;
+        .image-gallery-svg {
+          width: 32px;
+          height: 32px;
+          transform: none;
+          color: #171a1c;
+        }
+      }
+      button.image-gallery-icon.image-gallery-right-nav {
+        padding: 0;
+        bottom: -10px;
+        right: 15px;
+        width: 32px;
+        height: 32px;
+        margin: 0;
+        background: #2d363a 0% 0% no-repeat padding-box;
+        border-radius: 50%;
+        .image-gallery-svg {
+          width: 32px;
+          height: 32px;
+          transform: none;
+          color: #171a1c;
+        }
+      }
+      .image-gallery-slides {
+        min-width: 350px;
+        min-height: 200px;
+        max-width: 500px;
+        .post-video {
+          max-width: 500px;
+        }
+      }
+    }
     textarea {
       background: #171a1c 0% 0% no-repeat padding-box;
       resize: none;
       overflow-y: scroll;
       width: 100%;
-      height: 80px;
-      border: 1px solid #273137;
+      min-height: 80px;
+      border: 0.5px solid #273137;
       color: #657172;
       padding: 30px;
       font: Bold 16px/14px Montserrat;
+    }
+  }
+  .hashTag_section {
+    display: flex;
+    align-items: center;
+    padding: 6px 20px;
+    .hashtag_label {
+      font: Bold 16px/14px Montserrat;
+      letter-spacing: 0px;
+      margin-right: 10px;
+    }
+    .hashtag_input {
+      background: #171a1c 0% 0% no-repeat padding-box;
+      border: 1px solid #273137;
+      height: 36px;
+      width: 100%;
+      flex: 12;
+      .hash_tag_name_box {
+        width: 100%;
+        .css-19qj21d-control,
+        .css-57pngl-control {
+          width: 100%;
+          background: #171a1c 0% 0% no-repeat padding-box;
+          color: #ffffff;
+          font: Regular 14px/20px Montserrat;
+          letter-spacing: 0px;
+        }
+        .css-kj6f9i-menu {
+          background: #171a1c 0% 0% no-repeat padding-box;
+          color: #ffffff;
+        }
+        .css-1wy0on6 {
+          display: none;
+        }
+      }
     }
   }
   .compose__button {
@@ -1538,14 +1671,34 @@ section#content-container {
     align-items: center;
     height: 64px;
     .cancel {
-      border: 2px solid #ffffff;
-      border-radius: 8px;
-      color: #ffffff;
-      margin-right: 35px;
-      background: transparent;
-      padding: 10px 40px;
-      margin: 0;
-      margin-right: 35px;
+      font: 20px/0px Montserrat;
+      letter-spacing: 0px;
+      color: #1d2326;
+      opacity: 1;
+      background: url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/X_icon.svg') 0% 0% no-repeat
+        padding-box;
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      padding: 6px;
+      position: absolute;
+      top: -15px;
+      right: -15px;
+      outline: none;
+      &:focus {
+        margin: 0;
+        outline: none;
+      }
+      &:active {
+        margin: 0;
+        outline: none;
+      }
+      &:visited {
+        margin: 0;
+        outline: none;
+      }
     }
     .add__post {
       text-align: center;
@@ -1567,21 +1720,22 @@ section#content-container {
     display: flex;
     padding: 6px 20px;
     height: 60px;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     .label {
-      flex: 1;
+      font: Bold 16px/14px Montserrat;
     }
     .people_selected_container {
-      flex: 8;
       display: flex;
       .people_selected_list {
         display: flex;
-        justify-content: left;
+        justify-content: flex-start;
         align-items: center;
         padding-right: 10px;
         margin-left: 10px;
         border-right: 1px solid #384952;
+        position: relative;
+        font: Bold 16px/14px Montserrat;
         .default_circle {
           background: #ff00ff 0% 0% no-repeat padding-box;
           width: 30px;
@@ -1590,20 +1744,75 @@ section#content-container {
           content: '';
           margin-right: 5px;
         }
+        .more__groups {
+          cursor: pointer;
+        }
+        .group__details {
+          position: absolute;
+          display: flex;
+          flex-direction: column;
+          background: #0b1014;
+          padding: 18px;
+          top: 20px;
+          align-items: flex-start;
+          padding: 18px 5px;
+          top: 30px;
+          min-width: 100px;
+          max-width: 200px;
+          font-size: 10px;
+          z-index: 2;
+          .people_label {
+            margin-bottom: 5px;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+          }
+        }
+      }
+      .all__selected_groups {
+        border: none;
       }
     }
+    .post_for {
+      font: Italic 14px/14px Montserrat;
+      letter-spacing: 0px;
+      color: #939697;
+      margin-right: 10px;
+      margin-left: 10px;
+      display: flex;
+      align-items: center;
+      border-right: 1px solid #384952;
+      padding-right: 10px;
+      height: 30px;
+    }
     .add_more_people {
-      flex: 1;
       position: relative;
       .add__people {
-        text-align: center;
-        font: Bold 16px/14px Montserrat;
+        font: 30px/20px Montserrat;
         letter-spacing: 0px;
-        color: #000000;
+        color: #1d2326;
         opacity: 1;
-        background: #e5c746;
-        padding: 10px 40px;
-        margin: 0;
+        background: #686c6e;
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
+        padding: 7px;
+        &:focus {
+          margin: 0;
+          outline: none;
+        }
+        &:active {
+          margin: 0;
+          outline: none;
+        }
+        &:visited {
+          margin: 0;
+          outline: none;
+        }
       }
     }
   }
@@ -1642,6 +1851,12 @@ section#content-container {
         margin: 0;
         .image {
           position: relative;
+          .post-video {
+            background: #ff00ff 0% 0% no-repeat padding-box;
+            margin-right: 10px;
+            width: 160px;
+            height: 120px;
+          }
         }
         img {
           background: #ff00ff 0% 0% no-repeat padding-box;
@@ -1668,6 +1883,7 @@ section#content-container {
   .modal-wrap {
     min-height: 200px;
     height: auto !important;
+    max-width: 500px !important;
     width: 100% !important;
     background: none !important;
     z-index: 10;
@@ -1681,6 +1897,13 @@ section#content-container {
         visibility: visible;
         opacity: 1;
       }
+      h1 {
+        font: Bold 16px/14px Montserrat;
+        letter-spacing: 0px;
+        color: #ffffff;
+        opacity: 1;
+        margin-bottom: 20px;
+      }
       visibility: hidden;
       opacity: 0;
       transition: visibility 0s, opacity 0.3s ease-in;
@@ -1692,7 +1915,8 @@ section#content-container {
         padding: 30px;
         display: flex;
         justify-content: center;
-        align-items: center;
+        align-items: flex-start;
+        flex-direction: column;
         label {
           margin-top: 10px;
           margin-right: 10px;
@@ -1742,6 +1966,32 @@ section#content-container {
             margin-left: auto;
             input {
               margin: 0;
+            }
+            .group_request {
+              text-align: center;
+              font: Bold 12px/10px Montserrat;
+              letter-spacing: 0px;
+              color: #000000;
+              opacity: 1;
+              background: #e5c746;
+              padding: 10px 10px;
+              margin: 0;
+              border: none;
+              border-radius: 4px;
+              opacity: 0.5;
+            }
+            .group_join {
+              text-align: center;
+              font: Bold 12px/10px Montserrat;
+              letter-spacing: 0px;
+              color: #000000;
+              opacity: 1;
+              background: #e5c746;
+              padding: 10px 10px;
+              margin: 0;
+              border: none;
+              border-radius: 4px;
+              cursor: pointer;
             }
           }
         }
@@ -1805,11 +2055,19 @@ section#content-container {
 
       .people_group_actions {
         background: #1d2326;
-        padding: 20px;
+
+        h1 {
+          font: Bold 16px/14px Montserrat;
+          letter-spacing: 0px;
+          color: #ffffff;
+          opacity: 1;
+          margin-bottom: 10px;
+          padding: 20px;
+        }
         .post__privacy_select {
           display: flex;
           justify-content: center;
-          padding: 20px 0px;
+          margin: 20px 20px;
           div {
             flex-grow: 2;
             display: flex;
@@ -1818,17 +2076,36 @@ section#content-container {
         .actions {
           display: flex;
           justify-content: center;
+          border-top: 1px solid #384952;
           .cancel {
-            border: 2px solid #ffffff;
-            border-radius: 8px;
-            font: Bold 16px/14px Montserrat;
+            font: 20px/0px Montserrat;
             letter-spacing: 0px;
-            color: #ffffff;
-            margin-right: 35px;
-            background: transparent;
-            padding: 10px 40px;
-            margin: 0;
-            margin-right: 35px;
+            background: url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/X_icon.svg') 0% 0% no-repeat
+              padding-box;
+            color: #1d2326;
+            opacity: 1;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            padding: 6px;
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            outline: none;
+            &:focus {
+              margin: 0;
+              outline: none;
+            }
+            &:active {
+              margin: 0;
+              outline: none;
+            }
+            &:visited {
+              margin: 0;
+              outline: none;
+            }
           }
           .add__post {
             text-align: center;
@@ -1840,6 +2117,7 @@ section#content-container {
             padding: 10px 40px;
             margin: 0;
             border: none;
+            margin: 20px;
           }
         }
         .container {
@@ -1948,7 +2226,7 @@ section#content-container {
 }
 
 #posts_old {
-  //DELETE THIS LATER ONCE VIEW GAME IS COMPELTED
+  //DELETE THIS LATER ONCE VIEW GAME IS COMPELTED RAAZ
   .startofSinglePage {
     padding: 50px 20px;
   }
@@ -2381,7 +2659,8 @@ section#content-container {
               text-indent: 3em;
               .reply-name-box {
                 font-size: 0.72rem;
-                background: $backgroundContent2;
+                background: #1d2326 0% 0% no-repeat padding-box;
+                color: #657172;
               }
             }
           }
@@ -2397,6 +2676,21 @@ section#content-container {
     padding-left: 80px;
     font-family: 'Montserrat';
     .post__content {
+      .post_content_editbox {
+        textarea {
+          height: 50px;
+          width: 100%;
+          border: 1px solid #273136;
+          border-radius: 4px;
+          background: #1d2326 0% 0% no-repeat padding-box;
+          resize: none;
+          overflow: auto;
+          color: #657172;
+          font-size: 12px;
+          padding: 8px 20px;
+        }
+      }
+
       .post-dropdown {
         visibility: hidden;
         display: flex;
@@ -2548,6 +2842,7 @@ section#content-container {
     }
     .image-gallery-fullscreen-button {
       top: 0;
+      height: 10px;
       .image-gallery-svg {
         height: 24px;
         width: 24px;
@@ -2555,6 +2850,10 @@ section#content-container {
     }
     .image-gallery-play-button {
       display: none;
+    }
+    .image-gallery-slides {
+      min-width: 400px;
+      min-height: 300px;
     }
     .uploadImage_loading {
       position: relative;
@@ -2679,7 +2978,6 @@ section#content-container {
             left: -20px;
           }
           .comment__section {
-            margin-bottom: 30px;
             position: relative;
             background: #1d2326;
             clear: both;
@@ -2709,6 +3007,7 @@ section#content-container {
               .comment-content {
                 color: #93a4a5;
                 font-size: 12px;
+                width: 100%;
 
                 .show__comment__image {
                   width: 480px;
@@ -2771,33 +3070,34 @@ section#content-container {
                 left: 0px;
               }
             }
-            .reply__comment_section {
-              clear: both;
-              overflow: auto;
-              padding: 10px;
-              .comment-panel-like,
-              .comment-panel-liked,
-              .no-likes {
-                margin-right: 15px;
-                float: right;
-                font-size: 12px;
-              }
-              .comment-panel-liked {
-                padding-left: 15px;
-                border-left: 1px solid #384952;
-              }
-              .comment-panel-reply {
-                float: right;
-                font-size: 12px;
-                padding-left: 15px;
-                border-left: 1px solid #384952;
-              }
-              .divider {
-                margin-left: 10px;
-                margin-right: 10px;
-              }
+          }
+          .reply__comment_section {
+            clear: both;
+            overflow: auto;
+            padding: 10px;
+            margin-bottom: 10px;
+            .comment-panel-like,
+            .comment-panel-liked,
+            .no-likes {
+              margin-right: 15px;
+              float: right;
+              font-size: 12px;
+            }
+            .comment-panel-liked {
+              padding-left: 15px;
+            }
+            .comment-panel-reply {
+              float: right;
+              font-size: 12px;
+              padding-left: 15px;
+              border-left: 1px solid #384952;
+            }
+            .divider {
+              margin-left: 10px;
+              margin-right: 10px;
             }
           }
+
           .comment-panel {
             margin-left: 20px;
             width: 90%;
@@ -2820,14 +3120,17 @@ section#content-container {
             .individual-comment-container {
               width: 100%;
             }
+            .reply-panel {
+              width: 100%;
+            }
             .add-reply {
               position: relative;
               box-shadow: none;
               border: none;
               input {
                 width: 100%;
-                background: #ffffff 0% 0% no-repeat padding-box;
-                color: #1d2326;
+                background: #1d2326 0% 0% no-repeat padding-box;
+                color: #657172;
                 padding: 10px;
                 border: none;
                 margin-bottom: 10px;

@@ -37,6 +37,7 @@ class AuthController {
       email: 'required|email|unique:users',
       password: 'required|min:6|max:40',
       confirm_password: 'required',
+      encryption: 'required|min:12|max:30',
       firstName: 'required',
       lastName: 'required',
     }
@@ -44,7 +45,7 @@ class AuthController {
     const messages = {
       required: 'Required field',
       email: 'Enter valid email address',
-      min: 'Not enough characters - Min 4',
+      min: 'Not enough characters - Min 4 for Alias, 6 for Password and 12 for Encryption Paraphrase',
       max: 'Wow! Too many characters - Max 30',
       unique: 'Sorry, this field is not unique. Try again please.',
     }
@@ -56,7 +57,7 @@ class AuthController {
       return response.redirect('back')
     } else {
       var strMsg =
-        'Special characters:\r\nUsernames can only contain letters (a-z), numbers (0-9), and periods (.).\r\nUsernames can begin or end with non-alphanumeric characters except periods (.) and they can not have multiple periods.'
+        'Special characters:\r\nAlias can only contain letters (a-z), numbers (0-9), and periods (.).\r\nAlias can begin or end with non-alphanumeric characters except periods (.) and they can not have multiple periods.'
 
       try {
         if (request.input('alias').charAt(0) == '.' || request.input('alias').charAt(request.input('alias').length - 1) == '.') {
@@ -118,7 +119,7 @@ class AuthController {
         .first()
       await auth.login(user)
 
-      return response.redirect('/')
+      return response.redirect(`/setEncryptionParaphrase/${request.input('encryption')}`)
     }
     // } else {
     //   session

@@ -1,7 +1,35 @@
-import { fetchChats, fetchChat, fetchChatContacts, addContactsToChat, inviteUserToGroup, createChat, updateChat, clearChat, deleteChat, exitGroup, removeFromGroup, checkSelfDestruct, fetchMessages, fetchUnreadMessages, fetchEncryptionMessages, fetchLinks, updateLink, fetchEntryLogs, sendMessage, editMessage, deleteMessage, addReaction, removeReaction, fetchBlockedUsers, blockUser, unblockUser, setTyping } from '../../integration/http/chat';
-import { fetchGroupPrivateKeyRequests } from '../../integration/http/guest';
-import { fetchGames, fetchContacts, fetchContact, fetchStatus } from '../../integration/http/user';
-import { generateKeys, deserializeKey, getPublicKey } from '../../integration/encryption';
+import {
+  fetchChats,
+  fetchChat,
+  fetchChatContacts,
+  addContactsToChat,
+  inviteUserToGroup,
+  createChat,
+  updateChat,
+  clearChat,
+  deleteChat,
+  exitGroup,
+  removeFromGroup,
+  checkSelfDestruct,
+  fetchMessages,
+  fetchUnreadMessages,
+  fetchEncryptionMessages,
+  fetchLinks,
+  updateLink,
+  fetchEntryLogs,
+  sendMessage,
+  editMessage,
+  deleteMessage,
+  addReaction,
+  removeReaction,
+  fetchBlockedUsers,
+  blockUser,
+  unblockUser,
+  setTyping,
+} from '../../integration/http/chat'
+import { fetchGroupPrivateKeyRequests } from '../../integration/http/guest'
+import { fetchGames, fetchContacts, fetchContact, fetchStatus } from '../../integration/http/user'
+import { generateKeys, deserializeKey, getPublicKey } from '../../integration/encryption'
 
 export function onNewChatAction(chat, userId) {
   return {
@@ -45,6 +73,13 @@ export function onUpdateMessageAction(message) {
 export function onDeleteMessagesAction(payload) {
   return {
     type: 'ON_MESSAGES_DELETED',
+    payload,
+  }
+}
+
+export function onChatNotification(payload) {
+  return {
+    type: 'ON_CHAT_NOTIFICATION',
     payload,
   }
 }
@@ -143,44 +178,70 @@ export function updateChatStateAction(chatId, state) {
 }
 
 export function prepareMessengerAction(userId, alias, pin, privateKey, publicKey) {
-  const chatsRequest = fetchChats();
-  const gamesRequest = fetchGames(userId);
-  const contactsRequest = fetchContacts();
-  const statusRequest = fetchStatus();
-  let encryptionRequest = Promise.resolve({});
-  if (privateKey) privateKey = deserializeKey(privateKey);
-  if (privateKey) encryptionRequest = Promise.resolve({ encryption: { pin, privateKey, publicKey: getPublicKey(privateKey) } });
-  else if (pin) encryptionRequest = generateKeys(pin);
-  else if (!publicKey) encryptionRequest = generateKeys();
-  const requests = [chatsRequest, contactsRequest, gamesRequest, statusRequest, encryptionRequest];
+  const chatsRequest = fetchChats()
+  const gamesRequest = fetchGames(userId)
+  const contactsRequest = fetchContacts()
+  const statusRequest = fetchStatus()
+  let encryptionRequest = Promise.resolve({})
+  if (privateKey) privateKey = deserializeKey(privateKey)
+  if (privateKey) encryptionRequest = Promise.resolve({ encryption: { pin, privateKey, publicKey: getPublicKey(privateKey) } })
+  else if (pin) encryptionRequest = generateKeys(pin)
+  else if (!publicKey) encryptionRequest = generateKeys()
+  const requests = [chatsRequest, contactsRequest, gamesRequest, statusRequest, encryptionRequest]
   return {
     type: 'PREPARE_MESSENGER',
-    payload: Promise.all(requests).then(([chats, contacts, games, status, encryption]) => ({ ...chats, ...contacts, ...games, ...status, ...encryption })),
+    payload: Promise.all(requests).then(([chats, contacts, games, status, encryption]) => ({
+      ...chats,
+      ...contacts,
+      ...games,
+      ...status,
+      ...encryption,
+    })),
     meta: { userId, alias },
   }
 }
 
 export function prepareChatAction(chatId, userId, contactId, isGroup) {
-  const chatRequest = fetchChat(chatId);
-  const messagesRequest = fetchMessages(chatId);
-  const encryptionMessagesRequest = fetchEncryptionMessages(chatId);
-  const privateKeyRequestsRequest = fetchGroupPrivateKeyRequests(chatId);
-  const linksRequest = fetchLinks(chatId);
-  const entryLogsRequest = fetchEntryLogs(chatId);
-  const contactRequest = contactId ? fetchContact(contactId) : Promise.resolve({});
-  const contactsRequest = isGroup ? fetchChatContacts(chatId) : Promise.resolve({});
-  const requests = [chatRequest, messagesRequest, encryptionMessagesRequest, privateKeyRequestsRequest, linksRequest, entryLogsRequest, contactRequest, contactsRequest];
+  const chatRequest = fetchChat(chatId)
+  const messagesRequest = fetchMessages(chatId)
+  const encryptionMessagesRequest = fetchEncryptionMessages(chatId)
+  const privateKeyRequestsRequest = fetchGroupPrivateKeyRequests(chatId)
+  const linksRequest = fetchLinks(chatId)
+  const entryLogsRequest = fetchEntryLogs(chatId)
+  const contactRequest = contactId ? fetchContact(contactId) : Promise.resolve({})
+  const contactsRequest = isGroup ? fetchChatContacts(chatId) : Promise.resolve({})
+  const requests = [
+    chatRequest,
+    messagesRequest,
+    encryptionMessagesRequest,
+    privateKeyRequestsRequest,
+    linksRequest,
+    entryLogsRequest,
+    contactRequest,
+    contactsRequest,
+  ]
   return {
     type: 'PREPARE_CHAT',
-    payload: Promise.all(requests).then(([chat, messages, encryptionMessages, privateKeyRequests, links, entryLogs, contact, contacts]) => ({ ...chat, ...messages, ...encryptionMessages, ...privateKeyRequests, ...links, ...entryLogs, ...contact, ...contacts })),
-    meta: { chatId, contactId, userId }
+    payload: Promise.all(
+      requests
+    ).then(([chat, messages, encryptionMessages, privateKeyRequests, links, entryLogs, contact, contacts]) => ({
+      ...chat,
+      ...messages,
+      ...encryptionMessages,
+      ...privateKeyRequests,
+      ...links,
+      ...entryLogs,
+      ...contact,
+      ...contacts,
+    })),
+    meta: { chatId, contactId, userId },
   }
 }
 
 export function fetchChatsAction() {
   return {
     type: 'FETCH_CHATS',
-    payload: fetchChats()
+    payload: fetchChats(),
   }
 }
 
@@ -196,7 +257,7 @@ export function createChatAction(contacts, userId, title, icon, encryption, isGr
   return {
     type: 'CREATE_CHAT',
     payload: createChat(contacts, [userId], title, icon, encryption && encryption.publicKey, isGroup, individualGameId, gameId),
-    meta: { userId, encryption }
+    meta: { userId, encryption },
   }
 }
 
@@ -278,7 +339,7 @@ export function fetchUnreadMessagesAction() {
 }
 
 export function clearUnreadIndicatorAction() {
-  return { type: 'CLEAR_UNREAD_INDICATOR' };
+  return { type: 'CLEAR_UNREAD_INDICATOR' }
 }
 
 export function sendMessageAction(chatId, userId, alias, encrypted, attachment, replyId, replyContent, replyBackup) {

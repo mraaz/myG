@@ -69,7 +69,7 @@ const sideBarItems = {
   },
   FEED: {
     id: 'FEED',
-    header: 'Feed',
+    header: 'Dashboard',
     icon: 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_Feed.svg',
     cta: '/',
     expanded: false,

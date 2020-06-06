@@ -5,6 +5,7 @@ const Database = use('Database');
 const User = use('App/Models/User');
 const Chat = use('App/Models/Chat');
 const UserChat = use('App/Models/UserChat');
+const UserChatNotification = use('App/Models/UserChatNotification');
 const ChatMessage = use('App/Models/ChatMessage');
 const ChatMessageReaction = use('App/Models/ChatMessageReaction');
 const ChatLastCleared = use('App/Models/ChatLastCleared');
@@ -14,6 +15,7 @@ const ChatEntryLog = use('App/Models/ChatEntryLog');
 const ChatPrivateKeyRequest = use('App/Models/ChatPrivateKeyRequest');
 const ChatGameMessageSchedule = use('App/Models/ChatGameMessageSchedule');
 const ChatBlockedUser = use('App/Models/ChatBlockedUser');
+const Guest = use('App/Models/Guest');
 const Notification = use('App/Models/Notification');
 
 const AwsKeyController = use('App/Controllers/Http/AwsKeyController');
@@ -23,11 +25,13 @@ const UserSchema = require('../../Schemas/User');
 const ChatSchema = require('../../Schemas/Chat');
 const ChatLinkSchema = require('../../Schemas/ChatLink');
 const ChatEntryLogSchema = require('../../Schemas/ChatEntryLog');
+const GuestSchema = require('../../Schemas/Guest');
 const MessageSchema = require('../../Schemas/Message');
 const ReactionSchema = require('../../Schemas/Reaction');
 const DefaultSchema = require('../../Schemas/Default');
 const ContactSchema = require('../../Schemas/Contact');
 const ChatPrivateKeyRequestSchema = require('../../Schemas/ChatPrivateKeyRequest');
+const ChatNotificationSchema = require('../../Schemas/ChatNotification');
 
 const uuidv4 = require('uuid/v4');
 const { broadcast } = require('../../Common/socket');
@@ -356,7 +360,10 @@ class ChatRepository {
     if (icon !== undefined) await Chat.query().where('id', requestedChatId).update({ icon });
     if (title !== undefined) await Chat.query().where('id', requestedChatId).update({ title });
     if (owners !== undefined) await Chat.query().where('id', requestedChatId).update({ owners: JSON.stringify(owners) });
-    if (moderators !== undefined) await Chat.query().where('id', requestedChatId).update({ moderators: JSON.stringify(moderators) });
+    if (moderators !== undefined) {
+      await this._addChatNotificationModerator({ requestingUserId, requestedChatId, moderators });
+      await Chat.query().where('id', requestedChatId).update({ moderators: JSON.stringify(moderators) });
+    }
     if (icon || title || owners || moderators || isPrivate !== undefined) this._notifyChatUpdated({ requestedChatId });
     return new DefaultSchema({ success: true });
   }
@@ -439,19 +446,28 @@ class ChatRepository {
     return new DefaultSchema({ success: true });
   }
 
-  async searchGroup({ groupName, requestedPage }) {
-    let query = Chat.query().where('isGroup', true).andWhere('isPrivate', false);
+  async searchGroup({ requestingUserId, groupName, requestedPage }) {
+    const query = Database
+      .select('user_chats.chat_id', 'user_chats.user_id', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id')
+      .from('user_chats')
+      .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
+      .where('user_chats.user_id', requestingUserId)
+      .andWhere('chats.isGroup', true);
     if (groupName) query.andWhere('title', 'like', '%' + groupName + '%');
-    if (requestedPage === "ALL") query = query.fetch();
-    else query = query.paginate(requestedPage || 1, 10);
+    if (requestedPage !== "ALL") query.offset((requestedPage || 0) * 10).limit(10);
     const results = await query;
     if (!results) return { groups: [] };
     const groups = results.toJSON ? results.toJSON() : results.map(chat => new ChatSchema({
-      chatId: chat.id,
+      chatId: chat.chat_id,
+      muted: chat.muted,
       isPrivate: chat.isPrivate,
       isGroup: chat.isGroup,
       gameId: chat.game_id,
       individualGameId: chat.individual_game_id,
+      selfDestruct: chat.self_destruct,
+      deletedMessages: chat.deleted_messages,
+      lastRead: chat.last_read_message_id,
+      lastCleared: chat.last_cleared_message_id,
       icon: chat.icon,
       title: chat.title,
       lastMessage: chat.last_message,
@@ -460,10 +476,25 @@ class ChatRepository {
       guests: chat.guests,
       owners: chat.owners,
       moderators: chat.moderators,
+      messages: chat.messages,
       createdAt: chat.created_at,
       updatedAt: chat.updated_at,
     }));
     return { groups };
+  }
+
+  async fetchChatNotifications({ requestingUserId, requestedPage }) {
+    let query = UserChatNotification.query().where('user_id', requestingUserId);
+    if (requestedPage === "ALL") query = query.fetch();
+    else query = query.paginate(requestedPage || 1, 10);
+    const result = (await query).toJSON();
+    const notifications = (result.data ? result.data : result).map(notification => new ChatNotificationSchema(notification));
+    return { notifications };
+  }
+
+  async deleteChatNotifications({ requestingUserId }) {
+    await UserChatNotification.query().where('user_id', requestingUserId).delete();
+    return new DefaultSchema({ success: true });
   }
 
   async exitGroup({ requestingUserId, requestedChatId, requestedUserId }) {
@@ -483,8 +514,13 @@ class ChatRepository {
     !isKickingGuest && await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', userToRemove).delete();
     const alias = isKickingGuest ? `Guest #${userToRemove}` : (await User.query().where('id', '=', userToRemove).first()).toJSON().alias;
     const entryLog = await this._insertEntryLog(requestedChatId, alias, !!requestedUserId, !requestedUserId, false, false);
+    if (requestedUserId) this._addChatNotificationKicked({ requestingUserId, requestedUserId, chat });
     chat.contacts.forEach(userId => this._notifyChatEvent({ userId, action: isKickingGuest ? 'guestLeft' : 'userLeft', payload: { userId: userToRemove, guestId: userToRemove, chatId: requestedChatId, entryLog } }));
     chat.guests.forEach(guestId => this._notifyChatEvent({ guestId, action: isKickingGuest ? 'guestLeft' : 'userLeft', payload: { userId: userToRemove, guestId: userToRemove, chatId: requestedChatId, entryLog } }));
+    if (isKickingGuest) {
+      const guest = await Guest.find(userToRemove);
+      return new GuestSchema({ publicKey: guest.public_key, uuid: guest.uuid, guestId: guest.id });
+    }
     return new DefaultSchema({ success: true });
   }
 
@@ -558,6 +594,7 @@ class ChatRepository {
       updatedAt: message.updated_at,
     });
     this._notifyChatEvent({ chatId: requestedChatId, action: 'newMessage', payload: messageSchema });
+    if (!chat.isGroup) this._addChatNotificationMessage({ requestingUserId, requestedChatId, chat, content });
     return { message: messageSchema };
   }
 
@@ -848,6 +885,66 @@ class ChatRepository {
       await this.deleteMessage({ requestingUserId: message.sender_id, requestedChatId: message.chat_id, requestedMessageId: message.id });
     }
     log('CRON', `END - HANDLE EXPIRED ATTACHMENTS - DELETED ${expiredAttachments.length} ATTACHMENTS`);
+  }
+  async _addChatNotificationModerator({ requestingUserId, requestedChatId, moderators }) {
+
+    const { chat } = await this.fetchChatInfo({ requestedChatId });
+    const alias = (await User.query().where('id', '=', requestingUserId).first()).toJSON().alias;
+    const oldModerators = chat.moderators;
+    const added = moderators.filter(moderator => !oldModerators.includes(moderator));
+    const removed = oldModerators.filter(moderator => !moderators.includes(moderator));
+    console.log(moderators, oldModerators, added, removed)
+    const type = added[0] ? "PROMOTED" : "DEMOTED";
+    this._addChatNotification({
+      chatId: requestedChatId,
+      userId: added[0] || removed[0],
+      senderId: requestingUserId,
+      senderAlias: alias,
+      type,
+      content: chat.title,
+    })
+  }
+
+  async _addChatNotificationKicked({ requestingUserId, requestedUserId, chat }) {
+    const alias = (await User.query().where('id', '=', requestingUserId).first()).toJSON().alias;
+    this._addChatNotification({
+      chatId: chat.chatId,
+      userId: requestedUserId,
+      senderId: requestingUserId,
+      senderAlias: alias,
+      type: "KICKED",
+      content: chat.title,
+    });
+  }
+
+  async _addChatNotificationMessage({ requestingUserId, requestedChatId, chat, content }) {
+    const otherUserId = chat.contacts.filter(contactId => contactId !== requestingUserId)[0];
+    const status = (await User.query().where('id', '=', otherUserId).first()).toJSON().status;
+    if (status === "offline") {
+      const alias = (await User.query().where('id', '=', requestingUserId).first()).toJSON().alias;
+      this._addChatNotification({
+        chatId: requestedChatId,
+        userId: otherUserId,
+        senderId: requestingUserId,
+        senderAlias: alias,
+        type: "MESSAGE",
+        content: content,
+      });
+    }
+  }
+
+  async _addChatNotification({ chatId, userId, senderId, senderAlias, type, content }) {
+    const notification = new UserChatNotification();
+    notification.chat_id = chatId;
+    notification.user_id = userId;
+    notification.sender_id = senderId;
+    notification.sender_alias = senderAlias;
+    notification.type = type;
+    notification.content = content;
+    await notification.save();
+    const payload = new ChatNotificationSchema(notification);
+    log('CHAT', `Adding Chat Notification: ${JSON.stringify(payload)}`);
+    await this._notifyChatEvent(({ userId, action: 'chatNotification', payload }));
   }
 
   async _insertEntryLog(requestedChatId, alias, kicked, left, invited, link) {

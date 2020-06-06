@@ -1,5 +1,11 @@
+/*
+ * Author : nitin Tyagi
+ * github  : https://github.com/realinit
+ * Email : nitin.1992tyagi@gmail.com
+ */
 import React, { Component } from 'react'
 import axios from 'axios'
+import Progress from './common/ProgressCircle/progress'
 
 export default class AnalyticsBox extends Component {
   state = {
@@ -45,16 +51,29 @@ export default class AnalyticsBox extends Component {
       level_max_points = 0,
     } = userTransactionStates
 
+    const progress = Math.floor((user_experience / level_max_points) * 100)
+
     return (
       <section className='social'>
         <div className='social__content'>
           <div className='level-container'>
             <section className='level-container-img'>
-              <div className={`circle-wrap ${user_xp_negative_balance ? 'red' : 'yellow'}`}>
+              {/* <div className={`circle-wrap ${user_xp_negative_balance ? 'red' : 'yellow'}`}>
                 <div className='inside-circle-level'>Level</div>
                 <div className='inside-circle-value'>{user_level}</div>
-                {/* <div className='inside-circle-value'>{level_max_points}</div> */}
-              </div>
+               <div className='inside-circle-value'>{level_max_points}</div>
+              </div> */}
+              <Progress
+                className={`circle-wrap`}
+                borderColor={`${user_xp_negative_balance ? '#d70f46' : '#E5C746'}`}
+                progress={progress || 0}
+                value={user_level}
+                subtitle={'Level'}
+                reduction={0}
+                hideBall
+                strokeWidth={8}
+                background={'#ffffff'}
+              />
               <div className='ratings'>
                 {/* <p className='social-box-text'>Avg Rating</p>
               <p className='social-box-count'>4.66/5</p>
@@ -67,7 +86,7 @@ export default class AnalyticsBox extends Component {
 
           <div className='social-box'>
             <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/connection.png'
+              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_Network.svg'
               className='social-box-img'
             />
             <p className='social-box-count'>{connections}</p>
@@ -77,7 +96,7 @@ export default class AnalyticsBox extends Component {
 
           <div className='social-box'>
             <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/follower.png'
+              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_followers.svg'
               className='social-box-img'
             />
             <p className='social-box-count'>{followers}</p>
@@ -87,7 +106,7 @@ export default class AnalyticsBox extends Component {
 
           <div className='social-box'>
             <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/games.png'
+              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_games.svg'
               className='social-box-img'
             />
             <p className='social-box-count'>{games}</p>
@@ -97,7 +116,7 @@ export default class AnalyticsBox extends Component {
 
           <div className='social-box'>
             <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/games.png'
+              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Header_btn_likes.svg'
               className='social-box-img'
             />
             <p className='social-box-count'>{likes}</p>
@@ -107,7 +126,7 @@ export default class AnalyticsBox extends Component {
 
           <div className='social-box'>
             <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/reviews.png'
+              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_reviews.svg'
               className='social-box-img'
             />
             <p className='social-box-count'>{commendations}</p>

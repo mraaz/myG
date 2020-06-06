@@ -5,7 +5,10 @@ const ConnectionController = use('./ConnectionController')
 
 class LoginController {
   async redirect({ ally }) {
-    await ally.driver('google').redirect()
+    await ally
+      .driver('google')
+      .stateless()
+      .redirect()
   }
 
   async callback({ ally, auth, response, view, session }) {
@@ -33,9 +36,9 @@ class LoginController {
       } else {
         session.put('provider', 'google')
         session.put('provider_id', userData.getId())
-        var alias = userData.getName()
-        alias = alias.replace(' ', '')
-        session.put('alias', alias)
+        // var alias = userData.getName()
+        // alias = alias.replace(' ', '')
+        // session.put('alias', alias)
         session.put('email', userData.getEmail())
         session.put('profile_img', userData.getAvatar())
         return response.redirect('/user/register')

@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, NavLink, Link } from 'react-router-dom'
 import axios from 'axios'
 import FileOpenModal from './FileOpenModal'
 import { toast } from 'react-toastify'
-import SweetAlert from 'react-bootstrap-sweetalert'
+import SweetAlert from './common/MyGSweetAlert'
 import { Toast_style } from './Utility_Function'
 
 export default class GroupHeader extends Component {
@@ -126,7 +126,12 @@ export default class GroupHeader extends Component {
         break
     }
     try {
-      const update_group_type = axios.get(`/api/groups/update_type/${this.props.groups_id.params.id}/${this.state.group_info.type}`)
+      //const update_group_type = axios.get(`/api/groups/update_type/${this.props.groups_id.params.id}/${this.state.group_info.type}`)
+      const sendInvite = axios.post('/api/groups/update_settings', {
+        group_id: this.props.groups_id.params.id,
+        privacy: this.state.group_info.type,
+        mApprovals: 1,
+      })
     } catch (error) {
       console.log(error)
     }
@@ -145,19 +150,19 @@ export default class GroupHeader extends Component {
         const sendInvite = axios.post('/api/usergroup/create', {
           group_id: this.props.groups_id.params.id,
         })
-        const owner_invitation = axios.post('/api/notifications/addGroup', {
-          other_user_id: this.state.group_info.user_id,
-          group_id: this.props.groups_id.params.id,
-        })
-        if (this.state.group_info.all_accept) {
-          const group_invitation = axios.post('/api/notifications/add_all_to_Group', {
-            group_id: this.props.groups_id.params.id,
-          })
-        } else {
-          const group_invitation = axios.post('/api/notifications/add_vip_to_Group', {
-            group_id: this.props.groups_id.params.id,
-          })
-        }
+        // const owner_invitation = axios.post('/api/notifications/addGroup', {
+        //   other_user_id: this.state.group_info.user_id,
+        //   group_id: this.props.groups_id.params.id,
+        // })
+        // if (this.state.group_info.all_accept) {
+        //   const group_invitation = axios.post('/api/notifications/add_all_to_Group', {
+        //     group_id: this.props.groups_id.params.id,
+        //   })
+        // } else {
+        //   const group_invitation = axios.post('/api/notifications/add_vip_to_Group', {
+        //     group_id: this.props.groups_id.params.id,
+        //   })
+        // }
       } catch (error) {
         console.log(error)
       }
@@ -166,6 +171,27 @@ export default class GroupHeader extends Component {
       })
     } else if (this.state.statusTxt == 'Pending Approval') {
       this.showAlert_remove_group()
+    }
+  }
+
+  delete_community = () => {
+    try {
+      const delete_group = axios.post('/api/groups/delete', {
+        group_id: this.props.groups_id.params.id,
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  change_name_community = () => {
+    try {
+      const change_group = axios.post('/api/groups/update_name', {
+        group_id: this.props.groups_id.params.id,
+        name: 'TEST_Raaz',
+      })
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -222,19 +248,7 @@ export default class GroupHeader extends Component {
       case 'showAlert_remove_group_true':
         try {
           const deleteRegistration = axios.get(`/api/usergroup/delete/${this.props.groups_id.params.id}`)
-          const killInvite = axios.get(`/api/notifications/delete_group/${this.props.groups_id.params.id}`)
-        } catch (error) {
-          console.log(error)
-        }
-        this.setState({
-          statusTxt: 'Join',
-          show_approvals: false,
-        })
-        break
-      case 'showAlert_remove_group_true':
-        try {
-          const deleteRegistration = axios.get(`/api/usergroup/delete/${this.props.groups_id.params.id}`)
-          const killInvite = axios.get(`/api/notifications/delete_group/${this.props.groups_id.params.id}`)
+          //const killInvite = axios.get(`/api/notifications/delete_group/${this.props.groups_id.params.id}`)
         } catch (error) {
           console.log(error)
         }
@@ -288,6 +302,12 @@ export default class GroupHeader extends Component {
               <div className='group-status'>
                 <button className='status' onClick={this.statusToggle}>
                   {this.state.statusTxt}
+                </button>
+                <button className='status' onClick={this.delete_community}>
+                  Delete Community
+                </button>
+                <button className='status' onClick={this.change_name_community}>
+                  Change name to TEST_Raaz
                 </button>
               </div>
               <div className='member-list'>

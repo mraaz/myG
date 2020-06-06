@@ -10,7 +10,7 @@ export function generateKeys(pin) {
 
 export function generateKeysSync(pin) {
   logger.log('USER', 'Generating Keys for Pin', pin);
-  if (!pin) pin = generatePin(12);
+  if (!pin) pin = generatePin(7);
   const privateKey = cryptico.generateRSAKey(pin, 1024);
   const publicKey = cryptico.publicKeyString(privateKey);
   return { encryption: { pin, privateKey, publicKey } };

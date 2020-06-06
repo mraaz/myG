@@ -4,8 +4,8 @@ import axios from 'axios'
 import IndividualGamingExperience from './IndividualGamingExperience'
 import IndividualEsportsExperience from './IndividualEsportsExperience'
 import FileOpenModal from './FileOpenModal'
-import SweetAlert from 'react-bootstrap-sweetalert'
-import { setAsFriendRedux } from '../../common/friend'
+import SweetAlert from './common/MyGSweetAlert';
+import { setAsFriendRedux, removeFriendRedux } from '../../common/friend'
 
 export default class Profile extends Component {
   constructor() {
@@ -373,6 +373,7 @@ export default class Profile extends Component {
     if (text == 'true') {
       const { match } = this.props.routeProps
       try {
+        removeFriendRedux(match.params.id);
         const userProfile = axios.get(`/api/user/${match.params.id}/unfriend`)
         this.setState({
           friendTxt: 'Add Friend',

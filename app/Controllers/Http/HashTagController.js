@@ -16,6 +16,14 @@ class HashTagController {
         })
         return newHashTag.id
       } catch (error) {
+        if (error.code == 'ER_DUP_ENTRY') {
+          const newHashTag = await Database.table('hash_tags')
+            .where({ content: request.input('content').trim() })
+            .first()
+
+          return newHashTag.id
+        }
+
         console.log(error)
       }
     }

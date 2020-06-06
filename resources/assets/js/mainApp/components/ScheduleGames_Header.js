@@ -31,10 +31,10 @@ const platform_options = [
 ]
 const date_options = [
   { value: 'Now-ish', label: 'Now-ish' },
-  { value: '8 hours', label: '8 hours' },
-  { value: '2 days', label: '2 days' },
-  { value: '7 days', label: '7 days' },
-  { value: '14 days', label: '14 days' },
+  { value: '8 hours', label: 'Up to 8 hours' },
+  { value: '2 days', label: 'Up to 2 days' },
+  { value: '7 days', label: 'Up to 7 days' },
+  { value: '14 days', label: 'Up to 14 days' },
 ]
 const visibility_options = [{ value: 1, label: 'Public' }, { value: 2, label: 'Friends' }, { value: 3, label: 'Group' }]
 
@@ -91,6 +91,11 @@ export default class ScheduleGames_Header extends Component {
     this.setState({
       allscheduledGames: [],
     })
+
+    if (!tmp_allscheduledGames.data) {
+      console.log("Endsureing we're not failing on lenght check later")
+      return
+    }
 
     if (tmp_allscheduledGames.data.latestScheduledGames.length > 10) {
       this.setState({

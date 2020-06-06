@@ -10,13 +10,10 @@ const ChatRepository = require('../../Repositories/Chat')
 //https://html-online.com/editor/
 
 class EmailController {
-  async welcome_email(toAddress) {
-    let email = new AWSEmailController()
-
-    let subject = "Welcome to myG - The Gamer's platform"
-    let body =
-      "<p>Hi mate,<br /><br /> This will most likely be the first and last email from myG. That's because email is turned off by default. Ofcourse you can update this in the <a title='mySettings' href='https://myG.gg/mySettings' target='_blank' rel='noopener'>Settings</a>.<br /><br /> myG's vision is to improve gamers performance, knowledge and experience and we're going to do that by becoming a kick ass gaming platform, allowing gamers to connect, share and improve.<br /><br />Update your <a title='Profile' href='https://myG.gg/profile' target='_blank' rel='noopener'>Profile</a>, create/join games, reach out to other gamers! <br /><br />P.S If you wish to report bugs or feature requests you can here at our public Trello board.<br /><br />GLHF<br /><br />Raaz<br /><br /><img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/myGame_Logo_black_text.png' alt='myG Logo' width='119' height='67' /></p>"
-
+  async welcome_email(toAddress, pin) {
+    const email = new AWSEmailController()
+    const subject = "Welcome to myG - The Gamer's platform"
+    const body = `<p>Hi mate,<br /><br /> This will most likely be the first and last email from myG. That's because email is turned off by default. Ofcourse you can update this in the <a title='mySettings' href='https://myG.gg/mySettings' target='_blank' rel='noopener'>Settings</a>.<br /><br /> myG's vision is to improve gamers performance, knowledge and experience and we're going to do that by becoming a kick ass gaming platform, allowing gamers to connect, share and improve.<br /><br />This key will be used to access your chat history.<br><strong>${pin}</strong><br> Everytime you log off, you key is cleared and when you log back in, you will need to RE-ENTER this key. Failure to do so will disable chat and if a new key is generated, you will LOSE all your previous chat history. <br> This is a true End to End encryption chat, meaning myG doesn't have any visibility of your messages or your key. Therefore we cannot retrieve messages or key if they are lost <br /><br />Update your <a title='Profile' href='https://myG.gg/profile' target='_blank' rel='noopener'>Profile</a>, create/join games, reach out to other gamers! <br /><br />P.S If you wish to report bugs or feature requests you can here at our public Trello board.<br /><br />GLHF<br /><br />Raaz<br /><br /><img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/logos/myGame_Logo_black_text.png' alt='myG Logo' width='119' height='67' /></p>`
     email.createEmailnSend(toAddress, subject, body)
   }
 
@@ -87,8 +84,8 @@ class EmailController {
 
   async encryption_email(email, pin) {
     const awsEmailController = new AWSEmailController()
-    const subject = "myG - The Gamer's platform - New Encryption"
-    const body = `<p>Hi mate,</p><p>Here is your encryption secret: ${pin}</p><p>Keep it safe!</p>`
+    const subject = 'myG Chat password - CONFIDENTIAL COMMUNICATION'
+    const body = `Hi, <br> This password will be used to access your chat history.<br><strong>${pin}</strong><br><br> Everytime you log off, your password is cleared and when you log back in, you will need to RE-ENTER this password. Failure to do so will disable chat and if a new password is generated, you will LOSE all your previous chat history. <br><br> This is a true End to End encryption chat, meaning myG doesn't have any visibility of your messages or your password. Therefore we cannot retrieve messages or key if they are lost <br><br> Cheers, <br><br> myG`
     return awsEmailController.createEmailnSend(email, subject, body)
   }
 }

@@ -28,19 +28,20 @@ class CommonSaveController {
       await auth.logout()
     }
 
-    if (session.get('provider_id') == null) {
-      console.log('Security Error! Unable to authenticate against your social.')
-      session
-        .withErrors([
-          { field: 'alias', message: 'Security Error! Unable to authenticate against your social. Please clear cache and try again.' },
-        ])
-        .flashAll()
-      return response.redirect('back')
-    }
+    // if (session.get('provider_id') == null) {
+    //   console.log('Security Error! Unable to authenticate against your social.')
+    //   session
+    //     .withErrors([
+    //       { field: 'alias', message: 'Security Error! Unable to authenticate against your social. Please clear cache and try again.' },
+    //     ])
+    //     .flashAll()
+    //   return response.redirect('back')
+    // }
 
     const rules = {
       alias: 'required|unique:users,alias|min:4|max:30',
       email: 'required|email|unique:users',
+      encryption: 'required|min:6|max:30',
       firstName: 'required',
       lastName: 'required',
     }
@@ -48,8 +49,8 @@ class CommonSaveController {
     const messages = {
       required: 'Required field',
       email: 'Enter valid email address',
-      min: 'Not enough characters for Alias- Min 4',
-      max: 'Wow! Too many characters for Alias - Max 30',
+      min: 'Not enough characters - Min 4 for Alias, 6 for Chat Password',
+      max: 'Wow! Too many characters - Max 30',
       unique: 'Sorry, this field is not unique. Try again please.',
     }
 
@@ -61,12 +62,12 @@ class CommonSaveController {
 
       switch (tmp[0].validation) {
         case 'unique':
-          var newMsg = 'Sorry, ' + tmp[0].field + '  is not unique. Please try again.'
+          var newMsg = 'Sorry, ' + tmp[0].field + ' is not unique. Please try again.'
           session.withErrors([{ field: 'alias', message: newMsg }]).flashAll()
           return response.redirect('back')
           break
         case 'required':
-          var newMsg = 'Sorry, ' + tmp[0].field + '  is required. Please try again.'
+          var newMsg = 'Sorry, ' + tmp[0].field + ' is required. Please try again.'
           session.withErrors([{ field: 'alias', message: newMsg }]).flashAll()
           return response.redirect('back')
           break
@@ -75,8 +76,7 @@ class CommonSaveController {
           return response.redirect('back')
       }
     } else {
-      var strMsg =
-        'Special characters:\r\nUsernames can only contain letters (a-z), numbers (0-9), and periods (.).\r\nUsernames can begin or end with non-alphanumeric characters except periods (.) and they can not have multiple periods (.).'
+      var strMsg = 'Alias invalid!'
       try {
         if (request.input('alias').charAt(0) == '.' || request.input('alias').charAt(request.input('alias').length - 1) == '.') {
           session.withErrors([{ field: 'alias', message: strMsg }]).flashAll()
@@ -100,7 +100,6 @@ class CommonSaveController {
         session.withErrors(validation.messages()).flashAll()
         return response.redirect('back')
       }
-
       // await Mail.send('emails.welcome', user.toJSON(), (message) => {
       //   message
       //     .to(user.email)
@@ -108,7 +107,6 @@ class CommonSaveController {
       //     .subject('Welcome to My Game')
       // })
       const token = request.input('g-recaptcha-response')
-      console.log(token)
       const data_request = await axios.post(
         'https://www.google.com/recaptcha/api/siteverify',
         querystring.stringify({ secret: Env.get('SECRET_KEY'), response: token })
@@ -159,13 +157,10 @@ class CommonSaveController {
         //   else console.log(info)
         // })
 
-        let send_email = new EmailController()
-        send_email.welcome_email(request.input('email'))
-
         session.forget('provider')
         session.forget('provider_id')
         await auth.loginViaId(user.id)
-        return response.redirect('/')
+        return response.redirect(`/setEncryptionParaphrase/${request.input('encryption')}`)
       }
     }
   }

@@ -90,7 +90,7 @@ export default class GroupMain extends Component {
       try {
         const getmyGroups = await axios.get(`/api/groups/view/${counter}`)
         self.setState({
-          myGroups: getmyGroups.data.myGroups.data,
+          myGroups: getmyGroups.data.myGroups,
         })
       } catch (error) {
         console.log(error)
@@ -102,7 +102,7 @@ export default class GroupMain extends Component {
       try {
         const getGroups_im_in = await axios.get(`/api/usergroup/view/${counter}`)
         self.setState({
-          groups_im_in: getGroups_im_in.data.groups_im_in.data,
+          groups_im_in: getGroups_im_in.data.groups_im_in,
         })
       } catch (error) {
         console.log(error)
@@ -160,7 +160,7 @@ export default class GroupMain extends Component {
     const getPlayerInfo = async function() {
       try {
         const groupSearchResults = await axios.get(`/api/groups/${value}/groupSearchResults_Post`)
-        playersDB = groupSearchResults.data.groupSearchResults
+        playersDB = groupSearchResults.data.myGroupSearchResults
         self.setState({
           suggestions: getSuggestions(value),
         })
@@ -195,6 +195,16 @@ export default class GroupMain extends Component {
       return this.state.groups_im_in.map((item, index) => {
         return <IndividualGroups groups={item} key={index} user={this.props.initialData} />
       })
+    }
+  }
+
+  get_my_communities = async () => {
+    try {
+      const get_my_communities = await axios.get('/api/groups/get_my_communities/1')
+
+      console.log(get_my_communities)
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -246,6 +256,9 @@ export default class GroupMain extends Component {
               </div>
               <div className='padding-container'></div>
               <div className='my-groups'>
+                <button className='allread' onClick={() => this.get_my_communities()}>
+                  get my communities
+                </button>
                 <div className='indent'></div>
                 {this.showmyGroups()}
               </div>

@@ -364,6 +364,6 @@ class Dossier extends Component {
     }
   }
 }
-const GoogleMapsUrl = `https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyC3_pe0RevMHBu1JhLAwJCNR_cQyec-X70`
+const GoogleMapsUrl = 'https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyDf3hgYx463MIz995EhEiJRjgAuFrzPyaA'
 
 export default scriptLoader([GoogleMapsUrl])(Dossier)

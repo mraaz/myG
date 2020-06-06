@@ -1,20 +1,18 @@
+/*
+ * Author : nitin Tyagi
+ * github  : https://github.com/realinit
+ * Email : nitin.1992tyagi@gmail.com
+ */
 import React, { Component } from 'react'
 import axios from 'axios'
-
 import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
-
-// import 'react-dropzone-uploader/dist/styles.css'
-// import Dropzone from 'react-dropzone-uploader'
-import Dropzone from 'react-dropzone'
-const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
 
 export default class PostFileModal extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      preview_files: [],
       post_content: '',
       store_files: [],
       lock: false,
@@ -23,9 +21,10 @@ export default class PostFileModal extends Component {
       open_compose_textTab: props.open_compose_textTab,
       add_group_toggle: false,
       selected_group: [],
-      selectedGroup: [],
+      selected_group_data: [],
       groups_im_in: [],
       visibility: 1,
+      gid_request: {},
     }
 
     this.closeModal = this.closeModal.bind(this)
@@ -53,9 +52,15 @@ export default class PostFileModal extends Component {
         console.log(error)
       }
     }
+    const { selected_group = [], selected_group_data = [], visibility } = this.props
 
     getGroups_im_in()
     getmyGroups()
+    this.setState({
+      selected_group,
+      selected_group_data,
+      visibility,
+    })
   }
 
   togglePostTypeTab = (label) => {
@@ -64,27 +69,6 @@ export default class PostFileModal extends Component {
       open_compose_textTab = false
     }
     this.setState({ open_compose_textTab })
-  }
-
-  removeIndivdualfromAWS(id) {
-    for (var i = 0; i < this.state.preview_files.length; i++) {
-      if (this.state.preview_files[i].id == id) {
-        const formData = new FormData()
-        formData.append('key', this.state.preview_files[i].key)
-
-        try {
-          const post = axios.post('/api/deleteFile', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          })
-        } catch (error) {
-          toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again'} />)
-        }
-        this.state.preview_files.splice(i, 1)
-        break
-      }
-    }
   }
 
   closeModal(outsideClick = false) {
@@ -99,13 +83,11 @@ export default class PostFileModal extends Component {
   }
 
   handleSubmit = () => {
+    const { selected_group = [], selected_group_data = [], visibility } = this.state
     this.props.callbackConfirm({
-      selected_group: this.state.selected_group,
-      visibility: this.state.visibility,
-    })
-
-    this.setState({
-      preview_files: [],
+      selected_group: selected_group,
+      selected_group_data: selected_group_data,
+      visibility: visibility,
     })
   }
 
@@ -126,12 +108,24 @@ export default class PostFileModal extends Component {
     }
   }
 
+  getMergedGroupData = (groups_im_in, groups_im_not_in) => {
+    groups_im_not_in.map((gd) => {
+      gd['im_not_in'] = true
+      groups_im_in.push(gd)
+    })
+
+    return groups_im_in.length > 0 ? groups_im_in.sort((a, b) => ('' + a.name).localeCompare(b.name)) : []
+  }
+
   getSearchGroup = async (e) => {
     const searchText = e.target.value
-    const groups = [...this.state.groups_im_in]
     if (searchText != '') {
-      ///api/groups/${value}/groupSearchResults_Post
-      const groups_im_in = groups.filter((g) => g.name.includes(searchText))
+      const gd = await axios.get(`/api/groups/${searchText}/groupSearchResults_Post`)
+      let groups_im_in = gd.data.myGroupSearchResults
+      const groups_im_not_in = gd.data.groupSearchResults_im_not_in
+      if (groups_im_not_in.length > 0) {
+        groups_im_in = this.getMergedGroupData(groups_im_in, groups_im_not_in)
+      }
       this.setState({ groups_im_in, searchText })
     } else {
       const getGroups_im_in = await axios.get('/api/usergroup/view/1')
@@ -142,19 +136,41 @@ export default class PostFileModal extends Component {
     }
   }
 
-  handleGroupCheck = (e, id) => {
+  handleGroupCheck = (e, { id, name, group_img }) => {
     let selected_group = [...this.state.selected_group]
+    let selected_group_data = [...this.state.selected_group_data]
     const value = event.target.checked
     if (value) {
       selected_group.push(id)
+      selected_group_data.push({
+        name,
+        id,
+        group_img,
+      })
     } else {
       selected_group = selected_group.filter((gid) => gid != id)
+      selected_group_data = selected_group_data.filter((gid) => gid.id != id)
     }
-    this.setState({ selected_group })
+    this.setState({ selected_group, selected_group_data })
+  }
+
+  joinMe = async (gid) => {
+    try {
+      const { gid_request = {} } = this.state
+      const sendInvite = await axios.post('/api/usergroup/create', {
+        group_id: gid,
+      })
+      if (sendInvite.data) {
+        gid_request[gid] = true
+        this.setState({ gid_request })
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   render() {
-    const { groups_im_in, selected_group, selectedGroup, searchText = '' } = this.state
+    const { groups_im_in, selected_group, searchText = '', gid_request } = this.state
     var class_modal_status = ''
     if (this.props.bOpen) {
       class_modal_status = 'modal--show'
@@ -165,8 +181,11 @@ export default class PostFileModal extends Component {
           <section className='postCompose__container'>
             <div className={`people_group_list  active`}>
               <div className='search__box'>
-                <label htmlFor='searchInput'>Search</label>
-                <input type='text' id='searchInput' onChange={this.getSearchGroup} value={searchText} placeholder='Search here ...' />
+                <h1>Add communities feed</h1>
+                <div style={{ display: 'flex' }}>
+                  <label htmlFor='searchInput'>Search</label>
+                  <input type='text' id='searchInput' onChange={this.getSearchGroup} value={searchText} placeholder='Search here ...' />
+                </div>
               </div>
               <div className='people_group_list_box'>
                 {groups_im_in &&
@@ -179,21 +198,32 @@ export default class PostFileModal extends Component {
                         </div>
                         <div className='groupName'>{group_in.name}</div>
                         <div className='action'>
-                          <label className='container'>
-                            <input
-                              type='checkbox'
-                              checked={selected_group.includes(group_in.id)}
-                              onChange={(e) => this.handleGroupCheck(e, group_in.id)}
-                              value={1}
-                            />
-                            <span className='checkmark'></span>
-                          </label>
+                          {group_in.im_not_in ? (
+                            gid_request[group_in.id] ? (
+                              <div className='group_request-sent'>Sent</div>
+                            ) : (
+                              <div className='group_join' onClick={(e) => this.joinMe(group_in.id)}>
+                                JOIN ME
+                              </div>
+                            )
+                          ) : (
+                            <label className='container'>
+                              <input
+                                type='checkbox'
+                                checked={selected_group.includes(group_in.id)}
+                                onChange={(e) => this.handleGroupCheck(e, group_in)}
+                                value={1}
+                              />
+                              <span className='checkmark'></span>
+                            </label>
+                          )}
                         </div>
                       </div>
                     )
                   })}
               </div>
               <div className='people_group_actions'>
+                <h1>Who can see your post</h1>
                 <div className='post__privacy_select'>
                   <div>
                     <label className='container'>
@@ -249,9 +279,7 @@ export default class PostFileModal extends Component {
                   </div>
                 </div>
                 <div className='actions'>
-                  <button type='button' className='cancel' onClick={this.closeModal}>
-                    Cancel
-                  </button>
+                  <button type='button' className='cancel' onClick={this.closeModal}></button>
                   <button type='button' className='add__post' onClick={this.handleSubmit}>
                     Add
                   </button>

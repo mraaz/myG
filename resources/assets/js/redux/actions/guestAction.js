@@ -1,6 +1,19 @@
-
-import { generateKeysSync } from '../../integration/encryption';
-import { register, unregister, fetchChat, fetchMessages, fetchEncryptionMessages, fetchGroupPrivateKeyRequests, sendMessage, editMessage, deleteMessage, addReaction, removeReaction, fetchEntryLogs, fetchChatContacts } from '../../integration/http/guest';
+import { generateKeysSync } from '../../integration/encryption'
+import {
+  register,
+  unregister,
+  fetchChat,
+  fetchMessages,
+  fetchEncryptionMessages,
+  fetchGroupPrivateKeyRequests,
+  sendMessage,
+  editMessage,
+  deleteMessage,
+  addReaction,
+  removeReaction,
+  fetchEntryLogs,
+  fetchChatContacts,
+} from '../../integration/http/guest'
 
 export function setGuestLinkAction(guestLink) {
   return {
@@ -9,12 +22,14 @@ export function setGuestLinkAction(guestLink) {
   }
 }
 
-export function registerGuestAction(chatId, alias) {
-  const { encryption: { publicKey, privateKey } } = generateKeysSync();
+export function registerGuestAction(chatId, alias, uuid) {
+  const {
+    encryption: { publicKey, privateKey },
+  } = generateKeysSync()
   return {
     type: 'REGISTER_GUEST',
-    payload: register(publicKey, chatId, alias),
-    meta: { publicKey, privateKey, chatId, alias }
+    payload: register(publicKey, chatId, alias, uuid),
+    meta: { publicKey, privateKey, chatId, alias, uuid },
   }
 }
 
@@ -22,22 +37,29 @@ export function unregisterGuestAction(guestId, chatId) {
   return {
     type: 'UNREGISTER_GUEST',
     payload: unregister(guestId, chatId),
-    meta: { guestId, chatId }
+    meta: { guestId, chatId },
   }
 }
 
 export function prepareChatAction(chatId, userId) {
-  const chatRequest = fetchChat(chatId);
-  const messagesRequest = fetchMessages(chatId, 1);
-  const encryptionMessagesRequest = fetchEncryptionMessages(userId, chatId);
-  const privateKeyRequestsRequest = fetchGroupPrivateKeyRequests(chatId);
-  const entryLogsRequest = fetchEntryLogs(chatId);
-  const contactsRequest = fetchChatContacts(chatId);
-  const requests = [chatRequest, messagesRequest, encryptionMessagesRequest, privateKeyRequestsRequest, entryLogsRequest, contactsRequest];
+  const chatRequest = fetchChat(chatId)
+  const messagesRequest = fetchMessages(chatId, 1)
+  const encryptionMessagesRequest = fetchEncryptionMessages(userId, chatId)
+  const privateKeyRequestsRequest = fetchGroupPrivateKeyRequests(chatId)
+  const entryLogsRequest = fetchEntryLogs(chatId)
+  const contactsRequest = fetchChatContacts(chatId)
+  const requests = [chatRequest, messagesRequest, encryptionMessagesRequest, privateKeyRequestsRequest, entryLogsRequest, contactsRequest]
   return {
     type: 'PREPARE_CHAT',
-    payload: Promise.all(requests).then(([chat, messages, encryptionMessages, privateKeyRequests, entryLogs, contacts]) => ({ ...chat, ...messages, ...encryptionMessages, ...privateKeyRequests, ...entryLogs, ...contacts })),
-    meta: { chatId, userId }
+    payload: Promise.all(requests).then(([chat, messages, encryptionMessages, privateKeyRequests, entryLogs, contacts]) => ({
+      ...chat,
+      ...messages,
+      ...encryptionMessages,
+      ...privateKeyRequests,
+      ...entryLogs,
+      ...contacts,
+    })),
+    meta: { chatId, userId },
   }
 }
 
@@ -61,7 +83,7 @@ export function editMessageAction(chatId, userId, messageId, encrypted) {
   return {
     type: 'EDIT_MESSAGE',
     payload: editMessage(chatId, userId, messageId, encrypted),
-    meta: { chatId, userId, },
+    meta: { chatId, userId },
   }
 }
 

@@ -33,6 +33,18 @@
     border-radius: 4px;
   }
 
+  .myg-icon {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover !important;
+    border-radius: 20px;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    margin-left: -40%;
+    margin-right: 35%;
+  }
+
   .alias-container {
 
     background-color: #1D2326;
@@ -85,6 +97,10 @@
     }
   
     .register {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
       background-color: #2D363A;
       margin: 8px auto;
       padding: 8px 12px;

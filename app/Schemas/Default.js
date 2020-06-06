@@ -1,13 +1,10 @@
-
-const { forceString, forceBoolean } = require('./Primitives');
+const { forceString, forceBoolean } = require('./Primitives')
 
 class Default {
-
   constructor(data) {
-    this.success = forceBoolean(data.success);
-    this.error = forceString(data.error);
+    this.success = forceBoolean(data.success)
+    this.error = forceString(data.error)
   }
-
 }
 
-module.exports = Default;
+module.exports = Default

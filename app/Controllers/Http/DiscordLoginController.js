@@ -57,7 +57,7 @@ class DiscordLoginController {
         } else {
           session.put('provider', 'discord')
           session.put('provider_id', json.id)
-          session.put('alias', json.username)
+          //session.put('alias', json.username)
           session.put('email', json.email)
           session.put('profile_img', '//cdn.discordapp.com/avatars/' + json.id + '/' + json.avatar + '.png')
           return response.redirect('/user/register')

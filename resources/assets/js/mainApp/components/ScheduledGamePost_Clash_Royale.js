@@ -7,7 +7,7 @@ import IndividualComment from './IndividualComment'
 import DeleteScheduleGameModal from './DeleteScheduleGameModal'
 import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
-import SweetAlert from 'react-bootstrap-sweetalert'
+import SweetAlert from './common/MyGSweetAlert'
 import { exitGameGroup } from '../../common/group'
 
 export default class ScheduledGamePost_Clash_Royale extends Component {
@@ -375,13 +375,13 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
 
   enrollinGame = async () => {
     try {
-      const getNumberofAttendees = await axios.get(`/api/attendees/attending/${this.props.props.schedule_game.id}`)
+      const getNumberofAttendees = await axios.get(`/api/attendees/attending/${this.props.props.schedule_game.schedule_games_id}`)
       if (
         this.props.props.schedule_game.limit == 42 ||
         getNumberofAttendees.data.allAttendees[0].no_of_allAttendees < this.props.props.schedule_game.limit
       ) {
         const savemySpot = axios.post('/api/attendees/savemySpot', {
-          schedule_games_id: this.props.props.schedule_game.id,
+          schedule_games_id: this.props.props.schedule_game.schedule_games_id,
           notify: true,
         })
         this.setState({
@@ -406,8 +406,8 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
 
   disenrollinGame = () => {
     try {
-      const getNumberofAttendees = axios.get(`/api/attendees/removeattending/${this.props.props.schedule_game.id}`)
-      exitGameGroup(this.props.props.schedule_game.id)
+      const getNumberofAttendees = axios.get(`/api/attendees/removeattending/${this.props.props.schedule_game.schedule_games_id}`)
+      exitGameGroup(this.props.props.schedule_game.schedule_games_id)
       this.setState({
         show_invite: true,
         show_attending: false,
@@ -417,7 +417,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
 
       const no_vacany = axios.post('/api/ScheduleGame/update_vacany/', {
         vacancy: true,
-        id: this.props.props.schedule_game.id,
+        id: this.props.props.schedule_game.schedule_games_id,
       })
     } catch (error) {
       console.log(error)
@@ -482,7 +482,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
     if (text == 'delete_true') {
       try {
         const tmp = null
-        const mysch = axios.get(`/api/ScheduleGame/delete/${this.props.props.schedule_game.id}/${tmp}`)
+        const mysch = axios.get(`/api/ScheduleGame/delete/${this.props.props.schedule_game.schedule_games_id}/${tmp}`)
         location.reload()
       } catch (error) {
         console.log(error)
@@ -494,7 +494,7 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
     const { schedule_game } = this.props.props
 
     if (this.state.redirect_PlayerList === true) {
-      var tmp = `/playerList/${this.props.props.schedule_game.id}`
+      var tmp = `/playerList/${this.props.props.schedule_game.schedule_games_id}`
       return <Redirect push to={tmp} />
     }
     if (this.state.redirect_Approvals === true) {

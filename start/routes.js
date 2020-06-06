@@ -90,6 +90,9 @@ Route.post('/api/GameExperiences/:id/:game_id', 'GameExperienceController.update
 Route.get('/api/GameExperiences/:id/:game_id', 'GameExperienceController.show_Game')
 Route.post('/api/GameExperiences/gameExpSearchResults', 'GameExperienceController.gameExpSearchResults')
 
+Route.post('/api/ScheduleGame/test', 'ScheduleGameController.test')
+Route.get('/api/ScheduleGame/additional_game_info/:id', 'ScheduleGameController.additional_game_info')
+
 Route.post('/api/ScheduleGame', 'ScheduleGameController.store')
 Route.get('/api/ScheduleGame/delete/:id/:reason', 'ScheduleGameController.destroy')
 //Route.get('/api/ScheduleGame', 'ScheduleGameController.show')
@@ -157,7 +160,6 @@ Route.get('/api/replies/show_reply/:id', 'ReplyController.show_reply')
 Route.get('/api/replies/my_count/:id', 'ReplyController.replies_count')
 Route.post('/api/replies/', 'ReplyController.store')
 
-Route.post('/api/notifications/getAllNoti', 'NotificationController.getAllNotifications')
 Route.post('/api/notifications/addFriend', 'NotificationController.addFriend')
 Route.get('/api/notifications/friend/:id', 'NotificationController.checkFriend')
 Route.get('/api/notifications/myFriendRequests/', 'NotificationController.myFriendRequests')
@@ -178,8 +180,7 @@ Route.get('/api/notifications/deleteReplyLike/:id', 'NotificationController.dele
 Route.post('/api/notifications/addComment', 'NotificationController.addComment')
 Route.post('/api/notifications/addReply', 'NotificationController.addReply')
 Route.post('/api/notifications/updateRead_Status/:post_id/:activity_type', 'NotificationController.updateRead_Status')
-Route.get('/api/notifications/markAllNoti', 'NotificationController.markAllNoti')
-Route.get('/api/notifications/deleteAllNoti', 'NotificationController.deleteAllNoti')
+
 Route.get('/api/notifications/getunread/:post_id/:activity_type', 'NotificationController.getRead_Status')
 Route.get(
   '/api/notifications/getunread_schedule_game/:schedule_game_id/:activity_type',
@@ -219,7 +220,14 @@ Route.put('/api/notifications/inviteToGroup', 'NotificationController.inviteToGr
 Route.post('/api/notifications/invitations', 'NotificationController.invitations')
 Route.get('/api/notifications/getunread_dings', 'NotificationController.getunread_dings')
 
+//-----------------------------------------
 Route.post('/api/notifications_v2/getApprovals_Dashboard', 'NotificationController_v2.getApprovals_Dashboard')
+Route.get('/api/notifications_v2/delete/:id', 'NotificationController_v2.destroy')
+Route.post('/api/notifications_v2/getAllNoti', 'NotificationController_v2.getAllNotifications')
+Route.get('/api/notifications_v2/markAllNoti', 'NotificationController_v2.markAllNoti')
+Route.get('/api/notifications_v2/deleteAllNoti', 'NotificationController_v2.deleteAllNoti')
+
+//-----------------------------------------
 
 Route.post('/api/friends/create', 'FriendController.store')
 Route.post('/api/friends/allmyFriends', 'FriendController.showallmyFriends')
@@ -249,11 +257,11 @@ Route.get('/api/attendees/myattendance/:id', 'AttendeeController.show_myattendan
 Route.post('/api/attendees/savemySpot', 'AttendeeController.savemySpot')
 Route.get('/api/attendees/removeattending/:id', 'AttendeeController.remove_myattendance')
 Route.get('/api/attendees/role_call/:id', 'AttendeeController.role_call')
-Route.get('/api/attendees/role_call_ALL/:id', 'AttendeeController.role_call_ALL')
 Route.get('/api/attendees/game_positions/:id', 'AttendeeController.show_game_positions')
 Route.get('/api/attendees/getScheduleGameInvites/:id', 'AttendeeController.getScheduleGameInvites')
 Route.get('/api/attendees/delete_myInvite/:schedule_game_id/:id', 'AttendeeController.delete_invite')
-Route.post('/api/attendees/update_invite/:schedule_game_id/:id', 'AttendeeController.up_invite')
+Route.post('/api/attendees/role_call_ALL', 'AttendeeController.role_call_ALL')
+Route.post('/api/attendees/update_invite', 'AttendeeController.up_invite')
 
 Route.get('/api/archive_attendees/attending/:id', 'Archive_AttendeeController.show_attending')
 Route.get('/api/archive_attendees/role_call/:id', 'Archive_AttendeeController.role_call')
@@ -267,16 +275,22 @@ Route.get('/api/groups/view/:counter', 'GroupController.myshow')
 Route.get('/api/groups/:id', 'GroupController.show')
 Route.post('/api/groups/update_img', 'GroupController.update_img')
 Route.post('/api/groups/update/all_accept/', 'GroupController.update_all_accept')
-Route.get('/api/groups/update_type/:id/:group_type', 'GroupController.update_type')
+Route.post('/api/groups/update_settings/', 'GroupController.update_settings')
 Route.get('/api/groups/show_owner/:id', 'GroupController.show_owner')
+
+Route.post('/api/groups/delete', 'GroupController.destroy')
+
+Route.post('/api/groups/update_name', 'GroupController.update_name')
+
+Route.get('/api/groups/get_my_communities/:counter', 'GroupController.get_my_communities')
 
 Route.get('/api/usergroup/get_all_my_group_approvals/:id', 'UsergroupController.get_all_my_group_approvals')
 Route.post('/api/usergroup/create', 'UsergroupController.store')
 Route.get('/api/usergroup/view/:counter', 'UsergroupController.myshow')
 Route.get('/api/usergroup/:id', 'UsergroupController.show')
 Route.get('/api/usergroup/mygroup_details/:id', 'UsergroupController.mygroup_details')
-Route.get('/api/usergroup/delete/:id', 'UsergroupController.destroy')
-Route.get('/api/usergroup/set_group_approval/:id/:usergrp_id', 'UsergroupController.set_group_approval')
+Route.get('/api/usergroup/delete/:grp_id', 'UsergroupController.destroy')
+Route.get('/api/usergroup/set_group_approval/:grp_id/:user_id', 'UsergroupController.set_group_approval')
 Route.get('/api/usergroup/remove_group_approval/:id/:usergrp_id', 'UsergroupController.remove_group_approval')
 Route.get('/api/usergroup/member_lists/:id', 'UsergroupController.member_lists')
 Route.get('/api/usergroup/delete_member/:id/:usergrp_id', 'UsergroupController.delete_member')
@@ -317,6 +331,7 @@ Route.put('/api/chat/:chatId', 'ChatController.updateChat')
 Route.delete('/api/chat/:chatId', 'ChatController.clearChat')
 Route.delete('/api/chat/:chatId/destruction', 'ChatController.checkChatDestruction')
 Route.delete('/api/chat/:chatId/delete', 'ChatController.deleteChat')
+Route.delete('/api/chat/:chatId/forceDelete', 'ChatController.forceDeleteChat')
 Route.delete('/api/chat/:chatId/exit', 'ChatController.exitGroup')
 Route.delete('/api/chat/:chatId/exit/:userId', 'ChatController.removeFromGroup')
 Route.get('/api/chat/:chatId/contacts', 'ChatController.fetchChatContacts')
@@ -325,6 +340,8 @@ Route.get('/api/chat/:chatId/message/', 'ChatController.fetchMessages')
 Route.get('/api/chat/message/unread', 'ChatController.fetchUnreadMessages')
 Route.get('/api/chat/:chatId/message/encryption', 'ChatController.fetchEncryptionMessages')
 Route.get('/api/groups', 'ChatController.searchGroup')
+Route.get('/api/chat_notifications', 'ChatController.fetchChatNotifications')
+Route.delete('/api/chat_notifications', 'ChatController.deleteChatNotifications')
 Route.post('/api/chat/:chatId/message/', 'ChatController.sendMessage')
 Route.put('/api/chat/:chatId/message/:messageId', 'ChatController.editMessage')
 Route.delete('/api/chat/:chatId/message/:messageId', 'ChatController.deleteMessage')

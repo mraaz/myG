@@ -536,6 +536,8 @@ class NotificationController {
         .paginate(request.input('counter'), set_limit)
       const allMyschedulegames = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
+        .innerJoin('schedule_games', 'schedule_games.id', 'notifications.schedule_games_id')
+        .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
         .where({ other_user_id: auth.user.id, activity_type: 10 })
         .select(
           'notifications.schedule_games_id',
@@ -544,46 +546,19 @@ class NotificationController {
           'users.profile_img',
           'users.id',
           'notifications.created_at',
-          'notifications.read_status'
+          'notifications.read_status',
+          'schedule_games.start_date_time',
+          'schedule_games.end_date_time',
+          'game_names.game_name'
         )
         .orderBy('notifications.created_at', 'desc')
         .paginate(request.input('counter'), set_limit)
-      const myschedulegames_attendees = await Database.from('notifications')
-        .innerJoin('users', 'users.id', 'notifications.user_id')
-        .where({ other_user_id: auth.user.id, activity_type: 11 })
-        .groupBy('notifications.schedule_games_id')
-        .select(
-          'notifications.schedule_games_id',
-          'notifications.activity_type',
-          'users.alias',
-          'users.first_name',
-          'users.last_name',
-          'users.profile_img',
-          'users.id',
-          'notifications.created_at'
-        )
-        .orderBy('notifications.created_at', 'desc')
-        .paginate(request.input('counter'), set_limit)
-      const mygroups = await Database.from('notifications')
-        .innerJoin('users', 'users.id', 'notifications.user_id')
-        .innerJoin('groups', 'groups.id', 'notifications.group_id')
-        .where({ other_user_id: auth.user.id, activity_type: 12 })
-        .groupBy('notifications.group_id')
-        .select(
-          'notifications.group_id',
-          'notifications.activity_type',
-          'users.alias',
-          'users.profile_img',
-          'users.id',
-          'notifications.created_at',
-          'groups.name'
-        )
-        .orderBy('notifications.created_at', 'desc')
-        .paginate(request.input('counter'), set_limit)
+
       const myschedulegames_approvals = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
+        .innerJoin('schedule_games', 'schedule_games.id', 'notifications.schedule_games_id')
+        .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
         .where({ other_user_id: auth.user.id, activity_type: 14 })
-        .groupBy('notifications.schedule_games_id')
         .select(
           'notifications.schedule_games_id',
           'notifications.activity_type',
@@ -592,28 +567,39 @@ class NotificationController {
           'users.last_name',
           'users.profile_img',
           'users.id',
-          'notifications.created_at'
+          'notifications.read_status',
+          'notifications.created_at',
+          'game_names.game_name',
+          'schedule_games.accept_msg'
         )
         .orderBy('notifications.created_at', 'desc')
         .paginate(request.input('counter'), set_limit)
+
       const allMyarchived_schedulegames = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
+        .innerJoin('archive_schedule_games', 'archive_schedule_games.archive_schedule_game_id', 'notifications.schedule_games_id')
+        .innerJoin('game_names', 'game_names.id', 'archive_schedule_games.game_names_id')
         .where({ other_user_id: auth.user.id, activity_type: 15 })
-        .groupBy('notifications.archive_schedule_game_id')
         .select(
           'notifications.archive_schedule_game_id',
           'notifications.activity_type',
+          'notifications.read_status',
           'users.alias',
           'users.first_name',
           'users.last_name',
           'users.profile_img',
           'users.id',
+          'game_names.game_name',
+          'archive_schedule_games.start_date_time',
+          'archive_schedule_games.reason_for_cancel',
           'notifications.created_at'
         )
         .orderBy('notifications.created_at', 'desc')
         .paginate(request.input('counter'), set_limit)
       const dropped_out_attendees = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
+        .innerJoin('schedule_games', 'schedule_games.id', 'notifications.schedule_games_id')
+        .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
         .where({ other_user_id: auth.user.id, activity_type: 16 })
         .groupBy('notifications.schedule_games_id')
         .select(
@@ -622,21 +608,26 @@ class NotificationController {
           'users.alias',
           'users.profile_img',
           'users.id',
+          'schedule_games.start_date_time',
+          'schedule_games.end_date_time',
+          'game_names.game_name',
           'notifications.created_at'
         )
         .orderBy('notifications.created_at', 'desc')
         .paginate(request.input('counter'), set_limit)
       const group_member_approved = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
+        .innerJoin('groups', 'groups.id', 'notifications.group_id')
         .where({ other_user_id: auth.user.id, activity_type: 17 })
-        .groupBy('notifications.schedule_games_id')
         .select(
           'notifications.group_id',
           'notifications.activity_type',
           'users.alias',
           'users.profile_img',
           'users.id',
-          'notifications.created_at'
+          'notifications.created_at',
+          'groups.name',
+          'notifications.read_status'
         )
         .orderBy('notifications.created_at', 'desc')
         .paginate(request.input('counter'), set_limit)
@@ -658,29 +649,30 @@ class NotificationController {
         .paginate(request.input('counter'), set_limit)
       const group_member_kicked = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
+        .innerJoin('groups', 'groups.id', 'notifications.group_id')
         .where({ other_user_id: auth.user.id, activity_type: 19 })
-        .groupBy('notifications.schedule_games_id')
         .select(
           'notifications.group_id',
           'notifications.activity_type',
           'users.alias',
           'users.profile_img',
           'users.id',
-          'notifications.created_at'
+          'notifications.created_at',
+          'groups.name',
+          'notifications.read_status'
         )
         .orderBy('notifications.created_at', 'desc')
         .paginate(request.input('counter'), set_limit)
       const user_ding = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id, activity_type: 20 })
-        .groupBy('notifications.schedule_games_id')
         .select(
-          'notifications.group_id',
           'notifications.activity_type',
           'users.alias',
           'users.profile_img',
           'users.id',
-          'notifications.created_at'
+          'notifications.created_at',
+          'notifications.read_status'
         )
         .orderBy('notifications.created_at', 'desc')
         .paginate(request.input('counter'), set_limit)
@@ -692,8 +684,6 @@ class NotificationController {
         ...allMycomments.data,
         ...allMyreplies.data,
         ...allMyschedulegames.data,
-        ...myschedulegames_attendees.data,
-        ...mygroups.data,
         ...myschedulegames_approvals.data,
         ...allMyarchived_schedulegames.data,
         ...dropped_out_attendees.data,
@@ -1369,7 +1359,7 @@ class NotificationController {
           })
           .delete()
 
-        return delete_noti
+        return 'deleted'
       } catch (error) {
         console.log(error)
       }
