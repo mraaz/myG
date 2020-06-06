@@ -1,0 +1,498 @@
+$main-shade: #171A1C;
+$secondary-shade: #1D2326;
+$third-shade: #2D363A;
+$main-font: 'Montserrat';
+
+.app-container.home-page .notifications-page {
+
+  .postCompose__container {
+    width: inherit !important;
+    padding: 0;
+  }
+
+  .notifications-container {
+    height: 500px !important;
+    background-color: $main-shade;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    .notifications-menu {
+      float: left;
+      width: 180px;
+      height: inherit;
+      background-color: $secondary-shade;
+      border-right: 1px $third-shade solid;
+      display: inline-block;
+
+      .button-list {
+        position: relative;
+        width: 100% !important;
+        height: 300px;
+        top: 50%;
+        margin-top: -125px;
+      }
+
+      .button {
+        width: 100%;
+        height: 60px;
+        background-color: $secondary-shade;
+        border: 1px $third-shade solid;
+        text-align: left;
+        font-size: 16px/14px;
+        font-family: $main-font;
+        font-weight: 700;
+        color: #fff;
+        padding: 15px 0 18px 20px;
+        box-sizing: border-box;
+        display: block;
+        cursor: pointer;
+
+        &:focus {
+          margin: 0;
+          height: 60px !important;
+          font-size: 16px/14px !important;
+          padding: 0 0 0 20px !important;
+          text-decoration: none;
+          outline: none;
+        }
+
+        &:nth-of-type(2n) {
+          &::before {
+            content: url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Notifications/Approvals.svg');
+            top: 5px;
+            position: relative;
+            margin: 0 12px 0 0;
+          }
+        }
+
+        &:nth-of-type(3n) {
+          &::before {
+            content: url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Notifications/Alerts.svg');
+            top: 5px;
+            position: relative;
+            margin: 0 12px 0 0;
+          }
+        }
+
+        &:nth-of-type(4n) {
+          &::before {
+            content: url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Notifications/Chat.svg');
+            top: 5px;
+            position: relative;
+            margin: 0 12px 0 0;
+          }
+        }
+
+        &:nth-of-type(5n) {
+          &::before {
+            content: url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Notifications/Settings.svg');
+            top: 5px;
+            position: relative;
+            margin: 0 12px 0 0;
+          }
+        }
+      }
+
+      .active {
+        width: calc(100% + 2px);
+        background-color: $main-shade;
+        border-right: 2px $main-shade solid;
+        box-sizing: none;
+      }
+    }
+
+    .notifications-content {
+      height: inherit;
+      width: calc(100% - 180px);
+      display: inline-block;
+      padding: 20px;
+      box-sizing: border-box;
+      overflow-y: scroll;
+    }
+  }
+
+  .upcoming-game {
+    margin-top: 10px;
+    width: 100%;
+    height: 160px !important;
+    background-color: $secondary-shade;
+    border-radius: 10px;
+    display: block;
+    cursor: pointer;
+
+    .thumbnail {
+      float: left;
+      width: 120px;
+      height: 160px;
+      border-radius: 10px 0 0 10px;
+      text-align: center;
+      display: inline-block;
+
+      .image {
+        width: 120px !important;
+        height: 160px !important;
+        border-radius: 10px 0 0 10px;
+      }
+
+      .default-image {
+        top: 50%;
+        position: relative;
+        margin-top: -37px;
+      }
+    }
+
+    &:nth-of-type(1n) {
+      .thumbnail {
+        background-color: #652A2A;
+      }
+    }
+
+    &:nth-of-type(2n) {
+      .thumbnail {
+        background-color: #2A2A65;
+      }
+    }
+
+    &:nth-of-type(3n) {
+      .thumbnail {
+        background-color: #568842;
+      }
+    }
+
+    &:nth-of-type(4n) {
+      .thumbnail {
+        background-color: #8D7514;
+      }
+    }
+
+    .content {
+      float: left;
+      width: calc(100% - 240px);
+      height: inherit;
+      display: inline-block;
+      padding: 22px;
+      box-sizing: border-box;
+
+      .header {
+        height: 90px;
+        width: 100%;
+
+        .game-title {
+          font: bold 20px/14px $main-font;
+          text-align: left;
+          color: #fff;
+          display: inline-block;
+        }
+
+        .game-user {
+          float: right;
+          display: inline-block;
+
+          .profile-picture {
+            margin-right: 10px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #fff;
+            display: inline-block;
+            box-shadow: 0 2px 0 #a0a0a0;
+          }
+
+          .user-name {
+            float: right;
+            margin-top: 11px;
+            font-family: $main-font;
+            font-size: 12px;
+            font-weight: 600;
+            color: #fff;
+            display: inline-block;
+          }
+        }
+
+        .match-info {
+          margin-top: 15px;
+
+          .players {
+            font-family: $main-font;
+            font-size: 12px;
+            font-weight: 500;
+            margin: 0 20px 0 0;
+
+            &:before {
+              content: url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/little_green_man.svg');
+              margin-right: 5px;
+            }
+          }
+
+          .start-date-time {
+            font-family: $main-font;
+            font-size: 12px;
+            font-weight: 500;
+
+            &:before {
+              content: url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/clock.svg');
+              margin-right: 5px;
+            }
+          }
+        }
+      }
+
+      .game-tags {
+        width: 100%;
+        display: block;
+
+        .experience {
+          float: right;
+          font-family: $main-font;
+          font-size: 12px;
+          font-weight: 700;
+          color: #D6B9FF;
+          border: 1px #D6B9FF solid;
+          border-radius: 25px;
+          padding: 8px 12px 8px 12px;
+        }
+
+        .region {
+          float: left;
+          font-family: $main-font;
+          font-size: 12px;
+          font-weight: 700;
+          color: #B9B9B9;
+          border: 1px #B9B9B9 solid;
+          border-radius: 6px;
+          padding: 8px 12px 8px 12px;
+        }
+      }
+    }
+
+    .time {
+      width: 120px;
+      height: inherit;
+      background-color: $third-shade;
+      border-radius: 0 10px 10px 0;
+      font-family: $main-font;
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+      text-align: center;
+      display: inline-block;
+
+      .time-align {
+        position: relative;
+        top: 50%;
+        margin-top: -40px;
+        height: 80px;
+      }
+
+      .time-info {
+        font-size: 60px !important;
+        font-weight: 700 !important;
+      }
+    }
+
+    .start-soon {
+      background-color: #E5C746 !important;
+    }
+  }
+
+  .top-tabs {
+    width: 100%;
+    height: 62px;
+    border-bottom: 1px #101214 solid;
+    margin-bottom: 30px;
+
+    .tab-button {
+      height: 61px;
+      width: 25%;
+      background-color: transparent !important;
+      font-family: $main-font;
+      font-size: 14px/14px;
+      font-weight: 500;
+      color: #fff;
+      text-align: center;
+      border: none;
+      display: inline-block;
+      box-sizing: border-box;
+      cursor: pointer;
+      
+      &:focus {
+        outline: none;
+      }
+
+      &:active {
+        outline: none;
+      }
+    }
+
+    .active {
+      border-bottom: 2px #E5C746 solid;
+    }
+  }
+
+  .top-actions {
+    height: 60px;
+    margin: 20px 0 20px 0;
+    display: block;
+    
+    .actions {
+      float: right;
+      
+      .action {
+        margin-right: 20px;
+        padding: 8px 10px 8px 10px;
+        background-color: #E5C746;
+        font-family: $main-font;
+        font-size: 12px/11px;
+        font-weight: 700;
+        color: #000;
+        border: none;
+        border-radius: 5px;
+        display: inline-block;
+        cursor: pointer;
+  
+        &:focus {
+          outline: none;
+        }
+  
+        &:active {
+          outline: none;
+        }
+      }
+    }
+  }
+
+  .notification {
+    width: 100%;
+    height: 90px;
+    background-color: $secondary-shade;
+    border-radius: 4px;
+    margin: 0 0 25px 0;
+
+    .notification-user-avatar {
+      position: relative;
+      top: -10px;
+      left: -10px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #fff;
+      padding: 5px;
+      box-sizing: border-box;
+    }
+
+    .notification-content {
+      margin-left: 20px;
+
+      .notification-description {
+        max-width: 60%;
+        font-family: $main-font;
+        font-size: 12px;
+        color: #93A4A5;
+        font-weight: 700;
+        line-height: 160%;
+        display: inline-block;
+      
+        .notification-username {
+          font-size: 14px !important;
+          color: #fff !important;
+        }
+
+        .notification-type {
+          color: #fff !important;
+        }
+
+        .notification-link {
+          color: #fff !important;
+          text-decoration: underline;
+        }
+      }
+
+      .notification-options {
+        float: right;
+        margin-right: 15px;
+        display: inline-block;
+
+        .notification-time {
+          text-align: right;
+          font-size: 14px;
+          color: #fff;
+          font-weight: 700;
+          display: block;
+        }
+  
+        .notification-actions {
+          margin-top: 20px;
+          display: block;
+
+          .action {
+            font-family: $main-font;
+            font-size: 12/11px;
+            font-weight: 700;
+            color: #fff;
+            padding: 8px 14px 8px 14px;
+            border: none;
+            border-radius: 4px 4px 0 0;
+            display: inline-block;
+            cursor: pointer;
+
+            &:focus {
+              outline: none;
+            }
+
+            &:active {
+              outline: none;
+            }
+          }
+          
+          .accept {
+            margin-right: 20px;
+            background-color: #446F62;
+          }
+
+          .decline {
+            background-color: #804545;
+          }
+        }
+      }
+    }
+  }
+
+  .alert {
+    height: 70px;
+  }
+
+  .endline {
+    height: 70px;
+    padding: 20px 10px 0 10px;
+    border-top: 1px #384952 solid;
+    font-family: $main-font;
+    font-size: 12px;
+    color: #93A4A5;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .settings {
+    .option {
+      width: 100%;
+      height: 70px;
+      padding: 20px;
+      border-bottom: 1px #384952 solid;
+      display: block;
+
+      .title {
+        font-family: $main-font;
+        font-size: 14px/22px;
+        font-weight: 400;
+        color: #fff;
+      }
+
+      &:last-of-type {
+        border: none;
+      }
+    }
+  }
+}
+

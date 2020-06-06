@@ -22,6 +22,7 @@ export default class Notifications extends Component {
     })
   }
 
+
   isActive = (tab) => {
     return this.state.activeTab === tab
   }
