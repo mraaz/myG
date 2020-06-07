@@ -275,9 +275,9 @@ export default class ScheduleGames extends Component {
     showFilterTypeInput[id] = true
     this.setState({ showFilterTypeInput, inputValue, showOverlay: true })
   }
-  handleSavefilterInputChnage = (e, id, value) => {
+  handleSavefilterInputChnage = (e, id, filterPayload) => {
     const inputValue = e.target.value
-    this.setState({ inputValue, filterId: id })
+    this.setState({ inputValue, filterId: id, filterPayload })
   }
 
   handleInputKeyDown = (e) => {
@@ -299,7 +299,7 @@ export default class ScheduleGames extends Component {
   }
 
   update_Filter_Name = async () => {
-    const { inputValue = '', filterId = '' } = this.state
+    const { inputValue = '', filterId = '', filterPayload = '' } = this.state
     if (!inputValue) {
       toast.error(<Toast_style text={'Please enter filter name first.'} />)
       return
@@ -307,6 +307,7 @@ export default class ScheduleGames extends Component {
     try {
       const saveFilter = await axios.post('/api/SavedFiltersScheduleGameController/updateFilter', {
         name: inputValue,
+        payload: filterPayload,
       })
       if (saveFilter) {
         this.setState({ showFilterTypeInput: {}, inputValue: '' })
@@ -548,7 +549,7 @@ export default class ScheduleGames extends Component {
                             <input
                               type='text'
                               className='filter__Input'
-                              onChange={(e) => this.handleSavefilterInputChnage(e, k.id)}
+                              onChange={(e) => this.handleSavefilterInputChnage(e, k.id, k.payload)}
                               value={inputValue}
                               onKeyDown={this.handleInputKeyDown}
                             />
