@@ -309,7 +309,7 @@ export default class ScheduleGames extends Component {
         name: inputValue,
       })
       if (saveFilter) {
-        this.setState({ showFilterTypeInput: {}, inputValue: '', showOverlay: false })
+        this.setState({ showFilterTypeInput: {}, inputValue: '' })
         this.getFilter()
       }
     } catch (error) {
