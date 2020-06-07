@@ -305,7 +305,7 @@ export default class ScheduleGames extends Component {
       return
     }
     try {
-      const saveFilter = await axios.post('/api/SavedFiltersScheduleGameController', {
+      const saveFilter = await axios.post('/api/SavedFiltersScheduleGameController/updateFilter', {
         name: inputValue,
       })
       if (saveFilter) {
