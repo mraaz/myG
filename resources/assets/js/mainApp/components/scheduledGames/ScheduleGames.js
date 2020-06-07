@@ -19,6 +19,11 @@ export default class ScheduleGames extends Component {
       if (scheduleGames.data.latestScheduledGames.length > 0) {
         this.setState({ scheduleGames: scheduleGames.data.latestScheduledGames })
       }
+    } else {
+      const scheduleGames = await getScheduleGames({ counter: 1 })
+      if (scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
+        this.setState({ scheduleGames: scheduleGames.data.latestScheduledGames })
+      }
     }
   }
 
