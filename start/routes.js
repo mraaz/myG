@@ -97,7 +97,6 @@ Route.post('/api/ScheduleGame', 'ScheduleGameController.store')
 Route.get('/api/ScheduleGame/delete/:id/:reason', 'ScheduleGameController.destroy')
 //Route.get('/api/ScheduleGame', 'ScheduleGameController.show')
 Route.get('/api/ScheduleGame/:id', 'ScheduleGameController.show_one')
-Route.post('/api/ScheduleGame/update_vacany', 'ScheduleGameController.update_vacany')
 Route.post('/api/ScheduleGame/getAdmin', 'ScheduleGameController.getAdmin')
 
 Route.get('/api/ArchiveScheduleGame/:id', 'Archive_ScheduleGameController.show_one')
@@ -190,7 +189,6 @@ Route.get(
   '/api/notifications/getunread_archive_schedule_game/:archive_schedule_game_id/:activity_type',
   'NotificationController.getunread_archive_schedule_game'
 )
-Route.post('/api/notifications/addScheduleGame/attendance', 'NotificationController.addScheduleGame_attendance')
 Route.post(
   '/api/notifications/updateRead_Status_schedule_game/:schedule_game_id/:activity_type',
   'NotificationController.updateRead_Status_schedule_game'
