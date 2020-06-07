@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import moment from 'moment'
 
+const defaultThumbnails = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Notifications/myG_icon.svg'
+
 export default class GameList extends Component {
   constructor() {
     super()
@@ -26,11 +28,13 @@ export default class GameList extends Component {
           {/* My game list start here */}
           {scheduleGames.length > 0 &&
             scheduleGames.map((game) => {
+              const image = null
+              const scheduledGamePicture = (
+                <img src={image == null ? defaultThumbnails : image} className={image == null ? 'default-image' : 'image'} />
+              )
               return (
                 <div className='mygames'>
-                  <div className='gameImage'>
-                    <img src='https://scontent.fdel20-1.fna.fbcdn.net/v/t1.0-9/101379557_1122093438157270_4919549497542967296_n.jpg?_nc_cat=100&_nc_sid=730e14&_nc_ohc=TFifTmgEhSMAX9hMl7s&_nc_ht=scontent.fdel20-1.fna&oh=00403f8d95cce0121f5996fbc96d61cd&oe=5EFB813E' />
-                  </div>
+                  <div className='gameImage'>{scheduledGamePicture}</div>
                   <div className='game__attributes'>
                     <div className='first__row'>
                       <h1 className='game__name'>{game.game_name}</h1>
