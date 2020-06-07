@@ -5,7 +5,7 @@ const SavedFiltersScheduleGame = use('App/Models/SavedFiltersScheduleGame')
 class SavedFiltersScheduleGameController {
   async store({ auth, request, response }) {
     if (auth.user) {
-      if (/['/.%#$,;`\\]/.test(request.input('content'))) {
+      if (/['/.%#$,;`\\]/.test(request.input('name'))) {
         return false
       }
       try {
@@ -14,8 +14,11 @@ class SavedFiltersScheduleGameController {
           name: request.input('name').trim(),
           payload: JSON.stringify(request.input('payload')),
         })
-        return 'Saved'
+        return newSavedFilter
       } catch (error) {
+        if (error.code == 'ER_DUP_ENTRY') {
+          return 'ER_DUP_ENTRY'
+        }
         console.log(error)
       }
     }
@@ -36,15 +39,22 @@ class SavedFiltersScheduleGameController {
   }
 
   async updateFilter({ auth, request, response }) {
+    if (/['/.%#$,;`\\]/.test(request.input('name'))) {
+      return false
+    }
     if (auth.user) {
       try {
         const updateFilter = await SavedFiltersScheduleGame.query()
-          .where({ user_id: auth.user.id, name: request.input('name') })
+          .where({ id: request.input('id') })
           .update({
+            name: request.input('name'),
             payload: JSON.stringify(request.input('payload')),
           })
         return 'Saved successfully'
       } catch (error) {
+        if (error.code == 'ER_DUP_ENTRY') {
+          return 'ER_DUP_ENTRY'
+        }
         console.log(error)
       }
     } else {
@@ -57,8 +67,7 @@ class SavedFiltersScheduleGameController {
       try {
         const byebyebye = await Database.table('saved_filters_schedule_games')
           .where({
-            user_id: auth.user.id,
-            name: request.input('name'),
+            id: request.input('id'),
           })
           .delete()
 

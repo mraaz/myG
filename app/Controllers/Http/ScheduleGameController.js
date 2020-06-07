@@ -16,6 +16,7 @@ const Archive_schedule_games_transController = use('./Archive_schedule_games_tra
 const GameNameController = use('./GameNameController')
 const Attendee = use('App/Models/Attendee')
 const InGame_fieldsController = use('./InGame_fieldsController')
+const GameTagController = use('./GameTagController')
 
 class ScheduleGameController {
   async store({ auth, request, response }) {
@@ -149,18 +150,28 @@ class ScheduleGameController {
           }
         }
 
-        if (request.input('tags') != null && request.input('tags').lenght > 0) {
-          var arrTags = request.input('tags').split(',')
+        if (request.input('tags') != null && request.input('tags').length > 0) {
+          var arrTags = JSON.parse(request.input('tags'))
+          for (var i = 0; i < arrTags.length; i++) {
+            if (arrTags[i].game_tag_id == null) {
+              if (/['/.%#$;`\\]/.test(arrTags[i].value)) {
+                continue
+              }
+              let game_tags_Controller = new GameTagController()
+              const game_tag_id = await game_tags_Controller.store({ auth }, arrTags[i].value)
 
-          if (arrTags != '') {
-            for (var i = 0; i < arrTags.length; i++) {
               const create_arrTags = await ScheduleGamesTags.create({
                 schedule_games_id: newScheduleGame.id,
-                game_tag_id: arrTags[i],
+                game_tag_id: game_tag_id,
+              })
+            } else {
+              const create_arrTags = await ScheduleGamesTags.create({
+                schedule_games_id: newScheduleGame.id,
+                game_tag_id: arrTags[i].game_tag_id,
               })
 
               const update_counter = await GameTags.query()
-                .where({ id: arrTags[i] })
+                .where({ id: arrTags[i].game_tag_id })
                 .increment('counter', 1)
             }
           }
@@ -591,10 +602,21 @@ class ScheduleGameController {
       var latestScheduledGames = await Database.from('schedule_games')
         .innerJoin('users', 'users.id', 'schedule_games.user_id')
         .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
-        .where('schedule_games.id', '=', request.params.id)
+        .where('schedule_games.schedule_games_GUID', '=', request.params.schedule_games_GUID)
         .select('*', 'users.id as user_id', 'schedule_games.id as id', 'schedule_games.created_at', 'schedule_games.updated_at')
 
+      if (!latestScheduledGames.length) {
+        return
+      }
+
       latestScheduledGames = await InGame_fieldsController.find_InGame_Fields_NOT_paginate(latestScheduledGames)
+
+      let getAllTags = await Database.from('schedule_games_tags')
+        .innerJoin('game_tags', 'game_tags.id', 'schedule_games_tags.game_tag_id')
+        .where({ schedule_games_id: latestScheduledGames[0].id })
+        .select('content')
+
+      latestScheduledGames[0].tags = getAllTags
 
       return {
         latestScheduledGames,
@@ -604,22 +626,22 @@ class ScheduleGameController {
     }
   }
 
-  async show_one({ auth, request, response }) {
-    try {
-      var getOne = await Database.from('schedule_games')
-        .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
-        .select('*', 'schedule_games.id as id', 'schedule_games.created_at', 'schedule_games.updated_at')
-        .where('schedule_games.id', '=', request.params.id)
-
-      getOne = await InGame_fieldsController.find_InGame_Fields_NOT_paginate(getOne)
-
-      return {
-        getOne,
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  // async show_one({ auth, request, response }) {
+  //   try {
+  //     var getOne = await Database.from('schedule_games')
+  //       .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+  //       .select('*', 'schedule_games.id as id', 'schedule_games.created_at', 'schedule_games.updated_at')
+  //       .where('schedule_games.id', '=', request.params.id)
+  //
+  //     getOne = await InGame_fieldsController.find_InGame_Fields_NOT_paginate(getOne)
+  //
+  //     return {
+  //       getOne,
+  //     }
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
 
   async update_vacany({ auth }, schedule_game_id, vacancy) {
     try {

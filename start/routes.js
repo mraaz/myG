@@ -96,7 +96,7 @@ Route.get('/api/ScheduleGame/additional_game_info/:id', 'ScheduleGameController.
 Route.post('/api/ScheduleGame', 'ScheduleGameController.store')
 Route.get('/api/ScheduleGame/delete/:id/:reason', 'ScheduleGameController.destroy')
 //Route.get('/api/ScheduleGame', 'ScheduleGameController.show')
-Route.get('/api/ScheduleGame/:id', 'ScheduleGameController.show_one')
+//Route.get('/api/ScheduleGame/:id', 'ScheduleGameController.show_one')
 Route.post('/api/ScheduleGame/getAdmin', 'ScheduleGameController.getAdmin')
 
 Route.get('/api/ArchiveScheduleGame/:id', 'Archive_ScheduleGameController.show_one')
@@ -104,7 +104,7 @@ Route.get('/api/ArchiveScheduleGame/filtered_by_one/:id', 'Archive_ScheduleGameC
 
 Route.post('/api/ScheduleGame/scheduleSearchResults', 'ScheduleGameController.scheduleSearchResults')
 
-Route.get('/api/ScheduleGame/filtered_by_one/:id', 'ScheduleGameController.filtered_by_one')
+Route.get('/api/ScheduleGame/filtered_by_one/:schedule_games_GUID', 'ScheduleGameController.filtered_by_one')
 
 Route.get('/api/myScheduledGames/:limitstr/:exclude_expired', 'ScheduleGameController.myScheduledGames')
 Route.get('/api/myScheduledGamesCount/:id', 'ScheduleGameController.myScheduledGamesCount')
@@ -123,7 +123,6 @@ Route.post('/api/Tags/getTagsforGames', 'TagController.getTagsforGames')
 Route.post('/api/Tags/getTopTagsforGames', 'TagController.getTopTagsforGames')
 Route.post('/api/Tags', 'TagController.store')
 
-Route.post('/api/GameTags', 'GameTagController.store')
 Route.get('/api/GameTags/getTopGameTags', 'GameTagController.getTopGameTags')
 Route.post('/api/GameTags/getGameTags', 'GameTagController.getGameTags')
 

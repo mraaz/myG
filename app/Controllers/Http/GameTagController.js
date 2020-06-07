@@ -4,14 +4,14 @@ const GameTags = use('App/Models/GameTag')
 const Database = use('Database')
 
 class GameTagController {
-  async store({ auth, request, response }) {
+  async store({ auth }, content) {
     if (auth.user) {
-      if (/['/.%#$,;`\\]/.test(request.input('content'))) {
-        return false
-      }
+      // if (/['/.%#$,;`\\]/.test(request.input('content'))) {
+      //   return false
+      // }
       try {
         const newGameTag = await GameTags.create({
-          content: request.input('content').trim(),
+          content: content.trim(),
           user_id: auth.user.id,
         })
         return newGameTag.id
