@@ -547,11 +547,6 @@ export default class ScheduledGamePost_Dota2 extends Component {
         show_full: false,
         show_pending: false,
       })
-
-      const no_vacany = axios.post('/api/ScheduleGame/update_vacany/', {
-        vacancy: true,
-        id: this.props.props.schedule_game.schedule_games_id,
-      })
     } catch (error) {
       console.log(error)
     }

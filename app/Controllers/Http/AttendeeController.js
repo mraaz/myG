@@ -308,10 +308,21 @@ class AttendeeController {
 
         if (get_all_attendees.length > 1) {
           const get_host = await Database.from('schedule_games')
-            .select('user_id')
+            .select('user_id', 'limit')
             .where({ id: request.input('schedule_game_id') })
 
           userStatController.update_total_number_of(get_host[0].user_id, 'total_number_of_games_hosted')
+
+          if (get_host[0].limit != 0) {
+            let scheduleGameController = new ScheduleGameController()
+
+            if (get_all_attendees.length >= get_host[0].limit) {
+              scheduleGameController.update_vacany({ auth }, request.params.id, false)
+            } else {
+              //This is a way to clean up this field incase its incorrectly placed false
+              scheduleGameController.update_vacany({ auth }, request.params.id, true)
+            }
+          }
         }
 
         for (var i = 0; i < get_all_attendees.length; i++) {
