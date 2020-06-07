@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom'
 const AddGameContainer = () => {
   // State
   const [isGameListedModalOpen, updateIsGameListedModalOpen] = useState(false)
-  const [isInviteModalOpen, updateIsInviteModalOpen] = useState(false)
+  const [isInviteModalOpen, updateIsInviteModalOpen] = useState(true)
   const [isInvitesSentsModalOpen, updateIsInvitesSentsModalOpen] = useState(false)
   const [isSubmitting, updateIsSubmitting] = useState(false)
   const [state, updateComponentState] = useState({ selectedSettings: SETTINGS_ENUMS.MAIN, isGameNameField: false })
@@ -152,8 +152,11 @@ const AddGameContainer = () => {
           <MyGInput
             value={`https://myG.gg/scheduledGames/${gameLink}`}
             containerStyles={{ width: '318px' }}
-            inputStyles={{ width: '100%', outline: 'none' }}
+            inputStyles={{ width: '100%', outline: 'none', cursor: 'pointer' }}
             refInput={gameLinkRef}
+            onClick={() => {
+              window.open(`https://myG.gg/scheduledGames/${gameLink}`, '_blank')
+            }}
             readOnly>
             <div style={{ marginTop: '9px', marginLeft: '15px', cursor: 'pointer' }} onClick={copyToClipboard}>
               <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Link.svg' height='18' width='18' />

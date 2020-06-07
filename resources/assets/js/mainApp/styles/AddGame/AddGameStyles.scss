@@ -13,6 +13,7 @@
     margin-bottom: 20px;
     max-height: -webkit-fill-available;
     overflow: scroll;
+    scrollbar-width: none;
   }
   &__field-title {
     color: #fff;
@@ -92,7 +93,7 @@
     flex: 1;
   }
   &__optional-view-container {
-    height: fit-content;
+    height: min-content;
     border: 1px solid #707070;
     border-radius: 18px;
   }

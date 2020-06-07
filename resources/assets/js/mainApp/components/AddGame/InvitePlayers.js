@@ -290,7 +290,12 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
   const getPlayersList = () => {
     return (
       <div>
-        <InfiniteScroll dataLength={keywordSearchResults.friendsList.length} next={fetchMoreData} hasMore={moreplease} height={402}>
+        <InfiniteScroll
+          dataLength={keywordSearchResults.friendsList.length}
+          next={fetchMoreData}
+          hasMore={moreplease}
+          height={402}
+          style={{ scrollbarWidth: 'none' }}>
           <UserTab
             dataList={keywordSearchResults.friendsList}
             dataObject={keywordSearchResults.searchResults}
@@ -351,6 +356,9 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
           },
           control: {
             width: '439px',
+          },
+          menuList: {
+            backgroundColor: '#1d2326',
           },
         }}
         isValidNewOption={() => {
@@ -418,7 +426,12 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
   const getGroupsList = () => {
     return (
       <div>
-        <InfiniteScroll dataLength={groupsKeywordSearchResults.groupsList.length} next={fetchGroupsData} hasMore={false} height={402}>
+        <InfiniteScroll
+          dataLength={groupsKeywordSearchResults.groupsList.length}
+          next={fetchGroupsData}
+          hasMore={false}
+          height={402}
+          style={{ scrollbarWidth: 'none' }}>
           <UserTab
             dataList={groupsKeywordSearchResults.groupsList}
             dataObject={groupsKeywordSearchResults.searchResults}
@@ -433,7 +446,12 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
   const getCommunitiesList = () => {
     return (
       <div>
-        <InfiniteScroll dataLength={communitiesKeywordSearchResults.communitiesList.length} next={fetchCommunitiesData} height={402}>
+        <InfiniteScroll
+          dataLength={communitiesKeywordSearchResults.communitiesList.length}
+          next={fetchCommunitiesData}
+          height={402}
+          style={{ scrollbarWidth: 'none' }}>
+          >
           <UserTab
             dataList={communitiesKeywordSearchResults.communitiesList}
             dataObject={communitiesKeywordSearchResults.searchResults}
