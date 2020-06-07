@@ -3,7 +3,8 @@ import axios from 'axios'
 
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import Select from 'react-select'
-import { Game_name_values, Disable_keys } from '../Utility_Function'
+import { Game_name_values, Disable_keys, Toast_style } from '../Utility_Function'
+import { toast } from 'react-toastify'
 
 import { region_options, visibility_options, date_options, platform_options, experience_options } from './option'
 
@@ -43,6 +44,7 @@ export default class ScheduleGames extends Component {
       filterTypeArray: ['game_name'],
       showFilterType: false,
       showFilters: false,
+      showOverlay: false,
     }
     this.filterGroup = {
       game_name: 'Game Name',
@@ -51,9 +53,8 @@ export default class ScheduleGames extends Component {
       start_time: 'Start Time',
       platform: 'Platform',
       description: 'Description',
-      exclude_full_games: 'Exclude Full Game',
-      tags: 'Tags',
     }
+    this.filterNameRef = React.createRef()
   }
 
   componentDidMount() {
@@ -175,17 +176,23 @@ export default class ScheduleGames extends Component {
   }
 
   handleClearFilterClick = () => {
-    this.setState({ filterTypeArray: ['game_name'] })
+    this.setState({
+      filterTypeArray: ['game_name'],
+      showFilterType: false,
+      showFilters: false,
+      showSaveFilterInput: false,
+      showOverlay: false,
+    })
   }
 
   handleSaveFilterClick = async () => {
     const { filterName = '', isRequesting = false, filterTypeArray = [] } = this.state
     if (!filterName) {
-      alert('Please enter filter name first.')
+      toast.error(<Toast_style text={'Please enter filter name first.'} />)
       return
     }
     if (isRequesting) {
-      alert('Please wait.')
+      toast.warn(<Toast_style text={'Please wait.Requesting...'} />)
       return
     }
     this.setState({ isRequesting: true })
@@ -199,7 +206,7 @@ export default class ScheduleGames extends Component {
         payload,
       })
       if (saveFilter) {
-        this.setState({ showSaveFilterInput: false, isRequesting: false, filterName: '' })
+        this.setState({ showSaveFilterInput: false, isRequesting: false, filterName: '', showOverlay: false })
         this.getFilter()
       }
     } catch (error) {
@@ -209,17 +216,20 @@ export default class ScheduleGames extends Component {
   }
 
   handleSaveFilterAction = () => {
-    this.setState({ showSaveFilterInput: true })
+    this.setState({ showSaveFilterInput: true, showOverlay: true })
+    setTimeout(() => {
+      this.filterNameRef.current.focus()
+    }, 10)
   }
   handleCloseSaveFilterInput = () => {
     this.setState({ showSaveFilterInput: false })
   }
 
   handleSavedFilterChange = () => {
-    this.setState({ showFilters: !this.state.showFilters, showFilterType: false })
+    this.setState({ showFilters: !this.state.showFilters, showFilterType: false, showOverlay: true })
   }
   handleAddFilterChange = () => {
-    this.setState({ showFilterType: !this.state.showFilterType, showFilters: false })
+    this.setState({ showFilterType: !this.state.showFilterType, showFilters: false, showOverlay: true })
   }
   handleSaveFilterName = (e) => {
     const filterName = e.target.value
@@ -227,19 +237,23 @@ export default class ScheduleGames extends Component {
     if (!isVaid) {
       if (filterName.length < 250) {
         this.setState({ filterName })
+      } else {
+        toast.error(<Toast_style text={'You can not enter more than 250 Char.'} />)
       }
     } else {
-      alert('Please enter a valid Filter Name.')
+      toast.error(<Toast_style text={'Please enter a valid Filter Name.'} />)
     }
   }
   handleFilterTypeClick = (k) => {
-    const { filterTypeArray = [], showFilterType } = this.state
-    if (!filterTypeArray.includes(k)) {
-      filterTypeArray.push(k)
-      this.setState({ filterTypeArray, showFilterType: !showFilterType })
-    } else {
-      const filterType = filterTypeArray.filter((name) => name != k)
-      this.setState({ filterTypeArray: filterType, showFilterType: !showFilterType })
+    if (k != 'game_name') {
+      const { filterTypeArray = [], showFilterType } = this.state
+      if (!filterTypeArray.includes(k)) {
+        filterTypeArray.push(k)
+        this.setState({ filterTypeArray, showFilterType: !showFilterType, showOverlay: false })
+      } else {
+        const filterType = filterTypeArray.filter((name) => name != k)
+        this.setState({ filterTypeArray: filterType, showFilterType: !showFilterType, showOverlay: false })
+      }
     }
   }
 
@@ -252,18 +266,18 @@ export default class ScheduleGames extends Component {
         filterTypeArray.push(key)
       }
     })
-    this.setState({ filterTypeArray, showFilters: false })
+    this.setState({ filterTypeArray, showFilters: false, showOverlay: false })
   }
 
   handleEditFilterType = (e, id, inputValue) => {
     e.preventDefault()
     const showFilterTypeInput = {}
     showFilterTypeInput[id] = true
-    this.setState({ showFilterTypeInput, inputValue })
+    this.setState({ showFilterTypeInput, inputValue, showOverlay: true })
   }
-  handleSavefilterInputChnage = (e, id, value) => {
+  handleSavefilterInputChnage = (e, id, filterPayload) => {
     const inputValue = e.target.value
-    this.setState({ inputValue, filterId: id })
+    this.setState({ inputValue, filterId: id, filterPayload })
   }
 
   handleInputKeyDown = (e) => {
@@ -285,14 +299,15 @@ export default class ScheduleGames extends Component {
   }
 
   update_Filter_Name = async () => {
-    const { inputValue = '', filterId = '' } = this.state
+    const { inputValue = '', filterId = '', filterPayload = '' } = this.state
     if (!inputValue) {
-      alert('Please enter filter name first.')
+      toast.error(<Toast_style text={'Please enter filter name first.'} />)
       return
     }
     try {
-      const saveFilter = await axios.post('/api/SavedFiltersScheduleGameController', {
+      const saveFilter = await axios.post('/api/SavedFiltersScheduleGameController/updateFilter', {
         name: inputValue,
+        payload: filterPayload,
       })
       if (saveFilter) {
         this.setState({ showFilterTypeInput: {}, inputValue: '' })
@@ -310,12 +325,22 @@ export default class ScheduleGames extends Component {
         name,
       })
       if (deleteFilter) {
-        this.setState({ showFilters: false })
+        this.setState({ showFilters: false, showOverlay: false })
         this.getFilter()
       }
     } catch (error) {
       console.log(error)
     }
+  }
+
+  handleOverlayClick = () => {
+    this.setState({
+      showFilterTypeInput: {},
+      showFilterType: false,
+      showFilters: false,
+      showSaveFilterInput: false,
+      showOverlay: false,
+    })
   }
 
   render() {
@@ -331,6 +356,7 @@ export default class ScheduleGames extends Component {
       savedFiltersObj = [],
       showFilterTypeInput = [],
       inputValue = '',
+      showOverlay = false,
     } = this.state
     if (this.props.initialData == 'loading') {
       return <h1>Loading</h1>
@@ -466,34 +492,42 @@ export default class ScheduleGames extends Component {
               }
             })}
 
-            <div className='saveFilterAction__section'>
-              <button type='button' disabled={isRequesting} className='saveFilter__button' onClick={this.handleSaveFilterAction}>
-                Save Filter
-              </button>
-              {showSaveFilterInput && (
-                <div className='saveFilterInput__container'>
-                  <div className='input_name'>
-                    <div className='input__label'>Filter Name</div>
-                    <input
-                      type='text'
-                      value={filterName}
-                      placeholder='Name your filter'
-                      onChange={this.handleSaveFilterName}
-                      autoComplete='off'
-                    />
+            {filterTypeArray.length > 1 && (
+              <div className='saveFilterAction__section'>
+                <button type='button' disabled={isRequesting} className='saveFilter__button' onClick={this.handleSaveFilterAction}>
+                  Save Filter
+                </button>
+                {showSaveFilterInput && (
+                  <div className='saveFilterInput__container'>
+                    <div className='input_name'>
+                      <div className='input__label'>Filter Name</div>
+                      <input
+                        type='text'
+                        ref={this.filterNameRef}
+                        value={filterName}
+                        placeholder='Name your filter'
+                        onChange={this.handleSaveFilterName}
+                        autoComplete={+new Date()}
+                        maxlength='250'
+                      />
+                    </div>
+                    <button
+                      type='button'
+                      disabled={isRequesting || !filterName}
+                      className='filter__save_button'
+                      onClick={this.handleSaveFilterClick}>
+                      Save
+                    </button>
+                    <div className='filterInput__close' onClick={this.handleCloseSaveFilterInput}>
+                      X
+                    </div>
                   </div>
-                  <button type='button' disabled={isRequesting} className='filter__save_button' onClick={this.handleSaveFilterClick}>
-                    Save
-                  </button>
-                  <div className='filterInput__close' onClick={this.handleCloseSaveFilterInput}>
-                    X
-                  </div>
+                )}
+                <div className='clearFilter' onClick={this.handleClearFilterClick}>
+                  Clear
                 </div>
-              )}
-              <div className='clearFilter' onClick={this.handleClearFilterClick}>
-                Clear
               </div>
-            </div>
+            )}
           </div>
         </div>
         <div className='viewGame__addMoreFilter'>
@@ -515,7 +549,7 @@ export default class ScheduleGames extends Component {
                             <input
                               type='text'
                               className='filter__Input'
-                              onChange={(e) => this.handleSavefilterInputChnage(e, k.id)}
+                              onChange={(e) => this.handleSavefilterInputChnage(e, k.id, k.payload)}
                               value={inputValue}
                               onKeyDown={this.handleInputKeyDown}
                             />
@@ -538,6 +572,7 @@ export default class ScheduleGames extends Component {
               </div>
             )}
           </div>
+          <div className='filter_dot'></div>
           <div className='addFilter__option'>
             <div className='filter__header' onClick={this.handleAddFilterChange}>
               Add Filter
@@ -560,6 +595,7 @@ export default class ScheduleGames extends Component {
               </div>
             )}
           </div>
+          {showOverlay && <div className='filter__overlay' onClick={this.handleOverlayClick}></div>}
         </div>
       </Fragment>
     )
