@@ -57,7 +57,7 @@ export default class GameList extends Component {
                       <div className='game__tags'>
                         <div className='game__tag'>Initiator</div>
                       </div>
-                      <div className='game__level'>{game.experience}</div>
+                      {game.experience && <div className='game__level'>{game.experience}</div>}
                     </div>
                   </div>
                 </div>
