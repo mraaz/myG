@@ -28,7 +28,7 @@ export default class GameList extends Component {
           {/* My game list start here */}
           {scheduleGames.length > 0 &&
             scheduleGames.map((game) => {
-              const image = null
+              const image = game.game_img || null
               const scheduledGamePicture = (
                 <img src={image == null ? defaultThumbnails : image} className={image == null ? 'default-image' : 'image'} />
               )
@@ -46,7 +46,9 @@ export default class GameList extends Component {
                     <div className='second__row'>
                       <div className='gamer__count'>
                         <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/little_green_man.svg' />
-                        <span>0 / 3 Gamers</span>
+                        <span>
+                          {game.no_of_gamers} / {game.limit} Gamers
+                        </span>
                       </div>
                       <div className='game__timestamp'>
                         <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/clock.svg' />
@@ -55,7 +57,11 @@ export default class GameList extends Component {
                     </div>
                     <div className='third__row'>
                       <div className='game__tags'>
-                        <div className='game__tag'>Initiator</div>
+                        {game.tags &&
+                          game.tags.length > 0 &&
+                          game.tags.map((tag) => {
+                            return <div className='game__tag'>Initiator</div>
+                          })}
                       </div>
                       {game.experience && <div className='game__level'>{game.experience}</div>}
                     </div>
