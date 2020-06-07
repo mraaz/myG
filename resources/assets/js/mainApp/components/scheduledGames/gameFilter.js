@@ -47,7 +47,7 @@ export default class ScheduleGames extends Component {
       showOverlay: false,
     }
     this.filterGroup = {
-      game_name: 'Game Name',
+      game_name: 'Game Title',
       region: 'Region',
       experience: 'Experience Level',
       start_time: 'Start Time',
@@ -306,6 +306,7 @@ export default class ScheduleGames extends Component {
     }
     try {
       const saveFilter = await axios.post('/api/SavedFiltersScheduleGameController/updateFilter', {
+        id: filterId,
         name: inputValue,
         payload: filterPayload,
       })
