@@ -7,6 +7,7 @@ import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import Modal from 'react-modal'
 import { toast } from 'react-toastify'
 import { Game_name_values, Disable_keys, Toast_style, Game_name_Tags } from './Utility_Function'
+import { refreshGames } from '../../common/game'
 
 Modal.setAppElement('#app')
 
@@ -297,6 +298,7 @@ export default class AddEsportsExp extends Component<*, State> {
           achievements: this.state.achievements_box,
           skills: myTags,
         })
+        refreshGames()
       } catch (error) {
         console.log(error)
       }

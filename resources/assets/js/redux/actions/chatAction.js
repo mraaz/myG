@@ -245,6 +245,13 @@ export function fetchChatsAction() {
   }
 }
 
+export function fetchGamesAction(userId) {
+  return {
+    type: 'FETCH_GAMES',
+    payload: fetchGames(userId),
+  }
+}
+
 export function fetchChatAction(chatId) {
   return {
     type: 'FETCH_CHAT',
