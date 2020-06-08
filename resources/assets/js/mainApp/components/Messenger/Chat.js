@@ -71,7 +71,7 @@ export class Chat extends React.Component {
   handleMessageListScroll = () => {
     const messageList = this.messageListRef.current
     if (!messageList) return
-    const hasScrolledEnough = messageList.scrollHeight - messageList.scrollTop > 500
+    const hasScrolledEnough = messageList.scrollHeight - messageList.scrollTop > 750
     this.setState({ oldMessages: hasScrolledEnough })
     if (messageList.scrollTop !== 0 || this.props.loadingMessages || this.props.noMoreMessages) return
     const nextPage = this.state.messagePaginationPage + 1
