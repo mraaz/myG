@@ -369,7 +369,7 @@ export default function reducer(
     }
 
     case 'UPDATE_CHAT_FULFILLED': {
-      logger.log('CHAT', `Redux -> Chat Updated: `, action.meta)
+      logger.log('CHAT', `Redux -> Chat Updated: `, action.meta, action.payload)
       const { chatId, muted, isPrivate, title, icon, selfDestruct } = action.meta
       if (muted === undefined && title === undefined && icon === undefined && selfDestruct === undefined && isPrivate === undefined)
         return state
@@ -379,7 +379,7 @@ export default function reducer(
       if (isPrivate !== undefined) chat.isPrivate = isPrivate
       if (title !== undefined) chat.title = title
       if (icon !== undefined) chat.icon = icon
-      if (selfDestruct !== undefined) chat.selfDestruct = selfDestruct
+      if (selfDestruct !== undefined && action.payload.success) chat.selfDestruct = selfDestruct
       return {
         ...state,
         chats,

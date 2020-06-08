@@ -466,6 +466,7 @@ export class Chat extends React.Component {
           editLastMessage={this.editLastMessage}
           onBlur={() => this.setState({ replyingTo: null })}
           setTyping={(isTyping) => !this.props.isGuest && this.props.setTyping(this.props.chatId, isTyping)}
+          toggleSelfDestruct={() => this.props.updateChat(this.props.chatId, { selfDestruct: !this.props.selfDestruct })}
         />
       </div>
     )

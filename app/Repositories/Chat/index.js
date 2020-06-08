@@ -360,7 +360,7 @@ class ChatRepository {
 
   async updateChat({ requestingUserId, requestedChatId, icon, title, owners, moderators, muted, isPrivate, markAsRead, selfDestruct }) {
     if (markAsRead) await this._markAsRead({ requestingUserId, requestedChatId });
-    if (selfDestruct !== undefined) await this._setSelfDestruct({ requestingUserId, requestedChatId, selfDestruct });
+    if (selfDestruct !== undefined) return await this._setSelfDestruct({ requestingUserId, requestedChatId, selfDestruct });
     if (muted !== undefined) await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', requestingUserId).update({ muted });
     if (isPrivate !== undefined) await Chat.query().where('id', requestedChatId).update({ isPrivate });
     if (icon !== undefined) await Chat.query().where('id', requestedChatId).update({ icon });
@@ -1004,10 +1004,17 @@ class ChatRepository {
     return new DefaultSchema({ success: true });
   }
 
-  async _setSelfDestruct({ requestedChatId, selfDestruct }) {
-    await Chat.query().where('id', requestedChatId).update({ self_destruct: selfDestruct });
-    const payload = { chatId: requestedChatId, selfDestruct };
-    this._notifyChatEvent({ chatId: requestedChatId, action: 'selfDestruct', payload });
+  async _setSelfDestruct({ requestingUserId, requestedChatId, selfDestruct }) {
+    const { chat } = await this.fetchChatInfo({ requestedChatId });
+    const isOwner = !chat.isGroup || chat.owners.find(contactId => parseInt(contactId) === parseInt(requestingUserId));
+    const isModerator = !chat.isGroup || chat.moderators.find(contactId => parseInt(contactId) === parseInt(requestingUserId));
+    const canSetSelfDestruct = isOwner || isModerator;
+    if (canSetSelfDestruct) {
+      await Chat.query().where('id', requestedChatId).update({ self_destruct: selfDestruct });
+      const payload = { chatId: requestedChatId, selfDestruct };
+      this._notifyChatEvent({ chatId: requestedChatId, action: 'selfDestruct', payload });
+    }
+    return new DefaultSchema({ success: canSetSelfDestruct });
   }
 
   async _notifyChatUpdated({ requestedChatId }) {
