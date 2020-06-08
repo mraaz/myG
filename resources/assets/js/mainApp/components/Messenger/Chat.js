@@ -289,10 +289,37 @@ export class Chat extends React.Component {
   }
 
   renderMuteBanner = () => {
-    if (!this.props.muted) return null
+    const blocked = !this.props.isGroup && this.props.blockedUsers.map((user) => user.userId).includes(this.props.contactId);
+    if (!this.props.muted || blocked) return null
     return (
       <div className='chat-component-muted-banner'>
         This chat is currently muted
+        <div className='chat-component-muted-button clickable' onClick={() => this.props.updateChat(this.props.chatId, { muted: false })}>
+          Unmute
+        </div>
+      </div>
+    )
+  }
+
+  renderBlockedBanner = () => {
+    const blocked = !this.props.isGroup && this.props.blockedUsers.map((user) => user.userId).includes(this.props.contactId);
+    if (!blocked || this.props.muted) return null
+    return (
+      <div className='chat-component-muted-banner'>
+        This chat is currently blocked
+        <div className='chat-component-muted-button clickable' onClick={() => this.props.unblockUser(this.props.contactId)}>
+          Unblock
+        </div>
+      </div>
+    )
+  }
+
+  renderMutedAndBlockedBanner = () => {
+    const blocked = !this.props.isGroup && this.props.blockedUsers.map((user) => user.userId).includes(this.props.contactId);
+    if (!blocked || !this.props.muted) return null
+    return (
+      <div className='chat-component-muted-banner'>
+        This chat is currently blocked and muted
         <div className='chat-component-muted-button clickable' onClick={() => this.props.updateChat(this.props.chatId, { muted: false })}>
           Unmute
         </div>
@@ -463,6 +490,8 @@ export class Chat extends React.Component {
       <div key={this.props.chatId} className={`chat-component-base ${extraClass}`}>
         {this.renderHeader()}
         {!this.state.settings && !this.props.minimised && this.renderMuteBanner()}
+        {!this.state.settings && !this.props.minimised && this.renderBlockedBanner()}
+        {!this.state.settings && !this.props.minimised && this.renderMutedAndBlockedBanner()}
         {this.state.attachment && this.renderAttachment()}
         {this.state.settings && !this.props.minimised && this.renderSettings()}
         {!this.state.settings && !this.props.minimised && this.renderBody()}
