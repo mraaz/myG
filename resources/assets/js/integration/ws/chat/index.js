@@ -10,6 +10,12 @@ let hasDisconnected = false;
 let ws = null;
 let subscription = null;
 
+export function monitorSocketConnection() {
+  setInterval(() => {
+    if (store.getState().socket.disconnected) attemptSocketConnection();
+  }, 1000);
+}
+
 export function attemptSocketConnection() {
 
   ws = socket.connect().ws;
