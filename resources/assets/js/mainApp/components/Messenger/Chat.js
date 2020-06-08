@@ -80,8 +80,8 @@ export class Chat extends React.Component {
   }
 
   componentDidUpdate() {
-    const isValidMessage = message => !message.isLastRead && !message.isEntryLog && !message.isDateDivisor;
-    const lastMessageId = (this.props.messages.slice().reverse().find(isValidMessage) || {}).messageId;
+    const isValidMessage = (message) => !message.isLastRead && !message.isEntryLog && !message.isDateDivisor
+    const lastMessageId = (this.props.messages.slice().reverse().find(isValidMessage) || {}).messageId
     this.markAsRead(lastMessageId)
     this.scrollToLastMessage(lastMessageId)
   }
@@ -287,7 +287,7 @@ export class Chat extends React.Component {
   }
 
   renderMuteBanner = () => {
-    const blocked = !this.props.isGroup && this.props.blockedUsers.map((user) => user.userId).includes(this.props.contactId);
+    const blocked = !this.props.isGroup && this.props.blockedUsers.map((user) => user.userId).includes(this.props.contactId)
     if (!this.props.muted || blocked) return null
     return (
       <div className='chat-component-muted-banner'>
@@ -300,7 +300,7 @@ export class Chat extends React.Component {
   }
 
   renderBlockedBanner = () => {
-    const blocked = !this.props.isGroup && this.props.blockedUsers.map((user) => user.userId).includes(this.props.contactId);
+    const blocked = !this.props.isGroup && this.props.blockedUsers.map((user) => user.userId).includes(this.props.contactId)
     if (!blocked || this.props.muted) return null
     return (
       <div className='chat-component-muted-banner'>
@@ -313,7 +313,7 @@ export class Chat extends React.Component {
   }
 
   renderMutedAndBlockedBanner = () => {
-    const blocked = !this.props.isGroup && this.props.blockedUsers.map((user) => user.userId).includes(this.props.contactId);
+    const blocked = !this.props.isGroup && this.props.blockedUsers.map((user) => user.userId).includes(this.props.contactId)
     if (!blocked || !this.props.muted) return null
     return (
       <div className='chat-component-muted-banner'>
@@ -330,6 +330,7 @@ export class Chat extends React.Component {
       <div className='chat-component-body' ref={this.messageListRef}>
         {this.renderLoadingIndicator()}
         {this.renderEmptyChatMessage()}
+        {this.renderGameMessage()}
         <ChatMessageList
           userId={this.props.userId}
           chatId={this.props.chatId}
@@ -372,6 +373,16 @@ export class Chat extends React.Component {
         }>
         <p>Messages you send to this chat are secured with end-to-end encryption.</p>
         <p>Please keep your encryption key safe, otherwise you will LOSE your chat history. Click for more info.</p>
+      </div>
+    )
+  }
+
+  renderGameMessage = () => {
+    if (!this.props.gameMessage) return
+    return (
+      <div
+        className='chat-component-empty-chat-message'>
+        <p>{this.props.gameMessage}</p>
       </div>
     )
   }
@@ -476,7 +487,7 @@ export class Chat extends React.Component {
   }
 
   render() {
-    logger.log("RENDER", "ChatComponent");
+    logger.log('RENDER', 'ChatComponent')
     if (!this.state.settings && !this.props.minimised && !this.props.privateKey) return this.renderEncryptedChat()
     let extraClass = ''
     if (this.props.maximised) extraClass += 'chat-maximised'
@@ -521,7 +532,13 @@ export function mapStateToProps(state, props) {
     chatSubtitle = `${onlineCount}/${memberCount} online`
   }
   chat.privateKey = deserializeKey(chat.privateKey)
-  const messages = withDatesAndLogsAndLastReads(chat.messages || [], chat.entryLogs || [], contactsMap || {}, chat.lastReads || {}, !!guests.length)
+  const messages = withDatesAndLogsAndLastReads(
+    chat.messages || [],
+    chat.entryLogs || [],
+    contactsMap || {},
+    chat.lastReads || {},
+    !!guests.length
+  )
   return {
     messages,
     loadingMessages: chat.loadingMessages,
@@ -531,6 +548,7 @@ export function mapStateToProps(state, props) {
     contactsMap,
     isGroup,
     group: chat,
+    gameMessage: chat.gameMessage || '',
     icon: chat.icon || contact.icon || '',
     title: chat.title || contact.name || '',
     subtitle: chatSubtitle || contactSubtitle || '',

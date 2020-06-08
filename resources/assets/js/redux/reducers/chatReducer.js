@@ -87,6 +87,7 @@ export default function reducer(
       chat.muted = action.payload.chat.muted
       chat.icon = action.payload.chat.icon
       chat.individualGameId = action.payload.chat.individualGameId
+      chat.gameMessage = action.payload.chat.gameMessage
       const messages = action.payload.messages
         .filter((message) => message.messageId > action.payload.chat.lastCleared)
         .filter((message) => !action.payload.chat.deletedMessages.includes(message.messageId))
