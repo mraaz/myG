@@ -1,8 +1,9 @@
 import { store } from '../redux/Store'
 import { openChatAction } from '../redux/actions/chatAction'
 import { isOneDayBehind, isYesterday } from './date'
+import { getAssetUrl } from './assets'
 
-export function withDatesAndLogsAndLastReads(messages, entryLogs, contactsMap, lastReads) {
+export function withDatesAndLogsAndLastReads(messages, entryLogs, contactsMap, lastReads, hasGuests) {
   entryLogs = entryLogs.sort((e1, e2) => e1.createdAt - e2.createdAt)
   const enrichedMessages = []
   let lastDate = new Date()
@@ -36,7 +37,14 @@ export function withDatesAndLogsAndLastReads(messages, entryLogs, contactsMap, l
     enrichedMessages.push(message)
   })
   reversedEntryLogs.forEach((entryLog) => enrichedMessages.push({ ...entryLog, isEntryLog: true, messageId: `EntryLog-${entryLog.id}` }))
-  return enrichedMessages.reverse()
+  const unreversedMessages = enrichedMessages.reverse()
+  if (hasGuests) {
+    const guestContact = { contactId: 'GUEST', icon: getAssetUrl('ic_guest_icon') };
+    const lastReadMessage = enrichedMessages.find(message => message.isLastRead);
+    if (lastReadMessage) lastReadMessage.contacts.push(guestContact)
+    else unreversedMessages.push({ isLastRead: true, contacts: [guestContact], messageId: 'LastReadGuest' });
+  }
+  return unreversedMessages
 }
 
 export function openChat(chatId) {

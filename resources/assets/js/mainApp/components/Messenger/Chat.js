@@ -42,7 +42,6 @@ export class Chat extends React.Component {
     this.state = {
       lastMessageId: null,
       lastRead: 0,
-      lastReads: {},
       wasEncrypted: !props.privateKey,
       currentlyTyping: '',
       editing: false,
@@ -81,7 +80,8 @@ export class Chat extends React.Component {
   }
 
   componentDidUpdate() {
-    const lastMessageId = (this.props.messages[this.props.messages.length - 1] || {}).messageId
+    const isValidMessage = message => !message.isLastRead && !message.isEntryLog && !message.isDateDivisor;
+    const lastMessageId = (this.props.messages.slice().reverse().find(isValidMessage) || {}).messageId;
     this.markAsRead(lastMessageId)
     this.scrollToLastMessage(lastMessageId)
   }
@@ -89,13 +89,11 @@ export class Chat extends React.Component {
   scrollToLastMessage = (lastMessageId) => {
     const typing = JSON.stringify(this.props.typing)
     const isTyping = typing !== this.state.currentlyTyping
-    const hasNewReadIndicators = JSON.stringify(this.props.lastReads) !== JSON.stringify(this.state.lastReads)
     const hasNewMessage = this.state.lastMessageId !== lastMessageId
     const gotDecrypted = this.state.wasEncrypted && this.props.privateKey
-    if (isTyping || hasNewReadIndicators || hasNewMessage || gotDecrypted) {
+    if (isTyping || hasNewMessage || gotDecrypted) {
       const state = {}
       if (isTyping) state.currentlyTyping = typing
-      if (hasNewReadIndicators) state.lastReads = this.props.lastReads
       if (hasNewMessage) state.lastMessageId = lastMessageId
       if (gotDecrypted) state.wasEncrypted = false
       this.setState(state)
@@ -523,7 +521,7 @@ export function mapStateToProps(state, props) {
     chatSubtitle = `${onlineCount}/${memberCount} online`
   }
   chat.privateKey = deserializeKey(chat.privateKey)
-  const messages = withDatesAndLogsAndLastReads(chat.messages || [], chat.entryLogs || [], contactsMap || {}, chat.lastReads || {})
+  const messages = withDatesAndLogsAndLastReads(chat.messages || [], chat.entryLogs || [], contactsMap || {}, chat.lastReads || {}, !!guests.length)
   return {
     messages,
     loadingMessages: chat.loadingMessages,
