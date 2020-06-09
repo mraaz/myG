@@ -44,10 +44,7 @@ export default class GameList extends Component {
                   <div className='gameImage'>{scheduledGamePicture}</div>
                   <div className='game__attributes'>
                     <div className='first__row'>
-                      <h1
-                        className='game__name'
-                        title={game.game_name}
-                        onClick={(e) => this.props.getSingleGameData(game.schedule_games_GUID)}>
+                      <h1 className='game__name' title={game.game_name} onClick={(e) => this.props.getSingleGameData(game.id, game)}>
                         {game.game_name}
                       </h1>
                       <div className='game__playerList'>
@@ -73,8 +70,8 @@ export default class GameList extends Component {
                       <div className='game__tags'>
                         {game.tags &&
                           game.tags.length > 0 &&
-                          game.tags.map((tag) => {
-                            return <div className='game__tag'>Initiator</div>
+                          game.tags.slice(0, 7).map((tag) => {
+                            return <div className='game__tag'>{tag.content}</div>
                           })}
                       </div>
                       {game.experience && <div className='game__level'>{game.experience}</div>}

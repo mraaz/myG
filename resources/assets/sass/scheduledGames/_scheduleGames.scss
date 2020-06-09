@@ -529,7 +529,10 @@
           margin-bottom: 20px;
         }
         .gameTags__value {
+          display: flex;
+          flex-wrap: wrap;
           .singleTags {
+            margin: 0 5px 5px 0;
             max-width: 70px;
             height: 24px;
             border: 1px solid #d6b9ff;
@@ -628,7 +631,7 @@
         .mygames {
           display: flex;
           justify-content: start;
-          height: 163px;
+          min-height: 163px;
           background: #1d2326 0% 0% no-repeat padding-box;
           border-radius: 4px;
           opacity: 1;
@@ -728,7 +731,7 @@
             .second__row {
               display: flex;
               justify-content: flex-start;
-              height: 70px;
+              height: 30px;
               .gamer__count,
               .game__timestamp {
                 display: flex;
@@ -749,6 +752,11 @@
               display: flex;
               .game__tags {
                 flex: auto;
+                flex: auto;
+                display: flex;
+                max-width: 300px;
+                flex-wrap: wrap;
+                margin-right: auto;
                 .game__tag {
                   max-width: 90px;
                   height: 24px;
@@ -761,6 +769,7 @@
                   white-space: nowrap;
                   overflow: hidden;
                   text-overflow: ellipsis;
+                  margin: 0 5px 5px 0;
                 }
               }
               .game__level {

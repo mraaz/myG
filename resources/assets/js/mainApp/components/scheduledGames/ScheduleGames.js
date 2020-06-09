@@ -11,6 +11,8 @@ export default class ScheduleGames extends Component {
     this.state = {
       show_full_games: false,
       singleScheduleGamesPayload: {},
+      selected_game: {},
+      showRightSideInfo: false,
     }
   }
 
@@ -30,12 +32,10 @@ export default class ScheduleGames extends Component {
     }
   }
 
-  getSingleGameData = async (schedule_games_GUID) => {
-    const scheduleGames = await axios.get(`api/ScheduleGame/additional_game_info/${schedule_games_GUID}`)
+  getSingleGameData = async (id, game) => {
+    const scheduleGames = await axios.get(`/api/ScheduleGame/additional_game_info/${id}`)
     if (scheduleGames.data && Object.keys(scheduleGames.data).length > 0) {
-      console.log(scheduleGames.data, 'scheduleGames.data ')
-
-      this.setState({ singleScheduleGamesPayload: scheduleGames.data })
+      this.setState({ singleScheduleGamesPayload: scheduleGames.data, selected_game: { ...game }, showRightSideInfo: true })
     }
   }
 
@@ -66,7 +66,15 @@ export default class ScheduleGames extends Component {
   render() {
     const { params = {} } = this.props.routeProps.match
     const { id = '' } = params
-    const { savedFilter, addFilter, scheduleGames, show_full_games, singleScheduleGamesPayload } = this.state
+    const {
+      savedFilter,
+      addFilter,
+      scheduleGames,
+      show_full_games,
+      singleScheduleGamesPayload,
+      selected_game,
+      showRightSideInfo,
+    } = this.state
     if (this.props.initialData == 'loading') {
       return <h1>Loading</h1>
     }
@@ -80,7 +88,11 @@ export default class ScheduleGames extends Component {
             handleExcludesFullGames={this.handleExcludesFullGames}
             getSingleGameData={this.getSingleGameData}
           />
-          <GameDetails singleScheduleGamesPayload={singleScheduleGamesPayload} />
+          <GameDetails
+            singleScheduleGamesPayload={singleScheduleGamesPayload}
+            selected_game={selected_game}
+            showRightSideInfo={showRightSideInfo}
+          />
         </div>
       </section>
     )
