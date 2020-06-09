@@ -10,6 +10,7 @@ class ChatSchema extends Schema {
       table.integer('game_id').unsigned().index()
       table.integer('individual_game_id').unsigned().index()
       table.text('icon')
+      table.text('game_message')
       table.string('title', 64).index()
       table.text('last_message')
       table.text('public_key')

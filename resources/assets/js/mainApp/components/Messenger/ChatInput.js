@@ -51,9 +51,13 @@ export default class ChatInput extends React.Component {
   onKeyDown = (event) => {
     const code = event.keyCode || event.which
     const arrowUpKeyCode = 38
+    const selftDestructKeyCode = 83
     if (code === arrowUpKeyCode) {
       this.setState({ input: '' })
       this.props.editLastMessage()
+    }
+    if (code === selftDestructKeyCode && event.ctrlKey) {
+      this.props.toggleSelfDestruct()
     }
   }
 

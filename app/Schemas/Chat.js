@@ -5,6 +5,7 @@ class Chat {
     this.chatId = forceInt(data.chatId)
     this.individualGameId = forceInt(data.individualGameId)
     this.gameId = forceInt(data.gameId)
+    this.gameMessage = forceString(data.gameMessage)
     this.muted = forceBoolean(data.muted)
     this.isPrivate = forceBoolean(data.isPrivate)
     this.isGroup = forceBoolean(data.isGroup)

@@ -6,6 +6,7 @@ const UserRepository = require('../../Repositories/User')
 class UserChatController {
   async storePublicKey({ auth, request, response }) {
     const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
     const publicKey = request.only('publicKey').publicKey
     log('USER', `User ${requestingUserId} storing Public Key ${publicKey}`)
     const { success, error } = await UserRepository.storePublicKey({ requestingUserId, publicKey })
@@ -14,6 +15,7 @@ class UserChatController {
 
   async sendEncryptionEmail({ auth, request, response }) {
     const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
     const { publicKey, pin } = request.only(['publicKey', 'pin'])
     log('USER', `User ${requestingUserId} requesting Encryption Email for ${pin}`)
     const { success, error } = await UserRepository.sendEncryptionEmail({ requestingUserId, publicKey, pin })
@@ -29,6 +31,7 @@ class UserChatController {
 
   async favoriteGame({ auth, params, response }) {
     const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
     const requestedGameId = params.gameId
     log('USER', `User ${requestingUserId} favoriting Game ${requestedGameId}`)
     const { success, error } = await UserRepository.favoriteGame({ requestingUserId, requestedGameId })
@@ -37,6 +40,7 @@ class UserChatController {
 
   async unfavoriteGame({ auth, params, response }) {
     const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
     const requestedGameId = params.gameId
     log('USER', `User ${requestingUserId} unfavoriting Game ${requestedGameId}`)
     const { success, error } = await UserRepository.unfavoriteGame({ requestingUserId, requestedGameId })
@@ -45,6 +49,7 @@ class UserChatController {
 
   async updateGameIcon({ auth, params, request, response }) {
     const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
     const requestedGameId = params.gameId
     const icon = request.only(['icon']).icon
     log('USER', `User ${requestingUserId} updating Icon for Game ${requestedGameId}`)
@@ -54,6 +59,7 @@ class UserChatController {
 
   async fetchContacts({ auth, response }) {
     const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
     log('USER', `User ${requestingUserId} requesting Contacts`)
     const { contacts } = await UserRepository.fetchContacts({ requestingUserId })
     return response.send({ contacts })
@@ -61,6 +67,7 @@ class UserChatController {
 
   async fetchContact({ auth, params, response }) {
     const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
     const requestedContactId = params.contactId
     log('USER', `User ${requestingUserId} requesting Contact ${requestedContactId}`)
     const { contact } = await UserRepository.fetchContact({ requestingUserId, requestedContactId })
@@ -69,6 +76,7 @@ class UserChatController {
 
   async fetchStatus({ auth, response }) {
     const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
     log('USER', `User ${requestingUserId} requesting Status`)
     const { status } = await UserRepository.fetchStatus({ requestingUserId })
     return response.send({ status })
@@ -76,6 +84,7 @@ class UserChatController {
 
   async updateStatus({ auth, request, response }) {
     const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
     const requestedStatus = request.only('status').status
     const forceStatus = request.only(['forceStatus']).forceStatus
     log('USER', `User ${requestingUserId} changing Status to ${requestedStatus} (${forceStatus ? 'Forced' : 'Not Forced'})`)
@@ -85,6 +94,7 @@ class UserChatController {
 
   async searchUsers({ auth, request, response }) {
     const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
     const query = request.only('query').query
     log('USER', `User ${requestingUserId} searching for other users with ${query}`)
     const { users } = await UserRepository.searchUsers({ requestingUserId, query })
