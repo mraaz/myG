@@ -421,6 +421,7 @@ export default class ScheduleGames extends Component {
                       name='region-box'
                       isClearable
                       className='viewGame__name'
+                      classNamePrefix='filter'
                     />
                   </div>
                 )
@@ -435,6 +436,7 @@ export default class ScheduleGames extends Component {
                       name='experience-box'
                       isClearable
                       className='viewGame__name'
+                      classNamePrefix='filter'
                     />
                   </div>
                 )
@@ -449,6 +451,7 @@ export default class ScheduleGames extends Component {
                       name='platform-box'
                       isClearable
                       className='viewGame__name'
+                      classNamePrefix='filter'
                     />
                   </div>
                 )
@@ -463,6 +466,7 @@ export default class ScheduleGames extends Component {
                       name='date-time-box'
                       isClearable
                       className='viewGame__name'
+                      classNamePrefix='filter'
                     />
                   </div>
                 )
@@ -503,6 +507,7 @@ export default class ScheduleGames extends Component {
                       name='visibility-box'
                       isClearable
                       className='viewGame__name'
+                      classNamePrefix='filter'
                     />
                   </div>
                 )
