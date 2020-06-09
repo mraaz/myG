@@ -129,35 +129,48 @@
             color: #ffffff;
           }
         }
-        .css-kj6f9i-menu {
-          top: 50px;
-          background-color: #4d565a;
-          color: #ffffff;
-          border-radius: 4px;
-          margin-bottom: 8px;
-          margin-top: 8px;
-          position: absolute;
-          width: 100%;
-          z-index: 1;
-          box-sizing: border-box;
-        }
-        .css-dpec0i-option {
-          background-color: #000000;
-          color: inherit;
-          cursor: default;
-          display: block;
-          font-size: inherit;
-          padding: 8px 12px;
-          width: 100%;
-          -webkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-          -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-          box-sizing: border-box;
-          &:hover {
-            background-color: rgba(0, 0, 0, 0);
+
+        .filter {
+          &__menu {
+            top: 50px;
+            background-color: #4d565a;
             color: #ffffff;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            margin-top: 8px;
+            position: absolute;
+            width: 100%;
+            z-index: 1;
+            box-sizing: border-box;
+          }
+
+          &__option {
+            background-color: #0b0f14;
+            color: inherit;
+            cursor: pointer;
+            display: block;
+            font-size: inherit;
+            padding: 8px 12px;
+            width: 100%;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            box-sizing: border-box;
+            &:hover {
+              background-color: rgba(0, 0, 0, 0);
+              color: #0b0f14;
+            }
+
+            &--is-focused {
+              background-color: #e5c746 !important;
+              color: #0b0f14;
+            }
+          }
+
+          &__group {
+            padding: 0;
           }
         }
       }
@@ -531,6 +544,7 @@
         .gameTags__value {
           display: flex;
           flex-wrap: wrap;
+          margin-bottom: 20px;
           .singleTags {
             margin: 0 5px 5px 0;
             max-width: 70px;
@@ -602,7 +616,7 @@
     .gameList {
       flex: 1;
       border-right: 1px solid #384952;
-      min-height: 570px;
+      min-height: 100vh;
       padding: 20px;
       .gameList_head__option {
         display: flex;
@@ -626,7 +640,7 @@
       }
       .gameList__box {
         position: relative;
-        max-height: 550px;
+        max-height: 100vh;
         overflow-y: scroll;
         .mygames {
           display: flex;
@@ -707,6 +721,7 @@
                 text-overflow: ellipsis;
                 width: 200px;
                 margin-top: 10px;
+                cursor: pointer;
               }
               .game__playerList {
                 flex: auto;

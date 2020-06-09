@@ -13,6 +13,7 @@ export default class ScheduleGames extends Component {
       singleScheduleGamesPayload: {},
       selected_game: {},
       showRightSideInfo: false,
+      commentData: {},
     }
   }
 
@@ -34,6 +35,10 @@ export default class ScheduleGames extends Component {
 
   getSingleGameData = async (id, game) => {
     const scheduleGames = await axios.get(`/api/ScheduleGame/additional_game_info/${id}`)
+    const allComments = await axios.get(`/api/comments/get_right_card_comment_info/${id}`)
+    if (allComments.data) {
+      this.setState({ commentData: { ...allComments.data } })
+    }
     if (scheduleGames.data && Object.keys(scheduleGames.data).length > 0) {
       this.setState({ singleScheduleGamesPayload: scheduleGames.data, selected_game: { ...game }, showRightSideInfo: true })
     }
@@ -74,6 +79,7 @@ export default class ScheduleGames extends Component {
       singleScheduleGamesPayload,
       selected_game,
       showRightSideInfo,
+      commentData,
     } = this.state
     if (this.props.initialData == 'loading') {
       return <h1>Loading</h1>
@@ -92,6 +98,7 @@ export default class ScheduleGames extends Component {
             singleScheduleGamesPayload={singleScheduleGamesPayload}
             selected_game={selected_game}
             showRightSideInfo={showRightSideInfo}
+            commentData={commentData}
           />
         </div>
       </section>

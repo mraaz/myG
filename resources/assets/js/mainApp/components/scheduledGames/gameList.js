@@ -63,7 +63,7 @@ export default class GameList extends Component {
                       </div>
                       <div className='game__timestamp'>
                         <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/clock.svg' />
-                        <span>{moment(game.start_date_time).format('YYYY-MM-DD HH:mm')}</span>
+                        <span>{moment(game.start_date_time).format('LL')}</span>
                       </div>
                     </div>
                     <div className='third__row'>
@@ -71,7 +71,11 @@ export default class GameList extends Component {
                         {game.tags &&
                           game.tags.length > 0 &&
                           game.tags.slice(0, 7).map((tag) => {
-                            return <div className='game__tag'>{tag.content}</div>
+                            return (
+                              <div key={tag.content} className='game__tag'>
+                                {tag.content}
+                              </div>
+                            )
                           })}
                       </div>
                       {game.experience && <div className='game__level'>{game.experience}</div>}

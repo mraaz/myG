@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react'
 import moment from 'moment'
 const buttonStatus = {
-  0: 'Join',
-  1: 'Joined',
-  3: 'Pending',
+  '0': 'Join',
+  '1': 'Joined',
+  '3': 'Pending',
 }
 export default class GameDetails extends Component {
   constructor() {
@@ -12,11 +12,13 @@ export default class GameDetails extends Component {
   }
 
   render() {
-    const { singleScheduleGamesPayload = {}, selected_game = {}, showRightSideInfo } = this.props
-    const { additional_game_info = [], approved_gamers = [], join_status } = singleScheduleGamesPayload
+    const { singleScheduleGamesPayload = {}, selected_game = {}, showRightSideInfo, commentData } = this.props
+    const { additional_game_info = [], approved_gamers = [], join_status = '' } = singleScheduleGamesPayload
     const [game_additional_data = {}] = additional_game_info
     const { game_name = '', experience = '', no_of_gamers = '', tags = [] } = selected_game
-    const { start_date_time = '', end_date_time = '', limit, description = '' } = game_additional_data
+    const { start_date_time = '', end_date_time = '', limit, description = '', platform = '', region = '' } = game_additional_data
+
+    const { no_of_comments = [], lastComment = '' } = commentData
 
     return (
       <div className='gameDetails'>
@@ -37,7 +39,15 @@ export default class GameDetails extends Component {
                 </div>
                 <div className='game__level'>{experience}</div>
               </div>
-              <div className='game__action__buttton'>{join_status && <button type='button'>{buttonStatus[join_status]}</button>}</div>
+              {join_status == 0 ? (
+                <div className='game__action__buttton'>
+                  <button type='button'>{`Join`}</button>
+                </div>
+              ) : (
+                <div className='game__action__buttton'>
+                  <button type='button'>{buttonStatus[`${join_status}`]}</button>
+                </div>
+              )}
             </div>
             <div className='gameDetails__body'>
               <div className='filter__label'>Game Details</div>
@@ -53,19 +63,25 @@ export default class GameDetails extends Component {
                     return <div className='singleTags'>{tag.content}</div>
                   })}
               </div>
+              {platform && <div className='gameTime__label'>Platform</div>}
+              {platform && <div className='gameTime__value'>{platform}</div>}
+              {region && <div className='gameTime__label'>Region</div>}
+              {region && <div className='gameTime__value'>{region}</div>}
             </div>
-            <div className='gameDetaiils__footer'>
-              <div className='view__all__comments'>View all (3) comments</div>
-              <div className='game__comment'>
-                <div className='profile__image'></div>
-                <div className='arrow'></div>
-                <span className='author'>Alexander Bischof</span>
-                <span>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-                  aliqua.
-                </span>
+            {lastComment && (
+              <div className='gameDetaiils__footer'>
+                <div className='view__all__comments'>View all (3) comments</div>
+                <div className='game__comment'>
+                  <div className='profile__image'></div>
+                  <div className='arrow'></div>
+                  <span className='author'>Alexander Bischof</span>
+                  <span>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+                    aliqua.
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
           </Fragment>
         )}
       </div>
