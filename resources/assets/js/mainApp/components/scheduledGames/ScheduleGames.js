@@ -10,6 +10,7 @@ export default class ScheduleGames extends Component {
     super()
     this.state = {
       show_full_games: false,
+      singleScheduleGamesPayload: {},
     }
   }
 
@@ -26,6 +27,15 @@ export default class ScheduleGames extends Component {
       if (scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
         this.setState({ scheduleGames: scheduleGames.data.latestScheduledGames })
       }
+    }
+  }
+
+  getSingleGameData = async (schedule_games_GUID) => {
+    const scheduleGames = await axios.get(`api/ScheduleGame/additional_game_info/${schedule_games_GUID}`)
+    if (scheduleGames.data && Object.keys(scheduleGames.data).length > 0) {
+      console.log(scheduleGames.data, 'scheduleGames.data ')
+
+      this.setState({ singleScheduleGamesPayload: scheduleGames.data })
     }
   }
 
@@ -56,7 +66,7 @@ export default class ScheduleGames extends Component {
   render() {
     const { params = {} } = this.props.routeProps.match
     const { id = '' } = params
-    const { savedFilter, addFilter, scheduleGames, show_full_games } = this.state
+    const { savedFilter, addFilter, scheduleGames, show_full_games, singleScheduleGamesPayload } = this.state
     if (this.props.initialData == 'loading') {
       return <h1>Loading</h1>
     }
@@ -68,8 +78,9 @@ export default class ScheduleGames extends Component {
             scheduleGames={scheduleGames}
             show_full_games={show_full_games}
             handleExcludesFullGames={this.handleExcludesFullGames}
+            getSingleGameData={this.getSingleGameData}
           />
-          <GameDetails />
+          <GameDetails singleScheduleGamesPayload={singleScheduleGamesPayload} />
         </div>
       </section>
     )

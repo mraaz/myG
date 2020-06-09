@@ -44,7 +44,10 @@ export default class GameList extends Component {
                   <div className='gameImage'>{scheduledGamePicture}</div>
                   <div className='game__attributes'>
                     <div className='first__row'>
-                      <h1 className='game__name' title={game.game_name}>
+                      <h1
+                        className='game__name'
+                        title={game.game_name}
+                        onClick={(e) => this.props.getSingleGameData(game.schedule_games_GUID)}>
                         {game.game_name}
                       </h1>
                       <div className='game__playerList'>
