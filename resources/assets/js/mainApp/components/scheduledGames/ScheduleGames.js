@@ -8,7 +8,9 @@ import axios from 'axios'
 export default class ScheduleGames extends Component {
   constructor() {
     super()
-    this.state = {}
+    this.state = {
+      show_full_games: false,
+    }
   }
 
   async componentDidMount() {
@@ -16,7 +18,7 @@ export default class ScheduleGames extends Component {
     const { id = '' } = params
     if (id) {
       const scheduleGames = await axios.get(`/api/ScheduleGame/filtered_by_one/${id}`)
-      if (scheduleGames.data.latestScheduledGames.length > 0) {
+      if (scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
         this.setState({ scheduleGames: scheduleGames.data.latestScheduledGames })
       }
     } else {
@@ -38,17 +40,23 @@ export default class ScheduleGames extends Component {
       })
     }
   }
-  ScheduleGames = async () => {
-    const scheduleGames = await getScheduleGames(this.state)
+  ScheduleGames = async (data = {}) => {
+    const scheduleGames = await getScheduleGames({ ...this.state, ...data })
     if (scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
       this.setState({ scheduleGames: scheduleGames.data.latestScheduledGames })
     }
+  }
+  handleExcludesFullGames = (e) => {
+    const checked = e.target.checked
+    this.setState({ show_full_games: checked }, () => {
+      this.ScheduleGames({ show_full_games: checked })
+    })
   }
 
   render() {
     const { params = {} } = this.props.routeProps.match
     const { id = '' } = params
-    const { savedFilter, addFilter, scheduleGames } = this.state
+    const { savedFilter, addFilter, scheduleGames, show_full_games } = this.state
     if (this.props.initialData == 'loading') {
       return <h1>Loading</h1>
     }
@@ -56,7 +64,11 @@ export default class ScheduleGames extends Component {
       <section className='viewGame__container'>
         {id == '' && <GameFilter handleChange={this.handleChange} />}
         <div className='gameList__section'>
-          <GameList scheduleGames={scheduleGames} />
+          <GameList
+            scheduleGames={scheduleGames}
+            show_full_games={show_full_games}
+            handleExcludesFullGames={this.handleExcludesFullGames}
+          />
           <GameDetails />
         </div>
       </section>

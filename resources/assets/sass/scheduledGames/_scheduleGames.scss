@@ -10,7 +10,6 @@
     justify-content: center;
     border-bottom: 2px solid #344953;
     .title {
-      margin-left: auto;
       padding: 0;
       font: Bold 20px/14px Montserrat;
       letter-spacing: 0px;
@@ -276,11 +275,14 @@
       letter-spacing: 0px;
       color: #e5c746;
       position: relative;
+      display: flex;
+      align-items: baseline;
       .filter__header {
         color: inherit;
         font: Bold 14px/14px Montserrat;
         letter-spacing: 0px;
         cursor: pointer;
+        margin-right: 10px;
       }
       .filterType__group {
         position: absolute;
@@ -370,7 +372,7 @@
       }
     }
     .addFilter__option {
-      margin-left: 30px;
+      margin-left: 12px;
     }
     .filter_dot {
       width: 8px;
@@ -621,6 +623,8 @@
       }
       .gameList__box {
         position: relative;
+        max-height: 550px;
+        overflow-y: scroll;
         .mygames {
           display: flex;
           justify-content: start;
@@ -658,6 +662,7 @@
               position: relative;
               margin-top: -37px;
               height: 75px;
+              margin-left: 8px;
             }
           }
           &:nth-of-type(1n) {
@@ -698,9 +703,7 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
                 width: 200px;
-                justify-content: left;
-                align-items: center;
-                display: flex;
+                margin-top: 10px;
               }
               .game__playerList {
                 flex: auto;
