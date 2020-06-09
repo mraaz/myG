@@ -491,14 +491,15 @@ class ScheduleGameController {
 
             if (request.input('experience') != null) builder.where('experience', request.input('experience'))
 
-            if (request.input('start_date_time') != null)
-              builder.where('schedule_games.start_date_time', '<=', request.input('start_date_time'))
+            //RAAZ UNDO THIS AFTER VIEW GAME IS COMPLETED BY NITIN!!!! https://github.com/mraaz/myGame/issues/274
+            // if (request.input('start_date_time') != null)
+            //   builder.where('schedule_games.start_date_time', '<=', request.input('start_date_time'))
 
             if (request.input('end_date_time') != null) builder.where('schedule_games.end_date_time', '>=', request.input('end_date_time'))
 
             if (request.input('platform') != null) builder.where('platform', request.input('platform'))
 
-            if (request.input('description') != null) builder.where('description', request.input('description'))
+            if (request.input('description') != null) builder.where('description', 'like', '%' + request.input('description') + '%')
 
             if (request.input('vacancy') == false) builder.where('vacancy', 0)
 

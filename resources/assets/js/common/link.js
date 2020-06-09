@@ -9,14 +9,14 @@ export function handleLink(userId) {
   const url = window.location.href
   const uuid = Array.isArray(url.match(uuidMatcher)) ? url.match(uuidMatcher)[0] : null
   fetchLink(uuid).then(({ link }) => {
-    if (!link) return notifyToast('The Group for this Link was not found :(')
+    if (!link) return notifyToast('The group for this link was not found :(')
     const isValid = !link.expiry || new Date(link.updatedAt).getTime() + link.expiry * 60 * 60 * 1000 >= Date.now()
-    if (!isValid) return notifyToast('This Link has expired :(')
+    if (!isValid) return notifyToast('This link has expired :(')
     const chatId = link.chatId
     acceptInvitation(chatId, [userId]).then((response) => {
-      if (response.error === 'Contacts are Already in Chat.') return notifyToast('You are already in this Group!')
-      store.dispatch(fetchChatsAction());
-      return notifyToast('You have been added to this Group!!')
+      if (response.error === 'Contacts are already in chat.') return notifyToast('You are already in this group!')
+      store.dispatch(fetchChatsAction())
+      return notifyToast('You have been added to this group!!')
     })
   })
 }
