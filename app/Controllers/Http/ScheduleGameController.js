@@ -183,7 +183,6 @@ class ScheduleGameController {
       }
     }
   }
-  async test({ auth, request, response }) {}
 
   async destroy({ auth, request, response }) {
     if (auth.user) {
