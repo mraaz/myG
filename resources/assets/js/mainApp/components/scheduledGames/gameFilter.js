@@ -366,9 +366,6 @@ export default class ScheduleGames extends Component {
       <Fragment>
         <div className='viewGame__header'>
           <div className='title'>Find Games</div>
-          <div className='search__results'>
-            <input type='text' placeholder='Search Results' />
-          </div>
         </div>
         <div className='viewGame__filter'>
           <div className='filter__label'>Filter by</div>
@@ -536,6 +533,10 @@ export default class ScheduleGames extends Component {
             <div className='filter__header' onClick={this.handleSavedFilterChange}>
               Saved Filter
             </div>
+            <img
+              src={' https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/View+Game/Down+Carrot.svg'}
+              onClick={this.handleSavedFilterChange}
+            />
             {showFilters && (
               <div className='filterType__group'>
                 <div className='filterType__head'>Saved Filters</div>
@@ -545,7 +546,9 @@ export default class ScheduleGames extends Component {
                       return (
                         <div className={`filterType__name`} key={`${k.id}_${k.name}`}>
                           {!showFilterTypeInput[k.id] ? (
-                            <span onClick={(e) => this.handleSavedFilterClick(k)}>{k.name}</span>
+                            <span onClick={(e) => this.handleSavedFilterClick(k)} title={k.name}>
+                              {k.name}
+                            </span>
                           ) : (
                             <input
                               type='text'
@@ -578,6 +581,10 @@ export default class ScheduleGames extends Component {
             <div className='filter__header' onClick={this.handleAddFilterChange}>
               Add Filter
             </div>
+            <img
+              src={' https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/View+Game/Down+Carrot.svg'}
+              onClick={this.handleAddFilterChange}
+            />
             {showFilterType && (
               <div className='filterType__group'>
                 <div className='filterType__head'>Add Filters</div>

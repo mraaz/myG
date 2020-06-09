@@ -8,7 +8,7 @@ export async function PullDataFunction(myG) {
     myPlatform = null,
     myDescription_box = null,
     counter = 1,
-    show_full_games = true,
+    show_full_games = myG.show_full_games,
     startDate = moment().utc(),
     tmp_startDate = moment().utc(),
     endDate = moment().utc(),
