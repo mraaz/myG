@@ -6,16 +6,21 @@ import SingleGameDetails from './singlegameDetails'
 import { PullDataFunction as getScheduleGames } from './getScheduleGames'
 import axios from 'axios'
 
+import InfiniteScroll from 'react-infinite-scroll-component'
+
 export default class ScheduleGames extends Component {
   constructor() {
     super()
     this.state = {
       show_full_games: false,
       singleScheduleGamesPayload: {},
+      scheduleGames: [],
       selected_game: {},
       showRightSideInfo: false,
       commentData: {},
       singleView: false,
+      moreplease: true,
+      counter: 1,
     }
   }
 
@@ -49,18 +54,37 @@ export default class ScheduleGames extends Component {
   handleChange = async (data, name) => {
     if (name == 'game_name') {
       this.setState({ ...data }, () => {
-        this.ScheduleGames()
+        this.getScheduleGamesData()
       })
     } else {
       this.setState({ ...data }, () => {
-        this.ScheduleGames()
+        this.getScheduleGamesData()
       })
     }
   }
-  ScheduleGames = async (data = {}) => {
-    const scheduleGames = await getScheduleGames({ ...this.state, ...data })
-    if (scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
-      this.setState({ scheduleGames: scheduleGames.data.latestScheduledGames })
+  getScheduleGamesData = async (data = {}) => {
+    const { counter, scheduleGames = [] } = this.state
+
+    let count = counter + 1
+
+    if (scheduleGames.length > 0) {
+      window.scrollTo(0, document.documentElement.offsetHeight - 4000)
+    }
+    const scheduleGamesRes = await getScheduleGames({ ...this.state, ...data, counter: count })
+
+    if (scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length == 0) {
+      this.setState({
+        moreplease: false,
+      })
+      return
+    }
+
+    if (scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length > 0) {
+      if (count > 1) {
+        this.setState({ scheduleGames: [...scheduleGames, ...scheduleGamesRes.data.latestScheduledGames], counter: count })
+      } else {
+        this.setState({ scheduleGames: scheduleGames.data.latestScheduledGames })
+      }
     }
   }
   handleExcludesFullGames = (e) => {
@@ -84,6 +108,7 @@ export default class ScheduleGames extends Component {
       commentData,
       singleView,
     } = this.state
+
     if (this.props.initialData == 'loading') {
       return <h1>Loading</h1>
     }
@@ -93,12 +118,14 @@ export default class ScheduleGames extends Component {
         <div className={`gameList__section ${singleView ? 'singleGameView__container' : ''}`}>
           {!singleView ? (
             <Fragment>
-              <GameList
-                scheduleGames={scheduleGames}
-                show_full_games={show_full_games}
-                handleExcludesFullGames={this.handleExcludesFullGames}
-                getSingleGameData={this.getSingleGameData}
-              />
+              <InfiniteScroll dataLength={scheduleGames.length} next={this.getScheduleGamesData} hasMore={this.state.moreplease}>
+                <GameList
+                  scheduleGames={scheduleGames}
+                  show_full_games={show_full_games}
+                  handleExcludesFullGames={this.handleExcludesFullGames}
+                  getSingleGameData={this.getSingleGameData}
+                />
+              </InfiniteScroll>
               <GameDetails
                 singleScheduleGamesPayload={singleScheduleGamesPayload}
                 selected_game={selected_game}
