@@ -12,12 +12,21 @@ export default class GameDetails extends Component {
   }
 
   render() {
-    const { singleScheduleGamesPayload = {}, selected_game = {}, showRightSideInfo, commentData } = this.props
-    const { additional_game_info = [], approved_gamers = [], join_status = '' } = singleScheduleGamesPayload
-    const [game_additional_data = {}] = additional_game_info
-    const { game_name = '', experience = '', no_of_gamers = '', tags = [] } = selected_game
-    const { start_date_time = '', end_date_time = '', limit, description = '', platform = '', region = '' } = game_additional_data
-
+    const { scheduleGames = [], showRightSideInfo, commentData } = this.props
+    const { latestScheduledGames, approved_gamers, join_status } = scheduleGames
+    const [scheduleGames_data = {}] = latestScheduledGames
+    const {
+      game_name = '',
+      experience = '',
+      no_of_gamers = '',
+      tags = [],
+      start_date_time = '',
+      end_date_time = '',
+      limit,
+      description = '',
+      platform = '',
+      region = '',
+    } = scheduleGames_data
     const { no_of_comments = [], lastComment = '' } = commentData
 
     return (

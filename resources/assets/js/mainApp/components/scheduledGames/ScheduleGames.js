@@ -1,7 +1,8 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import GameFilter from './gameFilter'
 import GameList from './gameList'
 import GameDetails from './gameDetails'
+import SingleGameDetails from './singlegameDetails'
 import { PullDataFunction as getScheduleGames } from './getScheduleGames'
 import axios from 'axios'
 
@@ -13,6 +14,8 @@ export default class ScheduleGames extends Component {
       singleScheduleGamesPayload: {},
       selected_game: {},
       showRightSideInfo: false,
+      commentData: {},
+      singleView: false,
     }
   }
 
@@ -22,7 +25,7 @@ export default class ScheduleGames extends Component {
     if (id) {
       const scheduleGames = await axios.get(`/api/ScheduleGame/filtered_by_one/${id}`)
       if (scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
-        this.setState({ scheduleGames: scheduleGames.data.latestScheduledGames })
+        this.setState({ scheduleGames: scheduleGames.data, showRightSideInfo: true, singleView: true })
       }
     } else {
       const scheduleGames = await getScheduleGames({ counter: 1 })
@@ -34,6 +37,10 @@ export default class ScheduleGames extends Component {
 
   getSingleGameData = async (id, game) => {
     const scheduleGames = await axios.get(`/api/ScheduleGame/additional_game_info/${id}`)
+    const allComments = await axios.get(`/api/comments/get_right_card_comment_info/${id}`)
+    if (allComments.data) {
+      this.setState({ commentData: { ...allComments.data } })
+    }
     if (scheduleGames.data && Object.keys(scheduleGames.data).length > 0) {
       this.setState({ singleScheduleGamesPayload: scheduleGames.data, selected_game: { ...game }, showRightSideInfo: true })
     }
@@ -74,6 +81,8 @@ export default class ScheduleGames extends Component {
       singleScheduleGamesPayload,
       selected_game,
       showRightSideInfo,
+      commentData,
+      singleView,
     } = this.state
     if (this.props.initialData == 'loading') {
       return <h1>Loading</h1>
@@ -81,18 +90,25 @@ export default class ScheduleGames extends Component {
     return (
       <section className='viewGame__container'>
         {id == '' && <GameFilter handleChange={this.handleChange} />}
-        <div className='gameList__section'>
-          <GameList
-            scheduleGames={scheduleGames}
-            show_full_games={show_full_games}
-            handleExcludesFullGames={this.handleExcludesFullGames}
-            getSingleGameData={this.getSingleGameData}
-          />
-          <GameDetails
-            singleScheduleGamesPayload={singleScheduleGamesPayload}
-            selected_game={selected_game}
-            showRightSideInfo={showRightSideInfo}
-          />
+        <div className={`gameList__section ${singleView ? 'singleGameView__container' : ''}`}>
+          {!singleView ? (
+            <Fragment>
+              <GameList
+                scheduleGames={scheduleGames}
+                show_full_games={show_full_games}
+                handleExcludesFullGames={this.handleExcludesFullGames}
+                getSingleGameData={this.getSingleGameData}
+              />
+              <GameDetails
+                singleScheduleGamesPayload={singleScheduleGamesPayload}
+                selected_game={selected_game}
+                showRightSideInfo={showRightSideInfo}
+                commentData={commentData}
+              />
+            </Fragment>
+          ) : (
+            <SingleGameDetails scheduleGames={scheduleGames} showRightSideInfo={showRightSideInfo} commentData={commentData} />
+          )}
         </div>
       </section>
     )

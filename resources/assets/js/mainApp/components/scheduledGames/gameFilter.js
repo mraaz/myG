@@ -205,7 +205,10 @@ export default class ScheduleGames extends Component {
         name: filterName,
         payload,
       })
-      if (saveFilter) {
+      if (saveFilter.data == 'ER_DUP_ENTRY') {
+        toast.error(<Toast_style text={'Name you entered already exists.'} />)
+        this.setState({ isRequesting: false })
+      } else {
         this.setState({ showSaveFilterInput: false, isRequesting: false, filterName: '', showOverlay: false })
         this.getFilter()
       }
@@ -261,7 +264,7 @@ export default class ScheduleGames extends Component {
     const { payload = {} } = data
     const JsonPayload = JSON.parse(payload)
     const filterTypeArray = []
-    Object.keys(JsonPayload).map((key) => {
+    Object.keys(JsonPayload).forEach((key) => {
       if (JsonPayload[key] == true) {
         filterTypeArray.push(key)
       }
@@ -278,6 +281,21 @@ export default class ScheduleGames extends Component {
   handleSavefilterInputChnage = (e, id, filterPayload) => {
     const inputValue = e.target.value
     this.setState({ inputValue, filterId: id, filterPayload })
+  }
+
+  editFilterInputKeyDown = (e) => {
+    if (e.key === 'Enter' && e.shiftKey) {
+      return
+    }
+    if (e.key === 'Escape') {
+      this.setState({ showSaveFilterInput: false, isRequesting: false, filterName: '', showOverlay: false })
+    }
+
+    if (e.key === 'Enter') {
+      event.preventDefault()
+      event.stopPropagation()
+      this.handleSaveFilterClick()
+    }
   }
 
   handleInputKeyDown = (e) => {
@@ -308,7 +326,7 @@ export default class ScheduleGames extends Component {
       const saveFilter = await axios.post('/api/SavedFiltersScheduleGameController/updateFilter', {
         id: filterId,
         name: inputValue,
-        payload: filterPayload,
+        payload: JSON.parse(filterPayload),
       })
       if (saveFilter) {
         this.setState({ showFilterTypeInput: {}, inputValue: '' })
@@ -319,11 +337,11 @@ export default class ScheduleGames extends Component {
     }
   }
 
-  handleDeleteFilterType = async (e, name) => {
+  handleDeleteFilterType = async (e, id) => {
     e.preventDefault()
     try {
       const deleteFilter = await axios.post('/api/SavedFiltersScheduleGameController/deleteFilter', {
-        name,
+        id,
       })
       if (deleteFilter) {
         this.setState({ showFilters: false, showOverlay: false })
@@ -388,6 +406,7 @@ export default class ScheduleGames extends Component {
                       onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
                       onKeyDown={this.onKeyDown}
                       isSearchable={true}
+                      classNamePrefix='filter'
                     />
                   </div>
                 )
@@ -402,6 +421,7 @@ export default class ScheduleGames extends Component {
                       name='region-box'
                       isClearable
                       className='viewGame__name'
+                      classNamePrefix='filter'
                     />
                   </div>
                 )
@@ -416,6 +436,7 @@ export default class ScheduleGames extends Component {
                       name='experience-box'
                       isClearable
                       className='viewGame__name'
+                      classNamePrefix='filter'
                     />
                   </div>
                 )
@@ -430,6 +451,7 @@ export default class ScheduleGames extends Component {
                       name='platform-box'
                       isClearable
                       className='viewGame__name'
+                      classNamePrefix='filter'
                     />
                   </div>
                 )
@@ -444,6 +466,7 @@ export default class ScheduleGames extends Component {
                       name='date-time-box'
                       isClearable
                       className='viewGame__name'
+                      classNamePrefix='filter'
                     />
                   </div>
                 )
@@ -484,6 +507,7 @@ export default class ScheduleGames extends Component {
                       name='visibility-box'
                       isClearable
                       className='viewGame__name'
+                      classNamePrefix='filter'
                     />
                   </div>
                 )
@@ -506,7 +530,8 @@ export default class ScheduleGames extends Component {
                         placeholder='Name your filter'
                         onChange={this.handleSaveFilterName}
                         autoComplete={+new Date()}
-                        maxlength='250'
+                        maxLength='250'
+                        onKeyDown={this.editFilterInputKeyDown}
                       />
                     </div>
                     <button
@@ -552,6 +577,7 @@ export default class ScheduleGames extends Component {
                           ) : (
                             <input
                               type='text'
+                              id={k.id}
                               className='filter__Input'
                               onChange={(e) => this.handleSavefilterInputChnage(e, k.id, k.payload)}
                               value={inputValue}
@@ -560,7 +586,7 @@ export default class ScheduleGames extends Component {
                           )}
 
                           {!showFilterTypeInput[k.id] && (
-                            <div className='deleteFilter' onClick={(e) => this.handleDeleteFilterType(e, k.name)}>
+                            <div className='deleteFilter' onClick={(e) => this.handleDeleteFilterType(e, k.id)}>
                               <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/View+Game/X+icon.svg' />
                             </div>
                           )}
