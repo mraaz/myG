@@ -578,10 +578,11 @@ class ScheduleGameController {
         .where({ schedule_games_id: request.params.id, type: 1 })
         .limit(4)
 
-      const my_attendance = await Database.from('attendees')
-        .where({ schedule_games_id: request.params.id, user_id: auth.user.id })
-        .select('type')
-        .first()
+      const approved_gamers = await Database.from('attendees')
+        .innerJoin('users', 'users.id', 'attendees.user_id')
+        .where({ schedule_games_id: latestScheduledGames[0].id, type: 1 })
+        .select('attendees.*', 'users.id as user_id', 'users.profile_img', 'users.alias')
+        .limit(4)
 
       if (my_attendance != undefined) {
         join_status = my_attendance.type
@@ -621,7 +622,9 @@ class ScheduleGameController {
       latestScheduledGames[0].tags = getAllTags
 
       const approved_gamers = await Database.from('attendees')
+        .innerJoin('users', 'users.id', 'attendees.user_id')
         .where({ schedule_games_id: latestScheduledGames[0].id, type: 1 })
+        .select('attendees.*', 'users.id as user_id', 'users.profile_img', 'users.alias')
         .limit(4)
 
       const my_attendance = await Database.from('attendees')
