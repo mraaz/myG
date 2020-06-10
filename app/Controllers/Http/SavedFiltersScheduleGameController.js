@@ -28,7 +28,22 @@ class SavedFiltersScheduleGameController {
     if (auth.user) {
       try {
         const allFilters = await Database.table('saved_filters_schedule_games').where({ user_id: auth.user.id })
+        for (var i = 0; i < allFilters.length; i++) {
+          let payload = {
+            game_name: false,
+            region: false,
+            experience: false,
+            start_time: false,
+            platform: false,
+            description: false,
+          }
+          let mysql_sort_fail = JSON.parse(allFilters[i].payload)
+          for (var attributename in mysql_sort_fail) {
+            payload[attributename] = mysql_sort_fail[attributename]
+          }
 
+          allFilters[i].payload = JSON.stringify(payload)
+        }
         return {
           allFilters,
         }

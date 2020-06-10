@@ -594,6 +594,8 @@ class ScheduleGameController {
     }
   }
 
+  //trying to figure out position or clash_royale_trophies
+
   async filtered_by_one({ auth, request, response }) {
     let join_status = 0
     try {

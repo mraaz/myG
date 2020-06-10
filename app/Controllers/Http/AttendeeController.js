@@ -171,8 +171,8 @@ class AttendeeController {
     try {
       const role_call_ALL = await Database.from('attendees')
         .innerJoin('users', 'users.id', 'attendees.user_id')
-        .where({ schedule_games_GUID: request.input('schedule_games_GUID'), type: 1 })
-        .select('users.id as user_id', 'users.profile_img', 'users.alias')
+        .where({ schedule_games_id: request.input('schedule_games_id'), type: 1 })
+        .select('users.id as user_id', 'users.profile_img', 'users.alias', 'users.level')
         .paginate(request.input('counter'), 10)
 
       return {
