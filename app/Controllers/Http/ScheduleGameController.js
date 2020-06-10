@@ -575,10 +575,6 @@ class ScheduleGameController {
         )
 
       const approved_gamers = await Database.from('attendees')
-        .where({ schedule_games_id: request.params.id, type: 1 })
-        .limit(4)
-
-      const approved_gamers = await Database.from('attendees')
         .innerJoin('users', 'users.id', 'attendees.user_id')
         .where({ schedule_games_id: latestScheduledGames[0].id, type: 1 })
         .select('attendees.*', 'users.id as user_id', 'users.profile_img', 'users.alias')
