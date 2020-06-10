@@ -1,6 +1,12 @@
 .viewGame__container {
   min-width: 100%;
   background: #0b0f14 0% 0% no-repeat padding-box;
+  .singleGameView__container {
+    width: 659px;
+    margin: 0 auto;
+    margin-top: 55px;
+    border: 1px solid #384952;
+  }
   .viewGame__header {
     height: 77px;
     background: #1d2326 0% 0% no-repeat padding-box;

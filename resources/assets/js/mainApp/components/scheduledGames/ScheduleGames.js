@@ -90,7 +90,7 @@ export default class ScheduleGames extends Component {
     return (
       <section className='viewGame__container'>
         {id == '' && <GameFilter handleChange={this.handleChange} />}
-        <div className='gameList__section'>
+        <div className={`gameList__section ${singleView ? 'singleGameView__container' : ''}`}>
           {!singleView ? (
             <Fragment>
               <GameList
