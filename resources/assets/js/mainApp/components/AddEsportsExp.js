@@ -228,11 +228,11 @@ export default class AddEsportsExp extends Component<*, State> {
         myTags = ''
       }
       for (var i = 0; i < this.state.value_tags.length; i++) {
-        if (/['/.%#$,;`\\]/.test(this.state.value_tags[i].label)) {
+        if (/['/.%#$,;`\\]/.test(this.state.value_tags[i].value)) {
           toast.success(<Toast_style text={'Sorry mate! Skills can not have invalid fields'} />)
           return
         }
-        myTags += this.state.value_tags[i].label + '; '
+        myTags += this.state.value_tags[i].value + '; '
       }
       myTags = myTags
         .trim()

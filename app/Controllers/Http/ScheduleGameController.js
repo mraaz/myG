@@ -183,7 +183,6 @@ class ScheduleGameController {
       }
     }
   }
-  async test({ auth, request, response }) {}
 
   async destroy({ auth, request, response }) {
     if (auth.user) {
@@ -599,10 +598,12 @@ class ScheduleGameController {
   }
 
   async filtered_by_one({ auth, request, response }) {
+    let join_status = 0
     try {
       var latestScheduledGames = await Database.from('schedule_games')
         .innerJoin('users', 'users.id', 'schedule_games.user_id')
         .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+        .leftJoin('schedule_games_transactions', 'schedule_games_transactions.schedule_games_id', 'schedule_games.id')
         .where('schedule_games.schedule_games_GUID', '=', request.params.schedule_games_GUID)
         .select('*', 'users.id as user_id', 'schedule_games.id as id', 'schedule_games.created_at', 'schedule_games.updated_at')
 
@@ -619,8 +620,23 @@ class ScheduleGameController {
 
       latestScheduledGames[0].tags = getAllTags
 
+      const approved_gamers = await Database.from('attendees')
+        .where({ schedule_games_id: latestScheduledGames[0].id, type: 1 })
+        .limit(4)
+
+      const my_attendance = await Database.from('attendees')
+        .where({ schedule_games_id: latestScheduledGames[0].id, user_id: auth.user.id })
+        .select('type')
+        .first()
+
+      if (my_attendance != undefined) {
+        join_status = my_attendance.type
+      }
+
       return {
         latestScheduledGames,
+        approved_gamers,
+        join_status,
       }
     } catch (error) {
       console.log(error)
