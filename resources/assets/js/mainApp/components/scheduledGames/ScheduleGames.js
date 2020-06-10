@@ -1,7 +1,8 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import GameFilter from './gameFilter'
 import GameList from './gameList'
 import GameDetails from './gameDetails'
+import SingleGameDetails from './singlegameDetails'
 import { PullDataFunction as getScheduleGames } from './getScheduleGames'
 import axios from 'axios'
 
@@ -14,6 +15,7 @@ export default class ScheduleGames extends Component {
       selected_game: {},
       showRightSideInfo: false,
       commentData: {},
+      singleView: false,
     }
   }
 
@@ -23,7 +25,7 @@ export default class ScheduleGames extends Component {
     if (id) {
       const scheduleGames = await axios.get(`/api/ScheduleGame/filtered_by_one/${id}`)
       if (scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
-        this.setState({ scheduleGames: scheduleGames.data.latestScheduledGames })
+        this.setState({ scheduleGames: scheduleGames.data, showRightSideInfo: true, singleView: true })
       }
     } else {
       const scheduleGames = await getScheduleGames({ counter: 1 })
@@ -80,6 +82,7 @@ export default class ScheduleGames extends Component {
       selected_game,
       showRightSideInfo,
       commentData,
+      singleView,
     } = this.state
     if (this.props.initialData == 'loading') {
       return <h1>Loading</h1>
@@ -88,18 +91,24 @@ export default class ScheduleGames extends Component {
       <section className='viewGame__container'>
         {id == '' && <GameFilter handleChange={this.handleChange} />}
         <div className='gameList__section'>
-          <GameList
-            scheduleGames={scheduleGames}
-            show_full_games={show_full_games}
-            handleExcludesFullGames={this.handleExcludesFullGames}
-            getSingleGameData={this.getSingleGameData}
-          />
-          <GameDetails
-            singleScheduleGamesPayload={singleScheduleGamesPayload}
-            selected_game={selected_game}
-            showRightSideInfo={showRightSideInfo}
-            commentData={commentData}
-          />
+          {!singleView ? (
+            <Fragment>
+              <GameList
+                scheduleGames={scheduleGames}
+                show_full_games={show_full_games}
+                handleExcludesFullGames={this.handleExcludesFullGames}
+                getSingleGameData={this.getSingleGameData}
+              />
+              <GameDetails
+                singleScheduleGamesPayload={singleScheduleGamesPayload}
+                selected_game={selected_game}
+                showRightSideInfo={showRightSideInfo}
+                commentData={commentData}
+              />
+            </Fragment>
+          ) : (
+            <SingleGameDetails scheduleGames={scheduleGames} showRightSideInfo={showRightSideInfo} commentData={commentData} />
+          )}
         </div>
       </section>
     )

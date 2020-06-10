@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
+import { Toast_style } from '../Utility_Function'
+import { toast } from 'react-toastify'
 
 const defaultThumbnails = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Notifications/myG_icon.svg'
 
@@ -8,6 +10,12 @@ export default class GameList extends Component {
   constructor() {
     super()
     this.state = {}
+  }
+
+  handleCopyToClipBoard = (guid) => {
+    const link = `${window.location.protocol}//${window.location.hostname}/scheduledGames/${guid}`
+    navigator.clipboard.writeText(link)
+    toast.error(<Toast_style text={'Link Copied Successfully.'} />)
   }
 
   render() {
@@ -64,6 +72,11 @@ export default class GameList extends Component {
                       <div className='game__timestamp'>
                         <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/clock.svg' />
                         <span>{moment(game.start_date_time).format('LL')}</span>
+                      </div>
+                    </div>
+                    <div className='copy__clipboard'>
+                      <div className='copy__clipboard__action' onClick={() => this.handleCopyToClipBoard(game.schedule_games_GUID)}>
+                        <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Link.svg' />
                       </div>
                     </div>
                     <div className='third__row'>

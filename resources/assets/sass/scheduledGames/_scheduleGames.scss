@@ -665,6 +665,9 @@
           }
           &:hover {
             background: #ffffff0d;
+            .copy__clipboard {
+              display: flex;
+            }
           }
           .gameImage {
             width: 120px;
@@ -708,6 +711,11 @@
           .game__attributes {
             padding: 15px;
             width: 100%;
+            &:hover {
+              .copy__clipboard {
+                display: flex;
+              }
+            }
             .first__row {
               display: flex;
               margin-bottom: 10px;
@@ -761,6 +769,26 @@
               }
               .game__timestamp {
                 margin-left: 10px;
+              }
+            }
+            .copy__clipboard {
+              display: none;
+              justify-content: flex-end;
+              margin-bottom: 30px;
+              transition: all 1s cubic-bezier(0.4, 0, 1, 1);
+              .copy__clipboard__action {
+                width: 34px;
+                height: 34px;
+                border-radius: 50%;
+                background: #696969 0% 0% no-repeat padding-box;
+                box-shadow: 0px 5px 6px #00000027;
+                opacity: 1;
+                padding: 8px;
+                cursor: pointer;
+                img {
+                  width: 18px;
+                  height: 18px;
+                }
               }
             }
             .third__row {
