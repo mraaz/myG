@@ -17,6 +17,7 @@ class GuestLink extends React.Component {
 
   state = {
     chatId: null,
+    invalidLink: false,
     validLink: false,
     loaded: false,
     alias: '',
@@ -27,9 +28,15 @@ class GuestLink extends React.Component {
     this.props.logout()
     localStorage.clear()
     fetchLink(this.props.uuid).then(({ link }) => {
-      if (!link) return notifyToast('The Group for this Link was not found :(')
+      if (!link) {
+        this.setState({ invalidLink: true })
+        return notifyToast('The Group for this Link was not found :(')
+      }
       const isValid = !link.expiry || new Date(link.updatedAt).getTime() + link.expiry * 60 * 60 * 1000 >= Date.now()
-      if (!isValid) return notifyToast('This Link has expired :(')
+      if (!isValid) {
+        this.setState({ invalidLink: true })
+        return notifyToast('This Link has expired :(')
+      }
       const chatId = link.chatId
       this.props.setGuestLink(`/link/${this.props.uuid}`)
       this.setState({ chatId, validLink: true })
@@ -74,8 +81,23 @@ class GuestLink extends React.Component {
     )
   }
 
+  renderNoLink() {
+    if (!this.state.invalidLink) return null
+    return (
+      <div className='alias-container'>
+        <p className='kicked-hint'>Sorry, this Group is no longer available :(</p>
+        <div className='join clickable' onClick={() => window.location.replace('/')}>
+          Login
+        </div>
+        <div className='register clickable' onClick={() => window.location.replace('/')}>
+          Create a new Account
+        </div>
+      </div>
+    )
+  }
+
   renderKicked() {
-    if (!this.props.kicked) return null
+    if (!this.props.invalidLink) return null
     return (
       <div className='alias-container'>
         <p className='kicked-hint'>Sorry, you have been kicked from this Group :(</p>
@@ -126,6 +148,7 @@ class GuestLink extends React.Component {
     return (
       <div id='guest-container' style={{ backgroundImage: `url(${getAssetUrl('background_guest')})` }}>
         {!!this.props.hasChat && this.renderChat()}
+        {this.renderNoLink()}
         {this.renderKicked()}
         {this.renderAlias()}
       </div>

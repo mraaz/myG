@@ -249,7 +249,10 @@ export class Chat extends React.Component {
                 <div
                   className='chat-component-header-button clickable'
                   style={{ backgroundImage: `url(${getAssetUrl('ic_chat_maximise')})` }}
-                  onClick={() => this.props.updateChatState(this.props.chatId, { maximised: !this.props.maximised, minimised: false })}
+                  onClick={() => {
+                    this.props.updateChatState(this.props.chatId, { maximised: !this.props.maximised, minimised: false })
+                    document.querySelector('.chat-component-input').focus()
+                  }}
                 />
                 <div
                   className='chat-component-header-button clickable'
@@ -380,8 +383,7 @@ export class Chat extends React.Component {
   renderGameMessage = () => {
     if (!this.props.gameMessage) return
     return (
-      <div
-        className='chat-component-empty-chat-message'>
+      <div className='chat-component-empty-chat-message'>
         <p>{this.props.gameMessage}</p>
       </div>
     )

@@ -56,7 +56,7 @@ export default class ChatInput extends React.Component {
       this.setState({ input: '' })
       this.props.editLastMessage()
     }
-    if (code === selftDestructKeyCode && event.ctrlKey) {
+    if (code === selftDestructKeyCode && event.altKey) {
       this.props.toggleSelfDestruct()
     }
   }

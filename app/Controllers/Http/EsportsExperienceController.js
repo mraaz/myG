@@ -4,6 +4,7 @@ const Database = use('Database')
 const EsportsExperience = use('App/Models/EsportsExperience')
 const GameNameController = use('./GameNameController')
 const TagController = use('./TagController')
+const UserRepository = require('../../Repositories/User')
 
 class EsportsExperienceController {
   async store({ auth, request, response }) {
@@ -66,6 +67,9 @@ class EsportsExperienceController {
         // })
 
         //request.params.game_names_id = mygame[0].id
+        const requestingUserId = auth.user.id
+        const requestedGameId = request.params.game_names_id
+        await UserRepository.favoriteGame({ requestingUserId, requestedGameId })
         gameface.incrementGameCounter({ auth, request, response })
         return 'Saved item'
       } catch (error) {

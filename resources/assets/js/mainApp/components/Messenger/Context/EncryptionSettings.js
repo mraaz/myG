@@ -19,6 +19,15 @@ export default class EncryptionSettings extends React.Component {
     reEncryptingMessages: false,
     reEncryptionState: '',
   }
+  
+  onKeyPressed = (event) => {
+    const code = event.keyCode || event.which
+    const enterKeyCode = 13
+    if (code === enterKeyCode) {
+      event.preventDefault()
+      this.confirmPinEdit()
+    }
+  }
 
   requestPinEdit = () => {
     this.setState({ editingPin: true, pinInput: '', pinError: false })
@@ -145,6 +154,7 @@ export default class EncryptionSettings extends React.Component {
         disabled={!this.state.editingPin}
         value={this.state.editingPin ? this.state.pinInput : this.props.pin}
         onChange={(event) => this.setState({ pinInput: event.target.value })}
+        onKeyPress={this.onKeyPressed}
       />
     )
   }
@@ -156,7 +166,7 @@ export default class EncryptionSettings extends React.Component {
         <div
           className='messenger-settings-encryption-footer-button clickable'
           onClick={() => (this.state.editingPin ? this.confirmPinEdit() : this.requestPinEdit())}>
-          {this.state.editingPin ? 'SAVE YOUR CHAT PASSWORD' : 'CHANGE YOUR CHAT PASSWORD'}
+          CHANGE YOUR CHAT PASSWORD
         </div>
       </div>
     )

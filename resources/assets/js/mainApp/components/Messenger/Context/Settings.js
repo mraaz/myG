@@ -1,17 +1,13 @@
 import React from 'react'
 import ToggleButton from 'react-toggle-button'
 import EncryptionSettings from './EncryptionSettings'
+import GameSettings from './GameSettings'
 import BlockedUsers from './BlockedUsers'
-import { getAssetUrl } from '../../../../common/assets'
 import { ignoreFunctions } from '../../../../common/render'
 
 export default class Settings extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
-  }
-
-  state = {
-    favoriteGameInput: '',
   }
 
   renderNotificationSoundSettings = () => {
@@ -45,57 +41,7 @@ export default class Settings extends React.Component {
   }
 
   renderGamesSettings = () => {
-    const search = (name) => name.toLowerCase().includes(this.state.favoriteGameInput.toLowerCase())
-    const maxedOut = this.props.favoriteGames.length >= 10
-    const games = maxedOut
-      ? this.props.games
-          .slice(0)
-          .sort((g1, g2) => (g1.isFavorite === g2.isFavorite ? 0 : g1.isFavorite ? -1 : 1))
-          .slice(0, 10)
-      : this.props.games.slice(0).filter((game) => search(game.name))
-    return (
-      <div className='messenger-settings-encryption-container'>
-        <p className='messenger-settings-encryption-title'>Edit your favourite games</p>
-        <p className='messenger-settings-encryption-subtitle'>Type in your favourite games to be view on your top list</p>
-        <input
-          className='messenger-settings-encryption-key'
-          type='text'
-          placeholder={`${maxedOut ? 'Maximum of 10 favourite games' : 'Type here to search...'}`}
-          disabled={maxedOut}
-          value={this.state.favoriteGameInput}
-          onChange={(event) => this.setState({ favoriteGameInput: event.target.value })}
-        />
-        <div className='messenger-footer-favorite-games'>{games.map(this.renderGameSelection)}</div>
-      </div>
-    )
-  }
-
-  renderGameSelection = (game) => {
-    const isFavorite = this.props.favoriteGames.find((favorite) => favorite.gameId === game.gameId)
-    const isOwner = parseInt(this.props.userId) === parseInt(game.ownerId)
-    if (!isFavorite && !this.state.favoriteGameInput) return null
-    return (
-      <div key={game.gameId} className='messenger-footer-favorite-game'>
-        <div className='messenger-body-game-section'>
-          {!isOwner && <div className='messenger-game-icon' style={{ backgroundImage: `url('${game.icon}')` }} />}
-          {isOwner && (
-            <div
-              className='messenger-change-game-icon-button clickable'
-              style={{
-                backgroundImage: `url(${getAssetUrl('ic_chat_group_icon')})`,
-              }}
-              onClick={() => this.props.onUploadPhoto(game.gameId)}
-            />
-          )}
-          <p className='messenger-body-section-header-name'>{game.name}</p>
-        </div>
-        <div
-          className='messenger-footer-favorite-game-button clickable'
-          onClick={() => (isFavorite ? this.props.unfavoriteGame(game.gameId) : this.props.favoriteGame(game.gameId))}>
-          {isFavorite ? `unfavourite` : `favourite`}
-        </div>
-      </div>
-    )
+    return <GameSettings {...this.props} />
   }
 
   renderEncryptionSettings() {
