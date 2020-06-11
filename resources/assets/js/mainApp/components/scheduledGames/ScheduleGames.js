@@ -21,6 +21,7 @@ export default class ScheduleGames extends Component {
       singleView: false,
       moreplease: true,
       counter: 1,
+      scheduleGamesView: {},
     }
   }
 
@@ -30,7 +31,7 @@ export default class ScheduleGames extends Component {
     if (id) {
       const scheduleGames = await axios.get(`/api/ScheduleGame/filtered_by_one/${id}`)
       if (scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
-        this.setState({ scheduleGames: scheduleGames.data, showRightSideInfo: true, singleView: true })
+        this.setState({ scheduleGamesView: scheduleGames.data, showRightSideInfo: true, singleView: true })
       }
     } else {
       const scheduleGames = await getScheduleGames({ counter: 1 })
@@ -124,7 +125,9 @@ export default class ScheduleGames extends Component {
       showRightSideInfo,
       commentData,
       singleView,
+      scheduleGamesView = {},
     } = this.state
+    const { latestScheduledGames = [] } = scheduleGamesView
 
     if (this.props.initialData == 'loading') {
       return <h1>Loading</h1>
@@ -152,8 +155,8 @@ export default class ScheduleGames extends Component {
             </Fragment>
           ) : (
             <Fragment>
-              {scheduleGames.length > 0 ? (
-                <SingleGameDetails scheduleGames={scheduleGames} showRightSideInfo={showRightSideInfo} commentData={commentData} />
+              {latestScheduledGames.length > 0 ? (
+                <SingleGameDetails scheduleGames={scheduleGamesView} showRightSideInfo={showRightSideInfo} commentData={commentData} />
               ) : (
                 <h1>There is no data found!</h1>
               )}

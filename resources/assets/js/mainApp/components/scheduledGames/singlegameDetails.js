@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import moment from 'moment'
+import Approved_gamers from './ApprovedGamers'
 const buttonStatus = {
   '0': 'Join',
   '1': 'Joined',
@@ -13,7 +14,7 @@ export default class GameDetails extends Component {
 
   render() {
     const { scheduleGames = [], showRightSideInfo, commentData } = this.props
-    const { latestScheduledGames, approved_gamers, join_status } = scheduleGames
+    const { latestScheduledGames, approved_gamers = [], join_status } = scheduleGames
     const [scheduleGames_data = {}] = latestScheduledGames
     const {
       game_name = '',
@@ -76,6 +77,7 @@ export default class GameDetails extends Component {
               {platform && <div className='gameTime__value'>{platform}</div>}
               {region && <div className='gameTime__label'>Region</div>}
               {region && <div className='gameTime__value'>{region}</div>}
+              <Approved_gamers approved_gamers={approved_gamers} />
             </div>
             {lastComment && (
               <div className='gameDetaiils__footer'>
