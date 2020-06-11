@@ -53,6 +53,7 @@ export default class ScheduleGames extends Component {
   }
 
   handleChange = async (data, name) => {
+    this.setState({ singleScheduleGamesPayload: {}, showRightSideInfo: false })
     if (name == 'game_name') {
       this.setState({ ...data }, () => {
         this.getScheduleGamesChangeCall()
@@ -65,7 +66,6 @@ export default class ScheduleGames extends Component {
   }
   getScheduleGamesChangeCall = async (data = {}) => {
     const { counter, scheduleGames = [] } = this.state
-    window.scrollTo(0, 0)
     const scheduleGamesRes = await getScheduleGames({ ...this.state, ...data, counter: 1 })
 
     if (scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length == 0) {

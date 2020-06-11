@@ -14,7 +14,7 @@ export default class GameDetails extends Component {
   }
 
   render() {
-    const { singleScheduleGamesPayload = {}, selected_game = {}, showRightSideInfo, commentData } = this.props
+    const { singleScheduleGamesPayload = {}, selected_game = {}, showRightSideInfo, commentData, fetching } = this.props
     const { additional_game_info = [], approved_gamers = [], join_status = '' } = singleScheduleGamesPayload
     const [game_additional_data = {}] = additional_game_info
     const { id = '', game_name = '', experience = '', no_of_gamers = '', tags = [] } = selected_game

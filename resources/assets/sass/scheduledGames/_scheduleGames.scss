@@ -402,6 +402,12 @@
     border-top: 1px solid #384952;
     align-items: flex-start;
     justify-content: center;
+    &:nth-child(1) {
+      flex: 1;
+    }
+    &:nth-child(2) {
+      flex: 1;
+    }
     .gameDetails {
       flex: 1;
       justify-content: flex-start;
