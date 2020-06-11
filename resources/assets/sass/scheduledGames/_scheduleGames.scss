@@ -1,12 +1,7 @@
 .viewGame__container {
   min-width: 100%;
   background: #0b0f14 0% 0% no-repeat padding-box;
-  .singleGameView__container {
-    width: 659px;
-    margin: 0 auto;
-    margin-top: 55px;
-    border: 1px solid #384952;
-  }
+
   .viewGame__header {
     height: 77px;
     background: #1d2326 0% 0% no-repeat padding-box;
@@ -401,6 +396,7 @@
       border-radius: 50%;
     }
   }
+
   .gameList__section {
     display: flex;
     border-top: 1px solid #384952;
@@ -622,7 +618,6 @@
     .gameList {
       flex: 1;
       border-right: 1px solid #384952;
-      min-height: 100vh;
       padding: 20px;
       .gameList_head__option {
         display: flex;
@@ -646,8 +641,6 @@
       }
       .gameList__box {
         position: relative;
-        max-height: 100vh;
-        overflow-y: scroll;
         .mygames {
           display: flex;
           justify-content: start;
@@ -672,7 +665,7 @@
           &:hover {
             background: #ffffff0d;
             .copy__clipboard {
-              display: flex;
+              opacity: 1;
             }
           }
           .gameImage {
@@ -691,27 +684,27 @@
               margin-left: 8px;
             }
           }
-          &:nth-of-type(1n) {
+          &:nth-of-type(4n) {
+            .gameImage {
+              background-color: #8d7514;
+            }
+          }
+
+          &:nth-of-type(4n + 1) {
             .gameImage {
               background-color: #652a2a;
             }
           }
 
-          &:nth-of-type(2n) {
+          &:nth-of-type(4n + 2) {
             .gameImage {
               background-color: #2a2a65;
             }
           }
 
-          &:nth-of-type(3n) {
+          &:nth-of-type(4n + 3) {
             .gameImage {
               background-color: #568842;
-            }
-          }
-
-          &:nth-of-type(4n) {
-            .gameImage {
-              background-color: #8d7514;
             }
           }
           .game__attributes {
@@ -719,7 +712,7 @@
             width: 100%;
             &:hover {
               .copy__clipboard {
-                display: flex;
+                opacity: 1;
               }
             }
             .first__row {
@@ -778,10 +771,11 @@
               }
             }
             .copy__clipboard {
-              display: none;
+              display: flex;
               justify-content: flex-end;
               margin-bottom: 30px;
-              transition: all 1s cubic-bezier(0.4, 0, 1, 1);
+              transition: all 0.3s cubic-bezier(0.4, 0, 1, 1);
+              opacity: 0;
               .copy__clipboard__action {
                 width: 34px;
                 height: 34px;
@@ -838,6 +832,22 @@
           }
         }
       }
+    }
+  }
+  .singleGameView__container {
+    width: 659px;
+    margin: 0 auto;
+    margin-top: 55px;
+    border: none;
+    .gameDetails {
+      background: #171a1c;
+      .gameDetails__header {
+        background: #1d2326;
+      }
+    }
+    .gamer__count,
+    .game__timestamp {
+      margin-right: 30px !important;
     }
   }
   .filter__overlay {
