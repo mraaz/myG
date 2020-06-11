@@ -92,6 +92,28 @@ class CommentController {
     }
   }
 
+  async get_right_card_comment_info({ auth, request, response }) {
+    try {
+      const lastComment = await Database.from('comments')
+        .innerJoin('users', 'users.id', 'comments.user_id')
+        .where('schedule_games_id', '=', request.params.id)
+        .select('*', 'comments.id', 'comments.updated_at')
+        .orderBy('comments.created_at', 'desc')
+        .first()
+
+      const no_of_comments = await Database.from('comments')
+        .where('schedule_games_id', '=', request.params.id)
+        .count('* as no_of_my_comments')
+
+      return {
+        lastComment,
+        no_of_comments,
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   async destroy({ auth, request, response }) {
     if (auth.user) {
       try {

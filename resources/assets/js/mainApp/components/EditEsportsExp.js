@@ -8,6 +8,7 @@ import Modal from 'react-modal'
 import { toast } from 'react-toastify'
 import SweetAlert from './common/MyGSweetAlert';
 import { Game_name_values, Disable_keys, Toast_style, Game_name_Tags } from './Utility_Function'
+import { refreshGames } from '../../common/game'
 
 Modal.setAppElement('#app')
 
@@ -148,11 +149,12 @@ export default class EditEsportsExp extends Component<*, State> {
     this.setState({ shouldCloseOnOverlayClick_: false })
   }
 
-  delete_exp = () => {
+  delete_exp = async () => {
     const { match } = this.props.routeProps
 
     try {
-      const myesportsexp = axios.get(`/api/esports_experiences/delete/${match.params.esportsExp_id}`)
+      const myesportsexp = await axios.get(`/api/esports_experiences/delete/${match.params.esportsExp_id}`)
+      refreshGames()
     } catch (error) {
       console.log(error)
     }

@@ -96,8 +96,7 @@ Route.get('/api/ScheduleGame/additional_game_info/:id', 'ScheduleGameController.
 Route.post('/api/ScheduleGame', 'ScheduleGameController.store')
 Route.get('/api/ScheduleGame/delete/:id/:reason', 'ScheduleGameController.destroy')
 //Route.get('/api/ScheduleGame', 'ScheduleGameController.show')
-Route.get('/api/ScheduleGame/:id', 'ScheduleGameController.show_one')
-Route.post('/api/ScheduleGame/update_vacany', 'ScheduleGameController.update_vacany')
+//Route.get('/api/ScheduleGame/:id', 'ScheduleGameController.show_one')
 Route.post('/api/ScheduleGame/getAdmin', 'ScheduleGameController.getAdmin')
 
 Route.get('/api/ArchiveScheduleGame/:id', 'Archive_ScheduleGameController.show_one')
@@ -105,7 +104,7 @@ Route.get('/api/ArchiveScheduleGame/filtered_by_one/:id', 'Archive_ScheduleGameC
 
 Route.post('/api/ScheduleGame/scheduleSearchResults', 'ScheduleGameController.scheduleSearchResults')
 
-Route.get('/api/ScheduleGame/filtered_by_one/:id', 'ScheduleGameController.filtered_by_one')
+Route.get('/api/ScheduleGame/filtered_by_one/:schedule_games_GUID', 'ScheduleGameController.filtered_by_one')
 
 Route.get('/api/myScheduledGames/:limitstr/:exclude_expired', 'ScheduleGameController.myScheduledGames')
 Route.get('/api/myScheduledGamesCount/:id', 'ScheduleGameController.myScheduledGamesCount')
@@ -124,7 +123,6 @@ Route.post('/api/Tags/getTagsforGames', 'TagController.getTagsforGames')
 Route.post('/api/Tags/getTopTagsforGames', 'TagController.getTopTagsforGames')
 Route.post('/api/Tags', 'TagController.store')
 
-Route.post('/api/GameTags', 'GameTagController.store')
 Route.get('/api/GameTags/getTopGameTags', 'GameTagController.getTopGameTags')
 Route.post('/api/GameTags/getGameTags', 'GameTagController.getGameTags')
 
@@ -149,6 +147,7 @@ Route.get('/api/comments/show_comment/:id', 'CommentController.show_comment')
 Route.post('/api/comments/update/:id', 'CommentController.update')
 Route.get('/api/comments/scheduled_games/:id', 'CommentController.show_scheduled_games')
 Route.get('/api/comments/scheduled_gamesCount/:id', 'CommentController.show_scheduled_gamesCount')
+Route.get('/api/comments/get_right_card_comment_info/:id', 'CommentController.get_right_card_comment_info')
 
 Route.get('/api/archive_comments/scheduled_gamesCount/:id', 'Archive_CommentController.show_scheduled_gamesCount')
 Route.get('/api/archive_comments/scheduled_games/:id', 'Archive_CommentController.show_scheduled_games')
@@ -190,7 +189,6 @@ Route.get(
   '/api/notifications/getunread_archive_schedule_game/:archive_schedule_game_id/:activity_type',
   'NotificationController.getunread_archive_schedule_game'
 )
-Route.post('/api/notifications/addScheduleGame/attendance', 'NotificationController.addScheduleGame_attendance')
 Route.post(
   '/api/notifications/updateRead_Status_schedule_game/:schedule_game_id/:activity_type',
   'NotificationController.updateRead_Status_schedule_game'

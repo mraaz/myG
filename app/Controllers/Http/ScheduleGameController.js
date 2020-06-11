@@ -16,6 +16,7 @@ const Archive_schedule_games_transController = use('./Archive_schedule_games_tra
 const GameNameController = use('./GameNameController')
 const Attendee = use('App/Models/Attendee')
 const InGame_fieldsController = use('./InGame_fieldsController')
+const GameTagController = use('./GameTagController')
 
 class ScheduleGameController {
   async store({ auth, request, response }) {
@@ -149,18 +150,28 @@ class ScheduleGameController {
           }
         }
 
-        if (request.input('tags') != null && request.input('tags').lenght > 0) {
-          var arrTags = request.input('tags').split(',')
+        if (request.input('tags') != null && request.input('tags').length > 0) {
+          var arrTags = JSON.parse(request.input('tags'))
+          for (var i = 0; i < arrTags.length; i++) {
+            if (arrTags[i].game_tag_id == null) {
+              if (/['/.%#$;`\\]/.test(arrTags[i].value)) {
+                continue
+              }
+              let game_tags_Controller = new GameTagController()
+              const game_tag_id = await game_tags_Controller.store({ auth }, arrTags[i].value)
 
-          if (arrTags != '') {
-            for (var i = 0; i < arrTags.length; i++) {
               const create_arrTags = await ScheduleGamesTags.create({
                 schedule_games_id: newScheduleGame.id,
-                game_tag_id: arrTags[i],
+                game_tag_id: game_tag_id,
+              })
+            } else {
+              const create_arrTags = await ScheduleGamesTags.create({
+                schedule_games_id: newScheduleGame.id,
+                game_tag_id: arrTags[i].game_tag_id,
               })
 
               const update_counter = await GameTags.query()
-                .where({ id: arrTags[i] })
+                .where({ id: arrTags[i].game_tag_id })
                 .increment('counter', 1)
             }
           }
@@ -172,7 +183,6 @@ class ScheduleGameController {
       }
     }
   }
-  async test({ auth, request, response }) {}
 
   async destroy({ auth, request, response }) {
     if (auth.user) {
@@ -480,14 +490,15 @@ class ScheduleGameController {
 
             if (request.input('experience') != null) builder.where('experience', request.input('experience'))
 
-            if (request.input('start_date_time') != null)
-              builder.where('schedule_games.start_date_time', '<=', request.input('start_date_time'))
+            //RAAZ UNDO THIS AFTER VIEW GAME IS COMPLETED BY NITIN!!!! https://github.com/mraaz/myGame/issues/274
+            // if (request.input('start_date_time') != null)
+            //   builder.where('schedule_games.start_date_time', '<=', request.input('start_date_time'))
 
             if (request.input('end_date_time') != null) builder.where('schedule_games.end_date_time', '>=', request.input('end_date_time'))
 
             if (request.input('platform') != null) builder.where('platform', request.input('platform'))
 
-            if (request.input('description') != null) builder.where('description', request.input('description'))
+            if (request.input('description') != null) builder.where('description', 'like', '%' + request.input('description') + '%')
 
             if (request.input('vacancy') == false) builder.where('vacancy', 0)
 
@@ -564,13 +575,10 @@ class ScheduleGameController {
         )
 
       const approved_gamers = await Database.from('attendees')
-        .where({ schedule_games_id: request.params.id, type: 1 })
+        .innerJoin('users', 'users.id', 'attendees.user_id')
+        .where({ schedule_games_id: latestScheduledGames[0].id, type: 1 })
+        .select('attendees.*', 'users.id as user_id', 'users.profile_img', 'users.alias')
         .limit(4)
-
-      const my_attendance = await Database.from('attendees')
-        .where({ schedule_games_id: request.params.id, user_id: auth.user.id })
-        .select('type')
-        .first()
 
       if (my_attendance != undefined) {
         join_status = my_attendance.type
@@ -587,46 +595,76 @@ class ScheduleGameController {
   }
 
   async filtered_by_one({ auth, request, response }) {
+    let join_status = 0
     try {
       var latestScheduledGames = await Database.from('schedule_games')
         .innerJoin('users', 'users.id', 'schedule_games.user_id')
         .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
-        .where('schedule_games.id', '=', request.params.id)
+        .leftJoin('schedule_games_transactions', 'schedule_games_transactions.schedule_games_id', 'schedule_games.id')
+        .where('schedule_games.schedule_games_GUID', '=', request.params.schedule_games_GUID)
         .select('*', 'users.id as user_id', 'schedule_games.id as id', 'schedule_games.created_at', 'schedule_games.updated_at')
+
+      if (!latestScheduledGames.length) {
+        return
+      }
 
       latestScheduledGames = await InGame_fieldsController.find_InGame_Fields_NOT_paginate(latestScheduledGames)
 
+      let getAllTags = await Database.from('schedule_games_tags')
+        .innerJoin('game_tags', 'game_tags.id', 'schedule_games_tags.game_tag_id')
+        .where({ schedule_games_id: latestScheduledGames[0].id })
+        .select('content')
+
+      latestScheduledGames[0].tags = getAllTags
+
+      const approved_gamers = await Database.from('attendees')
+        .innerJoin('users', 'users.id', 'attendees.user_id')
+        .where({ schedule_games_id: latestScheduledGames[0].id, type: 1 })
+        .select('attendees.*', 'users.id as user_id', 'users.profile_img', 'users.alias')
+        .limit(4)
+
+      const my_attendance = await Database.from('attendees')
+        .where({ schedule_games_id: latestScheduledGames[0].id, user_id: auth.user.id })
+        .select('type')
+        .first()
+
+      if (my_attendance != undefined) {
+        join_status = my_attendance.type
+      }
+
       return {
         latestScheduledGames,
+        approved_gamers,
+        join_status,
       }
     } catch (error) {
       console.log(error)
     }
   }
 
-  async show_one({ auth, request, response }) {
-    try {
-      var getOne = await Database.from('schedule_games')
-        .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
-        .select('*', 'schedule_games.id as id', 'schedule_games.created_at', 'schedule_games.updated_at')
-        .where('schedule_games.id', '=', request.params.id)
+  // async show_one({ auth, request, response }) {
+  //   try {
+  //     var getOne = await Database.from('schedule_games')
+  //       .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+  //       .select('*', 'schedule_games.id as id', 'schedule_games.created_at', 'schedule_games.updated_at')
+  //       .where('schedule_games.id', '=', request.params.id)
+  //
+  //     getOne = await InGame_fieldsController.find_InGame_Fields_NOT_paginate(getOne)
+  //
+  //     return {
+  //       getOne,
+  //     }
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
 
-      getOne = await InGame_fieldsController.find_InGame_Fields_NOT_paginate(getOne)
-
-      return {
-        getOne,
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  async update_vacany({ auth, request, response }) {
+  async update_vacany({ auth }, schedule_game_id, vacancy) {
     try {
       const update_vacany = await ScheduleGame.query()
-        .where({ id: request.input('id') })
-        .update({ vacancy: request.input('vacancy') })
-      return 'Saved successfully'
+        .where({ id: schedule_game_id })
+        .update({ vacancy: vacancy })
+      return
     } catch (error) {
       console.log(error)
     }

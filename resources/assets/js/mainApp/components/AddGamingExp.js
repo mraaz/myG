@@ -6,7 +6,7 @@ import CreatableSelect from 'react-select/lib/Creatable'
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import Modal from 'react-modal'
 import { toast } from 'react-toastify'
-
+import { refreshGames } from '../../common/game'
 import { Game_name_values, Disable_keys, Toast_style, Game_name_Tags } from './Utility_Function'
 
 Modal.setAppElement('#app')
@@ -224,6 +224,7 @@ export default class AddGamingExp extends Component<*, State> {
         ratings: myRatings,
         tags: myTags,
       })
+      refreshGames();
       this.handleCloseModal()
     } catch (error) {
       console.log(error)

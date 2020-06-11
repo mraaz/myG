@@ -42,16 +42,19 @@ export async function SubmitDataFunction(myG) {
         toast.success(<Toast_style text={'Sorry mate! Game tags can not have invalid fields'} />)
         return
       }
-      if (myG.tags[i].game_tag_id == null) {
-        const new_GameTags = await axios.post('/api/GameTags', {
-          content: myG.tags[i].value,
-        })
-        tags.push(new_GameTags.data)
-      } else {
-        tags.push(myG.tags[i].game_tag_id)
-      }
+
+      delete myG.tags[i].label
+
+      // if (myG.tags[i].game_tag_id == null) {
+      //   const new_GameTags = await axios.post('/api/GameTags', {
+      //     content: myG.tags[i].value,
+      //   })
+      //   tags.push(new_GameTags.data)
+      // } else {
+      //   tags.push(myG.tags[i].game_tag_id)
+      // }
     }
-    tags = tags.toString()
+    tags = JSON.stringify(myG.tags)
   }
 
   if (myG.endDate != null || myG.endDate != undefined) {

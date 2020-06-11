@@ -30,7 +30,7 @@ export default function reducer(
     }
 
     case 'PREPARE_MESSENGER_FULFILLED': {
-      logger.log('CHAT', `Redux -> Messenger Ready (User): `, action.payload)
+      logger.log('USER', `Redux -> Messenger Ready (User): `, action.payload)
       const { contacts, games } = action.payload
       const { userId, alias } = action.meta
       const { value: currentStatus, locked: isStatusLocked } = action.payload.status
@@ -48,7 +48,7 @@ export default function reducer(
 
     case 'PREPARE_CHAT_FULFILLED': {
       if (!action.payload.contact) return state
-      logger.log('CHAT', `Redux -> Chat ${action.meta.chatId} Ready (User): `, action.payload)
+      logger.log('USER', `Redux -> Chat ${action.meta.chatId} Ready (User): `, action.payload)
       const { contact: newContact } = action.payload
       const contacts = JSON.parse(JSON.stringify(state.contacts))
       const contact = contacts.find((contact) => contact.contactId === newContact.contactId)
@@ -61,7 +61,7 @@ export default function reducer(
     }
 
     case 'FETCH_CONTACT_FULFILLED': {
-      logger.log('CHAT', `Redux -> Fetched Contacts (User): `, action.payload)
+      logger.log('USER', `Redux -> Fetched Contacts (User): `, action.payload)
       const contacts = JSON.parse(JSON.stringify(state.contacts))
       const contact = contacts.find((contact) => contact.contactId === action.payload.contact.contactId)
       if (contact) Object.assign(contact, action.payload.contact)
@@ -69,6 +69,15 @@ export default function reducer(
       return {
         ...state,
         contacts,
+      }
+    }
+
+    case "FETCH_GAMES_FULFILLED": {
+      logger.log('USER', `Redux -> Fetched Games: `, action.payload)
+      const { games } = action.payload;
+      return {
+        ...state,
+        games,
       }
     }
 
@@ -201,7 +210,7 @@ export default function reducer(
     }
 
     case 'TOGGLE_AUTO_SELF_DESTRUCT_FULFILLED': {
-      logger.log('CHAT', `Redux -> Toggle Auto Self Destruct: `, action.meta)
+      logger.log('USER', `Redux -> Toggle Auto Self Destruct: `, action.meta)
       return {
         ...state,
         autoSelfDestruct: action.meta.enabled,

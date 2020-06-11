@@ -41,7 +41,7 @@ class CommonSaveController {
     const rules = {
       alias: 'required|unique:users,alias|min:4|max:30',
       email: 'required|email|unique:users',
-      encryption: 'required|min:6|max:30',
+      encryption: 'required|min:7|max:30',
       firstName: 'required',
       lastName: 'required',
     }
@@ -49,7 +49,7 @@ class CommonSaveController {
     const messages = {
       required: 'Required field',
       email: 'Enter valid email address',
-      min: 'Not enough characters - Min 4 for Alias, 6 for Chat Password',
+      min: 'Not enough characters - Min 4 for Alias, 6 for Chat Password and 7 for Encryption Paraphrase',
       max: 'Wow! Too many characters - Max 30',
       unique: 'Sorry, this field is not unique. Try again please.',
     }

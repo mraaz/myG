@@ -14,7 +14,7 @@ import WindowFocusHandler from '../WindowFocusHandler'
 import FileOpenModal from '../FileOpenModal'
 
 import { handleLink } from '../../../common/link'
-import { monitorChats, closeSubscription } from '../../../integration/ws/chat'
+import { monitorChats, closeSubscription, monitorSocketConnection } from '../../../integration/ws/chat'
 import {
   createChatAction,
   openChatAction,
@@ -55,6 +55,7 @@ class Messenger extends React.Component {
   componentDidMount() {
     monitorChats(this.props.userId, false)
     handleLink(this.props.userId)
+    monitorSocketConnection()
   }
 
   componentWillUnmount() {

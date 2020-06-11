@@ -3,7 +3,8 @@ import axios from 'axios'
 
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import Select from 'react-select'
-import { Game_name_values, Disable_keys } from '../Utility_Function'
+import { Game_name_values, Disable_keys, Toast_style } from '../Utility_Function'
+import { toast } from 'react-toastify'
 
 import { region_options, visibility_options, date_options, platform_options, experience_options } from './option'
 
@@ -43,17 +44,17 @@ export default class ScheduleGames extends Component {
       filterTypeArray: ['game_name'],
       showFilterType: false,
       showFilters: false,
+      showOverlay: false,
     }
     this.filterGroup = {
-      game_name: 'Game Name',
+      game_name: 'Game Title',
       region: 'Region',
       experience: 'Experience Level',
       start_time: 'Start Time',
       platform: 'Platform',
       description: 'Description',
-      exclude_full_games: 'Exclude Full Game',
-      tags: 'Tags',
     }
+    this.filterNameRef = React.createRef()
   }
 
   componentDidMount() {
@@ -175,17 +176,23 @@ export default class ScheduleGames extends Component {
   }
 
   handleClearFilterClick = () => {
-    this.setState({ filterTypeArray: ['game_name'] })
+    this.setState({
+      filterTypeArray: ['game_name'],
+      showFilterType: false,
+      showFilters: false,
+      showSaveFilterInput: false,
+      showOverlay: false,
+    })
   }
 
   handleSaveFilterClick = async () => {
     const { filterName = '', isRequesting = false, filterTypeArray = [] } = this.state
     if (!filterName) {
-      alert('Please enter filter name first.')
+      toast.error(<Toast_style text={'Please enter filter name first.'} />)
       return
     }
     if (isRequesting) {
-      alert('Please wait.')
+      toast.warn(<Toast_style text={'Please wait.Requesting...'} />)
       return
     }
     this.setState({ isRequesting: true })
@@ -198,8 +205,11 @@ export default class ScheduleGames extends Component {
         name: filterName,
         payload,
       })
-      if (saveFilter) {
-        this.setState({ showSaveFilterInput: false, isRequesting: false, filterName: '' })
+      if (saveFilter.data == 'ER_DUP_ENTRY') {
+        toast.error(<Toast_style text={'Name you entered already exists.'} />)
+        this.setState({ isRequesting: false })
+      } else {
+        this.setState({ showSaveFilterInput: false, isRequesting: false, filterName: '', showOverlay: false })
         this.getFilter()
       }
     } catch (error) {
@@ -209,17 +219,20 @@ export default class ScheduleGames extends Component {
   }
 
   handleSaveFilterAction = () => {
-    this.setState({ showSaveFilterInput: true })
+    this.setState({ showSaveFilterInput: true, showOverlay: true })
+    setTimeout(() => {
+      this.filterNameRef.current.focus()
+    }, 10)
   }
   handleCloseSaveFilterInput = () => {
     this.setState({ showSaveFilterInput: false })
   }
 
   handleSavedFilterChange = () => {
-    this.setState({ showFilters: !this.state.showFilters, showFilterType: false })
+    this.setState({ showFilters: !this.state.showFilters, showFilterType: false, showOverlay: true })
   }
   handleAddFilterChange = () => {
-    this.setState({ showFilterType: !this.state.showFilterType, showFilters: false })
+    this.setState({ showFilterType: !this.state.showFilterType, showFilters: false, showOverlay: true })
   }
   handleSaveFilterName = (e) => {
     const filterName = e.target.value
@@ -227,19 +240,23 @@ export default class ScheduleGames extends Component {
     if (!isVaid) {
       if (filterName.length < 250) {
         this.setState({ filterName })
+      } else {
+        toast.error(<Toast_style text={'You can not enter more than 250 Char.'} />)
       }
     } else {
-      alert('Please enter a valid Filter Name.')
+      toast.error(<Toast_style text={'Please enter a valid Filter Name.'} />)
     }
   }
   handleFilterTypeClick = (k) => {
-    const { filterTypeArray = [], showFilterType } = this.state
-    if (!filterTypeArray.includes(k)) {
-      filterTypeArray.push(k)
-      this.setState({ filterTypeArray, showFilterType: !showFilterType })
-    } else {
-      const filterType = filterTypeArray.filter((name) => name != k)
-      this.setState({ filterTypeArray: filterType, showFilterType: !showFilterType })
+    if (k != 'game_name') {
+      const { filterTypeArray = [], showFilterType } = this.state
+      if (!filterTypeArray.includes(k)) {
+        filterTypeArray.push(k)
+        this.setState({ filterTypeArray, showFilterType: !showFilterType, showOverlay: false })
+      } else {
+        const filterType = filterTypeArray.filter((name) => name != k)
+        this.setState({ filterTypeArray: filterType, showFilterType: !showFilterType, showOverlay: false })
+      }
     }
   }
 
@@ -247,23 +264,38 @@ export default class ScheduleGames extends Component {
     const { payload = {} } = data
     const JsonPayload = JSON.parse(payload)
     const filterTypeArray = []
-    Object.keys(JsonPayload).map((key) => {
+    Object.keys(JsonPayload).forEach((key) => {
       if (JsonPayload[key] == true) {
         filterTypeArray.push(key)
       }
     })
-    this.setState({ filterTypeArray, showFilters: false })
+    this.setState({ filterTypeArray, showFilters: false, showOverlay: false })
   }
 
   handleEditFilterType = (e, id, inputValue) => {
     e.preventDefault()
     const showFilterTypeInput = {}
     showFilterTypeInput[id] = true
-    this.setState({ showFilterTypeInput, inputValue })
+    this.setState({ showFilterTypeInput, inputValue, showOverlay: true })
   }
-  handleSavefilterInputChnage = (e, id, value) => {
+  handleSavefilterInputChnage = (e, id, filterPayload) => {
     const inputValue = e.target.value
-    this.setState({ inputValue, filterId: id })
+    this.setState({ inputValue, filterId: id, filterPayload })
+  }
+
+  editFilterInputKeyDown = (e) => {
+    if (e.key === 'Enter' && e.shiftKey) {
+      return
+    }
+    if (e.key === 'Escape') {
+      this.setState({ showSaveFilterInput: false, isRequesting: false, filterName: '', showOverlay: false })
+    }
+
+    if (e.key === 'Enter') {
+      event.preventDefault()
+      event.stopPropagation()
+      this.handleSaveFilterClick()
+    }
   }
 
   handleInputKeyDown = (e) => {
@@ -285,14 +317,16 @@ export default class ScheduleGames extends Component {
   }
 
   update_Filter_Name = async () => {
-    const { inputValue = '', filterId = '' } = this.state
+    const { inputValue = '', filterId = '', filterPayload = '' } = this.state
     if (!inputValue) {
-      alert('Please enter filter name first.')
+      toast.error(<Toast_style text={'Please enter filter name first.'} />)
       return
     }
     try {
-      const saveFilter = await axios.post('/api/SavedFiltersScheduleGameController', {
+      const saveFilter = await axios.post('/api/SavedFiltersScheduleGameController/updateFilter', {
+        id: filterId,
         name: inputValue,
+        payload: JSON.parse(filterPayload),
       })
       if (saveFilter) {
         this.setState({ showFilterTypeInput: {}, inputValue: '' })
@@ -303,19 +337,29 @@ export default class ScheduleGames extends Component {
     }
   }
 
-  handleDeleteFilterType = async (e, name) => {
+  handleDeleteFilterType = async (e, id) => {
     e.preventDefault()
     try {
       const deleteFilter = await axios.post('/api/SavedFiltersScheduleGameController/deleteFilter', {
-        name,
+        id,
       })
       if (deleteFilter) {
-        this.setState({ showFilters: false })
+        this.setState({ showFilters: false, showOverlay: false })
         this.getFilter()
       }
     } catch (error) {
       console.log(error)
     }
+  }
+
+  handleOverlayClick = () => {
+    this.setState({
+      showFilterTypeInput: {},
+      showFilterType: false,
+      showFilters: false,
+      showSaveFilterInput: false,
+      showOverlay: false,
+    })
   }
 
   render() {
@@ -331,6 +375,7 @@ export default class ScheduleGames extends Component {
       savedFiltersObj = [],
       showFilterTypeInput = [],
       inputValue = '',
+      showOverlay = false,
     } = this.state
     if (this.props.initialData == 'loading') {
       return <h1>Loading</h1>
@@ -339,9 +384,6 @@ export default class ScheduleGames extends Component {
       <Fragment>
         <div className='viewGame__header'>
           <div className='title'>Find Games</div>
-          <div className='search__results'>
-            <input type='text' placeholder='Search Results' />
-          </div>
         </div>
         <div className='viewGame__filter'>
           <div className='filter__label'>Filter by</div>
@@ -364,6 +406,7 @@ export default class ScheduleGames extends Component {
                       onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
                       onKeyDown={this.onKeyDown}
                       isSearchable={true}
+                      classNamePrefix='filter'
                     />
                   </div>
                 )
@@ -378,6 +421,7 @@ export default class ScheduleGames extends Component {
                       name='region-box'
                       isClearable
                       className='viewGame__name'
+                      classNamePrefix='filter'
                     />
                   </div>
                 )
@@ -392,6 +436,7 @@ export default class ScheduleGames extends Component {
                       name='experience-box'
                       isClearable
                       className='viewGame__name'
+                      classNamePrefix='filter'
                     />
                   </div>
                 )
@@ -406,6 +451,7 @@ export default class ScheduleGames extends Component {
                       name='platform-box'
                       isClearable
                       className='viewGame__name'
+                      classNamePrefix='filter'
                     />
                   </div>
                 )
@@ -420,6 +466,7 @@ export default class ScheduleGames extends Component {
                       name='date-time-box'
                       isClearable
                       className='viewGame__name'
+                      classNamePrefix='filter'
                     />
                   </div>
                 )
@@ -460,40 +507,50 @@ export default class ScheduleGames extends Component {
                       name='visibility-box'
                       isClearable
                       className='viewGame__name'
+                      classNamePrefix='filter'
                     />
                   </div>
                 )
               }
             })}
 
-            <div className='saveFilterAction__section'>
-              <button type='button' disabled={isRequesting} className='saveFilter__button' onClick={this.handleSaveFilterAction}>
-                Save Filter
-              </button>
-              {showSaveFilterInput && (
-                <div className='saveFilterInput__container'>
-                  <div className='input_name'>
-                    <div className='input__label'>Filter Name</div>
-                    <input
-                      type='text'
-                      value={filterName}
-                      placeholder='Name your filter'
-                      onChange={this.handleSaveFilterName}
-                      autoComplete='off'
-                    />
+            {filterTypeArray.length > 1 && (
+              <div className='saveFilterAction__section'>
+                <button type='button' disabled={isRequesting} className='saveFilter__button' onClick={this.handleSaveFilterAction}>
+                  Save Filter
+                </button>
+                {showSaveFilterInput && (
+                  <div className='saveFilterInput__container'>
+                    <div className='input_name'>
+                      <div className='input__label'>Filter Name</div>
+                      <input
+                        type='text'
+                        ref={this.filterNameRef}
+                        value={filterName}
+                        placeholder='Name your filter'
+                        onChange={this.handleSaveFilterName}
+                        autoComplete={+new Date()}
+                        maxLength='250'
+                        onKeyDown={this.editFilterInputKeyDown}
+                      />
+                    </div>
+                    <button
+                      type='button'
+                      disabled={isRequesting || !filterName}
+                      className='filter__save_button'
+                      onClick={this.handleSaveFilterClick}>
+                      Save
+                    </button>
+                    <div className='filterInput__close' onClick={this.handleCloseSaveFilterInput}>
+                      X
+                    </div>
                   </div>
-                  <button type='button' disabled={isRequesting} className='filter__save_button' onClick={this.handleSaveFilterClick}>
-                    Save
-                  </button>
-                  <div className='filterInput__close' onClick={this.handleCloseSaveFilterInput}>
-                    X
-                  </div>
+                )}
+                <div className='clearFilter' onClick={this.handleClearFilterClick}>
+                  Clear
                 </div>
-              )}
-              <div className='clearFilter' onClick={this.handleClearFilterClick}>
-                Clear
               </div>
-            </div>
+            )}
           </div>
         </div>
         <div className='viewGame__addMoreFilter'>
@@ -501,6 +558,10 @@ export default class ScheduleGames extends Component {
             <div className='filter__header' onClick={this.handleSavedFilterChange}>
               Saved Filter
             </div>
+            <img
+              src={' https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/View+Game/Down+Carrot.svg'}
+              onClick={this.handleSavedFilterChange}
+            />
             {showFilters && (
               <div className='filterType__group'>
                 <div className='filterType__head'>Saved Filters</div>
@@ -510,19 +571,22 @@ export default class ScheduleGames extends Component {
                       return (
                         <div className={`filterType__name`} key={`${k.id}_${k.name}`}>
                           {!showFilterTypeInput[k.id] ? (
-                            <span onClick={(e) => this.handleSavedFilterClick(k)}>{k.name}</span>
+                            <span onClick={(e) => this.handleSavedFilterClick(k)} title={k.name}>
+                              {k.name}
+                            </span>
                           ) : (
                             <input
                               type='text'
+                              id={k.id}
                               className='filter__Input'
-                              onChange={(e) => this.handleSavefilterInputChnage(e, k.id)}
+                              onChange={(e) => this.handleSavefilterInputChnage(e, k.id, k.payload)}
                               value={inputValue}
                               onKeyDown={this.handleInputKeyDown}
                             />
                           )}
 
                           {!showFilterTypeInput[k.id] && (
-                            <div className='deleteFilter' onClick={(e) => this.handleDeleteFilterType(e, k.name)}>
+                            <div className='deleteFilter' onClick={(e) => this.handleDeleteFilterType(e, k.id)}>
                               <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/View+Game/X+icon.svg' />
                             </div>
                           )}
@@ -538,10 +602,15 @@ export default class ScheduleGames extends Component {
               </div>
             )}
           </div>
+          <div className='filter_dot'></div>
           <div className='addFilter__option'>
             <div className='filter__header' onClick={this.handleAddFilterChange}>
               Add Filter
             </div>
+            <img
+              src={' https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/View+Game/Down+Carrot.svg'}
+              onClick={this.handleAddFilterChange}
+            />
             {showFilterType && (
               <div className='filterType__group'>
                 <div className='filterType__head'>Add Filters</div>
@@ -560,6 +629,7 @@ export default class ScheduleGames extends Component {
               </div>
             )}
           </div>
+          {showOverlay && <div className='filter__overlay' onClick={this.handleOverlayClick}></div>}
         </div>
       </Fragment>
     )

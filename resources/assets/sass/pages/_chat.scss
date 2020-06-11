@@ -1,9 +1,9 @@
 .chat-component-base {
   pointer-events: auto;
-  background-color: #171A1C;
+  background-color: #171a1c;
   display: flex;
   flex-direction: column;
-  margin: 4px;
+  margin: 0 4px;
   height: 240px;
   width: 25%;
   font-family: 'Montserrat Alternates', sans-serif;
@@ -36,7 +36,7 @@
 
 .chat-component-header {
   display: flex;
-  background-color: #1D2326;
+  background-color: #1d2326;
   padding: 12px;
   border-top-right-radius: 12px;
   border-top-left-radius: 12px;
@@ -47,7 +47,7 @@
 }
 
 .chat-component-header-icon {
-  background-color: #2D363A;
+  background-color: #2d363a;
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
@@ -73,19 +73,19 @@
 }
 
 .chat-component-header-status-indicator-online {
-  background-color: #68BD45;
+  background-color: #68bd45;
 }
 
 .chat-component-header-status-indicator-playing {
-  background-color: #FD323C;
+  background-color: #fd323c;
 }
 
 .chat-component-header-status-indicator-afk {
-  background-color: #D8BD43
+  background-color: #d8bd43;
 }
 
 .chat-component-header-status-indicator-offline {
-  background-color: #08507D;
+  background-color: #08507d;
 }
 
 .chat-component-header-options {
@@ -119,12 +119,12 @@
 .chat-component-header-title {
   font-size: 16px;
   font-weight: 600;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .chat-component-header-subtitle {
   font-size: 12px;
-  color: #A0A0A0;
+  color: #a0a0a0;
 }
 
 .chat-component-header-button {
@@ -151,7 +151,7 @@
 
 .chat-component-muted-button {
   background-color: #253338;
-  color: #FAFAFA;
+  color: #fafafa;
   padding: 6px;
   font-size: 10px;
   border-radius: 4px;
@@ -162,13 +162,13 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  background-color: #171A1C;
+  background-color: #171a1c;
   overflow-y: scroll;
   padding: 12px;
 }
 
 .chat-component-loading-indicator {
-  background-color: #2D363A;
+  background-color: #2d363a;
   color: #707070;
   text-align: center;
   font-size: 12px;
@@ -182,17 +182,19 @@
 .chat-component-scroll-to-bottom {
   font-size: 12px;
   text-align: center;
-  background-color: #2D363A;
+  background-color: #2d363a;
   padding: 8px;
 }
 
 .chat-component-empty-chat-message {
   display: flex;
   flex-direction: column;
-  background-color: #2D363A;
+  background-color: #2d363a;
   padding: 8px;
   font-size: 12px;
   text-align: center;
+  border-radius: 4px;
+  margin-top: 4px;
 }
 
 .chat-component-read-indicator-container {
@@ -237,7 +239,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #171A1C;
+  background-color: #171a1c;
   padding: 4px;
 }
 
@@ -270,7 +272,7 @@
   justify-content: space-around;
   width: 85%;
   max-height: 0;
-  background-color: #2D363A;
+  background-color: #2d363a;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   -webkit-transition: all 0.5s ease-in-out;
@@ -286,7 +288,7 @@
   }
 
   .attach-icon {
-    background-color: #171A1C;
+    background-color: #171a1c;
     background-repeat: no-repeat;
     background-position: center center;
     background-size: inherit;
@@ -295,13 +297,15 @@
     height: 40px;
     margin: 8px;
   }
-
 }
 
 .chat-component-attachment-modal {
   position: fixed;
-  bottom: 0; left: 0; right: 0; top: 0;
-  background-color: rgba(0,0,0,0.8);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.8);
   z-index: 999;
   display: flex;
   align-items: center;
@@ -337,14 +341,14 @@
   flex: 1;
   height: 100%;
   border: none;
-  background-color: #1D2326;
-  color: #93A4A5;
+  background-color: #1d2326;
+  color: #93a4a5;
   padding: 8px 2px;
   font-size: 14px;
 }
 
 .chat-component-send-button {
-  background-color: #2D363A;
+  background-color: #2d363a;
   background-size: 28px;
   background-position: center;
   background-repeat: no-repeat;
@@ -355,7 +359,7 @@
 }
 
 .chat-component-attach-button-container {
-  background-color: #1D2326;
+  background-color: #1d2326;
   height: 100%;
   border-top-left-radius: 16px;
   border-bottom-left-radius: 16px;
@@ -364,7 +368,7 @@
 }
 
 .chat-component-attach-button {
-  background-color: #1D2326;
+  background-color: #1d2326;
   background-size: 28px;
   background-position: center;
   background-repeat: no-repeat;
@@ -377,15 +381,15 @@
 }
 
 .chat-component-attach-button-rotated {
-  -webkit-transform: rotate(45deg); 
-  -moz-transform: rotate(45deg); 
-  -ms-transform: rotate(45deg); 
-  -o-transform: rotate(45deg); 
-  transform: rotate(45deg); 
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 
 .chat-component-attach-button-divider {
-  background-color: #171A1C;
+  background-color: #171a1c;
   height: 24px;
   width: 1px;
   align-self: center;
@@ -396,12 +400,12 @@
 .chat-component-encryption-warning {
   padding: 8px 12px;
   border-radius: 12px;
-  background-color: #2D363A;
+  background-color: #2d363a;
   margin-top: 4px;
   margin-left: 8px;
   margin-right: 8px;
   margin-bottom: auto;
-  color: #FAFAFA;
+  color: #fafafa;
   font-size: 12px;
 }
 
@@ -413,13 +417,14 @@
   margin-left: 14px;
   margin-right: 14px;
   border-radius: 5px;
-  background-color: #F0F0F0;
-  color: #F0F0F0;
+  background-color: #f0f0f0;
+  color: #f0f0f0;
   animation: dotFlashing 1s infinite linear alternate;
-  animation-delay: .5s;
+  animation-delay: 0.5s;
 }
 
-.dot-flashing::before, .dot-flashing::after {
+.dot-flashing::before,
+.dot-flashing::after {
   content: '';
   display: inline-block;
   position: absolute;
@@ -431,8 +436,8 @@
   width: 8px;
   height: 8px;
   border-radius: 5px;
-  background-color: #F0F0F0;
-  color: #F0F0F0;
+  background-color: #f0f0f0;
+  color: #f0f0f0;
   animation: dotFlashing 1s infinite alternate;
   animation-delay: 0s;
 }
@@ -442,18 +447,18 @@
   width: 8px;
   height: 8px;
   border-radius: 5px;
-  background-color: #F0F0F0;
-  color: #F0F0F0;
+  background-color: #f0f0f0;
+  color: #f0f0f0;
   animation: dotFlashing 1s infinite alternate;
   animation-delay: 1s;
 }
 
 @keyframes dotFlashing {
   0% {
-    background-color: #F0F0F0;
+    background-color: #f0f0f0;
   }
   50%,
   100% {
-    background-color: #A0A0A0;
+    background-color: #a0a0a0;
   }
 }
