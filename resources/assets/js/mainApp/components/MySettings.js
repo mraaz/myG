@@ -158,7 +158,7 @@ class MySettings extends Component {
 
   fire_off_test = () => {
     const callMasterControllerforConnections = async function() {
-      let game_id = 110
+      let game_id = 1211
       try {
         const get_stats = await axios.get(`api/ScheduleGame/additional_game_info/${game_id}`)
         console.log(get_stats)
