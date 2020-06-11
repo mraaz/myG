@@ -73,7 +73,7 @@ export default class CustomCron extends Component {
     }
     getHeaders() {
         return tabs.map(d => {
-            return <li className={this.state.selectedTab === d ? 'active' : ''}><a onClick={this.tabChanged.bind(this,d)}>{d}</a></li>
+            return <li className={this.state.selectedTab === d ? 'active' : ''} style={{ color: (this.state.selectedTab === d ? '#e5c746' : '#fff') }}><a onClick={this.tabChanged.bind(this,d)}>{d}</a></li>
         })
     }
     onValueChange(val) {
