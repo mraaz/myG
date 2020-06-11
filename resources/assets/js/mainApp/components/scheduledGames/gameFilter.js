@@ -45,6 +45,7 @@ export default class ScheduleGames extends Component {
       showFilterType: false,
       showFilters: false,
       showOverlay: false,
+      filterValueArray: {},
     }
     this.filterGroup = {
       game_name: 'Game Title',
@@ -62,11 +63,15 @@ export default class ScheduleGames extends Component {
   }
 
   handleDropDownChange = (entered_name, name) => {
+    const value = entered_name.value || ''
+    const { filterValueArray = {} } = this.state
+    filterValueArray['game_name'] = entered_name
     this.setState(
       {
         game_name_box: entered_name,
         default: false,
         games: false,
+        filterValueArray,
       },
       () => {
         this.props.handleChange(
@@ -81,9 +86,12 @@ export default class ScheduleGames extends Component {
     )
   }
   handleChange_region = (selected_region, name) => {
+    const { filterValueArray = {} } = this.state
+    filterValueArray['region'] = selected_region
     this.setState(
       {
         selected_region,
+        filterValueArray,
       },
       () => {
         this.props.handleChange({ selected_region }, name)
@@ -92,9 +100,12 @@ export default class ScheduleGames extends Component {
   }
 
   handleChange_experience = (selected_experience, name) => {
+    const { filterValueArray = {} } = this.state
+    filterValueArray['experience'] = selected_experience
     this.setState(
       {
         selected_experience,
+        filterValueArray,
       },
       () => {
         this.props.handleChange({ selected_experience }, name)
@@ -102,9 +113,12 @@ export default class ScheduleGames extends Component {
     )
   }
   handleChange_platform = (selected_platform, name) => {
+    const { filterValueArray = {} } = this.state
+    filterValueArray['platform'] = selected_platform
     this.setState(
       {
         selected_platform,
+        filterValueArray,
       },
       () => {
         this.props.handleChange({ selected_platform }, name)
@@ -112,9 +126,12 @@ export default class ScheduleGames extends Component {
     )
   }
   handleChange_time = (when, name) => {
+    const { filterValueArray = {} } = this.state
+    filterValueArray['start_time'] = when
     this.setState(
       {
         when,
+        filterValueArray,
       },
       () => {
         this.props.handleChange({ when }, name)
@@ -124,9 +141,12 @@ export default class ScheduleGames extends Component {
 
   handleChange_description = (e, name) => {
     const description_box = e.target.value
+    const { filterValueArray = {} } = this.state
+    filterValueArray['description'] = description_box
     this.setState(
       {
         description_box,
+        filterValueArray,
       },
       () => {
         this.props.handleChange({ description_box }, name)
@@ -136,9 +156,12 @@ export default class ScheduleGames extends Component {
 
   handleChange_other = (e, name) => {
     const other_box = e.target.value
+    const { filterValueArray = {} } = this.state
+    filterValueArray['other'] = other_box
     this.setState(
       {
         other_box,
+        filterValueArray,
       },
       () => {
         this.props.handleChange({ other_box }, name)
@@ -186,7 +209,7 @@ export default class ScheduleGames extends Component {
   }
 
   handleSaveFilterClick = async () => {
-    const { filterName = '', isRequesting = false, filterTypeArray = [] } = this.state
+    const { filterName = '', isRequesting = false, filterTypeArray = [], filterValueArray = {} } = this.state
     if (!filterName) {
       toast.error(<Toast_style text={'Please enter filter name first.'} />)
       return
@@ -198,7 +221,7 @@ export default class ScheduleGames extends Component {
     this.setState({ isRequesting: true })
     const payload = {}
     filterTypeArray.forEach((key) => {
-      payload[key] = true
+      payload[key] = filterValueArray[key] || ''
     })
     try {
       const saveFilter = await axios.post('/api/SavedFiltersScheduleGameController', {
@@ -209,6 +232,7 @@ export default class ScheduleGames extends Component {
         toast.error(<Toast_style text={'Name you entered already exists.'} />)
         this.setState({ isRequesting: false })
       } else {
+        toast.success(<Toast_style text={`Filter ${filterName} was created successfully.`} />)
         this.setState({ showSaveFilterInput: false, isRequesting: false, filterName: '', showOverlay: false })
         this.getFilter()
       }
@@ -264,12 +288,14 @@ export default class ScheduleGames extends Component {
     const { payload = {} } = data
     const JsonPayload = JSON.parse(payload)
     const filterTypeArray = []
+    const filterValueArray = {}
     Object.keys(JsonPayload).forEach((key) => {
-      if (JsonPayload[key] == true) {
+      if (JsonPayload.hasOwnProperty(key)) {
         filterTypeArray.push(key)
+        filterValueArray[key] = JsonPayload[key]
       }
     })
-    this.setState({ filterTypeArray, showFilters: false, showOverlay: false })
+    this.setState({ filterTypeArray, filterValueArray, showFilters: false, showOverlay: false })
   }
 
   handleEditFilterType = (e, id, inputValue) => {
@@ -328,7 +354,11 @@ export default class ScheduleGames extends Component {
         name: inputValue,
         payload: JSON.parse(filterPayload),
       })
-      if (saveFilter) {
+      if (saveFilter.data == 'ER_DUP_ENTRY') {
+        toast.error(<Toast_style text={'Name you entered already exists.'} />)
+        this.setState({ isRequesting: false })
+      } else {
+        toast.success(<Toast_style text={`Filter ${inputValue} was updated successfully.`} />)
         this.setState({ showFilterTypeInput: {}, inputValue: '' })
         this.getFilter()
       }
@@ -376,7 +406,9 @@ export default class ScheduleGames extends Component {
       showFilterTypeInput = [],
       inputValue = '',
       showOverlay = false,
+      filterValueArray = {},
     } = this.state
+
     if (this.props.initialData == 'loading') {
       return <h1>Loading</h1>
     }
@@ -400,7 +432,7 @@ export default class ScheduleGames extends Component {
                       loadOptions={this.getOptions}
                       onChange={(data) => this.handleDropDownChange(data, k)}
                       isClearable
-                      value={this.state.game_name_box}
+                      value={this.state.game_name_box || filterValueArray['game_name']}
                       className='viewGame__name'
                       placeholder={this.filterGroup[k]}
                       onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
@@ -422,6 +454,7 @@ export default class ScheduleGames extends Component {
                       isClearable
                       className='viewGame__name'
                       classNamePrefix='filter'
+                      value={filterValueArray['region']}
                     />
                   </div>
                 )
@@ -437,6 +470,7 @@ export default class ScheduleGames extends Component {
                       isClearable
                       className='viewGame__name'
                       classNamePrefix='filter'
+                      value={filterValueArray['experience']}
                     />
                   </div>
                 )
@@ -452,6 +486,7 @@ export default class ScheduleGames extends Component {
                       isClearable
                       className='viewGame__name'
                       classNamePrefix='filter'
+                      value={filterValueArray['platform']}
                     />
                   </div>
                 )
@@ -467,6 +502,7 @@ export default class ScheduleGames extends Component {
                       isClearable
                       className='viewGame__name'
                       classNamePrefix='filter'
+                      value={filterValueArray['start_date']}
                     />
                   </div>
                 )
@@ -478,7 +514,7 @@ export default class ScheduleGames extends Component {
                       type='text'
                       className='viewGame__name__input'
                       onChange={this.handleChange_description}
-                      value={this.state.description_box}
+                      value={this.state.description_box || filterValueArray['description']}
                       placeholder='Description'
                     />
                   </div>
@@ -491,7 +527,7 @@ export default class ScheduleGames extends Component {
                       type='text'
                       className='viewGame__name__input'
                       onChange={this.handleChange_other}
-                      value={this.state.other_box}
+                      value={this.state.other_box || filterValueArray['other']}
                       placeholder='Any Other stuff'
                     />
                   </div>
@@ -508,6 +544,7 @@ export default class ScheduleGames extends Component {
                       isClearable
                       className='viewGame__name'
                       classNamePrefix='filter'
+                      value={this.state.visibility || filterValueArray['visibility']}
                     />
                   </div>
                 )

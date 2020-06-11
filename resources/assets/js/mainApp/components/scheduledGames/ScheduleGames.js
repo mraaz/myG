@@ -54,12 +54,29 @@ export default class ScheduleGames extends Component {
   handleChange = async (data, name) => {
     if (name == 'game_name') {
       this.setState({ ...data }, () => {
-        this.getScheduleGamesData()
+        this.getScheduleGamesChangeCall()
       })
     } else {
       this.setState({ ...data }, () => {
-        this.getScheduleGamesData()
+        this.getScheduleGamesChangeCall()
       })
+    }
+  }
+  getScheduleGamesChangeCall = async (data = {}) => {
+    const { counter, scheduleGames = [] } = this.state
+    window.scrollTo(0, 0)
+    const scheduleGamesRes = await getScheduleGames({ ...this.state, ...data, counter: 1 })
+
+    if (scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length == 0) {
+      this.setState({
+        moreplease: false,
+      })
+      return
+    }
+
+    if (scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length > 0) {
+      const { latestScheduledGames = [] } = scheduleGamesRes.data
+      this.setState({ scheduleGames: latestScheduledGames })
     }
   }
   getScheduleGamesData = async (data = {}) => {
@@ -90,7 +107,7 @@ export default class ScheduleGames extends Component {
   handleExcludesFullGames = (e) => {
     const checked = e.target.checked
     this.setState({ show_full_games: checked }, () => {
-      this.ScheduleGames({ show_full_games: checked })
+      this.getScheduleGamesChangeCall({ show_full_games: checked })
     })
   }
 
@@ -100,7 +117,7 @@ export default class ScheduleGames extends Component {
     const {
       savedFilter,
       addFilter,
-      scheduleGames,
+      scheduleGames = [],
       show_full_games,
       singleScheduleGamesPayload,
       selected_game,
@@ -116,7 +133,7 @@ export default class ScheduleGames extends Component {
       <section className='viewGame__container'>
         {id == '' && <GameFilter handleChange={this.handleChange} />}
         <div className={`gameList__section ${singleView ? 'singleGameView__container' : ''}`}>
-          {!singleView ? (
+          {!singleView && scheduleGames.length > 0 ? (
             <Fragment>
               <InfiniteScroll dataLength={scheduleGames.length} next={this.getScheduleGamesData} hasMore={this.state.moreplease}>
                 <GameList
@@ -134,7 +151,13 @@ export default class ScheduleGames extends Component {
               />
             </Fragment>
           ) : (
-            <SingleGameDetails scheduleGames={scheduleGames} showRightSideInfo={showRightSideInfo} commentData={commentData} />
+            <Fragment>
+              {scheduleGames.length > 0 ? (
+                <SingleGameDetails scheduleGames={scheduleGames} showRightSideInfo={showRightSideInfo} commentData={commentData} />
+              ) : (
+                <h1>There is no data found!</h1>
+              )}
+            </Fragment>
           )}
         </div>
       </section>

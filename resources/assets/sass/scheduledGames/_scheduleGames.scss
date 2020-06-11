@@ -684,27 +684,27 @@
               margin-left: 8px;
             }
           }
-          &:nth-of-type(1n) {
+          &:nth-of-type(4n) {
+            .gameImage {
+              background-color: #8d7514;
+            }
+          }
+
+          &:nth-of-type(4n + 1) {
             .gameImage {
               background-color: #652a2a;
             }
           }
 
-          &:nth-of-type(2n) {
+          &:nth-of-type(4n + 2) {
             .gameImage {
               background-color: #2a2a65;
             }
           }
 
-          &:nth-of-type(3n) {
+          &:nth-of-type(4n + 3) {
             .gameImage {
               background-color: #568842;
-            }
-          }
-
-          &:nth-of-type(4n) {
-            .gameImage {
-              background-color: #8d7514;
             }
           }
           .game__attributes {
@@ -840,7 +840,10 @@
     margin-top: 55px;
     border: none;
     .gameDetails {
-      background: #1d2326;
+      background: #171a1c;
+      .gameDetails__header {
+        background: #1d2326;
+      }
     }
     .gamer__count,
     .game__timestamp {
