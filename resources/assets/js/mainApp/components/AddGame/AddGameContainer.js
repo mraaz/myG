@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom'
 const AddGameContainer = () => {
   // State
   const [isGameListedModalOpen, updateIsGameListedModalOpen] = useState(false)
-  const [isInviteModalOpen, updateIsInviteModalOpen] = useState(true)
+  const [isInviteModalOpen, updateIsInviteModalOpen] = useState(false)
   const [isInvitesSentsModalOpen, updateIsInvitesSentsModalOpen] = useState(false)
   const [isSubmitting, updateIsSubmitting] = useState(false)
   const [state, updateComponentState] = useState({ selectedSettings: SETTINGS_ENUMS.MAIN, isGameNameField: false })
@@ -166,13 +166,12 @@ const AddGameContainer = () => {
           <MyGButton customStyles={{ color: '#E5C746', border: '2px solid' }} text='Invite Friends' onClick={onInviteFriendsClick} />
         </div>
         <div className={styles.listedBottomContentContainer}>
-          <MyGButton
-            customStyles={{ color: '#fff', border: '2px solid' }}
-            text='Done'
-            onClick={() => {
-              window.location.reload(false)
-            }}
-          />
+          <Link to='/addScheduleGames' replace>
+            <MyGButton
+              customStyles={{ color: '#fff', border: '2px solid' }}
+              text='Done'
+            />
+          </Link>
         </div>
       </MyGModal>
     )
