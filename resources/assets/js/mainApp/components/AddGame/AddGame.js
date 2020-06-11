@@ -41,16 +41,16 @@ const AddGame = ({
 }) => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    // const getInitialData = async function() {
-    //   try {
-    //     let results = await Schedule_Game_Tags()
-    //     updateAdvancedSettings({ optionTags: results })
-    //   } catch (error) {
-    //     // Error get option tags
-    //   }
-    // }
-    // getInitialData()
-  })
+     const getInitialData = async function() {
+       try {
+         let results = await Schedule_Game_Tags()
+         updateAdvancedSettings({ optionTags: results })
+       } catch (error) {
+         // Error get option tags
+       }
+     }
+     getInitialData()
+  }, [])
 
   // Handlers
   const updateMainSettings = (stateUpdates) => {

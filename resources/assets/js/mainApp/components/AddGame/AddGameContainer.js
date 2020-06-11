@@ -108,7 +108,7 @@ const AddGameContainer = () => {
         tags: advancedSettingsState.tags,
         newCreatedTags: advancedSettingsState.newCreatedTags,
       })
-      updateGameLink(data.id)
+      updateGameLink(data.schedule_games_GUID)
       updateIsGameListedModalOpen(true)
     } catch (err) {
       updateIsSubmitting(false)
