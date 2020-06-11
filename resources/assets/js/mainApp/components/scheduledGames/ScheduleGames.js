@@ -135,7 +135,7 @@ export default class ScheduleGames extends Component {
     return (
       <section className='viewGame__container'>
         {id == '' && <GameFilter handleChange={this.handleChange} />}
-        <div className={`gameList__section ${singleView ? 'singleGameView__container' : ''}`}>
+        <div className={`gameList__section ${singleView ? 'singleGameView__container' : 'GameView__container'}`}>
           {!singleView && scheduleGames.length > 0 ? (
             <Fragment>
               <InfiniteScroll dataLength={scheduleGames.length} next={this.getScheduleGamesData} hasMore={this.state.moreplease}>

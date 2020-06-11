@@ -95,7 +95,16 @@ export default class GameDetails extends Component {
             )}
           </Fragment>
         )}
-        {showAllComment && <GameComments game_id={id} scheduleGames_data={scheduleGames_data} {...this.props} />}
+        {showAllComment && (
+          <div className='gameDetails'>
+            <GameComments
+              game_id={id}
+              toggleBack={this.handleShowAllComments}
+              scheduleGames_data={scheduleGames_data}
+              user={this.props.initialData}
+            />
+          </div>
+        )}
       </div>
     )
   }

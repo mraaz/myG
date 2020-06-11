@@ -863,19 +863,22 @@
       }
     }
   }
-  .singleGameView__container {
+  .singleGameView__container,
+  .GameView__container {
     width: 659px;
     margin: 0 auto;
     margin-top: 55px;
     border: none;
     .gameDetails {
       background: #171a1c;
+      border-radius: 4px;
       .gameDetails__header {
         background: #1d2326;
       }
       .show-individual-comments {
         padding-left: 100px;
         padding-right: 50px;
+        margin-bottom: 30px;
         .individual-comment-container {
           .comment__shape {
             width: 0px;
@@ -1099,82 +1102,89 @@
         align-items: center;
         margin-bottom: 20px;
         border-bottom: 2px solid #a09770;
+        background: #1d2326;
         .game__name {
           font: 20px/14px Montserrat;
           letter-spacing: 0px;
           color: #ffffff;
           font-weight: bold;
+          cursor: pointer;
         }
       }
     }
-    .compose-comment {
-      display: flex;
-      justify-content: center;
-      position: relative;
-      width: 90%;
-      align-items: center;
-      margin: 0 auto;
+    .compose__comment__wrapper {
+      background: #1d2326 0% 0% no-repeat padding-box;
+      padding: 16px;
       margin-top: auto;
-      textarea {
-        position: relative;
-        z-index: 2;
-        border: none;
-        height: 40px;
-        width: 100%;
-        border: 1px solid #273136;
-        border-radius: 10px;
-        background: #1d2326 0% 0% no-repeat padding-box;
-        resize: none;
-        overflow: auto;
-        color: #657172;
-        font-size: 12px;
-        padding: 8px 20px;
-        top: -20px;
-      }
-      .insert__images {
-        position: absolute;
-        right: 5px;
-        top: -18px;
-        z-index: 2;
-        cursor: pointer;
-        input {
-          display: none;
-        }
-        img {
-          padding-right: 18px;
-          height: 35px;
-        }
-      }
-      .profile__image {
-        position: absolute;
-        left: -20px;
-        top: -15px;
-        background: #ff00ff;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        z-index: 12;
-        .online__status {
-          border: 7px solid #68bd45;
-          border-radius: 50%;
-          position: absolute;
-          bottom: 0px;
-          left: 0px;
-        }
-      }
-      .buttons {
+      display: flex;
+      .compose-comment {
         display: flex;
-        .repost-btn {
+        justify-content: center;
+        position: relative;
+        width: 90%;
+        align-items: center;
+        margin: 0 auto;
+        margin-top: auto;
+        textarea {
+          position: relative;
+          z-index: 2;
+          border: none;
           height: 40px;
-          width: 40px;
-          background: 1d2326;
-          color: #fff;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50%;
-          margin-left: 20px;
+          width: 100%;
+          background: #2d363a 0% 0% no-repeat padding-box;
+          border: 1px solid #273136;
+          border-radius: 4px;
+          resize: none;
+          overflow: auto;
+          color: #657172;
+          font-size: 12px;
+          padding: 8px 20px;
+        }
+        .insert__images {
+          position: absolute;
+          right: 5px;
+          z-index: 2;
+          width: 27px;
+          height: 27px;
           cursor: pointer;
+          input {
+            display: none;
+          }
+          img {
+            padding-right: 18px;
+            height: 27px;
+          }
+        }
+        .profile__image {
+          position: absolute;
+          left: -20px;
+          background: #ff00ff;
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          z-index: 12;
+          .online__status {
+            border: 7px solid #68bd45;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+          }
+        }
+        .buttons {
+          display: flex;
+          .repost-btn {
+            height: 40px;
+            width: 40px;
+            background: 1d2326;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-left: 20px;
+            cursor: pointer;
+          }
         }
       }
     }
@@ -1182,6 +1192,11 @@
     .game__timestamp {
       margin-right: 30px !important;
     }
+  }
+  .GameView__container {
+    width: 100%;
+    border-top: 1px solid #384952;
+    margin: 0;
   }
   .filter__overlay {
     position: fixed;

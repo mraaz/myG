@@ -2,25 +2,31 @@ import React, { Component, Fragment } from 'react'
 import moment from 'moment'
 import Approved_gamers from './ApprovedGamers'
 import JoinButtonAction from './JoinButtonAction'
+import GameComments from './GameComments'
 
 export default class GameDetails extends Component {
   constructor() {
     super()
     this.state = {}
   }
+  handleShowAllComments = () => {
+    this.setState({ showAllComment: !this.state.showAllComment })
+  }
 
   render() {
     const { singleScheduleGamesPayload = {}, selected_game = {}, showRightSideInfo, commentData } = this.props
     const { additional_game_info = [], approved_gamers = [], join_status = '' } = singleScheduleGamesPayload
     const [game_additional_data = {}] = additional_game_info
-    const { game_name = '', experience = '', no_of_gamers = '', tags = [] } = selected_game
+    const { id = '', game_name = '', experience = '', no_of_gamers = '', tags = [] } = selected_game
     const { start_date_time = '', end_date_time = '', limit, description = '', platform = '', region = '' } = game_additional_data
 
     const { no_of_comments = [], lastComment = '' } = commentData
 
+    const { showAllComment } = this.state
+
     return (
       <div className='gameDetails'>
-        {showRightSideInfo && (
+        {showRightSideInfo && !showAllComment && (
           <Fragment>
             <div className='gameDetails__header'>
               <div className='gameName'>
@@ -62,9 +68,11 @@ export default class GameDetails extends Component {
                   })}
               </div>
             </div>
-            {lastComment && (
+            {(lastComment || !showAllComment) && (
               <div className='gameDetaiils__footer'>
-                <div className='view__all__comments'>View all (3) comments</div>
+                <div className='view__all__comments' onClick={this.handleShowAllComments}>
+                  View all (3) comments
+                </div>
                 <div className='game__comment'>
                   <div className='profile__image'></div>
                   <div className='arrow'></div>
@@ -77,6 +85,14 @@ export default class GameDetails extends Component {
               </div>
             )}
           </Fragment>
+        )}
+        {showAllComment && (
+          <GameComments
+            game_id={id}
+            scheduleGames_data={selected_game}
+            user={this.props.initialData}
+            toggleBack={this.handleShowAllComments}
+          />
         )}
       </div>
     )

@@ -19,6 +19,7 @@ export default class GameComments extends Component {
     this.imageFileType = ['jpeg', 'jpg', 'png', 'gif']
     this.videoFileType = ['mov', 'webm', 'mpg', 'mp4', 'avi', 'ogg']
     this.textInput = null
+    this.fileInputRef = React.createRef()
   }
 
   componentDidMount() {
@@ -161,48 +162,51 @@ export default class GameComments extends Component {
       hash_tags = [],
     } = scheduleGames_data
     return (
-      <div className='gameDetails'>
+      <Fragment>
         <div className='gameComments__header '>
-          <div className='gameName' onClick={this.handleShowAllComments}>
+          <div className='gameName' onClick={this.props.toggleBack}>
             <h1 className='game__name'> Comments {`(${comments.length})`} </h1>
           </div>
         </div>
         <div className='show-individual-comments'>{this.showComment()}</div>
-        <div className='compose-comment'>
-          <textarea
-            name='name'
-            placeholder='Write a comment...'
-            value={this.state.value}
-            onChange={this.handleChange}
-            maxLength='254'
-            onKeyDown={this.detectKey}
-            ref={this.setTextInputRef}
-          />
-          <div className='insert__images' onClick={this.insert_image_comment}>
-            <input type='file' accept='image/*' ref={this.fileInputRef} onChange={this.handleSelectFile} name='insert__images' />
-            <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
-          </div>
+        <div className='compose__comment__wrapper'>
+          <div className='compose-comment'>
+            <textarea
+              name='name'
+              placeholder='Write a comment...'
+              value={this.state.value}
+              onChange={this.handleChange}
+              maxLength='254'
+              onKeyDown={this.detectKey}
+              ref={this.setTextInputRef}
+            />
+            <div className='insert__images' onClick={this.insert_image_comment}>
+              <input type='file' accept='image/*' ref={this.fileInputRef} onChange={this.handleSelectFile} name='insert__images' />
+              <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
+            </div>
 
-          <div
-            className='profile__image'
-            style={{
-              backgroundImage: `url('${scheduleGames_data.profile_img}')`,
-              backgroundSize: 'cover',
-            }}>
-            <Link to={`/profile/${scheduleGames_data.alias}`} className='user-img'></Link>
-            <div className='online__status'></div>
-          </div>
-        </div>
-        {this.state.uploading && <div className='uploadImage_loading'>Uploading ...</div>}
-        {this.state.preview_file.length > 0 && (
-          <div className='preview__image'>
-            <img src={`${this.state.preview_file[0]}`} />
-            <div className='clear__preview__image' onClick={this.clearPreviewImage}>
-              X
+            <div
+              className='profile__image'
+              style={{
+                backgroundImage: `url('${scheduleGames_data.profile_img}')`,
+                backgroundSize: 'cover',
+              }}>
+              <Link to={`/profile/${scheduleGames_data.alias}`} className='user-img'></Link>
+              <div className='online__status'></div>
             </div>
           </div>
-        )}
-      </div>
+
+          {this.state.uploading && <div className='uploadImage_loading'>Uploading ...</div>}
+          {this.state.preview_file.length > 0 && (
+            <div className='preview__image'>
+              <img src={`${this.state.preview_file[0]}`} />
+              <div className='clear__preview__image' onClick={this.clearPreviewImage}>
+                X
+              </div>
+            </div>
+          )}
+        </div>
+      </Fragment>
     )
   }
 }
