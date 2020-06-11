@@ -602,6 +602,9 @@
         background: #1d2326 0% 0% no-repeat padding-box;
         border-radius: 4px;
         padding: 24px 36px 36px 24px;
+        display: flex;
+        margin-top: auto;
+        flex-direction: column;
 
         .view__all__comments {
           font: Bold 12px/14px Montserrat;
