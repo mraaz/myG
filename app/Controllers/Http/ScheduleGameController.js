@@ -576,9 +576,14 @@ class ScheduleGameController {
 
       const approved_gamers = await Database.from('attendees')
         .innerJoin('users', 'users.id', 'attendees.user_id')
-        .where({ schedule_games_id: latestScheduledGames[0].id, type: 1 })
+        .where({ schedule_games_id: request.params.id, type: 1 })
         .select('attendees.*', 'users.id as user_id', 'users.profile_img', 'users.alias')
         .limit(4)
+
+      const my_attendance = await Database.from('attendees')
+        .where({ schedule_games_id: request.params.id, user_id: auth.user.id })
+        .select('type')
+        .first()
 
       if (my_attendance != undefined) {
         join_status = my_attendance.type
@@ -593,6 +598,8 @@ class ScheduleGameController {
       console.log(error)
     }
   }
+
+  //trying to figure out position or clash_royale_trophies
 
   async filtered_by_one({ auth, request, response }) {
     let join_status = 0

@@ -15,7 +15,7 @@ export default class PlayerList extends Component {
     const getAttendees = async function() {
       try {
         const getAttendees = await axios.post('/api/attendees/role_call_ALL/', {
-          schedule_games_GUID: match.params.schedule_games_GUID,
+          schedule_games_id: 456,
           counter: 1,
         })
         self.setState({

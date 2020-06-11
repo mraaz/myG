@@ -188,11 +188,11 @@ export default class ScheduleGames extends Component {
   handleSaveFilterClick = async () => {
     const { filterName = '', isRequesting = false, filterTypeArray = [] } = this.state
     if (!filterName) {
-      toast.error(<Toast_style text={'Please enter filter name first.'} />)
+      toast.error(<Toast_style text={'Hmmm, sorry those characters are not allowed'} />)
       return
     }
     if (isRequesting) {
-      toast.warn(<Toast_style text={'Please wait.Requesting...'} />)
+      toast.warn(<Toast_style text={'Requesting, please wait....'} />)
       return
     }
     this.setState({ isRequesting: true })
@@ -206,7 +206,7 @@ export default class ScheduleGames extends Component {
         payload,
       })
       if (saveFilter.data == 'ER_DUP_ENTRY') {
-        toast.error(<Toast_style text={'Name you entered already exists.'} />)
+        toast.error(<Toast_style text={'Opps! This name already exists.'} />)
         this.setState({ isRequesting: false })
       } else {
         this.setState({ showSaveFilterInput: false, isRequesting: false, filterName: '', showOverlay: false })
@@ -241,10 +241,10 @@ export default class ScheduleGames extends Component {
       if (filterName.length < 250) {
         this.setState({ filterName })
       } else {
-        toast.error(<Toast_style text={'You can not enter more than 250 Char.'} />)
+        toast.error(<Toast_style text={'Sigh, You can not enter more than 250 Char.'} />)
       }
     } else {
-      toast.error(<Toast_style text={'Please enter a valid Filter Name.'} />)
+      toast.error(<Toast_style text={'Hmmm, sorry those characters are not allowed'} />)
     }
   }
   handleFilterTypeClick = (k) => {
