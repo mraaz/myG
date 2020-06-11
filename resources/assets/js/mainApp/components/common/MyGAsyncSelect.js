@@ -36,6 +36,7 @@ const MyGAsyncSelect = ({
       ...provided,
       backgroundColor: '#fff',
       color: '#384952',
+      ...styles.menuList,
     }),
     singleValue: (provided) => ({
       ...provided,

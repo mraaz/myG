@@ -108,7 +108,7 @@ const AddGameContainer = () => {
         tags: advancedSettingsState.tags,
         newCreatedTags: advancedSettingsState.newCreatedTags,
       })
-      updateGameLink(data.id)
+      updateGameLink(data.schedule_games_GUID)
       updateIsGameListedModalOpen(true)
     } catch (err) {
       updateIsSubmitting(false)
@@ -152,8 +152,11 @@ const AddGameContainer = () => {
           <MyGInput
             value={`https://myG.gg/scheduledGames/${gameLink}`}
             containerStyles={{ width: '318px' }}
-            inputStyles={{ width: '100%', outline: 'none' }}
+            inputStyles={{ width: '100%', outline: 'none', cursor: 'pointer' }}
             refInput={gameLinkRef}
+            onClick={() => {
+              window.open(`https://myG.gg/scheduledGames/${gameLink}`, '_blank')
+            }}
             readOnly>
             <div style={{ marginTop: '9px', marginLeft: '15px', cursor: 'pointer' }} onClick={copyToClipboard}>
               <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Link.svg' height='18' width='18' />
@@ -163,13 +166,12 @@ const AddGameContainer = () => {
           <MyGButton customStyles={{ color: '#E5C746', border: '2px solid' }} text='Invite Friends' onClick={onInviteFriendsClick} />
         </div>
         <div className={styles.listedBottomContentContainer}>
-          <MyGButton
-            customStyles={{ color: '#fff', border: '2px solid' }}
-            text='Done'
-            onClick={() => {
-              window.location.reload(false)
-            }}
-          />
+          <Link to='/addScheduleGames' replace>
+            <MyGButton
+              customStyles={{ color: '#fff', border: '2px solid' }}
+              text='Done'
+            />
+          </Link>
         </div>
       </MyGModal>
     )

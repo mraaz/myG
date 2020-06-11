@@ -85,12 +85,12 @@ export async function Game_name_Tags(inputValue, game_names_id) {
 }
 
 export async function Schedule_Game_Tags(inputValue) {
-  if (inputValue != undefined) {
-    inputValue = inputValue.trimStart()
-    if (inputValue.length <= 250) {
-      inputValue = inputValue.substr(0, 250)
-    }
-  }
+//  if (inputValue != undefined) {
+//    inputValue = inputValue.trimStart()
+//    if (inputValue.length <= 250) {
+//      inputValue = inputValue.substr(0, 250)
+//    }
+//  }
 
   let allTags
 

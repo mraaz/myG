@@ -79,9 +79,9 @@ const parsePlayersToSelectData = (data) => {
     data.forEach((player) => {
       selectData.push({
         label: (
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#1d2326' }}>
             <img style={{ display: 'inline', marginRight: '10px', borderRadius: '30px' }} src={player.profile_img} height={20} width={20} />
-            <div style={{ display: 'inline' }}>{player.alias || player.first}</div>
+            <div style={{ display: 'inline', color: '#fff' }}>{player.alias || player.first}</div>
           </div>
         ),
         id: player.id,

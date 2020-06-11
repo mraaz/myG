@@ -57,7 +57,6 @@ MyGDatePicker.defaultProps = {
   todayButton: 'Today',
   shouldCloseOnSelect: true,
   minDate: moment(),
-  maxDate: moment().add(7, 'days'),
 }
 
 export default MyGDatePicker

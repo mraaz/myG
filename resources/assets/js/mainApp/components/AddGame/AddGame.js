@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { Fragment, useState, useEffect, memo } from 'react'
 import classNames from 'classnames'
 import Slider, { Range } from 'rc-slider'
 import moment from 'moment'
@@ -41,16 +41,16 @@ const AddGame = ({
 }) => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    // const getInitialData = async function() {
-    //   try {
-    //     let results = await Schedule_Game_Tags()
-    //     updateAdvancedSettings({ optionTags: results })
-    //   } catch (error) {
-    //     // Error get option tags
-    //   }
-    // }
-    // getInitialData()
-  })
+     const getInitialData = async function() {
+       try {
+         let results = await Schedule_Game_Tags()
+         updateAdvancedSettings({ optionTags: results })
+       } catch (error) {
+         // Error get option tags
+       }
+     }
+     getInitialData()
+  }, [])
 
   // Handlers
   const updateMainSettings = (stateUpdates) => {
@@ -196,7 +196,12 @@ const AddGame = ({
               },
               visible: true,
             }}
-            tipFormatter={(value) => value + ' Gamers'}
+            tipFormatter={(value) => {
+              if (value === 1) {
+                return value + ' Gamer'
+              }
+              return value + ' Gamers'
+            }}
           />
         )}
         <MyGCheckbox
@@ -250,6 +255,8 @@ const AddGame = ({
           onChange={(value) => {
             updateMainSettings({ endTime: value })
           }}
+          minDate={moment(mainSettingsState.startTime)}
+          maxDate={moment(mainSettingsState.startTime).add(14, 'days')}
           selected={mainSettingsState.endTime}>
           <img
             style={{ margin: '0 10px' }}
@@ -277,6 +284,10 @@ const AddGame = ({
               <div
                 className={styles.optionalText}
                 onClick={() => {
+                  if (!mainSettingsState.startTime) {
+                    toast.success(<Toast_style text={'Please add start time first.'} />)
+                    return
+                  }
                   updateMainSettings({
                     isEndGameFieldSelected: true,
                     endTime: moment(mainSettingsState.startTime).add(2, 'days'),
@@ -376,9 +387,18 @@ const AddGame = ({
           <div className={styles.fieldTitle}>Start Time</div>
           <MyGDatePicker
             onChange={(value) => {
+              if (!value) {
+                updateMainSettings({
+                  isEndGameFieldSelected: false,
+                  endTime: null,
+                  startTime: value,
+                })
+                return
+              }
               updateMainSettings({ startTime: value })
             }}
             selected={mainSettingsState.startTime}
+            maxDate={moment().add(14, 'days')}
           />
           {getOptionalMainSettingsView()}
           {getPlayersNumberView()}
