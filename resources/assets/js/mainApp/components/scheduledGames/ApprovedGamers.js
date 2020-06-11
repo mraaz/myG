@@ -5,17 +5,21 @@ const Approved_gamers = (props) => {
   return (
     <Fragment>
       <div className='gameTime__label'>Gamers</div>
-      {approved_gamers.length > 0 &&
-        approved_gamers.map((gamer) => {
-          return (
-            <div className='gamer__wraper'>
-              <div className='gamer__image '>
-                <img src={gamer.profile_img} />
+      <div className='gamer__wraper'>
+        {approved_gamers.length > 0 &&
+          approved_gamers.map((gamer) => {
+            return (
+              <div className='single__gamer'>
+                <div className='gamer__image '>
+                  <img src={gamer.profile_img} />
+                </div>
+                <div className='gamer__alias ' title={gamer.alias}>
+                  {gamer.alias}
+                </div>
               </div>
-              <div className='gamer__alias '>{gamer.alias}</div>
-            </div>
-          )
-        })}
+            )
+          })}
+      </div>
     </Fragment>
   )
 }

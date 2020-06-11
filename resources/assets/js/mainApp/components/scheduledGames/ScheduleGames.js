@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react'
-import GameFilter from './gameFilter'
-import GameList from './gameList'
-import GameDetails from './gameDetails'
-import SingleGameDetails from './singlegameDetails'
+import GameFilter from './GameFilter'
+import GameList from './GameList'
+import GameDetails from './GameDetails'
+import SingleGameDetails from './SingleGameDetails.js'
 import { PullDataFunction as getScheduleGames } from './getScheduleGames'
 import axios from 'axios'
 
@@ -151,12 +151,18 @@ export default class ScheduleGames extends Component {
                 selected_game={selected_game}
                 showRightSideInfo={showRightSideInfo}
                 commentData={commentData}
+                {...this.props}
               />
             </Fragment>
           ) : (
             <Fragment>
               {latestScheduledGames.length > 0 ? (
-                <SingleGameDetails scheduleGames={scheduleGamesView} showRightSideInfo={showRightSideInfo} commentData={commentData} />
+                <SingleGameDetails
+                  scheduleGames={scheduleGamesView}
+                  showRightSideInfo={showRightSideInfo}
+                  commentData={commentData}
+                  {...this.props}
+                />
               ) : (
                 <h1>There is no data found!</h1>
               )}

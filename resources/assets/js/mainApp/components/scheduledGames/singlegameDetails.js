@@ -1,15 +1,18 @@
 import React, { Component, Fragment } from 'react'
 import moment from 'moment'
 import Approved_gamers from './ApprovedGamers'
-const buttonStatus = {
-  '0': 'Join',
-  '1': 'Joined',
-  '3': 'Pending',
-}
+import JoinButtonAction from './JoinButtonAction'
+import GameComments from './GameComments'
+
 export default class GameDetails extends Component {
   constructor() {
     super()
-    this.state = {}
+    this.state = {
+      showAllComment: false,
+    }
+  }
+  handleShowAllComments = () => {
+    this.setState({ showAllComment: !this.state.showAllComment })
   }
 
   render() {
@@ -27,12 +30,15 @@ export default class GameDetails extends Component {
       description = '',
       platform = '',
       region = '',
+      id = '',
     } = scheduleGames_data
     const { no_of_comments = [], lastComment = '' } = commentData
 
+    const { showAllComment } = this.state
+
     return (
       <div className='gameDetails'>
-        {showRightSideInfo && (
+        {showRightSideInfo && !showAllComment && (
           <Fragment>
             <div className='gameDetails__header'>
               <div className='gameName'>
@@ -49,15 +55,7 @@ export default class GameDetails extends Component {
                 </div>
                 {experience && <div className='game__level'>{experience}</div>}
               </div>
-              {join_status == 0 ? (
-                <div className='game__action__buttton'>
-                  <button type='button'>{`Join`}</button>
-                </div>
-              ) : (
-                <div className='game__action__buttton'>
-                  <button type='button'>{buttonStatus[`${join_status}`]}</button>
-                </div>
-              )}
+              <JoinButtonAction join_status={join_status} />
             </div>
             <div className='gameDetails__body'>
               <div className='filter__label'>Game Details</div>
@@ -69,7 +67,7 @@ export default class GameDetails extends Component {
               <div className='gameTags__value'>
                 {tags &&
                   tags.length > 0 &&
-                  tags.slice(0, 7).map((tag) => {
+                  tags.map((tag) => {
                     return <div className='singleTags'>{tag.content}</div>
                   })}
               </div>
@@ -79,9 +77,11 @@ export default class GameDetails extends Component {
               {region && <div className='gameTime__value'>{region}</div>}
               <Approved_gamers approved_gamers={approved_gamers} />
             </div>
-            {lastComment && (
+            {(lastComment || !showAllComment) && (
               <div className='gameDetaiils__footer'>
-                <div className='view__all__comments'>View all (3) comments</div>
+                <div className='view__all__comments' onClick={this.handleShowAllComments}>
+                  View all (3) comments
+                </div>
                 <div className='game__comment'>
                   <div className='profile__image'></div>
                   <div className='arrow'></div>
@@ -95,6 +95,7 @@ export default class GameDetails extends Component {
             )}
           </Fragment>
         )}
+        {showAllComment && <GameComments game_id={id} scheduleGames_data={scheduleGames_data} {...this.props} />}
       </div>
     )
   }
