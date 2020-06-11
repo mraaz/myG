@@ -176,7 +176,6 @@ class ScheduleGameController {
             }
           }
         }
-
         return newScheduleGame
       } catch (error) {
         console.log(error)
@@ -561,18 +560,10 @@ class ScheduleGameController {
 
   async additional_game_info({ auth, request, response }) {
     let join_status = 0
+    let additional_submit_info = false
+    let additional_submit_info_fields = []
     try {
-      var additional_game_info = await Database.from('schedule_games')
-        .leftJoin('schedule_games_transactions', 'schedule_games_transactions.schedule_games_id', 'schedule_games.id')
-        .where('schedule_games.id', '=', request.params.id)
-        .select(
-          'schedule_games.*',
-          'schedule_games_transactions.value_one',
-          'schedule_games_transactions.value_two',
-          'schedule_games_transactions.value_three',
-          'schedule_games_transactions.value_four',
-          'schedule_games_transactions.value_five'
-        )
+      var additional_game_info = await Database.from('schedule_games').where('schedule_games.id', '=', request.params.id)
 
       const approved_gamers = await Database.from('attendees')
         .innerJoin('users', 'users.id', 'attendees.user_id')
@@ -588,11 +579,55 @@ class ScheduleGameController {
       if (my_attendance != undefined) {
         join_status = my_attendance.type
       }
+      //Figure out what fields to return, create the key value pair.
+      const getGameFields = await Database.from('game_name_fields')
+        .where({ game_names_id: additional_game_info[0].game_names_id })
+        .select('in_game_fields')
+        .first()
+
+      if (getGameFields != undefined) {
+        additional_submit_info = true
+        let obj = JSON.parse(getGameFields.in_game_fields)
+        let obj2 = JSON.parse(getGameFields.in_game_field_labels)
+        let obj3 = JSON.parse(getGameFields.in_game_field_types)
+
+        const getGameTransactions = await Database.from('schedule_games_transactions')
+          .where({ schedule_games_id: request.params.id })
+          .first()
+
+        if (getGameTransactions != undefined) {
+          let arr_game_fields = [],
+            arr_game_fields_data = []
+
+          for (let key in obj) {
+            arr_game_fields.push(obj[key])
+          }
+          let tmp_array = []
+          switch (arr_game_fields.length - 1) {
+            case 4:
+              tmp_array[arr_game_fields[4]] = getGameTransactions.value_five
+            case 3:
+              tmp_array[arr_game_fields[3]] = getGameTransactions.value_four
+            case 2:
+              tmp_array[arr_game_fields[2]] = getGameTransactions.value_three
+            case 1:
+              tmp_array[arr_game_fields[1]] = getGameTransactions.value_two
+            case 0:
+              tmp_array[arr_game_fields[0]] = getGameTransactions.value_one
+          }
+          for (let key in tmp_array) {
+            let tmp_tmp = { [key]: tmp_array[key] }
+            additional_submit_info_fields.push([tmp_tmp, obj2[key], obj3[key]])
+          }
+        }
+      }
 
       return {
         additional_game_info,
         approved_gamers,
         join_status,
+        additional_submit_info,
+        additional_submit_info_fields,
       }
     } catch (error) {
       console.log(error)
