@@ -90,6 +90,7 @@ export default class GameList extends Component {
                               </div>
                             )
                           })}
+                        {game.tags && game.tags.length > 8 && `...`}
                       </div>
                       {game.experience && <div className='game__level'>{game.experience}</div>}
                     </div>
