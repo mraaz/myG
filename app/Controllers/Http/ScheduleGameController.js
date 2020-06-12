@@ -637,12 +637,17 @@ class ScheduleGameController {
         }
       }
 
+      let getAllGamers = await Database.from('attendees')
+        .where({ schedule_games_id: request.params.id, type: 1 })
+        .count('* as no_of_gamers')
+
       return {
         additional_game_info,
         approved_gamers,
         join_status,
         additional_submit_info,
         additional_submit_info_fields,
+        getAllGamers,
       }
     } catch (error) {
       console.log(error)
