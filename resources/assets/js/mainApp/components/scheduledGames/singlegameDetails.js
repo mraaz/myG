@@ -3,6 +3,8 @@ import moment from 'moment'
 import Approved_gamers from './ApprovedGamers'
 import JoinButtonAction from './JoinButtonAction'
 import GameComments from './GameComments'
+import { Link } from 'react-router-dom'
+import { WithTooltip } from '../Tooltip'
 
 export default class GameDetails extends Component {
   constructor() {
@@ -33,6 +35,7 @@ export default class GameDetails extends Component {
       id = '',
     } = scheduleGames_data
     const { no_of_comments = [], lastComment = '' } = commentData
+    console.log('commentData   ', commentData)
 
     const { showAllComment } = this.state
 
@@ -63,19 +66,29 @@ export default class GameDetails extends Component {
               <div className='gameDescription__body'>{description}</div>
               <div className='gameTime__label'>End Time</div>
               <div className='gameTime__value'>{moment(end_date_time).format('LLLL')}</div>
-              <div className='gameTags__label'>Tags</div>
-              <div className='gameTags__value'>
-                {tags &&
-                  tags.length > 0 &&
-                  tags.map((tag) => {
-                    return <div className='singleTags'>{tag.content}</div>
-                  })}
-              </div>
+
               {platform && <div className='gameTime__label'>Platform</div>}
               {platform && <div className='gameTime__value'>{platform}</div>}
               {region && <div className='gameTime__label'>Region</div>}
               {region && <div className='gameTime__value'>{region}</div>}
               <Approved_gamers approved_gamers={approved_gamers} />
+              <div className='gameTags__label'>Tags</div>
+              <div className='gameTags__value game__tags'>
+                {tags &&
+                  tags.length > 0 &&
+                  tags.map((tag) => {
+                    return (
+                      <WithTooltip
+                        position={{ bottom: '24px', left: '-12px' }}
+                        style={{ height: '24px', display: 'inline-block', marginBottom: '10px' }}
+                        text={tag.content}>
+                        <p className='singleTags' title={tag.content}>
+                          {tag.content}
+                        </p>
+                      </WithTooltip>
+                    )
+                  })}
+              </div>
             </div>
             {(lastComment || !showAllComment) && (
               <div className='gameDetaiils__footer'>

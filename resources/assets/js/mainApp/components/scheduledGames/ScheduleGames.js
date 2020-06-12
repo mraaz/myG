@@ -22,7 +22,12 @@ export default class ScheduleGames extends Component {
       moreplease: true,
       counter: 1,
       scheduleGamesView: {},
+      showAllComment: false,
     }
+  }
+
+  handleShowAllComments = () => {
+    this.setState({ showAllComment: !this.state.showAllComment })
   }
 
   async componentDidMount() {
@@ -48,7 +53,12 @@ export default class ScheduleGames extends Component {
       this.setState({ commentData: { ...allComments.data } })
     }
     if (scheduleGames.data && Object.keys(scheduleGames.data).length > 0) {
-      this.setState({ singleScheduleGamesPayload: scheduleGames.data, selected_game: { ...game }, showRightSideInfo: true })
+      this.setState({
+        singleScheduleGamesPayload: scheduleGames.data,
+        selected_game: { ...game },
+        showRightSideInfo: true,
+        showAllComment: false,
+      })
     }
   }
 
@@ -126,6 +136,7 @@ export default class ScheduleGames extends Component {
       commentData,
       singleView,
       scheduleGamesView = {},
+      showAllComment,
     } = this.state
     const { latestScheduledGames = [] } = scheduleGamesView
 
@@ -151,6 +162,8 @@ export default class ScheduleGames extends Component {
                 selected_game={selected_game}
                 showRightSideInfo={showRightSideInfo}
                 commentData={commentData}
+                handleShowAllComments={this.handleShowAllComments}
+                showAllComment={showAllComment}
                 {...this.props}
               />
             </Fragment>

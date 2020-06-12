@@ -335,13 +335,15 @@
             letter-spacing: 0px;
             color: #ffffff;
             font-weight: bold;
-            padding: 9px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             cursor: pointer;
-            span {
+            div {
               font: inherit;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
             }
             &:hover,
             &.selected {
@@ -446,19 +448,24 @@
               margin-right: 5px;
             }
           }
-          .game__level {
-            max-width: 90px;
-            height: 27px;
-            border: 1px solid #d6b9ff;
-            border-radius: 23px;
-            font: 14px/14px Montserrat;
-            letter-spacing: 0px;
-            color: #b9b9b9;
-            padding: 6px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: inline-block;
+          .game__level__wrap {
+            display: flex;
+            flex-direction: column;
+            .game__level {
+              max-width: 100px;
+              height: 27px;
+              border: 1px solid #d6b9ff;
+              border-radius: 23px;
+              font: 14px/14px Montserrat;
+              letter-spacing: 0px;
+              color: #b9b9b9;
+              padding: 6px;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              display: inline-block;
+              margin-bottom: 10px;
+            }
           }
         }
         .game__action__buttton {
@@ -571,6 +578,7 @@
         .gamer__wraper {
           display: inline-flex;
           align-items: center;
+          margin-bottom: 10px;
           .single__gamer {
             display: inline-flex;
             align-items: center;
@@ -618,6 +626,7 @@
           padding: 9px 13px;
           margin-left: 70px;
           position: relative;
+          min-height: 50px;
           span {
             font: 12px/18px Montserrat;
             letter-spacing: 0px;
@@ -834,7 +843,6 @@
               .game__tags {
                 flex: auto;
                 flex: auto;
-                display: flex;
                 max-width: 300px;
                 flex-wrap: wrap;
                 margin-right: auto;
@@ -854,7 +862,7 @@
                 }
               }
               .game__level {
-                max-width: 90px;
+                max-width: 100px;
                 height: 27px;
                 border: 1px solid #d6b9ff;
                 border-radius: 23px;
@@ -865,6 +873,7 @@
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
+                margin-bottom: 10px;
               }
             }
           }
@@ -880,7 +889,6 @@
     border: none;
     .gameDetails {
       background: #171a1c;
-      border-radius: 4px;
       .gameDetails__header {
         background: #1d2326;
       }
@@ -1051,7 +1059,8 @@
               border: none;
               input {
                 width: 100%;
-                background: #1d2326 0% 0% no-repeat padding-box;
+                // background: #1d2326 0% 0% no-repeat padding-box;
+                background: #2d363a 0% 0% no-repeat padding-box;
                 color: #657172;
                 padding: 10px;
                 border: none;
@@ -1060,8 +1069,8 @@
               }
               .insert__images {
                 position: absolute;
-                right: 5px;
-                top: -18px;
+                right: -10px;
+                top: 4px;
                 z-index: 2;
                 cursor: pointer;
                 input {
@@ -1069,7 +1078,7 @@
                 }
                 img {
                   padding-right: 18px;
-                  height: 35px;
+                  height: 25px;
                 }
               }
               .uploadImage_loading {
@@ -1200,6 +1209,12 @@
     .gamer__count,
     .game__timestamp {
       margin-right: 30px !important;
+    }
+    .gameTags__value {
+      .singleTags {
+        max-width: 100px !important;
+        margin: 0 10px 10px 0 !important;
+      }
     }
   }
   .GameView__container {

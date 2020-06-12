@@ -170,9 +170,7 @@ class ScheduleGameController {
                 game_tag_id: arrTags[i].game_tag_id,
               })
 
-              const update_counter = await GameTags.query()
-                .where({ id: arrTags[i].game_tag_id })
-                .increment('counter', 1)
+              const update_counter = await GameTags.query().where({ id: arrTags[i].game_tag_id }).increment('counter', 1)
             }
           }
         }
@@ -306,9 +304,7 @@ class ScheduleGameController {
     var myScheduledGames = ''
     try {
       //   //const latestScheduledGames = await ScheduleGame.query().innerJoin('users', 'user_id', 'schedule_games.user_id').options({nestTables:true}).fetch()
-      const subquery = Database.select('schedule_games_id')
-        .from('attendees')
-        .where({ user_id: auth.user.id })
+      const subquery = Database.select('schedule_games_id').from('attendees').where({ user_id: auth.user.id })
 
       myScheduledGames = await Database.from('schedule_games')
         .innerJoin('users', 'users.id', 'schedule_games.user_id')
@@ -336,15 +332,9 @@ class ScheduleGameController {
   async myScheduledGames_Upcoming_Games({ auth, request, response }) {
     var myScheduledGames = ''
 
-    let next24hours = new Date(new Date(Date.now()).getTime() + 60 * 60 * 24 * 1000)
-      .toISOString()
-      .slice(0, 19)
-      .replace('T', ' ')
+    let next24hours = new Date(new Date(Date.now()).getTime() + 60 * 60 * 24 * 1000).toISOString().slice(0, 19).replace('T', ' ')
 
-    let last4hours = new Date(new Date(Date.now()).getTime() - 60 * 60 * 4 * 1000)
-      .toISOString()
-      .slice(0, 19)
-      .replace('T', ' ')
+    let last4hours = new Date(new Date(Date.now()).getTime() - 60 * 60 * 4 * 1000).toISOString().slice(0, 19).replace('T', ' ')
 
     try {
       const subquery = Database.from('attendees')
@@ -566,9 +556,7 @@ class ScheduleGameController {
       additional_game_info = []
 
     try {
-      additional_game_info = await Database.from('schedule_games')
-        .where('schedule_games.id', '=', request.params.id)
-        .first()
+      additional_game_info = await Database.from('schedule_games').where('schedule_games.id', '=', request.params.id).first()
       if (additional_game_info != undefined) {
         approved_gamers = await Database.from('attendees')
           .innerJoin('users', 'users.id', 'attendees.user_id')
@@ -584,70 +572,19 @@ class ScheduleGameController {
         if (my_attendance != undefined) {
           join_status = my_attendance.type
         }
-        //Figure out what fields to return, create the key value pair.
-        const getGameFields = await Database.from('game_name_fields')
-          .where({ game_names_id: additional_game_info.game_names_id })
-          .first()
 
-        if (getGameFields != undefined) {
-          additional_submit_info = true
-          let obj = '',
-            obj2 = '',
-            obj3 = ''
+        let getAllGamers = await Database.from('attendees')
+          .where({ schedule_games_id: request.params.id, type: 1 })
+          .count('* as no_of_gamers')
 
-          if (getGameFields.in_game_fields != undefined) {
-            obj = JSON.parse(getGameFields.in_game_fields)
-          }
-          if (getGameFields.in_game_field_labels != undefined) {
-            obj2 = JSON.parse(getGameFields.in_game_field_labels)
-          }
-          if (getGameFields.in_game_field_types != undefined) {
-            obj3 = JSON.parse(getGameFields.in_game_field_types)
-          }
-
-          const getGameTransactions = await Database.from('schedule_games_transactions')
-            .where({ schedule_games_id: request.params.id })
-            .first()
-
-          if (getGameTransactions != undefined) {
-            let arr_game_fields = [],
-              arr_game_fields_data = []
-
-            for (let key in obj) {
-              arr_game_fields.push(obj[key])
-            }
-            let tmp_array = []
-            switch (arr_game_fields.length - 1) {
-              case 4:
-                tmp_array[arr_game_fields[4]] = getGameTransactions.value_five
-              case 3:
-                tmp_array[arr_game_fields[3]] = getGameTransactions.value_four
-              case 2:
-                tmp_array[arr_game_fields[2]] = getGameTransactions.value_three
-              case 1:
-                tmp_array[arr_game_fields[1]] = getGameTransactions.value_two
-              case 0:
-                tmp_array[arr_game_fields[0]] = getGameTransactions.value_one
-            }
-            for (let key in tmp_array) {
-              let tmp_tmp = { [key]: tmp_array[key] }
-              additional_submit_info_fields.push([tmp_tmp, obj2[key], obj3[key]])
-            }
-          }
+        return {
+          additional_game_info,
+          approved_gamers,
+          join_status,
+          additional_submit_info,
+          additional_submit_info_fields,
+          getAllGamers,
         }
-      }
-
-      let getAllGamers = await Database.from('attendees')
-        .where({ schedule_games_id: request.params.id, type: 1 })
-        .count('* as no_of_gamers')
-
-      return {
-        additional_game_info,
-        approved_gamers,
-        join_status,
-        additional_submit_info,
-        additional_submit_info_fields,
-        getAllGamers,
       }
     } catch (error) {
       console.log(error)
@@ -723,9 +660,7 @@ class ScheduleGameController {
 
   async update_vacany({ auth }, schedule_game_id, vacancy) {
     try {
-      const update_vacany = await ScheduleGame.query()
-        .where({ id: schedule_game_id })
-        .update({ vacancy: vacancy })
+      const update_vacany = await ScheduleGame.query().where({ id: schedule_game_id }).update({ vacancy: vacancy })
       return
     } catch (error) {
       console.log(error)
@@ -749,9 +684,7 @@ class ScheduleGameController {
           return isAdmin
         }
 
-        const checkCo_host = await Database.from('co_hosts')
-          .where({ schedule_games_id: getID.id, user_id: auth.user.id })
-          .select('id')
+        const checkCo_host = await Database.from('co_hosts').where({ schedule_games_id: getID.id, user_id: auth.user.id }).select('id')
 
         if (checkCo_host.length > 0) {
           isAdmin = true

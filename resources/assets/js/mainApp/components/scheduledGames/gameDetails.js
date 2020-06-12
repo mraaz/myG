@@ -3,6 +3,8 @@ import moment from 'moment'
 import Approved_gamers from './ApprovedGamers'
 import JoinButtonAction from './JoinButtonAction'
 import GameComments from './GameComments'
+import { Link } from 'react-router-dom'
+import { WithTooltip } from '../Tooltip'
 
 export default class GameDetails extends Component {
   constructor() {
@@ -10,19 +12,25 @@ export default class GameDetails extends Component {
     this.state = {}
   }
   handleShowAllComments = () => {
-    this.setState({ showAllComment: !this.state.showAllComment })
+    this.props.handleShowAllComments()
   }
 
   render() {
-    const { singleScheduleGamesPayload = {}, selected_game = {}, showRightSideInfo, commentData, fetching } = this.props
-    const { additional_game_info = [], approved_gamers = [], join_status = '' } = singleScheduleGamesPayload
-    const [game_additional_data = {}] = additional_game_info
+    const { singleScheduleGamesPayload = {}, selected_game = {}, showRightSideInfo, commentData, showAllComment } = this.props
+    const { additional_game_info = {}, approved_gamers = [], join_status = '' } = singleScheduleGamesPayload
     const { id = '', game_name = '', experience = '', no_of_gamers = '', tags = [] } = selected_game
-    const { start_date_time = '', end_date_time = '', limit, description = '', platform = '', region = '' } = game_additional_data
+    const {
+      start_date_time = '',
+      end_date_time = '',
+      limit,
+      description = '',
+      platform = '',
+      region = '',
+      allow_comments = 0,
+    } = additional_game_info
 
     const { no_of_comments = [], lastComment = '' } = commentData
-
-    const { showAllComment } = this.state
+    const { no_of_my_comments = '' } = no_of_comments[0] || {}
 
     return (
       <div className='gameDetails'>
@@ -52,36 +60,52 @@ export default class GameDetails extends Component {
               {description && <div className='gameDescription__body'>{description}</div>}
               <div className='gameTime__label'>End Time</div>
               <div className='gameTime__value'>{moment(end_date_time).format('LLLL')}</div>
-              {tags.length > 0 && <div className='gameTags__label'>Tags</div>}
 
               {platform && <div className='gameTime__label'>Platform</div>}
               {platform && <div className='gameTime__value'>{platform}</div>}
               {region && <div className='gameTime__label'>Region</div>}
               {region && <div className='gameTime__value'>{region}</div>}
               <Approved_gamers approved_gamers={approved_gamers} />
-              {tags.length > 0 && <div className='gameTags__label'>Tags</div>}
+              {tags && tags.length > 7 && <div className='gameTags__label'>Tags</div>}
               <div className='gameTags__value'>
                 {tags &&
                   tags.length > 7 &&
                   tags.map((tag) => {
-                    return <div className='singleTags'>{tag.content}</div>
+                    return (
+                      <WithTooltip
+                        position={{ bottom: '24px', left: '-12px' }}
+                        style={{ height: '24px', display: 'inline-block', marginBottom: '5px' }}
+                        text={tag.content}>
+                        <p className='singleTags' title={tag.content}>
+                          {tag.content}
+                        </p>
+                      </WithTooltip>
+                    )
                   })}
               </div>
             </div>
-            {(lastComment || !showAllComment) && (
+            {(lastComment.content || !showAllComment) && (
               <div className='gameDetaiils__footer'>
                 <div className='view__all__comments' onClick={this.handleShowAllComments}>
-                  View all (3) comments
+                  {no_of_my_comments ? `View all (${no_of_my_comments}) comments` : 'Click here to post a comment'}
                 </div>
-                <div className='game__comment'>
-                  <div className='profile__image'></div>
-                  <div className='arrow'></div>
-                  <span className='author'>Alexander Bischof</span>
-                  <span>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua.
-                  </span>
-                </div>
+                {no_of_my_comments > 0 && (
+                  <div className='game__comment'>
+                    <Link to={`/profile/${lastComment.alias}`} className='user-img'>
+                      {' '}
+                      <div
+                        className='profile__image'
+                        style={{
+                          backgroundImage: `url('${lastComment.profile_img}')`,
+                          backgroundSize: 'cover',
+                        }}></div>
+                    </Link>
+
+                    <div className='arrow'></div>
+                    <span className='author'>{`${lastComment.first_name} ${lastComment.last_name}`}</span>
+                    <span>{lastComment.content || ''}</span>
+                  </div>
+                )}
               </div>
             )}
           </Fragment>
@@ -92,6 +116,7 @@ export default class GameDetails extends Component {
             scheduleGames_data={selected_game}
             user={this.props.initialData}
             toggleBack={this.handleShowAllComments}
+            allow_comments={allow_comments}
           />
         )}
       </div>

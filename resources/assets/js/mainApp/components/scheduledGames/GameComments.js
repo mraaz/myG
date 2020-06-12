@@ -155,7 +155,7 @@ export default class GameComments extends Component {
   }
 
   render() {
-    let { scheduleGames_data = {} } = this.props //destructing of object
+    let { scheduleGames_data = {}, allow_comments = 0 } = this.props //destructing of object
     let { comments = [] } = this.state //destructing of object
     let {
       profile_img = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png',
@@ -169,43 +169,45 @@ export default class GameComments extends Component {
           </div>
         </div>
         <div className='show-individual-comments'>{this.showComment()}</div>
-        <div className='compose__comment__wrapper'>
-          <div className='compose-comment'>
-            <textarea
-              name='name'
-              placeholder='Write a comment...'
-              value={this.state.value}
-              onChange={this.handleChange}
-              maxLength='254'
-              onKeyDown={this.detectKey}
-              ref={this.setTextInputRef}
-            />
-            <div className='insert__images' onClick={this.insert_image_comment}>
-              <input type='file' accept='image/*' ref={this.fileInputRef} onChange={this.handleSelectFile} name='insert__images' />
-              <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
-            </div>
-
-            <div
-              className='profile__image'
-              style={{
-                backgroundImage: `url('${scheduleGames_data.profile_img}')`,
-                backgroundSize: 'cover',
-              }}>
-              <Link to={`/profile/${scheduleGames_data.alias}`} className='user-img'></Link>
-              <div className='online__status'></div>
-            </div>
-          </div>
-
-          {this.state.uploading && <div className='uploadImage_loading'>Uploading ...</div>}
-          {this.state.preview_file.length > 0 && (
-            <div className='preview__image'>
-              <img src={`${this.state.preview_file[0]}`} />
-              <div className='clear__preview__image' onClick={this.clearPreviewImage}>
-                X
+        {allow_comments == 1 && (
+          <div className='compose__comment__wrapper'>
+            <div className='compose-comment'>
+              <textarea
+                name='name'
+                placeholder='Write a comment...'
+                value={this.state.value}
+                onChange={this.handleChange}
+                maxLength='254'
+                onKeyDown={this.detectKey}
+                ref={this.setTextInputRef}
+              />
+              <div className='insert__images' onClick={this.insert_image_comment}>
+                <input type='file' accept='image/*' ref={this.fileInputRef} onChange={this.handleSelectFile} name='insert__images' />
+                <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
               </div>
+              <Link to={`/profile/${scheduleGames_data.alias}`} className='user-img'>
+                <div
+                  className='profile__image'
+                  style={{
+                    backgroundImage: `url('${scheduleGames_data.profile_img}')`,
+                    backgroundSize: 'cover',
+                  }}>
+                  <div className='online__status'></div>
+                </div>
+              </Link>
             </div>
-          )}
-        </div>
+
+            {this.state.uploading && <div className='uploadImage_loading'>Uploading ...</div>}
+            {this.state.preview_file.length > 0 && (
+              <div className='preview__image'>
+                <img src={`${this.state.preview_file[0]}`} />
+                <div className='clear__preview__image' onClick={this.clearPreviewImage}>
+                  X
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </Fragment>
     )
   }
