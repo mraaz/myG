@@ -47,6 +47,8 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
   })
   const [selectedGroups, updateSelectedGroups] = useState({})
   const [groupsSuggestions, updateGroupsSuggestions] = useState([])
+  const [morepleaseGroups, updateMorePleaseGropus] = useState(true)
+  const [counterGroups, updateGroupsCounter] = useState(1)
   // Communities
   const [communitiesKeywordSearchResults, updateCommunitiesKeywordSearchResults] = useState({
     searchResults: {},
@@ -54,6 +56,8 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
     totalCommunities: 0,
   })
   const [selectedCommunities, updateSelectedCommunities] = useState({})
+  const [morepleaseCommunities, updateMorePleaseCommunities] = useState(true)
+  const [counterCommunities, updateCommunitiesCounter] = useState(1)
 
   useEffect(() => {
     fetchMoreData()
@@ -174,11 +178,12 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
   }
 
   const fetchCommunitiesData = async () => {
+    await updateCommunitiesCounter(counterCommunities + 1)
     const getmyGroups = async function () {
       try {
         const {
           data: { myGroups },
-        } = await axios.get('/api/groups/view')
+        } = await axios.get(`/api/groups/view/${counterCommunities}`)
         return myGroups
       } catch (error) {
         // error fetch communities data
@@ -190,7 +195,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
       try {
         const {
           data: { groups_im_in },
-        } = await axios.get('/api/usergroup/view')
+        } = await axios.get(`/api/usergroup/view/${counterCommunities}`)
         return groups_im_in
       } catch (error) {
         // error getGroups_im_in
@@ -199,13 +204,18 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
     }
     const myGroups = await getmyGroups()
     const groupsImIn = await getGroups_im_in()
+    if (myGroups.length === 0 && groupsImIn.length === 0) {
+      updateMorePleaseCommunities(false)
+      return
+    }
+
     const { itemsArray: myGroupsItemsArray, dataObj: myGroupsItemObj } = normalizeCommunitiesData(myGroups)
     const { itemsArray: groupsImInItemsArray, dataObj: groupsImInItemObj } = normalizeCommunitiesData(groupsImIn)
-    updateCommunitiesKeywordSearchResults({
-      searchResults: { ...myGroupsItemObj, ...groupsImInItemObj },
-      communitiesList: [...myGroupsItemsArray, ...groupsImInItemsArray],
+    updateCommunitiesKeywordSearchResults((currentResults) => ({
+      searchResults: { ...currentResults.searchResults, ...myGroupsItemObj, ...groupsImInItemObj },
+      communitiesList: [...currentResults.communitiesList, ...myGroupsItemsArray, ...groupsImInItemsArray],
       totalCommunities: (myGroups ? myGroups.length : 0) + (groupsImIn ? groupsImIn.length : 0),
-    })
+    }))
   }
 
   const fetchGroupsData = async () => {
@@ -450,8 +460,8 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, gameId }) => {
           dataLength={communitiesKeywordSearchResults.communitiesList.length}
           next={fetchCommunitiesData}
           height={402}
+          hasMore={morepleaseCommunities}
           style={{ scrollbarWidth: 'none' }}>
-          >
           <UserTab
             dataList={communitiesKeywordSearchResults.communitiesList}
             dataObject={communitiesKeywordSearchResults.searchResults}
