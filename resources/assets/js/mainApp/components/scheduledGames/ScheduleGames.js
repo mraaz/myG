@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react'
-import GameFilter from './GameFilter'
-import GameList from './GameList'
-import GameDetails from './GameDetails'
-import SingleGameDetails from './SingleGameDetails.js'
+import GameFilter from './gameFilter'
+import GameList from './gameList'
+import GameDetails from './gameDetails'
+import SingleGameDetails from './singlegameDetails.js'
 import { PullDataFunction as getScheduleGames } from './getScheduleGames'
 import axios from 'axios'
 
