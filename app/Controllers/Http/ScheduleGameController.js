@@ -559,80 +559,65 @@ class ScheduleGameController {
   }
 
   async additional_game_info({ auth, request, response }) {
-    let join_status = 0,
-      approved_gamers = [],
-      additional_submit_info = false,
-      additional_submit_info_fields = [],
-      additional_game_info = []
-
+    let join_status = 0
+    let additional_submit_info = false
+    let additional_submit_info_fields = []
     try {
-      additional_game_info = await Database.from('schedule_games')
-        .where('schedule_games.id', '=', request.params.id)
+      var additional_game_info = await Database.from('schedule_games').where('schedule_games.id', '=', request.params.id)
+
+      const approved_gamers = await Database.from('attendees')
+        .innerJoin('users', 'users.id', 'attendees.user_id')
+        .where({ schedule_games_id: request.params.id, type: 1 })
+        .select('attendees.*', 'users.id as user_id', 'users.profile_img', 'users.alias')
+        .limit(4)
+
+      const my_attendance = await Database.from('attendees')
+        .where({ schedule_games_id: request.params.id, user_id: auth.user.id })
+        .select('type')
         .first()
-      if (additional_game_info != undefined) {
-        approved_gamers = await Database.from('attendees')
-          .innerJoin('users', 'users.id', 'attendees.user_id')
-          .where({ schedule_games_id: request.params.id, type: 1 })
-          .select('attendees.*', 'users.id as user_id', 'users.profile_img', 'users.alias')
-          .limit(4)
 
-        const my_attendance = await Database.from('attendees')
-          .where({ schedule_games_id: request.params.id, user_id: auth.user.id })
-          .select('type')
+      if (my_attendance != undefined) {
+        join_status = my_attendance.type
+      }
+      //Figure out what fields to return, create the key value pair.
+      const getGameFields = await Database.from('game_name_fields')
+        .where({ game_names_id: additional_game_info[0].game_names_id })
+        .select('in_game_fields')
+        .first()
+
+      if (getGameFields != undefined) {
+        additional_submit_info = true
+        let obj = JSON.parse(getGameFields.in_game_fields)
+        let obj2 = JSON.parse(getGameFields.in_game_field_labels)
+        let obj3 = JSON.parse(getGameFields.in_game_field_types)
+
+        const getGameTransactions = await Database.from('schedule_games_transactions')
+          .where({ schedule_games_id: request.params.id })
           .first()
 
-        if (my_attendance != undefined) {
-          join_status = my_attendance.type
-        }
-        //Figure out what fields to return, create the key value pair.
-        const getGameFields = await Database.from('game_name_fields')
-          .where({ game_names_id: additional_game_info.game_names_id })
-          .first()
+        if (getGameTransactions != undefined) {
+          let arr_game_fields = [],
+            arr_game_fields_data = []
 
-        if (getGameFields != undefined) {
-          additional_submit_info = true
-          let obj = '',
-            obj2 = '',
-            obj3 = ''
-
-          if (getGameFields.in_game_fields != undefined) {
-            obj = JSON.parse(getGameFields.in_game_fields)
+          for (let key in obj) {
+            arr_game_fields.push(obj[key])
           }
-          if (getGameFields.in_game_field_labels != undefined) {
-            obj2 = JSON.parse(getGameFields.in_game_field_labels)
+          let tmp_array = []
+          switch (arr_game_fields.length - 1) {
+            case 4:
+              tmp_array[arr_game_fields[4]] = getGameTransactions.value_five
+            case 3:
+              tmp_array[arr_game_fields[3]] = getGameTransactions.value_four
+            case 2:
+              tmp_array[arr_game_fields[2]] = getGameTransactions.value_three
+            case 1:
+              tmp_array[arr_game_fields[1]] = getGameTransactions.value_two
+            case 0:
+              tmp_array[arr_game_fields[0]] = getGameTransactions.value_one
           }
-          if (getGameFields.in_game_field_types != undefined) {
-            obj3 = JSON.parse(getGameFields.in_game_field_types)
-          }
-
-          const getGameTransactions = await Database.from('schedule_games_transactions')
-            .where({ schedule_games_id: request.params.id })
-            .first()
-
-          if (getGameTransactions != undefined) {
-            let arr_game_fields = [],
-              arr_game_fields_data = []
-
-            for (let key in obj) {
-              arr_game_fields.push(obj[key])
-            }
-            let tmp_array = []
-            switch (arr_game_fields.length - 1) {
-              case 4:
-                tmp_array[arr_game_fields[4]] = getGameTransactions.value_five
-              case 3:
-                tmp_array[arr_game_fields[3]] = getGameTransactions.value_four
-              case 2:
-                tmp_array[arr_game_fields[2]] = getGameTransactions.value_three
-              case 1:
-                tmp_array[arr_game_fields[1]] = getGameTransactions.value_two
-              case 0:
-                tmp_array[arr_game_fields[0]] = getGameTransactions.value_one
-            }
-            for (let key in tmp_array) {
-              let tmp_tmp = { [key]: tmp_array[key] }
-              additional_submit_info_fields.push([tmp_tmp, obj2[key], obj3[key]])
-            }
+          for (let key in tmp_array) {
+            let tmp_tmp = { [key]: tmp_array[key] }
+            additional_submit_info_fields.push([tmp_tmp, obj2[key], obj3[key]])
           }
         }
       }
