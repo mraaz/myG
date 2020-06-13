@@ -149,23 +149,31 @@ export default class ScheduleGames extends Component {
         <div className={`gameList__section ${singleView ? 'singleGameView__container' : 'GameView__container'}`}>
           {!singleView && scheduleGames.length > 0 ? (
             <Fragment>
-              <InfiniteScroll dataLength={scheduleGames.length} next={this.getScheduleGamesData} hasMore={this.state.moreplease}>
-                <GameList
-                  scheduleGames={scheduleGames}
-                  show_full_games={show_full_games}
-                  handleExcludesFullGames={this.handleExcludesFullGames}
-                  getSingleGameData={this.getSingleGameData}
+              <div style={{ flex: 1 }}>
+                <InfiniteScroll
+                  style={{ flex: 1 }}
+                  dataLength={scheduleGames.length}
+                  next={this.getScheduleGamesData}
+                  hasMore={this.state.moreplease}>
+                  <GameList
+                    scheduleGames={scheduleGames}
+                    show_full_games={show_full_games}
+                    handleExcludesFullGames={this.handleExcludesFullGames}
+                    getSingleGameData={this.getSingleGameData}
+                  />
+                </InfiniteScroll>
+              </div>
+              <div style={{ flex: 1 }}>
+                <GameDetails
+                  singleScheduleGamesPayload={singleScheduleGamesPayload}
+                  selected_game={selected_game}
+                  showRightSideInfo={showRightSideInfo}
+                  commentData={commentData}
+                  handleShowAllComments={this.handleShowAllComments}
+                  showAllComment={showAllComment}
+                  {...this.props}
                 />
-              </InfiniteScroll>
-              <GameDetails
-                singleScheduleGamesPayload={singleScheduleGamesPayload}
-                selected_game={selected_game}
-                showRightSideInfo={showRightSideInfo}
-                commentData={commentData}
-                handleShowAllComments={this.handleShowAllComments}
-                showAllComment={showAllComment}
-                {...this.props}
-              />
+              </div>
             </Fragment>
           ) : (
             <Fragment>

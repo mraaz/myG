@@ -98,8 +98,12 @@ export default class GameList extends Component {
                       </div>
                       <div className='game__level__wrap'>
                         {experience_split.length > 0 &&
-                          experience_split.map((ex) => {
-                            return <div className='game__level'>{ex}</div>
+                          experience_split.map((ex, index) => {
+                            return (
+                              <div className={`game__level game__level_${index}`} key={ex}>
+                                {ex}
+                              </div>
+                            )
                           })}
                       </div>
                     </div>

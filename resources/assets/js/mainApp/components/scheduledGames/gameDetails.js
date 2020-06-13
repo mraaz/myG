@@ -32,6 +32,8 @@ export default class GameDetails extends Component {
     const { no_of_comments = [], lastComment = '' } = commentData
     const { no_of_my_comments = '' } = no_of_comments[0] || {}
 
+    const experience_split = experience ? experience.split(',') : []
+
     return (
       <div className='gameDetails'>
         {showRightSideInfo && !showAllComment && (
@@ -49,7 +51,16 @@ export default class GameDetails extends Component {
                   <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/clock.svg' />
                   <span>{moment(start_date_time).format('LL')}</span>
                 </div>
-                {experience && <div className='game__level'>{experience}</div>}
+                <div className='game__level__wrap'>
+                  {experience_split.length > 0 &&
+                    experience_split.map((ex, index) => {
+                      return (
+                        <div className={`game__level game__level_${index}`} key={ex}>
+                          {ex}
+                        </div>
+                      )
+                    })}
+                </div>
               </div>
 
               <JoinButtonAction join_status={join_status} />
