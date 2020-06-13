@@ -33,6 +33,7 @@ export default class CustomCron extends Component {
         this.state = {
         //    selectedTab: tabs[0],
         occurrence: 26,
+        repeatEvery: 1,
         };
         tabs = props.tabs || defaultTabs;
     }
@@ -63,6 +64,10 @@ export default class CustomCron extends Component {
 
     }
 
+    updateRepeatEvery = (val) => {
+        this.setState({ repeatEvery: val })
+    }
+
     defaultValue(tab) {
        return defaultTabsVal[tab];
     }
@@ -72,8 +77,8 @@ export default class CustomCron extends Component {
         this.parentChange(this.defaultValue(tab))
     }
     getHeaders() {
-        return tabs.map(d => {
-            return <li className={this.state.selectedTab === d ? 'active' : ''} style={{ color: (this.state.selectedTab === d ? '#e5c746' : '#fff') }}><a onClick={this.tabChanged.bind(this,d)}>{d}</a></li>
+        return tabs.map((d) => {
+            return <li key={d} className={this.state.selectedTab === d ? 'active' : ''} style={{ color: (this.state.selectedTab === d ? '#e5c746' : '#fff') }}><a onClick={this.tabChanged.bind(this,d)}>{d}</a></li>
         })
     }
     onValueChange(val) {
@@ -90,8 +95,7 @@ export default class CustomCron extends Component {
         let newVal = ''
         newVal = val.toString().replace(/,/g,' ')
         newVal = newVal.replace(/!/g, ',')
-        console.log(newVal);
-        this.props.onChange(newVal)
+        this.props.onChange({cron: newVal, occurrence: this.state.occurrence, repeatEvery: this.state.repeatEvery})
     }
     getVal() {
         let val = cronstrue.toString(this.state.value.toString().replace(/,/g,' ').replace(/!/g, ','))
@@ -117,7 +121,7 @@ export default class CustomCron extends Component {
                 return <Daily value={this.state.value} hours={this.props.hours} minutes={this.props.minutes} onChange={this.onValueChange.bind(this)}/>
                 break;
             case defaultTabs[4] :
-                return <Weekly value={this.state.value} hours={this.props.hours} minutes={this.props.minutes} onChange={this.onValueChange.bind(this)}/>
+                return <Weekly value={this.state.value} hours={this.props.hours} minutes={this.props.minutes} onChange={this.onValueChange.bind(this)} updateRepeatEvery={this.updateRepeatEvery} repeatEvery={this.state.repeatEvery} />
                 break;
             case defaultTabs[5] :
                 return <Monthly value={this.state.value} hours={this.props.hours} minutes={this.props.minutes} onChange={this.onValueChange.bind(this)}/>
@@ -137,7 +141,6 @@ export default class CustomCron extends Component {
     };
 
     render() {
-        console.log('this.state: ', this.state);
         return (
             <div>
                 {this.props.style && <style>{this.props.style}</style>}

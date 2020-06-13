@@ -85,12 +85,12 @@ export async function Game_name_Tags(inputValue, game_names_id) {
 }
 
 export async function Schedule_Game_Tags(inputValue) {
-//  if (inputValue != undefined) {
-//    inputValue = inputValue.trimStart()
-//    if (inputValue.length <= 250) {
-//      inputValue = inputValue.substr(0, 250)
-//    }
-//  }
+  //  if (inputValue != undefined) {
+  //    inputValue = inputValue.trimStart()
+  //    if (inputValue.length <= 250) {
+  //      inputValue = inputValue.substr(0, 250)
+  //    }
+  //  }
 
   let allTags
 
@@ -105,9 +105,11 @@ export async function Schedule_Game_Tags(inputValue) {
     var newArr = []
     var i, newOption
 
-    for (i = 0; i < allTags.data.allTags.length; i++) {
-      newOption = createOption_GameTags(allTags.data.allTags[i].content, allTags.data.allTags[i].id)
-      newArr.push(newOption)
+    if (allTags.data && allTags.data.allTags) {
+      for (i = 0; i < allTags.data.allTags.length; i++) {
+        newOption = createOption_GameTags(allTags.data.allTags[i].content, allTags.data.allTags[i].id)
+        newArr.push(newOption)
+      }
     }
     return newArr
   } catch (error) {

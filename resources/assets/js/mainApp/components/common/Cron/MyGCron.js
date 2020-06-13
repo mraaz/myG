@@ -42,7 +42,7 @@ class App extends Component {
           tabs={['Daily', 'Weekly', 'Monthly']}
           onChange={(e) => {
             this.setState({ value: e })
-            console.log(e)
+            this.props.onChange(e)
           }}
           hours={2}
           minutes={15}
