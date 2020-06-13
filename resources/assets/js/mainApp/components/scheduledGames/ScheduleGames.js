@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import GameFilter from './GameFilter'
 import GameList from './GameList'
 import GameDetails from './GameDetails'
-import SingleGameDetails from './singlegameDetails'
+import SingleGameDetails from './SinglegameDetails'
 import { PullDataFunction as getScheduleGames } from './getScheduleGames'
 import axios from 'axios'
 
