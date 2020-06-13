@@ -335,13 +335,15 @@
             letter-spacing: 0px;
             color: #ffffff;
             font-weight: bold;
-            padding: 9px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             cursor: pointer;
-            span {
+            div {
               font: inherit;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
             }
             &:hover,
             &.selected {
@@ -440,19 +442,24 @@
               margin-right: 5px;
             }
           }
-          .game__level {
-            max-width: 90px;
-            height: 27px;
-            border: 1px solid #d6b9ff;
-            border-radius: 23px;
-            font: 14px/14px Montserrat;
-            letter-spacing: 0px;
-            color: #b9b9b9;
-            padding: 6px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: inline-block;
+          .game__level__wrap {
+            display: flex;
+            flex-direction: column;
+            .game__level {
+              max-width: 100px;
+              height: 27px;
+              border: 1px solid #d6b9ff;
+              border-radius: 23px;
+              font: 14px/14px Montserrat;
+              letter-spacing: 0px;
+              color: #b9b9b9;
+              padding: 6px;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              display: inline-block;
+              margin-bottom: 10px;
+            }
           }
         }
         .game__action__buttton {
@@ -562,6 +569,36 @@
             text-overflow: ellipsis;
           }
         }
+        .gamer__wraper {
+          display: inline-flex;
+          align-items: center;
+          margin-bottom: 10px;
+          .single__gamer {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 20px;
+          }
+          .gamer__image {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+            img {
+              width: 100%;
+              border-radius: 50%;
+            }
+          }
+          .gamer__alias {
+            font: 10px/14px Montserrat;
+            letter-spacing: 0px;
+            color: #ffffff;
+            font-weight: 500;
+            max-width: 45px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
       }
       .gameDetaiils__footer {
         background: #1d2326 0% 0% no-repeat padding-box;
@@ -580,6 +617,7 @@
           padding: 9px 13px;
           margin-left: 70px;
           position: relative;
+          min-height: 50px;
           span {
             font: 12px/18px Montserrat;
             letter-spacing: 0px;
@@ -796,7 +834,6 @@
               .game__tags {
                 flex: auto;
                 flex: auto;
-                display: flex;
                 max-width: 300px;
                 flex-wrap: wrap;
                 margin-right: auto;
@@ -816,7 +853,7 @@
                 }
               }
               .game__level {
-                max-width: 90px;
+                max-width: 100px;
                 height: 27px;
                 border: 1px solid #d6b9ff;
                 border-radius: 23px;
@@ -827,6 +864,7 @@
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
+                margin-bottom: 10px;
               }
             }
           }
@@ -844,10 +882,329 @@
       .gameDetails__header {
         background: #1d2326;
       }
+      .show-individual-comments {
+        padding-left: 100px;
+        padding-right: 50px;
+        margin-bottom: 30px;
+        .individual-comment-container {
+          .comment__shape {
+            width: 0px;
+            height: 0px;
+            border-top: 14px solid transparent;
+            border-bottom: 14px solid transparent;
+            border-right: 30px solid #1d2326;
+            position: absolute;
+            top: 0;
+            left: -20px;
+          }
+          .comment__section {
+            position: relative;
+            background: #1d2326;
+            clear: both;
+            .edit__comment__input {
+              input {
+                position: relative;
+                height: 40px;
+                width: 100%;
+                border: 1px solid #273136;
+                border-radius: 4px;
+                background: #f0f1f2 0% 0% no-repeat padding-box;
+                resize: none;
+                overflow: auto;
+                color: #657172;
+                font-size: 12px;
+                padding: 8px 20px;
+              }
+            }
+            .comment-info {
+              display: flex;
+              padding: 20px;
+              a {
+                font-size: 16px;
+                margin-right: 10px;
+                font-weight: bold;
+              }
+              .comment-content {
+                color: #93a4a5;
+                font-size: 12px;
+                width: 100%;
+
+                .show__comment__image {
+                  width: 480px;
+                  height: 270px;
+                  margin-top: 10px;
+                  img {
+                    width: 100%;
+                    height: 100%;
+                  }
+                }
+              }
+            }
+            .comment-options {
+              position: absolute;
+              right: -25px;
+              top: 50%;
+              transform: translateY(-50%);
+              font-size: 12px;
+            }
+            .dropdown {
+              position: absolute;
+              top: 100%;
+              right: -50px;
+              transform: translateY(-50%);
+              font-size: 12px;
+              z-index: 10;
+              color: #ffffff;
+              background: #1d2326;
+              transition: all 0.6s ease-in-out;
+              visibility: hidden;
+              opacity: 0;
+              cursor: pointer;
+
+              &.active {
+                visibility: visible;
+                opacity: 1;
+              }
+              .edit {
+                font-size: 10px;
+                padding: 4px;
+              }
+              .delete {
+                font-size: 10px;
+                padding: 4px;
+              }
+            }
+            .profile__image {
+              position: absolute;
+              left: -50px;
+              top: 2px;
+              background: #ff00ff;
+              width: 35px;
+              height: 35px;
+              border-radius: 50%;
+              .online__status {
+                border: 7px solid #68bd45;
+                border-radius: 50%;
+                position: absolute;
+                bottom: 0px;
+                left: 0px;
+              }
+            }
+          }
+          .reply__comment_section {
+            clear: both;
+            overflow: auto;
+            padding: 10px;
+            margin-bottom: 10px;
+            .comment-panel-like,
+            .comment-panel-liked,
+            .no-likes {
+              margin-right: 15px;
+              float: right;
+              font-size: 12px;
+            }
+            .comment-panel-liked {
+              padding-left: 15px;
+            }
+            .comment-panel-reply {
+              float: right;
+              font-size: 12px;
+              padding-left: 15px;
+              border-left: 1px solid #384952;
+            }
+            .divider {
+              margin-left: 10px;
+              margin-right: 10px;
+            }
+          }
+
+          .comment-panel {
+            margin-left: 20px;
+            width: 90%;
+            display: flex;
+            margin-left: auto;
+            flex-direction: column;
+            .show__moreReply {
+              background: #171a1c;
+              padding: 5px 5px 5px 0px;
+              font-size: 10px;
+              color: #93a4a5;
+              position: relative;
+              display: -ms-flexbox;
+              display: flex;
+              border-top: 1px solid #4d565a;
+              border-bottom: 1px solid #4d565a;
+              cursor: pointer;
+              margin-bottom: 10px;
+            }
+            .individual-comment-container {
+              width: 100%;
+            }
+            .reply-panel {
+              width: 100%;
+            }
+            .add-reply {
+              position: relative;
+              box-shadow: none;
+              border: none;
+              input {
+                width: 100%;
+                // background: #1d2326 0% 0% no-repeat padding-box;
+                background: #2d363a 0% 0% no-repeat padding-box;
+                color: #657172;
+                padding: 10px;
+                border: none;
+                margin-bottom: 10px;
+                border-radius: 11px;
+              }
+              .insert__images {
+                position: absolute;
+                right: -10px;
+                top: 4px;
+                z-index: 2;
+                cursor: pointer;
+                input {
+                  display: none;
+                }
+                img {
+                  padding-right: 18px;
+                  height: 25px;
+                }
+              }
+              .uploadImage_loading {
+                position: relative;
+                top: 23px;
+                width: 90%;
+                font-size: 12px;
+                margin-left: 40px;
+              }
+              .preview__image {
+                position: relative;
+                top: 22px;
+                height: 80px;
+                margin-left: 40px;
+                border: 1px solid;
+                width: 90%;
+                padding: 5px;
+                img {
+                  width: 120px;
+                  height: 100%;
+                }
+                .clear__preview__image {
+                  position: absolute;
+                  right: 4px;
+                  top: 4px;
+                  font-size: 10px;
+                  cursor: pointer;
+                  z-index: 5;
+                }
+              }
+            }
+          }
+        }
+      }
+      .gameComments__header {
+        padding: 16px 40px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #a09770;
+        background: #1d2326;
+        .game__name {
+          font: 20px/14px Montserrat;
+          letter-spacing: 0px;
+          color: #ffffff;
+          font-weight: bold;
+          cursor: pointer;
+        }
+      }
+    }
+    .compose__comment__wrapper {
+      background: #1d2326 0% 0% no-repeat padding-box;
+      padding: 16px;
+      margin-top: auto;
+      display: flex;
+      .compose-comment {
+        display: flex;
+        justify-content: center;
+        position: relative;
+        width: 90%;
+        align-items: center;
+        margin: 0 auto;
+        margin-top: auto;
+        textarea {
+          position: relative;
+          z-index: 2;
+          border: none;
+          height: 40px;
+          width: 100%;
+          background: #2d363a 0% 0% no-repeat padding-box;
+          border: 1px solid #273136;
+          border-radius: 4px;
+          resize: none;
+          overflow: auto;
+          color: #657172;
+          font-size: 12px;
+          padding: 8px 20px;
+        }
+        .insert__images {
+          position: absolute;
+          right: 5px;
+          z-index: 2;
+          width: 27px;
+          height: 27px;
+          cursor: pointer;
+          input {
+            display: none;
+          }
+          img {
+            padding-right: 18px;
+            height: 27px;
+          }
+        }
+        .profile__image {
+          position: absolute;
+          left: -20px;
+          background: #ff00ff;
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          z-index: 12;
+          .online__status {
+            border: 7px solid #68bd45;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+          }
+        }
+        .buttons {
+          display: flex;
+          .repost-btn {
+            height: 40px;
+            width: 40px;
+            background: 1d2326;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-left: 20px;
+            cursor: pointer;
+          }
+        }
+      }
     }
     .gamer__count,
     .game__timestamp {
       margin-right: 30px !important;
+    }
+    .gameTags__value {
+      .singleTags {
+        max-width: 100px !important;
+        margin: 0 10px 10px 0 !important;
+      }
     }
   }
   .filter__overlay {

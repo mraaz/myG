@@ -104,7 +104,6 @@ class CommentController {
       const no_of_comments = await Database.from('comments')
         .where('schedule_games_id', '=', request.params.id)
         .count('* as no_of_my_comments')
-
       return {
         lastComment,
         no_of_comments,
@@ -148,9 +147,7 @@ class CommentController {
 
   async show_scheduled_gamesCount({ auth, request, response }) {
     try {
-      const no_of_comments = await Database.from('comments')
-        .where({ schedule_games_id: request.params.id })
-        .count('* as no_of_comments')
+      const no_of_comments = await Database.from('comments').where({ schedule_games_id: request.params.id }).count('* as no_of_comments')
 
       return {
         no_of_comments,

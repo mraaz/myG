@@ -3,6 +3,7 @@ import moment from 'moment'
 import { Link } from 'react-router-dom'
 import { Toast_style } from '../Utility_Function'
 import { toast } from 'react-toastify'
+import { WithTooltip } from '../Tooltip'
 
 const defaultThumbnails = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Notifications/myG_icon.svg'
 
@@ -44,6 +45,7 @@ export default class GameList extends Component {
           {scheduleGames.length > 0 &&
             scheduleGames.map((game) => {
               const image = game.game_img || null
+              const experience_split = game.experience ? game.experience.split(',') : []
               const scheduledGamePicture = (
                 <img src={image == null ? defaultThumbnails : image} className={image == null ? 'default-image' : 'image'} />
               )
@@ -85,13 +87,21 @@ export default class GameList extends Component {
                           game.tags.length > 0 &&
                           game.tags.slice(0, 7).map((tag) => {
                             return (
-                              <div key={tag.content} className='game__tag'>
-                                {tag.content}
-                              </div>
+                              <WithTooltip
+                                position={{ bottom: '24px', left: '-12px' }}
+                                style={{ height: '24px', display: 'inline-block' }}
+                                text={tag.content}>
+                                <p className='game__tag'>{tag.content}</p>
+                              </WithTooltip>
                             )
                           })}
                       </div>
-                      {game.experience && <div className='game__level'>{game.experience}</div>}
+                      <div className='game__level__wrap'>
+                        {experience_split.length > 0 &&
+                          experience_split.map((ex) => {
+                            return <div className='game__level'>{ex}</div>
+                          })}
+                      </div>
                     </div>
                   </div>
                 </div>

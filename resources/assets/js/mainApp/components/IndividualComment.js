@@ -583,15 +583,16 @@ export default class IndividualComment extends Component {
             {/* comment option end  */}
 
             {/* profile section start  */}
-            <div
-              className='profile__image'
-              style={{
-                backgroundImage: `url('${profile_img}')`,
-                backgroundSize: 'cover',
-              }}>
-              <Link to={`/profile/${comment.alias}`} className='user-img'></Link>
-              <div className='online__status'></div>
-            </div>
+            <Link to={`/profile/${comment.alias}`} className='user-img'>
+              <div
+                className='profile__image'
+                style={{
+                  backgroundImage: `url('${profile_img}')`,
+                  backgroundSize: 'cover',
+                }}>
+                <div className='online__status'></div>
+              </div>
+            </Link>
           </div>
           {/* profile section end  */}
           <div className='reply__comment_section'>

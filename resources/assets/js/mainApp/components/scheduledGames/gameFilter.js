@@ -300,11 +300,13 @@ export default class ScheduleGames extends Component {
 
   handleEditFilterType = (e, id, inputValue) => {
     e.preventDefault()
+    e.stopPropagation()
     const showFilterTypeInput = {}
     showFilterTypeInput[id] = true
     this.setState({ showFilterTypeInput, inputValue, showOverlay: true })
   }
   handleSavefilterInputChnage = (e, id, filterPayload) => {
+    e.stopPropagation()
     const inputValue = e.target.value
     this.setState({ inputValue, filterId: id, filterPayload })
   }
@@ -325,6 +327,7 @@ export default class ScheduleGames extends Component {
   }
 
   handleInputKeyDown = (e) => {
+    e.stopPropagation()
     if (e.key === 'Enter' && e.shiftKey) {
       return
     }
@@ -369,6 +372,7 @@ export default class ScheduleGames extends Component {
 
   handleDeleteFilterType = async (e, id) => {
     e.preventDefault()
+    e.stopPropagation()
     try {
       const deleteFilter = await axios.post('/api/SavedFiltersScheduleGameController/deleteFilter', {
         id,
@@ -608,18 +612,20 @@ export default class ScheduleGames extends Component {
                       return (
                         <div className={`filterType__name`} key={`${k.id}_${k.name}`}>
                           {!showFilterTypeInput[k.id] ? (
-                            <span onClick={(e) => this.handleSavedFilterClick(k)} title={k.name}>
+                            <div style={{ padding: '9px' }} title={k.name} onClick={(e) => this.handleSavedFilterClick(k)}>
                               {k.name}
-                            </span>
+                            </div>
                           ) : (
-                            <input
-                              type='text'
-                              id={k.id}
-                              className='filter__Input'
-                              onChange={(e) => this.handleSavefilterInputChnage(e, k.id, k.payload)}
-                              value={inputValue}
-                              onKeyDown={this.handleInputKeyDown}
-                            />
+                            <div style={{ padding: '9px' }}>
+                              <input
+                                type='text'
+                                id={k.id}
+                                className='filter__Input'
+                                onChange={(e) => this.handleSavefilterInputChnage(e, k.id, k.payload)}
+                                value={inputValue}
+                                onKeyDown={this.handleInputKeyDown}
+                              />
+                            </div>
                           )}
 
                           {!showFilterTypeInput[k.id] && (
@@ -656,6 +662,7 @@ export default class ScheduleGames extends Component {
                     return (
                       <div
                         className={`filterType__name  ${filterTypeArray.includes(k) ? 'selected' : ''}`}
+                        style={{ padding: '9px' }}
                         key={k}
                         onClick={(e) => this.handleFilterTypeClick(k)}>
                         {this.filterGroup[k]}
