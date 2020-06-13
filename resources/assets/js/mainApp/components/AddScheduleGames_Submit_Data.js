@@ -121,8 +121,10 @@ export async function SubmitDataFunction(myG) {
       co_hosts: co_hosts,
       repeat_game: repeat_game,
       tags: tags,
+      cron: myG.cron,
+      occurrence: myG.occurrence,
+      repeatEvery: myG.repeatEvery,
     })
-    console.log(post)
     return post
   } catch (error) {
     throw error

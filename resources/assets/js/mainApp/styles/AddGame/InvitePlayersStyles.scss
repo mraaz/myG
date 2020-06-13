@@ -38,6 +38,7 @@
   &__player-image {
     border-radius: 30px;
     margin-right: 16px;
+    background-color: #2c363a;
   }
   &__player-alias {
     color: #fff;
@@ -91,6 +92,19 @@
     overflow: scroll;
     overflow-x: hidden;
     max-height: 128px;
+  }
+  &__player-list-container::-webkit-scrollbar {
+    width: 12px;
+    background-color: #74767a;
+  }
+  &__player-list-container::-webkit-scrollbar-button {
+    background-color: white;
+  }
+  &__player-list-container::-webkit-scrollbar-track {
+    background-color: #1b1f25;
+  }
+  &__player-list-container::-webkit-scrollbar-thumb {
+    background-color: #74767a;
   }
   &__player-list-text {
     margin-bottom: 10px;

@@ -41,15 +41,15 @@ const AddGame = ({
 }) => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-     const getInitialData = async function() {
-       try {
-         let results = await Schedule_Game_Tags()
-         updateAdvancedSettings({ optionTags: results })
-       } catch (error) {
-         // Error get option tags
-       }
-     }
-     getInitialData()
+    const getInitialData = async function () {
+      try {
+        let results = await Schedule_Game_Tags()
+        updateAdvancedSettings({ optionTags: results })
+      } catch (error) {
+        // Error get option tags
+      }
+    }
+    getInitialData()
   }, [])
 
   // Handlers
@@ -324,7 +324,13 @@ const AddGame = ({
               alignItems: 'center',
             }}>
             <CustomCron
-              onChange={console.log}
+              onChange={({ cron, occurrence, repeatEvery }) => {
+                updateMainSettings({
+                  cron,
+                  occurrence,
+                  repeatEvery,
+                })
+              }}
               tabs={['Daily', 'Weekly', 'Monthly']}
               hours={2}
               minutes={15}
@@ -340,6 +346,9 @@ const AddGame = ({
                 updateMainSettings({
                   isRepeatFieldSelected: false,
                   endTime: null,
+                  cron: null,
+                  occurrence: null,
+                  repeatEvery: null,
                 })
               }}
             />

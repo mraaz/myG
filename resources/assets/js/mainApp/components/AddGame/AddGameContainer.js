@@ -107,6 +107,9 @@ const AddGameContainer = () => {
         coHosts: advancedSettingsState.coHosts,
         tags: advancedSettingsState.tags,
         newCreatedTags: advancedSettingsState.newCreatedTags,
+        cron: mainSettingsState.cron,
+        occurrence: mainSettingsState.occurrence,
+        repeatEvery: mainSettingsState.repeatEvery,
       })
       updateGameLink(data.schedule_games_GUID)
       updateIsGameListedModalOpen(true)
@@ -167,10 +170,7 @@ const AddGameContainer = () => {
         </div>
         <div className={styles.listedBottomContentContainer}>
           <Link to='/addScheduleGames' replace>
-            <MyGButton
-              customStyles={{ color: '#fff', border: '2px solid' }}
-              text='Done'
-            />
+            <MyGButton customStyles={{ color: '#fff', border: '2px solid' }} text='Done' />
           </Link>
         </div>
       </MyGModal>
@@ -188,13 +188,9 @@ const AddGameContainer = () => {
           </Link>
         </div>
         <div className={styles.listedBottomContentContainer}>
-          <MyGButton
-            customStyles={{ color: '#fff', border: '2px solid' }}
-            text='Done'
-            onClick={() => {
-              window.location.reload(false)
-            }}
-          />
+          <Link to='/addScheduleGames' replace>
+            <MyGButton customStyles={{ color: '#fff', border: '2px solid' }} text='Done' />
+          </Link>
         </div>
       </MyGModal>
     )

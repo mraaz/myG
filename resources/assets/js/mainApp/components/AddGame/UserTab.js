@@ -10,7 +10,12 @@ const UserTab = ({ dataList, dataObject, selectedItemsObject, onClick }) => {
     return (
       <div key={index} className='invite-players__player-profile-container'>
         <div className='invite-players__player-profile'>
-          <img src={item.img} height={20} width={20} className='invite-players__player-image' />
+          {item.img ? (
+            <img src={item.img} height={20} width={20} className='invite-players__player-image' />
+          ) : (
+            <span className='invite-players__player-image' style={{ height: '20px', width: '20px' }} />
+          )}
+
           <div className='invite-players__player-alias'>{item.name}</div>
         </div>
         <MyGCheckbox
