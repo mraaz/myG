@@ -414,6 +414,7 @@
       min-height: 570px;
       flex-direction: column;
       border-bottom: 1px solid #384952;
+      position: relative;
       .gameDetails__header {
         display: flex;
         max-height: 92px;
@@ -1118,9 +1119,8 @@
               }
               .preview__image {
                 position: relative;
-                top: 22px;
+                top: 0px;
                 height: 80px;
-                margin-left: 40px;
                 border: 1px solid;
                 width: 90%;
                 padding: 5px;
