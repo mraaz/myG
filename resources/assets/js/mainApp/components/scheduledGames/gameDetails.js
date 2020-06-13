@@ -6,7 +6,7 @@ import GameComments from './GameComments'
 import { Link } from 'react-router-dom'
 import { WithTooltip } from '../Tooltip'
 
-export default class GameDetails extends Component {
+export default class extends Component {
   constructor() {
     super()
     this.state = {}
@@ -65,7 +65,7 @@ export default class GameDetails extends Component {
               {platform && <div className='gameTime__value'>{platform}</div>}
               {region && <div className='gameTime__label'>Region</div>}
               {region && <div className='gameTime__value'>{region}</div>}
-              <Approved_gamers approved_gamers={approved_gamers} />
+              <Approved_gamers approved_gamers={approved_gamers} schedule_games_id={id} />
               {tags && tags.length > 7 && <div className='gameTags__label'>Tags</div>}
               <div className='gameTags__value'>
                 {tags &&
