@@ -7,22 +7,23 @@ const Approved_gamers = (props) => {
   const [modalStatus, setModalStatus] = useState(false)
   const { approved_gamers = [] } = props
 
-  useEffect(async () => {
-    const getAttendees = await axios.post('/api/attendees/role_call_ALL/', {
-      schedule_games_id: props.schedule_games_id,
-      counter: 1,
-    })
-    if (getAttendees.data) {
-      const { role_call_ALL = {} } = getAttendees.data
-      const { data = [] } = role_call_ALL
-      setAttendees(data)
+  useEffect(() => {
+    async function fetchData() {
+      const getAttendees = await axios.post('/api/attendees/role_call_ALL/', {
+        schedule_games_id: props.schedule_games_id,
+        counter: 1,
+      })
+      if (getAttendees.data) {
+        const { role_call_ALL = {} } = getAttendees.data
+        const { data = [] } = role_call_ALL
+        setAttendees(data)
+      }
     }
-    return () => {}
+    fetchData()
   }, [])
   const showModal = () => {
     setModalStatus(!modalStatus)
   }
-  console.log('attendees  ', attendees)
 
   return (
     <Fragment>

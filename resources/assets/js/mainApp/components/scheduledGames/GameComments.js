@@ -157,6 +157,8 @@ export default class GameComments extends Component {
   render() {
     let { scheduleGames_data = {}, allow_comments = 0 } = this.props //destructing of object
     let { comments = [] } = this.state //destructing of object
+    console.log('scheduleGames_data ', scheduleGames_data)
+
     let {
       profile_img = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png',
       hash_tags = [],

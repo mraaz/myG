@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import GameFilter from './GameFilter'
 import GameList from './GameList'
 import GameDetails from './GameDetails'
-import SingleGameDetails from './SinglegameDetails'
+import SingleGameDetails from './SingleGameDetails.js'
 import { PullDataFunction as getScheduleGames } from './getScheduleGames'
 import axios from 'axios'
 
@@ -36,7 +36,7 @@ export default class ScheduleGames extends Component {
     if (id) {
       const scheduleGames = await axios.get(`/api/ScheduleGame/filtered_by_one/${id}`)
       if (scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
-        this.setState({ scheduleGames: scheduleGames.data, showRightSideInfo: true, singleView: true })
+        this.setState({ scheduleGamesView: scheduleGames.data, showRightSideInfo: true, singleView: true })
       }
     } else {
       const scheduleGames = await getScheduleGames({ counter: 1 })
@@ -63,6 +63,7 @@ export default class ScheduleGames extends Component {
   }
 
   handleChange = async (data, name) => {
+    this.setState({ singleScheduleGamesPayload: {}, showRightSideInfo: false })
     if (name == 'game_name') {
       this.setState({ ...data }, () => {
         this.getScheduleGamesChangeCall()
@@ -75,7 +76,6 @@ export default class ScheduleGames extends Component {
   }
   getScheduleGamesChangeCall = async (data = {}) => {
     const { counter, scheduleGames = [] } = this.state
-    window.scrollTo(0, 0)
     const scheduleGamesRes = await getScheduleGames({ ...this.state, ...data, counter: 1 })
 
     if (scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length == 0) {
@@ -138,6 +138,7 @@ export default class ScheduleGames extends Component {
       scheduleGamesView = {},
       showAllComment,
     } = this.state
+    const { latestScheduledGames = [] } = scheduleGamesView
 
     if (this.props.initialData == 'loading') {
       return <h1>Loading</h1>
@@ -145,7 +146,7 @@ export default class ScheduleGames extends Component {
     return (
       <section className='viewGame__container'>
         {id == '' && <GameFilter handleChange={this.handleChange} />}
-        <div className={`gameList__section ${singleView ? 'singleGameView__container' : ''}`}>
+        <div className={`gameList__section ${singleView ? 'singleGameView__container' : 'GameView__container'}`}>
           {!singleView && scheduleGames.length > 0 ? (
             <Fragment>
               <InfiniteScroll dataLength={scheduleGames.length} next={this.getScheduleGamesData} hasMore={this.state.moreplease}>
@@ -168,8 +169,15 @@ export default class ScheduleGames extends Component {
             </Fragment>
           ) : (
             <Fragment>
-              {scheduleGames.length > 0 ? (
-                <SingleGameDetails scheduleGames={scheduleGames} showRightSideInfo={showRightSideInfo} commentData={commentData} />
+              {latestScheduledGames.length > 0 ? (
+                <SingleGameDetails
+                  scheduleGames={scheduleGamesView}
+                  showRightSideInfo={showRightSideInfo}
+                  handleShowAllComments={this.handleShowAllComments}
+                  commentData={commentData}
+                  showAllComment={showAllComment}
+                  {...this.props}
+                />
               ) : (
                 <h1>There is no data found!</h1>
               )}

@@ -6,15 +6,17 @@ import GameComments from './GameComments'
 import { Link } from 'react-router-dom'
 import { WithTooltip } from '../Tooltip'
 
-export default class SinglegameDetails extends Component {
+export default class GameDetails extends Component {
   constructor() {
     super()
     this.state = {}
   }
 
   render() {
-    const { scheduleGames = [], showRightSideInfo, commentData } = this.props
-    const { latestScheduledGames, approved_gamers, join_status } = scheduleGames
+    const { scheduleGames = {}, showRightSideInfo, commentData = {}, showAllComment } = this.props
+    const { latestScheduledGames, approved_gamers = [], join_status } = scheduleGames
+    console.log('scheduleGames  ', scheduleGames, showAllComment)
+
     const [scheduleGames_data = {}] = latestScheduledGames
     const {
       game_name = '',
@@ -27,13 +29,14 @@ export default class SinglegameDetails extends Component {
       description = '',
       platform = '',
       region = '',
+      id = '',
     } = scheduleGames_data
+
     const { no_of_comments = [], lastComment = '' } = commentData
-    console.log('commentData   ', commentData)
 
     return (
       <div className='gameDetails'>
-        {showRightSideInfo && (
+        {showRightSideInfo && !showAllComment && (
           <Fragment>
             <div className='gameDetails__header'>
               <div className='gameName'>
@@ -50,15 +53,7 @@ export default class SinglegameDetails extends Component {
                 </div>
                 {experience && <div className='game__level'>{experience}</div>}
               </div>
-              {join_status == 0 ? (
-                <div className='game__action__buttton'>
-                  <button type='button'>{`Join`}</button>
-                </div>
-              ) : (
-                <div className='game__action__buttton'>
-                  <button type='button'>{buttonStatus[`${join_status}`]}</button>
-                </div>
-              )}
+              <JoinButtonAction join_status={join_status} />
             </div>
             <div className='gameDetails__body'>
               <div className='filter__label'>Game Details</div>
@@ -90,9 +85,11 @@ export default class SinglegameDetails extends Component {
                   })}
               </div>
             </div>
-            {lastComment && (
+            {(lastComment || !showAllComment) && (
               <div className='gameDetaiils__footer'>
-                <div className='view__all__comments'>View all (3) comments</div>
+                <div className='view__all__comments' onClick={this.props.handleShowAllComments}>
+                  View all (3) comments
+                </div>
                 <div className='game__comment'>
                   <div className='profile__image'></div>
                   <div className='arrow'></div>
@@ -105,6 +102,16 @@ export default class SinglegameDetails extends Component {
               </div>
             )}
           </Fragment>
+        )}
+        {showAllComment && (
+          <div className='gameDetails'>
+            <GameComments
+              game_id={id}
+              toggleBack={this.props.handleShowAllComments}
+              scheduleGames_data={scheduleGames_data}
+              user={this.props.initialData}
+            />
+          </div>
         )}
       </div>
     )
