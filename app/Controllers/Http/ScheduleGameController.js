@@ -657,9 +657,11 @@ class ScheduleGameController {
   //trying to figure out position or clash_royale_trophies
 
   async filtered_by_one({ auth, request, response }) {
-    let join_status = 0
+    let join_status = 0,
+      latestScheduledGames = [],
+      approved_gamers = []
     try {
-      var latestScheduledGames = await Database.from('schedule_games')
+      latestScheduledGames = await Database.from('schedule_games')
         .innerJoin('users', 'users.id', 'schedule_games.user_id')
         .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
         .leftJoin('schedule_games_transactions', 'schedule_games_transactions.schedule_games_id', 'schedule_games.id')
@@ -679,7 +681,7 @@ class ScheduleGameController {
 
       latestScheduledGames[0].tags = getAllTags
 
-      const approved_gamers = await Database.from('attendees')
+      approved_gamers = await Database.from('attendees')
         .innerJoin('users', 'users.id', 'attendees.user_id')
         .where({ schedule_games_id: latestScheduledGames[0].id, type: 1 })
         .select('attendees.*', 'users.id as user_id', 'users.profile_img', 'users.alias')
