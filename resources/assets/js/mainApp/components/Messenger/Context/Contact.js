@@ -20,6 +20,7 @@ export default class Contact extends React.Component {
   }
 
   decryptMessage = (message) => {
+    if (message.unencryptedContent) return { ...message, content: message.unencryptedContent }
     const isSent = message.senderId === this.props.userId
     const content = decryptMessage(isSent ? message.backup : message.content, this.props.privateKey)
     return { ...message, content }

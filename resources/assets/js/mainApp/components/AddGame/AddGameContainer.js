@@ -31,6 +31,7 @@ const AddGameContainer = () => {
     newCreatedTags: '',
   })
   const [mainSettingsState, updateMainSettingsState] = useState({
+    scheduledGameId: null,
     gameTitlesList: [],
     gameTitle: '',
     startTime: moment(),
@@ -111,6 +112,10 @@ const AddGameContainer = () => {
         occurrence: mainSettingsState.occurrence,
         repeatEvery: mainSettingsState.repeatEvery,
       })
+      updateMainSettingsState((currentState) => ({
+        ...currentState,
+        scheduledGameId: data.id,
+      }))
       updateGameLink(data.schedule_games_GUID)
       updateIsGameListedModalOpen(true)
     } catch (err) {
@@ -219,6 +224,9 @@ const AddGameContainer = () => {
           onInvitationSent={onInvitationSent}
           onCancelInviteClick={onCancelInviteClick}
           gameId={mainSettingsState.gameTitle.game_names_id}
+          scheduledGameId={mainSettingsState.scheduledGameId}
+          gameTitle={mainSettingsState.gameTitle.label}
+          startTime={mainSettingsState.startTime.valueOf()}
         />
       )}
     </div>

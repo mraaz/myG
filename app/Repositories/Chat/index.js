@@ -145,6 +145,7 @@ class ChatRepository {
         senderId: message.sender_id,
         keyReceiver: message.key_receiver,
         senderName: message.sender_name,
+      unencryptedContent: message.unencrypted_content,
         content: message.content,
         backup: message.backup,
         deleted: message.deleted,
@@ -181,6 +182,7 @@ class ChatRepository {
         senderId: message.sender_id,
         keyReceiver: message.key_receiver,
         senderName: message.sender_name,
+      unencryptedContent: message.unencrypted_content,
         content: message.content,
         backup: message.backup,
         deleted: message.deleted,
@@ -221,6 +223,7 @@ class ChatRepository {
       senderId: message.sender_id,
       keyReceiver: message.key_receiver,
       senderName: message.sender_name,
+      unencryptedContent: message.unencrypted_content,
       content: message.content,
       backup: message.backup,
       deleted: message.deleted,
@@ -587,6 +590,7 @@ class ChatRepository {
       senderId: requestingUserId,
       keyReceiver: message.key_receiver,
       senderName: message.sender_name,
+      unencryptedContent: message.unencrypted_content,
       content: message.content,
       backup: message.backup,
       deleted: message.deleted,
@@ -605,6 +609,34 @@ class ChatRepository {
     return { message: messageSchema };
   }
 
+  async sendMessageFromMyGToUser({ requestingUserId, requestedUserId, content }) {
+    const { chat } = await this.createChat({ requestingUserId, contacts: [requestedUserId] });
+    return this.sendMessageFromMyG({ requestedChatId: chat.chatId, content });
+  }
+
+  async sendMessageFromMyG({ requestedChatId, content }) {
+    const messageData = {
+      sender_id: 0,
+      sender_name: "myG",
+      backup: '',
+      content: '',
+      unencrypted_content: content,
+    };
+    const message = await Chat.find(requestedChatId).then(chat => chat.messages().create(messageData));
+    const messageSchema = new MessageSchema({
+      messageId: message.id,
+      chatId: message.chat_id,
+      senderId: message.sender_id,
+      keyReceiver: message.key_receiver,
+      senderName: message.sender_name,
+      unencryptedContent: message.unencrypted_content,
+      createdAt: message.created_at,
+      updatedAt: message.updated_at,
+    });
+    this._notifyChatEvent({ chatId: requestedChatId, action: 'newMessage', payload: messageSchema });
+    return { message: messageSchema };
+  }
+
   async editMessage({ requestingUserId, requestedChatId, requestedMessageId, backup, content, reEncrypting }) {
     const message = await ChatMessage.find(requestedMessageId);
     if (content) message.content = content;
@@ -616,6 +648,7 @@ class ChatRepository {
       chatId: requestedChatId,
       senderId: requestingUserId,
       senderName: message.sender_name,
+      unencryptedContent: message.unencrypted_content,
       content: message.content,
       backup: message.backup,
       deleted: message.deleted,
@@ -645,6 +678,7 @@ class ChatRepository {
       chatId: requestedChatId,
       senderId: message.sender_id,
       senderName: message.sender_name,
+      unencryptedContent: message.unencrypted_content,
       content: message.content,
       backup: message.backup,
       deleted: message.deleted,

@@ -150,6 +150,7 @@ export class Chat extends React.Component {
   }
 
   decryptMessage = (message) => {
+    if (message.unencryptedContent) return { ...message, content: message.unencryptedContent }
     if (!message.content && !message.backup) return message
     const isSent = !this.props.isGroup && message.senderId == this.props.userId
     const encryptedContent = isSent ? message.backup : message.content

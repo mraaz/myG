@@ -8,6 +8,7 @@ class Message {
     this.keyReceiver = forceInt(data.keyReceiver)
     this.senderName = forceString(data.senderName)
     this.content = forceString(data.content)
+    this.unencryptedContent = forceString(data.unencryptedContent)
     this.backup = forceString(data.backup)
     this.deleted = forceBoolean(data.deleted)
     this.edited = forceBoolean(data.edited)

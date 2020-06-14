@@ -2,12 +2,11 @@ import { getEmojiDataFromNative, emojiIndex } from 'emoji-mart'
 import data from 'emoji-mart/data/all.json'
 
 export function convertColonsToEmojis(text) {
-  while (text.match(/:([^:]*):/)) {
-    const colons = text
-      .match(/:([^:]*):/)[0]
-      .replace(':', '')
-      .replace(':', '')
-    text = text.replace(/:([^:]*):/, emojiIndex.search(colons)[0].native)
+  const possibleEmojis = text.match(/:([^:]*):/g) || [];
+  for (const possibleEmoji of possibleEmojis) {
+    const colons = possibleEmoji.replace(':', '').replace(':', '')
+    const emoji = emojiIndex.search(colons)[0]
+    if (emoji) text = text.replace(possibleEmoji, emoji.native)
   }
   return text
 }
