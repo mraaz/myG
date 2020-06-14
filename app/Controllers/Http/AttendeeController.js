@@ -9,40 +9,126 @@ const ScheduleGameController = use('./ScheduleGameController')
 
 class AttendeeController {
   async savemySpot({ auth, request, response }) {
+    if (auth.user) {
+      //TODO: Future version can check the game to see which fields were the host looking for. To ensure we're not accepting any extra fields
+      // Currently we get any field that matchs so the front end can send extra values which was not selected in Add Game
+
+      let db_save_value_array = new Array(5).fill(null),
+        myType = 3,
+        return_msg = 'Pending'
+
+      try {
+        const get_game_info = await Database.from('schedule_games')
+          .where('schedule_games.id', '=', request.input('schedule_games_id'))
+          .select('game_names_id', 'user_id', 'limit', 'autoJoin')
+          .first()
+
+        if (get_game_info == undefined) {
+          return false
+        }
+
+        const getGameFields = await Database.from('game_name_fields')
+          .where({ game_names_id: get_game_info.game_names_id })
+          .first()
+
+        if (getGameFields != undefined) {
+          let db_obj = ''
+
+          if (getGameFields.in_game_fields != undefined) {
+            db_obj = JSON.parse(getGameFields.in_game_fields)
+          }
+
+          if (request.input('value_one') != undefined && request.input('value_one') != null && db_obj != '') {
+            db_save_value_array = await this.process_game_name_fields(db_obj, request.input('value_one'), db_save_value_array)
+          }
+          if (request.input('value_two') != undefined && request.input('value_two') != null && db_obj != '') {
+            db_save_value_array = await this.process_game_name_fields(db_obj, request.input('value_two'), db_save_value_array)
+          }
+          if (request.input('value_three') != undefined && request.input('value_three') != null && db_obj != '') {
+            db_save_value_array = await this.process_game_name_fields(db_obj, request.input('value_three'), db_save_value_array)
+          }
+          if (request.input('value_four') != undefined && request.input('value_four') != null && db_obj != '') {
+            db_save_value_array = await this.process_game_name_fields(db_obj, request.input('value_four'), db_save_value_array)
+          }
+          if (request.input('value_five') != undefined && request.input('value_five') != null && db_obj != '') {
+            db_save_value_array = await this.process_game_name_fields(db_obj, request.input('value_five'), db_save_value_array)
+          }
+        }
+
+        //Need to see if we're not over the limit b4 doing this.
+        if (get_game_info.limit != 0) {
+          const allAttendees = await Database.from('attendees')
+            .where({ schedule_games_id: request.input('schedule_games_id'), type: 1 })
+            .count('* as no_of_allAttendees')
+            .first()
+
+          if (allAttendees.no_of_allAttendees >= get_game_info.limit) {
+            return 'Limit Reached'
+          }
+        }
+
+        if (get_game_info.autoJoin == 1) {
+          myType = 1
+          return_msg = 'Joined'
+        }
+
+        const savemySpot = await Attendee.create({
+          schedule_games_id: request.input('schedule_games_id'),
+          user_id: auth.user.id,
+          type: myType,
+          value_one: db_save_value_array[0],
+          value_two: db_save_value_array[1],
+          value_three: db_save_value_array[2],
+          value_four: db_save_value_array[3],
+          value_five: db_save_value_array[4],
+        })
+
+        let noti = new NotificationController_v2()
+
+        await noti.remove_schedule_game_attendees({ auth }, request.input('schedule_games_id'))
+
+        noti.addScheduleGame_attendance({ auth }, request.input('schedule_games_id'), get_game_info.user_id)
+
+        const co_hosts = await Database.from('co_hosts')
+          .where({ schedule_games_id: request.input('schedule_games_id') })
+          .select('user_id')
+
+        for (var i = 0; i < co_hosts.length; i++) {
+          noti.addScheduleGame_attendance({ auth }, request.input('schedule_games_id'), co_hosts[i].user_id)
+        }
+
+        return return_msg
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+  async process_game_name_fields(db_obj, user_entered_data, db_save_value_array) {
     try {
-      const savemySpot = await Attendee.create({
-        schedule_games_id: request.input('schedule_games_id'),
-        user_id: auth.user.id,
-        type: 3,
-        dota_2_position_one: request.input('dota_2_position_one'),
-        dota_2_position_two: request.input('dota_2_position_two'),
-        dota_2_position_three: request.input('dota_2_position_three'),
-        dota_2_position_four: request.input('dota_2_position_four'),
-        dota_2_position_five: request.input('dota_2_position_five'),
-      })
-
-      if (request.input('notify') == true) {
-        const all_pending_attendees = await Database.from('attendees')
-          .innerJoin('schedule_games', 'schedule_games.id', 'attendees.schedule_games_id')
-          .select('schedule_games.user_id')
-          .where({
-            schedule_games_id: request.input('schedule_games_id'),
-            type: 3,
-          })
-          .limit(1)
-
-        if (all_pending_attendees.length > 0) {
-          let noti = new NotificationController()
-          request.params.id = request.input('schedule_games_id')
-          await noti.remove_schedule_game_attendees({ auth, request, response })
-          request.params.other_user_id = all_pending_attendees[0].user_id
-          request.params.schedule_games_id = request.input('schedule_games_id')
-
-          noti.addScheduleGame_attendance({ auth, request, response })
+      for (let key in db_obj) {
+        let match = user_entered_data[db_obj[key]]
+        if (match != undefined && match != null && match.length > 0) {
+          switch (key) {
+            case 'value_one':
+              db_save_value_array[0] = match
+              break
+            case 'value_two':
+              db_save_value_array[1] = match
+              break
+            case 'value_three':
+              db_save_value_array[2] = match
+              break
+            case 'value_four':
+              db_save_value_array[3] = match
+              break
+            case 'value_five':
+              db_save_value_array[4] = match
+              break
+          }
         }
       }
 
-      return 'Saved successfully'
+      return db_save_value_array
     } catch (error) {
       console.log(error)
     }
@@ -50,7 +136,6 @@ class AttendeeController {
 
   async show_attending({ auth, request, response }) {
     try {
-      //const allAttendees = await Database.select('*').from('attendees').where({schedule_games_id: request.params.id})
       const allAttendees = await Database.from('attendees')
         .where({ schedule_games_id: request.params.id, type: 1 })
         .count('* as no_of_allAttendees')
@@ -188,16 +273,14 @@ class AttendeeController {
       try {
         const attendees = await Database.from('attendees')
           .innerJoin('schedule_games', 'schedule_games.id', 'attendees.schedule_games_id')
-          .innerJoin('users', 'users.id', 'schedule_games.user_id')
           .where({ schedule_games_id: request.params.id, type: 1 })
           .where('attendees.user_id', '=', auth.user.id)
-          .select('users.id')
+          .select('schedule_games.user_id')
 
         if (attendees.length > 0) {
-          let noti = new NotificationController()
-          request.params.schedule_games_id = request.params.id
-          request.params.other_user_id = attendees[0].id
-          noti.add_approved_attendee_left({ auth, request, response })
+          let noti = new NotificationController_v2()
+
+          noti.add_approved_attendee_left({ auth }, request.params.id, attendees[0].user_id)
 
           //look up co hosts and notify aswell
           const co_hosts = await Database.from('co_hosts')
@@ -206,8 +289,16 @@ class AttendeeController {
 
           for (var i = 0; i < co_hosts.length; i++) {
             request.params.other_user_id = co_hosts[i].user_id
-            noti.add_approved_attendee_left({ auth, request, response })
+            noti.add_approved_attendee_left({ auth }, request.params.id, co_hosts[i].user_id)
           }
+
+          let userStatController = new UserStatTransactionController()
+
+          userStatController.update_total_number_of(attendees[0].user_id, 'total_number_of_games_hosted')
+          userStatController.update_total_number_of(auth.user.id, 'total_number_of_games_played')
+
+          let scheduleGameController = new ScheduleGameController()
+          scheduleGameController.update_vacany({ auth }, request.params.id, true)
         }
 
         const delete_attendance = await Database.table('attendees')
@@ -216,18 +307,6 @@ class AttendeeController {
             user_id: auth.user.id,
           })
           .delete()
-
-        let userStatController = new UserStatTransactionController()
-
-        const get_host = await Database.from('schedule_games')
-          .select('user_id')
-          .where({ id: request.params.id })
-
-        userStatController.update_total_number_of(get_host[0].user_id, 'total_number_of_games_hosted')
-        userStatController.update_total_number_of(auth.user.id, 'total_number_of_games_played')
-
-        let scheduleGameController = new ScheduleGameController()
-        scheduleGameController.update_vacany({ auth }, request.params.id, true)
 
         return 'Remove entry'
       } catch (error) {

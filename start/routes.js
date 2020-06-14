@@ -206,7 +206,6 @@ Route.get(
   '/api/notifications/getAllNotiScheduleGamesAttendees/:schedule_games_id',
   'NotificationController.getAllNotiScheduleGamesAttendees'
 )
-Route.get('/api/notifications/delete/schedule_game_attendees/:id', 'NotificationController.remove_schedule_game_attendees')
 Route.get('/api/notifications/myRequests/', 'NotificationController.myRequests')
 Route.post('/api/notifications/addGroup', 'NotificationController.addGroup')
 Route.post('/api/notifications/add_all_to_Group', 'NotificationController.add_all_to_Group')
