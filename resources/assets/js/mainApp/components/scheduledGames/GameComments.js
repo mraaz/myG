@@ -11,7 +11,9 @@ export default class GameComments extends Component {
   constructor() {
     super()
     this.state = {
-      preview_file: '',
+      preview_file: [
+        'https://mygame-media.s3.ap-southeast-2.amazonaws.com/user_files/100_1592126882477_nYLAiC_comment_image%2Cjpeg_1592126880918_best-seven-street-food-and-restorant.jpg',
+      ],
       aws_key: '',
       file_keys: '',
       uploading: false,
@@ -198,7 +200,6 @@ export default class GameComments extends Component {
                 </div>
               </Link>
             </div>
-
             {this.state.uploading && <div className='uploadImage_loading'>Uploading ...</div>}
             {this.state.preview_file.length > 0 && (
               <div className='preview__image'>

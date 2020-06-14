@@ -290,7 +290,7 @@ export default class ScheduleGames extends Component {
     const filterTypeArray = []
     const filterValueArray = {}
     Object.keys(JsonPayload).forEach((key) => {
-      if (JsonPayload.hasOwnProperty(key)) {
+      if (JsonPayload.hasOwnProperty(key) && JsonPayload[key] != false) {
         filterTypeArray.push(key)
         filterValueArray[key] = JsonPayload[key]
       }
