@@ -100,6 +100,22 @@ class UserChatController {
     const { users } = await UserRepository.searchUsers({ requestingUserId, query })
     return response.send({ users })
   }
+
+  async fetchSettings({ auth, response }) {
+    const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
+    log('USER', `User ${requestingUserId} fetching settings`)
+    const { settings } = await UserRepository.fetchSettings({ requestingUserId })
+    return response.send({ settings })
+  }
+
+  async togglePushNotifications({ auth, response }) {
+    const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
+    log('USER', `User ${requestingUserId} toggling push notifications`)
+    const { settings } = await UserRepository.togglePushNotifications({ requestingUserId })
+    return response.send({ settings })
+  }
 }
 
 module.exports = UserChatController

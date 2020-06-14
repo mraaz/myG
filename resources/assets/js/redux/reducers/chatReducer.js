@@ -16,6 +16,7 @@ export default function reducer(
     blockedUsers: [],
     notificationSoundsDisabled: false,
     autoSelfDestruct: false,
+    pushNotificationsEnabled: true,
   },
   action
 ) {
@@ -257,8 +258,15 @@ export default function reducer(
       const unreadMessages = JSON.parse(JSON.stringify(state.unreadMessages))
       if (!chat) return state
       if (state.blockedUsers.find((user) => user.userId === message.senderId)) return state
-      if (!chat.muted && !window.focused && message.senderId !== userId && !message.keyReceiver)
+      if (!chat.muted && !window.focused && message.senderId !== userId && !message.keyReceiver) {
         playMessageSound(state.notificationSoundsDisabled)
+        if (window.notifier && state.pushNotificationsEnabled) {
+          const privateKey = deserializeKey(chat.privateKey || state.privateKey)
+          const body = decryptMessage(message.content, privateKey)
+          const title = `New Message from ${message.senderName}${chat.isGroup ? ` on ${chat.title}` : ''}`
+          window.notifier.showNotification(title, { body })
+        }
+      }
       if (window.document.hidden) window.document.title = `(${parseInt((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0) + 1}) myG`
       if (!chat.muted && !message.keyReceiver) {
         const openChats = chats.filter((candidate) => !candidate.closed && candidate.chatId !== chatId)
@@ -753,6 +761,24 @@ export default function reducer(
       return {
         ...state,
         autoSelfDestruct: action.meta.enabled,
+      }
+    }
+    
+    case "FETCH_SETTINGS_FULFILLED": {
+      logger.log('CHAT', `Redux -> Fetched Settings: `, action.payload)
+      const { pushNotificationsEnabled } = action.payload.settings;
+      return {
+        ...state,
+        pushNotificationsEnabled,
+      }
+    }
+
+    case "TOGGLE_PUSH_NOTIFICATIONS_FULFILLED": {
+      logger.log('CHAT', `Redux -> Toggled Push Notifications: `, action.payload)
+      const { pushNotificationsEnabled } = action.payload.settings;
+      return {
+        ...state,
+        pushNotificationsEnabled,
       }
     }
 

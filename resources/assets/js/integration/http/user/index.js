@@ -51,6 +51,16 @@ export function fetchStatus() {
   return axios.get(`/api/user_chat/status/`).then((response => response.data));
 }
 
+export function fetchSettings() {
+  logger.log('USER', 'HTTP', `Fetching Status`);
+  return axios.get(`/api/user_settings`).then((response => response.data));
+}
+
+export function togglePushNotifications() {
+  logger.log('USER', 'HTTP', `Fetching Status`);
+  return axios.post(`/api/user_settings/push_notifications`).then((response => response.data));
+}
+
 export function updateStatus(status, forceStatus) {
   logger.log('USER', 'HTTP', `${forceStatus ? 'Forcing' : 'Setting'} Status ${status}`);
   return axios.put(`/api/user_chat/status/`, { status, forceStatus }).then((response => response.data));

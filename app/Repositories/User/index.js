@@ -4,9 +4,11 @@ const User = use('App/Models/User');
 const UserChat = use('App/Models/UserChat');
 const FavoriteGame = use('App/Models/FavoriteGame');
 const GameName = use('App/Models/GameName');
+const Settings = use('App/Models/Setting');
 
 const StatusSchema = require('../../Schemas/Status');
 const ContactSchema = require('../../Schemas/Contact');
+const SettingsSchema = require('../../Schemas/Settings');
 const DefaultSchema = require('../../Schemas/Default');
 const GameSchema = require('../../Schemas/Game');
 
@@ -155,6 +157,25 @@ class UserRepository {
         publicKey: user.public_key,
       }));
     return { users };
+  }
+
+  async fetchSettings({ requestingUserId }) {
+    let response = await Settings.query().where('user_id', requestingUserId).first();
+    if (!response) {
+      response = new Settings();
+      response.user_id = requestingUserId;
+      response.push_notification = 1;
+      await response.save();
+    }
+    const settings = new SettingsSchema(response.toJSON());
+    return { settings };
+  }
+
+  async togglePushNotifications({ requestingUserId }) {
+    const { settings } = await this.fetchSettings({ requestingUserId });
+    await Settings.query().where('user_id', requestingUserId).update({ push_notification: settings.pushNotificationsEnabled ? 0 : 1 });
+    settings.pushNotificationsEnabled = !settings.pushNotificationsEnabled;
+    return { settings };
   }
 
   _uniqBy(a, key) {

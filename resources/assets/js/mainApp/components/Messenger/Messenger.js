@@ -30,6 +30,8 @@ import {
   updateStatusAction,
   toggleNotificationSoundsAction,
   toggleAutoSelfDestructAction,
+  fetchSettingsAction,
+  togglePushNotificationsAction,
 } from '../../../redux/actions/userAction'
 import { generateKeysAction, validatePinAction } from '../../../redux/actions/encryptionAction'
 import { uploadGameIcon } from '../../../integration/http/chat'
@@ -56,6 +58,7 @@ class Messenger extends React.Component {
     monitorChats(this.props.userId, false)
     handleLink(this.props.userId)
     monitorSocketConnection()
+    this.props.fetchSettings(this.props.userId)
   }
 
   componentWillUnmount() {
@@ -114,6 +117,7 @@ class Messenger extends React.Component {
         chats={this.props.chats}
         contacts={this.props.contacts}
         notificationSoundsDisabled={this.props.notificationSoundsDisabled}
+        pushNotificationsEnabled={this.props.pushNotificationsEnabled}
         autoSelfDestruct={this.props.autoSelfDestruct}
         blockedUsers={this.props.blockedUsers}
         blockUser={this.props.blockUser}
@@ -123,6 +127,7 @@ class Messenger extends React.Component {
         clearChat={this.props.clearChat}
         toggleNotificationSounds={this.props.toggleNotificationSounds}
         toggleAutoSelfDestruct={this.props.toggleAutoSelfDestruct}
+        togglePushNotifications={this.props.togglePushNotifications}
         toggleSettings={() => this.setState((previous) => ({ blockSettings: !previous.blockSettings }))}
         onUploadPhoto={(gameId) => this.setState({ uploadingPhoto: gameId })}
       />
@@ -270,6 +275,7 @@ function mapStateToProps(state) {
     alert: state.alert.show,
     autoSelfDestruct: state.user.autoSelfDestruct,
     notificationSoundsDisabled: state.user.notificationSoundsDisabled,
+    pushNotificationsEnabled: state.user.pushNotificationsEnabled,
     status: state.user.status,
     isStatusLocked: state.user.isStatusLocked,
     chats: state.chat.chats,
@@ -302,6 +308,8 @@ function mapDispatchToProps(dispatch) {
     updateStatus: (status, forcedStatus) => dispatch(updateStatusAction(status, forcedStatus)),
     toggleNotificationSounds: (disabled) => dispatch(toggleNotificationSoundsAction(disabled)),
     toggleAutoSelfDestruct: (enabled) => dispatch(toggleAutoSelfDestructAction(enabled)),
+    fetchSettings: (userId) => dispatch(fetchSettingsAction(userId)),
+    togglePushNotifications: (userId) => dispatch(togglePushNotificationsAction(userId)),
   }
 }
 

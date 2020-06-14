@@ -13,6 +13,7 @@ export default function reducer(
     foundUsers: [],
     notificationSoundsDisabled: false,
     autoSelfDestruct: false,
+    pushNotificationsEnabled: true,
   },
   action
 ) {
@@ -214,6 +215,24 @@ export default function reducer(
       return {
         ...state,
         autoSelfDestruct: action.meta.enabled,
+      }
+    }
+
+    case "FETCH_SETTINGS_FULFILLED": {
+      logger.log('USER', `Redux -> Fetched Settings: `, action.payload)
+      const { pushNotificationsEnabled } = action.payload.settings;
+      return {
+        ...state,
+        pushNotificationsEnabled,
+      }
+    }
+
+    case "TOGGLE_PUSH_NOTIFICATIONS_FULFILLED": {
+      logger.log('USER', `Redux -> Toggled Push Notifications: `, action.payload)
+      const { pushNotificationsEnabled } = action.payload.settings;
+      return {
+        ...state,
+        pushNotificationsEnabled,
       }
     }
 
