@@ -510,12 +510,11 @@ export default class ScheduledGamePost_Dota2 extends Component {
       ) {
         const savemySpot = axios.post('/api/attendees/savemySpot', {
           schedule_games_id: this.props.props.schedule_game.schedule_games_id,
-          dota_2_position_one: this.state.show_dota_2_pos_one,
-          dota_2_position_two: this.state.show_dota_2_pos_two,
-          dota_2_position_three: this.state.show_dota_2_pos_three,
-          dota_2_position_four: this.state.show_dota_2_pos_four,
-          dota_2_position_five: this.state.show_dota_2_pos_five,
-          notify: true,
+          value_one: { dota2_medal_ranks: 'Herald' },
+          value_two: { dota2_server_regions: 'North Amerrica' },
+          value_three: { dota2_server_regions: 'Position 1, Position 2' },
+          value_four: null,
+          value_five: null,
         })
         this.setState({
           show_invite: false,

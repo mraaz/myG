@@ -10,6 +10,40 @@ const ScheduleGameController = use('./ScheduleGameController')
 class AttendeeController {
   async savemySpot({ auth, request, response }) {
     try {
+      const get_game_info = await Database.from('schedule_games')
+        .where('schedule_games.id', '=', request.input('schedule_games_id'))
+        .selct('game_names_id')
+        .first()
+
+      if (get_game_info != undefined) {
+        return
+      }
+
+      const getGameFields = await Database.from('game_name_fields')
+        .where({ game_names_id: get_game_info.game_names_id })
+        .first()
+
+      if (getGameFields != undefined) {
+        return
+      }
+
+      let obj = ''
+
+      if (getGameFields.in_game_fields != undefined) {
+        obj = JSON.parse(getGameFields.in_game_fields)
+      }
+      //obj = {value_one: "dota2_medal_ranks"}
+      //value_one: { dota2_server_regions: 'Position 1, Position 2' },
+
+      if (request.input('value_one') != undefined && request.input('value_one') != null) {
+        let value_one_data = (obj = JSON.parse(request.input('value_one')))
+        for (let key in obj) {
+          if (obj[key] == ' ') {
+            let x = null
+          }
+        }
+      }
+
       const savemySpot = await Attendee.create({
         schedule_games_id: request.input('schedule_games_id'),
         user_id: auth.user.id,
