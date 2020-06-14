@@ -30,7 +30,7 @@ const Approved_gamers = (props) => {
       <div className='gameTime__label'>Gamers</div>
       <div className='gamer__wraper'>
         {approved_gamers.length > 0 &&
-          approved_gamers.map((gamer) => {
+          approved_gamers.slice(0, 3).map((gamer) => {
             return (
               <div className='single__gamer'>
                 <div className='gamer__image '>
@@ -42,10 +42,11 @@ const Approved_gamers = (props) => {
               </div>
             )
           })}
+        <div className='View__AllGamers' onClick={showModal}>
+          ... View All Gamers
+        </div>
       </div>
-      <div className='View__AllGamers' onClick={showModal}>
-        View All Gamers
-      </div>
+
       <div className={`modal-container View__AllGamers__modal ${modalStatus ? 'modal--show' : ''}`}>
         <div className='modal-wrap'>
           <div className='modal__header'>
