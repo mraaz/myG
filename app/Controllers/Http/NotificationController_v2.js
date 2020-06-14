@@ -529,6 +529,60 @@ class NotificationController_v2 {
       console.log(error)
     }
   }
+
+  async addScheduleGame_attendance({ auth }, schedule_games_id, other_user_id) {
+    if (auth.user) {
+      try {
+        const addScheduleGame_attendance = await Notification.create({
+          other_user_id: other_user_id,
+          user_id: auth.user.id,
+          activity_type: 11,
+          schedule_games_id: schedule_games_id,
+        })
+        return 'Saved item'
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async remove_schedule_game_attendees({ auth }, schedule_games_id) {
+    if (auth.user) {
+      try {
+        const remove_schedule_game_attendees = await Database.table('notifications')
+          .where({
+            schedule_games_id: schedule_games_id,
+            activity_type: 11,
+          })
+          .delete()
+
+        return 'Deleted'
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+  async add_approved_attendee_left({ auth }, schedule_games_id, other_user_id) {
+    if (auth.user) {
+      try {
+        const add_approved_attendee_left = await Notification.create({
+          other_user_id: other_user_id,
+          user_id: auth.user.id,
+          activity_type: 16,
+          schedule_games_id: schedule_games_id,
+        })
+        return 'Saved item'
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
 }
 
 module.exports = NotificationController_v2

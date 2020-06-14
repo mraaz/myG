@@ -170,6 +170,26 @@ class MySettings extends Component {
     callMasterControllerforConnections()
   }
 
+  fire_off_saveAttendee = () => {
+    const callMasterControllerforConnections = async function() {
+      try {
+        const get_stats = await axios.post('/api/attendees/savemySpot', {
+          schedule_games_id: 915,
+          value_two: { dota2_medal_ranks: 'Herald' },
+          value_three: { dota2_server_regions: 'North Amerrica' },
+          value_one: { dota2_roles: 'Position 1, Position 2' },
+          value_four: null,
+          value_five: null,
+        })
+        console.log(get_stats)
+        //console.log('Raaz-inside')
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    callMasterControllerforConnections()
+  }
+
   render() {
     if (this.state.redirect_) {
       this.props.logout()
@@ -191,6 +211,9 @@ class MySettings extends Component {
               </button>
               <button className='save' onClick={this.fire_off_test}>
                 Fire off test
+              </button>
+              <button className='save' onClick={this.fire_off_saveAttendee}>
+                Save Attendee
               </button>
               <a rel='noopener noreferrer' href='https://github.com/mraaz/myG_RoadMap' target='_blank'>
                 Report bugs, request feature, help improve myG :)

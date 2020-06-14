@@ -183,16 +183,16 @@ export default class ScheduledGamePost_Clash_Royale extends Component {
         if (schedule_game.limit != 42) {
           //If its not an unlimited game
           self.state.show_attendees = true //Display the count ie 1 of 5
-          const getNumberofAttendees = await axios.get(`/api/attendees/attending/${schedule_game.id}`) //Get the total
-          if (getNumberofAttendees.data.allAttendees[0].no_of_allAttendees != 0) {
-            self.state.attendees_count = getNumberofAttendees.data.allAttendees[0].no_of_allAttendees
-            if (getNumberofAttendees.data.allAttendees[0].no_of_allAttendees >= schedule_game.limit) {
-              self.state.show_attending = false
-              self.state.show_invite = false
-              self.state.show_full = true
-              self.state.show_pending = false
-            }
-          }
+          // const getNumberofAttendees = await axios.get(`/api/attendees/attending/${schedule_game.id}`) //Get the total
+          // if (getNumberofAttendees.data.allAttendees[0].no_of_allAttendees != 0) {
+          //   self.state.attendees_count = getNumberofAttendees.data.allAttendees[0].no_of_allAttendees
+          //   if (getNumberofAttendees.data.allAttendees[0].no_of_allAttendees >= schedule_game.limit) {
+          //     self.state.show_attending = false
+          //     self.state.show_invite = false
+          //     self.state.show_full = true
+          //     self.state.show_pending = false
+          //   }
+          // }
         }
       } catch (error) {
         console.log(error)
