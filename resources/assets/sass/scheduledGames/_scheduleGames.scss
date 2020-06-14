@@ -1141,6 +1141,7 @@
           }
         }
       }
+
       .gameComments__header {
         padding: 16px 40px;
         height: 60px;
@@ -1163,6 +1164,7 @@
       padding: 16px;
       margin-top: auto;
       display: flex;
+      flex-direction: column;
       .compose-comment {
         display: flex;
         justify-content: center;
@@ -1232,6 +1234,27 @@
             margin-left: 20px;
             cursor: pointer;
           }
+        }
+      }
+      .preview__image {
+        position: relative;
+        top: 5px;
+        height: 80px;
+        margin-left: 30px;
+        border: 1px solid;
+        width: 90%;
+        padding: 5px;
+        img {
+          width: 120px;
+          height: 100%;
+        }
+        .clear__preview__image {
+          position: absolute;
+          right: 4px;
+          top: 4px;
+          font-size: 10px;
+          cursor: pointer;
+          z-index: 5;
         }
       }
     }
