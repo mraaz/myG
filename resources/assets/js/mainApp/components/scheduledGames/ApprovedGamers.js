@@ -83,10 +83,55 @@ const Approved_gamers = (props) => {
                   <span className='level__value'>99</span>
                 </div>
               </div>
+
               <div className='list__item'>
                 <div className='gamer__name'>
                   <div className='default_circle'>{/* <img src={group_in.group_img} className='groupImage' /> */}</div>
                   <spam>Nitin</spam>
+                </div>
+                <div className='other__title server'> Europe</div>
+                <div className='other__title medals'> Europe</div>
+                <div className='other__title'>
+                  {' '}
+                  <span className='position'>1</span>
+                </div>
+                <div className='other__title level'>
+                  {'level '}
+                  <span className='level__value'>99</span>
+                </div>
+              </div>
+
+              <div className='list__item'>
+                <div className='gamer__name'>
+                  <div className='default_circle'>{/* <img src={group_in.group_img} className='groupImage' /> */}</div>
+                  <spam>Nitin</spam>
+                </div>
+                <div className='other__title server'> Europe</div>
+                <div className='other__title medals'> Europe</div>
+                <div className='other__title'>
+                  {' '}
+                  <span className='position'>1</span>
+                </div>
+                <div className='other__title level'>
+                  {'level '}
+                  <span className='level__value'>99</span>
+                </div>
+              </div>
+
+              <div className='list__item'>
+                <div className='gamer__name'>
+                  <div className='default_circle'>{/* <img src={group_in.group_img} className='groupImage' /> */}</div>
+                  <spam>Nitin</spam>
+                </div>
+                <div className='other__title server'> Europe</div>
+                <div className='other__title medals'> Europe</div>
+                <div className='other__title'>
+                  {' '}
+                  <span className='position'>1</span>
+                </div>
+                <div className='other__title level'>
+                  {'level '}
+                  <span className='level__value'>99</span>
                 </div>
               </div>
             </div>
