@@ -111,8 +111,7 @@ class DiscordLoginController {
       const seatsAvailable = await SeatsAvailable.query().first()
       const extraSeatsCode = request.input('extraSeatsCode')
       if (!seatsAvailable.seats_available && !extraSeatsCode) {
-        session.withErrors([{ message: 'There are no more seats available!' }]).flashAll()
-        return response.redirect('back')
+        return response.redirect('/?error=seats')
       }
 
       const user = new User()

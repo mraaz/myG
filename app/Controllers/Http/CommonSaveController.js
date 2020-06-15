@@ -113,17 +113,16 @@ class CommonSaveController {
         'https://www.google.com/recaptcha/api/siteverify',
         querystring.stringify({ secret: Env.get('SECRET_KEY'), response: token })
       )
-      if (data_request.data.success) {
+      if (!data_request.data.success) {
         console.log('Google Recaptcha Verification Fail: ' + data_request.data)
-        return response.redirect('/')
+        return response.redirect('/?error=google-recaptcha')
       } else {
         // Seats Availability
         const seatsAvailable = await SeatsAvailable.query().first()
         const extraSeatsCode = request.input('extraSeatsCode')
         console.log(`hi, ${extraSeatsCode}`)
         if (!seatsAvailable.seats_available && !extraSeatsCode) {
-          session.withErrors([{ message: 'There are no more seats available!' }]).flashAll()
-          return response.redirect('back')
+          return response.redirect('/?error=seats')
         }
 
         const user = new User()

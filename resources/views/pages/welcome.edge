@@ -109,6 +109,16 @@
     }
   }
 
+  function checkErrors() {
+    const searchParams = window.location.search;
+    if (searchParams) {
+      const error = searchParams.split("?error=")[1];
+      if (error === "google-recaptcha") alert("There was an error with your Google Captcha Validation");
+      if (error === "seats") alert("There are no Seats available, only an invitation can get you in now!");
+    }
+  }
+
   setSeatsAvailable()
+  setTimeout(checkErrors, 500)
 </script>
 @endsection
