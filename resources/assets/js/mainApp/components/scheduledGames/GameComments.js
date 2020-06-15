@@ -11,7 +11,7 @@ export default class GameComments extends Component {
   constructor() {
     super()
     this.state = {
-      preview_file: '',
+      preview_file: [],
       aws_key: '',
       file_keys: '',
       uploading: false,
@@ -198,7 +198,6 @@ export default class GameComments extends Component {
                 </div>
               </Link>
             </div>
-
             {this.state.uploading && <div className='uploadImage_loading'>Uploading ...</div>}
             {this.state.preview_file.length > 0 && (
               <div className='preview__image'>

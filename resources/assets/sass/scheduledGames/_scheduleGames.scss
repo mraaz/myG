@@ -1,3 +1,6 @@
+@function random_element($elements...) {
+  @return nth($elements, random(length($elements)));
+}
 .viewGame__container {
   min-width: 100%;
   background: #0b0f14 0% 0% no-repeat padding-box;
@@ -411,6 +414,7 @@
       min-height: 570px;
       flex-direction: column;
       border-bottom: 1px solid #384952;
+      position: relative;
       .gameDetails__header {
         display: flex;
         max-height: 92px;
@@ -481,10 +485,10 @@
         }
       }
       .gameDetails__body {
-        margin: 24px 60px 0 24px;
+        margin: 24px 24px 0 24px;
         border-left: 2px solid #344953;
         position: relative;
-        padding: 0 20px;
+        padding: 0 0 0 20px;
         padding-bottom: 0;
         margin-bottom: 40px;
         &::before {
@@ -598,12 +602,22 @@
             overflow: hidden;
             text-overflow: ellipsis;
           }
+          .View__AllGamers {
+            font: 10px/14px Montserrat;
+            letter-spacing: 0px;
+            color: #e5c746;
+            font-weight: 400;
+            cursor: pointer;
+          }
         }
       }
       .gameDetaiils__footer {
         background: #1d2326 0% 0% no-repeat padding-box;
         border-radius: 4px;
         padding: 24px 36px 36px 24px;
+        display: flex;
+        margin-top: auto;
+        flex-direction: column;
 
         .view__all__comments {
           font: Bold 12px/14px Montserrat;
@@ -865,6 +879,18 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
                 margin-bottom: 10px;
+                &.game__level_0 {
+                  color: #ffd9b9;
+                  border: 1px solid #ffd9b9;
+                }
+                &.game__level_1 {
+                  color: #d6b9ff;
+                  border: 1px solid #d6b9ff;
+                }
+                &.game__level_2 {
+                  color: #9dceff;
+                  border: 1px solid #9dceff;
+                }
               }
             }
           }
@@ -872,7 +898,8 @@
       }
     }
   }
-  .singleGameView__container {
+  .singleGameView__container,
+  .GameView__container {
     width: 659px;
     margin: 0 auto;
     margin-top: 55px;
@@ -881,6 +908,25 @@
       background: #171a1c;
       .gameDetails__header {
         background: #1d2326;
+        max-height: 108px !important;
+        .game__level__wrap {
+          flex-direction: row !important;
+          .game__level {
+            margin-right: 5px;
+            &.game__level_0 {
+              color: #ffd9b9;
+              border: 1px solid #ffd9b9;
+            }
+            &.game__level_1 {
+              color: #d6b9ff;
+              border: 1px solid #d6b9ff;
+            }
+            &.game__level_2 {
+              color: #9dceff;
+              border: 1px solid #9dceff;
+            }
+          }
+        }
       }
       .show-individual-comments {
         padding-left: 100px;
@@ -930,9 +976,10 @@
                 width: 100%;
 
                 .show__comment__image {
-                  width: 480px;
+                  max-width: 400px;
                   height: 270px;
                   margin-top: 10px;
+                  min-width: 240px;
                   img {
                     width: 100%;
                     height: 100%;
@@ -1080,9 +1127,8 @@
               }
               .preview__image {
                 position: relative;
-                top: 22px;
+                top: 0px;
                 height: 80px;
-                margin-left: 40px;
                 border: 1px solid;
                 width: 90%;
                 padding: 5px;
@@ -1103,6 +1149,7 @@
           }
         }
       }
+
       .gameComments__header {
         padding: 16px 40px;
         height: 60px;
@@ -1125,6 +1172,7 @@
       padding: 16px;
       margin-top: auto;
       display: flex;
+      flex-direction: column;
       .compose-comment {
         display: flex;
         justify-content: center;
@@ -1171,6 +1219,7 @@
           height: 30px;
           border-radius: 50%;
           z-index: 12;
+          top: 6px;
           .online__status {
             border: 7px solid #68bd45;
             border-radius: 50%;
@@ -1195,6 +1244,27 @@
           }
         }
       }
+      .preview__image {
+        position: relative;
+        top: 5px;
+        height: 80px;
+        margin-left: 30px;
+        border: 1px solid;
+        width: 90%;
+        padding: 5px;
+        img {
+          width: 120px;
+          height: 100%;
+        }
+        .clear__preview__image {
+          position: absolute;
+          right: 4px;
+          top: 4px;
+          font-size: 10px;
+          cursor: pointer;
+          z-index: 5;
+        }
+      }
     }
     .gamer__count,
     .game__timestamp {
@@ -1207,6 +1277,11 @@
       }
     }
   }
+  .GameView__container {
+    width: 100%;
+    border-top: 1px solid #384952;
+    margin: 0;
+  }
   .filter__overlay {
     position: fixed;
     top: 0;
@@ -1214,6 +1289,116 @@
     right: 0;
     bottom: 0;
     z-index: 1;
+  }
+
+  .View__AllGamers__modal {
+    z-index: 9999;
+    background: none;
+    .modal-wrap {
+      border: 1px solid #273137;
+      border-radius: 4px;
+      opacity: 1;
+      z-index: 2;
+      position: relative;
+      background: #171a1c 0% 0% no-repeat padding-box;
+      height: 512px;
+      .modal__header {
+        background: #1d2326 0% 0% no-repeat padding-box;
+        height: 80px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        .modal__close {
+          width: 32px;
+          height: 32px;
+          background: #1d2326 0% 0% no-repeat padding-box;
+          border-radius: 50%;
+          position: absolute;
+          right: -15px;
+          top: -15px;
+          cursor: pointer;
+        }
+      }
+      .modal__body {
+        background: #171a1c 0% 0% no-repeat padding-box;
+        height: auto;
+        .people_group_list_box_header {
+          background: #1d2326 0% 0% no-repeat padding-box;
+          height: 60px;
+          display: flex;
+          padding: 20px 0;
+          .box_header_name {
+            font: Medium 16px/22px Montserrat;
+            letter-spacing: 0px;
+            color: #ffffff;
+            flex: 1;
+            font-weight: 400;
+            margin: 0;
+            display: flex;
+            justify-content: flex-start;
+            padding: 0px 22px;
+          }
+        }
+        .people_group_list_box {
+          height: 370px;
+          overflow: scroll;
+          transition: 1s all ease;
+          .list__item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0px 10px 18px;
+            margin-right: 10px;
+            .default_circle {
+              width: 30px;
+              height: 30px;
+              border-radius: 50%;
+              background: #ff00ff;
+              margin-right: 10px;
+              img {
+                height: 100%;
+                width: 100%;
+                border-radius: 50%;
+              }
+            }
+            .gamer__name {
+              font: Bold 18px/22px Montserrat;
+              letter-spacing: 0px;
+              color: #ffffff;
+              flex: 2;
+              display: flex;
+              align-items: center;
+            }
+            .other__title {
+              font: 14px/18px Montserrat;
+              letter-spacing: 0px;
+              color: #ffffff;
+              flex: 1;
+              display: flex;
+              justify-content: center;
+              .position {
+                border: 1px solid #ffffff;
+                border-radius: 4px;
+                padding: 4px 10px;
+              }
+              .level__value {
+                font: 28px/18px Montserrat;
+                margin-left: 6px;
+              }
+            }
+          }
+        }
+      }
+    }
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      backdrop-filter: blur(14px);
+      z-index: 1;
+    }
   }
 }
 

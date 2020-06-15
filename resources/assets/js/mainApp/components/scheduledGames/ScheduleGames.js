@@ -46,7 +46,9 @@ export default class ScheduleGames extends Component {
     }
   }
 
-  getSingleGameData = async (id, game) => {
+  getSingleGameData = async (e, id, game) => {
+    e.preventDefault()
+    e.stopPropagation()
     const scheduleGames = await axios.get(`/api/ScheduleGame/additional_game_info/${id}`)
     const allComments = await axios.get(`/api/comments/get_right_card_comment_info/${id}`)
     if (allComments.data) {
@@ -81,6 +83,7 @@ export default class ScheduleGames extends Component {
     if (scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length == 0) {
       this.setState({
         moreplease: false,
+        scheduleGames: {},
       })
       return
     }
@@ -149,23 +152,31 @@ export default class ScheduleGames extends Component {
         <div className={`gameList__section ${singleView ? 'singleGameView__container' : 'GameView__container'}`}>
           {!singleView && scheduleGames.length > 0 ? (
             <Fragment>
-              <InfiniteScroll dataLength={scheduleGames.length} next={this.getScheduleGamesData} hasMore={this.state.moreplease}>
-                <GameList
-                  scheduleGames={scheduleGames}
-                  show_full_games={show_full_games}
-                  handleExcludesFullGames={this.handleExcludesFullGames}
-                  getSingleGameData={this.getSingleGameData}
+              <div style={{ flex: 1 }}>
+                <InfiniteScroll
+                  style={{ flex: 1 }}
+                  dataLength={scheduleGames.length}
+                  next={this.getScheduleGamesData}
+                  hasMore={this.state.moreplease}>
+                  <GameList
+                    scheduleGames={scheduleGames}
+                    show_full_games={show_full_games}
+                    handleExcludesFullGames={this.handleExcludesFullGames}
+                    getSingleGameData={this.getSingleGameData}
+                  />
+                </InfiniteScroll>
+              </div>
+              <div style={{ flex: 1 }}>
+                <GameDetails
+                  singleScheduleGamesPayload={singleScheduleGamesPayload}
+                  selected_game={selected_game}
+                  showRightSideInfo={showRightSideInfo}
+                  commentData={commentData}
+                  handleShowAllComments={this.handleShowAllComments}
+                  showAllComment={showAllComment}
+                  {...this.props}
                 />
-              </InfiniteScroll>
-              <GameDetails
-                singleScheduleGamesPayload={singleScheduleGamesPayload}
-                selected_game={selected_game}
-                showRightSideInfo={showRightSideInfo}
-                commentData={commentData}
-                handleShowAllComments={this.handleShowAllComments}
-                showAllComment={showAllComment}
-                {...this.props}
-              />
+              </div>
             </Fragment>
           ) : (
             <Fragment>

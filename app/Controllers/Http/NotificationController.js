@@ -192,24 +192,6 @@ class NotificationController {
     }
   }
 
-  async add_approved_attendee_left({ auth, request, response }) {
-    if (auth.user) {
-      try {
-        const add_approved_attendee_left = await Notification.create({
-          other_user_id: request.params.other_user_id,
-          user_id: auth.user.id,
-          activity_type: 16,
-          schedule_games_id: request.params.schedule_games_id,
-        })
-        return 'Saved item'
-      } catch (error) {
-        console.log(error)
-      }
-    } else {
-      return 'You are not Logged In!'
-    }
-  }
-
   async add_approved_group_attendee({ auth, request, response }) {
     if (auth.user) {
       try {
@@ -920,25 +902,6 @@ class NotificationController {
     }
   }
 
-  async remove_schedule_game_attendees({ auth, request, response }) {
-    if (auth.user) {
-      try {
-        const remove_schedule_game_attendees = await Database.table('notifications')
-          .where({
-            schedule_games_id: request.params.id,
-            activity_type: 11,
-          })
-          .delete()
-
-        return 'Deleted'
-      } catch (error) {
-        console.log(error)
-      }
-    } else {
-      return 'You are not Logged In!'
-    }
-  }
-
   async deleteCommentLike({ auth, request, response }) {
     if (auth.user) {
       try {
@@ -1351,24 +1314,6 @@ class NotificationController {
         }
 
         return 'Saved'
-      } catch (error) {
-        console.log(error)
-      }
-    } else {
-      return 'You are not Logged In!'
-    }
-  }
-
-  async addScheduleGame_attendance({ auth, request, response }) {
-    if (auth.user) {
-      try {
-        const addScheduleGame_attendance = await Notification.create({
-          other_user_id: request.params.other_user_id,
-          user_id: auth.user.id,
-          activity_type: 11,
-          schedule_games_id: request.params.schedule_games_id,
-        })
-        return 'Saved item'
       } catch (error) {
         console.log(error)
       }

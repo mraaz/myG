@@ -30,6 +30,7 @@ export default class GameDetails extends Component {
       platform = '',
       region = '',
       id = '',
+      allow_comments = 0,
     } = scheduleGames_data
 
     const { no_of_comments = [], lastComment = '' } = commentData
@@ -110,6 +111,7 @@ export default class GameDetails extends Component {
               toggleBack={this.props.handleShowAllComments}
               scheduleGames_data={scheduleGames_data}
               user={this.props.initialData}
+              allow_comments={allow_comments}
             />
           </div>
         )}
