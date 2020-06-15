@@ -13,7 +13,9 @@ export default class GameList extends Component {
     this.state = {}
   }
 
-  handleCopyToClipBoard = (guid) => {
+  handleCopyToClipBoard = (e, guid) => {
+    e.preventDefault()
+    e.stopPropagation()
     const link = `${window.location.protocol}//${window.location.hostname}/scheduledGames/${guid}`
     navigator.clipboard.writeText(link)
     toast.error(<Toast_style text={'Link Copied Successfully.'} />)
@@ -50,11 +52,11 @@ export default class GameList extends Component {
                 <img src={image == null ? defaultThumbnails : image} className={image == null ? 'default-image' : 'image'} />
               )
               return (
-                <div className='mygames' key={game.id}>
+                <div className='mygames' key={game.id} onClick={(e) => this.props.getSingleGameData(e, game.id, game)}>
                   <div className='gameImage'>{scheduledGamePicture}</div>
                   <div className='game__attributes'>
                     <div className='first__row'>
-                      <h1 className='game__name' title={game.game_name} onClick={(e) => this.props.getSingleGameData(game.id, game)}>
+                      <h1 className='game__name' title={game.game_name}>
                         {game.game_name}
                       </h1>
                       <div className='game__playerList'>
@@ -77,7 +79,7 @@ export default class GameList extends Component {
                       </div>
                     </div>
                     <div className='copy__clipboard'>
-                      <div className='copy__clipboard__action' onClick={() => this.handleCopyToClipBoard(game.schedule_games_GUID)}>
+                      <div className='copy__clipboard__action' onClick={(e) => this.handleCopyToClipBoard(e, game.schedule_games_GUID)}>
                         <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Link.svg' />
                       </div>
                     </div>
