@@ -19,8 +19,8 @@ const Approved_gamers = (props) => {
         setAttendees(data)
       }
     }
-    fetchData()
-  }, [])
+    if (modalStatus == true) fetchData()
+  }, [modalStatus])
   const showModal = () => {
     setModalStatus(!modalStatus)
   }
@@ -67,78 +67,30 @@ const Approved_gamers = (props) => {
             </div>
 
             <div className='people_group_list_box'>
-              <div className='list__item'>
-                <div className='gamer__name'>
-                  <div className='default_circle'>{/* <img src={group_in.group_img} className='groupImage' /> */}</div>
-                  <spam>Nitin</spam>
-                </div>
-                <div className='other__title server'> Europe</div>
-                <div className='other__title medals'> Europe</div>
-                <div className='other__title'>
-                  {' '}
-                  <span className='position'>1</span>
-                </div>
-                <div className='other__title level'>
-                  {'level '}
-                  <span className='level__value'>99</span>
-                </div>
-              </div>
-
-              <div className='list__item'>
-                <div className='gamer__name'>
-                  <div className='default_circle'>{/* <img src={group_in.group_img} className='groupImage' /> */}</div>
-                  <spam>Nitin</spam>
-                </div>
-                <div className='other__title server'> Europe</div>
-                <div className='other__title medals'> Europe</div>
-                <div className='other__title'>
-                  {' '}
-                  <span className='position'>1</span>
-                </div>
-                <div className='other__title level'>
-                  {'level '}
-                  <span className='level__value'>99</span>
-                </div>
-              </div>
-
-              <div className='list__item'>
-                <div className='gamer__name'>
-                  <div className='default_circle'>{/* <img src={group_in.group_img} className='groupImage' /> */}</div>
-                  <spam>Nitin</spam>
-                </div>
-                <div className='other__title server'> Europe</div>
-                <div className='other__title medals'> Europe</div>
-                <div className='other__title'>
-                  {' '}
-                  <span className='position'>1</span>
-                </div>
-                <div className='other__title level'>
-                  {'level '}
-                  <span className='level__value'>99</span>
-                </div>
-              </div>
-
-              <div className='list__item'>
-                <div className='gamer__name'>
-                  <div className='default_circle'>{/* <img src={group_in.group_img} className='groupImage' /> */}</div>
-                  <spam>Nitin</spam>
-                </div>
-                <div className='other__title server'> Europe</div>
-                <div className='other__title medals'> Europe</div>
-                <div className='other__title'>
-                  {' '}
-                  <span className='position'>1</span>
-                </div>
-                <div className='other__title level'>
-                  {'level '}
-                  <span className='level__value'>99</span>
-                </div>
-              </div>
+              {attendees.length > 0 &&
+                attendees.map((attendee) => {
+                  return (
+                    <div className='list__item'>
+                      <div className='gamer__name'>
+                        <div className='default_circle'>
+                          <img src={attendee.profile_img} className='groupImage' />
+                        </div>
+                        <spam>{attendee.alias}</spam>
+                      </div>
+                      <div className='other__title server'> </div>
+                      <div className='other__title medals'> </div>
+                      <div className='other__title'>
+                        {' '}
+                        <span className='position'>1</span>
+                      </div>
+                      <div className='other__title level'>
+                        {'level '}
+                        <span className='level__value'>{attendee.level}</span>
+                      </div>
+                    </div>
+                  )
+                })}
             </div>
-            {/* {attendees.length > 0 &&
-              attendees.map((attendee) => {
-                return attendee.alias
-              })} */}
           </div>
         </div>
 

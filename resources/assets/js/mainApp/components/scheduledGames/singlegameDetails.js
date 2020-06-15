@@ -32,6 +32,7 @@ export default class GameDetails extends Component {
       id = '',
       allow_comments = 0,
     } = scheduleGames_data
+    const experience_split = experience ? experience.split(',') : []
 
     const { no_of_comments = [], lastComment = '' } = commentData
 
@@ -52,9 +53,18 @@ export default class GameDetails extends Component {
                   <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/clock.svg' />
                   <span>{moment(start_date_time).format('LL')}</span>
                 </div>
-                {experience && <div className='game__level'>{experience}</div>}
+                <div className='game__level__wrap'>
+                  {experience_split.length > 0 &&
+                    experience_split.map((ex, index) => {
+                      return (
+                        <div className={`game__level game__level_${ex}`} key={ex}>
+                          {ex}
+                        </div>
+                      )
+                    })}
+                </div>
               </div>
-              <JoinButtonAction join_status={join_status} />
+              <JoinButtonAction join_status={join_status} schedule_games_id={id} />
             </div>
             <div className='gameDetails__body'>
               <div className='filter__label'>Game Details</div>
@@ -67,7 +77,7 @@ export default class GameDetails extends Component {
               {platform && <div className='gameTime__value'>{platform}</div>}
               {region && <div className='gameTime__label'>Region</div>}
               {region && <div className='gameTime__value'>{region}</div>}
-              <Approved_gamers approved_gamers={approved_gamers} />
+              <Approved_gamers approved_gamers={approved_gamers} schedule_games_id={id} />
               <div className='gameTags__label'>Tags</div>
               <div className='gameTags__value game__tags'>
                 {tags &&
