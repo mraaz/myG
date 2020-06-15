@@ -81,6 +81,7 @@ export default class ScheduleGames extends Component {
     if (scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length == 0) {
       this.setState({
         moreplease: false,
+        scheduleGames: {},
       })
       return
     }
