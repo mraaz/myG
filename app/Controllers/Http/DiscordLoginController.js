@@ -3,6 +3,8 @@
 const User = use('App/Models/User')
 const fetch = require('node-fetch')
 const ConnectionController = use('./ConnectionController')
+const SeatsAvailable = use('App/Models/SeatsAvailable')
+const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
 
 class DiscordLoginController {
   async redirect({ ally, response }) {
@@ -105,6 +107,14 @@ class DiscordLoginController {
         return response.redirect('/')
       }
 
+      // Seats Availability
+      const seatsAvailable = await SeatsAvailable.query().first()
+      const extraSeatsCode = request.input('extraSeatsCode')
+      if (!seatsAvailable.seats_available && !extraSeatsCode) {
+        session.withErrors([{ message: 'There are no more seats available!' }]).flashAll()
+        return response.redirect('back')
+      }
+
       const user = new User()
       user.first_name = userData.getName()
       var alias = userData.getName()
@@ -116,6 +126,15 @@ class DiscordLoginController {
       user.provider = provider
 
       await user.save()
+
+      // Decrease Seats Available upon Registration
+      seatsAvailable.seats_available = (seatsAvailable.seats_available || 1) - 1
+      seatsAvailable.save()
+
+      // Mark Extra Seat Code as Used
+      if (extraSeatsCode) {
+        await ExtraSeatsCodes.query().where('code', extraSeatsCode).update({ user_id: newUser.id })
+      }
 
       await auth.loginViaId(user.id)
       return response.redirect('/')

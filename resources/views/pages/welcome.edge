@@ -21,7 +21,7 @@
       <div class="logo-on-card">
         <img src="https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Login+Screen/Card_Logo.svg" height="90" width="90" />
       </div>
-      <div class="card-round">
+      <div class="card-round" id="login-options">
               <a href="/login/facebook" class="button facebook-btn">
                 <img src="https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Login+Screen/Facebook_SSO.svg" class="sso-logo" height="25" width="25"/>
                 <div class="sso-text">Log in with Facebook</div>
@@ -49,12 +49,68 @@
         </div>
         <div class="seats-desc">
           <div class="card-seats">
-            <b>104</b>
+            <b id="seats-available"> Loading... </b>
           </div>
           <b>seats available</b>
         </div>
         <div class="register-message"><b>Register</b> while there's still time!</div>
+        <div id="extra-seats-code-container"></div>
       </div>
   </div>
 </div>
+<script>
+  function fetchSeatsAvailable() {
+    const xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", '/api/seats_available', false );
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
+  }
+
+  function setSeatsAvailable() {
+    const seatsAvailable = parseInt(fetchSeatsAvailable());
+    document.getElementById('seats-available').innerText = seatsAvailable;
+    if (!seatsAvailable) {
+      document.getElementById('login-options').style.display = "none";
+      document.getElementsByClassName('register-message')[0].innerText = "Only Invitation Codes can get you in now!";
+      injectInvitationCodeInput();
+    }
+  }
+
+  function injectInvitationCodeInput() {
+    const inputHtml = ''
+      + '<div class="extra-seats-code-container">'
+        + '<p id="extra-seats-code-hint" class="extra-seats-code-hint">Enter Invitation Code</p>'
+        + '<input class="input-common extra-seats-code-input"'
+        + 'id="extra-seats-code-input"'
+        + 'placeholder="e.g. A1B2C3"'
+        + 'type="text"'
+        + 'maxlength="6"'
+        + 'name="extra-seats-code"'
+        + 'style="text-transform:uppercase"'
+        + '></input>'
+        + '<div class="extra-seats-code-button clickable" onclick="checkExtraSeatsCode()">'
+          + 'Check'
+        + '</div>'
+      + '</div>';
+    document.getElementById('extra-seats-code-container').innerHTML = inputHtml;
+  }
+
+  function checkExtraSeatsCode() {
+    const code = document.getElementById('extra-seats-code-input').value;
+    const xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", '/api/seats_available/' + code, false );
+    xmlHttp.send( null );
+    const isCodeValid = xmlHttp.responseText === "true";
+    if (isCodeValid) {
+      document.getElementById('extra-seats-code-container').innerHTML = null;
+      document.getElementById('login-options').style.display = "block";
+      document.getElementsByClassName('register-message')[0].innerText = "But you were invited, so you get in!";
+      window.localStorage.setItem('extraSeatsCode', code);
+    } else {
+      document.getElementById('extra-seats-code-hint').innerText = "The code " + code + " is not valid!";
+    }
+  }
+
+  setSeatsAvailable()
+</script>
 @endsection

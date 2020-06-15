@@ -388,4 +388,8 @@ Route.get('/api/guest/privateKey/:chatId', 'GuestController.fetchGroupPrivateKey
 Route.post('/api/guest/privateKey/:userId/:chatId', 'GuestController.requestGroupPrivateKey')
 Route.delete('/api/guest/privateKey/:userId/:chatId', 'GuestController.confirmGroupPrivateKey')
 
+// Seats Available
+Route.get('/api/seats_available', 'SeatsAvailableController.fetchSeatsAvailable')
+Route.get('/api/seats_available/:code', 'SeatsAvailableController.checkExtraSeatsCode')
+
 Route.any('*', ({ view }) => view.render('pages/react'))

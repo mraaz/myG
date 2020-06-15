@@ -35,11 +35,11 @@
     text-align: center;
   }
   .facebook-btn {
-    background-color: #3F5DA6;
+    background-color: #3f5da6;
     color: #ffffff;
   }
   .discord-btn {
-    background-color: #5B6BC0;
+    background-color: #5b6bc0;
     color: #ffffff;
     text-align: center;
   }
@@ -75,7 +75,7 @@
     justify-content: center;
   }
   .card-seats {
-    background-color: #171A1C;
+    background-color: #171a1c;
     padding: 10px;
     border-radius: 8px;
     margin-right: 6px;
@@ -94,14 +94,45 @@
   .sso-logo {
     position: relative;
     top: 9px;
-    left:10px;
+    left: 10px;
   }
   .register-message {
     font-size: 14px;
     margin-top: 12px;
     text-align: center;
   }
-
+  .extra-seats-code-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    margin-top: 12px;
+  }
+  .extra-seats-code-hint {
+    margin-bottom: 8px;
+  }
+  .extra-seats-code-input {
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 0;
+  }
+  .extra-seats-code-button {
+    background-color: #e7bb30;
+    margin: 8px auto 0 auto;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    width: 100%;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 1000;
+    color: #0a0a0a;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
   @media only screen and (max-width: 1000px) {
     .card-round {
       width: 743px;

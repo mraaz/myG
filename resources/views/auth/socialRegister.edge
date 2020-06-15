@@ -115,6 +115,7 @@
           @endif
         " required="">
         </div>
+        <input type='hidden' id='extra-seats-code' name='extraSeatsCode' value="" />"
         <div class="form-group">
             <button class="button-common" type="submit">REGISTER</button>
         </div>
@@ -130,7 +131,7 @@
             </div>
             <div class="seats-desc">
                 <div class="card-seats">
-                    <b>104</b>
+                    <b id="seats-available"> Loading... </b>
                 </div>
                 <b>seats available</b>
             </div>
@@ -140,6 +141,23 @@
 </div>
 <script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_sitekey() }}" ></script>
 <script>
+
+  function fetchSeatsAvailable() {
+    const xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", '/api/seats_available', false );
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
+  }
+
+  function setSeatsAvailable() {
+    const seatsAvailable = parseInt(fetchSeatsAvailable());
+    document.getElementById('seats-available').innerText = seatsAvailable;
+  }
+
+  setSeatsAvailable()
+
+  const extraSeatsCodeField = document.getElementById('extra-seats-code');
+  extraSeatsCodeField.value = window.localStorage.getItem("extraSeatsCode");
 
   function checkKeyPress(ele){
 
