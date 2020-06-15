@@ -463,6 +463,7 @@ class ScheduleGameController {
             .orderBy('schedule_games.created_at', 'desc')
             .select(
               'game_names.game_artwork',
+              'game_names.game_name_fields_img',
               'game_names.game_name',
               'schedule_games.start_date_time',
               'users.alias',
@@ -520,6 +521,7 @@ class ScheduleGameController {
           .orderBy('schedule_games.created_at', 'desc')
           .select(
             'game_names.game_artwork',
+            'game_names.game_name_fields_img',
             'game_names.game_name',
             'schedule_games.start_date_time',
             'users.alias',
