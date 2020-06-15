@@ -14,6 +14,7 @@ class ChatMessageSchema extends Schema {
       table.text('sender_name').notNullable()
       table.text('content').notNullable()
       table.text('backup').notNullable()
+      table.text('unencrypted_content')
       table.text('attachment')
       table.integer('reply_id').unsigned()
       table.text('reply_content')

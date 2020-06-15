@@ -101,6 +101,7 @@ class Layout extends Component {
     getInitialData()
 
     window.addEventListener('focus', this.onFocus)
+    this.registerServiceWorker()
   }
 
   componentWilUnmount() {
@@ -109,6 +110,15 @@ class Layout extends Component {
 
   onFocus = () => {
     window.document.title = 'myG'
+  }
+
+  registerServiceWorker = async () => {
+    if (!('serviceWorker' in navigator)) throw new Error('No Service Worker support!')
+    if (!('PushManager' in window)) throw new Error('No Push API Support!')
+    const swRegistration = await navigator.serviceWorker.register('service.js')
+    const permission = await window.Notification.requestPermission()
+    if (permission !== 'granted') throw new Error('Permission not granted for Notification')
+    window.notifier = swRegistration
   }
 
   renderRouter = () => {

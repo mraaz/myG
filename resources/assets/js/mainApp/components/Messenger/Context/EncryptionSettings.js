@@ -3,6 +3,7 @@ import notifyToast from '../../../../common/toast'
 import LoadingIndicator from '../../LoadingIndicator'
 import { fetchMessages, editMessage } from '../../../../integration/http/chat'
 import { decryptMessage, encryptMessage } from '../../../../integration/encryption'
+import { emailEncryptionKey } from '../../../../integration/http/user'
 import logger from '../../../../common/logger'
 import { ignoreFunctions } from '../../../../common/render'
 
@@ -15,11 +16,10 @@ export default class EncryptionSettings extends React.Component {
     pinInput: '',
     editingPin: false,
     pinError: false,
-    showKey: false,
     reEncryptingMessages: false,
     reEncryptionState: '',
   }
-  
+
   onKeyPressed = (event) => {
     const code = event.keyCode || event.which
     const enterKeyCode = 13
@@ -27,6 +27,12 @@ export default class EncryptionSettings extends React.Component {
       event.preventDefault()
       this.confirmPinEdit()
     }
+  }
+
+  emailKey = () => {
+    emailEncryptionKey(this.props.pin)
+      .then(() => notifyToast('Your Chat Password has been sent to your E-mail'))
+      .catch(() => notifyToast('There was an error sending your Chat Password to your E-mail'))
   }
 
   requestPinEdit = () => {
@@ -123,6 +129,7 @@ export default class EncryptionSettings extends React.Component {
   }
 
   decryptMessage = (message, chatPrivateKey) => {
+    if (message.unencryptedContent) return { ...message, content: message.unencryptedContent }
     if (!message.content && !message.backup) return message
     const isSent = message.senderId == this.props.userId
     const encryptedContent = isSent ? message.backup : message.content
@@ -139,10 +146,10 @@ export default class EncryptionSettings extends React.Component {
 
   renderEncryptionInput = () => {
     if (this.state.reEncryptingMessages) return null
-    if (!this.state.showKey && !this.state.editingPin) {
+    if (!this.state.editingPin) {
       return (
-        <div className='messenger-settings-encryption-show-button clickable' onClick={() => this.setState({ showKey: true })}>
-          SHOW KEY
+        <div className='messenger-settings-encryption-show-button clickable' onClick={this.emailKey}>
+          E-MAIL ME MY PASSWORD
         </div>
       )
     }

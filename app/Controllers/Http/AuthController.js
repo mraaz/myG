@@ -5,6 +5,8 @@ const Hash = use('Hash')
 const User = use('App/Models/User')
 const Settings = use('App/Models/Setting')
 const ConnectionController = use('./ConnectionController')
+const SeatsAvailable = use('App/Models/SeatsAvailable')
+const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
 
 class AuthController {
   async register({ response, request, view }) {
@@ -85,6 +87,13 @@ class AuthController {
       var newUser
 
       try {
+        // Seats Availability
+        const seatsAvailable = await SeatsAvailable.query().first()
+        const extraSeatsCode = request.input('extraSeatsCode')
+        if (!seatsAvailable.seats_available && !extraSeatsCode) {
+          return response.redirect('/?error=seats')
+        }
+
         newUser = await User.create({
           email: request.input('email'),
           password: request.input('password'),
@@ -94,6 +103,15 @@ class AuthController {
           profile_img: 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png',
           profile_bg: 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/universe.jpg',
         })
+
+        // Decrease Seats Available upon Registration
+        seatsAvailable.seats_available = (seatsAvailable.seats_available || 1) - 1
+        seatsAvailable.save()
+
+        // Mark Extra Seat Code as Used
+        if (extraSeatsCode) {
+          await ExtraSeatsCodes.query().where('code', extraSeatsCode).update({ user_id: newUser.id })
+        }
 
         var newUserSettings = await Settings.create({
           user_id: newUser.id,
@@ -114,9 +132,7 @@ class AuthController {
       }
       //session.flash({ notification: 'Welcome to myGame!!!' })
 
-      const user = await User.query()
-        .where('email', request.input('email'))
-        .first()
+      const user = await User.query().where('email', request.input('email')).first()
       await auth.login(user)
 
       return response.redirect(`/setEncryptionParaphrase/${request.input('encryption')}`)
@@ -142,9 +158,7 @@ class AuthController {
     const postData = request.post()
 
     //find the user in the Database by their Email
-    const user = await User.query()
-      .where('email', postData.email)
-      .first()
+    const user = await User.query().where('email', postData.email).first()
     if (user) {
       //Verfiy the Password
       const passwordVerified = await Hash.verify(postData.password, user.password)
@@ -227,9 +241,7 @@ class AuthController {
         if (passwordVerified) {
           try {
             auth.user.password = await Hash.make(request.input('password'))
-            var updateUser = await User.query()
-              .where('id', '=', auth.user.id)
-              .update({ password: auth.user.password })
+            var updateUser = await User.query().where('id', '=', auth.user.id).update({ password: auth.user.password })
             session.flash({ notification: 'Password Updated' })
             return response.redirect('/')
           } catch (error) {

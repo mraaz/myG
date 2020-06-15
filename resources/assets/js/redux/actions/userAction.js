@@ -5,6 +5,8 @@ import {
   fetchContacts,
   fetchContact,
   fetchStatus,
+  fetchSettings,
+  togglePushNotifications,
   updateStatus,
   fetchFriendRequests,
   addAsFriend,
@@ -134,5 +136,21 @@ export function toggleAutoSelfDestructAction(enabled) {
     type: 'TOGGLE_AUTO_SELF_DESTRUCT',
     payload: toggleAutoSelfDestruct(enabled),
     meta: { enabled },
+  }
+}
+
+export function fetchSettingsAction(userId) {
+  return {
+    type: 'FETCH_SETTINGS',
+    payload: fetchSettings(userId),
+    meta: { userId },
+  }
+}
+
+export function togglePushNotificationsAction(userId) {
+  return {
+    type: 'TOGGLE_PUSH_NOTIFICATIONS',
+    payload: togglePushNotifications(userId),
+    meta: { userId },
   }
 }

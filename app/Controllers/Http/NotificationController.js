@@ -4,6 +4,8 @@ const Notification = use('App/Models/Notification')
 const Post = use('App/Models/Post')
 const Usergroup = use('App/Models/Usergroup')
 const Database = use('Database')
+const ChatRepository = require('../../Repositories/Chat')
+const { formatDateTimeFromNow } = require('../../Common/date')
 
 // Split the array into halves and merge them recursively
 function mergeSort(arr) {
@@ -1175,14 +1177,21 @@ class NotificationController {
           return
         }
 
-        var arrInvite_user = request.input('gamers').split(',')
-        var arrInvite_group = request.input('communities').split(',')
+        const requestingUserId = auth.user.id
+        const arrInvite_user = request.input('gamers').split(',')
+        const arrInvite_group = request.input('groups').split(',')
+        const arrInvite_community = request.input('communities').split(',')
+        const scheduledGameId = request.input('scheduledGameId')
+        const gameTitle = request.input('gameTitle')
+        const startTime = formatDateTimeFromNow(request.input('startTime'))
+        const content = `Heya! A new ${gameTitle} game has been created! It is scheduled to start ${startTime}. Find out more here: https://myG.gg/scheduled_games/${scheduledGameId}`
+
 
         if (arrInvite_user != '') {
           for (var i = 0; i < arrInvite_user.length; i++) {
             const findUser = await Database.table('users')
               .where({
-                alias: arrInvite_user[i],
+                alias: arrInvite_user[i].trim(),
               })
               .select('id')
 
@@ -1194,16 +1203,36 @@ class NotificationController {
               other_user_id: findUser[0].id,
               user_id: auth.user.id,
               activity_type: 10,
-              schedule_games_id: request.input('schedule_games_id'),
+              schedule_games_id: scheduledGameId,
             })
+
+            const requestedUserId = findUser[0].id
+            await ChatRepository.sendMessageFromMyGToUser({ requestingUserId, requestedUserId, content })
           }
         }
 
         if (arrInvite_group != '') {
           for (var i = 0; i < arrInvite_group.length; i++) {
+            const findChat = await Database.table('chats')
+              .where({
+                title: arrInvite_group[i].trim(),
+              })
+              .select('id')
+
+            if (findChat.length == 0) {
+              return
+            }
+
+            const requestedChatId = findChat[0].id
+            await ChatRepository.sendMessageFromMyG({ requestedChatId, content })
+          }
+        }
+
+        if (arrInvite_community != '') {
+          for (var i = 0; i < arrInvite_community.length; i++) {
             const findGroup = await Database.table('groups')
               .where({
-                name: arrInvite_group[i],
+                name: arrInvite_community[i].trim(),
               })
               .select('id')
 
@@ -1213,7 +1242,7 @@ class NotificationController {
 
             const findGame = await Database.table('schedule_games')
               .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
-              .where('schedule_games.id', '=', request.input('schedule_games_id'))
+              .where('schedule_games.id', '=', scheduledGameId)
               .select('game_names.game_name', 'schedule_games.start_date_time')
               .first()
 
@@ -1230,7 +1259,7 @@ class NotificationController {
                 ' game has been created! It is scheduled to start: ' +
                 findGame.start_date_time +
                 '. Find out more here: https://myG.gg/scheduled_games/' +
-                request.input('schedule_games_id'),
+                scheduledGameId,
               group_id: findGroup[0].id,
             })
           }

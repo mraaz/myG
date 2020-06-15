@@ -22,6 +22,15 @@ class UserChatController {
     return response.send({ success, error })
   }
 
+  async sendEncryptionReminderEmail({ auth, request, response }) {
+    const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
+    const pin = request.only(['pin']).pin
+    log('USER', `User ${requestingUserId} requesting Reminder Encryption Email for ${pin}`)
+    const { success, error } = await UserRepository.sendEncryptionReminderEmail({ requestingUserId, pin })
+    return response.send({ success, error })
+  }
+
   async fetchGames({ auth, response }) {
     const requestingUserIds = [auth.user.id]
     log('USER', `User ${requestingUserIds} requesting Games`)
@@ -99,6 +108,22 @@ class UserChatController {
     log('USER', `User ${requestingUserId} searching for other users with ${query}`)
     const { users } = await UserRepository.searchUsers({ requestingUserId, query })
     return response.send({ users })
+  }
+
+  async fetchSettings({ auth, response }) {
+    const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
+    log('USER', `User ${requestingUserId} fetching settings`)
+    const { settings } = await UserRepository.fetchSettings({ requestingUserId })
+    return response.send({ settings })
+  }
+
+  async togglePushNotifications({ auth, response }) {
+    const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
+    log('USER', `User ${requestingUserId} toggling push notifications`)
+    const { settings } = await UserRepository.togglePushNotifications({ requestingUserId })
+    return response.send({ settings })
   }
 }
 

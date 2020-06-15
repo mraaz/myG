@@ -2,6 +2,8 @@
 
 const { validate } = use('Validator')
 const User = use('App/Models/User')
+const SeatsAvailable = use('App/Models/SeatsAvailable')
+const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
 const Settings = use('App/Models/Setting')
 //var nodemailer = require('nodemailer')
 const axios = use('axios')
@@ -113,8 +115,16 @@ class CommonSaveController {
       )
       if (!data_request.data.success) {
         console.log('Google Recaptcha Verification Fail: ' + data_request.data)
-        return response.redirect('/')
+        return response.redirect('/?error=google-recaptcha')
       } else {
+        // Seats Availability
+        const seatsAvailable = await SeatsAvailable.query().first()
+        const extraSeatsCode = request.input('extraSeatsCode')
+        console.log(`hi, ${extraSeatsCode}`)
+        if (!seatsAvailable.seats_available && !extraSeatsCode) {
+          return response.redirect('/?error=seats')
+        }
+
         const user = new User()
         user.first_name = request.input('firstName')
         user.last_name = request.input('lastName')
@@ -125,6 +135,16 @@ class CommonSaveController {
         user.profile_bg = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/universe.jpg'
         user.provider = session.get('provider')
         await user.save()
+
+        // Decrease Seats Available upon Registration
+        seatsAvailable.seats_available = (seatsAvailable.seats_available || 1) - 1
+        seatsAvailable.save()
+
+        // Mark Extra Seat Code as Used
+        if (extraSeatsCode) {
+          await ExtraSeatsCodes.query().where('code', extraSeatsCode).update({ user_id: user.id })
+        }
+
 
         // var transporter = nodemailer.createTransport({
         //   host: '',

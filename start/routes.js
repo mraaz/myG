@@ -366,6 +366,9 @@ Route.get('/api/user_chat/search/', 'UserChatController.searchUsers')
 Route.get('/api/user_chat/status/', 'UserChatController.fetchStatus')
 Route.put('/api/user_chat/status/', 'UserChatController.updateStatus')
 Route.get('/api/game/', 'GameController.searchGames')
+Route.get('/api/user_settings', 'UserChatController.fetchSettings')
+Route.post('/api/user_settings/push_notifications', 'UserChatController.togglePushNotifications')
+Route.post('/api/encryption', 'UserChatController.sendEncryptionReminderEmail')
 
 // Guests
 Route.post('/api/guest/', 'GuestController.register')
@@ -384,5 +387,9 @@ Route.get('/api/guest/chat/:chatId/contacts', 'GuestController.fetchChatContacts
 Route.get('/api/guest/privateKey/:chatId', 'GuestController.fetchGroupPrivateKeyRequests')
 Route.post('/api/guest/privateKey/:userId/:chatId', 'GuestController.requestGroupPrivateKey')
 Route.delete('/api/guest/privateKey/:userId/:chatId', 'GuestController.confirmGroupPrivateKey')
+
+// Seats Available
+Route.get('/api/seats_available', 'SeatsAvailableController.fetchSeatsAvailable')
+Route.get('/api/seats_available/:code', 'SeatsAvailableController.checkExtraSeatsCode')
 
 Route.any('*', ({ view }) => view.render('pages/react'))

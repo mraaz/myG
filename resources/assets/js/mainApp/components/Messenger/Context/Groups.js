@@ -18,6 +18,7 @@ export default class Groups extends React.Component {
   }
 
   decryptMessage = (message, userPrivateKey, chatPrivateKey) => {
+    if (message.unencryptedContent) return { ...message, content: message.unencryptedContent }
     const isSent = message.senderId === this.props.userId
     const content = decryptMessage(isSent ? message.backup : message.content, isSent ? userPrivateKey : deserializeKey(chatPrivateKey))
     return { ...message, content }
