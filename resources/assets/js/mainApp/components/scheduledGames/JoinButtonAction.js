@@ -3,6 +3,7 @@ import axios from 'axios'
 import { Toast_style } from '../Utility_Function'
 import { toast } from 'react-toastify'
 import Select from 'react-select'
+import { exitGameGroup } from '../../../common/group'
 
 const buttonStatus = {
   '0': 'Join',
@@ -49,8 +50,11 @@ const JoinStatus = (props) => {
     }
   }
 
-  const handleLeaveGame = () => {
-    console.log('handleLeaveGame')
+  const handleLeaveGame = async () => {
+    const removeAttendee = axios.get(`/api/attendees/removeattending/${props.schedule_games_id}`)
+    exitGameGroup(props.schedule_games_id)
+    setSoinButtonText(buttonStatus['0'])
+    setLeaveButtonStatus(!leaveButtonStatus)
   }
   const handleJoindButtonClick = () => {
     setLeaveButtonStatus(!leaveButtonStatus)
