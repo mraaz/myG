@@ -17,7 +17,13 @@ export default class GameDetails extends Component {
 
   render() {
     const { singleScheduleGamesPayload = {}, selected_game = {}, showRightSideInfo, commentData, showAllComment } = this.props
-    const { additional_game_info = {}, approved_gamers = [], join_status = '' } = singleScheduleGamesPayload
+    const {
+      additional_game_info = {},
+      approved_gamers = [],
+      join_status = '',
+      additional_submit_info = false,
+      additional_submit_info_fields = [],
+    } = singleScheduleGamesPayload
     const { id = '', game_name = '', experience = '', no_of_gamers = '', tags = [] } = selected_game
     const {
       start_date_time = '',
@@ -55,7 +61,7 @@ export default class GameDetails extends Component {
                   {experience_split.length > 0 &&
                     experience_split.map((ex, index) => {
                       return (
-                        <div className={`game__level game__level_${index}`} key={ex}>
+                        <div className={`game__level game__level_${ex}`} key={ex}>
                           {ex}
                         </div>
                       )
@@ -63,7 +69,12 @@ export default class GameDetails extends Component {
                 </div>
               </div>
 
-              <JoinButtonAction join_status={join_status} />
+              <JoinButtonAction
+                join_status={join_status}
+                schedule_games_id={id}
+                additional_submit_info={additional_submit_info}
+                additional_submit_info_fields={additional_submit_info_fields}
+              />
             </div>
             <div className='gameDetails__body'>
               <div className='filter__label'>Game Details</div>
@@ -76,7 +87,7 @@ export default class GameDetails extends Component {
               {platform && <div className='gameTime__value'>{platform}</div>}
               {region && <div className='gameTime__label'>Region</div>}
               {region && <div className='gameTime__value'>{region}</div>}
-              <Approved_gamers approved_gamers={approved_gamers} />
+              <Approved_gamers approved_gamers={approved_gamers} schedule_games_id={id} />
               {tags && tags.length > 7 && <div className='gameTags__label'>Tags</div>}
               <div className='gameTags__value'>
                 {tags &&
