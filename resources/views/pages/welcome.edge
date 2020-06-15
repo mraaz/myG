@@ -21,7 +21,7 @@
       <div class="logo-on-card">
         <img src="https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Login+Screen/Card_Logo.svg" height="90" width="90" />
       </div>
-      <div class="card-round" id="login-options">
+      <div class="card-round">
               <a href="/login/facebook" class="button facebook-btn">
                 <img src="https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Login+Screen/Facebook_SSO.svg" class="sso-logo" height="25" width="25"/>
                 <div class="sso-text">Log in with Facebook</div>
@@ -70,7 +70,6 @@
     const seatsAvailable = parseInt(fetchSeatsAvailable());
     document.getElementById('seats-available').innerText = seatsAvailable;
     if (!seatsAvailable) {
-      document.getElementById('login-options').style.display = "none";
       document.getElementsByClassName('register-message')[0].innerText = "Only Invitation Codes can get you in now!";
       injectInvitationCodeInput();
     }
@@ -103,7 +102,6 @@
     const isCodeValid = xmlHttp.responseText === "true";
     if (isCodeValid) {
       document.getElementById('extra-seats-code-container').innerHTML = null;
-      document.getElementById('login-options').style.display = "block";
       document.getElementsByClassName('register-message')[0].innerText = "But you were invited, so you get in!";
       window.localStorage.setItem('extraSeatsCode', code);
     } else {
