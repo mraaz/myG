@@ -43,6 +43,13 @@ class UserRepository {
     return new DefaultSchema({ success: true });
   }
 
+  async sendEncryptionReminderEmail({ requestingUserId, pin }) {
+    const user = (await User.query().where('id', '=', requestingUserId).first()).toJSON();
+    if (!user.email) return new DefaultSchema({ success: false, error: "User doesn't have an email" });
+    await new EmailController().encryption_email(user.email, pin);
+    return new DefaultSchema({ success: true });
+  }
+
   async fetchGames({ requestingUserIds }) {
     const rawGames = await Database
       .select('game_experiences.user_id', 'game_names.user_id as owner_id', 'game_names_id', 'game_name', 'game_img')

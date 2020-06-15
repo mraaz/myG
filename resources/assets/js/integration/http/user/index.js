@@ -90,3 +90,8 @@ export function toggleAutoSelfDestruct(enabled) {
   logger.log('USER', 'HTTP', `Toggling Auto Self Destruct: ${enabled}`);
   return axios.put(`/api/user/auto_self_destruct`, { enabled }).then((response => response.data));
 }
+
+export function emailEncryptionKey(pin) {
+  logger.log('USER', 'HTTP', `Requesting Email for Pin: ${pin}`);
+  return axios.post(`/api/encryption`, { pin }).then((response => response.data));
+}

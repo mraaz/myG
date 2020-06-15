@@ -369,6 +369,7 @@ Route.put('/api/user_chat/status/', 'UserChatController.updateStatus')
 Route.get('/api/game/', 'GameController.searchGames')
 Route.get('/api/user_settings', 'UserChatController.fetchSettings')
 Route.post('/api/user_settings/push_notifications', 'UserChatController.togglePushNotifications')
+Route.post('/api/encryption', 'UserChatController.sendEncryptionReminderEmail')
 
 // Guests
 Route.post('/api/guest/', 'GuestController.register')

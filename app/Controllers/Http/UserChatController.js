@@ -22,6 +22,15 @@ class UserChatController {
     return response.send({ success, error })
   }
 
+  async sendEncryptionReminderEmail({ auth, request, response }) {
+    const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
+    const pin = request.only(['pin']).pin
+    log('USER', `User ${requestingUserId} requesting Reminder Encryption Email for ${pin}`)
+    const { success, error } = await UserRepository.sendEncryptionReminderEmail({ requestingUserId, pin })
+    return response.send({ success, error })
+  }
+
   async fetchGames({ auth, response }) {
     const requestingUserIds = [auth.user.id]
     log('USER', `User ${requestingUserIds} requesting Games`)
