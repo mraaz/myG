@@ -524,7 +524,7 @@ class ChatRepository {
     !isKickingGuest && await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', userToRemove).delete();
     const alias = isKickingGuest ? `Guest #${userToRemove}` : (await User.query().where('id', '=', userToRemove).first()).toJSON().alias;
     const entryLog = await this._insertEntryLog(requestedChatId, alias, !!requestedUserId, !requestedUserId, false, false);
-    if (requestedUserId) this._addChatNotificationKicked({ requestingUserId, requestedUserId, chat });
+    if (requestedUserId && !isKickingGuest) this._addChatNotificationKicked({ requestingUserId, requestedUserId, chat });
     chat.contacts.forEach(userId => this._notifyChatEvent({ userId, action: isKickingGuest ? 'guestLeft' : 'userLeft', payload: { userId: userToRemove, guestId: userToRemove, chatId: requestedChatId, entryLog } }));
     chat.guests.forEach(guestId => this._notifyChatEvent({ guestId, action: isKickingGuest ? 'guestLeft' : 'userLeft', payload: { userId: userToRemove, guestId: userToRemove, chatId: requestedChatId, entryLog } }));
     if (isKickingGuest) {
