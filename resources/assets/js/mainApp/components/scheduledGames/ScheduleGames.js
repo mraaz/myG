@@ -46,7 +46,9 @@ export default class ScheduleGames extends Component {
     }
   }
 
-  getSingleGameData = async (id, game) => {
+  getSingleGameData = async (e, id, game) => {
+    e.preventDefault()
+    e.stopPropagation()
     const scheduleGames = await axios.get(`/api/ScheduleGame/additional_game_info/${id}`)
     const allComments = await axios.get(`/api/comments/get_right_card_comment_info/${id}`)
     if (allComments.data) {
@@ -81,6 +83,7 @@ export default class ScheduleGames extends Component {
     if (scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length == 0) {
       this.setState({
         moreplease: false,
+        scheduleGames: {},
       })
       return
     }
