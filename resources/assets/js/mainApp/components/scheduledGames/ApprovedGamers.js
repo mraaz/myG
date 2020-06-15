@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import axios from 'axios'
 import Modal from 'react-modal'
+import { Link } from 'react-router-dom'
 
 const Approved_gamers = (props) => {
   const [attendees, setAttendees] = useState([])
@@ -27,7 +28,7 @@ const Approved_gamers = (props) => {
 
   return (
     <Fragment>
-      <div className='gameTime__label'>Gamers</div>
+      {approved_gamers.length > 0 && <div className='gameTime__label'>Gamers</div>}
       <div className='gamer__wraper'>
         {approved_gamers.length > 0 &&
           approved_gamers.slice(0, 3).map((gamer) => {
@@ -37,14 +38,16 @@ const Approved_gamers = (props) => {
                   <img src={gamer.profile_img} />
                 </div>
                 <div className='gamer__alias ' title={gamer.alias}>
-                  {gamer.alias}
+                  <Link to={`/profile/${gamer.alias}`}>{gamer.alias}</Link>
                 </div>
               </div>
             )
           })}
-        <div className='View__AllGamers' onClick={showModal}>
-          ... View All Gamers
-        </div>
+        {approved_gamers.length > 3 && (
+          <div className='View__AllGamers' onClick={showModal}>
+            ... View All Gamers
+          </div>
+        )}
       </div>
 
       <div className={`modal-container View__AllGamers__modal ${modalStatus ? 'modal--show' : ''}`}>
@@ -75,7 +78,9 @@ const Approved_gamers = (props) => {
                         <div className='default_circle'>
                           <img src={attendee.profile_img} className='groupImage' />
                         </div>
-                        <spam>{attendee.alias}</spam>
+                        <spam>
+                          <Link to={`/profile/${attendee.alias}`}>{attendee.alias}</Link>
+                        </spam>
                       </div>
                       <div className='other__title server'> </div>
                       <div className='other__title medals'> </div>

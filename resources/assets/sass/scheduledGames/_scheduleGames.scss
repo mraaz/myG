@@ -733,6 +733,14 @@
             .copy__clipboard {
               opacity: 1;
             }
+            &::after {
+              border-bottom: 2px solid #a09770;
+              content: '';
+              position: absolute;
+              bottom: 0;
+              height: 2px;
+              width: 100%;
+            }
           }
           .gameImage {
             width: 120px;

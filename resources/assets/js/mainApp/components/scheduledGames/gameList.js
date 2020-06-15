@@ -10,7 +10,9 @@ const defaultThumbnails = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/
 export default class GameList extends Component {
   constructor() {
     super()
-    this.state = {}
+    this.state = {
+      activeItemId: '',
+    }
   }
 
   handleCopyToClipBoard = (e, guid) => {
@@ -20,9 +22,14 @@ export default class GameList extends Component {
     navigator.clipboard.writeText(link)
     toast.error(<Toast_style text={'Link Copied Successfully.'} />)
   }
+  handleSingleGameDetails = (e, id, game) => {
+    this.setState({ activeItemId: id })
+    this.props.getSingleGameData(e, id, game)
+  }
 
   render() {
     const { scheduleGames = [] } = this.props
+    const { activeItemId = '' } = this.state
     const len = scheduleGames.length
 
     return (
@@ -46,13 +53,16 @@ export default class GameList extends Component {
           {/* My game list start here */}
           {scheduleGames.length > 0 &&
             scheduleGames.map((game) => {
-              const image = game.game_img || null
+              const image = game.game_name_fields_img || null
               const experience_split = game.experience ? game.experience.split(',') : []
               const scheduledGamePicture = (
                 <img src={image == null ? defaultThumbnails : image} className={image == null ? 'default-image' : 'image'} />
               )
               return (
-                <div className='mygames' key={game.id} onClick={(e) => this.props.getSingleGameData(e, game.id, game)}>
+                <div
+                  className={`mygames ${activeItemId == game.id ? 'active' : ''}`}
+                  key={game.id}
+                  onClick={(e) => this.handleSingleGameDetails(e, game.id, game)}>
                   <div className='gameImage'>{scheduledGamePicture}</div>
                   <div className='game__attributes'>
                     <div className='first__row'>

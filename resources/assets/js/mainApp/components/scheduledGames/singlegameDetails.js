@@ -78,7 +78,7 @@ export default class GameDetails extends Component {
               {region && <div className='gameTime__label'>Region</div>}
               {region && <div className='gameTime__value'>{region}</div>}
               <Approved_gamers approved_gamers={approved_gamers} schedule_games_id={id} />
-              <div className='gameTags__label'>Tags</div>
+              {tags && tags.length > 0 && <div className='gameTags__label'>Tags</div>}
               <div className='gameTags__value game__tags'>
                 {tags &&
                   tags.length > 0 &&
