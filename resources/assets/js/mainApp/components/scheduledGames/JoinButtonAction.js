@@ -64,7 +64,7 @@ const JoinStatus = (props) => {
         </div>
       ) : (
         <div className='game__action__buttton'>
-          <button type='button' onClick={handleJoinGame}>
+          <button type='button' onClick={handleJoindButtonClick}>
             {`${joinButtonText}`}
           </button>
           {leaveButtonStatus && <button type='button' className='leaveGame__button' onClick={handleLeaveGame}>{`Leave Game`}</button>}
