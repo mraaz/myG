@@ -160,7 +160,8 @@ class MySettings extends Component {
     const callMasterControllerforConnections = async function() {
       let game_id = 1211
       try {
-        const get_stats = await axios.get(`api/ScheduleGame/additional_game_info/${game_id}`)
+        //const get_stats = await axios.get(`api/ScheduleGame/additional_game_info/${game_id}`)
+        const get_stats = await axios.get('/api/SavedFiltersScheduleGameController/getAllSavedFilters')
         console.log(get_stats)
         //console.log('Raaz-inside')
       } catch (error) {
