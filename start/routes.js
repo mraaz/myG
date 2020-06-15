@@ -259,6 +259,7 @@ Route.get('/api/attendees/getScheduleGameInvites/:id', 'AttendeeController.getSc
 Route.get('/api/attendees/delete_myInvite/:schedule_game_id/:id', 'AttendeeController.delete_invite')
 Route.post('/api/attendees/role_call_ALL', 'AttendeeController.role_call_ALL')
 Route.post('/api/attendees/update_invite', 'AttendeeController.up_invite')
+Route.get('/api/attendees/getHeader/:id', 'AttendeeController.getHeader')
 
 Route.get('/api/archive_attendees/attending/:id', 'Archive_AttendeeController.show_attending')
 Route.get('/api/archive_attendees/role_call/:id', 'Archive_AttendeeController.role_call')
