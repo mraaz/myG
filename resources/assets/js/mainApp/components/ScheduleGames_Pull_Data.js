@@ -12,10 +12,15 @@ export async function PullDataFunction(myG) {
     startDate = moment().utc(),
     tmp_startDate = moment().utc(),
     endDate = moment().utc(),
-    dota2_medal_ranks = null,
-    dota2_server_regions = null,
-    dota2_roles = null,
-    clash_royale_trophies = null,
+    value_one = null,
+    value_two = null,
+    value_three = null,
+    value_four = null,
+    value_five = null,
+    // dota2_medal_ranks = null,
+    // dota2_server_regions = null,
+    // dota2_roles = null,
+    // clash_royale_trophies = null,
     tags = null
 
   if (myG.selected_region != undefined && myG.selected_region != null && myG.selected_region != '') {
@@ -30,21 +35,33 @@ export async function PullDataFunction(myG) {
     myPlatform = myG.selected_platform.value
   }
 
-  if (myG.dota2_medal_ranks != undefined && myG.dota2_medal_ranks != null && myG.dota2_medal_ranks != '') {
-    dota2_medal_ranks = myG.dota2_medal_ranks.value
+  if (myG.value_one != undefined && myG.value_one != null && myG.value_one != '') {
+    value_one = myG.value_one.value
+  }
+  if (myG.value_two != undefined && myG.value_two != null && myG.value_two != '') {
+    value_two = myG.value_two.value
+  }
+  if (myG.value_three != undefined && myG.value_three != null && myG.value_three != '') {
+    value_three = myG.value_three.value
+  }
+  if (myG.value_four != undefined && myG.value_four != null && myG.value_four != '') {
+    value_four = myG.value_four.value
+  }
+  if (myG.value_five != undefined && myG.value_five != null && myG.value_five != '') {
+    value_five = myG.value_five.value
   }
 
-  if (myG.dota2_server_regions != undefined && myG.dota2_server_regions != null && myG.dota2_server_regions != '') {
-    dota2_server_regions = myG.dota2_server_regions.value
-  }
-
-  if (myG.dota2_roles != undefined && myG.dota2_roles != null && myG.dota2_roles != '') {
-    dota2_roles = myG.dota2_roles.value
-  }
-
-  if (myG.clash_royale_trophies != undefined && myG.clash_royale_trophies != null && myG.clash_royale_trophies != '') {
-    clash_royale_trophies = myG.clash_royale_trophies.value
-  }
+  // if (myG.dota2_server_regions != undefined && myG.dota2_server_regions != null && myG.dota2_server_regions != '') {
+  //   dota2_server_regions = myG.dota2_server_regions.value
+  // }
+  //
+  // if (myG.dota2_roles != undefined && myG.dota2_roles != null && myG.dota2_roles != '') {
+  //   dota2_roles = myG.dota2_roles.value
+  // }
+  //
+  // if (myG.clash_royale_trophies != undefined && myG.clash_royale_trophies != null && myG.clash_royale_trophies != '') {
+  //   clash_royale_trophies = myG.clash_royale_trophies.value
+  // }
 
   if (myG.when != undefined && myG.when != null) {
     switch (myG.when.value) {
@@ -104,11 +121,12 @@ export async function PullDataFunction(myG) {
       description: myDescription_box,
       counter: counter,
       vacancy: show_full_games,
-      dota2_medal_ranks: dota2_medal_ranks,
-      dota2_server_regions: dota2_server_regions,
-      dota2_roles: dota2_roles,
-      clash_royale_trophies: clash_royale_trophies,
       tags: tags,
+      value_one: value_one,
+      value_two: value_two,
+      value_three: value_three,
+      value_four: value_four,
+      value_five: value_five,
     })
     return allscheduledGames
   } catch (error) {

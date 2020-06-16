@@ -287,10 +287,18 @@ class AttendeeController {
 
       if (getGameFields != undefined) {
         additional_submit_info = true
-        let obj = ''
+        let obj = '',
+          obj2 = '',
+          obj3 = ''
 
         if (getGameFields.in_game_fields != undefined) {
           obj = JSON.parse(getGameFields.in_game_fields)
+        }
+        if (getGameFields.in_game_field_labels != undefined) {
+          obj2 = JSON.parse(getGameFields.in_game_field_labels)
+        }
+        if (getGameFields.in_game_field_types != undefined) {
+          obj3 = JSON.parse(getGameFields.in_game_field_types)
         }
 
         additional_submit_info_fields = obj
