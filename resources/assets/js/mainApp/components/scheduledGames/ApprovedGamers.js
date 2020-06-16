@@ -45,7 +45,7 @@ const Approved_gamers = (props) => {
           })}
         {approved_gamers.length > 3 && (
           <div className='View__AllGamers' onClick={showModal}>
-            ... View All Gamers
+            ... View All
           </div>
         )}
       </div>
