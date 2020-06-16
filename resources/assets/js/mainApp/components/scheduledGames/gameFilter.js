@@ -688,7 +688,10 @@ export default class ScheduleGames extends Component {
                       return (
                         <div className={`filterType__name`} key={`${k.id}_${k.name}`}>
                           {!showFilterTypeInput[k.id] ? (
-                            <div style={{ padding: '9px' }} title={k.name} onClick={(e) => this.handleSavedFilterClick(k)}>
+                            <div
+                              style={{ padding: '9px', paddingRight: '42px' }}
+                              title={k.name}
+                              onClick={(e) => this.handleSavedFilterClick(k)}>
                               {k.name}
                             </div>
                           ) : (
