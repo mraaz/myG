@@ -15,11 +15,10 @@ const JoinStatus = (props) => {
   const { join_status = 0, additional_submit_info = false, additional_submit_info_fields = [] } = props
   const [modalStatus, setModalStatus] = useState(false)
   const [leaveButtonStatus, setLeaveButtonStatus] = useState(false)
-  const [joinButtonText, setSoinButtonText] = useState(buttonStatus[join_status])
+  const [joinButtonText, setJoinButtonText] = useState(buttonStatus[join_status])
   const [otherInfoPlaceholder, setOtherInfoPlaceholder] = useState('')
   const [inGameUsername, setInGameUsername] = useState('')
   const [selectValues, setSelectValues] = useState({})
-  console.log('additional_submit_info_fields ', additional_submit_info_fields)
 
   const showModal = () => {
     setModalStatus(!modalStatus)
@@ -59,16 +58,18 @@ const JoinStatus = (props) => {
     }
     if (get_stats.data == 'Joined') {
       toast.success(<Toast_style text={'Gratz, you are in!'} />)
+      setJoinButtonText(buttonStatus['1'])
     }
     if (get_stats.data == 'Pending') {
       toast.success(<Toast_style text={'Host notified, waiting on approval'} />)
+      setJoinButtonText(buttonStatus['3'])
     }
   }
 
   const handleLeaveGame = async () => {
     const removeAttendee = axios.get(`/api/attendees/removeattending/${props.schedule_games_id}`)
     exitGameGroup(props.schedule_games_id)
-    setSoinButtonText(buttonStatus['0'])
+    setJoinButtonText(buttonStatus['0'])
     setLeaveButtonStatus(!leaveButtonStatus)
   }
   const handleJoindButtonClick = () => {
