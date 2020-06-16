@@ -16,9 +16,24 @@ const JoinStatus = (props) => {
   const [modalStatus, setModalStatus] = useState(false)
   const [leaveButtonStatus, setLeaveButtonStatus] = useState(false)
   const [joinButtonText, setSoinButtonText] = useState(buttonStatus[join_status])
+  const [otherInfoPlaceholder, setOtherInfoPlaceholder] = useState('')
+  const [inGameUsername, setInGameUsername] = useState('')
+  const [selectValues, setSelectValues] = useState({})
+  console.log('additional_submit_info_fields ', additional_submit_info_fields)
 
   const showModal = () => {
     setModalStatus(!modalStatus)
+  }
+  const getOption = (data = '') => {
+    console.log('data  ', data)
+
+    const arr = data ? data.split(',') : []
+    const option =
+      arr.length > 0 &&
+      arr.map((d) => {
+        return { value: d, label: d }
+      })
+    return option
   }
 
   const handleJoinGame = () => {
@@ -60,6 +75,23 @@ const JoinStatus = (props) => {
     setLeaveButtonStatus(!leaveButtonStatus)
   }
 
+  const handleOtherInfoPlaceholder = (e) => {
+    const value = e.target.value
+    setOtherInfoPlaceholder(value)
+  }
+  const handleInGameUsername = (e) => {
+    const value = e.target.value
+    setInGameUsername(value)
+  }
+  const handleSelectChange = (data, name) => {
+    const values = { ...selectValues }
+    values[name] = data
+    setSelectValues(values)
+  }
+
+  const handleSubmit = () => {
+    alert('In progress')
+  }
   return (
     <Fragment>
       {joinButtonText == 'Join' ? (
@@ -80,63 +112,50 @@ const JoinStatus = (props) => {
             <div className='body__content'>
               <h1>Select your role</h1>
               <p>Please, insert your current info and what you wish to apply for</p>
-              <Select
-                onChange={(data) => this.handleChange_region(data, 'region')}
-                options={[]}
-                placeholder='Select your region'
-                name='region-box'
-                isClearable
-                className='game__values'
-                classNamePrefix='filter'
-                value={''}
+              <input
+                type='text'
+                className='viewGame__name__input'
+                onChange={handleInGameUsername}
+                value={inGameUsername}
+                placeholder='In-game username'
               />
-              <Select
-                onChange={(data) => this.handleChange_region(data, 'region')}
-                options={[]}
-                placeholder='Select your region'
-                name='region-box'
-                isClearable
-                className='game__values'
-                classNamePrefix='filter'
-                value={''}
+              <input
+                type='text'
+                className='viewGame__name__input'
+                onChange={handleOtherInfoPlaceholder}
+                value={otherInfoPlaceholder}
+                placeholder='Other info (Placeholder)'
               />
-              <Select
-                onChange={(data) => this.handleChange_region(data, 'region')}
-                options={[]}
-                placeholder='Select your region'
-                name='region-box'
-                isClearable
-                className='game__values'
-                classNamePrefix='filter'
-                value={''}
-              />
-              <Select
-                onChange={(data) => this.handleChange_region(data, 'region')}
-                options={[]}
-                placeholder='Select your region'
-                name='region-box'
-                isClearable
-                className='game__values'
-                classNamePrefix='filter'
-                value={''}
-              />
-              <Select
-                onChange={(data) => this.handleChange_region(data, 'region')}
-                options={[]}
-                placeholder='Select your region'
-                name='region-box'
-                isClearable
-                className='game__values'
-                classNamePrefix='filter'
-                value={''}
-              />
+              {additional_submit_info_fields.map((fields, index) => {
+                const type = fields[2] == 'multi' ? true : false
+                const Placeholder = fields[1] ? fields[1] : ''
+                const Obj = fields[0]
+                const key = Object.keys(fields[0])[0]
+                const values = Object.values(fields[0])[0]
+                return (
+                  <Select
+                    onChange={(data) => handleSelectChange(data, key)}
+                    options={getOption(values)}
+                    placeholder={Placeholder}
+                    name={key}
+                    isClearable
+                    className='game__values'
+                    classNamePrefix='filter'
+                    value={selectValues[key] || ''}
+                    isMulti={type}
+                    key={index}
+                  />
+                )
+              })}
             </div>
             <div className='modal__close' onClick={showModal}>
               <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/X_icon.svg' />
             </div>
           </div>
           <div className='modal__footer'>
-            <button type='button'>Submit</button>
+            <button type='button' onClick={handleSubmit}>
+              Submit
+            </button>
           </div>
         </div>
 
