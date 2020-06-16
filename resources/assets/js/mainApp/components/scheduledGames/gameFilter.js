@@ -63,7 +63,6 @@ export default class ScheduleGames extends Component {
   }
 
   handleDropDownChange = (entered_name, name) => {
-    const value = entered_name.value || ''
     const { filterValueArray = {} } = this.state
     filterValueArray['game_name'] = entered_name
     this.setState(
@@ -290,7 +289,7 @@ export default class ScheduleGames extends Component {
     const filterTypeArray = []
     const filterValueArray = {}
     Object.keys(JsonPayload).forEach((key) => {
-      if (JsonPayload.hasOwnProperty(key) && JsonPayload[key] != false) {
+      if ((JsonPayload.hasOwnProperty(key) && JsonPayload[key] != false) || key == 'game_name') {
         filterTypeArray.push(key)
         filterValueArray[key] = JsonPayload[key]
       }
