@@ -448,17 +448,20 @@ class ScheduleGameController {
 
               if (request.input('vacancy') == false) builder.where('vacancy', 0)
 
-              if (request.input('dota2_medal_ranks') != null)
-                builder.where('schedule_games_transactions.value_one', 'like', '%' + request.input('dota2_medal_ranks') + '%')
+              if (request.input('value_one') != null)
+                builder.where('schedule_games_transactions.value_one', 'like', '%' + request.input('value_one') + '%')
 
-              if (request.input('dota2_server_regions') != null)
-                builder.where('schedule_games_transactions.value_two', 'like', '%' + request.input('dota2_server_regions') + '%')
+              if (request.input('value_two') != null)
+                builder.where('schedule_games_transactions.value_two', 'like', '%' + request.input('value_two') + '%')
 
-              if (request.input('dota2_roles') != null)
-                builder.where('schedule_games_transactions.value_three', 'like', '%' + request.input('dota2_roles') + '%')
+              if (request.input('value_three') != null)
+                builder.where('schedule_games_transactions.value_three', 'like', '%' + request.input('value_three') + '%')
 
-              if (request.input('clash_royale_trophies') != null)
-                builder.where('schedule_games_transactions.value_one', 'like', '%' + request.input('clash_royale_trophies') + '%')
+              if (request.input('value_four') != null)
+                builder.where('schedule_games_transactions.value_four', 'like', '%' + request.input('value_four') + '%')
+
+              if (request.input('value_five') != null)
+                builder.where('schedule_games_transactions.value_five', 'like', '%' + request.input('value_five') + '%')
             })
             .orderBy('schedule_games.created_at', 'desc')
             .select(
@@ -502,21 +505,20 @@ class ScheduleGameController {
 
             if (request.input('vacancy') == false) builder.where('vacancy', 0)
 
-            if (request.input('dota2_medal_ranks') != null)
-              builder.where('schedule_games_transactions.value_one', 'like', '%' + request.input('dota2_medal_ranks') + '%')
-            // .andWhere('game_name_fields.in_game_field', '=', 'dota2_medal_ranks')
-            // .andWhere((qB) => qB.where('game_name_fields.in_game_field', '=', 'dota2_medal_ranks'))
+            if (request.input('value_one') != null)
+              builder.where('schedule_games_transactions.value_one', 'like', '%' + request.input('value_one') + '%')
 
-            if (request.input('dota2_server_regions') != null)
-              builder.where('schedule_games_transactions.value_two', 'like', '%' + request.input('dota2_server_regions') + '%')
+            if (request.input('value_two') != null)
+              builder.where('schedule_games_transactions.value_two', 'like', '%' + request.input('value_two') + '%')
 
-            if (request.input('dota2_roles') != null)
-              builder.where('schedule_games_transactions.value_three', 'like', '%' + request.input('dota2_roles') + '%')
-            //.andWhere('game_name_fields.in_game_field', '=', 'dota2_roles')
+            if (request.input('value_three') != null)
+              builder.where('schedule_games_transactions.value_three', 'like', '%' + request.input('value_three') + '%')
 
-            //Clash Royale
-            if (request.input('clash_royale_trophies') != null)
-              builder.where('schedule_games_transactions.value_one', 'like', '%' + request.input('clash_royale_trophies') + '%')
+            if (request.input('value_four') != null)
+              builder.where('schedule_games_transactions.value_four', 'like', '%' + request.input('value_four') + '%')
+
+            if (request.input('value_five') != null)
+              builder.where('schedule_games_transactions.value_five', 'like', '%' + request.input('value_five') + '%')
           })
           .orderBy('schedule_games.created_at', 'desc')
           .select(
