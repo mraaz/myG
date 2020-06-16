@@ -107,6 +107,7 @@ export default class GameList extends Component {
                               </WithTooltip>
                             )
                           })}
+                        {game.tags && game.tags.length > 0 && ` ...`}
                       </div>
                       <div className='game__level__wrap'>
                         {experience_split.length > 0 &&

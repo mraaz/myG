@@ -448,7 +448,7 @@
           }
           .game__level__wrap {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             .game__level {
               max-width: 100px;
               height: 27px;
@@ -607,7 +607,7 @@
             }
           }
           .gamer__alias {
-            font: 10px/14px Montserrat;
+            font: 14px/14px Montserrat;
             letter-spacing: 0px;
             color: #ffffff;
             font-weight: 500;
@@ -870,7 +870,6 @@
               .game__tags {
                 flex: auto;
                 flex: auto;
-                max-width: 300px;
                 flex-wrap: wrap;
                 margin-right: auto;
                 .game__tag {
@@ -888,30 +887,34 @@
                   margin: 0 5px 5px 0;
                 }
               }
-              .game__level {
-                max-width: 100px;
-                height: 27px;
-                border: 1px solid #d6b9ff;
-                border-radius: 23px;
-                font: 14px/14px Montserrat;
-                letter-spacing: 0px;
-                color: #b9b9b9;
-                padding: 6px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                margin-bottom: 10px;
-                &.game__level_Professional {
-                  color: #ffd9b9;
-                  border: 1px solid #ffd9b9;
-                }
-                &.game__level_Semi {
-                  color: #d6b9ff;
+              .game__level__wrap {
+                display: flex;
+                .game__level {
+                  max-width: 100px;
+                  height: 27px;
                   border: 1px solid #d6b9ff;
-                }
-                &.game__level_Casual {
-                  color: #9dceff;
-                  border: 1px solid #9dceff;
+                  border-radius: 23px;
+                  font: 14px/14px Montserrat;
+                  letter-spacing: 0px;
+                  color: #b9b9b9;
+                  padding: 6px;
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  margin-bottom: 10px;
+                  margin-left: 5px;
+                  &.game__level_Professional {
+                    color: #ffd9b9;
+                    border: 1px solid #ffd9b9;
+                  }
+                  &.game__level_Semi {
+                    color: #d6b9ff;
+                    border: 1px solid #d6b9ff;
+                  }
+                  &.game__level_Casual {
+                    color: #9dceff;
+                    border: 1px solid #9dceff;
+                  }
                 }
               }
             }

@@ -2,8 +2,9 @@ import React, { Component, Fragment } from 'react'
 import axios from 'axios'
 
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
+import CreatableSelect from 'react-select/lib/Creatable'
 import Select from 'react-select'
-import { Game_name_values, Disable_keys, Toast_style } from '../Utility_Function'
+import { Game_name_values, Disable_keys, Toast_style, Game_name_Tags } from '../Utility_Function'
 import { toast } from 'react-toastify'
 
 import { region_options, visibility_options, date_options, platform_options, experience_options } from './option'
@@ -31,6 +32,12 @@ const compareOption = (inputValue, option) => {
   return option.value === candidate || option.label === candidate
 }
 
+const createOption = (label: string, game_names_id: string) => ({
+  label,
+  value: label,
+  game_names_id,
+})
+
 export default class ScheduleGames extends Component {
   constructor() {
     super()
@@ -46,10 +53,13 @@ export default class ScheduleGames extends Component {
       showFilters: false,
       showOverlay: false,
       filterValueArray: {},
+      options_tags: '',
+      value_tags: '',
     }
     this.filterGroup = {
       game_name: 'Game Title',
       region: 'Region',
+      tags: 'Tags',
       experience: 'Experience Level',
       start_time: 'Start Time',
       platform: 'Platform',
@@ -83,6 +93,11 @@ export default class ScheduleGames extends Component {
         )
       }
     )
+  }
+  handleTagsChange = (value_tags, name) => {
+    const { filterValueArray = {} } = this.state
+    filterValueArray['tags'] = value_tags
+    this.setState({ value_tags, filterValueArray })
   }
   handleChange_region = (selected_region, name) => {
     const { filterValueArray = {} } = this.state
@@ -181,6 +196,48 @@ export default class ScheduleGames extends Component {
 
   async getOptions(inputValue) {
     return Game_name_values(inputValue)
+  }
+
+  getOptions_tags = (inputValue) => {
+    const self = this
+    const getInitialData = async function (inputValue) {
+      try {
+        var results = await Game_name_Tags(inputValue, self.props.game_name_box.game_names_id)
+        self.setState({ options_tags: results })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    if (this.props.game_name_box != null) {
+      if (
+        this.props.game_name_box.game_names_id != null &&
+        this.props.game_name_box.game_names_id != undefined &&
+        this.props.game_name_box.game_names_id != ''
+      ) {
+        getInitialData(inputValue)
+      }
+    }
+  }
+  handleCreateTags = (inputValue: any) => {
+    if (inputValue.length > 88) {
+      toast.success(<Toast_style text={'Sorry mate! Skill length is too long.'} />)
+      return
+    }
+    setTimeout(() => {
+      const { options_tags = [], value_tags = [], newValueCreated_tags = [], filterValueArray = {} } = this.state
+      const newOption = createOption(inputValue, null)
+      const { tags = [] } = filterValueArray
+      const changedTags = [...tags, newOption]
+      filterValueArray['tags'] = changedTags
+
+      this.setState({
+        options_tags: [...options_tags, newOption],
+        value_tags: [...value_tags, newOption],
+        newValueCreated_tags: [...newValueCreated_tags, newOption.label],
+        filterValueArray,
+      })
+    }, 300)
   }
 
   getFilter = async () => {
@@ -441,6 +498,26 @@ export default class ScheduleGames extends Component {
                       onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
                       onKeyDown={this.onKeyDown}
                       isSearchable={true}
+                      classNamePrefix='filter'
+                    />
+                  </div>
+                )
+              } else if (k == 'tags') {
+                const value = this.state.value_tags || filterValueArray['tags']
+                return (
+                  <div className='viewGame__gameName'>
+                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                    <CreatableSelect
+                      onChange={(data) => this.handleTagsChange(data, k)}
+                      options={this.state.options_tags}
+                      onCreateOption={this.handleCreateTags}
+                      isClearable
+                      value={value}
+                      className='viewGame__name'
+                      isMulti
+                      onKeyDown={this.onKeyDown}
+                      onInputChange={this.getOptions_tags}
+                      placeholder='Search, Select or create Tags'
                       classNamePrefix='filter'
                     />
                   </div>
