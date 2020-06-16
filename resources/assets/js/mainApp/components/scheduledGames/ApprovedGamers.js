@@ -28,7 +28,7 @@ const Approved_gamers = (props) => {
 
   return (
     <Fragment>
-      {approved_gamers.length > 0 && <div className='gameTime__label'>Gamers</div>}
+      {approved_gamers.length > 0 && <div className='gameTime__label'>Gamers ({approved_gamers.length})</div>}
       <div className='gamer__wraper'>
         {approved_gamers.length > 0 &&
           approved_gamers.slice(0, 3).map((gamer) => {
