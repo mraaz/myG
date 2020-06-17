@@ -32,6 +32,7 @@ const AddGameContainer = () => {
   })
   const [mainSettingsState, updateMainSettingsState] = useState({
     scheduledGameId: null,
+    scheduledGameGuid: null,
     gameTitlesList: [],
     gameTitle: '',
     startTime: moment(),
@@ -115,6 +116,7 @@ const AddGameContainer = () => {
       updateMainSettingsState((currentState) => ({
         ...currentState,
         scheduledGameId: data.id,
+        scheduledGameGuid: data.schedule_games_GUID,
       }))
       updateGameLink(data.schedule_games_GUID)
       updateIsGameListedModalOpen(true)
@@ -201,6 +203,7 @@ const AddGameContainer = () => {
     )
   }
 
+  console.log(mainSettingsState)
   return (
     <div className={styles.container}>
       <PageHeader headerText='Add Public Game' />
@@ -225,7 +228,8 @@ const AddGameContainer = () => {
           onCancelInviteClick={onCancelInviteClick}
           gameId={mainSettingsState.gameTitle.game_names_id}
           scheduledGameId={mainSettingsState.scheduledGameId}
-          gameTitle={mainSettingsState.gameTitle.label}
+          scheduledGameGuid={mainSettingsState.scheduledGameGuid}
+          gameTitle={mainSettingsState.gameTitle.value}
           startTime={mainSettingsState.startTime.valueOf()}
         />
       )}

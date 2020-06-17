@@ -23,7 +23,7 @@ const MENU_OPTIONS = {
   COMMUNITIES: 'COMMUNITIES',
 }
 
-const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId, gameTitle, startTime, gameId }) => {
+const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId, scheduledGameGuid, gameTitle, startTime, gameId }) => {
   const [selectedMenu, updateSelectedMenu] = useState(MENU_OPTIONS.PLAYERS)
   const [showOptions, updateShowOptions] = useState({
     'Selected Gamers': false,
@@ -109,6 +109,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
         groups,
         schedule_games_id: gameId,
         scheduledGameId,
+        scheduledGameGuid,
         gameTitle,
         startTime,
       })
