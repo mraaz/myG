@@ -14,7 +14,13 @@ export default class GameDetails extends Component {
 
   render() {
     const { scheduleGames = {}, showRightSideInfo, commentData = {}, showAllComment } = this.props
-    const { latestScheduledGames, approved_gamers = [], join_status } = scheduleGames
+    const {
+      latestScheduledGames,
+      approved_gamers = [],
+      join_status,
+      additional_submit_info = false,
+      additional_submit_info_fields = [],
+    } = scheduleGames
     console.log('scheduleGames  ', scheduleGames, showAllComment)
 
     const [scheduleGames_data = {}] = latestScheduledGames
@@ -64,7 +70,12 @@ export default class GameDetails extends Component {
                     })}
                 </div>
               </div>
-              <JoinButtonAction join_status={join_status} schedule_games_id={id} />
+              <JoinButtonAction
+                join_status={join_status}
+                additional_submit_info={additional_submit_info}
+                additional_submit_info_fields={additional_submit_info_fields}
+                schedule_games_id={id}
+              />
             </div>
             <div className='gameDetails__body'>
               <div className='filter__label'>Game Details</div>

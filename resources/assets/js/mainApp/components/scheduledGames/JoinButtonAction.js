@@ -10,23 +10,28 @@ const buttonStatus = {
   '1': 'Joined',
   '3': 'Pending',
 }
+const queryMapping = {
+  1: 'one',
+  2: 'two',
+  3: 'three',
+  4: 'four',
+  5: 'five',
+}
 
 const JoinStatus = (props) => {
   const { join_status = 0, additional_submit_info = false, additional_submit_info_fields = [] } = props
   const [modalStatus, setModalStatus] = useState(false)
   const [leaveButtonStatus, setLeaveButtonStatus] = useState(false)
-  const [joinButtonText, setSoinButtonText] = useState(buttonStatus[join_status])
+  const [joinButtonText, setJoinButtonText] = useState(buttonStatus[join_status])
   const [otherInfoPlaceholder, setOtherInfoPlaceholder] = useState('')
   const [inGameUsername, setInGameUsername] = useState('')
   const [selectValues, setSelectValues] = useState({})
-  console.log('additional_submit_info_fields ', additional_submit_info_fields)
 
   const showModal = () => {
     setModalStatus(!modalStatus)
+    setSelectValues({})
   }
   const getOption = (data = '') => {
-    console.log('data  ', data)
-
     const arr = data ? data.split(',') : []
     const option =
       arr.length > 0 &&
@@ -43,7 +48,7 @@ const JoinStatus = (props) => {
       setModalStatus(!modalStatus)
     }
   }
-  const saveJoinGame = async () => {
+  const saveJoinGame = async (query = {}) => {
     const get_stats = await axios.post('/api/attendees/savemySpot', {
       schedule_games_id: props.schedule_games_id,
       value_two: null,
@@ -51,6 +56,7 @@ const JoinStatus = (props) => {
       value_one: null,
       value_four: null,
       value_five: null,
+      ...query,
     })
     if (get_stats.data == 'Limit Reached') {
       toast.success(<Toast_style text={'Sorry mate, the spot got filled up! You are NOT in :('} />)
@@ -59,16 +65,18 @@ const JoinStatus = (props) => {
     }
     if (get_stats.data == 'Joined') {
       toast.success(<Toast_style text={'Gratz, you are in!'} />)
+      setJoinButtonText(buttonStatus['1'])
     }
     if (get_stats.data == 'Pending') {
       toast.success(<Toast_style text={'Host notified, waiting on approval'} />)
+      setJoinButtonText(buttonStatus['3'])
     }
   }
 
   const handleLeaveGame = async () => {
     const removeAttendee = axios.get(`/api/attendees/removeattending/${props.schedule_games_id}`)
     exitGameGroup(props.schedule_games_id)
-    setSoinButtonText(buttonStatus['0'])
+    setJoinButtonText(buttonStatus['0'])
     setLeaveButtonStatus(!leaveButtonStatus)
   }
   const handleJoindButtonClick = () => {
@@ -88,9 +96,32 @@ const JoinStatus = (props) => {
     values[name] = data
     setSelectValues(values)
   }
+  const getFinalValueToSubmit = (data) => {
+    let payload = {}
+    for (let key in data) {
+      if (Array.isArray(data[key])) {
+        const arr = data[key] && data[key].length > 0 ? data[key].map((d) => d.value) : data[key]
+        if (arr) {
+          payload[key] = arr.toString()
+        }
+      } else {
+        payload[key] = data[key].value || ''
+      }
+    }
+    return payload
+  }
 
   const handleSubmit = () => {
-    alert('In progress')
+    const valueToSubmit = getFinalValueToSubmit(selectValues)
+    let index = 1
+    let query = {}
+    for (let key in valueToSubmit) {
+      query[`value_${queryMapping[index]}`] = { [key]: valueToSubmit[key] }
+      index++
+    }
+    saveJoinGame(query)
+    setModalStatus(!modalStatus)
+    setSelectValues({})
   }
   return (
     <Fragment>
@@ -112,7 +143,7 @@ const JoinStatus = (props) => {
             <div className='body__content'>
               <h1>Select your role</h1>
               <p>Please, insert your current info and what you wish to apply for</p>
-              <input
+              {/* <input
                 type='text'
                 className='viewGame__name__input'
                 onChange={handleInGameUsername}
@@ -125,9 +156,9 @@ const JoinStatus = (props) => {
                 onChange={handleOtherInfoPlaceholder}
                 value={otherInfoPlaceholder}
                 placeholder='Other info (Placeholder)'
-              />
+              /> */}
               {additional_submit_info_fields.map((fields, index) => {
-                const type = fields[2] == 'multi' ? true : false
+                const type = fields[2] == 'Multi' ? true : false
                 const Placeholder = fields[1] ? fields[1] : ''
                 const Obj = fields[0]
                 const key = Object.keys(fields[0])[0]

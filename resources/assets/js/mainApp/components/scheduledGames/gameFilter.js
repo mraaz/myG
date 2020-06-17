@@ -97,7 +97,9 @@ export default class ScheduleGames extends Component {
   handleTagsChange = (value_tags, name) => {
     const { filterValueArray = {} } = this.state
     filterValueArray['tags'] = value_tags
-    this.setState({ value_tags, filterValueArray })
+    this.setState({ value_tags, filterValueArray }, () => {
+      this.props.handleChange({ value_tags }, name)
+    })
   }
   handleChange_region = (selected_region, name) => {
     const { filterValueArray = {} } = this.state
@@ -231,12 +233,17 @@ export default class ScheduleGames extends Component {
       const changedTags = [...tags, newOption]
       filterValueArray['tags'] = changedTags
 
-      this.setState({
-        options_tags: [...options_tags, newOption],
-        value_tags: [...value_tags, newOption],
-        newValueCreated_tags: [...newValueCreated_tags, newOption.label],
-        filterValueArray,
-      })
+      this.setState(
+        {
+          options_tags: [...options_tags, newOption],
+          value_tags: [...value_tags, newOption],
+          newValueCreated_tags: [...newValueCreated_tags, newOption.label],
+          filterValueArray,
+        },
+        () => {
+          this.props.handleChange({ value_tags }, name)
+        }
+      )
     }, 300)
   }
 
@@ -261,6 +268,15 @@ export default class ScheduleGames extends Component {
       showFilters: false,
       showSaveFilterInput: false,
       showOverlay: false,
+      other_box: '',
+      description_box: '',
+      when: '',
+      selected_platform: '',
+      selected_experience: '',
+      selected_region: '',
+      game_name_box: '',
+      value_tags: '',
+      filterValueArray: {},
     })
   }
 
@@ -346,7 +362,7 @@ export default class ScheduleGames extends Component {
     const filterTypeArray = []
     const filterValueArray = {}
     Object.keys(JsonPayload).forEach((key) => {
-      if ((JsonPayload.hasOwnProperty(key) && JsonPayload[key] != false) || key == 'game_name') {
+      if ((JsonPayload.hasOwnProperty(key) && JsonPayload[key] !== false) || key == 'game_name' || JsonPayload[key] === '') {
         filterTypeArray.push(key)
         filterValueArray[key] = JsonPayload[key]
       }
