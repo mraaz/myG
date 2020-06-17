@@ -167,7 +167,10 @@ export default class GameComments extends Component {
       <Fragment>
         <div className='gameComments__header '>
           <div className='gameName' onClick={this.props.toggleBack}>
-            <h1 className='game__name'> Comments {`(${comments.length})`} </h1>
+            <h1 className='game__name'>
+              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/View+Game/Down+Carrot.svg' /> Comments{' '}
+              {` (${comments.length})`}{' '}
+            </h1>
           </div>
         </div>
         <div className='show-individual-comments'>{this.showComment()}</div>

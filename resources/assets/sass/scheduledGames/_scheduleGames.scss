@@ -1189,6 +1189,9 @@
           color: #ffffff;
           font-weight: bold;
           cursor: pointer;
+          img {
+            transform: rotate(90deg);
+          }
         }
       }
     }
