@@ -116,46 +116,6 @@ class NotificationController {
     }
   }
 
-  async addComment({ auth, request, response }) {
-    if (auth.user) {
-      try {
-        const addComment = await Notification.create({
-          other_user_id: request.input('other_user_id'),
-          user_id: auth.user.id,
-          activity_type: 5,
-          post_id: request.input('post_id'),
-          comment_id: request.input('comment_id'),
-          schedule_games_id: request.input('schedule_games_id'),
-        })
-        return 'Saved item'
-      } catch (error) {
-        console.log(error)
-      }
-    } else {
-      return 'You are not Logged In!'
-    }
-  }
-
-  async addReply({ auth, request, response }) {
-    if (auth.user) {
-      try {
-        const addReply = await Notification.create({
-          other_user_id: request.input('other_user_id'),
-          user_id: auth.user.id,
-          activity_type: 6,
-          post_id: request.input('post_id'),
-          reply_id: request.input('reply_id'),
-          schedule_games_id: request.input('schedule_games_id'),
-        })
-        return 'Saved item'
-      } catch (error) {
-        console.log(error)
-      }
-    } else {
-      return 'You are not Logged In!'
-    }
-  }
-
   async addGroup({ auth, request, response }) {
     if (auth.user) {
       try {

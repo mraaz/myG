@@ -176,8 +176,7 @@ Route.post('/api/notifications/addCommentLike', 'NotificationController.addComme
 Route.get('/api/notifications/deleteCommentLike/:id', 'NotificationController.deleteCommentLike')
 Route.post('/api/notifications/addReplyLike', 'NotificationController.addReplyLike')
 Route.get('/api/notifications/deleteReplyLike/:id', 'NotificationController.deleteReplyLike')
-Route.post('/api/notifications/addComment', 'NotificationController.addComment')
-Route.post('/api/notifications/addReply', 'NotificationController.addReply')
+
 Route.post('/api/notifications/updateRead_Status/:post_id/:activity_type', 'NotificationController.updateRead_Status')
 
 Route.get('/api/notifications/getunread/:post_id/:activity_type', 'NotificationController.getRead_Status')

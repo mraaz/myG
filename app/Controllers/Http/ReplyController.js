@@ -3,6 +3,7 @@
 const Database = use('Database')
 const Reply = use('App/Models/Reply')
 const AwsKeyController = use('./AwsKeyController')
+const NotificationController_v2 = use('./NotificationController_v2')
 
 class ReplyController {
   async store({ auth, request, response }) {
@@ -19,6 +20,18 @@ class ReplyController {
           let update_key = new AwsKeyController()
           request.params.reply_id = newReply.id
           update_key.addReplyKey({ auth, request, response })
+        }
+
+        //Get post owner or game owner and then create notification
+        let noti = new NotificationController_v2()
+        const getPostOwner = await Database.from('comments')
+          .where({ id: request.input('comment_id') })
+          .first()
+
+        if (getPostOwner != undefined) {
+          if (auth.user.id != getPostOwner.user_id) {
+            noti.addReply({ auth }, getPostOwner.post_id, getPostOwner.user_id, newReply.id)
+          }
         }
 
         newReply = await Database.from('replies')

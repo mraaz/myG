@@ -66,7 +66,7 @@ export default class IndividualComment extends Component {
     const self = this
     let comment = this.props
 
-    const getCommentLike = async function () {
+    const getCommentLike = async function() {
       try {
         var i
 
@@ -88,7 +88,7 @@ export default class IndividualComment extends Component {
       }
     }
 
-    const getCommentReplies = async function () {
+    const getCommentReplies = async function() {
       try {
         var i
 
@@ -108,7 +108,7 @@ export default class IndividualComment extends Component {
       }
     }
 
-    const getmyCommentCount = async function () {
+    const getmyCommentCount = async function() {
       try {
         var i
 
@@ -132,7 +132,7 @@ export default class IndividualComment extends Component {
     var comment_id = this.props.comment.id
     const self = this
 
-    const getComments = async function () {
+    const getComments = async function() {
       try {
         const myCommentReplies = await axios.get(`/api/replies/${comment_id}`)
         self.setState({
@@ -220,7 +220,7 @@ export default class IndividualComment extends Component {
 
     if (!this.state.show_add_reply) {
       setTimeout(
-        function () {
+        function() {
           //Start the timer
           this.focusTextInput()
         }.bind(this),
@@ -319,7 +319,7 @@ export default class IndividualComment extends Component {
     const self = this
     var comment_id = this.props.comment.id
 
-    const saveComment = async function () {
+    const saveComment = async function() {
       try {
         const mysaveComment = await axios.post(`/api/comments/update/${comment_id}`, {
           content: self.state.value2,
@@ -358,25 +358,25 @@ export default class IndividualComment extends Component {
         })
 
         let { comment, user } = self.props
-        if (comment.user_id != user.userInfo.id) {
-          if (self.props.comment.schedule_games_id != null) {
-            const addReply = axios.post('/api/notifications/addReply', {
-              other_user_id: comment.user_id,
-              schedule_games_id: self.props.comment.schedule_games_id,
-              reply_id: postReply.data.id,
-              media_url: self.state.preview_file.length > 0 ? JSON.stringify(self.state.preview_file) : '',
-              file_keys: self.state.file_keys.length > 0 ? self.state.file_keys : '',
-            })
-          } else {
-            const addReply = axios.post('/api/notifications/addReply', {
-              other_user_id: comment.user_id,
-              post_id: comment.post_id,
-              reply_id: postReply.data.id,
-              media_url: self.state.preview_file.length > 0 ? JSON.stringify(self.state.preview_file) : '',
-              file_keys: self.state.file_keys.length > 0 ? self.state.file_keys : '',
-            })
-          }
-        }
+        // if (comment.user_id != user.userInfo.id) {
+        //   if (self.props.comment.schedule_games_id != null) {
+        //     const addReply = axios.post('/api/notifications/addReply', {
+        //       other_user_id: comment.user_id,
+        //       schedule_games_id: self.props.comment.schedule_games_id,
+        //       reply_id: postReply.data.id,
+        //       media_url: self.state.preview_file.length > 0 ? JSON.stringify(self.state.preview_file) : '',
+        //       file_keys: self.state.file_keys.length > 0 ? self.state.file_keys : '',
+        //     })
+        //   } else {
+        //     const addReply = axios.post('/api/notifications/addReply', {
+        //       other_user_id: comment.user_id,
+        //       post_id: comment.post_id,
+        //       reply_id: postReply.data.id,
+        //       media_url: self.state.preview_file.length > 0 ? JSON.stringify(self.state.preview_file) : '',
+        //       file_keys: self.state.file_keys.length > 0 ? self.state.file_keys : '',
+        //     })
+        //   }
+        // }
         self.setState({
           myReplies: [...myReplies, ...postReply.data],
         })
