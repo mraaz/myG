@@ -393,6 +393,16 @@
     margin-top: 4px;
   }
 
+  .messenger-settings-favorite-games-input {
+    display: flex;
+    flex-direction: column;
+    background-color: #151b26;
+    max-height: 100px;
+    overflow-y: scroll;
+    padding: 4px;
+    margin-top: 4px;
+  }
+
   .messenger-settings-favorite-game {
     color: #657172;
     background-color: #2d363a;

@@ -18,11 +18,14 @@ export default class General extends React.Component {
   }
 
   renderContacts = () => {
+    let messagesLength = 0;
+    (this.props.chats || []).forEach(chat => messagesLength += (chat.messages || []).length)
     return (
       <Contacts
         userId={this.props.userId}
         privateKey={this.props.privateKey}
         contacts={this.props.contacts}
+        messagesLength={messagesLength}
         search={this.props.search}
         disconnected={this.props.disconnected}
         openChat={this.props.openChat}

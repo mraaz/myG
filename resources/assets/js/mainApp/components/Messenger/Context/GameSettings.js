@@ -66,7 +66,7 @@ export default class GameSettings extends React.Component {
             onClick={() => this.setState({ editingSlot: null })}
           />
         </div>
-        <div className='messenger-settings-favorite-games'>{games.map(this.renderGameSelection)}</div>
+        <div className='messenger-settings-favorite-games-input'>{games.map(this.renderGameSelection)}</div>
       </div>
     )
   }

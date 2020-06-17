@@ -97,9 +97,9 @@ export function fetchEncryptionMessages(chatId) {
   return axios.get(`/api/chat/${chatId}/message/encryption`).then(response => response.data);
 }
 
-export function sendMessage(chatId, userId, senderName, encryptedContent, keyReceiver, attachment, replyId, replyContent, replyBackup) {
-  logger.log('CHAT', 'HTTP', `Sending Message from User ${userId} to Chat ${chatId}`);
-  return axios.post(`/api/chat/${chatId}/message/`, { encryptedContent, keyReceiver, attachment, senderName, replyId, replyContent, replyBackup }).then(response => response.data);
+export function sendMessage(chatId, userId, senderName, encryptedContent, keyReceiver, attachment, replyId, replyContent, replyBackup, uuid) {
+  logger.log('CHAT', 'HTTP', `Sending Message ${uuid} from User ${userId} to Chat ${chatId}`);
+  return axios.post(`/api/chat/${chatId}/message/`, { encryptedContent, keyReceiver, attachment, senderName, replyId, replyContent, replyBackup, uuid }).then(response => response.data);
 }
 
 export function editMessage(chatId, userId, messageId, encryptedContent, reEncrypting) {

@@ -105,7 +105,8 @@
       document.getElementsByClassName('register-message')[0].innerText = "But you were invited, so you get in!";
       window.localStorage.setItem('extraSeatsCode', code);
     } else {
-      document.getElementById('extra-seats-code-hint').innerText = "The code " + code + " is not valid!";
+      document.getElementById('extra-seats-code-hint').innerText = "The code " + code.toUpperCase() + " is not valid!";
+      document.getElementById('extra-seats-code-hint').style = "color: #ce2b35";
     }
   }
 

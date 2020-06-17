@@ -36,6 +36,7 @@ class SavedFiltersScheduleGameController {
             start_time: false,
             platform: false,
             description: false,
+            tags: false,
           }
           let mysql_sort_fail = JSON.parse(allFilters[i].payload)
           for (var attributename in mysql_sort_fail) {

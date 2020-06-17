@@ -64,7 +64,7 @@ export default class Contacts extends React.Component {
     return (
       <Contact
         contact={contact}
-        messages={(contact.chat || {}).messages || []}
+        messagesLength={((contact.chat || {}).messages || []).length}
         userId={this.props.userId}
         privateKey={this.props.privateKey}
         disconnected={this.props.disconnected}

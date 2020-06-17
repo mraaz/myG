@@ -6,7 +6,15 @@ import { ignoreFunctions } from '../../../../common/render'
 
 export default class Contact extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
+    const currentMessages = ((this.props.contact || {}).chat || {}).messages || []
+    const newMessages = ((nextProps.contact || {}).chat || {}).messages || []
+    if (currentMessages.length !== newMessages.length) return true
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
+  static getDerivedStateFromProps(props) {
+    const messages = ((props.contact || {}).chat || {}).messages || []
+    return { messages }
   }
 
   state = {
@@ -20,6 +28,7 @@ export default class Contact extends React.Component {
   }
 
   decryptMessage = (message) => {
+    if (message.decrypted) return message
     if (message.unencryptedContent) return { ...message, content: message.unencryptedContent }
     const isSent = message.senderId === this.props.userId
     const content = decryptMessage(isSent ? message.backup : message.content, this.props.privateKey)
@@ -53,7 +62,8 @@ export default class Contact extends React.Component {
   }
 
   render() {
-    const { contact, messages } = this.props
+    const { contact } = this.props
+    const { messages } = this.state
     const lastMessage = messages[messages.length - 1]
     const receivedMessages = messages.filter((message) => message.senderId !== this.props.userId)
     const unreadCount = this.countUnreadMessages(contact.chat.lastRead, receivedMessages)

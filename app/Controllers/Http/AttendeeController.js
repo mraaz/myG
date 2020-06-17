@@ -289,7 +289,8 @@ class AttendeeController {
         additional_submit_info = true
         let obj = '',
           obj2 = '',
-          obj3 = ''
+          obj3 = '',
+          obj4 = ''
 
         if (getGameFields.in_game_fields != undefined) {
           obj = JSON.parse(getGameFields.in_game_fields)
@@ -300,8 +301,14 @@ class AttendeeController {
         if (getGameFields.in_game_field_types != undefined) {
           obj3 = JSON.parse(getGameFields.in_game_field_types)
         }
+        if (getGameFields.in_game_field_text != undefined) {
+          obj4 = JSON.parse(getGameFields.in_game_field_text)
+        }
 
-        additional_submit_info_fields = obj
+        for (let key in obj) {
+          let tmp_tmp = { [key]: obj[key] }
+          additional_submit_info_fields.push([tmp_tmp, obj2[key], obj3[key], obj4[key]])
+        }
       }
 
       return {

@@ -227,6 +227,7 @@ class ChatController {
     const senderName = request.only('senderName').senderName
     const keyReceiver = request.only('keyReceiver').keyReceiver
     const attachment = request.only('attachment').attachment
+    const uuid = request.only('uuid').uuid
     log('CHAT', `User ${requestingUserId} sending encrypted ${keyReceiver ? 'Key' : 'Message'} for Chat ${requestedChatId}`)
     const { message } = await ChatRepository.sendMessage({
       requestingUserId,
@@ -239,6 +240,7 @@ class ChatController {
       replyId,
       replyContent,
       replyBackup,
+      uuid,
     })
     return response.send({ message })
   }

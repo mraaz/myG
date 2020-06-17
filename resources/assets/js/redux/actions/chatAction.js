@@ -1,3 +1,4 @@
+import uuidv4 from 'uuid/v4'
 import {
   fetchChats,
   fetchChat,
@@ -222,18 +223,18 @@ export function prepareChatAction(chatId, userId, contactId, isGroup) {
   ]
   return {
     type: 'PREPARE_CHAT',
-    payload: Promise.all(
-      requests
-    ).then(([chat, messages, encryptionMessages, privateKeyRequests, links, entryLogs, contact, contacts]) => ({
-      ...chat,
-      ...messages,
-      ...encryptionMessages,
-      ...privateKeyRequests,
-      ...links,
-      ...entryLogs,
-      ...contact,
-      ...contacts,
-    })),
+    payload: Promise.all(requests).then(
+      ([chat, messages, encryptionMessages, privateKeyRequests, links, entryLogs, contact, contacts]) => ({
+        ...chat,
+        ...messages,
+        ...encryptionMessages,
+        ...privateKeyRequests,
+        ...links,
+        ...entryLogs,
+        ...contact,
+        ...contacts,
+      })
+    ),
     meta: { chatId, contactId, userId },
   }
 }
@@ -349,11 +350,12 @@ export function clearUnreadIndicatorAction() {
   return { type: 'CLEAR_UNREAD_INDICATOR' }
 }
 
-export function sendMessageAction(chatId, userId, alias, encrypted, attachment, replyId, replyContent, replyBackup) {
+export function sendMessageAction(chatId, userId, alias, encrypted, attachment, replyId, replyContent, replyBackup, unencryptedContent) {
+  const uuid = uuidv4()
   return {
     type: 'SEND_MESSAGE',
-    payload: sendMessage(chatId, userId, alias, encrypted, null, attachment, replyId, replyContent, replyBackup),
-    meta: { chatId, userId },
+    payload: sendMessage(chatId, userId, alias, encrypted, null, attachment, replyId, replyContent, replyBackup, uuid),
+    meta: { chatId, userId, alias, encrypted, attachment, replyId, replyContent, replyBackup, uuid, unencryptedContent },
   }
 }
 

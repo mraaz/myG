@@ -158,6 +158,7 @@ export default class EncryptionSettings extends React.Component {
         className='messenger-settings-encryption-key'
         type='text'
         placeholder='New Encryption Key'
+        autoFocus
         disabled={!this.state.editingPin}
         value={this.state.editingPin ? this.state.pinInput : this.props.pin}
         onChange={(event) => this.setState({ pinInput: event.target.value })}
