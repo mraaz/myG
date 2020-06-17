@@ -265,22 +265,27 @@ export default class ScheduleGames extends Component {
   }
 
   handleClearFilterClick = () => {
-    this.setState({
-      filterTypeArray: ['game_name'],
-      showFilterType: false,
-      showFilters: false,
-      showSaveFilterInput: false,
-      showOverlay: false,
-      other_box: '',
-      description_box: '',
-      when: '',
-      selected_platform: '',
-      selected_experience: '',
-      selected_region: '',
-      game_name_box: '',
-      value_tags: '',
-      filterValueArray: {},
-    })
+    this.setState(
+      {
+        filterTypeArray: ['game_name'],
+        showFilterType: false,
+        showFilters: false,
+        showSaveFilterInput: false,
+        showOverlay: false,
+        other_box: '',
+        description_box: '',
+        when: '',
+        selected_platform: '',
+        selected_experience: '',
+        selected_region: '',
+        game_name_box: '',
+        value_tags: '',
+        filterValueArray: {},
+      },
+      () => {
+        this.props.handleChange({ ...this.state }, '')
+      }
+    )
   }
 
   handleSaveFilterClick = async () => {
