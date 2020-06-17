@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import axios from 'axios'
 import { Toast_style } from '../Utility_Function'
 import { toast } from 'react-toastify'
@@ -26,6 +26,10 @@ const JoinStatus = (props) => {
   const [otherInfoPlaceholder, setOtherInfoPlaceholder] = useState('')
   const [inGameUsername, setInGameUsername] = useState('')
   const [selectValues, setSelectValues] = useState({})
+
+  useEffect(() => {
+    setJoinButtonText(buttonStatus[join_status])
+  }, [join_status])
 
   const showModal = () => {
     setModalStatus(!modalStatus)

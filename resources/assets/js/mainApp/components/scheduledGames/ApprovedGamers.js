@@ -5,10 +5,21 @@ import { Link } from 'react-router-dom'
 
 const Approved_gamers = (props) => {
   const [attendees, setAttendees] = useState([])
+  const [extraHeaders, setHeaders] = useState([])
   const [modalStatus, setModalStatus] = useState(false)
   const { approved_gamers = [] } = props
 
   useEffect(() => {
+    async function fetchHeaders() {
+      const getHeaders = await axios.get(`/api/attendees/getHeader/${props.schedule_games_id}`)
+      if (getHeaders.data) {
+        const { additional_submit_info = false, additional_submit_info_fields = {} } = getHeaders.data
+        if (additional_submit_info) {
+          setHeaders(Object.values(additional_submit_info_fields))
+        }
+      }
+    }
+
     async function fetchData() {
       const getAttendees = await axios.post('/api/attendees/role_call_ALL/', {
         schedule_games_id: props.schedule_games_id,
@@ -20,7 +31,11 @@ const Approved_gamers = (props) => {
         setAttendees(data)
       }
     }
-    if (modalStatus == true) fetchData()
+
+    if (modalStatus == true) {
+      fetchData()
+      fetchHeaders()
+    }
   }, [modalStatus])
   const showModal = () => {
     setModalStatus(!modalStatus)
@@ -62,9 +77,10 @@ const Approved_gamers = (props) => {
               <div className='box_header_name' style={{ flex: 3 }}>
                 Gamer
               </div>
-              <div className='box_header_name'>Server</div>
-              <div className='box_header_name'>Medals</div>
-              <div className='box_header_name'>Position</div>
+              {extraHeaders.length > 0 &&
+                extraHeaders.map((header) => {
+                  return <div className='box_header_name'>{header}</div>
+                })}
               <div className='box_header_name'>Level</div>
             </div>
 
