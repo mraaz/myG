@@ -94,6 +94,7 @@ export default function reducer(
         .filter((message) => !action.payload.chat.deletedMessages.includes(message.messageId))
         .filter((message) => !state.blockedUsers.find((user) => user.userId === message.senderId))
         .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId))
+        .map(message => prepareMessage(state, chat, message))
       chat.messages = messages
       if (chat.gameStarting) chat.messages.push(chat.gameStarting)
       if (action.payload.chat.isGroup) {
@@ -135,6 +136,7 @@ export default function reducer(
         .filter((message) => !message.keyReceiver)
         .filter((message) => !state.blockedUsers.find((user) => user.userId === message.senderId))
         .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId))
+        .map(message => prepareMessage(state, chat, message))
       chat.noMoreMessages = !action.payload.messages.length
       chat.loadingMessages = false
       chat.messages = messages
@@ -248,41 +250,78 @@ export default function reducer(
       }
     }
 
+    case 'SEND_MESSAGE_PENDING': {
+      logger.log('CHAT', `Redux -> Sending Message: `, action.meta)
+      const { chatId, userId, alias, encrypted, unencryptedContent, attachment, replyId, uuid } = action.meta
+      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chat = chats.find((candidate) => candidate.chatId === chatId)
+      if (!chat) return state
+      if (attachment) return state
+      if (replyId) return state
+      const message = {
+        chatId,
+        uuid,
+        unencryptedContent,
+        senderId: userId,
+        senderName: alias,
+        content: encrypted.content,
+        backup: encrypted.backup,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        messageId: `pending-${uuid}`,
+        isPending: true,
+      }
+      chat.messages.push(prepareMessage(state, chat, message))
+      return {
+        ...state,
+        chats,
+      }
+    }
+
     case 'NEW_MESSAGE': {
       logger.log('CHAT', `Redux -> New Message: `, action.payload, action.meta)
+
       const message = action.payload.message
       const userId = action.meta.userId
       const chatId = message.chatId
       const chats = JSON.parse(JSON.stringify(state.chats))
       const chat = chats.find((candidate) => candidate.chatId === chatId)
-      const unreadMessages = JSON.parse(JSON.stringify(state.unreadMessages))
-      if (!chat) return state
-      if (state.blockedUsers.find((user) => user.userId === message.senderId)) return state
-      if (!chat.muted && !window.focused && message.senderId !== userId && !message.keyReceiver) {
-        playMessageSound(state.notificationSoundsDisabled)
-        if (window.notifier && state.pushNotificationsEnabled) {
-          const privateKey = deserializeKey(chat.privateKey || state.privateKey)
-          const body = message.unencryptedContent || decryptMessage(message.content, privateKey)
-          const title = `New Message from ${message.senderName}${chat.isGroup ? ` on ${chat.title}` : ''}`
-          window.notifier.showNotification(title, { body })
+
+      const shouldIgnoreMessage = !chat || state.blockedUsers.find((user) => user.userId === message.senderId)
+      if (shouldIgnoreMessage) return state
+
+      const isReceivingGroupKeys = !!message.keyReceiver
+      if (isReceivingGroupKeys) {
+        const isGroupKeyRecipient = message.keyReceiver === userId
+        if (isGroupKeyRecipient) {
+          const privateKey = receiveGroupKey(chat, [message], userId, state.privateKey)
+          if (privateKey) chat.privateKey = privateKey
         }
+        return state
       }
-      if (window.document.hidden) window.document.title = `(${parseInt((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0) + 1}) myG`
-      if (!chat.muted && !message.keyReceiver) {
+
+      const isNotActivelyLooking = !chat.muted && !window.focused && message.senderId !== userId && !message.keyReceiver
+      if (isNotActivelyLooking) {
+        playMessageSound(state.notificationSoundsDisabled)
+        showNotification(state, chat, message)
+        showNewMessageIndicator()
+      }
+
+      const shouldOpenChat = !chat.muted && !message.keyReceiver
+      if (shouldOpenChat) {
         const openChats = chats.filter((candidate) => !candidate.closed && candidate.chatId !== chatId)
-        if (openChats.length <= 3) chat.closed = false
-        else unreadMessages.push(message)
+        if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => (openChats[index].closed = true))
+        chat.closed = false
       }
+
       if (!chat.messages) chat.messages = []
-      if (!message.keyReceiver) chat.messages.push(message)
-      if (message.keyReceiver === userId) {
-        const privateKey = receiveGroupKey(chat, [message], userId, state.privateKey)
-        if (privateKey) chat.privateKey = privateKey
-      }
+      const mustClearPendingMessages = message.senderId === userId
+      if (mustClearPendingMessages) chat.messages = chat.messages.filter((existing) => existing.uuid !== message.uuid)
+      chat.messages.push(prepareMessage(state, chat, message))
+
       return {
         ...state,
         chats,
-        unreadMessages,
       }
     }
 
@@ -763,19 +802,19 @@ export default function reducer(
         autoSelfDestruct: action.meta.enabled,
       }
     }
-    
-    case "FETCH_SETTINGS_FULFILLED": {
+
+    case 'FETCH_SETTINGS_FULFILLED': {
       logger.log('CHAT', `Redux -> Fetched Settings: `, action.payload)
-      const { pushNotificationsEnabled } = action.payload.settings;
+      const { pushNotificationsEnabled } = action.payload.settings
       return {
         ...state,
         pushNotificationsEnabled,
       }
     }
 
-    case "TOGGLE_PUSH_NOTIFICATIONS_FULFILLED": {
+    case 'TOGGLE_PUSH_NOTIFICATIONS_FULFILLED': {
       logger.log('CHAT', `Redux -> Toggled Push Notifications: `, action.payload)
-      const { pushNotificationsEnabled } = action.payload.settings;
+      const { pushNotificationsEnabled } = action.payload.settings
       return {
         ...state,
         pushNotificationsEnabled,
@@ -795,6 +834,33 @@ function playMessageSound(disabled) {
   } catch (error) {
     console.error('Error While Playing Message Notification:', error)
   }
+}
+
+function showNotification(state, chat, message) {
+  if (window.notifier && state.pushNotificationsEnabled) {
+    const privateKey = deserializeKey(chat.privateKey || state.privateKey)
+    const body = message.unencryptedContent || decryptMessage(message.content, privateKey)
+    const title = `New Message from ${message.senderName}${chat.isGroup ? ` on ${chat.title}` : ''}`
+    window.notifier.showNotification(title, { body })
+  }
+}
+
+function showNewMessageIndicator() {
+  window.document.title = `(${parseInt((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0) + 1}) myG`
+}
+
+function prepareMessage(state, chat, message) {
+  if (message.decrypted) return message
+  if (message.unencryptedContent) return { ...message, content: message.unencryptedContent }
+  if (!message.content && !message.backup) return message
+  const isSent = !chat.isGroup && message.senderId == state.userId
+  const chatKey = chat.isGroup ? chat.privateKey : state.privateKey
+  const encryptedContent = isSent ? message.backup : message.content
+  const encryptedReplyContent = isSent ? message.replyBackup : message.replyContent
+  const privateKey = isSent ? state.privateKey : chatKey
+  const content = decryptMessage(encryptedContent, privateKey)
+  const replyContent = encryptedReplyContent && decryptMessage(encryptedReplyContent, privateKey)
+  return { ...message, content, replyContent, decrypted: true }
 }
 
 function prepareGroupKeysToSend(group, userId, userContacts, userPublicKey, userPrivateKey) {

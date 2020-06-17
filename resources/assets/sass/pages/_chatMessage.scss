@@ -73,6 +73,14 @@
   background-color: #503030 !important;
 }
 
+.chat-component-message-pending {
+  opacity: 0.5 !important;
+}
+
+.chat-component-message-pending::before {
+  opacity: 0.5 !important;
+}
+
 .chat-component-message-container {
   display: flex;
   justify-content: space-between;

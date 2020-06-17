@@ -2,6 +2,7 @@ const { forceInt, forceString, forceBoolean, forceDate, forceArray } = require('
 
 class Message {
   constructor(data) {
+    this.uuid = forceString(data.uuid)
     this.messageId = forceInt(data.messageId)
     this.chatId = forceInt(data.chatId)
     this.senderId = forceInt(data.senderId)
