@@ -203,7 +203,6 @@ const AddGameContainer = () => {
     )
   }
 
-  console.log(mainSettingsState)
   return (
     <div className={styles.container}>
       <PageHeader headerText='Add Public Game' />

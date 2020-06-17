@@ -262,7 +262,7 @@ export default function reducer(
         playMessageSound(state.notificationSoundsDisabled)
         if (window.notifier && state.pushNotificationsEnabled) {
           const privateKey = deserializeKey(chat.privateKey || state.privateKey)
-          const body = decryptMessage(message.content, privateKey)
+          const body = message.unencryptedContent || decryptMessage(message.content, privateKey)
           const title = `New Message from ${message.senderName}${chat.isGroup ? ` on ${chat.title}` : ''}`
           window.notifier.showNotification(title, { body })
         }
