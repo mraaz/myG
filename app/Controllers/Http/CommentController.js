@@ -3,6 +3,7 @@
 const Comment = use('App/Models/Comment')
 const Database = use('Database')
 const AwsKeyController = use('./AwsKeyController')
+const NotificationController_v2 = use('./NotificationController_v2')
 
 class CommentController {
   async store({ auth, request, response }) {
@@ -20,6 +21,32 @@ class CommentController {
           let update_key = new AwsKeyController()
           request.params.comment_id = newComment.id
           update_key.addCommentKey({ auth, request, response })
+        }
+
+        //Get post owner or game owner and then create notification
+        let noti = new NotificationController_v2()
+        if (request.input('post_id') != undefined && request.input('post_id') != null) {
+          const getPostOwner = await Database.from('posts')
+            .where({ id: request.input('post_id') })
+            .first()
+
+          if (getPostOwner != undefined) {
+            if (auth.user.id != getPostOwner.user_id) {
+              noti.addComment({ auth }, request.input('post_id'), getPostOwner.user_id, newComment.id)
+            }
+          }
+        }
+
+        if (request.input('schedule_games_id') != undefined && request.input('schedule_games_id') != null) {
+          const getPostOwner = await Database.from('posts')
+            .where({ schedule_games_id: request.input('schedule_games_id') })
+            .first()
+
+          if (getPostOwner != undefined) {
+            if (auth.user.id != getPostOwner.user_id) {
+              noti.addComment({ auth }, getPostOwner.id, getPostOwner.user_id, newComment.id)
+            }
+          }
         }
 
         newComment = await Database.from('comments')
@@ -147,7 +174,9 @@ class CommentController {
 
   async show_scheduled_gamesCount({ auth, request, response }) {
     try {
-      const no_of_comments = await Database.from('comments').where({ schedule_games_id: request.params.id }).count('* as no_of_comments')
+      const no_of_comments = await Database.from('comments')
+        .where({ schedule_games_id: request.params.id })
+        .count('* as no_of_comments')
 
       return {
         no_of_comments,

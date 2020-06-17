@@ -583,6 +583,44 @@ class NotificationController_v2 {
       return 'You are not Logged In!'
     }
   }
+
+  async addComment({ auth }, post_id, other_user_id, comment_id) {
+    if (auth.user) {
+      try {
+        const addComment = await Notification.create({
+          other_user_id: other_user_id,
+          user_id: auth.user.id,
+          activity_type: 5,
+          post_id: post_id,
+          comment_id: comment_id,
+        })
+        return 'Saved item'
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async addReply({ auth }, post_id, other_user_id, reply_id) {
+    if (auth.user) {
+      try {
+        const addReply = await Notification.create({
+          other_user_id: other_user_id,
+          user_id: auth.user.id,
+          activity_type: 6,
+          post_id: post_id,
+          reply_id: reply_id,
+        })
+        return 'Saved item'
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
 }
 
 module.exports = NotificationController_v2

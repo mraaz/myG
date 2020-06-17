@@ -186,7 +186,7 @@ export default class IndividualPost extends Component {
 
     var post_id = this.props.post.id
 
-    const getmyPostCount = async function () {
+    const getmyPostCount = async function() {
       try {
         var i
 
@@ -202,7 +202,7 @@ export default class IndividualPost extends Component {
       }
     }
 
-    const getGroup_info = async function () {
+    const getGroup_info = async function() {
       try {
         var i
 
@@ -233,7 +233,7 @@ export default class IndividualPost extends Component {
     var post_id = this.props.post.id
     const self = this
 
-    const getComments = async function () {
+    const getComments = async function() {
       try {
         const myComments = await axios.get(`/api/comments/${post_id}`)
         self.setState({
@@ -346,13 +346,13 @@ export default class IndividualPost extends Component {
         })
 
         let { post, user } = this.props
-        if (post.user_id != user.userInfo.id) {
-          const addPostLike = axios.post('/api/notifications/addComment', {
-            other_user_id: post.user_id,
-            post_id: this.props.post.id,
-            comment_id: postComment.data.id,
-          })
-        }
+        // if (post.user_id != user.userInfo.id) {
+        //   const addPostLike = axios.post('/api/notifications/addComment', {
+        //     other_user_id: post.user_id,
+        //     post_id: this.props.post.id,
+        //     comment_id: postComment.data.id,
+        //   })
+        // }
         this.setState({
           myComments: [...myComments, ...postComment.data],
           preview_file: '',
@@ -384,7 +384,7 @@ export default class IndividualPost extends Component {
     const self = this
     var post_id = this.props.post.id
 
-    const editPost = async function () {
+    const editPost = async function() {
       try {
         const myEditPost = await axios.post(`/api/post/update/${post_id}`, {
           content: self.state.value2,
@@ -472,7 +472,7 @@ export default class IndividualPost extends Component {
       dropdown: false,
     })
     setTimeout(
-      function () {
+      function() {
         //Start the timer
         this.focusTextInput2()
       }.bind(this),
