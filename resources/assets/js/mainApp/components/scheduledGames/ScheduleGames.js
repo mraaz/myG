@@ -3,6 +3,7 @@ import GameFilter from './gameFilter'
 import GameList from './gameList'
 import GameDetails from './gameDetails'
 import SingleGameDetails from './singlegameDetails.js'
+import NoRecord from './NoRecord.js'
 import { PullDataFunction as getScheduleGames } from './getScheduleGames'
 import axios from 'axios'
 
@@ -190,7 +191,7 @@ export default class ScheduleGames extends Component {
                   {...this.props}
                 />
               ) : (
-                <h1>There is no data found!</h1>
+                <NoRecord />
               )}
             </Fragment>
           )}

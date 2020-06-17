@@ -1637,6 +1637,30 @@
       z-index: 1;
     }
   }
+  .noRecordFound__wraper {
+    background: #171a1c;
+    padding: 40px;
+    height: 100vh;
+    .noRecordFound__header {
+      font: 24px/18px Montserrat;
+      font-weight: bold;
+      letter-spacing: 0px;
+      color: #ffffff;
+      margin-bottom: 30px;
+      .noRecordFound__body {
+        font: 18px/16px Montserrat;
+        font-weight: 400;
+        letter-spacing: 0px;
+        color: #ffffff;
+        opacity: 1;
+        margin-bottom: 20px;
+        a {
+          color: #e5c746;
+          cursor: pointer;
+        }
+      }
+    }
+  }
 }
 
 $height: 15 / 16 * 1em;
