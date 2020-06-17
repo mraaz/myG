@@ -153,6 +153,7 @@ class Messenger extends React.Component {
         privateKey={this.props.privateKey}
         contacts={this.props.contacts}
         groups={this.props.groups}
+        chats={this.props.chats}
         search={this.state.searchInput}
         disconnected={this.props.disconnected}
         openChat={this.props.openChat}

@@ -1182,10 +1182,10 @@ class NotificationController {
         const arrInvite_group = request.input('groups').split(',')
         const arrInvite_community = request.input('communities').split(',')
         const scheduledGameId = request.input('scheduledGameId')
+        const scheduledGameGuid = request.input('scheduledGameGuid')
         const gameTitle = request.input('gameTitle')
         const startTime = formatDateTimeFromNow(request.input('startTime'))
-        const content = `Heya! A new ${gameTitle} game has been created! It is scheduled to start ${startTime}. Find out more here: https://myG.gg/scheduled_games/${scheduledGameId}`
-
+        const content = `Heya! A new ${gameTitle} game has been created! It is scheduled to start ${startTime}. Find out more here: https://myG.gg/scheduledGames/${scheduledGameGuid}`
 
         if (arrInvite_user != '') {
           for (var i = 0; i < arrInvite_user.length; i++) {

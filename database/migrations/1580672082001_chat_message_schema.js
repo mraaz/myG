@@ -7,6 +7,7 @@ class ChatMessageSchema extends Schema {
   up () {
     this.create('chat_messages', (table) => {
       table.increments()
+      table.text('uuid')
       table.integer('chat_id').unsigned().notNullable().index()
       table.foreign('chat_id').references('id').inTable('chats').onDelete('CASCADE')
       table.integer('sender_id').unsigned().notNullable()

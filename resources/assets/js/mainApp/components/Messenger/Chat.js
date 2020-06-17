@@ -135,7 +135,8 @@ export class Chat extends React.Component {
       attachment,
       replyId,
       replyContent,
-      replyBackup
+      replyBackup,
+      input,
     )
   }
 
@@ -150,6 +151,7 @@ export class Chat extends React.Component {
   }
 
   decryptMessage = (message) => {
+    if (message.decrypted) return message;
     if (message.unencryptedContent) return { ...message, content: message.unencryptedContent }
     if (!message.content && !message.backup) return message
     const isSent = !this.props.isGroup && message.senderId == this.props.userId
@@ -158,7 +160,7 @@ export class Chat extends React.Component {
     const privateKey = isSent ? this.props.userPrivateKey : this.props.privateKey
     const content = decryptMessage(encryptedContent, privateKey)
     const replyContent = encryptedReplyContent && decryptMessage(encryptedReplyContent, privateKey)
-    return { ...message, content, replyContent }
+    return { ...message, content, replyContent, decrypted: true }
   }
 
   editLastMessage = () => {
@@ -577,8 +579,8 @@ function mapDispatchToProps(dispatch) {
   return {
     prepareChat: (chatId, userId, contactId, isGroup) => dispatch(prepareChatAction(chatId, userId, contactId, isGroup)),
     fetchMessages: (chatId, page) => dispatch(fetchMessagesAction(chatId, page)),
-    sendMessage: (chatId, userId, alias, content, attachment, replyId, replyContent, replyBackup) =>
-      dispatch(sendMessageAction(chatId, userId, alias, content, attachment, replyId, replyContent, replyBackup)),
+    sendMessage: (chatId, userId, alias, content, attachment, replyId, replyContent, replyBackup, unencryptedContent) =>
+      dispatch(sendMessageAction(chatId, userId, alias, content, attachment, replyId, replyContent, replyBackup, unencryptedContent)),
     editMessage: (chatId, userId, messageId, content) => dispatch(editMessageAction(chatId, userId, messageId, content)),
     deleteMessage: (chatId, userId, messageId, origin) => dispatch(deleteMessageAction(chatId, userId, messageId, origin)),
     addReaction: (chatId, userId, messageId, reactionId) => dispatch(addReactionAction(chatId, userId, messageId, reactionId)),

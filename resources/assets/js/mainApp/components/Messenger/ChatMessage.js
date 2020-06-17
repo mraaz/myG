@@ -356,8 +356,9 @@ export default class ChatMessage extends React.Component {
     logger.log('RENDER', `ChatMessage: ${this.props.message.messageId}`)
     const { message } = this.props
     const origin = message.senderId === this.props.userId ? 'sent' : 'received'
-    const deletedStyle = message.deleted && 'chat-component-message-deleted'
-    const selfDestructStyle = message.selfDestruct && 'chat-component-message-self-destruct'
+    const deletedStyle = !!message.deleted && 'chat-component-message-deleted'
+    const selfDestructStyle = !!message.selfDestruct && 'chat-component-message-self-destruct'
+    const pendingStyle = !!message.isPending && 'chat-component-message-pending'
     if (this.state.editing) return this.renderInput()
     if (message.isDateDivisor) return this.renderDateDivisor()
     if (message.isEntryLog) return this.renderEntryLog()
@@ -367,7 +368,7 @@ export default class ChatMessage extends React.Component {
         data-message-id={message.messageId}
         key={message.messageId}
         ref={this.messageRef}
-        className={`chat-component-message chat-component-message-${origin} ${deletedStyle} ${selfDestructStyle}`}
+        className={`chat-component-message chat-component-message-${origin} ${deletedStyle} ${selfDestructStyle} ${pendingStyle}`}
         onMouseEnter={() => this.setState({ showOptionsButton: true })}
         onMouseLeave={() => this.setState({ showOptionsButton: false, showOptionsMenu: false })}>
         <div className='chat-component-message-container'>

@@ -135,12 +135,14 @@ class ChatRepository {
           id: reaction.id,
           chatId: message.chat_id,
           messageId: message.id,
+          uuid: message.uuid,
           reactionId: reaction.reaction_id,
           senderId: reaction.sender_id,
           senderName: reaction.sender_name,
         }));
       return new MessageSchema({
         messageId: message.id,
+        uuid: message.uuid,
         chatId: message.chat_id,
         senderId: message.sender_id,
         keyReceiver: message.key_receiver,
@@ -178,6 +180,7 @@ class ChatRepository {
       if (!message) return;
       if (!lastReadId || (parseInt(message.id) > parseInt(lastReadId))) unreadMessages.push(new MessageSchema({
         messageId: message.id,
+        uuid: message.uuid,
         chatId: message.chat_id,
         senderId: message.sender_id,
         keyReceiver: message.key_receiver,
@@ -219,6 +222,7 @@ class ChatRepository {
       .fetch()).toJSON();
     const encryptionMessages = result.map(message => new MessageSchema({
       messageId: message.id,
+      uuid: message.uuid,
       chatId: message.chat_id,
       senderId: message.sender_id,
       keyReceiver: message.key_receiver,
@@ -567,9 +571,10 @@ class ChatRepository {
     return { contacts: fullContacts };
   }
 
-  async sendMessage({ requestingUserId, requestedChatId, senderName, backup, content, keyReceiver, attachment, replyId, replyContent, replyBackup }) {
+  async sendMessage({ requestingUserId, requestedChatId, senderName, backup, content, keyReceiver, attachment, replyId, replyContent, replyBackup, uuid }) {
     const { chat } = await this.fetchChat({ requestingUserId, requestedChatId });
     const messageData = {
+      uuid,
       sender_id: requestingUserId,
       key_receiver: keyReceiver,
       sender_name: senderName,
@@ -586,6 +591,7 @@ class ChatRepository {
     if (attachment) await new AwsKeyController().addChatAttachmentKey(requestedChatId, message.id, attachment);
     const messageSchema = new MessageSchema({
       messageId: message.id,
+      uuid: message.uuid,
       chatId: requestedChatId,
       senderId: requestingUserId,
       keyReceiver: message.key_receiver,
@@ -625,6 +631,7 @@ class ChatRepository {
     const message = await Chat.find(requestedChatId).then(chat => chat.messages().create(messageData));
     const messageSchema = new MessageSchema({
       messageId: message.id,
+      uuid: message.uuid,
       chatId: message.chat_id,
       senderId: message.sender_id,
       keyReceiver: message.key_receiver,
@@ -645,6 +652,7 @@ class ChatRepository {
     await message.save();
     const messageSchema = new MessageSchema({
       messageId: message.id,
+      uuid: message.uuid,
       chatId: requestedChatId,
       senderId: requestingUserId,
       senderName: message.sender_name,
@@ -675,6 +683,7 @@ class ChatRepository {
     message.deleted = true;
     const messageSchema = new MessageSchema({
       messageId: message.id,
+      uuid: message.uuid,
       chatId: requestedChatId,
       senderId: message.sender_id,
       senderName: message.sender_name,
