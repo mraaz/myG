@@ -50,7 +50,7 @@ export default class GameDetails extends Component {
                 <div className='gamer__count'>
                   <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/little_green_man.svg' />
                   <span>
-                    {no_of_gamers} / {limit} Gamers
+                    {no_of_gamers} / {limit == 0 ? <span>&#8734;</span> : limit} Gamers
                   </span>
                 </div>
                 <div className='game__timestamp'>

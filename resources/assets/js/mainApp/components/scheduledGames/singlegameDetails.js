@@ -21,7 +21,6 @@ export default class GameDetails extends Component {
       additional_submit_info = false,
       additional_submit_info_fields = [],
     } = scheduleGames
-    console.log('scheduleGames  ', scheduleGames, showAllComment)
 
     const [scheduleGames_data = {}] = latestScheduledGames
     const {
@@ -41,6 +40,7 @@ export default class GameDetails extends Component {
     const experience_split = experience ? experience.split(',') : []
 
     const { no_of_comments = [], lastComment = '' } = commentData
+    console.log('scheduleGames  ', scheduleGames, showAllComment)
 
     return (
       <div className='gameDetails'>
@@ -52,7 +52,7 @@ export default class GameDetails extends Component {
                 <div className='gamer__count'>
                   <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/little_green_man.svg' />
                   <span>
-                    {no_of_gamers} / {limit} Gamers
+                    {no_of_gamers} / {limit == 0 ? <span>&#8734;</span> : limit} Gamers
                   </span>
                 </div>
                 <div className='game__timestamp'>

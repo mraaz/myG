@@ -80,7 +80,7 @@ export default class GameList extends Component {
                       <div className='gamer__count'>
                         <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/little_green_man.svg' />
                         <span>
-                          {game.no_of_gamers} / {game.limit} Gamers
+                          {game.no_of_gamers} / {game.limit == 0 ? <span>&#8734;</span> : game.limit} Gamers
                         </span>
                       </div>
                       <div className='game__timestamp'>
