@@ -271,6 +271,7 @@ export default class ScheduleGames extends Component {
       other_box: '',
       description_box: '',
       when: '',
+      game_name_box: '',
       selected_platform: '',
       selected_experience: '',
       selected_region: '',

@@ -1642,15 +1642,19 @@
     }
   }
   .noRecordFound__wraper {
-    background: #171a1c;
+    background: #0b0f14;
     padding: 40px;
     height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     .noRecordFound__header {
       font: 24px/18px Montserrat;
       font-weight: bold;
       letter-spacing: 0px;
       color: #ffffff;
       margin-bottom: 30px;
+      text-align: center;
       .noRecordFound__body {
         font: 18px/16px Montserrat;
         font-weight: 400;
