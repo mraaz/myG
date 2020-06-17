@@ -28,7 +28,9 @@ const JoinStatus = (props) => {
   const [selectValues, setSelectValues] = useState({})
 
   useEffect(() => {
+    console.log(join_status, props.join_status)
     setJoinButtonText(buttonStatus[join_status])
+    return () => setJoinButtonText(buttonStatus['0'])
   }, [join_status])
 
   const showModal = () => {
@@ -135,8 +137,9 @@ const JoinStatus = (props) => {
         </div>
       ) : (
         <div className='game__action__buttton'>
-          <button type='button' onClick={handleJoindButtonClick}>
+          <button type='button' onClick={handleJoindButtonClick} className={`${leaveButtonStatus ? 'open' : ''}`}>
             {`${joinButtonText}`}
+            <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/View+Game/Down+Carrot.svg' />
           </button>
           {leaveButtonStatus && <button type='button' className='leaveGame__button' onClick={handleLeaveGame}>{`Leave Game`}</button>}
         </div>

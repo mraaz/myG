@@ -470,7 +470,7 @@
           position: relative;
           top: 10px;
           button {
-            width: 84px;
+            width: 90px;
             height: 39px;
             background: #e5c746 0% 0% no-repeat padding-box;
             border-radius: 8px;
@@ -482,9 +482,16 @@
             cursor: pointer;
             outline: none;
             margin: 0;
+            img {
+              width: 15px;
+              margin-left: 2px;
+            }
+            &.open {
+              background: #b9b9b9;
+            }
           }
           .leaveGame__button {
-            width: 84px;
+            width: 90px;
             height: 39px;
             background: #171a1c 0% 0% no-repeat padding-box;
             border: 1px solid #384952;
@@ -1643,11 +1650,10 @@
   }
   .noRecordFound__wraper {
     background: #0b0f14;
-    padding: 40px;
-    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    padding-top: 50px;
     .noRecordFound__header {
       font: 24px/18px Montserrat;
       font-weight: bold;
@@ -1662,7 +1668,7 @@
         color: #ffffff;
         opacity: 1;
         margin-bottom: 20px;
-        a {
+        .addScheduleGames__link {
           color: #e5c746;
           cursor: pointer;
         }

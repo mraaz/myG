@@ -59,9 +59,11 @@ const Approved_gamers = (props) => {
             )
           })}
 
-        <div className='View__AllGamers' onClick={showModal}>
-          ... View All
-        </div>
+        {approved_gamers.length > 0 && (
+          <div className='View__AllGamers' onClick={showModal}>
+            ... View All
+          </div>
+        )}
       </div>
 
       <div className={`modal-container View__AllGamers__modal ${modalStatus ? 'modal--show' : ''}`}>

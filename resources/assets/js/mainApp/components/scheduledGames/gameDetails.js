@@ -74,6 +74,7 @@ export default class GameDetails extends Component {
                 schedule_games_id={id}
                 additional_submit_info={additional_submit_info}
                 additional_submit_info_fields={additional_submit_info_fields}
+                showRightSideInfo={showRightSideInfo}
               />
             </div>
             <div className='gameDetails__body'>

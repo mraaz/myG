@@ -88,7 +88,7 @@ export async function PullDataFunction(myG) {
         tags.push(myG.tags[i].game_tag_id)
       }
     }
-    tags = tags.toString()
+    tags = tags.length > 0 ? tags.toString() : null
   }
 
   if (myG.counter != undefined) {
