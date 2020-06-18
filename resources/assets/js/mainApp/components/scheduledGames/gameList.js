@@ -13,6 +13,15 @@ export default class GameList extends Component {
     this.state = {
       activeItemId: '',
     }
+    this.myRef = React.createRef()
+  }
+
+  handleScroll = (event) => {
+    const _event = event.currentTarget,
+      _current = this.myRef.current
+    if (_event.scrollTop + (3 / 2) * _current.offsetHeight > _event.scrollHeight && this.props.hasMore) {
+      this.props.next()
+    }
   }
 
   handleCopyToClipBoard = (e, guid) => {
@@ -49,7 +58,7 @@ export default class GameList extends Component {
             </div>
           </div>
         </div>
-        <div className='gameList__box'>
+        <div className='gameList__box' onScroll={this.handleScroll} ref={this.myRef}>
           {/* My game list start here */}
           {scheduleGames.length > 0 &&
             scheduleGames.map((game) => {
