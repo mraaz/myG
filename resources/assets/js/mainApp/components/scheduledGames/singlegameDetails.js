@@ -5,6 +5,7 @@ import JoinButtonAction from './JoinButtonAction'
 import GameComments from './GameComments'
 import { Link } from 'react-router-dom'
 import { WithTooltip } from '../Tooltip'
+import axios from 'axios'
 
 export default class GameDetails extends Component {
   constructor() {
@@ -12,8 +13,24 @@ export default class GameDetails extends Component {
     this.state = {}
   }
 
+  async componentDidMount() {
+    try {
+      const { scheduleGames = {} } = this.props
+      const { latestScheduledGames } = scheduleGames
+
+      const [scheduleGames_data = {}] = latestScheduledGames
+      const { id = '' } = scheduleGames_data
+      const allComments = await axios.get(`/api/comments/get_right_card_comment_info/${id}`)
+      if (allComments.data) {
+        this.setState({ commentData: { ...allComments.data } })
+      }
+    } catch (error) {
+      console.log('error  ', error)
+    }
+  }
+
   render() {
-    const { scheduleGames = {}, showRightSideInfo, commentData = {}, showAllComment } = this.props
+    const { scheduleGames = {}, showRightSideInfo, showAllComment } = this.props
     const {
       latestScheduledGames,
       approved_gamers = [],
@@ -38,7 +55,7 @@ export default class GameDetails extends Component {
       allow_comments = 0,
     } = scheduleGames_data
     const experience_split = experience ? experience.split(',') : []
-
+    const { commentData = {} } = this.state
     const { no_of_comments = [], lastComment = '' } = commentData
     const { no_of_my_comments = 0 } = no_of_comments[0] || {}
 
