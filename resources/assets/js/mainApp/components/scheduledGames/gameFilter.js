@@ -94,11 +94,12 @@ export default class ScheduleGames extends Component {
       }
     )
   }
-  handleTagsChange = (value_tags, name) => {
+  handleTagsChange = (value_tags = [], name) => {
     const { filterValueArray = {} } = this.state
     filterValueArray['tags'] = value_tags
     this.setState({ value_tags, filterValueArray }, () => {
-      this.props.handleChange({ value_tags }, name)
+      const tags = this.getTagsValue([...value_tags])
+      this.props.handleChange({ tags: value_tags }, name)
     })
   }
   handleChange_region = (selected_region, name) => {
@@ -201,25 +202,26 @@ export default class ScheduleGames extends Component {
   }
 
   getOptions_tags = (inputValue) => {
-    const self = this
-    const getInitialData = async function (inputValue) {
+    const getInitialData = async (inputValue) => {
       try {
-        var results = await Game_name_Tags(inputValue, self.props.game_name_box.game_names_id)
-        self.setState({ options_tags: results })
+        var results = await Game_name_Tags(inputValue, this.state.game_name_box.game_names_id)
+        this.setState({ options_tags: results })
       } catch (error) {
         console.log(error)
       }
     }
-
-    if (this.props.game_name_box != null) {
+    if (this.state.game_name_box != null) {
       if (
-        this.props.game_name_box.game_names_id != null &&
-        this.props.game_name_box.game_names_id != undefined &&
-        this.props.game_name_box.game_names_id != ''
+        this.state.game_name_box.game_names_id != null &&
+        this.state.game_name_box.game_names_id != undefined &&
+        this.state.game_name_box.game_names_id != ''
       ) {
         getInitialData(inputValue)
       }
     }
+  }
+  getTagsValue = (value_tags = []) => {
+    return value_tags.map((d) => d.value)
   }
   handleCreateTags = (inputValue: any) => {
     if (inputValue.length > 88) {
@@ -241,7 +243,8 @@ export default class ScheduleGames extends Component {
           filterValueArray,
         },
         () => {
-          this.props.handleChange({ value_tags }, name)
+          const tags = this.getTagsValue([...value_tags, newOption])
+          this.props.handleChange({ tags }, name)
         }
       )
     }, 300)
@@ -262,22 +265,27 @@ export default class ScheduleGames extends Component {
   }
 
   handleClearFilterClick = () => {
-    this.setState({
-      filterTypeArray: ['game_name'],
-      showFilterType: false,
-      showFilters: false,
-      showSaveFilterInput: false,
-      showOverlay: false,
-      other_box: '',
-      description_box: '',
-      when: '',
-      selected_platform: '',
-      selected_experience: '',
-      selected_region: '',
-      game_name_box: '',
-      value_tags: '',
-      filterValueArray: {},
-    })
+    this.setState(
+      {
+        filterTypeArray: ['game_name'],
+        showFilterType: false,
+        showFilters: false,
+        showSaveFilterInput: false,
+        showOverlay: false,
+        other_box: '',
+        description_box: '',
+        when: '',
+        selected_platform: '',
+        selected_experience: '',
+        selected_region: '',
+        game_name_box: '',
+        value_tags: '',
+        filterValueArray: {},
+      },
+      () => {
+        this.props.handleChange({ ...this.state }, '')
+      }
+    )
   }
 
   handleSaveFilterClick = async () => {
@@ -498,6 +506,11 @@ export default class ScheduleGames extends Component {
           <div className='viewGame__filter-section'>
             {filterTypeArray.map((k) => {
               if (k == 'game_name') {
+                const value = this.state.game_name_box
+                  ? this.state.game_name_box
+                  : filterValueArray['game_name']
+                  ? filterValueArray['game_name']
+                  : null
                 return (
                   <div className='viewGame__gameName'>
                     <div className='viewGame__label'>{this.filterGroup[k]}</div>
@@ -508,7 +521,7 @@ export default class ScheduleGames extends Component {
                       loadOptions={this.getOptions}
                       onChange={(data) => this.handleDropDownChange(data, k)}
                       isClearable
-                      value={this.state.game_name_box || filterValueArray['game_name']}
+                      value={value}
                       className='viewGame__name'
                       placeholder={this.filterGroup[k]}
                       onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}

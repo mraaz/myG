@@ -7,9 +7,13 @@ const NoRecordFound = (props) => {
   return (
     <div className='noRecordFound__wraper'>
       <h1 className='noRecordFound__header'>Cannot find any games</h1>
-      <h1 className='noRecordFound__body'>
-        Try searching for another filter or <Link to='/addScheduleGames'> add your own game</Link>
-      </h1>
+      <div className='noRecordFound__body'>
+        Try searching for another filter or{' '}
+        <Link to='/addScheduleGames' className='addScheduleGames__link'>
+          {' '}
+          add your own game
+        </Link>
+      </div>
     </div>
   )
 }
