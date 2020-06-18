@@ -36,7 +36,7 @@ export default class GameDetails extends Component {
     } = additional_game_info
 
     const { no_of_comments = [], lastComment = '' } = commentData
-    const { no_of_my_comments = '' } = no_of_comments[0] || {}
+    const { no_of_my_comments = 0 } = no_of_comments[0] || {}
 
     const experience_split = experience ? experience.split(',') : []
 
@@ -109,24 +109,32 @@ export default class GameDetails extends Component {
             </div>
             {(lastComment.content || !showAllComment) && (
               <div className='gameDetaiils__footer'>
-                <div className='view__all__comments' onClick={this.handleShowAllComments}>
-                  {no_of_my_comments ? `View all (${no_of_my_comments}) comments` : 'Click here to post a comment'}
-                </div>
                 {no_of_my_comments > 0 && (
-                  <div className='game__comment'>
-                    <Link to={`/profile/${lastComment.alias}`} className='user-img'>
-                      {' '}
-                      <div
-                        className='profile__image'
-                        style={{
-                          backgroundImage: `url('${lastComment.profile_img}')`,
-                          backgroundSize: 'cover',
-                        }}></div>
-                    </Link>
+                  <Fragment>
+                    <div className='view__all__comments' onClick={this.handleShowAllComments}>
+                      {`View all (${no_of_my_comments}) comments`}
+                    </div>
 
-                    <div className='arrow'></div>
-                    <span className='author'>{`${lastComment.first_name} ${lastComment.last_name}`}</span>
-                    <span>{lastComment.content || ''}</span>
+                    <div className='game__comment'>
+                      <Link to={`/profile/${lastComment.alias}`} className='user-img'>
+                        {' '}
+                        <div
+                          className='profile__image'
+                          style={{
+                            backgroundImage: `url('${lastComment.profile_img}')`,
+                            backgroundSize: 'cover',
+                          }}></div>
+                      </Link>
+
+                      <div className='arrow'></div>
+                      <span className='author'>{`${lastComment.first_name} ${lastComment.last_name}`}</span>
+                      <span>{lastComment.content || ''}</span>
+                    </div>
+                  </Fragment>
+                )}
+                {no_of_my_comments == 0 && (
+                  <div className='noComments'>
+                    No comments yet. <span onClick={this.handleShowAllComments}>Be the first to leave a comment.</span>
                   </div>
                 )}
               </div>

@@ -639,7 +639,16 @@
         display: flex;
         margin-top: auto;
         flex-direction: column;
-
+        .noComments {
+          font: Bold 12px/14px Montserrat;
+          letter-spacing: 0px;
+          color: #b9b9b9;
+          text-align: left;
+          span {
+            color: #e5c746;
+            cursor: pointer;
+          }
+        }
         .view__all__comments {
           font: Bold 12px/14px Montserrat;
           letter-spacing: 0px;
@@ -753,16 +762,17 @@
             width: 120px;
             $num-colors: 1000;
             border-radius: 4px 0px 0px 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             .image {
               width: 120px;
-              height: 163px;
+              height: auto;
+              max-height: 163px;
             }
             .default-image {
-              top: 50%;
               position: relative;
-              margin-top: -37px;
               height: 75px;
-              margin-left: 8px;
             }
           }
           &:nth-of-type(4n) {

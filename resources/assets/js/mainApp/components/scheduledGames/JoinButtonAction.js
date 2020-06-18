@@ -22,28 +22,32 @@ const JoinStatus = (props) => {
   const { join_status = 0, additional_submit_info = false, additional_submit_info_fields = [] } = props
   const [modalStatus, setModalStatus] = useState(false)
   const [leaveButtonStatus, setLeaveButtonStatus] = useState(false)
-  const [joinButtonText, setJoinButtonText] = useState(buttonStatus[join_status])
+  const [joinButtonText, setJoinButtonText] = useState('')
   const [otherInfoPlaceholder, setOtherInfoPlaceholder] = useState('')
   const [inGameUsername, setInGameUsername] = useState('')
   const [selectValues, setSelectValues] = useState({})
 
   useEffect(() => {
-    console.log(join_status, props.join_status)
     setJoinButtonText(buttonStatus[join_status])
     return () => setJoinButtonText(buttonStatus['0'])
-  }, [join_status])
+  }, [props.join_status])
 
   const showModal = () => {
     setModalStatus(!modalStatus)
     setSelectValues({})
   }
   const getOption = (data = '') => {
-    const arr = data ? data.split(',') : []
+    let arr = []
+    if ((data != null) & (data != '')) {
+      arr = data != null ? data.split(',') : []
+    }
+
     const option =
-      arr.length > 0 &&
-      arr.map((d) => {
-        return { value: d, label: d }
-      })
+      arr.length > 0
+        ? arr.map((d) => {
+            return { value: d, label: d }
+          })
+        : []
     return option
   }
 
@@ -165,11 +169,22 @@ const JoinStatus = (props) => {
                 placeholder='Other info (Placeholder)'
               /> */}
               {additional_submit_info_fields.map((fields, index) => {
-                const type = fields[2] == 'Multi' ? true : false
-                const Placeholder = fields[1] ? fields[1] : ''
+                let type = false
+                let Placeholder = ''
+                let key = []
+                let values = []
+                if (fields[2] != null) {
+                  type = fields[2] == 'Multi' ? true : false
+                }
+                if (fields[1] != null) {
+                  Placeholder = fields[1] ? fields[1] : ''
+                }
                 const Obj = fields[0]
-                const key = Object.keys(fields[0])[0]
-                const values = Object.values(fields[0])[0]
+                if (Obj != null) {
+                  key = Object.keys(Obj)[0]
+                  values = Object.values(Obj)[0]
+                }
+
                 return (
                   <Select
                     onChange={(data) => handleSelectChange(data, key)}
