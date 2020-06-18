@@ -154,18 +154,14 @@ export default class ScheduleGames extends Component {
           {!singleView && scheduleGames.length > 0 ? (
             <Fragment>
               <div style={{ flex: 1 }}>
-                <InfiniteScroll
-                  style={{ flex: 1 }}
-                  dataLength={scheduleGames.length}
+                <GameList
+                  scheduleGames={scheduleGames}
+                  show_full_games={show_full_games}
+                  handleExcludesFullGames={this.handleExcludesFullGames}
+                  getSingleGameData={this.getSingleGameData}
                   next={this.getScheduleGamesData}
-                  hasMore={this.state.moreplease}>
-                  <GameList
-                    scheduleGames={scheduleGames}
-                    show_full_games={show_full_games}
-                    handleExcludesFullGames={this.handleExcludesFullGames}
-                    getSingleGameData={this.getSingleGameData}
-                  />
-                </InfiniteScroll>
+                  hasMore={this.state.moreplease}
+                />
               </div>
               <div style={{ flex: 1 }}>
                 <GameDetails

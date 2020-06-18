@@ -723,6 +723,8 @@
       }
       .gameList__box {
         position: relative;
+        height: 600px;
+        overflow: scroll;
         .mygames {
           display: flex;
           justify-content: start;
