@@ -411,7 +411,7 @@
       flex: 1;
       justify-content: flex-start;
       display: flex;
-      min-height: 100vh;
+      height: calc(100vh - 100px);
       flex-direction: column;
       border-bottom: 1px solid #384952;
       position: relative;
