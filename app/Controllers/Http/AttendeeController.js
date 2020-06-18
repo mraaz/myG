@@ -270,7 +270,7 @@ class AttendeeController {
 
   async getHeader({ auth, request, response }) {
     let additional_submit_info = false,
-      additional_submit_info_fields = ''
+      additional_submit_info_fields = []
 
     try {
       const additional_game_info = await Database.from('schedule_games')
@@ -286,7 +286,6 @@ class AttendeeController {
         .first()
 
       if (getGameFields != undefined) {
-        additional_submit_info = true
         let obj = '',
           obj2 = '',
           obj3 = '',
@@ -311,6 +310,10 @@ class AttendeeController {
         }
       }
 
+      if (additional_submit_info_fields.length > 0) {
+        additional_submit_info = true
+      }
+
       return {
         additional_submit_info,
         additional_submit_info_fields,
@@ -321,6 +324,9 @@ class AttendeeController {
   }
 
   async remove_myattendance({ auth, request, response }) {
+    console.log('DS')
+    console.log(request.params.id)
+
     if (auth.user) {
       try {
         const attendees = await Database.from('attendees')
@@ -331,6 +337,8 @@ class AttendeeController {
 
         if (attendees.length > 0) {
           let noti = new NotificationController_v2()
+          let scheduleGameController = new ScheduleGameController()
+          let userStatController = new UserStatTransactionController()
 
           noti.add_approved_attendee_left({ auth }, request.params.id, attendees[0].user_id)
 
@@ -344,12 +352,9 @@ class AttendeeController {
             noti.add_approved_attendee_left({ auth }, request.params.id, co_hosts[i].user_id)
           }
 
-          let userStatController = new UserStatTransactionController()
-
           userStatController.update_total_number_of(attendees[0].user_id, 'total_number_of_games_hosted')
           userStatController.update_total_number_of(auth.user.id, 'total_number_of_games_played')
 
-          let scheduleGameController = new ScheduleGameController()
           scheduleGameController.update_vacany({ auth }, request.params.id, true)
         }
 
