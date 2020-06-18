@@ -8,10 +8,6 @@ export async function SubmitDataFunction(myG) {
   let myRegion = null,
     myExperience = null,
     myPlatform = null,
-    myDota2_medal_ranks = null,
-    myDota2_server_regions = null,
-    myDota2_roles = null,
-    myClash_royale_trophies = null,
     now = moment(),
     end_date = myG.endDate,
     myLimit = 0,
@@ -75,21 +71,21 @@ export async function SubmitDataFunction(myG) {
     }
   }
 
-  if (myG.clash_royale_trophy != null || myG.clash_royale_trophy != undefined) {
-    myClash_royale_trophies = myG.clash_royale_trophy.value
-  }
-
-  if (myG.dota2_medal_ranks !== undefined && myG.dota2_medal_ranks !== null && myG.dota2_medal_ranks.length !== 0) {
-    myDota2_medal_ranks = Convert_to_comma_delimited_value(myG.dota2_medal_ranks)
-  }
-
-  if (myG.dota2_server_regions !== undefined && myG.dota2_server_regions !== null && myG.dota2_server_regions.length !== 0) {
-    myDota2_server_regions = Convert_to_comma_delimited_value(myG.dota2_server_regions)
-  }
-
-  if (myG.dota2_roles !== undefined && myG.dota2_roles !== null && myG.dota2_roles.length !== 0) {
-    myDota2_roles = Convert_to_comma_delimited_value(myG.dota2_roles)
-  }
+  // if (myG.clash_royale_trophy != null || myG.clash_royale_trophy != undefined) {
+  //   myClash_royale_trophies = myG.clash_royale_trophy.value
+  // }
+  //
+  // if (myG.dota2_medal_ranks !== undefined && myG.dota2_medal_ranks !== null && myG.dota2_medal_ranks.length !== 0) {
+  //   myDota2_medal_ranks = Convert_to_comma_delimited_value(myG.dota2_medal_ranks)
+  // }
+  //
+  // if (myG.dota2_server_regions !== undefined && myG.dota2_server_regions !== null && myG.dota2_server_regions.length !== 0) {
+  //   myDota2_server_regions = Convert_to_comma_delimited_value(myG.dota2_server_regions)
+  // }
+  //
+  // if (myG.dota2_roles !== undefined && myG.dota2_roles !== null && myG.dota2_roles.length !== 0) {
+  //   myDota2_roles = Convert_to_comma_delimited_value(myG.dota2_roles)
+  // }
 
   if (myG.autoJoin != null || myG.autoJoin != undefined) {
     autoJoin = myG.autoJoin
@@ -111,11 +107,7 @@ export async function SubmitDataFunction(myG) {
       visibility: myG.selected_visibility,
       limit: myLimit,
       accept_msg: myG.txtAreaValue.trim(),
-      dota2_medal_ranks: myDota2_medal_ranks,
-      dota2_server_regions: myDota2_server_regions,
-      dota2_roles: myDota2_roles,
       schedule_games_GUID: tmp,
-      clash_royale_trophies: myClash_royale_trophies,
       allow_comments: myG.allow_comments,
       autoJoin: autoJoin,
       co_hosts: co_hosts,
@@ -124,7 +116,17 @@ export async function SubmitDataFunction(myG) {
       cron: myG.cron,
       occurrence: myG.occurrence,
       repeatEvery: myG.repeatEvery,
+      value_one: myG.value_one,
+      value_two: myG.value_two,
+      value_three: myG.value_three,
+      value_four: myG.value_four,
+      value_five: myG.value_five,
     })
+
+    // clash_royale_trophies: myClash_royale_trophies,
+    // dota2_medal_ranks: myDota2_medal_ranks,
+    // dota2_server_regions: myDota2_server_regions,
+    // dota2_roles: myDota2_roles,
     return post
   } catch (error) {
     throw error

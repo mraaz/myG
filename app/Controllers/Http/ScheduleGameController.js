@@ -1,11 +1,13 @@
 'use strict'
 
 const Database = use('Database')
+
 const ScheduleGame = use('App/Models/ScheduleGame')
 const ScheduleGamesTransaction = use('App/Models/ScheduleGamesTransaction')
 const CoHost = use('App/Models/CoHost')
 const GameTags = use('App/Models/GameTag')
 const ScheduleGamesTags = use('App/Models/ScheduleGamesTag')
+const Attendee = use('App/Models/Attendee')
 
 const NotificationController = use('./NotificationController')
 const Archive_AttendeeController = use('./Archive_AttendeeController')
@@ -14,9 +16,9 @@ const Archive_CommentController = use('./Archive_CommentController')
 const Archive_ReplyController = use('./Archive_ReplyController')
 const Archive_schedule_games_transController = use('./Archive_schedule_games_transController')
 const GameNameController = use('./GameNameController')
-const Attendee = use('App/Models/Attendee')
 const InGame_fieldsController = use('./InGame_fieldsController')
 const GameTagController = use('./GameTagController')
+const AttendeeController = use('./AttendeeController')
 
 class ScheduleGameController {
   async store({ auth, request, response }) {
@@ -88,46 +90,88 @@ class ScheduleGameController {
           allow_comments: request.input('allow_comments'),
         })
 
+        console.log(request.input('value_one'))
+
         if (
           getGameName.length != 0 &&
-          (request.input('dota2_medal_ranks') != null ||
-            request.input('dota2_server_regions') != null ||
-            request.input('dota2_roles') != null ||
-            request.input('clash_royale_trophies') != null)
+          ((request.input('value_one') != null && JSON.stringify(request.input('value_one')) !== '{}') ||
+            (request.input('value_two') != null && JSON.stringify(request.input('value_two')) !== '{}') ||
+            (request.input('value_three') != null && JSON.stringify(request.input('value_three')) !== '{}') ||
+            (request.input('value_four') != null && JSON.stringify(request.input('value_four')) !== '{}') ||
+            (request.input('value_five') != null && JSON.stringify(request.input('value_five')) !== '{}'))
         ) {
-          const getGameNameFields = await Database.from('game_name_fields')
+          const getGameFields = await Database.from('game_name_fields')
             .where({
-              game_names_id: 998,
+              game_names_id: gameNameID,
             })
             .first()
-          if (getGameNameFields != undefined) {
-            let obj = JSON.parse(getGameNameFields.in_game_fields)
-            let value_one = null,
-              value_two = null,
-              value_three = null
 
-            if (request.input('dota2_medal_ranks') != null && obj.value_one == 'dota2_medal_ranks') {
-              value_one = request.input('dota2_medal_ranks')
+          if (getGameFields != undefined) {
+            let db_obj = ''
+
+            let db_save_value_array = new Array(5).fill(null)
+
+            let attendeeController = new AttendeeController()
+
+            if (getGameFields.in_game_fields != undefined) {
+              db_obj = JSON.parse(getGameFields.in_game_fields)
             }
 
-            if (request.input('dota2_server_regions') != null && obj.value_two == 'dota2_server_regions') {
-              value_two = request.input('dota2_server_regions')
+            if (request.input('value_one') != undefined && request.input('value_one') != null && db_obj != '') {
+              db_save_value_array = await attendeeController.process_game_name_fields(
+                db_obj,
+                request.input('value_one'),
+                db_save_value_array
+              )
             }
 
-            if (request.input('dota2_roles') != null && obj.value_three == 'dota2_roles') {
-              value_three = request.input('dota2_roles')
+            if (request.input('value_two') != undefined && request.input('value_two') != null && db_obj != '') {
+              db_save_value_array = await attendeeController.process_game_name_fields(
+                db_obj,
+                request.input('value_two'),
+                db_save_value_array
+              )
             }
-
-            if (request.input('clash_royale_trophies') != null && obj.value_one == 'clash_royale_trophies') {
-              value_one = request.input('clash_royale_trophies')
+            if (request.input('value_three') != undefined && request.input('value_three') != null && db_obj != '') {
+              db_save_value_array = await attendeeController.process_game_name_fields(
+                db_obj,
+                request.input('value_three'),
+                db_save_value_array
+              )
             }
-            await ScheduleGamesTransaction.create({
-              schedule_games_id: newScheduleGame.id,
-              game_name_fields_id: getGameNameFields.id,
-              value_one: value_one,
-              value_two: value_two,
-              value_three: value_three,
-            })
+            if (request.input('value_four') != undefined && request.input('value_four') != null && db_obj != '') {
+              db_save_value_array = await attendeeController.process_game_name_fields(
+                db_obj,
+                request.input('value_four'),
+                db_save_value_array
+              )
+            }
+            if (request.input('value_five') != undefined && request.input('value_five') != null && db_obj != '') {
+              db_save_value_array = await attendeeController.process_game_name_fields(
+                db_obj,
+                request.input('value_five'),
+                db_save_value_array
+              )
+            }
+            console.log('got hrere')
+            let counter = 0
+            for (var i = 0; i < db_save_value_array.length; i++) {
+              if (db_save_value_array[i] == null) {
+                counter = counter + 1
+              }
+            }
+            console.log(counter)
+            if (counter != 5) {
+              await ScheduleGamesTransaction.create({
+                schedule_games_id: newScheduleGame.id,
+                game_name_fields_id: getGameFields.id,
+                value_one: db_save_value_array[0],
+                value_two: db_save_value_array[1],
+                value_three: db_save_value_array[2],
+                value_four: db_save_value_array[3],
+                value_five: db_save_value_array[4],
+              })
+            }
           }
         }
         if (request.input('autoJoin') == true) {
@@ -596,7 +640,6 @@ class ScheduleGameController {
           .first()
 
         if (getGameFields != undefined) {
-          additional_submit_info = true
           let obj = '',
             obj2 = '',
             obj3 = ''
@@ -641,6 +684,10 @@ class ScheduleGameController {
             }
           }
         }
+      }
+
+      if (additional_submit_info_fields.length > 0) {
+        additional_submit_info = true
       }
 
       let getAllGamers = await Database.from('attendees')

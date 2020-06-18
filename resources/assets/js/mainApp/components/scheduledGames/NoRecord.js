@@ -8,7 +8,7 @@ const NoRecordFound = (props) => {
     <div className='noRecordFound__wraper'>
       <h1 className='noRecordFound__header'>Cannot find any games</h1>
       <div className='noRecordFound__body'>
-        Try searching for another filter or{' '}
+        Try searching for another title or{' '}
         <Link to='/addScheduleGames'>
           {' '}
           <span className='addScheduleGames__link' style={{ color: '#e5c746', cursor: 'pointer' }}>
