@@ -420,7 +420,8 @@ class ScheduleGameController {
     try {
       let arrTags = '',
         latestScheduledGames
-      if (request.input('tags') != null) {
+      if (request.input('tags') != null && request.input('tags').length != 0) {
+        console.log(request.input('tags'))
         arrTags = request.input('tags').split(',')
         if (arrTags != '') {
           latestScheduledGames = await Database.from('schedule_games')
@@ -438,7 +439,8 @@ class ScheduleGameController {
 
               if (request.input('experience') != null) builder.where('experience', request.input('experience'))
 
-              if (request.input('start_date_time') != null) builder.where('start_date_time', '<=', request.input('start_date_time'))
+              //RAAZ UNDO THIS AFTER VIEW GAME IS COMPLETED BY NITIN!!!! https://github.com/mraaz/myGame/issues/274
+              //if (request.input('start_date_time') != null) builder.where('start_date_time', '<=', request.input('start_date_time'))
 
               if (request.input('end_date_time') != null) builder.where('end_date_time', '>=', request.input('end_date_time'))
 
