@@ -2,9 +2,8 @@ import React, { Component, Fragment } from 'react'
 import axios from 'axios'
 
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
-import CreatableSelect from 'react-select/lib/Creatable'
 import Select from 'react-select'
-import { Game_name_values, Disable_keys, Toast_style, Game_name_Tags } from '../Utility_Function'
+import { Game_name_values, Disable_keys, Schedule_Game_Tags, Toast_style, Game_name_Tags } from '../Utility_Function'
 import { toast } from 'react-toastify'
 
 import { region_options, visibility_options, date_options, platform_options, experience_options } from './option'
@@ -69,6 +68,16 @@ export default class ScheduleGames extends Component {
   }
 
   componentDidMount() {
+    const getInitialData = async () => {
+      try {
+        let results = await Schedule_Game_Tags()
+        this.setState({ options_tags: results })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getInitialData()
+
     this.getFilter()
   }
 
@@ -204,51 +213,44 @@ export default class ScheduleGames extends Component {
   getOptions_tags = (inputValue) => {
     const getInitialData = async (inputValue) => {
       try {
-        var results = await Game_name_Tags(inputValue, this.state.game_name_box.game_names_id)
+        let results = await Schedule_Game_Tags(inputValue)
         this.setState({ options_tags: results })
       } catch (error) {
         console.log(error)
       }
     }
-    if (this.state.game_name_box != null) {
-      if (
-        this.state.game_name_box.game_names_id != null &&
-        this.state.game_name_box.game_names_id != undefined &&
-        this.state.game_name_box.game_names_id != ''
-      ) {
-        getInitialData(inputValue)
-      }
-    }
+    getInitialData(inputValue)
   }
   getTagsValue = (value_tags = []) => {
     return value_tags.map((d) => d.value)
   }
-  handleCreateTags = (inputValue: any) => {
-    if (inputValue.length > 88) {
-      toast.success(<Toast_style text={'Sorry mate! Skill length is too long.'} />)
-      return
-    }
-    setTimeout(() => {
-      const { options_tags = [], value_tags = [], newValueCreated_tags = [], filterValueArray = {} } = this.state
-      const newOption = createOption(inputValue, null)
-      const { tags = [] } = filterValueArray
-      const changedTags = [...tags, newOption]
-      filterValueArray['tags'] = changedTags
 
-      this.setState(
-        {
-          options_tags: [...options_tags, newOption],
-          value_tags: [...value_tags, newOption],
-          newValueCreated_tags: [...newValueCreated_tags, newOption.label],
-          filterValueArray,
-        },
-        () => {
-          const tags = this.getTagsValue([...value_tags, newOption])
-          this.props.handleChange({ tags }, name)
-        }
-      )
-    }, 300)
-  }
+  // handleCreateTags = (inputValue: any) => {
+  //   if (inputValue.length > 88) {
+  //     toast.success(<Toast_style text={'Sorry mate! Skill length is too long.'} />)
+  //     return
+  //   }
+  //   setTimeout(() => {
+  //     const { options_tags = [], value_tags = [], newValueCreated_tags = [], filterValueArray = {} } = this.state
+  //     const newOption = createOption(inputValue, null)
+  //     const { tags = [] } = filterValueArray
+  //     const changedTags = [...tags, newOption]
+  //     filterValueArray['tags'] = changedTags
+  //
+  //     this.setState(
+  //       {
+  //         options_tags: [...options_tags, newOption],
+  //         value_tags: [...value_tags, newOption],
+  //         newValueCreated_tags: [...newValueCreated_tags, newOption.label],
+  //         filterValueArray,
+  //       },
+  //       () => {
+  //         const tags = this.getTagsValue([...value_tags, newOption])
+  //         this.props.handleChange({ tags }, name)
+  //       }
+  //     )
+  //   }, 300)
+  // }
 
   getFilter = async () => {
     try {
@@ -536,17 +538,16 @@ export default class ScheduleGames extends Component {
                 return (
                   <div className='viewGame__gameName'>
                     <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                    <CreatableSelect
+                    <Select
                       onChange={(data) => this.handleTagsChange(data, k)}
                       options={this.state.options_tags}
-                      onCreateOption={this.handleCreateTags}
                       isClearable
                       value={value}
                       className='viewGame__name'
                       isMulti
                       onKeyDown={this.onKeyDown}
                       onInputChange={this.getOptions_tags}
-                      placeholder='Search, Select or create Tags'
+                      placeholder='Search or Select Tags'
                       classNamePrefix='filter'
                     />
                   </div>
