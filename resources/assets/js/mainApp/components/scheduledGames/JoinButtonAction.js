@@ -26,6 +26,8 @@ const JoinStatus = (props) => {
   const [otherInfoPlaceholder, setOtherInfoPlaceholder] = useState('')
   const [inGameUsername, setInGameUsername] = useState('')
   const [selectValues, setSelectValues] = useState({})
+  const [isButtonDisabled, setButtonDisabled] = useState(true)
+  let fieldKey = {}
 
   useEffect(() => {
     setJoinButtonText(buttonStatus[join_status])
@@ -35,7 +37,8 @@ const JoinStatus = (props) => {
     setModalStatus(!modalStatus)
     setSelectValues({})
   }
-  const getOption = (data = '') => {
+  const getOption = (data = '', k = '') => {
+    let key = { ...fieldKey }
     let arr = []
     if ((data != null) & (data != '')) {
       arr = data != null ? data.split(',') : []
@@ -47,6 +50,11 @@ const JoinStatus = (props) => {
             return { value: d, label: d }
           })
         : []
+    if (option.length > 0) {
+      key[k] = true
+      fieldKey = key
+    }
+
     return option
   }
 
@@ -101,8 +109,20 @@ const JoinStatus = (props) => {
     setInGameUsername(value)
   }
   const handleSelectChange = (data, name) => {
+    const keys = { ...fieldKey }
+    if (data == null) {
+      keys[name] = true
+    } else {
+      delete keys[name]
+    }
     const values = { ...selectValues }
     values[name] = data
+    fieldKey = keys
+    if (Object.keys(fieldKey).length == 0) {
+      setButtonDisabled(false)
+    } else {
+      setButtonDisabled(true)
+    }
     setSelectValues(values)
   }
   const getFinalValueToSubmit = (data) => {
@@ -183,21 +203,22 @@ const JoinStatus = (props) => {
                   key = Object.keys(Obj)[0]
                   values = Object.values(Obj)[0]
                 }
-
-                return (
-                  <Select
-                    onChange={(data) => handleSelectChange(data, key)}
-                    options={getOption(values)}
-                    placeholder={Placeholder}
-                    name={key}
-                    isClearable
-                    className='game__values'
-                    classNamePrefix='filter'
-                    value={selectValues[key] || ''}
-                    isMulti={type}
-                    key={index}
-                  />
-                )
+                if (values != null) {
+                  return (
+                    <Select
+                      onChange={(data) => handleSelectChange(data, key)}
+                      options={getOption(values, key)}
+                      placeholder={Placeholder}
+                      name={key}
+                      isClearable
+                      className='game__values'
+                      classNamePrefix='filter'
+                      value={selectValues[key] || ''}
+                      isMulti={type}
+                      key={index}
+                    />
+                  )
+                }
               })}
             </div>
             <div className='modal__close' onClick={showModal}>
@@ -205,7 +226,7 @@ const JoinStatus = (props) => {
             </div>
           </div>
           <div className='modal__footer'>
-            <button type='button' onClick={handleSubmit}>
+            <button type='button' onClick={handleSubmit} disabled={isButtonDisabled}>
               Submit
             </button>
           </div>
