@@ -40,7 +40,7 @@ export default class GameDetails extends Component {
     const experience_split = experience ? experience.split(',') : []
 
     const { no_of_comments = [], lastComment = '' } = commentData
-    console.log('scheduleGames  ', scheduleGames, showAllComment)
+    const { no_of_my_comments = 0 } = no_of_comments[0] || {}
 
     return (
       <div className='gameDetails'>
@@ -109,18 +109,34 @@ export default class GameDetails extends Component {
             </div>
             {(lastComment || !showAllComment) && (
               <div className='gameDetaiils__footer'>
-                <div className='view__all__comments' onClick={this.props.handleShowAllComments}>
-                  View all (3) comments
-                </div>
-                <div className='game__comment'>
-                  <div className='profile__image'></div>
-                  <div className='arrow'></div>
-                  <span className='author'>Alexander Bischof</span>
-                  <span>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua.
-                  </span>
-                </div>
+                {no_of_my_comments > 0 && (
+                  <Fragment>
+                    <div className='view__all__comments' onClick={this.props.handleShowAllComments}>
+                      {`View all (${no_of_my_comments}) comments`}
+                    </div>
+
+                    <div className='game__comment'>
+                      <Link to={`/profile/${lastComment.alias}`} className='user-img'>
+                        {' '}
+                        <div
+                          className='profile__image'
+                          style={{
+                            backgroundImage: `url('${lastComment.profile_img}')`,
+                            backgroundSize: 'cover',
+                          }}></div>
+                      </Link>
+
+                      <div className='arrow'></div>
+                      <span className='author'>{`${lastComment.first_name} ${lastComment.last_name}`}</span>
+                      <span>{lastComment.content || ''}</span>
+                    </div>
+                  </Fragment>
+                )}
+                {no_of_my_comments == 0 && (
+                  <div className='noComments'>
+                    No comments yet. <span onClick={this.props.handleShowAllComments}>Be the first to leave a comment.</span>
+                  </div>
+                )}
               </div>
             )}
           </Fragment>
