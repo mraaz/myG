@@ -411,7 +411,7 @@
       flex: 1;
       justify-content: flex-start;
       display: flex;
-      min-height: 570px;
+      min-height: 100vh;
       flex-direction: column;
       border-bottom: 1px solid #384952;
       position: relative;
@@ -723,7 +723,7 @@
       }
       .gameList__box {
         position: relative;
-        height: 600px;
+        height: 120vh;
         overflow: scroll;
         .mygames {
           display: flex;
@@ -773,6 +773,7 @@
               max-height: 163px;
             }
             .default-image {
+              width: 120px;
               position: relative;
               height: 75px;
             }
