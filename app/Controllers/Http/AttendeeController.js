@@ -270,6 +270,53 @@ class AttendeeController {
 
   async getHeader({ auth, request, response }) {
     let additional_submit_info = false,
+      additional_submit_info_fields = {}
+
+    try {
+      const additional_game_info = await Database.from('schedule_games')
+        .where('schedule_games.id', '=', request.params.id)
+        .first()
+
+      if (additional_game_info == undefined) {
+        return
+      }
+      //Figure out what fields to return, create the key value pair.
+      const getGameFields = await Database.from('game_name_fields')
+        .where({ game_names_id: additional_game_info.game_names_id })
+        .first()
+
+      if (getGameFields != undefined) {
+        let obj = '',
+          obj4 = ''
+
+        if (getGameFields.in_game_fields != undefined) {
+          obj = JSON.parse(getGameFields.in_game_fields)
+        }
+
+        if (getGameFields.in_game_field_text != undefined) {
+          obj4 = JSON.parse(getGameFields.in_game_field_text)
+        }
+
+        for (let key in obj) {
+          additional_submit_info_fields[key] = obj4[obj[key]]
+        }
+      }
+
+      if (JSON.stringify(additional_submit_info_fields) !== '{}') {
+        additional_submit_info = true
+      }
+
+      return {
+        additional_submit_info,
+        additional_submit_info_fields,
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async getHeader_ALL({ auth, request, response }) {
+    let additional_submit_info = false,
       additional_submit_info_fields = []
 
     try {

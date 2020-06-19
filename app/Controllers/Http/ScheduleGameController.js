@@ -88,9 +88,8 @@ class ScheduleGameController {
           accept_msg: request.input('accept_msg'),
           schedule_games_GUID: request.input('schedule_games_GUID'),
           allow_comments: request.input('allow_comments'),
+          autoJoin: request.input('autoJoin'),
         })
-
-        console.log(request.input('value_one'))
 
         if (
           getGameName.length != 0 &&
@@ -153,14 +152,14 @@ class ScheduleGameController {
                 db_save_value_array
               )
             }
-            console.log('got hrere')
             let counter = 0
+
             for (var i = 0; i < db_save_value_array.length; i++) {
               if (db_save_value_array[i] == null) {
                 counter = counter + 1
               }
             }
-            console.log(counter)
+
             if (counter != 5) {
               await ScheduleGamesTransaction.create({
                 schedule_games_id: newScheduleGame.id,
@@ -465,7 +464,6 @@ class ScheduleGameController {
       let arrTags = '',
         latestScheduledGames
       if (request.input('tags') != null && request.input('tags').length != 0) {
-        console.log(request.input('tags'))
         arrTags = request.input('tags').split(',')
         if (arrTags != '') {
           latestScheduledGames = await Database.from('schedule_games')
