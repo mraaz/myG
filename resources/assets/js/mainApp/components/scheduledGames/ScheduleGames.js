@@ -24,6 +24,7 @@ export default class ScheduleGames extends Component {
       counter: 1,
       scheduleGamesView: {},
       showAllComment: false,
+      fetching: false,
     }
   }
 
@@ -100,26 +101,21 @@ export default class ScheduleGames extends Component {
   }
   getScheduleGamesData = async (data = {}) => {
     const { counter, scheduleGames = [] } = this.state
-
     let count = counter + 1
-
-    if (scheduleGames.length > 0) {
-      window.scrollTo(0, document.documentElement.offsetHeight - 4000)
-    }
+    this.setState({ fetching: true })
     const scheduleGamesRes = await getScheduleGames({ ...this.state, ...data, counter: count })
-
     if (scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length == 0) {
       this.setState({
         moreplease: false,
+        fetching: false,
       })
       return
     }
-
     if (scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length > 0) {
       if (count > 1) {
-        this.setState({ scheduleGames: [...scheduleGames, ...scheduleGamesRes.data.latestScheduledGames], counter: count })
+        this.setState({ scheduleGames: [...scheduleGames, ...scheduleGamesRes.data.latestScheduledGames], counter: count, fetching: false })
       } else {
-        this.setState({ scheduleGames: scheduleGames.data.latestScheduledGames })
+        this.setState({ scheduleGames: scheduleGames.data.latestScheduledGames, fetching: false })
       }
     }
   }
@@ -145,6 +141,7 @@ export default class ScheduleGames extends Component {
       singleView,
       scheduleGamesView = {},
       showAllComment,
+      fetching,
     } = this.state
     const { latestScheduledGames = [] } = scheduleGamesView
 
@@ -165,6 +162,7 @@ export default class ScheduleGames extends Component {
                   getSingleGameData={this.getSingleGameData}
                   next={this.getScheduleGamesData}
                   hasMore={this.state.moreplease}
+                  fetching={fetching}
                 />
               </div>
               <div style={{ flex: 1 }}>

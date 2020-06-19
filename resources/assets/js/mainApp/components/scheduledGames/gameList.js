@@ -19,7 +19,7 @@ export default class GameList extends Component {
   handleScroll = (event) => {
     const _event = event.currentTarget,
       _current = this.myRef.current
-    if (_event.scrollTop + (3 / 2) * _current.offsetHeight > _event.scrollHeight && this.props.hasMore) {
+    if (_event.scrollTop + (3 / 2) * _current.offsetHeight > _event.scrollHeight && this.props.hasMore && !this.props.fetching) {
       this.props.next()
     }
   }
