@@ -257,7 +257,7 @@ class AttendeeController {
       const role_call_ALL = await Database.from('attendees')
         .innerJoin('users', 'users.id', 'attendees.user_id')
         .where({ schedule_games_id: request.input('schedule_games_id'), type: 1 })
-        .select('users.id as user_id', 'users.profile_img', 'users.alias', 'users.level')
+        .select('attendees.*', 'users.id as user_id', 'users.profile_img', 'users.alias', 'users.level')
         .paginate(request.input('counter'), 10)
 
       return {
@@ -306,7 +306,7 @@ class AttendeeController {
 
         for (let key in obj) {
           let tmp_tmp = { [key]: obj[key] }
-          additional_submit_info_fields.push([tmp_tmp, obj2[key], obj3[key], obj4[key]])
+          additional_submit_info_fields.push([tmp_tmp, obj2[obj[key]], obj3[obj[key]], obj4[obj[key]]])
         }
       }
 
