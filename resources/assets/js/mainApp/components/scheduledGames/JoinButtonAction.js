@@ -113,10 +113,16 @@ const JoinStatus = (props) => {
       let keys = { ...fieldKey }
       const values = { ...selectValues }
       if (data != null) {
-        values[name] = data
+        if (data.length > 0 || Object.keys(data).length > 0) {
+          values[name] = data
+        } else {
+          delete values[name]
+        }
       } else {
         delete values[name]
       }
+      console.log(data)
+
       if (Object.keys(fieldKey).length == Object.keys(values).length) {
         setButtonDisabled(false)
       } else {
