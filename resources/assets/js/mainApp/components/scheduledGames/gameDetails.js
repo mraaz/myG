@@ -11,8 +11,8 @@ export default class GameDetails extends Component {
     super()
     this.state = {}
   }
-  handleShowAllComments = () => {
-    this.props.handleShowAllComments()
+  handleShowAllComments = (id) => {
+    this.props.handleShowAllComments(id)
   }
 
   render() {
@@ -110,7 +110,7 @@ export default class GameDetails extends Component {
               <div className='gameDetaiils__footer'>
                 {no_of_my_comments > 0 && (
                   <Fragment>
-                    <div className='view__all__comments' onClick={this.handleShowAllComments}>
+                    <div className='view__all__comments' onClick={(e) => this.handleShowAllComments(id)}>
                       {`View all (${no_of_my_comments}) comments`}
                     </div>
 
@@ -133,7 +133,7 @@ export default class GameDetails extends Component {
                 )}
                 {no_of_my_comments == 0 && (
                   <div className='noComments'>
-                    No comments yet. <span onClick={this.handleShowAllComments}>Be the first to leave a comment.</span>
+                    No comments yet. <span onClick={(e) => this.handleShowAllComments(id)}>Be the first to leave a comment.</span>
                   </div>
                 )}
               </div>
@@ -145,7 +145,7 @@ export default class GameDetails extends Component {
             game_id={id}
             scheduleGames_data={selected_game}
             user={this.props.initialData}
-            toggleBack={this.handleShowAllComments}
+            toggleBack={(e) => this.handleShowAllComments(id)}
             allow_comments={allow_comments}
           />
         )}

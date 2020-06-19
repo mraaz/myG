@@ -27,8 +27,12 @@ export default class ScheduleGames extends Component {
     }
   }
 
-  handleShowAllComments = () => {
+  handleShowAllComments = async (id) => {
     this.setState({ showAllComment: !this.state.showAllComment })
+    const allComments = await axios.get(`/api/comments/get_right_card_comment_info/${id}`)
+    if (allComments.data) {
+      this.setState({ commentData: { ...allComments.data } })
+    }
   }
 
   async componentDidMount() {
