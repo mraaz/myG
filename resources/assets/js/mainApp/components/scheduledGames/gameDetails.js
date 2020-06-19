@@ -42,7 +42,7 @@ export default class GameDetails extends Component {
 
     return (
       <div className='gameDetails'>
-        {showRightSideInfo && !showAllComment && (
+        {showRightSideInfo && !showAllComment ? (
           <Fragment>
             <div className='gameDetails__header'>
               <div className='gameName'>
@@ -84,7 +84,7 @@ export default class GameDetails extends Component {
               <div className='gameTime__value'>{moment(end_date_time).format('LLLL')}</div>
 
               {platform && <div className='gameTime__label'>Platform</div>}
-              {platform && <div className='gameTime__value'>{platform}</div>}
+              {platform && <div className='gameTime__value'>{platform.split(',').join(',  ')}</div>}
               {region && <div className='gameTime__label'>Region</div>}
               {region && <div className='gameTime__value'>{region}</div>}
               <Approved_gamers approved_gamers={approved_gamers} schedule_games_id={id} />
@@ -139,6 +139,8 @@ export default class GameDetails extends Component {
               </div>
             )}
           </Fragment>
+        ) : (
+          !showAllComment && <div className='viewRightInfo'>Click on any card on left to see detail here.</div>
         )}
         {showAllComment && (
           <GameComments

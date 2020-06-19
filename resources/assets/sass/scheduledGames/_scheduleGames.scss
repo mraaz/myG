@@ -407,6 +407,14 @@
     border-top: 1px solid #384952;
     align-items: flex-start;
     justify-content: center;
+    .viewRightInfo {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      justify-content: center;
+      padding: 40px 0;
+      height: 300px;
+    }
     .gameDetails {
       flex: 1;
       justify-content: flex-start;
@@ -604,6 +612,10 @@
             display: inline-flex;
             align-items: center;
             margin-right: 20px;
+            a {
+              display: flex;
+              align-items: center;
+            }
           }
           .gamer__image {
             width: 30px;
@@ -839,10 +851,17 @@
                 }
                 .playerName {
                   text-align: left;
-                  font: SemiBold 10px/14px Montserrat;
+                  font: 10px/14px Montserrat;
                   letter-spacing: 0px;
                   color: #ffffff;
                   margin-left: 5px;
+                  display: flex;
+                  align-items: center;
+                  font-weight: 600;
+                  cursor: pointer;
+                  span {
+                    margin-left: 5px;
+                  }
                 }
               }
             }
@@ -979,6 +998,8 @@
         padding-left: 100px;
         padding-right: 50px;
         margin-bottom: 30px;
+        max-height: 550px;
+        overflow: scroll;
         .individual-comment-container {
           .comment__shape {
             width: 0px;
