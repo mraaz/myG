@@ -19,7 +19,7 @@ export default class GameList extends Component {
   handleScroll = (event) => {
     const _event = event.currentTarget,
       _current = this.myRef.current
-    if (_event.scrollTop + (3 / 2) * _current.offsetHeight > _event.scrollHeight && this.props.hasMore) {
+    if (_event.scrollTop + (3 / 2) * _current.offsetHeight > _event.scrollHeight && this.props.hasMore && !this.props.fetching) {
       this.props.next()
     }
   }
@@ -79,10 +79,12 @@ export default class GameList extends Component {
                         {game.game_name}
                       </h1>
                       <div className='game__playerList'>
-                        <img src={game.profile_img} />
-                        <div className='playerName'>
-                          <Link to={`/profile/${game.alias}`}>{game.alias}</Link>
-                        </div>
+                        <Link to={`/profile/${game.alias}`}>
+                          <div className='playerName'>
+                            <img src={game.profile_img} />
+                            <span> {game.alias}</span>
+                          </div>
+                        </Link>
                       </div>
                     </div>
                     <div className='second__row'>

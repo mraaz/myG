@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 const Approved_gamers = (props) => {
   const [attendees, setAttendees] = useState([])
   const [extraHeaders, setHeaders] = useState([])
+  const [extraKeys, setExtraKeys] = useState([])
   const [modalStatus, setModalStatus] = useState(false)
   const { approved_gamers = [] } = props
 
@@ -16,6 +17,7 @@ const Approved_gamers = (props) => {
         const { additional_submit_info = false, additional_submit_info_fields = {} } = getHeaders.data
         if (additional_submit_info) {
           setHeaders(Object.values(additional_submit_info_fields))
+          setExtraKeys(Object.keys(additional_submit_info_fields))
         }
       }
     }
@@ -49,12 +51,14 @@ const Approved_gamers = (props) => {
           approved_gamers.slice(0, 3).map((gamer) => {
             return (
               <div className='single__gamer'>
-                <div className='gamer__image '>
-                  <img src={gamer.profile_img} />
-                </div>
-                <div className='gamer__alias ' title={gamer.alias}>
-                  <Link to={`/profile/${gamer.alias}`}>{gamer.alias}</Link>
-                </div>
+                <Link to={`/profile/${gamer.alias}`}>
+                  <div className='gamer__image '>
+                    <img src={gamer.profile_img} />
+                  </div>
+                  <div className='gamer__alias ' title={gamer.alias}>
+                    {gamer.alias}
+                  </div>
+                </Link>
               </div>
             )
           })}
@@ -92,19 +96,17 @@ const Approved_gamers = (props) => {
                   return (
                     <div className='list__item'>
                       <div className='gamer__name'>
-                        <div className='default_circle'>
-                          <img src={attendee.profile_img} className='groupImage' />
-                        </div>
-                        <spam>
-                          <Link to={`/profile/${attendee.alias}`}>{attendee.alias}</Link>
-                        </spam>
+                        <Link to={`/profile/${attendee.alias}`}>
+                          <div className='default_circle'>
+                            <img src={attendee.profile_img} className='groupImage' />
+                          </div>
+                          <spam>{attendee.alias}</spam>
+                        </Link>
                       </div>
-                      <div className='other__title server'> </div>
-                      <div className='other__title medals'> </div>
-                      <div className='other__title'>
-                        {' '}
-                        <span className='position'>1</span>
-                      </div>
+                      {extraKeys.length > 0 &&
+                        extraKeys.map((extraKey) => {
+                          return <div className='other__title server'>{attendee[extraKey] || ''}</div>
+                        })}
                       <div className='other__title level'>
                         {'level '}
                         <span className='level__value'>{attendee.level}</span>

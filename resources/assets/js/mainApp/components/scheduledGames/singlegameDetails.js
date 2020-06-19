@@ -22,11 +22,19 @@ export default class GameDetails extends Component {
       const { id = '' } = scheduleGames_data
       const allComments = await axios.get(`/api/comments/get_right_card_comment_info/${id}`)
       if (allComments.data) {
-        this.setState({ commentData: { ...allComments.data } })
+        await this.setState({ commentData: { ...allComments.data } })
       }
     } catch (error) {
       console.log('error  ', error)
     }
+  }
+
+  handleShowAllComments = async (id) => {
+    const allComments = await axios.get(`/api/comments/get_right_card_comment_info/${id}`)
+    if (allComments.data) {
+      await this.setState({ commentData: { ...allComments.data } })
+    }
+    this.props.handleShowAllComments()
   }
 
   render() {
@@ -37,13 +45,13 @@ export default class GameDetails extends Component {
       join_status,
       additional_submit_info = false,
       additional_submit_info_fields = [],
+      getAllGamers = [],
     } = scheduleGames
 
     const [scheduleGames_data = {}] = latestScheduledGames
     const {
       game_name = '',
       experience = '',
-      no_of_gamers = '',
       tags = [],
       start_date_time = '',
       end_date_time = '',
@@ -54,6 +62,7 @@ export default class GameDetails extends Component {
       id = '',
       allow_comments = 0,
     } = scheduleGames_data
+    const { no_of_gamers } = getAllGamers[0] || {}
     const experience_split = experience ? experience.split(',') : []
     const { commentData = {} } = this.state
     const { no_of_comments = [], lastComment = '' } = commentData
@@ -102,7 +111,7 @@ export default class GameDetails extends Component {
               <div className='gameTime__value'>{moment(end_date_time).format('LLLL')}</div>
 
               {platform && <div className='gameTime__label'>Platform</div>}
-              {platform && <div className='gameTime__value'>{platform}</div>}
+              {platform && <div className='gameTime__value'>{platform.split(',').join(', ')}</div>}
               {region && <div className='gameTime__label'>Region</div>}
               {region && <div className='gameTime__value'>{region}</div>}
               <Approved_gamers approved_gamers={approved_gamers} schedule_games_id={id} />
@@ -128,7 +137,7 @@ export default class GameDetails extends Component {
               <div className='gameDetaiils__footer'>
                 {no_of_my_comments > 0 && (
                   <Fragment>
-                    <div className='view__all__comments' onClick={this.props.handleShowAllComments}>
+                    <div className='view__all__comments' onClick={(e) => this.handleShowAllComments(id)}>
                       {`View all (${no_of_my_comments}) comments`}
                     </div>
 
@@ -151,7 +160,7 @@ export default class GameDetails extends Component {
                 )}
                 {no_of_my_comments == 0 && (
                   <div className='noComments'>
-                    No comments yet. <span onClick={this.props.handleShowAllComments}>Be the first to leave a comment.</span>
+                    No comments yet. <span onClick={(e) => this.handleShowAllComments(id)}>Be the first to leave a comment.</span>
                   </div>
                 )}
               </div>
@@ -162,7 +171,7 @@ export default class GameDetails extends Component {
           <div className='gameDetails'>
             <GameComments
               game_id={id}
-              toggleBack={this.props.handleShowAllComments}
+              toggleBack={(e) => this.handleShowAllComments(id)}
               scheduleGames_data={scheduleGames_data}
               user={this.props.initialData}
               allow_comments={allow_comments}
