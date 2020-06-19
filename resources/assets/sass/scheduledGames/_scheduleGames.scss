@@ -411,10 +411,12 @@
       flex: 1;
       justify-content: flex-start;
       display: flex;
-      height: calc(100vh - 100px);
+      min-height: 580px;
+      max-height: calc(100vh - 100px);
       flex-direction: column;
       border-bottom: 1px solid #384952;
       position: relative;
+      margin: 15px;
       .gameDetails__header {
         display: flex;
         max-height: 92px;

@@ -109,21 +109,24 @@ const JoinStatus = (props) => {
     setInGameUsername(value)
   }
   const handleSelectChange = (data, name) => {
-    const keys = { ...fieldKey }
-    if (data == null) {
-      keys[name] = true
-    } else {
-      delete keys[name]
+    try {
+      let keys = { ...fieldKey }
+      const values = { ...selectValues }
+      if (data != null) {
+        values[name] = data
+      } else {
+        delete values[name]
+      }
+      if (Object.keys(fieldKey).length == Object.keys(values).length) {
+        setButtonDisabled(false)
+      } else {
+        setButtonDisabled(true)
+      }
+      setSelectValues(values)
+      keys = {}
+    } catch (error) {
+      console.log('Select Change Join button  error ', error)
     }
-    const values = { ...selectValues }
-    values[name] = data
-    fieldKey = keys
-    if (Object.keys(fieldKey).length == 0) {
-      setButtonDisabled(false)
-    } else {
-      setButtonDisabled(true)
-    }
-    setSelectValues(values)
   }
   const getFinalValueToSubmit = (data) => {
     let payload = {}
@@ -205,18 +208,20 @@ const JoinStatus = (props) => {
                 }
                 if (values != null) {
                   return (
-                    <Select
-                      onChange={(data) => handleSelectChange(data, key)}
-                      options={getOption(values, key)}
-                      placeholder={Placeholder}
-                      name={key}
-                      isClearable
-                      className='game__values'
-                      classNamePrefix='filter'
-                      value={selectValues[key] || ''}
-                      isMulti={type}
-                      key={index}
-                    />
+                    <div key={index}>
+                      <Select
+                        onChange={(data) => handleSelectChange(data, key)}
+                        options={getOption(values, key)}
+                        placeholder={Placeholder}
+                        name={key}
+                        isClearable
+                        className='game__values'
+                        classNamePrefix='filter'
+                        value={selectValues[key] || ''}
+                        isMulti={type}
+                        key={index}
+                      />
+                    </div>
                   )
                 }
               })}
