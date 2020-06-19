@@ -285,7 +285,7 @@ export default class ScheduleGames extends Component {
         filterValueArray: {},
       },
       () => {
-        this.props.handleChange({ ...this.state }, '')
+        this.props.handleChange({ ...this.state, tags: '' }, '')
       }
     )
   }
