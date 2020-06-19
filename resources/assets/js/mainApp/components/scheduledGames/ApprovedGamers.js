@@ -96,12 +96,12 @@ const Approved_gamers = (props) => {
                   return (
                     <div className='list__item'>
                       <div className='gamer__name'>
-                        <div className='default_circle'>
-                          <img src={attendee.profile_img} className='groupImage' />
-                        </div>
-                        <spam>
-                          <Link to={`/profile/${attendee.alias}`}>{attendee.alias}</Link>
-                        </spam>
+                        <Link to={`/profile/${attendee.alias}`}>
+                          <div className='default_circle'>
+                            <img src={attendee.profile_img} className='groupImage' />
+                          </div>
+                          <spam>{attendee.alias}</spam>
+                        </Link>
                       </div>
                       {extraKeys.length > 0 &&
                         extraKeys.map((extraKey) => {

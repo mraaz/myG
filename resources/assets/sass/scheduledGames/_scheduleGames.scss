@@ -1440,6 +1440,10 @@
               flex: 2;
               display: flex;
               align-items: center;
+              a {
+                display: flex;
+                align-items: center;
+              }
             }
             .other__title {
               font: 14px/18px Montserrat;
