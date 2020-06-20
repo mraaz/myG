@@ -149,7 +149,7 @@ export default class ScheduleGames extends Component {
       return <h1>Loading</h1>
     }
     return (
-      <section className='viewGame__container'>
+      <section className='viewGame__container' style={{ height: '100vh', overflow: 'scroll' }}>
         {id == '' && <GameFilter handleChange={this.handleChange} />}
         <div className={`gameList__section ${singleView ? 'singleGameView__container' : 'GameView__container'}`}>
           {!singleView && scheduleGames.length > 0 ? (
