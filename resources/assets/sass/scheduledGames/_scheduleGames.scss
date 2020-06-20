@@ -658,6 +658,9 @@
           letter-spacing: 0px;
           color: #b9b9b9;
           text-align: left;
+          &.disabled {
+            cursor: not-allowed;
+          }
           span {
             color: #e5c746;
             cursor: pointer;
@@ -1101,8 +1104,8 @@
                 border: 7px solid #68bd45;
                 border-radius: 50%;
                 position: absolute;
-                bottom: 0px;
-                left: 0px;
+                bottom: -2px;
+                left: -2px;
               }
             }
           }
@@ -1287,17 +1290,17 @@
           position: absolute;
           left: -20px;
           background: #ff00ff;
-          width: 30px;
-          height: 30px;
+          width: 35px;
+          height: 35px;
           border-radius: 50%;
           z-index: 12;
-          top: 6px;
+          top: 3px;
           .online__status {
             border: 7px solid #68bd45;
             border-radius: 50%;
             position: absolute;
-            bottom: 0px;
-            left: 0px;
+            bottom: -2px;
+            left: -2px;
           }
         }
         .buttons {
