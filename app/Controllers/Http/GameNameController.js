@@ -124,10 +124,11 @@ class GameNameController {
       // inputValue = "'%" + inputValue + "%'"
       //
       // const gameSearchResults = await Database.schema.raw('select * from game_names WHERE game_name LIKE ' + inputValue)
-
       const gameSearchResults = await Database.table('game_names')
+        .leftJoin('game_name_fields', 'game_name_fields.game_names_id', 'game_names.id')
         .where('game_name', 'like', '%' + inputValue + '%')
-        .limit(88)
+        .select('game_names.*', 'game_name_fields.game_names_id as more_data')
+        .limit(25)
 
       // WORKS!!!! const gameSearchResults = await Database.schema.raw("select * from game_names WHERE game_name LIKE " + "'%the\%Alien%'")
 

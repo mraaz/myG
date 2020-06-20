@@ -315,61 +315,6 @@ class AttendeeController {
     }
   }
 
-  async getHeader_ALL({ auth, request, response }) {
-    let additional_submit_info = false,
-      additional_submit_info_fields = []
-
-    try {
-      const additional_game_info = await Database.from('schedule_games')
-        .where('schedule_games.id', '=', request.params.id)
-        .first()
-
-      if (additional_game_info == undefined) {
-        return
-      }
-      //Figure out what fields to return, create the key value pair.
-      const getGameFields = await Database.from('game_name_fields')
-        .where({ game_names_id: additional_game_info.game_names_id })
-        .first()
-
-      if (getGameFields != undefined) {
-        let obj = '',
-          obj2 = '',
-          obj3 = '',
-          obj4 = ''
-
-        if (getGameFields.in_game_fields != undefined) {
-          obj = JSON.parse(getGameFields.in_game_fields)
-        }
-        if (getGameFields.in_game_field_labels != undefined) {
-          obj2 = JSON.parse(getGameFields.in_game_field_labels)
-        }
-        if (getGameFields.in_game_field_types != undefined) {
-          obj3 = JSON.parse(getGameFields.in_game_field_types)
-        }
-        if (getGameFields.in_game_field_text != undefined) {
-          obj4 = JSON.parse(getGameFields.in_game_field_text)
-        }
-
-        for (let key in obj) {
-          let tmp_tmp = { [key]: obj[key] }
-          additional_submit_info_fields.push([tmp_tmp, obj2[obj[key]], obj3[obj[key]], obj4[obj[key]]])
-        }
-      }
-
-      if (additional_submit_info_fields.length > 0) {
-        additional_submit_info = true
-      }
-
-      return {
-        additional_submit_info,
-        additional_submit_info_fields,
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   async remove_myattendance({ auth, request, response }) {
     console.log('DS')
     console.log(request.params.id)

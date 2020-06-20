@@ -18,7 +18,7 @@ const AddGameContainer = () => {
   const [isInviteModalOpen, updateIsInviteModalOpen] = useState(false)
   const [isInvitesSentsModalOpen, updateIsInvitesSentsModalOpen] = useState(false)
   const [isSubmitting, updateIsSubmitting] = useState(false)
-  const [state, updateComponentState] = useState({ selectedSettings: SETTINGS_ENUMS.MAIN, isGameNameField: false })
+  const [state, updateComponentState] = useState({ selectedSettings: SETTINGS_ENUMS.MAIN, additional_info: false })
   const [advancedSettingsState, updateAdvancedSettingsState] = useState({
     experience: null,
     platform: null,

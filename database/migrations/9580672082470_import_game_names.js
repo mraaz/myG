@@ -1050,8 +1050,8 @@ class Import_game_names_Schema extends Schema {
     .raw("update game_names set game_img = \"https://mygame-media.s3-ap-southeast-2.amazonaws.com/game_icons/dota_2_img.jpg\" where game_name = \"Dota 2\"")
     .raw("update game_names set game_img = \"https://mygame-media.s3-ap-southeast-2.amazonaws.com/game_icons/clash_royale_img.png\" where game_name = \"Clash Royale\"")
 
-    .raw("update game_names set game_name_fields = 1 where game_name = \"Dota 2\"")
-    .raw("update game_names set game_name_fields = 1 where game_name = \"Clash Royale\"")
+    // .raw("update game_names set game_name_fields = 1 where game_name = \"Dota 2\"")
+    // .raw("update game_names set game_name_fields = 1 where game_name = \"Clash Royale\"")
 
 
     // .raw("insert into game_name_fields(game_names_id, in_game_fields,in_game_field_labels, in_game_field_types, created_at, updated_at) values (998, '{\"value_one\": \"dota2_medal_ranks\", \"value_two\": \"dota2_server_regions\", \"value_three\": \"dota2_roles\"}', '{\"dota2_medal_ranks\": \"Please advise what is your current Medal Rank?\", \"dota2_server_regions\": \"Select what region/s you can play\", \"dota2_roles\": \"Select the role/s you wish to apply for\"}','{\"dota2_medal_ranks\": \"Single\", \"dota2_server_regions\": \"Multi\", \"dota2_roles\": \"Multi\"}', '1988-08-08', '1988-08-08')")

@@ -881,6 +881,74 @@ class ScheduleGameController {
       console.log(error)
     }
   }
+
+  async getHeader_ALL({ auth, request, response }) {
+    let additional_info = false,
+      additional_info_fields = {},
+      additional_info_types = {},
+      additional_info_placeholder = {}
+
+    //request.params.game_names_id = 998
+    try {
+      const game_info = await Database.from('game_names')
+        .where({ id: request.params.game_names_id })
+        .first()
+
+      if (game_info == undefined) {
+        return
+      }
+      //Figure out what fields to return, create the key value pair.
+      const getGameFields = await Database.from('game_name_fields')
+        .where({ game_names_id: game_info.id })
+        .first()
+
+      if (getGameFields != undefined) {
+        let obj = '',
+          obj2 = '',
+          obj3 = '',
+          obj4 = ''
+
+        if (getGameFields.in_game_fields != undefined) {
+          obj = JSON.parse(getGameFields.in_game_fields)
+        }
+        if (getGameFields.in_game_field_labels != undefined) {
+          obj2 = JSON.parse(getGameFields.in_game_field_labels)
+        }
+        if (getGameFields.in_game_field_types != undefined) {
+          obj3 = JSON.parse(getGameFields.in_game_field_types)
+        }
+        if (getGameFields.in_game_field_text != undefined) {
+          obj4 = JSON.parse(getGameFields.in_game_field_text)
+        }
+
+        // for (let key in obj) {
+        //   additional_submit_info_fields[key] = obj4[obj[key]]
+        // }
+
+        for (let key in obj) {
+          let tmp_tmp = { [key]: obj[key] }
+          //additional_submit_info_fields.push([tmp_tmp, obj2[obj[key]], obj3[obj[key]], obj4[obj[key]]])
+          //additional_submit_info_fields.push([obj[key], obj4[obj[key]], ['types', obj3[obj[key]]], ['placholder', obj2[obj[key]]]])
+          additional_info_fields[obj[key]] = obj4[obj[key]]
+          additional_info_types[obj[key]] = obj3[obj[key]]
+          additional_info_placeholder[obj[key]] = obj2[obj[key]]
+        }
+      }
+
+      if (JSON.stringify(additional_info_fields) !== '{}') {
+        additional_info = true
+      }
+
+      return {
+        additional_info,
+        additional_info_fields,
+        additional_info_types,
+        additional_info_placeholder,
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 }
 
 module.exports = ScheduleGameController

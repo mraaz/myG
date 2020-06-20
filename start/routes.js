@@ -111,6 +111,8 @@ Route.get('/api/myScheduledGamesCount/:id', 'ScheduleGameController.myScheduledG
 
 Route.post('/api/ScheduleGame/myScheduledGames_Upcoming_Games/', 'ScheduleGameController.myScheduledGames_Upcoming_Games')
 
+Route.get('/api/ScheduleGame/getHeader_ALL/:game_names_id', 'ScheduleGameController.getHeader_ALL')
+
 Route.get('/api/ArchivemyScheduledGamesCount/:id', 'Archive_ScheduleGameController.myScheduledGamesCount')
 
 Route.get('/api/GameNames', 'GameNameController.show')

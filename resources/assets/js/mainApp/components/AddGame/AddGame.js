@@ -37,7 +37,7 @@ const AddGame = ({
   updateMainSettingsState,
   optionalFieldsState,
   updateOptionalFieldsState,
-  isGameNameField,
+  additional_info,
 }) => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
@@ -385,8 +385,8 @@ const AddGame = ({
             loadOptions={onGameTitleChange}
             onChange={(value) => {
               updateMainSettings({ gameTitle: value })
-              value && !value.isGameNameField && updateOptionalSettings({ serverRegion: null })
-              updateState({ isGameNameField: value ? value.isGameNameField : false })
+              value && !value.additional_info && updateOptionalSettings({ serverRegion: null })
+              updateState({ additional_info: value ? value.additional_info : false })
             }}
             value={mainSettingsState.gameTitle}
             placeholder='Enter Game Title'
@@ -624,7 +624,7 @@ const AddGame = ({
         {getSettingsMenu()}
         {getGameSettingsView()}
       </div>
-      {state.isGameNameField && getOptionalGameFieldsView()}
+      {state.additional_info && getOptionalGameFieldsView()}
     </div>
   )
 }

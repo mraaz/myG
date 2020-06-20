@@ -12,11 +12,11 @@ export async function PullDataFunction(myG) {
     startDate = moment().utc(),
     tmp_startDate = moment().utc(),
     endDate = moment().utc(),
-    value_one = null,
-    value_two = null,
-    value_three = null,
-    value_four = null,
-    value_five = null,
+    // value_one = null,
+    // value_two = null,
+    // value_three = null,
+    // value_four = null,
+    // value_five = null,
     // dota2_medal_ranks = null,
     // dota2_server_regions = null,
     // dota2_roles = null,
@@ -35,21 +35,21 @@ export async function PullDataFunction(myG) {
     myPlatform = myG.selected_platform.value
   }
 
-  if (myG.value_one != undefined && myG.value_one != null && myG.value_one != '') {
-    value_one = myG.value_one.value
-  }
-  if (myG.value_two != undefined && myG.value_two != null && myG.value_two != '') {
-    value_two = myG.value_two.value
-  }
-  if (myG.value_three != undefined && myG.value_three != null && myG.value_three != '') {
-    value_three = myG.value_three.value
-  }
-  if (myG.value_four != undefined && myG.value_four != null && myG.value_four != '') {
-    value_four = myG.value_four.value
-  }
-  if (myG.value_five != undefined && myG.value_five != null && myG.value_five != '') {
-    value_five = myG.value_five.value
-  }
+  // if (myG.value_one != undefined && myG.value_one != null && myG.value_one != '') {
+  //   value_one = myG.value_one.value
+  // }
+  // if (myG.value_two != undefined && myG.value_two != null && myG.value_two != '') {
+  //   value_two = myG.value_two.value
+  // }
+  // if (myG.value_three != undefined && myG.value_three != null && myG.value_three != '') {
+  //   value_three = myG.value_three.value
+  // }
+  // if (myG.value_four != undefined && myG.value_four != null && myG.value_four != '') {
+  //   value_four = myG.value_four.value
+  // }
+  // if (myG.value_five != undefined && myG.value_five != null && myG.value_five != '') {
+  //   value_five = myG.value_five.value
+  // }
 
   // if (myG.dota2_server_regions != undefined && myG.dota2_server_regions != null && myG.dota2_server_regions != '') {
   //   dota2_server_regions = myG.dota2_server_regions.value
@@ -123,13 +123,12 @@ export async function PullDataFunction(myG) {
       counter: counter,
       vacancy: show_full_games,
       tags: tags,
-      value_one: value_one,
-      value_two: value_two,
-      value_three: value_three,
-      value_four: value_four,
-      value_five: value_five,
+      value_one: myG.value_one,
+      value_two: myG.value_two,
+      value_three: myG.value_three,
+      value_four: myG.value_four,
+      value_five: myG.value_five,
     })
-    console.log(allscheduledGames)
     return allscheduledGames
   } catch (error) {
     console.log(error)
