@@ -155,9 +155,9 @@ export default class GameComments extends Component {
   }
 
   render() {
-    let { scheduleGames_data = {}, allow_comments = 0 } = this.props //destructing of object
+    let { scheduleGames_data = {}, allow_comments = 0, user } = this.props //destructing of object
     let { comments = [] } = this.state //destructing of object
-    console.log('scheduleGames_data ', scheduleGames_data)
+    let { userInfo = {} } = user //destructing of object
 
     let {
       profile_img = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png',
@@ -190,11 +190,11 @@ export default class GameComments extends Component {
                 <input type='file' accept='image/*' ref={this.fileInputRef} onChange={this.handleSelectFile} name='insert__images' />
                 <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
               </div>
-              <Link to={`/profile/${scheduleGames_data.alias}`} className='user-img'>
+              <Link to={`/profile/${userInfo.alias}`} className='user-img'>
                 <div
                   className='profile__image'
                   style={{
-                    backgroundImage: `url('${scheduleGames_data.profile_img}')`,
+                    backgroundImage: `url('${userInfo.profile_img}')`,
                     backgroundSize: 'cover',
                   }}>
                   <div className='online__status'></div>
