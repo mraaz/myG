@@ -86,7 +86,7 @@ export default class GameDetails extends Component {
               {platform && <div className='gameTime__label'>Platform</div>}
               {platform && <div className='gameTime__value'>{platform.split(',').join(',  ')}</div>}
               {region && <div className='gameTime__label'>Region</div>}
-              {region && <div className='gameTime__value'>{region}</div>}
+              {region && <div className='gameTime__value'>{region.split(',').join(', ')}</div>}
               <Approved_gamers approved_gamers={approved_gamers} schedule_games_id={id} />
               {tags && tags.length > 7 && <div className='gameTags__label'>Tags</div>}
               <div className='gameTags__value'>
@@ -131,11 +131,14 @@ export default class GameDetails extends Component {
                     </div>
                   </Fragment>
                 )}
-                {no_of_my_comments == 0 && (
+                {no_of_my_comments == 0 && allow_comments ? (
                   <div className='noComments'>
                     No comments yet. <span onClick={(e) => this.handleShowAllComments(id)}>Be the first to leave a comment.</span>
                   </div>
+                ) : (
+                  ''
                 )}
+                {allow_comments == 0 && <div className='noComments disabled'>Comments disabled.</div>}
               </div>
             )}
           </Fragment>
