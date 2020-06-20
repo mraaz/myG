@@ -171,7 +171,7 @@ const JoinStatus = (props) => {
         <div className='game__action__buttton'>
           <button type='button' onClick={handleJoindButtonClick} className={`${leaveButtonStatus ? 'open' : ''}`}>
             {`${joinButtonText}`}
-            <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/View+Game/Down+Carrot.svg' />
+            <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/View+Game/Down+Carrot_black.svg' />
           </button>
           {leaveButtonStatus && <button type='button' className='leaveGame__button' onClick={handleLeaveGame}>{`Leave Game`}</button>}
         </div>
