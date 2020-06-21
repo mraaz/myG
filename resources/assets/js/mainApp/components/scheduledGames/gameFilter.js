@@ -50,6 +50,14 @@ const createOption = (label: string, game_names_id: string) => ({
   game_names_id,
 })
 
+const queryMapping = {
+  0: 'one',
+  1: 'two',
+  2: 'three',
+  3: 'four',
+  4: 'five',
+}
+
 export default class ScheduleGames extends Component {
   constructor() {
     super()
@@ -77,6 +85,7 @@ export default class ScheduleGames extends Component {
       platform: 'Platform',
       description: 'Description',
     }
+    this.constantFilter = ['game_name', 'region', 'tags', 'experience', 'start_time', 'platform', 'description']
     this.filterNameRef = React.createRef()
   }
 
@@ -330,9 +339,21 @@ export default class ScheduleGames extends Component {
     }
     this.setState({ isRequesting: true })
     const payload = {}
+    const extraFields = {}
+    const constantFilter = [...this.constantFilter]
     filterTypeArray.forEach((key) => {
-      payload[key] = filterValueArray[key] || ''
+      if (constantFilter.includes(key)) {
+        payload[key] = filterValueArray[key] || ''
+      } else {
+        extraFields[key] = filterValueArray[key] || ''
+      }
     })
+    if (Object.keys(extraFields).length > 0) {
+      Object.keys(extraFields).forEach((key, index) => {
+        payload[`value_${queryMapping[index]}`] = { [key]: filterValueArray[key] || '' }
+      })
+    }
+
     try {
       const saveFilter = await axios.post('/api/SavedFiltersScheduleGameController', {
         name: filterName,
