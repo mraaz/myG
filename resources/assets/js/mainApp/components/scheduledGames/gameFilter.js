@@ -83,7 +83,13 @@ export default class ScheduleGames extends Component {
 
   handleDropDownChange = (entered_name, name) => {
     const { filterValueArray = {} } = this.state
-    filterValueArray['game_name'] = entered_name
+    //@Nitin, I broke the clear functionality and how it saves the filters so made this change to fix it.
+    filterValueArray['game_name'] = ''
+
+    if (entered_name != null && entered_name != undefined) {
+      filterValueArray['game_name'] = entered_name.value
+    }
+
     this.setState(
       {
         game_name_box: entered_name,

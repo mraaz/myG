@@ -884,12 +884,12 @@ class ScheduleGameController {
 
   async getHeader_ALL({ auth, request, response }) {
     let additional_info = false,
-      additional_info_fields = {},
-      additional_info_types = {},
-      additional_info_placeholder = {},
-      additional_info_values = {}
+      additional_info_data = {}
+    // additional_info_fields = {},
+    // additional_info_types = {},
+    // additional_info_placeholder = {},
+    // additional_info_values = {}
 
-    //request.params.game_names_id = 998
     try {
       const game_info = await Database.from('game_names')
         .where({ id: request.params.game_names_id })
@@ -898,7 +898,6 @@ class ScheduleGameController {
       if (game_info == undefined) {
         return
       }
-      //Figure out what fields to return, create the key value pair.
       const getGameFields = await Database.from('game_name_fields')
         .where({ game_names_id: game_info.id })
         .first()
@@ -926,31 +925,29 @@ class ScheduleGameController {
           obj5 = JSON.parse(getGameFields.in_game_field_values)
         }
 
-        // for (let key in obj) {
-        //   additional_submit_info_fields[key] = obj4[obj[key]]
-        // }
-
         for (let key in obj) {
-          let tmp_tmp = { [key]: obj[key] }
-          //additional_submit_info_fields.push([tmp_tmp, obj2[obj[key]], obj3[obj[key]], obj4[obj[key]]])
-          //additional_submit_info_fields.push([obj[key], obj4[obj[key]], ['types', obj3[obj[key]]], ['placholder', obj2[obj[key]]]])
-          additional_info_fields[obj[key]] = obj4[obj[key]]
-          additional_info_types[obj[key]] = obj3[obj[key]]
-          additional_info_placeholder[obj[key]] = obj2[obj[key]]
-          additional_info_values[obj[key]] = obj5[obj[key]]
+          // let tmp_tmp = { [key]: obj[key] }
+          // additional_info_fields[obj[key]] = obj4[obj[key]]
+          // additional_info_types[obj[key]] = obj3[obj[key]]
+          // additional_info_placeholder[obj[key]] = obj2[obj[key]]
+          // additional_info_values[obj[key]] = obj5[obj[key]]
+
+          additional_info_data[obj[key]] = {
+            label: obj2[obj[key]],
+            type: obj3[obj[key]],
+            placeholder: obj4[obj[key]],
+            value: obj5[obj[key]],
+          }
         }
       }
 
-      if (JSON.stringify(additional_info_fields) !== '{}') {
+      if (JSON.stringify(additional_info_data) !== '{}') {
         additional_info = true
       }
 
       return {
         additional_info,
-        additional_info_fields,
-        additional_info_types,
-        additional_info_placeholder,
-        additional_info_values,
+        additional_info_data,
       }
     } catch (error) {
       console.log(error)
