@@ -6,7 +6,15 @@ import Select from 'react-select'
 import { Game_name_values, Disable_keys, Schedule_Game_Tags, Toast_style, Game_name_Tags } from '../Utility_Function'
 import { toast } from 'react-toastify'
 
-import { region_options, visibility_options, date_options, platform_options, experience_options } from './option'
+import {
+  region_options,
+  visibility_options,
+  date_options,
+  platform_options,
+  experience_options,
+  getExtraFilterOprion,
+  properCase,
+} from './option'
 
 function isValidNewOption(inputValue, selectValue, selectOptions) {
   return !(
@@ -81,13 +89,21 @@ export default class ScheduleGames extends Component {
     this.getFilter()
   }
 
-  handleDropDownChange = (entered_name, name) => {
-    const { filterValueArray = {} } = this.state
-    //@Nitin, I broke the clear functionality and how it saves the filters so made this change to fix it.
-    filterValueArray['game_name'] = ''
+  handleDropDownChange = async (entered_name, name) => {
+    const { filterValueArray = {}, filterTypeArray } = this.state
+    const { additional_info = false, game_names_id = '', value = '' } = entered_name || {}
 
-    if (entered_name != null && entered_name != undefined) {
-      filterValueArray['game_name'] = entered_name.value
+    filterValueArray['game_name'] = entered_name
+    let additional_info_data = {}
+
+    if (additional_info) {
+      const getAllExtraFilters = await axios.get(`/api/ScheduleGame/getHeader_ALL/${game_names_id}`)
+      additional_info_data = getAllExtraFilters.data.additional_info_data
+      const allKeys = Object.keys(additional_info_data)
+      allKeys.length > 0 &&
+        allKeys.forEach((key) => {
+          this.filterGroup[key] = properCase(key)
+        })
     }
 
     this.setState(
@@ -96,6 +112,7 @@ export default class ScheduleGames extends Component {
         default: false,
         games: false,
         filterValueArray,
+        additional_info_data,
       },
       () => {
         this.props.handleChange(
@@ -483,6 +500,19 @@ export default class ScheduleGames extends Component {
       showOverlay: false,
     })
   }
+  handleAdditionalInfoChange = (data, key, type) => {
+    const { filterValueArray = {} } = this.state
+    filterValueArray[key] = data
+    this.setState(
+      {
+        [key]: data,
+        filterValueArray,
+      },
+      () => {
+        this.props.handleChange({ [key]: data }, key)
+      }
+    )
+  }
 
   render() {
     const {
@@ -499,6 +529,7 @@ export default class ScheduleGames extends Component {
       inputValue = '',
       showOverlay = false,
       filterValueArray = {},
+      additional_info_data = {},
     } = this.state
 
     if (this.props.initialData == 'loading') {
@@ -661,6 +692,24 @@ export default class ScheduleGames extends Component {
                       className='viewGame__name'
                       classNamePrefix='filter'
                       value={this.state.visibility || filterValueArray['visibility']}
+                    />
+                  </div>
+                )
+              } else {
+                const field_data = additional_info_data[k]
+                return (
+                  <div className='viewGame__gameName'>
+                    <div className='viewGame__label'>{field_data.placeholder}</div>
+                    <Select
+                      onChange={(data) => this.handleAdditionalInfoChange(data, k, field_data.type)}
+                      options={getExtraFilterOprion(field_data.value)}
+                      isClearable
+                      value={this.state[k] || filterValueArray[k] || ''}
+                      className='viewGame__name'
+                      isMulti={field_data.type == 'Single' ? false : true}
+                      onKeyDown={this.onKeyDown}
+                      placeholder={`${field_data.placeholder}`}
+                      classNamePrefix='filter'
                     />
                   </div>
                 )
