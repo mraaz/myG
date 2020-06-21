@@ -27,10 +27,7 @@ class SavedFiltersScheduleGameController {
   async getAllSavedFilters({ auth, request, response }) {
     if (auth.user) {
       let additional_info = false,
-        additional_info_fields = {},
-        additional_info_types = {},
-        additional_info_placeholder = {},
-        additional_info_values = {}
+        additional_info_data = {}
       try {
         const allFilters = await Database.table('saved_filters_schedule_games').where({ user_id: auth.user.id })
         for (var i = 0; i < allFilters.length; i++) {
@@ -89,15 +86,16 @@ class SavedFiltersScheduleGameController {
               }
 
               for (let key in obj) {
-                let tmp_tmp = { [key]: obj[key] }
-                additional_info_fields[obj[key]] = obj4[obj[key]]
-                additional_info_types[obj[key]] = obj3[obj[key]]
-                additional_info_placeholder[obj[key]] = obj2[obj[key]]
-                additional_info_values[obj[key]] = obj5[obj[key]]
+                additional_info_data[obj[key]] = {
+                  label: obj2[obj[key]],
+                  type: obj3[obj[key]],
+                  placeholder: obj4[obj[key]],
+                  value: obj5[obj[key]],
+                }
               }
             }
 
-            if (JSON.stringify(additional_info_fields) !== '{}') {
+            if (JSON.stringify(additional_info_data) !== '{}') {
               additional_info = true
             }
           }
@@ -107,10 +105,7 @@ class SavedFiltersScheduleGameController {
         return {
           allFilters,
           additional_info,
-          additional_info_fields,
-          additional_info_types,
-          additional_info_placeholder,
-          additional_info_values,
+          additional_info_data,
         }
       } catch (error) {
         console.log(error)
