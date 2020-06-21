@@ -460,9 +460,109 @@ class ScheduleGameController {
 
   async scheduleSearchResults({ auth, request, response }) {
     // WTF is goin on with ancient games??
+
     try {
       let arrTags = '',
         latestScheduledGames
+
+      let value_one = null,
+        value_two = null,
+        value_three = null,
+        value_four = null,
+        value_five = null
+
+      // let tmp = { dota2_medal_ranks: 'Herald' },
+      //   tmp2 = { dota2_roles: 'Pos 1' }
+      if (
+        request.input('value_one') != null ||
+        request.input('value_two') != null ||
+        request.input('value_three') != null ||
+        request.input('value_four') != null ||
+        request.input('value_five') != null
+      ) {
+        let myKey
+        const result = {}
+
+        for (myKey in request.input('value_one')) {
+          if (request.input('value_one').hasOwnProperty(myKey)) {
+            result[myKey] = request.input('value_one')[myKey]
+          }
+        }
+
+        for (myKey in request.input('value_two')) {
+          if (request.input('value_two').hasOwnProperty(myKey)) {
+            result[myKey] = request.input('value_two')[myKey]
+          }
+        }
+
+        for (myKey in request.input('value_three')) {
+          if (request.input('value_three').hasOwnProperty(myKey)) {
+            result[myKey] = request.input('value_three')[myKey]
+          }
+        }
+
+        for (myKey in request.input('value_four')) {
+          if (request.input('value_four').hasOwnProperty(myKey)) {
+            result[myKey] = request.input('value_four')[myKey]
+          }
+        }
+
+        for (myKey in request.input('value_five')) {
+          if (request.input('value_five').hasOwnProperty(myKey)) {
+            result[myKey] = request.input('value_five')[myKey]
+          }
+        }
+
+        // for (myKey in tmp) {
+        //   if (tmp.hasOwnProperty(myKey)) {
+        //     result[myKey] = tmp[myKey]
+        //   }
+        // }
+        //
+        // for (myKey in tmp2) {
+        //   if (tmp2.hasOwnProperty(myKey)) {
+        //     result[myKey] = tmp2[myKey]
+        //   }
+        // }
+
+        const getGameFields = await Database.table('game_names')
+          .innerJoin('game_name_fields', 'game_name_fields.game_names_id', 'game_names.id')
+          .where('game_name', '=', request.input('game_name'))
+          .select('game_name_fields.*')
+          .first()
+
+        if (getGameFields != undefined) {
+          let obj = ''
+
+          if (getGameFields.in_game_fields != undefined) {
+            obj = JSON.parse(getGameFields.in_game_fields)
+          }
+
+          for (let key in obj) {
+            if (result[obj[key]] == undefined) {
+              continue
+            }
+            switch (key) {
+              case 'value_one':
+                value_one = result[obj[key]]
+                break
+              case 'value_two':
+                value_two = result[obj[key]]
+                break
+              case 'value_three':
+                value_three = result[obj[key]]
+                break
+              case 'value_four':
+                value_four = result[obj[key]]
+                break
+              case 'value_five':
+                value_five = result[obj[key]]
+                break
+            }
+          }
+        }
+      }
+
       if (request.input('tags') != null && request.input('tags').length != 0) {
         arrTags = request.input('tags').split(',')
         if (arrTags != '') {
@@ -492,20 +592,15 @@ class ScheduleGameController {
 
               if (request.input('vacancy') == false) builder.where('vacancy', 0)
 
-              if (request.input('value_one') != null)
-                builder.where('schedule_games_transactions.value_one', 'like', '%' + request.input('value_one') + '%')
+              if (value_one != null) builder.where('schedule_games_transactions.value_one', 'like', '%' + value_one + '%')
 
-              if (request.input('value_two') != null)
-                builder.where('schedule_games_transactions.value_two', 'like', '%' + request.input('value_two') + '%')
+              if (value_two != null) builder.where('schedule_games_transactions.value_two', 'like', '%' + value_two + '%')
 
-              if (request.input('value_three') != null)
-                builder.where('schedule_games_transactions.value_three', 'like', '%' + request.input('value_three') + '%')
+              if (value_three != null) builder.where('schedule_games_transactions.value_three', 'like', '%' + value_three + '%')
 
-              if (request.input('value_four') != null)
-                builder.where('schedule_games_transactions.value_four', 'like', '%' + request.input('value_four') + '%')
+              if (value_four != null) builder.where('schedule_games_transactions.value_four', 'like', '%' + value_four + '%')
 
-              if (request.input('value_five') != null)
-                builder.where('schedule_games_transactions.value_five', 'like', '%' + request.input('value_five') + '%')
+              if (value_five != null) builder.where('schedule_games_transactions.value_five', 'like', '%' + value_five + '%')
             })
             .orderBy('schedule_games.created_at', 'desc')
             .select(
@@ -549,20 +644,15 @@ class ScheduleGameController {
 
             if (request.input('vacancy') == false) builder.where('vacancy', 0)
 
-            if (request.input('value_one') != null)
-              builder.where('schedule_games_transactions.value_one', 'like', '%' + request.input('value_one') + '%')
+            if (value_one != null) builder.where('schedule_games_transactions.value_one', 'like', '%' + value_one + '%')
 
-            if (request.input('value_two') != null)
-              builder.where('schedule_games_transactions.value_two', 'like', '%' + request.input('value_two') + '%')
+            if (value_two != null) builder.where('schedule_games_transactions.value_two', 'like', '%' + value_two + '%')
 
-            if (request.input('value_three') != null)
-              builder.where('schedule_games_transactions.value_three', 'like', '%' + request.input('value_three') + '%')
+            if (value_three != null) builder.where('schedule_games_transactions.value_three', 'like', '%' + value_three + '%')
 
-            if (request.input('value_four') != null)
-              builder.where('schedule_games_transactions.value_four', 'like', '%' + request.input('value_four') + '%')
+            if (value_four != null) builder.where('schedule_games_transactions.value_four', 'like', '%' + value_four + '%')
 
-            if (request.input('value_five') != null)
-              builder.where('schedule_games_transactions.value_five', 'like', '%' + request.input('value_five') + '%')
+            if (value_five != null) builder.where('schedule_games_transactions.value_five', 'like', '%' + value_five + '%')
           })
           .orderBy('schedule_games.created_at', 'desc')
           .select(
