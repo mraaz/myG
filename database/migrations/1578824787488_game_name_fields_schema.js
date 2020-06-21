@@ -13,6 +13,7 @@ class GameNameFieldsSchema extends Schema {
       table.json('in_game_field_labels').notNullable()
       table.json('in_game_field_types').notNullable()
       table.json('in_game_field_text')
+      table.json('in_game_field_values')      
       table.timestamps(true,true)
     })
   }
