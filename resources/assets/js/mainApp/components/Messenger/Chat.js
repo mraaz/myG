@@ -25,7 +25,7 @@ import {
   unblockUserAction,
 } from '../../../redux/actions/chatAction'
 import { withDatesAndLogsAndLastReads } from '../../../common/chat'
-import { encryptMessage, decryptMessage, deserializeKey } from '../../../integration/encryption'
+import { encryptMessage, decryptMessage, deserializeKey, generateKeysSync } from '../../../integration/encryption'
 import { formatDateTime } from '../../../common/date'
 import { getAssetUrl } from '../../../common/assets'
 import { showMessengerAlert } from '../../../common/alert'
@@ -136,7 +136,7 @@ export class Chat extends React.Component {
       replyId,
       replyContent,
       replyBackup,
-      input,
+      input
     )
   }
 
@@ -151,7 +151,7 @@ export class Chat extends React.Component {
   }
 
   decryptMessage = (message) => {
-    if (message.decrypted) return message;
+    if (message.decrypted) return message
     if (message.unencryptedContent) return { ...message, content: message.unencryptedContent }
     if (!message.content && !message.backup) return message
     const isSent = !this.props.isGroup && message.senderId == this.props.userId
@@ -161,6 +161,11 @@ export class Chat extends React.Component {
     const content = decryptMessage(encryptedContent, privateKey)
     const replyContent = encryptedReplyContent && decryptMessage(encryptedReplyContent, privateKey)
     return { ...message, content, replyContent, decrypted: true }
+  }
+
+  resetGroupKey = () => {
+    const { encryption } = generateKeysSync()
+    this.props.updateChat(this.props.chatId, encryption)
   }
 
   editLastMessage = () => {
@@ -480,13 +485,30 @@ export class Chat extends React.Component {
   renderEncryptedChat() {
     const isGroupWithoutKey = this.props.isGroup && !this.props.privateKey
     const noUserKeyText = 'Please inform your encryption key to read the contents of this chat.'
-    const noGroupKeyText = `Unable to retrieve E2E key from an active member. Please wait for a chat member to come online.${
-      this.props.isGuest ? 'Alternatively, create an account @ myG.gg' : ''
-    }`
+    const noGroupKeyText = `Unable to retrieve E2E key from an active member. Please wait for a chat member to come online.`
+    const noGroupKeySubtext = this.props.isGuest
+      ? 'Alternatively, create an account @ myG.gg'
+      : this.props.isGroupOwner
+      ? 'Alternatively, click here to reset the encryption key.'
+      : ''
+    const canResetKey = isGroupWithoutKey && this.props.isGroupOwner
     return (
       <div key={this.props.chatId} className='chat-component-base'>
         {this.renderHeader()}
-        <div className='chat-component-encryption-warning'>{isGroupWithoutKey ? noGroupKeyText : noUserKeyText}</div>
+        <div
+          className={`chat-component-encryption-warning${canResetKey ? ' clickable' : ''}`}
+          onClick={() =>
+            canResetKey &&
+            showMessengerAlert(
+              "Resetting the Encryption Key will delete this group's history, but will grant you access to this group if the Encryption Key was lost.",
+              this.resetGroupKey,
+              null,
+              'Reset Key'
+            )
+          }>
+          <p>{isGroupWithoutKey ? noGroupKeyText : noUserKeyText}</p>
+          <p>{noGroupKeySubtext}</p>
+        </div>
         {this.renderFooter()}
       </div>
     )
@@ -537,6 +559,7 @@ export function mapStateToProps(state, props) {
     const onlineCount = contacts.filter((contactId) => (contactsMap[contactId] || {}).status === 'online').length + guests.length + 1
     chatSubtitle = `${onlineCount}/${memberCount} online`
   }
+  const isGroupOwner = chat.owners.length && chat.owners.includes(props.userId)
   chat.privateKey = deserializeKey(chat.privateKey)
   const messages = withDatesAndLogsAndLastReads(
     chat.messages || [],
@@ -553,6 +576,7 @@ export function mapStateToProps(state, props) {
     contactId,
     contactsMap,
     isGroup,
+    isGroupOwner,
     group: chat,
     gameMessage: chat.gameMessage || '',
     icon: chat.icon || contact.icon || '',

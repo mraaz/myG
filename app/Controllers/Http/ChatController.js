@@ -46,7 +46,7 @@ class ChatController {
     const requestingUserId = auth.user.id
     if (!requestingUserId) throw new Error('Auth Error')
     const requestedChatId = params.chatId
-    const { muted, isPrivate, icon, title, owners, moderators, markAsRead, selfDestruct } = request.only([
+    const { muted, isPrivate, icon, title, owners, moderators, markAsRead, selfDestruct, publicKey } = request.only([
       'muted',
       'isPrivate',
       'icon',
@@ -55,6 +55,7 @@ class ChatController {
       'moderators',
       'markAsRead',
       'selfDestruct',
+      'publicKey',
     ])
     log(
       'CHAT',
@@ -67,6 +68,7 @@ class ChatController {
         moderators,
         markAsRead,
         selfDestruct,
+        publicKey,
       })}`
     )
     const result = await ChatRepository.updateChat({
@@ -80,6 +82,7 @@ class ChatController {
       moderators,
       markAsRead,
       selfDestruct,
+      publicKey,
     })
     return response.send(result)
   }

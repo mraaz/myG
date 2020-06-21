@@ -355,6 +355,7 @@ export default class ChatMessage extends React.Component {
   render() {
     logger.log('RENDER', `ChatMessage: ${this.props.message.messageId}`)
     const { message } = this.props
+    if (!message.deleted && !message.content) return null
     const origin = message.senderId === this.props.userId ? 'sent' : 'received'
     const deletedStyle = !!message.deleted && 'chat-component-message-deleted'
     const selfDestructStyle = !!message.selfDestruct && 'chat-component-message-self-destruct'

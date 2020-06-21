@@ -319,13 +319,16 @@ class ChatRepository {
     }
 
     if (isGroup) {
-      [1, 2, 3].forEach(async () => {
+      const createLink = async () => {
         const link = new ChatLink();
         link.chat_id = chat.id;
         link.uuid = uuidv4();
         link.expiry = null;
         await link.save();
-      });
+      };
+      await createLink();
+      await createLink();
+      await createLink();
     }
 
     if (individualGameId) {
@@ -365,7 +368,7 @@ class ChatRepository {
     return this.fetchBlockedUsers({ requestingUserId });
   }
 
-  async updateChat({ requestingUserId, requestedChatId, icon, title, owners, moderators, muted, isPrivate, markAsRead, selfDestruct }) {
+  async updateChat({ requestingUserId, requestedChatId, icon, title, owners, moderators, muted, isPrivate, markAsRead, selfDestruct, publicKey}) {
     if (markAsRead) await this._markAsRead({ requestingUserId, requestedChatId });
     if (selfDestruct !== undefined) return await this._setSelfDestruct({ requestingUserId, requestedChatId, selfDestruct });
     if (muted !== undefined) await UserChat.query().where('chat_id', requestedChatId).andWhere('user_id', requestingUserId).update({ muted });
@@ -373,6 +376,7 @@ class ChatRepository {
     if (icon !== undefined) await Chat.query().where('id', requestedChatId).update({ icon });
     if (title !== undefined) await Chat.query().where('id', requestedChatId).update({ title });
     if (owners !== undefined) await Chat.query().where('id', requestedChatId).update({ owners: JSON.stringify(owners) });
+    if (publicKey !== undefined) await Chat.query().where('id', requestedChatId).update({ public_key: publicKey });
     if (moderators !== undefined) {
       await this._addChatNotificationModerator({ requestingUserId, requestedChatId, moderators });
       await Chat.query().where('id', requestedChatId).update({ moderators: JSON.stringify(moderators) });
