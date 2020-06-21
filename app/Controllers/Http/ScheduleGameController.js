@@ -886,7 +886,8 @@ class ScheduleGameController {
     let additional_info = false,
       additional_info_fields = {},
       additional_info_types = {},
-      additional_info_placeholder = {}
+      additional_info_placeholder = {},
+      additional_info_values = {}
 
     //request.params.game_names_id = 998
     try {
@@ -906,7 +907,8 @@ class ScheduleGameController {
         let obj = '',
           obj2 = '',
           obj3 = '',
-          obj4 = ''
+          obj4 = '',
+          obj5 = ''
 
         if (getGameFields.in_game_fields != undefined) {
           obj = JSON.parse(getGameFields.in_game_fields)
@@ -920,6 +922,9 @@ class ScheduleGameController {
         if (getGameFields.in_game_field_text != undefined) {
           obj4 = JSON.parse(getGameFields.in_game_field_text)
         }
+        if (getGameFields.in_game_field_values != undefined) {
+          obj5 = JSON.parse(getGameFields.in_game_field_values)
+        }
 
         // for (let key in obj) {
         //   additional_submit_info_fields[key] = obj4[obj[key]]
@@ -932,6 +937,7 @@ class ScheduleGameController {
           additional_info_fields[obj[key]] = obj4[obj[key]]
           additional_info_types[obj[key]] = obj3[obj[key]]
           additional_info_placeholder[obj[key]] = obj2[obj[key]]
+          additional_info_values[obj[key]] = obj5[obj[key]]
         }
       }
 
@@ -944,6 +950,7 @@ class ScheduleGameController {
         additional_info_fields,
         additional_info_types,
         additional_info_placeholder,
+        additional_info_values,
       }
     } catch (error) {
       console.log(error)
