@@ -115,11 +115,11 @@ export class Chat extends React.Component {
   }
 
   markAsRead = (lastMessageId) => {
-    if (this.props.isGuest) return
     if (this.props.minimised || !this.props.privateKey || !this.props.windowFocused) return
     if (!lastMessageId || lastMessageId <= this.props.lastRead || lastMessageId <= this.state.lastRead) return
     this.setState({ lastRead: lastMessageId })
-    this.props.updateChat(this.props.chatId, { markAsRead: true })
+    if (this.props.isGuest) return this.props.markLastReadGuest(this.props.chatId, this.props.userId)
+    else this.props.updateChat(this.props.chatId, { markAsRead: true })
   }
 
   sendMessage = (input, attachment) => {
@@ -566,7 +566,7 @@ export function mapStateToProps(state, props) {
     chat.entryLogs || [],
     contactsMap || {},
     chat.lastReads || {},
-    !!guests.length
+    props.userId,
   )
   return {
     messages,
@@ -586,7 +586,6 @@ export function mapStateToProps(state, props) {
     muted: chat.muted || false,
     selfDestruct: chat.selfDestruct || false,
     lastRead: chat.lastRead || 0,
-    lastReads: chat.lastReads || {},
     blockedUsers: state.chat.blockedUsers || [],
     typing: chat.typing || [],
     maximised: chat.maximised || false,

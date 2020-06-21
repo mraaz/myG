@@ -50,6 +50,7 @@ class GuestController {
     const { backup, content } = request.only('encryptedContent').encryptedContent
     const { replyId, replyContent, replyBackup } = request.only(['replyId', 'replyContent', 'replyBackup'])
     const senderName = request.only('senderName').senderName
+    const uuid = request.only('uuid').uuid
     log('GUEST', `Guest ${guestId} sending encrypted Message for Chat ${requestedChatId}`)
     const { message } = await GuestRepository.sendMessage({
       requestedChatId,
@@ -60,6 +61,7 @@ class GuestController {
       replyId,
       replyContent,
       replyBackup,
+      uuid,
     })
     return response.send({ message })
   }
@@ -81,6 +83,13 @@ class GuestController {
     log('GUEST', `Guest ${guestId} deleting Message ${requestedMessageId} for Chat ${requestedChatId}`)
     const { message } = await GuestRepository.deleteMessage({ guestId, requestedChatId, requestedMessageId })
     return response.send({ message })
+  }
+
+  async markLastReadGuest({ params, response }) {
+    const { guestId, chatId } = params
+    log('GUEST', `Guest ${guestId} marking last read for Chat ${chatId}`)
+    const { success, error } = await GuestRepository.markLastReadGuest({ guestId, chatId })
+    return response.send({ success, error })
   }
 
   async addReaction({ params, request, response }) {
@@ -126,17 +135,17 @@ class GuestController {
   }
 
   async requestGroupPrivateKey({ params, request, response }) {
-    const { userId, chatId } = params
+    const { guestId, chatId } = params
     const { publicKey } = request.only(['publicKey'])
-    log('CHAT', `User ${userId} requesting Group ${chatId} Private Key`)
-    const { success, error } = await GuestRepository.requestGroupPrivateKey({ userId, chatId, publicKey })
+    log('CHAT', `User ${guestId} requesting Group ${chatId} Private Key`)
+    const { success, error } = await GuestRepository.requestGroupPrivateKey({ guestId, chatId, publicKey })
     return response.send({ success, error })
   }
 
   async confirmGroupPrivateKey({ params, response }) {
-    const { userId, chatId } = params
-    log('CHAT', `User ${userId} confirming Group ${chatId} Private Key`)
-    const { success, error } = await GuestRepository.confirmGroupPrivateKey({ userId, chatId })
+    const { guestId, chatId } = params
+    log('CHAT', `User ${guestId} confirming Group ${chatId} Private Key`)
+    const { success, error } = await GuestRepository.confirmGroupPrivateKey({ guestId, chatId })
     return response.send({ success, error })
   }
 }

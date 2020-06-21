@@ -31,9 +31,9 @@ export function fetchEncryptionMessages(guestId, chatId) {
   return axios.get(`/api/guest/${guestId}/chat/${chatId}/message/encryption`).then(response => response.data);
 }
 
-export function sendMessage(chatId, guestId, senderName, encryptedContent, keyReceiver, attachment, replyId, replyContent, replyBackup) {
+export function sendMessage(chatId, guestId, senderName, encryptedContent, keyReceiver, attachment, replyId, replyContent, replyBackup, uuid) {
   logger.log('GUEST', 'HTTP', `Sending Message from Guest ${guestId} to Chat ${chatId}`);
-  return axios.post(`/api/guest/${guestId}/chat/${chatId}/message/`, { encryptedContent, keyReceiver, attachment, senderName, replyId, replyContent, replyBackup }).then(response => response.data);
+  return axios.post(`/api/guest/${guestId}/chat/${chatId}/message/`, { encryptedContent, keyReceiver, attachment, senderName, replyId, replyContent, replyBackup, uuid }).then(response => response.data);
 }
 
 export function editMessage(chatId, guestId, messageId, encryptedContent, reEncrypting) {
@@ -79,4 +79,9 @@ export function requestGroupPrivateKey(userId, chatId, publicKey) {
 export function confirmGroupPrivateKey(userId, chatId) {
   logger.log('GUEST', 'HTTP', `Confirming Group ${chatId} Private key for User ${userId}`);
   return axios.delete(`/api/guest/privateKey/${userId}/${chatId}`).then(response => response.data);
+}
+
+export function markLastReadGuest(chatId, guestId) {
+  logger.log('GUEST', 'HTTP', `Guest ${guestId} marking last read for chat ${chatId}`);
+  return axios.post(`/api/guest/lastRead/${guestId}/${chatId}`).then(response => response.data);
 }

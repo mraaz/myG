@@ -667,13 +667,14 @@ export default function reducer(
     case 'MARK_AS_READ': {
       logger.log('CHAT', `Redux -> Mark As Read: `, action.meta, action.payload)
       const { userId: thisUserId } = action.meta
-      const { userId, chatId, lastRead } = action.payload
+      const { guestId, userId, chatId, lastRead } = action.payload
       const chats = JSON.parse(JSON.stringify(state.chats))
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       if (userId === thisUserId) chat.lastRead = lastRead
       else {
         if (!chat.lastReads) chat.lastReads = {}
-        chat.lastReads[userId] = lastRead
+        if (guestId) chat.lastReads[`Guest #${guestId}`] = lastRead
+        else chat.lastReads[userId] = lastRead
       }
       return {
         ...state,
@@ -862,6 +863,7 @@ function prepareMessage(state, chat, message) {
   const encryptedContent = isSent ? message.backup : message.content
   const encryptedReplyContent = isSent ? message.replyBackup : message.replyContent
   const privateKey = deserializeKey(isSent ? state.privateKey : chatKey)
+  if (!privateKey) return message
   const content = decryptMessage(encryptedContent, privateKey)
   const replyContent = encryptedReplyContent && decryptMessage(encryptedReplyContent, privateKey)
   return { ...message, content, replyContent, decrypted: true }

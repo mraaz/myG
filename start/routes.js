@@ -386,8 +386,9 @@ Route.delete('/api/guest/:guestId/chat/:chatId/message/:messageId/reaction/:reac
 Route.get('/api/guest/chat/:chatId/entryLogs', 'GuestController.fetchEntryLogs')
 Route.get('/api/guest/chat/:chatId/contacts', 'GuestController.fetchChatContacts')
 Route.get('/api/guest/privateKey/:chatId', 'GuestController.fetchGroupPrivateKeyRequests')
-Route.post('/api/guest/privateKey/:userId/:chatId', 'GuestController.requestGroupPrivateKey')
-Route.delete('/api/guest/privateKey/:userId/:chatId', 'GuestController.confirmGroupPrivateKey')
+Route.post('/api/guest/privateKey/:guestId/:chatId', 'GuestController.requestGroupPrivateKey')
+Route.delete('/api/guest/privateKey/:guestId/:chatId', 'GuestController.confirmGroupPrivateKey')
+Route.post('/api/guest/lastRead/:guestId/:chatId', 'GuestController.markLastReadGuest')
 
 // Seats Available
 Route.get('/api/seats_available', 'SeatsAvailableController.fetchSeatsAvailable')

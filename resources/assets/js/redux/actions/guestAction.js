@@ -1,3 +1,4 @@
+import uuidv4 from 'uuid/v4'
 import { generateKeysSync } from '../../integration/encryption'
 import {
   register,
@@ -13,6 +14,7 @@ import {
   removeReaction,
   fetchEntryLogs,
   fetchChatContacts,
+  markLastReadGuest,
 } from '../../integration/http/guest'
 
 export function setGuestLinkAction(guestLink) {
@@ -71,11 +73,12 @@ export function fetchMessagesAction(chatId, page) {
   }
 }
 
-export function sendMessageAction(chatId, userId, alias, encrypted, attachment, replyId, replyContent, replyBackup) {
+export function sendMessageAction(chatId, userId, alias, encrypted, attachment, replyId, replyContent, replyBackup, unencryptedContent) {
+  const uuid = uuidv4()
   return {
     type: 'SEND_MESSAGE',
-    payload: sendMessage(chatId, userId, alias, encrypted, null, attachment, replyId, replyContent, replyBackup),
-    meta: { chatId, userId },
+    payload: sendMessage(chatId, userId, alias, encrypted, null, attachment, replyId, replyContent, replyBackup, uuid),
+    meta: { chatId, userId, alias, encrypted, attachment, replyId, replyContent, replyBackup, uuid, unencryptedContent },
   }
 }
 
@@ -116,5 +119,13 @@ export function updateChatStateAction(chatId, state) {
     type: 'CHAT_STATE_UPDATED',
     payload: state,
     meta: { chatId },
+  }
+}
+
+export function markLastReadGuestAction(chatId, guestId) {
+  return {
+    type: 'GUEST_MARK_LAST_READ',
+    payload: markLastReadGuest(chatId, guestId),
+    meta: { chatId, guestId },
   }
 }

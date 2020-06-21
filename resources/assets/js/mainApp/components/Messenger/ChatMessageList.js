@@ -21,11 +21,11 @@ export default class ChatMessageList extends React.Component {
         messageListRef={this.props.messageListRef}
         editing={this.props.editing === message.messageId}
         onEdit={this.props.onEdit}
-        message={message}
+        message={this.props.decryptMessage(message)}
         encryptedMessage={message}
         addReaction={this.props.addReaction}
         removeReaction={this.props.removeReaction}
-        replyToMessage={this.props.replyToMessage}
+        replyToMessage={this.props.decryptMessage(this.props.replyToMessage)}
         scrollToMessage={this.props.scrollToMessage}
         editMessage={this.props.editMessage}
         deleteMessage={this.props.deleteMessage}
