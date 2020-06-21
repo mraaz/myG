@@ -1,3 +1,8 @@
+/*
+ * Author : nitin Tyagi
+ * github  : https://github.com/realinit
+ * Email : nitin.1992tyagi@gmail.com
+ */
 const region_options = [
   { value: 'North America', label: 'North America' },
   { value: 'Europe', label: 'Europe' },
