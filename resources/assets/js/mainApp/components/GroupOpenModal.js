@@ -192,12 +192,12 @@ export default class GroupOpenModal extends Component {
     })
   }
 
-  getUploadParams = async ({ file, meta: { id, name } }) => {
-    this.doUploadS3(file, name)
-    return { url: 'https://httpbin.org/post' }
-  }
-
   handleChangeStatus = ({ meta }, status, allFiles) => {
+    if (status === 'done') {
+      const file = allFiles[0].file
+      const name = allFiles[0].meta.name
+      this.doUploadS3(file, name)
+    }
     this.state.store_files = allFiles
     if (status == 'removed' && this.state.lock == false) {
       this.removeIndivdualfromAWS()
@@ -279,7 +279,6 @@ export default class GroupOpenModal extends Component {
               accept group invitations
             </div>
             <Dropzone
-              getUploadParams={this.getUploadParams}
               onChangeStatus={this.handleChangeStatus}
               onSubmit={this.handleSubmit}
               accept='image/*'
