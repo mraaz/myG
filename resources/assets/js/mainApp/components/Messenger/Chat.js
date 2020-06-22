@@ -51,6 +51,7 @@ export class Chat extends React.Component {
       messagePaginationPage: 1,
       attachment: null,
       loadedAllMessages: false,
+      hasScrolledToLastRead: false,
     }
     this.messageListRef = React.createRef()
   }
@@ -71,6 +72,9 @@ export class Chat extends React.Component {
     const messageList = this.messageListRef.current
     if (!messageList) return
     const hasScrolledEnough = messageList.scrollHeight - messageList.scrollTop > 750
+    const hasScrolledToBottom = messageList.scrollHeight - messageList.scrollTop < 300
+    console.log(hasScrolledToBottom, messageList.scrollHeight, messageList.scrollTop)
+    if (hasScrolledToBottom) this.markAsRead()
     this.setState({ oldMessages: hasScrolledEnough })
     if (messageList.scrollTop !== 0 || this.props.loadingMessages || this.props.noMoreMessages) return
     const nextPage = this.state.messagePaginationPage + 1
@@ -80,25 +84,29 @@ export class Chat extends React.Component {
   }
 
   componentDidUpdate() {
-    const isValidMessage = (message) => !message.isLastRead && !message.isEntryLog && !message.isDateDivisor
-    const lastMessageId = (this.props.messages.slice().reverse().find(isValidMessage) || {}).messageId
-    this.markAsRead(lastMessageId)
-    this.scrollToLastMessage(lastMessageId)
+    this.scrollMessagesIfNeeded()
   }
 
-  scrollToLastMessage = (lastMessageId) => {
-    const typing = JSON.stringify(this.props.typing)
-    const isTyping = typing !== this.state.currentlyTyping
-    const hasNewMessage = this.state.lastMessageId !== lastMessageId
+  scrollMessagesIfNeeded() {
+    const isValidMessage = (message) => !message.isLastRead && !message.isEntryLog && !message.isDateDivisor
+    const lastMessage = this.props.messages.slice().reverse().find(isValidMessage) || {}
+    const lastMessageTime = lastMessage.createdAt
+    const lastMessageId = lastMessage.messageId
+    const lastReadMessageId = this.props.lastRead
+    const messageTimeDelta = Date.now() - new Date(lastMessageTime).getTime()
+    const tenSeconds = 1000 * 10
+    const hasNewMessage = lastMessageId > this.state.lastMessageId
     const gotDecrypted = this.state.wasEncrypted && this.props.privateKey
-    if (isTyping || hasNewMessage || gotDecrypted) {
-      const state = {}
-      if (isTyping) state.currentlyTyping = typing
-      if (hasNewMessage) state.lastMessageId = lastMessageId
-      if (gotDecrypted) state.wasEncrypted = false
-      this.setState(state)
+    if (!this.state.hasScrolledToLastRead && messageTimeDelta > tenSeconds) {
+      if (this.state.lastMessageId) this.setState({ hasScrolledToLastRead: true })
+      this.setState({ lastMessageId })
+      return this.scrollToMessage(lastReadMessageId)
+    }
+    if (gotDecrypted || hasNewMessage) {
+      this.setState({ lastMessageId, wasEncrypted: false })
+      this.markAsRead()
       if (this.messageListRef.current) this.messageListRef.current.scrollTo(0, this.messageListRef.current.scrollHeight)
-      return true
+      return
     }
   }
 
@@ -114,7 +122,9 @@ export class Chat extends React.Component {
     }
   }
 
-  markAsRead = (lastMessageId) => {
+  markAsRead = () => {
+    const isValidMessage = (message) => !message.isLastRead && !message.isEntryLog && !message.isDateDivisor
+    const lastMessageId = (this.props.messages.slice().reverse().find(isValidMessage) || {}).messageId
     if (this.props.minimised || !this.props.privateKey || !this.props.windowFocused) return
     if (!lastMessageId || lastMessageId <= this.props.lastRead || lastMessageId <= this.state.lastRead) return
     this.setState({ lastRead: lastMessageId })
@@ -566,7 +576,7 @@ export function mapStateToProps(state, props) {
     chat.entryLogs || [],
     contactsMap || {},
     chat.lastReads || {},
-    props.userId,
+    props.userId
   )
   return {
     messages,

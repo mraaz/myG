@@ -48,6 +48,7 @@ class Messenger extends React.Component {
     searchInput: '',
     uploadingPhoto: null,
     blockSettings: false,
+    windowFocused: true,
     dividerExpanded: {
       general: true,
       games: false,

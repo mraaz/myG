@@ -336,12 +336,13 @@ export default function reducer(
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       const updated = chat.messages.find((candidate) => candidate.messageId === message.messageId)
       if (updated) {
-        updated.content = message.content
-        updated.backup = message.backup
-        updated.edited = message.edited
-        updated.deleted = message.deleted
+        const preparedMessaged = prepareMessage(state, chat, message)
+        updated.content = preparedMessaged.content
+        updated.backup = preparedMessaged.backup
+        updated.edited = preparedMessaged.edited
+        updated.deleted = preparedMessaged.deleted
       } else {
-        chat.messages.push(message)
+        chat.messages.push(prepareMessage(state, chat, message))
       }
       chat.messages = chat.messages.sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId))
       return {
