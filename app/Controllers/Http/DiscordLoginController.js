@@ -1,5 +1,7 @@
 'use strict'
 
+//https://medium.com/@orels1/using-discord-oauth2-a-simple-guide-and-an-example-nodejs-app-71a9e032770
+
 const User = use('App/Models/User')
 const fetch = require('node-fetch')
 const ConnectionController = use('./ConnectionController')
@@ -9,31 +11,55 @@ const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
 class DiscordLoginController {
   async redirect({ ally, response }) {
     return response.redirect(
-      'https://discordapp.com/api/oauth2/authorize?client_id=588326792289320962&redirect_uri=https://myg.gg/authenticated%2Fdiscord&response_type=code&scope=email%20identify'
+      //'https://discordapp.com/api/oauth2/authorize?client_id=588326792289320962&redirect_uri=https://myg.gg/authenticated%2Fdiscord&response_type=code&scope=email%20identify'
+      'https://discord.com/api/oauth2/authorize?client_id=588326792289320962&redirect_uri=https%3A%2F%2Fmyg.gg%2Fauthenticated%2Fdiscord&response_type=code&scope=identify%20email'
     )
   }
 
   async callback({ auth, response, request, session }) {
     var all = request.all()
-    var API_ENDPOINT = 'https://discordapp.com/api/v6'
+    var API_ENDPOINT = 'https://discord.com/api/v6'
     var CLIENT_ID = '588326792289320962'
     var CLIENT_SECRET = 'wr47LZpqEoVUd2AEusSqTNWxWfJZFW9r'
+    var REDIRECT_URI = 'https://myg.gg/authenticated/discord'
+
     var redirect = 'https://myg.gg/finalauthenticated/discord'
     const code = all.code
     const token = all.token
     if (code) {
+      console.log('Going into CODE <<<<<<<<<<<<<<<')
+      var data = {
+        client_id: CLIENT_ID,
+        client_secret: CLIENT_SECRET,
+        grant_type: 'authorization_code',
+        code: code,
+        redirect_uri: REDIRECT_URI,
+        scope: 'identify email connections',
+      }
       //const creds = btoa(`${CLIENT_ID}:${CLIENT_SECRET}`);
+      //Instead of using btoa we've manually encoded this Base64
       const creds = 'NTg4MzI2NzkyMjg5MzIwOTYyOndyNDdMWnBxRW9WVWQyQUV1c1NxVE5XeFdmSlpGVzly'
-      const res = await fetch(
-        `https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=https://myg.gg/authenticated/discord`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Basic ${creds}`,
-          },
-        }
-      )
+
+      // const res = await fetch(
+      //   `https://discord.com/api/v6/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=https://myg.gg/authenticated/discord`,
+      //   {
+      //     method: 'POST',
+      //     headers: {
+      //       Authorization: `Basic ${creds}`,
+      //     },
+      //   }
+      // )
+      const res = await fetch(`https://discord.com/api/v6/oauth2/token?${data}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      })
+
+      //const res = await fetch('%s/oauth2/token' % API_ENDPOINT, data=data, headers=headers)
+
       const json = await res.json()
+      console.log(json)
       return response.redirect(`https://myg.gg/authenticated/discord/?token=${json.access_token}`)
     } else if (token) {
       const res = await fetch(`https://discordapp.com/api/users/@me`, {
