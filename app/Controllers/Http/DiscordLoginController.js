@@ -49,12 +49,15 @@ class DiscordLoginController {
       //     },
       //   }
       // )
-      const res = await fetch(`https://discord.com/api/v6/oauth2/token?${data}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      })
+      const res = await fetch(
+        `https://discord.com/api/v6/oauth2/token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&grant_type=authorization_code&code=${code}&redirect_uri=${REDIRECT_URI}&scope=identify email connections`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+      )
 
       //const res = await fetch('%s/oauth2/token' % API_ENDPOINT, data=data, headers=headers)
 
