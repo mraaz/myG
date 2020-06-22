@@ -7,6 +7,7 @@ import { groupBy } from '../../../common/array'
 import { getAssetUrl } from '../../../common/assets'
 import logger from '../../../common/logger'
 import { ignoreFunctions } from '../../../common/render'
+import { WithTooltip } from '../Tooltip'
 
 export default class ChatMessage extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -253,18 +254,20 @@ export default class ChatMessage extends React.Component {
     const contacts = this.props.message.contacts
     return (
       <div key={this.props.message.messageId + 'LastRead'} className='chat-component-read-indicator-container'>
-        {contacts.map((contact) => this.renderReadIndicator(contact.contactId, contact.icon))}
+        {contacts.map((contact) => this.renderReadIndicator(contact.contactId, contact.icon, contact.name))}
       </div>
     )
   }
 
-  renderReadIndicator(key, icon) {
+  renderReadIndicator(key, icon, name) {
     return (
-      <div key={key} className='chat-component-read-indicator'>
-        <div className='chat-component-read-indicator-icon'>
-          <img className='chat-component-read-indicator-icon-image' src={icon} />
+      <WithTooltip position={{ bottom: '28px', left: '-10px' }} text={name}>
+        <div key={key} className='chat-component-read-indicator'>
+          <div className='chat-component-read-indicator-icon'>
+            <img className='chat-component-read-indicator-icon-image' src={icon} />
+          </div>
         </div>
-      </div>
+      </WithTooltip>
     )
   }
 
@@ -363,6 +366,7 @@ export default class ChatMessage extends React.Component {
     if (message.isDateDivisor) return this.renderDateDivisor()
     if (message.isEntryLog) return this.renderEntryLog()
     if (message.isLastRead) return this.renderLastRead()
+    if (!message.deleted && !message.content) return null
     return (
       <div
         data-message-id={message.messageId}

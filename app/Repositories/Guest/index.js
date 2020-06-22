@@ -80,8 +80,9 @@ class GuestRepository {
     return ChatRepository.fetchEncryptionMessages({ requestingUserId: requestingGuestId, requestedChatId });
   }
 
-  async sendMessage({ requestedChatId, senderName, guestId, backup, content, replyId, replyContent, replyBackup }) {
+  async sendMessage({ requestedChatId, senderName, guestId, backup, content, replyId, replyContent, replyBackup, uuid }) {
     const messageData = {
+      uuid,
       sender_id: guestId,
       sender_name: senderName,
       backup: backup,
@@ -94,6 +95,7 @@ class GuestRepository {
     const message = await Chat.find(requestedChatId).then(chat => chat.messages().create(messageData));
     const messageSchema = new MessageSchema({
       messageId: message.id,
+      uuid: message.uuid,
       chatId: requestedChatId,
       senderId: message.sender_id,
       keyReceiver: message.key_receiver,
@@ -123,6 +125,7 @@ class GuestRepository {
     message.deleted = true;
     const messageSchema = new MessageSchema({
       messageId: message.id,
+      uuid: message.uuid,
       chatId: requestedChatId,
       senderId: message.sender_id,
       senderName: message.sender_name,
@@ -166,12 +169,20 @@ class GuestRepository {
     return ChatRepository.fetchGroupPrivateKeyRequests({ chatId });
   }
 
-  async requestGroupPrivateKey({ userId, chatId, publicKey }) {
-    return ChatRepository.requestGroupPrivateKey({ userId, chatId, publicKey });
+  async requestGroupPrivateKey({ guestId, chatId, publicKey }) {
+    return ChatRepository.requestGroupPrivateKey({ userId: guestId, chatId, publicKey });
   }
 
-  async confirmGroupPrivateKey({ userId, chatId }) {
-    return ChatRepository.confirmGroupPrivateKey({ userId, chatId });
+  async confirmGroupPrivateKey({ guestId, chatId }) {
+    return ChatRepository.confirmGroupPrivateKey({ userId: guestId, chatId });
+  }
+
+  async markLastReadGuest({ guestId, chatId }) {
+    const lastRead = await ChatRepository._fetchLastMessageId({ requestedChatId: chatId });
+    if (!lastRead) return new DefaultSchema({ success: false, error: 'No Last Read Found' });
+    const payload = { chatId, guestId, lastRead };
+    ChatRepository._notifyChatEvent({ chatId, action: 'markAsRead', payload });
+    return new DefaultSchema({ success: true });
   }
 
 }

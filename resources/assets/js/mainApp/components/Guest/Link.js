@@ -7,6 +7,7 @@ import { monitorChats, closeSubscription } from '../../../integration/ws/chat'
 import notifyToast from '../../../common/toast'
 import Chat from './Chat'
 import Register from './Register'
+import WindowFocusHandler from '../WindowFocusHandler'
 import { getAssetUrl } from '../../../common/assets'
 import { ignoreFunctions } from '../../../common/render'
 
@@ -22,6 +23,7 @@ class GuestLink extends React.Component {
     loaded: false,
     alias: '',
     aliasEmpty: false,
+    windowFocused: false,
   }
 
   componentDidMount() {
@@ -75,7 +77,14 @@ class GuestLink extends React.Component {
     if (!guestId || !chatId || kicked || !loaded || !validLink) return null
     return (
       <div id='messenger' className='messenger-container'>
-        <Chat key={chatId} userId={guestId} chatId={chatId} alias={`${this.state.alias} (Guest #${guestId})`} isGuest={true} />
+        <Chat
+          key={chatId}
+          userId={guestId}
+          chatId={chatId}
+          alias={`${this.state.alias} (Guest #${guestId})`}
+          isGuest={true}
+          windowFocused={this.state.windowFocused}
+        />
         <Register />
       </div>
     )
@@ -144,6 +153,12 @@ class GuestLink extends React.Component {
     )
   }
 
+  renderFocusMonitor = () => {
+    return (
+      <WindowFocusHandler onFocus={() => this.setState({ windowFocused: true })} onBlur={() => this.setState({ windowFocused: false })} />
+    )
+  }
+
   render() {
     return (
       <div id='guest-container' style={{ backgroundImage: `url(${getAssetUrl('background_guest')})` }}>
@@ -151,6 +166,7 @@ class GuestLink extends React.Component {
         {this.renderNoLink()}
         {this.renderKicked()}
         {this.renderAlias()}
+        {this.renderFocusMonitor()}
       </div>
     )
   }

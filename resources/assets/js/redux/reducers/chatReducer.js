@@ -94,7 +94,7 @@ export default function reducer(
         .filter((message) => !action.payload.chat.deletedMessages.includes(message.messageId))
         .filter((message) => !state.blockedUsers.find((user) => user.userId === message.senderId))
         .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId))
-        .map(message => prepareMessage(state, chat, message))
+        .map((message) => prepareMessage(state, chat, message))
       chat.messages = messages
       if (chat.gameStarting) chat.messages.push(chat.gameStarting)
       if (action.payload.chat.isGroup) {
@@ -136,7 +136,7 @@ export default function reducer(
         .filter((message) => !message.keyReceiver)
         .filter((message) => !state.blockedUsers.find((user) => user.userId === message.senderId))
         .sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId))
-        .map(message => prepareMessage(state, chat, message))
+        .map((message) => prepareMessage(state, chat, message))
       chat.noMoreMessages = !action.payload.messages.length
       chat.loadingMessages = false
       chat.messages = messages
@@ -297,7 +297,10 @@ export default function reducer(
           const privateKey = receiveGroupKey(chat, [message], userId, state.privateKey)
           if (privateKey) chat.privateKey = privateKey
         }
-        return state
+        return {
+          ...state,
+          chats,
+        }
       }
 
       const isNotActivelyLooking = !chat.muted && !window.focused && message.senderId !== userId && !message.keyReceiver
@@ -333,12 +336,13 @@ export default function reducer(
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       const updated = chat.messages.find((candidate) => candidate.messageId === message.messageId)
       if (updated) {
-        updated.content = message.content
-        updated.backup = message.backup
-        updated.edited = message.edited
-        updated.deleted = message.deleted
+        const preparedMessaged = prepareMessage(state, chat, message)
+        updated.content = preparedMessaged.content
+        updated.backup = preparedMessaged.backup
+        updated.edited = preparedMessaged.edited
+        updated.deleted = preparedMessaged.deleted
       } else {
-        chat.messages.push(message)
+        chat.messages.push(prepareMessage(state, chat, message))
       }
       chat.messages = chat.messages.sort((m1, m2) => parseInt(m1.messageId) - parseInt(m2.messageId))
       return {
@@ -417,16 +421,17 @@ export default function reducer(
 
     case 'UPDATE_CHAT_FULFILLED': {
       logger.log('CHAT', `Redux -> Chat Updated: `, action.meta, action.payload)
-      const { chatId, muted, isPrivate, title, icon, selfDestruct } = action.meta
-      if (muted === undefined && title === undefined && icon === undefined && selfDestruct === undefined && isPrivate === undefined)
-        return state
+      const { chatId, muted, isPrivate, title, icon, selfDestruct, publicKey, privateKey } = action.meta
       const chats = JSON.parse(JSON.stringify(state.chats))
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       if (muted !== undefined) chat.muted = muted
-      if (isPrivate !== undefined) chat.isPrivate = isPrivate
       if (title !== undefined) chat.title = title
       if (icon !== undefined) chat.icon = icon
       if (selfDestruct !== undefined && action.payload.success) chat.selfDestruct = selfDestruct
+      if (isPrivate !== undefined) chat.isPrivate = isPrivate
+      if (publicKey !== undefined) chat.publicKey = publicKey
+      if (privateKey !== undefined) chat.privateKey = deserializeKey(privateKey)
+      if (publicKey !== undefined) prepareGroupKeysToSend(chat, parseInt(state.userId), state.contacts, state.publicKey, state.privateKey)
       return {
         ...state,
         chats,
@@ -663,13 +668,14 @@ export default function reducer(
     case 'MARK_AS_READ': {
       logger.log('CHAT', `Redux -> Mark As Read: `, action.meta, action.payload)
       const { userId: thisUserId } = action.meta
-      const { userId, chatId, lastRead } = action.payload
+      const { guestId, userId, chatId, lastRead } = action.payload
       const chats = JSON.parse(JSON.stringify(state.chats))
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       if (userId === thisUserId) chat.lastRead = lastRead
       else {
         if (!chat.lastReads) chat.lastReads = {}
-        chat.lastReads[userId] = lastRead
+        if (guestId) chat.lastReads[`Guest #${guestId}`] = lastRead
+        else chat.lastReads[userId] = lastRead
       }
       return {
         ...state,
@@ -857,7 +863,8 @@ function prepareMessage(state, chat, message) {
   const chatKey = chat.isGroup ? chat.privateKey : state.privateKey
   const encryptedContent = isSent ? message.backup : message.content
   const encryptedReplyContent = isSent ? message.replyBackup : message.replyContent
-  const privateKey = isSent ? state.privateKey : chatKey
+  const privateKey = deserializeKey(isSent ? state.privateKey : chatKey)
+  if (!privateKey) return message
   const content = decryptMessage(encryptedContent, privateKey)
   const replyContent = encryptedReplyContent && decryptMessage(encryptedReplyContent, privateKey)
   return { ...message, content, replyContent, decrypted: true }

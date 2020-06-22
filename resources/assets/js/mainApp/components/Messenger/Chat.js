@@ -25,7 +25,7 @@ import {
   unblockUserAction,
 } from '../../../redux/actions/chatAction'
 import { withDatesAndLogsAndLastReads } from '../../../common/chat'
-import { encryptMessage, decryptMessage, deserializeKey } from '../../../integration/encryption'
+import { encryptMessage, decryptMessage, deserializeKey, generateKeysSync } from '../../../integration/encryption'
 import { formatDateTime } from '../../../common/date'
 import { getAssetUrl } from '../../../common/assets'
 import { showMessengerAlert } from '../../../common/alert'
@@ -51,6 +51,7 @@ export class Chat extends React.Component {
       messagePaginationPage: 1,
       attachment: null,
       loadedAllMessages: false,
+      hasScrolledToLastRead: false,
     }
     this.messageListRef = React.createRef()
   }
@@ -71,6 +72,9 @@ export class Chat extends React.Component {
     const messageList = this.messageListRef.current
     if (!messageList) return
     const hasScrolledEnough = messageList.scrollHeight - messageList.scrollTop > 750
+    const hasScrolledToBottom = messageList.scrollHeight - messageList.scrollTop < 300
+    console.log(hasScrolledToBottom, messageList.scrollHeight, messageList.scrollTop)
+    if (hasScrolledToBottom) this.markAsRead()
     this.setState({ oldMessages: hasScrolledEnough })
     if (messageList.scrollTop !== 0 || this.props.loadingMessages || this.props.noMoreMessages) return
     const nextPage = this.state.messagePaginationPage + 1
@@ -80,25 +84,29 @@ export class Chat extends React.Component {
   }
 
   componentDidUpdate() {
-    const isValidMessage = (message) => !message.isLastRead && !message.isEntryLog && !message.isDateDivisor
-    const lastMessageId = (this.props.messages.slice().reverse().find(isValidMessage) || {}).messageId
-    this.markAsRead(lastMessageId)
-    this.scrollToLastMessage(lastMessageId)
+    this.scrollMessagesIfNeeded()
   }
 
-  scrollToLastMessage = (lastMessageId) => {
-    const typing = JSON.stringify(this.props.typing)
-    const isTyping = typing !== this.state.currentlyTyping
-    const hasNewMessage = this.state.lastMessageId !== lastMessageId
+  scrollMessagesIfNeeded() {
+    const isValidMessage = (message) => !message.isLastRead && !message.isEntryLog && !message.isDateDivisor
+    const lastMessage = this.props.messages.slice().reverse().find(isValidMessage) || {}
+    const lastMessageTime = lastMessage.createdAt
+    const lastMessageId = lastMessage.messageId
+    const lastReadMessageId = this.props.lastRead
+    const messageTimeDelta = Date.now() - new Date(lastMessageTime).getTime()
+    const tenSeconds = 1000 * 10
+    const hasNewMessage = lastMessageId > this.state.lastMessageId
     const gotDecrypted = this.state.wasEncrypted && this.props.privateKey
-    if (isTyping || hasNewMessage || gotDecrypted) {
-      const state = {}
-      if (isTyping) state.currentlyTyping = typing
-      if (hasNewMessage) state.lastMessageId = lastMessageId
-      if (gotDecrypted) state.wasEncrypted = false
-      this.setState(state)
+    if (!this.state.hasScrolledToLastRead && messageTimeDelta > tenSeconds) {
+      if (this.state.lastMessageId) this.setState({ hasScrolledToLastRead: true })
+      this.setState({ lastMessageId })
+      return this.scrollToMessage(lastReadMessageId)
+    }
+    if (gotDecrypted || hasNewMessage) {
+      this.setState({ lastMessageId, wasEncrypted: false })
+      this.markAsRead()
       if (this.messageListRef.current) this.messageListRef.current.scrollTo(0, this.messageListRef.current.scrollHeight)
-      return true
+      return
     }
   }
 
@@ -114,12 +122,14 @@ export class Chat extends React.Component {
     }
   }
 
-  markAsRead = (lastMessageId) => {
-    if (this.props.isGuest) return
+  markAsRead = () => {
+    const isValidMessage = (message) => !message.isLastRead && !message.isEntryLog && !message.isDateDivisor
+    const lastMessageId = (this.props.messages.slice().reverse().find(isValidMessage) || {}).messageId
     if (this.props.minimised || !this.props.privateKey || !this.props.windowFocused) return
     if (!lastMessageId || lastMessageId <= this.props.lastRead || lastMessageId <= this.state.lastRead) return
     this.setState({ lastRead: lastMessageId })
-    this.props.updateChat(this.props.chatId, { markAsRead: true })
+    if (this.props.isGuest) return this.props.markLastReadGuest(this.props.chatId, this.props.userId)
+    else this.props.updateChat(this.props.chatId, { markAsRead: true })
   }
 
   sendMessage = (input, attachment) => {
@@ -136,7 +146,7 @@ export class Chat extends React.Component {
       replyId,
       replyContent,
       replyBackup,
-      input,
+      input
     )
   }
 
@@ -151,7 +161,7 @@ export class Chat extends React.Component {
   }
 
   decryptMessage = (message) => {
-    if (message.decrypted) return message;
+    if (message.decrypted) return message
     if (message.unencryptedContent) return { ...message, content: message.unencryptedContent }
     if (!message.content && !message.backup) return message
     const isSent = !this.props.isGroup && message.senderId == this.props.userId
@@ -161,6 +171,11 @@ export class Chat extends React.Component {
     const content = decryptMessage(encryptedContent, privateKey)
     const replyContent = encryptedReplyContent && decryptMessage(encryptedReplyContent, privateKey)
     return { ...message, content, replyContent, decrypted: true }
+  }
+
+  resetGroupKey = () => {
+    const { encryption } = generateKeysSync()
+    this.props.updateChat(this.props.chatId, encryption)
   }
 
   editLastMessage = () => {
@@ -480,13 +495,30 @@ export class Chat extends React.Component {
   renderEncryptedChat() {
     const isGroupWithoutKey = this.props.isGroup && !this.props.privateKey
     const noUserKeyText = 'Please inform your encryption key to read the contents of this chat.'
-    const noGroupKeyText = `Unable to retrieve E2E key from an active member. Please wait for a chat member to come online.${
-      this.props.isGuest ? 'Alternatively, create an account @ myG.gg' : ''
-    }`
+    const noGroupKeyText = `Unable to retrieve E2E key from an active member. Please wait for a chat member to come online.`
+    const noGroupKeySubtext = this.props.isGuest
+      ? 'Alternatively, create an account @ myG.gg'
+      : this.props.isGroupOwner
+      ? 'Alternatively, click here to reset the encryption key.'
+      : ''
+    const canResetKey = isGroupWithoutKey && this.props.isGroupOwner
     return (
       <div key={this.props.chatId} className='chat-component-base'>
         {this.renderHeader()}
-        <div className='chat-component-encryption-warning'>{isGroupWithoutKey ? noGroupKeyText : noUserKeyText}</div>
+        <div
+          className={`chat-component-encryption-warning${canResetKey ? ' clickable' : ''}`}
+          onClick={() =>
+            canResetKey &&
+            showMessengerAlert(
+              "Resetting the Encryption Key will delete this group's history, but will grant you access to this group if the Encryption Key was lost.",
+              this.resetGroupKey,
+              null,
+              'Reset Key'
+            )
+          }>
+          <p>{isGroupWithoutKey ? noGroupKeyText : noUserKeyText}</p>
+          <p>{noGroupKeySubtext}</p>
+        </div>
         {this.renderFooter()}
       </div>
     )
@@ -537,13 +569,14 @@ export function mapStateToProps(state, props) {
     const onlineCount = contacts.filter((contactId) => (contactsMap[contactId] || {}).status === 'online').length + guests.length + 1
     chatSubtitle = `${onlineCount}/${memberCount} online`
   }
+  const isGroupOwner = chat.owners.length && chat.owners.includes(props.userId)
   chat.privateKey = deserializeKey(chat.privateKey)
   const messages = withDatesAndLogsAndLastReads(
     chat.messages || [],
     chat.entryLogs || [],
     contactsMap || {},
     chat.lastReads || {},
-    !!guests.length
+    props.userId
   )
   return {
     messages,
@@ -553,6 +586,7 @@ export function mapStateToProps(state, props) {
     contactId,
     contactsMap,
     isGroup,
+    isGroupOwner,
     group: chat,
     gameMessage: chat.gameMessage || '',
     icon: chat.icon || contact.icon || '',
@@ -562,7 +596,6 @@ export function mapStateToProps(state, props) {
     muted: chat.muted || false,
     selfDestruct: chat.selfDestruct || false,
     lastRead: chat.lastRead || 0,
-    lastReads: chat.lastReads || {},
     blockedUsers: state.chat.blockedUsers || [],
     typing: chat.typing || [],
     maximised: chat.maximised || false,

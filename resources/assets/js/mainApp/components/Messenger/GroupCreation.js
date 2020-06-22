@@ -89,6 +89,7 @@ class GroupCreation extends React.Component {
   }
 
   onUploadPhoto = (icon, key) => {
+    console.log(icon, key)
     this.setState({ icon, key, uploadingPhoto: false })
   }
 

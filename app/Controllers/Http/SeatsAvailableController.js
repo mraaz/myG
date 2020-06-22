@@ -2,7 +2,7 @@
 
 const SeatsAvailable = use('App/Models/SeatsAvailable')
 const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
-const { log } = require('../../Common/logger')
+const SeatsAvailableEmail = use('App/Models/SeatsAvailableEmail')
 
 class SeatsAvailableController {
   async fetchSeatsAvailable({ response }) {
@@ -14,6 +14,16 @@ class SeatsAvailableController {
     const code = params.code
     const hasCode = await ExtraSeatsCodes.query().where('code', code).andWhere('user_id', null).first()
     return response.send(!!hasCode)
+  }
+
+  async storeSeatsAvailableEmail({ params, response }) {
+    const email = params.email
+    const existingEmail = await SeatsAvailableEmail.query().where('email', email).first()
+    if (existingEmail) return response.send(false)
+    const seatsAvailableEmail = new SeatsAvailableEmail()
+    seatsAvailableEmail.email = email
+    await seatsAvailableEmail.save()
+    return response.send(true)
   }
 }
 

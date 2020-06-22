@@ -3,7 +3,7 @@ import { openChatAction } from '../redux/actions/chatAction'
 import { isOneDayBehind, isYesterday } from './date'
 import { getAssetUrl } from './assets'
 
-export function withDatesAndLogsAndLastReads(messages, entryLogs, contactsMap, lastReads, hasGuests) {
+export function withDatesAndLogsAndLastReads(messages, entryLogs, contactsMap, lastReads, guestId) {
   entryLogs = entryLogs.sort((e1, e2) => e1.createdAt - e2.createdAt)
   const enrichedMessages = []
   let lastDate = new Date()
@@ -13,6 +13,16 @@ export function withDatesAndLogsAndLastReads(messages, entryLogs, contactsMap, l
   Object.keys(lastReads).forEach((contactId) => {
     const messageId = lastReads[contactId]
     if (!lastReadContacts[messageId]) lastReadContacts[messageId] = []
+    if (`${contactId}`.startsWith('Guest')) {
+      const id = contactId.split('Guest #')[1]
+      if (parseInt(id) !== parseInt(guestId)) {
+        lastReadContacts[messageId].push({
+          contactId,
+          icon: getAssetUrl('ic_guest_icon'),
+          name: contactId,
+        });
+      }
+    }
     if (contactsMap[contactId]) lastReadContacts[messageId].push(contactsMap[contactId])
   })
   reversedMessages.forEach((message) => {
@@ -38,12 +48,6 @@ export function withDatesAndLogsAndLastReads(messages, entryLogs, contactsMap, l
   })
   reversedEntryLogs.forEach((entryLog) => enrichedMessages.push({ ...entryLog, isEntryLog: true, messageId: `EntryLog-${entryLog.id}` }))
   const unreversedMessages = enrichedMessages.reverse()
-  if (hasGuests) {
-    const guestContact = { contactId: 'GUEST', icon: getAssetUrl('ic_guest_icon') };
-    const lastReadMessage = enrichedMessages.find(message => message.isLastRead);
-    if (lastReadMessage) lastReadMessage.contacts.push(guestContact)
-    else unreversedMessages.push({ isLastRead: true, contacts: [guestContact], messageId: 'LastReadGuest' });
-  }
   return unreversedMessages
 }
 
