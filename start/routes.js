@@ -393,5 +393,6 @@ Route.post('/api/guest/lastRead/:guestId/:chatId', 'GuestController.markLastRead
 // Seats Available
 Route.get('/api/seats_available', 'SeatsAvailableController.fetchSeatsAvailable')
 Route.get('/api/seats_available/:code', 'SeatsAvailableController.checkExtraSeatsCode')
+Route.get('/api/seats_available_email/:email', 'SeatsAvailableController.storeSeatsAvailableEmail')
 
 Route.any('*', ({ view }) => view.render('pages/react'))

@@ -137,6 +137,7 @@
             </div>
             <div class="register-message"><b>Register</b> while there's still time!</div>
             <div id="extra-seats-code-container"></div>
+            <div id="extra-seats-email-container"></div>
         </div>
     </div>
 </div>
@@ -156,6 +157,7 @@ function fetchSeatsAvailable() {
     if (!seatsAvailable) {
       document.getElementsByClassName('register-message')[0].innerText = "Only Invitation Codes can get you in now!";
       injectInvitationCodeInput();
+      injectInvitationEmailInput();
     }
     const currentCode =  window.localStorage.getItem("extraSeatsCode");
     if (currentCode) {
@@ -200,6 +202,33 @@ function fetchSeatsAvailable() {
       document.getElementById('extra-seats-code-hint').innerText = "The code " + code.toUpperCase() + " is not valid!";
       document.getElementById('extra-seats-code-hint').style = "color: #ce2b35";
     }
+  }
+
+  function injectInvitationEmailInput() {
+    const inputHtml = ''
+      + '<div class="extra-seats-code-container">'
+        + '<p id="extra-seats-code-hint" class="extra-seats-code-hint">Enter email address to be notified for next round of open seats.</p>'
+        + '<input class="input-common extra-seats-code-input"'
+        + 'id="extra-seats-email-input"'
+        + 'placeholder="EMAIL"'
+        + 'type="text"'
+        + 'name="extra-seats-email"'
+        + 'style="text-transform:uppercase"'
+        + '></input>'
+        + '<div class="extra-seats-code-button clickable" onclick="saveExtraSeatsEmail()">'
+          + 'Request'
+        + '</div>'
+      + '</div>';
+    document.getElementById('extra-seats-email-container').innerHTML = inputHtml;
+  }
+
+  function saveExtraSeatsEmail() {
+    const email = document.getElementById('extra-seats-email-input').value;
+    if (!email) return alert('Enter valid email address')
+    const xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", '/api/seats_available_email/' + email.trim().toLowerCase(), false );
+    xmlHttp.send( null );
+    alert('We will be in touch when the next round of seats is available.')
   }
 
   setSeatsAvailable()
