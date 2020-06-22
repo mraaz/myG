@@ -43,7 +43,8 @@ class DiscordLoginController {
         },
       })
       const json = await res.json()
-
+      console.log('Raaz')
+      console.log(json)
       try {
         const authUser = await User.query()
           .where({
@@ -132,7 +133,9 @@ class DiscordLoginController {
 
       // Mark Extra Seat Code as Used
       if (extraSeatsCode) {
-        await ExtraSeatsCodes.query().where('code', extraSeatsCode).update({ user_id: newUser.id })
+        await ExtraSeatsCodes.query()
+          .where('code', extraSeatsCode)
+          .update({ user_id: newUser.id })
       }
 
       await auth.loginViaId(user.id)
