@@ -2,6 +2,7 @@
 
 const Database = use('Database')
 const Attendee = use('App/Models/Attendee')
+
 const NotificationController = use('./NotificationController')
 const NotificationController_v2 = use('./NotificationController_v2')
 const UserStatTransactionController = use('./UserStatTransactionController')
@@ -316,10 +317,8 @@ class AttendeeController {
   }
 
   async remove_myattendance({ auth, request, response }) {
-    console.log('DS')
-    console.log(request.params.id)
-
     if (auth.user) {
+      let scheduleGameController = new ScheduleGameController()
       try {
         const attendees = await Database.from('attendees')
           .innerJoin('schedule_games', 'schedule_games.id', 'attendees.schedule_games_id')
@@ -327,28 +326,29 @@ class AttendeeController {
           .where('attendees.user_id', '=', auth.user.id)
           .select('schedule_games.user_id')
 
-        if (attendees.length > 0) {
-          let noti = new NotificationController_v2()
-          let scheduleGameController = new ScheduleGameController()
-          let userStatController = new UserStatTransactionController()
-
-          noti.add_approved_attendee_left({ auth }, request.params.id, attendees[0].user_id)
-
-          //look up co hosts and notify aswell
-          const co_hosts = await Database.from('co_hosts')
-            .where({ schedule_games_id: request.params.id })
-            .select('user_id')
-
-          for (var i = 0; i < co_hosts.length; i++) {
-            request.params.other_user_id = co_hosts[i].user_id
-            noti.add_approved_attendee_left({ auth }, request.params.id, co_hosts[i].user_id)
-          }
-
-          userStatController.update_total_number_of(attendees[0].user_id, 'total_number_of_games_hosted')
-          userStatController.update_total_number_of(auth.user.id, 'total_number_of_games_played')
-
-          scheduleGameController.update_vacany({ auth }, request.params.id, true)
+        if (attendees.length == 0) {
+          return
         }
+
+        let noti = new NotificationController_v2()
+        let userStatController = new UserStatTransactionController()
+
+        noti.add_approved_attendee_left({ auth }, request.params.id, attendees[0].user_id)
+
+        //look up co hosts and notify aswell
+        const co_hosts = await Database.from('co_hosts')
+          .where({ schedule_games_id: request.params.id })
+          .select('user_id')
+
+        for (var i = 0; i < co_hosts.length; i++) {
+          request.params.other_user_id = co_hosts[i].user_id
+          noti.add_approved_attendee_left({ auth }, request.params.id, co_hosts[i].user_id)
+        }
+
+        userStatController.update_total_number_of(attendees[0].user_id, 'total_number_of_games_hosted')
+        userStatController.update_total_number_of(auth.user.id, 'total_number_of_games_played')
+
+        scheduleGameController.update_vacany({ auth }, request.params.id, true)
 
         const delete_attendance = await Database.table('attendees')
           .where({
