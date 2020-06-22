@@ -1,3 +1,8 @@
+/*
+ * Author : nitin Tyagi
+ * github  : https://github.com/realinit
+ * Email : nitin.1992tyagi@gmail.com
+ */
 import React, { Fragment, useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { Toast_style } from '../Utility_Function'

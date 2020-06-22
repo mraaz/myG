@@ -1,3 +1,8 @@
+/*
+ * Author : nitin Tyagi
+ * github  : https://github.com/realinit
+ * Email : nitin.1992tyagi@gmail.com
+ */
 import React, { Fragment, useEffect, useState } from 'react'
 import axios from 'axios'
 import Modal from 'react-modal'

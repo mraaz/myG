@@ -1,3 +1,8 @@
+/*
+ * Author : nitin Tyagi
+ * github  : https://github.com/realinit
+ * Email : nitin.1992tyagi@gmail.com
+ */
 const region_options = [
   { value: 'North America', label: 'North America' },
   { value: 'Europe', label: 'Europe' },
@@ -35,4 +40,28 @@ const visibility_options = [
   { value: 3, label: 'Group' },
 ]
 
-module.exports = { region_options, experience_options, platform_options, date_options, visibility_options }
+const getExtraFilterOprion = (arg) => {
+  const data = arg && arg.length > 0 ? arg.split(',') : []
+  return data.map((item) => {
+    return { value: item, label: item }
+  })
+}
+
+const properCase = (str) => {
+  let strArr = str.split('_')
+  let arr = []
+  for (var x = 0; x < strArr.length; x++) {
+    arr.push(strArr[x].charAt(0).toUpperCase() + strArr[x].slice(1))
+  }
+  return arr.join(' ')
+}
+
+module.exports = {
+  region_options,
+  experience_options,
+  platform_options,
+  date_options,
+  visibility_options,
+  getExtraFilterOprion,
+  properCase,
+}
