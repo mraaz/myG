@@ -50,7 +50,7 @@ class DiscordLoginController {
       //   }
       // )
       const res = await fetch(
-        `https://discord.com/api/v6/oauth2/token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&grant_type=authorization_code&code=${code}&redirect_uri=${REDIRECT_URI}&scope=identify email connections`,
+        `https://discord.com/api/v6/oauth2/token?client_id=588326792289320962&client_secret=wr47LZpqEoVUd2AEusSqTNWxWfJZFW9r&grant_type=authorization_code&code=${code}&redirect_uri=${REDIRECT_URI}&scope=identify email connections`,
         {
           method: 'POST',
           headers: {
