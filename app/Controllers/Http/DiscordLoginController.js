@@ -21,7 +21,6 @@ class DiscordLoginController {
 
   async callback({ auth, response, request, session }) {
     var all = request.all()
-    var API_ENDPOINT = 'https://discord.com/api/v6'
     var CLIENT_ID = '588326792289320962'
     var CLIENT_SECRET = 'wr47LZpqEoVUd2AEusSqTNWxWfJZFW9r'
     var REDIRECT_URI = 'https://myg.gg/authenticated/discord'
@@ -30,21 +29,6 @@ class DiscordLoginController {
     const code = all.code
     const token = all.token
     if (code) {
-      console.log('Going into CODE <<<<<<<<<<<<<<<')
-
-      //const creds = btoa(`${CLIENT_ID}:${CLIENT_SECRET}`);
-      //Instead of using btoa we've manually encoded this Base64
-      //const creds = 'NTg4MzI2NzkyMjg5MzIwOTYyOndyNDdMWnBxRW9WVWQyQUV1c1NxVE5XeFdmSlpGVzly'
-
-      // const res = await fetch(
-      //   `https://discord.com/api/v6/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=https://myg.gg/authenticated/discord`,
-      //   {
-      //     method: 'POST',
-      //     headers: {
-      //       Authorization: `Basic ${creds}`,
-      //     },
-      //   }
-      // )
       const data = new FormData()
 
       data.append('client_id', CLIENT_ID)
@@ -59,20 +43,7 @@ class DiscordLoginController {
         body: data,
       })
 
-      // const res = await fetch(
-      //   `https://discord.com/api/v6/oauth2/token?client_id=588326792289320962&client_secret=wr47LZpqEoVUd2AEusSqTNWxWfJZFW9r&grant_type=authorization_code&code=${code}&redirect_uri=${REDIRECT_URI}&scope=identify email connections`,
-      //   {
-      //     method: 'POST',
-      //     headers: {
-      //       'Content-Type': 'application/x-www-form-urlencoded',
-      //     },
-      //   }
-      // )
-
-      //const res = await fetch('%s/oauth2/token' % API_ENDPOINT, data=data, headers=headers)
-
       const json = await res.json()
-      console.log(json)
       return response.redirect(`https://myg.gg/authenticated/discord/?token=${json.access_token}`)
     } else if (token) {
       const res = await fetch(`https://discordapp.com/api/users/@me`, {
@@ -82,8 +53,6 @@ class DiscordLoginController {
         },
       })
       const json = await res.json()
-      console.log('Raaz')
-      console.log(json)
       try {
         const authUser = await User.query()
           .where({
