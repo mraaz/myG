@@ -27,9 +27,10 @@ class SavedFiltersScheduleGameController {
   async getAllSavedFilters({ auth, request, response }) {
     if (auth.user) {
       let additional_info = false,
-        additional_info_data = {}
+        additional_info_data = {},
+        allFilters = []
       try {
-        const allFilters = await Database.table('saved_filters_schedule_games').where({ user_id: auth.user.id })
+        allFilters = await Database.table('saved_filters_schedule_games').where({ user_id: auth.user.id })
         for (var i = 0; i < allFilters.length; i++) {
           let payload = {
             game_name: false,
@@ -109,6 +110,8 @@ class SavedFiltersScheduleGameController {
         }
       } catch (error) {
         console.log(error)
+        allFilters = []
+        additional_info = false
         return {
           allFilters,
           additional_info,
