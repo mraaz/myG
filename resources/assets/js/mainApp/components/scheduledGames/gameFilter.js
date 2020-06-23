@@ -107,7 +107,10 @@ export default class ScheduleGames extends Component {
     const { filterValueArray = {}, filterTypeArray } = this.state
     const { additional_info = false, game_names_id = '', value = '' } = entered_name || {}
 
-    filterValueArray['game_name'] = entered_name
+    if (entered_name != null && entered_name != undefined) {
+      filterValueArray['game_name'] = entered_name.value
+    }
+
     let additional_info_data = {}
 
     if (additional_info) {
