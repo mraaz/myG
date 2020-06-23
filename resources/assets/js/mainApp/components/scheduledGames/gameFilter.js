@@ -121,6 +121,18 @@ export default class ScheduleGames extends Component {
         allKeys.forEach((key) => {
           this.filterGroup[key] = properCase(key)
         })
+    } else {
+      let additional_info_data = {}
+      let allKeys = { ...this.filterGroup }
+      let keys = {}
+      if (Object.keys(allKeys).length > 0) {
+        Object.keys(allKeys).forEach((key) => {
+          if (this.constantFilter.includes(key)) {
+            keys[key] = allKeys[key]
+          }
+        })
+      }
+      this.filterGroup = { ...keys }
     }
 
     this.setState(
@@ -353,7 +365,13 @@ export default class ScheduleGames extends Component {
     })
     if (Object.keys(extraFields).length > 0) {
       Object.keys(extraFields).forEach((key, index) => {
-        payload[`value_${queryMapping[index]}`] = { [key]: filterValueArray[key] || '' }
+        let value = ''
+        if (Array.isArray(filterValueArray[key]) && filterValueArray[key].length > 0) {
+          value = filterValueArray[key][0].value
+        } else if (typeof filterValueArray[key] == 'object') {
+          value = filterValueArray[key].value
+        }
+        payload[`value_${queryMapping[index]}`] = { [key]: value }
       })
     }
 
@@ -724,11 +742,11 @@ export default class ScheduleGames extends Component {
                     />
                   </div>
                 )
-              } else {
-                const field_data = additional_info_data[k]
+              } else if (Object.keys(additional_info_data).length > 0) {
+                const field_data = additional_info_data[k] || {}
                 return (
                   <div className='viewGame__gameName'>
-                    <div className='viewGame__label'>{field_data.placeholder}</div>
+                    <div className='viewGame__label'>{field_data.placeholder || ''}</div>
                     <Select
                       onChange={(data) => this.handleAdditionalInfoChange(data, k, field_data.type)}
                       options={getExtraFilterOprion(field_data.value)}
@@ -737,7 +755,7 @@ export default class ScheduleGames extends Component {
                       className='viewGame__name'
                       isMulti={field_data.type == 'Single' ? false : true}
                       onKeyDown={this.onKeyDown}
-                      placeholder={`${field_data.placeholder}`}
+                      placeholder={`${field_data.placeholder || ''}`}
                       classNamePrefix='filter'
                     />
                   </div>
