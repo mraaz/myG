@@ -109,6 +109,11 @@ class SavedFiltersScheduleGameController {
         }
       } catch (error) {
         console.log(error)
+        return {
+          allFilters,
+          additional_info,
+          additional_info_data,
+        }
       }
     }
   }
