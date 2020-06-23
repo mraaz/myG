@@ -1,9 +1,12 @@
 'use strict'
 
 //https://medium.com/@orels1/using-discord-oauth2-a-simple-guide-and-an-example-nodejs-app-71a9e032770
+//https://discordjs.guide/oauth2/#oauth2-flows
 
 const User = use('App/Models/User')
 const fetch = require('node-fetch')
+const FormData = require('form-data')
+
 const ConnectionController = use('./ConnectionController')
 const SeatsAvailable = use('App/Models/SeatsAvailable')
 const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
@@ -28,17 +31,10 @@ class DiscordLoginController {
     const token = all.token
     if (code) {
       console.log('Going into CODE <<<<<<<<<<<<<<<')
-      var data = {
-        client_id: CLIENT_ID,
-        client_secret: CLIENT_SECRET,
-        grant_type: 'authorization_code',
-        code: code,
-        redirect_uri: REDIRECT_URI,
-        scope: 'identify email connections',
-      }
+
       //const creds = btoa(`${CLIENT_ID}:${CLIENT_SECRET}`);
       //Instead of using btoa we've manually encoded this Base64
-      const creds = 'NTg4MzI2NzkyMjg5MzIwOTYyOndyNDdMWnBxRW9WVWQyQUV1c1NxVE5XeFdmSlpGVzly'
+      //const creds = 'NTg4MzI2NzkyMjg5MzIwOTYyOndyNDdMWnBxRW9WVWQyQUV1c1NxVE5XeFdmSlpGVzly'
 
       // const res = await fetch(
       //   `https://discord.com/api/v6/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=https://myg.gg/authenticated/discord`,
@@ -49,15 +45,29 @@ class DiscordLoginController {
       //     },
       //   }
       // )
-      const res = await fetch(
-        `https://discord.com/api/v6/oauth2/token?client_id=588326792289320962&client_secret=wr47LZpqEoVUd2AEusSqTNWxWfJZFW9r&grant_type=authorization_code&code=${code}&redirect_uri=${REDIRECT_URI}&scope=identify email connections`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        }
-      )
+      const data = new FormData()
+
+      data.append('client_id', CLIENT_ID)
+      data.append('client_secret', CLIENT_SECRET)
+      data.append('grant_type', 'authorization_code')
+      data.append('redirect_uri', REDIRECT_URI)
+      data.append('scope', 'identify email')
+      data.append('code', code)
+
+      const res = await fetch('https://discordapp.com/api/oauth2/token', {
+        method: 'POST',
+        body: data,
+      })
+
+      // const res = await fetch(
+      //   `https://discord.com/api/v6/oauth2/token?client_id=588326792289320962&client_secret=wr47LZpqEoVUd2AEusSqTNWxWfJZFW9r&grant_type=authorization_code&code=${code}&redirect_uri=${REDIRECT_URI}&scope=identify email connections`,
+      //   {
+      //     method: 'POST',
+      //     headers: {
+      //       'Content-Type': 'application/x-www-form-urlencoded',
+      //     },
+      //   }
+      // )
 
       //const res = await fetch('%s/oauth2/token' % API_ENDPOINT, data=data, headers=headers)
 
