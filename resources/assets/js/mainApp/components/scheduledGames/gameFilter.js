@@ -554,6 +554,7 @@ export default class ScheduleGames extends Component {
       showOverlay = false,
       filterValueArray = {},
       additional_info_data = {},
+      extraFields = {},
     } = this.state
 
     if (this.props.initialData == 'loading') {
@@ -728,7 +729,7 @@ export default class ScheduleGames extends Component {
                       onChange={(data) => this.handleAdditionalInfoChange(data, k, field_data.type)}
                       options={getExtraFilterOprion(field_data.value)}
                       isClearable
-                      value={this.state[k] || filterValueArray[k] || ''}
+                      value={this.state[k] || extraFields[k] || ''}
                       className='viewGame__name'
                       isMulti={field_data.type == 'Single' ? false : true}
                       onKeyDown={this.onKeyDown}
