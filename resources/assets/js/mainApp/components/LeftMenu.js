@@ -18,24 +18,38 @@ class LeftMenu extends Component {
     dropdown: false,
     show_top_btn: false,
     isExpanded: false,
-    sideBarData: sideBarItems,
+    sideBarData: {
+      ...sideBarItems,
+    },
   }
 
   onMenuToggle = () => {
     this.setState((currentState) => ({
       isExpanded: !currentState.isExpanded,
-      sideBarData: sideBarItems,
+      sideBarData: {
+        ...sideBarItems,
+      },
     }))
   }
 
   onItemClick = (itemKey) => {
     this.setState((prevState) => ({
+      isExpanded: true,
       sideBarData: {
         ...prevState.sideBarData,
         [itemKey]: {
           ...prevState.sideBarData[itemKey],
           expanded: !prevState.sideBarData[itemKey].expanded,
         },
+      },
+    }))
+  }
+
+  onSubItemClick = (e) => {
+    e.stopPropagation()
+    this.setState((currentState) => ({
+      sideBarData: {
+        ...sideBarItems,
       },
     }))
   }
@@ -143,8 +157,10 @@ class LeftMenu extends Component {
   getSubItems = (subItems) => {
     return (
       <div className={styles.subItemContainer}>
-        {subItems.map((item) => (
-          <div className={styles.subItemText} dangerouslySetInnerHTML={{ __html: item.header }} />
+        {subItems.map((item, index) => (
+          <Link to={item.cta} key={index} onClick={this.onSubItemClick}>
+            <div className={styles.subItemText} dangerouslySetInnerHTML={{ __html: item.header }} />
+          </Link>
         ))}
       </div>
     )
@@ -152,6 +168,16 @@ class LeftMenu extends Component {
 
   getSideBarItems = () => {
     const { sideBarData, isExpanded } = this.state
+
+    const item = (icon, expanded, subItems, header) => (
+      <Fragment>
+        <div className={styles.itemBox}>
+          <img src={icon} height='24' width='24' />
+          {isExpanded && <div className={styles.sidebarItemText}>{header}</div>}
+        </div>
+        {expanded && this.getSubItems(subItems)}
+      </Fragment>
+    )
 
     return (
       <Fragment>
@@ -162,15 +188,23 @@ class LeftMenu extends Component {
             const alias = this.props.initialData === 'loading' ? '' : this.props.initialData.userInfo.alias
             tileCta = tileCta + `/${alias}`
           }
-          return (
-            <Link key={itemKey} to={tileCta}>
-              <div className={styles.itemBox}>
-                <img src={icon} height='24' width='24' />
-                {isExpanded && <div className={styles.sidebarItemText}>{header}</div>}
+          if (subItems) {
+            return (
+              <div
+                key={itemKey}
+                onClick={() => {
+                  this.onItemClick(itemKey)
+                }}>
+                {item(icon, expanded, subItems, header)}
               </div>
-              {expanded && subItems && this.getSubItems(subItems)}
-            </Link>
-          )
+            )
+          } else {
+            return (
+              <Link key={itemKey} to={tileCta}>
+                {item(icon, expanded, subItems, header)}
+              </Link>
+            )
+          }
         })}
       </Fragment>
     )
@@ -223,7 +257,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(withRouter(LeftMenu))
+export default connect(null, mapDispatchToProps)(withRouter(LeftMenu))

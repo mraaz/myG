@@ -77,7 +77,7 @@ export default class Home extends Component {
     const { tabName, initialData } = this.state
     if (initialData) {
       return (
-        <div className='content-area' ref={this.contentAreaRef}>
+        <div className='content-area' ref={this.contentAreaRef} style={{ height: '100vh', overflow: 'scroll' }}>
           <AnalyticsBox />
           {/* <ComposeSection initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData} /> */}
           <div className='links' ref={this.navRef}>
