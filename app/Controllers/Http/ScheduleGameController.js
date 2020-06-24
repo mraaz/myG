@@ -279,26 +279,26 @@ class ScheduleGameController {
           type: 1,
         })
 
-        for (var i = 0; i < allAttendees.length; i++) {
-          request.params.archive_schedule_game_id = allAttendees[i].schedule_games_id
-          request.params.user_id = allAttendees[i].user_id
-          request.params.type = allAttendees[i].type
-          request.params.dota_2_position_one = allAttendees[i].dota_2_position_one
-          request.params.dota_2_position_two = allAttendees[i].dota_2_position_two
-          request.params.dota_2_position_three = allAttendees[i].dota_2_position_three
-          request.params.dota_2_position_four = allAttendees[i].dota_2_position_four
-          request.params.dota_2_position_five = allAttendees[i].dota_2_position_five
-          request.params.og_created_at = allAttendees[i].created_at
-
-          archive_attendees.savemySpot({ auth, request, response })
-
-          if (auth.user.id != allAttendees[i].user_id) {
-            request.params.id = allAttendees[i].user_id
-            request.params.archive_schedule_game_id = schedule_game_id
-            noti.addGameDeleted({ auth, request, response })
-            //request.params.payload = `${getOne[0].game_name} was deleted! This game was scheduled to start ${getOne[0].start_date_time}`
-          }
-        }
+        // for (var i = 0; i < allAttendees.length; i++) {
+        //   request.params.archive_schedule_game_id = allAttendees[i].schedule_games_id
+        //   request.params.user_id = allAttendees[i].user_id
+        //   request.params.type = allAttendees[i].type
+        //   request.params.dota_2_position_one = allAttendees[i].dota_2_position_one
+        //   request.params.dota_2_position_two = allAttendees[i].dota_2_position_two
+        //   request.params.dota_2_position_three = allAttendees[i].dota_2_position_three
+        //   request.params.dota_2_position_four = allAttendees[i].dota_2_position_four
+        //   request.params.dota_2_position_five = allAttendees[i].dota_2_position_five
+        //   request.params.og_created_at = allAttendees[i].created_at
+        //
+        //   archive_attendees.savemySpot({ auth, request, response })
+        //
+        //   if (auth.user.id != allAttendees[i].user_id) {
+        //     request.params.id = allAttendees[i].user_id
+        //     request.params.archive_schedule_game_id = schedule_game_id
+        //     noti.addGameDeleted({ auth, request, response })
+        //     //request.params.payload = `${getOne[0].game_name} was deleted! This game was scheduled to start ${getOne[0].start_date_time}`
+        //   }
+        // }
 
         const getComments = await Database.from('comments').where({
           schedule_games_id: schedule_game_id,
