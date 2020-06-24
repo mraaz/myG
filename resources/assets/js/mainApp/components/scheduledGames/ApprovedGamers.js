@@ -114,7 +114,7 @@ const Approved_gamers = (props) => {
                         extraKeys.map((extraKey) => {
                           return (
                             <div className='other__title extraKey' style={{ width: `${50 / attendees.length}%` }}>
-                              {attendee[extraKey] || ''}
+                              {attendee[extraKey] ? attendee[extraKey].split(',').join(', ') || ''}
                             </div>
                           )
                         })}
