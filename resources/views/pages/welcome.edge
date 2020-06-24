@@ -45,7 +45,7 @@
       </div>
       <div class="card-round">
         <div class="seats-header">
-          <b>We have currently</b>
+          <b>We currently have</b>
         </div>
         <div class="seats-desc">
           <div class="card-seats">
@@ -104,22 +104,24 @@
     const isCodeValid = xmlHttp.responseText === "true";
     if (isCodeValid) {
       document.getElementById('extra-seats-code-container').innerHTML = null;
-      document.getElementsByClassName('register-message')[0].innerText = "But you were invited, so you get in!";
+      document.getElementById('extra-seats-email-container').innerHTML = null;
+      document.getElementsByClassName('register-message')[0].innerText = "Nice mate... You're In! Login via your social of choice.";
+      document.getElementsByClassName('register-message')[0].style = "color: #ce2b35";
       window.localStorage.setItem('extraSeatsCode', code);
     } else {
-      document.getElementById('extra-seats-code-hint').innerText = "The code " + code.toUpperCase() + " is not valid!";
+      document.getElementById('extra-seats-code-hint').innerText = "Fair dinkum, this code " + code.toUpperCase() + " is garbage :(";
       document.getElementById('extra-seats-code-hint').style = "color: #ce2b35";
     }
   }
 
   function injectInvitationEmailInput() {
     const inputHtml = ''
-      + '<div class="extra-seats-code-container">'
+      + '<div class="extra-seats-email-container">'
         + '<p id="extra-seats-code-hint" class="extra-seats-code-hint">Enter email address to be notified for next round of open seats.</p>'
         + '<input class="input-common extra-seats-code-input"'
         + 'id="extra-seats-email-input"'
-        + 'placeholder="EMAIL"'
-        + 'type="text"'
+        + 'placeholder="Enter Email"'
+        + 'type="email"'
         + 'name="extra-seats-email"'
         + 'style="text-transform:uppercase"'
         + '></input>'
@@ -132,19 +134,28 @@
 
   function saveExtraSeatsEmail() {
     const email = document.getElementById('extra-seats-email-input').value;
-    if (!email) return alert('Enter valid email address')
+
+    if (!email) return alert('Fair dinkum, this email is beyond garbage!')
+    var validations ={
+      email: [/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/, 'Mate! Please enter a valid email address']
+    };
+
+    var validation = new RegExp(validations['email'][0])
+    if (!validation.test(email)){
+      return alert('Enter valid email address')
+    }
     const xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "GET", '/api/seats_available_email/' + email.trim().toLowerCase(), false );
     xmlHttp.send( null );
-    alert('We will be in touch when the next round of seats is available.')
+    alert('Cheers mate! We will be in touch.')
   }
 
   function checkErrors() {
     const searchParams = window.location.search;
     if (searchParams) {
       const error = searchParams.split("?error=")[1];
-      if (error === "google-recaptcha") alert("There was an error with your Google Captcha Validation");
-      if (error === "seats") alert("There are no Seats available, only an invitation can get you in now!");
+      if (error === "google-recaptcha") alert("Crikey! Google captcha validation FAILED! If you're a bot, please stop (pretty pls), otherwise try again.");
+      if (error === "seats") alert("There are no seats available, only an invitation can get you in now! Ask a friend for codes or sign up");
     }
   }
 
