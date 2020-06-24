@@ -188,53 +188,53 @@ class AttendeeController {
   }
 
   async show_game_positions({ auth, request, response }) {
-    try {
-      const game_position_of_dota_2_position_ones = await Database.from('attendees')
-        .where({
-          schedule_games_id: request.params.id,
-          type: 1,
-          dota_2_position_one: 1,
-        })
-        .count('* as no_of_dota_2_position_ones')
-      const game_position_of_dota_2_position_twos = await Database.from('attendees')
-        .where({
-          schedule_games_id: request.params.id,
-          type: 1,
-          dota_2_position_two: 1,
-        })
-        .count('* as no_of_dota_2_position_twos')
-      const game_position_of_dota_2_position_threes = await Database.from('attendees')
-        .where({
-          schedule_games_id: request.params.id,
-          type: 1,
-          dota_2_position_three: 1,
-        })
-        .count('* as no_of_dota_2_position_threes')
-      const game_position_of_dota_2_position_fours = await Database.from('attendees')
-        .where({
-          schedule_games_id: request.params.id,
-          type: 1,
-          dota_2_position_four: 1,
-        })
-        .count('* as no_of_dota_2_position_fours')
-      const game_position_of_dota_2_position_fives = await Database.from('attendees')
-        .where({
-          schedule_games_id: request.params.id,
-          type: 1,
-          dota_2_position_five: 1,
-        })
-        .count('* as no_of_dota_2_position_fives')
-
-      return {
-        game_position_of_dota_2_position_ones,
-        game_position_of_dota_2_position_twos,
-        game_position_of_dota_2_position_threes,
-        game_position_of_dota_2_position_fours,
-        game_position_of_dota_2_position_fives,
-      }
-    } catch (error) {
-      console.log(error)
-    }
+    // try {
+    //   const game_position_of_dota_2_position_ones = await Database.from('attendees')
+    //     .where({
+    //       schedule_games_id: request.params.id,
+    //       type: 1,
+    //       dota_2_position_one: 1,
+    //     })
+    //     .count('* as no_of_dota_2_position_ones')
+    //   const game_position_of_dota_2_position_twos = await Database.from('attendees')
+    //     .where({
+    //       schedule_games_id: request.params.id,
+    //       type: 1,
+    //       dota_2_position_two: 1,
+    //     })
+    //     .count('* as no_of_dota_2_position_twos')
+    //   const game_position_of_dota_2_position_threes = await Database.from('attendees')
+    //     .where({
+    //       schedule_games_id: request.params.id,
+    //       type: 1,
+    //       dota_2_position_three: 1,
+    //     })
+    //     .count('* as no_of_dota_2_position_threes')
+    //   const game_position_of_dota_2_position_fours = await Database.from('attendees')
+    //     .where({
+    //       schedule_games_id: request.params.id,
+    //       type: 1,
+    //       dota_2_position_four: 1,
+    //     })
+    //     .count('* as no_of_dota_2_position_fours')
+    //   const game_position_of_dota_2_position_fives = await Database.from('attendees')
+    //     .where({
+    //       schedule_games_id: request.params.id,
+    //       type: 1,
+    //       dota_2_position_five: 1,
+    //     })
+    //     .count('* as no_of_dota_2_position_fives')
+    //
+    //   return {
+    //     game_position_of_dota_2_position_ones,
+    //     game_position_of_dota_2_position_twos,
+    //     game_position_of_dota_2_position_threes,
+    //     game_position_of_dota_2_position_fours,
+    //     game_position_of_dota_2_position_fives,
+    //   }
+    // } catch (error) {
+    //   console.log(error)
+    // }
   }
 
   async role_call({ auth, request, response }) {
