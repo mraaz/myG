@@ -562,6 +562,12 @@ class ScheduleGameController {
           }
         }
       }
+      console.log('dasd')
+      console.log(value_one)
+      console.log(value_two)
+      console.log(value_three)
+      console.log(value_four)
+      console.log(value_five)
 
       if (request.input('tags') != null && request.input('tags').length != 0) {
         arrTags = request.input('tags').split(',')
@@ -730,16 +736,21 @@ class ScheduleGameController {
         if (getGameFields != undefined) {
           let obj = '',
             obj2 = '',
-            obj3 = ''
+            obj3 = '',
+            obj4 = ''
 
           if (getGameFields.in_game_fields != undefined) {
             obj = JSON.parse(getGameFields.in_game_fields)
           }
-          if (getGameFields.in_game_field_labels != undefined) {
-            obj2 = JSON.parse(getGameFields.in_game_field_labels)
+          if (getGameFields.in_game_field_placeholders != undefined) {
+            obj2 = JSON.parse(getGameFields.in_game_field_placeholders)
           }
           if (getGameFields.in_game_field_types != undefined) {
             obj3 = JSON.parse(getGameFields.in_game_field_types)
+          }
+
+          if (getGameFields.in_game_field_labels != undefined) {
+            obj4 = JSON.parse(getGameFields.in_game_field_labels)
           }
 
           const getGameTransactions = await Database.from('schedule_games_transactions')
@@ -767,7 +778,7 @@ class ScheduleGameController {
                 tmp_array[arr_game_fields[0]] = getGameTransactions.value_one
             }
             for (let key in tmp_array) {
-              let tmp_tmp = { [key]: tmp_array[key] }
+              let tmp_tmp = { [key]: tmp_array[key], label: obj4[key], placeholder: obj2[key], type: obj3[key] }
               additional_submit_info_fields.push([tmp_tmp, obj2[key], obj3[key]])
             }
           }
@@ -855,8 +866,8 @@ class ScheduleGameController {
         if (getGameFields.in_game_fields != undefined) {
           obj = JSON.parse(getGameFields.in_game_fields)
         }
-        if (getGameFields.in_game_field_labels != undefined) {
-          obj2 = JSON.parse(getGameFields.in_game_field_labels)
+        if (getGameFields.in_game_field_placeholders != undefined) {
+          obj2 = JSON.parse(getGameFields.in_game_field_placeholders)
         }
         if (getGameFields.in_game_field_types != undefined) {
           obj3 = JSON.parse(getGameFields.in_game_field_types)
@@ -1008,8 +1019,8 @@ class ScheduleGameController {
         if (getGameFields.in_game_field_types != undefined) {
           obj3 = JSON.parse(getGameFields.in_game_field_types)
         }
-        if (getGameFields.in_game_field_text != undefined) {
-          obj4 = JSON.parse(getGameFields.in_game_field_text)
+        if (getGameFields.in_game_field_placeholders != undefined) {
+          obj4 = JSON.parse(getGameFields.in_game_field_placeholders)
         }
         if (getGameFields.in_game_field_values != undefined) {
           obj5 = JSON.parse(getGameFields.in_game_field_values)

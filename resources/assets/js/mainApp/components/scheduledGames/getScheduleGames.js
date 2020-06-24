@@ -100,6 +100,9 @@ export async function PullDataFunction(myG) {
   }
 
   counter = myG.counter
+  console.log(myG.value_one, '<<<< Value One')
+  console.log(myG.value_two, '<<<< Value Two')
+  console.log(myG.value_three, '<<<< Value Three')
 
   try {
     const allscheduledGames = await axios.post('/api/ScheduleGame/scheduleSearchResults', {
