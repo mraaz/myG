@@ -6,6 +6,14 @@
 import axios from 'axios'
 import moment from 'moment'
 
+const queryMapping = {
+  0: 'one',
+  1: 'two',
+  2: 'three',
+  3: 'four',
+  4: 'five',
+}
+
 export async function PullDataFunction(myG) {
   let myGame_name_box = null,
     myRegion = null,
@@ -17,16 +25,21 @@ export async function PullDataFunction(myG) {
     startDate = moment().utc(),
     tmp_startDate = moment().utc(),
     endDate = moment().utc(),
-    // value_one = null,
-    // value_two = null,
-    // value_three = null,
-    // value_four = null,
-    // value_five = null,
-    // dota2_medal_ranks = null,
-    // dota2_server_regions = null,
-    // dota2_roles = null,
-    // clash_royale_trophies = null,
-    tags = []
+    tags = [],
+    count = 0,
+    extraFields = myG.extraFields || {}
+  if (Object.keys(extraFields).length > 0) {
+    Object.keys(extraFields).forEach((key, index) => {
+      let value = ''
+      if (Array.isArray(extraFields[key]) && extraFields[key].length > 0) {
+        value = extraFields[key][0].value
+      } else if (typeof extraFields[key] == 'object') {
+        value = extraFields[key].value
+      }
+      myG[`value_${queryMapping[index]}`] = { [key]: value }
+      count++
+    })
+  }
 
   if (myG.selected_region != undefined && myG.selected_region != null && myG.selected_region != '') {
     myRegion = myG.selected_region.value
@@ -39,34 +52,6 @@ export async function PullDataFunction(myG) {
   if (myG.selected_platform != undefined && myG.selected_platform != null && myG.selected_platform != '') {
     myPlatform = myG.selected_platform.value
   }
-
-  // if (myG.value_one != undefined && myG.value_one != null && myG.value_one != '') {
-  //   value_one = myG.value_one.value
-  // }
-  // if (myG.value_two != undefined && myG.value_two != null && myG.value_two != '') {
-  //   value_two = myG.value_two.value
-  // }
-  // if (myG.value_three != undefined && myG.value_three != null && myG.value_three != '') {
-  //   value_three = myG.value_three.value
-  // }
-  // if (myG.value_four != undefined && myG.value_four != null && myG.value_four != '') {
-  //   value_four = myG.value_four.value
-  // }
-  // if (myG.value_five != undefined && myG.value_five != null && myG.value_five != '') {
-  //   value_five = myG.value_five.value
-  // }
-
-  // if (myG.dota2_server_regions != undefined && myG.dota2_server_regions != null && myG.dota2_server_regions != '') {
-  //   dota2_server_regions = myG.dota2_server_regions.value
-  // }
-  //
-  // if (myG.dota2_roles != undefined && myG.dota2_roles != null && myG.dota2_roles != '') {
-  //   dota2_roles = myG.dota2_roles.value
-  // }
-  //
-  // if (myG.clash_royale_trophies != undefined && myG.clash_royale_trophies != null && myG.clash_royale_trophies != '') {
-  //   clash_royale_trophies = myG.clash_royale_trophies.value
-  // }
 
   if (myG.when != undefined && myG.when != null) {
     switch (myG.when.value) {
