@@ -277,33 +277,6 @@ export default class ScheduleGames extends Component {
     return value_tags.map((d) => d.value)
   }
 
-  // handleCreateTags = (inputValue: any) => {
-  //   if (inputValue.length > 88) {
-  //     toast.success(<Toast_style text={'Sorry mate! Skill length is too long.'} />)
-  //     return
-  //   }
-  //   setTimeout(() => {
-  //     const { options_tags = [], value_tags = [], newValueCreated_tags = [], filterValueArray = {} } = this.state
-  //     const newOption = createOption(inputValue, null)
-  //     const { tags = [] } = filterValueArray
-  //     const changedTags = [...tags, newOption]
-  //     filterValueArray['tags'] = changedTags
-  //
-  //     this.setState(
-  //       {
-  //         options_tags: [...options_tags, newOption],
-  //         value_tags: [...value_tags, newOption],
-  //         newValueCreated_tags: [...newValueCreated_tags, newOption.label],
-  //         filterValueArray,
-  //       },
-  //       () => {
-  //         const tags = this.getTagsValue([...value_tags, newOption])
-  //         this.props.handleChange({ tags }, name)
-  //       }
-  //     )
-  //   }, 300)
-  // }
-
   getFilter = async () => {
     try {
       const getAllSavedFilters = await axios.get('/api/SavedFiltersScheduleGameController/getAllSavedFilters')
@@ -547,16 +520,20 @@ export default class ScheduleGames extends Component {
       showOverlay: false,
     })
   }
+
   handleAdditionalInfoChange = (data, key, type) => {
-    const { filterValueArray = {} } = this.state
+    const { filterValueArray = {}, extraFields = {} } = this.state
     filterValueArray[key] = data
+    extraFields[key] = data
+
     this.setState(
       {
         [key]: data,
+        extraFields,
         filterValueArray,
       },
       () => {
-        this.props.handleChange({ [key]: data }, key)
+        this.props.handleChange({ extraFields }, key)
       }
     )
   }

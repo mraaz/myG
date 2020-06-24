@@ -43,7 +43,8 @@ const visibility_options = [
 const getExtraFilterOprion = (arg) => {
   const data = arg && arg.length > 0 ? arg.split(',') : []
   return data.map((item) => {
-    return { value: item, label: item }
+    const val = item ? item.trim() : ''
+    return { value: val, label: val }
   })
 }
 
