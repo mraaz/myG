@@ -29,6 +29,7 @@ class SavedFiltersScheduleGameController {
       let additional_info = false,
         additional_info_data = {},
         allFilters = []
+      insurance_policy = true
       try {
         allFilters = await Database.table('saved_filters_schedule_games').where({ user_id: auth.user.id })
         for (var i = 0; i < allFilters.length; i++) {
@@ -70,17 +71,19 @@ class SavedFiltersScheduleGameController {
                 obj4 = '',
                 obj5 = ''
 
+              insurance_policy = false
+
               if (getGameFields.in_game_fields != undefined) {
                 obj = JSON.parse(getGameFields.in_game_fields)
               }
-              if (getGameFields.in_game_field_labels != undefined) {
-                obj2 = JSON.parse(getGameFields.in_game_field_labels)
+              if (getGameFields.in_game_field_placeholders != undefined) {
+                obj2 = JSON.parse(getGameFields.in_game_field_placeholders)
               }
               if (getGameFields.in_game_field_types != undefined) {
                 obj3 = JSON.parse(getGameFields.in_game_field_types)
               }
-              if (getGameFields.in_game_field_text != undefined) {
-                obj4 = JSON.parse(getGameFields.in_game_field_text)
+              if (getGameFields.in_game_field_labels != undefined) {
+                obj4 = JSON.parse(getGameFields.in_game_field_labels)
               }
               if (getGameFields.in_game_field_values != undefined) {
                 obj5 = JSON.parse(getGameFields.in_game_field_values)
@@ -88,9 +91,9 @@ class SavedFiltersScheduleGameController {
 
               for (let key in obj) {
                 additional_info_data[obj[key]] = {
-                  label: obj2[obj[key]],
+                  label: obj4[obj[key]],
                   type: obj3[obj[key]],
-                  placeholder: obj4[obj[key]],
+                  placeholder: obj2[obj[key]],
                   value: obj5[obj[key]],
                 }
               }
@@ -112,6 +115,14 @@ class SavedFiltersScheduleGameController {
         console.log(error)
         allFilters = []
         additional_info = false
+        if (insurance_policy) {
+          const byebyebye = await Database.table('saved_filters_schedule_games')
+            .where({
+              user_id: auth.user.id,
+            })
+            .delete()
+        }
+
         return {
           allFilters,
           additional_info,

@@ -2,6 +2,7 @@
 
 const Database = use('Database')
 const Attendee = use('App/Models/Attendee')
+const ScheduleGame = use('App/Models/ScheduleGame')
 
 const NotificationController = use('./NotificationController')
 const NotificationController_v2 = use('./NotificationController_v2')
@@ -294,8 +295,8 @@ class AttendeeController {
           obj = JSON.parse(getGameFields.in_game_fields)
         }
 
-        if (getGameFields.in_game_field_text != undefined) {
-          obj4 = JSON.parse(getGameFields.in_game_field_text)
+        if (getGameFields.in_game_field_labels != undefined) {
+          obj4 = JSON.parse(getGameFields.in_game_field_labels)
         }
 
         for (let key in obj) {
@@ -318,7 +319,6 @@ class AttendeeController {
 
   async remove_myattendance({ auth, request, response }) {
     if (auth.user) {
-      let scheduleGameController = new ScheduleGameController()
       try {
         const attendees = await Database.from('attendees')
           .innerJoin('schedule_games', 'schedule_games.id', 'attendees.schedule_games_id')
@@ -348,7 +348,10 @@ class AttendeeController {
         userStatController.update_total_number_of(attendees[0].user_id, 'total_number_of_games_hosted')
         userStatController.update_total_number_of(auth.user.id, 'total_number_of_games_played')
 
-        scheduleGameController.update_vacany({ auth }, request.params.id, true)
+        // Getting: TypeError: ScheduleGameController is not a constructor, No idea why so created the string here instead
+        const update_vacany = await ScheduleGame.query()
+          .where({ id: request.params.id })
+          .update({ vacancy: true })
 
         const delete_attendance = await Database.table('attendees')
           .where({
