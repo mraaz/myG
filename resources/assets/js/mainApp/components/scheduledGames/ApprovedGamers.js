@@ -102,7 +102,7 @@ const Approved_gamers = (props) => {
                 attendees.map((attendee) => {
                   return (
                     <div className='list__item'>
-                      <div className='gamer__name gamer'>
+                      <div className='gamer__name'>
                         <Link to={`/profile/${attendee.alias}`}>
                           <div className='default_circle'>
                             <img src={attendee.profile_img} className='groupImage' />

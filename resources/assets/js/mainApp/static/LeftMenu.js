@@ -37,16 +37,12 @@ const sideBarItems = {
     expanded: false,
     subItems: [
       {
-        header: 'Find <b>Games</b>',
-        cta: '',
+        header: 'Find <b>Matches</b>',
+        cta: '/scheduledGames',
       },
       {
-        header: 'Find <b>Players</b>',
-        cta: '',
-      },
-      {
-        header: 'Find <b>Groups</b>',
-        cta: '',
+        header: 'Find <b>Gamers</b>',
+        cta: '/',
       },
     ],
   },
@@ -58,12 +54,12 @@ const sideBarItems = {
     expanded: false,
     subItems: [
       {
-        header: 'Add New <b>Public</b>',
-        cta: '',
+        header: 'New <b>Game</b>',
+        cta: '/addScheduleGames',
       },
       {
-        header: 'Add New <b>Private</b>',
-        cta: '',
+        header: 'New <b>Community</b>',
+        cta: '/',
       },
     ],
   },
