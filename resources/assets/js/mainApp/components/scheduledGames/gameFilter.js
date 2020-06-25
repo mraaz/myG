@@ -120,6 +120,9 @@ export default class ScheduleGames extends Component {
 
     if (entered_name != null && entered_name != undefined) {
       filterValueArray['game_name'] = entered_name.value
+    } else {
+      filterValueArray['game_name'] = entered_name
+      this.filterGroup = this.constantFilterGroup
     }
 
     let additional_info_data = {}
@@ -153,6 +156,7 @@ export default class ScheduleGames extends Component {
         games: false,
         filterValueArray,
         additional_info_data,
+        extraFields: {},
       },
       () => {
         this.props.handleChange(
@@ -467,7 +471,12 @@ export default class ScheduleGames extends Component {
         })
     }
 
-    this.setState({ filterTypeArray, filterValueArray, showFilters: false, showOverlay: false, additional_info_data: ad_info, extraFields })
+    this.setState(
+      { filterTypeArray, filterValueArray, showFilters: false, showOverlay: false, additional_info_data: ad_info, extraFields },
+      () => {
+        this.props.handleChange({ ...filterValueArray }, '')
+      }
+    )
   }
 
   handleEditFilterType = (e, id, inputValue) => {

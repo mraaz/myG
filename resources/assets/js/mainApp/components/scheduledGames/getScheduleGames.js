@@ -32,7 +32,7 @@ export async function PullDataFunction(myG) {
     Object.keys(extraFields).forEach((key, index) => {
       let value = ''
       if (Array.isArray(extraFields[key]) && extraFields[key].length > 0) {
-        value = extraFields[key][0].value
+        value = extraFields[key].map((item) => item.value).toString()
       } else if (typeof extraFields[key] == 'object') {
         value = extraFields[key].value
       }
