@@ -85,14 +85,16 @@ const Approved_gamers = (props) => {
           </div>
           <div className='modal__body'>
             <div className='people_group_list_box_header'>
-              <div className='box_header_name' style={{ flex: 3 }}>
-                Gamer
-              </div>
+              <div className='box_header_name gamer'>Gamer</div>
               {extraHeaders.length > 0 &&
                 extraHeaders.map((header) => {
-                  return <div className='box_header_name'>{header}</div>
+                  return (
+                    <div className='box_header_name extraFileds' style={{ width: `${50 / extraHeaders.length}%` }}>
+                      {header}
+                    </div>
+                  )
                 })}
-              <div className='box_header_name'>Level</div>
+              <div className='box_header_name level'>Level</div>
             </div>
 
             <div className='people_group_list_box'>
@@ -100,7 +102,7 @@ const Approved_gamers = (props) => {
                 attendees.map((attendee) => {
                   return (
                     <div className='list__item'>
-                      <div className='gamer__name'>
+                      <div className='gamer__name gamer'>
                         <Link to={`/profile/${attendee.alias}`}>
                           <div className='default_circle'>
                             <img src={attendee.profile_img} className='groupImage' />
@@ -110,7 +112,11 @@ const Approved_gamers = (props) => {
                       </div>
                       {extraKeys.length > 0 &&
                         extraKeys.map((extraKey) => {
-                          return <div className='other__title server'>{attendee[extraKey] || ''}</div>
+                          return (
+                            <div className='other__title extraKey' style={{ width: `${50 / attendees.length}%` }}>
+                              {attendee[extraKey] ? attendee[extraKey].split(',').join(', ') || ''}
+                            </div>
+                          )
                         })}
                       <div className='other__title level'>
                         {'level '}

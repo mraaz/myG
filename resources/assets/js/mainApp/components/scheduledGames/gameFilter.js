@@ -58,6 +58,8 @@ const queryMapping = {
   4: 'five',
 }
 
+const valueMapping = ['value_one', 'value_two', 'value_three', 'value_four', 'value_five']
+
 export default class ScheduleGames extends Component {
   constructor() {
     super()
@@ -77,6 +79,15 @@ export default class ScheduleGames extends Component {
       value_tags: '',
     }
     this.filterGroup = {
+      game_name: 'Game Title',
+      region: 'Region',
+      tags: 'Tags',
+      experience: 'Experience Level',
+      start_time: 'Start Time',
+      platform: 'Platform',
+      description: 'Description',
+    }
+    this.constantFilterGroup = {
       game_name: 'Game Title',
       region: 'Region',
       tags: 'Tags',
@@ -281,7 +292,13 @@ export default class ScheduleGames extends Component {
     try {
       const getAllSavedFilters = await axios.get('/api/SavedFiltersScheduleGameController/getAllSavedFilters')
       const savedFiltersObj = getAllSavedFilters.data.allFilters
-      this.setState({ savedFiltersObj })
+      const additional_info = getAllSavedFilters.data.additional_info
+      const additional_info_data_savedFilter = getAllSavedFilters.data.additional_info_data
+      if (additional_info) {
+        this.setState({ additional_info_data_savedFilter, savedFiltersObj })
+      } else {
+        this.setState({ savedFiltersObj, additional_info_data_savedFilter: {} })
+      }
     } catch (error) {
       console.log(error)
     }
@@ -308,8 +325,10 @@ export default class ScheduleGames extends Component {
         game_name_box: '',
         value_tags: '',
         filterValueArray: {},
+        extraFields: {},
       },
       () => {
+        this.filterGroup = this.constantFilterGroup
         this.props.handleChange({ ...this.state, tags: '' }, '')
       }
     )
@@ -340,7 +359,7 @@ export default class ScheduleGames extends Component {
       Object.keys(extraFields).forEach((key, index) => {
         let value = ''
         if (Array.isArray(filterValueArray[key]) && filterValueArray[key].length > 0) {
-          value = filterValueArray[key][0].value
+          value = filterValueArray[key].map((v) => v.value)
         } else if (typeof filterValueArray[key] == 'object') {
           value = filterValueArray[key].value
         }
@@ -409,18 +428,46 @@ export default class ScheduleGames extends Component {
     }
   }
 
-  handleSavedFilterClick = (data) => {
+  handleSavedFilterClick = (data, ad_info) => {
+    let { extraFields = {} } = this.state
     const { payload = {} } = data
     const JsonPayload = JSON.parse(payload)
     const filterTypeArray = []
-    const filterValueArray = {}
+    let filterValueArray = {}
     Object.keys(JsonPayload).forEach((key) => {
       if ((JsonPayload.hasOwnProperty(key) && JsonPayload[key] !== false) || key == 'game_name' || JsonPayload[key] === '') {
-        filterTypeArray.push(key)
-        filterValueArray[key] = JsonPayload[key]
+        if (!valueMapping.includes(key)) {
+          filterTypeArray.push(key)
+          filterValueArray[key] = JsonPayload[key]
+        } else {
+          const extraKeys = JsonPayload[key]
+          const extraFields_key = Object.keys(extraKeys)[0]
+          if (extraFields_key) {
+            const extraFields_value = Object.values(extraKeys)[0]
+            if (Array.isArray(extraFields_value) && extraFields_value.length > 0) {
+              let value = []
+              extraFields_value.forEach((item) => {
+                value.push({ value: item, label: item })
+              })
+              extraFields = { ...extraFields, [extraFields_key]: value }
+            } else {
+              extraFields = { ...extraFields, [extraFields_key]: { value: extraFields_value, label: extraFields_value } }
+            }
+            filterTypeArray.push(extraFields_key)
+          }
+          filterValueArray = { ...filterValueArray, ...extraFields }
+        }
       }
     })
-    this.setState({ filterTypeArray, filterValueArray, showFilters: false, showOverlay: false })
+    if (Object.keys(ad_info).length > 0) {
+      const allKeys = Object.keys(ad_info)
+      allKeys.length > 0 &&
+        allKeys.forEach((key) => {
+          this.filterGroup[key] = properCase(key)
+        })
+    }
+
+    this.setState({ filterTypeArray, filterValueArray, showFilters: false, showOverlay: false, additional_info_data: ad_info, extraFields })
   }
 
   handleEditFilterType = (e, id, inputValue) => {
@@ -528,7 +575,6 @@ export default class ScheduleGames extends Component {
 
     this.setState(
       {
-        [key]: data,
         extraFields,
         filterValueArray,
       },
@@ -554,6 +600,9 @@ export default class ScheduleGames extends Component {
       showOverlay = false,
       filterValueArray = {},
       additional_info_data = {},
+      extraFields = {},
+      additional_info_data_savedFilter = {},
+      game_name_box,
     } = this.state
 
     if (this.props.initialData == 'loading') {
@@ -569,11 +618,8 @@ export default class ScheduleGames extends Component {
           <div className='viewGame__filter-section'>
             {filterTypeArray.map((k) => {
               if (k == 'game_name') {
-                const value = this.state.game_name_box
-                  ? this.state.game_name_box
-                  : filterValueArray['game_name']
-                  ? filterValueArray['game_name']
-                  : null
+                // const value = game_name_box ? game_name_box : filterValueArray[k] ? filterValueArray[k] : null
+                const value = filterValueArray[k] ? { value: filterValueArray[k], label: filterValueArray[k] } : null
                 return (
                   <div className='viewGame__gameName'>
                     <div className='viewGame__label'>{this.filterGroup[k]}</div>
@@ -723,12 +769,12 @@ export default class ScheduleGames extends Component {
                 const field_data = additional_info_data[k] || {}
                 return (
                   <div className='viewGame__gameName'>
-                    <div className='viewGame__label'>{field_data.placeholder || ''}</div>
+                    <div className='viewGame__label'>{field_data.label || ''}</div>
                     <Select
                       onChange={(data) => this.handleAdditionalInfoChange(data, k, field_data.type)}
                       options={getExtraFilterOprion(field_data.value)}
                       isClearable
-                      value={this.state[k] || filterValueArray[k] || ''}
+                      value={extraFields[k] || ''}
                       className='viewGame__name'
                       isMulti={field_data.type == 'Single' ? false : true}
                       onKeyDown={this.onKeyDown}
@@ -800,7 +846,7 @@ export default class ScheduleGames extends Component {
                             <div
                               style={{ padding: '9px', paddingRight: '42px' }}
                               title={k.name}
-                              onClick={(e) => this.handleSavedFilterClick(k)}>
+                              onClick={(e) => this.handleSavedFilterClick(k, additional_info_data_savedFilter)}>
                               {k.name}
                             </div>
                           ) : (
