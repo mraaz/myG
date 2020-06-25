@@ -28,8 +28,8 @@ class SavedFiltersScheduleGameController {
     if (auth.user) {
       let additional_info = false,
         additional_info_data = {},
-        allFilters = []
-      insurance_policy = true
+        allFilters = [],
+        insurance_policy = true
       try {
         allFilters = await Database.table('saved_filters_schedule_games').where({ user_id: auth.user.id })
         for (var i = 0; i < allFilters.length; i++) {
