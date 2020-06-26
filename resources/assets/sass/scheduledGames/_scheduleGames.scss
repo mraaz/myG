@@ -429,7 +429,7 @@
       margin: 15px;
       .gameDetails__header {
         display: flex;
-        max-height: 92px;
+        min-height: 92px;
         border-bottom: 2px solid #a09770;
         width: 100%;
         padding: 16px 24px 16px 24px;
@@ -979,7 +979,7 @@
       background: #171a1c;
       .gameDetails__header {
         background: #1d2326;
-        max-height: 108px !important;
+        min-height: 108px !important;
         .game__level__wrap {
           flex-direction: row !important;
           .game__level {
