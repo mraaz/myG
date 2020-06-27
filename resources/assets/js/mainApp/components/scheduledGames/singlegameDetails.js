@@ -11,6 +11,7 @@ import GameComments from './GameComments'
 import { Link } from 'react-router-dom'
 import { WithTooltip } from '../Tooltip'
 import axios from 'axios'
+const defaultUserImage = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png'
 
 export default class GameDetails extends Component {
   constructor() {
@@ -152,7 +153,7 @@ export default class GameDetails extends Component {
                         <div
                           className='profile__image'
                           style={{
-                            backgroundImage: `url('${lastComment.profile_img}')`,
+                            backgroundImage: `url('${lastComment.profile_img ? lastComment.profile_img : defaultUserImage}')`,
                             backgroundSize: 'cover',
                           }}></div>
                       </Link>
