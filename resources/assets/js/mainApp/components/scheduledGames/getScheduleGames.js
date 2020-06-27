@@ -32,7 +32,7 @@ export async function PullDataFunction(myG) {
     Object.keys(extraFields).forEach((key, index) => {
       let value = ''
       if (Array.isArray(extraFields[key]) && extraFields[key].length > 0) {
-        value = extraFields[key][0].value
+        value = extraFields[key].map((item) => item.value).toString()
       } else if (typeof extraFields[key] == 'object') {
         value = extraFields[key].value
       }
@@ -41,20 +41,20 @@ export async function PullDataFunction(myG) {
     })
   }
 
-  if (myG.selected_region != undefined && myG.selected_region != null && myG.selected_region != '') {
-    myRegion = myG.selected_region.value
+  if (myG.region != undefined && myG.region != null && myG.region != '') {
+    myRegion = myG.region.value
   }
 
-  if (myG.selected_experience != undefined && myG.selected_experience != null && myG.selected_experience != '') {
-    myExperience = myG.selected_experience.value
+  if (myG.experience != undefined && myG.experience != null && myG.experience != '') {
+    myExperience = myG.experience.value
   }
 
-  if (myG.selected_platform != undefined && myG.selected_platform != null && myG.selected_platform != '') {
-    myPlatform = myG.selected_platform.value
+  if (myG.platform != undefined && myG.platform != null && myG.platform != '') {
+    myPlatform = myG.platform.value
   }
 
-  if (myG.when != undefined && myG.when != null) {
-    switch (myG.when.value) {
+  if (myG.start_time != undefined && myG.start_time != null) {
+    switch (myG.start_time.value) {
       case 'Now-ish':
         startDate = tmp_startDate.add(4, 'hour').format('YYYY-MM-DDTHH:mm:ss')
         break
@@ -74,13 +74,14 @@ export async function PullDataFunction(myG) {
         startDate = tmp_startDate.add(2000, 'years').format('YYYY-MM-DDTHH:mm:ss')
     }
   }
+  console.log('myG   ', myG)
 
-  if (myG.game_name_box != null && myG.game_name_box != '') {
-    myGame_name_box = myG.game_name_box.value
+  if (myG.game_name != null && myG.game_name != '') {
+    myGame_name_box = myG.game_name
   }
 
-  if (myG.description_box != '' && myG.description_box != undefined) {
-    myDescription_box = myG.description_box
+  if (myG.description != '' && myG.description != undefined) {
+    myDescription_box = myG.description
   }
 
   if (myG.tags != undefined && myG.tags.length != 0 && myG.tags != null) {

@@ -120,6 +120,9 @@ export default class ScheduleGames extends Component {
 
     if (entered_name != null && entered_name != undefined) {
       filterValueArray['game_name'] = entered_name.value
+    } else {
+      filterValueArray['game_name'] = entered_name
+      this.filterGroup = this.constantFilterGroup
     }
 
     let additional_info_data = {}
@@ -148,11 +151,12 @@ export default class ScheduleGames extends Component {
 
     this.setState(
       {
-        game_name_box: entered_name,
+        game_name: filterValueArray['game_name'],
         default: false,
         games: false,
         filterValueArray,
         additional_info_data,
+        extraFields: {},
       },
       () => {
         this.props.handleChange(
@@ -174,71 +178,71 @@ export default class ScheduleGames extends Component {
       this.props.handleChange({ tags: value_tags }, name)
     })
   }
-  handleChange_region = (selected_region, name) => {
+  handleChange_region = (region, name) => {
     const { filterValueArray = {} } = this.state
-    filterValueArray['region'] = selected_region
+    filterValueArray['region'] = region
     this.setState(
       {
-        selected_region,
+        region,
         filterValueArray,
       },
       () => {
-        this.props.handleChange({ selected_region }, name)
+        this.props.handleChange({ region }, name)
       }
     )
   }
 
-  handleChange_experience = (selected_experience, name) => {
+  handleChange_experience = (experience, name) => {
     const { filterValueArray = {} } = this.state
-    filterValueArray['experience'] = selected_experience
+    filterValueArray['experience'] = experience
     this.setState(
       {
-        selected_experience,
+        experience,
         filterValueArray,
       },
       () => {
-        this.props.handleChange({ selected_experience }, name)
+        this.props.handleChange({ experience }, name)
       }
     )
   }
-  handleChange_platform = (selected_platform, name) => {
+  handleChange_platform = (platform, name) => {
     const { filterValueArray = {} } = this.state
-    filterValueArray['platform'] = selected_platform
+    filterValueArray['platform'] = platform
     this.setState(
       {
-        selected_platform,
+        platform,
         filterValueArray,
       },
       () => {
-        this.props.handleChange({ selected_platform }, name)
+        this.props.handleChange({ platform }, name)
       }
     )
   }
-  handleChange_time = (when, name) => {
+  handleChange_time = (start_time, name) => {
     const { filterValueArray = {} } = this.state
-    filterValueArray['start_time'] = when
+    filterValueArray['start_time'] = start_time
     this.setState(
       {
-        when,
+        start_time,
         filterValueArray,
       },
       () => {
-        this.props.handleChange({ when }, name)
+        this.props.handleChange({ start_time }, name)
       }
     )
   }
 
   handleChange_description = (e, name) => {
-    const description_box = e.target.value
+    const description = e.target.value
     const { filterValueArray = {} } = this.state
-    filterValueArray['description'] = description_box
+    filterValueArray['description'] = description
     this.setState(
       {
-        description_box,
+        description,
         filterValueArray,
       },
       () => {
-        this.props.handleChange({ description_box }, name)
+        this.props.handleChange({ description }, name)
       }
     )
   }
@@ -467,7 +471,12 @@ export default class ScheduleGames extends Component {
         })
     }
 
-    this.setState({ filterTypeArray, filterValueArray, showFilters: false, showOverlay: false, additional_info_data: ad_info, extraFields })
+    this.setState(
+      { filterTypeArray, filterValueArray, showFilters: false, showOverlay: false, additional_info_data: ad_info, extraFields },
+      () => {
+        this.props.handleChange({ ...filterValueArray }, '')
+      }
+    )
   }
 
   handleEditFilterType = (e, id, inputValue) => {
