@@ -110,7 +110,7 @@
           background-color: #4d565a;
           border: none;
           padding: 0;
-          height: 38px;
+          // min-height: 45px;
         }
         .css-bgvzuu-indicatorSeparator {
           background: none;
@@ -122,6 +122,11 @@
           padding-left: 10px;
           .css-151xaom-placeholder {
             color: #ffffff;
+            top: 80%;
+          }
+          .css-dvua67-singleValue {
+            color: #ffffff;
+            top: 80%;
           }
           .css-1g6gooi {
             margin: 0;
@@ -1606,7 +1611,7 @@
               background-color: #4d565a;
               border: none;
               padding: 0;
-              height: 38px;
+              // min-height: 45px;
               margin-bottom: 22px;
             }
             .css-bgvzuu-indicatorSeparator {
@@ -1617,6 +1622,11 @@
               padding-left: 10px;
               .css-151xaom-placeholder {
                 color: #ffffff;
+                top: 80%;
+              }
+              .css-dvua67-singleValue {
+                color: #ffffff;
+                top: 80%;
               }
               .css-1g6gooi {
                 margin: 0;
