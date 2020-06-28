@@ -14,7 +14,7 @@
     width: 77px;
   }
   &__item-box {
-    padding-left: 17px;
+    padding-left: 23px;
     height: 79px;
     border-bottom: 0.1px #384952;
     border-style: solid;
@@ -64,6 +64,7 @@
   &__sub-item-text {
     margin-bottom: 15px;
     cursor: pointer;
+    position: fixed;
   }
   &__logo-section-container {
     height: 134px;
