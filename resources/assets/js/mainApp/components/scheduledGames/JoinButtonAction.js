@@ -36,6 +36,9 @@ const JoinStatus = (props) => {
 
   useEffect(() => {
     setJoinButtonText(buttonStatus[join_status])
+    return () => {
+      setJoinButtonText('')
+    }
   }, [join_status])
 
   const showModal = () => {
