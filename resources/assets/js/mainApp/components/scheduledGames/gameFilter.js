@@ -148,6 +148,7 @@ export default class ScheduleGames extends Component {
       }
       this.filterGroup = { ...keys }
     }
+    console.log("filterValueArray['game_name']  ", filterValueArray['game_name'])
 
     this.setState(
       {
@@ -161,7 +162,7 @@ export default class ScheduleGames extends Component {
       () => {
         this.props.handleChange(
           {
-            game_name_box: entered_name,
+            game_name: filterValueArray['game_name'],
             default: false,
             games: false,
           },
@@ -320,16 +321,18 @@ export default class ScheduleGames extends Component {
         showFilters: false,
         showSaveFilterInput: false,
         showOverlay: false,
-        other_box: '',
-        description_box: '',
+        other: '',
+        description: '',
         when: '',
-        selected_platform: '',
-        selected_experience: '',
-        selected_region: '',
-        game_name_box: '',
+        platform: '',
+        experience: '',
+        region: '',
+        game_name: '',
         value_tags: '',
         filterValueArray: {},
         extraFields: {},
+        filterValueArray: {},
+        tags: [],
       },
       () => {
         this.filterGroup = this.constantFilterGroup

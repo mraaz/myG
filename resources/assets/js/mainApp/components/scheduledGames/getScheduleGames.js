@@ -74,7 +74,6 @@ export async function PullDataFunction(myG) {
         startDate = tmp_startDate.add(2000, 'years').format('YYYY-MM-DDTHH:mm:ss')
     }
   }
-  console.log('myG   ', myG)
 
   if (myG.game_name != null && myG.game_name != '') {
     myGame_name_box = myG.game_name

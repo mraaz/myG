@@ -7,6 +7,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import axios from 'axios'
 import Modal from 'react-modal'
 import { Link } from 'react-router-dom'
+const defaultUserImage = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png'
 
 const Approved_gamers = (props) => {
   const [attendees, setAttendees] = useState([])
@@ -58,7 +59,7 @@ const Approved_gamers = (props) => {
               <div className='single__gamer'>
                 <Link to={`/profile/${gamer.alias}`}>
                   <div className='gamer__image '>
-                    <img src={gamer.profile_img} />
+                    <img src={gamer.profile_img ? gamer.profile_img : defaultUserImage} />
                   </div>
                   <div className='gamer__alias ' title={gamer.alias}>
                     {gamer.alias}
@@ -102,7 +103,7 @@ const Approved_gamers = (props) => {
                 attendees.map((attendee) => {
                   return (
                     <div className='list__item'>
-                      <div className='gamer__name'>
+                      <div className='gamer__name gamer'>
                         <Link to={`/profile/${attendee.alias}`}>
                           <div className='default_circle'>
                             <img src={attendee.profile_img} className='groupImage' />
