@@ -84,21 +84,25 @@ export default class IndividualPost extends Component {
   }
 
   click_like_btn = async (post_id) => {
+    this.setState({
+      total: this.state.total + 1,
+    })
+
     try {
       const mylike = await axios.post('/api/likes', {
         post_id: post_id,
       })
-      let { post, user } = this.props
-      if (this.props != undefined) {
-        if (user.userInfo != undefined) {
-          if (post.user_id != user.userInfo.id) {
-            const addPostLike = axios.post('/api/notifications/addPostLike', {
-              other_user_id: post.user_id,
-              post_id: post_id,
-            })
-          }
-        }
-      }
+      // let { post, user } = this.props
+      // if (this.props != undefined) {
+      //   if (user.userInfo != undefined) {
+      //     if (post.user_id != user.userInfo.id) {
+      //       const addPostLike = axios.post('/api/notifications/addPostLike', {
+      //         other_user_id: post.user_id,
+      //         post_id: post_id,
+      //       })
+      //     }
+      //   }
+      // }
     } catch (error) {
       console.log(error)
     }
@@ -107,9 +111,6 @@ export default class IndividualPost extends Component {
         admirer_first_name: this.props.user.userInfo.alias,
       })
     }
-    this.setState({
-      total: this.state.total + 1,
-    })
 
     this.setState({
       show_like: true,
@@ -121,16 +122,17 @@ export default class IndividualPost extends Component {
   }
 
   click_unlike_btn = async (post_id) => {
+    this.setState({
+      total: this.state.total - 1,
+    })
+
     try {
       const unlike = await axios.get(`/api/likes/delete/${post_id}`)
-      const deletePostLike = axios.get(`/api/notifications/deletePostLike/${post_id}`)
+      //const deletePostLike = axios.get(`/api/notifications/deletePostLike/${post_id}`)
     } catch (error) {
       console.log(error)
     }
 
-    this.setState({
-      total: this.state.total - 1,
-    })
     if (this.state.total == 0) {
       this.setState({
         show_like: false,

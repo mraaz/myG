@@ -169,6 +169,20 @@ export function Disable_keys(e) {
     e.preventDefault()
     e.stopPropagation()
   }
+
+  switch (e.key) {
+    case 'Home':
+      e.preventDefault()
+      if (e.shiftKey) e.target.selectionStart = 0
+      else e.target.setSelectionRange(0, 0)
+      break
+    case 'End':
+      e.preventDefault()
+      const len = e.target.value.length
+      if (e.shiftKey) e.target.selectionEnd = len
+      else e.target.setSelectionRange(len, len)
+      break
+  }
 }
 
 export const Toast_style = (props) => (

@@ -50,7 +50,7 @@ export default class IndividualReply extends Component {
     const self = this
     let reply = this.props
 
-    const getCommentReplies = async function () {
+    const getCommentReplies = async function() {
       try {
         var i
 
@@ -73,7 +73,7 @@ export default class IndividualReply extends Component {
       }
     }
 
-    const getmyRepliesCount = async function () {
+    const getmyRepliesCount = async function() {
       try {
         var i
 
@@ -93,34 +93,17 @@ export default class IndividualReply extends Component {
   }
 
   click_reply_like_btn = (reply_id) => {
+    this.setState({
+      reply_like_total: this.state.reply_like_total + 1,
+    })
+
     try {
       const replyLike = axios.post('/api/likes', {
         reply_id: reply_id,
       })
-
-      let { comment_user_id, post_id, reply, user, schedule_game_id } = this.props
-      if (reply.user_id != user.userInfo.id) {
-        if (schedule_game_id != null) {
-          const addReplyLike = axios.post('/api/notifications/addReplyLike', {
-            other_user_id: reply.user_id,
-            schedule_games_id: schedule_game_id,
-            reply_id: reply_id,
-          })
-        } else {
-          const addReplyLike = axios.post('/api/notifications/addReplyLike', {
-            other_user_id: reply.user_id,
-            post_id: post_id,
-            reply_id: reply_id,
-          })
-        }
-      }
     } catch (error) {
       console.log(error)
     }
-
-    this.setState({
-      reply_like_total: this.state.reply_like_total + 1,
-    })
 
     this.setState({
       show_reply_like: true,
@@ -129,10 +112,13 @@ export default class IndividualReply extends Component {
   }
 
   click_reply_unlike_btn = (reply_id) => {
-    let { post_id } = this.props
+    this.setState({
+      reply_like_total: this.state.reply_like_total - 1,
+    })
+
+    //let { post_id } = this.props
     try {
       const reply_unlike = axios.get(`/api/likes/delete/reply/${reply_id}`)
-      const deleteReplyLike = axios.get(`/api/notifications/deleteReplyLike/${reply_id}`)
     } catch (error) {
       console.log(error)
     }
@@ -142,10 +128,6 @@ export default class IndividualReply extends Component {
         show_reply_like: false,
       })
     }
-
-    this.setState({
-      reply_like_total: this.state.reply_like_total - 1,
-    })
 
     this.setState({
       reply_like: !this.state.reply_like,
@@ -224,7 +206,7 @@ export default class IndividualReply extends Component {
     const self = this
     var reply_id = this.props.reply.id
 
-    const saveReply = async function () {
+    const saveReply = async function() {
       try {
         const mysaveReply = await axios.post(`/api/replies/update/${reply_id}`, {
           content: self.state.value,

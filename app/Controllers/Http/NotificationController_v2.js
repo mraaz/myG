@@ -621,6 +621,124 @@ class NotificationController_v2 {
       return 'You are not Logged In!'
     }
   }
+
+  async addCommentLike({ auth }, post_id, other_user_id, comment_id, schedule_games_id) {
+    if (auth.user) {
+      try {
+        const addCommentLike = await Notification.create({
+          other_user_id: other_user_id,
+          user_id: auth.user.id,
+          activity_type: 3,
+          post_id: post_id,
+          comment_id: comment_id,
+          schedule_games_id: schedule_games_id,
+        })
+        return 'Saved item'
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async deleteCommentLike({ auth }, comment_id) {
+    if (auth.user) {
+      try {
+        const deleteCommentLike = await Database.table('notifications')
+          .where({
+            comment_id: comment_id,
+            user_id: auth.user.id,
+            activity_type: 3,
+          })
+          .delete()
+
+        return deleteCommentLike
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async addReplyLike({ auth }, post_id, other_user_id, reply_id, schedule_games_id) {
+    if (auth.user) {
+      try {
+        const addReplyLike = await Notification.create({
+          other_user_id: other_user_id,
+          user_id: auth.user.id,
+          activity_type: 4,
+          post_id: post_id,
+          reply_id: reply_id,
+          schedule_games_id: schedule_games_id,
+        })
+        return 'Saved item'
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async deleteReplyLike({ auth }, reply_id) {
+    if (auth.user) {
+      try {
+        const deleteReplyLike = await Database.table('notifications')
+          .where({
+            reply_id: reply_id,
+            user_id: auth.user.id,
+            activity_type: 4,
+          })
+          .delete()
+
+        return deleteReplyLike
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async addPostLike({ auth }, post_id, other_user_id) {
+    if (auth.user) {
+      try {
+        const addPostLike = await Notification.create({
+          other_user_id: other_user_id,
+          user_id: auth.user.id,
+          activity_type: 2,
+          post_id: post_id,
+        })
+        return 'Saved item'
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async deletePostLike({ auth }, post_id) {
+    if (auth.user) {
+      try {
+        const deletePostLike = await Database.table('notifications')
+          .where({
+            post_id: post_id,
+            user_id: auth.user.id,
+            activity_type: 2,
+          })
+          .delete()
+
+        return deletePostLike
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
 }
 
 module.exports = NotificationController_v2

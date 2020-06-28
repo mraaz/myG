@@ -58,64 +58,6 @@ class NotificationController {
     }
   }
 
-  async addPostLike({ auth, request, response }) {
-    if (auth.user) {
-      try {
-        const addPostLike = await Notification.create({
-          other_user_id: request.input('other_user_id'),
-          user_id: auth.user.id,
-          activity_type: 2,
-          post_id: request.input('post_id'),
-        })
-        return 'Saved item'
-      } catch (error) {
-        console.log(error)
-      }
-    } else {
-      return 'You are not Logged In!'
-    }
-  }
-
-  async addCommentLike({ auth, request, response }) {
-    if (auth.user) {
-      try {
-        const addCommentLike = await Notification.create({
-          other_user_id: request.input('other_user_id'),
-          user_id: auth.user.id,
-          activity_type: 3,
-          post_id: request.input('post_id'),
-          comment_id: request.input('comment_id'),
-          schedule_games_id: request.input('schedule_games_id'),
-        })
-        return 'Saved item'
-      } catch (error) {
-        console.log(error)
-      }
-    } else {
-      return 'You are not Logged In!'
-    }
-  }
-
-  async addReplyLike({ auth, request, response }) {
-    if (auth.user) {
-      try {
-        const addReplyLike = await Notification.create({
-          other_user_id: request.input('other_user_id'),
-          user_id: auth.user.id,
-          activity_type: 4,
-          post_id: request.input('post_id'),
-          reply_id: request.input('reply_id'),
-          schedule_games_id: request.input('schedule_games_id'),
-        })
-        return 'Saved item'
-      } catch (error) {
-        console.log(error)
-      }
-    } else {
-      return 'You are not Logged In!'
-    }
-  }
-
   async addGroup({ auth, request, response }) {
     if (auth.user) {
       try {
@@ -834,66 +776,6 @@ class NotificationController {
           .delete()
 
         return delete_noti
-      } catch (error) {
-        console.log(error)
-      }
-    } else {
-      return 'You are not Logged In!'
-    }
-  }
-
-  async deletePostLike({ auth, request, response }) {
-    if (auth.user) {
-      try {
-        const deletePostLike = await Database.table('notifications')
-          .where({
-            post_id: request.params.id,
-            user_id: auth.user.id,
-            activity_type: 2,
-          })
-          .delete()
-
-        return deletePostLike
-      } catch (error) {
-        console.log(error)
-      }
-    } else {
-      return 'You are not Logged In!'
-    }
-  }
-
-  async deleteCommentLike({ auth, request, response }) {
-    if (auth.user) {
-      try {
-        const deleteCommentLike = await Database.table('notifications')
-          .where({
-            comment_id: request.params.id,
-            user_id: auth.user.id,
-            activity_type: 3,
-          })
-          .delete()
-
-        return deleteCommentLike
-      } catch (error) {
-        console.log(error)
-      }
-    } else {
-      return 'You are not Logged In!'
-    }
-  }
-
-  async deleteReplyLike({ auth, request, response }) {
-    if (auth.user) {
-      try {
-        const deleteReplyLike = await Database.table('notifications')
-          .where({
-            reply_id: request.params.id,
-            user_id: auth.user.id,
-            activity_type: 4,
-          })
-          .delete()
-
-        return deleteReplyLike
       } catch (error) {
         console.log(error)
       }

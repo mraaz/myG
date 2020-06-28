@@ -138,6 +138,7 @@ Route.get('/api/likes/comment/:id', 'LikeController.show_comments')
 Route.get('/api/likes/reply/:id', 'LikeController.show_replies')
 Route.get('/api/likes/delete/:id', 'LikeController.destroy')
 Route.get('/api/likes/delete/comment/:id', 'LikeController.destroy_comment')
+
 Route.get('/api/likes/delete/reply/:id', 'LikeController.destroy_reply')
 Route.get('/api/thisLike/:id', 'LikeController.getthisLike')
 
@@ -172,12 +173,6 @@ Route.get('/api/notifications/getAllNotiLike_comment/:id', 'NotificationControll
 Route.get('/api/notifications/getAllNotiLike_reply/:id', 'NotificationController.getAllNotiLike_reply')
 Route.get('/api/notifications/getAllNotiComment/:id', 'NotificationController.getAllNotiComment')
 Route.get('/api/notifications/getAllNotiReply/:id', 'NotificationController.getAllNotiReply')
-Route.post('/api/notifications/addPostLike', 'NotificationController.addPostLike')
-Route.get('/api/notifications/deletePostLike/:id', 'NotificationController.deletePostLike')
-Route.post('/api/notifications/addCommentLike', 'NotificationController.addCommentLike')
-Route.get('/api/notifications/deleteCommentLike/:id', 'NotificationController.deleteCommentLike')
-Route.post('/api/notifications/addReplyLike', 'NotificationController.addReplyLike')
-Route.get('/api/notifications/deleteReplyLike/:id', 'NotificationController.deleteReplyLike')
 
 Route.post('/api/notifications/updateRead_Status/:post_id/:activity_type', 'NotificationController.updateRead_Status')
 
