@@ -52,7 +52,7 @@ export default class GameList extends Component {
         <div className='gameList_head__option'>
           {/* <div className='gameResult__count'> {len} Results</div> */}
           <div className='gameResult__fillView'>
-            <span>Show full games </span>{' '}
+            <span>{this.props.slideOptionLabel} </span>{' '}
             <div className='button-switch'>
               <input
                 type='checkbox'

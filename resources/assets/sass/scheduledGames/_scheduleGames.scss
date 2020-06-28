@@ -444,7 +444,7 @@
       position: relative;
       margin: 15px;
       .gameDetails__header {
-        display: flex;
+        display: inline-table;
         min-height: 92px;
         border-bottom: 2px solid #a09770;
         width: 100%;
@@ -452,6 +452,8 @@
         align-items: flex-start;
         .gameName {
           flex: auto;
+          width: 78%;
+          float: left;
           .game__name {
             font: 20px/14px Montserrat;
             font-weight: bold;

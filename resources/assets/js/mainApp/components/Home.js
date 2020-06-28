@@ -9,10 +9,11 @@ import ComposeSection from './ComposeSection_v2'
 import Posts from './Posts'
 import Notifications from './Notifications'
 import MyPosts from './MyPosts'
-import MyScheduledGames from './MyScheduledGames'
+// import MyScheduledGames from './MyScheduledGames'
 import AnalyticsBox from './AnalyticsBox'
 import GroupMain from './GroupMain'
 import { Link } from 'react-router-dom'
+import MyScheduledGames from '../components/scheduledGames/MyScheduledGames'
 
 export default class Home extends Component {
   constructor() {
