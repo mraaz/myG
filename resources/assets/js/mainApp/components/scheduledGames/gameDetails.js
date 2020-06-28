@@ -45,7 +45,6 @@ export default class GameDetails extends Component {
     const { no_of_my_comments = 0 } = no_of_comments[0] || {}
 
     const experience_split = experience ? experience.split(',') : []
-
     return (
       <div className='gameDetails'>
         {showRightSideInfo && !showAllComment ? (

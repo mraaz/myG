@@ -112,10 +112,12 @@
           padding: 0;
           // min-height: 45px;
         }
+
         .css-bgvzuu-indicatorSeparator {
           background: none;
         }
         .css-1hwfws3 {
+          height: 45px;
           overflow: scroll;
           height: 100%;
           padding: 2px;
@@ -138,6 +140,14 @@
           }
           .css-16pqwjk-indicatorContainer {
             color: #ffffff;
+          }
+        }
+        .filter__control--is-focused {
+          .filter__value-container {
+            height: 45px;
+          }
+          .filter__value-container--is-multi {
+            height: auto;
           }
         }
 
@@ -1424,11 +1434,11 @@
             justify-content: flex-start;
             padding: 0px 22px;
             &.gamer {
-              width: 20%;
+              width: 200px;
             }
             &.level {
               justify-content: center;
-              width: 15%;
+              width: 100px;
               margin-left: auto;
             }
             &.extraFileds {
@@ -1468,7 +1478,7 @@
                 align-items: center;
               }
               &.gamer {
-                width: 20%;
+                width: 200px;
               }
             }
             .other__title {
@@ -1479,10 +1489,12 @@
               display: flex;
               justify-content: flex-start;
               &.extraKey {
-                width: 10%;
                 margin-left: auto;
+                padding: 0px 22px;
               }
               &.level {
+                justify-content: center;
+                width: 100px;
                 margin-left: auto;
               }
               .position {
@@ -1617,6 +1629,7 @@
               background: none;
             }
             .css-1hwfws3 {
+              height: 45px;
               padding: 2px;
               padding-left: 10px;
               .css-151xaom-placeholder {
@@ -1640,6 +1653,14 @@
               }
             }
 
+            .filter__control--is-focused {
+              .filter__value-container {
+                height: 45px;
+              }
+              .filter__value-container--is-multi {
+                height: auto;
+              }
+            }
             .filter {
               &__menu {
                 top: 50px;
