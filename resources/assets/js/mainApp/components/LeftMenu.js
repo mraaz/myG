@@ -158,7 +158,11 @@ class LeftMenu extends Component {
     return (
       <div className={styles.subItemContainer}>
         {subItems.map((item, index) => (
-          <Link to={item.cta} key={index} onClick={this.onSubItemClick}>
+          <Link
+            to={item.cta}
+            key={index}
+            onClick={this.onSubItemClick}
+            style={{ position: 'relative', display: 'block', width: '100%', height: '28px' }}>
             <div className={styles.subItemText} dangerouslySetInnerHTML={{ __html: item.header }} />
           </Link>
         ))}
