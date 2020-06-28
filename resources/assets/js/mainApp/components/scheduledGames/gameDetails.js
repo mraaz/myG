@@ -10,6 +10,7 @@ import JoinButtonAction from './JoinButtonAction'
 import GameComments from './GameComments'
 import { Link } from 'react-router-dom'
 import { WithTooltip } from '../Tooltip'
+const defaultUserImage = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png'
 
 export default class GameDetails extends Component {
   constructor() {
@@ -44,7 +45,6 @@ export default class GameDetails extends Component {
     const { no_of_my_comments = 0 } = no_of_comments[0] || {}
 
     const experience_split = experience ? experience.split(',') : []
-
     return (
       <div className='gameDetails'>
         {showRightSideInfo && !showAllComment ? (
@@ -125,7 +125,7 @@ export default class GameDetails extends Component {
                         <div
                           className='profile__image'
                           style={{
-                            backgroundImage: `url('${lastComment.profile_img}')`,
+                            backgroundImage: `url('${lastComment.profile_img ? lastComment.profile_img : defaultUserImage}')`,
                             backgroundSize: 'cover',
                           }}></div>
                       </Link>

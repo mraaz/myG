@@ -7,6 +7,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import axios from 'axios'
 import Modal from 'react-modal'
 import { Link } from 'react-router-dom'
+const defaultUserImage = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png'
 
 const Approved_gamers = (props) => {
   const [attendees, setAttendees] = useState([])
@@ -58,7 +59,7 @@ const Approved_gamers = (props) => {
               <div className='single__gamer'>
                 <Link to={`/profile/${gamer.alias}`}>
                   <div className='gamer__image '>
-                    <img src={gamer.profile_img} />
+                    <img src={gamer.profile_img ? gamer.profile_img : defaultUserImage} />
                   </div>
                   <div className='gamer__alias ' title={gamer.alias}>
                     {gamer.alias}
@@ -89,7 +90,7 @@ const Approved_gamers = (props) => {
               {extraHeaders.length > 0 &&
                 extraHeaders.map((header) => {
                   return (
-                    <div className='box_header_name extraFileds' style={{ width: `${60 / extraHeaders.length}%` }}>
+                    <div className='box_header_name extraFileds' style={{ width: `${500 / extraHeaders.length}px` }}>
                       {header}
                     </div>
                   )
@@ -102,7 +103,7 @@ const Approved_gamers = (props) => {
                 attendees.map((attendee) => {
                   return (
                     <div className='list__item'>
-                      <div className='gamer__name'>
+                      <div className='gamer__name gamer'>
                         <Link to={`/profile/${attendee.alias}`}>
                           <div className='default_circle'>
                             <img src={attendee.profile_img} className='groupImage' />
@@ -114,7 +115,7 @@ const Approved_gamers = (props) => {
                         extraKeys.map((extraKey) => {
                           if (attendee[extraKey]) {
                             return (
-                              <div className='other__title extraKey' style={{ width: `${60 / extraKeys.length}%` }}>
+                              <div className='other__title extraKey' style={{ width: `${500 / extraKeys.length}px` }}>
                                 {attendee[extraKey].split(',').join(', ')}
                               </div>
                             )

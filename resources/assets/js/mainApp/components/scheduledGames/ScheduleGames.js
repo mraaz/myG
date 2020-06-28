@@ -76,16 +76,17 @@ export default class ScheduleGames extends Component {
   }
 
   handleChange = async (data, name) => {
-    this.setState({ singleScheduleGamesPayload: {}, showRightSideInfo: false })
-    if (name == 'game_name') {
-      this.setState({ ...data }, () => {
-        this.getScheduleGamesChangeCall()
-      })
-    } else {
-      this.setState({ ...data }, () => {
-        this.getScheduleGamesChangeCall()
-      })
-    }
+    this.setState({ singleScheduleGamesPayload: {}, showRightSideInfo: false }, () => {
+      if (name == 'game_name') {
+        this.setState({ ...data }, () => {
+          this.getScheduleGamesChangeCall()
+        })
+      } else {
+        this.setState({ ...data }, () => {
+          this.getScheduleGamesChangeCall()
+        })
+      }
+    })
   }
   getScheduleGamesChangeCall = async (data = {}) => {
     const { counter, scheduleGames = [] } = this.state

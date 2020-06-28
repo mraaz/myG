@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom'
 import { Toast_style } from '../Utility_Function'
 import { toast } from 'react-toastify'
 import { WithTooltip } from '../Tooltip'
+const defaultUserImage = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png'
 
 const defaultThumbnails = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Notifications/myG_icon.svg'
 
@@ -86,7 +87,7 @@ export default class GameList extends Component {
                       <div className='game__playerList'>
                         <Link to={`/profile/${game.alias}`}>
                           <div className='playerName'>
-                            <img src={game.profile_img} />
+                            <img src={game.profile_img ? game.profile_img : defaultUserImage} />
                             <span> {game.alias}</span>
                           </div>
                         </Link>

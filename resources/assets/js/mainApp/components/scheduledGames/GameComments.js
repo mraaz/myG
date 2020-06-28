@@ -11,6 +11,7 @@ import { toast } from 'react-toastify'
 import { Toast_style } from '../Utility_Function'
 const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
 import { Link } from 'react-router-dom'
+const defaultUserImage = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png'
 
 export default class GameComments extends Component {
   constructor() {
@@ -199,7 +200,7 @@ export default class GameComments extends Component {
                 <div
                   className='profile__image'
                   style={{
-                    backgroundImage: `url('${userInfo.profile_img}')`,
+                    backgroundImage: `url('${userInfo.profile_img ? userInfo.profile_img : defaultUserImage}')`,
                     backgroundSize: 'cover',
                   }}>
                   <div className='online__status'></div>
