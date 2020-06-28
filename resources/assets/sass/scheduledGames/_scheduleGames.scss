@@ -112,6 +112,7 @@
           padding: 0;
           // min-height: 45px;
         }
+
         .css-bgvzuu-indicatorSeparator {
           background: none;
         }
@@ -141,8 +142,13 @@
             color: #ffffff;
           }
         }
-        .filter__value-container--is-multi {
-          height: auto;
+        .filter__control--is-focused {
+          .filter__value-container {
+            height: 45px;
+          }
+          .filter__value-container--is-multi {
+            height: auto;
+          }
         }
 
         .filter {
@@ -1646,10 +1652,15 @@
                 color: #ffffff;
               }
             }
-            .filter__value-container--is-multi {
-              height: auto;
-            }
 
+            .filter__control--is-focused {
+              .filter__value-container {
+                height: 45px;
+              }
+              .filter__value-container--is-multi {
+                height: auto;
+              }
+            }
             .filter {
               &__menu {
                 top: 50px;
