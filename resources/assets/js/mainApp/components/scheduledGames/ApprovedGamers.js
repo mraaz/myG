@@ -90,7 +90,7 @@ const Approved_gamers = (props) => {
               {extraHeaders.length > 0 &&
                 extraHeaders.map((header) => {
                   return (
-                    <div className='box_header_name extraFileds' style={{ width: `${60 / extraHeaders.length}%` }}>
+                    <div className='box_header_name extraFileds' style={{ width: `${500 / extraHeaders.length}px` }}>
                       {header}
                     </div>
                   )
@@ -115,7 +115,7 @@ const Approved_gamers = (props) => {
                         extraKeys.map((extraKey) => {
                           if (attendee[extraKey]) {
                             return (
-                              <div className='other__title extraKey' style={{ width: `${60 / extraKeys.length}%` }}>
+                              <div className='other__title extraKey' style={{ width: `${500 / extraKeys.length}px` }}>
                                 {attendee[extraKey].split(',').join(', ')}
                               </div>
                             )
