@@ -348,31 +348,57 @@ class ScheduleGameController {
   async myScheduledGames({ auth, request, response }) {
     var myScheduledGames = ''
     try {
-      //   //const latestScheduledGames = await ScheduleGame.query().innerJoin('users', 'user_id', 'schedule_games.user_id').options({nestTables:true}).fetch()
-      const subquery = Database.select('schedule_games_id')
-        .from('attendees')
+      const subquery = Database.from('attendees')
+        .select('schedule_games_id')
         .where({ user_id: auth.user.id })
 
       myScheduledGames = await Database.from('schedule_games')
         .innerJoin('users', 'users.id', 'schedule_games.user_id')
         .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
         .where((builder) => {
-          if (request.params.exclude_expired == 'true') builder.where('expiry', '>', Database.fn.now())
+          if (request.input('exclude_expired') == 'true') builder.where('expiry', '>', Database.fn.now())
         })
         .where('schedule_games.user_id', '=', auth.user.id)
         .orWhereIn('schedule_games.id', subquery)
+        .select(
+          'game_names.game_artwork',
+          'game_names.game_name_fields_img',
+          'game_names.game_name',
+          'schedule_games.start_date_time',
+          'users.alias',
+          'users.profile_img',
+          'schedule_games.experience',
+          'schedule_games.schedule_games_GUID',
+          'schedule_games.limit',
+          'schedule_games.id',
+          'users.id as user_id',
+          'schedule_games.game_names_id'
+        )
+        .paginate(request.input('counter'), 10)
 
-        .select('*', 'schedule_games.id', 'schedule_games.user_id')
-        .orderBy('schedule_games.created_at', 'desc')
-        .paginate(request.params.limitstr, 10)
+      for (var i = 0; i < myScheduledGames.data.length; i++) {
+        let getAllGamers = await Database.from('attendees')
+          .where({ schedule_games_id: myScheduledGames.data[i].id, type: 1 })
+          .count('* as no_of_gamers')
 
-      myScheduledGames = await InGame_fieldsController.find_InGame_Fields(myScheduledGames)
+        let getAllTags = await Database.from('schedule_games_tags')
+          .innerJoin('game_tags', 'game_tags.id', 'schedule_games_tags.game_tag_id')
+          .where({ schedule_games_id: myScheduledGames.data[i].id })
+          .select('content')
+
+        myScheduledGames.data[i].tags = getAllTags
+
+        myScheduledGames.data[i].no_of_gamers = getAllGamers[0].no_of_gamers
+      }
+      myScheduledGames = myScheduledGames.data
+
+      return {
+        myScheduledGames,
+      }
     } catch (error) {
       console.log(error)
-    }
-
-    return {
-      myScheduledGames,
+      myScheduledGames = []
+      return myScheduledGames
     }
   }
 
@@ -562,12 +588,6 @@ class ScheduleGameController {
           }
         }
       }
-      console.log('dasd')
-      console.log(value_one)
-      console.log(value_two)
-      console.log(value_three)
-      console.log(value_four)
-      console.log(value_five)
 
       if (request.input('tags') != null && request.input('tags').length != 0) {
         arrTags = request.input('tags').split(',')

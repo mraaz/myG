@@ -107,6 +107,7 @@ Route.post('/api/ScheduleGame/scheduleSearchResults', 'ScheduleGameController.sc
 Route.get('/api/ScheduleGame/filtered_by_one/:schedule_games_GUID', 'ScheduleGameController.filtered_by_one')
 
 Route.get('/api/myScheduledGames/:limitstr/:exclude_expired', 'ScheduleGameController.myScheduledGames')
+Route.post('/api/myScheduledGames', 'ScheduleGameController.myScheduledGames')
 Route.get('/api/myScheduledGamesCount/:id', 'ScheduleGameController.myScheduledGamesCount')
 
 Route.post('/api/ScheduleGame/myScheduledGames_Upcoming_Games/', 'ScheduleGameController.myScheduledGames_Upcoming_Games')
