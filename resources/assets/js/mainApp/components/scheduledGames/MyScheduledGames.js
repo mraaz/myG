@@ -42,20 +42,12 @@ export default class MyScheduledGames extends Component {
   }
 
   async componentDidMount() {
-    const { routeProps = {} } = this.props
-    const { match = {} } = routeProps
-    const { params = {} } = match
-    const { id = '' } = params
-    if (id) {
-      const scheduleGames = await axios.get(`/api/ScheduleGame/filtered_by_one/${id}`)
-      if (scheduleGames.data && scheduleGames.data.myScheduledGames.length > 0) {
-        this.setState({ scheduleGamesView: scheduleGames.data, showRightSideInfo: true, singleView: true })
-      }
-    } else {
-      const scheduleGames = await axios.get(`/api/myScheduledGames/1/true`)
-      if (scheduleGames.data && scheduleGames.data.myScheduledGames && scheduleGames.data.myScheduledGames.data.length > 0) {
-        this.setState({ scheduleGames: scheduleGames.data.myScheduledGames.data })
-      }
+    const scheduleGames = await axios.post(`/api/myScheduledGames`, {
+      counter: 1,
+      exclude_expired: false,
+    })
+    if (scheduleGames.data && scheduleGames.data.myScheduledGames && scheduleGames.data.myScheduledGames.length > 0) {
+      this.setState({ scheduleGames: scheduleGames.data.myScheduledGames })
     }
   }
 
