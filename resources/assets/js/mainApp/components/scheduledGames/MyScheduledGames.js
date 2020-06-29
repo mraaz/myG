@@ -14,7 +14,7 @@ import axios from 'axios'
 
 import InfiniteScroll from 'react-infinite-scroll-component'
 
-export default class ScheduleGames extends Component {
+export default class MyScheduledGames extends Component {
   constructor() {
     super()
     this.state = {
@@ -42,17 +42,19 @@ export default class ScheduleGames extends Component {
   }
 
   async componentDidMount() {
-    const { params = {} } = this.props.routeProps.match
+    const { routeProps = {} } = this.props
+    const { match = {} } = routeProps
+    const { params = {} } = match
     const { id = '' } = params
     if (id) {
       const scheduleGames = await axios.get(`/api/ScheduleGame/filtered_by_one/${id}`)
-      if (scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
+      if (scheduleGames.data && scheduleGames.data.myScheduledGames.length > 0) {
         this.setState({ scheduleGamesView: scheduleGames.data, showRightSideInfo: true, singleView: true })
       }
     } else {
-      const scheduleGames = await getScheduleGames({ counter: 1 })
-      if (scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
-        this.setState({ scheduleGames: scheduleGames.data.latestScheduledGames })
+      const scheduleGames = await axios.get(`/api/myScheduledGames/1/true`)
+      if (scheduleGames.data && scheduleGames.data.myScheduledGames && scheduleGames.data.myScheduledGames.data.length > 0) {
+        this.setState({ scheduleGames: scheduleGames.data.myScheduledGames.data })
       }
     }
   }
@@ -109,19 +111,19 @@ export default class ScheduleGames extends Component {
     const { counter, scheduleGames = [] } = this.state
     let count = counter + 1
     this.setState({ fetching: true })
-    const scheduleGamesRes = await getScheduleGames({ ...this.state, ...data, counter: count })
-    if (scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length == 0) {
+    const scheduleGamesRes = await axios.get(`/api/myScheduledGames/${count}/true`)
+    if (scheduleGamesRes.data && scheduleGamesRes.data.myScheduledGames.length == 0) {
       this.setState({
         moreplease: false,
         fetching: false,
       })
       return
     }
-    if (scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length > 0) {
+    if (scheduleGamesRes.data && scheduleGamesRes.data.myScheduledGames.length > 0) {
       if (count > 1) {
-        this.setState({ scheduleGames: [...scheduleGames, ...scheduleGamesRes.data.latestScheduledGames], counter: count, fetching: false })
+        this.setState({ scheduleGames: [...scheduleGames, ...scheduleGamesRes.data.myScheduledGames], counter: count, fetching: false })
       } else {
-        this.setState({ scheduleGames: scheduleGames.data.latestScheduledGames, fetching: false })
+        this.setState({ scheduleGames: scheduleGames.data.myScheduledGames, fetching: false })
       }
     }
   }
@@ -133,7 +135,9 @@ export default class ScheduleGames extends Component {
   }
 
   render() {
-    const { params = {} } = this.props.routeProps.match
+    const { routeProps = {} } = this.props
+    const { match = {} } = routeProps
+    const { params = {} } = match
     const { id = '' } = params
     const {
       savedFilter,
@@ -156,7 +160,6 @@ export default class ScheduleGames extends Component {
     }
     return (
       <section className='viewGame__container' style={{ height: '100vh', overflow: 'scroll' }}>
-        {id == '' && <GameFilter handleChange={this.handleChange} />}
         <div className={`gameList__section ${singleView ? 'singleGameView__container' : 'GameView__container'}`}>
           {!singleView && scheduleGames.length > 0 ? (
             <Fragment>
@@ -165,7 +168,7 @@ export default class ScheduleGames extends Component {
                   scheduleGames={scheduleGames}
                   show_full_games={show_full_games}
                   handleExcludesFullGames={this.handleExcludesFullGames}
-                  slideOptionLabel={`Show full games `}
+                  slideOptionLabel={`Exclude Expired Games`}
                   getSingleGameData={this.getSingleGameData}
                   next={this.getScheduleGamesData}
                   hasMore={this.state.moreplease}
