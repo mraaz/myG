@@ -346,35 +346,170 @@ class ScheduleGameController {
   }
 
   async myScheduledGames({ auth, request, response }) {
-    var myScheduledGames = ''
-    try {
-      const subquery = Database.from('attendees')
-        .select('schedule_games_id')
-        .where({ user_id: auth.user.id })
+    var myScheduledGames = '',
+      subquery = '',
+      filter = 0,
+      number_of_records = 0,
+      count_myScheduledGames = ''
 
-      myScheduledGames = await Database.from('schedule_games')
-        .innerJoin('users', 'users.id', 'schedule_games.user_id')
-        .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
-        .where((builder) => {
-          if (request.input('exclude_expired') == 'true') builder.where('expiry', '>', Database.fn.now())
-        })
-        .where('schedule_games.user_id', '=', auth.user.id)
-        .orWhereIn('schedule_games.id', subquery)
-        .select(
-          'game_names.game_artwork',
-          'game_names.game_name_fields_img',
-          'game_names.game_name',
-          'schedule_games.start_date_time',
-          'users.alias',
-          'users.profile_img',
-          'schedule_games.experience',
-          'schedule_games.schedule_games_GUID',
-          'schedule_games.limit',
-          'schedule_games.id',
-          'users.id as user_id',
-          'schedule_games.game_names_id'
-        )
-        .paginate(request.input('counter'), 10)
+    // All myGames: 0
+    // my Hosted Games: 1
+    // myGames (Participating): 2
+    // myGames (Awaiting Approval): 3
+
+    if (request.input('filter')) {
+      filter = request.input('filter')
+    }
+
+    try {
+      switch (filter) {
+        case 0:
+          subquery = Database.from('attendees')
+            .select('schedule_games_id')
+            .where({ user_id: auth.user.id })
+
+          myScheduledGames = await Database.from('schedule_games')
+            .innerJoin('users', 'users.id', 'schedule_games.user_id')
+            .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+            .where((builder) => {
+              if (request.input('exclude_expired') == 'true') builder.where('expiry', '>', Database.fn.now())
+            })
+            .where('schedule_games.user_id', '=', auth.user.id)
+            .orWhereIn('schedule_games.id', subquery)
+            .select(
+              'game_names.game_artwork',
+              'game_names.game_name_fields_img',
+              'game_names.game_name',
+              'schedule_games.start_date_time',
+              'users.alias',
+              'users.profile_img',
+              'schedule_games.experience',
+              'schedule_games.schedule_games_GUID',
+              'schedule_games.limit',
+              'schedule_games.id',
+              'users.id as user_id',
+              'schedule_games.game_names_id'
+            )
+            .paginate(request.input('counter'), 10)
+
+          count_myScheduledGames = await Database.from('schedule_games')
+            .where((builder) => {
+              if (request.input('exclude_expired') == 'true') builder.where('expiry', '>', Database.fn.now())
+            })
+            .where('schedule_games.user_id', '=', auth.user.id)
+            .orWhereIn('schedule_games.id', subquery)
+            .count('* as no_of_records')
+
+          number_of_records = count_myScheduledGames[0].no_of_records
+          break
+        case 1:
+          myScheduledGames = await Database.from('schedule_games')
+            .innerJoin('users', 'users.id', 'schedule_games.user_id')
+            .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+            .where((builder) => {
+              if (request.input('exclude_expired') == 'true') builder.where('expiry', '>', Database.fn.now())
+            })
+            .where('schedule_games.user_id', '=', auth.user.id)
+            .select(
+              'game_names.game_artwork',
+              'game_names.game_name_fields_img',
+              'game_names.game_name',
+              'schedule_games.start_date_time',
+              'users.alias',
+              'users.profile_img',
+              'schedule_games.experience',
+              'schedule_games.schedule_games_GUID',
+              'schedule_games.limit',
+              'schedule_games.id',
+              'users.id as user_id',
+              'schedule_games.game_names_id'
+            )
+            .paginate(request.input('counter'), 10)
+
+          count_myScheduledGames = await Database.from('schedule_games')
+            .where((builder) => {
+              if (request.input('exclude_expired') == 'true') builder.where('expiry', '>', Database.fn.now())
+            })
+            .where('schedule_games.user_id', '=', auth.user.id)
+            .count('* as no_of_records')
+
+          number_of_records = count_myScheduledGames[0].no_of_records
+          break
+        case 2:
+          subquery = Database.from('attendees')
+            .select('schedule_games_id')
+            .where({ user_id: auth.user.id, type: 1 })
+
+          myScheduledGames = await Database.from('schedule_games')
+            .innerJoin('users', 'users.id', 'schedule_games.user_id')
+            .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+            .where((builder) => {
+              if (request.input('exclude_expired') == 'true') builder.where('expiry', '>', Database.fn.now())
+            })
+            .whereIn('schedule_games.id', subquery)
+            .select(
+              'game_names.game_artwork',
+              'game_names.game_name_fields_img',
+              'game_names.game_name',
+              'schedule_games.start_date_time',
+              'users.alias',
+              'users.profile_img',
+              'schedule_games.experience',
+              'schedule_games.schedule_games_GUID',
+              'schedule_games.limit',
+              'schedule_games.id',
+              'users.id as user_id',
+              'schedule_games.game_names_id'
+            )
+            .paginate(request.input('counter'), 10)
+
+          count_myScheduledGames = await Database.from('schedule_games')
+            .where((builder) => {
+              if (request.input('exclude_expired') == 'true') builder.where('expiry', '>', Database.fn.now())
+            })
+            .whereIn('schedule_games.id', subquery)
+            .count('* as no_of_records')
+
+          number_of_records = count_myScheduledGames[0].no_of_records
+          break
+        case 3:
+          subquery = Database.from('attendees')
+            .select('schedule_games_id')
+            .where({ user_id: auth.user.id, type: 3 })
+
+          myScheduledGames = await Database.from('schedule_games')
+            .innerJoin('users', 'users.id', 'schedule_games.user_id')
+            .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+            .where((builder) => {
+              if (request.input('exclude_expired') == 'true') builder.where('expiry', '>', Database.fn.now())
+            })
+            .whereIn('schedule_games.id', subquery)
+            .select(
+              'game_names.game_artwork',
+              'game_names.game_name_fields_img',
+              'game_names.game_name',
+              'schedule_games.start_date_time',
+              'users.alias',
+              'users.profile_img',
+              'schedule_games.experience',
+              'schedule_games.schedule_games_GUID',
+              'schedule_games.limit',
+              'schedule_games.id',
+              'users.id as user_id',
+              'schedule_games.game_names_id'
+            )
+            .paginate(request.input('counter'), 10)
+
+          count_myScheduledGames = await Database.from('schedule_games')
+            .where((builder) => {
+              if (request.input('exclude_expired') == 'true') builder.where('expiry', '>', Database.fn.now())
+            })
+            .whereIn('schedule_games.id', subquery)
+            .count('* as no_of_records')
+
+          number_of_records = count_myScheduledGames[0].no_of_records
+          break
+      }
 
       for (var i = 0; i < myScheduledGames.data.length; i++) {
         let getAllGamers = await Database.from('attendees')
@@ -387,18 +522,36 @@ class ScheduleGameController {
           .select('content')
 
         myScheduledGames.data[i].tags = getAllTags
-
         myScheduledGames.data[i].no_of_gamers = getAllGamers[0].no_of_gamers
+
+        //if we're the host
+        if (myScheduledGames.data[i].user_id == auth.user.id) {
+          let getAllpendings = await Database.from('attendees')
+            .where({ schedule_games_id: myScheduledGames.data[i].id, type: 3 })
+            .count('* as no_of_Approval_Pending')
+
+          myScheduledGames.data[i].no_of_Approval_Pending = getAllpendings[0].no_of_Approval_Pending
+        }
+
+        let getstatus = await Database.from('attendees')
+          .where({ schedule_games_id: myScheduledGames.data[i].id })
+          .select('type')
+          .first()
+
+        if (getstatus != undefined) {
+          myScheduledGames.data[i].myStatus = getstatus.type
+        }
       }
       myScheduledGames = myScheduledGames.data
 
       return {
         myScheduledGames,
+        number_of_records,
       }
     } catch (error) {
       console.log(error)
       myScheduledGames = []
-      return myScheduledGames
+      return { myScheduledGames, number_of_records }
     }
   }
 
@@ -727,7 +880,9 @@ class ScheduleGameController {
       approved_gamers = [],
       additional_submit_info = false,
       additional_submit_info_fields = [],
-      additional_game_info = []
+      additional_game_info = [],
+      edit_status = false,
+      button_text = ''
 
     try {
       additional_game_info = await Database.from('schedule_games')
@@ -747,7 +902,31 @@ class ScheduleGameController {
 
         if (my_attendance != undefined) {
           join_status = my_attendance.type
+          switch (join_status) {
+            case 1:
+              button_text = 'Joined'
+              break
+            case 3:
+              button_text = 'Pending'
+              break
+            default:
+          }
         }
+
+        if (additional_game_info.user_id == auth.user.id) {
+          edit_status = true
+          button_text = 'Hosting'
+        } else {
+          const checkCo_host = await Database.from('co_hosts')
+            .where({ schedule_games_id: request.params.id, user_id: auth.user.id })
+            .select('id')
+            .first()
+          if (checkCo_host != undefined) {
+            edit_status = true
+            button_text = 'Co-Hosting'
+          }
+        }
+
         //Figure out what fields to return, create the key value pair.
         const getGameFields = await Database.from('game_name_fields')
           .where({ game_names_id: additional_game_info.game_names_id })
@@ -813,6 +992,10 @@ class ScheduleGameController {
         .where({ schedule_games_id: request.params.id, type: 1 })
         .count('* as no_of_gamers')
 
+      if (join_status != 1 || button_text != 'Hosting' || button_text != 'Co-Hosting') {
+        additional_game_info.accept_msg = ''
+      }
+
       return {
         additional_game_info,
         approved_gamers,
@@ -820,6 +1003,8 @@ class ScheduleGameController {
         additional_submit_info,
         additional_submit_info_fields,
         getAllGamers,
+        edit_status,
+        button_text,
       }
     } catch (error) {
       console.log(error)
@@ -878,6 +1063,104 @@ class ScheduleGameController {
         .first()
 
       if (getGameFields != undefined) {
+        let obj = '',
+          obj2 = '',
+          obj3 = ''
+
+        if (getGameFields.in_game_fields != undefined) {
+          obj = JSON.parse(getGameFields.in_game_fields)
+        }
+        if (getGameFields.in_game_field_placeholders != undefined) {
+          obj2 = JSON.parse(getGameFields.in_game_field_placeholders)
+        }
+        if (getGameFields.in_game_field_types != undefined) {
+          obj3 = JSON.parse(getGameFields.in_game_field_types)
+        }
+
+        const getGameTransactions = await Database.from('schedule_games_transactions')
+          .where({ schedule_games_id: latestScheduledGames[0].id })
+          .first()
+
+        if (getGameTransactions != undefined) {
+          let arr_game_fields = [],
+            arr_game_fields_data = []
+
+          for (let key in obj) {
+            arr_game_fields.push(obj[key])
+          }
+          let tmp_array = []
+          switch (arr_game_fields.length - 1) {
+            case 4:
+              tmp_array[arr_game_fields[4]] = getGameTransactions.value_five
+            case 3:
+              tmp_array[arr_game_fields[3]] = getGameTransactions.value_four
+            case 2:
+              tmp_array[arr_game_fields[2]] = getGameTransactions.value_three
+            case 1:
+              tmp_array[arr_game_fields[1]] = getGameTransactions.value_two
+            case 0:
+              tmp_array[arr_game_fields[0]] = getGameTransactions.value_one
+          }
+          for (let key in tmp_array) {
+            let tmp_tmp = { [key]: tmp_array[key] }
+            additional_submit_info_fields.push([tmp_tmp, obj2[key], obj3[key]])
+          }
+        }
+      }
+
+      if (additional_submit_info_fields.length > 0) {
+        additional_submit_info = true
+      }
+
+      getAllGamers = await Database.from('attendees')
+        .where({ schedule_games_id: latestScheduledGames[0].id, type: 1 })
+        .count('* as no_of_gamers')
+
+      return {
+        latestScheduledGames,
+        approved_gamers,
+        join_status,
+        additional_submit_info,
+        additional_submit_info_fields,
+        getAllGamers,
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async edit_game({ auth, request, response }) {
+    let latestScheduledGames = [],
+      additional_submit_info = false,
+      additional_submit_info_fields = []
+
+    try {
+      latestScheduledGames = await Database.from('schedule_games')
+        .innerJoin('users', 'users.id', 'schedule_games.user_id')
+        .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+        .leftJoin('schedule_games_transactions', 'schedule_games_transactions.schedule_games_id', 'schedule_games.id')
+        .where('schedule_games.id', '=', request.params.id)
+        .select('*', 'users.id as user_id', 'schedule_games.id as id', 'schedule_games.created_at', 'schedule_games.updated_at')
+
+      if (!latestScheduledGames.length) {
+        return
+      }
+
+      latestScheduledGames = await InGame_fieldsController.find_InGame_Fields_NOT_paginate(latestScheduledGames)
+
+      let getAllTags = await Database.from('schedule_games_tags')
+        .innerJoin('game_tags', 'game_tags.id', 'schedule_games_tags.game_tag_id')
+        .where({ schedule_games_id: latestScheduledGames[0].id })
+        .select('content')
+
+      latestScheduledGames[0].tags = getAllTags
+
+      //Figure out what fields to return, create the key value pair.
+      const getGameFields = await Database.from('game_name_fields')
+        .where({ game_names_id: latestScheduledGames[0].game_names_id })
+        .first()
+
+      if (getGameFields != undefined) {
         additional_submit_info = true
         let obj = '',
           obj2 = '',
@@ -924,17 +1207,14 @@ class ScheduleGameController {
         }
       }
 
-      getAllGamers = await Database.from('attendees')
-        .where({ schedule_games_id: latestScheduledGames[0].id, type: 1 })
-        .count('* as no_of_gamers')
+      if (additional_submit_info_fields.length > 0) {
+        additional_submit_info = true
+      }
 
       return {
         latestScheduledGames,
-        approved_gamers,
-        join_status,
         additional_submit_info,
         additional_submit_info_fields,
-        getAllGamers,
       }
     } catch (error) {
       console.log(error)

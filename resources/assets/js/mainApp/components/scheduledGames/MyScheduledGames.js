@@ -45,7 +45,11 @@ export default class MyScheduledGames extends Component {
     const scheduleGames = await axios.post(`/api/myScheduledGames`, {
       counter: 1,
       exclude_expired: false,
+      filter: 0,
     })
+    // const scheduleGames1 = await axios.get('/api/ScheduleGame/edit_game/726')
+    // console.log(scheduleGames1)
+
     if (scheduleGames.data && scheduleGames.data.myScheduledGames && scheduleGames.data.myScheduledGames.length > 0) {
       this.setState({ scheduleGames: scheduleGames.data.myScheduledGames })
     }
