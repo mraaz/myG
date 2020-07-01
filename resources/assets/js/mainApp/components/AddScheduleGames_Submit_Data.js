@@ -95,7 +95,8 @@ export async function SubmitDataFunction(myG) {
   var tmp = uuidv1()
 
   try {
-    const post = await axios.post('/api/ScheduleGame', {
+    const post = await axios.post('/api/ScheduleGame/update', {
+      id: 726,
       game_name_box: myG.game_name_box.value,
       selected_region: myRegion,
       selected_experience: myExperience,

@@ -26,6 +26,9 @@ class ScheduleGamesSchema extends Schema {
       table.boolean('autoJoin').defaultTo(1)
       table.string('schedule_games_GUID', 254).notNullable().unique()
       table.boolean('allow_comments').defaultTo(1)
+      table.string('cron', 254).nullable()
+      table.integer('occurrence').nullable().defaultTo(0)
+      table.integer('repeatEvery').nullable().defaultTo(0)
       table.timestamps(true,true)
     })
   }

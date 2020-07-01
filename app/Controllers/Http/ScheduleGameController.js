@@ -89,6 +89,9 @@ class ScheduleGameController {
           schedule_games_GUID: request.input('schedule_games_GUID'),
           allow_comments: request.input('allow_comments'),
           autoJoin: request.input('autoJoin'),
+          cron: request.input('cron'),
+          occurrence: request.input('occurrence'),
+          repeatEvery: request.input('repeatEvery'),
         })
 
         if (
@@ -309,6 +312,9 @@ class ScheduleGameController {
             schedule_games_GUID: request.input('schedule_games_GUID'),
             allow_comments: request.input('allow_comments'),
             autoJoin: request.input('autoJoin'),
+            cron: request.input('cron'),
+            occurrence: request.input('occurrence'),
+            repeatEvery: request.input('repeatEvery'),
           })
 
         if (
@@ -379,17 +385,17 @@ class ScheduleGameController {
                 counter = counter + 1
               }
             }
-            //RAAZ still to finish
             if (counter != 5) {
-              await ScheduleGamesTransaction.create({
-                schedule_games_id: newScheduleGame.id,
-                game_name_fields_id: getGameFields.id,
-                value_one: db_save_value_array[0],
-                value_two: db_save_value_array[1],
-                value_three: db_save_value_array[2],
-                value_four: db_save_value_array[3],
-                value_five: db_save_value_array[4],
-              })
+              const updateScheduleGamesTransaction = await ScheduleGamesTransaction.query()
+                .where({ schedule_games_id: request.input('id') })
+                .update({
+                  game_name_fields_id: getGameFields.id,
+                  value_one: db_save_value_array[0],
+                  value_two: db_save_value_array[1],
+                  value_three: db_save_value_array[2],
+                  value_four: db_save_value_array[3],
+                  value_five: db_save_value_array[4],
+                })
             }
           }
         }
@@ -453,7 +459,7 @@ class ScheduleGameController {
             }
           }
         }
-        return newScheduleGame
+        return updateScheduleGame
       } catch (error) {
         console.log(error)
       }
