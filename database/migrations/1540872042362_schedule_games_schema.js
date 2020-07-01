@@ -18,7 +18,7 @@ class ScheduleGamesSchema extends Schema {
       table.string('platform', 254).nullable()
       table.string('description', 254).nullable()
       table.string('other', 254).nullable()
-      table.timestamp('expiry').notNullable().index()
+      table.timestamp('expiry').notNullable()
       table.integer('visibility').unsigned().nullable().defaultTo(1)
       table.integer('limit').nullable().defaultTo(0)
       table.string('accept_msg', 254).nullable()

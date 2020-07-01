@@ -38,7 +38,7 @@ class UserRepository {
     if (!user.email) return new DefaultSchema({ success: false, error: "User doesn't have an email" });
     const fifteenMinutesAgo = Date.now() - 1000 * 60 * 15
     const newUser = new Date(user.created_at).getTime() > fifteenMinutesAgo;
-    if (newUser) await new EmailController().welcome_email(user.email, pin);
+    if (newUser) await new EmailController().welcome_email(user.email, pin, user.alias);
     else await new EmailController().encryption_email(user.email, pin);
     return new DefaultSchema({ success: true });
   }
