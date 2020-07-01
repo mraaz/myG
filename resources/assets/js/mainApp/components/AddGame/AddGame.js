@@ -425,6 +425,21 @@ const AddGame = ({
           <div className={styles.sideLine} />
         </div>
         <div>
+          <div className={styles.fieldTitle}>Co-host</div>
+          <MyGAsyncSelect
+            isClearable
+            isMulti
+            isValidNewOption={() => {
+              return
+            }}
+            loadOptions={onPlayersSuggestionFetch}
+            onChange={(value) => {
+              updateAdvancedSettings({ coHosts: value })
+            }}
+            value={advancedSettingsState.coHosts}
+            placeholder='Enter your Friend’s name to set him as a co-host'
+            onKeyDown={Disable_keys}
+          />
           <div className={styles.fieldTitle}>Experience</div>
           <MyGSelect
             options={EXPERIENCE_OPTIONS}
@@ -490,21 +505,6 @@ const AddGame = ({
             value={advancedSettingsState.acceptMessage}
             placeholder='Create a message for those who join & accept your game'
             maxLength={250}
-          />
-          <div className={styles.fieldTitle}>Co-host</div>
-          <MyGAsyncSelect
-            isClearable
-            isMulti
-            isValidNewOption={() => {
-              return
-            }}
-            loadOptions={onPlayersSuggestionFetch}
-            onChange={(value) => {
-              updateAdvancedSettings({ coHosts: value })
-            }}
-            value={advancedSettingsState.coHosts}
-            placeholder='Enter your Friend’s name to set him as a co-host'
-            onKeyDown={Disable_keys}
           />
         </div>
       </div>

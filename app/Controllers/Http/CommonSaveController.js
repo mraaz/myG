@@ -114,13 +114,12 @@ class CommonSaveController {
         querystring.stringify({ secret: Env.get('SECRET_KEY'), response: token })
       )
       if (!data_request.data.success) {
-        console.log('Google Recaptcha Verification Fail: ' + data_request.data)
+        console.log('Google Recaptcha Verification Failed: ' + data_request.data)
         return response.redirect('/?error=google-recaptcha')
       } else {
         // Seats Availability
         const seatsAvailable = await SeatsAvailable.query().first()
         const extraSeatsCode = request.input('extraSeatsCode')
-        console.log(`hi, ${extraSeatsCode}`)
         if (!seatsAvailable.seats_available && !extraSeatsCode) {
           return response.redirect('/?error=seats')
         }
@@ -142,9 +141,10 @@ class CommonSaveController {
 
         // Mark Extra Seat Code as Used
         if (extraSeatsCode) {
-          await ExtraSeatsCodes.query().where('code', extraSeatsCode).update({ user_id: user.id })
+          await ExtraSeatsCodes.query()
+            .where('code', extraSeatsCode)
+            .update({ user_id: user.id })
         }
-
 
         // var transporter = nodemailer.createTransport({
         //   host: '',
