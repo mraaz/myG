@@ -89,6 +89,9 @@ class ScheduleGameController {
           schedule_games_GUID: request.input('schedule_games_GUID'),
           allow_comments: request.input('allow_comments'),
           autoJoin: request.input('autoJoin'),
+          cron: request.input('cron'),
+          occurrence: request.input('occurrence'),
+          repeatEvery: request.input('repeatEvery'),
         })
 
         if (
@@ -220,6 +223,243 @@ class ScheduleGameController {
           }
         }
         return newScheduleGame
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+
+  async update({ auth, request, response }) {
+    let myTime = new Date(new Date(Date.now()).getTime() - 60 * 60 * 1000)
+
+    let newStartdate = new Date(request.input('start_date_time'))
+    if (myTime > newStartdate) {
+      return
+    }
+
+    let end_date_time
+
+    if (request.input('end_date_time') != undefined) {
+      end_date_time = new Date(request.input('end_date_time')).toISOString().replace('T', ' ')
+
+      let newEnddate = new Date(request.input('end_date_time'))
+      let extendedDate = new Date(new Date(request.input('start_date_time')).getTime() + 15 * 60 * 60 * 24 * 1000)
+      if (newEnddate > extendedDate) {
+        return
+      }
+    }
+
+    if (auth.user) {
+      try {
+        var gameNameID = null
+
+        const getOne = await Database.from('schedule_games')
+          .where({
+            id: request.input('id'),
+          })
+          .first()
+
+        if (getOne == undefined) {
+          return
+        }
+
+        const getGameName = await Database.from('game_names').where({
+          game_name: request.input('game_name_box'),
+        })
+        let gameface = new GameNameController()
+
+        if (getGameName.length == 0) {
+          request.params.game_name = request.input('game_name_box')
+          let tmp = await gameface.createGame({ auth, request, response })
+          if (tmp == false) {
+            return
+          }
+          gameNameID = tmp.id
+        } else {
+          gameNameID = getGameName[0].id
+          if (getOne.game_name != getGameName.game_name) {
+            request.params.game_names_id = getGameName[0].id
+            gameface.incrementGameCounter({ auth, request, response })
+          }
+        }
+
+        let end_date_time
+
+        if (request.input('end_date_time') != undefined) {
+          end_date_time = new Date(request.input('end_date_time')).toISOString().replace('T', ' ')
+          let extendedDate = new Date(new Date(request.input('start_date_time')).getTime() + 15 * 60 * 60 * 24 * 1000)
+          if (end_date_time > extendedDate) {
+            return
+          }
+        }
+
+        const updateScheduleGame = await ScheduleGame.query()
+          .where({ id: request.input('id') })
+          .update({
+            game_names_id: parseInt(gameNameID, 10),
+            user_id: auth.user.id,
+            region: request.input('selected_region'),
+            experience: request.input('selected_experience'),
+            start_date_time: request.input('start_date_time'),
+            end_date_time: request.input('end_date_time'),
+            platform: request.input('selected_platform'),
+            description: request.input('description_box'),
+            other: request.input('other_box'),
+            expiry: request.input('selected_expiry'),
+            visibility: request.input('visibility'),
+            limit: request.input('limit'),
+            accept_msg: request.input('accept_msg'),
+            schedule_games_GUID: request.input('schedule_games_GUID'),
+            allow_comments: request.input('allow_comments'),
+            autoJoin: request.input('autoJoin'),
+            cron: request.input('cron'),
+            occurrence: request.input('occurrence'),
+            repeatEvery: request.input('repeatEvery'),
+          })
+
+        if (
+          getGameName.length != 0 &&
+          ((request.input('value_one') != null && JSON.stringify(request.input('value_one')) !== '{}') ||
+            (request.input('value_two') != null && JSON.stringify(request.input('value_two')) !== '{}') ||
+            (request.input('value_three') != null && JSON.stringify(request.input('value_three')) !== '{}') ||
+            (request.input('value_four') != null && JSON.stringify(request.input('value_four')) !== '{}') ||
+            (request.input('value_five') != null && JSON.stringify(request.input('value_five')) !== '{}'))
+        ) {
+          const getGameFields = await Database.from('game_name_fields')
+            .where({
+              game_names_id: gameNameID,
+            })
+            .first()
+
+          if (getGameFields != undefined) {
+            let db_obj = ''
+
+            let db_save_value_array = new Array(5).fill(null)
+
+            let attendeeController = new AttendeeController()
+
+            if (getGameFields.in_game_fields != undefined) {
+              db_obj = JSON.parse(getGameFields.in_game_fields)
+            }
+
+            if (request.input('value_one') != undefined && request.input('value_one') != null && db_obj != '') {
+              db_save_value_array = await attendeeController.process_game_name_fields(
+                db_obj,
+                request.input('value_one'),
+                db_save_value_array
+              )
+            }
+
+            if (request.input('value_two') != undefined && request.input('value_two') != null && db_obj != '') {
+              db_save_value_array = await attendeeController.process_game_name_fields(
+                db_obj,
+                request.input('value_two'),
+                db_save_value_array
+              )
+            }
+            if (request.input('value_three') != undefined && request.input('value_three') != null && db_obj != '') {
+              db_save_value_array = await attendeeController.process_game_name_fields(
+                db_obj,
+                request.input('value_three'),
+                db_save_value_array
+              )
+            }
+            if (request.input('value_four') != undefined && request.input('value_four') != null && db_obj != '') {
+              db_save_value_array = await attendeeController.process_game_name_fields(
+                db_obj,
+                request.input('value_four'),
+                db_save_value_array
+              )
+            }
+            if (request.input('value_five') != undefined && request.input('value_five') != null && db_obj != '') {
+              db_save_value_array = await attendeeController.process_game_name_fields(
+                db_obj,
+                request.input('value_five'),
+                db_save_value_array
+              )
+            }
+            let counter = 0
+
+            for (var i = 0; i < db_save_value_array.length; i++) {
+              if (db_save_value_array[i] == null) {
+                counter = counter + 1
+              }
+            }
+            if (counter != 5) {
+              const updateScheduleGamesTransaction = await ScheduleGamesTransaction.query()
+                .where({ schedule_games_id: request.input('id') })
+                .update({
+                  game_name_fields_id: getGameFields.id,
+                  value_one: db_save_value_array[0],
+                  value_two: db_save_value_array[1],
+                  value_three: db_save_value_array[2],
+                  value_four: db_save_value_array[3],
+                  value_five: db_save_value_array[4],
+                })
+            }
+          }
+        }
+        if (request.input('autoJoin') == true && !getOne.autoJoin) {
+          const autoJoining = Attendee.create({
+            schedule_games_id: request.input('id'),
+            user_id: auth.user.id,
+            type: 1,
+          })
+        }
+        if (request.input('co_hosts') != null) {
+          const delete_co_hosts = await Database.table('co_hosts')
+            .where({
+              schedule_games_id: request.input('id'),
+            })
+            .delete()
+
+          var arrCo_hosts = request.input('co_hosts').split(',')
+
+          if (arrCo_hosts != '') {
+            for (var i = 0; i < arrCo_hosts.length; i++) {
+              const create_co_hosts = await CoHost.create({
+                schedule_games_id: request.input('id'),
+                user_id: arrCo_hosts[i],
+              })
+            }
+          }
+        }
+
+        if (request.input('tags') != null && request.input('tags').length > 0) {
+          var arrTags = JSON.parse(request.input('tags'))
+          //Delete all Tags
+          const delete_schedule_games_tags = await Database.table('schedule_games_tags')
+            .where({
+              schedule_games_id: request.input('id'),
+            })
+            .delete()
+          //Do a recalc
+          //Create tags
+          for (var i = 0; i < arrTags.length; i++) {
+            if (arrTags[i].game_tag_id == null) {
+              if (/['/.%#$;`\\]/.test(arrTags[i].value)) {
+                continue
+              }
+              let game_tags_Controller = new GameTagController()
+              const game_tag_id = await game_tags_Controller.store({ auth }, arrTags[i].value)
+
+              const create_arrTags = await ScheduleGamesTags.create({
+                schedule_games_id: request.input('id'),
+                game_tag_id: game_tag_id,
+              })
+            } else {
+              const create_arrTags = await ScheduleGamesTags.create({
+                schedule_games_id: request.input('id'),
+                game_tag_id: arrTags[i].game_tag_id,
+              })
+
+              const update_counter = await GameTags.query()
+                .where({ id: arrTags[i].game_tag_id })
+                .increment('counter', 1)
+            }
+          }
+        }
+        return updateScheduleGame
       } catch (error) {
         console.log(error)
       }
