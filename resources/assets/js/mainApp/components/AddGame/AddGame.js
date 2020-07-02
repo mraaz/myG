@@ -41,15 +41,26 @@ const AddGame = ({
 }) => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    const getInitialData = async function() {
+    const getInitialData_Tags = async function() {
       try {
         let results = await Schedule_Game_Tags()
         updateAdvancedSettings({ optionTags: results })
       } catch (error) {
-        // Error get option tags
+        console.log(error)
       }
     }
-    getInitialData()
+
+    const getInitialData_GameName = async function() {
+      try {
+        let results = await Game_name_values()
+        updateMainSettings({ gameTitlesList: results })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    getInitialData_Tags()
+    getInitialData_GameName()
   }, [])
 
   // Handlers
@@ -81,11 +92,6 @@ const AddGame = ({
     }))
   }
 
-  const onGameTitleChange = async (value) => {
-    const updatedGameList = await Game_name_values(value)
-    return updatedGameList
-  }
-
   const createOption = (label, game_names_id) => ({
     label,
     value: label,
@@ -97,15 +103,24 @@ const AddGame = ({
       toast.success(<Toast_style text={'Sorry mate! Skill length is too long.'} />)
       return
     }
-    setTimeout(() => {
-      const { optionTags, tags, newCreatedTags } = advancedSettingsState
-      const newOption = createOption(inputValue, null)
-      updateAdvancedSettings({
-        optionTags: [...optionTags, newOption],
-        tags: [...tags, newOption],
-        newCreatedTags: [...newCreatedTags, newOption.label],
-      })
-    }, 300)
+
+    const { optionTags, tags } = advancedSettingsState
+    const newOption = createOption(inputValue, null)
+    updateAdvancedSettings({
+      optionTags: [...optionTags, newOption],
+      tags: [...tags, newOption],
+    })
+  }
+
+  const handleCreateGame = (inputValue) => {
+    if (inputValue.length > 88) {
+      toast.success(<Toast_style text={'Sorry mate! Game Title is too long.'} />)
+      return
+    }
+
+    const { gameTitlesList, gameTitle } = mainSettingsState
+    const newOption = createOption(inputValue, null)
+    updateMainSettings({ gameTitlesList: [...gameTitlesList, newOption], gameTitle: newOption })
   }
 
   // api calls
@@ -117,6 +132,28 @@ const AddGame = ({
       } catch (error) {
         // Error get option tags
       }
+    }
+
+    if (inputValue.length > 88) {
+      toast.success(<Toast_style text={'Sorry mate! Game Tag is too long.'} />)
+      return
+    }
+    getInitialData(inputValue)
+  }
+
+  const getOptionsGames = (inputValue) => {
+    const getInitialData = async function(inputValue) {
+      try {
+        let results = await Game_name_values(inputValue)
+        updateMainSettings({ gameTitlesList: results })
+      } catch (error) {
+        // Error get option tags
+      }
+    }
+
+    if (inputValue.length > 88) {
+      toast.success(<Toast_style text={'Sorry mate! Game Title is too long.'} />)
+      return
     }
     getInitialData(inputValue)
   }
@@ -242,6 +279,13 @@ const AddGame = ({
             updateMainSettings({ autoAccept: value })
           }}
           labelText='Auto Accept Gamers (first-come, first-served)'
+        />
+        <MyGCheckbox
+          checked={mainSettingsState.autoJoinHost}
+          onClick={(value) => {
+            updateMainSettings({ autoJoinHost: value })
+          }}
+          labelText='Host attending?'
         />
       </div>
     )
@@ -376,23 +420,20 @@ const AddGame = ({
         </div>
         <div>
           <div className={styles.fieldTitle}>Game Title</div>
-          <MyGAsyncSelect
-            cacheOptions
-            defaultOptions
+          <MyGCreateableSelect
             isClearable
-            isValidNewOption={() => false}
-            onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
-            loadOptions={onGameTitleChange}
+            onCreateOption={handleCreateGame}
+            onInputChange={getOptionsGames}
             onChange={(value) => {
               updateMainSettings({ gameTitle: value })
               value && !value.additional_info && updateOptionalSettings({ serverRegion: null })
               updateState({ additional_info: value ? value.additional_info : false })
             }}
             value={mainSettingsState.gameTitle}
-            placeholder='Enter Game Title'
+            placeholder='Search, Select or create Game Title'
             options={mainSettingsState.gameTitlesList}
+            onKeyDown={Disable_keys}
           />
-
           <div className={styles.fieldTitle}>Start Time</div>
           <MyGDatePicker
             onChange={(value) => {

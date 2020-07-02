@@ -29,6 +29,7 @@ class ScheduleGamesSchema extends Schema {
       table.string('cron', 254).nullable()
       table.integer('occurrence').nullable().defaultTo(0)
       table.integer('repeatEvery').nullable().defaultTo(0)
+      table.boolean('autoJoinHost').defaultTo(1)
       table.timestamps(true,true)
     })
   }

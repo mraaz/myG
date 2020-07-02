@@ -69,9 +69,12 @@ class AttendeeController {
           }
         }
 
+        let activity_type = 11
+
         if (get_game_info.autoJoin == 1) {
           myType = 1
           return_msg = 'Joined'
+          activity_type = 21
         }
 
         const savemySpot = await Attendee.create({
@@ -87,9 +90,8 @@ class AttendeeController {
 
         let noti = new NotificationController_v2()
 
-        await noti.remove_schedule_game_attendees({ auth }, request.input('schedule_games_id'))
-
-        noti.addScheduleGame_attendance({ auth }, request.input('schedule_games_id'), get_game_info.user_id)
+        await noti.remove_schedule_game_attendees({ auth }, request.input('schedule_games_id'), activity_type)
+        noti.addScheduleGame_attendance({ auth }, request.input('schedule_games_id'), get_game_info.user_id, activity_type)
 
         const co_hosts = await Database.from('co_hosts')
           .where({ schedule_games_id: request.input('schedule_games_id') })

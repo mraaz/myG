@@ -95,9 +95,9 @@ export async function SubmitDataFunction(myG) {
   var tmp = uuidv1()
 
   try {
-    const post = await axios.post('/api/ScheduleGame/update', {
-      id: 726,
+    const post = await axios.post('/api/ScheduleGame', {
       game_name_box: myG.game_name_box.value,
+      game_names_id: myG.game_name_box.game_names_id,
       selected_region: myRegion,
       selected_experience: myExperience,
       start_date_time: myG.startDate.format('YYYY-MM-DD HH:mm:ssZ'),
@@ -122,6 +122,7 @@ export async function SubmitDataFunction(myG) {
       value_three: myG.value_three,
       value_four: myG.value_four,
       value_five: myG.value_five,
+      autoJoinHost: myG.autoJoinHost,
     })
 
     // clash_royale_trophies: myClash_royale_trophies,

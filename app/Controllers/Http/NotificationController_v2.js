@@ -458,6 +458,19 @@ class NotificationController_v2 {
         )
         .orderBy('notifications.created_at', 'desc')
         .paginate(request.input('counter'), set_limit)
+      const schedule_games_attendees_notify_only = await Database.from('notifications')
+        .innerJoin('users', 'users.id', 'notifications.user_id')
+        .where({ other_user_id: auth.user.id, activity_type: 21 })
+        .select(
+          'notifications.activity_type',
+          'users.alias',
+          'users.profile_img',
+          'users.id',
+          'notifications.created_at',
+          'notifications.read_status'
+        )
+        .orderBy('notifications.created_at', 'desc')
+        .paginate(request.input('counter'), set_limit)
 
       var singleArr = [
         ...allMylike_posts.data,
@@ -473,6 +486,7 @@ class NotificationController_v2 {
         ...group_member_kicked.data,
         ...chat_group_invite.data,
         ...user_ding.data,
+        ...schedule_games_attendees_notify_only.data,
       ]
 
       if (singleArr.length == 0) {
@@ -507,7 +521,7 @@ class NotificationController_v2 {
     try {
       const markAllNoti = await Notification.query()
         .where({ other_user_id: auth.user.id })
-        .whereIn('activity_type', [2, 3, 4, 5, 6, 7, 8, 9, 10, 14, 15, 16, 17, 19, 20])
+        .whereIn('activity_type', [2, 3, 4, 5, 6, 7, 8, 9, 10, 14, 15, 16, 17, 19, 20, 21])
         .update({ read_status: 1 })
       return 'Saved successfully'
     } catch (error) {
@@ -521,7 +535,7 @@ class NotificationController_v2 {
         .where({
           other_user_id: auth.user.id,
         })
-        .whereIn('activity_type', [2, 3, 4, 5, 6, 7, 8, 9, 10, 14, 15, 16, 17, 18, 19, 20])
+        .whereIn('activity_type', [2, 3, 4, 5, 6, 7, 8, 9, 10, 14, 15, 16, 17, 18, 19, 20, 21])
         .delete()
 
       return 'Saved successfully'
@@ -530,13 +544,13 @@ class NotificationController_v2 {
     }
   }
 
-  async addScheduleGame_attendance({ auth }, schedule_games_id, other_user_id) {
+  async addScheduleGame_attendance({ auth }, schedule_games_id, other_user_id, activity_type) {
     if (auth.user) {
       try {
         const addScheduleGame_attendance = await Notification.create({
           other_user_id: other_user_id,
           user_id: auth.user.id,
-          activity_type: 11,
+          activity_type: activity_type,
           schedule_games_id: schedule_games_id,
         })
         return 'Saved item'
@@ -548,13 +562,13 @@ class NotificationController_v2 {
     }
   }
 
-  async remove_schedule_game_attendees({ auth }, schedule_games_id) {
+  async remove_schedule_game_attendees({ auth }, schedule_games_id, activity_type) {
     if (auth.user) {
       try {
         const remove_schedule_game_attendees = await Database.table('notifications')
           .where({
             schedule_games_id: schedule_games_id,
-            activity_type: 11,
+            activity_type: activity_type,
           })
           .delete()
 

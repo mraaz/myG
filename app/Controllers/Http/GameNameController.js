@@ -11,7 +11,7 @@ class GameNameController {
       }
       try {
         const newGameName = await GameNames.create({
-          game_name: request.input('game_name'),
+          game_name: request.input('game_name').trim(),
           user_id: auth.user.id,
         })
 
@@ -131,6 +131,22 @@ class GameNameController {
         .limit(25)
 
       // WORKS!!!! const gameSearchResults = await Database.schema.raw("select * from game_names WHERE game_name LIKE " + "'%the\%Alien%'")
+
+      return {
+        gameSearchResults,
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async getTopGames({ auth, request, response }) {
+    try {
+      const gameSearchResults = await Database.table('game_names')
+        .leftJoin('game_name_fields', 'game_name_fields.game_names_id', 'game_names.id')
+        .select('game_names.*', 'game_name_fields.game_names_id as more_data')
+        .orderBy('counter', 'desc')
+        .limit(18)
 
       return {
         gameSearchResults,

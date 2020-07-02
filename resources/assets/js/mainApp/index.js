@@ -23,8 +23,6 @@ import { loadUserInfoToReduxStore } from '../common/user';
 import {
   Home,
   Profile,
-  ScheduleGames,
-  MyScheduledGames,
   LeftMenu,
   MessengerLoader,
   ChatUnreadMessages,
@@ -48,7 +46,6 @@ import {
   IndividualInvitation,
   MyFriends,
   IndividualFriend,
-  ScheduledGamePost,
   IndividualGamingExperience,
   MySettings,
   UploadPic,
@@ -60,7 +57,6 @@ import {
   EditEsportsExp,
   AdvancedSearch,
   IndividualPlayer,
-  PlayerList,
   GroupMain,
   ScheduledGamesApprovals,
   GroupHome,
@@ -324,18 +320,6 @@ class Layout extends Component {
 
                 <Route
                   exact
-                  path='/myScheduledGames'
-                  component={(props) => (
-                    <MyScheduledGames
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
                   path='/addScheduleGames'
                   component={(props) => (
                     <AddScheduleGames
@@ -423,30 +407,6 @@ class Layout extends Component {
                   path='/advancedSearch/:id/:table'
                   component={(props) => (
                     <AdvancedSearch
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/playerList/:schedule_games_GUID'
-                  component={(props) => (
-                    <PlayerList
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/archive_playerList/:archive_id'
-                  component={(props) => (
-                    <PlayerList
                       routeProps={props}
                       initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
                       key={Math.random()}

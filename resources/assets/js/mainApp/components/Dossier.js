@@ -32,7 +32,7 @@ class Dossier extends Component {
       first_name_box: '',
       last_name_box: '',
       country_: '',
-      region_: '',
+      regional_: '',
       slogan_box: '',
       bio_box: '',
       contact_info_box: '',
@@ -99,7 +99,7 @@ class Dossier extends Component {
 
   submitForm = async () => {
     this.state.country_ = ''
-    this.state.region_ = ''
+    this.state.regional_ = ''
 
     var relationship_status = null
 
@@ -139,7 +139,7 @@ class Dossier extends Component {
         if (i == arrTags.length - 1) {
           this.state.country_ = arrTags[i].trim()
         } else {
-          this.state.region_ += arrTags[i] + ','
+          this.state.regional_ += arrTags[i] + ','
         }
       }
     }
@@ -156,7 +156,7 @@ class Dossier extends Component {
         slogan: this.state.slogan_box,
         bio: this.state.bio_box,
         country: this.state.country_,
-        region: this.state.region_,
+        regional: this.state.region_,
         contact_info: this.state.contact_info_box,
         relationship_status: relationship_status,
       })
@@ -174,12 +174,12 @@ class Dossier extends Component {
     }
 
     if (this.state.userProfile !== undefined && this.state.scriptLoader_loading) {
-      const { country_, region_ } = this.state
+      const { country_, regional_ } = this.state
       const {
         first_name,
         last_name,
         country,
-        region,
+        regional,
         profile_img,
         profile_bg,
         slogan,
@@ -190,8 +190,8 @@ class Dossier extends Component {
       if (this.state.intial_trigger) {
         this.setState({ first_name_box: first_name })
         this.setState({ last_name_box: last_name })
-        this.setState({ address: region + country })
-        this.setState({ final_add: region + country })
+        this.setState({ address: regional + country })
+        this.setState({ final_add: regional + country })
         this.setState({ slogan_box: slogan })
         this.setState({ bio_box: bio })
         this.setState({ relationship_status_box: relationship_status })

@@ -90,7 +90,6 @@ Route.post('/api/GameExperiences/:id/:game_id', 'GameExperienceController.update
 Route.get('/api/GameExperiences/:id/:game_id', 'GameExperienceController.show_Game')
 Route.post('/api/GameExperiences/gameExpSearchResults', 'GameExperienceController.gameExpSearchResults')
 
-Route.post('/api/ScheduleGame/test', 'ScheduleGameController.test')
 Route.get('/api/ScheduleGame/additional_game_info/:id', 'ScheduleGameController.additional_game_info')
 
 Route.post('/api/ScheduleGame', 'ScheduleGameController.store')
@@ -122,6 +121,7 @@ Route.get('/api/GameNames', 'GameNameController.show')
 Route.get('/api/GameName/:name', 'GameNameController.show_one')
 Route.post('/api/GameNames', 'GameNameController.store')
 Route.get('/api/GameNames/:int/gameSearchResults', 'GameNameController.gameSearchResults')
+Route.get('/api/GameNames/getTopGames', 'GameNameController.getTopGames')
 
 Route.get('/api/Tags', 'TagController.show')
 Route.post('/api/Tags/getTagsforGames', 'TagController.getTagsforGames')
