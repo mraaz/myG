@@ -10,6 +10,7 @@ class Import_game_names_fields_data_Schema extends Schema {
 
     .raw("insert into game_name_fields(game_names_id, in_game_fields,in_game_field_placeholders, in_game_field_types, in_game_field_labels, in_game_field_values, created_at, updated_at) values (1015, '{\"value_one\": \"clash_royale_trophies\"}','{\"clash_royale_trophies\": \"Please select your trophy range\"}','{\"clash_royale_trophies\": \"Single\"}','{\"clash_royale_trophies\": \"Trophies\"}', '{\"clash_royale_trophies\": \"1000, 2000, 3000, 4000, 5000, competitive\"}', '1988-08-08', '1988-08-08');")
   }
+  //insert into friends (user_id, friend_id) values (100,412);
 
   down () {
 

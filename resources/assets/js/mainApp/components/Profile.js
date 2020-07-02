@@ -4,7 +4,7 @@ import axios from 'axios'
 import IndividualGamingExperience from './IndividualGamingExperience'
 import IndividualEsportsExperience from './IndividualEsportsExperience'
 import FileOpenModal from './FileOpenModal'
-import SweetAlert from './common/MyGSweetAlert';
+import SweetAlert from './common/MyGSweetAlert'
 import { setAsFriendRedux, removeFriendRedux } from '../../common/friend'
 
 export default class Profile extends Component {
@@ -373,7 +373,7 @@ export default class Profile extends Component {
     if (text == 'true') {
       const { match } = this.props.routeProps
       try {
-        removeFriendRedux(match.params.id);
+        removeFriendRedux(match.params.id)
         const userProfile = axios.get(`/api/user/${match.params.id}/unfriend`)
         this.setState({
           friendTxt: 'Add Friend',
@@ -418,7 +418,7 @@ export default class Profile extends Component {
           first_name,
           last_name,
           country,
-          region,
+          regional,
           profile_img,
           profile_bg,
           slogan,
@@ -518,7 +518,7 @@ export default class Profile extends Component {
                   {show_location && (
                     <div className='location'>
                       <i className='fas fa-circle'></i>&nbsp;
-                      {`${region}`}&nbsp;{`${country}`}
+                      {`${regional}`}&nbsp;{`${country}`}
                     </div>
                   )}
                   <div className='alias'>({`${this.state.userProfile.alias}`})</div>

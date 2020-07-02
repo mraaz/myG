@@ -66,7 +66,7 @@ class UserController {
             slogan: request.input('slogan'),
             bio: request.input('bio'),
             country: request.input('country'),
-            region: request.input('region'),
+            regional: request.input('regional'),
             contact_info: request.input('contact_info'),
             relationship_status: request.input('relationship_status'),
           })
@@ -241,8 +241,8 @@ class UserController {
         await User.query()
           .where('id', '=', auth.user.id)
           .update({
-            notification_sounds_disabled: request.only('disabled').disabled
-          });
+            notification_sounds_disabled: request.only('disabled').disabled,
+          })
       } catch (error) {
         console.log(error)
       }
@@ -257,8 +257,8 @@ class UserController {
         await User.query()
           .where('id', '=', auth.user.id)
           .update({
-            chat_auto_self_destruct: request.only('enabled').enabled
-          });
+            chat_auto_self_destruct: request.only('enabled').enabled,
+          })
       } catch (error) {
         console.log(error)
       }
@@ -266,7 +266,6 @@ class UserController {
       return 'You are not Logged In!'
     }
   }
-
 }
 
 module.exports = UserController

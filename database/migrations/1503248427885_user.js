@@ -13,7 +13,7 @@ class UserSchema extends Schema {
       table.string('email', 88).notNullable().unique()
       table.string('password', 60).nullable()
       table.string('country', 254).nullable().defaultTo("")
-      table.string('region', 254).nullable().defaultTo("")
+      table.string('regional', 254).nullable().defaultTo("")
       table.string('profile_img', 254).nullable()
       table.string('profile_bg', 254).nullable()
       table.string('slogan', 254).nullable().defaultTo("")

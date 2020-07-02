@@ -29,22 +29,13 @@ export default class IndividualGroup extends Component {
     }
   }
 
-  // showScheduledGamePost = async (item, index) => {
-  //   try {
-  //     const onescheduledGames = await axios.get(`/api/ScheduleGame/filtered_by_one/${item.schedule_games_id}`)
-  //     return <ScheduledGamePost schedule_game={onescheduledGames.data.latestScheduledGames[0]} key={index} user={this.props.initialData} />
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-
   fetchMoreData = () => {
     if (this.state.myPosts.length > 0) {
       window.scrollTo(0, document.documentElement.offsetHeight - 4000)
     }
     const self = this
 
-    const getPosts = async function () {
+    const getPosts = async function() {
       try {
         const myPosts = await axios.get(`/api/get_group_posts/${self.props.groups_id.params.id}/${self.state.counter}`)
 

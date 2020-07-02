@@ -43,7 +43,7 @@ class ScheduleGameController {
 
     if (auth.user) {
       try {
-        var gameNameID = null
+        let gameNameID = null
         const getGameName = await Database.from('game_names').where({
           game_name: request.input('game_name_box'),
         })
@@ -92,6 +92,7 @@ class ScheduleGameController {
           cron: request.input('cron'),
           occurrence: request.input('occurrence'),
           repeatEvery: request.input('repeatEvery'),
+          autoJoinHost: request.input('autoJoinHost'),
         })
 
         if (
@@ -176,7 +177,7 @@ class ScheduleGameController {
             }
           }
         }
-        if (request.input('autoJoin') == true) {
+        if (request.input('autoJoinHost') == true) {
           const autoJoining = Attendee.create({
             schedule_games_id: newScheduleGame.id,
             user_id: auth.user.id,
@@ -315,6 +316,7 @@ class ScheduleGameController {
             cron: request.input('cron'),
             occurrence: request.input('occurrence'),
             repeatEvery: request.input('repeatEvery'),
+            autoJoinHost: request.input('autoJoinHost'),
           })
 
         if (
@@ -399,7 +401,8 @@ class ScheduleGameController {
             }
           }
         }
-        if (request.input('autoJoin') == true && !getOne.autoJoin) {
+
+        if (request.input('autoJoinHost') == true && !getOne.autoJoinHost) {
           const autoJoining = Attendee.create({
             schedule_games_id: request.input('id'),
             user_id: auth.user.id,
@@ -1000,8 +1003,7 @@ class ScheduleGameController {
 
               if (request.input('experience') != null) builder.where('experience', request.input('experience'))
 
-              //RAAZ UNDO THIS AFTER VIEW GAME IS COMPLETED BY NITIN!!!! https://github.com/mraaz/myGame/issues/274
-              //if (request.input('start_date_time') != null) builder.where('start_date_time', '<=', request.input('start_date_time'))
+              if (request.input('start_date_time') != null) builder.where('start_date_time', '<=', request.input('start_date_time'))
 
               if (request.input('end_date_time') != null) builder.where('end_date_time', '>=', request.input('end_date_time'))
 
@@ -1051,9 +1053,8 @@ class ScheduleGameController {
 
             if (request.input('experience') != null) builder.where('experience', request.input('experience'))
 
-            //RAAZ UNDO THIS AFTER VIEW GAME IS COMPLETED BY NITIN!!!! https://github.com/mraaz/myGame/issues/274
-            // if (request.input('start_date_time') != null)
-            //   builder.where('schedule_games.start_date_time', '<=', request.input('start_date_time'))
+            if (request.input('start_date_time') != null)
+              builder.where('schedule_games.start_date_time', '<=', request.input('start_date_time'))
 
             if (request.input('end_date_time') != null) builder.where('schedule_games.end_date_time', '>=', request.input('end_date_time'))
 
@@ -1268,7 +1269,7 @@ class ScheduleGameController {
         .leftJoin('schedule_games_transactions', 'schedule_games_transactions.schedule_games_id', 'schedule_games.id')
         .where('schedule_games.schedule_games_GUID', '=', request.params.schedule_games_GUID)
         .select('*', 'users.id as user_id', 'schedule_games.id as id', 'schedule_games.created_at', 'schedule_games.updated_at')
-
+      console.log(latestScheduledGames)
       if (!latestScheduledGames.length) {
         return
       }

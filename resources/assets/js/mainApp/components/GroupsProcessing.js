@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 
-import ScheduledGamePost from './ScheduledGamePost'
+import ScheduleGamesView from './scheduledGames/ScheduleGames'
 import IndividualPost from './IndividualPost'
 
 export default class GroupsProcessing extends Component {
   constructor() {
     super()
-    this.state = { scheduledGamePost: false }
+    this.state = { scheduledGameView: false }
   }
 
   componentDidMount() {
@@ -20,7 +20,7 @@ export default class GroupsProcessing extends Component {
           if (onescheduledGames.data.latestScheduledGames.length != 0) {
             self.setState({
               schedule_games: onescheduledGames.data.latestScheduledGames[0],
-              scheduledGamePost: true,
+              scheduledGameView: true,
             })
           }
         } catch (error) {
@@ -32,8 +32,8 @@ export default class GroupsProcessing extends Component {
   }
 
   showPost = () => {
-    if (this.state.scheduledGamePost) {
-      return <ScheduledGamePost schedule_game={this.state.schedule_games} key={this.props.post.id} user={this.props.user} />
+    if (this.state.scheduledGameView) {
+      return <ScheduleGamesView schedule_game={this.state.schedule_games} key={this.props.post.id} user={this.props.user} />
     } else {
       return <IndividualPost post={this.props.post} key={this.props.post.id} user={this.props.user} />
     }

@@ -22,13 +22,22 @@ const createOption_HashTags = (label, hash_tag_id) => ({
 })
 
 export async function Game_name_values(inputValue) {
-  inputValue = inputValue.trimStart()
+  let getGameName = ''
+
   if (inputValue == '' || inputValue == undefined) {
-    return []
+    getGameName = await axios.get('/api/GameNames/getTopGames')
+  } else {
+    inputValue = inputValue.trimStart()
+    getGameName = await axios.get(`/api/GameNames/${inputValue}/gameSearchResults`)
   }
   try {
-    const getGameName = await axios.get(`/api/GameNames/${inputValue}/gameSearchResults`)
-    var results = getGameName.data.gameSearchResults.filter((i) => i.game_name.toLowerCase().includes(inputValue.toLowerCase()))
+    let results = []
+
+    if (inputValue != '' && inputValue != undefined) {
+      results = getGameName.data.gameSearchResults.filter((i) => i.game_name.toLowerCase().includes(inputValue.toLowerCase()))
+    } else {
+      results = getGameName.data.gameSearchResults
+    }
     var newArr = []
     var i, newOption
     if (results.length != 0) {
@@ -47,7 +56,6 @@ export async function Game_name_values(inputValue) {
     } else {
       return []
     }
-
     return newArr
   } catch (error) {
     console.log(error)

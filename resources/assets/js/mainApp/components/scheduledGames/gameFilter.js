@@ -21,35 +21,6 @@ import {
   properCase,
 } from './option'
 
-function isValidNewOption(inputValue, selectValue, selectOptions) {
-  return !(
-    !inputValue ||
-    selectValue.some((option) => compareOption(inputValue, option)) ||
-    selectOptions.some((option) => compareOption(inputValue, option))
-  )
-}
-
-const compareOption = (inputValue, option) => {
-  const candidate = typeof inputValue === 'string' ? inputValue.toLowerCase() : inputValue
-  if (typeof option.value === 'string') {
-    if (option.value.toLowerCase() === candidate) {
-      return true
-    }
-  }
-  if (typeof option.label === 'string') {
-    if (option.label.toLowerCase() === candidate) {
-      return true
-    }
-  }
-  return option.value === candidate || option.label === candidate
-}
-
-const createOption = (label: string, game_names_id: string) => ({
-  label,
-  value: label,
-  game_names_id,
-})
-
 const queryMapping = {
   0: 'one',
   1: 'two',
@@ -109,9 +80,8 @@ export default class ScheduleGames extends Component {
         console.log(error)
       }
     }
-    getInitialData()
-
     this.getFilter()
+    getInitialData()
   }
 
   handleDropDownChange = async (entered_name, name) => {
@@ -148,7 +118,6 @@ export default class ScheduleGames extends Component {
       }
       this.filterGroup = { ...keys }
     }
-    console.log("filterValueArray['game_name']  ", filterValueArray['game_name'])
 
     this.setState(
       {
@@ -638,13 +607,13 @@ export default class ScheduleGames extends Component {
                     <AsyncCreatableSelect
                       cacheOptions
                       defaultOptions
-                      isValidNewOption={isValidNewOption}
+                      isValidNewOption={() => false}
                       loadOptions={this.getOptions}
                       onChange={(data) => this.handleDropDownChange(data, k)}
                       isClearable
                       value={value}
                       className='viewGame__name'
-                      placeholder={this.filterGroup[k]}
+                      placeholder='Search or Select Game Title'
                       onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
                       onKeyDown={this.onKeyDown}
                       isSearchable={true}

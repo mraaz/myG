@@ -28,7 +28,6 @@ const AddGameContainer = () => {
     description: '',
     acceptMessage: '',
     optionTags: '',
-    newCreatedTags: '',
   })
   const [mainSettingsState, updateMainSettingsState] = useState({
     scheduledGameId: null,
@@ -39,11 +38,12 @@ const AddGameContainer = () => {
     endTime: null,
     isEndGameFieldSelected: false,
     isRepeatFieldSelected: false,
-    numberOfPlayers: -42,
+    numberOfPlayers: 0,
     isUnlimitedPlayers: true,
     isCommentsAllowed: true,
     isPublicGame: true,
     autoAccept: true,
+    autoJoinHost: true,
   })
   const [optionalFieldsState, updateOptionalFieldsState] = useState({
     modalRank: null,
@@ -137,10 +137,10 @@ const AddGameContainer = () => {
         autoJoin: mainSettingsState.autoAccept,
         coHosts: advancedSettingsState.coHosts,
         tags: advancedSettingsState.tags,
-        newCreatedTags: advancedSettingsState.newCreatedTags,
         cron: mainSettingsState.cron,
         occurrence: mainSettingsState.occurrence,
         repeatEvery: mainSettingsState.repeatEvery,
+        autoJoinHost: mainSettingsState.autoJoinHost,
       })
       updateMainSettingsState((currentState) => ({
         ...currentState,
