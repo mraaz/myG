@@ -64,12 +64,7 @@ const SearchHeader = Loadable({
     return null
   },
 })
-const ComposeSection = Loadable({
-  loader: () => import('./components/ComposeSection'),
-  loading: function() {
-    return null
-  },
-})
+
 const Posts = Loadable({
   loader: () => import('./components/Posts'),
   loading: function() {
@@ -278,7 +273,6 @@ export {
   GuestLink,
   EncryptionParaphraseRegistration,
   SearchHeader,
-  ComposeSection,
   Posts,
   LoadingComp,
   AddScheduleGames,
@@ -324,7 +318,6 @@ export {
 // import ChatUnreadMessages from './components/Messenger/ChatUnreadMessages'
 // import GuestLink from './components/Guest/Link'
 // import SearchHeader from './components/SearchHeader'
-// import ComposeSection from './components/ComposeSection'
 // import Posts from './components/Posts'
 // import LoadingComp from './components/LoadingComp'
 // import Dossier from './components/Dossier'

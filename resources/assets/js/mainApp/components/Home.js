@@ -4,7 +4,6 @@
  * Email : nitin.1992tyagi@gmail.com
  */
 import React, { Component } from 'react'
-// import ComposeSection from './ComposeSection'
 import ComposeSection from './ComposeSection_v2'
 import Posts from './Posts'
 import Notifications from './Notifications'
@@ -79,7 +78,6 @@ export default class Home extends Component {
       return (
         <div className='content-area' ref={this.contentAreaRef} style={{ height: '100vh', overflow: 'scroll' }}>
           <AnalyticsBox />
-          {/* <ComposeSection initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData} /> */}
           <div className='links' ref={this.navRef}>
             <div className={`${tabName == 'home' ? 'active' : ''}`} onClick={(e) => this.tabToggle('home')}>
               Home

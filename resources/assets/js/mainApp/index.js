@@ -29,7 +29,6 @@ import {
   EncryptionParaphraseRegistration,
   GuestLink,
   SearchHeader,
-  ComposeSection,
   Posts,
   LoadingComp,
   AddScheduleGames,
