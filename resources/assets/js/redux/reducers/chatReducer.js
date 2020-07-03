@@ -43,7 +43,6 @@ export default function reducer(
     case 'PREPARE_MESSENGER_FULFILLED': {
       logger.log('CHAT', `Redux -> Messenger Ready (Chat): `, action.payload)
       const { userId, alias } = action.meta
-      const chats = prepareChats(action.payload.chats || [], state.chats || [])
       const contacts = action.payload.contacts || []
       const blockedUsers = action.payload.blockedUsers || []
       const settings = action.payload.settings || {}
@@ -53,7 +52,6 @@ export default function reducer(
         preparingMessenger: false,
         userId,
         alias,
-        chats,
         contacts,
         blockedUsers,
         ...settings,

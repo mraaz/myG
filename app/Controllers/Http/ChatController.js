@@ -8,8 +8,8 @@ class ChatController {
   async prepareMessenger({ auth, response }) {
     const requestingUserId = auth.user.id
     if (!requestingUserId) throw new Error('Auth Error')
-    const { chats, contacts, games, status, blockedUsers, settings } = await MessengerRepository.prepareMessenger({ requestingUserId });
-    return response.send({ chats, contacts, games, status, blockedUsers, settings })
+    const { contacts, games, status, blockedUsers, settings } = await MessengerRepository.prepareMessenger({ requestingUserId });
+    return response.send({ contacts, games, status, blockedUsers, settings })
   }
 
   async fetchChats({ auth, request, response }) {
