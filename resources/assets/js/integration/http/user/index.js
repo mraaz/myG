@@ -41,9 +41,8 @@ export function updateGameIcon(gameId, icon) {
   return axios.put(`/api/user_chat/game/${gameId}/icon`, { icon }).then(response => response.data);
 }
 
-export function fetchContacts(limit) {
+export function fetchContacts() {
   logger.log('USER', 'HTTP', `Fetching Contacts`);
-  if (limit) return axios.get(`/api/user_chat/contact?limit=10`).then(response => response.data);
   return axios.get(`/api/user_chat/contact/`).then(response => response.data);
 }
 

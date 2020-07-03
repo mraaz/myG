@@ -42,7 +42,7 @@ const MAXIMUM_GROUP_SIZE = 37;
 class ChatRepository {
   async fetchChats({ requestingUserId, onlyGroups }) {
     const chatsQuery = Database
-      .select('user_chats.chat_id', 'user_chats.user_id', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chats.game_message', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chats.game_message', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .leftJoin('chat_last_reads', function () { this.on('chat_last_reads.chat_id', 'user_chats.chat_id').andOn('chat_last_reads.user_id', 'user_chats.user_id') })
@@ -63,7 +63,6 @@ class ChatRepository {
       lastCleared: chat.last_cleared_message_id,
       icon: chat.icon,
       title: chat.title,
-      lastMessage: chat.last_message,
       publicKey: chat.public_key,
       contacts: chat.contacts,
       guests: chat.guests,
@@ -78,7 +77,7 @@ class ChatRepository {
 
   async fetchChat({ requestingUserId, requestedChatId }) {
     const chat = (await Database
-      .select('user_chats.chat_id', 'user_chats.user_id', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chats.game_message', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chats.game_message', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .leftJoin('chat_last_reads', function () { this.on('chat_last_reads.chat_id', 'user_chats.chat_id').andOn('chat_last_reads.user_id', 'user_chats.user_id') })
@@ -104,7 +103,6 @@ class ChatRepository {
       lastReads: lastReadsObject,
       icon: chat.icon,
       title: chat.title,
-      lastMessage: chat.last_message,
       publicKey: chat.public_key,
       contacts: chat.contacts,
       guests: chat.guests,
@@ -464,7 +462,7 @@ class ChatRepository {
 
   async searchGroup({ requestingUserId, groupName, requestedPage }) {
     const query = Database
-      .select('user_chats.chat_id', 'user_chats.user_id', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chats.game_message')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chats.game_message')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .where('user_chats.user_id', requestingUserId)
@@ -487,7 +485,6 @@ class ChatRepository {
       lastCleared: chat.last_cleared_message_id,
       icon: chat.icon,
       title: chat.title,
-      lastMessage: chat.last_message,
       publicKey: chat.public_key,
       contacts: chat.contacts,
       guests: chat.guests,
@@ -765,7 +762,6 @@ class ChatRepository {
       individualGameId: chat.individual_game_id,
       icon: chat.icon,
       title: chat.title,
-      lastMessage: chat.last_message,
       publicKey: chat.public_key,
       contacts: chat.contacts,
       guests: chat.guests,
@@ -885,7 +881,6 @@ class ChatRepository {
       individualGameId: chat.individual_game_id,
       icon: chat.icon,
       title: chat.title,
-      lastMessage: chat.last_message,
       publicKey: chat.public_key,
       contacts: chat.contacts,
       guests: chat.guests,

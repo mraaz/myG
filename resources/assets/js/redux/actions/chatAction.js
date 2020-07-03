@@ -30,7 +30,7 @@ import {
 } from '../../integration/http/chat'
 import { fetchGroupPrivateKeyRequests } from '../../integration/http/guest'
 import { fetchGames, fetchContact, prepareMessenger } from '../../integration/http/user'
-import { generateKeys, deserializeKey, getPublicKey } from '../../integration/encryption'
+import { prepareEncryption } from '../../integration/encryption'
 
 export function onNewChatAction(chat, userId) {
   return {
@@ -179,19 +179,10 @@ export function updateChatStateAction(chatId, state) {
 }
 
 export function prepareMessengerAction(userId, alias, pin, privateKey, publicKey) {
-  const messengerRequest = prepareMessenger()
-  let encryptionRequest = Promise.resolve({})
-  if (privateKey) privateKey = deserializeKey(privateKey)
-  if (privateKey) encryptionRequest = Promise.resolve({ encryption: { pin, privateKey, publicKey: getPublicKey(privateKey) } })
-  else if (pin) encryptionRequest = generateKeys(pin)
-  else if (!publicKey) encryptionRequest = generateKeys()
-  const requests = [messengerRequest, encryptionRequest]
+  const requests = [prepareMessenger(), prepareEncryption(pin, privateKey, publicKey)]
   return {
     type: 'PREPARE_MESSENGER',
-    payload: Promise.all(requests).then(([messenger, encryption]) => ({
-      ...messenger,
-      ...encryption,
-    })),
+    payload: Promise.all(requests).then(([messenger, encryption]) => ({ ...messenger, ...encryption })),
     meta: { userId, alias },
   }
 }

@@ -12,7 +12,7 @@ export default class General extends React.Component {
 
   state = {
     dividerExpanded: {
-      friends: false,
+      friends: true,
       groups: false,
     },
   }

@@ -16,7 +16,6 @@ class Chat {
     this.lastReads = data.lastReads
     this.icon = forceString(data.icon)
     this.title = forceString(data.title)
-    this.lastMessage = forceString(data.lastMessage)
     this.publicKey = forceString(data.publicKey)
     this.contacts = forceArray(data.contacts)
     this.guests = forceArray(data.guests)

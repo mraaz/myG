@@ -30,7 +30,7 @@ class GuestController {
 
   async fetchMessages({ params, request, response }) {
     const requestedChatId = params.chatId
-    const requestedPage = request.only(['page']).page || 1
+    const requestedPage = request.only(['page']).page || 0
     log('GUEST', `Guest requesting Messages for Chat ${requestedChatId}`)
     const { messages } = await GuestRepository.fetchMessages({ requestedChatId, requestedPage })
     return response.send({ messages })

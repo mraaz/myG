@@ -50,19 +50,41 @@ class UserRepository {
     return new DefaultSchema({ success: true });
   }
 
+  async fetchUserGames({ requestingUserId }) {
+    const query = Database
+    .select('game_experiences.user_id', 'game_names.user_id as owner_id', 'game_names_id', 'game_name', 'game_img')
+    .from('game_experiences')
+    .leftJoin('game_names', 'game_names.id', 'game_experiences.game_names_id')
+    .where('game_experiences.user_id', requestingUserId)
+    .union([
+      Database
+        .select('esports_experiences.user_id', 'game_names.user_id as owner_id', 'game_names_id', 'game_name', 'game_img')
+        .from('esports_experiences')
+        .leftJoin('game_names', 'game_names.id', 'esports_experiences.game_names_id')
+        .where('esports_experiences.user_id', requestingUserId)
+    ]);
+    const rawGames = await query;
+    const games = rawGames.map(game => new GameSchema({ gameId: game.game_names_id, userId: game.user_id, ownerId: game.owner_id, name: game.game_name, icon: game.game_img }));
+    const favoriteGamesRaw = await FavoriteGame.query().where('user_id', requestingUserId).fetch();
+    const favoriteGames = (favoriteGamesRaw && favoriteGamesRaw.toJSON()) || [];
+    games.forEach(game => game.isFavorite = favoriteGames.find(favorite => favorite.game_names_id === game.gameId));
+    return { games };
+  }
+
   async fetchGames({ requestingUserIds }) {
-    const rawGames = await Database
-      .select('game_experiences.user_id', 'game_names.user_id as owner_id', 'game_names_id', 'game_name', 'game_img')
-      .from('game_experiences')
-      .leftJoin('game_names', 'game_names.id', 'game_experiences.game_names_id')
-      .where('game_experiences.user_id', 'in', requestingUserIds)
-      .union([
-        Database
-          .select('esports_experiences.user_id', 'game_names.user_id as owner_id', 'game_names_id', 'game_name', 'game_img')
-          .from('esports_experiences')
-          .leftJoin('game_names', 'game_names.id', 'esports_experiences.game_names_id')
-          .where('esports_experiences.user_id', 'in', requestingUserIds)
-      ]);
+    const query = Database
+    .select('game_experiences.user_id', 'game_names.user_id as owner_id', 'game_names_id', 'game_name', 'game_img')
+    .from('game_experiences')
+    .leftJoin('game_names', 'game_names.id', 'game_experiences.game_names_id')
+    .where('game_experiences.user_id', 'in', requestingUserIds)
+    .union([
+      Database
+        .select('esports_experiences.user_id', 'game_names.user_id as owner_id', 'game_names_id', 'game_name', 'game_img')
+        .from('esports_experiences')
+        .leftJoin('game_names', 'game_names.id', 'esports_experiences.game_names_id')
+        .where('esports_experiences.user_id', 'in', requestingUserIds)
+    ]);
+    const rawGames = await query;
     const games = rawGames.map(game => new GameSchema({ gameId: game.game_names_id, userId: game.user_id, ownerId: game.owner_id, name: game.game_name, icon: game.game_img }));
     const byUserIds = requestingUserIds.map(userId => ({ userId, games: this._uniqBy(games.filter(game => game.userId === userId), game => game.gameId) }));
     const gameMap = {};
@@ -97,12 +119,11 @@ class UserRepository {
     return new DefaultSchema({ success: true });
   }
 
-  async fetchContacts({ requestingUserId, limit }) {
+  async fetchContacts({ requestingUserId }) {
     const query = Database.from('friends')
       .innerJoin('users', 'users.id', 'friends.friend_id')
       .where({ user_id: requestingUserId })
       .orderBy('friends.created_at', 'desc');
-    if (limit) query.limit(limit);
     const friends = await query;
     const contacts = friends.map(friend => new ContactSchema({
       contactId: friend.friend_id,
@@ -112,9 +133,6 @@ class UserRepository {
       lastSeen: friend.last_seen,
       publicKey: friend.public_key,
     }));
-    const requestingUserIds = contacts.map(contact => contact.contactId);
-    const { games } = await this.fetchGames({ requestingUserIds });
-    contacts.forEach(contact => contact.games = games[contact.contactId] || []);
     return { contacts };
   }
 

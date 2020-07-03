@@ -8,8 +8,8 @@ class ChatController {
   async prepareMessenger({ auth, response }) {
     const requestingUserId = auth.user.id
     if (!requestingUserId) throw new Error('Auth Error')
-    const { status, blockedUsers, settings } = await MessengerRepository.prepareMessenger({ requestingUserId });
-    return response.send({ status, blockedUsers, settings })
+    const { chats, contacts, games, status, blockedUsers, settings } = await MessengerRepository.prepareMessenger({ requestingUserId });
+    return response.send({ chats, contacts, games, status, blockedUsers, settings })
   }
 
   async fetchChats({ auth, request, response }) {
@@ -135,8 +135,8 @@ class ChatController {
     const requestingUserId = auth.user.id
     if (!requestingUserId) throw new Error('Auth Error')
     const groupName = request.only('groupName').groupName
-    const requestedPage = request.only(['page']).page || 1
-    log('CHAT', `User ${requestingUserId} searching for Groups for page ${requestedPage || 1} with ${groupName}`)
+    const requestedPage = request.only(['page']).page || 0
+    log('CHAT', `User ${requestingUserId} searching for Groups for page ${requestedPage || 0} with ${groupName}`)
     const { groups } = await ChatRepository.searchGroup({ requestingUserId, groupName, requestedPage })
     return response.send({ groups })
   }
@@ -144,7 +144,7 @@ class ChatController {
   async fetchChatNotifications({ auth, request, response }) {
     const requestingUserId = auth.user.id
     if (!requestingUserId) throw new Error('Auth Error')
-    const requestedPage = request.only(['page']).page || 1
+    const requestedPage = request.only(['page']).page || 0
     log('CHAT', `User ${requestingUserId} requesting Chat Notifications`)
     const { notifications } = await ChatRepository.fetchChatNotifications({ requestingUserId, requestedPage })
     return response.send({ notifications })
@@ -206,7 +206,7 @@ class ChatController {
     const requestingUserId = auth.user.id
     if (!requestingUserId) throw new Error('Auth Error')
     const requestedChatId = params.chatId
-    const requestedPage = request.only(['page']).page || 1
+    const requestedPage = request.only(['page']).page || 0
     log('CHAT', `User ${requestingUserId} requesting Messages for Chat ${requestedChatId}`)
     const { messages } = await ChatRepository.fetchMessages({ requestingUserId, requestedChatId, requestedPage })
     return response.send({ messages })

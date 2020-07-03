@@ -2,7 +2,6 @@ import {
   favoriteGame,
   unfavoriteGame,
   updateGameIcon,
-  fetchContacts,
   fetchContact,
   fetchStatus,
   fetchSettings,
@@ -49,13 +48,6 @@ export function updateGameIconAction(gameId, icon) {
     type: 'UPDATE_GAME_ICON',
     payload: updateGameIcon(gameId, icon),
     meta: { gameId, icon },
-  }
-}
-
-export function fetchContactsAction() {
-  return {
-    type: 'FETCH_CONTACTS',
-    payload: fetchContacts(),
   }
 }
 

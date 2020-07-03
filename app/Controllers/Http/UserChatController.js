@@ -66,12 +66,11 @@ class UserChatController {
     return response.send({ success, error })
   }
 
-  async fetchContacts({ auth, request, response }) {
+  async fetchContacts({ auth, response }) {
     const requestingUserId = auth.user.id
     if (!requestingUserId) throw new Error('Auth Error')
-    const limit = request.only(['limit']).limit;
     log('USER', `User ${requestingUserId} requesting Contacts`)
-    const { contacts } = await UserRepository.fetchContacts({ requestingUserId, limit })
+    const { contacts } = await UserRepository.fetchContacts({ requestingUserId })
     return response.send({ contacts })
   }
 

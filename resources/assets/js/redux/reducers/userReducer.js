@@ -33,14 +33,18 @@ export default function reducer(
     case 'PREPARE_MESSENGER_FULFILLED': {
       logger.log('USER', `Redux -> Messenger Ready (User): `, action.payload)
       const { userId, alias } = action.meta
+      const contacts = action.payload.contacts || []
+      const games = action.payload.games || []
       const { value: currentStatus, locked: isStatusLocked } = action.payload.status
       const status = currentStatus === 'offline' && !isStatusLocked ? 'online' : currentStatus
       return {
         ...state,
-        status,
-        isStatusLocked,
         userId,
         alias,
+        contacts,
+        games,
+        status,
+        isStatusLocked,
       }
     }
 

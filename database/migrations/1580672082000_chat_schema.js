@@ -12,7 +12,6 @@ class ChatSchema extends Schema {
       table.text('icon')
       table.text('game_message')
       table.string('title', 64).index()
-      table.text('last_message')
       table.text('public_key')
       table.text('contacts').notNullable().defaultTo('[]')
       table.text('guests').notNullable().defaultTo('[]')
