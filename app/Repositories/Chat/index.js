@@ -40,7 +40,6 @@ const { log } = require('../../Common/logger');
 const MAXIMUM_GROUP_SIZE = 37;
 
 class ChatRepository {
-
   async fetchChats({ requestingUserId, onlyGroups }) {
     const chatsQuery = Database
       .select('user_chats.chat_id', 'user_chats.user_id', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.last_message', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chats.game_message', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')

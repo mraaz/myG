@@ -42,28 +42,18 @@ export default function reducer(
 
     case 'PREPARE_MESSENGER_FULFILLED': {
       logger.log('CHAT', `Redux -> Messenger Ready (Chat): `, action.payload)
-      const { userId } = action.meta
-      const chats = action.payload.chats.map((chat) => {
-        const previousChat = state.chats.find((candidate) => candidate.chatId === chat.chatId) || {}
-        const previousMessages = previousChat.messages || []
-        return {
-          ...chat,
-          ...previousChat,
-          messages: previousMessages,
-          closed: previousChat.closed || !previousMessages.length,
-          deletedMessages: chat.deletedMessages,
-        }
-      })
-      const openChats = chats.filter((candidate) => !candidate.closed)
-      if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => (openChats[index].closed = true))
+      const { userId, alias } = action.meta
+      const blockedUsers = action.payload.blockedUsers || []
+      const settings = action.payload.settings || {}
+      const encryption = action.payload.encryption || {}
       return {
         ...state,
-        userId,
-        chats,
-        contacts: action.payload.contacts,
         preparingMessenger: false,
-        publicKey: (action.payload.encryption || {}).publicKey,
-        privateKey: (action.payload.encryption || {}).privateKey,
+        userId,
+        alias,
+        blockedUsers,
+        ...settings,
+        ...encryption,
       }
     }
 

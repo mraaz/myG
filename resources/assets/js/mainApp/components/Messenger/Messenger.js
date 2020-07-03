@@ -30,7 +30,6 @@ import {
   updateStatusAction,
   toggleNotificationSoundsAction,
   toggleAutoSelfDestructAction,
-  fetchSettingsAction,
   togglePushNotificationsAction,
 } from '../../../redux/actions/userAction'
 import { generateKeysAction, validatePinAction } from '../../../redux/actions/encryptionAction'
@@ -59,7 +58,6 @@ class Messenger extends React.Component {
     monitorChats(this.props.userId, false)
     handleLink(this.props.userId)
     monitorSocketConnection()
-    this.props.fetchSettings(this.props.userId)
   }
 
   componentWillUnmount() {
@@ -310,7 +308,6 @@ function mapDispatchToProps(dispatch) {
     updateStatus: (status, forcedStatus) => dispatch(updateStatusAction(status, forcedStatus)),
     toggleNotificationSounds: (disabled) => dispatch(toggleNotificationSoundsAction(disabled)),
     toggleAutoSelfDestruct: (enabled) => dispatch(toggleAutoSelfDestructAction(enabled)),
-    fetchSettings: (userId) => dispatch(fetchSettingsAction(userId)),
     togglePushNotifications: (userId) => dispatch(togglePushNotificationsAction(userId)),
   }
 }

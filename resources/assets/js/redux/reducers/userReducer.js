@@ -32,14 +32,11 @@ export default function reducer(
 
     case 'PREPARE_MESSENGER_FULFILLED': {
       logger.log('USER', `Redux -> Messenger Ready (User): `, action.payload)
-      const { contacts, games } = action.payload
       const { userId, alias } = action.meta
       const { value: currentStatus, locked: isStatusLocked } = action.payload.status
       const status = currentStatus === 'offline' && !isStatusLocked ? 'online' : currentStatus
       return {
         ...state,
-        contacts,
-        games,
         status,
         isStatusLocked,
         userId,
@@ -73,9 +70,9 @@ export default function reducer(
       }
     }
 
-    case "FETCH_GAMES_FULFILLED": {
+    case 'FETCH_GAMES_FULFILLED': {
       logger.log('USER', `Redux -> Fetched Games: `, action.payload)
-      const { games } = action.payload;
+      const { games } = action.payload
       return {
         ...state,
         games,
@@ -218,18 +215,18 @@ export default function reducer(
       }
     }
 
-    case "FETCH_SETTINGS_FULFILLED": {
+    case 'FETCH_SETTINGS_FULFILLED': {
       logger.log('USER', `Redux -> Fetched Settings: `, action.payload)
-      const { pushNotificationsEnabled } = action.payload.settings;
+      const { pushNotificationsEnabled } = action.payload.settings
       return {
         ...state,
         pushNotificationsEnabled,
       }
     }
 
-    case "TOGGLE_PUSH_NOTIFICATIONS_FULFILLED": {
+    case 'TOGGLE_PUSH_NOTIFICATIONS_FULFILLED': {
       logger.log('USER', `Redux -> Toggled Push Notifications: `, action.payload)
-      const { pushNotificationsEnabled } = action.payload.settings;
+      const { pushNotificationsEnabled } = action.payload.settings
       return {
         ...state,
         pushNotificationsEnabled,

@@ -488,15 +488,17 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    padding: 8px;
   }
 
   .messenger-settings-game-input {
-    position: absolute;
+    position: fixed;
     display: flex;
     flex-direction: column;
     width: 19vw;
-    left: -8px;
-    bottom: 16px;
+    right: 8px;
+    bottom: 0;
+    z-index: 10;
     background-color: #151c26;
   }
 
@@ -507,7 +509,6 @@
     border-radius: 12px;
     font-size: 14px;
     width: 90%;
-    margin-top: 14px;
     align-self: center;
     color: #a0a0a0;
   }

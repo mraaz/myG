@@ -2,8 +2,16 @@
 
 const { log } = require('../../Common/logger')
 const ChatRepository = require('../../Repositories/Chat')
+const MessengerRepository = require('../../Repositories/Messenger')
 
 class ChatController {
+  async prepareMessenger({ auth, response }) {
+    const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
+    const { status, blockedUsers, settings } = await MessengerRepository.prepareMessenger({ requestingUserId });
+    return response.send({ status, blockedUsers, settings })
+  }
+
   async fetchChats({ auth, request, response }) {
     const requestingUserId = auth.user.id
     if (!requestingUserId) throw new Error('Auth Error')

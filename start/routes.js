@@ -321,6 +321,7 @@ Route.post('/api/chat/:chatId/icon', 'AwsKeyController.addChatGroupProfileKey')
 Route.post('/api/game/:gameId/icon', 'AwsKeyController.addGameIconKey')
 
 // Chat Feature - https://docs.google.com/spreadsheets/d/1AR9P3MLQw6J6eoRqgTbOVROFxmPE215yXzsqD59wy2o
+Route.get('/api/messenger/', 'ChatController.prepareMessenger')
 Route.get('/api/chat/', 'ChatController.fetchChats')
 Route.get('/api/chat/:chatId', 'ChatController.fetchChat')
 Route.post('/api/chat/', 'ChatController.createChat')

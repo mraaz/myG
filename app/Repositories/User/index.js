@@ -97,11 +97,13 @@ class UserRepository {
     return new DefaultSchema({ success: true });
   }
 
-  async fetchContacts({ requestingUserId }) {
-    const friends = (await Database.from('friends')
+  async fetchContacts({ requestingUserId, limit }) {
+    const query = Database.from('friends')
       .innerJoin('users', 'users.id', 'friends.friend_id')
       .where({ user_id: requestingUserId })
-      .orderBy('friends.created_at', 'desc'));
+      .orderBy('friends.created_at', 'desc');
+    if (limit) query.limit(limit);
+    const friends = await query;
     const contacts = friends.map(friend => new ContactSchema({
       contactId: friend.friend_id,
       icon: friend.profile_img,
