@@ -518,7 +518,37 @@ class ChatRepository {
     return { contacts };
   }
 
-  async fetchGroupsPaginated({ requestingUserId, requestedPage, search }) {
+  async fetchContactsByGame({ requestingUserId, gameId }) {
+    const query = Database
+    .select('friends.friend_id', 'users.profile_img', 'users.alias', 'users.status', 'users.last_seen', 'users.public_key')
+    .from('game_experiences')
+    .leftJoin('friends', 'friends.friend_id', 'game_experiences.user_id')
+    .leftJoin('users', 'users.id', 'friends.friend_id')
+    .where('friends.user_id', requestingUserId)
+    .andWhere('game_experiences.game_names_id', gameId)
+    .union([
+      Database
+      .select('friends.friend_id', 'users.profile_img', 'users.alias', 'users.status', 'users.last_seen', 'users.public_key')
+      .from('esports_experiences')
+      .leftJoin('friends', 'friends.friend_id', 'esports_experiences.user_id')
+      .leftJoin('users', 'users.id', 'friends.friend_id')
+      .where('friends.user_id', requestingUserId)
+      .andWhere('esports_experiences.game_names_id', gameId)
+    ]);
+    const results = await query;
+    if (!results) return { contacts: [] };
+    const contacts = results.map(contact => new ContactSchema({
+      contactId: contact.friend_id,
+      icon: contact.profile_img,
+      name: contact.alias,
+      status: contact.status,
+      lastSeen: contact.last_seen,
+      publicKey: contact.public_key,
+    }));
+    return { contacts };
+  }
+
+  async fetchGroupsPaginated({ requestingUserId, requestedPage, gameId, search }) {
     let query = Database
       .select('user_chats.chat_id', 'user_chats.user_id', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chats.game_message')
       .from('user_chats')
@@ -526,6 +556,7 @@ class ChatRepository {
       .where('user_chats.user_id', requestingUserId)
       .andWhere('chats.isGroup', true)
     if (search) query = query.andWhere('chats.title', 'like', `%${search}%`)
+    if (gameId) query = query.andWhere('chats.game_id', gameId)
     const results = await query.offset(requestedPage * 10).limit(10);
     if (!results) return { groups: [] };
     const groups = results.toJSON ? results.toJSON() : results.map(chat => new ChatSchema({

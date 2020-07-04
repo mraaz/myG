@@ -1,16 +1,16 @@
 import { fetchContactsPaginated, fetchGroupsPaginated, fetchGamesPaginated, searchPaginated } from '../../integration/http/pagination'
 
-export function fetchContactsPaginatedAction(page, status) {
+export function fetchContactsPaginatedAction(page, status, gameId) {
   return {
     type: 'PAGINATED_CONTACTS',
-    payload: fetchContactsPaginated(page, status),
+    payload: fetchContactsPaginated(page, status, gameId),
   }
 }
 
-export function fetchGroupsPaginatedAction(page) {
+export function fetchGroupsPaginatedAction(page, gameId) {
   return {
     type: 'PAGINATED_GROUPS',
-    payload: fetchGroupsPaginated(page),
+    payload: fetchGroupsPaginated(page, gameId),
   }
 }
 
@@ -21,9 +21,9 @@ export function fetchGamesPaginatedAction(page) {
   }
 }
 
-export function searchPaginatedAction(page) {
+export function searchPaginatedAction(page, search) {
   return {
     type: 'PAGINATED_SEARCH',
-    payload: searchPaginated(page),
+    payload: searchPaginated(page, search),
   }
 }

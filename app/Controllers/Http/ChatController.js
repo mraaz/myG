@@ -406,8 +406,12 @@ class ChatController {
   async fetchContactsPaginated({ auth, request, response }) {
     const requestingUserId = auth.user.id
     if (!requestingUserId) throw new Error('Auth Error')
-    const { status, page: requestedPage } = request.only(['status', 'page'])
+    const { status, page: requestedPage, gameId } = request.only(['status', 'page', 'gameId'])
     log('USER', `User ${requestingUserId} requesting Contacts with status ${status} and page ${requestedPage}`)
+    if (gameId) {
+      const { contacts } = await ChatRepository.fetchContactsByGame({ requestingUserId, gameId })
+      return response.send({ contacts })
+    }
     const { contacts } = await ChatRepository.fetchContactsPaginated({ requestingUserId, status, requestedPage })
     return response.send({ contacts })
   }
@@ -416,8 +420,9 @@ class ChatController {
     const requestingUserId = auth.user.id
     if (!requestingUserId) throw new Error('Auth Error')
     const requestedPage = request.only('page').page
+    const gameId = request.only('gameId').gameId
     log('CHAT', `User ${requestingUserId} requesting Groups paginated`)
-    const { groups } = await ChatRepository.fetchGroupsPaginated({ requestingUserId, requestedPage })
+    const { groups } = await ChatRepository.fetchGroupsPaginated({ requestingUserId, requestedPage, gameId })
     return response.send({ groups })
   }
 
