@@ -5,31 +5,52 @@ export default function reducer(
     contacts: [],
     groups: [],
     games: [],
+    search: {},
   },
   action
 ) {
   switch (action.type) {
-    case 'FETCH_CONTACTS_PAGINATED_FULFILLED': {
+    case 'PAGINATED_CONTACTS_FULFILLED': {
       logger.log('PAGINATION', `Redux -> Fetched Contacts: `, action.payload)
+      const currentContacts = JSON.parse(JSON.stringify(state.contacts))
+      const currentContactIds = contacts.map((contact) => contact.contactId)
+      const newContacts = action.payload.contacts.filter((contact) => !currentContactIds.includes(contact.contactId))
+      const contacts = [...currentContacts, ...newContacts]
       return {
         ...state,
-        contacts: action.payload.contacts || [],
+        contacts,
       }
     }
 
-    case 'FETCH_GROUPS_PAGINATED_FULFILLED': {
+    case 'PAGINATED_GROUPS_FULFILLED': {
       logger.log('PAGINATION', `Redux -> Fetched Groups: `, action.payload)
+      const currentGroups = JSON.parse(JSON.stringify(state.groups))
+      const currentGroupIds = groups.map((group) => group.chatId)
+      const newGroups = action.payload.groups.filter((group) => !currentGroupIds.includes(group.chatId))
+      const groups = [...currentGroups, ...newGroups]
       return {
         ...state,
-        groups: action.payload.groups || [],
+        groups,
       }
     }
 
-    case 'FETCH_GAMES_PAGINATED_FULFILLED': {
+    case 'PAGINATED_GAMES_FULFILLED': {
       logger.log('PAGINATION', `Redux -> Fetched Games: `, action.payload)
+      const currentGames = JSON.parse(JSON.stringify(state.groups))
+      const currentGameIds = games.map((game) => game.gameId)
+      const newGames = action.payload.games.filter((game) => !currentGameIds.includes(game.gameId))
+      const games = [...currentGames, ...newGames]
       return {
         ...state,
-        games: action.payload.games || [],
+        games,
+      }
+    }
+
+    case 'PAGINATED_SEARCH_FULFILLED': {
+      logger.log('PAGINATION', `Redux -> Searched: `, action.payload)
+      return {
+        ...state,
+        search: action.payload.search || {},
       }
     }
 

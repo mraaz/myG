@@ -370,6 +370,10 @@ Route.get('/api/game/', 'GameController.searchGames')
 Route.get('/api/user_settings', 'UserChatController.fetchSettings')
 Route.post('/api/user_settings/push_notifications', 'UserChatController.togglePushNotifications')
 Route.post('/api/encryption', 'UserChatController.sendEncryptionReminderEmail')
+Route.get('/api/chat/paginated/contact', 'ChatController.fetchContactsPaginated')
+Route.get('/api/chat/paginated/groups', 'ChatController.fetchGroupsPaginated')
+Route.get('/api/chat/paginated/games', 'ChatController.fetchGamesPaginated')
+Route.get('/api/chat/paginated/search', 'ChatController.searchPaginated')
 
 // Guests
 Route.post('/api/guest/', 'GuestController.register')

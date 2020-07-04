@@ -8,7 +8,7 @@ class ChatController {
   async prepareMessenger({ auth, response }) {
     const requestingUserId = auth.user.id
     if (!requestingUserId) throw new Error('Auth Error')
-    const { contacts, games, status, blockedUsers, settings } = await MessengerRepository.prepareMessenger({ requestingUserId });
+    const { contacts, games, status, blockedUsers, settings } = await MessengerRepository.prepareMessenger({ requestingUserId })
     return response.send({ contacts, games, status, blockedUsers, settings })
   }
 
@@ -401,6 +401,43 @@ class ChatController {
     log('CHAT', `User ${requestingUserId} accepting to join Game Group ${requestedGameId}`)
     const { success, error } = await ChatRepository.acceptGameGroupInvitation({ requestedUserId, requestedGameId })
     return response.send({ success, error })
+  }
+
+  async fetchContactsPaginated({ auth, request, response }) {
+    const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
+    const { status, page: requestedPage } = request.only(['status', 'page'])
+    log('USER', `User ${requestingUserId} requesting Contacts with status ${status} and page ${requestedPage}`)
+    const { contacts } = await ChatRepository.fetchContactsPaginated({ requestingUserId, status, requestedPage })
+    return response.send({ contacts })
+  }
+
+  async fetchGroupsPaginated({ auth, request, response }) {
+    const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
+    const requestedPage = request.only('page').page
+    log('CHAT', `User ${requestingUserId} requesting Groups paginated`)
+    const { groups } = await ChatRepository.fetchGroupsPaginated({ requestingUserId, requestedPage })
+    return response.send({ groups })
+  }
+
+  async fetchGamesPaginated({ auth, request, response }) {
+    const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
+    const requestedPage = request.only('page').page
+    log('CHAT', `User ${requestingUserId} requesting Games paginated`)
+    const { games } = await ChatRepository.fetchGamesPaginated({ requestingUserId, requestedPage })
+    return response.send({ games })
+  }
+
+  async searchPaginated({ auth, request, response }) {
+    const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
+    const requestedPage = request.only('page').page
+    const search = request.only('search').search
+    log('CHAT', `User ${requestingUserId} searching for ${search} paginated`)
+    const { contacts, groups, games } = await ChatRepository.searchPaginated({ requestingUserId, requestedPage, search })
+    return response.send({ contacts, groups, games })
   }
 }
 

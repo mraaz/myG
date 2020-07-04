@@ -16,6 +16,7 @@ const ChatPrivateKeyRequest = use('App/Models/ChatPrivateKeyRequest');
 const ChatGameMessageSchedule = use('App/Models/ChatGameMessageSchedule');
 const ChatBlockedUser = use('App/Models/ChatBlockedUser');
 const Guest = use('App/Models/Guest');
+const FavoriteGame = use('App/Models/FavoriteGame');
 const Notification = use('App/Models/Notification');
 
 const AwsKeyController = use('App/Controllers/Http/AwsKeyController');
@@ -26,6 +27,7 @@ const ChatSchema = require('../../Schemas/Chat');
 const ChatLinkSchema = require('../../Schemas/ChatLink');
 const ChatEntryLogSchema = require('../../Schemas/ChatEntryLog');
 const GuestSchema = require('../../Schemas/Guest');
+const GameSchema = require('../../Schemas/Game');
 const MessageSchema = require('../../Schemas/Message');
 const ReactionSchema = require('../../Schemas/Reaction');
 const DefaultSchema = require('../../Schemas/Default');
@@ -495,6 +497,98 @@ class ChatRepository {
       updatedAt: chat.updated_at,
     }));
     return { groups };
+  }
+
+  async fetchContactsPaginated({ requestingUserId, requestedPage, status, search }) {
+    let query = Database.from('friends')
+      .innerJoin('users', 'users.id', 'friends.friend_id')
+      .where({ user_id: requestingUserId })
+    if (status) query = query.andWhere({  status: status })
+    if (search) query = query.andWhere('alias', 'like', `%${search}%`)
+    const results = await query.offset(requestedPage * 10).limit(10);
+    if (!results) return { contacts: [] };
+    const contacts = results.map(contact => new ContactSchema({
+      contactId: contact.friend_id,
+      icon: contact.profile_img,
+      name: contact.alias,
+      status: contact.status,
+      lastSeen: contact.last_seen,
+      publicKey: contact.public_key,
+    }));
+    return { contacts };
+  }
+
+  async fetchGroupsPaginated({ requestingUserId, requestedPage, search }) {
+    let query = Database
+      .select('user_chats.chat_id', 'user_chats.user_id', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chats.game_message')
+      .from('user_chats')
+      .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
+      .where('user_chats.user_id', requestingUserId)
+      .andWhere('chats.isGroup', true)
+    if (search) query = query.andWhere('chats.title', 'like', `%${search}%`)
+    const results = await query.offset(requestedPage * 10).limit(10);
+    if (!results) return { groups: [] };
+    const groups = results.toJSON ? results.toJSON() : results.map(chat => new ChatSchema({
+      chatId: chat.chat_id,
+      muted: chat.muted,
+      isPrivate: chat.isPrivate,
+      isGroup: chat.isGroup,
+      gameId: chat.game_id,
+      gameMessage: chat.game_message,
+      individualGameId: chat.individual_game_id,
+      selfDestruct: chat.self_destruct,
+      deletedMessages: chat.deleted_messages,
+      lastRead: chat.last_read_message_id,
+      lastCleared: chat.last_cleared_message_id,
+      icon: chat.icon,
+      title: chat.title,
+      publicKey: chat.public_key,
+      contacts: chat.contacts,
+      guests: chat.guests,
+      owners: chat.owners,
+      moderators: chat.moderators,
+      messages: chat.messages,
+      createdAt: chat.created_at,
+      updatedAt: chat.updated_at,
+    }));
+    return { groups };
+  }
+
+  async fetchGamesPaginated({ requestingUserId, requestedPage, search }) {
+    let esportsQuery = Database
+      .select('esports_experiences.user_id', 'game_names.user_id as owner_id', 'game_names_id', 'game_name', 'game_img')
+      .from('esports_experiences')
+      .leftJoin('game_names', 'game_names.id', 'esports_experiences.game_names_id')
+      .where('esports_experiences.user_id', requestingUserId)
+    
+      let experiencesQuery = Database
+      .select('game_experiences.user_id', 'game_names.user_id as owner_id', 'game_names_id', 'game_name', 'game_img')
+      .from('game_experiences')
+      .leftJoin('game_names', 'game_names.id', 'game_experiences.game_names_id')
+      .where('game_experiences.user_id', requestingUserId)
+
+    if (search) {
+      esportsQuery = esportsQuery.andWhere('game_names.game_name', 'like', `%${search}%`)
+      experiencesQuery = experiencesQuery.andWhere('game_names.game_name', 'like', `%${search}%`)
+    }
+
+    const query = esportsQuery.union(experiencesQuery)
+    const rawGames = await query.offset(requestedPage * 10).limit(10);
+    const games = rawGames.map(game => new GameSchema({ gameId: game.game_names_id, userId: game.user_id, ownerId: game.owner_id, name: game.game_name, icon: game.game_img }));
+    const favoriteGamesRaw = await FavoriteGame.query().where('user_id', requestingUserId).fetch();
+    const favoriteGames = (favoriteGamesRaw && favoriteGamesRaw.toJSON()) || [];
+    games.forEach(game => game.isFavorite = favoriteGames.find(favorite => favorite.game_names_id === game.gameId));
+    return { games };
+  }
+
+  async searchPaginated({ requestingUserId, requestedPage, search }) {
+    const contactsRequest = this.fetchContactsPaginated({ requestingUserId, requestedPage, search })
+    const groupsRequest = this.fetchGroupsPaginated({ requestingUserId, requestedPage, search })
+    const gamesRequest = this.fetchGamesPaginated({ requestingUserId, requestedPage, search })
+    const { contacts } = await contactsRequest;
+    const { groups } = await groupsRequest;
+    const { games } = await gamesRequest;
+    return { contacts, groups, games }
   }
 
   async fetchChatNotifications({ requestingUserId, requestedPage }) {
