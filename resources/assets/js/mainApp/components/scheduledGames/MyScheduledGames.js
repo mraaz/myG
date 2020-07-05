@@ -30,6 +30,7 @@ export default class MyScheduledGames extends Component {
       scheduleGamesView: {},
       showAllComment: false,
       fetching: false,
+      exclude_expired: false,
     }
   }
 
@@ -74,13 +75,13 @@ export default class MyScheduledGames extends Component {
   }
 
   getScheduleGamesData = async (data = {}) => {
-    const { counter, scheduleGames = [] } = this.state
+    const { counter, scheduleGames = [], exclude_expired, filter } = this.state
     let count = counter + 1
     this.setState({ fetching: true })
     const scheduleGamesRes = await axios.post(`/api/myScheduledGames`, {
       counter: count,
-      exclude_expired: false,
-      filter: 0,
+      exclude_expired: exclude_expired,
+      filter,
     })
     if (scheduleGamesRes.data && scheduleGamesRes.data.myScheduledGames.length == 0) {
       this.setState({
@@ -93,30 +94,30 @@ export default class MyScheduledGames extends Component {
       if (count > 1) {
         this.setState({ scheduleGames: [...scheduleGames, ...scheduleGamesRes.data.myScheduledGames], counter: count, fetching: false })
       } else {
-        this.setState({ scheduleGames: scheduleGames.data.myScheduledGames, fetching: false })
+        this.setState({ scheduleGames: scheduleGamesRes.data.myScheduledGames, fetching: false })
       }
     }
   }
-  handleExcludesFullGames = async (e) => {
-    const checked = e.target.checked
+  handleExcludesFullGames = async (e, _filter) => {
+    const checked = e ? e.target.checked : this.state.exclude_expired
+    const filter = _filter ? _filter : this.state.filter
     const scheduleGamesRes = await axios.post(`/api/myScheduledGames`, {
       counter: 1,
       exclude_expired: checked,
-      filter: 0,
+      filter,
     })
-    if (scheduleGamesRes.data && scheduleGamesRes.data.myScheduledGames.length == 0) {
+    console.log('scheduleGamesRes    ', scheduleGamesRes.data.myScheduledGames.length)
+
+    if (scheduleGamesRes.data && scheduleGamesRes.data.myScheduledGames.length > 0) {
+      this.setState({ scheduleGames: scheduleGamesRes.data.myScheduledGames, fetching: false, exclude_expired: checked, filter })
+    } else {
       this.setState({
         moreplease: false,
         fetching: false,
+        exclude_expired: checked,
+        filter,
+        scheduleGames: [],
       })
-      return
-    }
-    if (scheduleGamesRes.data && scheduleGamesRes.data.myScheduledGames.length > 0) {
-      if (count > 1) {
-        this.setState({ scheduleGames: [...scheduleGames, ...scheduleGamesRes.data.myScheduledGames], counter: count, fetching: false })
-      } else {
-        this.setState({ scheduleGames: scheduleGames.data.myScheduledGames, fetching: false })
-      }
     }
   }
 
@@ -160,6 +161,7 @@ export default class MyScheduledGames extends Component {
                   hasMore={this.state.moreplease}
                   fetching={fetching}
                   copyClipboardEnable={false}
+                  showPrefilledFilter={true}
                 />
               </div>
               <div style={{ flex: 1 }}>

@@ -9,16 +9,20 @@ import { Link } from 'react-router-dom'
 import { Toast_style } from '../Utility_Function'
 import { toast } from 'react-toastify'
 import { WithTooltip } from '../Tooltip'
+import Select from 'react-select'
 const defaultUserImage = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png'
 
 const defaultThumbnails = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Notifications/myG_icon.svg'
 const statusMapping = { 1: 'Approved. you are in!', 3: 'Pending Approval by Host' }
+
+import { prefilledFilter_option } from './option'
 
 export default class GameList extends Component {
   constructor() {
     super()
     this.state = {
       activeItemId: '',
+      prefilledFilter: { value: 0, label: 'All myGames' },
     }
     this.myRef = React.createRef()
   }
@@ -46,16 +50,36 @@ export default class GameList extends Component {
     e.stopPropagation()
     window.location.href = `/notifications`
   }
+  handleChangeFilter = (prefilledFilter) => {
+    this.setState({ prefilledFilter }, () => {
+      this.props.handleExcludesFullGames(null, prefilledFilter.value)
+    })
+  }
 
   render() {
-    const { scheduleGames = [], copyClipboardEnable = true } = this.props
-    const { activeItemId = '' } = this.state
+    const { scheduleGames = [], copyClipboardEnable = true, showPrefilledFilter = false } = this.props
+    const { activeItemId = '', prefilledFilter } = this.state
     const len = scheduleGames.length
 
     return (
       <div className='gameList'>
+        {showPrefilledFilter && (
+          <div className='myGame__filter-section'>
+            <div className='viewGame__gameName'>
+              <Select
+                onChange={(data) => this.handleChangeFilter(data)}
+                options={prefilledFilter_option}
+                placeholder='Select your region'
+                name='prefilledFilter'
+                className='viewGame__name'
+                classNamePrefix='filter'
+                value={prefilledFilter}
+              />
+            </div>
+          </div>
+        )}
         <div className='gameList_head__option'>
-          {/* <div className='gameResult__count'> {len} Results</div> */}
+          <div className='gameResult__count'> {len} Results</div>
           <div className='gameResult__fillView'>
             <span>{this.props.slideOptionLabel} </span>{' '}
             <div className='button-switch'>
