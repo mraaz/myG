@@ -997,12 +997,16 @@
                 margin-right: 5px;
               }
               .my__status {
+                display: flex;
+                align-items: center;
                 span {
                   color: #8ce09a;
                 }
               }
               .no__of__approval {
                 margin-left: 10px;
+                display: flex;
+                align-items: center;
                 cursor: pointer;
                 span {
                   color: #ead782;
