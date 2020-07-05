@@ -9,7 +9,7 @@ export function fetchContactsPaginated(page, status, gameId) {
 
 export function fetchGroupsPaginated(page, gameId) {
   logger.log('PAGINATED', 'HTTP', `Fetching Groups`);
-  const request = `/api/chat/paginated/contact?${page ? `&page=${page}` : ''}${gameId ? `&gameId=${gameId}` : ''}`;
+  const request = `/api/chat/paginated/groups?${page ? `&page=${page}` : ''}${gameId ? `&gameId=${gameId}` : ''}`;
   return axios.get(request).then(response => response.data);
 }
 

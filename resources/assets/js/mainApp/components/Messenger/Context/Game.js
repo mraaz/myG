@@ -40,7 +40,6 @@ export default class Game extends React.Component {
         game={this.props.game}
         gameId={this.props.game.gameId}
         privateKey={this.props.privateKey}
-        contacts={this.props.contacts}
         groups={this.props.groups}
         search={this.props.search}
         disconnected={this.props.disconnected}

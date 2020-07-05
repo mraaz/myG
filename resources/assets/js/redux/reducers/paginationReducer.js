@@ -45,7 +45,7 @@ export default function reducer(
       const currentGroups = JSON.parse(JSON.stringify(state.groups))
       const currentGroupIds = currentGroups.map((group) => group.chatId)
       const newGroups = action.payload.groups.filter((group) => !currentGroupIds.includes(group.chatId))
-      const groups = action.meta.refresh ? newGroups : [...currentGroups, ...newGroups]
+      const groups = action.meta.refresh ? action.payload.groups : [...currentGroups, ...newGroups]
       return {
         ...state,
         loading: false,

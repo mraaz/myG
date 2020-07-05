@@ -40,7 +40,6 @@ export default class General extends React.Component {
       <Groups
         userId={this.props.userId}
         privateKey={this.props.privateKey}
-        contacts={this.props.contacts}
         groups={this.props.groups}
         search={this.props.search}
         disconnected={this.props.disconnected}

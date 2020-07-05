@@ -1,20 +1,65 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import Divider from './Divider'
 import GroupCreation from '../GroupCreation'
+import LoadingIndicator from '../../LoadingIndicator'
 import { deserializeKey, decryptMessage, generateKeysSync as generateGroupKeys } from '../../../../integration/encryption'
 import { formatAMPM } from '../../../../common/date'
 import { WithTooltip } from '../../Tooltip'
 import { uploadGroupIcon } from '../../../../integration/http/chat'
 import { getAssetUrl } from '../../../../common/assets'
 import { ignoreFunctions } from '../../../../common/render'
+import { fetchGroupsPaginatedAction } from '../../../../redux/actions/paginationAction'
 
-export default class Groups extends React.Component {
+function compareLastMessages(c1, c2) {
+  const m1 = (c1.messages || [])[(c1.messages || []).length - 1] || { createdAt: 0 }
+  const m2 = (c2.messages || [])[(c2.messages || []).length - 1] || { createdAt: 0 }
+  return new Date(m2.createdAt) - new Date(m1.createdAt)
+}
+
+class Groups extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
   }
 
-  state = {
-    showingGroupCreation: false,
+  constructor(props) {
+    super(props)
+    this.state = {
+      page: 0,
+      showingGroupCreation: false,
+    }
+    this.groupsListRef = React.createRef()
+  }
+
+  componentDidMount() {
+    if (this.props.expanded) this.fetchGroups()
+    document.addEventListener('scroll', this.handleScroll, { passive: true })
+    document.addEventListener('wheel', this.handleScroll, { passive: true })
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('scroll', this.handleScroll, false)
+    document.removeEventListener('wheel', this.handleScroll, false)
+  }
+
+  handleScroll = () => {
+    const groupsList = this.groupsListRef.current
+    if (!groupsList) return
+    const hasScrolledToBottom = groupsList.scrollHeight - groupsList.scrollTop === 200
+    if (hasScrolledToBottom)
+      this.setState(
+        (previous) => ({ page: previous.page + 1 }),
+        () => this.fetchGroups()
+      )
+  }
+
+  fetchGroups() {
+    this.props.fetchGroupsPaginated(this.state.page, this.props.gameId, !this.state.page)
+  }
+
+  expand = () => {
+    if (!this.props.expanded) this.setState({ page: 0 }, () => this.fetchGroups())
+    this.props.onExpand(this.props.expanded)
   }
 
   decryptMessage = (message, userPrivateKey, chatPrivateKey) => {
@@ -52,7 +97,7 @@ export default class Groups extends React.Component {
           <div className='messenger-empty-message-container'>
             <p className='messenger-empty-message'>You aren't part of any group{this.props.inGame ? ' for this game' : ''} yet :(</p>
             <p className='messenger-empty-message'>
-              {this.props.contacts.length ? 'Try adding some of your friends to a group' : 'You can find groups through matchmaking'}
+              You can find groups through matchmaking
             </p>
           </div>
         )}
@@ -65,6 +110,29 @@ export default class Groups extends React.Component {
         )}
       </div>
     )
+  }
+
+  renderLoading = () => {
+    if (!this.props.expanded || !this.props.loading) return null
+    return (
+      <div className='messenger-loading-container'>
+        <p className='messenger-loading-hint-top'>Hang On</p>
+        <div className='messenger-loading-indicator'>
+          <LoadingIndicator />
+        </div>
+        <p className='messenger-loading-hint-bottom'>Looking for Friends...</p>
+      </div>
+    )
+  }
+
+  renderLoadingMore = () => {
+    if (!this.props.loadingMore || !this.props.expanded || this.props.loading) return null
+    return <div className='messenger-body-section-loader'>loading more...</div>
+  }
+
+  renderGroups = () => {
+    if (!this.props.expanded || this.props.loading) return null
+    return this.props.groups.map(this.renderGroup);
   }
 
   renderGroup = (group) => {
@@ -100,22 +168,39 @@ export default class Groups extends React.Component {
   }
 
   render() {
-    const isSearching = this.props.search.trim()
-    const search = (name) => (isSearching ? name.toLowerCase().includes(this.props.search.toLowerCase()) : true)
-    const groups = this.props.groups.slice(0).filter((group) => search(group.title))
     return Divider(
       'groups',
       this.props.expanded,
-      () => this.props.onExpand(this.props.expanded),
+      () => this.expand(),
       () => {
         if (!this.props.groups.length) return this.renderGroupButton()
         return (
           <div>
             {this.renderGroupButton()}
-            <div className='messenger-body-section-content'>{groups.map(this.renderGroup)}</div>
+            <div className='messenger-body-section-content' ref={this.groupsListRef}>
+              {this.renderGroups()}
+              {this.renderLoading()}
+              {this.renderLoadingMore()}
+            </div>
           </div>
         )
       }
     )
   }
 }
+
+export function mapStateToProps(state) {
+  return {
+    loading: state.pagination.loading,
+    loadingMore: state.pagination.loadingMore,
+    groups: state.pagination.groups.sort(compareLastMessages),
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    fetchGroupsPaginated: (page, gameId, refresh) => dispatch(fetchGroupsPaginatedAction(page, gameId, refresh)),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Groups)

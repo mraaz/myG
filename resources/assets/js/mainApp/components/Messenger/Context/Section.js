@@ -41,7 +41,6 @@ class Section extends React.Component {
   handleScroll = () => {
     const contactsList = this.contactsListRef.current
     if (!contactsList) return
-    console.log(contactsList.scrollHeight, contactsList.scrollTop, contactsList.scrollHeight - contactsList.scrollTop)
     const hasScrolledToBottom = contactsList.scrollHeight - contactsList.scrollTop === 200
     if (hasScrolledToBottom)
       this.setState(
@@ -72,6 +71,12 @@ class Section extends React.Component {
     )
   }
 
+  renderLoadingMore = () => {
+    if (!this.props.loadingMore || !this.props.expanded || this.props.loading) return null
+    return <div className='messenger-body-section-loader'>loading more...</div>
+  }
+
+
   renderEmpty = () => {
     if (this.props.contacts.length || !this.props.expanded || this.props.loading) return null
     return (
@@ -85,11 +90,6 @@ class Section extends React.Component {
   renderContacts = () => {
     if (!this.props.contacts.length || !this.props.expanded || this.props.loading) return null
     return this.props.contacts.map(this.renderContact)
-  }
-
-  renderLoadingMore = () => {
-    if (!this.props.loadingMore || !this.props.expanded || this.props.loading) return null
-    return <div className='messenger-body-section-loader'>loading more...</div>
   }
 
   renderContact = (contact) => {
