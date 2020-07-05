@@ -73,36 +73,6 @@ export default class MyScheduledGames extends Component {
     }
   }
 
-  handleChange = async (data, name) => {
-    this.setState({ singleScheduleGamesPayload: {}, showRightSideInfo: false }, () => {
-      if (name == 'game_name') {
-        this.setState({ ...data }, () => {
-          this.getScheduleGamesChangeCall()
-        })
-      } else {
-        this.setState({ ...data }, () => {
-          this.getScheduleGamesChangeCall()
-        })
-      }
-    })
-  }
-  getScheduleGamesChangeCall = async (data = {}) => {
-    const { counter, scheduleGames = [] } = this.state
-    const scheduleGamesRes = await getScheduleGames({ ...this.state, ...data, counter: 1 })
-
-    if (scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length == 0) {
-      this.setState({
-        moreplease: false,
-        scheduleGames: {},
-      })
-      return
-    }
-
-    if (scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length > 0) {
-      const { latestScheduledGames = [] } = scheduleGamesRes.data
-      this.setState({ scheduleGames: latestScheduledGames })
-    }
-  }
   getScheduleGamesData = async (data = {}) => {
     const { counter, scheduleGames = [] } = this.state
     let count = counter + 1
@@ -127,11 +97,27 @@ export default class MyScheduledGames extends Component {
       }
     }
   }
-  handleExcludesFullGames = (e) => {
+  handleExcludesFullGames = async (e) => {
     const checked = e.target.checked
-    this.setState({ show_full_games: checked }, () => {
-      this.getScheduleGamesChangeCall({ show_full_games: checked })
+    const scheduleGamesRes = await axios.post(`/api/myScheduledGames`, {
+      counter: 1,
+      exclude_expired: checked,
+      filter: 0,
     })
+    if (scheduleGamesRes.data && scheduleGamesRes.data.myScheduledGames.length == 0) {
+      this.setState({
+        moreplease: false,
+        fetching: false,
+      })
+      return
+    }
+    if (scheduleGamesRes.data && scheduleGamesRes.data.myScheduledGames.length > 0) {
+      if (count > 1) {
+        this.setState({ scheduleGames: [...scheduleGames, ...scheduleGamesRes.data.myScheduledGames], counter: count, fetching: false })
+      } else {
+        this.setState({ scheduleGames: scheduleGames.data.myScheduledGames, fetching: false })
+      }
+    }
   }
 
   render() {
@@ -161,7 +147,7 @@ export default class MyScheduledGames extends Component {
     return (
       <section className='viewGame__container' style={{ height: '100vh', overflow: 'scroll' }}>
         <div className={`gameList__section ${singleView ? 'singleGameView__container' : 'GameView__container'}`}>
-          {!singleView && scheduleGames.length > 0 ? (
+          {scheduleGames.length > 0 ? (
             <Fragment>
               <div style={{ flex: 1 }}>
                 <GameList
@@ -173,6 +159,7 @@ export default class MyScheduledGames extends Component {
                   next={this.getScheduleGamesData}
                   hasMore={this.state.moreplease}
                   fetching={fetching}
+                  copyClipboardEnable={false}
                 />
               </div>
               <div style={{ flex: 1 }}>
@@ -188,20 +175,7 @@ export default class MyScheduledGames extends Component {
               </div>
             </Fragment>
           ) : (
-            <Fragment>
-              {latestScheduledGames.length > 0 ? (
-                <SingleGameDetails
-                  scheduleGames={scheduleGamesView}
-                  showRightSideInfo={showRightSideInfo}
-                  handleShowAllComments={this.handleShowAllComments}
-                  commentData={commentData}
-                  showAllComment={showAllComment}
-                  {...this.props}
-                />
-              ) : (
-                <NoRecord />
-              )}
-            </Fragment>
+            <NoRecord />
           )}
         </div>
       </section>

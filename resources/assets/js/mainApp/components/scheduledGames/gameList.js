@@ -12,6 +12,7 @@ import { WithTooltip } from '../Tooltip'
 const defaultUserImage = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png'
 
 const defaultThumbnails = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Notifications/myG_icon.svg'
+const statusMapping = { 1: 'Approved. you are in!', 3: 'Pending Approval by Host' }
 
 export default class GameList extends Component {
   constructor() {
@@ -41,9 +42,13 @@ export default class GameList extends Component {
     this.setState({ activeItemId: id })
     this.props.getSingleGameData(e, id, game)
   }
+  handlePendingApproval = (e) => {
+    e.stopPropagation()
+    window.location.href = `/notifications`
+  }
 
   render() {
-    const { scheduleGames = [] } = this.props
+    const { scheduleGames = [], copyClipboardEnable = true } = this.props
     const { activeItemId = '' } = this.state
     const len = scheduleGames.length
 
@@ -68,10 +73,13 @@ export default class GameList extends Component {
           {/* My game list start here */}
           {scheduleGames.length > 0 &&
             scheduleGames.map((game) => {
-              const image = game.game_name_fields_img || null
-              const experience_split = game.experience ? game.experience.split(',') : []
+              const { myStatus = '', no_of_Approval_Pending = '', game_name_fields_img = '', experience = '' } = game
+              const experience_split = experience ? experience.split(',') : []
               const scheduledGamePicture = (
-                <img src={image == null ? defaultThumbnails : image} className={image == null ? 'default-image' : 'image'} />
+                <img
+                  src={game_name_fields_img == '' ? defaultThumbnails : game_name_fields_img}
+                  className={game_name_fields_img == '' ? 'default-image' : 'image'}
+                />
               )
               return (
                 <div
@@ -105,11 +113,13 @@ export default class GameList extends Component {
                         <span>{moment(game.start_date_time).format('LL')}</span>
                       </div>
                     </div>
-                    <div className='copy__clipboard'>
-                      <div className='copy__clipboard__action' onClick={(e) => this.handleCopyToClipBoard(e, game.schedule_games_GUID)}>
-                        <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Link.svg' />
+                    {copyClipboardEnable && (
+                      <div className='copy__clipboard'>
+                        <div className='copy__clipboard__action' onClick={(e) => this.handleCopyToClipBoard(e, game.schedule_games_GUID)}>
+                          <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Link.svg' />
+                        </div>
                       </div>
-                    </div>
+                    )}
                     <div className='third__row'>
                       <div className='game__tags'>
                         {game.tags &&
@@ -136,6 +146,22 @@ export default class GameList extends Component {
                             )
                           })}
                       </div>
+                    </div>
+                    <div className='fourth__row'>
+                      {statusMapping[myStatus] && (
+                        <div className='my__status'>
+                          <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/clock.svg' />
+                          <span>{statusMapping[myStatus]}</span>
+                        </div>
+                      )}
+                      {no_of_Approval_Pending ? (
+                        <div className='no__of__approval' onClick={this.handlePendingApproval}>
+                          <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/clock.svg' />
+                          <span>{no_of_Approval_Pending} Approval Pending</span>
+                        </div>
+                      ) : (
+                        ''
+                      )}
                     </div>
                   </div>
                 </div>

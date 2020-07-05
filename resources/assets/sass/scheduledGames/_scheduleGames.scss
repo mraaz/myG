@@ -844,6 +844,7 @@
           .game__attributes {
             padding: 15px;
             width: 100%;
+            padding-bottom: 0;
             &:hover {
               .copy__clipboard {
                 opacity: 1;
@@ -982,6 +983,29 @@
                     color: #9dceff;
                     border: 1px solid #9dceff;
                   }
+                }
+              }
+            }
+            .fourth__row {
+              display: flex;
+              border-top: 1px solid #43654e;
+              padding: 10px 0px;
+              font-size: 13px;
+              img {
+                width: 15px;
+                height: 15px;
+                margin-right: 5px;
+              }
+              .my__status {
+                span {
+                  color: #8ce09a;
+                }
+              }
+              .no__of__approval {
+                margin-left: 10px;
+                cursor: pointer;
+                span {
+                  color: #ead782;
                 }
               }
             }
