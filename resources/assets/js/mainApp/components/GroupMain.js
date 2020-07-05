@@ -88,7 +88,7 @@ export default class GroupMain extends Component {
     const getmyGroups = async function() {
       var counter = 1
       try {
-        const getmyGroups = await axios.get(`/api/groups/view/${counter}`)
+        const getmyGroups = await axios.get('/api/groups/all_myGrps/1')
         self.setState({
           myGroups: getmyGroups.data.myGroups,
         })

@@ -9,8 +9,10 @@ class CoHostsSchema extends Schema {
       table.increments()
       table.integer('user_id').unsigned().notNullable()
       table.foreign('user_id').references('users.id').onDelete('cascade')
-      table.integer('schedule_games_id').unsigned().notNullable()
+      table.integer('schedule_games_id').unsigned().nullable()
       table.foreign('schedule_games_id').references('schedule_games.id').onDelete('cascade')
+      table.integer('group_id').unsigned().nullable()
+      table.foreign('group_id').references('groups.id').onDelete('cascade')
       table.timestamps(true,true)
     })
   }
