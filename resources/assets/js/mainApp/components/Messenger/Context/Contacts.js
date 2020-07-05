@@ -1,6 +1,7 @@
 import React from 'react'
 import Divider from './Divider'
 import Contact from './Contact'
+import Section from './Section'
 import { STATUS_ENUM, compareStatus } from '../../../../common/status'
 import { getAssetUrl } from '../../../../common/assets'
 import logger from '../../../../common/logger'
@@ -13,51 +14,11 @@ export default class Contacts extends React.Component {
 
   state = {
     sectionExpanded: {
-      recent: true,
-      [STATUS_ENUM.ONLINE]: false,
+      [STATUS_ENUM.ONLINE]: true,
       [STATUS_ENUM.PLAYING]: false,
       [STATUS_ENUM.AFK]: false,
       [STATUS_ENUM.OFFLINE]: false,
     },
-  }
-
-  compareLastMessages = (f1, f2) => {
-    const m1 = (f1.chat.messages || [])[(f1.chat.messages || []).length - 1] || { createdAt: 0 }
-    const m2 = (f2.chat.messages || [])[(f2.chat.messages || []).length - 1] || { createdAt: 0 }
-    return new Date(m2.createdAt) - new Date(m1.createdAt)
-  }
-
-  renderSection(name, count, contacts, expanded) {
-    const chevronType = contacts.length && expanded ? 'down' : 'right'
-    return (
-      <div className='messenger-body-section' key={name}>
-        <div
-          className='messenger-body-section-header clickable'
-          onClick={() =>
-            this.setState((previous) => ({
-              sectionExpanded: {
-                ...{
-                  [STATUS_ENUM.ONLINE]: false,
-                  [STATUS_ENUM.PLAYING]: false,
-                  [STATUS_ENUM.AFK]: false,
-                  [STATUS_ENUM.OFFLINE]: false,
-                },
-                [name]: !previous.sectionExpanded[name],
-              },
-            }))
-          }>
-          <p className='messenger-body-section-header-name'>{name}</p>
-          <div className='messenger-body-section-header-info'>
-            <p className='messenger-body-section-header-count'>{`(${count})`}</p>
-            <div
-              className='messenger-body-section-header-icon'
-              style={{ backgroundImage: `url('${getAssetUrl(`ic_messenger_chevron_${chevronType}`)}')` }}
-            />
-          </div>
-        </div>
-        {!!contacts.length && expanded && <div className='messenger-body-section-content'>{contacts.map(this.renderContact)}</div>}
-      </div>
-    )
   }
 
   renderContact = (contact) => {
@@ -74,78 +35,57 @@ export default class Contacts extends React.Component {
     )
   }
 
+  expandSection = (section) => {
+    this.setState((previous) => ({
+      sectionExpanded: {
+        ...{
+          [STATUS_ENUM.ONLINE]: false,
+          [STATUS_ENUM.PLAYING]: false,
+          [STATUS_ENUM.AFK]: false,
+          [STATUS_ENUM.OFFLINE]: false,
+        },
+        [section]: !previous.sectionExpanded[section],
+      },
+    }))
+  }
+
   render() {
-  logger.log('RENDER', 'Contacts')
+    logger.log('RENDER', 'Contacts')
     return Divider(
       'friends',
       this.props.expanded,
       () => this.props.onExpand(this.props.expanded),
       () => {
-        if (!this.props.contacts.length) {
-          return (
-            <div className='messenger-empty-message-container'>
-              <p className='messenger-empty-message'>
-                You haven't added any friends{this.props.inGame ? ' that play this game' : ''} yet :(
-              </p>
-              <p className='messenger-empty-message'>Try searching for players</p>
-            </div>
-          )
-        }
-
-        const sections = {}
-
-        const contacts = this.props.contacts
-          .slice(0)
-          .sort((f1, f2) => compareStatus(f1.status, f2.status))
-          .sort((f1, f2) => this.compareLastMessages(f1, f2))
-
-        if (this.props.search.trim()) {
-          const search = (name) => name.toLowerCase().includes(this.props.search.toLowerCase())
-          sections['suggestions'] = contacts
-            .slice(0)
-            .filter((contact) => search(contact.name))
-            .slice(0, 18)
-        } else {
-          sections['recent'] = contacts.filter((contact) => (contact.chat.messages || []).length).slice(0, 8)
-          sections[STATUS_ENUM.ONLINE] = contacts.filter((contact) => contact.status === STATUS_ENUM.ONLINE)
-          sections[STATUS_ENUM.PLAYING] = contacts.filter((contact) => contact.status === STATUS_ENUM.PLAYING)
-          sections[STATUS_ENUM.AFK] = contacts.filter((contact) => contact.status === STATUS_ENUM.AFK)
-          sections[STATUS_ENUM.OFFLINE] = contacts.filter((contact) => contact.status === STATUS_ENUM.OFFLINE)
-        }
-
         return (
           <div className='messenger-body-section'>
-            {!!this.props.search && this.renderSection('suggestions', sections['suggestions'].length, sections['suggestions'], true)}
-            {!this.props.search &&
-              this.renderSection('recent', sections['recent'].length, sections['recent'], this.state.sectionExpanded['recent'])}
-            {!this.props.search &&
-              this.renderSection(
-                STATUS_ENUM.ONLINE,
-                sections[STATUS_ENUM.ONLINE].length,
-                sections[STATUS_ENUM.ONLINE],
-                this.state.sectionExpanded[STATUS_ENUM.ONLINE]
-              )}
-            {!this.props.search &&
-              this.renderSection(
-                STATUS_ENUM.PLAYING,
-                sections[STATUS_ENUM.PLAYING].length,
-                sections[STATUS_ENUM.PLAYING],
-                this.state.sectionExpanded[STATUS_ENUM.PLAYING]
-              )}
-            {!this.props.search &&
-              this.renderSection(
-                STATUS_ENUM.AFK,
-                sections[STATUS_ENUM.AFK].length,
-                sections[STATUS_ENUM.AFK],
-                this.state.sectionExpanded[STATUS_ENUM.AFK]
-              )}
-            {!this.props.search &&
-              this.renderSection(
-                STATUS_ENUM.OFFLINE,
-                sections[STATUS_ENUM.OFFLINE].length,
-                sections[STATUS_ENUM.OFFLINE],
-                this.state.sectionExpanded[STATUS_ENUM.OFFLINE]
-              )}
+            {!this.props.search && (
+              <React.Fragment>
+                <Section
+                  {...this.props}
+                  status={STATUS_ENUM.ONLINE}
+                  expanded={this.state.sectionExpanded[STATUS_ENUM.ONLINE]}
+                  onSectionExpanded={() => this.expandSection(STATUS_ENUM.ONLINE)}
+                />
+                <Section
+                  {...this.props}
+                  status={STATUS_ENUM.PLAYING}
+                  expanded={this.state.sectionExpanded[STATUS_ENUM.PLAYING]}
+                  onSectionExpanded={() => this.expandSection(STATUS_ENUM.PLAYING)}
+                />
+                <Section
+                  {...this.props}
+                  status={STATUS_ENUM.AFK}
+                  expanded={this.state.sectionExpanded[STATUS_ENUM.AFK]}
+                  onSectionExpanded={() => this.expandSection(STATUS_ENUM.AFK)}
+                />
+                <Section
+                  {...this.props}
+                  status={STATUS_ENUM.OFFLINE}
+                  expanded={this.state.sectionExpanded[STATUS_ENUM.OFFLINE]}
+                  onSectionExpanded={() => this.expandSection(STATUS_ENUM.OFFLINE)}
+                />
+              </React.Fragment>
+            )}
           </div>
         )
       }

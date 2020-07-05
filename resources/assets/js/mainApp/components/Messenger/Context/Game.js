@@ -19,6 +19,7 @@ export default class Game extends React.Component {
     return (
       <Contacts
         userId={this.props.userId}
+        gameId={this.props.game.gameId}
         privateKey={this.props.privateKey}
         contacts={this.props.contacts}
         search={this.props.search}
@@ -37,6 +38,7 @@ export default class Game extends React.Component {
       <Groups
         userId={this.props.userId}
         game={this.props.game}
+        gameId={this.props.game.gameId}
         privateKey={this.props.privateKey}
         contacts={this.props.contacts}
         groups={this.props.groups}
@@ -53,7 +55,7 @@ export default class Game extends React.Component {
 
   render() {
     return (
-      <div className='messenger-body-section-content'>
+      <div className='messenger-body-tab-content'>
         {this.renderContacts()}
         {this.renderGroups()}
       </div>

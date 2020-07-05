@@ -66,7 +66,7 @@ export default class Contact extends React.Component {
     const { messages } = this.state
     const lastMessage = messages[messages.length - 1]
     const receivedMessages = messages.filter((message) => message.senderId !== this.props.userId)
-    const unreadCount = this.countUnreadMessages(contact.chat.lastRead, receivedMessages)
+    const unreadCount = this.countUnreadMessages(contact.chat && contact.chat.lastRead, receivedMessages)
     return (
       <div key={contact.contactId} className='messenger-contact' onClick={() => this.openChat(contact)}>
         <div className='messenger-contact-icon' style={{ backgroundImage: `url('${contact.icon}')` }}>

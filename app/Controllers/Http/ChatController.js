@@ -409,7 +409,7 @@ class ChatController {
     const { status, page: requestedPage, gameId } = request.only(['status', 'page', 'gameId'])
     log('USER', `User ${requestingUserId} requesting Contacts with status ${status} and page ${requestedPage}`)
     if (gameId) {
-      const { contacts } = await ChatRepository.fetchContactsByGame({ requestingUserId, gameId })
+      const { contacts } = await ChatRepository.fetchContactsByGame({ requestingUserId, status, gameId })
       return response.send({ contacts })
     }
     const { contacts } = await ChatRepository.fetchContactsPaginated({ requestingUserId, status, requestedPage })

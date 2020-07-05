@@ -24,7 +24,6 @@ export default class General extends React.Component {
       <Contacts
         userId={this.props.userId}
         privateKey={this.props.privateKey}
-        contacts={this.props.contacts}
         messagesLength={messagesLength}
         search={this.props.search}
         disconnected={this.props.disconnected}
@@ -85,7 +84,7 @@ export default class General extends React.Component {
         </div>
 
         {this.props.expanded && (
-          <div className='messenger-body-section-content'>
+          <div className='messenger-body-tab-content'>
             {this.renderContacts()}
             {this.renderGroups()}
           </div>

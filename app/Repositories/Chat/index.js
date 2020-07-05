@@ -518,7 +518,7 @@ class ChatRepository {
     return { contacts };
   }
 
-  async fetchContactsByGame({ requestingUserId, gameId }) {
+  async fetchContactsByGame({ requestingUserId, status, gameId }) {
     const query = Database
     .select('friends.friend_id', 'users.profile_img', 'users.alias', 'users.status', 'users.last_seen', 'users.public_key')
     .from('game_experiences')
@@ -526,6 +526,7 @@ class ChatRepository {
     .leftJoin('users', 'users.id', 'friends.friend_id')
     .where('friends.user_id', requestingUserId)
     .andWhere('game_experiences.game_names_id', gameId)
+    .andWhere('users.status', status)
     .union([
       Database
       .select('friends.friend_id', 'users.profile_img', 'users.alias', 'users.status', 'users.last_seen', 'users.public_key')
@@ -534,6 +535,7 @@ class ChatRepository {
       .leftJoin('users', 'users.id', 'friends.friend_id')
       .where('friends.user_id', requestingUserId)
       .andWhere('esports_experiences.game_names_id', gameId)
+      .andWhere('users.status', status)
     ]);
     const results = await query;
     if (!results) return { contacts: [] };
