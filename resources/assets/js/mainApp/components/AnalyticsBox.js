@@ -16,7 +16,6 @@ export default class AnalyticsBox extends Component {
 
   async componentDidMount() {
     const get_stats = await axios.get('/api/userStatTransaction/master_controller')
-    console.log(get_stats)
     const getGamers_you_might_know = await axios.post('/api/connections/gamers_you_might_know', { counter: 1 })
     const youMayKnowUser = getGamers_you_might_know.data.data
     this.setState({ userTransactionStates: { ...get_stats.data }, youMayKnowUser })
