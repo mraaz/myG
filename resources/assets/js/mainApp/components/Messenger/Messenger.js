@@ -4,6 +4,7 @@ import SweetAlert from '../common/MyGSweetAlert'
 
 import General from './Context/General'
 import Games from './Context/Games'
+import SearchResults from './Context/SearchResults'
 import Chats from './Context/Chats'
 import Footer from './Context/Footer'
 import Settings from './Context/Settings'
@@ -30,10 +31,10 @@ import {
   updateStatusAction,
   toggleNotificationSoundsAction,
   toggleAutoSelfDestructAction,
-  fetchSettingsAction,
   togglePushNotificationsAction,
 } from '../../../redux/actions/userAction'
 import { generateKeysAction, validatePinAction } from '../../../redux/actions/encryptionAction'
+import { searchPaginatedAction } from '../../../redux/actions/paginationAction'
 import { uploadGameIcon } from '../../../integration/http/chat'
 import logger from '../../../common/logger'
 import { ignoreFunctions } from '../../../common/render'
@@ -59,11 +60,15 @@ class Messenger extends React.Component {
     monitorChats(this.props.userId, false)
     handleLink(this.props.userId)
     monitorSocketConnection()
-    this.props.fetchSettings(this.props.userId)
   }
 
   componentWillUnmount() {
     closeSubscription()
+  }
+
+  onSearch = (searchInput) => {
+    this.setState({ searchInput })
+    this.props.searchPaginated(0, searchInput, true)
   }
 
   onUploadPhoto = async (icon, key) => {
@@ -84,6 +89,7 @@ class Messenger extends React.Component {
       <div className='messenger-body'>
         {this.renderConnectionWarning()}
         {this.renderGeneral()}
+        {this.renderSearchResults()}
         {this.renderGames()}
       </div>
     )
@@ -97,7 +103,7 @@ class Messenger extends React.Component {
         updateStatus={this.props.updateStatus}
         profileImage={this.props.profileImage}
         status={this.props.status}
-        onSearch={(searchInput) => this.setState({ searchInput })}
+        onSearch={this.onSearch}
         onSettingsClicked={() => !this.state.blockSettings && this.setState((previous) => ({ showingSettings: !previous.showingSettings }))}
       />
     )
@@ -152,9 +158,6 @@ class Messenger extends React.Component {
       <General
         userId={this.props.userId}
         privateKey={this.props.privateKey}
-        contacts={this.props.contacts}
-        groups={this.props.groups}
-        chats={this.props.chats}
         search={this.state.searchInput}
         disconnected={this.props.disconnected}
         openChat={this.props.openChat}
@@ -165,14 +168,28 @@ class Messenger extends React.Component {
     )
   }
 
+  renderSearchResults = () => {
+    return (
+      <SearchResults
+        searchResults={this.props.searchResults}
+        loading={this.props.searching}
+        chats={this.props.chats}
+        userId={this.props.userId}
+        privateKey={this.props.privateKey}
+        search={this.state.searchInput}
+        disconnected={this.props.disconnected}
+        openChat={this.props.openChat}
+        createChat={this.props.createChat}
+      />
+    )
+  }
+
   renderGames = () => {
     return (
       <Games
+        games={this.props.games}
         userId={this.props.userId}
         privateKey={this.props.privateKey}
-        contacts={this.props.contacts}
-        games={this.props.games}
-        groups={this.props.groups}
         search={this.state.searchInput}
         disconnected={this.props.disconnected}
         openChat={this.props.openChat}
@@ -290,6 +307,8 @@ function mapStateToProps(state) {
     invalidPin: state.encryption.invalidPin,
     privateKey: state.encryption.privateKey,
     disconnected: state.socket.disconnected,
+    searchResults: state.pagination.search,
+    searching: state.pagination.loading,
   }
 }
 
@@ -297,7 +316,7 @@ function mapDispatchToProps(dispatch) {
   return {
     createChat: (contacts, userId, title, icon, encryption, isGroup, individualGameId, gameId) =>
       dispatch(createChatAction(contacts, userId, title, icon, encryption, isGroup, individualGameId, gameId)),
-    openChat: (chatId) => dispatch(openChatAction(chatId)),
+    openChat: (chatId, chat) => dispatch(openChatAction(chatId, chat)),
     closeChat: (chatId) => dispatch(closeChatAction(chatId)),
     generateKeys: (pin) => dispatch(generateKeysAction(pin)),
     validatePin: (pin, publicKey) => dispatch(validatePinAction(pin, publicKey)),
@@ -308,9 +327,9 @@ function mapDispatchToProps(dispatch) {
     unblockUser: (blockedUserId) => dispatch(unblockUserAction(blockedUserId)),
     updateGameIcon: (gameId, icon) => dispatch(updateGameIconAction(gameId, icon)),
     updateStatus: (status, forcedStatus) => dispatch(updateStatusAction(status, forcedStatus)),
+    searchPaginated: (page, search, refresh) => dispatch(searchPaginatedAction(page, search, refresh)),
     toggleNotificationSounds: (disabled) => dispatch(toggleNotificationSoundsAction(disabled)),
     toggleAutoSelfDestruct: (enabled) => dispatch(toggleAutoSelfDestructAction(enabled)),
-    fetchSettings: (userId) => dispatch(fetchSettingsAction(userId)),
     togglePushNotifications: (userId) => dispatch(togglePushNotificationsAction(userId)),
   }
 }

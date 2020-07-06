@@ -1,7 +1,6 @@
 import React from 'react'
 import Contacts from './Contacts'
 import Groups from './Groups'
-import { STATUS_ENUM } from '../../../../common/status'
 import { getAssetUrl } from '../../../../common/assets'
 import { ignoreFunctions } from '../../../../common/render'
 
@@ -18,15 +17,10 @@ export default class General extends React.Component {
   }
 
   renderContacts = () => {
-    let messagesLength = 0;
-    (this.props.chats || []).forEach(chat => messagesLength += (chat.messages || []).length)
     return (
       <Contacts
         userId={this.props.userId}
         privateKey={this.props.privateKey}
-        contacts={this.props.contacts}
-        messagesLength={messagesLength}
-        search={this.props.search}
         disconnected={this.props.disconnected}
         openChat={this.props.openChat}
         createChat={this.props.createChat}
@@ -41,9 +35,6 @@ export default class General extends React.Component {
       <Groups
         userId={this.props.userId}
         privateKey={this.props.privateKey}
-        contacts={this.props.contacts}
-        groups={this.props.groups}
-        search={this.props.search}
         disconnected={this.props.disconnected}
         openChat={this.props.openChat}
         createChat={this.props.createChat}
@@ -54,17 +45,14 @@ export default class General extends React.Component {
   }
 
   render() {
-    const color = '#40494C'
-    const chevronType = this.props.expanded ? 'down' : 'right'
-    const onlineCount = this.props.contacts.filter((contact) => contact.status === STATUS_ENUM.ONLINE).length
-    const onlineInfo = `${onlineCount}/${this.props.contacts.length} online`
+    if (this.props.search) return null
     return (
-      <div key={'general'} className='messenger-body-section' style={{ backgroundColor: color }}>
+      <div key={'general'} className='messenger-body-section' style={{ backgroundColor: '#40494C' }}>
         <div
           className='messenger-body-section-header clickable'
-          style={{ backgroundColor: color }}
+          style={{ backgroundColor: '#40494C' }}
           onClick={() => this.props.onExpand(this.props.expanded)}>
-          <div className='messenger-body-game-section' style={{ backgroundColor: color }}>
+          <div className='messenger-body-game-section' style={{ backgroundColor: '#40494C' }}>
             <div
               className='messenger-game-icon'
               style={{
@@ -76,16 +64,15 @@ export default class General extends React.Component {
             <p className='messenger-body-section-header-name'>General</p>
           </div>
           <div className='messenger-body-section-header-info'>
-            <p className='messenger-body-section-online-count'>{onlineInfo}</p>
             <div
               className='messenger-body-section-header-icon'
-              style={{ backgroundImage: `url('${getAssetUrl(`ic_messenger_chevron_${chevronType}`)}')` }}
+              style={{ backgroundImage: `url('${getAssetUrl(`ic_messenger_chevron_${this.props.expanded ? 'down' : 'right'}`)}')` }}
             />
           </div>
         </div>
 
         {this.props.expanded && (
-          <div className='messenger-body-section-content'>
+          <div className='messenger-body-tab-content'>
             {this.renderContacts()}
             {this.renderGroups()}
           </div>

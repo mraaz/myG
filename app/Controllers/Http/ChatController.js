@@ -2,8 +2,16 @@
 
 const { log } = require('../../Common/logger')
 const ChatRepository = require('../../Repositories/Chat')
+const MessengerRepository = require('../../Repositories/Messenger')
 
 class ChatController {
+  async prepareMessenger({ auth, response }) {
+    const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
+    const { contacts, games, status, blockedUsers, settings } = await MessengerRepository.prepareMessenger({ requestingUserId })
+    return response.send({ contacts, games, status, blockedUsers, settings })
+  }
+
   async fetchChats({ auth, request, response }) {
     const requestingUserId = auth.user.id
     if (!requestingUserId) throw new Error('Auth Error')
@@ -127,8 +135,8 @@ class ChatController {
     const requestingUserId = auth.user.id
     if (!requestingUserId) throw new Error('Auth Error')
     const groupName = request.only('groupName').groupName
-    const requestedPage = request.only(['page']).page || 1
-    log('CHAT', `User ${requestingUserId} searching for Groups for page ${requestedPage || 1} with ${groupName}`)
+    const requestedPage = request.only(['page']).page || 0
+    log('CHAT', `User ${requestingUserId} searching for Groups for page ${requestedPage || 0} with ${groupName}`)
     const { groups } = await ChatRepository.searchGroup({ requestingUserId, groupName, requestedPage })
     return response.send({ groups })
   }
@@ -136,7 +144,7 @@ class ChatController {
   async fetchChatNotifications({ auth, request, response }) {
     const requestingUserId = auth.user.id
     if (!requestingUserId) throw new Error('Auth Error')
-    const requestedPage = request.only(['page']).page || 1
+    const requestedPage = request.only(['page']).page || 0
     log('CHAT', `User ${requestingUserId} requesting Chat Notifications`)
     const { notifications } = await ChatRepository.fetchChatNotifications({ requestingUserId, requestedPage })
     return response.send({ notifications })
@@ -198,7 +206,7 @@ class ChatController {
     const requestingUserId = auth.user.id
     if (!requestingUserId) throw new Error('Auth Error')
     const requestedChatId = params.chatId
-    const requestedPage = request.only(['page']).page || 1
+    const requestedPage = request.only(['page']).page || 0
     log('CHAT', `User ${requestingUserId} requesting Messages for Chat ${requestedChatId}`)
     const { messages } = await ChatRepository.fetchMessages({ requestingUserId, requestedChatId, requestedPage })
     return response.send({ messages })
@@ -393,6 +401,51 @@ class ChatController {
     log('CHAT', `User ${requestingUserId} accepting to join Game Group ${requestedGameId}`)
     const { success, error } = await ChatRepository.acceptGameGroupInvitation({ requestedUserId, requestedGameId })
     return response.send({ success, error })
+  }
+
+  async fetchContactsPaginated({ auth, request, response }) {
+    const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
+    const { status, page: requestedPage, gameId } = request.only(['status', 'page', 'gameId'])
+    const search = request.only('search').search
+    log('USER', `User ${requestingUserId} requesting Contacts with status ${status} and page ${requestedPage}`)
+    if (gameId) {
+      const { contacts } = await ChatRepository.fetchContactsByGame({ requestingUserId, status, gameId, search })
+      return response.send({ contacts })
+    }
+    const { contacts } = await ChatRepository.fetchContactsPaginated({ requestingUserId, status, requestedPage, search })
+    return response.send({ contacts })
+  }
+
+  async fetchGroupsPaginated({ auth, request, response }) {
+    const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
+    const requestedPage = request.only('page').page
+    const gameId = request.only('gameId').gameId
+    const search = request.only('search').search
+    log('CHAT', `User ${requestingUserId} requesting Groups paginated`)
+    const { groups } = await ChatRepository.fetchGroupsPaginated({ requestingUserId, requestedPage, gameId, search })
+    return response.send({ groups })
+  }
+
+  async fetchGamesPaginated({ auth, request, response }) {
+    const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
+    const requestedPage = request.only('page').page
+    const search = request.only('search').search
+    log('CHAT', `User ${requestingUserId} requesting Games paginated`)
+    const { games } = await ChatRepository.fetchGamesPaginated({ requestingUserId, requestedPage, search })
+    return response.send({ games })
+  }
+
+  async searchPaginated({ auth, request, response }) {
+    const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
+    const requestedPage = request.only('page').page
+    const search = request.only('search').search
+    log('CHAT', `User ${requestingUserId} searching for ${search} paginated`)
+    const { contacts, groups, games } = await ChatRepository.searchPaginated({ requestingUserId, requestedPage, search })
+    return response.send({ contacts, groups, games })
   }
 }
 

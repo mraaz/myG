@@ -1,6 +1,11 @@
 import axios from 'axios';
 import logger from '../../../common/logger';
 
+export function prepareMessenger() {
+  logger.log('USER', 'HTTP', `Preparing Messenger`);
+  return axios.get(`/api/messenger`).then(response => response.data);
+}
+
 export function fetchUser(userId) {
   logger.log('USER', 'HTTP', `Fetching User`);
   return axios.get(`/api/user/${userId}`).then(response => response.data);

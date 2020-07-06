@@ -5,6 +5,7 @@ import FileOpenModal from '../FileOpenModal'
 import Dropdown from '../Dropdown'
 import notifyToast from '../../../common/toast'
 import { searchGameAction } from '../../../redux/actions/gameAction'
+import { fetchContactsPaginatedAction } from '../../../redux/actions/paginationAction'
 import { getAssetUrl } from '../../../common/assets'
 import { ignoreFunctions } from '../../../common/render'
 
@@ -23,7 +24,6 @@ class GroupCreation extends React.Component {
       gameInput: '',
       selectedGame: this.props.game || null,
       contactInput: '',
-      matchingContacts: [],
       addedContacts: [],
       uploadingPhoto: false,
     }
@@ -53,8 +53,8 @@ class GroupCreation extends React.Component {
   }
 
   onContactSearch = (name) => {
-    const matchingContacts = this.props.contacts.filter((contact) => contact.name.toLowerCase().includes(name.toLowerCase()))
-    this.setState({ contactInput: name, matchingContacts })
+    this.props.fetchContactsPaginated(0, null, null, name, true)
+    this.setState({ contactInput: name })
   }
 
   onGameSearch = (game) => {
@@ -64,7 +64,7 @@ class GroupCreation extends React.Component {
 
   onCreate = () => {
     const { icon, key, addedContacts, selectedGame } = this.state
-    const contactAliases = addedContacts.map((contactId) => this.props.contacts.find((contact) => contact.contactId === contactId).name)
+    const contactAliases = addedContacts.map((contact) => contact.name)
     const firstAlias = contactAliases[0] ? `, ${contactAliases[0]}` : ''
     const secondAlias = contactAliases[1] ? `, ${contactAliases[1]}` : ''
     const title = this.state.title || `${this.props.alias}` + firstAlias + secondAlias
@@ -85,11 +85,10 @@ class GroupCreation extends React.Component {
 
   onAddContact = (contact) => {
     if (this.state.addedContacts.length >= MAXIMUM_GROUP_SIZE) return notifyToast('Maximum Group size reached!')
-    this.setState((previous) => ({ addedContacts: [...previous.addedContacts, contact.contactId] }))
+    this.setState((previous) => ({ addedContacts: [...previous.addedContacts, contact] }))
   }
 
   onUploadPhoto = (icon, key) => {
-    console.log(icon, key)
     this.setState({ icon, key, uploadingPhoto: false })
   }
 
@@ -175,12 +174,12 @@ class GroupCreation extends React.Component {
   }
 
   renderContacts = () => {
-    const contacts = this.state.matchingContacts.length ? this.state.matchingContacts : this.props.contacts
+    const contacts = this.props.foundContacts.length ? this.props.foundContacts : this.props.contacts
     return <div className='chat-group-creation-contacts'>{contacts.map(this.renderContact)}</div>
   }
 
   renderContact = (contact) => {
-    const isAdded = this.state.addedContacts.includes(contact.contactId)
+    const isAdded = this.state.addedContacts.map((contact) => contact.contactId).includes(contact.contactId)
     return (
       <div key={contact.contactId} className='chat-group-creation-contact'>
         <div className='chat-group-creation-contact-info'>
@@ -192,7 +191,7 @@ class GroupCreation extends React.Component {
             className='chat-group-creation-contact-remove-button clickable'
             onClick={() =>
               this.setState((previous) => ({
-                addedContacts: previous.addedContacts.filter((contactId) => contactId !== contact.contactId),
+                addedContacts: previous.addedContacts.filter((existing) => existing.contactId !== contact.contactId),
               }))
             }>
             Remove
@@ -241,12 +240,15 @@ function mapStateToProps(state) {
     contacts: state.user.contacts,
     games: state.user.games,
     foundGames: state.game.foundGames,
+    foundContacts: state.pagination.foundContacts,
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     searchGame: (name) => dispatch(searchGameAction(name)),
+    fetchContactsPaginated: (page, status, gameId, search, refresh) =>
+      dispatch(fetchContactsPaginatedAction(page, status, gameId, search, refresh)),
   }
 }
 

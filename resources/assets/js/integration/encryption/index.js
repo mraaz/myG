@@ -2,6 +2,13 @@
 import cryptico, { RSAKey } from 'cryptico';
 import logger from '../../common/logger';
 
+export function prepareEncryption(pin, privateKey, publicKey) {
+  privateKey = deserializeKey(privateKey)
+  if (!privateKey && !pin && publicKey) return Promise.resolve({});
+  if (privateKey) return Promise.resolve({ encryption: { pin, privateKey, publicKey: getPublicKey(privateKey) } })
+  return generateKeys(pin)
+}
+
 export function generateKeys(pin) {
   return new Promise(resolve => {
     setTimeout(() => resolve(generateKeysSync(pin)));

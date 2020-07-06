@@ -7,6 +7,7 @@ import chat from './reducers/chatReducer'
 import user from './reducers/userReducer'
 import guest from './reducers/guestReducer'
 import game from './reducers/gameReducer'
+import pagination from './reducers/paginationReducer'
 import encryption from './reducers/encryptionReducer'
 import socket from './reducers/socketReducer'
 
@@ -16,6 +17,7 @@ const appReducer = combineReducers({
   chat,
   guest,
   game,
+  pagination,
   encryption,
   socket,
 })

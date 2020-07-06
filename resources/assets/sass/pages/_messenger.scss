@@ -488,15 +488,17 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    padding: 8px;
   }
 
   .messenger-settings-game-input {
-    position: absolute;
+    position: fixed;
     display: flex;
     flex-direction: column;
     width: 19vw;
-    left: -8px;
-    bottom: 16px;
+    right: 8px;
+    bottom: 0;
+    z-index: 10;
     background-color: #151c26;
   }
 
@@ -507,7 +509,6 @@
     border-radius: 12px;
     font-size: 14px;
     width: 90%;
-    margin-top: 14px;
     align-self: center;
     color: #a0a0a0;
   }
@@ -582,6 +583,16 @@
     flex-direction: column;
   }
 
+  .messenger-body-section-loader {
+    display: flex;
+    padding: 8px;
+    color: #FAFAFA;
+    align-items: center;
+    justify-content: center;
+    background-color: #2d363a;
+    opacity: 0.6;
+  }
+
   .messenger-body-game-section {
     display: flex;
     align-items: center;
@@ -642,10 +653,18 @@
     margin-left: 4px;
   }
 
+  .messenger-body-tab-content {
+    display: flex;
+    flex-direction: column;
+    background-color: #151b26;
+  }
+
   .messenger-body-section-content {
     display: flex;
     flex-direction: column;
     background-color: #151b26;
+    max-height: 200px;
+    overflow-y: scroll;
   }
 
   .messenger-body-divider-content {
@@ -718,11 +737,12 @@
     flex-direction: column;
     align-content: center;
     justify-content: center;
+    margin: 16px;
   }
 
   .messenger-loading-hint-top {
     color: #fafafa;
-    font-size: 1.2em;
+    font-size: 1em;
     text-align: center;
     margin-bottom: 16px;
   }

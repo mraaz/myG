@@ -1,30 +1,20 @@
 import React from 'react'
 import { decryptMessage } from '../../../../integration/encryption'
 import { formatAMPM } from '../../../../common/date'
-import { STATUS_ENUM } from '../../../../common/status'
 import { ignoreFunctions } from '../../../../common/render'
 
 export default class Contact extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
-    const currentMessages = ((this.props.contact || {}).chat || {}).messages || []
-    const newMessages = ((nextProps.contact || {}).chat || {}).messages || []
-    if (currentMessages.length !== newMessages.length) return true
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
   }
 
   static getDerivedStateFromProps(props) {
     const messages = ((props.contact || {}).chat || {}).messages || []
-    return { messages }
+    return { messages: JSON.parse(JSON.stringify(messages)) }
   }
 
   state = {
-    sectionExpanded: {
-      recent: true,
-      [STATUS_ENUM.ONLINE]: false,
-      [STATUS_ENUM.PLAYING]: false,
-      [STATUS_ENUM.AFK]: false,
-      [STATUS_ENUM.OFFLINE]: false,
-    },
+    messages: [],
   }
 
   decryptMessage = (message) => {
@@ -37,7 +27,7 @@ export default class Contact extends React.Component {
 
   openChat = (contact) => {
     if (this.props.disconnected) return
-    if (contact.chat && contact.chat.chatId) return this.props.openChat(contact.chat.chatId)
+    if (contact.chat && contact.chat.chatId) return this.props.openChat(contact.chat.chatId, contact.chat)
     this.props.createChat([contact.contactId], this.props.userId)
   }
 
@@ -66,7 +56,7 @@ export default class Contact extends React.Component {
     const { messages } = this.state
     const lastMessage = messages[messages.length - 1]
     const receivedMessages = messages.filter((message) => message.senderId !== this.props.userId)
-    const unreadCount = this.countUnreadMessages(contact.chat.lastRead, receivedMessages)
+    const unreadCount = this.countUnreadMessages(contact.chat && contact.chat.lastRead, receivedMessages)
     return (
       <div key={contact.contactId} className='messenger-contact' onClick={() => this.openChat(contact)}>
         <div className='messenger-contact-icon' style={{ backgroundImage: `url('${contact.icon}')` }}>

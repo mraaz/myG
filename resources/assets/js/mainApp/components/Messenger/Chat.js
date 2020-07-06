@@ -73,7 +73,6 @@ export class Chat extends React.Component {
     if (!messageList) return
     const hasScrolledEnough = messageList.scrollHeight - messageList.scrollTop > 750
     const hasScrolledToBottom = messageList.scrollHeight - messageList.scrollTop < 300
-    console.log(hasScrolledToBottom, messageList.scrollHeight, messageList.scrollTop)
     if (hasScrolledToBottom) this.markAsRead()
     this.setState({ oldMessages: hasScrolledEnough })
     if (messageList.scrollTop !== 0 || this.props.loadingMessages || this.props.noMoreMessages) return

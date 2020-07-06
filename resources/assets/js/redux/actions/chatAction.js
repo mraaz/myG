@@ -29,8 +29,8 @@ import {
   setTyping,
 } from '../../integration/http/chat'
 import { fetchGroupPrivateKeyRequests } from '../../integration/http/guest'
-import { fetchGames, fetchContacts, fetchContact, fetchStatus } from '../../integration/http/user'
-import { generateKeys, deserializeKey, getPublicKey } from '../../integration/encryption'
+import { fetchGames, fetchContact, prepareMessenger } from '../../integration/http/user'
+import { prepareEncryption } from '../../integration/encryption'
 
 export function onNewChatAction(chat, userId) {
   return {
@@ -179,25 +179,10 @@ export function updateChatStateAction(chatId, state) {
 }
 
 export function prepareMessengerAction(userId, alias, pin, privateKey, publicKey) {
-  const chatsRequest = fetchChats()
-  const gamesRequest = fetchGames(userId)
-  const contactsRequest = fetchContacts()
-  const statusRequest = fetchStatus()
-  let encryptionRequest = Promise.resolve({})
-  if (privateKey) privateKey = deserializeKey(privateKey)
-  if (privateKey) encryptionRequest = Promise.resolve({ encryption: { pin, privateKey, publicKey: getPublicKey(privateKey) } })
-  else if (pin) encryptionRequest = generateKeys(pin)
-  else if (!publicKey) encryptionRequest = generateKeys()
-  const requests = [chatsRequest, contactsRequest, gamesRequest, statusRequest, encryptionRequest]
+  const requests = [prepareMessenger(), prepareEncryption(pin, privateKey, publicKey)]
   return {
     type: 'PREPARE_MESSENGER',
-    payload: Promise.all(requests).then(([chats, contacts, games, status, encryption]) => ({
-      ...chats,
-      ...contacts,
-      ...games,
-      ...status,
-      ...encryption,
-    })),
+    payload: Promise.all(requests).then(([messenger, encryption]) => ({ ...messenger, ...encryption })),
     meta: { userId, alias },
   }
 }
@@ -317,10 +302,10 @@ export function removeFromGroupAction(chatId, userId) {
   }
 }
 
-export function openChatAction(chatId) {
+export function openChatAction(chatId, chat) {
   return {
     type: 'OPEN_CHAT',
-    payload: { chatId },
+    payload: { chatId, chat },
   }
 }
 

@@ -42,28 +42,18 @@ export default function reducer(
 
     case 'PREPARE_MESSENGER_FULFILLED': {
       logger.log('CHAT', `Redux -> Messenger Ready (Chat): `, action.payload)
-      const { userId } = action.meta
-      const chats = action.payload.chats.map((chat) => {
-        const previousChat = state.chats.find((candidate) => candidate.chatId === chat.chatId) || {}
-        const previousMessages = previousChat.messages || []
-        return {
-          ...chat,
-          ...previousChat,
-          messages: previousMessages,
-          closed: previousChat.closed || !previousMessages.length,
-          deletedMessages: chat.deletedMessages,
-        }
-      })
-      const openChats = chats.filter((candidate) => !candidate.closed)
-      if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => (openChats[index].closed = true))
+      const { userId, alias } = action.meta
+      const blockedUsers = action.payload.blockedUsers || []
+      const settings = action.payload.settings || {}
+      const encryption = action.payload.encryption || {}
       return {
         ...state,
-        userId,
-        chats,
-        contacts: action.payload.contacts,
         preparingMessenger: false,
-        publicKey: (action.payload.encryption || {}).publicKey,
-        privateKey: (action.payload.encryption || {}).privateKey,
+        userId,
+        alias,
+        blockedUsers,
+        ...settings,
+        ...encryption,
       }
     }
 
@@ -71,6 +61,9 @@ export default function reducer(
       logger.log('CHAT', `Redux -> Chat ${action.meta.chatId} Ready (Chat): `, action.payload, action.meta)
       const { chatId, userId } = action.meta
       const chats = JSON.parse(JSON.stringify(state.chats))
+      const contacts = JSON.parse(JSON.stringify(state.contacts))
+      const contactIds = contacts.map(contact => contact.contactId)
+      action.payload.contacts && action.payload.contacts.forEach(contact => !contactIds.includes(contact.contactId) && contacts.push(contact))
       const existingChat = chats.find((candidate) => candidate.chatId === chatId)
       const chat = existingChat || action.payload.chat
       if (!existingChat) chats.push(chat)
@@ -108,6 +101,7 @@ export default function reducer(
       return {
         ...state,
         chats,
+        contacts,
       }
     }
 
@@ -185,7 +179,11 @@ export default function reducer(
       logger.log('CHAT', `Redux -> Open Chat: `, action.payload)
       const chatId = action.payload.chatId
       const chats = JSON.parse(JSON.stringify(state.chats))
-      const chat = chats.find((candidate) => candidate.chatId === chatId)
+      let chat = chats.find((candidate) => candidate.chatId === chatId)
+      if (!chat) {
+        chat = action.payload.chat
+        chats.push(chat)
+      }
       chat.closed = false
       chat.minimised = false
       chat.maximised = false
@@ -853,6 +851,23 @@ function showNotification(state, chat, message) {
 
 function showNewMessageIndicator() {
   window.document.title = `(${parseInt((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0) + 1}) myG`
+}
+
+function prepareChats(newChats, previousChats) {
+  const chats = newChats.map((chat) => {
+    const previousChat = previousChats.find((candidate) => candidate.chatId === chat.chatId) || {}
+    const previousMessages = previousChat.messages || []
+    return {
+      ...chat,
+      ...previousChat,
+      messages: previousMessages,
+      closed: previousChat.closed || !previousMessages.length,
+      deletedMessages: chat.deletedMessages,
+    }
+  })
+  const openChats = chats.filter((candidate) => !candidate.closed)
+  if (openChats.length > 4) Array.from(Array(openChats.length - 4)).forEach((_, index) => (openChats[index].closed = true))
+  return chats
 }
 
 function prepareMessage(state, chat, message) {

@@ -129,6 +129,7 @@ export default class EncryptionSettings extends React.Component {
   }
 
   decryptMessage = (message, chatPrivateKey) => {
+    if (message.decrypted) return message
     if (message.unencryptedContent) return { ...message, content: message.unencryptedContent }
     if (!message.content && !message.backup) return message
     const isSent = message.senderId == this.props.userId
