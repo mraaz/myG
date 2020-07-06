@@ -19,6 +19,6 @@ export function fetchGamesPaginated(page) {
 }
 
 export function searchPaginated(page, search) {
-  logger.log('PAGINATED', 'HTTP', `Searching for ${chatId}`);
+  logger.log('PAGINATED', 'HTTP', `Searching for ${search}`);
   return axios.get(`/api/chat/paginated/search?page=${page}&search=${search}`).then(response => response.data);
 }

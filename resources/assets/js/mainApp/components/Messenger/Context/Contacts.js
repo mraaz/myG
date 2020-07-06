@@ -1,9 +1,7 @@
 import React from 'react'
 import Divider from './Divider'
-import Contact from './Contact'
 import Section from './Section'
-import { STATUS_ENUM, compareStatus } from '../../../../common/status'
-import { getAssetUrl } from '../../../../common/assets'
+import { STATUS_ENUM } from '../../../../common/status'
 import logger from '../../../../common/logger'
 import { ignoreFunctions } from '../../../../common/render'
 
@@ -19,20 +17,6 @@ export default class Contacts extends React.Component {
       [STATUS_ENUM.AFK]: false,
       [STATUS_ENUM.OFFLINE]: false,
     },
-  }
-
-  renderContact = (contact) => {
-    return (
-      <Contact
-        contact={contact}
-        messagesLength={((contact.chat || {}).messages || []).length}
-        userId={this.props.userId}
-        privateKey={this.props.privateKey}
-        disconnected={this.props.disconnected}
-        openChat={this.props.openChat}
-        createChat={this.props.createChat}
-      />
-    )
   }
 
   expandSection = (section) => {

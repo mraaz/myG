@@ -22,6 +22,7 @@ export default class Game extends React.Component {
         gameId={this.props.game.gameId}
         privateKey={this.props.privateKey}
         contacts={this.props.contacts}
+        chats={this.props.chats}
         search={this.props.search}
         disconnected={this.props.disconnected}
         openChat={this.props.openChat}
@@ -41,6 +42,7 @@ export default class Game extends React.Component {
         gameId={this.props.game.gameId}
         privateKey={this.props.privateKey}
         groups={this.props.groups}
+        chats={this.props.chats}
         search={this.props.search}
         disconnected={this.props.disconnected}
         openChat={this.props.openChat}

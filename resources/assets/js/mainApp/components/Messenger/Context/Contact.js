@@ -1,30 +1,20 @@
 import React from 'react'
 import { decryptMessage } from '../../../../integration/encryption'
 import { formatAMPM } from '../../../../common/date'
-import { STATUS_ENUM } from '../../../../common/status'
 import { ignoreFunctions } from '../../../../common/render'
 
 export default class Contact extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
-    const currentMessages = ((this.props.contact || {}).chat || {}).messages || []
-    const newMessages = ((nextProps.contact || {}).chat || {}).messages || []
-    if (currentMessages.length !== newMessages.length) return true
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
   }
 
   static getDerivedStateFromProps(props) {
     const messages = ((props.contact || {}).chat || {}).messages || []
-    return { messages }
+    return { messages: JSON.parse(JSON.stringify(messages)) }
   }
 
   state = {
-    sectionExpanded: {
-      recent: true,
-      [STATUS_ENUM.ONLINE]: false,
-      [STATUS_ENUM.PLAYING]: false,
-      [STATUS_ENUM.AFK]: false,
-      [STATUS_ENUM.OFFLINE]: false,
-    },
+    messages: [],
   }
 
   decryptMessage = (message) => {

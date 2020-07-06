@@ -10,7 +10,11 @@ export default function reducer(
     offline: [],
     groups: [],
     games: [],
-    search: {},
+    search: {
+      contacts: [],
+      groups: [],
+      games: [],
+    },
   },
   action
 ) {
@@ -74,7 +78,7 @@ export default function reducer(
         ...state,
         loading: false,
         loadingMore: false,
-        search: action.payload.search || {},
+        search: action.payload || {},
       }
     }
 

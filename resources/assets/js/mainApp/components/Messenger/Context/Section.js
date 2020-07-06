@@ -76,7 +76,6 @@ class Section extends React.Component {
     return <div className='messenger-body-section-loader'>loading more...</div>
   }
 
-
   renderEmpty = () => {
     if (this.props.contacts.length || !this.props.expanded || this.props.loading) return null
     return (
@@ -93,17 +92,7 @@ class Section extends React.Component {
   }
 
   renderContact = (contact) => {
-    return (
-      <Contact
-        contact={contact}
-        messagesLength={((contact.chat || {}).messages || []).length}
-        userId={this.props.userId}
-        privateKey={this.props.privateKey}
-        disconnected={this.props.disconnected}
-        openChat={this.props.openChat}
-        createChat={this.props.createChat}
-      />
-    )
+    return <Contact {...this.props} contact={contact} />
   }
 
   render() {
@@ -143,6 +132,7 @@ export function mapStateToProps(state, props) {
     loading: state.pagination.loading,
     loadingMore: state.pagination.loadingMore,
     contacts: contacts.sort(compareLastMessages),
+    chats,
   }
 }
 

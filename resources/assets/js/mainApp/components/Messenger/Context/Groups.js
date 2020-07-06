@@ -1,11 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Divider from './Divider'
+import Group from './Group'
 import GroupCreation from '../GroupCreation'
 import LoadingIndicator from '../../LoadingIndicator'
-import { deserializeKey, decryptMessage, generateKeysSync as generateGroupKeys } from '../../../../integration/encryption'
-import { formatAMPM } from '../../../../common/date'
-import { WithTooltip } from '../../Tooltip'
+import { generateKeysSync as generateGroupKeys } from '../../../../integration/encryption'
 import { uploadGroupIcon } from '../../../../integration/http/chat'
 import { getAssetUrl } from '../../../../common/assets'
 import { ignoreFunctions } from '../../../../common/render'
@@ -62,13 +61,6 @@ class Groups extends React.Component {
     this.props.onExpand(this.props.expanded)
   }
 
-  decryptMessage = (message, userPrivateKey, chatPrivateKey) => {
-    if (message.unencryptedContent) return { ...message, content: message.unencryptedContent }
-    const isSent = message.senderId === this.props.userId
-    const content = decryptMessage(isSent ? message.backup : message.content, isSent ? userPrivateKey : deserializeKey(chatPrivateKey))
-    return { ...message, content }
-  }
-
   openChat = (contact) => {
     if (this.props.disconnected) return
     if (contact.chat.chatId) return this.props.openChat(contact.chat.chatId, contact.chat)
@@ -96,9 +88,7 @@ class Groups extends React.Component {
         {!this.props.groups.length && (
           <div className='messenger-empty-message-container'>
             <p className='messenger-empty-message'>You aren't part of any group{this.props.inGame ? ' for this game' : ''} yet :(</p>
-            <p className='messenger-empty-message'>
-              You can find groups through matchmaking
-            </p>
+            <p className='messenger-empty-message'>You can find groups through matchmaking</p>
           </div>
         )}
         {this.state.showingGroupCreation && (
@@ -132,39 +122,11 @@ class Groups extends React.Component {
 
   renderGroups = () => {
     if (!this.props.expanded || this.props.loading) return null
-    return this.props.groups.map(this.renderGroup);
+    return this.props.groups.map(this.renderGroup)
   }
 
   renderGroup = (group) => {
-    const messages = group.messages || []
-    const lastMessage = messages[messages.length - 1]
-    const unreadCount = 0
-    const titleTooLong = group.title.length > 20
-    return (
-      <div key={`group-${group.chatId}`} className='messenger-contact' onClick={() => this.props.openChat(group.chatId, group)}>
-        <div className='messenger-contact-icon' style={{ backgroundImage: `url('${group.icon}')` }} />
-        <div className='messenger-contact-body'>
-          {titleTooLong ? (
-            <WithTooltip position={{ bottom: '24px', left: '-12px' }} text={group.title}>
-              <p className='messenger-contact-body-title'>{group.title.slice(0, 17) + '...'}</p>
-            </WithTooltip>
-          ) : (
-            <p className='messenger-contact-body-title'>{group.title}</p>
-          )}
-          {lastMessage && (
-            <p className='messenger-contact-body-subtitle'>
-              {this.decryptMessage(lastMessage, this.props.privateKey, group.privateKey).content}
-            </p>
-          )}
-        </div>
-        <div className='messenger-contact-info'>
-          {lastMessage && <p className='messenger-contact-info-last-seen'>{formatAMPM(new Date(lastMessage.createdAt))}</p>}
-          <div className='messenger-contact-info-unread'>
-            <p className='messenger-contact-info-unread-count'>{unreadCount}</p>
-          </div>
-        </div>
-      </div>
-    )
+    return <Group {...this.props} group={group} />
   }
 
   render() {
@@ -190,10 +152,17 @@ class Groups extends React.Component {
 }
 
 export function mapStateToProps(state) {
+  const groups = state.pagination.groups
+  groups.forEach((group) => {
+    const chat = state.chat.chats.find((chat) => chat.chatId === group.chatId) || {}
+    group.messages = chat.messages || []
+    group.privateKey = chat.privateKey
+  })
   return {
     loading: state.pagination.loading,
     loadingMore: state.pagination.loadingMore,
-    groups: state.pagination.groups.sort(compareLastMessages),
+    groups: groups.sort(compareLastMessages),
+    chats: state.chat.chats,
   }
 }
 
