@@ -54,8 +54,6 @@ export default class General extends React.Component {
   render() {
     const color = '#40494C'
     const chevronType = this.props.expanded ? 'down' : 'right'
-    const onlineCount = this.props.contacts.filter((contact) => contact.status === STATUS_ENUM.ONLINE).length
-    const onlineInfo = `${onlineCount}/${this.props.contacts.length} online`
     return (
       <div key={'general'} className='messenger-body-section' style={{ backgroundColor: color }}>
         <div
@@ -74,7 +72,6 @@ export default class General extends React.Component {
             <p className='messenger-body-section-header-name'>General</p>
           </div>
           <div className='messenger-body-section-header-info'>
-            <p className='messenger-body-section-online-count'>{onlineInfo}</p>
             <div
               className='messenger-body-section-header-icon'
               style={{ backgroundImage: `url('${getAssetUrl(`ic_messenger_chevron_${chevronType}`)}')` }}

@@ -295,7 +295,7 @@ function mapDispatchToProps(dispatch) {
   return {
     createChat: (contacts, userId, title, icon, encryption, isGroup, individualGameId, gameId) =>
       dispatch(createChatAction(contacts, userId, title, icon, encryption, isGroup, individualGameId, gameId)),
-    openChat: (chatId) => dispatch(openChatAction(chatId)),
+    openChat: (chatId, chat) => dispatch(openChatAction(chatId, chat)),
     closeChat: (chatId) => dispatch(closeChatAction(chatId)),
     generateKeys: (pin) => dispatch(generateKeysAction(pin)),
     validatePin: (pin, publicKey) => dispatch(validatePinAction(pin, publicKey)),

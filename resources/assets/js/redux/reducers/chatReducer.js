@@ -175,7 +175,11 @@ export default function reducer(
       logger.log('CHAT', `Redux -> Open Chat: `, action.payload)
       const chatId = action.payload.chatId
       const chats = JSON.parse(JSON.stringify(state.chats))
-      const chat = chats.find((candidate) => candidate.chatId === chatId)
+      let chat = chats.find((candidate) => candidate.chatId === chatId)
+      if (!chat) {
+        chat = action.payload.chat
+        chats.push(chat)
+      }
       chat.closed = false
       chat.minimised = false
       chat.maximised = false

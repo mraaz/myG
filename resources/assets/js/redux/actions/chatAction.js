@@ -302,10 +302,10 @@ export function removeFromGroupAction(chatId, userId) {
   }
 }
 
-export function openChatAction(chatId) {
+export function openChatAction(chatId, chat) {
   return {
     type: 'OPEN_CHAT',
-    payload: { chatId },
+    payload: { chatId, chat },
   }
 }
 

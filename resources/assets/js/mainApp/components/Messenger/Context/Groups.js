@@ -71,7 +71,7 @@ class Groups extends React.Component {
 
   openChat = (contact) => {
     if (this.props.disconnected) return
-    if (contact.chat.chatId) return this.props.openChat(contact.chat.chatId)
+    if (contact.chat.chatId) return this.props.openChat(contact.chat.chatId, contact.chat)
     this.props.createChat([contact.contactId], this.props.userId)
   }
 
@@ -141,7 +141,7 @@ class Groups extends React.Component {
     const unreadCount = 0
     const titleTooLong = group.title.length > 20
     return (
-      <div key={`group-${group.chatId}`} className='messenger-contact' onClick={() => this.props.openChat(group.chatId)}>
+      <div key={`group-${group.chatId}`} className='messenger-contact' onClick={() => this.props.openChat(group.chatId, group)}>
         <div className='messenger-contact-icon' style={{ backgroundImage: `url('${group.icon}')` }} />
         <div className='messenger-contact-body'>
           {titleTooLong ? (

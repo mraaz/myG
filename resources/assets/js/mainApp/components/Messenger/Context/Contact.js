@@ -37,7 +37,7 @@ export default class Contact extends React.Component {
 
   openChat = (contact) => {
     if (this.props.disconnected) return
-    if (contact.chat && contact.chat.chatId) return this.props.openChat(contact.chat.chatId)
+    if (contact.chat && contact.chat.chatId) return this.props.openChat(contact.chat.chatId, contact.chat)
     this.props.createChat([contact.contactId], this.props.userId)
   }
 

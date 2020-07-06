@@ -19,7 +19,7 @@ export default class Games extends React.Component {
     return new Date(m2.createdAt) - new Date(m1.createdAt)
   }
 
-  renderGame(id, name, icon, color, onlineInfo, contacts, groups, expanded) {
+  renderGame(id, name, icon, color, contacts, groups, expanded) {
     const chevronType = contacts.length && expanded ? 'down' : 'right'
     return (
       <div key={id} className='messenger-body-section' style={{ backgroundColor: color }}>
@@ -37,7 +37,6 @@ export default class Games extends React.Component {
             <p className='messenger-body-section-header-name'>{name}</p>
           </div>
           <div className='messenger-body-section-header-info'>
-            <p className='messenger-body-section-online-count'>{onlineInfo}</p>
             <div
               className='messenger-body-section-header-icon'
               style={{ backgroundImage: `url('${getAssetUrl(`ic_messenger_chevron_${chevronType}`)}')` }}
@@ -89,8 +88,6 @@ export default class Games extends React.Component {
     games.slice(0, 10).forEach((game, index) => {
       const gameContacts = contacts.filter((contact) => (contact.games || []).find((contactGame) => contactGame.gameId === game.gameId))
       const gameGroups = groups.filter((groups) => groups.gameId === game.gameId)
-      const onlineCount = gameContacts.filter((contact) => contact.status === STATUS_ENUM.ONLINE).length
-      const onlineInfo = `${onlineCount}/${gameContacts.length} online`
       sections.push({
         id: game.gameId,
         name: game.name,
@@ -98,7 +95,6 @@ export default class Games extends React.Component {
         color: colors[index],
         contacts: gameContacts,
         groups: gameGroups,
-        onlineInfo,
       })
     })
 
@@ -110,7 +106,6 @@ export default class Games extends React.Component {
             section.name,
             section.icon,
             section.color,
-            section.onlineInfo,
             section.contacts,
             section.groups,
             this.state.expandedGame === section.name
