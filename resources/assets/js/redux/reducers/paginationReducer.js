@@ -8,6 +8,7 @@ export default function reducer(
     playing: [],
     afk: [],
     offline: [],
+    foundContacts: [],
     groups: [],
     games: [],
     search: {
@@ -23,6 +24,7 @@ export default function reducer(
     case 'PAGINATED_GROUPS_PENDING':
     case 'PAGINATED_GAMES_PENDING':
     case 'PAGINATED_SEARCH_PENDING': {
+      if (action.type === 'PAGINATED_CONTACTS_FULFILLED' && !action.meta.status) return state;
       return {
         ...state,
         loading: action.meta.refresh,
@@ -32,6 +34,14 @@ export default function reducer(
 
     case 'PAGINATED_CONTACTS_FULFILLED': {
       logger.log('PAGINATION', `Redux -> Fetched Contacts: `, action.payload, action.meta)
+      if (!action.meta.status) {
+        return {
+          ...state,
+          loading: false,
+          loadingMore: false,
+          foundContacts: action.payload.contacts,
+        }
+      }
       const currentContacts = JSON.parse(JSON.stringify(state[action.meta.status]))
       const currentContactIds = currentContacts.map((contact) => contact.contactId)
       const newContacts = action.payload.contacts.filter((contact) => !currentContactIds.includes(contact.contactId))

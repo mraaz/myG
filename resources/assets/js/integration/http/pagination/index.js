@@ -1,9 +1,9 @@
 import axios from 'axios';
 import logger from '../../../common/logger';
 
-export function fetchContactsPaginated(page, status, gameId) {
+export function fetchContactsPaginated(page, status, gameId, search) {
   logger.log('PAGINATED', 'HTTP', `Fetching Contacts`);
-  const request = `/api/chat/paginated/contact?${page ? `&page=${page}` : ''}${status ? `&status=${status}` : ''}${gameId ? `&gameId=${gameId}` : ''}`;
+  const request = `/api/chat/paginated/contact?${page ? `&page=${page}` : ''}${status ? `&status=${status}` : ''}${gameId ? `&gameId=${gameId}` : ''}${search ? `&search=${search}` : ''}`;
   return axios.get(request).then(response => response.data);
 }
 

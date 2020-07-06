@@ -50,7 +50,7 @@ class Section extends React.Component {
   }
 
   fetchContacts() {
-    this.props.fetchContactsPaginated(this.state.page, this.props.status, this.props.gameId, !this.state.page)
+    this.props.fetchContactsPaginated(this.state.page, this.props.status, this.props.gameId, null, !this.state.page)
   }
 
   expand = () => {
@@ -138,7 +138,7 @@ export function mapStateToProps(state, props) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    fetchContactsPaginated: (page, status, gameId, refresh) => dispatch(fetchContactsPaginatedAction(page, status, gameId, refresh)),
+    fetchContactsPaginated: (page, status, gameId, search, refresh) => dispatch(fetchContactsPaginatedAction(page, status, gameId, search, refresh)),
   }
 }
 

@@ -61,6 +61,9 @@ export default function reducer(
       logger.log('CHAT', `Redux -> Chat ${action.meta.chatId} Ready (Chat): `, action.payload, action.meta)
       const { chatId, userId } = action.meta
       const chats = JSON.parse(JSON.stringify(state.chats))
+      const contacts = JSON.parse(JSON.stringify(state.contacts))
+      const contactIds = contacts.map(contact => contact.contactId)
+      action.payload.contacts && action.payload.contacts.forEach(contact => !contactIds.includes(contact.contactId) && contacts.push(contact))
       const existingChat = chats.find((candidate) => candidate.chatId === chatId)
       const chat = existingChat || action.payload.chat
       if (!existingChat) chats.push(chat)
@@ -98,6 +101,7 @@ export default function reducer(
       return {
         ...state,
         chats,
+        contacts,
       }
     }
 

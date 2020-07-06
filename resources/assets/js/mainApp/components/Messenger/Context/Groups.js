@@ -74,7 +74,7 @@ class Groups extends React.Component {
       value: {
         chat: { chatId },
       },
-    } = await this.props.createChat(contacts, this.props.userId, title, icon, encryption, true, null, gameId)
+    } = await this.props.createChat(contacts.map(contact => contact.contactId), this.props.userId, title, icon, encryption, true, null, gameId)
     if (key) await uploadGroupIcon(chatId, key)
   }
 

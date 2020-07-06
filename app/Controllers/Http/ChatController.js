@@ -407,12 +407,13 @@ class ChatController {
     const requestingUserId = auth.user.id
     if (!requestingUserId) throw new Error('Auth Error')
     const { status, page: requestedPage, gameId } = request.only(['status', 'page', 'gameId'])
+    const search = request.only('search').search
     log('USER', `User ${requestingUserId} requesting Contacts with status ${status} and page ${requestedPage}`)
     if (gameId) {
-      const { contacts } = await ChatRepository.fetchContactsByGame({ requestingUserId, status, gameId })
+      const { contacts } = await ChatRepository.fetchContactsByGame({ requestingUserId, status, gameId, search })
       return response.send({ contacts })
     }
-    const { contacts } = await ChatRepository.fetchContactsPaginated({ requestingUserId, status, requestedPage })
+    const { contacts } = await ChatRepository.fetchContactsPaginated({ requestingUserId, status, requestedPage, search })
     return response.send({ contacts })
   }
 
@@ -421,8 +422,9 @@ class ChatController {
     if (!requestingUserId) throw new Error('Auth Error')
     const requestedPage = request.only('page').page
     const gameId = request.only('gameId').gameId
+    const search = request.only('search').search
     log('CHAT', `User ${requestingUserId} requesting Groups paginated`)
-    const { groups } = await ChatRepository.fetchGroupsPaginated({ requestingUserId, requestedPage, gameId })
+    const { groups } = await ChatRepository.fetchGroupsPaginated({ requestingUserId, requestedPage, gameId, search })
     return response.send({ groups })
   }
 
@@ -430,8 +432,9 @@ class ChatController {
     const requestingUserId = auth.user.id
     if (!requestingUserId) throw new Error('Auth Error')
     const requestedPage = request.only('page').page
+    const search = request.only('search').search
     log('CHAT', `User ${requestingUserId} requesting Games paginated`)
-    const { games } = await ChatRepository.fetchGamesPaginated({ requestingUserId, requestedPage })
+    const { games } = await ChatRepository.fetchGamesPaginated({ requestingUserId, requestedPage, search })
     return response.send({ games })
   }
 

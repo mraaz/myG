@@ -1,9 +1,9 @@
 import { fetchContactsPaginated, fetchGroupsPaginated, fetchGamesPaginated, searchPaginated } from '../../integration/http/pagination'
 
-export function fetchContactsPaginatedAction(page, status, gameId, refresh) {
+export function fetchContactsPaginatedAction(page, status, gameId, search, refresh) {
   return {
     type: 'PAGINATED_CONTACTS',
-    payload: fetchContactsPaginated(page, status, gameId),
+    payload: fetchContactsPaginated(page, status, gameId, search),
     meta: { status, refresh },
   }
 }

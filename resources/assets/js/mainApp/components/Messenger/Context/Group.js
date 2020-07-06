@@ -1,5 +1,5 @@
 import React from 'react'
-import { decryptMessage } from '../../../../integration/encryption'
+import { decryptMessage, deserializeKey } from '../../../../integration/encryption'
 import { formatAMPM } from '../../../../common/date'
 import { WithTooltip } from '../../Tooltip'
 import { ignoreFunctions } from '../../../../common/render'
@@ -19,6 +19,7 @@ export default class Group extends React.Component {
   }
 
   decryptMessage = (message, userPrivateKey, chatPrivateKey) => {
+    if (message.decrypted) return message
     if (message.unencryptedContent) return { ...message, content: message.unencryptedContent }
     const isSent = message.senderId === this.props.userId
     const content = decryptMessage(isSent ? message.backup : message.content, isSent ? userPrivateKey : deserializeKey(chatPrivateKey))
