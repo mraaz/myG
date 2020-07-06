@@ -9,15 +9,20 @@ import { Link } from 'react-router-dom'
 import { Toast_style } from '../Utility_Function'
 import { toast } from 'react-toastify'
 import { WithTooltip } from '../Tooltip'
+import Select from 'react-select'
 const defaultUserImage = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png'
 
 const defaultThumbnails = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Notifications/myG_icon.svg'
+const statusMapping = { 1: 'Approved. you are in!', 3: 'Pending Approval by Host' }
+
+import { prefilledFilter_option } from './option'
 
 export default class GameList extends Component {
   constructor() {
     super()
     this.state = {
       activeItemId: '',
+      prefilledFilter: { value: 0, label: 'All myGames' },
     }
     this.myRef = React.createRef()
   }
@@ -41,16 +46,40 @@ export default class GameList extends Component {
     this.setState({ activeItemId: id })
     this.props.getSingleGameData(e, id, game)
   }
+  handlePendingApproval = (e) => {
+    e.stopPropagation()
+    window.location.href = `/notifications`
+  }
+  handleChangeFilter = (prefilledFilter) => {
+    this.setState({ prefilledFilter }, () => {
+      this.props.handleExcludesFullGames(null, prefilledFilter.value)
+    })
+  }
 
   render() {
-    const { scheduleGames = [] } = this.props
-    const { activeItemId = '' } = this.state
+    const { scheduleGames = [], copyClipboardEnable = true, showPrefilledFilter = false } = this.props
+    const { activeItemId = '', prefilledFilter } = this.state
     const len = scheduleGames.length
 
     return (
       <div className='gameList'>
+        {showPrefilledFilter && (
+          <div className='myGame__filter-section'>
+            <div className='viewGame__gameName'>
+              <Select
+                onChange={(data) => this.handleChangeFilter(data)}
+                options={prefilledFilter_option}
+                placeholder='Select your region'
+                name='prefilledFilter'
+                className='viewGame__name'
+                classNamePrefix='filter'
+                value={prefilledFilter}
+              />
+            </div>
+          </div>
+        )}
         <div className='gameList_head__option'>
-          {/* <div className='gameResult__count'> {len} Results</div> */}
+          <div className='gameResult__count'> {len} Results</div>
           <div className='gameResult__fillView'>
             <span>{this.props.slideOptionLabel} </span>{' '}
             <div className='button-switch'>
@@ -68,10 +97,13 @@ export default class GameList extends Component {
           {/* My game list start here */}
           {scheduleGames.length > 0 &&
             scheduleGames.map((game) => {
-              const image = game.game_name_fields_img || null
-              const experience_split = game.experience ? game.experience.split(',') : []
+              const { myStatus = '', no_of_Approval_Pending = '', game_name_fields_img = '', experience = '' } = game
+              const experience_split = experience ? experience.split(',') : []
               const scheduledGamePicture = (
-                <img src={image == null ? defaultThumbnails : image} className={image == null ? 'default-image' : 'image'} />
+                <img
+                  src={game_name_fields_img == '' ? defaultThumbnails : game_name_fields_img}
+                  className={game_name_fields_img == '' ? 'default-image' : 'image'}
+                />
               )
               return (
                 <div
@@ -105,11 +137,13 @@ export default class GameList extends Component {
                         <span>{moment(game.start_date_time).format('LL')}</span>
                       </div>
                     </div>
-                    <div className='copy__clipboard'>
-                      <div className='copy__clipboard__action' onClick={(e) => this.handleCopyToClipBoard(e, game.schedule_games_GUID)}>
-                        <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Link.svg' />
+                    {copyClipboardEnable && (
+                      <div className='copy__clipboard'>
+                        <div className='copy__clipboard__action' onClick={(e) => this.handleCopyToClipBoard(e, game.schedule_games_GUID)}>
+                          <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Link.svg' />
+                        </div>
                       </div>
-                    </div>
+                    )}
                     <div className='third__row'>
                       <div className='game__tags'>
                         {game.tags &&
@@ -136,6 +170,22 @@ export default class GameList extends Component {
                             )
                           })}
                       </div>
+                    </div>
+                    <div className='fourth__row'>
+                      {statusMapping[myStatus] && (
+                        <div className='my__status'>
+                          <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/clock.svg' />
+                          <span>{statusMapping[myStatus]}</span>
+                        </div>
+                      )}
+                      {no_of_Approval_Pending ? (
+                        <div className='no__of__approval' onClick={this.handlePendingApproval}>
+                          <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/clock.svg' />
+                          <span>{no_of_Approval_Pending} Approval Pending</span>
+                        </div>
+                      ) : (
+                        ''
+                      )}
                     </div>
                   </div>
                 </div>

@@ -39,6 +39,12 @@ const visibility_options = [
   { value: 2, label: 'Friends' },
   { value: 3, label: 'Group' },
 ]
+const prefilledFilter_option = [
+  { value: 0, label: 'All myGames' },
+  { value: 1, label: 'my Hosted Games' },
+  { value: 2, label: 'myGames (Participating)' },
+  { value: 3, label: 'myGames (Awaiting Approval)' },
+]
 
 const getExtraFilterOprion = (arg) => {
   const data = arg && arg.length > 0 ? arg.split(',') : []
@@ -65,4 +71,5 @@ module.exports = {
   visibility_options,
   getExtraFilterOprion,
   properCase,
+  prefilledFilter_option,
 }

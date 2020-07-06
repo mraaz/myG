@@ -297,6 +297,132 @@
       }
     }
   }
+  .myGame__filter-section {
+    margin-bottom: 10px;
+    display: flex;
+    padding-bottom: 0;
+    flex-wrap: wrap;
+    .viewGame__gameName {
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+    .viewGame__name__input {
+      width: 400px;
+      height: 38px;
+      margin: 0;
+      background-color: #4d565a;
+      border: none;
+      padding: 0;
+      height: 38px;
+      color: #fff;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 500;
+      &::placeholder {
+        color: #fff;
+      }
+    }
+    .viewGame__name {
+      width: 250px;
+      height: 38px;
+      margin: 0;
+      &:focus {
+        margin: 0;
+      }
+
+      .css-bg1rzq-control,
+      .css-1szy77t-control {
+        background-color: #4d565a;
+        border: none;
+        padding: 0;
+        z-index: 1;
+        // min-height: 45px;
+      }
+
+      .css-bgvzuu-indicatorSeparator {
+        background: none;
+      }
+      .css-1hwfws3 {
+        height: 45px;
+        overflow: scroll;
+        height: 100%;
+        padding: 2px;
+        padding-left: 10px;
+        .css-151xaom-placeholder {
+          color: #ffffff;
+          top: 80%;
+        }
+        .css-dvua67-singleValue {
+          color: #ffffff;
+          top: 70%;
+        }
+        .css-1g6gooi {
+          margin: 0;
+          padding: 2px;
+          color: #ffffff;
+        }
+        .css-dvua67-singleValue {
+          color: #ffffff;
+        }
+        .css-16pqwjk-indicatorContainer {
+          color: #ffffff;
+        }
+      }
+      .filter__control--is-focused {
+        .filter__value-container {
+          height: 45px;
+        }
+        .filter__value-container--is-multi {
+          height: auto;
+        }
+      }
+
+      .filter {
+        &__menu {
+          top: 50px;
+          background-color: #4d565a;
+          color: #ffffff;
+          border-radius: 4px;
+          margin-bottom: 8px;
+          margin-top: 8px;
+          position: absolute;
+          width: 100%;
+          z-index: 1;
+          box-sizing: border-box;
+        }
+
+        &__option {
+          background-color: #0b0f14;
+          color: inherit;
+          cursor: pointer;
+          display: block;
+          font-size: inherit;
+          padding: 8px 12px;
+          width: 100%;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+          box-sizing: border-box;
+          &:hover {
+            background-color: rgba(0, 0, 0, 0);
+            color: #0b0f14;
+          }
+
+          &--is-focused {
+            background-color: #e5c746 !important;
+            color: #0b0f14;
+          }
+        }
+
+        &__group {
+          padding: 0;
+        }
+      }
+    }
+  }
   .viewGame__addMoreFilter {
     display: flex;
     justify-content: start;
@@ -844,6 +970,7 @@
           .game__attributes {
             padding: 15px;
             width: 100%;
+            padding-bottom: 0;
             &:hover {
               .copy__clipboard {
                 opacity: 1;
@@ -982,6 +1109,33 @@
                     color: #9dceff;
                     border: 1px solid #9dceff;
                   }
+                }
+              }
+            }
+            .fourth__row {
+              display: flex;
+              border-top: 1px solid #43654e;
+              padding: 10px 0px;
+              font-size: 13px;
+              img {
+                width: 15px;
+                height: 15px;
+                margin-right: 5px;
+              }
+              .my__status {
+                display: flex;
+                align-items: center;
+                span {
+                  color: #8ce09a;
+                }
+              }
+              .no__of__approval {
+                margin-left: 10px;
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+                span {
+                  color: #ead782;
                 }
               }
             }
