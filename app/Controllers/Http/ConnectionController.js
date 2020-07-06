@@ -11,6 +11,7 @@ class ConnectionController {
       //if we ran this in the last 24 hours, DONT run again!!!!
 
       this.myCommon_friends({ auth })
+      return
 
       const getRunTime = await Database.from('settings')
         .select('gamer_connection_last_runtime', 'id')
@@ -400,12 +401,14 @@ class ConnectionController {
 
         const subquery = Database.from('friends')
           .where({ user_id: auth.user.id })
-          .select('friends.friend_id as user_id')
+          .select('friend_id')
 
         const friendsOfFriends = await Database.from('friends')
-          .whereIn('user_id', subquery)
+          .whereNotIn('friend_id', subquery)
           .whereNotIn('user_id', showallMyEnemies)
           .whereNotIn('user_id', existingConnections)
+          .whereNot({ user_id: auth.user.id, friend_id: auth.user.id })
+          .whereIn('user_id', subquery)
           .select('friends.friend_id as user_id')
 
         //const friendsOfFriendsIds = friendsOfFriends.map((friend) => friend.user_id).filter((id) => !connectionsToIgnore.includes(id))
