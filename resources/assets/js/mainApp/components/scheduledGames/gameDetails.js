@@ -92,6 +92,20 @@ export default class GameDetails extends Component {
               {platform && <div className='gameTime__value'>{platform.split(',').join(',  ')}</div>}
               {region && <div className='gameTime__label'>Region</div>}
               {region && <div className='gameTime__value'>{region.split(',').join(', ')}</div>}
+              {additional_submit_info_fields.length > 0 &&
+                additional_submit_info_fields.map((fields) => {
+                  let values = ''
+                  const Obj = fields[0]
+                  if (Obj != null) {
+                    values = Object.values(Obj)[0]
+                  }
+                  return (
+                    <Fragment>
+                      <div className='gameTime__label'>{Obj.label}</div>
+                      <div className='gameTime__value'>{values.split(',').join(', ')}</div>
+                    </Fragment>
+                  )
+                })}
               <Approved_gamers approved_gamers={approved_gamers} schedule_games_id={id} />
               {tags && tags.length > 7 && <div className='gameTags__label'>Tags</div>}
               <div className='gameTags__value'>

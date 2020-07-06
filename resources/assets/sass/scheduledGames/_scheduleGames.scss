@@ -501,6 +501,7 @@
         .game__action__buttton {
           position: relative;
           top: 10px;
+          display: inline-block;
           button {
             width: 102px;
             height: 39px;
@@ -998,6 +999,8 @@
     .gameDetails {
       background: #171a1c;
       margin: 0;
+      display: inline-table;
+      width: 100%;
       .gameDetails__header {
         background: #1d2326;
         min-height: 108px !important;

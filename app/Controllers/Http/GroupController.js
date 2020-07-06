@@ -14,6 +14,8 @@ class GroupController {
           group_img: request.input('group_img'),
           type: request.input('type'),
           all_accept: request.input('all_accept'),
+          game_names_id: request.input('game_names_id'),
+          grp_description: request.input('grp_description'),
         })
 
         let userStatController = new UserStatTransactionController()
@@ -109,6 +111,27 @@ class GroupController {
       return {
         myGroups,
         total_number_of_my_communities: total_number_of_my_communities,
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async all_myGrps({ auth, request, response }) {
+    try {
+      const subquery = Database.select('id')
+        .from('groups')
+        .where({ user_id: auth.user.id })
+
+      let groups_im_in = await Database.from('usergroups')
+        .innerJoin('groups', 'groups.id', 'usergroups.group_id')
+        .where('usergroups.user_id', '=', auth.user.id)
+        .whereNot('usergroups.permission_level', 42)
+        .orWhereIn('usergroups.group_id', subquery)
+        .paginate(request.params.counter, 25)
+
+      return {
+        groups_im_in,
       }
     } catch (error) {
       console.log(error)

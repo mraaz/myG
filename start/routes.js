@@ -268,7 +268,10 @@ Route.post('/api/groups/create', 'GroupController.store')
 Route.get('/api/groups/groupName/:name', 'GroupController.show_one_name')
 Route.get('/api/groups/:str/groupSearchResults', 'GroupController.groupSearchResults')
 Route.get('/api/groups/:str/groupSearchResults_Post', 'GroupController.groupSearchResults_Post')
+
 Route.get('/api/groups/view/:counter', 'GroupController.myshow')
+Route.get('/api/groups/all_myGrps/:counter', 'GroupController.all_myGrps')
+
 Route.get('/api/groups/:id', 'GroupController.show')
 Route.post('/api/groups/update_img', 'GroupController.update_img')
 Route.post('/api/groups/update/all_accept/', 'GroupController.update_all_accept')

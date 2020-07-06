@@ -97,32 +97,23 @@ export default class GroupOpenModal extends Component {
         show_group_name_error: true,
         show_group_name_unique_error: false,
       })
-      toast.success(<Toast_style text={"Hmmmm, blank group name can't be. The rules it is"} />)
+      toast.success(<Toast_style text={"Hmmmm, blank community name can't be. The rules it is"} />)
       return
     }
 
     if (this.state.is_unique == false) {
-      toast.success(<Toast_style text={'Hmmmm, be unique group name must'} />)
+      toast.success(<Toast_style text={'Hmmmm, be unique community name must'} />)
       return
     }
 
     try {
-      if (this.state.file_src == '' || this.state.file_src == null) {
-        const post = await axios.post('/api/groups/create', {
-          name: this.state.group_name_box.trim(),
-          type: this.state.privacy_box.value,
-          all_accept: this.state.all_accept_chkbox,
-        })
-        this.state.group_id = post.data.id
-      } else {
-        const post = await axios.post('/api/groups/create', {
-          name: this.state.group_name_box.trim(),
-          group_img: this.state.file_src,
-          type: this.state.privacy_box.value,
-          all_accept: this.state.all_accept_chkbox,
-        })
-        this.state.group_id = post.data.id
-      }
+      const post = await axios.post('/api/groups/create', {
+        name: this.state.group_name_box.trim(),
+        group_img: this.state.file_src ? this.state.file_src : null,
+        type: this.state.privacy_box.value,
+        all_accept: this.state.all_accept_chkbox,
+      })
+      this.state.group_id = post.data.id
     } catch (error) {
       console.log(error)
     }

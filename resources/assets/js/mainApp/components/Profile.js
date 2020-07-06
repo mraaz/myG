@@ -467,7 +467,7 @@ export default class Profile extends Component {
               bOpen={this.state.bFileModalOpen}
               callbackClose={this.callbackFileModalClose}
               callbackConfirm={this.callbackFileModalConfirm}></FileOpenModal>
-            <div className='content-area profile-page'>
+            <div className='content-area profile-page' style={{ height: '100vh', overflow: 'scroll' }}>
               <div className='header-grey-container'>
                 <div className='top-container'>
                   <div

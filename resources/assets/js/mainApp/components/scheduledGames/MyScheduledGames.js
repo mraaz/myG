@@ -48,7 +48,7 @@ export default class MyScheduledGames extends Component {
       filter: 0,
     })
     // const scheduleGames1 = await axios.get('/api/ScheduleGame/edit_game/726')
-    // console.log(scheduleGames1)
+    // console.log(scheduleGames)
 
     if (scheduleGames.data && scheduleGames.data.myScheduledGames && scheduleGames.data.myScheduledGames.length > 0) {
       this.setState({ scheduleGames: scheduleGames.data.myScheduledGames })
@@ -107,7 +107,11 @@ export default class MyScheduledGames extends Component {
     const { counter, scheduleGames = [] } = this.state
     let count = counter + 1
     this.setState({ fetching: true })
-    const scheduleGamesRes = await axios.get(`/api/myScheduledGames/${count}/true`)
+    const scheduleGamesRes = await axios.post(`/api/myScheduledGames`, {
+      counter: count,
+      exclude_expired: false,
+      filter: 0,
+    })
     if (scheduleGamesRes.data && scheduleGamesRes.data.myScheduledGames.length == 0) {
       this.setState({
         moreplease: false,
