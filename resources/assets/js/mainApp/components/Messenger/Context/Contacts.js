@@ -72,7 +72,8 @@ export default class Contacts extends React.Component {
             )}
           </div>
         )
-      }
+      },
+      this.props.contactCount
     )
   }
 }

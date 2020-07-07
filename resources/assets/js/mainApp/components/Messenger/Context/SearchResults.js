@@ -9,6 +9,11 @@ export default class SearchResults extends React.Component {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
   }
 
+  state = {
+    contacts: [],
+    groups: [],
+  }
+
   static getDerivedStateFromProps(props) {
     const contacts = props.searchResults.contacts || []
     const groups = props.searchResults.groups || []

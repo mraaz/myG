@@ -7,6 +7,7 @@ export default function reducer(
     icon: null,
     status: 'online',
     isStatusLocked: false,
+    contactCount: 0,
     contacts: [],
     games: [],
     friendRequests: [],
@@ -33,6 +34,7 @@ export default function reducer(
     case 'PREPARE_MESSENGER_FULFILLED': {
       logger.log('USER', `Redux -> Messenger Ready (User): `, action.payload)
       const { userId, alias } = action.meta
+      const contactCount = action.payload.contactCount || 0
       const games = action.payload.games || []
       const { value: currentStatus, locked: isStatusLocked } = action.payload.status
       const status = currentStatus === 'offline' && !isStatusLocked ? 'online' : currentStatus
@@ -40,6 +42,7 @@ export default function reducer(
         ...state,
         userId,
         alias,
+        contactCount,
         games,
         status,
         isStatusLocked,
@@ -189,6 +192,7 @@ export default function reducer(
       return {
         ...state,
         contacts,
+        contactCount: state.contactCount + 1,
       }
     }
 
@@ -198,6 +202,7 @@ export default function reducer(
       return {
         ...state,
         contacts: contacts.filter((contact) => contact.contactId !== action.payload),
+        contactCount: state.contactCount - 1,
       }
     }
 

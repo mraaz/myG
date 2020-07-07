@@ -24,6 +24,7 @@ export default class General extends React.Component {
         disconnected={this.props.disconnected}
         openChat={this.props.openChat}
         createChat={this.props.createChat}
+        contactCount={this.props.contactCount}
         expanded={this.state.dividerExpanded.friends}
         onExpand={(expanded) => this.setState({ dividerExpanded: { friends: !expanded, groups: false } })}
       />
