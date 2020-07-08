@@ -1,6 +1,7 @@
 
 const Database = use('Database');
 const User = use('App/Models/User');
+const Friend = use('App/Models/Friend');
 const UserChat = use('App/Models/UserChat');
 const FavoriteGame = use('App/Models/FavoriteGame');
 const GameName = use('App/Models/GameName');
@@ -117,6 +118,11 @@ class UserRepository {
     game.game_img = icon;
     await game.save();
     return new DefaultSchema({ success: true });
+  }
+
+  async countContacts({ requestingUserId }) {
+    const contactCount = await Friend.query().where({ user_id: requestingUserId }).getCount()
+    return { contactCount };
   }
 
   async fetchContacts({ requestingUserId }) {

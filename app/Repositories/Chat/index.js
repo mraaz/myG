@@ -1019,6 +1019,28 @@ class ChatRepository {
     return { chat: chatSchema };
   }
 
+  async fetchChatByIndividualGameId({ requestedGameId }) {
+    const chat = (await Chat.query().where('individual_game_id', requestedGameId).first()).toJSON();
+    const chatSchema = new ChatSchema({
+      chatId: chat.id,
+      isPrivate: chat.isPrivate,
+      isGroup: chat.isGroup,
+      gameId: chat.game_id,
+      gameMessage: chat.game_message,
+      individualGameId: chat.individual_game_id,
+      icon: chat.icon,
+      title: chat.title,
+      publicKey: chat.public_key,
+      contacts: chat.contacts,
+      guests: chat.guests,
+      owners: chat.owners,
+      moderators: chat.moderators,
+      createdAt: chat.created_at,
+      updatedAt: chat.updated_at,
+    });
+    return { chat: chatSchema };
+  }
+
   async scheduleGameMessage({ chatId, schedule }) {
     const gameMessageSchedule = new ChatGameMessageSchedule();
     gameMessageSchedule.chat_id = chatId;

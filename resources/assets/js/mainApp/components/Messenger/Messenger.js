@@ -162,6 +162,7 @@ class Messenger extends React.Component {
         disconnected={this.props.disconnected}
         openChat={this.props.openChat}
         createChat={this.props.createChat}
+        contactCount={this.props.contactCount}
         expanded={this.state.dividerExpanded.general}
         onExpand={(expanded) => this.setState({ dividerExpanded: { general: !expanded, games: false } })}
       />
@@ -309,6 +310,7 @@ function mapStateToProps(state) {
     disconnected: state.socket.disconnected,
     searchResults: state.pagination.search,
     searching: state.pagination.loading,
+    contactCount: state.user.contactCount,
   }
 }
 

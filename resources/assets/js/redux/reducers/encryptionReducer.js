@@ -89,7 +89,7 @@ export default function reducer(
       const { userId: updatedUserId, publicKey } = action.payload
       if (updatedUserId !== state.userId) return state
       if (publicKey === state.publicKey) return state
-      notifyToast(`Your Encryption Passphrase changed, please enter it again.`)
+      notifyToast(`Chat password changed! Please log in again.`)
       logger.log('USER', `Redux -> Key Changed Elsewhere, Logging Out...`)
       return {
         ...state,

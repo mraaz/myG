@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { store } from '../redux/Store'
 import { openChatAction } from '../redux/actions/chatAction'
 import { isOneDayBehind, isYesterday } from './date'
@@ -20,7 +21,7 @@ export function withDatesAndLogsAndLastReads(messages, entryLogs, contactsMap, l
           contactId,
           icon: getAssetUrl('ic_guest_icon'),
           name: contactId,
-        });
+        })
       }
     }
     if (contactsMap[contactId]) lastReadContacts[messageId].push(contactsMap[contactId])
@@ -53,4 +54,12 @@ export function withDatesAndLogsAndLastReads(messages, entryLogs, contactsMap, l
 
 export function openChat(chatId) {
   store.dispatch(openChatAction(chatId))
+}
+
+export function openChatForGame(gameId) {
+  axios.get(`/api/chat_by_game/${gameId}`).then((response) => {
+    const chat = response && response.data && response.data.chat
+    const chatId = response && response.data && response.data.chat && response.data.chat.chatId
+    if (chat && chatId) store.dispatch(openChatAction(chatId, chat))
+  })
 }

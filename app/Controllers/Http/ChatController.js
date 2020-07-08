@@ -8,8 +8,8 @@ class ChatController {
   async prepareMessenger({ auth, response }) {
     const requestingUserId = auth.user.id
     if (!requestingUserId) throw new Error('Auth Error')
-    const { contacts, games, status, blockedUsers, settings } = await MessengerRepository.prepareMessenger({ requestingUserId })
-    return response.send({ contacts, games, status, blockedUsers, settings })
+    const { contactCount, games, status, blockedUsers, settings } = await MessengerRepository.prepareMessenger({ requestingUserId })
+    return response.send({ contactCount, games, status, blockedUsers, settings })
   }
 
   async fetchChats({ auth, request, response }) {
@@ -27,6 +27,15 @@ class ChatController {
     const requestedChatId = params.chatId
     log('CHAT', `User ${requestingUserId} requesting Chat ${requestedChatId}`)
     const { chat } = await ChatRepository.fetchChat({ requestingUserId, requestedChatId })
+    return response.send({ chat })
+  }
+
+  async fetchChatByIndividualGameId({ auth, params, response }) {
+    const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
+    const requestedGameId = params.requestedGameId
+    log('CHAT', `User ${requestingUserId} requesting Chat for Game ${requestedGameId}`)
+    const { chat } = await ChatRepository.fetchChatByIndividualGameId({ requestedGameId })
     return response.send({ chat })
   }
 
