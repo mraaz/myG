@@ -85,7 +85,7 @@ export default class GroupMain extends Component {
   componentDidMount() {
     const self = this
 
-    const getmyGroups = async function() {
+    const getmyGroups = async function () {
       var counter = 1
       try {
         const getmyGroups = await axios.get('/api/groups/all_myGrps/1')
@@ -97,7 +97,7 @@ export default class GroupMain extends Component {
       }
     }
 
-    const getGroups_im_in = async function() {
+    const getGroups_im_in = async function () {
       var counter = 1
       try {
         const getGroups_im_in = await axios.get(`/api/usergroup/view/${counter}`)
@@ -157,7 +157,7 @@ export default class GroupMain extends Component {
       getPlayerInfo()
     }, 300)
 
-    const getPlayerInfo = async function() {
+    const getPlayerInfo = async function () {
       try {
         const groupSearchResults = await axios.get(`/api/groups/${value}/groupSearchResults_Post`)
         playersDB = groupSearchResults.data.myGroupSearchResults

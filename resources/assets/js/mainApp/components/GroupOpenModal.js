@@ -8,7 +8,11 @@ import Dropzone from 'react-dropzone-uploader'
 import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
 
-const privacy_options = [{ value: 1, label: 'Public' }, { value: 2, label: 'Closed' }, { value: 3, label: 'Secret' }]
+const privacy_options = [
+  { value: 1, label: 'Public' },
+  { value: 2, label: 'Closed' },
+  { value: 3, label: 'Secret' },
+]
 
 export default class GroupOpenModal extends Component {
   constructor() {
@@ -64,7 +68,7 @@ export default class GroupOpenModal extends Component {
             'Content-Type': 'multipart/form-data',
           },
         })
-        .then(function(resp) {
+        .then(function (resp) {
           instance.setState({
             file_src: resp.data.Location,
           })
