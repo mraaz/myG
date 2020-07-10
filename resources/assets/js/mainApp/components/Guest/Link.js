@@ -32,12 +32,12 @@ class GuestLink extends React.Component {
     fetchLink(this.props.uuid).then(({ link }) => {
       if (!link) {
         this.setState({ invalidLink: true })
-        return notifyToast('The Group for this Link was not found :(')
+        return notifyToast("Invalid link mate! I searched and now I'm buggered...")
       }
       const isValid = !link.expiry || new Date(link.updatedAt).getTime() + link.expiry * 60 * 60 * 1000 >= Date.now()
       if (!isValid) {
         this.setState({ invalidLink: true })
-        return notifyToast('This Link has expired :(')
+        return notifyToast('This link has expired :(')
       }
       const chatId = link.chatId
       this.props.setGuestLink(`/link/${this.props.uuid}`)
@@ -94,7 +94,7 @@ class GuestLink extends React.Component {
     if (!this.state.invalidLink) return null
     return (
       <div className='alias-container'>
-        <p className='kicked-hint'>Sorry, this Group is no longer available :(</p>
+        <p className='kicked-hint'>Sorry mate! This link has expired. :(</p>
         <div className='join clickable' onClick={() => window.location.replace('/')}>
           Login
         </div>
@@ -109,7 +109,7 @@ class GuestLink extends React.Component {
     if (!this.props.invalidLink) return null
     return (
       <div className='alias-container'>
-        <p className='kicked-hint'>Sorry, you have been kicked from this Group :(</p>
+        <p className='kicked-hint'>Crikey! You have been kicked from this group :(</p>
         <div className='join clickable' onClick={() => window.location.replace('/')}>
           Login
         </div>

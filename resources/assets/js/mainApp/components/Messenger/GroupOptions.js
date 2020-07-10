@@ -87,7 +87,8 @@ class GroupOptions extends React.Component {
   }
 
   render() {
-    const mainLink = !!this.props.group.links.length && window.location.protocol + '//' + window.location.host + '/link/' + this.props.group.links[0].uuid
+    const mainLink =
+      !!this.props.group.links.length && window.location.protocol + '//' + window.location.host + '/link/' + this.props.group.links[0].uuid
     const isGroupOwner = this.props.group.owners.length && this.props.group.owners.includes(this.props.userId)
     const isGroupModerator = this.props.group.moderators.length && this.props.group.moderators.includes(this.props.userId)
     const canShareLink = !this.props.group.isPrivate || isGroupModerator || isGroupOwner
@@ -200,7 +201,7 @@ class GroupOptions extends React.Component {
 
         {isGroupModerator && (
           <div className='chat-component-options-toggle'>
-            Self destruct mode
+            Self destruct mode (ALT+S)
             <WithTooltip
               position={{ bottom: '-6px', left: '58px' }}
               text={'Kaboom! When activated, messages\nwill only remain for 24 hours'}>
