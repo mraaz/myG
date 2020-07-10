@@ -28,7 +28,7 @@ class ChatOptions extends React.Component {
             className={`chat-component-options-option clickable ${!this.props.messages.length && inactiveStyle}`}
             onClick={() =>
               showMessengerAlert(
-                'Are you sure you wish to clear your chat history?',
+                'Mate, are you sure you wish to clear your chat history?',
                 () => this.props.clearChat(this.props.chatId),
                 null,
                 'Yes'
@@ -57,7 +57,7 @@ class ChatOptions extends React.Component {
         </div>
 
         <div className='chat-component-options-toggle'>
-          Self destruct mode
+          Self destruct mode (ALT+S)
           <WithTooltip
             position={{ bottom: '-6px', right: '10px' }}
             text={'Kaboom! When activated, messages\nwill only remain for 24 hours'}>

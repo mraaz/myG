@@ -88,7 +88,11 @@ export class Chat extends React.Component {
 
   scrollMessagesIfNeeded() {
     const isValidMessage = (message) => !message.isLastRead && !message.isEntryLog && !message.isDateDivisor
-    const lastMessage = this.props.messages.slice().reverse().find(isValidMessage) || {}
+    const lastMessage =
+      this.props.messages
+        .slice()
+        .reverse()
+        .find(isValidMessage) || {}
     const lastMessageTime = lastMessage.createdAt
     const lastMessageId = lastMessage.messageId
     const lastReadMessageId = this.props.lastRead
@@ -123,7 +127,12 @@ export class Chat extends React.Component {
 
   markAsRead = () => {
     const isValidMessage = (message) => !message.isLastRead && !message.isEntryLog && !message.isDateDivisor
-    const lastMessageId = (this.props.messages.slice().reverse().find(isValidMessage) || {}).messageId
+    const lastMessageId = (
+      this.props.messages
+        .slice()
+        .reverse()
+        .find(isValidMessage) || {}
+    ).messageId
     if (this.props.minimised || !this.props.privateKey || !this.props.windowFocused) return
     if (!lastMessageId || lastMessageId <= this.props.lastRead || lastMessageId <= this.state.lastRead) return
     this.setState({ lastRead: lastMessageId })
@@ -388,11 +397,11 @@ export class Chat extends React.Component {
         className='chat-component-empty-chat-message clickable'
         onClick={() =>
           showMessengerAlert(
-            'Most E2E store a secret key on a device. This means you need a device to access your messages. myG emails you the secret key, which allows you to get E2E without additional gadgets. Only you have access to this key and with it you can decrypt your chat history. With great power, comes great responsibility. If you lose your key unfortunately, you will also lose your chat history, not even the god-like nerds @ myG can recover this.'
+            'Most End to End (E2E) apps store a secret key on a device. This means you need a device to access your messages. myG emails you this secret key which we call chat password, which allows you to get E2E without additional gadgets. Only you have access to this key and with it you can decrypt your chat history. With great power, comes great responsibility. If you lose your key unfortunately, you will also lose your chat history, not even the god-like nerds @ myG can recover this.'
           )
         }>
         <p>Messages you send to this chat are secured with end-to-end encryption.</p>
-        <p>Please keep your encryption key safe, otherwise you will LOSE your chat history. Click for more info.</p>
+        <p>Please keep your chat password safe, otherwise you will LOSE your chat history. Click for more info.</p>
       </div>
     )
   }
@@ -494,7 +503,7 @@ export class Chat extends React.Component {
   renderEncryptedChat() {
     const isGroupWithoutKey = this.props.isGroup && !this.props.privateKey
     const noUserKeyText = 'Please inform your encryption key to read the contents of this chat.'
-    const noGroupKeyText = `Unable to retrieve E2E key from an active member. Please wait for a chat member to come online.`
+    const noGroupKeyText = `Unable to retrieve E2E key from an active member. Please wait for a group chat member to come online.`
     const noGroupKeySubtext = this.props.isGuest
       ? 'Alternatively, create an account @ myG.gg'
       : this.props.isGroupOwner
@@ -509,7 +518,7 @@ export class Chat extends React.Component {
           onClick={() =>
             canResetKey &&
             showMessengerAlert(
-              "Resetting the Encryption Key will delete this group's history, but will grant you access to this group if the Encryption Key was lost.",
+              "Resetting the Encryption key will delete this group's chat history, but will grant you access to this group.",
               this.resetGroupKey,
               null,
               'Reset Key'
