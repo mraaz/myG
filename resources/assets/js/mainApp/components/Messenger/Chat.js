@@ -422,7 +422,7 @@ export class Chat extends React.Component {
       : [this.props.title]
     const typingHint = usersTyping.length > 1 ? usersTyping.join(', ') + ' are typing...' : usersTyping[0] + ' is typing...'
     return (
-      <div key={'typing'} className={`chat-component-message chat-component-message-received`}>
+      <div key={'typing'} id="chat-component-message" className="chat-component-message-received">
         <div className='chat-component-message-typing-hint'>{typingHint}</div>
         <div className='chat-component-message-container'>
           <div className='dot-flashing' />
@@ -511,7 +511,7 @@ export class Chat extends React.Component {
       : ''
     const canResetKey = isGroupWithoutKey && this.props.isGroupOwner
     return (
-      <div key={this.props.chatId} className='chat-component-base'>
+      <div key={this.props.chatId} id='chat-component-base'>
         {this.renderHeader()}
         <div
           className={`chat-component-encryption-warning${canResetKey ? ' clickable' : ''}`}
@@ -542,7 +542,7 @@ export class Chat extends React.Component {
     if (this.props.isGuest) extraClass = 'chat-guest'
     if (this.state.guestChatExpanded) extraClass += '-expanded'
     return (
-      <div key={this.props.chatId} className={`chat-component-base ${extraClass}`}>
+      <div key={this.props.chatId} id="chat-component-base" className={extraClass}>
         {this.renderHeader()}
         {!this.state.settings && !this.props.minimised && this.renderMuteBanner()}
         {!this.state.settings && !this.props.minimised && this.renderBlockedBanner()}

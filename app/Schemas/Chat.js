@@ -18,6 +18,7 @@ class Chat {
     this.title = forceString(data.title)
     this.publicKey = forceString(data.publicKey)
     this.contacts = forceArray(data.contacts)
+    this.fullContacts = forceArray(data.fullContacts)
     this.guests = forceArray(data.guests)
     this.owners = forceArray(data.owners)
     this.moderators = forceArray(data.moderators)

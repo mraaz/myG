@@ -215,7 +215,7 @@ export default class ChatMessage extends React.Component {
   renderInput() {
     const { message } = this.props
     return (
-      <div key={message.messageId} className='chat-component-message chat-component-message-sent'>
+      <div key={message.messageId} id='chat-component-message' className='chat-component-message-sent'>
         <textarea
           rows={1}
           autoFocus
@@ -358,10 +358,10 @@ export default class ChatMessage extends React.Component {
   render() {
     logger.log('RENDER', `ChatMessage: ${this.props.message.messageId}`)
     const { message } = this.props
-    const origin = message.senderId === this.props.userId ? 'sent' : 'received'
-    const deletedStyle = !!message.deleted && 'chat-component-message-deleted'
-    const selfDestructStyle = !!message.selfDestruct && 'chat-component-message-self-destruct'
-    const pendingStyle = !!message.isPending && 'chat-component-message-pending'
+    const originStyle = message.senderId === this.props.userId ? 'chat-component-message-sent' : 'chat-component-message-received'
+    const deletedStyle = message.deleted ? 'chat-component-message-deleted' : ''
+    const selfDestructStyle = message.selfDestruct ? 'chat-component-message-self-destruct' : ''
+    const pendingStyle = message.isPending ? 'chat-component-message-pending' : ''
     if (this.state.editing) return this.renderInput()
     if (message.isDateDivisor) return this.renderDateDivisor()
     if (message.isEntryLog) return this.renderEntryLog()
@@ -372,7 +372,8 @@ export default class ChatMessage extends React.Component {
         data-message-id={message.messageId}
         key={message.messageId}
         ref={this.messageRef}
-        className={`chat-component-message chat-component-message-${origin} ${deletedStyle} ${selfDestructStyle} ${pendingStyle}`}
+        id='chat-component-message'
+        className={`${originStyle} ${deletedStyle} ${selfDestructStyle} ${pendingStyle}`}
         onMouseEnter={() => this.setState({ showOptionsButton: true })}
         onMouseLeave={() => this.setState({ showOptionsButton: false, showOptionsMenu: false })}>
         <div className='chat-component-message-container'>

@@ -87,6 +87,7 @@ class ChatRepository {
       .where('user_chats.user_id', requestingUserId)
       .andWhere('user_chats.chat_id', requestedChatId)
       .first());
+    if (!chat) return { chat: 'NOT_FOUND' };
     const lastReadsObject = {};
     const lastReadsRaw = (await ChatLastRead.query().where('user_id', '!=', requestingUserId).andWhere('chat_id', requestedChatId).fetch()).toJSON();
     lastReadsRaw.forEach(lastRead => lastReadsObject[lastRead.user_id] = lastRead.last_read_message_id);
@@ -184,7 +185,7 @@ class ChatRepository {
         senderId: message.sender_id,
         keyReceiver: message.key_receiver,
         senderName: message.sender_name,
-      unencryptedContent: message.unencrypted_content,
+        unencryptedContent: message.unencrypted_content,
         content: message.content,
         backup: message.backup,
         deleted: message.deleted,
@@ -292,9 +293,11 @@ class ChatRepository {
     chat.self_destruct = !!forceSelfDestruct || !!individualGameId;
     await chat.save();
 
+    const { contacts: fullContacts } = await this.fetchChatContacts({ requestingUserId, requestedChatId: chat.id })
     const chatSchema = new ChatSchema({
       chatId: chat.id,
       contacts,
+      fullContacts,
       guests,
       owners,
       moderators: owners,
@@ -428,7 +431,9 @@ class ChatRepository {
   }
 
   async fetchChatContacts({ requestingUserId, requestedChatId }) {
-    const chat = (await Chat.query().where('id', requestedChatId).first()).toJSON();
+    const chatResponse = (await Chat.query().where('id', requestedChatId).first());
+    if (!chatResponse) return { contacts: [] }
+    const chat = chatResponse.toJSON();
     const contactIds = JSON.parse(chat.contacts || '[]');
     if (!Array.isArray(contactIds)) return { contacts: [] };
     const contactsQuery = contactIds.filter(contactId => contactId !== requestingUserId);
