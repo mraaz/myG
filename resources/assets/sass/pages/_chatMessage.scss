@@ -258,19 +258,6 @@
       height: auto;
     }
 
-    .chat-component-message-date-divisor {
-      background-color: #2d363a;
-      color: #627176;
-      padding: 6px;
-      border-radius: 4px;
-      font-size: 10px;
-      width: fit-content;
-      margin-left: auto;
-      margin-right: auto;
-      margin-top: 2px;
-      margin-bottom: 2px;
-    }
-
     .chat-component-message-typing-hint {
       font-size: 12px;
       margin-bottom: 8px;
@@ -316,6 +303,19 @@
       font-size: 9px;
       margin-top: 8px;
     }
+  }
+
+  .chat-component-message-date-divisor {
+    background-color: #2d363a;
+    color: #627176;
+    padding: 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2px;
+    margin-bottom: 2px;
   }
 
   .chat-component-message-short {

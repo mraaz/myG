@@ -92,7 +92,7 @@ class Section extends React.Component {
   }
 
   renderContact = (contact) => {
-    return <Contact {...this.props} contact={contact} />
+    return <Contact key={contact.contactId} {...this.props} contact={contact} />
   }
 
   render() {

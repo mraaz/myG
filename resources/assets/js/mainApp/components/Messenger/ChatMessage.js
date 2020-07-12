@@ -261,7 +261,7 @@ export default class ChatMessage extends React.Component {
 
   renderReadIndicator(key, icon, name) {
     return (
-      <WithTooltip position={{ bottom: '28px', left: '-10px' }} text={name}>
+      <WithTooltip key={key} position={{ bottom: '28px', left: '-10px' }} text={name}>
         <div key={key} className='chat-component-read-indicator'>
           <div className='chat-component-read-indicator-icon'>
             <img className='chat-component-read-indicator-icon-image' src={icon} />
