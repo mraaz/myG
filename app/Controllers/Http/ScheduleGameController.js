@@ -783,6 +783,8 @@ class ScheduleGameController {
 
         if (getstatus != undefined) {
           myScheduledGames.data[i].myStatus = getstatus.type
+        } else {
+          myScheduledGames.data[i].myStatus = 0
         }
       }
       myScheduledGames = myScheduledGames.data
@@ -1117,6 +1119,12 @@ class ScheduleGameController {
   }
 
   async additional_game_info({ auth, request, response }) {
+    // '0': 'Join',
+    // '1': 'Joined',
+    // '3': 'Pending',
+    // '4': 'Co-Hosting',
+    // '5': 'Hosting',
+
     let join_status = 0,
       approved_gamers = [],
       additional_submit_info = false,
@@ -1143,20 +1151,11 @@ class ScheduleGameController {
 
         if (my_attendance != undefined) {
           join_status = my_attendance.type
-          switch (join_status) {
-            case 1:
-              button_text = 'Joined'
-              break
-            case 3:
-              button_text = 'Pending'
-              break
-            default:
-          }
         }
 
         if (additional_game_info.user_id == auth.user.id) {
           edit_status = true
-          button_text = 'Hosting'
+          join_status = 5
         } else {
           const checkCo_host = await Database.from('co_hosts')
             .where({ schedule_games_id: request.params.id, user_id: auth.user.id })
@@ -1164,7 +1163,7 @@ class ScheduleGameController {
             .first()
           if (checkCo_host != undefined) {
             edit_status = true
-            button_text = 'Co-Hosting'
+            join_status = 4
           }
         }
 

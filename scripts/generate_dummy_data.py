@@ -26,7 +26,7 @@ class TravelProvider(BaseProvider):
 
 def main():
   start = 100
-  stop = 1110 #120 = Maximum call stack size exceeded
+  stop = 110 #120 = Maximum call stack size exceeded
 
 
   #Gaming intestests, esportsExp, scheduledGames how many per user
@@ -76,6 +76,9 @@ def main():
 
   gap = mini_stop - mini_start
   tiny_gap = tiny_stop - tiny_start
+
+  attendee_pairs = set()
+  usergroups_pairs = set()
 
   for x in range(start, stop, 1):
     mini_start+=gap
@@ -141,13 +144,12 @@ def main():
           tiny_start+=tiny_gap
           tiny_stop+=tiny_gap
 
-
     for d in range(x-start):
       if(adonisJS):
         print(".raw(\"INSERT INTO usergroups (group_id, user_id, permission_level, created_at, updated_at) values (%s, %s, %s, '2019-12-01 00:00:00', '2019-12-01 00:00:00')\")" % (x, randrange(start, x), random.choice(ug_permission_level) ) )
       else:
-        print("INSERT INTO usergroups (group_id, user_id, permission_level, created_at, updated_at) values (%s, %s, %s, '2019-12-01 00:00:00', '2019-12-01 00:00:00');" % (x, randrange(start, x), random.choice(ug_permission_level) ) )
-
+        #print("INSERT INTO usergroups (group_id, user_id, permission_level, created_at, updated_at) values (%s, %s, %s, '2019-12-01 00:00:00', '2019-12-01 00:00:00');" % (x, randrange(start, x), random.choice(ug_permission_level) ) )
+        usergroups_pairs.update([(x, randrange(start, x))])
 
     #FRIENDS
     if (create_celebrity and x <= start+1 ):
@@ -177,13 +179,27 @@ def main():
       print("INSERT INTO friends (user_id, friend_id, created_at, updated_at) values (%s,%s,'2019-12-01 00:00:00','2019-12-01 00:00:00');" % (myself, friend) )
       print("INSERT INTO friends (user_id, friend_id, created_at, updated_at) values (%s,%s,'2019-12-01 00:00:00','2019-12-01 00:00:00');" % (friend, myself) )
 
+
+
     for z in range(gap):
       if(adonisJS):
         print(".raw(\"INSERT INTO attendees (schedule_games_id, user_id, type, created_at, updated_at) values (%s, %s, %s, '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (random.randint(start+gap, mini_stop-1), myself, random.randint(1,3) ) )
       else:
-        print("INSERT INTO attendees (schedule_games_id, user_id, type, created_at, updated_at) values (%s, %s, %s, '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (random.randint(start+gap, mini_stop-1), myself, random.randint(1,3) ) )
+        #print("INSERT INTO attendees (schedule_games_id, user_id, type, created_at, updated_at) values (%s, %s, %s, '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (random.randint(start+gap, mini_stop-1), myself, random.randint(1,3) ) )
+        attendee_pairs.update([(random.randint(start+gap, mini_stop-1), myself)])
 
-  #Loop thru all groups
+  for i in attendee_pairs:
+    print("INSERT INTO attendees (schedule_games_id, user_id, type, created_at, updated_at) values (%s, %s, %s, '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (i[0], i[1], random.randint(1,3) ) )
+    set((a,b) if a<=b else (b,a) for a,b in usergroups_pairs)
+
+  # pairs = set( [(0,1),(0,1),(1,0),(1,2),(1,0),(2,1)] )
+  # set((a,b) if a<=b else (b,a) for a,b in pairs)
+  #print(usergroups_pairs)
+
+  for j in usergroups_pairs:
+    print("INSERT INTO usergroups (group_id, user_id, permission_level, created_at, updated_at) values (%s, %s, %s, '2019-12-01 00:00:00', '2019-12-01 00:00:00');" % (j[0], j[1], random.choice(ug_permission_level) ) )
+
+  # Loop thru all groups
   for x in range(start, stop, 1):
     #Each group gets three posts from different users
     for y in range(gap):
@@ -194,29 +210,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-  # print(f'name: {fake.name()}')
-  # print(f'address: {fake.city()}')
-  #
-  # print(f'text: {fake.text()}')
-  #
-  # # Add the TravelProvider to our faker object
-  #
-  # # We can now use the destination method:
-  # print(fake.destination())
-  #
-  # print(fake.date(pattern='%Y-%m-%d 00:00:00', end_datetime=None))
-
-#   var arrTags = this.state.address.split(',')
-# if (arrTags.length == 1) {
-# this.state.country_ = arrTags[0]
-# } else {
-# for (var i = 0; i < arrTags.length; i++) {
-#   if (i == arrTags.length - 1) {
-#     this.state.country_ = arrTags[i].trim()
-#   } else {
-#     this.state.region_ += arrTags[i] + ','
-#   }
-# }
-# }
