@@ -574,7 +574,8 @@ export function mapStateToProps(state, props) {
   if (!isGroup) contactsMap[contactId] = contact
   if (isGroup) {
     const memberCount = contacts.length + guests.length + 1
-    const onlineCount = contacts.filter((contactId) => (contactsMap[contactId] || {}).status === 'online').length + guests.length + 1
+    const isGroupMemberOnline = (contact) => contacts.includes(contact.contactId) && contact.status === 'online'
+    const onlineCount = state.user.contacts.filter(isGroupMemberOnline).length + guests.length + 1
     chatSubtitle = `${onlineCount}/${memberCount} online`
   }
   const isGroupOwner = chat.owners.length && chat.owners.includes(props.userId)

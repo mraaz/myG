@@ -50,8 +50,20 @@ export default function reducer(
     }
 
     case 'PREPARE_CHAT_FULFILLED': {
-      if (!action.payload.contact) return state
       logger.log('USER', `Redux -> Chat ${action.meta.chatId} Ready (User): `, action.payload)
+      if (!action.payload.contact) {
+        const fullContacts = action.payload.contacts || []
+        if (!fullContacts.length) return state
+        const contacts = JSON.parse(JSON.stringify(state.contacts))
+        fullContacts.forEach((contact) => {
+          const hasContact = contacts.find((existing) => existing.contactId === contact.contactId)
+          if (!hasContact) contacts.push(contact)
+        })
+        return {
+          ...state,
+          contacts,
+        }
+      }
       const { contact: newContact } = action.payload
       const contacts = JSON.parse(JSON.stringify(state.contacts))
       const contact = contacts.find((contact) => contact.contactId === newContact.contactId)
@@ -108,8 +120,10 @@ export default function reducer(
       logger.log('USER', `Redux -> On Status Changed: `, action.payload)
       const { contactId, status, lastSeen } = action.payload
       const contacts = JSON.parse(JSON.stringify(state.contacts))
-      const contact = contacts.find((contact) => contact.contactId === contactId)
-      if (contact) Object.assign(contact, { status, lastSeen })
+      const existing = contacts.find((contact) => contact.contactId === contactId)
+      const contact = existing || { contactId }
+      Object.assign(contact, { status, lastSeen })
+      if (!existing) contacts.push(contact)
       return {
         ...state,
         contacts,
@@ -122,9 +136,11 @@ export default function reducer(
       const { userId: updatedUserId, publicKey } = action.payload
       if (updatedUserId === state.userId) return state
       const contacts = JSON.parse(JSON.stringify(state.contacts))
-      const contact = contacts.find((contact) => contact.contactId === updatedUserId)
+      const existing = contacts.find((contact) => contact.contactId === updatedUserId)
+      const contact = existing || { contactId: updatedUserId }
       if (parseInt(updatedUserId) === parseInt(thisUserId)) return state
       contact.publicKey = publicKey
+      if (!existing) contacts.push(contact)
       return {
         ...state,
         contacts,
