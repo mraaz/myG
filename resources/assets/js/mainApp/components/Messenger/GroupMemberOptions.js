@@ -180,7 +180,7 @@ class GroupMemberOptions extends React.Component {
           <div className='chat-group-member-button'>
             {this.renderKickButton(
               { contactId: isGuest ? guestId : contact.contactId, name: isGuest ? guestAlias : contact.name },
-              isGroupModerator
+              isGroupModerator && !isContactOwner
             )}
           </div>
           <div className='chat-group-member-button-divider' />

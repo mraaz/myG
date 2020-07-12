@@ -1090,14 +1090,13 @@ class ChatRepository {
     }
     log('CRON', `END - HANDLE EXPIRED ATTACHMENTS - DELETED ${expiredAttachments.length} ATTACHMENTS`);
   }
+  
   async _addChatNotificationModerator({ requestingUserId, requestedChatId, moderators }) {
-
     const { chat } = await this.fetchChatInfo({ requestedChatId });
     const alias = (await User.query().where('id', '=', requestingUserId).first()).toJSON().alias;
     const oldModerators = chat.moderators;
     const added = moderators.filter(moderator => !oldModerators.includes(moderator));
     const removed = oldModerators.filter(moderator => !moderators.includes(moderator));
-    console.log(moderators, oldModerators, added, removed)
     const type = added[0] ? "PROMOTED" : "DEMOTED";
     this._addChatNotification({
       chatId: requestedChatId,
