@@ -11,6 +11,7 @@ class CommendationsSchema extends Schema {
       table.foreign('game_experiences_id').references('game_experiences.id').onDelete('cascade')
       table.integer('user_id').unsigned().notNullable()
       table.foreign('user_id').references('users.id').onDelete('cascade')
+      table.unique(['user_id', 'game_experiences_id']);
       table.timestamps(true,true)
     })
   }

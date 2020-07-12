@@ -17,6 +17,7 @@ class AttendeesSchema extends Schema {
       table.string('value_three', 254).nullable()
       table.string('value_four', 254).nullable()
       table.string('value_five', 254).nullable()
+      table.unique(['user_id', 'schedule_games_id']);
       table.timestamps(true,true)
     })
   }
