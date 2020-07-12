@@ -208,6 +208,7 @@ class Messenger extends React.Component {
         userId={this.props.userId}
         chats={this.props.chats}
         alias={this.props.alias}
+        forceSelfDestruct={this.props.autoSelfDestruct}
         closeChat={this.props.closeChat}
         windowFocused={this.state.windowFocused}
       />

@@ -247,6 +247,7 @@ class ChatController {
     const senderName = request.only('senderName').senderName
     const keyReceiver = request.only('keyReceiver').keyReceiver
     const attachment = request.only('attachment').attachment
+    const forceSelfDestruct = request.only('forceSelfDestruct').forceSelfDestruct
     const uuid = request.only('uuid').uuid
     log('CHAT', `User ${requestingUserId} sending encrypted ${keyReceiver ? 'Key' : 'Message'} for Chat ${requestedChatId}`)
     const { message } = await ChatRepository.sendMessage({
@@ -261,6 +262,7 @@ class ChatController {
       replyContent,
       replyBackup,
       uuid,
+      forceSelfDestruct,
     })
     return response.send({ message })
   }

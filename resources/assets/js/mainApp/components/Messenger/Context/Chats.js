@@ -14,6 +14,7 @@ export default class Chats extends React.Component {
         userId={this.props.userId}
         alias={this.props.alias}
         chatId={chat.chatId}
+        forceSelfDestruct={this.props.forceSelfDestruct}
         onClose={(chatId) => this.props.closeChat(chatId)}
         windowFocused={this.props.windowFocused}
       />

@@ -703,7 +703,7 @@ class ChatRepository {
     return { contacts: fullContacts };
   }
 
-  async sendMessage({ requestingUserId, requestedChatId, senderName, backup, content, keyReceiver, attachment, replyId, replyContent, replyBackup, uuid }) {
+  async sendMessage({ requestingUserId, requestedChatId, senderName, backup, content, keyReceiver, attachment, replyId, replyContent, replyBackup, uuid, forceSelfDestruct }) {
     const { chat } = await this.fetchChat({ requestingUserId, requestedChatId });
     const messageData = {
       uuid,
@@ -713,7 +713,7 @@ class ChatRepository {
       backup: backup,
       content: content,
       attachment: attachment,
-      self_destruct: chat.selfDestruct,
+      self_destruct: chat.selfDestruct || forceSelfDestruct,
       is_attachment: !!attachment,
       reply_id: replyId,
       reply_content: replyContent,
@@ -1090,7 +1090,7 @@ class ChatRepository {
     }
     log('CRON', `END - HANDLE EXPIRED ATTACHMENTS - DELETED ${expiredAttachments.length} ATTACHMENTS`);
   }
-  
+
   async _addChatNotificationModerator({ requestingUserId, requestedChatId, moderators }) {
     const { chat } = await this.fetchChatInfo({ requestedChatId });
     const alias = (await User.query().where('id', '=', requestingUserId).first()).toJSON().alias;
