@@ -21,10 +21,17 @@ class Groups extends React.Component {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
   }
 
+  static getDerivedStateFromProps(props, state) {
+    if (props.groups.length > state.previousCount) return { page: state.page + 1, previousCount: props.groups.length, canShowLoader: true }
+    else return { canShowLoader: false }
+  }
+
   constructor(props) {
     super(props)
     this.state = {
       page: 0,
+      previousCount: 0,
+      canShowLoader: false,
       showingGroupCreation: false,
     }
     this.groupsListRef = React.createRef()
@@ -45,15 +52,12 @@ class Groups extends React.Component {
     const groupsList = this.groupsListRef.current
     if (!groupsList) return
     const hasScrolledToBottom = groupsList.scrollHeight - groupsList.scrollTop === 200
-    if (hasScrolledToBottom)
-      this.setState(
-        (previous) => ({ page: previous.page + 1 }),
-        () => this.fetchGroups()
-      )
+    if (hasScrolledToBottom) this.fetchGroups(true)
   }
 
-  fetchGroups() {
-    this.props.fetchGroupsPaginated(this.state.page, this.props.gameId, !this.state.page)
+  fetchGroups(hasScrolled) {
+    const page = this.state.page + hasScrolled ? 1 : 0
+    this.props.fetchGroupsPaginated(page, this.props.gameId, !page)
   }
 
   expand = () => {
@@ -74,7 +78,16 @@ class Groups extends React.Component {
       value: {
         chat: { chatId },
       },
-    } = await this.props.createChat(contacts.map(contact => contact.contactId), this.props.userId, title, icon, encryption, true, null, gameId)
+    } = await this.props.createChat(
+      contacts.map((contact) => contact.contactId),
+      this.props.userId,
+      title,
+      icon,
+      encryption,
+      true,
+      null,
+      gameId
+    )
     if (key) await uploadGroupIcon(chatId, key)
   }
 
@@ -116,7 +129,7 @@ class Groups extends React.Component {
   }
 
   renderLoadingMore = () => {
-    if (!this.props.loadingMore || !this.props.expanded || this.props.loading) return null
+    if (!this.props.loadingMore || !this.props.expanded || this.props.loading || !this.state.canShowLoader) return null
     return <div className='messenger-body-section-loader'>loading more...</div>
   }
 
