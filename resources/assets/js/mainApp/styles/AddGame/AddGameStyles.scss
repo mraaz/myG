@@ -15,19 +15,25 @@
   font-size: 14px;
 }
 
-.main-settings-content {
+.main-settings-content,
+.advance-settings-content {
   margin: 30px 0px;
 }
 
 .game-title-select,
-.date-picker-select {
+.date-picker-select,
+.friend-name-select,
+.experience-select,
+.platform-select,
+.description-text-area {
   padding-bottom: 15px;
 }
 
 .time-text-container {
   display: flex;
-  margin: 10px 0px;
   align-items: center;
+  margin-top: 10px;
+  margin-bottom: 30px;
 }
 
 .circle {
@@ -43,6 +49,13 @@
   color: #e5c746;
   font-weight: bold;
   cursor: pointer;
+}
+
+.number-of-games-container span,
+.comments-privacy-container span {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500 !important;
 }
 
 .add-game {
