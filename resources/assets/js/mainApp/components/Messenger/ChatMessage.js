@@ -277,7 +277,7 @@ export default class ChatMessage extends React.Component {
   }
 
   getAttachment = (content) => {
-    return content.split('myg-image|')[1] || content.split('myg-sound|')[1] || content.split('myg-video|')[1] || null
+    return content && content.split('myg-image|')[1] || content.split('myg-sound|')[1] || content.split('myg-video|')[1] || null
   }
 
   getAttachmentName = (content) => {
@@ -350,7 +350,13 @@ export default class ChatMessage extends React.Component {
           />
           <div>Video</div>
         </div>
-        <p className='chat-component-message-image-expiry'>This file will expire on {formatDate(expirationDate)}</p>
+        {this.state.showOptionsButton ? (
+          <p className='chat-component-message-image-expiry clickable' onClick={() => this.props.showAttachment({ video })}>
+            Click to play this video
+          </p>
+        ) : (
+          <p className='chat-component-message-image-expiry'>This file will expire on {formatDate(expirationDate)}</p>
+        )}
       </div>
     )
   }

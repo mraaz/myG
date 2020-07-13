@@ -238,8 +238,8 @@ export class Chat extends React.Component {
         )}
 
         <div
-          className='chat-component-header-info clickable'
-          onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}>
+          className={`chat-component-header-info ${this.props.isGuest ? '' : 'clickable'}`}
+          onClick={() => !this.props.isGuest && this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}>
           {titleTooLong ? (
             <WithTooltip position={{ bottom: '24px', left: '-12px' }} text={this.props.title}>
               <div className='chat-component-header-title'>{this.props.title.slice(0, 17) + '...'}</div>
@@ -249,7 +249,7 @@ export class Chat extends React.Component {
           )}
 
           {this.props.subtitle &&
-            (this.props.isGroup ? (
+            (this.props.isGroup && !this.props.isGuest ? (
               <WithTooltip
                 position={{ bottom: '16px', left: '-12px' }}
                 text={[
