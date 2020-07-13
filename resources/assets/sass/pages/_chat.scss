@@ -301,6 +301,56 @@
       flex-direction: column;
       flex: 1;
       height: 100%;
+
+      .chat-component-message-reply-no-margin {
+        font-size: 12px;
+        border-left: solid 2px #e5c746;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: left;
+        padding: 4px;
+        color: #c0c0c0;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+      }
+
+      .chat-component-message-attachment-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+      }
+  
+      .chat-component-message-image {
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: contain;
+        width: 164px;
+        height: 80px;
+      }
+  
+      .chat-component-message-video {
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: contain;
+        width: 80px;
+        height: 40px;
+      }
+  
+      .chat-component-message-sound {
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: contain;
+        width: 80px;
+        height: 40px;
+      }
+  
+      .chat-component-message-image-container {
+        display: flex;
+        flex-direction: column;
+      }
+
     }
 
     .chat-component-input-container {

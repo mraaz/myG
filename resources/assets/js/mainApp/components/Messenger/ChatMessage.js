@@ -277,7 +277,7 @@ export default class ChatMessage extends React.Component {
   }
 
   getAttachment = (content) => {
-    return content && content.split('myg-image|')[1] || content.split('myg-sound|')[1] || content.split('myg-video|')[1] || null
+    return (content && content.split('myg-image|')[1]) || content.split('myg-sound|')[1] || content.split('myg-video|')[1] || null
   }
 
   getAttachmentName = (content) => {
