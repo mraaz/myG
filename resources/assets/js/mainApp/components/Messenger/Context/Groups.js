@@ -98,7 +98,7 @@ class Groups extends React.Component {
           <div className='messenger-new-group-button-icon' style={{ backgroundImage: `url(${getAssetUrl('ic_chat_group_create')})` }} />
           Create Group
         </div>
-        {!this.props.groups.length && (
+        {!this.props.loading && !this.props.groups.length && (
           <div className='messenger-empty-message-container'>
             <p className='messenger-empty-message'>You aren't part of any group{this.props.inGame ? ' for this game' : ''} yet :(</p>
             <p className='messenger-empty-message'>You can find groups through matchmaking</p>
@@ -148,7 +148,7 @@ class Groups extends React.Component {
       this.props.expanded,
       () => this.expand(),
       () => {
-        if (!this.props.groups.length) return this.renderGroupButton()
+        if (!this.props.loading && !this.props.groups.length) return this.renderGroupButton()
         return (
           <div>
             {this.renderGroupButton()}
