@@ -95,7 +95,7 @@
     .chat-component-message-reactions {
       position: absolute;
       z-index: 10;
-      bottom: -20px;
+      bottom: -27px;
       background-color: #1d2326;
       padding: 4px;
       display: flex;
@@ -130,9 +130,9 @@
       background-repeat: no-repeat;
       background-position: center center;
       background-size: contain;
-      width: 16px;
-      height: 16px;
-      margin: 4px;
+      width: 14px;
+      height: 14px;
+      margin: 3px;
     }
 
     .chat-component-message-reaction-senders-container {
