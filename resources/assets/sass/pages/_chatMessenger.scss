@@ -719,6 +719,29 @@
     margin-bottom: 4px;
   }
 
+  .messenger-search-no-results-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 16px 8px 16px 8px;
+  }
+
+  .messenger-search-no-results-title {
+    color: #fafafa;
+    font-size: 1.1em;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .messenger-search-no-results-subtitle {
+    color: #fafafa;
+    font-size: 0.9em;
+    text-align: center;
+    margin-top: 4px;
+  }
+
   .messenger-loading-container {
     flex: 1;
     display: flex;

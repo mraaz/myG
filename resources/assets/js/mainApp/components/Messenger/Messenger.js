@@ -173,6 +173,7 @@ class Messenger extends React.Component {
     return (
       <SearchResults
         searchResults={this.props.searchResults}
+        games={this.props.games}
         loading={this.props.searching}
         chats={this.props.chats}
         userId={this.props.userId}
