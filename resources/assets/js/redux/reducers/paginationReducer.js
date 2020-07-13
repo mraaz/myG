@@ -105,6 +105,15 @@ export default function reducer(
       }
     }
 
+    case 'ON_CHAT_DELETED': {
+      logger.log('PAGINATION', `Redux -> On Chat Deleted: `, action.payload)
+      const groups = JSON.parse(JSON.stringify(state.groups)).filter((chat) => parseInt(chat.chatId) !== parseInt(action.payload.chatId))
+      return {
+        ...state,
+        groups,
+      }
+    }
+
     default:
       return state
   }
