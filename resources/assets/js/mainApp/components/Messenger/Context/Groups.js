@@ -21,10 +21,17 @@ class Groups extends React.Component {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
   }
 
+  static getDerivedStateFromProps(props, state) {
+    if (props.groups.length > state.previousCount) return { page: state.page + 1, previousCount: props.groups.length, canShowLoader: true }
+    else return { canShowLoader: false }
+  }
+
   constructor(props) {
     super(props)
     this.state = {
       page: 0,
+      previousCount: 0,
+      canShowLoader: false,
       showingGroupCreation: false,
     }
     this.groupsListRef = React.createRef()
@@ -45,15 +52,12 @@ class Groups extends React.Component {
     const groupsList = this.groupsListRef.current
     if (!groupsList) return
     const hasScrolledToBottom = groupsList.scrollHeight - groupsList.scrollTop === 200
-    if (hasScrolledToBottom)
-      this.setState(
-        (previous) => ({ page: previous.page + 1 }),
-        () => this.fetchGroups()
-      )
+    if (hasScrolledToBottom) this.fetchGroups(true)
   }
 
-  fetchGroups() {
-    this.props.fetchGroupsPaginated(this.state.page, this.props.gameId, !this.state.page)
+  fetchGroups(hasScrolled) {
+    const page = this.state.page + hasScrolled ? 1 : 0
+    this.props.fetchGroupsPaginated(page, this.props.gameId, !page)
   }
 
   expand = () => {
@@ -74,7 +78,16 @@ class Groups extends React.Component {
       value: {
         chat: { chatId },
       },
-    } = await this.props.createChat(contacts.map(contact => contact.contactId), this.props.userId, title, icon, encryption, true, null, gameId)
+    } = await this.props.createChat(
+      contacts.map((contact) => contact.contactId),
+      this.props.userId,
+      title,
+      icon,
+      encryption,
+      true,
+      null,
+      gameId
+    )
     if (key) await uploadGroupIcon(chatId, key)
   }
 
@@ -85,7 +98,7 @@ class Groups extends React.Component {
           <div className='messenger-new-group-button-icon' style={{ backgroundImage: `url(${getAssetUrl('ic_chat_group_create')})` }} />
           Create Group
         </div>
-        {!this.props.groups.length && (
+        {!this.props.loading && !this.props.groups.length && (
           <div className='messenger-empty-message-container'>
             <p className='messenger-empty-message'>You aren't part of any group{this.props.inGame ? ' for this game' : ''} yet :(</p>
             <p className='messenger-empty-message'>You can find groups through matchmaking</p>
@@ -116,7 +129,7 @@ class Groups extends React.Component {
   }
 
   renderLoadingMore = () => {
-    if (!this.props.loadingMore || !this.props.expanded || this.props.loading) return null
+    if (!this.props.loadingMore || !this.props.expanded || this.props.loading || !this.state.canShowLoader) return null
     return <div className='messenger-body-section-loader'>loading more...</div>
   }
 
@@ -126,7 +139,7 @@ class Groups extends React.Component {
   }
 
   renderGroup = (group) => {
-    return <Group {...this.props} group={group} />
+    return <Group key={group.chatId} {...this.props} group={group} />
   }
 
   render() {
@@ -135,7 +148,7 @@ class Groups extends React.Component {
       this.props.expanded,
       () => this.expand(),
       () => {
-        if (!this.props.groups.length) return this.renderGroupButton()
+        if (!this.props.loading && !this.props.groups.length) return this.renderGroupButton()
         return (
           <div>
             {this.renderGroupButton()}

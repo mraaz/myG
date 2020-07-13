@@ -44,7 +44,7 @@ const MAXIMUM_GROUP_SIZE = 37;
 class ChatRepository {
   async fetchChats({ requestingUserId, onlyGroups }) {
     const chatsQuery = Database
-      .select('user_chats.chat_id', 'user_chats.user_id', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chats.game_message', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chats.game_message', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .leftJoin('chat_last_reads', function () { this.on('chat_last_reads.chat_id', 'user_chats.chat_id').andOn('chat_last_reads.user_id', 'user_chats.user_id') })
@@ -79,7 +79,7 @@ class ChatRepository {
 
   async fetchChat({ requestingUserId, requestedChatId }) {
     const chat = (await Database
-      .select('user_chats.chat_id', 'user_chats.user_id', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chats.game_message', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chats.game_message', 'chat_last_reads.last_read_message_id', ' chat_last_cleareds.last_cleared_message_id')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .leftJoin('chat_last_reads', function () { this.on('chat_last_reads.chat_id', 'user_chats.chat_id').andOn('chat_last_reads.user_id', 'user_chats.user_id') })
@@ -87,6 +87,7 @@ class ChatRepository {
       .where('user_chats.user_id', requestingUserId)
       .andWhere('user_chats.chat_id', requestedChatId)
       .first());
+    if (!chat) return { chat: 'NOT_FOUND' };
     const lastReadsObject = {};
     const lastReadsRaw = (await ChatLastRead.query().where('user_id', '!=', requestingUserId).andWhere('chat_id', requestedChatId).fetch()).toJSON();
     lastReadsRaw.forEach(lastRead => lastReadsObject[lastRead.user_id] = lastRead.last_read_message_id);
@@ -184,7 +185,7 @@ class ChatRepository {
         senderId: message.sender_id,
         keyReceiver: message.key_receiver,
         senderName: message.sender_name,
-      unencryptedContent: message.unencrypted_content,
+        unencryptedContent: message.unencrypted_content,
         content: message.content,
         backup: message.backup,
         deleted: message.deleted,
@@ -292,9 +293,11 @@ class ChatRepository {
     chat.self_destruct = !!forceSelfDestruct || !!individualGameId;
     await chat.save();
 
+    const { contacts: fullContacts } = await this.fetchChatContacts({ requestingUserId, requestedChatId: chat.id })
     const chatSchema = new ChatSchema({
       chatId: chat.id,
       contacts,
+      fullContacts,
       guests,
       owners,
       moderators: owners,
@@ -428,7 +431,9 @@ class ChatRepository {
   }
 
   async fetchChatContacts({ requestingUserId, requestedChatId }) {
-    const chat = (await Chat.query().where('id', requestedChatId).first()).toJSON();
+    const chatResponse = (await Chat.query().where('id', requestedChatId).first());
+    if (!chatResponse) return { contacts: [] }
+    const chat = chatResponse.toJSON();
     const contactIds = JSON.parse(chat.contacts || '[]');
     if (!Array.isArray(contactIds)) return { contacts: [] };
     const contactsQuery = contactIds.filter(contactId => contactId !== requestingUserId);
@@ -464,7 +469,7 @@ class ChatRepository {
 
   async searchGroup({ requestingUserId, groupName, requestedPage }) {
     const query = Database
-      .select('user_chats.chat_id', 'user_chats.user_id', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chats.game_message')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chats.game_message')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .where('user_chats.user_id', requestingUserId)
@@ -552,7 +557,7 @@ class ChatRepository {
 
   async fetchGroupsPaginated({ requestingUserId, requestedPage, gameId, search }) {
     let query = Database
-      .select('user_chats.chat_id', 'user_chats.user_id', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chats.game_message')
+      .select('user_chats.chat_id', 'user_chats.user_id', 'user_chats.muted', 'chats.self_destruct', 'user_chats.deleted_messages', 'user_chats.created_at', 'user_chats.updated_at', 'chats.isPrivate', 'chats.isGroup', 'chats.icon', 'chats.title', 'chats.public_key', 'chats.contacts', 'chats.owners', 'chats.moderators', 'chats.guests', 'chats.individual_game_id', 'chats.game_id', 'chats.game_message')
       .from('user_chats')
       .leftJoin('chats', 'user_chats.chat_id', 'chats.id')
       .where('user_chats.user_id', requestingUserId)
@@ -698,7 +703,7 @@ class ChatRepository {
     return { contacts: fullContacts };
   }
 
-  async sendMessage({ requestingUserId, requestedChatId, senderName, backup, content, keyReceiver, attachment, replyId, replyContent, replyBackup, uuid }) {
+  async sendMessage({ requestingUserId, requestedChatId, senderName, backup, content, keyReceiver, attachment, replyId, replyContent, replyBackup, uuid, forceSelfDestruct }) {
     const { chat } = await this.fetchChat({ requestingUserId, requestedChatId });
     const messageData = {
       uuid,
@@ -708,7 +713,7 @@ class ChatRepository {
       backup: backup,
       content: content,
       attachment: attachment,
-      self_destruct: chat.selfDestruct,
+      self_destruct: chat.selfDestruct || forceSelfDestruct,
       is_attachment: !!attachment,
       reply_id: replyId,
       reply_content: replyContent,
@@ -1085,14 +1090,13 @@ class ChatRepository {
     }
     log('CRON', `END - HANDLE EXPIRED ATTACHMENTS - DELETED ${expiredAttachments.length} ATTACHMENTS`);
   }
-  async _addChatNotificationModerator({ requestingUserId, requestedChatId, moderators }) {
 
+  async _addChatNotificationModerator({ requestingUserId, requestedChatId, moderators }) {
     const { chat } = await this.fetchChatInfo({ requestedChatId });
     const alias = (await User.query().where('id', '=', requestingUserId).first()).toJSON().alias;
     const oldModerators = chat.moderators;
     const added = moderators.filter(moderator => !oldModerators.includes(moderator));
     const removed = oldModerators.filter(moderator => !moderators.includes(moderator));
-    console.log(moderators, oldModerators, added, removed)
     const type = added[0] ? "PROMOTED" : "DEMOTED";
     this._addChatNotification({
       chatId: requestedChatId,

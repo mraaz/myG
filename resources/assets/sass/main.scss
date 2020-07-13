@@ -26,6 +26,8 @@
 @import 'pages/tooltip';
 @import 'pages/dropdown';
 @import 'pages/chat';
+@import 'pages/chatMessenger';
+@import 'pages/chatLink';
 @import 'pages/chatMessage';
 @import 'pages/chatOptions';
 @import 'pages/chatGroupCreation';
@@ -33,8 +35,6 @@
 @import 'pages/chatGroupMembers';
 @import 'pages/chatGroupLinks';
 @import 'pages/chatUnreadMessages';
-@import 'pages/messenger';
-@import 'pages/messengerLink';
 @import 'auth/auth';
 @import 'pages/analytics';
 @import 'scheduledGames/scheduleGames';

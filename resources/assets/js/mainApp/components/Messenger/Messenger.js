@@ -173,6 +173,7 @@ class Messenger extends React.Component {
     return (
       <SearchResults
         searchResults={this.props.searchResults}
+        games={this.props.games}
         loading={this.props.searching}
         chats={this.props.chats}
         userId={this.props.userId}
@@ -208,6 +209,7 @@ class Messenger extends React.Component {
         userId={this.props.userId}
         chats={this.props.chats}
         alias={this.props.alias}
+        forceSelfDestruct={this.props.autoSelfDestruct}
         closeChat={this.props.closeChat}
         windowFocused={this.state.windowFocused}
       />

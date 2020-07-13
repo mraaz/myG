@@ -5,8 +5,8 @@ export default class Dropdown extends React.PureComponent {
     return (
       <div className="item clickable"
         key={index}
-        onClick={() => onItemClick(item)}>
-        {item}
+        onClick={() => onItemClick(item.name || item)}>
+        {item.render || item.name || item}
       </div>
     );
   }

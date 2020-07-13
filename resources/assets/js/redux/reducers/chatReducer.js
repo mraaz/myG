@@ -59,6 +59,13 @@ export default function reducer(
 
     case 'PREPARE_CHAT_FULFILLED': {
       logger.log('CHAT', `Redux -> Chat ${action.meta.chatId} Ready (Chat): `, action.payload, action.meta)
+      if (action.payload.chat === "NOT_FOUND") {
+        const chats = JSON.parse(JSON.stringify(state.chats))
+        return {
+          ...state,
+          chats: chats.filter(chat => chat.chatId !== action.meta.chatId),
+        }
+      }
       const { chatId, userId } = action.meta
       const chats = JSON.parse(JSON.stringify(state.chats))
       const contacts = JSON.parse(JSON.stringify(state.contacts))
@@ -219,7 +226,7 @@ export default function reducer(
       chat.minimised = false
       chat.maximised = false
       if (!chat.privateKey) Object.assign(chat, encryption)
-      prepareGroupKeysToSend(chat, parseInt(action.meta.userId), state.contacts, state.publicKey, state.privateKey)
+      prepareGroupKeysToSend(chat, parseInt(action.meta.userId), chat.fullContacts, state.publicKey, state.privateKey)
       if (!chat.closed) {
         const openChats = chats.filter((candidate) => !candidate.closed && candidate.chatId !== created.chatId)
         if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => (openChats[index].closed = true))
@@ -429,7 +436,7 @@ export default function reducer(
       if (isPrivate !== undefined) chat.isPrivate = isPrivate
       if (publicKey !== undefined) chat.publicKey = publicKey
       if (privateKey !== undefined) chat.privateKey = deserializeKey(privateKey)
-      if (publicKey !== undefined) prepareGroupKeysToSend(chat, parseInt(state.userId), state.contacts, state.publicKey, state.privateKey)
+      if (publicKey !== undefined) prepareGroupKeysToSend(chat, parseInt(state.userId), chat.fullContacts, state.publicKey, state.privateKey)
       return {
         ...state,
         chats,
@@ -885,11 +892,10 @@ function prepareMessage(state, chat, message) {
   return { ...message, content, replyContent, decrypted: true }
 }
 
-function prepareGroupKeysToSend(group, userId, userContacts, userPublicKey, userPrivateKey) {
+function prepareGroupKeysToSend(group, userId, chatContacts, userPublicKey, userPrivateKey) {
   if (!group.isGroup) return
-  const chatContacts = group.contacts.filter((contactId) => userId !== parseInt(contactId))
-  const getContact = (contactId) => userContacts.find((contact) => parseInt(contact.contactId) === parseInt(contactId))
-  const contacts = chatContacts.map((contactId) => getContact(contactId))
+  console.log('prepareGroupKeysToSend', group, userId, chatContacts, userPublicKey, userPrivateKey)
+  const contacts = JSON.parse(JSON.stringify(chatContacts))
   contacts.push({ contactId: userId, publicKey: userPublicKey })
   sendGroupKeys(group.chatId, userId, contacts, group.privateKey, userPrivateKey)
 }

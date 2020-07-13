@@ -3,6 +3,7 @@ import { convertEmojisToColons } from '../../../common/emoji'
 import { getAssetUrl } from '../../../common/assets'
 import logger from '../../../common/logger'
 import { ignoreFunctions } from '../../../common/render'
+import { convertColonsToEmojis } from '../../../common/emoji'
 
 export default class ChatInput extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -81,6 +82,30 @@ export default class ChatInput extends React.Component {
     this.setState({ isTyping: false })
   }
 
+  renderMessage = (content) => {
+    if (!content) return null
+    const isImage = content.includes('myg-image')
+    const isSound = content.includes('myg-sound')
+    const isVideo = content.includes('myg-video')
+    if (isImage) return this.renderImage(content)
+    if (isSound) return ' a sound file'
+    if (isVideo) return ' a video file'
+    return convertColonsToEmojis(content)
+  }
+
+  renderImage = (content) => {
+    const image = content.split('myg-image|')[1]
+    return (
+      <div className='chat-component-message-image-container'>
+        <div
+          className={`chat-component-message-image clickable`}
+          onClick={() => this.props.showAttachment({ image })}
+          style={{ backgroundImage: `url('${image}')` }}
+        />
+      </div>
+    )
+  }
+
   render() {
     logger.log('RENDER', 'ChatInput')
     const disabled = !this.props.connected || !!this.props.blocked || !this.props.isDecryptable
@@ -91,7 +116,7 @@ export default class ChatInput extends React.Component {
       : 'Type your message here'
     return (
       <div className='chat-component-input-with-reply-container'>
-        {this.props.replyingTo && <p className='chat-component-message-reply-no-margin'>replying to: {this.props.replyingTo.content}</p>}
+        {this.props.replyingTo && <p className='chat-component-message-reply-no-margin'>replying to {this.renderMessage(this.props.replyingTo.content)}</p>}
         <div className='chat-component-input-container'>
           <textarea
             ref={this.input}

@@ -154,7 +154,8 @@ export class Chat extends React.Component {
       replyId,
       replyContent,
       replyBackup,
-      input
+      input,
+      this.props.forceSelfDestruct
     )
   }
 
@@ -237,8 +238,8 @@ export class Chat extends React.Component {
         )}
 
         <div
-          className='chat-component-header-info clickable'
-          onClick={() => this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}>
+          className={`chat-component-header-info ${this.props.isGuest ? '' : 'clickable'}`}
+          onClick={() => !this.props.isGuest && this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}>
           {titleTooLong ? (
             <WithTooltip position={{ bottom: '24px', left: '-12px' }} text={this.props.title}>
               <div className='chat-component-header-title'>{this.props.title.slice(0, 17) + '...'}</div>
@@ -248,7 +249,7 @@ export class Chat extends React.Component {
           )}
 
           {this.props.subtitle &&
-            (this.props.isGroup ? (
+            (this.props.isGroup && !this.props.isGuest ? (
               <WithTooltip
                 position={{ bottom: '16px', left: '-12px' }}
                 text={[
@@ -422,7 +423,7 @@ export class Chat extends React.Component {
       : [this.props.title]
     const typingHint = usersTyping.length > 1 ? usersTyping.join(', ') + ' are typing...' : usersTyping[0] + ' is typing...'
     return (
-      <div key={'typing'} className={`chat-component-message chat-component-message-received`}>
+      <div key={'typing'} id="chat-component-message" className="chat-component-message-received">
         <div className='chat-component-message-typing-hint'>{typingHint}</div>
         <div className='chat-component-message-container'>
           <div className='dot-flashing' />
@@ -511,7 +512,7 @@ export class Chat extends React.Component {
       : ''
     const canResetKey = isGroupWithoutKey && this.props.isGroupOwner
     return (
-      <div key={this.props.chatId} className='chat-component-base'>
+      <div key={this.props.chatId} id='chat-component-base'>
         {this.renderHeader()}
         <div
           className={`chat-component-encryption-warning${canResetKey ? ' clickable' : ''}`}
@@ -542,7 +543,7 @@ export class Chat extends React.Component {
     if (this.props.isGuest) extraClass = 'chat-guest'
     if (this.state.guestChatExpanded) extraClass += '-expanded'
     return (
-      <div key={this.props.chatId} className={`chat-component-base ${extraClass}`}>
+      <div key={this.props.chatId} id="chat-component-base" className={extraClass}>
         {this.renderHeader()}
         {!this.state.settings && !this.props.minimised && this.renderMuteBanner()}
         {!this.state.settings && !this.props.minimised && this.renderBlockedBanner()}
@@ -574,7 +575,8 @@ export function mapStateToProps(state, props) {
   if (!isGroup) contactsMap[contactId] = contact
   if (isGroup) {
     const memberCount = contacts.length + guests.length + 1
-    const onlineCount = contacts.filter((contactId) => (contactsMap[contactId] || {}).status === 'online').length + guests.length + 1
+    const isGroupMemberOnline = (contact) => contacts.includes(contact.contactId) && contact.status === 'online'
+    const onlineCount = state.user.contacts.filter(isGroupMemberOnline).length + guests.length + 1
     chatSubtitle = `${onlineCount}/${memberCount} online`
   }
   const isGroupOwner = chat.owners.length && chat.owners.includes(props.userId)
@@ -620,8 +622,8 @@ function mapDispatchToProps(dispatch) {
   return {
     prepareChat: (chatId, userId, contactId, isGroup) => dispatch(prepareChatAction(chatId, userId, contactId, isGroup)),
     fetchMessages: (chatId, page) => dispatch(fetchMessagesAction(chatId, page)),
-    sendMessage: (chatId, userId, alias, content, attachment, replyId, replyContent, replyBackup, unencryptedContent) =>
-      dispatch(sendMessageAction(chatId, userId, alias, content, attachment, replyId, replyContent, replyBackup, unencryptedContent)),
+    sendMessage: (chatId, userId, alias, content, attachment, replyId, replyContent, replyBackup, unencryptedContent, forceSelfDestruct) =>
+      dispatch(sendMessageAction(chatId, userId, alias, content, attachment, replyId, replyContent, replyBackup, unencryptedContent, forceSelfDestruct)),
     editMessage: (chatId, userId, messageId, content) => dispatch(editMessageAction(chatId, userId, messageId, content)),
     deleteMessage: (chatId, userId, messageId, origin) => dispatch(deleteMessageAction(chatId, userId, messageId, origin)),
     addReaction: (chatId, userId, messageId, reactionId) => dispatch(addReactionAction(chatId, userId, messageId, reactionId)),

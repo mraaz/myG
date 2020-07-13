@@ -50,6 +50,7 @@ export default class GameSettings extends React.Component {
     const games = this.props.games.slice(0).filter((game) => search(game.name))
     return (
       <div className='messenger-settings-game-input'>
+        <p className="messenger-settings-game-input-hint">Search for your added games to favourite</p>
         <div className='messenger-settings-game-input-header'>
           <input
             className='messenger-settings-game-input-field'

@@ -335,12 +335,12 @@ export function clearUnreadIndicatorAction() {
   return { type: 'CLEAR_UNREAD_INDICATOR' }
 }
 
-export function sendMessageAction(chatId, userId, alias, encrypted, attachment, replyId, replyContent, replyBackup, unencryptedContent) {
+export function sendMessageAction(chatId, userId, alias, encrypted, attachment, replyId, replyContent, replyBackup, unencryptedContent, forceSelfDestruct) {
   const uuid = uuidv4()
   return {
     type: 'SEND_MESSAGE',
-    payload: sendMessage(chatId, userId, alias, encrypted, null, attachment, replyId, replyContent, replyBackup, uuid),
-    meta: { chatId, userId, alias, encrypted, attachment, replyId, replyContent, replyBackup, uuid, unencryptedContent },
+    payload: sendMessage(chatId, userId, alias, encrypted, null, attachment, replyId, replyContent, replyBackup, uuid, forceSelfDestruct),
+    meta: { chatId, userId, alias, encrypted, attachment, replyId, replyContent, replyBackup, uuid, unencryptedContent, forceSelfDestruct },
   }
 }
 

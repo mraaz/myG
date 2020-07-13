@@ -45,7 +45,7 @@ export default class Settings extends React.Component {
       <div className='messenger-settings-toggle'>
         <div className='messenger-settings-toggle-hint'>
           <div className='messenger-settings-toggle-title'>Auto Destruct</div>
-          <div className='messenger-settings-toggle-subtitle'>Any Chat created will have Self Destruct turned on by default.</div>
+          <div className='messenger-settings-toggle-subtitle'>Any message sent will automatically self destruct.</div>
         </div>
         <ToggleButton
           value={this.props.autoSelfDestruct}

@@ -169,7 +169,7 @@ class GroupMemberOptions extends React.Component {
       this.props.blockedUsers.length && this.props.blockedUsers.map((user) => user.userId).includes(contact.contactId)
     return (
       <div key={contact.contactId} className='chat-group-member'>
-        {this.renderMemberInfo(isGuest ? getAssetUrl('ic_guest_icon') : contact.icon, isGuest ? guestAlias : contact.name)}
+        {this.renderMemberInfo(isGuest ? getAssetUrl('ic_guest_icon') : contact.icon, isGuest ? guestAlias : contact.name, isGuest)}
         <div className='chat-group-member-buttons'>
           <div className='chat-group-member-button'>
             {this.renderMemberRole(contact.contactId, isGroupModerator, isContactOwner, isContactModerator, isGuest)}
@@ -180,7 +180,7 @@ class GroupMemberOptions extends React.Component {
           <div className='chat-group-member-button'>
             {this.renderKickButton(
               { contactId: isGuest ? guestId : contact.contactId, name: isGuest ? guestAlias : contact.name },
-              isGroupModerator
+              isGroupModerator && !isContactOwner
             )}
           </div>
           <div className='chat-group-member-button-divider' />
@@ -190,10 +190,11 @@ class GroupMemberOptions extends React.Component {
     )
   }
 
-  renderMemberInfo = (icon, name) => {
+  renderMemberInfo = (icon, name, isGuest) => {
+    const iconStyle = isGuest ? 'chat-group-guest-icon' : 'chat-group-member-icon';
     return (
       <div className='chat-group-member-info'>
-        <div className='chat-group-guest-icon' style={{ backgroundImage: `url(${icon})` }} />
+        <div className={iconStyle} style={{ backgroundImage: `url(${icon})` }} />
         <div className='chat-group-member-name'>{name}</div>
       </div>
     )

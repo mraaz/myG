@@ -1,59 +1,57 @@
 .popup-component {
-
-  position: relative;
-  width: 0;
-  height: 0;
+  position: relative !important;
+  width: 0 !important;
+  height: 0 !important;
 
   .container {
-    position: absolute;
-    background-color: #253338;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    z-index: 1;
-    width: max-content;
-    border-radius: 8px;
+    position: absolute !important;
+    background-color: #253338 !important;
+    padding: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    z-index: 1 !important;
+    width: max-content !important;
+    border-radius: 8px !important;
   }
 
   .header {
-    font-size: 12px;
-    text-align: center;
-    color: #E0E0E0;
-    margin-bottom: 4px;
+    font-size: 12px !important;
+    text-align: center !important;
+    color: #e0e0e0 !important;
+    margin-bottom: 4px !important;
   }
 
   .buttons {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: -8px;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-bottom: -8px !important;
   }
 
   .button {
-    padding: 8px 12px;
-    border-radius: 8px;
-    color: #E0E0E0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 8px;
-    font-size: 12px;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    color: #e0e0e0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 8px !important;
+    font-size: 12px !important;
   }
 
   .confirm {
-    background-color: #446F62;
+    background-color: #446f62 !important;
   }
 
   .deny {
-    background-color: #804545;
+    background-color: #804545 !important;
   }
 
   .footer {
-    font-size: 10px;
-    text-align: center;
-    color: #E0E0E0;
-    margin-top: 12px;
+    font-size: 10px !important;
+    text-align: center !important;
+    color: #e0e0e0 !important;
+    margin-top: 12px !important;
   }
-
 }

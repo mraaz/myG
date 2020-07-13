@@ -1,27 +1,10 @@
 #messenger {
-  position: relative;
-  width: 20%;
+  position: fixed;
+  width: 20vw;
   top: 0;
   bottom: 0;
   right: 0;
   z-index: 1000;
-
-  input {
-    border: none;
-    outline: none;
-  }
-
-  input:focus,
-  select:focus,
-  button:focus {
-    font-size: inherit;
-    font-weight: inherit;
-    margin-bottom: inherit;
-    display: inherit;
-    outline: none;
-    box-shadow: 0 0 1pt 1pt #1515ff;
-  }
-
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -175,7 +158,6 @@
 
   .messenger-contact-info-unread-count {
     font-size: 10px;
-    height: 8px;
     color: #a0a0a0;
     text-align: center;
   }
@@ -483,6 +465,11 @@
     height: 0;
   }
 
+  .messenger-settings-game-input-hint {
+    display: flex;
+    padding: 8px;
+  }
+
   .messenger-settings-game-input-header {
     display: flex;
     flex-direction: row;
@@ -495,11 +482,12 @@
     position: fixed;
     display: flex;
     flex-direction: column;
-    width: 19vw;
-    right: 8px;
+    width: 20vw;
+    right: -2px;
     bottom: 0;
     z-index: 10;
     background-color: #151c26;
+    border-top: 2px solid #222b37;
   }
 
   .messenger-settings-game-input-field {
@@ -586,7 +574,7 @@
   .messenger-body-section-loader {
     display: flex;
     padding: 8px;
-    color: #FAFAFA;
+    color: #fafafa;
     align-items: center;
     justify-content: center;
     background-color: #2d363a;
@@ -731,6 +719,29 @@
     margin-bottom: 4px;
   }
 
+  .messenger-search-no-results-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 16px 8px 16px 8px;
+  }
+
+  .messenger-search-no-results-title {
+    color: #fafafa;
+    font-size: 1.1em;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .messenger-search-no-results-subtitle {
+    color: #fafafa;
+    font-size: 0.9em;
+    text-align: center;
+    margin-top: 4px;
+  }
+
   .messenger-loading-container {
     flex: 1;
     display: flex;
@@ -841,5 +852,28 @@
     margin-top: 12px;
     color: #fafafa;
     font-size: 10px;
+  }
+
+  div,
+  p,
+  a,
+  img {
+    margin: 0;
+    padding: 0;
+    color: #fff;
+  }
+  input {
+    border: none;
+    outline: none;
+  }
+  input:focus,
+  select:focus,
+  button:focus {
+    font-size: inherit;
+    font-weight: inherit;
+    margin-bottom: inherit;
+    display: inherit;
+    outline: none;
+    box-shadow: 0 0 1pt 1pt #1515ff;
   }
 }

@@ -19,10 +19,17 @@ class Section extends React.Component {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
   }
 
+  static getDerivedStateFromProps(props, state) {
+    if (props.contacts.length > state.previousCount) return { page: state.page + 1, previousCount: props.contacts.length, canShowLoader: true }
+    else return { canShowLoader: false }
+  }
+
   constructor(props) {
     super(props)
     this.state = {
       page: 0,
+      previousCount: 0,
+      canShowLoader: true,
     }
     this.contactsListRef = React.createRef()
   }
@@ -42,15 +49,12 @@ class Section extends React.Component {
     const contactsList = this.contactsListRef.current
     if (!contactsList) return
     const hasScrolledToBottom = contactsList.scrollHeight - contactsList.scrollTop === 200
-    if (hasScrolledToBottom)
-      this.setState(
-        (previous) => ({ page: previous.page + 1 }),
-        () => this.fetchContacts()
-      )
+    if (hasScrolledToBottom) this.fetchContacts(true)
   }
 
-  fetchContacts() {
-    this.props.fetchContactsPaginated(this.state.page, this.props.status, this.props.gameId, null, !this.state.page)
+  fetchContacts(hasScrolled) {
+    const page = this.state.page + hasScrolled ? 1 : 0
+    this.props.fetchContactsPaginated(page, this.props.status, this.props.gameId, null, !page)
   }
 
   expand = () => {
@@ -72,7 +76,7 @@ class Section extends React.Component {
   }
 
   renderLoadingMore = () => {
-    if (!this.props.loadingMore || !this.props.expanded || this.props.loading) return null
+    if (!this.props.loadingMore || !this.props.expanded || this.props.loading || !this.state.canShowLoader) return null
     return <div className='messenger-body-section-loader'>loading more...</div>
   }
 
@@ -92,7 +96,7 @@ class Section extends React.Component {
   }
 
   renderContact = (contact) => {
-    return <Contact {...this.props} contact={contact} />
+    return <Contact key={contact.contactId} {...this.props} contact={contact} />
   }
 
   render() {

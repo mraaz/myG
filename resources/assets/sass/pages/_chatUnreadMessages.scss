@@ -1,59 +1,59 @@
-
-#chat-unread-messages {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: 32px;
-
-  .header {
-    color: #FAFAFA;
-    margin-top: 12px;
-    margin-left: 12px;
-    margin-bottom: 12px;
-  }
-
-  .container {
-    width: 63%;
+#messenger {
+  #chat-unread-messages {
     display: flex;
     flex-direction: column;
-    background: #151b26;
-    border: 1px solid #a1a5ac;
-    box-shadow: 0 21px 48px -21px rgba(59,71,99,0.5);
-  }
+    align-items: center;
+    justify-content: center;
+    margin-top: 32px;
 
-  .unread-message {
-    padding: 8px;
-  }
+    .header {
+      color: #fafafa;
+      margin-top: 12px;
+      margin-left: 12px;
+      margin-bottom: 12px;
+    }
 
-  .unread-message:hover {
-    background-color: #252b36;
-  }
+    .container {
+      width: 63%;
+      display: flex;
+      flex-direction: column;
+      background: #151b26;
+      border: 1px solid #a1a5ac;
+      box-shadow: 0 21px 48px -21px rgba(59, 71, 99, 0.5);
+    }
 
-  .title {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 0;
-    margin-bottom: 4px;
-  }
+    .unread-message {
+      padding: 8px;
+    }
 
-  .sender-name {
-    color: #D0D0D0;
-    font-weight: 400;
-    font-size: 14px;
-  }
+    .unread-message:hover {
+      background-color: #252b36;
+    }
 
-  .date {
-    color: #A0A0A0;
-    font-weight: 400;
-    font-size: 14px;
-  }
+    .title {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 0;
+      margin-bottom: 4px;
+    }
 
-  .content {
-    color: #A0A0A0;
-    font-weight: 400;
-    font-size: 14px;
-  }
+    .sender-name {
+      color: #d0d0d0;
+      font-weight: 400;
+      font-size: 14px;
+    }
 
+    .date {
+      color: #a0a0a0;
+      font-weight: 400;
+      font-size: 14px;
+    }
+
+    .content {
+      color: #a0a0a0;
+      font-weight: 400;
+      font-size: 14px;
+    }
+  }
 }

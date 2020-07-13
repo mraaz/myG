@@ -29,18 +29,40 @@ export default class SearchResults extends React.Component {
       group.messages = chat.messages || []
       group.privateKey = chat.privateKey
     })
-    return { contacts: JSON.parse(JSON.stringify(contacts)), groups: JSON.parse(JSON.stringify(groups)) }
+    const games = props.search.trim()
+      ? props.games
+          .slice(0)
+          .filter((game) => game.name.toLowerCase().includes(props.search.toLowerCase()))
+          .sort((g1, g2) => g1.name.localeCompare(g2.name))
+          .sort((g1, g2) => (g1.isFavorite === g2.isFavorite ? 0 : g1.isFavorite ? -1 : 1))
+          .slice(0, 10)
+      : []
+    return {
+      contacts: JSON.parse(JSON.stringify(contacts)),
+      groups: JSON.parse(JSON.stringify(groups)),
+      games: JSON.parse(JSON.stringify(games)),
+    }
   }
 
   renderLoading = () => {
     if (!this.props.search || !this.props.loading) return null
     return (
-      <div className='messenger-loading-container'>
+      <div className='messenger-search-no-results-container'>
         <p className='messenger-loading-hint-top'>Hang On</p>
         <div className='messenger-loading-indicator'>
           <LoadingIndicator />
         </div>
         <p className='messenger-loading-hint-bottom'>{`Searching for ${this.props.search}...`}</p>
+      </div>
+    )
+  }
+
+  renderEmpty = () => {
+    if (!this.props.search || this.props.loading || this.state.contacts.length || this.state.groups.length || this.state.games.length) return null
+    return (
+      <div className='messenger-search-no-results-container'>
+        <p className='messenger-search-no-results-title'>Cannot find any results</p>
+        <p className='messenger-search-no-results-subtitle'>Try searching for something else</p>
       </div>
     )
   }
@@ -53,6 +75,7 @@ export default class SearchResults extends React.Component {
   renderContact = (contact) => {
     return (
       <Contact
+        key={contact.contactId}
         contact={contact}
         messagesLength={((contact.chat || {}).messages || []).length}
         userId={this.props.userId}
@@ -70,7 +93,7 @@ export default class SearchResults extends React.Component {
   }
 
   renderGroup = (group) => {
-    return <Group {...this.props} group={group} />
+    return <Group key={group.chatId} {...this.props} group={group} />
   }
 
   render() {
@@ -80,6 +103,7 @@ export default class SearchResults extends React.Component {
         {this.renderContacts()}
         {this.renderGroups()}
         {this.renderLoading()}
+        {this.renderEmpty()}
       </div>
     )
   }
