@@ -106,7 +106,7 @@ class GuestLink extends React.Component {
   }
 
   renderKicked() {
-    if (!this.props.invalidLink) return null
+    if (!this.props.kicked) return null
     return (
       <div className='alias-container'>
         <p className='kicked-hint'>Crikey! You have been kicked from this group :(</p>
