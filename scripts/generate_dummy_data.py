@@ -108,7 +108,7 @@ def main():
     #Game_id: 998 = Dota 2
     #Game_id: 1015 = Clash Royale
     #Game IDs range from 1 to 1037
-    for y in range(mini_start, 0, 1):
+    for y in range(mini_start, mini_stop, 1):
       if(adonisJS):
         print(".raw(\"INSERT INTO game_experiences (id, user_id, game_names_id, experience, comments, played, commendation, status, link, ratings, tags, created_at, updated_at) values (%s, %s, %s, '%s', '%s', %s, '%s', '%s', '%s', %s, '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (y, x, random.randint(1,1037), random.choice(ge_experience), fake.sentence().replace("'", ""), random.choice(ge_played), random.choice(ge_commendation), random.choice(ge_status), fake.image_url(), random.randint(1,5), random.choice(ge_tags) ) )
         print(".raw(\"INSERT INTO esports_experiences (user_id, game_names_id, role_title, team_name, duration, achievements, skills, created_at, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00')\")" % (x, random.randint(1,1037), fake.job().replace("'", ""), fake.company().replace("'", ""), random.choice(ge_played), fake.sentence().replace("'", ""), random.choice(ge_tags) ) )
@@ -132,6 +132,7 @@ def main():
         print("INSERT INTO esports_experiences (user_id, game_names_id, role_title, team_name, duration, achievements, skills, created_at, updated_at) values (%s, %s, '%s', '%s', %s, '%s', '%s', '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (x, random.randint(1,1037), fake.job().replace("'", ""), fake.company().replace("'", ""), random.choice(ge_played), fake.sentence().replace("'", ""), random.choice(ge_tags) ) )
         #SCHEDULE_GAMES
         print("INSERT INTO schedule_games (id, user_id, game_names_id, region, experience, start_date_time, end_date_time, platform, description, other, expiry, visibility, `limit`, accept_msg, schedule_games_GUID, vacancy, created_at, updated_at) values (%s, %s, %s, '%s', '%s', '2019-12-01 00:00:00', '2029-12-01 00:00:00', '%s', '%s', '%s', '2025-08-08 00:00:00', %s, %s, '%s', '%s', %s, '2019-12-01 00:00:00','2019-12-01 00:00:00');" % (y, x, random.randint(1,1037), random.choice(sg_region), random.choice(ge_experience), random.choice(sg_platform), fake.sentence().replace("'", ""), fake.sentence().replace("'", ""), random.randint(1,4), random.choice(sg_limit), fake.sentence().replace("'", ""), fake.uuid4(), random.randint(0,1) ) )
+
         print("INSERT INTO commendations (game_experiences_id, user_id) values (%s, %s);" % (y, randrange(start, x)))
 
         #This line is differnet, as it contains Media_urls
