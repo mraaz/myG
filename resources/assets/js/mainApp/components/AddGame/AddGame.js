@@ -202,7 +202,7 @@ const AddGame = ({
 
     return (
       <div>
-        <div className={styles.fieldTitle}>Number of Gamers</div>
+        <div className='field-title'>Number of Gamers</div>
         {!mainSettingsState.isUnlimitedPlayers && (
           <SliderWithTooltip
             value={mainSettingsState.numberOfPlayers}
@@ -258,7 +258,7 @@ const AddGame = ({
   const getCommentPrivaryView = () => {
     return (
       <div>
-        <div className={styles.fieldTitle}>Comments and Privacy</div>
+        <div className='field-title'>Comments and Privacy</div>
         <MyGCheckbox
           checked={mainSettingsState.isCommentsAllowed}
           onClick={(value) => {
@@ -322,30 +322,28 @@ const AddGame = ({
   const getOptionalView = () => {
     return (
       <Fragment>
-        <div className={styles.optionalMainContainer}>
+        <div className='time-text-container'>
           {!mainSettingsState.isEndGameFieldSelected && (
-            <div className={styles.optionalEndContainer}>
-              <div
-                className={styles.optionalText}
-                onClick={() => {
-                  if (!mainSettingsState.startTime) {
-                    toast.success(<Toast_style text={'Please add start time first.'} />)
-                    return
-                  }
-                  updateMainSettings({
-                    isEndGameFieldSelected: true,
-                    endTime: moment(mainSettingsState.startTime).add(2, 'days'),
-                  })
-                }}>
-                Add End Time
-              </div>
+            <div
+              className='text-end-time'
+              onClick={() => {
+                if (!mainSettingsState.startTime) {
+                  toast.success(<Toast_style text={'Please add start time first.'} />)
+                  return
+                }
+                updateMainSettings({
+                  isEndGameFieldSelected: true,
+                  endTime: moment(mainSettingsState.startTime).add(2, 'days'),
+                })
+              }}>
+              Add End Time
             </div>
           )}
           {!mainSettingsState.isRepeatFieldSelected && (
             <React.Fragment>
-              {!mainSettingsState.isEndGameFieldSelected && <div className={styles.optionalCircle} />}
+              {!mainSettingsState.isEndGameFieldSelected && <div className='circle' />}
               <div
-                className={styles.optionalText}
+                className='text-set-to-repeat'
                 onClick={(value) => {
                   updateMainSettings({ isRepeatFieldSelected: true })
                 }}>
@@ -418,41 +416,49 @@ const AddGame = ({
           <div className={styles.sideBall} />
           <div className={styles.sideLine} />
         </div>
-        <div>
-          <div className={styles.fieldTitle}>Game Title</div>
-          <MyGCreateableSelect
-            isClearable
-            onCreateOption={handleCreateGame}
-            onInputChange={getOptionsGames}
-            onChange={(value) => {
-              updateMainSettings({ gameTitle: value })
-              value && !value.additional_info && updateOptionalSettings({ serverRegion: null })
-              updateState({ additional_info: value ? value.additional_info : false })
-            }}
-            value={mainSettingsState.gameTitle}
-            placeholder='Search, Select or create Game Title'
-            options={mainSettingsState.gameTitlesList}
-            onKeyDown={Disable_keys}
-          />
-          <div className={styles.fieldTitle}>Start Time</div>
-          <MyGDatePicker
-            onChange={(value) => {
-              if (!value) {
-                updateMainSettings({
-                  isEndGameFieldSelected: false,
-                  endTime: null,
-                  startTime: value,
-                })
-                return
-              }
-              updateMainSettings({ startTime: value })
-            }}
-            selected={mainSettingsState.startTime}
-            maxDate={moment().add(14, 'days')}
-          />
-          {getOptionalMainSettingsView()}
-          {getPlayersNumberView()}
-          {getCommentPrivaryView()}
+        <div className='main-settings-content'>
+          <div className='field-title'>
+            <p>Game Title</p>
+          </div>
+          <div className='game-title-select'>
+            <MyGCreateableSelect
+              isClearable
+              onCreateOption={handleCreateGame}
+              onInputChange={getOptionsGames}
+              onChange={(value) => {
+                updateMainSettings({ gameTitle: value })
+                value && !value.additional_info && updateOptionalSettings({ serverRegion: null })
+                updateState({ additional_info: value ? value.additional_info : false })
+              }}
+              value={mainSettingsState.gameTitle}
+              placeholder='Search, Select or create Game Title'
+              options={mainSettingsState.gameTitlesList}
+              onKeyDown={Disable_keys}
+            />
+          </div>
+          <div className='field-title'>
+            <p>Start Time</p>
+          </div>
+          <div className='date-picker-select'>
+            <MyGDatePicker
+              onChange={(value) => {
+                if (!value) {
+                  updateMainSettings({
+                    isEndGameFieldSelected: false,
+                    endTime: null,
+                    startTime: value,
+                  })
+                  return
+                }
+                updateMainSettings({ startTime: value })
+              }}
+              selected={mainSettingsState.startTime}
+              maxDate={moment().add(14, 'days')}
+            />
+            {getOptionalMainSettingsView()}
+            {getPlayersNumberView()}
+            {getCommentPrivaryView()}
+          </div>
         </div>
       </div>
     )
@@ -641,13 +647,13 @@ const AddGame = ({
     return (
       <div className={styles.menuContainer}>
         <div onClick={() => updateState({ selectedSettings: SETTINGS_ENUMS.MAIN })}>
-          <div className={styles.menuText}>Main Settings</div>
+          <div className='tab-heading'>Main Setting</div>
           <div
             className={classNames([styles.menuLine, state.selectedSettings === SETTINGS_ENUMS.MAIN ? styles.menuLineHighlighted : null])}
           />
         </div>
         <div onClick={() => updateState({ selectedSettings: SETTINGS_ENUMS.ADVANCED })}>
-          <div className={styles.menuText}>Advanced Settings</div>
+          <div className='tab-heading'>Advanced Settings</div>
           <div
             className={classNames([
               styles.menuLine,

@@ -1,3 +1,50 @@
+// Add Game CSS
+
+.tab-heading {
+  font-size: 16px;
+  padding: 0 32px;
+  cursor: pointer;
+  color: #fff;
+  font-weight: 600;
+}
+
+.field-title {
+  color: #fff;
+  font-weight: 600;
+  padding-bottom: 15px;
+  font-size: 14px;
+}
+
+.main-settings-content {
+  margin: 30px 0px;
+}
+
+.game-title-select,
+.date-picker-select {
+  padding-bottom: 15px;
+}
+
+.time-text-container {
+  display: flex;
+  margin: 10px 0px;
+  align-items: center;
+}
+
+.circle {
+  height: 6px;
+  width: 6px;
+  background-color: #484848;
+  margin: 0 10px;
+  border-radius: 50%;
+}
+
+.text-end-time,
+.text-set-to-repeat {
+  color: #e5c746;
+  font-weight: bold;
+  cursor: pointer;
+}
+
 .add-game {
   &__container {
     display: flex;

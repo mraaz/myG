@@ -1,14 +1,15 @@
-@import url('https://fonts.googleapis.com/css?family=Montserrat:300');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
 
-html, body {
+html,
+body {
   height: 100%;
   width: 100%;
 }
 
 body {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Montserrat', sans-serif !important;
   font-weight: 300;
-  background-image: url("/splash.png");
+  background-image: url('/splash.png');
   background-color: #220052;
 }
 
@@ -29,9 +30,9 @@ section {
 }
 
 section:before {
-  content: "";
+  content: '';
   position: absolute;
-  background: url("/pyramid.png") no-repeat;
+  background: url('/pyramid.png') no-repeat;
   background-size: 100%;
   width: 100%;
   height: 402px;
@@ -39,32 +40,32 @@ section:before {
 }
 
 .logo {
-  background: url("/logo.svg") no-repeat;
+  background: url('/logo.svg') no-repeat;
   width: 36px;
   height: 33px;
   background-size: 100%;
   margin-bottom: 35px;
   opacity: 0;
-  animation: slideUp 1s cubic-bezier(0.19, 1, 0.30, 1) 1.3s forwards;
+  animation: slideUp 1s cubic-bezier(0.19, 1, 0.3, 1) 1.3s forwards;
 }
 
 .title {
-  background: url("/title.svg") no-repeat;
+  background: url('/title.svg') no-repeat;
   width: 219px;
   height: 36px;
   background-size: 100%;
   opacity: 0;
-  animation: slideUp 1s cubic-bezier(0.19, 1, 0.30, 1) 0.2s forwards;
+  animation: slideUp 1s cubic-bezier(0.19, 1, 0.3, 1) 0.2s forwards;
 }
 
 .subtitle {
   margin-top: 25px;
-  color: #BDB3CB;
+  color: #bdb3cb;
   font-size: 17px;
   text-align: center;
   letter-spacing: 0.5;
   opacity: 0;
-  animation: slideUp 1s cubic-bezier(0.19, 1, 0.30, 1) 0.5s forwards;
+  animation: slideUp 1s cubic-bezier(0.19, 1, 0.3, 1) 0.5s forwards;
 }
 
 @keyframes slideUp {
