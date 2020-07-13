@@ -465,6 +465,11 @@
     height: 0;
   }
 
+  .messenger-settings-game-input-hint {
+    display: flex;
+    padding: 8px;
+  }
+
   .messenger-settings-game-input-header {
     display: flex;
     flex-direction: row;
@@ -477,11 +482,12 @@
     position: fixed;
     display: flex;
     flex-direction: column;
-    width: 19vw;
-    right: 8px;
+    width: 20vw;
+    right: -2px;
     bottom: 0;
     z-index: 10;
     background-color: #151c26;
+    border-top: 2px solid #222b37;
   }
 
   .messenger-settings-game-input-field {
