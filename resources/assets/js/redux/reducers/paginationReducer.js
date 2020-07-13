@@ -92,6 +92,19 @@ export default function reducer(
       }
     }
 
+    case 'NEW_CHAT': {
+      if (!action.payload.chat.isGroup) return state;
+      logger.log('PAGINATION', `Redux -> New Chat: `, action.payload)
+      const groups = JSON.parse(JSON.stringify(state.groups))
+      const groupsIds = groups.map((group) => group.chatId)
+      if (groupsIds.includes(action.payload.chat.chatId)) return state;
+      groups.push(action.payload.chat)
+      return {
+        ...state,
+        groups,
+      }
+    }
+
     default:
       return state
   }

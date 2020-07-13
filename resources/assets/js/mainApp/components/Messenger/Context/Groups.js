@@ -126,7 +126,7 @@ class Groups extends React.Component {
   }
 
   renderGroup = (group) => {
-    return <Group {...this.props} group={group} />
+    return <Group key={group.chatId} {...this.props} group={group} />
   }
 
   render() {

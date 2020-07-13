@@ -130,6 +130,12 @@ class GroupCreation extends React.Component {
     )
   }
 
+  renderGameIcon = (game, selection) => {
+    return (
+      <div className={`chat-group-creation-game-icon${selection ? '-selection' : ''}`} style={{ backgroundImage: `url(${game.icon})` }} />
+    )
+  }
+
   renderGameInput = () => {
     return (
       <div className='chat-group-creation-contact-input-container' onClick={() => this.inputRef.current.focus()}>
@@ -139,13 +145,11 @@ class GroupCreation extends React.Component {
           placeholder={'Game Name'}
           value={this.state.selectedGame ? this.state.selectedGame.name : this.state.gameInput}
           onChange={(event) => this.onGameSearch(event.target.value)}></input>
-        {this.state.selectedGame && this.state.selectedGame.icon && (
-          <div className='chat-group-creation-game-icon' style={{ backgroundImage: `url(${this.state.selectedGame.icon})` }} />
-        )}
+        {this.state.selectedGame && this.state.selectedGame.icon && this.renderGameIcon(this.state.selectedGame)}
         <Dropdown
           show={this.state.gameInput.length}
           position={{ top: '-6px' }}
-          items={this.props.foundGames.map((game) => game.name)}
+          items={this.props.foundGames.map((game) => game.icon ? { ...game, render: this.renderGameIcon(game, true) } : game)}
           onItemClick={(item) => this.setState({ selectedGame: this.props.foundGames.find((game) => game.name === item), gameInput: '' })}
           emptyMessage={'no games found'}
         />
@@ -174,8 +178,7 @@ class GroupCreation extends React.Component {
   }
 
   renderContacts = () => {
-    const contacts = this.props.foundContacts.length ? this.props.foundContacts : this.props.contacts
-    return <div className='chat-group-creation-contacts'>{contacts.map(this.renderContact)}</div>
+    return <div className='chat-group-creation-contacts'>{this.props.foundContacts.map(this.renderContact)}</div>
   }
 
   renderContact = (contact) => {
