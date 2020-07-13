@@ -3,6 +3,7 @@ import { convertEmojisToColons } from '../../../common/emoji'
 import { getAssetUrl } from '../../../common/assets'
 import logger from '../../../common/logger'
 import { ignoreFunctions } from '../../../common/render'
+import { convertColonsToEmojis } from '../../../common/emoji'
 
 export default class ChatInput extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -89,7 +90,7 @@ export default class ChatInput extends React.Component {
     if (isImage) return this.renderImage(content)
     if (isSound) return ' a sound file'
     if (isVideo) return ' a video file'
-    return content
+    return convertColonsToEmojis(content)
   }
 
   renderImage = (content) => {
