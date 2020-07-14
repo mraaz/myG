@@ -47,18 +47,6 @@
     position: fixed;
   }
 
-  &__sidebar-item-icon {
-    margin-right: 16px;
-  }
-
-  &__logout {
-    position: absolute;
-    border-top: 0.1px #384952;
-    border-style: solid;
-    bottom: 0px;
-    width: 100%;
-  }
-
   &__sub-item-container {
     background-color: #171a1c;
     padding-top: 25px;
@@ -114,21 +102,11 @@
     margin-right: 10px;
   }
 
-  // &__logo-collapsed {
-  //   margin-top: 24px;
-  //   margin-left: 15px;
-  // }
-
   &__settings-icon {
     position: absolute;
     right: 10px;
     top: 22px;
   }
-
-  // &__toggle-icon {
-  //   border-top: 1px solid #384952;
-  //   border-bottom: 1px solid #384952;
-  // }
 
   &__clickable {
     cursor: pointer;
@@ -143,20 +121,17 @@
   &__notification-area {
     border: 1px solid #384952;
     position: relative;
-    top: -8px;
+    top: -30px;
     background-color: #1d2326;
     left: 15px;
     border-radius: 6px;
-    height: fit-content;
     font-size: 12px;
-    padding: 1px;
     color: #fff;
     text-align: center;
   }
 
   &__logout-area {
-    height: 79px;
-    display: flex;
-    align-items: center;
+    text-align: center;
+    padding-top: 75px;
   }
 }
