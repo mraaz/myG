@@ -67,6 +67,7 @@ export default class GameDetails extends Component {
       region = '',
       id = '',
       allow_comments = 0,
+      schedule_games_GUID,
     } = scheduleGames_data
     const { no_of_gamers } = getAllGamers[0] || {}
     const experience_split = experience ? experience.split(',') : []

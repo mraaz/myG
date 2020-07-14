@@ -39,6 +39,7 @@ export default class GameDetails extends Component {
       platform = '',
       region = '',
       allow_comments = 0,
+      schedule_games_GUID,
     } = additional_game_info
 
     const { no_of_comments = [], lastComment = '' } = commentData
@@ -79,6 +80,7 @@ export default class GameDetails extends Component {
                 schedule_games_id={id}
                 additional_submit_info={additional_submit_info}
                 additional_submit_info_fields={additional_submit_info_fields}
+                schedule_games_GUID={schedule_games_GUID}
               />
             </div>
             <div className='gameDetails__body'>

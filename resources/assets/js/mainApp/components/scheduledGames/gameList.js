@@ -174,13 +174,13 @@ export default class GameList extends Component {
                     <div className='fourth__row'>
                       {statusMapping[myStatus] && (
                         <div className='my__status'>
-                          <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/clock.svg' />
+                          <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/View+Game/tick.svg' />
                           <span>{statusMapping[myStatus]}</span>
                         </div>
                       )}
                       {no_of_Approval_Pending ? (
                         <div className='no__of__approval' onClick={this.handlePendingApproval}>
-                          <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/clock.svg' />
+                          <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/View+Game/warning.svg' />
                           <span>{no_of_Approval_Pending} Approval Pending</span>
                         </div>
                       ) : (
