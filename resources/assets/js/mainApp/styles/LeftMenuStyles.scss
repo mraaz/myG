@@ -115,6 +115,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  cursor: pointer;
 }
 
 .sidebar-sub-items p,
@@ -138,4 +139,14 @@
 .logout-text {
   display: flex;
   flex-wrap: wrap;
+}
+
+.sidebar-sub-menu {
+  background: #171a1c;
+  padding: 20px;
+  font-size: 14px;
+}
+
+.sidebar-sub-menu .menu-item {
+  padding-bottom: 10px;
 }

@@ -149,14 +149,10 @@ class LeftMenu extends Component {
 
   getSubItems = (subItems) => {
     return (
-      <div className={styles.subItemContainer}>
+      <div className='sidebar-sub-menu'>
         {subItems.map((item, index) => (
-          <Link
-            to={item.cta}
-            key={index}
-            onClick={this.onSubItemClick}
-            style={{ position: 'relative', display: 'block', width: '100%', height: '28px' }}>
-            <div className={styles.subItemText} dangerouslySetInnerHTML={{ __html: item.header }} />
+          <Link to={item.cta} key={index} onClick={this.onSubItemClick}>
+            <div className='menu-item' dangerouslySetInnerHTML={{ __html: item.header }} />
           </Link>
         ))}
       </div>
