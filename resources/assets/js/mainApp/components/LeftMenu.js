@@ -60,35 +60,28 @@ class LeftMenu extends Component {
         <Link to='/'>
           <img
             src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Login+Screen/Logo_FINAL%402x.png'
-            height='107'
-            width='191'
+            className='img-fluid'
           />
         </Link>
-        <div className={styles.logoButton} onClick={this.onMenuToggle}>
+        <div className='sidebar-menu-toggle' onClick={this.onMenuToggle}>
           <img
             src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_Uncollapse_Menu.svg'
-            height='20'
-            width='20'
+            className='img-fluid'
           />
         </div>
       </Fragment>
     ) : (
       <Link to='/'>
-        <img
-          src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/logo.svg'
-          className={styles.logoCollapsed}
-          height='32'
-          width='32'
-        />
+        <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/logo.svg' height='32' width='32' />
       </Link>
     )
 
-    return <div className={styles.logoSectionContainer}>{children}</div>
+    return <div className='logo-section-container'>{children}</div>
   }
 
   getToggleButton = () => {
     return this.state.isExpanded ? null : (
-      <div className={classNames([styles.itemBox, styles.toggleIcon])} onClick={this.onMenuToggle}>
+      <div className='toggle-menu' onClick={this.onMenuToggle}>
         <img
           src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/toggle_menu_collapsed.svg'
           height='24'
@@ -104,49 +97,49 @@ class LeftMenu extends Component {
     const { isExpanded } = this.state
 
     return (
-      <div className={classNames([styles.userDetailsBox, isExpanded ? '' : styles.userDetailsBoxCollapsed])}>
+      <div className={classNames([isExpanded ? 'user-detail-box-expanded' : 'user-detail-box-collapsed'])}>
         {isExpanded && (
           <Link to={`/profile/${alias}`}>
-            <div className={styles.userInfo}>
-              <img src={profileImage} className={styles.userDp} />
-              <div className={styles.userAlias}>@{alias}</div>
+            <div className='user-info-main'>
+              <img src={profileImage} className='img-fluid' alt='user-picture' />
+              <div className='username'>@{alias}</div>
             </div>
           </Link>
         )}
-        <div className={classNames([styles.notificationContainer, isExpanded ? '' : styles.notificationContainerCollapsed])}>
+        <div className={classNames([isExpanded ? 'notification-expanded' : 'notification-collapsed'])}>
           <Link to='/invitation'>
-            <div className={styles.notificationIcon}>
+            <div className='notification-container'>
               <img
                 src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/ntfo_Friendship_Icon.svg'
                 height='22'
                 width='22'
                 className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
               />
-              <div className={styles.notificationArea}>123</div>
+              <div className='notification-box'>123</div>
               {isExpanded && <div className={styles.line} />}
             </div>
           </Link>
           <Link to='/notifications'>
-            <div className={styles.notificationIcon}>
+            <div className='notification-container'>
               <img
                 src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Bell_Icon.svg'
                 height='22'
                 width='22'
                 className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
               />
-              <div className={styles.notificationArea}>123</div>
+              <div className='notification-box'>123</div>
               {isExpanded && <div className={styles.line} />}
             </div>
           </Link>
           <Link to='/messages'>
-            <div className={styles.notificationIcon}>
+            <div className='notification-container'>
               <img
                 src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Chat_Icon.svg'
                 height='22'
                 width='22'
                 className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
               />
-              <div className={styles.notificationArea}>123</div>
+              <div className='notification-box'>123</div>
             </div>
           </Link>
         </div>
@@ -175,9 +168,9 @@ class LeftMenu extends Component {
 
     const item = (icon, expanded, subItems, header) => (
       <Fragment>
-        <div className={styles.itemBox}>
-          <img src={icon} height='24' width='24' />
-          {isExpanded && <div className={styles.sidebarItemText}>{header}</div>}
+        <div className='sidebar-sub-items'>
+          <img src={icon} className='img-fluid' />
+          {isExpanded && <p>{header}</p>}
         </div>
         {expanded && this.getSubItems(subItems)}
       </Fragment>
@@ -217,23 +210,21 @@ class LeftMenu extends Component {
   getLogout = () => {
     return (
       <Fragment>
-        <div className={classNames([styles.itemBox, styles.logout])}>
+        <div className='logout-btn-main'>
           <div
             onClick={() => {
               this.props.logout()
               window.location.href = '/logout'
             }}
-            className={styles.logoutArea}>
-            <img src={logoutButton.icon} height='24' width='24' className={styles.sideBarItemIcon} />
-            {this.state.isExpanded && <div className={styles.sidebarItemText}>{logoutButton.header}</div>}
+            className='logout-text'>
+            <img src={logoutButton.icon} className='img-fluid' />
+            {this.state.isExpanded && <p>{logoutButton.header}</p>}
           </div>
           {this.state.isExpanded && (
             <Link to='/mySettings'>
               <img
                 src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Settings_Chat_Window.svg'
-                height='31'
-                width='31'
-                className={styles.settingsIcon}
+                className='img-fluid'
               />
             </Link>
           )}
@@ -244,13 +235,15 @@ class LeftMenu extends Component {
 
   render() {
     return (
-      <div className={classNames([styles.container, !this.state.isExpanded ? styles.menuCollapsed : ''])}>
-        {this.getLogoSection()}
-        {this.getToggleButton()}
-        {this.getUserSection()}
-        {this.getSideBarItems()}
-        {this.getLogout()}
-      </div>
+      <Fragment>
+        <div className={` ${!this.state.isExpanded ? 'sidebar-container-collapsed' : 'sidebar-container'}`}>
+          {this.getLogoSection()}
+          {this.getToggleButton()}
+          {this.getUserSection()}
+          {this.getSideBarItems()}
+          {this.getLogout()}
+        </div>
+      </Fragment>
     )
   }
 }
