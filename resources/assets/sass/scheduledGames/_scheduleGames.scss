@@ -660,13 +660,13 @@
             border-radius: 4px;
             .leaveGame__button {
               width: auto;
-              height: auto;
+              height: 20px;
               background: #171a1c 0% 0% no-repeat padding-box;
-              border: 1px solid #384952;
               font: 10px/12px Montserrat;
               letter-spacing: 0px;
               color: #ffffff;
               font-weight: bold;
+              margin: 0;
             }
           }
         }
