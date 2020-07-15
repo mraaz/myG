@@ -1,6 +1,5 @@
 #messenger {
-  position: fixed;
-  width: 20vw;
+  width: 100%;
   top: 0;
   bottom: 0;
   right: 0;
@@ -21,13 +20,11 @@
   }
 
   .messenger-content {
-    position: fixed;
     z-index: 200;
     bottom: 0;
     height: 100vh;
     display: flex;
     flex-direction: column;
-    width: 20%;
   }
 
   .messenger-chat-bar {

@@ -1,58 +1,63 @@
-.social {
+.social-main {
   background: #0b0f14;
-  padding: 20px 70px;
+  padding: 30px 25px;
   margin-bottom: 50px;
 }
-.social__content {
+
+.social-content {
   background: #1d2326;
+  display: -ms-flexbox;
   display: flex;
   border-radius: 3px;
+  -ms-flex-align: center;
   align-items: center;
-  padding: 15px 10px;
+  padding: 15px;
+  border: 1px solid #273137;
+  justify-content: space-between;
 }
 
 .level-container {
-  width: 25%;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   color: #fff;
+
   .level-container-img {
     display: flex;
     align-items: center;
+    padding-right: 5px;
   }
 }
+
 .ratings {
   margin-left: 20px;
 }
+
 .social-box {
-  width: 15%;
   text-align: center;
   color: #fff;
   position: relative;
+  border-left: 1px solid #384952;
+  padding: 0px 30px;
 }
-.social-box:after {
-  content: '';
-  position: absolute;
-  top: 25px;
-  height: 65%;
-  right: 0;
-  border: 1px solid #384952;
-}
+
 .social-box:last-child:after {
   height: 0;
   width: 0;
 }
+
 .social-box-img {
   width: 32px;
   margin-bottom: 15px;
 }
+
 .social-box-count {
   font: 24px/14px Montserrat;
   letter-spacing: 0px;
   color: #ffffff;
   margin-bottom: 5px;
 }
+
 .social-box-text {
   font: 10px/14px Montserrat;
   letter-spacing: 0px;

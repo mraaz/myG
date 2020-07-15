@@ -53,8 +53,8 @@ export default class AnalyticsBox extends Component {
     const progress = Math.floor((user_experience / level_max_points) * 100)
 
     return (
-      <section className='social'>
-        <div className='social__content'>
+      <section className='social-main'>
+        <div className='social-content'>
           <div className='level-container'>
             <section className='level-container-img'>
               {/* <div className={`circle-wrap ${user_xp_negative_balance ? 'red' : 'yellow'}`}>
