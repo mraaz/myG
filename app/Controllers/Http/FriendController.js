@@ -3,6 +3,7 @@
 const Database = use('Database')
 const Friends = use('App/Models/Friend')
 const UserStatTransactionController = use('./UserStatTransactionController')
+const FollowerController = use('./FollowerController')
 
 class FriendController {
   async store({ auth, request, response }) {
@@ -16,6 +17,10 @@ class FriendController {
           user_id: request.input('friend_id'),
           friend_id: auth.user.id,
         })
+
+        let myFollowerController = new FollowerController()
+        myFollowerController.store2({ auth }, request.input('friend_id'), auth.user.id)
+        myFollowerController.store2({ auth }, auth.user.id, request.input('friend_id'))
 
         let userStatController = new UserStatTransactionController()
         userStatController.update_total_number_of(auth.user.id, 'total_number_of_friends')
