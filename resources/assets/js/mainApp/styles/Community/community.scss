@@ -1,0 +1,48 @@
+.main {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.left-container {
+  display: flex;
+  flex-wrap: wrap;
+  padding-right: 70px;
+}
+
+.right-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.community-input:focus {
+  outline: none;
+  margin-bottom: 0px !important;
+}
+
+.sideLineContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.sideBall {
+  margin-top: 37px;
+  height: 10px;
+  width: 10px;
+  border-radius: 10px;
+  background-color: #e6c846;
+  margin-right: 12px;
+}
+
+.sideLine {
+  width: 2px;
+  background-color: #344953;
+  flex: 1;
+  margin-left: 4px;
+}
+
+.fieldTitle {
+  color: #fff;
+  font-weight: 500;
+  margin-bottom: 10px;
+  margin-top: 30px;
+}
