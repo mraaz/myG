@@ -39,6 +39,8 @@ export default class GameDetails extends Component {
       platform = '',
       region = '',
       allow_comments = 0,
+      schedule_games_GUID,
+      accept_msg = '',
     } = additional_game_info
 
     const { no_of_comments = [], lastComment = '' } = commentData
@@ -79,6 +81,7 @@ export default class GameDetails extends Component {
                 schedule_games_id={id}
                 additional_submit_info={additional_submit_info}
                 additional_submit_info_fields={additional_submit_info_fields}
+                schedule_games_GUID={schedule_games_GUID}
               />
             </div>
             <div className='gameDetails__body'>
@@ -92,6 +95,8 @@ export default class GameDetails extends Component {
               {platform && <div className='gameTime__value'>{platform.split(',').join(',  ')}</div>}
               {region && <div className='gameTime__label'>Region</div>}
               {region && <div className='gameTime__value'>{region.split(',').join(', ')}</div>}
+              {accept_msg && <div className='gameTime__label'>Accept Message</div>}
+              {accept_msg && <div className='gameTime__value'>{accept_msg}</div>}
               {additional_submit_info_fields.length > 0 &&
                 additional_submit_info_fields.map((fields) => {
                   let values = ''

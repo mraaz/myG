@@ -9,11 +9,14 @@ import { Toast_style } from '../Utility_Function'
 import { toast } from 'react-toastify'
 import Select from 'react-select'
 import { exitGameGroup } from '../../../common/group'
+import { openChatForGame } from '../../../common/chat'
 
 const buttonStatus = {
   '0': 'Join',
   '1': 'Joined',
   '3': 'Pending',
+  '4': 'Co-Hosting',
+  '5': 'Hosting',
 }
 const queryMapping = {
   1: 'one',
@@ -109,6 +112,14 @@ const JoinStatus = (props) => {
     setLeaveButtonStatus(!leaveButtonStatus)
   }
 
+  const handleEditGameDetails = () => {
+    window.location.href = `/addScheduleGames?id=${props.schedule_games_GUID}`
+  }
+  const handleOpenGroupChat = () => {
+    openChatForGame(props.schedule_games_id)
+    setLeaveButtonStatus(!leaveButtonStatus)
+  }
+
   const handleOtherInfoPlaceholder = (e) => {
     const value = e.target.value
     setOtherInfoPlaceholder(value)
@@ -182,7 +193,13 @@ const JoinStatus = (props) => {
             {`${joinButtonText}`}
             <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/View+Game/Down+Carrot_black.svg' />
           </button>
-          {leaveButtonStatus && <button type='button' className='leaveGame__button' onClick={handleLeaveGame}>{`Leave Game`}</button>}
+          {leaveButtonStatus && (
+            <div className='dropDown--option'>
+              <button type='button' className='leaveGame__button' onClick={handleEditGameDetails}>{`Edit Game Details`}</button>
+              <button type='button' className='leaveGame__button' onClick={handleOpenGroupChat}>{`Open Group Chat`}</button>
+              <button type='button' className='leaveGame__button' onClick={handleLeaveGame}>{`Leave Game`}</button>
+            </div>
+          )}
         </div>
       )}
       <div className={`modal-container View__JoinBUtton__modal ${modalStatus ? 'modal--show' : ''}`}>
