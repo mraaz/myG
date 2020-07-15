@@ -1,7 +1,7 @@
 .social-main {
   background: #0b0f14;
   padding: 30px 25px;
-  margin-bottom: 50px;
+  margin-bottom: 20px;
 }
 
 .social-content {
@@ -103,11 +103,10 @@
 .suggestion {
   display: flex;
   margin-top: 20px;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
-.suggestion-box-text {
-  width: 12%;
-  border-right: 1px solid #a3a9a9;
-}
+
 .show__user__suggestion {
   display: inline-flex;
   flex-wrap: nowrap;

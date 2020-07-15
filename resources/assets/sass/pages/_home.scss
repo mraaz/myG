@@ -216,10 +216,8 @@ section#content-container {
     //overflow: hidden;
     //height: 900px; Hide the scroll bars, decided against it
     .content-area {
-      width: 100%;
-      height: calc(100% - 53px);
-      position: relative;
-      padding: 0 15px 0 8px;
+      height: 100vh;
+      overflow: scroll;
     }
     .search-header {
       position: relative;
