@@ -649,18 +649,25 @@
               background: #b9b9b9;
             }
           }
-          .leaveGame__button {
-            width: 90px;
-            height: 39px;
+          .dropDown--option {
+            position: absolute;
+            top: 40px;
+            right: 0;
             background: #171a1c 0% 0% no-repeat padding-box;
             border: 1px solid #384952;
-            position: absolute;
-            bottom: -39px;
-            left: 0;
-            font: 10px/12px Montserrat;
-            letter-spacing: 0px;
-            color: #ffffff;
-            font-weight: bold;
+            width: 125px;
+            padding: 4px;
+            border-radius: 4px;
+            .leaveGame__button {
+              width: auto;
+              height: 20px;
+              background: #171a1c 0% 0% no-repeat padding-box;
+              font: 10px/12px Montserrat;
+              letter-spacing: 0px;
+              color: #ffffff;
+              font-weight: bold;
+              margin: 0;
+            }
           }
         }
       }
@@ -1125,17 +1132,23 @@
               .my__status {
                 display: flex;
                 align-items: center;
+                font: 12px/14px Montserrat;
+                font-weight: 500;
+                letter-spacing: 0px;
                 span {
-                  color: #8ce09a;
+                  color: #9dffac;
                 }
               }
               .no__of__approval {
                 margin-left: 10px;
                 display: flex;
                 align-items: center;
+                font: 12px/14px Montserrat;
+                font-weight: 500;
+                letter-spacing: 0px;
                 cursor: pointer;
                 span {
-                  color: #ead782;
+                  color: #e5c746;
                 }
               }
             }

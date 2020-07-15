@@ -67,6 +67,7 @@ export default class GameDetails extends Component {
       region = '',
       id = '',
       allow_comments = 0,
+      schedule_games_GUID,
     } = scheduleGames_data
     const { no_of_gamers } = getAllGamers[0] || {}
     const experience_split = experience ? experience.split(',') : []
@@ -107,6 +108,7 @@ export default class GameDetails extends Component {
                 additional_submit_info={additional_submit_info}
                 additional_submit_info_fields={additional_submit_info_fields}
                 schedule_games_id={id}
+                schedule_games_GUID={schedule_games_GUID}
               />
             </div>
             <div className='gameDetails__body'>

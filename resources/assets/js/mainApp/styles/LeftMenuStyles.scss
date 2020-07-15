@@ -1,142 +1,152 @@
-.my-left-menu {
-  &__container {
-    width: 233px;
-    position: relative;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: #1d2326;
-    overflow-x: hidden;
-    transition: 0.5s;
-    color: #fff;
-  }
-  &__menu-collapsed {
-    width: 77px;
-  }
-  &__item-box {
-    padding-left: 23px;
-    height: 79px;
-    border-bottom: 0.1px #384952;
-    border-style: solid;
-    line-height: 79px;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-  }
-  &__internal-item-box {
-    background-color: #171a1c;
-    padding-left: 15px;
-    padding-top: 15px;
-    padding-bottom: 15px;
-  }
-  &__user-details-box {
-    background-color: #171a1c;
-    padding: 40px;
-    border-top: 0.1px #384952;
-    border-bottom: 0.1px #384952;
-    border-style: solid;
-  }
-  &__user-details-box-collapsed {
-    padding: 19px;
-  }
-  &__sidebar-item-text {
-    margin-left: 41px;
-    position: fixed;
-  }
-  &__sidebar-item-icon {
-    margin-right: 16px;
-  }
-  &__logout {
-    position: absolute;
-    border-top: 0.1px #384952;
-    border-style: solid;
-    bottom: 0px;
-    width: 100%;
-  }
-  &__sub-item-container {
-    background-color: #171a1c;
-    padding-top: 25px;
-    padding-left: 20px;
-    padding-bottom: 20px;
-    transition: 0.5s;
-  }
-  &__sub-item-text {
-    margin-bottom: 15px;
-    cursor: pointer;
-    position: fixed;
-  }
-  &__logo-section-container {
-    height: 134px;
-  }
-  &__toggle-button {
-    position: absolute;
-    right: 6px;
-  }
-  &__notification-icon {
-    display: flex;
-  }
-  &__notification-icon-collapsed {
-    margin-bottom: 24px;
-  }
-  &__notification_container {
-    display: flex;
-  }
-  &__notification-container-collapsed {
-    flex-direction: column;
-  }
-  &__user-info {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  &__user-alias {
-    display: inline;
-  }
-  &__user-dp {
-    height: 40px;
-    width: 40px;
-    background-color: #ff00ff;
-    border-radius: 40px;
-    margin-right: 10px;
-  }
-  &__logo-collapsed {
-    margin-top: 24px;
-    margin-left: 15px;
-  }
-  &__settings-icon {
-    position: absolute;
-    right: 10px;
-    top: 22px;
-  }
-  &__toggle-icon {
-    border-top: 0.1px #384952;
-    border-style: solid;
-  }
-  &__clickable {
-    cursor: pointer;
-  }
-  &__line {
-    width: 1px;
-    margin: 0 6px;
-    background-color: #384952;
-  }
-  &__notification-area {
-    border: 1px #384952;
-    border-style: solid;
-    position: relative;
-    top: 11px;
-    background-color: #1d2326;
-    left: -8px;
-    border-radius: 8px;
-    height: fit-content;
-    font-size: 13px;
-    padding: 5px;
-    height: min-content;
-  }
-  &__logout-area {
-    height: 79px;
-    display: flex;
-    align-items: center;
-  }
+.sidebar-container {
+  width: 245px;
+  position: relative;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #1d2326;
+  overflow-x: hidden;
+  transition: 0.5s;
+  color: #fff;
+}
+
+.sidebar-container-collapsed {
+  width: 80px;
+  position: relative;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #1d2326;
+  overflow-x: hidden;
+  transition: 0.5s;
+  color: #fff;
+}
+
+.logo-section-container {
+  text-align: center;
+  padding-top: 30px;
+  padding-bottom: 100px;
+}
+
+.sidebar-container .logo-section-container {
+  text-align: center;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.sidebar-menu-toggle {
+  text-align: right;
+  padding-right: 10px;
+}
+
+.sidebar-menu-toggle img {
+  cursor: pointer;
+}
+
+.user-detail-box-expanded {
+  padding: 20px;
+  text-align: center;
+  border-top: 1px solid #384952;
+  border-bottom: 1px solid #384952;
+}
+
+.user-info-main {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.username {
+  color: #fff;
+  padding-left: 10px;
+}
+
+.notification-expanded {
+  display: flex;
+  justify-content: space-between;
+}
+
+.notification-collapsed {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.notification-box {
+  border: 1px solid #384952;
+  position: relative;
+  top: -30px;
+  background-color: #1d2326;
+  left: 15px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #fff;
+  text-align: center;
+}
+
+.notification-expanded .notification-box {
+  border: 1px solid #384952;
+  position: relative;
+  top: -10px;
+  background-color: #1d2326;
+  left: 15px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #fff;
+  text-align: center;
+}
+
+.toggle-menu {
+  text-align: center;
+  padding: 20px 0px;
+  cursor: pointer;
+  border-top: 1px solid #384952;
+  border-bottom: 1px solid #384952;
+}
+
+.user-detail-box-collapsed {
+  border-bottom: 1px solid #384952;
+}
+
+.sidebar-sub-items {
+  padding: 20px;
+  text-align: center;
+  border-bottom: 1px solid #384952;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  cursor: pointer;
+}
+
+.sidebar-sub-items p,
+.logout-text p {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  padding-left: 10px;
+}
+
+.logout-btn-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 50px;
+  padding-right: 20px;
+  padding-left: 20px;
+}
+
+.logout-text {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.sidebar-sub-menu {
+  background: #171a1c;
+  padding: 20px;
+  font-size: 14px;
+}
+
+.sidebar-sub-menu .menu-item {
+  padding-bottom: 10px;
 }
