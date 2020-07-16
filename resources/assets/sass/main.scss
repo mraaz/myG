@@ -247,11 +247,11 @@ label {
 
 .links {
   display: flex;
-  margin: 0 100px;
   justify-content: center;
   margin-bottom: 30px;
-  z-index: 1001;
   background: #0b0f14;
+  font-size: 14px;
+  color: #fff;
   div {
     font: Medium 14px/14px Montserrat;
     border: 0;
