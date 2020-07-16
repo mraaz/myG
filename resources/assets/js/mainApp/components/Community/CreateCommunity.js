@@ -28,14 +28,6 @@ const CreateCommunity = () => {
             <MyGInput className='community-input' placeholder='Community Name' />
             <div className='fieldTitle'>Game Title</div>
             <MyGInput className='community-input' placeholder='Enter Game Title' />
-            {/* <div className='fieldTitle'>Featured Image</div>
-            <MyGTextarea
-              onChange={(event) => {
-                updateAdvancedSettings({ acceptMessage: event.target.value })
-              }}
-              placeholder='Create a message for those who join & accept your game'
-              maxLength={250}
-            /> */}
             <div className='fieldTitle'>Featured Image</div>
             <div className='community-media'>
               <div className='media__container'>
