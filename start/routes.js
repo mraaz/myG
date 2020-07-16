@@ -135,6 +135,9 @@ Route.post('/api/HashTags', 'HashTagController.store')
 Route.get('/api/HashTags/getTopHashTags', 'HashTagController.getTopHashTags')
 Route.post('/api/HashTags/getHashTags', 'HashTagController.getHashTags')
 
+Route.get('/api/GroupHashTags/getTopGameTags', 'GroupHashTagController.getTopGameTags')
+Route.post('/api/GroupHashTags/getGameTags', 'GroupHashTagController.getGameTags')
+
 Route.post('/api/likes/', 'LikeController.store')
 Route.get('/api/likes/:id', 'LikeController.show')
 Route.get('/api/likes/comment/:id', 'LikeController.show_comments')

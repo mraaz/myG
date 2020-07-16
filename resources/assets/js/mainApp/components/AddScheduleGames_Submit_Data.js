@@ -71,22 +71,6 @@ export async function SubmitDataFunction(myG) {
     }
   }
 
-  // if (myG.clash_royale_trophy != null || myG.clash_royale_trophy != undefined) {
-  //   myClash_royale_trophies = myG.clash_royale_trophy.value
-  // }
-  //
-  // if (myG.dota2_medal_ranks !== undefined && myG.dota2_medal_ranks !== null && myG.dota2_medal_ranks.length !== 0) {
-  //   myDota2_medal_ranks = Convert_to_comma_delimited_value(myG.dota2_medal_ranks)
-  // }
-  //
-  // if (myG.dota2_server_regions !== undefined && myG.dota2_server_regions !== null && myG.dota2_server_regions.length !== 0) {
-  //   myDota2_server_regions = Convert_to_comma_delimited_value(myG.dota2_server_regions)
-  // }
-  //
-  // if (myG.dota2_roles !== undefined && myG.dota2_roles !== null && myG.dota2_roles.length !== 0) {
-  //   myDota2_roles = Convert_to_comma_delimited_value(myG.dota2_roles)
-  // }
-
   if (myG.autoJoin != null || myG.autoJoin != undefined) {
     autoJoin = myG.autoJoin
   }
