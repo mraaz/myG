@@ -232,13 +232,15 @@ class LeftMenu extends Component {
   render() {
     return (
       <Fragment>
-        <div className={` ${!this.state.isExpanded ? 'sidebar-container-collapsed' : 'sidebar-container'}`}>
-          {this.getLogoSection()}
-          {this.getToggleButton()}
-          {this.getUserSection()}
-          {this.getSideBarItems()}
-          {this.getLogout()}
-        </div>
+        <section id='main-sidebar'>
+          <div className={` ${!this.state.isExpanded ? 'sidebar-container-collapsed' : 'sidebar-container'}`}>
+            {this.getLogoSection()}
+            {this.getToggleButton()}
+            {this.getUserSection()}
+            {this.getSideBarItems()}
+            {this.getLogout()}
+          </div>
+        </section>
       </Fragment>
     )
   }

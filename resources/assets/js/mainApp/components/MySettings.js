@@ -264,7 +264,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(MySettings)
+export default connect(null, mapDispatchToProps)(MySettings)

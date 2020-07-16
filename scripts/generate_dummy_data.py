@@ -29,7 +29,7 @@ def id_generator(size=6, chars=string.ascii_lowercase + string.digits):
 
 def main():
   start = 100
-  stop = 10010 #120 = Maximum call stack size exceeded
+  stop = 1010 #120 = Maximum call stack size exceeded
 
 
   #Gaming intestests, esportsExp, scheduledGames how many per user
@@ -176,6 +176,9 @@ def main():
       else:
         print("INSERT INTO friends (user_id, friend_id, created_at, updated_at) values (%s,%s,'2019-12-01 00:00:00','2019-12-01 00:00:00');" % (start, x) )
         print("INSERT INTO friends (user_id, friend_id, created_at, updated_at) values (%s,%s,'2019-12-01 00:00:00','2019-12-01 00:00:00');" % (x, start) )
+        print("INSERT INTO followers (user_id, follower_id) values (%s,%s);" % (start, x) )
+        print("INSERT INTO followers (user_id, follower_id) values (%s,%s);" % (x, start) )
+
     if (myself == friend or myself == start-1 or friend == start-1):
       continue
 
@@ -185,6 +188,8 @@ def main():
     else:
       print("INSERT INTO friends (user_id, friend_id, created_at, updated_at) values (%s,%s,'2019-12-01 00:00:00','2019-12-01 00:00:00');" % (myself, friend) )
       print("INSERT INTO friends (user_id, friend_id, created_at, updated_at) values (%s,%s,'2019-12-01 00:00:00','2019-12-01 00:00:00');" % (friend, myself) )
+      print("INSERT INTO followers (user_id, follower_id) values (%s,%s);" % (myself, friend) )
+      print("INSERT INTO followers (user_id, follower_id) values (%s,%s);" % (friend, myself) )
 
     for z in range(gap):
       if(adonisJS):
