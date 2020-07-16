@@ -161,8 +161,12 @@ class MySettings extends Component {
       let game_id = 1211
       try {
         //const get_stats = await axios.get(`api/ScheduleGame/additional_game_info/${game_id}`)
-        const get_stats = await axios.get('/api/SavedFiltersScheduleGameController/getAllSavedFilters')
-        console.log(get_stats)
+        const post = await axios.post('/api/groups/create', {
+          name: 'Group name',
+          group_img: null,
+          type: 'Public',
+          all_accept: true,
+        })
         //console.log('Raaz-inside')
       } catch (error) {
         console.log(error)
@@ -264,7 +268,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(MySettings)
+export default connect(null, mapDispatchToProps)(MySettings)
