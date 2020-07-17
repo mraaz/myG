@@ -13,6 +13,13 @@ class GroupHashTagController {
         })
         return newGrpTag.id
       } catch (error) {
+        if (error.code == 'ER_DUP_ENTRY') {
+          const newGrpTag = await Database.table('group_hash_tags')
+            .where({ content: content.trim() })
+            .first()
+
+          return newGrpTag.id
+        }
         console.log(error)
       }
     }

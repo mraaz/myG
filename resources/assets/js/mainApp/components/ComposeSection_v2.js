@@ -131,17 +131,19 @@ export default class ComposeSection extends Component {
           toast.success(<Toast_style text={'Sorry mate! Hash tags can not have invalid characters'} />)
           return
         }
-        if (this.state.value_tags[i].hash_tag_id == null) {
-          const new_HashTags = await axios.post('/api/HashTags', {
-            content: this.state.value_tags[i].value,
-          })
-          hash_tags.push(new_HashTags.data)
-        } else {
-          hash_tags.push(this.state.value_tags[i].hash_tag_id)
-        }
+        // if (this.state.value_tags[i].hash_tag_id == null) {
+        //   const new_HashTags = await axios.post('/api/HashTags', {
+        //     content: this.state.value_tags[i].value,
+        //   })
+        //   hash_tags.push(new_HashTags.data)
+        // } else {
+        //   hash_tags.push(this.state.value_tags[i].hash_tag_id)
+        // }
+        delete this.state.value_tags[i].label
       }
+      hash_tags = JSON.stringify(this.state.value_tags)
     }
-    hash_tags = hash_tags.toString()
+
     try {
       const post = await axios.post('/api/post', {
         content: content,

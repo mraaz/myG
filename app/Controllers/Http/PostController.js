@@ -1,11 +1,13 @@
 'use strict'
 
 const Post = use('App/Models/Post')
+const HashTags = use('App/Models/HashTag')
 const Database = use('Database')
+
 const AwsKeyController = use('./AwsKeyController')
 const LikeController = use('./LikeController')
-const HashTags = use('App/Models/HashTag')
 const PostHashTagTransactionController = use('./PostHashTagTransactionController')
+const HashTagController = use('./HashTagController')
 
 class PostController {
   async store({ auth, request, response }) {
@@ -28,18 +30,8 @@ class PostController {
             media_url: request.input('media_url'),
           })
 
-          if (request.input('hash_tags') != null) {
-            var arrTags = request.input('hash_tags').split(',')
-            if (arrTags != '') {
-              let PHController = new PostHashTagTransactionController()
-              for (var i = 0; i < arrTags.length; i++) {
-                PHController.store({ auth }, newPost.id, arrTags[i])
-
-                const update_counter = await HashTags.query()
-                  .where({ id: arrTags[i] })
-                  .increment('counter', 1)
-              }
-            }
+          if (request.input('hash_tags') != null && request.input('hash_tags').length > 0) {
+            await this.process_hash_tags({ auth }, request.input('hash_tags'), newPost.id)
           }
         } else {
           for (var i = 0; i < arrGroups_id.length; i++) {
@@ -51,21 +43,9 @@ class PostController {
               visibility: request.input('visibility'),
               media_url: request.input('media_url'),
             })
-
-            if (request.input('hash_tags') != null) {
-              var arrTags = request.input('hash_tags').split(',')
-
-              if (arrTags != '') {
-                let PHController = new PostHashTagTransactionController()
-                for (var i = 0; i < arrTags.length; i++) {
-                  PHController.store({ auth }, newPost.id, arrTags[i])
-
-                  const update_counter = await HashTags.query()
-                    .where({ id: arrTags[i] })
-                    .increment('counter', 1)
-                }
-              }
+            if (request.input('hash_tags') != null && request.input('hash_tags').length > 0) {
             }
+            await this.process_hash_tags({ auth }, request.input('hash_tags'), newPost.id)
           }
         }
 
@@ -82,6 +62,28 @@ class PostController {
       }
     } catch (error) {
       console.log(error)
+    }
+  }
+
+  async process_hash_tags({ auth }, hash_tags, post_id) {
+    var arrTags = JSON.parse(hash_tags)
+    let PHController = new PostHashTagTransactionController()
+
+    for (var i = 0; i < arrTags.length; i++) {
+      if (arrTags[i].hash_tag_id == null) {
+        if (/['/.%#$;`\\]/.test(arrTags[i].value)) {
+          continue
+        }
+
+        let hash_tags_Controller = new HashTagController()
+        const hash_tag_id = await hash_tags_Controller.store({ auth }, arrTags[i].value)
+        await PHController.store({ auth }, post_id, hash_tag_id)
+      } else {
+        await PHController.store({ auth }, post_id, arrTags[i].hash_tag_id)
+        const update_counter = await HashTags.query()
+          .where({ id: arrTags[i].hash_tag_id })
+          .increment('counter', 1)
+      }
     }
   }
 
