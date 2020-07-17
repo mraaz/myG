@@ -1,5 +1,4 @@
-.sidebar-container {
-  width: 245px;
+#main-sidebar {
   position: relative;
   z-index: 1;
   top: 0;
@@ -8,6 +7,14 @@
   overflow-x: hidden;
   transition: 0.5s;
   color: #fff;
+}
+
+.sidebar-container {
+  width: 245px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: 0.5s;
 }
 
 .sidebar-container-collapsed {
@@ -54,6 +61,11 @@
   display: flex;
   align-items: center;
   margin-bottom: 20px;
+}
+
+.user-info-main img {
+  width: 40px;
+  border-radius: 50px;
 }
 
 .username {
@@ -147,6 +159,18 @@
   font-size: 14px;
 }
 
+.sidebar-sub-menu a {
+  text-decoration: none;
+}
+
 .sidebar-sub-menu .menu-item {
   padding-bottom: 10px;
+}
+
+.sidebar-sub-menu .menu-item:hover {
+  color: #e5c746;
+}
+
+.notification-expanded a {
+  padding-right: 35px;
 }

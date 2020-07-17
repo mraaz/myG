@@ -36,7 +36,6 @@
 }
 section#content-container {
   background-color: #0b0f14;
-  display: flex;
   flex: 1;
 }
 .dashboard-main-container {
@@ -1518,8 +1517,8 @@ section#content-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    font: Bold 16px/14px Montserrat;
     height: 54px;
+    color: #fff;
     .devider {
       border: 1px solid #384952;
       height: 70%;
