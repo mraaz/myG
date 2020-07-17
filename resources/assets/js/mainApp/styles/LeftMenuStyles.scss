@@ -56,6 +56,11 @@
   margin-bottom: 20px;
 }
 
+.user-info-main img {
+  width: 40px;
+  border-radius: 50px;
+}
+
 .username {
   color: #fff;
   padding-left: 10px;
@@ -147,6 +152,18 @@
   font-size: 14px;
 }
 
+.sidebar-sub-menu a {
+  text-decoration: none;
+}
+
 .sidebar-sub-menu .menu-item {
   padding-bottom: 10px;
+}
+
+.sidebar-sub-menu .menu-item:hover {
+  color: #e5c746;
+}
+
+.notification-expanded a {
+  padding-right: 35px;
 }
