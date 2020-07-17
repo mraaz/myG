@@ -161,12 +161,8 @@ class MySettings extends Component {
       let game_id = 1211
       try {
         //const get_stats = await axios.get(`api/ScheduleGame/additional_game_info/${game_id}`)
-        const post = await axios.post('/api/groups/create', {
-          name: 'Group name',
-          group_img: null,
-          type: 'Public',
-          all_accept: true,
-        })
+        const get_stats = await axios.get('/api/SavedFiltersScheduleGameController/getAllSavedFilters')
+        console.log(get_stats)
         //console.log('Raaz-inside')
       } catch (error) {
         console.log(error)
