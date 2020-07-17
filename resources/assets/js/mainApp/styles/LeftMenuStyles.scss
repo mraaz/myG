@@ -1,5 +1,4 @@
-.sidebar-container {
-  width: 245px;
+#main-sidebar {
   position: relative;
   z-index: 1;
   top: 0;
@@ -8,6 +7,14 @@
   overflow-x: hidden;
   transition: 0.5s;
   color: #fff;
+}
+
+.sidebar-container {
+  width: 245px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: 0.5s;
 }
 
 .sidebar-container-collapsed {
