@@ -17,6 +17,8 @@ import { Toast_style } from './Utility_Function'
 import ImageGallery from './common/ImageGallery/ImageGallery.js'
 // import ImageGallery from 'react-image-gallery'
 
+const MAX_HASH_TAGS = 21
+
 const createOption = (label, hash_tag_id) => ({
   label,
   value: label,
@@ -126,7 +128,10 @@ export default class ComposeSection extends Component {
     }
     let hash_tags = []
     if (this.state.value_tags.length != 0 && this.state.value_tags != null) {
-      for (let i = 0; i < this.state.value_tags.length; i++) {
+      if (this.state.value_tags.length >= MAX_HASH_TAGS) {
+        toast.success(<Toast_style text={"Crikey, mate! That's alot of tags. I'll only grab 20 and dump the rest."} />)
+      }
+      for (let i = 0; i < MAX_HASH_TAGS && i < this.state.value_tags.length; i++) {
         if (/['/.%#$,;`\\]/.test(this.state.value_tags[i].value)) {
           toast.success(<Toast_style text={'Sorry mate! Hash tags can not have invalid characters'} />)
           return

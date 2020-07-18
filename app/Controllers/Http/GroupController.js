@@ -8,6 +8,9 @@ const UserStatTransactionController = use('./UserStatTransactionController')
 const GroupHashTagController = use('./GroupHashTagController')
 const GroupHashTagTranController = use('./GroupHashTagTranController')
 
+const MAX_HASH_TAGS = 4
+const MAX_CO_HOSTS = 9
+
 class GroupController {
   async store({ auth, request, response }) {
     if (auth.user) {
@@ -24,7 +27,8 @@ class GroupController {
 
         if (request.input('tags') != null && request.input('tags').length > 0) {
           var arrTags = JSON.parse(request.input('tags'))
-          for (var i = 0; i < arrTags.length; i++) {
+          //Max of three tags per Group.
+          for (var i = 0; i < MAX_HASH_TAGS && i < arrTags.length; i++) {
             if (arrTags[i].group_hash_tag_id == null) {
               if (/['/.%#$;`\\]/.test(arrTags[i].value)) {
                 continue
@@ -45,6 +49,19 @@ class GroupController {
               const update_counter = await GroupHashTag.query()
                 .where({ id: arrTags[i].group_hash_tag_id })
                 .increment('counter', 1)
+            }
+          }
+        }
+
+        if (request.input('co_hosts') != undefined && request.input('co_hosts') != null) {
+          var arrCo_hosts = request.input('co_hosts').split(',')
+
+          if (arrCo_hosts != '') {
+            for (var i = 0; i < MAX_CO_HOSTS && i < arrCo_hosts.length; i++) {
+              const create_co_hosts = await CoHost.create({
+                group_id: newGroup.id,
+                user_id: arrCo_hosts[i],
+              })
             }
           }
         }

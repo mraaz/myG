@@ -167,7 +167,7 @@ export default class GameDetails extends Component {
             )}
           </Fragment>
         ) : (
-          !showAllComment && <div className='viewRightInfo'>Please select card from left side to see more deatils.</div>
+          !showAllComment && <div className='viewRightInfo'>Please select card from left side to see more details.</div>
         )}
         {showAllComment && (
           <GameComments

@@ -12,6 +12,9 @@ import { SubmitDataFunction } from '../AddScheduleGames_Submit_Data'
 import InvitePlayers from './InvitePlayers'
 import { Link } from 'react-router-dom'
 
+const MAX_GAME_TAGS = 9
+const MAX_CO_HOSTS = 5
+
 const AddGameContainer = () => {
   // State
   const [isGameListedModalOpen, updateIsGameListedModalOpen] = useState(false)
@@ -85,6 +88,16 @@ const AddGameContainer = () => {
     if (mainSettingsState.startTime.isSameOrAfter(mainSettingsState.endTime)) {
       toast.success(<Toast_style text={'Sorry mate! End date needs to be AFTER start date'} />)
       updateIsSubmitting(false)
+      return
+    }
+
+    if (advancedSettingsState.tags.length >= MAX_GAME_TAGS) {
+      toast.success(<Toast_style text={"Crikey, mate! That's alot of tags. I can only process 8 tags. Try again!"} />)
+      return
+    }
+
+    if (advancedSettingsState.coHosts.length >= MAX_CO_HOSTS) {
+      toast.success(<Toast_style text={"Crikey, mate! That's alot of co-hosts. I can only process 4 co-hosts. Try again!"} />)
       return
     }
 

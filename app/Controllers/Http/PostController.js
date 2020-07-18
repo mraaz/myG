@@ -9,6 +9,8 @@ const LikeController = use('./LikeController')
 const PostHashTagTransactionController = use('./PostHashTagTransactionController')
 const HashTagController = use('./HashTagController')
 
+const MAX_HASH_TAGS = 21
+
 class PostController {
   async store({ auth, request, response }) {
     try {
@@ -69,7 +71,7 @@ class PostController {
     var arrTags = JSON.parse(hash_tags)
     let PHController = new PostHashTagTransactionController()
 
-    for (var i = 0; i < arrTags.length; i++) {
+    for (var i = 0; i < MAX_HASH_TAGS && i < arrTags.length; i++) {
       if (arrTags[i].hash_tag_id == null) {
         if (/['/.%#$;`\\]/.test(arrTags[i].value)) {
           continue
