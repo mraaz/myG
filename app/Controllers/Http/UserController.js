@@ -130,10 +130,11 @@ class UserController {
 
   async playerSearchResults({ auth, request, response }) {
     try {
-      const playerSearchResults = await Database.table('users')
-        .whereNot({ id: auth.user.id })
+      const playerSearchResults = await Database.table('friends')
+        .innerJoin('users', 'users.id', 'friends.friend_id')
+        .where({ user_id: auth.user.id })
         .andWhere('alias', 'like', '%' + request.input('alias') + '%')
-        .select('alias as first', 'profile_img', 'id')
+        .select('alias as first', 'profile_img', 'users.id as id')
         .limit(8)
 
       return {
@@ -146,10 +147,17 @@ class UserController {
 
   async keywordSearchResults({ auth, request, response }) {
     try {
-      const playerSearchResults = await Database.table('users')
-        .whereNot({ id: auth.user.id })
+      // const playerSearchResults = await Database.table('users')
+      //   .whereNot({ id: auth.user.id })
+      //   .andWhere('alias', 'like', '%' + request.input('keywords') + '%')
+      //   .select('alias', 'profile_img', 'id')
+      //   .paginate(request.input('counter'), 88)
+
+      const playerSearchResults = await Database.table('friends')
+        .innerJoin('users', 'users.id', 'friends.friend_id')
+        .where({ user_id: auth.user.id })
         .andWhere('alias', 'like', '%' + request.input('keywords') + '%')
-        .select('alias', 'profile_img', 'id')
+        .select('alias', 'profile_img', 'users.id as id')
         .paginate(request.input('counter'), 88)
 
       return {

@@ -4,21 +4,21 @@ const HashTags = use('App/Models/HashTag')
 const Database = use('Database')
 
 class HashTagController {
-  async store({ auth, request, response }) {
+  async store({ auth }, content) {
     if (auth.user) {
-      if (/['/.%#$,;`\\]/.test(request.input('content'))) {
-        return false
-      }
+      // if (/['/.%#$,;`\\]/.test(request.input('content'))) {
+      //   return false
+      // }
       try {
         const newHashTag = await HashTags.create({
-          content: request.input('content').trim(),
+          content: content.trim(),
           user_id: auth.user.id,
         })
         return newHashTag.id
       } catch (error) {
         if (error.code == 'ER_DUP_ENTRY') {
           const newHashTag = await Database.table('hash_tags')
-            .where({ content: request.input('content').trim() })
+            .where({ content: content.trim() })
             .first()
 
           return newHashTag.id
