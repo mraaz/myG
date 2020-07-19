@@ -58,6 +58,19 @@ const EditGameContainer = (props) => {
   const [gameLink, updateGameLink] = useState('')
   const gameLinkRef = useRef(null)
 
+  // to create select box value from array or string
+  const getExtraFilterOprion = (arg) => {
+    const data = arg && arg.length > 0 ? arg.split(',') : []
+    if (data.length > 0) {
+      return data.map((item) => {
+        const val = item ? item.trim() : ''
+        return { value: val, label: val }
+      })
+    } else {
+      return null
+    }
+  }
+
   useEffect(async () => {
     const { params = {} } = props.routeProps.match
     const { id = '' } = params
@@ -66,11 +79,19 @@ const EditGameContainer = (props) => {
       if (scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
         const { latestScheduledGames = [] } = scheduleGames.data
         const mainSettings = { ...mainSettingsState }
+        const advanceSettings = { ...advancedSettingsState }
+        advanceSettings.acceptMessage = latestScheduledGames[0].accept_msg
+        advanceSettings.description = latestScheduledGames[0].description
+        advanceSettings.experience = getExtraFilterOprion(latestScheduledGames[0].experience)
+        advanceSettings.platform = getExtraFilterOprion(latestScheduledGames[0].platform)
+        advanceSettings.region = getExtraFilterOprion(latestScheduledGames[0].region)
 
         mainSettings.gameTitle = { value: latestScheduledGames[0].game_name, label: latestScheduledGames[0].game_name }
         mainSettings.startTime = moment(latestScheduledGames[0].start_date_time)
+        mainSettings.endTime = moment(latestScheduledGames[0].end_date_time)
         mainSettings.isCommentsAllowed = latestScheduledGames[0].allow_comments ? true : false
 
+        updateAdvancedSettingsState(advanceSettings)
         updateMainSettingsState(mainSettings)
         setSechduledGameData(latestScheduledGames)
       }
