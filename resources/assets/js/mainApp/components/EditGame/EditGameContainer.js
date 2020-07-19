@@ -200,6 +200,13 @@ const EditGameContainer = (props) => {
     }
   }
 
+  const onCancelGameHandler = () => {
+    window.location.href = '/?at=mygame'
+  }
+  const onDeleteGameHandler = () => {
+    alert('click delete.')
+  }
+
   const getPageFooter = () => {
     return (
       <div className={styles.footerContainer}>
@@ -209,10 +216,10 @@ const EditGameContainer = (props) => {
           Update Game
         </div>
 
-        <div className={classNames([styles.footerCancelButton])} onClick={isSubmitting ? null : onAddGameSubmit}>
+        <div className={classNames([styles.footerCancelButton])} onClick={isSubmitting ? null : onCancelGameHandler}>
           Cancel
         </div>
-        <div className={classNames([styles.footerDeleteButton])} onClick={isSubmitting ? null : onAddGameSubmit}>
+        <div className={classNames([styles.footerDeleteButton])} onClick={isSubmitting ? null : onDeleteGameHandler}>
           Delete
         </div>
       </div>
