@@ -1,17 +1,19 @@
 import logger from '../../common/logger'
 
-export default function reducer(
-  state = {
-    guestId: null,
-    chatId: null,
-    publicKey: null,
-    privateKey: null,
-    chat: null,
-    kicked: false,
-  },
-  action
-) {
+const initialState = {
+  guestId: null,
+  chatId: null,
+  publicKey: null,
+  privateKey: null,
+  chat: null,
+  kicked: false,
+}
+
+export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case 'REACT_ERROR':
+      return initialState
+
     case 'REGISTER_GUEST_FULFILLED': {
       logger.log('GUEST', `Redux -> Guest Registered: `, action.payload, action.meta)
       const {

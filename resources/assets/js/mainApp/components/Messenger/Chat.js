@@ -486,6 +486,7 @@ export class Chat extends React.Component {
           <div className='chat-component-attach-button-divider' />
         </div>
         <ChatInput
+          chatId={this.props.chatId}
           replyingTo={this.state.replyingTo && this.decryptMessage(this.state.replyingTo)}
           connected={!this.props.disconnected}
           blocked={!this.props.isGroup && this.props.blockedUsers.map((user) => user.userId).includes(this.props.contactId)}

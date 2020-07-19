@@ -17,6 +17,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
+import ErrorHandler from './components/ErrorHandler';
 import { store, persistor } from '../redux/Store'
 import { loadUserInfoToReduxStore } from '../common/user';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -530,19 +531,21 @@ class Layout extends Component {
   render() {
     const guestLink = this.state.initialData && window.location.href.includes('/link') && this.state.initialData.userInfo === 1981
     return (
-      <Provider store={store}>
-        <PersistGate persistor={persistor}>
-          <ToastContainer
-            autoClose={8000}
-            draggablePercent={60}
-            hideProgressBar={false}
-            className='toast-container'
-            toastClassName='dark-toast'
-          />
-          {!guestLink && this.renderRouter()}
-          {guestLink && this.renderGuestLink()}
-        </PersistGate>
-      </Provider>
+      <ErrorHandler>
+        <Provider store={store}>
+          <PersistGate persistor={persistor}>
+            <ToastContainer
+              autoClose={8000}
+              draggablePercent={60}
+              hideProgressBar={false}
+              className='toast-container'
+              toastClassName='dark-toast'
+            />
+            {!guestLink && this.renderRouter()}
+            {guestLink && this.renderGuestLink()}
+          </PersistGate>
+        </Provider>
+      </ErrorHandler>
     )
   }
 }

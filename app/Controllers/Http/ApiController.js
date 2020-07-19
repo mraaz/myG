@@ -78,7 +78,7 @@ class ApiController {
           .andWhere('is_attachment', true)
           .andWhere('created_at', '>', today)
           .fetch()
-        if (attachmentsToday && attachmentsToday.toJSON().length >= 10) return response.status(500).json('MAX_UPLOAD_REACHED')
+        if (attachmentsToday && attachmentsToday.toJSON().length >= 30) return response.status(500).json('MAX_UPLOAD_REACHED')
         if (isRecentUser) return response.status(500).json('USER_CREATION')
       }
 

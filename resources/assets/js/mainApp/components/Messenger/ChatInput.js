@@ -4,6 +4,7 @@ import { getAssetUrl } from '../../../common/assets'
 import logger from '../../../common/logger'
 import { ignoreFunctions } from '../../../common/render'
 import { convertColonsToEmojis } from '../../../common/emoji'
+import { GoogleAnalytics } from '../../../common/analytics'
 
 export default class ChatInput extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -64,6 +65,7 @@ export default class ChatInput extends React.Component {
 
   sendMessage = () => {
     if (!this.state.input.trim()) return
+    GoogleAnalytics.chatMessageSent({ chatId: this.props.chatId })
     this.props.sendMessage(convertEmojisToColons(this.state.input.trim()))
     this.props.setTyping(false)
     this.setState({ input: '' })
