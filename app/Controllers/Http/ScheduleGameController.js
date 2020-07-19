@@ -20,6 +20,9 @@ const InGame_fieldsController = use('./InGame_fieldsController')
 const GameTagController = use('./GameTagController')
 const AttendeeController = use('./AttendeeController')
 
+const MAX_GAME_TAGS = 9
+const MAX_CO_HOSTS = 5
+
 class ScheduleGameController {
   async store({ auth, request, response }) {
     let myTime = new Date(new Date(Date.now()).getTime() - 60 * 60 * 1000)
@@ -184,11 +187,11 @@ class ScheduleGameController {
             type: 1,
           })
         }
-        if (request.input('co_hosts') != null) {
+        if (request.input('co_hosts') != undefined && request.input('co_hosts') != null) {
           var arrCo_hosts = request.input('co_hosts').split(',')
 
           if (arrCo_hosts != '') {
-            for (var i = 0; i < arrCo_hosts.length; i++) {
+            for (var i = 0; i < arrCo_hosts.length && i < MAX_CO_HOSTS; i++) {
               const create_co_hosts = await CoHost.create({
                 schedule_games_id: newScheduleGame.id,
                 user_id: arrCo_hosts[i],
@@ -197,9 +200,9 @@ class ScheduleGameController {
           }
         }
 
-        if (request.input('tags') != null && request.input('tags').length > 0) {
+        if (request.input('tags') != undefined && request.input('tags') != null && request.input('tags').length > 0) {
           var arrTags = JSON.parse(request.input('tags'))
-          for (var i = 0; i < arrTags.length; i++) {
+          for (var i = 0; i < MAX_GAME_TAGS && i < arrTags.length; i++) {
             if (arrTags[i].game_tag_id == null) {
               if (/['/.%#$;`\\]/.test(arrTags[i].value)) {
                 continue
@@ -1232,7 +1235,7 @@ class ScheduleGameController {
         .where({ schedule_games_id: request.params.id, type: 1 })
         .count('* as no_of_gamers')
 
-      if (join_status != 1 || button_text != 'Hosting' || button_text != 'Co-Hosting') {
+      if (join_status == 0 || join_status == 3) {
         additional_game_info.accept_msg = ''
       }
 

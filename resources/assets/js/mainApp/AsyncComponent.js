@@ -26,6 +26,14 @@ const AddScheduleGames = Loadable({
     return null
   },
 })
+
+const CreateCommunity = Loadable({
+  loader: () => import('./components/Community/CommunityContainer'),
+  loading: function () {
+    return null
+  },
+})
+
 const EditScheduleGames = Loadable({
   loader: () => import('./components/EditGame/EditGameContainer'),
   loading: function () {
@@ -314,5 +322,6 @@ export {
   ArchivedScheduledGames,
   AllSearchResults,
   ScheduleGamesView,
+  CreateCommunity,
   EditScheduleGames,
 }

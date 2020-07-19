@@ -1,29 +1,25 @@
 'use strict'
 
-const HashTags = use('App/Models/HashTag')
+const GroupHashTag = use('App/Models/GroupHashTag')
 const Database = use('Database')
 
-class HashTagController {
+class GroupHashTagController {
   async store({ auth }, content) {
     if (auth.user) {
-      // if (/['/.%#$,;`\\]/.test(request.input('content'))) {
-      //   return false
-      // }
       try {
-        const newHashTag = await HashTags.create({
+        const newGrpTag = await GroupHashTag.create({
           content: content.trim(),
           user_id: auth.user.id,
         })
-        return newHashTag.id
+        return newGrpTag.id
       } catch (error) {
         if (error.code == 'ER_DUP_ENTRY') {
-          const newHashTag = await Database.table('hash_tags')
+          const newGrpTag = await Database.table('group_hash_tags')
             .where({ content: content.trim() })
             .first()
 
-          return newHashTag.id
+          return newGrpTag.id
         }
-
         console.log(error)
       }
     }
@@ -31,7 +27,7 @@ class HashTagController {
 
   async getHashTags({ auth, request, response }) {
     try {
-      const allTags = await Database.table('hash_tags')
+      const allTags = await Database.table('group_hash_tags')
         .where('content', 'like', '%' + request.input('content') + '%')
         .limit(88)
 
@@ -45,7 +41,7 @@ class HashTagController {
 
   async getTopHashTags({ auth, request, response }) {
     try {
-      const allTags = await Database.table('hash_tags')
+      const allTags = await Database.table('group_hash_tags')
         .orderBy('counter', 'desc')
         .limit(18)
 
@@ -58,4 +54,4 @@ class HashTagController {
   }
 }
 
-module.exports = HashTagController
+module.exports = GroupHashTagController

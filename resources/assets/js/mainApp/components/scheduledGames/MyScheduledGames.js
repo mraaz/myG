@@ -144,7 +144,7 @@ export default class MyScheduledGames extends Component {
       return <h1>Loading</h1>
     }
     return (
-      <section className='viewGame__container' style={{ height: '100vh', overflow: 'scroll' }}>
+      <section className='viewGame__container'>
         <div className={`gameList__section ${singleView ? 'singleGameView__container' : 'GameView__container'}`}>
           {scheduleGames.length > 0 ? (
             <Fragment>

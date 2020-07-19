@@ -2,8 +2,7 @@
   @return nth($elements, random(length($elements)));
 }
 .viewGame__container {
-  min-width: 100%;
-  background: #0b0f14 0% 0% no-repeat padding-box;
+  margin: 0px 100px;
 
   .viewGame__header {
     height: 77px;
@@ -1547,7 +1546,6 @@
   }
   .GameView__container {
     width: 100%;
-    border-top: 1px solid #384952;
     margin: 0;
   }
   .filter__overlay {

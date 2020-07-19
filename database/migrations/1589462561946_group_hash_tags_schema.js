@@ -3,9 +3,9 @@
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use('Schema')
 
-class HashTagsSchema extends Schema {
+class GroupHashTagsSchema extends Schema {
   up () {
-    this.create('hash_tags', (table) => {
+    this.create('group_hash_tags', (table) => {
       table.increments()
       table.string('content', 250).notNullable().unique().index()
       table.integer('user_id').unsigned().notNullable()
@@ -17,8 +17,8 @@ class HashTagsSchema extends Schema {
   }
 
   down () {
-    this.drop('hash_tags')
+    this.drop('group_hash_tags')
   }
 }
 
-module.exports = HashTagsSchema
+module.exports = GroupHashTagsSchema

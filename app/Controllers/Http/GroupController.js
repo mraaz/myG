@@ -1,8 +1,15 @@
 'use strict'
 
 const Group = use('App/Models/Group')
+const GroupHashTag = use('App/Models/GroupHashTag')
 const Database = use('Database')
+
 const UserStatTransactionController = use('./UserStatTransactionController')
+const GroupHashTagController = use('./GroupHashTagController')
+const GroupHashTagTranController = use('./GroupHashTagTranController')
+
+const MAX_HASH_TAGS = 4
+const MAX_CO_HOSTS = 9
 
 class GroupController {
   async store({ auth, request, response }) {
@@ -17,6 +24,47 @@ class GroupController {
           game_names_id: request.input('game_names_id'),
           grp_description: request.input('grp_description'),
         })
+
+        if (request.input('tags') != null && request.input('tags').length > 0) {
+          var arrTags = JSON.parse(request.input('tags'))
+          //Max of three tags per Group.
+          for (var i = 0; i < MAX_HASH_TAGS && i < arrTags.length; i++) {
+            if (arrTags[i].group_hash_tag_id == null) {
+              if (/['/.%#$;`\\]/.test(arrTags[i].value)) {
+                continue
+              }
+              let grp_tags_Controller = new GroupHashTagController()
+              const grp_tag_id = await grp_tags_Controller.store({ auth }, arrTags[i].value)
+
+              const create_arrTags = await GroupHashTagTranController.create({
+                group_id: newGroup.id,
+                hash_tag_id: grp_tag_id,
+              })
+            } else {
+              const create_arrTags = await GroupHashTagTranController.create({
+                group_id: newGroup.id,
+                hash_tag_id: arrTags[i].group_hash_tag_id,
+              })
+
+              const update_counter = await GroupHashTag.query()
+                .where({ id: arrTags[i].group_hash_tag_id })
+                .increment('counter', 1)
+            }
+          }
+        }
+
+        if (request.input('co_hosts') != undefined && request.input('co_hosts') != null) {
+          var arrCo_hosts = request.input('co_hosts').split(',')
+
+          if (arrCo_hosts != '') {
+            for (var i = 0; i < MAX_CO_HOSTS && i < arrCo_hosts.length; i++) {
+              const create_co_hosts = await CoHost.create({
+                group_id: newGroup.id,
+                user_id: arrCo_hosts[i],
+              })
+            }
+          }
+        }
 
         let userStatController = new UserStatTransactionController()
         userStatController.update_total_number_of(auth.user.id, 'total_number_of_communities')
