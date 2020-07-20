@@ -38,7 +38,7 @@ class DiscordLoginController {
       data.append('scope', 'identify email')
       data.append('code', code)
 
-      const res = await fetch('https://discordapp.com/api/oauth2/token', {
+      const res = await fetch('https://discord.com/api/oauth2/token', {
         method: 'POST',
         body: data,
       })
@@ -46,7 +46,7 @@ class DiscordLoginController {
       const json = await res.json()
       return response.redirect(`https://myg.gg/authenticated/discord/?token=${json.access_token}`)
     } else if (token) {
-      const res = await fetch(`https://discordapp.com/api/users/@me`, {
+      const res = await fetch(`https://discord.com/api/users/@me`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -100,7 +100,7 @@ class DiscordLoginController {
     const provider = 'discord'
     try {
       const Requestcurl = use('Request')
-      const result = Requestcurl.get('https://discordapp.com/api/oauth2/users/@me')
+      const result = Requestcurl.get('https://discord.com/api/oauth2/users/@me')
       console.log(result)
 
       const userData = await ally.driver(provider).getUser()
