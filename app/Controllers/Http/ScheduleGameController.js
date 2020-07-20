@@ -496,6 +496,28 @@ class ScheduleGameController {
         gameface.decrementGameCounter({ auth, request, response })
         //If game is deleted then return, we're not storing this if no1 has it in their profile or has scheduled games for it
 
+        let reasons = null
+
+        switch (request.params.reason) {
+          case 1:
+            reasons = 'Real life issues, sorry all'
+            break
+          case 2:
+            reasons = 'Technical issues, sorry all'
+            break
+          case 3:
+            reasons = 'Totally forgot about this, my bad'
+            break
+          case 4:
+            reasons = 'Not enuf players'
+            break
+          case 5:
+            reasons = 'Decided not to play anymore, sorry all'
+            break
+          default:
+            reasons = null
+        }
+
         request.params.id = getOne[0].id
         request.params.user_id = getOne[0].user_id
         request.params.region = getOne[0].region
@@ -512,18 +534,18 @@ class ScheduleGameController {
         request.params.schedule_games_GUID = getOne[0].schedule_games_GUID
         request.params.vacancy = getOne[0].vacancy
         request.params.og_created_at = getOne[0].created_at
-        request.params.reason_for_cancel = request.params.reason
+        request.params.reason_for_cancel = reasons
 
         var archived_schedule_game = await archive_schedule_games.store({ auth, request, response })
 
         request.params.archive_schedule_games_id = archived_schedule_game.id
 
-        archive_schedule_games_trans.store({ auth, request, response })
+        //archive_schedule_games_trans.store({ auth, request, response })
 
-        const allAttendees = await Database.from('attendees').where({
-          schedule_games_id: request.params.id,
-          type: 1,
-        })
+        // const allAttendees = await Database.from('attendees').where({
+        //   schedule_games_id: request.params.id,
+        //   type: 1,
+        // })
 
         // for (var i = 0; i < allAttendees.length; i++) {
         //   request.params.archive_schedule_game_id = allAttendees[i].schedule_games_id
@@ -1454,10 +1476,24 @@ class ScheduleGameController {
         additional_submit_info = true
       }
 
+      const allAttendees = await Database.from('attendees')
+        .where({
+          schedule_games_id: request.params.id,
+          type: 1,
+        })
+        .first()
+
+      let hasAttendees = 0
+
+      if (allAttendees != undefined) {
+        hasAttendees = 1
+      }
+
       return {
         latestScheduledGames,
         additional_submit_info,
         additional_submit_info_fields,
+        hasAttendees,
       }
     } catch (error) {
       console.log(error)
