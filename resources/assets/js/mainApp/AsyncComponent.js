@@ -34,6 +34,13 @@ const CreateCommunity = Loadable({
   },
 })
 
+const EditScheduleGames = Loadable({
+  loader: () => import('./components/EditGame/EditGameContainer'),
+  loading: function () {
+    return null
+  },
+})
+
 const LeftMenu = Loadable({
   loader: () => import('./components/LeftMenu'),
   loading: function () {
@@ -316,46 +323,5 @@ export {
   AllSearchResults,
   ScheduleGamesView,
   CreateCommunity,
+  EditScheduleGames,
 }
-
-// import Home from './components/Home'
-// import Profile from './components/Profile'
-// import ScheduleGames from './components/ScheduleGames'
-// import LeftMenu from './components/LeftMenu'
-// import MessengerLoader from './components/Messenger/MessengerLoader'
-// import ChatUnreadMessages from './components/Messenger/ChatUnreadMessages'
-// import GuestLink from './components/Guest/Link'
-// import SearchHeader from './components/SearchHeader'
-// import Posts from './components/Posts'
-// import LoadingComp from './components/LoadingComp'
-// import Dossier from './components/Dossier'
-// import AddGamingExp from './components/AddGamingExp'
-// import EditGamingExp from './components/EditGamingExp'
-// import IndividualPost from './components/IndividualPost'
-// import IndividualComment from './components/IndividualComment'
-// import IndividualReply from './components/IndividualReply'
-// import MyPosts from './components/MyPosts'
-// import MyHome from './components/MyHome'
-// import MyComposeSection from './components/MyComposeSection'
-// import Invitation from './components/Invitation'
-// import IndividualInvitation from './components/IndividualInvitation'
-// import MyFriends from './components/MyFriends'
-// import IndividualFriend from './components/IndividualFriend'
-// import MySettings from './components/MySettings'
-// import IndividualGamingExperience from './components/IndividualGamingExperience'
-// import UploadPic from './components/UploadPic'
-// import Notifications from './components/Notifications'
-// import IndividualNotification from './components/IndividualNotification'
-// import SinglePost from './components/SinglePost'
-// import IndividualEsportsExperience from './components/IndividualEsportsExperience'
-// import AddEsportsExp from './components/AddEsportsExp'
-// import EditEsportsExp from './components/EditEsportsExp'
-// import AdvancedSearch from './components/AdvancedSearch'
-// import IndividualPlayer from './components/IndividualPlayer'
-// import GroupMain from './components/GroupMain'
-// import ScheduledGamesApprovals from './components/ScheduledGamesApprovals'
-// import GroupHome from './components/GroupHome'
-// import MyApprovals from './components/MyApprovals'
-// import Member_lists from './components/Member_lists'
-// import ArchivedScheduledGames from './components/ArchivedScheduledGames'
-// import AllSearchResults from './components/AllSearchResults'
