@@ -19,6 +19,7 @@ const EditGameContainer = (props) => {
   const { id = '' } = params
   // State
   const [sechduledGameData, setSechduledGameData] = useState({})
+  const [hasAttendees, setHasAttendees] = useState(false)
   const [isGameListedModalOpen, updateIsGameListedModalOpen] = useState(false)
   const [isReasonModalOpen, updateReasonModalOpen] = useState(false)
   const [isInviteModalOpen, updateIsInviteModalOpen] = useState(false)
@@ -81,7 +82,7 @@ const EditGameContainer = (props) => {
       console.log('scheduleGames  ', scheduleGames)
 
       if (scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
-        const { latestScheduledGames = [] } = scheduleGames.data
+        const { latestScheduledGames = [], hasAttendees = 0 } = scheduleGames.data
 
         const advanceSettings = { ...advancedSettingsState }
 
@@ -109,6 +110,9 @@ const EditGameContainer = (props) => {
         updateAdvancedSettingsState(advanceSettings)
         updateMainSettingsState(mainSettings)
         setSechduledGameData(latestScheduledGames)
+        setHasAttendees(hasAttendees)
+      } else {
+        window.location.href = '/?at=mygame'
       }
     }
     return () => {
@@ -215,8 +219,14 @@ const EditGameContainer = (props) => {
   const onCancelGameHandler = () => {
     window.location.href = '/?at=mygame'
   }
-  const onDeleteGameHandler = () => {
-    alert('click delete.')
+  const onDeleteGameHandler = async () => {
+    if (hasAttendees == 0) {
+      const deleteGameData = await axios.get(`/api/ScheduleGame/delete/${id}/0`)
+      console.log('deleteGameData if', deleteGameData)
+    } else {
+      const deleteGameData = await axios.get(`/api/ScheduleGame/delete/${id}/1`)
+      console.log('deleteGameData else', deleteGameData)
+    }
   }
 
   const getPageFooter = () => {
