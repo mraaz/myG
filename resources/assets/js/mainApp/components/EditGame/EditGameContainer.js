@@ -103,6 +103,7 @@ const EditGameContainer = (props) => {
         mainSettings.autoJoinHost = latestScheduledGames[0].autoJoinHost == 1 ? true : false
         mainSettings.scheduledGameId = latestScheduledGames[0].id
         mainSettings.scheduledGameGuid = latestScheduledGames[0].schedule_games_GUID
+        mainSettings.isRepeatFieldSelected = latestScheduledGames[0].repeatEvery == 1 ? true : false
         mainSettings.cron = latestScheduledGames[0].cron
 
         updateAdvancedSettingsState(advanceSettings)
