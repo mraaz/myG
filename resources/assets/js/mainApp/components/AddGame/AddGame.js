@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect, memo } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import classNames from 'classnames'
 import Slider, { Range } from 'rc-slider'
 import moment from 'moment'

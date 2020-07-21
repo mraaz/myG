@@ -14,6 +14,14 @@ class LeftMenu extends Component {
     initialData: PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired,
   }
 
+  componentDidMount() {
+    let expanded = localStorage.getItem('isExpanded')
+
+    if (expanded == 'true') {
+      this.setState({ isExpanded: true })
+    }
+  }
+
   state = {
     dropdown: false,
     show_top_btn: false,
@@ -24,6 +32,7 @@ class LeftMenu extends Component {
   }
 
   onMenuToggle = () => {
+    localStorage.setItem('isExpanded', !this.state.isExpanded)
     this.setState((currentState) => ({
       isExpanded: !currentState.isExpanded,
       sideBarData: {
@@ -47,10 +56,18 @@ class LeftMenu extends Component {
 
   onSubItemClick = (e) => {
     e.stopPropagation()
+    let expanded = localStorage.getItem('isExpanded')
+    if (expanded == 'true') {
+      expanded = true
+    } else {
+      expanded = false
+    }
+
     this.setState((currentState) => ({
       sideBarData: {
         ...sideBarItems,
       },
+      isExpanded: expanded,
     }))
   }
 
