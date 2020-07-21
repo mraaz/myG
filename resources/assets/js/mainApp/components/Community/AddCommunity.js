@@ -8,7 +8,7 @@ import 'rc-slider/assets/index.css'
 import { toast } from 'react-toastify'
 
 import { Toast_style } from '../Utility_Function'
-import '../../styles/AddGame/AddGameStyles.scss'
+import '../../styles/Community/AddCommunityStyles.scss'
 
 import {
   SETTINGS_ENUMS,
@@ -20,7 +20,7 @@ import {
   DOTA2_MEDAL_RANKS,
   DOTA2_ROLES,
   DOTA2_SERVER_REGIONS,
-} from '../../static/AddGame'
+} from '../../static/AddCommunity'
 import { MyGCheckbox, MyGTextarea, MyGAsyncSelect, MyGCreateableSelect, MyGSelect, MyGDatePicker } from '../common'
 import { Game_name_values, Schedule_Game_Tags, Disable_keys } from '../Utility_Function'
 import Axios from 'axios'
@@ -28,7 +28,7 @@ import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
 
 const SliderWithTooltip = Slider.createSliderWithTooltip(Slider)
 
-const CreateCommunity = ({
+const AddCommunity = ({
   state,
   updateComponentState,
   advancedSettingsState,
@@ -691,12 +691,4 @@ const CreateCommunity = ({
   )
 }
 
-export default CreateCommunity
-
-// import React, { Fragment } from 'react'
-
-// const CreateCommunity = () => {
-//   return <h1>Create Community</h1>
-// }
-
-// export default CreateCommunity
+export default AddCommunity

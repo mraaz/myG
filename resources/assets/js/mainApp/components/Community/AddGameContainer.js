@@ -4,18 +4,18 @@ import moment from 'moment'
 import classNames from 'classnames'
 
 import { PageHeader, MyGButton, MyGModal, MyGInput } from '../common'
-import { styles, SETTINGS_ENUMS } from '../../static/AddGame'
+import { styles, SETTINGS_ENUMS } from '../../static/AddCommunity'
 import '../../styles/AddGame/AddGameStyles.scss'
-import AddGame from '../AddGame/AddGame.js'
+import AddCommunity from './AddCommunity'
 import { Toast_style, Convert_to_comma_delimited_value } from '../Utility_Function'
 import { SubmitDataFunction } from '../AddScheduleGames_Submit_Data'
-import InvitePlayers from '../AddGame/InvitePlayers.js'
+import InvitePlayers from './InvitePlayers'
 import { Link } from 'react-router-dom'
 
 const MAX_GAME_TAGS = 9
 const MAX_CO_HOSTS = 5
 
-const CommunityContainer = () => {
+const AddCommunityContainer = () => {
   // State
   const [isGameListedModalOpen, updateIsGameListedModalOpen] = useState(false)
   const [isInviteModalOpen, updateIsInviteModalOpen] = useState(false)
@@ -278,12 +278,4 @@ const CommunityContainer = () => {
   )
 }
 
-export default CommunityContainer
-
-// import React, { Fragment } from 'react'
-
-// const CommunityContainer = () => {
-//   return <h1>Community Container</h1>
-// }
-
-// export default CommunityContainer
+export default AddCommunityContainer
