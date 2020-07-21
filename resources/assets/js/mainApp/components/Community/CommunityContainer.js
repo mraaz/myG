@@ -6,10 +6,10 @@ import classNames from 'classnames'
 import { PageHeader, MyGButton, MyGModal, MyGInput } from '../common'
 import { styles, SETTINGS_ENUMS } from '../../static/AddGame'
 import '../../styles/AddGame/AddGameStyles.scss'
-import AddGame from './AddGame'
+import AddGame from '../AddGame/AddGame.js'
 import { Toast_style, Convert_to_comma_delimited_value } from '../Utility_Function'
 import { SubmitDataFunction } from '../AddScheduleGames_Submit_Data'
-import InvitePlayers from './InvitePlayers'
+import InvitePlayers from '../AddGame/InvitePlayers.js'
 import { Link } from 'react-router-dom'
 
 const MAX_GAME_TAGS = 9
