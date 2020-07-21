@@ -2,13 +2,14 @@ import React, { useState, useRef, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import moment from 'moment'
 import classNames from 'classnames'
+import Select from 'react-select'
 
 import { PageHeader, MyGButton, MyGModal, MyGInput } from '../common'
 import { styles, SETTINGS_ENUMS } from '../../static/AddGame'
 import '../../styles/AddGame/AddGameStyles.scss'
 import EditGame from './EditGame'
 import { Toast_style, Convert_to_comma_delimited_value } from '../Utility_Function'
-import { SubmitDataFunction } from '../AddScheduleGames_Submit_Data'
+import { SubmitDataFunction } from './UpdateScheduleGames'
 import InvitePlayers from './InvitePlayers'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
@@ -18,7 +19,9 @@ const EditGameContainer = (props) => {
   const { id = '' } = params
   // State
   const [sechduledGameData, setSechduledGameData] = useState({})
+  const [hasAttendees, setHasAttendees] = useState(false)
   const [isGameListedModalOpen, updateIsGameListedModalOpen] = useState(false)
+  const [isReasonModalOpen, updateReasonModalOpen] = useState(false)
   const [isInviteModalOpen, updateIsInviteModalOpen] = useState(false)
   const [isInvitesSentsModalOpen, updateIsInvitesSentsModalOpen] = useState(false)
   const [isSubmitting, updateIsSubmitting] = useState(false)
@@ -35,7 +38,7 @@ const EditGameContainer = (props) => {
   })
   const [mainSettingsState, updateMainSettingsState] = useState({
     scheduledGameId: null,
-    scheduledGameGuid: id,
+    scheduledGameGuid: null,
     gameTitlesList: [],
     gameTitle: '',
     startTime: moment(),
@@ -75,25 +78,41 @@ const EditGameContainer = (props) => {
     const { params = {} } = props.routeProps.match
     const { id = '' } = params
     if (id) {
-      const scheduleGames = await axios.get(`/api/ScheduleGame/filtered_by_one/${id}`)
+      const scheduleGames = await axios.get(`/api/ScheduleGame/edit_game/${id}`)
+      console.log('scheduleGames  ', scheduleGames)
+
       if (scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
-        const { latestScheduledGames = [] } = scheduleGames.data
-        const mainSettings = { ...mainSettingsState }
+        const { latestScheduledGames = [], hasAttendees = 0 } = scheduleGames.data
+
         const advanceSettings = { ...advancedSettingsState }
+
         advanceSettings.acceptMessage = latestScheduledGames[0].accept_msg
         advanceSettings.description = latestScheduledGames[0].description
         advanceSettings.experience = getExtraFilterOprion(latestScheduledGames[0].experience)
         advanceSettings.platform = getExtraFilterOprion(latestScheduledGames[0].platform)
-        advanceSettings.region = getExtraFilterOprion(latestScheduledGames[0].region)
+        advanceSettings.optionTags = getExtraFilterOprion(latestScheduledGames[0].tags)
+
+        const mainSettings = { ...mainSettingsState }
 
         mainSettings.gameTitle = { value: latestScheduledGames[0].game_name, label: latestScheduledGames[0].game_name }
         mainSettings.startTime = moment(latestScheduledGames[0].start_date_time)
         mainSettings.endTime = moment(latestScheduledGames[0].end_date_time)
-        mainSettings.isCommentsAllowed = latestScheduledGames[0].allow_comments ? true : false
+        mainSettings.isEndGameFieldSelected = latestScheduledGames[0].end_date_time !== null ? true : false
+        mainSettings.isCommentsAllowed = latestScheduledGames[0].allow_comments == 1 ? true : false
+        mainSettings.isPublicGame = latestScheduledGames[0].visibility == 1 ? true : false
+        mainSettings.autoAccept = latestScheduledGames[0].autoJoin == 1 ? true : false
+        mainSettings.autoJoinHost = latestScheduledGames[0].autoJoinHost == 1 ? true : false
+        mainSettings.scheduledGameId = latestScheduledGames[0].id
+        mainSettings.scheduledGameGuid = latestScheduledGames[0].schedule_games_GUID
+        mainSettings.isRepeatFieldSelected = latestScheduledGames[0].repeatEvery == 1 ? true : false
+        mainSettings.cron = latestScheduledGames[0].cron
 
         updateAdvancedSettingsState(advanceSettings)
         updateMainSettingsState(mainSettings)
         setSechduledGameData(latestScheduledGames)
+        setHasAttendees(hasAttendees)
+      } else {
+        window.location.href = '/?at=mygame'
       }
     }
     return () => {
@@ -175,10 +194,6 @@ const EditGameContainer = (props) => {
         value_three,
         value_four,
         value_five,
-        // dota2_medal_ranks: optionalFieldsState.modalRank,
-        // dota2_server_regions: optionalFieldsState.serverRegion,
-        // dota2_roles: optionalFieldsState.roleNeeded,
-        // clash_royale_trophies: optionalFieldsState.trophies,
         allow_comments: mainSettingsState.isCommentsAllowed,
         autoJoin: mainSettingsState.autoAccept,
         coHosts: advancedSettingsState.coHosts,
@@ -187,11 +202,12 @@ const EditGameContainer = (props) => {
         occurrence: mainSettingsState.occurrence,
         repeatEvery: mainSettingsState.repeatEvery,
         autoJoinHost: mainSettingsState.autoJoinHost,
+        schedule_games_GUID: props.schedule_games_GUID,
       })
       updateMainSettingsState((currentState) => ({
         ...currentState,
         scheduledGameId: data.id,
-        scheduledGameGuid: data.schedule_games_GUID,
+        scheduledGameGuid: props.schedule_games_GUID,
       }))
       updateGameLink(data.schedule_games_GUID)
       updateIsGameListedModalOpen(true)
@@ -203,8 +219,14 @@ const EditGameContainer = (props) => {
   const onCancelGameHandler = () => {
     window.location.href = '/?at=mygame'
   }
-  const onDeleteGameHandler = () => {
-    alert('click delete.')
+  const onDeleteGameHandler = async () => {
+    if (hasAttendees == 0) {
+      const deleteGameData = await axios.get(`/api/ScheduleGame/delete/${id}/0`)
+      console.log('deleteGameData if', deleteGameData)
+    } else {
+      const deleteGameData = await axios.get(`/api/ScheduleGame/delete/${id}/1`)
+      console.log('deleteGameData else', deleteGameData)
+    }
   }
 
   const getPageFooter = () => {
@@ -265,9 +287,48 @@ const EditGameContainer = (props) => {
           <MyGButton customStyles={{ color: '#E5C746', border: '2px solid' }} text='Invite Friends' onClick={onInviteFriendsClick} />
         </div>
         <div className={styles.listedBottomContentContainer}>
-          <Link to='/addScheduleGames' replace>
-            <MyGButton customStyles={{ color: '#fff', border: '2px solid' }} text='Done' />
-          </Link>
+          <MyGButton customStyles={{ color: '#fff', border: '2px solid' }} text='Done' onClick={() => updateIsGameListedModalOpen(false)} />
+        </div>
+      </MyGModal>
+    )
+  }
+  const handleSelectChange = (data) => {
+    try {
+      console.log('data ', data)
+    } catch (error) {
+      console.log('Select Change Join button  error ', error)
+    }
+  }
+
+  const selectReasonToDelete = () => {
+    return (
+      <MyGModal isOpen ariaHideApp={false}>
+        <div className={styles.listedTopContentContainer}>
+          <div className={styles.listedHeader}>Are you sure?</div>
+          <div className={styles.listedShareText}>Select a reason for canceling</div>
+
+          <Select
+            onChange={(data) => handleSelectChange(data)}
+            options={[
+              { value: 1, label: 'Real life issues, sorry all' },
+              { value: 2, label: 'Technical issues, sorry all' },
+              { value: 3, label: 'Totally forgot about this, my bad' },
+              { value: 4, label: 'Not enuf players' },
+              { value: 5, label: 'Decided not to play anymore, sorry all' },
+            ]}
+            placeholder={'Select a reason '}
+            className='game__values'
+            classNamePrefix='filter'
+            value={''}
+          />
+        </div>
+        <div className={styles.listedBottomContentContainer}>
+          <MyGButton
+            customStyles={{ background: '#E5C746', color: '#000000' }}
+            text='Submit'
+            onClick={() => updateReasonModalOpen(false)}
+          />
+          <MyGButton customStyles={{ color: '#FFFFFF', border: '2px solid #FFFFFF' }} text='Cancel' />
         </div>
       </MyGModal>
     )
@@ -284,7 +345,7 @@ const EditGameContainer = (props) => {
           </Link>
         </div>
         <div className={styles.listedBottomContentContainer}>
-          <Link to='/addScheduleGames' replace>
+          <Link to={`/editScheduleGames/${id}`} replace>
             <MyGButton customStyles={{ color: '#fff', border: '2px solid' }} text='Done' />
           </Link>
         </div>
@@ -293,7 +354,7 @@ const EditGameContainer = (props) => {
   }
   return (
     <div className={styles.container}>
-      <PageHeader headerText='Add Public Game' />
+      <PageHeader headerText='Edit Game' />
       <EditGame
         state={state}
         updateComponentState={updateComponentState}
@@ -307,6 +368,7 @@ const EditGameContainer = (props) => {
         updateIsSubmitting={updateIsSubmitting}
       />
       {getPageFooter()}
+      {/* {selectReasonToDelete()} */}
       {isGameListedModalOpen && getGameListedModal()}
       {isInvitesSentsModalOpen && getInvitesSentModal()}
       {isInviteModalOpen && (

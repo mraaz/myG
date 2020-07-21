@@ -113,7 +113,7 @@ const JoinStatus = (props) => {
   }
 
   const handleEditGameDetails = () => {
-    window.location.href = `/editScheduleGames/${props.schedule_games_GUID}`
+    window.location.href = `/editScheduleGames/${props.schedule_games_id}`
   }
   const handleOpenGroupChat = () => {
     openChatForGame(props.schedule_games_id)
