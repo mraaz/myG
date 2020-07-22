@@ -13,15 +13,18 @@ import { SubmitDataFunction } from './UpdateScheduleGames'
 import InvitePlayers from './InvitePlayers'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 const EditGameContainer = (props) => {
   const { params = {} } = props.routeProps.match
   const { id = '' } = params
   // State
+  const [reason, setReason] = useState('')
+  const [showReasonModal, setShowReasonModal] = useState(false)
+  const [showSweetAlert, setShowSweetAlert] = useState(null)
   const [sechduledGameData, setSechduledGameData] = useState({})
   const [hasAttendees, setHasAttendees] = useState(false)
   const [isGameListedModalOpen, updateIsGameListedModalOpen] = useState(false)
-  const [isReasonModalOpen, updateReasonModalOpen] = useState(false)
   const [isInviteModalOpen, updateIsInviteModalOpen] = useState(false)
   const [isInvitesSentsModalOpen, updateIsInvitesSentsModalOpen] = useState(false)
   const [isSubmitting, updateIsSubmitting] = useState(false)
@@ -74,12 +77,35 @@ const EditGameContainer = (props) => {
     }
   }
 
+  const hideAlert = async (val) => {
+    setShowSweetAlert(null)
+    if (val == 'true') {
+      const deleteGameData = await axios.get(`/api/ScheduleGame/delete/${id}/0`)
+      if (deleteGameData) {
+        toast.success(<Toast_style text={'Yeah! Game has been deleted successfully.'} />)
+      }
+    }
+  }
+
+  const renderSweetAlert = () => (
+    <SweetAlert
+      success
+      showCancel
+      title='Are you sure ?'
+      confirmBtnText='Make it so!'
+      confirmBtnBsStyle='success'
+      focusCancelBtn={true}
+      focusConfirmBtn={false}
+      showCloseButton={true}
+      onConfirm={() => hideAlert('true')}
+      onCancel={() => hideAlert('false')}></SweetAlert>
+  )
+
   useEffect(async () => {
     const { params = {} } = props.routeProps.match
     const { id = '' } = params
     if (id) {
       const scheduleGames = await axios.get(`/api/ScheduleGame/edit_game/${id}`)
-      console.log('scheduleGames  ', scheduleGames)
 
       if (scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
         const { latestScheduledGames = [], hasAttendees = 0 } = scheduleGames.data
@@ -219,13 +245,21 @@ const EditGameContainer = (props) => {
   const onCancelGameHandler = () => {
     window.location.href = '/?at=mygame'
   }
-  const onDeleteGameHandler = async () => {
-    if (hasAttendees == 0) {
-      const deleteGameData = await axios.get(`/api/ScheduleGame/delete/${id}/0`)
-      console.log('deleteGameData if', deleteGameData)
+  const onDeleteGameHandler = () => {
+    if (hasAttendees == 1) {
+      setShowSweetAlert(renderSweetAlert())
     } else {
-      const deleteGameData = await axios.get(`/api/ScheduleGame/delete/${id}/1`)
-      console.log('deleteGameData else', deleteGameData)
+      setShowReasonModal(true)
+    }
+  }
+  const handleReasonSubmit = async (value) => {
+    setShowReasonModal(false)
+    if (value && reason.value) {
+      const deleteGameData = await axios.get(`/api/ScheduleGame/delete/${id}/${reason.value}`)
+      if (deleteGameData) {
+        setReason('')
+        toast.success(<Toast_style text={'Yeah! Game has been deleted successfully.'} />)
+      }
     }
   }
 
@@ -294,7 +328,7 @@ const EditGameContainer = (props) => {
   }
   const handleSelectChange = (data) => {
     try {
-      console.log('data ', data)
+      setReason(data)
     } catch (error) {
       console.log('Select Change Join button  error ', error)
     }
@@ -308,6 +342,7 @@ const EditGameContainer = (props) => {
           <div className={styles.listedShareText}>Select a reason for canceling</div>
 
           <Select
+            style={{ width: '100%' }}
             onChange={(data) => handleSelectChange(data)}
             options={[
               { value: 1, label: 'Real life issues, sorry all' },
@@ -319,16 +354,30 @@ const EditGameContainer = (props) => {
             placeholder={'Select a reason '}
             className='game__values'
             classNamePrefix='filter'
-            value={''}
+            value={reason}
           />
         </div>
         <div className={styles.listedBottomContentContainer}>
+          <button
+            style={{
+              padding: '0 22px',
+              borderRadius: '6px',
+              height: '35px',
+              lineHeight: '34px',
+              margin: '0 20px',
+              cursor: reason == '' ? 'not-allowed' : 'pointer',
+              background: '#E5C746',
+              color: '#000000',
+            }}
+            disabled={reason == ''}
+            onClick={() => handleReasonSubmit(true)}>
+            {`Submit`}
+          </button>
           <MyGButton
-            customStyles={{ background: '#E5C746', color: '#000000' }}
-            text='Submit'
-            onClick={() => updateReasonModalOpen(false)}
+            customStyles={{ color: '#FFFFFF', border: '2px solid #FFFFFF' }}
+            onClick={() => handleReasonSubmit(false)}
+            text='Cancel'
           />
-          <MyGButton customStyles={{ color: '#FFFFFF', border: '2px solid #FFFFFF' }} text='Cancel' />
         </div>
       </MyGModal>
     )
@@ -353,7 +402,7 @@ const EditGameContainer = (props) => {
     )
   }
   return (
-    <div className={styles.container}>
+    <div className={styles.edit__container}>
       <PageHeader headerText='Edit Game' />
       <EditGame
         state={state}
@@ -368,20 +417,8 @@ const EditGameContainer = (props) => {
         updateIsSubmitting={updateIsSubmitting}
       />
       {getPageFooter()}
-      {/* {selectReasonToDelete()} */}
-      {isGameListedModalOpen && getGameListedModal()}
-      {isInvitesSentsModalOpen && getInvitesSentModal()}
-      {isInviteModalOpen && (
-        <InvitePlayers
-          onInvitationSent={onInvitationSent}
-          onCancelInviteClick={onCancelInviteClick}
-          gameId={mainSettingsState.gameTitle.game_names_id}
-          scheduledGameId={mainSettingsState.scheduledGameId}
-          scheduledGameGuid={mainSettingsState.scheduledGameGuid}
-          gameTitle={mainSettingsState.gameTitle.value}
-          startTime={mainSettingsState.startTime.valueOf()}
-        />
-      )}
+      {showReasonModal && selectReasonToDelete()}
+      {showSweetAlert}
     </div>
   )
 }

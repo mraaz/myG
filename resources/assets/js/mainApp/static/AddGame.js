@@ -5,6 +5,7 @@ const SETTINGS_ENUMS = {
 
 const styles = {
   container: 'add-game__container',
+  edit__container: 'add-game__container edit__container',
   fieldTitle: 'add-game__field-title',
   mainContainer: 'add-game__main-container',
   menuContainer: 'add-game__menu-container',
