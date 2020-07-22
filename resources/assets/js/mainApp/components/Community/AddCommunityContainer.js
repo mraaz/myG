@@ -5,10 +5,10 @@ import classNames from 'classnames'
 
 import { PageHeader, MyGButton, MyGModal, MyGInput } from '../common'
 import { styles, SETTINGS_ENUMS } from '../../static/AddCommunity'
-import '../../styles/AddGame/AddGameStyles.scss'
+import '../../styles/Community/AddCommunityStyles.scss'
 import AddCommunity from './AddCommunity'
 import { Toast_style, Convert_to_comma_delimited_value } from '../Utility_Function'
-import { SubmitDataFunction } from '../AddScheduleGames_Submit_Data'
+import { SubmitDataFunction } from '../AddScheduleCommunity_Submit_Data'
 import InvitePlayers from './InvitePlayers'
 import { Link } from 'react-router-dom'
 
@@ -142,10 +142,6 @@ const AddCommunityContainer = () => {
         value_three,
         value_four,
         value_five,
-        // dota2_medal_ranks: optionalFieldsState.modalRank,
-        // dota2_server_regions: optionalFieldsState.serverRegion,
-        // dota2_roles: optionalFieldsState.roleNeeded,
-        // clash_royale_trophies: optionalFieldsState.trophies,
         allow_comments: mainSettingsState.isCommentsAllowed,
         autoJoin: mainSettingsState.autoAccept,
         coHosts: advancedSettingsState.coHosts,
@@ -173,7 +169,7 @@ const AddCommunityContainer = () => {
         <div
           className={classNames([styles.footerSubmitButton, isButtonDisabled() ? styles.footerSubmitButtonLight : ''])}
           onClick={isSubmitting ? null : onAddGameSubmit}>
-          Add Game
+          Add Community
         </div>
       </div>
     )
@@ -199,7 +195,7 @@ const AddCommunityContainer = () => {
     return (
       <MyGModal isOpen ariaHideApp={false}>
         <div className={styles.listedTopContentContainer}>
-          <div className={styles.listedHeader}>Your Game is now listed!</div>
+          <div className={styles.listedHeader}>Your Community is now listed!</div>
           <div className={styles.listedShareText}>Use this game link for direct access to your game</div>
           <MyGInput
             value={`https://myG.gg/scheduledGames/${gameLink}`}
@@ -247,8 +243,8 @@ const AddCommunityContainer = () => {
 
   return (
     <div className={styles.container}>
-      <PageHeader headerText='Add Public Game' />
-      <AddGame
+      <PageHeader headerText='Add Community' />
+      <AddCommunity
         state={state}
         updateComponentState={updateComponentState}
         advancedSettingsState={advancedSettingsState}

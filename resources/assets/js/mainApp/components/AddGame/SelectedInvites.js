@@ -56,7 +56,6 @@ const SelectedInvites = ({
               'invite-players__invites-header-arrow',
               showOptions[group] ? 'invite-players__invites-header-arrow-down' : '',
             ])}>
-            >
           </div>
         </div>
       </div>

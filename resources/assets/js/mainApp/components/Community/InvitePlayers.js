@@ -4,7 +4,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import axios from 'axios'
 
 import { MyGModal, MyGButton, MyGAsyncSelect } from '../common'
-import { styles } from '../../static/AddGame'
+import { styles } from '../../static/AddCommunity'
 import UserTab from './UserTab'
 import {
   normalizePlayersData,
@@ -13,8 +13,8 @@ import {
   parseCommunitiesToSelectData,
   parsePlayersToSelectData,
 } from '../../utils/InvitePlayersUtils'
-import '../../styles/AddGame/InvitePlayersStyles.scss'
-import '../../styles/AddGame/AddGameStyles.scss'
+import '../../styles/Community/InvitePlayersStyles.scss'
+import '../../styles/Community/AddCommunityStyles.scss'
 import SelectedInvites from './SelectedInvites'
 
 const MENU_OPTIONS = {
