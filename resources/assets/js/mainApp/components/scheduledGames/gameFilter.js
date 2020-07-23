@@ -335,6 +335,8 @@ export default class ScheduleGames extends Component {
         extraFields: {},
         filterValueArray: {},
         tags: [],
+        eighteen_plus: null,
+        mic: null,
       },
       () => {
         this.filterGroup = this.constantFilterGroup
