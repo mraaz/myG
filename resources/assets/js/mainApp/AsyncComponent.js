@@ -28,7 +28,7 @@ const AddScheduleGames = Loadable({
 })
 
 const CreateCommunity = Loadable({
-  loader: () => import('./components/Community/CommunityContainer'),
+  loader: () => import('./components/Community/AddCommunityContainer'),
   loading: function () {
     return null
   },
