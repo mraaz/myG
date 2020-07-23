@@ -45,6 +45,10 @@ const prefilledFilter_option = [
   { value: 2, label: 'myGames (Participating)' },
   { value: 3, label: 'myGames (Awaiting Approval)' },
 ]
+const yes_no_options = [
+  { value: 1, label: 'Fo sho!' },
+  { value: 0, label: 'Meh' },
+]
 
 const getExtraFilterOprion = (arg) => {
   const data = arg && arg.length > 0 ? arg.split(',') : []
@@ -72,4 +76,5 @@ module.exports = {
   getExtraFilterOprion,
   properCase,
   prefilledFilter_option,
+  yes_no_options,
 }

@@ -40,7 +40,7 @@ export default class GameList extends Component {
     e.stopPropagation()
     const link = `${window.location.protocol}//${window.location.hostname}/scheduledGames/${guid}`
     navigator.clipboard.writeText(link)
-    toast.error(<Toast_style text={'Link Copied Successfully.'} />)
+    toast.error(<Toast_style text={'Link copied mate!'} />)
   }
   handleSingleGameDetails = (e, id, game) => {
     this.setState({ activeItemId: id })
