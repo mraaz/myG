@@ -568,6 +568,22 @@ const AddGame = ({
               maxLength={250}
             />
           </div>
+          <div className='comments-privacy-container'>
+            <MyGCheckbox
+              checked={advancedSettingsState.mic}
+              onClick={(value) => {
+                updateAdvancedSettings({ mic: value })
+              }}
+              labelText='Mic required?'
+            />
+            <MyGCheckbox
+              checked={advancedSettingsState.eighteen_plus}
+              onClick={(value) => {
+                updateAdvancedSettings({ eighteen_plus: value })
+              }}
+              labelText='18+ event?'
+            />
+          </div>
         </div>
       </div>
     )

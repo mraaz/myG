@@ -96,6 +96,8 @@ class ScheduleGameController {
           occurrence: request.input('occurrence'),
           repeatEvery: request.input('repeatEvery'),
           autoJoinHost: request.input('autoJoinHost'),
+          mic: request.input('mic'),
+          eighteen_plus: request.input('eighteen_plus'),
         })
 
         if (
@@ -658,6 +660,7 @@ class ScheduleGameController {
               'users.id as user_id',
               'schedule_games.game_names_id'
             )
+            .orderBy('schedule_games.start_date_time', 'desc')
             .paginate(request.input('counter'), 10)
 
           count_myScheduledGames = await Database.from('schedule_games')
@@ -1030,6 +1033,10 @@ class ScheduleGameController {
 
               if (request.input('experience') != null) builder.where('experience', request.input('experience'))
 
+              if (request.input('mic') != null) builder.where('mic', request.input('mic'))
+
+              if (request.input('eighteen_plus') != null) builder.where('eighteen_plus', request.input('eighteen_plus'))
+
               if (request.input('start_date_time') != null) builder.where('start_date_time', '<=', request.input('start_date_time'))
 
               if (request.input('end_date_time') != null) builder.where('end_date_time', '>=', request.input('end_date_time'))
@@ -1079,6 +1086,10 @@ class ScheduleGameController {
             if (request.input('region') != null) builder.where('schedule_games.region', request.input('region'))
 
             if (request.input('experience') != null) builder.where('experience', request.input('experience'))
+
+            if (request.input('mic') != null) builder.where('mic', request.input('mic'))
+
+            if (request.input('eighteen_plus') != null) builder.where('eighteen_plus', request.input('eighteen_plus'))
 
             if (request.input('start_date_time') != null)
               builder.where('schedule_games.start_date_time', '<=', request.input('start_date_time'))

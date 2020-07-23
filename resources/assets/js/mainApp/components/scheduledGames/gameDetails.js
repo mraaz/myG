@@ -43,10 +43,24 @@ export default class GameDetails extends Component {
       accept_msg = '',
     } = additional_game_info
 
+    let mic = additional_game_info.mic
+    let eighteen_plus = additional_game_info.eighteen_plus
+    if (mic) {
+      mic = true
+    } else {
+      mic = false
+    }
+    if (eighteen_plus) {
+      eighteen_plus = true
+    } else {
+      eighteen_plus = false
+    }
+
     const { no_of_comments = [], lastComment = '' } = commentData
     const { no_of_my_comments = 0 } = no_of_comments[0] || {}
 
     const experience_split = experience ? experience.split(',') : []
+
     return (
       <div className='gameDetails'>
         {showRightSideInfo && !showAllComment ? (
@@ -86,6 +100,8 @@ export default class GameDetails extends Component {
             </div>
             <div className='gameDetails__body'>
               <div className='filter__label'>Game Details</div>
+              {mic && <div className='gameDescription__body'>Mic required!</div>}
+              {eighteen_plus && <div className='gameDescription__body'>18+ event boies n gurls</div>}
               {description && <div className='gameDescription'>Description</div>}
               {description && <div className='gameDescription__body'>{description}</div>}
               <div className='gameTime__label'>End Time</div>

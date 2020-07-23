@@ -109,6 +109,8 @@ export async function SubmitDataFunction(myG) {
       value_four: myG.value_four,
       value_five: myG.value_five,
       autoJoinHost: myG.autoJoinHost,
+      mic: myG.mic,
+      eighteen_plus: myG.eighteen_plus,
     })
 
     // clash_royale_trophies: myClash_royale_trophies,

@@ -31,6 +31,8 @@ const AddGameContainer = () => {
     description: '',
     acceptMessage: '',
     optionTags: '',
+    mic: false,
+    eighteen_plus: false,
   })
   const [mainSettingsState, updateMainSettingsState] = useState({
     scheduledGameId: null,
@@ -154,6 +156,8 @@ const AddGameContainer = () => {
         occurrence: mainSettingsState.occurrence,
         repeatEvery: mainSettingsState.repeatEvery,
         autoJoinHost: mainSettingsState.autoJoinHost,
+        mic: advancedSettingsState.mic,
+        eighteen_plus: advancedSettingsState.eighteen_plus,
       })
       updateMainSettingsState((currentState) => ({
         ...currentState,
