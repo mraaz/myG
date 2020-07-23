@@ -1037,7 +1037,7 @@ class ScheduleGameController {
 
               if (request.input('eighteen_plus') != null) builder.where('eighteen_plus', request.input('eighteen_plus'))
 
-              if (request.input('start_date_time') != null) builder.where('start_date_time', '<=', request.input('start_date_time'))
+              //if (request.input('start_date_time') != null) builder.where('start_date_time', '<=', request.input('start_date_time'))
 
               if (request.input('end_date_time') != null) builder.where('end_date_time', '>=', request.input('end_date_time'))
 
@@ -1091,8 +1091,8 @@ class ScheduleGameController {
 
             if (request.input('eighteen_plus') != null) builder.where('eighteen_plus', request.input('eighteen_plus'))
 
-            if (request.input('start_date_time') != null)
-              builder.where('schedule_games.start_date_time', '<=', request.input('start_date_time'))
+            //if (request.input('start_date_time') != null)
+            //builder.where('schedule_games.start_date_time', '<=', request.input('start_date_time'))
 
             if (request.input('end_date_time') != null) builder.where('schedule_games.end_date_time', '>=', request.input('end_date_time'))
 

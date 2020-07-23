@@ -568,6 +568,7 @@ const AddGame = ({
               maxLength={250}
             />
           </div>
+          <div className='field-title'>Extra's</div>
           <div className='comments-privacy-container'>
             <MyGCheckbox
               checked={advancedSettingsState.mic}
