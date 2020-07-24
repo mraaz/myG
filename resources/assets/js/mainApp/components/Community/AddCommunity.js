@@ -560,7 +560,7 @@ const AddCommunity = ({
                 updateAdvancedSettings({ experience: value })
               }}
               value={advancedSettingsState.experience}
-              placeholder='Select experience level'
+              placeholder='Select Moderator'
               isMulti
             />
           </div>
