@@ -66,13 +66,11 @@
   }
   &__main-container {
     display: flex;
-    flex: 1;
-    margin-left: 40px;
-    margin-right: 40px;
-    padding-top: 30px;
+    padding: 30px;
     margin-bottom: 20px;
     overflow: scroll;
     scrollbar-width: none;
+    justify-content: space-between;
   }
   &__field-title {
     color: #fff;
