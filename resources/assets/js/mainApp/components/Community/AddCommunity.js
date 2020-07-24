@@ -4,6 +4,7 @@ import Slider, { Range } from 'rc-slider'
 import moment from 'moment'
 import CustomCron from '../common/Cron/MyGCron'
 import Dropzone from 'react-dropzone'
+const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
 import 'rc-slider/assets/index.css'
 import { toast } from 'react-toastify'
 
@@ -300,28 +301,21 @@ const AddCommunity = ({
           onClick={(value) => {
             updateMainSettings({ isCommentsAllowed: value })
           }}
-          labelText='Allow Comments On Game Listing'
+          labelText='Allow posts from everyone'
         />
         <MyGCheckbox
           checked={mainSettingsState.isPublicGame}
           onClick={(value) => {
             updateMainSettings({ isPublicGame: value })
           }}
-          labelText='List Game as Public Game'
+          labelText='Allow everyone check members list'
         />
         <MyGCheckbox
           checked={mainSettingsState.autoAccept}
           onClick={(value) => {
             updateMainSettings({ autoAccept: value })
           }}
-          labelText='Auto Accept Gamers (first-come, first-served)'
-        />
-        <MyGCheckbox
-          checked={mainSettingsState.autoJoinHost}
-          onClick={(value) => {
-            updateMainSettings({ autoJoinHost: value })
-          }}
-          labelText='Host attending?'
+          labelText='Allow managers to post as Featured'
         />
       </div>
     )
@@ -445,6 +439,19 @@ const AddCommunity = ({
     )
   }
 
+  handlePreviewRemove = (e, src) => {
+    e.preventDefault()
+    let preview_files = [...this.state.preview_files]
+    preview_files = preview_files.filter((data) => data.src != src)
+    this.setState({ preview_files })
+  }
+
+  getPreviewImageGallery = (preview_filesData) => {
+    return preview_filesData.map((data) => {
+      return { original: data.src, thumbnail: data.src }
+    })
+  }
+
   const getCommunityleftView = () => {
     return (
       <div style={{ display: 'flex' }}>
@@ -491,26 +498,10 @@ const AddCommunity = ({
               onKeyDown={Disable_keys}
             />
           </div>
-          {/* <div className='date-picker-select'>
-              <MyGDatePicker
-                onChange={(value) => {
-                  if (!value) {
-                    updateMainSettings({
-                      isEndGameFieldSelected: false,
-                      endTime: null,
-                      startTime: value,
-                    })
-                    return
-                  }
-                  updateMainSettings({ startTime: value })
-                }}
-                selected={mainSettingsState.startTime}
-                maxDate={moment().add(14, 'days')}
-              />
-              {getOptionalMainSettingsView()}
-              {getPlayersNumberView()}
-              {getCommentPrivaryView()}
-            </div> */}
+          <div className='field-title'>
+            <p>Featured Image</p>
+          </div>
+          <div className='media__container'></div>
           <div className='field-title'>
             <p>Add Hashtags</p>
           </div>
