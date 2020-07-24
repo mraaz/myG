@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import Slider, { Range } from 'rc-slider'
 import moment from 'moment'
 import CustomCron from '../common/Cron/MyGCron'
-
+import Dropzone from 'react-dropzone'
 import 'rc-slider/assets/index.css'
 import { toast } from 'react-toastify'
 
@@ -175,6 +175,41 @@ const AddCommunity = ({
       // error player suggestion fetch
     }
   }
+  // togglePostTypeTab = (label) => {
+  //   let open_compose_textTab = true
+  //   if (label == 'media') {
+  //     open_compose_textTab = false
+  //   }
+  //   if (label == 'text') {
+  //     setTimeout(function () {
+  //       document.getElementById('composeTextarea').focus()
+  //     }, 0)
+  //   }
+  //   this.setState({ open_compose_textTab, overlay_active: true })
+  // }
+
+  // handleAcceptedFiles = (Files, rejectedFiles) => {
+  //   const { preview_files = [] } = this.state
+  //   const len = preview_files.length + Files.length
+  //   if (rejectedFiles.length > 0) {
+  //     toast.error(
+  //       <Toast_style text={`Sorry mate! ${rejectedFiles.length} File(s) rejected because of bad format or file size limit exceed (10mb)`} />
+  //     )
+  //   }
+  //   if (len > 8) {
+  //     toast.success(<Toast_style text={`Sorry mate! Can't upload more than eight at a time.`} />)
+  //   } else {
+  //     for (var i = 0; i < Files.length; i++) {
+  //       let type = Files[i].type.split('/')
+  //       let name = `post_${type[0]}_${+new Date()}_${Files[i].name}`
+  //       this.doUploadS3(Files[i], name, name)
+  //     }
+  //   }
+  // }
+
+  // addGroupToggle = () => {
+  //   this.setState({ bFileModalOpen: !this.state.bFileModalOpen })
+  // }
 
   // Views
   const getPlayersNumberView = () => {
@@ -420,6 +455,25 @@ const AddCommunity = ({
           </div>
           <div className='main-settings-content'>
             <div className='field-title'>
+              <p>Community Name</p>
+            </div>
+            <div className='game-title-select'>
+              <MyGCreateableSelect
+                isClearable
+                onCreateOption={handleCreateGame}
+                onInputChange={getOptionsGames}
+                onChange={(value) => {
+                  updateMainSettings({ gameTitle: value })
+                  value && !value.additional_info && updateOptionalSettings({ serverRegion: null })
+                  updateState({ additional_info: value ? value.additional_info : false })
+                }}
+                value={mainSettingsState.gameTitle}
+                placeholder='Community Name'
+                options={mainSettingsState.gameTitlesList}
+                onKeyDown={Disable_keys}
+              />
+            </div>
+            <div className='field-title'>
               <p>Game Title</p>
             </div>
             <div className='game-title-select'>
@@ -438,10 +492,7 @@ const AddCommunity = ({
                 onKeyDown={Disable_keys}
               />
             </div>
-            <div className='field-title'>
-              <p>Start Time</p>
-            </div>
-            <div className='date-picker-select'>
+            {/* <div className='date-picker-select'>
               <MyGDatePicker
                 onChange={(value) => {
                   if (!value) {
@@ -460,45 +511,10 @@ const AddCommunity = ({
               {getOptionalMainSettingsView()}
               {getPlayersNumberView()}
               {getCommentPrivaryView()}
+            </div> */}
+            <div className='field-title'>
+              <p>Add Hashtags</p>
             </div>
-          </div>
-        </div>
-        <div style={{ display: 'flex' }}>
-          <div className={styles.sideLineContainer}>
-            <div className={styles.sideBall} />
-            <div className={styles.sideLine} />
-          </div>
-          <div className='advance-settings-content'>
-            <div className='field-title'>Co-host</div>
-            <div className='friend-name-select'>
-              <MyGAsyncSelect
-                isClearable
-                isMulti
-                isValidNewOption={() => {
-                  return
-                }}
-                loadOptions={onPlayersSuggestionFetch}
-                onChange={(value) => {
-                  updateAdvancedSettings({ coHosts: value })
-                }}
-                value={advancedSettingsState.coHosts}
-                placeholder='Enter your Friend’s name to set him as a co-host'
-                onKeyDown={Disable_keys}
-              />
-            </div>
-            <div className='field-title'>Experience</div>
-            <div className='experience-select'>
-              <MyGSelect
-                options={EXPERIENCE_OPTIONS}
-                onChange={(value) => {
-                  updateAdvancedSettings({ experience: value })
-                }}
-                value={advancedSettingsState.experience}
-                placeholder='Select experience level'
-                isMulti
-              />
-            </div>
-            <div className='field-title'>Game Tags</div>
             <div className='game-title-select'>
               <MyGCreateableSelect
                 isClearable
@@ -514,34 +530,14 @@ const AddCommunity = ({
                 onKeyDown={Disable_keys}
               />
             </div>
-            <div className='field-title'>Platform</div>
-            <div className='platform-select'>
-              <MyGSelect
-                options={PLATFORM_OPTIONS}
-                onChange={(value) => {
-                  updateAdvancedSettings({ platform: value })
-                }}
-                value={advancedSettingsState.platform}
-                placeholder='Select platform'
-                isMulti
-              />
-            </div>
-            {(!mainSettingsState.gameTitle || mainSettingsState.gameTitle.value !== 'Dota 2') && (
-              <Fragment>
-                <div className='field-title'>Region</div>
-                <div className='platform-select'>
-                  <MyGSelect
-                    onChange={(value) => {
-                      updateAdvancedSettings({ region: value })
-                    }}
-                    value={advancedSettingsState.region}
-                    options={REGION_OPTIONS}
-                    placeholder='Select region'
-                    isMulti
-                  />
-                </div>
-              </Fragment>
-            )}
+          </div>
+        </div>
+        <div style={{ display: 'flex' }}>
+          <div className={styles.sideLineContainer}>
+            <div className={styles.sideBall} />
+            <div className={styles.sideLine} />
+          </div>
+          <div className='advance-settings-content'>
             <div className='field-title'>Description</div>
             <div className='description-text-area'>
               <MyGTextarea
@@ -553,17 +549,20 @@ const AddCommunity = ({
                 maxLength={250}
               />
             </div>
-            <div className='field-title'>Accept Message</div>
-            <div className='description-text-area'>
-              <MyGTextarea
-                onChange={(event) => {
-                  updateAdvancedSettings({ acceptMessage: event.target.value })
+            <div className='field-title'>Moderators</div>
+            <div className='experience-select'>
+              <MyGSelect
+                options={EXPERIENCE_OPTIONS}
+                onChange={(value) => {
+                  updateAdvancedSettings({ experience: value })
                 }}
-                value={advancedSettingsState.acceptMessage}
-                placeholder='Create a message for those who join & accept your game'
-                maxLength={250}
+                value={advancedSettingsState.experience}
+                placeholder='Select experience level'
+                isMulti
               />
             </div>
+
+            <div className='comment-section'>{getCommentPrivaryView()}</div>
           </div>
         </div>
       </Fragment>
@@ -809,41 +808,8 @@ const AddCommunity = ({
     )
   }
 
-  const getGameSettingsView = () => {
-    return (
-      <div>
-        <div />
-        {state.selectedSettings === SETTINGS_ENUMS.MAIN ? getMainSettingsView() : getAdvancedSettingsView()}
-      </div>
-    )
-  }
-
-  const getSettingsMenu = () => {
-    return (
-      <div className={styles.menuContainer}>
-        <div onClick={() => updateState({ selectedSettings: SETTINGS_ENUMS.MAIN })}>
-          <div className='tab-heading'>Main Setting</div>
-          <div
-            className={classNames([styles.menuLine, state.selectedSettings === SETTINGS_ENUMS.MAIN ? styles.menuLineHighlighted : null])}
-          />
-        </div>
-        <div onClick={() => updateState({ selectedSettings: SETTINGS_ENUMS.ADVANCED })}>
-          <div className='tab-heading'>Advanced Settings</div>
-          <div
-            className={classNames([
-              styles.menuLine,
-              state.selectedSettings === SETTINGS_ENUMS.ADVANCED ? styles.menuLineHighlighted : null,
-            ])}
-          />
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className={styles.mainContainer}>
-      {/* {getSettingsMenu()}
-        {getGameSettingsView()} */}
       {getCommunityView()}
       {state.additional_info && getOptionalGameFieldsView()}
     </div>
