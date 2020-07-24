@@ -445,54 +445,53 @@ const AddCommunity = ({
     )
   }
 
-  const getCommunityView = () => {
+  const getCommunityleftView = () => {
     return (
-      <Fragment>
-        <div style={{ display: 'flex' }}>
-          <div className={styles.sideLineContainer}>
-            <div className={styles.sideBall} />
-            <div className={styles.sideLine} />
+      <div style={{ display: 'flex' }}>
+        <div className={styles.sideLineContainer}>
+          <div className={styles.sideBall} />
+          <div className={styles.sideLine} />
+        </div>
+        <div className='main-settings-content'>
+          <div className='field-title'>
+            <p>Community Name</p>
           </div>
-          <div className='main-settings-content'>
-            <div className='field-title'>
-              <p>Community Name</p>
-            </div>
-            <div className='game-title-select'>
-              <MyGCreateableSelect
-                isClearable
-                onCreateOption={handleCreateGame}
-                onInputChange={getOptionsGames}
-                onChange={(value) => {
-                  updateMainSettings({ gameTitle: value })
-                  value && !value.additional_info && updateOptionalSettings({ serverRegion: null })
-                  updateState({ additional_info: value ? value.additional_info : false })
-                }}
-                value={mainSettingsState.gameTitle}
-                placeholder='Community Name'
-                options={mainSettingsState.gameTitlesList}
-                onKeyDown={Disable_keys}
-              />
-            </div>
-            <div className='field-title'>
-              <p>Game Title</p>
-            </div>
-            <div className='game-title-select'>
-              <MyGCreateableSelect
-                isClearable
-                onCreateOption={handleCreateGame}
-                onInputChange={getOptionsGames}
-                onChange={(value) => {
-                  updateMainSettings({ gameTitle: value })
-                  value && !value.additional_info && updateOptionalSettings({ serverRegion: null })
-                  updateState({ additional_info: value ? value.additional_info : false })
-                }}
-                value={mainSettingsState.gameTitle}
-                placeholder='Search, Select or create Game Title'
-                options={mainSettingsState.gameTitlesList}
-                onKeyDown={Disable_keys}
-              />
-            </div>
-            {/* <div className='date-picker-select'>
+          <div className='game-title-select'>
+            <MyGCreateableSelect
+              isClearable
+              onCreateOption={handleCreateGame}
+              onInputChange={getOptionsGames}
+              onChange={(value) => {
+                updateMainSettings({ gameTitle: value })
+                value && !value.additional_info && updateOptionalSettings({ serverRegion: null })
+                updateState({ additional_info: value ? value.additional_info : false })
+              }}
+              value={mainSettingsState.gameTitle}
+              placeholder='Community Name'
+              options={mainSettingsState.gameTitlesList}
+              onKeyDown={Disable_keys}
+            />
+          </div>
+          <div className='field-title'>
+            <p>Game Title</p>
+          </div>
+          <div className='game-title-select'>
+            <MyGCreateableSelect
+              isClearable
+              onCreateOption={handleCreateGame}
+              onInputChange={getOptionsGames}
+              onChange={(value) => {
+                updateMainSettings({ gameTitle: value })
+                value && !value.additional_info && updateOptionalSettings({ serverRegion: null })
+                updateState({ additional_info: value ? value.additional_info : false })
+              }}
+              value={mainSettingsState.gameTitle}
+              placeholder='Search, Select or create Game Title'
+              options={mainSettingsState.gameTitlesList}
+              onKeyDown={Disable_keys}
+            />
+          </div>
+          {/* <div className='date-picker-select'>
               <MyGDatePicker
                 onChange={(value) => {
                   if (!value) {
@@ -512,225 +511,65 @@ const AddCommunity = ({
               {getPlayersNumberView()}
               {getCommentPrivaryView()}
             </div> */}
-            <div className='field-title'>
-              <p>Add Hashtags</p>
-            </div>
-            <div className='game-title-select'>
-              <MyGCreateableSelect
-                isClearable
-                isMulti
-                onCreateOption={handleCreateTags}
-                onInputChange={getOptionsTags}
-                onChange={(value) => {
-                  updateAdvancedSettings({ tags: value })
-                }}
-                value={advancedSettingsState.tags}
-                placeholder='Search, Select or create Game Tags'
-                options={advancedSettingsState.optionTags}
-                onKeyDown={Disable_keys}
-              />
-            </div>
+          <div className='field-title'>
+            <p>Add Hashtags</p>
+          </div>
+          <div className='game-title-select'>
+            <MyGCreateableSelect
+              isClearable
+              isMulti
+              onCreateOption={handleCreateTags}
+              onInputChange={getOptionsTags}
+              onChange={(value) => {
+                updateAdvancedSettings({ tags: value })
+              }}
+              value={advancedSettingsState.tags}
+              placeholder='Search, Select or create Game Tags'
+              options={advancedSettingsState.optionTags}
+              onKeyDown={Disable_keys}
+            />
           </div>
         </div>
-        <div style={{ display: 'flex' }}>
-          <div className={styles.sideLineContainer}>
-            <div className={styles.sideBall} />
-            <div className={styles.sideLine} />
-          </div>
-          <div className='advance-settings-content'>
-            <div className='field-title'>Description</div>
-            <div className='description-text-area'>
-              <MyGTextarea
-                onChange={(event) => {
-                  updateAdvancedSettings({ description: event.target.value })
-                }}
-                value={advancedSettingsState.description}
-                placeholder='Enter a description for your game'
-                maxLength={250}
-              />
-            </div>
-            <div className='field-title'>Moderators</div>
-            <div className='experience-select'>
-              <MyGSelect
-                options={EXPERIENCE_OPTIONS}
-                onChange={(value) => {
-                  updateAdvancedSettings({ experience: value })
-                }}
-                value={advancedSettingsState.experience}
-                placeholder='Select experience level'
-                isMulti
-              />
-            </div>
-
-            <div className='comment-section'>{getCommentPrivaryView()}</div>
-          </div>
-        </div>
-      </Fragment>
+      </div>
     )
   }
+  const getCommunityrightView = () => {
+    return (
+      <div style={{ display: 'flex' }}>
+        <div className={styles.sideLineContainer}>
+          <div className={styles.sideBall} />
+          <div className={styles.sideLine} />
+        </div>
+        <div className='advance-settings-content'>
+          <div className='field-title'>Description</div>
+          <div className='description-text-area'>
+            <MyGTextarea
+              onChange={(event) => {
+                updateAdvancedSettings({ description: event.target.value })
+              }}
+              value={advancedSettingsState.description}
+              placeholder='Enter a description for your game'
+              maxLength={250}
+            />
+          </div>
+          <div className='field-title'>Moderators</div>
+          <div className='experience-select'>
+            <MyGSelect
+              options={EXPERIENCE_OPTIONS}
+              onChange={(value) => {
+                updateAdvancedSettings({ experience: value })
+              }}
+              value={advancedSettingsState.experience}
+              placeholder='Select experience level'
+              isMulti
+            />
+          </div>
 
-  // const getMainSettingsView = () => {
-  //   return (
-  //     <div style={{ display: 'flex' }}>
-  //       <div className={styles.sideLineContainer}>
-  //         <div className={styles.sideBall} />
-  //         <div className={styles.sideLine} />
-  //       </div>
-  //       <div className='main-settings-content'>
-  //         <div className='field-title'>
-  //           <p>Game Title</p>
-  //         </div>
-  //         <div className='game-title-select'>
-  //           <MyGCreateableSelect
-  //             isClearable
-  //             onCreateOption={handleCreateGame}
-  //             onInputChange={getOptionsGames}
-  //             onChange={(value) => {
-  //               updateMainSettings({ gameTitle: value })
-  //               value && !value.additional_info && updateOptionalSettings({ serverRegion: null })
-  //               updateState({ additional_info: value ? value.additional_info : false })
-  //             }}
-  //             value={mainSettingsState.gameTitle}
-  //             placeholder='Search, Select or create Game Title'
-  //             options={mainSettingsState.gameTitlesList}
-  //             onKeyDown={Disable_keys}
-  //           />
-  //         </div>
-  //         <div className='field-title'>
-  //           <p>Start Time</p>
-  //         </div>
-  //         <div className='date-picker-select'>
-  //           <MyGDatePicker
-  //             onChange={(value) => {
-  //               if (!value) {
-  //                 updateMainSettings({
-  //                   isEndGameFieldSelected: false,
-  //                   endTime: null,
-  //                   startTime: value,
-  //                 })
-  //                 return
-  //               }
-  //               updateMainSettings({ startTime: value })
-  //             }}
-  //             selected={mainSettingsState.startTime}
-  //             maxDate={moment().add(14, 'days')}
-  //           />
-  //           {getOptionalMainSettingsView()}
-  //           {getPlayersNumberView()}
-  //           {getCommentPrivaryView()}
-  //         </div>
-  //       </div>
-  //     </div>
-  //   )
-  // }
-
-  // const getAdvancedSettingsView = () => {
-  //   return (
-  //     <div style={{ display: 'flex' }}>
-  //       <div className={styles.sideLineContainer}>
-  //         <div className={styles.sideBall} />
-  //         <div className={styles.sideLine} />
-  //       </div>
-  //       <div className='advance-settings-content'>
-  //         <div className='field-title'>Co-host</div>
-  //         <div className='friend-name-select'>
-  //           <MyGAsyncSelect
-  //             isClearable
-  //             isMulti
-  //             isValidNewOption={() => {
-  //               return
-  //             }}
-  //             loadOptions={onPlayersSuggestionFetch}
-  //             onChange={(value) => {
-  //               updateAdvancedSettings({ coHosts: value })
-  //             }}
-  //             value={advancedSettingsState.coHosts}
-  //             placeholder='Enter your Friend’s name to set him as a co-host'
-  //             onKeyDown={Disable_keys}
-  //           />
-  //         </div>
-  //         <div className='field-title'>Experience</div>
-  //         <div className='experience-select'>
-  //           <MyGSelect
-  //             options={EXPERIENCE_OPTIONS}
-  //             onChange={(value) => {
-  //               updateAdvancedSettings({ experience: value })
-  //             }}
-  //             value={advancedSettingsState.experience}
-  //             placeholder='Select experience level'
-  //             isMulti
-  //           />
-  //         </div>
-  //         <div className='field-title'>Game Tags</div>
-  //         <div className='game-title-select'>
-  //           <MyGCreateableSelect
-  //             isClearable
-  //             isMulti
-  //             onCreateOption={handleCreateTags}
-  //             onInputChange={getOptionsTags}
-  //             onChange={(value) => {
-  //               updateAdvancedSettings({ tags: value })
-  //             }}
-  //             value={advancedSettingsState.tags}
-  //             placeholder='Search, Select or create Game Tags'
-  //             options={advancedSettingsState.optionTags}
-  //             onKeyDown={Disable_keys}
-  //           />
-  //         </div>
-  //         <div className='field-title'>Platform</div>
-  //         <div className='platform-select'>
-  //           <MyGSelect
-  //             options={PLATFORM_OPTIONS}
-  //             onChange={(value) => {
-  //               updateAdvancedSettings({ platform: value })
-  //             }}
-  //             value={advancedSettingsState.platform}
-  //             placeholder='Select platform'
-  //             isMulti
-  //           />
-  //         </div>
-  //         {(!mainSettingsState.gameTitle || mainSettingsState.gameTitle.value !== 'Dota 2') && (
-  //           <Fragment>
-  //             <div className='field-title'>Region</div>
-  //             <div className='platform-select'>
-  //               <MyGSelect
-  //                 onChange={(value) => {
-  //                   updateAdvancedSettings({ region: value })
-  //                 }}
-  //                 value={advancedSettingsState.region}
-  //                 options={REGION_OPTIONS}
-  //                 placeholder='Select region'
-  //                 isMulti
-  //               />
-  //             </div>
-  //           </Fragment>
-  //         )}
-  //         <div className='field-title'>Description</div>
-  //         <div className='description-text-area'>
-  //           <MyGTextarea
-  //             onChange={(event) => {
-  //               updateAdvancedSettings({ description: event.target.value })
-  //             }}
-  //             value={advancedSettingsState.description}
-  //             placeholder='Enter a description for your game'
-  //             maxLength={250}
-  //           />
-  //         </div>
-  //         <div className='field-title'>Accept Message</div>
-  //         <div className='description-text-area'>
-  //           <MyGTextarea
-  //             onChange={(event) => {
-  //               updateAdvancedSettings({ acceptMessage: event.target.value })
-  //             }}
-  //             value={advancedSettingsState.acceptMessage}
-  //             placeholder='Create a message for those who join & accept your game'
-  //             maxLength={250}
-  //           />
-  //         </div>
-  //       </div>
-  //     </div>
-  //   )
-  // }
+          <div className='comment-section'>{getCommentPrivaryView()}</div>
+        </div>
+      </div>
+    )
+  }
 
   // ToDo: update modal rank and roles needs options
   const getOptionalGameFieldsView = () => {
@@ -810,7 +649,8 @@ const AddCommunity = ({
 
   return (
     <div className={styles.mainContainer}>
-      {getCommunityView()}
+      {getCommunityleftView()}
+      {getCommunityrightView()}
       {state.additional_info && getOptionalGameFieldsView()}
     </div>
   )
