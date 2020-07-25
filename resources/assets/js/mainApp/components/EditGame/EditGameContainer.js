@@ -228,14 +228,14 @@ const EditGameContainer = (props) => {
         occurrence: mainSettingsState.occurrence,
         repeatEvery: mainSettingsState.repeatEvery,
         autoJoinHost: mainSettingsState.autoJoinHost,
-        schedule_games_GUID: props.schedule_games_GUID,
+        schedule_games_GUID: mainSettingsState.scheduledGameGuid,
       })
       updateMainSettingsState((currentState) => ({
         ...currentState,
         scheduledGameId: data.id,
-        scheduledGameGuid: props.schedule_games_GUID,
+        scheduledGameGuid: mainSettingsState.scheduledGameGuid,
       }))
-      updateGameLink(data.schedule_games_GUID)
+      updateGameLink(mainSettingsState.scheduledGameGuid)
       updateIsGameListedModalOpen(true)
     } catch (err) {
       updateIsSubmitting(false)
@@ -246,7 +246,7 @@ const EditGameContainer = (props) => {
     window.location.href = '/?at=mygame'
   }
   const onDeleteGameHandler = () => {
-    if (hasAttendees == 1) {
+    if (hasAttendees == 0) {
       setShowSweetAlert(renderSweetAlert())
     } else {
       setShowReasonModal(true)
@@ -336,50 +336,46 @@ const EditGameContainer = (props) => {
 
   const selectReasonToDelete = () => {
     return (
-      <MyGModal isOpen ariaHideApp={false}>
-        <div className={styles.listedTopContentContainer}>
-          <div className={styles.listedHeader}>Are you sure?</div>
-          <div className={styles.listedShareText}>Select a reason for canceling</div>
+      <div className={`modal-container View__JoinBUtton__modal ${showReasonModal ? 'modal--show' : ''}`}>
+        <div className='modal-wrap'>
+          <div className='modal__body'>
+            <div className='body__content'>
+              <h1>Are you sure?</h1>
+              <p>Select a reason for canceling</p>
 
-          <Select
-            style={{ width: '100%' }}
-            onChange={(data) => handleSelectChange(data)}
-            options={[
-              { value: 1, label: 'Real life issues, sorry all' },
-              { value: 2, label: 'Technical issues, sorry all' },
-              { value: 3, label: 'Totally forgot about this, my bad' },
-              { value: 4, label: 'Not enuf players' },
-              { value: 5, label: 'Decided not to play anymore, sorry all' },
-            ]}
-            placeholder={'Select a reason '}
-            className='game__values'
-            classNamePrefix='filter'
-            value={reason}
-          />
+              <Select
+                style={{ width: '100%' }}
+                onChange={(data) => handleSelectChange(data)}
+                options={[
+                  { value: 1, label: 'Real life issues, sorry all' },
+                  { value: 2, label: 'Technical issues, sorry all' },
+                  { value: 3, label: 'Totally forgot about this, my bad' },
+                  { value: 4, label: 'Not enuf players' },
+                  { value: 5, label: 'Decided not to play anymore, sorry all' },
+                ]}
+                placeholder={'Select a reason '}
+                className='game__values'
+                classNamePrefix='filter'
+                value={reason}
+              />
+            </div>
+            <div className='modal__close' onClick={() => handleReasonSubmit(false)}>
+              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/X_icon.svg' />
+            </div>
+          </div>
+          <div className='modal__footer'>
+            <MyGButton
+              customStyles={{ color: '#FFFFFF', border: '2px solid #FFFFFF' }}
+              onClick={() => handleReasonSubmit(false)}
+              text='Cancel'
+            />
+            <button type='button' disabled={reason == ''} onClick={() => handleReasonSubmit(true)}>
+              Submit
+            </button>
+          </div>
         </div>
-        <div className={styles.listedBottomContentContainer}>
-          <button
-            style={{
-              padding: '0 22px',
-              borderRadius: '6px',
-              height: '35px',
-              lineHeight: '34px',
-              margin: '0 20px',
-              cursor: reason == '' ? 'not-allowed' : 'pointer',
-              background: '#E5C746',
-              color: '#000000',
-            }}
-            disabled={reason == ''}
-            onClick={() => handleReasonSubmit(true)}>
-            {`Submit`}
-          </button>
-          <MyGButton
-            customStyles={{ color: '#FFFFFF', border: '2px solid #FFFFFF' }}
-            onClick={() => handleReasonSubmit(false)}
-            text='Cancel'
-          />
-        </div>
-      </MyGModal>
+        <div className='modal-overlay' onClick={() => handleReasonSubmit(false)}></div>
+      </div>
     )
   }
 
@@ -419,6 +415,19 @@ const EditGameContainer = (props) => {
       {getPageFooter()}
       {showReasonModal && selectReasonToDelete()}
       {showSweetAlert}
+      {isGameListedModalOpen && getGameListedModal()}
+      {isInvitesSentsModalOpen && getInvitesSentModal()}
+      {isInviteModalOpen && (
+        <InvitePlayers
+          onInvitationSent={onInvitationSent}
+          onCancelInviteClick={onCancelInviteClick}
+          gameId={mainSettingsState.gameTitle.game_names_id}
+          scheduledGameId={mainSettingsState.scheduledGameId}
+          scheduledGameGuid={mainSettingsState.scheduledGameGuid}
+          gameTitle={mainSettingsState.gameTitle.value}
+          startTime={mainSettingsState.startTime.valueOf()}
+        />
+      )}
     </div>
   )
 }

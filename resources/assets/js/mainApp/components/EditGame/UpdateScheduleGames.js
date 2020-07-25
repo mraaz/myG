@@ -6,6 +6,8 @@ import moment from 'moment'
 const MAX_GAME_TAGS = 9
 
 export async function SubmitDataFunction(myG) {
+  console.log('myG    ', myG)
+
   let myRegion = null,
     myExperience = null,
     myPlatform = null,
