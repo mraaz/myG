@@ -11,6 +11,8 @@ import SingleGameDetails from './singlegameDetails.js'
 import NoRecord from './NoRecord.js'
 import { PullDataFunction as getScheduleGames } from './getScheduleGames'
 import axios from 'axios'
+import Select from 'react-select'
+import { prefilledFilter_option } from './option'
 
 import InfiniteScroll from 'react-infinite-scroll-component'
 
@@ -104,7 +106,6 @@ export default class MyScheduledGames extends Component {
       exclude_expired: checked,
       filter,
     })
-    console.log('scheduleGamesRes    ', scheduleGamesRes.data.myScheduledGames.length)
 
     if (scheduleGamesRes.data && scheduleGamesRes.data.myScheduledGames.length > 0) {
       this.setState({ scheduleGames: scheduleGamesRes.data.myScheduledGames, fetching: false, exclude_expired: checked, filter })
@@ -117,6 +118,11 @@ export default class MyScheduledGames extends Component {
         scheduleGames: [],
       })
     }
+  }
+  handleChangeFilter = (prefilledFilter) => {
+    this.setState({ prefilledFilter }, () => {
+      this.handleExcludesFullGames(null, prefilledFilter.value)
+    })
   }
 
   render() {
@@ -137,6 +143,7 @@ export default class MyScheduledGames extends Component {
       scheduleGamesView = {},
       showAllComment,
       fetching,
+      prefilledFilter,
     } = this.state
     const { latestScheduledGames = [] } = scheduleGamesView
 
@@ -145,38 +152,55 @@ export default class MyScheduledGames extends Component {
     }
     return (
       <section className='viewGame__container'>
-        <div className={`gameList__section ${singleView ? 'singleGameView__container' : 'GameView__container'}`}>
-          {scheduleGames.length > 0 ? (
-            <Fragment>
-              <div style={{ flex: 1 }}>
-                <GameList
-                  scheduleGames={scheduleGames}
-                  show_full_games={show_full_games}
-                  handleExcludesFullGames={this.handleExcludesFullGames}
-                  slideOptionLabel={`Exclude Expired Games`}
-                  getSingleGameData={this.getSingleGameData}
-                  next={this.getScheduleGamesData}
-                  hasMore={this.state.moreplease}
-                  fetching={fetching}
-                  copyClipboardEnable={false}
-                  showPrefilledFilter={true}
-                />
-              </div>
-              <div style={{ flex: 1 }}>
-                <GameDetails
-                  singleScheduleGamesPayload={singleScheduleGamesPayload}
-                  selected_game={selected_game}
-                  showRightSideInfo={showRightSideInfo}
-                  commentData={commentData}
-                  handleShowAllComments={this.handleShowAllComments}
-                  showAllComment={showAllComment}
-                  {...this.props}
-                />
-              </div>
-            </Fragment>
-          ) : (
-            <NoRecord />
-          )}
+        <div
+          className={`gameList__section ${singleView ? 'singleGameView__container' : 'GameView__container'}`}
+          style={{ display: 'block' }}>
+          <div className='myGame__filter-section'>
+            <div className='viewGame__gameName'>
+              <Select
+                onChange={(data) => this.handleChangeFilter(data)}
+                options={prefilledFilter_option}
+                placeholder='Select your region'
+                name='prefilledFilter'
+                className='viewGame__name'
+                classNamePrefix='filter'
+                value={prefilledFilter}
+              />
+            </div>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            {scheduleGames.length > 0 ? (
+              <Fragment>
+                <div style={{ flex: 1 }}>
+                  <GameList
+                    scheduleGames={scheduleGames}
+                    show_full_games={show_full_games}
+                    handleExcludesFullGames={this.handleExcludesFullGames}
+                    slideOptionLabel={`Exclude Expired Games`}
+                    getSingleGameData={this.getSingleGameData}
+                    next={this.getScheduleGamesData}
+                    hasMore={this.state.moreplease}
+                    fetching={fetching}
+                    copyClipboardEnable={false}
+                    showPrefilledFilter={true}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <GameDetails
+                    singleScheduleGamesPayload={singleScheduleGamesPayload}
+                    selected_game={selected_game}
+                    showRightSideInfo={showRightSideInfo}
+                    commentData={commentData}
+                    handleShowAllComments={this.handleShowAllComments}
+                    showAllComment={showAllComment}
+                    {...this.props}
+                  />
+                </div>
+              </Fragment>
+            ) : (
+              <NoRecord />
+            )}
+          </div>
         </div>
       </section>
     )
