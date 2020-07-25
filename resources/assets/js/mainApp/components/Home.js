@@ -32,6 +32,11 @@ export default class Home extends Component {
       initialData: this.props.initialData,
     })
     window.addEventListener('scroll', this.handleScroll)
+    let params = new URLSearchParams(window.location.search)
+    const activeTab = params.get('at')
+    this.setState({
+      tabName: activeTab,
+    })
   }
 
   componentWillUnmount() {
@@ -88,7 +93,7 @@ export default class Home extends Component {
             <div className={`${tabName == 'notifications' ? 'active' : 'notifications'}`} onClick={(e) => this.tabToggle('notifications')}>
               Notifications
             </div>
-            <div className={`${tabName == 'mygames' ? 'active' : 'mygames'}`} onClick={(e) => this.tabToggle('mygames')}>
+            <div className={`${tabName == 'mygame' ? 'active' : 'mygames'}`} onClick={(e) => this.tabToggle('mygame')}>
               My Games
             </div>
             <div className={`${tabName == 'myposts' ? 'active' : 'myposts'}`} onClick={(e) => this.tabToggle('myposts')}>
@@ -98,7 +103,7 @@ export default class Home extends Component {
           {tabName == 'home' && <Posts initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData} />}
           {tabName == 'communities' && <GroupMain routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
           {tabName == 'notifications' && <Notifications routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
-          {tabName == 'mygames' && <MyScheduledGames routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
+          {tabName == 'mygame' && <MyScheduledGames routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
           {tabName == 'myposts' && <MyPosts routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
         </div>
       )
