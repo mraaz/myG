@@ -111,7 +111,6 @@ const EditGameContainer = (props) => {
     const { id = '' } = params
     if (id) {
       const scheduleGames = await axios.get(`/api/ScheduleGame/edit_game/${id}`)
-      console.log('scheduleGames', scheduleGames)
       if (scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
         const { latestScheduledGames = [], hasAttendees = 0, additional_submit_info = false } = scheduleGames.data
 
@@ -415,7 +414,6 @@ const EditGameContainer = (props) => {
       </MyGModal>
     )
   }
-  console.log(optionalFieldsState, ' optionalFieldsState')
 
   return (
     <div className={styles.edit__container}>
