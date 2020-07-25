@@ -65,11 +65,16 @@ const EditGameContainer = (props) => {
   const gameLinkRef = useRef(null)
 
   // to create select box value from array or string
-  const getExtraFilterOprion = (arg) => {
-    const data = arg && arg.length > 0 ? arg.split(',') : []
+  const getExtraFilterOprion = (arg = '') => {
+    let data = []
+    if (typeof arg == 'string') {
+      data = arg && arg.length > 0 ? arg.split(',') : []
+    } else if (Array.isArray(arg)) {
+      data = arg
+    }
     if (data.length > 0) {
       return data.map((item) => {
-        const val = item ? item.trim() : ''
+        const val = item && item.content ? item.content : item.trim()
         return { value: val, label: val }
       })
     } else {
@@ -106,9 +111,9 @@ const EditGameContainer = (props) => {
     const { id = '' } = params
     if (id) {
       const scheduleGames = await axios.get(`/api/ScheduleGame/edit_game/${id}`)
-
+      console.log('scheduleGames', scheduleGames)
       if (scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
-        const { latestScheduledGames = [], hasAttendees = 0 } = scheduleGames.data
+        const { latestScheduledGames = [], hasAttendees = 0, additional_submit_info = false } = scheduleGames.data
 
         const advanceSettings = { ...advancedSettingsState }
 
@@ -133,8 +138,19 @@ const EditGameContainer = (props) => {
         mainSettings.isRepeatFieldSelected = latestScheduledGames[0].repeatEvery == 1 ? true : false
         mainSettings.cron = latestScheduledGames[0].cron
 
+        const optionalFields = { ...optionalFieldsState }
+        optionalFields.modalRank = latestScheduledGames[0].value_one ? getExtraFilterOprion(latestScheduledGames[0].value_one) : null
+        optionalFields.serverRegion = latestScheduledGames[0].value_two ? getExtraFilterOprion(latestScheduledGames[0].value_two) : null
+        optionalFields.roleNeeded = latestScheduledGames[0].value_three ? getExtraFilterOprion(latestScheduledGames[0].value_three) : null
+        optionalFields.trophies = latestScheduledGames[0].value_four ? getExtraFilterOprion(latestScheduledGames[0].value_four) : null
+
+        const localState = { ...state }
+        localState.additional_info = additional_submit_info
+
         updateAdvancedSettingsState(advanceSettings)
         updateMainSettingsState(mainSettings)
+        updateOptionalFieldsState(optionalFields)
+        updateComponentState(localState)
         setSechduledGameData(latestScheduledGames)
         setHasAttendees(hasAttendees)
       } else {
@@ -229,6 +245,7 @@ const EditGameContainer = (props) => {
         repeatEvery: mainSettingsState.repeatEvery,
         autoJoinHost: mainSettingsState.autoJoinHost,
         schedule_games_GUID: mainSettingsState.scheduledGameGuid,
+        gameId: id,
       })
       updateMainSettingsState((currentState) => ({
         ...currentState,
@@ -236,7 +253,8 @@ const EditGameContainer = (props) => {
         scheduledGameGuid: mainSettingsState.scheduledGameGuid,
       }))
       updateGameLink(mainSettingsState.scheduledGameGuid)
-      updateIsGameListedModalOpen(true)
+      // updateIsGameListedModalOpen(true)
+      window.location.href = '/?at=mygame'
     } catch (err) {
       updateIsSubmitting(false)
     }
@@ -397,6 +415,8 @@ const EditGameContainer = (props) => {
       </MyGModal>
     )
   }
+  console.log(optionalFieldsState, ' optionalFieldsState')
+
   return (
     <div className={styles.edit__container}>
       <PageHeader headerText='Edit Game' />

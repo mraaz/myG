@@ -96,7 +96,7 @@ const AddGameContainer = () => {
       return
     }
 
-    if (advancedSettingsState.coHosts.length >= MAX_CO_HOSTS) {
+    if (advancedSettingsState.coHosts && advancedSettingsState.coHosts.length >= MAX_CO_HOSTS) {
       toast.success(<Toast_style text={"Crikey, mate! That's alot of co-hosts. I can only process 4 co-hosts. Try again!"} />)
       return
     }
