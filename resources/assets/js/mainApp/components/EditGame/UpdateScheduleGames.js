@@ -80,6 +80,7 @@ export async function SubmitDataFunction(myG) {
 
   try {
     const post = await axios.post('/api/ScheduleGame/update', {
+      id: 4660,
       game_name_box: myG.game_name_box.value,
       game_names_id: myG.game_name_box.game_names_id,
       selected_region: myRegion,
