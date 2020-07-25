@@ -118,6 +118,8 @@ export async function PullDataFunction(myG) {
       value_three: myG.value_three,
       value_four: myG.value_four,
       value_five: myG.value_five,
+      mic: myG.mic ? myG.mic.value : null,
+      eighteen_plus: myG.eighteen_plus ? myG.eighteen_plus.value : null,
     })
     return allscheduledGames
   } catch (error) {

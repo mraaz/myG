@@ -4,18 +4,18 @@ import moment from 'moment'
 import classNames from 'classnames'
 
 import { PageHeader, MyGButton, MyGModal, MyGInput } from '../common'
-import { styles, SETTINGS_ENUMS } from '../../static/AddGame'
-import '../../styles/AddGame/AddGameStyles.scss'
-import AddGame from './AddGame'
+import { styles, SETTINGS_ENUMS } from '../../static/AddCommunity'
+import '../../styles/Community/AddCommunityStyles.scss'
+import AddCommunity from './AddCommunity'
 import { Toast_style, Convert_to_comma_delimited_value } from '../Utility_Function'
-import { SubmitDataFunction } from '../AddScheduleGames_Submit_Data'
+import { SubmitDataFunction } from '../AddScheduleCommunity_Submit_Data'
 import InvitePlayers from './InvitePlayers'
 import { Link } from 'react-router-dom'
 
 const MAX_GAME_TAGS = 9
 const MAX_CO_HOSTS = 5
 
-const AddGameContainer = () => {
+const AddCommunityContainer = () => {
   // State
   const [isGameListedModalOpen, updateIsGameListedModalOpen] = useState(false)
   const [isInviteModalOpen, updateIsInviteModalOpen] = useState(false)
@@ -31,8 +31,6 @@ const AddGameContainer = () => {
     description: '',
     acceptMessage: '',
     optionTags: '',
-    mic: false,
-    eighteen_plus: false,
   })
   const [mainSettingsState, updateMainSettingsState] = useState({
     scheduledGameId: null,
@@ -98,7 +96,7 @@ const AddGameContainer = () => {
       return
     }
 
-    if (advancedSettingsState.coHosts != null && advancedSettingsState.coHosts.length >= MAX_CO_HOSTS) {
+    if (advancedSettingsState.coHosts.length >= MAX_CO_HOSTS) {
       toast.success(<Toast_style text={"Crikey, mate! That's alot of co-hosts. I can only process 4 co-hosts. Try again!"} />)
       return
     }
@@ -144,10 +142,6 @@ const AddGameContainer = () => {
         value_three,
         value_four,
         value_five,
-        // dota2_medal_ranks: optionalFieldsState.modalRank,
-        // dota2_server_regions: optionalFieldsState.serverRegion,
-        // dota2_roles: optionalFieldsState.roleNeeded,
-        // clash_royale_trophies: optionalFieldsState.trophies,
         allow_comments: mainSettingsState.isCommentsAllowed,
         autoJoin: mainSettingsState.autoAccept,
         coHosts: advancedSettingsState.coHosts,
@@ -156,8 +150,6 @@ const AddGameContainer = () => {
         occurrence: mainSettingsState.occurrence,
         repeatEvery: mainSettingsState.repeatEvery,
         autoJoinHost: mainSettingsState.autoJoinHost,
-        mic: advancedSettingsState.mic,
-        eighteen_plus: advancedSettingsState.eighteen_plus,
       })
       updateMainSettingsState((currentState) => ({
         ...currentState,
@@ -177,7 +169,7 @@ const AddGameContainer = () => {
         <div
           className={classNames([styles.footerSubmitButton, isButtonDisabled() ? styles.footerSubmitButtonLight : ''])}
           onClick={isSubmitting ? null : onAddGameSubmit}>
-          Add Game
+          Add Community
         </div>
       </div>
     )
@@ -203,7 +195,7 @@ const AddGameContainer = () => {
     return (
       <MyGModal isOpen ariaHideApp={false}>
         <div className={styles.listedTopContentContainer}>
-          <div className={styles.listedHeader}>Your Game is now listed!</div>
+          <div className={styles.listedHeader}>Your Community is now listed!</div>
           <div className={styles.listedShareText}>Use this game link for direct access to your game</div>
           <MyGInput
             value={`https://myG.gg/scheduledGames/${gameLink}`}
@@ -251,8 +243,8 @@ const AddGameContainer = () => {
 
   return (
     <div className={styles.container}>
-      <PageHeader headerText='Add Public Game' />
-      <AddGame
+      <PageHeader headerText='Add Community' />
+      <AddCommunity
         state={state}
         updateComponentState={updateComponentState}
         advancedSettingsState={advancedSettingsState}
@@ -282,4 +274,4 @@ const AddGameContainer = () => {
   )
 }
 
-export default AddGameContainer
+export default AddCommunityContainer

@@ -96,6 +96,8 @@ class ScheduleGameController {
           occurrence: request.input('occurrence'),
           repeatEvery: request.input('repeatEvery'),
           autoJoinHost: request.input('autoJoinHost'),
+          mic: request.input('mic'),
+          eighteen_plus: request.input('eighteen_plus'),
         })
 
         if (
@@ -237,9 +239,9 @@ class ScheduleGameController {
     let myTime = new Date(new Date(Date.now()).getTime() - 60 * 60 * 1000)
 
     let newStartdate = new Date(request.input('start_date_time'))
-    if (myTime > newStartdate) {
-      return
-    }
+    // if (myTime > newStartdate) {
+    //   return
+    // }
 
     let end_date_time
 
@@ -248,14 +250,18 @@ class ScheduleGameController {
 
       let newEnddate = new Date(request.input('end_date_time'))
       let extendedDate = new Date(new Date(request.input('start_date_time')).getTime() + 15 * 60 * 60 * 24 * 1000)
-      if (newEnddate > extendedDate) {
-        return
-      }
+      // if (newEnddate > extendedDate) {
+      //   return
+      // }
     }
 
     if (auth.user) {
       try {
         var gameNameID = null
+
+        if (request.input('id') == undefined || request.input('id') == null) {
+          return
+        }
 
         const getOne = await Database.from('schedule_games')
           .where({
@@ -292,9 +298,9 @@ class ScheduleGameController {
         if (request.input('end_date_time') != undefined) {
           end_date_time = new Date(request.input('end_date_time')).toISOString().replace('T', ' ')
           let extendedDate = new Date(new Date(request.input('start_date_time')).getTime() + 15 * 60 * 60 * 24 * 1000)
-          if (end_date_time > extendedDate) {
-            return
-          }
+          // if (end_date_time > extendedDate) {
+          //   return
+          // }
         }
 
         const updateScheduleGame = await ScheduleGame.query()
@@ -658,6 +664,7 @@ class ScheduleGameController {
               'users.id as user_id',
               'schedule_games.game_names_id'
             )
+            .orderBy('schedule_games.start_date_time', 'desc')
             .paginate(request.input('counter'), 10)
 
           count_myScheduledGames = await Database.from('schedule_games')
@@ -1030,7 +1037,11 @@ class ScheduleGameController {
 
               if (request.input('experience') != null) builder.where('experience', request.input('experience'))
 
-              if (request.input('start_date_time') != null) builder.where('start_date_time', '<=', request.input('start_date_time'))
+              if (request.input('mic') != null) builder.where('mic', request.input('mic'))
+
+              if (request.input('eighteen_plus') != null) builder.where('eighteen_plus', request.input('eighteen_plus'))
+
+              //if (request.input('start_date_time') != null) builder.where('start_date_time', '<=', request.input('start_date_time'))
 
               if (request.input('end_date_time') != null) builder.where('end_date_time', '>=', request.input('end_date_time'))
 
@@ -1080,8 +1091,12 @@ class ScheduleGameController {
 
             if (request.input('experience') != null) builder.where('experience', request.input('experience'))
 
-            if (request.input('start_date_time') != null)
-              builder.where('schedule_games.start_date_time', '<=', request.input('start_date_time'))
+            if (request.input('mic') != null) builder.where('mic', request.input('mic'))
+
+            if (request.input('eighteen_plus') != null) builder.where('eighteen_plus', request.input('eighteen_plus'))
+
+            //if (request.input('start_date_time') != null)
+            //builder.where('schedule_games.start_date_time', '<=', request.input('start_date_time'))
 
             if (request.input('end_date_time') != null) builder.where('schedule_games.end_date_time', '>=', request.input('end_date_time'))
 

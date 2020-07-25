@@ -100,7 +100,9 @@ export default class Home extends Component {
               My Posts
             </div>
           </div>
-          {tabName == 'home' && <Posts initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData} />}
+          {tabName == 'home' && (
+            <Posts initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData} key={Math.random()} />
+          )}
           {tabName == 'communities' && <GroupMain routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
           {tabName == 'notifications' && <Notifications routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
           {tabName == 'mygames' && <MyScheduledGames routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}

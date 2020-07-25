@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment, useState, useEffect, memo } from 'react'
 import classNames from 'classnames'
 import Slider, { Range } from 'rc-slider'
 import moment from 'moment'
@@ -8,7 +8,7 @@ import 'rc-slider/assets/index.css'
 import { toast } from 'react-toastify'
 
 import { Toast_style } from '../Utility_Function'
-import '../../styles/AddGame/AddGameStyles.scss'
+import '../../styles/Community/AddCommunityStyles.scss'
 
 import {
   SETTINGS_ENUMS,
@@ -20,7 +20,7 @@ import {
   DOTA2_MEDAL_RANKS,
   DOTA2_ROLES,
   DOTA2_SERVER_REGIONS,
-} from '../../static/AddGame'
+} from '../../static/AddCommunity'
 import { MyGCheckbox, MyGTextarea, MyGAsyncSelect, MyGCreateableSelect, MyGSelect, MyGDatePicker } from '../common'
 import { Game_name_values, Schedule_Game_Tags, Disable_keys } from '../Utility_Function'
 import Axios from 'axios'
@@ -28,7 +28,7 @@ import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
 
 const SliderWithTooltip = Slider.createSliderWithTooltip(Slider)
 
-const AddGame = ({
+const AddCommunity = ({
   state,
   updateComponentState,
   advancedSettingsState,
@@ -41,7 +41,7 @@ const AddGame = ({
 }) => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    const getInitialData_Tags = async function() {
+    const getInitialData_Tags = async function () {
       try {
         let results = await Schedule_Game_Tags()
         updateAdvancedSettings({ optionTags: results })
@@ -50,7 +50,7 @@ const AddGame = ({
       }
     }
 
-    const getInitialData_GameName = async function() {
+    const getInitialData_GameName = async function () {
       try {
         let results = await Game_name_values()
         updateMainSettings({ gameTitlesList: results })
@@ -129,7 +129,7 @@ const AddGame = ({
 
   // api calls
   const getOptionsTags = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         let results = await Schedule_Game_Tags(inputValue)
         updateAdvancedSettings({ optionTags: results })
@@ -146,7 +146,7 @@ const AddGame = ({
   }
 
   const getOptionsGames = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         let results = await Game_name_values(inputValue)
         updateMainSettings({ gameTitlesList: results })
@@ -568,23 +568,6 @@ const AddGame = ({
               maxLength={250}
             />
           </div>
-          <div className='field-title'>Extra's</div>
-          <div className='comments-privacy-container'>
-            <MyGCheckbox
-              checked={advancedSettingsState.mic}
-              onClick={(value) => {
-                updateAdvancedSettings({ mic: value })
-              }}
-              labelText='Mic required?'
-            />
-            <MyGCheckbox
-              checked={advancedSettingsState.eighteen_plus}
-              onClick={(value) => {
-                updateAdvancedSettings({ eighteen_plus: value })
-              }}
-              labelText='18+ event?'
-            />
-          </div>
         </div>
       </div>
     )
@@ -708,4 +691,4 @@ const AddGame = ({
   )
 }
 
-export default AddGame
+export default AddCommunity

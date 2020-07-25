@@ -30,6 +30,8 @@ class ScheduleGamesSchema extends Schema {
       table.integer('occurrence').nullable().defaultTo(0)
       table.integer('repeatEvery').nullable().defaultTo(0)
       table.boolean('autoJoinHost').defaultTo(1)
+      table.boolean('mic').defaultTo(0)
+      table.boolean('eighteen_plus').defaultTo(0)
       table.timestamps(true,true)
     })
   }
