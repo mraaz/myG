@@ -154,7 +154,7 @@ const EditGameContainer = (props) => {
         setSechduledGameData(latestScheduledGames)
         setHasAttendees(hasAttendees)
       } else {
-        window.location.href = '/?at=mygame'
+        window.location.href = '/?at=mygames'
       }
     }
     return () => {
@@ -254,14 +254,14 @@ const EditGameContainer = (props) => {
       }))
       updateGameLink(mainSettingsState.scheduledGameGuid)
       // updateIsGameListedModalOpen(true)
-      window.location.href = '/?at=mygame'
+      window.location.href = '/?at=mygames'
     } catch (err) {
       updateIsSubmitting(false)
     }
   }
 
   const onCancelGameHandler = () => {
-    window.location.href = '/?at=mygame'
+    window.location.href = '/?at=mygames'
   }
   const onDeleteGameHandler = () => {
     if (hasAttendees == 0) {
