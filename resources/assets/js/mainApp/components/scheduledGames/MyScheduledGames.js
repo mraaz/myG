@@ -98,9 +98,9 @@ export default class MyScheduledGames extends Component {
       }
     }
   }
-  handleExcludesFullGames = async (e, _filter) => {
+  handleExcludesFullGames = async (e, _filter = '') => {
     const checked = e ? e.target.checked : this.state.exclude_expired
-    const filter = _filter ? _filter : this.state.filter
+    const filter = _filter !== '' ? _filter : this.state.filter
     const scheduleGamesRes = await axios.post(`/api/myScheduledGames`, {
       counter: 1,
       exclude_expired: checked,
