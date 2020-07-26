@@ -41,7 +41,6 @@ export async function SubmitDataFunction(myG) {
         toast.success(<Toast_style text={'Sorry mate! Game tags can not have invalid fields'} />)
         return
       }
-
       delete myG.tags[i].label
 
       // if (myG.tags[i].game_tag_id == null) {
