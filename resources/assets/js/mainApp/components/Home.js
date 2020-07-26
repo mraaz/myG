@@ -32,6 +32,11 @@ export default class Home extends Component {
       initialData: this.props.initialData,
     })
     window.addEventListener('scroll', this.handleScroll)
+    let params = new URLSearchParams(window.location.search)
+    const activeTab = params.get('at')
+    this.setState({
+      tabName: activeTab,
+    })
   }
 
   componentWillUnmount() {
