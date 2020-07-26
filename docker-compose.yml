@@ -1,7 +1,8 @@
-version: '3'
+version: '4'
 services:
   db:
-    image: mysql:5.6
+    image: mariadb
+    container_name: myg_mysql
     restart: always
     ports:
       - "3306:3306"
@@ -12,3 +13,22 @@ services:
       - MYSQL_ROOT_PASSWORD=root
     expose:
       - "3306"
+  redis:
+    image: redis:latest
+    container_name: myg_redis
+    restart: always
+    ports:
+        - 6379:6379
+    volumes:
+        - ./config/redis.conf:/redis.conf
+    command: [ "redis-server", "/redis.conf" ]
+    expose:
+      - "6379"
+  nats:
+    image: nats
+    container_name: myg_nats
+    restart: always
+    ports:
+        - '8222:8222'
+    expose:
+      - "8222"
