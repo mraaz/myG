@@ -32,6 +32,11 @@ export default class Home extends Component {
       initialData: this.props.initialData,
     })
     window.addEventListener('scroll', this.handleScroll)
+    let params = new URLSearchParams(window.location.search)
+    const activeTab = params.get('at')
+    this.setState({
+      tabName: activeTab,
+    })
   }
 
   componentWillUnmount() {
@@ -76,26 +81,28 @@ export default class Home extends Component {
     const { tabName, initialData } = this.state
     if (initialData) {
       return (
-        <div className='content-area' ref={this.contentAreaRef} style={{ height: '100vh', overflow: 'scroll' }}>
+        <div className='content-area' ref={this.contentAreaRef}>
           <AnalyticsBox />
           <div className='links' ref={this.navRef}>
-            <div className={`${tabName == 'home' ? 'active' : ''}`} onClick={(e) => this.tabToggle('home')}>
+            <div className={`${tabName == 'home' ? 'active' : 'home'}`} onClick={(e) => this.tabToggle('home')}>
               Home
             </div>
-            <div className={`${tabName == 'communities' ? 'active' : ''}`} onClick={(e) => this.tabToggle('communities')}>
+            <div className={`${tabName == 'communities' ? 'active' : 'communities'}`} onClick={(e) => this.tabToggle('communities')}>
               Communities
             </div>
-            <div className={`${tabName == 'notifications' ? 'active' : ''}`} onClick={(e) => this.tabToggle('notifications')}>
+            <div className={`${tabName == 'notifications' ? 'active' : 'notifications'}`} onClick={(e) => this.tabToggle('notifications')}>
               Notifications
             </div>
-            <div className={`${tabName == 'mygames' ? 'active' : ''}`} onClick={(e) => this.tabToggle('mygames')}>
+            <div className={`${tabName == 'mygames' ? 'active' : 'mygames'}`} onClick={(e) => this.tabToggle('mygames')}>
               My Games
             </div>
-            <div className={`${tabName == 'myposts' ? 'active' : ''}`} onClick={(e) => this.tabToggle('myposts')}>
+            <div className={`${tabName == 'myposts' ? 'active' : 'myposts'}`} onClick={(e) => this.tabToggle('myposts')}>
               My Posts
             </div>
           </div>
-          {tabName == 'home' && <Posts initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData} />}
+          {tabName == 'home' && (
+            <Posts initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData} key={Math.random()} />
+          )}
           {tabName == 'communities' && <GroupMain routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
           {tabName == 'notifications' && <Notifications routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
           {tabName == 'mygames' && <MyScheduledGames routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}

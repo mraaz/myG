@@ -39,12 +39,28 @@ export default class GameDetails extends Component {
       platform = '',
       region = '',
       allow_comments = 0,
+      schedule_games_GUID,
+      accept_msg = '',
     } = additional_game_info
+
+    let mic = additional_game_info.mic
+    let eighteen_plus = additional_game_info.eighteen_plus
+    if (mic) {
+      mic = true
+    } else {
+      mic = false
+    }
+    if (eighteen_plus) {
+      eighteen_plus = true
+    } else {
+      eighteen_plus = false
+    }
 
     const { no_of_comments = [], lastComment = '' } = commentData
     const { no_of_my_comments = 0 } = no_of_comments[0] || {}
 
     const experience_split = experience ? experience.split(',') : []
+
     return (
       <div className='gameDetails'>
         {showRightSideInfo && !showAllComment ? (
@@ -79,10 +95,13 @@ export default class GameDetails extends Component {
                 schedule_games_id={id}
                 additional_submit_info={additional_submit_info}
                 additional_submit_info_fields={additional_submit_info_fields}
+                schedule_games_GUID={schedule_games_GUID}
               />
             </div>
             <div className='gameDetails__body'>
               <div className='filter__label'>Game Details</div>
+              {mic && <div className='gameDescription__body'>Mic required!</div>}
+              {eighteen_plus && <div className='gameDescription__body'>18+ event boies n gurls</div>}
               {description && <div className='gameDescription'>Description</div>}
               {description && <div className='gameDescription__body'>{description}</div>}
               <div className='gameTime__label'>End Time</div>
@@ -92,6 +111,8 @@ export default class GameDetails extends Component {
               {platform && <div className='gameTime__value'>{platform.split(',').join(',  ')}</div>}
               {region && <div className='gameTime__label'>Region</div>}
               {region && <div className='gameTime__value'>{region.split(',').join(', ')}</div>}
+              {accept_msg && <div className='gameTime__label'>Accept Message</div>}
+              {accept_msg && <div className='gameTime__value'>{accept_msg}</div>}
               {additional_submit_info_fields.length > 0 &&
                 additional_submit_info_fields.map((fields) => {
                   let values = ''
@@ -162,7 +183,7 @@ export default class GameDetails extends Component {
             )}
           </Fragment>
         ) : (
-          !showAllComment && <div className='viewRightInfo'>Please select card from left side to see more deatils.</div>
+          !showAllComment && <div className='viewRightInfo'>Please select card from left side to see more details.</div>
         )}
         {showAllComment && (
           <GameComments

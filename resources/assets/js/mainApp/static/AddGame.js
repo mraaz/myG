@@ -5,6 +5,7 @@ const SETTINGS_ENUMS = {
 
 const styles = {
   container: 'add-game__container',
+  edit__container: 'add-game__container edit__container',
   fieldTitle: 'add-game__field-title',
   mainContainer: 'add-game__main-container',
   menuContainer: 'add-game__menu-container',
@@ -19,6 +20,7 @@ const styles = {
   sliderContainer: 'add-game__slider-container',
   footerContainer: 'add-game__footer-container',
   footerCancelButton: 'add-game__footer-cancel-button',
+  footerDeleteButton: 'add-game__footer-delete-button',
   footerSubmitButton: 'add-game__footer-submit-button',
   footerSubmitButtonLight: 'add-game__footer-submit-button-light',
   mainViewContainer: 'add-game__main-view-container',

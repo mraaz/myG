@@ -1,11 +1,15 @@
 'use strict'
 
 const Post = use('App/Models/Post')
+const HashTags = use('App/Models/HashTag')
 const Database = use('Database')
+
 const AwsKeyController = use('./AwsKeyController')
 const LikeController = use('./LikeController')
-const HashTags = use('App/Models/HashTag')
 const PostHashTagTransactionController = use('./PostHashTagTransactionController')
+const HashTagController = use('./HashTagController')
+
+const MAX_HASH_TAGS = 21
 
 class PostController {
   async store({ auth, request, response }) {
@@ -28,18 +32,8 @@ class PostController {
             media_url: request.input('media_url'),
           })
 
-          if (request.input('hash_tags') != null) {
-            var arrTags = request.input('hash_tags').split(',')
-            if (arrTags != '') {
-              let PHController = new PostHashTagTransactionController()
-              for (var i = 0; i < arrTags.length; i++) {
-                PHController.store({ auth }, newPost.id, arrTags[i])
-
-                const update_counter = await HashTags.query()
-                  .where({ id: arrTags[i] })
-                  .increment('counter', 1)
-              }
-            }
+          if (request.input('hash_tags') != null && request.input('hash_tags').length > 0) {
+            await this.process_hash_tags({ auth }, request.input('hash_tags'), newPost.id)
           }
         } else {
           for (var i = 0; i < arrGroups_id.length; i++) {
@@ -51,21 +45,9 @@ class PostController {
               visibility: request.input('visibility'),
               media_url: request.input('media_url'),
             })
-
-            if (request.input('hash_tags') != null) {
-              var arrTags = request.input('hash_tags').split(',')
-
-              if (arrTags != '') {
-                let PHController = new PostHashTagTransactionController()
-                for (var i = 0; i < arrTags.length; i++) {
-                  PHController.store({ auth }, newPost.id, arrTags[i])
-
-                  const update_counter = await HashTags.query()
-                    .where({ id: arrTags[i] })
-                    .increment('counter', 1)
-                }
-              }
+            if (request.input('hash_tags') != null && request.input('hash_tags').length > 0) {
             }
+            await this.process_hash_tags({ auth }, request.input('hash_tags'), newPost.id)
           }
         }
 
@@ -82,6 +64,28 @@ class PostController {
       }
     } catch (error) {
       console.log(error)
+    }
+  }
+
+  async process_hash_tags({ auth }, hash_tags, post_id) {
+    var arrTags = JSON.parse(hash_tags)
+    let PHController = new PostHashTagTransactionController()
+
+    for (var i = 0; i < MAX_HASH_TAGS && i < arrTags.length; i++) {
+      if (arrTags[i].hash_tag_id == null) {
+        if (/['/.%#$;`\\]/.test(arrTags[i].value)) {
+          continue
+        }
+
+        let hash_tags_Controller = new HashTagController()
+        const hash_tag_id = await hash_tags_Controller.store({ auth }, arrTags[i].value)
+        await PHController.store({ auth }, post_id, hash_tag_id)
+      } else {
+        await PHController.store({ auth }, post_id, arrTags[i].hash_tag_id)
+        const update_counter = await HashTags.query()
+          .where({ id: arrTags[i].hash_tag_id })
+          .increment('counter', 1)
+      }
     }
   }
 
@@ -172,29 +176,29 @@ class PostController {
 
   async show({ auth, request, response }) {
     try {
-      const myFriendsPosts = await Database.select('*', 'posts.id', 'posts.updated_at')
-        .from('friends')
-        .innerJoin('posts', 'posts.user_id', 'friends.friend_id')
-        .innerJoin('users', 'users.id', 'posts.user_id')
-        .where('friends.user_id', '=', auth.user.id)
-        .whereNot('posts.visibility', '=', 0)
-        .orderBy('posts.created_at', 'desc')
-        .paginate(request.params.paginateNo, 10)
+      // const myFriendsPosts = await Database.select('*', 'posts.id', 'posts.updated_at')
+      //   .from('friends')
+      //   .innerJoin('posts', 'posts.user_id', 'friends.friend_id')
+      //   .innerJoin('users', 'users.id', 'posts.user_id')
+      //   .where('friends.user_id', '=', auth.user.id)
+      //   .whereNot('posts.visibility', '=', 0)
+      //   .orderBy('posts.created_at', 'desc')
+      //   .paginate(request.params.paginateNo, 10)
 
-      const ppl_im_following_Posts = await Database.select('*', 'posts.id', 'posts.updated_at')
+      let ppl_im_following_Posts = await Database.select('*', 'posts.id', 'posts.updated_at')
         .from('followers')
         .innerJoin('posts', 'posts.user_id', 'followers.follower_id')
         .innerJoin('users', 'users.id', 'posts.user_id')
         .where('followers.user_id', '=', auth.user.id)
         .where('posts.visibility', '=', 1)
         .orderBy('posts.created_at', 'desc')
-        .paginate(request.params.paginateNo, 5)
+        .paginate(request.params.paginateNo, 10)
 
-      const _1stpass = [...myFriendsPosts.data, ...ppl_im_following_Posts.data]
-      const uniqueSet = new Set(_1stpass)
-      let myPosts = [...uniqueSet]
+      // const _1stpass = [...myFriendsPosts.data, ...ppl_im_following_Posts.data]
+      // const uniqueSet = new Set(_1stpass)
+      ppl_im_following_Posts = ppl_im_following_Posts.data
 
-      myPosts = await this.get_additional_info({ auth, request, response }, myPosts)
+      let myPosts = await this.get_additional_info({ auth, request, response }, ppl_im_following_Posts)
       return {
         myPosts,
       }

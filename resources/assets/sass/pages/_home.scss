@@ -36,7 +36,6 @@
 }
 section#content-container {
   background-color: #0b0f14;
-  display: flex;
   flex: 1;
 }
 .dashboard-main-container {
@@ -216,10 +215,8 @@ section#content-container {
     //overflow: hidden;
     //height: 900px; Hide the scroll bars, decided against it
     .content-area {
-      width: 100%;
-      height: calc(100% - 53px);
-      position: relative;
-      padding: 0 15px 0 8px;
+      height: 100vh;
+      overflow: scroll;
     }
     .search-header {
       position: relative;
@@ -1520,8 +1517,8 @@ section#content-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    font: Bold 16px/14px Montserrat;
     height: 54px;
+    color: #fff;
     .devider {
       border: 1px solid #384952;
       height: 70%;

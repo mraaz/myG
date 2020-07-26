@@ -15,8 +15,6 @@ const defaultUserImage = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/d
 const defaultThumbnails = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Notifications/myG_icon.svg'
 const statusMapping = { 1: 'Approved. you are in!', 3: 'Pending Approval by Host' }
 
-import { prefilledFilter_option } from './option'
-
 export default class GameList extends Component {
   constructor() {
     super()
@@ -40,7 +38,7 @@ export default class GameList extends Component {
     e.stopPropagation()
     const link = `${window.location.protocol}//${window.location.hostname}/scheduledGames/${guid}`
     navigator.clipboard.writeText(link)
-    toast.error(<Toast_style text={'Link Copied Successfully.'} />)
+    toast.error(<Toast_style text={'Link copied mate!'} />)
   }
   handleSingleGameDetails = (e, id, game) => {
     this.setState({ activeItemId: id })
@@ -50,11 +48,6 @@ export default class GameList extends Component {
     e.stopPropagation()
     window.location.href = `/notifications`
   }
-  handleChangeFilter = (prefilledFilter) => {
-    this.setState({ prefilledFilter }, () => {
-      this.props.handleExcludesFullGames(null, prefilledFilter.value)
-    })
-  }
 
   render() {
     const { scheduleGames = [], copyClipboardEnable = true, showPrefilledFilter = false } = this.props
@@ -63,21 +56,6 @@ export default class GameList extends Component {
 
     return (
       <div className='gameList'>
-        {showPrefilledFilter && (
-          <div className='myGame__filter-section'>
-            <div className='viewGame__gameName'>
-              <Select
-                onChange={(data) => this.handleChangeFilter(data)}
-                options={prefilledFilter_option}
-                placeholder='Select your region'
-                name='prefilledFilter'
-                className='viewGame__name'
-                classNamePrefix='filter'
-                value={prefilledFilter}
-              />
-            </div>
-          </div>
-        )}
         <div className='gameList_head__option'>
           <div className='gameResult__count'> {len} Results</div>
           <div className='gameResult__fillView'>
@@ -174,13 +152,13 @@ export default class GameList extends Component {
                     <div className='fourth__row'>
                       {statusMapping[myStatus] && (
                         <div className='my__status'>
-                          <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/clock.svg' />
+                          <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/View+Game/tick.svg' />
                           <span>{statusMapping[myStatus]}</span>
                         </div>
                       )}
                       {no_of_Approval_Pending ? (
                         <div className='no__of__approval' onClick={this.handlePendingApproval}>
-                          <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/clock.svg' />
+                          <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/View+Game/warning.svg' />
                           <span>{no_of_Approval_Pending} Approval Pending</span>
                         </div>
                       ) : (

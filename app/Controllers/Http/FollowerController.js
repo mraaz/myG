@@ -23,6 +23,24 @@ class FollowerController {
     }
   }
 
+  async store2({ auth }, leader, follower) {
+    if (auth.user) {
+      try {
+        const newFollower = await Follower.create({
+          follower_id: leader,
+          user_id: follower,
+        })
+
+        let userStatController = new UserStatTransactionController()
+        userStatController.update_total_number_of(leader, 'total_number_of_followers')
+
+        return 'Saved'
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+
   async delete({ auth, request, response }) {
     if (auth.user) {
       try {

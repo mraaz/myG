@@ -12,6 +12,9 @@ import { SubmitDataFunction } from '../AddScheduleGames_Submit_Data'
 import InvitePlayers from './InvitePlayers'
 import { Link } from 'react-router-dom'
 
+const MAX_GAME_TAGS = 9
+const MAX_CO_HOSTS = 5
+
 const AddGameContainer = () => {
   // State
   const [isGameListedModalOpen, updateIsGameListedModalOpen] = useState(false)
@@ -28,6 +31,8 @@ const AddGameContainer = () => {
     description: '',
     acceptMessage: '',
     optionTags: '',
+    mic: false,
+    eighteen_plus: false,
   })
   const [mainSettingsState, updateMainSettingsState] = useState({
     scheduledGameId: null,
@@ -88,6 +93,16 @@ const AddGameContainer = () => {
       return
     }
 
+    if (advancedSettingsState.tags.length >= MAX_GAME_TAGS) {
+      toast.success(<Toast_style text={"Crikey, mate! That's alot of tags. I can only process 8 tags. Try again!"} />)
+      return
+    }
+
+    if (advancedSettingsState.coHosts != null && advancedSettingsState.coHosts.length >= MAX_CO_HOSTS) {
+      toast.success(<Toast_style text={"Crikey, mate! That's alot of co-hosts. I can only process 4 co-hosts. Try again!"} />)
+      return
+    }
+
     let value_one = null,
       value_two = null,
       value_three = null,
@@ -141,6 +156,8 @@ const AddGameContainer = () => {
         occurrence: mainSettingsState.occurrence,
         repeatEvery: mainSettingsState.repeatEvery,
         autoJoinHost: mainSettingsState.autoJoinHost,
+        mic: advancedSettingsState.mic,
+        eighteen_plus: advancedSettingsState.eighteen_plus,
       })
       updateMainSettingsState((currentState) => ({
         ...currentState,

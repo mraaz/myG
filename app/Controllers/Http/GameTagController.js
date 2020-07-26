@@ -16,6 +16,13 @@ class GameTagController {
         })
         return newGameTag.id
       } catch (error) {
+        if (error.code == 'ER_DUP_ENTRY') {
+          const newGameTag = await Database.table('game_tags')
+            .where({ content: content.trim() })
+            .first()
+
+          return newGameTag.id
+        }
         console.log(error)
       }
     }

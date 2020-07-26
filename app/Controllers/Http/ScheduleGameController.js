@@ -20,8 +20,19 @@ const InGame_fieldsController = use('./InGame_fieldsController')
 const GameTagController = use('./GameTagController')
 const AttendeeController = use('./AttendeeController')
 
+const MAX_GAME_TAGS = 9
+const MAX_CO_HOSTS = 5
+
 class ScheduleGameController {
   async store({ auth, request, response }) {
+    if (request.input('start_date_time') == undefined || request.input('game_name_box') == undefined) {
+      return
+    }
+
+    if (request.input('start_date_time') == null || request.input('game_name_box') == null) {
+      return
+    }
+
     let myTime = new Date(new Date(Date.now()).getTime() - 60 * 60 * 1000)
 
     let newStartdate = new Date(request.input('start_date_time'))
@@ -31,7 +42,7 @@ class ScheduleGameController {
 
     let end_date_time
 
-    if (request.input('end_date_time') != undefined) {
+    if (request.input('end_date_time') != undefined && request.input('end_date_time') != null) {
       end_date_time = new Date(request.input('end_date_time')).toISOString().replace('T', ' ')
 
       let newEnddate = new Date(request.input('end_date_time'))
@@ -39,6 +50,9 @@ class ScheduleGameController {
       if (newEnddate > extendedDate) {
         return
       }
+      end_date_time = request.input('end_date_time')
+    } else {
+      end_date_time = new Date(new Date(request.input('start_date_time')).getTime() + 60 * 60 * 18 * 1000)
     }
 
     if (auth.user) {
@@ -62,23 +76,13 @@ class ScheduleGameController {
           gameface.incrementGameCounter({ auth, request, response })
         }
 
-        let end_date_time
-
-        if (request.input('end_date_time') != undefined) {
-          end_date_time = new Date(request.input('end_date_time')).toISOString().replace('T', ' ')
-          let extendedDate = new Date(new Date(request.input('start_date_time')).getTime() + 15 * 60 * 60 * 24 * 1000)
-          if (end_date_time > extendedDate) {
-            return
-          }
-        }
-
         const newScheduleGame = await ScheduleGame.create({
           game_names_id: parseInt(gameNameID, 10),
           user_id: auth.user.id,
           region: request.input('selected_region'),
           experience: request.input('selected_experience'),
           start_date_time: request.input('start_date_time'),
-          end_date_time: request.input('end_date_time'),
+          end_date_time: end_date_time,
           platform: request.input('selected_platform'),
           description: request.input('description_box'),
           other: request.input('other_box'),
@@ -93,6 +97,8 @@ class ScheduleGameController {
           occurrence: request.input('occurrence'),
           repeatEvery: request.input('repeatEvery'),
           autoJoinHost: request.input('autoJoinHost'),
+          mic: request.input('mic'),
+          eighteen_plus: request.input('eighteen_plus'),
         })
 
         if (
@@ -184,11 +190,11 @@ class ScheduleGameController {
             type: 1,
           })
         }
-        if (request.input('co_hosts') != null) {
+        if (request.input('co_hosts') != undefined && request.input('co_hosts') != null) {
           var arrCo_hosts = request.input('co_hosts').split(',')
 
           if (arrCo_hosts != '') {
-            for (var i = 0; i < arrCo_hosts.length; i++) {
+            for (var i = 0; i < arrCo_hosts.length && i < MAX_CO_HOSTS; i++) {
               const create_co_hosts = await CoHost.create({
                 schedule_games_id: newScheduleGame.id,
                 user_id: arrCo_hosts[i],
@@ -197,9 +203,9 @@ class ScheduleGameController {
           }
         }
 
-        if (request.input('tags') != null && request.input('tags').length > 0) {
+        if (request.input('tags') != undefined && request.input('tags') != null && request.input('tags').length > 0) {
           var arrTags = JSON.parse(request.input('tags'))
-          for (var i = 0; i < arrTags.length; i++) {
+          for (var i = 0; i < MAX_GAME_TAGS && i < arrTags.length; i++) {
             if (arrTags[i].game_tag_id == null) {
               if (/['/.%#$;`\\]/.test(arrTags[i].value)) {
                 continue
@@ -231,28 +237,43 @@ class ScheduleGameController {
   }
 
   async update({ auth, request, response }) {
-    let myTime = new Date(new Date(Date.now()).getTime() - 60 * 60 * 1000)
-
-    let newStartdate = new Date(request.input('start_date_time'))
-    if (myTime > newStartdate) {
+    if (request.input('start_date_time') == undefined || request.input('game_name_box') == undefined) {
       return
     }
 
+    if (request.input('start_date_time') == null || request.input('game_name_box') == null) {
+      return
+    }
+
+    let myTime = new Date(new Date(Date.now()).getTime() - 60 * 60 * 1000)
+
+    let newStartdate = new Date(request.input('start_date_time'))
+    // if (myTime > newStartdate) {
+    //   return
+    // }
+
     let end_date_time
 
-    if (request.input('end_date_time') != undefined) {
+    if (request.input('end_date_time') != undefined && request.input('end_date_time') != null) {
       end_date_time = new Date(request.input('end_date_time')).toISOString().replace('T', ' ')
 
       let newEnddate = new Date(request.input('end_date_time'))
       let extendedDate = new Date(new Date(request.input('start_date_time')).getTime() + 15 * 60 * 60 * 24 * 1000)
-      if (newEnddate > extendedDate) {
-        return
-      }
+      // if (newEnddate > extendedDate) {
+      //   return
+      // }
+      end_date_time = request.input('end_date_time')
+    } else {
+      end_date_time = new Date(new Date(request.input('start_date_time')).getTime() + 60 * 60 * 18 * 1000)
     }
 
     if (auth.user) {
       try {
         var gameNameID = null
+
+        if (request.input('id') == undefined || request.input('id') == null) {
+          return
+        }
 
         const getOne = await Database.from('schedule_games')
           .where({
@@ -284,16 +305,6 @@ class ScheduleGameController {
           }
         }
 
-        let end_date_time
-
-        if (request.input('end_date_time') != undefined) {
-          end_date_time = new Date(request.input('end_date_time')).toISOString().replace('T', ' ')
-          let extendedDate = new Date(new Date(request.input('start_date_time')).getTime() + 15 * 60 * 60 * 24 * 1000)
-          if (end_date_time > extendedDate) {
-            return
-          }
-        }
-
         const updateScheduleGame = await ScheduleGame.query()
           .where({ id: request.input('id') })
           .update({
@@ -302,7 +313,7 @@ class ScheduleGameController {
             region: request.input('selected_region'),
             experience: request.input('selected_experience'),
             start_date_time: request.input('start_date_time'),
-            end_date_time: request.input('end_date_time'),
+            end_date_time: end_date_time,
             platform: request.input('selected_platform'),
             description: request.input('description_box'),
             other: request.input('other_box'),
@@ -493,6 +504,28 @@ class ScheduleGameController {
         gameface.decrementGameCounter({ auth, request, response })
         //If game is deleted then return, we're not storing this if no1 has it in their profile or has scheduled games for it
 
+        let reasons = null
+
+        switch (request.params.reason) {
+          case 1:
+            reasons = 'Real life issues, sorry all'
+            break
+          case 2:
+            reasons = 'Technical issues, sorry all'
+            break
+          case 3:
+            reasons = 'Totally forgot about this, my bad'
+            break
+          case 4:
+            reasons = 'Not enuf players'
+            break
+          case 5:
+            reasons = 'Decided not to play anymore, sorry all'
+            break
+          default:
+            reasons = null
+        }
+
         request.params.id = getOne[0].id
         request.params.user_id = getOne[0].user_id
         request.params.region = getOne[0].region
@@ -509,18 +542,18 @@ class ScheduleGameController {
         request.params.schedule_games_GUID = getOne[0].schedule_games_GUID
         request.params.vacancy = getOne[0].vacancy
         request.params.og_created_at = getOne[0].created_at
-        request.params.reason_for_cancel = request.params.reason
+        request.params.reason_for_cancel = reasons
 
         var archived_schedule_game = await archive_schedule_games.store({ auth, request, response })
 
         request.params.archive_schedule_games_id = archived_schedule_game.id
 
-        archive_schedule_games_trans.store({ auth, request, response })
+        //archive_schedule_games_trans.store({ auth, request, response })
 
-        const allAttendees = await Database.from('attendees').where({
-          schedule_games_id: request.params.id,
-          type: 1,
-        })
+        // const allAttendees = await Database.from('attendees').where({
+        //   schedule_games_id: request.params.id,
+        //   type: 1,
+        // })
 
         // for (var i = 0; i < allAttendees.length; i++) {
         //   request.params.archive_schedule_game_id = allAttendees[i].schedule_games_id
@@ -633,6 +666,7 @@ class ScheduleGameController {
               'users.id as user_id',
               'schedule_games.game_names_id'
             )
+            .orderBy('schedule_games.start_date_time', 'desc')
             .paginate(request.input('counter'), 10)
 
           count_myScheduledGames = await Database.from('schedule_games')
@@ -1005,7 +1039,11 @@ class ScheduleGameController {
 
               if (request.input('experience') != null) builder.where('experience', request.input('experience'))
 
-              if (request.input('start_date_time') != null) builder.where('start_date_time', '<=', request.input('start_date_time'))
+              if (request.input('mic') != null) builder.where('mic', request.input('mic'))
+
+              if (request.input('eighteen_plus') != null) builder.where('eighteen_plus', request.input('eighteen_plus'))
+
+              //if (request.input('start_date_time') != null) builder.where('start_date_time', '<=', request.input('start_date_time'))
 
               if (request.input('end_date_time') != null) builder.where('end_date_time', '>=', request.input('end_date_time'))
 
@@ -1055,8 +1093,12 @@ class ScheduleGameController {
 
             if (request.input('experience') != null) builder.where('experience', request.input('experience'))
 
-            if (request.input('start_date_time') != null)
-              builder.where('schedule_games.start_date_time', '<=', request.input('start_date_time'))
+            if (request.input('mic') != null) builder.where('mic', request.input('mic'))
+
+            if (request.input('eighteen_plus') != null) builder.where('eighteen_plus', request.input('eighteen_plus'))
+
+            //if (request.input('start_date_time') != null)
+            //builder.where('schedule_games.start_date_time', '<=', request.input('start_date_time'))
 
             if (request.input('end_date_time') != null) builder.where('schedule_games.end_date_time', '>=', request.input('end_date_time'))
 
@@ -1232,7 +1274,7 @@ class ScheduleGameController {
         .where({ schedule_games_id: request.params.id, type: 1 })
         .count('* as no_of_gamers')
 
-      if (join_status != 1 || button_text != 'Hosting' || button_text != 'Co-Hosting') {
+      if (join_status == 0 || join_status == 3) {
         additional_game_info.accept_msg = ''
       }
 
@@ -1451,10 +1493,31 @@ class ScheduleGameController {
         additional_submit_info = true
       }
 
+      const allAttendees = await Database.from('attendees')
+        .where({
+          schedule_games_id: request.params.id,
+          type: 1,
+        })
+        .first()
+
+      let hasAttendees = 0
+
+      if (allAttendees != undefined) {
+        hasAttendees = 1
+      }
+
+      let getAllCo_hosts = await Database.from('co_hosts')
+        .innerJoin('users', 'users.id', 'co_hosts.user_id')
+        .where({ schedule_games_id: latestScheduledGames[0].id })
+        .select('alias')
+
+      latestScheduledGames[0].co_hosts = getAllCo_hosts
+
       return {
         latestScheduledGames,
         additional_submit_info,
         additional_submit_info_fields,
+        hasAttendees,
       }
     } catch (error) {
       console.log(error)

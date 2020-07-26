@@ -19,6 +19,7 @@ import {
   experience_options,
   getExtraFilterOprion,
   properCase,
+  yes_no_options,
 } from './option'
 
 const queryMapping = {
@@ -57,6 +58,8 @@ export default class ScheduleGames extends Component {
       start_time: 'Start Time',
       platform: 'Platform',
       description: 'Description',
+      mic: 'Mic required?',
+      eighteen_plus: '18+',
     }
     this.constantFilterGroup = {
       game_name: 'Game Title',
@@ -66,8 +69,10 @@ export default class ScheduleGames extends Component {
       start_time: 'Start Time',
       platform: 'Platform',
       description: 'Description',
+      mic: 'Mic required?',
+      eighteen_plus: '18+',
     }
-    this.constantFilter = ['game_name', 'region', 'tags', 'experience', 'start_time', 'platform', 'description']
+    this.constantFilter = ['game_name', 'region', 'tags', 'experience', 'start_time', 'platform', 'description', 'mic', 'eighteen_plus']
     this.filterNameRef = React.createRef()
   }
 
@@ -232,6 +237,34 @@ export default class ScheduleGames extends Component {
     )
   }
 
+  handleChange_mic = (mic, name) => {
+    const { filterValueArray = {} } = this.state
+    filterValueArray['mic'] = mic
+    this.setState(
+      {
+        mic,
+        filterValueArray,
+      },
+      () => {
+        this.props.handleChange({ mic }, name)
+      }
+    )
+  }
+
+  handleChange_eighteen_plus = (eighteen_plus, name) => {
+    const { filterValueArray = {} } = this.state
+    filterValueArray['eighteen_plus'] = eighteen_plus
+    this.setState(
+      {
+        eighteen_plus,
+        filterValueArray,
+      },
+      () => {
+        this.props.handleChange({ eighteen_plus }, name)
+      }
+    )
+  }
+
   handleChange_visibility = (visibility_box, name) => {
     this.setState(
       {
@@ -302,6 +335,8 @@ export default class ScheduleGames extends Component {
         extraFields: {},
         filterValueArray: {},
         tags: [],
+        eighteen_plus: null,
+        mic: null,
       },
       () => {
         this.filterGroup = this.constantFilterGroup
@@ -317,7 +352,7 @@ export default class ScheduleGames extends Component {
       return
     }
     if (isRequesting) {
-      toast.warn(<Toast_style text={'Requesting, please wait....'} />)
+      toast.warn(<Toast_style text={'Requeeeeesting, please wait....'} />)
       return
     }
     this.setState({ isRequesting: true })
@@ -349,10 +384,10 @@ export default class ScheduleGames extends Component {
         payload,
       })
       if (saveFilter.data == 'ER_DUP_ENTRY') {
-        toast.error(<Toast_style text={'Opps! This name already exists.'} />)
+        toast.error(<Toast_style text={'Oopsie! This name already exists.'} />)
         this.setState({ isRequesting: false })
       } else {
-        toast.success(<Toast_style text={`Filter ${filterName} was created successfully.`} />)
+        toast.success(<Toast_style text={`Sweeet, filter ${filterName} was created successfully.`} />)
         this.setState({ showSaveFilterInput: false, isRequesting: false, filterName: '', showOverlay: false })
         this.getFilter()
       }
@@ -501,7 +536,7 @@ export default class ScheduleGames extends Component {
   update_Filter_Name = async () => {
     const { inputValue = '', filterId = '', filterPayload = '' } = this.state
     if (!inputValue) {
-      toast.error(<Toast_style text={'Please enter filter name first.'} />)
+      toast.error(<Toast_style text={'Mate, please enter filter name first.'} />)
       return
     }
     try {
@@ -511,10 +546,10 @@ export default class ScheduleGames extends Component {
         payload: JSON.parse(filterPayload),
       })
       if (saveFilter.data == 'ER_DUP_ENTRY') {
-        toast.error(<Toast_style text={'Name you entered already exists.'} />)
+        toast.error(<Toast_style text={'Oopsie! Name already exists.'} />)
         this.setState({ isRequesting: false })
       } else {
-        toast.success(<Toast_style text={`Filter ${inputValue} was updated successfully.`} />)
+        toast.success(<Toast_style text={`Sweeet, filter ${inputValue} was updated successfully.`} />)
         this.setState({ showFilterTypeInput: {}, inputValue: '' })
         this.getFilter()
       }
@@ -714,6 +749,38 @@ export default class ScheduleGames extends Component {
                       onChange={this.handleChange_description}
                       value={this.state.description_box || filterValueArray['description']}
                       placeholder='Description'
+                    />
+                  </div>
+                )
+              } else if (k == 'mic') {
+                return (
+                  <div className='viewGame__gameName'>
+                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                    <Select
+                      onChange={this.handleChange_mic}
+                      options={yes_no_options}
+                      placeholder='Mic required?'
+                      name='platform-box'
+                      isClearable
+                      className='viewGame__name'
+                      classNamePrefix='filter'
+                      value={filterValueArray['mic']}
+                    />
+                  </div>
+                )
+              } else if (k == 'eighteen_plus') {
+                return (
+                  <div className='viewGame__gameName'>
+                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                    <Select
+                      onChange={this.handleChange_eighteen_plus}
+                      options={yes_no_options}
+                      placeholder='18+ event?'
+                      name='platform-box'
+                      isClearable
+                      className='viewGame__name'
+                      classNamePrefix='filter'
+                      value={filterValueArray['eighteen_plus']}
                     />
                   </div>
                 )
