@@ -1,4 +1,4 @@
-version: '4'
+version: '3'
 services:
   db:
     image: mariadb
@@ -29,6 +29,6 @@ services:
     container_name: myg_nats
     restart: always
     ports:
-        - '8222:8222'
+        - '4222:4222'
     expose:
-      - "8222"
+      - "4222"

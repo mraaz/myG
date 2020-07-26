@@ -82,6 +82,7 @@
     "moment": "^2.22.2",
     "multiparty": "^4.2.1",
     "mysql": "^2.16.0",
+    "nats": "^1.4.9",
     "node-cron": "^2.0.3",
     "node-fetch": "^2.6.0",
     "node-sass": "^4.5.2",

@@ -21,6 +21,7 @@ const Notification = use('App/Models/Notification');
 
 const AwsKeyController = use('App/Controllers/Http/AwsKeyController');
 const RedisRepository = require('../../Repositories/Redis');
+const NatsChatRepository = require('../../Repositories/NatsChat');
 
 const UserSchema = require('../../Schemas/User');
 const ChatSchema = require('../../Schemas/Chat');
@@ -744,6 +745,7 @@ class ChatRepository {
     });
     this._notifyChatEvent({ chatId: requestedChatId, action: 'newMessage', payload: messageSchema });
     if (!chat.isGroup) this._addChatNotificationMessage({ requestingUserId, requestedChatId, chat, content });
+    NatsChatRepository.userSentMessage(messageSchema);
     return { message: messageSchema };
   }
 
