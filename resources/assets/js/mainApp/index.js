@@ -83,6 +83,7 @@ class Layout extends Component {
       try {
         const initialData = await axios.get('/api/initialApp')
         window.PORT = initialData.data.port
+        window.LOGS_ON = initialData.data.logsOn
 
         if (initialData.data.userInfo == 1981 && !window.location.href.includes('/link')) {
           window.location.href = '/'
