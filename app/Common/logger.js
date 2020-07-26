@@ -1,6 +1,6 @@
 
-// const ALLOWED_LOGS = [];
-const ALLOWED_LOGS = ['NATS', 'USER', 'CHAT', 'GUEST', 'GAME', 'CRON'];
+const ALLOWED_LOGS = [];
+// const ALLOWED_LOGS = ['NATS', 'USER', 'CHAT', 'GUEST', 'GAME', 'CRON'];
 
 function log(context, args) {
   if (ALLOWED_LOGS.includes(context)) {

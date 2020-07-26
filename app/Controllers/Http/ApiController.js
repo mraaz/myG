@@ -55,6 +55,7 @@ class ApiController {
     if (auth.user) {
       return {
         userInfo: auth.user,
+        port: process.env.PORT,
       }
     } else {
       return {
