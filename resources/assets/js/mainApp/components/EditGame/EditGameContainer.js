@@ -123,6 +123,7 @@ const EditGameContainer = (props) => {
           advanceSettings.platform = getExtraFilterOprion(latestScheduledGames[0].platform)
           advanceSettings.optionTags = getExtraFilterOprion(latestScheduledGames[0].tags)
           advanceSettings.tags = getExtraFilterOprion(latestScheduledGames[0].tags)
+          advanceSettings.coHosts = getExtraFilterOprion(latestScheduledGames[0].co_hosts)
 
           const mainSettings = { ...mainSettingsState }
 
@@ -418,18 +419,20 @@ const EditGameContainer = (props) => {
   return (
     <div className={styles.edit__container}>
       <PageHeader headerText='Edit Game' />
-      <EditGame
-        state={state}
-        updateComponentState={updateComponentState}
-        advancedSettingsState={advancedSettingsState}
-        updateAdvancedSettingsState={updateAdvancedSettingsState}
-        mainSettingsState={mainSettingsState}
-        updateMainSettingsState={updateMainSettingsState}
-        optionalFieldsState={optionalFieldsState}
-        updateOptionalFieldsState={updateOptionalFieldsState}
-        isSubmitting={isSubmitting}
-        updateIsSubmitting={updateIsSubmitting}
-      />
+      {mainSettingsState.gameTitle.value && (
+        <EditGame
+          state={state}
+          updateComponentState={updateComponentState}
+          advancedSettingsState={advancedSettingsState}
+          updateAdvancedSettingsState={updateAdvancedSettingsState}
+          mainSettingsState={mainSettingsState}
+          updateMainSettingsState={updateMainSettingsState}
+          optionalFieldsState={optionalFieldsState}
+          updateOptionalFieldsState={updateOptionalFieldsState}
+          isSubmitting={isSubmitting}
+          updateIsSubmitting={updateIsSubmitting}
+        />
+      )}
       {getPageFooter()}
       {showReasonModal && selectReasonToDelete()}
       {showSweetAlert}
