@@ -385,7 +385,7 @@ export default class ComposeSection extends Component {
     preview_files = preview_files.filter((data) => data.src != src)
     this.setState({ preview_files })
   }
-  
+
   getPreviewImageGallery = (preview_filesData) => {
     return preview_filesData.map((data) => {
       return { original: data.src, thumbnail: data.src }
