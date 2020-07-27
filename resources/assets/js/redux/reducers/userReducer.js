@@ -1,24 +1,31 @@
 import logger from '../../common/logger'
 
+const initialState = {
+  isStatusLocked: false,
+  contactCount: 0,
+  contacts: [],
+  games: [],
+  friendRequests: [],
+  foundUsers: [],
+  notificationSoundsDisabled: false,
+  autoSelfDestruct: false,
+  pushNotificationsEnabled: true,
+}
+
 export default function reducer(
   state = {
     userId: null,
     alias: null,
     icon: null,
     status: 'online',
-    isStatusLocked: false,
-    contactCount: 0,
-    contacts: [],
-    games: [],
-    friendRequests: [],
-    foundUsers: [],
-    notificationSoundsDisabled: false,
-    autoSelfDestruct: false,
-    pushNotificationsEnabled: true,
+    ...initialState,
   },
   action
 ) {
   switch (action.type) {
+    case 'REACT_ERROR':
+      return { ...state, ...initialState }
+
     case 'LOAD_USER_INFO': {
       logger.log('User', `Redux -> Loading User Info (User): `, action.payload)
       return {

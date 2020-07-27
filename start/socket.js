@@ -15,6 +15,5 @@
 
 const Ws = use('Ws')
 
-Ws.channel('chat:*', 'ChatRealtimeController')
-
-
+Ws.channel('chat:auth:*', 'ChatRealtimeController').middleware(['auth'])
+Ws.channel('chat:guest:*', 'GuestRealtimeController')

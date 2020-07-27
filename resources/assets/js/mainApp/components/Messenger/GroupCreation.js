@@ -8,6 +8,7 @@ import { searchGameAction } from '../../../redux/actions/gameAction'
 import { fetchContactsPaginatedAction } from '../../../redux/actions/paginationAction'
 import { getAssetUrl } from '../../../common/assets'
 import { ignoreFunctions } from '../../../common/render'
+import { GoogleAnalytics } from '../../../common/analytics'
 
 export const MAXIMUM_GROUP_SIZE = 37
 
@@ -63,6 +64,7 @@ class GroupCreation extends React.Component {
   }
 
   onCreate = () => {
+    GoogleAnalytics.chatGroupCreated()
     const { icon, key, addedContacts, selectedGame } = this.state
     const contactAliases = addedContacts.map((contact) => contact.name)
     const firstAlias = contactAliases[0] ? `, ${contactAliases[0]}` : ''
@@ -149,7 +151,7 @@ class GroupCreation extends React.Component {
         <Dropdown
           show={this.state.gameInput.length}
           position={{ top: '-6px' }}
-          items={this.props.foundGames.map((game) => game.icon ? { ...game, render: this.renderGameIcon(game, true) } : game)}
+          items={this.props.foundGames.map((game) => (game.icon ? { ...game, render: this.renderGameIcon(game, true) } : game))}
           onItemClick={(item) => this.setState({ selectedGame: this.props.foundGames.find((game) => game.name === item), gameInput: '' })}
           emptyMessage={'no games found'}
         />

@@ -2,6 +2,7 @@ import React from 'react'
 import { decryptMessage } from '../../../../integration/encryption'
 import { formatAMPM } from '../../../../common/date'
 import { ignoreFunctions } from '../../../../common/render'
+import { GoogleAnalytics } from '../../../../common/analytics'
 
 export default class Contact extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -26,6 +27,7 @@ export default class Contact extends React.Component {
   }
 
   openChat = (contact) => {
+    GoogleAnalytics.chatContactClicked({ contactId: contact.contactId })
     if (this.props.disconnected) return
     if (contact.chat && contact.chat.chatId) return this.props.openChat(contact.chat.chatId, contact.chat)
     this.props.createChat([contact.contactId], this.props.userId)
