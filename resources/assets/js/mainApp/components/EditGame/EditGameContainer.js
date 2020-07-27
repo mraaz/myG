@@ -106,59 +106,60 @@ const EditGameContainer = (props) => {
       onCancel={() => hideAlert('false')}></SweetAlert>
   )
 
-  useEffect(async () => {
-    const { params = {} } = props.routeProps.match
-    const { id = '' } = params
-    if (id) {
-      const scheduleGames = await axios.get(`/api/ScheduleGame/edit_game/${id}`)
-      if (scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
-        const { latestScheduledGames = [], hasAttendees = 0, additional_submit_info = false } = scheduleGames.data
+  useEffect(() => {
+    const innerFunc = async () => {
+      const { params = {} } = props.routeProps.match
+      const { id = '' } = params
+      if (id) {
+        const scheduleGames = await axios.get(`/api/ScheduleGame/edit_game/${id}`)
+        if (scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
+          const { latestScheduledGames = [], hasAttendees = 0, additional_submit_info = false } = scheduleGames.data
 
-        const advanceSettings = { ...advancedSettingsState }
+          const advanceSettings = { ...advancedSettingsState }
 
-        advanceSettings.acceptMessage = latestScheduledGames[0].accept_msg
-        advanceSettings.description = latestScheduledGames[0].description
-        advanceSettings.experience = getExtraFilterOprion(latestScheduledGames[0].experience)
-        advanceSettings.platform = getExtraFilterOprion(latestScheduledGames[0].platform)
-        advanceSettings.optionTags = getExtraFilterOprion(latestScheduledGames[0].tags)
+          advanceSettings.acceptMessage = latestScheduledGames[0].accept_msg
+          advanceSettings.description = latestScheduledGames[0].description
+          advanceSettings.experience = getExtraFilterOprion(latestScheduledGames[0].experience)
+          advanceSettings.platform = getExtraFilterOprion(latestScheduledGames[0].platform)
+          advanceSettings.optionTags = getExtraFilterOprion(latestScheduledGames[0].tags)
+          advanceSettings.tags = getExtraFilterOprion(latestScheduledGames[0].tags)
 
-        const mainSettings = { ...mainSettingsState }
+          const mainSettings = { ...mainSettingsState }
 
-        mainSettings.gameTitle = { value: latestScheduledGames[0].game_name, label: latestScheduledGames[0].game_name }
-        mainSettings.startTime = moment(latestScheduledGames[0].start_date_time)
-        mainSettings.endTime = moment(latestScheduledGames[0].end_date_time)
-        mainSettings.isEndGameFieldSelected = latestScheduledGames[0].end_date_time !== null ? true : false
-        mainSettings.isCommentsAllowed = latestScheduledGames[0].allow_comments == 1 ? true : false
-        mainSettings.isPublicGame = latestScheduledGames[0].visibility == 1 ? true : false
-        mainSettings.autoAccept = latestScheduledGames[0].autoJoin == 1 ? true : false
-        mainSettings.autoJoinHost = latestScheduledGames[0].autoJoinHost == 1 ? true : false
-        mainSettings.scheduledGameId = latestScheduledGames[0].id
-        mainSettings.scheduledGameGuid = latestScheduledGames[0].schedule_games_GUID
-        mainSettings.isRepeatFieldSelected = latestScheduledGames[0].repeatEvery == 1 ? true : false
-        mainSettings.cron = latestScheduledGames[0].cron
+          mainSettings.gameTitle = { value: latestScheduledGames[0].game_name, label: latestScheduledGames[0].game_name }
+          mainSettings.startTime = moment(latestScheduledGames[0].start_date_time)
+          mainSettings.endTime = moment(latestScheduledGames[0].end_date_time)
+          mainSettings.isEndGameFieldSelected = latestScheduledGames[0].end_date_time !== null ? true : false
+          mainSettings.isCommentsAllowed = latestScheduledGames[0].allow_comments == 1 ? true : false
+          mainSettings.isPublicGame = latestScheduledGames[0].visibility == 1 ? true : false
+          mainSettings.autoAccept = latestScheduledGames[0].autoJoin == 1 ? true : false
+          mainSettings.autoJoinHost = latestScheduledGames[0].autoJoinHost == 1 ? true : false
+          mainSettings.scheduledGameId = latestScheduledGames[0].id
+          mainSettings.scheduledGameGuid = latestScheduledGames[0].schedule_games_GUID
+          mainSettings.isRepeatFieldSelected = latestScheduledGames[0].repeatEvery == 1 ? true : false
+          mainSettings.cron = latestScheduledGames[0].cron
 
-        const optionalFields = { ...optionalFieldsState }
-        optionalFields.modalRank = latestScheduledGames[0].value_one ? getExtraFilterOprion(latestScheduledGames[0].value_one) : null
-        optionalFields.serverRegion = latestScheduledGames[0].value_two ? getExtraFilterOprion(latestScheduledGames[0].value_two) : null
-        optionalFields.roleNeeded = latestScheduledGames[0].value_three ? getExtraFilterOprion(latestScheduledGames[0].value_three) : null
-        optionalFields.trophies = latestScheduledGames[0].value_four ? getExtraFilterOprion(latestScheduledGames[0].value_four) : null
+          const optionalFields = { ...optionalFieldsState }
+          optionalFields.modalRank = latestScheduledGames[0].value_one ? getExtraFilterOprion(latestScheduledGames[0].value_one) : null
+          optionalFields.serverRegion = latestScheduledGames[0].value_two ? getExtraFilterOprion(latestScheduledGames[0].value_two) : null
+          optionalFields.roleNeeded = latestScheduledGames[0].value_three ? getExtraFilterOprion(latestScheduledGames[0].value_three) : null
+          optionalFields.trophies = latestScheduledGames[0].value_four ? getExtraFilterOprion(latestScheduledGames[0].value_four) : null
 
-        const localState = { ...state }
-        localState.additional_info = additional_submit_info
+          const localState = { ...state }
+          localState.additional_info = additional_submit_info
 
-        updateAdvancedSettingsState(advanceSettings)
-        updateMainSettingsState(mainSettings)
-        updateOptionalFieldsState(optionalFields)
-        updateComponentState(localState)
-        setSechduledGameData(latestScheduledGames)
-        setHasAttendees(hasAttendees)
-      } else {
-        window.location.href = '/?at=mygames'
+          updateAdvancedSettingsState(advanceSettings)
+          updateMainSettingsState(mainSettings)
+          updateOptionalFieldsState(optionalFields)
+          updateComponentState(localState)
+          setSechduledGameData(latestScheduledGames)
+          setHasAttendees(hasAttendees)
+        } else {
+          window.location.href = '/?at=mygames'
+        }
       }
     }
-    return () => {
-      return
-    }
+    innerFunc()
   }, [])
   // Handlers
   const isButtonDisabled = () => {
@@ -414,7 +415,6 @@ const EditGameContainer = (props) => {
       </MyGModal>
     )
   }
-
   return (
     <div className={styles.edit__container}>
       <PageHeader headerText='Edit Game' />
