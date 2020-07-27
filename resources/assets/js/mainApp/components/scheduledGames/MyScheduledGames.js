@@ -160,7 +160,7 @@ export default class MyScheduledGames extends Component {
               <Select
                 onChange={(data) => this.handleChangeFilter(data)}
                 options={prefilledFilter_option}
-                placeholder='Select your region'
+                placeholder='Select your filter'
                 name='prefilledFilter'
                 className='viewGame__name'
                 classNamePrefix='filter'
