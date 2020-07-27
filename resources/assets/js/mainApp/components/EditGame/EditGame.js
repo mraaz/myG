@@ -61,7 +61,6 @@ const EditGame = ({
 
     getInitialData_Tags()
     getInitialData_GameName()
-    console.log('>>>>>>>>>>>>>>>>>>>>>')
   }, [])
 
   // Handlers
