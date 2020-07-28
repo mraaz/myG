@@ -25,6 +25,14 @@ const MAX_CO_HOSTS = 5
 
 class ScheduleGameController {
   async store({ auth, request, response }) {
+    if (request.input('start_date_time') == undefined || request.input('game_name_box') == undefined) {
+      return
+    }
+
+    if (request.input('start_date_time') == null || request.input('game_name_box') == null) {
+      return
+    }
+
     let myTime = new Date(new Date(Date.now()).getTime() - 60 * 60 * 1000)
 
     let newStartdate = new Date(request.input('start_date_time'))
@@ -34,7 +42,7 @@ class ScheduleGameController {
 
     let end_date_time
 
-    if (request.input('end_date_time') != undefined) {
+    if (request.input('end_date_time') != undefined && request.input('end_date_time') != null) {
       end_date_time = new Date(request.input('end_date_time')).toISOString().replace('T', ' ')
 
       let newEnddate = new Date(request.input('end_date_time'))
@@ -42,6 +50,9 @@ class ScheduleGameController {
       if (newEnddate > extendedDate) {
         return
       }
+      end_date_time = request.input('end_date_time')
+    } else {
+      end_date_time = new Date(new Date(request.input('start_date_time')).getTime() + 60 * 60 * 18 * 1000)
     }
 
     if (auth.user) {
@@ -65,23 +76,13 @@ class ScheduleGameController {
           gameface.incrementGameCounter({ auth, request, response })
         }
 
-        let end_date_time
-
-        if (request.input('end_date_time') != undefined) {
-          end_date_time = new Date(request.input('end_date_time')).toISOString().replace('T', ' ')
-          let extendedDate = new Date(new Date(request.input('start_date_time')).getTime() + 15 * 60 * 60 * 24 * 1000)
-          if (end_date_time > extendedDate) {
-            return
-          }
-        }
-
         const newScheduleGame = await ScheduleGame.create({
           game_names_id: parseInt(gameNameID, 10),
           user_id: auth.user.id,
           region: request.input('selected_region'),
           experience: request.input('selected_experience'),
           start_date_time: request.input('start_date_time'),
-          end_date_time: request.input('end_date_time'),
+          end_date_time: end_date_time,
           platform: request.input('selected_platform'),
           description: request.input('description_box'),
           other: request.input('other_box'),
@@ -236,28 +237,43 @@ class ScheduleGameController {
   }
 
   async update({ auth, request, response }) {
-    let myTime = new Date(new Date(Date.now()).getTime() - 60 * 60 * 1000)
-
-    let newStartdate = new Date(request.input('start_date_time'))
-    if (myTime > newStartdate) {
+    if (request.input('start_date_time') == undefined || request.input('game_name_box') == undefined) {
       return
     }
 
+    if (request.input('start_date_time') == null || request.input('game_name_box') == null) {
+      return
+    }
+
+    let myTime = new Date(new Date(Date.now()).getTime() - 60 * 60 * 1000)
+
+    let newStartdate = new Date(request.input('start_date_time'))
+    // if (myTime > newStartdate) {
+    //   return
+    // }
+
     let end_date_time
 
-    if (request.input('end_date_time') != undefined) {
+    if (request.input('end_date_time') != undefined && request.input('end_date_time') != null) {
       end_date_time = new Date(request.input('end_date_time')).toISOString().replace('T', ' ')
 
       let newEnddate = new Date(request.input('end_date_time'))
       let extendedDate = new Date(new Date(request.input('start_date_time')).getTime() + 15 * 60 * 60 * 24 * 1000)
-      if (newEnddate > extendedDate) {
-        return
-      }
+      // if (newEnddate > extendedDate) {
+      //   return
+      // }
+      end_date_time = request.input('end_date_time')
+    } else {
+      end_date_time = new Date(new Date(request.input('start_date_time')).getTime() + 60 * 60 * 18 * 1000)
     }
 
     if (auth.user) {
       try {
         var gameNameID = null
+
+        if (request.input('id') == undefined || request.input('id') == null) {
+          return
+        }
 
         const getOne = await Database.from('schedule_games')
           .where({
@@ -289,16 +305,6 @@ class ScheduleGameController {
           }
         }
 
-        let end_date_time
-
-        if (request.input('end_date_time') != undefined) {
-          end_date_time = new Date(request.input('end_date_time')).toISOString().replace('T', ' ')
-          let extendedDate = new Date(new Date(request.input('start_date_time')).getTime() + 15 * 60 * 60 * 24 * 1000)
-          if (end_date_time > extendedDate) {
-            return
-          }
-        }
-
         const updateScheduleGame = await ScheduleGame.query()
           .where({ id: request.input('id') })
           .update({
@@ -307,7 +313,7 @@ class ScheduleGameController {
             region: request.input('selected_region'),
             experience: request.input('selected_experience'),
             start_date_time: request.input('start_date_time'),
-            end_date_time: request.input('end_date_time'),
+            end_date_time: end_date_time,
             platform: request.input('selected_platform'),
             description: request.input('description_box'),
             other: request.input('other_box'),
@@ -1499,6 +1505,13 @@ class ScheduleGameController {
       if (allAttendees != undefined) {
         hasAttendees = 1
       }
+
+      let getAllCo_hosts = await Database.from('co_hosts')
+        .innerJoin('users', 'users.id', 'co_hosts.user_id')
+        .where({ schedule_games_id: latestScheduledGames[0].id })
+        .select('alias')
+
+      latestScheduledGames[0].co_hosts = getAllCo_hosts
 
       return {
         latestScheduledGames,

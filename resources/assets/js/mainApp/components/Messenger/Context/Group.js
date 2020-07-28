@@ -3,6 +3,7 @@ import { decryptMessage, deserializeKey } from '../../../../integration/encrypti
 import { formatAMPM } from '../../../../common/date'
 import { WithTooltip } from '../../Tooltip'
 import { ignoreFunctions } from '../../../../common/render'
+import { GoogleAnalytics } from '../../../../common/analytics'
 
 export default class Group extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -34,6 +35,12 @@ export default class Group extends React.Component {
     return content
   }
 
+  openChat = () => {
+    const group = this.props.group
+    this.props.openChat(group.chatId, group)
+    GoogleAnalytics.chatGroupClicked({ chatId: group.chatId })
+  }
+
   render() {
     const group = this.props.group
     const messages = this.state.messages || []
@@ -41,7 +48,7 @@ export default class Group extends React.Component {
     const unreadCount = 0
     const titleTooLong = group.title.length > 20
     return (
-      <div key={`group-${group.chatId}`} className='messenger-contact' onClick={() => this.props.openChat(group.chatId, group)}>
+      <div key={`group-${group.chatId}`} className='messenger-contact' onClick={this.openChat}>
         <div className='messenger-contact-icon' style={{ backgroundImage: `url('${group.icon}')` }} />
         <div className='messenger-contact-body'>
           {titleTooLong ? (

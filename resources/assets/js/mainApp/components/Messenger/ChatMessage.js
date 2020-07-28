@@ -333,7 +333,23 @@ export default class ChatMessage extends React.Component {
           />
           <div>Audio</div>
         </div>
-        <p className='chat-component-message-image-expiry'>This file will expire on {formatDate(expirationDate)}</p>
+        {this.state.showOptionsButton ? (
+          <p
+            className='chat-component-message-image-expiry clickable'
+            onClick={() => {
+              if (this.state.audio) {
+                this.state.audio.pause()
+                this.setState({ audio: null })
+              } else {
+                audio.play()
+                this.setState({ audio })
+              }
+            }}>
+            Click to play this audio
+          </p>
+        ) : (
+          <p className='chat-component-message-image-expiry'>This file will expire on {formatDate(expirationDate)}</p>
+        )}
       </div>
     )
   }

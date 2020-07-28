@@ -3,7 +3,7 @@ import Ws from '@adonisjs/websocket-client'
 export class SocketConnection {
   connect() {
     const protocol = window.location.href.includes('localhost') ? 'ws://' : 'wss://'
-    const url = window.location.href.includes('localhost') ? 'localhost:3333' : 'myg.gg'
+    const url = window.location.href.includes('localhost') ? `localhost:${window.PORT}` : 'myg.gg'
     this.ws = Ws(`${protocol}${url}`).connect()
     return this
   }

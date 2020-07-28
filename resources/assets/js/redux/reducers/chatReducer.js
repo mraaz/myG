@@ -5,22 +5,23 @@ import { requestGroupPrivateKey, confirmGroupPrivateKey } from '../../integratio
 import notifyToast from '../../common/toast'
 import { getAssetUrl } from '../../common/assets'
 
-export default function reducer(
-  state = {
-    userId: null,
-    chats: [],
-    contacts: [],
-    unreadMessages: [],
-    preparingMessenger: false,
-    guestLink: null,
-    blockedUsers: [],
-    notificationSoundsDisabled: false,
-    autoSelfDestruct: false,
-    pushNotificationsEnabled: true,
-  },
-  action
-) {
+const initialState = {
+  chats: [],
+  contacts: [],
+  unreadMessages: [],
+  blockedUsers: [],
+  preparingMessenger: false,
+  guestLink: null,
+  notificationSoundsDisabled: false,
+  autoSelfDestruct: false,
+  pushNotificationsEnabled: true,
+}
+
+export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case 'REACT_ERROR':
+      return { ...state, ...initialState }
+
     case 'LOAD_USER_INFO': {
       logger.log('User', `Redux -> Loading User Info (Chat): `, action.payload)
       return {
@@ -59,18 +60,19 @@ export default function reducer(
 
     case 'PREPARE_CHAT_FULFILLED': {
       logger.log('CHAT', `Redux -> Chat ${action.meta.chatId} Ready (Chat): `, action.payload, action.meta)
-      if (action.payload.chat === "NOT_FOUND") {
+      if (action.payload.chat === 'NOT_FOUND') {
         const chats = JSON.parse(JSON.stringify(state.chats))
         return {
           ...state,
-          chats: chats.filter(chat => chat.chatId !== action.meta.chatId),
+          chats: chats.filter((chat) => chat.chatId !== action.meta.chatId),
         }
       }
       const { chatId, userId } = action.meta
       const chats = JSON.parse(JSON.stringify(state.chats))
       const contacts = JSON.parse(JSON.stringify(state.contacts))
-      const contactIds = contacts.map(contact => contact.contactId)
-      action.payload.contacts && action.payload.contacts.forEach(contact => !contactIds.includes(contact.contactId) && contacts.push(contact))
+      const contactIds = contacts.map((contact) => contact.contactId)
+      action.payload.contacts &&
+        action.payload.contacts.forEach((contact) => !contactIds.includes(contact.contactId) && contacts.push(contact))
       const existingChat = chats.find((candidate) => candidate.chatId === chatId)
       const chat = existingChat || action.payload.chat
       if (!existingChat) chats.push(chat)
@@ -436,7 +438,8 @@ export default function reducer(
       if (isPrivate !== undefined) chat.isPrivate = isPrivate
       if (publicKey !== undefined) chat.publicKey = publicKey
       if (privateKey !== undefined) chat.privateKey = deserializeKey(privateKey)
-      if (publicKey !== undefined) prepareGroupKeysToSend(chat, parseInt(state.userId), chat.fullContacts, state.publicKey, state.privateKey)
+      if (publicKey !== undefined)
+        prepareGroupKeysToSend(chat, parseInt(state.userId), chat.fullContacts, state.publicKey, state.privateKey)
       return {
         ...state,
         chats,

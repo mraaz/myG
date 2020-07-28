@@ -65,12 +65,6 @@ class Groups extends React.Component {
     this.props.onExpand(this.props.expanded)
   }
 
-  openChat = (contact) => {
-    if (this.props.disconnected) return
-    if (contact.chat.chatId) return this.props.openChat(contact.chat.chatId, contact.chat)
-    this.props.createChat([contact.contactId], this.props.userId)
-  }
-
   createGroup = async (icon, key, title, contacts, gameId) => {
     const { encryption } = generateGroupKeys()
     this.setState({ showingGroupCreation: false })

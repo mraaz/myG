@@ -21,6 +21,8 @@ const Notification = use('App/Models/Notification');
 
 const AwsKeyController = use('App/Controllers/Http/AwsKeyController');
 const RedisRepository = require('../../Repositories/Redis');
+const NatsChatRepository = require('../../Repositories/NatsChat');
+const WebsocketChatRepository = require('../../Repositories/WebsocketChat');
 
 const UserSchema = require('../../Schemas/User');
 const ChatSchema = require('../../Schemas/Chat');
@@ -36,7 +38,6 @@ const ChatPrivateKeyRequestSchema = require('../../Schemas/ChatPrivateKeyRequest
 const ChatNotificationSchema = require('../../Schemas/ChatNotification');
 
 const uuidv4 = require('uuid/v4');
-const { broadcast } = require('../../Common/socket');
 const { log } = require('../../Common/logger');
 
 const MAXIMUM_GROUP_SIZE = 37;
@@ -1236,20 +1237,33 @@ class ChatRepository {
     if (payload.contactId) payload.contactId = parseInt(payload.contactId);
     const logKey = (userId && `User ${userId}`) || (chatId && `Chat ${chatId}`) || (contactId && `Contacts from User ${contactId}`);
     log('CHAT', `Broadcasting ${action} event to ${logKey} with Payload: ${JSON.stringify(payload)}`);
-    if (userId) return broadcast('chat:*', `chat:${userId}`, `chat:${action}`, payload);
-    if (guestId) return broadcast('chat:*', `chat:${guestId}:guest`, `chat:${action}`, payload);
+    if (userId) return this.broadcast('chat:auth:*', `chat:auth:${userId}`, `chat:${action}`, payload);
+    if (guestId) return this.broadcast('chat:guest:*', `chat:guest:${guestId}`, `chat:${action}`, payload);
     if (chatId) {
       const chat = (await Chat.find(chatId)).toJSON();
       const contacts = JSON.parse(chat.contacts);
       const guests = JSON.parse(chat.guests);
-      contacts.forEach(contactId => broadcast('chat:*', `chat:${contactId}`, `chat:${action}`, payload));
-      guests.forEach(guestId => broadcast('chat:*', `chat:${guestId}:guest`, `chat:${action}`, payload));
+      contacts.forEach(contactId => this.broadcast('chat:auth:*', `chat:auth:${contactId}`, `chat:${action}`, payload));
+      guests.forEach(guestId => this.broadcast('chat:guest:*', `chat:guest:${guestId}`, `chat:${action}`, payload));
       return;
     }
     if (contactId) {
       const contacts = (await Database.from('friends').where({ user_id: contactId })).map(contact => contact.friend_id);
-      contacts.forEach(contactId => broadcast('chat:*', `chat:${contactId}`, `chat:${action}`, payload));
+      contacts.forEach(contactId => this.broadcast('chat:auth:*', `chat:auth:${contactId}`, `chat:${action}`, payload));
     }
+  }
+
+  async broadcastWebsocket(channelId, id, type, data) {
+    return WebsocketChatRepository.broadcast(channelId, id, type, data);
+  }
+
+  async broadcastNats(channelId, id, type, data) {
+    return NatsChatRepository.publish({ channelId, id, type, data });
+  }
+
+  async broadcast(channelId, id, type, data) {
+    this.broadcastWebsocket(channelId, id, type, data);
+    this.broadcastNats(channelId, id, type, data);
   }
 
 }

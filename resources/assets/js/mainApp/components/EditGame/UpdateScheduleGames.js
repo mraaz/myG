@@ -6,6 +6,8 @@ import moment from 'moment'
 const MAX_GAME_TAGS = 9
 
 export async function SubmitDataFunction(myG) {
+  console.log('myG    ', myG)
+
   let myRegion = null,
     myExperience = null,
     myPlatform = null,
@@ -39,7 +41,6 @@ export async function SubmitDataFunction(myG) {
         toast.success(<Toast_style text={'Sorry mate! Game tags can not have invalid fields'} />)
         return
       }
-
       delete myG.tags[i].label
 
       // if (myG.tags[i].game_tag_id == null) {
@@ -78,6 +79,7 @@ export async function SubmitDataFunction(myG) {
 
   try {
     const post = await axios.post('/api/ScheduleGame/update', {
+      id: myG.gameId,
       game_name_box: myG.game_name_box.value,
       game_names_id: myG.game_name_box.game_names_id,
       selected_region: myRegion,

@@ -1,30 +1,32 @@
 import logger from '../../common/logger'
 
-export default function reducer(
-  state = {
-    loading: false,
-    loadingMore: false,
-    online: [],
-    playing: [],
-    afk: [],
-    offline: [],
-    foundContacts: [],
+const initialState = {
+  loading: false,
+  loadingMore: false,
+  online: [],
+  playing: [],
+  afk: [],
+  offline: [],
+  foundContacts: [],
+  groups: [],
+  games: [],
+  search: {
+    contacts: [],
     groups: [],
     games: [],
-    search: {
-      contacts: [],
-      groups: [],
-      games: [],
-    },
   },
-  action
-) {
+}
+
+export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case 'REACT_ERROR':
+      return initialState
+
     case 'PAGINATED_CONTACTS_PENDING':
     case 'PAGINATED_GROUPS_PENDING':
     case 'PAGINATED_GAMES_PENDING':
     case 'PAGINATED_SEARCH_PENDING': {
-      if (action.type === 'PAGINATED_CONTACTS_FULFILLED' && !action.meta.status) return state;
+      if (action.type === 'PAGINATED_CONTACTS_FULFILLED' && !action.meta.status) return state
       return {
         ...state,
         loading: action.meta.refresh,
@@ -93,11 +95,11 @@ export default function reducer(
     }
 
     case 'NEW_CHAT': {
-      if (!action.payload.chat.isGroup) return state;
+      if (!action.payload.chat.isGroup) return state
       logger.log('PAGINATION', `Redux -> New Chat: `, action.payload)
       const groups = JSON.parse(JSON.stringify(state.groups))
       const groupsIds = groups.map((group) => group.chatId)
-      if (groupsIds.includes(action.payload.chat.chatId)) return state;
+      if (groupsIds.includes(action.payload.chat.chatId)) return state
       groups.push(action.payload.chat)
       return {
         ...state,

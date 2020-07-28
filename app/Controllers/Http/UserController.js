@@ -7,6 +7,10 @@ const UserStatTransactionController = use('./UserStatTransactionController')
 
 class UserController {
   async profile({ auth, request, response }) {
+    if (!auth.user) {
+      return 'You are not Logged In!'
+    }
+    
     var friend = undefined,
       following = undefined
     try {

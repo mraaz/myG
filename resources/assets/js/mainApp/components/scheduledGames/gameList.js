@@ -15,8 +15,6 @@ const defaultUserImage = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/d
 const defaultThumbnails = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Notifications/myG_icon.svg'
 const statusMapping = { 1: 'Approved. you are in!', 3: 'Pending Approval by Host' }
 
-import { prefilledFilter_option } from './option'
-
 export default class GameList extends Component {
   constructor() {
     super()
@@ -50,11 +48,6 @@ export default class GameList extends Component {
     e.stopPropagation()
     window.location.href = `/notifications`
   }
-  handleChangeFilter = (prefilledFilter) => {
-    this.setState({ prefilledFilter }, () => {
-      this.props.handleExcludesFullGames(null, prefilledFilter.value)
-    })
-  }
 
   render() {
     const { scheduleGames = [], copyClipboardEnable = true, showPrefilledFilter = false } = this.props
@@ -63,21 +56,6 @@ export default class GameList extends Component {
 
     return (
       <div className='gameList'>
-        {showPrefilledFilter && (
-          <div className='myGame__filter-section'>
-            <div className='viewGame__gameName'>
-              <Select
-                onChange={(data) => this.handleChangeFilter(data)}
-                options={prefilledFilter_option}
-                placeholder='Select your region'
-                name='prefilledFilter'
-                className='viewGame__name'
-                classNamePrefix='filter'
-                value={prefilledFilter}
-              />
-            </div>
-          </div>
-        )}
         <div className='gameList_head__option'>
           <div className='gameResult__count'> {len} Results</div>
           <div className='gameResult__fillView'>

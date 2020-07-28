@@ -65,11 +65,16 @@ const EditGameContainer = (props) => {
   const gameLinkRef = useRef(null)
 
   // to create select box value from array or string
-  const getExtraFilterOprion = (arg) => {
-    const data = arg && arg.length > 0 ? arg.split(',') : []
+  const getExtraFilterOprion = (arg = '') => {
+    let data = []
+    if (typeof arg == 'string') {
+      data = arg && arg.length > 0 ? arg.split(',') : []
+    } else if (Array.isArray(arg)) {
+      data = arg
+    }
     if (data.length > 0) {
       return data.map((item) => {
-        const val = item ? item.trim() : ''
+        const val = item && item.content ? item.content : item.trim()
         return { value: val, label: val }
       })
     } else {
@@ -101,49 +106,61 @@ const EditGameContainer = (props) => {
       onCancel={() => hideAlert('false')}></SweetAlert>
   )
 
-  useEffect(async () => {
-    const { params = {} } = props.routeProps.match
-    const { id = '' } = params
-    if (id) {
-      const scheduleGames = await axios.get(`/api/ScheduleGame/edit_game/${id}`)
+  useEffect(() => {
+    const innerFunc = async () => {
+      const { params = {} } = props.routeProps.match
+      const { id = '' } = params
+      if (id) {
+        const scheduleGames = await axios.get(`/api/ScheduleGame/edit_game/${id}`)
+        if (scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
+          const { latestScheduledGames = [], hasAttendees = 0, additional_submit_info = false } = scheduleGames.data
 
-      if (scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
-        const { latestScheduledGames = [], hasAttendees = 0 } = scheduleGames.data
+          const advanceSettings = { ...advancedSettingsState }
 
-        const advanceSettings = { ...advancedSettingsState }
+          advanceSettings.acceptMessage = latestScheduledGames[0].accept_msg
+          advanceSettings.description = latestScheduledGames[0].description
+          advanceSettings.experience = getExtraFilterOprion(latestScheduledGames[0].experience)
+          advanceSettings.platform = getExtraFilterOprion(latestScheduledGames[0].platform)
+          advanceSettings.optionTags = getExtraFilterOprion(latestScheduledGames[0].tags)
+          advanceSettings.tags = getExtraFilterOprion(latestScheduledGames[0].tags)
+          advanceSettings.coHosts = getExtraFilterOprion(latestScheduledGames[0].co_hosts)
 
-        advanceSettings.acceptMessage = latestScheduledGames[0].accept_msg
-        advanceSettings.description = latestScheduledGames[0].description
-        advanceSettings.experience = getExtraFilterOprion(latestScheduledGames[0].experience)
-        advanceSettings.platform = getExtraFilterOprion(latestScheduledGames[0].platform)
-        advanceSettings.optionTags = getExtraFilterOprion(latestScheduledGames[0].tags)
+          const mainSettings = { ...mainSettingsState }
 
-        const mainSettings = { ...mainSettingsState }
+          mainSettings.gameTitle = { value: latestScheduledGames[0].game_name, label: latestScheduledGames[0].game_name }
+          mainSettings.startTime = moment(latestScheduledGames[0].start_date_time)
+          mainSettings.endTime = moment(latestScheduledGames[0].end_date_time)
+          mainSettings.isEndGameFieldSelected = latestScheduledGames[0].end_date_time !== null ? true : false
+          mainSettings.isCommentsAllowed = latestScheduledGames[0].allow_comments == 1 ? true : false
+          mainSettings.isPublicGame = latestScheduledGames[0].visibility == 1 ? true : false
+          mainSettings.autoAccept = latestScheduledGames[0].autoJoin == 1 ? true : false
+          mainSettings.autoJoinHost = latestScheduledGames[0].autoJoinHost == 1 ? true : false
+          mainSettings.scheduledGameId = latestScheduledGames[0].id
+          mainSettings.scheduledGameGuid = latestScheduledGames[0].schedule_games_GUID
+          mainSettings.isRepeatFieldSelected = latestScheduledGames[0].repeatEvery == 1 ? true : false
+          mainSettings.cron = latestScheduledGames[0].cron
 
-        mainSettings.gameTitle = { value: latestScheduledGames[0].game_name, label: latestScheduledGames[0].game_name }
-        mainSettings.startTime = moment(latestScheduledGames[0].start_date_time)
-        mainSettings.endTime = moment(latestScheduledGames[0].end_date_time)
-        mainSettings.isEndGameFieldSelected = latestScheduledGames[0].end_date_time !== null ? true : false
-        mainSettings.isCommentsAllowed = latestScheduledGames[0].allow_comments == 1 ? true : false
-        mainSettings.isPublicGame = latestScheduledGames[0].visibility == 1 ? true : false
-        mainSettings.autoAccept = latestScheduledGames[0].autoJoin == 1 ? true : false
-        mainSettings.autoJoinHost = latestScheduledGames[0].autoJoinHost == 1 ? true : false
-        mainSettings.scheduledGameId = latestScheduledGames[0].id
-        mainSettings.scheduledGameGuid = latestScheduledGames[0].schedule_games_GUID
-        mainSettings.isRepeatFieldSelected = latestScheduledGames[0].repeatEvery == 1 ? true : false
-        mainSettings.cron = latestScheduledGames[0].cron
+          const optionalFields = { ...optionalFieldsState }
+          optionalFields.modalRank = latestScheduledGames[0].value_one ? getExtraFilterOprion(latestScheduledGames[0].value_one) : null
+          optionalFields.serverRegion = latestScheduledGames[0].value_two ? getExtraFilterOprion(latestScheduledGames[0].value_two) : null
+          optionalFields.roleNeeded = latestScheduledGames[0].value_three ? getExtraFilterOprion(latestScheduledGames[0].value_three) : null
+          optionalFields.trophies = latestScheduledGames[0].value_four ? getExtraFilterOprion(latestScheduledGames[0].value_four) : null
 
-        updateAdvancedSettingsState(advanceSettings)
-        updateMainSettingsState(mainSettings)
-        setSechduledGameData(latestScheduledGames)
-        setHasAttendees(hasAttendees)
-      } else {
-        window.location.href = '/?at=mygame'
+          const localState = { ...state }
+          localState.additional_info = additional_submit_info
+
+          updateAdvancedSettingsState(advanceSettings)
+          updateMainSettingsState(mainSettings)
+          updateOptionalFieldsState(optionalFields)
+          updateComponentState(localState)
+          setSechduledGameData(latestScheduledGames)
+          setHasAttendees(hasAttendees)
+        } else {
+          window.location.href = '/?at=mygames'
+        }
       }
     }
-    return () => {
-      return
-    }
+    innerFunc()
   }, [])
   // Handlers
   const isButtonDisabled = () => {
@@ -228,25 +245,27 @@ const EditGameContainer = (props) => {
         occurrence: mainSettingsState.occurrence,
         repeatEvery: mainSettingsState.repeatEvery,
         autoJoinHost: mainSettingsState.autoJoinHost,
-        schedule_games_GUID: props.schedule_games_GUID,
+        schedule_games_GUID: mainSettingsState.scheduledGameGuid,
+        gameId: id,
       })
       updateMainSettingsState((currentState) => ({
         ...currentState,
         scheduledGameId: data.id,
-        scheduledGameGuid: props.schedule_games_GUID,
+        scheduledGameGuid: mainSettingsState.scheduledGameGuid,
       }))
-      updateGameLink(data.schedule_games_GUID)
-      updateIsGameListedModalOpen(true)
+      updateGameLink(mainSettingsState.scheduledGameGuid)
+      // updateIsGameListedModalOpen(true)
+      window.location.href = '/?at=mygames'
     } catch (err) {
       updateIsSubmitting(false)
     }
   }
 
   const onCancelGameHandler = () => {
-    window.location.href = '/?at=mygame'
+    window.location.href = '/?at=mygames'
   }
   const onDeleteGameHandler = () => {
-    if (hasAttendees == 1) {
+    if (hasAttendees == 0) {
       setShowSweetAlert(renderSweetAlert())
     } else {
       setShowReasonModal(true)
@@ -336,50 +355,46 @@ const EditGameContainer = (props) => {
 
   const selectReasonToDelete = () => {
     return (
-      <MyGModal isOpen ariaHideApp={false}>
-        <div className={styles.listedTopContentContainer}>
-          <div className={styles.listedHeader}>Are you sure?</div>
-          <div className={styles.listedShareText}>Select a reason for canceling</div>
+      <div className={`modal-container View__JoinBUtton__modal ${showReasonModal ? 'modal--show' : ''}`}>
+        <div className='modal-wrap'>
+          <div className='modal__body'>
+            <div className='body__content'>
+              <h1>Are you sure?</h1>
+              <p>Select a reason for canceling</p>
 
-          <Select
-            style={{ width: '100%' }}
-            onChange={(data) => handleSelectChange(data)}
-            options={[
-              { value: 1, label: 'Real life issues, sorry all' },
-              { value: 2, label: 'Technical issues, sorry all' },
-              { value: 3, label: 'Totally forgot about this, my bad' },
-              { value: 4, label: 'Not enuf players' },
-              { value: 5, label: 'Decided not to play anymore, sorry all' },
-            ]}
-            placeholder={'Select a reason '}
-            className='game__values'
-            classNamePrefix='filter'
-            value={reason}
-          />
+              <Select
+                style={{ width: '100%' }}
+                onChange={(data) => handleSelectChange(data)}
+                options={[
+                  { value: 1, label: 'Real life issues, sorry all' },
+                  { value: 2, label: 'Technical issues, sorry all' },
+                  { value: 3, label: 'Totally forgot about this, my bad' },
+                  { value: 4, label: 'Not enuf players' },
+                  { value: 5, label: 'Decided not to play anymore, sorry all' },
+                ]}
+                placeholder={'Select a reason '}
+                className='game__values'
+                classNamePrefix='filter'
+                value={reason}
+              />
+            </div>
+            <div className='modal__close' onClick={() => handleReasonSubmit(false)}>
+              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/X_icon.svg' />
+            </div>
+          </div>
+          <div className='modal__footer'>
+            <MyGButton
+              customStyles={{ color: '#FFFFFF', border: '2px solid #FFFFFF' }}
+              onClick={() => handleReasonSubmit(false)}
+              text='Cancel'
+            />
+            <button type='button' disabled={reason == ''} onClick={() => handleReasonSubmit(true)}>
+              Submit
+            </button>
+          </div>
         </div>
-        <div className={styles.listedBottomContentContainer}>
-          <button
-            style={{
-              padding: '0 22px',
-              borderRadius: '6px',
-              height: '35px',
-              lineHeight: '34px',
-              margin: '0 20px',
-              cursor: reason == '' ? 'not-allowed' : 'pointer',
-              background: '#E5C746',
-              color: '#000000',
-            }}
-            disabled={reason == ''}
-            onClick={() => handleReasonSubmit(true)}>
-            {`Submit`}
-          </button>
-          <MyGButton
-            customStyles={{ color: '#FFFFFF', border: '2px solid #FFFFFF' }}
-            onClick={() => handleReasonSubmit(false)}
-            text='Cancel'
-          />
-        </div>
-      </MyGModal>
+        <div className='modal-overlay' onClick={() => handleReasonSubmit(false)}></div>
+      </div>
     )
   }
 
@@ -404,21 +419,36 @@ const EditGameContainer = (props) => {
   return (
     <div className={styles.edit__container}>
       <PageHeader headerText='Edit Game' />
-      <EditGame
-        state={state}
-        updateComponentState={updateComponentState}
-        advancedSettingsState={advancedSettingsState}
-        updateAdvancedSettingsState={updateAdvancedSettingsState}
-        mainSettingsState={mainSettingsState}
-        updateMainSettingsState={updateMainSettingsState}
-        optionalFieldsState={optionalFieldsState}
-        updateOptionalFieldsState={updateOptionalFieldsState}
-        isSubmitting={isSubmitting}
-        updateIsSubmitting={updateIsSubmitting}
-      />
+      {mainSettingsState.gameTitle.value && (
+        <EditGame
+          state={state}
+          updateComponentState={updateComponentState}
+          advancedSettingsState={advancedSettingsState}
+          updateAdvancedSettingsState={updateAdvancedSettingsState}
+          mainSettingsState={mainSettingsState}
+          updateMainSettingsState={updateMainSettingsState}
+          optionalFieldsState={optionalFieldsState}
+          updateOptionalFieldsState={updateOptionalFieldsState}
+          isSubmitting={isSubmitting}
+          updateIsSubmitting={updateIsSubmitting}
+        />
+      )}
       {getPageFooter()}
       {showReasonModal && selectReasonToDelete()}
       {showSweetAlert}
+      {isGameListedModalOpen && getGameListedModal()}
+      {isInvitesSentsModalOpen && getInvitesSentModal()}
+      {isInviteModalOpen && (
+        <InvitePlayers
+          onInvitationSent={onInvitationSent}
+          onCancelInviteClick={onCancelInviteClick}
+          gameId={mainSettingsState.gameTitle.game_names_id}
+          scheduledGameId={mainSettingsState.scheduledGameId}
+          scheduledGameGuid={mainSettingsState.scheduledGameGuid}
+          gameTitle={mainSettingsState.gameTitle.value}
+          startTime={mainSettingsState.startTime.valueOf()}
+        />
+      )}
     </div>
   )
 }
