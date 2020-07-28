@@ -245,7 +245,46 @@
   padding-top: 5px;
 }
 
-.box{
-  background: red;
+// Community Box Style
+
+.community-cards {
   padding: 20px;
+}
+
+.community-card-box {
+  background: #171a1c;
+  padding: 30px 20px;
+  text-align: center;
+  border: 1px solid #273137;
+  border-radius: 8px;
+  margin-bottom: 40px;
+}
+
+.community-card-box .community-title {
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.community-card-box hr {
+  border-top: 1px solid #384952;
+  width: 30%;
+}
+
+.community-card-box .members {
+  color: #fff;
+}
+
+.community-card-box .btn-show button {
+  background: #e5c746;
+  color: #000;
+  font-weight: 700;
+  border: none;
+  padding: 5px 15px;
+}
+
+.community-card-box .btn-show {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 25px;
 }
