@@ -10,6 +10,7 @@ import { Hash_Tags } from './Utility_Function'
 
 import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
+import yourCommunitiesBox from './Community/YourCommunityBox/index'
 
 const MAX_HASH_TAGS = 21
 
@@ -174,7 +175,15 @@ export default class GroupMain extends Component {
               {` Suggest Communities`}
             </div>
           </div>
-          {open_compose_textTab && <h1>Your Communities</h1>}
+          {open_compose_textTab && (
+            <Fragment>
+              <div className='row'>
+                <div className='col-md-3'>
+                  <yourCommunitiesBox />
+                </div>
+              </div>
+            </Fragment>
+          )}
           {!open_compose_textTab && <h1>Suggest Communities</h1>}
         </section>
       </Fragment>
