@@ -1310,7 +1310,6 @@ class ScheduleGameController {
         .leftJoin('schedule_games_transactions', 'schedule_games_transactions.schedule_games_id', 'schedule_games.id')
         .where('schedule_games.schedule_games_GUID', '=', request.params.schedule_games_GUID)
         .select('*', 'users.id as user_id', 'schedule_games.id as id', 'schedule_games.created_at', 'schedule_games.updated_at')
-      console.log(latestScheduledGames)
       if (!latestScheduledGames.length) {
         return
       }
