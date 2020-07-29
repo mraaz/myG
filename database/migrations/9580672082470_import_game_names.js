@@ -549,7 +549,6 @@ class Import_game_names_Schema extends Schema {
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('N+', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Naked War', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('NARC', 1, 1, '1988-08-08', '1988-08-08')")
-    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('NBA 2K10', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('NBA Jam', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('NBA Street Vol 2', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Nebulus', 1, 1, '1988-08-08', '1988-08-08')")
@@ -1031,7 +1030,6 @@ class Import_game_names_Schema extends Schema {
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Sekiro: Shadows Die Twice', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Hearthstone: Heroes of Warcraft', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Overwatch', 1, 1, '1988-08-08', '1988-08-08')")
-    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('PlayerUnknowns Battlegrounds', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Grand Theft Auto V', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('World Of Tanks', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Rocket League', 1, 1, '1988-08-08', '1988-08-08')")
@@ -1050,18 +1048,19 @@ class Import_game_names_Schema extends Schema {
 
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Roblox', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Mobile Legends: Bang Bang', 1, 1, '1988-08-08', '1988-08-08')")
-    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('CS:GO', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Subway Surfers', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Pokemon GO', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('PUBG', 1, 1, '1988-08-08', '1988-08-08')")
-    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Overwatch', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('NBA 2K', 1, 1, '1988-08-08', '1988-08-08')")
-    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Rocket League', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Super Smash Bros. Ultimate', 1, 1, '1988-08-08', '1988-08-08')")
 
 
     .raw("update game_names set game_img = \"https://mygame-media.s3-ap-southeast-2.amazonaws.com/game_icons/dota_2_img.jpg\" where game_name = \"Dota 2\"")
     .raw("update game_names set game_img = \"https://mygame-media.s3-ap-southeast-2.amazonaws.com/game_icons/clash_royale_img.png\" where game_name = \"Clash Royale\"")
+
+    .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Call%20of%20Duty:%20Modern%20Warfare-144x192.jpg\" where game_name = \"Call of Duty: Warzone\"")
+
+
 
     // .raw("update game_names set game_name_fields = 1 where game_name = \"Dota 2\"")
     // .raw("update game_names set game_name_fields = 1 where game_name = \"Clash Royale\"")

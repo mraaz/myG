@@ -348,7 +348,7 @@ class Layout extends Component {
 
                 <Route
                   exact
-                  path='/createCommunity'
+                  path='/community/create'
                   component={(props) => (
                     <CreateCommunity />
                   )}
