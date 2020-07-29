@@ -1,284 +1,219 @@
-import React, { Component } from 'react'
-import { Redirect } from 'react-router'
+/*
+ * Author : nitin Tyagi
+ * github  : https://github.com/realinit
+ * Email : nitin.1992tyagi@gmail.com
+ */
+import React, { Component, Fragment } from 'react'
 import axios from 'axios'
-import IndividualGroups from './IndividualGroups'
+import { toast } from 'react-toastify'
+import { Toast_style } from './Utility_Function'
+import YourCommunityBox from '../components/Community/YourCommunityBox'
+import SuggestedCommunityBox from '../components/Community/SuggestedCommunitybox'
 
-import GroupOpenModal from './GroupOpenModal'
+const MAX_HASH_TAGS = 21
 
-import Autosuggest from 'react-autosuggest'
-import AutosuggestHighlightMatch from 'autosuggest-highlight/match'
-import AutosuggestHighlightParse from 'autosuggest-highlight/parse'
-
-var playersDB = []
-
-function escapeRegexCharacters(str) {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-}
-
-function getSuggestions(value) {
-  const escapedValue = escapeRegexCharacters(value.trim())
-
-  if (escapedValue === '') {
-    return []
-  }
-
-  const regex = new RegExp('\\b' + escapedValue, 'i')
-
-  return playersDB.filter((person) => regex.test(getSuggestionValue(person)))
-}
-
-function getSuggestionValue(suggestion) {
-  return `${suggestion.name}`
-}
-
-function renderSuggestion(suggestion, { query }) {
-  const suggestionText = `${suggestion.name}`
-  const matches = AutosuggestHighlightMatch(suggestionText, query)
-  const parts = AutosuggestHighlightParse(suggestionText, matches)
-
-  return (
-    <span className='suggestion-content'>
-      <span
-        className='suggestion-user-img'
-        style={{
-          backgroundImage: `url('${suggestion.group_img}')`,
-        }}></span>
-      <span className='name'>
-        {parts.map((part, index) => {
-          const className = part.highlight ? 'highlight' : null
-
-          return (
-            <span className={className} key={index}>
-              {part.text}
-            </span>
-          )
-        })}
-      </span>
-    </span>
-  )
-}
+const createOption = (label, hash_tag_id) => ({
+  label,
+  value: label,
+  hash_tag_id,
+})
 
 export default class GroupMain extends Component {
   constructor() {
     super()
-    self = this
     this.state = {
-      collapse: true,
-      collapseesports: true,
-      friendStatus: 0, //0: Not friend, 1: Friends, 2:Friend request pending,
-      friendTxt: '',
-      myPage: false,
+      show_post: false,
+      profile_img: '',
+      post_content: '',
       bFileModalOpen: false,
-      profile_attr: '',
-      show_bio: false,
-      value: '',
-      suggestions: [],
-      redirect_: false,
-      redirect_link: '',
+      myPosts: [],
+      masterList: [],
+      open_compose_textTab: true,
+      add_group_toggle: false,
+      selected_group: [],
+      selected_group_data: [],
+      selectedGroup: [],
+      groups_im_in: [],
+      preview_files: [],
+      visibility: 1,
+      group_id: [],
+      options_tags: '',
+      value_tags: [],
+      isShowAllGroup: false,
     }
-
-    this.callbackFileModalClose = this.callbackFileModalClose.bind(this)
-    this.addGroup = this.addGroup.bind(this)
-    this.callbackFileModalConfirm = this.callbackFileModalConfirm.bind(this)
   }
 
-  componentDidMount() {
-    const self = this
+  submitForm = async () => {
+    const content = this.state.post_content.trim()
 
-    const getmyGroups = async function () {
-      var counter = 1
-      try {
-        const getmyGroups = await axios.get('/api/groups/all_myGrps/1')
-        self.setState({
-          myGroups: getmyGroups.data.myGroups,
-        })
-      } catch (error) {
-        console.log(error)
+    let media_url = []
+    let keys = []
+
+    if (this.state.preview_files.length > 0) {
+      for (let i = 0; i < this.state.preview_files.length; i++) {
+        media_url.push(this.state.preview_files[i].src)
+        keys.push(this.state.preview_files[i].key)
       }
     }
-
-    const getGroups_im_in = async function () {
-      var counter = 1
-      try {
-        const getGroups_im_in = await axios.get(`/api/usergroup/view/${counter}`)
-        self.setState({
-          groups_im_in: getGroups_im_in.data.groups_im_in,
-        })
-      } catch (error) {
-        console.log(error)
+    let hash_tags = []
+    if (this.state.value_tags.length != 0 && this.state.value_tags != null) {
+      if (this.state.value_tags.length >= MAX_HASH_TAGS) {
+        toast.success(<Toast_style text={"Crikey, mate! That's alot of tags. I'll only grab 20 and dump the rest."} />)
       }
-    }
-
-    getGroups_im_in()
-    getmyGroups()
-  }
-
-  callbackFileModalClose() {
-    this.setState({
-      bFileModalOpen: false,
-    })
-  }
-
-  addGroup() {
-    this.setState({
-      bFileModalOpen: true,
-    })
-  }
-
-  callbackFileModalConfirm(src) {
-    this.setState({
-      bFileModalOpen: false,
-    })
-  }
-
-  onChange = (event, { newValue }) => {
-    if (newValue == '') {
-      if (this.timeout) clearTimeout(this.timeout)
-      playersDB = []
-      this.setState({
-        suggestions: [],
-        value: '',
-      })
-    } else {
-      this.setState({
-        value: newValue,
-      })
-    }
-  }
-
-  // Autosuggest will call this function every time you need to update suggestions.
-  // You already implemented this logic above, so just use it.
-  //Timeout ensures we query the DB when the user pauses typing, not querying every stroke
-  onSuggestionsFetchRequested = ({ value }) => {
-    const self = this
-
-    if (this.timeout) clearTimeout(this.timeout)
-    this.timeout = setTimeout(() => {
-      getPlayerInfo()
-    }, 300)
-
-    const getPlayerInfo = async function () {
-      try {
-        const groupSearchResults = await axios.get(`/api/groups/${value}/groupSearchResults_Post`)
-        playersDB = groupSearchResults.data.myGroupSearchResults
-        self.setState({
-          suggestions: getSuggestions(value),
-        })
-      } catch (error) {
-        console.log(error)
+      for (let i = 0; i < MAX_HASH_TAGS && i < this.state.value_tags.length; i++) {
+        if (/['/.%#$,;`\\]/.test(this.state.value_tags[i].value)) {
+          toast.success(<Toast_style text={'Sorry mate! Hash tags can not have invalid characters'} />)
+          return
+        }
+        delete this.state.value_tags[i].label
       }
+      hash_tags = JSON.stringify(this.state.value_tags)
     }
-  }
 
-  // Autosuggest will call this function every time you need to clear suggestions.
-  onSuggestionsClearRequested = () => {
-    this.setState({
-      suggestions: [],
-    })
-  }
-
-  onSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
-    this.state.redirect_link = suggestion.id
-    this.setState({ redirect_: true })
-  }
-
-  showmyGroups = () => {
-    if (this.state.myGroups != undefined) {
-      return this.state.myGroups.map((item, index) => {
-        return <IndividualGroups groups={item} key={index} user={this.props.initialData} />
-      })
-    }
-  }
-
-  showGroupsimin = () => {
-    if (this.state.groups_im_in != undefined) {
-      return this.state.groups_im_in.map((item, index) => {
-        return <IndividualGroups groups={item} key={index} user={this.props.initialData} />
-      })
-    }
-  }
-
-  get_my_communities = async () => {
     try {
-      const get_my_communities = await axios.get('/api/groups/get_my_communities/1')
-
-      console.log(get_my_communities)
+      const post = await axios.post('/api/post', {
+        content: content,
+        user_id: this.props.initialData.userInfo.id,
+        type: 'text',
+        visibility: this.state.visibility,
+        group_id: this.state.group_id.toString(),
+        media_url: media_url.length > 0 ? JSON.stringify(media_url) : '',
+        file_keys: keys.length > 0 ? keys : '',
+        hash_tags: hash_tags,
+      })
+      this.setState(
+        {
+          bFileModalOpen: false,
+          post_content: '',
+          media_url: [],
+          preview_files: [],
+          keys: [],
+          visibility: 1,
+          overlay_active: false,
+          value_tags: [],
+          selected_group_data: [],
+          selected_group: [],
+          group_id: [],
+          open_compose_textTab: true,
+        },
+        () => {
+          media_url = []
+          keys = []
+          this.props.successCallback(post)
+        }
+      )
+      // await this.get_posts(post)
     } catch (error) {
       console.log(error)
     }
   }
 
-  render() {
-    if (this.state.redirect_) {
-      var tmp = `/groups/${this.state.redirect_link}`
-      return <Redirect push to={tmp} />
-    }
-    const { value, suggestions } = this.state
+  get_posts = (post) => {
+    const self = this
 
-    // Autosuggest will pass through all these props to the input.
-    const inputProps = {
-      placeholder: 'Search for Groups',
-      value,
-      onChange: this.onChange,
+    const getPosts = async function () {
+      try {
+        const myPosts = await axios.get(`/api/mypost/${post.data}`)
+        self.state.masterList = self.state.masterList.concat(myPosts.data.myPosts)
+
+        self.setState({
+          myPosts: self.state.masterList.reverse(),
+          show_post: true,
+          post_content: '',
+        })
+      } catch (error) {
+        console.log(error)
+      }
     }
+    getPosts()
+  }
+
+  componentDidMount() {
+    const self = this
+
+    if (this.props != undefined) {
+      if (this.props.initialData.userInfo != undefined) {
+        this.setState({
+          profile_img: this.props.initialData.userInfo.profile_img,
+          alias: this.props.initialData.userInfo.alias,
+        })
+      }
+    }
+  }
+
+  togglePostTypeTab = (label) => {
+    let open_compose_textTab = true
+    if (label == 'media') {
+      open_compose_textTab = false
+    }
+    if (label == 'text') {
+      setTimeout(function () {
+        document.getElementById('composeTextarea').focus()
+      }, 0)
+    }
+    this.setState({ open_compose_textTab, overlay_active: true })
+  }
+
+  toggleShowAllGroup = () => {
+    this.setState({ isShowAllGroup: !this.state.isShowAllGroup })
+  }
+
+  render() {
+    const { open_compose_textTab, overlay_active } = this.state
+
     return (
-      <section id='group-page'>
-        <GroupOpenModal
-          bOpen={this.state.bFileModalOpen}
-          callbackClose={this.callbackFileModalClose}
-          callbackConfirm={this.callbackFileModalConfirm}></GroupOpenModal>
-        <div className='content-area group-page'>
-          <div className='padding-container'>
-            <div className='groups-grey-container'>
-              <h3>Groups</h3>
-              <div className='add-group'>
-                <i className='fas fa-plus-circle' onClick={() => this.addGroup()}></i>
-              </div>
-              <div className='padding-container'></div>
-              <div className='group-search-box'>
-                <Autosuggest
-                  suggestions={suggestions}
-                  onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                  onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                  getSuggestionValue={getSuggestionValue}
-                  renderSuggestion={renderSuggestion}
-                  onSuggestionSelected={this.onSuggestionSelected}
-                  inputProps={inputProps}
-                />
-              </div>
+      <Fragment>
+        <section className={`postCompose__container ${overlay_active ? 'zI1000' : ''}`}>
+          <div className='compose__type__section'>
+            <div className={`share__thought ${open_compose_textTab ? 'active' : ''}`} onClick={(e) => this.togglePostTypeTab('text')}>
+              {`Your Communities`}
+            </div>
+            <div className='devider'></div>
+            <div className={`add__post__image ${open_compose_textTab ? '' : 'active'}`} onClick={(e) => this.togglePostTypeTab('media')}>
+              {` Suggest Communities`}
             </div>
           </div>
-          <div className='padding-container'>
-            <div className='mygroups-grey-container'>
-              <h3>myGroups</h3>
-              <div className='icon' onClick={this.clickedDropdown}>
-                <i className='fas fa-chevron-down' />
+          {open_compose_textTab && (
+            <Fragment>
+              <div className='community-cards'>
+                <div className='row'>
+                  <div className='col-md-4'>
+                    <YourCommunityBox />
+                  </div>
+                  <div className='col-md-4'>
+                    <YourCommunityBox />
+                  </div>
+                  <div className='col-md-4'>
+                    <YourCommunityBox />
+                  </div>
+                  <div className='col-md-4'>
+                    <YourCommunityBox />
+                  </div>
+                  <div className='col-md-4'>
+                    <YourCommunityBox />
+                  </div>
+                  <div className='col-md-4'>
+                    <YourCommunityBox />
+                  </div>
+                </div>
               </div>
-              <div className='padding-container'></div>
-              <div className='my-groups'>
-                <button className='allread' onClick={() => this.get_my_communities()}>
-                  get my communities
-                </button>
-                <div className='indent'></div>
-                {this.showmyGroups()}
+            </Fragment>
+          )}
+          {!open_compose_textTab && (
+            <Fragment>
+              <div className='community-cards'>
+                <div className='row'>
+                  <div className='col-md-4'>
+                    <SuggestedCommunityBox />
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className='padding-container'>
-            <div className='groups-im-in-grey-container'>
-              <h3>Groups I'm in</h3>
-              <div className='icon' onClick={this.clickedDropdown}>
-                <i className='fas fa-chevron-down' />
-              </div>
-              <div className='padding-container'></div>
-              <div className='groups-im-in'>
-                <div className='indent'></div>
-                {this.showGroupsimin()}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+            </Fragment>
+          )}
+        </section>
+      </Fragment>
     )
   }
 }
+
+const app = document.getElementById('app')

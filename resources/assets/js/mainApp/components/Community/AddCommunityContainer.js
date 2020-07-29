@@ -243,7 +243,7 @@ const AddCommunityContainer = () => {
 
   return (
     <div className={styles.container}>
-      <PageHeader headerText='Add Community' />
+      <PageHeader headerText='Create Community' />
       <AddCommunity
         state={state}
         updateComponentState={updateComponentState}
