@@ -8,6 +8,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
 import YourCommunityBox from '../components/Community/YourCommunityBox'
+import SuggestedCommunityBox from '../components/Community/SuggestedCommunitybox'
 
 const MAX_HASH_TAGS = 21
 
@@ -198,7 +199,17 @@ export default class GroupMain extends Component {
               </div>
             </Fragment>
           )}
-          {!open_compose_textTab && <h1>Suggest Communities</h1>}
+          {!open_compose_textTab && (
+            <Fragment>
+              <div className='community-cards'>
+                <div className='row'>
+                  <div className='col-md-4'>
+                    <SuggestedCommunityBox />
+                  </div>
+                </div>
+              </div>
+            </Fragment>
+          )}
         </section>
       </Fragment>
     )
