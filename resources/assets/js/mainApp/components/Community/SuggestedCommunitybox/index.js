@@ -3,7 +3,7 @@ import React, { Fragment } from "react";
 // import styles
 import "../../../styles/Community/AddCommunityStyles.scss"
 
-import img from "../../../img/suggested-community-icon.png"
+//import img from "../../../img/suggested-community-icon.png"
 
 const SuggestedCommunityBox = (props) => {
     return (
@@ -13,7 +13,7 @@ const SuggestedCommunityBox = (props) => {
                     <p>dota 2 australia</p>
                 </div>
                 <div className="community-img">
-                    <img src={img} className="img-fluid" />
+                    {/* <img src={img} className="img-fluid" /> */}
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut aliquam sodales nunc, et laoreet nulla. Orci varius natoque penatibus et ma</p>
                 </div>
                 <div className="btn-show">
