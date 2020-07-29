@@ -253,11 +253,12 @@
 
 .community-card-box {
   background: #171a1c;
-  padding: 30px 20px;
   text-align: center;
   border: 1px solid #273137;
   border-radius: 8px;
   margin-bottom: 40px;
+  padding-top: 30px;
+  padding-bottom: 50px;
 }
 
 .community-card-box .community-title {
@@ -287,4 +288,12 @@
   left: 0;
   right: 0;
   bottom: 25px;
+}
+
+.community-card-box span {
+  font-size: 14px;
+}
+
+.community-card-box .community-title p {
+  font-weight: bold;
 }

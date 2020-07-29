@@ -12,7 +12,7 @@ const YourCommunityBox = (props) => {
                 </div>
                 <hr />
                 <div className="members">
-                    <h1>2.8k</h1>
+                    <h2>2.8k</h2>
                     <span>Members</span>
                 </div>
                 <div className="btn-show">
