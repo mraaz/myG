@@ -51,10 +51,11 @@ const AddGameContainer = () => {
     autoJoinHost: true,
   })
   const [optionalFieldsState, updateOptionalFieldsState] = useState({
-    modalRank: null,
-    serverRegion: null,
-    roleNeeded: null,
-    trophies: null,
+    value_one: null,
+    value_two: null,
+    value_three: null,
+    value_four: null,
+    value_five: null,
   })
   const [gameLink, updateGameLink] = useState('')
   const gameLinkRef = useRef(null)

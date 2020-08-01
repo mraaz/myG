@@ -3,6 +3,7 @@ import classNames from 'classnames'
 import Slider, { Range } from 'rc-slider'
 import moment from 'moment'
 import CustomCron from '../common/Cron/MyGCron'
+import axios from 'axios'
 
 import 'rc-slider/assets/index.css'
 import { toast } from 'react-toastify'
@@ -410,6 +411,19 @@ const AddGame = ({
     )
   }
 
+  const handleChange_game_title = async (value) => {
+    updateMainSettings({ gameTitle: value })
+    if (value && !value.additional_info) {
+      updateOptionalSettings({ value_one: null, value_two: null, value_three: null, value_four: null, value_five: null })
+      updateState({ additional_info: value ? value.additional_info : false })
+    } else if (value && value.additional_info) {
+      const scheduleGames = await axios.get(`/api/ScheduleGame/additional_game_info/${value.id}`)
+      console.log(scheduleGames, '<Raaz')
+      updateOptionalSettings({ value_one: null, value_two: null, value_three: null, value_four: null, value_five: null })
+      updateState({ additional_info: value ? value.additional_info : false })
+    }
+  }
+
   const getMainSettingsView = () => {
     return (
       <div style={{ display: 'flex' }}>
@@ -426,11 +440,7 @@ const AddGame = ({
               isClearable
               onCreateOption={handleCreateGame}
               onInputChange={getOptionsGames}
-              onChange={(value) => {
-                updateMainSettings({ gameTitle: value })
-                value && !value.additional_info && updateOptionalSettings({ serverRegion: null })
-                updateState({ additional_info: value ? value.additional_info : false })
-              }}
+              onChange={handleChange_game_title}
               value={mainSettingsState.gameTitle}
               placeholder='Search, Select or create Game Title'
               options={mainSettingsState.gameTitlesList}

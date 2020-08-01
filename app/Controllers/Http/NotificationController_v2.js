@@ -2,6 +2,7 @@
 
 const Notification = use('App/Models/Notification')
 const Database = use('Database')
+const ScheduleGameController = use('./ScheduleGameController')
 
 // Split the array into halves and merge them recursively
 function mergeSort(arr) {
@@ -39,7 +40,7 @@ function merge(left, right) {
 class NotificationController_v2 {
   async getApprovals_Dashboard({ auth, request, response }) {
     //Return results for Activity_type: 1, 11, 12
-    let set_limit = 10,
+    let set_limit = 18,
       singleArr = []
     try {
       if (request.input('activity_type') == 0 || request.input('activity_type') == 1) {
@@ -50,7 +51,7 @@ class NotificationController_v2 {
             'notifications.activity_type',
             'users.alias',
             'users.profile_img',
-            'users.id',
+            'users.id as user_id',
             'notifications.id',
             'notifications.created_at',
             'notifications.read_status'
@@ -60,26 +61,76 @@ class NotificationController_v2 {
         singleArr.push(...allMyFriends.data)
       }
       if (request.input('activity_type') == 0 || request.input('activity_type') == 11) {
-        const myschedulegames_attendees = await Database.from('notifications')
+        let myschedulegames_attendees = await Database.from('notifications')
           .innerJoin('users', 'users.id', 'notifications.user_id')
           .innerJoin('schedule_games', 'schedule_games.id', 'notifications.schedule_games_id')
           .innerJoin('game_names', 'schedule_games.game_names_id', 'game_names.id')
           .where({ other_user_id: auth.user.id, activity_type: 11 })
           .select(
             'schedule_games.start_date_time',
-            'schedule_games.id',
+            'schedule_games.id as schedule_games_id',
             'schedule_games.schedule_games_GUID',
             'game_names.game_name',
             'notifications.activity_type',
             'users.alias',
             'users.profile_img',
-            'users.id',
+            'users.id as user_id',
             'notifications.id',
             'notifications.created_at',
             'notifications.read_status'
           )
           .orderBy('notifications.created_at', 'desc')
           .paginate(request.input('counter'), set_limit)
+
+        let memorise = []
+
+        let scheduleGameController = new ScheduleGameController()
+        for (var i = 0; i < myschedulegames_attendees.data.length; i++) {
+          if (memorise[myschedulegames_attendees.data[i].schedule_games_id] == undefined) {
+            const more_fields = await scheduleGameController.get_labels_for_game_fields(
+              { auth },
+              myschedulegames_attendees.data[i].schedule_games_id
+            )
+            memorise[myschedulegames_attendees.data[i].schedule_games_id] = more_fields.obj
+          }
+
+          let _attendees = await Database.from('attendees')
+            .where({ schedule_games_id: myschedulegames_attendees.data[i].schedule_games_id })
+            .first()
+
+          if (_attendees != undefined) {
+            for (let key in memorise[myschedulegames_attendees.data[i].schedule_games_id]) {
+              switch (key) {
+                case 'value_one':
+                  myschedulegames_attendees.data[i].value_one = {
+                    [memorise[myschedulegames_attendees.data[i].schedule_games_id][key]]: _attendees.value_one,
+                  }
+                  break
+                case 'value_two':
+                  myschedulegames_attendees.data[i].value_two = {
+                    [memorise[myschedulegames_attendees.data[i].schedule_games_id][key]]: _attendees.value_two,
+                  }
+                  break
+                case 'value_three':
+                  myschedulegames_attendees.data[i].value_three = {
+                    [memorise[myschedulegames_attendees.data[i].schedule_games_id][key]]: _attendees.value_three,
+                  }
+                  break
+                case 'value_four':
+                  myschedulegames_attendees.data[i].value_four = {
+                    [memorise[myschedulegames_attendees.data[i].schedule_games_id][key]]: _attendees.value_four,
+                  }
+                  break
+                case 'value_five':
+                  myschedulegames_attendees.data[i].value_five = {
+                    [memorise[myschedulegames_attendees.data[i].schedule_games_id][key]]: _attendees.value_five,
+                  }
+                  break
+                default:
+              }
+            }
+          }
+        }
 
         singleArr.push(...myschedulegames_attendees.data)
       }
@@ -94,7 +145,7 @@ class NotificationController_v2 {
             'notifications.activity_type',
             'users.alias',
             'users.profile_img',
-            'users.id',
+            'users.id as user_id',
             'notifications.created_at',
             'notifications.id',
             'notifications.read_status',
