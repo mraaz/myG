@@ -41,8 +41,11 @@ export default class GameList extends Component {
     toast.error(<Toast_style text={'Link copied mate!'} />)
   }
   handleSingleGameDetails = (e, id, game) => {
-    this.setState({ activeItemId: id })
-    this.props.getSingleGameData(e, id, game)
+    const { activeItemId = '' } = this.state
+    if (activeItemId != id) {
+      this.setState({ activeItemId: id })
+      this.props.getSingleGameData(e, id, game)
+    }
   }
   handlePendingApproval = (e) => {
     e.stopPropagation()
@@ -79,8 +82,8 @@ export default class GameList extends Component {
               const experience_split = experience ? experience.split(',') : []
               const scheduledGamePicture = (
                 <img
-                  src={game_name_fields_img == '' ? defaultThumbnails : game_name_fields_img}
-                  className={game_name_fields_img == '' ? 'default-image' : 'image'}
+                  src={game_name_fields_img ? game_name_fields_img : defaultThumbnails}
+                  className={game_name_fields_img ? 'image' : 'default-image'}
                 />
               )
               return (

@@ -215,7 +215,6 @@ section#content-container {
     //overflow: hidden;
     //height: 900px; Hide the scroll bars, decided against it
     .content-area {
-      height: 100vh;
       overflow: scroll;
     }
     .search-header {
@@ -1508,8 +1507,7 @@ section#content-container {
   border: 1px solid #273137;
   margin: 0 100px;
   margin-bottom: 24px;
-
-  position: inherit;
+  position: relative;
   &.zI1000 {
     z-index: 1000;
   }
