@@ -26,6 +26,7 @@ import { MyGCheckbox, MyGTextarea, MyGAsyncSelect, MyGCreateableSelect, MyGSelec
 import { Game_name_values, Schedule_Game_Tags, Disable_keys } from '../Utility_Function'
 import Axios from 'axios'
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
+import { FeatureEnabled, REPEAT_SCHEDULE } from '../../../common/flags'
 
 const SliderWithTooltip = Slider.createSliderWithTooltip(Slider)
 
@@ -44,7 +45,7 @@ const AddGame = ({
 }) => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    const getInitialData_Tags = async function() {
+    const getInitialData_Tags = async function () {
       try {
         let results = await Schedule_Game_Tags()
         updateAdvancedSettings({ optionTags: results })
@@ -53,7 +54,7 @@ const AddGame = ({
       }
     }
 
-    const getInitialData_GameName = async function() {
+    const getInitialData_GameName = async function () {
       try {
         let results = await Game_name_values()
         updateMainSettings({ gameTitlesList: results })
@@ -132,7 +133,7 @@ const AddGame = ({
 
   // api calls
   const getOptionsTags = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         let results = await Schedule_Game_Tags(inputValue)
         updateAdvancedSettings({ optionTags: results })
@@ -149,7 +150,7 @@ const AddGame = ({
   }
 
   const getOptionsGames = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         let results = await Game_name_values(inputValue)
         updateMainSettings({ gameTitlesList: results })
@@ -344,16 +345,18 @@ const AddGame = ({
             </div>
           )}
           {!mainSettingsState.isRepeatFieldSelected && (
-            <React.Fragment>
-              {!mainSettingsState.isEndGameFieldSelected && <div className='circle' />}
-              <div
-                className='text-set-to-repeat'
-                onClick={(value) => {
-                  updateMainSettings({ isRepeatFieldSelected: true })
-                }}>
-                Set To Repeat
-              </div>
-            </React.Fragment>
+            <FeatureEnabled allOf={[REPEAT_SCHEDULE]}>
+              <React.Fragment>
+                {!mainSettingsState.isEndGameFieldSelected && <div className='circle' />}
+                <div
+                  className='text-set-to-repeat'
+                  onClick={(value) => {
+                    updateMainSettings({ isRepeatFieldSelected: true })
+                  }}>
+                  Set To Repeat
+                </div>
+              </React.Fragment>
+            </FeatureEnabled>
           )}
         </div>
         {/* <MyGCheckbox
