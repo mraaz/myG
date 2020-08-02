@@ -29,6 +29,8 @@ import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
 
 const SliderWithTooltip = Slider.createSliderWithTooltip(Slider)
 
+let game_data_struct = {}
+
 const AddGame = ({
   state,
   updateComponentState,
@@ -412,13 +414,135 @@ const AddGame = ({
   }
 
   const handleChange_game_title = async (value) => {
+    if (value == undefined || value == null) {
+      updateOptionalSettings({ value_one: null, value_two: null, value_three: null, value_four: null, value_five: null })
+      updateState({ additional_info: false })
+    }
     updateMainSettings({ gameTitle: value })
     if (value && !value.additional_info) {
       updateOptionalSettings({ value_one: null, value_two: null, value_three: null, value_four: null, value_five: null })
       updateState({ additional_info: value ? value.additional_info : false })
     } else if (value && value.additional_info) {
-      const scheduleGames = await axios.get(`/api/ScheduleGame/additional_game_info/${value.id}`)
-      console.log(scheduleGames, '<Raaz')
+      const getAllExtraFilters = await axios.get(`/api/ScheduleGame/getHeader_ALL/${value.game_names_id}`)
+      let additional_info_data = getAllExtraFilters.data.additional_info_data
+
+      game_data_struct = {}
+
+      let counter = 0,
+        newArr = [],
+        arrTags = ''
+
+      for (let key in additional_info_data) {
+        switch (counter) {
+          case 0:
+            newArr = []
+            arrTags = ''
+            game_data_struct['value_one_label'] = additional_info_data[key].label
+            game_data_struct['value_one_placeholder'] = additional_info_data[key].placeholder
+
+            if (additional_info_data[key].type == 'Multi') {
+              game_data_struct['value_one_multi_type'] = true
+            } else {
+              game_data_struct['value_one_multi_type'] = false
+            }
+
+            arrTags = additional_info_data[key].value.split(',')
+
+            for (let i = 0; i < arrTags.length; i++) {
+              const newOption = createOption(arrTags[i], null)
+              newArr.push(newOption)
+            }
+
+            game_data_struct['value_one_value'] = newArr
+
+            break
+          case 1:
+            newArr = []
+            arrTags = ''
+            game_data_struct['value_two_label'] = additional_info_data[key].label
+            game_data_struct['value_two_placeholder'] = additional_info_data[key].placeholder
+            game_data_struct['value_two_value'] = additional_info_data[key].value
+            if (additional_info_data[key].type == 'Multi') {
+              game_data_struct['value_two_multi_type'] = true
+            } else {
+              game_data_struct['value_two_multi_type'] = false
+            }
+
+            arrTags = additional_info_data[key].value.split(',')
+
+            for (let i = 0; i < arrTags.length; i++) {
+              const newOption = createOption(arrTags[i], null)
+              newArr.push(newOption)
+            }
+
+            game_data_struct['value_two_value'] = newArr
+            break
+          case 2:
+            newArr = []
+            arrTags = ''
+            game_data_struct['value_three_label'] = additional_info_data[key].label
+            game_data_struct['value_three_placeholder'] = additional_info_data[key].placeholder
+            game_data_struct['value_three_value'] = additional_info_data[key].value
+            if (additional_info_data[key].type == 'Multi') {
+              game_data_struct['value_three_multi_type'] = true
+            } else {
+              game_data_struct['value_three_multi_type'] = false
+            }
+
+            arrTags = additional_info_data[key].value.split(',')
+
+            for (let i = 0; i < arrTags.length; i++) {
+              const newOption = createOption(arrTags[i], null)
+              newArr.push(newOption)
+            }
+
+            game_data_struct['value_three_value'] = newArr
+            break
+          case 3:
+            newArr = []
+            arrTags = ''
+            game_data_struct['value_four_label'] = additional_info_data[key].label
+            game_data_struct['value_four_placeholder'] = additional_info_data[key].placeholder
+            game_data_struct['value_four_value'] = additional_info_data[key].value
+            if (additional_info_data[key].type == 'Multi') {
+              game_data_struct['value_four_multi_type'] = true
+            } else {
+              game_data_struct['value_four_multi_type'] = false
+            }
+
+            arrTags = additional_info_data[key].value.split(',')
+
+            for (let i = 0; i < arrTags.length; i++) {
+              const newOption = createOption(arrTags[i], null)
+              newArr.push(newOption)
+            }
+
+            game_data_struct['value_four_value'] = newArr
+            break
+          case 4:
+            newArr = []
+            arrTags = ''
+            game_data_struct['value_five_label'] = additional_info_data[key].label
+            game_data_struct['value_five_placeholder'] = additional_info_data[key].placeholder
+            game_data_struct['value_five_value'] = additional_info_data[key].value
+            if (additional_info_data[key].type == 'Multi') {
+              game_data_struct['value_five_multi_type'] = true
+            } else {
+              game_data_struct['value_five_multi_type'] = false
+            }
+
+            arrTags = additional_info_data[key].value.split(',')
+
+            for (let i = 0; i < arrTags.length; i++) {
+              const newOption = createOption(arrTags[i], null)
+              newArr.push(newOption)
+            }
+
+            game_data_struct['value_five_value'] = newArr
+            break
+        }
+        counter++
+      }
       updateOptionalSettings({ value_one: null, value_two: null, value_three: null, value_four: null, value_five: null })
       updateState({ additional_info: value ? value.additional_info : false })
     }
@@ -608,66 +732,87 @@ const AddGame = ({
         style={{ backgroundImage: `url(${imageTempUrl})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}
         className={styles.optionalViewContainer}>
         <div className={styles.optionalHeaderContainer}>
-          <span>DOTA 2 In-Game Fields </span>
+          <span>In-Game Fields </span>
           <span>(Optional)</span>
         </div>
+
         <div className={styles.optionalViewFields}>
-          {mainSettingsState.gameTitle.value !== 'Clash Royale' && (
+          {game_data_struct['value_one_label'] && (
             <Fragment>
-              <div className={styles.fieldTitle}>Medal Rank</div>
+              <div className={styles.fieldTitle}>{game_data_struct['value_one_label']}</div>
               <MyGSelect
-                options={DOTA2_MEDAL_RANKS}
+                options={game_data_struct['value_one_value']}
                 onChange={(value) => {
-                  updateOptionalSettings({ modalRank: value })
+                  updateOptionalSettings({ value_one: value })
                 }}
-                value={optionalFieldsState.modalRank}
-                placeholder='Select medal rank'
-                isMulti
+                value={optionalFieldsState.value_one}
+                placeholder={game_data_struct['value_one_placeholder']}
+                isMulti={game_data_struct['value_one_multi_type']}
+                isClearable
               />
             </Fragment>
           )}
 
-          {mainSettingsState.gameTitle.value !== 'Clash Royale' && (
+          {game_data_struct['value_two_label'] && (
             <Fragment>
-              <div className={styles.fieldTitle}>Server Regions</div>
+              <div className={styles.fieldTitle}>{game_data_struct['value_two_label']}</div>
               <MyGSelect
-                options={DOTA2_SERVER_REGIONS}
+                options={game_data_struct['value_two_value']}
                 onChange={(value) => {
-                  updateOptionalSettings({ serverRegion: value })
+                  updateOptionalSettings({ value_two: value })
                 }}
-                value={optionalFieldsState.serverRegion}
-                placeholder='Select server regions'
-                isMulti
+                value={optionalFieldsState.value_two}
+                placeholder={game_data_struct['value_two_placeholder']}
+                isMulti={game_data_struct['value_two_multi_type']}
+                isClearable
               />
             </Fragment>
           )}
 
-          {mainSettingsState.gameTitle.value !== 'Clash Royale' && (
+          {game_data_struct['value_three_label'] && (
             <Fragment>
-              <div className={styles.fieldTitle}>Roles Needed</div>
+              <div className={styles.fieldTitle}>{game_data_struct['value_three_label']}</div>
               <MyGSelect
-                options={DOTA2_ROLES}
+                options={game_data_struct['value_three_value']}
                 onChange={(value) => {
-                  updateOptionalSettings({ roleNeeded: value })
+                  updateOptionalSettings({ value_three: value })
                 }}
-                value={optionalFieldsState.roleNeeded}
-                placeholder='Select roles needed'
-                isMulti
+                value={optionalFieldsState.value_three}
+                placeholder={game_data_struct['value_three_placeholder']}
+                isMulti={game_data_struct['value_three_multi_type']}
+                isClearable
               />
             </Fragment>
           )}
 
-          {mainSettingsState.gameTitle.value === 'Clash Royale' && (
+          {game_data_struct['value_four_label'] && (
             <Fragment>
-              <div className={styles.fieldTitle}>Trophies</div>
+              <div className={styles.fieldTitle}>{game_data_struct['value_four_label']}</div>
               <MyGSelect
-                options={CLASH_ROYAL_TROPHY}
+                options={game_data_struct['value_four_value']}
                 onChange={(value) => {
-                  updateOptionalSettings({ trophies: value })
+                  updateOptionalSettings({ value_four: value })
                 }}
-                value={optionalFieldsState.trophies}
-                placeholder='Select trophies'
-                isMulti
+                value={optionalFieldsState.value_four}
+                placeholder={game_data_struct['value_four_placeholder']}
+                isMulti={game_data_struct['value_four_multi_type']}
+                isClearable
+              />
+            </Fragment>
+          )}
+
+          {game_data_struct['value_five_label'] && (
+            <Fragment>
+              <div className={styles.fieldTitle}>{game_data_struct['value_five_label']}</div>
+              <MyGSelect
+                options={game_data_struct['value_five_value']}
+                onChange={(value) => {
+                  updateOptionalSettings({ value_five: value })
+                }}
+                value={optionalFieldsState.value_five}
+                placeholder={game_data_struct['value_five_placeholder']}
+                isMulti={game_data_struct['value_five_multi_type']}
+                isClearable
               />
             </Fragment>
           )}

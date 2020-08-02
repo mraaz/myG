@@ -1679,12 +1679,6 @@ class ScheduleGameController {
         }
 
         for (let key in obj) {
-          // let tmp_tmp = { [key]: obj[key] }
-          // additional_info_fields[obj[key]] = obj4[obj[key]]
-          // additional_info_types[obj[key]] = obj3[obj[key]]
-          // additional_info_placeholder[obj[key]] = obj2[obj[key]]
-          // additional_info_values[obj[key]] = obj5[obj[key]]
-
           additional_info_data[obj[key]] = {
             label: obj2[obj[key]],
             type: obj3[obj[key]],
