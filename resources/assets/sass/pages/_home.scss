@@ -214,7 +214,6 @@ section#content-container {
     //overflow: hidden;
     //height: 900px; Hide the scroll bars, decided against it
     .content-area {
-      height: 100vh;
       overflow: scroll;
     }
     .search-header {
@@ -1507,8 +1506,7 @@ section#content-container {
   border: 1px solid #273137;
   margin: 0 100px;
   margin-bottom: 24px;
-
-  position: inherit;
+  position: relative;
   &.zI1000 {
     z-index: 1000;
   }
@@ -1631,6 +1629,7 @@ section#content-container {
     display: flex;
     align-items: center;
     padding: 6px 20px;
+    color: #657172;
     .hashtag_label {
       font: Bold 16px/14px Montserrat;
       letter-spacing: 0px;
@@ -1721,6 +1720,7 @@ section#content-container {
     align-items: center;
     .label {
       font: Bold 16px/14px Montserrat;
+      color: #657172;
     }
     .people_selected_container {
       display: flex;
@@ -1732,6 +1732,7 @@ section#content-container {
         margin-left: 10px;
         border-right: 1px solid #384952;
         position: relative;
+        color: #657172;
         font: Bold 16px/14px Montserrat;
         .default_circle {
           background: #ff00ff 0% 0% no-repeat padding-box;
@@ -1765,6 +1766,7 @@ section#content-container {
             overflow: hidden;
             text-overflow: ellipsis;
             width: 100%;
+            color: #657172;
           }
         }
       }

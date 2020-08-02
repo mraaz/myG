@@ -75,7 +75,7 @@ const EditGameContainer = (props) => {
     }
     if (data.length > 0) {
       return data.map((item) => {
-        const val = item && item.content ? item.content : item.trim()
+        const val = item && item.content ? item.content : item ? item.trim() : ''
         return { value: val, label: val }
       })
     } else {
@@ -423,7 +423,7 @@ const EditGameContainer = (props) => {
   return (
     <div className={styles.edit__container}>
       <PageHeader headerText='Edit Game' />
-      {mainSettingsState.gameTitle.value && (
+      {mainSettingsState.scheduledGameId && (
         <EditGame
           state={state}
           updateComponentState={updateComponentState}
