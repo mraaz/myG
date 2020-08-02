@@ -56,10 +56,11 @@ const EditGameContainer = (props) => {
     autoJoinHost: true,
   })
   const [optionalFieldsState, updateOptionalFieldsState] = useState({
-    modalRank: null,
-    serverRegion: null,
-    roleNeeded: null,
-    trophies: null,
+    value_one: null,
+    value_two: null,
+    value_three: null,
+    value_four: null,
+    value_five: null,
   })
   const [gameLink, updateGameLink] = useState('')
   const gameLinkRef = useRef(null)
@@ -141,10 +142,13 @@ const EditGameContainer = (props) => {
           mainSettings.cron = latestScheduledGames[0].cron
 
           const optionalFields = { ...optionalFieldsState }
-          optionalFields.modalRank = latestScheduledGames[0].value_one ? getExtraFilterOprion(latestScheduledGames[0].value_one) : null
-          optionalFields.serverRegion = latestScheduledGames[0].value_two ? getExtraFilterOprion(latestScheduledGames[0].value_two) : null
-          optionalFields.roleNeeded = latestScheduledGames[0].value_three ? getExtraFilterOprion(latestScheduledGames[0].value_three) : null
-          optionalFields.trophies = latestScheduledGames[0].value_four ? getExtraFilterOprion(latestScheduledGames[0].value_four) : null
+          optionalFields.value_one = latestScheduledGames[0].value_one ? getExtraFilterOprion(latestScheduledGames[0].value_one) : null
+          optionalFields.value_two = latestScheduledGames[0].value_two ? getExtraFilterOprion(latestScheduledGames[0].value_two) : null
+          optionalFields.value_three = latestScheduledGames[0].value_three
+            ? getExtraFilterOprion(latestScheduledGames[0].value_three)
+            : null
+          optionalFields.value_four = latestScheduledGames[0].value_four ? getExtraFilterOprion(latestScheduledGames[0].value_four) : null
+          optionalFields.value_five = latestScheduledGames[0].value_five ? getExtraFilterOprion(latestScheduledGames[0].value_five) : null
 
           const localState = { ...state }
           localState.additional_info = additional_submit_info
