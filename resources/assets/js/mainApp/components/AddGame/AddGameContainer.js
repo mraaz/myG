@@ -56,6 +56,7 @@ const AddGameContainer = () => {
     value_three: null,
     value_four: null,
     value_five: null,
+    game_artwork_lnk: '',
   })
   const [gameLink, updateGameLink] = useState('')
   const gameLinkRef = useRef(null)

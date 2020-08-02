@@ -543,7 +543,14 @@ const AddGame = ({
         }
         counter++
       }
-      updateOptionalSettings({ value_one: null, value_two: null, value_three: null, value_four: null, value_five: null })
+      updateOptionalSettings({
+        value_one: null,
+        value_two: null,
+        value_three: null,
+        value_four: null,
+        value_five: null,
+        game_artwork_lnk: value.game_artwork,
+      })
       updateState({ additional_info: value ? value.additional_info : false })
     }
   }
@@ -726,10 +733,10 @@ const AddGame = ({
 
   // ToDo: update modal rank and roles needs options
   const getOptionalGameFieldsView = () => {
-    const imageTempUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Game+Images/DOTA2.png'
+    //'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Game+Images/DOTA2.png'
     return (
       <div
-        style={{ backgroundImage: `url(${imageTempUrl})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}
+        style={{ backgroundImage: `url(${optionalFieldsState.game_artwork_lnk})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}
         className={styles.optionalViewContainer}>
         <div className={styles.optionalHeaderContainer}>
           <span>In-Game Fields </span>
