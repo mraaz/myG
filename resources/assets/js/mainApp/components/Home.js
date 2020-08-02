@@ -87,7 +87,7 @@ export default class Home extends Component {
           <AnalyticsBox />
           <div className='links' ref={this.navRef}>
             <div className={`${tabName == 'home' ? 'active' : 'home'}`} onClick={(e) => this.tabToggle('home')}>
-              Home
+              Home - myG Rules
             </div>
             <div className={`${tabName == 'communities' ? 'active' : 'communities'}`} onClick={(e) => this.tabToggle('communities')}>
               Communities
