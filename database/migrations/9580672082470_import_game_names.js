@@ -1021,7 +1021,6 @@ class Import_game_names_Schema extends Schema {
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Total War: Three Kingdoms', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Marvel Ultimate Alliance 3: The Black Order', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Star Wars: Jedi – Fallen Order', 1, 1, '1988-08-08', '1988-08-08')")
-    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('CS:GO', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Rainbow Six Siege', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Clash Royale', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Clash of Clans', 1, 1, '1988-08-08', '1988-08-08')")
