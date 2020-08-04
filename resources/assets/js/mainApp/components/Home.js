@@ -35,7 +35,7 @@ export default class Home extends Component {
     let params = new URLSearchParams(window.location.search)
     const activeTab = params.get('at')
     this.setState({
-      tabName: activeTab,
+      tabName: activeTab ? activeTab : 'home',
     })
   }
 
@@ -47,6 +47,8 @@ export default class Home extends Component {
     this.lastScrollY = window.scrollY
     const offsetWidth = this.contentAreaRef.current.offsetWidth ? 0 : this.contentAreaRef.current.offsetWidth
     window.requestAnimationFrame(() => {
+      console.log('this.lastScrollY   ', this.lastScrollY)
+
       if (this.lastScrollY > 300) {
         this.navRef.current.style.top = '0px'
         this.navRef.current.style.position = 'fixed'
@@ -85,7 +87,7 @@ export default class Home extends Component {
           <AnalyticsBox />
           <div className='links' ref={this.navRef}>
             <div className={`${tabName == 'home' ? 'active' : 'home'}`} onClick={(e) => this.tabToggle('home')}>
-              Home
+              Home - myG Rules
             </div>
             <div className={`${tabName == 'communities' ? 'active' : 'communities'}`} onClick={(e) => this.tabToggle('communities')}>
               Communities

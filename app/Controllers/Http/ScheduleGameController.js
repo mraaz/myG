@@ -1160,6 +1160,56 @@ class ScheduleGameController {
     }
   }
 
+  async get_labels_for_game_fields({ auth }, game_id) {
+    let additional_submit_info_fields = [],
+      additional_game_info = []
+
+    try {
+      additional_game_info = await Database.from('schedule_games')
+        .where('schedule_games.id', '=', game_id)
+        .first()
+
+      if (additional_game_info == undefined) {
+        return
+      }
+
+      //Figure out what fields to return, create the key value pair.
+      const getGameFields = await Database.from('game_name_fields')
+        .where({ game_names_id: additional_game_info.game_names_id })
+        .first()
+
+      if (getGameFields == undefined) {
+        return
+      }
+
+      let obj = '',
+        obj4 = ''
+
+      if (getGameFields.in_game_fields != undefined) {
+        obj = JSON.parse(getGameFields.in_game_fields)
+      }
+
+      if (getGameFields.in_game_field_labels != undefined) {
+        obj4 = JSON.parse(getGameFields.in_game_field_labels)
+      }
+
+      //Maximum of 5 in each loop so Nested is OK :)
+      for (let key2 in obj4) {
+        for (let key in obj) {
+          if (obj[key] == key2) {
+            obj[key] = obj4[key2]
+          }
+        }
+      }
+
+      return {
+        obj,
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   async additional_game_info({ auth, request, response }) {
     // '0': 'Join',
     // '1': 'Joined',
@@ -1310,7 +1360,6 @@ class ScheduleGameController {
         .leftJoin('schedule_games_transactions', 'schedule_games_transactions.schedule_games_id', 'schedule_games.id')
         .where('schedule_games.schedule_games_GUID', '=', request.params.schedule_games_GUID)
         .select('*', 'users.id as user_id', 'schedule_games.id as id', 'schedule_games.created_at', 'schedule_games.updated_at')
-      console.log(latestScheduledGames)
       if (!latestScheduledGames.length) {
         return
       }
@@ -1630,12 +1679,6 @@ class ScheduleGameController {
         }
 
         for (let key in obj) {
-          // let tmp_tmp = { [key]: obj[key] }
-          // additional_info_fields[obj[key]] = obj4[obj[key]]
-          // additional_info_types[obj[key]] = obj3[obj[key]]
-          // additional_info_placeholder[obj[key]] = obj2[obj[key]]
-          // additional_info_values[obj[key]] = obj5[obj[key]]
-
           additional_info_data[obj[key]] = {
             label: obj2[obj[key]],
             type: obj3[obj[key]],

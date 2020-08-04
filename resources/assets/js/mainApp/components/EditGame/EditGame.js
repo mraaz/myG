@@ -25,6 +25,7 @@ import { MyGCheckbox, MyGTextarea, MyGAsyncSelect, MyGCreateableSelect, MyGSelec
 import { Game_name_values, Schedule_Game_Tags, Disable_keys } from '../Utility_Function'
 import Axios from 'axios'
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
+import { FeatureEnabled, REPEAT_SCHEDULE } from '../../../common/flags'
 
 const SliderWithTooltip = Slider.createSliderWithTooltip(Slider)
 
@@ -341,18 +342,20 @@ const EditGame = ({
               </div>
             </div>
           )}
-          {!mainSettingsState.isRepeatFieldSelected && (
-            <React.Fragment>
-              {!mainSettingsState.isEndGameFieldSelected && <div className={styles.optionalCircle} />}
-              <div
-                className={styles.optionalText}
-                onClick={(value) => {
-                  updateMainSettings({ isRepeatFieldSelected: true })
-                }}>
-                Set To Repeat
-              </div>
-            </React.Fragment>
-          )}
+          <FeatureEnabled allOf={[REPEAT_SCHEDULE]}>
+            {!mainSettingsState.isRepeatFieldSelected && (
+              <React.Fragment>
+                {!mainSettingsState.isEndGameFieldSelected && <div className={styles.optionalCircle} />}
+                <div
+                  className={styles.optionalText}
+                  onClick={(value) => {
+                    updateMainSettings({ isRepeatFieldSelected: true })
+                  }}>
+                  Set To Repeat
+                </div>
+              </React.Fragment>
+            )}
+          </FeatureEnabled>
         </div>
         {/* <MyGCheckbox
           checked={mainSettingsState.isRepeatFieldSelected}

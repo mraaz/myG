@@ -59,7 +59,7 @@ const sideBarItems = {
       },
       {
         header: 'New <b>Community</b>',
-        cta: '/',
+        cta: '/community/create',
       },
     ],
   },

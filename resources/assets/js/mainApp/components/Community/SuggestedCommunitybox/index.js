@@ -17,6 +17,7 @@ const SuggestedCommunityBox = (props) => {
                     />
                 </div>
                 <div className="suggested-community-text">
+
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut aliquam sodales nunc, et laoreet nulla. Orci varius natoque penatibus et ma</p>
                     <hr />
                 </div>
