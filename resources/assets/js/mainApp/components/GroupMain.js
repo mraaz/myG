@@ -206,6 +206,33 @@ export default class GroupMain extends Component {
                   <div className='col-md-4'>
                     <SuggestedCommunityBox />
                   </div>
+                  <div className='col-md-4'>
+                    <SuggestedCommunityBox />
+                  </div>
+                  <div className='col-md-4'>
+                    <SuggestedCommunityBox />
+                  </div>
+                  <div className='col-md-4'>
+                    <SuggestedCommunityBox />
+                  </div>
+                  <div className='col-md-4'>
+                    <SuggestedCommunityBox />
+                  </div>
+                  <div className='col-md-4'>
+                    <SuggestedCommunityBox />
+                  </div>
+                  <div className='col-md-4'>
+                    <SuggestedCommunityBox />
+                  </div>
+                  <div className='col-md-4'>
+                    <SuggestedCommunityBox />
+                  </div>
+                  <div className='col-md-4'>
+                    <SuggestedCommunityBox />
+                  </div>
+                  <div className='col-md-4'>
+                    <SuggestedCommunityBox />
+                  </div>
                 </div>
               </div>
             </Fragment>
