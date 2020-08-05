@@ -73,11 +73,12 @@ const EditGameContainer = (props) => {
     } else if (Array.isArray(arg)) {
       data = arg
     }
-    console.log(data)
+    console.log(data, '<<<data')
     if (data.length > 0) {
       return data.map((item) => {
-        console.log(item)
-        const val = item && item.content ? item.content : item ? item.trim() : ''
+        console.log(item, '<<<item')
+        //const val = item && item.content ? item.content : item ? item.trim() : ''
+        const val = item && item.content ? item.content : item && item.alias ? item.alias : item ? item.trim() : ''
         return { value: val, label: val }
       })
     } else {
