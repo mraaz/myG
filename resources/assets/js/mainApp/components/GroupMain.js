@@ -173,6 +173,12 @@ export default class GroupMain extends Component {
               {` Suggest Communities`}
             </div>
           </div>
+          <div className='community__search_container'>
+            <div className='community__search'>
+              <input type='text' class='form-control' placeholder='Search' />
+              <img src='https://mygame-media.s3.ap-southeast-2.amazonaws.com/user_files/100_1596627479161_3uAR8Y_BTN_Search%201.png' />
+            </div>
+          </div>
           {open_compose_textTab && (
             <Fragment>
               <div className='community-cards'>
