@@ -439,15 +439,15 @@ class ScheduleGameController {
           }
         }
 
+        //Delete all Tags
+        const delete_schedule_games_tags = await Database.table('schedule_games_tags')
+          .where({
+            schedule_games_id: request.input('id'),
+          })
+          .delete()
+
         if (request.input('tags') != null && request.input('tags').length > 0) {
           var arrTags = JSON.parse(request.input('tags'))
-          //Delete all Tags
-          const delete_schedule_games_tags = await Database.table('schedule_games_tags')
-            .where({
-              schedule_games_id: request.input('id'),
-            })
-            .delete()
-          //Do a recalc
           //Create tags
           for (var i = 0; i < arrTags.length; i++) {
             if (arrTags[i].game_tag_id == null) {
@@ -1482,7 +1482,7 @@ class ScheduleGameController {
       let getAllTags = await Database.from('schedule_games_tags')
         .innerJoin('game_tags', 'game_tags.id', 'schedule_games_tags.game_tag_id')
         .where({ schedule_games_id: latestScheduledGames[0].id })
-        .select('content')
+        .select('content', 'game_tags.id as game_tags_coming_down')
 
       latestScheduledGames[0].tags = getAllTags
 
@@ -1558,7 +1558,7 @@ class ScheduleGameController {
       let getAllCo_hosts = await Database.from('co_hosts')
         .innerJoin('users', 'users.id', 'co_hosts.user_id')
         .where({ schedule_games_id: latestScheduledGames[0].id })
-        .select('alias')
+        .select('alias', 'co_hosts.user_id as co_hosts_coming_down')
 
       latestScheduledGames[0].co_hosts = getAllCo_hosts
 

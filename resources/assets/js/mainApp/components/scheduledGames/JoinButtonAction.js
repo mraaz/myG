@@ -8,6 +8,8 @@ import axios from 'axios'
 import { Toast_style } from '../Utility_Function'
 import { toast } from 'react-toastify'
 import Select from 'react-select'
+import { withRouter } from 'react-router-dom'
+
 import { exitGameGroup } from '../../../common/group'
 import { openChatForGame } from '../../../common/chat'
 
@@ -96,7 +98,7 @@ const JoinStatus = (props) => {
       setJoinButtonText(buttonStatus['1'])
     }
     if (get_stats.data == 'Pending') {
-      toast.success(<Toast_style text={'Host notified, waiting on approval'} />)
+      toast.success(<Toast_style text={'Yoyo! Host has been notified, waiting on their approval'} />)
       setJoinButtonText(buttonStatus['3'])
     }
   }
@@ -113,7 +115,7 @@ const JoinStatus = (props) => {
   }
 
   const handleEditGameDetails = () => {
-    window.location.href = `/editScheduleGames/${props.schedule_games_id}`
+    props.routeProps.routeProps.history.push(`/editScheduleGames/${props.schedule_games_id}`)
   }
   const handleOpenGroupChat = () => {
     openChatForGame(props.schedule_games_id)

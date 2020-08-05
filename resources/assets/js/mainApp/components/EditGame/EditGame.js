@@ -105,8 +105,22 @@ const EditGame = ({
       return
     }
 
-    const { optionTags, tags } = advancedSettingsState
+    if (/['/.%#$,;`\\]/.test(inputValue)) {
+      toast.success(<Toast_style text={'Sorry mate! Game tags can not have invalid characters'} />)
+      return
+    }
+
+    let { optionTags, tags } = advancedSettingsState
+
+    if (!tags) {
+      tags = ''
+    }
+    if (!optionTags) {
+      optionTags = ''
+    }
+
     const newOption = createOption(inputValue, null)
+
     updateAdvancedSettings({
       optionTags: [...optionTags, newOption],
       tags: [...tags, newOption],

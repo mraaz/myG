@@ -91,7 +91,9 @@ class NotificationController_v2 {
               { auth },
               myschedulegames_attendees.data[i].schedule_games_id
             )
-            memorise[myschedulegames_attendees.data[i].schedule_games_id] = more_fields.obj
+            if (more_fields != undefined) {
+              memorise[myschedulegames_attendees.data[i].schedule_games_id] = more_fields.obj
+            }
           }
 
           let _attendees = await Database.from('attendees')
