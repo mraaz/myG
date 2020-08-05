@@ -4,6 +4,8 @@ import moment from 'moment'
 import classNames from 'classnames'
 import Select from 'react-select'
 
+import { withRouter } from 'react-router-dom'
+
 import { PageHeader, MyGButton, MyGModal, MyGInput } from '../common'
 import { styles, SETTINGS_ENUMS } from '../../static/AddGame'
 import '../../styles/AddGame/AddGameStyles.scss'
@@ -73,12 +75,18 @@ const EditGameContainer = (props) => {
     } else if (Array.isArray(arg)) {
       data = arg
     }
-    console.log(data, '<<<data')
+
     if (data.length > 0) {
       return data.map((item) => {
-        console.log(item, '<<<item')
         //const val = item && item.content ? item.content : item ? item.trim() : ''
         const val = item && item.content ? item.content : item && item.alias ? item.alias : item ? item.trim() : ''
+        if (item.co_hosts_coming_down) {
+          return { value: item.co_hosts_coming_down, label: val }
+        }
+        if (item.game_tags_coming_down) {
+          return { value: val, label: val, game_tag_id: item.game_tags_coming_down }
+        }
+
         return { value: val, label: val }
       })
     } else {
@@ -129,6 +137,13 @@ const EditGameContainer = (props) => {
           advanceSettings.tags = getExtraFilterOprion(latestScheduledGames[0].tags)
           advanceSettings.coHosts = getExtraFilterOprion(latestScheduledGames[0].co_hosts)
 
+          if (!advanceSettings.tags) {
+            advanceSettings.tags = ''
+          }
+          if (!advanceSettings.optionTags) {
+            advanceSettings.optionTags = ''
+          }
+
           const mainSettings = { ...mainSettingsState }
 
           mainSettings.gameTitle = { value: latestScheduledGames[0].game_name, label: latestScheduledGames[0].game_name }
@@ -163,7 +178,7 @@ const EditGameContainer = (props) => {
           setSechduledGameData(latestScheduledGames)
           setHasAttendees(hasAttendees)
         } else {
-          window.location.href = '/?at=mygames'
+          props.routeProps.history.push('/?at=mygames')
         }
       }
     }
@@ -262,14 +277,14 @@ const EditGameContainer = (props) => {
       }))
       updateGameLink(mainSettingsState.scheduledGameGuid)
       // updateIsGameListedModalOpen(true)
-      window.location.href = '/?at=mygames'
+      props.routeProps.history.push('/?at=mygames')
     } catch (err) {
       updateIsSubmitting(false)
     }
   }
 
   const onCancelGameHandler = () => {
-    window.location.href = '/?at=mygames'
+    props.routeProps.history.push('/?at=mygames')
   }
   const onDeleteGameHandler = () => {
     if (hasAttendees == 0) {

@@ -50,6 +50,7 @@ export default class GameList extends Component {
   handlePendingApproval = (e) => {
     e.stopPropagation()
     window.location.href = `/notifications`
+    //this.props.routeProps.history.push('/notifications')
   }
 
   render() {
