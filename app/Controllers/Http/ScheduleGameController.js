@@ -854,16 +854,16 @@ class ScheduleGameController {
         .where('attendees.user_id', '=', auth.user.id)
         .where('attendees.type', '=', 1)
         .where('schedule_games.expiry', '>', Database.fn.now())
-        .where('schedule_games.start_date_time', '<', next24hours)
-        .where('schedule_games.start_date_time', '>', last4hours)
+      //.where('schedule_games.start_date_time', '<', next24hours)
+      //.where('schedule_games.start_date_time', '>', last4hours)
 
       myScheduledGames = await Database.from('schedule_games')
         .innerJoin('users', 'users.id', 'schedule_games.user_id')
         .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
         .where('expiry', '>', Database.fn.now())
         .where('schedule_games.user_id', '=', auth.user.id)
-        .where('schedule_games.start_date_time', '<', next24hours)
-        .where('schedule_games.start_date_time', '>', last4hours)
+        //.where('schedule_games.start_date_time', '<', next24hours)
+        //.where('schedule_games.start_date_time', '>', last4hours)
         .orWhereIn('schedule_games.id', subquery)
         .select(
           'users.alias',
