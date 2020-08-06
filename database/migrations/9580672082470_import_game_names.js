@@ -1027,7 +1027,7 @@ class Import_game_names_Schema extends Schema {
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Baba is You', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Tetris 99', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Sekiro: Shadows Die Twice', 1, 1, '1988-08-08', '1988-08-08')")
-    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Hearthstone: Heroes of Warcraft', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Hearthstone', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Overwatch', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Grand Theft Auto V', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('World Of Tanks', 1, 1, '1988-08-08', '1988-08-08')")
@@ -1054,6 +1054,9 @@ class Import_game_names_Schema extends Schema {
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Super Smash Bros. Ultimate', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('CSGO', 1, 1, '1988-08-08', '1988-08-08')")
 
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Valorant', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Fall Guys: Ultimate Knockout', 1, 1, '1988-08-08', '1988-08-08')")
+
 
     .raw("update game_names set game_img = \"https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/game_img/Dota_2.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Dota%202-90x120.jpg\", game_name_fields_img =\"https://static-cdn.jtvnw.net/ttv-boxart/Dota%202-390x520.jpg\"  where game_name = \"Dota 2\"")
     .raw("update game_names set game_img = \"https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/game_img/Clash_royale.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Clash%20Royale-144x192.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Clash%20Royale-390x520.jpg\" where game_name = \"Clash Royale\"")
@@ -1073,7 +1076,12 @@ class Import_game_names_Schema extends Schema {
     .raw("update game_names set game_img = \"https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/game_img/Super_smash.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Super%20Smash%20Bros.%20Ultimate-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Super%20Smash%20Bros.%20Ultimate-390x520.jpg\" where game_name = \"Super Smash Bros. Ultimate\"")
     .raw("update game_names set game_img = \"https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/game_img/League_legends.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/League%20of%20Legends-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/League%20of%20Legends-390x520.jpg\" where game_name = \"League of Legends\"")
 
-
+    .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Grand%20Theft%20Auto%20V-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Grand%20Theft%20Auto%20V-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Grand%20Theft%20Auto%20V-390x520.jpg\" where game_name = \"Grand Theft Auto V\"")
+    .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/VALORANT-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/VALORANT-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/VALORANT-390x520.jpg\" where game_name = \"Valorant\"")
+    .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/World%20of%20Warcraft-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/World%20of%20Warcraft-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/World%20of%20Warcraft-390x520.jpg\" where game_name = \"World of Warcraft\"")
+    .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Hearthstone-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Hearthstone-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Hearthstone-390x520.jpg\" where game_name = \"Hearthstone\"")
+    .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Fall%20Guys-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Fall%20Guys-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Fall%20Guys-390x520.jpg\" where game_name = \"Fall Guys: Ultimate Knockout\"")
+    .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/World%20of%20Tanks-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/World%20of%20Tanks-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/World%20of%20Tanks-390x520.jpg\" where game_name = \"World of Tanks\"")
 
 
     // .raw("update game_names set game_name_fields = 1 where game_name = \"Dota 2\"")
