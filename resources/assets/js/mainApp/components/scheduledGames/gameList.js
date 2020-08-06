@@ -79,13 +79,10 @@ export default class GameList extends Component {
           {/* My game list start here */}
           {scheduleGames.length > 0 &&
             scheduleGames.map((game) => {
-              const { myStatus = '', no_of_Approval_Pending = '', game_name_fields_img = '', experience = '' } = game
+              const { myStatus = '', no_of_Approval_Pending = '', game_artwork = '', experience = '' } = game
               const experience_split = experience ? experience.split(',') : []
               const scheduledGamePicture = (
-                <img
-                  src={game_name_fields_img ? game_name_fields_img : defaultThumbnails}
-                  className={game_name_fields_img ? 'image' : 'default-image'}
-                />
+                <img src={game_artwork ? game_artwork : defaultThumbnails} className={game_artwork ? 'image' : 'default-image'} />
               )
               return (
                 <div
