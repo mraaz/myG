@@ -32,6 +32,7 @@ class ScheduleGamesSchema extends Schema {
       table.boolean('autoJoinHost').defaultTo(1)
       table.boolean('mic').defaultTo(0)
       table.boolean('eighteen_plus').defaultTo(0)
+      table.string('game_languages', 254).nullable()
       table.timestamps(true,true)
     })
   }

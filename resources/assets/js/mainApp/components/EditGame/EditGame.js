@@ -3,6 +3,7 @@ import classNames from 'classnames'
 import Slider, { Range } from 'rc-slider'
 import moment from 'moment'
 import CustomCron from '../common/Cron/MyGCron'
+import axios from 'axios'
 
 import 'rc-slider/assets/index.css'
 import { toast } from 'react-toastify'
@@ -10,22 +11,13 @@ import { toast } from 'react-toastify'
 import { Toast_style } from '../Utility_Function'
 import '../../styles/AddGame/AddGameStyles.scss'
 
-import {
-  SETTINGS_ENUMS,
-  styles,
-  EXPERIENCE_OPTIONS,
-  REGION_OPTIONS,
-  PLATFORM_OPTIONS,
-  CLASH_ROYAL_TROPHY,
-  DOTA2_MEDAL_RANKS,
-  DOTA2_ROLES,
-  DOTA2_SERVER_REGIONS,
-} from '../../static/AddGame'
+import { SETTINGS_ENUMS, styles, EXPERIENCE_OPTIONS, REGION_OPTIONS, PLATFORM_OPTIONS, LANGUAGE_OPTIONS } from '../../static/AddGame'
 import { MyGCheckbox, MyGTextarea, MyGAsyncSelect, MyGCreateableSelect, MyGSelect, MyGDatePicker } from '../common'
 import { Game_name_values, Schedule_Game_Tags, Disable_keys } from '../Utility_Function'
-import Axios from 'axios'
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
 import { FeatureEnabled, REPEAT_SCHEDULE } from '../../../common/flags'
+
+let game_data_struct = {}
 
 const SliderWithTooltip = Slider.createSliderWithTooltip(Slider)
 
@@ -42,7 +34,7 @@ const EditGame = ({
 }) => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    const getInitialData_Tags = async function () {
+    const getInitialData_Tags = async function() {
       try {
         let results = await Schedule_Game_Tags()
         updateAdvancedSettings({ optionTags: results })
@@ -51,9 +43,14 @@ const EditGame = ({
       }
     }
 
-    const getInitialData_GameName = async function () {
+    const getInitialData_GameName = async function() {
       try {
-        let results = await Game_name_values()
+        let results = await Game_name_values(mainSettingsState.gameTitle.value)
+        updateMainSettings({ gameTitle: results })
+        if (results) {
+          handleChange_game_title(results[0], true)
+        }
+        results = await Game_name_values()
         updateMainSettings({ gameTitlesList: results })
       } catch (error) {
         console.log(error)
@@ -140,7 +137,7 @@ const EditGame = ({
 
   // api calls
   const getOptionsTags = (inputValue) => {
-    const getInitialData = async function (inputValue) {
+    const getInitialData = async function(inputValue) {
       try {
         let results = await Schedule_Game_Tags(inputValue)
         updateAdvancedSettings({ optionTags: results })
@@ -157,7 +154,7 @@ const EditGame = ({
   }
 
   const getOptionsGames = (inputValue) => {
-    const getInitialData = async function (inputValue) {
+    const getInitialData = async function(inputValue) {
       try {
         let results = await Game_name_values(inputValue)
         updateMainSettings({ gameTitlesList: results })
@@ -177,7 +174,7 @@ const EditGame = ({
     try {
       const {
         data: { playerSearchResults },
-      } = await Axios.post(`/api/user/playerSearchResults`, {
+      } = await axios.post(`/api/user/playerSearchResults`, {
         alias: value,
       })
       const parsedData = parsePlayersToSelectData(playerSearchResults)
@@ -273,7 +270,7 @@ const EditGame = ({
   const getCommentPrivaryView = () => {
     return (
       <div>
-        <div className={styles.fieldTitle}>Comments and Privacy</div>
+        <div className={styles.fieldTitle}>Settings</div>
         <MyGCheckbox
           checked={mainSettingsState.isCommentsAllowed}
           onClick={(value) => {
@@ -428,6 +425,170 @@ const EditGame = ({
     )
   }
 
+  const handleChange_game_title = async (value, initial = false) => {
+    if (value == undefined || value == null) {
+      updateOptionalSettings({ value_one: null, value_two: null, value_three: null, value_four: null, value_five: null })
+      updateState({ additional_info: false })
+    }
+    updateMainSettings({ gameTitle: value })
+    if (value && !value.additional_info) {
+      updateOptionalSettings({ value_one: null, value_two: null, value_three: null, value_four: null, value_five: null })
+      updateState({ additional_info: value ? value.additional_info : false })
+    } else if (value && value.additional_info) {
+      const getAllExtraFilters = await axios.get(`/api/ScheduleGame/getHeader_ALL/${value.game_names_id}`)
+      let additional_info_data = getAllExtraFilters.data.additional_info_data
+
+      game_data_struct = {}
+
+      let counter = 0,
+        newArr = [],
+        arrTags = ''
+
+      for (let key in additional_info_data) {
+        switch (counter) {
+          case 0:
+            newArr = []
+            arrTags = ''
+
+            updateOptionalSettings({ value_one_key: key })
+
+            game_data_struct['value_one_label'] = additional_info_data[key].label
+            game_data_struct['value_one_placeholder'] = additional_info_data[key].placeholder
+
+            if (additional_info_data[key].type == 'Multi') {
+              game_data_struct['value_one_multi_type'] = true
+            } else {
+              game_data_struct['value_one_multi_type'] = false
+            }
+
+            arrTags = additional_info_data[key].value.split(',')
+
+            for (let i = 0; i < arrTags.length; i++) {
+              const newOption = createOption(arrTags[i], null)
+              newArr.push(newOption)
+            }
+
+            game_data_struct['value_one_value'] = newArr
+
+            break
+          case 1:
+            newArr = []
+            arrTags = ''
+
+            updateOptionalSettings({ value_two_key: key })
+
+            game_data_struct['value_two_label'] = additional_info_data[key].label
+            game_data_struct['value_two_placeholder'] = additional_info_data[key].placeholder
+            game_data_struct['value_two_value'] = additional_info_data[key].value
+            if (additional_info_data[key].type == 'Multi') {
+              game_data_struct['value_two_multi_type'] = true
+            } else {
+              game_data_struct['value_two_multi_type'] = false
+            }
+
+            arrTags = additional_info_data[key].value.split(',')
+
+            for (let i = 0; i < arrTags.length; i++) {
+              const newOption = createOption(arrTags[i], null)
+              newArr.push(newOption)
+            }
+
+            game_data_struct['value_two_value'] = newArr
+            break
+          case 2:
+            newArr = []
+            arrTags = ''
+
+            updateOptionalSettings({ value_three_key: key })
+
+            game_data_struct['value_three_label'] = additional_info_data[key].label
+            game_data_struct['value_three_placeholder'] = additional_info_data[key].placeholder
+            game_data_struct['value_three_value'] = additional_info_data[key].value
+            if (additional_info_data[key].type == 'Multi') {
+              game_data_struct['value_three_multi_type'] = true
+            } else {
+              game_data_struct['value_three_multi_type'] = false
+            }
+
+            arrTags = additional_info_data[key].value.split(',')
+
+            for (let i = 0; i < arrTags.length; i++) {
+              const newOption = createOption(arrTags[i], null)
+              newArr.push(newOption)
+            }
+
+            game_data_struct['value_three_value'] = newArr
+            break
+          case 3:
+            newArr = []
+            arrTags = ''
+
+            updateOptionalSettings({ value_four_key: key })
+
+            game_data_struct['value_four_label'] = additional_info_data[key].label
+            game_data_struct['value_four_placeholder'] = additional_info_data[key].placeholder
+            game_data_struct['value_four_value'] = additional_info_data[key].value
+            if (additional_info_data[key].type == 'Multi') {
+              game_data_struct['value_four_multi_type'] = true
+            } else {
+              game_data_struct['value_four_multi_type'] = false
+            }
+
+            arrTags = additional_info_data[key].value.split(',')
+
+            for (let i = 0; i < arrTags.length; i++) {
+              const newOption = createOption(arrTags[i], null)
+              newArr.push(newOption)
+            }
+
+            game_data_struct['value_four_value'] = newArr
+            break
+          case 4:
+            newArr = []
+            arrTags = ''
+
+            updateOptionalSettings({ value_five_key: key })
+
+            game_data_struct['value_five_label'] = additional_info_data[key].label
+            game_data_struct['value_five_placeholder'] = additional_info_data[key].placeholder
+            game_data_struct['value_five_value'] = additional_info_data[key].value
+            if (additional_info_data[key].type == 'Multi') {
+              game_data_struct['value_five_multi_type'] = true
+            } else {
+              game_data_struct['value_five_multi_type'] = false
+            }
+
+            arrTags = additional_info_data[key].value.split(',')
+
+            for (let i = 0; i < arrTags.length; i++) {
+              const newOption = createOption(arrTags[i], null)
+              newArr.push(newOption)
+            }
+
+            game_data_struct['value_five_value'] = newArr
+            break
+        }
+        counter++
+      }
+      if (initial != true) {
+        updateOptionalSettings({
+          value_one: null,
+          value_two: null,
+          value_three: null,
+          value_four: null,
+          value_five: null,
+          game_name_fields_img: value.game_name_fields_img,
+        })
+      } else {
+        updateOptionalSettings({
+          game_name_fields_img: value.game_name_fields_img,
+        })
+      }
+
+      updateState({ additional_info: value ? value.additional_info : false })
+    }
+  }
+
   const getMainSettingsView = () => {
     return (
       <div style={{ display: 'flex' }}>
@@ -441,11 +602,7 @@ const EditGame = ({
             isClearable
             onCreateOption={handleCreateGame}
             onInputChange={getOptionsGames}
-            onChange={(value) => {
-              updateMainSettings({ gameTitle: value })
-              value && !value.additional_info && updateOptionalSettings({ serverRegion: null })
-              updateState({ additional_info: value ? value.additional_info : false })
-            }}
+            onChange={handleChange_game_title}
             value={mainSettingsState.gameTitle}
             placeholder='Search, Select or create Game Title'
             options={mainSettingsState.gameTitlesList}
@@ -495,7 +652,7 @@ const EditGame = ({
               updateAdvancedSettings({ coHosts: value })
             }}
             value={advancedSettingsState.coHosts}
-            placeholder='Enter your Friend’s name to set him as a co-host'
+            placeholder='Enter your Friend’s name to set them as a co-host'
             onKeyDown={Disable_keys}
           />
           <div className={styles.fieldTitle}>Experience</div>
@@ -546,6 +703,18 @@ const EditGame = ({
               />
             </Fragment>
           )}
+          <div className='field-title'>Language</div>
+          <div className='platform-select'>
+            <MyGSelect
+              options={LANGUAGE_OPTIONS}
+              onChange={(value) => {
+                updateAdvancedSettings({ language: value })
+              }}
+              value={advancedSettingsState.language}
+              placeholder='Select language/s'
+              isMulti
+            />
+          </div>
           <div className={styles.fieldTitle}>Description</div>
           <MyGTextarea
             onChange={(event) => {
@@ -564,6 +733,23 @@ const EditGame = ({
             placeholder='Create a message for those who join & accept your game'
             maxLength={250}
           />
+          <div className='field-title'>Extra's</div>
+          <div className='comments-privacy-container'>
+            <MyGCheckbox
+              checked={advancedSettingsState.mic}
+              onClick={(value) => {
+                updateAdvancedSettings({ mic: value })
+              }}
+              labelText='Mic required?'
+            />
+            <MyGCheckbox
+              checked={advancedSettingsState.eighteen_plus}
+              onClick={(value) => {
+                updateAdvancedSettings({ eighteen_plus: value })
+              }}
+              labelText='18+ event?'
+            />
+          </div>
         </div>
       </div>
     )
@@ -571,72 +757,96 @@ const EditGame = ({
 
   // ToDo: update modal rank and roles needs options
   const getOptionalGameFieldsView = () => {
-    const imageTempUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Game+Images/DOTA2.png'
     return (
       <div
-        style={{ backgroundImage: `url(${imageTempUrl})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}
+        style={{
+          backgroundImage: `url(${optionalFieldsState.game_name_fields_img})`,
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat',
+        }}
         className={styles.optionalViewContainer}>
         <div className={styles.optionalHeaderContainer}>
-          <span>DOTA 2 In-Game Fields </span>
+          <span>In-Game Fields </span>
           <span>(Optional)</span>
         </div>
+
         <div className={styles.optionalViewFields}>
-          {mainSettingsState.gameTitle.value !== 'Clash Royale' && (
+          {game_data_struct['value_one_label'] && (
             <Fragment>
-              <div className={styles.fieldTitle}>Medal Rank</div>
+              <div className={styles.fieldTitle}>{game_data_struct['value_one_label']}</div>
               <MyGSelect
-                options={DOTA2_MEDAL_RANKS}
+                options={game_data_struct['value_one_value']}
                 onChange={(value) => {
-                  updateOptionalSettings({ modalRank: value })
+                  updateOptionalSettings({ value_one: value })
                 }}
-                value={optionalFieldsState.modalRank}
-                placeholder='Select medal rank'
-                isMulti
+                value={optionalFieldsState.value_one}
+                placeholder={game_data_struct['value_one_placeholder']}
+                isMulti={game_data_struct['value_one_multi_type']}
+                isClearable
               />
             </Fragment>
           )}
 
-          {mainSettingsState.gameTitle.value !== 'Clash Royale' && (
+          {game_data_struct['value_two_label'] && (
             <Fragment>
-              <div className={styles.fieldTitle}>Server Regions</div>
+              <div className={styles.fieldTitle}>{game_data_struct['value_two_label']}</div>
               <MyGSelect
-                options={DOTA2_SERVER_REGIONS}
+                options={game_data_struct['value_two_value']}
                 onChange={(value) => {
-                  updateOptionalSettings({ serverRegion: value })
+                  updateOptionalSettings({ value_two: value })
                 }}
-                value={optionalFieldsState.serverRegion}
-                placeholder='Select server regions'
-                isMulti
+                value={optionalFieldsState.value_two}
+                placeholder={game_data_struct['value_two_placeholder']}
+                isMulti={game_data_struct['value_two_multi_type']}
+                isClearable
               />
             </Fragment>
           )}
 
-          {mainSettingsState.gameTitle.value !== 'Clash Royale' && (
+          {game_data_struct['value_three_label'] && (
             <Fragment>
-              <div className={styles.fieldTitle}>Roles Needed</div>
+              <div className={styles.fieldTitle}>{game_data_struct['value_three_label']}</div>
               <MyGSelect
-                options={DOTA2_ROLES}
+                options={game_data_struct['value_three_value']}
                 onChange={(value) => {
-                  updateOptionalSettings({ roleNeeded: value })
+                  updateOptionalSettings({ value_three: value })
                 }}
-                value={optionalFieldsState.roleNeeded}
-                placeholder='Select roles needed'
-                isMulti
+                value={optionalFieldsState.value_three}
+                placeholder={game_data_struct['value_three_placeholder']}
+                isMulti={game_data_struct['value_three_multi_type']}
+                isClearable
               />
             </Fragment>
           )}
 
-          {mainSettingsState.gameTitle.value === 'Clash Royale' && (
+          {game_data_struct['value_four_label'] && (
             <Fragment>
-              <div className={styles.fieldTitle}>Trophies</div>
+              <div className={styles.fieldTitle}>{game_data_struct['value_four_label']}</div>
               <MyGSelect
-                options={CLASH_ROYAL_TROPHY}
+                options={game_data_struct['value_four_value']}
                 onChange={(value) => {
-                  updateOptionalSettings({ trophies: value })
+                  updateOptionalSettings({ value_four: value })
                 }}
-                value={optionalFieldsState.trophies}
-                placeholder='Select trophies'
-                isMulti
+                value={optionalFieldsState.value_four}
+                placeholder={game_data_struct['value_four_placeholder']}
+                isMulti={game_data_struct['value_four_multi_type']}
+                isClearable
+              />
+            </Fragment>
+          )}
+
+          {game_data_struct['value_five_label'] && (
+            <Fragment>
+              <div className={styles.fieldTitle}>{game_data_struct['value_five_label']}</div>
+              <MyGSelect
+                options={game_data_struct['value_five_value']}
+                onChange={(value) => {
+                  updateOptionalSettings({ value_five: value })
+                }}
+                value={optionalFieldsState.value_five}
+                placeholder={game_data_struct['value_five_placeholder']}
+                isMulti={game_data_struct['value_five_multi_type']}
+                isClearable
               />
             </Fragment>
           )}

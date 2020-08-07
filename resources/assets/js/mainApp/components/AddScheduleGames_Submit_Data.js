@@ -10,6 +10,7 @@ export async function SubmitDataFunction(myG) {
   let myRegion = null,
     myExperience = null,
     myPlatform = null,
+    myLanguages = null,
     now = moment(),
     end_date = myG.endDate,
     myLimit = 0,
@@ -28,6 +29,10 @@ export async function SubmitDataFunction(myG) {
 
   if (myG.selected_platform !== undefined && myG.selected_platform !== null && myG.selected_platform.length !== 0) {
     myPlatform = Convert_to_comma_delimited_value(myG.selected_platform)
+  }
+
+  if (myG.language !== undefined && myG.langugage !== null && myG.language.length !== 0) {
+    myLanguages = Convert_to_comma_delimited_value(myG.language)
   }
 
   if (myG.coHosts) {
@@ -111,6 +116,7 @@ export async function SubmitDataFunction(myG) {
       autoJoinHost: myG.autoJoinHost,
       mic: myG.mic,
       eighteen_plus: myG.eighteen_plus,
+      game_languages: myLanguages,
     })
 
     // clash_royale_trophies: myClash_royale_trophies,

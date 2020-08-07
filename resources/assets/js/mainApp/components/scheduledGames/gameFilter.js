@@ -20,6 +20,7 @@ import {
   getExtraFilterOprion,
   properCase,
   yes_no_options,
+  language_options,
 } from './option'
 
 const queryMapping = {
@@ -60,6 +61,7 @@ export default class ScheduleGames extends Component {
       description: 'Description',
       mic: 'Mic required?',
       eighteen_plus: '18+',
+      language: 'Language',
     }
     this.constantFilterGroup = {
       game_name: 'Game Title',
@@ -71,8 +73,20 @@ export default class ScheduleGames extends Component {
       description: 'Description',
       mic: 'Mic required?',
       eighteen_plus: '18+',
+      language: 'Language',
     }
-    this.constantFilter = ['game_name', 'region', 'tags', 'experience', 'start_time', 'platform', 'description', 'mic', 'eighteen_plus']
+    this.constantFilter = [
+      'game_name',
+      'region',
+      'tags',
+      'experience',
+      'start_time',
+      'platform',
+      'description',
+      'mic',
+      'eighteen_plus',
+      'language',
+    ]
     this.filterNameRef = React.createRef()
   }
 
@@ -93,12 +107,26 @@ export default class ScheduleGames extends Component {
     const { filterValueArray = {}, filterTypeArray } = this.state
     const { additional_info = false, game_names_id = '', value = '' } = entered_name || {}
 
-    if (entered_name != null && entered_name != undefined) {
-      filterValueArray['game_name'] = entered_name.value
+    let results = null
+    if (entered_name && entered_name.value) {
+      results = await Game_name_values(entered_name.value)
+    }
+
+    if (results) {
+      filterValueArray['game_name'] = results[0].value
+      filterValueArray['game_name_value'] = results[0]
     } else {
       filterValueArray['game_name'] = entered_name
+      filterValueArray['game_name_value'] = entered_name
       this.filterGroup = this.constantFilterGroup
     }
+
+    // if (entered_name != null && entered_name != undefined) {
+    //   filterValueArray['game_name'] = entered_name.value
+    // } else {
+    //   filterValueArray['game_name'] = entered_name
+    //   this.filterGroup = this.constantFilterGroup
+    // }
 
     let additional_info_data = {}
 
@@ -265,6 +293,20 @@ export default class ScheduleGames extends Component {
     )
   }
 
+  handleChange_language = (language, name) => {
+    const { filterValueArray = {} } = this.state
+    filterValueArray['language'] = language
+    this.setState(
+      {
+        language,
+        filterValueArray,
+      },
+      () => {
+        this.props.handleChange({ language }, name)
+      }
+    )
+  }
+
   handleChange_visibility = (visibility_box, name) => {
     this.setState(
       {
@@ -337,6 +379,7 @@ export default class ScheduleGames extends Component {
         tags: [],
         eighteen_plus: null,
         mic: null,
+        language: null,
       },
       () => {
         this.filterGroup = this.constantFilterGroup
@@ -635,7 +678,7 @@ export default class ScheduleGames extends Component {
             {filterTypeArray.map((k) => {
               if (k == 'game_name') {
                 // const value = game_name_box ? game_name_box : filterValueArray[k] ? filterValueArray[k] : null
-                const value = filterValueArray[k] ? { value: filterValueArray[k], label: filterValueArray[k] } : null
+                //const value = filterValueArray[k] ? { value: filterValueArray[k], label: filterValueArray[k] } : null
                 return (
                   <div className='viewGame__gameName'>
                     <div className='viewGame__label'>{this.filterGroup[k]}</div>
@@ -646,7 +689,7 @@ export default class ScheduleGames extends Component {
                       loadOptions={this.getOptions}
                       onChange={(data) => this.handleDropDownChange(data, k)}
                       isClearable
-                      value={value}
+                      value={filterValueArray['game_name_value']}
                       className='viewGame__name'
                       placeholder='Search or Select Game Title'
                       onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
@@ -781,6 +824,22 @@ export default class ScheduleGames extends Component {
                       className='viewGame__name'
                       classNamePrefix='filter'
                       value={filterValueArray['eighteen_plus']}
+                    />
+                  </div>
+                )
+              } else if (k == 'language') {
+                return (
+                  <div className='viewGame__gameName'>
+                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                    <Select
+                      onChange={this.handleChange_language}
+                      options={language_options}
+                      placeholder='Search which language/s'
+                      name='platform-box'
+                      isClearable
+                      className='viewGame__name'
+                      classNamePrefix='filter'
+                      value={filterValueArray['language']}
                     />
                   </div>
                 )

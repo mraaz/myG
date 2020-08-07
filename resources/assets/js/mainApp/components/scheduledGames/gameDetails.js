@@ -29,6 +29,7 @@ export default class GameDetails extends Component {
       join_status = '',
       additional_submit_info = false,
       additional_submit_info_fields = [],
+      myStatus = 0,
     } = singleScheduleGamesPayload
     const { id = '', game_name = '', experience = '', no_of_gamers = '', tags = [] } = selected_game
     const {
@@ -96,6 +97,7 @@ export default class GameDetails extends Component {
                 additional_submit_info={additional_submit_info}
                 additional_submit_info_fields={additional_submit_info_fields}
                 schedule_games_GUID={schedule_games_GUID}
+                myStatus={myStatus}
                 routeProps={this.props.routeProps}
               />
             </div>

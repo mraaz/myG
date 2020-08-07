@@ -30,6 +30,7 @@ const queryMapping = {
 
 const JoinStatus = (props) => {
   const { join_status = 0, additional_submit_info = false, additional_submit_info_fields = [] } = props
+  const [_myStatus, setmyStatus] = useState(false)
   const [modalStatus, setModalStatus] = useState(false)
   const [leaveButtonStatus, setLeaveButtonStatus] = useState(false)
   const [joinButtonText, setJoinButtonText] = useState(buttonStatus[join_status])
@@ -40,6 +41,11 @@ const JoinStatus = (props) => {
   let fieldKey = {}
 
   useEffect(() => {
+    if (props.myStatus == 1 || props.myStatus == 3) {
+      setmyStatus(true)
+    } else {
+      setmyStatus(false)
+    }
     setJoinButtonText(buttonStatus[join_status])
     return () => {
       setJoinButtonText('')
@@ -74,9 +80,12 @@ const JoinStatus = (props) => {
   const handleJoinGame = () => {
     if (!additional_submit_info) {
       saveJoinGame()
+      toast.success(<Toast_style text={"You're in!"} />)
     } else {
       setModalStatus(!modalStatus)
     }
+    setmyStatus(true)
+    setLeaveButtonStatus(!leaveButtonStatus)
   }
   const saveJoinGame = async (query = {}) => {
     const get_stats = await axios.post('/api/attendees/savemySpot', {
@@ -107,7 +116,8 @@ const JoinStatus = (props) => {
     const removeAttendee = axios.get(`/api/attendees/removeattending/${props.schedule_games_id}`)
     toast.success(<Toast_style text={"You're out!"} />)
     exitGameGroup(props.schedule_games_id)
-    setJoinButtonText(buttonStatus['0'])
+    //setJoinButtonText(buttonStatus['0'])
+    setmyStatus(false)
     setLeaveButtonStatus(!leaveButtonStatus)
   }
   const handleJoindButtonClick = () => {
@@ -143,7 +153,6 @@ const JoinStatus = (props) => {
       } else {
         delete values[name]
       }
-      console.log(data)
 
       if (Object.keys(fieldKey).length == Object.keys(values).length) {
         setButtonDisabled(false)
@@ -199,7 +208,8 @@ const JoinStatus = (props) => {
             <div className='dropDown--option'>
               <button type='button' className='leaveGame__button' onClick={handleEditGameDetails}>{`Edit Game Details`}</button>
               <button type='button' className='leaveGame__button' onClick={handleOpenGroupChat}>{`Open Group Chat`}</button>
-              <button type='button' className='leaveGame__button' onClick={handleLeaveGame}>{`Leave Game`}</button>
+              {_myStatus && <button type='button' className='leaveGame__button' onClick={handleLeaveGame}>{`Leave Game`}</button>}
+              {!_myStatus && <button type='button' className='leaveGame__button' onClick={handleJoinGame}>{`Join Game`}</button>}
             </div>
           )}
         </div>
