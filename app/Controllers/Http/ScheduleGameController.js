@@ -1325,8 +1325,19 @@ class ScheduleGameController {
         .where({ schedule_games_id: request.params.id, type: 1 })
         .count('* as no_of_gamers')
 
+      let getstatus = await Database.from('attendees')
+        .where({ schedule_games_id: request.params.id })
+        .select('type')
+        .first()
+
+      let myStatus = 0
+
       if (join_status == 0 || join_status == 3) {
         additional_game_info.accept_msg = ''
+      }
+
+      if (getstatus != undefined) {
+        myStatus = getstatus.type
       }
 
       return {
@@ -1338,6 +1349,7 @@ class ScheduleGameController {
         getAllGamers,
         edit_status,
         button_text,
+        myStatus,
       }
     } catch (error) {
       console.log(error)
