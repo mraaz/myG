@@ -259,6 +259,52 @@
   margin-bottom: 40px;
   padding-top: 30px;
   padding-bottom: 50px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.community__search {
+  text-align: center;
+  background: #171a1c;
+  border-radius: 50px;
+  width: 380px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.community__search_container {
+  border-top: 1px solid #273137;
+  padding-top: 20px;
+}
+
+.community__search input {
+  border-radius: 50px;
+  color: #93a4a5;
+  padding: 15px;
+  border: none;
+  outline: none;
+  background: transparent;
+}
+
+.community__search input:focus {
+  border-radius: 50px;
+  color: #93a4a5;
+  padding: 15px;
+  border: none;
+  outline: none;
+  background: transparent;
+  box-shadow: none !important;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 100;
+}
+
+.community__search img {
+  background: #2d363a;
+  padding: 11px;
+  border-top-right-radius: 50px;
+  border-bottom-right-radius: 50px;
 }
 
 .community-card-box .community-title {
