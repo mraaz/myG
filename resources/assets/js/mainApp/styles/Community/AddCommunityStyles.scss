@@ -278,8 +278,26 @@
   width: 30%;
 }
 
+.arrow__right {
+  position: absolute;
+  top: 50%;
+  right: -15px;
+}
+
+.arrow__left {
+  position: absolute;
+  transform: rotate(180deg);
+  top: 50%;
+  left: -15px;
+}
+
 .community-card-box .members {
   color: #fff;
+}
+
+.community-card-box .members h2 {
+  font-size: 24px;
+  margin: 0;
 }
 
 .community-card-box .btn-show button {
@@ -303,6 +321,7 @@
 
 .community-card-box .community-title p {
   font-weight: bold;
+  font-size: 12px;
 }
 
 .suggested-community-text p {
