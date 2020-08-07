@@ -33,6 +33,7 @@ const AddGameContainer = () => {
     optionTags: '',
     mic: false,
     eighteen_plus: false,
+    language: null,
   })
   const [mainSettingsState, updateMainSettingsState] = useState({
     scheduledGameId: null,
@@ -57,6 +58,11 @@ const AddGameContainer = () => {
     value_four: null,
     value_five: null,
     game_name_fields_img: '',
+    value_one_key: null,
+    value_two_key: null,
+    value_three_key: null,
+    value_four_key: null,
+    value_five_key: null,
   })
   const [gameLink, updateGameLink] = useState('')
   const gameLinkRef = useRef(null)
@@ -111,22 +117,23 @@ const AddGameContainer = () => {
       value_four = null,
       value_five = null
 
-    //If the field is multi then you need to convert otherwise no need to.
-
-    if (optionalFieldsState.modalRank != null) {
-      let tmp = Convert_to_comma_delimited_value(optionalFieldsState.modalRank)
-      value_one = { dota2_medal_ranks: tmp }
+    if (optionalFieldsState.value_one != null) {
+      let tmp = Convert_to_comma_delimited_value(optionalFieldsState.value_one)
+      value_one = { [optionalFieldsState.value_one_key]: tmp }
     }
-    if (optionalFieldsState.serverRegion != null) {
-      let tmp = Convert_to_comma_delimited_value(optionalFieldsState.serverRegion)
-      value_two = { dota2_server_regions: tmp }
+    if (optionalFieldsState.value_two != null) {
+      let tmp = Convert_to_comma_delimited_value(optionalFieldsState.value_two)
+      value_two = { [optionalFieldsState.value_two_key]: tmp }
     }
-    if (optionalFieldsState.roleNeeded != null) {
-      let tmp = Convert_to_comma_delimited_value(optionalFieldsState.roleNeeded)
-      value_three = { dota2_roles: tmp }
+    if (optionalFieldsState.value_three != null) {
+      let tmp = Convert_to_comma_delimited_value(optionalFieldsState.value_three)
+      value_three = { [optionalFieldsState.value_three_key]: tmp }
     }
-    if (optionalFieldsState.trophies != null) {
-      value_one = { clash_royale_trophies: optionalFieldsState.trophies[0].value }
+    if (optionalFieldsState.value_four != null) {
+      value_four = { [optionalFieldsState.value_four_key]: tmp }
+    }
+    if (optionalFieldsState.value_five != null) {
+      value_five = { [optionalFieldsState.value_five_key]: tmp }
     }
 
     try {
@@ -146,10 +153,6 @@ const AddGameContainer = () => {
         value_three,
         value_four,
         value_five,
-        // dota2_medal_ranks: optionalFieldsState.modalRank,
-        // dota2_server_regions: optionalFieldsState.serverRegion,
-        // dota2_roles: optionalFieldsState.roleNeeded,
-        // clash_royale_trophies: optionalFieldsState.trophies,
         allow_comments: mainSettingsState.isCommentsAllowed,
         autoJoin: mainSettingsState.autoAccept,
         coHosts: advancedSettingsState.coHosts,
@@ -160,6 +163,7 @@ const AddGameContainer = () => {
         autoJoinHost: mainSettingsState.autoJoinHost,
         mic: advancedSettingsState.mic,
         eighteen_plus: advancedSettingsState.eighteen_plus,
+        language: advancedSettingsState.language,
       })
       updateMainSettingsState((currentState) => ({
         ...currentState,

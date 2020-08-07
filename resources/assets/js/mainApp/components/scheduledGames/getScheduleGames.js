@@ -19,6 +19,7 @@ export async function PullDataFunction(myG) {
     myRegion = null,
     myExperience = null,
     myPlatform = null,
+    myLanguage = null,
     myDescription_box = null,
     counter = 0,
     show_full_games = true,
@@ -51,6 +52,10 @@ export async function PullDataFunction(myG) {
 
   if (myG.platform != undefined && myG.platform != null && myG.platform != '') {
     myPlatform = myG.platform.value
+  }
+
+  if (myG.language != undefined && myG.language != null && myG.language != '') {
+    myLanguage = myG.language.value
   }
 
   if (myG.start_time != undefined && myG.start_time != null) {
@@ -120,6 +125,7 @@ export async function PullDataFunction(myG) {
       value_five: myG.value_five,
       mic: myG.mic ? myG.mic.value : null,
       eighteen_plus: myG.eighteen_plus ? myG.eighteen_plus.value : null,
+      game_languages: myLanguage,
     })
     return allscheduledGames
   } catch (error) {

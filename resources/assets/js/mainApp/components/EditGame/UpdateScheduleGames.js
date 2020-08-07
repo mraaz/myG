@@ -9,6 +9,7 @@ export async function SubmitDataFunction(myG) {
   let myRegion = null,
     myExperience = null,
     myPlatform = null,
+    myLanguages = null,
     now = myG.startDate ? moment(myG.startDate) : moment(),
     end_date = myG.endDate,
     myLimit = 0,
@@ -29,6 +30,10 @@ export async function SubmitDataFunction(myG) {
     myPlatform = Convert_to_comma_delimited_value(myG.selected_platform)
   }
 
+  if (myG.language !== undefined && myG.langugage !== null && myG.language.length !== 0) {
+    myLanguages = Convert_to_comma_delimited_value(myG.language)
+  }
+
   if (myG.coHosts) {
     co_hosts = Convert_to_comma_delimited_value(myG.coHosts)
   }
@@ -40,15 +45,6 @@ export async function SubmitDataFunction(myG) {
         return
       }
       delete myG.tags[i].label
-
-      // if (myG.tags[i].game_tag_id == null) {
-      //   const new_GameTags = await axios.post('/api/GameTags', {
-      //     content: myG.tags[i].value,
-      //   })
-      //   tags.push(new_GameTags.data)
-      // } else {
-      //   tags.push(myG.tags[i].game_tag_id)
-      // }
     }
     tags = JSON.stringify(myG.tags)
   }
@@ -105,12 +101,11 @@ export async function SubmitDataFunction(myG) {
       value_four: myG.value_four,
       value_five: myG.value_five,
       autoJoinHost: myG.autoJoinHost,
+      mic: myG.mic,
+      eighteen_plus: myG.eighteen_plus,
+      game_languages: myLanguages,
     })
 
-    // clash_royale_trophies: myClash_royale_trophies,
-    // dota2_medal_ranks: myDota2_medal_ranks,
-    // dota2_server_regions: myDota2_server_regions,
-    // dota2_roles: myDota2_roles,
     return post
   } catch (error) {
     throw error

@@ -99,6 +99,7 @@ class ScheduleGameController {
           autoJoinHost: request.input('autoJoinHost'),
           mic: request.input('mic'),
           eighteen_plus: request.input('eighteen_plus'),
+          game_languages: request.input('game_languages'),
         })
 
         if (
@@ -328,6 +329,9 @@ class ScheduleGameController {
             occurrence: request.input('occurrence'),
             repeatEvery: request.input('repeatEvery'),
             autoJoinHost: request.input('autoJoinHost'),
+            mic: request.input('mic'),
+            eighteen_plus: request.input('eighteen_plus'),
+            game_languages: request.input('game_languages'),
           })
 
         if (
@@ -918,8 +922,6 @@ class ScheduleGameController {
   }
 
   async scheduleSearchResults({ auth, request, response }) {
-    // WTF is goin on with ancient games??
-
     try {
       let arrTags = '',
         latestScheduledGames
@@ -930,8 +932,6 @@ class ScheduleGameController {
         value_four = null,
         value_five = null
 
-      // let tmp = { dota2_medal_ranks: 'Herald' },
-      //   tmp2 = { dota2_roles: 'Pos 1' }
       if (
         request.input('value_one') != null ||
         request.input('value_two') != null ||
@@ -971,18 +971,6 @@ class ScheduleGameController {
             result[myKey] = request.input('value_five')[myKey]
           }
         }
-
-        // for (myKey in tmp) {
-        //   if (tmp.hasOwnProperty(myKey)) {
-        //     result[myKey] = tmp[myKey]
-        //   }
-        // }
-        //
-        // for (myKey in tmp2) {
-        //   if (tmp2.hasOwnProperty(myKey)) {
-        //     result[myKey] = tmp2[myKey]
-        //   }
-        // }
 
         const getGameFields = await Database.table('game_names')
           .innerJoin('game_name_fields', 'game_name_fields.game_names_id', 'game_names.id')
@@ -1044,6 +1032,8 @@ class ScheduleGameController {
 
               if (request.input('eighteen_plus') != null) builder.where('eighteen_plus', request.input('eighteen_plus'))
 
+              if (request.input('game_languages') != null) builder.where('game_languages', request.input('game_languages'))
+
               //if (request.input('start_date_time') != null) builder.where('start_date_time', '<=', request.input('start_date_time'))
 
               if (request.input('end_date_time') != null) builder.where('end_date_time', '>=', request.input('end_date_time'))
@@ -1097,6 +1087,8 @@ class ScheduleGameController {
             if (request.input('mic') != null) builder.where('mic', request.input('mic'))
 
             if (request.input('eighteen_plus') != null) builder.where('eighteen_plus', request.input('eighteen_plus'))
+
+            if (request.input('game_languages') != null) builder.where('game_languages', request.input('game_languages'))
 
             //if (request.input('start_date_time') != null)
             //builder.where('schedule_games.start_date_time', '<=', request.input('start_date_time'))
@@ -1585,23 +1577,6 @@ class ScheduleGameController {
       console.log(error)
     }
   }
-
-  // async show_one({ auth, request, response }) {
-  //   try {
-  //     var getOne = await Database.from('schedule_games')
-  //       .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
-  //       .select('*', 'schedule_games.id as id', 'schedule_games.created_at', 'schedule_games.updated_at')
-  //       .where('schedule_games.id', '=', request.params.id)
-  //
-  //     getOne = await InGame_fieldsController.find_InGame_Fields_NOT_paginate(getOne)
-  //
-  //     return {
-  //       getOne,
-  //     }
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
 
   async update_vacany({ auth }, schedule_game_id, vacancy) {
     try {

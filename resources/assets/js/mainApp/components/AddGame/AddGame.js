@@ -11,20 +11,9 @@ import { toast } from 'react-toastify'
 import { Toast_style } from '../Utility_Function'
 import '../../styles/AddGame/AddGameStyles.scss'
 
-import {
-  SETTINGS_ENUMS,
-  styles,
-  EXPERIENCE_OPTIONS,
-  REGION_OPTIONS,
-  PLATFORM_OPTIONS,
-  CLASH_ROYAL_TROPHY,
-  DOTA2_MEDAL_RANKS,
-  DOTA2_ROLES,
-  DOTA2_SERVER_REGIONS,
-} from '../../static/AddGame'
+import { SETTINGS_ENUMS, styles, EXPERIENCE_OPTIONS, REGION_OPTIONS, PLATFORM_OPTIONS, LANGUAGE_OPTIONS } from '../../static/AddGame'
 import { MyGCheckbox, MyGTextarea, MyGAsyncSelect, MyGCreateableSelect, MyGSelect, MyGDatePicker } from '../common'
 import { Game_name_values, Schedule_Game_Tags, Disable_keys } from '../Utility_Function'
-import Axios from 'axios'
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
 import { FeatureEnabled, REPEAT_SCHEDULE } from '../../../common/flags'
 
@@ -170,7 +159,7 @@ const AddGame = ({
     try {
       const {
         data: { playerSearchResults },
-      } = await Axios.post(`/api/user/playerSearchResults`, {
+      } = await axios.post(`/api/user/playerSearchResults`, {
         alias: value,
       })
       const parsedData = parsePlayersToSelectData(playerSearchResults)
@@ -251,7 +240,7 @@ const AddGame = ({
           onClick={(value) => {
             updateMainSettings({
               isUnlimitedPlayers: value,
-              numberOfPlayers: value ? -42 : 1,
+              numberOfPlayers: value ? 0 : 1,
             })
           }}
           labelText='Unlimited'
@@ -263,7 +252,7 @@ const AddGame = ({
   const getCommentPrivaryView = () => {
     return (
       <div className='comments-privacy-container'>
-        <div className='field-title'>Comments and Privacy</div>
+        <div className='field-title'>Settings</div>
         <MyGCheckbox
           checked={mainSettingsState.isCommentsAllowed}
           onClick={(value) => {
@@ -440,6 +429,9 @@ const AddGame = ({
           case 0:
             newArr = []
             arrTags = ''
+
+            updateOptionalSettings({ value_one_key: key })
+
             game_data_struct['value_one_label'] = additional_info_data[key].label
             game_data_struct['value_one_placeholder'] = additional_info_data[key].placeholder
 
@@ -462,6 +454,9 @@ const AddGame = ({
           case 1:
             newArr = []
             arrTags = ''
+
+            updateOptionalSettings({ value_two_key: key })
+
             game_data_struct['value_two_label'] = additional_info_data[key].label
             game_data_struct['value_two_placeholder'] = additional_info_data[key].placeholder
             game_data_struct['value_two_value'] = additional_info_data[key].value
@@ -483,6 +478,9 @@ const AddGame = ({
           case 2:
             newArr = []
             arrTags = ''
+
+            updateOptionalSettings({ value_three_key: key })
+
             game_data_struct['value_three_label'] = additional_info_data[key].label
             game_data_struct['value_three_placeholder'] = additional_info_data[key].placeholder
             game_data_struct['value_three_value'] = additional_info_data[key].value
@@ -504,6 +502,9 @@ const AddGame = ({
           case 3:
             newArr = []
             arrTags = ''
+
+            updateOptionalSettings({ value_four_key: key })
+
             game_data_struct['value_four_label'] = additional_info_data[key].label
             game_data_struct['value_four_placeholder'] = additional_info_data[key].placeholder
             game_data_struct['value_four_value'] = additional_info_data[key].value
@@ -525,6 +526,9 @@ const AddGame = ({
           case 4:
             newArr = []
             arrTags = ''
+
+            updateOptionalSettings({ value_five_key: key })
+
             game_data_struct['value_five_label'] = additional_info_data[key].label
             game_data_struct['value_five_placeholder'] = additional_info_data[key].placeholder
             game_data_struct['value_five_value'] = additional_info_data[key].value
@@ -630,7 +634,7 @@ const AddGame = ({
                 updateAdvancedSettings({ coHosts: value })
               }}
               value={advancedSettingsState.coHosts}
-              placeholder='Enter your Friend’s name to set him as a co-host'
+              placeholder='Enter your friend’s name to set them as a co-host'
               onKeyDown={Disable_keys}
             />
           </div>
@@ -690,6 +694,18 @@ const AddGame = ({
               </div>
             </Fragment>
           )}
+          <div className='field-title'>Language</div>
+          <div className='platform-select'>
+            <MyGSelect
+              options={LANGUAGE_OPTIONS}
+              onChange={(value) => {
+                updateAdvancedSettings({ language: value })
+              }}
+              value={advancedSettingsState.language}
+              placeholder='Select language/s'
+              isMulti
+            />
+          </div>
           <div className='field-title'>Description</div>
           <div className='description-text-area'>
             <MyGTextarea
