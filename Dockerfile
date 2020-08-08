@@ -4,6 +4,7 @@ FROM node:13.8.0
 RUN mkdir -p /usr/src/app
 RUN mkdir -p /usr/src/app/node_modules
 RUN chown -R node:node /usr/src/app
+RUN touch /usr/src/app/.env
 WORKDIR /usr/src/app
 
 # Install app dependencies
@@ -17,4 +18,4 @@ RUN npm run build
 
 # Run app
 EXPOSE 3333
-CMD [ "npm", "dev"]
+CMD [ "npm", "start"]
