@@ -1,9 +1,10 @@
-import React, { Fragment, useState, useEffect, memo } from 'react'
+import React, { Fragment, useState, useEffect, memo, useCallback } from 'react'
 import classNames from 'classnames'
 import Slider, { Range } from 'rc-slider'
 import moment from 'moment'
 import CustomCron from '../common/Cron/MyGCron'
-import Dropzone from 'react-dropzone'
+// import Dropzone from 'react-dropzone'
+import { useDropzone } from 'react-dropzone'
 const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
 import 'rc-slider/assets/index.css'
 import { toast } from 'react-toastify'
@@ -29,7 +30,6 @@ import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
 import { FeatureEnabled, REPEAT_SCHEDULE } from '../../../common/flags'
 
 const SliderWithTooltip = Slider.createSliderWithTooltip(Slider)
-
 const AddCommunity = ({
   state,
   updateComponentState,
@@ -442,20 +442,21 @@ const AddCommunity = ({
     )
   }
 
-  handlePreviewRemove = (e, src) => {
-    e.preventDefault()
-    let preview_files = [...this.state.preview_files]
-    preview_files = preview_files.filter((data) => data.src != src)
-    this.setState({ preview_files })
-  }
+  // handlePreviewRemove = (e, src) => {
+  //   e.preventDefault()
+  //   let preview_files = [...this.state.preview_files]
+  //   preview_files = preview_files.filter((data) => data.src != src)
+  //   this.setState({ preview_files })
+  // }
 
-  getPreviewImageGallery = (preview_filesData) => {
-    return preview_filesData.map((data) => {
-      return { original: data.src, thumbnail: data.src }
-    })
-  }
+  // getPreviewImageGallery = (preview_filesData) => {
+  //   return preview_filesData.map((data) => {
+  //     return { original: data.src, thumbnail: data.src }
+  //   })
+  // }
 
   const getCommunityleftView = () => {
+    const { getRootProps, getInputProps } = useDropzone()
     return (
       <div style={{ display: 'flex' }}>
         <div className={styles.sideLineContainer}>
@@ -504,7 +505,12 @@ const AddCommunity = ({
           <div className='field-title'>
             <p>Featured Image</p>
           </div>
-          <div className='media__container'></div>
+          <div className='media__container'>
+            <div {...getRootProps()}>
+              <input {...getInputProps()} />
+              <p>Drag 'n' drop some files here, or click to select files</p>
+            </div>
+          </div>
           <div className='field-title'>
             <p>Add Hashtags</p>
           </div>
