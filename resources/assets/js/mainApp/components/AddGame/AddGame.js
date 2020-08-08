@@ -638,18 +638,20 @@ const AddGame = ({
               onKeyDown={Disable_keys}
             />
           </div>
-          <div className='field-title'>Experience</div>
-          <div className='experience-select'>
-            <MyGSelect
-              options={EXPERIENCE_OPTIONS}
-              onChange={(value) => {
-                updateAdvancedSettings({ experience: value })
-              }}
-              value={advancedSettingsState.experience}
-              placeholder='Select experience level'
-              isMulti
-            />
-          </div>
+          {advancedSettingsState.show_experience && <div className='field-title'>Experience</div>}
+          {advancedSettingsState.show_experience && (
+            <div className='experience-select'>
+              <MyGSelect
+                options={EXPERIENCE_OPTIONS}
+                onChange={(value) => {
+                  updateAdvancedSettings({ experience: value })
+                }}
+                value={advancedSettingsState.experience}
+                placeholder='Select experience level'
+                isMulti
+              />
+            </div>
+          )}
           <div className='field-title'>Game Tags</div>
           <div className='game-title-select'>
             <MyGCreateableSelect

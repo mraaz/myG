@@ -125,7 +125,9 @@ const JoinStatus = (props) => {
   }
 
   const handleEditGameDetails = () => {
-    props.routeProps.routeProps.history.push(`/editScheduleGames/${props.schedule_games_id}`)
+    props.routeProps.routeProps
+      ? props.routeProps.routeProps.history.push(`/editScheduleGames/${props.schedule_games_id}`)
+      : props.routeProps.history.push(`/editScheduleGames/${props.schedule_games_id}`)
   }
   const handleOpenGroupChat = () => {
     openChatForGame(props.schedule_games_id)
