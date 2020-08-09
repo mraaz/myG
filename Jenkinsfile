@@ -6,7 +6,7 @@ pipeline {
         REGISTRY = 'myg2020/myg'
         REGISTRY_CREDENTIAL = 'docker-hub-credential'
         GITHUB = 'git@github.com:/mraaz/myG'
-        GITHUB_REDENTIAL = 'git-private-key'
+        GITHUB_CREDENTIAL = 'git-private-key'
     }
     agent {
         kubernetes {
@@ -19,9 +19,9 @@ pipeline {
         stage('Code Checkout') {
             steps {
                 checkout([
-                    $class: 'GitSCM',
-                    branches: [[name: '*/avin']],
-                    userRemoteConfigs: [[credentialsId: '${GITHUB_REDENTIAL}', url: '${GITHHUB}']]
+                  git branch: 'avin',
+                      credentialsId: 'git-private-key',
+                      url: 'git@github.com:mraaz/myG.git'
                 ])
             }
         }
@@ -36,7 +36,7 @@ pipeline {
         stage('Docker Publish') {
             steps {
                 container('docker') {
-                    withDockerRegistry([credentialsId: "${REGISTRY_CREDENTIAL}", url: ""]) {
+                    withDockerRegistry([credentialsId: "${REGISTRY_CREDENTIAL}", url: "https://docker.io"]) {
                         sh "docker push ${REGISTRY}"
                     }
                 }
