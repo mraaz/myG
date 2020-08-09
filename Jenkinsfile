@@ -43,9 +43,12 @@ pipeline {
         stage('Deploy image') {
             steps {
                 container('helm') {
-                     withKubeCredentials([credentialsId: "${KUBERNETES_CREDENTIAL}", serverUrl: "${KUBERNETES_BOOTSTRAP_SERVER}"]) {
-                        sh "kubectl config view"
-                        sh "helm upgrade myg --install --force ./helm/mygame -f ./helm/mygame.yaml -n mygame"
+                     withCredentials([file(credentialsId: '${KUBERNETES_CREDENTIAL}', variable: 'config')]) {
+                       sh """
+                       export KUBECONFIG=\${config}
+                       kubectl config view
+                       helm upgrade myg --install --force ./helm/mygame -f ./helm/mygame.yaml -n mygame
+                       """
                      }
                 }
             }
