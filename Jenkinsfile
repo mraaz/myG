@@ -41,7 +41,7 @@ pipeline {
         stage('Deploy image') {
             steps {
                 container('helm') {
-                    sh "helm upgrade --install --force ./helm/mygame -f ./helm/mygame.yaml -n mygame"
+                    sh "helm upgrade myg --install --force ./helm/mygame -f ./helm/mygame.yaml -n mygame"
                 }
             }
         }
