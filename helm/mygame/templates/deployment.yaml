@@ -1,0 +1,123 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mygame.fullname" . }}
+  labels:
+{{ include "mygame.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "mygame.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "mygame.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ template "mygame.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: mygame
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: DB_CONNECTION
+              value: mysql
+            - name: DB_DATABASE
+              value: {{ .Values.mygame.databaseName }}
+            - name: DB_USER
+              value: {{ .Values.mygame.dataseUser }}
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name:  {{ template "mygame.fullname" . }}
+                  key: db-password
+            - name: DB_HOST
+              value: {{ .Values.mygame.databaseHost }}
+            - name: DB_PORT
+              value: {{ .Values.mygame.databasePort | quote }}
+            - name: NODE_ENV
+              value: {{ .Values.mygame.nodeEnvironment }}
+            - name: CACHE_VIEWS
+              value: "false"
+            - name: APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name:  {{ template "mygame.fullname" . }}
+                  key: appkey
+            - name: SESSION_DRIVER
+              value: cookie
+            - name: HASH_DRIVER
+              value: bcrypt
+            - name: ENV_SILENT
+              value: "true"
+            - name: APP_URL
+              value: http://${HOST}:${PORT}
+            - name: HOST
+              value: "0.0.0.0"
+            - name: PORT 
+              value: "3333"
+            - name: REDIS_ENABLED
+              value: "true"
+            - name: REDIS_HOST
+              value: {{ .Values.mygame.redisHost }}
+            - name: REDIS_PORT
+              value: {{ .Values.mygame.redisPort }}
+            - name: NATS_ENABLED
+              value: "true"
+            - name: NATS_SERVER
+              value: {{ .Values.mygame.natsServer }}
+            - name: LOGS_ON
+              value: "NATS|USER|CHAT|GUEST|GAME|CRON|PAGINATION|ANALYTICS"
+            - name: CLAMAV_HOST
+              value: {{ .Values.mygame.clamavHost }}
+            - name: CLAMAV_PORT
+              value: {{ .Values.mygame.clamavPort }}
+            - name: TZ
+              value: {{ .Values.mygame.timezone }}
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom: 
+                secretKeyRef:
+                  name:  {{ template "mygame.fullname" . }}
+                  key: awssecret
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name:  {{ template "mygame.fullname" . }}
+                  key: awskey
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name:  {{ template "mygame.fullname" . }}
+                  key: googleid
+            - name: GOOGLE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name:  {{ template "mygame.fullname" . }}
+                  key: googlesecret
+          ports: 
+            - containerPort: 3333
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
