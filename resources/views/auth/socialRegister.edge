@@ -153,7 +153,7 @@ function fetchSeatsAvailable() {
 
   function setSeatsAvailable() {
     const seatsAvailable = parseInt(fetchSeatsAvailable());
-    document.getElementById('seats-available').innerText = seatsAvailable;
+    document.getElementById('seats-available').innerText = seatsAvailable || 0;
     if (!seatsAvailable) {
       document.getElementsByClassName('register-message')[0].innerText = "Only Invitation Codes can get you in now!";
       injectInvitationCodeInput();
