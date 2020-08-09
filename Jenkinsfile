@@ -23,8 +23,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 container('docker') {
-                    sh "TAG = date +'%d.%m.%Y..%H.%M.%S'"
-                    sh "docker build -t ${REGISTRY}:$TAG ."
+                    sh "export TAG=${date +'%d.%m.%Y..%H.%M.%S'}; docker build -t ${REGISTRY}:$TAG ."
                     sh "docker tag myg2020/myg:$TAG myg2020/myg:latest"
                 }
             }
