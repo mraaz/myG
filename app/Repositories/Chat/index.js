@@ -460,7 +460,9 @@ class ChatRepository {
     const guests = JSON.parse(chat.guests || '[]');
     const owners = JSON.parse(chat.owners || '[]');
     if (!forceDelete && !owners.includes(requestingUserId)) throw new Error('Only Owners can Delete Chat');
-    await new AwsKeyController().removeChatGroupProfileKey(requestedChatId);
+    const keyController = new AwsKeyController();
+    await keyController.removeChatGroupProfileKey(requestedChatId);
+    await keyController.removeChatAttachmentKey(requestedChatId);
     await chatModel.delete();
     await Notification.query().where('chat_id', requestedChatId).delete();
     contacts.forEach(userId => this._notifyChatEvent({ userId, action: 'deleteChat', payload: { chatId: requestedChatId } }));
@@ -721,7 +723,6 @@ class ChatRepository {
       reply_backup: replyBackup,
     };
     const message = await Chat.find(requestedChatId).then(chat => chat.messages().create(messageData));
-    if (attachment) await new AwsKeyController().addChatAttachmentKey(requestedChatId, message.id, attachment);
     const messageSchema = new MessageSchema({
       messageId: message.id,
       uuid: message.uuid,
@@ -834,6 +835,7 @@ class ChatRepository {
       createdAt: message.created_at,
       updatedAt: message.updated_at,
     });
+    await new AwsKeyController().removeChatAttachmentKey(requestedChatId, requestedMessageId);
     if (messageSchema.senderId === requestingUserId) {
       await message.save();
       this._notifyChatEvent({ chatId: requestedChatId, action: 'updateMessage', payload: messageSchema });
@@ -1089,7 +1091,7 @@ class ChatRepository {
     const expiredAttachments = expiredAttachmentsRaw && expiredAttachmentsRaw.toJSON() || [];
     const keyController = new AwsKeyController();
     for (const message of expiredAttachments) {
-      await keyController.removeChatAttachmentKey(message.chat_id, message.id, message.attachment);
+      await keyController.removeChatAttachmentKey(message.chat_id, message.id);
       await this.deleteMessage({ requestingUserId: message.sender_id, requestedChatId: message.chat_id, requestedMessageId: message.id });
     }
     log('CRON', `END - HANDLE EXPIRED ATTACHMENTS - DELETED ${expiredAttachments.length} ATTACHMENTS`);

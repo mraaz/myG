@@ -27,6 +27,11 @@ export function uploadGroupIcon(chatId, awsKey) {
   return axios.post(`/api/chat/${chatId}/icon`, { awsKey }).then(response => response.data);
 }
 
+export function uploadAttachmentIcon(chatId, messageId, awsKey) {
+  logger.log('CHAT', 'HTTP', `Uploading Attachment Icon for ${chatId} message ${messageId} -> ${awsKey}`);
+  return axios.post(`/api/chat/${chatId}/message/${messageId}/icon`, { awsKey }).then(response => response.data);
+}
+
 export function uploadGameIcon(gameId, awsKey) {
   logger.log('CHAT', 'HTTP', `Uploading Game Icon for ${gameId} -> ${awsKey}`);
   return axios.post(`/api/game/${gameId}/icon`, { awsKey }).then(response => response.data);

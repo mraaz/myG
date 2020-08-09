@@ -324,6 +324,7 @@ Route.get('/api/SavedFiltersScheduleGameController/getAllSavedFilters', 'SavedFi
 
 // Aws Key Upload
 Route.post('/api/chat/:chatId/icon', 'AwsKeyController.addChatGroupProfileKey')
+Route.post('/api/chat/:chatId/message/:messageId/icon', 'AwsKeyController.addChatAttachmentKey')
 Route.post('/api/game/:gameId/icon', 'AwsKeyController.addGameIconKey')
 
 // Chat Feature - https://docs.google.com/spreadsheets/d/1AR9P3MLQw6J6eoRqgTbOVROFxmPE215yXzsqD59wy2o

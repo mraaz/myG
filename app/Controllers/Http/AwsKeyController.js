@@ -183,62 +183,82 @@ class AwsKeyController {
     }
   }
 
-  async addChatGroupProfileKey({ auth, request }) {
-    if (auth.user) {
-      try {
-        const chat_id = request.params.chatId
-        const aws_key = request.only('awsKey').awsKey
-        const type = 4
-        await AwsKey.create({ aws_key, chat_id, type })
-      } catch (error) {
-        console.log(error)
-      }
-    } else {
-      return 'You are not Logged In!'
+  addChatGroupProfileKey({ auth, request }) {
+    if (!auth.user) return Promise.resolve('AUTH_REFUSED')
+    try {
+      const chat_id = request.params.chatId
+      const aws_key = request.only('awsKey').awsKey
+      return AwsKey.create({ aws_key, chat_id, type: 4 })
+    } catch (error) {
+      console.log(error)
+      return Promise.resolve(error)
     }
   }
 
-  async addGameIconKey({ auth, request }) {
-    if (auth.user) {
-      try {
-        const game_name_id = request.params.gameId
-        const aws_key = request.only('awsKey').awsKey
-        const type = 6
-        await AwsKey.create({ aws_key, game_name_id, type })
-      } catch (error) {
-        console.log(error)
-      }
-    } else {
-      return 'You are not Logged In!'
+  addChatAttachmentKey({ auth, request }) {
+    if (!auth.user) return Promise.resolve('AUTH_REFUSED')
+    try {
+      const chat_id = request.params.chatId
+      const chat_message_id = request.params.messageId
+      const aws_key = request.only('awsKey').awsKey
+      return AwsKey.create({ aws_key, chat_id, chat_message_id, type: 5 })
+    } catch (error) {
+      console.log(error)
+      return Promise.resolve(error)
+    }
+  }
+
+  addGameIconKey({ auth, request }) {
+    if (!auth.user) return Promise.resolve('AUTH_REFUSED')
+    try {
+      const game_name_id = request.params.gameId
+      const aws_key = request.only('awsKey').awsKey
+      return AwsKey.create({ aws_key, game_name_id, type: 6 })
+    } catch (error) {
+      console.log(error)
+      return Promise.resolve(error)
     }
   }
 
   async removeChatGroupProfileKey(chat_id) {
     try {
-      const type = 4
-      const { aws_key } = await Database.from('aws_keys').where({ chat_id, type })
-      await Database.table('aws_keys')
-        .where({ chat_id, type })
-        .delete()
-      await new ApiController()._deleteFile(aws_key)
-      return Promise.resolve()
+      const apiController = new ApiController()
+      const response = await Database.from('aws_keys').where({ chat_id, type: 4 })
+      if (!response.length) return Promise.resolve()
+      await apiController._deleteFile(response[0].aws_key)
     } catch (error) {
       console.log(error)
       return Promise.resolve()
     }
   }
 
-  async addChatAttachmentKey(chat_id, chat_message_id, aws_key) {
-    const type = 5
-    await AwsKey.create({ aws_key, chat_id, chat_message_id, type })
+  async removeChatAttachmentKey(chat_id, chat_message_id) {
+    try {
+      const apiController = new ApiController()
+      if (chat_message_id) {
+        const response = await Database.from('aws_keys').where({ chat_id, chat_message_id, type: 5 })
+        if (!response.length) return Promise.resolve()
+        await apiController._deleteFile(response[0].aws_key)
+      } else {
+        const response = await Database.from('aws_keys').where({ chat_id, type: 5 })
+        if (!response.length) return Promise.resolve()
+        await Promise.all(response.map((key) => apiController._deleteFile(key.aws_key)))
+      }
+    } catch (error) {
+      console.log(error)
+      return Promise.resolve()
+    }
   }
 
-  async removeChatAttachmentKey(chat_id, chat_message_id, aws_key) {
-    const type = 5
-    await Database.table('aws_keys')
-      .where({ chat_id, chat_message_id, type })
-      .delete()
-    await new ApiController()._deleteFile(aws_key)
+  async removeGameIconKey(game_name_id) {
+    try {
+      const apiController = new ApiController()
+      const { aws_key } = await Database.from('aws_keys').where({ game_name_id, type: 6 })
+      await apiController._deleteFile(aws_key)
+    } catch (error) {
+      console.log(error)
+      return Promise.resolve()
+    }
   }
 }
 

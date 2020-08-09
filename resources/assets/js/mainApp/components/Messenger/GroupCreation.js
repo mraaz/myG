@@ -33,7 +33,6 @@ class GroupCreation extends React.Component {
   }
 
   componentDidMount() {
-    console.log('on mount')
     document.addEventListener('keydown', this.handleKeyDown)
     this.props.fetchContactsPaginated(0, null, null, null, true)
   }
