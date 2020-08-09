@@ -6,7 +6,7 @@ const Schema = use('Schema')
 class Import_game_names_Schema extends Schema {
   up () {
     this
-    .raw(" insert into users (alias, email, created_at, updated_at) values ('Raaz-admin', 'levelup@myg.gg', '1981-03-19', '1981-03-19')")
+    .raw(" insert into users (id, alias, email, created_at, updated_at) values (1, 'Raaz-admin', 'levelup@myg.gg', '1981-03-19', '1981-03-19')")
 
 
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('1943: The Battle of Midway', 1, 1, '1988-08-08', '1988-08-08')")
