@@ -8,27 +8,6 @@ class Import_game_names_Schema extends Schema {
     this
     .raw(" insert into users (id, alias, email, created_at, updated_at) values (1, 'Raaz-admin', 'levelup@myg.gg', '1981-03-19', '1981-03-19')")
 
-    .raw("insert into game_names (id, game_name, user_id, verified, created_at, updated_at) values (998, 'Dota 2', 1, 1, '1988-08-08', '1988-08-08')")
-    .raw("insert into game_names (id, game_name, user_id, verified, created_at, updated_at) values (999, 'League of Legends', 1, 1, '1988-08-08', '1988-08-08')")
-    .raw("insert into game_names (id, game_name, user_id, verified, created_at, updated_at) values (1000, 'Fortnite', 1, 1, '1988-08-08', '1988-08-08')")
-    .raw("insert into game_names (id, game_name, user_id, verified, created_at, updated_at) values (1001, 'Apex Legends', 1, 1, '1988-08-08', '1988-08-08')")
-    .raw("insert into game_names (id, game_name, user_id, verified, created_at, updated_at) values (1014, 'Clash Royale', 1, 1, '1988-08-08', '1988-08-08')")
-    .raw("insert into game_names (id, game_name, user_id, verified, created_at, updated_at) values (1020, 'Overwatch', 1, 1, '1988-08-08', '1988-08-08')")
-    .raw("insert into game_names (id, game_name, user_id, verified, created_at, updated_at) values (100, 'Call of Duty: Warzone', 1, 1, '1988-08-08', '1988-08-08')")
-    .raw("insert into game_names (id, game_name, user_id, verified, created_at, updated_at) values (1023, 'Rocket League', 1, 1, '1988-08-08', '1988-08-08')")
-
-    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Roblox', 1, 1, '1988-08-08', '1988-08-08')")
-    .raw("insert into game_names (id, game_name, user_id, verified, created_at, updated_at) values (1037, 'Mobile Legends: Bang Bang', 1, 1, '1988-08-08', '1988-08-08')")
-    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Subway Surfers', 1, 1, '1988-08-08', '1988-08-08')")
-    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Pokemon GO', 1, 1, '1988-08-08', '1988-08-08')")
-    .raw("insert into game_names (id, game_name, user_id, verified, created_at, updated_at) values (1040, 'PUBG', 1, 1, '1988-08-08', '1988-08-08')")
-    .raw("insert into game_names (id, game_name, user_id, verified, created_at, updated_at) values (1041, 'NBA 2K', 1, 1, '1988-08-08', '1988-08-08')")
-    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Super Smash Bros. Ultimate', 1, 1, '1988-08-08', '1988-08-08')")
-    .raw("insert into game_names (id, game_name, user_id, verified, created_at, updated_at) values (1043, 'CSGO', 1, 1, '1988-08-08', '1988-08-08')")
-
-    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Valorant', 1, 1, '1988-08-08', '1988-08-08')")
-    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Fall Guys: Ultimate Knockout', 1, 1, '1988-08-08', '1988-08-08')")
-
 
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('1943: The Battle of Midway', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('42 All-Time Classics', 1, 1, '1988-08-08', '1988-08-08')")
@@ -129,6 +108,7 @@ class Import_game_names_Schema extends Schema {
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Call of Duty 2', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Call of Duty 4: Modern Warfare', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Call of Duty: Modern Warfare 2', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Call of Duty: Warzone', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Canabalt', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Cannon Fodder', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Capcom vs SNK', 1, 1, '1988-08-08', '1988-08-08')")
@@ -1026,7 +1006,10 @@ class Import_game_names_Schema extends Schema {
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Zoo Keeper', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Zork I: The Great Underground Empire', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Zuma', 1, 1, '1988-08-08', '1988-08-08')")
-
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Dota 2', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('League of Legends', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Fortnite', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Apex Legends', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Mortal Kombat 11', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('My Time at Portia', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Devil May Cry 5', 1, 1, '1988-08-08', '1988-08-08')")
@@ -1039,14 +1022,16 @@ class Import_game_names_Schema extends Schema {
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Marvel Ultimate Alliance 3: The Black Order', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Star Wars: Jedi – Fallen Order', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Rainbow Six Siege', 1, 1, '1988-08-08', '1988-08-08')")
-
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Clash Royale', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Clash of Clans', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Baba is You', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Tetris 99', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Sekiro: Shadows Die Twice', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Hearthstone', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Overwatch', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Grand Theft Auto V', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('World Of Tanks', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Rocket League', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Borderlands 2', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Arma 3', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Assassins Creed: Unity', 1, 1, '1988-08-08', '1988-08-08')")
@@ -1060,7 +1045,17 @@ class Import_game_names_Schema extends Schema {
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Tekken 7', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Secret of Evermore', 1, 1, '1988-08-08', '1988-08-08')")
 
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Roblox', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Mobile Legends: Bang Bang', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Subway Surfers', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Pokemon GO', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('PUBG', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('NBA 2K', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Super Smash Bros. Ultimate', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('CSGO', 1, 1, '1988-08-08', '1988-08-08')")
 
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Valorant', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Fall Guys: Ultimate Knockout', 1, 1, '1988-08-08', '1988-08-08')")
 
 
     .raw("update game_names set game_img = \"https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/game_img/Dota_2.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Dota%202-90x120.jpg\", game_name_fields_img =\"https://static-cdn.jtvnw.net/ttv-boxart/Dota%202-390x520.jpg\"  where game_name = \"Dota 2\"")
