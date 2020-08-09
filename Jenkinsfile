@@ -43,7 +43,7 @@ pipeline {
         stage('Deploy image') {
             steps {
                 container('helm') {
-                     withCredentials([file(credentialsId: '${KUBERNETES_CREDENTIAL}', variable: 'config')]) {
+                     withCredentials([file(credentialsId: 'kubernetes-credential', variable: 'config')]) {
                        sh """
                        export KUBECONFIG=\${config}
                        kubectl config view
