@@ -976,6 +976,7 @@ class ChatRepository {
     const requests = rawRequests.map(request => new ChatPrivateKeyRequestSchema({
       chatId: request.chat_id,
       userId: request.user_id,
+      guestId: request.guest_id,
       publicKey: request.public_key,
       createdAt: request.created_at,
       updatedAt: request.updated_at,
@@ -983,17 +984,19 @@ class ChatRepository {
     return { requests };
   }
 
-  async requestGroupPrivateKey({ userId, chatId, publicKey }) {
+  async requestGroupPrivateKey({ userId, guestId, chatId, publicKey }) {
     const request = new ChatPrivateKeyRequest();
     request.user_id = userId;
+    request.guest_id = guestId;
     request.chat_id = chatId;
     request.public_key = publicKey;
     await request.save();
     return new DefaultSchema({ success: true });
   }
 
-  async confirmGroupPrivateKey({ userId, chatId }) {
-    await ChatPrivateKeyRequest.query().where('user_id', userId).andWhere('chat_id', chatId).delete();
+  async confirmGroupPrivateKey({ userId, guestId, chatId }) {
+    if (userId) await ChatPrivateKeyRequest.query().where('user_id', userId).andWhere('chat_id', chatId).delete();
+    if (guestId) await ChatPrivateKeyRequest.query().where('guest_id', guestId).andWhere('chat_id', chatId).delete();
     return new DefaultSchema({ success: true });
   }
 

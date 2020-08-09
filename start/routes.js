@@ -381,6 +381,9 @@ Route.get('/api/chat/paginated/contact', 'ChatController.fetchContactsPaginated'
 Route.get('/api/chat/paginated/groups', 'ChatController.fetchGroupsPaginated')
 Route.get('/api/chat/paginated/games', 'ChatController.fetchGamesPaginated')
 Route.get('/api/chat/paginated/search', 'ChatController.searchPaginated')
+Route.get('/api/chat/:chatId/privateKey', 'ChatController.fetchGroupPrivateKeyRequests')
+Route.post('/api/chat/:chatId/privateKey', 'ChatController.requestGroupPrivateKey')
+Route.delete('/api/chat/:chatId/privateKey', 'ChatController.confirmGroupPrivateKey')
 
 // Guests
 Route.post('/api/guest/', 'GuestController.register')

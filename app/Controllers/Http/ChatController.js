@@ -458,6 +458,34 @@ class ChatController {
     const { contacts, groups, games } = await ChatRepository.searchPaginated({ requestingUserId, requestedPage, search })
     return response.send({ contacts, groups, games })
   }
+
+  async fetchGroupPrivateKeyRequests({ auth, params, response }) {
+    const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
+    const { chatId } = params
+    log('CHAT', `User Fetching Private Key Requests for Group ${chatId}`)
+    const { requests } = await ChatRepository.fetchGroupPrivateKeyRequests({ chatId })
+    return response.send({ requests })
+  }
+
+  async requestGroupPrivateKey({ auth, params, request, response }) {
+    const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
+    const { chatId } = params
+    const { publicKey } = request.only(['publicKey'])
+    log('CHAT', `User ${requestingUserId} requesting Group ${chatId} Private Key`)
+    const { success, error } = await ChatRepository.requestGroupPrivateKey({ userId: requestingUserId, chatId, publicKey })
+    return response.send({ success, error })
+  }
+
+  async confirmGroupPrivateKey({ auth, params, response }) {
+    const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
+    const { chatId } = params
+    log('CHAT', `User ${requestingUserId} confirming Group ${chatId} Private Key`)
+    const { success, error } = await ChatRepository.confirmGroupPrivateKey({ userId: requestingUserId, chatId })
+    return response.send({ success, error })
+  }
 }
 
 module.exports = ChatController

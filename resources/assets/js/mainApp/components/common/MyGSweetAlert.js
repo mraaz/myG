@@ -4,13 +4,6 @@ import SweetAlert from 'react-bootstrap-sweetalert';
 import { getAssetUrl } from '../../../common/assets';
 
 export default class MyGSweetAlert extends React.Component {
-
-  // Hacky work-around for SweetAlert's bad design decisions.
-  componentDidMount() {
-    document.querySelector(".sweet-alert > h2").setAttribute('style', "font-size: 20px; font-weight: 500; color: #FAFAFA; line-height: 1.2; font-family: Montserrat Alternates");
-    document.querySelector(".sweet-alert > .text-muted").setAttribute('style', "color: #FAFAFA; line-height: 1.2; font-family: Montserrat Alternates");
-  }
-
   render() {
     const customIcon = this.props.info ?
       getAssetUrl('ic_sweet_alert_info') : this.props.danger ?

@@ -171,3 +171,18 @@ function sendGroupPrivateKey(userId, chatId, contacts, publicKey, privateKey, us
   });
   return Promise.resolve();
 }
+
+export function fetchGroupPrivateKeyRequests(chatId) {
+  logger.log('GUEST', 'HTTP', `Fetching Private Key Requests for Group ${chatId}`);
+  return axios.get(`/api/chat/${chatId}/privateKey`).then(response => response.data);
+}
+
+export function requestGroupPrivateKey(chatId, publicKey) {
+  logger.log('GUEST', 'HTTP', `Requesting group ${chatId} private key`);
+  return axios.post(`/api/chat/${chatId}/privateKey`, { publicKey }).then(response => response.data);
+}
+
+export function confirmGroupPrivateKey(chatId) {
+  logger.log('GUEST', 'HTTP', `Confirming group ${chatId} private key`);
+  return axios.delete(`/api/chat/${chatId}/privateKey`).then(response => response.data);
+}

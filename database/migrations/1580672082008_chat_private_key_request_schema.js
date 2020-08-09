@@ -8,7 +8,8 @@ class ChatPrivateKeyRequestSchema extends Schema {
     this.create('chat_private_key_requests', (table) => {
       table.increments()
       table.integer('chat_id').unsigned().notNullable().index()
-      table.integer('user_id').unsigned().notNullable().index()
+      table.integer('user_id').unsigned().index()
+      table.integer('guest_id').unsigned().index()
       table.foreign('chat_id').references('id').inTable('chats').onDelete('CASCADE')
       table.string('public_key', 172).nullable()
       table.timestamps(true,true)
