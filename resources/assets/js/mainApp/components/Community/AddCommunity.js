@@ -8,6 +8,8 @@ import { useDropzone } from 'react-dropzone'
 const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
 import 'rc-slider/assets/index.css'
 import { toast } from 'react-toastify'
+import 'react-dropzone-uploader/dist/styles.css'
+import Dropzone from 'react-dropzone-uploader'
 
 import { Toast_style } from '../Utility_Function'
 import '../../styles/Community/AddCommunityStyles.scss'
@@ -456,7 +458,34 @@ const AddCommunity = ({
   // }
 
   const getCommunityleftView = () => {
-    const { getRootProps, getInputProps } = useDropzone()
+    const handleChangeStatus = ({ meta }, status, allFiles) => {
+      this.state.store_files = allFiles
+      if (status === 'done') {
+        const file = allFiles[0].file
+        const name = allFiles[0].meta.name
+        this.doUploadS3(file, name)
+      }
+      if (status == 'removed' && this.state.lock == false) {
+        this.removeIndivdualfromAWS()
+      }
+    }
+
+    const handleSubmit = (files, allFiles) => {
+      if (this.state.uploading == true) {
+        return
+      }
+      this.props.callbackConfirm(this.state.file_src, this.state.file_key)
+
+      this.setState({
+        store_files: [],
+        file_key: '',
+        file_src: '',
+      })
+
+      this.state.lock = true
+      allFiles.forEach((f) => f.remove())
+      this.state.lock = false
+    }
     return (
       <div style={{ display: 'flex' }}>
         <div className={styles.sideLineContainer}>
@@ -506,10 +535,14 @@ const AddCommunity = ({
             <p>Featured Image</p>
           </div>
           <div className='media__container'>
-            <div {...getRootProps()}>
-              <input {...getInputProps()} />
-              <p>Drag 'n' drop some files here, or click to select files</p>
-            </div>
+            <Dropzone
+              onChangeStatus={handleChangeStatus}
+              onSubmit={handleSubmit}
+              maxFiles={1}
+              maxSizeBytes={26214400}
+              accept='image/*'
+              inputContent={(files, extra) => (extra.reject ? 'Image files only' : 'Drag Files or Click to Browse')}
+            />
           </div>
           <div className='field-title'>
             <p>Add Hashtags</p>
