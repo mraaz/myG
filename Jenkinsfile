@@ -5,6 +5,8 @@ pipeline {
         TAG = "${date +'%d.%m.%Y..%H.%M.%S'}"
         REGISTRY = 'myg2020/myg'
         REGISTRY_CREDENTIAL = 'docker-hub-credential'
+        GITHUB = 'git@github.com:/mraaz/myG'
+        GITHUB_REDENTIAL = 'git-private-key'
     }
     agent {
         kubernetes {
@@ -12,11 +14,20 @@ pipeline {
             yamlFile 'build.yaml'
         }
     }
+
+    stage('Code Checkout') {
+            steps {
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: '*/avin']],
+                    userRemoteConfigs: [[credentialsId: '${GITHUB_REDENTIAL}', url: '${GITHHUB}']]
+                ])
+            }
+        }
+
+
     stages {
         stage('Docker Build') {
-            when {
-                branch 'avin'
-            }
             steps {
                 container('docker') {
                     sh "docker build -t ${REGISTRY}:$TAG ."
@@ -25,9 +36,6 @@ pipeline {
             }
         }
         stage('Docker Publish') {
-            when {
-                branch 'avin'
-            }
             steps {
                 container('docker') {
                     withDockerRegistry([credentialsId: "${REGISTRY_CREDENTIAL}", url: ""]) {
@@ -36,10 +44,7 @@ pipeline {
                 }
             }
         }
-        stage('Kubernetes Deploy') {
-            when {
-                branch 'avin'
-            }
+        stage('Deploy image') {
             steps {
                 container('helm') {
                     sh "helm upgrade --install --force ./helm/mygame -f ./helm/mygame.yaml -n mygame"
