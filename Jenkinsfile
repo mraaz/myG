@@ -15,7 +15,8 @@ pipeline {
         }
     }
 
-    stage('Code Checkout') {
+    stages {
+        stage('Code Checkout') {
             steps {
                 checkout([
                     $class: 'GitSCM',
@@ -24,9 +25,6 @@ pipeline {
                 ])
             }
         }
-
-
-    stages {
         stage('Docker Build') {
             steps {
                 container('docker') {
