@@ -18,11 +18,9 @@ pipeline {
     stages {
         stage('Code Checkout') {
             steps {
-                checkout([
                   git branch: 'avin',
                       credentialsId: 'git-private-key',
                       url: 'git@github.com:mraaz/myG.git'
-                ])
             }
         }
         stage('Docker Build') {
