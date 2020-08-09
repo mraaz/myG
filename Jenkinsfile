@@ -4,6 +4,7 @@ pipeline {
         REGISTRY_CREDENTIAL = 'docker-hub-credential'
         GITHUB = 'git@github.com:/mraaz/myG'
         GITHUB_CREDENTIAL = 'git-private-key'
+        TAG = $BUILD_TIMESTAMP
     }
     agent {
         kubernetes {
@@ -23,7 +24,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 container('docker') {
-                    sh "export TAG=${date +'%d.%m.%Y..%H.%M.%S'}; docker build -t ${REGISTRY}:$TAG ."
+                    sh "docker build -t ${REGISTRY}:$TAG ."
                     sh "docker tag myg2020/myg:$TAG myg2020/myg:latest"
                 }
             }
