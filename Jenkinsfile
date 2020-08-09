@@ -2,7 +2,7 @@ pipeline {
     environment {
         DEPLOY = "${env.BRANCH_NAME == "avin" ? "true" : "false"}"
         DOMAIN = 'localhost'
-        TAG="$(date +'%d.%m.%Y..%H.%M.%S')"
+        TAG = "${date +'%d.%m.%Y..%H.%M.%S'}"
         REGISTRY = 'myg2020/myg'
         REGISTRY_CREDENTIAL = 'docker-hub-credential'
     }
