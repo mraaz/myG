@@ -8,6 +8,7 @@ import { generateKeysSync as generateGroupKeys } from '../../../../integration/e
 import { uploadGroupIcon } from '../../../../integration/http/chat'
 import { getAssetUrl } from '../../../../common/assets'
 import { ignoreFunctions } from '../../../../common/render'
+import logger from '../../../../common/logger'
 import { fetchGroupsPaginatedAction } from '../../../../redux/actions/paginationAction'
 
 function compareLastMessages(c1, c2) {
@@ -137,6 +138,7 @@ class Groups extends React.Component {
   }
 
   render() {
+    logger.log('RENDER', 'Groups')
     return Divider(
       'groups',
       this.props.expanded,
@@ -166,8 +168,8 @@ export function mapStateToProps(state) {
     group.privateKey = chat.privateKey
   })
   return {
-    loading: state.pagination.loading,
-    loadingMore: state.pagination.loadingMore,
+    loading: state.pagination.groupsLoading,
+    loadingMore: state.pagination.groupsLoadingMore,
     groups: groups.sort(compareLastMessages),
     chats: state.chat.chats,
   }

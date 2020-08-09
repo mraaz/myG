@@ -133,8 +133,8 @@ export function mapStateToProps(state, props) {
   const contacts = state.pagination[props.status] || []
   contacts.forEach((contact) => (contact.chat = chatsByContact[contact.contactId]))
   return {
-    loading: state.pagination.loading,
-    loadingMore: state.pagination.loadingMore,
+    loading: state.pagination.contactsLoading,
+    loadingMore: state.pagination.contactsLoadingMore,
     contacts: contacts.sort(compareLastMessages),
     chats,
   }

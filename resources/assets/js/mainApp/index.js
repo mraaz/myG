@@ -85,6 +85,11 @@ class Layout extends Component {
         window.PORT = initialData.data.port
         window.LOGS_ON = initialData.data.logsOn
 
+        if (window.LOGS_ON.includes('EXPLAIN')) {
+          const whyDidYouRender = require('@welldone-software/why-did-you-render');
+          whyDidYouRender(React);
+        }
+
         if (initialData.data.userInfo == 1981 && !window.location.href.includes('/link')) {
           window.location.href = '/'
         }
