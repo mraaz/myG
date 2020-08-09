@@ -257,7 +257,7 @@ const AddGameContainer = () => {
 
   return (
     <div className={styles.container}>
-      <PageHeader headerText='Add Public Game' />
+      <PageHeader headerText='Add Match' />
       <AddGame
         state={state}
         updateComponentState={updateComponentState}
