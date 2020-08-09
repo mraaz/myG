@@ -4,7 +4,7 @@ pipeline {
         REGISTRY_CREDENTIAL = 'docker-hub-credential'
         GITHUB = 'git@github.com:/mraaz/myG'
         GITHUB_CREDENTIAL = 'git-private-key'
-        TAG = java.time.LocalDateTime.now()
+        TAG = System.currentTimeMillis()
     }
     agent {
         kubernetes {
