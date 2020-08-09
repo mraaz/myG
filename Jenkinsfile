@@ -21,6 +21,7 @@ pipeline {
                       url: 'git@github.com:mraaz/myG.git'
             }
         }
+
         stage('Docker Build') {
             steps {
                 container('docker') {
@@ -44,7 +45,7 @@ pipeline {
                      withCredentials([file(credentialsId: 'kubernetes-credential', variable: 'config')]) {
                        sh """
                        export KUBECONFIG=\${config}
-                       helm upgrade myg ./helm/mygame -f ./helm/mygame.yaml -n mygame
+                       helm upgrade myg ./helm/mygame -f ./helm/mygame.yaml -n mygame --set image.tag=$TAG
                        """
                      }
                 }
