@@ -22,7 +22,7 @@ class UserSchema extends Schema {
       table.string('relationship_status', 254).nullable().defaultTo("")
       table.string('provider_id', 254).nullable()
       table.string('provider', 254).nullable()
-      table.enu('status', ['online', 'playing', 'afk', 'offline']).notNullable().defaultTo('offline')
+      table.enu('status', ['online', 'playing', 'afk', 'offline']).notNullable().defaultTo('offline').index()
       table.enu('last_status', ['online', 'playing', 'afk', 'offline']).notNullable().defaultTo('online')
       table.boolean('status_locked').notNullable().defaultTo(false)
       table.datetime('last_seen').nullable()

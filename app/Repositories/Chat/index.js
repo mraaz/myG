@@ -523,7 +523,8 @@ class ChatRepository {
       lastSeen: contact.last_seen,
       publicKey: contact.public_key,
     }));
-    return { contacts };
+    const count = status ? (await Database.from('friends').innerJoin('users', 'users.id', 'friends.friend_id').where({ user_id: requestingUserId }).andWhere({ status }).count())[0]['count(*)'] : 0
+    return { contacts, count };
   }
 
   async fetchContactsByGame({ requestingUserId, status, gameId }) {

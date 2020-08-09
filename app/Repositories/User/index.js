@@ -121,8 +121,11 @@ class UserRepository {
   }
 
   async countContacts({ requestingUserId }) {
-    const contactCount = await Friend.query().where({ user_id: requestingUserId }).getCount()
-    return { contactCount };
+    const online = (await Database.from('friends').innerJoin('users', 'users.id', 'friends.friend_id').where({ user_id: requestingUserId }).andWhere({ status: 'online' }).count())[0]['count(*)']
+    const playing = (await Database.from('friends').innerJoin('users', 'users.id', 'friends.friend_id').where({ user_id: requestingUserId }).andWhere({ status: 'playing' }).count())[0]['count(*)']
+    const afk = (await Database.from('friends').innerJoin('users', 'users.id', 'friends.friend_id').where({ user_id: requestingUserId }).andWhere({ status: 'afk' }).count())[0]['count(*)']
+    const offline = (await Database.from('friends').innerJoin('users', 'users.id', 'friends.friend_id').where({ user_id: requestingUserId }).andWhere({ status: 'offline' }).count())[0]['count(*)']
+    return { online, playing, afk, offline };
   }
 
   async fetchContacts({ requestingUserId }) {

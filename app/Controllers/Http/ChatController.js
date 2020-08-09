@@ -424,8 +424,8 @@ class ChatController {
       const { contacts } = await ChatRepository.fetchContactsByGame({ requestingUserId, status, gameId, search })
       return response.send({ contacts })
     }
-    const { contacts } = await ChatRepository.fetchContactsPaginated({ requestingUserId, status, requestedPage, search })
-    return response.send({ contacts })
+    const { contacts, count } = await ChatRepository.fetchContactsPaginated({ requestingUserId, status, requestedPage, search })
+    return response.send({ contacts, count })
   }
 
   async fetchGroupsPaginated({ auth, request, response }) {

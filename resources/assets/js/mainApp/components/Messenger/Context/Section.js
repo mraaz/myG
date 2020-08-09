@@ -106,6 +106,7 @@ class Section extends React.Component {
         <div className='messenger-body-section-header clickable' onClick={this.expand}>
           <p className='messenger-body-section-header-name'>{this.props.status}</p>
           <div className='messenger-body-section-header-info'>
+            {this.props.count}
             <div
               className='messenger-body-section-header-icon'
               style={{ backgroundImage: `url('${getAssetUrl(`ic_messenger_chevron_${chevronType}`)}')` }}
