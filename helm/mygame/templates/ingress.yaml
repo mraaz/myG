@@ -1,0 +1,32 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "mygame.fullname" . }}
+  labels: {{- include "mygame.labels" . | nindent 4 }}
+  annotations:
+    {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  rules:
+  - http:
+      paths: 
+{{- if len (.Values.ingress.paths) }}
+{{ tpl (toYaml .Values.ingress.paths | indent 6) . }}
+{{- else }}
+      - backend:
+          serviceName: {{ template "mygame.fullname" . }}
+          servicePort: {{ .Values.service.portName }}
+{{- if .Values.ingress.path }}
+        path: {{ .Values.ingress.path }}
+{{- end -}}
+{{- end -}}
+{{- if .Values.ingress.hostName }}
+    host: {{ .Values.ingress.hostName | quote }}
+{{- end }}
+{{- if .Values.ingress.tls }}
+  tls:
+{{ toYaml .Values.ingress.tls | indent 4 }}
+{{- end -}}
+{{ end }}

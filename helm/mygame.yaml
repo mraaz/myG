@@ -1,0 +1,99 @@
+# Default values for mygame.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 2
+
+mygame:
+  databaseName: mygame
+  dataseUser: root
+  databasePassword: rootpass
+  databaseHost: proxysql-proxysql-cluste
+  databasePort: 6033
+  nodeEnvironment: development
+  appKey: "tEr8zSnVwS5KB0QtExWxRSXsUu6OTDim"
+  redisHost: "redis-master"
+  redisPort: '"6379"'
+  natsServer: "nats://nats-client:4222"
+  clamavHost: clamav
+  clamavPort: '"3310"'
+  timezone: UTC
+  awsKey: AKIAWV72ZDUVBRW3HFSF
+  awsSecret: 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
+  googleID: 377601093294-tptd2pbjs3me7k4r8d5543ietlmmubc1.apps.googleusercontent.com
+  googleSecret: XkHa7E6yTpBmdqnhuxu8mZuj
+
+image:
+  repository: myg2020/myg
+  tag: latest 
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: 
+- name: mygame-dockerhub
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  portName: mygame-http
+  port: 3333
+  targetPort: 3333
+  annotations: {}
+  
+
+ingress:
+  enabled: true
+  annotations: 
+    kubernetes.io/ingress.class: nginx
+    #ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: myg
+    #kubernetes.io/tls-acme: "true"
+  paths: []
+  path: /
+  hostName: stage.myg.gg
+  tls:
+    - secretName: stage.myg.gg
+      hosts:
+      - stage.myg.gg
+
+tls:
+  enabled: false
+  name: mygggsecret
+  fullchain: |-
+  privkey: |-
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
