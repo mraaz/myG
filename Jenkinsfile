@@ -46,7 +46,6 @@ pipeline {
                      withCredentials([file(credentialsId: 'kubernetes-credential', variable: 'config')]) {
                        sh """
                        export KUBECONFIG=\${config}
-                       kubectl config view
                        helm upgrade myg --install --force ./helm/mygame -f ./helm/mygame.yaml -n mygame
                        """
                      }
