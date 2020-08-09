@@ -15,7 +15,7 @@ pipeline {
     stages {
         stage('Docker Build') {
             when {
-                environment name: 'DEPLOY', value: 'true'
+                branch 'avin'
             }
             steps {
                 container('docker') {
@@ -26,7 +26,7 @@ pipeline {
         }
         stage('Docker Publish') {
             when {
-                environment name: 'DEPLOY', value: 'true'
+                branch 'avin'
             }
             steps {
                 container('docker') {
@@ -38,7 +38,7 @@ pipeline {
         }
         stage('Kubernetes Deploy') {
             when {
-                environment name: 'DEPLOY', value: 'true'
+                branch 'avin'
             }
             steps {
                 container('helm') {
