@@ -1,7 +1,6 @@
 
 const Database = use('Database');
 const User = use('App/Models/User');
-const Friend = use('App/Models/Friend');
 const UserChat = use('App/Models/UserChat');
 const FavoriteGame = use('App/Models/FavoriteGame');
 const GameName = use('App/Models/GameName');

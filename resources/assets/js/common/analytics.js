@@ -19,6 +19,14 @@ export const GoogleAnalytics = {
     })
   },
 
+  // A recent message in the context window was clicked to open a chat
+  chatRecentMessageClicked({ messageId }) {
+    pushEvent({
+      event: 'chatRecentMessageClicked',
+      messageId,
+    })
+  },
+
   // A contact in the context window was clicked to open a chat
   chatContactClicked({ contactId }) {
     pushEvent({
@@ -48,5 +56,5 @@ export const GoogleAnalytics = {
       event: 'chatMessageSent',
       chatId,
     })
-  }
+  },
 }

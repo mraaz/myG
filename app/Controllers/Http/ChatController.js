@@ -221,6 +221,14 @@ class ChatController {
     return response.send({ messages })
   }
 
+  async fetchRecentMessages({ auth, response }) {
+    const requestingUserId = auth.user.id
+    if (!requestingUserId) throw new Error('Auth Error')
+    log('CHAT', `User ${requestingUserId} requesting recent messages`)
+    const { messages } = await ChatRepository.fetchRecentMessages({ requestingUserId })
+    return response.send({ messages })
+  }
+
   async fetchUnreadMessages({ auth, response }) {
     const requestingUserId = auth.user.id
     if (!requestingUserId) throw new Error('Auth Error')

@@ -5,6 +5,7 @@ const initialState = {
   groupsLoading: false,
   gamesLoading: false,
   searchLoading: false,
+  recentsLoading: false,
   contactsLoadingMore: false,
   groupsLoadingMore: false,
   gamesLoadingMore: false,
@@ -16,6 +17,7 @@ const initialState = {
   foundContacts: [],
   groups: [],
   games: [],
+  recents: [],
   search: {
     contacts: [],
     groups: [],
@@ -117,6 +119,36 @@ export default function reducer(state = initialState, action) {
         searchLoading: false,
         searchLoadingMore: false,
         search: action.payload || {},
+      }
+    }
+
+    case 'RECENTS_PENDING': {
+      logger.log('PAGINATION', `Redux -> Loading Recents`)
+      return {
+        ...state,
+        recentsLoading: true,
+      }
+    }
+
+    case 'RECENTS_FULFILLED': {
+      logger.log('PAGINATION', `Redux -> Recents: `, action.payload)
+      return {
+        ...state,
+        recents: (action.payload.messages || []).sort((m1, m2) => m2.messageId - m1.messageId),
+        recentsLoading: false,
+      }
+    }
+
+    case 'NEW_MESSAGE': {
+      logger.log('CHAT', `Redux -> New Message: `, action.payload, action.meta)
+      const newMessage = action.payload.message
+      if (newMessage.keyReceiver) return state
+      const existingRecentMessages = JSON.parse(JSON.stringify(state.recents))
+      const recentMessages = existingRecentMessages.filter((message) => message.chatId !== newMessage.chatId)
+      const recents = [...recentMessages, newMessage].sort((m1, m2) => m2.messageId - m1.messageId)
+      return {
+        ...state,
+        recents,
       }
     }
 

@@ -51,7 +51,8 @@ class RedisRepository {
 
   async loadGameMessageSchedule() {
     const rawSchedule = await ChatGameMessageSchedule
-      .query('schedule', '>', moment())
+      .query()
+      .where('schedule', '>', moment())
       .orderBy('schedule', 'desc')
       .fetch();
     const schedule = (rawSchedule && rawSchedule.toJSON()) || [];
