@@ -18,9 +18,9 @@ export default class ErrorHandler extends React.PureComponent {
   }
 
   componentDidMount() {
-    console.error = this.componentDidCatch
-    window.onerror = this.componentDidCatch
-    window.onunhandledrejection = this.componentDidCatch
+    console.error = this.handleError
+    window.onerror = this.handleError
+    window.onunhandledrejection = this.handleError
   }
 
   componentWillUnmount() {
@@ -30,21 +30,27 @@ export default class ErrorHandler extends React.PureComponent {
   }
 
   componentDidCatch(error) {
+    this.handleError(error, "SHOULD_RELOAD")
+  }
+
+  handleError = (error, reload = false) => {
     originalErrorHandler(error)
-    
-    const stack = error && error.stack && error.stack.split('at ')[1] || null
-    const message = error && error.message || 'Unknown'
-    const context = stack && stack.split('(')[0] || 'Unknown'
+
+    const stack = (error && error.stack && error.stack.split('at ')[1]) || null
+    const message = (error && error.message) || 'Unknown'
+    const context = (stack && stack.split('(')[0]) || 'Unknown'
     if (message !== 'Unknown' || context !== 'Unknown') {
       GoogleAnalytics.caughtReactError({ message, context })
       logToElasticsearch('error', context, message)
     }
 
-    store.dispatch({ type: 'REACT_ERROR' })
-    const hasReloadedOnError = window.localStorage.getItem('hasReloadedOnError', 0)
-    if (Date.now() - hasReloadedOnError > 5000) {
-      window.localStorage.setItem('hasReloadedOnError', Date.now())
-      window.location.reload(true)
+    if (reload === "SHOULD_RELOAD") {
+      store.dispatch({ type: 'REACT_ERROR' })
+      const hasReloadedOnError = window.localStorage.getItem('hasReloadedOnError', 0)
+      if (Date.now() - hasReloadedOnError > 5000) {
+        window.localStorage.setItem('hasReloadedOnError', Date.now())
+        window.location.reload(true)
+      }
     }
   }
 
