@@ -2,6 +2,7 @@
 
 const GroupHashTag = use('App/Models/GroupHashTag')
 const Database = use('Database')
+const LoggingRepository = require('../../Repositories/Logging')
 
 class GroupHashTagController {
   async store({ auth }, content) {
@@ -20,7 +21,7 @@ class GroupHashTagController {
 
           return newGrpTag.id
         }
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     }
   }
@@ -35,7 +36,7 @@ class GroupHashTagController {
         allTags,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -49,7 +50,7 @@ class GroupHashTagController {
         allTags,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 }

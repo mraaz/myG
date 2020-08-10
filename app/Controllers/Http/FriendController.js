@@ -4,6 +4,7 @@ const Database = use('Database')
 const Friends = use('App/Models/Friend')
 const UserStatTransactionController = use('./UserStatTransactionController')
 const FollowerController = use('./FollowerController')
+const LoggingRepository = require('../../Repositories/Logging')
 
 class FriendController {
   async store({ auth, request, response }) {
@@ -28,7 +29,7 @@ class FriendController {
 
         return 'Saved item'
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     } else {
       return 'You are not Logged In!'
@@ -52,7 +53,7 @@ class FriendController {
         myFriendsLength: showCountallMyFriends,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 }

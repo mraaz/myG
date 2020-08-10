@@ -3,6 +3,7 @@
 const Follower = use('App/Models/Follower')
 const Database = use('Database')
 const UserStatTransactionController = use('./UserStatTransactionController')
+const LoggingRepository = require('../../Repositories/Logging')
 
 class FollowerController {
   async store({ auth, request, response }) {
@@ -18,7 +19,7 @@ class FollowerController {
 
         return 'Saved'
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     }
   }
@@ -36,7 +37,7 @@ class FollowerController {
 
         return 'Saved'
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     }
   }
@@ -56,7 +57,7 @@ class FollowerController {
 
         return 'Deleted successfully'
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     } else {
       return 'You are not Logged In!'

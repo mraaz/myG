@@ -2,6 +2,7 @@
 
 const Database = use('Database')
 const Archive_schedule_games_trans = use('App/Models/Archive_schedule_games_trans')
+const LoggingRepository = require('../../Repositories/Logging')
 
 class Archive_schedule_games_transController {
   async store({ auth, request, response }) {
@@ -23,7 +24,7 @@ class Archive_schedule_games_transController {
           })
         }
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
       return 'All Done'
     }

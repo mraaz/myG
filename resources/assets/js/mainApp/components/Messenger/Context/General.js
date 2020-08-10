@@ -1,4 +1,5 @@
 import React from 'react'
+import Recents from './Recents'
 import Contacts from './Contacts'
 import Groups from './Groups'
 import { getAssetUrl } from '../../../../common/assets'
@@ -11,9 +12,24 @@ export default class General extends React.Component {
 
   state = {
     dividerExpanded: {
-      friends: true,
+      recents: true,
+      friends: false,
       groups: false,
     },
+  }
+
+  renderRecents = () => {
+    return (
+      <Recents
+        userId={this.props.userId}
+        privateKey={this.props.privateKey}
+        disconnected={this.props.disconnected}
+        openChat={this.props.openChat}
+        createChat={this.props.createChat}
+        expanded={this.state.dividerExpanded.recents}
+        onExpand={(expanded) => this.setState({ dividerExpanded: { recents: !expanded, friends: false, groups: false } })}
+      />
+    )
   }
 
   renderContacts = () => {
@@ -26,7 +42,7 @@ export default class General extends React.Component {
         createChat={this.props.createChat}
         contactCount={this.props.contactCount}
         expanded={this.state.dividerExpanded.friends}
-        onExpand={(expanded) => this.setState({ dividerExpanded: { friends: !expanded, groups: false } })}
+        onExpand={(expanded) => this.setState({ dividerExpanded: { recents: false, friends: !expanded, groups: false } })}
       />
     )
   }
@@ -40,7 +56,7 @@ export default class General extends React.Component {
         openChat={this.props.openChat}
         createChat={this.props.createChat}
         expanded={this.state.dividerExpanded.groups}
-        onExpand={(expanded) => this.setState({ dividerExpanded: { groups: !expanded, friends: false } })}
+        onExpand={(expanded) => this.setState({ dividerExpanded: { recents: false, friends: false, groups: !expanded } })}
       />
     )
   }
@@ -74,6 +90,7 @@ export default class General extends React.Component {
 
         {this.props.expanded && (
           <div className='messenger-body-tab-content'>
+            {this.renderRecents()}
             {this.renderContacts()}
             {this.renderGroups()}
           </div>

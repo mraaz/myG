@@ -286,7 +286,7 @@ export default class ChatMessage extends React.Component {
   }
 
   renderMessage = (content) => {
-    if (!content) return null
+    if (!content) return 'encrypted message'
     const isImage = content.includes('myg-image')
     const isSound = content.includes('myg-sound')
     const isVideo = content.includes('myg-video')

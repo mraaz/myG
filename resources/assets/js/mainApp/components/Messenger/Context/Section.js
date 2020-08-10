@@ -106,6 +106,7 @@ class Section extends React.Component {
         <div className='messenger-body-section-header clickable' onClick={this.expand}>
           <p className='messenger-body-section-header-name'>{this.props.status}</p>
           <div className='messenger-body-section-header-info'>
+            <span className='messenger-body-section-header-count'>({this.props.count})</span>
             <div
               className='messenger-body-section-header-icon'
               style={{ backgroundImage: `url('${getAssetUrl(`ic_messenger_chevron_${chevronType}`)}')` }}
@@ -133,8 +134,8 @@ export function mapStateToProps(state, props) {
   const contacts = state.pagination[props.status] || []
   contacts.forEach((contact) => (contact.chat = chatsByContact[contact.contactId]))
   return {
-    loading: state.pagination.loading,
-    loadingMore: state.pagination.loadingMore,
+    loading: state.pagination.contactsLoading,
+    loadingMore: state.pagination.contactsLoadingMore,
     contacts: contacts.sort(compareLastMessages),
     chats,
   }
