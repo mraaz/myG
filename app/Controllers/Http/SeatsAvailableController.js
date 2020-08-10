@@ -15,7 +15,7 @@ class SeatsAvailableController {
   async checkExtraSeatsCode({ req, params, response }) {
     const ip = getIp(req)
     const failedAttempts = await RedisRepository.getRecentFailedLoginAttempts(ip);
-    if (failedAttempts > 5) return response.send(false);
+    if (failedAttempts > 5) return response.send("LIMIT_EXCEEED");
     const code = params.code
     const hasCode = await ExtraSeatsCodes.query().where('code', code).andWhere('user_id', null).first()
     if (!hasCode) await RedisRepository.registerFailedLoginAttempt(ip);
