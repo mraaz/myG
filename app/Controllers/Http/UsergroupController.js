@@ -8,6 +8,7 @@ const NotificationController_v2 = use('./NotificationController_v2')
 
 const UserStatTransactionController = use('./UserStatTransactionController')
 const GroupConnectionController = use('./GroupConnectionController')
+const LoggingRepository = require('../../Repositories/Logging')
 
 class UsergroupController {
   async store({ auth, request, response }) {
@@ -28,7 +29,7 @@ class UsergroupController {
 
         return 'Saved'
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     }
   }
@@ -59,7 +60,7 @@ class UsergroupController {
         total_number_of_communities: total_number_of_communities,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -73,7 +74,7 @@ class UsergroupController {
         all_my_groups,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -88,7 +89,7 @@ class UsergroupController {
         mygroup_details,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -110,7 +111,7 @@ class UsergroupController {
 
         return 'Remove entry'
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     } else {
       return 'You are not Logged In!'
@@ -179,7 +180,7 @@ class UsergroupController {
         group_query: group_query[0].name,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -249,7 +250,7 @@ class UsergroupController {
           .delete()
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -303,7 +304,7 @@ class UsergroupController {
         return 'Removed successfully'
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -362,7 +363,7 @@ class UsergroupController {
 
       return 'Removed successfully'
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -412,7 +413,7 @@ class UsergroupController {
         .update({ permission_level: user_to_be_promoted_permission - 1 })
       return 'updated successfully'
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -462,7 +463,7 @@ class UsergroupController {
         .update({ permission_level: user_to_be_demoted_permission + 1 })
       return 'updated successfully'
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -479,7 +480,7 @@ class UsergroupController {
         all_group_members,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -493,7 +494,7 @@ class UsergroupController {
         current_member,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 }

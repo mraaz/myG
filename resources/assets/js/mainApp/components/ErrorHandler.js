@@ -1,6 +1,11 @@
 import React from 'react'
 import { GoogleAnalytics } from '../../common/analytics'
 import { store } from '../../redux/Store'
+import { logToElasticsearch } from '../../integration/http/logger'
+
+const originalErrorHandler = console.error
+const originalWindowErrorHandler = window.onerror
+const originalWindowExceptionHandler = window.onunhandledrejection
 
 export default class ErrorHandler extends React.PureComponent {
   constructor(props) {
@@ -12,9 +17,29 @@ export default class ErrorHandler extends React.PureComponent {
     return { hasError: true }
   }
 
-  componentDidCatch(error, errorInfo) {
-    GoogleAnalytics.caughtReactError({ error, errorInfo })
-    console.error(error, errorInfo)
+  componentDidMount() {
+    console.error = this.componentDidCatch
+    window.onerror = this.componentDidCatch
+    window.onunhandledrejection = this.componentDidCatch
+  }
+
+  componentWillUnmount() {
+    console.error = originalErrorHandler
+    window.onerror = originalWindowErrorHandler
+    window.onunhandledrejection = originalWindowExceptionHandler
+  }
+
+  componentDidCatch(error) {
+    originalErrorHandler(error)
+    
+    const stack = error && error.stack && error.stack.split('at ')[1] || null
+    const message = error && error.message || 'Unknown'
+    const context = stack && stack.split('(')[0] || 'Unknown'
+    if (message !== 'Unknown' || context !== 'Unknown') {
+      GoogleAnalytics.caughtReactError({ message, context })
+      logToElasticsearch('error', context, message)
+    }
+
     store.dispatch({ type: 'REACT_ERROR' })
     const hasReloadedOnError = window.localStorage.getItem('hasReloadedOnError', 0)
     if (Date.now() - hasReloadedOnError > 5000) {

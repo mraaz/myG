@@ -2,7 +2,7 @@
 
 const Database = use('Database')
 const Archive_ScheduleGame = use('App/Models/Archive_ScheduleGame')
-const NotificationController = use('./NotificationController')
+const LoggingRepository = require('../../Repositories/Logging')
 
 const InGame_fieldsController = use('./InGame_fieldsController')
 
@@ -44,7 +44,7 @@ class Archive_ScheduleGameController {
 
         return 'Deleted successfully'
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     } else {
       return 'You are not Logged In!'
@@ -64,7 +64,7 @@ class Archive_ScheduleGameController {
         myScheduledGamesCount,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -81,7 +81,7 @@ class Archive_ScheduleGameController {
         latestScheduledGames,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -100,7 +100,7 @@ class Archive_ScheduleGameController {
         getOne,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 }

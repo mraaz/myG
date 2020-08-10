@@ -179,6 +179,7 @@ Route.get('/api/notifications/getAllNotiLike_comment/:id', 'NotificationControll
 Route.get('/api/notifications/getAllNotiLike_reply/:id', 'NotificationController.getAllNotiLike_reply')
 Route.get('/api/notifications/getAllNotiComment/:id', 'NotificationController.getAllNotiComment')
 Route.get('/api/notifications/getAllNotiReply/:id', 'NotificationController.getAllNotiReply')
+Route.get('/api/notifications/outgoingFriendRequests', 'NotificationController.outgoingFriendRequests')
 
 Route.post('/api/notifications/updateRead_Status/:post_id/:activity_type', 'NotificationController.updateRead_Status')
 
@@ -312,15 +313,15 @@ Route.post('/api/connections/communities_you_might_know', 'ConnectionController.
 
 Route.post('/api/invited_users_for_schedule_games/create', 'InvitedUsersForScheduleGameController.store')
 
-// Trying to avoid conflicts, should move this route up later.
-Route.get('/api/notifications/outgoingFriendRequests', 'NotificationController.outgoingFriendRequests')
-
 Route.get('/api/userStatTransaction/master_controller', 'UserStatTransactionController.master_controller')
 
 Route.post('/api/SavedFiltersScheduleGameController', 'SavedFiltersScheduleGameController.store')
 Route.post('/api/SavedFiltersScheduleGameController/updateFilter', 'SavedFiltersScheduleGameController.updateFilter')
 Route.post('/api/SavedFiltersScheduleGameController/deleteFilter', 'SavedFiltersScheduleGameController.destroy')
 Route.get('/api/SavedFiltersScheduleGameController/getAllSavedFilters', 'SavedFiltersScheduleGameController.getAllSavedFilters')
+
+// Logging
+Route.post('/api/logging', 'LoggingController.log')
 
 // Aws Key Upload
 Route.post('/api/chat/:chatId/icon', 'AwsKeyController.addChatGroupProfileKey')

@@ -11,11 +11,11 @@ function pushEvent(event) {
 
 export const GoogleAnalytics = {
   // A caught JS error on React
-  caughtReactError({ error, errorInfo }) {
+  caughtReactError({ message, context }) {
     pushEvent({
       event: 'caughtReactError',
-      error,
-      errorInfo,
+      message,
+      context,
     })
   },
 

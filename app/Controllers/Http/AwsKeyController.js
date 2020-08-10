@@ -1,8 +1,8 @@
 'use strict'
 const Database = use('Database')
 const AwsKey = use('App/Models/AwsKey')
-const User = use('App/Models/User')
 const ApiController = use('./ApiController')
+const LoggingRepository = require('../../Repositories/Logging')
 
 class AwsKeyController {
   async addUserKey({ auth, request, response }) {
@@ -29,7 +29,7 @@ class AwsKeyController {
         })
         return addAwsKey
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     } else {
       return 'You are not Logged In!'
@@ -69,7 +69,7 @@ class AwsKeyController {
           })
         }
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     } else {
       return 'You are not Logged In!'
@@ -89,7 +89,7 @@ class AwsKeyController {
           remove_file.deleteFile_server({ auth, request, response })
         }
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     } else {
       return 'You are not Logged In!'
@@ -112,7 +112,7 @@ class AwsKeyController {
           })
         }
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     } else {
       return 'You are not Logged In!'
@@ -132,7 +132,7 @@ class AwsKeyController {
           remove_file.deleteFile_server({ auth, request, response })
         }
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     } else {
       return 'You are not Logged In!'
@@ -156,7 +156,7 @@ class AwsKeyController {
           })
         }
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     } else {
       return 'You are not Logged In!'
@@ -176,7 +176,7 @@ class AwsKeyController {
           remove_file.deleteFile_server({ auth, request, response })
         }
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     } else {
       return 'You are not Logged In!'
@@ -190,7 +190,7 @@ class AwsKeyController {
       const aws_key = request.only('awsKey').awsKey
       return AwsKey.create({ aws_key, chat_id, type: 4 })
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       return Promise.resolve(error)
     }
   }
@@ -203,7 +203,7 @@ class AwsKeyController {
       const aws_key = request.only('awsKey').awsKey
       return AwsKey.create({ aws_key, chat_id, chat_message_id, type: 5 })
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       return Promise.resolve(error)
     }
   }
@@ -215,7 +215,7 @@ class AwsKeyController {
       const aws_key = request.only('awsKey').awsKey
       return AwsKey.create({ aws_key, game_name_id, type: 6 })
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       return Promise.resolve(error)
     }
   }
@@ -227,7 +227,7 @@ class AwsKeyController {
       if (!response.length) return Promise.resolve()
       await apiController._deleteFile(response[0].aws_key)
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       return Promise.resolve()
     }
   }
@@ -245,7 +245,7 @@ class AwsKeyController {
         await Promise.all(response.map((key) => apiController._deleteFile(key.aws_key)))
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       return Promise.resolve()
     }
   }
@@ -256,7 +256,7 @@ class AwsKeyController {
       const { aws_key } = await Database.from('aws_keys').where({ game_name_id, type: 6 })
       await apiController._deleteFile(aws_key)
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       return Promise.resolve()
     }
   }
