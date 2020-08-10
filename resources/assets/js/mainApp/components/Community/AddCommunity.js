@@ -541,10 +541,29 @@ const AddCommunity = ({
               maxFiles={1}
               maxSizeBytes={26214400}
               accept='image/*'
-              inputContent={(files, extra) => (extra.reject ? 'Image files only' : 'Drag Files or Click to Browse')}
+              inputContent={(files, extra) =>
+                extra.reject ? (
+                  'Image files only'
+                ) : (
+                  <section className='custom__html dropzone-section'>
+                    <div className='text'>Drop your image or video</div>
+                    <div className='images community-images-container'>
+                      <span className=' button photo-btn'>
+                        <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
+                      </span>
+                      <span className='button video-btn'>
+                        <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Video.svg`} />
+                      </span>
+                    </div>
+                    <div className='text'>
+                      Or <span>click here </span> to select
+                    </div>
+                  </section>
+                )
+              }
             />
           </div>
-          <div className='field-title'>
+          <div className='field-title hash-tags'>
             <p>Add Hashtags</p>
           </div>
           <div className='game-title-select'>

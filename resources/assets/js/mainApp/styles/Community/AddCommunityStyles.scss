@@ -25,7 +25,8 @@
 .friend-name-select,
 .experience-select,
 .platform-select,
-.description-text-area {
+.description-text-area,
+.media__container {
   padding-bottom: 15px;
 }
 
@@ -384,4 +385,40 @@
 }
 .suggested-community-text {
   padding: 15px;
+}
+
+.community-images-container {
+  text-align: center;
+}
+
+.dropzone-section {
+  padding-top: 20px;
+  color: #fff;
+}
+
+.dzu-dropzone {
+  border-color: rgb(39, 49, 55) !important;
+  border-radius: 4px !important;
+}
+
+.text {
+  text-align: center;
+  font-size: 15px;
+}
+
+.text span {
+  color: #e5c746 !important;
+}
+
+.media__container {
+  background: rgb(39, 49, 55);
+  border: none !important;
+}
+
+.video-btn {
+  padding-left: 7px;
+}
+
+.hash-tags {
+  margin-top: 15px;
 }
