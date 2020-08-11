@@ -15,13 +15,21 @@ export default class UpcomingItem extends Component {
   }
 
   render() {
-    const { myStatus = '', no_of_Approval_Pending = '', game_img = '', experience = '', start_date_time, schedule_games_GUID } = this.props
+    const { game_img = '', experience = '', start_date_time, schedule_games_GUID } = this.props
     const experience_split = experience ? experience.split(',') : []
-    let countdown_label = 'hours'
+    let countdown_label = 'Hours'
     let countdown = moment(start_date_time).diff(moment(), 'hours')
     if (countdown == 0) {
       countdown = moment(start_date_time).diff(moment(), 'minutes')
-      countdown_label = 'minutes'
+      countdown_label = 'Minutes'
+    }
+    if (countdown == 0) {
+      countdown = moment(start_date_time).diff(moment(), 'seconds')
+      countdown_label = 'Seconds'
+    }
+    if (countdown < 0) {
+      countdown = 0
+      countdown_label = 'Expired'
     }
     const scheduledGamePicture = <img src={game_img ? game_img : defaultThumbnails} className={game_img ? 'image' : 'default-image'} />
     return (
@@ -54,51 +62,14 @@ export default class UpcomingItem extends Component {
             </div>
           </div>
         </div>
-        <div className='time'>
+        <div className={`time ${countdown_label == 'Seconds' ? 'start-soon' : ''}`}>
           <div className='time-align'>
-            Starting in
-            <div className='time-info'>{countdown}</div>
+            {countdown_label !== 'Expired' && `Starting in`}
+            {countdown_label !== 'Expired' && <div className='time-info'>{countdown}</div>}
             {countdown_label}
           </div>
         </div>
       </div>
     )
-    // <div className='upcoming-game' onClick={() => alert('hey')}>
-    //   <div className='thumbnail'>{scheduledGamePicture}</div>
-    //   <div className='content'>
-    //     <div className='header'>
-    //       <h1 className='game-title'> {game_name} </h1>
-    //       <div className='game-user'>
-    //         <Link to={`/profile/${alias}`}>
-    //           <div className='profile-picture'>
-    //             <img src={profile_img ? profile_img : defaultUserImage} />
-    //             <span className='user-name'> {alias}</span>
-    //           </div>
-    //         </Link>
-    //       </div>
-    //       <div className='match-info'>
-    //         <span className='players'>{no_of_gamers} players</span>
-    //         <span className='start-date-time'>{moment(start_date_time).format('LL')}</span>
-    //       </div>
-    //     </div>
-    //     <div className='game__level__wrap'>
-    //       {experience_split.length > 0 &&
-    //         experience_split.map((ex, index) => {
-    //           return (
-    //             <div className={`game__level game__level_${ex}`} key={ex}>
-    //               {ex}
-    //             </div>
-    //           )
-    //         })}
-    //     </div>
-    //   </div>
-    // <div className='time'>
-    //   <div className='time-align'>
-    //     Starting in
-    //     <div className='time-info'>3</div>
-    //     hours
-    //   </div>
-    // </div>
-    // </div>
   }
 }
