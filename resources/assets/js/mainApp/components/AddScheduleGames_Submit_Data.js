@@ -31,7 +31,7 @@ export async function SubmitDataFunction(myG) {
     myPlatform = Convert_to_comma_delimited_value(myG.selected_platform)
   }
 
-  if (myG.language !== undefined && myG.langugage !== null && myG.language.length !== 0) {
+  if (myG.language !== undefined && myG.language !== null && myG.language.length !== 0) {
     myLanguages = Convert_to_comma_delimited_value(myG.language)
   }
 
