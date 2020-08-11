@@ -7,15 +7,19 @@ import UpcomingItem from './UpcomingItem'
 export default class Upcoming extends Component {
   constructor() {
     super()
+    this.state = {
+      upcomingGames: [],
+    }
   }
 
   async componentDidMount() {
     try {
-      const getUpcomingGames_Dashboard = await axios.post('/api/ScheduleGame/myScheduledGames_Upcoming_Games', {
+      const getUpcomingGames = await axios.post('/api/ScheduleGame/myScheduledGames_Upcoming_Games', {
         counter: 1,
       })
-
-      console.log(getUpcomingGames_Dashboard)
+      if (getUpcomingGames.data && getUpcomingGames.data.myScheduledGames.length > 0) {
+        this.setState({ upcomingGames: getUpcomingGames.data.myScheduledGames })
+      }
     } catch (error) {
       console.log(error)
     }
@@ -23,13 +27,18 @@ export default class Upcoming extends Component {
 
   render() {
     const { active } = this.props
+    const { upcomingGames = [] } = this.state
 
     const isActive = active == true ? { display: 'block' } : { display: 'none' }
 
     return (
       <div style={isActive}>
         <InfiniteScroll dataLength={5} hasMore={false}>
-          <UpcomingItem gameTitle='Dota 2' players='3' />
+          <div className='gameList__box'>
+            {upcomingGames.map((game) => {
+              return <UpcomingItem {...game} />
+            })}
+          </div>
         </InfiniteScroll>
       </div>
     )
