@@ -27,6 +27,7 @@
 .platform-select,
 .description-text-area {
   padding-bottom: 15px;
+  font-size: 13px;
 }
 
 .time-text-container {
@@ -63,6 +64,7 @@
     display: flex;
     flex: 1;
     flex-direction: column;
+    height: 100%;
   }
   &__main-container {
     display: flex;
@@ -224,7 +226,6 @@
     margin-top: 37px;
     height: 10px;
     width: 10px;
-    border-radius: 10px;
     background-color: #e6c846;
     margin-right: 12px;
   }

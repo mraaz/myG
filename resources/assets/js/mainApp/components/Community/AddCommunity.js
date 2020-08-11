@@ -442,18 +442,18 @@ const AddCommunity = ({
     )
   }
 
-  handlePreviewRemove = (e, src) => {
-    e.preventDefault()
-    let preview_files = [...this.state.preview_files]
-    preview_files = preview_files.filter((data) => data.src != src)
-    this.setState({ preview_files })
-  }
+  // handlePreviewRemove = (e, src) => {
+  //   e.preventDefault()
+  //   let preview_files = [...this.state.preview_files]
+  //   preview_files = preview_files.filter((data) => data.src != src)
+  //   this.setState({ preview_files })
+  // }
 
-  getPreviewImageGallery = (preview_filesData) => {
-    return preview_filesData.map((data) => {
-      return { original: data.src, thumbnail: data.src }
-    })
-  }
+  // getPreviewImageGallery = (preview_filesData) => {
+  //   return preview_filesData.map((data) => {
+  //     return { original: data.src, thumbnail: data.src }
+  //   })
+  // }
 
   const getCommunityleftView = () => {
     return (
