@@ -15,14 +15,7 @@ export default class UpcomingItem extends Component {
   }
 
   render() {
-    const {
-      myStatus = '',
-      no_of_Approval_Pending = '',
-      game_name_fields_img = '',
-      experience = '',
-      start_date_time,
-      schedule_games_GUID,
-    } = this.props
+    const { myStatus = '', no_of_Approval_Pending = '', game_img = '', experience = '', start_date_time, schedule_games_GUID } = this.props
     const experience_split = experience ? experience.split(',') : []
     let countdown_label = 'hours'
     let countdown = moment(start_date_time).diff(moment(), 'hours')
@@ -30,12 +23,7 @@ export default class UpcomingItem extends Component {
       countdown = moment(start_date_time).diff(moment(), 'minutes')
       countdown_label = 'minutes'
     }
-    const scheduledGamePicture = (
-      <img
-        src={game_name_fields_img ? game_name_fields_img : defaultThumbnails}
-        className={game_name_fields_img ? 'image' : 'default-image'}
-      />
-    )
+    const scheduledGamePicture = <img src={game_img ? game_img : defaultThumbnails} className={game_img ? 'image' : 'default-image'} />
     return (
       <div className={`mygames`} key={this.props.id}>
         <div className='gameImage'>{scheduledGamePicture}</div>
