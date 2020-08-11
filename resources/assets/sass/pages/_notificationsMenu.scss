@@ -1,10 +1,9 @@
-$main-shade: #171A1C;
-$secondary-shade: #1D2326;
-$third-shade: #2D363A;
+$main-shade: #171a1c;
+$secondary-shade: #1d2326;
+$third-shade: #2d363a;
 $main-font: 'Montserrat';
 
 .app-container.home-page .notifications-page {
-
   .postCompose__container {
     width: inherit !important;
     padding: 0;
@@ -19,19 +18,18 @@ $main-font: 'Montserrat';
     overflow: hidden;
 
     .notifications-menu {
-      float: left;
       width: 180px;
-      height: inherit;
       background-color: $secondary-shade;
       border-right: 1px $third-shade solid;
       display: inline-block;
+      vertical-align: top;
 
       .button-list {
         position: relative;
         width: 100% !important;
         height: 300px;
         top: 50%;
-        margin-top: -125px;
+        margin-top: 125px;
       }
 
       .button {
@@ -145,13 +143,13 @@ $main-font: 'Montserrat';
 
     &:nth-of-type(1n) {
       .thumbnail {
-        background-color: #652A2A;
+        background-color: #652a2a;
       }
     }
 
     &:nth-of-type(2n) {
       .thumbnail {
-        background-color: #2A2A65;
+        background-color: #2a2a65;
       }
     }
 
@@ -163,7 +161,7 @@ $main-font: 'Montserrat';
 
     &:nth-of-type(4n) {
       .thumbnail {
-        background-color: #8D7514;
+        background-color: #8d7514;
       }
     }
 
@@ -248,8 +246,8 @@ $main-font: 'Montserrat';
           font-family: $main-font;
           font-size: 12px;
           font-weight: 700;
-          color: #D6B9FF;
-          border: 1px #D6B9FF solid;
+          color: #d6b9ff;
+          border: 1px #d6b9ff solid;
           border-radius: 25px;
           padding: 8px 12px 8px 12px;
         }
@@ -259,8 +257,8 @@ $main-font: 'Montserrat';
           font-family: $main-font;
           font-size: 12px;
           font-weight: 700;
-          color: #B9B9B9;
-          border: 1px #B9B9B9 solid;
+          color: #b9b9b9;
+          border: 1px #b9b9b9 solid;
           border-radius: 6px;
           padding: 8px 12px 8px 12px;
         }
@@ -281,19 +279,18 @@ $main-font: 'Montserrat';
 
       .time-align {
         position: relative;
-        top: 50%;
-        margin-top: -40px;
+        margin-top: 30px;
         height: 80px;
       }
 
       .time-info {
-        font-size: 60px !important;
+        font-size: 45px !important;
         font-weight: 700 !important;
       }
     }
 
     .start-soon {
-      background-color: #E5C746 !important;
+      background-color: #e5c746 !important;
     }
   }
 
@@ -316,7 +313,7 @@ $main-font: 'Montserrat';
       display: inline-block;
       box-sizing: border-box;
       cursor: pointer;
-      
+
       &:focus {
         outline: none;
       }
@@ -327,7 +324,7 @@ $main-font: 'Montserrat';
     }
 
     .active {
-      border-bottom: 2px #E5C746 solid;
+      border-bottom: 2px #e5c746 solid;
     }
   }
 
@@ -335,14 +332,14 @@ $main-font: 'Montserrat';
     height: 60px;
     margin: 20px 0 20px 0;
     display: block;
-    
+
     .actions {
       float: right;
-      
+
       .action {
         margin-right: 20px;
         padding: 8px 10px 8px 10px;
-        background-color: #E5C746;
+        background-color: #e5c746;
         font-family: $main-font;
         font-size: 12px/11px;
         font-weight: 700;
@@ -351,11 +348,11 @@ $main-font: 'Montserrat';
         border-radius: 5px;
         display: inline-block;
         cursor: pointer;
-  
+
         &:focus {
           outline: none;
         }
-  
+
         &:active {
           outline: none;
         }
@@ -389,11 +386,11 @@ $main-font: 'Montserrat';
         max-width: 60%;
         font-family: $main-font;
         font-size: 12px;
-        color: #93A4A5;
+        color: #93a4a5;
         font-weight: 700;
         line-height: 160%;
         display: inline-block;
-      
+
         .notification-username {
           font-size: 14px !important;
           color: #fff !important;
@@ -421,7 +418,7 @@ $main-font: 'Montserrat';
           font-weight: 700;
           display: block;
         }
-  
+
         .notification-actions {
           margin-top: 20px;
           display: block;
@@ -445,10 +442,10 @@ $main-font: 'Montserrat';
               outline: none;
             }
           }
-          
+
           .accept {
             margin-right: 20px;
-            background-color: #446F62;
+            background-color: #446f62;
           }
 
           .decline {
@@ -469,7 +466,7 @@ $main-font: 'Montserrat';
     border-top: 1px #384952 solid;
     font-family: $main-font;
     font-size: 12px;
-    color: #93A4A5;
+    color: #93a4a5;
     font-weight: 700;
     text-align: center;
   }
@@ -495,4 +492,3 @@ $main-font: 'Montserrat';
     }
   }
 }
-

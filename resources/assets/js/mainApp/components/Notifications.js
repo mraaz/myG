@@ -22,7 +22,6 @@ export default class Notifications extends Component {
     })
   }
 
-
   isActive = (tab) => {
     return this.state.activeTab === tab
   }
@@ -35,9 +34,7 @@ export default class Notifications extends Component {
     return (
       <section className='notifications-page'>
         <div className='notifications-container postCompose__container'>
-          <div className='notifications-menu'>
-            <Menu changeContentTab={this.changeContentTab} />
-          </div>
+          <Menu changeContentTab={this.changeContentTab} />
           <div className='notifications-content'>
             <Upcoming active={this.isActive(0)} />
             <Approvals active={this.isActive(1)} />
