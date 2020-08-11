@@ -92,7 +92,7 @@ export default class ScheduleGames extends Component {
     const { counter, scheduleGames = [] } = this.state
     const scheduleGamesRes = await getScheduleGames({ ...this.state, ...data, counter: 1 })
 
-    if (scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length == 0) {
+    if (scheduleGamesRes && scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length == 0) {
       this.setState({
         moreplease: false,
         scheduleGames: {},

@@ -45,7 +45,10 @@ export default class Home extends Component {
 
   handleScroll = () => {
     this.lastScrollY = window.scrollY
-    const offsetWidth = this.contentAreaRef.current.offsetWidth ? 0 : this.contentAreaRef.current.offsetWidth
+    let offsetWidth = 0
+    if (this.contentAreaRef.current && this.contentAreaRef.current.offsetWidth) {
+      offsetWidth = this.contentAreaRef.current.offsetWidth ? 0 : this.contentAreaRef.current.offsetWidth
+    }
     window.requestAnimationFrame(() => {
       if (this.lastScrollY > 300) {
         this.navRef.current.style.top = '0px'

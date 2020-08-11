@@ -4,6 +4,8 @@ const GameNames = use('App/Models/GameName')
 const Database = use('Database')
 const LoggingRepository = require('../../Repositories/Logging')
 
+const Schedule_games_logix = use('./Schedule_games_logix')
+
 class GameNameController {
   async store({ auth, request, response }) {
     if (auth.user) {
@@ -131,6 +133,12 @@ class GameNameController {
         .select('game_names.*', 'game_name_fields.game_names_id as more_data')
         .limit(25)
 
+      let gameHeader_logix = new Schedule_games_logix()
+
+      for (var i = 0; i < gameSearchResults.length; i++) {
+        gameSearchResults[i].game_headers = await gameHeader_logix.getGameHeaders(gameSearchResults[i].game_name)
+      }
+
       // WORKS!!!! const gameSearchResults = await Database.schema.raw("select * from game_names WHERE game_name LIKE " + "'%the\%Alien%'")
 
       return {
@@ -148,6 +156,12 @@ class GameNameController {
         .select('game_names.*', 'game_name_fields.game_names_id as more_data')
         .orderBy('counter', 'desc')
         .limit(18)
+
+      let gameHeader_logix = new Schedule_games_logix()
+
+      for (var i = 0; i < gameSearchResults.length; i++) {
+        gameSearchResults[i].game_headers = await gameHeader_logix.getGameHeaders(gameSearchResults[i].game_name)
+      }
 
       return {
         gameSearchResults,

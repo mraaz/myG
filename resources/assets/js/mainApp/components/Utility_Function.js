@@ -1,13 +1,14 @@
 import React from 'react'
 import axios from 'axios'
 
-const createOption = (label, game_names_id, gameImg, game_name_fields_img, additional_info) => ({
+const createOption = (label, game_names_id, gameImg, game_name_fields_img, additional_info, game_headers) => ({
   label,
   value: label,
   game_names_id,
   gameImg,
   game_name_fields_img,
   additional_info: false,
+  game_headers,
 })
 
 const createOption_GameTags = (label, game_tag_id) => ({
@@ -50,10 +51,24 @@ export async function Game_name_values(inputValue) {
     if (results.length != 0) {
       for (i = 0; i < results.length; i++) {
         if (results[i].game_img != '' && results[i].game_img != null) {
-          newOption = createOption(results[i].game_name, results[i].id, results[i].game_img, results[i].game_name_fields_img)
+          newOption = createOption(
+            results[i].game_name,
+            results[i].id,
+            results[i].game_img,
+            results[i].game_name_fields_img,
+            false,
+            results[i].game_headers
+          )
           newOption.label = <img src={results[i].game_img} />
         } else {
-          newOption = createOption(results[i].game_name, results[i].id, null, results[i].game_name_fields_img)
+          newOption = createOption(
+            results[i].game_name,
+            results[i].id,
+            null,
+            results[i].game_name_fields_img,
+            false,
+            results[i].game_headers
+          )
         }
         if (results[i].more_data != null) {
           newOption.additional_info = true

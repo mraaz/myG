@@ -34,6 +34,9 @@ const AddGameContainer = () => {
     mic: false,
     eighteen_plus: false,
     language: null,
+    show_experience: true,
+    show_platform: true,
+    show_region: true,
   })
   const [mainSettingsState, updateMainSettingsState] = useState({
     scheduledGameId: null,
@@ -257,7 +260,7 @@ const AddGameContainer = () => {
 
   return (
     <div className={styles.container}>
-      <PageHeader headerText='Add Public Game' />
+      <PageHeader headerText='Add Match' />
       <AddGame
         state={state}
         updateComponentState={updateComponentState}
