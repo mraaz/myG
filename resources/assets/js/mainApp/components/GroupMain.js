@@ -164,6 +164,18 @@ export default class GroupMain extends Component {
     return (
       <Fragment>
         <section className={`postCompose__container ${overlay_active ? 'zI1000' : ''}`}>
+          <div className='arrow__right'>
+            <img
+              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Communities/Group+971.svg'
+              alt='arrow-right'
+            />
+          </div>
+          <div className='arrow__left'>
+            <img
+              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Communities/Group+971.svg'
+              alt='arrow-left'
+            />
+          </div>
           <div className='compose__type__section'>
             <div className={`share__thought ${open_compose_textTab ? 'active' : ''}`} onClick={(e) => this.togglePostTypeTab('text')}>
               {`Your Communities`}
@@ -176,7 +188,7 @@ export default class GroupMain extends Component {
           <div className='community__search_container'>
             <div className='community__search'>
               <input type='text' class='form-control' placeholder='Search' />
-              <img src='https://mygame-media.s3.ap-southeast-2.amazonaws.com/user_files/100_1596627479161_3uAR8Y_BTN_Search%201.png' />
+              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Communities/btn_Search.png' />
             </div>
           </div>
           {open_compose_textTab && (
