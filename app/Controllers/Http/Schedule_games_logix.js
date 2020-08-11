@@ -4,7 +4,7 @@ class Schedule_games_logix {
   async getGameHeaders(game_name) {
     let header_struct = {
       experience: true,
-      platfom: true,
+      platform: true,
       region: true,
     }
 
@@ -12,7 +12,7 @@ class Schedule_games_logix {
       case 'Dota 2':
         header_struct = {
           experience: true,
-          platfom: false,
+          platform: false,
           region: false,
         }
         break

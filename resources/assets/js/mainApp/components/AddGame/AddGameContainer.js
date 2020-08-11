@@ -34,6 +34,9 @@ const AddGameContainer = () => {
     mic: false,
     eighteen_plus: false,
     language: null,
+    show_experience: true,
+    show_platform: true,
+    show_region: true,
   })
   const [mainSettingsState, updateMainSettingsState] = useState({
     scheduledGameId: null,

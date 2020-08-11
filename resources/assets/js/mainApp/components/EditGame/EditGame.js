@@ -426,11 +426,31 @@ const EditGame = ({
   }
 
   const handleChange_game_title = async (value, initial = false) => {
+    updateMainSettings({ gameTitle: value })
+    updateAdvancedSettings({ show_experience: true, show_platform: true, show_region: true })
+
     if (value == undefined || value == null) {
       updateOptionalSettings({ value_one: null, value_two: null, value_three: null, value_four: null, value_five: null })
       updateState({ additional_info: false })
+      return
     }
-    updateMainSettings({ gameTitle: value })
+
+    for (let key in value.game_headers) {
+      if (!value.game_headers[key]) {
+        switch (key) {
+          case 'experience':
+            updateAdvancedSettings({ show_experience: value.game_headers[key], experience: null })
+            break
+          case 'platform':
+            updateAdvancedSettings({ show_platform: value.game_headers[key], platform: null })
+            break
+          case 'region':
+            updateAdvancedSettings({ show_region: value.game_headers[key], region: null })
+            break
+        }
+      }
+    }
+
     if (value && !value.additional_info) {
       updateOptionalSettings({ value_one: null, value_two: null, value_three: null, value_four: null, value_five: null })
       updateState({ additional_info: value ? value.additional_info : false })
@@ -655,16 +675,18 @@ const EditGame = ({
             placeholder='Enter your Friend’s name to set them as a co-host'
             onKeyDown={Disable_keys}
           />
-          <div className={styles.fieldTitle}>Experience</div>
-          <MyGSelect
-            options={EXPERIENCE_OPTIONS}
-            onChange={(value) => {
-              updateAdvancedSettings({ experience: value })
-            }}
-            value={advancedSettingsState.experience}
-            placeholder='Select experience level'
-            isMulti
-          />
+          {advancedSettingsState.show_experience && <div className={styles.fieldTitle}>Experience</div>}
+          {advancedSettingsState.show_experience && (
+            <MyGSelect
+              options={EXPERIENCE_OPTIONS}
+              onChange={(value) => {
+                updateAdvancedSettings({ experience: value })
+              }}
+              value={advancedSettingsState.experience}
+              placeholder='Select experience level'
+              isMulti
+            />
+          )}
           <div className={styles.fieldTitle}>Game Tags</div>
           <MyGCreateableSelect
             isClearable
@@ -679,17 +701,19 @@ const EditGame = ({
             options={advancedSettingsState.optionTags}
             onKeyDown={Disable_keys}
           />
-          <div className={styles.fieldTitle}>Platform</div>
-          <MyGSelect
-            options={PLATFORM_OPTIONS}
-            onChange={(value) => {
-              updateAdvancedSettings({ platform: value })
-            }}
-            value={advancedSettingsState.platform}
-            placeholder='Select platform'
-            isMulti
-          />
-          {(!mainSettingsState.gameTitle || mainSettingsState.gameTitle.value !== 'Dota 2') && (
+          {advancedSettingsState.show_platform && <div className={styles.fieldTitle}>Platform</div>}
+          {advancedSettingsState.show_platform && (
+            <MyGSelect
+              options={PLATFORM_OPTIONS}
+              onChange={(value) => {
+                updateAdvancedSettings({ platform: value })
+              }}
+              value={advancedSettingsState.platform}
+              placeholder='Select platform'
+              isMulti
+            />
+          )}
+          {advancedSettingsState.show_region && (
             <Fragment>
               <div className={styles.fieldTitle}>Region</div>
               <MyGSelect

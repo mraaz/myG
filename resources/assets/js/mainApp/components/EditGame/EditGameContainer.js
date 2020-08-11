@@ -44,7 +44,7 @@ const EditGameContainer = (props) => {
     eighteen_plus: false,
     language: null,
     show_experience: false,
-    show_platfom: true,
+    show_platform: true,
     show_region: true,
   })
   const [mainSettingsState, updateMainSettingsState] = useState({

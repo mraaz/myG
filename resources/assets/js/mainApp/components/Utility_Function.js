@@ -8,7 +8,7 @@ const createOption = (label, game_names_id, gameImg, game_name_fields_img, addit
   gameImg,
   game_name_fields_img,
   additional_info: false,
-  game_headers: {},
+  game_headers,
 })
 
 const createOption_GameTags = (label, game_tag_id) => ({

@@ -156,6 +156,12 @@ class GameNameController {
         .orderBy('counter', 'desc')
         .limit(18)
 
+      let gameHeader_logix = new Schedule_games_logix()
+
+      for (var i = 0; i < gameSearchResults.length; i++) {
+        gameSearchResults[i].game_headers = await gameHeader_logix.getGameHeaders(gameSearchResults[i].game_name)
+      }
+
       return {
         gameSearchResults,
       }

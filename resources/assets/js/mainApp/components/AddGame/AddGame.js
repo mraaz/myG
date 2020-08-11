@@ -406,11 +406,31 @@ const AddGame = ({
   }
 
   const handleChange_game_title = async (value) => {
+    updateMainSettings({ gameTitle: value })
+    updateAdvancedSettings({ show_experience: true, show_platform: true, show_region: true })
+
     if (value == undefined || value == null) {
       updateOptionalSettings({ value_one: null, value_two: null, value_three: null, value_four: null, value_five: null })
       updateState({ additional_info: false })
+      return
     }
-    updateMainSettings({ gameTitle: value })
+
+    for (let key in value.game_headers) {
+      if (!value.game_headers[key]) {
+        switch (key) {
+          case 'experience':
+            updateAdvancedSettings({ show_experience: value.game_headers[key], experience: null })
+            break
+          case 'platform':
+            updateAdvancedSettings({ show_platform: value.game_headers[key], platform: null })
+            break
+          case 'region':
+            updateAdvancedSettings({ show_region: value.game_headers[key], region: null })
+            break
+        }
+      }
+    }
+
     if (value && !value.additional_info) {
       updateOptionalSettings({ value_one: null, value_two: null, value_three: null, value_four: null, value_five: null })
       updateState({ additional_info: value ? value.additional_info : false })
@@ -668,19 +688,21 @@ const AddGame = ({
               onKeyDown={Disable_keys}
             />
           </div>
-          <div className='field-title'>Platform</div>
-          <div className='platform-select'>
-            <MyGSelect
-              options={PLATFORM_OPTIONS}
-              onChange={(value) => {
-                updateAdvancedSettings({ platform: value })
-              }}
-              value={advancedSettingsState.platform}
-              placeholder='Select platform'
-              isMulti
-            />
-          </div>
-          {(!mainSettingsState.gameTitle || mainSettingsState.gameTitle.value !== 'Dota 2') && (
+          {advancedSettingsState.show_platform && <div className='field-title'>Platform</div>}
+          {advancedSettingsState.show_platform && (
+            <div className='platform-select'>
+              <MyGSelect
+                options={PLATFORM_OPTIONS}
+                onChange={(value) => {
+                  updateAdvancedSettings({ platform: value })
+                }}
+                value={advancedSettingsState.platform}
+                placeholder='Select platform'
+                isMulti
+              />
+            </div>
+          )}
+          {advancedSettingsState.show_region && (
             <Fragment>
               <div className='field-title'>Region</div>
               <div className='platform-select'>
