@@ -2,6 +2,9 @@
 
 const GameNames = use('App/Models/GameName')
 const Database = use('Database')
+const LoggingRepository = require('../../Repositories/Logging')
+
+const Schedule_games_logix = use('./Schedule_games_logix')
 
 class GameNameController {
   async store({ auth, request, response }) {
@@ -17,7 +20,7 @@ class GameNameController {
 
         return newGameName
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
         return false
       }
     }
@@ -37,7 +40,7 @@ class GameNameController {
 
         return createGame
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
         return false
       }
     } else {
@@ -53,7 +56,7 @@ class GameNameController {
           .increment('counter', 1)
         return 'Updated successfully'
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
         return false
       }
     } else {
@@ -82,7 +85,7 @@ class GameNameController {
 
         return 'Updated successfully'
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
         return false
       }
     } else {
@@ -97,7 +100,7 @@ class GameNameController {
         allGameNames,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -113,7 +116,7 @@ class GameNameController {
         getOne,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -130,13 +133,19 @@ class GameNameController {
         .select('game_names.*', 'game_name_fields.game_names_id as more_data')
         .limit(25)
 
+      let gameHeader_logix = new Schedule_games_logix()
+
+      for (var i = 0; i < gameSearchResults.length; i++) {
+        gameSearchResults[i].game_headers = await gameHeader_logix.getGameHeaders(gameSearchResults[i].game_name)
+      }
+
       // WORKS!!!! const gameSearchResults = await Database.schema.raw("select * from game_names WHERE game_name LIKE " + "'%the\%Alien%'")
 
       return {
         gameSearchResults,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -148,11 +157,17 @@ class GameNameController {
         .orderBy('counter', 'desc')
         .limit(18)
 
+      let gameHeader_logix = new Schedule_games_logix()
+
+      for (var i = 0; i < gameSearchResults.length; i++) {
+        gameSearchResults[i].game_headers = await gameHeader_logix.getGameHeaders(gameSearchResults[i].game_name)
+      }
+
       return {
         gameSearchResults,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 }

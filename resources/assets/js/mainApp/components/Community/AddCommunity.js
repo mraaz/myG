@@ -1,12 +1,15 @@
-import React, { Fragment, useState, useEffect, memo } from 'react'
+import React, { Fragment, useState, useEffect, memo, useCallback } from 'react'
 import classNames from 'classnames'
 import Slider, { Range } from 'rc-slider'
 import moment from 'moment'
 import CustomCron from '../common/Cron/MyGCron'
-import Dropzone from 'react-dropzone'
+// import Dropzone from 'react-dropzone'
+import { useDropzone } from 'react-dropzone'
 const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
 import 'rc-slider/assets/index.css'
 import { toast } from 'react-toastify'
+import 'react-dropzone-uploader/dist/styles.css'
+import Dropzone from 'react-dropzone-uploader'
 
 import { Toast_style } from '../Utility_Function'
 import '../../styles/Community/AddCommunityStyles.scss'
@@ -29,7 +32,6 @@ import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
 import { FeatureEnabled, REPEAT_SCHEDULE } from '../../../common/flags'
 
 const SliderWithTooltip = Slider.createSliderWithTooltip(Slider)
-
 const AddCommunity = ({
   state,
   updateComponentState,
@@ -442,20 +444,48 @@ const AddCommunity = ({
     )
   }
 
-  handlePreviewRemove = (e, src) => {
-    e.preventDefault()
-    let preview_files = [...this.state.preview_files]
-    preview_files = preview_files.filter((data) => data.src != src)
-    this.setState({ preview_files })
-  }
+  // handlePreviewRemove = (e, src) => {
+  //   e.preventDefault()
+  //   let preview_files = [...this.state.preview_files]
+  //   preview_files = preview_files.filter((data) => data.src != src)
+  //   this.setState({ preview_files })
+  // }
 
-  getPreviewImageGallery = (preview_filesData) => {
-    return preview_filesData.map((data) => {
-      return { original: data.src, thumbnail: data.src }
-    })
-  }
+  // getPreviewImageGallery = (preview_filesData) => {
+  //   return preview_filesData.map((data) => {
+  //     return { original: data.src, thumbnail: data.src }
+  //   })
+  // }
 
   const getCommunityleftView = () => {
+    const handleChangeStatus = ({ meta }, status, allFiles) => {
+      this.state.store_files = allFiles
+      if (status === 'done') {
+        const file = allFiles[0].file
+        const name = allFiles[0].meta.name
+        this.doUploadS3(file, name)
+      }
+      if (status == 'removed' && this.state.lock == false) {
+        this.removeIndivdualfromAWS()
+      }
+    }
+
+    const handleSubmit = (files, allFiles) => {
+      if (this.state.uploading == true) {
+        return
+      }
+      this.props.callbackConfirm(this.state.file_src, this.state.file_key)
+
+      this.setState({
+        store_files: [],
+        file_key: '',
+        file_src: '',
+      })
+
+      this.state.lock = true
+      allFiles.forEach((f) => f.remove())
+      this.state.lock = false
+    }
     return (
       <div style={{ display: 'flex' }}>
         <div className={styles.sideLineContainer}>
@@ -504,8 +534,36 @@ const AddCommunity = ({
           <div className='field-title'>
             <p>Featured Image</p>
           </div>
-          <div className='media__container'></div>
-          <div className='field-title'>
+          <div className='media__container'>
+            <Dropzone
+              onChangeStatus={handleChangeStatus}
+              onSubmit={handleSubmit}
+              maxFiles={1}
+              maxSizeBytes={26214400}
+              accept='image/*'
+              inputContent={(files, extra) =>
+                extra.reject ? (
+                  'Image files only'
+                ) : (
+                  <section className='custom__html dropzone-section'>
+                    <div className='text'>Drop your image or video</div>
+                    <div className='images community-images-container'>
+                      <span className=' button photo-btn'>
+                        <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
+                      </span>
+                      <span className='button video-btn'>
+                        <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Video.svg`} />
+                      </span>
+                    </div>
+                    <div className='text'>
+                      Or <span>click here </span> to select
+                    </div>
+                  </section>
+                )
+              }
+            />
+          </div>
+          <div className='field-title hash-tags'>
             <p>Add Hashtags</p>
           </div>
           <div className='game-title-select'>

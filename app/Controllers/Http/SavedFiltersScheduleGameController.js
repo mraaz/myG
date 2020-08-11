@@ -1,6 +1,7 @@
 'use strict'
 const Database = use('Database')
 const SavedFiltersScheduleGame = use('App/Models/SavedFiltersScheduleGame')
+const LoggingRepository = require('../../Repositories/Logging')
 
 class SavedFiltersScheduleGameController {
   async store({ auth, request, response }) {
@@ -19,7 +20,7 @@ class SavedFiltersScheduleGameController {
         if (error.code == 'ER_DUP_ENTRY') {
           return 'ER_DUP_ENTRY'
         }
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     }
   }
@@ -112,7 +113,7 @@ class SavedFiltersScheduleGameController {
           additional_info_data,
         }
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
         allFilters = []
         additional_info = false
         if (insurance_policy) {
@@ -149,7 +150,7 @@ class SavedFiltersScheduleGameController {
         if (error.code == 'ER_DUP_ENTRY') {
           return 'ER_DUP_ENTRY'
         }
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     } else {
       return 'You are not Logged In!'
@@ -167,7 +168,7 @@ class SavedFiltersScheduleGameController {
 
         return 'Deleted successfully'
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     } else {
       return 'You are not Logged In!'

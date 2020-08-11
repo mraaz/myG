@@ -2,6 +2,7 @@
 
 const Commendation = use('App/Models/Commendation')
 const Database = use('Database')
+const LoggingRepository = require('../../Repositories/Logging')
 
 class CommendationController {
   async store({ auth, request, response }) {
@@ -12,7 +13,7 @@ class CommendationController {
       })
       return newCommendation
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
   async showUser({ auth, request, response }) {
@@ -28,7 +29,7 @@ class CommendationController {
         getCommend,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
   async show({ auth, request, response }) {
@@ -41,7 +42,7 @@ class CommendationController {
         getAllCommend,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 }

@@ -19,6 +19,7 @@ const GameNameController = use('./GameNameController')
 const InGame_fieldsController = use('./InGame_fieldsController')
 const GameTagController = use('./GameTagController')
 const AttendeeController = use('./AttendeeController')
+const LoggingRepository = require('../../Repositories/Logging')
 
 const MAX_GAME_TAGS = 9
 const MAX_CO_HOSTS = 5
@@ -99,6 +100,7 @@ class ScheduleGameController {
           autoJoinHost: request.input('autoJoinHost'),
           mic: request.input('mic'),
           eighteen_plus: request.input('eighteen_plus'),
+          game_languages: request.input('game_languages'),
         })
 
         if (
@@ -231,7 +233,7 @@ class ScheduleGameController {
         }
         return newScheduleGame
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     }
   }
@@ -328,6 +330,9 @@ class ScheduleGameController {
             occurrence: request.input('occurrence'),
             repeatEvery: request.input('repeatEvery'),
             autoJoinHost: request.input('autoJoinHost'),
+            mic: request.input('mic'),
+            eighteen_plus: request.input('eighteen_plus'),
+            game_languages: request.input('game_languages'),
           })
 
         if (
@@ -439,15 +444,15 @@ class ScheduleGameController {
           }
         }
 
+        //Delete all Tags
+        const delete_schedule_games_tags = await Database.table('schedule_games_tags')
+          .where({
+            schedule_games_id: request.input('id'),
+          })
+          .delete()
+
         if (request.input('tags') != null && request.input('tags').length > 0) {
           var arrTags = JSON.parse(request.input('tags'))
-          //Delete all Tags
-          const delete_schedule_games_tags = await Database.table('schedule_games_tags')
-            .where({
-              schedule_games_id: request.input('id'),
-            })
-            .delete()
-          //Do a recalc
           //Create tags
           for (var i = 0; i < arrTags.length; i++) {
             if (arrTags[i].game_tag_id == null) {
@@ -475,7 +480,7 @@ class ScheduleGameController {
         }
         return updateScheduleGame
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     }
   }
@@ -614,7 +619,7 @@ class ScheduleGameController {
 
         return 'Deleted successfully'
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     } else {
       return 'You are not Logged In!'
@@ -828,13 +833,14 @@ class ScheduleGameController {
         number_of_records,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       myScheduledGames = []
       return { myScheduledGames, number_of_records }
     }
   }
 
   async myScheduledGames_Upcoming_Games({ auth, request, response }) {
+    //RAAZ UNDO THIS AFTER  NITIN HAS FINISHED BULIDING NOTIFICATIONS
     var myScheduledGames = ''
 
     let next24hours = new Date(new Date(Date.now()).getTime() + 60 * 60 * 24 * 1000)
@@ -854,16 +860,16 @@ class ScheduleGameController {
         .where('attendees.user_id', '=', auth.user.id)
         .where('attendees.type', '=', 1)
         .where('schedule_games.expiry', '>', Database.fn.now())
-        .where('schedule_games.start_date_time', '<', next24hours)
-        .where('schedule_games.start_date_time', '>', last4hours)
+      //.where('schedule_games.start_date_time', '<', next24hours)
+      //.where('schedule_games.start_date_time', '>', last4hours)
 
       myScheduledGames = await Database.from('schedule_games')
         .innerJoin('users', 'users.id', 'schedule_games.user_id')
         .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
         .where('expiry', '>', Database.fn.now())
         .where('schedule_games.user_id', '=', auth.user.id)
-        .where('schedule_games.start_date_time', '<', next24hours)
-        .where('schedule_games.start_date_time', '>', last4hours)
+        //.where('schedule_games.start_date_time', '<', next24hours)
+        //.where('schedule_games.start_date_time', '>', last4hours)
         .orWhereIn('schedule_games.id', subquery)
         .select(
           'users.alias',
@@ -894,7 +900,7 @@ class ScheduleGameController {
       }
       myScheduledGames = myScheduledGames.data
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
 
     return {
@@ -912,13 +918,11 @@ class ScheduleGameController {
         myScheduledGamesCount,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
   async scheduleSearchResults({ auth, request, response }) {
-    // WTF is goin on with ancient games??
-
     try {
       let arrTags = '',
         latestScheduledGames
@@ -929,8 +933,6 @@ class ScheduleGameController {
         value_four = null,
         value_five = null
 
-      // let tmp = { dota2_medal_ranks: 'Herald' },
-      //   tmp2 = { dota2_roles: 'Pos 1' }
       if (
         request.input('value_one') != null ||
         request.input('value_two') != null ||
@@ -970,18 +972,6 @@ class ScheduleGameController {
             result[myKey] = request.input('value_five')[myKey]
           }
         }
-
-        // for (myKey in tmp) {
-        //   if (tmp.hasOwnProperty(myKey)) {
-        //     result[myKey] = tmp[myKey]
-        //   }
-        // }
-        //
-        // for (myKey in tmp2) {
-        //   if (tmp2.hasOwnProperty(myKey)) {
-        //     result[myKey] = tmp2[myKey]
-        //   }
-        // }
 
         const getGameFields = await Database.table('game_names')
           .innerJoin('game_name_fields', 'game_name_fields.game_names_id', 'game_names.id')
@@ -1043,6 +1033,8 @@ class ScheduleGameController {
 
               if (request.input('eighteen_plus') != null) builder.where('eighteen_plus', request.input('eighteen_plus'))
 
+              if (request.input('game_languages') != null) builder.where('game_languages', request.input('game_languages'))
+
               //if (request.input('start_date_time') != null) builder.where('start_date_time', '<=', request.input('start_date_time'))
 
               if (request.input('end_date_time') != null) builder.where('end_date_time', '>=', request.input('end_date_time'))
@@ -1096,6 +1088,8 @@ class ScheduleGameController {
             if (request.input('mic') != null) builder.where('mic', request.input('mic'))
 
             if (request.input('eighteen_plus') != null) builder.where('eighteen_plus', request.input('eighteen_plus'))
+
+            if (request.input('game_languages') != null) builder.where('game_languages', request.input('game_languages'))
 
             //if (request.input('start_date_time') != null)
             //builder.where('schedule_games.start_date_time', '<=', request.input('start_date_time'))
@@ -1156,7 +1150,7 @@ class ScheduleGameController {
         latestScheduledGames,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -1206,7 +1200,7 @@ class ScheduleGameController {
         obj,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -1324,8 +1318,19 @@ class ScheduleGameController {
         .where({ schedule_games_id: request.params.id, type: 1 })
         .count('* as no_of_gamers')
 
+      let getstatus = await Database.from('attendees')
+        .where({ schedule_games_id: request.params.id })
+        .select('type')
+        .first()
+
+      let myStatus = 0
+
       if (join_status == 0 || join_status == 3) {
         additional_game_info.accept_msg = ''
+      }
+
+      if (getstatus != undefined) {
+        myStatus = getstatus.type
       }
 
       return {
@@ -1337,9 +1342,10 @@ class ScheduleGameController {
         getAllGamers,
         edit_status,
         button_text,
+        myStatus,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -1456,7 +1462,7 @@ class ScheduleGameController {
         getAllGamers,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -1482,7 +1488,7 @@ class ScheduleGameController {
       let getAllTags = await Database.from('schedule_games_tags')
         .innerJoin('game_tags', 'game_tags.id', 'schedule_games_tags.game_tag_id')
         .where({ schedule_games_id: latestScheduledGames[0].id })
-        .select('content')
+        .select('content', 'game_tags.id as game_tags_coming_down')
 
       latestScheduledGames[0].tags = getAllTags
 
@@ -1558,7 +1564,7 @@ class ScheduleGameController {
       let getAllCo_hosts = await Database.from('co_hosts')
         .innerJoin('users', 'users.id', 'co_hosts.user_id')
         .where({ schedule_games_id: latestScheduledGames[0].id })
-        .select('alias')
+        .select('alias', 'co_hosts.user_id as co_hosts_coming_down')
 
       latestScheduledGames[0].co_hosts = getAllCo_hosts
 
@@ -1569,26 +1575,9 @@ class ScheduleGameController {
         hasAttendees,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
-
-  // async show_one({ auth, request, response }) {
-  //   try {
-  //     var getOne = await Database.from('schedule_games')
-  //       .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
-  //       .select('*', 'schedule_games.id as id', 'schedule_games.created_at', 'schedule_games.updated_at')
-  //       .where('schedule_games.id', '=', request.params.id)
-  //
-  //     getOne = await InGame_fieldsController.find_InGame_Fields_NOT_paginate(getOne)
-  //
-  //     return {
-  //       getOne,
-  //     }
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
 
   async update_vacany({ auth }, schedule_game_id, vacancy) {
     try {
@@ -1597,7 +1586,7 @@ class ScheduleGameController {
         .update({ vacancy: vacancy })
       return
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -1631,7 +1620,7 @@ class ScheduleGameController {
 
       return isAdmin
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -1697,7 +1686,7 @@ class ScheduleGameController {
         additional_info_data,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 }

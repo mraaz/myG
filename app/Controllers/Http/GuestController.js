@@ -129,7 +129,7 @@ class GuestController {
 
   async fetchGroupPrivateKeyRequests({ params, response }) {
     const { chatId } = params
-    log('CHAT', `Fetching Private Key Requests for Group ${chatId}`)
+    log('CHAT', `Guest Fetching Private Key Requests for Group ${chatId}`)
     const { requests } = await GuestRepository.fetchGroupPrivateKeyRequests({ chatId })
     return response.send({ requests })
   }
@@ -137,14 +137,14 @@ class GuestController {
   async requestGroupPrivateKey({ params, request, response }) {
     const { guestId, chatId } = params
     const { publicKey } = request.only(['publicKey'])
-    log('CHAT', `User ${guestId} requesting Group ${chatId} Private Key`)
+    log('CHAT', `Guest ${guestId} requesting Group ${chatId} Private Key`)
     const { success, error } = await GuestRepository.requestGroupPrivateKey({ guestId, chatId, publicKey })
     return response.send({ success, error })
   }
 
   async confirmGroupPrivateKey({ params, response }) {
     const { guestId, chatId } = params
-    log('CHAT', `User ${guestId} confirming Group ${chatId} Private Key`)
+    log('CHAT', `Guest ${guestId} confirming Group ${chatId} Private Key`)
     const { success, error } = await GuestRepository.confirmGroupPrivateKey({ guestId, chatId })
     return response.send({ success, error })
   }

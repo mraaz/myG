@@ -4,6 +4,7 @@ const Database = use('Database')
 const Connection = use('App/Models/Connection')
 const Settings = use('App/Models/Setting')
 const GroupConnectionController = use('./GroupConnectionController')
+const LoggingRepository = require('../../Repositories/Logging')
 
 class ConnectionController {
   async master_controller({ auth }) {
@@ -92,7 +93,7 @@ class ConnectionController {
 
         return getConnections
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     } else {
       return 'You are not Logged In!'
@@ -122,7 +123,7 @@ class ConnectionController {
 
         return getCommunities
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     } else {
       return 'You are not Logged In!'
@@ -218,7 +219,7 @@ class ConnectionController {
           groupConnectionController.store({ auth }, myArr[i].group_id, myArr[i].no_of_members)
         }
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     } else {
       return 'You are not Logged In!'
@@ -300,7 +301,7 @@ class ConnectionController {
         return
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -369,7 +370,7 @@ class ConnectionController {
           }
         }
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     }
   }
@@ -436,7 +437,7 @@ class ConnectionController {
           }
         }
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     }
   }
@@ -548,7 +549,7 @@ class ConnectionController {
           }
         }
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     }
   }
@@ -636,7 +637,7 @@ class ConnectionController {
           }
         }
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     } else {
       return 'You are not Logged In!'
@@ -705,7 +706,7 @@ class ConnectionController {
           }
         }
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     }
   }
@@ -786,7 +787,7 @@ class ConnectionController {
           }
         }
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     }
   }
@@ -858,7 +859,7 @@ class ConnectionController {
           .delete()
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 }

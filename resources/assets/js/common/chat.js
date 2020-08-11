@@ -63,3 +63,11 @@ export function openChatForGame(gameId) {
     if (chat && chatId) store.dispatch(openChatAction(chatId, chat))
   })
 }
+
+export function openChatById(chatId) {
+  axios.get(`/api/chat/${chatId}`).then((response) => {
+    const chat = response && response.data && response.data.chat
+    const chatId = response && response.data && response.data.chat && response.data.chat.chatId
+    if (chat && chatId) store.dispatch(openChatAction(chatId, chat))
+  })
+}

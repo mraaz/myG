@@ -27,6 +27,11 @@ export function uploadGroupIcon(chatId, awsKey) {
   return axios.post(`/api/chat/${chatId}/icon`, { awsKey }).then(response => response.data);
 }
 
+export function uploadAttachmentIcon(chatId, messageId, awsKey) {
+  logger.log('CHAT', 'HTTP', `Uploading Attachment Icon for ${chatId} message ${messageId} -> ${awsKey}`);
+  return axios.post(`/api/chat/${chatId}/message/${messageId}/icon`, { awsKey }).then(response => response.data);
+}
+
 export function uploadGameIcon(gameId, awsKey) {
   logger.log('CHAT', 'HTTP', `Uploading Game Icon for ${gameId} -> ${awsKey}`);
   return axios.post(`/api/game/${gameId}/icon`, { awsKey }).then(response => response.data);
@@ -170,4 +175,19 @@ function sendGroupPrivateKey(userId, chatId, contacts, publicKey, privateKey, us
     sendMessage(chatId, userId, '', { content, backup: '' }, contactId);
   });
   return Promise.resolve();
+}
+
+export function fetchGroupPrivateKeyRequests(chatId) {
+  logger.log('GUEST', 'HTTP', `Fetching Private Key Requests for Group ${chatId}`);
+  return axios.get(`/api/chat/${chatId}/privateKey`).then(response => response.data);
+}
+
+export function requestGroupPrivateKey(chatId, publicKey) {
+  logger.log('GUEST', 'HTTP', `Requesting group ${chatId} private key`);
+  return axios.post(`/api/chat/${chatId}/privateKey`, { publicKey }).then(response => response.data);
+}
+
+export function confirmGroupPrivateKey(chatId) {
+  logger.log('GUEST', 'HTTP', `Confirming group ${chatId} private key`);
+  return axios.delete(`/api/chat/${chatId}/privateKey`).then(response => response.data);
 }

@@ -1,7 +1,8 @@
 import logger from '../../common/logger'
 import { reEncryptMessages, sendGroupKeys } from '../../common/encryption'
-import { encryptMessage, decryptMessage, deserializeKey } from '../../integration/encryption'
-import { requestGroupPrivateKey, confirmGroupPrivateKey } from '../../integration/http/guest'
+import { encryptMessage, decryptMessage, deserializeKey, getPublicKey } from '../../integration/encryption'
+import { requestGroupPrivateKey as guestRequestGroupPrivateKey, confirmGroupPrivateKey as guestConfirmGroupPrivateKey } from '../../integration/http/guest'
+import { requestGroupPrivateKey as userRequestGroupPrivateKey, confirmGroupPrivateKey as userConfirmGroupPrivateKey } from '../../integration/http/chat'
 import notifyToast from '../../common/toast'
 import { getAssetUrl } from '../../common/assets'
 
@@ -91,6 +92,7 @@ export default function reducer(state = initialState, action) {
       chat.icon = action.payload.chat.icon
       chat.individualGameId = action.payload.chat.individualGameId
       chat.gameMessage = action.payload.chat.gameMessage
+      chat.privateKeyRequests = action.payload.requests || []
       const messages = action.payload.messages
         .filter((message) => message.messageId > action.payload.chat.lastCleared)
         .filter((message) => !action.payload.chat.deletedMessages.includes(message.messageId))
@@ -100,12 +102,17 @@ export default function reducer(state = initialState, action) {
       chat.messages = messages
       if (chat.gameStarting) chat.messages.push(chat.gameStarting)
       if (action.payload.chat.isGroup) {
-        const privateKey = receiveGroupKey(chat, action.payload.encryptionMessages, userId, state.privateKey)
+        const privateKey = receiveGroupKey(chat, action.payload.encryptionMessages, userId, state.guestId, state.privateKey)
         if (privateKey) {
           chat.privateKey = privateKey
-          const privateKeyRequests = action.payload.requests || []
-          if (privateKeyRequests.length) sendGroupKeys(chatId, userId, privateKeyRequests, privateKey, state.privateKey)
-        } else requestGroupPrivateKey(userId, chatId, state.publicKey)
+          chat.publicKey = getPublicKey(privateKey)
+          if (!state.isGuest && chat.privateKeyRequests.length) {
+            sendGroupKeys(chatId, userId, chat.privateKeyRequests, privateKey, state.privateKey)
+          }
+        } else {
+          if (state.isGuest) guestRequestGroupPrivateKey(state.guestId, chatId, state.publicKey)
+          else userRequestGroupPrivateKey(chatId, state.publicKey)
+        }
       }
       return {
         ...state,
@@ -131,7 +138,7 @@ export default function reducer(state = initialState, action) {
       const { chatId } = action.meta
       const chats = JSON.parse(JSON.stringify(state.chats))
       const chat = chats.find((candidate) => candidate.chatId === chatId)
-      const chatMessages = chat.messages.map((message) => message.messageId)
+      const chatMessages = (chat.messages || []).map((message) => message.messageId)
       const nextMessages = action.payload.messages.filter((message) => !chatMessages.includes(message.messageId))
       const messages = [...nextMessages, ...chat.messages]
         .filter((message) => message.messageId > chat.lastCleared)
@@ -301,8 +308,11 @@ export default function reducer(state = initialState, action) {
       if (isReceivingGroupKeys) {
         const isGroupKeyRecipient = message.keyReceiver === userId
         if (isGroupKeyRecipient) {
-          const privateKey = receiveGroupKey(chat, [message], userId, state.privateKey)
-          if (privateKey) chat.privateKey = privateKey
+          const privateKey = receiveGroupKey(chat, [message], userId, state.guestId, state.privateKey)
+          if (privateKey) {
+            chat.privateKey = privateKey
+            chat.publicKey = getPublicKey(privateKey)
+          }
         }
         return {
           ...state,
@@ -440,6 +450,9 @@ export default function reducer(state = initialState, action) {
       if (privateKey !== undefined) chat.privateKey = deserializeKey(privateKey)
       if (publicKey !== undefined)
         prepareGroupKeysToSend(chat, parseInt(state.userId), chat.fullContacts, state.publicKey, state.privateKey)
+      if (chat.privateKeyRequests.length && chat.privateKey) {
+        sendGroupKeys(chatId, parseInt(state.userId), chat.privateKeyRequests, chat.privateKey, state.privateKey)
+      }
       return {
         ...state,
         chats,
@@ -766,6 +779,7 @@ export default function reducer(state = initialState, action) {
       if (!existingChat) chats.push(chat)
       return {
         ...state,
+        isGuest: true,
         guestId,
         publicKey,
         privateKey,
@@ -903,14 +917,16 @@ function prepareGroupKeysToSend(group, userId, chatContacts, userPublicKey, user
   sendGroupKeys(group.chatId, userId, contacts, group.privateKey, userPrivateKey)
 }
 
-function receiveGroupKey(group, messages, userId, userPrivateKey) {
+function receiveGroupKey(group, messages, userId, guestId, userPrivateKey) {
   if (!group.isGroup) return
   const message = messages[0]
-  if (!message || !message.content || message.keyReceiver !== userId) return
-  const privateKey = decryptMessage(message.content, userPrivateKey)
+  if (!message || !message.content || (message.keyReceiver !== userId && message.keyReceiver !== guestId)) return
+  const serializedKey = decryptMessage(message.content, userPrivateKey)
+  const privateKey = serializedKey && deserializeKey(JSON.parse(serializedKey))
   if (!privateKey) return
-  confirmGroupPrivateKey(userId, group.chatId)
-  return deserializeKey(JSON.parse(privateKey))
+  if (guestId) guestConfirmGroupPrivateKey(guestId, group.chatId)
+  else userConfirmGroupPrivateKey(group.chatId)
+  return privateKey
 }
 
 function contactPublicKeyUpdated(state, contactId, publicKey) {

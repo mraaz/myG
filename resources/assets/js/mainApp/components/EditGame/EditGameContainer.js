@@ -4,6 +4,8 @@ import moment from 'moment'
 import classNames from 'classnames'
 import Select from 'react-select'
 
+import { withRouter } from 'react-router-dom'
+
 import { PageHeader, MyGButton, MyGModal, MyGInput } from '../common'
 import { styles, SETTINGS_ENUMS } from '../../static/AddGame'
 import '../../styles/AddGame/AddGameStyles.scss'
@@ -38,6 +40,12 @@ const EditGameContainer = (props) => {
     description: '',
     acceptMessage: '',
     optionTags: '',
+    mic: false,
+    eighteen_plus: false,
+    language: null,
+    show_experience: false,
+    show_platform: true,
+    show_region: true,
   })
   const [mainSettingsState, updateMainSettingsState] = useState({
     scheduledGameId: null,
@@ -61,6 +69,12 @@ const EditGameContainer = (props) => {
     value_three: null,
     value_four: null,
     value_five: null,
+    game_name_fields_img: '',
+    value_one_key: null,
+    value_two_key: null,
+    value_three_key: null,
+    value_four_key: null,
+    value_five_key: null,
   })
   const [gameLink, updateGameLink] = useState('')
   const gameLinkRef = useRef(null)
@@ -73,9 +87,18 @@ const EditGameContainer = (props) => {
     } else if (Array.isArray(arg)) {
       data = arg
     }
+
     if (data.length > 0) {
       return data.map((item) => {
-        const val = item && item.content ? item.content : item ? item.trim() : ''
+        //const val = item && item.content ? item.content : item ? item.trim() : ''
+        const val = item && item.content ? item.content : item && item.alias ? item.alias : item ? item.trim() : ''
+        if (item.co_hosts_coming_down) {
+          return { value: item.co_hosts_coming_down, label: val }
+        }
+        if (item.game_tags_coming_down) {
+          return { value: val, label: val, game_tag_id: item.game_tags_coming_down }
+        }
+
         return { value: val, label: val }
       })
     } else {
@@ -125,6 +148,17 @@ const EditGameContainer = (props) => {
           advanceSettings.optionTags = getExtraFilterOprion(latestScheduledGames[0].tags)
           advanceSettings.tags = getExtraFilterOprion(latestScheduledGames[0].tags)
           advanceSettings.coHosts = getExtraFilterOprion(latestScheduledGames[0].co_hosts)
+          advanceSettings.language = getExtraFilterOprion(latestScheduledGames[0].game_languages)
+
+          advanceSettings.mic = latestScheduledGames[0].mic == 1 ? true : false
+          advanceSettings.eighteen_plus = latestScheduledGames[0].eighteen_plus == 1 ? true : false
+
+          if (!advanceSettings.tags) {
+            advanceSettings.tags = ''
+          }
+          if (!advanceSettings.optionTags) {
+            advanceSettings.optionTags = ''
+          }
 
           const mainSettings = { ...mainSettingsState }
 
@@ -160,7 +194,7 @@ const EditGameContainer = (props) => {
           setSechduledGameData(latestScheduledGames)
           setHasAttendees(hasAttendees)
         } else {
-          window.location.href = '/?at=mygames'
+          props.routeProps.history.push('/?at=mygames')
         }
       }
     }
@@ -204,24 +238,28 @@ const EditGameContainer = (props) => {
       value_two = null,
       value_three = null,
       value_four = null,
-      value_five = null
+      value_five = null,
+      tmp_val = ''
 
-    //If the field is multi then you need to convert otherwise no need to.
-
-    if (optionalFieldsState.modalRank != null) {
-      let tmp = Convert_to_comma_delimited_value(optionalFieldsState.modalRank)
-      value_one = { dota2_medal_ranks: tmp }
+    if (optionalFieldsState.value_one != null) {
+      tmp_val = Convert_to_comma_delimited_value(optionalFieldsState.value_one)
+      value_one = { [optionalFieldsState.value_one_key]: tmp_val }
     }
-    if (optionalFieldsState.serverRegion != null) {
-      let tmp = Convert_to_comma_delimited_value(optionalFieldsState.serverRegion)
-      value_two = { dota2_server_regions: tmp }
+    if (optionalFieldsState.value_two != null) {
+      tmp_val = Convert_to_comma_delimited_value(optionalFieldsState.value_two)
+      value_two = { [optionalFieldsState.value_two_key]: tmp_val }
     }
-    if (optionalFieldsState.roleNeeded != null) {
-      let tmp = Convert_to_comma_delimited_value(optionalFieldsState.roleNeeded)
-      value_three = { dota2_roles: tmp }
+    if (optionalFieldsState.value_three != null) {
+      tmp_val = Convert_to_comma_delimited_value(optionalFieldsState.value_three)
+      value_three = { [optionalFieldsState.value_three_key]: tmp_val }
     }
-    if (optionalFieldsState.trophies != null) {
-      value_one = { clash_royale_trophies: optionalFieldsState.trophies[0].value }
+    if (optionalFieldsState.value_four != null) {
+      tmp_val = Convert_to_comma_delimited_value(optionalFieldsState.value_four)
+      value_four = { [optionalFieldsState.value_four_key]: tmp_val }
+    }
+    if (optionalFieldsState.value_five != null) {
+      tmp_val = Convert_to_comma_delimited_value(optionalFieldsState.value_five)
+      value_five = { [optionalFieldsState.value_five_key]: tmp_val }
     }
 
     try {
@@ -251,6 +289,9 @@ const EditGameContainer = (props) => {
         autoJoinHost: mainSettingsState.autoJoinHost,
         schedule_games_GUID: mainSettingsState.scheduledGameGuid,
         gameId: id,
+        mic: advancedSettingsState.mic,
+        eighteen_plus: advancedSettingsState.eighteen_plus,
+        language: advancedSettingsState.language,
       })
       updateMainSettingsState((currentState) => ({
         ...currentState,
@@ -259,14 +300,14 @@ const EditGameContainer = (props) => {
       }))
       updateGameLink(mainSettingsState.scheduledGameGuid)
       // updateIsGameListedModalOpen(true)
-      window.location.href = '/?at=mygames'
+      props.routeProps.history.push('/?at=mygames')
     } catch (err) {
       updateIsSubmitting(false)
     }
   }
 
   const onCancelGameHandler = () => {
-    window.location.href = '/?at=mygames'
+    props.routeProps.history.push('/?at=mygames')
   }
   const onDeleteGameHandler = () => {
     if (hasAttendees == 0) {
