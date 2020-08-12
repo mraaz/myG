@@ -2,6 +2,7 @@
 
 const GameTags = use('App/Models/GameTag')
 const Database = use('Database')
+const LoggingRepository = require('../../Repositories/Logging')
 
 class GameTagController {
   async store({ auth }, content) {
@@ -23,7 +24,7 @@ class GameTagController {
 
           return newGameTag.id
         }
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     }
   }
@@ -38,7 +39,7 @@ class GameTagController {
         allTags,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -52,7 +53,7 @@ class GameTagController {
         allTags,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 }

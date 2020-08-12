@@ -1,6 +1,6 @@
 'use strict'
-const Database = use('Database')
 const PostHashTagTransaction = use('App/Models/PostHashTagTransaction')
+const LoggingRepository = require('../../Repositories/Logging')
 
 class PostHashTagTransactionController {
   async store({ auth }, post_id, hash_tag_id) {
@@ -15,7 +15,7 @@ class PostHashTagTransactionController {
         if (error.code == 'ER_DUP_ENTRY') {
           return
         }
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     }
   }

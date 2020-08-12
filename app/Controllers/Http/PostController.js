@@ -8,6 +8,7 @@ const AwsKeyController = use('./AwsKeyController')
 const LikeController = use('./LikeController')
 const PostHashTagTransactionController = use('./PostHashTagTransactionController')
 const HashTagController = use('./HashTagController')
+const LoggingRepository = require('../../Repositories/Logging')
 
 const MAX_HASH_TAGS = 21
 
@@ -63,7 +64,7 @@ class PostController {
         return newPost
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -126,7 +127,7 @@ class PostController {
 
         return newPost
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     }
   }
@@ -169,7 +170,7 @@ class PostController {
 
         return newPost
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     }
   }
@@ -203,7 +204,7 @@ class PostController {
         myPosts,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -222,7 +223,7 @@ class PostController {
         myPosts,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -239,7 +240,7 @@ class PostController {
         myPost,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -258,7 +259,7 @@ class PostController {
         myPosts,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -277,7 +278,7 @@ class PostController {
         groupPosts,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -291,7 +292,7 @@ class PostController {
         no_of_my_posts,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -309,7 +310,7 @@ class PostController {
 
         return 'Deleted successfully'
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     } else {
       return 'You are not Logged In!'
@@ -324,7 +325,7 @@ class PostController {
           .update({ content: request.input('content') })
         return 'Saved successfully'
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     }
   }
@@ -358,7 +359,7 @@ class PostController {
         post[i].hash_tags = myHashTags
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
 
     return post

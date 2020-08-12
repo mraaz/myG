@@ -4,6 +4,7 @@ const Database = use('Database')
 const User = use('App/Models/User')
 const UserStatTransaction = use('App/Models/UserStatTransaction')
 const NotificationController = use('./NotificationController')
+const LoggingRepository = require('../../Repositories/Logging')
 
 const GREAT_COMMUNITY_SIZE = 100
 const CUT_OFF_FOR_ATTENDEES_FOR_GAME = 1 //2 OR MORE
@@ -392,7 +393,7 @@ class UserStatTransactionController {
 
       return 'Saved item'
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 

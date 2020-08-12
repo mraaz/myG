@@ -19,6 +19,7 @@ const GameNameController = use('./GameNameController')
 const InGame_fieldsController = use('./InGame_fieldsController')
 const GameTagController = use('./GameTagController')
 const AttendeeController = use('./AttendeeController')
+const LoggingRepository = require('../../Repositories/Logging')
 
 const MAX_GAME_TAGS = 9
 const MAX_CO_HOSTS = 5
@@ -232,7 +233,7 @@ class ScheduleGameController {
         }
         return newScheduleGame
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     }
   }
@@ -479,7 +480,7 @@ class ScheduleGameController {
         }
         return updateScheduleGame
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     }
   }
@@ -618,7 +619,7 @@ class ScheduleGameController {
 
         return 'Deleted successfully'
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     } else {
       return 'You are not Logged In!'
@@ -832,7 +833,7 @@ class ScheduleGameController {
         number_of_records,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       myScheduledGames = []
       return { myScheduledGames, number_of_records }
     }
@@ -899,7 +900,7 @@ class ScheduleGameController {
       }
       myScheduledGames = myScheduledGames.data
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
 
     return {
@@ -917,7 +918,7 @@ class ScheduleGameController {
         myScheduledGamesCount,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -1149,7 +1150,7 @@ class ScheduleGameController {
         latestScheduledGames,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -1199,7 +1200,7 @@ class ScheduleGameController {
         obj,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -1344,7 +1345,7 @@ class ScheduleGameController {
         myStatus,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -1461,7 +1462,7 @@ class ScheduleGameController {
         getAllGamers,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -1574,7 +1575,7 @@ class ScheduleGameController {
         hasAttendees,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -1585,7 +1586,7 @@ class ScheduleGameController {
         .update({ vacancy: vacancy })
       return
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -1619,7 +1620,7 @@ class ScheduleGameController {
 
       return isAdmin
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -1685,7 +1686,7 @@ class ScheduleGameController {
         additional_info_data,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 }
