@@ -28,7 +28,7 @@ export default class Group extends React.Component {
   }
 
   renderMessage = (content) => {
-    if (!content) return 'encrypted message'
+    if (!content) return null
     if (content.includes('myg-image')) return 'Sent an Image'
     if (content.includes('myg-video')) return 'Sent a Video'
     if (content.includes('myg-sound')) return 'Sent an Audio File'

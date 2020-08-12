@@ -71,14 +71,14 @@ export function fetchGroupPrivateKeyRequests(chatId) {
   return axios.get(`/api/guest/privateKey/${chatId}`).then(response => response.data);
 }
 
-export function requestGroupPrivateKey(guestId, chatId, publicKey) {
-  logger.log('GUEST', 'HTTP', `Requesting Group ${chatId} Private key for Guest ${guestId}`);
-  return axios.post(`/api/guest/privateKey/${guestId}/${chatId}`, { publicKey }).then(response => response.data);
+export function requestGroupPrivateKey(userId, chatId, publicKey) {
+  logger.log('GUEST', 'HTTP', `Requesting Group ${chatId} Private key for User ${userId}`);
+  return axios.post(`/api/guest/privateKey/${userId}/${chatId}`, { publicKey }).then(response => response.data);
 }
 
-export function confirmGroupPrivateKey(guestId, chatId) {
-  logger.log('GUEST', 'HTTP', `Confirming Group ${chatId} Private key for Guest ${guestId}`);
-  return axios.delete(`/api/guest/privateKey/${guestId}/${chatId}`).then(response => response.data);
+export function confirmGroupPrivateKey(userId, chatId) {
+  logger.log('GUEST', 'HTTP', `Confirming Group ${chatId} Private key for User ${userId}`);
+  return axios.delete(`/api/guest/privateKey/${userId}/${chatId}`).then(response => response.data);
 }
 
 export function markLastReadGuest(chatId, guestId) {

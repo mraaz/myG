@@ -1,13 +1,12 @@
 'use strict'
 
-const { validate } = use('Validator')
+const { validate, sanitize } = use('Validator')
 const Hash = use('Hash')
 const User = use('App/Models/User')
 const Settings = use('App/Models/Setting')
 const ConnectionController = use('./ConnectionController')
 const SeatsAvailable = use('App/Models/SeatsAvailable')
 const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
-const LoggingRepository = require('../../Repositories/Logging')
 
 class AuthController {
   async register({ response, request, view }) {
@@ -81,7 +80,7 @@ class AuthController {
           }
         }
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
         session.withErrors(validation.messages()).flashAll()
         return response.redirect('back')
       }
@@ -214,7 +213,7 @@ class AuthController {
       await auth.logout()
       return response.redirect('/')
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
       return 'Error, unable to logout'
     }
   }

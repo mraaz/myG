@@ -2,10 +2,10 @@
 
 const Notification = use('App/Models/Notification')
 const Post = use('App/Models/Post')
+const Usergroup = use('App/Models/Usergroup')
 const Database = use('Database')
 const ChatRepository = require('../../Repositories/Chat')
 const { formatDateTimeFromNow } = require('../../Common/date')
-const LoggingRepository = require('../../Repositories/Logging')
 
 // Split the array into halves and merge them recursively
 function mergeSort(arr) {
@@ -51,7 +51,7 @@ class NotificationController {
         })
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -69,7 +69,7 @@ class NotificationController {
         })
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -87,7 +87,7 @@ class NotificationController {
         })
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -105,7 +105,7 @@ class NotificationController {
         })
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -123,7 +123,7 @@ class NotificationController {
         })
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
         return error
       }
     } else {
@@ -143,7 +143,7 @@ class NotificationController {
         checkedFriend: checkFriend === undefined || checkFriend.length == 0 ? false : true,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -157,7 +157,7 @@ class NotificationController {
         checkMyFriends: checkMyFriends,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -171,7 +171,7 @@ class NotificationController {
         checkMyFriends: checkMyFriends,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -298,7 +298,7 @@ class NotificationController {
         // group_member_approved: group_member_approved
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -314,7 +314,7 @@ class NotificationController {
         allMyFriends: allMyFriends,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -333,7 +333,7 @@ class NotificationController {
         noti_id: myFriendRequest === undefined || myFriendRequest.length == 0 ? 0 : myFriendRequest,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -585,7 +585,7 @@ class NotificationController {
         return (singleArr = mergeSort(singleArr))
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -615,7 +615,7 @@ class NotificationController {
         getAllNotiLike_unreadCount: getAllNotiLike_unreadCount,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -645,7 +645,7 @@ class NotificationController {
         getAllNotiLike_unreadCount: getAllNotiLike_unreadCount,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -675,7 +675,7 @@ class NotificationController {
         getAllNotiLike_unreadCount: getAllNotiLike_unreadCount,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -705,7 +705,7 @@ class NotificationController {
         getAllNotiCommentCount_unreadCount: getAllNotiCommentCount_unreadCount,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -735,7 +735,7 @@ class NotificationController {
         getAllNotiReplyCount_unreadCount: getAllNotiReplyCount_unreadCount,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -762,7 +762,7 @@ class NotificationController {
         getAllNotiScheduleGamesAttendeesCount: getAllNotiScheduleGamesAttendeesCount,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -777,7 +777,7 @@ class NotificationController {
 
         return delete_noti
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -796,7 +796,7 @@ class NotificationController {
           .update({ read_status: 1 })
         return 'Saved successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     }
   }
@@ -813,7 +813,7 @@ class NotificationController {
           .update({ read_status: 1 })
         return 'Saved successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     }
   }
@@ -830,7 +830,7 @@ class NotificationController {
           .update({ read_status: 1 })
         return 'Saved successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     }
   }
@@ -848,7 +848,7 @@ class NotificationController {
           .update({ read_status: 1 })
         return 'Saved successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     }
   }
@@ -864,7 +864,7 @@ class NotificationController {
           .update({ read_status: 1 })
         return 'Saved successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     }
   }
@@ -877,7 +877,7 @@ class NotificationController {
         .update({ read_status: 1 })
       return 'Saved successfully'
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -892,7 +892,7 @@ class NotificationController {
 
       return 'Saved successfully'
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -911,7 +911,7 @@ class NotificationController {
         getAllNotiReplyCount_unreadCount: getAllNotiReplyCount_unreadCount,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -930,7 +930,7 @@ class NotificationController {
         getAllNotiReplyCount_unreadCount: getAllNotiReplyCount_unreadCount,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -949,7 +949,7 @@ class NotificationController {
         getAllNotiReplyCount_unreadCount: getunread_archive_schedule_game,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -968,7 +968,7 @@ class NotificationController {
         getAllNotiReplyCount_unreadCount: getAllNotiReplyCount_unreadCount,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -986,7 +986,7 @@ class NotificationController {
         getAllNotiReplyCount_unreadCount: getAllNotiReplyCount_unreadCount,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -1001,7 +1001,7 @@ class NotificationController {
         })
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -1109,7 +1109,7 @@ class NotificationController {
 
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -1133,7 +1133,7 @@ class NotificationController {
 
         return 'Saved'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -1157,7 +1157,7 @@ class NotificationController {
 
         return 'Saved'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -1177,7 +1177,7 @@ class NotificationController {
 
         return 'deleted'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -1195,7 +1195,7 @@ class NotificationController {
         })
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -1210,7 +1210,7 @@ class NotificationController {
         .where({ user_id: auth.user.id, activity_type: 1 })
       return { friendRequests }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -1225,7 +1225,7 @@ class NotificationController {
         })
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -1241,7 +1241,7 @@ class NotificationController {
       })
       return 'Saved item'
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -1307,7 +1307,7 @@ class NotificationController {
         return (singleArr = mergeSort(singleArr))
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 }

@@ -45,8 +45,8 @@ export default class Contact extends React.Component {
     return unreadCount
   }
 
-  renderContent = (content) => {
-    if (!content) return 'encrypted message'
+  renderMessage = (content) => {
+    if (!content) return null
     if (content.includes('myg-image')) return 'Sent an Image'
     if (content.includes('myg-video')) return 'Sent a Video'
     if (content.includes('myg-sound')) return 'Sent an Audio File'
@@ -66,7 +66,7 @@ export default class Contact extends React.Component {
         </div>
         <div className='messenger-contact-body'>
           <p className='messenger-contact-body-title'>{contact.name}</p>
-          {lastMessage && <p className='messenger-contact-body-subtitle'>{this.renderContent(this.decryptMessage(lastMessage).content)}</p>}
+          {lastMessage && <p className='messenger-contact-body-subtitle'>{this.renderMessage(this.decryptMessage(lastMessage).content)}</p>}
         </div>
         <div className='messenger-contact-info'>
           {lastMessage && <p className='messenger-contact-info-last-seen'>{formatAMPM(new Date(lastMessage.createdAt))}</p>}

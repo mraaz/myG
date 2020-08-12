@@ -2,7 +2,6 @@
 
 const HashTags = use('App/Models/HashTag')
 const Database = use('Database')
-const LoggingRepository = require('../../Repositories/Logging')
 
 class HashTagController {
   async store({ auth }, content) {
@@ -25,7 +24,7 @@ class HashTagController {
           return newHashTag.id
         }
 
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     }
   }
@@ -40,7 +39,7 @@ class HashTagController {
         allTags,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -54,7 +53,7 @@ class HashTagController {
         allTags,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 }

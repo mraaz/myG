@@ -2,7 +2,6 @@
 
 const Database = use('Database')
 const Settings = use('App/Models/Setting')
-const LoggingRepository = require('../../Repositories/Logging')
 
 //A new record is created in AuthController when the user is created
 class SettingController {
@@ -24,7 +23,7 @@ class SettingController {
           mySettings,
         }
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     }
   }

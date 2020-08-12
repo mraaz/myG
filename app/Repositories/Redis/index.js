@@ -51,28 +51,12 @@ class RedisRepository {
 
   async loadGameMessageSchedule() {
     const rawSchedule = await ChatGameMessageSchedule
-      .query()
-      .where('schedule', '>', moment())
+      .query('schedule', '>', moment())
       .orderBy('schedule', 'desc')
       .fetch();
     const schedule = (rawSchedule && rawSchedule.toJSON()) || [];
     await this.setGameMessageSchedule(JSON.stringify(schedule));
     return schedule;
-  }
-
-  async getRecentFailedLoginAttempts(ip) {
-    if (!isRedisEnabled) return Promise.resolve(0);
-    return new Promise(resolve => {
-      client.get(`${keys.LOGIN_ATTEMPT_IP}|${ip}`, async (_, response) => resolve(parseInt(response) || 0));
-    });
-  }
-
-  async registerFailedLoginAttempt(ip) {
-    if (!isRedisEnabled) return Promise.resolve();
-    return new Promise(async resolve => {
-      const attempts = await this.getRecentFailedLoginAttempts(ip);
-      client.set(`${keys.LOGIN_ATTEMPT_IP}|${ip}`, attempts + 1, 'EX', 300, (_, response) => resolve(response));
-    });
   }
 
 }

@@ -2,7 +2,6 @@
 
 const Database = use('Database')
 const Archive_Attendee = use('App/Models/Archive_Attendee')
-const LoggingRepository = require('../../Repositories/Logging')
 
 class Archive_AttendeeController {
   async savemySpot({ auth, request, response }) {
@@ -21,7 +20,7 @@ class Archive_AttendeeController {
         })
         return 'Saved successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     }
   }
@@ -37,7 +36,7 @@ class Archive_AttendeeController {
         allAttendees,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -52,7 +51,7 @@ class Archive_AttendeeController {
         allAttendees,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -79,7 +78,7 @@ class Archive_AttendeeController {
         myattendance_pending,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -129,7 +128,7 @@ class Archive_AttendeeController {
         game_position_of_dota_2_position_fives,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -145,7 +144,7 @@ class Archive_AttendeeController {
         role_call,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -160,7 +159,7 @@ class Archive_AttendeeController {
         role_call_ALL,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -176,7 +175,7 @@ class Archive_AttendeeController {
 
         return 'Remove entry'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -195,7 +194,7 @@ class Archive_AttendeeController {
         getScheduleGameInvites,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -211,7 +210,7 @@ class Archive_AttendeeController {
 
         return 'Remove entry'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -235,7 +234,7 @@ class Archive_AttendeeController {
         })
       return up_invite
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 }

@@ -8,7 +8,6 @@ import FileOpenModal from '../FileOpenModal'
 import { WithTooltip } from '../Tooltip'
 import { updateChatAction, clearChatAction, deleteChatAction, exitGroupAction, updateLinkAction } from '../../../redux/actions/chatAction'
 import { copyToClipboard } from '../../../common/clipboard'
-import { uploadGroupIcon } from '../../../integration/http/chat'
 import { getAssetUrl } from '../../../common/assets'
 import { showMessengerAlert } from '../../../common/alert'
 import { ignoreFunctions } from '../../../common/render'
@@ -46,10 +45,9 @@ class GroupOptions extends React.Component {
     if (code === escKeyCode) return this.setState({ title: '' })
   }
 
-  onUploadPhoto = (icon, key) => {
+  onUploadPhoto = (icon) => {
     this.props.updateChat(this.props.group.chatId, { icon })
     this.setState({ uploadingPhoto: false })
-    if (key) uploadGroupIcon(this.props.group.chatId, key)
   }
 
   exitOrDeleteGroup = () => {

@@ -2,7 +2,6 @@
 
 const Tags = use('App/Models/Tag')
 const Database = use('Database')
-const LoggingRepository = require('../../Repositories/Logging')
 
 class TagController {
   async store({ auth, request, response }) {
@@ -14,7 +13,7 @@ class TagController {
         })
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     }
   }
@@ -28,7 +27,7 @@ class TagController {
         })
         return newGameTag
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     }
   }
@@ -40,7 +39,7 @@ class TagController {
         allTags,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -55,7 +54,7 @@ class TagController {
         allTags,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -70,7 +69,7 @@ class TagController {
         allTags,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -84,7 +83,7 @@ class TagController {
   //       allTags,
   //     }
   //   } catch (error) {
-  //     LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+  //     console.log(error)
   //   }
   // }
 }

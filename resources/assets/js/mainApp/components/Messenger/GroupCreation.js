@@ -9,7 +9,6 @@ import { fetchContactsPaginatedAction } from '../../../redux/actions/paginationA
 import { getAssetUrl } from '../../../common/assets'
 import { ignoreFunctions } from '../../../common/render'
 import { GoogleAnalytics } from '../../../common/analytics'
-import logger from '../../../common/logger'
 
 export const MAXIMUM_GROUP_SIZE = 37
 
@@ -34,7 +33,6 @@ class GroupCreation extends React.Component {
 
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeyDown)
-    this.props.fetchContactsPaginated(0, null, null, null, true)
   }
 
   componentWillUnmount() {
@@ -227,7 +225,6 @@ class GroupCreation extends React.Component {
   }
 
   render() {
-    logger.log('RENDER', 'GroupCreation')
     return (
       <div className='chat-group-creation-container'>
         {this.renderHeader()}

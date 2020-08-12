@@ -1,11 +1,4 @@
-import { fetchRecents, fetchContactsPaginated, fetchGroupsPaginated, fetchGamesPaginated, searchPaginated } from '../../integration/http/pagination'
-
-export function fetchRecentsAction() {
-  return {
-    type: 'RECENTS',
-    payload: fetchRecents(),
-  }
-}
+import { fetchContactsPaginated, fetchGroupsPaginated, fetchGamesPaginated, searchPaginated } from '../../integration/http/pagination'
 
 export function fetchContactsPaginatedAction(page, status, gameId, search, refresh) {
   return {

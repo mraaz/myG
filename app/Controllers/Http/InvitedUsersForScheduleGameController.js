@@ -1,6 +1,6 @@
 'use strict'
+const Database = use('Database')
 const InvitedUsersForScheduleGame = use('App/Models/InvitedUsersForScheduleGame')
-const LoggingRepository = require('../../Repositories/Logging')
 
 class InvitedUsersForScheduleGameController {
   async store({ auth, request, response }) {
@@ -14,7 +14,7 @@ class InvitedUsersForScheduleGameController {
         })
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'

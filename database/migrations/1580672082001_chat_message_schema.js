@@ -13,7 +13,6 @@ class ChatMessageSchema extends Schema {
       table.integer('sender_id').unsigned().notNullable()
       table.integer('key_receiver').unsigned().index()
       table.text('sender_name').notNullable()
-      table.text('title').notNullable()
       table.text('content').notNullable()
       table.text('backup').notNullable()
       table.text('unencrypted_content')

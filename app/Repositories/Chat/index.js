@@ -7,7 +7,6 @@ const Chat = use('App/Models/Chat');
 const UserChat = use('App/Models/UserChat');
 const UserChatNotification = use('App/Models/UserChatNotification');
 const ChatMessage = use('App/Models/ChatMessage');
-const ChatRecentMessage = use('App/Models/ChatRecentMessage');
 const ChatMessageReaction = use('App/Models/ChatMessageReaction');
 const ChatLastCleared = use('App/Models/ChatLastCleared');
 const ChatLastRead = use('App/Models/ChatLastRead');
@@ -120,19 +119,15 @@ class ChatRepository {
     return { chat: chatSchema };
   }
 
-  async fetchMessages({ requestedChatId, requestedMessageIds, requestedPage }) {
+  async fetchMessages({ requestedChatId, requestedPage }) {
     let query = ChatMessage.query()
-    if (requestedMessageIds) {
-      query = query.where('chat_messages.id', 'in', requestedMessageIds).orderBy('chat_messages.id', 'desc').fetch();  
-    } else {
-      query = query.where('chat_messages.chat_id', requestedChatId)
+      .where('chat_messages.chat_id', requestedChatId)
       .andWhere('chat_messages.key_receiver', null)
       .orderBy('chat_messages.id', 'desc');
-      if (requestedPage === "ALL") query = query.fetch();
-      else query = query.paginate(requestedPage || 1, 10);
-    }
+    if (requestedPage === "ALL") query = query.fetch();
+    else query = query.paginate(requestedPage || 1, 10);
     const result = (await query).toJSON();
-    const reactionData = requestedChatId && await ChatMessageReaction.query().where('chat_id', requestedChatId).fetch();
+    const reactionData = await ChatMessageReaction.query().where('chat_id', requestedChatId).fetch();
     const chatReactions = reactionData ? reactionData.toJSON() : [];
     const messages = (result.data ? result.data : result).map(message => {
       const messageReactions = chatReactions
@@ -153,8 +148,7 @@ class ChatRepository {
         senderId: message.sender_id,
         keyReceiver: message.key_receiver,
         senderName: message.sender_name,
-        title: message.title,
-        unencryptedContent: message.unencrypted_content,
+      unencryptedContent: message.unencrypted_content,
         content: message.content,
         backup: message.backup,
         deleted: message.deleted,
@@ -192,7 +186,6 @@ class ChatRepository {
         senderId: message.sender_id,
         keyReceiver: message.key_receiver,
         senderName: message.sender_name,
-        title: message.title,
         unencryptedContent: message.unencrypted_content,
         content: message.content,
         backup: message.backup,
@@ -235,7 +228,6 @@ class ChatRepository {
       senderId: message.sender_id,
       keyReceiver: message.key_receiver,
       senderName: message.sender_name,
-      title: message.title,
       unencryptedContent: message.unencrypted_content,
       content: message.content,
       backup: message.backup,
@@ -468,9 +460,7 @@ class ChatRepository {
     const guests = JSON.parse(chat.guests || '[]');
     const owners = JSON.parse(chat.owners || '[]');
     if (!forceDelete && !owners.includes(requestingUserId)) throw new Error('Only Owners can Delete Chat');
-    const keyController = new AwsKeyController();
-    await keyController.removeChatGroupProfileKey(requestedChatId);
-    await keyController.removeChatAttachmentKey(requestedChatId);
+    await new AwsKeyController().removeChatGroupProfileKey(requestedChatId);
     await chatModel.delete();
     await Notification.query().where('chat_id', requestedChatId).delete();
     contacts.forEach(userId => this._notifyChatEvent({ userId, action: 'deleteChat', payload: { chatId: requestedChatId } }));
@@ -531,8 +521,7 @@ class ChatRepository {
       lastSeen: contact.last_seen,
       publicKey: contact.public_key,
     }));
-    const count = status ? (await Database.from('friends').innerJoin('users', 'users.id', 'friends.friend_id').where({ user_id: requestingUserId }).andWhere({ status }).count())[0]['count(*)'] : 0
-    return { contacts, count };
+    return { contacts };
   }
 
   async fetchContactsByGame({ requestingUserId, status, gameId }) {
@@ -717,14 +706,11 @@ class ChatRepository {
 
   async sendMessage({ requestingUserId, requestedChatId, senderName, backup, content, keyReceiver, attachment, replyId, replyContent, replyBackup, uuid, forceSelfDestruct }) {
     const { chat } = await this.fetchChat({ requestingUserId, requestedChatId });
-    const { contacts } = chat.isGroup ? { contacts: [] } : await this.fetchChatContacts({ requestingUserId, requestedChatId });
-    const contact = contacts.find(contact => contact.contactId !== requestingUserId) || {};
     const messageData = {
       uuid,
       sender_id: requestingUserId,
       key_receiver: keyReceiver,
       sender_name: senderName,
-      title: chat.isGroup ? chat.title : contact.name,
       backup: backup,
       content: content,
       attachment: attachment,
@@ -735,6 +721,7 @@ class ChatRepository {
       reply_backup: replyBackup,
     };
     const message = await Chat.find(requestedChatId).then(chat => chat.messages().create(messageData));
+    if (attachment) await new AwsKeyController().addChatAttachmentKey(requestedChatId, message.id, attachment);
     const messageSchema = new MessageSchema({
       messageId: message.id,
       uuid: message.uuid,
@@ -742,7 +729,6 @@ class ChatRepository {
       senderId: requestingUserId,
       keyReceiver: message.key_receiver,
       senderName: message.sender_name,
-      title: message.title,
       unencryptedContent: message.unencrypted_content,
       content: message.content,
       backup: message.backup,
@@ -759,25 +745,7 @@ class ChatRepository {
     });
     this._notifyChatEvent({ chatId: requestedChatId, action: 'newMessage', payload: messageSchema });
     if (!chat.isGroup) this._addChatNotificationMessage({ requestingUserId, requestedChatId, chat, content });
-    this.saveRecentMessage(messageSchema);
     return { message: messageSchema };
-  }
-
-  async fetchRecentMessages({ requestingUserId }) {
-    const chats = await Database.select('chat_id').from('user_chats').where('user_chats.user_id', requestingUserId);
-    const chatIds = (chats || []).map(chat => chat.chat_id);
-    const recentMessages = await ChatRecentMessage.query().where('chat_id', 'in', chatIds).fetch();
-    const requestedMessageIds = ((recentMessages && recentMessages.toJSON()) || []).map(recentMessage => recentMessage.message_id);
-    return this.fetchMessages({ requestedMessageIds });
-  }
-
-  async saveRecentMessage(message) {
-    if (message.keyReceiver) return;
-    await ChatRecentMessage.query().where({ chat_id: message.chatId }).delete();
-    const recentMessage = new ChatRecentMessage()
-    recentMessage.chat_id = message.chatId;
-    recentMessage.message_id = message.messageId;
-    return recentMessage.save();
   }
 
   async sendMessageFromMyGToUser({ requestingUserId, requestedUserId, content }) {
@@ -789,7 +757,6 @@ class ChatRepository {
     const messageData = {
       sender_id: 0,
       sender_name: "myG",
-      title: 'myG',
       backup: '',
       content: '',
       unencrypted_content: content,
@@ -800,9 +767,8 @@ class ChatRepository {
       uuid: message.uuid,
       chatId: message.chat_id,
       senderId: message.sender_id,
-      title: message.title,
       keyReceiver: message.key_receiver,
-      title: message.sender_name,
+      senderName: message.sender_name,
       unencryptedContent: message.unencrypted_content,
       createdAt: message.created_at,
       updatedAt: message.updated_at,
@@ -823,7 +789,6 @@ class ChatRepository {
       chatId: requestedChatId,
       senderId: requestingUserId,
       senderName: message.sender_name,
-      title: message.title,
       unencryptedContent: message.unencrypted_content,
       content: message.content,
       backup: message.backup,
@@ -855,7 +820,6 @@ class ChatRepository {
       chatId: requestedChatId,
       senderId: message.sender_id,
       senderName: message.sender_name,
-      title: message.title,
       unencryptedContent: message.unencrypted_content,
       content: message.content,
       backup: message.backup,
@@ -870,7 +834,6 @@ class ChatRepository {
       createdAt: message.created_at,
       updatedAt: message.updated_at,
     });
-    await new AwsKeyController().removeChatAttachmentKey(requestedChatId, requestedMessageId);
     if (messageSchema.senderId === requestingUserId) {
       await message.save();
       this._notifyChatEvent({ chatId: requestedChatId, action: 'updateMessage', payload: messageSchema });
@@ -1013,7 +976,6 @@ class ChatRepository {
     const requests = rawRequests.map(request => new ChatPrivateKeyRequestSchema({
       chatId: request.chat_id,
       userId: request.user_id,
-      guestId: request.guest_id,
       publicKey: request.public_key,
       createdAt: request.created_at,
       updatedAt: request.updated_at,
@@ -1021,19 +983,17 @@ class ChatRepository {
     return { requests };
   }
 
-  async requestGroupPrivateKey({ userId, guestId, chatId, publicKey }) {
+  async requestGroupPrivateKey({ userId, chatId, publicKey }) {
     const request = new ChatPrivateKeyRequest();
     request.user_id = userId;
-    request.guest_id = guestId;
     request.chat_id = chatId;
     request.public_key = publicKey;
     await request.save();
     return new DefaultSchema({ success: true });
   }
 
-  async confirmGroupPrivateKey({ userId, guestId, chatId }) {
-    if (userId) await ChatPrivateKeyRequest.query().where('user_id', userId).andWhere('chat_id', chatId).delete();
-    if (guestId) await ChatPrivateKeyRequest.query().where('guest_id', guestId).andWhere('chat_id', chatId).delete();
+  async confirmGroupPrivateKey({ userId, chatId }) {
+    await ChatPrivateKeyRequest.query().where('user_id', userId).andWhere('chat_id', chatId).delete();
     return new DefaultSchema({ success: true });
   }
 
@@ -1096,7 +1056,7 @@ class ChatRepository {
   }
 
   async clearGameMessageSchedule({ chatIds }) {
-    await ChatGameMessageSchedule.query().where('chat_id', 'in', chatIds).delete();
+    await ChatGameMessageSchedule.query('chat_id', 'in', chatIds).delete();
   }
 
   async handleGameMessages() {
@@ -1126,7 +1086,7 @@ class ChatRepository {
     const expiredAttachments = expiredAttachmentsRaw && expiredAttachmentsRaw.toJSON() || [];
     const keyController = new AwsKeyController();
     for (const message of expiredAttachments) {
-      await keyController.removeChatAttachmentKey(message.chat_id, message.id);
+      await keyController.removeChatAttachmentKey(message.chat_id, message.id, message.attachment);
       await this.deleteMessage({ requestingUserId: message.sender_id, requestedChatId: message.chat_id, requestedMessageId: message.id });
     }
     log('CRON', `END - HANDLE EXPIRED ATTACHMENTS - DELETED ${expiredAttachments.length} ATTACHMENTS`);

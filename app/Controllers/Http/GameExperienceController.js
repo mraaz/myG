@@ -6,7 +6,6 @@ const GameNameController = use('./GameNameController')
 const TagController = use('./TagController')
 const UserStatTransactionController = use('./UserStatTransactionController')
 const UserRepository = require('../../Repositories/User')
-const LoggingRepository = require('../../Repositories/Logging')
 
 class GameExperienceController {
   async store({ auth, request, response }) {
@@ -69,7 +68,7 @@ class GameExperienceController {
         await UserRepository.favoriteGame({ requestingUserId, requestedGameId })
         gameface.incrementGameCounter({ auth, request, response })
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
       return 'Saved item'
     }
@@ -89,7 +88,7 @@ class GameExperienceController {
         allGameExperiences,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -107,7 +106,7 @@ class GameExperienceController {
         myGameExperience,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -125,7 +124,7 @@ class GameExperienceController {
         myGameExperience,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -196,7 +195,7 @@ class GameExperienceController {
         }
         return 'Saved successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     }
   }
@@ -223,7 +222,7 @@ class GameExperienceController {
 
         return 'Saved successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     }
   }
@@ -253,7 +252,7 @@ class GameExperienceController {
 
         return 'Deleted successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -337,7 +336,7 @@ class GameExperienceController {
         latestGameExperiences,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 }

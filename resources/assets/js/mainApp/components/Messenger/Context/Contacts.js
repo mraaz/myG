@@ -47,28 +47,24 @@ export default class Contacts extends React.Component {
                 <Section
                   {...this.props}
                   status={STATUS_ENUM.ONLINE}
-                  count={this.props.contactCount[STATUS_ENUM.ONLINE]}
                   expanded={this.state.sectionExpanded[STATUS_ENUM.ONLINE]}
                   onSectionExpanded={() => this.expandSection(STATUS_ENUM.ONLINE)}
                 />
                 <Section
                   {...this.props}
                   status={STATUS_ENUM.PLAYING}
-                  count={this.props.contactCount[STATUS_ENUM.PLAYING]}
                   expanded={this.state.sectionExpanded[STATUS_ENUM.PLAYING]}
                   onSectionExpanded={() => this.expandSection(STATUS_ENUM.PLAYING)}
                 />
                 <Section
                   {...this.props}
                   status={STATUS_ENUM.AFK}
-                  count={this.props.contactCount[STATUS_ENUM.AFK]}
                   expanded={this.state.sectionExpanded[STATUS_ENUM.AFK]}
                   onSectionExpanded={() => this.expandSection(STATUS_ENUM.AFK)}
                 />
                 <Section
                   {...this.props}
                   status={STATUS_ENUM.OFFLINE}
-                  count={this.props.contactCount[STATUS_ENUM.OFFLINE]}
                   expanded={this.state.sectionExpanded[STATUS_ENUM.OFFLINE]}
                   onSectionExpanded={() => this.expandSection(STATUS_ENUM.OFFLINE)}
                 />
@@ -76,7 +72,8 @@ export default class Contacts extends React.Component {
             )}
           </div>
         )
-      }
+      },
+      this.props.contactCount
     )
   }
 }
