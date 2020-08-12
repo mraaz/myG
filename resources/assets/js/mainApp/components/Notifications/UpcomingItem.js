@@ -11,13 +11,14 @@ export default class UpcomingItem extends Component {
   }
 
   handleSingleGameView = (id) => {
-    window.location.href = `/scheduledGames/${id}`
+    this.props.routeProps.routeProps.history.push(`/scheduledGames/${id}`)
   }
 
   render() {
-    const { game_img = '', experience = '', start_date_time, schedule_games_GUID } = this.props
+    const { game_artwork = '', experience = '', start_date_time, schedule_games_GUID, end_date_time } = this.props
     const experience_split = experience ? experience.split(',') : []
     let countdown_label = 'Hours'
+    let isExpired = false
     let countdown = moment(start_date_time).diff(moment(), 'hours')
     if (countdown == 0) {
       countdown = moment(start_date_time).diff(moment(), 'minutes')
@@ -28,16 +29,31 @@ export default class UpcomingItem extends Component {
       countdown_label = 'Seconds'
     }
     if (countdown < 0) {
-      countdown = 0
-      countdown_label = 'Expired'
+      isExpired = true
+      countdown = moment(end_date_time).diff(moment(), 'days')
+      countdown_label = 'Days'
+      if (countdown == 0) {
+        countdown = moment(end_date_time).diff(moment(), 'hours')
+        countdown_label = 'Hours'
+      }
+      if (countdown == 0) {
+        countdown = moment(end_date_time).diff(moment(), 'minutes')
+        countdown_label = 'Minutes'
+      }
+      if (countdown == 0) {
+        countdown = moment(end_date_time).diff(moment(), 'seconds')
+        countdown_label = 'Seconds'
+      }
     }
-    const scheduledGamePicture = <img src={game_img ? game_img : defaultThumbnails} className={game_img ? 'image' : 'default-image'} />
+    const scheduledGamePicture = (
+      <img src={game_artwork ? game_artwork : defaultThumbnails} className={game_artwork ? 'image' : 'default-image'} />
+    )
     return (
-      <div className={`mygames`} key={this.props.id}>
+      <div className={`mygames`} key={this.props.id} onClick={(e) => this.handleSingleGameView(schedule_games_GUID)}>
         <div className='gameImage'>{scheduledGamePicture}</div>
         <div className='game__attributes'>
           <div className='first__row'>
-            <h1 className='game__name' title={this.props.game_name} onClick={(e) => this.handleSingleGameView(schedule_games_GUID)}>
+            <h1 className='game__name' title={this.props.game_name}>
               {this.props.game_name}
             </h1>
             <div className='game__playerList'>
@@ -64,8 +80,8 @@ export default class UpcomingItem extends Component {
         </div>
         <div className={`time ${countdown_label == 'Seconds' ? 'start-soon' : ''}`}>
           <div className='time-align'>
-            {countdown_label !== 'Expired' && `Starting in`}
-            {countdown_label !== 'Expired' && <div className='time-info'>{countdown}</div>}
+            {!isExpired ? `Starting in` : `Expire in `}
+            <div className='time-info'>{countdown}</div>
             {countdown_label}
           </div>
         </div>

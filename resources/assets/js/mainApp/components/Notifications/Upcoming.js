@@ -68,7 +68,7 @@ export default class Upcoming extends Component {
       <div style={isActive}>
         <div className='gameList__box' onScroll={this.handleScroll} ref={this.myRef}>
           {upcomingGames.map((game) => {
-            return <UpcomingItem {...game} />
+            return <UpcomingItem {...game} {...this.props} />
           })}
         </div>
       </div>
