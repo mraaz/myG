@@ -30,7 +30,7 @@ export default class ErrorHandler extends React.PureComponent {
   }
 
   componentDidCatch(error) {
-    this.handleError(error, "SHOULD_RELOAD")
+    this.handleError(error, 'SHOULD_RELOAD')
   }
 
   handleError = (error, reload = false) => {
@@ -44,7 +44,7 @@ export default class ErrorHandler extends React.PureComponent {
       logToElasticsearch('error', context, message)
     }
 
-    if (reload === "SHOULD_RELOAD") {
+    if (reload === 'SHOULD_RELOAD') {
       store.dispatch({ type: 'REACT_ERROR' })
       const hasReloadedOnError = window.localStorage.getItem('hasReloadedOnError', 0)
       if (Date.now() - hasReloadedOnError > 5000) {
