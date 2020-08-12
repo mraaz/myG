@@ -1,5 +1,6 @@
 import React from 'react'
 import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const createOption = (label, game_names_id, gameImg, game_name_fields_img, additional_info, game_headers) => ({
   label,
@@ -224,6 +225,7 @@ export function Disable_keys(e) {
   ) {
     e.preventDefault()
     e.stopPropagation()
+    toast.success(<Toast_style text={'Sorry mate! Invalid key for this field.'} />)
   }
 
   switch (e.key) {
