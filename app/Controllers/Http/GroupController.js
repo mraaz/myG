@@ -16,6 +16,23 @@ class GroupController {
   async store({ auth, request, response }) {
     if (auth.user) {
       try {
+        if (
+          request.input('name').length > 75 ||
+          request.input('name') == undefined ||
+          request.input('name') == null ||
+          request.input('name').length == 0
+        ) {
+          return
+        }
+
+        if (/['/.%#$;`\\]/.test(request.input('name'))) {
+          return
+        }
+
+        if (request.input('grp_description').length > 250) {
+          return
+        }
+
         const newGroup = await Group.create({
           user_id: auth.user.id,
           name: request.input('name'),
@@ -72,7 +89,13 @@ class GroupController {
 
         return newGroup
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     }
   }
@@ -87,7 +110,13 @@ class GroupController {
         getOne,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 
@@ -103,7 +132,13 @@ class GroupController {
         groupSearchResults,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 
@@ -140,7 +175,13 @@ class GroupController {
         groupSearchResults_im_not_in,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 
@@ -162,7 +203,13 @@ class GroupController {
         total_number_of_my_communities: total_number_of_my_communities,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 
@@ -183,7 +230,13 @@ class GroupController {
         groups_im_in,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 
@@ -237,7 +290,13 @@ class GroupController {
           total_number_of_communities: total_number_of_communities,
         }
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     }
   }
@@ -252,7 +311,13 @@ class GroupController {
         group,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 
@@ -266,7 +331,13 @@ class GroupController {
         show_owner,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 
@@ -284,7 +355,13 @@ class GroupController {
           .update({ group_img: request.input('group_img') })
         return 'Saved successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     }
   }
@@ -302,7 +379,13 @@ class GroupController {
           .update({ type: request.input('privacy'), all_accept: request.input('mApprovals') })
         return 'Saved successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     }
   }
@@ -327,7 +410,13 @@ class GroupController {
         if (error.code == 'ER_DUP_ENTRY') {
           return
         }
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     }
   }
@@ -349,7 +438,13 @@ class GroupController {
 
         return 'Deleted successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
@@ -376,7 +471,13 @@ class GroupController {
       }
       return current_user_permission
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 }

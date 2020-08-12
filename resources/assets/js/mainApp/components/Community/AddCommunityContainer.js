@@ -1,10 +1,9 @@
 import React, { useState, useRef } from 'react'
 import { toast } from 'react-toastify'
-import moment from 'moment'
 import classNames from 'classnames'
 
 import { PageHeader, MyGButton, MyGModal, MyGInput } from '../common'
-import { styles, SETTINGS_ENUMS } from '../../static/AddCommunity'
+import { styles } from '../../static/AddCommunity'
 import '../../styles/Community/AddCommunityStyles.scss'
 import AddCommunity from './AddCommunity'
 import { Toast_style, Convert_to_comma_delimited_value } from '../Utility_Function'
@@ -21,50 +20,25 @@ const AddCommunityContainer = () => {
   const [isInviteModalOpen, updateIsInviteModalOpen] = useState(false)
   const [isInvitesSentsModalOpen, updateIsInvitesSentsModalOpen] = useState(false)
   const [isSubmitting, updateIsSubmitting] = useState(false)
-  const [state, updateComponentState] = useState({ selectedSettings: SETTINGS_ENUMS.MAIN, additional_info: false })
   const [advancedSettingsState, updateAdvancedSettingsState] = useState({
-    experience: null,
-    platform: null,
-    region: null,
     coHosts: null,
     tags: '',
     description: '',
-    acceptMessage: '',
     optionTags: '',
   })
   const [mainSettingsState, updateMainSettingsState] = useState({
-    scheduledGameId: null,
-    scheduledGameGuid: null,
     gameTitlesList: [],
     gameTitle: '',
-    startTime: moment(),
-    endTime: null,
-    isEndGameFieldSelected: false,
-    isRepeatFieldSelected: false,
-    numberOfPlayers: 0,
-    isUnlimitedPlayers: true,
-    isCommentsAllowed: true,
-    isPublicGame: true,
     autoAccept: true,
-    autoJoinHost: true,
+    community_name: '',
   })
-  const [optionalFieldsState, updateOptionalFieldsState] = useState({
-    modalRank: null,
-    serverRegion: null,
-    roleNeeded: null,
-    trophies: null,
-  })
+
   const [gameLink, updateGameLink] = useState('')
   const gameLinkRef = useRef(null)
 
   // Handlers
   const isButtonDisabled = () => {
-    return (
-      mainSettingsState.gameTitle == '' ||
-      mainSettingsState.gameTitle == null ||
-      mainSettingsState.startTime == null ||
-      mainSettingsState.startTime.isSameOrAfter(mainSettingsState.endTime)
-    )
+    return mainSettingsState.community_name == '' || mainSettingsState.community_name == null
   }
 
   const onCancelInviteClick = () => {
@@ -74,19 +48,8 @@ const AddCommunityContainer = () => {
 
   const onAddGameSubmit = async () => {
     updateIsSubmitting(false)
-    if (mainSettingsState.gameTitle == '' || mainSettingsState.gameTitle == null) {
-      toast.success(<Toast_style text={'Sorry mate! Game name can not be blank'} />)
-      updateIsSubmitting(false)
-      return
-    }
-    if (mainSettingsState.startTime == null) {
-      toast.success(<Toast_style text={'Sorry mate! Start date can not be empty'} />)
-      updateIsSubmitting(false)
-      return
-    }
-
-    if (mainSettingsState.startTime.isSameOrAfter(mainSettingsState.endTime)) {
-      toast.success(<Toast_style text={'Sorry mate! End date needs to be AFTER start date'} />)
+    if (mainSettingsState.community_name == '' || mainSettingsState.community_name == null) {
+      toast.success(<Toast_style text={'Sorry mate! Community name can not be blank'} />)
       updateIsSubmitting(false)
       return
     }
@@ -101,30 +64,6 @@ const AddCommunityContainer = () => {
       return
     }
 
-    let value_one = null,
-      value_two = null,
-      value_three = null,
-      value_four = null,
-      value_five = null
-
-    //If the field is multi then you need to convert otherwise no need to.
-
-    if (optionalFieldsState.modalRank != null) {
-      let tmp = Convert_to_comma_delimited_value(optionalFieldsState.modalRank)
-      value_one = { dota2_medal_ranks: tmp }
-    }
-    if (optionalFieldsState.serverRegion != null) {
-      let tmp = Convert_to_comma_delimited_value(optionalFieldsState.serverRegion)
-      value_two = { dota2_server_regions: tmp }
-    }
-    if (optionalFieldsState.roleNeeded != null) {
-      let tmp = Convert_to_comma_delimited_value(optionalFieldsState.roleNeeded)
-      value_three = { dota2_roles: tmp }
-    }
-    if (optionalFieldsState.trophies != null) {
-      value_one = { clash_royale_trophies: optionalFieldsState.trophies[0].value }
-    }
-
     try {
       const { data } = await SubmitDataFunction({
         game_name_box: mainSettingsState.gameTitle,
@@ -137,11 +76,6 @@ const AddCommunityContainer = () => {
         selected_visibility: mainSettingsState.isPublicGame,
         selected_limit: mainSettingsState.numberOfPlayers,
         txtAreaValue: advancedSettingsState.acceptMessage,
-        value_one,
-        value_two,
-        value_three,
-        value_four,
-        value_five,
         allow_comments: mainSettingsState.isCommentsAllowed,
         autoJoin: mainSettingsState.autoAccept,
         coHosts: advancedSettingsState.coHosts,
@@ -245,14 +179,10 @@ const AddCommunityContainer = () => {
     <div className={styles.container}>
       <PageHeader headerText='Create Community' />
       <AddCommunity
-        state={state}
-        updateComponentState={updateComponentState}
         advancedSettingsState={advancedSettingsState}
         updateAdvancedSettingsState={updateAdvancedSettingsState}
         mainSettingsState={mainSettingsState}
         updateMainSettingsState={updateMainSettingsState}
-        optionalFieldsState={optionalFieldsState}
-        updateOptionalFieldsState={updateOptionalFieldsState}
         isSubmitting={isSubmitting}
         updateIsSubmitting={updateIsSubmitting}
       />

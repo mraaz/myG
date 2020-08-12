@@ -10,6 +10,10 @@ class GameTagController {
       // if (/['/.%#$,;`\\]/.test(request.input('content'))) {
       //   return false
       // }
+      if (content.trim().length > 88) {
+        return
+      }
+
       try {
         const newGameTag = await GameTags.create({
           content: content.trim(),
@@ -24,7 +28,13 @@ class GameTagController {
 
           return newGameTag.id
         }
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     }
   }
@@ -39,7 +49,13 @@ class GameTagController {
         allTags,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 
@@ -53,7 +69,13 @@ class GameTagController {
         allTags,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 }
