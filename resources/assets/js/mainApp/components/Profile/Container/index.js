@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from 'react-router'
 import get from 'lodash.get';
 import { ignoreFunctions } from '../../../common/render'
 import Profile from './Profile';
