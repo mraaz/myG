@@ -2,7 +2,6 @@
 
 const Database = use('Database')
 const Archive_Reply = use('App/Models/Archive_Reply')
-const LoggingRepository = require('../../Repositories/Logging')
 
 class Archive_ReplyController {
   async store({ auth, request, response }) {
@@ -16,7 +15,7 @@ class Archive_ReplyController {
           og_updated_at: request.params.og_updated_at,
         })
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     }
   }
@@ -38,7 +37,7 @@ class Archive_ReplyController {
         no_of_replies: no_of_replies,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -50,7 +49,7 @@ class Archive_ReplyController {
         this_reply,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -64,7 +63,7 @@ class Archive_ReplyController {
         no_of_my_replies,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -79,7 +78,7 @@ class Archive_ReplyController {
 
         return delete_reply
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -93,7 +92,7 @@ class Archive_ReplyController {
         .update({ content: request.input('content') })
       return 'Saved successfully'
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 }

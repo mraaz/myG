@@ -8,7 +8,6 @@ class Message {
     this.senderId = forceInt(data.senderId)
     this.keyReceiver = forceInt(data.keyReceiver)
     this.senderName = forceString(data.senderName)
-    this.title = forceString(data.title)
     this.content = forceString(data.content)
     this.unencryptedContent = forceString(data.unencryptedContent)
     this.backup = forceString(data.backup)

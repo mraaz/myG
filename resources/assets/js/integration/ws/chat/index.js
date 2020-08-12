@@ -9,7 +9,6 @@ let currentUserId = null;
 let hasDisconnected = false;
 let ws = null;
 let subscription = null;
-let isGuest = false;
 
 export function monitorSocketConnection() {
   setInterval(() => {
@@ -25,7 +24,7 @@ export function attemptSocketConnection() {
     store.dispatch(onConnectionStateChangedAction(false));
     if (!hasDisconnected) return;
     ws = socket.connect().ws;
-    monitorChats(currentUserId, isGuest);
+    monitorChats(currentUserId);
     hasDisconnected = false;
   });
 
@@ -44,8 +43,7 @@ export function closeSubscription() {
   subscription = null;
 }
 
-export function monitorChats(userId, _isGuest) {
-  isGuest = _isGuest;
+export function monitorChats(userId, isGuest) {
   currentUserId = userId;
   if (subscription !== null) return;
   const subscriptionKey = `chat${isGuest ? ':guest:' : ':auth:'}${userId}`;

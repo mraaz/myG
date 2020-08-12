@@ -69,7 +69,7 @@
 
   function setSeatsAvailable() {
     const seatsAvailable = parseInt(fetchSeatsAvailable());
-    document.getElementById('seats-available').innerText = seatsAvailable || 0;
+    document.getElementById('seats-available').innerText = seatsAvailable;
     if (!seatsAvailable) {
       document.getElementsByClassName('register-message')[0].innerText = "Only Invitation Codes can get you in now!";
       injectInvitationCodeInput();
@@ -131,10 +131,7 @@
       document.getElementsByClassName('register-message')[0].style = "color: #ce2b35";
       window.localStorage.setItem('extraSeatsCode', code);
     } else {
-      if (xmlHttp.responseText === "LIMIT_EXCEEED") {
-        document.getElementById('extra-seats-code-hint').innerText = "Hey bro, limit exceeded, please try again in five minutes.";
-      }
-      else document.getElementById('extra-seats-code-hint').innerText = "Fair dinkum, this code " + code.toUpperCase() + " is garbage :(";
+      document.getElementById('extra-seats-code-hint').innerText = "Fair dinkum, this code " + code.toUpperCase() + " is garbage :(";
       document.getElementById('extra-seats-code-hint').style = "color: #ce2b35";
     }
   }

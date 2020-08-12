@@ -9,7 +9,7 @@ class MessengerRepository {
     const statusRequest = UserRepository.fetchStatus({ requestingUserId });
     const blockedUsersRequest = ChatRepository.fetchBlockedUsers({ requestingUserId });
     const settingsRequest = UserRepository.fetchSettings({ requestingUserId });
-    const contactCount = await contactCountRequest;
+    const { contactCount } = await contactCountRequest;
     const { games } = await gamesRequest;
     const { status } = await statusRequest;
     const { blockedUsers } = await blockedUsersRequest;

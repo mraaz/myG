@@ -4,7 +4,6 @@ const Database = use('Database')
 const User = use('App/Models/User')
 const AwsKeyController = use('./AwsKeyController')
 const UserStatTransactionController = use('./UserStatTransactionController')
-const LoggingRepository = require('../../Repositories/Logging')
 
 class UserController {
   async profile({ auth, request, response }) {
@@ -36,7 +35,7 @@ class UserController {
         following: following === undefined || following.length == 0 ? false : true,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -56,7 +55,7 @@ class UserController {
         friend: friend === undefined || friend.length == 0 ? false : true,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -77,7 +76,7 @@ class UserController {
           })
         return 'Saved successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -97,7 +96,7 @@ class UserController {
   //
   //       return 'Saved successfully'
   //     } catch (error) {
-  //       LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+  //       console.log(error)
   //     }
   //   } else {
   //     return 'You are not Logged In!'
@@ -126,7 +125,7 @@ class UserController {
 
         return 'Deleted successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -146,7 +145,7 @@ class UserController {
         playerSearchResults,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -169,7 +168,7 @@ class UserController {
         playerSearchResults,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -184,7 +183,7 @@ class UserController {
 
         return 'Deleted successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -241,7 +240,7 @@ class UserController {
 
         return aliasConverted
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -257,7 +256,7 @@ class UserController {
             notification_sounds_disabled: request.only('disabled').disabled,
           })
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -273,7 +272,7 @@ class UserController {
             chat_auto_self_destruct: request.only('enabled').enabled,
           })
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'

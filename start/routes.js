@@ -179,7 +179,6 @@ Route.get('/api/notifications/getAllNotiLike_comment/:id', 'NotificationControll
 Route.get('/api/notifications/getAllNotiLike_reply/:id', 'NotificationController.getAllNotiLike_reply')
 Route.get('/api/notifications/getAllNotiComment/:id', 'NotificationController.getAllNotiComment')
 Route.get('/api/notifications/getAllNotiReply/:id', 'NotificationController.getAllNotiReply')
-Route.get('/api/notifications/outgoingFriendRequests', 'NotificationController.outgoingFriendRequests')
 
 Route.post('/api/notifications/updateRead_Status/:post_id/:activity_type', 'NotificationController.updateRead_Status')
 
@@ -313,6 +312,9 @@ Route.post('/api/connections/communities_you_might_know', 'ConnectionController.
 
 Route.post('/api/invited_users_for_schedule_games/create', 'InvitedUsersForScheduleGameController.store')
 
+// Trying to avoid conflicts, should move this route up later.
+Route.get('/api/notifications/outgoingFriendRequests', 'NotificationController.outgoingFriendRequests')
+
 Route.get('/api/userStatTransaction/master_controller', 'UserStatTransactionController.master_controller')
 
 Route.post('/api/SavedFiltersScheduleGameController', 'SavedFiltersScheduleGameController.store')
@@ -320,12 +322,8 @@ Route.post('/api/SavedFiltersScheduleGameController/updateFilter', 'SavedFilters
 Route.post('/api/SavedFiltersScheduleGameController/deleteFilter', 'SavedFiltersScheduleGameController.destroy')
 Route.get('/api/SavedFiltersScheduleGameController/getAllSavedFilters', 'SavedFiltersScheduleGameController.getAllSavedFilters')
 
-// Logging
-Route.post('/api/logging', 'LoggingController.log')
-
 // Aws Key Upload
 Route.post('/api/chat/:chatId/icon', 'AwsKeyController.addChatGroupProfileKey')
-Route.post('/api/chat/:chatId/message/:messageId/icon', 'AwsKeyController.addChatAttachmentKey')
 Route.post('/api/game/:gameId/icon', 'AwsKeyController.addGameIconKey')
 
 // Chat Feature - https://docs.google.com/spreadsheets/d/1AR9P3MLQw6J6eoRqgTbOVROFxmPE215yXzsqD59wy2o
@@ -370,7 +368,6 @@ Route.get('/api/user_chat/game/', 'UserChatController.fetchGames')
 Route.put('/api/user_chat/game/:gameId', 'UserChatController.favoriteGame')
 Route.delete('/api/user_chat/game/:gameId', 'UserChatController.unfavoriteGame')
 Route.put('/api/user_chat/game/:gameId/icon', 'UserChatController.updateGameIcon')
-Route.get('/api/user_chat/recent', 'ChatController.fetchRecentMessages')
 Route.get('/api/user_chat/contact/', 'UserChatController.fetchContacts')
 Route.get('/api/user_chat/contact/:contactId', 'UserChatController.fetchContact')
 Route.get('/api/user_chat/search/', 'UserChatController.searchUsers')
@@ -384,9 +381,6 @@ Route.get('/api/chat/paginated/contact', 'ChatController.fetchContactsPaginated'
 Route.get('/api/chat/paginated/groups', 'ChatController.fetchGroupsPaginated')
 Route.get('/api/chat/paginated/games', 'ChatController.fetchGamesPaginated')
 Route.get('/api/chat/paginated/search', 'ChatController.searchPaginated')
-Route.get('/api/chat/:chatId/privateKey', 'ChatController.fetchGroupPrivateKeyRequests')
-Route.post('/api/chat/:chatId/privateKey', 'ChatController.requestGroupPrivateKey')
-Route.delete('/api/chat/:chatId/privateKey', 'ChatController.confirmGroupPrivateKey')
 
 // Guests
 Route.post('/api/guest/', 'GuestController.register')

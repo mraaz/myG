@@ -3,10 +3,11 @@
 const Database = use('Database')
 const Attendee = use('App/Models/Attendee')
 const ScheduleGame = use('App/Models/ScheduleGame')
+
+const NotificationController = use('./NotificationController')
 const NotificationController_v2 = use('./NotificationController_v2')
 const UserStatTransactionController = use('./UserStatTransactionController')
 const ScheduleGameController = use('./ScheduleGameController')
-const LoggingRepository = require('../../Repositories/Logging')
 
 class AttendeeController {
   async savemySpot({ auth, request, response }) {
@@ -102,7 +103,7 @@ class AttendeeController {
 
         return return_msg
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     }
   }
@@ -133,7 +134,7 @@ class AttendeeController {
 
       return db_save_value_array
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -147,7 +148,7 @@ class AttendeeController {
         allAttendees,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -162,7 +163,7 @@ class AttendeeController {
         allAttendees,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -185,7 +186,7 @@ class AttendeeController {
         myattendance,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -235,7 +236,7 @@ class AttendeeController {
     //     game_position_of_dota_2_position_fives,
     //   }
     // } catch (error) {
-    //   LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+    //   console.log(error)
     // }
   }
 
@@ -251,7 +252,7 @@ class AttendeeController {
         role_call,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -267,7 +268,7 @@ class AttendeeController {
         role_call_ALL,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -314,7 +315,7 @@ class AttendeeController {
         additional_submit_info_fields,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -363,7 +364,7 @@ class AttendeeController {
 
         return 'Remove entry'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -392,7 +393,7 @@ class AttendeeController {
         getScheduleGameInvites,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -408,7 +409,7 @@ class AttendeeController {
 
         return 'Remove entry'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -473,7 +474,7 @@ class AttendeeController {
 
         return up_invite
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     }
   }

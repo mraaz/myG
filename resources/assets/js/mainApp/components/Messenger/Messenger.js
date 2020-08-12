@@ -311,7 +311,7 @@ function mapStateToProps(state) {
     privateKey: state.encryption.privateKey,
     disconnected: state.socket.disconnected,
     searchResults: state.pagination.search,
-    searching: state.pagination.searchLoading,
+    searching: state.pagination.loading,
     contactCount: state.user.contactCount,
   }
 }

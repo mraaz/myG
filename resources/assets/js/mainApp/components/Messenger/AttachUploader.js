@@ -5,7 +5,6 @@ import axios from 'axios'
 import LoadingIndicator from '../LoadingIndicator'
 import notifyToast from '../../../common/toast'
 import { ignoreFunctions } from '../../../common/render'
-import { uploadAttachmentIcon } from '../../../integration/http/chat'
 
 export default class AttachUploader extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -37,9 +36,7 @@ export default class AttachUploader extends React.Component {
           'Content-Type': 'multipart/form-data',
         },
       })
-      const key = post.data.Key
-      const response = await this.props.sendMessage(`myg-${mygType}|${post.data.Location}`, key)
-      if (key) await uploadAttachmentIcon(response.value.message.chatId, response.value.message.messageId, key)
+      await this.props.sendMessage(`myg-${mygType}|${post.data.Location}`, post.data.Key)
     } catch (error) {
       const message = error && error.response && error.response.data
       if (message === 'CHAT_UPLOAD_DISABLED') notifyToast('Sorry mate, file uploading is currently disabled.')

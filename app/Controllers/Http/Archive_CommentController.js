@@ -2,7 +2,6 @@
 
 const Archive_Comment = use('App/Models/Archive_Comment')
 const Database = use('Database')
-const LoggingRepository = require('../../Repositories/Logging')
 
 class Archive_CommentController {
   async store({ auth, request, response }) {
@@ -17,7 +16,7 @@ class Archive_CommentController {
           og_updated_at: request.params.og_updated_at,
         })
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     }
   }
@@ -34,7 +33,7 @@ class Archive_CommentController {
         allComments,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -48,7 +47,7 @@ class Archive_CommentController {
         no_of_my_comments,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -60,7 +59,7 @@ class Archive_CommentController {
         this_comment,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -76,7 +75,7 @@ class Archive_CommentController {
         allComments,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -91,7 +90,7 @@ class Archive_CommentController {
 
         return delete_comment
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'
@@ -105,7 +104,7 @@ class Archive_CommentController {
         .update({ content: request.input('content') })
       return 'Saved successfully'
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 
@@ -119,7 +118,7 @@ class Archive_CommentController {
         no_of_comments,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
     }
   }
 }

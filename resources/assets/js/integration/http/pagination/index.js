@@ -1,11 +1,6 @@
 import axios from 'axios';
 import logger from '../../../common/logger';
 
-export function fetchRecents() {
-  logger.log('PAGINATED', 'HTTP', `Fetching Recent Messages`);
-  return axios.get('/api/user_chat/recent').then(response => response.data);
-}
-
 export function fetchContactsPaginated(page, status, gameId, search) {
   logger.log('PAGINATED', 'HTTP', `Fetching Contacts`);
   const request = `/api/chat/paginated/contact?${page ? `&page=${page}` : ''}${status ? `&status=${status}` : ''}${gameId ? `&gameId=${gameId}` : ''}${search ? `&search=${search}` : ''}`;
