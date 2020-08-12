@@ -27,8 +27,8 @@ import {
   blockUser,
   unblockUser,
   setTyping,
+  fetchGroupPrivateKeyRequests,
 } from '../../integration/http/chat'
-import { fetchGroupPrivateKeyRequests } from '../../integration/http/guest'
 import { fetchGames, fetchContact, prepareMessenger } from '../../integration/http/user'
 import { prepareEncryption } from '../../integration/encryption'
 

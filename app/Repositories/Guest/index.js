@@ -170,11 +170,11 @@ class GuestRepository {
   }
 
   async requestGroupPrivateKey({ guestId, chatId, publicKey }) {
-    return ChatRepository.requestGroupPrivateKey({ userId: guestId, chatId, publicKey });
+    return ChatRepository.requestGroupPrivateKey({ guestId, chatId, publicKey });
   }
 
   async confirmGroupPrivateKey({ guestId, chatId }) {
-    return ChatRepository.confirmGroupPrivateKey({ userId: guestId, chatId });
+    return ChatRepository.confirmGroupPrivateKey({ guestId, chatId });
   }
 
   async markLastReadGuest({ guestId, chatId }) {

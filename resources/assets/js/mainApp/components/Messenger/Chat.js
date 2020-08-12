@@ -84,6 +84,7 @@ export class Chat extends React.Component {
 
   componentDidUpdate() {
     this.scrollMessagesIfNeeded()
+    this.markAsRead()
   }
 
   scrollMessagesIfNeeded() {

@@ -4,13 +4,10 @@ const { validate } = use('Validator')
 const User = use('App/Models/User')
 const SeatsAvailable = use('App/Models/SeatsAvailable')
 const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
-const Settings = use('App/Models/Setting')
-//var nodemailer = require('nodemailer')
 const axios = use('axios')
 const querystring = use('querystring')
 const Env = use('Env')
-
-const EmailController = use('./EmailController')
+const LoggingRepository = require('../../Repositories/Logging')
 
 class CommonSaveController {
   async register({ view, session }) {
@@ -98,7 +95,7 @@ class CommonSaveController {
           }
         }
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
         session.withErrors(validation.messages()).flashAll()
         return response.redirect('back')
       }

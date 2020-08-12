@@ -1,6 +1,7 @@
 'use strict'
 const GroupConnection = use('App/Models/GroupConnection')
 const Database = use('Database')
+const LoggingRepository = require('../../Repositories/Logging')
 
 class GroupConnectionController {
   //Decided not find duplicates myself and instead let the DB figure it out.
@@ -16,7 +17,7 @@ class GroupConnectionController {
         if (error.code == 'ER_DUP_ENTRY') {
           return
         }
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     }
   }
@@ -33,7 +34,7 @@ class GroupConnectionController {
 
         return 'Remove entry'
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     } else {
       return 'You are not Logged In!'

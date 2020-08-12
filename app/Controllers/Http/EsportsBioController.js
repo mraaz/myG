@@ -1,6 +1,7 @@
 'use strict'
 
 const EsportsBio = use('App/Models/EsportsBio')
+const LoggingRepository = require('../../Repositories/Logging')
 
 class EsportsBioController {
   async store({ auth, request, response }) {
@@ -15,7 +16,7 @@ class EsportsBioController {
         })
         return 'Saved item'
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     }
   }
@@ -30,7 +31,7 @@ class EsportsBioController {
         myProfile,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -44,7 +45,7 @@ class EsportsBioController {
         myProfile,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -60,7 +61,7 @@ class EsportsBioController {
         })
       return 'Saved successfully'
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 }

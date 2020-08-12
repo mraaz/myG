@@ -11,11 +11,19 @@ function pushEvent(event) {
 
 export const GoogleAnalytics = {
   // A caught JS error on React
-  caughtReactError({ error, errorInfo }) {
+  caughtReactError({ message, context }) {
     pushEvent({
       event: 'caughtReactError',
-      error,
-      errorInfo,
+      message,
+      context,
+    })
+  },
+
+  // A recent message in the context window was clicked to open a chat
+  chatRecentMessageClicked({ messageId }) {
+    pushEvent({
+      event: 'chatRecentMessageClicked',
+      messageId,
     })
   },
 
@@ -48,5 +56,5 @@ export const GoogleAnalytics = {
       event: 'chatMessageSent',
       chatId,
     })
-  }
+  },
 }

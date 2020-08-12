@@ -5,6 +5,7 @@ const EsportsExperience = use('App/Models/EsportsExperience')
 const GameNameController = use('./GameNameController')
 const TagController = use('./TagController')
 const UserRepository = require('../../Repositories/User')
+const LoggingRepository = require('../../Repositories/Logging')
 
 class EsportsExperienceController {
   async store({ auth, request, response }) {
@@ -73,7 +74,7 @@ class EsportsExperienceController {
         gameface.incrementGameCounter({ auth, request, response })
         return 'Saved item'
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     }
   }
@@ -93,7 +94,7 @@ class EsportsExperienceController {
         myesportsExperience,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -163,7 +164,7 @@ class EsportsExperienceController {
 
         return 'Saved successfully'
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     }
   }
@@ -192,7 +193,7 @@ class EsportsExperienceController {
 
         return 'Deleted successfully'
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
       }
     } else {
       return 'You are not Logged In!'
@@ -214,7 +215,7 @@ class EsportsExperienceController {
         esportsExperience,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -291,7 +292,7 @@ class EsportsExperienceController {
         latestGameExperiences,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 }

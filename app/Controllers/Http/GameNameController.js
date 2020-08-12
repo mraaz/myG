@@ -2,6 +2,7 @@
 
 const GameNames = use('App/Models/GameName')
 const Database = use('Database')
+const LoggingRepository = require('../../Repositories/Logging')
 
 const Schedule_games_logix = use('./Schedule_games_logix')
 
@@ -19,7 +20,7 @@ class GameNameController {
 
         return newGameName
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
         return false
       }
     }
@@ -39,7 +40,7 @@ class GameNameController {
 
         return createGame
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
         return false
       }
     } else {
@@ -55,7 +56,7 @@ class GameNameController {
           .increment('counter', 1)
         return 'Updated successfully'
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
         return false
       }
     } else {
@@ -84,7 +85,7 @@ class GameNameController {
 
         return 'Updated successfully'
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
         return false
       }
     } else {
@@ -99,7 +100,7 @@ class GameNameController {
         allGameNames,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -115,7 +116,7 @@ class GameNameController {
         getOne,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -144,7 +145,7 @@ class GameNameController {
         gameSearchResults,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 
@@ -166,7 +167,7 @@ class GameNameController {
         gameSearchResults,
       }
     } catch (error) {
-      console.log(error)
+      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
     }
   }
 }
