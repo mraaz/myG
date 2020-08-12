@@ -57,12 +57,14 @@ class ApiController {
         userInfo: auth.user,
         port: process.env.PORT,
         logsOn: process.env.LOGS_ON,
+        featuresOn: process.env.FEATURES_ON,
       }
     } else {
       return {
         userInfo: 1981,
         port: process.env.PORT,
         logsOn: process.env.LOGS_ON,
+        featuresOn: process.env.FEATURES_ON,
       }
     }
   }

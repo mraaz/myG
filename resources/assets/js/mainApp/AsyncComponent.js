@@ -6,8 +6,16 @@ const Home = Loadable({
     return null
   },
 })
+
 const Profile = Loadable({
   loader: () => import('./components/Profile'),
+  loading: function () {
+    return null
+  },
+})
+
+const ProfileContainer = Loadable({
+  loader: () => import('./components/Profile/Container'),
   loading: function () {
     return null
   },
@@ -281,6 +289,7 @@ const AllSearchResults = Loadable({
 export {
   Home,
   Profile,
+  ProfileContainer,
   LeftMenu,
   MessengerLoader,
   ChatUnreadMessages,
