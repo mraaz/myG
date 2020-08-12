@@ -33,7 +33,7 @@ export default class ErrorHandler extends React.PureComponent {
     this.handleError(error, "SHOULD_RELOAD")
   }
 
-  handleError = (error, reload = false) => {
+  handleError = (error, reload) => {
     originalErrorHandler(error)
 
     const stack = (error && error.stack && error.stack.split('at ')[1]) || null
