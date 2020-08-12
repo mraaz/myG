@@ -36,7 +36,7 @@ export default class Notifications extends Component {
         <div className='notifications-container postCompose__container'>
           <Menu changeContentTab={this.changeContentTab} />
           <div className='notifications-content'>
-            <Upcoming active={this.isActive(0)} />
+            <Upcoming active={this.isActive(0)} {...this.props} />
             <Approvals active={this.isActive(1)} />
             <Alerts active={this.isActive(2)} />
             <Chat active={this.isActive(3)} />

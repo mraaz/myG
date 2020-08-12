@@ -69,7 +69,7 @@ export default class Home extends Component {
           this.navRef.current.style.margin = '0 auto'
         }
       } else {
-        this.navRef.current.removeAttribute('style')
+        if (this.navRef.current) this.navRef.current.removeAttribute('style')
       }
     })
   }
