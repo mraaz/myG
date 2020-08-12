@@ -83,7 +83,7 @@ class Layout extends Component {
       try {
         const initialData = await axios.get('/api/initialApp')
         window.PORT = initialData.data.port
-        window.LOGS_ON = initialData.data.logsOn
+        window.LOGS_ON = initialData.data.logsOn || ""
 
         if (window.LOGS_ON.includes('EXPLAIN')) {
           const whyDidYouRender = require('@welldone-software/why-did-you-render');
