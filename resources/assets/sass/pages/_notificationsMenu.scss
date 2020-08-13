@@ -125,20 +125,20 @@ $main-font: 'Montserrat';
             width: 100%;
           }
         }
-        &:hover {
-          background: #ffffff0d;
-          .copy__clipboard {
-            opacity: 1;
-          }
-          &::after {
-            border-bottom: 2px solid #a09770;
-            content: '';
-            position: absolute;
-            bottom: 0;
-            height: 2px;
-            width: 100%;
-          }
-        }
+        // &:hover {
+        //   background: #ffffff0d;
+        //   .copy__clipboard {
+        //     opacity: 1;
+        //   }
+        //   &::after {
+        //     border-bottom: 2px solid #a09770;
+        //     content: '';
+        //     position: absolute;
+        //     bottom: 0;
+        //     height: 2px;
+        //     width: 100%;
+        //   }
+        // }
         .gameImage {
           width: 120px;
           $num-colors: 1000;
@@ -184,11 +184,6 @@ $main-font: 'Montserrat';
           padding: 15px;
           width: 100%;
           padding-bottom: 0;
-          &:hover {
-            .copy__clipboard {
-              opacity: 1;
-            }
-          }
           .first__row {
             display: flex;
             margin-bottom: 10px;
@@ -249,6 +244,61 @@ $main-font: 'Montserrat';
             }
             .game__timestamp {
               margin-left: 10px;
+            }
+          }
+          .third__row {
+            display: flex;
+            margin-top: 30px;
+            .game__tags {
+              flex: auto;
+              flex: auto;
+              flex-wrap: wrap;
+              margin-right: auto;
+              .game__tag {
+                max-width: 90px;
+                height: 24px;
+                border: 1px solid #b9b9b9;
+                border-radius: 4px;
+                font: 14px/14px Montserrat;
+                letter-spacing: 0px;
+                color: #b9b9b9;
+                padding: 4px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                margin: 0 5px 5px 0;
+              }
+            }
+            .game__level__wrap {
+              display: flex;
+              margin-left: auto;
+              .game__level {
+                max-width: 100px;
+                height: 27px;
+                border: 1px solid #d6b9ff;
+                border-radius: 23px;
+                font: 14px/14px Montserrat;
+                letter-spacing: 0px;
+                color: #b9b9b9;
+                padding: 6px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                margin-bottom: 10px;
+                margin-left: 5px;
+                &.game__level_Professional {
+                  color: #ffd9b9;
+                  border: 1px solid #ffd9b9;
+                }
+                &.game__level_Semi {
+                  color: #d6b9ff;
+                  border: 1px solid #d6b9ff;
+                }
+                &.game__level_Casual {
+                  color: #9dceff;
+                  border: 1px solid #9dceff;
+                }
+              }
             }
           }
         }
@@ -347,7 +397,6 @@ $main-font: 'Montserrat';
     }
 
     .content {
-      float: left;
       width: calc(100% - 240px);
       height: inherit;
       display: inline-block;
@@ -382,7 +431,6 @@ $main-font: 'Montserrat';
           }
 
           .user-name {
-            float: right;
             margin-top: 11px;
             font-family: $main-font;
             font-size: 12px;
@@ -421,91 +469,6 @@ $main-font: 'Montserrat';
           }
         }
       }
-      .game__level__wrap {
-        display: flex;
-        .game__level {
-          max-width: 100px;
-          height: 27px;
-          border: 1px solid #d6b9ff;
-          border-radius: 23px;
-          font: 14px/14px Montserrat;
-          letter-spacing: 0px;
-          color: #b9b9b9;
-          padding: 6px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          margin-bottom: 10px;
-          margin-left: 5px;
-          &.game__level_Professional {
-            color: #ffd9b9;
-            border: 1px solid #ffd9b9;
-          }
-          &.game__level_Semi {
-            color: #d6b9ff;
-            border: 1px solid #d6b9ff;
-          }
-          &.game__level_Casual {
-            color: #9dceff;
-            border: 1px solid #9dceff;
-          }
-        }
-      }
-
-      .game-tags {
-        width: 100%;
-        display: block;
-
-        .experience {
-          float: right;
-          font-family: $main-font;
-          font-size: 12px;
-          font-weight: 700;
-          color: #d6b9ff;
-          border: 1px #d6b9ff solid;
-          border-radius: 25px;
-          padding: 8px 12px 8px 12px;
-        }
-
-        .region {
-          float: left;
-          font-family: $main-font;
-          font-size: 12px;
-          font-weight: 700;
-          color: #b9b9b9;
-          border: 1px #b9b9b9 solid;
-          border-radius: 6px;
-          padding: 8px 12px 8px 12px;
-        }
-      }
-    }
-
-    .time {
-      width: 120px;
-      height: inherit;
-      background-color: $third-shade;
-      border-radius: 0 10px 10px 0;
-      font-family: $main-font;
-      font-size: 12px;
-      font-weight: 600;
-      color: #fff;
-      text-align: center;
-      display: inline-block;
-
-      .time-align {
-        position: relative;
-        margin-top: 30px;
-        height: 80px;
-      }
-
-      .time-info {
-        font-size: 45px !important;
-        font-weight: 700 !important;
-      }
-    }
-
-    .start-soon {
-      background-color: #e5c746 !important;
     }
   }
 

@@ -31,16 +31,19 @@ export default class Notifications extends Component {
   }
 
   render() {
+    const { activeTab = 0 } = this.state
+    console.log('this.state.activeTab ')
+
     return (
       <section className='notifications-page'>
         <div className='notifications-container postCompose__container'>
           <Menu changeContentTab={this.changeContentTab} />
           <div className='notifications-content'>
-            <Upcoming active={this.isActive(0)} {...this.props} />
-            <Approvals active={this.isActive(1)} />
-            <Alerts active={this.isActive(2)} />
-            <Chat active={this.isActive(3)} />
-            <Settings active={this.isActive(4)} />
+            {activeTab == 0 && <Upcoming active={this.isActive(0)} {...this.props} />}
+            {activeTab == 1 && <Approvals active={this.isActive(1)} {...this.props} />}
+            {activeTab == 2 && <Alerts active={this.isActive(2)} {...this.props} />}
+            {activeTab == 3 && <Chat active={this.isActive(3)} {...this.props} />}
+            {activeTab == 4 && <Settings active={this.isActive(4)} {...this.props} />}
           </div>
         </div>
       </section>
