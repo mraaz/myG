@@ -32,8 +32,6 @@ export default class Notifications extends Component {
 
   render() {
     const { activeTab = 0 } = this.state
-    console.log('this.state.activeTab ')
-
     return (
       <section className='notifications-page'>
         <div className='notifications-container postCompose__container'>
