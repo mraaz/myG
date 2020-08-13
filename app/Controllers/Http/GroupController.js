@@ -3,6 +3,7 @@
 const Group = use('App/Models/Group')
 const GroupHashTag = use('App/Models/GroupHashTag')
 const Database = use('Database')
+const CoHost = use('App/Models/CoHost')
 
 const UserStatTransactionController = use('./UserStatTransactionController')
 const GroupHashTagController = use('./GroupHashTagController')
@@ -22,15 +23,15 @@ class GroupController {
           request.input('name') == null ||
           request.input('name').length == 0
         ) {
-          return
+          return false
         }
 
         if (/['/.%#$;`\\]/.test(request.input('name'))) {
-          return
+          return false
         }
 
         if (request.input('grp_description').length > 250) {
-          return
+          return false
         }
 
         const newGroup = await Group.create({
@@ -44,7 +45,9 @@ class GroupController {
         })
 
         if (request.input('tags') != null && request.input('tags').length > 0) {
+          let grp_tags_TRANS_Controller = new GroupHashTagTranController()
           var arrTags = JSON.parse(request.input('tags'))
+
           //Max of three tags per Group.
           for (var i = 0; i < MAX_HASH_TAGS && i < arrTags.length; i++) {
             if (arrTags[i].group_hash_tag_id == null) {
@@ -52,17 +55,11 @@ class GroupController {
                 continue
               }
               let grp_tags_Controller = new GroupHashTagController()
-              const grp_tag_id = await grp_tags_Controller.store({ auth }, arrTags[i].value)
 
-              const create_arrTags = await GroupHashTagTranController.create({
-                group_id: newGroup.id,
-                hash_tag_id: grp_tag_id,
-              })
+              const grp_tag_id = await grp_tags_Controller.store({ auth }, arrTags[i].value)
+              await grp_tags_TRANS_Controller.store({ auth }, newGroup.id, grp_tag_id)
             } else {
-              const create_arrTags = await GroupHashTagTranController.create({
-                group_id: newGroup.id,
-                hash_tag_id: arrTags[i].group_hash_tag_id,
-              })
+              await grp_tags_TRANS_Controller.store({ auth }, newGroup.id, arrTags[i].group_hash_tag_id)
 
               const update_counter = await GroupHashTag.query()
                 .where({ id: arrTags[i].group_hash_tag_id })
@@ -87,7 +84,7 @@ class GroupController {
         let userStatController = new UserStatTransactionController()
         userStatController.update_total_number_of(auth.user.id, 'total_number_of_communities')
 
-        return newGroup
+        return newGroup.id
       } catch (error) {
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
