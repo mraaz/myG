@@ -5,7 +5,7 @@ const Schema = use('Schema')
 
 class GroupHashTagTransactionsSchema extends Schema {
   up () {
-    this.create('group_hash_tag_transactions', (table) => {
+    this.create('group_hash_tag_trans', (table) => {
       table.increments()
       table.integer('group_id').unsigned().notNullable()
       table.foreign('group_id').references('groups.id').onDelete('cascade')
@@ -16,7 +16,7 @@ class GroupHashTagTransactionsSchema extends Schema {
   }
 
   down () {
-    this.drop('group_hash_tag_transactions')
+    this.drop('group_hash_tag_trans')
   }
 }
 

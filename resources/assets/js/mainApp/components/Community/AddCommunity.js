@@ -13,9 +13,10 @@ import '../../styles/Community/AddCommunityStyles.scss'
 
 import { styles } from '../../static/AddCommunity'
 
-import { MyGCheckbox, MyGTextarea, MyGAsyncSelect, MyGCreateableSelect, MyGInput } from '../common'
+import { MyGCheckbox, MyGTextarea, MyGAsyncSelect, MyGCreateableSelect, MyGInput, MyGSelect } from '../common'
 import { Game_name_values, Group_Hash_Tags, Disable_keys } from '../Utility_Function'
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
+import logger from '../../../common/logger'
 
 const AddCommunity = ({
   updateComponentState,
@@ -102,6 +103,30 @@ const AddCommunity = ({
     })
   }
 
+  const onBlur_group_name = async (inputValue) => {
+    if (mainSettingsState.community_name.trim() == '' || mainSettingsState.community_name.trim() == null) {
+      updateAdvancedSettings({ grp_name_unique: true })
+      return
+    }
+
+    const getgroup_name = await axios.get(`/api/groups/groupName/${mainSettingsState.community_name.trim()}`)
+
+    if (getgroup_name.data.getOne) {
+      if (getgroup_name.data.getOne[0].no_of_names == 0) {
+        updateAdvancedSettings({ grp_name_unique: true })
+      } else {
+        updateAdvancedSettings({ grp_name_unique: false })
+        toast.success(<Toast_style text={'Hmmmm, be unique community name must'} />)
+        return
+      }
+    } else {
+      updateAdvancedSettings({ grp_name_unique: false })
+      toast.success(<Toast_style text={'Hmmmm, failed :( Refresh site, or try again later?'} />)
+      logger.log('RENDER', 'Add Community')
+      return
+    }
+  }
+
   const handleCreateGame = (inputValue) => {
     if (inputValue.length > 88) {
       toast.success(<Toast_style text={'Sorry mate! Game Title is too long.'} />)
@@ -173,6 +198,13 @@ const AddCommunity = ({
           }}
           labelText='Allow any community member to accept new applicants'
         />
+        <MyGCheckbox
+          checked={advancedSettingsState.type}
+          onClick={(value) => {
+            updateAdvancedSettings({ type: value })
+          }}
+          labelText='Publicly listed: Community appears in searches'
+        />
       </div>
     )
   }
@@ -214,7 +246,7 @@ const AddCommunity = ({
         </div>
         <div className='main-settings-content'>
           <div className='field-title'>
-            <p>Community Name</p>
+            <p>Community Name (Unique, be it must)</p>
           </div>
           <div className='game-title-select'>
             <MyGInput
@@ -222,6 +254,7 @@ const AddCommunity = ({
               type='text'
               maxLength={75}
               onKeyDown={Disable_keys}
+              onBlur={onBlur_group_name}
               onChange={(value) => {
                 updateMainSettings({ community_name: value.target.value })
               }}></MyGInput>
@@ -333,7 +366,6 @@ const AddCommunity = ({
               className='test'
             />
           </div>
-
           <div className='comment-section'>{getCommentPrivaryView()}</div>
         </div>
       </div>

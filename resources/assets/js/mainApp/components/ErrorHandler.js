@@ -34,6 +34,7 @@ export default class ErrorHandler extends React.PureComponent {
   }
 
   handleError = (error, reload) => {
+    console.log('dfdfd')
     originalErrorHandler(error)
 
     const stack = (error && error.stack && error.stack.split('at ')[1]) || null
