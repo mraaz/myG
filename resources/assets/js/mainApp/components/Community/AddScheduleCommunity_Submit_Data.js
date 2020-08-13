@@ -2,7 +2,7 @@ import { Convert_to_comma_delimited_value } from '../Utility_Function'
 
 import axios from 'axios'
 
-const MAX_GAME_TAGS = 9
+const MAX_GAME_TAGS = 4
 
 export async function SubmitDataFunction(myG) {
   let co_hosts = null,
