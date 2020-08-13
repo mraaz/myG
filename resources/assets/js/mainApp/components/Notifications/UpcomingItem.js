@@ -17,9 +17,13 @@ export default class UpcomingItem extends Component {
   render() {
     const { game_artwork = '', experience = '', start_date_time, schedule_games_GUID, end_date_time } = this.props
     const experience_split = experience ? experience.split(',') : []
-    let countdown_label = 'Hours'
+    let countdown_label = 'Days'
     let isExpired = false
-    let countdown = moment(start_date_time).diff(moment(), 'hours')
+    let countdown = moment(start_date_time).diff(moment(), 'days')
+    if (countdown == 0) {
+      countdown = moment(start_date_time).diff(moment(), 'hours')
+      countdown_label = 'Hours'
+    }
     if (countdown == 0) {
       countdown = moment(start_date_time).diff(moment(), 'minutes')
       countdown_label = 'Minutes'
@@ -77,8 +81,20 @@ export default class UpcomingItem extends Component {
               <span>{moment(this.props.start_date_time).format('LL')}</span>
             </div>
           </div>
+          <div className='third__row'>
+            <div className='game__level__wrap'>
+              {experience_split.length > 0 &&
+                experience_split.map((ex, index) => {
+                  return (
+                    <div className={`game__level game__level_${ex}`} key={ex}>
+                      {ex}
+                    </div>
+                  )
+                })}
+            </div>
+          </div>
         </div>
-        <div className={`time ${countdown_label == 'Seconds' ? 'start-soon' : ''}`}>
+        <div className={`time ${countdown_label == 'Minutes' && !isExpired && countdown < 60 ? 'start-soon' : ''}`}>
           <div className='time-align'>
             {!isExpired ? `Starting in` : `Expire in `}
             <div className='time-info'>{countdown}</div>
