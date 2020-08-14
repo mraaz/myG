@@ -34,7 +34,8 @@ pipeline {
             steps {
                 container('docker') {
                     withDockerRegistry([credentialsId: "${REGISTRY_CREDENTIAL}", url: ""]) {
-                        sh "docker push ${REGISTRY}"
+                        sh "docker push ${REGISTRY}:$TAG"
+                        sh "docker push ${REGISTRY}:latest"
                     }
                 }
             }
