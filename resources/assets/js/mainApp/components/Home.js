@@ -51,22 +51,24 @@ export default class Home extends Component {
     }
     window.requestAnimationFrame(() => {
       if (this.lastScrollY > 300) {
-        this.navRef.current.style.top = '0px'
-        this.navRef.current.style.position = 'fixed'
-        this.navRef.current.style.zIndex = '1001'
+        if (this.navRef.current && this.navRef.current.style) {
+          this.navRef.current.style.top = '0px'
+          this.navRef.current.style.position = 'fixed'
+          this.navRef.current.style.zIndex = '1001'
 
-        if (offsetWidth < 1200) {
-          this.navRef.current.style.width = '72%'
-          this.navRef.current.style.height = '60px'
-          this.navRef.current.style.padding = '10px'
-          this.navRef.current.style.paddingBottom = 0
-          this.navRef.current.style.margin = '0 auto'
-        } else {
-          this.navRef.current.style.width = '74%'
-          this.navRef.current.style.height = '60px'
-          this.navRef.current.style.padding = '10px'
-          this.navRef.current.style.paddingBottom = 0
-          this.navRef.current.style.margin = '0 auto'
+          if (offsetWidth < 1200) {
+            this.navRef.current.style.width = '72%'
+            this.navRef.current.style.height = '60px'
+            this.navRef.current.style.padding = '10px'
+            this.navRef.current.style.paddingBottom = 0
+            this.navRef.current.style.margin = '0 auto'
+          } else {
+            this.navRef.current.style.width = '74%'
+            this.navRef.current.style.height = '60px'
+            this.navRef.current.style.padding = '10px'
+            this.navRef.current.style.paddingBottom = 0
+            this.navRef.current.style.margin = '0 auto'
+          }
         }
       } else {
         if (this.navRef.current) this.navRef.current.removeAttribute('style')
