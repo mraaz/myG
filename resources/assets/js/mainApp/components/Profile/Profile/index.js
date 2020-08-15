@@ -3,6 +3,7 @@ import get from 'lodash.get';
 import { connect } from 'react-redux'
 import { ignoreFunctions } from '../../../../common/render'
 import { fetchProfileInfoAction } from '../../../../redux/actions/profileAction';
+import Banner from '../Banner';
 
 export class Profile extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -17,7 +18,7 @@ export class Profile extends React.Component {
     console.log('profile: ', this.props.profile);
     return(
       <div id="profile">
-        Profile
+        <Banner profile={this.props.profile} />
       </div>
     );
   }
