@@ -7,7 +7,7 @@ import { styles } from '../../static/AddCommunity'
 import '../../styles/Community/AddCommunityStyles.scss'
 import AddCommunity from './AddCommunity'
 import { Toast_style, Convert_to_comma_delimited_value } from '../Utility_Function'
-import { SubmitDataFunction } from '../AddScheduleCommunity_Submit_Data'
+import { SubmitDataFunction } from './AddScheduleCommunity_Submit_Data'
 import InvitePlayers from './InvitePlayers'
 import { Link } from 'react-router-dom'
 
@@ -25,6 +25,8 @@ const AddCommunityContainer = () => {
     tags: '',
     description: '',
     optionTags: '',
+    grp_name_unique: true,
+    type: 1,
   })
   const [mainSettingsState, updateMainSettingsState] = useState({
     gameTitlesList: [],
@@ -48,8 +50,15 @@ const AddCommunityContainer = () => {
 
   const onAddGameSubmit = async () => {
     updateIsSubmitting(false)
+
     if (mainSettingsState.community_name == '' || mainSettingsState.community_name == null) {
-      toast.success(<Toast_style text={'Sorry mate! Community name can not be blank'} />)
+      toast.success(<Toast_style text={"Hmmmm, blank community name can't be. The rules it is"} />)
+      updateIsSubmitting(false)
+      return
+    }
+
+    if (advancedSettingsState.grp_name_unique == false) {
+      toast.success(<Toast_style text={'Hmmmm, Invalid community name. Keep trying, you must'} />)
       updateIsSubmitting(false)
       return
     }
@@ -59,38 +68,27 @@ const AddCommunityContainer = () => {
       return
     }
 
-    if (advancedSettingsState.coHosts.length >= MAX_CO_HOSTS) {
+    if (advancedSettingsState.coHosts != null && advancedSettingsState.coHosts.length >= MAX_CO_HOSTS) {
       toast.success(<Toast_style text={"Crikey, mate! That's alot of co-hosts. I can only process 4 co-hosts. Try again!"} />)
       return
     }
 
     try {
       const { data } = await SubmitDataFunction({
+        community_name: mainSettingsState.community_name,
         game_name_box: mainSettingsState.gameTitle,
-        selected_region: advancedSettingsState.region,
-        selected_experience: advancedSettingsState.experience,
-        startDate: mainSettingsState.startTime,
-        endDate: mainSettingsState.endTime,
-        selected_platform: advancedSettingsState.platform,
-        description_box: advancedSettingsState.description,
-        selected_visibility: mainSettingsState.isPublicGame,
-        selected_limit: mainSettingsState.numberOfPlayers,
-        txtAreaValue: advancedSettingsState.acceptMessage,
-        allow_comments: mainSettingsState.isCommentsAllowed,
-        autoJoin: mainSettingsState.autoAccept,
-        coHosts: advancedSettingsState.coHosts,
         tags: advancedSettingsState.tags,
-        cron: mainSettingsState.cron,
-        occurrence: mainSettingsState.occurrence,
-        repeatEvery: mainSettingsState.repeatEvery,
-        autoJoinHost: mainSettingsState.autoJoinHost,
+        description: advancedSettingsState.description,
+        coHosts: advancedSettingsState.coHosts,
+        autoAccept: mainSettingsState.autoAccept,
+        type: advancedSettingsState.type,
       })
       updateMainSettingsState((currentState) => ({
         ...currentState,
         scheduledGameId: data.id,
         scheduledGameGuid: data.schedule_games_GUID,
       }))
-      updateGameLink(data.schedule_games_GUID)
+      updateGameLink(data.id)
       updateIsGameListedModalOpen(true)
     } catch (err) {
       updateIsSubmitting(false)

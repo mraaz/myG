@@ -562,7 +562,6 @@
       flex: 1;
       justify-content: flex-start;
       display: flex;
-      min-height: 580px;
       max-height: calc(100vh - 100px);
       flex-direction: column;
       border-bottom: 1px solid #384952;
@@ -606,20 +605,19 @@
           .game__level__wrap {
             display: flex;
             flex-direction: row;
+            margin-top: 50px;
             .game__level {
-              max-width: 100px;
-              height: 27px;
               border: 1px solid #d6b9ff;
               border-radius: 23px;
               font: 14px/14px Montserrat;
               letter-spacing: 0px;
               color: #b9b9b9;
-              padding: 6px;
+              padding: 10px 15px;
               white-space: nowrap;
               overflow: hidden;
               text-overflow: ellipsis;
               display: inline-block;
-              margin-bottom: 10px;
+              font-weight: 600;
             }
           }
         }
@@ -690,30 +688,33 @@
         }
         .filter__label {
           font: 16px/14px Montserrat;
-          font-weight: 400;
+          font-weight: 600;
           letter-spacing: 0px;
           color: #ffffff;
           opacity: 1;
           margin-bottom: 20px;
         }
+
         .gameDescription {
           font: 16px/14px Montserrat;
           letter-spacing: 0px;
-          font-weight: bold;
+          font-weight: 600;
           letter-spacing: 0px;
           color: #ffffff;
           opacity: 1;
           margin-bottom: 20px;
         }
+
         .gameDescription__body {
           font: 14px/14px Montserrat;
           letter-spacing: 0px;
-          font-weight: 400;
+          font-weight: 600;
           letter-spacing: 0px;
           color: #ffffff;
           opacity: 1;
           margin-bottom: 20px;
         }
+
         .gameTime__label {
           font: 16px/14px Montserrat;
           letter-spacing: 0px;
@@ -723,15 +724,17 @@
           opacity: 1;
           margin-bottom: 20px;
         }
+
         .gameTime__value {
           font: 14px/14px Montserrat;
           letter-spacing: 0px;
-          font-weight: 400;
+          font-weight: 600;
           letter-spacing: 0px;
           color: #ffffff;
           opacity: 1;
           margin-bottom: 20px;
         }
+
         .gameTags__label {
           font: 16px/14px Montserrat;
           letter-spacing: 0px;
@@ -741,6 +744,7 @@
           opacity: 1;
           margin-bottom: 20px;
         }
+
         .gameTags__value {
           display: flex;
           flex-wrap: wrap;
@@ -760,6 +764,7 @@
             text-overflow: ellipsis;
           }
         }
+
         .gamer__wraper {
           display: inline-flex;
           align-items: center;
@@ -908,6 +913,7 @@
           width: 100%;
           margin-bottom: 10px;
           position: relative;
+          cursor: pointer;
           &.active {
             background: #ffffff0d;
             &::after {
@@ -1092,19 +1098,16 @@
               .game__level__wrap {
                 display: flex;
                 .game__level {
-                  max-width: 100px;
-                  height: 27px;
                   border: 1px solid #d6b9ff;
                   border-radius: 23px;
                   font: 14px/14px Montserrat;
                   letter-spacing: 0px;
                   color: #b9b9b9;
-                  padding: 6px;
+                  padding: 10px 15px;
                   white-space: nowrap;
                   overflow: hidden;
-                  text-overflow: ellipsis;
                   margin-bottom: 10px;
-                  margin-left: 5px;
+                  font-weight: 600;
                   &.game__level_Professional {
                     color: #ffd9b9;
                     border: 1px solid #ffd9b9;
@@ -1165,12 +1168,15 @@
     border: none;
     .gameDetails {
       background: #171a1c;
-      margin: 0;
+      margin-left: 10px;
       display: inline-table;
       width: 100%;
       .gameDetails__header {
         background: #1d2326;
         min-height: 108px !important;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        display: flex;
         .game__level__wrap {
           flex-direction: row !important;
           .game__level {

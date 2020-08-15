@@ -21,6 +21,8 @@ const SliderWithTooltip = Slider.createSliderWithTooltip(Slider)
 
 let game_data_struct = {}
 
+const MAX_GAME_TAGS = 8
+
 const AddGame = ({
   state,
   updateComponentState,
@@ -92,6 +94,11 @@ const AddGame = ({
   })
 
   const handleCreateTags = (inputValue) => {
+    if (advancedSettingsState.tags.length >= MAX_GAME_TAGS) {
+      toast.success(<Toast_style text={'Sorry mate! Max of 8 tags.'} />)
+      return
+    }
+
     if (inputValue.length > 88) {
       toast.success(<Toast_style text={'Sorry mate! Game tags length is too long.'} />)
       return
@@ -684,8 +691,13 @@ const AddGame = ({
               }}
               value={advancedSettingsState.tags}
               placeholder='Search, Select or create Game Tags'
-              options={advancedSettingsState.optionTags}
               onKeyDown={Disable_keys}
+              options={advancedSettingsState.tags.length === MAX_GAME_TAGS ? [] : advancedSettingsState.optionTags}
+              noOptionsMessage={() => {
+                return advancedSettingsState.optionTags.length === MAX_GAME_TAGS
+                  ? 'You have reached the max options value'
+                  : 'Yo! Either nothing to display or you need to type in something'
+              }}
             />
           </div>
           {advancedSettingsState.show_platform && <div className='field-title'>Platform</div>}

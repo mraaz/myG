@@ -12,6 +12,7 @@ const MyGCreateableSelect = ({
   onInputChange,
   styles,
   onCreateOption,
+  noOptionsMessage,
   ...otherProps
 }) => {
   const customStyles = {
@@ -68,6 +69,7 @@ const MyGCreateableSelect = ({
       placeholder={placeholder}
       onInputChange={onInputChange}
       onCreateOption={onCreateOption}
+      noOptionsMessage={noOptionsMessage}
       {...otherProps}
     />
   )

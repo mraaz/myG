@@ -1,6 +1,6 @@
 import React from 'react'
 
-const MyGInput = ({ containerStyles, inputStyles, placeholder, value, onChange, children, refInput, onClick, ...props }) => {
+const MyGInput = ({ containerStyles, inputStyles, placeholder, value, onChange, children, refInput, onClick, onBlur, ...props }) => {
   const styles = {
     container: {
       backgroundColor: '#2D363A',
@@ -28,6 +28,7 @@ const MyGInput = ({ containerStyles, inputStyles, placeholder, value, onChange, 
         onChange={onChange}
         onClick={onClick}
         ref={refInput}
+        onBlur={onBlur}
         {...props}
       />
       {children}

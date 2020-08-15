@@ -1,5 +1,6 @@
 import React from 'react'
-import Select from 'react-select/lib/AsyncCreatable'
+//import AsyncSelect from 'react-select'
+import AsyncSelect from 'react-select/lib/Async'
 
 const MyGAsyncSelect = ({
   defaultValue,
@@ -11,6 +12,8 @@ const MyGAsyncSelect = ({
   onInputChang,
   onInputChange,
   styles,
+  noOptionsMessage,
+  loadOptions,
   ...otherProps
 }) => {
   const customStyles = {
@@ -59,7 +62,7 @@ const MyGAsyncSelect = ({
   }
 
   return (
-    <Select
+    <AsyncSelect
       styles={customStyles}
       defaultValue={defaultValue}
       value={value}
@@ -68,6 +71,8 @@ const MyGAsyncSelect = ({
       onChange={onChange}
       placeholder={placeholder}
       onInputChange={onInputChange}
+      noOptionsMessage={noOptionsMessage}
+      loadOptions={loadOptions}
       {...otherProps}
     />
   )

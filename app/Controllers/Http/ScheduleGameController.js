@@ -904,7 +904,7 @@ class ScheduleGameController {
           'schedule_games.user_id'
         )
         .orderBy('schedule_games.start_date_time', 'desc')
-        .paginate(request.params.limitstr, 10)
+        .paginate(request.input('counter'), 10)
 
       myScheduledGames = await InGame_fieldsController.find_InGame_Fields(myScheduledGames)
 
