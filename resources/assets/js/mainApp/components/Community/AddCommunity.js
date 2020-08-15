@@ -4,9 +4,7 @@ const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/pla
 import { toast } from 'react-toastify'
 import axios from 'axios'
 
-import 'react-dropzone-uploader/dist/styles.css'
-import Dropzone from 'react-dropzone-uploader'
-import { useDropzone } from 'react-dropzone'
+import Dropzone from 'react-dropzone'
 
 import { Toast_style } from '../Utility_Function'
 import '../../styles/Community/AddCommunityStyles.scss'
@@ -220,35 +218,71 @@ const AddCommunity = ({
     )
   }
 
-  const getCommunityleftView = () => {
-    const handleChangeStatus = ({ meta }, status, allFiles) => {
-      this.state.store_files = allFiles
-      if (status === 'done') {
-        const file = allFiles[0].file
-        const name = allFiles[0].meta.name
-        this.doUploadS3(file, name)
-      }
-      if (status == 'removed' && this.state.lock == false) {
-        this.removeIndivdualfromAWS()
+  const handlePreviewRemove = (e, src) => {
+    e.preventDefault()
+    let preview_files = [...advancedSettingsState.preview_files]
+    preview_files = preview_files.filter((data) => data.src != src)
+    removeIndivdualfromAWS()
+    updateAdvancedSettings({ preview_files: preview_files })
+  }
+  const handleAcceptedFiles = (file, rejectedFiles) => {
+    if (rejectedFiles.length > 0) {
+      toast.error(
+        <Toast_style text={`Sorry mate! ${rejectedFiles.length} File(s) rejected because of bad format or file size limit exceed (10mb)`} />
+      )
+    }
+    if (file.length > 0) {
+      doUploadS3(file[0], file[0].name)
+    }
+  }
+
+  const removeIndivdualfromAWS = () => {
+    if (advancedSettingsState.preview_files != [] && advancedSettingsState.preview_files[0].key != '') {
+      const formData = new FormData()
+      formData.append('key', advancedSettingsState.preview_files[0].key)
+
+      try {
+        const post = axios.post('/api/deleteFile', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+      } catch (error) {
+        logger.log('RENDER', 'Community Delete image ')
       }
     }
+  }
 
-    const handleSubmit = (files, allFiles) => {
-      if (this.state.uploading == true) {
-        return
-      }
-      this.props.callbackConfirm(this.state.file_src, this.state.file_key)
+  const doUploadS3 = async (file, name) => {
+    updateAdvancedSettings({ uploading: true })
 
-      this.setState({
-        store_files: [],
-        file_key: '',
-        file_src: '',
+    const formData = new FormData()
+    formData.append('upload_file', file)
+    formData.append('filename', name)
+
+    try {
+      const post = await axios.post('/api/uploadFile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       })
 
-      this.state.lock = true
-      allFiles.forEach((f) => f.remove())
-      this.state.lock = false
+      let new_preview_files = []
+      new_preview_files.push({
+        src: post.data.Location,
+        key: post.data.Key,
+      })
+
+      updateAdvancedSettings({ preview_files: new_preview_files, uploading: false })
+    } catch (error) {
+      console.log(error)
+      updateAdvancedSettings({ uploading: false })
+      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again???'} />)
+      logger.log('RENDER', 'Community image upload')
     }
+  }
+
+  const getCommunityleftView = () => {
     return (
       <div style={{ display: 'flex' }}>
         <div className={styles.sideLineContainer}>
@@ -292,17 +326,17 @@ const AddCommunity = ({
           </div>
           <div className='media__container'>
             <Dropzone
-              onChangeStatus={handleChangeStatus}
-              onSubmit={handleSubmit}
+              //onChangeStatus={handleAcceptedFiles}
+              onDrop={(acceptedFiles, rejectedFiles) => handleAcceptedFiles(acceptedFiles, rejectedFiles)}
               maxFiles={1}
-              maxSizeBytes={26214400}
+              minSize={0}
+              maxSizeBytes={11185350}
               accept='image/*'
-              inputContent={(files, extra) =>
-                extra.reject ? (
-                  'Image files only'
-                ) : (
+              disabled={advancedSettingsState.uploading}>
+              {(props) => {
+                return (
                   <section className='custom__html dropzone-section'>
-                    <div className='text'>Drop your image or video</div>
+                    <div className='text'>Drop your image</div>
                     <div className='images community-images-container'>
                       <span className=' button photo-btn'>
                         <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
@@ -314,10 +348,28 @@ const AddCommunity = ({
                     <div className='text'>
                       Or <span>click here </span> to select
                     </div>
+                    {advancedSettingsState.uploading && (
+                      <div className='text'>
+                        <span>Uploading... </span>
+                      </div>
+                    )}
+                    {advancedSettingsState.preview_files.length > 0 && (
+                      <div className='files__preview'>
+                        <span className='image' key={advancedSettingsState.preview_files[0].src}>
+                          <img src={advancedSettingsState.preview_files[0].src} key={advancedSettingsState.preview_files[0].src} />
+                          <span
+                            className='remove__image'
+                            onClick={(e) => handlePreviewRemove(e, advancedSettingsState.preview_files[0].src)}>
+                            X
+                          </span>
+                        </span>
+                        {advancedSettingsState.preview_files.length > 3 ? `(${advancedSettingsState.preview_files.length})...` : ''}
+                      </div>
+                    )}
                   </section>
                 )
-              }
-            />
+              }}
+            </Dropzone>
           </div>
           <div className='field-title hash-tags'>
             <p>Community Tags</p>

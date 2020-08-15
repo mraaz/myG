@@ -395,6 +395,27 @@
   text-align: center;
 }
 
+.files__preview {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  .image {
+    position: relative;
+  }
+  img {
+    background: #ff00ff 0% 0% no-repeat padding-box;
+    margin-right: 10px;
+    width: 160px;
+    height: 120px;
+  }
+  .remove__image {
+    position: absolute;
+    top: 2px;
+    right: 12px;
+    cursor: pointer;
+  }
+}
+
 .dropzone-section {
   padding-top: 20px;
   color: #fff;
