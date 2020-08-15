@@ -7,7 +7,7 @@ import { styles } from '../../static/AddCommunity'
 import '../../styles/Community/AddCommunityStyles.scss'
 import AddCommunity from './AddCommunity'
 import { Toast_style, Convert_to_comma_delimited_value } from '../Utility_Function'
-import { SubmitDataFunction } from './AddScheduleCommunity_Submit_Data'
+import { SubmitDataFunction } from './AddCommunity_Submit_Data'
 import InvitePlayers from './InvitePlayers'
 import { Link } from 'react-router-dom'
 
@@ -27,6 +27,8 @@ const AddCommunityContainer = () => {
     optionTags: '',
     grp_name_unique: true,
     type: 1,
+    uploading: false,
+    preview_files: [],
   })
   const [mainSettingsState, updateMainSettingsState] = useState({
     gameTitlesList: [],
@@ -49,6 +51,8 @@ const AddCommunityContainer = () => {
   }
 
   const onAddGameSubmit = async () => {
+    console.log(advancedSettingsState.preview_files)
+    return
     updateIsSubmitting(false)
 
     if (mainSettingsState.community_name == '' || mainSettingsState.community_name == null) {
