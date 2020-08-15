@@ -1,8 +1,8 @@
 import React from 'react';
 import get from 'lodash.get';
 import { connect } from 'react-redux'
-import { ignoreFunctions } from '../../../common/render'
-import { fetchProfileInfoAction } from '../../../redux/actions/profileAction';
+import { ignoreFunctions } from '../../../../common/render'
+import { fetchProfileInfoAction } from '../../../../redux/actions/profileAction';
 
 export class Profile extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -14,7 +14,7 @@ export class Profile extends React.Component {
   }
 
   render() {
-    console.log(this.props.profile);
+    console.log('profile: ', this.props.profile);
     return(
       <div id="profile">
         Profile

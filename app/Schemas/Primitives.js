@@ -1,9 +1,9 @@
 function forceInt(value) {
-  return parseInt(value) || null
+  return parseInt(value) !== NaN ? parseInt(value) : null
 }
 
 function forceFloat(value) {
-  return parseFloat(value) || null
+  return parseFloat(value) !== NaN ? parseFloat(value) : null
 }
 
 function forceString(value) {
@@ -41,6 +41,11 @@ function forceStatus(value) {
   return value
 }
 
+function forceObject(value) {
+  if (value && Object.keys(value).length) return value;
+  return {};
+}
+
 module.exports = {
   forceInt,
   forceFloat,
@@ -50,4 +55,5 @@ module.exports = {
   forceBoolean,
   forceDate,
   forceStatus,
+  forceObject,
 }

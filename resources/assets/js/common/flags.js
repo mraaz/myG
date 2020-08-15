@@ -21,7 +21,7 @@ async function initRollout() {
 initRollout().then(function() {})
 
 function checkFlag(flag) {
-  if (window.location.href.startsWith('https://localhost')) return isFlagEnabledDevelopment(flag);
+  if (window.location.href.startsWith('http://localhost')) return isFlagEnabledDevelopment(flag);
   return isFlagEnabledProduction(flag);
 }
 
@@ -30,7 +30,7 @@ function isFlagEnabledProduction(flag) {
 }
 
 function isFlagEnabledDevelopment(flag) {
-  return window.FEATURES_ON.includes(flag);
+  return window.FEATURES_ON && window.FEATURES_ON.includes(flag);
 }
 
 export class FeatureEnabled extends React.Component {

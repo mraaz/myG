@@ -1,8 +1,8 @@
 import React from 'react';
 import { Redirect } from 'react-router'
 import get from 'lodash.get';
-import { ignoreFunctions } from '../../../common/render'
-import Profile from './Profile';
+import { ignoreFunctions } from '../../../../common/render'
+import Profile from '../Profile';
 
 export default class ProfileContainer extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {

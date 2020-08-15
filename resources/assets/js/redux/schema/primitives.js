@@ -1,9 +1,9 @@
 export function forceInt(value) {
-  return parseInt(value) || null
+  return parseInt(value) !== NaN ? parseInt(value) : null
 }
 
 export function forceFloat(value) {
-  return parseFloat(value) || null
+  return parseFloat(value) !== NaN ? parseFloat(value) : null
 }
 
 export function forceString(value) {
@@ -39,4 +39,9 @@ export function forceStatus(value) {
   const validStatus = ['online', 'playing', 'afk', 'offline']
   if (!validStatus.includes(value)) return null
   return value
+}
+
+export function forceObject(value) {
+  if (value && Object.keys(value).length) return value;
+  return {};
 }
