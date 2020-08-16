@@ -166,7 +166,13 @@ class NotificationController_v2 {
         return (singleArr = mergeSort(singleArr))
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 
@@ -181,7 +187,13 @@ class NotificationController_v2 {
 
         return 'Deleted'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
@@ -205,7 +217,13 @@ class NotificationController_v2 {
         })
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
@@ -242,7 +260,13 @@ class NotificationController_v2 {
 
         return 'Saved'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
@@ -262,7 +286,13 @@ class NotificationController_v2 {
 
         return 'deleted'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
@@ -280,7 +310,13 @@ class NotificationController_v2 {
         })
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
@@ -288,56 +324,74 @@ class NotificationController_v2 {
   }
 
   async getAllNotifications({ auth, request, response }) {
-    var set_limit = 10
+    let set_limit = 10,
+      singleArr = []
+
     try {
-      const allMylike_posts = await Database.from('notifications')
-        .innerJoin('users', 'users.id', 'notifications.user_id')
-        .where({ other_user_id: auth.user.id, activity_type: 2 })
-        .groupBy('notifications.post_id')
-        .count('* as no_of_my_notis')
-        .select(
-          'notifications.schedule_games_id',
-          'notifications.post_id',
-          'notifications.activity_type',
-          'users.alias',
-          'users.profile_img',
-          'users.id',
-          'notifications.created_at'
-        )
-        .orderBy('notifications.created_at', 'desc')
-        .paginate(request.input('counter'), set_limit)
-      const allMylike_comments = await Database.from('notifications')
-        .innerJoin('users', 'users.id', 'notifications.user_id')
-        .where({ other_user_id: auth.user.id, activity_type: 3 })
-        .groupBy('notifications.post_id')
-        .count('* as no_of_my_notis')
-        .select(
-          'notifications.schedule_games_id',
-          'notifications.post_id',
-          'notifications.activity_type',
-          'users.alias',
-          'users.profile_img',
-          'users.id',
-          'notifications.created_at'
-        )
-        .orderBy('notifications.created_at', 'desc')
-        .paginate(request.input('counter'), set_limit)
-      const allMylike_replies = await Database.from('notifications')
-        .innerJoin('users', 'users.id', 'notifications.user_id')
-        .where({ other_user_id: auth.user.id, activity_type: 4 })
-        .groupBy('notifications.post_id')
-        .count('* as no_of_my_notis')
-        .select(
-          'notifications.schedule_games_id',
-          'notifications.post_id',
-          'notifications.activity_type',
-          'users.alias',
-          'users.profile_img',
-          'users.id',
-          'notifications.created_at'
-        )
-        .orderBy('notifications.created_at', 'desc')
-        .paginate(request.input('counter'), set_limit)
+      if (
+        request.input('activity_type') == 0 ||
+        request.input('activity_type') == 2 ||
+        request.input('activity_type') == 3 ||
+        request.input('activity_type') == 4 ||
+        request.input('activity_type') == 5
+      ) {
+        let arr = []
+        switch (request.input('activity_type')) {
+          case '0':
+            arr = [2, 3, 4]
+            break
+          default:
+            arr.push(parseInt(request.input('activity_type')))
+            break
+        }
+        let allMylike_posts = await Database.from('notifications')
+          .innerJoin('users', 'users.id', 'notifications.user_id')
+          .where({ other_user_id: auth.user.id })
+          .whereIn('activity_type', arr)
+          .groupBy('notifications.post_id')
+          .select('notifications.post_id', 'notifications.created_at', 'notifications.activity_type')
+          .orderBy('notifications.created_at', 'desc')
+          .paginate(request.input('counter'), set_limit)
+
+        allMylike_posts = allMylike_posts.data
+
+        for (let i = 0; i < allMylike_posts.length; i++) {
+          const first_two_users = await Database.from('notifications')
+            .innerJoin('users', 'users.id', 'notifications.user_id')
+            .where({ post_id: allMylike_posts[i].post_id, other_user_id: auth.user.id })
+            .whereIn('activity_type', arr)
+            .select('users.alias')
+            .orderBy('notifications.created_at', 'desc')
+            .limit(2)
+          const total_post_count = await Database.from('notifications')
+            .innerJoin('users', 'users.id', 'notifications.user_id')
+            .where({ post_id: allMylike_posts[i].post_id, other_user_id: auth.user.id })
+            .whereIn('activity_type', arr)
+            .count('* as no_of_my_notis')
+          const getAllNotiLike_unreadCount = await Database.from('notifications')
+            .innerJoin('users', 'users.id', 'notifications.user_id')
+            .where({ post_id: allMylike_posts[i].post_id, read_status: 0, other_user_id: auth.user.id })
+            .whereIn('activity_type', arr)
+            .count('* as no_of_my_unread')
+
+          if (first_two_users.length == 2) {
+            allMylike_posts[i].first_user = first_two_users[0].alias
+            allMylike_posts[i].second_user = first_two_users[1].alias
+          } else if (first_two_users.length == 1) {
+            allMylike_posts[i].first_user = first_two_users[0].alias
+            allMylike_posts[i].second_user = null
+          } else {
+            allMylike_posts[i].first_user = null
+            allMylike_posts[i].second_user = null
+          }
+
+          allMylike_posts[i].total_post_count = total_post_count[0].no_of_my_notis > 0 ? total_post_count[0].no_of_my_notis : 0
+          allMylike_posts[i].read = getAllNotiLike_unreadCount[0].no_of_my_unread > 0 ? false : true
+        }
+
+        singleArr.push(...allMylike_posts)
+      }
+
       const allMycomments = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id, activity_type: 5 })
@@ -354,6 +408,7 @@ class NotificationController_v2 {
         )
         .orderBy('notifications.created_at', 'desc')
         .paginate(request.input('counter'), set_limit)
+
       const allMyreplies = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .where({ other_user_id: auth.user.id, activity_type: 6 })
@@ -526,22 +581,22 @@ class NotificationController_v2 {
         .orderBy('notifications.created_at', 'desc')
         .paginate(request.input('counter'), set_limit)
 
-      var singleArr = [
-        ...allMylike_posts.data,
-        ...allMylike_comments.data,
-        ...allMylike_replies.data,
-        ...allMycomments.data,
-        ...allMyreplies.data,
-        ...allMyschedulegames.data,
-        ...myschedulegames_approvals.data,
-        ...allMyarchived_schedulegames.data,
-        ...dropped_out_attendees.data,
-        ...group_member_approved.data,
-        ...group_member_kicked.data,
-        ...chat_group_invite.data,
-        ...user_ding.data,
-        ...schedule_games_attendees_notify_only.data,
-      ]
+      // var singleArr = [
+      //   ...allMylike_posts.data,
+      //   ...allMylike_comments.data,
+      //   ...allMylike_replies.data,
+      //   ...allMycomments.data,
+      //   ...allMyreplies.data,
+      //   ...allMyschedulegames.data,
+      //   ...myschedulegames_approvals.data,
+      //   ...allMyarchived_schedulegames.data,
+      //   ...dropped_out_attendees.data,
+      //   ...group_member_approved.data,
+      //   ...group_member_kicked.data,
+      //   ...chat_group_invite.data,
+      //   ...user_ding.data,
+      //   ...schedule_games_attendees_notify_only.data,
+      // ]
 
       if (singleArr.length == 0) {
         return singleArr
@@ -549,7 +604,14 @@ class NotificationController_v2 {
         return (singleArr = mergeSort(singleArr))
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      console.log(error)
+      // LoggingRepository.log({
+      //   environment: process.env.NODE_ENV,
+      //   type: 'error',
+      //   source: 'backend',
+      //   context: __filename,
+      //   message: (error && error.message) || error,
+      // })
     }
   }
 
@@ -564,7 +626,13 @@ class NotificationController_v2 {
         })
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
@@ -579,7 +647,13 @@ class NotificationController_v2 {
         .update({ read_status: 1 })
       return 'Saved successfully'
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 
@@ -594,7 +668,13 @@ class NotificationController_v2 {
 
       return 'Saved successfully'
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 
@@ -609,7 +689,13 @@ class NotificationController_v2 {
         })
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
@@ -628,7 +714,13 @@ class NotificationController_v2 {
 
         return 'Deleted'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
@@ -645,7 +737,13 @@ class NotificationController_v2 {
         })
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
@@ -664,7 +762,13 @@ class NotificationController_v2 {
         })
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
@@ -683,7 +787,13 @@ class NotificationController_v2 {
         })
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
@@ -703,7 +813,13 @@ class NotificationController_v2 {
         })
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
@@ -723,7 +839,13 @@ class NotificationController_v2 {
 
         return deleteCommentLike
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
@@ -743,7 +865,13 @@ class NotificationController_v2 {
         })
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
@@ -763,7 +891,13 @@ class NotificationController_v2 {
 
         return deleteReplyLike
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
@@ -781,7 +915,13 @@ class NotificationController_v2 {
         })
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
@@ -801,7 +941,13 @@ class NotificationController_v2 {
 
         return deletePostLike
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
