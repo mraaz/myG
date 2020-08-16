@@ -29,7 +29,7 @@ def id_generator(size=6, chars=string.ascii_lowercase + string.digits):
 
 def main():
   start = 100
-  stop = 1010 #120 = Maximum call stack size exceeded
+  stop = 110 #120 = Maximum call stack size exceeded
 
 
   #Gaming intestests, esportsExp, scheduledGames how many per user
