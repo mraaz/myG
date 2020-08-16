@@ -412,4 +412,7 @@ Route.get('/api/seats_available', 'SeatsAvailableController.fetchSeatsAvailable'
 Route.get('/api/seats_available/:code', 'SeatsAvailableController.checkExtraSeatsCode')
 Route.get('/api/seats_available_email/:email', 'SeatsAvailableController.storeSeatsAvailableEmail')
 
+// Profile
+Route.get('/api/profile/:alias', 'ProfileController.fetchProfileInfo')
+
 Route.any('*', ({ view }) => view.render('pages/react'))
