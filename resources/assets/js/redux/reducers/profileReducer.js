@@ -45,6 +45,86 @@ export default function reducer(state = initialState, action) {
       }
     }
 
+    case 'SEND_FRIEND_REQUEST_FULFILLED': {
+      logger.log('PROFILE', `Redux -> Sent friend request for ${action.meta.alias}`)
+      const alias = action.meta.alias
+      const profiles = addProfile(state, alias)
+      profiles[alias].set({ hasSentFriendRequest: true })
+      return {
+        ...state,
+        profiles,
+      }
+    }
+
+    case 'CONFIRM_FRIEND_REQUEST_FULFILLED': {
+      logger.log('PROFILE', `Redux -> Confirm friend request for ${action.meta.alias}`)
+      const alias = action.meta.alias
+      const profiles = addProfile(state, alias)
+      profiles[alias].set({ isFriend: true, hasSentFriendRequest: false })
+      return {
+        ...state,
+        profiles,
+      }
+    }
+
+
+    case 'UNFRIEND_FULFILLED': {
+      logger.log('PROFILE', `Redux -> Unfriended ${action.meta.alias}`)
+      const alias = action.meta.alias
+      const profiles = addProfile(state, alias)
+      profiles[alias].set({ isFriend: false, hasSentFriendRequest: false })
+      return {
+        ...state,
+        profiles,
+      }
+    }
+
+    case 'FOLLOW_FULFILLED': {
+      logger.log('PROFILE', `Redux -> Followed ${action.meta.alias}`)
+      const alias = action.meta.alias
+      const profiles = addProfile(state, alias)
+      profiles[alias].set({ isFollower: true })
+      return {
+        ...state,
+        profiles,
+      }
+    }
+
+    case 'UNFOLLOW_FULFILLED': {
+      logger.log('PROFILE', `Redux -> Unfollowed ${action.meta.alias}`)
+      const alias = action.meta.alias
+      const profiles = addProfile(state, alias)
+      profiles[alias].set({ isFollower: false })
+      return {
+        ...state,
+        profiles,
+      }
+    }
+
+    case 'UPLOAD_PROFILE_IMAGE_FULFILLED': {
+      logger.log('PROFILE', `Redux -> Updated profile image for ${action.meta.alias}: `, action.meta.image)
+      const alias = action.meta.alias
+      const image = action.meta.image
+      const profiles = addProfile(state, alias)
+      profiles[alias].set({ image })
+      return {
+        ...state,
+        profiles,
+      }
+    }
+
+    case 'UPLOAD_PROFILE_BACKGROUND_FULFILLED': {
+      logger.log('PROFILE', `Redux -> Updated profile background for ${action.meta.alias}: `, action.meta.background)
+      const alias = action.meta.alias
+      const background = action.meta.background
+      const profiles = addProfile(state, alias)
+      profiles[alias].set({ background })
+      return {
+        ...state,
+        profiles,
+      }
+    }
+
     default:
       return state
   }

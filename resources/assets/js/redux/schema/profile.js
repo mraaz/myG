@@ -9,6 +9,7 @@ export default class ProfileSchema {
     if (!data) data = {}
     if (data.loading !== undefined) this.loading = forceBoolean(data.loading)
     if (data.error !== undefined) this.error = data.error.message ? forceString(data.error.message) : forceString(data.error)
+    if (data.profileId !== undefined) this.profileId = forceString(data.profileId)
     if (data.alias !== undefined) this.alias = forceString(data.alias)
     if (data.image !== undefined) this.image = forceString(data.image);
     if (data.background !== undefined) this.background = forceString(data.background);
@@ -22,6 +23,7 @@ export default class ProfileSchema {
     if (data.isFollower !== undefined) this.isFollower = forceBoolean(data.isFollower)
     if (data.hasSentFriendRequest !== undefined) this.hasSentFriendRequest = forceBoolean(data.hasSentFriendRequest);
     if (data.hasReceivedFriendRequest !== undefined) this.hasReceivedFriendRequest = forceBoolean(data.hasReceivedFriendRequest);
+    if (data.friendRequestId !== undefined) this.friendRequestId = forceInt(data.friendRequestId);
     if (data.gameExperiences !== undefined) this.gameExperiences = forceObject(data.gameExperiences);
     if (data.esportsExperiences !== undefined) this.esportsExperiences = forceObject(data.esportsExperiences);
     if (data.esportsBio !== undefined) this.esportsBio = forceObject(data.esportsBio);

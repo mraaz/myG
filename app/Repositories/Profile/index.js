@@ -10,11 +10,16 @@ const ProfileSchema = require('../../Schemas/Profile');
 
 class ProfileRepository {
 
+  async fetchProfileId({ alias }) {
+    const profile = await this.fetchProfileByAlias({ alias });
+    return profile.id;
+  }
+
   async fetchProfileInfo({ requestingUserId, alias }) {
     const profile = await this.fetchProfileByAlias({ alias });
     const profileId = profile.id;
     const image = profile.profile_img;
-    const background = profile.profile_background;
+    const background = profile.profile_bg;
     const country = profile.country;
     const relationship = profile.relationship_status;
     const status = profile.status;
@@ -25,7 +30,7 @@ class ProfileRepository {
       isFriend,
       isFollower,
       hasSentFriendRequest,
-      hasReceivedFriendRequest,
+      friendRequest,
       gameExperiences,
       esportsExperiences,
       esportsBio,
@@ -33,12 +38,15 @@ class ProfileRepository {
       this.isFriend({ isSelf, requestingUserId, profileId }),
       this.isFollower({ isSelf, requestingUserId, profileId }),
       this.hasSentFriendRequest({ isSelf, requestingUserId, profileId }),
-      this.hasReceivedFriendRequest({ isSelf, requestingUserId, profileId }),
+      this.fetchFriendRequest({ isSelf, requestingUserId, profileId }),
       this.fetchGameExperiences({ profileId }),
       this.fetchEsportsExperiences({ profileId }),
       this.fetchEsportsBio({ profileId }),
     ]);
+    const hasReceivedFriendRequest = !!friendRequest.id;
+    const friendRequestId = friendRequest.id;
     const profileSchema = new ProfileSchema({
+      profileId,
       alias,
       image,
       background,
@@ -52,6 +60,7 @@ class ProfileRepository {
       isFollower,
       hasSentFriendRequest,
       hasReceivedFriendRequest,
+      friendRequestId,
       gameExperiences,
       esportsExperiences,
       esportsBio,
@@ -86,7 +95,7 @@ class ProfileRepository {
     return response && response.toJSON()[0] || false;
   }
 
-  async hasReceivedFriendRequest({ isSelf, requestingUserId, profileId }) {
+  async fetchFriendRequest({ isSelf, requestingUserId, profileId }) {
     if (isSelf) return false;
     const response = await Notification.query().where('user_id', profileId).andWhere('other_user_id', requestingUserId).andWhere('activity_type', 1).fetch();
     return response && response.toJSON()[0] || false;

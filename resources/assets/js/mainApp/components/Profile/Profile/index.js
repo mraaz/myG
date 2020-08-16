@@ -27,7 +27,7 @@ export class Profile extends React.Component {
 function mapStateToProps(state, props) {
   const profile = get(state, `profile.profiles[${props.alias}]`, {});
   return {
-    profile,
+    profile
   }
 }
 
