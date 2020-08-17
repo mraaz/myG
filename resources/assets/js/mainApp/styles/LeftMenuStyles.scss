@@ -9,34 +9,33 @@
   color: #fff;
 }
 
-.sidebar-sub-items img {
-  height: 23px;
-}
-
 .sidebar-container {
   width: 245px;
   height: 100vh;
   display: flex;
   flex-direction: column;
   transition: 0.5s;
+  overflow-y: scroll;
 }
 
 .sidebar-container-collapsed {
   width: 80px;
-  position: relative;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  background-color: #1d2326;
-  overflow-x: hidden;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
   transition: 0.5s;
-  color: #fff;
+  overflow-y: scroll;
+}
+
+.sidebar-sub-items img {
+  height: 23px;
 }
 
 .logo-section-container {
   text-align: center;
   padding-top: 30px;
   padding-bottom: 100px;
+  background: #1d2326;
 }
 
 .sidebar-container .logo-section-container {

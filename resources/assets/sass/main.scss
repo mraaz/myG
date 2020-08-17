@@ -219,19 +219,7 @@ label {
 .dark-toast {
   background: $myG-black !important;
 }
-.notifications {
-  &.welcome {
-    background: #a7f442;
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 20px;
-    z-index: 100;
-  }
-  &.active {
-    display: block;
-  }
-}
+
 .clickable {
   cursor: pointer;
   -webkit-touch-callout: none;
