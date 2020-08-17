@@ -564,9 +564,9 @@
       display: flex;
       max-height: calc(100vh - 100px);
       flex-direction: column;
-      border-bottom: 1px solid #384952;
       position: relative;
       margin: 15px;
+      border-radius: 8px;
       .gameDetails__header {
         display: inline-table;
         min-height: 92px;
@@ -808,11 +808,12 @@
       }
       .gameDetaiils__footer {
         background: #1d2326 0% 0% no-repeat padding-box;
-        border-radius: 4px;
-        padding: 24px 36px 36px 24px;
+        border-radius: 8px;
+        padding: 24px;
         display: flex;
         margin-top: auto;
         flex-direction: column;
+        border-top: 1px solid #384952;
         .noComments {
           font: Bold 12px/14px Montserrat;
           letter-spacing: 0px;
