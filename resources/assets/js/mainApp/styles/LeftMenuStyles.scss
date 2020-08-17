@@ -1,3 +1,15 @@
+#main-sidebar {
+  position: relative;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #1d2326;
+  overflow: auto;
+  transition: 0.5s;
+  color: #fff;
+  height: 100vh;
+}
+
 .sidebar-sub-items img {
   height: 23px;
 }
@@ -16,15 +28,14 @@
 }
 
 .sidebar-container-collapsed {
-  left: 0%;
-  top: 0%;
-  right: auto;
-  bottom: 0%;
   width: 80px;
+  position: relative;
+  z-index: 1;
+  top: 0;
+  left: 0;
   background-color: #1d2326;
   transition: 0.5s;
-  position: fixed;
-  overflow: auto;
+  color: #fff;
 }
 
 .logo-section-container {
