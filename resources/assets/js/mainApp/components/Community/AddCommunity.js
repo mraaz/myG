@@ -13,6 +13,7 @@ import { styles } from '../../static/AddCommunity'
 
 import { MyGCheckbox, MyGTextarea, MyGAsyncSelect, MyGCreateableSelect, MyGInput, MyGSelect } from '../common'
 import { Game_name_values, Group_Hash_Tags, Disable_keys } from '../Utility_Function'
+import { Upload_to_S3, Remove_file } from '../AWS_utilities'
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
 import logger from '../../../common/logger'
 
@@ -222,63 +223,36 @@ const AddCommunity = ({
     e.preventDefault()
     let preview_files = [...advancedSettingsState.preview_files]
     preview_files = preview_files.filter((data) => data.src != src)
-    removeIndivdualfromAWS()
+
+    if (advancedSettingsState.preview_files != [] && advancedSettingsState.preview_files[0].key != '') {
+      Remove_file(advancedSettingsState.preview_files[0].key)
+    }
+
     updateAdvancedSettings({ preview_files: preview_files })
   }
-  const handleAcceptedFiles = (file, rejectedFiles) => {
+
+  const handleAcceptedFiles = async (file, rejectedFiles) => {
     if (rejectedFiles.length > 0) {
       toast.error(
         <Toast_style text={`Sorry mate! ${rejectedFiles.length} File(s) rejected because of bad format or file size limit exceed (10mb)`} />
       )
     }
     if (file.length > 0) {
-      doUploadS3(file[0], file[0].name)
-    }
-  }
-
-  const removeIndivdualfromAWS = () => {
-    if (advancedSettingsState.preview_files != [] && advancedSettingsState.preview_files[0].key != '') {
-      const formData = new FormData()
-      formData.append('key', advancedSettingsState.preview_files[0].key)
-
-      try {
-        const post = axios.post('/api/deleteFile', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-      } catch (error) {
-        logger.log('RENDER', 'Community Delete image ')
+      updateAdvancedSettings({ uploading: true })
+      let post = await Upload_to_S3(file[0], file[0].name, 0, null)
+      if (!post) {
+        updateAdvancedSettings({ uploading: false })
+        return
       }
-    }
-  }
-
-  const doUploadS3 = async (file, name) => {
-    updateAdvancedSettings({ uploading: true })
-
-    const formData = new FormData()
-    formData.append('upload_file', file)
-    formData.append('filename', name)
-
-    try {
-      const post = await axios.post('/api/uploadFile', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-
       let new_preview_files = []
+
       new_preview_files.push({
         src: post.data.Location,
         key: post.data.Key,
+        id: post.aws_key_id,
       })
 
       updateAdvancedSettings({ preview_files: new_preview_files, uploading: false })
-    } catch (error) {
-      console.log(error)
-      updateAdvancedSettings({ uploading: false })
-      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Close this window and try again???'} />)
-      logger.log('RENDER', 'Community image upload')
     }
   }
 
@@ -326,7 +300,6 @@ const AddCommunity = ({
           </div>
           <div className='media__container'>
             <Dropzone
-              //onChangeStatus={handleAcceptedFiles}
               onDrop={(acceptedFiles, rejectedFiles) => handleAcceptedFiles(acceptedFiles, rejectedFiles)}
               maxFiles={1}
               minSize={0}
