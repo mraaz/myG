@@ -4,38 +4,31 @@
   top: 0;
   left: 0;
   background-color: #1d2326;
-  overflow: auto;
+  overflow-x: hidden;
   transition: 0.5s;
   color: #fff;
-  height: 100vh;
-}
-
-.sidebar-sub-items img {
-  height: 23px;
 }
 
 .sidebar-container {
-  left: 0%;
-  top: 0%;
-  right: auto;
-  bottom: 0%;
-  z-index: 999;
   width: 245px;
-  background-color: #1d2326;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
   transition: 0.5s;
-  position: fixed;
-  overflow: auto;
+  overflow-y: scroll;
 }
 
 .sidebar-container-collapsed {
   width: 80px;
-  position: relative;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  background-color: #1d2326;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
   transition: 0.5s;
-  color: #fff;
+  overflow-y: scroll;
+}
+
+.sidebar-sub-items img {
+  height: 23px;
 }
 
 .logo-section-container {
