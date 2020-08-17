@@ -350,7 +350,6 @@ $main-font: 'Montserrat';
     cursor: pointer;
 
     .thumbnail {
-      float: left;
       width: 120px;
       height: 160px;
       border-radius: 10px 0 0 10px;
@@ -542,21 +541,28 @@ $main-font: 'Montserrat';
     background-color: $secondary-shade;
     border-radius: 4px;
     margin: 0 0 25px 0;
+    position: relative;
 
     .notification-user-avatar {
-      position: relative;
+      position: absolute;
       top: -10px;
       left: -10px;
       width: 30px;
       height: 30px;
       border-radius: 50%;
       background-color: #fff;
-      padding: 5px;
       box-sizing: border-box;
+      img {
+        width: 100%;
+        border-radius: 50%;
+      }
     }
 
     .notification-content {
       margin-left: 20px;
+      position: relative;
+      display: flex;
+      padding: 10px;
 
       .notification-description {
         max-width: 60%;
@@ -565,15 +571,27 @@ $main-font: 'Montserrat';
         color: #93a4a5;
         font-weight: 700;
         line-height: 160%;
-        display: inline-block;
+        display: inline-table;
+        flex-wrap: wrap;
 
+        .username__link {
+          display: inline-flex;
+        }
+        .notification__text {
+          display: inline;
+        }
         .notification-username {
-          font-size: 14px !important;
           color: #fff !important;
+          margin-right: 5px;
+          text-align: left;
+          font: Bold 14px/14px Montserrat;
+          letter-spacing: 0px;
         }
 
         .notification-type {
           color: #fff !important;
+          margin-right: 5px;
+          margin-left: 5px;
         }
 
         .notification-link {
@@ -583,9 +601,9 @@ $main-font: 'Montserrat';
       }
 
       .notification-options {
-        float: right;
         margin-right: 15px;
         display: inline-block;
+        margin-left: auto;
 
         .notification-time {
           text-align: right;
@@ -596,8 +614,8 @@ $main-font: 'Montserrat';
         }
 
         .notification-actions {
-          margin-top: 20px;
-          display: block;
+          margin-top: 35px;
+          display: flex;
 
           .action {
             font-family: $main-font;
@@ -620,14 +638,83 @@ $main-font: 'Montserrat';
           }
 
           .accept {
+            width: 100px;
+            height: 38px;
             margin-right: 20px;
-            background-color: #446f62;
+            text-align: center;
+            font: Bold 12px/11px Montserrat;
+            letter-spacing: 0px;
+            color: #ffffff;
+            background: #446f62 0% 0% no-repeat padding-box;
+            border-radius: 4px 4px 0px 0px;
           }
 
           .decline {
-            background-color: #804545;
+            width: 100px;
+            height: 38px;
+            text-align: center;
+            font: Bold 12px/11px Montserrat;
+            letter-spacing: 0px;
+            color: #ffffff;
+            background: #804545 0% 0% no-repeat padding-box;
+            border-radius: 4px 4px 0px 0px;
+            img {
+              transform: rotate(-160deg);
+            }
           }
         }
+      }
+    }
+
+    .post {
+      width: 220px;
+      height: 80px;
+    }
+    .post .avatar {
+      float: left;
+      width: 52px;
+      height: 52px;
+      background-color: #ccc;
+      border-radius: 25%;
+      margin: 8px;
+      background-image: linear-gradient(90deg, #f4f4f4 0px, rgba(229, 229, 229, 0.8) 40px, #f4f4f4 80px);
+      background-size: 600px;
+      animation: shine-avatar 2s infinite ease-out;
+    }
+    .post .line {
+      float: left;
+      width: 140px;
+      height: 16px;
+      margin-top: 12px;
+      border-radius: 7px;
+      background-image: linear-gradient(90deg, #f4f4f4 0px, rgba(229, 229, 229, 0.8) 40px, #f4f4f4 80px);
+      background-size: 600px;
+      animation: shine-lines 2s infinite ease-out;
+    }
+    .post .avatar + .line {
+      margin-top: 11px;
+      width: 100px;
+    }
+    .post .line ~ .line {
+      background-color: #ddd;
+    }
+
+    @keyframes shine-lines {
+      0% {
+        background-position: -100px;
+      }
+      40%,
+      100% {
+        background-position: 140px;
+      }
+    }
+    @keyframes shine-avatar {
+      0% {
+        background-position: -32px;
+      }
+      40%,
+      100% {
+        background-position: 208px;
       }
     }
   }
