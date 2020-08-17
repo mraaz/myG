@@ -36,6 +36,8 @@
 section#content-container {
   background-color: #0b0f14;
   flex: 1;
+  height: 100vh;
+  overflow-y: scroll;
 }
 .dashboard-main-container {
   display: flex;
