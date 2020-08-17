@@ -142,7 +142,7 @@ export default class Approvals extends Component {
                 return (
                   <div className='notification'>
                     <div className='notification-user-avatar'>
-                      <img src={this.props.profile_img ? this.props.profile_img : defaultUserImage} />
+                      <img src={approval.profile_img ? approval.profile_img : defaultUserImage} />
                     </div>
                     <div className='notification-content'>
                       <div className='notification-description'>
