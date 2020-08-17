@@ -8,6 +8,7 @@
 @import 'pages/welcome';
 @import 'pages/home';
 @import 'pages/profile';
+@import 'pages/profileV2';
 @import 'pages/scheduleGames';
 @import 'pages/dossier';
 @import 'pages/addGamingExp';
@@ -221,6 +222,12 @@ label {
 
 .clickable {
   cursor: pointer;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   &:active {
     opacity: 0.3;
   }

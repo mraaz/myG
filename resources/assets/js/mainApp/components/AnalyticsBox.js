@@ -53,7 +53,7 @@ export default class AnalyticsBox extends Component {
     const progress = Math.floor((user_experience / level_max_points) * 100)
 
     return (
-      <section className='social-main'>
+      <section className={`social-main ${this.props.containerStyle ? this.props.containerStyle : ''}`}>
         <div className='social-content'>
           <div className='level-container'>
             <section className='level-container-img'>
@@ -134,7 +134,7 @@ export default class AnalyticsBox extends Component {
           </div>
         </div>
 
-        {youMayKnowUser && youMayKnowUser.length > 0 && (
+        {!this.props.hideSuggestions && youMayKnowUser && youMayKnowUser.length > 0 && (
           <div className='suggestion'>
             <div className='suggestion-box-text'>
               <p className='suggestion-box-head'>connections</p>
@@ -159,6 +159,7 @@ export default class AnalyticsBox extends Component {
             </div>
           </div>
         )}
+
       </section>
     )
   }

@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { store } from '../redux/Store'
-import { openChatAction } from '../redux/actions/chatAction'
+import { openChatAction, createChatAction } from '../redux/actions/chatAction'
 import { isOneDayBehind, isYesterday } from './date'
 import { getAssetUrl } from './assets'
 
@@ -70,4 +70,9 @@ export function openChatById(chatId) {
     const chatId = response && response.data && response.data.chat && response.data.chat.chatId
     if (chat && chatId) store.dispatch(openChatAction(chatId, chat))
   })
+}
+
+export function openChatByContact(contactId) {
+  const userId = store.getState().user.userId;
+  store.dispatch(createChatAction([parseInt(contactId)], parseInt(userId)));
 }
