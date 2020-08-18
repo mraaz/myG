@@ -52,7 +52,7 @@ const AddCommunityContainer = () => {
 
   const onAddGameSubmit = async () => {
     console.log(advancedSettingsState.preview_files)
-    return
+
     updateIsSubmitting(false)
 
     if (mainSettingsState.community_name == '' || mainSettingsState.community_name == null) {
@@ -86,6 +86,7 @@ const AddCommunityContainer = () => {
         coHosts: advancedSettingsState.coHosts,
         autoAccept: mainSettingsState.autoAccept,
         type: advancedSettingsState.type,
+        preview_files: advancedSettingsState.preview_files,
       })
       updateMainSettingsState((currentState) => ({
         ...currentState,

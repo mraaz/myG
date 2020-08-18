@@ -65,16 +65,14 @@ class ScheduleGameController {
         let gameface = new GameNameController()
 
         if (getGameName.length == 0) {
-          request.params.game_name = request.input('game_name_box')
-          let tmp = await gameface.createGame({ auth, request, response })
+          let tmp = await gameface.createGame({ auth }, request.input('game_name_box'))
           if (tmp == false) {
             return
           }
           gameNameID = tmp.id
         } else {
           gameNameID = getGameName[0].id
-          request.params.game_names_id = getGameName[0].id
-          gameface.incrementGameCounter({ auth, request, response })
+          gameface.incrementGameCounter({ auth }, request.input('game_name_box'))
         }
 
         const newScheduleGame = await ScheduleGame.create({
@@ -299,8 +297,7 @@ class ScheduleGameController {
         let gameface = new GameNameController()
 
         if (getGameName.length == 0) {
-          request.params.game_name = request.input('game_name_box')
-          let tmp = await gameface.createGame({ auth, request, response })
+          let tmp = await gameface.createGame({ auth }, request.input('game_name_box'))
           if (tmp == false) {
             return
           }
@@ -308,8 +305,7 @@ class ScheduleGameController {
         } else {
           gameNameID = getGameName[0].id
           if (getOne.game_name != getGameName.game_name) {
-            request.params.game_names_id = getGameName[0].id
-            gameface.incrementGameCounter({ auth, request, response })
+            gameface.incrementGameCounter({ auth }, request.input('game_name_box'))
           }
         }
 
@@ -516,9 +512,8 @@ class ScheduleGameController {
         })
 
         //archive_GameNameField.store({ auth, request, response })
-        request.params.game_names_id = getOne[0].game_names_id
 
-        gameface.decrementGameCounter({ auth, request, response })
+        gameface.decrementGameCounter({ auth }, getOne[0].game_names_id)
         //If game is deleted then return, we're not storing this if no1 has it in their profile or has scheduled games for it
 
         let reasons = null

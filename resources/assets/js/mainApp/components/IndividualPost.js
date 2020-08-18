@@ -713,7 +713,13 @@ export default class IndividualPost extends Component {
                 ref={this.setTextInputRef}
               />
               <div className='insert__images' onClick={this.insert_image_comment}>
-                <input type='file' accept='image/*' ref={this.fileInputRef} onChange={this.handleSelectFile} name='insert__images' />
+                <input
+                  type='file'
+                  accept='image/jpeg,image/jpg,image/png,image/gif'
+                  ref={this.fileInputRef}
+                  onChange={this.handleSelectFile}
+                  name='insert__images'
+                />
                 <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
               </div>
 
