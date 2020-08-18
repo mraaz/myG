@@ -707,7 +707,6 @@
         .gameDescription__body {
           font: 14px/14px Montserrat;
           letter-spacing: 0px;
-          font-weight: 600;
           letter-spacing: 0px;
           color: #ffffff;
           opacity: 1;
@@ -727,7 +726,6 @@
         .gameTime__value {
           font: 14px/14px Montserrat;
           letter-spacing: 0px;
-          font-weight: 600;
           letter-spacing: 0px;
           color: #ffffff;
           opacity: 1;
@@ -877,7 +875,7 @@
     }
     .gameList {
       flex: 1;
-      border-right: 1px solid #384952;
+      border: 1px solid #384952;
       padding: 20px;
       .gameList_head__option {
         display: flex;
@@ -1242,6 +1240,7 @@
                 color: white;
               }
               .comment-content {
+                padding-top: 3px;
                 color: #93a4a5;
                 font-size: 12px;
                 width: 100%;
