@@ -63,7 +63,7 @@ export default class AttachUploader extends React.Component {
     }
     return (
       <Dropzone
-        accept='image/*,audio/*,video/*'
+        accept='image/jpeg,image/jpg,image/png,image/gif,audio/*,video/*'
         maxFiles={1}
         maxSizeBytes={10485760}
         PreviewComponent={null}

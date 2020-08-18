@@ -8,6 +8,9 @@ const CoHost = use('App/Models/CoHost')
 const UserStatTransactionController = use('./UserStatTransactionController')
 const GroupHashTagController = use('./GroupHashTagController')
 const GroupHashTagTranController = use('./GroupHashTagTranController')
+const ApiController = use('./ApiController')
+const GameNameController = use('./GameNameController')
+
 const LoggingRepository = require('../../Repositories/Logging')
 
 const MAX_HASH_TAGS = 4
@@ -34,7 +37,28 @@ class GroupController {
           return false
         }
 
+        //Code copied over from ScheduleGameController
+        let gameNameID = null
+        const getGameName = await Database.from('game_names').where({
+          game_name: request.input('game_name_box'),
+        })
+        let gameface = new GameNameController()
+
+        if (getGameName.length == 0) {
+          request.params.game_name = request.input('game_name_box')
+          let tmp = await gameface.createGame({ auth }, request.input('game_name_box'))
+          if (tmp == false) {
+            return
+          }
+          gameNameID = tmp.id
+        } else {
+          gameNameID = getGameName[0].id
+          gameface.incrementGameCounter({ auth }, request.input('game_names_id'))
+        }
+        //End copy of code
+
         const newGroup = await Group.create({
+          game_names_id: parseInt(gameNameID, 10),
           user_id: auth.user.id,
           name: request.input('name'),
           group_img: request.input('group_img'),
@@ -43,6 +67,15 @@ class GroupController {
           game_names_id: request.input('game_names_id'),
           grp_description: request.input('grp_description'),
         })
+
+        if (
+          request.input('preview_files') != undefined &&
+          request.input('preview_files') != null &&
+          request.input('preview_files').length > 0
+        ) {
+          let apiController = new ApiController()
+          apiController.update_aws_keys_entry({ auth }, request.input('preview_files')[0].id, '4', newGroup.id)
+        }
 
         if (request.input('tags') != null && request.input('tags').length > 0) {
           let grp_tags_TRANS_Controller = new GroupHashTagTranController()

@@ -37,19 +37,19 @@ class GameNameController {
     }
   }
 
-  async createGame({ auth, request, response }) {
+  async createGame({ auth }, game_name) {
     if (auth.user) {
       try {
-        if (/['/.%#$,;`\\]/.test(request.params.game_name)) {
+        if (/['/.%#$,;`\\]/.test(game_name)) {
           return false
         }
 
-        if (request.params.game_name.length > 88) {
+        if (game_name.length > 88) {
           return false
         }
 
         const createGame = await GameNames.create({
-          game_name: request.params.game_name,
+          game_name: game_name,
           user_id: auth.user.id,
         })
 
@@ -69,11 +69,11 @@ class GameNameController {
     }
   }
 
-  async incrementGameCounter({ auth, request, response }) {
+  async incrementGameCounter({ auth }, game_name) {
     if (auth.user) {
       try {
         const incrementGameCounter = await GameNames.query()
-          .where({ id: request.params.game_names_id })
+          .where({ id: game_name })
           .increment('counter', 1)
         return 'Updated successfully'
       } catch (error) {
@@ -91,21 +91,21 @@ class GameNameController {
     }
   }
 
-  async decrementGameCounter({ auth, request, response }) {
+  async decrementGameCounter({ auth }, game_name) {
     if (auth.user) {
       try {
         const decrementGameCounter = await GameNames.query()
-          .where({ id: request.params.game_names_id })
+          .where({ id: game_name })
           .decrement('counter', 1)
 
         const game_names = await Database.table('game_names').where({
-          id: request.params.game_names_id,
+          id: game_name,
         })
 
         if (game_names[0].verified == 0 && game_names[0].counter == 0) {
           const delete_game = await Database.table('game_names')
             .where({
-              id: request.params.game_names_id,
+              id: game_name,
             })
             .delete()
         }

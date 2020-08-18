@@ -17,7 +17,6 @@ export async function Upload_to_S3(file, name, type = 0, id = null) {
         'Content-Type': 'multipart/form-data',
       },
     })
-    console.log(post)
     return post
   } catch (error) {
     toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Refresh and try again???'} />)
@@ -26,9 +25,10 @@ export async function Upload_to_S3(file, name, type = 0, id = null) {
   }
 }
 
-export async function Remove_file(key) {
+export async function Remove_file(key, aws_key_id) {
   const formData = new FormData()
   formData.append('key', key)
+  formData.append('aws_key_id', aws_key_id)
 
   try {
     const post = axios.post('/api/deleteFile', formData, {

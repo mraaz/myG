@@ -71,10 +71,17 @@ class EsportsExperienceController {
         const requestingUserId = auth.user.id
         const requestedGameId = request.params.game_names_id
         await UserRepository.favoriteGame({ requestingUserId, requestedGameId })
-        gameface.incrementGameCounter({ auth, request, response })
+        gameface.incrementGameCounter({ auth }, request.input('game_name'))
+
         return 'Saved item'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     }
   }
@@ -94,7 +101,13 @@ class EsportsExperienceController {
         myesportsExperience,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 
@@ -156,15 +169,21 @@ class EsportsExperienceController {
           })
 
         if (game_experiences[0].game_name !== request.input('game_name')) {
-          gameface.incrementGameCounter({ auth, request, response })
+          gameface.incrementGameCounter({ auth }, request.input('game_name'))
 
           request.params.game_names_id = game_experiences[0].game_names_id
-          gameface.decrementGameCounter({ auth, request, response })
+          gameface.decrementGameCounter({ auth }, game_experiences[0].game_names_id)
         }
 
         return 'Saved successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     }
   }
@@ -182,8 +201,7 @@ class EsportsExperienceController {
         //   game_name: game_experiences[0].game_name,
         // })
 
-        request.params.game_names_id = game_experiences[0].game_names_id
-        gameface.decrementGameCounter({ auth, request, response })
+        gameface.decrementGameCounter({ auth }, game_experiences[0].game_names_id)
 
         const delete_esport_exp = await Database.table('esports_experiences')
           .where({
@@ -193,7 +211,13 @@ class EsportsExperienceController {
 
         return 'Deleted successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
@@ -215,7 +239,13 @@ class EsportsExperienceController {
         esportsExperience,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 
@@ -292,7 +322,13 @@ class EsportsExperienceController {
         latestGameExperiences,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 }
