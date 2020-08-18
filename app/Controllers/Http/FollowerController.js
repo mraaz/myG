@@ -4,22 +4,33 @@ const Follower = use('App/Models/Follower')
 const Database = use('Database')
 const UserStatTransactionController = use('./UserStatTransactionController')
 const LoggingRepository = require('../../Repositories/Logging')
+const ProfileRepository = require('../../Repositories/Profile')
 
 class FollowerController {
-  async store({ auth, request, response }) {
+  async store({ auth, request }) {
     if (auth.user) {
       try {
-        const newFollower = await Follower.create({
-          follower_id: request.input('follower_id'),
+        const followerIdInput = request.input('follower_id')
+        const alias = request.input('follower_alias')
+        const followerId = followerIdInput || (await ProfileRepository.fetchProfileId({ alias }))
+
+        await Follower.create({
+          follower_id: followerId,
           user_id: auth.user.id,
         })
 
         let userStatController = new UserStatTransactionController()
-        userStatController.update_total_number_of(request.input('follower_id'), 'total_number_of_followers')
+        userStatController.update_total_number_of(followerId, 'total_number_of_followers')
 
         return 'Saved'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     }
   }
@@ -37,7 +48,13 @@ class FollowerController {
 
         return 'Saved'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     }
   }
@@ -57,7 +74,13 @@ class FollowerController {
 
         return 'Deleted successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'

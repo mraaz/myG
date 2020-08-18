@@ -36,6 +36,8 @@
 section#content-container {
   background-color: #0b0f14;
   flex: 1;
+  height: 100vh;
+  overflow-y: scroll;
 }
 .dashboard-main-container {
   display: flex;
@@ -629,12 +631,12 @@ section#content-container {
           textarea {
             position: relative;
             z-index: 2;
-            border: none;
             height: 48px;
             width: 100%;
             border-radius: 20px;
             box-shadow: $boxshadowbtns;
             background-color: $backgroundContent;
+            outline: none !important;
           }
           .buttons {
             display: flex;
@@ -1221,6 +1223,7 @@ section#content-container {
           font-size: 12px;
           padding: 8px 20px;
           top: 20px;
+          outline: none;
         }
         .insert__images {
           position: absolute;

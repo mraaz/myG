@@ -564,9 +564,9 @@
       display: flex;
       max-height: calc(100vh - 100px);
       flex-direction: column;
-      border-bottom: 1px solid #384952;
       position: relative;
       margin: 15px;
+      border-radius: 8px;
       .gameDetails__header {
         display: inline-table;
         min-height: 92px;
@@ -623,7 +623,6 @@
         }
         .game__action__buttton {
           position: relative;
-          top: 10px;
           display: inline-block;
           button {
             width: 102px;
@@ -809,11 +808,12 @@
       }
       .gameDetaiils__footer {
         background: #1d2326 0% 0% no-repeat padding-box;
-        border-radius: 4px;
-        padding: 24px 36px 36px 24px;
+        border-radius: 8px;
+        padding: 24px;
         display: flex;
         margin-top: auto;
         flex-direction: column;
+        border-top: 1px solid #384952;
         .noComments {
           font: Bold 12px/14px Montserrat;
           letter-spacing: 0px;
@@ -1423,8 +1423,7 @@
       }
 
       .gameComments__header {
-        padding: 16px 30px;
-        height: 60px;
+        padding: 20px 10px;
         display: flex;
         align-items: center;
         margin-bottom: 20px;
@@ -1436,6 +1435,7 @@
           color: #ffffff;
           font-weight: bold;
           cursor: pointer;
+          margin: 0;
           img {
             transform: rotate(90deg);
             height: 12px;
@@ -1471,6 +1471,7 @@
           color: #657172;
           font-size: 12px;
           padding: 8px 20px;
+          outline: none;
         }
         .insert__images {
           position: absolute;

@@ -8,6 +8,7 @@
 @import 'pages/welcome';
 @import 'pages/home';
 @import 'pages/profile';
+@import 'pages/profileV2';
 @import 'pages/scheduleGames';
 @import 'pages/dossier';
 @import 'pages/addGamingExp';
@@ -218,21 +219,15 @@ label {
 .dark-toast {
   background: $myG-black !important;
 }
-.notifications {
-  &.welcome {
-    background: #a7f442;
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 20px;
-    z-index: 100;
-  }
-  &.active {
-    display: block;
-  }
-}
+
 .clickable {
   cursor: pointer;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   &:active {
     opacity: 0.3;
   }

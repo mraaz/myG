@@ -50,9 +50,12 @@ class RedisRepository {
   }
 
   async loadGameMessageSchedule() {
+    const zeroPad = (number) => number < 10 ? `0${number}` : number;
+    const today = new Date();
+    const scheduleDate = `${today.getFullYear()}-${zeroPad(today.getMonth() + 1)}-${zeroPad(today.getDate())} ${zeroPad(today.getHours())}:${zeroPad(today.getMinutes())}:${zeroPad(today.getSeconds())}`
     const rawSchedule = await ChatGameMessageSchedule
       .query()
-      .where('schedule', '>', moment())
+      .where('schedule', '>', scheduleDate)
       .orderBy('schedule', 'desc')
       .fetch();
     const schedule = (rawSchedule && rawSchedule.toJSON()) || [];

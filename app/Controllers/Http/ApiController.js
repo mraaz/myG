@@ -10,6 +10,10 @@ const User = use('App/Models/User')
 const ChatMessage = use('App/Models/ChatMessage')
 const NodeClam = require('clamscan')
 
+const LoggingRepository = require('../../Repositories/Logging')
+
+const AwsKey = use('App/Models/AwsKey')
+
 const S3_BUCKET_CHAT = 'mygame-media/myG chat/chat_images'
 const S3_BUCKET = 'mygame-media/user_files'
 const S3_BUCKET_DELETE = 'mygame-media'
@@ -57,12 +61,14 @@ class ApiController {
         userInfo: auth.user,
         port: process.env.PORT,
         logsOn: process.env.LOGS_ON,
+        featuresOn: process.env.FEATURES_ON,
       }
     } else {
       return {
         userInfo: 1981,
         port: process.env.PORT,
         logsOn: process.env.LOGS_ON,
+        featuresOn: process.env.FEATURES_ON,
       }
     }
   }
@@ -111,11 +117,87 @@ class ApiController {
         const type = fileType(buffer)
         const timestamp = Date.now().toString()
         //const fileName = timestamp + '_' + generateRandomString(6) + '_' + filename
-        const data = await uploadFile(bucket, buffer, tmpfilename, type)
+        let data = await uploadFile(bucket, buffer, tmpfilename, type)
         fs.unlinkSync(tmpfilepath)
+        data.aws_key_id = await this.create_aws_keys_entry({ auth }, data.Key, request.input('type'), request.input('id'))
+
         return response.status(200).json(data)
       } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
         return response.status(400).json(error)
+      }
+    }
+  }
+
+  async create_aws_keys_entry({ auth }, key, type, id) {
+    if (auth.user) {
+      try {
+        if (key.length == undefined || key == null) {
+          return
+        }
+        let post_id = null,
+          group_id = null,
+          chat_id = null,
+          chat_message_id = null,
+          comment_id = null,
+          reply_id = null,
+          game_name_id = null
+
+        switch (type) {
+          case '3':
+            post_id = id
+            break
+          case '4':
+            group_id = id
+            break
+          case '5':
+            chat_id = id
+            break
+          case '6':
+            chat_message_id = id
+            break
+          case '7':
+            comment_id = id
+            break
+          case '8':
+            reply_id = id
+            break
+          case '9':
+            game_name_id = id
+            break
+        }
+        if (type == undefined || type == null) {
+          type = 0
+        }
+
+        let addAwsKey = await AwsKey.create({
+          aws_key: key,
+          user_id: auth.user.id,
+          post_id: post_id,
+          group_id: group_id,
+          chat_id: chat_id,
+          chat_message_id: chat_message_id,
+          game_name_id: game_name_id,
+          comment_id: comment_id,
+          reply_id: reply_id,
+          type: type,
+        })
+        return addAwsKey.id
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
+        return false
       }
     }
   }
@@ -128,7 +210,7 @@ class ApiController {
           Bucket: S3_BUCKET_DELETE,
           Key: key,
         },
-        function (err, data) {
+        function(err, data) {
           if (data) {
             return response.status(200).json({ success: true })
           } else {
@@ -146,7 +228,7 @@ class ApiController {
           Bucket: S3_BUCKET_DELETE,
           Key: key,
         },
-        function (err, data) {
+        function(err, data) {
           if (data) {
             resolve()
           } else {
@@ -164,7 +246,7 @@ class ApiController {
           Bucket: S3_BUCKET_DELETE,
           Key: request.params.key,
         },
-        function (err, data) {
+        function(err, data) {
           if (data) {
             return response.status(200).json({ success: true })
           } else {
@@ -185,7 +267,7 @@ class ApiController {
             Bucket: S3_BUCKET_DELETE,
             Key: files[findex].key,
           },
-          function (err, data) {
+          function(err, data) {
             if (!data) {
               bFailed = true
             }

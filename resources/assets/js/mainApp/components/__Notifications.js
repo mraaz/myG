@@ -28,7 +28,7 @@ export default class Notifications extends Component {
     }
 
     try {
-      const getnoti = await axios.post('/api/notifications/getAllNoti', {
+      const getnoti = await axios.post('/api/notifications_v2/getAllNoti', {
         counter: this.state.counter,
       })
 

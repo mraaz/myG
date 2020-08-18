@@ -20,11 +20,13 @@ import { PersistGate } from 'redux-persist/integration/react'
 import ErrorHandler from './components/ErrorHandler';
 import { store, persistor } from '../redux/Store'
 import { loadUserInfoToReduxStore } from '../common/user';
+import { FeatureEnabled, FeatureDisabled, PROFILE_V2 } from '../common/flags';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import {
   Home,
   Profile,
+  ProfileContainer,
   LeftMenu,
   MessengerLoader,
   ChatUnreadMessages,
@@ -84,6 +86,7 @@ class Layout extends Component {
         const initialData = await axios.get('/api/initialApp')
         window.PORT = initialData.data.port
         window.LOGS_ON = initialData.data.logsOn || ""
+        window.FEATURES_ON = initialData.data.featuresOn || ""
 
         if (window.LOGS_ON.includes('EXPLAIN')) {
           const whyDidYouRender = require('@welldone-software/why-did-you-render');
@@ -164,11 +167,25 @@ class Layout extends Component {
                   exact
                   path='/profile/:alias'
                   component={(props) => (
-                    <Profile
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
+                    <React.Fragment>
+
+                      <FeatureEnabled allOf={[PROFILE_V2]}>
+                        <ProfileContainer
+                          routeProps={props}
+                          initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
+                          key={Math.random()}
+                        />
+                      </FeatureEnabled>
+
+                      <FeatureDisabled anyOf={[PROFILE_V2]}>
+                        <Profile
+                          routeProps={props}
+                          initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
+                          key={Math.random()}
+                        />
+                      </FeatureDisabled>
+
+                    </React.Fragment>
                   )}
                 />
 

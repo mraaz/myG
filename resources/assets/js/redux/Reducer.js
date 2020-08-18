@@ -10,6 +10,7 @@ import game from './reducers/gameReducer'
 import pagination from './reducers/paginationReducer'
 import encryption from './reducers/encryptionReducer'
 import socket from './reducers/socketReducer'
+import profile from './reducers/profileReducer'
 
 const appReducer = combineReducers({
   alert,
@@ -20,6 +21,7 @@ const appReducer = combineReducers({
   pagination,
   encryption,
   socket,
+  profile,
 })
 
 const rootReducer = (state, action) => {
