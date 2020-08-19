@@ -37,6 +37,9 @@ export default class GameComments extends Component {
     try {
       const gameComments = await axios.get(`/api/comments/scheduled_games/${id}`)
       this.setState({
+        comments: [],
+      })
+      this.setState({
         comments: gameComments.data.allComments,
         comment_total: gameComments.data.allComments.length,
       })
@@ -148,7 +151,7 @@ export default class GameComments extends Component {
           file_keys: '',
           value: '',
         })
-        // this.pullComments()
+        this.pullComments()
         this.setState({
           comment_total: this.state.comment_total + 1,
           zero_comments: true,
@@ -193,7 +196,13 @@ export default class GameComments extends Component {
                 ref={this.setTextInputRef}
               />
               <div className='insert__images' onClick={this.insert_image_comment}>
-                <input type='file' accept='image/*' ref={this.fileInputRef} onChange={this.handleSelectFile} name='insert__images' />
+                <input
+                  type='file'
+                  accept='image/jpeg,image/jpg,image/png,image/gif'
+                  ref={this.fileInputRef}
+                  onChange={this.handleSelectFile}
+                  name='insert__images'
+                />
                 <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
               </div>
               <Link to={`/profile/${userInfo.alias}`} className='user-img'>

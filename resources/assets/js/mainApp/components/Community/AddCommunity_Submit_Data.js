@@ -29,12 +29,15 @@ export async function SubmitDataFunction(myG) {
   //type: this.state.privacy_box.value,
   try {
     const post = await axios.post('/api/groups/create', {
+      game_name_box: myG.game_name_box.value,
+      game_names_id: myG.game_name_box.game_names_id,
       name: myG.community_name,
       all_accept: myG.autoAccept,
       grp_description: myG.description,
       tags: tags,
       co_hosts: co_hosts,
       type: myG.type,
+      preview_files: myG.preview_files,
     })
     return post
   } catch (error) {

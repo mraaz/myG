@@ -9,6 +9,7 @@ const bluebird = require('bluebird')
 const User = use('App/Models/User')
 const ChatMessage = use('App/Models/ChatMessage')
 const NodeClam = require('clamscan')
+const Database = use('Database')
 
 const LoggingRepository = require('../../Repositories/Logging')
 
@@ -202,9 +203,73 @@ class ApiController {
     }
   }
 
+  async update_aws_keys_entry({ auth }, aws_key_id, type, id) {
+    if (auth.user) {
+      try {
+        let post_id = null,
+          group_id = null,
+          chat_id = null,
+          chat_message_id = null,
+          comment_id = null,
+          reply_id = null,
+          game_name_id = null
+
+        switch (type) {
+          case '3':
+            post_id = id
+            break
+          case '4':
+            group_id = id
+            break
+          case '5':
+            chat_id = id
+            break
+          case '6':
+            chat_message_id = id
+            break
+          case '7':
+            comment_id = id
+            break
+          case '8':
+            reply_id = id
+            break
+          case '9':
+            game_name_id = id
+            break
+          default:
+            return
+        }
+
+        let addAwsKey = await AwsKey.query()
+          .where({ id: aws_key_id })
+          .update({
+            post_id: null,
+            group_id: group_id,
+            chat_id: null,
+            chat_message_id: null,
+            game_name_id: null,
+            comment_id: null,
+            reply_id: null,
+            type: type,
+          })
+
+        return true
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+
   async deleteFile({ auth, request, response }) {
     if (auth.user) {
-      var key = request.input('key')
+      let key = request.input('key')
+
+      var delete_aws_entry = await Database.table('aws_keys')
+        .where({
+          id: request.input('aws_key_id'),
+        })
+        .delete()
+
       s3.deleteObject(
         {
           Bucket: S3_BUCKET_DELETE,

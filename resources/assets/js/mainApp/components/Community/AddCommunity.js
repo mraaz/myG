@@ -225,7 +225,7 @@ const AddCommunity = ({
     preview_files = preview_files.filter((data) => data.src != src)
 
     if (advancedSettingsState.preview_files != [] && advancedSettingsState.preview_files[0].key != '') {
-      Remove_file(advancedSettingsState.preview_files[0].key)
+      Remove_file(advancedSettingsState.preview_files[0].key, advancedSettingsState.preview_files[0].id)
     }
 
     updateAdvancedSettings({ preview_files: preview_files })
@@ -249,7 +249,7 @@ const AddCommunity = ({
       new_preview_files.push({
         src: post.data.Location,
         key: post.data.Key,
-        id: post.aws_key_id,
+        id: post.data.aws_key_id,
       })
 
       updateAdvancedSettings({ preview_files: new_preview_files, uploading: false })
@@ -304,7 +304,7 @@ const AddCommunity = ({
               maxFiles={1}
               minSize={0}
               maxSizeBytes={11185350}
-              accept='image/*'
+              accept='image/jpeg,image/jpg,image/png,image/gif'
               disabled={advancedSettingsState.uploading}>
               {(props) => {
                 return (
