@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react'
-const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
+const buckectBaseUrl = 'https://mygame-media.s3.amazonaws.com/platform_images/'
 
 import { toast } from 'react-toastify'
 import axios from 'axios'

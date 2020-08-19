@@ -71,7 +71,7 @@ export default class Header extends React.Component {
       <div className='send-message-button clickable' onClick={() => openChatByContact(this.props.profile.profileId)}>
         <div
           className='send-message-button-icon'
-          style={{ backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/logo.svg')` }}
+          style={{ backgroundImage: `url('https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/logo.svg')` }}
         />
         Send Message
       </div>

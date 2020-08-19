@@ -115,7 +115,7 @@ export default class Member_lists extends Component {
         <section id='invitation-page'>
           <div className='content-area invitation-page'>
             <div id='header'>
-              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/headers/headers_v1-16.png' />
+              <img src='https://mygame-media.s3.amazonaws.com/headers/headers_v1-16.png' />
             </div>
             {this.state.show_settings && (
               <div className='group-settings'>

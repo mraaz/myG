@@ -285,7 +285,7 @@ export default class IndividualApproval extends Component {
               to={`/profile/${approvals.users.alias}`}
               className='user-img'
               style={{
-                backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/default_user/new-user-profile-picture.png')`,
+                backgroundImage: `url('https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png')`,
               }}></Link>
           )}
           <div className='user-info'>{`${approvals.users.alias}`}</div>
@@ -294,7 +294,7 @@ export default class IndividualApproval extends Component {
           {this.state.dota_2_position_one && (
             <div className='dota_2_position_one' onClick={() => this.clickUpdatePosition(1)}>
               <img
-                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-one-key-first-3-512.png'
+                src='https://mygame-media.s3.amazonaws.com/stock_images/number-one-key-first-3-512.png'
                 height='40'
                 width='40'></img>
             </div>
@@ -302,7 +302,7 @@ export default class IndividualApproval extends Component {
           {this.state.dota_2_position_one_ticked && (
             <div className='dota_2_position_one' onClick={() => this.clickUpdatePosition(-1)}>
               <img
-                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-one-key-first-3-512-Ticked.png'
+                src='https://mygame-media.s3.amazonaws.com/stock_images/number-one-key-first-3-512-Ticked.png'
                 height='40'
                 width='40'></img>{' '}
             </div>
@@ -310,7 +310,7 @@ export default class IndividualApproval extends Component {
           {this.state.dota_2_position_two && (
             <div className='dota_2_position_two' onClick={() => this.clickUpdatePosition(2)}>
               <img
-                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-two-key-3-512.png'
+                src='https://mygame-media.s3.amazonaws.com/stock_images/number-two-key-3-512.png'
                 height='40'
                 width='40'></img>{' '}
             </div>
@@ -318,7 +318,7 @@ export default class IndividualApproval extends Component {
           {this.state.dota_2_position_two_ticked && (
             <div className='dota_2_position_two' onClick={() => this.clickUpdatePosition(-2)}>
               <img
-                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-two-key-3-512-Ticked.png'
+                src='https://mygame-media.s3.amazonaws.com/stock_images/number-two-key-3-512-Ticked.png'
                 height='40'
                 width='40'></img>{' '}
             </div>
@@ -326,7 +326,7 @@ export default class IndividualApproval extends Component {
           {this.state.dota_2_position_three && (
             <div className='dota_2_position_three' onClick={() => this.clickUpdatePosition(3)}>
               <img
-                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-three-keyboard-3-512.png'
+                src='https://mygame-media.s3.amazonaws.com/stock_images/number-three-keyboard-3-512.png'
                 height='40'
                 width='40'></img>{' '}
             </div>
@@ -334,7 +334,7 @@ export default class IndividualApproval extends Component {
           {this.state.dota_2_position_three_ticked && (
             <div className='dota_2_position_three' onClick={() => this.clickUpdatePosition(-3)}>
               <img
-                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-three-keyboard-3-512-Ticked.png'
+                src='https://mygame-media.s3.amazonaws.com/stock_images/number-three-keyboard-3-512-Ticked.png'
                 height='40'
                 width='40'></img>{' '}
             </div>
@@ -342,7 +342,7 @@ export default class IndividualApproval extends Component {
           {this.state.dota_2_position_four && (
             <div className='dota_2_position_four' onClick={() => this.clickUpdatePosition(4)}>
               <img
-                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-four-keyboard-3-512.png'
+                src='https://mygame-media.s3.amazonaws.com/stock_images/number-four-keyboard-3-512.png'
                 height='40'
                 width='40'></img>{' '}
             </div>
@@ -350,7 +350,7 @@ export default class IndividualApproval extends Component {
           {this.state.dota_2_position_four_ticked && (
             <div className='dota_2_position_four' onClick={() => this.clickUpdatePosition(-4)}>
               <img
-                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-four-keyboard-3-512-Ticked.png'
+                src='https://mygame-media.s3.amazonaws.com/stock_images/number-four-keyboard-3-512-Ticked.png'
                 height='40'
                 width='40'></img>{' '}
             </div>
@@ -358,7 +358,7 @@ export default class IndividualApproval extends Component {
           {this.state.dota_2_position_five && (
             <div className='dota_2_position_five' onClick={() => this.clickUpdatePosition(5)}>
               <img
-                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-five-keyboard-3-512.png'
+                src='https://mygame-media.s3.amazonaws.com/stock_images/number-five-keyboard-3-512.png'
                 height='40'
                 width='40'></img>{' '}
             </div>
@@ -366,7 +366,7 @@ export default class IndividualApproval extends Component {
           {this.state.dota_2_position_five_ticked && (
             <div className='dota_2_position_five' onClick={() => this.clickUpdatePosition(-5)}>
               <img
-                src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/number-five-keyboard-3-512-Ticked.png'
+                src='https://mygame-media.s3.amazonaws.com/stock_images/number-five-keyboard-3-512-Ticked.png'
                 height='40'
                 width='40'></img>{' '}
             </div>
@@ -410,7 +410,7 @@ export default class IndividualApproval extends Component {
               to={`/profile/${approvals.users.alias}`}
               className='user-img'
               style={{
-                backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/default_user/new-user-profile-picture.png')`,
+                backgroundImage: `url('https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png')`,
               }}></Link>
           )}
           <div className='user-info'>{`${approvals.users.alias}`}</div>

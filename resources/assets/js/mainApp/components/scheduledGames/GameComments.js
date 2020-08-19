@@ -9,9 +9,9 @@ import axios from 'axios'
 import IndividualComment from '../IndividualComment'
 import { toast } from 'react-toastify'
 import { Toast_style } from '../Utility_Function'
-const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
+const buckectBaseUrl = 'https://mygame-media.s3.amazonaws.com/platform_images/'
 import { Link } from 'react-router-dom'
-const defaultUserImage = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png'
+const defaultUserImage = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
 
 export default class GameComments extends Component {
   constructor() {
@@ -169,7 +169,7 @@ export default class GameComments extends Component {
     let { userInfo = {} } = user //destructing of object
 
     let {
-      profile_img = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png',
+      profile_img = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png',
       hash_tags = [],
     } = scheduleGames_data
     return (
@@ -177,7 +177,7 @@ export default class GameComments extends Component {
         <div className='gameComments__header '>
           <div className='gameName' onClick={this.props.toggleBack}>
             <h1 className='game__name'>
-              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/View+Game/Down+Carrot.svg' /> Comments{' '}
+              <img src='https://mygame-media.s3.amazonaws.com/platform_images/View+Game/Down+Carrot.svg' /> Comments{' '}
               {` (${comments.length})`}{' '}
             </h1>
           </div>

@@ -124,7 +124,7 @@ class SearchHeader extends Component {
         playersDB.push({
           first: 'See all results for ' + `${value}`,
           last: `${value}`,
-          profile_img: 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png',
+          profile_img: 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png',
           id: -1,
         })
         self.setState({

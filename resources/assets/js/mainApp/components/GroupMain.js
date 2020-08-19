@@ -166,13 +166,13 @@ export default class GroupMain extends Component {
         <section className={`postCompose__container ${overlay_active ? 'zI1000' : ''}`}>
           <div className='arrow__right'>
             <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Communities/Group+971.svg'
+              src='https://mygame-media.s3.amazonaws.com/platform_images/Communities/Group+971.svg'
               alt='arrow-right'
             />
           </div>
           <div className='arrow__left'>
             <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Communities/Group+971.svg'
+              src='https://mygame-media.s3.amazonaws.com/platform_images/Communities/Group+971.svg'
               alt='arrow-left'
             />
           </div>
@@ -188,7 +188,7 @@ export default class GroupMain extends Component {
           <div className='community__search_container'>
             <div className='community__search'>
               <input type='text' class='form-control' placeholder='Search' />
-              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Communities/btn_Search.png' />
+              <img src='https://mygame-media.s3.amazonaws.com/platform_images/Communities/btn_Search.png' />
             </div>
           </div>
           {open_compose_textTab && (
