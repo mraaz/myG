@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 
-const defaultThumbnails = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Notifications/myG_icon.svg'
-const defaultUserImage = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png'
+const defaultThumbnails = 'https://mygame-media.s3.amazonaws.com/platform_images/Notifications/myG_icon.svg'
+const defaultUserImage = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
 
 export default class UpcomingItem extends Component {
   constructor() {
@@ -12,6 +12,10 @@ export default class UpcomingItem extends Component {
 
   handleSingleGameView = (id) => {
     this.props.routeProps.routeProps.history.push(`/scheduledGames/${id}`)
+  }
+
+  addDefaultSrc(ev) {
+    ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
   }
 
   render() {
@@ -63,7 +67,7 @@ export default class UpcomingItem extends Component {
             <div className='game__playerList'>
               <Link to={`/profile/${this.props.alias}`}>
                 <div className='playerName'>
-                  <img src={this.props.profile_img ? this.props.profile_img : defaultUserImage} />
+                  <img onError={this.addDefaultSrc} src={this.props.profile_img ? this.props.profile_img : defaultUserImage} />
                   <span> {this.props.alias}</span>
                 </div>
               </Link>
@@ -71,13 +75,13 @@ export default class UpcomingItem extends Component {
           </div>
           <div className='second__row'>
             <div className='gamer__count'>
-              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/little_green_man.svg' />
+              <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Notifications/little_green_man.svg' />
               <span>
                 {this.props.no_of_gamers} / {this.props.limit == 0 ? <span>&#8734;</span> : this.props.limit} Gamers
               </span>
             </div>
             <div className='game__timestamp'>
-              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/clock.svg' />
+              <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Notifications/clock.svg' />
               <span>{moment(this.props.start_date_time).format('LL')}</span>
             </div>
           </div>

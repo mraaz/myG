@@ -81,7 +81,13 @@ class AuthController {
           }
         }
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
         session.withErrors(validation.messages()).flashAll()
         return response.redirect('back')
       }
@@ -101,8 +107,8 @@ class AuthController {
           alias: request.input('alias'),
           first_name: request.input('firstName'),
           last_name: request.input('lastName'),
-          profile_img: 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png',
-          profile_bg: 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/universe.jpg',
+          profile_img: 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png',
+          profile_bg: 'https://mygame-media.s3.amazonaws.com/default_user/universe.jpg',
         })
 
         // Decrease Seats Available upon Registration
@@ -111,7 +117,9 @@ class AuthController {
 
         // Mark Extra Seat Code as Used
         if (extraSeatsCode) {
-          await ExtraSeatsCodes.query().where('code', extraSeatsCode).update({ user_id: newUser.id })
+          await ExtraSeatsCodes.query()
+            .where('code', extraSeatsCode)
+            .update({ user_id: newUser.id })
         }
 
         var newUserSettings = await Settings.create({
@@ -133,7 +141,9 @@ class AuthController {
       }
       //session.flash({ notification: 'Welcome to myGame!!!' })
 
-      const user = await User.query().where('email', request.input('email')).first()
+      const user = await User.query()
+        .where('email', request.input('email'))
+        .first()
       await auth.login(user)
 
       return response.redirect(`/setEncryptionParaphrase/${request.input('encryption')}`)
@@ -159,7 +169,9 @@ class AuthController {
     const postData = request.post()
 
     //find the user in the Database by their Email
-    const user = await User.query().where('email', postData.email).first()
+    const user = await User.query()
+      .where('email', postData.email)
+      .first()
     if (user) {
       //Verfiy the Password
       const passwordVerified = await Hash.verify(postData.password, user.password)
@@ -214,7 +226,13 @@ class AuthController {
       await auth.logout()
       return response.redirect('/')
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
       return 'Error, unable to logout'
     }
   }
@@ -242,7 +260,9 @@ class AuthController {
         if (passwordVerified) {
           try {
             auth.user.password = await Hash.make(request.input('password'))
-            var updateUser = await User.query().where('id', '=', auth.user.id).update({ password: auth.user.password })
+            var updateUser = await User.query()
+              .where('id', '=', auth.user.id)
+              .update({ password: auth.user.password })
             session.flash({ notification: 'Password Updated' })
             return response.redirect('/')
           } catch (error) {

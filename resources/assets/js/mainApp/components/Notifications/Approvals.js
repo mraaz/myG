@@ -4,7 +4,7 @@ import axios from 'axios'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
 import TopTabs from './TopTabs'
-const defaultUserImage = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png'
+const defaultUserImage = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
 const tabObj = {
   0: 0,
   1: 1,
@@ -164,11 +164,11 @@ export default class Approvals extends Component {
                         </span>
                         <div className='notification-actions'>
                           <button className='action accept'>
-                            <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' />
+                            <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' />
                             {` Accept`}
                           </button>
                           <button className='action decline'>
-                            <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' />
+                            <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' />
                             {` Decline`}
                           </button>
                         </div>

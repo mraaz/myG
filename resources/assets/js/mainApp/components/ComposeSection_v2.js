@@ -8,7 +8,7 @@ import axios from 'axios'
 import IndividualPost from './IndividualPost'
 import PostFileModal from './PostFileModal'
 import Dropzone from 'react-dropzone'
-const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
+const buckectBaseUrl = 'https://mygame-media.s3.amazonaws.com/platform_images/'
 import { MyGCreateableSelect } from './common'
 import { Disable_keys, Hash_Tags } from './Utility_Function'
 

@@ -10,7 +10,7 @@ import IndividualComment from './IndividualComment'
 import moment from 'moment'
 import SweetAlert from './common/MyGSweetAlert'
 // import ImageGallery from 'react-image-gallery'
-const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
+const buckectBaseUrl = 'https://mygame-media.s3.amazonaws.com/platform_images/'
 import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
 
@@ -569,7 +569,7 @@ export default class IndividualPost extends Component {
 
       let { post } = this.props //destructing of object
       let {
-        profile_img = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png',
+        profile_img = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png',
         hash_tags = [],
       } = post //destructing of object
       //destructing of object
@@ -669,13 +669,13 @@ export default class IndividualPost extends Component {
             <div className='update-stats'>
               {this.state.like && (
                 <div className='like-btn' onClick={() => this.click_unlike_btn(post.id)}>
-                  <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' />
+                  <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' />
                   &nbsp;Liked
                 </div>
               )}
               {!this.state.like && (
                 <div className='like-btn' onClick={() => this.click_like_btn(post.id)}>
-                  <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_unLike_Feed.svg' />
+                  <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_unLike_Feed.svg' />
                   &nbsp;Like
                 </div>
               )}
