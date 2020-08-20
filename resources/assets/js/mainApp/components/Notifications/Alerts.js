@@ -10,15 +10,16 @@ export default class Alerts extends Component {
   componentDidMount = () => {
     window.scrollTo(0, 0)
   }
+  changeTab = async (tab) => {}
 
   render() {
-    const { active } = this.props;
+    const { active } = this.props
 
-    const isActive = active == true ? {display: 'block'} : {display: 'none'};
+    const isActive = active == true ? { display: 'block' } : { display: 'none' }
 
     return (
       <div style={isActive}>
-        <TopTabs tabs={['All', 'Feed', 'Games', 'Misc']} />
+        <TopTabs tabs={['All', 'Feed', 'Games', 'Misc']} changeTab={this.changeTab} />
         <div className='top-actions'>
           <div className='actions'>
             <button className='action'>Mark All Read</button>
@@ -29,8 +30,8 @@ export default class Alerts extends Component {
           <div className='notification-user-avatar'></div>
           <div className='notification-content'>
             <p className='notification-description'>
-              <span className='notification-username'>@brunogoodma</span> 
-              has <span className='notification-type'>Commented</span> 
+              <span className='notification-username'>@brunogoodma</span>
+              has <span className='notification-type'>Commented</span>
               your <span className='notification-link'>Post</span>
             </p>
             <div className='notification-options'>
@@ -38,10 +39,8 @@ export default class Alerts extends Component {
             </div>
           </div>
         </div>
-        <div className='endline'>
-          No more updates
-        </div>
+        <div className='endline'>No more updates</div>
       </div>
-    );
+    )
   }
 }

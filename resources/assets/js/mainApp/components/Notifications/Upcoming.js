@@ -22,7 +22,9 @@ export default class Upcoming extends Component {
         counter: 1,
       })
       if (getUpcomingGames.data && getUpcomingGames.data.myScheduledGames.length > 0) {
-        this.setState({ upcomingGames: getUpcomingGames.data.myScheduledGames })
+        this.setState({ upcomingGames: getUpcomingGames.data.myScheduledGames }, () => {
+          this.props.setNotificationsCount(this.state.upcomingGames.length)
+        })
       }
     } catch (error) {
       console.log(error)
@@ -44,9 +46,16 @@ export default class Upcoming extends Component {
     }
     if (getUpcomingGames.data && getUpcomingGames.data.myScheduledGames.length > 0) {
       if (count > 1) {
-        this.setState({ upcomingGames: [...upcomingGames, ...getUpcomingGames.data.myScheduledGames], counter: count, fetching: false })
+        this.setState(
+          { upcomingGames: [...upcomingGames, ...getUpcomingGames.data.myScheduledGames], counter: count, fetching: false },
+          () => {
+            this.props.setNotificationsCount(this.state.upcomingGames.length)
+          }
+        )
       } else {
-        this.setState({ upcomingGames: getUpcomingGames.data.myScheduledGames, fetching: false })
+        this.setState({ upcomingGames: getUpcomingGames.data.myScheduledGames, fetching: false }, () => {
+          this.props.setNotificationsCount(this.state.upcomingGames.length)
+        })
       }
     }
   }

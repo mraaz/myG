@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Button from './Button';
+import Button from './Button'
 
 export default class Menu extends Component {
   constructor() {
@@ -10,49 +10,64 @@ export default class Menu extends Component {
     }
   }
 
-  changeTab = tab => {
+  changeTab = (tab) => {
     this.setState({
       active: tab,
     })
   }
 
-  isActive = tab => {
+  isActive = (tab) => {
     return this.state.active === tab
   }
 
   render() {
-    const { changeContentTab } = this.props;
+    const { changeContentTab, notificationsCount, activeTab } = this.props
 
     return (
       <div className='notifications-menu'>
         <div className='button-list'>
-          <Button 
-            title='Upcoming Games'
+          <Button
+            title={`Upcoming Games  ${activeTab == 0 ? `(${notificationsCount})` : ''}`}
             active={this.isActive(0)}
-            onClick={() => { this.changeTab(0); changeContentTab(0) }} 
+            onClick={() => {
+              this.changeTab(0)
+              changeContentTab(0)
+            }}
           />
           <Button
-            title='Approvals'
+            title={`Approvals  ${activeTab == 1 ? `(${notificationsCount})` : ''}`}
             active={this.isActive(1)}
-            onClick={() => { this.changeTab(1); changeContentTab(1) }}
+            onClick={() => {
+              this.changeTab(1)
+              changeContentTab(1)
+            }}
           />
           <Button
-            title='Alerts'
+            title={`Alerts  ${activeTab == 2 ? `(${notificationsCount})` : ''}`}
             active={this.isActive(2)}
-            onClick={() => { this.changeTab(2); changeContentTab(2) }}
+            onClick={() => {
+              this.changeTab(2)
+              changeContentTab(2)
+            }}
           />
           <Button
-            title='Chat'
+            title={`Chat  ${activeTab == 3 ? `(${notificationsCount})` : ''}`}
             active={this.isActive(3)}
-            onClick={() => { this.changeTab(3); changeContentTab(3) }}
+            onClick={() => {
+              this.changeTab(3)
+              changeContentTab(3)
+            }}
           />
           <Button
             title='Settings'
             active={this.isActive(4)}
-            onClick={() => { this.changeTab(4); changeContentTab(4) }}
+            onClick={() => {
+              this.changeTab(4)
+              changeContentTab(4)
+            }}
           />
         </div>
       </div>
-    );
+    )
   }
 }
