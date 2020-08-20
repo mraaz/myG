@@ -47,7 +47,7 @@ export default class ArchivedScheduledGames extends Component {
         <section id='posts'>
           <div className='content-area scheduleGames-page'>
             <div id='header-2'>
-              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/headers/headers_v1-19.png' />
+              <img src='https://mygame-media.s3.amazonaws.com/headers/headers_v1-19.png' />
             </div>
             <div className='da-gap'></div>
             {this.showLatestPosts()}

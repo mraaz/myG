@@ -444,7 +444,7 @@ export default class ArchivedScheduledGamePost extends Component {
                     className='user-img'
                     onClick={this.redirect_link}
                     style={{
-                      backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/stock_images/5%2B.png')`,
+                      backgroundImage: `url('https://mygame-media.s3.amazonaws.com/stock_images/5%2B.png')`,
                     }}>
                     {' '}
                   </div>

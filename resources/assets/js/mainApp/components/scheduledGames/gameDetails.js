@@ -10,7 +10,7 @@ import JoinButtonAction from './JoinButtonAction'
 import GameComments from './GameComments'
 import { Link } from 'react-router-dom'
 import { WithTooltip } from '../Tooltip'
-const defaultUserImage = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png'
+const defaultUserImage = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
 
 export default class GameDetails extends Component {
   constructor() {
@@ -70,13 +70,13 @@ export default class GameDetails extends Component {
               <div className='gameName'>
                 <h1 className='game__name'>{game_name}</h1>
                 <div className='gamer__count'>
-                  <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/little_green_man.svg' />
+                  <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Notifications/little_green_man.svg' />
                   <span>
                     {no_of_gamers} / {limit == 0 ? <span>&#8734;</span> : limit} Gamers
                   </span>
                 </div>
                 <div className='game__timestamp'>
-                  <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Notifications/clock.svg' />
+                  <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Notifications/clock.svg' />
                   <span>{moment(start_date_time).format('LL')}</span>
                 </div>
                 <div className='game__level__wrap'>

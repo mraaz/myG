@@ -9,7 +9,7 @@ import axios from 'axios'
 import IndividualReply from './IndividualReply'
 import moment from 'moment'
 import SweetAlert from './common/MyGSweetAlert'
-const buckectBaseUrl = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/'
+const buckectBaseUrl = 'https://mygame-media.s3.amazonaws.com/platform_images/'
 
 export default class IndividualComment extends Component {
   constructor() {
@@ -503,7 +503,7 @@ export default class IndividualComment extends Component {
   render() {
     let { comment } = this.props
     let {
-      profile_img = 'https://s3-ap-southeast-2.amazonaws.com/mygame-media/default_user/new-user-profile-picture.png',
+      profile_img = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png',
       media_url = '',
     } = comment
     const { myReplies = [], show_more_replies = true, hideReplies = false } = this.state

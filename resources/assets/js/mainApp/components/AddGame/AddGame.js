@@ -307,7 +307,7 @@ const AddGame = ({
           selected={mainSettingsState.endTime}>
           <img
             style={{ margin: '0 10px' }}
-            src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/X+icon.svg'
+            src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/X+icon.svg'
             height='20'
             width='20'
             onClick={() => {
@@ -386,7 +386,7 @@ const AddGame = ({
             />
             <img
               style={{ margin: '0 10px' }}
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/X+icon.svg'
+              src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/X+icon.svg'
               height='20'
               width='20'
               onClick={() => {
@@ -790,7 +790,7 @@ const AddGame = ({
 
   // ToDo: update modal rank and roles needs options
   const getOptionalGameFieldsView = () => {
-    //'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Game+Images/DOTA2.png'
+    //'https://mygame-media.s3.amazonaws.com/platform_images/Game+Images/DOTA2.png'
     return (
       <div
         style={{

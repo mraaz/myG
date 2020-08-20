@@ -39,26 +39,35 @@ class GroupController {
 
         //Code copied over from ScheduleGameController
         let gameNameID = null
-        const getGameName = await Database.from('game_names').where({
-          game_name: request.input('game_name_box'),
-        })
-        let gameface = new GameNameController()
 
-        if (getGameName.length == 0) {
-          request.params.game_name = request.input('game_name_box')
-          let tmp = await gameface.createGame({ auth }, request.input('game_name_box'))
-          if (tmp == false) {
-            return
+        if (
+          request.input('game_name_box') != undefined &&
+          request.input('game_name_box') != null &&
+          request.input('game_name_box').length > 0
+        ) {
+          const getGameName = await Database.from('game_names').where({
+            game_name: request.input('game_name_box'),
+          })
+          let gameface = new GameNameController()
+
+          if (getGameName.length == 0) {
+            request.params.game_name = request.input('game_name_box')
+            let tmp = await gameface.createGame({ auth }, request.input('game_name_box'))
+            if (tmp == false) {
+              return
+            }
+            gameNameID = tmp.id
+          } else {
+            gameNameID = getGameName[0].id
+            gameface.incrementGameCounter({ auth }, request.input('game_names_id'))
           }
-          gameNameID = tmp.id
-        } else {
-          gameNameID = getGameName[0].id
-          gameface.incrementGameCounter({ auth }, request.input('game_names_id'))
+          gameNameID = parseInt(gameNameID, 10)
         }
+
         //End copy of code
 
         const newGroup = await Group.create({
-          game_names_id: parseInt(gameNameID, 10),
+          game_names_id: gameNameID,
           user_id: auth.user.id,
           name: request.input('name'),
           group_img: request.input('group_img'),
@@ -116,8 +125,8 @@ class GroupController {
 
         let userStatController = new UserStatTransactionController()
         userStatController.update_total_number_of(auth.user.id, 'total_number_of_communities')
-
-        return newGroup.id
+        console.log(newGroup)
+        return newGroup
       } catch (error) {
         LoggingRepository.log({
           environment: process.env.NODE_ENV,

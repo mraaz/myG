@@ -536,7 +536,7 @@ export default class Profile extends Component {
                 </div>
               </div>
               <div id='header'>
-                <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/headers/headers_v1-13.png' />
+                <img src='https://mygame-media.s3.amazonaws.com/headers/headers_v1-13.png' />
               </div>
 
               {this.state.show_bio && (
