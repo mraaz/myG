@@ -48,17 +48,17 @@ const sideBarItems = {
   },
   NEW_GAME: {
     id: 'NEW_GAME',
-    header: 'New Game',
+    header: 'Create',
     icon: 'https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_New_Game.svg',
     cta: '/addScheduleGames',
     expanded: false,
     subItems: [
       {
-        header: 'New <b>Game</b>',
+        header: 'Create <b>Match</b>',
         cta: '/addScheduleGames',
       },
       {
-        header: 'New <b>Community</b>',
+        header: 'Create <b>Community</b>',
         cta: '/community/create',
       },
     ],

@@ -125,7 +125,7 @@ class GroupController {
 
         let userStatController = new UserStatTransactionController()
         userStatController.update_total_number_of(auth.user.id, 'total_number_of_communities')
-        console.log(newGroup)
+
         return newGroup
       } catch (error) {
         LoggingRepository.log({

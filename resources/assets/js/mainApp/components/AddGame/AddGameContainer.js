@@ -8,7 +8,7 @@ import { styles, SETTINGS_ENUMS } from '../../static/AddGame'
 import '../../styles/AddGame/AddGameStyles.scss'
 import AddGame from './AddGame'
 import { Toast_style, Convert_to_comma_delimited_value } from '../Utility_Function'
-import { SubmitDataFunction } from '../AddScheduleGames_Submit_Data'
+import { SubmitDataFunction } from './AddScheduleGames_Submit_Data'
 import InvitePlayers from './InvitePlayers'
 import { Link } from 'react-router-dom'
 
@@ -260,7 +260,7 @@ const AddGameContainer = () => {
 
   return (
     <div className={styles.container}>
-      <PageHeader headerText='Add Match' />
+      <PageHeader headerText='Create Match' />
       <AddGame
         state={state}
         updateComponentState={updateComponentState}

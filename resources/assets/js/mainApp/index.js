@@ -372,7 +372,11 @@ class Layout extends Component {
                   exact
                   path='/community/create'
                   component={(props) => (
-                    <CreateCommunity />
+                    <CreateCommunity
+                    routeProps={props}
+                    initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
+                    key={Math.random()}
+                     />
                   )}
                 />
 
