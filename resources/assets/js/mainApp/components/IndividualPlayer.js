@@ -30,7 +30,7 @@ export default class IndividualPlayer extends Component {
             to={`/profile/${attendee.alias}`}
             className='user-img'
             style={{
-              backgroundImage: `url('https://mygame-media.s3-ap-southeast-2.amazonaws.com/default_user/new-user-profile-picture.png')`,
+              backgroundImage: `url('https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png')`,
             }}></Link>
         )}
         <div className='user-info'>{`${attendee.alias}`}</div>

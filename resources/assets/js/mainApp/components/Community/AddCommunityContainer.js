@@ -51,8 +51,6 @@ const AddCommunityContainer = () => {
   }
 
   const onAddGameSubmit = async () => {
-    console.log(advancedSettingsState.preview_files)
-
     updateIsSubmitting(false)
 
     if (mainSettingsState.community_name == '' || mainSettingsState.community_name == null) {
@@ -93,6 +91,7 @@ const AddCommunityContainer = () => {
         scheduledGameId: data.id,
         scheduledGameGuid: data.schedule_games_GUID,
       }))
+      console.log(data)
       updateGameLink(data.id)
       updateIsGameListedModalOpen(true)
     } catch (err) {
@@ -132,19 +131,19 @@ const AddCommunityContainer = () => {
     return (
       <MyGModal isOpen ariaHideApp={false}>
         <div className={styles.listedTopContentContainer}>
-          <div className={styles.listedHeader}>Your Community is now listed!</div>
-          <div className={styles.listedShareText}>Use this game link for direct access to your game</div>
+          <div className={styles.listedHeader}>Your Community is now created!</div>
+          <div className={styles.listedShareText}>Use this link for direct access to your community</div>
           <MyGInput
-            value={`https://myG.gg/scheduledGames/${gameLink}`}
+            value={`https://myG.gg/community/${gameLink}`}
             containerStyles={{ width: '318px' }}
             inputStyles={{ width: '100%', outline: 'none', cursor: 'pointer' }}
             refInput={gameLinkRef}
             onClick={() => {
-              window.open(`https://myG.gg/scheduledGames/${gameLink}`, '_blank')
+              window.open(`https://myG.gg/community/${gameLink}`, '_blank')
             }}
             readOnly>
             <div style={{ marginTop: '9px', marginLeft: '15px', cursor: 'pointer' }} onClick={copyToClipboard}>
-              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Link.svg' height='18' width='18' />
+              <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Link.svg' height='18' width='18' />
             </div>
           </MyGInput>
           <div className={styles.listedOrText}>OR</div>

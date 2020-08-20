@@ -85,7 +85,7 @@ export default class AnalyticsBox extends Component {
 
           <div className='social-box'>
             <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_Network.svg'
+              src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Network.svg'
               className='social-box-img'
             />
             <p className='social-box-count'>{connections}</p>
@@ -95,7 +95,7 @@ export default class AnalyticsBox extends Component {
 
           <div className='social-box'>
             <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_followers.svg'
+              src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_followers.svg'
               className='social-box-img'
             />
             <p className='social-box-count'>{followers}</p>
@@ -105,7 +105,7 @@ export default class AnalyticsBox extends Component {
 
           <div className='social-box'>
             <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_games.svg'
+              src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_games.svg'
               className='social-box-img'
             />
             <p className='social-box-count'>{games}</p>
@@ -115,7 +115,7 @@ export default class AnalyticsBox extends Component {
 
           <div className='social-box'>
             <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/Header_btn_likes.svg'
+              src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Header_btn_likes.svg'
               className='social-box-img'
             />
             <p className='social-box-count'>{likes}</p>
@@ -125,7 +125,7 @@ export default class AnalyticsBox extends Component {
 
           <div className='social-box'>
             <img
-              src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/btn_reviews.svg'
+              src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_reviews.svg'
               className='social-box-img'
             />
             <p className='social-box-count'>{commendations}</p>
@@ -155,7 +155,7 @@ export default class AnalyticsBox extends Component {
             </div>
 
             <div className='suggestions-box-reset' onClick={(e) => this.refreshSuggestedUser()}>
-              <img src='https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/reset.png' className='' />
+              <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/reset.png' className='' />
             </div>
           </div>
         )}

@@ -11,8 +11,8 @@ const MyGCheckbox = ({ checked, onClick, labelText, containerStyles }) => {
       fontWeight: 'bold',
     },
   }
-  const checked_svg = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/checkbox_checked.svg'
-  const unchecked_svg = 'https://mygame-media.s3-ap-southeast-2.amazonaws.com/platform_images/Dashboard/checkbox_uncheked.svg'
+  const checked_svg = 'https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/checkbox_checked.svg'
+  const unchecked_svg = 'https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/checkbox_uncheked.svg'
 
   return (
     <div style={{ ...styles.container, ...containerStyles }} onClick={() => onClick(!checked)}>
