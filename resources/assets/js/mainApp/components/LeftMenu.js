@@ -204,7 +204,7 @@ class LeftMenu extends Component {
             )
           } else {
             return (
-              <Link key={itemKey} to={tileCta}>
+              <Link key={itemKey} to={tileCta} className='side-menu-anchor'>
                 {item(icon, expanded, subItems, header)}
               </Link>
             )
