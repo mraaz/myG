@@ -49,6 +49,10 @@ const Approved_gamers = (props) => {
     setModalStatus(!modalStatus)
   }
 
+  const addDefaultSrc = (ev) => {
+    ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
+  }
+
   return (
     <Fragment>
       {approved_gamers.length > 0 && <div className='gameTime__label'>Gamers ({approved_gamers.length})</div>}
@@ -59,7 +63,7 @@ const Approved_gamers = (props) => {
               <div className='single__gamer'>
                 <Link to={`/profile/${gamer.alias}`}>
                   <div className='gamer__image '>
-                    <img src={gamer.profile_img ? gamer.profile_img : defaultUserImage} />
+                    <img onError={addDefaultSrc} src={gamer.profile_img ? gamer.profile_img : defaultUserImage} />
                   </div>
                   <div className='gamer__alias ' title={gamer.alias}>
                     {gamer.alias}
@@ -106,7 +110,7 @@ const Approved_gamers = (props) => {
                       <div className='gamer__name gamer'>
                         <Link to={`/profile/${attendee.alias}`}>
                           <div className='default_circle'>
-                            <img src={attendee.profile_img} className='groupImage' />
+                            <img onError={ddDefaultSrc} src={attendee.profile_img} className='groupImage' />
                           </div>
                           <spam>{attendee.alias}</spam>
                         </Link>

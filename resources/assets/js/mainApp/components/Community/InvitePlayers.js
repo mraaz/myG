@@ -23,7 +23,7 @@ const MENU_OPTIONS = {
   COMMUNITIES: 'COMMUNITIES',
 }
 
-const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId, scheduledGameGuid, gameTitle, startTime, gameId }) => {
+const InvitePlayers = ({ onInvitationSent, onCancelInviteClick }) => {
   const [selectedMenu, updateSelectedMenu] = useState(MENU_OPTIONS.PLAYERS)
   const [showOptions, updateShowOptions] = useState({
     'Selected Gamers': false,
@@ -103,16 +103,17 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
       groups = groups.concat(`, ${selectedGroups[groupKey].name}`)
     })
     try {
-      await axios.post('/api/notifications/invitations', {
-        communities,
-        gamers,
-        groups,
-        schedule_games_id: gameId,
-        scheduledGameId,
-        scheduledGameGuid,
-        gameTitle,
-        startTime,
-      })
+      // await axios.post('/api/notifications/invitations', {
+      //   communities,
+      //   gamers,
+      //   groups,
+      //   schedule_games_id: gameId,
+      //   scheduledGameId,
+      //   scheduledGameGuid,
+      //   gameTitle,
+      //   startTime,
+      // })
+      console.log('NEED RAAZ TO FIX ME')
     } catch (error) {
       // error submit invitation
     }
@@ -159,7 +160,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
 
   const fetchMoreData = async () => {
     await updateCounter(counter + 1)
-    const getKeywordSearchResults = async function () {
+    const getKeywordSearchResults = async function() {
       try {
         const response = await axios.post('/api/friends/allmyFriends', {
           counter,
@@ -183,13 +184,11 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
 
   const fetchCommunitiesData = async () => {
     await updateCommunitiesCounter(counterCommunities + 1)
-    const getmyGroups = async function () {
+    const getmyGroups = async function() {
       try {
         const {
           data: { myGroups },
         } = await axios.get(`/api/groups/view/${counterCommunities}`)
-        console.log('Kids')
-        console.log(myGroups)
         return myGroups
       } catch (error) {
         // error fetch communities data
@@ -197,13 +196,11 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
       }
     }
 
-    const getGroups_im_in = async function () {
+    const getGroups_im_in = async function() {
       try {
         const {
           data: { groups_im_in },
         } = await axios.get(`/api/usergroup/view/${counterCommunities}`)
-        console.log('Groupsie')
-        console.log(groups_im_in)
         return groups_im_in
       } catch (error) {
         // error getGroups_im_in

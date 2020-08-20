@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom'
 const MAX_GAME_TAGS = 9
 const MAX_CO_HOSTS = 5
 
-const AddCommunityContainer = () => {
+const AddCommunityContainer = ({ routeProps }) => {
   // State
   const [isGameListedModalOpen, updateIsGameListedModalOpen] = useState(false)
   const [isInviteModalOpen, updateIsInviteModalOpen] = useState(false)
@@ -86,13 +86,7 @@ const AddCommunityContainer = () => {
         type: advancedSettingsState.type,
         preview_files: advancedSettingsState.preview_files,
       })
-      updateMainSettingsState((currentState) => ({
-        ...currentState,
-        scheduledGameId: data.id,
-        scheduledGameGuid: data.schedule_games_GUID,
-      }))
-      console.log(data)
-      updateGameLink(data.id)
+      updateGameLink(encodeURI(data.name))
       updateIsGameListedModalOpen(true)
     } catch (err) {
       updateIsSubmitting(false)
@@ -105,7 +99,7 @@ const AddCommunityContainer = () => {
         <div
           className={classNames([styles.footerSubmitButton, isButtonDisabled() ? styles.footerSubmitButtonLight : ''])}
           onClick={isSubmitting ? null : onAddGameSubmit}>
-          Add Community
+          Create Community
         </div>
       </div>
     )
@@ -150,7 +144,7 @@ const AddCommunityContainer = () => {
           <MyGButton customStyles={{ color: '#E5C746', border: '2px solid' }} text='Invite Friends' onClick={onInviteFriendsClick} />
         </div>
         <div className={styles.listedBottomContentContainer}>
-          <Link to='/addScheduleGames' replace>
+          <Link to='/community/create' replace>
             <MyGButton customStyles={{ color: '#fff', border: '2px solid' }} text='Done' />
           </Link>
         </div>
@@ -169,7 +163,7 @@ const AddCommunityContainer = () => {
           </Link>
         </div>
         <div className={styles.listedBottomContentContainer}>
-          <Link to='/addScheduleGames' replace>
+          <Link to='/community/create' replace>
             <MyGButton customStyles={{ color: '#fff', border: '2px solid' }} text='Done' />
           </Link>
         </div>
@@ -191,17 +185,7 @@ const AddCommunityContainer = () => {
       {getPageFooter()}
       {isGameListedModalOpen && getGameListedModal()}
       {isInvitesSentsModalOpen && getInvitesSentModal()}
-      {isInviteModalOpen && (
-        <InvitePlayers
-          onInvitationSent={onInvitationSent}
-          onCancelInviteClick={onCancelInviteClick}
-          gameId={mainSettingsState.gameTitle.game_names_id}
-          scheduledGameId={mainSettingsState.scheduledGameId}
-          scheduledGameGuid={mainSettingsState.scheduledGameGuid}
-          gameTitle={mainSettingsState.gameTitle.value}
-          startTime={mainSettingsState.startTime.valueOf()}
-        />
-      )}
+      {isInviteModalOpen && <InvitePlayers onInvitationSent={onInvitationSent} onCancelInviteClick={onCancelInviteClick} />}
     </div>
   )
 }
