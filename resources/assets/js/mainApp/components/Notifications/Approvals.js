@@ -101,6 +101,10 @@ export default class Approvals extends Component {
     }
   }
 
+  addDefaultSrc(ev) {
+    ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
+  }
+
   render() {
     const { active } = this.props
     const { fetching, approvals } = this.state
@@ -142,7 +146,7 @@ export default class Approvals extends Component {
                 return (
                   <div className='notification'>
                     <div className='notification-user-avatar'>
-                      <img src={approval.profile_img ? approval.profile_img : defaultUserImage} />
+                      <img onError={this.addDefaultSrc} src={approval.profile_img ? approval.profile_img : defaultUserImage} />
                     </div>
                     <div className='notification-content'>
                       <div className='notification-description'>
