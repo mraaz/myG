@@ -327,7 +327,8 @@ class NotificationController_v2 {
     // P.S 7, 8 & 9 don't exist, just have them as placeholder atm.
 
     let set_limit = 10,
-      singleArr = []
+      singleArr = [],
+      first_two_users
 
     try {
       if (
@@ -363,7 +364,7 @@ class NotificationController_v2 {
         allMylike_posts = allMylike_posts.data
 
         for (let i = 0; i < allMylike_posts.length; i++) {
-          const first_two_users = await Database.from('notifications')
+          first_two_users = await Database.from('notifications')
             .innerJoin('users', 'users.id', 'notifications.user_id')
             .where({ post_id: allMylike_posts[i].post_id, other_user_id: auth.user.id })
             .whereIn('activity_type', arr)
@@ -381,17 +382,19 @@ class NotificationController_v2 {
             .whereIn('activity_type', arr)
             .count('* as no_of_my_unread')
 
-          if (first_two_users.length == 2) {
-            allMylike_posts[i].first_user_alias = first_two_users[0].alias
-            allMylike_posts[i].first_user_profile_img = first_two_users[0].profile_img
-            allMylike_posts[i].second_user_alias = first_two_users[1].alias
-          } else if (first_two_users.length == 1) {
-            allMylike_posts[i].first_user_alias = first_two_users[0].alias
-            allMylike_posts[i].first_user_profile_img = first_two_users[0].profile_img
-            allMylike_posts[i].second_user = null
-          } else {
-            allMylike_posts[i].first_user_alias = null
-            allMylike_posts[i].second_user_alias = null
+          if (first_two_users != undefined) {
+            if (first_two_users.length == 2) {
+              allMylike_posts[i].first_user_alias = first_two_users[0].alias
+              allMylike_posts[i].first_user_profile_img = first_two_users[0].profile_img
+              allMylike_posts[i].second_user_alias = first_two_users[1].alias
+            } else if (first_two_users.length == 1) {
+              allMylike_posts[i].first_user_alias = first_two_users[0].alias
+              allMylike_posts[i].first_user_profile_img = first_two_users[0].profile_img
+              allMylike_posts[i].second_user = null
+            } else {
+              allMylike_posts[i].first_user_alias = null
+              allMylike_posts[i].second_user_alias = null
+            }
           }
 
           allMylike_posts[i].total_post_count = total_post_count[0].no_of_my_notis > 0 ? total_post_count[0].no_of_my_notis : 0
@@ -486,26 +489,27 @@ class NotificationController_v2 {
               activity_type: 16,
             })
             .count('* as no_of_my_unread')
-
-          if (first_three_users.length == 3) {
-            dropped_out_attendees[i].first_user_alias = first_three_users[0].alias
-            dropped_out_attendees[i].first_user_profile_img = first_three_users[0].profile_img
-            dropped_out_attendees[i].second_user_alias = first_three_users[1].alias
-            dropped_out_attendees[i].third_user_alias = first_three_users[2].alias
-          } else if (first_two_users.length == 2) {
-            dropped_out_attendees[i].first_user_alias = first_three_users[0].alias
-            dropped_out_attendees[i].first_user_profile_img = first_three_users[0].profile_img
-            dropped_out_attendees[i].second_user_alias = first_three_users[1].alias
-            dropped_out_attendees[i].third_user_alias = null
-          } else if (first_two_users.length == 1) {
-            dropped_out_attendees[i].first_user_alias = first_three_users[0].alias
-            dropped_out_attendees[i].first_user_profile_img = first_three_users[0].profile_img
-            dropped_out_attendees[i].second_user_alias = null
-            dropped_out_attendees[i].third_user_alias = null
-          } else {
-            dropped_out_attendees[i].first_user_alias = null
-            dropped_out_attendees[i].second_user_alias = null
-            dropped_out_attendees[i].third_user_alias = null
+          if (first_three_users != undefined) {
+            if (first_three_users.length == 3) {
+              dropped_out_attendees[i].first_user_alias = first_three_users[0].alias
+              dropped_out_attendees[i].first_user_profile_img = first_three_users[0].profile_img
+              dropped_out_attendees[i].second_user_alias = first_three_users[1].alias
+              dropped_out_attendees[i].third_user_alias = first_three_users[2].alias
+            } else if (first_three_users.length == 2) {
+              dropped_out_attendees[i].first_user_alias = first_three_users[0].alias
+              dropped_out_attendees[i].first_user_profile_img = first_three_users[0].profile_img
+              dropped_out_attendees[i].second_user_alias = first_three_users[1].alias
+              dropped_out_attendees[i].third_user_alias = null
+            } else if (first_three_users.length == 1) {
+              dropped_out_attendees[i].first_user_alias = first_three_users[0].alias
+              dropped_out_attendees[i].first_user_profile_img = first_three_users[0].profile_img
+              dropped_out_attendees[i].second_user_alias = null
+              dropped_out_attendees[i].third_user_alias = null
+            } else {
+              dropped_out_attendees[i].first_user_alias = null
+              dropped_out_attendees[i].second_user_alias = null
+              dropped_out_attendees[i].third_user_alias = null
+            }
           }
 
           dropped_out_attendees[i].total_post_count = total_post_count[0].no_of_my_notis > 0 ? total_post_count[0].no_of_my_notis : 0
@@ -542,7 +546,6 @@ class NotificationController_v2 {
 
         singleArr.push(...group_member_approved.data)
         singleArr.push(...user_ding.data)
-        singleArr.push(...schedule_games_attendees_notify_only.data)
       }
 
       // const chat_group_invite = await Database.from('notifications')
@@ -601,7 +604,6 @@ class NotificationController_v2 {
         return (singleArr = mergeSort(singleArr))
       }
     } catch (error) {
-      //console.log(error)
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
         type: 'error',
