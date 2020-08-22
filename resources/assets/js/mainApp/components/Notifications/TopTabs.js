@@ -19,7 +19,9 @@ export default class TobTabs extends Component {
         activeTab: tab,
       },
       () => {
-        this.props.changeTab(tab)
+        if (this.props.changeTab) {
+          this.props.changeTab(tab)
+        }
       }
     )
   }
