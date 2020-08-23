@@ -8,8 +8,8 @@ mygame:
   databaseName: mygame
   dataseUser: root
   databasePassword: rootpass
-  databaseHost: proxysql-proxysql-cluste
-  databasePort: 6033
+  databaseHost: galera-mariadb-galera
+  databasePort: 3306
   nodeEnvironment: development
   appKey: "tEr8zSnVwS5KB0QtExWxRSXsUu6OTDim"
   redisHost: "redis-master"
