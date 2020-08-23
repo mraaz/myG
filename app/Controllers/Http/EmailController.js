@@ -5,7 +5,7 @@ const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
 const Database = use('Database')
 
 const AWSEmailController = use('./AWSEmailController')
-const NotificationController = use('./NotificationController')
+const NotificationController_v2 = use('./NotificationController_v2')
 const ChatRepository = require('../../Repositories/Chat')
 
 //https://html-online.com/editor/
@@ -75,7 +75,7 @@ class EmailController {
 
   async summary_email(user_id) {
     let email = new AWSEmailController()
-    let noti = new NotificationController()
+    let noti = new NotificationController_v2()
 
     let myFriendRequests = await noti.getmyFriendRequests(user_id)
     //console.log(myFriendRequests.checkMyFriends[0].no_of_my_notiFriends)

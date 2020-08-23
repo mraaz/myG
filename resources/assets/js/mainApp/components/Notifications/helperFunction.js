@@ -20,7 +20,7 @@ export const clickedAccept_myInvitations = (invitation) => {
 
 export const clickedDenied_myInvitations = (invitation) => {
   try {
-    const deleteNoti = axios.get(`/api/notifications/delete/${invitation.id}`)
+    const deleteNoti = axios.get(`/api/notifications_v2/delete/${invitation.id}`)
   } catch (error) {
     console.log(error)
   }

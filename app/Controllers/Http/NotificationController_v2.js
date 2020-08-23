@@ -952,6 +952,95 @@ class NotificationController_v2 {
       return 'You are not Logged In!'
     }
   }
+
+  async addFriend({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        const addFriend = await Notification.create({
+          other_user_id: request.input('other_user_id'),
+          user_id: auth.user.id,
+          activity_type: 1,
+        })
+        return 'Saved item'
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async destroy({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        const delete_noti = await Database.table('notifications')
+          .where({
+            id: request.params.id,
+          })
+          .delete()
+
+        return delete_noti
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async checkFriend({ auth, request, response }) {
+    try {
+      const checkFriend = await Database.from('notifications').where({
+        user_id: auth.user.id,
+        activity_type: 1,
+        other_user_id: request.params.id,
+      })
+
+      return {
+        checkedFriend: checkFriend === undefined || checkFriend.length == 0 ? false : true,
+      }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+    }
+  }
+
+  async getmyFriendRequests(id) {
+    try {
+      const checkMyFriends = await Database.from('notifications')
+        .where({ other_user_id: id, activity_type: 1 })
+        .count('* as no_of_my_notiFriends')
+
+      return {
+        checkMyFriends: checkMyFriends,
+      }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+    }
+  }
 }
 
 module.exports = NotificationController_v2
