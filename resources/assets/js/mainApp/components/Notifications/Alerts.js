@@ -1,14 +1,29 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 
 import TopTabs from './TopTabs'
 
 export default class Alerts extends Component {
   constructor() {
     super()
+    this.state = {
+      counter: 1,
+      notification: [],
+    }
   }
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
+    const { counter } = this.state
     window.scrollTo(0, 0)
+    const getnoti = await axios.post('/api/notifications_v2/getAllNoti', {
+      counter,
+      activity_type: 0,
+    })
+    if (getnoti.data.length > 0) {
+      this.setState({
+        notification: getnoti.data,
+      })
+    }
   }
   changeTab = async (tab) => {}
 

@@ -85,7 +85,7 @@ export default class Approvals extends Component {
       activity_type: tabObj[tab],
     })
     if (getApprovals.data.length > 0) {
-      this.setState({ approvals: getApprovals.data, fetching: false, tab }, () => {
+      this.setState({ approvals: getApprovals.data, fetching: false, moreplease: true, tab }, () => {
         this.props.setNotificationsCount(this.state.approvals.length)
       })
     }
