@@ -36,7 +36,7 @@ const AddGame = ({
 }) => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    const getInitialData_Tags = async function() {
+    const getInitialData_Tags = async function () {
       try {
         let results = await Schedule_Game_Tags()
         updateAdvancedSettings({ optionTags: results })
@@ -45,7 +45,7 @@ const AddGame = ({
       }
     }
 
-    const getInitialData_GameName = async function() {
+    const getInitialData_GameName = async function () {
       try {
         let results = await Game_name_values()
         updateMainSettings({ gameTitlesList: results })
@@ -129,7 +129,7 @@ const AddGame = ({
 
   // api calls
   const getOptionsTags = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         let results = await Schedule_Game_Tags(inputValue)
         updateAdvancedSettings({ optionTags: results })
@@ -146,7 +146,7 @@ const AddGame = ({
   }
 
   const getOptionsGames = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         let results = await Game_name_values(inputValue)
         updateMainSettings({ gameTitlesList: results })
@@ -208,39 +208,41 @@ const AddGame = ({
       <div className='number-of-games-container'>
         <div className='field-title'>Number of Gamers</div>
         {!mainSettingsState.isUnlimitedPlayers && (
-          <SliderWithTooltip
-            value={mainSettingsState.numberOfPlayers}
-            onChange={(value) => {
-              updateMainSettings({ numberOfPlayers: value })
-            }}
-            marks={{
-              1: { label: 1, style: numberStyle },
-              25: { label: 25, style: numberStyle },
-              50: { label: 50, style: numberStyle },
-              75: { label: 75, style: numberStyle },
-              100: { label: 100, style: numberStyle },
-            }}
-            dotStyle={dotStyle}
-            min={1}
-            max={100}
-            railStyle={railStyle}
-            handleStyle={handleStyle}
-            trackStyle={trackStyle}
-            tipProps={{
-              placement: 'top',
-              prefixCls: 'rc-slider-tooltip',
-              align: {
-                offset: [0, -5],
-              },
-              visible: true,
-            }}
-            tipFormatter={(value) => {
-              if (value === 1) {
-                return value + ' Gamer'
-              }
-              return value + ' Gamers'
-            }}
-          />
+          <div className='add-game-range-slider'>
+            <SliderWithTooltip
+              value={mainSettingsState.numberOfPlayers}
+              onChange={(value) => {
+                updateMainSettings({ numberOfPlayers: value })
+              }}
+              marks={{
+                1: { label: 1, style: numberStyle },
+                25: { label: 25, style: numberStyle },
+                50: { label: 50, style: numberStyle },
+                75: { label: 75, style: numberStyle },
+                100: { label: 100, style: numberStyle },
+              }}
+              dotStyle={dotStyle}
+              min={1}
+              max={100}
+              railStyle={railStyle}
+              handleStyle={handleStyle}
+              trackStyle={trackStyle}
+              tipProps={{
+                placement: 'top',
+                prefixCls: 'rc-slider-tooltip',
+                align: {
+                  offset: [0, -5],
+                },
+                visible: true,
+              }}
+              tipFormatter={(value) => {
+                if (value === 1) {
+                  return value + ' Gamer'
+                }
+                return value + ' Gamers'
+              }}
+            />
+          </div>
         )}
         <MyGCheckbox
           checked={mainSettingsState.isUnlimitedPlayers}
