@@ -299,7 +299,7 @@ export default class Alerts extends Component {
                           {noti.second_user_alias && (
                             <Link to={`/profile/${noti.second_user_alias}`}>
                               <div className='notification-username'>
-                                {`, `}
+                                {`and `}
                                 <span> @{noti.second_user_alias}</span>
                               </div>
                             </Link>
