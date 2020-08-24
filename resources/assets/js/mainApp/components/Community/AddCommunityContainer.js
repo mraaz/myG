@@ -131,6 +131,7 @@ const AddCommunityContainer = ({ routeProps }) => {
             value={`https://myG.gg/community/${gameLink}`}
             containerStyles={{ width: '318px' }}
             inputStyles={{ width: '100%', outline: 'none', cursor: 'pointer' }}
+            className={'create-community-popup-link'}
             refInput={gameLinkRef}
             onClick={() => {
               window.open(`https://myG.gg/community/${gameLink}`, '_blank')
