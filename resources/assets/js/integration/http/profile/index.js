@@ -46,3 +46,8 @@ export function uploadProfileBackground(profile_bg, aws_key) {
   logger.log('PROFILE', 'HTTP', 'Uploading profile background');
   return axios.post('/api/userprofilebg', { profile_bg, aws_key }).then(response => response.data);
 }
+
+export function updateProfileInfo(alias, updates) {
+  logger.log('PROFILE', 'HTTP', `Uploading profile info for ${alias}, ${JSON.stringify(updates)}`);
+  return axios.put(`/api/profile/${alias}`, updates).then(response => response.data);
+}

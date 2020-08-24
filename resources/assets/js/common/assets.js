@@ -54,6 +54,10 @@ const assets = {
   ic_reaction_4: 'ic_reaction_4.png',
   ic_reaction_5: 'ic_reaction_5.png',
   ic_reaction_6: 'ic_reaction_6.png',
+
+  ic_profile_add: 'ic_profile_add.svg',
+  ic_profile_close: 'ic_profile_close.svg',
+  ic_profile_settings: 'ic_profile_settings.svg',
 }
 
 export function getAssetUrl(asset) {
