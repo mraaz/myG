@@ -68,11 +68,11 @@ ingress:
     #kubernetes.io/tls-acme: "true"
   paths: []
   path: /
-  hostName: stage.myg.gg
+  hostName: www.myg.gg
   tls:
-    - secretName: stage.myg.gg
+    - secretName: www.myg.gg
       hosts:
-      - stage.myg.gg
+      - www.myg.gg
 
 tls:
   enabled: false
