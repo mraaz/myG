@@ -4,6 +4,16 @@ import axios from 'axios'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
 import TopTabs from './TopTabs'
+import {
+  clickedAccept_myInvitations,
+  clickedDenied_myInvitations,
+  clickedAccept_community,
+  clickedDenied_community,
+  clickedAccept_game,
+  clickedDenied_game,
+} from './helperFunction'
+import { Toast_style } from './../Utility_Function'
+import { toast } from 'react-toastify'
 const defaultUserImage = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
 const tabObj = {
   0: 0,
@@ -34,7 +44,9 @@ export default class Approvals extends Component {
       activity_type: tabObj[tab],
     })
     if (getApprovals.data.length > 0) {
-      this.setState({ approvals: getApprovals.data, fetching: false })
+      this.setState({ approvals: getApprovals.data, fetching: false }, () => {
+        this.props.setNotificationsCount(this.state.approvals.length)
+      })
     }
   }
 
@@ -56,9 +68,13 @@ export default class Approvals extends Component {
     }
     if (getApprovals.data && getApprovals.data.length > 0) {
       if (count > 1) {
-        this.setState({ approvals: [...approvals, ...getApprovals.data], counter: count, fetching: false })
+        this.setState({ approvals: [...approvals, ...getApprovals.data], counter: count, fetching: false }, () => {
+          this.props.setNotificationsCount(this.state.approvals.length)
+        })
       } else {
-        this.setState({ approvals: getApprovals.data, fetching: false })
+        this.setState({ approvals: getApprovals.data, fetching: false }, () => {
+          this.props.setNotificationsCount(this.state.approvals.length)
+        })
       }
     }
   }
@@ -69,7 +85,9 @@ export default class Approvals extends Component {
       activity_type: tabObj[tab],
     })
     if (getApprovals.data.length > 0) {
-      this.setState({ approvals: getApprovals.data, fetching: false, tab })
+      this.setState({ approvals: getApprovals.data, fetching: false, moreplease: true, tab }, () => {
+        this.props.setNotificationsCount(this.state.approvals.length)
+      })
     }
   }
 
@@ -101,6 +119,73 @@ export default class Approvals extends Component {
     }
   }
 
+  handleActionClick = (type, data) => {
+    const { approvals } = this.state
+    if (type == 'accept') {
+      if (data.activity_type == 1) {
+        clickedAccept_myInvitations(data)
+      } else if (data.activity_type == 12) {
+        clickedAccept_community(data)
+      } else {
+        clickedAccept_game(data)
+      }
+    } else {
+      if (data.activity_type == 1) {
+        clickedDenied_myInvitations(data)
+      } else if (data.activity_type == 12) {
+        clickedDenied_community(data)
+      } else {
+        clickedDenied_game(data)
+      }
+    }
+    const filterApprovals = approvals.filter((approval) => approval.id != data.id)
+    this.setState({ approvals: filterApprovals }, () => {
+      this.props.setNotificationsCount(this.state.approvals.length)
+    })
+    toast.success(<Toast_style text={`Yeah! you have successfully ${type} the request.`} />)
+  }
+
+  renderActivityText = (props) => {
+    const { activity_type } = props
+    let activity_name = ''
+    switch (activity_type) {
+      case 12:
+        activity_name = 'Group'
+        return (
+          <div className='notification__text'>
+            {`wants to join `}{' '}
+            <Link to={`/community/${props.group_id}`}>
+              <span className='notification-type'>{activity_name}</span>{' '}
+            </Link>
+            {`. What ya reckon? `}
+          </div>
+        )
+        break
+      case 1:
+        activity_name = 'Friendship'
+        return <div className='notification__text'>{` wants to connect with you. `}</div>
+        break
+      case 11:
+        activity_name = 'Game'
+        return (
+          <div className='notification__text'>
+            {`wants to join  `}{' '}
+            <Link to={`/scheduledGames/${props.schedule_games_GUID}`}>
+              <span className='notification-type'>{activity_name}</span>{' '}
+            </Link>
+          </div>
+        )
+        break
+
+      default:
+        break
+    }
+  }
+
+  addDefaultSrc(ev) {
+    ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
+  }
+
   render() {
     const { active } = this.props
     const { fetching, approvals } = this.state
@@ -128,21 +213,11 @@ export default class Approvals extends Component {
           <div className='gameList__box' style={{ padding: '15px' }} onScroll={this.handleScroll} ref={this.myRef}>
             {approvals.length > 0 &&
               approvals.map((approval) => {
-                let activity_name = ''
-                if (approval.activity_type == 12) {
-                  activity_name = 'Group'
-                }
-                if (approval.activity_type == 1) {
-                  activity_name = 'Friendship'
-                }
-                if (approval.activity_type == 11) {
-                  activity_name = 'Game'
-                }
                 const time = this.handleTime(approval.created_at)
                 return (
-                  <div className='notification'>
+                  <div className='notification' key={approval.id}>
                     <div className='notification-user-avatar'>
-                      <img src={approval.profile_img ? approval.profile_img : defaultUserImage} />
+                      <img onError={this.addDefaultSrc} src={approval.profile_img ? approval.profile_img : defaultUserImage} />
                     </div>
                     <div className='notification-content'>
                       <div className='notification-description'>
@@ -153,21 +228,18 @@ export default class Approvals extends Component {
                             </div>
                           </Link>
                         </div>
-                        <div className='notification__text'>
-                          {`has sent you a  `} <span className='notification-type'>{activity_name}</span>
-                          {` request`}
-                        </div>
+                        {this.renderActivityText(approval)}
                       </div>
                       <div className='notification-options'>
                         <span className='notification-time'>
                           {time.countdown} {time.countdown_label} ago
                         </span>
                         <div className='notification-actions'>
-                          <button className='action accept'>
+                          <button className='action accept' onClick={(e) => this.handleActionClick('accept', approval)}>
                             <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' />
                             {` Accept`}
                           </button>
-                          <button className='action decline'>
+                          <button className='action decline' onClick={(e) => this.handleActionClick('decline', approval)}>
                             <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' />
                             {` Decline`}
                           </button>

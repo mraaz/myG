@@ -314,9 +314,6 @@ const AddCommunity = ({
                       <span className=' button photo-btn'>
                         <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
                       </span>
-                      <span className='button video-btn'>
-                        <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Video.svg`} />
-                      </span>
                     </div>
                     <div className='text'>
                       Or <span>click here </span> to select

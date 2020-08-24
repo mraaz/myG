@@ -168,12 +168,6 @@ Route.get('/api/replies/show_reply/:id', 'ReplyController.show_reply')
 Route.get('/api/replies/my_count/:id', 'ReplyController.replies_count')
 Route.post('/api/replies/', 'ReplyController.store')
 
-Route.post('/api/notifications/addFriend', 'NotificationController.addFriend')
-Route.get('/api/notifications/friend/:id', 'NotificationController.checkFriend')
-Route.get('/api/notifications/myFriendRequests/', 'NotificationController.myFriendRequests')
-Route.post('/api/notifications/allmyFriendRequests/', 'NotificationController.allmyFriendRequests')
-Route.get('/api/notifications/myFriendRequest/:id', 'NotificationController.myFriendRequest')
-Route.get('/api/notifications/delete/:id', 'NotificationController.destroy')
 Route.get('/api/notifications/getAllNotiLike_post/:id', 'NotificationController.getAllNotiLike_post')
 Route.get('/api/notifications/getAllNotiLike_comment/:id', 'NotificationController.getAllNotiLike_comment')
 Route.get('/api/notifications/getAllNotiLike_reply/:id', 'NotificationController.getAllNotiLike_reply')
@@ -226,6 +220,9 @@ Route.get('/api/notifications_v2/delete/:id', 'NotificationController_v2.destroy
 Route.post('/api/notifications_v2/getAllNoti', 'NotificationController_v2.getAllNotifications')
 Route.get('/api/notifications_v2/markAllNoti', 'NotificationController_v2.markAllNoti')
 Route.get('/api/notifications_v2/deleteAllNoti', 'NotificationController_v2.deleteAllNoti')
+Route.post('/api/notifications_v2/addFriend', 'NotificationController_v2.addFriend')
+Route.get('/api/notifications_v2/delete/:id', 'NotificationController_v2.destroy')
+Route.get('/api/notifications_v2/friend/:id', 'NotificationController_v2.checkFriend')
 
 //-----------------------------------------
 

@@ -240,7 +240,9 @@ export class Chat extends React.Component {
 
         <div
           className={`chat-component-header-info ${this.props.isGuest ? '' : 'clickable'}`}
-          onClick={() => !this.props.isGuest && this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })}>
+          onClick={() =>
+            !this.props.isGuest && this.props.updateChatState(this.props.chatId, { minimised: !this.props.minimised, maximised: false })
+          }>
           {titleTooLong ? (
             <WithTooltip position={{ bottom: '24px', left: '-12px' }} text={this.props.title}>
               <div className='chat-component-header-title'>{this.props.title.slice(0, 17) + '...'}</div>
@@ -399,7 +401,7 @@ export class Chat extends React.Component {
         className='chat-component-empty-chat-message clickable'
         onClick={() =>
           showMessengerAlert(
-            'Most End to End (E2E) apps store a secret key on a device. This means you need a device to access your messages. myG emails you this secret key which we call chat password, which allows you to get E2E without additional gadgets. Only you have access to this key and with it you can decrypt your chat history. With great power, comes great responsibility. If you lose your key unfortunately, you will also lose your chat history, not even the god-like nerds @ myG can recover this.'
+            'End to End Encryption (E2E) means that no one outside of the chat can read your messages (not even myG). Most E2E apps store a secret key on a device. This means you need a device to access your messages. myG emails you this secret key which we call chat password. This allows you to get E2E without additional gadgets. With great power, comes great responsibility. If you lose your key unfortunately, you will also lose your chat history, not even the god-like nerds @ myG can recover your key.'
           )
         }>
         <p>Messages you send to this chat are secured with end-to-end encryption.</p>
@@ -424,7 +426,7 @@ export class Chat extends React.Component {
       : [this.props.title]
     const typingHint = usersTyping.length > 1 ? usersTyping.join(', ') + ' are typing...' : usersTyping[0] + ' is typing...'
     return (
-      <div key={'typing'} id="chat-component-message" className="chat-component-message-received">
+      <div key={'typing'} id='chat-component-message' className='chat-component-message-received'>
         <div className='chat-component-message-typing-hint'>{typingHint}</div>
         <div className='chat-component-message-container'>
           <div className='dot-flashing' />
@@ -545,7 +547,7 @@ export class Chat extends React.Component {
     if (this.props.isGuest) extraClass = 'chat-guest'
     if (this.state.guestChatExpanded) extraClass += '-expanded'
     return (
-      <div key={this.props.chatId} id="chat-component-base" className={extraClass}>
+      <div key={this.props.chatId} id='chat-component-base' className={extraClass}>
         {this.renderHeader()}
         {!this.state.settings && !this.props.minimised && this.renderMuteBanner()}
         {!this.state.settings && !this.props.minimised && this.renderBlockedBanner()}
@@ -625,7 +627,20 @@ function mapDispatchToProps(dispatch) {
     prepareChat: (chatId, userId, contactId, isGroup) => dispatch(prepareChatAction(chatId, userId, contactId, isGroup)),
     fetchMessages: (chatId, page) => dispatch(fetchMessagesAction(chatId, page)),
     sendMessage: (chatId, userId, alias, content, attachment, replyId, replyContent, replyBackup, unencryptedContent, forceSelfDestruct) =>
-      dispatch(sendMessageAction(chatId, userId, alias, content, attachment, replyId, replyContent, replyBackup, unencryptedContent, forceSelfDestruct)),
+      dispatch(
+        sendMessageAction(
+          chatId,
+          userId,
+          alias,
+          content,
+          attachment,
+          replyId,
+          replyContent,
+          replyBackup,
+          unencryptedContent,
+          forceSelfDestruct
+        )
+      ),
     editMessage: (chatId, userId, messageId, content) => dispatch(editMessageAction(chatId, userId, messageId, content)),
     deleteMessage: (chatId, userId, messageId, origin) => dispatch(deleteMessageAction(chatId, userId, messageId, origin)),
     addReaction: (chatId, userId, messageId, reactionId) => dispatch(addReactionAction(chatId, userId, messageId, reactionId)),

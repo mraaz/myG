@@ -72,7 +72,7 @@ class ScheduleGameController {
           gameNameID = tmp.id
         } else {
           gameNameID = getGameName[0].id
-          gameface.incrementGameCounter({ auth }, request.input('game_name_box'))
+          gameface.incrementGameCounter({ auth }, request.input('game_names_id'))
         }
 
         const newScheduleGame = await ScheduleGame.create({

@@ -161,17 +161,17 @@ export default class AddGamingExp extends Component<*, State> {
     var myTags = ''
 
     if (this.state.value == '' || this.state.value == null) {
-      toast.success(<Toast_style text={'Sorry mate! Game name can not be blank'} />)
+      toast.error(<Toast_style text={'Sorry mate! Game name can not be blank'} />)
       return
     }
 
     if (this.state.status_box == '' || this.state.status_box == null) {
-      toast.success(<Toast_style text={'Sorry mate! Status name can not be blank'} />)
+      toast.error(<Toast_style text={'Sorry mate! Status name can not be blank'} />)
       return
     }
 
     if (/['/.%#$,;`\\]/.test(this.state.value.value)) {
-      toast.success(<Toast_style text={'Sorry mate! Game name can not have invalid fields'} />)
+      toast.error(<Toast_style text={'Sorry mate! Game name can not have invalid fields'} />)
       return
     }
 
@@ -192,15 +192,12 @@ export default class AddGamingExp extends Component<*, State> {
       }
       for (var i = 0; i < this.state.value_tags.length; i++) {
         if (/['/.%#$,;`\\]/.test(this.state.value_tags[i].label)) {
-          toast.success(<Toast_style text={'Sorry mate! Tags can not have invalid fields'} />)
+          toast.error(<Toast_style text={'Sorry mate! Tags can not have invalid fields'} />)
           return
         }
         myTags += this.state.value_tags[i].label.trim() + '; '
       }
-      myTags = myTags
-        .trim()
-        .replace(/; /g, ',')
-        .trim()
+      myTags = myTags.trim().replace(/; /g, ',').trim()
       myTags = myTags.replace(/;/g, '')
       myTags = myTags.replace(/,/g, ', ')
     }
@@ -224,7 +221,7 @@ export default class AddGamingExp extends Component<*, State> {
         ratings: myRatings,
         tags: myTags,
       })
-      refreshGames();
+      refreshGames()
       this.handleCloseModal()
     } catch (error) {
       console.log(error)
@@ -243,7 +240,7 @@ export default class AddGamingExp extends Component<*, State> {
 
   handleCreate3 = (inputValue: any) => {
     if (inputValue.length > 88) {
-      toast.success(<Toast_style text={'Sorry mate! Tag length is too long.'} />)
+      toast.error(<Toast_style text={'Sorry mate! Tag length is too long.'} />)
       return
     }
     setTimeout(() => {
@@ -260,7 +257,7 @@ export default class AddGamingExp extends Component<*, State> {
 
   getOptions_tags = (inputValue) => {
     const self = this
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         var results = await Game_name_Tags(inputValue, self.state.value.game_names_id)
         self.setState({ options_tags: results })

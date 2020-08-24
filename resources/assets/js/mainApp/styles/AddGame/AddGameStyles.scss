@@ -198,7 +198,8 @@
   &__optional-view-fields {
     padding: 0 17px;
     padding-bottom: 17px;
-    // padding-top: 114px;
+    backdrop-filter: blur(10px);
+    background-color: rgba(0, 0, 0, 0.4);
   }
   &__listed {
     &__header {
