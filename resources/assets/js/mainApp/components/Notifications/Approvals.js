@@ -153,7 +153,7 @@ export default class Approvals extends Component {
         activity_name = 'Group'
         return (
           <div className='notification__text'>
-            {`wants to join `}{' '}
+            {`wants to join this group `}{' '}
             <Link to={`/community/${props.group_id}`}>
               <span className='notification-type'>{activity_name}</span>{' '}
             </Link>
@@ -173,6 +173,7 @@ export default class Approvals extends Component {
             <Link to={`/scheduledGames/${props.schedule_games_GUID}`}>
               <span className='notification-type'>{activity_name}</span>{' '}
             </Link>
+            {`starting on ${moment(props.start_time).format('DD-MMM-YYYY')}`}
           </div>
         )
         break
@@ -189,7 +190,7 @@ export default class Approvals extends Component {
     const isActive = active == true ? { display: 'block' } : { display: 'none' }
 
     return (
-      <div style={isActive}>
+      <div style={isActive} className='game__approval'>
         <TopTabs tabs={['All', 'Friendships', 'Games', 'Communities']} changeTab={this.changeTab} />
         {fetching && (
           <div>
@@ -245,9 +246,9 @@ export default class Approvals extends Component {
                   </div>
                 )
               })}
+            <div className='endline'>No more updates</div>
           </div>
         )}
-        <div className='endline'>No more updates</div>
       </div>
     )
   }

@@ -66,3 +66,18 @@ export const clickedDenied_game = (invitation) => {
     console.log(error)
   }
 }
+
+export const mark_all = () => {
+  try {
+    const mark_all = axios.get('/api/notifications/markAllNoti')
+  } catch (error) {
+    console.log(error)
+  }
+}
+export const delete_all = () => {
+  try {
+    const delete_all = axios.get('/api/notifications/deleteAllNoti')
+  } catch (error) {
+    console.log(error)
+  }
+}
