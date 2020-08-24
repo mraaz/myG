@@ -110,7 +110,7 @@ const Approved_gamers = (props) => {
                       <div className='gamer__name gamer'>
                         <Link to={`/profile/${attendee.alias}`}>
                           <div className='default_circle'>
-                            <img onError={ddDefaultSrc} src={attendee.profile_img} className='groupImage' />
+                            <img onError={addDefaultSrc} src={attendee.profile_img} className='groupImage' />
                           </div>
                           <spam>{attendee.alias}</spam>
                         </Link>
