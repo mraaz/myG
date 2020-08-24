@@ -411,5 +411,6 @@ Route.get('/api/seats_available_email/:email', 'SeatsAvailableController.storeSe
 
 // Profile
 Route.get('/api/profile/:alias', 'ProfileController.fetchProfileInfo')
+Route.put('/api/profile/:alias', 'ProfileController.updateProfile')
 
 Route.any('*', ({ view }) => view.render('pages/react'))

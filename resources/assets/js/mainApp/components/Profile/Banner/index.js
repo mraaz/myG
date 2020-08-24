@@ -13,7 +13,7 @@ export class Banner extends React.Component {
 
   render() {
     return(
-      <div id="banner">
+      <div id="profile-banner">
         <AnalyticsBox hideSuggestions containerStyle='analytics' />
         <Background 
           alias={this.props.profile.alias}

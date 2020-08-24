@@ -19,7 +19,7 @@ export default class Header extends React.Component {
         </Uploader>
       )
     }
-    return <div className='icon' style={{ backgroundImage: `url('${this.props.profile.image}')` }} />
+    return <div className='icon' style={{ backgroundImage: `url('${this.props.profile.image}'), url('https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png')` }} />
   }
 
   renderInfo = () => {
