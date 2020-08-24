@@ -2,8 +2,9 @@ import React from 'react';
 import get from 'lodash.get';
 import { connect } from 'react-redux'
 import { ignoreFunctions } from '../../../../common/render'
-import { fetchProfileInfoAction } from '../../../../redux/actions/profileAction';
+import { fetchProfileInfoAction, updateProfileInfoAction } from '../../../../redux/actions/profileAction';
 import Banner from '../Banner';
+import ProfileInfo from '../Info';
 
 export class Profile extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -19,6 +20,7 @@ export class Profile extends React.Component {
     return(
       <div id="profile">
         <Banner profile={this.props.profile} />
+        <ProfileInfo profile={this.props.profile} updateProfile={this.props.updateProfile} />
       </div>
     );
   }
@@ -34,6 +36,7 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
   return {
     fetchProfile: (alias) => dispatch(fetchProfileInfoAction(alias)),
+    updateProfile: (alias, updates) => dispatch(updateProfileInfoAction(alias, updates)),
   }
 }
 

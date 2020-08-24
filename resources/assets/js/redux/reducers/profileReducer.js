@@ -45,6 +45,18 @@ export default function reducer(state = initialState, action) {
       }
     }
 
+    case 'UPDATE_PROFILE_INFO_FULFILLED': {
+      logger.log('PROFILE', `Redux -> Updated profile info for ${action.meta.alias}: `, action.payload)
+      const alias = action.meta.alias
+      const profiles = addProfile(state, alias)
+      profiles[alias].set(get(action, 'payload.profile'))
+      profiles[alias].set({ error: get(action, 'payload.error') })
+      return {
+        ...state,
+        profiles,
+      }
+    }
+
     case 'SEND_FRIEND_REQUEST_FULFILLED': {
       logger.log('PROFILE', `Redux -> Sent friend request for ${action.meta.alias}`)
       const alias = action.meta.alias

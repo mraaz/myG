@@ -23,7 +23,26 @@ class ProfileController {
       })
       return response.send({ error })
     }
+  }
 
+  async updateProfile({ auth, request, response }) {
+    try {
+      const requestingUserId = auth.user.id
+      if (!requestingUserId) throw new Error('Auth Error')
+      const updates = request.all()
+      log('PROFILE', `User ${requestingUserId} requesting to update profile info with ${JSON.stringify(updates)}`)
+      const { profile } = await ProfileRepository.updateProfile({ requestingUserId, ...updates })
+      return response.send({ profile })
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+      return response.send({ error })
+    }
   }
 }
 
