@@ -4,7 +4,7 @@ const Database = use('Database')
 const Attendee = use('App/Models/Attendee')
 const ScheduleGame = use('App/Models/ScheduleGame')
 
-const NotificationController_v2 = use('./NotificationController_v2')
+const NotificationController_v2 = require('./NotificationController_v2')
 const UserStatTransactionController = use('./UserStatTransactionController')
 const ScheduleGameController = use('./ScheduleGameController')
 const LoggingRepository = require('../../Repositories/Logging')
@@ -380,8 +380,8 @@ class AttendeeController {
           return
         }
 
-        let noti = new NotificationController_v2()
-        let userStatController = new UserStatTransactionController()
+        const noti = new NotificationController_v2()
+        const userStatController = new UserStatTransactionController()
 
         noti.add_approved_attendee_left({ auth }, request.params.id, attendees[0].user_id)
 
