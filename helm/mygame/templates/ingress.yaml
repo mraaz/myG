@@ -30,3 +30,36 @@ spec:
 {{ toYaml .Values.ingress.tls | indent 4 }}
 {{- end -}}
 {{ end }}
+---
+{{- if .Values.ingress2.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "mygame.fullname" . }}-www
+  labels: {{- include "mygame.labels" . | nindent 4 }}
+  annotations:
+    {{- with .Values.ingress2.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  rules:
+  - http:
+      paths:
+{{- if len (.Values.ingress2.paths) }}
+{{ tpl (toYaml .Values.ingress2.paths | indent 6) . }}
+{{- else }}
+      - backend:
+          serviceName: {{ template "mygame.fullname" . }}
+          servicePort: {{ .Values.service.portName }}
+{{- if .Values.ingress2.path }}
+        path: {{ .Values.ingress2.path }}
+{{- end -}}
+{{- end -}}
+{{- if .Values.ingress2.hostName }}
+    host: {{ .Values.ingress2.hostName | quote }}
+{{- end }}
+{{- if .Values.ingress2.tls }}
+  tls:
+{{ toYaml .Values.ingress2.tls | indent 4 }}
+{{- end -}}
+{{ end }}
