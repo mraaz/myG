@@ -103,8 +103,22 @@
 .suggestion {
   display: flex;
   margin-top: 20px;
-  justify-content: space-between;
   flex-wrap: wrap;
+  .suggestion-box-text {
+    color: #555e5f;
+  }
+  .suggestion-box-head {
+    margin: 0;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 300;
+    margin-right: 20px;
+  }
+  .suggestions-box-reset {
+    width: 5%;
+    cursor: pointer;
+    margin-left: auto;
+  }
 }
 
 .show__user__suggestion {
@@ -135,6 +149,7 @@
   .suggestions-box-reset {
     width: 5%;
     cursor: pointer;
+    margin-left: auto;
   }
   .suggestion-box-input {
     background: #1d2326;
@@ -148,6 +163,7 @@
     color: #fff;
     max-width: 100px;
     overflow: hidden;
+    height: 49px;
   }
   .input-outer {
     border-radius: 0 6px 6px 0;

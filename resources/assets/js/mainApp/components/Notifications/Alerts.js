@@ -284,7 +284,7 @@ export default class Alerts extends Component {
               notification.map((noti) => {
                 const time = this.handleTime(noti.created_at)
                 return (
-                  <div className={`notification alert ${noti.read ? '' : 'unread'}`}>
+                  <div className={`notification alert ${noti.read ? '' : 'unread'}`} key={noti.div}>
                     <div className='notification-user-avatar'>
                       <img src={noti.profile_img ? noti.profile_img : defaultUserImage} />
                     </div>
@@ -311,6 +311,12 @@ export default class Alerts extends Component {
                                 <span> @{noti.third_user_alias}</span>
                               </div>
                             </Link>
+                          )}
+                          {noti.total_post_count > 0 && (
+                            <div className='notification-username'>
+                              {`and `}
+                              {noti.total_post_count}
+                            </div>
                           )}
                         </div>
                         {this.renderActivityText(noti)}
