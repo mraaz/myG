@@ -103,7 +103,7 @@ $main-font: 'Montserrat';
     }
     .gameList__box {
       position: relative;
-      height: 100vh;
+      max-height: 100vh;
       overflow: scroll;
       .mygames {
         display: flex;
@@ -333,12 +333,12 @@ $main-font: 'Montserrat';
 
     .game__approval {
       .gameList__box {
-        height: 85vh;
+        max-height: 85vh;
       }
     }
     .notification__container {
       .gameList__box {
-        height: 70vh;
+        max-height: 70vh;
       }
     }
 
@@ -555,10 +555,6 @@ $main-font: 'Montserrat';
     margin: 0 0 25px 0;
     position: relative;
 
-    &.unread {
-      background: #0b0f14;
-    }
-
     .notification-user-avatar {
       position: absolute;
       top: -10px;
@@ -589,6 +585,9 @@ $main-font: 'Montserrat';
         line-height: 160%;
         display: inline-table;
         flex-wrap: wrap;
+        &.unread {
+          font-weight: 300;
+        }
 
         .username__link {
           display: inline-flex;

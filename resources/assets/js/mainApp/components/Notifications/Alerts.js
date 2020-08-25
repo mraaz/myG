@@ -256,6 +256,7 @@ export default class Alerts extends Component {
   }
   deleteAll = () => {
     delete_all()
+    this.setState({ notification: [] })
   }
 
   render() {
@@ -288,7 +289,7 @@ export default class Alerts extends Component {
                       <img src={noti.profile_img ? noti.profile_img : defaultUserImage} />
                     </div>
                     <div className='notification-content'>
-                      <div className='notification-description'>
+                      <div className={`notification-description ${noti.read == false || noti.read_status == 0 ? '' : 'unread'}`}>
                         <div className='username__link'>
                           <Link to={`/profile/${noti.first_user_alias}`}>
                             <div className='notification-username'>
@@ -298,13 +299,15 @@ export default class Alerts extends Component {
                           {noti.second_user_alias && (
                             <Link to={`/profile/${noti.second_user_alias}`}>
                               <div className='notification-username'>
+                                {`and `}
                                 <span> @{noti.second_user_alias}</span>
                               </div>
                             </Link>
                           )}
-                          {noti.third_user_alias && (
+                          {noti.third_user_alias && `,` && (
                             <Link to={`/profile/${noti.third_user_alias}`}>
                               <div className='notification-username'>
+                                {`and `}
                                 <span> @{noti.third_user_alias}</span>
                               </div>
                             </Link>
