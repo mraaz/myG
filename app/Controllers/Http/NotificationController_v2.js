@@ -342,10 +342,10 @@ class NotificationController_v2 {
       ) {
         let arr = []
         switch (request.input('activity_type')) {
-          case '0':
+          case 0:
             arr = [2, 3, 4, 5, 6]
             break
-          case '-1':
+          case -1:
             arr = [2, 3, 4, 5, 6]
             break
           default:
@@ -461,6 +461,7 @@ class NotificationController_v2 {
             'users.profile_img',
             'schedule_games.start_date_time',
             'schedule_games.end_date_time',
+            'schedule_games.schedule_games_GUID',
             'game_names.game_name',
             'notifications.created_at'
           )
@@ -540,7 +541,14 @@ class NotificationController_v2 {
         const user_ding = await Database.from('notifications')
           .innerJoin('users', 'users.id', 'notifications.user_id')
           .where({ other_user_id: auth.user.id, activity_type: 20 })
-          .select('notifications.activity_type', 'users.profile_img', 'users.id', 'notifications.created_at', 'notifications.read_status')
+          .select(
+            'notifications.activity_type',
+            'users.profile_img',
+            'users.id',
+            'users.alias',
+            'notifications.created_at',
+            'notifications.read_status'
+          )
           .orderBy('notifications.created_at', 'desc')
           .paginate(request.input('counter'), set_limit)
 

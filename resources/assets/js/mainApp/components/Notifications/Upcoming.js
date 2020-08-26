@@ -3,6 +3,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import axios from 'axios'
 
 import UpcomingItem from './UpcomingItem'
+import NoRecord from './NoRecord'
 
 export default class Upcoming extends Component {
   constructor() {
@@ -75,10 +76,12 @@ export default class Upcoming extends Component {
 
     return (
       <div style={isActive}>
-        <div className='gameList__box' onScroll={this.handleScroll} ref={this.myRef}>
-          {upcomingGames.map((game) => {
-            return <UpcomingItem {...game} {...this.props} />
-          })}
+        <div className='gameList__box upcoming__game' onScroll={this.handleScroll} ref={this.myRef}>
+          {upcomingGames.length == 0 && <NoRecord />}
+          {upcomingGames.length > 0 &&
+            upcomingGames.map((game) => {
+              return <UpcomingItem {...game} {...this.props} />
+            })}
         </div>
       </div>
     )

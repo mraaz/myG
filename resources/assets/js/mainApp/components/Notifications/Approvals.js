@@ -216,12 +216,12 @@ export default class Approvals extends Component {
               approvals.map((approval) => {
                 const time = this.handleTime(approval.created_at)
                 return (
-                  <div className='notification' key={approval.id}>
+                  <div className={`notification ${approval.read_status == 0 ? 'unread' : ''}`} key={approval.id}>
                     <div className='notification-user-avatar'>
                       <img onError={this.addDefaultSrc} src={approval.profile_img ? approval.profile_img : defaultUserImage} />
                     </div>
                     <div className='notification-content'>
-                      <div className='notification-description'>
+                      <div className={`notification-description ${approval.read_status == 0 ? '' : 'unread'}`}>
                         <div className='username__link'>
                           <Link to={`/profile/${approval.alias}`}>
                             <div className='notification-username'>
