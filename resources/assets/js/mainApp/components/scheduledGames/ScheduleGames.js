@@ -172,7 +172,7 @@ export default class ScheduleGames extends Component {
                   fetching={fetching}
                 />
               </div>
-              <div style={{ flex: '1', borderLeft: '1px solid #384952', padding: '8px', borderTop: '1px solid #384952' }}>
+              <div style={{ flex: '1', padding: '8px', borderTop: '1px solid #384952' }}>
                 <GameDetails
                   singleScheduleGamesPayload={singleScheduleGamesPayload}
                   selected_game={selected_game}

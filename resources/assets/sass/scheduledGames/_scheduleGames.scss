@@ -138,9 +138,6 @@
           .filter__value-container {
             height: 45px;
           }
-          .filter__value-container--is-multi {
-            height: auto;
-          }
         }
 
         .filter {
@@ -362,9 +359,6 @@
         .filter__value-container {
           height: 45px;
         }
-        .filter__value-container--is-multi {
-          height: auto;
-        }
       }
 
       .filter {
@@ -550,14 +544,6 @@
       color: #fff;
     }
     .gameDetails {
-      flex: 1;
-      justify-content: flex-start;
-      display: flex;
-      max-height: calc(100vh - 100px);
-      flex-direction: column;
-      position: relative;
-      margin: 15px;
-      border-radius: 8px;
       .gameDetails__header {
         display: inline-table;
         border-bottom: 2px solid #a09770;
@@ -659,17 +645,15 @@
         }
       }
       .gameDetails__body {
-        margin: 24px 24px 0 24px;
         border-left: 2px solid #344953;
         position: relative;
-        padding: 0 0 0 20px;
-        padding-bottom: 0;
-        margin-bottom: 40px;
+        padding-left: 20px;
+        margin: 20px 20px 0px 20px;
         &::before {
           content: '';
           width: 7px;
           height: 7px;
-          background: #e6c846 0% 0% no-repeat padding-box;
+          background: #e6c846;
           opacity: 1;
           position: absolute;
           top: 0;
@@ -793,13 +777,12 @@
         }
       }
       .gameDetaiils__footer {
-        background: #1d2326 0% 0% no-repeat padding-box;
-        border-radius: 8px;
+        background: #1d2326;
         padding: 24px;
-        display: flex;
-        margin-top: auto;
-        flex-direction: column;
         border-top: 1px solid #384952;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
         .noComments {
           font: Bold 12px/14px Montserrat;
           letter-spacing: 0px;
@@ -1151,8 +1134,10 @@
     .gameDetails {
       background: #171a1c;
       margin-left: 10px;
-      display: inline-table;
       width: 100%;
+      position: relative;
+      height: 125vh;
+      overflow: scroll;
       .gameDetails__header {
         background: #1d2326;
         border-top-left-radius: 8px;
@@ -1819,9 +1804,6 @@
             .filter__control--is-focused {
               .filter__value-container {
                 height: 45px;
-              }
-              .filter__value-container--is-multi {
-                height: auto;
               }
             }
             .filter {
