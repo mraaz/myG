@@ -66,11 +66,13 @@ class GroupController {
 
         //End copy of code
 
+        console.log(request.input('group_img'))
+
         const newGroup = await Group.create({
           game_names_id: gameNameID,
           user_id: auth.user.id,
           name: request.input('name'),
-          group_img: request.input('group_img'),
+          group_img: request.input('group_img') ? request.input('group_img') : null,
           type: request.input('type'),
           all_accept: request.input('all_accept'),
           game_names_id: request.input('game_names_id'),

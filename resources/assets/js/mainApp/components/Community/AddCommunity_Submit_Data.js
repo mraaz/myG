@@ -37,7 +37,7 @@ export async function SubmitDataFunction(myG) {
       tags: tags,
       co_hosts: co_hosts,
       type: myG.type,
-      preview_files: myG.preview_files,
+      group_img: myG.preview_files ? (myG.preview_files.src ? myG.preview_files.src : null) : null,
     })
     return post
   } catch (error) {

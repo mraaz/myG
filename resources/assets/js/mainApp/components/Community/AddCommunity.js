@@ -245,7 +245,7 @@ const AddCommunity = ({
         return
       }
       let new_preview_files = []
-
+      console.log(post)
       new_preview_files.push({
         src: post.data.Location,
         key: post.data.Key,

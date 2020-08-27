@@ -162,6 +162,7 @@ class UserStatTransactionController {
             ])
 
           if (getCount_total_number_of_communities.length != 0) {
+            console.log(getCount_total_number_of_communities, '<<<RAAAZ')
             value_to_be_updated = getCount_total_number_of_communities[0].total_count + getCount_total_number_of_communities[1].total_count
           }
           break
