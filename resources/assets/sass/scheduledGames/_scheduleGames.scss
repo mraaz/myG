@@ -779,7 +779,7 @@
       .gameDetaiils__footer {
         background: #1d2326;
         padding: 24px;
-        border-top: 1px solid #384952;
+        border-top: 2px solid #384952;
         position: absolute;
         bottom: 0;
         width: 100%;
@@ -1137,7 +1137,7 @@
       width: 100%;
       position: relative;
       height: 125vh;
-      overflow: scroll;
+      overflow: hidden;
       .gameDetails__header {
         background: #1d2326;
         border-top-left-radius: 8px;
