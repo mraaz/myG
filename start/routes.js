@@ -223,6 +223,7 @@ Route.get('/api/notifications_v2/deleteAllNoti', 'NotificationController_v2.dele
 Route.post('/api/notifications_v2/addFriend', 'NotificationController_v2.addFriend')
 Route.get('/api/notifications_v2/delete/:id', 'NotificationController_v2.destroy')
 Route.get('/api/notifications_v2/friend/:id', 'NotificationController_v2.checkFriend')
+Route.post('/api/notifications_v2/invitations_community', 'NotificationController_v2.invitations_community')
 
 //-----------------------------------------
 

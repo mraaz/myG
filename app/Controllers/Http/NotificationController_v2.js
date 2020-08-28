@@ -5,6 +5,8 @@ const Database = use('Database')
 const ScheduleGameController = use('./ScheduleGameController')
 const LoggingRepository = require('../../Repositories/Logging')
 
+const Post = use('App/Models/Post')
+
 // Split the array into halves and merge them recursively
 function mergeSort(arr) {
   if (arr.length === 1) {
@@ -1047,6 +1049,104 @@ class NotificationController_v2 {
         context: __filename,
         message: (error && error.message) || error,
       })
+    }
+  }
+
+  async invitations_community({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        if (request.input('community_id') == undefined || request.input('community_id') == null || request.input('community_id') == '') {
+          return
+        }
+
+        const requestingUserId = auth.user.id
+        const arrInvite_user = request.input('gamers').split(',')
+        const arrInvite_group = request.input('groups').split(',')
+        const arrInvite_community = request.input('communities').split(',')
+        const group_id = request.input('community_id')
+        const community_name = request.input('community_name')
+
+        const content = `Heya! A new community - ${community_name} has been created! Find out more here: https://myG.gg/community/${community_name}`
+
+        console.log(arrInvite_user)
+        console.log(arrInvite_group)
+        console.log(arrInvite_community)
+        console.log(group_id)
+        console.log(community_name)
+        console.log(content)
+
+        if (arrInvite_user != '') {
+          for (var i = 0; i < arrInvite_user.length; i++) {
+            const findUser = await Database.table('users')
+              .where({
+                alias: arrInvite_user[i].trim(),
+              })
+              .select('id')
+
+            if (findUser.length == 0) {
+              continue
+            }
+
+            const addScheduleGame = await Notification.create({
+              other_user_id: findUser[0].id,
+              user_id: auth.user.id,
+              activity_type: 22,
+              group_id: group_id,
+            })
+          }
+        }
+
+        if (arrInvite_group != '') {
+          for (var i = 0; i < arrInvite_group.length; i++) {
+            const findChat = await Database.table('chats')
+              .where({
+                title: arrInvite_group[i].trim(),
+              })
+              .select('id')
+
+            if (findChat.length == 0) {
+              continue
+            }
+
+            const requestedChatId = findChat[0].id
+            await ChatRepository.sendMessageFromMyG({ requestedChatId, content })
+          }
+        }
+
+        if (arrInvite_community != '') {
+          for (var i = 0; i < arrInvite_community.length; i++) {
+            const findGroup = await Database.table('groups')
+              .where({
+                name: arrInvite_community[i].trim(),
+              })
+              .select('id', 'group_img')
+
+            if (findGroup.length == 0) {
+              continue
+            }
+
+            const newPost = await Post.create({
+              user_id: auth.user.id,
+              type: 'text',
+              content: content,
+              group_id: findGroup[0].id,
+              media_url: findGroup[0].group_img,
+            })
+          }
+        }
+
+        return 'Saved item'
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
+      }
+    } else {
+      return 'You are not Logged In!'
     }
   }
 }
