@@ -55,11 +55,14 @@ const SelectedInvites = ({
             className={classNames([
               'invite-players__invites-header-arrow',
               showOptions[group] ? 'invite-players__invites-header-arrow-down' : '',
-            ])}>
-          </div>
+            ])}></div>
         </div>
       </div>
     )
+  }
+
+  const addDefaultSrc = (ev) => {
+    ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
   }
 
   const getInvitesListView = (group) => {
@@ -84,7 +87,7 @@ const SelectedInvites = ({
                 hoveredElements[key] ? '' : 'invite-players__player-list-element-hovered',
               ])}>
               <div style={{ display: 'flex' }}>
-                <img src={data[key].img} height={20} width={20} className='invite-players__player-image' />
+                <img onError={addDefaultSrc} src={data[key].img} height={20} width={20} className='invite-players__player-image' />
                 <div className='invite-players__player-list-text'>{data[key].name}</div>
               </div>
               <img

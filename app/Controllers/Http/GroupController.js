@@ -24,7 +24,8 @@ class GroupController {
           request.input('name').length > 75 ||
           request.input('name') == undefined ||
           request.input('name') == null ||
-          request.input('name').length == 0
+          request.input('name').length == 0 ||
+          request.input('name').length < 4
         ) {
           return false
         }
@@ -66,8 +67,6 @@ class GroupController {
 
         //End copy of code
 
-        console.log(request.input('group_img'))
-
         const newGroup = await Group.create({
           game_names_id: gameNameID,
           user_id: auth.user.id,
@@ -79,17 +78,13 @@ class GroupController {
           grp_description: request.input('grp_description'),
         })
 
-        if (
-          request.input('preview_files') != undefined &&
-          request.input('preview_files') != null &&
-          request.input('preview_files').length > 0
-        ) {
-          let apiController = new ApiController()
-          apiController.update_aws_keys_entry({ auth }, request.input('preview_files')[0].id, '4', newGroup.id)
+        if (request.input('aws_key_id') != undefined && request.input('aws_key_id') != null) {
+          const apiController = new ApiController()
+          apiController.update_aws_keys_entry({ auth }, request.input('aws_key_id'), '4', newGroup.id)
         }
 
         if (request.input('tags') != null && request.input('tags').length > 0) {
-          let grp_tags_TRANS_Controller = new GroupHashTagTranController()
+          const grp_tags_TRANS_Controller = new GroupHashTagTranController()
           var arrTags = JSON.parse(request.input('tags'))
 
           //Max of three tags per Group.
@@ -125,7 +120,7 @@ class GroupController {
           }
         }
 
-        let userStatController = new UserStatTransactionController()
+        const userStatController = new UserStatTransactionController()
         userStatController.update_total_number_of(auth.user.id, 'total_number_of_communities')
 
         return newGroup

@@ -53,9 +53,16 @@ const AddCommunityContainer = ({ routeProps }) => {
   const onAddGameSubmit = async () => {
     updateIsSubmitting(false)
 
+    //http://www.yodaspeak.co.uk/index.php
+
     if (mainSettingsState.community_name == '' || mainSettingsState.community_name == null) {
-      toast.success(<Toast_style text={"Hmmmm, blank community name can't be. The rules it is"} />)
+      toast.success(<Toast_style text={'Be blank community name cannot. The rules, this is. Yes, hmmm.'} />)
       updateIsSubmitting(false)
+      return
+    }
+
+    if (mainSettingsState.community_name.trim().length < 4) {
+      toast.success(<Toast_style text={'Hmmmm, be longer community name must. The rules, four or more are. Yes, hmmm.'} />)
       return
     }
 
@@ -66,18 +73,18 @@ const AddCommunityContainer = ({ routeProps }) => {
     }
 
     if (advancedSettingsState.tags.length >= MAX_GAME_TAGS) {
-      toast.success(<Toast_style text={"Crikey, mate! That's alot of tags. I can only process 8 tags. Try again!"} />)
+      toast.success(<Toast_style text={'Alot of tags, that is. Only process 8 tags, I can. Try again. Yeesssssss.'} />)
       return
     }
 
     if (advancedSettingsState.coHosts != null && advancedSettingsState.coHosts.length >= MAX_CO_HOSTS) {
-      toast.success(<Toast_style text={"Crikey, mate! That's alot of co-hosts. I can only process 4 co-hosts. Try again!"} />)
+      toast.success(<Toast_style text={'Alot of co-hosts, that is. Only process 4 co-hosts, I can. Try again. Yeesssssss.'} />)
       return
     }
 
     try {
       const { data } = await SubmitDataFunction({
-        community_name: mainSettingsState.community_name,
+        community_name: mainSettingsState.community_name.trim(),
         game_name_box: mainSettingsState.gameTitle,
         tags: advancedSettingsState.tags,
         description: advancedSettingsState.description,
@@ -86,7 +93,7 @@ const AddCommunityContainer = ({ routeProps }) => {
         type: advancedSettingsState.type,
         preview_files: advancedSettingsState.preview_files,
       })
-      updateGameLink(encodeURI(data.name))
+      updateGameLink(encodeURI(data.name.trim()))
       updateIsGameListedModalOpen(true)
     } catch (err) {
       updateIsSubmitting(false)

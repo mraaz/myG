@@ -142,13 +142,13 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick }) => {
           </div>
           <div onClick={() => updateSelectedMenu(MENU_OPTIONS.GROUPS)}>
             <div className={classNames([styles.menuText, selectedMenu === MENU_OPTIONS.PLAYERS ? styles.menuTextSelected : null])}>
-            <span className='invite-gamers-tab'>Groups</span>
+              <span className='invite-gamers-tab'>Groups</span>
             </div>
             <div className={classNames([styles.menuLine, selectedMenu === MENU_OPTIONS.GROUPS ? styles.menuLineHighlighted : null])} />
           </div>
           <div onClick={() => updateSelectedMenu(MENU_OPTIONS.COMMUNITIES)}>
             <div className={classNames([styles.menuText, selectedMenu === MENU_OPTIONS.PLAYERS ? styles.menuTextSelected : null])}>
-            <span className='invite-gamers-tab'>Communities</span>
+              <span className='invite-gamers-tab'>Communities</span>
             </div>
             <div className={classNames([styles.menuLine, selectedMenu === MENU_OPTIONS.COMMUNITIES ? styles.menuLineHighlighted : null])} />
           </div>
@@ -160,7 +160,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick }) => {
 
   const fetchMoreData = async () => {
     await updateCounter(counter + 1)
-    const getKeywordSearchResults = async function () {
+    const getKeywordSearchResults = async function() {
       try {
         const response = await axios.post('/api/friends/allmyFriends', {
           counter,
@@ -184,7 +184,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick }) => {
 
   const fetchCommunitiesData = async () => {
     await updateCommunitiesCounter(counterCommunities + 1)
-    const getmyGroups = async function () {
+    const getmyGroups = async function() {
       try {
         const {
           data: { myGroups },
@@ -196,7 +196,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick }) => {
       }
     }
 
-    const getGroups_im_in = async function () {
+    const getGroups_im_in = async function() {
       try {
         const {
           data: { groups_im_in },
@@ -229,6 +229,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick }) => {
         data: { chats },
       } = await axios.get('/api/chat?onlyGroups=true')
       const { itemsArray, dataObj } = normalizeGroupsData(chats)
+      console.log(chats, '<<<<<DATA from Chat groups!!')
       updateGroupsKeywordSearchResults({
         searchResults: { ...dataObj },
         groupsList: [...itemsArray],
