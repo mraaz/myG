@@ -35,6 +35,7 @@ const AddCommunityContainer = ({ routeProps }) => {
     gameTitle: '',
     autoAccept: true,
     community_name: '',
+    community_id: '',
   })
 
   const [gameLink, updateGameLink] = useState('')
@@ -94,6 +95,7 @@ const AddCommunityContainer = ({ routeProps }) => {
         preview_files: advancedSettingsState.preview_files,
       })
       updateGameLink(encodeURI(data.name.trim()))
+      updateMainSettingsState({ community_id: data.id, community_name: data.name.trim() })
       updateIsGameListedModalOpen(true)
     } catch (err) {
       updateIsSubmitting(false)
@@ -193,7 +195,14 @@ const AddCommunityContainer = ({ routeProps }) => {
       {getPageFooter()}
       {isGameListedModalOpen && getGameListedModal()}
       {isInvitesSentsModalOpen && getInvitesSentModal()}
-      {isInviteModalOpen && <InvitePlayers onInvitationSent={onInvitationSent} onCancelInviteClick={onCancelInviteClick} />}
+      {isInviteModalOpen && (
+        <InvitePlayers
+          onInvitationSent={onInvitationSent}
+          onCancelInviteClick={onCancelInviteClick}
+          community_id={mainSettingsState.community_id}
+          community_name={mainSettingsState.community_name}
+        />
+      )}
     </div>
   )
 }
