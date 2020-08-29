@@ -155,7 +155,7 @@ export default class Approvals extends Component {
           <div className='notification__text'>
             {`wants to join this group `}{' '}
             <Link to={`/community/${props.group_id}`}>
-              <span className='notification-type'>{activity_name}</span>{' '}
+              <span className='notification-type'>{props.name}</span>
             </Link>
             {`. What ya reckon? `}
           </div>
@@ -171,7 +171,7 @@ export default class Approvals extends Component {
           <div className='notification__text'>
             {`wants to join  `}{' '}
             <Link to={`/scheduledGames/${props.schedule_games_GUID}`}>
-              <span className='notification-type'>{activity_name}</span>{' '}
+              <span className='notification-type'>{props.game_name}</span>
             </Link>
             {`starting on ${moment(props.start_time).format('DD-MMM-YYYY')}`}
           </div>
@@ -218,7 +218,9 @@ export default class Approvals extends Component {
                 return (
                   <div className={`notification ${approval.read_status == 0 ? 'unread' : ''}`} key={approval.id}>
                     <div className='notification-user-avatar'>
-                      <img onError={this.addDefaultSrc} src={approval.profile_img ? approval.profile_img : defaultUserImage} />
+                      <Link to={`/profile/${approval.alias}`}>
+                        <img onError={this.addDefaultSrc} src={approval.profile_img ? approval.profile_img : defaultUserImage} />
+                      </Link>
                     </div>
                     <div className='notification-content'>
                       <div className={`notification-description ${approval.read_status == 0 ? '' : 'unread'}`}>

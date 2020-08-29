@@ -101,7 +101,9 @@ $main-font: 'Montserrat';
         font-size: 12px;
       }
     }
-    .upcoming__game {
+    .upcoming__game,
+    .game__approval,
+    .notification__container {
       .noRecordFound__wraper {
         background: #181a1c;
         .noRecordFound__body {
@@ -347,6 +349,9 @@ $main-font: 'Montserrat';
     .game__approval {
       .gameList__box {
         max-height: 85vh;
+      }
+      .notification-content {
+        margin-left: 0;
       }
     }
     .notification__container {
@@ -751,7 +756,7 @@ $main-font: 'Montserrat';
   }
 
   .alert {
-    height: 70px;
+    min-height: 70px;
   }
 
   .endline {
