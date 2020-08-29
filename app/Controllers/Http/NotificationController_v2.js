@@ -1066,14 +1066,9 @@ class NotificationController_v2 {
         const group_id = request.input('community_id')
         const community_name = request.input('community_name')
 
-        const content = `Heya! A new community - ${community_name} has been created! Find out more here: https://myG.gg/community/${community_name}`
-
-        console.log(arrInvite_user)
-        console.log(arrInvite_group)
-        console.log(arrInvite_community)
-        console.log(group_id)
-        console.log(community_name)
-        console.log(content)
+        const content = `Heya! A new community - ${community_name} has been created! Find out more here: https://myG.gg/community/${encodeURI(
+          community_name
+        )}`
 
         if (arrInvite_user != '') {
           for (var i = 0; i < arrInvite_user.length; i++) {
@@ -1135,6 +1130,51 @@ class NotificationController_v2 {
           }
         }
 
+        return 'Saved item'
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async addGenericNoti_({ auth }, id, other_user_id, type) {
+    type = parseInt(type)
+
+    let post_id = null,
+      group_id = null,
+      chat_id = null,
+      comment_id = null,
+      reply_id = null,
+      schedule_games_id = null
+
+    if (auth.user) {
+      switch (type) {
+        case 22:
+          group_id = id
+          break
+        default:
+      }
+
+      try {
+        const addNoti = await Notification.create({
+          other_user_id: other_user_id,
+          user_id: auth.user.id,
+          activity_type: type,
+          post_id: post_id,
+          group_id: group_id,
+          chat_id: chat_id,
+          schedule_games_id: schedule_games_id,
+          comment_id: comment_id,
+          reply_id: reply_id,
+        })
         return 'Saved item'
       } catch (error) {
         LoggingRepository.log({
