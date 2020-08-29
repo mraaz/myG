@@ -10,6 +10,7 @@ const GroupHashTagController = use('./GroupHashTagController')
 const GroupHashTagTranController = use('./GroupHashTagTranController')
 const ApiController = use('./ApiController')
 const GameNameController = use('./GameNameController')
+const NotificationController_v2 = use('./NotificationController_v2')
 
 const LoggingRepository = require('../../Repositories/Logging')
 
@@ -111,11 +112,13 @@ class GroupController {
           var arrCo_hosts = request.input('co_hosts').split(',')
 
           if (arrCo_hosts != '') {
+            const noti = new NotificationController_v2()
             for (var i = 0; i < MAX_CO_HOSTS && i < arrCo_hosts.length; i++) {
               const create_co_hosts = await CoHost.create({
                 group_id: newGroup.id,
                 user_id: arrCo_hosts[i],
               })
+              noti.addGenericNoti_({ auth }, newGroup.id, arrCo_hosts[i], 22)
             }
           }
         }
