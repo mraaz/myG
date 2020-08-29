@@ -210,51 +210,51 @@ export default class Approvals extends Component {
             </div>
           </div>
         )}
-        {!fetching && (
-          <div className='gameList__box' style={{ padding: '15px' }} onScroll={this.handleScroll} ref={this.myRef}>
-            {approvals.length > 0 &&
-              approvals.map((approval) => {
-                const time = this.handleTime(approval.created_at)
-                return (
-                  <div className={`notification ${approval.read_status == 0 ? 'unread' : ''}`} key={approval.id}>
-                    <div className='notification-user-avatar'>
-                      <Link to={`/profile/${approval.alias}`}>
-                        <img onError={this.addDefaultSrc} src={approval.profile_img ? approval.profile_img : defaultUserImage} />
-                      </Link>
-                    </div>
-                    <div className='notification-content'>
-                      <div className={`notification-description ${approval.read_status == 0 ? '' : 'unread'}`}>
-                        <div className='username__link'>
-                          <Link to={`/profile/${approval.alias}`}>
-                            <div className='notification-username'>
-                              <span> @{approval.alias}</span>
-                            </div>
-                          </Link>
-                        </div>
-                        {this.renderActivityText(approval)}
+        {/* {!fetching && ( */}
+        <div className='gameList__box' style={{ padding: '15px' }} onScroll={this.handleScroll} ref={this.myRef}>
+          {approvals.length > 0 &&
+            approvals.map((approval) => {
+              const time = this.handleTime(approval.created_at)
+              return (
+                <div className={`notification ${approval.read_status == 0 ? 'unread' : ''}`} key={approval.id}>
+                  <div className='notification-user-avatar'>
+                    <Link to={`/profile/${approval.alias}`}>
+                      <img onError={this.addDefaultSrc} src={approval.profile_img ? approval.profile_img : defaultUserImage} />
+                    </Link>
+                  </div>
+                  <div className='notification-content'>
+                    <div className={`notification-description ${approval.read_status == 0 ? '' : 'unread'}`}>
+                      <div className='username__link'>
+                        <Link to={`/profile/${approval.alias}`}>
+                          <div className='notification-username'>
+                            <span> @{approval.alias}</span>
+                          </div>
+                        </Link>
                       </div>
-                      <div className='notification-options'>
-                        <span className='notification-time'>
-                          {time.countdown} {time.countdown_label} ago
-                        </span>
-                        <div className='notification-actions'>
-                          <button className='action accept' onClick={(e) => this.handleActionClick('accept', approval)}>
-                            <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' />
-                            {` Accept`}
-                          </button>
-                          <button className='action decline' onClick={(e) => this.handleActionClick('decline', approval)}>
-                            <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' />
-                            {` Decline`}
-                          </button>
-                        </div>
+                      {this.renderActivityText(approval)}
+                    </div>
+                    <div className='notification-options'>
+                      <span className='notification-time'>
+                        {time.countdown} {time.countdown_label} ago
+                      </span>
+                      <div className='notification-actions'>
+                        <button className='action accept' onClick={(e) => this.handleActionClick('accept', approval)}>
+                          <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' />
+                          {` Accept`}
+                        </button>
+                        <button className='action decline' onClick={(e) => this.handleActionClick('decline', approval)}>
+                          <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' />
+                          {` Decline`}
+                        </button>
                       </div>
                     </div>
                   </div>
-                )
-              })}
-            <div className='endline'>No more updates</div>
-          </div>
-        )}
+                </div>
+              )
+            })}
+          <div className='endline'>No more updates</div>
+        </div>
+        // )}
       </div>
     )
   }

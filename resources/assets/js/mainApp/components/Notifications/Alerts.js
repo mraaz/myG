@@ -283,64 +283,64 @@ export default class Alerts extends Component {
         ) : (
           <NoRecord />
         )}
-        {!fetching && (
-          <div className='gameList__box' style={{ padding: '15px' }} onScroll={this.handleScroll} ref={this.myRef}>
-            {notification.length > 0 &&
-              notification.map((noti) => {
-                const time = this.handleTime(noti.created_at)
-                return (
-                  <div className={`notification alert ${noti.read ? '' : 'unread'}`} key={noti.id}>
-                    <div className='notification-user-avatar'>
-                      <Link to={`/profile/${noti.alias}`}>
-                        <img src={noti.profile_img ? noti.profile_img : defaultUserImage} />
-                      </Link>
-                    </div>
-                    <div className='notification-content'>
-                      <div className={`notification-description ${noti.read == false || noti.read_status == 0 ? '' : 'unread'}`}>
-                        <div className='username__link'>
-                          <Link to={`/profile/${noti.first_user_alias}`}>
+        {/* {!fetching && ( */}
+        <div className='gameList__box' style={{ padding: '15px' }} onScroll={this.handleScroll} ref={this.myRef}>
+          {notification.length > 0 &&
+            notification.map((noti) => {
+              const time = this.handleTime(noti.created_at)
+              return (
+                <div className={`notification alert ${noti.read ? '' : 'unread'}`} key={`${notification.length}_${noti.alias}`}>
+                  <div className='notification-user-avatar'>
+                    <Link to={`/profile/${noti.alias}`}>
+                      <img src={noti.profile_img ? noti.profile_img : defaultUserImage} />
+                    </Link>
+                  </div>
+                  <div className='notification-content'>
+                    <div className={`notification-description ${noti.read == false || noti.read_status == 0 ? '' : 'unread'}`}>
+                      <div className='username__link'>
+                        <Link to={`/profile/${noti.first_user_alias}`}>
+                          <div className='notification-username'>
+                            <span> @{noti.first_user_alias}</span>
+                          </div>
+                        </Link>
+                        {noti.second_user_alias && (
+                          <Link to={`/profile/${noti.second_user_alias}`}>
                             <div className='notification-username'>
-                              <span> @{noti.first_user_alias}</span>
+                              {noti.total_post_count > 0 ? `,` : ' and '}
+                              <span> @{noti.second_user_alias}</span>
                             </div>
                           </Link>
-                          {noti.second_user_alias && (
-                            <Link to={`/profile/${noti.second_user_alias}`}>
-                              <div className='notification-username'>
-                                {noti.total_post_count > 0 ? `,` : ' and '}
-                                <span> @{noti.second_user_alias}</span>
-                              </div>
-                            </Link>
-                          )}
-                          {noti.third_user_alias && `,` && (
-                            <Link to={`/profile/${noti.third_user_alias}`}>
-                              <div className='notification-username'>
-                                {noti.total_post_count > 0 ? `,` : ' and '}
-                                <span> @{noti.third_user_alias}</span>
-                              </div>
-                            </Link>
-                          )}
-                          {noti.total_post_count > 0 && (
+                        )}
+                        {noti.third_user_alias && `,` && (
+                          <Link to={`/profile/${noti.third_user_alias}`}>
                             <div className='notification-username'>
-                              {`and `}
-                              {noti.total_post_count}
-                              {` others `}
+                              {noti.total_post_count > 0 ? `,` : ' and '}
+                              <span> @{noti.third_user_alias}</span>
                             </div>
-                          )}
-                        </div>
-                        {this.renderActivityText(noti)}
+                          </Link>
+                        )}
+                        {noti.total_post_count > 0 && (
+                          <div className='notification-username'>
+                            {`and `}
+                            {noti.total_post_count}
+                            {` others `}
+                          </div>
+                        )}
                       </div>
-                      <div className='notification-options'>
-                        <span className='notification-time'>
-                          {time.countdown} {time.countdown_label} ago
-                        </span>
-                      </div>
+                      {this.renderActivityText(noti)}
+                    </div>
+                    <div className='notification-options'>
+                      <span className='notification-time'>
+                        {time.countdown} {time.countdown_label} ago
+                      </span>
                     </div>
                   </div>
-                )
-              })}
-            {notification.length > 0 && <div className='endline'>No more updates</div>}
-          </div>
-        )}
+                </div>
+              )
+            })}
+          {notification.length > 0 && <div className='endline'>No more updates</div>}
+        </div>
+        // )}
       </div>
     )
   }
