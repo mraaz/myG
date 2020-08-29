@@ -1,43 +1,45 @@
 @function random_element($elements...) {
   @return nth($elements, random(length($elements)));
 }
+
+.viewGame__header {
+  height: 77px;
+  background: #1d2326 0% 0% no-repeat padding-box;
+  opacity: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 2px solid #344953;
+  .title {
+    padding: 0;
+    font: Bold 20px/14px Montserrat;
+    letter-spacing: 0px;
+    color: #ffffff;
+  }
+  .search__results {
+    margin-left: auto;
+    letter-spacing: 0px;
+    color: #657172;
+    opacity: 1;
+    font-size: 18px/16px Montserrat;
+    margin-right: 20px;
+    input {
+      padding: 0px;
+      border: none;
+      background: #1d2326;
+      font-size: 15px;
+      outline: none;
+      margin: 0;
+      letter-spacing: 0px;
+      color: #657172;
+      height: 18px;
+    }
+  }
+}
+
 .viewGame__container {
   margin: 0px 100px;
 
-  .viewGame__header {
-    height: 77px;
-    background: #1d2326 0% 0% no-repeat padding-box;
-    opacity: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 2px solid #344953;
-    .title {
-      padding: 0;
-      font: Bold 20px/14px Montserrat;
-      letter-spacing: 0px;
-      color: #ffffff;
-    }
-    .search__results {
-      margin-left: auto;
-      letter-spacing: 0px;
-      color: #657172;
-      opacity: 1;
-      font-size: 18px/16px Montserrat;
-      margin-right: 20px;
-      input {
-        padding: 0px;
-        border: none;
-        background: #1d2326;
-        font-size: 15px;
-        outline: none;
-        margin: 0;
-        letter-spacing: 0px;
-        color: #657172;
-        height: 18px;
-      }
-    }
-  }
   .viewGame__filter {
     margin: 20px;
     border-left: 2px solid #344953;

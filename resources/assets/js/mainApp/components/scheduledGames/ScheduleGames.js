@@ -155,53 +155,58 @@ export default class ScheduleGames extends Component {
       return <h1>Loading</h1>
     }
     return (
-      <section className='viewGame__container'>
-        {id == '' && <GameFilter handleChange={this.handleChange} />}
-        <div className={`gameList__section ${singleView ? 'singleGameView__container' : 'GameView__container'}`}>
-          {!singleView && scheduleGames.length > 0 ? (
-            <Fragment>
-              <div style={{ flex: 1 }}>
-                <GameList
-                  scheduleGames={scheduleGames}
-                  show_full_games={show_full_games}
-                  handleExcludesFullGames={this.handleExcludesFullGames}
-                  slideOptionLabel={`Show full games `}
-                  getSingleGameData={this.getSingleGameData}
-                  next={this.getScheduleGamesData}
-                  hasMore={this.state.moreplease}
-                  fetching={fetching}
-                />
-              </div>
-              <div style={{ flex: '1', padding: '8px', borderTop: '1px solid #384952' }}>
-                <GameDetails
-                  singleScheduleGamesPayload={singleScheduleGamesPayload}
-                  selected_game={selected_game}
-                  showRightSideInfo={showRightSideInfo}
-                  commentData={commentData}
-                  handleShowAllComments={this.handleShowAllComments}
-                  showAllComment={showAllComment}
-                  {...this.props}
-                />
-              </div>
-            </Fragment>
-          ) : (
-            <Fragment>
-              {latestScheduledGames.length > 0 ? (
-                <SingleGameDetails
-                  scheduleGames={scheduleGamesView}
-                  showRightSideInfo={showRightSideInfo}
-                  handleShowAllComments={this.handleShowAllComments}
-                  commentData={commentData}
-                  showAllComment={showAllComment}
-                  {...this.props}
-                />
-              ) : (
-                <NoRecord />
-              )}
-            </Fragment>
-          )}
+      <Fragment>
+        <div className='viewGame__header'>
+          <div className='title'>Find Matches</div>
         </div>
-      </section>
+        <section className='viewGame__container'>
+          {id == '' && <GameFilter handleChange={this.handleChange} />}
+          <div className={`gameList__section ${singleView ? 'singleGameView__container' : 'GameView__container'}`}>
+            {!singleView && scheduleGames.length > 0 ? (
+              <Fragment>
+                <div style={{ flex: 1 }}>
+                  <GameList
+                    scheduleGames={scheduleGames}
+                    show_full_games={show_full_games}
+                    handleExcludesFullGames={this.handleExcludesFullGames}
+                    slideOptionLabel={`Show full games `}
+                    getSingleGameData={this.getSingleGameData}
+                    next={this.getScheduleGamesData}
+                    hasMore={this.state.moreplease}
+                    fetching={fetching}
+                  />
+                </div>
+                <div style={{ flex: '1', borderLeft: '1px solid #384952', padding: '8px', borderTop: '1px solid #384952' }}>
+                  <GameDetails
+                    singleScheduleGamesPayload={singleScheduleGamesPayload}
+                    selected_game={selected_game}
+                    showRightSideInfo={showRightSideInfo}
+                    commentData={commentData}
+                    handleShowAllComments={this.handleShowAllComments}
+                    showAllComment={showAllComment}
+                    {...this.props}
+                  />
+                </div>
+              </Fragment>
+            ) : (
+              <Fragment>
+                {latestScheduledGames.length > 0 ? (
+                  <SingleGameDetails
+                    scheduleGames={scheduleGamesView}
+                    showRightSideInfo={showRightSideInfo}
+                    handleShowAllComments={this.handleShowAllComments}
+                    commentData={commentData}
+                    showAllComment={showAllComment}
+                    {...this.props}
+                  />
+                ) : (
+                  <NoRecord />
+                )}
+              </Fragment>
+            )}
+          </div>
+        </section>
+      </Fragment>
     )
   }
 }
