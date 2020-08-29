@@ -30,7 +30,7 @@ const AddCommunity = ({
 }) => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    const getInitialData_Tags = async function() {
+    const getInitialData_Tags = async function () {
       try {
         let results = await Group_Hash_Tags()
         updateAdvancedSettings({ optionTags: results })
@@ -39,7 +39,7 @@ const AddCommunity = ({
       }
     }
 
-    const getInitialData_GameName = async function() {
+    const getInitialData_GameName = async function () {
       try {
         let results = await Game_name_values()
         updateMainSettings({ gameTitlesList: results })
@@ -146,7 +146,7 @@ const AddCommunity = ({
 
   // api calls
   const getOptionsTags = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         let results = await Group_Hash_Tags(inputValue)
         updateAdvancedSettings({ optionTags: results })
@@ -163,7 +163,7 @@ const AddCommunity = ({
   }
 
   const getOptionsGames = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         let results = await Game_name_values(inputValue)
         updateMainSettings({ gameTitlesList: results })
@@ -258,7 +258,7 @@ const AddCommunity = ({
 
   const getCommunityleftView = () => {
     return (
-      <div style={{ display: 'flex' }}>
+      <div className='flexBox'>
         <div className={styles.sideLineContainer}>
           <div className={styles.sideBall} />
           <div className={styles.sideLine} />
@@ -272,6 +272,7 @@ const AddCommunity = ({
               value={mainSettingsState.community_name}
               type='text'
               maxLength={75}
+              class={'community-input'}
               onKeyDown={Disable_keys}
               onBlur={onBlur_group_name}
               onChange={(value) => {
@@ -370,7 +371,7 @@ const AddCommunity = ({
   }
   const getCommunityrightView = () => {
     return (
-      <div style={{ display: 'flex' }}>
+      <div className='flexBox'>
         <div className={styles.sideLineContainer}>
           <div className={styles.sideBall} />
           <div className={styles.sideLine} />
@@ -420,6 +421,7 @@ const AddCommunity = ({
   }
 
   return (
+    
     <div className={styles.mainContainer}>
       {getCommunityleftView()}
       {getCommunityrightView()}

@@ -17,7 +17,9 @@
 
 .main-settings-content,
 .advance-settings-content {
-  margin: 30px 0px;
+  margin-right: 30px;
+  margin-top: 30px;
+  width: 100%;
 }
 
 .game-title-select,
@@ -34,6 +36,7 @@
 .game-title-select input {
   outline: none;
   margin: 0 !important;
+  width: 100% !important;
 }
 
 .time-text-container {
@@ -66,18 +69,11 @@
 }
 
 .add-game {
-  &__container {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-  }
   &__main-container {
+    margin: 0 40px;
+    border: none;
     display: flex;
-    padding: 30px;
-    margin-bottom: 20px;
-    overflow: scroll;
-    scrollbar-width: none;
-    justify-content: space-between;
+    height: 100vh;
   }
   &__field-title {
     color: #fff;
@@ -456,4 +452,16 @@
 
 .invite-gamers-tab {
   color: #fff;
+}
+
+.game-title-select > div,
+.game-title-select > div > div,
+.description-text-area div,
+.experience-select > div > div {
+  width: 100% !important;
+}
+
+.flexBox {
+  display: flex;
+  flex: 1 0 0%;
 }
