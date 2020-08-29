@@ -196,7 +196,7 @@ export default class Approvals extends Component {
     return (
       <div style={isActive} className='game__approval'>
         <TopTabs tabs={['All', 'Friendships', 'Games', 'Communities']} changeTab={this.changeTab} />
-        {fetching && (
+        {/* {fetching && (
           <div>
             <div class='post'>
               <div class='avatar'></div>
@@ -209,7 +209,7 @@ export default class Approvals extends Component {
               <div class='line'></div>
             </div>
           </div>
-        )}
+        )} */}
         {/* {!fetching && ( */}
         <div className='gameList__box' style={{ padding: '15px' }} onScroll={this.handleScroll} ref={this.myRef}>
           {approvals.length > 0 &&
