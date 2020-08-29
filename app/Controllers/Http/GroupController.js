@@ -10,6 +10,7 @@ const GroupHashTagController = use('./GroupHashTagController')
 const GroupHashTagTranController = use('./GroupHashTagTranController')
 const ApiController = use('./ApiController')
 const GameNameController = use('./GameNameController')
+const NotificationController_v2 = use('./NotificationController_v2')
 
 const LoggingRepository = require('../../Repositories/Logging')
 
@@ -24,7 +25,8 @@ class GroupController {
           request.input('name').length > 75 ||
           request.input('name') == undefined ||
           request.input('name') == null ||
-          request.input('name').length == 0
+          request.input('name').length == 0 ||
+          request.input('name').length < 4
         ) {
           return false
         }
@@ -70,24 +72,20 @@ class GroupController {
           game_names_id: gameNameID,
           user_id: auth.user.id,
           name: request.input('name'),
-          group_img: request.input('group_img'),
+          group_img: request.input('group_img') ? request.input('group_img') : null,
           type: request.input('type'),
           all_accept: request.input('all_accept'),
           game_names_id: request.input('game_names_id'),
           grp_description: request.input('grp_description'),
         })
 
-        if (
-          request.input('preview_files') != undefined &&
-          request.input('preview_files') != null &&
-          request.input('preview_files').length > 0
-        ) {
-          let apiController = new ApiController()
-          apiController.update_aws_keys_entry({ auth }, request.input('preview_files')[0].id, '4', newGroup.id)
+        if (request.input('aws_key_id') != undefined && request.input('aws_key_id') != null) {
+          const apiController = new ApiController()
+          apiController.update_aws_keys_entry({ auth }, request.input('aws_key_id'), '4', newGroup.id)
         }
 
         if (request.input('tags') != null && request.input('tags').length > 0) {
-          let grp_tags_TRANS_Controller = new GroupHashTagTranController()
+          const grp_tags_TRANS_Controller = new GroupHashTagTranController()
           var arrTags = JSON.parse(request.input('tags'))
 
           //Max of three tags per Group.
@@ -114,16 +112,18 @@ class GroupController {
           var arrCo_hosts = request.input('co_hosts').split(',')
 
           if (arrCo_hosts != '') {
+            const noti = new NotificationController_v2()
             for (var i = 0; i < MAX_CO_HOSTS && i < arrCo_hosts.length; i++) {
               const create_co_hosts = await CoHost.create({
                 group_id: newGroup.id,
                 user_id: arrCo_hosts[i],
               })
+              noti.addGenericNoti_({ auth }, newGroup.id, arrCo_hosts[i], 22)
             }
           }
         }
 
-        let userStatController = new UserStatTransactionController()
+        const userStatController = new UserStatTransactionController()
         userStatController.update_total_number_of(auth.user.id, 'total_number_of_communities')
 
         return newGroup

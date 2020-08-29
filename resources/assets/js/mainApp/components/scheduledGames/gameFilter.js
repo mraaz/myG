@@ -675,223 +675,253 @@ export default class ScheduleGames extends Component {
         <div className='viewGame__filter'>
           <div className='filter__label'>Filter by</div>
           <div className='viewGame__filter-section'>
-            {filterTypeArray.map((k) => {
-              if (k == 'game_name') {
-                // const value = game_name_box ? game_name_box : filterValueArray[k] ? filterValueArray[k] : null
-                //const value = filterValueArray[k] ? { value: filterValueArray[k], label: filterValueArray[k] } : null
-                return (
-                  <div className='viewGame__gameName'>
-                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                    <AsyncCreatableSelect
-                      cacheOptions
-                      defaultOptions
-                      isValidNewOption={() => false}
-                      loadOptions={this.getOptions}
-                      onChange={(data) => this.handleDropDownChange(data, k)}
-                      isClearable
-                      value={filterValueArray['game_name_value']}
-                      className='viewGame__name'
-                      placeholder='Search or Select Game Title'
-                      onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
-                      onKeyDown={this.onKeyDown}
-                      isSearchable={true}
-                      classNamePrefix='filter'
-                    />
-                  </div>
-                )
-              } else if (k == 'tags') {
-                const value = this.state.value_tags || filterValueArray['tags']
-                return (
-                  <div className='viewGame__gameName'>
-                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                    <Select
-                      onChange={(data) => this.handleTagsChange(data, k)}
-                      options={this.state.options_tags}
-                      isClearable
-                      value={value}
-                      className='viewGame__name'
-                      isMulti
-                      onKeyDown={this.onKeyDown}
-                      onInputChange={this.getOptions_tags}
-                      placeholder='Search or Select Tags'
-                      classNamePrefix='filter'
-                    />
-                  </div>
-                )
-              } else if (k == 'region') {
-                return (
-                  <div className='viewGame__gameName'>
-                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                    <Select
-                      onChange={(data) => this.handleChange_region(data, 'region')}
-                      options={region_options}
-                      placeholder='Select your region'
-                      name='region-box'
-                      isClearable
-                      className='viewGame__name'
-                      classNamePrefix='filter'
-                      value={filterValueArray['region']}
-                    />
-                  </div>
-                )
-              } else if (k == 'experience') {
-                return (
-                  <div className='viewGame__gameName'>
-                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                    <Select
-                      onChange={this.handleChange_experience}
-                      options={experience_options}
-                      placeholder='Select experience level'
-                      name='experience-box'
-                      isClearable
-                      className='viewGame__name'
-                      classNamePrefix='filter'
-                      value={filterValueArray['experience']}
-                    />
-                  </div>
-                )
-              } else if (k == 'platform') {
-                return (
-                  <div className='viewGame__gameName'>
-                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                    <Select
-                      onChange={this.handleChange_platform}
-                      options={platform_options}
-                      placeholder='Select which platform'
-                      name='platform-box'
-                      isClearable
-                      className='viewGame__name'
-                      classNamePrefix='filter'
-                      value={filterValueArray['platform']}
-                    />
-                  </div>
-                )
-              } else if (k == 'start_time') {
-                return (
-                  <div className='viewGame__gameName'>
-                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                    <Select
-                      onChange={this.handleChange_time}
-                      options={date_options}
-                      placeholder='Start Date?'
-                      name='date-time-box'
-                      isClearable
-                      className='viewGame__name'
-                      classNamePrefix='filter'
-                      value={filterValueArray['start_date']}
-                    />
-                  </div>
-                )
-              } else if (k == 'description') {
-                return (
-                  <div className='viewGame__gameName'>
-                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                    <input
-                      type='text'
-                      className='viewGame__name__input'
-                      onChange={this.handleChange_description}
-                      value={this.state.description_box || filterValueArray['description']}
-                      placeholder='Description'
-                    />
-                  </div>
-                )
-              } else if (k == 'mic') {
-                return (
-                  <div className='viewGame__gameName'>
-                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                    <Select
-                      onChange={this.handleChange_mic}
-                      options={yes_no_options}
-                      placeholder='Mic required?'
-                      name='platform-box'
-                      isClearable
-                      className='viewGame__name'
-                      classNamePrefix='filter'
-                      value={filterValueArray['mic']}
-                    />
-                  </div>
-                )
-              } else if (k == 'eighteen_plus') {
-                return (
-                  <div className='viewGame__gameName'>
-                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                    <Select
-                      onChange={this.handleChange_eighteen_plus}
-                      options={yes_no_options}
-                      placeholder='18+ event?'
-                      name='platform-box'
-                      isClearable
-                      className='viewGame__name'
-                      classNamePrefix='filter'
-                      value={filterValueArray['eighteen_plus']}
-                    />
-                  </div>
-                )
-              } else if (k == 'language') {
-                return (
-                  <div className='viewGame__gameName'>
-                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                    <Select
-                      onChange={this.handleChange_language}
-                      options={language_options}
-                      placeholder='Search which language/s'
-                      name='platform-box'
-                      isClearable
-                      className='viewGame__name'
-                      classNamePrefix='filter'
-                      value={filterValueArray['language']}
-                    />
-                  </div>
-                )
-              } else if (k == 'other') {
-                return (
-                  <div className='viewGame__gameName'>
-                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                    <input
-                      type='text'
-                      className='viewGame__name__input'
-                      onChange={this.handleChange_other}
-                      value={this.state.other_box || filterValueArray['other']}
-                      placeholder='Any Other stuff'
-                    />
-                  </div>
-                )
-              } else if (k == 'visibility') {
-                return (
-                  <div className='viewGame__gameName'>
-                    <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                    <Select
-                      onChange={this.handleChange_visibility}
-                      options={visibility_options}
-                      placeholder='Select visibility'
-                      name='visibility-box'
-                      isClearable
-                      className='viewGame__name'
-                      classNamePrefix='filter'
-                      value={this.state.visibility || filterValueArray['visibility']}
-                    />
-                  </div>
-                )
-              } else if (Object.keys(additional_info_data).length > 0) {
-                const field_data = additional_info_data[k] || {}
-                return (
-                  <div className='viewGame__gameName'>
-                    <div className='viewGame__label'>{field_data.label || ''}</div>
-                    <Select
-                      onChange={(data) => this.handleAdditionalInfoChange(data, k, field_data.type)}
-                      options={getExtraFilterOprion(field_data.value)}
-                      isClearable
-                      value={extraFields[k] || ''}
-                      className='viewGame__name'
-                      isMulti={field_data.type == 'Single' ? false : true}
-                      onKeyDown={this.onKeyDown}
-                      placeholder={`${field_data.placeholder || ''}`}
-                      classNamePrefix='filter'
-                    />
-                  </div>
-                )
-              }
-            })}
+            <div className='row'>
+              {filterTypeArray.map((k) => {
+                if (k == 'game_name') {
+                  // const value = game_name_box ? game_name_box : filterValueArray[k] ? filterValueArray[k] : null
+                  //const value = filterValueArray[k] ? { value: filterValueArray[k], label: filterValueArray[k] } : null
+                  return (
+                    <div className='col-md-6'>
+                      <div className='viewGame__gameName'>
+                        <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                        <AsyncCreatableSelect
+                          cacheOptions
+                          defaultOptions
+                          isValidNewOption={() => false}
+                          loadOptions={this.getOptions}
+                          onChange={(data) => this.handleDropDownChange(data, k)}
+                          isClearable
+                          value={filterValueArray['game_name_value']}
+                          className='viewGame__name'
+                          placeholder='Search or Select Game Title'
+                          onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
+                          onKeyDown={this.onKeyDown}
+                          isSearchable={true}
+                          classNamePrefix='filter'
+                          styles='background: red;'
+                        />
+                      </div>
+                    </div>
+                  )
+                } else if (k == 'tags') {
+                  const value = this.state.value_tags || filterValueArray['tags']
+                  return (
+                    <div className='col-md-6'>
+                      <div className='viewGame__gameName'>
+                        <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                        <Select
+                          onChange={(data) => this.handleTagsChange(data, k)}
+                          options={this.state.options_tags}
+                          isClearable
+                          value={value}
+                          className='viewGame__name'
+                          isMulti
+                          onKeyDown={this.onKeyDown}
+                          onInputChange={this.getOptions_tags}
+                          placeholder='Search or Select Tags'
+                          classNamePrefix='filter'
+                          menuColor='red'
+                        />
+                      </div>
+                    </div>
+                  )
+                } else if (k == 'region') {
+                  return (
+                    <div className='col-md-6'>
+                      <div className='viewGame__gameName'>
+                        <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                        <Select
+                          onChange={(data) => this.handleChange_region(data, 'region')}
+                          options={region_options}
+                          placeholder='Select your region'
+                          name='region-box'
+                          isClearable
+                          className='viewGame__name'
+                          classNamePrefix='filter'
+                          value={filterValueArray['region']}
+                        />
+                      </div>
+                    </div>
+                  )
+                } else if (k == 'experience') {
+                  return (
+                    <div className='col-md-6'>
+                      <div className='viewGame__gameName'>
+                        <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                        <Select
+                          onChange={this.handleChange_experience}
+                          options={experience_options}
+                          placeholder='Select experience level'
+                          name='experience-box'
+                          isClearable
+                          className='viewGame__name'
+                          classNamePrefix='filter'
+                          value={filterValueArray['experience']}
+                        />
+                      </div>
+                    </div>
+                  )
+                } else if (k == 'platform') {
+                  return (
+                    <div className='col-md-6'>
+                      <div className='viewGame__gameName'>
+                        <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                        <Select
+                          onChange={this.handleChange_platform}
+                          options={platform_options}
+                          placeholder='Select which platform'
+                          name='platform-box'
+                          isClearable
+                          className='viewGame__name'
+                          classNamePrefix='filter'
+                          value={filterValueArray['platform']}
+                        />
+                      </div>
+                    </div>
+                  )
+                } else if (k == 'start_time') {
+                  return (
+                    <div className='col-md-6'>
+                      <div className='viewGame__gameName'>
+                        <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                        <Select
+                          onChange={this.handleChange_time}
+                          options={date_options}
+                          placeholder='Start Date?'
+                          name='date-time-box'
+                          isClearable
+                          className='viewGame__name'
+                          classNamePrefix='filter'
+                          value={filterValueArray['start_date']}
+                        />
+                      </div>
+                    </div>
+                  )
+                } else if (k == 'description') {
+                  return (
+                    <div className='col-md-6'>
+                      <div className='viewGame__gameName'>
+                        <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                        <input
+                          type='text'
+                          className='viewGame__name__input'
+                          onChange={this.handleChange_description}
+                          value={this.state.description_box || filterValueArray['description']}
+                          placeholder='Description'
+                        />
+                      </div>
+                    </div>
+                  )
+                } else if (k == 'mic') {
+                  return (
+                    <div className='col-md-6'>
+                      <div className='viewGame__gameName'>
+                        <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                        <Select
+                          onChange={this.handleChange_mic}
+                          options={yes_no_options}
+                          placeholder='Mic required?'
+                          name='platform-box'
+                          isClearable
+                          className='viewGame__name'
+                          classNamePrefix='filter'
+                          value={filterValueArray['mic']}
+                        />
+                      </div>
+                    </div>
+                  )
+                } else if (k == 'eighteen_plus') {
+                  return (
+                    <div className='col-md-6'>
+                      <div className='viewGame__gameName'>
+                        <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                        <Select
+                          onChange={this.handleChange_eighteen_plus}
+                          options={yes_no_options}
+                          placeholder='18+ event?'
+                          name='platform-box'
+                          isClearable
+                          className='viewGame__name'
+                          classNamePrefix='filter'
+                          value={filterValueArray['eighteen_plus']}
+                        />
+                      </div>
+                    </div>
+                  )
+                } else if (k == 'language') {
+                  return (
+                    <div className='col-md-6'>
+                      <div className='viewGame__gameName'>
+                        <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                        <Select
+                          onChange={this.handleChange_language}
+                          options={language_options}
+                          placeholder='Search which language/s'
+                          name='platform-box'
+                          isClearable
+                          className='viewGame__name'
+                          classNamePrefix='filter'
+                          value={filterValueArray['language']}
+                        />
+                      </div>
+                    </div>
+                  )
+                } else if (k == 'other') {
+                  return (
+                    <div className='col-md-6'>
+                      <div className='viewGame__gameName'>
+                        <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                        <input
+                          type='text'
+                          className='viewGame__name__input'
+                          onChange={this.handleChange_other}
+                          value={this.state.other_box || filterValueArray['other']}
+                          placeholder='Any Other stuff'
+                        />
+                      </div>
+                    </div>
+                  )
+                } else if (k == 'visibility') {
+                  return (
+                    <div className='col-md-6'>
+                      <div className='viewGame__gameName'>
+                        <div className='viewGame__label'>{this.filterGroup[k]}</div>
+                        <Select
+                          onChange={this.handleChange_visibility}
+                          options={visibility_options}
+                          placeholder='Select visibility'
+                          name='visibility-box'
+                          isClearable
+                          className='viewGame__name'
+                          classNamePrefix='filter'
+                          value={this.state.visibility || filterValueArray['visibility']}
+                        />
+                      </div>
+                    </div>
+                  )
+                } else if (Object.keys(additional_info_data).length > 0) {
+                  const field_data = additional_info_data[k] || {}
+                  return (
+                    <div className='col-md-6'>
+                      <div className='viewGame__gameName'>
+                        <div className='viewGame__label'>{field_data.label || ''}</div>
+                        <Select
+                          onChange={(data) => this.handleAdditionalInfoChange(data, k, field_data.type)}
+                          options={getExtraFilterOprion(field_data.value)}
+                          isClearable
+                          value={extraFields[k] || ''}
+                          className='viewGame__name'
+                          isMulti={field_data.type == 'Single' ? false : true}
+                          onKeyDown={this.onKeyDown}
+                          placeholder={`${field_data.placeholder || ''}`}
+                          classNamePrefix='filter'
+                        />
+                      </div>
+                    </div>
+                  )
+                }
+              })}
+            </div>
 
             {filterTypeArray.length > 1 && (
               <div className='saveFilterAction__section'>

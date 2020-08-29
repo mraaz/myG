@@ -135,19 +135,19 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
         <div className={styles.menuContainer}>
           <div onClick={() => updateSelectedMenu(MENU_OPTIONS.PLAYERS)}>
             <div className={classNames([styles.menuText, selectedMenu === MENU_OPTIONS.PLAYERS ? styles.menuTextSelected : null])}>
-              Gamers
+              <span className='invite-gamers-tab'>Gamers</span>
             </div>
             <div className={classNames([styles.menuLine, selectedMenu === MENU_OPTIONS.PLAYERS ? styles.menuLineHighlighted : null])} />
           </div>
           <div onClick={() => updateSelectedMenu(MENU_OPTIONS.GROUPS)}>
             <div className={classNames([styles.menuText, selectedMenu === MENU_OPTIONS.PLAYERS ? styles.menuTextSelected : null])}>
-              Groups
+              <span className='invite-gamers-tab'>Groups</span>
             </div>
             <div className={classNames([styles.menuLine, selectedMenu === MENU_OPTIONS.GROUPS ? styles.menuLineHighlighted : null])} />
           </div>
           <div onClick={() => updateSelectedMenu(MENU_OPTIONS.COMMUNITIES)}>
             <div className={classNames([styles.menuText, selectedMenu === MENU_OPTIONS.PLAYERS ? styles.menuTextSelected : null])}>
-              Communities
+              <span className='invite-gamers-tab'>Communities</span>
             </div>
             <div className={classNames([styles.menuLine, selectedMenu === MENU_OPTIONS.COMMUNITIES ? styles.menuLineHighlighted : null])} />
           </div>
@@ -159,7 +159,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
 
   const fetchMoreData = async () => {
     await updateCounter(counter + 1)
-    const getKeywordSearchResults = async function() {
+    const getKeywordSearchResults = async function () {
       try {
         const response = await axios.post('/api/friends/allmyFriends', {
           counter,
@@ -183,7 +183,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
 
   const fetchCommunitiesData = async () => {
     await updateCommunitiesCounter(counterCommunities + 1)
-    const getmyGroups = async function() {
+    const getmyGroups = async function () {
       try {
         const {
           data: { myGroups },
@@ -195,7 +195,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
       }
     }
 
-    const getGroups_im_in = async function() {
+    const getGroups_im_in = async function () {
       try {
         const {
           data: { groups_im_in },

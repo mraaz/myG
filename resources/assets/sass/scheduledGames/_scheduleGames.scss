@@ -69,15 +69,13 @@
       color: #ffffff;
       opacity: 1;
       margin-bottom: 10px;
+      margin-top: 10px;
     }
     .viewGame__filter-section {
       padding: 20px 0;
-      display: flex;
       padding-bottom: 0;
-      flex-wrap: wrap;
       .viewGame__gameName {
-        margin-right: 10px;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
       }
       .viewGame__name__input {
         width: 400px;
@@ -96,9 +94,6 @@
         }
       }
       .viewGame__name {
-        width: 450px;
-        height: 38px;
-        margin: 0;
         &:focus {
           margin: 0;
         }
@@ -108,8 +103,6 @@
           background-color: #4d565a;
           border: none;
           padding: 0;
-          z-index: 1;
-          // min-height: 45px;
         }
 
         .css-bgvzuu-indicatorSeparator {
@@ -144,9 +137,6 @@
         .filter__control--is-focused {
           .filter__value-container {
             height: 45px;
-          }
-          .filter__value-container--is-multi {
-            height: auto;
           }
         }
 
@@ -197,7 +187,7 @@
       .saveFilterAction__section {
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
         position: relative;
         top: 5px;
         position: relative;
@@ -334,8 +324,6 @@
         background-color: #4d565a;
         border: none;
         padding: 0;
-        z-index: 1;
-        // min-height: 45px;
       }
 
       .css-bgvzuu-indicatorSeparator {
@@ -370,9 +358,6 @@
       .filter__control--is-focused {
         .filter__value-container {
           height: 45px;
-        }
-        .filter__value-container--is-multi {
-          height: auto;
         }
       }
 
@@ -559,14 +544,6 @@
       color: #fff;
     }
     .gameDetails {
-      flex: 1;
-      justify-content: flex-start;
-      display: flex;
-      max-height: calc(100vh - 100px);
-      flex-direction: column;
-      position: relative;
-      margin: 15px;
-      border-radius: 8px;
       .gameDetails__header {
         display: inline-table;
         border-bottom: 2px solid #a09770;
@@ -668,17 +645,15 @@
         }
       }
       .gameDetails__body {
-        margin: 24px 24px 0 24px;
         border-left: 2px solid #344953;
         position: relative;
-        padding: 0 0 0 20px;
-        padding-bottom: 0;
-        margin-bottom: 40px;
+        padding-left: 20px;
+        margin: 20px 20px 0px 20px;
         &::before {
           content: '';
           width: 7px;
           height: 7px;
-          background: #e6c846 0% 0% no-repeat padding-box;
+          background: #e6c846;
           opacity: 1;
           position: absolute;
           top: 0;
@@ -700,7 +675,6 @@
           letter-spacing: 0px;
           color: #ffffff;
           opacity: 1;
-          margin-bottom: 10px;
         }
 
         .gameDescription__body {
@@ -719,7 +693,6 @@
           letter-spacing: 0px;
           color: #ffffff;
           opacity: 1;
-          margin-bottom: 10px;
         }
 
         .gameTime__value {
@@ -804,13 +777,12 @@
         }
       }
       .gameDetaiils__footer {
-        background: #1d2326 0% 0% no-repeat padding-box;
-        border-radius: 8px;
+        background: #1d2326;
         padding: 24px;
-        display: flex;
-        margin-top: auto;
-        flex-direction: column;
-        border-top: 1px solid #384952;
+        border-top: 2px solid #384952;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
         .noComments {
           font: Bold 12px/14px Montserrat;
           letter-spacing: 0px;
@@ -1075,18 +1047,17 @@
                 flex-wrap: wrap;
                 margin-right: auto;
                 .game__tag {
-                  max-width: 90px;
-                  height: 24px;
                   border: 1px solid #b9b9b9;
                   border-radius: 4px;
                   font: 14px/14px Montserrat;
                   letter-spacing: 0px;
                   color: #b9b9b9;
-                  padding: 4px;
+                  padding: 5px;
                   white-space: nowrap;
                   overflow: hidden;
                   text-overflow: ellipsis;
-                  margin: 0 5px 5px 0;
+                  margin-right: 10px !important;
+                  font-weight: 600;
                 }
               }
               .game__level__wrap {
@@ -1163,8 +1134,10 @@
     .gameDetails {
       background: #171a1c;
       margin-left: 10px;
-      display: inline-table;
       width: 100%;
+      position: relative;
+      height: 125vh;
+      overflow: hidden;
       .gameDetails__header {
         background: #1d2326;
         border-top-left-radius: 8px;
@@ -1831,9 +1804,6 @@
             .filter__control--is-focused {
               .filter__value-container {
                 height: 45px;
-              }
-              .filter__value-container--is-multi {
-                height: auto;
               }
             }
             .filter {

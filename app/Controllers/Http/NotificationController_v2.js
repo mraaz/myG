@@ -5,6 +5,8 @@ const Database = use('Database')
 const ScheduleGameController = use('./ScheduleGameController')
 const LoggingRepository = require('../../Repositories/Logging')
 
+const Post = use('App/Models/Post')
+
 // Split the array into halves and merge them recursively
 function mergeSort(arr) {
   if (arr.length === 1) {
@@ -342,10 +344,10 @@ class NotificationController_v2 {
       ) {
         let arr = []
         switch (request.input('activity_type')) {
-          case '0':
+          case 0:
             arr = [2, 3, 4, 5, 6]
             break
-          case '-1':
+          case -1:
             arr = [2, 3, 4, 5, 6]
             break
           default:
@@ -461,6 +463,7 @@ class NotificationController_v2 {
             'users.profile_img',
             'schedule_games.start_date_time',
             'schedule_games.end_date_time',
+            'schedule_games.schedule_games_GUID',
             'game_names.game_name',
             'notifications.created_at'
           )
@@ -540,7 +543,14 @@ class NotificationController_v2 {
         const user_ding = await Database.from('notifications')
           .innerJoin('users', 'users.id', 'notifications.user_id')
           .where({ other_user_id: auth.user.id, activity_type: 20 })
-          .select('notifications.activity_type', 'users.profile_img', 'users.id', 'notifications.created_at', 'notifications.read_status')
+          .select(
+            'notifications.activity_type',
+            'users.profile_img',
+            'users.id',
+            'users.alias',
+            'notifications.created_at',
+            'notifications.read_status'
+          )
           .orderBy('notifications.created_at', 'desc')
           .paginate(request.input('counter'), set_limit)
 
@@ -1039,6 +1049,144 @@ class NotificationController_v2 {
         context: __filename,
         message: (error && error.message) || error,
       })
+    }
+  }
+
+  async invitations_community({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        if (request.input('community_id') == undefined || request.input('community_id') == null || request.input('community_id') == '') {
+          return
+        }
+
+        const requestingUserId = auth.user.id
+        const arrInvite_user = request.input('gamers').split(',')
+        const arrInvite_group = request.input('groups').split(',')
+        const arrInvite_community = request.input('communities').split(',')
+        const group_id = request.input('community_id')
+        const community_name = request.input('community_name')
+
+        const content = `Heya! A new community - ${community_name} has been created! Find out more here: https://myG.gg/community/${encodeURI(
+          community_name
+        )}`
+
+        if (arrInvite_user != '') {
+          for (var i = 0; i < arrInvite_user.length; i++) {
+            const findUser = await Database.table('users')
+              .where({
+                alias: arrInvite_user[i].trim(),
+              })
+              .select('id')
+
+            if (findUser.length == 0) {
+              continue
+            }
+
+            const addScheduleGame = await Notification.create({
+              other_user_id: findUser[0].id,
+              user_id: auth.user.id,
+              activity_type: 22,
+              group_id: group_id,
+            })
+          }
+        }
+
+        if (arrInvite_group != '') {
+          for (var i = 0; i < arrInvite_group.length; i++) {
+            const findChat = await Database.table('chats')
+              .where({
+                title: arrInvite_group[i].trim(),
+              })
+              .select('id')
+
+            if (findChat.length == 0) {
+              continue
+            }
+
+            const requestedChatId = findChat[0].id
+            await ChatRepository.sendMessageFromMyG({ requestedChatId, content })
+          }
+        }
+
+        if (arrInvite_community != '') {
+          for (var i = 0; i < arrInvite_community.length; i++) {
+            const findGroup = await Database.table('groups')
+              .where({
+                name: arrInvite_community[i].trim(),
+              })
+              .select('id', 'group_img')
+
+            if (findGroup.length == 0) {
+              continue
+            }
+
+            const newPost = await Post.create({
+              user_id: auth.user.id,
+              type: 'text',
+              content: content,
+              group_id: findGroup[0].id,
+              media_url: findGroup[0].group_img,
+            })
+          }
+        }
+
+        return 'Saved item'
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async addGenericNoti_({ auth }, id, other_user_id, type) {
+    type = parseInt(type)
+
+    let post_id = null,
+      group_id = null,
+      chat_id = null,
+      comment_id = null,
+      reply_id = null,
+      schedule_games_id = null
+
+    if (auth.user) {
+      switch (type) {
+        case 22:
+          group_id = id
+          break
+        default:
+      }
+
+      try {
+        const addNoti = await Notification.create({
+          other_user_id: other_user_id,
+          user_id: auth.user.id,
+          activity_type: type,
+          post_id: post_id,
+          group_id: group_id,
+          chat_id: chat_id,
+          schedule_games_id: schedule_games_id,
+          comment_id: comment_id,
+          reply_id: reply_id,
+        })
+        return 'Saved item'
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
+      }
+    } else {
+      return 'You are not Logged In!'
     }
   }
 }

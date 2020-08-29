@@ -135,19 +135,19 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
         <div className={styles.menuContainer}>
           <div onClick={() => updateSelectedMenu(MENU_OPTIONS.PLAYERS)}>
             <div className={classNames([styles.menuText, selectedMenu === MENU_OPTIONS.PLAYERS ? styles.menuTextSelected : null])}>
-              Gamers
+              <span className='invite-gamers-tab'>Gamers</span>
             </div>
             <div className={classNames([styles.menuLine, selectedMenu === MENU_OPTIONS.PLAYERS ? styles.menuLineHighlighted : null])} />
           </div>
           <div onClick={() => updateSelectedMenu(MENU_OPTIONS.GROUPS)}>
             <div className={classNames([styles.menuText, selectedMenu === MENU_OPTIONS.PLAYERS ? styles.menuTextSelected : null])}>
-              Groups
+              <span className='invite-gamers-tab'>Groups</span>
             </div>
             <div className={classNames([styles.menuLine, selectedMenu === MENU_OPTIONS.GROUPS ? styles.menuLineHighlighted : null])} />
           </div>
           <div onClick={() => updateSelectedMenu(MENU_OPTIONS.COMMUNITIES)}>
             <div className={classNames([styles.menuText, selectedMenu === MENU_OPTIONS.PLAYERS ? styles.menuTextSelected : null])}>
-              Communities
+              <span className='invite-gamers-tab'>Communities</span>
             </div>
             <div className={classNames([styles.menuLine, selectedMenu === MENU_OPTIONS.COMMUNITIES ? styles.menuLineHighlighted : null])} />
           </div>

@@ -1074,7 +1074,7 @@ class NotificationController {
               .select('id')
 
             if (findUser.length == 0) {
-              return
+              continue
             }
 
             const addScheduleGame = await Notification.create({
@@ -1084,8 +1084,8 @@ class NotificationController {
               schedule_games_id: scheduledGameId,
             })
 
-            const requestedUserId = findUser[0].id
-            await ChatRepository.sendMessageFromMyGToUser({ requestingUserId, requestedUserId, content })
+            // const requestedUserId = findUser[0].id
+            // await ChatRepository.sendMessageFromMyGToUser({ requestingUserId, requestedUserId, content })
           }
         }
 
@@ -1098,7 +1098,7 @@ class NotificationController {
               .select('id')
 
             if (findChat.length == 0) {
-              return
+              continue
             }
 
             const requestedChatId = findChat[0].id
@@ -1115,7 +1115,7 @@ class NotificationController {
               .select('id')
 
             if (findGroup.length == 0) {
-              return
+              continue
             }
 
             const findGame = await Database.table('schedule_games')
@@ -1125,7 +1125,7 @@ class NotificationController {
               .first()
 
             if (findGame == undefined) {
-              return
+              continue
             }
 
             const newPost = await Post.create({
