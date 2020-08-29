@@ -89,15 +89,15 @@ const AddCommunity = ({
 
   const handleCreateTags = (inputValue) => {
     if (advancedSettingsState.tags.length >= MAX_GAME_TAGS) {
-      toast.success(<Toast_style text={'Sorry mate! Max of 3 tags.'} />)
+      toast.success(<Toast_style text={'Of 3 tags max. Herh herh herh.'} />)
       return
     }
     if (inputValue.length > 88) {
-      toast.success(<Toast_style text={'Sorry mate! Game tags length is too long.'} />)
+      toast.success(<Toast_style text={'Too long, game tags length is.'} />)
       return
     }
     if (/['/.%#$,;`\\]/.test(inputValue)) {
-      toast.success(<Toast_style text={'Sorry mate! Game tags can not have invalid characters'} />)
+      toast.success(<Toast_style text={'Game tags can have invalid characters not.'} />)
       return
     }
 
@@ -112,6 +112,11 @@ const AddCommunity = ({
   const onBlur_group_name = async (inputValue) => {
     if (mainSettingsState.community_name.trim() == '' || mainSettingsState.community_name.trim() == null) {
       updateAdvancedSettings({ grp_name_unique: true })
+      return
+    }
+
+    if (mainSettingsState.community_name.trim().length < 4) {
+      toast.success(<Toast_style text={'Hmmmm, be longer community name must'} />)
       return
     }
 
@@ -135,7 +140,7 @@ const AddCommunity = ({
 
   const handleCreateGame = (inputValue) => {
     if (inputValue.length > 88) {
-      toast.success(<Toast_style text={'Sorry mate! Game Title is too long.'} />)
+      toast.success(<Toast_style text={'Too long, game title is. Hmmmmmm.'} />)
       return
     }
 
@@ -156,7 +161,7 @@ const AddCommunity = ({
     }
 
     if (inputValue.length > 88) {
-      toast.success(<Toast_style text={'Sorry mate! Game Tag is too long.'} />)
+      toast.success(<Toast_style text={'Too long, game title is. Hmmmmmm.'} />)
       return
     }
     getInitialData(inputValue)
@@ -173,7 +178,7 @@ const AddCommunity = ({
     }
 
     if (inputValue.length > 88) {
-      toast.success(<Toast_style text={'Sorry mate! Game Title is too long.'} />)
+      toast.success(<Toast_style text={'Too long, game title is. Hmmmmmm.'} />)
       return
     }
     getInitialData(inputValue)
@@ -234,7 +239,9 @@ const AddCommunity = ({
   const handleAcceptedFiles = async (file, rejectedFiles) => {
     if (rejectedFiles.length > 0) {
       toast.error(
-        <Toast_style text={`Sorry mate! ${rejectedFiles.length} File(s) rejected because of bad format or file size limit exceed (10mb)`} />
+        <Toast_style
+          text={`Sorry mate! ${rejectedFiles.length} File(s) rejected because of bad format or file size limit exceed (10mb). Yes, hmmm`}
+        />
       )
     }
     if (file.length > 0) {
@@ -265,7 +272,7 @@ const AddCommunity = ({
         </div>
         <div className='main-settings-content'>
           <div className='field-title'>
-            <p>Community Name (Unique, be it must)</p>
+            <p>Community Name (Be, unique it must.)</p>
           </div>
           <div className='game-title-select'>
             <MyGInput
@@ -273,6 +280,7 @@ const AddCommunity = ({
               type='text'
               maxLength={75}
               class={'community-input'}
+              minLength={3}
               onKeyDown={Disable_keys}
               onBlur={onBlur_group_name}
               onChange={(value) => {

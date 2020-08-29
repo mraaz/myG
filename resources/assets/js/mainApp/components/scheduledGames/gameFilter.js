@@ -698,6 +698,7 @@ export default class ScheduleGames extends Component {
                           onKeyDown={this.onKeyDown}
                           isSearchable={true}
                           classNamePrefix='filter'
+                          styles='background: red;'
                         />
                       </div>
                     </div>
@@ -719,6 +720,7 @@ export default class ScheduleGames extends Component {
                           onInputChange={this.getOptions_tags}
                           placeholder='Search or Select Tags'
                           classNamePrefix='filter'
+                          menuColor='red'
                         />
                       </div>
                     </div>
