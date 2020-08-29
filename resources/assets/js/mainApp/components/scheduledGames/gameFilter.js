@@ -669,9 +669,6 @@ export default class ScheduleGames extends Component {
     }
     return (
       <Fragment>
-        <div className='viewGame__header'>
-          <div className='title'>Find Matches</div>
-        </div>
         <div className='viewGame__filter'>
           <div className='filter__label'>Filter by</div>
           <div className='viewGame__filter-section'>
