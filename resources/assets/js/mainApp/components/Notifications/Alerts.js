@@ -251,11 +251,15 @@ export default class Alerts extends Component {
       }
     })
     mark_all()
-    this.setState({ notification: notify })
+    this.setState({ notification: notify }, () => {
+      this.props.setNotificationsCount(0)
+    })
   }
   deleteAll = () => {
     delete_all()
-    this.setState({ notification: [] })
+    this.setState({ notification: [] }, () => {
+      this.props.setNotificationsCount(0)
+    })
   }
 
   render() {
@@ -263,6 +267,7 @@ export default class Alerts extends Component {
     const { notification = [], fetching = false } = this.state
 
     const isActive = active == true ? { display: 'block' } : { display: 'none' }
+
     return (
       <div style={isActive} className='notification__container'>
         <TopTabs tabs={['All', 'Feed', 'Games', 'Misc']} changeTab={this.changeTab} />
@@ -284,8 +289,9 @@ export default class Alerts extends Component {
           {notification.length > 0 &&
             notification.map((noti) => {
               const time = this.handleTime(noti.created_at)
+              const newDate = +new Date()
               return (
-                <div className={`notification alert ${noti.read ? '' : 'unread'}`} key={`${notification.length}_${noti.alias}`}>
+                <div className={`notification alert ${noti.read ? '' : 'unread'}`} key={`${noti.schedule_games_id}`}>
                   <div className='notification-user-avatar'>
                     <Link to={`/profile/${noti.alias}`}>
                       <img src={noti.profile_img ? noti.profile_img : defaultUserImage} />
