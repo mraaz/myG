@@ -8,18 +8,21 @@ import axios from 'axios'
 import { Link } from 'react-router-dom'
 
 const NoRecordFound = (props) => {
+  const { title = '', linkvisible = true } = props
   return (
     <div className='noRecordFound__wraper'>
-      <h1 className='noRecordFound__header'>Cannot find any games</h1>
-      <div className='noRecordFound__body'>
-        Try searching for another title or{' '}
-        <Link to='/addScheduleGames'>
-          {' '}
-          <span className='addScheduleGames__link' style={{ color: '#e5c746', cursor: 'pointer' }}>
-            add your own game
-          </span>
-        </Link>
-      </div>
+      <h1 className='noRecordFound__header'>{title}</h1>
+      {linkvisible && (
+        <div className='noRecordFound__body'>
+          Wait for notification or{' '}
+          <Link to='/addScheduleGames'>
+            {' '}
+            <span className='addScheduleGames__link' style={{ color: '#e5c746', cursor: 'pointer' }}>
+              add your own game
+            </span>
+          </Link>
+        </div>
+      )}
     </div>
   )
 }

@@ -210,7 +210,7 @@ export default class Approvals extends Component {
             </div>
           </div>
         )} */}
-        {/* {!fetching && ( */}
+
         <div className='gameList__box' style={{ padding: '15px' }} onScroll={this.handleScroll} ref={this.myRef}>
           {approvals.length > 0 &&
             approvals.map((approval) => {
@@ -254,7 +254,6 @@ export default class Approvals extends Component {
             })}
           <div className='endline'>No more updates</div>
         </div>
-        // )}
       </div>
     )
   }
