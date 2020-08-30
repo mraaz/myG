@@ -9,7 +9,7 @@ import Posts from './Posts'
 import Notifications from './Notifications'
 import MyPosts from './MyPosts'
 import AnalyticsBox from './AnalyticsBox'
-import GroupMain from './GroupMain'
+import GroupMain from './Community/GroupMain'
 import { Link } from 'react-router-dom'
 import MyScheduledGames from '../components/scheduledGames/MyScheduledGames'
 

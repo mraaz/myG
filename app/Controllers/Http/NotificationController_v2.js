@@ -359,7 +359,7 @@ class NotificationController_v2 {
           .where({ other_user_id: auth.user.id })
           .whereIn('activity_type', arr)
           .groupBy('notifications.post_id')
-          .select('notifications.post_id', 'notifications.created_at', 'notifications.activity_type')
+          .select('notifications.id', 'notifications.post_id', 'notifications.created_at', 'notifications.activity_type')
           .orderBy('notifications.created_at', 'desc')
           .paginate(request.input('counter'), set_limit)
 
@@ -440,7 +440,8 @@ class NotificationController_v2 {
             'notifications.read_status',
             'schedule_games.start_date_time',
             'schedule_games.schedule_games_GUID',
-            'game_names.game_name'
+            'game_names.game_name',
+            'notifications.id'
           )
           .orderBy('notifications.created_at', 'desc')
           .paginate(request.input('counter'), set_limit)
@@ -465,7 +466,8 @@ class NotificationController_v2 {
             'schedule_games.end_date_time',
             'schedule_games.schedule_games_GUID',
             'game_names.game_name',
-            'notifications.created_at'
+            'notifications.created_at',
+            'notifications.id'
           )
           .orderBy('notifications.created_at', 'desc')
           .paginate(request.input('counter'), set_limit)
@@ -535,7 +537,8 @@ class NotificationController_v2 {
             'users.id',
             'notifications.created_at',
             'groups.name',
-            'notifications.read_status'
+            'notifications.read_status',
+            'notifications.id'
           )
           .orderBy('notifications.created_at', 'desc')
           .paginate(request.input('counter'), set_limit)
@@ -549,7 +552,8 @@ class NotificationController_v2 {
             'users.id',
             'users.alias',
             'notifications.created_at',
-            'notifications.read_status'
+            'notifications.read_status',
+            'notifications.id'
           )
           .orderBy('notifications.created_at', 'desc')
           .paginate(request.input('counter'), set_limit)
@@ -1187,6 +1191,81 @@ class NotificationController_v2 {
       }
     } else {
       return 'You are not Logged In!'
+    }
+  }
+
+  async getUnread_count({ auth, request, response }) {
+    if (auth.user) {
+      let checking = false
+      try {
+        let arr = []
+        switch (request.input('notification_type')) {
+          case '0':
+            arr = [2, 3, 4, 5, 6]
+            break
+          case '1':
+            arr = [10, 14, 15, 17, 20, 21, 22]
+            break
+          case '2':
+            arr = []
+            break
+          default:
+            checking = true
+        }
+        if (checking) {
+          const getUnread_count_Approvals = await Database.from('notifications')
+            .where({ other_user_id: auth.user.id, read_status: 0 })
+            .whereIn('activity_type', [2, 3, 4, 5, 6])
+            .count('* as no_of_my_unread_approvals')
+
+          const getUnread_count_Alerts = await Database.from('notifications')
+            .where({ other_user_id: auth.user.id, read_status: 0 })
+            .whereIn('activity_type', [10, 14, 15, 17, 20, 21, 22])
+            .count('* as no_of_my_unread_alerts')
+
+          return {
+            getUnread_count_Approvals: getUnread_count_Approvals[0].no_of_my_unread_approvals,
+            getUnread_count_Alerts: getUnread_count_Alerts[0].no_of_my_unread_alerts,
+          }
+        } else {
+          const getUnread_count = await Database.from('notifications')
+            .where({ other_user_id: auth.user.id, read_status: 0 })
+            .whereIn('activity_type', arr)
+            .count('* as no_of_my_unread')
+
+          return getUnread_count
+        }
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
+      }
+    }
+  }
+
+  async mark_read_status({ auth, request, response }) {
+    if (auth.user) {
+      if (request.input('id') == undefined || request.input('id') == null) {
+        return
+      }
+      try {
+        const markAllNoti = await Notification.query()
+          .where({ id: parseInt(request.input('id')) })
+          .update({ read_status: request.input('read_status') })
+        return 'Saved successfully'
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
+      }
     }
   }
 }
