@@ -224,7 +224,8 @@ Route.post('/api/notifications_v2/addFriend', 'NotificationController_v2.addFrie
 Route.get('/api/notifications_v2/delete/:id', 'NotificationController_v2.destroy')
 Route.get('/api/notifications_v2/friend/:id', 'NotificationController_v2.checkFriend')
 Route.post('/api/notifications_v2/invitations_community', 'NotificationController_v2.invitations_community')
-
+Route.post('/api/notifications_v2/mark_read_status', 'NotificationController_v2.mark_read_status')
+Route.post('/api/notifications_v2/getUnread_count', 'NotificationController_v2.getUnread_count')
 //-----------------------------------------
 
 Route.post('/api/friends/create', 'FriendController.store')
