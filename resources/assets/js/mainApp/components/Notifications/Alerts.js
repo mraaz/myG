@@ -133,11 +133,10 @@ export default class Alerts extends Component {
         }
         return (
           <div className='notification__text'>
-            {`liked your`}{' '}
+            {`liked your`}
             <Link to={`/post/${props.post_id}`}>
-              <span className='notification-type'>{activity_name}</span>
+              <span className='notification-type'>{`${activity_name}.`}</span>
             </Link>
-            {'.'}
           </div>
         )
         break
@@ -145,11 +144,10 @@ export default class Alerts extends Component {
         activity_name = 'post'
         return (
           <div className='notification__text'>
-            {`commented on your `}{' '}
+            {`commented on your`}
             <Link to={`/post/${props.post_id}`}>
-              <span className='notification-type'>{activity_name}</span>
+              <span className='notification-type'>{`${activity_name}.`}</span>
             </Link>
-            {'.'}
           </div>
         )
         break
@@ -157,18 +155,17 @@ export default class Alerts extends Component {
         activity_name = 'post'
         return (
           <div className='notification__text'>
-            {`replied on your `}{' '}
+            {`replied on your`}
             <Link to={`/post/${props.post_id}`}>
-              <span className='notification-type'>{activity_name}</span>
+              <span className='notification-type'>{`${activity_name}.`}</span>
             </Link>
-            {'.'}
           </div>
         )
         break
       case 10:
         return (
           <div className='notification__text'>
-            {`has invited you to join`}{' '}
+            {`has invited you to join`}
             <Link to={`/scheduledGames/${props.schedule_games_GUID}`}>
               <span className='notification-type'>{props.game_name}</span>
             </Link>
@@ -179,7 +176,7 @@ export default class Alerts extends Component {
       case 14:
         return (
           <div className='notification__text'>
-            {`Grats! You are accepted to join`}{' '}
+            {`Grats! You are accepted to join`}
             <Link to={`/scheduledGames/${props.schedule_games_GUID}`}>
               <span className='notification-type'>{props.game_name}</span>
             </Link>
@@ -190,7 +187,7 @@ export default class Alerts extends Component {
       case 15:
         return (
           <div className='notification__text'>
-            {`Boo!`}{' '}
+            {`Boo!`}
             <Link to={`/scheduledGames/${props.schedule_games_GUID}`}>
               <span className='notification-type'>{props.game_name}</span>
             </Link>
@@ -201,9 +198,9 @@ export default class Alerts extends Component {
       case 16:
         return (
           <div className='notification__text'>
-            {`left your`}{' '}
+            {`left your`}
             <Link to={`/scheduledGames/${props.schedule_games_GUID}`}>
-              <span className='notification-type'>{props.game_name}</span>{' '}
+              <span className='notification-type'>{props.game_name}</span>
             </Link>
             {`game starting on ${moment(props.start_time).format('DD-MMM-YYYY')}`}
           </div>
@@ -212,9 +209,9 @@ export default class Alerts extends Component {
       case 17:
         return (
           <div className='notification__text'>
-            {`Epic! You have been accepted to group: `}{' '}
+            {`Epic! You have been accepted to group: `}
             <Link to={`/community/${props.group_id}`}>
-              <span className='notification-type'>{props.game_name}</span>{' '}
+              <span className='notification-type'>{props.game_name}</span>
             </Link>
           </div>
         )
@@ -231,9 +228,9 @@ export default class Alerts extends Component {
       case 21:
         return (
           <div className='notification__text'>
-            {`has joined`}{' '}
+            {`has joined`}
             <Link to={`/scheduledGames/${props.schedule_games_GUID}`}>
-              <span className='notification-type'>{props.game_name}</span>{' '}
+              <span className='notification-type'>{props.game_name}</span>
             </Link>
             {`which starts on  ${moment(props.start_time).format('DD-MMM-YYYY')}`}
           </div>
@@ -254,11 +251,15 @@ export default class Alerts extends Component {
       }
     })
     mark_all()
-    this.setState({ notification: notify })
+    this.setState({ notification: notify }, () => {
+      this.props.setNotificationsCount(0)
+    })
   }
   deleteAll = () => {
     delete_all()
-    this.setState({ notification: [] })
+    this.setState({ notification: [] }, () => {
+      this.props.setNotificationsCount(0)
+    })
   }
 
   render() {
@@ -266,6 +267,7 @@ export default class Alerts extends Component {
     const { notification = [], fetching = false } = this.state
 
     const isActive = active == true ? { display: 'block' } : { display: 'none' }
+
     return (
       <div style={isActive} className='notification__container'>
         <TopTabs tabs={['All', 'Feed', 'Games', 'Misc']} changeTab={this.changeTab} />
@@ -281,15 +283,15 @@ export default class Alerts extends Component {
             </div>
           </div>
         ) : (
-          <NoRecord />
+          <NoRecord title='no more updates.' linkvisible={false} />
         )}
-        {/* {!fetching && ( */}
         <div className='gameList__box' style={{ padding: '15px' }} onScroll={this.handleScroll} ref={this.myRef}>
           {notification.length > 0 &&
             notification.map((noti) => {
               const time = this.handleTime(noti.created_at)
+              const newDate = +new Date()
               return (
-                <div className={`notification alert ${noti.read ? '' : 'unread'}`} key={`${notification.length}_${noti.alias}`}>
+                <div className={`notification alert ${noti.read ? '' : 'unread'}`} key={`${noti.schedule_games_id}`}>
                   <div className='notification-user-avatar'>
                     <Link to={`/profile/${noti.alias}`}>
                       <img src={noti.profile_img ? noti.profile_img : defaultUserImage} />
@@ -297,36 +299,28 @@ export default class Alerts extends Component {
                   </div>
                   <div className='notification-content'>
                     <div className={`notification-description ${noti.read == false || noti.read_status == 0 ? '' : 'unread'}`}>
-                      <div className='username__link'>
-                        <Link to={`/profile/${noti.first_user_alias}`}>
-                          <div className='notification-username'>
-                            <span> @{noti.first_user_alias}</span>
-                          </div>
+                      <span className='username__link'>
+                        <Link to={`/profile/${noti.first_user_alias || noti.alias}`}>
+                          <span className='notification-username'>
+                            <span> @{noti.first_user_alias || noti.alias}</span>
+                          </span>
                         </Link>
                         {noti.second_user_alias && (
                           <Link to={`/profile/${noti.second_user_alias}`}>
-                            <div className='notification-username'>
-                              {noti.total_post_count > 0 ? `,` : ' and '}
-                              <span> @{noti.second_user_alias}</span>
-                            </div>
+                            <span className='notification-username'>
+                              {noti.total_post_count > 0 ? `, @${noti.second_user_alias}` : ` and @${noti.second_user_alias}`}
+                            </span>
                           </Link>
                         )}
                         {noti.third_user_alias && `,` && (
                           <Link to={`/profile/${noti.third_user_alias}`}>
-                            <div className='notification-username'>
-                              {noti.total_post_count > 0 ? `,` : ' and '}
-                              <span> @{noti.third_user_alias}</span>
-                            </div>
+                            <span className='notification-username'>
+                              {noti.total_post_count > 0 ? `, @${noti.third_user_alias}` : ` and @${noti.third_user_alias} `}
+                            </span>
                           </Link>
                         )}
-                        {noti.total_post_count > 0 && (
-                          <div className='notification-username'>
-                            {`and `}
-                            {noti.total_post_count}
-                            {` others `}
-                          </div>
-                        )}
-                      </div>
+                        {noti.total_post_count > 2 && <span>{`and ${noti.total_post_count} others `}</span>}
+                      </span>
                       {this.renderActivityText(noti)}
                     </div>
                     <div className='notification-options'>
@@ -340,7 +334,6 @@ export default class Alerts extends Component {
             })}
           {notification.length > 0 && <div className='endline'>No more updates</div>}
         </div>
-        // )}
       </div>
     )
   }
