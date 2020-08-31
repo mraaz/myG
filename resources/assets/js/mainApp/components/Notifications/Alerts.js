@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
-import { mark_all, delete_all } from './helperFunction'
+import { mark_all, delete_all, handleSingleNotificationReadStatus } from './helperFunction'
 
 import TopTabs from './TopTabs'
 const defaultUserImage = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
@@ -242,6 +242,10 @@ export default class Alerts extends Component {
     }
   }
 
+  handleClickNotiFication = (id) => {
+    handleSingleNotificationReadStatus(id)
+  }
+
   markAllRead = () => {
     const { notification = [] } = this.state
     const notify = notification.map((noti) => {
@@ -291,7 +295,10 @@ export default class Alerts extends Component {
               const time = this.handleTime(noti.created_at)
               const newDate = +new Date()
               return (
-                <div className={`notification alert ${noti.read ? '' : 'unread'}`} key={`${noti.schedule_games_id}`}>
+                <div
+                  className={`notification alert ${noti.read ? '' : 'unread'}`}
+                  key={`${noti.schedule_games_id}${noti.post_id}`}
+                  onClick={(e) => this.handleClickNotiFication(noti.id)}>
                   <div className='notification-user-avatar'>
                     <Link to={`/profile/${noti.alias}`}>
                       <img src={noti.profile_img ? noti.profile_img : defaultUserImage} />

@@ -3,6 +3,7 @@ import { withRouter, Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
+import axios from 'axios'
 
 import { logoutAction } from '../../redux/actions/userAction'
 import '../styles/LeftMenuStyles.scss'
@@ -14,8 +15,16 @@ class LeftMenu extends Component {
     initialData: PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired,
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     let expanded = localStorage.getItem('isExpanded')
+
+    const getnoti = await axios.post('/api/notifications_v2/getUnread_count', {
+      notification_type: -1,
+    })
+    if (getnoti.data) {
+      const { getUnread_count_Alerts = '', getUnread_count_Approvals = '', getUnread_count_Chats = '' } = getnoti.data
+      this.setState({ alerts: getUnread_count_Alerts, approvals: getUnread_count_Approvals, chats: getUnread_count_Chats })
+    }
 
     if (expanded == 'true') {
       this.setState({ isExpanded: true })
@@ -29,6 +38,9 @@ class LeftMenu extends Component {
     sideBarData: {
       ...sideBarItems,
     },
+    approvals: 0,
+    alerts: 0,
+    chats: 0,
   }
 
   onMenuToggle = () => {
@@ -105,7 +117,7 @@ class LeftMenu extends Component {
   getUserSection = () => {
     const alias = this.props.initialData === 'loading' ? '' : this.props.initialData.userInfo.alias
     const profileImage = this.props.initialData === 'loading' ? '' : this.props.initialData.userInfo.profile_img
-    const { isExpanded } = this.state
+    const { isExpanded, approvals = 0, chats = 0, alerts = 0 } = this.state
 
     return (
       <div className={classNames([isExpanded ? 'user-detail-box-expanded' : 'user-detail-box-collapsed'])}>
@@ -126,7 +138,7 @@ class LeftMenu extends Component {
                 width='22'
                 className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
               />
-              <div className='notification-box'>123</div>
+              <div className='notification-box'>{approvals}</div>
               {isExpanded && <div className={styles.line} />}
             </div>
           </Link>
@@ -138,7 +150,7 @@ class LeftMenu extends Component {
                 width='22'
                 className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
               />
-              <div className='notification-box'>123</div>
+              <div className='notification-box'>{alerts}</div>
               {isExpanded && <div className={styles.line} />}
             </div>
           </Link>
@@ -150,7 +162,7 @@ class LeftMenu extends Component {
                 width='22'
                 className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
               />
-              <div className='notification-box'>123</div>
+              <div className='notification-box'>{chats}</div>
             </div>
           </Link>
         </div>

@@ -81,3 +81,10 @@ export const delete_all = () => {
     console.log(error)
   }
 }
+
+export const handleSingleNotificationReadStatus = (id) => {
+  const readstatus = axios.post('/api/comments/', {
+    id,
+    read_status: 1,
+  })
+}
