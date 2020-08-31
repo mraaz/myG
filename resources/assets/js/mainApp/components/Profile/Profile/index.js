@@ -1,5 +1,6 @@
 import React from 'react';
 import get from 'lodash.get';
+import { Redirect } from 'react-router'
 import { connect } from 'react-redux'
 import { ignoreFunctions } from '../../../../common/render'
 import { fetchProfileInfoAction, updateProfileInfoAction } from '../../../../redux/actions/profileAction';
@@ -17,6 +18,7 @@ export class Profile extends React.Component {
 
   render() {
     console.log('profile: ', this.props.profile);
+    if (!this.props.foundProfile) return <Redirect push to={`/profile/${this.props.userAlias}`} />;
     return(
       <div id="profile">
         <Banner profile={this.props.profile} />
@@ -29,7 +31,8 @@ export class Profile extends React.Component {
 function mapStateToProps(state, props) {
   const profile = get(state, `profile.profiles[${props.alias}]`, {});
   return {
-    profile
+    profile,
+    foundProfile: !!Object.keys(profile).length,
   }
 }
 

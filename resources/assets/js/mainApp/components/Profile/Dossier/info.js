@@ -1,6 +1,8 @@
 import React from 'react'
 import get from 'lodash.get'
+import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import PlacesAutocomplete from 'react-places-autocomplete'
+import { Game_name_values, Disable_keys } from '../../Utility_Function'
 import { getAssetUrl } from '../../../../common/assets'
 import MyGCheckbox from '../../common/MyGCheckbox'
 import MyGSelect from '../../common/MyGSelect'
@@ -13,7 +15,18 @@ export default class DossierInfo extends React.Component {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
   }
 
-  state = {}
+  state = {
+    name: '',
+    alias: '',
+    email: '',
+    country: '',
+    mostPlayedGames: [{}, {}, {}],
+    relationship: {},
+    languages: [],
+    visibilityName: 'secret',
+    visibilityEmail: 'secret',
+    lookingForWork: false,
+  }
 
   componentDidMount() {
     this.setState(this.getProfile())
@@ -30,7 +43,10 @@ export default class DossierInfo extends React.Component {
     const relationshipValue = get(this.props, 'profile.relationship') || 'Looking for player two'
     const relationship = { label: relationshipValue, value: relationshipValue }
     const languages = (get(this.props, 'profile.languages') || []).map((language) => ({ label: language, value: language }))
-    const mostPlayedGames = get(this.props, 'profile.mostPlayedGames') || ['', '', '']
+    const mostPlayedGames = (get(this.props, 'profile.mostPlayedGames') || []).map((game) => ({
+      gameName: game,
+      gameNameValue: { label: game, value: game },
+    }))
     const visibilityName = get(this.props, 'profile.visibilityName') || 'secret'
     const visibilityEmail = get(this.props, 'profile.visibilityEmail') || 'secret'
     const lookingForWork = get(this.props, 'profile.lookingForWork') || false
@@ -59,18 +75,20 @@ export default class DossierInfo extends React.Component {
     }
     if (profile.team !== this.state.team) updates.team = this.state.team
     if (profile.country !== this.state.country) updates.country = this.state.country
-    if (JSON.stringify(profile.languages) !== JSON.stringify(this.state.languages)) updates.languages = this.state.languages.map((language) => language.value)
-    if (JSON.stringify(profile.mostPlayedGames) !== JSON.stringify(this.state.mostPlayedGames)) updates.mostPlayedGames = this.state.mostPlayedGames
-    if (JSON.stringify(profile.relationship) !== JSON.stringify(this.state.relationship)) updates.relationship = this.state.relationship.value || this.state.relationship
+    if (JSON.stringify(profile.languages) !== JSON.stringify(this.state.languages))
+      updates.languages = this.state.languages.map((language) => language.value)
+    if (JSON.stringify(profile.mostPlayedGames) !== JSON.stringify(this.state.mostPlayedGames.map((game) => game.gameName)))
+      updates.mostPlayedGames = this.state.mostPlayedGames.map((game) => game.gameName)
+    if (JSON.stringify(profile.relationship) !== JSON.stringify(this.state.relationship))
+      updates.relationship = this.state.relationship.value || this.state.relationship
     if (profile.visibilityName !== this.state.visibilityName) updates.visibilityName = this.state.visibilityName
     if (profile.visibilityEmail !== this.state.visibilityEmail) updates.visibilityEmail = this.state.visibilityEmail
     if (profile.lookingForWork !== this.state.lookingForWork) updates.lookingForWork = this.state.lookingForWork
-    console.log(updates)
-    return updates;
+    return updates
   }
 
   onSave = () => {
-    if (!this.state.name) return showMessengerAlert('The name field cannot be blank.')
+    if (!this.state.name) return
     const updates = this.getUpdates()
     const hasPendingChanges = Object.keys(updates).length
     if (hasPendingChanges) this.props.updateProfile(this.state.alias, updates)
@@ -115,7 +133,7 @@ export default class DossierInfo extends React.Component {
   renderAliasInput = () => {
     return (
       <div className='row'>
-        <span className='hint'>Nickname</span>
+        <span className='hint'>Alias</span>
         <div className='input-container'>
           <input
             disabled
@@ -177,24 +195,45 @@ export default class DossierInfo extends React.Component {
     )
   }
 
+  handleDropDownChange = async (index, input) => {
+    const results = !!input && !!input.value && (await Game_name_values(input.value))
+    const gameName = results && results[0] ? results[0].value : input && input.value
+    const gameNameValue = results && results[0] ? results[0] : input
+    return this.setState((previous) => {
+      const mostPlayedGames = previous.mostPlayedGames
+      if (!mostPlayedGames[0]) mostPlayedGames.push({})
+      if (!mostPlayedGames[1]) mostPlayedGames.push({})
+      if (!mostPlayedGames[2]) mostPlayedGames.push({})
+      mostPlayedGames[index] = { gameName, gameNameValue }
+      return { mostPlayedGames }
+    })
+  }
+
+  loadOptions = async (input) => {
+    const results = await Game_name_values(input)
+    return results.length ? results : [{ label: input, value: input }]
+  }
+
   renderGameInput = (index) => {
     return (
       <div className='row'>
         <span className='hint'>Game #{index + 1}</span>
-        <div className='input-container'>
-          <input
-            className='input'
-            value={(this.state.mostPlayedGames || [])[index] || ''}
-            onChange={(event) =>
-              this.setState((previous) => {
-                const mostPlayedGames = previous.mostPlayedGames
-                if (!mostPlayedGames[0]) mostPlayedGames.push('')
-                if (!mostPlayedGames[1]) mostPlayedGames.push('')
-                if (!mostPlayedGames[2]) mostPlayedGames.push('')
-                mostPlayedGames[index] = event.target.value
-                return { mostPlayedGames }
-              })
-            }></input>
+        <div className='input-container-row'>
+          <AsyncCreatableSelect
+            defaultOptions
+            isValidNewOption={() => false}
+            loadOptions={this.loadOptions}
+            onChange={(input) => this.handleDropDownChange(index, input)}
+            isClearable
+            value={((this.state.mostPlayedGames || [])[index] || {}).gameNameValue}
+            className='viewGame__name full-width'
+            placeholder='Search, select or create game title'
+            onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
+            onKeyDown={(e) => Disable_keys(e)}
+            isSearchable={true}
+            classNamePrefix='filter'
+            styles='background: red;'
+          />
         </div>
       </div>
     )
@@ -274,9 +313,10 @@ export default class DossierInfo extends React.Component {
   }
 
   renderSave = () => {
+    const buttonState = this.state.name ? 'clickable' : 'disabled'
     return (
       <div className='save-container'>
-        <div className='save-button clickable' onClick={this.onSave}>
+        <div className={`save-button ${buttonState}`} onClick={this.onSave}>
           Save
         </div>
       </div>

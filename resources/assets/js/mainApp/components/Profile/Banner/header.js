@@ -1,5 +1,6 @@
 import React from 'react'
 import Uploader from './uploader'
+import get from 'lodash.get';
 import { ignoreFunctions } from '../../../../common/render'
 import { openChatByContact } from '../../../../common/chat'
 import { showMessengerAlert } from '../../../../common/alert'
@@ -19,15 +20,28 @@ export default class Header extends React.Component {
         </Uploader>
       )
     }
-    return <div className='icon' style={{ backgroundImage: `url('${this.props.profile.image}'), url('https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png')` }} />
+    return (
+      <div
+        className='icon'
+        style={{
+          backgroundImage: `url('${this.props.profile.image}'), url('https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png')`,
+        }}
+      />
+    )
   }
 
   renderInfo = () => {
+    const firstName = get(this.props, 'profile.firstName') || ''
+    const lastName = get(this.props, 'profile.lastName') || ''
+    const name = `${firstName} ${lastName}`
     return (
       <div className='info'>
         {this.renderIcon()}
         <div className={`status-${this.props.profile.status}`} />
-        <span className={`handle${this.props.profile.isSelf ? '-self' : ''}`}>@{this.props.profile.alias}</span>
+        <div className={`handle ${this.props.profile.isSelf ? 'self' : ''}`}>
+          <span className='alias'>@{this.props.profile.alias}</span>
+          <span className='name'>{name}</span>
+        </div>
       </div>
     )
   }
@@ -39,7 +53,7 @@ export default class Header extends React.Component {
     if (this.props.profile.isSelf) return null
     if (this.props.profile.isFriend) {
       return (
-        <div className='button clickable' onClick={() => showMessengerAlert("Are you sure mate?", this.unfriend, null, 'Yes')}>
+        <div className='button clickable' onClick={() => showMessengerAlert('Are you sure mate?', this.unfriend, null, 'Yes')}>
           Remove Friend
         </div>
       )
@@ -82,7 +96,7 @@ export default class Header extends React.Component {
     if (this.props.profile.isSelf) return null
     if (this.props.profile.isFollower) {
       return (
-        <div className='button clickable' onClick={() => showMessengerAlert("Are you sure mate?", this.unfollow, null, 'Yes')}>
+        <div className='button clickable' onClick={() => showMessengerAlert('Are you sure mate?', this.unfollow, null, 'Yes')}>
           Unfollow
         </div>
       )

@@ -70,14 +70,23 @@
         }
 
         .handle {
-          font-size: 26px;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .self {
+          margin-left: 48px;
+        }
+
+        .alias {
+          font-size: 24px;
           font-weight: 1000;
           color: #fff;
         }
 
-        .handle-self {
-          @extend .handle;
-          margin-left: 48px;
+        .name {
+          font-size: 16px;
+          color: #606060;
         }
       }
 
@@ -193,6 +202,7 @@
         color: #657172;
         margin: 0 !important;
         padding: 0 !important;
+        white-space: nowrap;
       }
 
       .value {
@@ -366,6 +376,10 @@
         width: 85%;
       }
 
+      .full-width {
+        width: 100%;
+      }
+
       .input {
         display: flex;
         flex: 1;
@@ -394,6 +408,10 @@
           margin: 12px;
           border-radius: 2px;
           font-weight: 600;
+        }
+
+        .disabled {
+          opacity: 40%;
         }
       }
     }

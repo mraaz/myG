@@ -26,6 +26,7 @@ export default class ProfileContainer extends React.Component {
     if (!alias) return <Redirect push to={`/profile/${userAlias}`} />;
     return <Profile 
       alias={alias}
+      userAlias={userAlias}
     />;
   }
 }
