@@ -10,13 +10,12 @@ export default class Background extends React.Component {
   onUpload = (source, key) => this.props.uploadProfileBackground(this.props.alias, source, key)
 
   renderBackground = () => {
-    return (
+    const background = this.props.background ? { backgroundImage: `url('${this.props.background}')` } : {};
+    return this.props.background && (
       <div
         id='background'
         className={this.props.isSelf && 'clickable'}
-        style={{
-          backgroundImage: `url('${this.props.background}')`,
-        }}
+        style={background}
       />
     )
   }

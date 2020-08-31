@@ -15,7 +15,7 @@ import { MyGCheckbox, MyGTextarea, MyGAsyncSelect, MyGCreateableSelect, MyGInput
 import { Game_name_values, Group_Hash_Tags, Disable_keys } from '../Utility_Function'
 import { Upload_to_S3, Remove_file } from '../AWS_utilities'
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
-import logger from '../../../common/logger'
+import { logToElasticsearch } from '../../../integration/http/logger'
 
 const MAX_GAME_TAGS = 3
 const MAX_CO_HOSTS = 8
@@ -133,7 +133,7 @@ const AddCommunity = ({
     } else {
       updateAdvancedSettings({ grp_name_unique: false })
       toast.success(<Toast_style text={'Hmmmm, failed :( Refresh site, or try again later?'} />)
-      logger.log('RENDER', 'Add Community')
+      logToElasticsearch("error", "AddCommunity", "Failed unique test");
       return
     }
   }

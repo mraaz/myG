@@ -4,8 +4,10 @@ const User = use('App/Models/User');
 const Friend = use('App/Models/Friend');
 const Follower = use('App/Models/Follower');
 const UserLanguage = use('App/Models/UserLanguage');
-const Notification = use ('App/Models/Notification');
-const EsportsBio = use ('App/Models/EsportsBio');
+const Notification = use('App/Models/Notification');
+const EsportsBio = use('App/Models/EsportsBio');
+const UserMostPlayedGame = use('App/Models/UserMostPlayedGame');
+const GameNameController = use('App/Controllers/Http/GameNameController');
 
 const ProfileSchema = require('../../Schemas/Profile');
 
@@ -21,6 +23,7 @@ class ProfileRepository {
     const profileId = profile.id;
     const firstName = profile.first_name;
     const lastName = profile.last_name;
+    const email = profile.email;
     const image = profile.profile_img;
     const background = profile.profile_bg;
     const team = profile.team;
@@ -39,6 +42,7 @@ class ProfileRepository {
       hasSentFriendRequest,
       friendRequest,
       languages,
+      mostPlayedGames,
       gameExperiences,
       esportsExperiences,
     ] = await Promise.all([
@@ -47,6 +51,7 @@ class ProfileRepository {
       this.hasSentFriendRequest({ isSelf, requestingUserId, profileId }),
       this.fetchFriendRequest({ isSelf, requestingUserId, profileId }),
       this.fetchLanguages({ profileId }),
+      this.fetchMostPlayedGames({ profileId }),
       this.fetchGameExperiences({ profileId }),
       this.fetchEsportsExperiences({ profileId }),
     ]);
@@ -55,8 +60,9 @@ class ProfileRepository {
     const profileSchema = new ProfileSchema({
       profileId,
       alias: alias || profile.alias,
-      firstName,
-      lastName,
+      firstName: (visibilityName === 'public' || visibilityName === 'friends' && isFriend || isSelf) ? firstName : '',
+      lastName: (visibilityName === 'public' || visibilityName === 'friends' && isFriend || isSelf) ? lastName : '',
+      email: (visibilityEmail === 'public' || visibilityEmail === 'friends' && isFriend || isSelf) ? email : '',
       image,
       background,
       languages,
@@ -74,6 +80,7 @@ class ProfileRepository {
       isFollower,
       hasSentFriendRequest,
       hasReceivedFriendRequest,
+      mostPlayedGames,
       friendRequestId,
       gameExperiences,
       esportsExperiences,
@@ -123,7 +130,15 @@ class ProfileRepository {
 
   async fetchLanguages({ profileId }) {
     const response = await UserLanguage.query().where('user_id', profileId).fetch();
-    return response && (response.toJSON() || []).map(element => element.language)
+    return response && (response.toJSON() || []).map(element => element.language);
+  }
+
+  async fetchMostPlayedGames({ profileId }) {
+    const response = await Database.table('user_most_played_games')
+    .innerJoin('game_names', 'game_names.id', 'user_most_played_games.game_name_id')
+    .where('user_most_played_games.user_id', '=', profileId)
+    .select('game_names.game_name');
+    return response && response.map(element => element.game_name);
   }
 
   async fetchGameExperiences({ profileId }) {
@@ -171,7 +186,17 @@ class ProfileRepository {
       await Promise.all(languagesRequests);
     }
     if (mostPlayedGames !== undefined) {
-
+      await UserMostPlayedGame.query({ user_id: requestingUserId }).delete();
+      const gameController = new GameNameController();
+      const createGame = (gameName) => gameController.createGame({ auth: { user: { id: requestingUserId } } }, gameName)
+      for (const gameName of mostPlayedGames.filter(gameName => !!gameName)) {
+        const game = await Database.from('game_names').where({ game_name: gameName }).select('id' ,'game_name');
+        const gameId = game && game[0] ? game[0].id : (await createGame(gameName)).id;
+        const mostPlayedGame = new UserMostPlayedGame();
+        mostPlayedGame.user_id = requestingUserId;
+        mostPlayedGame.game_name_id = gameId;
+        await mostPlayedGame.save();
+      }
     }
     await User.query().where('id', requestingUserId).update(updates);
     return this.fetchProfileInfo({ requestingUserId, id: requestingUserId });
