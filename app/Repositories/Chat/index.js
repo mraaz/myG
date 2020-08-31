@@ -641,13 +641,20 @@ class ChatRepository {
     return { contacts, groups, games }
   }
 
-  async fetchChatNotifications({ requestingUserId, requestedPage }) {
-    let query = UserChatNotification.query().where('user_id', requestingUserId);
+  async fetchChatNotifications({ requestingUserId, requestedPage, requestedType }) {
+    let query = UserChatNotification.query().where({ 'user_id': requestingUserId });
+    if (requestedType !== "ALL") query = query.andWhere('type', 'in', requestedType.split(','));
     if (requestedPage === "ALL") query = query.fetch();
     else query = query.paginate(requestedPage || 1, 10);
     const result = (await query).toJSON();
     const notifications = (result.data ? result.data : result).map(notification => new ChatNotificationSchema(notification));
     return { notifications };
+  }
+
+  async markChatNotificationAsRead({ requestingUserId, id }) {
+    if (id === 'ALL') await UserChatNotification.query().where('user_id', requestingUserId).update({ has_read: true });
+    await UserChatNotification.query().where('id', id).update({ has_read: true });
+    return new DefaultSchema({ success: true });
   }
 
   async deleteChatNotifications({ requestingUserId }) {
@@ -759,6 +766,7 @@ class ChatRepository {
     });
     this._notifyChatEvent({ chatId: requestedChatId, action: 'newMessage', payload: messageSchema });
     if (!chat.isGroup) this._addChatNotificationMessage({ requestingUserId, requestedChatId, chat, content });
+    else if (!message.key_receiver) this._addChatGroupNotificationMessage({ requestingUserId, requestedChatId, chat, content });
     this.saveRecentMessage(messageSchema);
     return { message: messageSchema };
   }
@@ -1165,19 +1173,42 @@ class ChatRepository {
     const otherUserId = chat.contacts.filter(contactId => contactId !== requestingUserId)[0];
     const status = (await User.query().where('id', '=', otherUserId).first()).toJSON().status;
     if (status === "offline") {
-      const alias = (await User.query().where('id', '=', requestingUserId).first()).toJSON().alias;
+      const user = (await User.query().where('id', '=', requestingUserId).first()).toJSON();
       this._addChatNotification({
         chatId: requestedChatId,
         userId: otherUserId,
         senderId: requestingUserId,
-        senderAlias: alias,
+        senderAlias: user.alias,
+        senderIcon: user.profile_img,
         type: "MESSAGE",
         content: content,
       });
     }
   }
 
-  async _addChatNotification({ chatId, userId, senderId, senderAlias, type, content }) {
+  async _addChatGroupNotificationMessage({ requestingUserId, requestedChatId, chat, content }) {
+    const otherUsersIds = chat.contacts.filter(contactId => contactId !== requestingUserId);
+    const user = (await User.query().where('id', '=', requestingUserId).first()).toJSON();
+    console.log(user)
+    for (const otherUserId of otherUsersIds) {
+      const status = (await User.query().where('id', '=', otherUserId).first()).toJSON().status;
+      if (status === "offline") {
+        await this._addChatNotification({
+          chatId: requestedChatId,
+          userId: otherUserId,
+          senderId: requestingUserId,
+          senderAlias: user && user.alias,
+          senderIcon: user && user.profile_img,
+          groupTitle: chat.title,
+          groupIcon: chat.icon,
+          type: "GROUP_MESSAGE",
+          content: content,
+        });
+      }
+    }
+  }
+
+  async _addChatNotification({ chatId, userId, senderId, senderAlias, type, content, senderIcon, groupTitle, groupIcon }) {
     const notification = new UserChatNotification();
     notification.chat_id = chatId;
     notification.user_id = userId;
@@ -1185,10 +1216,24 @@ class ChatRepository {
     notification.sender_alias = senderAlias;
     notification.type = type;
     notification.content = content;
+    notification.sender_icon = senderIcon;
+    notification.group_title = groupTitle;
+    notification.group_icon = groupIcon;
+    notification.count = await this._getChatNotificationCount({ chatId, userId, type });
+    notification.has_read = false;
     await notification.save();
     const payload = new ChatNotificationSchema(notification);
     log('CHAT', `Adding Chat Notification: ${JSON.stringify(payload)}`);
     await this._notifyChatEvent(({ userId, action: 'chatNotification', payload }));
+  }
+
+  async _getChatNotificationCount({ chatId, userId, type }) {
+    if (!chatId) return 0;
+    const notification = await UserChatNotification.query().where('chat_id', chatId).andWhere('user_id', userId).andWhere('type', type).andWhere('has_read', false).fetch();
+    const notificationData = notification && notification.toJSON && notification.toJSON()[0];
+    const count = notificationData && notificationData.count || 0;
+    await UserChatNotification.query().where('chat_id', chatId).andWhere('user_id', userId).andWhere('type', type).delete();
+    return count + 1;
   }
 
   async _insertEntryLog(requestedChatId, alias, kicked, left, invited, link) {

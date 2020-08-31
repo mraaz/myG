@@ -3,6 +3,7 @@ import { store } from '../redux/Store'
 import { openChatAction, createChatAction } from '../redux/actions/chatAction'
 import { isOneDayBehind, isYesterday } from './date'
 import { getAssetUrl } from './assets'
+import { decryptMessage, deserializeKey } from '../integration/encryption'
 
 export function withDatesAndLogsAndLastReads(messages, entryLogs, contactsMap, lastReads, guestId) {
   entryLogs = entryLogs.sort((e1, e2) => e1.createdAt - e2.createdAt)
@@ -75,4 +76,9 @@ export function openChatById(chatId) {
 export function openChatByContact(contactId) {
   const userId = store.getState().user.userId;
   store.dispatch(createChatAction([parseInt(contactId)], parseInt(userId)));
+}
+
+export function unencryptMessage(message) {
+  const privateKey = deserializeKey(store.getState().chat.privateKey);
+  return decryptMessage(message, privateKey);
 }

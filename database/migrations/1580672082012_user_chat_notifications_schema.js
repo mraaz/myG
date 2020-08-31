@@ -16,6 +16,11 @@ class UserChatNotificationSchema extends Schema {
       table.text('sender_alias').notNullable()
       table.text('type').notNullable()
       table.text('content').notNullable()
+      table.text('sender_icon')
+      table.text('group_title')
+      table.text('group_icon')
+      table.integer('count')
+      table.boolean('has_read')
       table.timestamps(true,true)
     })
   }

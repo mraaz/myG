@@ -11,7 +11,7 @@ export default class Background extends React.Component {
 
   renderBackground = () => {
     const background = this.props.background ? { backgroundImage: `url('${this.props.background}')` } : {};
-    return this.props.background && (
+    return (
       <div
         id='background'
         className={this.props.isSelf && 'clickable'}
