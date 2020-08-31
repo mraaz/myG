@@ -266,9 +266,29 @@ class ChatController {
       const requestingUserId = auth.user.id
       if (!requestingUserId) throw new Error('Auth Error')
       const requestedPage = request.only(['page']).page || 0
-      log('CHAT', `User ${requestingUserId} requesting Chat Notifications`)
-      const { notifications } = await ChatRepository.fetchChatNotifications({ requestingUserId, requestedPage })
+      const requestedType = request.only(['type']).type || 'ALL'
+      log('CHAT', `User ${requestingUserId} requesting Chat Notifications for page ${requestedPage} and type ${requestedType}`)
+      const { notifications } = await ChatRepository.fetchChatNotifications({ requestingUserId, requestedPage, requestedType })
       return response.send({ notifications })
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+    }
+  }
+
+  async markChatNotificationAsRead({ auth, request, response }) {
+    try {
+      const requestingUserId = auth.user.id
+      if (!requestingUserId) throw new Error('Auth Error')
+      const id = request.only(['id']).id || 'ALL'
+      log('CHAT', `User ${requestingUserId} marking Chat Notifications ${id} as read`)
+      const { success } = await ChatRepository.markChatNotificationAsRead({ requestingUserId, id })
+      return response.send({ success })
     } catch (error) {
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
