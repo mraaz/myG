@@ -287,7 +287,7 @@ class GroupController {
             user_id: auth.user.id,
           })
           .select('id', 'name')
-          .paginate(request.params.counter, 20)
+          .paginate(request.params.counter, 6)
 
         const total_number_of_communities = await Database.from('usergroups')
           .innerJoin('groups', 'groups.id', 'usergroups.group_id')
@@ -297,6 +297,31 @@ class GroupController {
           .count('groups.id as total_number_of_communities')
 
         myGroups = myGroups.data
+
+        let variable = 6
+        switch (myGroups.length) {
+          case 6:
+            variable = 6
+            break
+          case 5:
+            variable = 7
+            break
+          case 4:
+            variable = 8
+            break
+          case 3:
+            variable = 9
+            break
+          case 2:
+            variable = 10
+            break
+          case 1:
+            variable = 11
+            break
+          case 0:
+            variable = 12
+            break
+        }
 
         const subquery = Database.select('id')
           .from('groups')
@@ -309,9 +334,10 @@ class GroupController {
           .whereNotIn('usergroups.group_id', subquery)
           .groupBy('usergroups.group_id')
           .select('groups.id', 'groups.name')
-          .paginate(request.params.counter, 25)
+          .paginate(request.params.counter, variable)
 
         groups_im_in = groups_im_in.data
+
         let all_my_communities = [...myGroups, ...groups_im_in]
 
         for (var i = 0; i < all_my_communities.length; i++) {

@@ -4,6 +4,8 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import IndividualPost from './IndividualPost'
 import ComposeSection from './ComposeSection_v2'
 
+import { logToElasticsearch } from '../../integration/http/logger'
+
 export default class Posts extends Component {
   constructor() {
     super()
@@ -65,7 +67,7 @@ export default class Posts extends Component {
           myPosts: self.state.myPosts.concat(myPosts.data.myPosts),
         })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'Posts', 'Failed at myPosts' + ' ' + error)
       }
     }
 

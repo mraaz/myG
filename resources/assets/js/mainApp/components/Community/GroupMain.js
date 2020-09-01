@@ -5,14 +5,22 @@ import { Toast_style } from '../Utility_Function'
 import YourCommunityBox from './YourCommunityBox'
 import SuggestedCommunityBox from './SuggestedCommunitybox'
 
+import { logToElasticsearch } from '../../../integration/http/logger'
+
 export default class GroupMain extends Component {
   constructor() {
     super()
     this.state = {
       open_compose_textTab: true,
       isShowAllGroup: false,
-      counter: 2,
+      counter: 1,
       all_my_communities: [],
+      more_data: true,
+      less_data: false,
+      all_my_suggested_communities: [],
+      suggested_counter: 0,
+      suggested_more_data: true,
+      suggested_less_data: true,
     }
   }
 
@@ -22,13 +30,13 @@ export default class GroupMain extends Component {
     const getALLmyGroups = async function() {
       try {
         const getmyGroups = await axios.get('/api/groups/get_my_communities/1')
-        console.log(getmyGroups)
+
         self.setState({
           all_my_communities: getmyGroups.data.all_my_communities,
           total_number_of_communities: getmyGroups.data.total_number_of_communities,
         })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'List_Community', 'Failed getGroups in Mount' + ' ' + error)
       }
     }
 
@@ -38,6 +46,7 @@ export default class GroupMain extends Component {
   togglePostTypeTab = (label) => {
     let open_compose_textTab = true
     if (label == 'media') {
+      this.next_data_suggested()
       open_compose_textTab = false
     }
     if (label == 'text') {
@@ -56,9 +65,120 @@ export default class GroupMain extends Component {
     const { all_my_communities = [] } = this.state
     if (all_my_communities.length > 0) {
       return all_my_communities.map((item, index) => {
-        return <YourCommunityBox data={item} key={index} />
+        return <YourCommunityBox data={item} key={index} routeProps={this.props.routeProps} />
       })
     }
+  }
+
+  showSuggestedGroupCard = () => {
+    const { all_my_suggested_communities = [] } = this.state
+    if (all_my_suggested_communities.length > 0) {
+      return all_my_suggested_communities.map((item, index) => {
+        return <YourCommunityBox data={item} key={index} routeProps={this.props.routeProps} />
+      })
+    }
+  }
+
+  next_data_suggested = () => {
+    const self = this
+
+    const getALLmySuggestedGroups = async function() {
+      try {
+        const getALLmySuggestedGroups = await axios.post('/api/connections/communities_you_might_know', {
+          counter: self.state.suggested_counter + 1,
+        })
+
+        if (getALLmySuggestedGroups.data.getCommunities.length == 0) {
+          self.setState({
+            suggested_more_data: false,
+          })
+          return
+        }
+
+        console.log(getALLmySuggestedGroups)
+        self.setState({
+          all_my_suggested_communities: getALLmySuggestedGroups.data.getCommunities,
+          suggested_less_data: true,
+        })
+      } catch (error) {
+        logToElasticsearch('error', 'List_Community', 'Failed at getALLmySuggestedGroups' + ' ' + error)
+      }
+    }
+
+    getALLmySuggestedGroups()
+  }
+
+  next_data = () => {
+    const self = this
+
+    const getGroups = async function() {
+      try {
+        const getmyGroups = await axios.get(`/api/groups/get_my_communities/${self.state.counter}`)
+        if (getmyGroups.data.all_my_communities.length == 0) {
+          self.setState({
+            more_data: false,
+          })
+          return
+        }
+
+        self.setState({
+          all_my_communities: getmyGroups.data.all_my_communities,
+          total_number_of_communities: getmyGroups.data.total_number_of_communities,
+          less_data: true,
+        })
+      } catch (error) {
+        logToElasticsearch('error', 'List_Community', 'Failed at getGroups' + ' ' + error)
+      }
+    }
+
+    this.setState(
+      {
+        counter: this.state.counter + 1,
+      },
+      () => {
+        getGroups()
+      }
+    )
+  }
+
+  prev_data = () => {
+    const self = this
+
+    const getGroups = async function() {
+      try {
+        const getmyGroups = await axios.get(`/api/groups/get_my_communities/${self.state.counter}`)
+        if (getmyGroups.data.all_my_communities.length == 0) {
+          self.setState({
+            less_data: false,
+          })
+          return
+        }
+
+        self.setState({
+          all_my_communities: getmyGroups.data.all_my_communities,
+          total_number_of_communities: getmyGroups.data.total_number_of_communities,
+          more_data: true,
+        })
+      } catch (error) {
+        logToElasticsearch('error', 'List_Community', 'Failed at getGroups' + ' ' + error)
+      }
+    }
+
+    if (this.state.counter == 1) {
+      this.setState({
+        less_data: false,
+      })
+      return
+    }
+
+    this.setState(
+      {
+        counter: this.state.counter - 1,
+      },
+      () => {
+        getGroups()
+      }
+    )
   }
 
   render() {
@@ -67,11 +187,15 @@ export default class GroupMain extends Component {
     return (
       <Fragment>
         <section className={`postCompose__container ${overlay_active ? 'zI1000' : ''}`}>
-          <div className='arrow__right'>
-            <img src='https://mygame-media.s3.amazonaws.com/platform_images/Communities/Group+971.svg' alt='arrow-right' />
+          <div className='arrow__right' onClick={this.next_data}>
+            {this.state.more_data && (
+              <img src='https://mygame-media.s3.amazonaws.com/platform_images/Communities/Group+971.svg' alt='arrow-right' />
+            )}
           </div>
-          <div className='arrow__left'>
-            <img src='https://mygame-media.s3.amazonaws.com/platform_images/Communities/Group+971.svg' alt='arrow-left' />
+          <div className='arrow__left' onClick={this.prev_data}>
+            {this.state.less_data && (
+              <img src='https://mygame-media.s3.amazonaws.com/platform_images/Communities/Group+971.svg' alt='arrow-left' />
+            )}
           </div>
           <div className='compose__type__section'>
             <div className={`share__thought ${open_compose_textTab ? 'active' : ''}`} onClick={(e) => this.togglePostTypeTab('text')}>
@@ -79,7 +203,7 @@ export default class GroupMain extends Component {
             </div>
             <div className='devider'></div>
             <div className={`add__post__image ${open_compose_textTab ? '' : 'active'}`} onClick={(e) => this.togglePostTypeTab('media')}>
-              {` Suggest Communities`}
+              {` Suggested Communities`}
             </div>
           </div>
           <div className='community__search_container'>
@@ -91,64 +215,14 @@ export default class GroupMain extends Component {
           {open_compose_textTab && (
             <Fragment>
               <div className='community-cards'>
-                <div className='row'>
-                  <div className='col-md-4'>
-                    <YourCommunityBox />
-                  </div>
-                  <div className='col-md-4'>
-                    <YourCommunityBox />
-                  </div>
-                  <div className='col-md-4'>
-                    <YourCommunityBox />
-                  </div>
-                  <div className='col-md-4'>
-                    <YourCommunityBox />
-                  </div>
-                  <div className='col-md-4'>
-                    <YourCommunityBox />
-                  </div>
-                  <div className='col-md-4'>
-                    <YourCommunityBox />
-                  </div>
-                </div>
+                <div className='row'>{this.showGroupCard()}</div>
               </div>
             </Fragment>
           )}
           {!open_compose_textTab && (
             <Fragment>
               <div className='community-cards'>
-                <div className='row'>
-                  <div className='col-md-4'>
-                    <SuggestedCommunityBox />
-                  </div>
-                  <div className='col-md-4'>
-                    <SuggestedCommunityBox />
-                  </div>
-                  <div className='col-md-4'>
-                    <SuggestedCommunityBox />
-                  </div>
-                  <div className='col-md-4'>
-                    <SuggestedCommunityBox />
-                  </div>
-                  <div className='col-md-4'>
-                    <SuggestedCommunityBox />
-                  </div>
-                  <div className='col-md-4'>
-                    <SuggestedCommunityBox />
-                  </div>
-                  <div className='col-md-4'>
-                    <SuggestedCommunityBox />
-                  </div>
-                  <div className='col-md-4'>
-                    <SuggestedCommunityBox />
-                  </div>
-                  <div className='col-md-4'>
-                    <SuggestedCommunityBox />
-                  </div>
-                  <div className='col-md-4'>
-                    <SuggestedCommunityBox />
-                  </div>
-                </div>
+                <div className='row'>{this.showSuggestedGroupCard()}</div>
               </div>
             </Fragment>
           )}
@@ -157,5 +231,3 @@ export default class GroupMain extends Component {
     )
   }
 }
-
-const app = document.getElementById('app')

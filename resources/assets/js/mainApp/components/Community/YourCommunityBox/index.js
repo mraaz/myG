@@ -1,26 +1,37 @@
-import React, { Fragment } from "react";
+const app = document.getElementById('app')
+
+import React, { Fragment } from 'react'
 
 // import styles
-import "../../../styles/Community/AddCommunityStyles.scss"
+import '../../../styles/Community/AddCommunityStyles.scss'
 
 const YourCommunityBox = (props) => {
-    return (
-        <Fragment>
-            <div className="community-card-box">
-                <div className="community-title">
-                    <p>dota 2 australia</p>
-                </div>
-                <hr />
-                <div className="members">
-                    <h2>2.8k</h2>
-                    <span>Members</span>
-                </div>
-                <div className="btn-show">
-                    <button>Show</button>
-                </div>
-            </div>
-        </Fragment>
-    )
+  const redirect2Group = () => {
+    props.routeProps.routeProps.history.push(`/community/${encodeURI(props.data.name.trim())}`)
+  }
+  let members_txt = 'Members'
+  if (props.data.no_of_peeps == '1') {
+    members_txt = 'Member'
+  }
+  return (
+    <Fragment>
+      <div className='col-md-4'>
+        <div className='community-card-box'>
+          <div className='community-title'>
+            <p>{props.data.name}</p>
+          </div>
+          <hr />
+          <div className='members'>
+            <h2>{props.data.no_of_peeps}</h2>
+            <span>{members_txt}</span>
+          </div>
+          <div className='btn-show'>
+            <button onClick={redirect2Group}>Show</button>
+          </div>
+        </div>
+      </div>
+    </Fragment>
+  )
 }
 
-export default YourCommunityBox;
+export default YourCommunityBox
