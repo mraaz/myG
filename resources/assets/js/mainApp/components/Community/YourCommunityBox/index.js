@@ -1,5 +1,3 @@
-const app = document.getElementById('app')
-
 import React, { Fragment } from 'react'
 
 // import styles

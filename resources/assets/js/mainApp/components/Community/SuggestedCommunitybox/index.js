@@ -1,37 +1,49 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
+import axios from 'axios'
 
 // import styles
 import '../../../styles/Community/AddCommunityStyles.scss'
 
 const SuggestedCommunityBox = (props) => {
-  console.log(props);
+  const [joinState, updatejoinState] = useState(true)
+
+  console.log(props, '<<<<RAAAZ')
+  let members_txt = 'Members'
+
+  if (props.data.no_of_peeps == '1') {
+    members_txt = 'Member'
+  }
+
+  const addDefaultSrc = (ev) => {
+    ev.target.src = 'https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/logo.svg'
+  }
+
+  const joinGroup = () => {
+    const sendInvite = axios.post('/api/usergroup/create', {
+      group_id: props.data.group_id,
+    })
+    updatejoinState(false)
+  }
+
   return (
     <Fragment>
       <div className='col-md-4'>
         <div className='community-card-box'>
           <div className='suggested-community-title'>
-            <p>dota 2 australia</p>
+            <p>{props.data.name}</p>
           </div>
           <div className='community-img'>
-            <img
-              src='https://mygame-media.s3.amazonaws.com/user_files/100_1596028790483_7JlctF_-3H2D_iVButtUsgcApiZeFPSsz_WeURrwHjbW6-1KT0.png'
-              className='img-fluid'
-            />
+            <img onError={addDefaultSrc} src={props.data.group_img} className='img-fluid' />
           </div>
           <div className='suggested-community-text'>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut aliquam sodales nunc, et laoreet nulla. Orci varius natoque
-              penatibus et ma
-            </p>
+            <p>{props.data.grp_description}</p>
             <hr />
           </div>
           <div className='members'>
-            <h2>2.8k</h2>
-            <span>Members</span>
+            <h2>{props.data.no_of_peeps}</h2>
+            <span>{members_txt}</span>
           </div>
-          <div className='btn-show'>
-            <button>Join</button>
-          </div>
+          <div className='btn-show'>{joinState && <button onClick={joinGroup}>Join</button>}</div>
         </div>
       </div>
     </Fragment>

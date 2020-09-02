@@ -19,8 +19,9 @@ export default class GroupMain extends Component {
       less_data: false,
       all_my_suggested_communities: [],
       suggested_counter: 0,
-      suggested_more_data: true,
-      suggested_less_data: true,
+      suggested_more_data: false,
+      suggested_less_data: false,
+      yourCommunityTab: true,
     }
   }
 
@@ -45,14 +46,16 @@ export default class GroupMain extends Component {
 
   togglePostTypeTab = (label) => {
     let open_compose_textTab = true
-    if (label == 'media') {
+    if (label == 'suggestedCommunityTab') {
       this.next_data_suggested()
       open_compose_textTab = false
+      this.setState({ yourCommunityTab: false })
     }
-    if (label == 'text') {
-      setTimeout(function() {
-        document.getElementById('composeTextarea').focus()
-      }, 0)
+    if (label == 'yourCommunityTab') {
+      this.setState({ yourCommunityTab: true })
+      // setTimeout(function() {
+      //   document.getElementById('composeTextarea').focus()
+      // }, 0)
     }
     this.setState({ open_compose_textTab, overlay_active: true })
   }
@@ -74,7 +77,7 @@ export default class GroupMain extends Component {
     const { all_my_suggested_communities = [] } = this.state
     if (all_my_suggested_communities.length > 0) {
       return all_my_suggested_communities.map((item, index) => {
-        return <YourCommunityBox data={item} key={index} routeProps={this.props.routeProps} />
+        return <SuggestedCommunityBox data={item} key={index} routeProps={this.props.routeProps} />
       })
     }
   }
@@ -87,8 +90,8 @@ export default class GroupMain extends Component {
         const getALLmySuggestedGroups = await axios.post('/api/connections/communities_you_might_know', {
           counter: self.state.suggested_counter + 1,
         })
-
-        if (getALLmySuggestedGroups.data.getCommunities.length == 0) {
+        console.log(getALLmySuggestedGroups)
+        if (getALLmySuggestedGroups.data == undefined || getALLmySuggestedGroups.data.length == 0) {
           self.setState({
             suggested_more_data: false,
           })
@@ -97,12 +100,48 @@ export default class GroupMain extends Component {
 
         console.log(getALLmySuggestedGroups)
         self.setState({
-          all_my_suggested_communities: getALLmySuggestedGroups.data.getCommunities,
+          all_my_suggested_communities: getALLmySuggestedGroups.data,
           suggested_less_data: true,
+          suggested_more_data: true,
         })
       } catch (error) {
         logToElasticsearch('error', 'List_Community', 'Failed at getALLmySuggestedGroups' + ' ' + error)
       }
+    }
+
+    getALLmySuggestedGroups()
+  }
+
+  prev_data_suggested = () => {
+    const self = this
+
+    const getALLmySuggestedGroups = async function() {
+      try {
+        const getALLmySuggestedGroups = await axios.post('/api/connections/communities_you_might_know', {
+          counter: self.state.suggested_counter - 1,
+        })
+        console.log(getALLmySuggestedGroups)
+        if (getALLmySuggestedGroups.data == undefined || getALLmySuggestedGroups.data.length == 0) {
+          self.setState({
+            suggested_less_data: false,
+          })
+          return
+        }
+
+        self.setState({
+          all_my_suggested_communities: getALLmySuggestedGroups.data,
+          suggested_more_data: true,
+        })
+      } catch (error) {
+        logToElasticsearch('error', 'List_Community', 'Failed at getALLmySuggestedGroups' + ' ' + error)
+      }
+    }
+
+    if (this.state.suggested_counter == 1) {
+      this.setState({
+        suggested_less_data: false,
+      })
+      return
     }
 
     getALLmySuggestedGroups()
@@ -187,22 +226,46 @@ export default class GroupMain extends Component {
     return (
       <Fragment>
         <section className={`postCompose__container ${overlay_active ? 'zI1000' : ''}`}>
-          <div className='arrow__right' onClick={this.next_data}>
-            {this.state.more_data && (
-              <img src='https://mygame-media.s3.amazonaws.com/platform_images/Communities/Group+971.svg' alt='arrow-right' />
-            )}
-          </div>
-          <div className='arrow__left' onClick={this.prev_data}>
-            {this.state.less_data && (
-              <img src='https://mygame-media.s3.amazonaws.com/platform_images/Communities/Group+971.svg' alt='arrow-left' />
-            )}
-          </div>
+          {this.state.yourCommunityTab && (
+            <div className='arrow__right' onClick={this.next_data}>
+              {this.state.more_data && (
+                <img src='https://mygame-media.s3.amazonaws.com/platform_images/Communities/Group+971.svg' alt='arrow-right' />
+              )}
+            </div>
+          )}
+          {this.state.yourCommunityTab && (
+            <div className='arrow__left' onClick={this.prev_data}>
+              {this.state.less_data && (
+                <img src='https://mygame-media.s3.amazonaws.com/platform_images/Communities/Group+971.svg' alt='arrow-left' />
+              )}
+            </div>
+          )}
+
+          {!this.state.yourCommunityTab && (
+            <div className='arrow__right' onClick={this.next_data_suggested}>
+              {this.state.suggested_more_data && (
+                <img src='https://mygame-media.s3.amazonaws.com/platform_images/Communities/Group+971.svg' alt='arrow-right' />
+              )}
+            </div>
+          )}
+          {!this.state.yourCommunityTab && (
+            <div className='arrow__left' onClick={this.prev_data_suggested}>
+              {this.state.suggested_less_data && (
+                <img src='https://mygame-media.s3.amazonaws.com/platform_images/Communities/Group+971.svg' alt='arrow-left' />
+              )}
+            </div>
+          )}
+
           <div className='compose__type__section'>
-            <div className={`share__thought ${open_compose_textTab ? 'active' : ''}`} onClick={(e) => this.togglePostTypeTab('text')}>
+            <div
+              className={`share__thought ${open_compose_textTab ? 'active' : ''}`}
+              onClick={(e) => this.togglePostTypeTab('yourCommunityTab')}>
               {`Your Communities`}
             </div>
             <div className='devider'></div>
-            <div className={`add__post__image ${open_compose_textTab ? '' : 'active'}`} onClick={(e) => this.togglePostTypeTab('media')}>
+            <div
+              className={`add__post__image ${open_compose_textTab ? '' : 'active'}`}
+              onClick={(e) => this.togglePostTypeTab('suggestedCommunityTab')}>
               {` Suggested Communities`}
             </div>
           </div>
