@@ -70,6 +70,7 @@ import {
   ScheduleGamesView,
   CreateCommunity,
   EditScheduleGames,
+  MobileMenu,
 } from './AsyncComponent'
 
 class Layout extends Component {
@@ -564,6 +565,9 @@ class Layout extends Component {
               publicKey={this.state.initialData && this.state.initialData.userInfo.public_key}
               loading={!this.state.initialData}
             />
+          </div>
+          <div className="mobile-main-container">
+            <MobileMenu />
           </div>
         </div>
       </Router>
