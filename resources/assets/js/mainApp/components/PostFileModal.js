@@ -11,7 +11,7 @@ import { Toast_style } from './Utility_Function'
 export default class PostFileModal extends Component {
   constructor(props) {
     super(props)
-
+    this.timeout = 0
     this.state = {
       post_content: '',
       store_files: [],
@@ -117,22 +117,36 @@ export default class PostFileModal extends Component {
     return groups_im_in.length > 0 ? groups_im_in.sort((a, b) => ('' + a.name).localeCompare(b.name)) : []
   }
 
-  getSearchGroup = async (e) => {
+  getSearchGroup = (e) => {
+    const self = this
+
     const searchText = e.target.value
-    if (searchText != '') {
-      const gd = await axios.get(`/api/groups/${searchText}/groupSearchResults_Post`)
-      let groups_im_in = gd.data.myGroupSearchResults
-      const groups_im_not_in = gd.data.groupSearchResults_im_not_in
-      if (groups_im_not_in.length > 0) {
-        groups_im_in = this.getMergedGroupData(groups_im_in, groups_im_not_in)
+    this.setState({ searchText })
+
+    if (this.timeout) clearTimeout(this.timeout)
+    this.timeout = setTimeout(() => {
+      getSearchInfo()
+    }, 300)
+
+    const getSearchInfo = async function() {
+      try {
+        if (searchText != '') {
+          const gd = await axios.get(`/api/groups/${searchText}/groupSearchResults_Post`)
+          let groups_im_in = gd.data.myGroupSearchResults
+          const groups_im_not_in = gd.data.groupSearchResults_im_not_in
+          if (groups_im_not_in.length > 0) {
+            groups_im_in = self.getMergedGroupData(groups_im_in, groups_im_not_in)
+          }
+          self.setState({ groups_im_in })
+        } else {
+          const getGroups_im_in = await axios.get('/api/usergroup/view/1')
+          self.setState({
+            groups_im_in: getGroups_im_in.data.groups_im_in,
+          })
+        }
+      } catch (error) {
+        console.log(error)
       }
-      this.setState({ groups_im_in, searchText })
-    } else {
-      const getGroups_im_in = await axios.get('/api/usergroup/view/1')
-      this.setState({
-        groups_im_in: getGroups_im_in.data.groups_im_in,
-        searchText,
-      })
     }
   }
 
@@ -169,6 +183,10 @@ export default class PostFileModal extends Component {
     }
   }
 
+  addDefaultSrc(ev) {
+    ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
+  }
+
   render() {
     const { groups_im_in, selected_group, searchText = '', gid_request } = this.state
     var class_modal_status = ''
@@ -194,7 +212,7 @@ export default class PostFileModal extends Component {
                     return (
                       <div className='list__item' key={`${group_in.name}_${group_in.id}_${index}`}>
                         <div className='default_circle'>
-                          <img src={group_in.group_img} className='groupImage' />
+                          <img onError={this.addDefaultSrc} src={group_in.group_img} className='groupImage' />
                         </div>
                         <div className='groupName'>{group_in.name}</div>
                         <div className='action'>

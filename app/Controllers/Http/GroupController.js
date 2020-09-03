@@ -161,14 +161,49 @@ class GroupController {
 
   async groupSearchResults({ auth, request, response }) {
     try {
+      const all_groups_im_in_but_dont_own = Database.from('usergroups')
+        .where('usergroups.user_id', '=', auth.user.id)
+        .select('group_id')
+
       const groupSearchResults = await Database.from('groups')
+        .select('name', 'group_img', 'id')
         .where('name', 'like', '%' + request.params.str + '%')
-        .whereNot('type', 3)
-        .select('name', 'group_img', 'id', 'type')
-        .limit(10)
+        .whereIn('id', all_groups_im_in_but_dont_own)
+        .orWhere('groups.user_id', '=', auth.user.id)
+        .andWhere('name', 'like', '%' + request.params.str + '%')
+        .limit(24)
 
       return {
         groupSearchResults,
+      }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+    }
+  }
+
+  async groupSearchResults_notMygrps({ auth, request, response }) {
+    try {
+      const all_groups_im_in_ish = Database.from('usergroups')
+        .leftJoin('groups', 'groups.id', 'usergroups.group_id')
+        .where('usergroups.user_id', '=', auth.user.id)
+        .orWhere('groups.user_id', '=', auth.user.id)
+        .select('group_id')
+
+      const groupSearchResults_im_not_in = await Database.from('groups')
+        .select('name', 'group_img', 'id', 'type')
+        .where('name', 'like', '%' + request.params.str + '%')
+        .whereNot('type', 2)
+        .whereNotIn('id', all_groups_im_in_ish)
+        .limit(24)
+
+      return {
+        groupSearchResults_im_not_in,
       }
     } catch (error) {
       LoggingRepository.log({
@@ -191,7 +226,7 @@ class GroupController {
         .select('group_id')
 
       const all_groups_im_in_ish = Database.from('usergroups')
-        .innerJoin('groups', 'groups.id', 'usergroups.group_id')
+        .leftJoin('groups', 'groups.id', 'usergroups.group_id')
         .where('usergroups.user_id', '=', auth.user.id)
         .orWhere('groups.user_id', '=', auth.user.id)
         .select('group_id')
@@ -204,7 +239,7 @@ class GroupController {
 
       const groupSearchResults_im_not_in = await Database.from('groups')
         .where('name', 'like', '%' + request.params.str + '%')
-        .whereNot('type', 3)
+        .whereNot('type', 2)
         .select('name', 'group_img', 'id', 'type')
         .whereNotIn('id', all_groups_im_in_ish)
         .limit(18)
@@ -287,16 +322,41 @@ class GroupController {
             user_id: auth.user.id,
           })
           .select('id', 'name')
-          .paginate(request.params.counter, 20)
+          .paginate(request.params.counter, 6)
 
-        const total_number_of_communities = await Database.from('usergroups')
-          .innerJoin('groups', 'groups.id', 'usergroups.group_id')
-          .where('usergroups.user_id', '=', auth.user.id)
-          .whereNot('usergroups.permission_level', 42)
-          .orWhere('groups.user_id', '=', auth.user.id)
-          .count('groups.id as total_number_of_communities')
+        // const total_number_of_communities = await Database.from('usergroups')
+        //   .innerJoin('groups', 'groups.id', 'usergroups.group_id')
+        //   .where('usergroups.user_id', '=', auth.user.id)
+        //   .whereNot('usergroups.permission_level', 42)
+        //   .orWhere('groups.user_id', '=', auth.user.id)
+        //   .count('groups.id as total_number_of_communities')
 
         myGroups = myGroups.data
+
+        let variable = 6
+        switch (myGroups.length) {
+          case 6:
+            variable = 6
+            break
+          case 5:
+            variable = 7
+            break
+          case 4:
+            variable = 8
+            break
+          case 3:
+            variable = 9
+            break
+          case 2:
+            variable = 10
+            break
+          case 1:
+            variable = 11
+            break
+          case 0:
+            variable = 12
+            break
+        }
 
         const subquery = Database.select('id')
           .from('groups')
@@ -309,9 +369,10 @@ class GroupController {
           .whereNotIn('usergroups.group_id', subquery)
           .groupBy('usergroups.group_id')
           .select('groups.id', 'groups.name')
-          .paginate(request.params.counter, 25)
+          .paginate(request.params.counter, variable)
 
         groups_im_in = groups_im_in.data
+
         let all_my_communities = [...myGroups, ...groups_im_in]
 
         for (var i = 0; i < all_my_communities.length; i++) {
@@ -326,7 +387,7 @@ class GroupController {
 
         return {
           all_my_communities,
-          total_number_of_communities: total_number_of_communities,
+          //total_number_of_communities: total_number_of_communities,
         }
       } catch (error) {
         LoggingRepository.log({
