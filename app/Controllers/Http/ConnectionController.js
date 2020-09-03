@@ -116,7 +116,6 @@ class ConnectionController {
 
   async communities_you_might_know({ auth, request, response }) {
     if (auth.user) {
-      console.log('getting data')
       try {
         let getCommunities = await Database.from('group_connections')
           .innerJoin('groups', 'groups.id', 'group_connections.group_id')
@@ -125,8 +124,6 @@ class ConnectionController {
           .paginate(request.input('counter'), 25)
 
         getCommunities = getCommunities.data
-
-        console.log(getCommunities)
 
         for (let i = 0; i < getCommunities.length; i++) {
           const myPeeps = await Database.from('usergroups')
@@ -137,7 +134,6 @@ class ConnectionController {
 
           getCommunities[i].no_of_peeps = myPeeps[0].no_of_peeps
         }
-
         return getCommunities
       } catch (error) {
         LoggingRepository.log({
@@ -158,8 +154,6 @@ class ConnectionController {
     // Find public communities which my friends are in and ofc which I'm not in
 
     //ToDO: https://github.com/mraaz/myGame/issues/241
-
-    console.log('doing this now')
 
     if (auth.user) {
       try {
@@ -200,8 +194,6 @@ class ConnectionController {
         let popin_groups_size = 0
 
         //Let's do 80/20 split groups_my_friends_are_in for 80.
-        console.log(groups_my_friends_are_in, '<<<groups_my_friends_are_in')
-        console.log(popin_groups, '<<<popin_groups')
 
         if (groups_my_friends_are_in.length > 200) {
           let tmpVal = 0
@@ -239,8 +231,6 @@ class ConnectionController {
 
         let myArr = [...mySet]
         myArr = await this.shuffle(myArr)
-
-        console.log(myArr, 'myArr')
 
         let groupConnectionController = new GroupConnectionController()
 

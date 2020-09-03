@@ -10,6 +10,7 @@ import { logToElasticsearch } from '../../../integration/http/logger'
 export default class GroupMain extends Component {
   constructor() {
     super()
+    this.timeout = 0
     this.state = {
       open_compose_textTab: true,
       isShowAllGroup: false,
@@ -22,6 +23,7 @@ export default class GroupMain extends Component {
       suggested_more_data: false,
       suggested_less_data: false,
       yourCommunityTab: true,
+      searchText: '',
     }
   }
 
@@ -34,7 +36,6 @@ export default class GroupMain extends Component {
 
         self.setState({
           all_my_communities: getmyGroups.data.all_my_communities,
-          total_number_of_communities: getmyGroups.data.total_number_of_communities,
         })
       } catch (error) {
         logToElasticsearch('error', 'List_Community', 'Failed getGroups in Mount' + ' ' + error)
@@ -88,9 +89,8 @@ export default class GroupMain extends Component {
     const getALLmySuggestedGroups = async function() {
       try {
         const getALLmySuggestedGroups = await axios.post('/api/connections/communities_you_might_know', {
-          counter: self.state.suggested_counter + 1,
+          counter: self.state.suggested_counter,
         })
-        console.log(getALLmySuggestedGroups)
         if (getALLmySuggestedGroups.data == undefined || getALLmySuggestedGroups.data.length == 0) {
           self.setState({
             suggested_more_data: false,
@@ -98,7 +98,6 @@ export default class GroupMain extends Component {
           return
         }
 
-        console.log(getALLmySuggestedGroups)
         self.setState({
           all_my_suggested_communities: getALLmySuggestedGroups.data,
           suggested_less_data: true,
@@ -109,7 +108,14 @@ export default class GroupMain extends Component {
       }
     }
 
-    getALLmySuggestedGroups()
+    this.setState(
+      {
+        suggested_counter: this.state.suggested_counter + 1,
+      },
+      () => {
+        getALLmySuggestedGroups()
+      }
+    )
   }
 
   prev_data_suggested = () => {
@@ -118,9 +124,9 @@ export default class GroupMain extends Component {
     const getALLmySuggestedGroups = async function() {
       try {
         const getALLmySuggestedGroups = await axios.post('/api/connections/communities_you_might_know', {
-          counter: self.state.suggested_counter - 1,
+          counter: self.state.suggested_counter,
         })
-        console.log(getALLmySuggestedGroups)
+
         if (getALLmySuggestedGroups.data == undefined || getALLmySuggestedGroups.data.length == 0) {
           self.setState({
             suggested_less_data: false,
@@ -144,7 +150,14 @@ export default class GroupMain extends Component {
       return
     }
 
-    getALLmySuggestedGroups()
+    this.setState(
+      {
+        suggested_counter: this.state.suggested_counter - 1,
+      },
+      () => {
+        getALLmySuggestedGroups()
+      }
+    )
   }
 
   next_data = () => {
@@ -162,7 +175,6 @@ export default class GroupMain extends Component {
 
         self.setState({
           all_my_communities: getmyGroups.data.all_my_communities,
-          total_number_of_communities: getmyGroups.data.total_number_of_communities,
           less_data: true,
         })
       } catch (error) {
@@ -195,7 +207,6 @@ export default class GroupMain extends Component {
 
         self.setState({
           all_my_communities: getmyGroups.data.all_my_communities,
-          total_number_of_communities: getmyGroups.data.total_number_of_communities,
           more_data: true,
         })
       } catch (error) {
@@ -218,6 +229,67 @@ export default class GroupMain extends Component {
         getGroups()
       }
     )
+  }
+
+  getSearchGroup = (e) => {
+    const self = this
+
+    const searchText = e.target.value
+    this.setState({ searchText })
+
+    if (this.state.yourCommunityTab) {
+      if (this.timeout) clearTimeout(this.timeout)
+      this.timeout = setTimeout(() => {
+        getSearchInfoCommunity()
+      }, 300)
+    } else {
+      if (this.timeout) clearTimeout(this.timeout)
+      this.timeout = setTimeout(() => {
+        getSearchInfoSuggestedCommunity()
+      }, 300)
+    }
+
+    const getSearchInfoCommunity = async function() {
+      try {
+        if (searchText != '') {
+          const gd = await axios.get(`/api/groups/${searchText}/groupSearchResults`)
+          self.setState({ all_my_communities: gd.data.groupSearchResults, more_data: false, less_data: false })
+        } else {
+          const getmyGroups = await axios.get('/api/groups/get_my_communities/1')
+          self.setState({
+            all_my_communities: getmyGroups.data.all_my_communities,
+            more_data: true,
+            less_data: false,
+          })
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    const getSearchInfoSuggestedCommunity = async function() {
+      try {
+        if (searchText != '') {
+          const gd = await axios.get(`/api/groups/${searchText}/groupSearchResults_notMygrps`)
+          self.setState({
+            all_my_suggested_communities: gd.data.groupSearchResults_im_not_in,
+            suggested_more_data: false,
+            suggested_less_data: false,
+          })
+        } else {
+          const getALLmySuggestedGroups = await axios.post('/api/connections/communities_you_might_know', {
+            counter: 1,
+          })
+          self.setState({
+            all_my_suggested_communities: getALLmySuggestedGroups.data,
+            suggested_more_data: true,
+            suggested_less_data: false,
+          })
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
   }
 
   render() {
@@ -271,7 +343,13 @@ export default class GroupMain extends Component {
           </div>
           <div className='community__search_container'>
             <div className='community__search'>
-              <input type='text' class='form-control' placeholder='Search' />
+              <input
+                type='text'
+                class='form-control'
+                placeholder='Search here ...'
+                onChange={this.getSearchGroup}
+                value={this.state.searchText}
+              />
               <img src='https://mygame-media.s3.amazonaws.com/platform_images/Communities/btn_Search.png' />
             </div>
           </div>

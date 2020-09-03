@@ -7,7 +7,10 @@ import '../../../styles/Community/AddCommunityStyles.scss'
 const SuggestedCommunityBox = (props) => {
   const [joinState, updatejoinState] = useState(true)
 
-  console.log(props, '<<<<RAAAZ')
+  const redirect2Group = () => {
+    props.routeProps.routeProps.history.push(`/community/${encodeURI(props.data.name.trim())}`)
+  }
+
   let members_txt = 'Members'
 
   if (props.data.no_of_peeps == '1') {
