@@ -183,6 +183,11 @@ export default class Chat extends Component {
                       </div>
                       {this.renderActivityText(chatNoti)}
                     </div>
+                    <div className='notification-options'>
+                      <span className='notification-time'>
+                        {time.countdown} {time.countdown_label} ago
+                      </span>
+                    </div>
                   </div>
                 </div>
               )
