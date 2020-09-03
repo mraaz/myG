@@ -130,9 +130,9 @@ export default class Chat extends Component {
       this.props.setNotificationsCount(0)
     })
   }
-  handleClickNotiFication = (id) => {
+  handleClickNotiFication = (id, type) => {
     markread_chatNotification(id)
-    openChatById(id)
+    if (type == 'MESSAGE') openChatById(id)
   }
 
   render() {
@@ -166,7 +166,7 @@ export default class Chat extends Component {
                 <div
                   className={`notification ${chatNoti.hasRead == false ? 'unread' : ''}`}
                   key={chatNoti.id}
-                  onClick={(e) => this.handleClickNotiFication(chatNoti.chatId)}>
+                  onClick={(e) => this.handleClickNotiFication(chatNoti.chatId, chatNoti.type)}>
                   <div className='notification-user-avatar'>
                     <Link to={`/profile/${chatNoti.senderAlias}`}>
                       <img onError={this.addDefaultSrc} src={chatNoti.senderIcon ? chatNoti.senderIcon : defaultUserImage} />
