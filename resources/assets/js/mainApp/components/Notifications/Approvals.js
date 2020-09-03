@@ -11,6 +11,7 @@ import {
   clickedDenied_community,
   clickedAccept_game,
   clickedDenied_game,
+  handleTime,
 } from './helperFunction'
 import { Toast_style } from './../Utility_Function'
 import { toast } from 'react-toastify'
@@ -96,26 +97,6 @@ export default class Approvals extends Component {
       _current = this.myRef.current
     if (_event.scrollTop + (3 / 2) * _current.offsetHeight > _event.scrollHeight && this.state.moreplease && !this.state.fetching) {
       this.getMoreNotification()
-    }
-  }
-  handleTime = (time) => {
-    let countdown_label = 'Days'
-    let countdown = moment().diff(moment(time), 'days')
-    if (countdown == 0) {
-      countdown = moment().diff(moment(time), 'hours')
-      countdown_label = 'Hours'
-    }
-    if (countdown == 0) {
-      countdown = moment().diff(moment(time), 'minutes')
-      countdown_label = 'Minutes'
-    }
-    if (countdown == 0) {
-      countdown = moment().diff(moment(time), 'seconds')
-      countdown_label = 'Seconds'
-    }
-    return {
-      countdown,
-      countdown_label,
     }
   }
 
@@ -214,7 +195,7 @@ export default class Approvals extends Component {
         <div className='gameList__box' style={{ padding: '15px' }} onScroll={this.handleScroll} ref={this.myRef}>
           {approvals.length > 0 &&
             approvals.map((approval) => {
-              const time = this.handleTime(approval.created_at)
+              const time = handleTime(approval.created_at)
               return (
                 <div className={`notification ${approval.read_status == 0 ? 'unread' : ''}`} key={approval.id}>
                   <div className='notification-user-avatar'>
@@ -252,7 +233,7 @@ export default class Approvals extends Component {
                 </div>
               )
             })}
-          <div className='endline'>No more updates</div>
+          {approvals.length > 0 && <div className='endline'>No more updates</div>}
         </div>
       </div>
     )

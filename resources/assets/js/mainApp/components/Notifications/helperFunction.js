@@ -1,4 +1,5 @@
 import axios from 'axios'
+import moment from 'moment'
 import { setAsFriendRedux } from './../../../common/friend'
 import { joinGameGroup } from './../../../common/game'
 export const clickedAccept_myInvitations = (invitation) => {
@@ -87,4 +88,41 @@ export const handleSingleNotificationReadStatus = (id) => {
     id,
     read_status: 1,
   })
+}
+
+export const handleTime = (time) => {
+  let countdown_label = 'Days'
+  let countdown = moment().diff(moment(time), 'days')
+  if (countdown == 0) {
+    countdown = moment().diff(moment(time), 'hours')
+    countdown_label = 'Hours'
+  }
+  if (countdown == 0) {
+    countdown = moment().diff(moment(time), 'minutes')
+    countdown_label = 'Minutes'
+  }
+  if (countdown == 0) {
+    countdown = moment().diff(moment(time), 'seconds')
+    countdown_label = 'Seconds'
+  }
+  return {
+    countdown,
+    countdown_label,
+  }
+}
+
+export const delete_chatNotification_all = () => {
+  try {
+    const delete_all = axios.delete('/api/chat_notifications')
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const markread_chatNotification = (id) => {
+  try {
+    const read_all = axios.put('/api/chat_notifications', {})
+  } catch (error) {
+    console.log(error)
+  }
 }
