@@ -2225,3 +2225,17 @@ section#content-container {
   border-bottom: 14px solid transparent;
   border-right: 30px solid #1d2326;
 }
+
+.mobile-main-container {
+  display: none;
+}
+
+@media screen and (max-width: 575px) {
+  .dashboard-main-container {
+    display: none;
+  }
+
+  .mobile-main-container {
+    display: block;
+  }
+}

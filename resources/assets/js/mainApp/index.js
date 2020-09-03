@@ -565,6 +565,9 @@ class Layout extends Component {
               loading={!this.state.initialData}
             />
           </div>
+          <div className="mobile-main-container">
+            <h1>This is mobile container</h1>
+          </div>
         </div>
       </Router>
     )
