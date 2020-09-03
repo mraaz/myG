@@ -70,6 +70,7 @@ import {
   ScheduleGamesView,
   CreateCommunity,
   EditScheduleGames,
+  MobileMenu,
 } from './AsyncComponent'
 
 class Layout extends Component {
@@ -566,7 +567,7 @@ class Layout extends Component {
             />
           </div>
           <div className="mobile-main-container">
-            <h1>This is mobile container</h1>
+            <MobileMenu />
           </div>
         </div>
       </Router>
