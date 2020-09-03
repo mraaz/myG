@@ -49,7 +49,7 @@ export default class ErrorHandler extends React.PureComponent {
       const hasReloadedOnError = window.localStorage.getItem('hasReloadedOnError', 0)
       if (Date.now() - hasReloadedOnError > 5000) {
         window.localStorage.setItem('hasReloadedOnError', Date.now())
-        window.location.reload(true)
+        // window.location.reload(true)
       }
     }
   }
