@@ -1,4 +1,5 @@
 import React, { Fragment, useState } from 'react'
+import { Link } from 'react-router-dom'
 import axios from 'axios'
 
 // import styles
@@ -6,10 +7,6 @@ import '../../../styles/Community/AddCommunityStyles.scss'
 
 const SuggestedCommunityBox = (props) => {
   const [joinState, updatejoinState] = useState(true)
-
-  const redirect2Group = () => {
-    props.routeProps.routeProps.history.push(`/community/${encodeURI(props.data.name.trim())}`)
-  }
 
   let members_txt = 'Members'
 
@@ -33,7 +30,11 @@ const SuggestedCommunityBox = (props) => {
       <div className='col-md-4'>
         <div className='community-card-box'>
           <div className='suggested-community-title'>
-            <p>{props.data.name}</p>
+            <p>
+            <Link to={`/community/${encodeURI(props.data.name.trim())}`}>
+              {props.data.name}
+            </Link>
+            </p>
           </div>
           <div className='community-img'>
             <img onError={addDefaultSrc} src={props.data.group_img} className='img-fluid' />
