@@ -17,7 +17,7 @@ export default class Menu extends Component {
   }
 
   isActive = (tab) => {
-    return this.state.active === tab
+    return this.state.active == tab
   }
 
   render() {
@@ -28,7 +28,7 @@ export default class Menu extends Component {
         <div className='button-list'>
           <Button
             title={`Upcoming Games  ${activeTab == 0 ? `(${notificationsCount})` : ''}`}
-            active={this.isActive(0)}
+            active={activeTab == 0}
             onClick={() => {
               this.changeTab(0)
               changeContentTab(0)
@@ -36,7 +36,7 @@ export default class Menu extends Component {
           />
           <Button
             title={`Approvals  ${activeTab == 1 ? `(${notificationsCount})` : ''}`}
-            active={this.isActive(1)}
+            active={activeTab == 1}
             onClick={() => {
               this.changeTab(1)
               changeContentTab(1)
@@ -44,7 +44,7 @@ export default class Menu extends Component {
           />
           <Button
             title={`Alerts  ${activeTab == 2 ? `(${notificationsCount})` : ''}`}
-            active={this.isActive(2)}
+            active={activeTab == 2}
             onClick={() => {
               this.changeTab(2)
               changeContentTab(2)
@@ -52,7 +52,7 @@ export default class Menu extends Component {
           />
           <Button
             title={`Chat  ${activeTab == 3 ? `(${notificationsCount})` : ''}`}
-            active={this.isActive(3)}
+            active={activeTab == 3}
             onClick={() => {
               this.changeTab(3)
               changeContentTab(3)
@@ -60,7 +60,7 @@ export default class Menu extends Component {
           />
           <Button
             title='Settings'
-            active={this.isActive(4)}
+            active={activeTab == 4}
             onClick={() => {
               this.changeTab(4)
               changeContentTab(4)
