@@ -144,7 +144,7 @@ export default class Approvals extends Component {
         break
       case 1:
         activity_name = 'Friendship'
-        return <div className='notification__text'>{` wants to connect with you. `}</div>
+        return <div className='notification__text'>{` wants to connect with you `}</div>
         break
       case 11:
         activity_name = 'Game'
