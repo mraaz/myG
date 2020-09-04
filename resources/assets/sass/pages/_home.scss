@@ -2230,15 +2230,27 @@ section#content-container {
   display: none;
 }
 
+// Mobile CSS
+
 @media screen and (max-width: 575px) {
   .dashboard-main-container {
     display: none;
   }
 
-  // Mobile CSS
-
   .mobile-main-container {
     display: block;
     background: #0b0f14;
+    position: relative;
+  }
+
+  .menu-bottom {
+    background: #1d2326;
+    display: flex;
+    padding: 10px;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
   }
 }
