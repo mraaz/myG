@@ -2230,15 +2230,49 @@ section#content-container {
   display: none;
 }
 
+// Mobile CSS
+
 @media screen and (max-width: 575px) {
   .dashboard-main-container {
     display: none;
   }
 
-  // Mobile CSS
-
   .mobile-main-container {
     display: block;
     background: #0b0f14;
+    position: relative;
+  }
+
+  .menu-bottom {
+    background: #1d2326;
+    display: flex;
+    padding: 15px 10px;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+  }
+
+  .mobile-sub-menu-items {
+    position: absolute;
+    top: -74px;
+    display: flex;
+    width: 100%;
+    background: #171a1c;
+    left: 0;
+    justify-content: space-around;
+  }
+
+  .mobile-sub-menu-items a {
+    color: #fff;
+  }
+
+  .mobile-sub-menu-items .find-matches {
+    padding: 25px 10px;
+  }
+
+  .mobile-sub-menu-items .find-gamers {
+    padding: 25px 10px;
   }
 }

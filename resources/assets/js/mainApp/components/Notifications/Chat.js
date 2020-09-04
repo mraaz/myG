@@ -120,9 +120,7 @@ export default class Chat extends Component {
       }
     })
     markread_chatNotification()
-    this.setState({ chatNotifications: notify }, () => {
-      this.props.setNotificationsCount(0)
-    })
+    this.setState({ chatNotifications: notify })
   }
   deleteAll = () => {
     delete_chatNotification_all()
@@ -131,6 +129,14 @@ export default class Chat extends Component {
     })
   }
   handleClickNotiFication = (id, type) => {
+    const { chatNotifications = [] } = this.state
+    const notify = chatNotifications.map((noti) => {
+      return {
+        ...noti,
+        hasRead: noti.id == id ? true : noti.hasRead,
+      }
+    })
+    this.setState({ chatNotifications: notify })
     markread_chatNotification(id)
     if (type == 'MESSAGE') openChatById(id)
   }
@@ -156,7 +162,7 @@ export default class Chat extends Component {
             </div>
           </div>
         ) : (
-          <NoRecord title='no more updates.' linkvisible={false} />
+          <NoRecord title='No more updates.' linkvisible={false} />
         )}
         <div className='gameList__box' style={{ padding: '15px' }} onScroll={this.handleScroll} ref={this.myRef}>
           {chatNotifications.length > 0 &&
