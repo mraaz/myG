@@ -615,10 +615,10 @@ $main-font: 'Montserrat';
         }
         .notification__text {
           display: inline;
+          margin-left: 5px;
         }
         .notification-username {
           color: #fff !important;
-          margin-right: 5px;
           text-align: left;
           letter-spacing: 0px;
         }

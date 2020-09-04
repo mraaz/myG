@@ -135,7 +135,7 @@ export default class Alerts extends Component {
           <div className='notification__text'>
             {`liked your`}
             <Link to={`/post/${props.post_id}`}>
-              <span className='notification-type'>{`${activity_name}.`}</span>
+              <span className='notification-type'>{`${activity_name}`}</span>
             </Link>
           </div>
         )
@@ -146,7 +146,7 @@ export default class Alerts extends Component {
           <div className='notification__text'>
             {`commented on your`}
             <Link to={`/post/${props.post_id}`}>
-              <span className='notification-type'>{`${activity_name}.`}</span>
+              <span className='notification-type'>{`${activity_name}`}</span>
             </Link>
           </div>
         )
@@ -157,7 +157,7 @@ export default class Alerts extends Component {
           <div className='notification__text'>
             {`replied on your`}
             <Link to={`/post/${props.post_id}`}>
-              <span className='notification-type'>{`${activity_name}.`}</span>
+              <span className='notification-type'>{`${activity_name}`}</span>
             </Link>
           </div>
         )
@@ -243,7 +243,17 @@ export default class Alerts extends Component {
   }
 
   handleClickNotiFication = (id) => {
+    const { notification = [] } = this.state
+    const notify = notification.map((noti) => {
+      return {
+        ...noti,
+        read: noti.id == id ? true : noti.read,
+      }
+    })
     handleSingleNotificationReadStatus(id)
+    this.setState({ notification: notify }, () => {
+      this.props.setNotificationsCount(0)
+    })
   }
 
   markAllRead = () => {
@@ -287,7 +297,7 @@ export default class Alerts extends Component {
             </div>
           </div>
         ) : (
-          <NoRecord title='no more updates.' linkvisible={false} />
+          <NoRecord title='No more updates.' linkvisible={false} />
         )}
         <div className='gameList__box' style={{ padding: '15px' }} onScroll={this.handleScroll} ref={this.myRef}>
           {notification.length > 0 &&
@@ -297,7 +307,7 @@ export default class Alerts extends Component {
               return (
                 <div
                   className={`notification alert ${noti.read ? '' : 'unread'}`}
-                  key={`${noti.schedule_games_id}${noti.post_id}`}
+                  key={`${noti.id}`}
                   onClick={(e) => this.handleClickNotiFication(noti.id)}>
                   <div className='notification-user-avatar'>
                     <Link to={`/profile/${noti.alias}`}>
@@ -315,18 +325,23 @@ export default class Alerts extends Component {
                         {noti.second_user_alias && (
                           <Link to={`/profile/${noti.second_user_alias}`}>
                             <span className='notification-username'>
-                              {noti.total_post_count > 0 ? `, @${noti.second_user_alias}` : ` and @${noti.second_user_alias}`}
+                              {noti.total_post_count > 0 ? `,  @${noti.second_user_alias} ` : `and @${noti.second_user_alias}`}
                             </span>
                           </Link>
                         )}
                         {noti.third_user_alias && `,` && (
                           <Link to={`/profile/${noti.third_user_alias}`}>
                             <span className='notification-username'>
-                              {noti.total_post_count > 0 ? `, @${noti.third_user_alias}` : ` and @${noti.third_user_alias} `}
+                              {noti.total_post_count > 0 ? `,  @${noti.third_user_alias} ` : `and @${noti.third_user_alias} `}
                             </span>
                           </Link>
                         )}
-                        {noti.total_post_count > 2 && <span>{`and ${noti.total_post_count} others `}</span>}
+                        {noti.total_post_count > 2 && (
+                          <span className='notification__text'>
+                            {`and ${noti.total_post_count} others`}
+                            {` `}
+                          </span>
+                        )}
                       </span>
                       {this.renderActivityText(noti)}
                     </div>

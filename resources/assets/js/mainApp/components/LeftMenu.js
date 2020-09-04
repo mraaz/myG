@@ -130,7 +130,7 @@ class LeftMenu extends Component {
           </Link>
         )}
         <div className={classNames([isExpanded ? 'notification-expanded' : 'notification-collapsed'])}>
-          <Link to='/invitation'>
+          <Link to='/?at=notifications&submenu=1'>
             <div className='notification-container'>
               <img
                 src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/ntfo_Friendship_Icon.svg'
@@ -142,7 +142,7 @@ class LeftMenu extends Component {
               {isExpanded && <div className={styles.line} />}
             </div>
           </Link>
-          <Link to='/notifications'>
+          <Link to='/?at=notifications&submenu=2'>
             <div className='notification-container'>
               <img
                 src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Bell_Icon.svg'
@@ -154,7 +154,7 @@ class LeftMenu extends Component {
               {isExpanded && <div className={styles.line} />}
             </div>
           </Link>
-          <Link to='/messages'>
+          <Link to='/?at=notifications&submenu=3'>
             <div className='notification-container'>
               <img
                 src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Chat_Icon.svg'
