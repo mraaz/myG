@@ -83,10 +83,10 @@ export const delete_all = () => {
   }
 }
 
-export const handleSingleNotificationReadStatus = (id) => {
+export const handleSingleNotificationReadStatus = (id, status) => {
   const readstatus = axios.post('/api/comments/', {
     id,
-    read_status: 1,
+    read_status: status == true ? 1 : 0,
   })
 }
 
@@ -121,7 +121,7 @@ export const delete_chatNotification_all = () => {
 
 export const markread_chatNotification = (id) => {
   try {
-    const read_all = axios.put('/api/chat_notifications', {})
+    const read_all = axios.put('/api/chat_notifications', { id })
   } catch (error) {
     console.log(error)
   }

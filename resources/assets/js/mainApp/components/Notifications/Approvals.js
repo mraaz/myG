@@ -15,6 +15,7 @@ import {
 } from './helperFunction'
 import { Toast_style } from './../Utility_Function'
 import { toast } from 'react-toastify'
+import NoRecord from './NoRecord'
 const defaultUserImage = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
 const tabObj = {
   0: 0,
@@ -191,6 +192,7 @@ export default class Approvals extends Component {
             </div>
           </div>
         )} */}
+        {!approvals.length && <NoRecord title='No more updates.' linkvisible={false} />}
 
         <div className='gameList__box' style={{ padding: '15px' }} onScroll={this.handleScroll} ref={this.myRef}>
           {approvals.length > 0 &&
