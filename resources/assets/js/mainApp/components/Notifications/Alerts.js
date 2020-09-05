@@ -244,13 +244,18 @@ export default class Alerts extends Component {
 
   handleClickNotiFication = (id) => {
     const { notification = [] } = this.state
+    let status = false
     const notify = notification.map((noti) => {
+      if (noti.id == id) {
+        status = !noti.read
+      }
+
       return {
         ...noti,
-        read: noti.id == id ? true : noti.read,
+        read: noti.id == id ? !noti.read : noti.read,
       }
     })
-    handleSingleNotificationReadStatus(id)
+    handleSingleNotificationReadStatus(id, status)
     this.setState({ notification: notify }, () => {
       this.props.setNotificationsCount(0)
     })

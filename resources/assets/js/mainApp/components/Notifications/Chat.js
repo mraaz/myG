@@ -168,11 +168,12 @@ export default class Chat extends Component {
           {chatNotifications.length > 0 &&
             chatNotifications.map((chatNoti) => {
               const time = handleTime(chatNoti.createdAt)
+
               return (
                 <div
                   className={`notification ${chatNoti.hasRead == false ? 'unread' : ''}`}
                   key={chatNoti.id}
-                  onClick={(e) => this.handleClickNotiFication(chatNoti.chatId, chatNoti.type)}>
+                  onClick={(e) => this.handleClickNotiFication(chatNoti.id, chatNoti.type)}>
                   <div className='notification-user-avatar'>
                     <Link to={`/profile/${chatNoti.senderAlias}`}>
                       <img onError={this.addDefaultSrc} src={chatNoti.senderIcon ? chatNoti.senderIcon : defaultUserImage} />
