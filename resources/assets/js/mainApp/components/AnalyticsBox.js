@@ -12,6 +12,7 @@ export default class AnalyticsBox extends Component {
     userTransactionStates: {},
     youMayKnowUser: [],
     counter: 1,
+    hideSuggestions: true,
   }
 
   async componentDidMount() {
@@ -84,57 +85,42 @@ export default class AnalyticsBox extends Component {
           </div>
 
           <div className='social-box'>
-            <img
-              src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Network.svg'
-              className='social-box-img'
-            />
+            <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Network.svg' className='social-box-img' />
             <p className='social-box-count'>{connections}</p>
             <p className='social-box-text'>connections</p>
             <p className='social-box-month'>Last month: {last_month_connections}</p>
           </div>
 
           <div className='social-box'>
-            <img
-              src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_followers.svg'
-              className='social-box-img'
-            />
+            <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_followers.svg' className='social-box-img' />
             <p className='social-box-count'>{followers}</p>
             <p className='social-box-text'>followers</p>
             <p className='social-box-month'>Last month: {last_month_followers}</p>
           </div>
 
           <div className='social-box'>
-            <img
-              src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_games.svg'
-              className='social-box-img'
-            />
+            <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_games.svg' className='social-box-img' />
             <p className='social-box-count'>{games}</p>
             <p className='social-box-text'>games</p>
             <p className='social-box-month'>Last month: {last_month_games}</p>
           </div>
 
           <div className='social-box'>
-            <img
-              src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Header_btn_likes.svg'
-              className='social-box-img'
-            />
+            <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Header_btn_likes.svg' className='social-box-img' />
             <p className='social-box-count'>{likes}</p>
             <p className='social-box-text'>likes</p>
             <p className='social-box-month'>Last month: {last_month_likes}</p>
           </div>
 
           <div className='social-box'>
-            <img
-              src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_reviews.svg'
-              className='social-box-img'
-            />
+            <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_reviews.svg' className='social-box-img' />
             <p className='social-box-count'>{commendations}</p>
             <p className='social-box-text'>reviews</p>
             <p className='social-box-month'>Last month: {last_month_commendations}</p>
           </div>
         </div>
 
-        {!this.props.hideSuggestions && youMayKnowUser && youMayKnowUser.length > 0 && (
+        {!this.state.hideSuggestions && youMayKnowUser && youMayKnowUser.length > 0 && (
           <div className='suggestion'>
             <div className='suggestion-box-text'>
               <p className='suggestion-box-head'>connections</p>
@@ -159,7 +145,6 @@ export default class AnalyticsBox extends Component {
             </div>
           </div>
         )}
-
       </section>
     )
   }

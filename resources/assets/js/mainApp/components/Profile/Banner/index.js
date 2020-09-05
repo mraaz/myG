@@ -14,14 +14,14 @@ export class Banner extends React.Component {
   render() {
     return(
       <div id="profile-banner">
-        <AnalyticsBox hideSuggestions containerStyle='analytics' />
-        <Background 
+        <AnalyticsBox containerStyle='analytics' />
+        <Background
           alias={this.props.profile.alias}
           isSelf={this.props.profile.isSelf}
           background={this.props.profile.background}
           uploadProfileBackground={this.props.uploadProfileBackground}
          />
-        <Header 
+        <Header
           alias={this.props.profile.alias}
           profile={this.props.profile}
           sendFriendRequest={this.props.sendFriendRequest}
