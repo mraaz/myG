@@ -51,7 +51,7 @@ export default class Menu extends Component {
             }}
           />
           <Button
-            title={`Approvals  (${approvals})`}
+            title={`Approvals ${approvals ? `(${approvals})` : ''}`}
             active={activeTab == 1}
             onClick={() => {
               this.changeTab(1)
@@ -59,7 +59,7 @@ export default class Menu extends Component {
             }}
           />
           <Button
-            title={`Alerts  ${alerts}`}
+            title={`Alerts ${alerts ? `(${alerts})` : ''}`}
             active={activeTab == 2}
             onClick={() => {
               this.changeTab(2)
@@ -67,7 +67,7 @@ export default class Menu extends Component {
             }}
           />
           <Button
-            title={`Chat  ${chats}`}
+            title={`Chat ${chats ? `(${chats})` : ''}`}
             active={activeTab == 3}
             onClick={() => {
               this.changeTab(3)
