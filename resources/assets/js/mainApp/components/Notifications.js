@@ -18,10 +18,15 @@ export default class Notifications extends Component {
   }
 
   changeContentTab = (tab) => {
-    this.setState({
-      activeTab: tab,
-      notificationsCount: 0,
-    })
+    this.setState(
+      {
+        activeTab: tab,
+        notificationsCount: 0,
+      },
+      () => {
+        this.props.routeProps.routeProps.history.push(`/?at=notifications&submenu=${tab}`)
+      }
+    )
   }
   setNotificationsCount = (notificationsCount) => {
     this.setState({
