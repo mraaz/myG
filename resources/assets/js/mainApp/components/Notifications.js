@@ -29,9 +29,9 @@ export default class Notifications extends Component {
     )
   }
   setNotificationsCount = (notificationsCount) => {
-    this.setState({
-      notificationsCount,
-    })
+    // this.setState({
+    //   notificationsCount,
+    // })
   }
 
   isActive = (tab) => {
