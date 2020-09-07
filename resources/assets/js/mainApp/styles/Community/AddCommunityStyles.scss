@@ -468,3 +468,10 @@
   display: flex;
   flex: 1 0 0%;
 }
+
+.community-card-box .btn-show button:focus {
+  outline: none;
+  display: initial;
+  font-size: 16px;
+  margin-bottom: 0px;
+}
