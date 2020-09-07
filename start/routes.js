@@ -268,7 +268,7 @@ Route.get('/api/archive_attendees/role_call/:id', 'Archive_AttendeeController.ro
 Route.get('/api/archive_attendees/role_call_ALL/:id', 'Archive_AttendeeController.role_call_ALL')
 
 Route.post('/api/groups/create', 'GroupController.store')
-Route.get('/api/groups/groupName/:name', 'GroupController.show_one_name')
+Route.get('/api/groups/getGroupDetails/:name', 'GroupController.getGroupDetails')
 Route.get('/api/groups/:str/groupSearchResults', 'GroupController.groupSearchResults')
 Route.get('/api/groups/:str/groupSearchResults_Post', 'GroupController.groupSearchResults_Post')
 Route.get('/api/groups/:str/groupSearchResults_notMygrps', 'GroupController.groupSearchResults_notMygrps')
@@ -276,7 +276,6 @@ Route.get('/api/groups/:str/groupSearchResults_notMygrps', 'GroupController.grou
 Route.get('/api/groups/view/:counter', 'GroupController.myshow')
 Route.get('/api/groups/all_myGrps/:counter', 'GroupController.all_myGrps')
 
-Route.get('/api/groups/:id', 'GroupController.show')
 Route.post('/api/groups/update_img', 'GroupController.update_img')
 Route.post('/api/groups/update/all_accept/', 'GroupController.update_all_accept')
 Route.post('/api/groups/update_settings/', 'GroupController.update_settings')
@@ -416,5 +415,10 @@ Route.get('/api/seats_available_email/:email', 'SeatsAvailableController.storeSe
 // Profile
 Route.get('/api/profile/:alias', 'ProfileController.fetchProfileInfo')
 Route.put('/api/profile/:alias', 'ProfileController.updateProfile')
+
+//Sponsor
+Route.post('/api/sponsor/create', 'SponsorController.store')
+Route.post('/api/sponsor/delete', 'SponsorController.destroy')
+Route.post('/api/sponsor/update', 'SponsorController.update')
 
 Route.any('*', ({ view }) => view.render('pages/react'))

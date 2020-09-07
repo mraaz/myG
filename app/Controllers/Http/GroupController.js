@@ -11,6 +11,7 @@ const GroupHashTagTranController = use('./GroupHashTagTranController')
 const ApiController = use('./ApiController')
 const GameNameController = use('./GameNameController')
 const NotificationController_v2 = use('./NotificationController_v2')
+const SponsorController = use('./SponsorController')
 
 const LoggingRepository = require('../../Repositories/Logging')
 
@@ -139,11 +140,26 @@ class GroupController {
     }
   }
 
-  async show_one_name({ auth, request, response }) {
+  async getGroupDetails({ auth, request, response }) {
     try {
       const getOne = await Database.from('groups')
         .where({ name: request.params.name })
-        .count('* as no_of_names')
+        .first()
+
+      if (getOne != undefined) {
+        const sponsorController = new SponsorController()
+        getOne.sponsors = await sponsorController.show({ auth }, getOne.id, null)
+
+        const allGrpTags = await Database.table('group_hash_tag_trans')
+          .where({ group_id: getOne.id })
+          .first()
+
+        getOne.allGrpTags = allGrpTags
+
+        let current_user_permission = await this.get_permission({ auth }, getOne.id)
+
+        getOne.current_user_permission = current_user_permission
+      }
 
       return {
         getOne,
@@ -401,26 +417,6 @@ class GroupController {
     }
   }
 
-  async show({ auth, request, response }) {
-    try {
-      const group = await Database.from('groups').where({
-        id: request.params.id,
-      })
-
-      return {
-        group,
-      }
-    } catch (error) {
-      LoggingRepository.log({
-        environment: process.env.NODE_ENV,
-        type: 'error',
-        source: 'backend',
-        context: __filename,
-        message: (error && error.message) || error,
-      })
-    }
-  }
-
   async show_owner({ auth, request, response }) {
     try {
       const show_owner = await Database.from('groups')
@@ -551,6 +547,8 @@ class GroupController {
     }
   }
 
+  //current_user_permission:
+  //-1: Not a member of this group, 0: Owner, 1: Admin of group, 2: Moderator, 3: User, 42:Pending approval
   async get_permission({ auth }, group_id) {
     let current_user_permission = -1
     try {
