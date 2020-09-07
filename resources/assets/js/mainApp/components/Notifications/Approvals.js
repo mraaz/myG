@@ -12,6 +12,7 @@ import {
   clickedAccept_game,
   clickedDenied_game,
   handleTime,
+  mark_read_status,
 } from './helperFunction'
 import { Toast_style } from './../Utility_Function'
 import { toast } from 'react-toastify'
@@ -169,6 +170,18 @@ export default class Approvals extends Component {
     ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
   }
 
+  handleClickNotiFication = (id) => {
+    const { approvals = [] } = this.state
+    const notify = approvals.map((noti) => {
+      return {
+        ...noti,
+        read_status: noti.id == id ? !noti.read_status : noti.read_status,
+      }
+    })
+    this.setState({ approvals: notify })
+    mark_read_status(id)
+  }
+
   render() {
     const { active } = this.props
     const { fetching, approvals } = this.state
@@ -199,7 +212,11 @@ export default class Approvals extends Component {
             approvals.map((approval) => {
               const time = handleTime(approval.created_at)
               return (
-                <div className={`notification ${approval.read_status == 0 ? 'unread' : ''}`} key={approval.id}>
+                <div
+                  className={`notification ${approval.read_status == 0 ? 'unread' : ''}`}
+                  key={approval.id}
+                  onClick={(e) => this.handleClickNotiFication(approval.id)}>
+                  >
                   <div className='notification-user-avatar'>
                     <Link to={`/profile/${approval.alias}`}>
                       <img onError={this.addDefaultSrc} src={approval.profile_img ? approval.profile_img : defaultUserImage} />

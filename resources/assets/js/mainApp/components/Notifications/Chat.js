@@ -133,12 +133,12 @@ export default class Chat extends Component {
     const notify = chatNotifications.map((noti) => {
       return {
         ...noti,
-        hasRead: noti.id == id ? true : noti.hasRead,
+        hasRead: noti.id == id ? !noti.hasRead : noti.hasRead,
       }
     })
     this.setState({ chatNotifications: notify })
     markread_chatNotification(id)
-    if (type == 'MESSAGE') openChatById(id)
+    openChatById(id)
   }
 
   render() {

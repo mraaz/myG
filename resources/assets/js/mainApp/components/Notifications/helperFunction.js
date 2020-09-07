@@ -75,6 +75,16 @@ export const mark_all = () => {
     console.log(error)
   }
 }
+export const mark_read_status = (id) => {
+  try {
+    const mark_read_status = axios.post('/api/notifications_v2/mark_read_status', {
+      id,
+      read_status: 1,
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
 export const delete_all = () => {
   try {
     const delete_all = axios.get('/api/notifications/deleteAllNoti')

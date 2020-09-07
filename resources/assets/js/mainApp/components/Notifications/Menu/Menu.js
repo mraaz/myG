@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Button from './Button'
+import axios from 'axios'
 
 export default class Menu extends Component {
   constructor() {
@@ -7,6 +8,20 @@ export default class Menu extends Component {
 
     this.state = {
       active: 0,
+      approvals: 0,
+      alerts: 0,
+      chats: 0,
+    }
+  }
+
+  async componentDidMount() {
+    window.scrollTo(0, 0)
+    const getnoti = await axios.post('/api/notifications_v2/getUnread_count', {
+      notification_type: -1,
+    })
+    if (getnoti.data) {
+      const { getUnread_count_Alerts = '', getUnread_count_Approvals = '', getUnread_count_Chats = '' } = getnoti.data
+      this.setState({ alerts: getUnread_count_Alerts, approvals: getUnread_count_Approvals, chats: getUnread_count_Chats })
     }
   }
 
@@ -22,6 +37,7 @@ export default class Menu extends Component {
 
   render() {
     const { changeContentTab, notificationsCount, activeTab } = this.props
+    const { approvals = 0, chats = 0, alerts = 0 } = this.state
 
     return (
       <div className='notifications-menu'>
@@ -35,7 +51,7 @@ export default class Menu extends Component {
             }}
           />
           <Button
-            title={`Approvals  ${activeTab == 1 ? `(${notificationsCount})` : ''}`}
+            title={`Approvals ${approvals ? `(${approvals})` : ''}`}
             active={activeTab == 1}
             onClick={() => {
               this.changeTab(1)
@@ -43,7 +59,7 @@ export default class Menu extends Component {
             }}
           />
           <Button
-            title={`Alerts  ${activeTab == 2 ? `(${notificationsCount})` : ''}`}
+            title={`Alerts ${alerts ? `(${alerts})` : ''}`}
             active={activeTab == 2}
             onClick={() => {
               this.changeTab(2)
@@ -51,7 +67,7 @@ export default class Menu extends Component {
             }}
           />
           <Button
-            title={`Chat  ${activeTab == 3 ? `(${notificationsCount})` : ''}`}
+            title={`Chat ${chats ? `(${chats})` : ''}`}
             active={activeTab == 3}
             onClick={() => {
               this.changeTab(3)
