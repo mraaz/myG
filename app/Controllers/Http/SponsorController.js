@@ -3,6 +3,7 @@
 const Sponsor = use('App/Models/Sponsor')
 const Database = use('Database')
 const LoggingRepository = require('../../Repositories/Logging')
+const CommonController = use('./CommonController')
 
 class SponsorController {
   async store({ auth, request, response }) {
@@ -10,7 +11,10 @@ class SponsorController {
       try {
         //if its a group, check to see if this user can add
         if (request.input('group_id') != undefined && request.input('group_id') != null) {
-          let current_user_permission = await this.get_permission({ auth }, request.input('group_id'))
+          const commonController = new CommonController()
+
+          let current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
+
           if (current_user_permission != 0 && current_user_permission != 1) {
             return
           }
@@ -85,7 +89,9 @@ class SponsorController {
   async update({ auth, request, response }) {
     if (auth.user) {
       if (request.input('group_id') != undefined && request.input('group_id') != null) {
-        let current_user_permission = await this.get_permission({ auth }, request.input('group_id'))
+        const commonController = new CommonController()
+
+        let current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
         if (current_user_permission != 0 && current_user_permission != 1) {
           return
         }
@@ -105,39 +111,6 @@ class SponsorController {
           message: (error && error.message) || error,
         })
       }
-    }
-  }
-
-  //BUG with calling a Controller which call this current Controller. So a snake eating its tail.
-  //current_user_permission:
-  //-1: Not a member of this group, 0: Owner, 1: Admin of group, 2: Moderator, 3: User, 42:Pending approval
-  async get_permission({ auth }, group_id) {
-    let current_user_permission = -1
-    try {
-      const permission_query_current_user = await Database.from('usergroups').where({
-        user_id: auth.user.id,
-        group_id: group_id,
-      })
-      if (permission_query_current_user.length > 0) {
-        current_user_permission = permission_query_current_user[0].permission_level
-      } else {
-        const owner_query = await Database.from('groups').where({
-          user_id: auth.user.id,
-          id: group_id,
-        })
-        if (owner_query.length > 0) {
-          current_user_permission = 0
-        }
-      }
-      return current_user_permission
-    } catch (error) {
-      LoggingRepository.log({
-        environment: process.env.NODE_ENV,
-        type: 'error',
-        source: 'backend',
-        context: __filename,
-        message: (error && error.message) || error,
-      })
     }
   }
 }
