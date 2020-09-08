@@ -85,31 +85,37 @@ class LikeController {
 
         return 'Saved successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     }
   }
 
-  async show({ auth, request, response }) {
+  async show({ auth }, post_id) {
     try {
       const number_of_likes = await Database.from('likes')
-        .where('post_id', '=', request.params.id)
+        .where('post_id', '=', post_id)
         .count('* as total')
 
       const name_of_1st_admirer = await Database.from('likes')
         .innerJoin('users', 'users.id', 'likes.user_id')
-        .where('likes.post_id', '=', request.params.id)
+        .where('likes.post_id', '=', post_id)
         .select('likes.id', 'users.alias')
         .orderBy('likes.id', 'asc')
         .first()
 
       //const do_I_like_it = await Database.from('likes').where('post_id', '=', request.params.id, 'user_id', '=', auth.user.id )
       const do_I_like_it = await Database.from('likes')
-        .where({ post_id: request.params.id, user_id: auth.user.id })
+        .where({ post_id: post_id, user_id: auth.user.id })
         .count('* as myOpinion')
 
       const no_of_comments = await Database.from('comments')
-        .where({ post_id: request.params.id })
+        .where({ post_id: post_id })
         .count('* as no_of_comments')
 
       return {
@@ -119,7 +125,13 @@ class LikeController {
         no_of_comments: no_of_comments,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 
@@ -138,7 +150,13 @@ class LikeController {
         no_of_likes: no_of_likes,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 
@@ -157,7 +175,13 @@ class LikeController {
         no_of_likes: no_of_likes,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 
@@ -187,7 +211,13 @@ class LikeController {
 
         return 'Deleted successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
@@ -220,7 +250,13 @@ class LikeController {
 
         return 'Deleted successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
@@ -253,7 +289,13 @@ class LikeController {
 
         return 'Deleted successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
@@ -268,7 +310,13 @@ class LikeController {
         getthisLike,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 }

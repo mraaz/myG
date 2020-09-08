@@ -58,7 +58,6 @@ Route.post('/api/deleteFiles', 'ApiController.deleteFiles')
 Route.get('/api/post/:paginateNo', 'PostController.show')
 Route.get('/api/mypost/:id', 'PostController.myshow')
 Route.get('/api/getmypost/:paginateNo', 'PostController.showmyposts')
-Route.get('/api/get_group_posts/:id/:paginateNo', 'PostController.get_group_posts')
 Route.post('/api/post', 'PostController.store')
 Route.post('/api/postphoto', 'PostController.storephoto')
 Route.post('/api/postvideo', 'PostController.storevideo')
@@ -66,6 +65,8 @@ Route.get('/api/post/my_count/:id', 'PostController.posts_count')
 Route.get('/api/post/delete/:id', 'PostController.destroy')
 Route.post('/api/post/update/:id', 'PostController.update')
 Route.get('/api/getpost/:id', 'PostController.showpost')
+
+Route.post('/api/get_group_posts', 'PostController.get_group_posts')
 
 Route.post('/api/user', 'UserController.store')
 Route.post('/api/userprofile', 'UserController.changeProfile')
@@ -268,7 +269,7 @@ Route.get('/api/archive_attendees/role_call/:id', 'Archive_AttendeeController.ro
 Route.get('/api/archive_attendees/role_call_ALL/:id', 'Archive_AttendeeController.role_call_ALL')
 
 Route.post('/api/groups/create', 'GroupController.store')
-Route.get('/api/groups/groupName/:name', 'GroupController.show_one_name')
+Route.get('/api/groups/getGroupDetails/:name', 'GroupController.getGroupDetails')
 Route.get('/api/groups/:str/groupSearchResults', 'GroupController.groupSearchResults')
 Route.get('/api/groups/:str/groupSearchResults_Post', 'GroupController.groupSearchResults_Post')
 Route.get('/api/groups/:str/groupSearchResults_notMygrps', 'GroupController.groupSearchResults_notMygrps')
@@ -276,7 +277,6 @@ Route.get('/api/groups/:str/groupSearchResults_notMygrps', 'GroupController.grou
 Route.get('/api/groups/view/:counter', 'GroupController.myshow')
 Route.get('/api/groups/all_myGrps/:counter', 'GroupController.all_myGrps')
 
-Route.get('/api/groups/:id', 'GroupController.show')
 Route.post('/api/groups/update_img', 'GroupController.update_img')
 Route.post('/api/groups/update/all_accept/', 'GroupController.update_all_accept')
 Route.post('/api/groups/update_settings/', 'GroupController.update_settings')
@@ -417,5 +417,10 @@ Route.get('/api/seats_available_email/:email', 'SeatsAvailableController.storeSe
 Route.get('/api/profile/:alias', 'ProfileController.fetchProfileInfo')
 Route.put('/api/profile/:alias', 'ProfileController.updateProfile')
 Route.put('/api/profile/:alias/game', 'ProfileController.updateGame')
+
+//Sponsor
+Route.post('/api/sponsor/create', 'SponsorController.store')
+Route.post('/api/sponsor/delete', 'SponsorController.destroy')
+Route.post('/api/sponsor/update', 'SponsorController.update')
 
 Route.any('*', ({ view }) => view.render('pages/react'))

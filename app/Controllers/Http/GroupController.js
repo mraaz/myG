@@ -11,6 +11,9 @@ const GroupHashTagTranController = use('./GroupHashTagTranController')
 const ApiController = use('./ApiController')
 const GameNameController = use('./GameNameController')
 const NotificationController_v2 = use('./NotificationController_v2')
+const SponsorController = use('./SponsorController')
+const CommonController = use('./CommonController')
+const PostController = use('./PostController')
 
 const LoggingRepository = require('../../Repositories/Logging')
 
@@ -50,7 +53,7 @@ class GroupController {
           const getGameName = await Database.from('game_names').where({
             game_name: request.input('game_name_box'),
           })
-          let gameface = new GameNameController()
+          const gameface = new GameNameController()
 
           if (getGameName.length == 0) {
             request.params.game_name = request.input('game_name_box')
@@ -139,11 +142,32 @@ class GroupController {
     }
   }
 
-  async show_one_name({ auth, request, response }) {
+  async getGroupDetails({ auth, request, response }) {
     try {
       const getOne = await Database.from('groups')
         .where({ name: request.params.name })
-        .count('* as no_of_names')
+        .first()
+
+      if (getOne != undefined) {
+        const sponsorController = new SponsorController()
+        getOne.sponsors = await sponsorController.show({ auth }, getOne.id, null)
+
+        const allGrpTags = await Database.table('group_hash_tag_trans')
+          .where({ group_id: getOne.id })
+          .first()
+
+        getOne.allGrpTags = allGrpTags
+
+        const commonController = new CommonController()
+
+        let current_user_permission = await commonController.get_permission({ auth }, getOne.id)
+
+        getOne.current_user_permission = current_user_permission
+
+        const postController = new PostController()
+        const grp_posts = await postController.get_group_posts_internal({ auth }, getOne.id, 1)
+        getOne.groupPosts = grp_posts.groupPosts
+      }
 
       return {
         getOne,
@@ -401,26 +425,6 @@ class GroupController {
     }
   }
 
-  async show({ auth, request, response }) {
-    try {
-      const group = await Database.from('groups').where({
-        id: request.params.id,
-      })
-
-      return {
-        group,
-      }
-    } catch (error) {
-      LoggingRepository.log({
-        environment: process.env.NODE_ENV,
-        type: 'error',
-        source: 'backend',
-        context: __filename,
-        message: (error && error.message) || error,
-      })
-    }
-  }
-
   async show_owner({ auth, request, response }) {
     try {
       const show_owner = await Database.from('groups')
@@ -443,7 +447,9 @@ class GroupController {
 
   async update_img({ auth, request, response }) {
     if (auth.user) {
-      let current_user_permission = await this.get_permission({ auth }, request.input('group_id'))
+      const commonController = new CommonController()
+
+      let current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
 
       try {
         if (current_user_permission != 0 && current_user_permission != 1 && current_user_permission != 2) {
@@ -469,7 +475,9 @@ class GroupController {
   async update_settings({ auth, request, response }) {
     if (auth.user) {
       try {
-        let current_user_permission = await this.get_permission({ auth }, request.input('group_id'))
+        const commonController = new CommonController()
+
+        let current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
 
         if (current_user_permission != 0 && current_user_permission != 1 && current_user_permission != 2) {
           return
@@ -496,7 +504,9 @@ class GroupController {
         if (/['/.%#$,;`\\]/.test(request.input('name'))) {
           return false
         }
-        let current_user_permission = await this.get_permission({ auth }, request.input('group_id'))
+        const commonController = new CommonController()
+
+        let current_user_permission = await commonController.get_permission({ auth }, request.input('group_id'))
 
         if (current_user_permission != 0 && current_user_permission != 1) {
           return
@@ -548,36 +558,6 @@ class GroupController {
       }
     } else {
       return 'You are not Logged In!'
-    }
-  }
-
-  async get_permission({ auth }, group_id) {
-    let current_user_permission = -1
-    try {
-      const permission_query_current_user = await Database.from('usergroups').where({
-        user_id: auth.user.id,
-        group_id: group_id,
-      })
-      if (permission_query_current_user.length > 0) {
-        current_user_permission = permission_query_current_user[0].permission_level
-      } else {
-        const owner_query = await Database.from('groups').where({
-          user_id: auth.user.id,
-          id: group_id,
-        })
-        if (owner_query.length > 0) {
-          current_user_permission = 0
-        }
-      }
-      return current_user_permission
-    } catch (error) {
-      LoggingRepository.log({
-        environment: process.env.NODE_ENV,
-        type: 'error',
-        source: 'backend',
-        context: __filename,
-        message: (error && error.message) || error,
-      })
     }
   }
 }
