@@ -58,6 +58,10 @@ const assets = {
   ic_profile_add: 'ic_profile_add.svg',
   ic_profile_close: 'ic_profile_close.svg',
   ic_profile_settings: 'ic_profile_settings.svg',
+  ic_profile_chevron_left: 'ic_profile_chevron_left.svg',
+  ic_profile_chevron_right: 'ic_profile_chevron_right.svg',
+  ic_profile_main_info: 'ic_profile_main_info.svg',
+  ic_profile_experience: 'ic_profile_experience.svg',
 }
 
 export function getAssetUrl(asset) {

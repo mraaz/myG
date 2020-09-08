@@ -1,4 +1,5 @@
-const { forceObject, forceInt, forceString, forceArray, forceStatus, forceBoolean } = require('./Primitives')
+const GameExperience = require('./GameExperience');
+const { forceInt, forceString, forceArray, forceStatus, forceBoolean } = require('./Primitives')
 
 class Profile {
   constructor(data) {
@@ -26,8 +27,7 @@ class Profile {
     this.hasSentFriendRequest = forceBoolean(data.hasSentFriendRequest)
     this.hasReceivedFriendRequest = forceBoolean(data.hasReceivedFriendRequest)
     this.friendRequestId = forceInt(data.friendRequestId)
-    this.gameExperiences = forceObject(data.gameExperiences)
-    this.esportsExperiences = forceObject(data.esportsExperiences)
+    this.gameExperiences = forceArray(data.gameExperiences).map(experience => new GameExperience(experience));
   }
 }
 

@@ -57,6 +57,18 @@ export default function reducer(state = initialState, action) {
       }
     }
 
+    case 'UPDATE_PROFILE_GAME_FULFILLED': {
+      logger.log('PROFILE', `Redux -> Updated profile game for ${action.meta.alias}: `, action.payload)
+      const alias = action.meta.alias
+      const gameExperiences = action.payload.gameExperiences;
+      const profiles = addProfile(state, alias)
+      profiles[alias].gameExperiences = gameExperiences;
+      return {
+        ...state,
+        profiles,
+      }
+    }
+
     case 'SEND_FRIEND_REQUEST_FULFILLED': {
       logger.log('PROFILE', `Redux -> Sent friend request for ${action.meta.alias}`)
       const alias = action.meta.alias

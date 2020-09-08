@@ -1,17 +1,17 @@
 import React from 'react'
 import Select from 'react-select'
 
-const MyGSelect = ({ defaultValue, isSearchable, options, onChange, value, placeholder, onInputChange, ...props }) => {
+const MyGSelect = ({ defaultValue, isSearchable, options, onChange, value, width, innerWidth, placeholder, onInputChange, ...props }) => {
   const customStyles = {
     container: (provided) => ({
       ...provided,
-      width: '422px',
+      width:  width || '422px',
     }),
     control: (provided) => ({
       ...provided,
       backgroundColor: '#2D363A',
       border: 'none',
-      width: '422px',
+      width:  innerWidth || '422px',
       minHeight: '38px',
       color: '#fff',
     }),

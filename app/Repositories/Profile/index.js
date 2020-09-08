@@ -5,11 +5,14 @@ const Friend = use('App/Models/Friend');
 const Follower = use('App/Models/Follower');
 const UserLanguage = use('App/Models/UserLanguage');
 const Notification = use('App/Models/Notification');
-const EsportsBio = use('App/Models/EsportsBio');
+const GameExperience = use('App/Models/GameExperience');
+const GameName = use('App/Models/GameName');
 const UserMostPlayedGame = use('App/Models/UserMostPlayedGame');
 const GameNameController = use('App/Controllers/Http/GameNameController');
+const AwsKeyController = use('App/Controllers/Http/AwsKeyController');
 
 const ProfileSchema = require('../../Schemas/Profile');
+const GameExperienceSchema = require('../../Schemas/GameExperience');
 
 class ProfileRepository {
 
@@ -44,7 +47,6 @@ class ProfileRepository {
       languages,
       mostPlayedGames,
       gameExperiences,
-      esportsExperiences,
     ] = await Promise.all([
       this.isFriend({ isSelf, requestingUserId, profileId }),
       this.isFollower({ isSelf, requestingUserId, profileId }),
@@ -53,7 +55,6 @@ class ProfileRepository {
       this.fetchLanguages({ profileId }),
       this.fetchMostPlayedGames({ profileId }),
       this.fetchGameExperiences({ profileId }),
-      this.fetchEsportsExperiences({ profileId }),
     ]);
     const hasReceivedFriendRequest = !!friendRequest.id;
     const friendRequestId = friendRequest.id;
@@ -83,7 +84,6 @@ class ProfileRepository {
       mostPlayedGames,
       friendRequestId,
       gameExperiences,
-      esportsExperiences,
     });
     return {
       profile: profileSchema,
@@ -145,24 +145,8 @@ class ProfileRepository {
     const response = await Database.table('game_experiences')
       .innerJoin('game_names', 'game_names.id', 'game_experiences.game_names_id')
       .where('game_experiences.user_id', '=', profileId)
-      .select('game_experiences.*', 'game_names.game_name');
-    const gameExperiences = response && response[0];
-    return gameExperiences || {};
-  }
-
-  async fetchEsportsExperiences({ profileId }) {
-    const response = await Database.table('esports_experiences')
-      .innerJoin('game_names', 'game_names.id', 'esports_experiences.game_names_id')
-      .where('esports_experiences.id', '=', profileId)
-      .select('esports_experiences.*', 'game_names.game_name');
-    const esportsExperiences = response && response[0];
-    return esportsExperiences || {};
-  }
-
-  async fetchEsportsBio({ profileId }) {
-    const response = await EsportsBio.query().where('user_id', '=', profileId).fetch();
-    const bio = response && response.toJSON()[0];
-    return bio || {};
+      .select('game_experiences.*', 'game_names.game_name', 'game_names.game_img');
+    return response || [];
   }
 
   async updateProfile({ requestingUserId, firstName, lastName, team, country, relationship, visibilityName, visibilityEmail, lookingForWork, languages, mostPlayedGames }) {
@@ -200,6 +184,38 @@ class ProfileRepository {
     }
     await User.query().where('id', requestingUserId).update(updates);
     return this.fetchProfileInfo({ requestingUserId, id: requestingUserId });
+  }
+
+  async updateGame({ requestingUserId, id, imageKey, imageSource, mainFields, game, gameName, nickname, level, experience, team, tags }) {
+
+    if (!game && gameName) {
+      const gameNameModel = new GameName();
+      gameNameModel.user_id = requestingUserId;
+      gameNameModel.game_name = gameName;
+      gameNameModel.game_img = imageSource;
+      await gameNameModel.save();
+      game = gameNameModel.id;
+      if (imageKey) {
+        const keyController = new AwsKeyController();
+        const auth = { user: { id: requestingUserId } };
+        const request = { gameId: game, awsKey: imageKey };
+        await keyController.addGameIconKey({ auth, request });
+      }
+    }
+    
+    const gameExperience = id ? await GameExperience.find(id) : new GameExperience();
+    gameExperience.user_id = requestingUserId;
+    gameExperience.game_names_id = game;
+    gameExperience.main_fields = mainFields;
+    gameExperience.level = level;
+    gameExperience.experience = experience;
+    gameExperience.team = team;
+    gameExperience.nickname = nickname;
+    gameExperience.tags = tags;
+    await gameExperience.save();
+
+    const gameExperiences = await this.fetchGameExperiences({ profileId: requestingUserId });
+    return { gameExperiences: gameExperiences.map(experience => new GameExperienceSchema(experience)) }
   }
 
 }
