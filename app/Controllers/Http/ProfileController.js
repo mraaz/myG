@@ -44,6 +44,26 @@ class ProfileController {
       return response.send({ error })
     }
   }
+
+  async updateGame({ auth, request, response }) {
+    try {
+      const requestingUserId = auth.user.id
+      if (!requestingUserId) throw new Error('Auth Error')
+      const updates = request.all()
+      log('PROFILE', `User ${requestingUserId} requesting to update game info with ${JSON.stringify(updates)}`)
+      const { gameExperiences } = await ProfileRepository.updateGame({ requestingUserId, ...updates })
+      return response.send({ gameExperiences })
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+      return response.send({ error })
+    }
+  }
 }
 
 module.exports = ProfileController
