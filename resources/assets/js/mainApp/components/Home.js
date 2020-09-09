@@ -4,7 +4,6 @@
  * Email : nitin.1992tyagi@gmail.com
  */
 import React, { Component } from 'react'
-import ComposeSection from './ComposeSection_v2'
 import Posts from './Posts'
 import Notifications from './Notifications'
 import MyPosts from './MyPosts'
@@ -89,7 +88,7 @@ export default class Home extends Component {
         <div className='content-area' ref={this.contentAreaRef}>
           <AnalyticsBox />
           <div className='links' ref={this.navRef}>
-            <div className={`${tabName == 'Avin-Home' ? 'active' : 'Avin-Home'}`} onClick={(e) => this.tabToggle('Avin-Home')}>
+            <div className={`${tabName == 'home' ? 'active' : 'home'}`} onClick={(e) => this.tabToggle('home')}>
               Home
             </div>
             <div className={`${tabName == 'communities' ? 'active' : 'communities'}`} onClick={(e) => this.tabToggle('communities')}>

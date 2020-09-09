@@ -567,7 +567,11 @@ class Layout extends Component {
             />
           </div>
           <div className="mobile-main-container">
-            <MobileMenu />
+            <MobileMenu
+            //routeProps={props}
+            initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
+            key={Math.random()}
+             />
           </div>
         </div>
       </Router>
