@@ -64,7 +64,13 @@ class PostController {
         return newPost
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 
@@ -127,7 +133,13 @@ class PostController {
 
         return newPost
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     }
   }
@@ -170,7 +182,13 @@ class PostController {
 
         return newPost
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     }
   }
@@ -199,12 +217,18 @@ class PostController {
       // const uniqueSet = new Set(_1stpass)
       ppl_im_following_Posts = ppl_im_following_Posts.data
 
-      let myPosts = await this.get_additional_info({ auth, request, response }, ppl_im_following_Posts)
+      let myPosts = await this.get_additional_info({ auth }, ppl_im_following_Posts)
       return {
         myPosts,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 
@@ -217,13 +241,19 @@ class PostController {
         .orderBy('posts.created_at', 'desc')
         .limit(1)
 
-      myPosts = await this.get_additional_info({ auth, request, response }, myPosts)
+      myPosts = await this.get_additional_info({ auth }, myPosts)
 
       return {
         myPosts,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 
@@ -234,13 +264,19 @@ class PostController {
         .where('posts.id', '=', request.params.id)
         .select('*', 'posts.id', 'posts.created_at', 'posts.updated_at')
 
-      myPost = await this.get_additional_info({ auth, request, response }, myPost)
+      myPost = await this.get_additional_info({ auth }, myPost)
 
       return {
         myPost,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 
@@ -253,13 +289,42 @@ class PostController {
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.paginateNo, 10)
 
-      myPosts = await this.get_additional_info({ auth, request, response }, myPosts.data)
+      myPosts = await this.get_additional_info({ auth }, myPosts.data)
 
       return {
         myPosts,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+    }
+  }
+
+  async get_group_posts_internal({ auth }, group_id, counter) {
+    try {
+      let groupPosts = await Database.from('posts')
+        .innerJoin('users', 'users.id', 'posts.user_id')
+        .where({ group_id: group_id })
+        .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
+        .orderBy('posts.created_at', 'desc')
+        .paginate(counter, 10)
+      groupPosts = await this.get_additional_info({ auth }, groupPosts.data)
+      return {
+        groupPosts,
+      }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 
@@ -267,18 +332,24 @@ class PostController {
     try {
       let groupPosts = await Database.from('posts')
         .innerJoin('users', 'users.id', 'posts.user_id')
-        .where({ group_id: request.params.id })
-        .select('*', 'posts.id', 'posts.updated_at')
+        .where({ group_id: request.input('group_id') })
+        .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
         .orderBy('posts.created_at', 'desc')
-        .paginate(request.params.paginateNo, 10)
+        .paginate(request.input('counter'), 10)
 
-      groupPosts = await this.get_additional_info({ auth, request, response }, groupPosts.data)
+      groupPosts = await this.get_additional_info({ auth }, groupPosts.data)
 
       return {
         groupPosts,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 
@@ -292,7 +363,13 @@ class PostController {
         no_of_my_posts,
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 
@@ -310,7 +387,13 @@ class PostController {
 
         return 'Deleted successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
@@ -325,17 +408,22 @@ class PostController {
           .update({ content: request.input('content') })
         return 'Saved successfully'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     }
   }
 
-  async get_additional_info({ auth, request, response }, post) {
+  async get_additional_info({ auth }, post) {
     try {
       let likeController = new LikeController()
       for (var i = 0; i < post.length; i++) {
-        request.params.id = post[i].id
-        var myLikes = await likeController.show({ auth, request, response })
+        var myLikes = await likeController.show({ auth }, post[i].id)
 
         post[i].total = myLikes.number_of_likes[0].total
         post[i].no_of_comments = myLikes.no_of_comments[0].no_of_comments
@@ -359,7 +447,13 @@ class PostController {
         post[i].hash_tags = myHashTags
       }
     } catch (error) {
-      LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
 
     return post

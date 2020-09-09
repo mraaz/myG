@@ -247,8 +247,8 @@ class AwsKeyController {
   addGameIconKey({ auth, request }) {
     if (!auth.user) return Promise.resolve('AUTH_REFUSED')
     try {
-      const game_name_id = request.params.gameId
-      const aws_key = request.only('awsKey').awsKey
+      const game_name_id = request.gameId || request.params.gameId
+      const aws_key = request.awsKey || request.only('awsKey').awsKey
       return AwsKey.create({ aws_key, game_name_id, type: 6 })
     } catch (error) {
       LoggingRepository.log({

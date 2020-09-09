@@ -4,6 +4,10 @@ import { toast } from 'react-toastify'
 
 import logger from '../../common/logger'
 
+//File: File path to upload
+//Name: File name (Doesn't need to be unique, backend will handle that)
+//Type: 3= Post, 4=Group, 5=Chat....etc If Left 0 it will be deleted in 24 hours
+//Id: ID of the post, group, chat...etc
 export async function Upload_to_S3(file, name, type = 0, id = null) {
   const formData = new FormData()
   formData.append('upload_file', file)

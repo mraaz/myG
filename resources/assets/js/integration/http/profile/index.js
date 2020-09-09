@@ -51,3 +51,8 @@ export function updateProfileInfo(alias, updates) {
   logger.log('PROFILE', 'HTTP', `Uploading profile info for ${alias}, ${JSON.stringify(updates)}`);
   return axios.put(`/api/profile/${alias}`, updates).then(response => response.data);
 }
+
+export function updateProfileGame(alias, updates) {
+  logger.log('PROFILE', 'HTTP', `Uploading profile game for ${alias}, ${JSON.stringify(updates)}`);
+  return axios.put(`/api/profile/${alias}/game`, updates).then(response => response.data);
+}

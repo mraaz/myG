@@ -2275,4 +2275,124 @@ section#content-container {
   .mobile-sub-menu-items .find-gamers {
     padding: 25px 10px;
   }
+
+  .menu-tab {
+    margin: 10px;
+    background: #1d2326;
+    padding: 15px;
+    width: 117px;
+    height: 60px;
+    border: 1px solid #384952;
+    border-radius: 50px;
+    display: flex;
+  }
+
+  .top-menu > .logo-img {
+    padding-right: 20px;
+  }
+
+  .toggle-menu-btn {
+    margin-left: 10px;
+  }
+
+  .mobile-side-menu-top {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .back-btn {
+    background: #171a1c;
+    border-radius: 50%;
+    padding: 30px;
+    border: solid 1px #384952;
+  }
+
+  .mobile-side-menu {
+    margin: 10px;
+  }
+
+  .user-name-icon {
+    display: flex;
+    margin-left: 10px;
+  }
+
+  .user-icon {
+    margin-top: 10px;
+    background: #ff00ff 0% 0% no-repeat padding-box;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+  }
+
+  .user-name {
+    margin: 15px 5px;
+  }
+
+  .user-name span {
+    color: #fff;
+    font-size: 12px;
+  }
+
+  .level-information {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 1px solid #e5c746;
+    text-align: center;
+    padding: 5px;
+    margin-left: 85px;
+  }
+
+  .level {
+    font-size: 11px;
+    color: #fff;
+  }
+
+  .level-numer,
+  .reputation-number {
+    font-size: 15px;
+    color: #fff;
+  }
+
+  .reputation {
+    color: #fff;
+    font-size: 12px;
+  }
+
+  .reputation-reviews-number {
+    font-size: 12px;
+    color: #657172;
+  }
+
+  .reputation-reviews {
+    margin-left: 20px;
+  }
+
+  .menu-list {
+    color: #fff;
+    padding: 0px 55px;
+  }
+
+  .menu-list > ul {
+    border-left: 1px solid #273137;
+  }
+
+  .menu-list > ul > li {
+    padding-top: 15px;
+    padding-left: 30px;
+    font-size: 20px;
+  }
+
+  .logout-setting-section {
+    padding: 25px 55px;
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid #273137;
+  }
+
+  .logout-btn span {
+    color: #fff;
+    padding-left: 10px;
+    font-weight: 500;
+  }
 }

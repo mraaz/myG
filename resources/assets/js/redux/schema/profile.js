@@ -34,7 +34,7 @@ export default class ProfileSchema {
     if (data.hasSentFriendRequest !== undefined) this.hasSentFriendRequest = forceBoolean(data.hasSentFriendRequest)
     if (data.hasReceivedFriendRequest !== undefined) this.hasReceivedFriendRequest = forceBoolean(data.hasReceivedFriendRequest)
     if (data.friendRequestId !== undefined) this.friendRequestId = forceInt(data.friendRequestId)
-    if (data.gameExperiences !== undefined) this.gameExperiences = forceObject(data.gameExperiences)
-    if (data.esportsExperiences !== undefined) this.esportsExperiences = forceObject(data.esportsExperiences)
+    if (data.gameExperiences !== undefined) this.gameExperiences = forceArray(data.gameExperiences)
+    if (data.esportsExperiences !== undefined) this.esportsExperiences = forceArray(data.esportsExperiences)
   }
 }
