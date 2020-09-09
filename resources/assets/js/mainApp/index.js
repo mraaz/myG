@@ -551,6 +551,18 @@ class Layout extends Component {
 
                 <Route
                   exact
+                  path='/posts/'
+                  component={(props) => (
+                    <Posts
+                      routeProps={props}
+                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
+                      key={Math.random()}
+                    />
+                  )}
+                />
+
+                <Route
+                  exact
                   path='/setEncryptionParaphrase/:encryption'
                   component={props => <EncryptionParaphraseRegistration routeProps={props} key={Math.random()} />}
                 />

@@ -1,19 +1,18 @@
 import React, { Fragment, useState } from 'react'
-
-import Posts from '../Posts'
+import { Link } from 'react-router-dom'
 
 const MobileMenu = ({ initialData }) => {
   const [hideSearch, setHideSearch] = useState(false)
   const [hideCreate, setHideCreate] = useState(false)
 
-  const showHome = () => {
-    console.log('asdfasdfd')
-    return (
-      <Fragment>
-        <Posts initialData={initialData == undefined ? 'loading' : initialData} key={Math.random()} />
-      </Fragment>
-    )
-  }
+  // const showHome = () => {
+  //   console.log('asdfasdfd')
+  //   return (
+  //     <Fragment>
+  //       <Posts initialData={initialData == undefined ? 'loading' : initialData} key={Math.random()} />
+  //     </Fragment>
+  //   )
+  // }
 
   return (
     <Fragment>
@@ -28,8 +27,10 @@ const MobileMenu = ({ initialData }) => {
           <div className='mobile-search'>
             {hideSearch && (
               <div className='mobile-sub-menu-items'>
-                <div className='find-matches' onClick={() => showHome()}>
-                  Find <b>Matches</b>
+                <div className='find-matches'>
+                  <Link to='/posts' replace>
+                    Find <b>Matches</b>
+                  </Link>
                 </div>
                 <div className='find-gamers'>
                   <a href='#'>
