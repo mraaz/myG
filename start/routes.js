@@ -423,4 +423,6 @@ Route.post('/api/sponsor/create', 'SponsorController.store')
 Route.post('/api/sponsor/delete', 'SponsorController.destroy')
 Route.post('/api/sponsor/update', 'SponsorController.update')
 
+Route.delete('/api/groupConnection/:group_id', 'GroupConnectionController.destroy')
+
 Route.any('*', ({ view }) => view.render('pages/react'))

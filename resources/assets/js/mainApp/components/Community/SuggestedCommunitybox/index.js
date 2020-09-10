@@ -1,12 +1,20 @@
 import React, { Fragment, useState } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
+import { toast } from 'react-toastify'
+
+import { Toast_style } from '../../Utility_Function'
 
 // import styles
 import '../../../styles/Community/AddCommunityStyles.scss'
 
 const SuggestedCommunityBox = (props) => {
+  console.log(props);
   const [joinState, updatejoinState] = useState(true)
+
+  const redirect2Group = () => {
+    props.routeProps.routeProps.history.push(`/community/${encodeURI(props.data.name.trim())}`)
+  }
 
   let members_txt = 'Members'
 
@@ -22,7 +30,9 @@ const SuggestedCommunityBox = (props) => {
     const sendInvite = axios.post('/api/usergroup/create', {
       group_id: props.data.group_id,
     })
+    toast.success(<Toast_style text={'Woot! Request sent'} />)
     updatejoinState(false)
+    axios.delete(`/api/groupConnection/${props.data.id}`)
   }
 
   return (
@@ -47,7 +57,8 @@ const SuggestedCommunityBox = (props) => {
             <h2>{props.data.no_of_peeps}</h2>
             <span>{members_txt}</span>
           </div>
-          <div className='btn-show'>{joinState && <button onClick={joinGroup}>Join</button>}</div>
+          <div className='btn-show'>{joinState && <button onClick={joinGroup}>Join</button>}
+          {!joinState && <button onClick={redirect2Group}>Show</button>}</div>
         </div>
       </div>
     </Fragment>
