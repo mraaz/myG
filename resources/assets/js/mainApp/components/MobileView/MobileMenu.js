@@ -5,15 +5,6 @@ const MobileMenu = ({ initialData }) => {
   const [hideSearch, setHideSearch] = useState(false)
   const [hideCreate, setHideCreate] = useState(false)
 
-  // const showHome = () => {
-  //   console.log('asdfasdfd')
-  //   return (
-  //     <Fragment>
-  //       <Posts initialData={initialData == undefined ? 'loading' : initialData} key={Math.random()} />
-  //     </Fragment>
-  //   )
-  // }
-
   return (
     <Fragment>
       <section className='main-mobile-menu'>
@@ -28,7 +19,7 @@ const MobileMenu = ({ initialData }) => {
             {hideSearch && (
               <div className='mobile-sub-menu-items'>
                 <div className='find-matches'>
-                  <Link to='/posts' replace>
+                  <Link to='/posts'>
                     Find <b>Matches</b>
                   </Link>
                 </div>
