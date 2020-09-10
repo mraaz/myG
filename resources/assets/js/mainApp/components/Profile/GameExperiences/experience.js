@@ -1,20 +1,120 @@
-import React from 'react';
-import get from 'lodash.get';
-import { getAssetUrl } from '../../../../common/assets';
+import React from 'react'
 import { ignoreFunctions } from '../../../../common/render'
-import EditGameExperience from './edit';
+import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
+import MyGSelect from '../../common/MyGSelect'
+import { Disable_keys, Schedule_Game_Tags } from '../../Utility_Function'
+
+const EXPERIENCE_OPTIONS = [
+  { value: 'Less than 1 year', label: 'Less than 1 year' },
+  { value: 'Less than 2 years', label: 'Less than 2 years' },
+  { value: 'Less than 3 years', label: 'Less than 3 years' },
+  { value: 'Less than 4 years', label: 'Less than 4 years' },
+  { value: 'Less than 5 years', label: 'Less than 5 years' },
+  { value: '5+ years', label: '5+ years' },
+]
 
 export default class Experience extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
-    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+    return ignoreFunctions(nextProps, nextState, this.props, this.props.state)
+  }
+
+  renderTeamInput = () => {
+    return (
+      <div className='row'>
+        <span className='hint'>Team name</span>
+        <div className='input-container-row'>
+          <input
+            className='input'
+            value={this.props.experience.team}
+            onChange={(event) => this.props.storeExperience(this.props.experience.id, { team: event.target.value })}></input>
+        </div>
+      </div>
+    )
+  }
+
+  renderRoleInput = () => {
+    return (
+      <div className='row'>
+        <span className='hint'>Role title</span>
+        <div className='input-container-row'>
+          <input
+            className='input'
+            value={this.props.experience.role}
+            onChange={(event) => this.props.storeExperience(this.props.experience.id, { role: event.target.value })}></input>
+        </div>
+      </div>
+    )
+  }
+
+  renderExperienceInput = () => {
+    return (
+      <div className='row'>
+        <span className='hint'>Time in role</span>
+        <MyGSelect
+          width={'75%'}
+          innerWidth={'100%'}
+          options={EXPERIENCE_OPTIONS}
+          onChange={(experience) => this.props.storeExperience(this.props.experience.id, { experience })}
+          value={this.props.experience.experience}
+        />
+      </div>
+    )
+  }
+
+  onTagChange = async (skills) => {
+    return this.props.storeExperience(this.props.experience.id, { skills })
+  }
+
+  loadTagOptions = async (input) => {
+    const results = await Schedule_Game_Tags(input)
+    return results.length ? results : [{ label: input, value: input }]
+  }
+
+  renderSkillsInput = () => {
+    return (
+      <div className='row'>
+        <span className='hint'>Skills</span>
+        <div className='input-container-row viewGame__gameName'>
+          <AsyncCreatableSelect
+            defaultOptions
+            isValidNewOption={() => false}
+            loadOptions={this.loadTagOptions}
+            onChange={(input) => this.onTagChange(input)}
+            isClearable
+            isMulti
+            value={this.props.experience.skills}
+            className='viewGame__name full-width'
+            placeholder='Enter here your skills at this game'
+            onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
+            onKeyDown={(e) => Disable_keys(e)}
+            isSearchable={true}
+            classNamePrefix='filter'
+            styles='background: red;'
+          />
+        </div>
+      </div>
+    )
+  }
+
+  renderRemoveExperienceButton = () => {
+    return (
+      <div className='remove-experience-container'>
+        <div className='remove-experience-button clickable' onClick={() => this.props.onRemoveExperience(this.props.experience.id)}>
+          Remove Experience
+        </div>
+      </div>
+    )
   }
 
   render() {
-    return(
-      <div id="profile-game-experience">
-        
+    return (
+      <div id='profile-game-experience' className='content'>
+        {this.renderTeamInput()}
+        {this.renderRoleInput()}
+        {this.renderExperienceInput()}
+        {this.renderSkillsInput()}
+        {this.renderRemoveExperienceButton()}
       </div>
-    );
+    )
   }
 }
-

@@ -6,6 +6,7 @@ const Follower = use('App/Models/Follower');
 const UserLanguage = use('App/Models/UserLanguage');
 const Notification = use('App/Models/Notification');
 const GameExperience = use('App/Models/GameExperience');
+const GameBackground = use('App/Models/GameBackground');
 const GameName = use('App/Models/GameName');
 const UserMostPlayedGame = use('App/Models/UserMostPlayedGame');
 const GameNameController = use('App/Controllers/Http/GameNameController');
@@ -13,6 +14,7 @@ const AwsKeyController = use('App/Controllers/Http/AwsKeyController');
 
 const ProfileSchema = require('../../Schemas/Profile');
 const GameExperienceSchema = require('../../Schemas/GameExperience');
+const GameBackgroundSchema = require('../../Schemas/GameBackground');
 
 class ProfileRepository {
 
@@ -47,6 +49,7 @@ class ProfileRepository {
       languages,
       mostPlayedGames,
       gameExperiences,
+      gameBackground,
     ] = await Promise.all([
       this.isFriend({ isSelf, requestingUserId, profileId }),
       this.isFollower({ isSelf, requestingUserId, profileId }),
@@ -55,9 +58,12 @@ class ProfileRepository {
       this.fetchLanguages({ profileId }),
       this.fetchMostPlayedGames({ profileId }),
       this.fetchGameExperiences({ profileId }),
+      this.fetchGameBackground({ profileId }),
+      this.fetchGameBackground({ profileId }),
     ]);
     const hasReceivedFriendRequest = !!friendRequest.id;
     const friendRequestId = friendRequest.id;
+    this.insertBackgroundIntoExperiences({ gameExperiences, gameBackground });
     const profileSchema = new ProfileSchema({
       profileId,
       alias: alias || profile.alias,
@@ -149,6 +155,11 @@ class ProfileRepository {
     return response || [];
   }
 
+  async fetchGameBackground({ profileId }) {
+    const response = await GameBackground.query().where('user_id', profileId).fetch();
+    return response ? (response.toJSON() || []).map(background => new GameBackgroundSchema(background)) : [];
+  }
+
   async updateProfile({ requestingUserId, firstName, lastName, team, country, relationship, visibilityName, visibilityEmail, lookingForWork, languages, mostPlayedGames }) {
     const updates = {};
     if (firstName !== undefined) updates.first_name = firstName;
@@ -186,8 +197,7 @@ class ProfileRepository {
     return this.fetchProfileInfo({ requestingUserId, id: requestingUserId });
   }
 
-  async updateGame({ requestingUserId, id, imageKey, imageSource, mainFields, game, gameName, nickname, level, experience, team, tags }) {
-
+  async updateGame({ requestingUserId, id, imageKey, imageSource, mainFields, game, gameName, nickname, level, experience, team, tags, background }) {
     if (!game && gameName) {
       const gameNameModel = new GameName();
       gameNameModel.user_id = requestingUserId;
@@ -214,8 +224,32 @@ class ProfileRepository {
     gameExperience.tags = tags;
     await gameExperience.save();
 
+    await GameBackground.query().where('experience_id', gameExperience.id).delete();
+    await Promise.all(background.map(experience => {
+      const gameBackground = new GameBackground();
+      gameBackground.user_id = requestingUserId;
+      gameBackground.game_names_id = game;
+      gameBackground.experience_id = gameExperience.id;
+      gameBackground.team = experience.team;
+      gameBackground.role = experience.role;
+      gameBackground.experience = experience.experience;
+      gameBackground.skills = experience.skills;
+      return gameBackground.save();
+    }))
+
     const gameExperiences = await this.fetchGameExperiences({ profileId: requestingUserId });
+    const gameBackground = await this.fetchGameBackground({ profileId: requestingUserId });
+    this.insertBackgroundIntoExperiences({ gameExperiences, gameBackground })
     return { gameExperiences: gameExperiences.map(experience => new GameExperienceSchema(experience)) }
+  }
+
+  insertBackgroundIntoExperiences({ gameExperiences, gameBackground }) {
+    const backgroundByExperience = {};
+    gameBackground.forEach((background) => {
+      if (!backgroundByExperience[background.experienceId]) backgroundByExperience[background.experienceId] = [];
+      backgroundByExperience[background.experienceId].push(background);
+    });
+    gameExperiences.forEach((experience) => experience.background = backgroundByExperience[experience.id] || []);
   }
 
 }
