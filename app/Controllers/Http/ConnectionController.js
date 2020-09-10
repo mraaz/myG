@@ -910,7 +910,7 @@ class ConnectionController {
           .delete()
       }
 
-      //Cleam up group connections, we don't want more than 288
+      //Clean up group connections, we don't want more than 288
       const group_connections = await Database.from('group_connections')
         .where({ user_id: auth.user.id })
         .count('* as no_of_group_connections')

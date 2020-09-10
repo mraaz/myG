@@ -17,7 +17,13 @@ class GroupConnectionController {
         if (error.code == 'ER_DUP_ENTRY') {
           return
         }
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     }
   }
@@ -27,14 +33,20 @@ class GroupConnectionController {
       try {
         const deleteRegistration = await Database.table('group_connections')
           .where({
-            group_id: request.input('group_id'),
+            group_id: request.params.group_id,
             user_id: auth.user.id,
           })
           .delete()
 
         return 'Remove entry'
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'
