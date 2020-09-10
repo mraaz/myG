@@ -2233,14 +2233,19 @@ section#content-container {
 // Mobile CSS
 
 @media screen and (max-width: 575px) {
-  .dashboard-main-container {
-    display: none;
+  #main-sidebar,
+  #messenger,
+  .social-main,
+  .links,
+  .postCompose__container {
+    display: none !important;
   }
 
   .mobile-main-container {
     display: block;
     background: #0b0f14;
     position: relative;
+    z-index: 999;
   }
 
   .menu-bottom {
@@ -2394,5 +2399,11 @@ section#content-container {
     color: #fff;
     padding-left: 10px;
     font-weight: 500;
+  }
+
+  .app-container.home-page #posts .post__container {
+    margin: 0;
+    margin-top: 0;
+    padding: 30px;
   }
 }
