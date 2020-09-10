@@ -1,6 +1,6 @@
 // --- One way to disable adonis websocket logs.
 const log = console.log
-console.log = function () {
+console.log = function() {
   if (arguments[0] && arguments[0].includes && arguments[0].includes('adonis:websocket')) return
   if (log.apply) log.apply(console, arguments)
   else log(Array.prototype.slice.apply(arguments).join(' '))
@@ -17,11 +17,11 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
-import ErrorHandler from './components/ErrorHandler';
+import ErrorHandler from './components/ErrorHandler'
 import { store, persistor } from '../redux/Store'
-import { loadUserInfoToReduxStore } from '../common/user';
-import { FeatureEnabled, FeatureDisabled, PROFILE_V2 } from '../common/flags';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { loadUserInfoToReduxStore } from '../common/user'
+import { FeatureEnabled, FeatureDisabled, PROFILE_V2 } from '../common/flags'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 import {
   Home,
@@ -82,16 +82,16 @@ class Layout extends Component {
   }
   componentDidMount() {
     const self = this
-    const getInitialData = async function () {
+    const getInitialData = async function() {
       try {
         const initialData = await axios.get('/api/initialApp')
         window.PORT = initialData.data.port
-        window.LOGS_ON = initialData.data.logsOn || ""
-        window.FEATURES_ON = initialData.data.featuresOn || ""
+        window.LOGS_ON = initialData.data.logsOn || ''
+        window.FEATURES_ON = initialData.data.featuresOn || ''
 
         if (window.LOGS_ON.includes('EXPLAIN')) {
-          const whyDidYouRender = require('@welldone-software/why-did-you-render');
-          whyDidYouRender(React);
+          const whyDidYouRender = require('@welldone-software/why-did-you-render')
+          whyDidYouRender(React)
         }
 
         if (initialData.data.userInfo == 1981 && !window.location.href.includes('/link')) {
@@ -102,8 +102,7 @@ class Layout extends Component {
           initialData: initialData.data,
         })
 
-        loadUserInfoToReduxStore(initialData.data.userInfo);
-
+        loadUserInfoToReduxStore(initialData.data.userInfo)
       } catch (error) {
         console.log(error)
       }
@@ -154,22 +153,9 @@ class Layout extends Component {
 
                 <Route
                   exact
-                  path='/link/:uuid'
-                  component={(props) => (
-                    <Home
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
                   path='/profile/:alias'
                   component={(props) => (
                     <React.Fragment>
-
                       <FeatureEnabled allOf={[PROFILE_V2]}>
                         <ProfileContainer
                           routeProps={props}
@@ -185,7 +171,6 @@ class Layout extends Component {
                           key={Math.random()}
                         />
                       </FeatureDisabled>
-
                     </React.Fragment>
                   )}
                 />
@@ -374,10 +359,10 @@ class Layout extends Component {
                   path='/community/create'
                   component={(props) => (
                     <CreateCommunity
-                    routeProps={props}
-                    initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                    key={Math.random()}
-                     />
+                      routeProps={props}
+                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
+                      key={Math.random()}
+                    />
                   )}
                 />
 
@@ -551,20 +536,8 @@ class Layout extends Component {
 
                 <Route
                   exact
-                  path='/posts/'
-                  component={(props) => (
-                    <Posts
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
                   path='/setEncryptionParaphrase/:encryption'
-                  component={props => <EncryptionParaphraseRegistration routeProps={props} key={Math.random()} />}
+                  component={(props) => <EncryptionParaphraseRegistration routeProps={props} key={Math.random()} />}
                 />
 
                 <Route render={() => <h3> Oops! I couldn't find that </h3>} />
@@ -578,12 +551,25 @@ class Layout extends Component {
               loading={!this.state.initialData}
             />
           </div>
-          <div className="mobile-main-container">
+          <div className='mobile-main-container'>
             <MobileMenu
-            //routeProps={props}
-            initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-            key={Math.random()}
-             />
+              initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
+              key={Math.random()}
+            />
+            <Switch>
+              <Route
+                exact
+                path='/posts/'
+                component={(props) => (
+                  <Posts
+                    routeProps={props}
+                    initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
+                    key={Math.random()}
+                  />
+                )}
+              />
+            </Switch>
+
           </div>
         </div>
       </Router>
