@@ -1,4 +1,5 @@
 const { forceInt, forceString } = require('./Primitives')
+const GameBackgroundSchema = require('./GameBackground');
 
 class GameExperience {
   constructor(data) {
@@ -13,6 +14,7 @@ class GameExperience {
     this.team = forceString(data.team)
     this.nickname = forceString(data.nickname)
     this.tags = data.tags ? data.tags.split('|') : [];
+    this.background = data.background || []
   }
 }
 

@@ -88,6 +88,7 @@
 
     .hint {
       margin-right: 16px;
+      font-size: 14px;
       width: 10%;
     }
 
@@ -131,6 +132,42 @@
       border-radius: 4px;
       font-size: 16px;
       outline: none;
+    }
+
+    .add-experience-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      width: 100%;
+
+      .add-experience-button {
+        background-color: #657172;
+        color: white;
+        padding: 4px 16px;
+        margin: 12px;
+        font-size: 14px;
+        border-radius: 6px;
+      }
+    }
+
+    .remove-experience-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      width: 100%;
+
+      .remove-experience-button {
+        background-color: #EE4338;
+        color: black;
+        padding: 4px 12px;
+        font-size: 12px;
+        margin-bottom: 8px;
+        border-radius: 4px;
+      }
     }
 
     .save-container {
@@ -662,7 +699,28 @@
     }
   }
 
+  #profile-game-background {
+    width: 80%;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    padding: 0;
+    margin: 0;
+    overflow-y: scroll;
+  }
+
+  #profile-game-experience {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 16px;
+    border-bottom: 1px solid darkslategrey;
+    border-radius: 0;
+    margin: 0;
+  }
+
   #profile-game-main-info {
+    display: flex;
+    flex-direction: column;
     width: 80%;
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
