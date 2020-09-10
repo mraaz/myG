@@ -70,7 +70,7 @@ export const clickedDenied_game = (invitation) => {
 
 export const mark_all = () => {
   try {
-    const mark_all = axios.get('/api/notifications/markAllNoti')
+    const mark_all = axios.get('/api/notifications_v2/markAllNoti')
   } catch (error) {
     console.log(error)
   }
@@ -87,14 +87,14 @@ export const mark_read_status = (id) => {
 }
 export const delete_all = () => {
   try {
-    const delete_all = axios.get('/api/notifications/deleteAllNoti')
+    const delete_all = axios.get('/api/notifications_v2/deleteAllNoti')
   } catch (error) {
     console.log(error)
   }
 }
 
 export const handleSingleNotificationReadStatus = (id, status) => {
-  const readstatus = axios.post('/api/comments/', {
+  const readstatus = axios.post('/api/notifications_v2/mark_read_status', {
     id,
     read_status: status == true ? 1 : 0,
   })

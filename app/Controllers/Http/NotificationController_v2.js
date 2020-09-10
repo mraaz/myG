@@ -45,6 +45,7 @@ class NotificationController_v2 {
     //Return results for Activity_type: 1, 11, 12
     let set_limit = 18,
       singleArr = []
+
     try {
       if (request.input('activity_type') == 0 || request.input('activity_type') == 1) {
         const allMyFriends = await Database.from('notifications')
@@ -400,7 +401,7 @@ class NotificationController_v2 {
           }
 
           allMylike_posts[i].total_post_count = total_post_count[0].no_of_my_notis > 0 ? total_post_count[0].no_of_my_notis : 0
-          allMylike_posts[i].read = getAllNotiLike_unreadCount[0].no_of_my_unread > 0 ? false : true
+          allMylike_posts[i].read_status = getAllNotiLike_unreadCount[0].no_of_my_unread > 0 ? 0 : 1
         }
 
         singleArr.push(...allMylike_posts)
@@ -518,7 +519,7 @@ class NotificationController_v2 {
           }
 
           dropped_out_attendees[i].total_post_count = total_post_count[0].no_of_my_notis > 0 ? total_post_count[0].no_of_my_notis : 0
-          dropped_out_attendees[i].read = getAllNotiLike_unreadCount[0].no_of_my_unread > 0 ? false : true
+          dropped_out_attendees[i].read_status = getAllNotiLike_unreadCount[0].no_of_my_unread > 0 ? 0 : 1
         }
 
         singleArr.push(...dropped_out_attendees)
@@ -656,7 +657,7 @@ class NotificationController_v2 {
     try {
       const markAllNoti = await Notification.query()
         .where({ other_user_id: auth.user.id })
-        .whereIn('activity_type', [2, 3, 4, 5, 6, 7, 8, 9, 10, 14, 15, 16, 17, 19, 20, 21])
+        .whereIn('activity_type', [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 19, 20, 21, 22])
         .update({ read_status: 1 })
       return 'Saved successfully'
     } catch (error) {
@@ -676,7 +677,7 @@ class NotificationController_v2 {
         .where({
           other_user_id: auth.user.id,
         })
-        .whereIn('activity_type', [2, 3, 4, 5, 6, 7, 8, 9, 10, 14, 15, 16, 17, 18, 19, 20, 21])
+        .whereIn('activity_type', [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 19, 20, 21, 22])
         .delete()
 
       return 'Saved successfully'
