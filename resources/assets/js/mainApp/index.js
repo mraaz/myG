@@ -32,41 +32,16 @@ import {
   ChatUnreadMessages,
   EncryptionParaphraseRegistration,
   GuestLink,
-  SearchHeader,
   Posts,
   LoadingComp,
   AddScheduleGames,
-  Dossier,
-  AddGamingExp,
-  EditGamingExp,
-  IndividualPost,
-  IndividualComment,
-  IndividualReply,
-  MyPosts,
-  MyHome,
-  MyComposeSection,
-  Invitation,
-  IndividualInvitation,
-  MyFriends,
-  IndividualFriend,
-  IndividualGamingExperience,
   MySettings,
-  UploadPic,
   Notifications,
   IndividualNotification,
   SinglePost,
   IndividualEsportsExperience,
-  AddEsportsExp,
-  EditEsportsExp,
   AdvancedSearch,
-  IndividualPlayer,
-  GroupMain,
   ScheduledGamesApprovals,
-  GroupHome,
-  MyApprovals,
-  Member_lists,
-  ArchivedScheduledGames,
-  AllSearchResults,
   ScheduleGamesView,
   CreateCommunity,
   EditScheduleGames,
@@ -177,18 +152,6 @@ class Layout extends Component {
 
                 <Route
                   exact
-                  path='/myPosts/'
-                  component={(props) => (
-                    <MyHome
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
                   path='/post/:id'
                   component={(props) => (
                     <SinglePost
@@ -204,102 +167,6 @@ class Layout extends Component {
                   path='/profile/'
                   component={(props) => (
                     <Profile
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/profile/:alias/edit/dossier'
-                  component={(props) => (
-                    <Dossier
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/profile/:alias/upload/profile'
-                  component={(props) => (
-                    <UploadPic
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/profile/:alias/upload/bg_profile'
-                  component={(props) => (
-                    <UploadPic
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/profile/:alias/upload/img_profile'
-                  component={(props) => (
-                    <UploadPic
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/profile/:alias/add/gamingexp'
-                  component={(props) => (
-                    <AddGamingExp
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/profile/:alias/edit/gamingexp/:game_id'
-                  component={(props) => (
-                    <EditGamingExp
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/profile/:alias/add/esportsExp'
-                  component={(props) => (
-                    <AddEsportsExp
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/profile/:alias/edit/esportsExp/:esportsExp_id'
-                  component={(props) => (
-                    <EditEsportsExp
                       routeProps={props}
                       initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
                       key={Math.random()}
@@ -368,45 +235,9 @@ class Layout extends Component {
 
                 <Route
                   exact
-                  path='/invitation'
-                  component={(props) => (
-                    <Invitation
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/notifications'
-                  component={(props) => (
-                    <Notifications
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
                   path='/messages'
                   component={(props) => (
                     <ChatUnreadMessages
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/myFriends'
-                  component={(props) => (
-                    <MyFriends
                       routeProps={props}
                       initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
                       key={Math.random()}
@@ -443,90 +274,6 @@ class Layout extends Component {
                   path='/advancedSearch/:id/:table'
                   component={(props) => (
                     <AdvancedSearch
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/groups/'
-                  component={(props) => (
-                    <GroupMain
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/groups/:id'
-                  component={(props) => (
-                    <GroupHome
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/scheduledGamesApprovals/:id'
-                  component={(props) => (
-                    <ScheduledGamesApprovals
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/myApprovals/:id'
-                  component={(props) => (
-                    <MyApprovals
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/groups/:id/members'
-                  component={(props) => (
-                    <Member_lists
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/archived_scheduledGames/:id'
-                  component={(props) => (
-                    <ArchivedScheduledGames
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/search/:keywords'
-                  component={(props) => (
-                    <AllSearchResults
                       routeProps={props}
                       initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
                       key={Math.random()}

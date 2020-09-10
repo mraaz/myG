@@ -10,7 +10,6 @@ class CommentController {
   async store({ auth, request, response }) {
     if (auth.user) {
       try {
-        console.log('RAAAZ - COMMENT')
         let newComment = await Comment.create({
           content: request.input('content'),
           post_id: request.input('post_id'),

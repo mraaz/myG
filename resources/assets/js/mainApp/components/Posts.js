@@ -22,6 +22,7 @@ export default class Posts extends Component {
       top: 500,
       behavior: 'smooth',
     })
+    window.history.pushState('myG', 'myG', '/')
     this.fetchMoreData()
   }
 
@@ -47,8 +48,6 @@ export default class Posts extends Component {
 
     const getPosts = async function() {
       try {
-        // const myPosts = await axios.get(`/api/post/${self.state.counter}`)
-
         const myPosts = await axios({
           method: 'GET',
           url: `/api/post/${self.state.counter}`,
