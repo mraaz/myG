@@ -43,6 +43,7 @@ export default class GroupMain extends Component {
     }
 
     getALLmyGroups()
+    window.history.pushState('myG', 'myG', '/?at=communities')
   }
 
   togglePostTypeTab = (label) => {

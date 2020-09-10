@@ -54,6 +54,7 @@ export default class MyScheduledGames extends Component {
     if (scheduleGames.data && scheduleGames.data.myScheduledGames && scheduleGames.data.myScheduledGames.length > 0) {
       this.setState({ scheduleGames: scheduleGames.data.myScheduledGames })
     }
+    window.history.pushState('myG', 'myG', '/?at=mygames')
   }
 
   getSingleGameData = async (e, id, game) => {

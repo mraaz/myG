@@ -42,6 +42,10 @@ export default class Notifications extends Component {
     window.scrollTo(0, 0)
     let params = new URLSearchParams(window.location.search)
     const activeTab = params.get('submenu')
+    if (activeTab == null || activeTab == 0) {
+      window.history.pushState('myG', 'myG', '/?at=notifications&submenu=0')
+    }
+
     this.setState({
       activeTab: activeTab ? activeTab : 0,
     })
