@@ -330,12 +330,35 @@ class PostController {
 
   async get_group_posts({ auth, request, response }) {
     try {
-      let groupPosts = await Database.from('posts')
-        .innerJoin('users', 'users.id', 'posts.user_id')
-        .where({ group_id: request.input('group_id') })
-        .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
-        .orderBy('posts.created_at', 'desc')
-        .paginate(request.input('counter'), 10)
+      let groupPosts = []
+
+      switch (request.input('type')) {
+        case 'Recents':
+          groupPosts = await Database.from('posts')
+            .innerJoin('users', 'users.id', 'posts.user_id')
+            .where({ group_id: request.input('group_id') })
+            .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
+            .orderBy('posts.created_at', 'desc')
+            .paginate(request.input('counter'), 10)
+
+          break
+        case 'Featured':
+          groupPosts = await Database.from('posts')
+            .innerJoin('users', 'users.id', 'posts.user_id')
+            .where({ group_id: request.input('group_id'), featured: true })
+            .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
+            .orderBy('posts.created_at', 'desc')
+            .paginate(request.input('counter'), 10)
+
+          break
+        default:
+          groupPosts = await Database.from('posts')
+            .innerJoin('users', 'users.id', 'posts.user_id')
+            .where({ group_id: request.input('group_id') })
+            .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
+            .orderBy('posts.created_at', 'desc')
+            .paginate(request.input('counter'), 10)
+      }
 
       groupPosts = await this.get_additional_info({ auth }, groupPosts.data)
 
