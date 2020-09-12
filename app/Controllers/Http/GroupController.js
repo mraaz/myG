@@ -166,6 +166,7 @@ class GroupController {
 
         const postController = new PostController()
         const grp_posts = await postController.get_group_posts_internal({ auth }, getOne.id, 1)
+
         getOne.groupPosts = grp_posts.groupPosts
       }
 
