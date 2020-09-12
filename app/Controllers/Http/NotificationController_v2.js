@@ -1165,6 +1165,12 @@ class NotificationController_v2 {
         case 22:
           group_id = id
           break
+        case 23:
+          group_id = id
+          break
+        case 24:
+          group_id = id
+          break
         default:
       }
 

@@ -12,6 +12,8 @@ class UsergroupsSchema extends Schema {
       table.integer('group_id').unsigned().notNullable()
       table.foreign('group_id').references('groups.id').onDelete('cascade')
       table.integer('permission_level').unsigned().notNullable().defaultTo(1).index()
+      table.integer('permission_level_updated_by').unsigned()
+      table.foreign('permission_level_updated_by').references('users.id')
       table.unique(['user_id', 'group_id']);
       table.timestamps(true,true)
     })
