@@ -42,6 +42,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderMainFields = () => {
+    if (!this.props.isSelf) return this.renderDisabledField('Main Fields', this.props.experience.mainFields.map(field => field.value).join(', '));
     return (
       <div className='row'>
         <span className='hint'>Main Fields</span>
@@ -77,6 +78,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderGameTitle = () => {
+    if (!this.props.isSelf) return this.renderDisabledField('Game Title', (this.props.experience.game || {}).value);
     return (
       <div className='row'>
         <span className='hint'>Game Title</span>
@@ -95,6 +97,7 @@ export default class MainInfo extends React.Component {
             isSearchable={true}
             classNamePrefix='filter'
             styles='background: red;'
+            disabled={!this.props.isSelf}
           />
         </div>
       </div>
@@ -109,6 +112,7 @@ export default class MainInfo extends React.Component {
           <input
             className='input'
             value={this.props.experience.team}
+            disabled={!this.props.isSelf}
             onChange={(event) => this.props.storeExperience({ team: event.target.value })}></input>
         </div>
       </div>
@@ -123,6 +127,7 @@ export default class MainInfo extends React.Component {
           <input
             className='input'
             value={this.props.experience.nickname}
+            disabled={!this.props.isSelf}
             onChange={(event) => this.props.storeExperience({ nickname: event.target.value })}></input>
         </div>
       </div>
@@ -130,6 +135,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderLevelInput = () => {
+    if (!this.props.isSelf) return this.renderDisabledField('Level', (this.props.experience.level || {}).value);
     return (
       <div className='row'>
         <span className='hint'>Level</span>
@@ -145,6 +151,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderExperienceInput = () => {
+    if (!this.props.isSelf) return this.renderDisabledField('Experience', (this.props.experience.experience || {}).value);
     return (
       <div className='row'>
         <span className='hint'>Experience</span>
@@ -169,6 +176,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderTagsInput = () => {
+    if (!this.props.isSelf) return this.renderDisabledField('Tags', this.props.experience.tags.map(tag => tag.value).join(', '));
     return (
       <div className='row'>
         <span className='hint'>Tags</span>
@@ -188,6 +196,7 @@ export default class MainInfo extends React.Component {
             isSearchable={true}
             classNamePrefix='filter'
             styles='background: red;'
+            disabled={!this.props.isSelf}
           />
         </div>
       </div>
@@ -258,6 +267,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderSave = () => {
+    if (!this.props.isSelf) return null;
     const { game, level, experience } = this.props.experience
     const buttonState = game && level && experience ? 'clickable' : 'disabled'
     return (
@@ -276,6 +286,20 @@ export default class MainInfo extends React.Component {
         style={{ backgroundImage: `url(${getAssetUrl('ic_profile_close')})` }}
         onClick={this.props.onClose}
       />
+    )
+  }
+
+  renderDisabledField(title, value) {
+    return (
+      <div className='row'>
+        <span className='hint'>{title}</span>
+        <div className='input-container-row'>
+          <input
+            className='input'
+            value={value}
+            disabled={true}></input>
+        </div>
+      </div>
     )
   }
 

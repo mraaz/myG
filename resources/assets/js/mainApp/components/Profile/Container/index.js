@@ -12,21 +12,24 @@ export default class ProfileContainer extends React.Component {
   static getDerivedStateFromProps(props) {
     const alias = get(props, 'routeProps.match.params.alias', '');
     const userAlias = get(props, 'initialData.userInfo.alias', '');
+    const gameId = get(props, 'routeProps.match.params.gameId', '');
     const isLoadingInitialData = get(props, 'initialData') === undefined;
     return {
       alias,
       userAlias,
+      gameId,
       isLoadingInitialData,
     };
   }
 
   render() {
-    const { alias, userAlias, isLoadingInitialData } = this.state;
+    const { alias, userAlias, gameId, isLoadingInitialData } = this.state;
     if (isLoadingInitialData || !userAlias) return null;
     if (!alias) return <Redirect push to={`/profile/${userAlias}`} />;
     return <Profile 
       alias={alias}
       userAlias={userAlias}
+      gameId={gameId}
     />;
   }
 }
