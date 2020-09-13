@@ -11,6 +11,7 @@ const GameName = use('App/Models/GameName');
 const UserMostPlayedGame = use('App/Models/UserMostPlayedGame');
 const GameNameController = use('App/Controllers/Http/GameNameController');
 const AwsKeyController = use('App/Controllers/Http/AwsKeyController');
+const ConnectionController = use('App/Controllers/Http/ConnectionController');
 
 const ProfileSchema = require('../../Schemas/Profile');
 const GameExperienceSchema = require('../../Schemas/GameExperience');
@@ -181,7 +182,7 @@ class ProfileRepository {
       await Promise.all(languagesRequests);
     }
     if (mostPlayedGames !== undefined) {
-      await UserMostPlayedGame.query({ user_id: requestingUserId }).delete();
+      await UserMostPlayedGame.query().where('user_id', requestingUserId).delete();
       const gameController = new GameNameController();
       const createGame = (gameName) => gameController.createGame({ auth: { user: { id: requestingUserId } } }, gameName)
       for (const gameName of mostPlayedGames.filter(gameName => !!gameName)) {
@@ -250,6 +251,15 @@ class ProfileRepository {
       backgroundByExperience[background.experienceId].push(background);
     });
     gameExperiences.forEach((experience) => experience.background = backgroundByExperience[experience.id] || []);
+  }
+
+  async fetchGamerSuggestions({ requestingUserId }) {
+    const auth = { user: { id: requestingUserId} };
+    const request = { input: () => 1 };
+    const connectionController = new ConnectionController();
+    const { data } = await connectionController.gamers_you_might_know({ auth, request });
+    const gamerSuggestions = await Promise.all(data.map(({ alias }) => this.fetchProfileInfo({ requestingUserId, alias })));
+    return { gamerSuggestions: gamerSuggestions.map(suggestion => suggestion.profile) };
   }
 
 }

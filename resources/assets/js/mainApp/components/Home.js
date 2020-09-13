@@ -9,8 +9,8 @@ import Notifications from './Notifications'
 import MyPosts from './MyPosts'
 import AnalyticsBox from './AnalyticsBox'
 import GroupMain from './Community/GroupMain'
-import { Link } from 'react-router-dom'
 import MyScheduledGames from '../components/scheduledGames/MyScheduledGames'
+import GamerSuggestions from './Profile/GamerSuggestions'
 
 export default class Home extends Component {
   constructor() {
@@ -104,13 +104,12 @@ export default class Home extends Component {
               My Posts
             </div>
           </div>
-          {tabName == 'home' && (
-            <Posts initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData} key={Math.random()} />
-          )}
+          {tabName == 'home' && <Posts initialData={!this.props.initialData ? 'loading' : this.props.initialData} key={Math.random()} />}
           {tabName == 'communities' && <GroupMain routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
           {tabName == 'notifications' && <Notifications routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
           {tabName == 'mygames' && <MyScheduledGames routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
           {tabName == 'myposts' && <MyPosts routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
+          <GamerSuggestions />
         </div>
       )
     } else {

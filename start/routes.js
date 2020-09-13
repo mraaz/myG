@@ -422,6 +422,7 @@ Route.get('/api/seats_available_email/:email', 'SeatsAvailableController.storeSe
 Route.get('/api/profile/:alias', 'ProfileController.fetchProfileInfo')
 Route.put('/api/profile/:alias', 'ProfileController.updateProfile')
 Route.put('/api/profile/:alias/game', 'ProfileController.updateGame')
+Route.get('/api/gamer_suggestions', 'ProfileController.fetchGamerSuggestions')
 
 //Sponsor
 Route.post('/api/sponsor/create', 'SponsorController.store')
