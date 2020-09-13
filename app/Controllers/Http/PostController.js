@@ -204,6 +204,7 @@ class PostController {
       //   .whereNot('posts.visibility', '=', 0)
       //   .orderBy('posts.created_at', 'desc')
       //   .paginate(request.params.paginateNo, 10)
+      let grp_limit = 3
 
       let ppl_im_following_Posts = await Database.from('followers')
         .innerJoin('posts', 'posts.user_id', 'followers.follower_id')
@@ -214,11 +215,48 @@ class PostController {
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.paginateNo, 10)
 
-      // const _1stpass = [...myFriendsPosts.data, ...ppl_im_following_Posts.data]
-      // const uniqueSet = new Set(_1stpass)
-      ppl_im_following_Posts = ppl_im_following_Posts.data
+      switch (ppl_im_following_Posts.data.length) {
+        case 8:
+          grp_limit = 5
+          break
+        case 7:
+          grp_limit = 6
+          break
+        case 6:
+          grp_limit = 7
+          break
+        case 5:
+          grp_limit = 8
+          break
+        case 4:
+          grp_limit = 9
+          break
+        case 3:
+          grp_limit = 10
+          break
+        case 2:
+          grp_limit = 11
+          break
+        case 1:
+          grp_limit = 12
+          break
+        case 0:
+          grp_limit = 13
+          break
+      }
 
-      let myPosts = await this.get_additional_info({ auth }, ppl_im_following_Posts)
+      let groups_im_following_Posts = await Database.from('followers')
+        .innerJoin('posts', 'posts.group_id', 'followers.group_id')
+        .innerJoin('users', 'users.id', 'posts.user_id')
+        .where('followers.user_id', '=', auth.user.id)
+        .where('posts.visibility', '=', 1)
+        .select('*', 'posts.id', 'posts.updated_at')
+        .orderBy('posts.created_at', 'desc')
+        .paginate(request.params.paginateNo, grp_limit)
+
+      const _1stpass = [...ppl_im_following_Posts.data, ...groups_im_following_Posts.data]
+
+      let myPosts = await this.get_additional_info({ auth }, _1stpass)
       return {
         myPosts,
       }
@@ -492,21 +530,25 @@ class PostController {
 
   async get_additional_info({ auth }, post) {
     try {
-      let likeController = new LikeController()
-      for (var i = 0; i < post.length; i++) {
-        var myLikes = await likeController.show({ auth }, post[i].id)
-
-        post[i].total = myLikes.number_of_likes[0].total
-        post[i].no_of_comments = myLikes.no_of_comments[0].no_of_comments
-        if (myLikes.number_of_likes[0].total != 0) {
-          post[i].admirer_first_name = myLikes.admirer_UserInfo.alias
-        } else {
-          post[i].admirer_first_name = ''
+      const likeController = new LikeController()
+      for (let i = 0; i < post.length; i++) {
+        if (post[i].id == undefined || post[i].id == null) {
+          continue
         }
-        if (myLikes.do_I_like_it[0].myOpinion != 0) {
-          post[i].do_I_like_it = true
-        } else {
-          post[i].do_I_like_it = false
+        let myLikes = await likeController.show({ auth }, post[i].id)
+        if (myLikes) {
+          post[i].total = myLikes.number_of_likes[0].total
+          post[i].no_of_comments = myLikes.no_of_comments[0].no_of_comments
+          if (myLikes.number_of_likes[0].total != 0) {
+            post[i].admirer_first_name = myLikes.admirer_UserInfo.alias
+          } else {
+            post[i].admirer_first_name = ''
+          }
+          if (myLikes.do_I_like_it[0].myOpinion != 0) {
+            post[i].do_I_like_it = true
+          } else {
+            post[i].do_I_like_it = false
+          }
         }
 
         const myHashTags = await Database.from('post_hash_tag_transactions')
@@ -517,6 +559,7 @@ class PostController {
 
         post[i].hash_tags = myHashTags
       }
+      return post
     } catch (error) {
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
@@ -526,8 +569,6 @@ class PostController {
         message: (error && error.message) || error,
       })
     }
-
-    return post
   }
 
   async featureToggle({ auth, request, response }) {
