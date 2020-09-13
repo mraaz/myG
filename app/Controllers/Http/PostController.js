@@ -205,12 +205,12 @@ class PostController {
       //   .orderBy('posts.created_at', 'desc')
       //   .paginate(request.params.paginateNo, 10)
 
-      let ppl_im_following_Posts = await Database.select('*', 'posts.id', 'posts.updated_at')
-        .from('followers')
+      let ppl_im_following_Posts = await Database.from('followers')
         .innerJoin('posts', 'posts.user_id', 'followers.follower_id')
         .innerJoin('users', 'users.id', 'posts.user_id')
         .where('followers.user_id', '=', auth.user.id)
         .where('posts.visibility', '=', 1)
+        .select('*', 'posts.id', 'posts.updated_at')
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.paginateNo, 10)
 
