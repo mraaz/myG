@@ -45,24 +45,22 @@ export default class Posts extends Component {
     }
     const self = this
 
-    const getPosts = async function () {
+    const getPosts = async () => {
       try {
-        const myPosts = await axios({
-          method: 'GET',
-          url: `/api/post/${self.state.counter}`,
-          onDownloadProgress: (progressEvent) => {
-            const { loaded = 0, total = 0 } = progressEvent
-          },
+        const myPosts = await axios.post('/api/get_group_posts', {
+          counter: this.state.counter,
+          group_id: this.props.group_id,
+          type: 'All',
         })
-        if (myPosts.data.myPosts.length == 0) {
-          self.setState({
+        if (myPosts.data.groupPosts.groupPosts.length == 0) {
+          this.setState({
             moreplease: false,
           })
           return
         }
 
-        self.setState({
-          myPosts: self.state.myPosts.concat(myPosts.data.myPosts),
+        this.setState({
+          myPosts: self.state.myPosts.concat(myPosts.data.groupPosts.groupPosts),
         })
       } catch (error) {
         logToElasticsearch('error', 'Posts', 'Failed at myPosts' + ' ' + error)

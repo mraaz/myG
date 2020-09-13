@@ -27,7 +27,7 @@ const CommunityView = (props) => {
   return (
     <div className='communityName__container '>
       <CoverImage {...communityDetails} />
-      <GamePosts {...props} />
+      {communityDetails.id && <GamePosts {...props} group_id={communityDetails.id} />}
     </div>
   )
 }
