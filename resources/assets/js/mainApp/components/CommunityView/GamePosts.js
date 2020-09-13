@@ -1,10 +1,10 @@
 import React, { Component, Fragment } from 'react'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import IndividualPost from './IndividualPost'
-import ComposeSection from './ComposeSection_v2'
+import IndividualPost from '../IndividualPost'
+import ComposeSection from '../ComposeSection_v2'
 
-import { logToElasticsearch } from '../../integration/http/logger'
+import { logToElasticsearch } from '../../../integration/http/logger'
 
 export default class Posts extends Component {
   constructor() {
@@ -46,7 +46,7 @@ export default class Posts extends Component {
     }
     const self = this
 
-    const getPosts = async function() {
+    const getPosts = async function () {
       try {
         const myPosts = await axios({
           method: 'GET',
@@ -110,6 +110,7 @@ export default class Posts extends Component {
         <ComposeSection
           successCallback={this.composeSuccess}
           initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData}
+          communityBox={true}
         />
         {post_submit_loading && (
           <div className='timeline-item'>
