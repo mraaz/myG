@@ -62,6 +62,8 @@ const assets = {
   ic_profile_chevron_right: 'ic_profile_chevron_right.svg',
   ic_profile_main_info: 'ic_profile_main_info.svg',
   ic_profile_experience: 'ic_profile_experience.svg',
+  ic_profile_link: 'ic_profile_link.svg',
+  ic_profile_link_gray: 'ic_profile_link_gray.svg',
 }
 
 export function getAssetUrl(asset) {

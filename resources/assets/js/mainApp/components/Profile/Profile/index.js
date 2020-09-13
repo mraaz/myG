@@ -24,7 +24,7 @@ export class Profile extends React.Component {
       <div id="profile">
         <Banner profile={this.props.profile} />
         <ProfileInfo alias={this.props.alias} profile={this.props.profile} updateProfile={this.props.updateProfile} />
-        <GameExperiences alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
+        <GameExperiences selectedGame={this.props.gameId} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
       </div>
     );
   }

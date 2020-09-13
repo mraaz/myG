@@ -152,6 +152,22 @@ class Layout extends Component {
 
                 <Route
                   exact
+                  path='/profile/:alias/game/:gameId'
+                  component={(props) => (
+                    <React.Fragment>
+                      <FeatureEnabled allOf={[PROFILE_V2]}>
+                        <ProfileContainer
+                          routeProps={props}
+                          initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
+                          key={Math.random()}
+                        />
+                      </FeatureEnabled>
+                    </React.Fragment>
+                  )}
+                />
+
+                <Route
+                  exact
                   path='/post/:id'
                   component={(props) => (
                     <SinglePost

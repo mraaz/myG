@@ -26,6 +26,7 @@ export default class Experience extends React.Component {
           <input
             className='input'
             value={this.props.experience.team}
+            disabled={!this.props.isSelf}
             onChange={(event) => this.props.storeExperience(this.props.experience.id, { team: event.target.value })}></input>
         </div>
       </div>
@@ -40,6 +41,7 @@ export default class Experience extends React.Component {
           <input
             className='input'
             value={this.props.experience.role}
+            disabled={!this.props.isSelf}
             onChange={(event) => this.props.storeExperience(this.props.experience.id, { role: event.target.value })}></input>
         </div>
       </div>
@@ -47,6 +49,7 @@ export default class Experience extends React.Component {
   }
 
   renderExperienceInput = () => {
+    if (!this.props.isSelf) return this.renderDisabledField('Time in role', (this.props.experience.experience || {}).value);
     return (
       <div className='row'>
         <span className='hint'>Time in role</span>
@@ -56,6 +59,7 @@ export default class Experience extends React.Component {
           options={EXPERIENCE_OPTIONS}
           onChange={(experience) => this.props.storeExperience(this.props.experience.id, { experience })}
           value={this.props.experience.experience}
+          disabled={!this.props.isSelf}
         />
       </div>
     )
@@ -71,6 +75,7 @@ export default class Experience extends React.Component {
   }
 
   renderSkillsInput = () => {
+    if (!this.props.isSelf) return this.renderDisabledField('Skills', this.props.experience.skills.map(skill => skill.value).join(', '));
     return (
       <div className='row'>
         <span className='hint'>Skills</span>
@@ -90,6 +95,7 @@ export default class Experience extends React.Component {
             isSearchable={true}
             classNamePrefix='filter'
             styles='background: red;'
+            disabled={!this.props.isSelf}
           />
         </div>
       </div>
@@ -97,10 +103,25 @@ export default class Experience extends React.Component {
   }
 
   renderRemoveExperienceButton = () => {
+    if (!this.props.isSelf) return null;
     return (
       <div className='remove-experience-container'>
         <div className='remove-experience-button clickable' onClick={() => this.props.onRemoveExperience(this.props.experience.id)}>
           Remove Experience
+        </div>
+      </div>
+    )
+  }
+
+  renderDisabledField(title, value) {
+    return (
+      <div className='row'>
+        <span className='hint'>{title}</span>
+        <div className='input-container-row'>
+          <input
+            className='input'
+            value={value}
+            disabled={true}></input>
         </div>
       </div>
     )
