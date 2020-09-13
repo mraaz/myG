@@ -3,6 +3,7 @@ import { toast } from 'react-toastify'
 import moment from 'moment'
 import axios from 'axios'
 import { Toast_style, Convert_to_comma_delimited_value } from '../Utility_Function'
+import Posts from '../Posts'
 
 import CoverImage from './CoverImage'
 
@@ -26,6 +27,7 @@ const CommunityView = (props) => {
   return (
     <div className='communityName__container '>
       <CoverImage {...communityDetails} />
+      <Posts {...props} />
     </div>
   )
 }
