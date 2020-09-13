@@ -123,18 +123,18 @@ class UsergroupController {
       try {
         const deleteRegistration = await Database.table('usergroups')
           .where({
-            group_id: request.params.grp_id,
+            group_id: request.params.group_id,
             user_id: auth.user.id,
           })
           .delete()
 
-        let userStatController = new UserStatTransactionController()
+        const userStatController = new UserStatTransactionController()
         userStatController.update_total_number_of(auth.user.id, 'total_number_of_communities')
 
-        let noti = new NotificationController_v2()
+        const noti = new NotificationController_v2()
         noti.delete_group_invites({ auth }, request.params.grp_id)
 
-        return 'Remove entry'
+        return true
       } catch (error) {
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
@@ -512,6 +512,18 @@ class UsergroupController {
           }
         }
 
+        //Insurance Policy
+        if (user_to_be_promoted_permission - 1 < current_user_permission) {
+          LoggingRepository.log({
+            environment: process.env.NODE_ENV,
+            type: 'error',
+            source: 'backend',
+            context: __filename,
+            message: 'Insurance Policy Activated!!! UsergroupController',
+          })
+          return false
+        }
+
         const updated_permission = await Usergroup.query()
           .where({ id: request.params.usergrp_id })
           .update({ permission_level: user_to_be_promoted_permission - 1, permission_level_updated_by: auth.user.id })
@@ -533,12 +545,24 @@ class UsergroupController {
 
   async member_lists({ auth, request, response }) {
     try {
-      const all_group_members = await Database.from('usergroups')
-        .innerJoin('groups', 'groups.id', 'usergroups.group_id')
+      let all_group_members = await Database.from('usergroups')
         .innerJoin('users', 'users.id', 'usergroups.user_id')
-        .where('usergroups.group_id', '=', request.params.group_id)
+        .where('usergroups.group_id', '=', request.input('group_id'))
         .whereNot('usergroups.permission_level', 42)
-        .select('*', 'usergroups.user_id as usergroups_user_id', 'groups.user_id as groups_user_id', 'usergroups.id')
+        .select('usergroups.*', 'usergroups.id', 'users.profile_img', 'users.alias', 'users.level', 'users.profile_bg')
+        .paginate(request.input('counter'), 10)
+
+      all_group_members = all_group_members.data
+
+      if (request.input('counter') == 1) {
+        const show_owner = await Database.from('groups')
+          .innerJoin('users', 'users.id', 'groups.user_id')
+          .where('groups.id', '=', request.input('group_id'))
+          .select('users.profile_img', 'users.alias', 'users.level', 'users.profile_bg')
+          .first()
+        show_owner.permission_level = 0
+        all_group_members.unshift(show_owner)
+      }
 
       return {
         all_group_members,
@@ -562,6 +586,30 @@ class UsergroupController {
 
       return {
         current_member,
+      }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+    }
+  }
+
+  async usergroupSearchResults({ auth, request, response }) {
+    try {
+      const all_group_members = await Database.from('usergroups')
+        .innerJoin('users', 'users.id', 'usergroups.user_id')
+        .where('usergroups.group_id', '=', request.input('group_id'))
+        .where('users.alias', 'like', '%' + request.input('alias') + '%')
+        .whereNot('usergroups.permission_level', 42)
+        .select('usergroups.*', 'usergroups.id', 'users.profile_img', 'users.alias', 'users.level', 'users.profile_bg')
+        .limit(24)
+
+      return {
+        all_group_members,
       }
     } catch (error) {
       LoggingRepository.log({

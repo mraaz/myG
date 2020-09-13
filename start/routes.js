@@ -295,17 +295,20 @@ Route.post('/api/usergroup/create', 'UsergroupController.store')
 Route.get('/api/usergroup/view/:counter', 'UsergroupController.myshow')
 Route.get('/api/usergroup/:id', 'UsergroupController.show')
 Route.get('/api/usergroup/mygroup_details/:group_id', 'UsergroupController.mygroup_details')
-Route.get('/api/usergroup/delete/:grp_id', 'UsergroupController.destroy')
+Route.delete('/api/usergroup/:group_id', 'UsergroupController.destroy')
 Route.get('/api/usergroup/set_group_approval/:grp_id/:user_id', 'UsergroupController.set_group_approval')
 Route.get('/api/usergroup/remove_group_approval/:group_id/:usergrp_id', 'UsergroupController.remove_group_approval')
-Route.get('/api/usergroup/member_lists/:group_id', 'UsergroupController.member_lists')
+Route.post('/api/usergroup/member_lists/', 'UsergroupController.member_lists')
 Route.get('/api/usergroup/delete_member/:group_id/:usergrp_id', 'UsergroupController.delete_member')
 Route.get('/api/usergroup/promote_member_cycle/:group_id/:usergrp_id', 'UsergroupController.promote_member_cycle')
+
+Route.post('/api/usergroup/usergroupSearchResults/', 'UsergroupController.usergroupSearchResults')
 
 Route.get('/api/usergroup/current_member/:group_id', 'UsergroupController.current_member')
 
 Route.post('/api/followers/create', 'FollowerController.store')
 Route.delete('/api/followers/:follower_id/delete', 'FollowerController.delete')
+Route.delete('/api/followers/:follower_id/delete_group', 'FollowerController.delete_group')
 
 Route.get('/api/email/summary_email', 'EmailController.summary_email')
 

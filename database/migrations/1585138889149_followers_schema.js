@@ -9,8 +9,10 @@ class FollowersSchema extends Schema {
       table.increments()
       table.integer('user_id').unsigned().notNullable()
       table.foreign('user_id').references('users.id').onDelete('cascade')
-      table.integer('follower_id').unsigned().notNullable()
+      table.integer('follower_id').unsigned()
       table.foreign('follower_id').references('users.id').onDelete('cascade')
+      table.integer('group_id').unsigned()
+      table.foreign('group_id').references('groups.id').onDelete('cascade')
       table.timestamps(true,true)
     })
   }
