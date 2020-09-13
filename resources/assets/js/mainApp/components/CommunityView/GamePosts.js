@@ -22,7 +22,6 @@ export default class Posts extends Component {
       top: 500,
       behavior: 'smooth',
     })
-    window.history.pushState('myG', 'myG', '/')
     this.fetchMoreData()
   }
 
