@@ -12,14 +12,22 @@ const CoverImage = (props) => {
   const inputEl = useRef(null)
 
   const handleChange = async (event) => {
-    const file = event.target.files[0]
-    const data = await Upload_to_S3(file, file.name)
+    if (porps.current_user_permission == 0) {
+      const file = event.target.files[0]
+      const data = await Upload_to_S3(file, file.name)
+    }
   }
 
   return (
     <div className='coverImage__container'>
       <img onError={addDefaultSrc} src={props.group_img} className='featuredImage' onClick={(e) => inputEl.current.click()} />
-      <input type='file' ref={inputEl} className='featuredImageInput' onChange={(event) => handleChange(event)} />
+      <input
+        type='file'
+        ref={inputEl}
+        disabled={props.current_user_permission == 0 ? false : true}
+        className='featuredImageInput'
+        onChange={(event) => handleChange(event)}
+      />
 
       <div className='analyticsBox__container'>
         <AnalyticsBox />
