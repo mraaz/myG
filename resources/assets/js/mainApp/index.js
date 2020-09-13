@@ -46,6 +46,7 @@ import {
   CreateCommunity,
   EditScheduleGames,
   MobileMenu,
+  CommunityView,
 } from './AsyncComponent'
 
 class Layout extends Component {
@@ -301,6 +302,17 @@ class Layout extends Component {
                   exact
                   path='/setEncryptionParaphrase/:encryption'
                   component={(props) => <EncryptionParaphraseRegistration routeProps={props} key={Math.random()} />}
+                />
+                <Route
+                  exact
+                  path='/community/:name'
+                  component={(props) => (
+                    <CommunityView
+                      routeProps={props}
+                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
+                      key={Math.random()}
+                    />
+                  )}
                 />
 
                 <Route render={() => <h3> Oops! I couldn't find that </h3>} />

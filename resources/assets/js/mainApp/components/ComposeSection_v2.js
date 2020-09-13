@@ -413,6 +413,7 @@ export default class ComposeSection extends Component {
     const AllGroups = [...selected_group_data]
     const preview_filesData = [...preview_files]
     const previewImageGallery = this.getPreviewImageGallery(preview_filesData)
+    const { communityBox = false } = this.props
 
     return (
       <Fragment>
@@ -520,7 +521,7 @@ export default class ComposeSection extends Component {
             </div> */}
             </div>
           )}
-          {open_compose_textTab && (
+          {open_compose_textTab && !communityBox && (
             <div className='hashTag_section'>
               <div className='hashtag_label'>Add Hashtags</div>
               <div className='hashtag_input'>
@@ -539,7 +540,7 @@ export default class ComposeSection extends Component {
               </div>
             </div>
           )}
-          {open_compose_textTab && (
+          {open_compose_textTab && !communityBox && (
             <div className='compose__people__section'>
               <div className='label'>Post on: </div>
               <div className='people_selected_container'>
