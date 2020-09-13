@@ -32,12 +32,16 @@ export default class GameExperiences extends React.Component {
   changePage = (direction) => {
     const page = this.state.page;
     if (direction === 'left') return this.setState({ page: (page - 1) < 0 ? page : page - 1 });
-    if (direction === 'right') return this.setState({ page: (page + 1) > this.filterGameExperiences().length - 4 ? page : page + 1 });
+    if (direction === 'right') return this.setState({ page: (page + 1) > this.filterGameExperiences().length - this.getGamesPerPage() ? page : page + 1 });
   }
 
   copyLink = (gameId) => {
     copyToClipboard(`${window.location.host}/profile/${this.props.alias}/game/${gameId}`)
     notifyToast('The link for this game was copied to your clipboard!')
+  }
+
+  getGamesPerPage = () => {
+    return this.state.isSelf ? 3 : 4;
   }
 
   renderHeaders = () => {
@@ -61,7 +65,7 @@ export default class GameExperiences extends React.Component {
 
   renderPageButtons = () => {
     const gameExperiences = this.filterGameExperiences();
-    const fitsAllInScreen = gameExperiences.length <= 4;
+    const fitsAllInScreen = gameExperiences.length <= this.getGamesPerPage();
     const contentToTheLeft = !fitsAllInScreen && this.state.page > 0;
     const contentToTheRight = !fitsAllInScreen && this.state.page < gameExperiences.length - 4;
     return(
@@ -161,7 +165,7 @@ export default class GameExperiences extends React.Component {
         <div className="scroll">
           {this.renderPageButtons()}
           {this.renderAddGameExperience()}
-          {gameExperiences.slice(this.state.page, this.state.page + 4).map(this.renderGameExperience)}
+          {gameExperiences.slice(this.state.page, this.state.page + this.getGamesPerPage()).map(this.renderGameExperience)}
           {!gameExperiences.length && !this.state.isSelf && this.renderEmptyState()}
           {this.renderEditGameExperienceModal()}
         </div>
