@@ -10,30 +10,16 @@ import Progress from './common/ProgressCircle/progress'
 export default class AnalyticsBox extends Component {
   state = {
     userTransactionStates: {},
-    youMayKnowUser: [],
     counter: 1,
-    hideSuggestions: true,
   }
 
   async componentDidMount() {
     const get_stats = await axios.get('/api/userStatTransaction/master_controller')
-    const getGamers_you_might_know = await axios.post('/api/connections/gamers_you_might_know', { counter: 1 })
-    const youMayKnowUser = getGamers_you_might_know.data.data
-    this.setState({ userTransactionStates: { ...get_stats.data }, youMayKnowUser })
-  }
-
-  refreshSuggestedUser = async () => {
-    const getGamers_you_might_know = await axios.post('/api/connections/gamers_you_might_know', { counter: 1 })
-    const youMayKnowUser = getGamers_you_might_know.data.data
-    this.setState({ youMayKnowUser, counter: this.state.counter + 1 })
-  }
-
-  handleUserSuggestion = (username) => {
-    window.location.href = `/profile/${username}`
+    this.setState({ userTransactionStates: { ...get_stats.data } })
   }
 
   render() {
-    const { userTransactionStates = {}, youMayKnowUser } = this.state
+    const { userTransactionStates = {} } = this.state
     const {
       connections = 0,
       last_month_connections = 0,
@@ -119,32 +105,6 @@ export default class AnalyticsBox extends Component {
             <p className='social-box-month'>Last month: {last_month_commendations}</p>
           </div>
         </div>
-
-        {!this.state.hideSuggestions && youMayKnowUser && youMayKnowUser.length > 0 && (
-          <div className='suggestion'>
-            <div className='suggestion-box-text'>
-              <p className='suggestion-box-head'>connections</p>
-              <h2 className='suggestion-box-head'>Suggestions</h2>
-            </div>
-            <div className='show__user__suggestion'>
-              {youMayKnowUser.map((user) => {
-                return (
-                  <div className='suggestion-box' key={user.alias} onClick={(e) => this.handleUserSuggestion(user.alias)}>
-                    <div className='suggestion-box-input'>{`@${user.alias}`}</div>
-                    <div className='input-outer'>
-                      <p className='input-outer-label'>level</p>
-                      <p className='input-outer-count'>{user.level}</p>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-
-            <div className='suggestions-box-reset' onClick={(e) => this.refreshSuggestedUser()}>
-              <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/reset.png' className='' />
-            </div>
-          </div>
-        )}
       </section>
     )
   }

@@ -43,6 +43,7 @@ export default class Experiences extends React.Component {
   }
 
   renderAddExperienceButton = () => {
+    if (!this.props.isSelf) return null;
     return (
       <div className='add-experience-container'>
         <div className='add-experience-button clickable' onClick={this.onAddExperience}>
@@ -53,6 +54,7 @@ export default class Experiences extends React.Component {
   }
 
   renderSave = () => {
+    if (!this.props.isSelf) return null;
     const { game, level, experience } = this.props.experience
     const buttonState = game && level && experience ? 'clickable' : 'disabled'
     return (

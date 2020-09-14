@@ -64,6 +64,25 @@ class ProfileController {
       return response.send({ error })
     }
   }
+
+  async fetchGamerSuggestions({ auth, response }) {
+    try {
+      const requestingUserId = auth.user.id
+      if (!requestingUserId) throw new Error('Auth Error')
+      log('PROFILE', `User ${requestingUserId} requesting gamer suggestions`)
+      const { gamerSuggestions } = await ProfileRepository.fetchGamerSuggestions({ requestingUserId })
+      return response.send({ gamerSuggestions })
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+      return response.send({ error })
+    }
+  }
 }
 
 module.exports = ProfileController

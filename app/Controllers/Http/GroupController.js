@@ -144,6 +144,7 @@ class GroupController {
 
   async getGroupDetails({ auth, request, response }) {
     try {
+      let following = false
       const getOne = await Database.from('groups')
         .where({ name: request.params.name })
         .first()
@@ -166,7 +167,18 @@ class GroupController {
 
         const postController = new PostController()
         const grp_posts = await postController.get_group_posts_internal({ auth }, getOne.id, 1)
+
         getOne.groupPosts = grp_posts.groupPosts
+
+        const getFollowing = await Database.table('followers')
+          .where({ group_id: getOne.id, user_id: auth.user.id })
+          .first()
+
+        if (getFollowing != undefined) {
+          following = true
+        }
+
+        getOne.following = following
       }
 
       return {

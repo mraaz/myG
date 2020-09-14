@@ -1,6 +1,7 @@
 'use strict'
 
 const Post = use('App/Models/Post')
+const Report = use('App/Models/Report')
 const HashTags = use('App/Models/HashTag')
 const Database = use('Database')
 
@@ -203,21 +204,59 @@ class PostController {
       //   .whereNot('posts.visibility', '=', 0)
       //   .orderBy('posts.created_at', 'desc')
       //   .paginate(request.params.paginateNo, 10)
+      let grp_limit = 3
 
-      let ppl_im_following_Posts = await Database.select('*', 'posts.id', 'posts.updated_at')
-        .from('followers')
+      let ppl_im_following_Posts = await Database.from('followers')
         .innerJoin('posts', 'posts.user_id', 'followers.follower_id')
         .innerJoin('users', 'users.id', 'posts.user_id')
         .where('followers.user_id', '=', auth.user.id)
         .where('posts.visibility', '=', 1)
+        .select('*', 'posts.id', 'posts.updated_at')
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.paginateNo, 10)
 
-      // const _1stpass = [...myFriendsPosts.data, ...ppl_im_following_Posts.data]
-      // const uniqueSet = new Set(_1stpass)
-      ppl_im_following_Posts = ppl_im_following_Posts.data
+      switch (ppl_im_following_Posts.data.length) {
+        case 8:
+          grp_limit = 5
+          break
+        case 7:
+          grp_limit = 6
+          break
+        case 6:
+          grp_limit = 7
+          break
+        case 5:
+          grp_limit = 8
+          break
+        case 4:
+          grp_limit = 9
+          break
+        case 3:
+          grp_limit = 10
+          break
+        case 2:
+          grp_limit = 11
+          break
+        case 1:
+          grp_limit = 12
+          break
+        case 0:
+          grp_limit = 13
+          break
+      }
 
-      let myPosts = await this.get_additional_info({ auth }, ppl_im_following_Posts)
+      let groups_im_following_Posts = await Database.from('followers')
+        .innerJoin('posts', 'posts.group_id', 'followers.group_id')
+        .innerJoin('users', 'users.id', 'posts.user_id')
+        .where('followers.user_id', '=', auth.user.id)
+        .where('posts.visibility', '=', 1)
+        .select('*', 'posts.id', 'posts.updated_at')
+        .orderBy('posts.created_at', 'desc')
+        .paginate(request.params.paginateNo, grp_limit)
+
+      const _1stpass = [...ppl_im_following_Posts.data, ...groups_im_following_Posts.data]
+
+      let myPosts = await this.get_additional_info({ auth }, _1stpass)
       return {
         myPosts,
       }
@@ -313,7 +352,10 @@ class PostController {
         .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
         .orderBy('posts.created_at', 'desc')
         .paginate(counter, 10)
+
       groupPosts = await this.get_additional_info({ auth }, groupPosts.data)
+      groupPosts = await this.get_game_data(groupPosts)
+
       return {
         groupPosts,
       }
@@ -330,14 +372,81 @@ class PostController {
 
   async get_group_posts({ auth, request, response }) {
     try {
-      let groupPosts = await Database.from('posts')
-        .innerJoin('users', 'users.id', 'posts.user_id')
-        .where({ group_id: request.input('group_id') })
-        .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
-        .orderBy('posts.created_at', 'desc')
-        .paginate(request.input('counter'), 10)
+      let groupPosts = []
+
+      switch (request.input('type')) {
+        case 'Recents':
+          groupPosts = await Database.from('posts')
+            .innerJoin('users', 'users.id', 'posts.user_id')
+            .where({ group_id: request.input('group_id') })
+            .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
+            .orderBy('posts.created_at', 'desc')
+            .paginate(request.input('counter'), 10)
+
+          break
+        case 'Featured':
+          groupPosts = await Database.from('posts')
+            .innerJoin('users', 'users.id', 'posts.user_id')
+            .where({ group_id: request.input('group_id'), featured: true })
+            .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
+            .orderBy('posts.created_at', 'desc')
+            .paginate(request.input('counter'), 10)
+
+          break
+        default:
+          groupPosts = await Database.from('posts')
+            .innerJoin('users', 'users.id', 'posts.user_id')
+            .where({ group_id: request.input('group_id') })
+            .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
+            .orderBy('posts.created_at', 'desc')
+            .paginate(request.input('counter'), 10)
+      }
 
       groupPosts = await this.get_additional_info({ auth }, groupPosts.data)
+      groupPosts = await this.get_game_data(groupPosts)
+
+      return {
+        groupPosts,
+      }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+    }
+  }
+
+  async get_game_data(groupPosts) {
+    try {
+      for (var i = 0; i < groupPosts.length; i++) {
+        if (groupPosts[i].schedule_games_id != null) {
+          let getScheduleDetails = await Database.from('schedule_games')
+            .innerJoin('users', 'users.id', 'schedule_games.user_id')
+            .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+            .where('schedule_games.id', '=', groupPosts[i].schedule_games_id)
+            .where('schedule_games.expiry', '>', Database.fn.now())
+            .select(
+              'game_names.game_name',
+              'schedule_games.start_date_time',
+              'users.alias',
+              'users.profile_img',
+              'schedule_games.schedule_games_GUID',
+              'schedule_games.id',
+              'users.id as user_id'
+            )
+            .first()
+
+          if (getScheduleDetails != undefined) {
+            groupPosts[i].game_name = getScheduleDetails.game_name
+            groupPosts[i].game_schedule_games_GUID = getScheduleDetails.schedule_games_GUID
+            groupPosts[i].gamer_alias = getScheduleDetails.alias
+            groupPosts[i].game_start_date_time = getScheduleDetails.start_date_time
+          }
+        }
+      }
 
       return {
         groupPosts,
@@ -421,21 +530,25 @@ class PostController {
 
   async get_additional_info({ auth }, post) {
     try {
-      let likeController = new LikeController()
-      for (var i = 0; i < post.length; i++) {
-        var myLikes = await likeController.show({ auth }, post[i].id)
-
-        post[i].total = myLikes.number_of_likes[0].total
-        post[i].no_of_comments = myLikes.no_of_comments[0].no_of_comments
-        if (myLikes.number_of_likes[0].total != 0) {
-          post[i].admirer_first_name = myLikes.admirer_UserInfo.alias
-        } else {
-          post[i].admirer_first_name = ''
+      const likeController = new LikeController()
+      for (let i = 0; i < post.length; i++) {
+        if (post[i].id == undefined || post[i].id == null) {
+          continue
         }
-        if (myLikes.do_I_like_it[0].myOpinion != 0) {
-          post[i].do_I_like_it = true
-        } else {
-          post[i].do_I_like_it = false
+        let myLikes = await likeController.show({ auth }, post[i].id)
+        if (myLikes) {
+          post[i].total = myLikes.number_of_likes[0].total
+          post[i].no_of_comments = myLikes.no_of_comments[0].no_of_comments
+          if (myLikes.number_of_likes[0].total != 0) {
+            post[i].admirer_first_name = myLikes.admirer_UserInfo.alias
+          } else {
+            post[i].admirer_first_name = ''
+          }
+          if (myLikes.do_I_like_it[0].myOpinion != 0) {
+            post[i].do_I_like_it = true
+          } else {
+            post[i].do_I_like_it = false
+          }
         }
 
         const myHashTags = await Database.from('post_hash_tag_transactions')
@@ -446,6 +559,7 @@ class PostController {
 
         post[i].hash_tags = myHashTags
       }
+      return post
     } catch (error) {
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
@@ -455,8 +569,48 @@ class PostController {
         message: (error && error.message) || error,
       })
     }
+  }
 
-    return post
+  async featureToggle({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        const updatePost = await Post.query()
+          .where({ id: request.input('post_id') })
+          .update({ featured: request.input('featured_enabled') })
+
+        return 'Saved successfully'
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
+      }
+    }
+  }
+
+  async report({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        await Report.create({
+          post_id: request.params.id,
+          user_id: auth.user.id,
+        })
+      } catch (error) {
+        if (error.code == 'ER_DUP_ENTRY') {
+          return
+        }
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
+      }
+    }
   }
 }
 

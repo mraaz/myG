@@ -36,8 +36,6 @@ import {
   LoadingComp,
   AddScheduleGames,
   MySettings,
-  Notifications,
-  IndividualNotification,
   SinglePost,
   IndividualEsportsExperience,
   AdvancedSearch,
@@ -46,6 +44,7 @@ import {
   CreateCommunity,
   EditScheduleGames,
   MobileMenu,
+  CommunityView,
 } from './AsyncComponent'
 
 class Layout extends Component {
@@ -146,6 +145,22 @@ class Layout extends Component {
                           key={Math.random()}
                         />
                       </FeatureDisabled>
+                    </React.Fragment>
+                  )}
+                />
+
+                <Route
+                  exact
+                  path='/profile/:alias/game/:gameId'
+                  component={(props) => (
+                    <React.Fragment>
+                      <FeatureEnabled allOf={[PROFILE_V2]}>
+                        <ProfileContainer
+                          routeProps={props}
+                          initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
+                          key={Math.random()}
+                        />
+                      </FeatureEnabled>
                     </React.Fragment>
                   )}
                 />
@@ -285,6 +300,17 @@ class Layout extends Component {
                   exact
                   path='/setEncryptionParaphrase/:encryption'
                   component={(props) => <EncryptionParaphraseRegistration routeProps={props} key={Math.random()} />}
+                />
+                <Route
+                  exact
+                  path='/community/:name'
+                  component={(props) => (
+                    <CommunityView
+                      routeProps={props}
+                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
+                      key={Math.random()}
+                    />
+                  )}
                 />
 
                 <Route render={() => <h3> Oops! I couldn't find that </h3>} />

@@ -603,16 +603,18 @@ const AddGame = ({
             <p>Game Title</p>
           </div>
           <div className='game-title-select'>
-            <MyGCreateableSelect
-              isClearable
-              onCreateOption={handleCreateGame}
-              onInputChange={getOptionsGames}
-              onChange={handleChange_game_title}
-              value={mainSettingsState.gameTitle}
-              placeholder='Search, Select or create Game Title'
-              options={mainSettingsState.gameTitlesList}
-              onKeyDown={Disable_keys}
-            />
+            <div>
+              <MyGCreateableSelect
+                isClearable
+                onCreateOption={handleCreateGame}
+                onInputChange={getOptionsGames}
+                onChange={handleChange_game_title}
+                value={mainSettingsState.gameTitle}
+                placeholder='Search, Select or create Game Title'
+                options={mainSettingsState.gameTitlesList}
+                onKeyDown={Disable_keys}
+              />
+            </div>
           </div>
           <div className='field-title'>
             <p>Start Time</p>
@@ -683,24 +685,26 @@ const AddGame = ({
           )}
           <div className='field-title'>Game Tags</div>
           <div className='game-title-select'>
-            <MyGCreateableSelect
-              isClearable
-              isMulti
-              onCreateOption={handleCreateTags}
-              onInputChange={getOptionsTags}
-              onChange={(value) => {
-                updateAdvancedSettings({ tags: value })
-              }}
-              value={advancedSettingsState.tags}
-              placeholder='Search, Select or create Game Tags'
-              onKeyDown={Disable_keys}
-              options={advancedSettingsState.tags.length === MAX_GAME_TAGS ? [] : advancedSettingsState.optionTags}
-              noOptionsMessage={() => {
-                return advancedSettingsState.optionTags.length === MAX_GAME_TAGS
-                  ? 'You have reached the max options value'
-                  : 'Yo! Either nothing to display or you need to type in something'
-              }}
-            />
+            <div>
+              <MyGCreateableSelect
+                isClearable
+                isMulti
+                onCreateOption={handleCreateTags}
+                onInputChange={getOptionsTags}
+                onChange={(value) => {
+                  updateAdvancedSettings({ tags: value })
+                }}
+                value={advancedSettingsState.tags}
+                placeholder='Search, Select or create Game Tags'
+                onKeyDown={Disable_keys}
+                options={advancedSettingsState.tags.length === MAX_GAME_TAGS ? [] : advancedSettingsState.optionTags}
+                noOptionsMessage={() => {
+                  return advancedSettingsState.optionTags.length === MAX_GAME_TAGS
+                    ? 'You have reached the max options value'
+                    : 'Yo! Either nothing to display or you need to type in something'
+                }}
+              />
+            </div>
           </div>
           {advancedSettingsState.show_platform && <div className='field-title'>Platform</div>}
           {advancedSettingsState.show_platform && (
@@ -745,18 +749,20 @@ const AddGame = ({
             />
           </div>
           <div className='field-title'>Description</div>
-          <div className='description-text-area'>
-            <MyGTextarea
-              onChange={(event) => {
-                updateAdvancedSettings({ description: event.target.value })
-              }}
-              value={advancedSettingsState.description}
-              placeholder='Enter a description for your game'
-              maxLength={250}
-            />
+          <div className='description-text-area description-text-area-match'>
+            <div>
+              <MyGTextarea
+                onChange={(event) => {
+                  updateAdvancedSettings({ description: event.target.value })
+                }}
+                value={advancedSettingsState.description}
+                placeholder='Enter a description for your game'
+                maxLength={250}
+              />
+            </div>
           </div>
           <div className='field-title'>Accept Message</div>
-          <div className='description-text-area'>
+          <div className='description-text-area description-text-area-match'>
             <MyGTextarea
               onChange={(event) => {
                 updateAdvancedSettings({ acceptMessage: event.target.value })

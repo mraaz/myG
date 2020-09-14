@@ -4,6 +4,7 @@ import ProfileSchema from '../schema/profile'
 
 const initialState = {
   profiles: {},
+  gamerSuggestions: [],
 }
 
 export default function reducer(state = initialState, action) {
@@ -146,6 +147,15 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         profiles,
+      }
+    }
+
+    case 'FETCH_GAMER_SUGGESTIONS_FULFILLED': {
+      logger.log('PROFILE', `Redux -> Fetched gamer suggestions `, action.payload)
+      const gamerSuggestions = action.payload.gamerSuggestions || [];
+      return {
+        ...state,
+        gamerSuggestions,
       }
     }
 

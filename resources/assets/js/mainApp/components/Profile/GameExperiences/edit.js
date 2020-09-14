@@ -117,6 +117,7 @@ export default class EditGameExperience extends React.Component {
       return (
         <MainInfo
           profile={this.props.profile}
+          isSelf={this.props.isSelf}
           onClose={this.onClose}
           onUpdate={this.onUpdate}
           experience={this.state}
@@ -127,6 +128,7 @@ export default class EditGameExperience extends React.Component {
     return (
       <Experiences
         profile={this.props.profile}
+        isSelf={this.props.isSelf}
         onClose={this.onClose}
         onUpdate={this.onUpdate}
         experience={this.state}

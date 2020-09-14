@@ -120,18 +120,6 @@ const MySettings = Loadable({
   },
 })
 
-const Notifications = Loadable({
-  loader: () => import('./components/Notifications'),
-  loading: function() {
-    return null
-  },
-})
-const IndividualNotification = Loadable({
-  loader: () => import('./components/IndividualNotification'),
-  loading: function() {
-    return null
-  },
-})
 const SinglePost = Loadable({
   loader: () => import('./components/SinglePost'),
   loading: function() {
@@ -159,6 +147,12 @@ const EditScheduleGames = Loadable({
     return null
   },
 })
+const CommunityView = Loadable({
+  loader: () => import('./components/CommunityView/CommunityView'),
+  loading: function() {
+    return null
+  },
+})
 
 export {
   Home,
@@ -177,12 +171,11 @@ export {
   MyPosts,
   MyHome,
   MySettings,
-  Notifications,
-  IndividualNotification,
   SinglePost,
   AdvancedSearch,
   ScheduleGamesView,
   CreateCommunity,
   EditScheduleGames,
   MobileMenu,
+  CommunityView,
 }

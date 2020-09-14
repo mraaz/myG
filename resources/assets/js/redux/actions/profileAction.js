@@ -1,4 +1,4 @@
-import { fetchProfileInfo, sendFriendRequest, confirmFriendRequest, unfriend, follow, unfollow, uploadProfileImage, uploadProfileBackground, updateProfileInfo, updateProfileGame } from '../../integration/http/profile'
+import { fetchProfileInfo, sendFriendRequest, confirmFriendRequest, unfriend, follow, unfollow, uploadProfileImage, uploadProfileBackground, updateProfileInfo, updateProfileGame, fetchGamerSuggestions } from '../../integration/http/profile'
 
 export function fetchProfileInfoAction(alias) {
   return {
@@ -78,5 +78,12 @@ export function updateProfileGameAction(alias, updates) {
     type: 'UPDATE_PROFILE_GAME',
     payload: updateProfileGame(alias, updates),
     meta: { alias, updates },
+  }
+}
+
+export function fetchGamerSuggestionsAction() {
+  return {
+    type: 'FETCH_GAMER_SUGGESTIONS',
+    payload: fetchGamerSuggestions(),
   }
 }

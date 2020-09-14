@@ -4,10 +4,11 @@ const Database = use('Database')
 const Attendee = use('App/Models/Attendee')
 const ScheduleGame = use('App/Models/ScheduleGame')
 
-const NotificationController_v2 = use('./NotificationController_v2')
 const UserStatTransactionController = use('./UserStatTransactionController')
 const ScheduleGameController = use('./ScheduleGameController')
 const LoggingRepository = require('../../Repositories/Logging')
+
+const CommonController = use('./CommonController')
 
 class AttendeeController {
   async savemySpot({ auth, request, response }) {
@@ -88,7 +89,7 @@ class AttendeeController {
           value_five: db_save_value_array[4],
         })
 
-        const noti = new NotificationController_v2()
+        const noti = new CommonController()
 
         await noti.remove_schedule_game_attendees({ auth }, request.input('schedule_games_id'), activity_type)
         noti.addScheduleGame_attendance({ auth }, request.input('schedule_games_id'), get_game_info.user_id, activity_type)
@@ -380,7 +381,7 @@ class AttendeeController {
           return
         }
 
-        const noti_v2 = new NotificationController_v2()
+        const noti_v2 = new CommonController()
         const userStatController = new UserStatTransactionController()
 
         noti_v2.add_approved_attendee_left({ auth }, request.params.id, attendees[0].user_id)
@@ -527,7 +528,7 @@ class AttendeeController {
         for (var i = 0; i < get_all_attendees.length; i++) {
           userStatController.update_total_number_of(get_all_attendees[i].user_id, 'total_number_of_games_played')
         }
-        let noti = new NotificationController_v2()
+        let noti = new CommonController()
         noti.addGameApproved({ auth }, request.input('schedule_game_id'), request.input('user_id'))
 
         const co_hosts = await Database.from('co_hosts')

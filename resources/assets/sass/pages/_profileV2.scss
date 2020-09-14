@@ -34,6 +34,11 @@
     font-family: 'Montserrat Alternates', sans-serif !important;
   }
 
+  .empty {
+    color: white;
+    padding: 16px;
+  }
+
   .close-button {
     background-repeat: no-repeat;
     background-position: center center;
@@ -282,7 +287,7 @@
 
         .name {
           font-size: 16px;
-          color: #606060;
+          color: #bbb;
         }
       }
 
@@ -355,6 +360,7 @@
     display: flex;
     flex-direction: column;
     border-radius: 8px;
+    background-color: #0A0F14;
     border: 1px solid #657172;
     margin: 24px 15%;
     padding: 8px 0 0 0;
@@ -499,16 +505,46 @@
   }
 
   #profile-game-experiences {
-    position: relative;
     display: flex;
-    flex-direction: row;
-    align-content: center;
-    justify-content: center;
-    margin: 0px 32px;
-    padding: 8px;
-    border: 1px solid #2d363a;
-    border-radius: 8px;
-    background-color: #181a1c;
+    flex-direction: column;
+
+    .headers {
+      display: flex;
+      flex-direction: row;
+      margin: 0px 32px;
+      padding: 12px;
+      font-size: 18px;
+      color: white;
+      align-items: center;
+      justify-content: space-around;
+
+
+      .header {
+        border-bottom: 2px solid #1E2326;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 8px;
+        flex: 1;
+      }
+
+      .selected {
+        border-bottom: 2px solid #e5c746 !important;
+      }
+    }
+    
+    .scroll {
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      align-content: center;
+      justify-content: center;
+      margin: 0px 32px;
+      padding: 8px;
+      border: 1px solid #2d363a;
+      border-radius: 8px;
+      background-color: #181a1c;
+    }
 
     .page-button {
       @extend .button-icon;
@@ -542,7 +578,7 @@
       border-radius: 8px;
       margin: 16px;
       padding: 20px 0;
-      min-width: 220px;
+      min-width: 20%;
       min-height: 200px;
 
       .name {
@@ -557,12 +593,43 @@
         background-repeat: no-repeat;
         background-position: center center;
         background-size: cover;
-        width: 220px;
+        width: 100%;
         height: 80px;
         margin: 10px 0;
       }
 
+      .absolute-top {
+        position: absolute;
+        top: -10px;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+      }
+
+      .icon {
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: contain;
+        width: 64px;
+        height: 64px;
+        z-index: 1;
+        margin: 8px auto;
+        border-radius: 1000px;
+      }
+
+      .link {
+        position: absolute;
+        right: 0;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: initial;
+        width: 32px;
+        height: 32px;
+        background-color: #657172;
+        border-radius: 1000px;
+      }
+
       .field {
+        position: relative;
         display: flex;
         flex-direction: column;
         margin: 0 20px;
@@ -571,11 +638,14 @@
       .field-title {
         font-size: 12px;
         color: #666;
+        margin: 0;
+        padding: 0;
       }
 
       .field-value {
         font-size: 16px;
         color: white;
+        margin-bottom: 4px;
       }
 
       .edit-button {
