@@ -9,7 +9,6 @@ const GameTags = use('App/Models/GameTag')
 const ScheduleGamesTags = use('App/Models/ScheduleGamesTag')
 const Attendee = use('App/Models/Attendee')
 
-const NotificationController = use('./NotificationController')
 const Archive_AttendeeController = use('./Archive_AttendeeController')
 const Archive_ScheduleGameController = use('./Archive_ScheduleGameController')
 const Archive_CommentController = use('./Archive_CommentController')
@@ -496,7 +495,6 @@ class ScheduleGameController {
   async destroy({ auth, request, response }) {
     if (auth.user) {
       try {
-        let noti = new NotificationController()
         let archive_attendees = new Archive_AttendeeController()
         let archive_schedule_games = new Archive_ScheduleGameController()
         let archive_comments = new Archive_CommentController()

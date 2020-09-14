@@ -36,8 +36,6 @@ import {
   LoadingComp,
   AddScheduleGames,
   MySettings,
-  Notifications,
-  IndividualNotification,
   SinglePost,
   IndividualEsportsExperience,
   AdvancedSearch,
