@@ -2236,8 +2236,7 @@ section#content-container {
   #main-sidebar,
   #messenger,
   .social-main,
-  .links,
-  .postCompose__container {
+  .links {
     display: none !important;
   }
 
@@ -2270,7 +2269,7 @@ section#content-container {
   }
 
   .mobile-sub-menu-items a {
-    color: #fff;
+    color: #fff !important;
   }
 
   .mobile-sub-menu-items .find-matches {
@@ -2405,5 +2404,22 @@ section#content-container {
     margin: 0;
     margin-top: 0;
     padding: 30px;
+  }
+
+  .viewGame__container {
+    margin: 20px !important;
+  }
+
+  .viewGame__container .viewGame__filter {
+    margin: 0 !important;
+  }
+
+  .viewGame__container .gameList__section {
+    flex-direction: column;
+  }
+
+  .viewGame__container .singleGameView__container .gameDetails,
+  .viewGame__container .GameView__container .gameDetails {
+    height: auto !important;
   }
 }
