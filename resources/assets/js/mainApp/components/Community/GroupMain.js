@@ -36,6 +36,7 @@ export default class GroupMain extends Component {
 
         self.setState({
           all_my_communities: getmyGroups.data.all_my_communities,
+          more_data: getmyGroups.data.all_my_communities.length > 10 ? true : false,
         })
       } catch (error) {
         logToElasticsearch('error', 'List_Community', 'Failed getGroups in Mount' + ' ' + error)
@@ -101,8 +102,8 @@ export default class GroupMain extends Component {
 
         self.setState({
           all_my_suggested_communities: getALLmySuggestedGroups.data,
-          suggested_less_data: true,
-          suggested_more_data: true,
+          suggested_less_data: self.state.suggested_counter == 1 ? false : true,
+          suggested_more_data: getALLmySuggestedGroups.data.length > 24 ? true : false,
         })
       } catch (error) {
         logToElasticsearch('error', 'List_Community', 'Failed at getALLmySuggestedGroups' + ' ' + error)
@@ -137,7 +138,7 @@ export default class GroupMain extends Component {
 
         self.setState({
           all_my_suggested_communities: getALLmySuggestedGroups.data,
-          suggested_more_data: true,
+          suggested_more_data: getALLmySuggestedGroups.data.length > 10 ? true : false,
         })
       } catch (error) {
         logToElasticsearch('error', 'List_Community', 'Failed at getALLmySuggestedGroups' + ' ' + error)
@@ -208,7 +209,7 @@ export default class GroupMain extends Component {
 
         self.setState({
           all_my_communities: getmyGroups.data.all_my_communities,
-          more_data: true,
+          more_data: getmyGroups.data.all_my_communities.length > 10 ? true : false,
         })
       } catch (error) {
         logToElasticsearch('error', 'List_Community', 'Failed at getGroups' + ' ' + error)
