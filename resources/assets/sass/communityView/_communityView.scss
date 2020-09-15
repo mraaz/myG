@@ -1,12 +1,4 @@
 .communityName__container {
-  .community__description {
-    text-align: left;
-    font: normal normal normal 14px/20px Montserrat;
-    letter-spacing: 0px;
-    color: #ffffff;
-    margin-bottom: 5em;
-    padding: 20px 50px;
-  }
   .coverImage__container {
     height: 477px;
     width: 100%;
@@ -100,5 +92,27 @@
         }
       }
     }
+  }
+  .community__description {
+    text-align: left;
+    font: normal normal normal 14px/20px Montserrat;
+    letter-spacing: 0px;
+    color: #ffffff;
+    margin-bottom: 1em;
+    padding: 20px 50px;
+    margin-left: 6em;
+    margin-right: 6em;
+  }
+  .community__tags {
+    margin-bottom: 5em;
+    padding: 20px 50px;
+    display: flex;
+    .label {
+      font: normal normal bold 14px/14px Montserrat;
+      letter-spacing: 0px;
+      color: #ffffff;
+    }
+    margin-left: 6em;
+    margin-right: 6em;
   }
 }

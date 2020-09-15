@@ -76,7 +76,7 @@ const CoverImage = (props) => {
                   </div>
                 )}
                 <div className='dropdown__option' onClick={(e) => handleFollowClick(props.id)}>
-                  {props.follow == true ? 'Unfolllow' : 'Follow'}
+                  {props.following == true ? 'Unfolllow' : 'Follow'}
                 </div>
               </div>
             )}
