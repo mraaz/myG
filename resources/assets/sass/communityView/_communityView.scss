@@ -1,10 +1,18 @@
 .communityName__container {
+  .community__description {
+    text-align: left;
+    font: normal normal normal 14px/20px Montserrat;
+    letter-spacing: 0px;
+    color: #ffffff;
+    margin-bottom: 5em;
+    padding: 20px 50px;
+  }
   .coverImage__container {
     height: 477px;
     width: 100%;
     position: relative;
     opacity: 1;
-    margin-bottom: 5em;
+    margin-bottom: 1em;
     .featuredImageInput {
       display: none;
     }
