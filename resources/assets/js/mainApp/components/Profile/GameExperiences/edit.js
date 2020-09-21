@@ -12,6 +12,7 @@ export default class EditGameExperience extends React.Component {
 
   state = {
     selectedTab: 'main',
+    loaded: false,
     id: null,
     mainFields: [],
     game: null,
@@ -28,8 +29,9 @@ export default class EditGameExperience extends React.Component {
   }
 
   prepareExperience = () => {
-    const { id, mainFields, game, gameName, nickname, level, experience, team, tags, background } = this.props.gameExperience || {}
+    const { id, mainFields, game, gameName, nickname, level, experience, team, tags, dynamic, background } = this.props.gameExperience || {}
     return {
+      loaded: true,
       id: id || null,
       mainFields: mainFields ? mainFields.map((field) => ({ value: field, label: field })) : [],
       game: game ? { game_names_id: game, value: gameName, label: gameName } : null,
@@ -38,6 +40,7 @@ export default class EditGameExperience extends React.Component {
       experience: experience ? { value: experience, label: experience } : null,
       team: team || null,
       tags: tags ? tags.map((tag) => ({ value: tag, label: tag })) : [],
+      dynamic: dynamic || {},
       background: background ? background.map((experience) => ({
         id: experience.id || null,
         team: experience.team || null,
@@ -61,6 +64,7 @@ export default class EditGameExperience extends React.Component {
     if (experience.experience) updates.experience = experience.experience.value
     if (experience.team) updates.team = experience.team
     if (experience.tags) updates.tags = experience.tags.map((entry) => entry.value).join('|')
+    if (experience.dynamic) updates.dynamic = experience.dynamic
     if (experience.background) {
       updates.background = experience.background.filter(this.hasAddedDataToExperience).map((experience) => ({
         id: experience.id,
@@ -77,8 +81,6 @@ export default class EditGameExperience extends React.Component {
     const originalValues =  this.getUpdates(this.prepareExperience())
     const updates = this.getUpdates(this.state)
     const hasPendingChanges = JSON.stringify(originalValues) !== JSON.stringify(updates);
-    console.log(originalValues);
-    console.log(updates);
     if (hasPendingChanges) showMessengerAlert('You have unsaved changes, are you sure you want to close?', this.props.onClose, null, 'Yes')
     else this.props.onClose()
   }
@@ -122,6 +124,7 @@ export default class EditGameExperience extends React.Component {
           onUpdate={this.onUpdate}
           experience={this.state}
           storeExperience={(data) => this.setState(data)}
+          storeDynamicExperience={(data) => this.setState(previous => ({ dynamic: { ...previous.dynamic, ...data } }))}
         />
       )
     }
@@ -138,6 +141,7 @@ export default class EditGameExperience extends React.Component {
   }
 
   render() {
+    if (!this.state.loaded) return null;
     return (
       <div id='profile-edit-game-experience'>
         <div className='container'>

@@ -18,6 +18,7 @@ class GameExperiencesSchema extends Schema {
       table.string('experience', 254).nullable()
       table.string('team', 254).nullable()
       table.string('nickname', 254).nullable()
+      table.text('dynamic').nullable()
       table.text('tags').nullable()
 
       table.string('comments', 254).nullable().defaultTo("")

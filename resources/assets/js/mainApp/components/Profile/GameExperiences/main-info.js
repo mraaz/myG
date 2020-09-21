@@ -1,5 +1,6 @@
 import React from 'react'
 import Dropzone from 'react-dropzone'
+import get from 'lodash.get'
 import { getAssetUrl } from '../../../../common/assets'
 import { ignoreFunctions } from '../../../../common/render'
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
@@ -7,6 +8,7 @@ import MyGSelect from '../../common/MyGSelect'
 import { Game_name_values, Disable_keys, Schedule_Game_Tags } from '../../Utility_Function'
 import { Upload_to_S3, Remove_file } from '../../AWS_utilities'
 import { notifyToast } from '../../../../common/toast'
+import { fetchDynamicFields } from '../../../../integration/http/profile'
 
 const MAIN_FIELDS_OPTIONS = [
   { value: 'Nickname', label: 'Nickname' },
@@ -32,7 +34,16 @@ const LEVEL_OPTIONS = [
 
 export default class MainInfo extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
-    return ignoreFunctions(nextProps, nextState, this.props, this.props.state)
+    return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
+  state = {
+    dynamicFields: [],
+  }
+
+  componentDidMount() {
+    const gameId = get(this.props, 'experience.game.game_names_id')
+    if (gameId) fetchDynamicFields(gameId).then((dynamicFields) => !dynamicFields.error && this.setState({ dynamicFields }))
   }
 
   onSave = () => {
@@ -42,7 +53,8 @@ export default class MainInfo extends React.Component {
   }
 
   renderMainFields = () => {
-    if (!this.props.isSelf) return this.renderDisabledField('Main Fields', this.props.experience.mainFields.map(field => field.value).join(', '));
+    if (!this.props.isSelf)
+      return this.renderDisabledField('Main Fields', this.props.experience.mainFields.map((field) => field.value).join(', '))
     return (
       <div className='row'>
         <span className='hint'>Main Fields</span>
@@ -69,6 +81,8 @@ export default class MainInfo extends React.Component {
   onTitleChange = async (input) => {
     const results = !!input && !!input.value && (await Game_name_values(input.value))
     const game = results && results[0] ? results[0] : input
+    this.setState({ dynamicFields: [] })
+    fetchDynamicFields(game.game_names_id).then((dynamicFields) => !dynamicFields.error && this.setState({ dynamicFields }))
     return this.props.storeExperience({ game })
   }
 
@@ -78,7 +92,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderGameTitle = () => {
-    if (!this.props.isSelf) return this.renderDisabledField('Game Title', (this.props.experience.game || {}).value);
+    if (!this.props.isSelf) return this.renderDisabledField('Game Title', (this.props.experience.game || {}).value)
     return (
       <div className='row'>
         <span className='hint'>Game Title</span>
@@ -135,7 +149,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderLevelInput = () => {
-    if (!this.props.isSelf) return this.renderDisabledField('Level', (this.props.experience.level || {}).value);
+    if (!this.props.isSelf) return this.renderDisabledField('Level', (this.props.experience.level || {}).value)
     return (
       <div className='row'>
         <span className='hint'>Level</span>
@@ -151,7 +165,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderExperienceInput = () => {
-    if (!this.props.isSelf) return this.renderDisabledField('Experience', (this.props.experience.experience || {}).value);
+    if (!this.props.isSelf) return this.renderDisabledField('Experience', (this.props.experience.experience || {}).value)
     return (
       <div className='row'>
         <span className='hint'>Experience</span>
@@ -176,7 +190,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderTagsInput = () => {
-    if (!this.props.isSelf) return this.renderDisabledField('Tags', this.props.experience.tags.map(tag => tag.value).join(', '));
+    if (!this.props.isSelf) return this.renderDisabledField('Tags', this.props.experience.tags.map((tag) => tag.value).join(', '))
     return (
       <div className='row'>
         <span className='hint'>Tags</span>
@@ -200,6 +214,70 @@ export default class MainInfo extends React.Component {
           />
         </div>
       </div>
+    )
+  }
+
+  renderDynamicFields = () => {
+    if (!this.props.isSelf) return null
+    if (!this.state.dynamicFields || !this.state.dynamicFields.length) return null
+    return this.state.dynamicFields.map((field) => (
+      <div className='row'>
+        {field.type === 'Multi' && this.renderMultiField(field)}
+        {field.type === 'Single' && this.renderSingleField(field)}
+        {field.type === 'Input' && this.renderInputField(field)}
+      </div>
+    ))
+  }
+
+  renderMultiField = (field) => {
+    return (
+      <React.Fragment>
+        <span className='hint'>{field.label}</span>
+        <MyGSelect
+          width={'75%'}
+          innerWidth={'100%'}
+          options={field.values.map((value) => ({ value, label: value }))}
+          placeholder={field.placeholder}
+          onChange={(value) => this.props.storeDynamicExperience({ [field.id]: value })}
+          value={get(this.props, `experience.dynamic.${field.id}`)}
+          isMulti
+      />
+      </React.Fragment>
+    )
+  }
+
+  renderSingleField = (field) => {
+    return (
+      <React.Fragment>
+        <span className='hint'>{field.label}</span>
+        <MyGSelect
+          width={'75%'}
+          innerWidth={'100%'}
+          options={field.values.map((value) => ({ value, label: value }))}
+          placeholder={field.placeholder}
+          onChange={(value) => this.props.storeDynamicExperience({ [field.id]: value })}
+          value={get(this.props, `experience.dynamic.${field.id}`)}
+        />
+      </React.Fragment>
+    )
+  }
+
+  renderInputField = (field) => {
+    const validation = field.values && field.values[0] && new RegExp(field.values[0]);
+    const required = field.values && field.values[1];
+    const isValid = validation ? validation.test(get(this.props, `experience.dynamic.${field.id}`)) : true;
+    return (
+      <React.Fragment>
+        <span className='hint'>{field.label}</span>
+        {required && <span className="required">*</span>}
+        <div className="input-container-row">
+          <input
+            className={`input${isValid ? '' : ' input-error'}`}
+            value={get(this.props, `experience.dynamic.${field.id}`)}
+            placeholder={field.placeholder}
+            onChange={(event) => this.props.storeDynamicExperience({ [field.id]: event.target.value })}></input>
+        </div>
+      </React.Fragment>
     )
   }
 
@@ -267,12 +345,20 @@ export default class MainInfo extends React.Component {
   }
 
   renderSave = () => {
-    if (!this.props.isSelf) return null;
+    if (!this.props.isSelf) return null
     const { game, level, experience } = this.props.experience
-    const buttonState = game && level && experience ? 'clickable' : 'disabled'
+    const hasInvalidDynamicFields = this.state.dynamicFields.some((field) => {
+      if (field.type !== "Input") return false;
+      const value = get(this.props, `experience.dynamic.${field.id}`)
+      const validation = field.values && field.values[0] && new RegExp(field.values[0]);
+      const isRequiredAndMissing = field.values && field.values[1] && !value;
+      const isValid = validation ? validation.test(value) : true;
+      return isRequiredAndMissing || !isValid
+    });
+    const buttonState = game && level && experience && !hasInvalidDynamicFields ? 'clickable' : 'disabled'
     return (
       <div className='save-container'>
-        <div className={`save-button ${buttonState}`} onClick={this.onSave}>
+        <div className={`save-button ${buttonState}`} onClick={() => buttonState === 'clickable' && this.onSave()}>
           Save
         </div>
       </div>
@@ -294,10 +380,7 @@ export default class MainInfo extends React.Component {
       <div className='row'>
         <span className='hint'>{title}</span>
         <div className='input-container-row'>
-          <input
-            className='input'
-            value={value}
-            disabled={true}></input>
+          <input className='input' value={value} disabled={true}></input>
         </div>
       </div>
     )
@@ -316,6 +399,7 @@ export default class MainInfo extends React.Component {
           {this.renderTeamInput()}
           {this.renderNicknameInput()}
           {this.renderTagsInput()}
+          {this.renderDynamicFields()}
           {this.renderSave()}
         </div>
         {this.renderClose()}

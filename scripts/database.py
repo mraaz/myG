@@ -127,6 +127,13 @@ sql = "INSERT INTO friends (id, user_id, friend_id, created_at, updated_at) VALU
 val = (18, 10, 11, '2019-12-01 00:00:00', '2019-12-01 00:00:00')
 sql_cursor.execute(sql, val)
 
+# Games
+# update game_name_fields set in_game_fields = "{\"value_one\": \"lol_server_regions\", \"value_two\": \"lol_ranks\", \"value_three\": \"lol_roles\", \"value_six\": \"stats_link\"}" where game_names_id = 999;
+# update game_name_fields set in_game_field_placeholders = "{\"lol_server_regions\": \"Select what region/s you can play\", \"lol_ranks\": \"Please advise what Rank/s you are looking for?\", \"lol_roles\": \"Select the role/s you wish to apply for\", \"stats_link\": \"https://www.leagueofgraphs.com/summoner/region/profile-id\"}" where game_names_id = 999;
+# update game_name_fields set in_game_field_types = "{\"lol_server_regions\": \"Multi\", \"lol_ranks\": \"Multi\", \"lol_roles\": \"Multi\", \"stats_link\": \"Input\"}" where game_names_id = 999;
+# update game_name_fields set in_game_field_labels = "{\"lol_server_regions\": \"Server Regions\", \"lol_ranks\": \"Ranks\", \"lol_roles\": \"Roles\", \"stats_link\": \"Profile Link\"}" where game_names_id = 999;
+# update game_name_fields set in_game_field_values = "{\"lol_ranks\": \"Iron I, Iron II, Iron III, Iron IV, Bronze I, Bronze II, Bronze III, Bronze IV, Silver I, Silver II, Silver III, Silver IV, Gold I, Gold II, Gold III, Gold IV, Platinum I, Platinum II, Platinum III, Platinum IV, Diamond I, Diamond II, Diamond III, Diamond IV, Master, Grandmaster, Challenger\", \"lol_server_regions\": \"North America, Europe West, Europe East, Oceania, South East Asia, Latin America North, Latin America South, Brazil, Russia, Turkey, Japan, Corea\" , \"lol_roles\": \"Top, Jungle, Mid, ADC, Support\", \"stats_link\": \"^https://www.leagueofgraphs.com/summoner,true\"}" where game_names_id = 999;
+
 mydb.commit()
 
 print("Done")
