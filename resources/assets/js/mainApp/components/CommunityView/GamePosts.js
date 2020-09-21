@@ -104,11 +104,13 @@ export default class Posts extends Component {
     const { myPosts = [], moreplease, isFetching = false, post_submit_loading = false } = this.state
     return (
       <Fragment>
-        <ComposeSection
-          successCallback={this.composeSuccess}
-          initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData}
-          communityBox={true}
-        />
+        {[0, 1, 2, 3].includes(this.props.current_user_permission) && (
+          <ComposeSection
+            successCallback={this.composeSuccess}
+            initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData}
+            communityBox={true}
+          />
+        )}
         {post_submit_loading && (
           <div className='timeline-item'>
             <div className='animated-background'>

@@ -4,7 +4,7 @@
     width: 100%;
     position: relative;
     opacity: 1;
-    margin-bottom: 5em;
+    margin-bottom: 1em;
     .featuredImageInput {
       display: none;
     }
@@ -70,7 +70,49 @@
             margin-left: 15px;
           }
         }
+        .btn__option {
+          position: relative;
+          .btn__option__dropdown {
+            position: absolute;
+            background: #1d2426;
+            color: #fff;
+            width: 121px;
+            left: 0;
+            top: 38px;
+            border-radius: 4px;
+            .dropdown__option {
+              padding: 10px;
+              cursor: pointer;
+              &:hover {
+                border: 1px solid #fff;
+                border-radius: 4px;
+              }
+            }
+          }
+        }
       }
     }
+  }
+  .community__description {
+    text-align: left;
+    font: normal normal normal 14px/20px Montserrat;
+    letter-spacing: 0px;
+    color: #ffffff;
+    margin-bottom: 1em;
+    padding: 20px 50px;
+    margin-left: 6em;
+    margin-right: 6em;
+  }
+  .community__tags {
+    margin-bottom: 5em;
+    padding: 20px 50px;
+    display: flex;
+    .label {
+      font: normal normal bold 14px/14px Montserrat;
+      letter-spacing: 0px;
+      color: #ffffff;
+    }
+    margin-left: 6em;
+    margin-right: 6em;
   }
 }
