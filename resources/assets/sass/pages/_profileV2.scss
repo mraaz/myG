@@ -39,6 +39,63 @@
     padding: 16px;
   }
 
+  .empty-tab {
+    color: white;
+    padding: 16px 16px 24px 16px;
+  }
+
+  .share-button {
+    position: absolute;
+    background-color: #e5c746;
+    top: 20px;
+    right: 20px;
+    font-size: 12px;
+    border-radius: 2px;
+    width: unset;
+    font-weight: bold;
+    padding: 4px 12px;
+  }
+
+  .aligned-button {
+    width: 12%;
+    text-align: center;
+  }
+
+  .base-button {
+    background-color: #e5c746;
+    padding: 4px 22px;
+    margin: 12px;
+    border-radius: 2px;
+    font-weight: 600;
+    color: black;
+    text-decoration: none;
+  }
+
+  .disabled-button {
+    @extend .base-button;
+    opacity: 40%;
+    font-weight: 500;
+  }
+
+  .invalid-button {
+    @extend .base-button;
+    background-color: #EE4338;
+    font-weight: 500;
+    opacity: 40%;
+  }
+
+  .base-container {
+    position: absolute;
+    top: 12.5%;
+    bottom: 12.5%;
+    left: 12.5%;
+    right: 12.5%;
+    border-radius: 8px;
+    z-index: 901;
+    margin: 0;
+    padding: 0;
+  }
+
   .close-button {
     background-repeat: no-repeat;
     background-position: center center;
@@ -50,6 +107,13 @@
     right: -12px;
     width: 28px;
     height: 28px;
+  }
+  
+  .small-content {
+    width: 100% !important;
+    height: unset !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
   }
 
   .content {
@@ -80,6 +144,19 @@
       width: 40%;
     }
 
+    .transparent-icon {
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: unset;
+      background-color: transparent;
+      border-radius: 1000px;
+      width: 40px;
+      height: 40px;
+      margin-left: 16px;
+      margin-right: 8px;
+      padding: 0px;
+    }
+
     .row {
       display: flex;
       flex-direction: row;
@@ -89,6 +166,17 @@
       padding: 8px 8% 0 8px;
       margin: 0;
       justify-content: flex-start;
+    }
+
+    .row-center {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      color: #c0c0c0;
+      width: 100%;
+      margin: 4px 20px;
+      padding-top: 8px;
     }
 
     .hint {
@@ -102,10 +190,21 @@
       width: 10%;
     }
 
+    .flow-hint {
+      margin-right: 16px;
+      font-size: 16px;
+      width: 7%;
+    }
+
     .divider {
       margin: 16px 0;
       width: 100%;
       border-top: 1px solid #657172;
+    }
+
+    .spacer {
+      margin: 8px 0;
+      width: 100%;
     }
 
     .input-container {
@@ -120,6 +219,11 @@
     .input-container-row {
       @extend .input-container;
       width: 85%;
+    }
+
+    .input-container-fill {
+      @extend .input-container;
+      width: 65%;
     }
 
     .full-width {
@@ -379,6 +483,7 @@
       display: flex;
       flex-direction: column;
       width: 33.333%;
+      overflow-x: scroll;
     }
 
     .left {
@@ -453,18 +558,7 @@
     font-family: 'Montserrat Alternates', sans-serif;
 
     .container {
-      position: absolute;
-      top: 12.5%;
-      bottom: 12.5%;
-      left: 12.5%;
-      right: 12.5%;
-      border-radius: 8px;
-      border: 1px solid #1d2326;
-      z-index: 901;
-      width: 75%;
-      height: 75%;
-      margin: 0;
-      padding: 0;
+      @extend .base-container;
     }
 
     .tabs {
@@ -714,21 +808,9 @@
     font-family: 'Montserrat Alternates', sans-serif;
 
     .container {
+      @extend .base-container;
       display: flex;
       flex-direction: row;
-      position: absolute;
-      top: 12.5%;
-      bottom: 12.5%;
-      left: 12.5%;
-      right: 12.5%;
-      border-radius: 8px;
-      border: 1px solid #1d2326;
-      background-color: #1e2326;
-      z-index: 901;
-      width: 75%;
-      height: 75%;
-      margin: 0;
-      padding: 0;
 
       .left-menu {
         display: flex;
@@ -845,6 +927,12 @@
 
     .input-container-row {
       width: 75%;
+    }
+  }
+
+  #profile-social-hub {
+    .container {
+      @extend .base-container;
     }
   }
 }

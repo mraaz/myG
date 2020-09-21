@@ -37,6 +37,11 @@ class ProfileRepository {
     const relationship = profile.relationship_status;
     const status = profile.status;
     const level = profile.level;
+    const twitch = profile.twitch;
+    const discord = profile.discord;
+    const steam = profile.steam;
+    const youtube = profile.youtube;
+    const facebook = profile.facebook;
     const visibilityName = profile.name_visibility;
     const visibilityEmail = profile.email_visibility;
     const lookingForWork = profile.looking_for_work;
@@ -80,6 +85,11 @@ class ProfileRepository {
       status,
       level,
       experience,
+      twitch,
+      discord,
+      steam,
+      youtube,
+      facebook,
       visibilityName,
       visibilityEmail,
       lookingForWork,
@@ -161,7 +171,7 @@ class ProfileRepository {
     return response ? (response.toJSON() || []).map(background => new GameBackgroundSchema(background)) : [];
   }
 
-  async updateProfile({ requestingUserId, firstName, lastName, team, country, relationship, visibilityName, visibilityEmail, lookingForWork, languages, mostPlayedGames }) {
+  async updateProfile({ requestingUserId, firstName, lastName, team, country, relationship, visibilityName, visibilityEmail, lookingForWork, languages, twitch, discord, steam, youtube, facebook, mostPlayedGames }) {
     const updates = {};
     if (firstName !== undefined) updates.first_name = firstName;
     if (lastName !== undefined) updates.last_name = lastName;
@@ -171,6 +181,11 @@ class ProfileRepository {
     if (visibilityName !== undefined) updates.name_visibility = visibilityName;
     if (visibilityEmail !== undefined) updates.email_visibility = visibilityEmail;
     if (lookingForWork !== undefined) updates.looking_for_work = lookingForWork;
+    if (twitch !== undefined) updates.twitch = twitch;
+    if (discord !== undefined) updates.discord = discord;
+    if (steam !== undefined) updates.steam = steam;
+    if (youtube !== undefined) updates.youtube = youtube;
+    if (facebook !== undefined) updates.facebook = facebook;
     if (languages !== undefined) {
       await UserLanguage.query().where('user_id', requestingUserId).delete();
       const languagesRequests = languages.map(language => {
