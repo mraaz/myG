@@ -1,5 +1,4 @@
-const { forceInt, forceString } = require('./Primitives')
-const GameBackgroundSchema = require('./GameBackground');
+const { forceInt, forceString, forceJson } = require('./Primitives')
 
 class GameExperience {
   constructor(data) {
@@ -14,6 +13,7 @@ class GameExperience {
     this.team = forceString(data.team)
     this.nickname = forceString(data.nickname)
     this.tags = data.tags ? data.tags.split('|') : [];
+    this.dynamic = forceJson(data.dynamic)
     this.background = data.background || []
   }
 }

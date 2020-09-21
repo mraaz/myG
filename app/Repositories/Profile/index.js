@@ -9,6 +9,7 @@ const GameExperience = use('App/Models/GameExperience');
 const GameBackground = use('App/Models/GameBackground');
 const GameName = use('App/Models/GameName');
 const UserMostPlayedGame = use('App/Models/UserMostPlayedGame');
+const GameNameField = use('App/Models/GameNameField');
 const GameNameController = use('App/Controllers/Http/GameNameController');
 const AwsKeyController = use('App/Controllers/Http/AwsKeyController');
 const ConnectionController = use('App/Controllers/Http/ConnectionController');
@@ -37,6 +38,11 @@ class ProfileRepository {
     const relationship = profile.relationship_status;
     const status = profile.status;
     const level = profile.level;
+    const twitch = profile.twitch;
+    const discord = profile.discord;
+    const steam = profile.steam;
+    const youtube = profile.youtube;
+    const facebook = profile.facebook;
     const visibilityName = profile.name_visibility;
     const visibilityEmail = profile.email_visibility;
     const lookingForWork = profile.looking_for_work;
@@ -80,6 +86,11 @@ class ProfileRepository {
       status,
       level,
       experience,
+      twitch,
+      discord,
+      steam,
+      youtube,
+      facebook,
       visibilityName,
       visibilityEmail,
       lookingForWork,
@@ -161,7 +172,7 @@ class ProfileRepository {
     return response ? (response.toJSON() || []).map(background => new GameBackgroundSchema(background)) : [];
   }
 
-  async updateProfile({ requestingUserId, firstName, lastName, team, country, relationship, visibilityName, visibilityEmail, lookingForWork, languages, mostPlayedGames }) {
+  async updateProfile({ requestingUserId, firstName, lastName, team, country, relationship, visibilityName, visibilityEmail, lookingForWork, languages, twitch, discord, steam, youtube, facebook, mostPlayedGames }) {
     const updates = {};
     if (firstName !== undefined) updates.first_name = firstName;
     if (lastName !== undefined) updates.last_name = lastName;
@@ -171,6 +182,11 @@ class ProfileRepository {
     if (visibilityName !== undefined) updates.name_visibility = visibilityName;
     if (visibilityEmail !== undefined) updates.email_visibility = visibilityEmail;
     if (lookingForWork !== undefined) updates.looking_for_work = lookingForWork;
+    if (twitch !== undefined) updates.twitch = twitch;
+    if (discord !== undefined) updates.discord = discord;
+    if (steam !== undefined) updates.steam = steam;
+    if (youtube !== undefined) updates.youtube = youtube;
+    if (facebook !== undefined) updates.facebook = facebook;
     if (languages !== undefined) {
       await UserLanguage.query().where('user_id', requestingUserId).delete();
       const languagesRequests = languages.map(language => {
@@ -198,7 +214,7 @@ class ProfileRepository {
     return this.fetchProfileInfo({ requestingUserId, id: requestingUserId });
   }
 
-  async updateGame({ requestingUserId, id, imageKey, imageSource, mainFields, game, gameName, nickname, level, experience, team, tags, background }) {
+  async updateGame({ requestingUserId, id, imageKey, imageSource, mainFields, game, gameName, nickname, level, experience, team, tags, dynamic, background }) {
     if (!game && gameName) {
       const gameNameModel = new GameName();
       gameNameModel.user_id = requestingUserId;
@@ -223,6 +239,7 @@ class ProfileRepository {
     gameExperience.team = team;
     gameExperience.nickname = nickname;
     gameExperience.tags = tags;
+    gameExperience.dynamic = JSON.stringify(dynamic);
     await gameExperience.save();
 
     await GameBackground.query().where('experience_id', gameExperience.id).delete();
@@ -262,6 +279,21 @@ class ProfileRepository {
     return { gamerSuggestions: gamerSuggestions.map(suggestion => suggestion.profile) };
   }
 
+  async fetchDynamicFields({ gameId }) {
+    const response = await GameNameField.query().where('game_names_id', gameId).first();
+    const fields = JSON.parse(response.in_game_fields);
+    const placeholders = JSON.parse(response.in_game_field_placeholders);
+    const types = JSON.parse(response.in_game_field_types);
+    const labels = JSON.parse(response.in_game_field_labels);
+    const values = JSON.parse(response.in_game_field_values);
+    return Object.keys(fields).map(key => fields[key]).map((id) => ({
+      id,
+      placeholder: placeholders[id],
+      type: types[id],
+      label: labels[id],
+      values: values[id] ? values[id].split(',') : [],
+    }));
+  }
 }
 
 module.exports = new ProfileRepository();

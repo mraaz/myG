@@ -61,3 +61,8 @@ export function fetchGamerSuggestions() {
   logger.log('PROFILE', 'HTTP', `Fetching Gamer Suggestions`);
   return axios.get(`/api/gamer_suggestions`).then(response => response.data);
 }
+
+export function fetchDynamicFields(gameId) {
+  logger.log('PROFILE', 'HTTP', `Fetching Dynamic Fields for game ${gameId}`);
+  return axios.get(`/api/profile_fields/${gameId}`).then(response => response.data);
+}

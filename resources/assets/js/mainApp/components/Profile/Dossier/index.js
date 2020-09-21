@@ -13,7 +13,7 @@ export default class Dossier extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({ tab: this.props.tab });
+    this.setState({ tab: !this.props.isSelf ? 'social' : this.props.tab });
   }
 
   render() {
@@ -21,19 +21,21 @@ export default class Dossier extends React.Component {
       <div id="profile-dossier">
           <div className="container">
             <div className="tabs">
-              <div className={`tab clickable ${this.state.tab === 'info' ? 'selected' : 'unselected'}`}
+              {this.props.isSelf && (
+                <div className={`tab clickable ${this.state.tab === 'info' ? 'selected' : 'unselected'}`}
                 onClick={() => this.setState({ tab: 'info' })}
-              >
-                <p className="title">Information</p>
-              </div>
+                >
+                  <p className="title">Information</p>
+                </div>
+              )}
               <div className={`tab clickable ${this.state.tab === 'social' ? 'selected' : 'unselected'}`}
                 onClick={() => this.setState({ tab: 'social' })}
               >
                 <p className="title">Social Hub</p>
               </div>
             </div>
-            {this.state.tab === 'info' && <DossierInfo onClose={this.props.onClose} profile={this.props.profile} updateProfile={this.props.updateProfile} />}
-            {this.state.tab === 'social' && <DossierSocialHub onClose={this.props.onClose} profile={this.props.profile} updateProfile={this.props.updateProfile} />}
+            {this.state.tab === 'info' && <DossierInfo onClose={this.props.onClose} isSelf={this.props.isSelf} profile={this.props.profile} updateProfile={this.props.updateProfile} />}
+            {this.state.tab === 'social' && <DossierSocialHub onClose={this.props.onClose} isSelf={this.props.isSelf} profile={this.props.profile} updateProfile={this.props.updateProfile} />}
         </div>
       </div>
     );

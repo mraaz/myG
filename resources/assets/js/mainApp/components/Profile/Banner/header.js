@@ -1,6 +1,7 @@
 import React from 'react'
 import Uploader from './uploader'
-import get from 'lodash.get';
+import get from 'lodash.get'
+import Dossier from '../Dossier'
 import { ignoreFunctions } from '../../../../common/render'
 import { openChatByContact } from '../../../../common/chat'
 import { showMessengerAlert } from '../../../../common/alert'
@@ -8,6 +9,10 @@ import { showMessengerAlert } from '../../../../common/alert'
 export default class Header extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
+  state = {
+    editing: false,
   }
 
   onUpload = (source, key) => this.props.uploadProfileImage(this.props.alias, source, key)
@@ -114,8 +119,20 @@ export default class Header extends React.Component {
   }
 
   renderSocialHubButton = () => {
-    if (this.props.profile.isSelf) return null
-    return <div className='button clickable'>Social Hub</div>
+    return <div className='button clickable' onClick={() => this.setState({ editing: 'social' })}>Social Hub</div>
+  }
+
+  renderSocialHub = () => {
+    if (!this.state.editing) return;
+    return (
+      <Dossier
+        profile={this.props.profile}
+        updateProfile={this.props.updateProfile}
+        isSelf={this.props.isSelf}
+        tab={this.state.editing}
+        onClose={() => this.setState({ editing: false })}
+      />
+    )
   }
 
   render() {
@@ -128,6 +145,7 @@ export default class Header extends React.Component {
           {this.renderFollowButton()}
           {this.renderViewFriendsButton()}
           {this.renderSocialHubButton()}
+          {this.renderSocialHub()}
         </div>
       </div>
     )

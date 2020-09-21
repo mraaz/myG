@@ -83,6 +83,26 @@ class ProfileController {
       return response.send({ error })
     }
   }
+
+  async fetchDynamicFields({ auth, params, response }) {
+    try {
+      const requestingUserId = auth.user.id
+      if (!requestingUserId) throw new Error('Auth Error')
+      const gameId = params.gameId
+      log('PROFILE', `User ${requestingUserId} requesting dynamic fields for game ${gameId}`)
+      const fields = await ProfileRepository.fetchDynamicFields({ gameId })
+      return response.send(fields)
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+      return response.send({ error })
+    }
+  }
 }
 
 module.exports = ProfileController

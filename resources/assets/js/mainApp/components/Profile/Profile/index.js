@@ -22,7 +22,7 @@ export class Profile extends React.Component {
     if (this.props.profile.error) return <Redirect push to={`/profile/${this.props.userAlias}`} />;
     return(
       <div id="profile">
-        <Banner profile={this.props.profile} />
+        <Banner profile={this.props.profile} updateProfile={this.props.updateProfile} />
         <ProfileInfo alias={this.props.alias} profile={this.props.profile} updateProfile={this.props.updateProfile} />
         <GameExperiences selectedGame={this.props.gameId} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
       </div>
