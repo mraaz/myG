@@ -86,7 +86,7 @@ const CoverImage = (props) => {
               Manage
             </button>
           )}
-          <button type='button' className='btnWarning'>
+          <button type='button' className='btnWarning' onClick={(e) => props.handleModalStatus()}>
             View Members
           </button>
         </div>

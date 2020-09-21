@@ -115,4 +115,180 @@
     margin-left: 6em;
     margin-right: 6em;
   }
+  .View__Member__modal {
+    z-index: 9999;
+    background: none;
+    .modal-wrap {
+      border: 1px solid #273137;
+      border-radius: 4px;
+      opacity: 1;
+      z-index: 2;
+      position: relative;
+      background: #171a1c 0% 0% no-repeat padding-box;
+      height: 512px;
+      .modal__header {
+        background: #1d2326 0% 0% no-repeat padding-box;
+        height: 80px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        .tabs___header {
+          width: 375px;
+          height: 35px;
+          font: normal normal bold 16px/14px Montserrat;
+          letter-spacing: 0px;
+          color: #ffffff;
+          display: flex;
+          justify-content: space-around;
+          border-bottom: 1px solid #2d363a;
+
+          .setting__tab {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 12px;
+            cursor: pointer;
+            &.active {
+              border-bottom: 2px solid #e5c746;
+            }
+          }
+        }
+        .modal__close {
+          width: 32px;
+          height: 32px;
+          background: #1d2326 0% 0% no-repeat padding-box;
+          border-radius: 50%;
+          position: absolute;
+          right: -15px;
+          top: -15px;
+          cursor: pointer;
+        }
+      }
+      .modal__body {
+        background: #171a1c 0% 0% no-repeat padding-box;
+        height: auto;
+        width: 100%;
+        padding: 2em 5em;
+        display: inline-flex;
+        flex-wrap: wrap;
+        .GroupMember__card {
+          width: 174px;
+          height: auto;
+          display: block;
+          text-align: center;
+          background: #1d2326 0% 0% no-repeat padding-box;
+          border: 1px solid #273137;
+          border-radius: 4px;
+          margin-right: 2em;
+          position: relative;
+          .GroupMember__image {
+            height: 5em;
+            width: 100%;
+            margin-bottom: 3.5em;
+            position: relative;
+            img {
+              height: 100%;
+              width: 100%;
+            }
+            .GroupMember__profile {
+              width: 79px;
+              height: 79px;
+              background: #ff00ff 0% 0% no-repeat padding-box;
+              border-radius: 50%;
+              position: absolute;
+              bottom: -40px;
+              left: 25%;
+              img {
+                height: 100%;
+                width: 100%;
+                border-radius: 50%;
+              }
+              .GroupMember_role {
+                position: absolute;
+                cursor: pointer;
+                bottom: -10px;
+                left: 28px;
+              }
+            }
+          }
+          .GroupMember__alias {
+            text-align: center;
+            font: normal normal bold 18px/22px Montserrat;
+            letter-spacing: 0px;
+            color: #ffffff;
+            margin-bottom: 0.6em;
+          }
+          .GroupMember__level {
+            font: normal normal normal 14px/18px Montserrat;
+            letter-spacing: 0px;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            .level__value {
+              margin-left: 5px;
+              font: normal normal normal 28px/18px Montserrat;
+            }
+            margin-bottom: 3.5em;
+          }
+          .GroupMember__action {
+            padding: 0px 15px;
+            display: flex;
+            justify-content: space-around;
+            position: absolute;
+            bottom: -12px;
+            button {
+              width: 62px;
+              height: 25px;
+              background: #e5c746 0% 0% no-repeat padding-box;
+              font: normal normal bold 12px/14px Montserrat;
+              letter-spacing: 0px;
+              color: #000000;
+              border: none;
+              display: inline-flex;
+              justify-content: center;
+              align-items: center;
+              margin-right: 10px;
+              border-radius: 2px;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+      .modal__footer {
+        height: 90px;
+        background: #1d2326 0% 0% no-repeat padding-box;
+        border-radius: 0px 0px 10px 10px;
+        opacity: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        button {
+          width: 93px;
+          height: 39px;
+          background: #e5c746 0% 0% no-repeat padding-box;
+          border-radius: 8px;
+          opacity: 1;
+          font: Bold 16px/14px Montserrat;
+          letter-spacing: 0px;
+          color: #000000;
+          &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      backdrop-filter: blur(14px);
+      z-index: 1;
+    }
+  }
 }
