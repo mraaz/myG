@@ -14,6 +14,7 @@ export default class Posts extends Component {
       myPosts: [],
       moreplease: true,
       post_submit_loading: false,
+      activeTab: 'All',
     }
   }
 
@@ -43,14 +44,13 @@ export default class Posts extends Component {
     if (this.state.myPosts.length > 0) {
       window.scrollTo(0, document.documentElement.offsetHeight - 4000)
     }
-    const self = this
 
     const getPosts = async () => {
       try {
         const myPosts = await axios.post('/api/get_group_posts', {
           counter: this.state.counter,
           group_id: this.props.group_id,
-          type: 'All',
+          type: this.state.activeTab,
         })
         if (myPosts.data.groupPosts.groupPosts.length == 0) {
           this.setState({
@@ -60,7 +60,7 @@ export default class Posts extends Component {
         }
 
         this.setState({
-          myPosts: self.state.myPosts.concat(myPosts.data.groupPosts.groupPosts),
+          myPosts: this.state.myPosts.concat(myPosts.data.groupPosts.groupPosts),
         })
       } catch (error) {
         logToElasticsearch('error', 'Posts', 'Failed at myPosts' + ' ' + error)
@@ -100,10 +100,41 @@ export default class Posts extends Component {
     )
   }
 
+  handleTabOption = (activeTab) => {
+    this.setState({ activeTab, counter: 1 }, async () => {
+      const myPosts = await axios.post('/api/get_group_posts', {
+        counter: this.state.counter,
+        group_id: this.props.group_id,
+        type: this.state.activeTab,
+      })
+      if (myPosts.data.groupPosts.groupPosts.length == 0) {
+        this.setState({
+          myPosts: [],
+        })
+        return
+      }
+
+      this.setState({
+        myPosts: this.state.myPosts.concat(myPosts.data.groupPosts.groupPosts),
+      })
+    })
+  }
+
   render() {
-    const { myPosts = [], moreplease, isFetching = false, post_submit_loading = false } = this.state
+    const { myPosts = [], moreplease, isFetching = false, post_submit_loading = false, activeTab } = this.state
     return (
       <Fragment>
+        <div className='gamePost__tab'>
+          <span className={activeTab == 'All' ? 'active' : ''} onClick={(e) => this.handleTabOption('All')}>
+            All
+          </span>
+          <span className={activeTab == 'Recents' ? 'active' : ''} onClick={(e) => this.handleTabOption('Recents')}>
+            Recent
+          </span>
+          <span className={activeTab == 'Featured' ? 'active' : ''} onClick={(e) => this.handleTabOption('Featured')}>
+            Featured
+          </span>
+        </div>
         {[0, 1, 2, 3].includes(this.props.current_user_permission) && (
           <ComposeSection
             successCallback={this.composeSuccess}
