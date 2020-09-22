@@ -202,6 +202,7 @@
           border: 1px solid #273137;
           border-radius: 4px;
           margin-right: 2em;
+          margin-bottom: 2em;
           position: relative;
           .GroupMember__image {
             height: 5em;
@@ -239,6 +240,7 @@
             letter-spacing: 0px;
             color: #ffffff;
             margin-bottom: 0.6em;
+            word-break: break-all;
           }
           .GroupMember__level {
             font: normal normal normal 14px/18px Montserrat;
