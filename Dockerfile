@@ -15,6 +15,7 @@ RUN npm install
 # Bundle app source
 COPY --chown=node:node . /usr/src/app
 RUN npm run build
+RUN npm run production
 
 # Run app
 EXPOSE 3333

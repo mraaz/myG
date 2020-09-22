@@ -572,6 +572,31 @@ class GroupController {
       return 'You are not Logged In!'
     }
   }
+
+  async groupName({ auth, request, response }) {
+    try {
+      const groupNameResults = await Database.from('groups')
+        .select('id')
+        .where('name', '=', request.params.group_name)
+        .first()
+
+      console.log(groupNameResults)
+
+      if (groupNameResults == undefined) {
+        return false
+      } else {
+        return true
+      }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+    }
+  }
 }
 
 module.exports = GroupController
