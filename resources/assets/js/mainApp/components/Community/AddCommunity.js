@@ -121,19 +121,11 @@ const AddCommunity = ({
     }
 
     const getgroup_name = await axios.get(`/api/groups/groupName/${mainSettingsState.community_name.trim()}`)
-
-    if (getgroup_name.data.getOne) {
-      if (getgroup_name.data.getOne[0].no_of_names == 0) {
-        updateAdvancedSettings({ grp_name_unique: true })
-      } else {
-        updateAdvancedSettings({ grp_name_unique: false })
-        toast.success(<Toast_style text={'Hmmmm, be unique community name must'} />)
-        return
-      }
+    if (getgroup_name.data == false) {
+      updateAdvancedSettings({ grp_name_unique: true })
     } else {
       updateAdvancedSettings({ grp_name_unique: false })
-      toast.success(<Toast_style text={'Hmmmm, failed :( Refresh site, or try again later?'} />)
-      logToElasticsearch('error', 'AddCommunity', 'Failed unique test' + ' ' + error)
+      toast.success(<Toast_style text={'Hmmmm, be unique community name must'} />)
       return
     }
   }
