@@ -37,7 +37,7 @@ export default class GameExperiences extends React.Component {
 
   copyLink = (gameId) => {
     copyToClipboard(`${window.location.host}/profile/${this.props.alias}/game/${gameId}`)
-    notifyToast('The link for this game was copied to your clipboard!')
+    notifyToast('Roger that. Link copied. Over.')
   }
 
   getGamesPerPage = () => {
@@ -95,7 +95,7 @@ export default class GameExperiences extends React.Component {
     const fields = [...mainFields, ...missingFields].slice(0, 3);
     const hasCommended = this.props.profile.commended.find((commendation) => commendation.gameExperienceId === id && commendation.commenderId === this.props.userId);
     return(
-      <div className="game-experience" 
+      <div className="game-experience"
         onMouseEnter={() => this.setState({ hovering: id })}
         onMouseLeave={() => this.setState({ hovering: null })}
       >
@@ -148,7 +148,7 @@ export default class GameExperiences extends React.Component {
     if (!this.state.selected) return null;
     const gameExperience = this.state.gameExperiences.find(experience => parseInt(experience.id, 10) === parseInt(this.state.selected, 10));
     if (this.state.selected !== 'edit' && !gameExperience) return null;
-    return <EditGameExperience 
+    return <EditGameExperience
       alias={this.props.alias}
       profile={this.props.profile}
       isSelf={this.state.isSelf}
@@ -181,4 +181,3 @@ export default class GameExperiences extends React.Component {
     );
   }
 }
-

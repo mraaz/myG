@@ -233,7 +233,7 @@ export default class DossierSocialHub extends React.Component {
         className='share-button clickable'
         onClick={() => {
           copyToClipboard(window.location.href)
-          notifyToast('Copied this profile link to the clipboard!')
+          notifyToast('Profile link copied. Click Click Boom!')
         }}>
         Share
       </div>
@@ -241,11 +241,9 @@ export default class DossierSocialHub extends React.Component {
   }
 
   renderEmpty = () => {
-    if (this.props.isSelf) return;
-    if (this.hasChanges()) return;
-    return(
-      <span className="empty-tab">Nothing to show here mate!</span>
-    );
+    if (this.props.isSelf) return
+    if (this.hasChanges()) return
+    return <span className='empty-tab'>Nothing to show here mate!</span>
   }
 
   render() {

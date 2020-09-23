@@ -560,20 +560,17 @@ class NotificationController_v2 {
           .orderBy('notifications.created_at', 'desc')
           .paginate(request.input('counter'), set_limit)
 
-        singleArr.push(...group_member_approved.data)
-        singleArr.push(...user_ding.data)
-      }
-
-      if (request.input('activity_type') == 0) {
         const commendations = await Database.from('notifications')
           .innerJoin('users', 'users.id', 'notifications.other_user_id')
           .where({ user_id: auth.user.id, activity_type: 23 })
           .select('notifications.id', 'notifications.activity_type', 'notifications.read_status', 'users.alias')
           .orderBy('notifications.created_at', 'desc')
           .paginate(request.input('counter'), set_limit)
-        singleArr.push(...commendations.data)
-      }
 
+        singleArr.push(...commendations.data)
+        singleArr.push(...group_member_approved.data)
+        singleArr.push(...user_ding.data)
+      }
       // const chat_group_invite = await Database.from('notifications')
       //   .innerJoin('users', 'users.id', 'notifications.user_id')
       //   .where({ other_user_id: auth.user.id, activity_type: 18 })
