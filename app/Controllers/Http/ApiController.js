@@ -153,6 +153,16 @@ class ApiController {
           game_name_id = null
 
         switch (type) {
+          case '1':
+            const update_profile_img = await User.query()
+              .where({ id: auth.user.id })
+              .update({ profile_img: key })
+            break
+          case '2':
+            const update_bg_img = await User.query()
+              .where({ id: auth.user.id })
+              .update({ profile_bg: key })
+            break
           case '3':
             post_id = id
             break
