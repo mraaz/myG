@@ -66,3 +66,8 @@ export function fetchDynamicFields(gameId) {
   logger.log('PROFILE', 'HTTP', `Fetching Dynamic Fields for game ${gameId}`);
   return axios.get(`/api/profile_fields/${gameId}`).then(response => response.data);
 }
+
+export function commendUser(alias, gameExperienceId) {
+  logger.log('PROFILE', 'HTTP', `Commending user ${alias} for game ${gameExperienceId}`);
+  return axios.post(`/api/commend/${alias}/${gameExperienceId}`).then(response => response.data);
+}

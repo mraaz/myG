@@ -40,5 +40,7 @@ export default class ProfileSchema {
     if (data.friendRequestId !== undefined) this.friendRequestId = forceInt(data.friendRequestId)
     if (data.gameExperiences !== undefined) this.gameExperiences = forceArray(data.gameExperiences)
     if (data.esportsExperiences !== undefined) this.esportsExperiences = forceArray(data.esportsExperiences)
+    if (data.commended !== undefined) this.commended = forceArray(data.commended)
+    if (data.commender !== undefined) this.commender = forceArray(data.commender)
   }
 }

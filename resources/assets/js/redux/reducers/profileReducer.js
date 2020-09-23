@@ -159,6 +159,18 @@ export default function reducer(state = initialState, action) {
       }
     }
 
+    case 'COMMEND_USER_FULFILLED': {
+      logger.log('PROFILE', `Redux -> Commended User ${alias}: `, action.payload)
+      const alias = action.meta.alias
+      const profiles = addProfile(state, alias)
+      profiles[alias].set(get(action, 'payload.profile'))
+      profiles[alias].set({ error: get(action, 'payload.error') })
+      return {
+        ...state,
+        profiles,
+      }
+    }
+
     default:
       return state
   }
