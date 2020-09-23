@@ -441,6 +441,7 @@ class NotificationController_v2 {
             'notifications.read_status',
             'schedule_games.start_date_time',
             'schedule_games.schedule_games_GUID',
+            'schedule_games.reason_for_deletion',
             'game_names.game_name',
             'notifications.id'
           )

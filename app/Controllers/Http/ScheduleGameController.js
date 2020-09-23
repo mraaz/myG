@@ -9,11 +9,6 @@ const GameTags = use('App/Models/GameTag')
 const ScheduleGamesTags = use('App/Models/ScheduleGamesTag')
 const Attendee = use('App/Models/Attendee')
 
-const Archive_AttendeeController = use('./Archive_AttendeeController')
-const Archive_ScheduleGameController = use('./Archive_ScheduleGameController')
-const Archive_CommentController = use('./Archive_CommentController')
-const Archive_ReplyController = use('./Archive_ReplyController')
-const Archive_schedule_games_transController = use('./Archive_schedule_games_transController')
 const GameNameController = use('./GameNameController')
 const InGame_fieldsController = use('./InGame_fieldsController')
 const GameTagController = use('./GameTagController')
@@ -495,132 +490,50 @@ class ScheduleGameController {
   async destroy({ auth, request, response }) {
     if (auth.user) {
       try {
-        let archive_attendees = new Archive_AttendeeController()
-        let archive_schedule_games = new Archive_ScheduleGameController()
-        let archive_comments = new Archive_CommentController()
-        let archive_replies = new Archive_ReplyController()
-        let gameface = new GameNameController()
-
-        let archive_schedule_games_trans = new Archive_schedule_games_transController()
+        const gameface = new GameNameController()
 
         var schedule_game_id = request.params.id
 
-        const getOne = await Database.from('schedule_games').where({
-          id: request.params.id,
-        })
+        const getOne = await Database.from('schedule_games')
+          .where({
+            id: request.params.id,
+          })
+          .first()
 
-        //archive_GameNameField.store({ auth, request, response })
+        if (getOne == undefined) {
+          return
+        }
 
-        gameface.decrementGameCounter({ auth }, getOne[0].game_names_id)
-        //If game is deleted then return, we're not storing this if no1 has it in their profile or has scheduled games for it
+        gameface.decrementGameCounter({ auth }, getOne.game_names_id)
 
-        let reasons = null
+        let reason = null
 
         switch (request.params.reason) {
           case 1:
-            reasons = 'Real life issues, sorry all'
+            reason = 'Real life issues, sorry all'
             break
           case 2:
-            reasons = 'Technical issues, sorry all'
+            reason = 'Technical issues, sorry all'
             break
           case 3:
-            reasons = 'Totally forgot about this, my bad'
+            reason = 'Totally forgot about this, my bad'
             break
           case 4:
-            reasons = 'Not enuf players'
+            reason = 'Not enuf players'
             break
           case 5:
-            reasons = 'Decided not to play anymore, sorry all'
+            reason = 'Decided not to play anymore, sorry all'
+            break
+          case 6:
+            reason = 'meh, bite me!'
             break
           default:
-            reasons = null
+            reason = null
         }
 
-        request.params.id = getOne[0].id
-        request.params.user_id = getOne[0].user_id
-        request.params.region = getOne[0].region
-        request.params.experience = getOne[0].experience
-        request.params.start_date_time = getOne[0].start_date_time
-        request.params.end_date_time = getOne[0].end_date_time
-        request.params.platform = getOne[0].platform
-        request.params.description = getOne[0].description
-        request.params.other = getOne[0].other
-        request.params.expiry = getOne[0].expiry
-        request.params.visibility = getOne[0].visibility
-        request.params.limit = getOne[0].limit
-        request.params.accept_msg = getOne[0].accept_msg
-        request.params.schedule_games_GUID = getOne[0].schedule_games_GUID
-        request.params.vacancy = getOne[0].vacancy
-        request.params.og_created_at = getOne[0].created_at
-        request.params.reason_for_cancel = reasons
-
-        var archived_schedule_game = await archive_schedule_games.store({ auth, request, response })
-
-        request.params.archive_schedule_games_id = archived_schedule_game.id
-
-        //archive_schedule_games_trans.store({ auth, request, response })
-
-        // const allAttendees = await Database.from('attendees').where({
-        //   schedule_games_id: request.params.id,
-        //   type: 1,
-        // })
-
-        // for (var i = 0; i < allAttendees.length; i++) {
-        //   request.params.archive_schedule_game_id = allAttendees[i].schedule_games_id
-        //   request.params.user_id = allAttendees[i].user_id
-        //   request.params.type = allAttendees[i].type
-        //   request.params.dota_2_position_one = allAttendees[i].dota_2_position_one
-        //   request.params.dota_2_position_two = allAttendees[i].dota_2_position_two
-        //   request.params.dota_2_position_three = allAttendees[i].dota_2_position_three
-        //   request.params.dota_2_position_four = allAttendees[i].dota_2_position_four
-        //   request.params.dota_2_position_five = allAttendees[i].dota_2_position_five
-        //   request.params.og_created_at = allAttendees[i].created_at
-        //
-        //   archive_attendees.savemySpot({ auth, request, response })
-        //
-        //   if (auth.user.id != allAttendees[i].user_id) {
-        //     request.params.id = allAttendees[i].user_id
-        //     request.params.archive_schedule_game_id = schedule_game_id
-        //     noti.addGameDeleted({ auth, request, response })
-        //     //request.params.payload = `${getOne[0].game_name} was deleted! This game was scheduled to start ${getOne[0].start_date_time}`
-        //   }
-        // }
-
-        const getComments = await Database.from('comments').where({
-          schedule_games_id: schedule_game_id,
-        })
-        var getReplies
-
-        for (var i = 0; i < getComments.length; i++) {
-          request.params.id = getComments[i].id
-          request.params.content = getComments[i].content
-          request.params.archive_schedule_game_id = schedule_game_id
-          request.params.user_id = getComments[i].user_id
-          request.params.og_created_at = getComments[i].created_at
-          request.params.og_updated_at = getComments[i].updated_at
-
-          archive_comments.store({ auth, request, response })
-
-          getReplies = await Database.from('replies').where({
-            comment_id: getComments[i].id,
-          })
-
-          for (var x = 0; x < getReplies.length; x++) {
-            request.params.content = getReplies[x].content
-            request.params.archive_comment_id = getComments[i].id
-            request.params.user_id = getReplies[x].user_id
-            request.params.og_created_at = getReplies[x].created_at
-            request.params.og_updated_at = getReplies[x].updated_at
-
-            archive_replies.store({ auth, request, response })
-          }
-        }
-
-        const delete_sch = await Database.table('schedule_games')
-          .where({
-            id: schedule_game_id,
-          })
-          .delete()
+        const delete_sch = await ScheduleGame.query()
+          .where({ id: request.params.id })
+          .update({ marked_as_deleted: true, deleted_date: Database.fn.now(), reason_for_deletion: reason })
 
         return 'Deleted successfully'
       } catch (error) {
@@ -666,7 +579,7 @@ class ScheduleGameController {
             .where((builder) => {
               if (request.input('exclude_expired') == 'true') builder.where('expiry', '>', Database.fn.now())
             })
-            .where('schedule_games.user_id', '=', auth.user.id)
+            .where('schedule_games.user_id', '=', auth.user.id, 'schedule_games.marked_as_deleted', '=', 0)
             .orWhereIn('schedule_games.id', subquery)
             .select(
               'game_names.game_artwork',
@@ -689,7 +602,7 @@ class ScheduleGameController {
             .where((builder) => {
               if (request.input('exclude_expired') == 'true') builder.where('expiry', '>', Database.fn.now())
             })
-            .where('schedule_games.user_id', '=', auth.user.id)
+            .where('schedule_games.user_id', '=', auth.user.id, 'schedule_games.marked_as_deleted', '=', 0)
             .orWhereIn('schedule_games.id', subquery)
             .count('* as no_of_records')
 
@@ -702,7 +615,7 @@ class ScheduleGameController {
             .where((builder) => {
               if (request.input('exclude_expired') == 'true') builder.where('expiry', '>', Database.fn.now())
             })
-            .where('schedule_games.user_id', '=', auth.user.id)
+            .where('schedule_games.user_id', '=', auth.user.id, 'schedule_games.marked_as_deleted', '=', 0)
             .select(
               'game_names.game_artwork',
               'game_names.game_name_fields_img',
@@ -723,7 +636,7 @@ class ScheduleGameController {
             .where((builder) => {
               if (request.input('exclude_expired') == 'true') builder.where('expiry', '>', Database.fn.now())
             })
-            .where('schedule_games.user_id', '=', auth.user.id)
+            .where('schedule_games.user_id', '=', auth.user.id, 'schedule_games.marked_as_deleted', '=', 0)
             .count('* as no_of_records')
 
           number_of_records = count_myScheduledGames[0].no_of_records
@@ -740,6 +653,7 @@ class ScheduleGameController {
               if (request.input('exclude_expired') == 'true') builder.where('expiry', '>', Database.fn.now())
             })
             .whereIn('schedule_games.id', subquery)
+            .where('schedule_games.marked_as_deleted', '=', 0)
             .select(
               'game_names.game_artwork',
               'game_names.game_name_fields_img',
@@ -761,6 +675,7 @@ class ScheduleGameController {
               if (request.input('exclude_expired') == 'true') builder.where('expiry', '>', Database.fn.now())
             })
             .whereIn('schedule_games.id', subquery)
+            .where('schedule_games.marked_as_deleted', '=', 0)
             .count('* as no_of_records')
 
           number_of_records = count_myScheduledGames[0].no_of_records
@@ -777,6 +692,7 @@ class ScheduleGameController {
               if (request.input('exclude_expired') == 'true') builder.where('expiry', '>', Database.fn.now())
             })
             .whereIn('schedule_games.id', subquery)
+            .where('schedule_games.marked_as_deleted', '=', 0)
             .select(
               'game_names.game_artwork',
               'game_names.game_name_fields_img',
@@ -798,6 +714,7 @@ class ScheduleGameController {
               if (request.input('exclude_expired') == 'true') builder.where('expiry', '>', Database.fn.now())
             })
             .whereIn('schedule_games.id', subquery)
+            .where('schedule_games.marked_as_deleted', '=', 0)
             .count('* as no_of_records')
 
           number_of_records = count_myScheduledGames[0].no_of_records
@@ -884,7 +801,7 @@ class ScheduleGameController {
         .innerJoin('users', 'users.id', 'schedule_games.user_id')
         .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
         .where('expiry', '>', Database.fn.now())
-        .where('schedule_games.user_id', '=', auth.user.id)
+        .where('schedule_games.user_id', '=', auth.user.id, 'schedule_games.marked_as_deleted', '=', 0)
         //.where('schedule_games.start_date_time', '<', next24hours)
         //.where('schedule_games.start_date_time', '>', last4hours)
         .orWhereIn('schedule_games.id', subquery)
@@ -935,8 +852,9 @@ class ScheduleGameController {
     try {
       //const latestScheduledGames = await ScheduleGame.query().innerJoin('users', 'user_id', 'schedule_games.user_id').options({nestTables:true}).fetch()
       const myScheduledGamesCount = await Database.from('schedule_games')
-        .where({ id: request.params.id, user_id: auth.user.id })
+        .where({ id: request.params.id, user_id: auth.user.id, marked_as_deleted: 0 })
         .count('* as no_of_my_posts')
+
       return {
         myScheduledGamesCount,
       }
@@ -1049,7 +967,7 @@ class ScheduleGameController {
             .innerJoin('schedule_games_tags', 'schedule_games.id', 'schedule_games_tags.schedule_games_id')
             .innerJoin('game_tags', 'game_tags.id', 'schedule_games_tags.game_tag_id')
             .leftJoin('schedule_games_transactions', 'schedule_games_transactions.schedule_games_id', 'schedule_games.id')
-            .where({ visibility: 1 })
+            .where({ visibility: 1, marked_as_deleted: 0 })
             .whereIn('schedule_games_tags.game_tag_id', arrTags)
             .where((builder) => {
               if (request.input('game_name') != null) builder.where('game_names.game_name', request.input('game_name'))
@@ -1106,7 +1024,7 @@ class ScheduleGameController {
           .innerJoin('users', 'users.id', 'schedule_games.user_id')
           .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
           .leftJoin('schedule_games_transactions', 'schedule_games_transactions.schedule_games_id', 'schedule_games.id')
-          .where({ visibility: 1 })
+          .where({ visibility: 1, marked_as_deleted: 0 })
           .where((builder) => {
             if (request.input('game_name') != null) builder.where('game_names.game_name', request.input('game_name'))
 
