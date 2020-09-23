@@ -30,9 +30,11 @@ export default class EditGameExperience extends React.Component {
 
   prepareExperience = () => {
     const { id, mainFields, game, gameName, nickname, level, experience, team, tags, dynamic, background } = this.props.gameExperience || {}
+    const commends = this.props.profile.commended.filter((commend) => commend.gameExperienceId === id).length;
     return {
       loaded: true,
       id: id || null,
+      commends: commends || 0,
       mainFields: mainFields ? mainFields.map((field) => ({ value: field, label: field })) : [],
       game: game ? { game_names_id: game, value: gameName, label: gameName } : null,
       nickname: nickname || null,

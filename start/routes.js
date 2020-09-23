@@ -425,6 +425,7 @@ Route.put('/api/profile/:alias', 'ProfileController.updateProfile')
 Route.put('/api/profile/:alias/game', 'ProfileController.updateGame')
 Route.get('/api/gamer_suggestions', 'ProfileController.fetchGamerSuggestions')
 Route.get('/api/profile_fields/:gameId', 'ProfileController.fetchDynamicFields')
+Route.post('/api/commend/:alias/:gameExperienceId', 'ProfileController.commendUser')
 
 //Sponsor
 Route.post('/api/sponsor/create', 'SponsorController.store')

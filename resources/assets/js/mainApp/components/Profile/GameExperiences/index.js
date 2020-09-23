@@ -93,6 +93,7 @@ export default class GameExperiences extends React.Component {
     const allFields = ['level', 'experience', 'team', 'nickname'];
     const missingFields = allFields.filter(field => !mainFields.map(field => field.toLowerCase()).includes(field.toLowerCase()))
     const fields = [...mainFields, ...missingFields].slice(0, 3);
+    const hasCommended = this.props.profile.commended.find((commendation) => commendation.gameExperienceId === id && commendation.commenderId === this.props.userId);
     return(
       <div className="game-experience" 
         onMouseEnter={() => this.setState({ hovering: id })}
@@ -114,8 +115,15 @@ export default class GameExperiences extends React.Component {
           </div>
         ))}
         {this.state.hovering === id && (
-          <div className="edit-button clickable" onClick={() => this.setState({ selected: id })}>
-            {this.state.isSelf ? 'Edit' : 'Show'}
+          <div className="hover-box">
+            <div className="hover-button clickable" onClick={() => this.setState({ selected: id })}>
+              {this.state.isSelf ? 'Edit' : 'Show'}
+            </div>
+            {!!this.props.profile.isFriend && !hasCommended && (
+              <div className="hover-button clickable" onClick={() => this.props.commendUser(id)}>
+                  Commend Me
+              </div>
+            )}
           </div>
         )}
       </div>

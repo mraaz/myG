@@ -8,15 +8,18 @@ const Notification = use('App/Models/Notification');
 const GameExperience = use('App/Models/GameExperience');
 const GameBackground = use('App/Models/GameBackground');
 const GameName = use('App/Models/GameName');
+const Commendation = use('App/Models/Commendation');
 const UserMostPlayedGame = use('App/Models/UserMostPlayedGame');
 const GameNameField = use('App/Models/GameNameField');
 const GameNameController = use('App/Controllers/Http/GameNameController');
 const AwsKeyController = use('App/Controllers/Http/AwsKeyController');
 const ConnectionController = use('App/Controllers/Http/ConnectionController');
+const NotificationController_v2 = use('App/Controllers/Http/NotificationController_v2');
 
 const ProfileSchema = require('../../Schemas/Profile');
 const GameExperienceSchema = require('../../Schemas/GameExperience');
 const GameBackgroundSchema = require('../../Schemas/GameBackground');
+const CommendationSchema = require('../../Schemas/Commendation');
 
 class ProfileRepository {
 
@@ -57,6 +60,7 @@ class ProfileRepository {
       mostPlayedGames,
       gameExperiences,
       gameBackground,
+      { commended, commender },
     ] = await Promise.all([
       this.isFriend({ isSelf, requestingUserId, profileId }),
       this.isFollower({ isSelf, requestingUserId, profileId }),
@@ -66,7 +70,7 @@ class ProfileRepository {
       this.fetchMostPlayedGames({ profileId }),
       this.fetchGameExperiences({ profileId }),
       this.fetchGameBackground({ profileId }),
-      this.fetchGameBackground({ profileId }),
+      this.fetchCommendations({ profileId }),
     ]);
     const hasReceivedFriendRequest = !!friendRequest.id;
     const friendRequestId = friendRequest.id;
@@ -102,6 +106,8 @@ class ProfileRepository {
       mostPlayedGames,
       friendRequestId,
       gameExperiences,
+      commended,
+      commender,
     });
     return {
       profile: profileSchema,
@@ -170,6 +176,16 @@ class ProfileRepository {
   async fetchGameBackground({ profileId }) {
     const response = await GameBackground.query().where('user_id', profileId).fetch();
     return response ? (response.toJSON() || []).map(background => new GameBackgroundSchema(background)) : [];
+  }
+
+  async fetchCommendations({ profileId }) {
+    const [commendedResponse, commenderResponse] = await Promise.all([
+      Commendation.query().where('user_id', profileId).fetch(),
+      Commendation.query().where('commender_id', profileId).fetch(),
+    ]);
+    const commended = commendedResponse && commendedResponse.toJSON ? (commendedResponse.toJSON().map((data) => new CommendationSchema(data))) : [];
+    const commender = commenderResponse && commenderResponse.toJSON ? (commenderResponse.toJSON().map((data) => new CommendationSchema(data))) : [];
+    return { commended, commender };
   }
 
   async updateProfile({ requestingUserId, firstName, lastName, team, country, relationship, visibilityName, visibilityEmail, lookingForWork, languages, twitch, discord, steam, youtube, facebook, mostPlayedGames }) {
@@ -293,6 +309,20 @@ class ProfileRepository {
       label: labels[id],
       values: values[id] ? values[id].split(',') : [],
     }));
+  }
+
+  async commendUser({ requestingUserId, alias, gameExperienceId }) {
+    const commendedId = await this.fetchProfileId({ alias });
+    const existingCommendation = await Commendation.query().where('game_experiences_id', gameExperienceId).andWhere('user_id', commendedId).andWhere('commender_id', requestingUserId).first();
+    if (existingCommendation) return this.fetchProfileInfo({ requestingUserId, id: commendedId, alias });
+    const notificationController = new NotificationController_v2();
+    const commendation = new Commendation();
+    commendation.game_experiences_id = gameExperienceId;
+    commendation.user_id = commendedId;
+    commendation.commender_id = requestingUserId;
+    await commendation.save();
+    await notificationController.commend({ commendedId, commenderId: requestingUserId });
+    return this.fetchProfileInfo({ requestingUserId, id: commendedId, alias });
   }
 }
 
