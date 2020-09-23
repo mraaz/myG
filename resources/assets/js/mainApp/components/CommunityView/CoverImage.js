@@ -36,6 +36,9 @@ const CoverImage = (props) => {
   }
   const handleLeaveClick = async (id) => {
     const data = await axios.delete(`/api/usergroup/${id}`)
+    if (data) {
+      props.routeProps.history.push('/?at=communities')
+    }
   }
   const handleJoinButton = async () => {
     if (props.current_user_permission == -1) {

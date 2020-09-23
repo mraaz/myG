@@ -14,9 +14,10 @@ const CommunityView = (props) => {
 
   useEffect(() => {
     const getcommunityDetails = async () => {
+      const { match } = props.routeProps
       const {
         data: { getOne = {} },
-      } = await axios.get(`/api/groups/getGroupDetails/Hunter19oq235z`)
+      } = await axios.get(`/api/groups/getGroupDetails/${match.params.name}`)
 
       setCommunityDetails({ ...getOne })
     }
@@ -32,7 +33,7 @@ const CommunityView = (props) => {
 
   return (
     <div className='communityName__container '>
-      <CoverImage {...communityDetails} handleModalStatus={handleModalStatus} />
+      <CoverImage {...communityDetails} handleModalStatus={handleModalStatus} {...props} />
       <div className='community__description'>{communityDetails.grp_description}</div>
       <div className='community__tags'>
         <div className='label'>Tags :</div>

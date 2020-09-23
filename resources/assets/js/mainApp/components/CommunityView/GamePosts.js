@@ -91,11 +91,13 @@ export default class Posts extends Component {
       },
       () => {
         const { myPosts = [] } = this.state
-        this.setState({
-          myPosts: [...data.data.myPosts, ...myPosts],
-          moreplease: data.data.myPosts.lastPage == 1 ? false : true,
-          post_submit_loading: false,
-        })
+        if (data.data && data.data.myPosts) {
+          this.setState({
+            myPosts: [...data.data.myPosts, ...myPosts],
+            moreplease: data.data.myPosts.lastPage == 1 ? false : true,
+            post_submit_loading: false,
+          })
+        }
       }
     )
   }
@@ -140,6 +142,7 @@ export default class Posts extends Component {
             successCallback={this.composeSuccess}
             initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData}
             communityBox={true}
+            group_id={this.props.group_id}
           />
         )}
         {post_submit_loading && (
