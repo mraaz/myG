@@ -7,6 +7,8 @@ const Helpers = use('Helpers')
 const fileType = require('file-type')
 const bluebird = require('bluebird')
 const User = use('App/Models/User')
+const Group = use('App/Models/Group')
+
 const ChatMessage = use('App/Models/ChatMessage')
 const NodeClam = require('clamscan')
 const Database = use('Database')
@@ -151,11 +153,26 @@ class ApiController {
           game_name_id = null
 
         switch (type) {
+          case '1':
+            const update_profile_img = await User.query()
+              .where({ id: auth.user.id })
+              .update({ profile_img: key })
+            break
+          case '2':
+            const update_bg_img = await User.query()
+              .where({ id: auth.user.id })
+              .update({ profile_bg: key })
+            break
           case '3':
             post_id = id
             break
           case '4':
             group_id = id
+            if (id != undefined || id != null) {
+              const update_img = await Group.query()
+                .where({ id: request.input('group_id') })
+                .update({ group_img: key })
+            }
             break
           case '5':
             chat_id = id

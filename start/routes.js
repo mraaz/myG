@@ -275,6 +275,7 @@ Route.get('/api/groups/getGroupDetails/:name', 'GroupController.getGroupDetails'
 Route.get('/api/groups/:str/groupSearchResults', 'GroupController.groupSearchResults')
 Route.get('/api/groups/:str/groupSearchResults_Post', 'GroupController.groupSearchResults_Post')
 Route.get('/api/groups/:str/groupSearchResults_notMygrps', 'GroupController.groupSearchResults_notMygrps')
+Route.get('/api/groups/groupName/:group_name', 'GroupController.groupName')
 
 Route.get('/api/groups/view/:counter', 'GroupController.myshow')
 Route.get('/api/groups/all_myGrps/:counter', 'GroupController.all_myGrps')
@@ -423,6 +424,8 @@ Route.get('/api/profile/:alias', 'ProfileController.fetchProfileInfo')
 Route.put('/api/profile/:alias', 'ProfileController.updateProfile')
 Route.put('/api/profile/:alias/game', 'ProfileController.updateGame')
 Route.get('/api/gamer_suggestions', 'ProfileController.fetchGamerSuggestions')
+Route.get('/api/profile_fields/:gameId', 'ProfileController.fetchDynamicFields')
+Route.post('/api/commend/:alias/:gameExperienceId', 'ProfileController.commendUser')
 
 //Sponsor
 Route.post('/api/sponsor/create', 'SponsorController.store')

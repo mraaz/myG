@@ -64,6 +64,13 @@ const assets = {
   ic_profile_experience: 'ic_profile_experience.svg',
   ic_profile_link: 'ic_profile_link.svg',
   ic_profile_link_gray: 'ic_profile_link_gray.svg',
+
+  ic_youtube_white: 'ic_youtube_white.svg',
+  ic_facebook_white: 'ic_facebook_white.svg',
+  ic_steam_white: 'ic_steam_white.svg',
+  ic_twitch_white: 'ic_twitch_white.svg',
+  ic_discord_white: 'ic_discord_white.svg',
+
 }
 
 export function getAssetUrl(asset) {

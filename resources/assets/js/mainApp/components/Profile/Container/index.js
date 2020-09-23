@@ -30,6 +30,7 @@ export default class ProfileContainer extends React.Component {
       alias={alias}
       userAlias={userAlias}
       gameId={gameId}
+      initialData={this.props.initialData}
     />;
   }
 }

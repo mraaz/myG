@@ -441,6 +441,7 @@ class NotificationController_v2 {
             'notifications.read_status',
             'schedule_games.start_date_time',
             'schedule_games.schedule_games_GUID',
+            'schedule_games.reason_for_deletion',
             'game_names.game_name',
             'notifications.id'
           )
@@ -559,10 +560,17 @@ class NotificationController_v2 {
           .orderBy('notifications.created_at', 'desc')
           .paginate(request.input('counter'), set_limit)
 
+        const commendations = await Database.from('notifications')
+          .innerJoin('users', 'users.id', 'notifications.other_user_id')
+          .where({ user_id: auth.user.id, activity_type: 23 })
+          .select('notifications.id', 'notifications.activity_type', 'notifications.read_status', 'users.alias')
+          .orderBy('notifications.created_at', 'desc')
+          .paginate(request.input('counter'), set_limit)
+
+        singleArr.push(...commendations.data)
         singleArr.push(...group_member_approved.data)
         singleArr.push(...user_ding.data)
       }
-
       // const chat_group_invite = await Database.from('notifications')
       //   .innerJoin('users', 'users.id', 'notifications.user_id')
       //   .where({ other_user_id: auth.user.id, activity_type: 18 })
@@ -988,6 +996,24 @@ class NotificationController_v2 {
       }
     } else {
       return 'You are not Logged In!'
+    }
+  }
+
+  async commend({ commendedId, commenderId }) {
+    try {
+      await Notification.create({
+        user_id: commendedId,
+        other_user_id: commenderId,
+        activity_type: 23,
+      })
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 

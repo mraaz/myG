@@ -237,6 +237,14 @@ export default class Alerts extends Component {
         )
         break
 
+      case 23:
+        return (
+          <div className='notification__text'>
+            {`has commended you!`}
+          </div>
+        )
+        break
+
       default:
         break
     }

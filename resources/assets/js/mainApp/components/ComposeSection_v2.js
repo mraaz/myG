@@ -155,7 +155,7 @@ export default class ComposeSection extends Component {
         user_id: this.props.initialData.userInfo.id,
         type: 'text',
         visibility: this.state.visibility,
-        group_id: this.state.group_id.toString(),
+        group_id: this.props.group_id ? this.props.group_id : this.state.group_id.toString(),
         media_url: media_url.length > 0 ? JSON.stringify(media_url) : '',
         file_keys: keys.length > 0 ? keys : '',
         hash_tags: hash_tags,

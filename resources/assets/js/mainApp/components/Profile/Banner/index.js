@@ -24,12 +24,14 @@ export class Banner extends React.Component {
         <Header
           alias={this.props.profile.alias}
           profile={this.props.profile}
+          isSelf={this.props.profile.isSelf}
           sendFriendRequest={this.props.sendFriendRequest}
           confirmFriendRequest={this.props.confirmFriendRequest}
           unfriend={this.props.unfriend}
           follow={this.props.follow}
           unfollow={this.props.unfollow}
           uploadProfileImage={this.props.uploadProfileImage}
+          updateProfile={this.props.updateProfile}
         />
       </div>
     );

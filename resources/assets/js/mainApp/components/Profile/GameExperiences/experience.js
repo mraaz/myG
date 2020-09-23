@@ -49,7 +49,7 @@ export default class Experience extends React.Component {
   }
 
   renderExperienceInput = () => {
-    if (!this.props.isSelf) return this.renderDisabledField('Time in role', (this.props.experience.experience || {}).value);
+    if (!this.props.isSelf) return this.renderDisabledField('Time in role', (this.props.experience.experience || {}).value)
     return (
       <div className='row'>
         <span className='hint'>Time in role</span>
@@ -75,7 +75,7 @@ export default class Experience extends React.Component {
   }
 
   renderSkillsInput = () => {
-    if (!this.props.isSelf) return this.renderDisabledField('Skills', this.props.experience.skills.map(skill => skill.value).join(', '));
+    if (!this.props.isSelf) return this.renderDisabledField('Skills', this.props.experience.skills.map((skill) => skill.value).join(', '))
     return (
       <div className='row'>
         <span className='hint'>Skills</span>
@@ -103,7 +103,7 @@ export default class Experience extends React.Component {
   }
 
   renderRemoveExperienceButton = () => {
-    if (!this.props.isSelf) return null;
+    if (!this.props.isSelf) return null
     return (
       <div className='remove-experience-container'>
         <div className='remove-experience-button clickable' onClick={() => this.props.onRemoveExperience(this.props.experience.id)}>
@@ -118,10 +118,7 @@ export default class Experience extends React.Component {
       <div className='row'>
         <span className='hint'>{title}</span>
         <div className='input-container-row'>
-          <input
-            className='input'
-            value={value}
-            disabled={true}></input>
+          <input className='input' value={value} disabled={true}></input>
         </div>
       </div>
     )
@@ -129,7 +126,7 @@ export default class Experience extends React.Component {
 
   render() {
     return (
-      <div id='profile-game-experience' className='content'>
+      <div id='profile-game-experience' className='content small-content'>
         {this.renderTeamInput()}
         {this.renderRoleInput()}
         {this.renderExperienceInput()}

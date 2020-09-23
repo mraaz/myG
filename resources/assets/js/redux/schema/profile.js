@@ -20,7 +20,11 @@ export default class ProfileSchema {
     if (data.mostPlayedGames !== undefined) this.mostPlayedGames = forceArray(data.mostPlayedGames)
     if (data.team !== undefined) this.team = forceString(data.team)
     if (data.country !== undefined) this.country = forceString(data.country)
-    if (data.country !== undefined) this.country = forceString(data.country)
+    if (data.twitch !== undefined) this.twitch = forceString(data.twitch)
+    if (data.discord !== undefined) this.discord = forceString(data.discord)
+    if (data.steam !== undefined) this.steam = forceString(data.steam)
+    if (data.youtube !== undefined) this.youtube = forceString(data.youtube)
+    if (data.facebook !== undefined) this.facebook = forceString(data.facebook)
     if (data.relationship !== undefined) this.relationship = forceString(data.relationship)
     if (data.status !== undefined) this.status = forceStatus(data.status)
     if (data.level !== undefined) this.level = forceInt(data.level)
@@ -36,5 +40,7 @@ export default class ProfileSchema {
     if (data.friendRequestId !== undefined) this.friendRequestId = forceInt(data.friendRequestId)
     if (data.gameExperiences !== undefined) this.gameExperiences = forceArray(data.gameExperiences)
     if (data.esportsExperiences !== undefined) this.esportsExperiences = forceArray(data.esportsExperiences)
+    if (data.commended !== undefined) this.commended = forceArray(data.commended)
+    if (data.commender !== undefined) this.commender = forceArray(data.commender)
   }
 }
