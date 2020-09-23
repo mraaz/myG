@@ -208,7 +208,7 @@ class UserStatTransactionController {
         case 'total_number_of_games_hosted':
           const getGames = Database.from('schedule_games')
             .select('id')
-            .where({ user_id: my_user_id })
+            .where({ user_id: my_user_id, marked_as_deleted: 0 })
             .where('end_date_time', '<=', mysql_friendly_date)
 
           const getCount_total_number_of_games_hosted = await Database.from('attendees')
