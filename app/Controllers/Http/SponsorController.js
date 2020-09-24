@@ -67,13 +67,13 @@ class SponsorController {
     if (auth.user) {
       try {
         let allSponsors
-        console.log('jerer')
+
         if (group_id != undefined && group_id != null) {
           allSponsors = await Database.table('sponsors').where({ group_id: group_id })
         } else if (user_id != undefined && user_id != null) {
           allSponsors = await Database.table('sponsors').where({ user_id: user_id })
         }
-        console.log(allSponsors)
+
         return allSponsors
       } catch (error) {
         LoggingRepository.log({

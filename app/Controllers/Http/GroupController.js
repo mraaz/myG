@@ -154,10 +154,16 @@ class GroupController {
         getOne.sponsors = await sponsorController.show({ auth }, getOne.id, null)
 
         const allGrpTags = await Database.table('group_hash_tag_trans')
+          .innerJoin('group_hash_tags', 'group_hash_tags.id', 'group_hash_tag_trans.group_hash_tag_id')
           .where({ group_id: getOne.id })
-          .first()
+          .select('content')
 
-        getOne.allGrpTags = allGrpTags
+        let tmpArr = []
+        for (let i = 0; i < allGrpTags.length; i++) {
+          tmpArr.push(allGrpTags[i].content)
+        }
+
+        getOne.allGrpTags = tmpArr
 
         const commonController = new CommonController()
 
@@ -579,8 +585,6 @@ class GroupController {
         .select('id')
         .where('name', '=', request.params.group_name)
         .first()
-
-      console.log(groupNameResults)
 
       if (groupNameResults == undefined) {
         return false
