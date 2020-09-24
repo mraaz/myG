@@ -313,4 +313,28 @@
       z-index: 1;
     }
   }
+  .gamePostExtraOption {
+    position: absolute;
+    right: 10px;
+    top: -10px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #fff;
+    .post-dropdown {
+      position: absolute;
+      z-index: 2;
+      display: none;
+      &.active {
+        display: block;
+      }
+      nav {
+        background: #181a1c;
+        .option {
+          padding: 4px 0px;
+          cursor: pointer;
+          font-size: 10px;
+        }
+      }
+    }
+  }
 }

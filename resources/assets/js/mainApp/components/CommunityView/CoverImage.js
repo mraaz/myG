@@ -30,9 +30,16 @@ const CoverImage = (props) => {
     }
   }
   const handleFollowClick = async (id) => {
-    const data = await axios.post('/api/followers/create', {
-      group_id: id,
-    })
+    const { user_id, following } = props
+    if (following) {
+      const data = await axios.post(`/api/followers/${user_id}/delete_group`, {
+        group_id: id,
+      })
+    } else {
+      const data = await axios.post('/api/followers/create', {
+        group_id: id,
+      })
+    }
   }
   const handleLeaveClick = async (id) => {
     const data = await axios.delete(`/api/usergroup/${id}`)
