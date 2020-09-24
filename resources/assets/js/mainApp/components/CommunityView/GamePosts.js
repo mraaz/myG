@@ -125,7 +125,7 @@ export default class Posts extends Component {
       }
 
       this.setState({
-        myPosts: this.state.myPosts.concat(myPosts.data.groupPosts.groupPosts),
+        myPosts: [...myPosts.data.groupPosts.groupPosts],
       })
     })
   }
