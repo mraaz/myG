@@ -15,7 +15,6 @@ import { MyGCheckbox, MyGTextarea, MyGAsyncSelect, MyGCreateableSelect, MyGInput
 import { Game_name_values, Group_Hash_Tags, Disable_keys } from '../Utility_Function'
 import { Upload_to_S3, Remove_file } from '../AWS_utilities'
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
-import { logToElasticsearch } from '../../../integration/http/logger'
 
 const MAX_GAME_TAGS = 3
 const MAX_CO_HOSTS = 8

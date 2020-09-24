@@ -1083,6 +1083,10 @@ class Import_game_names_Schema extends Schema {
     .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Fall%20Guys-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Fall%20Guys-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Fall%20Guys-390x520.jpg\" where game_name = \"Fall Guys: Ultimate Knockout\"")
     .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/World%20of%20Tanks-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/World%20of%20Tanks-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/World%20of%20Tanks-390x520.jpg\" where game_name = \"World of Tanks\"")
 
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Baldurs Gate 3', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("update game_names set game_img = \"https://steamcdn-a.akamaihd.net/steam/apps/1086940/header.jpg?t=1600938252\", game_artwork = \"https://steamcdn-a.akamaihd.net/steam/apps/1086940/header.jpg?t=1600938252\", game_name_fields_img = \"https://steamcdn-a.akamaihd.net/steam/apps/1086940/header.jpg?t=1600938252\" where game_name = \"Baldurs Gate 3\"")
+
+
 
     // .raw("update game_names set game_name_fields = 1 where game_name = \"Dota 2\"")
     // .raw("update game_names set game_name_fields = 1 where game_name = \"Clash Royale\"")

@@ -293,15 +293,17 @@ const EditGameContainer = (props) => {
         eighteen_plus: advancedSettingsState.eighteen_plus,
         language: advancedSettingsState.language,
       })
+
       updateMainSettingsState((currentState) => ({
         ...currentState,
         scheduledGameId: data.id,
         scheduledGameGuid: mainSettingsState.scheduledGameGuid,
       }))
       updateGameLink(mainSettingsState.scheduledGameGuid)
+
       // updateIsGameListedModalOpen(true)
       props.routeProps.history.push('/?at=mygames')
-    } catch (err) {
+    } catch (error) {
       updateIsSubmitting(false)
     }
   }

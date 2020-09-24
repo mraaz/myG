@@ -97,11 +97,11 @@ class ScheduleGameController {
 
         if (
           getGameName.length != 0 &&
-          ((request.input('value_one') != null && JSON.stringify(request.input('value_one')) !== '{}') ||
-            (request.input('value_two') != null && JSON.stringify(request.input('value_two')) !== '{}') ||
-            (request.input('value_three') != null && JSON.stringify(request.input('value_three')) !== '{}') ||
-            (request.input('value_four') != null && JSON.stringify(request.input('value_four')) !== '{}') ||
-            (request.input('value_five') != null && JSON.stringify(request.input('value_five')) !== '{}'))
+          ((request.input('value_one') != null && JSON.stringify(request.input('value_one')) != '{}') ||
+            (request.input('value_two') != null && JSON.stringify(request.input('value_two')) != '{}') ||
+            (request.input('value_three') != null && JSON.stringify(request.input('value_three')) != '{}') ||
+            (request.input('value_four') != null && JSON.stringify(request.input('value_four')) != '{}') ||
+            (request.input('value_five') != null && JSON.stringify(request.input('value_five')) != '{}'))
         ) {
           const getGameFields = await Database.from('game_name_fields')
             .where({
@@ -333,11 +333,11 @@ class ScheduleGameController {
 
         if (
           getGameName.length != 0 &&
-          ((request.input('value_one') != null && JSON.stringify(request.input('value_one')) !== '{}') ||
-            (request.input('value_two') != null && JSON.stringify(request.input('value_two')) !== '{}') ||
-            (request.input('value_three') != null && JSON.stringify(request.input('value_three')) !== '{}') ||
-            (request.input('value_four') != null && JSON.stringify(request.input('value_four')) !== '{}') ||
-            (request.input('value_five') != null && JSON.stringify(request.input('value_five')) !== '{}'))
+          ((request.input('value_one') != null && JSON.stringify(request.input('value_one')) != '{}') ||
+            (request.input('value_two') != null && JSON.stringify(request.input('value_two')) != '{}') ||
+            (request.input('value_three') != null && JSON.stringify(request.input('value_three')) != '{}') ||
+            (request.input('value_four') != null && JSON.stringify(request.input('value_four')) != '{}') ||
+            (request.input('value_five') != null && JSON.stringify(request.input('value_five')) != '{}'))
         ) {
           const getGameFields = await Database.from('game_name_fields')
             .where({
@@ -1666,7 +1666,7 @@ class ScheduleGameController {
         }
       }
 
-      if (JSON.stringify(additional_info_data) !== '{}') {
+      if (JSON.stringify(additional_info_data) != '{}') {
         additional_info = true
       }
 
