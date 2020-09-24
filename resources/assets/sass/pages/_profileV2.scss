@@ -114,6 +114,7 @@
     height: unset !important;
     align-items: center !important;
     justify-content: flex-start !important;
+    border-bottom: none !important;
   }
 
   .content {
@@ -613,6 +614,7 @@
   #profile-game-experiences {
     display: flex;
     flex-direction: column;
+    margin-bottom: 24px;
 
     .headers {
       display: flex;
@@ -752,6 +754,25 @@
         font-size: 16px;
         color: white;
         margin-bottom: 4px;
+      }
+
+      .hover-box {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+        margin: 20px 0px -33px 0px;
+
+        .hover-button {
+          background-color: #e5c746;
+          text-align: center;
+          padding: 4px 8px;
+          font-size: 12px;
+          margin: 0 4px;
+          border-radius: 4px;
+          font-weight: bold;
+        }
       }
 
       .edit-button {

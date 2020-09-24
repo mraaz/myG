@@ -3,10 +3,11 @@ import get from 'lodash.get';
 import { Redirect } from 'react-router'
 import { connect } from 'react-redux'
 import { ignoreFunctions } from '../../../../common/render'
-import { fetchProfileInfoAction, updateProfileInfoAction, updateProfileGameAction } from '../../../../redux/actions/profileAction';
+import { fetchProfileInfoAction, updateProfileInfoAction, updateProfileGameAction, commendUserAction } from '../../../../redux/actions/profileAction';
 import Banner from '../Banner';
 import ProfileInfo from '../Info';
 import GameExperiences from '../GameExperiences';
+import MyPosts from '../../MyPosts'
 
 export class Profile extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -17,6 +18,10 @@ export class Profile extends React.Component {
     this.props.fetchProfile(this.props.alias);
   }
 
+  commendUser = (gameExperienceId) => {
+    this.props.commendUser(this.props.alias, gameExperienceId);
+  }
+
   render() {
     console.log('profile: ', this.props.profile);
     if (this.props.profile.error) return <Redirect push to={`/profile/${this.props.userAlias}`} />;
@@ -24,7 +29,8 @@ export class Profile extends React.Component {
       <div id="profile">
         <Banner profile={this.props.profile} updateProfile={this.props.updateProfile} />
         <ProfileInfo alias={this.props.alias} profile={this.props.profile} updateProfile={this.props.updateProfile} />
-        <GameExperiences selectedGame={this.props.gameId} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
+        <GameExperiences userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
+        <MyPosts initialData={this.props.initialData} />
       </div>
     );
   }
@@ -33,6 +39,7 @@ export class Profile extends React.Component {
 function mapStateToProps(state, props) {
   const profile = get(state, `profile.profiles[${props.alias}]`, {});
   return {
+    userId: state.user.userId,
     profile,
     foundProfile: !!Object.keys(profile).length,
   }
@@ -43,6 +50,7 @@ function mapDispatchToProps(dispatch) {
     fetchProfile: (alias) => dispatch(fetchProfileInfoAction(alias)),
     updateProfile: (alias, updates) => dispatch(updateProfileInfoAction(alias, updates)),
     updateGame: (alias, updates) => dispatch(updateProfileGameAction(alias, updates)),
+    commendUser: (alias, gameExperienceId) => dispatch(commendUserAction(alias, gameExperienceId)),
   }
 }
 

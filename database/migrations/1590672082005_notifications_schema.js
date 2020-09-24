@@ -20,8 +20,6 @@ class NotificationsSchema extends Schema {
       table.foreign('reply_id').references('replies.id').onDelete('cascade')
       table.integer('schedule_games_id').unsigned().nullable()
       table.foreign('schedule_games_id').references('schedule_games.id').onDelete('cascade')
-      table.integer('archive_schedule_game_id').unsigned().nullable()
-      table.foreign('archive_schedule_game_id').references('archive_schedule_games.archive_schedule_game_id').onDelete('cascade')
       table.integer('group_id').unsigned().nullable()
       table.foreign('group_id').references('groups.id').onDelete('cascade')
       table.integer('chat_id').unsigned().nullable()

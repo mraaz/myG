@@ -6,11 +6,9 @@
 import React, { Component } from 'react'
 import Posts from './Posts'
 import Notifications from './Notifications'
-import MyPosts from './MyPosts'
 import AnalyticsBox from './AnalyticsBox'
 import GroupMain from './Community/GroupMain'
 import MyScheduledGames from '../components/scheduledGames/MyScheduledGames'
-import GamerSuggestions from './Profile/GamerSuggestions'
 
 export default class Home extends Component {
   constructor() {
@@ -100,16 +98,11 @@ export default class Home extends Component {
             <div className={`${tabName == 'mygames' ? 'active' : 'mygames'}`} onClick={(e) => this.tabToggle('mygames')}>
               My Games
             </div>
-            <div className={`${tabName == 'myposts' ? 'active' : 'myposts'}`} onClick={(e) => this.tabToggle('myposts')}>
-              My Posts
-            </div>
           </div>
           {tabName == 'home' && <Posts initialData={!this.props.initialData ? 'loading' : this.props.initialData} key={Math.random()} />}
           {tabName == 'communities' && <GroupMain routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
           {tabName == 'notifications' && <Notifications routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
           {tabName == 'mygames' && <MyScheduledGames routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
-          {tabName == 'myposts' && <MyPosts routeProps={this.props} initialData={this.props.initialData} key={Math.random()} />}
-          <GamerSuggestions />
         </div>
       )
     } else {

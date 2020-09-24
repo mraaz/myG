@@ -67,6 +67,7 @@ class SponsorController {
     if (auth.user) {
       try {
         let allSponsors
+
         if (group_id != undefined && group_id != null) {
           allSponsors = await Database.table('sponsors').where({ group_id: group_id })
         } else if (user_id != undefined && user_id != null) {

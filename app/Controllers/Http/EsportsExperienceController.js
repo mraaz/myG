@@ -168,7 +168,7 @@ class EsportsExperienceController {
             skills: request.input('skills'),
           })
 
-        if (game_experiences[0].game_name !== request.input('game_name')) {
+        if (game_experiences[0].game_name != request.input('game_name')) {
           gameface.incrementGameCounter({ auth }, request.input('game_name'))
 
           request.params.game_names_id = game_experiences[0].game_names_id

@@ -33,6 +33,9 @@ class ScheduleGamesSchema extends Schema {
       table.boolean('mic').defaultTo(0)
       table.boolean('eighteen_plus').defaultTo(0)
       table.string('game_languages', 254).nullable()
+      table.boolean('marked_as_deleted').defaultTo(0).notNullable().index()
+      table.timestamp('deleted_date').nullable()
+      table.string('reason_for_deletion', 254).nullable()
       table.timestamps(true,true)
     })
   }

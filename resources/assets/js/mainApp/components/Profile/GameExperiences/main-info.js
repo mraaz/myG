@@ -32,6 +32,16 @@ const LEVEL_OPTIONS = [
   { value: 'Casual', label: 'Casual' },
 ]
 
+const commendationLevel = (commends) => {
+  if (commends < 49) return 'Apprentice';
+  if (commends < 99) return 'Elite';
+  if (commends < 149) return 'Expert';
+  if (commends < 199) return 'Hero';
+  if (commends < 249) return 'Master';
+  if (commends < 999) return 'Grand Master';
+  return 'Ultimate Master';
+};
+
 export default class MainInfo extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
@@ -176,6 +186,20 @@ export default class MainInfo extends React.Component {
           onChange={(experience) => this.props.storeExperience({ experience })}
           value={this.props.experience.experience}
         />
+      </div>
+    )
+  }
+
+  renderCommendationLabel = () => {
+    return (
+      <div className='row'>
+        <span className='hint'>Commends</span>
+        <div className='input-container-row'>
+          <input
+            className='input'
+            value={`${commendationLevel(this.props.experience.commends)} (${this.props.experience.commends})`}
+            disabled={true}></input>
+        </div>
       </div>
     )
   }
@@ -396,6 +420,7 @@ export default class MainInfo extends React.Component {
           {this.renderGameTitle()}
           {this.renderLevelInput()}
           {this.renderExperienceInput()}
+          {this.renderCommendationLabel()}
           {this.renderTeamInput()}
           {this.renderNicknameInput()}
           {this.renderTagsInput()}

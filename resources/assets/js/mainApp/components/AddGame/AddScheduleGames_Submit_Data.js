@@ -4,6 +4,8 @@ import axios from 'axios'
 import moment from 'moment'
 import uuid from 'uuid'
 
+import { logToElasticsearch } from '../../../integration/http/logger'
+
 const MAX_GAME_TAGS = 9
 
 export async function SubmitDataFunction(myG) {
@@ -19,19 +21,19 @@ export async function SubmitDataFunction(myG) {
     co_hosts = null,
     tags = []
 
-  if (myG.selected_region != undefined && myG.selected_region !== null && myG.selected_region.length !== 0) {
+  if (myG.selected_region != undefined && myG.selected_region != null && myG.selected_region.length != 0) {
     myRegion = Convert_to_comma_delimited_value(myG.selected_region)
   }
 
-  if (myG.selected_experience !== undefined && myG.selected_experience !== null && myG.selected_experience.length !== 0) {
+  if (myG.selected_experience != undefined && myG.selected_experience != null && myG.selected_experience.length != 0) {
     myExperience = Convert_to_comma_delimited_value(myG.selected_experience)
   }
 
-  if (myG.selected_platform !== undefined && myG.selected_platform !== null && myG.selected_platform.length !== 0) {
+  if (myG.selected_platform != undefined && myG.selected_platform != null && myG.selected_platform.length != 0) {
     myPlatform = Convert_to_comma_delimited_value(myG.selected_platform)
   }
 
-  if (myG.language !== undefined && myG.language !== null && myG.language.length !== 0) {
+  if (myG.language != undefined && myG.language != null && myG.language.length != 0) {
     myLanguages = Convert_to_comma_delimited_value(myG.language)
   }
 
@@ -125,6 +127,6 @@ export async function SubmitDataFunction(myG) {
     // dota2_roles: myDota2_roles,
     return post
   } catch (error) {
-    throw error
+    logToElasticsearch('error', 'Add Game - SubmitDataFunction', 'Failed Add Game - SubmitDataFunction ' + ' ' + error)
   }
 }

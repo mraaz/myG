@@ -154,10 +154,16 @@ class GroupController {
         getOne.sponsors = await sponsorController.show({ auth }, getOne.id, null)
 
         const allGrpTags = await Database.table('group_hash_tag_trans')
+          .innerJoin('group_hash_tags', 'group_hash_tags.id', 'group_hash_tag_trans.group_hash_tag_id')
           .where({ group_id: getOne.id })
-          .first()
+          .select('content')
 
-        getOne.allGrpTags = allGrpTags
+        let tmpArr = []
+        for (let i = 0; i < allGrpTags.length; i++) {
+          tmpArr.push(allGrpTags[i].content)
+        }
+
+        getOne.allGrpTags = tmpArr
 
         const commonController = new CommonController()
 
@@ -570,6 +576,29 @@ class GroupController {
       }
     } else {
       return 'You are not Logged In!'
+    }
+  }
+
+  async groupName({ auth, request, response }) {
+    try {
+      const groupNameResults = await Database.from('groups')
+        .select('id')
+        .where('name', '=', request.params.group_name)
+        .first()
+
+      if (groupNameResults == undefined) {
+        return false
+      } else {
+        return true
+      }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 }

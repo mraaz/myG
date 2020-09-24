@@ -15,7 +15,6 @@ import { MyGCheckbox, MyGTextarea, MyGAsyncSelect, MyGCreateableSelect, MyGInput
 import { Game_name_values, Group_Hash_Tags, Disable_keys } from '../Utility_Function'
 import { Upload_to_S3, Remove_file } from '../AWS_utilities'
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
-import { logToElasticsearch } from '../../../integration/http/logger'
 
 const MAX_GAME_TAGS = 3
 const MAX_CO_HOSTS = 8
@@ -121,19 +120,11 @@ const AddCommunity = ({
     }
 
     const getgroup_name = await axios.get(`/api/groups/groupName/${mainSettingsState.community_name.trim()}`)
-
-    if (getgroup_name.data.getOne) {
-      if (getgroup_name.data.getOne[0].no_of_names == 0) {
-        updateAdvancedSettings({ grp_name_unique: true })
-      } else {
-        updateAdvancedSettings({ grp_name_unique: false })
-        toast.success(<Toast_style text={'Hmmmm, be unique community name must'} />)
-        return
-      }
+    if (getgroup_name.data == false) {
+      updateAdvancedSettings({ grp_name_unique: true })
     } else {
       updateAdvancedSettings({ grp_name_unique: false })
-      toast.success(<Toast_style text={'Hmmmm, failed :( Refresh site, or try again later?'} />)
-      logToElasticsearch('error', 'AddCommunity', 'Failed unique test' + ' ' + error)
+      toast.success(<Toast_style text={'Hmmmm, be unique community name must'} />)
       return
     }
   }

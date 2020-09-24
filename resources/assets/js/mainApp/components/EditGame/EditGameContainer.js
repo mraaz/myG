@@ -111,7 +111,7 @@ const EditGameContainer = (props) => {
     if (val == 'true') {
       const deleteGameData = await axios.get(`/api/ScheduleGame/delete/${id}/0`)
       if (deleteGameData) {
-        toast.success(<Toast_style text={'Yeah! Game has been deleted successfully.'} />)
+        toast.success(<Toast_style text={'Woot! Game has been deleted successfully.'} />)
       }
     }
   }
@@ -293,15 +293,17 @@ const EditGameContainer = (props) => {
         eighteen_plus: advancedSettingsState.eighteen_plus,
         language: advancedSettingsState.language,
       })
+
       updateMainSettingsState((currentState) => ({
         ...currentState,
         scheduledGameId: data.id,
         scheduledGameGuid: mainSettingsState.scheduledGameGuid,
       }))
       updateGameLink(mainSettingsState.scheduledGameGuid)
+
       // updateIsGameListedModalOpen(true)
       props.routeProps.history.push('/?at=mygames')
-    } catch (err) {
+    } catch (error) {
       updateIsSubmitting(false)
     }
   }
@@ -322,7 +324,7 @@ const EditGameContainer = (props) => {
       const deleteGameData = await axios.get(`/api/ScheduleGame/delete/${id}/${reason.value}`)
       if (deleteGameData) {
         setReason('')
-        toast.success(<Toast_style text={'Yeah! Game has been deleted successfully.'} />)
+        toast.success(<Toast_style text={'Booo! Game has been deleted.'} />)
       }
     }
   }
@@ -404,8 +406,8 @@ const EditGameContainer = (props) => {
         <div className='modal-wrap'>
           <div className='modal__body'>
             <div className='body__content'>
-              <h1>Are you sure?</h1>
-              <p>Select a reason for canceling</p>
+              <h1>Suffering succotash!</h1>
+              <p>....but why???</p>
 
               <Select
                 style={{ width: '100%' }}
@@ -416,6 +418,7 @@ const EditGameContainer = (props) => {
                   { value: 3, label: 'Totally forgot about this, my bad' },
                   { value: 4, label: 'Not enuf players' },
                   { value: 5, label: 'Decided not to play anymore, sorry all' },
+                  { value: 6, label: 'meh, bite me!' },
                 ]}
                 placeholder={'Select a reason '}
                 className='game__values'

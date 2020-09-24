@@ -3,6 +3,7 @@ import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import IndividualPost from './IndividualPost'
 import ComposeSection from './ComposeSection_v2'
+import GamerSuggestions from './Profile/GamerSuggestions'
 
 import { logToElasticsearch } from '../../integration/http/logger'
 
@@ -130,6 +131,7 @@ export default class Posts extends Component {
             </div>
           </div>
         )}
+        <GamerSuggestions />
         {myPosts.length > 0 && !post_submit_loading && (
           <section id='posts' className={isFetching ? '' : `active`}>
             <InfiniteScroll dataLength={myPosts.length} next={this.fetchMoreData} hasMore={moreplease}>
