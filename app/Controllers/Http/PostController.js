@@ -54,9 +54,10 @@ class PostController {
         }
 
         if (request.input('file_keys') != undefined) {
-          let update_key = new AwsKeyController()
-          request.params.post_id = newPost.id
-          update_key.addPostKey({ auth, request, response })
+          //RAAZ: Need to update the type from 0 to POst ID
+          // let update_key = new AwsKeyController()
+          // request.params.post_id = newPost.id
+          // update_key.addPostKey({ auth, request, response })
         }
 
         request.params.id = newPost.id
@@ -128,9 +129,9 @@ class PostController {
           }
         }
 
-        let update_key = new AwsKeyController()
-        request.params.post_id = newPost.id
-        update_key.addPostKey({ auth, request, response })
+        // let update_key = new AwsKeyController()
+        // request.params.post_id = newPost.id
+        // update_key.addPostKey({ auth, request, response })
 
         return newPost
       } catch (error) {
@@ -177,9 +178,9 @@ class PostController {
           }
         }
 
-        let update_key = new AwsKeyController()
-        request.params.post_id = newPost.id
-        update_key.addPostKey({ auth, request, response })
+        // let update_key = new AwsKeyController()
+        // request.params.post_id = newPost.id
+        // update_key.addPostKey({ auth, request, response })
 
         return newPost
       } catch (error) {

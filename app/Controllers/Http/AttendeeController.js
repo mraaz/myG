@@ -349,7 +349,7 @@ class AttendeeController {
         }
       }
 
-      if (JSON.stringify(additional_submit_info_fields) !== '{}') {
+      if (JSON.stringify(additional_submit_info_fields) != '{}') {
         additional_submit_info = true
       }
 
