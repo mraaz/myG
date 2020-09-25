@@ -744,7 +744,7 @@ class ScheduleGameController {
         }
 
         let getstatus = await Database.from('attendees')
-          .where({ schedule_games_id: myScheduledGames.data[i].id })
+          .where({ schedule_games_id: myScheduledGames.data[i].id, user_id: auth.user.id })
           .select('type')
           .first()
 
@@ -1171,6 +1171,7 @@ class ScheduleGameController {
     // '5': 'Hosting',
 
     let join_status = 0,
+      myStatus = 0,
       approved_gamers = [],
       additional_submit_info = false,
       additional_submit_info_fields = [],
@@ -1196,6 +1197,7 @@ class ScheduleGameController {
 
         if (my_attendance != undefined) {
           join_status = my_attendance.type
+          myStatus = my_attendance.type
         }
 
         if (additional_game_info.user_id == auth.user.id) {
@@ -1273,24 +1275,13 @@ class ScheduleGameController {
         additional_submit_info = true
       }
 
-      let getAllGamers = await Database.from('attendees')
-        .where({ schedule_games_id: request.params.id, type: 1 })
-        .count('* as no_of_gamers')
-
-      let getstatus = await Database.from('attendees')
-        .where({ schedule_games_id: request.params.id })
-        .select('type')
-        .first()
-
-      let myStatus = 0
-
       if (join_status == 0 || join_status == 3) {
         additional_game_info.accept_msg = ''
       }
 
-      if (getstatus != undefined) {
-        myStatus = getstatus.type
-      }
+      let getAllGamers = await Database.from('attendees')
+        .where({ schedule_games_id: request.params.id, type: 1 })
+        .count('* as no_of_gamers')
 
       return {
         additional_game_info,
@@ -1314,10 +1305,9 @@ class ScheduleGameController {
     }
   }
 
-  //trying to figure out position or clash_royale_trophies
-
   async filtered_by_one({ auth, request, response }) {
     let join_status = 0,
+      myStatus = 0,
       latestScheduledGames = [],
       approved_gamers = [],
       additional_submit_info = false,
@@ -1330,7 +1320,17 @@ class ScheduleGameController {
         .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
         .leftJoin('schedule_games_transactions', 'schedule_games_transactions.schedule_games_id', 'schedule_games.id')
         .where('schedule_games.schedule_games_GUID', '=', request.params.schedule_games_GUID)
-        .select('*', 'users.id as user_id', 'schedule_games.id as id', 'schedule_games.created_at', 'schedule_games.updated_at')
+        .select(
+          'schedule_games.*',
+          'game_names.*',
+          'schedule_games_transactions.*',
+          'users.profile_img',
+          'users.alias',
+          'users.id as user_id',
+          'schedule_games.id as id',
+          'schedule_games.created_at',
+          'schedule_games.updated_at'
+        )
       if (!latestScheduledGames.length) {
         return
       }
@@ -1357,6 +1357,19 @@ class ScheduleGameController {
 
       if (my_attendance != undefined) {
         join_status = my_attendance.type
+        myStatus = my_attendance.type
+      }
+
+      if (latestScheduledGames[0].user_id == auth.user.id) {
+        join_status = 5
+      } else {
+        const checkCo_host = await Database.from('co_hosts')
+          .where({ schedule_games_id: latestScheduledGames[0].id, user_id: auth.user.id })
+          .select('id')
+          .first()
+        if (checkCo_host != undefined) {
+          join_status = 4
+        }
       }
 
       //Figure out what fields to return, create the key value pair.
@@ -1425,6 +1438,7 @@ class ScheduleGameController {
         additional_submit_info,
         additional_submit_info_fields,
         getAllGamers,
+        myStatus,
       }
     } catch (error) {
       LoggingRepository.log({

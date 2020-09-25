@@ -80,7 +80,6 @@ const JoinStatus = (props) => {
   const handleJoinGame = () => {
     if (!additional_submit_info) {
       saveJoinGame()
-      toast.success(<Toast_style text={"You're in!"} />)
     } else {
       setModalStatus(!modalStatus)
     }
@@ -125,6 +124,7 @@ const JoinStatus = (props) => {
   }
 
   const handleEditGameDetails = () => {
+    console.log(props.routeProps.routeProps)
     props.routeProps.routeProps
       ? props.routeProps.routeProps.history.push(`/editScheduleGames/${props.schedule_games_id}`)
       : props.routeProps.history.push(`/editScheduleGames/${props.schedule_games_id}`)

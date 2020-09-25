@@ -49,7 +49,7 @@ class FriendController {
         .innerJoin('users', 'users.id', 'friends.friend_id')
         .where({ user_id: auth.user.id })
         .orderBy('friends.created_at', 'desc')
-        .select('friends.friend_id', 'users.first_name', 'users.last_name', 'users.alias', 'users.profile_img')
+        .select('friends.friend_id', 'users.alias', 'users.profile_img')
         .paginate(request.input('counter'), 50)
 
       const showCountallMyFriends = await Database.from('friends')

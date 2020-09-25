@@ -65,30 +65,6 @@ class NotificationController {
     }
   }
 
-  async addGameDeleted({ auth, request, response }) {
-    if (auth.user) {
-      try {
-        const addGameDeleted = await Notification.create({
-          other_user_id: request.params.id,
-          user_id: auth.user.id,
-          activity_type: 15,
-          archive_schedule_game_id: request.params.archive_schedule_game_id,
-        })
-        return 'Saved item'
-      } catch (error) {
-        LoggingRepository.log({
-          environment: process.env.NODE_ENV,
-          type: 'error',
-          source: 'backend',
-          context: __filename,
-          message: (error && error.message) || error,
-        })
-      }
-    } else {
-      return 'You are not Logged In!'
-    }
-  }
-
   async add_approved_group_attendee({ auth, request, response }) {
     if (auth.user) {
       try {
@@ -190,11 +166,7 @@ class NotificationController {
         .where({ activity_type: 14, read_status: 0 })
         .groupBy('notifications.schedule_games_id')
         .select('id')
-      const allMyarchived_schedulegames = await Database.from('notifications')
-        .where({ other_user_id: auth.user.id })
-        .where({ activity_type: 15, read_status: 0 })
-        .groupBy('notifications.archive_schedule_game_id')
-        .select('id')
+
       const dropped_out_attendees = await Database.from('notifications')
         .where({ other_user_id: auth.user.id })
         .where({ activity_type: 16, read_status: 0 })
@@ -233,7 +205,6 @@ class NotificationController {
         ...myschedulegames_attendees,
         ...mygroups,
         ...myschedulegames_approvals,
-        ...allMyarchived_schedulegames,
         ...dropped_out_attendees,
         ...group_member_approved,
         ...group_invite,
@@ -243,7 +214,6 @@ class NotificationController {
       const number_of_notis = singleArr.length
       // 10,11,14,16 = schedule_games
       // 12,17 = group_post
-      // 15, archive_post
       // 2,3,4,5,6 = post_id
       return {
         number_of_notis,
@@ -256,7 +226,6 @@ class NotificationController {
         // myschedulegames_attendees: myschedulegames_attendees,
         // mygroups: mygroups,
         // myschedulegames_approvals: myschedulegames_approvals,
-        // allMyarchived_schedulegames: allMyarchived_schedulegames,
         // dropped_out_attendees: dropped_out_attendees,
         // group_member_approved: group_member_approved
       }
@@ -383,8 +352,6 @@ class NotificationController {
           'notifications.schedule_games_id',
           'notifications.activity_type',
           'users.alias',
-          'users.first_name',
-          'users.last_name',
           'users.profile_img',
           'users.id',
           'notifications.read_status',
@@ -395,27 +362,6 @@ class NotificationController {
         .orderBy('notifications.created_at', 'desc')
         .paginate(request.input('counter'), set_limit)
 
-      const allMyarchived_schedulegames = await Database.from('notifications')
-        .innerJoin('users', 'users.id', 'notifications.user_id')
-        .innerJoin('archive_schedule_games', 'archive_schedule_games.archive_schedule_game_id', 'notifications.schedule_games_id')
-        .innerJoin('game_names', 'game_names.id', 'archive_schedule_games.game_names_id')
-        .where({ other_user_id: auth.user.id, activity_type: 15 })
-        .select(
-          'notifications.archive_schedule_game_id',
-          'notifications.activity_type',
-          'notifications.read_status',
-          'users.alias',
-          'users.first_name',
-          'users.last_name',
-          'users.profile_img',
-          'users.id',
-          'game_names.game_name',
-          'archive_schedule_games.start_date_time',
-          'archive_schedule_games.reason_for_cancel',
-          'notifications.created_at'
-        )
-        .orderBy('notifications.created_at', 'desc')
-        .paginate(request.input('counter'), set_limit)
       const dropped_out_attendees = await Database.from('notifications')
         .innerJoin('users', 'users.id', 'notifications.user_id')
         .innerJoin('schedule_games', 'schedule_games.id', 'notifications.schedule_games_id')
@@ -505,7 +451,6 @@ class NotificationController {
         ...allMyreplies.data,
         ...allMyschedulegames.data,
         ...myschedulegames_approvals.data,
-        ...allMyarchived_schedulegames.data,
         ...dropped_out_attendees.data,
         ...group_member_approved.data,
         ...group_member_kicked.data,
@@ -788,29 +733,6 @@ class NotificationController {
     }
   }
 
-  async updateRead_Status_archive_schedule_game({ auth, request, response }) {
-    if (auth.user) {
-      try {
-        const updateRead_Status_archive_schedule_game = await Notification.query()
-          .where({
-            other_user_id: auth.user.id,
-            archive_schedule_game_id: request.params.archive_schedule_game_id,
-            activity_type: request.params.activity_type,
-          })
-          .update({ read_status: 1 })
-        return 'Saved successfully'
-      } catch (error) {
-        LoggingRepository.log({
-          environment: process.env.NODE_ENV,
-          type: 'error',
-          source: 'backend',
-          context: __filename,
-          message: (error && error.message) || error,
-        })
-      }
-    }
-  }
-
   async updateRead_Status_groups({ auth, request, response }) {
     if (auth.user) {
       try {
@@ -934,31 +856,6 @@ class NotificationController {
 
       return {
         getAllNotiReplyCount_unreadCount: getAllNotiReplyCount_unreadCount,
-      }
-    } catch (error) {
-      LoggingRepository.log({
-        environment: process.env.NODE_ENV,
-        type: 'error',
-        source: 'backend',
-        context: __filename,
-        message: (error && error.message) || error,
-      })
-    }
-  }
-
-  async getunread_archive_schedule_game({ auth, request, response }) {
-    try {
-      const getunread_archive_schedule_game = await Database.from('notifications')
-        .where({ other_user_id: auth.user.id })
-        .where({
-          archive_schedule_game_id: request.params.archive_schedule_game_id,
-          activity_type: request.params.activity_type,
-          read_status: 0,
-        })
-        .count('* as no_of_my_unread')
-
-      return {
-        getAllNotiReplyCount_unreadCount: getunread_archive_schedule_game,
       }
     } catch (error) {
       LoggingRepository.log({
