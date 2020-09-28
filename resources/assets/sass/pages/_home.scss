@@ -2423,3 +2423,17 @@ section#content-container {
     height: auto !important;
   }
 }
+
+@media screen and (max-width: 575px) {
+  .app-container.home-page {
+    display: block;
+  }
+
+  .show-individual-comments {
+    padding: 0px 50px !important;
+  }
+
+  .postCompose__container {
+    margin: 50px;
+  }
+}
