@@ -38,6 +38,7 @@ section#content-container {
   flex: 1;
   height: 100vh;
   overflow-y: scroll;
+  position: relative;
 }
 .dashboard-main-container {
   display: flex;
@@ -2277,6 +2278,12 @@ section#content-container {
 
   .mobile-sub-menu-items .find-gamers {
     padding: 25px 10px;
+  }
+
+  .mobile-top-menu-dropdown {
+    position: absolute;
+    top: 0;
+    background: #1d2326;
   }
 
   .menu-tab {
