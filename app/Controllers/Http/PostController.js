@@ -5,11 +5,11 @@ const Report = use('App/Models/Report')
 const HashTags = use('App/Models/HashTag')
 const Database = use('Database')
 
-const AwsKeyController = use('./AwsKeyController')
 const LikeController = use('./LikeController')
 const PostHashTagTransactionController = use('./PostHashTagTransactionController')
 const HashTagController = use('./HashTagController')
 const LoggingRepository = require('../../Repositories/Logging')
+const ApiController = use('./ApiController')
 
 const MAX_HASH_TAGS = 21
 
@@ -52,12 +52,13 @@ class PostController {
             await this.process_hash_tags({ auth }, request.input('hash_tags'), newPost.id)
           }
         }
+        let tmpArr = request.input('aws_key_id')
 
-        if (request.input('file_keys') != undefined) {
-          //RAAZ: Need to update the type from 0 to POst ID
-          // let update_key = new AwsKeyController()
-          // request.params.post_id = newPost.id
-          // update_key.addPostKey({ auth, request, response })
+        if (tmpArr != undefined && tmpArr.length > 0) {
+          const apiController = new ApiController()
+          for (let i = 0; i < tmpArr.length; i++) {
+            const alicia_key = await apiController.update_aws_keys_entry({ auth }, tmpArr[i], '3', newPost.id)
+          }
         }
 
         request.params.id = newPost.id
@@ -486,8 +487,8 @@ class PostController {
   async destroy({ auth, request, response }) {
     if (auth.user) {
       try {
-        let delete_files = new AwsKeyController()
-        await delete_files.deletePostKey({ auth, request, response })
+        // let delete_files = new AwsKeyController()
+        // await delete_files.deletePostKey({ auth, request, response })
 
         const delete_post = await Database.table('posts')
           .where({
