@@ -11,6 +11,7 @@ import Dropzone from 'react-dropzone'
 const buckectBaseUrl = 'https://mygame-media.s3.amazonaws.com/platform_images/'
 import { MyGCreateableSelect } from './common'
 import { Disable_keys, Hash_Tags } from './Utility_Function'
+import { Upload_to_S3 } from './AWS_utilities'
 
 import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
@@ -118,12 +119,12 @@ export default class ComposeSection extends Component {
     const content = this.state.post_content.trim()
 
     let media_url = []
-    let keys = []
+    let aws_key_id = []
 
     if (this.state.preview_files.length > 0) {
       for (let i = 0; i < this.state.preview_files.length; i++) {
         media_url.push(this.state.preview_files[i].src)
-        keys.push(this.state.preview_files[i].key)
+        aws_key_id.push(this.state.preview_files[i].id)
       }
     }
     let hash_tags = []
@@ -136,14 +137,7 @@ export default class ComposeSection extends Component {
           toast.success(<Toast_style text={'Sorry mate! Hash tags can not have invalid characters'} />)
           return
         }
-        // if (this.state.value_tags[i].hash_tag_id == null) {
-        //   const new_HashTags = await axios.post('/api/HashTags', {
-        //     content: this.state.value_tags[i].value,
-        //   })
-        //   hash_tags.push(new_HashTags.data)
-        // } else {
-        //   hash_tags.push(this.state.value_tags[i].hash_tag_id)
-        // }
+
         delete this.state.value_tags[i].label
       }
       hash_tags = JSON.stringify(this.state.value_tags)
@@ -157,7 +151,7 @@ export default class ComposeSection extends Component {
         visibility: this.state.visibility,
         group_id: this.props.group_id ? this.props.group_id : this.state.group_id.toString(),
         media_url: media_url.length > 0 ? JSON.stringify(media_url) : '',
-        file_keys: keys.length > 0 ? keys : '',
+        aws_key_id: aws_key_id.length > 0 ? aws_key_id : '',
         hash_tags: hash_tags,
       })
       this.setState(
@@ -177,7 +171,7 @@ export default class ComposeSection extends Component {
         },
         () => {
           media_url = []
-          keys = []
+          aws_key_id = []
           this.props.successCallback(post)
         }
       )
@@ -307,32 +301,25 @@ export default class ComposeSection extends Component {
       for (var i = 0; i < Files.length; i++) {
         let type = Files[i].type.split('/')
         let name = `post_${type[0]}_${+new Date()}_${Files[i].name}`
-        this.doUploadS3(Files[i], name, name)
+        this.doUploadS3(Files[i], name)
       }
     }
   }
-  async doUploadS3(file, id = '', name) {
+  async doUploadS3(file, name) {
     var instance = this
 
     this.setState({
       uploading: true,
     })
 
-    const formData = new FormData()
-    formData.append('upload_file', file)
-    formData.append('filename', name)
-
     try {
-      const post = await axios.post('/api/uploadFile', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+      const post = await Upload_to_S3(file, name, 0, null)
+
       var new_preview_files = instance.state.preview_files
       new_preview_files.push({
         src: post.data.Location,
         key: post.data.Key,
-        id: id,
+        id: post.data.aws_key_id,
       })
       instance.setState({
         preview_files: new_preview_files,
@@ -379,8 +366,14 @@ export default class ComposeSection extends Component {
     this.setState({ value_tags })
   }
 
-  handlePreviewRemove = (e, src) => {
+  handlePreviewRemove = (e, src, key, id) => {
     e.preventDefault()
+
+    const deleteKeys = axios.post('/api/deleteFile', {
+      aws_key_id: id,
+      key: key,
+    })
+
     let preview_files = [...this.state.preview_files]
     preview_files = preview_files.filter((data) => data.src != src)
     this.setState({ preview_files })
@@ -488,7 +481,7 @@ export default class ComposeSection extends Component {
                                   <video className='post-video' controls>
                                     <source src={file.src}></source>
                                   </video>
-                                  <span className='remove__image' onClick={(e) => this.handlePreviewRemove(e, file.src)}>
+                                  <span className='remove__image' onClick={(e) => this.handlePreviewRemove(e, file.src, file.key, file.id)}>
                                     X
                                   </span>
                                 </span>
@@ -497,7 +490,7 @@ export default class ComposeSection extends Component {
                             return (
                               <span className='image' key={file.src}>
                                 <img src={file.src} key={file.src} />
-                                <span className='remove__image' onClick={(e) => this.handlePreviewRemove(e, file.src)}>
+                                <span className='remove__image' onClick={(e) => this.handlePreviewRemove(e, file.src, file.key, file.id)}>
                                   X
                                 </span>
                               </span>
