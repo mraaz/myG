@@ -2243,7 +2243,6 @@ section#content-container {
   .mobile-main-container {
     display: block;
     background: #0b0f14;
-    position: relative;
     z-index: 999;
   }
 
@@ -2289,6 +2288,9 @@ section#content-container {
     border: 1px solid #384952;
     border-radius: 50px;
     display: flex;
+    position: absolute;
+    top: 0;
+    z-index: 999;
   }
 
   .top-menu > .logo-img {

@@ -324,6 +324,7 @@ class Layout extends Component {
               loading={!this.state.initialData}
             />
           </div>
+          
           <div className='mobile-main-container'>
             <MobileMenu
               initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
