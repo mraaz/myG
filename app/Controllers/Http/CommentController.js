@@ -155,7 +155,7 @@ class CommentController {
       const lastComment = await Database.from('comments')
         .innerJoin('users', 'users.id', 'comments.user_id')
         .where('schedule_games_id', '=', request.params.id)
-        .select('*', 'comments.id', 'comments.updated_at')
+        .select('comments.*', 'users.profile_img', 'users.alias', 'comments.id', 'comments.updated_at')
         .orderBy('comments.created_at', 'desc')
         .first()
 

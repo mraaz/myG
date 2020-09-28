@@ -233,39 +233,12 @@ class UserStatTransactionController {
             }
           }
 
-          const getArchived_Games = Database.from('archive_schedule_games')
-            .select('archive_schedule_game_id')
-            .where({ user_id: my_user_id })
-            .where('end_date_time', '<=', mysql_friendly_date)
-
-          const getArchiveCount = await Database.from('archive_attendees')
-            .select('id')
-            .where({ type: 1 })
-            .whereIn('archive_schedule_game_id', getArchived_Games)
-            .count('id as total_count')
-            .groupBy('archive_schedule_game_id')
-
-          var archive_tmp = 0
-          var great_archive_tmp = 0
-
-          for (var x = 0; x < getArchiveCount.length; x++) {
-            if (getArchiveCount[i].total_count > CUT_OFF_FOR_ATTENDEES_FOR_GREAT_GAME) {
-              great_archive_tmp++
-            }
-            if (
-              getArchiveCount[i].total_count > CUT_OFF_FOR_ATTENDEES_FOR_GAME &&
-              getArchiveCount[i].total_count <= CUT_OFF_FOR_ATTENDEES_FOR_GREAT_GAME
-            ) {
-              archive_tmp++
-            }
+          if (great_tmp_count != 0) {
+            great_value_to_be_updated = great_tmp_count
           }
 
-          if (great_tmp_count + great_archive_tmp != 0) {
-            great_value_to_be_updated = great_tmp_count + great_archive_tmp
-          }
-
-          if (archive_tmp + tmp_count != 0) {
-            value_to_be_updated = archive_tmp + tmp_count
+          if (tmp_count != 0) {
+            value_to_be_updated = tmp_count
           }
           break
         case 'total_number_of_great_games_played':
@@ -299,43 +272,11 @@ class UserStatTransactionController {
             }
           }
 
-          const getArchivedmyGames = Database.from('archive_attendees')
-            .innerJoin(
-              'archive_schedule_games',
-              'archive_schedule_games.archive_schedule_game_id',
-              'archive_attendees.archive_schedule_game_id'
-            )
-            .select('archive_attendees.archive_schedule_game_id')
-            .where({ type: 1 })
-            .where('archive_attendees.user_id', '=', my_user_id)
-            .where('end_date_time', '<=', mysql_friendly_date)
-
-          const getCount_archived_attendees = await Database.from('archive_attendees')
-            .select('id')
-            .where({ type: 1 })
-            .whereIn('archive_schedule_game_id', getArchivedmyGames)
-            .count('id as total_count')
-            .groupBy('archive_schedule_game_id')
-
-          var great_archvied_tmp_count_games_played = 0
-          var archvied_tmp_count_games_played = 0
-
-          for (var i = 0; i < getCount_archived_attendees.length; i++) {
-            if (getCount_archived_attendees[i].total_count > CUT_OFF_FOR_ATTENDEES_FOR_GREAT_GAME) {
-              great_archvied_tmp_count_games_played++
-            }
-            if (
-              getCount_archived_attendees[i].total_count > CUT_OFF_FOR_ATTENDEES_FOR_GAME &&
-              getCount_archived_attendees[i].total_count <= CUT_OFF_FOR_ATTENDEES_FOR_GREAT_GAME
-            ) {
-              archvied_tmp_count_games_played++
-            }
+          if (great_tmp_count_games_played != 0) {
+            great_value_to_be_updated = great_tmp_count_games_played
           }
-          if (great_tmp_count_games_played + great_archvied_tmp_count_games_played != 0) {
-            great_value_to_be_updated = great_tmp_count_games_played + great_archvied_tmp_count_games_played
-          }
-          if (tmp_count_games_played + archvied_tmp_count_games_played != 0) {
-            value_to_be_updated = tmp_count_games_played + archvied_tmp_count_games_played
+          if (tmp_count_games_played != 0) {
+            value_to_be_updated = tmp_count_games_played
           }
 
           break
