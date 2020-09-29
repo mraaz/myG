@@ -38,6 +38,7 @@ section#content-container {
   flex: 1;
   height: 100vh;
   overflow-y: scroll;
+  position: relative;
 }
 .dashboard-main-container {
   display: flex;
@@ -2233,14 +2234,17 @@ section#content-container {
 // Mobile CSS
 
 @media screen and (max-width: 575px) {
-  .dashboard-main-container {
-    display: none;
+  #main-sidebar,
+  #messenger,
+  .social-main,
+  .links {
+    display: none !important;
   }
 
   .mobile-main-container {
     display: block;
     background: #0b0f14;
-    position: relative;
+    z-index: 999;
   }
 
   .menu-bottom {
@@ -2265,7 +2269,7 @@ section#content-container {
   }
 
   .mobile-sub-menu-items a {
-    color: #fff;
+    color: #fff !important;
   }
 
   .mobile-sub-menu-items .find-matches {
@@ -2274,6 +2278,12 @@ section#content-container {
 
   .mobile-sub-menu-items .find-gamers {
     padding: 25px 10px;
+  }
+
+  .mobile-top-menu-dropdown {
+    position: absolute;
+    top: 0;
+    background: #1d2326;
   }
 
   .menu-tab {
@@ -2285,6 +2295,9 @@ section#content-container {
     border: 1px solid #384952;
     border-radius: 50px;
     display: flex;
+    position: absolute;
+    top: 0;
+    z-index: 999;
   }
 
   .top-menu > .logo-img {
@@ -2394,5 +2407,42 @@ section#content-container {
     color: #fff;
     padding-left: 10px;
     font-weight: 500;
+  }
+
+  .app-container.home-page #posts .post__container {
+    margin: 0;
+    margin-top: 0;
+    padding: 30px;
+  }
+
+  .viewGame__container {
+    margin: 20px !important;
+  }
+
+  .viewGame__container .viewGame__filter {
+    margin: 0 !important;
+  }
+
+  .viewGame__container .gameList__section {
+    flex-direction: column;
+  }
+
+  .viewGame__container .singleGameView__container .gameDetails,
+  .viewGame__container .GameView__container .gameDetails {
+    height: auto !important;
+  }
+}
+
+@media screen and (max-width: 575px) {
+  .app-container.home-page {
+    display: block;
+  }
+
+  .show-individual-comments {
+    padding: 0px 50px !important;
+  }
+
+  .postCompose__container {
+    margin: 50px;
   }
 }
