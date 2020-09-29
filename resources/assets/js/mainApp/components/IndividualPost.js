@@ -9,10 +9,10 @@ import axios from 'axios'
 import IndividualComment from './IndividualComment'
 import moment from 'moment'
 import SweetAlert from './common/MyGSweetAlert'
-// import ImageGallery from 'react-image-gallery'
 const buckectBaseUrl = 'https://mygame-media.s3.amazonaws.com/platform_images/'
 import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
+import { Upload_to_S3 } from './AWS_utilities'
 
 import ImageGallery from './common/ImageGallery/ImageGallery'
 
@@ -48,7 +48,7 @@ export default class IndividualPost extends Component {
       group_name: '',
       show_more_comments: true,
       preview_file: '',
-      aws_key: '',
+      aws_key_id: [],
       file_keys: '',
       galleryItems: [],
       showmore: false,
@@ -301,26 +301,22 @@ export default class IndividualPost extends Component {
     if (fileList.length > 0) {
       let type = fileList[0].type.split('/')
       let name = `comment_${type}_${+new Date()}_${fileList[0].name}`
-      this.doUploadS3(fileList[0], name, name)
+      this.doUploadS3(fileList[0], name)
     }
   }
 
-  doUploadS3 = async (file, id = '', name) => {
+  doUploadS3 = async (file, name) => {
     this.setState({
       uploading: true,
     })
-    const formData = new FormData()
-    formData.append('upload_file', file)
-    formData.append('filename', name)
+
     try {
-      const post = await axios.post('/api/uploadFile', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+      const post = await Upload_to_S3(file, name, 0, null)
+
       this.setState({
         preview_file: [post.data.Location],
-        file_keys: [post.data.Key],
+        file_keys: post.data.Key,
+        aws_key_id: [post.data.aws_key_id],
       })
     } catch (error) {
       toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
@@ -328,10 +324,14 @@ export default class IndividualPost extends Component {
     this.setState({
       uploading: false,
     })
+
+    this.setState({
+      uploading: false,
+    })
   }
 
   insert_comment = () => {
-    const { value = '', preview_file = [] } = this.state
+    const { value = '', preview_file = [], aws_key_id = [] } = this.state
 
     if (value.trim() == '' && preview_file.length == 0) {
       return
@@ -344,24 +344,19 @@ export default class IndividualPost extends Component {
           content: this.state.value.trim(),
           post_id: this.props.post.id,
           media_url: this.state.preview_file.length > 0 ? JSON.stringify(this.state.preview_file) : '',
-          file_keys: this.state.file_keys.length > 0 ? this.state.file_keys : '',
+          aws_key_id: aws_key_id.length > 0 ? aws_key_id : '',
         })
 
         let { post, user } = this.props
-        // if (post.user_id != user.userInfo.id) {
-        //   const addPostLike = axios.post('/api/notifications/addComment', {
-        //     other_user_id: post.user_id,
-        //     post_id: this.props.post.id,
-        //     comment_id: postComment.data.id,
-        //   })
-        // }
+
         this.setState({
           myComments: [...myComments, ...postComment.data],
           preview_file: '',
           file_keys: '',
           value: '',
+          aws_key_id: [],
         })
-        // this.pullComments()
+
         this.setState({
           comment_total: this.state.comment_total + 1,
           zero_comments: true,
@@ -527,6 +522,11 @@ export default class IndividualPost extends Component {
     }
   }
   clearPreviewImage = () => {
+    const deleteKeys = axios.post('/api/deleteFile', {
+      aws_key_id: this.state.aws_key_id[0],
+      key: this.state.file_keys,
+    })
+
     this.setState({
       preview_file: [],
       file_keys: '',
@@ -568,10 +568,7 @@ export default class IndividualPost extends Component {
       var show_media = false
 
       let { post } = this.props //destructing of object
-      let {
-        profile_img = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png',
-        hash_tags = [],
-      } = post //destructing of object
+      let { profile_img = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png', hash_tags = [] } = post //destructing of object
       //destructing of object
 
       if (media_urls != [] && media_urls != null) {

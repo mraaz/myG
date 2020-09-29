@@ -2,7 +2,8 @@
 
 const Comment = use('App/Models/Comment')
 const Database = use('Database')
-const AwsKeyController = use('./AwsKeyController')
+
+const ApiController = use('./ApiController')
 const NotificationController_v2 = use('./NotificationController_v2')
 const LoggingRepository = require('../../Repositories/Logging')
 
@@ -18,10 +19,13 @@ class CommentController {
           media_url: request.input('media_url'),
         })
 
-        if (request.input('file_keys') != undefined && request.input('file_keys') != null && request.input('file_keys').length != 0) {
-          let update_key = new AwsKeyController()
-          request.params.comment_id = newComment.id
-          update_key.addCommentKey({ auth, request, response })
+        let tmpArr = request.input('aws_key_id')
+
+        if (tmpArr != undefined && tmpArr.length > 0) {
+          const apiController = new ApiController()
+          for (let i = 0; i < tmpArr.length; i++) {
+            const alicia_key = await apiController.update_aws_keys_entry({ auth }, tmpArr[i], '7', newComment.id)
+          }
         }
 
         //Get post owner or game owner and then create notification
