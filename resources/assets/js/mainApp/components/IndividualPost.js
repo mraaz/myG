@@ -188,7 +188,7 @@ export default class IndividualPost extends Component {
 
     var post_id = this.props.post.id
 
-    const getmyPostCount = async function() {
+    const getmyPostCount = async function () {
       try {
         var i
 
@@ -204,7 +204,7 @@ export default class IndividualPost extends Component {
       }
     }
 
-    const getGroup_info = async function() {
+    const getGroup_info = async function () {
       try {
         var i
 
@@ -235,7 +235,7 @@ export default class IndividualPost extends Component {
     var post_id = this.props.post.id
     const self = this
 
-    const getComments = async function() {
+    const getComments = async function () {
       try {
         const myComments = await axios.get(`/api/comments/${post_id}`)
         self.setState({
@@ -386,7 +386,7 @@ export default class IndividualPost extends Component {
     const self = this
     var post_id = this.props.post.id
 
-    const editPost = async function() {
+    const editPost = async function () {
       try {
         const myEditPost = await axios.post(`/api/post/update/${post_id}`, {
           content: self.state.value2,
@@ -474,7 +474,7 @@ export default class IndividualPost extends Component {
       dropdown: false,
     })
     setTimeout(
-      function() {
+      function () {
         //Start the timer
         this.focusTextInput2()
       }.bind(this),
@@ -568,10 +568,7 @@ export default class IndividualPost extends Component {
       var show_media = false
 
       let { post } = this.props //destructing of object
-      let {
-        profile_img = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png',
-        hash_tags = [],
-      } = post //destructing of object
+      let { profile_img = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png', hash_tags = [] } = post //destructing of object
       //destructing of object
 
       if (media_urls != [] && media_urls != null) {
@@ -669,13 +666,13 @@ export default class IndividualPost extends Component {
             <div className='update-stats'>
               {this.state.like && (
                 <div className='like-btn' onClick={() => this.click_unlike_btn(post.id)}>
-                  <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' />
+                  <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' className='img-fluid' />
                   &nbsp;Liked
                 </div>
               )}
               {!this.state.like && (
                 <div className='like-btn' onClick={() => this.click_like_btn(post.id)}>
-                  <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_unLike_Feed.svg' />
+                  <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_unLike_Feed.svg' className='img-fluid' />
                   &nbsp;Like
                 </div>
               )}
@@ -720,7 +717,7 @@ export default class IndividualPost extends Component {
                   onChange={this.handleSelectFile}
                   name='insert__images'
                 />
-                <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
+                <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} className='img-fluid' />
               </div>
 
               <div
@@ -736,7 +733,7 @@ export default class IndividualPost extends Component {
             {this.state.uploading && <div className='uploadImage_loading'>Uploading ...</div>}
             {this.state.preview_file.length > 0 && (
               <div className='preview__image'>
-                <img src={`${this.state.preview_file[0]}`} />
+                <img src={`${this.state.preview_file[0]}`} className='img-fluid' />
                 <div className='clear__preview__image' onClick={this.clearPreviewImage}>
                   X
                 </div>

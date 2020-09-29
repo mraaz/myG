@@ -1317,7 +1317,6 @@ section#content-container {
                 }
               }
               .comment-info {
-                display: flex;
                 padding: 20px;
                 .reply-panel {
                   width: 100%;
@@ -2256,6 +2255,7 @@ section#content-container {
     position: absolute;
     bottom: 0;
     width: 100%;
+    z-index: 999;
   }
 
   .mobile-sub-menu-items {
@@ -2284,6 +2284,8 @@ section#content-container {
     position: absolute;
     top: 0;
     background: #1d2326;
+    z-index: 999;
+    width: 100%;
   }
 
   .menu-tab {
@@ -2316,8 +2318,11 @@ section#content-container {
   .back-btn {
     background: #171a1c;
     border-radius: 50%;
-    padding: 30px;
+    padding: 14px;
     border: solid 1px #384952;
+    justify-content: center;
+    display: flex;
+    align-items: center;
   }
 
   .mobile-side-menu {
@@ -2390,10 +2395,10 @@ section#content-container {
     border-left: 1px solid #273137;
   }
 
-  .menu-list > ul > li {
-    padding-top: 15px;
-    padding-left: 30px;
-    font-size: 20px;
+  .menu-list ul li {
+    padding-top: 10px;
+    padding-left: 20px;
+    font-size: 18px;
   }
 
   .logout-setting-section {
@@ -2431,9 +2436,11 @@ section#content-container {
   .viewGame__container .GameView__container .gameDetails {
     height: auto !important;
   }
-}
 
-@media screen and (max-width: 575px) {
+  .level-wrapper {
+    font-weight: 600;
+  }
+
   .app-container.home-page {
     display: block;
   }
