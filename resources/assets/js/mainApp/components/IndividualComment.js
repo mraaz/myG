@@ -10,6 +10,7 @@ import IndividualReply from './IndividualReply'
 import moment from 'moment'
 import SweetAlert from './common/MyGSweetAlert'
 const buckectBaseUrl = 'https://mygame-media.s3.amazonaws.com/platform_images/'
+import { Upload_to_S3 } from './AWS_utilities'
 
 export default class IndividualComment extends Component {
   constructor() {
@@ -34,7 +35,8 @@ export default class IndividualComment extends Component {
       alert: null,
       uploading: false,
       preview_file: [],
-      file_keys: [],
+      file_keys: '',
+      aws_key_id: [],
       hideReplies: false,
       replyShowCount: 1,
     }
@@ -321,7 +323,7 @@ export default class IndividualComment extends Component {
   }
 
   insert_reply = (e) => {
-    const { value = '', preview_file = [] } = this.state
+    const { value = '', preview_file = [], aws_key_id = [] } = this.state
 
     if (value.trim() == '' && preview_file.length == 0) {
       return
@@ -336,34 +338,14 @@ export default class IndividualComment extends Component {
           content: self.state.value.trim(),
           comment_id: self.props.comment.id,
           media_url: self.state.preview_file.length > 0 ? JSON.stringify(self.state.preview_file) : '',
-          file_keys: self.state.file_keys.length > 0 ? self.state.file_keys : '',
+          aws_key_id: aws_key_id.length > 0 ? aws_key_id : '',
         })
 
         let { comment, user } = self.props
-        // if (comment.user_id != user.userInfo.id) {
-        //   if (self.props.comment.schedule_games_id != null) {
-        //     const addReply = axios.post('/api/notifications/addReply', {
-        //       other_user_id: comment.user_id,
-        //       schedule_games_id: self.props.comment.schedule_games_id,
-        //       reply_id: postReply.data.id,
-        //       media_url: self.state.preview_file.length > 0 ? JSON.stringify(self.state.preview_file) : '',
-        //       file_keys: self.state.file_keys.length > 0 ? self.state.file_keys : '',
-        //     })
-        //   } else {
-        //     const addReply = axios.post('/api/notifications/addReply', {
-        //       other_user_id: comment.user_id,
-        //       post_id: comment.post_id,
-        //       reply_id: postReply.data.id,
-        //       media_url: self.state.preview_file.length > 0 ? JSON.stringify(self.state.preview_file) : '',
-        //       file_keys: self.state.file_keys.length > 0 ? self.state.file_keys : '',
-        //     })
-        //   }
-        // }
+
         self.setState({
           myReplies: [...myReplies, ...postReply.data],
         })
-
-        // self.pullReplies()
 
         self.setState({
           value: '',
@@ -461,25 +443,21 @@ export default class IndividualComment extends Component {
     const fileList = e.target.files
     let type = fileList[0].type.split('/')
     let name = `reply_${type}_${+new Date()}_${fileList[0].name}`
-    this.doUploadS3(fileList[0], name, name)
+    this.doUploadS3(fileList[0], name)
   }
 
-  doUploadS3 = async (file, id = '', name) => {
+  doUploadS3 = async (file, name) => {
     this.setState({
       uploading: true,
     })
-    const formData = new FormData()
-    formData.append('upload_file', file)
-    formData.append('filename', name)
+
     try {
-      const post = await axios.post('/api/uploadFile', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+      const post = await Upload_to_S3(file, name, 0, null)
+
       this.setState({
         preview_file: [post.data.Location],
-        file_keys: [post.data.Key],
+        file_keys: post.data.Key,
+        aws_key_id: [post.data.aws_key_id],
       })
     } catch (error) {
       toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
@@ -488,10 +466,17 @@ export default class IndividualComment extends Component {
       uploading: false,
     })
   }
+
   clearPreviewImage = () => {
+    const deleteKeys = axios.post('/api/deleteFile', {
+      aws_key_id: this.state.aws_key_id[0],
+      key: this.state.file_keys,
+    })
+
     this.setState({
       preview_file: [],
-      file_keys: [],
+      file_keys: '',
+      aws_key_id: [],
     })
   }
 
@@ -502,10 +487,7 @@ export default class IndividualComment extends Component {
 
   render() {
     let { comment } = this.props
-    let {
-      profile_img = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png',
-      media_url = '',
-    } = comment
+    let { profile_img = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png', media_url = '' } = comment
     const { myReplies = [], show_more_replies = true, hideReplies = false } = this.state
     const media_urls = media_url && media_url.length > 0 ? JSON.parse(media_url) : ''
     if (this.state.comment_deleted != true) {

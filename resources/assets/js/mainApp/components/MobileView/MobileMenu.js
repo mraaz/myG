@@ -1,12 +1,15 @@
 import React, { Fragment, useState } from 'react'
 import { Link } from 'react-router-dom'
+import MobileMenuTop from './MobileMenuTop'
 
 const MobileMenu = ({ initialData }) => {
   const [hideSearch, setHideSearch] = useState(false)
   const [hideCreate, setHideCreate] = useState(false)
+  const [hideSideMenu, setHideSideMenu] = useState(false)
 
   return (
     <Fragment>
+      <MobileMenuTop />
       <section className='main-mobile-menu'>
         <div className='menu-bottom'>
           <div className='mobile-sub-menu'>

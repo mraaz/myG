@@ -169,7 +169,7 @@ export default class GameDetails extends Component {
                       </Link>
 
                       <div className='arrow'></div>
-                      <span className='author'>{`${lastComment.first_name} ${lastComment.last_name}`}</span>
+                      <span className='author'>{`${lastComment.alias}`}</span>
                       <span>{lastComment.content || ''}</span>
                     </div>
                   </Fragment>

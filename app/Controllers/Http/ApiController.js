@@ -222,6 +222,7 @@ class ApiController {
 
   async update_aws_keys_entry({ auth }, aws_key_id, type, id) {
     if (auth.user) {
+      console.log('number 8')
       try {
         let post_id = null,
           group_id = null,
@@ -256,17 +257,17 @@ class ApiController {
           default:
             return
         }
-
+        console.log('doing maginc')
         let addAwsKey = await AwsKey.query()
           .where({ id: aws_key_id })
           .update({
-            post_id: null,
+            post_id: post_id,
             group_id: group_id,
-            chat_id: null,
-            chat_message_id: null,
-            game_name_id: null,
-            comment_id: null,
-            reply_id: null,
+            chat_id: chat_id,
+            chat_message_id: chat_message_id,
+            game_name_id: game_name_id,
+            comment_id: comment_id,
+            reply_id: reply_id,
             type: type,
           })
 
@@ -278,6 +279,7 @@ class ApiController {
   }
 
   async deleteFile({ auth, request, response }) {
+    console.log('in where')
     if (auth.user) {
       let key = request.input('key')
 

@@ -49,6 +49,7 @@ export default class GameDetails extends Component {
       latestScheduledGames,
       approved_gamers = [],
       join_status,
+      myStatus,
       additional_submit_info = false,
       additional_submit_info_fields = [],
       getAllGamers = [],
@@ -66,14 +67,19 @@ export default class GameDetails extends Component {
       platform = '',
       region = '',
       id = '',
-      allow_comments = 0,
       schedule_games_GUID,
+      marked_as_deleted = 0,
+      reason_for_deletion = null,
     } = scheduleGames_data
     const { no_of_gamers } = getAllGamers[0] || {}
     const experience_split = experience ? experience.split(',') : []
     const { commentData = {} } = this.state
     const { no_of_comments = [], lastComment = '' } = commentData
     const { no_of_my_comments = 0 } = no_of_comments[0] || {}
+    let { allow_comments = 0 } = scheduleGames_data
+    if (marked_as_deleted) {
+      allow_comments = 0
+    }
 
     return (
       <div className='gameDetails'>
@@ -103,13 +109,17 @@ export default class GameDetails extends Component {
                     })}
                 </div>
               </div>
-              <JoinButtonAction
-                join_status={join_status}
-                additional_submit_info={additional_submit_info}
-                additional_submit_info_fields={additional_submit_info_fields}
-                schedule_games_id={id}
-                schedule_games_GUID={schedule_games_GUID}
-              />
+              {!marked_as_deleted && (
+                <JoinButtonAction
+                  join_status={join_status}
+                  additional_submit_info={additional_submit_info}
+                  additional_submit_info_fields={additional_submit_info_fields}
+                  schedule_games_id={id}
+                  schedule_games_GUID={schedule_games_GUID}
+                  myStatus={myStatus}
+                  routeProps={this.props.routeProps}
+                />
+              )}
             </div>
             <div className='gameDetails__body'>
               <div className='filter__label'>Game Details</div>
@@ -122,6 +132,12 @@ export default class GameDetails extends Component {
               {platform && <div className='gameTime__value'>{platform.split(',').join(', ')}</div>}
               {region && <div className='gameTime__label'>Region</div>}
               {region && <div className='gameTime__value'>{region.split(',').join(', ')}</div>}
+              {marked_as_deleted != 0 && (
+                <div className='gameTime__label'>
+                  <span style={{ color: '#e5c746' }}>Reason for cancelling</span>
+                </div>
+              )}
+              {marked_as_deleted != 0 && <div className='gameTime__value'>{reason_for_deletion}</div>}
               {additional_submit_info_fields.length > 0 &&
                 additional_submit_info_fields.map((fields) => {
                   let values = ''
@@ -163,6 +179,8 @@ export default class GameDetails extends Component {
                       {`View all (${no_of_my_comments}) comments`}
                     </div>
 
+                    {allow_comments == 0 && <div className='noComments disabled'>Comments disabled.</div>}
+
                     <div className='game__comment'>
                       <Link to={`/profile/${lastComment.alias}`} className='user-img'>
                         {' '}
@@ -175,7 +193,7 @@ export default class GameDetails extends Component {
                       </Link>
 
                       <div className='arrow'></div>
-                      <span className='author'>{`${lastComment.first_name} ${lastComment.last_name}`}</span>
+                      <span className='author'>{`${lastComment.alias}`}</span>
                       <span>{lastComment.content || ''}</span>
                     </div>
                   </Fragment>
@@ -187,7 +205,6 @@ export default class GameDetails extends Component {
                 ) : (
                   ''
                 )}
-                {allow_comments == 0 && <div className='noComments disabled'>Comments disabled.</div>}
               </div>
             )}
           </Fragment>
