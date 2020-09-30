@@ -278,7 +278,6 @@ class ApiController {
   }
 
   async deleteFile({ auth, request, response }) {
-    console.log('in where')
     if (auth.user) {
       let key = request.input('key')
 
