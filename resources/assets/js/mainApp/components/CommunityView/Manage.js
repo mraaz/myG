@@ -56,24 +56,27 @@ export default class Members extends React.Component {
 
   render() {
     const { modalStatus, communityName, isunique } = this.state
+    const { current_user_permission } = this.props
 
     return (
       <div className='setting__container'>
-        <div className='communityName__section row'>
-          <div className='community___label col-sm-4'>Change Community Name</div>
-          <div className='community___input col-sm-6'>
-            <input
-              type='text'
-              value={communityName}
-              onBlur={this.handleNameblur}
-              onChange={this.handleCommunityNameChange}
-              placeholder='Change Community Name'
-            />
+        {[0, 1].includes(current_user_permission) && (
+          <div className='communityName__section row'>
+            <div className='community___label col-sm-4'>Change Community Name</div>
+            <div className='community___input col-sm-6'>
+              <input
+                type='text'
+                value={communityName}
+                onBlur={this.handleNameblur}
+                onChange={this.handleCommunityNameChange}
+                placeholder='Change Community Name'
+              />
+            </div>
+            <button disabled={isunique} className='community___button col-sm-2' onClick={this.handleCommunityNameSave}>
+              Save
+            </button>
           </div>
-          <button disabled={isunique} className='community___button col-sm-2' onClick={this.handleCommunityNameSave}>
-            Save
-          </button>
-        </div>
+        )}
         <div className='group__privacy row'>
           <div className='label col-sm-4'>Privacy</div>
           <div className='options col-sm-8'>

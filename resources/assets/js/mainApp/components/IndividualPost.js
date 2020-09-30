@@ -605,7 +605,6 @@ export default class IndividualPost extends Component {
       if (media_urls != [] && media_urls != null) {
         show_media = true
       }
-      console.log('current_user_permission ', current_user_permission)
 
       return (
         <div className='post__container'>

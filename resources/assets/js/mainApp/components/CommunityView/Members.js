@@ -54,14 +54,46 @@ export default class Members extends React.Component {
     })
   }
   handleDelete = async (e) => {
-    const delete_group = axios.post('/api/groups/delete', {
-      group_id: this.props.groups_id,
+    this.setState({
+      alert: null,
+      dropdown: false,
     })
-    if (delete_group) {
-      toast.error(<Toast_style text={'Hmmmm, Group has been deleted successfully.'} />)
-    } else {
-      toast.error(<Toast_style text={'Hmmmm, Something went wrong. Please try again.'} />)
+    if (text == 'true') {
+      const delete_group = axios.post('/api/groups/delete', {
+        group_id: this.props.groups_id,
+      })
+      if (delete_group) {
+        toast.error(<Toast_style text={'Hmmmm, Group has been deleted successfully.'} />)
+      } else {
+        toast.error(<Toast_style text={'Hmmmm, Something went wrong. Please try again.'} />)
+      }
     }
+  }
+
+  showAlert() {
+    const getAlert = () => (
+      <SweetAlert
+        danger
+        showCancel
+        title='Are you sure you wish to delete this comment?'
+        confirmBtnText='Make it so!'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={false}
+        btnSize='lg'
+        style={{
+          display: 'flex',
+          whiteSpace: 'pre',
+          width: '41%',
+        }}
+        onConfirm={() => this.handleDelete('true')}
+        onCancel={() => this.handleDelete('false')}>
+        You will not be able to recover this entry!
+      </SweetAlert>
+    )
+    this.setState({
+      alert: getAlert(),
+    })
   }
 
   renderGroupMember = () => {
@@ -69,6 +101,7 @@ export default class Members extends React.Component {
 
     return (
       <React.Fragment>
+        {this.state.alert}
         {group_members.length > 0 &&
           group_members.map((member) => {
             return (
@@ -134,7 +167,7 @@ export default class Members extends React.Component {
             <div className='modal__footer'>
               <MyGButton
                 customStyles={{ color: '#FFFFFF', border: '2px solid #FFFFFF', background: '#804545' }}
-                onClick={() => this.handleDelete(false)}
+                onClick={() => this.showAlert()}
                 text='Delete'
               />
               <button type='button' onClick={() => this.handleSave(true)}>
