@@ -82,7 +82,7 @@ export default class GameDetails extends Component {
     }
 
     return (
-      <div className='gameDetails'>
+      <div className='gameDetails singleGameDetail'>
         {showRightSideInfo && !showAllComment && (
           <Fragment>
             <div className='gameDetails__header'>
@@ -121,7 +121,7 @@ export default class GameDetails extends Component {
                 />
               )}
             </div>
-            <div className='gameDetails__body'>
+            <div className='gameDetails__body singleGameBody'>
               <div className='filter__label'>Game Details</div>
               <div className='gameDescription'>Description</div>
               <div className='gameDescription__body'>{description}</div>

@@ -1133,6 +1133,16 @@
     margin: 0 auto;
     margin-top: 55px;
     border: none;
+
+    .singleGameDetail {
+      height: fit-content !important;
+
+      .singleGameBody {
+        margin-top: 20px !important;
+        margin-left: 20px !important;
+        margin-bottom: 80px !important;
+      }
+    }
     .gameDetails {
       background: #171a1c;
       margin-left: 10px;
