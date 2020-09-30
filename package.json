@@ -133,6 +133,7 @@
     "uglifyjs-webpack-plugin": "^2.2.0",
     "uuid": "^3.3.2",
     "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
     "webpack-stream": "^3.2.0"
   },
   "devDependencies": {
@@ -140,8 +141,7 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-stage-0": "^6.24.1",
-    "webpack-bundle-analyzer": "^3.6.1",
-    "webpack-cli": "^3.3.11"
+    "webpack-bundle-analyzer": "^3.6.1"
   },
   "autoload": {
     "App": "./app"

@@ -146,7 +146,7 @@ class GroupController {
     try {
       let following = false
       const getOne = await Database.from('groups')
-        .where({ name: request.params.name })
+        .where({ name: decodeURIComponent(request.params.name) })
         .first()
 
       if (getOne != undefined) {
