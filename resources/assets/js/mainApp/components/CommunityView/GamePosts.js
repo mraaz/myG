@@ -35,7 +35,15 @@ export default class Posts extends Component {
         } catch (e) {
           item.media_url = ''
         }
-        return <IndividualPost post={item} key={index} user={this.props.initialData} source={'news_feed'} />
+        return (
+          <IndividualPost
+            current_user_permission={this.props.current_user_permission}
+            post={item}
+            key={index}
+            user={this.props.initialData}
+            source={'news_feed'}
+          />
+        )
       })
     }
   }
@@ -117,7 +125,7 @@ export default class Posts extends Component {
       }
 
       this.setState({
-        myPosts: this.state.myPosts.concat(myPosts.data.groupPosts.groupPosts),
+        myPosts: [...myPosts.data.groupPosts.groupPosts],
       })
     })
   }

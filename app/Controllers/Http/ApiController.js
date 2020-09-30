@@ -222,6 +222,7 @@ class ApiController {
 
   async update_aws_keys_entry({ auth }, aws_key_id, type, id) {
     if (auth.user) {
+      console.log('number 8')
       try {
         let post_id = null,
           group_id = null,
@@ -256,7 +257,7 @@ class ApiController {
           default:
             return
         }
-
+        console.log('doing maginc')
         let addAwsKey = await AwsKey.query()
           .where({ id: aws_key_id })
           .update({
