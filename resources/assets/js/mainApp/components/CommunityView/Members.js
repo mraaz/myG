@@ -4,6 +4,9 @@ import Modal from 'react-modal'
 import { Link } from 'react-router-dom'
 import SweetAlert from '../common/MyGSweetAlert'
 import Manage from './Manage'
+import { toast } from 'react-toastify'
+import { Toast_style } from '../Utility_Function'
+import { PageHeader, MyGButton, MyGModal, MyGInput } from '../common'
 
 export default class Members extends React.Component {
   constructor(props) {
@@ -38,6 +41,27 @@ export default class Members extends React.Component {
 
   handleSettingTab = (isActive) => {
     this.setState({ isActive })
+  }
+
+  handleSave = async (e) => {
+    console.log('handle save')
+    const { communityName, approval, privacy } = this.state
+    const sendInvite = await axios.post('/api/groups/update_settings', {
+      group_id: this.props.groups_id,
+      group_name: communityName,
+      privacy: privacy,
+      mApprovals: approval,
+    })
+  }
+  handleDelete = async (e) => {
+    const delete_group = axios.post('/api/groups/delete', {
+      group_id: this.props.groups_id,
+    })
+    if (delete_group) {
+      toast.error(<Toast_style text={'Hmmmm, Group has been deleted successfully.'} />)
+    } else {
+      toast.error(<Toast_style text={'Hmmmm, Something went wrong. Please try again.'} />)
+    }
   }
 
   renderGroupMember = () => {
@@ -106,6 +130,18 @@ export default class Members extends React.Component {
             </div>
           </div>
           <div className='modal__body'>{isActive == 'setting' ? this.renderSettingComponent() : this.renderGroupMember()}</div>
+          {isActive == 'setting' && (
+            <div className='modal__footer'>
+              <MyGButton
+                customStyles={{ color: '#FFFFFF', border: '2px solid #FFFFFF', background: '#804545' }}
+                onClick={() => this.handleDelete(false)}
+                text='Delete'
+              />
+              <button type='button' onClick={() => this.handleSave(true)}>
+                Save
+              </button>
+            </div>
+          )}
         </div>
 
         <div className='modal-overlay' onClick={(e) => this.props.handleModalStatus()}></div>

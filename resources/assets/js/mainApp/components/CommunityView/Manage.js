@@ -47,6 +47,12 @@ export default class Members extends React.Component {
   handlePrivacyChange = (e, privacy) => {
     this.setState({ privacy })
   }
+  handlePermissionsChange = (e, permissions) => {
+    this.setState({ permissions })
+  }
+  handleApprovalChange = (e, approval) => {
+    this.setState({ approval })
+  }
 
   render() {
     const { modalStatus, communityName, isunique } = this.state
@@ -77,7 +83,7 @@ export default class Members extends React.Component {
                 <input
                   type='checkbox'
                   name='public'
-                  checked={this.state.privacy == 1}
+                  checked={this.state.privacy == 'public'}
                   onChange={(e) => this.handlePrivacyChange(e, 'public')}
                   value={'public'}
                 />
@@ -90,7 +96,7 @@ export default class Members extends React.Component {
                 <input
                   type='checkbox'
                   name='closed'
-                  checked={this.state.privacy == 1}
+                  checked={this.state.privacy == 'closed'}
                   onChange={(e) => this.handlePrivacyChange(e, 'closed')}
                   value={'closed'}
                 />
@@ -103,9 +109,84 @@ export default class Members extends React.Component {
                 <input
                   type='checkbox'
                   name='secret'
-                  checked={this.state.privacy == 1}
+                  checked={this.state.privacy == 'secret'}
                   onChange={(e) => this.handlePrivacyChange(e, 'secret')}
                   value={'secret'}
+                />
+                <span className='checkmark'></span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div className='group__privacy row'>
+          <div className='label col-sm-4'>Post Permissions</div>
+          <div className='options col-sm-8'>
+            <div>
+              <label className='container'>
+                Everyone
+                <input
+                  type='checkbox'
+                  name='Everyone'
+                  checked={this.state.permissions == 'everyone'}
+                  onChange={(e) => this.handlePermissionsChange(e, 'everyone')}
+                  value={'public'}
+                />
+                <span className='checkmark'></span>
+              </label>
+            </div>
+            <div>
+              <label className='container'>
+                Admins
+                <input
+                  type='checkbox'
+                  name='Admins'
+                  checked={this.state.permissions == 'admins'}
+                  onChange={(e) => this.handlePermissionsChange(e, 'admins')}
+                  value={'closed'}
+                />
+                <span className='checkmark'></span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div className='group__privacy row'>
+          <div className='label col-sm-4'>Membership Approval</div>
+          <div className='options col-sm-8'>
+            <div>
+              <label className='container'>
+                Everyone
+                <input
+                  type='checkbox'
+                  name='Everyone'
+                  checked={this.state.approval == 'everyone'}
+                  onChange={(e) => this.handleApprovalChange(e, 'everyone')}
+                  value={'everyone'}
+                />
+                <span className='checkmark'></span>
+              </label>
+            </div>
+            <div>
+              <label className='container'>
+                Members
+                <input
+                  type='checkbox'
+                  name='members'
+                  checked={this.state.approval == 'members'}
+                  onChange={(e) => this.handleApprovalChange(e, 'members')}
+                  value={'members'}
+                />
+                <span className='checkmark'></span>
+              </label>
+            </div>
+            <div>
+              <label className='container'>
+                Admins
+                <input
+                  type='checkbox'
+                  name='Admins'
+                  checked={this.state.approval == 'admins'}
+                  onChange={(e) => this.handleApprovalChange(e, 'admins')}
+                  value={'admins'}
                 />
                 <span className='checkmark'></span>
               </label>
