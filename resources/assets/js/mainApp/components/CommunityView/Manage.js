@@ -9,6 +9,7 @@ export default class Members extends React.Component {
     this.state = {
       communityName: '',
       isunique: false,
+      saveButtonDisabled: true,
     }
   }
 
@@ -18,7 +19,9 @@ export default class Members extends React.Component {
   }
   handleCommunityNameChange = (e) => {
     const communityName = e.target.value
-    this.setState({ communityName })
+    this.setState({ communityName }, () => {
+      this.props.onSettingsChange()
+    })
   }
   handleCommunityNameSave = async () => {
     const { communityName } = this.state
@@ -45,17 +48,23 @@ export default class Members extends React.Component {
     }
   }
   handlePrivacyChange = (e, privacy) => {
-    this.setState({ privacy })
+    this.setState({ privacy }, () => {
+      this.props.onSettingsChange()
+    })
   }
   handlePermissionsChange = (e, permissions) => {
-    this.setState({ permissions })
+    this.setState({ permissions }, () => {
+      this.props.onSettingsChange()
+    })
   }
   handleApprovalChange = (e, approval) => {
-    this.setState({ approval })
+    this.setState({ approval }, () => {
+      this.props.onSettingsChange()
+    })
   }
 
   render() {
-    const { modalStatus, communityName, isunique } = this.state
+    const { modalStatus, communityName, isunique, saveButtonDisabled } = this.state
     const { current_user_permission } = this.props
 
     return (

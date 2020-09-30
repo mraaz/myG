@@ -17,6 +17,7 @@ export default class Members extends React.Component {
       group_members: [],
       isActive: 'members',
       permission_level: '',
+      saveButtonDisabled: true,
     }
   }
 
@@ -41,6 +42,10 @@ export default class Members extends React.Component {
 
   handleSettingTab = (isActive) => {
     this.setState({ isActive })
+  }
+
+  onSettingsChange = () => {
+    this.setState({ saveButtonDisabled: false })
   }
 
   handleSave = async (e) => {
@@ -137,11 +142,11 @@ export default class Members extends React.Component {
   }
 
   renderSettingComponent = () => {
-    return <Manage {...this.props} group_id={this.props.group_id} />
+    return <Manage {...this.props} onSettingsChange={this.onSettingsChange} group_id={this.props.group_id} />
   }
 
   render() {
-    const { modalStatus, isActive } = this.state
+    const { modalStatus, isActive, saveButtonDisabled } = this.state
     const { current_user_permission } = this.props
     return (
       <div className={`modal-container View__Member__modal ${modalStatus ? 'modal--show' : ''}`}>
@@ -170,7 +175,7 @@ export default class Members extends React.Component {
                 onClick={() => this.showAlert()}
                 text='Delete'
               />
-              <button type='button' onClick={() => this.handleSave(true)}>
+              <button type='button' disabled={saveButtonDisabled} onClick={() => this.handleSave(true)}>
                 Save
               </button>
             </div>
