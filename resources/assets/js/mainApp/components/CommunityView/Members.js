@@ -53,7 +53,7 @@ export default class Members extends React.Component {
       mApprovals: approval,
     })
   }
-  handleDelete = async (e) => {
+  handleDelete = async (text) => {
     this.setState({
       alert: null,
       dropdown: false,
@@ -101,7 +101,6 @@ export default class Members extends React.Component {
 
     return (
       <React.Fragment>
-        {this.state.alert}
         {group_members.length > 0 &&
           group_members.map((member) => {
             return (
@@ -146,6 +145,7 @@ export default class Members extends React.Component {
     const { current_user_permission } = this.props
     return (
       <div className={`modal-container View__Member__modal ${modalStatus ? 'modal--show' : ''}`}>
+        {this.state.alert}
         <div className='modal-wrap'>
           <div className='modal__header'>
             <div className='tabs___header'>
