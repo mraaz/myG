@@ -214,7 +214,6 @@ Route.get('/api/notifications/delete_group/:id', 'NotificationController.delete_
 Route.get('/api/notifications/getunread_group/:id/:activity_type', 'NotificationController.getunread_group')
 Route.post('/api/notifications/addGameApproved', 'NotificationController.addGameApproved')
 Route.put('/api/notifications/inviteToGroup', 'NotificationController.inviteToGroup')
-Route.post('/api/notifications/invitations', 'NotificationController.invitations')
 Route.get('/api/notifications/getunread_dings', 'NotificationController.getunread_dings')
 
 //-----------------------------------------
@@ -226,6 +225,7 @@ Route.get('/api/notifications_v2/deleteAllNoti', 'NotificationController_v2.dele
 Route.post('/api/notifications_v2/addFriend', 'NotificationController_v2.addFriend')
 Route.get('/api/notifications_v2/delete/:id', 'NotificationController_v2.destroy')
 Route.get('/api/notifications_v2/friend/:id', 'NotificationController_v2.checkFriend')
+Route.post('/api/notifications_v2/invitations', 'NotificationController_v2.invitations')
 Route.post('/api/notifications_v2/invitations_community', 'NotificationController_v2.invitations_community')
 Route.post('/api/notifications_v2/mark_read_status', 'NotificationController_v2.mark_read_status')
 Route.post('/api/notifications_v2/getUnread_count', 'NotificationController_v2.getUnread_count')
