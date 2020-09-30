@@ -236,13 +236,20 @@ export default class Alerts extends Component {
           </div>
         )
         break
-
-      case 23:
+      case 22:
         return (
           <div className='notification__text'>
-            {`has commended you!`}
+            {`has joined`}
+            <Link to={`/scheduledGames/${props.schedule_games_GUID}`}>
+              <span className='notification-type'>{props.game_name}</span>
+            </Link>
+            {`which starts on  ${moment(props.start_time).format('DD-MMM-YYYY')}`}
           </div>
         )
+        break
+
+      case 23:
+        return <div className='notification__text'>{`has commended you!`}</div>
         break
 
       default:
@@ -289,6 +296,10 @@ export default class Alerts extends Component {
     })
   }
 
+  addDefaultSrc(ev) {
+    ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
+  }
+
   render() {
     const { active } = this.props
     const { notification = [], fetching = false } = this.state
@@ -324,7 +335,7 @@ export default class Alerts extends Component {
                   onClick={(e) => this.handleClickNotiFication(noti.id)}>
                   <div className='notification-user-avatar'>
                     <Link to={`/profile/${noti.alias}`}>
-                      <img src={noti.profile_img ? noti.profile_img : defaultUserImage} />
+                      <img onError={this.addDefaultSrc} src={noti.profile_img ? noti.profile_img : defaultUserImage} />
                     </Link>
                   </div>
                   <div className='notification-content'>

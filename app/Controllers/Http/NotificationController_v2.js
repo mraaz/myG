@@ -329,6 +329,14 @@ class NotificationController_v2 {
   async getAllNotifications({ auth, request, response }) {
     // P.S 7, 8 & 9 don't exist, just have them as placeholder atm.
 
+    // Activity_types:
+    // Feed = -1
+    // Games: 10
+    // Misc: -2
+    // Get ALL: 0
+
+    //https://trello.com/c/kfr5Kyq7/3-alerts
+
     let set_limit = 10,
       singleArr = [],
       first_two_users
@@ -412,15 +420,16 @@ class NotificationController_v2 {
         request.input('activity_type') == 10 ||
         request.input('activity_type') == 14 ||
         request.input('activity_type') == 15 ||
-        request.input('activity_type') == 21
+        request.input('activity_type') == 21 ||
+        request.input('activity_type') == 22
       ) {
         let arr = []
         switch (request.input('activity_type')) {
           case '0':
-            arr = [10, 14, 15, 21]
+            arr = [10, 14, 15, 21, 22]
             break
           case '10':
-            arr = [10, 14, 15, 21]
+            arr = [10, 14, 15, 21, 22]
             break
           default:
             arr.push(parseInt(request.input('activity_type')))
@@ -1080,6 +1089,120 @@ class NotificationController_v2 {
         context: __filename,
         message: (error && error.message) || error,
       })
+    }
+  }
+
+  async invitations({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        if (
+          request.input('schedule_games_id') == undefined ||
+          request.input('schedule_games_id') == null ||
+          request.input('schedule_games_id') == ''
+        ) {
+          return
+        }
+
+        const requestingUserId = auth.user.id
+        const arrInvite_user = request.input('gamers').split(',')
+        const arrInvite_group = request.input('groups').split(',')
+        const arrInvite_community = request.input('communities').split(',')
+        const scheduledGameId = request.input('scheduledGameId')
+        const scheduledGameGuid = request.input('scheduledGameGuid')
+        const gameTitle = request.input('gameTitle')
+        const startTime = formatDateTimeFromNow(request.input('startTime'))
+        const content = `Heya! A new ${gameTitle} game has been created! It is scheduled to start ${startTime}. Find out more here: https://myG.gg/scheduledGames/${scheduledGameGuid}`
+
+        if (arrInvite_user != '') {
+          for (var i = 0; i < arrInvite_user.length; i++) {
+            const findUser = await Database.table('users')
+              .where({
+                alias: arrInvite_user[i].trim(),
+              })
+              .select('id')
+
+            if (findUser.length == 0) {
+              continue
+            }
+
+            const addScheduleGame = await Notification.create({
+              other_user_id: findUser[0].id,
+              user_id: auth.user.id,
+              activity_type: 10,
+              schedule_games_id: scheduledGameId,
+            })
+
+            // const requestedUserId = findUser[0].id
+            // await ChatRepository.sendMessageFromMyGToUser({ requestingUserId, requestedUserId, content })
+          }
+        }
+
+        if (arrInvite_group != '') {
+          for (var i = 0; i < arrInvite_group.length; i++) {
+            const findChat = await Database.table('chats')
+              .where({
+                title: arrInvite_group[i].trim(),
+              })
+              .select('id')
+
+            if (findChat.length == 0) {
+              continue
+            }
+
+            const requestedChatId = findChat[0].id
+            await ChatRepository.sendMessageFromMyG({ requestedChatId, content })
+          }
+        }
+
+        if (arrInvite_community != '') {
+          for (var i = 0; i < arrInvite_community.length; i++) {
+            const findGroup = await Database.table('groups')
+              .where({
+                name: arrInvite_community[i].trim(),
+              })
+              .select('id')
+
+            if (findGroup.length == 0) {
+              continue
+            }
+
+            const findGame = await Database.table('schedule_games')
+              .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+              .where('schedule_games.id', '=', scheduledGameId)
+              .select('game_names.game_name', 'schedule_games.start_date_time')
+              .first()
+
+            if (findGame == undefined) {
+              continue
+            }
+
+            const newPost = await Post.create({
+              user_id: auth.user.id,
+              type: 'text',
+              content:
+                'Heya! A new ' +
+                findGame.game_name +
+                ' game has been created! It is scheduled to start: ' +
+                findGame.start_date_time +
+                '. Find out more here: https://myG.gg/scheduled_games/' +
+                scheduledGameId,
+              group_id: findGroup[0].id,
+            })
+          }
+        }
+
+        return 'Saved item'
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
+      }
+    } else {
+      return 'You are not Logged In!'
     }
   }
 
