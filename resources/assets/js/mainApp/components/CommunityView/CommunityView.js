@@ -1,8 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { toast } from 'react-toastify'
 import moment from 'moment'
 import axios from 'axios'
-import { Toast_style } from '../Utility_Function'
 import GamePosts from './GamePosts'
 
 import CoverImage from './CoverImage'
@@ -11,13 +9,15 @@ import Members from './Members'
 const CommunityView = (props) => {
   const [communityDetails, setCommunityDetails] = useState({})
   const [modalStatus, setModalStatus] = useState(false)
+  const [activeModalTab, setActiveModalTab] = useState('settings')
 
   useEffect(() => {
     const getcommunityDetails = async () => {
       const { match } = props.routeProps
+      const groupName = decodeURIComponent(match.params.name)
       const {
         data: { getOne = {} },
-      } = await axios.get(`/api/groups/getGroupDetails/${match.params.name}`)
+      } = await axios.get(`/api/groups/getGroupDetails/${groupName}`)
 
       setCommunityDetails({ ...getOne })
     }
@@ -27,7 +27,8 @@ const CommunityView = (props) => {
     }
   }, [])
 
-  const handleModalStatus = () => {
+  const handleModalStatus = (label) => {
+    setActiveModalTab(label)
     setModalStatus(!modalStatus)
   }
 
@@ -41,7 +42,17 @@ const CommunityView = (props) => {
       {communityDetails.id && (
         <GamePosts {...props} group_id={communityDetails.id} current_user_permission={communityDetails.current_user_permission} />
       )}
-      {modalStatus == true ? <Members handleModalStatus={handleModalStatus} group_id={communityDetails.id} /> : ''}
+      {modalStatus == true ? (
+        <Members
+          current_user_permission={communityDetails.current_user_permission}
+          {...props}
+          activeTab={activeModalTab}
+          handleModalStatus={handleModalStatus}
+          group_id={communityDetails.id}
+        />
+      ) : (
+        ''
+      )}
     </div>
   )
 }

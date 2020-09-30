@@ -3,10 +3,11 @@ import axios from 'axios'
 import Modal from 'react-modal'
 import { Link } from 'react-router-dom'
 import SweetAlert from '../common/MyGSweetAlert'
+import Manage from './Manage'
 
 export default class Members extends React.Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       modalStatus: true,
       counter: 1,
@@ -17,7 +18,7 @@ export default class Members extends React.Component {
   }
 
   async componentDidMount() {
-    const { group_id = '' } = this.props
+    const { group_id = '', activeTab } = this.props
     const { counter = '' } = this.state
     const group_members = await axios.post('/api/usergroup/member_lists/', {
       group_id,
@@ -26,6 +27,7 @@ export default class Members extends React.Component {
     if (group_members.data && group_members.data.all_group_members.length > 0) {
       this.setState({ group_members: group_members.data.all_group_members })
     }
+    this.setState({ isActive: activeTab })
   }
   addDefaultSrc = (ev) => {
     ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/universe.jpg'
@@ -78,16 +80,23 @@ export default class Members extends React.Component {
     )
   }
 
+  renderSettingComponent = () => {
+    return <Manage {...this.props} group_id={this.props.group_id} />
+  }
+
   render() {
     const { modalStatus, isActive } = this.state
+    const { current_user_permission } = this.props
     return (
       <div className={`modal-container View__Member__modal ${modalStatus ? 'modal--show' : ''}`}>
         <div className='modal-wrap'>
           <div className='modal__header'>
             <div className='tabs___header'>
-              <span className={`setting__tab ${isActive == 'setting' ? 'active' : ''}`} onClick={(e) => this.handleSettingTab('setting')}>
-                Setting
-              </span>
+              {[0, 1, 2].includes(current_user_permission) && (
+                <span className={`setting__tab ${isActive == 'setting' ? 'active' : ''}`} onClick={(e) => this.handleSettingTab('setting')}>
+                  Setting
+                </span>
+              )}
               <span className={`setting__tab ${isActive == 'members' ? 'active' : ''}`} onClick={(e) => this.handleSettingTab('members')}>
                 Members
               </span>
@@ -96,7 +105,7 @@ export default class Members extends React.Component {
               <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/X_icon.svg' />
             </div>
           </div>
-          <div className='modal__body'>{this.renderGroupMember()}</div>
+          <div className='modal__body'>{isActive == 'setting' ? this.renderSettingComponent() : this.renderGroupMember()}</div>
         </div>
 
         <div className='modal-overlay' onClick={(e) => this.props.handleModalStatus()}></div>

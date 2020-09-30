@@ -211,7 +211,7 @@ export default class IndividualPost extends Component {
 
         const myPostCount = await axios.get(`/api/groups/${post.group_id}`)
 
-        if (myPostCount.data.group.length != 0) {
+        if (myPostCount.data && myPostCount.data.group && myPostCount.data.group.length != 0) {
           self.setState({
             group_name: myPostCount.data.group[0].name,
           })

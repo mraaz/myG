@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react'
-import { Toast_style } from '../Utility_Function'
 import { Upload_to_S3 } from '../AWS_utilities'
 import axios from 'axios'
 
@@ -92,11 +91,11 @@ const CoverImage = (props) => {
             )}
           </button>
           {[0, 1, 2].includes(props.current_user_permission) && (
-            <button type='button' className='btnWarning'>
+            <button type='button' className='btnWarning' onClick={(e) => props.handleModalStatus('setting')}>
               Manage
             </button>
           )}
-          <button type='button' className='btnWarning' onClick={(e) => props.handleModalStatus()}>
+          <button type='button' className='btnWarning' onClick={(e) => props.handleModalStatus('members')}>
             View Members
           </button>
         </div>
