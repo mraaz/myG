@@ -4,13 +4,17 @@
  * Email : nitin.1992tyagi@gmail.com
  */
 import React, { Component, Fragment } from 'react'
+import { Link } from 'react-router-dom'
+
 import moment from 'moment'
 import axios from 'axios'
+
 import IndividualComment from '../IndividualComment'
 import { toast } from 'react-toastify'
 import { Toast_style } from '../Utility_Function'
+import { Upload_to_S3 } from '../AWS_utilities'
+
 const buckectBaseUrl = 'https://mygame-media.s3.amazonaws.com/platform_images/'
-import { Link } from 'react-router-dom'
 const defaultUserImage = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
 
 export default class GameComments extends Component {
@@ -18,7 +22,7 @@ export default class GameComments extends Component {
     super()
     this.state = {
       preview_file: [],
-      aws_key: '',
+      aws_key_id: [],
       file_keys: '',
       uploading: false,
     }
@@ -94,26 +98,22 @@ export default class GameComments extends Component {
     if (fileList.length > 0) {
       let type = fileList[0].type.split('/')
       let name = `comment_${type}_${+new Date()}_${fileList[0].name}`
-      this.doUploadS3(fileList[0], name, name)
+      this.doUploadS3(fileList[0], name)
     }
   }
 
-  doUploadS3 = async (file, id = '', name) => {
+  doUploadS3 = async (file, name) => {
     this.setState({
       uploading: true,
     })
-    const formData = new FormData()
-    formData.append('upload_file', file)
-    formData.append('filename', name)
+
     try {
-      const post = await axios.post('/api/uploadFile', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+      const post = await Upload_to_S3(file, name, 0, null)
+
       this.setState({
         preview_file: [post.data.Location],
-        file_keys: [post.data.Key],
+        file_keys: post.data.Key,
+        aws_key_id: [post.data.aws_key_id],
       })
     } catch (error) {
       toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
@@ -123,6 +123,11 @@ export default class GameComments extends Component {
     })
   }
   clearPreviewImage = () => {
+    const deleteKeys = axios.post('/api/deleteFile', {
+      aws_key_id: this.state.aws_key_id[0],
+      key: this.state.file_keys,
+    })
+
     this.setState({
       preview_file: [],
       file_keys: '',
@@ -130,7 +135,7 @@ export default class GameComments extends Component {
   }
 
   insert_comment = () => {
-    const { value = '', preview_file = [] } = this.state
+    const { value = '', preview_file = [], aws_key_id = [] } = this.state
 
     if (value.trim() == '' && preview_file.length == 0) {
       return
@@ -142,7 +147,7 @@ export default class GameComments extends Component {
           content: this.state.value.trim(),
           schedule_games_id: this.props.game_id,
           media_url: this.state.preview_file.length > 0 ? JSON.stringify(this.state.preview_file) : '',
-          file_keys: this.state.file_keys.length > 0 ? this.state.file_keys : '',
+          aws_key_id: aws_key_id.length > 0 ? aws_key_id : '',
         })
 
         this.setState({
@@ -150,6 +155,7 @@ export default class GameComments extends Component {
           preview_file: '',
           file_keys: '',
           value: '',
+          aws_key_id: [],
         })
         this.pullComments()
         this.setState({
