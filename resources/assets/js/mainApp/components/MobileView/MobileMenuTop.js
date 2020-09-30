@@ -5,7 +5,7 @@ const MobileMenuTop = () => {
 
   return (
     <Fragment>
-      <div class='menu-tab' onClick={() => setHideSideMenu(!hideSideMenu)}>
+      <div class='menu-tab' onClick={() => setHideSideMenu(true)}>
         <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/logo.svg' class='img-fluid logo-img' />
         <div class='toggle-menu-btn'>
           <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/toggle_menu_collapsed.svg' class='img-fluid' />
@@ -19,7 +19,7 @@ const MobileMenuTop = () => {
                 <div className='back-btn'>
                   <img
                     src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Uncollapse_Menu.svg'
-                    className='img-fluid'
+                    onClick={() => setHideSideMenu(false)}
                   />
                 </div>
                 <div className='user-name-icon'>
@@ -52,11 +52,11 @@ const MobileMenuTop = () => {
             </div>
             <div className='logout-setting-section'>
               <div className='logout-btn'>
-                <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Logout_Icon.svg' class='img-fluid' />
+                <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Logout_Icon.svg' />
                 <span>Logout</span>
               </div>
               <div className='setting-btn'>
-                <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Settings_Chat_Window.svg' class='img-fluid' />
+                <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Settings_Chat_Window.svg' />
               </div>
             </div>
           </div>
