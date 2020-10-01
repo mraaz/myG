@@ -14,7 +14,7 @@ class GroupsSchema extends Schema {
       table.string('group_img', 254).nullable()
       table.integer('all_accept').unsigned().notNullable().defaultTo(1)
       table.integer('game_names_id').unsigned().nullable()
-      table.foreign('game_names_id').references('game_names.id').onDelete('cascade')
+      table.foreign('game_names_id').references('game_names.id')
       table.string('grp_description', 254).nullable()
       table.timestamps(true,true)
     })
