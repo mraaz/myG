@@ -1,6 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
@@ -112,19 +112,11 @@ module.exports = {
       },
     },
     minimizer: [
-      new UglifyJsPlugin({
-        cache: true,
+      new TerserPlugin({
         parallel: true,
-        uglifyOptions: {
-          compress: true,
+        terserOptions: {
           ecma: 6,
-          mangle: true,
-          warnings: false,
-          output: {
-            comments: false,
-          },
         },
-        sourceMap: true,
       }),
     ],
     removeAvailableModules: true,

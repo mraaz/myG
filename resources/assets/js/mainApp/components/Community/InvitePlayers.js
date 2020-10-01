@@ -115,9 +115,8 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, community_id, co
         community_id,
         community_name,
       })
-      console.log('NEED RAAZ TO FIX ME')
     } catch (error) {
-      // error submit invitation
+      console.log(error)
     }
 
     onInvitationSent()
@@ -231,7 +230,6 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, community_id, co
         data: { chats },
       } = await axios.get('/api/chat?onlyGroups=true')
       const { itemsArray, dataObj } = normalizeGroupsData(chats)
-      console.log(chats, '<<<<<DATA from Chat groups!!')
       updateGroupsKeywordSearchResults({
         searchResults: { ...dataObj },
         groupsList: [...itemsArray],

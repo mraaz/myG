@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 2
+replicaCount: 3
 
 mygame:
   databaseName: mygame
@@ -12,7 +12,7 @@ mygame:
   databasePort: 3306
   nodeEnvironment: development
   appKey: "tEr8zSnVwS5KB0QtExWxRSXsUu6OTDim"
-  redisHost: "redis-master"
+  redisHost: "redis-redis-cluster-headless"
   redisPort: '"6379"'
   natsServer: "nats://nats-client:4222"
   clamavHost: clamav

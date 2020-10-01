@@ -22,7 +22,7 @@ const MobileMenu = ({ initialData }) => {
             {hideSearch && (
               <div className='mobile-sub-menu-items'>
                 <div className='find-matches'>
-                  <Link to='/posts'>
+                  <Link to='/scheduledGames'>
                     Find <b>Matches</b>
                   </Link>
                 </div>

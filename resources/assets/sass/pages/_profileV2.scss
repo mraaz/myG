@@ -79,7 +79,7 @@
 
   .invalid-button {
     @extend .base-button;
-    background-color: #EE4338;
+    background-color: #ee4338;
     font-weight: 500;
     opacity: 40%;
   }
@@ -108,7 +108,7 @@
     width: 28px;
     height: 28px;
   }
-  
+
   .small-content {
     width: 100% !important;
     height: unset !important;
@@ -233,7 +233,7 @@
     }
 
     .required {
-      color: #EE4338;
+      color: #ee4338;
       margin-left: -30px;
       margin-right: 20px;
       font-size: 25px;
@@ -283,7 +283,7 @@
       width: 100%;
 
       .remove-experience-button {
-        background-color: #EE4338;
+        background-color: #ee4338;
         color: black;
         padding: 4px 12px;
         font-size: 12px;
@@ -477,7 +477,7 @@
     display: flex;
     flex-direction: column;
     border-radius: 8px;
-    background-color: #0A0F14;
+    background-color: #0a0f14;
     border: 1px solid #657172;
     margin: 24px 15%;
     padding: 8px 0 0 0;
@@ -626,9 +626,8 @@
       align-items: center;
       justify-content: space-around;
 
-
       .header {
-        border-bottom: 2px solid #1E2326;
+        border-bottom: 2px solid #1e2326;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -640,11 +639,10 @@
         border-bottom: 2px solid #e5c746 !important;
       }
     }
-    
+
     .scroll {
       position: relative;
       display: flex;
-      flex-direction: row;
       align-content: center;
       justify-content: center;
       margin: 0px 32px;
@@ -968,5 +966,12 @@
     .container {
       @extend .base-container;
     }
+  }
+}
+
+@media screen and (max-width: 575px) {
+  .scroll {
+    flex-direction: column;
+    text-align: center;
   }
 }
