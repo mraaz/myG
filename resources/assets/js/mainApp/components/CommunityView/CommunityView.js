@@ -44,6 +44,9 @@ const CommunityView = (props) => {
     setSingleSponcer({})
     setShowSponcerModal(false)
   }
+  const addDefaultSrc = (ev) => {
+    ev.target.src = 'https://myg-test-media-files.s3-ap-southeast-2.amazonaws.com/logo_JPG+(1).jpg'
+  }
 
   const renderSponcers = (sponcers = []) => {
     return (
@@ -56,7 +59,7 @@ const CommunityView = (props) => {
             return (
               <div className='sponcers' key={sponcer.id}>
                 <a href={`//${sponcer.link}`} target='_blank'>
-                  <img className='sponcers__image' src={`${sponcer.media_url}`} />
+                  <img className='sponcers__image' onError={addDefaultSrc} src={`${sponcer.media_url}`} />
                 </a>
                 <div className='sponcers__edit' onClick={(e) => handleSponcerClick(sponcer)}>
                   Edit
