@@ -68,6 +68,20 @@ const CommunityView = (props) => {
               </div>
             )
           })}
+        {sponcers.length < 2 &&
+          [1, 2].map((sponcer) => {
+            return (
+              <div className='sponcers' key={sponcer.id}>
+                <a href={`#`} target='_blank'>
+                  <img className='sponcers__image' onError={addDefaultSrc} src={``} />
+                </a>
+                <div className='sponcers__edit' onClick={(e) => handleSponcerClick({})}>
+                  Edit
+                </div>
+                <div className='sponcers__delete'>Delete</div>
+              </div>
+            )
+          })}
       </div>
     )
   }
