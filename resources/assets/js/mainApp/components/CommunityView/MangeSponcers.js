@@ -22,6 +22,15 @@ export default class MangeSponcers extends React.Component {
     ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/universe.jpg'
   }
 
+  handleSave = (e) => {
+    const { sponsor = {}, groups_id } = this.props
+    if (sponsor.id) {
+      this.updateSponcer()
+    } else {
+      this.createSponcer()
+    }
+  }
+
   updateSponcer = async (e) => {
     const { sponsor = {}, groups_id } = this.props
     const { linkValue, media_url } = this.state
@@ -33,6 +42,21 @@ export default class MangeSponcers extends React.Component {
     })
     if (updateSponcer) {
       toast.error(<Toast_style text={'Great, Saved successfully!'} />)
+      this.props.handleModalStatus()
+    }
+  }
+
+  createSponcer = async () => {
+    const { sponsor = {}, groups_id } = this.props
+    const { linkValue, media_url } = this.state
+    const createSponcerData = await axios.post('/api/sponsor/create', {
+      group_id: groups_id,
+      type: 2,
+      media_url: media_url == '' ? sponsor.media_url : media_url,
+      link: linkValue == '' ? sponsor.link : linkValue,
+    })
+    if (createSponcerData) {
+      toast.error(<Toast_style text={'Great, Created successfully!'} />)
       this.props.handleModalStatus()
     }
   }
@@ -71,7 +95,7 @@ export default class MangeSponcers extends React.Component {
               onClick={() => this.props.handleModalStatus()}
               text='Cancel'
             />
-            <button type='button' disabled={saveButtonDisabled} onClick={() => this.updateSponcer(true)}>
+            <button type='button' disabled={saveButtonDisabled} onClick={() => this.handleSave(true)}>
               Save
             </button>
           </div>

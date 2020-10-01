@@ -2,11 +2,14 @@ import React, { useState, useRef, useEffect } from 'react'
 import moment from 'moment'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 import GamePosts from './GamePosts'
 import CoverImage from './CoverImage'
 import Members from './Members'
 import MangeSponcers from './MangeSponcers'
+
+import { Toast_style } from '../Utility_Function'
 
 const CommunityView = (props) => {
   const [communityDetails, setCommunityDetails] = useState({})
@@ -48,6 +51,16 @@ const CommunityView = (props) => {
     ev.target.src = 'https://myg-test-media-files.s3-ap-southeast-2.amazonaws.com/logo_JPG+(1).jpg'
   }
 
+  const handleDeleteSponcer = async (id) => {
+    const createSponcerData = await axios.post('/api/sponsor/delete', {
+      group_id: groups_id,
+      id,
+    })
+    if (createSponcerData) {
+      toast.success(<Toast_style text={'Great, Deleted successfully!'} />)
+    }
+  }
+
   const renderSponcers = (sponcers = []) => {
     return (
       <div className='sponcers__container'>
@@ -64,7 +77,9 @@ const CommunityView = (props) => {
                 <div className='sponcers__edit' onClick={(e) => handleSponcerClick(sponcer)}>
                   Edit
                 </div>
-                <div className='sponcers__delete'>Delete</div>
+                <div className='sponcers__delete' onClick={(e) => handleDeleteSponcer(sponcer.id)}>
+                  Delete
+                </div>
               </div>
             )
           })}
@@ -78,7 +93,6 @@ const CommunityView = (props) => {
                 <div className='sponcers__edit' onClick={(e) => handleSponcerClick({})}>
                   Edit
                 </div>
-                <div className='sponcers__delete'>Delete</div>
               </div>
             )
           })}
