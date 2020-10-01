@@ -420,16 +420,15 @@ class NotificationController_v2 {
         request.input('activity_type') == 10 ||
         request.input('activity_type') == 14 ||
         request.input('activity_type') == 15 ||
-        request.input('activity_type') == 21 ||
-        request.input('activity_type') == 22
+        request.input('activity_type') == 21
       ) {
         let arr = []
         switch (request.input('activity_type')) {
           case '0':
-            arr = [10, 14, 15, 21, 22]
+            arr = [10, 14, 15, 21]
             break
           case '10':
-            arr = [10, 14, 15, 21, 22]
+            arr = [10, 14, 15, 21]
             break
           default:
             arr.push(parseInt(request.input('activity_type')))
@@ -460,8 +459,28 @@ class NotificationController_v2 {
         singleArr.push(...allMyschedulegames.data)
       }
 
+      if (request.input('activity_type') == 0 || request.input('activity_type') == 10 || request.input('activity_type') == 22) {
+        const allMyschedulegames = await Database.from('notifications')
+          .innerJoin('users', 'users.id', 'notifications.user_id')
+          .innerJoin('groups', 'groups.id', 'notifications.group_id')
+          .where({ other_user_id: auth.user.id, activity_type: 22 })
+          .select(
+            'groups.name',
+            'notifications.activity_type',
+            'users.alias',
+            'users.profile_img',
+            'notifications.created_at',
+            'notifications.read_status',
+            'notifications.id'
+          )
+          .orderBy('notifications.created_at', 'desc')
+          .paginate(request.input('counter'), set_limit)
+
+        singleArr.push(...allMyschedulegames.data)
+      }
+
       //We don't have a screen just for this activity_type so 10 is the reason
-      if (request.input('activity_type') == 0 || request.input('activity_type') == 10) {
+      if (request.input('activity_type') == 0 || request.input('activity_type') == 10 || request.input('activity_type') == 16) {
         let dropped_out_attendees = await Database.from('notifications')
           .innerJoin('users', 'users.id', 'notifications.user_id')
           .innerJoin('schedule_games', 'schedule_games.id', 'notifications.schedule_games_id')

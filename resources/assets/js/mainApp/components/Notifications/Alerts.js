@@ -239,11 +239,10 @@ export default class Alerts extends Component {
       case 22:
         return (
           <div className='notification__text'>
-            {`has joined`}
-            <Link to={`/scheduledGames/${props.schedule_games_GUID}`}>
-              <span className='notification-type'>{props.game_name}</span>
+            {`has invited you to this community: `}
+            <Link to={`/community/${decodeURIComponent(props.name)}`}>
+              <span className='notification-type'>{decodeURIComponent(props.name)}</span>
             </Link>
-            {`which starts on  ${moment(props.start_time).format('DD-MMM-YYYY')}`}
           </div>
         )
         break
