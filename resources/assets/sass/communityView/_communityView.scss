@@ -104,9 +104,10 @@
     margin-right: 6em;
   }
   .community__tags {
-    margin-bottom: 5em;
+    margin-bottom: 1em;
     padding: 20px 50px;
     display: flex;
+    align-items: center;
     .label {
       font: normal normal bold 14px/14px Montserrat;
       letter-spacing: 0px;
@@ -114,6 +115,17 @@
     }
     margin-left: 6em;
     margin-right: 6em;
+    .tags {
+      font: normal normal normal 14px/18px Montserrat;
+      letter-spacing: 0px;
+      color: #ffffff;
+      margin: 0 1em;
+    }
+    .dot {
+      width: 5px;
+      height: 5px;
+      background: #2a2d2f 0% 0% no-repeat padding-box;
+    }
   }
   .gamePost__tab {
     display: flex;
@@ -452,7 +464,7 @@
     }
   }
   .sponcers__container {
-    margin-bottom: 4em;
+    margin-bottom: 2.5em;
     padding: 20px 50px;
     margin-left: 6em;
     margin-right: 6em;

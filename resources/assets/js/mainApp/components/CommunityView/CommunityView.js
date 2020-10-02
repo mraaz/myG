@@ -106,6 +106,16 @@ const CommunityView = (props) => {
       <div className='community__description'>{communityDetails.grp_description}</div>
       <div className='community__tags'>
         <div className='label'>Tags :</div>
+        {communityDetails.allGrpTags &&
+          communityDetails.allGrpTags.length > 0 &&
+          communityDetails.allGrpTags.map((tag) => {
+            return (
+              <div>
+                <span className='tags'>{tag}</span>
+                <span className='dot'>{'.'}</span>
+              </div>
+            )
+          })}
       </div>
       {renderSponcers(communityDetails.sponsors)}
       {showSponcerModal && <MangeSponcers sponsor={singleSponcer} handleModalStatus={hideSponcerModal} group_id={communityDetails.id} />}
