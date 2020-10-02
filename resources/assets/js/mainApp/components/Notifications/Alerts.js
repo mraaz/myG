@@ -301,14 +301,14 @@ export default class Alerts extends Component {
 
   render() {
     const { active } = this.props
-    const { notification = [], fetching = false } = this.state
+    const { notification = [], fetching = false, tab = 0 } = this.state
 
     const isActive = active == true ? { display: 'block' } : { display: 'none' }
 
     return (
       <div style={isActive} className='notification__container'>
         <TopTabs tabs={['All', 'Feed', 'Games', 'Misc']} changeTab={this.changeTab} />
-        {notification.length ? (
+        {notification.length && tab == 0 && (
           <div className='top-actions'>
             <div className='actions'>
               <button className='action' onClick={(e) => this.markAllRead()}>
@@ -319,9 +319,8 @@ export default class Alerts extends Component {
               </button>
             </div>
           </div>
-        ) : (
-          <NoRecord title='No more updates.' linkvisible={false} />
         )}
+        {notification.length == 0 && <NoRecord title='No more updates.' linkvisible={false} />}
         <div className='gameList__box' style={{ padding: '15px' }} onScroll={this.handleScroll} ref={this.myRef}>
           {notification.length > 0 &&
             notification.map((noti) => {
