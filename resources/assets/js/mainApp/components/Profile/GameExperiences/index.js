@@ -35,6 +35,11 @@ export default class GameExperiences extends React.Component {
     if (direction === 'right') return this.setState({ page: (page + 1) > this.filterGameExperiences().length - this.getGamesPerPage() ? page : page + 1 });
   }
 
+  onClose = () => {
+    this.setState({ selected: false })
+    window.history.pushState("", "", `/profile/${this.props.alias}`)
+  }
+
   copyLink = (gameId) => {
     copyToClipboard(`${window.location.host}/profile/${this.props.alias}/game/${gameId}`)
     notifyToast('Roger that. Link copied. Over.')
@@ -153,7 +158,7 @@ export default class GameExperiences extends React.Component {
       profile={this.props.profile}
       isSelf={this.state.isSelf}
       gameExperience={gameExperience}
-      onClose={() => this.setState({ selected: false })}
+      onClose={this.onClose}
       updateGame={this.props.updateGame}
     />;
   }

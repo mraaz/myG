@@ -190,9 +190,9 @@ class ProfileRepository {
 
   async updateProfile({ requestingUserId, firstName, lastName, team, country, relationship, visibilityName, visibilityEmail, lookingForWork, languages, twitch, discord, steam, youtube, facebook, mostPlayedGames }) {
     const updates = {};
-    if (firstName !== undefined) updates.first_name = firstName;
-    if (lastName !== undefined) updates.last_name = lastName;
-    if (team !== undefined) updates.team = team;
+    if (firstName !== undefined) updates.first_name = firstName.trim();
+    if (lastName !== undefined) updates.last_name = lastName.trim();
+    if (team !== undefined) updates.team = team.trim();
     if (country !== undefined) updates.country = country;
     if (relationship !== undefined) updates.relationship_status = relationship;
     if (visibilityName !== undefined) updates.name_visibility = visibilityName;

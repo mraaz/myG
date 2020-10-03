@@ -83,7 +83,7 @@ export default class EditGameExperience extends React.Component {
     const originalValues =  this.getUpdates(this.prepareExperience())
     const updates = this.getUpdates(this.state)
     const hasPendingChanges = JSON.stringify(originalValues) !== JSON.stringify(updates);
-    if (hasPendingChanges) showMessengerAlert('You have unsaved changes, are you sure you want to close?', this.props.onClose, null, 'Yes')
+    if (hasPendingChanges) showMessengerAlert('You have unsaved changes, are you sure you want to close?', this.props.onClose, null, 'Make it so')
     else this.props.onClose()
   }
 

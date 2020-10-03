@@ -35,7 +35,7 @@ export default class DossierInfo extends React.Component {
   getProfile = () => {
     const firstName = get(this.props, 'profile.firstName') || ''
     const lastName = get(this.props, 'profile.lastName') || ''
-    const name = `${firstName} ${lastName}`
+    const name = `${firstName} ${lastName}`.trim()
     const alias = get(this.props, 'profile.alias') || ''
     const email = get(this.props, 'profile.email') || ''
     const team = get(this.props, 'profile.team') || ''
@@ -98,7 +98,7 @@ export default class DossierInfo extends React.Component {
   onClose = () => {
     const updates = this.getUpdates()
     const hasPendingChanges = Object.keys(updates).length
-    if (hasPendingChanges) showMessengerAlert('You have unsaved changes, are you sure you want to close?', this.props.onClose, null, 'Yes')
+    if (hasPendingChanges) showMessengerAlert('You have unsaved changes, are you sure you want to close?', this.props.onClose, null, 'Make it so')
     else this.props.onClose()
   }
 

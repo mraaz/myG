@@ -34,6 +34,12 @@
     font-family: 'Montserrat Alternates', sans-serif !important;
   }
 
+  .background {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+  }
+
   .empty {
     color: white;
     padding: 16px;
@@ -88,11 +94,11 @@
     position: absolute;
     top: 12.5%;
     bottom: 12.5%;
-    left: 12.5%;
-    right: 12.5%;
+    left: 0;
+    right: 0;
     border-radius: 8px;
     z-index: 901;
-    margin: 0;
+    margin: auto;
     padding: 0;
   }
 
@@ -464,12 +470,6 @@
     .analytics {
       background: none;
       z-index: 1;
-    }
-
-    .uploader {
-      position: absolute !important;
-      left: 0;
-      right: 0;
     }
   }
 

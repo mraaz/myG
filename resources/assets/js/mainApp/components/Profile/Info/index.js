@@ -15,9 +15,9 @@ export default class ProfileInfo extends React.Component {
 
   static getDerivedStateFromProps(props) {
     const isFriend = get(props, 'profile.isFriend') || false;
-    const visibilityEmail = get(props, 'profile.visibilityEmail') || 'secret'
-    const canShowEmail = visibilityEmail === 'public' || (visibilityEmail === 'friends' && isFriend);
     const isSelf = get(props, 'profile.isSelf') || false;
+    const visibilityEmail = get(props, 'profile.visibilityEmail') || 'secret'
+    const canShowEmail = isSelf || visibilityEmail === 'public' || (visibilityEmail === 'friends' && isFriend);
     const country = get(props, 'profile.country') || 'N/A';
     const team = get(props, 'profile.team') || 'N/A';
     const email = canShowEmail ? get(props, 'profile.email') || 'N/A' : 'Hidden';
@@ -53,7 +53,7 @@ export default class ProfileInfo extends React.Component {
 
   renderEditInfo = () => {
     if (!this.state.isSelf || !this.state.editing) return null;
-    return <Dossier profile={this.props.profile} updateProfile={this.props.updateProfile} tab={'info'} onClose={() => this.setState({ editing: false })} />;
+    return <Dossier profile={this.props.profile} isSelf={this.state.isSelf} updateProfile={this.props.updateProfile} tab={'info'} onClose={() => this.setState({ editing: false })} />;
   }
 
   render() {
