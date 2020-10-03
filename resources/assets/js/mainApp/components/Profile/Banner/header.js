@@ -38,7 +38,7 @@ export default class Header extends React.Component {
   renderInfo = () => {
     const firstName = get(this.props, 'profile.firstName') || ''
     const lastName = get(this.props, 'profile.lastName') || ''
-    const name = `${firstName} ${lastName}`
+    const name = this.props.profile.isSelf ? '' : `${firstName} ${lastName}`
     return (
       <div className='info'>
         {this.renderIcon()}
