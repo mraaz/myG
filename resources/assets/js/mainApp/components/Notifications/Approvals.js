@@ -39,6 +39,8 @@ export default class Approvals extends Component {
   }
 
   componentDidMount = async () => {
+    document.title = 'myG - Notification'
+
     const { counter, tab } = this.state
     window.scrollTo(0, 0)
     this.setState({ fetching: true })

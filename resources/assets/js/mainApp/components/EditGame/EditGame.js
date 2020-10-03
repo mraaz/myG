@@ -57,6 +57,7 @@ const EditGame = ({
       }
     }
 
+    document.title = 'myG - Edit Match'
     getInitialData_Tags()
     getInitialData_GameName()
   }, [])
