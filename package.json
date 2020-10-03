@@ -2,7 +2,7 @@
   "name": "mygame",
   "version": "4.1.0",
   "adonis-version": "4.1.0",
-  "description": "This is a Social Network Site",
+  "description": "myG - Gamer's platform",
   "main": "index.js",
   "scripts": {
     "start": "node server.js",

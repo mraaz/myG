@@ -42,6 +42,8 @@ export default class ScheduleGames extends Component {
   }
 
   async componentDidMount() {
+    document.title = 'myG - Find Matches'
+
     const { params = {} } = this.props.routeProps.match
     const { id = '' } = params
     if (id) {

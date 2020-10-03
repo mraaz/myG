@@ -6,13 +6,15 @@ export default class Settings extends Component {
   }
 
   componentDidMount = () => {
+    document.title = 'myG - Notification'
+
     window.scrollTo(0, 0)
   }
 
   render() {
-    const { active } = this.props;
+    const { active } = this.props
 
-    const isActive = active == true ? {display: 'block'} : {display: 'none'};
+    const isActive = active == true ? { display: 'block' } : { display: 'none' }
 
     return (
       <div className='settings' style={isActive}>
@@ -26,6 +28,6 @@ export default class Settings extends Component {
           <div className='title'>Notify via E-mail</div>
         </div>
       </div>
-    );
+    )
   }
 }
