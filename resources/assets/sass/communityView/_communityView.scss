@@ -228,88 +228,92 @@
         padding: 2em 5em;
         display: inline-flex;
         flex-wrap: wrap;
-        .GroupMember__card {
-          width: 174px;
-          height: 230px;
-          display: block;
-          text-align: center;
-          background: #1d2326 0% 0% no-repeat padding-box;
-          border: 1px solid #273137;
-          border-radius: 4px;
-          margin-right: 2em;
-          margin-bottom: 2em;
-          position: relative;
-          .GroupMember__image {
-            height: 5em;
-            width: 100%;
-            margin-bottom: 3.5em;
+        .GroupMember_list {
+          display: inline-flex;
+          flex-wrap: wrap;
+          .GroupMember__card {
+            width: 174px;
+            height: 230px;
+            display: block;
+            text-align: center;
+            background: #1d2326 0% 0% no-repeat padding-box;
+            border: 1px solid #273137;
+            border-radius: 4px;
+            margin-right: 2em;
+            margin-bottom: 2em;
             position: relative;
-            img {
-              height: 100%;
+            .GroupMember__image {
+              height: 5em;
               width: 100%;
-            }
-            .GroupMember__profile {
-              width: 79px;
-              height: 79px;
-              background: #ff00ff 0% 0% no-repeat padding-box;
-              border-radius: 50%;
-              position: absolute;
-              bottom: -40px;
-              left: 25%;
+              margin-bottom: 3.5em;
+              position: relative;
               img {
                 height: 100%;
                 width: 100%;
+              }
+              .GroupMember__profile {
+                width: 79px;
+                height: 79px;
+                background: #ff00ff 0% 0% no-repeat padding-box;
                 border-radius: 50%;
-              }
-              .GroupMember_role {
                 position: absolute;
-                cursor: pointer;
-                bottom: -10px;
-                left: 28px;
+                bottom: -40px;
+                left: 25%;
+                img {
+                  height: 100%;
+                  width: 100%;
+                  border-radius: 50%;
+                }
+                .GroupMember_role {
+                  position: absolute;
+                  cursor: pointer;
+                  bottom: -10px;
+                  left: 28px;
+                }
               }
             }
-          }
-          .GroupMember__alias {
-            text-align: center;
-            font: normal normal bold 18px/22px Montserrat;
-            letter-spacing: 0px;
-            color: #ffffff;
-            margin-bottom: 0.6em;
-            word-break: break-all;
-          }
-          .GroupMember__level {
-            font: normal normal normal 14px/18px Montserrat;
-            letter-spacing: 0px;
-            color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            .level__value {
-              margin-left: 5px;
-              font: normal normal normal 28px/18px Montserrat;
-            }
-            margin-bottom: 3.5em;
-          }
-          .GroupMember__action {
-            padding: 0px 15px;
-            display: flex;
-            justify-content: space-around;
-            position: absolute;
-            bottom: -12px;
-            button {
-              width: 62px;
-              height: 25px;
-              background: #e5c746 0% 0% no-repeat padding-box;
-              font: normal normal bold 12px/14px Montserrat;
+            .GroupMember__alias {
+              text-align: center;
+              font: normal normal bold 18px/22px Montserrat;
               letter-spacing: 0px;
-              color: #000000;
-              border: none;
-              display: inline-flex;
+              color: #ffffff;
+              margin-bottom: 0.6em;
+              word-break: break-all;
+            }
+            .GroupMember__level {
+              font: normal normal normal 14px/18px Montserrat;
+              letter-spacing: 0px;
+              color: #ffffff;
+              display: flex;
               justify-content: center;
               align-items: center;
-              margin-right: 10px;
-              border-radius: 2px;
-              cursor: pointer;
+              .level__value {
+                margin-left: 5px;
+                font: normal normal normal 28px/18px Montserrat;
+              }
+              margin-bottom: 3.5em;
+            }
+            .GroupMember__action {
+              padding: 0px 15px;
+              display: flex;
+              justify-content: space-around;
+              position: absolute;
+              bottom: -12px;
+              button {
+                width: 62px;
+                height: 25px;
+                background: #e5c746 0% 0% no-repeat padding-box;
+                font: normal normal bold 12px/14px Montserrat;
+                letter-spacing: 0px;
+                color: #000000;
+                border: none;
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                margin-right: 10px;
+                border-radius: 2px;
+                cursor: pointer;
+              }
             }
           }
         }

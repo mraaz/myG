@@ -32,6 +32,7 @@ export default class Members extends React.Component {
       permission_level: '',
       saveButtonDisabled: true,
     }
+    this.scrollRef = React.createRef()
   }
 
   componentDidMount() {
@@ -97,7 +98,7 @@ export default class Members extends React.Component {
       <SweetAlert
         danger
         showCancel
-        title='Are you sure you wish to delete this comment?'
+        title='Are you sure you wish to delete this group?'
         confirmBtnText='Make it so!'
         focusCancelBtn={true}
         focusConfirmBtn={false}
@@ -117,8 +118,50 @@ export default class Members extends React.Component {
       alert: getAlert(),
     })
   }
+  showExpelAlert(member) {
+    const getAlert = () => (
+      <SweetAlert
+        danger
+        showCancel
+        title='Are you sure you wish to delete this member from this group?'
+        confirmBtnText='Make it so!'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={false}
+        btnSize='lg'
+        style={{
+          display: 'flex',
+          whiteSpace: 'pre',
+          width: '41%',
+        }}
+        onConfirm={() => this.handleExpelClick('true', member)}
+        onCancel={() => this.handleExpelClick('false', member)}>
+        You will not be able to recover this entry!
+      </SweetAlert>
+    )
+    this.setState({
+      userExpelAlert: getAlert(),
+    })
+  }
 
-  handleExpelClick = (member) => {}
+  handleExpelClick = async (text, member) => {
+    if (text == 'false') {
+      this.setState({
+        userExpelAlert: '',
+      })
+    } else {
+      const data = await axios.delete(`/api/usergroup/delete_member/:${member.group_id}/:${member.user_id}`)
+      if (data) {
+        const { group_members } = this.state
+        const filterMembers = group_members.filter((members) => member.user_id != members.user_id)
+        this.setState({ group_members: filterMembers }, () => {
+          toast.success(<Toast_style text={`Yeah! User has been Expeled`} />)
+        })
+      } else {
+        toast.error(<Toast_style text={`Something went wrong with expel user.`} />)
+      }
+    }
+  }
 
   handleGroupMemberRole = async (member) => {
     try {
@@ -156,11 +199,24 @@ export default class Members extends React.Component {
     }
   }
 
+  handleScroll = (event) => {
+    if (this.state.searchMemberValue == '') {
+      const _event = event.currentTarget,
+        _current = this.scrollRef.current
+      if (_event.scrollTop + (3 / 2) * _current.offsetHeight > _event.scrollHeight && this.state.moreplease) {
+        const { counter = 1 } = this.state
+        this.setState({ counter: counter + 1 }, () => {
+          this.getInitialData()
+        })
+      }
+    }
+  }
+
   renderGroupMember = () => {
     const { group_members } = this.state
 
     return (
-      <React.Fragment>
+      <div className='GroupMember_list' onScroll={this.handleScroll} ref={this.scrollRef}>
         {group_members.length > 0 &&
           group_members.map((member) => {
             return (
@@ -187,7 +243,7 @@ export default class Members extends React.Component {
                   <Link to={`/profile/${member.alias}`}>
                     <button type='button View'>View</button>
                   </Link>
-                  <button type='button Expel' onClick={(e) => this.handleExpelClick(member)}>
+                  <button type='button Expel' onClick={(e) => this.showExpelAlert(member)}>
                     {' '}
                     Expel
                   </button>
@@ -195,7 +251,7 @@ export default class Members extends React.Component {
               </div>
             )
           })}
-      </React.Fragment>
+      </div>
     )
   }
 
@@ -229,6 +285,7 @@ export default class Members extends React.Component {
     return (
       <div className={`modal-container View__Member__modal ${modalStatus ? 'modal--show' : ''}`}>
         {this.state.alert}
+        {this.state.userExpelAlert}
         <div className='modal-wrap'>
           <div className='modal__header'>
             <div className='tabs___header'>
