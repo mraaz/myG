@@ -92,7 +92,7 @@ export default class MainInfo extends React.Component {
     const results = !!input && !!input.value && (await Game_name_values(input.value))
     const game = results && results[0] ? results[0] : input
     this.setState({ dynamicFields: [] })
-    fetchDynamicFields(game.game_names_id).then((dynamicFields) => !dynamicFields.error && this.setState({ dynamicFields }))
+    if (game) fetchDynamicFields(game.game_names_id).then((dynamicFields) => !dynamicFields.error && this.setState({ dynamicFields }))
     return this.props.storeExperience({ game })
   }
 

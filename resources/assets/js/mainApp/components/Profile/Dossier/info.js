@@ -1,5 +1,6 @@
 import React from 'react'
 import get from 'lodash.get'
+import scriptLoader from 'react-async-script-loader'
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import PlacesAutocomplete from 'react-places-autocomplete'
 import { Game_name_values, Disable_keys } from '../../Utility_Function'
@@ -10,7 +11,7 @@ import { LANGUAGE_OPTIONS } from '../../../static/AddGame'
 import { ignoreFunctions } from '../../../../common/render'
 import { showMessengerAlert } from '../../../../common/alert'
 
-export default class DossierInfo extends React.Component {
+export class DossierInfo extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
   }
@@ -200,7 +201,7 @@ export default class DossierInfo extends React.Component {
     const gameName = results && results[0] ? results[0].value : input && input.value
     const gameNameValue = results && results[0] ? results[0] : input
     return this.setState((previous) => {
-      const mostPlayedGames = previous.mostPlayedGames
+      const mostPlayedGames = JSON.parse(JSON.stringify(previous.mostPlayedGames))
       if (!mostPlayedGames[0]) mostPlayedGames.push({})
       if (!mostPlayedGames[1]) mostPlayedGames.push({})
       if (!mostPlayedGames[2]) mostPlayedGames.push({})
@@ -334,6 +335,7 @@ export default class DossierInfo extends React.Component {
   }
 
   render() {
+    if (!this.props.isScriptLoadSucceed) return null;
     return (
       <React.Fragment>
         <div className='content'>
@@ -358,3 +360,6 @@ export default class DossierInfo extends React.Component {
     )
   }
 }
+
+const GoogleMapsUrl = 'https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyDf3hgYx463MIz995EhEiJRjgAuFrzPyaA'
+export default scriptLoader([GoogleMapsUrl])(DossierInfo)

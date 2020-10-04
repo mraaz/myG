@@ -32,8 +32,14 @@ export default class ProfileInfo extends React.Component {
   renderPod = (title, value, alignment) => {
     return(
       <div className={`pod ${alignment}`}>
+        {this.state.hovering === title && value.length > 25 && <div className="hover-value">{value}</div>}
         <p className="title">{title}</p>
-        <p className="value">{value}</p>
+        <p className="value" 
+          onMouseOver={() => this.setState({ hovering: title })}
+          onMouseLeave={() => this.setState({ hovering: null })}
+        >
+          {value.slice(0, 25)}{value.length > 25 ? '...' : ''}
+        </p>
       </div>
     )
   }

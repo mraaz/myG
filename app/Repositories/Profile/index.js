@@ -1,4 +1,5 @@
 
+const cryptico = require('cryptico');
 const Database = use('Database');
 const User = use('App/Models/User');
 const Friend = use('App/Models/Friend');
@@ -22,6 +23,9 @@ const GameBackgroundSchema = require('../../Schemas/GameBackground');
 const CommendationSchema = require('../../Schemas/Commendation');
 
 class ProfileRepository {
+  
+  privateKey = null;
+  publicKey = null;
 
   async fetchProfileId({ alias }) {
     const profile = await this.fetchProfileByAlias({ alias });
@@ -31,8 +35,8 @@ class ProfileRepository {
   async fetchProfileInfo({ requestingUserId, id, alias }) {
     const profile = id ? await this.fetchProfileById({ id }) : await this.fetchProfileByAlias({ alias });
     const profileId = profile.id;
-    const firstName = profile.first_name;
-    const lastName = profile.last_name;
+    const firstName = await this.decryptField(profile.first_name);
+    const lastName = await this.decryptField(profile.last_name);
     const email = profile.email;
     const image = profile.profile_img;
     const background = profile.profile_bg;
@@ -190,8 +194,8 @@ class ProfileRepository {
 
   async updateProfile({ requestingUserId, firstName, lastName, team, country, relationship, visibilityName, visibilityEmail, lookingForWork, languages, twitch, discord, steam, youtube, facebook, mostPlayedGames }) {
     const updates = {};
-    if (firstName !== undefined) updates.first_name = firstName.trim();
-    if (lastName !== undefined) updates.last_name = lastName.trim();
+    if (firstName !== undefined) updates.first_name = await this.encryptField(firstName.trim());
+    if (lastName !== undefined) updates.last_name = await this.encryptField(lastName.trim());
     if (team !== undefined) updates.team = team.trim();
     if (country !== undefined) updates.country = country;
     if (relationship !== undefined) updates.relationship_status = relationship;
@@ -325,6 +329,25 @@ class ProfileRepository {
     await notificationController.commend({ commendedId, commenderId: requestingUserId });
     return this.fetchProfileInfo({ requestingUserId, id: commendedId, alias });
   }
+
+  async getEncryptionKeyPair() {
+    if (this.privateKey && this.publicKey) return { privateKey: this.privateKey, publicKey: this.publicKey }
+    const pin = process.env.PROFILE_ENCRYPTION_PIN | 123456;
+    this.privateKey = cryptico.generateRSAKey(`${pin}`, 1024);
+    this.publicKey = cryptico.publicKeyString(this.privateKey);
+    return { privateKey: this.privateKey, publicKey: this.publicKey }
+  }
+
+  async encryptField(field) {
+    const { privateKey, publicKey } = await this.getEncryptionKeyPair();
+    return cryptico.encrypt(field, publicKey, privateKey).cipher;
+  }
+
+  async decryptField(field) {
+    const { privateKey } = await this.getEncryptionKeyPair();
+    return cryptico.decrypt(field, privateKey).plaintext;
+  }
 }
 
 module.exports = new ProfileRepository();
+ 

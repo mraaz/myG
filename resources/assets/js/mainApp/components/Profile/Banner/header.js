@@ -13,6 +13,7 @@ export default class Header extends React.Component {
 
   state = {
     editing: false,
+    hoveringIcon: false,
   }
 
   onUpload = (source, key) => this.props.uploadProfileImage(this.props.alias, source, key)
@@ -21,7 +22,13 @@ export default class Header extends React.Component {
     if (this.props.profile.isSelf) {
       return (
         <Uploader onUpload={this.onUpload}>
-          <div className='icon clickable' style={{ backgroundImage: `url('${this.props.profile.image}')` }} />
+          <div className='icon clickable' 
+            style={{ backgroundImage: `url('${this.props.profile.image}')` }} 
+            onMouseEnter={() => this.setState({ hoveringIcon: true })}
+            onMouseLeave={() => this.setState({ hoveringIcon: false })}
+          >
+            {this.state.hoveringIcon && <div className="hover-icon">Update</div>}
+          </div>
         </Uploader>
       )
     }
