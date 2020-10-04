@@ -145,14 +145,14 @@ export default class Chat extends Component {
 
   render() {
     const { active } = this.props
-    const { fetching, chatNotifications } = this.state
+    const { fetching, chatNotifications, tab = '' } = this.state
 
     const isActive = active == true ? { display: 'block' } : { display: 'none' }
 
     return (
       <div style={isActive} className='game__approval'>
         <TopTabs tabs={['All', 'Messages', 'Groups', 'Misc']} changeTab={this.changeTab} />
-        {chatNotifications.length ? (
+        {chatNotifications.length && tab == 0 && (
           <div className='top-actions'>
             <div className='actions'>
               <button className='action' onClick={(e) => this.markAllRead()}>
@@ -163,9 +163,8 @@ export default class Chat extends Component {
               </button>
             </div>
           </div>
-        ) : (
-          <NoRecord title='No more updates.' linkvisible={false} />
         )}
+        {chatNotifications.length == 0 && <NoRecord title='No more updates.' linkvisible={false} />}
         <div className='gameList__box' style={{ padding: '15px' }} onScroll={this.handleScroll} ref={this.myRef}>
           {chatNotifications.length > 0 &&
             chatNotifications.map((chatNoti) => {
