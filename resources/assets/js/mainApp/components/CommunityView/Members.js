@@ -154,11 +154,14 @@ export default class Members extends React.Component {
       if (data) {
         const { group_members } = this.state
         const filterMembers = group_members.filter((members) => member.user_id != members.user_id)
-        this.setState({ group_members: filterMembers }, () => {
+        this.setState({ group_members: filterMembers, userExpelAlert: '' }, () => {
           toast.success(<Toast_style text={`Yeah! User has been Expeled`} />)
         })
       } else {
         toast.error(<Toast_style text={`Something went wrong with expel user.`} />)
+        this.setState({
+          userExpelAlert: '',
+        })
       }
     }
   }
