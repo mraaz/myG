@@ -118,36 +118,36 @@ class UsergroupController {
     }
   }
 
-  async destroy({ auth, request, response }) {
-    if (auth.user) {
-      try {
-        const deleteRegistration = await Database.table('usergroups')
-          .where({
-            group_id: request.params.group_id,
-            user_id: auth.user.id,
-          })
-          .delete()
-
-        const userStatController = new UserStatTransactionController()
-        userStatController.update_total_number_of(auth.user.id, 'total_number_of_communities')
-
-        const noti = new NotificationController_v2()
-        noti.delete_group_invites({ auth }, request.params.grp_id)
-
-        return true
-      } catch (error) {
-        LoggingRepository.log({
-          environment: process.env.NODE_ENV,
-          type: 'error',
-          source: 'backend',
-          context: __filename,
-          message: (error && error.message) || error,
-        })
-      }
-    } else {
-      return 'You are not Logged In!'
-    }
-  }
+  // async destroy({ auth, request, response }) {
+  //   if (auth.user) {
+  //     try {
+  //       const deleteRegistration = await Database.table('usergroups')
+  //         .where({
+  //           group_id: request.params.group_id,
+  //           user_id: auth.user.id,
+  //         })
+  //         .delete()
+  //
+  //       const userStatController = new UserStatTransactionController()
+  //       userStatController.update_total_number_of(auth.user.id, 'total_number_of_communities')
+  //
+  //       const noti = new NotificationController_v2()
+  //       noti.delete_group_invites({ auth }, request.params.grp_id)
+  //
+  //       return true
+  //     } catch (error) {
+  //       LoggingRepository.log({
+  //         environment: process.env.NODE_ENV,
+  //         type: 'error',
+  //         source: 'backend',
+  //         context: __filename,
+  //         message: (error && error.message) || error,
+  //       })
+  //     }
+  //   } else {
+  //     return 'You are not Logged In!'
+  //   }
+  // }
 
   async get_all_my_group_approvals({ auth, request, response }) {
     try {
