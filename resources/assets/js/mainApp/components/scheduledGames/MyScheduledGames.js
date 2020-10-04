@@ -45,6 +45,8 @@ export default class MyScheduledGames extends Component {
   }
 
   async componentDidMount() {
+    document.title = 'myG - My Games'
+
     const scheduleGames = await axios.post(`/api/myScheduledGames`, {
       counter: 1,
       exclude_expired: false,

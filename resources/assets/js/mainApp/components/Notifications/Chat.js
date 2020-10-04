@@ -30,6 +30,8 @@ export default class Chat extends Component {
   }
 
   componentDidMount = async () => {
+    document.title = 'myG - Notification'
+
     window.scrollTo(0, 0)
     this.setState({ fetching: true })
     const chatNotifications = await axios.get(`/api/chat_notifications?page=1`)

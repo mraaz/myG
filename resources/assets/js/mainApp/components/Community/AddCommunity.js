@@ -46,7 +46,7 @@ const AddCommunity = ({
         console.log(error)
       }
     }
-
+    document.title = 'myG - Add Community'
     getInitialData_Tags()
     getInitialData_GameName()
   }, [])

@@ -19,6 +19,8 @@ export default class Posts extends Component {
   }
 
   componentDidMount() {
+    document.title = 'myG - Home'
+
     window.scrollTo({
       top: 500,
       behavior: 'smooth',
@@ -47,7 +49,7 @@ export default class Posts extends Component {
     }
     const self = this
 
-    const getPosts = async function () {
+    const getPosts = async function() {
       try {
         const myPosts = await axios({
           method: 'GET',

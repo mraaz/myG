@@ -18,7 +18,7 @@ pipeline {
             steps {
                   git branch: 'master',
                       credentialsId: 'git-private-key',
-                      url: 'git@github.com:mraaz/myG.git'
+                      url: 'https://github.com/mraaz/myG'
             }
         }
 

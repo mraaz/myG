@@ -29,6 +29,8 @@ export default class Alerts extends Component {
   }
 
   componentDidMount = async () => {
+    document.title = 'myG - Notification'
+
     const { counter } = this.state
     window.scrollTo(0, 0)
     const getnoti = await axios.post('/api/notifications_v2/getAllNoti', {
