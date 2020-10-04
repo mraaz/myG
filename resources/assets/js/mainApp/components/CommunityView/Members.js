@@ -9,11 +9,13 @@ import { Toast_style } from '../Utility_Function'
 import { PageHeader, MyGButton, MyGModal, MyGInput } from '../common'
 
 const IconMap = {
+  0: 'https://mygame-media.s3.amazonaws.com/platform_images/Communities/btn_Moderator_gold.svg',
   1: 'https://mygame-media.s3.amazonaws.com/platform_images/Communities/btn_Moderator_gold.svg',
   2: ' https://mygame-media.s3.amazonaws.com/platform_images/Communities/btn_Moderator_silver.svg',
   3: 'https://mygame-media.s3.amazonaws.com/platform_images/Communities/btn_Moderator_clear.svg',
 }
 const PermissionMap = {
+  0: 'Owner',
   1: 'Admin',
   2: 'Moderator',
   3: 'Users',
@@ -117,6 +119,8 @@ export default class Members extends React.Component {
     })
   }
 
+  handleExpelClick = (member) => {}
+
   handleGroupMemberRole = async (member) => {
     try {
       const { user_id = '' } = member
@@ -161,7 +165,7 @@ export default class Members extends React.Component {
         {group_members.length > 0 &&
           group_members.map((member) => {
             return (
-              <div className='GroupMember__card'>
+              <div className='GroupMember__card' key={member.id}>
                 <div className='GroupMember__image'>
                   <img src={member.profile_bg} onError={this.addDefaultSrc} />
                   <div className='GroupMember__profile'>
@@ -184,7 +188,10 @@ export default class Members extends React.Component {
                   <Link to={`/profile/${member.alias}`}>
                     <button type='button View'>View</button>
                   </Link>
-                  <button type='button Expel'>Expel</button>
+                  <button type='button Expel' onClick={(e) => this.handleExpelClick(member)}>
+                    {' '}
+                    Expel
+                  </button>
                 </div>
               </div>
             )
