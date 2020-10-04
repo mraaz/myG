@@ -463,6 +463,24 @@ class GroupController {
     }
   }
 
+  async show({ auth, request, response }) {
+    try {
+      const grpInfo = await Database.from('groups').where('groups.id', '=', request.params.id)
+
+      return {
+        grpInfo,
+      }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+    }
+  }
+
   async update_img({ auth, request, response }) {
     if (auth.user) {
       const commonController = new CommonController()
