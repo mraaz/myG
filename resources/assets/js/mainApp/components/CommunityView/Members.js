@@ -62,12 +62,11 @@ export default class Members extends React.Component {
     this.setState({ isActive })
   }
 
-  onSettingsChange = () => {
-    this.setState({ saveButtonDisabled: false })
+  onSettingsChange = (data) => {
+    this.setState({ saveButtonDisabled: false, ...data })
   }
 
   handleSave = async (e) => {
-    console.log('handle save')
     const { communityName, approval, privacy } = this.state
     const sendInvite = await axios.post('/api/groups/update_settings', {
       group_id: this.props.groups_id,
