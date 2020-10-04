@@ -7,7 +7,7 @@ import { toast } from 'react-toastify'
 import GamePosts from './GamePosts'
 import CoverImage from './CoverImage'
 import Members from './Members'
-import MangeSponcers from './MangeSponcers'
+import MangeSponsors from './MangeSponsors'
 
 import { Toast_style } from '../Utility_Function'
 
@@ -15,8 +15,8 @@ const CommunityView = (props) => {
   const [communityDetails, setCommunityDetails] = useState({})
   const [modalStatus, setModalStatus] = useState(false)
   const [activeModalTab, setActiveModalTab] = useState('settings')
-  const [showSponcerModal, setShowSponcerModal] = useState(false)
-  const [singleSponcer, setSingleSponcer] = useState({})
+  const [showSponsorModal, setShowSponsorModal] = useState(false)
+  const [singleSponsor, setSingleSponsor] = useState({})
 
   useEffect(() => {
     const getcommunityDetails = async () => {
@@ -41,58 +41,62 @@ const CommunityView = (props) => {
     setModalStatus(!modalStatus)
   }
 
-  const handleSponcerClick = (data) => {
-    setSingleSponcer(data)
-    setShowSponcerModal(true)
+  const handleSponsorClick = (data) => {
+    setSingleSponsor(data)
+    setShowSponsorModal(true)
   }
-  const hideSponcerModal = (data) => {
-    setSingleSponcer({})
-    setShowSponcerModal(false)
+  const hideSponsorModal = (data) => {
+    setSingleSponsor({})
+    setShowSponsorModal(false)
   }
   const addDefaultSrc = (ev) => {
     ev.target.src = 'https://myg-test-media-files.s3-ap-southeast-2.amazonaws.com/logo_JPG+(1).jpg'
   }
 
-  const handleDeleteSponcer = async (id) => {
-    const createSponcerData = await axios.post('/api/sponsor/delete', {
+  const handleDeleteSponsor = async (id) => {
+    const createSponsorData = await axios.post('/api/sponsor/delete', {
       group_id: groups_id,
       id,
     })
-    if (createSponcerData) {
+    if (createSponsorData) {
       toast.success(<Toast_style text={'Great, Deleted successfully!'} />)
     }
   }
 
-  const renderSponcers = (sponcers = []) => {
+  const renderSponsors = (Sponsors = []) => {
     return (
-      <div className='sponcers__container'>
-        <div className='sponcers sponsors__label'>
+      <div className='Sponsors__container'>
+        <div className='Sponsors sponsors__label'>
           <span>Sponsors</span>
         </div>
-        {sponcers.length > 0 &&
-          sponcers.map((sponcer) => {
+        {Sponsors.length > 0 &&
+          Sponsors.map((Sponsor) => {
             return (
-              <div className='sponcers' key={sponcer.id}>
-                <a href={`//${sponcer.link}`} target='_blank'>
-                  <img className='sponcers__image' onError={addDefaultSrc} src={`${sponcer.media_url}`} />
+              <div className='Sponsors' key={Sponsor.id}>
+                <a href={`//${Sponsor.link}`} target='_blank'>
+                  <img className='Sponsors__image' onError={addDefaultSrc} src={`${Sponsor.media_url}`} />
                 </a>
-                <div className='sponcers__edit' onClick={(e) => handleSponcerClick(sponcer)}>
-                  Edit
-                </div>
-                <div className='sponcers__delete' onClick={(e) => handleDeleteSponcer(sponcer.id)}>
-                  Delete
-                </div>
+                {[0, 1].includes(communityDetails.current_user_permission) && (
+                  <div className='Sponsors__edit' onClick={(e) => handleSponsorClick(Sponsor)}>
+                    Edit
+                  </div>
+                )}
+                {[0, 1].includes(communityDetails.current_user_permission) && (
+                  <div className='Sponsors__delete' onClick={(e) => handleDeleteSponsor(Sponsor.id)}>
+                    Delete
+                  </div>
+                )}
               </div>
             )
           })}
-        {sponcers.length < 2 &&
-          [1, 2].map((sponcer) => {
+        {Sponsors.length < 2 &&
+          [1, 2].map((Sponsor) => {
             return (
-              <div className='sponcers' key={sponcer.id}>
+              <div className='Sponsors' key={Sponsor.id}>
                 <a href={`#`} target='_blank'>
-                  <img className='sponcers__image' onError={addDefaultSrc} src={``} />
+                  <img className='Sponsors__image' onError={addDefaultSrc} src={``} />
                 </a>
-                <div className='sponcers__edit' onClick={(e) => handleSponcerClick({})}>
+                <div className='Sponsors__edit' onClick={(e) => handleSponsorClick({})}>
                   Edit
                 </div>
               </div>
@@ -106,11 +110,10 @@ const CommunityView = (props) => {
     <div className='communityName__container '>
       <CoverImage {...communityDetails} handleModalStatus={handleModalStatus} {...props} />
       <div className='community__description'>{communityDetails.grp_description}</div>
-      <div className='community__tags'>
-        <div className='label'>Tags :</div>
-        {communityDetails.allGrpTags &&
-          communityDetails.allGrpTags.length > 0 &&
-          communityDetails.allGrpTags.map((tag) => {
+      {communityDetails.allGrpTags && communityDetails.allGrpTags.length > 0 && (
+        <div className='community__tags'>
+          <div className='label'>Tags :</div>
+          {communityDetails.allGrpTags.map((tag) => {
             return (
               <div>
                 <span className='tags'>{tag}</span>
@@ -118,9 +121,10 @@ const CommunityView = (props) => {
               </div>
             )
           })}
-      </div>
-      {renderSponcers(communityDetails.sponsors)}
-      {showSponcerModal && <MangeSponcers sponsor={singleSponcer} handleModalStatus={hideSponcerModal} group_id={communityDetails.id} />}
+        </div>
+      )}
+      {renderSponsors(communityDetails.sponsors)}
+      {showSponsorModal && <MangeSponsors sponsor={singleSponsor} handleModalStatus={hideSponsorModal} group_id={communityDetails.id} />}
       {communityDetails.id && (
         <GamePosts {...props} group_id={communityDetails.id} current_user_permission={communityDetails.current_user_permission} />
       )}

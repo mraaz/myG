@@ -20,7 +20,7 @@ export default class Members extends React.Component {
   handleCommunityNameChange = (e) => {
     const communityName = e.target.value
     this.setState({ communityName }, () => {
-      this.props.onSettingsChange()
+      this.props.onSettingsChange({ communityName })
     })
   }
   handleCommunityNameSave = async () => {
@@ -49,17 +49,17 @@ export default class Members extends React.Component {
   }
   handlePrivacyChange = (e, privacy) => {
     this.setState({ privacy }, () => {
-      this.props.onSettingsChange()
+      this.props.onSettingsChange({ privacy })
     })
   }
   handlePermissionsChange = (e, permissions) => {
     this.setState({ permissions }, () => {
-      this.props.onSettingsChange()
+      this.props.onSettingsChange({ permissions })
     })
   }
   handleApprovalChange = (e, approval) => {
     this.setState({ approval }, () => {
-      this.props.onSettingsChange()
+      this.props.onSettingsChange({ approval })
     })
   }
 
