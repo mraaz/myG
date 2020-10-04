@@ -9,7 +9,7 @@ export default class Experiences extends React.Component {
   }
 
   componentDidMount() {
-    if (!this.props.experience.background.length) this.onAddExperience();
+    if (!this.props.experience.background.length) this.onAddExperience()
   }
 
   onSave = () => {
@@ -37,24 +37,31 @@ export default class Experiences extends React.Component {
   }
 
   renderExperiences = () => {
-    return this.props.experience.background.sort((e1, e2) => `${e1.id}`.localeCompare(`${e2.id}`)).map((experience) => (
-      <Experience experience={experience} storeExperience={this.storeExperience} onRemoveExperience={this.onRemoveExperience} />
-    ))
+    return this.props.experience.background
+      .sort((e1, e2) => `${e1.id}`.localeCompare(`${e2.id}`))
+      .map((experience) => (
+        <Experience
+          experience={experience}
+          storeExperience={this.storeExperience}
+          onRemoveExperience={this.onRemoveExperience}
+          isSelf={this.props.isSelf}
+        />
+      ))
   }
 
   renderAddExperienceButton = () => {
-    if (!this.props.isSelf) return null;
+    if (!this.props.isSelf) return null
     return (
-      <div className='add-experience-container'>
-        <div className='add-experience-button clickable' onClick={this.onAddExperience}>
-          Add New Experience
-        </div>
-      </div>
+      <div
+        className='button-icon clickable'
+        style={{ backgroundImage: `url(${getAssetUrl('ic_profile_add')})` }}
+        onClick={this.onAddExperience}
+      />
     )
   }
 
   renderSave = () => {
-    if (!this.props.isSelf) return null;
+    if (!this.props.isSelf) return null
     const { game, level, experience } = this.props.experience
     const buttonState = game && level && experience ? 'clickable' : 'disabled'
     return (

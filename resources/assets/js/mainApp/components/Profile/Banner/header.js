@@ -119,7 +119,7 @@ export default class Header extends React.Component {
   }
 
   renderSocialHubButton = () => {
-    return <div className='button clickable' onClick={() => this.setState({ editing: 'social' })}>Social Hub</div>
+    return <div className='button clickable' onClick={() => this.setState({ editing: 'social-view' })}>Social Hub</div>
   }
 
   renderSocialHub = () => {

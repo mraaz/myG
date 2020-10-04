@@ -297,6 +297,7 @@ class ProfileRepository {
 
   async fetchDynamicFields({ gameId }) {
     const response = await GameNameField.query().where('game_names_id', gameId).first();
+    if (!response) return [];
     const fields = JSON.parse(response.in_game_fields);
     const placeholders = JSON.parse(response.in_game_field_placeholders);
     const types = JSON.parse(response.in_game_field_types);

@@ -21,21 +21,29 @@ export default class Dossier extends React.Component {
       <div id="profile-dossier">
           <div className="container">
             <div className="tabs">
-              {this.props.isSelf && (
+              {this.props.isSelf && this.state.tab !== 'social-view' && (
                 <div className={`tab clickable ${this.state.tab === 'info' ? 'selected' : 'unselected'}`}
                 onClick={() => this.setState({ tab: 'info' })}
                 >
                   <p className="title">Information</p>
                 </div>
               )}
-              <div className={`tab clickable ${this.state.tab === 'social' ? 'selected' : 'unselected'}`}
+              <div className={`tab clickable ${this.state.tab === 'social' || this.state.tab === 'social-view' ? 'selected' : 'unselected'}`}
                 onClick={() => this.setState({ tab: 'social' })}
               >
                 <p className="title">Social Hub</p>
+                {this.state.tab === 'social-view' && this.props.isSelf &&  (
+                  <div
+                    className='share-button clickable'
+                    style={{ right: '90px' }}
+                    onClick={() => this.setState({ tab: 'social' })}>
+                    Edit
+                  </div>
+                )}
               </div>
             </div>
             {this.state.tab === 'info' && <DossierInfo onClose={this.props.onClose} isSelf={this.props.isSelf} profile={this.props.profile} updateProfile={this.props.updateProfile} />}
-            {this.state.tab === 'social' && <DossierSocialHub onClose={this.props.onClose} isSelf={this.props.isSelf} profile={this.props.profile} updateProfile={this.props.updateProfile} />}
+            {(this.state.tab === 'social' || this.state.tab === 'social-view') && <DossierSocialHub onClose={this.props.onClose} isSelf={this.state.tab !== 'social-view' && this.props.isSelf} profile={this.props.profile} updateProfile={this.props.updateProfile} />}
         </div>
       </div>
     );

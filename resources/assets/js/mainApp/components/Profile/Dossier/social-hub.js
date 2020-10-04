@@ -1,5 +1,4 @@
 import React from 'react'
-import { copy } from 'superagent'
 import { getAssetUrl } from '../../../../common/assets'
 import { copyToClipboard } from '../../../../common/clipboard'
 import { ignoreFunctions } from '../../../../common/render'
@@ -31,28 +30,33 @@ export default class DossierSocialHub extends React.Component {
   onSave = () => {
     if (!this.hasChanges()) return
     this.props.updateProfile(this.props.profile.alias, {
-      twitch: /^https:\/\/www.twitch.tv\//.test(this.state.twitch) ? this.state.twitch : '',
+      twitch: /^(https:\/\/www.)?twitch.tv\//.test(this.state.twitch) ? this.state.twitch : '',
       discord: /^[A-z]+#\d+$/.test(this.state.discord) ? this.state.discord : '',
-      steam: /^https:\/\/steamcommunity.com\/profiles\//.test(this.state.steam) ? this.state.steam : '',
-      youtube: /^https:\/\/www.youtube.com\/channel\//.test(this.state.youtube) ? this.state.youtube : '',
-      facebook: /^https:\/\/www.facebook.com\//.test(this.state.facebook) ? this.state.facebook : '',
+      steam: /^(https:\/\/)?steamcommunity.com\/profiles\//.test(this.state.steam) ? this.state.steam : '',
+      youtube: /^(https:\/\/www.)?youtube.com\/channel\//.test(this.state.youtube) ? this.state.youtube : '',
+      facebook: /^(https:\/\/www.)?facebook.com\//.test(this.state.facebook) ? this.state.facebook : '',
     })
     this.props.onClose()
   }
 
   hasChanges = () => {
     return (
-      /^https:\/\/www.twitch.tv\//.test(this.state.twitch) ||
+      /^(https:\/\/www.)?twitch.tv\//.test(this.state.twitch) ||
       /^[A-z]+#\d+$/.test(this.state.discord) ||
-      /^https:\/\/steamcommunity.com\/profiles\//.test(this.state.steam) ||
-      /^https:\/\/www.youtube.com\/channel\//.test(this.state.youtube) ||
-      /^https:\/\/www.facebook.com\//.test(this.state.facebook)
+      /^(https:\/\/)?steamcommunity.com\/profiles\//.test(this.state.steam) ||
+      /^(https:\/\/www.)?youtube.com\/channel\//.test(this.state.youtube) ||
+      /^(https:\/\/www.)?facebook.com\//.test(this.state.facebook)
     )
+  }
+
+  forceHttps = (url) => {
+    if (url.startsWith('https://')) return url;
+    return `https://${url}`;
   }
 
   renderTwitchRow = () => {
     const isEmpty = !this.state.twitch
-    const isValid = /^https:\/\/www.twitch.tv\//.test(this.state.twitch)
+    const isValid = /^(https:\/\/www.)?twitch.tv\//.test(this.state.twitch)
     if (!this.props.isSelf && (isEmpty || !isValid)) return
     const style = isEmpty || isValid ? 'base-button' : 'invalid-button'
     return (
@@ -69,7 +73,7 @@ export default class DossierSocialHub extends React.Component {
         </div>
         <a
           className={style + ' aligned-button'}
-          href={isEmpty ? 'https://www.twitch.tv/profile' : isValid && this.state.twitch}
+          href={isEmpty ? 'https://www.twitch.tv/profile' : isValid && this.forceHttps(this.state.twitch)}
           target='_blank'
           rel='noopener noreferrer'>
           {isEmpty ? 'Find link' : isValid ? 'Go to page' : 'Invalid'}
@@ -114,7 +118,7 @@ export default class DossierSocialHub extends React.Component {
 
   renderSteamRow = () => {
     const isEmpty = !this.state.steam
-    const isValid = /^https:\/\/steamcommunity.com\/profiles\//.test(this.state.steam)
+    const isValid = /^(https:\/\/)?steamcommunity.com\/profiles\//.test(this.state.steam)
     if (!this.props.isSelf && (isEmpty || !isValid)) return
     const style = isEmpty || isValid ? 'base-button' : 'invalid-button'
     return (
@@ -131,7 +135,7 @@ export default class DossierSocialHub extends React.Component {
         </div>
         <a
           className={style + ' aligned-button'}
-          href={isEmpty ? 'https://steamcommunity.com/my' : isValid && this.state.steam}
+          href={isEmpty ? 'https://steamcommunity.com/my' : isValid && this.forceHttps(this.state.steam)}
           target='_blank'
           rel='noopener noreferrer'>
           {isEmpty ? 'Find link' : isValid ? 'Go to page' : 'Invalid'}
@@ -142,7 +146,7 @@ export default class DossierSocialHub extends React.Component {
 
   renderYoutubeRow = () => {
     const isEmpty = !this.state.youtube
-    const isValid = /^https:\/\/www.youtube.com\/channel\//.test(this.state.youtube)
+    const isValid = /^(https:\/\/www.)?youtube.com\/channel\//.test(this.state.youtube)
     if (!this.props.isSelf && (isEmpty || !isValid)) return
     const style = isEmpty || isValid ? 'base-button' : 'invalid-button'
     return (
@@ -159,7 +163,7 @@ export default class DossierSocialHub extends React.Component {
         </div>
         <a
           className={style + ' aligned-button'}
-          href={isEmpty ? 'https://www.youtube.com/my_profile' : isValid && this.state.youtube}
+          href={isEmpty ? 'https://www.youtube.com/my_profile' : isValid && this.forceHttps(this.state.youtube)}
           target='_blank'
           rel='noopener noreferrer'>
           {isEmpty ? 'Find link' : isValid ? 'Go to page' : 'Invalid'}
@@ -170,7 +174,7 @@ export default class DossierSocialHub extends React.Component {
 
   renderFacebookRow = () => {
     const isEmpty = !this.state.facebook
-    const isValid = /^https:\/\/www.facebook.com\//.test(this.state.facebook)
+    const isValid = /^(https:\/\/www.)?facebook.com\//.test(this.state.facebook)
     if (!this.props.isSelf && (isEmpty || !isValid)) return
     const style = isEmpty || isValid ? 'base-button' : 'invalid-button'
     return (
@@ -187,7 +191,7 @@ export default class DossierSocialHub extends React.Component {
         </div>
         <a
           className={style + ' aligned-button'}
-          href={isEmpty ? 'https://www.facebook.com/me' : isValid && this.state.facebook}
+          href={isEmpty ? 'https://www.facebook.com/me' : isValid && this.forceHttps(this.state.facebook)}
           target='_blank'
           rel='noopener noreferrer'>
           {isEmpty ? 'Find link' : isValid ? 'Go to page' : 'Invalid'}
@@ -246,23 +250,39 @@ export default class DossierSocialHub extends React.Component {
     return <span className='empty-tab'>Nothing to show here mate!</span>
   }
 
+  renderLinkToFindYourLink = (link) => {
+    if (!this.props.isSelf) return
+    return (
+      <div className="find-link">
+        Click <a className="find-link-link" href={link} target="_blank">here</a> to find your link
+      </div>
+    )
+  }
+
   render() {
     return (
       <React.Fragment>
         <div className='content small-content'>
-          {this.renderTwitchRow()}
-          {this.renderDivider()}
-          {this.renderDiscordRow()}
-          {this.renderDivider()}
-          {this.renderSteamRow()}
-          {this.renderDivider()}
-          {this.renderYoutubeRow()}
-          {this.renderDivider()}
-          {this.renderFacebookRow()}
+          <div className='scroll-content'>
+            {this.renderTwitchRow()}
+            {this.renderLinkToFindYourLink('https://www.twitch.tv/profile')}
+            {this.renderDivider()}
+            {this.renderDiscordRow()}
+            {this.renderLinkToFindYourLink('https://discord.com/channels/@me')}
+            {this.renderDivider()}
+            {this.renderSteamRow()}
+            {this.renderLinkToFindYourLink('https://steamcommunity.com/my')}
+            {this.renderDivider()}
+            {this.renderYoutubeRow()}
+            {this.renderLinkToFindYourLink('https://www.youtube.com/my_profile')}
+            {this.renderDivider()}
+            {this.renderFacebookRow()}
+            {this.renderLinkToFindYourLink('https://www.facebook.com/me')}
+            {this.renderEmpty()}
+          </div>
           {this.renderSpacer()}
           {this.renderSave()}
           {this.renderShare()}
-          {this.renderEmpty()}
         </div>
         {this.renderClose()}
       </React.Fragment>

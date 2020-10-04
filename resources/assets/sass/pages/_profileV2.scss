@@ -62,6 +62,16 @@
     padding: 4px 12px;
   }
 
+  .find-link {
+    color: white;
+    width: 100%;
+    padding: 0 4vw;
+  }
+
+  .find-link-link {
+    color: #e5c746;
+  }
+
   .aligned-button {
     width: 12%;
     text-align: center;
@@ -123,6 +133,16 @@
     border-bottom: none !important;
   }
 
+  .scroll-content {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    height: 60vh;
+    width: 100%;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
   .content {
     display: flex;
     flex-direction: column;
@@ -133,6 +153,13 @@
     height: 100%;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
+
+    .banner {
+      background-repeat: no-repeat;
+      background-size: contain;
+      width: 100%;
+      min-height: 100px;
+    }
 
     .fields {
       display: flex;
@@ -262,22 +289,11 @@
       outline: none;
     }
 
-    .add-experience-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 4px;
-      width: 100%;
-
-      .add-experience-button {
-        background-color: #657172;
-        color: white;
-        padding: 4px 16px;
-        margin: 12px;
-        font-size: 14px;
-        border-radius: 6px;
-      }
+    .add-experience-button {
+      @extend .button-icon;
+      width: 32px;
+      height: 32px;
+      margin-left: 32px;
     }
 
     .remove-experience-container {
@@ -689,6 +705,7 @@
         color: white;
         text-align: center;
         margin: 0 20px;
+        max-width: 160px;
       }
 
       .image {
@@ -730,6 +747,16 @@
         border-radius: 1000px;
       }
 
+      .center {
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+
+      .space-right {
+        margin-right: 8px !important;
+      }
+
       .field {
         position: relative;
         display: flex;
@@ -751,6 +778,8 @@
       }
 
       .hover-box {
+        position: absolute;
+        bottom: 20px;
         display: flex;
         flex-direction: row;
         width: 100%;

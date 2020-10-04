@@ -95,9 +95,7 @@ export default class GameExperiences extends React.Component {
 
   renderGameExperience = (game) => {
     const { id, gameName, gameImage, mainFields } = game;
-    const allFields = ['level', 'experience', 'team', 'nickname'];
-    const missingFields = allFields.filter(field => !mainFields.map(field => field.toLowerCase()).includes(field.toLowerCase()))
-    const fields = [...mainFields, ...missingFields].slice(0, 3);
+    const fields = mainFields
     const hasCommended = this.props.profile.commended.find((commendation) => commendation.gameExperienceId === id && commendation.commenderId === this.props.userId);
     return(
       <div className="game-experience"
