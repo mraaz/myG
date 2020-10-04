@@ -15,6 +15,7 @@ export default class GameExperiences extends React.Component {
     page: 0,
     selected: false,
     hovering: null,
+    changingPage: false,
     filter: 'All',
   }
 
@@ -31,8 +32,8 @@ export default class GameExperiences extends React.Component {
 
   changePage = (direction) => {
     const page = this.state.page;
-    if (direction === 'left') return this.setState({ page: (page - 1) < 0 ? page : page - 1 });
-    if (direction === 'right') return this.setState({ page: (page + 1) > this.filterGameExperiences().length - this.getGamesPerPage() ? page : page + 1 });
+    const newPage = direction === 'left' ? (page - 1) < 0 ? page : page - 1 : (page + 1) > this.filterGameExperiences().length - this.getGamesPerPage() ? page : page + 1;
+    this.setState({ changingPage: true }, () => setTimeout(() => this.setState({ page: newPage, changingPage: false }), 300));
   }
 
   onClose = () => {
@@ -46,7 +47,9 @@ export default class GameExperiences extends React.Component {
   }
 
   getGamesPerPage = () => {
-    return this.state.isSelf ? 3 : 4;
+    const selfSize = 3;
+    const othersSize = 4;
+    return this.state.isSelf ? selfSize : othersSize;
   }
 
   renderHeaders = () => {
@@ -98,7 +101,7 @@ export default class GameExperiences extends React.Component {
     const fields = mainFields
     const hasCommended = this.props.profile.commended.find((commendation) => commendation.gameExperienceId === id && commendation.commenderId === this.props.userId);
     return(
-      <div className="game-experience"
+      <div className="game-experience" style={{ opacity: this.state.changingPage ? 0.3 : 1 }}
         onMouseEnter={() => this.setState({ hovering: id })}
         onMouseLeave={() => this.setState({ hovering: null })}
       >
