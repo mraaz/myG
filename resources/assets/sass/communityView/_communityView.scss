@@ -198,9 +198,32 @@
           cursor: pointer;
         }
       }
+      .manage__searchBar {
+        display: flex;
+        justify-content: center;
+        padding: 1em 0px;
+        background: #1d2326;
+        input {
+          width: 50%;
+          background: #171a1c 0% 0% no-repeat padding-box;
+          border: none;
+          padding: 12px 12px;
+          border-radius: 25px;
+          outline: none;
+          margin: 0;
+          &:active,
+          &:focus {
+            padding: 12px 12px;
+          }
+          font: italic normal normal 12px/14px Montserrat;
+          letter-spacing: -0.65px;
+          color: #93a4a5;
+        }
+      }
       .modal__body {
         background: #171a1c 0% 0% no-repeat padding-box;
-        height: auto;
+        height: 500px;
+        overflow: scroll;
         width: 100%;
         padding: 2em 5em;
         display: inline-flex;
@@ -463,7 +486,7 @@
       }
     }
   }
-  .sponcers__container {
+  .Sponsors__container {
     margin-bottom: 2.5em;
     padding: 10px 15px;
     margin-left: 6em;
@@ -474,7 +497,7 @@
     border: 1px solid #1d2326;
     border-radius: 4px;
     overflow: scroll;
-    .sponcers {
+    .Sponsors {
       display: flex;
       position: relative;
       margin-right: 1.5em;
@@ -496,11 +519,11 @@
           border-right: 2px solid #1d2326;
         }
       }
-      .sponcers__image {
+      .Sponsors__image {
         width: 100%;
         height: 100%;
       }
-      .sponcers__edit {
+      .Sponsors__edit {
         position: absolute;
         background: #e7c947;
         cursor: pointer;
@@ -511,7 +534,7 @@
         border-radius: 4px;
         display: none;
       }
-      .sponcers__delete {
+      .Sponsors__delete {
         position: absolute;
         background: #e7c947;
         cursor: pointer;
@@ -523,16 +546,16 @@
         display: none;
       }
       &:hover {
-        .sponcers__delete,
-        .sponcers__edit {
+        .Sponsors__delete,
+        .Sponsors__edit {
           display: block;
         }
       }
     }
   }
-  .sponcer__edit {
+  .Sponsor__edit {
     padding: 2em 2em !important;
-    .sponcer__media__input {
+    .Sponsor__media__input {
       width: 100%;
       height: 350px;
       margin-bottom: 1em;
@@ -549,7 +572,7 @@
         color: #fff;
       }
     }
-    .sponcer__link__input {
+    .Sponsor__link__input {
       width: 100%;
       margin-bottom: 1em;
       label {

@@ -8,7 +8,7 @@ import { Toast_style } from '../Utility_Function'
 import { Upload_to_S3 } from '../AWS_utilities'
 import { PageHeader, MyGButton, MyGModal, MyGInput } from '../common'
 
-export default class MangeSponcers extends React.Component {
+export default class MangeSponsors extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -27,37 +27,37 @@ export default class MangeSponcers extends React.Component {
   handleSave = (e) => {
     const { sponsor = {}, groups_id } = this.props
     if (sponsor.id) {
-      this.updateSponcer()
+      this.updateSponsor()
     } else {
-      this.createSponcer()
+      this.createSponsor()
     }
   }
 
-  updateSponcer = async (e) => {
+  updateSponsor = async (e) => {
     const { sponsor = {}, groups_id } = this.props
     const { linkValue, media_url } = this.state
-    const updateSponcer = await axios.post('/api/sponsor/update', {
+    const updateSponsor = await axios.post('/api/sponsor/update', {
       group_id: groups_id,
       id: sponsor.id,
       media_url: media_url == '' ? sponsor.media_url : media_url,
       link: linkValue == '' ? sponsor.link : linkValue,
     })
-    if (updateSponcer) {
+    if (updateSponsor) {
       toast.error(<Toast_style text={'Great, Saved successfully!'} />)
       this.props.handleModalStatus()
     }
   }
 
-  createSponcer = async () => {
+  createSponsor = async () => {
     const { sponsor = {}, groups_id } = this.props
     const { linkValue, media_url } = this.state
-    const createSponcerData = await axios.post('/api/sponsor/create', {
+    const createSponsorData = await axios.post('/api/sponsor/create', {
       group_id: groups_id,
       type: 2,
       media_url: media_url == '' ? sponsor.media_url : media_url,
       link: linkValue == '' ? sponsor.link : linkValue,
     })
-    if (createSponcerData) {
+    if (createSponsorData) {
       toast.error(<Toast_style text={'Great, Created successfully!'} />)
       this.props.handleModalStatus()
     }
@@ -78,7 +78,7 @@ export default class MangeSponcers extends React.Component {
     const fileList = e.target.files
     if (fileList.length > 0) {
       let type = fileList[0].type.split('/')
-      let name = `sponcer_${type}_${+new Date()}_${fileList[0].name}`
+      let name = `Sponsor_${type}_${+new Date()}_${fileList[0].name}`
       this.doUploadS3(fileList[0], name)
     }
   }
@@ -114,8 +114,8 @@ export default class MangeSponcers extends React.Component {
               <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/X_icon.svg' />
             </div>
           </div>
-          <div className='modal__body sponcer__edit'>
-            <div className='sponcer__media__input' onClick={this.handleImageChange}>
+          <div className='modal__body Sponsor__edit'>
+            <div className='Sponsor__media__input' onClick={this.handleImageChange}>
               <input
                 type='file'
                 accept='image/jpeg,image/jpg,image/png,image/gif'
@@ -126,8 +126,8 @@ export default class MangeSponcers extends React.Component {
               {uploading && <div className='image__uploading'>Uploading...</div>}
               <img src={media_url == '' ? sponsor.media_url : media_url} onError={this.addDefaultSrc} />
             </div>
-            <div className='sponcer__link__input'>
-              <label>Enter Sponcer link</label>
+            <div className='Sponsor__link__input'>
+              <label>Enter Sponsor link</label>
               <input
                 type='text'
                 onChange={this.handleLinkChange}
