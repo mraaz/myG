@@ -25,7 +25,7 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
-    document.title = 'myG'
+    document.title = 'myG - Home'
 
     this.setState({
       initialData: this.props.initialData,

@@ -18,6 +18,8 @@ export default class Upcoming extends Component {
   }
 
   async componentDidMount() {
+    document.title = 'myG - Notification'
+
     try {
       const getUpcomingGames = await axios.post('/api/ScheduleGame/myScheduledGames_Upcoming_Games', {
         counter: 1,

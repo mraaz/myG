@@ -30,6 +30,8 @@ export default class GroupMain extends Component {
   componentDidMount() {
     const self = this
 
+    document.title = 'myG - Communities'
+
     const getALLmyGroups = async function() {
       try {
         const getmyGroups = await axios.get('/api/groups/get_my_communities/1')
