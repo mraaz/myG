@@ -150,7 +150,8 @@ class ApiController {
           chat_message_id = null,
           comment_id = null,
           reply_id = null,
-          game_name_id = null
+          game_name_id = null,
+          sponsor_id = null
 
         switch (type) {
           case '1':
@@ -189,8 +190,11 @@ class ApiController {
           case '9':
             game_name_id = id
             break
+          case '10':
+            sponsor_id = id
+            break
         }
-        if (type == undefined || type == null) {
+        if (type == undefined || type == null || type == '') {
           type = 0
         }
 
@@ -204,6 +208,7 @@ class ApiController {
           game_name_id: game_name_id,
           comment_id: comment_id,
           reply_id: reply_id,
+          sponsor_id: sponsor_id,
           type: type,
         })
         return addAwsKey.id
