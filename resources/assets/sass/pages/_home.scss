@@ -1540,6 +1540,11 @@ section#content-container {
       &:hover {
         border-bottom: 1px solid #e5c746;
       }
+
+      @media screen and (max-width: 575px) {
+        margin: 0;
+        font-size: 12px;
+      }
     }
     .share__thought.actve {
       border-bottom: 1px solid #e5c746;
@@ -1556,6 +1561,11 @@ section#content-container {
       }
       &:hover {
         border-bottom: 1px solid #e5c746;
+      }
+
+      @media screen and (max-width: 575px) {
+        margin: 0;
+        font-size: 12px;
       }
     }
   }
