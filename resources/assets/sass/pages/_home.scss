@@ -2315,6 +2315,7 @@ section#content-container {
   .mobile-side-menu-top {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
   }
 
   .back-btn {
@@ -2401,6 +2402,11 @@ section#content-container {
     padding-top: 10px;
     padding-left: 20px;
     font-size: 18px;
+  }
+
+  .menu-list a:hover {
+    color: #ffffff;
+    text-decoration: none;
   }
 
   .logout-setting-section {

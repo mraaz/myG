@@ -1,4 +1,5 @@
 import React, { Fragment, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 const MobileMenuTop = () => {
   const [hideSideMenu, setHideSideMenu] = useState(false)
@@ -44,8 +45,12 @@ const MobileMenuTop = () => {
             </div>
             <div className='menu-list'>
               <ul>
-                <li>Home</li>
-                <li>Communities</li>
+                <li>
+                  <Link to='/'>Home</Link>
+                </li>
+                <li>
+                  <Link to='/community/create'>Communities</Link>
+                </li>
                 <li>Notifications</li>
                 <li>My Games</li>
               </ul>
