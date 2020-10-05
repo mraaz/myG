@@ -31,14 +31,14 @@ export class GamerSuggestions extends React.Component {
       onMouseEnter={() => this.setState({ hovering: profile.alias })}
       onMouseLeave={() => this.setState({ hovering: null })}
     >
-      {profile.background && <div className="image absolute-top" style={{ backgroundImage: `url(${profile.background})` }} />}
-      <div className='icon' style={{ backgroundImage: `url(${profile.image})` }} />
+      <div className="image absolute-top" style={{ backgroundImage: `url(${profile.background}), url(https://mygame-media.s3.amazonaws.com/default_user/myG_bg.png)` }} />
+      <div className='icon' style={{ backgroundImage: `url(${profile.image}), url(https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png)` }} />
       <span className="name">{profile.alias}</span>
-      <div className="field">
-          <span className="field-title">Level</span>
+      <div className="field center">
+          <span className="field-title space-right">Level</span>
           <span className="field-value">{profile.level}</span>
       </div>
-      {profile.mostPlayedGames.map(game => <div className="field"><span className="field-value">{game}</span></div>)}
+      {profile.mostPlayedGames.map(game => <div className="field center"><span className="field-value">{game}</span></div>)}
       {this.state.hovering === profile.alias && (
         <div className="edit-button clickable" onClick={() => window.location.href = `/profile/${profile.alias}`}>
           View

@@ -33,14 +33,14 @@ const LEVEL_OPTIONS = [
 ]
 
 const commendationLevel = (commends) => {
-  if (commends < 49) return 'Apprentice';
-  if (commends < 99) return 'Elite';
-  if (commends < 149) return 'Expert';
-  if (commends < 199) return 'Hero';
-  if (commends < 249) return 'Master';
-  if (commends < 999) return 'Grand Master';
-  return 'Ultimate Master';
-};
+  if (commends < 49) return 'Apprentice'
+  if (commends < 99) return 'Elite'
+  if (commends < 149) return 'Expert'
+  if (commends < 199) return 'Hero'
+  if (commends < 249) return 'Master'
+  if (commends < 999) return 'Grand Master'
+  return 'Ultimate Master'
+}
 
 export default class MainInfo extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -92,7 +92,7 @@ export default class MainInfo extends React.Component {
     const results = !!input && !!input.value && (await Game_name_values(input.value))
     const game = results && results[0] ? results[0] : input
     this.setState({ dynamicFields: [] })
-    fetchDynamicFields(game.game_names_id).then((dynamicFields) => !dynamicFields.error && this.setState({ dynamicFields }))
+    if (game) fetchDynamicFields(game.game_names_id).then((dynamicFields) => !dynamicFields.error && this.setState({ dynamicFields }))
     return this.props.storeExperience({ game })
   }
 
@@ -193,12 +193,8 @@ export default class MainInfo extends React.Component {
   renderCommendationLabel = () => {
     return (
       <div className='row'>
-        <span className='hint'>Commends</span>
-        <div className='input-container-row'>
-          <input
-            className='input'
-            value={`${commendationLevel(this.props.experience.commends)} (${this.props.experience.commends})`}
-            disabled={true}></input>
+        <div className='input-container-row' style={{ width: '87%', marginTop: '12px' }}>
+          <input className='input' value={`${commendationLevel(this.props.experience.commends)}`} disabled={true}></input>
         </div>
       </div>
     )
@@ -265,7 +261,7 @@ export default class MainInfo extends React.Component {
           onChange={(value) => this.props.storeDynamicExperience({ [field.id]: value })}
           value={get(this.props, `experience.dynamic.${field.id}`)}
           isMulti
-      />
+        />
       </React.Fragment>
     )
   }
@@ -287,14 +283,14 @@ export default class MainInfo extends React.Component {
   }
 
   renderInputField = (field) => {
-    const validation = field.values && field.values[0] && new RegExp(field.values[0]);
-    const required = field.values && field.values[1];
-    const isValid = validation ? validation.test(get(this.props, `experience.dynamic.${field.id}`)) : true;
+    const validation = field.values && field.values[0] && new RegExp(field.values[0])
+    const required = field.values && field.values[1]
+    const isValid = validation ? validation.test(get(this.props, `experience.dynamic.${field.id}`)) : true
     return (
       <React.Fragment>
         <span className='hint'>{field.label}</span>
-        {required && <span className="required">*</span>}
-        <div className="input-container-row">
+        {required && <span className='required'>*</span>}
+        <div className='input-container-row'>
           <input
             className={`input${isValid ? '' : ' input-error'}`}
             value={get(this.props, `experience.dynamic.${field.id}`)}
@@ -368,17 +364,22 @@ export default class MainInfo extends React.Component {
     )
   }
 
+  renderImage = () => {
+    if (!this.props.experience.gameImage) return null
+    return <div className='banner' style={{ backgroundImage: `url(${this.props.experience.gameImage})` }} />
+  }
+
   renderSave = () => {
     if (!this.props.isSelf) return null
     const { game, level, experience } = this.props.experience
     const hasInvalidDynamicFields = this.state.dynamicFields.some((field) => {
-      if (field.type !== "Input") return false;
+      if (field.type !== 'Input') return false
       const value = get(this.props, `experience.dynamic.${field.id}`)
-      const validation = field.values && field.values[0] && new RegExp(field.values[0]);
-      const isRequiredAndMissing = field.values && field.values[1] && !value;
-      const isValid = validation ? validation.test(value) : true;
+      const validation = field.values && field.values[0] && new RegExp(field.values[0])
+      const isRequiredAndMissing = field.values && field.values[1] && !value
+      const isValid = validation ? validation.test(value) : true
       return isRequiredAndMissing || !isValid
-    });
+    })
     const buttonState = game && level && experience && !hasInvalidDynamicFields ? 'clickable' : 'disabled'
     return (
       <div className='save-container'>
@@ -415,12 +416,13 @@ export default class MainInfo extends React.Component {
       <React.Fragment>
         <div id='profile-game-main-info' className='content'>
           {this.renderImageUpload()}
+          {this.renderImage()}
           {this.renderMainFields()}
           {this.renderDivider()}
+          {this.renderCommendationLabel()}
           {this.renderGameTitle()}
           {this.renderLevelInput()}
           {this.renderExperienceInput()}
-          {this.renderCommendationLabel()}
           {this.renderTeamInput()}
           {this.renderNicknameInput()}
           {this.renderTagsInput()}

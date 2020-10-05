@@ -29,7 +29,7 @@ export default class EditGameExperience extends React.Component {
   }
 
   prepareExperience = () => {
-    const { id, mainFields, game, gameName, nickname, level, experience, team, tags, dynamic, background } = this.props.gameExperience || {}
+    const { id, mainFields, game, gameName, gameImage, nickname, level, experience, team, tags, dynamic, background } = this.props.gameExperience || {}
     const commends = this.props.profile.commended.filter((commend) => commend.gameExperienceId === id).length;
     return {
       loaded: true,
@@ -37,6 +37,7 @@ export default class EditGameExperience extends React.Component {
       commends: commends || 0,
       mainFields: mainFields ? mainFields.map((field) => ({ value: field, label: field })) : [],
       game: game ? { game_names_id: game, value: gameName, label: gameName } : null,
+      gameImage: gameImage || null,
       nickname: nickname || null,
       level: level ? { value: level, label: level } : null,
       experience: experience ? { value: experience, label: experience } : null,
@@ -83,7 +84,7 @@ export default class EditGameExperience extends React.Component {
     const originalValues =  this.getUpdates(this.prepareExperience())
     const updates = this.getUpdates(this.state)
     const hasPendingChanges = JSON.stringify(originalValues) !== JSON.stringify(updates);
-    if (hasPendingChanges) showMessengerAlert('You have unsaved changes, are you sure you want to close?', this.props.onClose, null, 'Yes')
+    if (hasPendingChanges) showMessengerAlert('You have unsaved changes, are you sure you want to close?', this.props.onClose, null, 'Make it so')
     else this.props.onClose()
   }
 
