@@ -13,6 +13,7 @@ export default class Header extends React.Component {
 
   state = {
     editing: false,
+    hoveringIcon: false,
   }
 
   onUpload = (source, key) => this.props.uploadProfileImage(this.props.alias, source, key)
@@ -21,7 +22,13 @@ export default class Header extends React.Component {
     if (this.props.profile.isSelf) {
       return (
         <Uploader onUpload={this.onUpload}>
-          <div className='icon clickable' style={{ backgroundImage: `url('${this.props.profile.image}')` }} />
+          <div className='icon clickable' 
+            style={{ backgroundImage: `url('${this.props.profile.image}')` }} 
+            onMouseEnter={() => this.setState({ hoveringIcon: true })}
+            onMouseLeave={() => this.setState({ hoveringIcon: false })}
+          >
+            {this.state.hoveringIcon && <div className="hover-icon">Update</div>}
+          </div>
         </Uploader>
       )
     }
@@ -38,7 +45,7 @@ export default class Header extends React.Component {
   renderInfo = () => {
     const firstName = get(this.props, 'profile.firstName') || ''
     const lastName = get(this.props, 'profile.lastName') || ''
-    const name = `${firstName} ${lastName}`
+    const name = this.props.profile.isSelf ? '' : `${firstName} ${lastName}`
     return (
       <div className='info'>
         {this.renderIcon()}
@@ -119,7 +126,7 @@ export default class Header extends React.Component {
   }
 
   renderSocialHubButton = () => {
-    return <div className='button clickable' onClick={() => this.setState({ editing: 'social' })}>Social Hub</div>
+    return <div className='button clickable' onClick={() => this.setState({ editing: 'social-view' })}>Social Hub</div>
   }
 
   renderSocialHub = () => {

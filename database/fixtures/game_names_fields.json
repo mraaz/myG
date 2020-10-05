@@ -1,0 +1,428 @@
+[
+  {
+    "gameId": "998",
+    "fields": {
+      "value_one": "dota2_server_regions",
+      "value_two": "dota2_medal_ranks",
+      "value_three": "dota2_roles",
+      "value_six": "stats_link"
+    },
+    "placeholders": {
+      "dota2_server_regions": "Select what region/s you can play",
+      "dota2_medal_ranks": "Please advise what Medal Rank/s you are looking for?",
+      "dota2_roles": "Select the role/s you wish to apply for",
+      "stats_links": "https://www.dotabuff.com/players/profile-id"
+    },
+    "types": {
+      "dota2_server_regions": "Multi",
+      "dota2_medal_ranks": "Multi",
+      "dota2_roles": "Multi",
+      "stats_link": "Input"
+    },
+    "labels": {
+      "dota2_server_regions": "Server Regions",
+      "dota2_medal_ranks": "Medal Ranks",
+      "dota2_roles": "Roles",
+      "stats_link": "Profile Link"
+    },
+    "values": {
+      "dota2_medal_ranks": "Herald, Guardian, Crusader, Archon, Legend, Ancient, Divine, Immortal",
+      "dota2_server_regions": "EU West, EU East, EU North, Poland, Spain, US Northwest, US Northeast, US Northcentral, US Southwest, Australia, Brazil, Chile, Emirates, India, India East, Peru, Japan, Hong Kong, Singapore, South Africa, China Shanghai, China Guangzhou, China Tianjin, China TC Zhejiang, China UC, China UC 2, China TC Wuhan",
+      "dota2_roles": "Position 1, Position 2, Position 3, Position 4, Position 5",
+      "stats_link": "(https:\/\/www.)?dotabuff.com\/players,true"
+    }
+  },
+  {
+    "gameId": "999",
+    "fields": {
+      "value_one": "lol_server_regions",
+      "value_two": "lol_ranks",
+      "value_three": "lol_roles",
+      "value_six": "stats_link"
+    },
+    "placeholders": {
+      "lol_server_regions": "Select what region/s you can play",
+      "lol_ranks": "Please advise what Rank/s you are looking for?",
+      "lol_roles": "Select the role/s you wish to apply for",
+      "stats_links": "https://www.leagueofgraphs.com/summoner/region/profile-id"
+    },
+    "types": {
+      "lol_server_regions": "Multi",
+      "lol_ranks": "Multi",
+      "lol_roles": "Multi",
+      "stats_link": "Input"
+    },
+    "labels": {
+      "lol_server_regions": "Server Regions",
+      "lol_ranks": "Ranks",
+      "lol_roles": "Roles",
+      "stats_link": "Profile Link"
+    },
+    "values": {
+      "lol_ranks": "Iron I, Iron II, Iron III, Iron IV, Bronze I, Bronze II, Bronze III, Bronze IV, Silver I, Silver II, Silver III, Silver IV, Gold I, Gold II, Gold III, Gold IV, Platinum I, Platinum II, Platinum III, Platinum IV, Diamond I, Diamond II, Diamond III, Diamond IV, Master, Grandmaster, Challenger",
+      "lol_server_regions": "North America, Europe West, Europe East, Oceania, South East Asia, Latin America North, Latin America South, Brazil, Russia, Turkey, Japan, Corea",
+      "lol_roles": "Top, Jungle, Mid, ADC, Support",
+      "stats_link": "(https://www.)?leagueofgraphs.com/summoner,true"
+    }
+  },
+  {
+    "gameId": "1037",
+    "fields": {
+      "value_one": "mlbb_ranks",
+      "value_two": "mlbb_classes",
+      "value_three": "mlbb_levels"
+    },
+    "placeholders": {
+      "mlbb_ranks": "Please advise what Rank/s you are looking for?",
+      "mlbb_classes": "Select the class/es you wish to apply for",
+      "mlbb_levels": "Please select your what level "
+    },
+    "types": {
+      "mlbb_ranks": "Multi",
+      "mlbb_classes": "Multi",
+      "mlbb_levels": "Multi"
+    },
+    "labels": {
+      "mlbb_ranks": "Ranks",
+      "mlbb_classes": "Classes",
+      "mlbb_levels": "Levels"
+    },
+    "values": {
+      "mlbb_ranks": "Warrior, Elite, Master, Grandmaster, Epic, Legend, Mythic, Glorious Mythic",
+      "mlbb_classes": "Tank, Fighter, Assassin, Mage, Marksman, Support",
+      "mlbb_levels": "0-10, 10-20, 20-30, 30"
+    }
+  },
+  {
+    "gameId": "1014",
+    "fields": {
+      "value_one": "clash_royale_trophies",
+      "value_six": "stats_link"
+    },
+    "placeholders": {
+      "clash_royale_trophies": "Please select your trophy range",
+      "stats_links": "https://statsroyale.com/profile/profile-id"
+    },
+    "types": {
+      "clash_royale_trophies": "Single",
+      "stats_link": "Input"
+    },
+    "labels": {
+      "clash_royale_trophies": "Trophies",
+      "stats_link": "Profile Link"
+    },
+    "values": {
+      "clash_royale_trophies": "1000, 2000, 3000, 4000, 5000, competitive",
+      "stats_link": "(https:\/\/)?statsroyale.com\/profile,true"
+    }
+  },
+  {
+    "gameId": "1020",
+    "fields": {
+      "value_one": "overw_server_regions",
+      "value_two": "overw_game_modes",
+      "value_three": "overw_ranks",
+      "value_four": "overw_roles",
+      "value_five": "overw_levels",
+      "value_six": "stats_link"
+    },
+    "placeholders": {
+      "overw_server_regions": "Select what region/s you can play",
+      "overw_game_modes": "Please select your game modes",
+      "overw_ranks": "Please select what ranks?",
+      "overw_roles": "Please select which roles",
+      "overw_levels": "Please select which levels",
+      "stats_links": "https://www.overbuff.com/players/pc/profile-id"
+    },
+    "types": {
+      "overw_server_regions": "Multi",
+      "overw_game_modes": "Multi",
+      "overw_ranks": "Multi",
+      "overw_roles": "Multi",
+      "overw_levels": "Multi",
+      "stats_link":"Input"
+    },
+    "labels": {
+      "overw_server_regions": "Server Regions",
+      "overw_game_modes": "Game Modes",
+      "overw_ranks": "Ranks",
+      "overw_roles": "Roles",
+      "overw_levels": "Levels",
+      "stats_link": "Profile Link"
+    },
+    "values": {
+      "overw_server_regions": "Americas, Europe, Asia",
+      "overw_game_modes": "Quick Play, Competitive, Arcade",
+      "overw_ranks": "Bronze: 0 to 1500 SR, Silver: 1500 to 1999 SR, Gold 2000 to 2499 SR, Platinum: 2500 to 2999 SR, Diamond: 3000 to 3499 SR, Masters: 3500 to 3999 SR, Grandmaster: 4000 to 5000 SR",
+      "overw_roles": "DPS, Tank, Support, Flex",
+      "overw_levels": "0-100, 100-200, 200-300, 300-400, 400-500, 500-600, 600-700, 700-800, 800-900, 900-1000, 1000-1100, 1100-1200, 1200+",
+      "stats_link": "(https:\/\/www.)?overbuff.com\/players,true"
+    }
+  },
+  {
+    "gameId": "100",
+    "fields": {
+      "value_one": "cod_warzone_server_regions",
+      "value_two": "cod_warzone_game_modes",
+      "value_three": "cod_warzone_kd_ratio",
+      "value_four": "cod_warzone_wins",
+      "value_six": "stats_link"
+    },
+    "placeholders": {
+      "cod_warzone_server_regions": "Select what levels you are looking for",
+      "cod_warzone_game_modes": "Please select your game modes",
+      "cod_warzone_kd_ratio": "Please select KD range",
+      "cod_warzone_wins": "Please select how many wins",
+      "stats_links": "https://cod.tracker.gg/warzone/profile-id"
+    },
+    "types": {
+      "cod_warzone_server_regions": "Multi",
+      "cod_warzone_game_modes": "Multi",
+      "cod_warzone_kd_ratio": "Single",
+      "cod_warzone_wins": "Multi",
+      "stats_link":"Input"
+    },
+    "labels": {
+      "cod_warzone_server_regions": "Server Regions",
+      "cod_warzone_game_modes": "Game Modes",
+      "cod_warzone_kd_ratio": "K/D Ratio",
+      "cod_warzone_wins": "Wins",
+      "stats_link": "Profile Link"
+    },
+    "values": {
+      "cod_warzone_server_regions": "America, Europe, Asia",
+      "cod_warzone_game_modes": "Battle Royale: Duos, Battle Royale: Trios, Battle Royale: Quads, Plunder",
+      "cod_warzone_kd_ratio": "0 to 0.5, 0.5 to 1, 1 to 1.5, 1.5 to 2, 2 to 2.5, 2.5 to 3, 3+",
+      "cod_warzone_wins": "0-10, 10-30, 30-50, 50-100, 100+",
+      "stats_link": "(https:\/\/)?cod.tracker.gg\/warzone\/,true"
+    }
+  },
+  {
+    "gameId": "1001",
+    "fields": {
+      "value_one": "apex_legends_game_modes",
+      "value_two": "apex_legends_level",
+      "value_three": "apex_legends_wins",
+      "value_four": "apex_legends_kills",
+      "value_six": "stats_link"
+    },
+    "placeholders": {
+      "apex_legends_game_modes": "Please select your game modes",
+      "apex_legends_level": "Please select your which levels",
+      "apex_legends_wins": "Please select how many wins",
+      "apex_legends_kills": "Please select how many kills",
+      "stats_links": "https://tracker.gg/apex/profile/psn/profile-id"
+    },
+    "types": {
+      "apex_legends_game_modes": "Multi",
+      "apex_legends_level": "Multi",
+      "apex_legends_wins": "Multi",
+      "apex_legends_kills": "Multi",
+      "stats_link":"Input"
+    },
+    "labels": {
+      "apex_legends_game_modes": "Game Modes",
+      "apex_legends_level": "Levels",
+      "apex_legends_wins": "Wins",
+      "apex_legends_kills": "Kills",
+      "stats_link": "Profile Link"
+    },
+    "values": {
+      "apex_legends_game_modes": " Duos, Trios",
+      "apex_legends_level": "0-50, 50-100, 100-150, 150-200, 200-250, 250-300, 300-350, 350-400, 400-450, 450-500",
+      "apex_legends_wins": "0-50, 50-150, 150-400, 400-800, 800+",
+      "apex_legends_kills": "0-100, 100-500, 500-1000, 1000-5000, 5K-10K, 10K+",
+      "stats_link": "(https:\/\/)?tracker.gg\/apex\/profile\/psn,true"
+    }
+  },
+  {
+    "gameId": "1043",
+    "fields": {
+      "value_one": "csgo_server_regions",
+      "value_two": "csgo_game_modes",
+      "value_three": "csgo_server_roles",
+      "value_four": "csgo_server_rank",
+      "value_five": "csgo_kd_ratio",
+      "value_six": "stats_link"
+    },
+    "placeholders": {
+      "csgo_server_regions": "Select what region/s you can play",
+      "csgo_server_rank": "Please select what rank",
+      "csgo_server_roles": "Please select which roles?",
+      "csgo_game_modes": "Please select your game modes",
+      "csgo_kd_ratio": "Please select KD range",
+      "stats_links": "https://csgo-stats.com/player/profile-id"
+    },
+    "types": {
+      "csgo_server_regions": "Multi",
+      "csgo_server_rank": "Multi",
+      "csgo_server_roles": "Multi",
+      "csgo_game_modes": "Multi",
+      "csgo_kd_ratio": "Multi",
+      "stats_link":"Input"
+    },
+    "labels": {
+      "csgo_server_regions": "Server Regions",
+      "csgo_server_rank": "Ranks",
+      "csgo_server_roles": "Roles",
+      "csgo_game_modes": "Game Modes",
+      "csgo_kd_ratio": "K/D Ratio",
+      "stats_link": "Profile Link"
+    },
+    "values": {
+      "csgo_server_regions": "North America East, North America West, North America Central, South America, Europe East, Europe West, Europe Central, Europe North, Asia, Oceania, Africa, Middle East",
+      "csgo_server_rank": "Silver I, Silver II, Silver III, Silver IV, Silver Elite, Silver Elite Master, Gold Nova I, Gold Nova II, Gold Nova III, Gold Nova Master, Master Guardian I, Master Guardian II, Master Guardian Elite, Distinguished Master Guardian, Legendary Eagle, Legendary Eagle Master, Supreme Master First Class, The Global Elite",
+      "csgo_server_roles": "Entry Fragger, Support, In-game Leader, AWPer, Lurker, Rifler",
+      "csgo_game_modes": "Competitive PUGs, League, Matchmaking",
+      "csgo_kd_ratio": "0 to 0.5, 0.5 to 1, 1 to 1.5, 1.5 to 2, 2 to 2.5, 3+",
+      "stats_link": "(https:\/\/)?csgo-stats.com\/player\/,true"
+    }
+  },
+  {
+    "gameId": "1000",
+    "fields": {
+      "value_one": "fortnite_server_regions",
+      "value_two": "fortnite_game_modes",
+      "value_three": "fortnite_kd_ratio",
+      "value_four": "fortnite_wins",
+      "value_five": "fortnite_kills",
+      "value_six": "stats_link"
+    },
+    "placeholders": {
+      "fortnite_server_regions": "Select what region/s you can play",
+      "fortnite_game_modes": "Please select your game modes",
+      "fortnite_kd_ratio": "Please select KD range",
+      "fortnite_wins": "Please select your how many wins",
+      "fortnite_kills": "Please select how many kills",
+      "stats_links": "https://fortnitetracker.com/profile/all/profile-id"
+    },
+    "types": {
+      "fortnite_server_regions": "Multi",
+      "fortnite_game_modes": "Multi",
+      "fortnite_kd_ratio": "Multi",
+      "fortnite_wins": "Multi",
+      "fortnite_kills": "Multi",
+      "stats_link":"Input"
+    },
+    "labels": {
+      "fortnite_server_regions": "Server Regions",
+      "fortnite_game_modes": "Game Modes",
+      "fortnite_kd_ratio": "K/D Ratio",
+      "fortnite_wins": "Wins",
+      "fortnite_kills": "Kills",
+      "stats_link": "Profile Link"
+    },
+    "values": {
+      "fortnite_server_regions": "NA East, NA West, Europe, Oceania, Brazil, Asia, Middle East",
+      "fortnite_game_modes": "Battle Royale: Duos, Battle Royale: Squads, Save the world, Arena, Team Rumble",
+      "fortnite_kd_ratio": "0 to 0.5, 0.5 to 1, 1 to 1.5, 1.5 to 2, 2 to 2.5, 2.5 to 5, 5 to 10, 10 to 15, 20+ ",
+      "fortnite_wins": "0-10, 10-30, 30-50, 50-100, 100-150, 200+",
+      "fortnite_kills": "0-10, 10-30, 30-50, 50-100, 100-150, 200+",
+      "stats_link": "(https:\/\/)?fortnitetracker.com\/profile\/all,true"
+    }
+  },
+  {
+    "gameId": "1040",
+    "fields": {
+      "value_one": "pubg_platform",
+      "value_two": "pubg_server_regions",
+      "value_three": "pubg_game_modes",
+      "value_four": "pubg_ranks",
+      "value_six": "stats_link"
+    },
+    "placeholders": {
+      "pubg_platform": "Select which platform",
+      "pubg_server_regions": "Select what region/s you can play",
+      "pubg_game_modes": "Please select your game modes",
+      "pubg_ranks": "Please select what rank",
+      "stats_links": "https://pubglookup.com/players/xbox/profile-id"
+    },
+    "types": {
+      "pubg_platform": "Single",
+      "pubg_server_regions": "Multi",
+      "pubg_game_modes": "Multi",
+      "pubg_ranks": "Multi",
+      "stats_link":"Input"
+    },
+    "labels": {
+      "pubg_platform": "Platform",
+      "pubg_server_regions": "Server Regions",
+      "pubg_game_modes": "Game Modes",
+      "pubg_ranks": "Ranks",
+      "stats_link": "Profile Link"
+    },
+    "values": {
+      "pubg_platform": "Console, PC",
+      "pubg_server_regions": "North America, Europe, Asia, Oceania, South America  ",
+      "pubg_game_modes": "Duos, Squads",
+      "pubg_ranks": "Bronze, Silver, Gold, Platinum, Diamond, Elite, Master, Grandmaster",
+      "stats_link": "(https:\/\/)?pubglookup.com\/players\/xbox,true"
+    }
+  },
+  {
+    "gameId": "1041",
+    "fields": {
+      "value_one": "nba2k_game_modes",
+      "value_two": "nba2k_positions",
+      "value_three": "nba2k_ovr_rating"
+    },
+    "placeholders": {
+      "nba2k_game_modes": "Please select your game modes",
+      "nba2k_positions": "Please select which positions?",
+      "nba2k_ovr_rating": "Please select the what OVR rating range"
+    },
+    "types": {
+      "nba2k_game_modes": "Multi",
+      "nba2k_positions": "Multi",
+      "nba2k_ovr_rating": "Multi"
+    },
+    "labels": {
+      "nba2k_game_modes": "Game Modes",
+      "nba2k_positions": "Positions",
+      "nba2k_ovr_rating": "OVR Rating"
+    },
+    "values": {
+      "nba2k_game_modes": "MyGM-MyLeague, MyTeam, PNO, Playground/Park, Pro-Am, Team-Up, The Rec",
+      "nba2k_positions": "C, PF, PG, SF, SG",
+      "nba2k_ovr_rating": "60-70, 70-80, 80-90, 90-100"
+    }
+  },
+  {
+    "gameId": "1023",
+    "fields": {
+      "value_one": "rocket_league_server_regions",
+      "value_two": "rocket_league_playlists",
+      "value_three": "rocket_league_competitive",
+      "value_four": "rocket_league_ranks",
+      "value_six": "stats_link"
+    },
+    "placeholders": {
+      "rocket_league_server_regions": "Select what region/s you can play",
+      "rocket_league_playlists": "Please select your playlists",
+      "rocket_league_competitive": "Please select your competitive mode",
+      "rocket_league_ranks": "Please select what rank",
+      "stats_links": "https://rocketleague.tracker.network/profile/steam/profile-id"
+    },
+    "types": {
+      "rocket_league_server_regions": "Multi",
+      "rocket_league_playlists": "Multi",
+      "rocket_league_competitive": "Multi",
+      "rocket_league_ranks": "Multi",
+      "stats_link":"Input"
+    },
+    "labels": {
+      "rocket_league_server_regions": "Server Regions",
+      "rocket_league_playlists": "Playlist",
+      "rocket_league_competitive": "Competitive",
+      "rocket_league_ranks": "Ranks",
+      "stats_link": "Profile Link"
+    },
+    "values": {
+      "rocket_league_server_regions": " North America, Europe, Asia, Oceania, South America",
+      "rocket_league_playlists": "Soccer 2v2 Doubles, Sports 2v2 Hoops, Soccer 3v3 Standard, Sports 3v3 Dropshot, Sports 3v3 Rumble, Sports 3v3 Snow Day, Sports 3v3 Rocket Labs, Soccer 4v4 Chaos",
+      "rocket_league_competitive": "2v2 Doubles, 3v3 Standard, 3v3 Solo Standard",
+      "rocket_league_ranks": "Unranked, Bronze I, Bronze II, Bronze III, Silver I, Silver II, Silver III, Gold I, Gold II, Gold III, Platinum I, Platinum II, Platinum III, Diamond I, Diamond II, Diamond III, Champion I, Champion II, Champion III, Grand champion",
+      "stats_link": "(https:\/\/)?rocketleague.tracker.network\/profile\/,true"
+    }
+  }
+]

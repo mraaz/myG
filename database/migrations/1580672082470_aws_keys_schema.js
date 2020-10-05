@@ -23,6 +23,8 @@ class AwsKeysSchema extends Schema {
       table.foreign('comment_id').references('comments.id').onDelete('cascade')
       table.integer('reply_id').unsigned()
       table.foreign('reply_id').references('replies.id').onDelete('cascade')
+      table.integer('sponsor_id').unsigned()
+      table.foreign('sponsor_id').references('sponsors.id').onDelete('cascade')
       table.integer('type').unsigned().notNullable()
       table.string('aws_key', 1024).notNullable()
       table.timestamps(true,true)

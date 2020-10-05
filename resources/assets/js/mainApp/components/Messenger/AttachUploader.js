@@ -1,11 +1,11 @@
 import 'react-dropzone-uploader/dist/styles.css'
 import React from 'react'
 import Dropzone from 'react-dropzone-uploader'
-import axios from 'axios'
 import LoadingIndicator from '../LoadingIndicator'
 import notifyToast from '../../../common/toast'
 import { ignoreFunctions } from '../../../common/render'
 import { uploadAttachmentIcon } from '../../../integration/http/chat'
+import { Upload_to_S3 } from '../AWS_utilities'
 
 export default class AttachUploader extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -26,17 +26,8 @@ export default class AttachUploader extends React.Component {
     const type = allFiles[0].meta.type
     const mygType = type.includes('image') ? 'image' : type.includes('video') ? 'video' : 'sound'
 
-    const formData = new FormData()
-    formData.append('upload_file', file)
-    formData.append('filename', name)
-    formData.append('chat', true)
-
     try {
-      const post = await axios.post('/api/uploadFile', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+      const post = await Upload_to_S3(file, name, 0, null, true)
       const key = post.data.Key
       const response = await this.props.sendMessage(`myg-${mygType}|${post.data.Location}`, key)
       if (key) await uploadAttachmentIcon(response.value.message.chatId, response.value.message.messageId, key)

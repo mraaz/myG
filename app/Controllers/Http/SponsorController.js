@@ -26,6 +26,9 @@ class SponsorController {
           media_url: request.input('media_url'),
           link: request.input('link'),
         })
+
+        //RAAZ to update AWS Key table
+
         return
       } catch (error) {
         LoggingRepository.log({

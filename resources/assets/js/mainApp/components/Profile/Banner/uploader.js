@@ -1,13 +1,10 @@
 import React from 'react'
 import Dropzone from 'react-dropzone'
-import axios from 'axios'
 import notifyToast from '../../../../common/toast'
+import { Remove_file, Upload_to_S3 } from '../../AWS_utilities'
 
 export default class Uploader extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {}
-  }
+  state = {}
 
   handleChangeStatus = ({ meta }, status, allFiles) => {
     this.state.store_files = allFiles
@@ -32,18 +29,15 @@ export default class Uploader extends React.Component {
 
   async uploadToAws(file, name) {
     this.setState({ uploading: true })
-    const formData = new FormData()
-    formData.append('upload_file', file)
-    formData.append('filename', name)
     try {
-      const post = await axios.post('/api/uploadFile', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+      const post = await Upload_to_S3(file, name)
       this.setState({
         file_src: post.data.Location,
         file_key: post.data.Key,
       })
-      this.props.onUpload(post.data.Location, post.data.Key);
+      this.props.onUpload(post.data.Location, post.data.Key)
     } catch (error) {
-      console.log(error);
+      console.log(error)
       notifyToast('Oops, something went wrong. Unable to upload your file. Close this window and try again.')
     }
     this.state.submitButtonContent = 'Submit'
@@ -54,17 +48,10 @@ export default class Uploader extends React.Component {
 
   removeFromAws() {
     if (this.state.file_key != '') {
-      const formData = new FormData()
-      formData.append('key', this.state.file_key)
-
       try {
-        const post = axios.post('/api/deleteFile', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
+        Remove_file(this.state.file_key)
       } catch (error) {
-        console.log(error);
+        console.log(error)
         toast.success(<Toast_style text={'Oops, something went wrong. Unable to upload your file. Close this window and try again'} />)
       }
     }

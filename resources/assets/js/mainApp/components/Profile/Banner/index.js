@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import Background from './background';
+import Uploader from './uploader'
 import AnalyticsBox from '../../AnalyticsBox';
 import Header from './header';
 import { ignoreFunctions } from '../../../../common/render'
@@ -12,15 +12,12 @@ export class Banner extends React.Component {
   }
 
   render() {
+    const background = this.props.profile.background ? { backgroundImage: `url('${this.props.profile.background}')` } : {};
     return(
-      <div id="profile-banner">
-        <AnalyticsBox containerStyle='analytics' />
-        <Background
-          alias={this.props.profile.alias}
-          isSelf={this.props.profile.isSelf}
-          background={this.props.profile.background}
-          uploadProfileBackground={this.props.uploadProfileBackground}
-         />
+      <div id="profile-banner" className={`background ${this.props.isSelf && 'clickable'}`} style={background}>
+        <Uploader background onUpload={this.onUpload}>
+            <AnalyticsBox containerStyle='analytics' />
+        </Uploader>
         <Header
           alias={this.props.profile.alias}
           profile={this.props.profile}
