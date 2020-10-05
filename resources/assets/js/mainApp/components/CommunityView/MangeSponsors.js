@@ -124,7 +124,14 @@ export default class MangeSponsors extends React.Component {
                 name='insert__images'
               />
               {uploading && <div className='image__uploading'>Uploading...</div>}
-              <img src={media_url == '' ? sponsor.media_url : media_url} onError={this.addDefaultSrc} />
+              <img
+                src={
+                  media_url == ''
+                    ? sponsor.media_url || 'https://mygame-media.s3.amazonaws.com/platform_images/Communities/upload_image.png'
+                    : media_url
+                }
+                onError={this.addDefaultSrc}
+              />
             </div>
             <div className='Sponsor__link__input'>
               <label>Enter Sponsor link</label>
