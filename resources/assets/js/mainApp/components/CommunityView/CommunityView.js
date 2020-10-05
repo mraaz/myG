@@ -97,11 +97,11 @@ const CommunityView = (props) => {
                 <a href={`/`} target='_blank'>
                   <img className='Sponsors__image' onError={addDefaultSrc} src={``} />
                 </a>
-                {/* {[0, 1].includes(current_user_permission) && ( */}
-                <div className='Sponsors__edit' onClick={(e) => handleSponsorClick({})}>
-                  Edit
-                </div>
-                {/* )} */}
+                {[0, 1].includes(current_user_permission) && (
+                  <div className='Sponsors__edit' onClick={(e) => handleSponsorClick({})}>
+                    Edit
+                  </div>
+                )}
               </div>
             )
           })}
