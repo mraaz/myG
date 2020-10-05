@@ -599,7 +599,11 @@ export default class IndividualPost extends Component {
       var show_media = false
 
       let { post, current_user_permission = null } = this.props //destructing of object
-      let { profile_img = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png', hash_tags = [] } = post //destructing of object
+      let {
+        profile_img = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png',
+        hash_tags = [],
+        featured = 0,
+      } = post //destructing of object
       //destructing of object
 
       if (media_urls != [] && media_urls != null) {
@@ -618,12 +622,12 @@ export default class IndividualPost extends Component {
                   </i>
                   <div className={`post-dropdown ${showPostExtraOption == true ? 'active' : ''}`}>
                     <nav>
-                      {[0, 1, 2].includes(current_user_permission) && (
+                      {[0, 1, 2].includes(current_user_permission) && featured == 1 && (
                         <div className='option' onClick={(e) => this.handlefeaturedClick(1, post.id)}>
                           Featured
                         </div>
                       )}
-                      {[0, 1, 2].includes(current_user_permission) && (
+                      {[0, 1, 2].includes(current_user_permission) && featured == 0 && (
                         <div className='option' onClick={(e) => this.handlefeaturedClick(0, post.id)}>
                           Unfeatured
                         </div>

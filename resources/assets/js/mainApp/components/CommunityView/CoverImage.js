@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react'
 import { Upload_to_S3 } from '../AWS_utilities'
 import axios from 'axios'
+import { toast } from 'react-toastify'
+import { Toast_style } from '../Utility_Function'
 
 const addDefaultSrc = (ev) => {
   ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/universe.jpg'
@@ -25,7 +27,7 @@ const CoverImage = (props) => {
   const handleChange = async (event) => {
     if (props.current_user_permission == 0) {
       const file = event.target.files[0]
-      const data = await Upload_to_S3(file, file.name, '', props.id)
+      const data = await Upload_to_S3(file, file.name, 4, props.id)
     }
   }
   const handleFollowClick = async (id) => {
@@ -51,7 +53,10 @@ const CoverImage = (props) => {
       const data = await axios.post('/api/usergroup/create', {
         group_id: id,
       })
-      setJoinlabel('Pending')
+      if (data) {
+        toast.success(<Toast_style text={'Community request sent, let waiting for an approval.'} />)
+        setJoinlabel('Pending')
+      }
     } else {
       setToggleOption(!toggle)
     }
@@ -59,14 +64,18 @@ const CoverImage = (props) => {
 
   return (
     <div className='coverImage__container'>
-      <img onError={addDefaultSrc} src={props.group_img} className='featuredImage' onClick={(e) => inputEl.current.click()} />
+      <img onError={addDefaultSrc} src={props.group_img} className='featuredImage' />
       <input
         type='file'
+        accept='image/jpeg,image/jpg,image/png'
         ref={inputEl}
         disabled={props.current_user_permission == 0 ? false : true}
         className='featuredImageInput'
         onChange={(event) => handleChange(event)}
       />
+      <div className='addCoverImage__button' onClick={(e) => inputEl.current.click()}>
+        Add/Edit Cover Image
+      </div>
 
       <div className='analyticsBox__container'>
         <AnalyticsBox />
