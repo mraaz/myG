@@ -29,7 +29,7 @@ export default class EditGameExperience extends React.Component {
   }
 
   prepareExperience = () => {
-    const { id, mainFields, game, gameName, gameImage, nickname, level, experience, team, tags, dynamic, background } = this.props.gameExperience || {}
+    const { id, mainFields, game, gameName, gameImage, nickname, level, experience, team, tags, rating, dynamic, background } = this.props.gameExperience || {}
     const commends = this.props.profile.commended.filter((commend) => commend.gameExperienceId === id).length;
     return {
       loaded: true,
@@ -43,6 +43,7 @@ export default class EditGameExperience extends React.Component {
       experience: experience ? { value: experience, label: experience } : null,
       team: team || null,
       tags: tags ? tags.map((tag) => ({ value: tag, label: tag })) : [],
+      rating: rating || 0,
       dynamic: dynamic || {},
       background: background ? background.map((experience) => ({
         id: experience.id || null,
@@ -67,6 +68,7 @@ export default class EditGameExperience extends React.Component {
     if (experience.experience) updates.experience = experience.experience.value
     if (experience.team) updates.team = experience.team
     if (experience.tags) updates.tags = experience.tags.map((entry) => entry.value).join('|')
+    if (experience.rating) updates.rating = experience.rating
     if (experience.dynamic) updates.dynamic = experience.dynamic
     if (experience.background) {
       updates.background = experience.background.filter(this.hasAddedDataToExperience).map((experience) => ({

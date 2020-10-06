@@ -719,6 +719,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-around;
+      align-items: center;
       background-color: #1d2326;
       border-radius: 8px;
       margin: 16px;
@@ -764,7 +765,8 @@
 
       .link {
         position: absolute;
-        right: 0;
+        top: 12px;
+        right: 12px;
         background-repeat: no-repeat;
         background-position: center center;
         background-size: initial;

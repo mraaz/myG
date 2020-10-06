@@ -13,6 +13,7 @@ class GameExperience {
     this.team = forceString(data.team)
     this.nickname = forceString(data.nickname)
     this.tags = data.tags ? data.tags.split('|') : [];
+    this.rating = forceInt(data.rating)
     this.dynamic = forceJson(data.dynamic)
     this.background = data.background || []
   }

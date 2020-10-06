@@ -234,7 +234,7 @@ class ProfileRepository {
     return this.fetchProfileInfo({ requestingUserId, id: requestingUserId });
   }
 
-  async updateGame({ requestingUserId, id, imageKey, imageSource, mainFields, game, gameName, nickname, level, experience, team, tags, dynamic, background }) {
+  async updateGame({ requestingUserId, id, imageKey, imageSource, mainFields, game, gameName, nickname, level, experience, team, tags, rating, dynamic, background }) {
     if (!game && gameName) {
       const gameNameModel = new GameName();
       gameNameModel.user_id = requestingUserId;
@@ -259,6 +259,7 @@ class ProfileRepository {
     gameExperience.team = team;
     gameExperience.nickname = nickname;
     gameExperience.tags = tags;
+    gameExperience.rating = rating;
     gameExperience.dynamic = JSON.stringify(dynamic);
     await gameExperience.save();
 

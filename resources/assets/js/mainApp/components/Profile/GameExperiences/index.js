@@ -107,17 +107,15 @@ export default class GameExperiences extends React.Component {
       >
         <span className="name">{gameName}</span>
         {gameImage && <div className="image" style={{ backgroundImage: `url(${gameImage})` }} />}
-        {fields.map((field, index) => (
+        <div
+          className={`link clickable`}
+          onClick={() => this.copyLink(id)}
+          style={{ backgroundImage: `url(${getAssetUrl('ic_profile_link_gray')})` }}
+        />
+        {fields.map((field) => (
           <div className="field">
             <span className="field-title">{field.charAt(0).toUpperCase() + field.slice(1)}</span>
             <span className="field-value">{game[field.toLowerCase()] || 'N/A'}</span>
-            {index === 0 && (
-              <div
-                className={`link clickable`}
-                onClick={() => this.copyLink(id)}
-                style={{ backgroundImage: `url(${getAssetUrl('ic_profile_link_gray')})` }}
-              />
-            )}
           </div>
         ))}
         {this.state.hovering === id && (
