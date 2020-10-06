@@ -1405,6 +1405,7 @@ section#content-container {
                 margin-right: 15px;
                 float: right;
                 font-size: 12px;
+                color: #ffffff;
               }
               .comment-panel-liked {
                 padding-left: 15px;
@@ -1414,6 +1415,7 @@ section#content-container {
                 font-size: 12px;
                 padding-left: 15px;
                 border-left: 1px solid #384952;
+                color: #ffffff;
               }
               .divider {
                 margin-left: 10px;
@@ -1538,6 +1540,11 @@ section#content-container {
       &:hover {
         border-bottom: 1px solid #e5c746;
       }
+
+      @media screen and (max-width: 575px) {
+        margin: 0;
+        font-size: 12px;
+      }
     }
     .share__thought.actve {
       border-bottom: 1px solid #e5c746;
@@ -1554,6 +1561,11 @@ section#content-container {
       }
       &:hover {
         border-bottom: 1px solid #e5c746;
+      }
+
+      @media screen and (max-width: 575px) {
+        margin: 0;
+        font-size: 12px;
       }
     }
   }
@@ -2313,12 +2325,13 @@ section#content-container {
   .mobile-side-menu-top {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
   }
 
   .back-btn {
     background: #171a1c;
-    border-radius: 50%;
-    padding: 14px;
+    border-radius: 50px;
+    padding: 20px;
     border: solid 1px #384952;
     justify-content: center;
     display: flex;
@@ -2399,6 +2412,11 @@ section#content-container {
     padding-top: 10px;
     padding-left: 20px;
     font-size: 18px;
+  }
+
+  .menu-list a:hover {
+    color: #ffffff;
+    text-decoration: none;
   }
 
   .logout-setting-section {
