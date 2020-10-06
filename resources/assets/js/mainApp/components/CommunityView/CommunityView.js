@@ -64,6 +64,7 @@ const CommunityView = (props) => {
   }
 
   const renderSponsors = (Sponsors = []) => {
+    const { current_user_permission } = communityDetails
     return (
       <div className='Sponsors__container'>
         <div className='Sponsors sponsors__label'>
@@ -76,12 +77,12 @@ const CommunityView = (props) => {
                 <a href={`//${Sponsor.link}`} target='_blank'>
                   <img className='Sponsors__image' onError={addDefaultSrc} src={`${Sponsor.media_url}`} />
                 </a>
-                {[0, 1].includes(communityDetails.current_user_permission) && (
+                {[0, 1].includes(current_user_permission) && (
                   <div className='Sponsors__edit' onClick={(e) => handleSponsorClick(Sponsor)}>
                     Edit
                   </div>
                 )}
-                {[0, 1].includes(communityDetails.current_user_permission) && (
+                {[0, 1].includes(current_user_permission) && (
                   <div className='Sponsors__delete' onClick={(e) => handleDeleteSponsor(Sponsor.id)}>
                     Delete
                   </div>
@@ -93,12 +94,14 @@ const CommunityView = (props) => {
           [1, 2].map((Sponsor) => {
             return (
               <div className='Sponsors' key={Sponsor.id}>
-                <a href={`#`} target='_blank'>
+                <a href={`/`} target='_blank'>
                   <img className='Sponsors__image' onError={addDefaultSrc} src={``} />
                 </a>
-                <div className='Sponsors__edit' onClick={(e) => handleSponsorClick({})}>
-                  Edit
-                </div>
+                {[0, 1].includes(current_user_permission) && (
+                  <div className='Sponsors__edit' onClick={(e) => handleSponsorClick({})}>
+                    Edit
+                  </div>
+                )}
               </div>
             )
           })}

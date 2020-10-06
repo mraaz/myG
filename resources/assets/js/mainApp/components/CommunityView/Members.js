@@ -217,6 +217,7 @@ export default class Members extends React.Component {
 
   renderGroupMember = () => {
     const { group_members } = this.state
+    const { current_user_permission } = this.props
 
     return (
       <div className='GroupMember_list' onScroll={this.handleScroll} ref={this.scrollRef}>
@@ -246,10 +247,12 @@ export default class Members extends React.Component {
                   <Link to={`/profile/${member.alias}`}>
                     <button type='button View'>View</button>
                   </Link>
-                  <button type='button Expel' onClick={(e) => this.showExpelAlert(member)}>
-                    {' '}
-                    Expel
-                  </button>
+                  {[0, 1].includes(current_user_permission) && (
+                    <button type='button Expel' onClick={(e) => this.showExpelAlert(member)}>
+                      {' '}
+                      Expel
+                    </button>
+                  )}
                 </div>
               </div>
             )

@@ -91,7 +91,6 @@ export default class MangeSponsors extends React.Component {
         media_url: [post.data.Location],
         file_keys: post.data.Key,
         aws_key_id: [post.data.aws_key_id],
-        saveButtonDisabled: false,
       })
     } catch (error) {
       toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
@@ -101,7 +100,7 @@ export default class MangeSponsors extends React.Component {
 
   render() {
     const { sponsor = {} } = this.props
-    const { saveButtonDisabled = false, linkValue = '', media_url = '', modalStatus = true, uploading = false } = this.state
+    const { saveButtonDisabled = true, linkValue = '', media_url = '', modalStatus = true, uploading = false } = this.state
 
     return (
       <div className={`modal-container View__Member__modal ${modalStatus ? 'modal--show' : ''}`}>
@@ -124,7 +123,14 @@ export default class MangeSponsors extends React.Component {
                 name='insert__images'
               />
               {uploading && <div className='image__uploading'>Uploading...</div>}
-              <img src={media_url == '' ? sponsor.media_url : media_url} onError={this.addDefaultSrc} />
+              <img
+                src={
+                  media_url == ''
+                    ? sponsor.media_url || 'https://mygame-media.s3.amazonaws.com/platform_images/Communities/upload_image.png'
+                    : media_url
+                }
+                onError={this.addDefaultSrc}
+              />
             </div>
             <div className='Sponsor__link__input'>
               <label>Enter Sponsor link</label>
