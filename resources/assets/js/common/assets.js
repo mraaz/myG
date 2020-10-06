@@ -71,6 +71,12 @@ const assets = {
   ic_twitch_white: 'ic_twitch_white.svg',
   ic_discord_white: 'ic_discord_white.svg',
 
+  ic_rating_very_sad: 'ic_rating_very_sad.svg',
+  ic_rating_sad: 'ic_rating_sad.svg',
+  ic_rating_neutral: 'ic_rating_neutral.svg',
+  ic_rating_happy: 'ic_rating_happy.svg',
+  ic_rating_very_happy: 'ic_rating_very_happy.svg',
+
 }
 
 export function getAssetUrl(asset) {

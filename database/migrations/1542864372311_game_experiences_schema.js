@@ -20,6 +20,7 @@ class GameExperiencesSchema extends Schema {
       table.string('nickname', 254).nullable()
       table.text('dynamic').nullable()
       table.text('tags').nullable()
+      table.integer('rating').nullable()
 
       table.string('comments', 254).nullable().defaultTo("")
       table.integer('played').unsigned().nullable().defaultTo(1)

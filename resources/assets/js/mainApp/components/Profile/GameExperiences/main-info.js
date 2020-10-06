@@ -5,6 +5,7 @@ import { getAssetUrl } from '../../../../common/assets'
 import { ignoreFunctions } from '../../../../common/render'
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import MyGSelect from '../../common/MyGSelect'
+import MyGRateSlider from '../../common/MyGRateSlider'
 import { Game_name_values, Disable_keys, Schedule_Game_Tags } from '../../Utility_Function'
 import { Upload_to_S3, Remove_file } from '../../AWS_utilities'
 import { notifyToast } from '../../../../common/toast'
@@ -237,6 +238,16 @@ export default class MainInfo extends React.Component {
     )
   }
 
+  renderRateSlider = () => {
+    if (!this.props.isSelf) return null
+    return (
+      <div className='row'>
+        <span className='hint'>Rating</span>
+        <MyGRateSlider rating={this.props.experience.rating} onRatingSelected={(rating) => this.props.storeExperience({ rating })}/>
+      </div>
+    )
+  }
+
   renderDynamicFields = () => {
     if (!this.props.isSelf) return null
     if (!this.state.dynamicFields || !this.state.dynamicFields.length) return null
@@ -426,6 +437,7 @@ export default class MainInfo extends React.Component {
           {this.renderTeamInput()}
           {this.renderNicknameInput()}
           {this.renderTagsInput()}
+          {this.renderRateSlider()}
           {this.renderDynamicFields()}
           {this.renderSave()}
         </div>
