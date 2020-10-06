@@ -23,11 +23,15 @@ const CoverImage = (props) => {
   const inputEl = useRef(null)
   const [joinlabel, setJoinlabel] = useState(labelMap[props.current_user_permission])
   const [toggle, setToggleOption] = useState(false)
+  const [coverImage, setCoverImage] = useState(props.group_img || '')
 
   const handleChange = async (event) => {
     if (props.current_user_permission == 0) {
       const file = event.target.files[0]
-      const data = await Upload_to_S3(file, file.name, 4, props.id)
+      if (file.size > 10240) {
+        const post = await Upload_to_S3(file, file.name, 4, props.id)
+        setCoverImage(post.data.Location)
+      }
     }
   }
   const handleFollowClick = async (id) => {
@@ -64,7 +68,7 @@ const CoverImage = (props) => {
 
   return (
     <div className='coverImage__container'>
-      <img onError={addDefaultSrc} src={props.group_img} className='featuredImage' />
+      <img onError={addDefaultSrc} src={coverImage == '' ? props.group_img : coverImage} className='featuredImage' />
       <input
         type='file'
         accept='image/jpeg,image/jpg,image/png'
