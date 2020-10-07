@@ -15,10 +15,6 @@ mygame:
   clamavHost: clamav
   clamavPort: '"3310"'
   timezone: UTC
-  awsKey: AKIAWV72ZDUVBRW3HFSF
-  awsSecret: 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
-  googleID: 377601093294-tptd2pbjs3me7k4r8d5543ietlmmubc1.apps.googleusercontent.com
-  googleSecret: XkHa7E6yTpBmdqnhuxu8mZuj
 
 image:
   repository: myg2020/myg
