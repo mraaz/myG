@@ -22,7 +22,6 @@ mygame:
   awsSecret: 8sSmgKGQgR/BCKFCsPJg5lD0vdl0BKxYpo6l9TXX
   googleID: 377601093294-tptd2pbjs3me7k4r8d5543ietlmmubc1.apps.googleusercontent.com
   googleSecret: XkHa7E6yTpBmdqnhuxu8mZuj
-  features_on: PROFILE_V2
 
 image:
   repository: myg2020/myg
