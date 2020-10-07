@@ -50,12 +50,13 @@ export default class MangeSponsors extends React.Component {
 
   createSponsor = async () => {
     const { sponsor = {}, groups_id } = this.props
-    const { linkValue, media_url } = this.state
+    const { linkValue, media_url, aws_key_id = '' } = this.state
     const createSponsorData = await axios.post('/api/sponsor/create', {
       group_id: groups_id,
       type: 2,
       media_url: media_url == '' ? sponsor.media_url : media_url,
       link: linkValue == '' ? sponsor.link : linkValue,
+      aws_key_id: aws_key_id,
     })
     if (createSponsorData) {
       toast.error(<Toast_style text={'Great, Created successfully!'} />)
@@ -86,12 +87,16 @@ export default class MangeSponsors extends React.Component {
   doUploadS3 = async (file, name) => {
     this.setState({ uploading: true })
     try {
-      const post = await Upload_to_S3(file, name, 0, null)
-      this.setState({
-        media_url: [post.data.Location],
-        file_keys: post.data.Key,
-        aws_key_id: [post.data.aws_key_id],
-      })
+      if (file.size > 10240) {
+        const post = await Upload_to_S3(file, name, 0, null)
+        this.setState({
+          media_url: [post.data.Location],
+          file_keys: post.data.Key,
+          aws_key_id: [post.data.aws_key_id],
+        })
+      } else {
+        toast.error(<Toast_style text={'Opps, file size can not be excced more than 10MB '} />)
+      }
     } catch (error) {
       toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
     }

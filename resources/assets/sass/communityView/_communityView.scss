@@ -15,6 +15,7 @@
       left: 5px;
       cursor: pointer;
       box-shadow: 1px 2px 5px #e5c745;
+      display: none;
     }
     .featuredImageInput {
       display: none;
@@ -33,6 +34,11 @@
         img {
           width: 2.2em;
         }
+      }
+    }
+    &:hover {
+      .addCoverImage__button {
+        display: block;
       }
     }
     .featuredImage {
@@ -242,6 +248,15 @@
         .GroupMember_list {
           display: inline-flex;
           flex-wrap: wrap;
+          width: 100%;
+          .noGroupFound {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            font-size: 24px;
+            color: #fff;
+            font-weight: 700;
+          }
           .GroupMember__card {
             width: 174px;
             height: 230px;
