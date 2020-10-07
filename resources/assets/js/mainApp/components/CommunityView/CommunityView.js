@@ -28,7 +28,7 @@ const CommunityView = (props) => {
 
       if (Object.keys(getOne).length == 0) {
         toast.error(<Toast_style text={`Sorry mate, can't find that`} />)
-        window.location.href = '/?at=communities'
+        props.routeProps.history.push('/?at=communities')
       }
 
       document.title = 'myG - ' + getOne.name
