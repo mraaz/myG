@@ -38,8 +38,9 @@ const CoverImage = (props) => {
     }
   }
   const handleFollowClick = async (id) => {
-    const { user_id, following } = props
-    if (following == 'Unfollow') {
+    const { user_id } = props
+    const f = following == '' ? (props.following == true ? 'Unfollow' : 'Follow') : following
+    if (f == 'Unfollow') {
       const data = await axios.post(`/api/followers/${user_id}/delete_group`, {
         group_id: id,
       })
@@ -75,14 +76,6 @@ const CoverImage = (props) => {
     }
   }
 
-  useEffect(() => {
-    if (following == '') {
-      setFollowing(props.following == true ? 'Unfolllow' : 'Follow')
-    }
-
-    return () => {}
-  })
-
   return (
     <div className='coverImage__container'>
       <img onError={addDefaultSrc} src={coverImage == '' ? props.group_img : coverImage} className='featuredImage' />
@@ -117,7 +110,7 @@ const CoverImage = (props) => {
                   </div>
                 )}
                 <div className='dropdown__option' onClick={(e) => handleFollowClick(props.id)}>
-                  {following || (props.following == 'true' ? 'Unfolllow' : 'Follow')}
+                  {following || (props.following == true ? 'Unfollow' : 'Follow')}
                 </div>
               </div>
             )}

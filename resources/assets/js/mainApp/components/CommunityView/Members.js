@@ -257,6 +257,7 @@ export default class Members extends React.Component {
               </div>
             )
           })}
+        {group_members.length == 0 && <div className='noGroupFound'>No records found</div>}
       </div>
     )
   }
