@@ -22,13 +22,14 @@ mygame:
   awsSecret: 8sSmgKGQgR/BCKFCsPJg5lD0vdl0BKxYpo6l9TXX
   googleID: 377601093294-tptd2pbjs3me7k4r8d5543ietlmmubc1.apps.googleusercontent.com
   googleSecret: XkHa7E6yTpBmdqnhuxu8mZuj
+  features_on: PROFILE_V2
 
 image:
   repository: myg2020/myg
-  tag: latest 
+  tag: latest
   pullPolicy: Always
 
-imagePullSecrets: 
+imagePullSecrets:
 - name: mygame-dockerhub
 nameOverride: ""
 fullnameOverride: ""
@@ -57,11 +58,11 @@ service:
   port: 3333
   targetPort: 3333
   annotations: {}
-  
+
 
 ingress:
   enabled: true
-  annotations: 
+  annotations:
     kubernetes.io/ingress.class: nginx
     #ingress.kubernetes.io/force-ssl-redirect: "true"
     cert-manager.io/cluster-issuer: myg
