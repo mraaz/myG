@@ -6,22 +6,15 @@ replicaCount: 3
 
 mygame:
   databaseName: mygame
-  dataseUser: root
-  databasePassword: rootpass
   databaseHost: galera-mariadb-galera
   databasePort: 3306
   nodeEnvironment: development
-  appKey: "tEr8zSnVwS5KB0QtExWxRSXsUu6OTDim"
   redisHost: "redis-redis-cluster-headless"
   redisPort: '"6379"'
   natsServer: "nats://nats-client:4222"
   clamavHost: clamav
   clamavPort: '"3310"'
   timezone: UTC
-  awsKey: AKIAWV72ZDUVBRW3HFSF
-  awsSecret: 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
-  googleID: 377601093294-tptd2pbjs3me7k4r8d5543ietlmmubc1.apps.googleusercontent.com
-  googleSecret: XkHa7E6yTpBmdqnhuxu8mZuj
   features_on: PROFILE_V2
 
 image:
