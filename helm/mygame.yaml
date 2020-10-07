@@ -6,12 +6,9 @@ replicaCount: 3
 
 mygame:
   databaseName: mygame
-  dataseUser: root
-  databasePassword: rootpass
   databaseHost: galera-mariadb-galera
   databasePort: 3306
   nodeEnvironment: development
-  appKey: "tEr8zSnVwS5KB0QtExWxRSXsUu6OTDim"
   redisHost: "redis-redis-cluster-headless"
   redisPort: '"6379"'
   natsServer: "nats://nats-client:4222"
