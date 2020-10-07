@@ -4,13 +4,13 @@ pipeline {
         REGISTRY_CREDENTIAL = 'docker-hub-credential'
         GITHUB = 'git@github.com:/mraaz/myG'
         GITHUB_CREDENTIAL = 'git-private-key'
-        DB_USER = 'db_user'
-        DB_PASS = 'db_pass'
-        APP_KEY = 'appkey'
-        AWS_KEY = 'aws_key'
-        AWS_SECRET = 'aws_secret'
-        GOOGLE_ID = 'google_id'
-        GOOGLE_SECRET = 'google_secret'
+        DB_USER = credentials('db_user')
+        DB_PASS = credentials('db_pass')
+        APP_KEY = credentials('appkey')
+        AWS_KEY = credentials('aws_key')
+        AWS_SECRET = credentials('aws_secret')
+        GOOGLE_ID = credentials('google_id')
+        GOOGLE_SECRET = credentials('google_secret')
         TAG = sh(script: "echo `date +'%d.%m.%Y..%H.%M.%S'`", returnStdout: true).trim()
     }
     agent {
