@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Upload_to_S3 } from '../AWS_utilities'
 import axios from 'axios'
 import { toast } from 'react-toastify'
@@ -24,6 +24,7 @@ const CoverImage = (props) => {
   const [joinlabel, setJoinlabel] = useState(labelMap[props.current_user_permission])
   const [toggle, setToggleOption] = useState(false)
   const [coverImage, setCoverImage] = useState(props.group_img || '')
+  const [following, setFollowing] = useState('')
 
   const handleChange = async (event) => {
     if (props.current_user_permission == 0) {
@@ -31,19 +32,27 @@ const CoverImage = (props) => {
       if (file.size > 10240) {
         const post = await Upload_to_S3(file, file.name, 4, props.id)
         setCoverImage(post.data.Location)
+      } else {
+        toast.error(<Toast_style text={'Opps, file size can not be excced more than 10MB '} />)
       }
     }
   }
   const handleFollowClick = async (id) => {
     const { user_id, following } = props
-    if (following) {
+    if (following == 'Unfollow') {
       const data = await axios.post(`/api/followers/${user_id}/delete_group`, {
         group_id: id,
       })
+      if (data) {
+        setFollowing('Follow')
+      }
     } else {
       const data = await axios.post('/api/followers/create', {
         group_id: id,
       })
+      if (data) {
+        setFollowing('Unfollow')
+      }
     }
   }
   const handleLeaveClick = async (id) => {
@@ -52,7 +61,7 @@ const CoverImage = (props) => {
       props.routeProps.history.push('/?at=communities')
     }
   }
-  const handleJoinButton = async () => {
+  const handleJoinButton = async (id) => {
     if (props.current_user_permission == -1) {
       const data = await axios.post('/api/usergroup/create', {
         group_id: id,
@@ -66,6 +75,14 @@ const CoverImage = (props) => {
     }
   }
 
+  useEffect(() => {
+    if (following == '') {
+      setFollowing(props.following == true ? 'Unfolllow' : 'Follow')
+    }
+
+    return () => {}
+  })
+
   return (
     <div className='coverImage__container'>
       <img onError={addDefaultSrc} src={coverImage == '' ? props.group_img : coverImage} className='featuredImage' />
@@ -77,9 +94,11 @@ const CoverImage = (props) => {
         className='featuredImageInput'
         onChange={(event) => handleChange(event)}
       />
-      <div className='addCoverImage__button' onClick={(e) => inputEl.current.click()}>
-        Add/Edit Cover Image
-      </div>
+      {[0, 1].includes(props.current_user_permission) && (
+        <div className='addCoverImage__button' onClick={(e) => inputEl.current.click()}>
+          Add/Edit Cover Image
+        </div>
+      )}
 
       <div className='analyticsBox__container'>
         <AnalyticsBox />
@@ -87,7 +106,7 @@ const CoverImage = (props) => {
       <div className='community__option'>
         <div className='name'>{props.name}</div>
         <div className='option'>
-          <button type='button' className='btnWarning btn__option' onClick={(e) => handleJoinButton()}>
+          <button type='button' className='btnWarning btn__option' onClick={(e) => handleJoinButton(props.id)}>
             <span>{joinlabel || labelMap[props.current_user_permission]}</span>
             <img src='https://mygame-media.s3.amazonaws.com/platform_images/View+Game/Down+Carrot_black.svg'></img>
             {toggle && labelMap[props.current_user_permission] == 'Joined' && (
@@ -98,7 +117,7 @@ const CoverImage = (props) => {
                   </div>
                 )}
                 <div className='dropdown__option' onClick={(e) => handleFollowClick(props.id)}>
-                  {props.following == true ? 'Unfolllow' : 'Follow'}
+                  {following || (props.following == 'true' ? 'Unfolllow' : 'Follow')}
                 </div>
               </div>
             )}

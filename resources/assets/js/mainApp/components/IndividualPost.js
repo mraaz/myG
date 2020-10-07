@@ -622,12 +622,12 @@ export default class IndividualPost extends Component {
                   </i>
                   <div className={`post-dropdown ${showPostExtraOption == true ? 'active' : ''}`}>
                     <nav>
-                      {[0, 1, 2].includes(current_user_permission) && featured == 1 && (
+                      {[0, 1, 2].includes(current_user_permission) && featured == 0 && (
                         <div className='option' onClick={(e) => this.handlefeaturedClick(1, post.id)}>
                           Featured
                         </div>
                       )}
-                      {[0, 1, 2].includes(current_user_permission) && featured == 0 && (
+                      {[0, 1, 2].includes(current_user_permission) && featured == 1 && (
                         <div className='option' onClick={(e) => this.handlefeaturedClick(0, post.id)}>
                           Unfeatured
                         </div>

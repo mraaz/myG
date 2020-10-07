@@ -26,6 +26,10 @@ const CommunityView = (props) => {
         data: { getOne = {} },
       } = await axios.get(`/api/groups/getGroupDetails/${groupName}`)
 
+      if (Object.keys(getOne).length == 0) {
+        window.location.href = '/?at=communities'
+      }
+
       document.title = 'myG - ' + getOne.name
       setCommunityDetails({ ...getOne })
     }
