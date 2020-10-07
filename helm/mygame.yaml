@@ -15,7 +15,7 @@ mygame:
   clamavHost: clamav
   clamavPort: '"3310"'
   timezone: UTC
-  features_on: profile_v2
+  features_on: PROFILE_V2
 
 image:
   repository: myg2020/myg
