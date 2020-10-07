@@ -64,7 +64,7 @@ spec:
               value: http://${HOST}:${PORT}
             - name: HOST
               value: "0.0.0.0"
-            - name: PORT 
+            - name: PORT
               value: "3333"
             - name: REDIS_ENABLED
               value: "true"
@@ -84,8 +84,10 @@ spec:
               value: {{ .Values.mygame.clamavPort }}
             - name: TZ
               value: {{ .Values.mygame.timezone }}
+            - name: FEATURES_ON
+              value: {{ .Values.mygame.features_on }}
             - name: AWS_SECRET_ACCESS_KEY
-              valueFrom: 
+              valueFrom:
                 secretKeyRef:
                   name:  {{ template "mygame.fullname" . }}
                   key: awssecret
@@ -104,7 +106,7 @@ spec:
                 secretKeyRef:
                   name:  {{ template "mygame.fullname" . }}
                   key: googlesecret
-          ports: 
+          ports:
             - containerPort: 3333
               protocol: TCP
           resources:

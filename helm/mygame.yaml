@@ -9,12 +9,13 @@ mygame:
   databaseHost: galera-mariadb-galera
   databasePort: 3306
   nodeEnvironment: development
-  redisHost: "redis-redis-cluster-headless"
+  redisHost: 'redis-redis-cluster-headless'
   redisPort: '"6379"'
-  natsServer: "nats://nats-client:4222"
+  natsServer: 'nats://nats-client:4222'
   clamavHost: clamav
   clamavPort: '"3310"'
   timezone: UTC
+  features_on: profile_v2
 
 image:
   repository: myg2020/myg
@@ -22,9 +23,9 @@ image:
   pullPolicy: Always
 
 imagePullSecrets:
-- name: mygame-dockerhub
-nameOverride: ""
-fullnameOverride: ""
+  - name: mygame-dockerhub
+nameOverride: ''
+fullnameOverride: ''
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -33,10 +34,12 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -51,7 +54,6 @@ service:
   targetPort: 3333
   annotations: {}
 
-
 ingress:
   enabled: true
   annotations:
@@ -65,7 +67,7 @@ ingress:
   tls:
     - secretName: myg.gg
       hosts:
-      - myg.gg
+        - myg.gg
 
 ingress2:
   enabled: true
@@ -80,7 +82,7 @@ ingress2:
   tls:
     - secretName: www.myg.gg
       hosts:
-      - www.myg.gg
+        - www.myg.gg
 
 tls:
   enabled: false
@@ -88,7 +90,8 @@ tls:
   fullchain: |-
   privkey: |-
 
-resources: {}
+resources:
+  {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
