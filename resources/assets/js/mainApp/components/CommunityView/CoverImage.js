@@ -87,11 +87,11 @@ const CoverImage = (props) => {
         className='featuredImageInput'
         onChange={(event) => handleChange(event)}
       />
-      {[0, 1].includes(props.current_user_permission) && (
-        <div className='addCoverImage__button' onClick={(e) => inputEl.current.click()}>
-          Add/Edit Cover Image
-        </div>
-      )}
+      {/* {[0, 1].includes(props.current_user_permission) && ( */}
+      <div className='addCoverImage__button' onClick={(e) => inputEl.current.click()}>
+        Add/Edit Cover Image
+      </div>
+      {/* )} */}
 
       <div className='analyticsBox__container'>
         <AnalyticsBox />
