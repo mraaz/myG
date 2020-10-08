@@ -227,7 +227,6 @@ class ApiController {
 
   async update_aws_keys_entry({ auth }, aws_key_id, type, id) {
     if (auth.user) {
-      console.log('number 8')
       try {
         let post_id = null,
           group_id = null,
@@ -262,7 +261,7 @@ class ApiController {
           default:
             return
         }
-        console.log('doing maginc')
+
         let addAwsKey = await AwsKey.query()
           .where({ id: aws_key_id })
           .update({
@@ -278,34 +277,50 @@ class ApiController {
 
         return true
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     }
   }
 
   async deleteFile({ auth, request, response }) {
     if (auth.user) {
-      let key = request.input('key')
+      try {
+        let key = request.input('key')
 
-      var delete_aws_entry = await Database.table('aws_keys')
-        .where({
-          id: request.input('aws_key_id'),
-        })
-        .delete()
+        var delete_aws_entry = await Database.table('aws_keys')
+          .where({
+            id: request.input('aws_key_id'),
+          })
+          .delete()
 
-      s3.deleteObject(
-        {
-          Bucket: S3_BUCKET_DELETE,
-          Key: key,
-        },
-        function(err, data) {
-          if (data) {
-            return response.status(200).json({ success: true })
-          } else {
-            return response.status(400).send(err)
+        s3.deleteObject(
+          {
+            Bucket: S3_BUCKET_DELETE,
+            Key: key,
+          },
+          function(err, data) {
+            if (data) {
+              return response.status(200).json({ success: true })
+            } else {
+              return response.status(400).send(err)
+            }
           }
-        }
-      )
+        )
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
+      }
     }
   }
 

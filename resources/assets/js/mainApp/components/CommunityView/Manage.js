@@ -25,26 +25,38 @@ export default class Members extends React.Component {
   }
   handleCommunityNameSave = async () => {
     const { communityName } = this.state
+    if (communityName.trim() == this.props.routeProps.match.params.name.trim()) {
+      return
+    }
     if (communityName && communityName.length > 3) {
       const change_group = axios.post('/api/groups/update_name', {
         group_id: this.props.group_id,
-        name: communityName,
+        name: communityName.trim(),
       })
       if (change_group) {
-        toast.success(<Toast_style text={'Yeah, community name has successfully saved.'} />)
+        toast.success(<Toast_style text={'Nice! Community name has successfully saved.'} />)
+        this.props.routeProps.match.params.name = communityName
       }
     } else {
-      toast.error(<Toast_style text={'Opps, Minimum 3 char required.'} />)
+      toast.error(<Toast_style text={'Opps, minimum four characters required.'} />)
     }
   }
 
   handleNameblur = async () => {
     const { communityName } = this.state
+    if (communityName.trim() == this.props.routeProps.match.params.name.trim()) {
+      return
+    }
+    if (communityName && communityName.trim().length < 4) {
+      return
+    }
     const getgroup_name = await axios.get(`/api/groups/groupName/${communityName.trim()}`)
-    if (getgroup_name) {
+
+    if (getgroup_name.data) {
       toast.error(<Toast_style text={'Hmmmm, be unique community name must'} />)
-    } else {
       this.setState({ isunique: true })
+    } else {
+      this.setState({ isunique: false })
     }
   }
   handlePrivacyChange = (e, privacy) => {

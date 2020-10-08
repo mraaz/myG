@@ -32,6 +32,8 @@ spec:
           env:
             - name: DB_CONNECTION
               value: mysql
+            - name: ORG_URL
+              value: {{ .Values.mygame.orgUrl }}
             - name: DB_DATABASE
               value: {{ .Values.mygame.databaseName }}
             - name: DB_USER
@@ -64,7 +66,7 @@ spec:
               value: http://${HOST}:${PORT}
             - name: HOST
               value: "0.0.0.0"
-            - name: PORT 
+            - name: PORT
               value: "3333"
             - name: REDIS_ENABLED
               value: "true"
@@ -84,8 +86,34 @@ spec:
               value: {{ .Values.mygame.clamavPort }}
             - name: TZ
               value: {{ .Values.mygame.timezone }}
+            - name: FEATURES_ON
+              value: {{ .Values.mygame.features_on }}
+            - name: MAIL_CONNECTION
+              value: smtp
+            - name: SMTP_HOST
+              value: {{ .Values.mygame.smtpHost }}
+            - name: MAIL_PORT
+              value: {{ .Values.mygame.smtpPort | quote }}
+            - name: SMTP_FROM_ADDRESS
+              value: {{ .Values.mygame.smtpFromAddress }}
+            - name: ELASTICSEARCH
+              value: {{ .Values.mygame.elasticSearch }}
+            - name: ELASTICSEARCH2
+              value: {{ .Values.mygame.elasticSearch2 }}
+            - name: REACT_APP_API_KEY
+              value: your_api_key
+            - name: FB_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name:  {{ template "mygame.fullname" . }}
+                  key: facebookid
+            - name: FB_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name:  {{ template "mygame.fullname" . }}
+                  key: facebooksecret 
             - name: AWS_SECRET_ACCESS_KEY
-              valueFrom: 
+              valueFrom:
                 secretKeyRef:
                   name:  {{ template "mygame.fullname" . }}
                   key: awssecret
@@ -94,6 +122,8 @@ spec:
                 secretKeyRef:
                   name:  {{ template "mygame.fullname" . }}
                   key: awskey
+            - name: AWS_SES_REGION
+              value: {{ .Values.mygame.awsSesRegion }}
             - name: GOOGLE_CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -104,7 +134,17 @@ spec:
                 secretKeyRef:
                   name:  {{ template "mygame.fullname" . }}
                   key: googlesecret
-          ports: 
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name:  {{ template "mygame.fullname" . }}
+                  key: secretkey
+            - name: SITE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name:  {{ template "mygame.fullname" . }}
+                  key: sitekey
+          ports:
             - containerPort: 3333
               protocol: TCP
           resources:

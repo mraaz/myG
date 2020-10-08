@@ -2,19 +2,36 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 2
+replicaCount: 3
 
 mygame:
   databaseName: mygame
   dataseUser: root
-  databasePassword: rootpass
+  databasePassword: password
   databaseHost: proxysql-proxysql-cluste
   databasePort: 6033
   nodeEnvironment: development
-  appKey: "tEr8zSnVwS5KB0QtExWxRSXsUu6OTDim"
+  appKey: ""
+  orgUrl: https://myg.gg
+  smtpHost: smtp.gmail.com
+  smtpPort: 587
+  smtpFromAddress: ""
+  nodeEnvironment: development
+  redisHost: 'redis-redis-cluster-headless'
+  redisPort: '"6379"'
+  natsServer: 'nats://nats-client:4222'
+  clamavHost: clamav
+  clamavPort: '"3310"'
+  timezone: UTC
+  features_on: PROFILE_V2
+  awsSesRegion: us-east-1
+  elasticSearch2: https://search-myg-w3ljhffsecbtpleuia2d4w2v3q.ap-southeast-2.es.amazonaws.com
+  elasticSearch: https://search-mygdev-rrk3x3fxnryjzqhfe3jeqrz6oe.us-east-1.es.amazonaws.com
+
+
 
 image:
-  repository: 459550563626.dkr.ecr.ap-southeast-2.amazonaws.com/azhang/myg
+  repository: ""
   tag: latest
   pullPolicy: IfNotPresent
 
