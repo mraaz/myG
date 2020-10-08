@@ -41,10 +41,11 @@ const CoverImage = (props) => {
     const { user_id } = props
     const f = following == '' ? (props.following == true ? 'Unfollow' : 'Follow') : following
     if (f == 'Unfollow') {
-      const data = await axios.post(`/api/followers/${user_id}/delete_group`, {
+      const data = await axios.delete(`/api/followers/${user_id}/delete_group`, {
         group_id: id,
       })
       if (data) {
+        toast.success(<Toast_style text={`Cheers mate you're no longer following`} />)
         setFollowing('Follow')
       }
     } else {
@@ -52,13 +53,15 @@ const CoverImage = (props) => {
         group_id: id,
       })
       if (data) {
+        toast.success(<Toast_style text={`Cheers mate you're following`} />)
         setFollowing('Unfollow')
       }
     }
   }
-  const handleLeaveClick = async (id) => {
-    const data = await axios.delete(`/api/usergroup/${id}`)
+  const handleLeaveClick = async (id, user_id) => {
+    const data = await axios.delete(`/api/usergroup/delete_member/${id}/${user_id}`)
     if (data) {
+      toast.success(<Toast_style text={`you are now no longer part of this community.`} />)
       props.routeProps.history.push('/?at=communities')
     }
   }
@@ -87,11 +90,11 @@ const CoverImage = (props) => {
         className='featuredImageInput'
         onChange={(event) => handleChange(event)}
       />
-      {/* {[0, 1].includes(props.current_user_permission) && ( */}
-      <div className='addCoverImage__button' onClick={(e) => inputEl.current.click()}>
-        Add/Edit Cover Image
-      </div>
-      {/* )} */}
+      {[0, 1].includes(props.current_user_permission) && (
+        <div className='addCoverImage__button' onClick={(e) => inputEl.current.click()}>
+          Add/Edit Cover Image
+        </div>
+      )}
 
       <div className='analyticsBox__container'>
         <AnalyticsBox />
@@ -105,7 +108,7 @@ const CoverImage = (props) => {
             {toggle && labelMap[props.current_user_permission] == 'Joined' && (
               <div className='btn__option__dropdown'>
                 {props.current_user_permission != 0 && (
-                  <div className='dropdown__option' onClick={(e) => handleLeaveClick(props.id)}>
+                  <div className='dropdown__option' onClick={(e) => handleLeaveClick(props.id, props.user_id)}>
                     Leave
                   </div>
                 )}

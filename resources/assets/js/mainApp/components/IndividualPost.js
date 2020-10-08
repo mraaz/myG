@@ -712,15 +712,28 @@ export default class IndividualPost extends Component {
                   </div>
                 )}
                 <div className={`post-dropdown ${this.state.dropdown == true ? 'active' : ''}`}>
-                  <nav>
-                    <div className='edit' onClick={this.clickedEdit}>
-                      Edit &nbsp;
-                    </div>
-                    <div className='delete' onClick={() => this.showAlert()}>
-                      Delete
-                    </div>
-                    &nbsp;
-                  </nav>
+                  {[0, 1].includes(current_user_permission) && showPostExtraOption && (
+                    <nav>
+                      <div className='edit' onClick={this.clickedEdit}>
+                        Edit &nbsp;
+                      </div>
+                      <div className='delete' onClick={() => this.showAlert()}>
+                        Delete
+                      </div>
+                      &nbsp;
+                    </nav>
+                  )}
+                  {showPostExtraOption == false && (
+                    <nav>
+                      <div className='edit' onClick={this.clickedEdit}>
+                        Edit &nbsp;
+                      </div>
+                      <div className='delete' onClick={() => this.showAlert()}>
+                        Delete
+                      </div>
+                      &nbsp;
+                    </nav>
+                  )}
                 </div>
               </div>
             </div>
