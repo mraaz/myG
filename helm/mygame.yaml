@@ -8,6 +8,10 @@ mygame:
   databaseName: mygame
   databaseHost: galera-mariadb-galera
   databasePort: 3306
+  orgUrl: https://myg.gg
+  smtpHost: smtp.gmail.com
+  smtpPort: 587
+  smtpFromAddress: levelup@myg.gg
   nodeEnvironment: development
   redisHost: 'redis-redis-cluster-headless'
   redisPort: '"6379"'
@@ -16,6 +20,10 @@ mygame:
   clamavPort: '"3310"'
   timezone: UTC
   features_on: PROFILE_V2
+  awsSesRegion: us-east-1
+  elasticSearch2: https://search-myg-w3ljhffsecbtpleuia2d4w2v3q.ap-southeast-2.es.amazonaws.com
+  elasticSearch: https://search-mygdev-rrk3x3fxnryjzqhfe3jeqrz6oe.us-east-1.es.amazonaws.com
+
 
 image:
   repository: myg2020/myg

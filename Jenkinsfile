@@ -11,6 +11,11 @@ pipeline {
         AWS_SECRET = credentials('aws_secret')
         GOOGLE_ID = credentials('google_id')
         GOOGLE_SECRET = credentials('google_secret')
+        FACEBOOK_ID = credentials('facebook_id')
+        FACEBOOK_SECRET = credentials('facebook_secret')
+        MIX_GOOGLE_MAPS_KEY = credentials('mix_google_maps_key')
+        SECRET_KEY = credentials('secret_key')
+        SITE_KEY = credentials('site_key')
         TAG = sh(script: "echo `date +'%d.%m.%Y..%H.%M.%S'`", returnStdout: true).trim()
     }
     agent {
