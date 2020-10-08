@@ -29,7 +29,7 @@ class PostController {
             content: request.input('content'),
             user_id: auth.user.id,
             type: 'text',
-            group_id: request.input('groups_id'),
+            group_id: request.input('group_id'),
             visibility: request.input('visibility'),
             media_url: request.input('media_url'),
           })

@@ -68,7 +68,7 @@ const CoverImage = (props) => {
         group_id: id,
       })
       if (data) {
-        toast.success(<Toast_style text={'Community request sent, let waiting for an approval.'} />)
+        toast.success(<Toast_style text={'Join request sent. Let the waiting game begin'} />)
         setJoinlabel('Pending')
       }
     } else {

@@ -150,15 +150,15 @@ export default class Members extends React.Component {
         userExpelAlert: '',
       })
     } else {
-      const data = await axios.delete(`/api/usergroup/delete_member/:${member.group_id}/:${member.user_id}`)
-      if (data) {
+      const data = await axios.delete(`/api/usergroup/delete_member/${member.group_id}/${member.user_id}`)
+      if (data && data.data) {
         const { group_members } = this.state
         const filterMembers = group_members.filter((members) => member.user_id != members.user_id)
         this.setState({ group_members: filterMembers, userExpelAlert: '' }, () => {
           toast.success(<Toast_style text={`Yeah! User has been Expeled`} />)
         })
       } else {
-        toast.error(<Toast_style text={`Something went wrong with expel user.`} />)
+        toast.error(<Toast_style text={`Nope, nope and nope, that did not work.`} />)
         this.setState({
           userExpelAlert: '',
         })
@@ -172,16 +172,17 @@ export default class Members extends React.Component {
       const { current_user_permission, group_id } = this.props
       const { group_members } = this.state
 
-      if (current_user_permission < member.permission_level) {
-        const promoteCall = await axios.get(`/api/usergroup/promote_member_cycle/:${group_id}/:${user_id}`)
-        if (promoteCall) {
+      if (current_user_permission <= member.permission_level) {
+        const promoteCall = await axios.get(`/api/usergroup/promote_member_cycle/${group_id}/${member.id}`)
+
+        if (promoteCall && promoteCall.data != false) {
           const group_membersMap = group_members.map((members) => {
             const { permission_level } = members
             if (members.user_id == user_id) {
-              toast.success(<Toast_style text={`All Done! Permission is now: ${PermissionMap[permission_level]}`} />)
+              toast.success(<Toast_style text={`All Done! Permission is now: ${PermissionMap[promoteCall.data]}`} />)
               return {
                 ...members,
-                permission_level: permission_level + 1,
+                permission_level: promoteCall.data,
               }
             } else {
               return {
@@ -192,10 +193,10 @@ export default class Members extends React.Component {
 
           this.setState({ group_members: group_membersMap })
         } else {
-          toast.error(<Toast_style text={'Whoops unable to demote/promote'} />)
+          toast.error(<Toast_style text={'Nope, nope and nope, unable to demote/promote'} />)
         }
       } else {
-        toast.error(<Toast_style text={'Whoops unable to demote/promote'} />)
+        toast.error(<Toast_style text={'Nope, nope and nope, unable to demote/promote'} />)
       }
     } catch (error) {
       console.log('error   ', error)

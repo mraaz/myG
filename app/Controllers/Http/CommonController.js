@@ -17,6 +17,7 @@ class CommonController {
         user_id: auth.user.id,
         group_id: group_id,
       })
+
       if (permission_query_current_user.length > 0) {
         current_user_permission = permission_query_current_user[0].permission_level
       } else {
@@ -24,6 +25,7 @@ class CommonController {
           user_id: auth.user.id,
           id: group_id,
         })
+
         if (owner_query.length > 0) {
           current_user_permission = 0
         }
