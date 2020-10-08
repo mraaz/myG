@@ -36,6 +36,7 @@ export default class Members extends React.Component {
       if (change_group) {
         toast.success(<Toast_style text={'Nice! Community name has successfully saved.'} />)
         this.props.routeProps.match.params.name = communityName
+        this.props.routeProps.history.push(`/community/${communityName}`)
       }
     } else {
       toast.error(<Toast_style text={'Opps, minimum four characters required.'} />)
