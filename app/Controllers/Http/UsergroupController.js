@@ -387,19 +387,19 @@ class UsergroupController {
         }
 
         if (current_user_permission == 3 || current_user_permission == 42 || current_user_permission == -1) {
-          return
+          return false
         }
 
         const permission_query_to_be_deleted_user = await Database.from('usergroups').where({ id: request.params.usergrp_id })
         if (permission_query_to_be_deleted_user.length > 0) {
           user_to_be_deleted_permission = permission_query_to_be_deleted_user[0].permission_level
         } else {
-          return
+          return false
         }
 
         if (current_user_permission == 2) {
           if (user_to_be_deleted_permission == 1) {
-            return
+            return false
           }
         }
 
@@ -418,7 +418,7 @@ class UsergroupController {
         let userStatController = new UserStatTransactionController()
         userStatController.update_total_number_of(permission_query_to_be_deleted_user[0].user_id, 'total_number_of_communities')
 
-        return 'Removed successfully'
+        return true
       } catch (error) {
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
@@ -539,6 +539,8 @@ class UsergroupController {
           context: __filename,
           message: (error && error.message) || error,
         })
+
+        return false
       }
     }
   }
@@ -598,6 +600,7 @@ class UsergroupController {
     }
   }
 
+  //Group Owner will NOT show up in search. It will always be the 1st card on the initial list
   async usergroupSearchResults({ auth, request, response }) {
     try {
       const all_group_members = await Database.from('usergroups')

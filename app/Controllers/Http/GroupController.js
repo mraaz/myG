@@ -74,11 +74,10 @@ class GroupController {
         const newGroup = await Group.create({
           game_names_id: gameNameID,
           user_id: auth.user.id,
-          name: request.input('name'),
+          name: request.input('name').trim(),
           group_img: request.input('group_img') ? request.input('group_img') : null,
           type: request.input('type'),
           all_accept: request.input('all_accept'),
-          game_names_id: request.input('game_names_id'),
           grp_description: request.input('grp_description'),
         })
 
@@ -549,7 +548,7 @@ class GroupController {
         }
         const update_img = await Group.query()
           .where({ id: request.input('group_id') })
-          .update({ name: request.input('name') })
+          .update({ name: request.input('name').trim() })
 
         return 'Saved successfully'
       } catch (error) {
@@ -598,11 +597,14 @@ class GroupController {
   }
 
   async groupName({ auth, request, response }) {
+    console.log('asdfd')
     try {
       const groupNameResults = await Database.from('groups')
         .select('id')
         .where('name', '=', request.params.group_name)
         .first()
+
+      console.log(groupNameResults)
 
       if (groupNameResults == undefined) {
         return false
