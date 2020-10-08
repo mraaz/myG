@@ -245,10 +245,12 @@ export default class Members extends React.Component {
                 </div>
                 <div className='GroupMember__action'>
                   <Link to={`/profile/${member.alias}`}>
-                    <button type='button View'>View</button>
+                    <button type='button' className='View'>
+                      View
+                    </button>
                   </Link>
                   {[0, 1].includes(current_user_permission) && (
-                    <button type='button Expel' onClick={(e) => this.showExpelAlert(member)}>
+                    <button type='button' className='Expel' onClick={(e) => this.showExpelAlert(member)}>
                       {' '}
                       Expel
                     </button>
