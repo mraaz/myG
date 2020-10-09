@@ -143,6 +143,8 @@ const CommunityView = (props) => {
           activeTab={activeModalTab}
           handleModalStatus={handleModalStatus}
           group_id={communityDetails.id}
+          community_type={communityDetails.type}
+          community_Membership_Approval={communityDetails.all_accept}
         />
       ) : (
         ''
