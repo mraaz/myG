@@ -10,13 +10,19 @@ export default class Members extends React.Component {
       communityName: '',
       isunique: false,
       saveButtonDisabled: true,
+      privacy: 1,
+      approval: 'true',
     }
   }
 
   componentDidMount() {
+    const { routeProps = {}, community_Membership_Approval, community_type } = this.props
     const { match } = this.props.routeProps
-    this.setState({ communityName: match.params.name })
-    console.log(this.props)
+    this.setState({
+      communityName: match.params.name,
+      privacy: community_type,
+      approval: community_Membership_Approval == 1 ? 'true' : 'false',
+    })
   }
   handleCommunityNameChange = (e) => {
     const communityName = e.target.value
@@ -109,9 +115,9 @@ export default class Members extends React.Component {
                 <input
                   type='checkbox'
                   name='public'
-                  checked={this.state.privacy == 'public'}
-                  onChange={(e) => this.handlePrivacyChange(e, 'public')}
-                  value={'public'}
+                  checked={this.state.privacy == '1'}
+                  onChange={(e) => this.handlePrivacyChange(e, '1')}
+                  value={'1'}
                 />
                 <span className='checkmark'></span>
               </label>
@@ -122,14 +128,14 @@ export default class Members extends React.Component {
                 <input
                   type='checkbox'
                   name='closed'
-                  checked={this.state.privacy == 'closed'}
-                  onChange={(e) => this.handlePrivacyChange(e, 'closed')}
-                  value={'closed'}
+                  checked={this.state.privacy == '2'}
+                  onChange={(e) => this.handlePrivacyChange(e, '2')}
+                  value={'2'}
                 />
                 <span className='checkmark'></span>
               </label>
             </div>
-            <div>
+            {/* <div>
               <label className='container'>
                 Secret
                 <input
@@ -141,10 +147,10 @@ export default class Members extends React.Component {
                 />
                 <span className='checkmark'></span>
               </label>
-            </div>
+            </div> */}
           </div>
         </div>
-        <div className='group__privacy row'>
+        {/* <div className='group__privacy row'>
           <div className='label col-sm-4'>Post Permissions</div>
           <div className='options col-sm-8'>
             <div>
@@ -155,7 +161,7 @@ export default class Members extends React.Component {
                   name='Everyone'
                   checked={this.state.permissions == 'everyone'}
                   onChange={(e) => this.handlePermissionsChange(e, 'everyone')}
-                  value={'public'}
+                  value={'everyone'}
                 />
                 <span className='checkmark'></span>
               </label>
@@ -174,7 +180,7 @@ export default class Members extends React.Component {
               </label>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className='group__privacy row'>
           <div className='label col-sm-4'>Membership Approval</div>
           <div className='options col-sm-8'>
@@ -184,14 +190,14 @@ export default class Members extends React.Component {
                 <input
                   type='checkbox'
                   name='Everyone'
-                  checked={this.state.approval == 'everyone'}
-                  onChange={(e) => this.handleApprovalChange(e, 'everyone')}
-                  value={'everyone'}
+                  checked={this.state.approval == 'true'}
+                  onChange={(e) => this.handleApprovalChange(e, 'true')}
+                  value={'true'}
                 />
                 <span className='checkmark'></span>
               </label>
             </div>
-            <div>
+            {/* <div>
               <label className='container'>
                 Members
                 <input
@@ -203,16 +209,16 @@ export default class Members extends React.Component {
                 />
                 <span className='checkmark'></span>
               </label>
-            </div>
+            </div> */}
             <div>
               <label className='container'>
                 Admins
                 <input
                   type='checkbox'
                   name='Admins'
-                  checked={this.state.approval == 'admins'}
-                  onChange={(e) => this.handleApprovalChange(e, 'admins')}
-                  value={'admins'}
+                  checked={this.state.approval == 'false'}
+                  onChange={(e) => this.handleApprovalChange(e, 'false')}
+                  value={'false'}
                 />
                 <span className='checkmark'></span>
               </label>
