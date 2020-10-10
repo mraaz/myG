@@ -16,6 +16,7 @@ export default class Members extends React.Component {
   componentDidMount() {
     const { match } = this.props.routeProps
     this.setState({ communityName: match.params.name })
+    console.log(this.props)
   }
   handleCommunityNameChange = (e) => {
     const communityName = e.target.value

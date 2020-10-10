@@ -597,14 +597,11 @@ class GroupController {
   }
 
   async groupName({ auth, request, response }) {
-    console.log('asdfd')
     try {
       const groupNameResults = await Database.from('groups')
         .select('id')
-        .where('name', '=', request.params.group_name)
+        .where('name', '=', decodeURIComponent(request.params.group_name.trim()))
         .first()
-
-      console.log(groupNameResults)
 
       if (groupNameResults == undefined) {
         return false
