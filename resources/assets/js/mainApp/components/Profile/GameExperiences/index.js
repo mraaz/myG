@@ -5,6 +5,7 @@ import { copyToClipboard } from '../../../../common/clipboard';
 import notifyToast from '../../../../common/toast';
 import { ignoreFunctions } from '../../../../common/render'
 import EditGameExperience from './edit';
+import { showMessengerAlert } from '../../../../common/alert';
 
 export default class GameExperiences extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -123,6 +124,16 @@ export default class GameExperiences extends React.Component {
             <div className="hover-button clickable" onClick={() => this.setState({ selected: id })}>
               {this.state.isSelf ? 'Edit' : 'Show'}
             </div>
+            {this.state.isSelf && (
+              <div className="hover-button clickable" onClick={() => 
+                showMessengerAlert(`Are you sure you want to delete your game experience for ${gameName}?`,
+                () => this.props.deleteExperience(id),
+                null,
+                'Make it so',
+              )}>
+                Delete
+              </div>
+            )}
             {!!this.props.profile.isFriend && !hasCommended && (
               <div className="hover-button clickable" onClick={() => this.props.commendUser(id)}>
                   Commend Me

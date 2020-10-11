@@ -3,7 +3,7 @@ import get from 'lodash.get';
 import { Redirect } from 'react-router'
 import { connect } from 'react-redux'
 import { ignoreFunctions } from '../../../../common/render'
-import { fetchProfileInfoAction, updateProfileInfoAction, updateProfileGameAction, commendUserAction } from '../../../../redux/actions/profileAction';
+import { fetchProfileInfoAction, updateProfileInfoAction, updateProfileGameAction, commendUserAction, deleteExperienceAction } from '../../../../redux/actions/profileAction';
 import Banner from '../Banner';
 import ProfileInfo from '../Info';
 import GameExperiences from '../GameExperiences';
@@ -23,13 +23,17 @@ export class Profile extends React.Component {
     this.props.commendUser(this.props.alias, gameExperienceId);
   }
 
+  deleteExperience = (gameExperienceId) => {
+    this.props.deleteExperience(this.props.alias, gameExperienceId);
+  }
+
   render() {
     if (this.props.profile.error) return <Redirect push to={`/profile/${this.props.userAlias}`} />;
     return(
       <div id="profile">
         <Banner profile={this.props.profile} updateProfile={this.props.updateProfile} />
         <ProfileInfo alias={this.props.alias} profile={this.props.profile} updateProfile={this.props.updateProfile} />
-        <GameExperiences userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
+        <GameExperiences userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
         <MyPosts initialData={this.props.initialData} />
       </div>
     );
@@ -51,6 +55,7 @@ function mapDispatchToProps(dispatch) {
     updateProfile: (alias, updates) => dispatch(updateProfileInfoAction(alias, updates)),
     updateGame: (alias, updates) => dispatch(updateProfileGameAction(alias, updates)),
     commendUser: (alias, gameExperienceId) => dispatch(commendUserAction(alias, gameExperienceId)),
+    deleteExperience: (alias, gameExperienceId) => dispatch(deleteExperienceAction(alias, gameExperienceId)),
   }
 }
 

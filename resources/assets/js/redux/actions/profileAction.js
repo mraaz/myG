@@ -1,4 +1,4 @@
-import { fetchProfileInfo, sendFriendRequest, confirmFriendRequest, unfriend, follow, unfollow, uploadProfileImage, uploadProfileBackground, updateProfileInfo, updateProfileGame, fetchGamerSuggestions, commendUser } from '../../integration/http/profile'
+import { fetchProfileInfo, sendFriendRequest, confirmFriendRequest, unfriend, follow, unfollow, uploadProfileImage, uploadProfileBackground, updateProfileInfo, updateProfileGame, fetchGamerSuggestions, commendUser, deleteExperience } from '../../integration/http/profile'
 
 export function fetchProfileInfoAction(alias) {
   return {
@@ -92,6 +92,14 @@ export function commendUserAction(alias, gameExperienceId) {
   return {
     type: 'COMMEND_USER',
     payload: commendUser(alias, gameExperienceId),
+    meta: { alias, gameExperienceId },
+  }
+}
+
+export function deleteExperienceAction(alias, gameExperienceId) {
+  return {
+    type: 'DELETE_GAME_EXPERIENCE',
+    payload: deleteExperience(gameExperienceId),
     meta: { alias, gameExperienceId },
   }
 }

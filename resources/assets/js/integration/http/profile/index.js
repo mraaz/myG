@@ -71,3 +71,8 @@ export function commendUser(alias, gameExperienceId) {
   logger.log('PROFILE', 'HTTP', `Commending user ${alias} for game ${gameExperienceId}`);
   return axios.post(`/api/commend/${alias}/${gameExperienceId}`).then(response => response.data);
 }
+
+export function deleteExperience(gameExperienceId) {
+  logger.log('PROFILE', 'HTTP', `Deleting game experience ${gameExperienceId}`);
+  return axios.delete(`/api/game_experience/${gameExperienceId}`).then(response => response.data);
+}

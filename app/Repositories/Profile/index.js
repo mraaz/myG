@@ -354,6 +354,11 @@ class ProfileRepository {
     return Object.keys(commendations).map((gameExperienceId) => commendationLevel(commendations[gameExperienceId]));
   }
 
+  async deleteGameExperience({ requestingUserId, gameExperienceId }) {
+    await Database.table('game_experiences').where({ id: gameExperienceId }).delete()
+    return this.fetchProfileInfo({ requestingUserId, id: requestingUserId })
+  }
+
   async getEncryptionKeyPair() {
     if (this.privateKey && this.publicKey) return { privateKey: this.privateKey, publicKey: this.publicKey }
     const pin = process.env.PROFILE_ENCRYPTION_PIN | 123456;

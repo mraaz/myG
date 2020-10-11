@@ -160,7 +160,19 @@ export default function reducer(state = initialState, action) {
     }
 
     case 'COMMEND_USER_FULFILLED': {
-      logger.log('PROFILE', `Redux -> Commended User ${alias}: `, action.payload)
+      logger.log('PROFILE', `Redux -> Commended User: ${action.meta.alias} `, action.payload)
+      const alias = action.meta.alias
+      const profiles = addProfile(state, alias)
+      profiles[alias].set(get(action, 'payload.profile'))
+      profiles[alias].set({ error: get(action, 'payload.error') })
+      return {
+        ...state,
+        profiles,
+      }
+    }
+
+    case 'DELETE_GAME_EXPERIENCE_FULFILLED': {
+      logger.log('PROFILE', `Redux -> Deleted Game Experience ${action.meta.gameExperienceId}: `, action.payload)
       const alias = action.meta.alias
       const profiles = addProfile(state, alias)
       profiles[alias].set(get(action, 'payload.profile'))
