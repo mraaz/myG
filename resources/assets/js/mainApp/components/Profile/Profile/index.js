@@ -24,7 +24,6 @@ export class Profile extends React.Component {
   }
 
   render() {
-    console.log('profile: ', this.props.profile);
     if (this.props.profile.error) return <Redirect push to={`/profile/${this.props.userAlias}`} />;
     return(
       <div id="profile">

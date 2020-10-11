@@ -428,6 +428,9 @@ Route.get('/api/gamer_suggestions', 'ProfileController.fetchGamerSuggestions')
 Route.get('/api/profile_fields/:gameId', 'ProfileController.fetchDynamicFields')
 Route.post('/api/commend/:alias/:gameExperienceId', 'ProfileController.commendUser')
 
+// Advanced Search
+Route.get('/api/search/gamers', 'SearchController.searchGamers')
+
 //Sponsor
 Route.post('/api/sponsor/create', 'SponsorController.store')
 Route.post('/api/sponsor/delete', 'SponsorController.destroy')

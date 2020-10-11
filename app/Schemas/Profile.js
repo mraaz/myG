@@ -33,6 +33,7 @@ class Profile {
     this.hasReceivedFriendRequest = forceBoolean(data.hasReceivedFriendRequest)
     this.friendRequestId = forceInt(data.friendRequestId)
     this.gameExperiences = forceArray(data.gameExperiences).map(experience => new GameExperience(experience));
+    this.commendations = forceArray(data.commendations)
     this.commended = forceArray(data.commended)
     this.commender = forceArray(data.commender)
   }

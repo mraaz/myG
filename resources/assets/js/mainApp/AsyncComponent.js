@@ -21,6 +21,13 @@ const ProfileContainer = Loadable({
   },
 })
 
+const FindGamersContainer = Loadable({
+  loader: () => import('./components/FindGamers/Container'),
+  loading: function () {
+    return null
+  },
+})
+
 const ScheduleGamesView = Loadable({
   loader: () => import('./components/scheduledGames/ScheduleGames'),
   loading: function () {
@@ -158,6 +165,7 @@ export {
   Home,
   Profile,
   ProfileContainer,
+  FindGamersContainer,
   LeftMenu,
   MessengerLoader,
   ChatUnreadMessages,

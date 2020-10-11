@@ -22,6 +22,8 @@ const GameExperienceSchema = require('../../Schemas/GameExperience');
 const GameBackgroundSchema = require('../../Schemas/GameBackground');
 const CommendationSchema = require('../../Schemas/Commendation');
 
+const ElasticsearchRepository = require('../Elasticsearch');
+
 class ProfileRepository {
   
   privateKey = null;
@@ -110,6 +112,7 @@ class ProfileRepository {
       mostPlayedGames,
       friendRequestId,
       gameExperiences,
+      commendations: this.getCommendations({ commended }),
       commended,
       commender,
     });
@@ -231,7 +234,9 @@ class ProfileRepository {
       }
     }
     await User.query().where('id', requestingUserId).update(updates);
-    return this.fetchProfileInfo({ requestingUserId, id: requestingUserId });
+    const { profile } = await this.fetchProfileInfo({ requestingUserId, id: requestingUserId });
+    await ElasticsearchRepository.storeUser({ user: profile });
+    return { profile };
   }
 
   async updateGame({ requestingUserId, id, imageKey, imageSource, mainFields, game, gameName, nickname, level, experience, team, tags, rating, dynamic, background }) {
@@ -331,6 +336,24 @@ class ProfileRepository {
     return this.fetchProfileInfo({ requestingUserId, id: commendedId, alias });
   }
 
+  getCommendations({ commended }) {
+    const commendationLevel = (commends) => {
+      if (commends < 49) return 'Apprentice'
+      if (commends < 99) return 'Elite'
+      if (commends < 149) return 'Expert'
+      if (commends < 199) return 'Hero'
+      if (commends < 249) return 'Master'
+      if (commends < 999) return 'Grand Master'
+      return 'Ultimate Master'
+    }
+    const commendations = {};
+    commended.forEach((commendation) => {
+      if (!commendations[commendation.gameExperienceId]) commendations[commendation.gameExperienceId] = 1;
+      else commendations[commendation.gameExperienceId] = commendations[commendation.gameExperienceId] + 1;
+    });
+    return Object.keys(commendations).map((gameExperienceId) => commendationLevel(commendations[gameExperienceId]));
+  }
+
   async getEncryptionKeyPair() {
     if (this.privateKey && this.publicKey) return { privateKey: this.privateKey, publicKey: this.publicKey }
     const pin = process.env.PROFILE_ENCRYPTION_PIN | 123456;
@@ -340,13 +363,23 @@ class ProfileRepository {
   }
 
   async encryptField(field) {
-    const { privateKey, publicKey } = await this.getEncryptionKeyPair();
-    return cryptico.encrypt(field, publicKey, privateKey).cipher;
+    try {
+      const { privateKey, publicKey } = await this.getEncryptionKeyPair();
+      return cryptico.encrypt(field, publicKey, privateKey).cipher;
+    } catch(error) {
+      console.error(`Failed to Encrypt: ${field}`, this.privateKey, this.publicKey);
+      return null;
+    }
   }
 
   async decryptField(field) {
-    const { privateKey } = await this.getEncryptionKeyPair();
-    return cryptico.decrypt(field, privateKey).plaintext;
+    try {
+      const { privateKey } = await this.getEncryptionKeyPair();
+      return cryptico.decrypt(field, privateKey).plaintext;
+    } catch(error) {
+      console.error(`Failed to Decrypt: ${field}`, this.privateKey, this.publicKey);
+      return null;
+    }
   }
 }
 
