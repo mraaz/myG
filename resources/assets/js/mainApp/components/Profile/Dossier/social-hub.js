@@ -30,22 +30,22 @@ export default class DossierSocialHub extends React.Component {
   onSave = () => {
     if (!this.hasChanges()) return
     this.props.updateProfile(this.props.profile.alias, {
-      twitch: /^(https:\/\/www.)?twitch.tv\//.test(this.state.twitch) ? this.state.twitch : '',
+      twitch: /^((https:\/\/)?www.)?twitch.tv\//.test(this.state.twitch) ? this.state.twitch : '',
       discord: /^[A-z]+#\d+$/.test(this.state.discord) ? this.state.discord : '',
-      steam: /^(https:\/\/)?steamcommunity.com\/profiles\//.test(this.state.steam) ? this.state.steam : '',
-      youtube: /^(https:\/\/www.)?youtube.com\/channel\//.test(this.state.youtube) ? this.state.youtube : '',
-      facebook: /^(https:\/\/www.)?facebook.com\//.test(this.state.facebook) ? this.state.facebook : '',
+      steam: /^((https:\/\/)?)?steamcommunity.com\/profiles\//.test(this.state.steam) ? this.state.steam : '',
+      youtube: /^((https:\/\/)?www.)?youtube.com\/channel\//.test(this.state.youtube) ? this.state.youtube : '',
+      facebook: /^(((https:\/\/)?www.)?facebook.com\/)|(((https:\/\/)?www.)?fb.me\/)/.test(this.state.facebook) ? this.state.facebook : '',
     })
     this.props.onClose()
   }
 
   hasChanges = () => {
     return (
-      /^(https:\/\/www.)?twitch.tv\//.test(this.state.twitch) ||
+      /^((https:\/\/)?www.)?twitch.tv\//.test(this.state.twitch) ||
       /^[A-z]+#\d+$/.test(this.state.discord) ||
-      /^(https:\/\/)?steamcommunity.com\/profiles\//.test(this.state.steam) ||
-      /^(https:\/\/www.)?youtube.com\/channel\//.test(this.state.youtube) ||
-      /^(https:\/\/www.)?facebook.com\//.test(this.state.facebook)
+      /^((https:\/\/)?)?steamcommunity.com\/profiles\//.test(this.state.steam) ||
+      /^((https:\/\/)?www.)?youtube.com\/channel\//.test(this.state.youtube) ||
+      /^(((https:\/\/)?www.)?facebook.com\/)|(((https:\/\/)?www.)?fb.me\/)/.test(this.state.facebook)
     )
   }
 
@@ -56,7 +56,7 @@ export default class DossierSocialHub extends React.Component {
 
   renderTwitchRow = () => {
     const isEmpty = !this.state.twitch
-    const isValid = /^(https:\/\/www.)?twitch.tv\//.test(this.state.twitch)
+    const isValid = /^((https:\/\/)?www.)?twitch.tv\//.test(this.state.twitch)
     if (!this.props.isSelf && (isEmpty || !isValid)) return
     const style = isEmpty || isValid ? 'base-button' : 'invalid-button'
     return (
@@ -118,7 +118,7 @@ export default class DossierSocialHub extends React.Component {
 
   renderSteamRow = () => {
     const isEmpty = !this.state.steam
-    const isValid = /^(https:\/\/)?steamcommunity.com\/profiles\//.test(this.state.steam)
+    const isValid = /^((https:\/\/)?)?steamcommunity.com\/profiles\//.test(this.state.steam)
     if (!this.props.isSelf && (isEmpty || !isValid)) return
     const style = isEmpty || isValid ? 'base-button' : 'invalid-button'
     return (
@@ -146,7 +146,7 @@ export default class DossierSocialHub extends React.Component {
 
   renderYoutubeRow = () => {
     const isEmpty = !this.state.youtube
-    const isValid = /^(https:\/\/www.)?youtube.com\/channel\//.test(this.state.youtube)
+    const isValid = /^((https:\/\/)?www.)?youtube.com\/channel\//.test(this.state.youtube)
     if (!this.props.isSelf && (isEmpty || !isValid)) return
     const style = isEmpty || isValid ? 'base-button' : 'invalid-button'
     return (
@@ -174,7 +174,7 @@ export default class DossierSocialHub extends React.Component {
 
   renderFacebookRow = () => {
     const isEmpty = !this.state.facebook
-    const isValid = /^(https:\/\/www.)?facebook.com\//.test(this.state.facebook)
+    const isValid = /^(((https:\/\/)?www.)?facebook.com\/)|(((https:\/\/)?www.)?fb.me\/)/.test(this.state.facebook)
     if (!this.props.isSelf && (isEmpty || !isValid)) return
     const style = isEmpty || isValid ? 'base-button' : 'invalid-button'
     return (

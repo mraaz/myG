@@ -11,13 +11,32 @@ export class Banner extends React.Component {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
   }
 
+  state = {
+    hoveringBanner: false
+  }
+
+  renderBannerUploader = () => {
+    if (!this.props.profile.isSelf || !this.state.hoveringBanner) return;
+    return(
+      <div className="hover-banner">Update Background Image</div>
+    );
+  }
+
+  onUpload = (image, key) => {
+    this.props.uploadProfileBackground(this.props.profile.alias, image, key)
+  }
+
   render() {
     const background = this.props.profile.background ? { backgroundImage: `url('${this.props.profile.background}')` } : {};
     return(
-      <div id="profile-banner" className={`background ${this.props.isSelf && 'clickable'}`} style={background}>
+      <div id="profile-banner" className={`background ${this.props.isSelf && 'clickable'}`} style={background}  
+        onMouseEnter={() => this.setState({ hoveringBanner: true })}
+        onMouseLeave={() => this.setState({ hoveringBanner: false })}
+      >
         <Uploader background onUpload={this.onUpload}>
             <AnalyticsBox containerStyle='analytics' />
         </Uploader>
+        {this.renderBannerUploader()}
         <Header
           alias={this.props.profile.alias}
           profile={this.props.profile}

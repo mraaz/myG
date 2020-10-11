@@ -40,6 +40,21 @@
     }
   }
 
+  .hover-banner {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 196px;
+    padding: 20px;
+    pointer-events: none;
+    opacity: 0.5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1D2326;
+    color: #E0E0E0;
+  }
+
   .background {
     background-repeat: no-repeat;
     background-position: center center;
@@ -942,6 +957,15 @@
     padding: 0;
     margin: 0;
     overflow-y: scroll;
+
+    .add-experience-icon-button {
+      @extend .button-icon;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      padding: 20px;
+      margin: 16px;
+    }
   }
 
   #profile-game-experience {

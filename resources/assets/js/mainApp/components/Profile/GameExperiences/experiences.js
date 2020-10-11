@@ -53,7 +53,7 @@ export default class Experiences extends React.Component {
     if (!this.props.isSelf) return null
     return (
       <div
-        className='button-icon clickable'
+        className='add-experience-icon-button clickable'
         style={{ backgroundImage: `url(${getAssetUrl('ic_profile_add')})` }}
         onClick={this.onAddExperience}
       />

@@ -192,9 +192,11 @@ export default class MainInfo extends React.Component {
   }
 
   renderCommendationLabel = () => {
+    if (this.props.isSelf) return null;
     return (
       <div className='row'>
-        <div className='input-container-row' style={{ width: '87%', marginTop: '12px' }}>
+        <span className='hint'>Commendation</span>
+        <div className='input-container-row'>
           <input className='input' value={`${commendationLevel(this.props.experience.commends)}`} disabled={true}></input>
         </div>
       </div>
@@ -376,8 +378,9 @@ export default class MainInfo extends React.Component {
   }
 
   renderImage = () => {
-    if (!this.props.experience.gameImage) return null
-    return <div className='banner' style={{ backgroundImage: `url(${this.props.experience.gameImage})` }} />
+    const selectedGameImage = this.props.experience.game && this.props.experience.game.gameImg;
+    if (!this.props.experience.gameImage && !selectedGameImage) return null
+    return <div className='banner' style={{ backgroundImage: `url(${this.props.experience.gameImage || selectedGameImage})` }} />
   }
 
   renderSave = () => {
