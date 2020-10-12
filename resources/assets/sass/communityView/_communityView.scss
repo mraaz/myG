@@ -239,7 +239,7 @@
       }
       .modal__body {
         background: #171a1c 0% 0% no-repeat padding-box;
-        height: 500px;
+        height: 400px;
         overflow: scroll;
         width: 100%;
         padding: 2em 5em;
@@ -339,6 +339,12 @@
                 margin-right: 10px;
                 border-radius: 2px;
                 cursor: pointer;
+                &:focus {
+                  margin: 0;
+                  border: 0;
+                  outline: none;
+                  margin-right: 10px;
+                }
               }
             }
           }

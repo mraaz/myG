@@ -150,18 +150,23 @@ export default class Members extends React.Component {
         userExpelAlert: '',
       })
     } else {
-      const data = await axios.delete(`/api/usergroup/delete_member/${member.group_id}/${member.user_id}`)
-      if (data && data.data) {
-        const { group_members } = this.state
-        const filterMembers = group_members.filter((members) => member.user_id != members.user_id)
-        this.setState({ group_members: filterMembers, userExpelAlert: '' }, () => {
-          toast.success(<Toast_style text={`Yeah! User has been Expeled`} />)
-        })
+      const { current_user_permission } = this.props
+      if (member.permission_level > current_user_permission) {
+        const data = await axios.delete(`/api/usergroup/delete_member/${member.group_id}/${member.user_id}`)
+        if (data && data.data) {
+          const { group_members } = this.state
+          const filterMembers = group_members.filter((members) => member.user_id != members.user_id)
+          this.setState({ group_members: filterMembers, userExpelAlert: '' }, () => {
+            toast.success(<Toast_style text={`Yeah! User has been Expeled`} />)
+          })
+        } else {
+          toast.error(<Toast_style text={`Nope, nope and nope, that did not work.`} />)
+          this.setState({
+            userExpelAlert: '',
+          })
+        }
       } else {
         toast.error(<Toast_style text={`Nope, nope and nope, that did not work.`} />)
-        this.setState({
-          userExpelAlert: '',
-        })
       }
     }
   }
@@ -246,10 +251,12 @@ export default class Members extends React.Component {
                 </div>
                 <div className='GroupMember__action'>
                   <Link to={`/profile/${member.alias}`}>
-                    <button type='button View'>View</button>
+                    <button type='button' className='View'>
+                      View
+                    </button>
                   </Link>
                   {[0, 1].includes(current_user_permission) && (
-                    <button type='button Expel' onClick={(e) => this.showExpelAlert(member)}>
+                    <button type='button' className='Expel' onClick={(e) => this.showExpelAlert(member)}>
                       {' '}
                       Expel
                     </button>
@@ -310,9 +317,11 @@ export default class Members extends React.Component {
               <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/X_icon.svg' />
             </div>
           </div>
-          <div className='manage__searchBar'>
-            <input type='text' value={searchMemberValue} onChange={(e) => this.handleMemberSearch(e)} placeholder='Search menbers here' />
-          </div>
+          {isActive != 'setting' && (
+            <div className='manage__searchBar'>
+              <input type='text' value={searchMemberValue} onChange={(e) => this.handleMemberSearch(e)} placeholder='Search menbers here' />
+            </div>
+          )}
           <div className='modal__body'>{isActive == 'setting' ? this.renderSettingComponent() : this.renderGroupMember()}</div>
           {isActive == 'setting' && (
             <div className='modal__footer'>

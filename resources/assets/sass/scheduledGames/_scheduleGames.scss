@@ -837,7 +837,7 @@
             position: absolute;
             left: -50px;
             top: 10px;
-            background: #ff00ff;
+            background-image: #ff00ff;
             width: 37px;
             height: 37px;
             border-radius: 50%;
@@ -1394,6 +1394,7 @@
                   font-size: 10px;
                   cursor: pointer;
                   z-index: 5;
+                  color: #fff;
                 }
               }
             }
@@ -1519,6 +1520,7 @@
           font-size: 10px;
           cursor: pointer;
           z-index: 5;
+          color: #fff;
         }
       }
     }

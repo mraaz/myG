@@ -512,6 +512,27 @@ export default class IndividualPost extends Component {
       alert: getAlert(),
     })
   }
+  showReportAlert(id) {
+    const getAlert = () => (
+      <SweetAlert
+        danger
+        showCancel
+        title='Are you sure you wish to report this post?'
+        confirmBtnText='Make it so!'
+        confirmBtnBsStyle='danger'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={true}
+        onConfirm={() => this.handleReportClick('true', id)}
+        onCancel={() => this.handleReportClick('false', id)}>
+        You will not be able to recover this entry!
+      </SweetAlert>
+    )
+
+    this.setState({
+      alert: getAlert(),
+    })
+  }
 
   hideAlert(text) {
     this.setState({
@@ -569,16 +590,21 @@ export default class IndividualPost extends Component {
       toast.success(<Toast_style text={`\Great! Post has been successfully ${featured_enabled == 1 ? 'featured' : 'unfeatured'} `} />)
     }
   }
-  handleReportClick = async (post_id) => {
-    const { showPostExtraOption } = this.state
-    this.setState({ showPostExtraOption: !showPostExtraOption })
-    const reportData = await axios.get(`/api/post/report/${post_id}`)
-    if (reportData) {
-      toast.success(
-        <Toast_style
-          text={`Thanks for reporting! You're helping to make this is a better place. If we deem this an inappropriate post, you'll be reward!`}
-        />
-      )
+  handleReportClick = async (text, post_id) => {
+    if (text == 'true') {
+      const { showPostExtraOption } = this.state
+      this.setState({ showPostExtraOption: !showPostExtraOption })
+      const reportData = await axios.get(`/api/post/report/${post_id}`)
+      if (reportData) {
+        this.setState({ alert: '' })
+        toast.success(
+          <Toast_style
+            text={`Thanks for reporting! You're helping to make this is a better place. If we deem this an inappropriate post, you'll be reward!`}
+          />
+        )
+      }
+    } else {
+      this.setState({ alert: '' })
     }
   }
 
@@ -633,7 +659,7 @@ export default class IndividualPost extends Component {
                         </div>
                       )}
                       {![0, 1, 2].includes(current_user_permission) && (
-                        <div className='option' onClick={(e) => this.handleReportClick(post.id)}>
+                        <div className='option' onClick={(e) => this.showReportAlert(post.id)}>
                           Report
                         </div>
                       )}
@@ -712,15 +738,28 @@ export default class IndividualPost extends Component {
                   </div>
                 )}
                 <div className={`post-dropdown ${this.state.dropdown == true ? 'active' : ''}`}>
-                  <nav>
-                    <div className='edit' onClick={this.clickedEdit}>
-                      Edit &nbsp;
-                    </div>
-                    <div className='delete' onClick={() => this.showAlert()}>
-                      Delete
-                    </div>
-                    &nbsp;
-                  </nav>
+                  {[0, 1].includes(current_user_permission) && showPostExtraOption && (
+                    <nav>
+                      <div className='edit' onClick={this.clickedEdit}>
+                        Edit &nbsp;
+                      </div>
+                      <div className='delete' onClick={() => this.showAlert()}>
+                        Delete
+                      </div>
+                      &nbsp;
+                    </nav>
+                  )}
+                  {showPostExtraOption == false && (
+                    <nav>
+                      <div className='edit' onClick={this.clickedEdit}>
+                        Edit &nbsp;
+                      </div>
+                      <div className='delete' onClick={() => this.showAlert()}>
+                        Delete
+                      </div>
+                      &nbsp;
+                    </nav>
+                  )}
                 </div>
               </div>
             </div>
