@@ -11,6 +11,7 @@ import pagination from './reducers/paginationReducer'
 import encryption from './reducers/encryptionReducer'
 import socket from './reducers/socketReducer'
 import profile from './reducers/profileReducer'
+import search from './reducers/searchReducer'
 
 const appReducer = combineReducers({
   alert,
@@ -22,6 +23,7 @@ const appReducer = combineReducers({
   encryption,
   socket,
   profile,
+  search,
 })
 
 const rootReducer = (state, action) => {

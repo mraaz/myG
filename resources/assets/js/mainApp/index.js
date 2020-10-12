@@ -27,6 +27,7 @@ import {
   Home,
   Profile,
   ProfileContainer,
+  FindGamersContainer,
   LeftMenu,
   MessengerLoader,
   ChatUnreadMessages,
@@ -161,6 +162,20 @@ class Layout extends Component {
                           key={Math.random()}
                         />
                       </FeatureEnabled>
+                    </React.Fragment>
+                  )}
+                />
+
+                <Route
+                  exact
+                  path='/find-gamers'
+                  component={(props) => (
+                    <React.Fragment>
+                      <FindGamersContainer
+                        routeProps={props}
+                        initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
+                        key={Math.random()}
+                      />
                     </React.Fragment>
                   )}
                 />

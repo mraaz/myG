@@ -83,7 +83,7 @@ export class GamerSuggestions extends React.Component {
     return(
       <div id="profile">
         <div id="profile-game-experiences">
-          {this.renderHeaders()}
+          {!this.props.noTitle && this.renderHeaders()}
           <div className="scroll">
             {this.renderPageButtons()}
             {this.props.gamerSuggestions.slice(this.state.page, this.state.page + 4).map(this.renderGamerSuggestion)}

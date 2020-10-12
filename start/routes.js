@@ -424,9 +424,13 @@ Route.get('/api/seats_available_email/:email', 'SeatsAvailableController.storeSe
 Route.get('/api/profile/:alias', 'ProfileController.fetchProfileInfo')
 Route.put('/api/profile/:alias', 'ProfileController.updateProfile')
 Route.put('/api/profile/:alias/game', 'ProfileController.updateGame')
+Route.delete('/api/game_experience/:gameExperienceId', 'ProfileController.deleteGameExperience')
 Route.get('/api/gamer_suggestions', 'ProfileController.fetchGamerSuggestions')
 Route.get('/api/profile_fields/:gameId', 'ProfileController.fetchDynamicFields')
 Route.post('/api/commend/:alias/:gameExperienceId', 'ProfileController.commendUser')
+
+// Advanced Search
+Route.get('/api/search/gamers', 'SearchController.searchGamers')
 
 //Sponsor
 Route.post('/api/sponsor/create', 'SponsorController.store')

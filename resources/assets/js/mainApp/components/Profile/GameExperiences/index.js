@@ -5,6 +5,7 @@ import { copyToClipboard } from '../../../../common/clipboard';
 import notifyToast from '../../../../common/toast';
 import { ignoreFunctions } from '../../../../common/render'
 import EditGameExperience from './edit';
+import { showMessengerAlert } from '../../../../common/alert';
 
 export default class GameExperiences extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -33,7 +34,7 @@ export default class GameExperiences extends React.Component {
   changePage = (direction) => {
     const page = this.state.page;
     const newPage = direction === 'left' ? (page - 1) < 0 ? page : page - 1 : (page + 1) > this.filterGameExperiences().length - this.getGamesPerPage() ? page : page + 1;
-    this.setState({ changingPage: true }, () => setTimeout(() => this.setState({ page: newPage, changingPage: false }), 300));
+    this.setState({ changingPage: true }, () => setTimeout(() => this.setState({ page: newPage, changingPage: false }), 100));
   }
 
   onClose = () => {
@@ -55,10 +56,10 @@ export default class GameExperiences extends React.Component {
   renderHeaders = () => {
     return(
       <div className='headers'>
-        <div className={`header clickable ${this.state.filter === 'All' && 'selected'}`} onClick={() => this.setState({ filter: 'All' })}>All</div>
-        <div className={`header clickable ${this.state.filter === 'Pro Gamer' && 'selected'}`} onClick={() => this.setState({ filter: 'Pro Gamer' })}>Pro Career</div>
-        <div className={`header clickable ${this.state.filter === 'Semi Pro' && 'selected'}`} onClick={() => this.setState({ filter: 'Semi Pro' })}>Semi Pro</div>
-        <div className={`header clickable ${this.state.filter === 'Casual' && 'selected'}`} onClick={() => this.setState({ filter: 'Casual' })}>Casual</div>
+        <div className={`header clickable ${this.state.filter === 'All' && 'selected'}`} onClick={() => this.setState({ page: 0,  filter: 'All' })}>All</div>
+        <div className={`header clickable ${this.state.filter === 'Pro Gamer' && 'selected'}`} onClick={() => this.setState({ page: 0,  filter: 'Pro Gamer' })}>Pro Career</div>
+        <div className={`header clickable ${this.state.filter === 'Semi Pro' && 'selected'}`} onClick={() => this.setState({ page: 0,  filter: 'Semi Pro' })}>Semi Pro</div>
+        <div className={`header clickable ${this.state.filter === 'Casual' && 'selected'}`} onClick={() => this.setState({ page: 0,  filter: 'Casual' })}>Casual</div>
       </div>
     );
   }
@@ -75,7 +76,7 @@ export default class GameExperiences extends React.Component {
     const gameExperiences = this.filterGameExperiences();
     const fitsAllInScreen = gameExperiences.length <= this.getGamesPerPage();
     const contentToTheLeft = !fitsAllInScreen && this.state.page > 0;
-    const contentToTheRight = !fitsAllInScreen && this.state.page < gameExperiences.length - 4;
+    const contentToTheRight = !fitsAllInScreen && this.state.page < gameExperiences.length - this.getGamesPerPage();
     return(
       <React.Fragment>
         {contentToTheLeft && (
@@ -101,10 +102,10 @@ export default class GameExperiences extends React.Component {
     const fields = mainFields
     const hasCommended = this.props.profile.commended.find((commendation) => commendation.gameExperienceId === id && commendation.commenderId === this.props.userId);
     return(
-      <div className="game-experience" style={{ opacity: this.state.changingPage ? 0.3 : 1 }}
+      <div className="game-experience clickable" style={{ opacity: this.state.changingPage ? 0.3 : 1 }}
         onMouseEnter={() => this.setState({ hovering: id })}
         onMouseLeave={() => this.setState({ hovering: null })}
-      >
+        onClick={() => this.setState({ selected: id })}>
         <span className="name">{gameName}</span>
         {gameImage && <div className="image" style={{ backgroundImage: `url(${gameImage})` }} />}
         <div
@@ -123,6 +124,16 @@ export default class GameExperiences extends React.Component {
             <div className="hover-button clickable" onClick={() => this.setState({ selected: id })}>
               {this.state.isSelf ? 'Edit' : 'Show'}
             </div>
+            {this.state.isSelf && (
+              <div className="hover-button clickable" onClick={() => 
+                showMessengerAlert(`Are you sure you want to delete your game experience for ${gameName}?`,
+                () => this.props.deleteExperience(id),
+                null,
+                'Make it so',
+              )}>
+                Delete
+              </div>
+            )}
             {!!this.props.profile.isFriend && !hasCommended && (
               <div className="hover-button clickable" onClick={() => this.props.commendUser(id)}>
                   Commend Me

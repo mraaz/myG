@@ -124,6 +124,26 @@ class ProfileController {
       return response.send({ error })
     }
   }
+  
+  async deleteGameExperience({ auth, params, response }) {
+    try {
+      const requestingUserId = auth.user.id
+      if (!requestingUserId) throw new Error('Auth Error')
+      const gameExperienceId = params.gameExperienceId
+      log('PROFILE', `User ${requestingUserId} deleting game experience ${gameExperienceId}`)
+      const { profile } = await ProfileRepository.deleteGameExperience({ requestingUserId, gameExperienceId })
+      return response.send({ profile })
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+      return response.send({ error })
+    }
+  }
 }
 
 module.exports = ProfileController
