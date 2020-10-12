@@ -68,6 +68,7 @@ export default class Members extends React.Component {
   }
 
   handleSave = async (e) => {
+    console.log(this.props.groups_id, '<<< this.props.groups_id')
     const { communityName, approval, privacy } = this.state
     const sendInvite = await axios.post('/api/groups/update_settings', {
       group_id: this.props.groups_id,
