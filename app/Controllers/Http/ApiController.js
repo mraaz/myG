@@ -78,8 +78,7 @@ class ApiController {
 
   async uploadFile({ auth, request, response }) {
     if (auth.user) {
-      const isChat = !!request.input('chat')
-
+      const isChat = request.input('chat')
       if (isChat) {
         if (Env.get('CHAT_UPLOAD_DISABLED')) return response.status(500).json('CHAT_UPLOAD_DISABLED')
         const user = (await User.find(auth.user.id)).toJSON()
@@ -97,11 +96,10 @@ class ApiController {
 
       var file = request.file('upload_file')
       var filename = request.input('filename')
-      const bucket = isChat ? S3_BUCKET_CHAT : S3_BUCKET
+      const bucket = isChat == true ? S3_BUCKET_CHAT : S3_BUCKET
 
       const timestamp_OG = Date.now().toString()
       var tmpfilename = auth.user.id + '_' + timestamp_OG + '_' + generateRandomString(6) + '_' + filename
-      //var tmpfilepath = Helpers.tmpPath('uploads') + '\\' + tmpfilename; FOR WINDOWS ONLY
       var tmpfilepath = Helpers.tmpPath('uploads') + '/' + tmpfilename
 
       if (fs.existsSync(tmpfilepath)) {
@@ -119,10 +117,10 @@ class ApiController {
         const buffer = fs.readFileSync(tmpfilepath)
         const type = fileType(buffer)
         const timestamp = Date.now().toString()
-        //const fileName = timestamp + '_' + generateRandomString(6) + '_' + filename
+
         let data = await uploadFile(bucket, buffer, tmpfilename, type)
         fs.unlinkSync(tmpfilepath)
-        data.aws_key_id = await this.create_aws_keys_entry({ auth }, data.Key, request.input('type'), request.input('id'))
+        data.aws_key_id = await this.create_aws_keys_entry({ auth }, data.Key, request.input('type'), request.input('id'), data.Location)
 
         return response.status(200).json(data)
       } catch (error) {
@@ -138,7 +136,7 @@ class ApiController {
     }
   }
 
-  async create_aws_keys_entry({ auth }, key, type, id) {
+  async create_aws_keys_entry({ auth }, key, type, id, location) {
     if (auth.user) {
       try {
         if (key.length == undefined || key == null) {
@@ -157,12 +155,12 @@ class ApiController {
           case '1':
             const update_profile_img = await User.query()
               .where({ id: auth.user.id })
-              .update({ profile_img: key })
+              .update({ profile_img: location })
             break
           case '2':
             const update_bg_img = await User.query()
               .where({ id: auth.user.id })
-              .update({ profile_bg: key })
+              .update({ profile_bg: location })
             break
           case '3':
             post_id = id
@@ -171,8 +169,8 @@ class ApiController {
             group_id = id
             if (id != undefined || id != null) {
               const update_img = await Group.query()
-                .where({ id: request.input('group_id') })
-                .update({ group_img: key })
+                .where({ id: id })
+                .update({ group_img: location })
             }
             break
           case '5':

@@ -61,7 +61,7 @@ const CoverImage = (props) => {
   const handleLeaveClick = async (id, user_id) => {
     const data = await axios.delete(`/api/usergroup/delete_member/${id}/${user_id}`)
     if (data) {
-      toast.success(<Toast_style text={`you are now no longer part of this community.`} />)
+      toast.success(<Toast_style text={`Out! We're out of ${props.name}!`} />)
       props.routeProps.history.push('/?at=communities')
     }
   }
