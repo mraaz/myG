@@ -11,7 +11,6 @@ pipeline {
         AWS_SECRET = credentials('aws_secret')
         GOOGLE_ID = credentials('google_id')
         GOOGLE_SECRET = credentials('google_secret')
-        FACEBOOK_ID = credentials('facebook_id')
         FACEBOOK_SECRET = credentials('facebook_secret')
         MIX_GOOGLE_MAPS_KEY = credentials('mix_google_maps_key')
         SECRET_KEY = credentials('secret_key')
@@ -58,7 +57,7 @@ pipeline {
                      withCredentials([file(credentialsId: 'kubernetes-credential', variable: 'config')]) {
                        sh """
                        export KUBECONFIG=\${config}
-                       helm upgrade myg ./helm/mygame -f ./helm/mygame.yaml -n mygame --set image.tag=$TAG --set mygame.dataseUser=$DB_USER --set mygame.databasePassword=$DB_PASS --set mygame.appKey=$APP_KEY --set mygame.awsKey=$AWS_KEY --set mygame.awsSecret=$AWS_SECRET --set mygame.googleID=$GOOGLE_ID --set mygame.googleSecret=$GOOGLE_SECRET --set mygame.facebookID=$FACEBOOK_ID --set mygame.facebookSecret=$FACEBOOK_SECRET --set mygame.mixGoogleMapsKey=$MIX_GOOGLE_MAPS_KEY --set mygame.secretKey=$SECRET_KEY --set mygame.siteKey=$SITE_KEY
+                       helm upgrade myg ./helm/mygame -f ./helm/mygame.yaml -n mygame --set image.tag=$TAG --set mygame.dataseUser=$DB_USER --set mygame.databasePassword=$DB_PASS --set mygame.appKey=$APP_KEY --set mygame.awsKey=$AWS_KEY --set mygame.awsSecret=$AWS_SECRET --set mygame.googleID=$GOOGLE_ID --set mygame.googleSecret=$GOOGLE_SECRET --set --set mygame.facebookSecret=$FACEBOOK_SECRET --set mygame.mixGoogleMapsKey=$MIX_GOOGLE_MAPS_KEY --set mygame.secretKey=$SECRET_KEY --set mygame.siteKey=$SITE_KEY
                        """
                      }
                 }
