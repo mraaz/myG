@@ -28,12 +28,12 @@ class GroupConnectionController {
     }
   }
 
-  async destroy({ auth, request, response }) {
+  async destroy({ auth }, group_id) {
     if (auth.user) {
       try {
         const deleteRegistration = await Database.table('group_connections')
           .where({
-            group_id: request.params.group_id,
+            group_id: group_id,
             user_id: auth.user.id,
           })
           .delete()
