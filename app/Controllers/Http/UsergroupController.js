@@ -22,7 +22,7 @@ class UsergroupController {
         })
 
         const myGroupConnectionController = new GroupConnectionController()
-        myGroupConnectionController.destroy({ auth, request, response })
+        myGroupConnectionController.destroy({ auth }, request.input('group_id'))
 
         const noti = new NotificationController_v2()
         noti.notify_owner_new_grp_request({ auth }, request.input('group_id'))
@@ -117,37 +117,6 @@ class UsergroupController {
       })
     }
   }
-
-  // async destroy({ auth, request, response }) {
-  //   if (auth.user) {
-  //     try {
-  //       const deleteRegistration = await Database.table('usergroups')
-  //         .where({
-  //           group_id: request.params.group_id,
-  //           user_id: auth.user.id,
-  //         })
-  //         .delete()
-  //
-  //       const userStatController = new UserStatTransactionController()
-  //       userStatController.update_total_number_of(auth.user.id, 'total_number_of_communities')
-  //
-  //       const noti = new NotificationController_v2()
-  //       noti.delete_group_invites({ auth }, request.params.grp_id)
-  //
-  //       return true
-  //     } catch (error) {
-  //       LoggingRepository.log({
-  //         environment: process.env.NODE_ENV,
-  //         type: 'error',
-  //         source: 'backend',
-  //         context: __filename,
-  //         message: (error && error.message) || error,
-  //       })
-  //     }
-  //   } else {
-  //     return 'You are not Logged In!'
-  //   }
-  // }
 
   async get_all_my_group_approvals({ auth, request, response }) {
     try {
@@ -270,8 +239,8 @@ class UsergroupController {
           const noti = new NotificationController_v2()
           noti.add_approved_group_attendee({ auth }, request.params.grp_id, request.params.user_id)
 
-          let userStatController = new UserStatTransactionController()
-          userStatController.update_total_number_of(query_for_user[0].id, 'total_number_of_communities')
+          const userStatController = new UserStatTransactionController()
+          userStatController.update_total_number_of(request.params.user_id, 'total_number_of_communities')
 
           //delete this notification
           auth.user.id = request.params.user_id
@@ -391,6 +360,7 @@ class UsergroupController {
         }
 
         const permission_query_to_be_deleted_user = await Database.from('usergroups').where({ id: request.params.usergrp_id })
+
         if (permission_query_to_be_deleted_user.length > 0) {
           user_to_be_deleted_permission = permission_query_to_be_deleted_user[0].permission_level
         } else {
@@ -417,6 +387,35 @@ class UsergroupController {
 
         let userStatController = new UserStatTransactionController()
         userStatController.update_total_number_of(permission_query_to_be_deleted_user[0].user_id, 'total_number_of_communities')
+
+        return true
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
+      }
+    }
+  }
+
+  async destroy({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        const deleteMember = await Database.table('usergroups')
+          .where({
+            user_id: auth.user.id,
+            group_id: request.params.group_id,
+          })
+          .delete()
+
+        let userStatController = new UserStatTransactionController()
+        userStatController.update_total_number_of(auth.user.id, 'total_number_of_communities')
+
+        const noti = new NotificationController_v2()
+        noti.delete_group_invites({ auth }, request.params.group_id)
 
         return true
       } catch (error) {

@@ -58,12 +58,10 @@ const CoverImage = (props) => {
       }
     }
   }
-  const handleLeaveClick = async (id, user_id) => {
-    const data = await axios.delete(`/api/usergroup/delete_member/${id}/${user_id}`)
-    if (data) {
-      toast.success(<Toast_style text={`Out! We're out of ${props.name}!`} />)
-      props.routeProps.history.push('/?at=communities')
-    }
+  const handleLeaveClick = async (id) => {
+    axios.delete(`/api/usergroup/${id}`)
+    toast.success(<Toast_style text={`Time to skedaddle! We're out of ${props.name}!`} />)
+    props.routeProps.history.push('/?at=communities')
   }
   const handleJoinButton = async (id) => {
     if (props.current_user_permission == -1) {
@@ -71,7 +69,7 @@ const CoverImage = (props) => {
         group_id: id,
       })
       if (data) {
-        toast.success(<Toast_style text={'Join request sent. Let the waiting game begin'} />)
+        toast.success(<Toast_style text={'Join request sent. You need approval, let the waiting game begin'} />)
         setJoinlabel('Pending')
       }
     } else {
@@ -108,7 +106,7 @@ const CoverImage = (props) => {
             {toggle && labelMap[props.current_user_permission] == 'Joined' && (
               <div className='btn__option__dropdown'>
                 {props.current_user_permission != 0 && (
-                  <div className='dropdown__option' onClick={(e) => handleLeaveClick(props.id, props.user_id)}>
+                  <div className='dropdown__option' onClick={(e) => handleLeaveClick(props.id)}>
                     Leave
                   </div>
                 )}

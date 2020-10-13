@@ -153,7 +153,7 @@ export default class Members extends React.Component {
     } else {
       const { current_user_permission } = this.props
       if (member.permission_level > current_user_permission) {
-        const data = await axios.delete(`/api/usergroup/delete_member/${member.group_id}/${member.user_id}`)
+        const data = await axios.delete(`/api/usergroup/delete_member/${member.group_id}/${member.id}`)
         if (data && data.data) {
           const { group_members } = this.state
           const filterMembers = group_members.filter((members) => member.user_id != members.user_id)
