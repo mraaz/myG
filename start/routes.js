@@ -218,12 +218,12 @@ Route.get('/api/notifications/getunread_dings', 'NotificationController.getunrea
 
 //-----------------------------------------
 Route.post('/api/notifications_v2/getApprovals_Dashboard', 'NotificationController_v2.getApprovals_Dashboard')
-Route.get('/api/notifications_v2/delete/:id', 'NotificationController_v2.destroy')
+Route.delete('/api/notifications_v2/delete/:id', 'NotificationController_v2.destroy')
+Route.delete('/api/notifications_v2/delete_community/:id/:group_id/:user_id', 'NotificationController_v2.destroy_community')
 Route.post('/api/notifications_v2/getAllNoti', 'NotificationController_v2.getAllNotifications')
 Route.get('/api/notifications_v2/markAllNoti', 'NotificationController_v2.markAllNoti')
 Route.get('/api/notifications_v2/deleteAllNoti', 'NotificationController_v2.deleteAllNoti')
 Route.post('/api/notifications_v2/addFriend', 'NotificationController_v2.addFriend')
-Route.get('/api/notifications_v2/delete/:id', 'NotificationController_v2.destroy')
 Route.get('/api/notifications_v2/friend/:id', 'NotificationController_v2.checkFriend')
 Route.post('/api/notifications_v2/invitations', 'NotificationController_v2.invitations')
 Route.post('/api/notifications_v2/invitations_community', 'NotificationController_v2.invitations_community')

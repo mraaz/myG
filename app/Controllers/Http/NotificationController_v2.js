@@ -1054,7 +1054,39 @@ class NotificationController_v2 {
           })
           .delete()
 
-        return delete_noti
+        return 'Done'
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async destroy_community({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        const delete_noti = await Database.table('notifications')
+          .where({
+            id: request.params.id,
+          })
+          .delete()
+
+        const deleteMember = await Database.table('usergroups')
+          .where({
+            user_id: request.params.user_id,
+            group_id: request.params.group_id,
+            permission_level: 42,
+          })
+          .delete()
+
+        return 'Done'
       } catch (error) {
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
