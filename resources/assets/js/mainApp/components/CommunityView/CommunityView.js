@@ -50,7 +50,22 @@ const CommunityView = (props) => {
     setSingleSponsor(data)
     setShowSponsorModal(true)
   }
-  const hideSponsorModal = (data) => {
+  const hideSponsorModal = async (data) => {
+    if (data === true) {
+      const { match } = props.routeProps
+      const groupName = decodeURIComponent(match.params.name)
+      const {
+        data: { getOne = {} },
+      } = await axios.get(`/api/groups/getGroupDetails/${groupName}`)
+
+      if (Object.keys(getOne).length == 0) {
+        toast.error(<Toast_style text={`Sorry mate, can't find that`} />)
+        props.routeProps.history.push('/?at=communities')
+      }
+
+      document.title = 'myG - ' + getOne.name
+      setCommunityDetails({ ...getOne })
+    }
     setSingleSponsor({})
     setShowSponsorModal(false)
   }
