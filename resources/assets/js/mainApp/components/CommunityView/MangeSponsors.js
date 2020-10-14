@@ -49,10 +49,10 @@ export default class MangeSponsors extends React.Component {
   }
 
   createSponsor = async () => {
-    const { sponsor = {}, groups_id } = this.props
+    const { sponsor = {}, group_id } = this.props
     const { linkValue, media_url, aws_key_id = '' } = this.state
     const createSponsorData = await axios.post('/api/sponsor/create', {
-      group_id: groups_id,
+      group_id: group_id,
       type: 2,
       media_url: media_url == '' ? sponsor.media_url : media_url,
       link: linkValue == '' ? sponsor.link : linkValue,
