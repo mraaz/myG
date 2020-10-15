@@ -44,15 +44,15 @@ export default class MangeSponsors extends React.Component {
     })
     if (updateSponsor) {
       toast.error(<Toast_style text={'Great, Saved successfully!'} />)
-      this.props.handleModalStatus()
+      this.props.handleModalStatus(true)
     }
   }
 
   createSponsor = async () => {
-    const { sponsor = {}, groups_id } = this.props
+    const { sponsor = {}, group_id } = this.props
     const { linkValue, media_url, aws_key_id = '' } = this.state
     const createSponsorData = await axios.post('/api/sponsor/create', {
-      group_id: groups_id,
+      group_id: group_id,
       type: 2,
       media_url: media_url == '' ? sponsor.media_url : media_url,
       link: linkValue == '' ? sponsor.link : linkValue,
@@ -60,13 +60,17 @@ export default class MangeSponsors extends React.Component {
     })
     if (createSponsorData) {
       toast.error(<Toast_style text={'Great, Created successfully!'} />)
-      this.props.handleModalStatus()
+      this.props.handleModalStatus(true)
     }
   }
 
   handleLinkChange = (e) => {
     const data = e.target.value
-    this.setState({ linkValue: data, saveButtonDisabled: false })
+    if (data == '') {
+      this.setState({ linkValue: data, saveButtonDisabled: true })
+    } else {
+      this.setState({ linkValue: data, saveButtonDisabled: false })
+    }
   }
 
   handleImageChange = (e) => {
@@ -112,9 +116,9 @@ export default class MangeSponsors extends React.Component {
         <div className='modal-wrap'>
           <div className='modal__header'>
             <div className='tabs___header'>
-              <span className={`setting__tab `}>Edit Media</span>
+              <span className={`setting__tab  notHand`}>Edit Media</span>
             </div>
-            <div className='modal__close' onClick={(e) => this.props.handleModalStatus()}>
+            <div className='modal__close' onClick={(e) => this.props.handleModalStatus(false)}>
               <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/X_icon.svg' />
             </div>
           </div>
@@ -150,7 +154,7 @@ export default class MangeSponsors extends React.Component {
           <div className='modal__footer'>
             <MyGButton
               customStyles={{ color: '#FFFFFF', border: '2px solid #FFFFFF', background: '#000' }}
-              onClick={() => this.props.handleModalStatus()}
+              onClick={() => this.props.handleModalStatus(false)}
               text='Cancel'
             />
             <button type='button' disabled={saveButtonDisabled} onClick={() => this.handleSave(true)}>
@@ -159,7 +163,7 @@ export default class MangeSponsors extends React.Component {
           </div>
         </div>
 
-        <div className='modal-overlay' onClick={(e) => this.props.handleModalStatus()}></div>
+        <div className='modal-overlay' onClick={(e) => this.props.handleModalStatus(false)}></div>
       </div>
     )
   }

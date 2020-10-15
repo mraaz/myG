@@ -202,6 +202,9 @@
             &.active {
               border-bottom: 2px solid #e5c746;
             }
+            &.notHand {
+              cursor: default;
+            }
           }
         }
         .modal__close {
@@ -239,7 +242,7 @@
       }
       .modal__body {
         background: #171a1c 0% 0% no-repeat padding-box;
-        height: 400px;
+        min-height: 400px;
         overflow: scroll;
         width: 100%;
         padding: 2em 5em;
@@ -370,6 +373,10 @@
           &:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+          }
+          &:focus {
+            margin: 0;
+            padding: 0;
           }
         }
       }
@@ -596,6 +603,7 @@
       height: 350px;
       margin-bottom: 1em;
       position: relative;
+      cursor: pointer;
       input {
         display: none;
       }

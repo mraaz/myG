@@ -663,7 +663,7 @@ export default class IndividualPost extends Component {
                           Report
                         </div>
                       )}
-                      {[0, 1, 2].includes(current_user_permission) && (
+                      {[0, 1].includes(current_user_permission) && (
                         <div className='option' onClick={() => this.showAlert()}>
                           Delete
                         </div>
