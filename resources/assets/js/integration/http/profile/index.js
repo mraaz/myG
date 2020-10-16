@@ -1,5 +1,6 @@
 import axios from 'axios';
 import logger from '../../../common/logger';
+import notifyToast from '../../../common/toast';
 import { setAsFriendRedux, removeFriendRedux } from '../../../common/friend';
 
 export function fetchProfileInfo(alias) {
@@ -68,6 +69,7 @@ export function fetchDynamicFields(gameId) {
 }
 
 export function commendUser(alias, gameExperienceId) {
+  notifyToast('Woohoo! Thanking you kindly!')
   logger.log('PROFILE', 'HTTP', `Commending user ${alias} for game ${gameExperienceId}`);
   return axios.post(`/api/commend/${alias}/${gameExperienceId}`).then(response => response.data);
 }
