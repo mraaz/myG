@@ -624,13 +624,14 @@ export default class IndividualPost extends Component {
     if (post_deleted != true) {
       var show_media = false
 
-      let { post, current_user_permission = null } = this.props //destructing of object
+      let { post, current_user_permission = null, user } = this.props //destructing of object
       let {
         profile_img = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png',
         hash_tags = [],
         featured = 0,
       } = post //destructing of object
       //destructing of object
+      const { userInfo = {} } = user
 
       if (media_urls != [] && media_urls != null) {
         show_media = true
@@ -658,12 +659,12 @@ export default class IndividualPost extends Component {
                           Unfeatured
                         </div>
                       )}
-                      {![0, 1, 2].includes(current_user_permission) && (
+                      {![0, 1, 2].includes(current_user_permission) && userInfo.id != post.user_id && (
                         <div className='option' onClick={(e) => this.showReportAlert(post.id)}>
                           Report
                         </div>
                       )}
-                      {[0, 1].includes(current_user_permission) && (
+                      {([0, 1].includes(current_user_permission) || userInfo.id == post.user_id) && (
                         <div className='option' onClick={() => this.showAlert()}>
                           Delete
                         </div>

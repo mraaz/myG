@@ -29,6 +29,12 @@ const CoverImage = (props) => {
   const handleChange = async (event) => {
     if (props.current_user_permission == 0) {
       const file = event.target.files[0]
+      let pattern = /image-*/
+
+      if (!file.type.match(pattern)) {
+        toast.error(<Toast_style text={'Opps, Invalid file format! '} />)
+        return
+      }
       if (file.size > 10240) {
         const post = await Upload_to_S3(file, file.name, 4, props.id)
         setCoverImage(post.data.Location)
@@ -76,10 +82,13 @@ const CoverImage = (props) => {
       setToggleOption(!toggle)
     }
   }
-
   return (
     <div className='coverImage__container'>
-      <img onError={addDefaultSrc} src={coverImage == '' ? props.group_img : coverImage} className='featuredImage' />
+      <img
+        onError={addDefaultSrc}
+        src={coverImage == '' ? props.group_img : coverImage}
+        className={`featuredImage ${props.current_user_permission == 0 ? '' : 'nothand'}`}
+      />
       <input
         type='file'
         accept='image/jpeg,image/jpg,image/png'
@@ -88,7 +97,7 @@ const CoverImage = (props) => {
         className='featuredImageInput'
         onChange={(event) => handleChange(event)}
       />
-      {[0, 1].includes(props.current_user_permission) && (
+      {[0].includes(props.current_user_permission) && (
         <div className='addCoverImage__button' onClick={(e) => inputEl.current.click()}>
           Add/Edit Cover Image
         </div>
