@@ -1229,16 +1229,18 @@ section#content-container {
         }
         .insert__images {
           position: absolute;
-          right: -14px;
+          right: 5px;
           top: 22px;
           z-index: 2;
+          background: #171a1c;
+          border-radius: 50px;
           cursor: pointer;
           input {
             display: none;
           }
           img {
-            padding-right: 18px;
-            height: 35px;
+            width: 35px;
+            padding: 5px;
           }
         }
         .profile__image {
