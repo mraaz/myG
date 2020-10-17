@@ -29,6 +29,12 @@ const CoverImage = (props) => {
   const handleChange = async (event) => {
     if (props.current_user_permission == 0) {
       const file = event.target.files[0]
+      let pattern = /image-*/
+
+      if (!file.type.match(pattern)) {
+        toast.error(<Toast_style text={'Opps, Invalid file format! '} />)
+        return
+      }
       if (file.size > 10240) {
         const post = await Upload_to_S3(file, file.name, 4, props.id)
         setCoverImage(post.data.Location)

@@ -68,10 +68,9 @@ export default class Members extends React.Component {
   }
 
   handleSave = async (e) => {
-    console.log(this.props.groups_id, '<<< this.props.groups_id')
     const { communityName, approval, privacy } = this.state
     const sendInvite = await axios.post('/api/groups/update_settings', {
-      group_id: this.props.groups_id,
+      group_id: this.props.group_id,
       group_name: communityName,
       privacy: privacy,
       mApprovals: approval,
@@ -84,7 +83,7 @@ export default class Members extends React.Component {
     })
     if (text == 'true') {
       const delete_group = axios.post('/api/groups/delete', {
-        group_id: this.props.groups_id,
+        group_id: this.props.group_id,
       })
       if (delete_group) {
         toast.error(<Toast_style text={'Hmmmm, Group has been deleted successfully.'} />)
@@ -256,7 +255,7 @@ export default class Members extends React.Component {
                       View
                     </button>
                   </Link>
-                  {[0, 1].includes(current_user_permission) && (
+                  {[0, 1].includes(current_user_permission) && member.permission_level != 0 && (
                     <button type='button' className='Expel' onClick={(e) => this.showExpelAlert(member)}>
                       {' '}
                       Expel
