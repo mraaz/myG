@@ -29,7 +29,6 @@
 .platform-select,
 .description-text-area,
 .media__container {
-  padding-bottom: 15px;
   font-size: 13px;
 }
 
@@ -445,6 +444,10 @@
 .media__container {
   background: rgb(39, 49, 55);
   border: none !important;
+}
+
+.media__container div {
+  width: 100% !important;
 }
 
 .video-btn {
