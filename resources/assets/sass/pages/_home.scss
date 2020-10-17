@@ -1001,7 +1001,10 @@ section#content-container {
             display: flex;
             font-size: 14px;
             font-weight: bold;
-            color: #fff;
+            color: #ffffff;
+            a {
+              color: #ffffff;
+            }
             a:hover {
               color: #0178ff;
             }
@@ -1170,10 +1173,7 @@ section#content-container {
       .image-gallery-play-button {
         display: none;
       }
-      .image-gallery-image {
-        width: 100% !important;
-        max-height: 100vh !important;
-      }
+
       .uploadImage_loading {
         position: relative;
         top: 23px;
@@ -1229,16 +1229,18 @@ section#content-container {
         }
         .insert__images {
           position: absolute;
-          right: -14px;
+          right: 5px;
           top: 22px;
           z-index: 2;
+          background: #171a1c;
+          border-radius: 50px;
           cursor: pointer;
           input {
             display: none;
           }
           img {
-            padding-right: 18px;
-            height: 35px;
+            width: 35px;
+            padding: 5px;
           }
         }
         .profile__image {
