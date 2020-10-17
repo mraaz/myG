@@ -84,9 +84,9 @@ class ProfileRepository {
     const profileSchema = new ProfileSchema({
       profileId,
       alias: alias || profile.alias,
-      firstName: (visibilityName === 'public' || visibilityName === 'friends' && isFriend || isSelf) ? firstName : '',
-      lastName: (visibilityName === 'public' || visibilityName === 'friends' && isFriend || isSelf) ? lastName : '',
-      email: (visibilityEmail === 'public' || visibilityEmail === 'friends' && isFriend || isSelf) ? email : '',
+      firstName: isSelf || visibilityName === 'public' || (visibilityName === 'friends' && isFriend) ? firstName : '',
+      lastName: isSelf || visibilityName === 'public' || (visibilityName === 'friends' && isFriend) ? lastName : '',
+      email: isSelf || visibilityEmail === 'public' || (visibilityEmail === 'friends' && isFriend) ? email : '',
       image,
       background,
       languages,
@@ -239,6 +239,15 @@ class ProfileRepository {
     return { profile };
   }
 
+  async verifyGameUpdates({ game, level, experience, dynamic }) {
+    if (!game) throw new Error('No game was selected.');
+    if (!level) throw new Error('No level was selected.');
+    if (!experience) throw new Error('No experience was selected.');
+    const dynamicFields = await this.fetchDynamicFields({ gameId: game });
+    const requiresLink = Object.keys(dynamicFields).includes('stats_link');
+    if (requiresLink && !get(dynamic, 'stats_link')) throw new Error('No stats link was selected.');
+  }
+
   async updateGame({ requestingUserId, id, imageKey, imageSource, mainFields, game, gameName, nickname, level, experience, team, tags, rating, dynamic, background }) {
     if (!game && gameName) {
       const gameNameModel = new GameName();
@@ -255,6 +264,8 @@ class ProfileRepository {
       }
     }
     
+    await this.verifyGameUpdates({ game, level, experience, dynamic });
+
     const gameExperience = id ? await GameExperience.find(id) : new GameExperience();
     gameExperience.user_id = requestingUserId;
     gameExperience.game_names_id = game;
