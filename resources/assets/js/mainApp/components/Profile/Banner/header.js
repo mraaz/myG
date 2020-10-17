@@ -66,7 +66,7 @@ export default class Header extends React.Component {
     if (this.props.profile.isSelf) return null
     if (this.props.profile.isFriend) {
       return (
-        <div className='button clickable' onClick={() => showMessengerAlert('Are you sure mate?', this.unfriend, null, 'Yes')}>
+        <div className='button clickable' onClick={() => showMessengerAlert('Fair dinkum! You sure you want to do this?', this.unfriend, null, 'Make it so')}>
           Remove Friend
         </div>
       )
@@ -109,7 +109,7 @@ export default class Header extends React.Component {
     if (this.props.profile.isSelf) return null
     if (this.props.profile.isFollower) {
       return (
-        <div className='button clickable' onClick={() => showMessengerAlert('Are you sure mate?', this.unfollow, null, 'Yes')}>
+        <div className='button clickable' onClick={() => showMessengerAlert('Fair dinkum! You sure you want to do this?', this.unfollow, null, 'Make it so')}>
           Unfollow
         </div>
       )
