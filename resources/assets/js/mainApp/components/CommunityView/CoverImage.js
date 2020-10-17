@@ -82,10 +82,13 @@ const CoverImage = (props) => {
       setToggleOption(!toggle)
     }
   }
-
   return (
     <div className='coverImage__container'>
-      <img onError={addDefaultSrc} src={coverImage == '' ? props.group_img : coverImage} className='featuredImage' />
+      <img
+        onError={addDefaultSrc}
+        src={coverImage == '' ? props.group_img : coverImage}
+        className={`featuredImage ${props.current_user_permission == 0 ? '' : 'nothand'}`}
+      />
       <input
         type='file'
         accept='image/jpeg,image/jpg,image/png'
@@ -94,7 +97,7 @@ const CoverImage = (props) => {
         className='featuredImageInput'
         onChange={(event) => handleChange(event)}
       />
-      {[0, 1].includes(props.current_user_permission) && (
+      {[0].includes(props.current_user_permission) && (
         <div className='addCoverImage__button' onClick={(e) => inputEl.current.click()}>
           Add/Edit Cover Image
         </div>

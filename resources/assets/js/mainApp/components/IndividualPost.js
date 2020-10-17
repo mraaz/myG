@@ -625,7 +625,6 @@ export default class IndividualPost extends Component {
       var show_media = false
 
       let { post, current_user_permission = null, user } = this.props //destructing of object
-      console.log('user ', user)
       let {
         profile_img = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png',
         hash_tags = [],
