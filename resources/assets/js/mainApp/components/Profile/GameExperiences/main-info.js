@@ -8,8 +8,8 @@ import MyGSelect from '../../common/MyGSelect'
 import MyGRateSlider from '../../common/MyGRateSlider'
 import { Game_name_values, Disable_keys, Schedule_Game_Tags } from '../../Utility_Function'
 import { Upload_to_S3, Remove_file } from '../../AWS_utilities'
-import { notifyToast } from '../../../../common/toast'
 import { fetchDynamicFields } from '../../../../integration/http/profile'
+import notifyToast from '../../../../common/toast'
 
 const MAIN_FIELDS_OPTIONS = [
   { value: 'Nickname', label: 'Nickname' },
@@ -57,10 +57,9 @@ export default class MainInfo extends React.Component {
     if (gameId) fetchDynamicFields(gameId).then((dynamicFields) => !dynamicFields.error && this.setState({ dynamicFields }))
   }
 
-  onSave = () => {
-    const { game, level, experience } = this.props.experience
-    if (!game || !level || !experience) return
-    this.props.onUpdate()
+  onSave = (canSave) => {
+    if (canSave) return this.props.onUpdate()
+    notifyToast('Sorry mate! Required fields not filled in.')
   }
 
   renderMainFields = () => {
@@ -394,10 +393,12 @@ export default class MainInfo extends React.Component {
       const isValid = validation ? validation.test(value) : true
       return isRequiredAndMissing || !isValid
     })
-    const buttonState = game && level && experience && !hasInvalidDynamicFields ? 'clickable' : 'disabled'
+    this.props.hasInvalidDynamicFields(hasInvalidDynamicFields);
+    const canSave = !!game && !!level && !!experience && !hasInvalidDynamicFields;
+    const buttonState = canSave ? '' : 'disabled'
     return (
       <div className='save-container'>
-        <div className={`save-button ${buttonState}`} onClick={() => buttonState === 'clickable' && this.onSave()}>
+        <div className={`save-button clickable ${buttonState}`} onClick={() => this.onSave(canSave)}>
           Save
         </div>
       </div>

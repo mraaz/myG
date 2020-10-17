@@ -129,6 +129,7 @@ export default class EditGameExperience extends React.Component {
           onUpdate={this.onUpdate}
           experience={this.state}
           storeExperience={(data) => this.setState(data)}
+          hasInvalidDynamicFields={(hasInvalidDynamicFields) => this.setState({ hasInvalidDynamicFields })}
           storeDynamicExperience={(data) => this.setState(previous => ({ dynamic: { ...previous.dynamic, ...data } }))}
         />
       )
@@ -140,6 +141,7 @@ export default class EditGameExperience extends React.Component {
         onClose={this.onClose}
         onUpdate={this.onUpdate}
         experience={this.state}
+        hasInvalidDynamicFields={this.state.hasInvalidDynamicFields}
         storeExperience={(data) => this.setState(data)}
       />
     )
