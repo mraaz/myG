@@ -8,7 +8,7 @@ class ElasticsearchRepository {
     if (!this.client) {
       this.client = new elasticsearch.Client({
         host: process.env.ELASTICSEARCH,
-        log: 'trace',
+        log: 'error',
         apiVersion: '7.7',
       });
     }
