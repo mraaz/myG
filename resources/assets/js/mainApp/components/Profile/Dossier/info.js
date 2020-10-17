@@ -289,6 +289,7 @@ export class DossierInfo extends React.Component {
           isMulti
           isSearchable
         />
+        <span className='post-hint'>(Max 3)</span>
       </div>
     )
   }
