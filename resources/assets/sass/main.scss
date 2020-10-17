@@ -436,19 +436,13 @@ label {
     position: relative;
     display: flex;
     flex-direction: row;
-
-    .line {
-      position: absolute;
-      top: 50%;
-      background-color: #384952;
-      height: 1px;
-      width: 100%;
-    }  
+    margin-top: -10px;
+    border-bottom: 1px solid #384952;
 
     .rating-container {
       width: 30px;
       height: 20px;
-      z-index: 1;
+      margin-bottom: -10px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -459,7 +453,6 @@ label {
       height: 16px;
       border-radius: 1000px;
       background-color: #384952;
-      z-index: 1;
     }
 
     .rating:hover {
@@ -467,7 +460,6 @@ label {
       height: 16px;
       border-radius: 1000px;
       background-color: #e5c746;
-      z-index: 1;
     }
 
     .selected {
