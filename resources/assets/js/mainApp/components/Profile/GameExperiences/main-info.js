@@ -63,8 +63,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderMainFields = () => {
-    if (!this.props.isSelf)
-      return this.renderDisabledField('Main Fields', this.props.experience.mainFields.map((field) => field.value).join(', '))
+    if (!this.props.isSelf) return null;
     return (
       <div className='row'>
         <span className='hint'>Main Fields</span>
@@ -129,6 +128,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderTeamInput = () => {
+    if (!this.props.isSelf) return this.renderDisabledField('Team', (this.props.experience.team || {}).value)
     return (
       <div className='row'>
         <span className='hint'>Team</span>
@@ -136,7 +136,6 @@ export default class MainInfo extends React.Component {
           <input
             className='input'
             value={this.props.experience.team}
-            disabled={!this.props.isSelf}
             onChange={(event) => this.props.storeExperience({ team: event.target.value })}></input>
         </div>
       </div>
@@ -144,6 +143,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderNicknameInput = () => {
+    if (!this.props.isSelf) return this.renderDisabledField('Nickname', (this.props.experience.nickname || {}).value)
     return (
       <div className='row'>
         <span className='hint'>Nickname</span>
@@ -151,7 +151,6 @@ export default class MainInfo extends React.Component {
           <input
             className='input'
             value={this.props.experience.nickname}
-            disabled={!this.props.isSelf}
             onChange={(event) => this.props.storeExperience({ nickname: event.target.value })}></input>
         </div>
       </div>
@@ -416,6 +415,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderDisabledField(title, value) {
+    if (!value) return null;
     return (
       <div className='row'>
         <span className='hint'>{title}</span>

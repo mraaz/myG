@@ -114,6 +114,7 @@ export default class Experience extends React.Component {
   }
 
   renderDisabledField(title, value) {
+    if (!value) return null;
     return (
       <div className='row'>
         <span className='hint'>{title}</span>
@@ -126,7 +127,7 @@ export default class Experience extends React.Component {
 
   render() {
     return (
-      <div id='profile-game-experience' className='content small-content'>
+      <div id='profile-game-experience' className='content'>
         {this.renderTeamInput()}
         {this.renderRoleInput()}
         {this.renderExperienceInput()}
