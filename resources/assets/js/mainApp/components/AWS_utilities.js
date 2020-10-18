@@ -24,7 +24,9 @@ export async function Upload_to_S3(file, name, type = 0, id = null, chat = false
     })
     return post
   } catch (error) {
-    toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file. Refresh and try again???'} />)
+    toast.success(
+      <Toast_style text={'Opps, something went wrong. Unable to upload your file. Refresh and try again or reduce the file size?'} />
+    )
     logger.log('RENDER', 'AWS upload')
     return false
   }
