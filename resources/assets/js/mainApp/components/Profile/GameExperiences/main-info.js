@@ -193,7 +193,7 @@ export default class MainInfo extends React.Component {
     if (this.props.isSelf) return null
     return (
       <div className='row'>
-        <span className='hint'>Commendation</span>
+        <span className='hint'>Commends</span>
         <div className='input-container-row'>
           <input className='input' value={`${commendationLevel(this.props.experience.commends)}`} disabled={true}></input>
         </div>
