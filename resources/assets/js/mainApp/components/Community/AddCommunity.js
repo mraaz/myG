@@ -263,7 +263,7 @@ const AddCommunity = ({
         </div>
         <div className='main-settings-content'>
           <div className='field-title'>
-            <p>Community Name (Be, unique it must.)</p>
+            <p>Community Name (Be, unique it must)</p>
           </div>
           <div className='game-title-select'>
             <MyGInput

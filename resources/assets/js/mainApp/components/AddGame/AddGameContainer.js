@@ -133,9 +133,11 @@ const AddGameContainer = () => {
       value_three = { [optionalFieldsState.value_three_key]: tmp }
     }
     if (optionalFieldsState.value_four != null) {
+      let tmp = Convert_to_comma_delimited_value(optionalFieldsState.value_four)
       value_four = { [optionalFieldsState.value_four_key]: tmp }
     }
     if (optionalFieldsState.value_five != null) {
+      let tmp = Convert_to_comma_delimited_value(optionalFieldsState.value_five)
       value_five = { [optionalFieldsState.value_five_key]: tmp }
     }
 

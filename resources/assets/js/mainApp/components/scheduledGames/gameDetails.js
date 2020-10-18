@@ -122,6 +122,9 @@ export default class GameDetails extends Component {
                   const Obj = fields[0]
                   if (Obj != null) {
                     values = Object.values(Obj)[0]
+                    if (values == undefined || values == null) {
+                      values = ''
+                    }
                   }
                   return (
                     <Fragment>

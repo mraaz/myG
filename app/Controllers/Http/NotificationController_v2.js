@@ -1,11 +1,15 @@
 'use strict'
 
 const Notification = use('App/Models/Notification')
+const Post = use('App/Models/Post')
+
 const Database = use('Database')
+
 const ScheduleGameController = use('./ScheduleGameController')
 const LoggingRepository = require('../../Repositories/Logging')
 
-const Post = use('App/Models/Post')
+const ChatRepository = require('../../Repositories/Chat')
+const { formatDateTimeFromNow } = require('../../Common/date')
 
 // Split the array into halves and merge them recursively
 function mergeSort(arr) {
