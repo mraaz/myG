@@ -7,6 +7,7 @@ import { fetchProfileInfoAction, updateProfileInfoAction, updateProfileGameActio
 import Banner from '../Banner';
 import ProfileInfo from '../Info';
 import GameExperiences from '../GameExperiences';
+import GamerSuggestions from '../GamerSuggestions';
 import MyPosts from '../../MyPosts'
 
 export class Profile extends React.Component {
@@ -34,6 +35,7 @@ export class Profile extends React.Component {
         <Banner profile={this.props.profile} updateProfile={this.props.updateProfile} />
         <ProfileInfo alias={this.props.alias} profile={this.props.profile} updateProfile={this.props.updateProfile} />
         <GameExperiences userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
+        <GamerSuggestions />
         <MyPosts initialData={this.props.initialData} />
       </div>
     );

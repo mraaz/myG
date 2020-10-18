@@ -389,6 +389,7 @@ class ProfileRepository {
   }
 
   async decryptField(field) {
+    if (!field) return field;
     try {
       const { privateKey } = await this.getEncryptionKeyPair();
       return cryptico.decrypt(field, privateKey).plaintext;
