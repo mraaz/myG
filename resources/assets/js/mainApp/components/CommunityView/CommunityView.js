@@ -111,9 +111,9 @@ const CommunityView = (props) => {
             )
           })}
         {Sponsors.length < 2 &&
-          [1, 2].map((Sponsor) => {
+          [...new Array(2 - Sponsors.length)].map((Sponsor, index) => {
             return (
-              <div className='Sponsors' key={Sponsor}>
+              <div className='Sponsors' key={index}>
                 <a href={`/`} target='_blank'>
                   <img className='Sponsors__image' onError={addDefaultSrc} src={``} />
                 </a>

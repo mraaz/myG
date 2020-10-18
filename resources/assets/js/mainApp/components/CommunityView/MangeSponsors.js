@@ -84,6 +84,12 @@ export default class MangeSponsors extends React.Component {
     if (fileList.length > 0) {
       let type = fileList[0].type.split('/')
       let name = `Sponsor_${type}_${+new Date()}_${fileList[0].name}`
+      let pattern = /image-*/
+
+      if (!fileList[0].type.match(pattern)) {
+        toast.error(<Toast_style text={'Opps, Invalid file format! '} />)
+        return
+      }
       this.doUploadS3(fileList[0], name)
     }
   }
