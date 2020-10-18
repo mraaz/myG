@@ -90,7 +90,7 @@ export default class Uploader extends React.Component {
         activeStyle={this.uploadStyle()}
         accept='image/jpeg,image/jpg,image/png,image/gif,video/mp4,video/webm,video/ogg'
         minSize={0}
-        maxSize={52428800}>
+        maxSize={10485760}>
         {this.props.children}
       </Dropzone>
     )
