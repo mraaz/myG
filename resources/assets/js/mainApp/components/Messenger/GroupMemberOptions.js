@@ -42,6 +42,11 @@ class GroupMemberOptions extends React.Component {
     this.props.addAsFriend(contactId)
   }
 
+  openProfile = (alias) => {
+    const url = `${window.location.origin}/profile/${alias}`
+    window.open(url, '_blank').focus()
+  }
+
   changeOwnership = () => {
     this.setState({ settingAsOwner: false })
     const contactId = this.props.groupContacts.find((contact) => contact.name === this.state.ownerInput).contactId
@@ -191,11 +196,13 @@ class GroupMemberOptions extends React.Component {
   }
 
   renderMemberInfo = (icon, name, isGuest) => {
-    const iconStyle = isGuest ? 'chat-group-guest-icon' : 'chat-group-member-icon';
+    const iconStyle = isGuest ? 'chat-group-guest-icon' : 'chat-group-member-icon'
     return (
       <div className='chat-group-member-info'>
         <div className={iconStyle} style={{ backgroundImage: `url(${icon})` }} />
-        <div className='chat-group-member-name'>{name}</div>
+        <div className='chat-group-member-name clickable' onClick={() => !isGuest && this.openProfile(name)}>
+          {name}
+        </div>
       </div>
     )
   }
