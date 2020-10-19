@@ -2,6 +2,7 @@ import React from 'react'
 import { getAssetUrl } from '../../../../common/assets'
 import { ignoreFunctions } from '../../../../common/render'
 import Experience from './experience'
+import notifyToast from '../../../../common/toast'
 
 export default class Experiences extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -12,11 +13,11 @@ export default class Experiences extends React.Component {
     if (!this.props.experience.background.length) this.onAddExperience()
   }
 
-  onSave = () => {
-    const { game, level, experience } = this.props.experience
-    if (!game || !level || !experience) return
-    this.props.onUpdate()
+  onSave = (canSave) => {
+    if (canSave) return this.props.onUpdate()
+    notifyToast('Sorry mate! Required fields not filled in.')
   }
+
 
   onAddExperience = () => {
     const background = [...this.props.experience.background]
@@ -63,10 +64,11 @@ export default class Experiences extends React.Component {
   renderSave = () => {
     if (!this.props.isSelf) return null
     const { game, level, experience } = this.props.experience
-    const buttonState = game && level && experience ? 'clickable' : 'disabled'
+    const canSave = !!game && !!level && !!experience & !this.props.hasInvalidDynamicFields;
+    const buttonState = canSave ? '' : 'disabled'
     return (
       <div className='save-container'>
-        <div className={`save-button ${buttonState}`} onClick={this.onSave}>
+        <div className={`save-button clickable ${buttonState}`} onClick={() => this.onSave(canSave)}>
           Save
         </div>
       </div>

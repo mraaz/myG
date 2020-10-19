@@ -28,7 +28,7 @@ export default class DossierSocialHub extends React.Component {
   }
 
   onSave = () => {
-    if (!this.hasChanges()) return
+    if (!this.canSave()) return
     this.props.updateProfile(this.props.profile.alias, {
       twitch: /^((https:\/\/)?www.)?twitch.tv\//.test(this.state.twitch) ? this.state.twitch : '',
       discord: /^[A-z]+#\d+$/.test(this.state.discord) ? this.state.discord : '',
@@ -39,13 +39,13 @@ export default class DossierSocialHub extends React.Component {
     this.props.onClose()
   }
 
-  hasChanges = () => {
-    return (
-      /^((https:\/\/)?www.)?twitch.tv\//.test(this.state.twitch) ||
-      /^[A-z]+#\d+$/.test(this.state.discord) ||
-      /^((https:\/\/)?)?steamcommunity.com\/profiles\//.test(this.state.steam) ||
-      /^((https:\/\/)?www.)?youtube.com\/channel\//.test(this.state.youtube) ||
-      /^(((https:\/\/)?www.)?facebook.com\/)|(((https:\/\/)?www.)?fb.me\/)/.test(this.state.facebook)
+  canSave = () => {
+    return !(
+      this.state.twitch && !/^((https:\/\/)?www.)?twitch.tv\//.test(this.state.twitch) ||
+      this.state.discord && !/^[A-z]+#\d+$/.test(this.state.discord) ||
+      this.state.steam && !/^((https:\/\/)?)?steamcommunity.com\/profiles\//.test(this.state.steam) ||
+      this.state.youtube && !/^((https:\/\/)?www.)?youtube.com\/channel\//.test(this.state.youtube) ||
+      this.state.faceb && !/^(((https:\/\/)?www.)?facebook.com\/)|(((https:\/\/)?www.)?fb.me\/)/.test(this.state.facebook)
     )
   }
 
@@ -211,7 +211,7 @@ export default class DossierSocialHub extends React.Component {
 
   renderSave = () => {
     if (!this.props.isSelf) return
-    const buttonState = this.hasChanges() ? 'clickable' : 'disabled'
+    const buttonState = this.canSave() ? 'clickable' : 'disabled'
     return (
       <div className='save-container'>
         <div className={`save-button ${buttonState}`} onClick={this.onSave}>
@@ -246,7 +246,7 @@ export default class DossierSocialHub extends React.Component {
 
   renderEmpty = () => {
     if (this.props.isSelf) return
-    if (this.hasChanges()) return
+    if (this.canSave()) return
     return <span className='empty-tab'>Nothing to show here mate!</span>
   }
 

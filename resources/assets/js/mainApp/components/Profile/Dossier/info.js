@@ -250,7 +250,7 @@ export class DossierInfo extends React.Component {
           onSelect={(country) => this.setState({ country })}
           searchOptions={{ types: ['(regions)'] }}>
           {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-            <div className='input-container'>
+            <div className='input-container country'>
               <input
                 {...getInputProps({
                   placeholder: 'Search Places ...',
@@ -289,6 +289,7 @@ export class DossierInfo extends React.Component {
           isMulti
           isSearchable
         />
+        <span className='post-hint'>(Max 3)</span>
       </div>
     )
   }

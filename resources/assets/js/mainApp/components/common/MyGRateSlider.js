@@ -57,7 +57,6 @@ export default class MyGRateSlider extends React.PureComponent {
     return (
       <div className='rate-slider'>
         <div className='slider'>
-          <div className='line' />
           {ratings.map(this.renderRating)}
         </div>
         <div className='rating-icon' style={{ backgroundImage: this.getRatingIcon() }} />
