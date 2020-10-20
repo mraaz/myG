@@ -72,14 +72,7 @@ ingress:
       location ~* ^.+\.(?:css|cur|js|jpe?g|gif|htc|ico|png|html|xml|otf|ttf|eot|woff|woff2|svg)$ {
         access_log off;
         expires 30d;
-        add_header Cache-Control public;
-
-        tcp_nodelay off;
-
-        open_file_cache max=3000 inactive=120s;
-        open_file_cache_valid 45s;
-        open_file_cache_min_uses 2;
-        open_file_cache_errors off;
+        add_header Cache-Control "public";
       }
     cert-manager.io/cluster-issuer: myg
     #kubernetes.io/tls-acme: "true"
@@ -96,6 +89,12 @@ ingress2:
   annotations:
     kubernetes.io/ingress.class: nginx
     #ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/configuration-snippet : |
+      location ~* ^.+\.(?:css|cur|js|jpe?g|gif|htc|ico|png|html|xml|otf|ttf|eot|woff|woff2|svg)$ {
+        access_log off;
+        expires 30d;
+        add_header Cache-Control "public";
+      }
     cert-manager.io/cluster-issuer: myg-www
     #kubernetes.io/tls-acme: "true"
   paths: []
