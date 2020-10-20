@@ -241,6 +241,8 @@ export default class GroupMain extends Component {
     const searchText = e.target.value
     this.setState({ searchText })
 
+    console.log(this.state.yourCommunityTab, '<<<RAAZ')
+
     if (this.state.yourCommunityTab) {
       if (this.timeout) clearTimeout(this.timeout)
       this.timeout = setTimeout(() => {

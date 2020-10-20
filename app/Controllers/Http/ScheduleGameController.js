@@ -1148,6 +1148,7 @@ class ScheduleGameController {
           }
         }
       }
+      delete obj['value_six']
 
       return {
         obj,
@@ -1264,6 +1265,9 @@ class ScheduleGameController {
                 tmp_array[arr_game_fields[0]] = getGameTransactions.value_one
             }
             for (let key in tmp_array) {
+              if (key == 'stats_link') {
+                continue
+              }
               let tmp_tmp = { [key]: tmp_array[key], label: obj4[key], placeholder: obj2[key], type: obj3[key] }
               additional_submit_info_fields.push([tmp_tmp, obj2[key], obj3[key]])
             }
@@ -1417,6 +1421,9 @@ class ScheduleGameController {
               tmp_array[arr_game_fields[0]] = getGameTransactions.value_one
           }
           for (let key in tmp_array) {
+            if (key == 'stats_link') {
+              continue
+            }
             let tmp_tmp = { [key]: tmp_array[key] }
             additional_submit_info_fields.push([tmp_tmp, obj2[key], obj3[key]])
           }
@@ -1683,6 +1690,8 @@ class ScheduleGameController {
       if (JSON.stringify(additional_info_data) != '{}') {
         additional_info = true
       }
+
+      delete additional_info_data['stats_link']
 
       return {
         additional_info,

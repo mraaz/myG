@@ -353,6 +353,8 @@ class AttendeeController {
         additional_submit_info = true
       }
 
+      delete additional_submit_info_fields['value_six']
+
       return {
         additional_submit_info,
         additional_submit_info_fields,

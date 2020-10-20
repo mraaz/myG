@@ -47,6 +47,8 @@ function merge(left, right) {
 class NotificationController_v2 {
   async getApprovals_Dashboard({ auth, request, response }) {
     //Return results for Activity_type: 1, 11, 12
+    console.log('getApprovals_Dashboard')
+    console.log(request.input('activity_type'))
     let set_limit = 18,
       singleArr = []
 

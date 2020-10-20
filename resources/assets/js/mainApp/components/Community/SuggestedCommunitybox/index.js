@@ -9,7 +9,6 @@ import { Toast_style } from '../../Utility_Function'
 import '../../../styles/Community/AddCommunityStyles.scss'
 
 const SuggestedCommunityBox = (props) => {
-  console.log(props);
   const [joinState, updatejoinState] = useState(true)
 
   const redirect2Group = () => {
