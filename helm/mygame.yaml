@@ -70,8 +70,10 @@ ingress:
     #ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/configuration-snippet : |
       location ~* ^.+\.(?:css|cur|js|jpe?g|gif|htc|ico|png|html|xml|otf|ttf|eot|woff|woff2|svg)$ {
+        root /usr/src/app;
         access_log off;
         expires 30d;
+        add_header Pragma public;
         add_header Cache-Control "public";
       }
     cert-manager.io/cluster-issuer: myg
@@ -91,8 +93,10 @@ ingress2:
     #ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/configuration-snippet : |
       location ~* ^.+\.(?:css|cur|js|jpe?g|gif|htc|ico|png|html|xml|otf|ttf|eot|woff|woff2|svg)$ {
+        root /usr/src/app;
         access_log off;
         expires 30d;
+        add_header Pragma public;
         add_header Cache-Control "public";
       }
     cert-manager.io/cluster-issuer: myg-www
