@@ -65,9 +65,11 @@ const CoverImage = (props) => {
     }
   }
   const handleLeaveClick = async (id) => {
-    axios.delete(`/api/usergroup/${id}`)
-    toast.success(<Toast_style text={`Time to skedaddle! We're out of ${props.name}!`} />)
-    props.routeProps.history.push('/?at=communities')
+    const leaverep = await axios.delete(`/api/usergroup/${id}`)
+    if (leaverep) {
+      toast.success(<Toast_style text={`Time to skedaddle! We're out of ${props.name}!`} />)
+      props.routeProps.history.push('/?at=communities')
+    }
   }
   const handleJoinButton = async (id) => {
     if (props.current_user_permission == -1) {
