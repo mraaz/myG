@@ -10,7 +10,7 @@ export function fetchProfileInfo(alias) {
 
 export function sendFriendRequest(alias, id) {
   logger.log('PROFILE', 'HTTP', `Sending friend request for ${alias}`);
-  return axios.post('/api/notifications/addFriend', { other_user_id: id }).then(response => response.data);
+  return axios.post('/api/notifications_v2/addFriend', { other_user_id: id }).then(response => response.data);
 }
 
 export function confirmFriendRequest(alias, id, notificationId) {

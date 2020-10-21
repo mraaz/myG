@@ -6,7 +6,7 @@
 import React, { Component, Fragment } from 'react'
 import axios from 'axios'
 
-import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
+import AsyncSelect from 'react-select/lib/Async'
 import Select from 'react-select'
 import { Game_name_values, Disable_keys, Schedule_Game_Tags, Toast_style, Game_name_Tags } from '../Utility_Function'
 import { toast } from 'react-toastify'
@@ -681,7 +681,7 @@ export default class ScheduleGames extends Component {
                     <div className='col-md-6'>
                       <div className='viewGame__gameName'>
                         <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                        <AsyncCreatableSelect
+                        <AsyncSelect
                           cacheOptions
                           defaultOptions
                           isValidNewOption={() => false}

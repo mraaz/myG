@@ -10,7 +10,7 @@ class FollowerController {
   async store({ auth, request }) {
     if (auth.user) {
       try {
-        let followerId = null
+        let followerId = request.input('follower_id')
         const followerIdInput = request.input('follower_id')
 
         if (request.input('follower_alias') != undefined) {
