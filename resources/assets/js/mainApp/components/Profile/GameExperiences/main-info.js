@@ -43,6 +43,12 @@ const commendationLevel = (commends) => {
   return 'Ultimate Master'
 }
 
+const createOption = (label: string, game_names_id: string) => ({
+  label,
+  value: label,
+  game_names_id,
+})
+
 export default class MainInfo extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
@@ -100,6 +106,13 @@ export default class MainInfo extends React.Component {
     return results.length ? results : [{ label: input, value: input }]
   }
 
+  handleCreate_game_name = (inputValue: any) => {
+    const newOption = createOption(inputValue, null)
+
+    //Felipe
+    //Not sure how to save newOption to this.props.experience.game
+  }
+
   renderGameTitle = () => {
     if (!this.props.isSelf) return this.renderDisabledField('Game Title', (this.props.experience.game || {}).value)
     return (
@@ -107,10 +120,11 @@ export default class MainInfo extends React.Component {
         <span className='hint'>Game Title</span>
         <div className='input-container-row viewGame__gameName'>
           <AsyncCreatableSelect
+            cacheOptions
             defaultOptions
-            isValidNewOption={() => false}
             loadOptions={this.loadTitleOptions}
             onChange={(input) => this.onTitleChange(input)}
+            onCreateOption={this.handleCreate_game_name}
             isClearable
             value={this.props.experience.game}
             className='viewGame__name full-width'
@@ -217,8 +231,8 @@ export default class MainInfo extends React.Component {
         <span className='hint'>Tags</span>
         <div className='input-container-row viewGame__gameName'>
           <AsyncCreatableSelect
+            cacheOptions
             defaultOptions
-            isValidNewOption={() => false}
             loadOptions={this.loadTagOptions}
             onChange={(input) => this.onTagChange(input)}
             isClearable
@@ -251,7 +265,7 @@ export default class MainInfo extends React.Component {
   renderDynamicFields = () => {
     if (!this.state.dynamicFields || !this.state.dynamicFields.length) return null
     return this.state.dynamicFields.map((field) => {
-      if (!this.props.isSelf && !get(this.props, `experience.dynamic.${field.id}`)) return null;
+      if (!this.props.isSelf && !get(this.props, `experience.dynamic.${field.id}`)) return null
       return (
         <div className='row'>
           {field.type === 'Multi' && this.renderMultiField(field)}
@@ -263,7 +277,12 @@ export default class MainInfo extends React.Component {
   }
 
   renderMultiField = (field) => {
-    if (!this.props.isSelf) return this.renderDisabledField(field.label, get(this.props, `experience.dynamic.${field.id}`, []).map(({ value }) => value), true)
+    if (!this.props.isSelf)
+      return this.renderDisabledField(
+        field.label,
+        get(this.props, `experience.dynamic.${field.id}`, []).map(({ value }) => value),
+        true
+      )
     return (
       <React.Fragment>
         <span className='hint'>{field.label}</span>
@@ -281,7 +300,12 @@ export default class MainInfo extends React.Component {
   }
 
   renderSingleField = (field) => {
-    if (!this.props.isSelf) return this.renderDisabledField(field.label, get(this.props, `experience.dynamic.${field.id}`).map(({ value }) => value), true)
+    if (!this.props.isSelf)
+      return this.renderDisabledField(
+        field.label,
+        get(this.props, `experience.dynamic.${field.id}`).map(({ value }) => value),
+        true
+      )
     return (
       <React.Fragment>
         <span className='hint'>{field.label}</span>
@@ -421,7 +445,7 @@ export default class MainInfo extends React.Component {
 
   renderDisabledField(title, value, skipRow) {
     if (!value) return null
-    const disabledValue = Array.isArray(value) ? value.join(', ') : value;
+    const disabledValue = Array.isArray(value) ? value.join(', ') : value
     const disabledField = (
       <React.Fragment>
         <span className='hint'>{title}</span>

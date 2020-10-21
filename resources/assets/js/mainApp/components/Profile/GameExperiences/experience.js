@@ -82,7 +82,7 @@ export default class Experience extends React.Component {
         <div className='input-container-row viewGame__gameName'>
           <AsyncCreatableSelect
             defaultOptions
-            isValidNewOption={() => false}
+            cacheOptions
             loadOptions={this.loadTagOptions}
             onChange={(input) => this.onTagChange(input)}
             isClearable
@@ -114,7 +114,7 @@ export default class Experience extends React.Component {
   }
 
   renderDisabledField(title, value) {
-    if (!value) return null;
+    if (!value) return null
     return (
       <div className='row'>
         <span className='hint'>{title}</span>
