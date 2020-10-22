@@ -65,9 +65,11 @@ const CoverImage = (props) => {
     }
   }
   const handleLeaveClick = async (id) => {
-    axios.delete(`/api/usergroup/${id}`)
-    toast.success(<Toast_style text={`Time to skedaddle! We're out of ${props.name}!`} />)
-    props.routeProps.history.push('/?at=communities')
+    const leaverep = await axios.delete(`/api/usergroup/${id}`)
+    if (leaverep) {
+      toast.success(<Toast_style text={`Time to skedaddle! We're out of ${props.name}!`} />)
+      props.routeProps.history.push('/?at=communities')
+    }
   }
   const handleJoinButton = async (id) => {
     if (props.current_user_permission == -1) {
@@ -112,7 +114,7 @@ const CoverImage = (props) => {
           <button type='button' className='btnWarning btn__option' onClick={(e) => handleJoinButton(props.id)}>
             <span>{joinlabel || labelMap[props.current_user_permission]}</span>
             <img src='https://mygame-media.s3.amazonaws.com/platform_images/View+Game/Down+Carrot_black.svg'></img>
-            {toggle && labelMap[props.current_user_permission] == 'Joined' && (
+            {toggle && (labelMap[props.current_user_permission] == 'Joined' || labelMap[props.current_user_permission] == 'Pending') && (
               <div className='btn__option__dropdown'>
                 {props.current_user_permission != 0 && (
                   <div className='dropdown__option' onClick={(e) => handleLeaveClick(props.id)}>

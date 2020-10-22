@@ -434,6 +434,9 @@
         padding: 6px 12px;
         border-radius: 6px;
         cursor: pointer;
+        &:focus {
+          margin: 0;
+        }
       }
       .community___input {
         input {

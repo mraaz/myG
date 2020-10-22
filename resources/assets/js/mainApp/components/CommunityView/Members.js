@@ -75,6 +75,12 @@ export default class Members extends React.Component {
       privacy: privacy,
       mApprovals: approval,
     })
+    if (sendInvite) {
+      toast.success(<Toast_style text={'Nice! Setting has been successfully saved.'} />)
+      this.props.handleModalStatus()
+      this.props.routeProps.match.params.name = communityName
+      this.props.routeProps.history.push(`/community/${communityName}`)
+    }
   }
   handleDelete = async (text) => {
     this.setState({
@@ -223,7 +229,8 @@ export default class Members extends React.Component {
 
   renderGroupMember = () => {
     const { group_members } = this.state
-    const { current_user_permission } = this.props
+    const { current_user_permission, initialData = {} } = this.props
+    const { userInfo = {} } = initialData
 
     return (
       <div className='GroupMember_list' onScroll={this.handleScroll} ref={this.scrollRef}>
@@ -255,7 +262,7 @@ export default class Members extends React.Component {
                       View
                     </button>
                   </Link>
-                  {[0, 1].includes(current_user_permission) && member.permission_level != 0 && (
+                  {[0, 1].includes(current_user_permission) && member.permission_level != 0 && member.user_id != userInfo.id && (
                     <button type='button' className='Expel' onClick={(e) => this.showExpelAlert(member)}>
                       {' '}
                       Expel

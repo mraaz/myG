@@ -3,7 +3,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import { Toast_style } from '../Utility_Function'
 
-export default class Members extends React.Component {
+export default class Manage extends React.Component {
   constructor() {
     super()
     this.state = {

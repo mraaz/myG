@@ -24,8 +24,20 @@ export default class MangeSponsors extends React.Component {
     ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/universe.jpg'
   }
 
+  onKeyDown = (event) => {
+    const code = event.keyCode || event.which
+    if (code === 13) {
+      const { sponsor = {} } = this.props
+      if (sponsor.id) {
+        this.updateSponsor()
+      } else {
+        this.createSponsor()
+      }
+    }
+  }
+
   handleSave = (e) => {
-    const { sponsor = {}, groups_id } = this.props
+    const { sponsor = {} } = this.props
     if (sponsor.id) {
       this.updateSponsor()
     } else {
@@ -97,7 +109,7 @@ export default class MangeSponsors extends React.Component {
   doUploadS3 = async (file, name) => {
     this.setState({ uploading: true })
     try {
-      if (file.size > 10240) {
+      if (file.size > 10485760) {
         const post = await Upload_to_S3(file, name, 0, null)
         this.setState({
           media_url: [post.data.Location],
@@ -154,6 +166,7 @@ export default class MangeSponsors extends React.Component {
                 onChange={this.handleLinkChange}
                 value={linkValue == '' ? sponsor.link : linkValue}
                 placeholder='Enter link here'
+                onKeyDown={this.onKeyDown}
               />
             </div>
           </div>
