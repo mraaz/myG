@@ -232,7 +232,8 @@ class ApiController {
           chat_message_id = null,
           comment_id = null,
           reply_id = null,
-          game_name_id = null
+          game_name_id = null,
+          sponsor_id = null
 
         switch (type) {
           case '3':
@@ -256,6 +257,9 @@ class ApiController {
           case '9':
             game_name_id = id
             break
+          case '10':
+            sponsor_id = id
+            break
           default:
             return
         }
@@ -270,6 +274,7 @@ class ApiController {
             game_name_id: game_name_id,
             comment_id: comment_id,
             reply_id: reply_id,
+            sponsor_id: sponsor_id,
             type: type,
           })
 
@@ -380,6 +385,85 @@ class ApiController {
         return response.status(400).json({ success: false })
       } else {
         return response.status(200).json({ success: true })
+      }
+    }
+  }
+
+  async internal_deleteFile({ auth }, type, id) {
+    if (auth.user) {
+      try {
+        let post_id = null,
+          group_id = null,
+          chat_id = null,
+          chat_message_id = null,
+          comment_id = null,
+          reply_id = null,
+          game_name_id = null,
+          sponsor_id = null
+
+        switch (type) {
+          case '3':
+            post_id = id
+            break
+          case '4':
+            group_id = id
+            break
+          case '5':
+            chat_id = id
+            break
+          case '6':
+            chat_message_id = id
+            break
+          case '7':
+            comment_id = id
+            break
+          case '8':
+            reply_id = id
+            break
+          case '9':
+            game_name_id = id
+            break
+          case '10':
+            sponsor_id = id
+            break
+          default:
+            return
+        }
+
+        const get_Alicia = await Database.from('aws_keys').where((builder) => {
+          if (post_id != null) builder.where('post_id', post_id)
+          if (group_id != null) builder.where('group_id', group_id)
+          if (chat_id != null) builder.where('chat_id', chat_id)
+          if (chat_message_id != null) builder.where('chat_message_id', chat_message_id)
+          if (comment_id != null) builder.where('comment_id', comment_id)
+          if (reply_id != null) builder.where('reply_id', reply_id)
+          if (game_name_id != null) builder.where('game_name_id', game_name_id)
+          if (sponsor_id != null) builder.where('sponsor_id', sponsor_id)
+        })
+
+        for (var i = 0; i < get_Alicia.length; i++) {
+          s3.deleteObject(
+            {
+              Bucket: S3_BUCKET_DELETE,
+              Key: get_Alicia[i].aws_key,
+            },
+            function(err, data) {
+              if (data) {
+                console.log('null')
+              } else {
+                console.log(err)
+              }
+            }
+          )
+        }
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     }
   }

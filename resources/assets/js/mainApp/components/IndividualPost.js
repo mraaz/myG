@@ -12,7 +12,7 @@ import SweetAlert from './common/MyGSweetAlert'
 const buckectBaseUrl = 'https://mygame-media.s3.amazonaws.com/platform_images/'
 import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
-import { Upload_to_S3 } from './AWS_utilities'
+import { Upload_to_S3, Remove_file } from './AWS_utilities'
 
 import ImageGallery from './common/ImageGallery/ImageGallery'
 
@@ -189,7 +189,7 @@ export default class IndividualPost extends Component {
 
     var post_id = this.props.post.id
 
-    const getmyPostCount = async function () {
+    const getmyPostCount = async function() {
       try {
         var i
 
@@ -205,7 +205,7 @@ export default class IndividualPost extends Component {
       }
     }
 
-    const getGroup_info = async function () {
+    const getGroup_info = async function() {
       try {
         var i
 
@@ -236,7 +236,7 @@ export default class IndividualPost extends Component {
     var post_id = this.props.post.id
     const self = this
 
-    const getComments = async function () {
+    const getComments = async function() {
       try {
         const myComments = await axios.get(`/api/comments/${post_id}`)
         self.setState({
@@ -382,7 +382,7 @@ export default class IndividualPost extends Component {
     const self = this
     var post_id = this.props.post.id
 
-    const editPost = async function () {
+    const editPost = async function() {
       try {
         const myEditPost = await axios.post(`/api/post/update/${post_id}`, {
           content: self.state.value2,
@@ -470,7 +470,7 @@ export default class IndividualPost extends Component {
       dropdown: false,
     })
     setTimeout(
-      function () {
+      function() {
         //Start the timer
         this.focusTextInput2()
       }.bind(this),
@@ -544,10 +544,12 @@ export default class IndividualPost extends Component {
     }
   }
   clearPreviewImage = () => {
-    const deleteKeys = axios.post('/api/deleteFile', {
-      aws_key_id: this.state.aws_key_id[0],
-      key: this.state.file_keys,
-    })
+    const delete_file = Remove_file(this.state.file_keys, this.state.aws_key_id[0])
+
+    // const deleteKeys = axios.post('/api/deleteFile', {
+    //   aws_key_id: this.state.aws_key_id[0],
+    //   key: this.state.file_keys,
+    // })
 
     this.setState({
       preview_file: [],

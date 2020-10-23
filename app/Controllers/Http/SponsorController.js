@@ -2,8 +2,10 @@
 
 const Sponsor = use('App/Models/Sponsor')
 const Database = use('Database')
+
 const LoggingRepository = require('../../Repositories/Logging')
 const CommonController = use('./CommonController')
+const ApiController = use('./ApiController')
 
 class SponsorController {
   async store({ auth, request, response }) {
@@ -19,7 +21,7 @@ class SponsorController {
             return
           }
         }
-        const create_Sponsor = Sponsor.create({
+        const create_Sponsor = await Sponsor.create({
           user_id: auth.user.id,
           group_id: request.input('group_id'),
           type: request.input('type'),
@@ -27,7 +29,14 @@ class SponsorController {
           link: request.input('link'),
         })
 
-        //RAAZ to update AWS Key table
+        let tmpArr = request.input('aws_key_id')
+
+        if (tmpArr != undefined && tmpArr.length > 0) {
+          const apiController = new ApiController()
+          for (let i = 0; i < tmpArr.length; i++) {
+            const alicia_key = await apiController.update_aws_keys_entry({ auth }, tmpArr[i], '10', create_Sponsor.id)
+          }
+        }
 
         return
       } catch (error) {
@@ -45,9 +54,12 @@ class SponsorController {
   async destroy({ auth, request, response }) {
     if (auth.user) {
       try {
+        const apiController = new ApiController()
+        await apiController.internal_deleteFile({ auth }, '10', request.params.id)
+
         const byebyebye = await Database.table('sponsors')
           .where({
-            id: request.input('id'),
+            id: request.params.id,
           })
           .delete()
 

@@ -10,7 +10,7 @@ import IndividualReply from './IndividualReply'
 import moment from 'moment'
 import SweetAlert from './common/MyGSweetAlert'
 const buckectBaseUrl = 'https://mygame-media.s3.amazonaws.com/platform_images/'
-import { Upload_to_S3 } from './AWS_utilities'
+import { Upload_to_S3, Remove_file } from './AWS_utilities'
 
 export default class IndividualComment extends Component {
   constructor() {
@@ -468,11 +468,11 @@ export default class IndividualComment extends Component {
   }
 
   clearPreviewImage = () => {
-    const deleteKeys = axios.post('/api/deleteFile', {
-      aws_key_id: this.state.aws_key_id[0],
-      key: this.state.file_keys,
-    })
-
+    const delete_file = Remove_file(this.state.file_keys, this.state.aws_key_id[0])
+    // const deleteKeys = axios.post('/api/deleteFile', {
+    //   aws_key_id: this.state.aws_key_id[0],
+    //   key: this.state.file_keys,
+    // })
     this.setState({
       preview_file: [],
       file_keys: '',

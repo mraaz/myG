@@ -574,6 +574,9 @@ class GroupController {
           id: request.input('group_id'),
         })
         if (owner_query.length > 0) {
+          const apiController = new ApiController()
+          await apiController.internal_deleteFile({ auth }, '4', request.input('group_id'))
+
           const delete_like = await Database.table('groups')
             .where({
               id: request.input('group_id'),

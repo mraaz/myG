@@ -12,7 +12,7 @@ import axios from 'axios'
 import IndividualComment from '../IndividualComment'
 import { toast } from 'react-toastify'
 import { Toast_style } from '../Utility_Function'
-import { Upload_to_S3 } from '../AWS_utilities'
+import { Upload_to_S3, Remove_file } from '../AWS_utilities'
 
 const buckectBaseUrl = 'https://mygame-media.s3.amazonaws.com/platform_images/'
 const defaultUserImage = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
@@ -122,11 +122,14 @@ export default class GameComments extends Component {
       uploading: false,
     })
   }
+
   clearPreviewImage = () => {
-    const deleteKeys = axios.post('/api/deleteFile', {
-      aws_key_id: this.state.aws_key_id[0],
-      key: this.state.file_keys,
-    })
+    const delete_file = Remove_file(this.state.file_keys, this.state.aws_key_id[0])
+
+    // const deleteKeys = axios.post('/api/deleteFile', {
+    //   aws_key_id: this.state.aws_key_id[0],
+    //   key: this.state.file_keys,
+    // })
 
     this.setState({
       preview_file: [],

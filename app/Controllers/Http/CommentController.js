@@ -184,8 +184,8 @@ class CommentController {
   async destroy({ auth, request, response }) {
     if (auth.user) {
       try {
-        let delete_files = new AwsKeyController()
-        await delete_files.deleteCommentKey({ auth, request, response })
+        const apiController = new ApiController()
+        await apiController.internal_deleteFile({ auth }, '7', request.params.id)
 
         const delete_comment = await Database.table('comments')
           .where({

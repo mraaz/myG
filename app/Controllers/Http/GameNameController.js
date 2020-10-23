@@ -2,6 +2,8 @@
 
 const GameNames = use('App/Models/GameName')
 const Database = use('Database')
+const ApiController = use('./ApiController')
+
 const LoggingRepository = require('../../Repositories/Logging')
 
 const Schedule_games_logix = use('./Schedule_games_logix')
@@ -75,6 +77,7 @@ class GameNameController {
         const incrementGameCounter = await GameNames.query()
           .where({ id: game_name })
           .increment('counter', 1)
+
         return 'Updated successfully'
       } catch (error) {
         LoggingRepository.log({
@@ -102,10 +105,13 @@ class GameNameController {
           id: game_name,
         })
 
-        if (game_names[0].verified == 0 && game_names[0].counter == 0) {
+        if (game_names[0].verified == 0 && game_names[0].counter < 1) {
+          const apiController = new ApiController()
+          await apiController.internal_deleteFile({ auth }, '9', game_name[0].id)
+
           const delete_game = await Database.table('game_names')
             .where({
-              id: game_name,
+              id: game_name[0].id,
             })
             .delete()
         }

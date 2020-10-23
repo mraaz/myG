@@ -74,13 +74,8 @@ const CommunityView = (props) => {
   }
 
   const handleDeleteSponsor = async (id) => {
-    const createSponsorData = await axios.post('/api/sponsor/delete', {
-      group_id: groups_id,
-      id,
-    })
-    if (createSponsorData) {
-      toast.success(<Toast_style text={'Great, Deleted successfully!'} />)
-    }
+    axios.delete(`/api/sponsor/delete/${id}`)
+    toast.success(<Toast_style text={'Yup, yup, yup... deleted successfully!'} />)
   }
 
   const renderSponsors = (Sponsors = []) => {

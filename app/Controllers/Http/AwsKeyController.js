@@ -131,31 +131,31 @@ class AwsKeyController {
   //   }
   // }
 
-  async deleteCommentKey({ auth, request, response }) {
-    if (auth.user) {
-      try {
-        const aws_entry_for_this_post = await Database.from('aws_keys').where({
-          comment_id: request.params.id,
-        })
-
-        for (var i = 0; i < aws_entry_for_this_post.length; i++) {
-          request.params.key = aws_entry_for_this_post[i].aws_key
-          let remove_file = new ApiController()
-          remove_file.deleteFile_server({ auth, request, response })
-        }
-      } catch (error) {
-        LoggingRepository.log({
-          environment: process.env.NODE_ENV,
-          type: 'error',
-          source: 'backend',
-          context: __filename,
-          message: (error && error.message) || error,
-        })
-      }
-    } else {
-      return 'You are not Logged In!'
-    }
-  }
+  // async deleteCommentKey({ auth, request, response }) {
+  //   if (auth.user) {
+  //     try {
+  //       const aws_entry_for_this_post = await Database.from('aws_keys').where({
+  //         comment_id: request.params.id,
+  //       })
+  //
+  //       for (var i = 0; i < aws_entry_for_this_post.length; i++) {
+  //         request.params.key = aws_entry_for_this_post[i].aws_key
+  //         let remove_file = new ApiController()
+  //         remove_file.deleteFile_server({ auth, request, response })
+  //       }
+  //     } catch (error) {
+  //       LoggingRepository.log({
+  //         environment: process.env.NODE_ENV,
+  //         type: 'error',
+  //         source: 'backend',
+  //         context: __filename,
+  //         message: (error && error.message) || error,
+  //       })
+  //     }
+  //   } else {
+  //     return 'You are not Logged In!'
+  //   }
+  // }
 
   // async addReplyKey({ auth, request, response }) {
   //   if (auth.user) {
@@ -181,31 +181,31 @@ class AwsKeyController {
   //   }
   // }
 
-  async deleteReplyKey({ auth, request, response }) {
-    if (auth.user) {
-      try {
-        const aws_entry_for_this_post = await Database.from('aws_keys').where({
-          reply_id: request.params.id,
-        })
-
-        for (var i = 0; i < aws_entry_for_this_post.length; i++) {
-          request.params.key = aws_entry_for_this_post[i].aws_key
-          let remove_file = new ApiController()
-          remove_file.deleteFile_server({ auth, request, response })
-        }
-      } catch (error) {
-        LoggingRepository.log({
-          environment: process.env.NODE_ENV,
-          type: 'error',
-          source: 'backend',
-          context: __filename,
-          message: (error && error.message) || error,
-        })
-      }
-    } else {
-      return 'You are not Logged In!'
-    }
-  }
+  // async deleteReplyKey({ auth, request, response }) {
+  //   if (auth.user) {
+  //     try {
+  //       const aws_entry_for_this_post = await Database.from('aws_keys').where({
+  //         reply_id: request.params.id,
+  //       })
+  //
+  //       for (var i = 0; i < aws_entry_for_this_post.length; i++) {
+  //         request.params.key = aws_entry_for_this_post[i].aws_key
+  //         let remove_file = new ApiController()
+  //         remove_file.deleteFile_server({ auth, request, response })
+  //       }
+  //     } catch (error) {
+  //       LoggingRepository.log({
+  //         environment: process.env.NODE_ENV,
+  //         type: 'error',
+  //         source: 'backend',
+  //         context: __filename,
+  //         message: (error && error.message) || error,
+  //       })
+  //     }
+  //   } else {
+  //     return 'You are not Logged In!'
+  //   }
+  // }
 
   addChatGroupProfileKey({ auth, request }) {
     if (!auth.user) return Promise.resolve('AUTH_REFUSED')
