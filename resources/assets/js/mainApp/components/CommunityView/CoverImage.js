@@ -119,7 +119,7 @@ const CoverImage = (props) => {
                 labelMap[props.current_user_permission] == 'Pending' ||
                 labelMap[props.current_user_permission] == 'Join') && (
                 <div className='btn__option__dropdown'>
-                  {props.current_user_permission != 0 && labelMap[props.current_user_permission] == 'Join' && (
+                  {props.current_user_permission != 0 && labelMap[props.current_user_permission] != 'Join' && (
                     <div className='dropdown__option' onClick={(e) => handleLeaveClick(props.id)}>
                       Leave
                     </div>
