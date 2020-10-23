@@ -125,8 +125,8 @@ class ReplyController {
   async destroy({ auth, request, response }) {
     if (auth.user) {
       try {
-        let delete_files = new AwsKeyController()
-        await delete_files.deleteReplyKey({ auth, request, response })
+        const apiController = new ApiController()
+        await apiController.internal_deleteFile({ auth }, '8', request.params.id)
 
         const delete_reply = await Database.table('replies')
           .where({

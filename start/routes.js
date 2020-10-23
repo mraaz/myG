@@ -434,7 +434,7 @@ Route.get('/api/search/gamers', 'SearchController.searchGamers')
 
 //Sponsor
 Route.post('/api/sponsor/create', 'SponsorController.store')
-Route.post('/api/sponsor/delete', 'SponsorController.destroy')
+Route.delete('/api/sponsor/delete/:id', 'SponsorController.destroy')
 Route.post('/api/sponsor/update', 'SponsorController.update')
 
 Route.delete('/api/groupConnection/:group_id', 'GroupConnectionController.destroy')

@@ -26,7 +26,7 @@ class AwsKeysSchema extends Schema {
       table.integer('sponsor_id').unsigned()
       table.foreign('sponsor_id').references('sponsors.id').onDelete('cascade')
       table.integer('type').unsigned().notNullable()
-      table.string('aws_key', 1024).notNullable()
+      table.string('aws_key', 4024).notNullable()
       table.timestamps(true,true)
     })
   }

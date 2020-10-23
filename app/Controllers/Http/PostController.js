@@ -487,8 +487,8 @@ class PostController {
   async destroy({ auth, request, response }) {
     if (auth.user) {
       try {
-        // let delete_files = new AwsKeyController()
-        // await delete_files.deletePostKey({ auth, request, response })
+        const apiController = new ApiController()
+        await apiController.internal_deleteFile({ auth }, '3', request.params.id)
 
         const delete_post = await Database.table('posts')
           .where({
