@@ -114,18 +114,21 @@ const CoverImage = (props) => {
           <button type='button' className='btnWarning btn__option' onClick={(e) => handleJoinButton(props.id)}>
             <span>{joinlabel || labelMap[props.current_user_permission]}</span>
             <img src='https://mygame-media.s3.amazonaws.com/platform_images/View+Game/Down+Carrot_black.svg'></img>
-            {toggle && (labelMap[props.current_user_permission] == 'Joined' || labelMap[props.current_user_permission] == 'Pending') && (
-              <div className='btn__option__dropdown'>
-                {props.current_user_permission != 0 && (
-                  <div className='dropdown__option' onClick={(e) => handleLeaveClick(props.id)}>
-                    Leave
+            {toggle &&
+              (labelMap[props.current_user_permission] == 'Joined' ||
+                labelMap[props.current_user_permission] == 'Pending' ||
+                labelMap[props.current_user_permission] == 'Join') && (
+                <div className='btn__option__dropdown'>
+                  {props.current_user_permission != 0 && labelMap[props.current_user_permission] != 'Join' && (
+                    <div className='dropdown__option' onClick={(e) => handleLeaveClick(props.id)}>
+                      Leave
+                    </div>
+                  )}
+                  <div className='dropdown__option' onClick={(e) => handleFollowClick(props.id)}>
+                    {following || (props.following == true ? 'Unfollow' : 'Follow')}
                   </div>
-                )}
-                <div className='dropdown__option' onClick={(e) => handleFollowClick(props.id)}>
-                  {following || (props.following == true ? 'Unfollow' : 'Follow')}
                 </div>
-              </div>
-            )}
+              )}
           </button>
           {[0, 1, 2].includes(props.current_user_permission) && (
             <button type='button' className='btnWarning' onClick={(e) => props.handleModalStatus('setting')}>
