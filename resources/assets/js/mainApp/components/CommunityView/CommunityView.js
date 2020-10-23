@@ -74,8 +74,11 @@ const CommunityView = (props) => {
   }
 
   const handleDeleteSponsor = async (id) => {
-    axios.delete(`/api/sponsor/delete/${id}`)
-    toast.success(<Toast_style text={'Yup, yup, yup... deleted successfully!'} />)
+    const sponsorData = await axios.delete(`/api/sponsor/delete/${id}`)
+    if (sponsorData) {
+      hideSponsorModal(true)
+      toast.success(<Toast_style text={'Yup, yup, yup... deleted successfully!'} />)
+    }
   }
 
   const renderSponsors = (Sponsors = []) => {
@@ -141,8 +144,7 @@ const CommunityView = (props) => {
           })}
         </div>
       )}
-      {(communityDetails.current_user_permission === 0 || (communityDetails.sponsors && communityDetails.sponsors.length > 0)) &&
-        renderSponsors(communityDetails.sponsors)}
+      {communityDetails.current_user_permission === 0 && renderSponsors(communityDetails.sponsors)}
       {showSponsorModal && <MangeSponsors sponsor={singleSponsor} handleModalStatus={hideSponsorModal} group_id={communityDetails.id} />}
       {communityDetails.id && (
         <GamePosts {...props} group_id={communityDetails.id} current_user_permission={communityDetails.current_user_permission} />
