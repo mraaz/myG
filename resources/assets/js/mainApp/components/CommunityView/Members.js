@@ -31,6 +31,9 @@ export default class Members extends React.Component {
       isActive: 'members',
       permission_level: '',
       saveButtonDisabled: true,
+      moreplease: true,
+      searchMemberValue: '',
+      fetching: false,
     }
     this.scrollRef = React.createRef()
   }
@@ -41,16 +44,21 @@ export default class Members extends React.Component {
     this.setState({ isActive: activeTab })
   }
 
-  getInitialData = async () => {
+  getInitialData = () => {
     const { group_id = '', activeTab } = this.props
-    const { counter = '' } = this.state
-    const group_members = await axios.post('/api/usergroup/member_lists/', {
-      group_id,
-      counter,
+    const { counter = '', group_members = [] } = this.state
+    this.setState({ fetching: true }, async () => {
+      const group_member = await axios.post('/api/usergroup/member_lists/', {
+        group_id,
+        counter,
+      })
+      if (group_member.data && group_member.data.all_group_members.length == 0) {
+        this.setState({ moreplease: false, fetching: false })
+      }
+      if (group_member.data && group_member.data.all_group_members.length > 0) {
+        this.setState({ group_members: [...group_members, ...group_member.data.all_group_members], fetching: false })
+      }
     })
-    if (group_members.data && group_members.data.all_group_members.length > 0) {
-      this.setState({ group_members: group_members.data.all_group_members })
-    }
   }
   addDefaultSrc = (ev) => {
     ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/universe.jpg'
@@ -218,7 +226,7 @@ export default class Members extends React.Component {
     if (this.state.searchMemberValue == '') {
       const _event = event.currentTarget,
         _current = this.scrollRef.current
-      if (_event.scrollTop + (3 / 2) * _current.offsetHeight > _event.scrollHeight && this.state.moreplease) {
+      if (_event.scrollTop + (3 / 2) * _current.offsetHeight > _event.scrollHeight && this.state.moreplease && !this.state.fetching) {
         const { counter = 1 } = this.state
         this.setState({ counter: counter + 1 }, () => {
           this.getInitialData()
