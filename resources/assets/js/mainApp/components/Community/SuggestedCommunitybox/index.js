@@ -31,7 +31,7 @@ const SuggestedCommunityBox = (props) => {
     })
     toast.success(<Toast_style text={'Woot! Request sent'} />)
     updatejoinState(false)
-    axios.delete(`/api/groupConnection/${props.data.id}`)
+    //axios.delete(`/api/groupConnection/${props.data.group_id}`)
   }
 
   return (
