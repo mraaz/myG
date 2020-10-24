@@ -281,7 +281,6 @@ Route.get('/api/groups/view/:counter', 'GroupController.myshow')
 Route.get('/api/groups/all_myGrps/:counter', 'GroupController.all_myGrps')
 
 Route.post('/api/groups/update_img', 'GroupController.update_img')
-Route.post('/api/groups/update/all_accept/', 'GroupController.update_all_accept')
 Route.post('/api/groups/update_settings/', 'GroupController.update_settings')
 Route.get('/api/groups/show_owner/:id', 'GroupController.show_owner')
 Route.get('/api/groups/:id', 'GroupController.show')

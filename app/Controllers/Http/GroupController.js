@@ -519,7 +519,7 @@ class GroupController {
         }
         const update_group_type = await Group.query()
           .where({ id: request.input('group_id') })
-          .update({ type: request.input('privacy'), all_accept: request.input('mApprovals') })
+          .update({ type: request.input('privacy'), all_accept: request.input('mApprovals') == 'true' ? 1 : 0 })
         return 'Saved successfully'
       } catch (error) {
         LoggingRepository.log({

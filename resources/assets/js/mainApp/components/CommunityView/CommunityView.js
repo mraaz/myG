@@ -42,7 +42,6 @@ const CommunityView = (props) => {
   }, [])
 
   const handleModalStatus = (label) => {
-    console.log('Here RAAZ')
     setActiveModalTab(label)
     setModalStatus(!modalStatus)
   }
