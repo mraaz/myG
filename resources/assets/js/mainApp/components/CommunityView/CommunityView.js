@@ -42,6 +42,7 @@ const CommunityView = (props) => {
   }, [])
 
   const handleModalStatus = (label) => {
+    console.log('Here RAAZ')
     setActiveModalTab(label)
     setModalStatus(!modalStatus)
   }
@@ -73,12 +74,10 @@ const CommunityView = (props) => {
     ev.target.src = 'https://myg-test-media-files.s3-ap-southeast-2.amazonaws.com/logo_JPG+(1).jpg'
   }
 
-  const handleDeleteSponsor = async (id) => {
-    const sponsorData = await axios.delete(`/api/sponsor/delete/${id}`)
-    if (sponsorData) {
-      hideSponsorModal(true)
-      toast.success(<Toast_style text={'Yup, yup, yup... deleted successfully!'} />)
-    }
+  const handleDeleteSponsor = (id) => {
+    const sponsorData = axios.delete(`/api/sponsor/delete/${id}`)
+    hideSponsorModal(true)
+    toast.success(<Toast_style text={'Yup, yup, yup... deleted successfully!'} />)
   }
 
   const renderSponsors = (Sponsors = []) => {
