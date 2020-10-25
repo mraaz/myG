@@ -19,8 +19,8 @@ class PostController {
       let arrGroups_id = [],
         newPost = ''
 
-      if (request.input('groups_id') != undefined) {
-        arrGroups_id = request.input('groups_id').split(',')
+      if (request.input('group_id') != undefined && request.input('group_id').trim().length > 0) {
+        arrGroups_id = request.input('group_id').split(',')
       }
 
       if (auth.user) {
@@ -29,7 +29,12 @@ class PostController {
             content: request.input('content'),
             user_id: auth.user.id,
             type: 'text',
-            group_id: request.input('group_id'),
+            group_id:
+              request.input('group_id') != undefined
+                ? request.input('group_id').trim().length > 0
+                  ? request.input('group_id')
+                  : null
+                : null,
             visibility: request.input('visibility'),
             media_url: request.input('media_url'),
           })
@@ -99,102 +104,102 @@ class PostController {
     }
   }
 
-  async storephoto({ auth, request, response }) {
-    let arrGroups_id = [],
-      newPost = ''
-
-    if (request.input('groups_id') != null) {
-      arrGroups_id = request.input('groups_id').split(',')
-    }
-    if (auth.user) {
-      try {
-        if (arrGroups_id.length == 0) {
-          newPost = await Post.create({
-            content: request.input('content'),
-            user_id: auth.user.id,
-            type: 'photo',
-            group_id: request.input('groups_id'),
-            visibility: request.input('visibility'),
-            media_url: request.input('media_url'),
-          })
-        } else {
-          for (var i = 0; i < arrGroups_id.length; i++) {
-            newPost = await Post.create({
-              content: request.input('content'),
-              user_id: auth.user.id,
-              type: 'photo',
-              group_id: arrGroups_id[i],
-              visibility: request.input('visibility'),
-              media_url: request.input('media_url'),
-            })
-          }
-        }
-
-        // let update_key = new AwsKeyController()
-        // request.params.post_id = newPost.id
-        // update_key.addPostKey({ auth, request, response })
-
-        return newPost
-      } catch (error) {
-        LoggingRepository.log({
-          environment: process.env.NODE_ENV,
-          type: 'error',
-          source: 'backend',
-          context: __filename,
-          message: (error && error.message) || error,
-        })
-      }
-    }
-  }
-
-  async storevideo({ auth, request, response }) {
-    let arrGroups_id = [],
-      newPost = ''
-
-    if (request.input('groups_id') != null) {
-      arrGroups_id = request.input('groups_id').split(',')
-    }
-
-    if (auth.user) {
-      try {
-        if (arrGroups_id.length == 0) {
-          newPost = await Post.create({
-            content: request.input('content'),
-            user_id: auth.user.id,
-            type: 'video',
-            group_id: request.input('groups_id'),
-            visibility: request.input('visibility'),
-            media_url: request.input('media_url'),
-          })
-        } else {
-          for (var i = 0; i < arrGroups_id.length; i++) {
-            newPost = await Post.create({
-              content: request.input('content'),
-              user_id: auth.user.id,
-              type: 'video',
-              group_id: arrGroups_id[i],
-              visibility: request.input('visibility'),
-              media_url: request.input('media_url'),
-            })
-          }
-        }
-
-        // let update_key = new AwsKeyController()
-        // request.params.post_id = newPost.id
-        // update_key.addPostKey({ auth, request, response })
-
-        return newPost
-      } catch (error) {
-        LoggingRepository.log({
-          environment: process.env.NODE_ENV,
-          type: 'error',
-          source: 'backend',
-          context: __filename,
-          message: (error && error.message) || error,
-        })
-      }
-    }
-  }
+  // async storephoto({ auth, request, response }) {
+  //   let arrGroups_id = [],
+  //     newPost = ''
+  //
+  //   if (request.input('groups_id') != null) {
+  //     arrGroups_id = request.input('groups_id').split(',')
+  //   }
+  //   if (auth.user) {
+  //     try {
+  //       if (arrGroups_id.length == 0) {
+  //         newPost = await Post.create({
+  //           content: request.input('content'),
+  //           user_id: auth.user.id,
+  //           type: 'photo',
+  //           group_id: request.input('groups_id'),
+  //           visibility: request.input('visibility'),
+  //           media_url: request.input('media_url'),
+  //         })
+  //       } else {
+  //         for (var i = 0; i < arrGroups_id.length; i++) {
+  //           newPost = await Post.create({
+  //             content: request.input('content'),
+  //             user_id: auth.user.id,
+  //             type: 'photo',
+  //             group_id: arrGroups_id[i],
+  //             visibility: request.input('visibility'),
+  //             media_url: request.input('media_url'),
+  //           })
+  //         }
+  //       }
+  //
+  //       // let update_key = new AwsKeyController()
+  //       // request.params.post_id = newPost.id
+  //       // update_key.addPostKey({ auth, request, response })
+  //
+  //       return newPost
+  //     } catch (error) {
+  //       LoggingRepository.log({
+  //         environment: process.env.NODE_ENV,
+  //         type: 'error',
+  //         source: 'backend',
+  //         context: __filename,
+  //         message: (error && error.message) || error,
+  //       })
+  //     }
+  //   }
+  // }
+  //
+  // async storevideo({ auth, request, response }) {
+  //   let arrGroups_id = [],
+  //     newPost = ''
+  //
+  //   if (request.input('groups_id') != null) {
+  //     arrGroups_id = request.input('groups_id').split(',')
+  //   }
+  //
+  //   if (auth.user) {
+  //     try {
+  //       if (arrGroups_id.length == 0) {
+  //         newPost = await Post.create({
+  //           content: request.input('content'),
+  //           user_id: auth.user.id,
+  //           type: 'video',
+  //           group_id: request.input('groups_id'),
+  //           visibility: request.input('visibility'),
+  //           media_url: request.input('media_url'),
+  //         })
+  //       } else {
+  //         for (var i = 0; i < arrGroups_id.length; i++) {
+  //           newPost = await Post.create({
+  //             content: request.input('content'),
+  //             user_id: auth.user.id,
+  //             type: 'video',
+  //             group_id: arrGroups_id[i],
+  //             visibility: request.input('visibility'),
+  //             media_url: request.input('media_url'),
+  //           })
+  //         }
+  //       }
+  //
+  //       // let update_key = new AwsKeyController()
+  //       // request.params.post_id = newPost.id
+  //       // update_key.addPostKey({ auth, request, response })
+  //
+  //       return newPost
+  //     } catch (error) {
+  //       LoggingRepository.log({
+  //         environment: process.env.NODE_ENV,
+  //         type: 'error',
+  //         source: 'backend',
+  //         context: __filename,
+  //         message: (error && error.message) || error,
+  //       })
+  //     }
+  //   }
+  // }
 
   async show({ auth, request, response }) {
     try {
