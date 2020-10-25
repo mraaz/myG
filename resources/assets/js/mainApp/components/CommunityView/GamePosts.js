@@ -15,7 +15,9 @@ export default class Posts extends Component {
       moreplease: true,
       post_submit_loading: false,
       activeTab: 'All',
+      fetching: false,
     }
+    this.scrollRef = React.createRef()
   }
 
   componentDidMount() {
@@ -63,12 +65,14 @@ export default class Posts extends Component {
         if (myPosts.data.groupPosts.groupPosts.length == 0) {
           this.setState({
             moreplease: false,
+            fetching: false,
           })
           return
         }
 
         this.setState({
           myPosts: this.state.myPosts.concat(myPosts.data.groupPosts.groupPosts),
+          fetching: false,
         })
       } catch (error) {
         logToElasticsearch('error', 'Posts', 'Failed at myPosts' + ' ' + error)
@@ -79,6 +83,7 @@ export default class Posts extends Component {
     this.setState(
       {
         counter: this.state.counter + 1,
+        fetching: true,
       },
       () => {
         getPosts()
@@ -130,6 +135,17 @@ export default class Posts extends Component {
     })
   }
 
+  handleScroll = (event) => {
+    const _event = event.currentTarget,
+      _current = this.scrollRef.current
+    if (_event.scrollTop + (3 / 2) * _current.offsetHeight > _event.scrollHeight && this.state.moreplease && !this.state.fetching) {
+      const { counter = 1 } = this.state
+      this.setState({ counter: counter + 1 }, () => {
+        this.fetchMoreData()
+      })
+    }
+  }
+
   render() {
     const { myPosts = [], moreplease, isFetching = false, post_submit_loading = false, activeTab } = this.state
     return (
@@ -174,9 +190,11 @@ export default class Posts extends Component {
         )}
         {myPosts.length > 0 && !post_submit_loading && (
           <section id='posts' className={isFetching ? '' : `active`}>
-            <InfiniteScroll dataLength={myPosts.length} next={this.fetchMoreData} hasMore={moreplease}>
+            <div className='GroupMember__post__list' onScroll={this.handleScroll} ref={this.scrollRef}>
+              {/* <InfiniteScroll dataLength={myPosts.length} next={this.fetchMoreData} hasMore={moreplease}> */}
               {this.showLatestPosts()}
-            </InfiniteScroll>
+              {/* </InfiniteScroll> */}
+            </div>
           </section>
         )}
       </Fragment>
