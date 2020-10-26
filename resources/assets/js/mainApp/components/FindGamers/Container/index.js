@@ -22,6 +22,7 @@ export default class FindGamersContainer extends React.Component {
     if (isLoadingInitialData || !alias) return null;
     return <FindGamers 
       alias={alias}
+      tab={get(this.props, 'routeProps.match.params.route') || 'search'}
       initialData={this.props.initialData}
     />;
   }

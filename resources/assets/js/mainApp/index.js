@@ -167,7 +167,7 @@ class Layout extends Component {
 
                 <Route
                   exact
-                  path='/find-gamers'
+                  path='/find-gamers/:route'
                   component={(props) => (
                     <React.Fragment>
                       <FindGamersContainer

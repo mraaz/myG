@@ -15,7 +15,15 @@ export class FindGamers extends React.Component {
   }
 
   state = {
-    tab: 'Search'
+    tab: '',
+  }
+
+  isInSearch = () => {
+    return this.state.tab ? this.state.tab === 'search' : this.props.tab === 'search';
+  }
+
+  isInSuggestions = () => {
+    return this.state.tab ? this.state.tab === 'suggestions' : this.props.tab === 'suggestions';
   }
 
   componentDidMount() {
@@ -26,8 +34,24 @@ export class FindGamers extends React.Component {
   renderHeaders = () => {
     return(
       <div className='headers'>
-        <div className={`header clickable ${this.state.tab === 'Search' && 'selected'}`} onClick={() => this.setState({ tab: 'Search' })}>Search</div>
-        <div className={`header clickable ${this.state.tab === 'Suggestions' && 'selected'}`} onClick={() => this.setState({ tab: 'Suggestions' })}>Suggestions</div>
+        <div 
+          className={`header clickable ${this.isInSearch() && 'selected'}`}
+          onClick={() => {
+            window.history.replaceState({}, 'myG - Find Gamers', '/find-gamers/search')
+            this.setState({ tab: 'search' })
+          }}
+        >
+          Search
+      </div>
+        <div 
+          className={`header clickable ${this.isInSuggestions() && 'selected'}`}
+          onClick={() => {
+            window.history.replaceState({}, 'myG - Find Gamers', '/find-gamers/suggestions')
+            this.setState({ tab: 'suggestions' })
+          }}
+        >
+          Suggestions
+      </div>
       </div>
     );
   }
@@ -40,9 +64,9 @@ export class FindGamers extends React.Component {
         <TopBar />
         <Banner profile={this.props.profile} />
         <Headers />
-        {this.state.tab === 'Search' && <Search onSearch={this.props.searchGamers} />}
-        {this.state.tab === 'Search' && <Results gamers={this.props.gamers} loading={this.props.loading} />}
-        {this.state.tab === 'Suggestions' && <GamerSuggestions noTitle />}
+        {this.isInSearch() && <Search onSearch={this.props.searchGamers} />}
+        {this.isInSearch() && <Results gamers={this.props.gamers} loading={this.props.loading} />}
+        {this.isInSuggestions() && <GamerSuggestions noTitle />}
       </div>
     );
   }
