@@ -56,6 +56,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    position: relative;
     padding: 16px;
     background-color: #1d2326;
     border-radius: 12px;
@@ -208,7 +209,9 @@
     @extend .base-button;
     padding: 4px 12px;
     font-size: 12px;
+    margin: 12px 4px;
     font-family: 'Montserrat';
+    white-space: nowrap;
   }
 
   .disabled-button {

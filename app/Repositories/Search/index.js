@@ -17,14 +17,17 @@ class SearchRepository {
     if (input.includes('country:')) targetedQueries.push({ field: 'country', value: input.split('country:')[1].trim().split(' ')[0] });
     if (input.includes('relationship:')) targetedQueries.push({ field: 'relationship', value: input.split('relationship:')[1].trim().split(' ')[0] });
     if (input.includes('commendations:')) targetedQueries.push({ field: 'commendations', value: input.split('commendations:')[1].trim().split(' ')[0] });
+    if (input.includes('commend:')) targetedQueries.push({ field: 'commendations', value: input.split('commend:')[1].trim().split(' ')[0] });
     if (input.includes('team:')) targetedQueries.push({ field: 'team', value: input.split('team:')[1].trim().split(' ')[0] });
     if (input.includes('languages:')) targetedQueries.push({ field: 'languages', value: input.split('languages:')[1].trim().split(' ')[0] });
+    if (input.includes('language:')) targetedQueries.push({ field: 'languages', value: input.split('language:')[1].trim().split(' ')[0] });
     if (input.includes('mostPlayedGames:')) targetedQueries.push({ field: 'mostPlayedGames', value: input.split('mostPlayedGames:')[1].trim().split(' ')[0] });
     if (input.includes('games:')) targetedQueries.push({ field: 'mostPlayedGames', value: input.split('games:')[1].trim().split(' ')[0] });
     if (input.includes('game:')) targetedQueries.push({ field: 'mostPlayedGames', value: input.split('game:')[1].trim().split(' ')[0] });
     if (targetedQueries.length === 1) this.buildTargetedUsersQuery(query, targetedQueries[0].field, targetedQueries[0].value);
     if (targetedQueries.length > 1) targetedQueries.reduce((a, b) => this.buildTargetedUsersQuery(a, b.field, b.value));
-    const orSearch = input.split(' ').filter((value) => !value.includes(':')).join(' ');
+    const values = targetedQueries.map((field) => field.value).filter((value) => !!value);
+    const orSearch = input.split(' ').filter((value) => !value.includes(':')).filter((value) => !values.includes(value)).join(' ');
     query.query.bool.should.push({ match: { alias: { query: orSearch, fuzziness: "auto" } } });
     query.query.bool.should.push({ match: { country: { query: orSearch, fuzziness: "auto" } } });
     query.query.bool.should.push({ match: { relationship: { query: orSearch, fuzziness: "auto" } } });

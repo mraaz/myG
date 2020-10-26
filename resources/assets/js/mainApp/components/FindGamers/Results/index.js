@@ -44,8 +44,8 @@ export default class Results extends React.Component {
             {gamer.country && <span className="value">{gamer.country}</span>}
             {gamer.team && <span className="title">Professional Team</span>}
             {gamer.team && <span className="value">{gamer.team}</span>}
-            {gamer.languages && <span className="title">Languages</span>}
-            {gamer.languages && <span className="value">{gamer.languages.join(', ')}</span>}
+            {gamer.languages.length && <span className="title">Languages</span>}
+            {gamer.languages.length && <span className="value">{gamer.languages.join(', ')}</span>}
           </div>
           <div className="level-progress">
             <Progress
@@ -72,9 +72,14 @@ export default class Results extends React.Component {
 
   renderHoverBar = (gamer, isHovering) => {
     if (!isHovering) return null;
+    const isFriend = (this.props.profile.friends || []).includes(gamer.alias);
+    const isFollower = (this.props.profile.follower || []).includes(gamer.alias);
     return(
       <div className="hover-bar">
         <div className="small-button clickable" onClick={() => window.location.href = `/profile/${gamer.alias}`}>Profile</div>
+        {!isFriend && <div className="small-button clickable" onClick={() => this.props.sendFriendRequest(gamer.alias, gamer.profileId)}>Request Connection</div>}
+        <div className="small-button clickable" onClick={() => {}}>Invite</div>
+        {!isFollower && <div className="small-button clickable" onClick={() => this.props.follow(gamer.alias, gamer.profileId)}>Follow</div>}
       </div>
     );
   }

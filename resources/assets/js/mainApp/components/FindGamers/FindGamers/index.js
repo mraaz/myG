@@ -3,7 +3,7 @@ import get from 'lodash.get'
 import { connect } from 'react-redux'
 import { ignoreFunctions } from '../../../../common/render'
 import { searchGamersAction } from '../../../../redux/actions/searchAction'
-import { fetchProfileInfoAction } from '../../../../redux/actions/profileAction'
+import { fetchProfileInfoAction, sendFriendRequestAction, followAction } from '../../../../redux/actions/profileAction'
 import Banner from '../Banner';
 import Search from '../Search';
 import Results from '../Results';
@@ -65,7 +65,7 @@ export class FindGamers extends React.Component {
         <Banner profile={this.props.profile} />
         <Headers />
         {this.isInSearch() && <Search onSearch={this.props.searchGamers} />}
-        {this.isInSearch() && <Results gamers={this.props.gamers} loading={this.props.loading} />}
+        {this.isInSearch() && <Results gamers={this.props.gamers} loading={this.props.loading} profile={this.props.profile} sendFriendRequest={this.props.sendFriendRequest} follow={this.props.follow}/>}
         {this.isInSuggestions() && <GamerSuggestions noTitle />}
       </div>
     );
@@ -88,7 +88,9 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     searchGamers: (input) => dispatch(searchGamersAction(input)),
-    fetchProfileInfo: (alias) => dispatch(fetchProfileInfoAction(alias))
+    fetchProfileInfo: (alias) => dispatch(fetchProfileInfoAction(alias)),
+    sendFriendRequest: (alias, id) => dispatch(sendFriendRequestAction(alias, id)),
+    follow: (alias, id) => dispatch(followAction(alias, id)),
   }
 }
 

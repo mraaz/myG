@@ -59,6 +59,8 @@ class ProfileRepository {
     const [
       isFriend,
       isFollower,
+      friends,
+      followers,
       hasSentFriendRequest,
       friendRequest,
       languages,
@@ -69,6 +71,8 @@ class ProfileRepository {
     ] = await Promise.all([
       this.isFriend({ isSelf, requestingUserId, profileId }),
       this.isFollower({ isSelf, requestingUserId, profileId }),
+      this.fetchFriends({ isSelf, requestingUserId }),
+      this.fetchFollowers({ isSelf, requestingUserId }),
       this.hasSentFriendRequest({ isSelf, requestingUserId, profileId }),
       this.fetchFriendRequest({ isSelf, requestingUserId, profileId }),
       this.fetchLanguages({ profileId }),
@@ -106,6 +110,8 @@ class ProfileRepository {
       isSelf,
       isFriend,
       isFollower,
+      friends,
+      followers,
       hasSentFriendRequest,
       hasReceivedFriendRequest,
       mostPlayedGames,
@@ -144,6 +150,24 @@ class ProfileRepository {
     if (isSelf) return false;
     const response = await Follower.query().where('user_id', requestingUserId).andWhere('follower_id', profileId).fetch();
     return response && response.toJSON()[0] || false;
+  }
+
+  async fetchFriends({ isSelf, requestingUserId }) {
+    if (!isSelf) return [];
+    const response = await Database.table('friends')
+      .innerJoin('users', 'users.id', 'friends.user_id')
+      .where('friends.friend_id', requestingUserId)
+      .select('users.alias');
+    return response.map((friend) => friend.alias);
+  }
+
+  async fetchFollowers({ isSelf, requestingUserId }) {
+    if (!isSelf) return [];
+    const response = await Database.table('followers')
+      .innerJoin('users', 'users.id', 'followers.user_id')
+      .where('followers.follower_id', requestingUserId)
+      .select('users.alias');
+    return response.map((follower) => follower.alias);
   }
 
   async hasSentFriendRequest({ isSelf, requestingUserId, profileId }) {
