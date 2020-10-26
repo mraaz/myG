@@ -38,7 +38,7 @@ export default class GroupMain extends Component {
 
         self.setState({
           all_my_communities: getmyGroups.data.all_my_communities,
-          more_data: getmyGroups.data.all_my_communities.length > 10 ? true : false,
+          more_data: getmyGroups.data.all_my_communities ? (getmyGroups.data.all_my_communities.length > 10 ? true : false) : false,
         })
       } catch (error) {
         logToElasticsearch('error', 'List_Community', 'Failed getGroups in Mount:' + ' ' + error)

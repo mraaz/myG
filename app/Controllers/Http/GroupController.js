@@ -365,13 +365,6 @@ class GroupController {
           .select('id', 'name')
           .paginate(request.params.counter, 6)
 
-        // const total_number_of_communities = await Database.from('usergroups')
-        //   .innerJoin('groups', 'groups.id', 'usergroups.group_id')
-        //   .where('usergroups.user_id', '=', auth.user.id)
-        //   .whereNot('usergroups.permission_level', 42)
-        //   .orWhere('groups.user_id', '=', auth.user.id)
-        //   .count('groups.id as total_number_of_communities')
-
         myGroups = myGroups.data
 
         let variable = 6
@@ -428,9 +421,9 @@ class GroupController {
 
         return {
           all_my_communities,
-          //total_number_of_communities: total_number_of_communities,
         }
       } catch (error) {
+        return error
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
           type: 'error',
