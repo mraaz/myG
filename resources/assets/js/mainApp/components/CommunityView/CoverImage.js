@@ -43,43 +43,36 @@ const CoverImage = (props) => {
       }
     }
   }
-  const handleFollowClick = async (id) => {
+  const handleFollowClick = (id) => {
     const { user_id } = props
     const f = following == '' ? (props.following == true ? 'Unfollow' : 'Follow') : following
     if (f == 'Unfollow') {
-      const data = await axios.delete(`/api/followers/${user_id}/delete_group`, {
+      const data = axios.delete(`/api/followers/${user_id}/delete_group`, {
         group_id: id,
       })
-      if (data) {
-        toast.success(<Toast_style text={`Cheers mate you're no longer following`} />)
-        setFollowing('Follow')
-      }
+      toast.success(<Toast_style text={`Cheers mate you're no longer following`} />)
+      setFollowing('Follow')
     } else {
-      const data = await axios.post('/api/followers/create', {
+      const data = axios.post('/api/followers/create', {
         group_id: id,
       })
-      if (data) {
-        toast.success(<Toast_style text={`Cheers mate you're following`} />)
-        setFollowing('Unfollow')
-      }
+      toast.success(<Toast_style text={`Cheers mate you're following`} />)
+      setFollowing('Unfollow')
     }
   }
-  const handleLeaveClick = async (id) => {
-    const leaverep = await axios.delete(`/api/usergroup/${id}`)
-    if (leaverep) {
-      toast.success(<Toast_style text={`Time to skedaddle! We're out of ${props.name}!`} />)
-      props.routeProps.history.push('/?at=communities')
-    }
+  const handleLeaveClick = (id) => {
+    const leaverep = axios.delete(`/api/usergroup/${id}`)
+    toast.success(<Toast_style text={`Time to skedaddle! We're out of ${props.name}!`} />)
+    props.routeProps.history.push('/?at=communities')
   }
-  const handleJoinButton = async (id) => {
+
+  const handleJoinButton = (id) => {
     if (props.current_user_permission == -1) {
-      const data = await axios.post('/api/usergroup/create', {
+      const data = axios.post('/api/usergroup/create', {
         group_id: id,
       })
-      if (data) {
-        toast.success(<Toast_style text={'Join request sent. You need approval, let the waiting game begin'} />)
-        setJoinlabel('Pending')
-      }
+      toast.success(<Toast_style text={'Join request sent. You need approval, let the waiting game begin'} />)
+      setJoinlabel('Pending')
     } else {
       setToggleOption(!toggle)
     }

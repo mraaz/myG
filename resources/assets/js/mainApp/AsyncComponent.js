@@ -108,12 +108,6 @@ const MyPosts = Loadable({
     return null
   },
 })
-const MyHome = Loadable({
-  loader: () => import('./components/MyHome'),
-  loading: function() {
-    return null
-  },
-})
 
 const MySettings = Loadable({
   loader: () => import('./components/MySettings'),
@@ -171,7 +165,6 @@ export {
   Dossier,
   IndividualPost,
   MyPosts,
-  MyHome,
   MySettings,
   SinglePost,
   AdvancedSearch,
