@@ -1,7 +1,9 @@
 import React from 'react';
+import get from 'lodash.get'
 import { connect } from 'react-redux'
 import { ignoreFunctions } from '../../../../common/render'
 import { searchGamersAction } from '../../../../redux/actions/searchAction'
+import { fetchProfileInfoAction } from '../../../../redux/actions/profileAction'
 import Banner from '../Banner';
 import Search from '../Search';
 import Results from '../Results';
@@ -18,6 +20,7 @@ export class FindGamers extends React.Component {
 
   componentDidMount() {
     document.title = 'myG - Find Gamers'
+    if (!Object.keys(this.props.profile).length) this.props.fetchProfileInfo(this.props.alias);
   }
 
   renderHeaders = () => {
@@ -35,7 +38,7 @@ export class FindGamers extends React.Component {
     return(
       <div id="find-gamers">
         <TopBar />
-        <Banner />
+        <Banner profile={this.props.profile} />
         <Headers />
         {this.state.tab === 'Search' && <Search onSearch={this.props.searchGamers} />}
         {this.state.tab === 'Search' && <Results gamers={this.props.gamers} loading={this.props.loading} />}
@@ -46,9 +49,12 @@ export class FindGamers extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const userId = state.user.userId;
+  const { userId, alias } = state.user;
+  const profile = get(state, `profile.profiles[${alias}]`, {});
   return {
     userId,
+    alias,
+    profile,
     gamers: state.search.gamers,
     loading: state.search.gamersLoading,
     error: state.search.gamersError,
@@ -58,6 +64,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     searchGamers: (input) => dispatch(searchGamersAction(input)),
+    fetchProfileInfo: (alias) => dispatch(fetchProfileInfoAction(alias))
   }
 }
 
