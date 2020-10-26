@@ -84,8 +84,8 @@ export default class Members extends React.Component {
       mApprovals: approval,
     })
     if (sendInvite) {
-      toast.success(<Toast_style text={'Nice! Setting have been successfully saved.'} />)
-      this.props.handleModalStatus()
+      toast.success(<Toast_style text={'Nice! Setting has been successfully saved.'} />)
+      this.props.handleModalStatus(true)
       // this.props.routeProps.match.params.name = communityName
       // this.props.routeProps.history.push(`/community/${communityName}`)
     }
