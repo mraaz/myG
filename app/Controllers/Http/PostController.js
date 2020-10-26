@@ -19,8 +19,8 @@ class PostController {
       let arrGroups_id = [],
         newPost = ''
 
-      if (request.input('group_id') != undefined && request.input('group_id').trim().length > 0) {
-        arrGroups_id = request.input('group_id').split(',')
+      if (request.input('group_id') != undefined && String(request.input('group_id')).trim().length > 0) {
+        arrGroups_id = String(request.input('group_id')).split(',')
       }
 
       if (auth.user) {
@@ -29,17 +29,12 @@ class PostController {
             content: request.input('content'),
             user_id: auth.user.id,
             type: 'text',
-            group_id:
-              request.input('group_id') != undefined
-                ? request.input('group_id').trim().length > 0
-                  ? request.input('group_id')
-                  : null
-                : null,
+            group_id: null,
             visibility: request.input('visibility'),
             media_url: request.input('media_url'),
           })
 
-          if (request.input('hash_tags') != null && request.input('hash_tags').length > 0) {
+          if (request.input('hash_tags') != undefined && request.input('hash_tags') != null && request.input('hash_tags').length > 0) {
             await this.process_hash_tags({ auth }, request.input('hash_tags'), newPost.id)
           }
         } else {
@@ -52,9 +47,9 @@ class PostController {
               visibility: request.input('visibility'),
               media_url: request.input('media_url'),
             })
-            if (request.input('hash_tags') != null && request.input('hash_tags').length > 0) {
+            if (request.input('hash_tags') != undefined && request.input('hash_tags') != null && request.input('hash_tags').length > 0) {
+              await this.process_hash_tags({ auth }, request.input('hash_tags'), newPost.id)
             }
-            await this.process_hash_tags({ auth }, request.input('hash_tags'), newPost.id)
           }
         }
         let tmpArr = request.input('aws_key_id')
