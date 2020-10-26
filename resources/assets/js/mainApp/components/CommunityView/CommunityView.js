@@ -144,7 +144,7 @@ const CommunityView = (props) => {
           })}
         </div>
       )}
-      {communityDetails.current_user_permission === 0 && renderSponsors(communityDetails.sponsors)}
+      {renderSponsors(communityDetails.sponsors)}
       {showSponsorModal && <MangeSponsors sponsor={singleSponsor} handleModalStatus={hideSponsorModal} group_id={communityDetails.id} />}
       {communityDetails.id && (
         <GamePosts {...props} group_id={communityDetails.id} current_user_permission={communityDetails.current_user_permission} />

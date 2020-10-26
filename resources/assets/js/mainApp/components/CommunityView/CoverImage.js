@@ -71,8 +71,9 @@ const CoverImage = (props) => {
       props.routeProps.history.push('/?at=communities')
     }
   }
-  const handleJoinButton = async (id) => {
-    if (props.current_user_permission == -1) {
+  const handleJoinButton = async (e, id) => {
+    e.preventDefault()
+    if (props.current_user_permission == -1 && joinlabel == undefined) {
       const data = await axios.post('/api/usergroup/create', {
         group_id: id,
       })
@@ -111,15 +112,17 @@ const CoverImage = (props) => {
       <div className='community__option'>
         <div className='name'>{props.name}</div>
         <div className='option'>
-          <button type='button' className='btnWarning btn__option' onClick={(e) => handleJoinButton(props.id)}>
-            <span>{joinlabel || labelMap[props.current_user_permission]}</span>
-            <img src='https://mygame-media.s3.amazonaws.com/platform_images/View+Game/Down+Carrot_black.svg'></img>
+          <button type='button' className='btnWarning btn__option'>
+            <span onClick={(e) => handleJoinButton(e, props.id)}>{joinlabel || labelMap[props.current_user_permission]}</span>
+            <img
+              src='https://mygame-media.s3.amazonaws.com/platform_images/View+Game/Down+Carrot_black.svg'
+              onClick={(e) => setToggleOption(!toggle)}></img>
             {toggle &&
               (labelMap[props.current_user_permission] == 'Joined' ||
                 labelMap[props.current_user_permission] == 'Pending' ||
                 labelMap[props.current_user_permission] == 'Join') && (
                 <div className='btn__option__dropdown'>
-                  {props.current_user_permission != 0 && labelMap[props.current_user_permission] != 'Join' && (
+                  {props.current_user_permission != 0 && (labelMap[props.current_user_permission] != 'Join' || joinlabel == 'Pending') && (
                     <div className='dropdown__option' onClick={(e) => handleLeaveClick(props.id)}>
                       Leave
                     </div>

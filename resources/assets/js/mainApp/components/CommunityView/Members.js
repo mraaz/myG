@@ -85,7 +85,7 @@ export default class Members extends React.Component {
     })
     if (sendInvite) {
       toast.success(<Toast_style text={'Nice! Setting has been successfully saved.'} />)
-      this.props.handleModalStatus()
+      this.props.handleModalStatus(true)
       this.props.routeProps.match.params.name = communityName
       this.props.routeProps.history.push(`/community/${communityName}`)
     }
