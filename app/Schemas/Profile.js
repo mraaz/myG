@@ -29,6 +29,8 @@ class Profile {
     this.isSelf = forceBoolean(data.isSelf)
     this.isFriend = forceBoolean(data.isFriend)
     this.isFollower = forceBoolean(data.isFollower)
+    this.friends = forceArray(data.friends)
+    this.followers = forceArray(data.followers)
     this.hasSentFriendRequest = forceBoolean(data.hasSentFriendRequest)
     this.hasReceivedFriendRequest = forceBoolean(data.hasReceivedFriendRequest)
     this.friendRequestId = forceInt(data.friendRequestId)

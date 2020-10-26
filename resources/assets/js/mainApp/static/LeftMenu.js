@@ -42,7 +42,7 @@ const sideBarItems = {
       },
       {
         header: 'Find <b>Gamers</b>',
-        cta: '/find-gamers',
+        cta: '/find-gamers/search',
       },
     ],
   },

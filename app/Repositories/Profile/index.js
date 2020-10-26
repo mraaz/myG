@@ -18,7 +18,6 @@ const ConnectionController = use('App/Controllers/Http/ConnectionController');
 const NotificationController_v2 = use('App/Controllers/Http/NotificationController_v2');
 
 const ProfileSchema = require('../../Schemas/Profile');
-const GameExperienceSchema = require('../../Schemas/GameExperience');
 const GameBackgroundSchema = require('../../Schemas/GameBackground');
 const CommendationSchema = require('../../Schemas/Commendation');
 
@@ -60,6 +59,8 @@ class ProfileRepository {
     const [
       isFriend,
       isFollower,
+      friends,
+      followers,
       hasSentFriendRequest,
       friendRequest,
       languages,
@@ -70,6 +71,8 @@ class ProfileRepository {
     ] = await Promise.all([
       this.isFriend({ isSelf, requestingUserId, profileId }),
       this.isFollower({ isSelf, requestingUserId, profileId }),
+      this.fetchFriends({ isSelf, requestingUserId }),
+      this.fetchFollowers({ isSelf, requestingUserId }),
       this.hasSentFriendRequest({ isSelf, requestingUserId, profileId }),
       this.fetchFriendRequest({ isSelf, requestingUserId, profileId }),
       this.fetchLanguages({ profileId }),
@@ -107,6 +110,8 @@ class ProfileRepository {
       isSelf,
       isFriend,
       isFollower,
+      friends,
+      followers,
       hasSentFriendRequest,
       hasReceivedFriendRequest,
       mostPlayedGames,
@@ -145,6 +150,24 @@ class ProfileRepository {
     if (isSelf) return false;
     const response = await Follower.query().where('user_id', requestingUserId).andWhere('follower_id', profileId).fetch();
     return response && response.toJSON()[0] || false;
+  }
+
+  async fetchFriends({ isSelf, requestingUserId }) {
+    if (!isSelf) return [];
+    const response = await Database.table('friends')
+      .innerJoin('users', 'users.id', 'friends.user_id')
+      .where('friends.friend_id', requestingUserId)
+      .select('users.alias');
+    return response.map((friend) => friend.alias);
+  }
+
+  async fetchFollowers({ isSelf, requestingUserId }) {
+    if (!isSelf) return [];
+    const response = await Database.table('followers')
+      .innerJoin('users', 'users.id', 'followers.user_id')
+      .where('followers.follower_id', requestingUserId)
+      .select('users.alias');
+    return response.map((follower) => follower.alias);
   }
 
   async hasSentFriendRequest({ isSelf, requestingUserId, profileId }) {
@@ -227,6 +250,8 @@ class ProfileRepository {
       for (const gameName of mostPlayedGames.filter(gameName => !!gameName)) {
         const game = await Database.from('game_names').where({ game_name: gameName }).select('id' ,'game_name');
         const gameId = game && game[0] ? game[0].id : (await createGame(gameName)).id;
+        const experience = await GameExperience.query().where({ user_id: requestingUserId }).andWhere({ game_names_id: gameId }).first();
+        if (!experience) await this.updateGame({ requestingUserId, game: gameId, level: 'Casual', experience: 'Less than 1 year' });
         const mostPlayedGame = new UserMostPlayedGame();
         mostPlayedGame.user_id = requestingUserId;
         mostPlayedGame.game_name_id = gameId;
@@ -280,7 +305,7 @@ class ProfileRepository {
     await gameExperience.save();
 
     await GameBackground.query().where('experience_id', gameExperience.id).delete();
-    await Promise.all(background.map(experience => {
+    await Promise.all((background || []).map(experience => {
       const gameBackground = new GameBackground();
       gameBackground.user_id = requestingUserId;
       gameBackground.game_names_id = game;
@@ -292,10 +317,9 @@ class ProfileRepository {
       return gameBackground.save();
     }))
 
-    const gameExperiences = await this.fetchGameExperiences({ profileId: requestingUserId });
-    const gameBackground = await this.fetchGameBackground({ profileId: requestingUserId });
-    this.insertBackgroundIntoExperiences({ gameExperiences, gameBackground })
-    return { gameExperiences: gameExperiences.map(experience => new GameExperienceSchema(experience)) }
+    const { profile } = await this.fetchProfileInfo({ requestingUserId, id: requestingUserId });
+    await ElasticsearchRepository.storeUser({ user: profile });
+    return { gameExperiences: profile.gameExperiences }
   }
 
   insertBackgroundIntoExperiences({ gameExperiences, gameBackground }) {
@@ -366,8 +390,13 @@ class ProfileRepository {
   }
 
   async deleteGameExperience({ requestingUserId, gameExperienceId }) {
+    const gameExperience = await GameExperience.find(gameExperienceId);
+    if (!gameExperience) return this.fetchProfileInfo({ requestingUserId, id: requestingUserId })
     await Database.table('game_experiences').where({ id: gameExperienceId }).delete()
-    return this.fetchProfileInfo({ requestingUserId, id: requestingUserId })
+    await Database.table('user_most_played_games').where({ user_id: requestingUserId }).andWhere({ game_name_id: gameExperience.game_names_id }).delete()
+    const { profile } = await this.fetchProfileInfo({ requestingUserId, id: requestingUserId });
+    await ElasticsearchRepository.storeUser({ user: profile });
+    return { profile };
   }
 
   async getEncryptionKeyPair() {
@@ -397,6 +426,15 @@ class ProfileRepository {
       console.error(`Failed to Decrypt: ${field}`, this.privateKey, this.publicKey);
       return null;
     }
+  }
+
+  async loadProfilesIntoElastisearch() {
+    const users = await Database.from('users').select('alias');
+    await Promise.all(users.map((user) => {
+      return this.fetchProfileInfo({ requestingUserId: 0, alias: user.alias }).then((profile) => {
+        return ElasticsearchRepository.storeUser({ user: profile.profile }).then(() => console.log(`Loaded User ${user.alias} into Elasticsearch`))
+      });
+    }));
   }
 }
 
