@@ -92,11 +92,12 @@ class ElasticsearchRepository {
   }
 
   async storeUser({ user }) {
+    const gameExperiences = (user.gameExperiences || []).map((experience) => ({ id: experience.game, level: experience.level, experience: experience.experience }));
     return this.getElasticsearchClient().update({
       index: 'users',
       id: user.profileId,
       body: {
-        doc: user,
+        doc: { ...user, gameExperiences },
         doc_as_upsert: true,
       }
     }).then(() => ({ success: true, error: null })).catch(error => ({ success: false, error }));

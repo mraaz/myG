@@ -227,6 +227,8 @@ class ProfileRepository {
       for (const gameName of mostPlayedGames.filter(gameName => !!gameName)) {
         const game = await Database.from('game_names').where({ game_name: gameName }).select('id' ,'game_name');
         const gameId = game && game[0] ? game[0].id : (await createGame(gameName)).id;
+        const experience = await GameExperience.query().where({ user_id: requestingUserId }).andWhere({ game_names_id: gameId }).first();
+        if (!experience) await this.updateGame({ requestingUserId, game: gameId, level: 'Casual', experience: 'Less than 1 year' });
         const mostPlayedGame = new UserMostPlayedGame();
         mostPlayedGame.user_id = requestingUserId;
         mostPlayedGame.game_name_id = gameId;
@@ -280,7 +282,7 @@ class ProfileRepository {
     await gameExperience.save();
 
     await GameBackground.query().where('experience_id', gameExperience.id).delete();
-    await Promise.all(background.map(experience => {
+    await Promise.all((background || []).map(experience => {
       const gameBackground = new GameBackground();
       gameBackground.user_id = requestingUserId;
       gameBackground.game_names_id = game;
@@ -292,10 +294,9 @@ class ProfileRepository {
       return gameBackground.save();
     }))
 
-    const gameExperiences = await this.fetchGameExperiences({ profileId: requestingUserId });
-    const gameBackground = await this.fetchGameBackground({ profileId: requestingUserId });
-    this.insertBackgroundIntoExperiences({ gameExperiences, gameBackground })
-    return { gameExperiences: gameExperiences.map(experience => new GameExperienceSchema(experience)) }
+    const { profile } = await this.fetchProfileInfo({ requestingUserId, id: requestingUserId });
+    await ElasticsearchRepository.storeUser({ user: profile });
+    return { gameExperiences: profile.gameExperiences }
   }
 
   insertBackgroundIntoExperiences({ gameExperiences, gameBackground }) {
@@ -366,8 +367,13 @@ class ProfileRepository {
   }
 
   async deleteGameExperience({ requestingUserId, gameExperienceId }) {
+    const gameExperience = await GameExperience.find(gameExperienceId);
+    if (!gameExperience) return this.fetchProfileInfo({ requestingUserId, id: requestingUserId })
     await Database.table('game_experiences').where({ id: gameExperienceId }).delete()
-    return this.fetchProfileInfo({ requestingUserId, id: requestingUserId })
+    await Database.table('user_most_played_games').where({ user_id: requestingUserId }).andWhere({ game_name_id: gameExperience.game_names_id }).delete()
+    const { profile } = await this.fetchProfileInfo({ requestingUserId, id: requestingUserId });
+    await ElasticsearchRepository.storeUser({ user: profile });
+    return { profile };
   }
 
   async getEncryptionKeyPair() {
