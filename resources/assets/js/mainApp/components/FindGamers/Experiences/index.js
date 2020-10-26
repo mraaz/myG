@@ -14,7 +14,7 @@ export default class Experiences extends React.Component {
     const style = game.level === 'Pro Gamer' ? 'pro' : game.level === 'Semi Pro' ? 'semi-pro' : 'casual';
     return(
       <div className="game clickable" onClick={() => this.openGame(game)}>
-        <div className="name">{game.gameName}</div>
+        <div className="name">{game.gameName || game.name}</div>
         <div className="experience">{game.experience}</div>
         <div className={style}>{game.level}</div>
       </div>

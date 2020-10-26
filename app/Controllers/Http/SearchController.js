@@ -20,6 +20,7 @@ class SearchController {
         source: 'backend',
         context: __filename,
         message: (error && error.message) || error,
+        error,
       })
       return response.send({ error })
     }

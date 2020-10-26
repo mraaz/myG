@@ -1,6 +1,7 @@
 import React from 'react';
 import Progress from '../../common/ProgressCircle/progress'
 import LoadingIndicator from '../../LoadingIndicator'
+import Experiences from '../Experiences'
 import { ignoreFunctions } from '../../../../common/render'
 
 export default class Results extends React.Component {
@@ -38,13 +39,13 @@ export default class Results extends React.Component {
           {this.renderHoverBar(gamer, isHovering)}
           <div className='icon' style={{ backgroundImage: `url('${gamer.image}'), url('https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png')` }} />
           <div className="info">
-            <span className="alias">@{gamer.alias}</span>
-            <span className="title">Country</span>
-            <span className="value">{gamer.country}</span>
-            <span className="title">Professional Team</span>
-            <span className="value">{gamer.team}</span>
-            <span className="title">Languages</span>
-            <span className="value">{gamer.languages.join(', ')}</span>
+            {gamer.alias && <span className="alias">@{gamer.alias}</span>}
+            {gamer.country && <span className="title">Country</span>}
+            {gamer.country && <span className="value">{gamer.country}</span>}
+            {gamer.team && <span className="title">Professional Team</span>}
+            {gamer.team && <span className="value">{gamer.team}</span>}
+            {gamer.languages && <span className="title">Languages</span>}
+            {gamer.languages && <span className="value">{gamer.languages.join(', ')}</span>}
           </div>
           <div className="level-progress">
             <Progress
@@ -64,15 +65,7 @@ export default class Results extends React.Component {
             <span className="value">{gamer.experience}</span>
           </div>
         </div>
-        {gamer.mostPlayedGames.map(this.renderGame)}
-      </div>
-    );
-  }
-
-  renderGame = (game) => {
-    return(
-      <div className="game">
-        <div className="name">{game}</div>
+        <Experiences gameExperiences={(gamer.gameExperiences || []).filter((experience) => gamer.mostPlayedGames.includes(experience.name))} />
       </div>
     );
   }

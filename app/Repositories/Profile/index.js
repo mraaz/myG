@@ -18,7 +18,6 @@ const ConnectionController = use('App/Controllers/Http/ConnectionController');
 const NotificationController_v2 = use('App/Controllers/Http/NotificationController_v2');
 
 const ProfileSchema = require('../../Schemas/Profile');
-const GameExperienceSchema = require('../../Schemas/GameExperience');
 const GameBackgroundSchema = require('../../Schemas/GameBackground');
 const CommendationSchema = require('../../Schemas/Commendation');
 
@@ -403,6 +402,15 @@ class ProfileRepository {
       console.error(`Failed to Decrypt: ${field}`, this.privateKey, this.publicKey);
       return null;
     }
+  }
+
+  async loadProfilesIntoElastisearch() {
+    const users = await Database.from('users').select('alias');
+    await Promise.all(users.map((user) => {
+      return this.fetchProfileInfo({ requestingUserId: 0, alias: user.alias }).then((profile) => {
+        return ElasticsearchRepository.storeUser({ user: profile.profile }).then(() => console.log(`Loaded User ${user.alias} into Elasticsearch`))
+      });
+    }));
   }
 }
 
