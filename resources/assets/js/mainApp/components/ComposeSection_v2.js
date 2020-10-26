@@ -154,6 +154,7 @@ export default class ComposeSection extends Component {
         aws_key_id: aws_key_id.length > 0 ? aws_key_id : '',
         hash_tags: hash_tags,
       })
+
       this.setState(
         {
           bFileModalOpen: false,

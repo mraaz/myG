@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import SweetAlert from '../common/MyGSweetAlert'
 import { toast } from 'react-toastify'
 import { Toast_style } from '../Utility_Function'
-import { Upload_to_S3 } from '../AWS_utilities'
+import { Upload_to_S3, Remove_file } from '../AWS_utilities'
 import { PageHeader, MyGButton, MyGModal, MyGInput } from '../common'
 
 export default class MangeSponsors extends React.Component {
@@ -16,6 +16,8 @@ export default class MangeSponsors extends React.Component {
       saveButtonDisabled: true,
       linkValue: '',
       media_url: '',
+      aws_key_id: '',
+      file_keys: '',
     }
     this.fileInputRef = React.createRef()
   }
@@ -45,6 +47,13 @@ export default class MangeSponsors extends React.Component {
     }
   }
 
+  handleClose = (e) => {
+    if (this.state.aws_key_id != '') {
+      const delete_file = Remove_file(this.state.file_keys, this.state.aws_key_id)
+    }
+    this.props.handleModalStatus(false)
+  }
+
   updateSponsor = async (e) => {
     const { sponsor = {}, groups_id } = this.props
     const { linkValue, media_url } = this.state
@@ -55,7 +64,7 @@ export default class MangeSponsors extends React.Component {
       link: linkValue == '' ? sponsor.link : linkValue,
     })
     if (updateSponsor) {
-      toast.error(<Toast_style text={'Great, Saved successfully!'} />)
+      toast.error(<Toast_style text={'Epic! Saved successfully!'} />)
       this.props.handleModalStatus(true)
     }
   }
@@ -109,7 +118,7 @@ export default class MangeSponsors extends React.Component {
   doUploadS3 = async (file, name) => {
     this.setState({ uploading: true })
     try {
-      if (file.size > 10485760) {
+      if (file.size < 9485760) {
         const post = await Upload_to_S3(file, name, 0, null)
         this.setState({
           media_url: [post.data.Location],
@@ -136,7 +145,7 @@ export default class MangeSponsors extends React.Component {
             <div className='tabs___header'>
               <span className={`setting__tab  notHand`}>Edit Media</span>
             </div>
-            <div className='modal__close' onClick={(e) => this.props.handleModalStatus(false)}>
+            <div className='modal__close' onClick={(e) => this.handleClose()}>
               <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/X_icon.svg' />
             </div>
           </div>
@@ -173,7 +182,7 @@ export default class MangeSponsors extends React.Component {
           <div className='modal__footer'>
             <MyGButton
               customStyles={{ color: '#FFFFFF', border: '2px solid #FFFFFF', background: '#000' }}
-              onClick={() => this.props.handleModalStatus(false)}
+              onClick={() => this.handleClose()}
               text='Cancel'
             />
             <button type='button' disabled={saveButtonDisabled} onClick={() => this.handleSave(true)}>
@@ -182,7 +191,7 @@ export default class MangeSponsors extends React.Component {
           </div>
         </div>
 
-        <div className='modal-overlay' onClick={(e) => this.props.handleModalStatus(false)}></div>
+        <div className='modal-overlay' onClick={(e) => this.handleClose()}></div>
       </div>
     )
   }

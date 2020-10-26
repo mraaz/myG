@@ -237,7 +237,7 @@ class GroupController {
         .select('group_id')
 
       const groupSearchResults_im_not_in = await Database.from('groups')
-        .select('name', 'group_img', 'id', 'type')
+        .select('name', 'group_img', 'id as group_id', 'type')
         .where('name', 'like', '%' + request.params.str + '%')
         .whereNot('type', 2)
         .whereNotIn('id', all_groups_im_in_ish)
@@ -519,7 +519,7 @@ class GroupController {
         }
         const update_group_type = await Group.query()
           .where({ id: request.input('group_id') })
-          .update({ type: request.input('privacy'), all_accept: request.input('mApprovals') })
+          .update({ type: request.input('privacy'), all_accept: request.input('mApprovals') == 'true' ? 1 : 0 })
         return 'Saved successfully'
       } catch (error) {
         LoggingRepository.log({
