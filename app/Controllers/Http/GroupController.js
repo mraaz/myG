@@ -423,7 +423,6 @@ class GroupController {
           all_my_communities,
         }
       } catch (error) {
-        return error
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
           type: 'error',

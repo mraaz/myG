@@ -137,6 +137,8 @@ class ApiController {
   }
 
   async create_aws_keys_entry({ auth }, key, type, id, location) {
+    type = String(type)
+
     if (auth.user) {
       try {
         if (key.length == undefined || key == null) {
@@ -168,6 +170,8 @@ class ApiController {
           case '4':
             group_id = id
             if (id != undefined || id != null) {
+              this.internal_deleteFile({ auth }, 4, id)
+
               const update_img = await Group.query()
                 .where({ id: id })
                 .update({ group_img: location })
@@ -224,6 +228,7 @@ class ApiController {
   }
 
   async update_aws_keys_entry({ auth }, aws_key_id, type, id) {
+    type = String(type)
     if (auth.user) {
       try {
         let post_id = null,
@@ -296,7 +301,7 @@ class ApiController {
       try {
         let key = request.input('key')
 
-        var delete_aws_entry = await Database.table('aws_keys')
+        let delete_aws_entry = await Database.table('aws_keys')
           .where({
             id: request.input('aws_key_id'),
           })
@@ -388,8 +393,10 @@ class ApiController {
       }
     }
   }
-
-  async internal_deleteFile({ auth }, type, id) {
+  //keep_latest use case is for when you update a image and you want to keep the latest
+  //file and delete any other upload for this entry. False will delete all files for this entry
+  async internal_deleteFile({ auth }, type, id, keep_latest = false) {
+    type = String(type)
     if (auth.user) {
       try {
         let post_id = null,
@@ -430,18 +437,23 @@ class ApiController {
             return
         }
 
-        const get_Alicia = await Database.from('aws_keys').where((builder) => {
-          if (post_id != null) builder.where('post_id', post_id)
-          if (group_id != null) builder.where('group_id', group_id)
-          if (chat_id != null) builder.where('chat_id', chat_id)
-          if (chat_message_id != null) builder.where('chat_message_id', chat_message_id)
-          if (comment_id != null) builder.where('comment_id', comment_id)
-          if (reply_id != null) builder.where('reply_id', reply_id)
-          if (game_name_id != null) builder.where('game_name_id', game_name_id)
-          if (sponsor_id != null) builder.where('sponsor_id', sponsor_id)
-        })
+        const get_Alicia = await Database.from('aws_keys')
+          .where((builder) => {
+            if (post_id != null) builder.where('post_id', post_id)
+            if (group_id != null) builder.where('group_id', group_id)
+            if (chat_id != null) builder.where('chat_id', chat_id)
+            if (chat_message_id != null) builder.where('chat_message_id', chat_message_id)
+            if (comment_id != null) builder.where('comment_id', comment_id)
+            if (reply_id != null) builder.where('reply_id', reply_id)
+            if (game_name_id != null) builder.where('game_name_id', game_name_id)
+            if (sponsor_id != null) builder.where('sponsor_id', sponsor_id)
+          })
+          .orderBy('created_at', 'desc')
 
         for (var i = 0; i < get_Alicia.length; i++) {
+          if (keep_latest && i == 0) {
+            continue
+          }
           s3.deleteObject(
             {
               Bucket: S3_BUCKET_DELETE,
@@ -449,12 +461,18 @@ class ApiController {
             },
             function(err, data) {
               if (data) {
-                console.log('null')
+                console.log('done')
               } else {
                 console.log(err)
               }
             }
           )
+
+          let delete_aws_entry = await Database.table('aws_keys')
+            .where({
+              id: get_Alicia[i].id,
+            })
+            .delete()
         }
       } catch (error) {
         LoggingRepository.log({
