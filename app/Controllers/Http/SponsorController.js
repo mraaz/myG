@@ -11,7 +11,7 @@ class SponsorController {
   async store({ auth, request, response }) {
     if (auth.user) {
       try {
-        //if its a group, check to see if this user can add
+        //if its a group, check to see if this user can add and Only allow two sponsors
         if (request.input('group_id') != undefined && request.input('group_id') != null) {
           const commonController = new CommonController()
 
@@ -20,7 +20,29 @@ class SponsorController {
           if (current_user_permission != 0 && current_user_permission != 1) {
             return
           }
+
+          const allSponsors = await Database.table('sponsors').where({ group_id: request.input('group_id') })
+
+          if (allSponsors.length == 2) {
+            const update_sponsor = await Sponsor.query()
+              .where({ id: allSponsors[0].id })
+              .update({ media_url: request.input('media_url'), link: request.input('link') })
+
+            let tmpArr = request.input('aws_key_id')
+
+            if (tmpArr != undefined && tmpArr.length > 0) {
+              const apiController = new ApiController()
+              await apiController.internal_deleteFile({ auth }, '10', allSponsors[0].id)
+
+              for (let i = 0; i < tmpArr.length; i++) {
+                const alicia_key = await apiController.update_aws_keys_entry({ auth }, tmpArr[i], '10', create_Sponsor.id)
+              }
+            }
+
+            return
+          }
         }
+
         const create_Sponsor = await Sponsor.create({
           user_id: auth.user.id,
           group_id: request.input('group_id'),
@@ -113,10 +135,14 @@ class SponsorController {
         }
       }
 
+      const apiController = new ApiController()
+      await apiController.internal_deleteFile({ auth }, '10', request.input('id'), true)
+
       try {
         const update_sponsor = await Sponsor.query()
           .where({ id: request.input('id') })
           .update({ media_url: request.input('media_url'), link: request.input('link') })
+
         return 'Saved successfully'
       } catch (error) {
         LoggingRepository.log({

@@ -35,7 +35,7 @@ const CoverImage = (props) => {
         toast.error(<Toast_style text={'Opps, Invalid file format! '} />)
         return
       }
-      if (file.size > 10240) {
+      if (file.size < 10485760) {
         const post = await Upload_to_S3(file, file.name, 4, props.id)
         setCoverImage(post.data.Location)
       } else {
