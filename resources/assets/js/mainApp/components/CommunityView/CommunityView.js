@@ -44,6 +44,9 @@ const CommunityView = (props) => {
   const handleModalStatus = (label) => {
     setActiveModalTab(label)
     setModalStatus(!modalStatus)
+    if (label == true) {
+      hideSponsorModal(true)
+    }
   }
 
   const handleSponsorClick = (data) => {
