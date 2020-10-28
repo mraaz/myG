@@ -94,24 +94,30 @@ class GameNameController {
     }
   }
 
-  async decrementGameCounter({ auth }, game_name) {
+  async decrementGameCounter({ auth }, game_id) {
     if (auth.user) {
       try {
         const decrementGameCounter = await GameNames.query()
-          .where({ id: game_name })
+          .where({ id: game_id })
           .decrement('counter', 1)
 
-        const game_names = await Database.table('game_names').where({
-          id: game_name,
-        })
+        const game_name = await Database.table('game_names')
+          .where({
+            id: game_id,
+          })
+          .first()
 
-        if (game_names[0].verified == 0 && game_names[0].counter < 1) {
+        if (game_name == undefined) {
+          return
+        }
+
+        if (game_name.verified == 0 && game_name.counter < 1) {
           const apiController = new ApiController()
-          await apiController.internal_deleteFile({ auth }, '9', game_name[0].id)
+          await apiController.internal_deleteFile({ auth }, '9', game_name.id)
 
           const delete_game = await Database.table('game_names')
             .where({
-              id: game_name[0].id,
+              id: game_name.id,
             })
             .delete()
         }

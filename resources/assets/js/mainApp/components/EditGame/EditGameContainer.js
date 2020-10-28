@@ -106,13 +106,13 @@ const EditGameContainer = (props) => {
     }
   }
 
-  const hideAlert = async (val) => {
+  const hideAlert = (val) => {
     setShowSweetAlert(null)
+
     if (val == 'true') {
-      const deleteGameData = await axios.get(`/api/ScheduleGame/delete/${id}/0`)
-      if (deleteGameData) {
-        toast.success(<Toast_style text={'Woot! Game has been deleted successfully.'} />)
-      }
+      const deleteGameData = axios.delete(`/api/ScheduleGame/delete/${id}/0`)
+      toast.success(<Toast_style text={'Woot! Game has been deleted successfully.'} />)
+      props.routeProps.history.push('/?at=mygames')
     }
   }
 
@@ -318,14 +318,13 @@ const EditGameContainer = (props) => {
       setShowReasonModal(true)
     }
   }
-  const handleReasonSubmit = async (value) => {
+  const handleReasonSubmit = (value) => {
     setShowReasonModal(false)
     if (value && reason.value) {
-      const deleteGameData = await axios.get(`/api/ScheduleGame/delete/${id}/${reason.value}`)
-      if (deleteGameData) {
-        setReason('')
-        toast.success(<Toast_style text={'Booo! Game has been deleted.'} />)
-      }
+      const deleteGameData = axios.delete(`/api/ScheduleGame/delete/${id}/${reason.value}`)
+      setReason('')
+      toast.success(<Toast_style text={'Booo! Game has been deleted.'} />)
+      props.routeProps.history.push('/?at=mygames')
     }
   }
 

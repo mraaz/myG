@@ -73,7 +73,7 @@ const CommunityView = (props) => {
     setShowSponsorModal(false)
   }
   const addDefaultSrc = (ev) => {
-    ev.target.src = 'https://myg-test-media-files.s3-ap-southeast-2.amazonaws.com/logo_JPG+(1).jpg'
+    ev.target.src = 'https://mygame-media.s3.amazonaws.com/platform_images/Communities/myG_logo.jpg'
   }
 
   const handleDeleteSponsor = (id) => {
