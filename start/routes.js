@@ -94,7 +94,7 @@ Route.post('/api/GameExperiences/gameExpSearchResults', 'GameExperienceControlle
 Route.get('/api/ScheduleGame/additional_game_info/:id', 'ScheduleGameController.additional_game_info')
 
 Route.post('/api/ScheduleGame', 'ScheduleGameController.store')
-Route.get('/api/ScheduleGame/delete/:id/:reason', 'ScheduleGameController.destroy')
+Route.delete('/api/ScheduleGame/delete/:id/:reason', 'ScheduleGameController.destroy')
 //Route.get('/api/ScheduleGame', 'ScheduleGameController.show')
 //Route.get('/api/ScheduleGame/:id', 'ScheduleGameController.show_one')
 Route.post('/api/ScheduleGame/getAdmin', 'ScheduleGameController.getAdmin')

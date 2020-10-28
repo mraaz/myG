@@ -492,7 +492,7 @@ class ScheduleGameController {
       try {
         const gameface = new GameNameController()
 
-        var schedule_game_id = request.params.id
+        let schedule_game_id = request.params.id
 
         const getOne = await Database.from('schedule_games')
           .where({
@@ -531,7 +531,7 @@ class ScheduleGameController {
             reason = null
         }
 
-        const delete_sch = await ScheduleGame.query()
+        const update_sch = await ScheduleGame.query()
           .where({ id: request.params.id })
           .update({ marked_as_deleted: true, deleted_date: Database.fn.now(), reason_for_deletion: reason })
 
