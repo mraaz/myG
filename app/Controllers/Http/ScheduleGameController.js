@@ -569,7 +569,7 @@ class ScheduleGameController {
     try {
       switch (filter) {
         case 0:
-          subquery = Database.from('attendees')
+          subquery = await Database.from('attendees')
             .select('schedule_games_id')
             .where({ user_id: auth.user.id })
 
@@ -579,7 +579,8 @@ class ScheduleGameController {
             .where((builder) => {
               if (request.input('exclude_expired') == 'true') builder.where('expiry', '>', Database.fn.now())
             })
-            .where('schedule_games.user_id', '=', auth.user.id, 'schedule_games.marked_as_deleted', '=', 0)
+            .where('schedule_games.user_id', '=', auth.user.id)
+            .where('schedule_games.marked_as_deleted', '=', 0)
             .orWhereIn('schedule_games.id', subquery)
             .select(
               'game_names.game_artwork',
@@ -602,7 +603,8 @@ class ScheduleGameController {
             .where((builder) => {
               if (request.input('exclude_expired') == 'true') builder.where('expiry', '>', Database.fn.now())
             })
-            .where('schedule_games.user_id', '=', auth.user.id, 'schedule_games.marked_as_deleted', '=', 0)
+            .where('schedule_games.user_id', '=', auth.user.id)
+            .where('schedule_games.marked_as_deleted', '=', 0)
             .orWhereIn('schedule_games.id', subquery)
             .count('* as no_of_records')
 
@@ -615,7 +617,8 @@ class ScheduleGameController {
             .where((builder) => {
               if (request.input('exclude_expired') == 'true') builder.where('expiry', '>', Database.fn.now())
             })
-            .where('schedule_games.user_id', '=', auth.user.id, 'schedule_games.marked_as_deleted', '=', 0)
+            .where('schedule_games.user_id', '=', auth.user.id)
+            .where('schedule_games.marked_as_deleted', '=', 0)
             .select(
               'game_names.game_artwork',
               'game_names.game_name_fields_img',
@@ -636,7 +639,8 @@ class ScheduleGameController {
             .where((builder) => {
               if (request.input('exclude_expired') == 'true') builder.where('expiry', '>', Database.fn.now())
             })
-            .where('schedule_games.user_id', '=', auth.user.id, 'schedule_games.marked_as_deleted', '=', 0)
+            .where('schedule_games.user_id', '=', auth.user.id)
+            .where('schedule_games.marked_as_deleted', '=', 0)
             .count('* as no_of_records')
 
           number_of_records = count_myScheduledGames[0].no_of_records
@@ -801,7 +805,8 @@ class ScheduleGameController {
         .innerJoin('users', 'users.id', 'schedule_games.user_id')
         .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
         .where('expiry', '>', Database.fn.now())
-        .where('schedule_games.user_id', '=', auth.user.id, 'schedule_games.marked_as_deleted', '=', 0)
+        .where('schedule_games.user_id', '=', auth.user.id)
+        .where('schedule_games.marked_as_deleted', '=', 0)
         //.where('schedule_games.start_date_time', '<', next24hours)
         //.where('schedule_games.start_date_time', '>', last4hours)
         .orWhereIn('schedule_games.id', subquery)
