@@ -10,7 +10,7 @@ class GameNamesSchema extends Schema {
       table.string('game_name', 254).notNullable().unique().index()
       table.integer('user_id').unsigned().notNullable()
       table.foreign('user_id').references('users.id').onDelete('cascade')
-      table.integer('counter').notNullable().defaultTo(0)
+      table.integer('counter').notNullable().defaultTo(1)
       table.integer('verified').unsigned().notNullable().defaultTo(0)
       table.string('game_img', 254).nullable()
       table.string('game_name_fields_img', 254).nullable()

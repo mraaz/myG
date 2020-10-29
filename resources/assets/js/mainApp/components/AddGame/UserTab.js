@@ -6,12 +6,17 @@ const UserTab = ({ dataList, dataObject, selectedItemsObject, onClick }) => {
   if (!dataList || dataList.length == 0) {
     return null
   }
+
+  const addDefaultSrc = (ev) => {
+    ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
+  }
+
   const getIndividualSearchTab = (item, index, selectedItemsObject, onClick) => {
     return (
       <div key={index} className='invite-players__player-profile-container'>
         <div className='invite-players__player-profile'>
           {item.img ? (
-            <img src={item.img} height={20} width={20} className='invite-players__player-image' />
+            <img onError={addDefaultSrc} src={item.img} height={20} width={20} className='invite-players__player-image' />
           ) : (
             <span className='invite-players__player-image' style={{ height: '20px', width: '20px' }} />
           )}

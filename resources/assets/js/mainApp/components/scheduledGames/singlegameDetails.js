@@ -35,6 +35,10 @@ export default class GameDetails extends Component {
     }
   }
 
+  addDefaultSrc = (ev) => {
+    ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
+  }
+
   handleShowAllComments = async (id) => {
     const allComments = await axios.get(`/api/comments/get_right_card_comment_info/${id}`)
     if (allComments.data) {
@@ -187,12 +191,13 @@ export default class GameDetails extends Component {
                     <div className='game__comment'>
                       <Link to={`/profile/${lastComment.alias}`} className='user-img'>
                         {' '}
-                        <div
-                          className='profile__image'
-                          style={{
-                            backgroundImage: `url('${lastComment.profile_img ? lastComment.profile_img : defaultUserImage}')`,
-                            backgroundSize: 'cover',
-                          }}></div>
+                        <div>
+                          <img
+                            onError={this.addDefaultSrc}
+                            src={lastComment.profile_img ? lastComment.profile_img : defaultUserImage}
+                            className='profile__image'
+                          />
+                        </div>
                       </Link>
 
                       <div className='arrow'></div>
