@@ -10,7 +10,7 @@ class TagsSchema extends Schema {
       table.integer('game_names_id').unsigned().notNullable()
       table.foreign('game_names_id').references('game_names.id').onDelete('cascade')
       table.string('tag', 250).notNullable().index()
-      table.integer('counter').unsigned().nullable().defaultTo(1)
+      table.integer('counter').nullable().defaultTo(1)
       table.integer('verified').unsigned().notNullable().defaultTo(0)
       table.timestamps(true,true)
     })
