@@ -1414,10 +1414,10 @@ class NotificationController_v2 {
         let arr = []
         switch (request.input('notification_type')) {
           case '0':
-            arr = [2, 3, 4, 5, 6]
+            arr = [1, 11, 12]
             break
           case '1':
-            arr = [10, 14, 15, 17, 20, 21, 22]
+            arr = [2, 3, 4, 5, 6, 10, 14, 15, 17, 19, 20, 21, 22, 23]
             break
           case '2':
             arr = []
@@ -1428,12 +1428,12 @@ class NotificationController_v2 {
         if (checking) {
           const getUnread_count_Approvals = await Database.from('notifications')
             .where({ other_user_id: auth.user.id, read_status: 0 })
-            .whereIn('activity_type', [2, 3, 4, 5, 6])
+            .whereIn('activity_type', [1, 11, 12])
             .count('* as no_of_my_unread_approvals')
 
           const getUnread_count_Alerts = await Database.from('notifications')
             .where({ other_user_id: auth.user.id, read_status: 0 })
-            .whereIn('activity_type', [10, 14, 15, 17, 20, 21, 22])
+            .whereIn('activity_type', [2, 3, 4, 5, 6, 10, 14, 15, 17, 19, 20, 21, 22, 23])
             .count('* as no_of_my_unread_alerts')
 
           return {

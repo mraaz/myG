@@ -48,8 +48,7 @@ export default class Approvals extends Component {
       counter,
       activity_type: tabObj[tab],
     })
-    console.log(tabObj[tab])
-    console.log(getApprovals, '<<<getApprovals')
+
     if (getApprovals.data.length > 0) {
       this.setState({ approvals: getApprovals.data, fetching: false }, () => {
         this.props.setNotificationsCount(this.state.approvals.length)
@@ -65,7 +64,7 @@ export default class Approvals extends Component {
       counter: count,
       activity_type: tabObj[tab],
     })
-    console.log(getApprovals, '<<<getApprovals 1')
+
     if (getApprovals.data && getApprovals.data.length == 0) {
       this.setState({
         moreplease: false,
@@ -91,7 +90,7 @@ export default class Approvals extends Component {
       counter: 1,
       activity_type: tabObj[tab],
     })
-    console.log(getApprovals, '<<<getApprovals 2')
+
     if (getApprovals.data.length > 0) {
       this.setState({ approvals: getApprovals.data, fetching: false, moreplease: true, tab }, () => {
         this.props.setNotificationsCount(this.state.approvals.length)
