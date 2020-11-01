@@ -264,7 +264,9 @@ export default class ChatMessage extends React.Component {
       <WithTooltip key={key} position={{ bottom: '28px', left: '-10px' }} text={name}>
         <div key={key} className='chat-component-read-indicator'>
           <div className='chat-component-read-indicator-icon'>
-            <img className='chat-component-read-indicator-icon-image' src={icon} />
+            <div className='chat-component-read-indicator-icon-image'
+              style={{ backgroundImage: `url(${icon}), url(https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png)` }}
+            />
           </div>
         </div>
       </WithTooltip>
