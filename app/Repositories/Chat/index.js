@@ -1074,7 +1074,9 @@ class ChatRepository {
   }
 
   async fetchChatByIndividualGameId({ requestedGameId }) {
-    const chat = (await Chat.query().where('individual_game_id', requestedGameId).first()).toJSON();
+    const response = (await Chat.query().where('individual_game_id', requestedGameId).first());
+    if (!response) return { chat: null };
+    const chat = response.toJSON();
     const chatSchema = new ChatSchema({
       chatId: chat.id,
       isPrivate: chat.isPrivate,
