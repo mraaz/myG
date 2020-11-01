@@ -191,6 +191,27 @@ export default function reducer(state = initialState, action) {
       }
     }
 
+    case 'FETCH_CHAT_FULFILLED': {
+      logger.log('CHAT', `Redux -> Fetched Chat: `, action.payload)
+      const chatId = action.meta.chatId
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
+      let chat = chats.find((candidate) => candidate.chatId === chatId)
+      if (!chat) {
+        chat = action.payload.chat
+        chats.push(chat)
+      }
+      chat.closed = false
+      chat.lastOpened = Date.now();
+      chat.minimised = false
+      chat.maximised = false
+      const openChats = chats.filter((candidate) => !candidate.closed && candidate.chatId !== chatId)
+      if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => (openChats[index].closed = true))
+      return {
+        ...state,
+        chats,
+      }
+    }
+
     case 'OPEN_CHAT': {
       logger.log('CHAT', `Redux -> Open Chat: `, action.payload)
       const chatId = action.payload.chatId

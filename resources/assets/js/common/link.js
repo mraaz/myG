@@ -1,7 +1,7 @@
 import notifyToast from './toast'
 import { fetchLink, acceptInvitation } from '../integration/http/chat'
 import { store } from '../redux/Store'
-import { fetchChatsAction } from '../redux/actions/chatAction'
+import { fetchChatAction } from '../redux/actions/chatAction'
 
 export function handleLink(userId) {
   if (!window.location.href.includes('/link')) return
@@ -15,7 +15,7 @@ export function handleLink(userId) {
     const chatId = link.chatId
     acceptInvitation(chatId, [userId]).then((response) => {
       if (response.error === 'Contacts are already in chat.') return notifyToast('You are already in this group!')
-      store.dispatch(fetchChatsAction())
+      store.dispatch(fetchChatAction(chatId))
       return notifyToast('You have been added to this group!!')
     })
   })
