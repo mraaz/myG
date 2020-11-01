@@ -17,6 +17,14 @@ class MessengerLoader extends React.Component {
   }
 
   componentDidMount() {
+    this.prepareMessenger();
+  }
+
+  componentDidUpdate() {
+    this.prepareMessenger();
+  }
+
+  prepareMessenger = () => {
     if (!this.state.loaded && !this.props.loading) {
       this.props.prepareMessenger(this.props.userId, this.props.alias, this.props.pin, this.props.privateKey, this.props.publicKey)
       this.setState({ loaded: true })
