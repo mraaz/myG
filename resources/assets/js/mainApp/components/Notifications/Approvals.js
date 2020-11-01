@@ -183,6 +183,7 @@ export default class Approvals extends Component {
       }
     })
     this.setState({ approvals: notify })
+    console.log('RAAAZ')
     mark_read_status(id)
   }
 
