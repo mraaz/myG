@@ -264,8 +264,11 @@ export default class ChatMessage extends React.Component {
       <WithTooltip key={key} position={{ bottom: '28px', left: '-10px' }} text={name}>
         <div key={key} className='chat-component-read-indicator'>
           <div className='chat-component-read-indicator-icon'>
-            <div className='chat-component-read-indicator-icon-image'
-              style={{ backgroundImage: `url(${icon}), url(https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png)` }}
+            <div
+              className='chat-component-read-indicator-icon-image'
+              style={{
+                backgroundImage: `url(${icon}), url(https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png)`,
+              }}
             />
           </div>
         </div>
@@ -287,7 +290,7 @@ export default class ChatMessage extends React.Component {
     return attachment.split('chat_images/')[1]
   }
 
-  renderMessage = (content) => {
+  renderMessage = (content, shouldConvertToUrl) => {
     if (!content) return 'encrypted message'
     const isImage = content.includes('myg-image')
     const isSound = content.includes('myg-sound')
@@ -297,7 +300,19 @@ export default class ChatMessage extends React.Component {
     if (isImage) return this.renderImage(content, expirationDate)
     if (isSound) return this.renderSound(content, expirationDate)
     if (isVideo) return this.renderVideo(content, expirationDate)
+    const url = content.match(
+      new RegExp('([a-zA-Z0-9]+://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?(/.*)?')
+    )
+    if (shouldConvertToUrl && url) return this.renderUrl(url[0], convertColonsToEmojis(content))
     return convertColonsToEmojis(content)
+  }
+
+  renderUrl = (url, content) => {
+    return (
+      <div className='clickable' onClick={() => window.open(url.includes('http') ? url : `https://${url}`, '_blank')}>
+        {content}
+      </div>
+    )
   }
 
   renderImage = (content, expirationDate) => {
@@ -409,7 +424,7 @@ export default class ChatMessage extends React.Component {
             )}
             {message.replyContent && (
               <div className={`chat-component-message-reply clickable`} onClick={() => this.props.scrollToMessage(message.replyId)}>
-                {this.renderMessage(message.replyContent)}
+                {this.renderMessage(message.replyContent, false)}
               </div>
             )}
             <div className={`chat-component-message-content`}>
@@ -419,7 +434,7 @@ export default class ChatMessage extends React.Component {
                   : origin === 'sent'
                   ? 'You deleted this message'
                   : 'This message was deleted'
-                : this.renderMessage(message.content)}
+                : this.renderMessage(message.content, true)}
             </div>
           </div>
 
