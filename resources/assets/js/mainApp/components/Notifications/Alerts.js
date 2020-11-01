@@ -258,23 +258,34 @@ export default class Alerts extends Component {
     }
   }
 
-  handleClickNotiFication = (id) => {
-    const { notification = [] } = this.state
-    let status = false
-    const notify = notification.map((noti) => {
-      if (noti.id == id) {
-        status = !noti.read
-      }
+  handleClickNotiFication = (id, index) => {
+    let { notification = [] } = this.state
+    if (notification.length > 0 && notification[index].read_status != 1) {
+      if (notification[index].read == undefined || notification[index].read == false) {
+        notification[index].read = true
+        handleSingleNotificationReadStatus(notification[index].id, true)
+        this.setState({ notification: notification })
 
-      return {
-        ...noti,
-        read: noti.id == id ? !noti.read : noti.read,
+        //   , () => {
+        //   this.props.setNotificationsCount(0)
+        // })
+      } else {
+        return
       }
-    })
-    handleSingleNotificationReadStatus(id, status)
-    this.setState({ notification: notify }, () => {
-      this.props.setNotificationsCount(0)
-    })
+    } else {
+      return
+    }
+    // const notify = notification.map((noti) => {
+    //   //console.log(noti)
+    //   if (noti.id == id) {
+    //     status = !noti.read
+    //   }
+    //
+    //   return {
+    //     ...noti,
+    //     read: noti.id == id ? !noti.read : noti.read,
+    //   }
+    // })
   }
 
   markAllRead = () => {
@@ -325,21 +336,25 @@ export default class Alerts extends Component {
         {notification.length == 0 && <NoRecord title='No more updates.' linkvisible={false} />}
         <div className='gameList__box' style={{ padding: '15px' }} onScroll={this.handleScroll} ref={this.myRef}>
           {notification.length > 0 &&
-            notification.map((noti) => {
+            notification.map((noti, index) => {
               const time = this.handleTime(noti.created_at)
-              const newDate = +new Date()
               return (
                 <div
-                  className={`notification alert ${noti.read ? '' : 'unread'}`}
+                  className={`notification alert ${
+                    noti.read == undefined ? (noti.read_status == 0 ? 'unread' : '') : noti.read == false ? 'unread' : ''
+                  }`}
                   key={`${noti.id}`}
-                  onClick={(e) => this.handleClickNotiFication(noti.id)}>
+                  onClick={(e) => this.handleClickNotiFication(noti.id, index)}>
                   <div className='notification-user-avatar'>
                     <Link to={`/profile/${noti.alias}`}>
                       <img onError={this.addDefaultSrc} src={noti.profile_img ? noti.profile_img : defaultUserImage} />
                     </Link>
                   </div>
                   <div className='notification-content'>
-                    <div className={`notification-description ${noti.read == false || noti.read_status == 0 ? '' : 'unread'}`}>
+                    <div
+                      className={`notification-description ${
+                        noti.read == undefined ? (noti.read_status == 0 ? 'unread' : '') : noti.read == false ? 'unread' : ''
+                      }`}>
                       <span className='username__link'>
                         <Link to={`/profile/${noti.first_user_alias || noti.alias}`}>
                           <span className='notification-username'>
