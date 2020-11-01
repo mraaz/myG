@@ -62,14 +62,14 @@ export default function reducer(state = initialState, action) {
     case 'PREPARE_CHAT_FULFILLED': {
       logger.log('CHAT', `Redux -> Chat ${action.meta.chatId} Ready (Chat): `, action.payload, action.meta)
       if (action.payload.chat === 'NOT_FOUND') {
-        const chats = JSON.parse(JSON.stringify(state.chats))
+        const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
         return {
           ...state,
           chats: chats.filter((chat) => chat.chatId !== action.meta.chatId),
         }
       }
       const { chatId, userId } = action.meta
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const contacts = JSON.parse(JSON.stringify(state.contacts))
       const contactIds = contacts.map((contact) => contact.contactId)
       action.payload.contacts &&
@@ -124,7 +124,7 @@ export default function reducer(state = initialState, action) {
     case 'FETCH_CHAT_MESSAGES_PENDING': {
       logger.log('CHAT', `Redux -> Loading More Messages: `, action.payload, action.meta)
       const { chatId } = action.meta
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       chat.loadingMessages = true
       return {
@@ -136,7 +136,7 @@ export default function reducer(state = initialState, action) {
     case 'FETCH_CHAT_MESSAGES_FULFILLED': {
       logger.log('CHAT', `Redux -> Loaded More Messages: `, action.payload, action.meta)
       const { chatId } = action.meta
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       const chatMessages = (chat.messages || []).map((message) => message.messageId)
       const nextMessages = action.payload.messages.filter((message) => !chatMessages.includes(message.messageId))
@@ -194,13 +194,14 @@ export default function reducer(state = initialState, action) {
     case 'OPEN_CHAT': {
       logger.log('CHAT', `Redux -> Open Chat: `, action.payload)
       const chatId = action.payload.chatId
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       let chat = chats.find((candidate) => candidate.chatId === chatId)
       if (!chat) {
         chat = action.payload.chat
         chats.push(chat)
       }
       chat.closed = false
+      chat.lastOpened = Date.now();
       chat.minimised = false
       chat.maximised = false
       const openChats = chats.filter((candidate) => !candidate.closed && candidate.chatId !== chatId)
@@ -214,7 +215,7 @@ export default function reducer(state = initialState, action) {
     case 'CLOSE_CHAT': {
       logger.log('CHAT', `Redux -> Close Chat: `, action.payload)
       const chatId = action.payload.chatId
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       chat.closed = true
       return {
@@ -227,11 +228,12 @@ export default function reducer(state = initialState, action) {
       logger.log('CHAT', `Redux -> Created Chat: `, action.payload, action.meta)
       const encryption = action.meta.encryption || {}
       const created = action.payload.chat
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chatAlreadyExists = chats.map((chat) => parseInt(chat.chatId)).includes(parseInt(created.chatId))
       if (!chatAlreadyExists) chats.push(created)
       const chat = chats.find((candidate) => candidate.chatId === created.chatId)
       chat.closed = !chatAlreadyExists && !!chat.individualGameId
+      if (!chat.closed) chat.lastOpened = Date.now();
       chat.minimised = false
       chat.maximised = false
       if (!chat.privateKey) Object.assign(chat, encryption)
@@ -251,7 +253,7 @@ export default function reducer(state = initialState, action) {
       const { chat } = action.payload
       const isGameGroupInvite = chat.individualGameId && !(chat.owners || []).includes(state.userId)
       chat.closed = !isGameGroupInvite && !chat.isGroup && (chat.messages || []).length === 0
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       if (chats.map((chat) => chat.chatId).includes(chat.chatId)) return state
       chats.push(chat)
       if (!chat.closed) {
@@ -267,7 +269,7 @@ export default function reducer(state = initialState, action) {
     case 'SEND_MESSAGE_PENDING': {
       logger.log('CHAT', `Redux -> Sending Message: `, action.meta)
       const { chatId, userId, alias, encrypted, unencryptedContent, attachment, replyId, uuid } = action.meta
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       if (!chat) return state
       if (attachment) return state
@@ -298,7 +300,7 @@ export default function reducer(state = initialState, action) {
       const message = action.payload.message
       const userId = action.meta.userId
       const chatId = message.chatId
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
 
       const shouldIgnoreMessage = !chat || state.blockedUsers.find((user) => user.userId === message.senderId)
@@ -332,6 +334,7 @@ export default function reducer(state = initialState, action) {
         const openChats = chats.filter((candidate) => !candidate.closed && candidate.chatId !== chatId)
         if (openChats.length > 3) Array.from(Array(openChats.length - 3)).forEach((_, index) => (openChats[index].closed = true))
         chat.closed = false
+        chat.lastOpened = Date.now();
       }
 
       if (!chat.messages) chat.messages = []
@@ -349,7 +352,7 @@ export default function reducer(state = initialState, action) {
       logger.log('CHAT', `Redux -> Update Message: `, action.payload)
       const message = action.payload.message
       const chatId = message.chatId
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       const updated = chat.messages.find((candidate) => candidate.messageId === message.messageId)
       if (updated) {
@@ -372,7 +375,7 @@ export default function reducer(state = initialState, action) {
       logger.log('CHAT', `Redux -> Link Updated: `, action.payload, action.meta)
       const chatId = parseInt(action.meta.chatId)
       const uuid = action.meta.uuid
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       const index = chat.links.indexOf(chat.links.find((link) => link.uuid === uuid))
       chat.links.splice(index, 1, action.payload.link)
@@ -386,7 +389,7 @@ export default function reducer(state = initialState, action) {
       logger.log('CHAT', `Redux -> On Messages Deleted: `, action.payload)
       const chatId = parseInt(action.payload.chatId)
       const messages = action.payload.messages
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       messages.forEach((message) => {
         const toDelete = chat.messages.find((candidate) => candidate.messageId === message.messageId)
@@ -402,7 +405,7 @@ export default function reducer(state = initialState, action) {
     case 'ON_REACTION_ADDED': {
       logger.log('CHAT', `Redux -> On Reaction Added: `, action.payload)
       const chatId = parseInt(action.payload.chatId)
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       const message = chat.messages.find((message) => message.messageId === action.payload.messageId)
       if (message) message.reactions.push(action.payload)
@@ -415,7 +418,7 @@ export default function reducer(state = initialState, action) {
     case 'ON_REACTION_REMOVED': {
       logger.log('CHAT', `Redux -> On Reaction Removed: `, action.payload)
       const chatId = parseInt(action.payload.chatId)
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       const message = chat.messages.find((message) => message.messageId === action.payload.messageId)
       if (message) message.reactions = message.reactions.filter((reaction) => reaction.id !== action.payload.id)
@@ -428,7 +431,7 @@ export default function reducer(state = initialState, action) {
     case 'ON_CHAT_DELETED': {
       logger.log('CHAT', `Redux -> On Chat Deleted: `, action.payload)
       const chatId = parseInt(action.payload.chatId)
-      const chats = JSON.parse(JSON.stringify(state.chats)).filter((chat) => parseInt(chat.chatId) !== parseInt(chatId))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened).filter((chat) => parseInt(chat.chatId) !== parseInt(chatId))
       if (state.guestId) notifyToast('This Group has been deleted.')
       return {
         ...state,
@@ -439,7 +442,7 @@ export default function reducer(state = initialState, action) {
     case 'UPDATE_CHAT_FULFILLED': {
       logger.log('CHAT', `Redux -> Chat Updated: `, action.meta, action.payload)
       const { chatId, muted, isPrivate, title, icon, selfDestruct, publicKey, privateKey } = action.meta
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       if (muted !== undefined) chat.muted = muted
       if (title !== undefined) chat.title = title
@@ -489,7 +492,7 @@ export default function reducer(state = initialState, action) {
     case 'ON_CHAT_UPDATED': {
       logger.log('CHAT', `Redux -> On Chat Updated: `, action.payload, action.meta)
       const { chatId, title, icon, owners, moderators, guests, isPrivate } = action.payload.chat
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       if (title !== undefined) chat.title = title
       if (icon !== undefined) chat.icon = icon
@@ -508,7 +511,7 @@ export default function reducer(state = initialState, action) {
       logger.log('CHAT', `Redux -> Contacts Added: `, action.payload, action.meta)
       const { chatId } = action.meta
       const { contacts } = action.payload
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       if (!chat.contacts.includes(contacts[0].contactId)) chat.contacts.push(contacts[0].contactId)
       if (!chat.fullContacts.map((contact) => contact.contactId).includes(contacts[0].contactId)) chat.fullContacts.push(contacts[0])
@@ -521,7 +524,7 @@ export default function reducer(state = initialState, action) {
     case 'CLEAR_CHAT_FULFILLED': {
       logger.log('CHAT', `Redux -> Chat Cleared: ${action.meta.chatId}`)
       const chatId = action.meta.chatId
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       chat.messages = []
       return {
@@ -534,7 +537,7 @@ export default function reducer(state = initialState, action) {
       logger.log('CHAT', `Redux -> Deleted Message: `, action.meta)
       const { chatId, messageId, origin } = action.meta
       if (origin === 'sent') return state
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       chat.messages = chat.messages.filter((message) => message.messageId !== messageId)
       return {
@@ -548,7 +551,7 @@ export default function reducer(state = initialState, action) {
       const { chatId, userId, isTyping } = action.payload
       const { userId: thisUserId } = action.meta
       if (userId === thisUserId) return state
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       if (!chat.typing) chat.typing = []
       const userTypingIndex = chat.typing.indexOf(userId)
@@ -566,7 +569,7 @@ export default function reducer(state = initialState, action) {
     case 'EXIT_GROUP_FULFILLED': {
       logger.log('CHAT', `Redux -> User Exited Group: `, action.meta)
       const { chatId } = action.meta
-      const chats = JSON.parse(JSON.stringify(state.chats)).filter((chat) => parseInt(chat.chatId) !== parseInt(chatId))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened).filter((chat) => parseInt(chat.chatId) !== parseInt(chatId))
       return {
         ...state,
         chats,
@@ -578,7 +581,7 @@ export default function reducer(state = initialState, action) {
       const { chatId, contacts, entryLog } = action.payload
       const { userId: thisUserId } = action.meta
       const contact = contacts.filter((contact) => contact.contactId !== thisUserId)[0]
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       if (!chat) return state
       if (entryLog && !chat.entryLogs) chat.entryLogs = []
@@ -598,13 +601,13 @@ export default function reducer(state = initialState, action) {
       const { chatId, userId, entryLog } = action.payload
       const { userId: thisUserId } = action.meta
       if (parseInt(userId) === parseInt(thisUserId)) {
-        const chats = JSON.parse(JSON.stringify(state.chats)).filter((chat) => parseInt(chat.chatId) !== parseInt(chatId))
+        const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened).filter((chat) => parseInt(chat.chatId) !== parseInt(chatId))
         return {
           ...state,
           chats,
         }
       }
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       if (!chat) return state
       if (!chat.entryLogs) chat.entryLogs = []
@@ -621,7 +624,7 @@ export default function reducer(state = initialState, action) {
       logger.log('CHAT', `Redux -> Guest Joined Group: `, action.payload, action.meta)
       const { chatId, guest, entryLog } = action.payload
       const { userId: thisUserId } = action.meta
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       if (!chat) return state
       if (!chat.guests.includes(guest.guestId)) chat.guests.push(guest.guestId)
@@ -637,7 +640,7 @@ export default function reducer(state = initialState, action) {
     case 'ON_GUEST_LEFT': {
       logger.log('CHAT', `Redux -> Guest Left Group: `, action.payload, action.meta)
       const { chatId, guestId, entryLog } = action.payload
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => parseInt(candidate.chatId) === parseInt(chatId))
       if (!chat) return state
       if (!chat.entryLogs) chat.entryLogs = []
@@ -652,12 +655,13 @@ export default function reducer(state = initialState, action) {
     case 'ON_GAME_STARTING': {
       logger.log('CHAT', `Redux -> Game Starting: `, action.payload, action.meta)
       const chatId = action.payload.chatId
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       if (!chat) return state
       playMessageSound(state.notificationSoundsDisabled)
       if (window.document.hidden) window.document.title = `(${parseInt((/\(([^)]+)\)/.exec(window.document.title) || [])[1] || 0) + 1}) myG`
       chat.closed = false
+      chat.lastOpened = Date.now();
       chat.minimised = false
       chat.maximised = false
       const openChats = chats.filter((candidate) => !candidate.closed && candidate.chatId !== chatId)
@@ -690,7 +694,7 @@ export default function reducer(state = initialState, action) {
       logger.log('CHAT', `Redux -> Mark As Read: `, action.meta, action.payload)
       const { userId: thisUserId } = action.meta
       const { guestId, userId, chatId, lastRead } = action.payload
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       if (userId === thisUserId) chat.lastRead = lastRead
       else {
@@ -707,7 +711,7 @@ export default function reducer(state = initialState, action) {
     case 'SELF_DESTRUCT': {
       logger.log('CHAT', `Redux -> Self Destruct: `, action.payload)
       const { chatId, selfDestruct } = action.payload
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       chat.selfDestruct = selfDestruct
       return {
@@ -724,7 +728,7 @@ export default function reducer(state = initialState, action) {
       const { privateKey } = state
       if (parseInt(updatedUserId) === parseInt(thisUserId)) return state
       if (!chatId) return contactPublicKeyUpdated(state, updatedUserId, publicKey)
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       const lastFriendRead = new Date(chat.friendReadDate)
       const unreadMessages = []
@@ -755,7 +759,7 @@ export default function reducer(state = initialState, action) {
       logger.log('CHAT', `Redux -> Chat State Updated: `, action.payload)
       const chatId = action.meta.chatId
       const { maximised, minimised } = action.payload
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       if (!chat) return state
       if (minimised !== undefined) chat.minimised = minimised
@@ -774,7 +778,7 @@ export default function reducer(state = initialState, action) {
         chat: { chatId },
       } = action.payload
       const { publicKey, privateKey } = action.meta
-      const chats = JSON.parse(JSON.stringify(state.chats))
+      const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened);
       const existingChat = chats.find((candidate) => candidate.chatId === chatId)
       if (!existingChat) chats.push(chat)
       return {
