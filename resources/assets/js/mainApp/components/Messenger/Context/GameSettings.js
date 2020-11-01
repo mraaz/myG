@@ -1,6 +1,7 @@
 import React from 'react'
 import { getAssetUrl } from '../../../../common/assets'
 import { ignoreFunctions } from '../../../../common/render'
+import Uploader from '../../common/Uploader'
 
 export default class GameSettings extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -21,13 +22,14 @@ export default class GameSettings extends React.Component {
           <div className='messenger-favorite-game-icon-button' style={{ backgroundImage: `url('${game.icon}')` }} />
         )}
         {!game.isEmptySlot && isOwner && (
-          <div
-            className='messenger-favorite-game-change-icon-button clickable'
-            style={{
-              backgroundImage: `url(${getAssetUrl('ic_chat_group_icon')})`,
-            }}
-            onClick={() => this.props.onUploadPhoto(game.gameId)}
-          />
+          <Uploader background onUpload={(icon, key) => this.props.onUploadPhoto(game.gameId, icon, key)}>
+            <div
+              className='messenger-favorite-game-change-icon-button clickable'
+              style={{
+                backgroundImage: `url(${getAssetUrl('ic_chat_group_icon')})`,
+              }}
+            />
+          </Uploader>
         )}
         <p className='messenger-settings-favorite-game clickable' onClick={() => this.setState({ editingSlot: index })}>
           {game.isEmptySlot ? `Game Number ${this.getNumber(index + 1)}` : game.name}
@@ -50,7 +52,7 @@ export default class GameSettings extends React.Component {
     const games = this.props.games.slice(0).filter((game) => search(game.name))
     return (
       <div className='messenger-settings-game-input'>
-        <p className="messenger-settings-game-input-hint">Search for your added games to favourite</p>
+        <p className='messenger-settings-game-input-hint'>Search for your added games to favourite</p>
         <div className='messenger-settings-game-input-header'>
           <input
             className='messenger-settings-game-input-field'

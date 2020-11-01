@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import SweetAlert from '../common/MyGSweetAlert'
-
 import General from './Context/General'
 import Games from './Context/Games'
 import SearchResults from './Context/SearchResults'
@@ -12,7 +11,6 @@ import EncryptionLogin from './Context/EncryptionLogin'
 import ConnectionWarning from './Context/ConnectionWarning'
 import StatusTimerWrapper from '../StatusTimerWrapper'
 import WindowFocusHandler from '../WindowFocusHandler'
-import FileOpenModal from '../FileOpenModal'
 
 import { handleLink } from '../../../common/link'
 import { monitorChats, closeSubscription, monitorSocketConnection } from '../../../integration/ws/chat'
@@ -47,7 +45,6 @@ class Messenger extends React.Component {
   state = {
     showingSettings: false,
     searchInput: '',
-    uploadingPhoto: null,
     blockSettings: false,
     windowFocused: true,
     dividerExpanded: {
@@ -71,10 +68,9 @@ class Messenger extends React.Component {
     this.props.searchPaginated(0, searchInput, true)
   }
 
-  onUploadPhoto = async (icon, key) => {
-    this.props.updateGameIcon(this.state.uploadingPhoto, icon)
-    if (key) await uploadGameIcon(this.state.uploadingPhoto, key)
-    this.setState({ uploadingPhoto: null })
+  onUploadPhoto = async (gameId, icon, key) => {
+    this.props.updateGameIcon(gameId, icon)
+    if (key) await uploadGameIcon(gameId, key)
   }
 
   renderConnectionWarning = () => {
@@ -136,7 +132,7 @@ class Messenger extends React.Component {
         toggleAutoSelfDestruct={this.props.toggleAutoSelfDestruct}
         togglePushNotifications={this.props.togglePushNotifications}
         toggleSettings={() => this.setState((previous) => ({ blockSettings: !previous.blockSettings }))}
-        onUploadPhoto={(gameId) => this.setState({ uploadingPhoto: gameId })}
+        onUploadPhoto={this.onUploadPhoto}
       />
     )
   }
@@ -216,16 +212,6 @@ class Messenger extends React.Component {
     )
   }
 
-  renderUploadModal = () => {
-    return (
-      <FileOpenModal
-        bOpen={this.state.uploadingPhoto !== null}
-        callbackClose={() => this.setState({ uploadingPhoto: null })}
-        callbackConfirm={this.onUploadPhoto}
-      />
-    )
-  }
-
   renderStatusMonitor = () => {
     return (
       <StatusTimerWrapper
@@ -273,7 +259,6 @@ class Messenger extends React.Component {
           {this.renderEncryptionLogin()}
         </div>
         {this.renderChats()}
-        {this.renderUploadModal()}
         {this.renderStatusMonitor()}
         {this.renderFocusMonitor()}
         {this.renderSweetAlert()}

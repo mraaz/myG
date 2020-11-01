@@ -1,5 +1,5 @@
 import React from 'react'
-import Uploader from './uploader'
+import Uploader from '../../common/Uploader'
 import get from 'lodash.get'
 import Dossier from '../Dossier'
 import { ignoreFunctions } from '../../../../common/render'

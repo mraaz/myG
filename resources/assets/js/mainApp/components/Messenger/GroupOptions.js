@@ -4,7 +4,7 @@ import ToggleButton from 'react-toggle-button'
 import GroupMemberOptions from './GroupMemberOptions'
 import GroupLinkOptions from './GroupLinkOptions'
 import Popup from '../Popup'
-import FileOpenModal from '../FileOpenModal'
+import Uploader from '../common/Uploader'
 import { WithTooltip } from '../Tooltip'
 import { updateChatAction, clearChatAction, deleteChatAction, exitGroupAction, updateLinkAction } from '../../../redux/actions/chatAction'
 import { copyToClipboard } from '../../../common/clipboard'
@@ -22,7 +22,6 @@ class GroupOptions extends React.Component {
     title: '',
     showingMembers: false,
     exitingGroup: false,
-    uploadingPhoto: false,
   }
 
   onSaveTitle() {
@@ -48,7 +47,6 @@ class GroupOptions extends React.Component {
 
   onUploadPhoto = (icon, key) => {
     this.props.updateChat(this.props.group.chatId, { icon })
-    this.setState({ uploadingPhoto: false })
     if (key) uploadGroupIcon(this.props.group.chatId, key)
   }
 
@@ -97,22 +95,17 @@ class GroupOptions extends React.Component {
     const inactiveStyle = 'chat-component-options-option-inactive'
     return (
       <div className='chat-component-options-container'>
-        <FileOpenModal
-          bOpen={this.state.uploadingPhoto}
-          callbackClose={() => this.setState({ uploadingPhoto: false })}
-          callbackConfirm={this.onUploadPhoto}
-        />
-
         {this.renderGroupMemberOptions()}
         {this.renderGroupLinkOptions()}
 
         {isGroupModerator && (
           <div className='chat-component-options-row'>
-            <div
-              className='chat-component-options-group-icon clickable'
-              style={{ backgroundImage: `url(${getAssetUrl('ic_chat_group_icon')})` }}
-              onClick={() => this.setState({ uploadingPhoto: true })}
-            />
+            <Uploader background onUpload={this.onUploadPhoto}>
+              <div
+                className='chat-component-options-group-icon clickable'
+                style={{ backgroundImage: `url(${getAssetUrl('ic_chat_group_icon')})` }}
+              />
+            </Uploader>
 
             <div className='chat-component-group-title-input-container'>
               <input
