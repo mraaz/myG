@@ -5,10 +5,19 @@ import ProfileSchema from '../schema/profile'
 const initialState = {
   profiles: {},
   gamerSuggestions: [],
+  ownAlias: null,
 }
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case 'LOAD_USER_INFO': {
+      logger.log('User', `Redux -> Loading User Info (User): `, action.payload)
+      return {
+        ...state,
+        ownAlias: action.payload.alias,
+      }
+    }
+
     case 'REACT_ERROR':
       return initialState
 
@@ -73,8 +82,9 @@ export default function reducer(state = initialState, action) {
     case 'SEND_FRIEND_REQUEST_FULFILLED': {
       logger.log('PROFILE', `Redux -> Sent friend request for ${action.meta.alias}`)
       const alias = action.meta.alias
-      const profiles = addProfile(state, alias)
+      const profiles = checkProfile(addProfile(state, alias), state.ownAlias);
       profiles[alias].set({ hasSentFriendRequest: true })
+      profiles[state.ownAlias].addFriendRequest(action.meta.alias)
       return {
         ...state,
         profiles,
@@ -107,8 +117,9 @@ export default function reducer(state = initialState, action) {
     case 'FOLLOW_FULFILLED': {
       logger.log('PROFILE', `Redux -> Followed ${action.meta.alias}`)
       const alias = action.meta.alias
-      const profiles = addProfile(state, alias)
+      const profiles = checkProfile(addProfile(state, alias), state.ownAlias);
       profiles[alias].set({ isFollower: true })
+      profiles[state.ownAlias].addFollower(action.meta.alias)
       return {
         ...state,
         profiles,
@@ -118,8 +129,9 @@ export default function reducer(state = initialState, action) {
     case 'UNFOLLOW_FULFILLED': {
       logger.log('PROFILE', `Redux -> Unfollowed ${action.meta.alias}`)
       const alias = action.meta.alias
-      const profiles = addProfile(state, alias)
+      const profiles = checkProfile(addProfile(state, alias), state.ownAlias);
       profiles[alias].set({ isFollower: false })
+      profiles[state.ownAlias].removeFollower(action.meta.alias)
       return {
         ...state,
         profiles,
@@ -190,6 +202,13 @@ export default function reducer(state = initialState, action) {
 
 function addProfile(state, alias) {
   const profiles = JSON.parse(JSON.stringify(state.profiles))
+  if (!profiles[alias]) profiles[alias] = new ProfileSchema()
+  else profiles[alias] = new ProfileSchema(profiles[alias])
+  return profiles
+}
+
+function checkProfile(profiles, alias) {
+  if (!alias) return profiles;
   if (!profiles[alias]) profiles[alias] = new ProfileSchema()
   else profiles[alias] = new ProfileSchema(profiles[alias])
   return profiles

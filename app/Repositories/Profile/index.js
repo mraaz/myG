@@ -61,6 +61,7 @@ class ProfileRepository {
       isFollower,
       friends,
       followers,
+      friendRequests,
       hasSentFriendRequest,
       friendRequest,
       languages,
@@ -73,6 +74,7 @@ class ProfileRepository {
       this.isFollower({ isSelf, requestingUserId, profileId }),
       this.fetchFriends({ isSelf, requestingUserId }),
       this.fetchFollowers({ isSelf, requestingUserId }),
+      this.fetchFriendRequests({ isSelf, requestingUserId }),
       this.hasSentFriendRequest({ isSelf, requestingUserId, profileId }),
       this.fetchFriendRequest({ isSelf, requestingUserId, profileId }),
       this.fetchLanguages({ profileId }),
@@ -112,6 +114,7 @@ class ProfileRepository {
       isFollower,
       friends,
       followers,
+      friendRequests,
       hasSentFriendRequest,
       hasReceivedFriendRequest,
       mostPlayedGames,
@@ -164,10 +167,20 @@ class ProfileRepository {
   async fetchFollowers({ isSelf, requestingUserId }) {
     if (!isSelf) return [];
     const response = await Database.table('followers')
-      .innerJoin('users', 'users.id', 'followers.user_id')
-      .where('followers.follower_id', requestingUserId)
+      .innerJoin('users', 'users.id', 'followers.follower_id')
+      .where('followers.user_id', requestingUserId)
       .select('users.alias');
     return response.map((follower) => follower.alias);
+  }
+
+  async fetchFriendRequests({ isSelf, requestingUserId }) {
+    if (!isSelf) return [];
+    const response = await Database.table('notifications')
+      .innerJoin('users', 'users.id', 'notifications.other_user_id')
+      .where('notifications.user_id', requestingUserId)
+      .andWhere('notifications.activity_type', 1)
+      .select('users.alias');
+    return response.map((friend) => friend.alias);
   }
 
   async hasSentFriendRequest({ isSelf, requestingUserId, profileId }) {

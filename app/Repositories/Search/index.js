@@ -39,10 +39,10 @@ class SearchRepository {
     return query;
   }
 
-  async searchGamers({ query }) {
-    const cleanUser = (user) => ({ ...user, firstName: '', lastName: '', email: '' });
+  async searchGamers({ requestingUserId, query }) {
+    const cleanUser = (user) => ({ ...user, profileId: parseInt(user.profileId), firstName: '', lastName: '', email: '' });
     const result = await ElasticsearchRepository.searchUser({ query: this.buildUsersQuery(query) });
-    const gamers = result.hits.hits.map((hit) => cleanUser(hit._source));
+    const gamers = result.hits.hits.map((hit) => cleanUser(hit._source)).filter(({ profileId }) => profileId !== requestingUserId);
     return { gamers };
   }
 }

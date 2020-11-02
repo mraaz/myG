@@ -31,6 +31,7 @@ class Profile {
     this.isFollower = forceBoolean(data.isFollower)
     this.friends = forceArray(data.friends)
     this.followers = forceArray(data.followers)
+    this.friendRequests = forceArray(data.friendRequests)
     this.hasSentFriendRequest = forceBoolean(data.hasSentFriendRequest)
     this.hasReceivedFriendRequest = forceBoolean(data.hasReceivedFriendRequest)
     this.friendRequestId = forceInt(data.friendRequestId)

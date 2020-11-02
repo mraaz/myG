@@ -3,6 +3,7 @@ import Progress from '../../common/ProgressCircle/progress'
 import LoadingIndicator from '../../LoadingIndicator'
 import Experiences from '../Experiences'
 import { ignoreFunctions } from '../../../../common/render'
+import notifyToast from '../../../../common/toast'
 
 export default class Results extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -65,7 +66,7 @@ export default class Results extends React.Component {
             <span className="value">{gamer.experience}</span>
           </div>
         </div>
-        <Experiences gameExperiences={(gamer.gameExperiences || []).filter((experience) => gamer.mostPlayedGames.includes(experience.name))} />
+        <Experiences alias={gamer.alias} gameExperiences={(gamer.gameExperiences || []).filter((experience) => gamer.mostPlayedGames.includes(experience.name))} />
       </div>
     );
   }
@@ -73,15 +74,28 @@ export default class Results extends React.Component {
   renderHoverBar = (gamer, isHovering) => {
     if (!isHovering) return null;
     const isFriend = (this.props.profile.friends || []).includes(gamer.alias);
-    const isFollower = (this.props.profile.follower || []).includes(gamer.alias);
+    const isFollower = (this.props.profile.followers || []).includes(gamer.alias);
+    const hasSentRequest = (this.props.profile.friendRequests || []).includes(gamer.alias);
     return(
       <div className="hover-bar">
         <div className="small-button clickable" onClick={() => window.location.href = `/profile/${gamer.alias}`}>Profile</div>
-        {!isFriend && <div className="small-button clickable" onClick={() => this.props.sendFriendRequest(gamer.alias, gamer.profileId)}>Request Connection</div>}
+        {!isFriend && !hasSentRequest && <div className="small-button clickable" onClick={() => this.sendFriendRequest(gamer.alias, gamer.profileId)}>Request Connection</div>}
+        {!isFriend && hasSentRequest && <div className="small-button">Request Sent</div>}
         <div className="small-button clickable" onClick={() => {}}>Invite</div>
-        {!isFollower && <div className="small-button clickable" onClick={() => this.props.follow(gamer.alias, gamer.profileId)}>Follow</div>}
+        {!isFollower && <div className="small-button clickable" onClick={() => this.follow(gamer.alias, gamer.profileId)}>Follow</div>}
+        {isFollower && <div className="small-button">Following</div>}
       </div>
     );
+  }
+
+  follow = (alias, profileId) => {
+    notifyToast(`Got it mate! You have followed ${alias}!`)
+    this.props.follow(alias, profileId)
+  }
+
+  sendFriendRequest = (alias, profileId) => {
+    notifyToast(`Got it mate! Friend request sent to ${alias}!`)
+    this.props.sendFriendRequest(alias, profileId)
   }
 
   render() {

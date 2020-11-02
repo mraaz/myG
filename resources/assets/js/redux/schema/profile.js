@@ -1,4 +1,4 @@
-import { forceObject, forceInt, forceStatus, forceArray, forceString, forceBoolean } from './primitives'
+import { forceInt, forceStatus, forceArray, forceString, forceBoolean } from './primitives'
 
 export default class ProfileSchema {
   constructor(data) {
@@ -37,6 +37,7 @@ export default class ProfileSchema {
     if (data.isFollower !== undefined) this.isFollower = forceBoolean(data.isFollower)
     if (data.friends !== undefined) this.friends = forceArray(data.friends)
     if (data.followers !== undefined) this.followers = forceArray(data.followers)
+    if (data.friendRequests !== undefined) this.friendRequests = forceArray(data.friendRequests)
     if (data.hasSentFriendRequest !== undefined) this.hasSentFriendRequest = forceBoolean(data.hasSentFriendRequest)
     if (data.hasReceivedFriendRequest !== undefined) this.hasReceivedFriendRequest = forceBoolean(data.hasReceivedFriendRequest)
     if (data.friendRequestId !== undefined) this.friendRequestId = forceInt(data.friendRequestId)
@@ -44,5 +45,25 @@ export default class ProfileSchema {
     if (data.esportsExperiences !== undefined) this.esportsExperiences = forceArray(data.esportsExperiences)
     if (data.commended !== undefined) this.commended = forceArray(data.commended)
     if (data.commender !== undefined) this.commender = forceArray(data.commender)
+  }
+
+  addFollower(alias) {
+    this.followers = forceArray(this.followers)
+    this.followers.push(alias)
+  }
+
+  addFriendRequest(alias) {
+    this.friendRequests = forceArray(this.friendRequests)
+    this.friendRequests.push(alias)
+  }
+
+  removeFollower(alias) {
+    this.followers = forceArray(this.followers)
+    this.followers.filter((follower) => follower !== alias)
+  }
+
+  removeFriendRequest(alias) {
+    this.friendRequests = forceArray(this.friendRequests)
+    this.friendRequests.filter((request) => request !== alias)
   }
 }
