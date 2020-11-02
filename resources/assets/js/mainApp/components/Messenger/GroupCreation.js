@@ -1,8 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import FileOpenModal from '../FileOpenModal'
 import Dropdown from '../Dropdown'
+import Uploader from '../common/Uploader'
 import notifyToast from '../../../common/toast'
 import { searchGameAction } from '../../../redux/actions/gameAction'
 import { fetchContactsPaginatedAction } from '../../../redux/actions/paginationAction'
@@ -27,7 +27,6 @@ class GroupCreation extends React.Component {
       selectedGame: this.props.game || null,
       contactInput: '',
       addedContacts: [],
-      uploadingPhoto: false,
     }
     this.inputRef = React.createRef()
   }
@@ -93,26 +92,21 @@ class GroupCreation extends React.Component {
   }
 
   onUploadPhoto = (icon, key) => {
-    this.setState({ icon, key, uploadingPhoto: false })
+    this.setState({ icon, key })
   }
 
   renderHeader = () => {
     return (
       <div className='chat-group-creation-header'>
-        <FileOpenModal
-          bOpen={this.state.uploadingPhoto}
-          callbackClose={() => this.setState({ uploadingPhoto: false })}
-          callbackConfirm={this.onUploadPhoto}
-        />
-
-        <div
-          className='chat-group-creation-header-icon clickable'
-          style={{
-            backgroundImage: `url(${this.state.icon || getAssetUrl('ic_chat_group_icon')}`,
-            backgroundSize: this.state.icon ? 'cover' : 'inherit',
-          }}
-          onClick={() => this.setState({ uploadingPhoto: true })}
-        />
+        <Uploader background onUpload={this.onUploadPhoto}>
+          <div
+            className='chat-group-creation-header-icon clickable'
+            style={{
+              backgroundImage: `url(${this.state.icon || getAssetUrl('ic_chat_group_icon')}`,
+              backgroundSize: this.state.icon ? 'cover' : 'inherit',
+            }}
+          />
+        </Uploader>
 
         <div className='chat-group-creation-title-input-container'>
           <input

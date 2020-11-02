@@ -1,7 +1,7 @@
 import React from 'react'
 import Dropzone from 'react-dropzone'
-import notifyToast from '../../../../common/toast'
-import { Remove_file, Upload_to_S3 } from '../../AWS_utilities'
+import notifyToast from '../../../common/toast'
+import { Remove_file, Upload_to_S3 } from '../AWS_utilities'
 
 export default class Uploader extends React.Component {
   state = {}

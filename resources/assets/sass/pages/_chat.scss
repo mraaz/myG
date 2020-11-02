@@ -197,6 +197,9 @@
 
     .chat-component-read-indicator-icon-image {
       position: absolute;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: cover;
       width: 20px;
       height: 20px;
       opacity: 0.6;

@@ -216,12 +216,16 @@ export default class MainInfo extends React.Component {
   }
 
   onTagChange = async (tags) => {
+    if (tags && tags.length)
+      tags.forEach((tag) => {
+        tag.label = tag.label.replace('Create tag ', '')
+      })
     return this.props.storeExperience({ tags })
   }
 
   loadTagOptions = async (input) => {
     const results = await Schedule_Game_Tags(input)
-    return results.length ? results : [{ label: input, value: input }]
+    return results.length ? results : [{ label: input ? `Create tag ${input}` : 'Type in Tag name', value: input }]
   }
 
   renderTagsInput = () => {
@@ -303,7 +307,7 @@ export default class MainInfo extends React.Component {
     if (!this.props.isSelf)
       return this.renderDisabledField(
         field.label,
-        get(this.props, `experience.dynamic.${field.id}`).map(({ value }) => value),
+        (get(this.props, `experience.dynamic.${field.id}`, []) || []).map(({ value }) => value),
         true
       )
     return (
@@ -312,7 +316,7 @@ export default class MainInfo extends React.Component {
         <MyGSelect
           width={'75%'}
           innerWidth={'100%'}
-          options={field.values.map((value) => ({ value, label: value }))}
+          options={(field.values || []).map((value) => ({ value, label: value }))}
           placeholder={field.placeholder}
           onChange={(value) => this.props.storeDynamicExperience({ [field.id]: value })}
           value={get(this.props, `experience.dynamic.${field.id}`)}

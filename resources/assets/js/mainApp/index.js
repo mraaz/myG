@@ -27,6 +27,7 @@ import {
   Home,
   Profile,
   ProfileContainer,
+  ChatLinkContainer,
   FindGamersContainer,
   LeftMenu,
   MessengerLoader,
@@ -127,24 +128,26 @@ class Layout extends Component {
 
                 <Route
                   exact
+                  path='/link/:uuid'
+                  component={(props) => (
+                    <ChatLinkContainer
+                      routeProps={props}
+                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
+                      key={Math.random()}
+                    />
+                  )}
+                />
+
+                <Route
+                  exact
                   path='/profile/:alias'
                   component={(props) => (
                     <React.Fragment>
-                      <FeatureEnabled allOf={[PROFILE_V2]}>
-                        <ProfileContainer
+                      <ProfileContainer
                           routeProps={props}
                           initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
                           key={Math.random()}
                         />
-                      </FeatureEnabled>
-
-                      <FeatureDisabled anyOf={[PROFILE_V2]}>
-                        <Profile
-                          routeProps={props}
-                          initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                          key={Math.random()}
-                        />
-                      </FeatureDisabled>
                     </React.Fragment>
                   )}
                 />

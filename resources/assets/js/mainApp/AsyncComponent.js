@@ -21,6 +21,13 @@ const ProfileContainer = Loadable({
   },
 })
 
+const ChatLinkContainer = Loadable({
+  loader: () => import('./components/ChatLinkContainer'),
+  loading: function() {
+    return null
+  },
+})
+
 const FindGamersContainer = Loadable({
   loader: () => import('./components/FindGamers/Container'),
   loading: function() {
@@ -154,6 +161,7 @@ export {
   Home,
   Profile,
   ProfileContainer,
+  ChatLinkContainer,
   FindGamersContainer,
   LeftMenu,
   MessengerLoader,

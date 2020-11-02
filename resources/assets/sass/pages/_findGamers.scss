@@ -40,6 +40,17 @@
     }
   }
 
+  .hover-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    bottom: -25px;
+    left: 0;
+    right: 0;
+  }
+
   #find-gamers-banner {
     display: flex;
     flex-direction: row;
@@ -334,17 +345,6 @@
         background-color: #1d2326;
         border-radius: 8px;
         margin-right: 12px;
-      }
-
-      .hover-bar {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        position: absolute;
-        bottom: -25px;
-        left: 0;
-        right: 0;
       }
 
       .icon {

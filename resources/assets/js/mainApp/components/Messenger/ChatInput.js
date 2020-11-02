@@ -72,6 +72,7 @@ export default class ChatInput extends React.Component {
   }
 
   onTyping = (input) => {
+    if (input.length > 2000) input = input.slice(0, 2000);
     if (!this.state.isTyping) this.props.setTyping(true)
     this.setState({ input, isTyping: true, lastTyped: Date.now() })
     setTimeout(() => this.clearTyping(), 2000)
@@ -123,6 +124,7 @@ export default class ChatInput extends React.Component {
           <textarea
             ref={this.input}
             rows={1}
+            maxLength={2000}
             className='chat-component-input'
             disabled={disabled}
             placeholder={placeholderText}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import Uploader from './uploader'
+import Uploader from '../../common/Uploader'
 import AnalyticsBox from '../../AnalyticsBox';
 import Header from './header';
 import { ignoreFunctions } from '../../../../common/render'
