@@ -216,12 +216,16 @@ export default class MainInfo extends React.Component {
   }
 
   onTagChange = async (tags) => {
+    if (tags && tags.length)
+      tags.forEach((tag) => {
+        tag.label = tag.label.replace('Create tag ', '')
+      })
     return this.props.storeExperience({ tags })
   }
 
   loadTagOptions = async (input) => {
     const results = await Schedule_Game_Tags(input)
-    return results.length ? results : [{ label: input, value: input }]
+    return results.length ? results : [{ label: input ? `Create tag ${input}` : 'Type in Tag name', value: input }]
   }
 
   renderTagsInput = () => {
