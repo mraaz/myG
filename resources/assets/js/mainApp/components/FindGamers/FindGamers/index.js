@@ -66,7 +66,7 @@ export class FindGamers extends React.Component {
         <Headers />
         {this.isInSearch() && <Search onSearch={this.props.searchGamers} />}
         {this.isInSearch() && <Results gamers={this.props.gamers} loading={this.props.loading} profile={this.props.profile} sendFriendRequest={this.props.sendFriendRequest} follow={this.props.follow}/>}
-        {this.isInSuggestions() && <GamerSuggestions noTitle />}
+        {this.isInSuggestions() && <GamerSuggestions noTitle gamers={this.props.gamers} loading={this.props.loading} profile={this.props.profile} sendFriendRequest={this.props.sendFriendRequest} follow={this.props.follow} />}
       </div>
     );
   }

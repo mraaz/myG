@@ -40,6 +40,32 @@
     }
   }
 
+  .hover-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    bottom: -25px;
+    left: 0;
+    right: 0;
+  }
+
+  .small-button {
+    background-color: #e5c746;
+    padding: 4px 22px;
+    margin: 12px;
+    border-radius: 2px;
+    font-weight: 600;
+    color: black;
+    text-decoration: none;
+    padding: 4px 12px;
+    font-size: 12px;
+    margin: 12px 4px;
+    font-family: 'Montserrat';
+    white-space: nowrap;
+  }
+
   .hover-banner {
     position: absolute;
     left: 0;
@@ -703,6 +729,7 @@
     .scroll {
       position: relative;
       display: flex;
+      flex-wrap: wrap;
       align-content: center;
       justify-content: center;
       margin: 0px 32px;

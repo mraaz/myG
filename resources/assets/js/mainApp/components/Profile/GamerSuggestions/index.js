@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { getAssetUrl } from '../../../../common/assets'
 import { ignoreFunctions } from '../../../../common/render'
 import { fetchGamerSuggestionsAction } from '../../../../redux/actions/profileAction';
+import notifyToast from '../../../../common/toast'
 
 export class GamerSuggestions extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -26,11 +27,15 @@ export class GamerSuggestions extends React.Component {
   }
 
   renderGamerSuggestion = (profile) => {
+    const isHovering = this.state.hovering === profile.alias;
+    const style = this.props.profile ? { minWidth: '40%' } : {};
     return(
       <div className="game-experience" 
+      style={style}
       onMouseEnter={() => this.setState({ hovering: profile.alias })}
       onMouseLeave={() => this.setState({ hovering: null })}
     >
+      {this.renderHoverBar(profile, isHovering)}
       <div className="image absolute-top" style={{ backgroundImage: `url(${profile.background}), url(https://mygame-media.s3.amazonaws.com/default_user/myG_bg.png)` }} />
       <div className='icon' style={{ backgroundImage: `url(${profile.image}), url(https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png)` }} />
       <span className="name">{profile.alias}</span>
@@ -39,13 +44,35 @@ export class GamerSuggestions extends React.Component {
           <span className="field-value">{profile.level}</span>
       </div>
       {profile.mostPlayedGames.map(game => <div className="field center"><span className="field-value">{game}</span></div>)}
-      {this.state.hovering === profile.alias && (
-        <div className="edit-button clickable" onClick={() => window.location.href = `/profile/${profile.alias}`}>
-          View
-        </div>
-      )}
     </div>
     );
+  }
+
+  renderHoverBar = (gamer, isHovering) => {
+    if (!isHovering) return null;
+    const isFriend = (this.props.profile && this.props.profile.friends || []).includes(gamer.alias);
+    const isFollower = (this.props.profile && this.props.profile.followers || []).includes(gamer.alias);
+    const hasSentRequest = (this.props.profile && this.props.profile.friendRequests || []).includes(gamer.alias);
+    return(
+      <div className="hover-bar">
+        <div className="small-button clickable" onClick={() => window.location.href = `/profile/${gamer.alias}`}>Profile</div>
+        {this.props.profile && !isFriend && !hasSentRequest && <div className="small-button clickable" onClick={() => this.sendFriendRequest(gamer.alias, gamer.profileId)}>Request Connection</div>}
+        {this.props.profile && !isFriend && hasSentRequest && <div className="small-button">Request Sent</div>}
+        {this.props.profile && <div className="small-button clickable" onClick={() => {}}>Invite</div>}
+        {this.props.profile && !isFollower && <div className="small-button clickable" onClick={() => this.follow(gamer.alias, gamer.profileId)}>Follow</div>}
+        {this.props.profile && isFollower && <div className="small-button">Following</div>}
+      </div>
+    );
+  }
+
+  follow = (alias, profileId) => {
+    notifyToast(`Got it mate! You have followed ${alias}!`)
+    this.props.follow(alias, profileId)
+  }
+
+  sendFriendRequest = (alias, profileId) => {
+    notifyToast(`Got it mate! Friend request sent to ${alias}!`)
+    this.props.sendFriendRequest(alias, profileId)
   }
 
   changePage = (direction) => {

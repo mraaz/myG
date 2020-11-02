@@ -16,7 +16,7 @@ export class Profile extends React.Component {
   }
 
   componentDidMount() {
-    document.title = `myG - Profile: ${this.props.alias}`
+    document.title = ``
     this.props.fetchProfile(this.props.alias);
   }
 
