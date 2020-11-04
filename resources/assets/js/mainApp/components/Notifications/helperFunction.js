@@ -81,7 +81,6 @@ export const mark_all = () => {
   }
 }
 export const mark_read_status = (id) => {
-  console.log('RAAZ rollecos')
   try {
     const mark_read_status = axios.post('/api/notifications_v2/mark_read_status', {
       id,

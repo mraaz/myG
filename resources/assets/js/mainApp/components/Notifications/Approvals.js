@@ -174,17 +174,20 @@ export default class Approvals extends Component {
     ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
   }
 
-  handleClickNotiFication = (id) => {
-    const { approvals = [] } = this.state
-    const notify = approvals.map((noti) => {
-      return {
-        ...noti,
-        read_status: noti.id == id ? !noti.read_status : noti.read_status,
+  handleClickNotiFication = (id, index) => {
+    let { approvals = [] } = this.state
+
+    if (approvals.length > 0 && approvals[index].read_status != 1) {
+      if (approvals[index].read == undefined || approvals[index].read == false) {
+        approvals[index].read = true
+        mark_read_status(id)
+        this.setState({ approvals: approvals })
+      } else {
+        return
       }
-    })
-    this.setState({ approvals: notify })
-    console.log('RAAAZ')
-    mark_read_status(id)
+    } else {
+      return
+    }
   }
 
   render() {
@@ -196,31 +199,20 @@ export default class Approvals extends Component {
     return (
       <div style={isActive} className='game__approval'>
         <TopTabs tabs={['All', 'Friendships', 'Games', 'Communities']} changeTab={this.changeTab} />
-        {/* {fetching && (
-          <div>
-            <div class='post'>
-              <div class='avatar'></div>
-              <div class='line'></div>
-              <div class='line'></div>
-            </div>
-            <div class='post'>
-              <div class='avatar'></div>
-              <div class='line'></div>
-              <div class='line'></div>
-            </div>
-          </div>
-        )} */}
+
         {!approvals.length && <NoRecord title='No more updates.' linkvisible={false} />}
 
         <div className='gameList__box' style={{ padding: '15px' }} onScroll={this.handleScroll} ref={this.myRef}>
           {approvals.length > 0 &&
-            approvals.map((approval) => {
+            approvals.map((approval, index) => {
               const time = handleTime(approval.created_at)
               return (
                 <div
-                  className={`notification ${approval.read_status == 0 ? 'unread' : ''}`}
+                  className={`notification ${
+                    approval.read == undefined ? (approval.read_status == 0 ? 'unread' : '') : approval.read == false ? 'unread' : ''
+                  }`}
                   key={approval.id}
-                  onClick={(e) => this.handleClickNotiFication(approval.id)}>
+                  onClick={(e) => this.handleClickNotiFication(approval.id, index)}>
                   >
                   <div className='notification-user-avatar'>
                     <Link to={`/profile/${approval.alias}`}>
@@ -228,7 +220,10 @@ export default class Approvals extends Component {
                     </Link>
                   </div>
                   <div className='notification-content'>
-                    <div className={`notification-description ${approval.read_status == 0 ? '' : 'unread'}`}>
+                    <div
+                      className={`notification-description ${
+                        approval.read == undefined ? (approval.read_status == 0 ? 'unread' : '') : approval.read == false ? 'unread' : ''
+                      }`}>
                       <div className='username__link'>
                         <Link to={`/profile/${approval.alias}`}>
                           <div className='notification-username'>
