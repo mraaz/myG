@@ -345,7 +345,7 @@ export default class Alerts extends Component {
                   }`}
                   key={`${noti.id}`}
                   onClick={(e) => this.handleClickNotiFication(noti.id, index)}>
-                  <div className='notification-user-avatar'>
+                  <div className='notification-user-avatar' onClick={(e) => this.handleClickNotiFication(noti.id, index)}>
                     <Link to={`/profile/${noti.alias}`}>
                       <img onError={this.addDefaultSrc} src={noti.profile_img ? noti.profile_img : defaultUserImage} />
                     </Link>
@@ -355,7 +355,7 @@ export default class Alerts extends Component {
                       className={`notification-description ${
                         noti.read == undefined ? (noti.read_status == 0 ? 'unread' : '') : noti.read == false ? 'unread' : ''
                       }`}>
-                      <span className='username__link'>
+                      <span className='username__link' onClick={(e) => this.handleClickNotiFication(noti.id, index)}>
                         <Link to={`/profile/${noti.first_user_alias || noti.alias}`}>
                           <span className='notification-username'>
                             <span> @{noti.first_user_alias || noti.alias}</span>

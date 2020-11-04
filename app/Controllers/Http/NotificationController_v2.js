@@ -467,7 +467,8 @@ class NotificationController_v2 {
         const allMyschedulegames = await Database.from('notifications')
           .innerJoin('users', 'users.id', 'notifications.user_id')
           .innerJoin('groups', 'groups.id', 'notifications.group_id')
-          .where({ other_user_id: auth.user.id, activity_type: 22 })
+          .where({ other_user_id: auth.user.id })
+          .whereIn('activity_type', [19, 22])
           .select(
             'groups.name',
             'notifications.activity_type',
@@ -603,6 +604,7 @@ class NotificationController_v2 {
         singleArr.push(...group_member_approved.data)
         singleArr.push(...user_ding.data)
       }
+
       // const chat_group_invite = await Database.from('notifications')
       //   .innerJoin('users', 'users.id', 'notifications.user_id')
       //   .where({ other_user_id: auth.user.id, activity_type: 18 })
@@ -697,7 +699,7 @@ class NotificationController_v2 {
     try {
       const markAllNoti = await Notification.query()
         .where({ other_user_id: auth.user.id })
-        .whereIn('activity_type', [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 19, 20, 21, 22])
+        .whereIn('activity_type', [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 19, 20, 21, 22, 23])
         .update({ read_status: 1 })
       return 'Saved successfully'
     } catch (error) {
@@ -717,7 +719,7 @@ class NotificationController_v2 {
         .where({
           other_user_id: auth.user.id,
         })
-        .whereIn('activity_type', [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 19, 20, 21, 22])
+        .whereIn('activity_type', [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 19, 20, 21, 22, 23])
         .delete()
 
       return 'Saved successfully'
@@ -1415,7 +1417,7 @@ class NotificationController_v2 {
             arr = [1, 11, 12]
             break
           case '1':
-            arr = [2, 3, 4, 5, 6, 10, 14, 15, 17, 19, 20, 21, 22, 23]
+            arr = [2, 3, 4, 5, 6, 10, 14, 15, 16, 17, 19, 20, 21, 22, 23]
             break
           case '2':
             arr = []
@@ -1431,8 +1433,10 @@ class NotificationController_v2 {
 
           const getUnread_count_Alerts = await Database.from('notifications')
             .where({ other_user_id: auth.user.id, read_status: 0 })
-            .whereIn('activity_type', [2, 3, 4, 5, 6, 10, 14, 15, 17, 19, 20, 21, 22, 23])
+            .whereIn('activity_type', [2, 3, 4, 5, 6, 10, 14, 15, 16, 17, 19, 20, 21, 22, 23])
             .count('* as no_of_my_unread_alerts')
+
+          console.log(getUnread_count_Alerts)
 
           return {
             getUnread_count_Approvals: getUnread_count_Approvals[0].no_of_my_unread_approvals,
