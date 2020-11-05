@@ -428,10 +428,10 @@ class NotificationController_v2 {
       ) {
         let arr = []
         switch (request.input('activity_type')) {
-          case '0':
+          case 0:
             arr = [10, 14, 15, 21]
             break
-          case '10':
+          case 10:
             arr = [10, 14, 15, 21]
             break
           default:
@@ -1417,6 +1417,9 @@ class NotificationController_v2 {
             arr = [1, 11, 12]
             break
           case '1':
+            //This doesnt work, didnt bother to fix as its not implemented
+            //It will need to have the groupBy queries
+            return
             arr = [2, 3, 4, 5, 6, 10, 14, 15, 16, 17, 19, 20, 21, 22, 23]
             break
           case '2':
@@ -1426,21 +1429,37 @@ class NotificationController_v2 {
             checking = true
         }
         if (checking) {
+          let getUnread_count_Alerts = 0
           const getUnread_count_Approvals = await Database.from('notifications')
             .where({ other_user_id: auth.user.id, read_status: 0 })
             .whereIn('activity_type', [1, 11, 12])
             .count('* as no_of_my_unread_approvals')
 
-          const getUnread_count_Alerts = await Database.from('notifications')
+          const _getUnread_count_Alerts = await Database.from('notifications')
             .where({ other_user_id: auth.user.id, read_status: 0 })
-            .whereIn('activity_type', [2, 3, 4, 5, 6, 10, 14, 15, 16, 17, 19, 20, 21, 22, 23])
+            .whereIn('activity_type', [10, 14, 15, 17, 19, 20, 21, 22, 23])
             .count('* as no_of_my_unread_alerts')
 
-          console.log(getUnread_count_Alerts)
+          getUnread_count_Alerts += _getUnread_count_Alerts[0].no_of_my_unread_alerts
+
+          const allMylike_posts = await Database.from('notifications')
+            .where({ other_user_id: auth.user.id, read_status: 0 })
+            .whereIn('activity_type', [2, 3, 4, 5, 6])
+            .groupBy('notifications.post_id')
+            .count('* as no_of_my_unread_alerts')
+
+          getUnread_count_Alerts += allMylike_posts[0].no_of_my_unread_alerts
+
+          const dropped_out_attendees = await Database.from('notifications')
+            .where({ other_user_id: auth.user.id, activity_type: 16, read_status: 0 })
+            .groupBy('notifications.schedule_games_id')
+            .count('* as no_of_my_unread_alerts')
+
+          getUnread_count_Alerts += dropped_out_attendees[0].no_of_my_unread_alerts
 
           return {
             getUnread_count_Approvals: getUnread_count_Approvals[0].no_of_my_unread_approvals,
-            getUnread_count_Alerts: getUnread_count_Alerts[0].no_of_my_unread_alerts,
+            getUnread_count_Alerts: getUnread_count_Alerts,
           }
         } else {
           const getUnread_count = await Database.from('notifications')
