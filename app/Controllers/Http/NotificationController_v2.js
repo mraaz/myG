@@ -1449,14 +1449,18 @@ class NotificationController_v2 {
             .groupBy('notifications.post_id')
             .count('* as no_of_my_unread_alerts')
 
-          getUnread_count_Alerts += allMylike_posts[0] != undefined ? allMylike_posts[0].no_of_my_unread_alerts : 0
+          for (let i = 0; i < allMylike_posts.length; i++) {
+            getUnread_count_Alerts += allMylike_posts[i].no_of_my_unread_alerts
+          }
 
           const dropped_out_attendees = await Database.from('notifications')
             .where({ other_user_id: auth.user.id, activity_type: 16, read_status: 0 })
             .groupBy('notifications.schedule_games_id')
             .count('* as no_of_my_unread_alerts')
 
-          getUnread_count_Alerts += dropped_out_attendees[0] != undefined ? dropped_out_attendees[0].no_of_my_unread_alerts : 0
+          for (let i = 0; i < dropped_out_attendees.length; i++) {
+            getUnread_count_Alerts += dropped_out_attendees[i].no_of_my_unread_alerts
+          }
 
           return {
             getUnread_count_Approvals: getUnread_count_Approvals[0].no_of_my_unread_approvals,
@@ -1487,10 +1491,42 @@ class NotificationController_v2 {
       if (request.input('id') == undefined || request.input('id') == null) {
         return
       }
+
       try {
-        const markAllNoti = await Notification.query()
-          .where({ id: parseInt(request.input('id')) })
-          .update({ read_status: request.input('read_status') })
+        switch (request.input('activity_type')) {
+          case 2:
+          case 3:
+          case 4:
+          case 5:
+          case 6:
+            const get_info = await Database.from('notifications')
+              .where({ id: request.input('id') })
+              .first()
+            if (get_info != undefined) {
+              await Notification.query()
+                .where({ post_id: get_info.post_id, activity_type: request.input('activity_type'), other_user_id: auth.user.id })
+                .update({ read_status: request.input('read_status') })
+            }
+            break
+          case 16:
+            const get_sweet_16 = await Database.from('notifications')
+              .where({ id: request.input('id') })
+              .first()
+            if (get_sweet_16 != undefined) {
+              if (get_sweet_16.activity_type == 16) {
+                await Notification.query()
+                  .where({ schedule_games_id: get_sweet_16.schedule_games_id, activity_type: 16, other_user_id: auth.user.id })
+                  .update({ read_status: request.input('read_status') })
+              }
+            }
+
+            break
+          default:
+            await Notification.query()
+              .where({ id: parseInt(request.input('id')) })
+              .update({ read_status: request.input('read_status') })
+        }
+
         return 'Saved successfully'
       } catch (error) {
         LoggingRepository.log({
