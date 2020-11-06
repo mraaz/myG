@@ -258,12 +258,12 @@ export default class Alerts extends Component {
     }
   }
 
-  handleClickNotiFication = (id, index) => {
+  handleClickNotiFication = (id, index, activity_type) => {
     let { notification = [] } = this.state
     if (notification.length > 0 && notification[index].read_status != 1) {
       if (notification[index].read == undefined || notification[index].read == false) {
         notification[index].read = true
-        handleSingleNotificationReadStatus(notification[index].id, true)
+        handleSingleNotificationReadStatus(notification[index].id, true, activity_type)
         this.setState({ notification: notification })
 
         //   , () => {
@@ -344,8 +344,10 @@ export default class Alerts extends Component {
                     noti.read == undefined ? (noti.read_status == 0 ? 'unread' : '') : noti.read == false ? 'unread' : ''
                   }`}
                   key={`${noti.id}`}
-                  onClick={(e) => this.handleClickNotiFication(noti.id, index)}>
-                  <div className='notification-user-avatar' onClick={(e) => this.handleClickNotiFication(noti.id, index)}>
+                  onClick={(e) => this.handleClickNotiFication(noti.id, index, noti.activity_type)}>
+                  <div
+                    className='notification-user-avatar'
+                    onClick={(e) => this.handleClickNotiFication(noti.id, index, noti.activity_type)}>
                     <Link to={`/profile/${noti.alias}`}>
                       <img onError={this.addDefaultSrc} src={noti.profile_img ? noti.profile_img : defaultUserImage} />
                     </Link>
@@ -355,7 +357,7 @@ export default class Alerts extends Component {
                       className={`notification-description ${
                         noti.read == undefined ? (noti.read_status == 0 ? 'unread' : '') : noti.read == false ? 'unread' : ''
                       }`}>
-                      <span className='username__link' onClick={(e) => this.handleClickNotiFication(noti.id, index)}>
+                      <span className='username__link' onClick={(e) => this.handleClickNotiFication(noti.id, index, noti.activity_type)}>
                         <Link to={`/profile/${noti.first_user_alias || noti.alias}`}>
                           <span className='notification-username'>
                             <span> @{noti.first_user_alias || noti.alias}</span>
