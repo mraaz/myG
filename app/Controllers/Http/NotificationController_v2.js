@@ -371,7 +371,7 @@ class NotificationController_v2 {
           .innerJoin('users', 'users.id', 'notifications.user_id')
           .where({ other_user_id: auth.user.id })
           .whereIn('activity_type', arr)
-          .groupBy('notifications.post_id')
+          .groupBy('notifications.activity_type', 'notifications.post_id')
           .select('notifications.id', 'notifications.post_id', 'notifications.created_at', 'notifications.activity_type')
           .orderBy('notifications.created_at', 'desc')
           .paginate(request.input('counter'), set_limit)
@@ -382,19 +382,21 @@ class NotificationController_v2 {
           first_two_users = await Database.from('notifications')
             .innerJoin('users', 'users.id', 'notifications.user_id')
             .where({ post_id: allMylike_posts[i].post_id, other_user_id: auth.user.id })
-            .whereIn('activity_type', arr)
+            .where('activity_type', allMylike_posts[i].activity_type)
             .select('users.alias', 'users.profile_img')
             .orderBy('notifications.created_at', 'desc')
             .limit(2)
+
           const total_post_count = await Database.from('notifications')
             .innerJoin('users', 'users.id', 'notifications.user_id')
             .where({ post_id: allMylike_posts[i].post_id, other_user_id: auth.user.id })
-            .whereIn('activity_type', arr)
+            .where('activity_type', allMylike_posts[i].activity_type)
             .count('* as no_of_my_notis')
+
           const getAllNotiLike_unreadCount = await Database.from('notifications')
             .innerJoin('users', 'users.id', 'notifications.user_id')
             .where({ post_id: allMylike_posts[i].post_id, read_status: 0, other_user_id: auth.user.id })
-            .whereIn('activity_type', arr)
+            .where('activity_type', allMylike_posts[i].activity_type)
             .count('* as no_of_my_unread')
 
           if (first_two_users != undefined) {
