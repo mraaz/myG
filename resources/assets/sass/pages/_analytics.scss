@@ -55,7 +55,7 @@
   font: 24px/14px Montserrat;
   letter-spacing: 0px;
   color: #ffffff;
-  margin-bottom: 5px;
+  margin-bottom: 5px !important;
 }
 
 .social-box-text {
@@ -63,7 +63,7 @@
   letter-spacing: 0px;
   color: #ffffff;
   position: relative;
-  margin-bottom: 10px;
+  margin-bottom: 10px !important;
   &.review {
     color: #657172;
   }
@@ -96,7 +96,7 @@
   width: 25px;
   height: 1px;
   background: #555e5f;
-  left: 40%;
+  left: 32%;
 }
 
 /* Suggestion css */
