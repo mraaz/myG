@@ -1,6 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { logToElasticsearch } from '../../integration/http/logger'
 
 const createOption = (label, game_names_id, gameImg, game_name_fields_img, additional_info, game_headers) => ({
   label,
@@ -81,7 +82,7 @@ export async function Game_name_values(inputValue) {
     }
     return newArr
   } catch (error) {
-    console.log(error)
+    logToElasticsearch('error', 'Utility_Function', 'Failed Game_name_values:' + ' ' + error)
   }
 }
 
@@ -114,7 +115,7 @@ export async function Game_name_Tags(inputValue, game_names_id) {
     }
     return newArr
   } catch (error) {
-    console.log(error)
+    logToElasticsearch('error', 'Utility_Function', 'Failed Game_name_Tags:' + ' ' + error)
   }
 }
 
@@ -147,7 +148,7 @@ export async function Schedule_Game_Tags(inputValue) {
     }
     return newArr
   } catch (error) {
-    console.log(error)
+    logToElasticsearch('error', 'Utility_Function', 'Failed Schedule_Game_Tags:' + ' ' + error)
   }
 }
 
@@ -173,7 +174,7 @@ export async function Group_Hash_Tags(inputValue) {
     }
     return newArr
   } catch (error) {
-    console.log(error)
+    logToElasticsearch('error', 'Utility_Function', 'Failed Group_Hash_Tags:' + ' ' + error)
   }
 }
 
@@ -205,7 +206,7 @@ export async function Hash_Tags(inputValue) {
     }
     return newArr
   } catch (error) {
-    console.log(error)
+    logToElasticsearch('error', 'Utility_Function', 'Failed Hash_Tags:' + ' ' + error)
     return []
   }
 }

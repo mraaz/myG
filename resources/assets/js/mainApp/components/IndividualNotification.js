@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 import moment from 'moment'
 import { setAsFriendRedux } from '../../common/friend'
+import { logToElasticsearch } from '../../integration/http/logger'
 
 export default class IndividualNotification extends Component {
   constructor() {
@@ -31,7 +32,7 @@ export default class IndividualNotification extends Component {
     try {
       const deleteNoti = axios.get(`/api/notifications/delete/${notification.id}`)
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'IndividualNotification', 'Failed clickedAccept_1:' + ' ' + error)
     }
 
     try {
@@ -40,7 +41,7 @@ export default class IndividualNotification extends Component {
         friend_id: notification.user_id,
       })
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'IndividualNotification', 'Failed clickedAccept_2:' + ' ' + error)
     }
 
     this.setState({
@@ -54,7 +55,7 @@ export default class IndividualNotification extends Component {
     try {
       const deleteNoti = axios.get(`/api/notifications/delete/${notification.id}`)
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'IndividualNotification', 'Failed clickedDenied:' + ' ' + error)
     }
     this.setState({
       actionClicked: false,
@@ -325,7 +326,7 @@ export default class IndividualNotification extends Component {
             break
         }
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualNotification', 'Failed getMoreNoti:' + ' ' + error)
       }
       self.forceUpdate()
     }
@@ -339,7 +340,7 @@ export default class IndividualNotification extends Component {
             self.state.unread = true
           }
         } catch (error) {
-          console.log(error)
+          logToElasticsearch('error', 'IndividualNotification', 'Failed getinitialData:' + ' ' + error)
         }
 
         switch (notification.activity_type) {
@@ -389,7 +390,7 @@ export default class IndividualNotification extends Component {
             ' )',
         })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualNotification', 'Failed getschedulegameData:' + ' ' + error)
       }
     }
 
@@ -410,7 +411,7 @@ export default class IndividualNotification extends Component {
           })
         }
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualNotification', 'Failed getGroupData:' + ' ' + error)
       }
     }
 
@@ -432,7 +433,7 @@ export default class IndividualNotification extends Component {
             notification.accept_msg,
         })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualNotification', 'Failed getGameApprovalData:' + ' ' + error)
       }
     }
 
@@ -465,7 +466,7 @@ export default class IndividualNotification extends Component {
             notification.reason_for_cancel,
         })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualNotification', 'Failed getArchive_scheduled_game_Data:' + ' ' + error)
       }
     }
 
@@ -487,7 +488,7 @@ export default class IndividualNotification extends Component {
           notification_str: 'Sorry mate! You were kicked from this community: ' + notification.name,
         })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualNotification', 'Failed getGroupKickedData:' + ' ' + error)
       }
     }
 
@@ -501,7 +502,7 @@ export default class IndividualNotification extends Component {
           notification_str: 'Ding! Congratz, you reached a new level!',
         })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualNotification', 'Failed getDingInfo:' + ' ' + error)
       }
     }
 
@@ -532,7 +533,7 @@ export default class IndividualNotification extends Component {
         `/api/notifications/updateRead_Status/${this.props.notification.post_id}/${this.props.notification.activity_type}`
       )
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'IndividualNotification', 'Failed updateRead_Status:' + ' ' + error)
     }
     this.state.redirect_link = 'updateRead_Status'
     this.setState({ redirect_: true })
@@ -544,7 +545,7 @@ export default class IndividualNotification extends Component {
         `/api/notifications/updateRead_Status_schedule_game/${this.props.notification.schedule_games_id}/${this.props.notification.activity_type}`
       )
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'IndividualNotification', 'Failed updateRead_Status_schedule_game:' + ' ' + error)
     }
     this.state.redirect_link = 'updateRead_Status_schedule_game'
     this.state.redirect_tmp = str_href
@@ -558,7 +559,7 @@ export default class IndividualNotification extends Component {
         `/api/notifications/updateRead_Status_groups/${this.props.notification.group_id}/${this.props.notification.activity_type}/${this.props.notification.id}`
       )
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'IndividualNotification', 'Failed updateRead_Status_groups:' + ' ' + error)
     }
     this.state.redirect_link = 'updateRead_Status_groups'
     this.setState({ redirect_: true })
@@ -570,7 +571,7 @@ export default class IndividualNotification extends Component {
         `/api/notifications/updateRead_Status_archive_schedule_game/${this.props.notification.archive_schedule_game_id}/${this.props.notification.activity_type}`
       )
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'IndividualNotification', 'Failed updateRead_Status_archive_schedule_game:' + ' ' + error)
     }
     this.state.redirect_link = 'updateRead_Status_archive_schedule_game'
     this.setState({ redirect_: true })
@@ -580,7 +581,7 @@ export default class IndividualNotification extends Component {
     try {
       const updateRead_Status_ding = axios.post('/api/notifications/updateRead_Status_ding/')
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'IndividualNotification', 'Failed updateRead_Status_ding:' + ' ' + error)
     }
     this.state.redirect_link = 'updateRead_Status_ding'
     this.setState({ redirect_: true })

@@ -7,6 +7,7 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
+import { logToElasticsearch } from '../../integration/http/logger'
 
 export default class PostFileModal extends Component {
   constructor(props) {
@@ -38,7 +39,7 @@ export default class PostFileModal extends Component {
           myGroups: getmyGroups.data.myGroups,
         })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'PostFileModal', 'Failed componentDidMount:' + ' ' + error)
       }
     }
 
@@ -49,7 +50,7 @@ export default class PostFileModal extends Component {
           groups_im_in: getGroups_im_in.data.groups_im_in,
         })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'PostFileModal', 'Failed getGroups_im_in:' + ' ' + error)
       }
     }
     const { selected_group = [], selected_group_data = [], visibility } = this.props
@@ -145,7 +146,7 @@ export default class PostFileModal extends Component {
           })
         }
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'PostFileModal', 'Failed getSearchInfo:' + ' ' + error)
       }
     }
   }
@@ -179,7 +180,7 @@ export default class PostFileModal extends Component {
         this.setState({ gid_request })
       }
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'PostFileModal', 'Failed joinMe:' + ' ' + error)
     }
   }
 

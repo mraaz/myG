@@ -25,7 +25,6 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 import {
   Home,
-  Profile,
   ProfileContainer,
   ChatLinkContainer,
   FindGamersContainer,
@@ -187,18 +186,6 @@ class Layout extends Component {
                   path='/post/:id'
                   component={(props) => (
                     <SinglePost
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/profile/'
-                  component={(props) => (
-                    <Profile
                       routeProps={props}
                       initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
                       key={Math.random()}

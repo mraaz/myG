@@ -12,6 +12,8 @@ import SweetAlert from './common/MyGSweetAlert'
 const buckectBaseUrl = 'https://mygame-media.s3.amazonaws.com/platform_images/'
 import { Upload_to_S3, Remove_file } from './AWS_utilities'
 
+import { logToElasticsearch } from '../../integration/http/logger'
+
 export default class IndividualComment extends Component {
   constructor() {
     super()
@@ -86,7 +88,7 @@ export default class IndividualComment extends Component {
           })
         }
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualComment', 'Failed getCommentLike:' + ' ' + error)
       }
     }
 
@@ -106,7 +108,7 @@ export default class IndividualComment extends Component {
           })
         }
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualComment', 'Failed getCommentReplies:' + ' ' + error)
       }
     }
 
@@ -122,7 +124,7 @@ export default class IndividualComment extends Component {
           })
         }
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualComment', 'Failed getmyCommentCount:' + ' ' + error)
       }
     }
     getCommentLike()
@@ -141,7 +143,7 @@ export default class IndividualComment extends Component {
           myReplies: myCommentReplies.data.this_comments_replies,
         })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualComment', 'Failed getComments:' + ' ' + error)
       }
     }
     getComments()
@@ -157,7 +159,7 @@ export default class IndividualComment extends Component {
         comment_id: comment_id,
       })
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'IndividualComment', 'Failed click_like_btn:' + ' ' + error)
     }
 
     this.setState({
@@ -175,7 +177,7 @@ export default class IndividualComment extends Component {
     try {
       axios.get(`/api/likes/delete/comment/${comment_id}`)
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'IndividualComment', 'Failed click_unlike_btn:' + ' ' + error)
     }
 
     if (this.state.total == 1) {
@@ -316,7 +318,7 @@ export default class IndividualComment extends Component {
           value2: '',
         })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualComment', 'Failed saveComment:' + ' ' + error)
       }
     }
     saveComment()
@@ -356,7 +358,7 @@ export default class IndividualComment extends Component {
           preview_file: [],
         })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualComment', 'Failed saveReply:' + ' ' + error)
       }
     }
     saveReply()
@@ -379,7 +381,7 @@ export default class IndividualComment extends Component {
         value2: content,
       })
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'IndividualComment', 'Failed clickedEdit:' + ' ' + error)
     }
   }
 
@@ -392,7 +394,7 @@ export default class IndividualComment extends Component {
         comment_deleted: true,
       })
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'IndividualComment', 'Failed delete_exp:' + ' ' + error)
     }
   }
 

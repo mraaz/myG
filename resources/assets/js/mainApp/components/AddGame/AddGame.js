@@ -16,6 +16,7 @@ import { MyGCheckbox, MyGTextarea, MyGAsyncSelect, MyGCreateableSelect, MyGSelec
 import { Game_name_values, Schedule_Game_Tags, Disable_keys } from '../Utility_Function'
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
 import { FeatureEnabled, REPEAT_SCHEDULE } from '../../../common/flags'
+import { logToElasticsearch } from '../../../integration/http/logger'
 
 const SliderWithTooltip = Slider.createSliderWithTooltip(Slider)
 
@@ -41,7 +42,7 @@ const AddGame = ({
         let results = await Schedule_Game_Tags()
         updateAdvancedSettings({ optionTags: results })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'AddGame', 'Failed getInitialData_Tags:' + ' ' + error)
       }
     }
 
@@ -50,7 +51,7 @@ const AddGame = ({
         let results = await Game_name_values()
         updateMainSettings({ gameTitlesList: results })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'AddGame', 'Failed getInitialData_GameName:' + ' ' + error)
       }
     }
 

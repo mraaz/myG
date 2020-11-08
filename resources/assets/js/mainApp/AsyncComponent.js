@@ -7,13 +7,6 @@ const Home = Loadable({
   },
 })
 
-const Profile = Loadable({
-  loader: () => import('./components/Profile'),
-  loading: function() {
-    return null
-  },
-})
-
 const ProfileContainer = Loadable({
   loader: () => import('./components/Profile/Container'),
   loading: function() {
@@ -95,13 +88,6 @@ const Posts = Loadable({
   },
 })
 
-const Dossier = Loadable({
-  loader: () => import('./components/Dossier'),
-  loading: function() {
-    return null
-  },
-})
-
 const IndividualPost = Loadable({
   loader: () => import('./components/IndividualPost'),
   loading: function() {
@@ -159,7 +145,6 @@ const CommunityView = Loadable({
 
 export {
   Home,
-  Profile,
   ProfileContainer,
   ChatLinkContainer,
   FindGamersContainer,
@@ -170,7 +155,6 @@ export {
   EncryptionParaphraseRegistration,
   Posts,
   AddScheduleGames,
-  Dossier,
   IndividualPost,
   MyPosts,
   MySettings,
