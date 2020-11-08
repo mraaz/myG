@@ -24,7 +24,13 @@ class SettingController {
           mySettings,
         }
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     }
   }
@@ -37,7 +43,7 @@ class SettingController {
           .update({ email_notification: request.input('email_notification') })
         return 'Saved successfully'
       } catch (error) {
-        console.log(saveUser)
+        console.log(error)
       }
     } else {
       return 'You are not Logged In!'

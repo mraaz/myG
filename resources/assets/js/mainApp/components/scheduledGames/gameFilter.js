@@ -10,6 +10,7 @@ import AsyncSelect from 'react-select/lib/Async'
 import Select from 'react-select'
 import { Game_name_values, Disable_keys, Schedule_Game_Tags, Toast_style, Game_name_Tags } from '../Utility_Function'
 import { toast } from 'react-toastify'
+import { logToElasticsearch } from '../../../integration/http/logger'
 
 import {
   region_options,
@@ -96,7 +97,7 @@ export default class ScheduleGames extends Component {
         let results = await Schedule_Game_Tags()
         this.setState({ options_tags: results })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'gameFilter', 'Failed componentDidMount:' + ' ' + error)
       }
     }
     this.getFilter()
@@ -328,7 +329,7 @@ export default class ScheduleGames extends Component {
         let results = await Schedule_Game_Tags(inputValue)
         this.setState({ options_tags: results })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'gameFilter', 'Failed getOptions_tags:' + ' ' + error)
       }
     }
     getInitialData(inputValue)
@@ -349,7 +350,7 @@ export default class ScheduleGames extends Component {
         this.setState({ savedFiltersObj, additional_info_data_savedFilter: {} })
       }
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'gameFilter', 'Failed getFilter:' + ' ' + error)
     }
   }
 
@@ -436,7 +437,7 @@ export default class ScheduleGames extends Component {
       }
     } catch (error) {
       this.setState({ isRequesting: false })
-      console.log(error)
+      logToElasticsearch('error', 'gameFilter', 'Failed handleSaveFilterClick:' + ' ' + error)
     }
   }
 
@@ -597,7 +598,7 @@ export default class ScheduleGames extends Component {
         this.getFilter()
       }
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'gameFilter', 'Failed update_Filter_Name:' + ' ' + error)
     }
   }
 
@@ -613,7 +614,7 @@ export default class ScheduleGames extends Component {
         this.getFilter()
       }
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'gameFilter', 'Failed handleDeleteFilterType:' + ' ' + error)
     }
   }
 

@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import moment from 'moment'
+
 import SweetAlert from './common/MyGSweetAlert'
+import { logToElasticsearch } from '../../integration/http/logger'
 
 export default class IndividualReply extends Component {
   constructor() {
@@ -69,7 +71,7 @@ export default class IndividualReply extends Component {
           })
         }
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualReply', 'Failed getCommentReplies:' + ' ' + error)
       }
     }
 
@@ -85,7 +87,7 @@ export default class IndividualReply extends Component {
           })
         }
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualReply', 'Failed getmyRepliesCount:' + ' ' + error)
       }
     }
     getCommentReplies()
@@ -102,7 +104,7 @@ export default class IndividualReply extends Component {
         reply_id: reply_id,
       })
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'IndividualReply', 'Failed click_reply_like_btn:' + ' ' + error)
     }
 
     this.setState({
@@ -120,7 +122,7 @@ export default class IndividualReply extends Component {
     try {
       const reply_unlike = axios.get(`/api/likes/delete/reply/${reply_id}`)
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'IndividualReply', 'Failed click_reply_unlike_btn:' + ' ' + error)
     }
 
     if (this.state.reply_like_total == 1) {
@@ -149,7 +151,7 @@ export default class IndividualReply extends Component {
         reply_deleted: true,
       })
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'IndividualReply', 'Failed delete_exp:' + ' ' + error)
     }
   }
 
@@ -165,7 +167,7 @@ export default class IndividualReply extends Component {
         value: myReply_content.data.this_reply[0].content,
       })
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'IndividualReply', 'Failed clickedEdit:' + ' ' + error)
     }
   }
 
@@ -219,7 +221,7 @@ export default class IndividualReply extends Component {
           value: '',
         })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualReply', 'Failed saveReply:' + ' ' + error)
       }
     }
     saveReply()
@@ -266,7 +268,7 @@ export default class IndividualReply extends Component {
   render() {
     let { reply } = this.props
     let { profile_img = 'https://image.flaticon.com/icons/svg/149/149071.svg', media_url = '' } = reply
-    //console.log(reply);
+
     const media_urls = media_url && media_url.length > 0 ? JSON.parse(media_url) : ''
     if (this.state.reply_deleted != true) {
       return (

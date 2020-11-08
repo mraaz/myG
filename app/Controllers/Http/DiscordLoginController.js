@@ -86,8 +86,8 @@ class DiscordLoginController {
 
         // await auth.loginViaId(user.id)
         // return response.redirect('/')
-      } catch (e) {
-        console.log(e)
+      } catch (error) {
+        console.log(error)
         return response.redirect('/login/discord')
       }
     }

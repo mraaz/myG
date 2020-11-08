@@ -16,7 +16,7 @@ import { Upload_to_S3, Remove_file } from './AWS_utilities'
 import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
 import ImageGallery from './common/ImageGallery/ImageGallery.js'
-// import ImageGallery from 'react-image-gallery'
+import { logToElasticsearch } from '../../integration/http/logger'
 
 const MAX_HASH_TAGS = 21
 
@@ -78,7 +78,7 @@ export default class ComposeSection extends Component {
         visibility: callbackData.visibility,
       })
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'ComposeSection_v2', 'Failed callbackPostFileModalConfirm:' + ' ' + error)
     }
   }
 
@@ -178,7 +178,7 @@ export default class ComposeSection extends Component {
       )
       // await this.get_posts(post)
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'ComposeSection_v2', 'Failed submitForm:' + ' ' + error)
     }
   }
 
@@ -223,7 +223,7 @@ export default class ComposeSection extends Component {
           post_content: '',
         })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'ComposeSection_v2', 'Failed get_posts:' + ' ' + error)
       }
     }
     getPosts()
@@ -269,7 +269,7 @@ export default class ComposeSection extends Component {
         let results = await Hash_Tags()
         self.setState({ options_tags: results })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'ComposeSection_v2', 'Failed getGamers_you_might_know:' + ' ' + error)
       }
     }
     getGamers_you_might_know()
@@ -357,7 +357,7 @@ export default class ComposeSection extends Component {
         var results = await Hash_Tags(inputValue)
         self.setState({ options_tags: results })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'ComposeSection_v2', 'Failed getOptions_tags:' + ' ' + error)
       }
     }
     getInitialData(inputValue)

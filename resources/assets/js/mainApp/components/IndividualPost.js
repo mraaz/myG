@@ -6,13 +6,17 @@
 import React, { Component, Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
-import IndividualComment from './IndividualComment'
 import moment from 'moment'
+
+import IndividualComment from './IndividualComment'
 import SweetAlert from './common/MyGSweetAlert'
-const buckectBaseUrl = 'https://mygame-media.s3.amazonaws.com/platform_images/'
-import { toast } from 'react-toastify'
 import { Toast_style } from './Utility_Function'
 import { Upload_to_S3, Remove_file } from './AWS_utilities'
+
+import { toast } from 'react-toastify'
+import { logToElasticsearch } from '../../integration/http/logger'
+
+const buckectBaseUrl = 'https://mygame-media.s3.amazonaws.com/platform_images/'
 
 import ImageGallery from './common/ImageGallery/ImageGallery'
 
@@ -105,7 +109,7 @@ export default class IndividualPost extends Component {
       //   }
       // }
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'IndividualComment', 'Failed click_like_btn:' + ' ' + error)
     }
     if (this.state.total == 0) {
       this.setState({
@@ -131,7 +135,7 @@ export default class IndividualPost extends Component {
       const unlike = await axios.get(`/api/likes/delete/${post_id}`)
       //const deletePostLike = axios.get(`/api/notifications/deletePostLike/${post_id}`)
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'IndividualComment', 'Failed click_unlike_btn:' + ' ' + error)
     }
 
     if (this.state.total == 0) {
@@ -201,7 +205,7 @@ export default class IndividualPost extends Component {
           })
         }
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualComment', 'Failed getmyPostCount:' + ' ' + error)
       }
     }
 
@@ -217,7 +221,7 @@ export default class IndividualPost extends Component {
           })
         }
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualComment', 'Failed getGroup_info:' + ' ' + error)
       }
     }
 
@@ -245,7 +249,7 @@ export default class IndividualPost extends Component {
           comment_total: myComments.data.allComments.length,
         })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualComment', 'Failed pullComments:' + ' ' + error)
       }
     }
     getComments()
@@ -363,7 +367,7 @@ export default class IndividualPost extends Component {
           zero_comments: true,
         })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualComment', 'Failed saveComment:' + ' ' + error)
       }
     }
     saveComment()
@@ -393,7 +397,7 @@ export default class IndividualPost extends Component {
           value2: '',
         })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualComment', 'Failed editPost:' + ' ' + error)
       }
     }
     editPost()
@@ -487,7 +491,7 @@ export default class IndividualPost extends Component {
         post_deleted: true,
       })
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'IndividualComment', 'Failed delete_exp:' + ' ' + error)
     }
   }
 
