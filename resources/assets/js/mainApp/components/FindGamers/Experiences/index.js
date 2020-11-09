@@ -33,7 +33,7 @@ export default class Experiences extends React.Component {
     if (!isHovering) return null;
     return(
       <div className="hover-bar">
-        <div className="small-button " onClick={() => this.openGame(game)}>Show</div>
+        <div className="small-button clickable" onClick={() => this.openGame(game)}>Show</div>
       </div>
     );
   }

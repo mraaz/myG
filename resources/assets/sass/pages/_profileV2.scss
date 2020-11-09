@@ -53,8 +53,6 @@
 
   .small-button {
     background-color: #e5c746;
-    padding: 4px 22px;
-    margin: 12px;
     border-radius: 2px;
     font-weight: 600;
     color: black;
@@ -62,6 +60,19 @@
     padding: 4px 12px;
     font-size: 12px;
     margin: 12px 4px;
+    font-family: 'Montserrat';
+    white-space: nowrap;
+  }
+
+  .tiny-button {
+    background-color: #e5c746;
+    border-radius: 2px;
+    font-weight: 600;
+    color: black;
+    text-decoration: none;
+    padding: 2px 6px;
+    font-size: 10px;
+    margin: 16px 4px;
     font-family: 'Montserrat';
     white-space: nowrap;
   }
@@ -77,8 +88,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #1D2326;
-    color: #E0E0E0;
+    background-color: #1d2326;
+    color: #e0e0e0;
   }
 
   .background {
@@ -321,7 +332,7 @@
     .full-width {
       width: 100%;
     }
-    
+
     .country {
       display: flex;
       flex-direction: column;
@@ -1074,6 +1085,48 @@
   #profile-social-hub {
     .container {
       @extend .base-container;
+    }
+  }
+
+  #profile-sponsors {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    background-color: #1d2326;
+    width: 90%;
+    margin: 10px 5%;
+    padding: 12px 24px;
+    border-radius: 8px;
+
+
+    .vertical-divider {
+      background-color: #657172;
+      width: 2px;
+      margin: 0 16px;
+      height: 64px;
+    }
+
+    .title {
+      margin: 0;
+      padding: 0;
+      color: #F0F0F0;
+      font-weight: 500;
+      font-family: 'Montserrat';
+    }
+
+    .sponsor {
+      display: flex;
+      position: relative;
+      width: 96px;
+      height: 64px;
+
+      .image {
+        display: flex;
+        flex: 1;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: contain;
+      }
     }
   }
 }

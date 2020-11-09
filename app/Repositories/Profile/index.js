@@ -59,6 +59,7 @@ class ProfileRepository {
     const [
       isFriend,
       isFollower,
+      sponsors,
       friends,
       followers,
       friendRequests,
@@ -72,6 +73,7 @@ class ProfileRepository {
     ] = await Promise.all([
       this.isFriend({ isSelf, requestingUserId, profileId }),
       this.isFollower({ isSelf, requestingUserId, profileId }),
+      this.fetchSponsors({ profileId }),
       this.fetchFriends({ isSelf, requestingUserId }),
       this.fetchFollowers({ isSelf, requestingUserId }),
       this.fetchFriendRequests({ isSelf, requestingUserId }),
@@ -112,6 +114,7 @@ class ProfileRepository {
       isSelf,
       isFriend,
       isFollower,
+      sponsors,
       friends,
       followers,
       friendRequests,
@@ -181,6 +184,10 @@ class ProfileRepository {
       .andWhere('notifications.activity_type', 1)
       .select('users.alias');
     return response.map((friend) => friend.alias);
+  }
+
+  async fetchSponsors({ profileId }) {
+    return Database.table('sponsors').where('sponsors.user_id', profileId).select();
   }
 
   async hasSentFriendRequest({ isSelf, requestingUserId, profileId }) {
