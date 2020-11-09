@@ -43,12 +43,6 @@ const commendationLevel = (commends) => {
   return 'Ultimate Master'
 }
 
-const createOption = (label: string, game_names_id: string) => ({
-  label,
-  value: label,
-  game_names_id,
-})
-
 export default class MainInfo extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
@@ -106,13 +100,6 @@ export default class MainInfo extends React.Component {
     return results.length ? results : [{ label: input, value: input }]
   }
 
-  handleCreate_game_name = (inputValue: any) => {
-    const newOption = createOption(inputValue, null)
-
-    //Felipe
-    //Not sure how to save newOption to this.props.experience.game
-  }
-
   renderGameTitle = () => {
     if (!this.props.isSelf) return this.renderDisabledField('Game Title', (this.props.experience.game || {}).value)
     return (
@@ -124,7 +111,6 @@ export default class MainInfo extends React.Component {
             defaultOptions
             loadOptions={this.loadTitleOptions}
             onChange={(input) => this.onTitleChange(input)}
-            onCreateOption={this.handleCreate_game_name}
             isClearable
             value={this.props.experience.game}
             className='viewGame__name full-width'
