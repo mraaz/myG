@@ -41,17 +41,17 @@ export default class DossierSocialHub extends React.Component {
 
   canSave = () => {
     return !(
-      this.state.twitch && !/^((https:\/\/)?www.)?twitch.tv\//.test(this.state.twitch) ||
-      this.state.discord && !/^[A-z]+#\d+$/.test(this.state.discord) ||
-      this.state.steam && !/^((https:\/\/)?)?steamcommunity.com\/profiles\//.test(this.state.steam) ||
-      this.state.youtube && !/^((https:\/\/)?www.)?youtube.com\/channel\//.test(this.state.youtube) ||
-      this.state.faceb && !/^(((https:\/\/)?www.)?facebook.com\/)|(((https:\/\/)?www.)?fb.me\/)/.test(this.state.facebook)
+      (this.state.twitch && !/^((https:\/\/)?www.)?twitch.tv\//.test(this.state.twitch)) ||
+      (this.state.discord && !/^[A-z]+#\d+$/.test(this.state.discord)) ||
+      (this.state.steam && !/^((https:\/\/)?)?steamcommunity.com\/profiles\//.test(this.state.steam)) ||
+      (this.state.youtube && !/^((https:\/\/)?www.)?youtube.com\/channel\//.test(this.state.youtube)) ||
+      (this.state.facebook && !/^(((https:\/\/)?www.)?facebook.com\/)|(((https:\/\/)?www.)?fb.me\/)/.test(this.state.facebook))
     )
   }
 
   forceHttps = (url) => {
-    if (url.startsWith('https://')) return url;
-    return `https://${url}`;
+    if (url.startsWith('https://')) return url
+    return `https://${url}`
   }
 
   renderTwitchRow = () => {
@@ -246,15 +246,20 @@ export default class DossierSocialHub extends React.Component {
 
   renderEmpty = () => {
     if (this.props.isSelf) return
-    if (this.canSave()) return
-    return <span className='empty-tab'>Nothing to show here mate!</span>
+    const isEmpty = !this.state.twitch && !this.state.discord && !this.state.steam && !this.state.youtube && !this.state.facebook
+    if (!isEmpty) return
+    return <span className='empty-tab'>No socials added.</span>
   }
 
   renderLinkToFindYourLink = (link) => {
     if (!this.props.isSelf) return
     return (
-      <div className="find-link">
-        Click <a className="find-link-link" href={link} target="_blank">here</a> to find your link
+      <div className='find-link'>
+        Click{' '}
+        <a className='find-link-link' href={link} target='_blank'>
+          here
+        </a>{' '}
+        to find your link
       </div>
     )
   }

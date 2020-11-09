@@ -6,6 +6,7 @@ import { ignoreFunctions } from '../../../../common/render'
 import { fetchProfileInfoAction, updateProfileInfoAction, updateProfileGameAction, commendUserAction, deleteExperienceAction } from '../../../../redux/actions/profileAction';
 import Banner from '../Banner';
 import ProfileInfo from '../Info';
+import Sponsors from '../Sponsors';
 import GameExperiences from '../GameExperiences';
 import GamerSuggestions from '../GamerSuggestions';
 import MyPosts from '../../MyPosts'
@@ -16,7 +17,7 @@ export class Profile extends React.Component {
   }
 
   componentDidMount() {
-    document.title = ``
+    document.title = `myG - Profile ${this.props.alias}`;
     this.props.fetchProfile(this.props.alias);
   }
 
@@ -30,10 +31,13 @@ export class Profile extends React.Component {
 
   render() {
     if (this.props.profile.error) return <Redirect push to={`/profile/${this.props.userAlias}`} />;
+    const profileSponsors = this.props.profile.sponsors || [];
+    const sponsors = [{ id: 'empty-1' }, { id: 'empty-2' }].map((sponsor, index) => profileSponsors[index] || sponsor);
     return(
       <div id="profile">
         <Banner profile={this.props.profile} updateProfile={this.props.updateProfile} />
         <ProfileInfo alias={this.props.alias} profile={this.props.profile} updateProfile={this.props.updateProfile} />
+        <Sponsors alias={this.props.alias} profile={this.props.profile} sponsors={sponsors} refetchSponsors={() => this.props.fetchProfile(this.props.alias)} />
         <GameExperiences userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
         <GamerSuggestions />
         <MyPosts initialData={this.props.initialData} />

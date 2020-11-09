@@ -35,6 +35,7 @@ export default class ProfileSchema {
     if (data.isSelf !== undefined) this.isSelf = forceBoolean(data.isSelf)
     if (data.isFriend !== undefined) this.isFriend = forceBoolean(data.isFriend)
     if (data.isFollower !== undefined) this.isFollower = forceBoolean(data.isFollower)
+    if (data.sponsors !== undefined) this.sponsors = forceArray(data.sponsors)
     if (data.friends !== undefined) this.friends = forceArray(data.friends)
     if (data.followers !== undefined) this.followers = forceArray(data.followers)
     if (data.friendRequests !== undefined) this.friendRequests = forceArray(data.friendRequests)

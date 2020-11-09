@@ -26,6 +26,15 @@ export default class EditGameExperience extends React.Component {
 
   componentDidMount() {
     this.setState(this.prepareExperience())
+    document.addEventListener("keydown", this.onKeyPressed, false)
+  }
+
+  componentWillUnmount(){
+    document.removeEventListener("keydown", this.onKeyPressed, false)
+  }
+
+  onKeyPressed = (event) => {
+    if (event.keyCode === 27) this.onClose();
   }
 
   prepareExperience = () => {
