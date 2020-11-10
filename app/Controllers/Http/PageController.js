@@ -14,6 +14,12 @@ class PageController {
   async welcome({ response, request, view }) {
     return view.render('pages/welcome')
   }
+  async terms_of_use({ response, request, view }) {
+    return view.render('pages/terms_of_use')
+  }
+  async privacy_policy({ response, request, view }) {
+    return view.render('pages/privacy_policy')
+  }
 }
 
 module.exports = PageController
