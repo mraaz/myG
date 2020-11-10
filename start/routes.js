@@ -19,16 +19,18 @@ const Route = use('Route')
 //Route.on('/home').render('pages/home')
 Route.get('/', 'PageController.home')
 Route.get('/home', 'PageController.redirectHome')
+Route.get('/terms', 'PageController.terms_of_use')
+Route.get('/privacy_policy', 'PageController.privacy_policy')
 
 //Authentication
-Route.get('/register', 'AuthController.register')
+//Route.get('/register', 'AuthController.register')
 Route.post('/register', 'AuthController.storeUser')
 Route.get('/login', 'AuthController.login')
 Route.post('/login', 'AuthController.loginUser')
-Route.get('/forgot-password', 'AuthController.forgotPassword')
+//Route.get('/forgot-password', 'AuthController.forgotPassword')
 Route.get('/logout', 'AuthController.logout')
-Route.get('/changepwd', 'AuthController.changepwd')
-Route.post('/changepwd', 'AuthController.updatepwd')
+//Route.get('/changepwd', 'AuthController.changepwd')
+//Route.post('/changepwd', 'AuthController.updatepwd')
 
 //Google Authentication
 Route.get('login/google', 'GoogleLoginController.redirect')
