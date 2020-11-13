@@ -18,9 +18,9 @@ RUN npm install
 # Bundle app source
 COPY --chown=node:node . /usr/src/app
 COPY --chown=node:node . /usr/local/lib/node_modules
-RUN npm i @adonisjs/cli
+RUN npm i -g @adonisjs/cli
 
-RUN adonis migration:refresh
+RUN adonis migration:refresh --force
 RUN npm run build
 RUN npm run production
 
