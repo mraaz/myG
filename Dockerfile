@@ -23,7 +23,7 @@ COPY --chown=node:node . /usr/src/app
 COPY --chown=node:node . /usr/local/lib/node_modules
 COPY --chown=node:node . /usr/local/bin/adonis
 
-RUN npm i -g @adonisjs/cli --force
+RUN su node -c "npm i -g @adonisjs/cli --force"
 
 RUN adonis migration:refresh --force
 RUN npm run build
