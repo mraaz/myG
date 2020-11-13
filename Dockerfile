@@ -3,7 +3,10 @@ FROM node:13.8.0
 # Create app directory
 RUN mkdir -p /usr/src/app
 RUN mkdir -p /usr/src/app/node_modules
+RUN mkdir -p /usr/local/lib/node_modules
+
 RUN chown -R node:node /usr/src/app
+RUN chown -R node:node /usr/local/lib/node_modules
 RUN touch /usr/src/app/.env
 WORKDIR /usr/src/app
 
@@ -15,7 +18,7 @@ RUN npm install
 # Bundle app source
 COPY --chown=node:node . /usr/src/app
 COPY --chown=node:node . /usr/local/lib/node_modules
-RUN npm i -g @adonisjs/cli
+RUN npm i @adonisjs/cli
 
 RUN adonis migration:refresh
 RUN npm run build
