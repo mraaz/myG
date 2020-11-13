@@ -11,6 +11,7 @@ WORKDIR /usr/src/app
 COPY package.json /usr/src/app/
 USER node
 RUN npm install
+RUN npm i -g @adonisjs/cli
 
 # Bundle app source
 COPY --chown=node:node . /usr/src/app
