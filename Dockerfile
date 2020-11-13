@@ -4,9 +4,12 @@ FROM node:13.8.0
 RUN mkdir -p /usr/src/app
 RUN mkdir -p /usr/src/app/node_modules
 RUN mkdir -p /usr/local/lib/node_modules
+RUN mkdir -p /usr/local/bin/adonis
 
 RUN chown -R node:node /usr/src/app
 RUN chown -R node:node /usr/local/lib/node_modules
+RUN chown -R node:node /usr/local/bin/adonis
+
 RUN touch /usr/src/app/.env
 WORKDIR /usr/src/app
 
@@ -18,6 +21,8 @@ RUN npm install
 # Bundle app source
 COPY --chown=node:node . /usr/src/app
 COPY --chown=node:node . /usr/local/lib/node_modules
+COPY --chown=node:node . /usr/local/bin/adonis
+
 RUN npm i -g @adonisjs/cli
 
 RUN adonis migration:refresh --force
