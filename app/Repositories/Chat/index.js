@@ -173,7 +173,8 @@ class ChatRepository {
     return { messages };
   }
 
-  async fetchUnreadMessages({ requestingUserId }) {
+  async fetchUnreadMessages({ requestingUserId, count }) {
+    if (count) return this.countLastMessages({ requestingUserId });
     const { chats } = await this.fetchChats({ requestingUserId });
     const lastReadsRaw = await ChatLastRead.query().where('user_id', requestingUserId).fetch();
     if (!lastReadsRaw) return { unreadMessages: [] };
@@ -210,6 +211,21 @@ class ChatRepository {
     });
 
     return { unreadMessages };
+  }
+
+  async countLastMessages({ requestingUserId }) {
+    const response = await Database.raw(`
+      select (
+        select count(*)
+        from chat_messages
+        where chat_id = chat_last_reads.chat_id
+        and id > chat_last_reads.last_read_message_id
+      ) as unread_count
+      from chat_last_reads
+      where user_id = ?
+   `, requestingUserId);
+   const unreadMessages = response[0].map((result) => result.unread_count);
+    return { unreadMessages: !!unreadMessages ? unreadMessages.reduce((prv, cur) => prv + cur, 0) : 0 };
   }
 
   async fetchLastMessage({ requestedChatId }) {
