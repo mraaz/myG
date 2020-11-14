@@ -21,6 +21,7 @@ Route.get('/', 'PageController.home')
 Route.get('/home', 'PageController.redirectHome')
 Route.get('/terms', 'PageController.terms_of_use')
 Route.get('/privacy_policy', 'PageController.privacy_policy')
+Route.get('/gamers_code', 'PageController.gamers_code')
 
 //Authentication
 //Route.get('/register', 'AuthController.register')
