@@ -15,10 +15,13 @@ class PageController {
     return view.render('pages/welcome')
   }
   async terms_of_use({ response, request, view }) {
-    return view.render('pages/terms_of_use')
+    return view.render('pages/legal/terms_of_use')
   }
   async privacy_policy({ response, request, view }) {
-    return view.render('pages/privacy_policy')
+    return view.render('pages/legal/privacy_policy')
+  }
+  async gamers_code({ response, request, view }) {
+    return view.render('pages/legal/gamers_code')
   }
 }
 
