@@ -6,6 +6,7 @@ import notifyToast from '../../../../common/toast';
 import { ignoreFunctions } from '../../../../common/render'
 import EditGameExperience from './edit';
 import { showMessengerAlert } from '../../../../common/alert';
+import { WithTooltip } from '../../Tooltip';
 
 export default class GameExperiences extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -106,7 +107,13 @@ export default class GameExperiences extends React.Component {
         onMouseEnter={() => this.setState({ hovering: id })}
         onMouseLeave={() => this.setState({ hovering: null })}
         onClick={() => this.setState({ selected: id })}>
-        <span className="name">{gameName}</span>
+        {gameName.length > 17 ?
+          (
+            <WithTooltip text={gameName} position={{ bottom: '36px', left: '-10vw' }}>
+              <span className="name">{gameName.slice(0, 17) + '...'}</span>
+            </WithTooltip>
+          ): <span className="name">{gameName}</span>
+        }
         {gameImage && <div className="image" style={{ backgroundImage: `url(${gameImage})` }} />}
         <div
           className={`link clickable`}
