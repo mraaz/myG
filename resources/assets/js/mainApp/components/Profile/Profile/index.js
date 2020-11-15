@@ -32,14 +32,15 @@ export class Profile extends React.Component {
   render() {
     if (this.props.profile.error) return <Redirect push to={`/profile/${this.props.userAlias}`} />;
     const profileSponsors = this.props.profile.sponsors || [];
-    const sponsors = [{ id: 'empty-1' }, { id: 'empty-2' }].map((sponsor, index) => profileSponsors[index] || sponsor);
+    const sponsorsIndexes = this.props.profile.isSelf ? [{ id: 'empty-1' }, { id: 'empty-2' }] : null;
+    const sponsors = sponsorsIndexes ? sponsorsIndexes.map((sponsor, index) => profileSponsors[index] || sponsor) : profileSponsors;
     return(
       <div id="profile">
         <Banner profile={this.props.profile} updateProfile={this.props.updateProfile} />
         <ProfileInfo alias={this.props.alias} profile={this.props.profile} updateProfile={this.props.updateProfile} />
-        <Sponsors alias={this.props.alias} profile={this.props.profile} sponsors={sponsors} refetchSponsors={() => this.props.fetchProfile(this.props.alias)} />
+        {sponsors.length && <Sponsors alias={this.props.alias} profile={this.props.profile} sponsors={sponsors} refetchSponsors={() => this.props.fetchProfile(this.props.alias)} />}
         <GameExperiences userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
-        <GamerSuggestions />
+        {this.props.profile.isSelf && <GamerSuggestions /> }
         <MyPosts initialData={this.props.initialData} />
       </div>
     );
