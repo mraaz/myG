@@ -10,6 +10,7 @@ import { Game_name_values, Disable_keys, Schedule_Game_Tags } from '../../Utilit
 import { Upload_to_S3, Remove_file } from '../../AWS_utilities'
 import { fetchDynamicFields } from '../../../../integration/http/profile'
 import notifyToast from '../../../../common/toast'
+import { WithTooltip } from '../../Tooltip'
 
 const MAIN_FIELDS_OPTIONS = [
   { value: 'Nickname', label: 'Nickname' },
@@ -84,6 +85,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderDivider = () => {
+    if (!this.props.isSelf) return null
     return <div className='divider' />
   }
 
@@ -215,7 +217,11 @@ export default class MainInfo extends React.Component {
   }
 
   renderTagsInput = () => {
-    if (!this.props.isSelf) return this.renderDisabledField('Tags', this.props.experience.tags.map((tag) => tag.value).join(', '))
+    if (!this.props.isSelf)
+      return this.renderDisabledFieldList(
+        'Tags',
+        this.props.experience.tags.map((tag) => tag.value)
+      )
     return (
       <div className='row'>
         <span className='hint'>Tags</span>
@@ -446,6 +452,24 @@ export default class MainInfo extends React.Component {
     )
     if (skipRow) return disabledField
     return <div className='row'>{disabledField}</div>
+  }
+
+  renderDisabledFieldList(title, values) {
+    if (!values || !Array.isArray(values)) return null
+    return (
+      <div className='row'>
+        <React.Fragment>
+          <span className='hint'>{title}</span>
+          <div className='input-container-row'>
+            {values.map((value) => (
+              <WithTooltip text={value} position={{ bottom: "80px", left: '-80px' }} disabled={value.length <= 9}>
+                <span className="tag" key={value}>{value.slice(0, 9) + (value.length > 9 ? '...' : '')}</span>
+              </WithTooltip>
+            ))}
+          </div>
+        </React.Fragment>
+      </div>
+    )
   }
 
   render() {

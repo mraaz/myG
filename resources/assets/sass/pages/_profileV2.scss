@@ -304,6 +304,7 @@
 
     .input-container {
       display: flex;
+      align-items: center;
       width: 40%;
       margin-right: 8px;
       font-size: 16px;
@@ -324,6 +325,13 @@
     .input-error {
       background-color: #5d2326 !important;
       opacity: 75% !important;
+    }
+
+    .tag {
+      margin-right: 4px;
+      padding: 2px 8px;
+      background-color: #1d2326;
+      color: #93a4a5;
     }
 
     .required {

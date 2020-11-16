@@ -117,7 +117,7 @@ export default class GameExperiences extends React.Component {
         {gameImage && <div className="image" style={{ backgroundImage: `url(${gameImage})` }} />}
         <div
           className={`link clickable`}
-          onClick={() => this.copyLink(id)}
+          onClick={(event) => { event.stopPropagation(); this.copyLink(id); }}
           style={{ backgroundImage: `url(${getAssetUrl('ic_profile_link_gray')})` }}
         />
         {fields.map((field) => (
@@ -142,7 +142,7 @@ export default class GameExperiences extends React.Component {
               </div>
             )}
             {!!this.props.profile.isFriend && !hasCommended && (
-              <div className="hover-button clickable" onClick={() => this.props.commendUser(id)}>
+              <div className="hover-button clickable" onClick={(event) => { event.stopPropagation(); this.props.commendUser(id); }}>
                   Commend Me
               </div>
             )}
