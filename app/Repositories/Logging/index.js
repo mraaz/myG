@@ -1,14 +1,8 @@
 const elasticsearch = use('elasticsearch');
 
 class LoggingRepository {
-  async log({ environment, type, source, context, message, error }) {
-    if (error) error = '';
-    if (error) {
-      const err = getErrorObject();
-      const caller_line = err.stack.split("\n")[4];
-      const index = caller_line.indexOf("at ");
-      error = caller_line.slice(index + 2, caller_line.length);
-    }
+  async log({ environment, type, source, context, browser, system, message, error }) {
+    if (!error) error = '';
     return new elasticsearch.Client({
       host: process.env.ELASTICSEARCH,
       log: 'trace',
@@ -21,6 +15,8 @@ class LoggingRepository {
         type,
         source,
         context,
+        browser,
+        system,
         message,
         error,
         date: Date.now(),
