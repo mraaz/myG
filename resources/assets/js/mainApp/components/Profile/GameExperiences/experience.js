@@ -2,7 +2,8 @@ import React from 'react'
 import { ignoreFunctions } from '../../../../common/render'
 import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
 import MyGSelect from '../../common/MyGSelect'
-import { Disable_keys, Schedule_Game_Tags } from '../../Utility_Function'
+import { Disable_keys, Schedule_Game_Skills } from '../../Utility_Function'
+import { WithTooltip } from '../../Tooltip'
 
 const EXPERIENCE_OPTIONS = [
   { value: 'Less than 1 year', label: 'Less than 1 year' },
@@ -65,17 +66,25 @@ export default class Experience extends React.Component {
     )
   }
 
-  onTagChange = async (skills) => {
+  onSkillChange = async (skills) => {
+    if (skills && skills.length)
+      skills.forEach((skill) => {
+        skill.label = skill.label.replace('Create skill: ', '')
+      })
     return this.props.storeExperience(this.props.experience.id, { skills })
   }
 
-  loadTagOptions = async (input) => {
-    const results = await Schedule_Game_Tags(input)
-    return results.length ? results : [{ label: input, value: input }]
+  loadSkillsOptions = async (input) => {
+    const results = await Schedule_Game_Skills(input)
+    return results.length ? results : [{ label: input ? `Create skill: ${input}` : 'Type in skill name', value: input }]
   }
 
   renderSkillsInput = () => {
-    if (!this.props.isSelf) return this.renderDisabledField('Skills', this.props.experience.skills.map((skill) => skill.value).join(', '))
+    if (!this.props.isSelf)
+    return this.renderDisabledFieldList(
+      'Skills',
+      this.props.experience.skills.map((skill) => skill.value)
+    )
     return (
       <div className='row'>
         <span className='hint'>Skills</span>
@@ -83,8 +92,8 @@ export default class Experience extends React.Component {
           <AsyncCreatableSelect
             defaultOptions
             cacheOptions
-            loadOptions={this.loadTagOptions}
-            onChange={(input) => this.onTagChange(input)}
+            loadOptions={this.loadSkillsOptions}
+            onChange={(input) => this.onSkillChange(input)}
             isClearable
             isMulti
             value={this.props.experience.skills}
@@ -121,6 +130,24 @@ export default class Experience extends React.Component {
         <div className='input-container-row'>
           <input className='input' value={value} disabled={true}></input>
         </div>
+      </div>
+    )
+  }
+
+  renderDisabledFieldList(title, values) {
+    if (!values || !Array.isArray(values)) return null
+    return (
+      <div className='row'>
+        <React.Fragment>
+          <span className='hint'>{title}</span>
+          <div className='input-container-row'>
+            {values.map((value) => (
+              <WithTooltip text={value} position={{ bottom: "80px", left: '-80px' }} disabled={value.length <= 9}>
+                <span className="tag" key={value}>{value.slice(0, 9) + (value.length > 9 ? '...' : '')}</span>
+              </WithTooltip>
+            ))}
+          </div>
+        </React.Fragment>
       </div>
     )
   }

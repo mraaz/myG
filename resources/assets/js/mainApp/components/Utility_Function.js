@@ -19,6 +19,12 @@ const createOption_GameTags = (label, game_tag_id) => ({
   game_tag_id,
 })
 
+const createOption_GameSkills = (label, game_skill_id) => ({
+  label,
+  value: label,
+  game_skill_id,
+})
+
 const createOption_HashTags = (label, hash_tag_id) => ({
   label,
   value: label,
@@ -120,13 +126,6 @@ export async function Game_name_Tags(inputValue, game_names_id) {
 }
 
 export async function Schedule_Game_Tags(inputValue) {
-  //  if (inputValue != undefined) {
-  //    inputValue = inputValue.trimStart()
-  //    if (inputValue.length <= 250) {
-  //      inputValue = inputValue.substr(0, 250)
-  //    }
-  //  }
-
   let allTags
 
   if (inputValue == '' || inputValue == undefined) {
@@ -149,6 +148,32 @@ export async function Schedule_Game_Tags(inputValue) {
     return newArr
   } catch (error) {
     logToElasticsearch('error', 'Utility_Function', 'Failed Schedule_Game_Tags:' + ' ' + error)
+  }
+}
+
+export async function Schedule_Game_Skills(inputValue) {
+  let allSkills
+
+  if (inputValue == '' || inputValue == undefined) {
+    allSkills = await axios.get('/api/GameSkills/getTopGameSkills')
+  } else {
+    allSkills = await axios.post('/api/GameSkills/getGameSkills', {
+      content: inputValue,
+    })
+  }
+  try {
+    var newArr = []
+    var i, newOption
+
+    if (allSkills.data && allSkills.data.allSkills) {
+      for (i = 0; i < allSkills.data.allSkills.length; i++) {
+        newOption = createOption_GameSkills(allSkills.data.allSkills[i].content, allSkills.data.allSkills[i].id)
+        newArr.push(newOption)
+      }
+    }
+    return newArr
+  } catch (error) {
+    logToElasticsearch('error', 'Utility_Function', 'Failed Schedule_Game_Skills:' + ' ' + error)
   }
 }
 

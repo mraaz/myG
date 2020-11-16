@@ -22,6 +22,7 @@ export class WithTooltip extends React.PureComponent {
   }
 
   render() {
+    if (this.props.disabled) return this.props.children;
     const { style = {} } = this.props
     return (
       <div onMouseEnter={() => this.setState({ hovering: true })} onMouseLeave={() => this.setState({ hovering: false })} style={style}>

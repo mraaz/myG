@@ -25,7 +25,7 @@ export default class Sponsors extends React.Component {
     const isHovering = this.state.hovering === sponsor.id;
     return(
       <div className='sponsor' key={sponsor.id}
-        onMouseEnter={() => this.setState({ hovering: sponsor.id })}
+        onMouseEnter={() => this.setState({ hovering: this.props.profile.isSelf && sponsor.id })}
         onMouseLeave={() => this.setState({ hovering: null })}
       >
         <div
@@ -35,7 +35,7 @@ export default class Sponsors extends React.Component {
         />
         <div className="hover-bar">
           {!!isHovering && <div className="tiny-button clickable" onClick={() => this.editSponsor(sponsor.id)}>Edit</div>}
-          {!!isHovering && <div className="tiny-button clickable" onClick={() => this.deleteSponsor(sponsor.id)}>Delete</div>}
+          {!!isHovering && !`${sponsor.id}`.includes('empty') && <div className="tiny-button clickable" onClick={() => this.deleteSponsor(sponsor.id)}>Delete</div>}
         </div>
       </div>
     );

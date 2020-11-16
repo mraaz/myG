@@ -13,6 +13,8 @@ const Commendation = use('App/Models/Commendation');
 const UserMostPlayedGame = use('App/Models/UserMostPlayedGame');
 const GameNameField = use('App/Models/GameNameField');
 const GameNameController = use('App/Controllers/Http/GameNameController');
+const GameSkillController = use('App/Controllers/Http/GameSkillController');
+const GameTagController = use('App/Controllers/Http/GameTagController');
 const AwsKeyController = use('App/Controllers/Http/AwsKeyController');
 const ConnectionController = use('App/Controllers/Http/ConnectionController');
 const NotificationController_v2 = use('App/Controllers/Http/NotificationController_v2');
@@ -294,6 +296,7 @@ class ProfileRepository {
   }
 
   async updateGame({ requestingUserId, id, imageKey, imageSource, mainFields, game, gameName, nickname, level, experience, team, tags, rating, dynamic, background }) {
+    const auth = { user: { id: requestingUserId } };
     if (!game && gameName) {
       const gameNameModel = new GameName();
       gameNameModel.user_id = requestingUserId;
@@ -322,7 +325,9 @@ class ProfileRepository {
     gameExperience.tags = tags;
     gameExperience.rating = rating;
     gameExperience.dynamic = JSON.stringify(dynamic);
-    await gameExperience.save();
+    const tagController = new GameTagController();
+    const tagRequests = tags.split('|').map((tag) => tagController.store({ auth }, tag));
+    await Promise.all(tagRequests).then(() => gameExperience.save());
 
     await GameBackground.query().where('experience_id', gameExperience.id).delete();
     await Promise.all((background || []).map(experience => {
@@ -334,7 +339,9 @@ class ProfileRepository {
       gameBackground.role = experience.role;
       gameBackground.experience = experience.experience;
       gameBackground.skills = experience.skills;
-      return gameBackground.save();
+      const skillController = new GameSkillController();
+      const skillRequests = experience.skills.split('|').map((skill) => skillController.store({ auth }, skill));
+      return Promise.all(skillRequests).then(() => gameBackground.save());
     }))
 
     const { profile } = await this.fetchProfileInfo({ requestingUserId, id: requestingUserId });

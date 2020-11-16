@@ -440,12 +440,13 @@ class ChatController {
     }
   }
 
-  async fetchUnreadMessages({ auth, response }) {
+  async fetchUnreadMessages({ auth, request, response }) {
     try {
       const requestingUserId = auth.user.id
       if (!requestingUserId) throw new Error('Auth Error')
-      log('CHAT', `User ${requestingUserId} requesting Unread Messages`)
-      const { unreadMessages } = await ChatRepository.fetchUnreadMessages({ requestingUserId })
+      const count = !!request._qs.count;
+      log('CHAT', `User ${requestingUserId} requesting Unread Messages ${count ? 'Count' : ''}`)
+      const { unreadMessages } = await ChatRepository.fetchUnreadMessages({ requestingUserId, count })
       return response.send({ unreadMessages })
     } catch (error) {
       LoggingRepository.log({

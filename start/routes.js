@@ -135,6 +135,9 @@ Route.post('/api/Tags', 'TagController.store')
 Route.get('/api/GameTags/getTopGameTags', 'GameTagController.getTopGameTags')
 Route.post('/api/GameTags/getGameTags', 'GameTagController.getGameTags')
 
+Route.get('/api/GameSkills/getTopGameSkills', 'GameSkillController.getTopGameSkills')
+Route.post('/api/GameSkills/getGameSkills', 'GameSkillController.getGameSkills')
+
 Route.post('/api/HashTags', 'HashTagController.store')
 Route.get('/api/HashTags/getTopHashTags', 'HashTagController.getTopHashTags')
 Route.post('/api/HashTags/getHashTags', 'HashTagController.getHashTags')
