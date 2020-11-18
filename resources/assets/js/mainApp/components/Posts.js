@@ -25,7 +25,7 @@ export default class Posts extends Component {
       top: 500,
       behavior: 'smooth',
     })
-    window.history.pushState('myG', 'myG', '/')
+    //window.history.pushState('myG', 'myG', '/')
     this.fetchMoreData()
   }
 
@@ -49,7 +49,7 @@ export default class Posts extends Component {
     }
     const self = this
 
-    const getPosts = async function () {
+    const getPosts = async function() {
       try {
         const myPosts = await axios({
           method: 'GET',
