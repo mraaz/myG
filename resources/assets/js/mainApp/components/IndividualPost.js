@@ -48,8 +48,6 @@ export default class IndividualPost extends Component {
       autoPlay: false,
       isRTL: false,
       disableSwipe: false,
-      show_group_name: false,
-      group_name: '',
       show_more_comments: true,
       preview_file: '',
       aws_key_id: [],
@@ -193,46 +191,24 @@ export default class IndividualPost extends Component {
 
     var post_id = this.props.post.id
 
-    const getmyPostCount = async function() {
-      try {
-        var i
+    // const getmyPostCount = async function() {
+    //   try {
+    //     var i
+    //
+    //     const myPostCount = await axios.get(`/api/post/my_count/${post_id}`)
+    //
+    //     if (myPostCount.data.no_of_my_posts[0].no_of_my_posts != 0) {
+    //       self.setState({
+    //         show_post_options: true,
+    //       })
+    //     }
+    //   } catch (error) {
+    //     logToElasticsearch('error', 'IndividualComment', 'Failed getmyPostCount:' + ' ' + error)
+    //   }
+    // }
+    //
+    // getmyPostCount()
 
-        const myPostCount = await axios.get(`/api/post/my_count/${post_id}`)
-
-        if (myPostCount.data.no_of_my_posts[0].no_of_my_posts != 0) {
-          self.setState({
-            show_post_options: true,
-          })
-        }
-      } catch (error) {
-        logToElasticsearch('error', 'IndividualComment', 'Failed getmyPostCount:' + ' ' + error)
-      }
-    }
-
-    const getGroup_info = async function() {
-      try {
-        var i
-
-        const myPostCount = await axios.get(`/api/groups/${post.group_id}`)
-
-        if (myPostCount.data && myPostCount.data.group && myPostCount.data.group.length != 0) {
-          self.setState({
-            group_name: myPostCount.data.group[0].name,
-          })
-        }
-      } catch (error) {
-        logToElasticsearch('error', 'IndividualComment', 'Failed getGroup_info:' + ' ' + error)
-      }
-    }
-
-    getmyPostCount()
-
-    if (post.group_id != null && post.group_id != '') {
-      if ((post.source = 'news_feed')) {
-        this.state.show_group_name = true
-        getGroup_info()
-      }
-    }
     this.pullComments()
   }
 
@@ -468,6 +444,7 @@ export default class IndividualPost extends Component {
   }
 
   clickedEdit = async () => {
+    this.clickedGamePostExtraOption()
     this.setState({
       edit_post: true,
       value2: this.state.content.trim(),
@@ -496,6 +473,7 @@ export default class IndividualPost extends Component {
   }
 
   showAlert() {
+    this.clickedGamePostExtraOption()
     const getAlert = () => (
       <SweetAlert
         danger
@@ -528,9 +506,7 @@ export default class IndividualPost extends Component {
         focusConfirmBtn={false}
         showCloseButton={true}
         onConfirm={() => this.handleReportClick('true', id)}
-        onCancel={() => this.handleReportClick('false', id)}>
-        You will not be able to recover this entry!
-      </SweetAlert>
+        onCancel={() => this.handleReportClick('false', id)}></SweetAlert>
     )
 
     this.setState({
@@ -585,17 +561,6 @@ export default class IndividualPost extends Component {
     this.setState({ showPostExtraOption: !showPostExtraOption })
   }
 
-  handlefeaturedClick = async (featured_enabled, post_id) => {
-    const { showPostExtraOption } = this.state
-    this.setState({ showPostExtraOption: !showPostExtraOption })
-    const featureToggle = await axios.post('/api/post/featureToggle/', {
-      post_id,
-      featured_enabled,
-    })
-    if (featureToggle) {
-      toast.success(<Toast_style text={`\Great! Post has been successfully ${featured_enabled == 1 ? 'featured' : 'unfeatured'} `} />)
-    }
-  }
   handleReportClick = async (text, post_id) => {
     if (text == 'true') {
       const { showPostExtraOption } = this.state
@@ -631,54 +596,42 @@ export default class IndividualPost extends Component {
       var show_media = false
 
       let { post, current_user_permission = null, user } = this.props //destructing of object
-      let {
-        profile_img = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png',
-        hash_tags = [],
-        featured = 0,
-      } = post //destructing of object
+      let { profile_img = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png', hash_tags = [] } = post //destructing of object
       //destructing of object
       const { userInfo = {} } = user
 
       if (media_urls != [] && media_urls != null) {
         show_media = true
       }
-
       return (
         <div className='post__container'>
           {alert}
           <div className='post__body__wrapper'>
             <div className='post__body'>
-              {current_user_permission != null && (
-                <div className='gamePostExtraOption'>
-                  <i className='fas fa-ellipsis-h' onClick={this.clickedGamePostExtraOption}>
-                    ...
-                  </i>
-                  <div className={`post-dropdown ${showPostExtraOption == true ? 'active' : ''}`}>
-                    <nav>
-                      {[0, 1, 2].includes(current_user_permission) && featured == 0 && (
-                        <div className='option' onClick={(e) => this.handlefeaturedClick(1, post.id)}>
-                          Featured
-                        </div>
-                      )}
-                      {[0, 1, 2].includes(current_user_permission) && featured == 1 && (
-                        <div className='option' onClick={(e) => this.handlefeaturedClick(0, post.id)}>
-                          Unfeatured
-                        </div>
-                      )}
-                      {![0, 1, 2].includes(current_user_permission) && userInfo.id != post.user_id && (
-                        <div className='option' onClick={(e) => this.showReportAlert(post.id)}>
-                          Report
-                        </div>
-                      )}
-                      {([0, 1].includes(current_user_permission) || userInfo.id == post.user_id) && (
-                        <div className='option' onClick={() => this.showAlert()}>
-                          Delete
-                        </div>
-                      )}
-                    </nav>
-                  </div>
+              <div className='gamePostExtraOption'>
+                <i className='fas fa-ellipsis-h' onClick={this.clickedGamePostExtraOption}>
+                  ...
+                </i>
+                <div className={`post-dropdown ${showPostExtraOption == true ? 'active' : ''}`}>
+                  <nav>
+                    {userInfo.id != post.user_id && (
+                      <div className='option' onClick={(e) => this.showReportAlert(post.id)}>
+                        Report
+                      </div>
+                    )}
+                    {userInfo.id == post.user_id && (
+                      <div className='option' onClick={() => this.showAlert()}>
+                        Delete
+                      </div>
+                    )}
+                    {userInfo.id == post.user_id && (
+                      <div className='option' onClick={this.clickedEdit}>
+                        Edit &nbsp;
+                      </div>
+                    )}
+                  </nav>
                 </div>
-              )}
+              </div>
               <div
                 className='profile__image'
                 style={{
@@ -693,15 +646,6 @@ export default class IndividualPost extends Component {
                   <div className='username'>
                     <Link to={`/profile/${post.alias}`}>{`@${post.alias} `}</Link>
                   </div>
-                  {this.state.group_name && (
-                    <div className='shared__group'>
-                      {`shared `}
-                      <div className='arrow'></div>
-                      {this.state.show_group_name && this.state.group_name && (
-                        <Link to={`/groups/${post.group_id}`}>{this.state.group_name}</Link>
-                      )}
-                    </div>
-                  )}
                 </div>
                 <div className='post__time'>{this.state.post_time}</div>
               </div>
@@ -738,36 +682,6 @@ export default class IndividualPost extends Component {
                     />
                   </div>
                 )}
-
-                {this.state.show_post_options && (
-                  <div className='post-options'>
-                    <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}></i>
-                  </div>
-                )}
-                <div className={`post-dropdown ${this.state.dropdown == true ? 'active' : ''}`}>
-                  {[0, 1].includes(current_user_permission) && showPostExtraOption && (
-                    <nav>
-                      <div className='edit' onClick={this.clickedEdit}>
-                        Edit &nbsp;
-                      </div>
-                      <div className='delete' onClick={() => this.showAlert()}>
-                        Delete
-                      </div>
-                      &nbsp;
-                    </nav>
-                  )}
-                  {showPostExtraOption == false && (
-                    <nav>
-                      <div className='edit' onClick={this.clickedEdit}>
-                        Edit &nbsp;
-                      </div>
-                      <div className='delete' onClick={() => this.showAlert()}>
-                        Delete
-                      </div>
-                      &nbsp;
-                    </nav>
-                  )}
-                </div>
               </div>
             </div>
             <div className='media'>
