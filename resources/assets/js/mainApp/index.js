@@ -62,6 +62,7 @@ class Layout extends Component {
         window.PORT = initialData.data.port
         window.LOGS_ON = initialData.data.logsOn || ''
         window.FEATURES_ON = initialData.data.featuresOn || ''
+        window.PREVENT_RELOAD = initialData.data.preventReload || ''
 
         if (window.LOGS_ON.includes('EXPLAIN')) {
           const whyDidYouRender = require('@welldone-software/why-did-you-render')

@@ -47,7 +47,7 @@ export default class ErrorHandler extends React.PureComponent {
     if (reload === 'SHOULD_RELOAD') {
       store.dispatch({ type: 'REACT_ERROR' })
       const hasReloadedOnError = window.localStorage.getItem('hasReloadedOnError', 0)
-      if (Date.now() - hasReloadedOnError > 5000) {
+    if (!window.PREVENT_RELOAD && Date.now() - hasReloadedOnError > 5000) {
         window.localStorage.setItem('hasReloadedOnError', Date.now())
         window.location.reload(true)
       }

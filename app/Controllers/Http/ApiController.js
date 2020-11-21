@@ -64,6 +64,7 @@ class ApiController {
         userInfo: auth.user,
         port: process.env.PORT,
         logsOn: process.env.LOGS_ON,
+        preventReload: process.env.PREVENT_RELOAD,
         featuresOn: process.env.FEATURES_ON,
       }
     } else {
@@ -71,6 +72,7 @@ class ApiController {
         userInfo: 1981,
         port: process.env.PORT,
         logsOn: process.env.LOGS_ON,
+        preventReload: process.env.PREVENT_RELOAD,
         featuresOn: process.env.FEATURES_ON,
       }
     }

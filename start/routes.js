@@ -322,6 +322,7 @@ Route.get('/api/connections/i_am_viewing_this_profile/:other_user_id', 'Connecti
 Route.post('/api/connections/communities_you_might_know', 'ConnectionController.communities_you_might_know')
 
 Route.post('/api/invited_users_for_schedule_games/create', 'InvitedUsersForScheduleGameController.store')
+Route.post('/api/invited_users_for_schedule_games/invite', 'InvitedUsersForScheduleGameController.invite')
 
 Route.get('/api/userStatTransaction/master_controller', 'UserStatTransactionController.master_controller')
 
