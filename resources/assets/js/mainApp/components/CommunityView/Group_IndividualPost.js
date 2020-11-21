@@ -6,17 +6,21 @@
 import React, { Component, Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
-import IndividualComment from './IndividualComment'
 import moment from 'moment'
-import SweetAlert from './common/MyGSweetAlert'
-// import ImageGallery from 'react-image-gallery'
-const buckectBaseUrl = 'https://mygame-media.s3.amazonaws.com/platform_images/'
+
+import IndividualComment from '../IndividualComment'
+import SweetAlert from '../common/MyGSweetAlert'
+import { Toast_style } from '../Utility_Function'
+import { Upload_to_S3, Remove_file } from '../AWS_utilities'
+
 import { toast } from 'react-toastify'
-import { Toast_style } from './Utility_Function'
+import { logToElasticsearch } from '../../../integration/http/logger'
 
-import ImageGallery from './common/ImageGallery/ImageGallery'
+const buckectBaseUrl = 'https://mygame-media.s3.amazonaws.com/platform_images/'
 
-export default class IndividualPost_Feed extends Component {
+import ImageGallery from '../common/ImageGallery/ImageGallery'
+
+export default class Group_IndividualPost extends Component {
   constructor() {
     super()
     this.state = {
@@ -48,12 +52,14 @@ export default class IndividualPost_Feed extends Component {
       group_name: '',
       show_more_comments: true,
       preview_file: '',
-      aws_key: '',
+      aws_key_id: [],
       file_keys: '',
       galleryItems: [],
       showmore: false,
       hideComments: false,
       commentShowCount: 2,
+      showPostExtraOption: false,
+      featured_enabled: false,
     }
     this.imageFileType = ['jpeg', 'jpg', 'png', 'gif']
     this.videoFileType = ['mov', 'webm', 'mpg', 'mp4', 'avi', 'ogg']
@@ -104,7 +110,7 @@ export default class IndividualPost_Feed extends Component {
       //   }
       // }
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'IndividualComment', 'Failed click_like_btn:' + ' ' + error)
     }
     if (this.state.total == 0) {
       this.setState({
@@ -130,7 +136,7 @@ export default class IndividualPost_Feed extends Component {
       const unlike = await axios.get(`/api/likes/delete/${post_id}`)
       //const deletePostLike = axios.get(`/api/notifications/deletePostLike/${post_id}`)
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'IndividualComment', 'Failed click_unlike_btn:' + ' ' + error)
     }
 
     if (this.state.total == 0) {
@@ -177,6 +183,7 @@ export default class IndividualPost_Feed extends Component {
       admirer_first_name: this.props.post.admirer_first_name,
       post_time: post_timestamp.local().fromNow(),
       content: this.props.post.content,
+      featured_enabled: this.props.featured,
       galleryItems,
     })
     if (this.props.post.no_of_comments != 0) {
@@ -188,21 +195,21 @@ export default class IndividualPost_Feed extends Component {
 
     var post_id = this.props.post.id
 
-    const getmyPostCount = async function() {
-      try {
-        var i
-
-        const myPostCount = await axios.get(`/api/post/my_count/${post_id}`)
-
-        if (myPostCount.data.no_of_my_posts[0].no_of_my_posts != 0) {
-          self.setState({
-            show_post_options: true,
-          })
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }
+    // const getmyPostCount = async function() {
+    //   try {
+    //     var i
+    //
+    //     const myPostCount = await axios.get(`/api/post/my_count/${post_id}`)
+    //
+    //     if (myPostCount.data.no_of_my_posts[0].no_of_my_posts != 0) {
+    //       self.setState({
+    //         show_post_options: true,
+    //       })
+    //     }
+    //   } catch (error) {
+    //     logToElasticsearch('error', 'IndividualComment', 'Failed getmyPostCount:' + ' ' + error)
+    //   }
+    // }
 
     const getGroup_info = async function() {
       try {
@@ -210,17 +217,17 @@ export default class IndividualPost_Feed extends Component {
 
         const myPostCount = await axios.get(`/api/groups/${post.group_id}`)
 
-        if (myPostCount.data.group.length != 0) {
+        if (myPostCount.data && myPostCount.data.group && myPostCount.data.group.length != 0) {
           self.setState({
             group_name: myPostCount.data.group[0].name,
           })
         }
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualComment', 'Failed getGroup_info:' + ' ' + error)
       }
     }
 
-    getmyPostCount()
+    //getmyPostCount()
 
     if (post.group_id != null && post.group_id != '') {
       if ((post.source = 'news_feed')) {
@@ -244,7 +251,7 @@ export default class IndividualPost_Feed extends Component {
           comment_total: myComments.data.allComments.length,
         })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualComment', 'Failed pullComments:' + ' ' + error)
       }
     }
     getComments()
@@ -301,26 +308,22 @@ export default class IndividualPost_Feed extends Component {
     if (fileList.length > 0) {
       let type = fileList[0].type.split('/')
       let name = `comment_${type}_${+new Date()}_${fileList[0].name}`
-      this.doUploadS3(fileList[0], name, name)
+      this.doUploadS3(fileList[0], name)
     }
   }
 
-  doUploadS3 = async (file, id = '', name) => {
+  doUploadS3 = async (file, name) => {
     this.setState({
       uploading: true,
     })
-    const formData = new FormData()
-    formData.append('upload_file', file)
-    formData.append('filename', name)
+
     try {
-      const post = await axios.post('/api/uploadFile', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+      const post = await Upload_to_S3(file, name, 0, null)
+
       this.setState({
         preview_file: [post.data.Location],
-        file_keys: [post.data.Key],
+        file_keys: post.data.Key,
+        aws_key_id: [post.data.aws_key_id],
       })
     } catch (error) {
       toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
@@ -328,10 +331,14 @@ export default class IndividualPost_Feed extends Component {
     this.setState({
       uploading: false,
     })
+
+    this.setState({
+      uploading: false,
+    })
   }
 
   insert_comment = () => {
-    const { value = '', preview_file = [] } = this.state
+    const { value = '', preview_file = [], aws_key_id = [] } = this.state
 
     if (value.trim() == '' && preview_file.length == 0) {
       return
@@ -344,30 +351,25 @@ export default class IndividualPost_Feed extends Component {
           content: this.state.value.trim(),
           post_id: this.props.post.id,
           media_url: this.state.preview_file.length > 0 ? JSON.stringify(this.state.preview_file) : '',
-          file_keys: this.state.file_keys.length > 0 ? this.state.file_keys : '',
+          aws_key_id: aws_key_id.length > 0 ? aws_key_id : '',
         })
 
         let { post, user } = this.props
-        // if (post.user_id != user.userInfo.id) {
-        //   const addPostLike = axios.post('/api/notifications/addComment', {
-        //     other_user_id: post.user_id,
-        //     post_id: this.props.post.id,
-        //     comment_id: postComment.data.id,
-        //   })
-        // }
+
         this.setState({
           myComments: [...myComments, ...postComment.data],
           preview_file: '',
           file_keys: '',
           value: '',
+          aws_key_id: [],
         })
-        // this.pullComments()
+
         this.setState({
           comment_total: this.state.comment_total + 1,
           zero_comments: true,
         })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualComment', 'Failed saveComment:' + ' ' + error)
       }
     }
     saveComment()
@@ -397,7 +399,7 @@ export default class IndividualPost_Feed extends Component {
           value2: '',
         })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'IndividualComment', 'Failed editPost:' + ' ' + error)
       }
     }
     editPost()
@@ -468,6 +470,7 @@ export default class IndividualPost_Feed extends Component {
   }
 
   clickedEdit = async () => {
+    this.clickedGamePostExtraOption()
     this.setState({
       edit_post: true,
       value2: this.state.content.trim(),
@@ -491,11 +494,12 @@ export default class IndividualPost_Feed extends Component {
         post_deleted: true,
       })
     } catch (error) {
-      console.log(error)
+      logToElasticsearch('error', 'IndividualComment', 'Failed delete_exp:' + ' ' + error)
     }
   }
 
   showAlert() {
+    this.clickedGamePostExtraOption()
     const getAlert = () => (
       <SweetAlert
         danger
@@ -516,6 +520,26 @@ export default class IndividualPost_Feed extends Component {
       alert: getAlert(),
     })
   }
+  showReportAlert(id) {
+    this.clickedGamePostExtraOption()
+    const getAlert = () => (
+      <SweetAlert
+        danger
+        showCancel
+        title='Are you sure you wish to report this post?'
+        confirmBtnText='Make it so!'
+        confirmBtnBsStyle='danger'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={true}
+        onConfirm={() => this.handleReportClick('true', id)}
+        onCancel={() => this.handleReportClick('false', id)}></SweetAlert>
+    )
+
+    this.setState({
+      alert: getAlert(),
+    })
+  }
 
   hideAlert(text) {
     this.setState({
@@ -527,6 +551,13 @@ export default class IndividualPost_Feed extends Component {
     }
   }
   clearPreviewImage = () => {
+    const delete_file = Remove_file(this.state.file_keys, this.state.aws_key_id[0])
+
+    // const deleteKeys = axios.post('/api/deleteFile', {
+    //   aws_key_id: this.state.aws_key_id[0],
+    //   key: this.state.file_keys,
+    // })
+
     this.setState({
       preview_file: [],
       file_keys: '',
@@ -552,6 +583,38 @@ export default class IndividualPost_Feed extends Component {
     this.setState({ hideComments: true, show_more_comments: !show_more_comments, commentShowCount: myComments.length })
   }
 
+  clickedGamePostExtraOption = () => {
+    const { showPostExtraOption } = this.state
+    this.setState({ showPostExtraOption: !showPostExtraOption })
+  }
+
+  handlefeaturedClick = (post_id) => {
+    this.clickedGamePostExtraOption()
+    let featured_enabled = !this.state.featured_enabled
+
+    const featureToggle = axios.post('/api/post/featureToggle/', {
+      post_id,
+      featured_enabled,
+    })
+
+    toast.success(<Toast_style text={`\Great! Post has been successfully ${featured_enabled ? 'featured' : 'unfeatured'} `} />)
+    this.setState({ featured_enabled: featured_enabled })
+  }
+  handleReportClick = (text, post_id) => {
+    this.clickedGamePostExtraOption()
+    if (text == 'true') {
+      const reportData = axios.get(`/api/post/report/${post_id}`)
+      this.setState({ alert: '' })
+      toast.success(
+        <Toast_style
+          text={`Thanks for reporting! You're helping to make this is a better place. If we deem this an inappropriate post, you'll be reward!`}
+        />
+      )
+    } else {
+      this.setState({ alert: '' })
+    }
+  }
+
   render() {
     const {
       myComments = [],
@@ -563,13 +626,16 @@ export default class IndividualPost_Feed extends Component {
       show_more_comments = false,
       galleryItems = [],
       hideComments,
+      showPostExtraOption,
     } = this.state
     if (post_deleted != true) {
       var show_media = false
 
-      let { post } = this.props //destructing of object
+      let { post, current_user_permission = null, user } = this.props //destructing of object
       let { profile_img = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png', hash_tags = [] } = post //destructing of object
+
       //destructing of object
+      const { userInfo = {} } = user
 
       if (media_urls != [] && media_urls != null) {
         show_media = true
@@ -580,6 +646,43 @@ export default class IndividualPost_Feed extends Component {
           {alert}
           <div className='post__body__wrapper'>
             <div className='post__body'>
+              {current_user_permission != null && (
+                <div className='gamePostExtraOption'>
+                  <i className='fas fa-ellipsis-h' onClick={this.clickedGamePostExtraOption}>
+                    ...
+                  </i>
+                  <div className={`post-dropdown ${showPostExtraOption == true ? 'active' : ''}`}>
+                    <nav>
+                      {[0, 1, 2].includes(current_user_permission) && !this.state.featured_enabled && (
+                        <div className='option' onClick={(e) => this.handlefeaturedClick(post.id)}>
+                          Featured
+                        </div>
+                      )}
+                      {[0, 1, 2].includes(current_user_permission) && this.state.featured_enabled && (
+                        <div className='option' onClick={(e) => this.handlefeaturedClick(post.id)}>
+                          Unfeatured
+                        </div>
+                      )}
+                      {![0, 1, 2].includes(current_user_permission) && userInfo.id != post.user_id && (
+                        <div className='option' onClick={(e) => this.showReportAlert(post.id)}>
+                          Report
+                        </div>
+                      )}
+                      {([0, 1].includes(current_user_permission) || userInfo.id == post.user_id) && (
+                        <div className='option' onClick={() => this.showAlert()}>
+                          Delete
+                        </div>
+                      )}
+
+                      {([0, 1].includes(current_user_permission) || userInfo.id == post.user_id) && (
+                        <div className='option' onClick={this.clickedEdit}>
+                          Edit &nbsp;
+                        </div>
+                      )}
+                    </nav>
+                  </div>
+                </div>
+              )}
               <div
                 className='profile__image'
                 style={{
@@ -639,23 +742,6 @@ export default class IndividualPost_Feed extends Component {
                     />
                   </div>
                 )}
-
-                {this.state.show_post_options && (
-                  <div className='post-options'>
-                    <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}></i>
-                  </div>
-                )}
-                <div className={`post-dropdown ${this.state.dropdown == true ? 'active' : ''}`}>
-                  <nav>
-                    <div className='edit' onClick={this.clickedEdit}>
-                      Edit &nbsp;
-                    </div>
-                    <div className='delete' onClick={() => this.showAlert()}>
-                      Delete
-                    </div>
-                    &nbsp;
-                  </nav>
-                </div>
               </div>
             </div>
             <div className='media'>
@@ -666,13 +752,13 @@ export default class IndividualPost_Feed extends Component {
             <div className='update-stats'>
               {this.state.like && (
                 <div className='like-btn' onClick={() => this.click_unlike_btn(post.id)}>
-                  <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' />
+                  <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' className='img-fluid' />
                   &nbsp;Liked
                 </div>
               )}
               {!this.state.like && (
                 <div className='like-btn' onClick={() => this.click_like_btn(post.id)}>
-                  <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_unLike_Feed.svg' />
+                  <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_unLike_Feed.svg' className='img-fluid' />
                   &nbsp;Like
                 </div>
               )}
@@ -717,7 +803,7 @@ export default class IndividualPost_Feed extends Component {
                   onChange={this.handleSelectFile}
                   name='insert__images'
                 />
-                <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
+                <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} className='img-fluid' />
               </div>
 
               <div
@@ -733,7 +819,7 @@ export default class IndividualPost_Feed extends Component {
             {this.state.uploading && <div className='uploadImage_loading'>Uploading ...</div>}
             {this.state.preview_file.length > 0 && (
               <div className='preview__image'>
-                <img src={`${this.state.preview_file[0]}`} />
+                <img src={`${this.state.preview_file[0]}`} className='img-fluid' />
                 <div className='clear__preview__image' onClick={this.clearPreviewImage}>
                   X
                 </div>

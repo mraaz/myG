@@ -1033,6 +1033,30 @@ section#content-container {
             margin-left: auto;
           }
         }
+        .gamePostExtraOption {
+          position: absolute;
+          right: 10px;
+          top: -10px;
+          font-size: 20px;
+          cursor: pointer;
+          color: #fff;
+          .post-dropdown {
+            position: absolute;
+            z-index: 2;
+            display: none;
+            &.active {
+              display: block;
+            }
+            nav {
+              background: #181a1c;
+              .option {
+                padding: 4px 0px;
+                cursor: pointer;
+                font-size: 10px;
+              }
+            }
+          }
+        }
       }
       .media {
         .post-video {
@@ -2436,11 +2460,11 @@ section#content-container {
     font-weight: 500;
   }
 
-  .app-container.home-page #posts .post__container {
-    margin: 0;
-    margin-top: 0;
-    padding: 30px;
-  }
+  // .app-container.home-page #posts .post__container {
+  //   margin: 0;
+  //   margin-top: 0;
+  //   padding: 30px;
+  // }
 
   .viewGame__container {
     margin: 20px !important;

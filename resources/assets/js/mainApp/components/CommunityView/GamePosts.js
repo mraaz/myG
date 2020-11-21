@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import IndividualPost from '../IndividualPost'
+import Group_IndividualPost from './Group_IndividualPost'
 import ComposeSection from '../ComposeSection_v2'
 
 import { logToElasticsearch } from '../../../integration/http/logger'
@@ -38,7 +38,7 @@ export default class Posts extends Component {
           item.media_url = ''
         }
         return (
-          <IndividualPost
+          <Group_IndividualPost
             current_user_permission={this.props.current_user_permission}
             post={item}
             key={index}
