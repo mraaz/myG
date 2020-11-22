@@ -446,7 +446,7 @@ export default class Group_IndividualPost extends Component {
     return (
       comments.length > 0 &&
       comments.map((item, index) => {
-        return <IndividualComment comment={item} key={index} user={this.props.user} />
+        return <IndividualComment comment={item} key={index} user={this.props.user.userInfo} />
       })
     )
   }
@@ -458,7 +458,7 @@ export default class Group_IndividualPost extends Component {
     return (
       commentArr.length > 0 &&
       commentArr.map((item, index) => {
-        return <IndividualComment comment={item} key={item.id} user={this.props.user} />
+        return <IndividualComment comment={item} key={item.id} user={this.props.user.userInfo} />
       })
     )
   }

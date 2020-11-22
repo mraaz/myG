@@ -204,7 +204,7 @@ export default class ComposeSection extends Component {
   showLatestPosts = () => {
     if (this.state.myPosts != []) {
       return this.state.myPosts.map((item, index) => {
-        return <IndividualPost post={item} key={item.id} user={this.props.initialData} />
+        return <IndividualPost post={item} key={item.id} user={this.props.initialData.userInfo} />
       })
     }
   }

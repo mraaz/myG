@@ -30,7 +30,6 @@ export default class IndividualComment extends Component {
       show_more_replies: true,
       dropdown: false,
       comment_deleted: false,
-      show_comment_options: false,
       show_edit_comment: false,
       content: '',
       comment_time: '',
@@ -70,33 +69,10 @@ export default class IndividualComment extends Component {
     const self = this
     let comment = this.props
 
-    const getCommentLike = async function() {
-      try {
-        var i
-
-        const myCommentLike = await axios.get(`/api/likes/comment/${comment.comment.id}`)
-
-        if (myCommentLike.data.do_I_like_this_comment[0].myOpinion != 0) {
-          self.setState({
-            like: true,
-          })
-        }
-        if (myCommentLike.data.no_of_likes[0].no_of_likes != 0) {
-          self.setState({
-            show_like: true,
-            total: myCommentLike.data.no_of_likes[0].no_of_likes,
-          })
-        }
-      } catch (error) {
-        logToElasticsearch('error', 'IndividualComment', 'Failed getCommentLike:' + ' ' + error)
-      }
-    }
-
     const getCommentReplies = async function() {
       try {
-        var i
-
         const myCommentReplies = await axios.get(`/api/replies/${comment.comment.id}`)
+
         self.setState({
           myReplies: myCommentReplies.data.this_comments_replies,
         })
@@ -107,29 +83,41 @@ export default class IndividualComment extends Component {
             reply_total: myCommentReplies.data.no_of_replies[0].no_of_replies,
           })
         }
+
+        if (myCommentReplies.data.do_I_like_this_comment[0].myOpinion != 0) {
+          self.setState({
+            like: true,
+          })
+        }
+        if (myCommentReplies.data.no_of_likes[0].no_of_likes != 0) {
+          self.setState({
+            show_like: true,
+            total: myCommentReplies.data.no_of_likes[0].no_of_likes,
+          })
+        }
       } catch (error) {
         logToElasticsearch('error', 'IndividualComment', 'Failed getCommentReplies:' + ' ' + error)
       }
     }
 
-    const getmyCommentCount = async function() {
-      try {
-        var i
+    // const getmyCommentCount = async function() {
+    //   try {
+    //     var i
+    //
+    //     const myCommentCount = await axios.get(`/api/comments/my_count/${comment.comment.id}`)
+    //
+    //     if (myCommentCount.data.no_of_my_comments[0].no_of_my_comments != 0) {
+    //       self.setState({
+    //         show_comment_options: true,
+    //       })
+    //     }
+    //   } catch (error) {
+    //     logToElasticsearch('error', 'IndividualComment', 'Failed getmyCommentCount:' + ' ' + error)
+    //   }
+    // }
 
-        const myCommentCount = await axios.get(`/api/comments/my_count/${comment.comment.id}`)
-
-        if (myCommentCount.data.no_of_my_comments[0].no_of_my_comments != 0) {
-          self.setState({
-            show_comment_options: true,
-          })
-        }
-      } catch (error) {
-        logToElasticsearch('error', 'IndividualComment', 'Failed getmyCommentCount:' + ' ' + error)
-      }
-    }
-    getCommentLike()
     getCommentReplies()
-    getmyCommentCount()
+    //getmyCommentCount()
   }
 
   pullReplies = () => {
@@ -343,8 +331,6 @@ export default class IndividualComment extends Component {
           aws_key_id: aws_key_id.length > 0 ? aws_key_id : '',
         })
 
-        let { comment, user } = self.props
-
         self.setState({
           myReplies: [...myReplies, ...postReply.data],
         })
@@ -380,6 +366,7 @@ export default class IndividualComment extends Component {
         dropdown: false,
         value2: content,
       })
+      this.focusTextInput()
     } catch (error) {
       logToElasticsearch('error', 'IndividualComment', 'Failed clickedEdit:' + ' ' + error)
     }
@@ -488,10 +475,11 @@ export default class IndividualComment extends Component {
   }
 
   render() {
-    let { comment } = this.props
+    let { comment, user } = this.props
     let { profile_img = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png', media_url = '' } = comment
     const { myReplies = [], show_more_replies = true, hideReplies = false } = this.state
     const media_urls = media_url && media_url.length > 0 ? JSON.parse(media_url) : ''
+
     if (this.state.comment_deleted != true) {
       return (
         <div className='individual-comment-container'>
@@ -515,6 +503,27 @@ export default class IndividualComment extends Component {
             </div>
             <div className='comment__shape'></div>
 
+            {/* comment option start  */}
+            {user.id == comment.user_id && (
+              <div className='gamePostExtraOption'>
+                <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}>
+                  ...
+                </i>
+                <div className={`dropdown ${this.state.dropdown ? 'active' : ''}`}>
+                  <nav>
+                    <div className='edit' onClick={this.clickedEdit}>
+                      Edit &nbsp;
+                    </div>
+                    <div className='delete' onClick={() => this.showAlert()}>
+                      Delete
+                    </div>
+                    &nbsp;
+                  </nav>
+                </div>
+              </div>
+            )}
+            {/* comment option end  */}
+
             {this.state.show_edit_comment && (
               <div className='edit__comment__input'>
                 <input
@@ -528,25 +537,6 @@ export default class IndividualComment extends Component {
                 />
               </div>
             )}
-
-            {/* comment option start  */}
-            {this.state.show_comment_options && (
-              <div className='comment-options'>
-                <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}></i>
-              </div>
-            )}
-            <div className={`dropdown ${this.state.dropdown ? 'active' : ''}`}>
-              <nav>
-                <div className='edit' onClick={this.clickedEdit}>
-                  Edit &nbsp;
-                </div>
-                <div className='delete' onClick={() => this.showAlert()}>
-                  Delete
-                </div>
-                &nbsp;
-              </nav>
-            </div>
-            {/* comment option end  */}
 
             {/* profile section start  */}
             <Link to={`/profile/${comment.alias}`} className='user-img'>
