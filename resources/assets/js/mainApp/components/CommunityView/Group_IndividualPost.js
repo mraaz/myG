@@ -489,7 +489,7 @@ export default class Group_IndividualPost extends Component {
     var post_id = this.props.post.id
 
     try {
-      const myPost_delete = axios.get(`/api/post/delete/${post_id}`)
+      const myPost_delete = axios.delete(`/api/post/delete/${post_id}`)
       this.setState({
         post_deleted: true,
       })

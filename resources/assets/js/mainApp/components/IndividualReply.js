@@ -143,7 +143,7 @@ export default class IndividualReply extends Component {
     let reply_id = this.props.reply.id
 
     try {
-      const myReply_delete = axios.get(`/api/replies/delete/${reply_id}`)
+      const myReply_delete = axios.delete(`/api/replies/delete/${reply_id}`)
       this.setState({
         reply_deleted: true,
       })
