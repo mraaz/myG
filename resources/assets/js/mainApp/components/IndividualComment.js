@@ -376,7 +376,7 @@ export default class IndividualComment extends Component {
     let comment_id = this.props.comment.id
 
     try {
-      const myComment_delete = axios.get(`/api/comments/delete/${comment_id}`)
+      const myComment_delete = axios.delete(`/api/comments/delete/${comment_id}`)
       this.setState({
         comment_deleted: true,
       })

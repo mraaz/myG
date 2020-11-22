@@ -156,6 +156,14 @@ class ReplyController {
   async destroy({ auth, request, response }) {
     if (auth.user) {
       try {
+        const security_check = await Database.from('replies')
+          .where({ id: request.params.id })
+          .first()
+
+        if (security_check == undefined || security_check.user_id != auth.user.id) {
+          return
+        }
+
         const apiController = new ApiController()
         await apiController.internal_deleteFile({ auth }, '8', request.params.id)
 
@@ -181,19 +189,30 @@ class ReplyController {
   }
 
   async update({ auth, request, response }) {
-    try {
-      const updateReply = await Reply.query()
-        .where({ id: request.params.id })
-        .update({ content: request.input('content') })
-      return 'Saved successfully'
-    } catch (error) {
-      LoggingRepository.log({
-        environment: process.env.NODE_ENV,
-        type: 'error',
-        source: 'backend',
-        context: __filename,
-        message: (error && error.message) || error,
-      })
+    if (auth.user) {
+      try {
+        const security_check = await Database.from('replies')
+          .where({ id: request.params.id })
+          .first()
+
+        if (security_check == undefined || security_check.user_id != auth.user.id) {
+          return
+        }
+
+        const updateReply = await Reply.query()
+          .where({ id: request.params.id })
+          .update({ content: request.input('content') })
+
+        return 'Saved successfully'
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
+      }
     }
   }
 }
