@@ -38,7 +38,7 @@ export default class MyPosts extends Component {
         } catch (e) {
           item.media_url = ''
         }
-        return <IndividualPost post={item} key={item.id} user={this.props.initialData} />
+        return <IndividualPost post={item} key={item.id} user={this.props.initialData.userInfo} />
       })
     }
   }

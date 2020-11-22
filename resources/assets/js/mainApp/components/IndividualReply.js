@@ -18,7 +18,6 @@ export default class IndividualReply extends Component {
       show_add_reply: false,
       dropdown: false,
       reply_deleted: false,
-      show_reply_options: false,
       show_edit_reply: false,
       value: '',
       content: '',
@@ -54,8 +53,6 @@ export default class IndividualReply extends Component {
 
     const getCommentReplies = async function() {
       try {
-        var i
-
         const myReplyLikes = await axios.get(`/api/likes/reply/${reply.reply.id}`)
 
         if (myReplyLikes.data.do_I_like_this_reply[0].myOpinion != 0) {
@@ -75,23 +72,23 @@ export default class IndividualReply extends Component {
       }
     }
 
-    const getmyRepliesCount = async function() {
-      try {
-        var i
-
-        const myRepliesCount = await axios.get(`/api/replies/my_count/${reply.reply.id}`)
-
-        if (myRepliesCount.data.no_of_my_replies[0].no_of_my_replies != 0) {
-          self.setState({
-            show_reply_options: true,
-          })
-        }
-      } catch (error) {
-        logToElasticsearch('error', 'IndividualReply', 'Failed getmyRepliesCount:' + ' ' + error)
-      }
-    }
+    // const getmyRepliesCount = async function() {
+    //   try {
+    //     var i
+    //
+    //     const myRepliesCount = await axios.get(`/api/replies/my_count/${reply.reply.id}`)
+    //
+    //     if (myRepliesCount.data.no_of_my_replies[0].no_of_my_replies != 0) {
+    //       self.setState({
+    //         show_reply_options: true,
+    //       })
+    //     }
+    //   } catch (error) {
+    //     logToElasticsearch('error', 'IndividualReply', 'Failed getmyRepliesCount:' + ' ' + error)
+    //   }
+    // }
     getCommentReplies()
-    getmyRepliesCount()
+    //getmyRepliesCount()
   }
 
   click_reply_like_btn = (reply_id) => {
@@ -143,7 +140,7 @@ export default class IndividualReply extends Component {
   }
 
   delete_exp = () => {
-    var reply_id = this.props.reply.id
+    let reply_id = this.props.reply.id
 
     try {
       const myReply_delete = axios.get(`/api/replies/delete/${reply_id}`)
@@ -156,7 +153,7 @@ export default class IndividualReply extends Component {
   }
 
   clickedEdit = async () => {
-    var reply_id = this.props.reply.id
+    let reply_id = this.props.reply.id
 
     try {
       const myReply_content = await axios.get(`/api/replies/show_reply/${reply_id}`)
@@ -166,6 +163,7 @@ export default class IndividualReply extends Component {
         dropdown: false,
         value: myReply_content.data.this_reply[0].content,
       })
+      this.focusTextInput()
     } catch (error) {
       logToElasticsearch('error', 'IndividualReply', 'Failed clickedEdit:' + ' ' + error)
     }
@@ -266,11 +264,13 @@ export default class IndividualReply extends Component {
   }
 
   render() {
-    let { reply } = this.props
+    let { reply, user } = this.props
     let { profile_img = 'https://image.flaticon.com/icons/svg/149/149071.svg', media_url = '' } = reply
 
     const media_urls = media_url && media_url.length > 0 ? JSON.parse(media_url) : ''
     if (this.state.reply_deleted != true) {
+      console.log(reply, '<<<<REPLY')
+      console.log(user, '<<<<USER')
       return (
         <div className='individual-reply-container'>
           {this.state.alert}
@@ -290,43 +290,43 @@ export default class IndividualReply extends Component {
                   )}
                 </div>
               )}
-              <div className='reply-panel'>
-                {this.state.show_edit_reply && (
-                  <div className='add-reply'>
-                    <input
-                      type='text'
-                      id='reply_name_box'
-                      className='reply-name-box'
-                      placeholder='Add a reply...'
-                      onKeyDown={this.detectKey}
-                      ref={this.setTextInputRef}
-                      onChange={this.handleChange}
-                      value={this.state.value}
-                    />
-                  </div>
-                )}
-              </div>
             </div>
             <div className='comment__shape'></div>
 
-            {/* comment option start  */}
-            {this.state.show_reply_options && (
-              <div className='comment-options'>
-                <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}></i>
+            {/* reply option start  */}
+            {user.id == reply.user_id && (
+              <div className='gamePostExtraOption'>
+                <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}>
+                  ...
+                </i>
+                <div className={`dropdown ${this.state.dropdown ? 'active' : ''}`}>
+                  <nav>
+                    <div className='edit' onClick={this.clickedEdit}>
+                      Edit &nbsp;
+                    </div>
+                    <div className='delete' onClick={() => this.showAlert()}>
+                      Delete
+                    </div>
+                    &nbsp;
+                  </nav>
+                </div>
               </div>
             )}
-            <div className={`dropdown ${this.state.dropdown ? 'active' : ''}`}>
-              <nav>
-                <div className='edit' onClick={this.clickedEdit}>
-                  Edit &nbsp;
-                </div>
-                <div className='delete' onClick={() => this.showAlert()}>
-                  Delete
-                </div>
-                &nbsp;
-              </nav>
-            </div>
-            {/* comment option end  */}
+
+            {/* reply option end  */}
+            {this.state.show_edit_reply && (
+              <div className='edit__comment__input'>
+                <input
+                  type='text'
+                  id='reply_name_box'
+                  className='reply-name-box'
+                  onKeyDown={this.detectKey}
+                  ref={this.setTextInputRef}
+                  onChange={this.handleChange}
+                  value={this.state.value}
+                />
+              </div>
+            )}
 
             {/* profile section start  */}
             <Link to={`/profile/${reply.alias}`} className='user-img'>
