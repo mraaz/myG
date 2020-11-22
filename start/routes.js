@@ -428,6 +428,7 @@ Route.get('/api/seats_available_email/:email', 'SeatsAvailableController.storeSe
 Route.get('/api/profile/:alias', 'ProfileController.fetchProfileInfo')
 Route.put('/api/profile/:alias', 'ProfileController.updateProfile')
 Route.put('/api/profile/:alias/game', 'ProfileController.updateGame')
+Route.get('/api/profile/:alias/friends', 'ProfileController.fetchFriends')
 Route.delete('/api/game_experience/:gameExperienceId', 'ProfileController.deleteGameExperience')
 Route.get('/api/gamer_suggestions', 'ProfileController.fetchGamerSuggestions')
 Route.get('/api/profile_fields/:gameId', 'ProfileController.fetchDynamicFields')
