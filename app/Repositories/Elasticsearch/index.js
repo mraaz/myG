@@ -21,6 +21,7 @@ class ElasticsearchRepository {
   }
 
   async storeUser({ user }) {
+    console.log(`Storing user in Elasticsearch:`, user);
     const gameExperiences = (user.gameExperiences || []).map((experience) => ({ 
       id: experience.game, 
       level: experience.level, 
@@ -34,6 +35,31 @@ class ElasticsearchRepository {
         doc: { ...user, gameExperiences },
         doc_as_upsert: true,
       }
+    }).then(() => ({ success: true, error: null })).catch(error => ({ success: false, error }));
+  }
+
+  async searchGame({ query }) {
+    if (process.env.DEBUG_ELASTICSEARCH) console.log('Elasticsearch Query:', JSON.stringify(query, null, 2));
+    return this.getElasticsearchClient().search({ index: 'games', body: query });
+  }
+
+  async storeGame({ gameInfo }) {
+    console.log(`Storing game in Elasticsearch:`, gameInfo);
+    return this.getElasticsearchClient().update({
+      index: 'games',
+      id: gameInfo.id,
+      body: {
+        doc: gameInfo,
+        doc_as_upsert: true,
+      }
+    }).then(() => ({ success: true, error: null })).catch(error => ({ success: false, error }));
+  }
+
+  async removeGame({ id }) {
+    console.log(`Removing game from Elasticsearch:`, id);
+    return this.getElasticsearchClient().delete({
+      id,
+      index: 'games',
     }).then(() => ({ success: true, error: null })).catch(error => ({ success: false, error }));
   }
 }

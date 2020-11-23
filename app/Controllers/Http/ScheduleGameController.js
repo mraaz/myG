@@ -14,6 +14,10 @@ const InGame_fieldsController = use('./InGame_fieldsController')
 const GameTagController = use('./GameTagController')
 const AttendeeController = use('./AttendeeController')
 const LoggingRepository = require('../../Repositories/Logging')
+const ElasticsearchRepository = require('../../Repositories/Elasticsearch')
+const SearchRepository = require('../../Repositories/Search')
+
+const moment = require('moment');
 
 const MAX_GAME_TAGS = 9
 const MAX_CO_HOSTS = 5
@@ -21,18 +25,18 @@ const MAX_CO_HOSTS = 5
 class ScheduleGameController {
   async store({ auth, request, response }) {
     if (request.input('start_date_time') == undefined || request.input('game_name_box') == undefined) {
-      return
+      return response.send('invalid start date - format')
     }
 
     if (request.input('start_date_time') == null || request.input('game_name_box') == null) {
-      return
+      return response.send('invalid start date - format')
     }
 
     let myTime = new Date(new Date(Date.now()).getTime() - 60 * 60 * 1000)
 
     let newStartdate = new Date(request.input('start_date_time'))
     if (myTime > newStartdate) {
-      return
+      return response.send('invalid start date - now greater than date')
     }
 
     let end_date_time
@@ -43,7 +47,7 @@ class ScheduleGameController {
       let newEnddate = new Date(request.input('end_date_time'))
       let extendedDate = new Date(new Date(request.input('start_date_time')).getTime() + 15 * 60 * 60 * 24 * 1000)
       if (newEnddate > extendedDate) {
-        return
+        return response.send('invalid end date - end date greater than maximum allowed')
       }
       end_date_time = request.input('end_date_time')
     } else {
@@ -61,7 +65,7 @@ class ScheduleGameController {
         if (getGameName.length == 0) {
           let tmp = await gameface.createGame({ auth }, request.input('game_name_box'))
           if (tmp == false) {
-            return
+            return response.send('couldnt create game')
           }
           gameNameID = tmp.id
         } else {
@@ -69,7 +73,7 @@ class ScheduleGameController {
           gameface.incrementGameCounter({ auth }, request.input('game_names_id'))
         }
 
-        const newScheduleGame = await ScheduleGame.create({
+        const gameInfo = {
           game_names_id: parseInt(gameNameID, 10),
           user_id: auth.user.id,
           region: request.input('selected_region'),
@@ -93,7 +97,11 @@ class ScheduleGameController {
           mic: request.input('mic'),
           eighteen_plus: request.input('eighteen_plus'),
           game_languages: request.input('game_languages'),
-        })
+        }
+
+        const newScheduleGame = await ScheduleGame.create(gameInfo)
+        gameInfo.id = newScheduleGame.id
+        gameInfo.game_name = request.input('game_name_box')
 
         if (
           getGameName.length != 0 &&
@@ -157,8 +165,13 @@ class ScheduleGameController {
               )
             }
             let counter = 0
-
+            gameInfo.dynamic_fields = []
+            const dynamicFieldNames = ['value_one', 'value_two', 'value_three', 'value_four', 'value_five']
             for (var i = 0; i < db_save_value_array.length; i++) {
+              const isValueArray = db_save_value_array[i] && db_save_value_array[i].includes(',')
+              const rawValue = isValueArray ? db_save_value_array[i].split(',') : db_save_value_array[i]
+              const value = isValueArray ? rawValue.map((value) => value.trim()) : rawValue && rawValue.trim()
+              gameInfo.dynamic_fields.push({ [dynamicFieldNames[i]]: value })
               if (db_save_value_array[i] == null) {
                 counter = counter + 1
               }
@@ -199,6 +212,7 @@ class ScheduleGameController {
 
         if (request.input('tags') != undefined && request.input('tags') != null && request.input('tags').length > 0) {
           var arrTags = JSON.parse(request.input('tags'))
+          gameInfo.tags = arrTags.map((tag) => tag.value)
           for (var i = 0; i < MAX_GAME_TAGS && i < arrTags.length; i++) {
             if (arrTags[i].game_tag_id == null) {
               if (/['/.%#$;`\\]/.test(arrTags[i].value)) {
@@ -217,12 +231,15 @@ class ScheduleGameController {
                 game_tag_id: arrTags[i].game_tag_id,
               })
 
-              const update_counter = await GameTags.query()
-                .where({ id: arrTags[i].game_tag_id })
-                .increment('counter', 1)
+              const update_counter = await GameTags.query().where({ id: arrTags[i].game_tag_id }).increment('counter', 1)
             }
           }
         }
+
+        if (process.env.ELASTICSEARCH_GAMES) {
+          await ElasticsearchRepository.storeGame({ gameInfo })
+        }
+
         return newScheduleGame
       } catch (error) {
         LoggingRepository.log({
@@ -303,33 +320,35 @@ class ScheduleGameController {
           }
         }
 
+        const gameInfo = {
+          game_names_id: parseInt(gameNameID, 10),
+          user_id: auth.user.id,
+          region: request.input('selected_region'),
+          experience: request.input('selected_experience'),
+          start_date_time: request.input('start_date_time'),
+          end_date_time: end_date_time,
+          platform: request.input('selected_platform'),
+          description: request.input('description_box'),
+          other: request.input('other_box'),
+          expiry: request.input('selected_expiry'),
+          visibility: request.input('visibility'),
+          limit: request.input('limit'),
+          accept_msg: request.input('accept_msg'),
+          schedule_games_GUID: request.input('schedule_games_GUID'),
+          allow_comments: request.input('allow_comments'),
+          autoJoin: request.input('autoJoin'),
+          cron: request.input('cron'),
+          occurrence: request.input('occurrence'),
+          repeatEvery: request.input('repeatEvery'),
+          autoJoinHost: request.input('autoJoinHost'),
+          mic: request.input('mic'),
+          eighteen_plus: request.input('eighteen_plus'),
+          game_languages: request.input('game_languages'),
+        }
+
         const updateScheduleGame = await ScheduleGame.query()
           .where({ id: request.input('id') })
-          .update({
-            game_names_id: parseInt(gameNameID, 10),
-            user_id: auth.user.id,
-            region: request.input('selected_region'),
-            experience: request.input('selected_experience'),
-            start_date_time: request.input('start_date_time'),
-            end_date_time: end_date_time,
-            platform: request.input('selected_platform'),
-            description: request.input('description_box'),
-            other: request.input('other_box'),
-            expiry: request.input('selected_expiry'),
-            visibility: request.input('visibility'),
-            limit: request.input('limit'),
-            accept_msg: request.input('accept_msg'),
-            schedule_games_GUID: request.input('schedule_games_GUID'),
-            allow_comments: request.input('allow_comments'),
-            autoJoin: request.input('autoJoin'),
-            cron: request.input('cron'),
-            occurrence: request.input('occurrence'),
-            repeatEvery: request.input('repeatEvery'),
-            autoJoinHost: request.input('autoJoinHost'),
-            mic: request.input('mic'),
-            eighteen_plus: request.input('eighteen_plus'),
-            game_languages: request.input('game_languages'),
-          })
+          .update(gameInfo)
 
         if (
           getGameName.length != 0 &&
@@ -393,8 +412,13 @@ class ScheduleGameController {
               )
             }
             let counter = 0
-
+            gameInfo.dynamic_fields = []
+            const dynamicFieldNames = ['value_one', 'value_two', 'value_three', 'value_four', 'value_five']
             for (var i = 0; i < db_save_value_array.length; i++) {
+              const isValueArray = db_save_value_array[i] && db_save_value_array[i].includes(',')
+              const rawValue = isValueArray ? db_save_value_array[i].split(',') : db_save_value_array[i]
+              const value = isValueArray ? rawValue.map((value) => value.split) : rawValue
+              gameInfo.dynamic_fields.push({ [dynamicFieldNames[i]]: value })
               if (db_save_value_array[i] == null) {
                 counter = counter + 1
               }
@@ -449,6 +473,7 @@ class ScheduleGameController {
 
         if (request.input('tags') != null && request.input('tags').length > 0) {
           var arrTags = JSON.parse(request.input('tags'))
+          gameInfo.tags = arrTags.map((tag) => tag.value)
           //Create tags
           for (var i = 0; i < arrTags.length; i++) {
             if (arrTags[i].game_tag_id == null) {
@@ -468,12 +493,15 @@ class ScheduleGameController {
                 game_tag_id: arrTags[i].game_tag_id,
               })
 
-              const update_counter = await GameTags.query()
-                .where({ id: arrTags[i].game_tag_id })
-                .increment('counter', 1)
+              const update_counter = await GameTags.query().where({ id: arrTags[i].game_tag_id }).increment('counter', 1)
             }
           }
         }
+
+        if (process.env.ELASTICSEARCH_GAMES) {
+          await ElasticsearchRepository.storeGame({ gameInfo })
+        }
+
         return updateScheduleGame
       } catch (error) {
         LoggingRepository.log({
@@ -531,6 +559,10 @@ class ScheduleGameController {
             reason = null
         }
 
+        if (process.env.ELASTICSEARCH_GAMES) {
+          await ElasticsearchRepository.removeGame({ id: request.params.id })
+        }
+
         const update_sch = await ScheduleGame.query()
           .where({ id: request.params.id })
           .update({ marked_as_deleted: true, deleted_date: Database.fn.now(), reason_for_deletion: reason })
@@ -566,12 +598,11 @@ class ScheduleGameController {
       filter = request.input('filter')
     }
 
+
     try {
       switch (filter) {
         case 0:
-          subquery = await Database.from('attendees')
-            .select('schedule_games_id')
-            .where({ user_id: auth.user.id })
+          subquery = await Database.from('attendees').select('schedule_games_id').where({ user_id: auth.user.id })
 
           myScheduledGames = await Database.from('schedule_games')
             .innerJoin('users', 'users.id', 'schedule_games.user_id')
@@ -646,9 +677,7 @@ class ScheduleGameController {
           number_of_records = count_myScheduledGames[0].no_of_records
           break
         case 2:
-          subquery = Database.from('attendees')
-            .select('schedule_games_id')
-            .where({ user_id: auth.user.id, type: 1 })
+          subquery = Database.from('attendees').select('schedule_games_id').where({ user_id: auth.user.id, type: 1 })
 
           myScheduledGames = await Database.from('schedule_games')
             .innerJoin('users', 'users.id', 'schedule_games.user_id')
@@ -685,9 +714,7 @@ class ScheduleGameController {
           number_of_records = count_myScheduledGames[0].no_of_records
           break
         case 3:
-          subquery = Database.from('attendees')
-            .select('schedule_games_id')
-            .where({ user_id: auth.user.id, type: 3 })
+          subquery = Database.from('attendees').select('schedule_games_id').where({ user_id: auth.user.id, type: 3 })
 
           myScheduledGames = await Database.from('schedule_games')
             .innerJoin('users', 'users.id', 'schedule_games.user_id')
@@ -780,15 +807,10 @@ class ScheduleGameController {
   async myScheduledGames_Upcoming_Games({ auth, request, response }) {
     var myScheduledGames = ''
 
-    let next24hours = new Date(new Date(Date.now()).getTime() + 60 * 60 * 24 * 1000)
-      .toISOString()
-      .slice(0, 19)
-      .replace('T', ' ')
+    let next24hours = new Date(new Date(Date.now()).getTime() + 60 * 60 * 24 * 1000).toISOString().slice(0, 19).replace('T', ' ')
 
-    let last4hours = new Date(new Date(Date.now()).getTime() - 60 * 60 * 4 * 1000)
-      .toISOString()
-      .slice(0, 19)
-      .replace('T', ' ')
+    let last4hours = new Date(new Date(Date.now()).getTime() - 60 * 60 * 4 * 1000).toISOString().slice(0, 19).replace('T', ' ')
+
 
     try {
       const subquery = Database.from('attendees')
@@ -874,6 +896,67 @@ class ScheduleGameController {
   }
 
   async scheduleSearchResults({ auth, request, response }) {
+    if (process.env.ELASTICSEARCH_GAMES) {
+      const query = request.only([
+        'game_name',
+        'experience',
+        'start_date_time',
+        'end_date_time',
+        'description',
+        'tags',
+        'mic',
+        'eighteen_plus',
+        'value_one',
+        'value_two',
+        'value_three',
+        'value_four',
+        'value_five',
+        'game_languages',
+      ]);
+      if (query.start_date_time) query.start_date_time = moment(query.start_date_time).format('YYYY-MM-DD HH:mm:ss');
+      if (query.end_date_time) query.end_date_time = moment(query.end_date_time).format('YYYY-MM-DD HH:mm:ss');
+      if (query.mic) query.mic = !!query.mic;
+      if (query.eighteen_plus) query.eighteen_plus = !!query.eighteen_plus;
+      if (query.end_date_time) query.end_date_time = moment(query.end_date_time).format('YYYY-MM-DD HH:mm:ss');
+      if (query.tags && query.tags.length > 0) {
+        query.tags = query.tags.split(',')
+        const tagNames = await Database.from('schedule_games_tags')
+          .innerJoin('game_tags', 'schedule_games_tags.game_tag_id', 'game_tags.id')
+          .where('schedule_games_tags.game_tag_id', 'in', query.tags)
+          .select('content')
+        const uniqueTags = {};
+        tagNames.forEach((tag) => uniqueTags[tag.content] = true);
+        query.tags = Object.keys(uniqueTags);
+      }
+      if (query.value_one || query.value_two || query.value_three || query.value_four || query.value_five) {
+        const gameFields = await Database.table('game_names')
+        .innerJoin('game_name_fields', 'game_name_fields.game_names_id', 'game_names.id')
+        .where('game_name', '=', request.input('game_name'))
+        .select('game_name_fields.*')
+        .first()
+        const wrongMappings = JSON.parse(JSON.stringify(query));
+        const correctMappings = JSON.parse(gameFields.in_game_fields);
+        const findValue = (mapping) => {
+          const value_one = wrongMappings.value_one || {};
+          if (mapping === Object.keys(value_one)[0]) return value_one[Object.keys(value_one)[0]];
+          const value_two = wrongMappings.value_two || {};
+          if (mapping === Object.keys(value_two)[0]) return value_two[Object.keys(value_two)[0]];
+          const value_three = wrongMappings.value_three || {};
+          if (mapping === Object.keys(value_three)[0]) return value_three[Object.keys(value_three)[0]];
+          const value_four = wrongMappings.value_four || {};
+          if (mapping === Object.keys(value_four)[0]) return value_four[Object.keys(value_four)[0]];
+          const value_five = wrongMappings.value_five || {};
+          if (mapping === Object.keys(value_five)[0]) return value_five[Object.keys(value_five)[0]];
+        }
+        Object.keys(correctMappings).forEach((key) => {
+          const mapping = correctMappings[key];
+          const value = findValue(mapping);
+          if (value) query[key] = value;
+        });
+      }
+      return SearchRepository.searchGames({ query });
+    }
+
     try {
       let arrTags = '',
         latestScheduledGames
@@ -1116,18 +1199,14 @@ class ScheduleGameController {
       additional_game_info = []
 
     try {
-      additional_game_info = await Database.from('schedule_games')
-        .where('schedule_games.id', '=', game_id)
-        .first()
+      additional_game_info = await Database.from('schedule_games').where('schedule_games.id', '=', game_id).first()
 
       if (additional_game_info == undefined) {
         return
       }
 
       //Figure out what fields to return, create the key value pair.
-      const getGameFields = await Database.from('game_name_fields')
-        .where({ game_names_id: additional_game_info.game_names_id })
-        .first()
+      const getGameFields = await Database.from('game_name_fields').where({ game_names_id: additional_game_info.game_names_id }).first()
 
       if (getGameFields == undefined) {
         return
@@ -1185,9 +1264,7 @@ class ScheduleGameController {
       button_text = ''
 
     try {
-      additional_game_info = await Database.from('schedule_games')
-        .where('schedule_games.id', '=', request.params.id)
-        .first()
+      additional_game_info = await Database.from('schedule_games').where('schedule_games.id', '=', request.params.id).first()
       if (additional_game_info != undefined) {
         approved_gamers = await Database.from('attendees')
           .innerJoin('users', 'users.id', 'attendees.user_id')
@@ -1220,9 +1297,7 @@ class ScheduleGameController {
         }
 
         //Figure out what fields to return, create the key value pair.
-        const getGameFields = await Database.from('game_name_fields')
-          .where({ game_names_id: additional_game_info.game_names_id })
-          .first()
+        const getGameFields = await Database.from('game_name_fields').where({ game_names_id: additional_game_info.game_names_id }).first()
 
         if (getGameFields != undefined) {
           let obj = '',
@@ -1314,6 +1389,7 @@ class ScheduleGameController {
   }
 
   async filtered_by_one({ auth, request, response }) {
+
     let join_status = 0,
       myStatus = 0,
       latestScheduledGames = [],
@@ -1381,9 +1457,7 @@ class ScheduleGameController {
       }
 
       //Figure out what fields to return, create the key value pair.
-      const getGameFields = await Database.from('game_name_fields')
-        .where({ game_names_id: latestScheduledGames[0].game_names_id })
-        .first()
+      const getGameFields = await Database.from('game_name_fields').where({ game_names_id: latestScheduledGames[0].game_names_id }).first()
 
       if (getGameFields != undefined) {
         let obj = '',
@@ -1489,9 +1563,7 @@ class ScheduleGameController {
       latestScheduledGames[0].tags = getAllTags
 
       //Figure out what fields to return, create the key value pair.
-      const getGameFields = await Database.from('game_name_fields')
-        .where({ game_names_id: latestScheduledGames[0].game_names_id })
-        .first()
+      const getGameFields = await Database.from('game_name_fields').where({ game_names_id: latestScheduledGames[0].game_names_id }).first()
 
       if (getGameFields != undefined) {
         additional_submit_info = true
@@ -1583,9 +1655,7 @@ class ScheduleGameController {
 
   async update_vacany({ auth }, schedule_game_id, vacancy) {
     try {
-      const update_vacany = await ScheduleGame.query()
-        .where({ id: schedule_game_id })
-        .update({ vacancy: vacancy })
+      const update_vacany = await ScheduleGame.query().where({ id: schedule_game_id }).update({ vacancy: vacancy })
       return
     } catch (error) {
       LoggingRepository.log({
@@ -1615,9 +1685,7 @@ class ScheduleGameController {
           return isAdmin
         }
 
-        const checkCo_host = await Database.from('co_hosts')
-          .where({ schedule_games_id: getID.id, user_id: auth.user.id })
-          .select('id')
+        const checkCo_host = await Database.from('co_hosts').where({ schedule_games_id: getID.id, user_id: auth.user.id }).select('id')
 
         if (checkCo_host.length > 0) {
           isAdmin = true
@@ -1647,16 +1715,12 @@ class ScheduleGameController {
     // additional_info_values = {}
 
     try {
-      const game_info = await Database.from('game_names')
-        .where({ id: request.params.game_names_id })
-        .first()
+      const game_info = await Database.from('game_names').where({ id: request.params.game_names_id }).first()
 
       if (game_info == undefined) {
         return
       }
-      const getGameFields = await Database.from('game_name_fields')
-        .where({ game_names_id: game_info.id })
-        .first()
+      const getGameFields = await Database.from('game_name_fields').where({ game_names_id: game_info.id }).first()
 
       if (getGameFields != undefined) {
         let obj = '',
