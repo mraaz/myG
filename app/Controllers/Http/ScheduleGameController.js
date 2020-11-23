@@ -235,11 +235,7 @@ class ScheduleGameController {
             }
           }
         }
-
-        if (process.env.ELASTICSEARCH_GAMES) {
-          await ElasticsearchRepository.storeGame({ gameInfo })
-        }
-
+        await ElasticsearchRepository.storeGame({ gameInfo })
         return newScheduleGame
       } catch (error) {
         LoggingRepository.log({
@@ -497,11 +493,7 @@ class ScheduleGameController {
             }
           }
         }
-
-        if (process.env.ELASTICSEARCH_GAMES) {
-          await ElasticsearchRepository.storeGame({ gameInfo })
-        }
-
+        await ElasticsearchRepository.storeGame({ gameInfo })
         return updateScheduleGame
       } catch (error) {
         LoggingRepository.log({
@@ -895,68 +887,69 @@ class ScheduleGameController {
     }
   }
 
-  async scheduleSearchResults({ auth, request, response }) {
-    if (process.env.ELASTICSEARCH_GAMES) {
-      const query = request.only([
-        'game_name',
-        'experience',
-        'start_date_time',
-        'end_date_time',
-        'description',
-        'tags',
-        'mic',
-        'eighteen_plus',
-        'value_one',
-        'value_two',
-        'value_three',
-        'value_four',
-        'value_five',
-        'game_languages',
-      ]);
-      if (query.start_date_time) query.start_date_time = moment(query.start_date_time).format('YYYY-MM-DD HH:mm:ss');
-      if (query.end_date_time) query.end_date_time = moment(query.end_date_time).format('YYYY-MM-DD HH:mm:ss');
-      if (query.mic) query.mic = !!query.mic;
-      if (query.eighteen_plus) query.eighteen_plus = !!query.eighteen_plus;
-      if (query.end_date_time) query.end_date_time = moment(query.end_date_time).format('YYYY-MM-DD HH:mm:ss');
-      if (query.tags && query.tags.length > 0) {
-        query.tags = query.tags.split(',')
-        const tagNames = await Database.from('schedule_games_tags')
-          .innerJoin('game_tags', 'schedule_games_tags.game_tag_id', 'game_tags.id')
-          .where('schedule_games_tags.game_tag_id', 'in', query.tags)
-          .select('content')
-        const uniqueTags = {};
-        tagNames.forEach((tag) => uniqueTags[tag.content] = true);
-        query.tags = Object.keys(uniqueTags);
-      }
-      if (query.value_one || query.value_two || query.value_three || query.value_four || query.value_five) {
-        const gameFields = await Database.table('game_names')
-        .innerJoin('game_name_fields', 'game_name_fields.game_names_id', 'game_names.id')
-        .where('game_name', '=', request.input('game_name'))
-        .select('game_name_fields.*')
-        .first()
-        const wrongMappings = JSON.parse(JSON.stringify(query));
-        const correctMappings = JSON.parse(gameFields.in_game_fields);
-        const findValue = (mapping) => {
-          const value_one = wrongMappings.value_one || {};
-          if (mapping === Object.keys(value_one)[0]) return value_one[Object.keys(value_one)[0]];
-          const value_two = wrongMappings.value_two || {};
-          if (mapping === Object.keys(value_two)[0]) return value_two[Object.keys(value_two)[0]];
-          const value_three = wrongMappings.value_three || {};
-          if (mapping === Object.keys(value_three)[0]) return value_three[Object.keys(value_three)[0]];
-          const value_four = wrongMappings.value_four || {};
-          if (mapping === Object.keys(value_four)[0]) return value_four[Object.keys(value_four)[0]];
-          const value_five = wrongMappings.value_five || {};
-          if (mapping === Object.keys(value_five)[0]) return value_five[Object.keys(value_five)[0]];
-        }
-        Object.keys(correctMappings).forEach((key) => {
-          const mapping = correctMappings[key];
-          const value = findValue(mapping);
-          if (value) query[key] = value;
-        });
-      }
-      return SearchRepository.searchGames({ query });
+  async searchElasticsearch({ request }) {
+    const query = request.only([
+      'game_name',
+      'experience',
+      'start_date_time',
+      'end_date_time',
+      'description',
+      'tags',
+      'mic',
+      'eighteen_plus',
+      'value_one',
+      'value_two',
+      'value_three',
+      'value_four',
+      'value_five',
+      'game_languages',
+    ]);
+    if (query.start_date_time) query.start_date_time = moment(query.start_date_time).format('YYYY-MM-DD HH:mm:ss');
+    if (query.end_date_time) query.end_date_time = moment(query.end_date_time).format('YYYY-MM-DD HH:mm:ss');
+    if (query.mic) query.mic = !!query.mic;
+    if (query.eighteen_plus) query.eighteen_plus = !!query.eighteen_plus;
+    if (query.end_date_time) query.end_date_time = moment(query.end_date_time).format('YYYY-MM-DD HH:mm:ss');
+    if (query.tags && query.tags.length > 0) {
+      query.tags = query.tags.split(',')
+      const tagNames = await Database.from('schedule_games_tags')
+        .innerJoin('game_tags', 'schedule_games_tags.game_tag_id', 'game_tags.id')
+        .where('schedule_games_tags.game_tag_id', 'in', query.tags)
+        .select('content')
+      const uniqueTags = {};
+      tagNames.forEach((tag) => uniqueTags[tag.content] = true);
+      query.tags = Object.keys(uniqueTags);
     }
+    if (query.value_one || query.value_two || query.value_three || query.value_four || query.value_five) {
+      const gameFields = await Database.table('game_names')
+      .innerJoin('game_name_fields', 'game_name_fields.game_names_id', 'game_names.id')
+      .where('game_name', '=', request.input('game_name'))
+      .select('game_name_fields.*')
+      .first()
+      const wrongMappings = JSON.parse(JSON.stringify(query));
+      const correctMappings = JSON.parse(gameFields.in_game_fields);
+      const findValue = (mapping) => {
+        const value_one = wrongMappings.value_one || {};
+        if (mapping === Object.keys(value_one)[0]) return value_one[Object.keys(value_one)[0]];
+        const value_two = wrongMappings.value_two || {};
+        if (mapping === Object.keys(value_two)[0]) return value_two[Object.keys(value_two)[0]];
+        const value_three = wrongMappings.value_three || {};
+        if (mapping === Object.keys(value_three)[0]) return value_three[Object.keys(value_three)[0]];
+        const value_four = wrongMappings.value_four || {};
+        if (mapping === Object.keys(value_four)[0]) return value_four[Object.keys(value_four)[0]];
+        const value_five = wrongMappings.value_five || {};
+        if (mapping === Object.keys(value_five)[0]) return value_five[Object.keys(value_five)[0]];
+      }
+      Object.keys(correctMappings).forEach((key) => {
+        const mapping = correctMappings[key];
+        const value = findValue(mapping);
+        if (value) query[key] = value;
+      });
+    }
+    return SearchRepository.searchGames({ query });
+  }
 
+  async scheduleSearchResults({ auth, request, response }) {
+    return this.searchElasticsearch({ request });
     try {
       let arrTags = '',
         latestScheduledGames
