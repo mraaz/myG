@@ -1111,7 +1111,6 @@
     padding: 12px 24px;
     border-radius: 8px;
 
-
     .vertical-divider {
       background-color: #657172;
       width: 2px;
@@ -1122,7 +1121,7 @@
     .title {
       margin: 0;
       padding: 0;
-      color: #F0F0F0;
+      color: #f0f0f0;
       font-weight: 500;
       font-family: 'Montserrat';
     }
@@ -1138,7 +1137,7 @@
         flex: 1;
         background-repeat: no-repeat;
         background-position: center center;
-        background-size: contain;
+        background-size: cover;
       }
     }
   }
