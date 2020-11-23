@@ -2,6 +2,7 @@ import React from 'react';
 import Progress from '../../common/ProgressCircle/progress'
 import LoadingIndicator from '../../LoadingIndicator'
 import Experiences from '../Experiences'
+import InviteModal from '../Invite'
 import { ignoreFunctions } from '../../../../common/render'
 import notifyToast from '../../../../common/toast'
 
@@ -81,10 +82,20 @@ export default class Results extends React.Component {
         <div className="small-button clickable" onClick={() => window.location.href = `/profile/${gamer.alias}`}>Profile</div>
         {!isFriend && !hasSentRequest && <div className="small-button clickable" onClick={() => this.sendFriendRequest(gamer.alias, gamer.profileId)}>Request Connection</div>}
         {!isFriend && hasSentRequest && <div className="small-button">Request Sent</div>}
-        <div className="small-button clickable" onClick={() => {}}>Invite</div>
+        <div className="small-button clickable" onClick={() => this.setState({ inviting: gamer })}>Invite</div>
         {!isFollower && <div className="small-button clickable" onClick={() => this.follow(gamer.alias, gamer.profileId)}>Follow</div>}
         {isFollower && <div className="small-button">Following</div>}
       </div>
+    );
+  }
+
+  renderInviteModal = () => {
+    if (!this.state.inviting) return null;
+    return(
+      <InviteModal 
+        gamer={this.state.inviting}
+        onClose={() => this.setState({ inviting: null })}
+      />
     );
   }
 
@@ -103,6 +114,7 @@ export default class Results extends React.Component {
       <div id="find-gamers-results">
         {this.renderLoading()}
         {this.renderGamers()}
+        {this.renderInviteModal()}
       </div>
     );
   }

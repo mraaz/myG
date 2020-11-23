@@ -145,6 +145,28 @@ class ProfileController {
       return response.send({ error })
     }
   }
+
+  async fetchFriends({ auth, params, request, response }) {
+    try {
+      const requestingUserId = auth.user.id
+      if (!requestingUserId) throw new Error('Auth Error')
+      const alias = params.alias
+      const experience = request.only(['experience']).experience || ''
+      const level = request.only(['level']).level || ''
+      log('PROFILE', `User ${requestingUserId} fetching Friends for profile ${alias}, with experience ${experience} and level ${level}`)
+      const { friends } = await ProfileRepository.fetchFriendsForGamer({ requestingUserId, alias, experience, level })
+      return response.send({ friends })
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+      return response.send({ friends: [], error })
+    }
+  }
 }
 
 module.exports = ProfileController

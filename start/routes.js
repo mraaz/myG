@@ -322,6 +322,7 @@ Route.get('/api/connections/i_am_viewing_this_profile/:other_user_id', 'Connecti
 Route.post('/api/connections/communities_you_might_know', 'ConnectionController.communities_you_might_know')
 
 Route.post('/api/invited_users_for_schedule_games/create', 'InvitedUsersForScheduleGameController.store')
+Route.post('/api/invited_users_for_schedule_games/invite', 'InvitedUsersForScheduleGameController.invite')
 
 Route.get('/api/userStatTransaction/master_controller', 'UserStatTransactionController.master_controller')
 
@@ -427,6 +428,7 @@ Route.get('/api/seats_available_email/:email', 'SeatsAvailableController.storeSe
 Route.get('/api/profile/:alias', 'ProfileController.fetchProfileInfo')
 Route.put('/api/profile/:alias', 'ProfileController.updateProfile')
 Route.put('/api/profile/:alias/game', 'ProfileController.updateGame')
+Route.get('/api/profile/:alias/friends', 'ProfileController.fetchFriends')
 Route.delete('/api/game_experience/:gameExperienceId', 'ProfileController.deleteGameExperience')
 Route.get('/api/gamer_suggestions', 'ProfileController.fetchGamerSuggestions')
 Route.get('/api/profile_fields/:gameId', 'ProfileController.fetchDynamicFields')
