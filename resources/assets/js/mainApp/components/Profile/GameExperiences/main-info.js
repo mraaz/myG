@@ -223,7 +223,7 @@ export default class MainInfo extends React.Component {
   }
 
   loadTagOptions = async (input) => {
-    const results = await Schedule_Game_Tags(input)
+    const results = await Schedule_Game_Tags(input, get(this.props, 'experience.game.game_names_id'), true)
     return results.length ? results : [{ label: input ? `Create tag: ${input}` : 'Type in tag name', value: input }]
   }
 
