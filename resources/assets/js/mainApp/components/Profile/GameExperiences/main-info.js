@@ -74,6 +74,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderMainFields = () => {
+    if (!get(this.props, 'experience.game.value')) return this.renderDisabledField('Main Fields', null)
     if (!this.props.isSelf) return null
     return (
       <div className='row'>
@@ -140,14 +141,14 @@ export default class MainInfo extends React.Component {
   }
 
   renderTeamInput = () => {
-    if (!this.props.isSelf) return this.renderDisabledField('Team', (this.props.experience.team || {}).value)
+    if (!get(this.props, 'experience.game.value') || !this.props.isSelf) return this.renderDisabledField('Team', (this.props.experience.team || {}).value)
     return (
       <div className='row'>
         <span className='hint'>Team</span>
         <div className='input-container-row'>
           <input
             className='input'
-            value={this.props.experience.team}
+            value={this.props.experience.team || ''}
             onChange={(event) => this.props.storeExperience({ team: event.target.value })}></input>
         </div>
       </div>
@@ -155,14 +156,14 @@ export default class MainInfo extends React.Component {
   }
 
   renderNicknameInput = () => {
-    if (!this.props.isSelf) return this.renderDisabledField('Nickname', (this.props.experience.nickname || {}).value)
+    if (!get(this.props, 'experience.game.value') || !this.props.isSelf) return this.renderDisabledField('Nickname', (this.props.experience.nickname || {}).value)
     return (
       <div className='row'>
         <span className='hint'>Nickname</span>
         <div className='input-container-row'>
           <input
             className='input'
-            value={this.props.experience.nickname}
+            value={this.props.experience.nickname || ''}
             onChange={(event) => this.props.storeExperience({ nickname: event.target.value })}></input>
         </div>
       </div>
@@ -170,7 +171,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderLevelInput = () => {
-    if (!this.props.isSelf) return this.renderDisabledField('Level', (this.props.experience.level || {}).value)
+    if (!get(this.props, 'experience.game.value') || !this.props.isSelf) return this.renderDisabledField('Level', (this.props.experience.level || {}).value)
     return (
       <div className='row'>
         <span className='hint'>Level</span>
@@ -186,7 +187,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderExperienceInput = () => {
-    if (!this.props.isSelf) return this.renderDisabledField('Experience', (this.props.experience.experience || {}).value)
+    if (!get(this.props, 'experience.game.value') || !this.props.isSelf) return this.renderDisabledField('Experience', (this.props.experience.experience || {}).value)
     return (
       <div className='row'>
         <span className='hint'>Experience</span>
@@ -227,6 +228,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderTagsInput = () => {
+    if (!get(this.props, 'experience.game.value')) return this.renderDisabledField('Tags', null)
     if (!this.props.isSelf)
       return this.renderDisabledFieldList(
         'Tags',
@@ -328,7 +330,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderInputField = (field) => {
-    if (!this.props.isSelf) return this.renderDisabledField(field.label, get(this.props, `experience.dynamic.${field.id}`), true)
+    if (!get(this.props, 'experience.game.value') || !this.props.isSelf) return this.renderDisabledField(field.label, get(this.props, `experience.dynamic.${field.id}`), true)
     const validation = field.values && field.values[0] && new RegExp(field.values[0])
     const required = field.values && field.values[1]
     const isValid = validation ? validation.test(get(this.props, `experience.dynamic.${field.id}`)) : true
@@ -450,8 +452,10 @@ export default class MainInfo extends React.Component {
   }
 
   renderDisabledField(title, value, skipRow) {
-    if (!value) return null
-    const disabledValue = Array.isArray(value) ? value.join(', ') : value
+    let displayValue = 'Requires Game Title';
+    if (!this.props.isSelf) displayValue = value;
+    if (!displayValue) return null
+    const disabledValue = Array.isArray(displayValue) ? displayValue.join(', ') : displayValue
     const disabledField = (
       <React.Fragment>
         <span className='hint'>{title}</span>
