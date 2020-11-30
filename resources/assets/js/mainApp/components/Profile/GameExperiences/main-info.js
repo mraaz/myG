@@ -56,6 +56,16 @@ export default class MainInfo extends React.Component {
   componentDidMount() {
     const gameId = get(this.props, 'experience.game.game_names_id')
     if (gameId) fetchDynamicFields(gameId).then((dynamicFields) => !dynamicFields.error && this.setState({ dynamicFields }))
+    document.addEventListener('keydown', (event) => {
+      if (
+        event.key === 'Tab' &&
+        !event.shiftKey &&
+        document.activeElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.classList
+          .toString()
+          .includes('viewGame__gameName')
+      )
+        event.preventDefault()
+    })
   }
 
   onSave = (canSave) => {
@@ -462,8 +472,10 @@ export default class MainInfo extends React.Component {
           <span className='hint'>{title}</span>
           <div className='input-container-row'>
             {values.map((value) => (
-              <WithTooltip text={value} position={{ bottom: "80px", left: '-80px' }} disabled={value.length <= 9}>
-                <span className="tag" key={value}>{value.slice(0, 9) + (value.length > 9 ? '...' : '')}</span>
+              <WithTooltip text={value} position={{ bottom: '80px', left: '-80px' }} disabled={value.length <= 9}>
+                <span className='tag' key={value}>
+                  {value.slice(0, 9) + (value.length > 9 ? '...' : '')}
+                </span>
               </WithTooltip>
             ))}
           </div>
