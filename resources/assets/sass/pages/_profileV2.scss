@@ -1272,13 +1272,14 @@
       position: relative;
       width: 96px;
       height: 64px;
+      margin-right: 1.5rem;
 
       .image {
         display: flex;
         flex: 1;
         background-repeat: no-repeat;
         background-position: center center;
-        background-size: cover;
+        background-size: contain;
       }
     }
   }
