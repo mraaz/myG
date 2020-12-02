@@ -147,6 +147,7 @@ export default class IndividualReply extends Component {
       this.setState({
         reply_deleted: true,
       })
+      this.props.onDelete(reply_id);
     } catch (error) {
       logToElasticsearch('error', 'IndividualReply', 'Failed delete_exp:' + ' ' + error)
     }

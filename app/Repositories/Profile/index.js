@@ -343,7 +343,7 @@ class ProfileRepository {
     gameExperience.rating = rating;
     gameExperience.dynamic = JSON.stringify(dynamic);
     const tagController = new GameTagController();
-    const tagRequests = tags.split('|').map((tag) => tagController.store({ auth }, tag));
+    const tagRequests = tags.split('|').map((tag) => tagController.store({ auth }, tag, game));
     await Promise.all(tagRequests).then(() => gameExperience.save());
 
     await GameBackground.query().where('experience_id', gameExperience.id).delete();

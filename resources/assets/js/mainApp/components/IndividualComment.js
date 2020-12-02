@@ -221,6 +221,11 @@ export default class IndividualComment extends Component {
             post_id={this.props.comment.post_id}
             user={this.props.user}
             schedule_game_id={this.props.comment.schedule_games_id}
+            onDelete={(deleted) => {
+              this.setState(previous => ({ 
+                myReplies: previous.myReplies.filter((reply) => reply.id !== deleted)
+              }));
+            }}
           />
         )
       })
@@ -238,6 +243,11 @@ export default class IndividualComment extends Component {
             post_id={this.props.comment.post_id}
             user={this.props.user}
             schedule_game_id={this.props.comment.schedule_games_id}
+            onDelete={(deleted) => {
+              this.setState(previous => ({ 
+                myReplies: previous.myReplies.filter((reply) => reply.id !== deleted)
+              }));
+            }}
           />
         )
       })
@@ -380,6 +390,7 @@ export default class IndividualComment extends Component {
       this.setState({
         comment_deleted: true,
       })
+      this.props.onDelete(comment_id);
     } catch (error) {
       logToElasticsearch('error', 'IndividualComment', 'Failed delete_exp:' + ' ' + error)
     }

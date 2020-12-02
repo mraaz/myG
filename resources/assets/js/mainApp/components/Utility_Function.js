@@ -125,14 +125,15 @@ export async function Game_name_Tags(inputValue, game_names_id) {
   }
 }
 
-export async function Schedule_Game_Tags(inputValue) {
+export async function Schedule_Game_Tags(inputValue, gameId, noTopGameTags) {
   let allTags
 
-  if (inputValue == '' || inputValue == undefined) {
+  if (!noTopGameTags && (inputValue == '' || inputValue == undefined)) {
     allTags = await axios.get('/api/GameTags/getTopGameTags')
   } else {
     allTags = await axios.post('/api/GameTags/getGameTags', {
       content: inputValue,
+      game_names_id: gameId,
     })
   }
   try {
