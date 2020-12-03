@@ -37,16 +37,6 @@ AWS.config.setPromisesDependency(bluebird)
 const s3 = new AWS.S3()
 
 const uploadFile = (bucket, buffer, name, type) => {
-  LoggingRepository.log({
-    environment: process.env.NODE_ENV,
-    type: 'error',
-    source: 'backend',
-    context: __filename,
-    message: bucket,
-    buffer,
-    name,
-    type,
-  })
   const params = {
     ACL: 'public-read',
     Body: buffer,
@@ -90,7 +80,8 @@ class ApiController {
 
   async uploadFile({ auth, request, response }) {
     if (auth.user) {
-      const isChat = request.input('chat')
+      let isChat = request.input('chat')
+      isChat = false
       if (isChat) {
         if (Env.get('CHAT_UPLOAD_DISABLED')) return response.status(500).json('CHAT_UPLOAD_DISABLED')
         const user = (await User.find(auth.user.id)).toJSON()
