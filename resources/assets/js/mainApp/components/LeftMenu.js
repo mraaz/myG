@@ -21,9 +21,16 @@ class LeftMenu extends Component {
     const getnoti = await axios.post('/api/notifications_v2/getUnread_count', {
       notification_type: -1,
     })
+
+    const chat_noti = await axios.get('/api/chat/message/unread?count=true')
+
+    if (chat_noti.data) {
+      this.setState({ chats: chat_noti.data.unreadMessages ? chat_noti.data.unreadMessages : 0 })
+    }
+
     if (getnoti.data) {
-      const { getUnread_count_Alerts = '', getUnread_count_Approvals = '', getUnread_count_Chats = '' } = getnoti.data
-      this.setState({ alerts: getUnread_count_Alerts, approvals: getUnread_count_Approvals, chats: getUnread_count_Chats })
+      const { getUnread_count_Alerts = 0, getUnread_count_Approvals = 0 } = getnoti.data
+      this.setState({ alerts: getUnread_count_Alerts, approvals: getUnread_count_Approvals })
     }
 
     if (expanded == 'true') {

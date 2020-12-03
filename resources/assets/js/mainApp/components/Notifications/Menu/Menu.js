@@ -19,9 +19,15 @@ export default class Menu extends Component {
     const getnoti = await axios.post('/api/notifications_v2/getUnread_count', {
       notification_type: -1,
     })
+
+    const chat_noti = await axios.get('/api/chat/message/unread?count=true')
+    if (chat_noti.data) {
+      this.setState({ chats: chat_noti.data.unreadMessages ? chat_noti.data.unreadMessages : 0 })
+    }
+
     if (getnoti.data) {
-      const { getUnread_count_Alerts = '', getUnread_count_Approvals = '', getUnread_count_Chats = '' } = getnoti.data
-      this.setState({ alerts: getUnread_count_Alerts, approvals: getUnread_count_Approvals, chats: getUnread_count_Chats })
+      const { getUnread_count_Alerts = 0, getUnread_count_Approvals = 0 } = getnoti.data
+      this.setState({ alerts: getUnread_count_Alerts, approvals: getUnread_count_Approvals })
     }
   }
 
@@ -43,7 +49,7 @@ export default class Menu extends Component {
       <div className='notifications-menu'>
         <div className='button-list'>
           <Button
-            title={`Upcoming Games  ${activeTab == 0 ? `(${notificationsCount})` : ''}`}
+            title={`Upcoming Games  ${activeTab == 0 ? `(${notificationsCount})` : '(0)'}`}
             active={activeTab == 0}
             onClick={() => {
               this.changeTab(0)
@@ -51,7 +57,7 @@ export default class Menu extends Component {
             }}
           />
           <Button
-            title={`Approvals ${approvals ? `(${approvals})` : ''}`}
+            title={`Approvals ${approvals ? `(${approvals})` : '(0)'}`}
             active={activeTab == 1}
             onClick={() => {
               this.changeTab(1)
@@ -59,7 +65,7 @@ export default class Menu extends Component {
             }}
           />
           <Button
-            title={`Alerts ${alerts ? `(${alerts})` : ''}`}
+            title={`Alerts ${alerts ? `(${alerts})` : '(0)'}`}
             active={activeTab == 2}
             onClick={() => {
               this.changeTab(2)
@@ -67,7 +73,7 @@ export default class Menu extends Component {
             }}
           />
           <Button
-            title={`Chat ${chats ? `(${chats})` : ''}`}
+            title={`Chat ${chats ? `(${chats})` : '(0)'}`}
             active={activeTab == 3}
             onClick={() => {
               this.changeTab(3)
