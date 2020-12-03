@@ -80,8 +80,8 @@ class ApiController {
 
   async uploadFile({ auth, request, response }) {
     if (auth.user) {
-      let isChat = request.input('chat')
-      isChat = false
+      const isChat = request.input('chat') == 'true'
+
       if (isChat) {
         if (Env.get('CHAT_UPLOAD_DISABLED')) return response.status(500).json('CHAT_UPLOAD_DISABLED')
         const user = (await User.find(auth.user.id)).toJSON()

@@ -16,8 +16,6 @@ export async function Upload_to_S3(file, name, type = 0, id = null, chat = false
   formData.append('id', id)
   formData.append('chat', chat)
 
-  console.log(chat, '<<<<CHAT!!!')
-
   try {
     const post = await axios.post('/api/uploadFile', formData, {
       headers: {
@@ -30,7 +28,6 @@ export async function Upload_to_S3(file, name, type = 0, id = null, chat = false
       <Toast_style text={'Opps, something went wrong. Unable to upload your file. Refresh and try again or reduce the file size?'} />
     )
     logToElasticsearch('error', 'AWS_utilities', 'Upload_to_S3:' + ' ' + error)
-    console.log(error, '<<<<ERROR!!!')
     //logger.log('RENDER', 'AWS upload')
     return false
   }
