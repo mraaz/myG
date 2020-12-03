@@ -951,7 +951,245 @@ class ScheduleGameController {
   }
 
   async scheduleSearchResults({ auth, request, response }) {
-    return this.searchElasticsearch({ request })
+    // UNDO ONCE the video is created.
+    // if (process.env.NODE_ENV != 'development') {
+    //   return this.searchElasticsearch({ request })
+    // }
+    try {
+      let arrTags = '',
+        latestScheduledGames
+
+      let value_one = null,
+        value_two = null,
+        value_three = null,
+        value_four = null,
+        value_five = null
+
+      if (
+        request.input('value_one') != null ||
+        request.input('value_two') != null ||
+        request.input('value_three') != null ||
+        request.input('value_four') != null ||
+        request.input('value_five') != null
+      ) {
+        let myKey
+        const result = {}
+
+        for (myKey in request.input('value_one')) {
+          if (request.input('value_one').hasOwnProperty(myKey)) {
+            result[myKey] = request.input('value_one')[myKey]
+          }
+        }
+
+        for (myKey in request.input('value_two')) {
+          if (request.input('value_two').hasOwnProperty(myKey)) {
+            result[myKey] = request.input('value_two')[myKey]
+          }
+        }
+
+        for (myKey in request.input('value_three')) {
+          if (request.input('value_three').hasOwnProperty(myKey)) {
+            result[myKey] = request.input('value_three')[myKey]
+          }
+        }
+
+        for (myKey in request.input('value_four')) {
+          if (request.input('value_four').hasOwnProperty(myKey)) {
+            result[myKey] = request.input('value_four')[myKey]
+          }
+        }
+
+        for (myKey in request.input('value_five')) {
+          if (request.input('value_five').hasOwnProperty(myKey)) {
+            result[myKey] = request.input('value_five')[myKey]
+          }
+        }
+
+        const getGameFields = await Database.table('game_names')
+          .innerJoin('game_name_fields', 'game_name_fields.game_names_id', 'game_names.id')
+          .where('game_name', '=', request.input('game_name'))
+          .select('game_name_fields.*')
+          .first()
+
+        if (getGameFields != undefined) {
+          let obj = ''
+
+          if (getGameFields.in_game_fields != undefined) {
+            obj = JSON.parse(getGameFields.in_game_fields)
+          }
+
+          for (let key in obj) {
+            if (result[obj[key]] == undefined) {
+              continue
+            }
+            switch (key) {
+              case 'value_one':
+                value_one = result[obj[key]]
+                break
+              case 'value_two':
+                value_two = result[obj[key]]
+                break
+              case 'value_three':
+                value_three = result[obj[key]]
+                break
+              case 'value_four':
+                value_four = result[obj[key]]
+                break
+              case 'value_five':
+                value_five = result[obj[key]]
+                break
+            }
+          }
+        }
+      }
+
+      if (request.input('tags') != null && request.input('tags').length != 0) {
+        arrTags = request.input('tags').split(',')
+        if (arrTags != '') {
+          latestScheduledGames = await Database.from('schedule_games')
+            .innerJoin('users', 'users.id', 'schedule_games.user_id')
+            .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+            .innerJoin('schedule_games_tags', 'schedule_games.id', 'schedule_games_tags.schedule_games_id')
+            .innerJoin('game_tags', 'game_tags.id', 'schedule_games_tags.game_tag_id')
+            .leftJoin('schedule_games_transactions', 'schedule_games_transactions.schedule_games_id', 'schedule_games.id')
+            .where({ visibility: 1, marked_as_deleted: 0 })
+            .whereIn('schedule_games_tags.game_tag_id', arrTags)
+            .where((builder) => {
+              if (request.input('game_name') != null) builder.where('game_names.game_name', request.input('game_name'))
+
+              if (request.input('region') != null) builder.where('schedule_games.region', request.input('region'))
+
+              if (request.input('experience') != null) builder.where('experience', request.input('experience'))
+
+              if (request.input('mic') != null) builder.where('mic', request.input('mic'))
+
+              if (request.input('eighteen_plus') != null) builder.where('eighteen_plus', request.input('eighteen_plus'))
+
+              if (request.input('game_languages') != null) builder.where('game_languages', request.input('game_languages'))
+
+              //if (request.input('start_date_time') != null) builder.where('start_date_time', '<=', request.input('start_date_time'))
+
+              if (request.input('end_date_time') != null) builder.where('end_date_time', '>=', request.input('end_date_time'))
+
+              if (request.input('platform') != null) builder.where('platform', request.input('platform'))
+
+              if (request.input('description') != null) builder.where('description', request.input('description'))
+
+              if (request.input('vacancy') == false) builder.where('vacancy', 0)
+
+              if (value_one != null) builder.where('schedule_games_transactions.value_one', 'like', '%' + value_one + '%')
+
+              if (value_two != null) builder.where('schedule_games_transactions.value_two', 'like', '%' + value_two + '%')
+
+              if (value_three != null) builder.where('schedule_games_transactions.value_three', 'like', '%' + value_three + '%')
+
+              if (value_four != null) builder.where('schedule_games_transactions.value_four', 'like', '%' + value_four + '%')
+
+              if (value_five != null) builder.where('schedule_games_transactions.value_five', 'like', '%' + value_five + '%')
+            })
+            .orderBy('schedule_games.created_at', 'desc')
+            .select(
+              'game_names.game_artwork',
+              'game_names.game_name_fields_img',
+              'game_names.game_name',
+              'schedule_games.start_date_time',
+              'users.alias',
+              'users.profile_img',
+              'schedule_games.experience',
+              'schedule_games.schedule_games_GUID',
+              'schedule_games.limit',
+              'schedule_games.id',
+              'users.id as user_id',
+              'schedule_games.game_names_id'
+            )
+            .paginate(request.input('counter'), 10)
+        }
+      } else {
+        latestScheduledGames = await Database.from('schedule_games')
+          .innerJoin('users', 'users.id', 'schedule_games.user_id')
+          .innerJoin('game_names', 'game_names.id', 'schedule_games.game_names_id')
+          .leftJoin('schedule_games_transactions', 'schedule_games_transactions.schedule_games_id', 'schedule_games.id')
+          .where({ visibility: 1, marked_as_deleted: 0 })
+          .where((builder) => {
+            if (request.input('game_name') != null) builder.where('game_names.game_name', request.input('game_name'))
+
+            if (request.input('region') != null) builder.where('schedule_games.region', request.input('region'))
+
+            if (request.input('experience') != null) builder.where('experience', request.input('experience'))
+
+            if (request.input('mic') != null) builder.where('mic', request.input('mic'))
+
+            if (request.input('eighteen_plus') != null) builder.where('eighteen_plus', request.input('eighteen_plus'))
+
+            if (request.input('game_languages') != null) builder.where('game_languages', request.input('game_languages'))
+
+            //if (request.input('start_date_time') != null)
+            //builder.where('schedule_games.start_date_time', '<=', request.input('start_date_time'))
+
+            if (request.input('end_date_time') != null) builder.where('schedule_games.end_date_time', '>=', request.input('end_date_time'))
+
+            if (request.input('platform') != null) builder.where('platform', request.input('platform'))
+
+            if (request.input('description') != null) builder.where('description', 'like', '%' + request.input('description') + '%')
+
+            if (request.input('vacancy') == false) builder.where('vacancy', 0)
+
+            if (value_one != null) builder.where('schedule_games_transactions.value_one', 'like', '%' + value_one + '%')
+
+            if (value_two != null) builder.where('schedule_games_transactions.value_two', 'like', '%' + value_two + '%')
+
+            if (value_three != null) builder.where('schedule_games_transactions.value_three', 'like', '%' + value_three + '%')
+
+            if (value_four != null) builder.where('schedule_games_transactions.value_four', 'like', '%' + value_four + '%')
+
+            if (value_five != null) builder.where('schedule_games_transactions.value_five', 'like', '%' + value_five + '%')
+          })
+          .orderBy('schedule_games.created_at', 'desc')
+          .select(
+            'game_names.game_artwork',
+            'game_names.game_name_fields_img',
+            'game_names.game_name',
+            'schedule_games.start_date_time',
+            'users.alias',
+            'users.profile_img',
+            'schedule_games.experience',
+            'schedule_games.schedule_games_GUID',
+            'schedule_games.limit',
+            'schedule_games.id',
+            'users.id as user_id',
+            'schedule_games.game_names_id'
+          )
+          .paginate(request.input('counter'), 10)
+        // .toSQL()
+        // .toNative()
+      }
+      for (var i = 0; i < latestScheduledGames.data.length; i++) {
+        let getAllTags = await Database.from('schedule_games_tags')
+          .innerJoin('game_tags', 'game_tags.id', 'schedule_games_tags.game_tag_id')
+          .where({ schedule_games_id: latestScheduledGames.data[i].id })
+          .select('content')
+
+        latestScheduledGames.data[i].tags = getAllTags
+
+        let getAllGamers = await Database.from('attendees')
+          .where({ schedule_games_id: latestScheduledGames.data[i].id, type: 1 })
+          .count('* as no_of_gamers')
+
+        latestScheduledGames.data[i].no_of_gamers = getAllGamers[0].no_of_gamers
+      }
+      latestScheduledGames = latestScheduledGames.data
+      return {
+        latestScheduledGames,
+      }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+    }
   }
 
   async get_labels_for_game_fields({ auth }, game_id) {
@@ -1233,7 +1471,8 @@ class ScheduleGameController {
       if (getGameFields != undefined) {
         let obj = '',
           obj2 = '',
-          obj3 = ''
+          obj3 = '',
+          obj4 = ''
 
         if (getGameFields.in_game_fields != undefined) {
           obj = JSON.parse(getGameFields.in_game_fields)
@@ -1243,6 +1482,10 @@ class ScheduleGameController {
         }
         if (getGameFields.in_game_field_types != undefined) {
           obj3 = JSON.parse(getGameFields.in_game_field_types)
+        }
+
+        if (getGameFields.in_game_field_labels != undefined) {
+          obj4 = JSON.parse(getGameFields.in_game_field_labels)
         }
 
         const getGameTransactions = await Database.from('schedule_games_transactions')
@@ -1273,7 +1516,7 @@ class ScheduleGameController {
             if (key == 'stats_link') {
               continue
             }
-            let tmp_tmp = { [key]: tmp_array[key] }
+            let tmp_tmp = { [key]: tmp_array[key], label: obj4[key], placeholder: obj2[key], type: obj3[key] }
             additional_submit_info_fields.push([tmp_tmp, obj2[key], obj3[key]])
           }
         }

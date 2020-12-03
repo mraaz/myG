@@ -124,6 +124,7 @@ export default class GameDetails extends Component {
                 additional_submit_info_fields.map((fields) => {
                   let values = ''
                   const Obj = fields[0]
+
                   if (Obj != null) {
                     values = Object.values(Obj)[0]
                     if (values == undefined || values == null) {
