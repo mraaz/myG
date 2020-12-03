@@ -16,6 +16,8 @@ export async function Upload_to_S3(file, name, type = 0, id = null, chat = false
   formData.append('id', id)
   formData.append('chat', chat)
 
+  console.log(chat, '<<<<CHAT!!!')
+
   try {
     const post = await axios.post('/api/uploadFile', formData, {
       headers: {
