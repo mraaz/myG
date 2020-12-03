@@ -61,7 +61,6 @@ export default class GameList extends Component {
     const { scheduleGames = [], copyClipboardEnable = true, showPrefilledFilter = false } = this.props
     const { activeItemId = '', prefilledFilter } = this.state
     const len = scheduleGames.length
-
     return (
       <div className='gameList'>
         <div className='gameList_head__option'>
@@ -88,6 +87,11 @@ export default class GameList extends Component {
               const scheduledGamePicture = (
                 <img src={game_artwork ? game_artwork : defaultThumbnails} className={game_artwork ? 'image' : 'default-image'} />
               )
+
+              if (game.no_of_gamers == undefined) {
+                game.no_of_gamers = 0
+              }
+
               return (
                 <div
                   className={`mygames ${activeItemId == game.id ? 'active' : ''}`}
