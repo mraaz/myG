@@ -37,6 +37,16 @@ AWS.config.setPromisesDependency(bluebird)
 const s3 = new AWS.S3()
 
 const uploadFile = (bucket, buffer, name, type) => {
+  LoggingRepository.log({
+    environment: process.env.NODE_ENV,
+    type: 'error',
+    source: 'backend',
+    context: __filename,
+    message: bucket,
+    buffer,
+    name,
+    type,
+  })
   const params = {
     ACL: 'public-read',
     Body: buffer,
