@@ -9,6 +9,8 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import IndividualPost from './IndividualPost'
 import ComposeSection from './ComposeSection_v2'
 
+import { logToElasticsearch } from '../../integration/http/logger'
+
 export default class MyPosts extends Component {
   constructor() {
     super()
@@ -32,6 +34,7 @@ export default class MyPosts extends Component {
   showLatestPosts = () => {
     const { myPosts = [] } = this.state
     if (myPosts.length > 0) {
+      console.log(this.props.initialData.userInfo, '<<<this.props.initialData.userInfo')
       return myPosts.map((item, index) => {
         try {
           let media_url = item.media_url.length > 0 ? JSON.parse(item.media_url) : ''
@@ -57,14 +60,8 @@ export default class MyPosts extends Component {
         const data = await axios({
           method: 'GET',
           url: `/api/getmypost/${counter}`,
-          onDownloadProgress: (progressEvent) => {
-            const { loaded = 0, total = 0 } = progressEvent
-            const percentCompleted = Math.round((loaded * 100) / total)
-            // self.setState({
-            //   post_submit_loading: percentCompleted,
-            // })
-          },
         })
+
         if (data.data.myPosts.length == 0) {
           this.setState({
             myPosts: [...myPosts],
@@ -79,7 +76,7 @@ export default class MyPosts extends Component {
           isFetching: false,
         })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'MyPosts', 'fetchMoreData' + ' ' + error)
       }
     }
 

@@ -7,7 +7,7 @@ class CommentsSchema extends Schema {
   up () {
     this.create('comments', (table) => {
       table.increments()
-      table.text('content').notNullable()
+      table.text('content').notNullable().collate('utf8mb4_unicode_ci')
       table.integer('user_id').unsigned().notNullable()
       table.foreign('user_id').references('users.id').onDelete('cascade')
       table.integer('post_id').unsigned()

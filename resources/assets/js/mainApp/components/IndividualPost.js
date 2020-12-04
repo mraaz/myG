@@ -420,11 +420,18 @@ export default class IndividualPost extends Component {
     return (
       comments.length > 0 &&
       comments.map((item, index) => {
-        return <IndividualComment comment={item} key={index} user={this.props.user} onDelete={(deleted) => {
-          this.setState(previous => ({ 
-            myComments: previous.myComments.filter((comment) => comment.id !== deleted)
-          }));
-        }} />
+        return (
+          <IndividualComment
+            comment={item}
+            key={index}
+            user={this.props.user}
+            onDelete={(deleted) => {
+              this.setState((previous) => ({
+                myComments: previous.myComments.filter((comment) => comment.id !== deleted),
+              }))
+            }}
+          />
+        )
       })
     )
   }
@@ -436,11 +443,18 @@ export default class IndividualPost extends Component {
     return (
       commentArr.length > 0 &&
       commentArr.map((item, index) => {
-        return <IndividualComment comment={item} key={item.id} user={this.props.user} onDelete={(deleted) => {
-          this.setState(previous => ({ 
-            myComments: previous.myComments.filter((comment) => comment.id !== deleted)
-          }));
-        }} />
+        return (
+          <IndividualComment
+            comment={item}
+            key={item.id}
+            user={this.props.user}
+            onDelete={(deleted) => {
+              this.setState((previous) => ({
+                myComments: previous.myComments.filter((comment) => comment.id !== deleted),
+              }))
+            }}
+          />
+        )
       })
     )
   }
@@ -603,14 +617,13 @@ export default class IndividualPost extends Component {
     if (post_deleted != true) {
       var show_media = false
 
-      let { post, current_user_permission = null, user } = this.props //destructing of object
+      let { post, current_user_permission = null, user = {} } = this.props //destructing of object
       let { profile_img = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png', hash_tags = [] } = post //destructing of object
-      //destructing of object
-      const { userInfo = {} } = user
 
       if (media_urls != [] && media_urls != null) {
         show_media = true
       }
+
       return (
         <div className='post__container'>
           {alert}
@@ -622,17 +635,17 @@ export default class IndividualPost extends Component {
                 </i>
                 <div className={`post-dropdown ${showPostExtraOption == true ? 'active' : ''}`}>
                   <nav>
-                    {userInfo.id != post.user_id && (
+                    {user.id != post.user_id && (
                       <div className='option' onClick={(e) => this.showReportAlert(post.id)}>
                         Report
                       </div>
                     )}
-                    {userInfo.id == post.user_id && (
+                    {user.id == post.user_id && (
                       <div className='option' onClick={() => this.showAlert()}>
                         Delete
                       </div>
                     )}
-                    {userInfo.id == post.user_id && (
+                    {user.id == post.user_id && (
                       <div className='option' onClick={this.clickedEdit}>
                         Edit &nbsp;
                       </div>
