@@ -147,7 +147,7 @@ export default class IndividualReply extends Component {
       this.setState({
         reply_deleted: true,
       })
-      this.props.onDelete(reply_id);
+      this.props.onDelete(reply_id)
     } catch (error) {
       logToElasticsearch('error', 'IndividualReply', 'Failed delete_exp:' + ' ' + error)
     }
@@ -270,8 +270,6 @@ export default class IndividualReply extends Component {
 
     const media_urls = media_url && media_url.length > 0 ? JSON.parse(media_url) : ''
     if (this.state.reply_deleted != true) {
-      console.log(reply, '<<<<REPLY')
-      console.log(user, '<<<<USER')
       return (
         <div className='individual-reply-container'>
           {this.state.alert}
