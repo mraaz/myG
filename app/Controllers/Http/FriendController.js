@@ -21,6 +21,14 @@ class FriendController {
           friend_id: auth.user.id,
         })
 
+        const deleteRequest = await Database.table('notifications')
+          .where({
+            user_id: request.input('friend_id'),
+            other_user_id: auth.user.id,
+            activity_type: 1,
+          })
+          .delete()
+
         let myFollowerController = new FollowerController()
         myFollowerController.store2({ auth }, request.input('friend_id'), auth.user.id)
         myFollowerController.store2({ auth }, auth.user.id, request.input('friend_id'))

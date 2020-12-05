@@ -282,22 +282,24 @@ class UserStatTransactionController {
           break
         case 'total_number_of_likes':
           const getCount_total_number_of_likes_posts = await Database.from('likes')
-            .select('likes.id')
             .innerJoin('posts', 'posts.id', 'likes.post_id')
             .where('posts.user_id', '=', my_user_id)
             .whereNot('likes.user_id', '=', my_user_id)
-            .count('likes.id as total_count')
-          const getCount_total_number_of_likes_comments = await Database.from('likes')
             .select('likes.id')
+            .count('likes.id as total_count')
+
+          console.log(getCount_total_number_of_likes_posts)
+          const getCount_total_number_of_likes_comments = await Database.from('likes')
             .innerJoin('comments', 'comments.id', 'likes.comment_id')
             .where('comments.user_id', '=', my_user_id)
             .whereNot('likes.user_id', '=', my_user_id)
+            .select('likes.id')
             .count('likes.id as total_count')
           const getCount_total_number_of_likes_replies = await Database.from('likes')
-            .select('likes.id')
             .innerJoin('replies', 'replies.id', 'likes.reply_id')
             .where('replies.user_id', '=', my_user_id)
             .whereNot('likes.user_id', '=', my_user_id)
+            .select('likes.id')
             .count('likes.id as total_count')
 
           if (getCount_total_number_of_likes_posts.length != 0) {
@@ -392,6 +394,8 @@ class UserStatTransactionController {
   }
 
   async reCalculate_xp(my_user_id, criteria, value_to_be_updated) {
+    console.log('reCalculate_xp')
+
     const getmyStats = await Database.from('user_stat_transactions')
       .innerJoin('user_stats', 'user_stats.id', 'user_stat_transactions.user_stat_id')
       .where({ user_id: my_user_id })
@@ -401,7 +405,7 @@ class UserStatTransactionController {
     for (var i = 0; i < getmyStats.length; i++) {
       xp = xp + parseInt(getmyStats[i].values) * getmyStats[i].xp_per_tick
     }
-
+    console.log(xp)
     const getGamerLevels = await Database.from('users')
       .where({ id: my_user_id })
       .select('level', 'experience_points', 'xp_negative_balance')

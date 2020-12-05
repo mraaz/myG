@@ -3,6 +3,8 @@
 const Database = use('Database')
 const User = use('App/Models/User')
 const AwsKeyController = use('./AwsKeyController')
+const FollowerController = use('./FollowerController')
+
 const UserStatTransactionController = use('./UserStatTransactionController')
 const LoggingRepository = require('../../Repositories/Logging')
 
@@ -138,7 +140,11 @@ class UserController {
           })
           .delete()
 
-        let userStatController = new UserStatTransactionController()
+        const myFollowerController = new FollowerController()
+        myFollowerController.delete2({ auth }, request.params.id, auth.user.id)
+        myFollowerController.delete2({ auth }, auth.user.id, request.params.id)
+
+        const userStatController = new UserStatTransactionController()
         userStatController.update_total_number_of(auth.user.id, 'total_number_of_friends')
         userStatController.update_total_number_of(request.params.id, 'total_number_of_friends')
 
