@@ -13,6 +13,8 @@ class FollowersSchema extends Schema {
       table.foreign('follower_id').references('users.id').onDelete('cascade')
       table.integer('group_id').unsigned()
       table.foreign('group_id').references('groups.id').onDelete('cascade')
+      table.unique(['user_id', 'follower_id']);
+      table.unique(['user_id', 'group_id']);
       table.timestamps(true,true)
     })
   }
