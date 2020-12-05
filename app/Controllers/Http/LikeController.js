@@ -203,7 +203,6 @@ class LikeController {
           .first()
 
         if (post_owner != undefined) {
-          console.log('Deleting')
           userStatController.update_total_number_of(post_owner.user_id, 'total_number_of_likes')
 
           const noti = new NotificationController_v2()
