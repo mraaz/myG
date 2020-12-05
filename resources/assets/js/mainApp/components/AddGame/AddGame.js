@@ -17,6 +17,7 @@ import { Game_name_values, Schedule_Game_Tags, Disable_keys } from '../Utility_F
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
 import { FeatureEnabled, REPEAT_SCHEDULE } from '../../../common/flags'
 import { logToElasticsearch } from '../../../integration/http/logger'
+import AsyncSelect from 'react-select/lib/Async'
 
 const SliderWithTooltip = Slider.createSliderWithTooltip(Slider)
 
@@ -37,7 +38,7 @@ const AddGame = ({
 }) => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    const getInitialData_Tags = async function() {
+    const getInitialData_Tags = async function () {
       try {
         let results = await Schedule_Game_Tags()
         updateAdvancedSettings({ optionTags: results })
@@ -46,7 +47,7 @@ const AddGame = ({
       }
     }
 
-    const getInitialData_GameName = async function() {
+    const getInitialData_GameName = async function () {
       try {
         let results = await Game_name_values()
         updateMainSettings({ gameTitlesList: results })
@@ -131,7 +132,7 @@ const AddGame = ({
 
   // api calls
   const getOptionsTags = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         let results = await Schedule_Game_Tags(inputValue)
         updateAdvancedSettings({ optionTags: results })
@@ -148,7 +149,7 @@ const AddGame = ({
   }
 
   const getOptionsGames = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         let results = await Game_name_values(inputValue)
         updateMainSettings({ gameTitlesList: results })
@@ -594,6 +595,38 @@ const AddGame = ({
   }
 
   const getMainSettingsView = () => {
+    const customStyles = {
+      option: (provided, state) => ({
+        ...provided,
+        borderBottom: '1px dotted pink',
+        // padding: 20,
+        '&:hover': {
+          background: '#75c5cd',
+          color: '#ffffff',
+        },
+        '&:focus': {
+          background: '#75c5cd',
+          color: '#ffffff',
+        },
+        '&:active': {
+          background: '#75c5cd',
+          color: '#ffffff',
+        },
+        background: state.isFocused ? '#75c5cd' : '#fff',
+        color: state.isFocused ? '#ffffff' : '#424c58',
+      }),
+      control: () => ({
+        background: '#ffffff',
+        borderRadius: '10px',
+        border: '1px solid #d7d7d7',
+        display: 'flex',
+        padding: '10px',
+        boxShadow: 'none',
+      }),
+      placeholder: () => ({
+        color: '#b3b3b3',
+      }),
+    }
     return (
       <div style={{ display: 'flex' }}>
         <div className={styles.sideLineContainer}>
@@ -615,6 +648,8 @@ const AddGame = ({
                 placeholder='Search, Select or create Game Title'
                 options={mainSettingsState.gameTitlesList}
                 onKeyDown={Disable_keys}
+                classNamePrefix='filter'
+                className='viewGame__name'
               />
             </div>
           </div>
