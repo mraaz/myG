@@ -11,6 +11,7 @@ class GameNameFieldsSchema extends Schema {
       table.foreign('game_names_id').references('game_names.id').onDelete('cascade')
       table.json('in_game_fields').notNullable()
       table.json('in_game_field_placeholders')
+      table.json('in_game_field_profile_placeholders')
       table.json('in_game_field_types')
       table.json('in_game_field_labels')
       table.json('in_game_field_values')

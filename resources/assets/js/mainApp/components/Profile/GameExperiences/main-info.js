@@ -298,7 +298,7 @@ export default class MainInfo extends React.Component {
           width={'75%'}
           innerWidth={'100%'}
           options={field.values.map((value) => ({ value, label: value }))}
-          placeholder={field.placeholder}
+          placeholder={field.profile_placeholder}
           onChange={(value) => this.props.storeDynamicExperience({ [field.id]: value })}
           value={get(this.props, `experience.dynamic.${field.id}`)}
           isMulti
@@ -321,7 +321,7 @@ export default class MainInfo extends React.Component {
           width={'75%'}
           innerWidth={'100%'}
           options={(field.values || []).map((value) => ({ value, label: value }))}
-          placeholder={field.placeholder}
+          placeholder={field.profile_placeholder}
           onChange={(value) => this.props.storeDynamicExperience({ [field.id]: value })}
           value={get(this.props, `experience.dynamic.${field.id}`)}
         />
@@ -342,7 +342,7 @@ export default class MainInfo extends React.Component {
           <input
             className={`input${isValid ? '' : ' input-error'}`}
             value={get(this.props, `experience.dynamic.${field.id}`)}
-            placeholder={field.placeholder}
+            placeholder={field.profile_placeholder}
             onChange={(event) => this.props.storeDynamicExperience({ [field.id]: event.target.value })}></input>
         </div>
       </React.Fragment>

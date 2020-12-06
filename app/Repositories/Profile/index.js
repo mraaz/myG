@@ -389,12 +389,14 @@ class ProfileRepository {
     if (!response) return [];
     const fields = JSON.parse(response.in_game_fields);
     const placeholders = JSON.parse(response.in_game_field_placeholders);
+    const profile_placeholders = JSON.parse(response.in_game_field_profile_placeholders);
     const types = JSON.parse(response.in_game_field_types);
     const labels = JSON.parse(response.in_game_field_labels);
     const values = JSON.parse(response.in_game_field_values);
     return Object.keys(fields).map(key => fields[key]).map((id) => ({
       id,
       placeholder: placeholders[id],
+      profile_placeholder: profile_placeholders[id],
       type: types[id],
       label: labels[id],
       values: values[id] ? values[id].split(',') : [],
