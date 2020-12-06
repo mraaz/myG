@@ -18,6 +18,9 @@ class UserStatTransactionController {
     // Games: Games hosted and Games played
     // Likes: Likes
     // Commendations: commendations
+
+    let start_of_level_xp = 0
+
     if (auth.user) {
       const getmyStats = await Database.from('user_stat_transactions')
         .innerJoin('user_stats', 'user_stats.id', 'user_stat_transactions.user_stat_id')
@@ -32,6 +35,17 @@ class UserStatTransactionController {
         .where({ level: parseInt(getGamerLevels.level) })
         .select('max_points')
         .first()
+
+      if (parseInt(getGamerLevels.level) > 1) {
+        const getCurLevel = await Database.from('user_levels')
+          .where({ level: parseInt(getGamerLevels.level) - 1 })
+          .select('max_points')
+          .first()
+
+        if (getCurLevel != undefined) {
+          start_of_level_xp = parseInt(getCurLevel.max_points) + 1
+        }
+      }
 
       let total_number_of_friends = 0,
         total_number_of_communities = 0,
@@ -65,8 +79,8 @@ class UserStatTransactionController {
             last_months_total_number_of_communities = parseInt(getmyStats[i].last_month_values)
             break
           case 'total_number_of_great_communities':
-            total_number_of_great_communities = parseInt(getmyStats[i].values)
-            last_months_total_number_of_great_communities = parseInt(getmyStats[i].last_month_values)
+            // total_number_of_great_communities = parseInt(getmyStats[i].values)
+            // last_months_total_number_of_great_communities = parseInt(getmyStats[i].last_month_values)
             break
           case 'total_number_of_followers':
             total_number_of_followers = parseInt(getmyStats[i].values)
@@ -123,6 +137,7 @@ class UserStatTransactionController {
         user_experience: getGamerLevels.experience_points,
         user_xp_negative_balance: getGamerLevels.xp_negative_balance,
         level_max_points: getNextLevel.max_points,
+        start_of_level_xp: start_of_level_xp,
       }
     } else {
       return 'You are not Logged In!'
@@ -148,6 +163,8 @@ class UserStatTransactionController {
             value_to_be_updated = getCount_total_number_of_friends[0].total_count
           }
           break
+        //Find out how many communities you're part of and how many you are the owner for
+        //You'll get x points per community
         case 'total_number_of_communities':
           const getCount_total_number_of_communities = await Database.from('usergroups')
             .where('usergroups.user_id', '=', my_user_id)
@@ -166,42 +183,46 @@ class UserStatTransactionController {
           }
 
           break
-        case 'total_number_of_great_communities':
-          const getCount_total_number_of_great_communities = await Database.from('usergroups')
-            .select('group_id')
-            .count('id as total_count')
-            .groupBy('group_id')
+        //DECIDED TO PARK THIS, AS ALL MEMBERS SHOULD GET EXTRA POINTS NOT JUST NEW MEMBERS
+        //ALSO ITS GOING TO BE A WHILE B4 WE GET GREAT COMMUNITIES
 
-          let great_communities_arr = []
-
-          for (var i = 0; i < getCount_total_number_of_great_communities.length; i++) {
-            if (getCount_total_number_of_great_communities[i].total_count > GREAT_COMMUNITY_SIZE) {
-              great_communities_arr.push(getCount_total_number_of_great_communities[i].group_id)
-            }
-          }
-          const getCount_usergroups = await Database.from('usergroups')
-            .whereIn('group_id', great_communities_arr)
-            .where({ user_id: my_user_id })
-            .whereNot('permission_level', 42)
-            .count('id as total_count')
-            .union([
-              Database.from('groups')
-                .where({
-                  user_id: my_user_id,
-                })
-                .whereIn('id', great_communities_arr)
-                .count('id as total_count'),
-            ])
-
-          for (let i = 0; i < getCount_usergroups.length; i++) {
-            value_to_be_updated += getCount_usergroups[i].total_count
-          }
-
-          break
+        // case 'total_number_of_great_communities':
+        //   const getCount_total_number_of_great_communities = await Database.from('usergroups')
+        //     .select('group_id')
+        //     .count('id as total_count')
+        //     .where('usergroups.group_id', '=', _group_id)
+        //
+        //   let great_communities_arr = []
+        //
+        //   for (let i = 0; i < getCount_total_number_of_great_communities.length; i++) {
+        //     if (getCount_total_number_of_great_communities[i].total_count > GREAT_COMMUNITY_SIZE) {
+        //       great_communities_arr.push(getCount_total_number_of_great_communities[i].group_id)
+        //     }
+        //   }
+        //   const getCount_usergroups = await Database.from('usergroups')
+        //     .whereIn('group_id', great_communities_arr)
+        //     .where({ user_id: my_user_id })
+        //     .whereNot('permission_level', 42)
+        //     .count('id as total_count')
+        //     .union([
+        //       Database.from('groups')
+        //         .where({
+        //           user_id: my_user_id,
+        //         })
+        //         .whereIn('id', great_communities_arr)
+        //         .count('id as total_count'),
+        //     ])
+        //
+        //   for (let i = 0; i < getCount_usergroups.length; i++) {
+        //     value_to_be_updated += getCount_usergroups[i].total_count
+        //   }
+        //
+        //   break
         case 'total_number_of_followers':
           const getCount_total_number_of_followers = await Database.from('followers')
             .where({ follower_id: my_user_id })
             .count('id as total_count')
+
           if (getCount_total_number_of_followers.length != 0) {
             value_to_be_updated = getCount_total_number_of_followers[0].total_count
           }
@@ -211,7 +232,7 @@ class UserStatTransactionController {
           const getGames = Database.from('schedule_games')
             .select('id')
             .where({ user_id: my_user_id, marked_as_deleted: 0 })
-            .where('end_date_time', '<=', mysql_friendly_date)
+            .where('end_date_time', '>=', mysql_friendly_date)
 
           const getCount_total_number_of_games_hosted = await Database.from('attendees')
             .select('id')
@@ -248,9 +269,9 @@ class UserStatTransactionController {
           const getmyGames = Database.from('attendees')
             .innerJoin('schedule_games', 'schedule_games.id', 'attendees.schedule_games_id')
             .select('attendees.schedule_games_id')
-            .where({ type: 1 })
+            .where({ type: 1, marked_as_deleted: 0 })
             .where('attendees.user_id', '=', my_user_id)
-            .where('end_date_time', '<=', mysql_friendly_date)
+            .where('end_date_time', '>=', mysql_friendly_date)
 
           const getCount_total_number_of_games_played = await Database.from('attendees')
             .select('id')
@@ -391,17 +412,18 @@ class UserStatTransactionController {
           })
       }
     }
-    this.reCalculate_xp(my_user_id, criteria, value_to_be_updated)
+    console.log(value_to_be_updated, '<<<value to <')
+    this.reCalculate_xp(my_user_id, criteria)
   }
 
-  async reCalculate_xp(my_user_id, criteria, value_to_be_updated) {
+  async reCalculate_xp(my_user_id, criteria) {
     const getmyStats = await Database.from('user_stat_transactions')
       .innerJoin('user_stats', 'user_stats.id', 'user_stat_transactions.user_stat_id')
       .where({ user_id: my_user_id })
 
     let xp = 0
 
-    for (var i = 0; i < getmyStats.length; i++) {
+    for (let i = 0; i < getmyStats.length; i++) {
       xp += parseInt(getmyStats[i].values) * getmyStats[i].xp_per_tick
     }
 
@@ -442,8 +464,10 @@ class UserStatTransactionController {
 
         if (xp > parseInt(getmyLevel.max_points) && parseInt(getGamerLevels.level) < getMax[0].max_level) {
           getGamerLevels.level = getGamerLevels.level + 1
-          let noti = new NotificationController()
-          noti.ding(my_user_id)
+          if (getGamerLevels.xp_negative_balance == false) {
+            const noti = new NotificationController()
+            noti.ding(my_user_id)
+          }
         } else {
           break
         }

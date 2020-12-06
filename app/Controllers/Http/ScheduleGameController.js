@@ -17,6 +17,8 @@ const LoggingRepository = require('../../Repositories/Logging')
 const ElasticsearchRepository = require('../../Repositories/Elasticsearch')
 const SearchRepository = require('../../Repositories/Search')
 
+const UserStatTransactionController = use('./UserStatTransactionController')
+
 const moment = require('moment')
 
 const MAX_GAME_TAGS = 9
@@ -513,6 +515,9 @@ class ScheduleGameController {
         if (getOne == undefined) {
           return
         }
+        if (getOne.user_id != auth.user.id) {
+          return
+        }
 
         gameface.decrementGameCounter({ auth }, getOne.game_names_id)
 
@@ -549,6 +554,16 @@ class ScheduleGameController {
           .where({ id: request.params.id })
           .update({ marked_as_deleted: true, deleted_date: Database.fn.now(), reason_for_deletion: reason })
 
+        //Clean up
+        //if(game is not compeletd){
+        //advise all attendees
+        //redo xp points
+        //}
+
+        // const userStatController = new UserStatTransactionController()
+        // userStatController.update_total_number_of(get_game_info.user_id, 'total_number_of_games_hosted')
+        // userStatController.update_total_number_of(auth.user.id, 'total_number_of_games_played')
+
         return 'Deleted successfully'
       } catch (error) {
         LoggingRepository.log({
@@ -583,7 +598,7 @@ class ScheduleGameController {
     try {
       switch (filter) {
         case 0:
-          subquery = await Database.from('attendees')
+          subquery = Database.from('attendees')
             .select('schedule_games_id')
             .where({ user_id: auth.user.id })
 
@@ -623,6 +638,7 @@ class ScheduleGameController {
             .count('* as no_of_records')
 
           number_of_records = count_myScheduledGames[0].no_of_records
+
           break
         case 1:
           myScheduledGames = await Database.from('schedule_games')

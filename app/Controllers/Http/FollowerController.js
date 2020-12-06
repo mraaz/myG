@@ -16,9 +16,6 @@ class FollowerController {
         if (request.input('follower_alias') != undefined) {
           const alias = request.input('follower_alias')
           followerId = followerIdInput || (await ProfileRepository.fetchProfileId({ alias }))
-
-          let userStatController = new UserStatTransactionController()
-          userStatController.update_total_number_of(followerId, 'total_number_of_followers')
         }
 
         await Follower.create({
@@ -26,6 +23,9 @@ class FollowerController {
           user_id: auth.user.id,
           group_id: request.input('group_id'),
         })
+
+        const userStatController = new UserStatTransactionController()
+        userStatController.update_total_number_of(followerId, 'total_number_of_followers')
 
         return 'Saved'
       } catch (error) {
