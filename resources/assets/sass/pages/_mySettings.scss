@@ -1,0 +1,59 @@
+.app-container.home-page .mySettings-page {
+  overflow: hidden;
+
+  .padding-container {
+    padding: 18px 15px;
+    justify-content: center;
+  }
+  .mySettings-container {
+    width: 100%;
+    padding-left: 8px;
+  }
+  .invitation-grey-container {
+    width: 69%;
+    position: relative;
+    z-index: 1;
+    left: 14.8%;
+    background: $backgroundContent;
+    border: 1px solid $veryLightText;
+
+    -webkit-box-shadow: 0 21px 48px -21px rgba(59, 71, 99, 0.5);
+    -moz-box-shadow: 0 21px 48px -21px rgba(59, 71, 99, 0.5);
+    box-shadow: 0 21px 48px -21px rgba(59, 71, 99, 0.5);
+
+    h3 {
+      color: $veryLightText;
+    }
+  }
+  .email-notification {
+    display: flex;
+    width: 88%;
+  }
+  .email-toggle {
+    display: flex;
+    justify-content: flex-end;
+    width: 78%;
+    padding-bottom: 4px;
+  }
+  .delete-account {
+    display: flex;
+    width: 88%;
+  }
+  .delete-toggle {
+    display: flex;
+    justify-content: flex-end;
+    width: 81.5%;
+    padding-bottom: 4px;
+  }
+
+  .change-password {
+    display: flex;
+    width: 88%;
+  }
+  .change-toggle {
+    display: flex;
+    justify-content: flex-end;
+    width: 78.5%;
+    padding-bottom: 4px;
+  }
+}

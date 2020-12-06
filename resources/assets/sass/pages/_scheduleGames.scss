@@ -1,0 +1,680 @@
+.app-container.home-page .scheduleGames-page {
+  position: absolute;
+
+  .game-menu {
+    color: #0b0f14;
+    font-size: 12px;
+    padding-left: 16px;
+    .game-name {
+      display: block;
+      padding: 8px 2px;
+      width: 28%;
+      .game-name-box {
+        background: $backgroundContent;
+      }
+    }
+  }
+  .filterMenu {
+    display: grid;
+    height: calc(10% - 53px);
+    grid-template-columns: 25% 25% 25% 25%;
+    padding: 8px 15px 0 8px;
+    margin-bottom: 38px;
+    color: #0b0f14;
+    font-size: 12px;
+
+    .region,
+    .experience,
+    .dota2_medal_ranks,
+    .dota2_server_regions,
+    .dota2_roles,
+    .date-time,
+    .platform,
+    .clash_royale_trophies,
+    .description,
+    .other,
+    .visibility {
+      display: block;
+      padding: 8px 2px;
+      width: 80%;
+
+      .description-box,
+      .other-box,
+      .visibility-box {
+        background: $backgroundContent;
+        font-size: 12px;
+        line-height: 34px;
+      }
+    }
+
+    .button {
+      display: grid;
+      color: #0b0f14;
+      font-size: 12px;
+      .plus-button {
+        position: relative;
+        left: 10px;
+        width: 60px;
+        height: 60px;
+        color: white;
+        border-radius: 50%;
+        background: #151b26;
+        cursor: pointer;
+        .fa-plus {
+          font-size: 40px;
+          padding: 10px 10px 10px 13px;
+        }
+      }
+      .full-game {
+        color: white;
+        grid-column-start: 5;
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+
+  .gap {
+    padding: 78px;
+  }
+  .da-gap {
+    padding-bottom: 18px;
+  }
+  .gamesPosts {
+    //width: 55%;
+    max-width: 630px;
+    margin: 0 auto;
+
+    .padding-container {
+      //padding: 0 15px;
+    }
+    .grey-container {
+      z-index: 0;
+      padding: 20px;
+      background: #151b26;
+
+      box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.1);
+      margin-bottom: 1rem;
+      border-radius: 20px;
+
+      .individual-toasts {
+        display: flex;
+        align-items: center;
+      }
+
+      .update-info {
+        .game-name-display {
+          display: flex;
+          width: 100%;
+          position: relative;
+          h3 {
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            padding: 10px 0 0 0px;
+            font-weight: 600;
+            color: $htext;
+            line-height: 1.5;
+            font-size: 1.3rem;
+          }
+          .approval-seal {
+            display: flex;
+            justify-content: space-between;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            height: 75px;
+            width: 220px;
+            cursor: pointer;
+          }
+
+          h6 {
+            display: grid;
+            justify-content: flex-end;
+            padding: 10px 0 0 10px;
+            font-weight: 600;
+            color: $htext;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            width: 100%;
+            align-items: center;
+          }
+          .comments-stats {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            color: $veryLightText;
+            font-size: 0.9rem;
+            padding-bottom: 3px;
+            .comments-statz {
+              cursor: pointer;
+            }
+          }
+          .delete-icon {
+            width: 18%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 10px 8px 0 10px;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            .fa-trash-alt {
+              cursor: pointer;
+            }
+          }
+        }
+
+        .expiry-info {
+          width: 100%;
+          color: $veryLightText;
+          font-size: 12px;
+          padding: 10px;
+        }
+        .myFields {
+          display: grid;
+          grid-template-columns: auto auto;
+          grid-column-gap: 8px;
+          color: $ptext;
+          line-height: 2;
+          font-size: 12px;
+          margin-bottom: 1rem;
+          p {
+            padding: 0 10px;
+          }
+        }
+      }
+      .invitation-panel {
+        display: flex;
+        color: $ptext;
+        line-height: 2;
+        font-size: 1rem;
+        border-top: 2px solid $border;
+        border-bottom: 2px solid $border;
+        margin-bottom: 18px;
+        width: 100%;
+
+        .invitation-link {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          margin: 0.7rem;
+          .hack-text {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            .fa-dungeon {
+              display: flex;
+              align-items: center;
+              color: #f44336;
+            }
+          }
+          .dota2-roles {
+            width: 58%;
+            padding-left: 2px;
+            padding-top: 2px;
+            padding-bottom: 2px;
+            margin-left: 10px;
+            z-index: 14;
+            border: none;
+            .dota2-roles-box {
+              font-size: 0.8rem;
+            }
+          }
+          .hack-text2 {
+            display: flex;
+            align-items: center;
+            .fa-door-closed {
+              display: flex;
+              align-items: center;
+              color: black;
+            }
+          }
+          .hack-text3 {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            .fa-door-closed {
+              display: flex;
+              align-items: center;
+              color: black;
+            }
+          }
+        }
+        .dota2-roles-answers {
+          display: flex;
+          padding-left: 8px;
+          align-items: center;
+          & > div {
+            display: flex;
+            align-items: center;
+            color: #797979;
+            padding: 0 0.5px;
+            position: relative;
+          }
+
+          .noti-number {
+            display: none;
+            background: $red;
+            right: -1px;
+            color: white;
+            font-size: 0.6rem;
+            position: relative;
+            top: -12px;
+            &.active {
+              display: block;
+              padding: 0px 2px 0px 2px;
+            }
+          }
+        }
+        .attendees-one {
+          padding-left: 8px;
+          padding-right: 4px;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          .user-img {
+            display: inline-block;
+            position: relative;
+            left: -2px;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            border-radius: 50%;
+            height: 40px;
+            width: 40px;
+            border: 5px solid white;
+          }
+        }
+        .attendees-two {
+          padding-right: 4px;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          .user-img {
+            display: inline-block;
+            position: relative;
+            left: -2px;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            border-radius: 50%;
+            height: 40px;
+            width: 40px;
+            border: 5px solid white;
+          }
+        }
+        .attendees-three {
+          padding-right: 4px;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          .user-img {
+            display: inline-block;
+            position: relative;
+            left: -2px;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            border-radius: 50%;
+            height: 40px;
+            width: 40px;
+            border: 5px solid white;
+          }
+        }
+        .attendees-four {
+          padding-right: 4px;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          .user-img {
+            display: inline-block;
+            position: relative;
+            left: -2px;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            border-radius: 50%;
+            height: 40px;
+            width: 40px;
+            border: 5px solid white;
+          }
+        }
+        .attendees-five {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          .user-img {
+            display: inline-block;
+            position: relative;
+            left: -2px;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            border-radius: 50%;
+            height: 40px;
+            width: 40px;
+            border: 5px solid white;
+          }
+        }
+        .attendees-more {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          cursor: pointer;
+          .user-img {
+            display: inline-block;
+            position: relative;
+            left: -2px;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            border-radius: 50%;
+            height: 40px;
+            width: 40px;
+            border: 5px solid white;
+          }
+        }
+        .attendees-count {
+          width: 30%;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+        }
+      }
+      .compose-comment {
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        z-index: 1;
+        textarea {
+          position: relative;
+          border: none;
+          height: 49px;
+          width: 100%;
+          border-radius: 10px;
+          box-shadow: $boxshadowbtns;
+          background-color: $backgroundContent;
+          outline: none;
+        }
+        .buttons {
+          display: flex;
+          .repost-btn {
+            height: 40px;
+            width: 40px;
+            background: white;
+            box-shadow: $boxshadowbtns;
+            color: $darksideBlue;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-left: 20px;
+            cursor: pointer;
+          }
+        }
+      } //compose-comment
+      .comments {
+        display: flex;
+        color: black;
+        margin-top: 18px;
+        font-size: 0.8rem;
+        position: relative;
+
+        .show-individual-comments {
+          width: 100%;
+          .individual-comment-container {
+            .author-info {
+              display: flex;
+              padding: 0 15px;
+              position: relative;
+              .user-img {
+                display: inline-block;
+                position: relative;
+                left: -2px;
+                background-position: center center;
+                background-repeat: no-repeat;
+                background-size: cover;
+                border-radius: 50%;
+                height: 40px;
+                width: 40px;
+                border: 5px solid white;
+              }
+              .info {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.8rem;
+                color: $ptext;
+                a {
+                  color: $htext;
+                  text-decoration: none;
+                  font-weight: 700;
+                  margin: 0 6px;
+                }
+              }
+              .post-options {
+                width: 60%;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                color: $veryLightText;
+
+                .fa-ellipsis-h {
+                  cursor: pointer;
+                }
+              }
+            }
+            a {
+              color: #23272a;
+              text-decoration: none;
+              font-weight: bold;
+              padding: 0 15px;
+              font-size: 0.7rem;
+              width: 8%;
+            }
+            .comment-info {
+              width: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: flex-start;
+              a {
+                width: 100%;
+              }
+            }
+            .comment-options {
+              width: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: flex-end;
+              color: $veryLightText;
+            }
+            .fa-ellipsis-h {
+              cursor: pointer;
+            }
+            .dropdown {
+              visibility: hidden;
+              display: flex;
+              position: absolute;
+              justify-content: flex-start;
+              width: 28%;
+              right: 0;
+              top: 88%;
+              z-index: 10;
+              background: #fff;
+              box-shadow: $boxshadowbtns;
+              transition: all 0.5s ease-in-out;
+              opacity: 0;
+
+              &.active {
+                visibility: visible;
+                opacity: 1;
+              }
+              nav {
+                .edit {
+                  display: block;
+                  padding: 10px 15px;
+                  color: $htext;
+                  cursor: pointer;
+                }
+                .delete {
+                  display: block;
+                  padding: 10px 15px;
+                  color: $htext;
+                  cursor: pointer;
+                }
+              }
+            }
+            .comment-content {
+              padding: 0 0 15px 0;
+              p {
+                padding: 0 15px;
+                margin: 0 57px;
+                font-size: 0.8rem;
+              }
+            }
+            .comment-panel {
+              padding: 0 15px;
+              margin: 0 57px;
+              font-size: 0.72rem;
+              color: $veryLightText;
+              display: flex;
+              align-items: center;
+              margin-bottom: 18px;
+            }
+            .comment-panel-liked {
+              margin-right: 18px;
+              font-weight: bold;
+              cursor: pointer;
+            }
+            .comment-panel-like {
+              margin-right: 18px;
+              cursor: pointer;
+            }
+            .comment-panel-reply {
+              margin-right: 8px;
+              cursor: pointer;
+            }
+            .divider {
+              margin-right: 14px;
+              margin-left: 8px;
+            }
+            .no-likes {
+              margin-right: 14px;
+            }
+            .colon {
+              margin-right: 14px;
+            }
+            .replies-panel {
+              margin: 0 20px;
+            }
+            .comment-time {
+              padding: 18px;
+              font-size: 0.62rem;
+              color: $veryLightText;
+              display: flex;
+              align-items: center;
+              .fa-circle {
+                padding-right: 8px;
+                font-size: 0.42rem;
+              }
+            }
+            .comment-replies {
+              padding: 0 15px;
+              font-size: 0.72rem;
+              width: 100%;
+              position: relative;
+              .user-img-reply {
+                margin: -8px 45px;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
+                border-radius: 50%;
+                height: 40px;
+                width: 40px;
+                border: 5px solid white;
+                display: flex;
+                position: absolute;
+              }
+              .reply-author-info {
+                width: 100%;
+                display: flex;
+                justify-content: flex-start;
+                margin: 0 56px;
+                text-indent: 3em;
+                margin-bottom: 18px;
+                position: relative;
+                .reply-options {
+                  width: 72%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: flex-end;
+                  color: $veryLightText;
+                }
+              }
+              .reply-comment-content {
+                margin: 0 57px;
+                text-indent: 3em;
+                margin-bottom: 18px;
+              }
+            }
+            .reply-dropdown {
+              visibility: hidden;
+              display: flex;
+              position: absolute;
+              justify-content: flex-start;
+              width: 28%;
+              right: 0;
+              z-index: 10;
+              background: #fff;
+              box-shadow: $boxshadowbtns;
+              transition: all 0.5s ease-in-out;
+              opacity: 0;
+
+              &.active {
+                visibility: visible;
+                opacity: 1;
+              }
+              nav {
+                .edit {
+                  display: block;
+                  padding: 10px 15px;
+                  color: $htext;
+                  cursor: pointer;
+                }
+                .delete {
+                  display: block;
+                  padding: 10px 15px;
+                  color: $htext;
+                  cursor: pointer;
+                }
+              }
+            }
+            .add-reply {
+              padding: 0 15px;
+              //margin: 0 53px;
+              text-indent: 3em;
+              .reply-name-box {
+                font-size: 0.72rem;
+                background: $backgroundContent2;
+              }
+            }
+          }
+        }
+      }
+    } // grey container
+  }
+  .prev_pls {
+    width: 10%;
+    display: flex;
+    cursor: pointer;
+  }
+  .more_pls {
+    width: 48%;
+    position: absolute;
+    cursor: pointer;
+    right: 0;
+  }
+}
