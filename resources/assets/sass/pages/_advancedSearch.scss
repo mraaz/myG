@@ -1,0 +1,347 @@
+.app-container.home-page .advancedSearch-page {
+  position: absolute;
+
+  .filterMenu {
+    //display: grid;
+    height: calc(10% - 53px);
+    //grid-template-columns: 33% 33% 33%;
+    padding: 40px 15px 0 8px;
+    margin-bottom: 38px;
+    color: #0b0f14;
+    font-size: 12px;
+    .row-one {
+      display: grid;
+      grid-template-columns: auto auto;
+    }
+    .table-name {
+      display: block;
+      padding: 8px 2px;
+      width: 80%;
+      .table-box {
+        background: $backgroundContent;
+      }
+    }
+    .game-name {
+      display: block;
+      padding: 8px 2px;
+      width: 80%;
+      .game-name-box {
+        background: $backgroundContent;
+      }
+    }
+    .gaming-experience {
+      .row-two {
+        display: grid;
+        grid-template-columns: auto auto auto auto;
+      }
+      .status {
+        display: block;
+        padding: 8px 2px;
+        width: 80%;
+        .status-box {
+          background: $backgroundContent;
+        }
+      }
+      .played {
+        display: block;
+        padding: 8px 2px;
+        width: 80%;
+        .played-box {
+          background: $backgroundContent;
+        }
+      }
+      .experience {
+        display: block;
+        padding: 8px 2px;
+        width: 80%;
+      }
+      .ratings {
+        display: block;
+        padding: 8px 2px;
+        width: 80%;
+        .ratings-box {
+          background: $backgroundContent;
+        }
+      }
+      .commendation {
+        display: block;
+        padding: 8px 2px;
+        width: 80%;
+        .commendation-box {
+          background: $backgroundContent;
+        }
+      }
+      .location {
+        display: block;
+        padding: 8px 2px;
+        width: 80%;
+      }
+      .tag_txtBox {
+        display: block;
+        padding: 8px 2px;
+        width: 80%;
+        .ratings-box {
+          background: $backgroundContent;
+        }
+      }
+    }
+
+    .esports-experience {
+      .row-two {
+        display: grid;
+        grid-template-columns: auto auto auto auto;
+      }
+      //display: flex;
+      .eStatus {
+        display: block;
+        padding: 8px 2px;
+        width: 80%;
+        .eStatus-box {
+          background: $backgroundContent;
+        }
+      }
+      .role-title {
+        display: block;
+        padding: 8px 2px;
+        width: 80%;
+        .role-title-box {
+          background: $backgroundContent;
+        }
+      }
+      .team-name {
+        display: block;
+        padding: 8px 2px;
+        width: 80%;
+        .team-name-box {
+          background: $backgroundContent;
+        }
+      }
+      .e-played {
+        display: block;
+        padding: 8px 2px;
+        width: 80%;
+        .e-played-box {
+          background: $backgroundContent;
+        }
+      }
+      .skill-txtBox {
+        display: block;
+        padding: 8px 2px;
+        width: 80%;
+        .skill-name-box {
+          background: $backgroundContent;
+        }
+      }
+      .location {
+        display: block;
+        padding: 8px 2px;
+        width: 80%;
+      }
+    }
+  }
+  .gamesPosts {
+    //display: grid;
+    //grid-template-columns: 1 1 1 1;
+    max-width: 630px;
+    margin: 0 auto;
+    .padding-container {
+    }
+    .grey-container {
+      z-index: 0;
+      position: relative;
+      //top: 200px;
+      //right: 325px;
+      padding: 12px;
+      margin: 20px;
+      background: #151b26;
+      // -webkit-box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.5);
+      // -moz-box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.5);
+      //box-shadow: 0 21px 48px -21px rgba(0, 0, 0, 0.5);
+      //margin-bottom: 1rem;
+      border-radius: 20px;
+      .update-info {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-row-gap: 8px;
+        font-size: 14px;
+        .game-name {
+          color: #fff;
+          font-size: 1.5rem;
+          font-weight: bold;
+          padding-top: 0.5rem;
+        }
+        .game-rating {
+          display: flex;
+          .stars {
+            padding-left: 16px;
+            .fa-star {
+              color: orange;
+            }
+          }
+        }
+        .author-info {
+          display: flex;
+          padding: 0 15px;
+          align-items: center;
+          .user-img {
+            display: inline-block;
+            left: -2px;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            border-radius: 50%;
+            height: 40px;
+            width: 40px;
+            border: 5px solid white;
+          }
+          .info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #d5dce0;
+            font-size: 1.5rem;
+            font-weight: bold;
+            a {
+              color: #d5dce0;
+              text-decoration: none;
+              font-weight: 700;
+              margin: 0 6px;
+            }
+          }
+        }
+        .game-status {
+          display: flex;
+          align-items: center;
+          margin-left: 1rem;
+          .fa-d-and-d {
+            align-items: center;
+            font-size: 1.5rem;
+            color: #f44336;
+            display: flex;
+            justify-content: flex-end;
+          }
+        }
+        .game-stuff {
+          display: flex;
+          align-items: center;
+          margin-left: 1rem;
+          .fa-gamepad {
+            align-items: center;
+            font-size: 1.5rem;
+            color: #2196f3;
+            display: flex;
+            justify-content: flex-end;
+          }
+        }
+        .role-title {
+          margin-left: 1rem;
+          display: flex;
+          align-items: center;
+          .fa-angle-double-down {
+            font-size: 1.5rem;
+            color: #4caf50;
+          }
+        }
+
+        .team-name {
+          margin-left: 1rem;
+          display: flex;
+          align-items: center;
+          .fa-users {
+            font-size: 1.5rem;
+            color: #2196f3;
+          }
+        }
+
+        .game-commendation {
+          margin-left: 1rem;
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          grid-column: span 2;
+          .fa-dragon {
+            font-size: 1.5rem;
+            color: #4caf50;
+          }
+        }
+
+        .tags {
+          grid-column: span 2;
+          margin: 0.5rem;
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          display: inline-block;
+          .tag {
+            display: flex;
+            align-items: center;
+            display: inline-block;
+            margin-top: 2px;
+            margin-bottom: 2px;
+
+            .btn-green {
+              border: 2px solid black;
+              margin: 10px;
+              background-color: #0b0f14;
+              color: black;
+              padding: 12px 12px;
+              font-size: 13px;
+              border-color: #4caf50;
+              color: green;
+              border-radius: 15px;
+
+              &:hover {
+                background-color: #4caf50;
+                color: white;
+              }
+            }
+            .btn-blue {
+              border: 2px solid black;
+              margin: 10px;
+              background-color: #0b0f14;
+              color: black;
+              padding: 12px 12px;
+              font-size: 13px;
+              border-color: #2196f3;
+              color: dodgerblue;
+              border-radius: 15px;
+              &:hover {
+                background-color: #2196f3;
+                color: white;
+              }
+            }
+            .btn-red {
+              border: 2px solid black;
+              margin: 10px;
+              background-color: #0b0f14;
+              color: black;
+              padding: 12px 12px;
+              font-size: 13px;
+              border-color: #f44336;
+              color: red;
+              border-radius: 15px;
+              &:hover {
+                background-color: #f44336;
+                color: white;
+              }
+            }
+            .btn-yellow {
+              border: 2px solid black;
+              margin: 10px;
+              background-color: #0b0f14;
+              padding: 12px 12px;
+              font-size: 13px;
+              border-color: #f7ca18;
+              color: gold;
+              border-radius: 15px;
+              &:hover {
+                background-color: #f7ca18;
+                color: white;
+              }
+            }
+          }
+        }
+      } // update-info
+    } // grey container
+  }
+}

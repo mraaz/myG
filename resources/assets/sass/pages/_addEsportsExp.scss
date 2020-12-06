@@ -1,0 +1,150 @@
+.app-container.home-page .addEsportsExp-page {
+} //.app-container
+
+.individual-toasts {
+  display: flex;
+  align-items: center;
+}
+
+.addEsportsModal {
+  position: absolute;
+  top: 8%;
+  left: 20%;
+  right: 20%;
+  bottom: 14%;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  overflow: hidden;
+  border-radius: 4px;
+  outline: none;
+  padding: 20px;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 0.08fr 0.15fr 0.15fr 0.15fr 0.15fr 0.15fr;
+  grid-column-gap: 0;
+  grid-row-gap: 0;
+
+  .fa-times {
+    display: flex;
+    justify-content: flex-end;
+    cursor: pointer;
+  }
+
+  .email {
+    width: 55%;
+  }
+
+  .games_ardour_txtBox {
+    grid-column-start: 1;
+    p {
+      padding: 2px 0 4px 0;
+    }
+    .games_ardour_box {
+      width: 55%;
+    }
+  }
+
+  .gName_txtBox2 {
+    .game_name_box2 {
+      width: 55%;
+    }
+  }
+
+  .career_highlights_box {
+    font-family: $sans-serif;
+    font-size: 1rem;
+    padding: 5px 15px;
+    margin-bottom: 1rem;
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+  }
+
+  .status {
+    p {
+      padding: 2px 0 4px 0;
+    }
+  }
+
+  .status_box {
+    width: 55%;
+  }
+  .role-title {
+    width: 55%;
+    .role_title_box {
+      font-family: $sans-serif;
+      font-size: 1rem;
+      padding: 5px 15px;
+      margin-bottom: 1rem;
+      background-color: white;
+      border: 1px solid rgba(0, 0, 0, 0.5);
+    }
+  }
+  .team-name {
+    width: 55%;
+    .team_name_box {
+      font-family: $sans-serif;
+      font-size: 1rem;
+      padding: 5px 15px;
+      margin-bottom: 1rem;
+      background-color: white;
+      border: 1px solid rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  .achievements_box {
+    font-family: $sans-serif;
+    font-size: 1rem;
+    padding: 5px 15px;
+    margin-bottom: 1rem;
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+  }
+
+  .tag_txtBox {
+    grid-column: span 2;
+    p {
+      padding: 2px 0 4px 0;
+    }
+  }
+  .save-btn {
+    position: relative;
+    font-size: 11rem;
+    display: flex;
+    justify-content: flex-end;
+    padding: 38px 3px 3px 3px;
+    //height: 23%;
+    text-align: center;
+    align-items: center;
+    .save {
+      padding: 18px;
+      position: absolute;
+      right: 8px;
+      background: $primarybuttonBG;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      color: #fff;
+      cursor: pointer;
+    }
+    .delete {
+      padding: 18px;
+      position: absolute;
+      right: 88px;
+      background: $primarybuttonBG;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      color: #fff;
+      cursor: pointer;
+    }
+  }
+}
+
+.Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.5);
+}

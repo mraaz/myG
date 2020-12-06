@@ -1,0 +1,31 @@
+.app-container.home-page .uploadPic-page {
+} //.app-container
+.Modal {
+  position: absolute;
+  top: 5%;
+  left: 16%;
+  right: 21%;
+  bottom: 25%;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  overflow: hidden;
+  border-radius: 4px;
+  outline: none;
+  padding: 20px;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 0.1fr 0.1fr 0.1fr 0.1fr 0.1fr 0.1fr;
+  grid-column-gap: 20px;
+  grid-row-gap: 0;
+}
+
+.Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.5);
+}
