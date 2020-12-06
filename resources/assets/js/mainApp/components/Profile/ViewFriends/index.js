@@ -16,6 +16,7 @@ export default class ViewFriendsModal extends React.Component {
     sentRequest: [],
     experience: '',
     level: '',
+    search: '',
   }
 
   componentDidMount() {
@@ -50,8 +51,14 @@ export default class ViewFriendsModal extends React.Component {
 
   renderFilters = () => {
     return(
-      <div className="filter">
-
+      <div className="filter" onClick={(event) => event.stopPropagation()}>
+        <div className="input-container-row">
+          <input
+            className='input'
+            placeholder='Search Friends'
+            value={this.state.search}
+            onChange={(event) => this.setState({ search: event.target.value })}></input>
+        </div>
       </div>
     );
   }
@@ -61,7 +68,7 @@ export default class ViewFriendsModal extends React.Component {
     if (!this.state.friends.length) return this.renderNoFriends();
     return(
       <div className="friend-list">
-        {this.state.friends.map(this.renderFriend)}
+        {this.state.friends.filter((friend) => friend.alias.includes(this.state.search)).map(this.renderFriend)}
       </div>
     );
   }
