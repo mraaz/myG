@@ -54,7 +54,7 @@ class UserStatTransactionController {
         last_months_total_number_of_likes = 0,
         last_months_total_number_of_commendations = 0
 
-      for (var i = 0; i < getmyStats.length; i++) {
+      for (let i = 0; i < getmyStats.length; i++) {
         switch (getmyStats[i].criteria) {
           case 'total_number_of_friends':
             total_number_of_friends = parseInt(getmyStats[i].values)
@@ -161,9 +161,10 @@ class UserStatTransactionController {
                 .count('id as total_count'),
             ])
 
-          if (getCount_total_number_of_communities.length != 0) {
-            value_to_be_updated = getCount_total_number_of_communities[0].total_count + getCount_total_number_of_communities[1].total_count
+          for (let i = 0; i < getCount_total_number_of_communities.length; i++) {
+            value_to_be_updated += getCount_total_number_of_communities[i].total_count
           }
+
           break
         case 'total_number_of_great_communities':
           const getCount_total_number_of_great_communities = await Database.from('usergroups')
@@ -192,9 +193,10 @@ class UserStatTransactionController {
                 .count('id as total_count'),
             ])
 
-          if (getCount_usergroups.length != 0) {
-            value_to_be_updated = getCount_usergroups[0].total_count + getCount_usergroups[1].total_count
+          for (let i = 0; i < getCount_usergroups.length; i++) {
+            value_to_be_updated += getCount_usergroups[i].total_count
           }
+
           break
         case 'total_number_of_followers':
           const getCount_total_number_of_followers = await Database.from('followers')
@@ -400,7 +402,7 @@ class UserStatTransactionController {
     let xp = 0
 
     for (var i = 0; i < getmyStats.length; i++) {
-      xp = xp + parseInt(getmyStats[i].values) * getmyStats[i].xp_per_tick
+      xp += parseInt(getmyStats[i].values) * getmyStats[i].xp_per_tick
     }
 
     const getGamerLevels = await Database.from('users')
