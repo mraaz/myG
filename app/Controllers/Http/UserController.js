@@ -1,5 +1,6 @@
 'use strict'
 
+const cryptico = require('cryptico');
 const Database = use('Database')
 const User = use('App/Models/User')
 const AwsKeyController = use('./AwsKeyController')
@@ -17,9 +18,7 @@ class UserController {
     var friend = undefined,
       following = undefined
     try {
-      const user = await User.query()
-        .where('id', '=', request.params.id)
-        .fetch()
+      const user = await User.query().where('id', '=', request.params.id).fetch()
       if (auth.user.id != request.params.id) {
         friend = await Database.from('friends').where({
           user_id: auth.user.id,
@@ -50,9 +49,7 @@ class UserController {
 
   async profile_with_alias({ auth, request, response }) {
     try {
-      const user = await Database.from('users')
-        .where('alias', '=', request.params.alias)
-        .first()
+      const user = await Database.from('users').where('alias', '=', request.params.alias).first()
       const friend = await Database.from('friends').where({
         user_id: auth.user.id,
         friend_id: user.id,
@@ -77,11 +74,11 @@ class UserController {
   async store({ auth, request, response }) {
     if (auth.user) {
       try {
-        const saveUser = await User.query()
+        await User.query()
           .where('id', '=', auth.user.id)
           .update({
-            first_name: request.input('first_name_box'),
-            last_name: request.input('last_name_box'),
+            first_name: this.encryptField(request.input('first_name_box')),
+            last_name: this.encryptField(request.input('last_name_box')),
             slogan: request.input('slogan'),
             bio: request.input('bio'),
             country: request.input('country'),
@@ -103,26 +100,7 @@ class UserController {
       return 'You are not Logged In!'
     }
   }
-  // async follow({ auth, request, response }) {
-  //   if (auth.user) {
-  //     try {
-  //       const followedUser = await Database.table('friends').insert({
-  //         user_id: auth.user.id,
-  //         friend_id: request.params.id,
-  //       })
-  //       //const vicevesa = await Database.table('friends').insert({user_id:request.params.id , friend_id: auth.user.id})
-  //
-  //       let userStatController = new UserStatTransactionController()
-  //       userStatController.update_total_number_of({ auth, request, response }, 'total_number_of_followers')
-  //
-  //       return 'Saved successfully'
-  //     } catch (error) {
-  //       LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
-  //     }
-  //   } else {
-  //     return 'You are not Logged In!'
-  //   }
-  // }
+
   async unfriend({ auth, request, response }) {
     if (auth.user) {
       try {
@@ -149,6 +127,31 @@ class UserController {
         userStatController.update_total_number_of(request.params.id, 'total_number_of_friends')
 
         return 'Deleted successfully'
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async cancelFriendRequest({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        await Database.table('notifications')
+          .where({
+            user_id: auth.user.id,
+            other_user_id: request.params.id,
+            activity_type: 1,
+          })
+          .delete()
+        return 'Cancelled successfully'
       } catch (error) {
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
@@ -343,6 +346,24 @@ class UserController {
       }
     } else {
       return 'You are not Logged In!'
+    }
+  }
+
+  getEncryptionKeyPair() {
+    const pin = process.env.PROFILE_ENCRYPTION_PIN | 123456;
+    this.privateKey = cryptico.generateRSAKey(`${pin}`, 1024);
+    this.publicKey = cryptico.publicKeyString(this.privateKey);
+    return { privateKey: this.privateKey, publicKey: this.publicKey }
+  }
+
+  encryptField(field) {
+    if (!field) return field;
+    try {
+      const { privateKey, publicKey } = this.getEncryptionKeyPair();
+      return cryptico.encrypt(field, publicKey, privateKey).cipher;
+    } catch(error) {
+      console.error(`Failed to Encrypt: ${field}`, this.privateKey, this.publicKey);
+      return null;
     }
   }
 }

@@ -55,6 +55,18 @@ class ElasticsearchRepository {
     }).then(() => ({ success: true, error: null })).catch(error => ({ success: false, error }));
   }
 
+  async updateAttendees({ id, no_of_gamers }) {
+    console.log(`Updating Attendees in Game:`, id, no_of_gamers);
+    return this.getElasticsearchClient().update({
+      index: 'games',
+      id: id,
+      body: {
+        doc: { attendees: no_of_gamers },
+        doc_as_upsert: true,
+      }
+    }).then(() => ({ success: true, error: null })).catch(error => ({ success: false, error }));
+  }
+
   async removeGame({ id }) {
     console.log(`Removing game from Elasticsearch:`, id);
     return this.getElasticsearchClient().delete({

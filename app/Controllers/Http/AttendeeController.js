@@ -7,6 +7,7 @@ const ScheduleGame = use('App/Models/ScheduleGame')
 const UserStatTransactionController = use('./UserStatTransactionController')
 const ScheduleGameController = use('./ScheduleGameController')
 const LoggingRepository = require('../../Repositories/Logging')
+const ElasticsearchRepository = require('../../Repositories/Elasticsearch')
 
 const CommonController = use('./CommonController')
 
@@ -30,9 +31,7 @@ class AttendeeController {
           return false
         }
 
-        const getGameFields = await Database.from('game_name_fields')
-          .where({ game_names_id: get_game_info.game_names_id })
-          .first()
+        const getGameFields = await Database.from('game_name_fields').where({ game_names_id: get_game_info.game_names_id }).first()
 
         if (getGameFields != undefined) {
           let db_obj = ''
@@ -88,6 +87,11 @@ class AttendeeController {
           value_four: db_save_value_array[3],
           value_five: db_save_value_array[4],
         })
+
+        const no_of_gamers = (await Database.from('attendees')
+        .where({ schedule_games_id: request.input('schedule_games_id'), type: 1 })
+        .count('* as no_of_gamers'))[0].no_of_gamers
+        await ElasticsearchRepository.updateAttendees({ id: request.input('schedule_games_id'), no_of_gamers })
 
         const noti = new CommonController()
 
@@ -320,17 +324,13 @@ class AttendeeController {
       additional_submit_info_fields = {}
 
     try {
-      const additional_game_info = await Database.from('schedule_games')
-        .where('schedule_games.id', '=', request.params.id)
-        .first()
+      const additional_game_info = await Database.from('schedule_games').where('schedule_games.id', '=', request.params.id).first()
 
       if (additional_game_info == undefined) {
         return
       }
       //Figure out what fields to return, create the key value pair.
-      const getGameFields = await Database.from('game_name_fields')
-        .where({ game_names_id: additional_game_info.game_names_id })
-        .first()
+      const getGameFields = await Database.from('game_name_fields').where({ game_names_id: additional_game_info.game_names_id }).first()
 
       if (getGameFields != undefined) {
         let obj = '',
@@ -389,9 +389,7 @@ class AttendeeController {
         noti_v2.add_approved_attendee_left({ auth }, request.params.id, attendees[0].user_id)
 
         //look up co hosts and notify aswell
-        const co_hosts = await Database.from('co_hosts')
-          .where({ schedule_games_id: request.params.id })
-          .select('user_id')
+        const co_hosts = await Database.from('co_hosts').where({ schedule_games_id: request.params.id }).select('user_id')
 
         for (var i = 0; i < co_hosts.length; i++) {
           request.params.other_user_id = co_hosts[i].user_id
@@ -402,9 +400,7 @@ class AttendeeController {
         userStatController.update_total_number_of(auth.user.id, 'total_number_of_games_played')
 
         // Getting: TypeError: ScheduleGameController is not a constructor, No idea why so created the string here instead
-        const update_vacany = await ScheduleGame.query()
-          .where({ id: request.params.id })
-          .update({ vacancy: true })
+        const update_vacany = await ScheduleGame.query().where({ id: request.params.id }).update({ vacancy: true })
 
         const delete_attendance = await Database.table('attendees')
           .where({

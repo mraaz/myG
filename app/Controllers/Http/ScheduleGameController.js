@@ -951,10 +951,7 @@ class ScheduleGameController {
   }
 
   async scheduleSearchResults({ auth, request, response }) {
-    // UNDO ONCE the video is created.
-    // if (process.env.NODE_ENV != 'development') {
-    //   return this.searchElasticsearch({ request })
-    // }
+    return this.searchElasticsearch({ request })
     try {
       let arrTags = '',
         latestScheduledGames

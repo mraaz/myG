@@ -115,25 +115,6 @@ a:visited {
   cursor: pointer;
 }
 
-input:focus,
-select:focus,
-button:focus,
-label {
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  display: block;
-}
-// input[type='text'],
-// input.text {
-//   background: #f3f3f3;
-//   border: none;
-//   border-radius: 3px;
-//   font-size: 1.2rem;
-//   width: 100%;
-//   padding: 5px 15px;
-//   margin-bottom: 1rem;
-// }
 .default-form {
   .error-box {
     display: none;

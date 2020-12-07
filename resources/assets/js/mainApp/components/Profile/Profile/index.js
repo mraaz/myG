@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import get from 'lodash.get';
 import { Redirect } from 'react-router'
 import { connect } from 'react-redux'
@@ -21,6 +22,18 @@ export class Profile extends React.Component {
     this.props.fetchProfile(this.props.alias);
   }
 
+  componentDidUpdate(previous) {
+    if (this.props.profile.profileId && !previous.profile.profileId) {
+      this.registerConnection();
+    }
+  }
+
+  registerConnection() {
+    const { isSelf, isFriend, profileId } = this.props.profile;
+    if (isSelf || isFriend || !profileId) return null;
+    axios.get(`/api/connections/i_am_viewing_this_profile/${profileId}`);
+  }
+
   commendUser = (gameExperienceId) => {
     this.props.commendUser(this.props.alias, gameExperienceId);
   }
@@ -41,7 +54,7 @@ export class Profile extends React.Component {
         {!!sponsors.length && <Sponsors alias={this.props.alias} profile={this.props.profile} sponsors={sponsors} refetchSponsors={() => this.props.fetchProfile(this.props.alias)} />}
         <GameExperiences userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
         {!!this.props.profile.isSelf && <GamerSuggestions /> }
-        <MyPosts initialData={this.props.initialData} />
+        {!!this.props.profile.isSelf && <MyPosts initialData={this.props.initialData} /> }
       </div>
     );
   }

@@ -4,7 +4,7 @@ import Uploader from '../../common/Uploader'
 import AnalyticsBox from '../../AnalyticsBox';
 import Header from './header';
 import { ignoreFunctions } from '../../../../common/render'
-import { sendFriendRequestAction, confirmFriendRequestAction, unfriendAction, followAction, unfollowAction, uploadProfileImageAction, uploadProfileBackgroundAction } from '../../../../redux/actions/profileAction';
+import { sendFriendRequestAction, confirmFriendRequestAction, unfriendAction, followAction, unfollowAction, cancelFriendRequestAction, uploadProfileImageAction, uploadProfileBackgroundAction } from '../../../../redux/actions/profileAction';
 
 export class Banner extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -46,6 +46,7 @@ export class Banner extends React.Component {
           unfriend={this.props.unfriend}
           follow={this.props.follow}
           unfollow={this.props.unfollow}
+          cancelFriendRequest={this.props.cancelFriendRequest}
           uploadProfileImage={this.props.uploadProfileImage}
           updateProfile={this.props.updateProfile}
         />
@@ -61,6 +62,7 @@ function mapDispatchToProps(dispatch) {
     unfriend: (alias, id) => dispatch(unfriendAction(alias, id)),
     follow: (alias, id) => dispatch(followAction(alias, id)),
     unfollow: (alias, id) => dispatch(unfollowAction(alias, id)),
+    cancelFriendRequest: (alias, id) => dispatch(cancelFriendRequestAction(alias, id)),
     uploadProfileImage: (alias, image, key) => dispatch(uploadProfileImageAction(alias, image, key)),
     uploadProfileBackground: (alias, image, key) => dispatch(uploadProfileBackgroundAction(alias, image, key)),
   }

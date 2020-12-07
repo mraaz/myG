@@ -38,6 +38,11 @@ export function unfollow(alias, id) {
   return axios.delete(`/api/followers/${id}/delete`).then(response => response.data);
 }
 
+export function cancelFriendRequest(alias, id) {
+  logger.log('PROFILE', 'HTTP', `Cancelling Friend Request for ${alias}`);
+  return axios.get(`/api/user/${id}/cancelFriendRequest`).then(response => response.data);
+}
+
 export function uploadProfileImage(profile_img, aws_key) {
   logger.log('PROFILE', 'HTTP', 'Uploading profile image');
   return axios.post('/api/userprofile', { profile_img, aws_key }).then(response => response.data);
