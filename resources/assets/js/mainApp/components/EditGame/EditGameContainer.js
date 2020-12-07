@@ -417,7 +417,8 @@ const EditGameContainer = (props) => {
                   { value: 3, label: 'Totally forgot about this, my bad' },
                   { value: 4, label: 'Not enuf players' },
                   { value: 5, label: 'Decided not to play anymore, sorry all' },
-                  { value: 6, label: 'meh, bite me!' },
+                  { value: 6, label: 'Meh, bite me!' },
+                  { value: 7, label: 'Old game, just doing clean up :)' },
                 ]}
                 placeholder={'Select a reason '}
                 className='game__values'

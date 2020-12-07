@@ -18,6 +18,7 @@ const ElasticsearchRepository = require('../../Repositories/Elasticsearch')
 const SearchRepository = require('../../Repositories/Search')
 
 const UserStatTransactionController = use('./UserStatTransactionController')
+const CommonController = use('./CommonController')
 
 const moment = require('moment')
 
@@ -524,23 +525,26 @@ class ScheduleGameController {
         let reason = null
 
         switch (request.params.reason) {
-          case 1:
+          case '1':
             reason = 'Real life issues, sorry all'
             break
-          case 2:
+          case '2':
             reason = 'Technical issues, sorry all'
             break
-          case 3:
+          case '3':
             reason = 'Totally forgot about this, my bad'
             break
-          case 4:
+          case '4':
             reason = 'Not enuf players'
             break
-          case 5:
+          case '5':
             reason = 'Decided not to play anymore, sorry all'
             break
-          case 6:
-            reason = 'meh, bite me!'
+          case '6':
+            reason = 'Meh, bite me!'
+            break
+          case '7':
+            reason = 'Old game, just doing clean up :) '
             break
           default:
             reason = null
@@ -549,20 +553,29 @@ class ScheduleGameController {
         if (process.env.ELASTICSEARCH_GAMES) {
           await ElasticsearchRepository.removeGame({ id: request.params.id })
         }
-
         const update_sch = await ScheduleGame.query()
           .where({ id: request.params.id })
           .update({ marked_as_deleted: true, deleted_date: Database.fn.now(), reason_for_deletion: reason })
 
-        //Clean up
-        //if(game is not compeletd){
-        //advise all attendees
-        //redo xp points
-        //}
+        const mysql_friendly_date = new Date().toISOString().slice(0, 19)
+        const end_date = new Date(new Date(getOne.end_date_time)).toISOString().slice(0, 19)
 
-        // const userStatController = new UserStatTransactionController()
-        // userStatController.update_total_number_of(get_game_info.user_id, 'total_number_of_games_hosted')
-        // userStatController.update_total_number_of(auth.user.id, 'total_number_of_games_played')
+        if (end_date >= mysql_friendly_date) {
+          const noti = new CommonController()
+          const userStatController = new UserStatTransactionController()
+
+          const allAttendees = await Database.from('attendees').where({
+            schedule_games_id: request.params.id,
+            type: 1,
+          })
+
+          userStatController.update_total_number_of(getOne.user_id, 'total_number_of_games_hosted')
+
+          for (let i = 0; i < allAttendees.length; i++) {
+            noti.addScheduleGame_attendance({ auth }, request.params.id, allAttendees[i].user_id, 15)
+            userStatController.update_total_number_of(allAttendees[i].user_id, 'total_number_of_games_played')
+          }
+        }
 
         return 'Deleted successfully'
       } catch (error) {
@@ -611,6 +624,7 @@ class ScheduleGameController {
             .where('schedule_games.user_id', '=', auth.user.id)
             .where('schedule_games.marked_as_deleted', '=', 0)
             .orWhereIn('schedule_games.id', subquery)
+            .andWhere('schedule_games.marked_as_deleted', '=', 0)
             .select(
               'game_names.game_artwork',
               'game_names.game_name_fields_img',
@@ -635,6 +649,7 @@ class ScheduleGameController {
             .where('schedule_games.user_id', '=', auth.user.id)
             .where('schedule_games.marked_as_deleted', '=', 0)
             .orWhereIn('schedule_games.id', subquery)
+            .andWhere('schedule_games.marked_as_deleted', '=', 0)
             .count('* as no_of_records')
 
           number_of_records = count_myScheduledGames[0].no_of_records
@@ -839,6 +854,7 @@ class ScheduleGameController {
         .where('schedule_games.start_date_time', '<', next24hours)
         .where('schedule_games.start_date_time', '>', last4hours)
         .orWhereIn('schedule_games.id', subquery)
+        .andWhere('schedule_games.marked_as_deleted', '=', 0)
         .select(
           'users.alias',
           'game_names.game_name',
