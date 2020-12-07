@@ -343,7 +343,7 @@ class ProfileRepository {
     gameExperience.rating = rating;
     gameExperience.dynamic = JSON.stringify(dynamic);
     const tagController = new GameTagController();
-    const tagRequests = tags.split('|').map((tag) => tagController.store({ auth }, tag, game));
+    const tagRequests = tags ? tags.split('|').map((tag) => tagController.store({ auth }, tag, game)) : [];
     await Promise.all(tagRequests).then(() => gameExperience.save());
 
     await GameBackground.query().where('experience_id', gameExperience.id).delete();
@@ -357,7 +357,7 @@ class ProfileRepository {
       gameBackground.experience = experience.experience;
       gameBackground.skills = experience.skills;
       const skillController = new GameSkillController();
-      const skillRequests = experience.skills.split('|').map((skill) => skillController.store({ auth }, skill));
+      const skillRequests = experience.skills ? experience.skills.split('|').map((skill) => skillController.store({ auth }, skill)) : [];
       return Promise.all(skillRequests).then(() => gameBackground.save());
     }))
 
