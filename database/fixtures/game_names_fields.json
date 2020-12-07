@@ -31,7 +31,7 @@
       "dota2_medal_ranks": "Herald, Guardian, Crusader, Archon, Legend, Ancient, Divine, Immortal",
       "dota2_server_regions": "EU West, EU East, EU North, Poland, Spain, US Northwest, US Northeast, US Northcentral, US Southwest, Australia, Brazil, Chile, Emirates, India, India East, Peru, Japan, Hong Kong, Singapore, South Africa, China Shanghai, China Guangzhou, China Tianjin, China TC Zhejiang, China UC, China UC 2, China TC Wuhan",
       "dota2_roles": "Position 1, Position 2, Position 3, Position 4, Position 5",
-      "stats_link": "(https://www.)?dotabuff.com/players,true"
+      "stats_link": "(https://www.)?dotabuff.com,true"
     }
   },
   {
@@ -66,7 +66,7 @@
       "lol_ranks": "Iron I, Iron II, Iron III, Iron IV, Bronze I, Bronze II, Bronze III, Bronze IV, Silver I, Silver II, Silver III, Silver IV, Gold I, Gold II, Gold III, Gold IV, Platinum I, Platinum II, Platinum III, Platinum IV, Diamond I, Diamond II, Diamond III, Diamond IV, Master, Grandmaster, Challenger",
       "lol_server_regions": "North America, Europe West, Europe East, Oceania, South East Asia, Latin America North, Latin America South, Brazil, Russia, Turkey, Japan, Corea",
       "lol_roles": "Top, Jungle, Mid, ADC, Support",
-      "stats_link": "(https://www.)?leagueofgraphs.com/summoner,true"
+      "stats_link": "(https://www.)?leagueofgraphs.com,true"
     }
   },
   {
@@ -120,7 +120,7 @@
     },
     "values": {
       "clash_royale_trophies": "1000, 2000, 3000, 4000, 5000, competitive",
-      "stats_link": "(https://)?statsroyale.com/profile,true"
+      "stats_link": "(https://)?statsroyale.com,true"
     }
   },
   {
@@ -165,7 +165,7 @@
       "overw_ranks": "Bronze: 0 to 1500 SR, Silver: 1500 to 1999 SR, Gold 2000 to 2499 SR, Platinum: 2500 to 2999 SR, Diamond: 3000 to 3499 SR, Masters: 3500 to 3999 SR, Grandmaster: 4000 to 5000 SR",
       "overw_roles": "DPS, Tank, Support, Flex",
       "overw_levels": "0-100, 100-200, 200-300, 300-400, 400-500, 500-600, 600-700, 700-800, 800-900, 900-1000, 1000-1100, 1100-1200, 1200+",
-      "stats_link": "(https://www.)?overbuff.com/players,true"
+      "stats_link": "(https://www.)?overbuff.com,true"
     }
   },
   {
@@ -205,7 +205,7 @@
       "cod_warzone_game_modes": "Battle Royale: Duos, Battle Royale: Trios, Battle Royale: Quads, Plunder",
       "cod_warzone_kd_ratio": "0 to 0.5, 0.5 to 1, 1 to 1.5, 1.5 to 2, 2 to 2.5, 2.5 to 3, 3+",
       "cod_warzone_wins": "0-10, 10-30, 30-50, 50-100, 100+",
-      "stats_link": "(https://)?cod.tracker.gg/warzone/,true"
+      "stats_link": "(https://)?cod.tracker.gg,true"
     }
   },
   {
@@ -245,7 +245,7 @@
       "apex_legends_level": "0-50, 50-100, 100-150, 150-200, 200-250, 250-300, 300-350, 350-400, 400-450, 450-500",
       "apex_legends_wins": "0-50, 50-150, 150-400, 400-800, 800+",
       "apex_legends_kills": "0-100, 100-500, 500-1000, 1000-5000, 5K-10K, 10K+",
-      "stats_link": "(https://)?tracker.gg/apex/profile,true"
+      "stats_link": "(https://)?tracker.gg/apex,true"
     }
   },
   {
@@ -290,7 +290,7 @@
       "csgo_server_roles": "Entry Fragger, Support, In-game Leader, AWPer, Lurker, Rifler",
       "csgo_game_modes": "Competitive PUGs, League, Matchmaking",
       "csgo_kd_ratio": "0 to 0.5, 0.5 to 1, 1 to 1.5, 1.5 to 2, 2 to 2.5, 3+",
-      "stats_link": "(https://)?csgo-stats.com/player/,true"
+      "stats_link": "(https://)?csgo-stats.com,true"
     }
   },
   {
@@ -335,7 +335,7 @@
       "fortnite_kd_ratio": "0 to 0.5, 0.5 to 1, 1 to 1.5, 1.5 to 2, 2 to 2.5, 2.5 to 5, 5 to 10, 10 to 15, 20+ ",
       "fortnite_wins": "0-10, 10-30, 30-50, 50-100, 100-150, 200+",
       "fortnite_kills": "0-10, 10-30, 30-50, 50-100, 100-150, 200+",
-      "stats_link": "(https://)?fortnitetracker.com/profile/all,true"
+      "stats_link": "(https://)?fortnitetracker.com,true"
     }
   },
   {
@@ -375,7 +375,7 @@
       "pubg_server_regions": "North America, Europe, Asia, Oceania, South America  ",
       "pubg_game_modes": "Duos, Squads",
       "pubg_ranks": "Bronze, Silver, Gold, Platinum, Diamond, Elite, Master, Grandmaster",
-      "stats_link": "(https://)?pubglookup.com/players,true"
+      "stats_link": "(https://)?pubglookup.com,true"
     }
   },
   {
@@ -444,7 +444,7 @@
       "rocket_league_playlists": "Soccer 2v2 Doubles, Sports 2v2 Hoops, Soccer 3v3 Standard, Sports 3v3 Dropshot, Sports 3v3 Rumble, Sports 3v3 Snow Day, Sports 3v3 Rocket Labs, Soccer 4v4 Chaos",
       "rocket_league_competitive": "2v2 Doubles, 3v3 Standard, 3v3 Solo Standard",
       "rocket_league_ranks": "Unranked, Bronze I, Bronze II, Bronze III, Silver I, Silver II, Silver III, Gold I, Gold II, Gold III, Platinum I, Platinum II, Platinum III, Diamond I, Diamond II, Diamond III, Champion I, Champion II, Champion III, Grand champion",
-      "stats_link": "(https://)?rocketleague.tracker.network/profile/,true"
+      "stats_link": "(https://)?rocketleague.tracker.network,true"
     }
   },
   {
@@ -465,7 +465,7 @@
       "stats_link": "Profile Link"
     },
     "values": {
-      "stats_link": "(https://www.)?roblox.com/users,true"
+      "stats_link": "(https://www.)?roblox.com,true"
     }
   }
 ]
