@@ -1,15 +1,52 @@
 import React, { Fragment, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-const MobileMenuTop = () => {
+const MobileMenuTop = (props) => {
+  const { initialData, notifications, hide } = props
   const [hideSideMenu, setHideSideMenu] = useState(false)
+
+  const alias = initialData === 'loading' ? '' : initialData.userInfo.alias
+  const profileImage = initialData === 'loading' ? '' : initialData.userInfo.profile_img
+  const level = initialData === 'loading' ? 0 : initialData.userInfo.level
 
   return (
     <Fragment>
-      <div class='menu-tab' onClick={() => setHideSideMenu(true)}>
+      <div class={hide ? 'menu-tab hide' : 'menu-tab show' } onClick={() => setHideSideMenu(true)}>
         <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/logo.svg' class='img-fluid logo-img' />
         <div class='toggle-menu-btn'>
           <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/toggle_menu_collapsed.svg' class='img-fluid' />
+        </div>
+        <div className={'notification-expanded'}>
+          <Link to='/?at=notifications&submenu=1'>
+            <div className='notification-container'>
+              <img
+                src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/ntfo_Friendship_Icon.svg'
+                height='22'
+                width='22'
+              />
+              <div className='notification-box'>{notifications.approvals}</div>
+            </div>
+          </Link>
+          <Link to='/?at=notifications&submenu=2'>
+            <div className='notification-container'>
+              <img
+                src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Bell_Icon.svg'
+                height='22'
+                width='22'
+              />
+              <div className='notification-box'>{notifications.alerts}</div>
+            </div>
+          </Link>
+          <Link to='/?at=notifications&submenu=3'>
+            <div className='notification-container'>
+              <img
+                src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Chat_Icon.svg'
+                height='22'
+                width='22'
+              />
+              <div className='notification-box'>{notifications.chats}</div>
+            </div>
+          </Link>
         </div>
       </div>
       {hideSideMenu && (
@@ -24,16 +61,23 @@ const MobileMenuTop = () => {
                   />
                 </div>
                 <div className='user-name-icon'>
-                  <div className='user-icon'></div>
-                  <div className='user-name'>
-                    <span>@brunogoodma</span>
-                  </div>
-                </div>
+                  <Link to={`/profile/${alias}`}>
+                    <div className='user-icon'>
+                      <img onError={(ev) => {ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'}}
+                           src={profileImage}
+                           className='img-fluid'
+                           alt='user-picture' />
+                    </div>
+                    <div className='user-name'>
+                      @{alias}
+                    </div>
+                  </Link>
+                </div>       
                 <div className='level-information'>
                   <div className='level-wrapper'>
                     <span className='level'>level</span>
                     <br />
-                    <span className='level-numer'>99</span>
+                    <span className='level-numer'>{level}</span>
                   </div>
                 </div>
                 <div className='reputation-reviews'>
@@ -46,13 +90,13 @@ const MobileMenuTop = () => {
             <div className='menu-list'>
               <ul>
                 <li>
-                  <Link to='/'>Home</Link>
+                  <Link to='/' onClick={() => setHideSideMenu(false)}>Home</Link>
                 </li>
                 <li>
-                  <Link to='/community/create'>Communities</Link>
+                  <Link to='/community/create' onClick={() => setHideSideMenu(false)}>Communities</Link>
                 </li>
-                <li>Notifications</li>
-                <li>My Games</li>
+                <li onClick={() => setHideSideMenu(false)}>Notifications</li>
+                <li onClick={() => setHideSideMenu(false)}>My Games</li>
               </ul>
             </div>
             <div className='logout-setting-section'>
