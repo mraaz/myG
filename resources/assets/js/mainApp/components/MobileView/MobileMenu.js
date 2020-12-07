@@ -1,17 +1,29 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import MobileMenuTop from './MobileMenuTop'
+import { useScrollDirection } from '../../hooks';
 
 const MobileMenu = ({ initialData }) => {
   const [hideSearch, setHideSearch] = useState(false)
   const [hideCreate, setHideCreate] = useState(false)
-  const [hideSideMenu, setHideSideMenu] = useState(false)
+  const [hideNav, setHideNav] = useState(false)
+  const [notifications, setNotifications] = useState({ alerts: 0, approvals: 0, chats: 0 })
+
+  const direction = useScrollDirection();
+
+  useEffect(() => {
+    if (direction === 'down') {
+      setHideNav(true)
+    } else {
+      setHideNav(false)
+    }
+  })
 
   return (
     <Fragment>
-      <MobileMenuTop />
+      <MobileMenuTop initialData={ initialData } notifications={ {...notifications} } hide={hideNav}/>
       <section className='main-mobile-menu'>
-        <div className='menu-bottom'>
+        <div className={hideNav ? 'menu-bottom hide' : 'menu-bottom show'}>
           <div className='mobile-sub-menu'>
             <div className='mobile-feed-img'>
               <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Feed.svg' class='img-fluid' />
@@ -44,12 +56,12 @@ const MobileMenu = ({ initialData }) => {
               {hideCreate && (
                 <div className='mobile-sub-menu-items'>
                   <div className='find-matches'>
-                    <a href='#'>
+                    <a href='#' onClick={() => setHideCreate(!hideCreate)}>
                       New <b>Matches</b>
                     </a>
                   </div>
                   <div className='find-gamers'>
-                    <a href='#'>
+                    <a href='#' onClick={() => setHideCreate(!hideCreate)}>
                       New <b>Community</b>
                     </a>
                   </div>

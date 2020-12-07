@@ -36,7 +36,7 @@
 section#content-container {
   background-color: #0b0f14;
   flex: 1;
-  height: 100vh;
+  // height: 100vh;
   overflow-y: scroll;
   position: relative;
 }
@@ -2284,6 +2284,9 @@ section#content-container {
     display: block;
     background: #0b0f14;
     z-index: 999;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
   }
 
   .menu-bottom {
@@ -2292,10 +2295,19 @@ section#content-container {
     padding: 15px 10px;
     justify-content: space-between;
     align-items: center;
-    position: absolute;
+    position: fixed;
+    transition: bottom 0.6s;
     bottom: 0;
     width: 100%;
     z-index: 999;
+
+    &.hide {
+      bottom: -60px;
+      
+      .mobile-sub-menu-items {
+        display: none;
+      }
+    }
   }
 
   .mobile-sub-menu-items {
@@ -2322,7 +2334,6 @@ section#content-container {
 
   .mobile-top-menu-dropdown {
     position: absolute;
-    top: 0;
     background: #1d2326;
     z-index: 999;
     width: 100%;
@@ -2332,14 +2343,23 @@ section#content-container {
     margin: 10px;
     background: #1d2326;
     padding: 15px;
-    width: 117px;
+    width: 235px;
     height: 60px;
     border: 1px solid #384952;
     border-radius: 50px;
     display: flex;
     position: absolute;
-    top: 0;
     z-index: 999;
+    transition: top 0.6s;
+
+    &.hide {
+      top:-110vh;
+    }
+  }
+
+  .mobile-top-menu-dropdown,
+  .menu-tab {
+    top: -100vh;
   }
 
   .top-menu > .logo-img {
@@ -2353,7 +2373,7 @@ section#content-container {
   .mobile-side-menu-top {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
   }
 
   .back-btn {
@@ -2364,27 +2384,38 @@ section#content-container {
     justify-content: center;
     display: flex;
     align-items: center;
+    margin-right: 8px;
   }
 
   .mobile-side-menu {
     margin: 10px;
   }
 
-  .user-name-icon {
+  .user-name-icon a {
     display: flex;
-    margin-left: 10px;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   .user-icon {
-    margin-top: 10px;
-    background: #ff00ff 0% 0% no-repeat padding-box;
+    background: #e7bb30 0% 0% no-repeat padding-box;
     width: 50px;
     height: 50px;
     border-radius: 50%;
+
+    img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+    }
   }
 
   .user-name {
-    margin: 15px 5px;
+    align-self: center;
+    padding-left: .75rem;
+    color: #fff;
   }
 
   .user-name span {
