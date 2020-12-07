@@ -1,5 +1,6 @@
 'use strict'
 
+const cryptico = require('cryptico');
 const Database = use('Database')
 const User = use('App/Models/User')
 const AwsKeyController = use('./AwsKeyController')
@@ -73,11 +74,11 @@ class UserController {
   async store({ auth, request, response }) {
     if (auth.user) {
       try {
-        const saveUser = await User.query()
+        await User.query()
           .where('id', '=', auth.user.id)
           .update({
-            first_name: request.input('first_name_box'),
-            last_name: request.input('last_name_box'),
+            first_name: this.encryptField(request.input('first_name_box')),
+            last_name: this.encryptField(request.input('last_name_box')),
             slogan: request.input('slogan'),
             bio: request.input('bio'),
             country: request.input('country'),
@@ -345,6 +346,24 @@ class UserController {
       }
     } else {
       return 'You are not Logged In!'
+    }
+  }
+
+  getEncryptionKeyPair() {
+    const pin = process.env.PROFILE_ENCRYPTION_PIN | 123456;
+    this.privateKey = cryptico.generateRSAKey(`${pin}`, 1024);
+    this.publicKey = cryptico.publicKeyString(this.privateKey);
+    return { privateKey: this.privateKey, publicKey: this.publicKey }
+  }
+
+  encryptField(field) {
+    if (!field) return field;
+    try {
+      const { privateKey, publicKey } = this.getEncryptionKeyPair();
+      return cryptico.encrypt(field, publicKey, privateKey).cipher;
+    } catch(error) {
+      console.error(`Failed to Encrypt: ${field}`, this.privateKey, this.publicKey);
+      return null;
     }
   }
 }

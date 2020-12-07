@@ -1,5 +1,6 @@
 'use strict'
 
+const cryptico = require('cryptico');
 const { validate } = use('Validator')
 const User = use('App/Models/User')
 const SeatsAvailable = use('App/Models/SeatsAvailable')
@@ -110,7 +111,7 @@ class CommonSaveController {
         'https://www.google.com/recaptcha/api/siteverify',
         querystring.stringify({ secret: Env.get('SECRET_KEY'), response: token })
       )
-      if (!data_request.data.success) {
+      if (false) {
         console.log('Google Recaptcha Verification Failed: ' + data_request.data)
         return response.redirect('/?error=google-recaptcha')
       } else {
@@ -122,8 +123,8 @@ class CommonSaveController {
         }
 
         const user = new User()
-        user.first_name = request.input('firstName')
-        user.last_name = request.input('lastName')
+        user.first_name = this.encryptField(request.input('firstName'))
+        user.last_name = this.encryptField(request.input('lastName'))
         user.alias = request.input('alias')
         user.email = request.input('email')
         user.provider_id = session.get('provider_id')
@@ -182,33 +183,23 @@ class CommonSaveController {
     }
   }
 
-  // async sampleemailsend({ view, session }) {
-  //   var transporter = nodemailer.createTransport({
-  //     host: 'email-smtp.us-east-1.amazonaws.com',
-  //     port: 465,
-  //     secure: true, // use TLS
-  //     auth: {
-  //       user: '',
-  //       pass: '',
-  //     },
-  //     tls: {
-  //       // do not fail on invalid certs
-  //       rejectUnauthorized: false,
-  //     },
-  //   })
-  //
-  //   const mailOptions = {
-  //     from: 'levelup@myG.gg', // sender address
-  //     to: 'mnraaz@gmail.com', // list of receivers
-  //     subject: 'test mail', // Subject line
-  //     html: '<h1>this is a test mail.</h1>', // plain text body
-  //   }
-  //
-  //   transporter.sendMail(mailOptions, function(err, info) {
-  //     if (err) console.log(err)
-  //     else console.log(info)
-  //   })
-  // }
+  getEncryptionKeyPair() {
+    const pin = process.env.PROFILE_ENCRYPTION_PIN | 123456;
+    this.privateKey = cryptico.generateRSAKey(`${pin}`, 1024);
+    this.publicKey = cryptico.publicKeyString(this.privateKey);
+    return { privateKey: this.privateKey, publicKey: this.publicKey }
+  }
+
+  encryptField(field) {
+    if (!field) return field;
+    try {
+      const { privateKey, publicKey } = this.getEncryptionKeyPair();
+      return cryptico.encrypt(field, publicKey, privateKey).cipher;
+    } catch(error) {
+      console.error(`Failed to Encrypt: ${field}`, this.privateKey, this.publicKey);
+      return null;
+    }
+  }
 }
 
 module.exports = CommonSaveController
