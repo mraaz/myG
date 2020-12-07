@@ -335,6 +335,17 @@
       color: #93a4a5;
     }
 
+    .icon-button {
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: unset;
+      background-color: #e5c746;
+      border-radius: 4px;
+      width: 32px;
+      height: 32px;
+      margin-left: -8px;
+    }
+
     .required {
       color: #ee4338;
       margin-left: -30px;

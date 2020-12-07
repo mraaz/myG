@@ -56,26 +56,26 @@ export default class MainInfo extends React.Component {
   componentDidMount() {
     const gameId = get(this.props, 'experience.game.game_names_id')
     if (gameId) fetchDynamicFields(gameId).then((dynamicFields) => !dynamicFields.error && this.setState({ dynamicFields }))
-    this.preventTabbingToCompose();
+    this.preventTabbingToCompose()
   }
 
   preventTabbingToCompose() {
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Tab' && !event.shiftKey) {
-        const activeElement = document.activeElement;
-        const possibleElements = document.querySelectorAll("input, textarea, button");
+        const activeElement = document.activeElement
+        const possibleElements = document.querySelectorAll('input, textarea, button')
         for (let i = 0; i < possibleElements.length; ++i) {
-          const focusedElement = possibleElements[i];
+          const focusedElement = possibleElements[i]
           if (focusedElement === activeElement) {
-            const nextElement = possibleElements[i + 1];
+            const nextElement = possibleElements[i + 1]
             if (nextElement.id === 'composeTextarea') {
-              event.preventDefault();
+              event.preventDefault()
             }
-            break;
+            break
           }
         }
       }
-    });
+    })
   }
 
   onSave = (canSave) => {
@@ -349,6 +349,7 @@ export default class MainInfo extends React.Component {
     const validation = field.values && field.values[0] && new RegExp(field.values[0])
     const required = field.values && field.values[1]
     const isValid = validation ? validation.test(get(this.props, `experience.dynamic.${field.id}`)) : true
+    const showLink = field.id === 'stats_link'
     return (
       <React.Fragment>
         <span className='hint'>{field.label}</span>
@@ -360,6 +361,13 @@ export default class MainInfo extends React.Component {
             placeholder={field.profile_placeholder}
             onChange={(event) => this.props.storeDynamicExperience({ [field.id]: event.target.value })}></input>
         </div>
+        {showLink && (
+          <div
+            className='icon-button clickable'
+            style={{ backgroundImage: `url(https://mygame-media.s3.amazonaws.com/platform_images/Profile/newWindow-icon.svg)` }}
+            onClick={() => window.open(field.profile_placeholder, '_blank')}
+          />
+        )}
       </React.Fragment>
     )
   }

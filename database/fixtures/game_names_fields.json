@@ -13,7 +13,7 @@
       "dota2_roles": "Select the role/s you wish to apply for"
     },
     "profile_placeholders": {
-      "stats_link": "https://www.dotabuff.com/players/profile-id"
+      "stats_link": "https://www.dotabuff.com"
     },
     "types": {
       "dota2_server_regions": "Multi",
@@ -48,7 +48,7 @@
       "lol_roles": "Select the role/s you wish to apply for"
     },
     "profile_placeholders": {
-      "stats_link": "https://www.leagueofgraphs.com/summoner/region/profile-id"
+      "stats_link": "https://www.leagueofgraphs.com"
     },
     "types": {
       "lol_server_regions": "Multi",
@@ -108,7 +108,7 @@
       "clash_royale_trophies": "Please select your trophy range"
     },
     "profile_placeholders": {
-      "stats_link": "https://statsroyale.com/profile/profile-id"
+      "stats_link": "https://statsroyale.com"
     },
     "types": {
       "clash_royale_trophies": "Single",
@@ -141,7 +141,7 @@
       "overw_levels": "Please select which levels"
     },
     "profile_placeholders": {
-      "stats_link": "https://www.overbuff.com/players/"
+      "stats_link": "https://www.overbuff.com"
     },
     "types": {
       "overw_server_regions": "Multi",
@@ -184,7 +184,7 @@
       "cod_warzone_wins": "Please select how many wins"
     },
     "profile_placeholders": {
-      "stats_link": "https://cod.tracker.gg/warzone/profile-id"
+      "stats_link": "https://cod.tracker.gg/warzone"
     },
     "types": {
       "cod_warzone_server_regions": "Multi",
@@ -224,7 +224,7 @@
       "apex_legends_kills": "Please select how many kills"
     },
     "profile_placeholders": {
-      "stats_link": "https://tracker.gg/apex/profile/"
+      "stats_link": "https://tracker.gg/apex"
     },
     "types": {
       "apex_legends_game_modes": "Multi",
@@ -266,7 +266,7 @@
       "csgo_kd_ratio": "Please select KD range"
     },
     "profile_placeholders": {
-      "stats_link": "https://csgo-stats.com/player/profile-id"
+      "stats_link": "https://csgo-stats.com"
     },
     "types": {
       "csgo_server_regions": "Multi",
@@ -311,7 +311,7 @@
       "fortnite_kills": "Please select how many kills"
     },
     "profile_placeholders": {
-      "stats_link": "https://fortnitetracker.com/profile/all/profile-id"
+      "stats_link": "https://fortnitetracker.com"
     },
     "types": {
       "fortnite_server_regions": "Multi",
@@ -354,7 +354,7 @@
       "pubg_ranks": "Please select what rank"
     },
     "profile_placeholders": {
-      "stats_link": "https://pubglookup.com/players/"
+      "stats_link": "https://pubglookup.com"
     },
     "types": {
       "pubg_platform": "Single",
@@ -423,7 +423,7 @@
       "rocket_league_ranks": "Please select what rank"
     },
     "profile_placeholders": {
-      "stats_link": "https://rocketleague.tracker.network/profile/steam/profile-id"
+      "stats_link": "https://rocketleague.tracker.network"
     },
     "types": {
       "rocket_league_server_regions": "Multi",
@@ -453,10 +453,10 @@
       "value_one": "stats_link"
     },
     "placeholders": {
-      "stats_link": "https://www.roblox.com/users/user-id"
+      "stats_link": "https://www.roblox.com"
     },
     "profile_placeholders": {
-      "stats_link": "https://www.roblox.com/users/user-id"
+      "stats_link": "https://www.roblox.com"
     },
     "types": {
       "stats_link": "Input"
