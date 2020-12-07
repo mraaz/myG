@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import get from 'lodash.get';
 import { Redirect } from 'react-router'
 import { connect } from 'react-redux'
@@ -19,6 +20,18 @@ export class Profile extends React.Component {
   componentDidMount() {
     document.title = `myG - ${this.props.alias}`;
     this.props.fetchProfile(this.props.alias);
+  }
+
+  componentDidUpdate(previous) {
+    if (this.props.profile.profileId && !previous.profile.profileId) {
+      this.registerConnection();
+    }
+  }
+
+  registerConnection() {
+    const { isSelf, isFriend, profileId } = this.props.profile;
+    if (isSelf || isFriend || !profileId) return null;
+    axios.get(`/api/connections/i_am_viewing_this_profile/${profileId}`);
   }
 
   commendUser = (gameExperienceId) => {
