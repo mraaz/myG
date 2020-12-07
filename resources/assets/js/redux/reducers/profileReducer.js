@@ -102,6 +102,16 @@ export default function reducer(state = initialState, action) {
       }
     }
 
+    case 'CANCEL_FRIEND_REQUEST_FULFILLED': {
+      logger.log('PROFILE', `Redux -> Cancelled Friend Request ${action.meta.alias}`)
+      const alias = action.meta.alias
+      const profiles = addProfile(state, alias)
+      profiles[alias].set({ isFriend: false, hasSentFriendRequest: false })
+      return {
+        ...state,
+        profiles,
+      }
+    }
 
     case 'UNFRIEND_FULFILLED': {
       logger.log('PROFILE', `Redux -> Unfriended ${action.meta.alias}`)

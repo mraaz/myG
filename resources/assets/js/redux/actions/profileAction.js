@@ -1,4 +1,4 @@
-import { fetchProfileInfo, sendFriendRequest, confirmFriendRequest, unfriend, follow, unfollow, uploadProfileImage, uploadProfileBackground, updateProfileInfo, updateProfileGame, fetchGamerSuggestions, commendUser, deleteExperience } from '../../integration/http/profile'
+import { fetchProfileInfo, sendFriendRequest, confirmFriendRequest, unfriend, follow, unfollow, cancelFriendRequest, uploadProfileImage, uploadProfileBackground, updateProfileInfo, updateProfileGame, fetchGamerSuggestions, commendUser, deleteExperience } from '../../integration/http/profile'
 
 export function fetchProfileInfoAction(alias) {
   return {
@@ -48,6 +48,13 @@ export function unfollowAction(alias, id) {
   }
 }
 
+export function cancelFriendRequestAction(alias, id) {
+  return {
+    type: 'CANCEL_FRIEND_REQUEST',
+    payload: cancelFriendRequest(alias, id),
+    meta: { alias, id },
+  }
+}
 
 export function uploadProfileImageAction(alias, image, key) {
   return {

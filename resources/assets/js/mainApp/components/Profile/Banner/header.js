@@ -63,6 +63,7 @@ export default class Header extends React.Component {
 
   unfriend = () => this.props.unfriend(this.props.profile.alias, this.props.profile.profileId)
   unfollow = () => this.props.unfollow(this.props.profile.alias, this.props.profile.profileId)
+  cancelFriendRequest = () => this.props.cancelFriendRequest(this.props.profile.alias, this.props.profile.profileId)
 
   renderConnectionButton = () => {
     if (this.props.profile.isSelf) return null
@@ -82,7 +83,7 @@ export default class Header extends React.Component {
       )
     }
     if (this.props.profile.hasSentFriendRequest) {
-      return <div className='button'>Request Sent</div>
+      return <div className='button clickable' onClick={() => showMessengerAlert('This will cancel the friend request, are you sure?', this.cancelFriendRequest, null, 'Make it so')}>Request Sent</div>
     }
     return (
       <div

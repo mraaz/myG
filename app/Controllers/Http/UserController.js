@@ -17,9 +17,7 @@ class UserController {
     var friend = undefined,
       following = undefined
     try {
-      const user = await User.query()
-        .where('id', '=', request.params.id)
-        .fetch()
+      const user = await User.query().where('id', '=', request.params.id).fetch()
       if (auth.user.id != request.params.id) {
         friend = await Database.from('friends').where({
           user_id: auth.user.id,
@@ -50,9 +48,7 @@ class UserController {
 
   async profile_with_alias({ auth, request, response }) {
     try {
-      const user = await Database.from('users')
-        .where('alias', '=', request.params.alias)
-        .first()
+      const user = await Database.from('users').where('alias', '=', request.params.alias).first()
       const friend = await Database.from('friends').where({
         user_id: auth.user.id,
         friend_id: user.id,
@@ -103,26 +99,7 @@ class UserController {
       return 'You are not Logged In!'
     }
   }
-  // async follow({ auth, request, response }) {
-  //   if (auth.user) {
-  //     try {
-  //       const followedUser = await Database.table('friends').insert({
-  //         user_id: auth.user.id,
-  //         friend_id: request.params.id,
-  //       })
-  //       //const vicevesa = await Database.table('friends').insert({user_id:request.params.id , friend_id: auth.user.id})
-  //
-  //       let userStatController = new UserStatTransactionController()
-  //       userStatController.update_total_number_of({ auth, request, response }, 'total_number_of_followers')
-  //
-  //       return 'Saved successfully'
-  //     } catch (error) {
-  //       LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
-  //     }
-  //   } else {
-  //     return 'You are not Logged In!'
-  //   }
-  // }
+
   async unfriend({ auth, request, response }) {
     if (auth.user) {
       try {
@@ -149,6 +126,31 @@ class UserController {
         userStatController.update_total_number_of(request.params.id, 'total_number_of_friends')
 
         return 'Deleted successfully'
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async cancelFriendRequest({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        await Database.table('notifications')
+          .where({
+            user_id: auth.user.id,
+            other_user_id: request.params.id,
+            activity_type: 1,
+          })
+          .delete()
+        return 'Cancelled successfully'
       } catch (error) {
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
