@@ -12,8 +12,6 @@ import NoRecord from './NoRecord.js'
 import { PullDataFunction as getScheduleGames } from './getScheduleGames'
 import axios from 'axios'
 
-import InfiniteScroll from 'react-infinite-scroll-component'
-
 export default class ScheduleGames extends Component {
   constructor() {
     super()

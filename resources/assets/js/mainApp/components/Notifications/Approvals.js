@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import InfiniteScroll from 'react-infinite-scroll-component'
 import axios from 'axios'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
