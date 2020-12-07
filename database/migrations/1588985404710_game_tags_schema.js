@@ -10,6 +10,8 @@ class GameTagsSchema extends Schema {
       table.string('content', 250).notNullable().unique().index()
       table.integer('user_id').unsigned().notNullable()
       table.foreign('user_id').references('users.id').onDelete('cascade')
+      table.integer('game_names_id').unsigned().nullable()
+      table.foreign('game_names_id').references('game_names.id').onDelete('cascade')
       table.integer('verified').unsigned().notNullable().defaultTo(0)
       table.integer('counter').nullable().defaultTo(1)
       table.timestamps(true,true)

@@ -282,22 +282,23 @@ class UserStatTransactionController {
           break
         case 'total_number_of_likes':
           const getCount_total_number_of_likes_posts = await Database.from('likes')
-            .select('likes.id')
             .innerJoin('posts', 'posts.id', 'likes.post_id')
             .where('posts.user_id', '=', my_user_id)
             .whereNot('likes.user_id', '=', my_user_id)
-            .count('likes.id as total_count')
-          const getCount_total_number_of_likes_comments = await Database.from('likes')
             .select('likes.id')
+            .count('likes.id as total_count')
+
+          const getCount_total_number_of_likes_comments = await Database.from('likes')
             .innerJoin('comments', 'comments.id', 'likes.comment_id')
             .where('comments.user_id', '=', my_user_id)
             .whereNot('likes.user_id', '=', my_user_id)
+            .select('likes.id')
             .count('likes.id as total_count')
           const getCount_total_number_of_likes_replies = await Database.from('likes')
-            .select('likes.id')
             .innerJoin('replies', 'replies.id', 'likes.reply_id')
             .where('replies.user_id', '=', my_user_id)
             .whereNot('likes.user_id', '=', my_user_id)
+            .select('likes.id')
             .count('likes.id as total_count')
 
           if (getCount_total_number_of_likes_posts.length != 0) {

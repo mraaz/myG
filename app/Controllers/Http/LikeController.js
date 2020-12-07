@@ -17,7 +17,7 @@ class LikeController {
           reply_id: request.input('reply_id'),
         })
 
-        let userStatController = new UserStatTransactionController()
+        const userStatController = new UserStatTransactionController()
 
         if (request.input('post_id') != undefined) {
           const post_owner = await Database.from('posts')
@@ -72,7 +72,7 @@ class LikeController {
             userStatController.update_total_number_of(reply_owner.user_id, 'total_number_of_likes')
 
             if (reply_owner.user_id != auth.user.id) {
-              let noti = new NotificationController_v2()
+              const noti = new NotificationController_v2()
 
               if (reply_owner.schedule_games_id != null) {
                 noti.addReplyLike({ auth }, null, reply_owner.user_id, request.input('reply_id'), reply_owner.schedule_games_id)
@@ -195,7 +195,7 @@ class LikeController {
           })
           .delete()
 
-        let userStatController = new UserStatTransactionController()
+        const userStatController = new UserStatTransactionController()
 
         const post_owner = await Database.from('posts')
           .where({ id: request.params.id })
@@ -205,7 +205,7 @@ class LikeController {
         if (post_owner != undefined) {
           userStatController.update_total_number_of(post_owner.user_id, 'total_number_of_likes')
 
-          let noti = new NotificationController_v2()
+          const noti = new NotificationController_v2()
           noti.deletePostLike({ auth }, request.params.id)
         }
 
@@ -234,7 +234,7 @@ class LikeController {
           })
           .delete()
 
-        let userStatController = new UserStatTransactionController()
+        const userStatController = new UserStatTransactionController()
 
         const comment_owner = await Database.from('comments')
           .where({ id: request.params.id })
@@ -244,7 +244,7 @@ class LikeController {
         if (comment_owner != undefined) {
           userStatController.update_total_number_of(comment_owner.user_id, 'total_number_of_likes')
 
-          let noti = new NotificationController_v2()
+          const noti = new NotificationController_v2()
           noti.deleteCommentLike({ auth }, request.params.id)
         }
 
@@ -273,7 +273,7 @@ class LikeController {
           })
           .delete()
 
-        let userStatController = new UserStatTransactionController()
+        const userStatController = new UserStatTransactionController()
 
         const reply_owner = await Database.from('replies')
           .where({ id: request.params.id })
@@ -283,7 +283,7 @@ class LikeController {
         if (reply_owner != undefined) {
           userStatController.update_total_number_of(reply_owner.user_id, 'total_number_of_likes')
 
-          let noti = new NotificationController_v2()
+          const noti = new NotificationController_v2()
           noti.deleteReplyLike({ auth }, request.params.id)
         }
 

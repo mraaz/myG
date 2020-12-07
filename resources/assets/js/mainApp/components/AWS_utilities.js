@@ -2,7 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 
-import logger from '../../common/logger'
+import { logToElasticsearch } from '../../integration/http/logger'
 
 //File: File path to upload
 //Name: File name (Doesn't need to be unique, backend will handle that)
@@ -27,7 +27,8 @@ export async function Upload_to_S3(file, name, type = 0, id = null, chat = false
     toast.success(
       <Toast_style text={'Opps, something went wrong. Unable to upload your file. Refresh and try again or reduce the file size?'} />
     )
-    logger.log('RENDER', 'AWS upload')
+    logToElasticsearch('error', 'AWS_utilities', 'Upload_to_S3:' + ' ' + error)
+    //logger.log('RENDER', 'AWS upload')
     return false
   }
 }
@@ -46,7 +47,8 @@ export async function Remove_file(key, aws_key_id) {
     return post
   } catch (error) {
     toast.success(<Toast_style text={"Hmmmm, something went wrong. Unable to remove your file. No issue, I'll look into it...."} />)
-    logger.log('RENDER', 'AWS Delete ')
+    //logger.log('RENDER', 'AWS Delete ')
+    logToElasticsearch('error', 'AWS_utilities', 'Remove_file:' + ' ' + error)
     return false
   }
 }

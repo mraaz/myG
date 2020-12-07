@@ -69,9 +69,40 @@ class ReplyController {
         .where({ comment_id: request.params.id })
         .count('* as no_of_replies')
 
+      const return_variable = await this.show_comments_likes({ auth }, request.params.id)
+      const do_I_like_this_comment = return_variable.do_I_like_this_comment
+      const no_of_likes = return_variable.no_of_likes
+
       return {
         this_comments_replies,
         no_of_replies: no_of_replies,
+        do_I_like_this_comment,
+        no_of_likes: no_of_likes,
+      }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+    }
+  }
+
+  async show_comments_likes({ auth }, comment_id) {
+    try {
+      const do_I_like_this_comment = await Database.from('likes')
+        .where({ comment_id: comment_id, user_id: auth.user.id })
+        .count('* as myOpinion')
+
+      const no_of_likes = await Database.from('likes')
+        .where({ comment_id: comment_id })
+        .count('* as no_of_likes')
+
+      return {
+        do_I_like_this_comment,
+        no_of_likes: no_of_likes,
       }
     } catch (error) {
       LoggingRepository.log({
@@ -125,6 +156,14 @@ class ReplyController {
   async destroy({ auth, request, response }) {
     if (auth.user) {
       try {
+        const security_check = await Database.from('replies')
+          .where({ id: request.params.id })
+          .first()
+
+        if (security_check == undefined || security_check.user_id != auth.user.id) {
+          return
+        }
+
         const apiController = new ApiController()
         await apiController.internal_deleteFile({ auth }, '8', request.params.id)
 
@@ -150,19 +189,30 @@ class ReplyController {
   }
 
   async update({ auth, request, response }) {
-    try {
-      const updateReply = await Reply.query()
-        .where({ id: request.params.id })
-        .update({ content: request.input('content') })
-      return 'Saved successfully'
-    } catch (error) {
-      LoggingRepository.log({
-        environment: process.env.NODE_ENV,
-        type: 'error',
-        source: 'backend',
-        context: __filename,
-        message: (error && error.message) || error,
-      })
+    if (auth.user) {
+      try {
+        const security_check = await Database.from('replies')
+          .where({ id: request.params.id })
+          .first()
+
+        if (security_check == undefined || security_check.user_id != auth.user.id) {
+          return
+        }
+
+        const updateReply = await Reply.query()
+          .where({ id: request.params.id })
+          .update({ content: request.input('content') })
+
+        return 'Saved successfully'
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
+      }
     }
   }
 }

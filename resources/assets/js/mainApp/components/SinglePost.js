@@ -31,7 +31,7 @@ export default class SinglePost extends Component {
   showLatestPost = () => {
     if (this.state.myPost != []) {
       return this.state.myPost.map((item, index) => {
-        return <IndividualPost post={item} key={index} user={this.props.initialData} source={'news_feed'} />
+        return <IndividualPost post={item} key={index} user={this.props.initialData.userInfo} source={'news_feed'} />
       })
     }
   }

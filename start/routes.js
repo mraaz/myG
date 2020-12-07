@@ -63,7 +63,7 @@ Route.get('/api/mypost/:id', 'PostController.myshow')
 Route.get('/api/getmypost/:paginateNo', 'PostController.showmyposts')
 Route.post('/api/post', 'PostController.store')
 Route.get('/api/post/my_count/:id', 'PostController.posts_count')
-Route.get('/api/post/delete/:id', 'PostController.destroy')
+Route.delete('/api/post/delete/:id', 'PostController.destroy')
 Route.post('/api/post/update/:id', 'PostController.update')
 Route.get('/api/getpost/:id', 'PostController.showpost')
 Route.post('/api/post/featureToggle/', 'PostController.featureToggle')
@@ -155,7 +155,7 @@ Route.get('/api/likes/delete/comment/:id', 'LikeController.destroy_comment')
 Route.get('/api/likes/delete/reply/:id', 'LikeController.destroy_reply')
 Route.get('/api/thisLike/:id', 'LikeController.getthisLike')
 
-Route.get('/api/comments/delete/:id', 'CommentController.destroy')
+Route.delete('/api/comments/delete/:id', 'CommentController.destroy')
 Route.get('/api/comments/:id', 'CommentController.show')
 Route.post('/api/comments/', 'CommentController.store')
 Route.get('/api/comments/my_count/:id', 'CommentController.comments_count')
@@ -168,7 +168,7 @@ Route.get('/api/comments/get_right_card_comment_info/:id', 'CommentController.ge
 Route.get('/api/archive_comments/scheduled_gamesCount/:id', 'Archive_CommentController.show_scheduled_gamesCount')
 Route.get('/api/archive_comments/scheduled_games/:id', 'Archive_CommentController.show_scheduled_games')
 
-Route.get('/api/replies/delete/:id', 'ReplyController.destroy')
+Route.delete('/api/replies/delete/:id', 'ReplyController.destroy')
 Route.get('/api/replies/:id', 'ReplyController.show')
 Route.post('/api/replies/update/:id', 'ReplyController.update')
 Route.get('/api/replies/show_reply/:id', 'ReplyController.show_reply')
@@ -322,6 +322,7 @@ Route.get('/api/connections/i_am_viewing_this_profile/:other_user_id', 'Connecti
 Route.post('/api/connections/communities_you_might_know', 'ConnectionController.communities_you_might_know')
 
 Route.post('/api/invited_users_for_schedule_games/create', 'InvitedUsersForScheduleGameController.store')
+Route.post('/api/invited_users_for_schedule_games/invite', 'InvitedUsersForScheduleGameController.invite')
 
 Route.get('/api/userStatTransaction/master_controller', 'UserStatTransactionController.master_controller')
 
@@ -427,6 +428,7 @@ Route.get('/api/seats_available_email/:email', 'SeatsAvailableController.storeSe
 Route.get('/api/profile/:alias', 'ProfileController.fetchProfileInfo')
 Route.put('/api/profile/:alias', 'ProfileController.updateProfile')
 Route.put('/api/profile/:alias/game', 'ProfileController.updateGame')
+Route.get('/api/profile/:alias/friends', 'ProfileController.fetchFriends')
 Route.delete('/api/game_experience/:gameExperienceId', 'ProfileController.deleteGameExperience')
 Route.get('/api/gamer_suggestions', 'ProfileController.fetchGamerSuggestions')
 Route.get('/api/profile_fields/:gameId', 'ProfileController.fetchDynamicFields')

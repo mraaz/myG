@@ -2,6 +2,7 @@ import React from 'react'
 import Uploader from '../../common/Uploader'
 import get from 'lodash.get'
 import Dossier from '../Dossier'
+import ViewFriends from '../ViewFriends'
 import { ignoreFunctions } from '../../../../common/render'
 import { openChatByContact } from '../../../../common/chat'
 import { showMessengerAlert } from '../../../../common/alert'
@@ -13,6 +14,7 @@ export default class Header extends React.Component {
 
   state = {
     editing: false,
+    viewingFriends: false,
     hoveringIcon: false,
   }
 
@@ -123,7 +125,7 @@ export default class Header extends React.Component {
 
   renderViewFriendsButton = () => {
     if (this.props.profile.isSelf) return null
-    return <div className='button clickable'>View Friends</div>
+    return <div className='button clickable' onClick={() => this.setState({ viewingFriends: true })}>View Friends</div>
   }
 
   renderSocialHubButton = () => {
@@ -143,6 +145,17 @@ export default class Header extends React.Component {
     )
   }
 
+  renderViewFriends = () => {
+    if (!this.state.viewingFriends) return;
+    return (
+      <ViewFriends
+        profile={this.props.profile}
+        sendFriendRequest={this.props.sendFriendRequest}
+        onClose={() => this.setState({ viewingFriends: false })}
+      />
+    )
+  }
+
   render() {
     return (
       <div id='header'>
@@ -154,6 +167,7 @@ export default class Header extends React.Component {
           {this.renderViewFriendsButton()}
           {this.renderSocialHubButton()}
           {this.renderSocialHub()}
+          {this.renderViewFriends()}
         </div>
       </div>
     )

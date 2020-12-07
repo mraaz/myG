@@ -78,3 +78,8 @@ export function deleteExperience(gameExperienceId) {
   logger.log('PROFILE', 'HTTP', `Deleting game experience ${gameExperienceId}`);
   return axios.delete(`/api/game_experience/${gameExperienceId}`).then(response => response.data);
 }
+
+export function fetchFriends({ alias, experience, level }) {
+  logger.log('PROFILE', 'HTTP', `Fetching Friends for profile ${alias}, with experience ${experience} and level ${level}`);
+  return axios.get(`/api/profile/${alias}/friends?experience=${experience}&level=${level}`).then(response => response.data);
+}

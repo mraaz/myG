@@ -64,6 +64,7 @@ class ApiController {
         userInfo: auth.user,
         port: process.env.PORT,
         logsOn: process.env.LOGS_ON,
+        preventReload: process.env.PREVENT_RELOAD,
         featuresOn: process.env.FEATURES_ON,
       }
     } else {
@@ -71,6 +72,7 @@ class ApiController {
         userInfo: 1981,
         port: process.env.PORT,
         logsOn: process.env.LOGS_ON,
+        preventReload: process.env.PREVENT_RELOAD,
         featuresOn: process.env.FEATURES_ON,
       }
     }
@@ -78,7 +80,8 @@ class ApiController {
 
   async uploadFile({ auth, request, response }) {
     if (auth.user) {
-      const isChat = request.input('chat')
+      const isChat = request.input('chat') == 'true'
+
       if (isChat) {
         if (Env.get('CHAT_UPLOAD_DISABLED')) return response.status(500).json('CHAT_UPLOAD_DISABLED')
         const user = (await User.find(auth.user.id)).toJSON()

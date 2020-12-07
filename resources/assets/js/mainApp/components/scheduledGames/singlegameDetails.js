@@ -13,7 +13,7 @@ import { WithTooltip } from '../Tooltip'
 import axios from 'axios'
 const defaultUserImage = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
 
-export default class GameDetails extends Component {
+export default class SingleGameDetails extends Component {
   constructor() {
     super()
     this.state = {}
@@ -146,6 +146,7 @@ export default class GameDetails extends Component {
                 additional_submit_info_fields.map((fields) => {
                   let values = ''
                   const Obj = fields[0]
+
                   if (Obj != null) {
                     values = Object.values(Obj)[0]
                     if (values == undefined || values == null) {

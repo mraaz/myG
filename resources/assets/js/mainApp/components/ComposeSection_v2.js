@@ -5,7 +5,6 @@
  */
 import React, { Component, Fragment } from 'react'
 import axios from 'axios'
-import IndividualPost from './IndividualPost'
 import PostFileModal from './PostFileModal'
 import Dropzone from 'react-dropzone'
 const buckectBaseUrl = 'https://mygame-media.s3.amazonaws.com/platform_images/'
@@ -35,7 +34,6 @@ export default class ComposeSection extends Component {
       post_content: '',
       bFileModalOpen: false,
       fileType: 'photo',
-      myPosts: [],
       masterList: [],
       open_compose_textTab: true,
       add_group_toggle: false,
@@ -176,7 +174,6 @@ export default class ComposeSection extends Component {
           this.props.successCallback(post)
         }
       )
-      // await this.get_posts(post)
     } catch (error) {
       logToElasticsearch('error', 'ComposeSection_v2', 'Failed submitForm:' + ' ' + error)
     }
@@ -199,34 +196,6 @@ export default class ComposeSection extends Component {
   }
   handleOverlayClick = () => {
     this.setState({ overlay_active: !this.state.overlay_active })
-  }
-
-  showLatestPosts = () => {
-    if (this.state.myPosts != []) {
-      return this.state.myPosts.map((item, index) => {
-        return <IndividualPost post={item} key={item.id} user={this.props.initialData} />
-      })
-    }
-  }
-
-  get_posts = (post) => {
-    const self = this
-
-    const getPosts = async function() {
-      try {
-        const myPosts = await axios.get(`/api/mypost/${post.data}`)
-        self.state.masterList = self.state.masterList.concat(myPosts.data.myPosts)
-
-        self.setState({
-          myPosts: self.state.masterList.reverse(),
-          show_post: true,
-          post_content: '',
-        })
-      } catch (error) {
-        logToElasticsearch('error', 'ComposeSection_v2', 'Failed get_posts:' + ' ' + error)
-      }
-    }
-    getPosts()
   }
 
   detectKey = (e) => {

@@ -487,6 +487,14 @@ class PostController {
   async destroy({ auth, request, response }) {
     if (auth.user) {
       try {
+        const security_check = await Database.from('posts')
+          .where({ id: request.params.id })
+          .first()
+
+        if (security_check == undefined || security_check.user_id != auth.user.id) {
+          return
+        }
+
         const apiController = new ApiController()
         await apiController.internal_deleteFile({ auth }, '3', request.params.id)
 
@@ -514,9 +522,18 @@ class PostController {
   async update({ auth, request, response }) {
     if (auth.user) {
       try {
+        const security_check = await Database.from('posts')
+          .where({ id: request.params.id })
+          .first()
+
+        if (security_check == undefined || security_check.user_id != auth.user.id) {
+          return
+        }
+
         const updatePost = await Post.query()
           .where({ id: request.params.id })
           .update({ content: request.input('content') })
+
         return 'Saved successfully'
       } catch (error) {
         LoggingRepository.log({

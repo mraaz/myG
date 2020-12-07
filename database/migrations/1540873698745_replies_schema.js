@@ -11,7 +11,7 @@ class RepliesSchema extends Schema {
       table.foreign('user_id').references('users.id').onDelete('cascade')
       table.integer('comment_id').unsigned().nullable()
       table.foreign('comment_id').references('comments.id').onDelete('cascade')
-      table.text('content').notNullable()
+      table.text('content').notNullable().collate('utf8mb4_unicode_ci')
       table.string('media_url', 600).nullable()
       table.timestamps(true,true)
     })

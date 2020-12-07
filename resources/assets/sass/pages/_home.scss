@@ -1059,6 +1059,7 @@ section#content-container {
         }
       }
       .media {
+        display: block;
         .post-video {
           width: 100%;
         }
@@ -1335,7 +1336,7 @@ section#content-container {
                   width: 100%;
                   border: 1px solid #273136;
                   border-radius: 4px;
-                  background: #f0f1f2 0% 0% no-repeat padding-box;
+                  background: #1d2326 0% 0% no-repeat padding-box;
                   resize: none;
                   overflow: auto;
                   color: #657172;
@@ -1370,12 +1371,36 @@ section#content-container {
                   }
                 }
               }
-              .comment-options {
+              // .comment-options {
+              //   position: absolute;
+              //   right: -25px;
+              //   top: 50%;
+              //   transform: translateY(-50%);
+              //   font-size: 12px;
+              // }
+              .gamePostExtraOption {
                 position: absolute;
-                right: -25px;
-                top: 50%;
-                transform: translateY(-50%);
-                font-size: 12px;
+                right: 10px;
+                top: -10px;
+                font-size: 20px;
+                cursor: pointer;
+                color: #fff;
+                .post-dropdown {
+                  position: absolute;
+                  z-index: 2;
+                  display: none;
+                  &.active {
+                    display: block;
+                  }
+                  nav {
+                    background: #181a1c;
+                    .option {
+                      padding: 4px 0px;
+                      cursor: pointer;
+                      font-size: 10px;
+                    }
+                  }
+                }
               }
               .dropdown {
                 position: absolute;
@@ -1652,6 +1677,10 @@ section#content-container {
         min-width: 350px;
         min-height: 200px;
         max-width: 500px;
+        .image-gallery-image {
+          max-height: 800px;
+          max-width: 700px;
+        }
         .post-video {
           max-width: 500px;
         }

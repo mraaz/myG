@@ -109,7 +109,7 @@ export default class GameExperiences extends React.Component {
         onClick={() => this.setState({ selected: id })}>
         {gameName.length > 17 ?
           (
-            <WithTooltip text={gameName} position={{ bottom: '36px', left: '-10vw' }}>
+            <WithTooltip text={gameName} position={{ bottom: '36px', left: '-2vw' }}>
               <span className="name">{gameName.slice(0, 17) + '...'}</span>
             </WithTooltip>
           ): <span className="name">{gameName}</span>

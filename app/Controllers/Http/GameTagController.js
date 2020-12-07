@@ -5,7 +5,7 @@ const Database = use('Database')
 const LoggingRepository = require('../../Repositories/Logging')
 
 class GameTagController {
-  async store({ auth }, content) {
+  async store({ auth }, content, gameId) {
     if (auth.user) {
       // if (/['/.%#$,;`\\]/.test(request.input('content'))) {
       //   return false
@@ -18,6 +18,7 @@ class GameTagController {
         const newGameTag = await GameTags.create({
           content: content.trim(),
           user_id: auth.user.id,
+          game_names_id: gameId,
         })
         return newGameTag.id
       } catch (error) {
@@ -43,6 +44,7 @@ class GameTagController {
     try {
       const allTags = await Database.table('game_tags')
         .where('content', 'like', '%' + request.input('content') + '%')
+        .andWhere('game_names_id', request.input('game_names_id'))
         .limit(88)
 
       return {

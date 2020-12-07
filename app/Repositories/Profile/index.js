@@ -169,6 +169,23 @@ class ProfileRepository {
     return response.map((friend) => friend.alias);
   }
 
+  async fetchFriendsForGamer({ requestingUserId, alias }) {
+    const myFriends = await this.fetchFriends({ isSelf: true, requestingUserId });
+    const profileId = await this.fetchProfileId({ alias });
+    const response = await Database.table('friends')
+      .innerJoin('users', 'users.id', 'friends.user_id')
+      .where('friends.friend_id', profileId);
+    const friends = response.map((profile) => ({
+      profileId: profile.id,
+      alias: profile.alias,
+      image: profile.profile_img,
+      background: profile.profile_bg,
+      level: profile.level,
+      isFriend: myFriends.includes(profile.alias),
+    }));
+    return { friends };
+  }
+
   async fetchFollowers({ isSelf, requestingUserId }) {
     if (!isSelf) return [];
     const response = await Database.table('followers')
@@ -326,7 +343,7 @@ class ProfileRepository {
     gameExperience.rating = rating;
     gameExperience.dynamic = JSON.stringify(dynamic);
     const tagController = new GameTagController();
-    const tagRequests = tags.split('|').map((tag) => tagController.store({ auth }, tag));
+    const tagRequests = tags.split('|').map((tag) => tagController.store({ auth }, tag, game));
     await Promise.all(tagRequests).then(() => gameExperience.save());
 
     await GameBackground.query().where('experience_id', gameExperience.id).delete();

@@ -19,14 +19,14 @@ export default class AnalyticsBox extends Component {
   }
 
   renderLevel = () => {
-    const { user_level = 0, user_experience = '0', user_xp_negative_balance = 0, level_max_points = 0 } = this.state.userTransactionStates;
-    const progress = Math.floor((user_experience / level_max_points) * 100);
+    const { user_level = 0, user_experience = '0', user_xp_negative_balance = 0, level_max_points = 0 } = this.state.userTransactionStates
+    const progress = Math.floor((user_experience / level_max_points) * 100)
     return (
       <div className='level-container'>
         <section className='level-container-img'>
           <Progress
             className={`circle-wrap`}
-            borderColor={`${user_xp_negative_balance ? '#d70f46' : '#E5C746'}`}
+            borderColor={`${user_xp_negative_balance == 1 ? '#d70f46' : '#E5C746'}`}
             progress={progress || 0}
             value={user_level}
             subtitle={'Level'}
@@ -45,7 +45,7 @@ export default class AnalyticsBox extends Component {
   }
 
   renderConnections = () => {
-    const { connections = 0, last_month_connections = 0 } = this.state.userTransactionStates;
+    const { connections = 0, last_month_connections = 0 } = this.state.userTransactionStates
     return (
       <div className='social-box'>
         <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Network.svg' className='social-box-img' />
@@ -58,7 +58,7 @@ export default class AnalyticsBox extends Component {
 
   renderFollowers = () => {
     if (this.props.onlyConnections) return null
-    const {  followers = 0, last_month_followers = 0 } = this.state.userTransactionStates;
+    const { followers = 0, last_month_followers = 0 } = this.state.userTransactionStates
     return (
       <div className='social-box'>
         <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_followers.svg' className='social-box-img' />
@@ -71,7 +71,7 @@ export default class AnalyticsBox extends Component {
 
   renderGames = () => {
     if (this.props.onlyConnections) return null
-    const { games = 0, last_month_games = 0 } = this.state.userTransactionStates;
+    const { games = 0, last_month_games = 0 } = this.state.userTransactionStates
     return (
       <div className='social-box'>
         <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_games.svg' className='social-box-img' />
@@ -84,7 +84,7 @@ export default class AnalyticsBox extends Component {
 
   renderLikes = () => {
     if (this.props.onlyConnections) return null
-    const { likes = 0, last_month_likes = 0 } = this.state.userTransactionStates;
+    const { likes = 0, last_month_likes = 0 } = this.state.userTransactionStates
     return (
       <div className='social-box'>
         <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Header_btn_likes.svg' className='social-box-img' />
@@ -97,7 +97,7 @@ export default class AnalyticsBox extends Component {
 
   renderReviews = () => {
     if (this.props.onlyConnections) return null
-    const { commendations = 0, last_month_commendations = 0 } = this.state.userTransactionStates;
+    const { commendations = 0, last_month_commendations = 0 } = this.state.userTransactionStates
     return (
       <div className='social-box'>
         <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_reviews.svg' className='social-box-img' />
