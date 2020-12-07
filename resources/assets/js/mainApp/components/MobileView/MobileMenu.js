@@ -10,6 +10,7 @@ const MobileMenu = ({ initialData }) => {
   const [notifications, setNotifications] = useState({ alerts: 0, approvals: 0, chats: 0 })
 
   const direction = useScrollDirection();
+  const alias = initialData === 'loading' ? '' : initialData.userInfo.alias
 
   useEffect(() => {
     if (direction === 'down') {
@@ -26,7 +27,9 @@ const MobileMenu = ({ initialData }) => {
         <div className={hideNav ? 'menu-bottom hide' : 'menu-bottom show'}>
           <div className='mobile-sub-menu'>
             <div className='mobile-feed-img'>
-              <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Feed.svg' class='img-fluid' />
+              <Link to='/'>
+                <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Feed.svg' class='img-fluid' />
+              </Link>
             </div>
           </div>
           {/* Hide and Show Search */}
@@ -75,12 +78,16 @@ const MobileMenu = ({ initialData }) => {
           </div>
           <div className='mobile-sub-menu'>
             <div className='mobile-profile-img'>
-              <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Profile.svg' class='img-fluid' />
+              <Link to={`/profile/${alias}`}>
+                <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Profile.svg' class='img-fluid' />
+              </Link>
             </div>
           </div>
           <div className='mobile-sub-menu'>
             <div className='mobile-notification-img'>
-              <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Bell_Icon.svg' class='img-fluid' />
+              <Link to='?at=notifications&submenu=0'>
+                <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Bell_Icon.svg' class='img-fluid' />
+              </Link>
             </div>
           </div>
         </div>

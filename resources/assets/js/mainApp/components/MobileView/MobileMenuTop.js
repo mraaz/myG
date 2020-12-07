@@ -1,9 +1,13 @@
 import React, { Fragment, useState } from 'react'
 import { Link } from 'react-router-dom'
+// import { useDispatch } from 'react-redux'
+
+// import { logoutAction } from '../../../redux/actions/userAction'
 
 const MobileMenuTop = (props) => {
   const { initialData, notifications, hide } = props
   const [hideSideMenu, setHideSideMenu] = useState(false)
+  // const dispatch = useDispatch()
 
   const alias = initialData === 'loading' ? '' : initialData.userInfo.alias
   const profileImage = initialData === 'loading' ? '' : initialData.userInfo.profile_img
@@ -93,19 +97,29 @@ const MobileMenuTop = (props) => {
                   <Link to='/' onClick={() => setHideSideMenu(false)}>Home</Link>
                 </li>
                 <li>
-                  <Link to='/community/create' onClick={() => setHideSideMenu(false)}>Communities</Link>
+                  <Link to='/?at=communities' onClick={() => setHideSideMenu(false)}>Communities</Link>
                 </li>
-                <li onClick={() => setHideSideMenu(false)}>Notifications</li>
-                <li onClick={() => setHideSideMenu(false)}>My Games</li>
+                <li>
+                  <Link to='/?at=notifications&submenu=0' onClick={() => setHideSideMenu(false)}>Notifications</Link>
+                </li>
+                <li>
+                  <Link to='/?at=mygames' onClick={() => setHideSideMenu(false)}>My Games</Link>
+                </li>
               </ul>
             </div>
             <div className='logout-setting-section'>
-              <div className='logout-btn'>
+              <div className='logout-btn' onClick={() => {
+                setHideSideMenu(false)
+                // dispatch(logoutAction())
+                window.location.href = '/logout'
+              }}>
                 <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Logout_Icon.svg' />
                 <span>Logout</span>
               </div>
               <div className='setting-btn'>
-                <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Settings_Chat_Window.svg' />
+                <Link to='/mySettings' onClick={() => setHideSideMenu(false)}>
+                  <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Settings_Chat_Window.svg' />
+                </Link>
               </div>
             </div>
           </div>
