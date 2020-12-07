@@ -1,18 +1,22 @@
 version: '3'
 services:
   db:
-    image: mariadb
+    image: mysql:latest
     container_name: myg_mysql
+    command: --default-authentication-plugin=mysql_native_password
     restart: always
     ports:
       - "3306:3306"
     environment:
       - MYSQL_DATABASE=mygame
       - MYSQL_USER=root
-      - MYSQL_PASSWORD=root
-      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_PASSWORD=mygame
+      - MYSQL_ROOT_PASSWORD=mygame
     expose:
       - "3306"
+    volumes:
+      - ./:/app/myG
+      - /data/myG:/var/lib/mysql
   redis:
     image: redis:latest
     container_name: myg_redis

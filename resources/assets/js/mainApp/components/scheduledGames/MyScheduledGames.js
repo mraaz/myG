@@ -14,8 +14,6 @@ import axios from 'axios'
 import Select from 'react-select'
 import { prefilledFilter_option } from './option'
 
-import InfiniteScroll from 'react-infinite-scroll-component'
-
 export default class MyScheduledGames extends Component {
   constructor() {
     super()

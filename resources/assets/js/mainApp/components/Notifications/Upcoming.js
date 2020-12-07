@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react'
-import InfiniteScroll from 'react-infinite-scroll-component'
 import axios from 'axios'
 
 import UpcomingItem from './UpcomingItem'
