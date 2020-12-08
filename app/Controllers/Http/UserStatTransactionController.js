@@ -417,15 +417,18 @@ class UserStatTransactionController {
   }
 
   async reCalculate_xp(my_user_id, criteria) {
+    console.log('reCalculate_xp')
     const getmyStats = await Database.from('user_stat_transactions')
       .innerJoin('user_stats', 'user_stats.id', 'user_stat_transactions.user_stat_id')
       .where({ user_id: my_user_id })
 
     let xp = 0
+    console.log(getmyStats)
 
     for (let i = 0; i < getmyStats.length; i++) {
       xp += parseInt(getmyStats[i].values) * getmyStats[i].xp_per_tick
     }
+    console.log(xp, '<<<xp')
 
     const getGamerLevels = await Database.from('users')
       .where({ id: my_user_id })
@@ -435,6 +438,7 @@ class UserStatTransactionController {
     let xp_neg_balance = false
 
     if (xp < parseInt(getGamerLevels.experience_points)) {
+      console.log(parseInt(getGamerLevels.experience_points), '<<<be like that')
       xp_neg_balance = true
       if (parseInt(getGamerLevels.level) == 1) {
         xp = 0
@@ -451,12 +455,26 @@ class UserStatTransactionController {
             .first()
           xp = parseInt(get1stLevel.max_points) + 1
         } else {
-          xp = parseInt(getprevLevel.max_points) + 1
+          if (xp <= parseInt(getprevLevel.max_points)) {
+            xp = parseInt(getprevLevel.max_points) + 1
+          }
         }
       }
     } else {
       const getMax = await Database.from('user_levels').max('level as max_level')
+      let counter = 0
+      //While loop as there is a possibility for users to get points for multiple levels
       while (true) {
+        //Put in place as an insurace policy, dont like having while true in code
+        if (counter >= parseInt(getMax[0].max_level)) {
+          break
+        }
+
+        counter++
+
+        if (parseInt(getGamerLevels.level) >= parseInt(getMax[0].max_level)) {
+          break
+        }
         const getmyLevel = await Database.from('user_levels')
           .where({ level: parseInt(getGamerLevels.level) })
           .select('max_points', 'level')
@@ -473,6 +491,8 @@ class UserStatTransactionController {
         }
       }
     }
+
+    console.log(xp, '<<<Final_xp')
 
     const update_xp = await User.query()
       .where({ id: my_user_id })
