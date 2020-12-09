@@ -2331,7 +2331,7 @@ section#content-container {
 
     &.hide {
       bottom: -60px;
-      
+
       .mobile-sub-menu-items {
         display: none;
       }
@@ -2381,7 +2381,7 @@ section#content-container {
     transition: top 0.6s;
 
     &.hide {
-      top:-110vh;
+      top: -110vh;
     }
   }
 
@@ -2442,7 +2442,7 @@ section#content-container {
 
   .user-name {
     align-self: center;
-    padding-left: .75rem;
+    padding-left: 0.75rem;
     color: #fff;
   }
 
@@ -2466,25 +2466,25 @@ section#content-container {
     color: #fff;
   }
 
-  .level-numer,
-  .reputation-number {
+  //.reputation-number,
+  .level-numer {
     font-size: 15px;
     color: #fff;
   }
 
-  .reputation {
-    color: #fff;
-    font-size: 12px;
-  }
-
-  .reputation-reviews-number {
-    font-size: 12px;
-    color: #657172;
-  }
-
-  .reputation-reviews {
-    margin-left: 20px;
-  }
+  // .reputation {
+  //   color: #fff;
+  //   font-size: 12px;
+  // }
+  //
+  // .reputation-reviews-number {
+  //   font-size: 12px;
+  //   color: #657172;
+  // }
+  //
+  // .reputation-reviews {
+  //   margin-left: 20px;
+  // }
 
   .menu-list {
     color: #fff;

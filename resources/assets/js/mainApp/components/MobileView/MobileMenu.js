@@ -1,7 +1,11 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import MobileMenuTop from './MobileMenuTop'
-import { useScrollDirection } from '../../hooks';
+
+import { useScrollDirection } from '../../hooks'
+import { logToElasticsearch } from '../../../integration/http/logger'
+
+import axios from 'axios'
 
 const MobileMenu = ({ initialData }) => {
   const [hideSearch, setHideSearch] = useState(false)
@@ -9,7 +13,7 @@ const MobileMenu = ({ initialData }) => {
   const [hideNav, setHideNav] = useState(false)
   const [notifications, setNotifications] = useState({ alerts: 0, approvals: 0, chats: 0 })
 
-  const direction = useScrollDirection();
+  const direction = useScrollDirection()
   const alias = initialData === 'loading' ? '' : initialData.userInfo.alias
 
   useEffect(() => {
@@ -18,11 +22,47 @@ const MobileMenu = ({ initialData }) => {
     } else {
       setHideNav(false)
     }
-  })
+
+    const getNotis = async function() {
+      let _chats = 0
+      try {
+        const getnoti = await axios.post('/api/notifications_v2/getUnread_count', {
+          notification_type: -1,
+        })
+
+        const chat_noti = await axios.get('/api/chat/message/unread?count=true')
+
+        if (chat_noti.data) {
+          const { unreadMessages = 0 } = chat_noti.data
+          _chats = unreadMessages
+        }
+
+        if (getnoti.data) {
+          const { getUnread_count_Alerts = 0, getUnread_count_Approvals = 0 } = getnoti.data
+
+          setNotifications({
+            alerts: getUnread_count_Alerts,
+            approvals: getUnread_count_Approvals,
+            chats: _chats,
+          })
+        } else {
+          setNotifications({
+            alerts: 0,
+            approvals: 0,
+            chats: _chats,
+          })
+        }
+      } catch (error) {
+        logToElasticsearch('error', 'MobileMenu', 'Failed getNotis:' + ' ' + error)
+      }
+    }
+
+    getNotis()
+  }, [])
 
   return (
     <Fragment>
-      <MobileMenuTop initialData={ initialData } notifications={ {...notifications} } hide={hideNav}/>
+      <MobileMenuTop initialData={initialData} notifications={{ ...notifications }} hide={hideNav} />
       <section className='main-mobile-menu'>
         <div className={hideNav ? 'menu-bottom hide' : 'menu-bottom show'}>
           <div className='mobile-sub-menu'>
