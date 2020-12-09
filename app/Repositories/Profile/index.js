@@ -19,6 +19,8 @@ const AwsKeyController = use('App/Controllers/Http/AwsKeyController');
 const ConnectionController = use('App/Controllers/Http/ConnectionController');
 const NotificationController_v2 = use('App/Controllers/Http/NotificationController_v2');
 
+const UserStatTransactionController = use('App/Controllers/Http/UserStatTransactionController')
+
 const ProfileSchema = require('../../Schemas/Profile');
 const GameBackgroundSchema = require('../../Schemas/GameBackground');
 const CommendationSchema = require('../../Schemas/Commendation');
@@ -26,7 +28,7 @@ const CommendationSchema = require('../../Schemas/Commendation');
 const ElasticsearchRepository = require('../Elasticsearch');
 
 class ProfileRepository {
-  
+
   privateKey = null;
   publicKey = null;
 
@@ -328,7 +330,7 @@ class ProfileRepository {
         await keyController.addGameIconKey({ auth, request });
       }
     }
-    
+
     await this.verifyGameUpdates({ game, level, experience, dynamic });
 
     const gameExperience = id ? await GameExperience.find(id) : new GameExperience();
@@ -405,13 +407,19 @@ class ProfileRepository {
     const commendedId = await this.fetchProfileId({ alias });
     const existingCommendation = await Commendation.query().where('game_experiences_id', gameExperienceId).andWhere('user_id', commendedId).andWhere('commender_id', requestingUserId).first();
     if (existingCommendation) return this.fetchProfileInfo({ requestingUserId, id: commendedId, alias });
+
     const notificationController = new NotificationController_v2();
     const commendation = new Commendation();
+    const userStatController = new UserStatTransactionController()
+
     commendation.game_experiences_id = gameExperienceId;
     commendation.user_id = commendedId;
     commendation.commender_id = requestingUserId;
     await commendation.save();
-    await notificationController.commend({ commendedId, commenderId: requestingUserId });
+
+    notificationController.commend({ commendedId, commenderId: requestingUserId });
+    userStatController.update_total_number_of(commendedId, 'total_number_of_commendations')
+
     return this.fetchProfileInfo({ requestingUserId, id: commendedId, alias });
   }
 
@@ -483,4 +491,3 @@ class ProfileRepository {
 }
 
 module.exports = new ProfileRepository();
- 

@@ -412,23 +412,18 @@ class UserStatTransactionController {
           })
       }
     }
-    console.log(value_to_be_updated, '<<<value to <')
     this.reCalculate_xp(my_user_id, criteria)
   }
 
   async reCalculate_xp(my_user_id, criteria) {
-    console.log('reCalculate_xp')
     const getmyStats = await Database.from('user_stat_transactions')
       .innerJoin('user_stats', 'user_stats.id', 'user_stat_transactions.user_stat_id')
       .where({ user_id: my_user_id })
 
     let xp = 0
-    console.log(getmyStats)
-
     for (let i = 0; i < getmyStats.length; i++) {
       xp += parseInt(getmyStats[i].values) * getmyStats[i].xp_per_tick
     }
-    console.log(xp, '<<<xp')
 
     const getGamerLevels = await Database.from('users')
       .where({ id: my_user_id })
@@ -438,7 +433,6 @@ class UserStatTransactionController {
     let xp_neg_balance = false
 
     if (xp < parseInt(getGamerLevels.experience_points)) {
-      console.log(parseInt(getGamerLevels.experience_points), '<<<be like that')
       xp_neg_balance = true
       if (parseInt(getGamerLevels.level) == 1) {
         xp = 0
@@ -491,8 +485,6 @@ class UserStatTransactionController {
         }
       }
     }
-
-    console.log(xp, '<<<Final_xp')
 
     const update_xp = await User.query()
       .where({ id: my_user_id })
