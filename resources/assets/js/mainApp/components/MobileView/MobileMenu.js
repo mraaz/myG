@@ -1,7 +1,10 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import MobileMenuTop from './MobileMenuTop'
+
 import { useScrollDirection } from '../../hooks'
+import { logToElasticsearch } from '../../../integration/http/logger'
+
 import axios from 'axios'
 
 const MobileMenu = ({ initialData }) => {
@@ -50,7 +53,7 @@ const MobileMenu = ({ initialData }) => {
           })
         }
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'MobileMenu', 'Failed getNotis:' + ' ' + error)
       }
     }
 
