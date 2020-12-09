@@ -19,8 +19,14 @@ export default class AnalyticsBox extends Component {
   }
 
   renderLevel = () => {
-    const { user_level = 0, user_experience = '0', user_xp_negative_balance = 0, level_max_points = 0 } = this.state.userTransactionStates
-    const progress = Math.floor((user_experience / level_max_points) * 100)
+    const {
+      user_level = 0,
+      user_experience = 0,
+      start_of_level_xp = 0,
+      user_xp_negative_balance = 0,
+      level_max_points = 0,
+    } = this.state.userTransactionStates
+    const progress = Math.floor(((user_experience - start_of_level_xp) / level_max_points) * 100)
     return (
       <div className='level-container'>
         <section className='level-container-img'>

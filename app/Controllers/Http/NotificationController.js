@@ -1095,7 +1095,7 @@ class NotificationController {
 
   async ding(my_user_id) {
     try {
-      const kicked_from_group = await Notification.create({
+      const ding = await Notification.create({
         other_user_id: my_user_id,
         user_id: my_user_id,
         activity_type: 20,

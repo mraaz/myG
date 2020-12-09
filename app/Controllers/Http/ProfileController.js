@@ -32,6 +32,7 @@ class ProfileController {
       const updates = request.all()
       log('PROFILE', `User ${requestingUserId} requesting to update profile info with ${JSON.stringify(updates)}`)
       const { profile } = await ProfileRepository.updateProfile({ requestingUserId, ...updates })
+
       return response.send({ profile })
     } catch (error) {
       LoggingRepository.log({
@@ -113,6 +114,7 @@ class ProfileController {
       const gameExperienceId = params.gameExperienceId
       log('PROFILE', `User ${requestingUserId} commending user ${alias} for game ${gameExperienceId}`)
       const { profile } = await ProfileRepository.commendUser({ requestingUserId, alias, gameExperienceId })
+
       return response.send({ profile })
     } catch (error) {
       LoggingRepository.log({
@@ -125,7 +127,7 @@ class ProfileController {
       return response.send({ error })
     }
   }
-  
+
   async deleteGameExperience({ auth, params, response }) {
     try {
       const requestingUserId = auth.user.id

@@ -107,7 +107,7 @@ export default class IndividualPost extends Component {
       //   }
       // }
     } catch (error) {
-      logToElasticsearch('error', 'IndividualComment', 'Failed click_like_btn:' + ' ' + error)
+      logToElasticsearch('error', 'IndividualPost', 'Failed click_like_btn:' + ' ' + error)
     }
     if (this.state.total == 0) {
       this.setState({
@@ -133,7 +133,7 @@ export default class IndividualPost extends Component {
       const unlike = await axios.get(`/api/likes/delete/${post_id}`)
       //const deletePostLike = axios.get(`/api/notifications/deletePostLike/${post_id}`)
     } catch (error) {
-      logToElasticsearch('error', 'IndividualComment', 'Failed click_unlike_btn:' + ' ' + error)
+      logToElasticsearch('error', 'IndividualPost', 'Failed click_unlike_btn:' + ' ' + error)
     }
 
     if (this.state.total == 0) {
@@ -203,7 +203,7 @@ export default class IndividualPost extends Component {
     //       })
     //     }
     //   } catch (error) {
-    //     logToElasticsearch('error', 'IndividualComment', 'Failed getmyPostCount:' + ' ' + error)
+    //     logToElasticsearch('error', 'IndividualPost', 'Failed getmyPostCount:' + ' ' + error)
     //   }
     // }
     //
@@ -225,7 +225,7 @@ export default class IndividualPost extends Component {
           comment_total: myComments.data.allComments.length,
         })
       } catch (error) {
-        logToElasticsearch('error', 'IndividualComment', 'Failed pullComments:' + ' ' + error)
+        logToElasticsearch('error', 'IndividualPost', 'Failed pullComments:' + ' ' + error)
       }
     }
     getComments()
@@ -343,7 +343,7 @@ export default class IndividualPost extends Component {
           zero_comments: true,
         })
       } catch (error) {
-        logToElasticsearch('error', 'IndividualComment', 'Failed saveComment:' + ' ' + error)
+        logToElasticsearch('error', 'IndividualPost', 'Failed saveComment:' + ' ' + error)
       }
     }
     saveComment()
@@ -373,7 +373,7 @@ export default class IndividualPost extends Component {
           value2: '',
         })
       } catch (error) {
-        logToElasticsearch('error', 'IndividualComment', 'Failed editPost:' + ' ' + error)
+        logToElasticsearch('error', 'IndividualPost', 'Failed editPost:' + ' ' + error)
       }
     }
     editPost()
@@ -490,7 +490,7 @@ export default class IndividualPost extends Component {
         post_deleted: true,
       })
     } catch (error) {
-      logToElasticsearch('error', 'IndividualComment', 'Failed delete_exp:' + ' ' + error)
+      logToElasticsearch('error', 'IndividualPost', 'Failed delete_exp:' + ' ' + error)
     }
   }
 
