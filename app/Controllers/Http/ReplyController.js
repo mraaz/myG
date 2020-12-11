@@ -173,7 +173,7 @@ class ReplyController {
           })
           .delete()
 
-        return delete_reply
+        return 'Done'
       } catch (error) {
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
