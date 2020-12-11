@@ -15,10 +15,7 @@ class ReportsSchema extends Schema {
       table.foreign('comment_id').references('comments.id').onDelete('cascade')
       table.integer('reply_id').unsigned().nullable()
       table.foreign('reply_id').references('replies.id').onDelete('cascade')
-      table.integer('other_user_id').unsigned().notNullable()
-      table.foreign('other_user_id').references('users.id').onDelete('cascade')
       table.string('report_description', 254).nullable()
-      table.integer('type').unsigned().notNullable().defaultTo(0)
       table.integer('read_status').unsigned().nullable().defaultTo(0)
       table.unique(['user_id', 'post_id']);
       table.unique(['user_id', 'comment_id']);
