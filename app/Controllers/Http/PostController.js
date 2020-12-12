@@ -1,7 +1,6 @@
 'use strict'
 
 const Post = use('App/Models/Post')
-const Report = use('App/Models/Report')
 const HashTags = use('App/Models/HashTag')
 const Database = use('Database')
 
