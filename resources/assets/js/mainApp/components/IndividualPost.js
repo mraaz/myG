@@ -217,7 +217,7 @@ export default class IndividualPost extends Component {
     var post_id = this.props.post.id
     const self = this
 
-    const getComments = async function () {
+    const getComments = async function() {
       try {
         const myComments = await axios.get(`/api/comments/${post_id}`)
         self.setState({
@@ -363,7 +363,7 @@ export default class IndividualPost extends Component {
     const self = this
     var post_id = this.props.post.id
 
-    const editPost = async function () {
+    const editPost = async function() {
       try {
         const myEditPost = await axios.post(`/api/post/update/${post_id}`, {
           content: self.state.value2,
@@ -474,7 +474,7 @@ export default class IndividualPost extends Component {
       dropdown: false,
     })
     setTimeout(
-      function () {
+      function() {
         //Start the timer
         this.focusTextInput2()
       }.bind(this),
@@ -570,24 +570,6 @@ export default class IndividualPost extends Component {
   clickedGamePostExtraOption = () => {
     const { showPostExtraOption } = this.state
     this.setState({ showPostExtraOption: !showPostExtraOption })
-  }
-
-  handleReportClick = async (text, post_id) => {
-    if (text == 'true') {
-      const { showPostExtraOption } = this.state
-      this.setState({ showPostExtraOption: !showPostExtraOption })
-      const reportData = await axios.get(`/api/post/report/${post_id}`)
-      if (reportData) {
-        this.setState({ alert: '' })
-        toast.success(
-          <Toast_style
-            text={`Thanks for reporting! You're helping to make this is a better place. If we deem this an inappropriate post, you'll be reward!`}
-          />
-        )
-      }
-    } else {
-      this.setState({ alert: '' })
-    }
   }
 
   render() {

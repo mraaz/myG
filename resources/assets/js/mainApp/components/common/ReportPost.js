@@ -22,7 +22,13 @@ const ReportPost = (props) => {
       ...props,
     })
     if (data) {
-      toast.success(<Toast_style text={'Thanks for reporting.we will review your concern.'} />)
+      toast.success(
+        <Toast_style
+          text={
+            "Thanks for reporting! You're helping to make this is a better place. If we deem this an inappropriate content, you'll be reward!"
+          }
+        />
+      )
       SetRequesting(false)
       hideModal(false)
     }

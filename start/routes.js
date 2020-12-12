@@ -67,7 +67,6 @@ Route.delete('/api/post/delete/:id', 'PostController.destroy')
 Route.post('/api/post/update/:id', 'PostController.update')
 Route.get('/api/getpost/:id', 'PostController.showpost')
 Route.post('/api/post/featureToggle/', 'PostController.featureToggle')
-Route.get('/api/post/report/:id', 'PostController.report')
 
 Route.post('/api/get_group_posts', 'PostController.get_group_posts')
 

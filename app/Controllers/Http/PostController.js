@@ -609,28 +609,6 @@ class PostController {
       }
     }
   }
-
-  async report({ auth, request, response }) {
-    if (auth.user) {
-      try {
-        await Report.create({
-          post_id: request.params.id,
-          user_id: auth.user.id,
-        })
-      } catch (error) {
-        if (error.code == 'ER_DUP_ENTRY') {
-          return
-        }
-        LoggingRepository.log({
-          environment: process.env.NODE_ENV,
-          type: 'error',
-          source: 'backend',
-          context: __filename,
-          message: (error && error.message) || error,
-        })
-      }
-    }
-  }
 }
 
 module.exports = PostController
