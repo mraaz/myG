@@ -2,7 +2,10 @@
 
 const Database = use('Database')
 const Report = use('App/Models/Report')
+
 const LoggingRepository = require('../../Repositories/Logging')
+
+const ReportedController = use('./ReportedController')
 
 // Split the array into halves and merge them recursively
 function mergeSort(arr) {
@@ -40,16 +43,6 @@ function merge(left, right) {
 class ReportController {
   async store({ auth, request, response }) {
     if (auth.user) {
-      // let type = 0
-      //
-      // if (request.input('post_id') != undefined && request.input('post_id') != '' && request.input('post_id') != null) {
-      //   type = 1
-      // } else if (request.input('comment_id') != undefined && request.input('comment_id') != '' && request.input('comment_id') != null) {
-      //   type = 2
-      // } else if (request.input('reply_id') != undefined && request.input('reply_id') != '' && request.input('reply_id') != null) {
-      //   type = 3
-      // }
-
       try {
         const newReport = await Report.create({
           user_id: auth.user.id,
@@ -74,13 +67,11 @@ class ReportController {
   async destroy({ auth, request, response }) {
     if (auth.user) {
       try {
-        const security_check = await Database.from('admins')
-          .where({ user_id: auth.user.id })
-          .first()
-
-        if (security_check == undefined) {
-          return
-        }
+        const check = await this.security_check({ auth })
+        //RAAZ UNDO THIS LATER
+        // if (!check) {
+        //   return
+        // }
 
         const delete_report = await Database.table('reports')
           .where({
@@ -105,10 +96,16 @@ class ReportController {
 
   async show({ auth, request, response }) {
     try {
+      const check = await this.security_check({ auth })
+      //RAAZ UNDO THIS LATER
+      // if (!check) {
+      //   return
+      // }
+
       let singleArr = []
 
       let allReports_posts = await Database.from('reports')
-        .select('reports.id', 'reports.post_id', 'reports.created_at')
+        .select('reports.id as report_id', 'reports.post_id', 'reports.created_at')
         .whereNot('post_id', '=', '')
         .groupBy('reports.post_id')
         .orderBy('reports.created_at', 'desc')
@@ -214,6 +211,131 @@ class ReportController {
       allReports[i].owner_profile_img = getOwner[0].profile_img
     }
     return allReports
+  }
+
+  async security_check({ auth }) {
+    const security_check = await Database.from('admins')
+      .where({ user_id: auth.user.id, permission_level: 1 })
+      .first()
+
+    if (security_check == undefined) {
+      return false
+    } else {
+      return true
+    }
+  }
+
+  async destroy_source({ auth, request, response }) {
+    try {
+      const check = await this.security_check({ auth })
+      //RAAZ UNDO THIS LATER
+      // if (!check) {
+      //   return
+      // }
+      console.log('hee haa')
+      const report_ = await Database.table('reports')
+        .where({
+          id: request.params.id,
+        })
+        .first()
+
+      if (report_ == undefined) {
+        return
+      }
+
+      let type = 0
+
+      if (report_.post_id) {
+        type = 1
+      } else if (report_.comment_id) {
+        type = 2
+      } else if (report_.reply_id) {
+        type = 3
+      }
+
+      let owner
+      switch (type) {
+        case 1:
+          owner = await Database.from('posts')
+            .where('posts.id', '=', report_.post_id)
+            .select('user_id')
+            .first()
+
+          await Database.table('posts')
+            .where({
+              id: report_.post_id,
+            })
+            .delete()
+          break
+        case 2:
+          owner = await Database.from('comments')
+            .where('comments.id', '=', report_.comment_id)
+            .select('user_id')
+            .first()
+
+          await Database.table('comments')
+            .where({
+              id: report_.comment_id,
+            })
+            .delete()
+          break
+        case 3:
+          owner = await Database.from('replies')
+            .where('replies.id', '=', report_.reply_id)
+            .select('user_id')
+            .first()
+
+          await Database.table('replies')
+            .where({
+              id: report_.reply_id,
+            })
+            .delete()
+          break
+        default:
+          return
+      }
+
+      //noti the owner: bad content
+      const _reported = await Database.from('reported')
+        .where({ user_id: owner.user_id })
+        .first()
+
+      const reported_controller = new ReportedController()
+
+      if (_reported == undefined) {
+        reported_controller.store(owner.user_id, report_.report_description, type)
+      } else {
+        let offenceInfo = {
+          first_offense: _reported.first_offence_date,
+          second_offense: _reported.second_offence_date,
+          third_offense: _reported.third_offence_date,
+        }
+
+        reported_controller.update(owner.user_id, offenceInfo, type)
+        //reported_controller.incrementCounter()
+        //rotate offenses
+        //incrementGameCounter
+      }
+
+      //find the owner and create a record in reported
+      //increment counter
+      // keep the last three times they voliated and reason
+      // if offense has not happened in last 6 months, half points
+      // if offense has not happened in last 12 months, set to 0
+      //}
+
+      //new feature
+      //option to delete user
+      //option to ban | 24hrs || 48 hrs || 1 week
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+    }
   }
 }
 

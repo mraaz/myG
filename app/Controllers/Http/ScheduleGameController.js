@@ -883,6 +883,18 @@ class ScheduleGameController {
         myScheduledGames.data[i].no_of_gamers = getAllGamers[0].no_of_gamers
       }
       myScheduledGames = myScheduledGames.data
+
+      const security_check = await Database.from('admins')
+        .where({ user_id: auth.user.id, permission_level: 1 })
+        .first()
+
+      if (security_check != undefined) {
+        myScheduledGames.isAdmin = true
+      }
+
+      return {
+        myScheduledGames,
+      }
     } catch (error) {
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
@@ -891,10 +903,10 @@ class ScheduleGameController {
         context: __filename,
         message: (error && error.message) || error,
       })
-    }
 
-    return {
-      myScheduledGames,
+      return {
+        myScheduledGames,
+      }
     }
   }
 
