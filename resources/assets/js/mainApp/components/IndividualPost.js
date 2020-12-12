@@ -19,6 +19,7 @@ import { logToElasticsearch } from '../../integration/http/logger'
 const buckectBaseUrl = 'https://mygame-media.s3.amazonaws.com/platform_images/'
 
 import ImageGallery from './common/ImageGallery/ImageGallery'
+import ReportPost from './common/ReportPost'
 
 export default class IndividualPost extends Component {
   constructor() {
@@ -216,7 +217,7 @@ export default class IndividualPost extends Component {
     var post_id = this.props.post.id
     const self = this
 
-    const getComments = async function() {
+    const getComments = async function () {
       try {
         const myComments = await axios.get(`/api/comments/${post_id}`)
         self.setState({
@@ -362,7 +363,7 @@ export default class IndividualPost extends Component {
     const self = this
     var post_id = this.props.post.id
 
-    const editPost = async function() {
+    const editPost = async function () {
       try {
         const myEditPost = await axios.post(`/api/post/update/${post_id}`, {
           content: self.state.value2,
@@ -473,7 +474,7 @@ export default class IndividualPost extends Component {
       dropdown: false,
     })
     setTimeout(
-      function() {
+      function () {
         //Start the timer
         this.focusTextInput2()
       }.bind(this),
@@ -517,26 +518,14 @@ export default class IndividualPost extends Component {
     })
   }
   showReportAlert(id) {
-    const getAlert = () => (
-      <SweetAlert
-        danger
-        showCancel
-        title='Are you sure you wish to report this post?'
-        confirmBtnText='Make it so!'
-        confirmBtnBsStyle='danger'
-        focusCancelBtn={true}
-        focusConfirmBtn={false}
-        showCloseButton={true}
-        onConfirm={() => this.handleReportClick('true', id)}
-        onCancel={() => this.handleReportClick('false', id)}></SweetAlert>
-    )
+    const getAlert = () => <ReportPost post_id={id} hideModal={this.hideAlert} />
 
     this.setState({
       alert: getAlert(),
     })
   }
 
-  hideAlert(text) {
+  hideAlert = (text) => {
     this.setState({
       alert: null,
       dropdown: false,
