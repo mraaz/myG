@@ -34,7 +34,6 @@ export default class MyPosts extends Component {
   showLatestPosts = () => {
     const { myPosts = [] } = this.state
     if (myPosts.length > 0) {
-      console.log(this.props.initialData.userInfo, '<<<this.props.initialData.userInfo')
       return myPosts.map((item, index) => {
         try {
           let media_url = item.media_url.length > 0 ? JSON.parse(item.media_url) : ''

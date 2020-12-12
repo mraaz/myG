@@ -95,15 +95,23 @@ class AttendeeController {
 
         const noti = new CommonController()
 
-        await noti.remove_schedule_game_attendees({ auth }, request.input('schedule_games_id'), activity_type)
-        noti.addScheduleGame_attendance({ auth }, request.input('schedule_games_id'), get_game_info.user_id, activity_type)
+        if (myType == 1) {
+          const userStatController = new UserStatTransactionController()
+          userStatController.update_total_number_of(get_game_info.user_id, 'total_number_of_games_hosted')
+          userStatController.update_total_number_of(auth.user.id, 'total_number_of_games_played')
 
-        const co_hosts = await Database.from('co_hosts')
-          .where({ schedule_games_id: request.input('schedule_games_id') })
-          .select('user_id')
+          await noti.remove_schedule_game_attendees({ auth }, request.input('schedule_games_id'), activity_type)
+          noti.addScheduleGame_attendance({ auth }, request.input('schedule_games_id'), get_game_info.user_id, activity_type)
+        } else {
+          noti.addScheduleGame_attendance({ auth }, request.input('schedule_games_id'), get_game_info.user_id, activity_type)
 
-        for (var i = 0; i < co_hosts.length; i++) {
-          noti.addScheduleGame_attendance({ auth }, request.input('schedule_games_id'), co_hosts[i].user_id)
+          const co_hosts = await Database.from('co_hosts')
+            .where({ schedule_games_id: request.input('schedule_games_id') })
+            .select('user_id')
+
+          for (var i = 0; i < co_hosts.length; i++) {
+            noti.addScheduleGame_attendance({ auth }, request.input('schedule_games_id'), co_hosts[i].user_id, activity_type)
+          }
         }
 
         return return_msg
@@ -391,13 +399,10 @@ class AttendeeController {
         //look up co hosts and notify aswell
         const co_hosts = await Database.from('co_hosts').where({ schedule_games_id: request.params.id }).select('user_id')
 
-        for (var i = 0; i < co_hosts.length; i++) {
+        for (let i = 0; i < co_hosts.length; i++) {
           request.params.other_user_id = co_hosts[i].user_id
           noti.add_approved_attendee_left({ auth }, request.params.id, co_hosts[i].user_id)
         }
-
-        userStatController.update_total_number_of(attendees[0].user_id, 'total_number_of_games_hosted')
-        userStatController.update_total_number_of(auth.user.id, 'total_number_of_games_played')
 
         // Getting: TypeError: ScheduleGameController is not a constructor, No idea why so created the string here instead
         const update_vacany = await ScheduleGame.query().where({ id: request.params.id }).update({ vacancy: true })
@@ -408,6 +413,9 @@ class AttendeeController {
             user_id: auth.user.id,
           })
           .delete()
+
+        userStatController.update_total_number_of(attendees[0].user_id, 'total_number_of_games_hosted')
+        userStatController.update_total_number_of(auth.user.id, 'total_number_of_games_played')
 
         return 'Remove entry'
       } catch (error) {
@@ -455,10 +463,42 @@ class AttendeeController {
       })
     }
   }
+  async check_permission({ auth }, schedule_game_id) {
+    let approved = false
 
+    const co_hosts = await Database.from('co_hosts')
+      .where({ schedule_games_id: schedule_game_id })
+      .select('user_id')
+
+    const get_host = await Database.from('schedule_games')
+      .select('user_id')
+      .where({ id: schedule_game_id })
+
+    if (get_host[0].user_id == auth.user.id) {
+      approved = true
+    } else {
+      for (let i = 0; i < co_hosts.length; i++) {
+        if (co_hosts[i].user_id == auth.user.id) {
+          approved = true
+          break
+        }
+      }
+    }
+
+    return approved
+  }
+
+  //If the host/co_host decided to deny the approval
   async delete_invite({ auth, request, response }) {
+    let approved = false
     if (auth.user) {
       try {
+        approved = await this.check_permission({ auth }, request.params.schedule_game_id)
+
+        if (!approved) {
+          return
+        }
+
         const delete_invite = await Database.table('attendees')
           .where({
             schedule_games_id: request.params.schedule_game_id,
@@ -482,10 +522,34 @@ class AttendeeController {
   }
 
   async up_invite({ auth, request, response }) {
+    let approved = false
     if (auth.user) {
-      let userStatController = new UserStatTransactionController()
+      const co_hosts = await Database.from('co_hosts')
+        .where({ schedule_games_id: request.input('schedule_game_id') })
+        .select('user_id')
+
+      const get_host = await Database.from('schedule_games')
+        .select('user_id', 'limit')
+        .where({ id: request.input('schedule_game_id') })
+
+      //check this user can approve 1st. Either host or co host
+      if (get_host[0].user_id == auth.user.id) {
+        approved = true
+      } else {
+        for (let i = 0; i < co_hosts.length; i++) {
+          if (co_hosts[i].user_id == auth.user.id) {
+            approved = true
+            break
+          }
+        }
+      }
+
+      const userStatController = new UserStatTransactionController()
 
       try {
+        if (!approved) {
+          return
+        }
         const up_invite = await Attendee.query()
           .where({
             schedule_games_id: request.input('schedule_game_id'),
@@ -493,11 +557,6 @@ class AttendeeController {
           })
           .update({
             type: 1,
-            dota_2_position_one: request.input('dota_2_position_one'),
-            dota_2_position_two: request.input('dota_2_position_two'),
-            dota_2_position_three: request.input('dota_2_position_three'),
-            dota_2_position_four: request.input('dota_2_position_four'),
-            dota_2_position_five: request.input('dota_2_position_five'),
           })
 
         const get_all_attendees = await Database.from('attendees')
@@ -505,10 +564,6 @@ class AttendeeController {
           .where({ schedule_games_id: request.input('schedule_game_id'), type: 1 })
 
         if (get_all_attendees.length > 1) {
-          const get_host = await Database.from('schedule_games')
-            .select('user_id', 'limit')
-            .where({ id: request.input('schedule_game_id') })
-
           userStatController.update_total_number_of(get_host[0].user_id, 'total_number_of_games_hosted')
 
           if (get_host[0].limit != 0) {
@@ -523,17 +578,13 @@ class AttendeeController {
           }
         }
 
-        for (var i = 0; i < get_all_attendees.length; i++) {
+        for (let i = 0; i < get_all_attendees.length; i++) {
           userStatController.update_total_number_of(get_all_attendees[i].user_id, 'total_number_of_games_played')
         }
         let noti = new CommonController()
         noti.addGameApproved({ auth }, request.input('schedule_game_id'), request.input('user_id'))
 
-        const co_hosts = await Database.from('co_hosts')
-          .where({ schedule_games_id: request.input('schedule_game_id') })
-          .select('user_id')
-
-        for (var i = 0; i < co_hosts.length; i++) {
+        for (let i = 0; i < co_hosts.length; i++) {
           noti.addGameApproved({ auth }, request.input('schedule_game_id'), co_hosts[i].user_id)
         }
 

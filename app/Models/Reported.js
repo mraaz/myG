@@ -4,6 +4,9 @@
 const Model = use('Model')
 
 class Reported extends Model {
+  static get table() {
+    return 'reported'
+  }
 }
 
 module.exports = Reported

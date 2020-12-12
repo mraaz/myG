@@ -443,4 +443,10 @@ Route.post('/api/sponsor/create', 'SponsorController.store')
 Route.delete('/api/sponsor/delete/:id', 'SponsorController.destroy')
 Route.post('/api/sponsor/update', 'SponsorController.update')
 
+//Reports
+Route.post('/api/report/create', 'ReportController.store')
+Route.delete('/api/report/delete/:id', 'ReportController.destroy')
+Route.delete('/api/report/delete_source/:id', 'ReportController.destroy_source')
+Route.get('/api/report/:counter', 'ReportController.show')
+
 Route.any('*', ({ view }) => view.render('pages/react'))

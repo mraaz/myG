@@ -368,7 +368,7 @@ class NotificationController_v2 {
             break
         }
         let allMylike_posts = await Database.from('notifications')
-          .innerJoin('users', 'users.id', 'notifications.user_id')
+          //.innerJoin('users', 'users.id', 'notifications.user_id')
           .where({ other_user_id: auth.user.id })
           .whereIn('activity_type', arr)
           .groupBy('notifications.activity_type', 'notifications.post_id')
@@ -388,13 +388,11 @@ class NotificationController_v2 {
             .limit(2)
 
           const total_post_count = await Database.from('notifications')
-            .innerJoin('users', 'users.id', 'notifications.user_id')
             .where({ post_id: allMylike_posts[i].post_id, other_user_id: auth.user.id })
             .where('activity_type', allMylike_posts[i].activity_type)
             .count('* as no_of_my_notis')
 
           const getAllNotiLike_unreadCount = await Database.from('notifications')
-            .innerJoin('users', 'users.id', 'notifications.user_id')
             .where({ post_id: allMylike_posts[i].post_id, read_status: 0, other_user_id: auth.user.id })
             .where('activity_type', allMylike_posts[i].activity_type)
             .count('* as no_of_my_unread')
@@ -412,6 +410,9 @@ class NotificationController_v2 {
               allMylike_posts[i].first_user_alias = null
               allMylike_posts[i].second_user_alias = null
             }
+          } else {
+            allMylike_posts[i].first_user_alias = null
+            allMylike_posts[i].second_user_alias = null
           }
 
           allMylike_posts[i].total_post_count = total_post_count[0].no_of_my_notis > 0 ? total_post_count[0].no_of_my_notis : 0
@@ -519,11 +520,9 @@ class NotificationController_v2 {
             .orderBy('notifications.created_at', 'desc')
             .limit(3)
           const total_post_count = await Database.from('notifications')
-            .innerJoin('users', 'users.id', 'notifications.user_id')
             .where({ schedule_games_id: dropped_out_attendees[i].schedule_games_id, other_user_id: auth.user.id, activity_type: 16 })
             .count('* as no_of_my_notis')
           const getAllNotiLike_unreadCount = await Database.from('notifications')
-            .innerJoin('users', 'users.id', 'notifications.user_id')
             .where({
               schedule_games_id: dropped_out_attendees[i].schedule_games_id,
               read_status: 0,
@@ -552,6 +551,10 @@ class NotificationController_v2 {
               dropped_out_attendees[i].second_user_alias = null
               dropped_out_attendees[i].third_user_alias = null
             }
+          } else {
+            dropped_out_attendees[i].first_user_alias = null
+            dropped_out_attendees[i].second_user_alias = null
+            dropped_out_attendees[i].third_user_alias = null
           }
 
           dropped_out_attendees[i].total_post_count = total_post_count[0].no_of_my_notis > 0 ? total_post_count[0].no_of_my_notis : 0
