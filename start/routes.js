@@ -448,4 +448,8 @@ Route.delete('/api/report/delete/:id', 'ReportController.destroy')
 Route.delete('/api/report/delete_source/:id', 'ReportController.destroy_source')
 Route.get('/api/report/:counter', 'ReportController.show')
 
+//Reported
+Route.get('/api/reported/:counter', 'ReportedController.show')
+Route.delete('/api/user/delete/:id', 'ReportedController.destroy')
+
 Route.any('*', ({ view }) => view.render('pages/react'))

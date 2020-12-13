@@ -53,6 +53,10 @@ class ReportController {
         })
         return newReport
       } catch (error) {
+        if (error.code == 'ER_DUP_ENTRY') {
+          return
+        }
+
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
           type: 'error',
@@ -232,7 +236,6 @@ class ReportController {
       // if (!check) {
       //   return
       // }
-      console.log('hee haa')
       const report_ = await Database.table('reports')
         .where({
           id: request.params.id,
@@ -306,23 +309,16 @@ class ReportController {
         reported_controller.store(owner.user_id, report_.report_description, type)
       } else {
         let offenceInfo = {
-          first_offense: _reported.first_offence_date,
-          second_offense: _reported.second_offence_date,
-          third_offense: _reported.third_offence_date,
+          first_offence_date: _reported.first_offence_date,
+          second_offence_date: _reported.second_offence_date,
+          third_offence_date: _reported.third_offence_date,
+          first_offence: _reported.first_offence,
+          second_offence: _reported.second_offence,
+          third_offence: _reported.third_offence,
         }
 
-        reported_controller.update(owner.user_id, offenceInfo, type)
-        //reported_controller.incrementCounter()
-        //rotate offenses
-        //incrementGameCounter
+        reported_controller.update(owner.user_id, offenceInfo, report_.report_description, type)
       }
-
-      //find the owner and create a record in reported
-      //increment counter
-      // keep the last three times they voliated and reason
-      // if offense has not happened in last 6 months, half points
-      // if offense has not happened in last 12 months, set to 0
-      //}
 
       //new feature
       //option to delete user
