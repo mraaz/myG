@@ -305,6 +305,23 @@
     padding: 0 64px;
   }
 
+  #find-gamers-online {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    padding: 16px 48px;
+    margin: 0;
+    .hint {
+      margin: 0 8px;
+      padding: 0;
+      color: #F0F0F0;
+      font-size: 14px;
+      font-weight: normal;
+    }
+  }
+
   #find-gamers-results {
     display: flex;
     flex-direction: column;

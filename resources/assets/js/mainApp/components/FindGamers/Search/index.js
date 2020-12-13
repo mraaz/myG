@@ -1,4 +1,5 @@
 import React from 'react';
+import ToggleButton from 'react-toggle-button'
 import { showMessengerAlert } from '../../../../common/alert'
 import { ignoreFunctions } from '../../../../common/render'
 
@@ -9,10 +10,11 @@ export default class Search extends React.Component {
 
   state = {
     search: '',
+    online: false,
   }
 
   componentDidMount() {
-    this.props.onSearch('');
+    this.props.onSearch('', this.state.online);
   }
 
   onChange = ({ target: { value: search } }) => {
@@ -27,21 +29,36 @@ export default class Search extends React.Component {
       These are the areas that can be targeted:
       alias: ?, country: ?, relationship: ?, commendations: ?, team: ?, languages: ?, game: ?
     `)
-    if (search.trim().length >= 3) this.props.onSearch(search.trim());
+    if (search.trim().length >= 3) this.props.onSearch(search.trim(), this.state.online);
+  }
+
+  toggleOnline = () => {
+    this.setState((previous) => ({ online: !previous.online }), () => {
+      this.props.onSearch(this.state.search.trim(), this.state.online);
+    });
   }
 
   render() {
     return(
-      <div id="find-gamers-search" className='row'>
-        <div className='input-container'>
-          <input 
-            className='input'
-            placeholder='Search Gamers'
-            value={this.state.search} 
-            onChange={this.onChange}
-          ></input>
+      <React.Fragment>
+        <div id="find-gamers-search" className='row'>
+          <div className='input-container'>
+            <input 
+              className='input'
+              placeholder='Search Gamers'
+              value={this.state.search} 
+              onChange={this.onChange}
+            ></input>
+          </div>
         </div>
-      </div>
+        <div id='find-gamers-online' className='row'>
+          <div className='hint'>Show only online Gamers</div>
+          <ToggleButton
+            value={this.state.online}
+            onToggle={this.toggleOnline}
+          />
+        </div>
+      </React.Fragment>
     );
   }
 }

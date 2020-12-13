@@ -1,9 +1,9 @@
 import { searchGamers } from '../../integration/http/search'
 
-export function searchGamersAction(input) {
+export function searchGamersAction(input, online) {
   return {
     type: 'SEARCH_GAMERS',
-    payload: searchGamers(input),
-    meta: { input },
+    payload: searchGamers(input, online),
+    meta: { input, online },
   }
 }
