@@ -39,7 +39,7 @@ class ReportedController {
     }
   }
 
-  async update(userId, offenceInfo, type) {
+  async update(userId, offenceInfo, newOffence, type) {
     let type_ = ''
     switch (parseInt(type)) {
       case 1:
@@ -53,18 +53,27 @@ class ReportedController {
         break
     }
 
-    report_description = report_description + ' reported on a ' + type_ + ' you created'
+    let report_description = newOffence + ' reported on a ' + type_ + ' you created'
+
+    offenceInfo.third_offence = offenceInfo.second_offence
+    offenceInfo.third_offence_date = offenceInfo.second_offence_date
+
+    offenceInfo.second_offence = offenceInfo.first_offence
+    offenceInfo.second_offence_date = offenceInfo.first_offence_date
+
+    offenceInfo.first_offence = report_description
+    offenceInfo.first_offence_date = new Date()
 
     try {
       await Reported.query()
         .where('user_id', '=', userId)
         .update({
-          first_offense: _reported.first_offence_date,
-          second_offense: _reported.second_offence_date,
-          third_offense: _reported.third_offence_date,
-          first_offence_date: 1,
-          second_offence_date: 2,
-          third_offence_date: 3,
+          first_offence: offenceInfo.first_offence,
+          second_offence: offenceInfo.second_offence,
+          third_offence: offenceInfo.third_offence,
+          first_offence_date: offenceInfo.first_offence_date,
+          second_offence_date: offenceInfo.second_offence_date,
+          third_offence_date: offenceInfo.third_offence_date,
         })
         .increment('counter', 1)
     } catch (error) {
@@ -75,6 +84,74 @@ class ReportedController {
         context: __filename,
         message: (error && error.message) || error,
       })
+    }
+  }
+
+  async show({ auth, request, response }) {
+    try {
+      const check = await this.security_check({ auth })
+      //RAAZ UNDO THIS LATER
+      // if (!check) {
+      //   return
+      // }
+
+      let allReports_gamers = await Database.from('reported')
+        .innerJoin('users', 'users.id', 'reported.user_id')
+        .select('users.alias', 'users.profile_img', 'reported.*')
+        .orderBy('counter', 'desc')
+        .paginate(request.params.counter, 10)
+
+      return allReports_gamers.data
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+    }
+  }
+
+  async destroy({ auth, request, response }) {
+    if (auth.user) {
+      try {
+        const check = await this.security_check({ auth })
+        //RAAZ UNDO THIS LATER
+        // if (!check) {
+        //   return
+        // }
+
+        const byebyebye = await Database.table('users')
+          .where({
+            id: request.params.id,
+          })
+          .delete()
+
+        return 'Deleted successfully'
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
+
+  async security_check({ auth }) {
+    const security_check = await Database.from('admins')
+      .where({ user_id: auth.user.id, permission_level: 1 })
+      .first()
+
+    if (security_check == undefined) {
+      return false
+    } else {
+      return true
     }
   }
 }
