@@ -116,7 +116,7 @@ export default class AnalyticsBox extends Component {
 
   render() {
     return (
-      <section className={`social-main ${this.props.containerStyle ? this.props.containerStyle : ''}`}>
+      <section className={`social-main ${this.props.containerStyle ? this.props.containerStyle : ''}`} onClick={(event) => event.stopPropagation()}>
         <div className='social-content'>
           {this.renderLevel()}
           {this.renderConnections()}
