@@ -6,6 +6,7 @@ import axios from 'axios'
 import moment from 'moment'
 import { setAsFriendRedux } from '../../common/friend'
 import { logToElasticsearch } from '../../integration/http/logger'
+import { GoogleAnalytics } from '../../common/analytics'
 
 export default class IndividualNotification extends Component {
   constructor() {
@@ -37,6 +38,7 @@ export default class IndividualNotification extends Component {
 
     try {
       setAsFriendRedux(notification.user_id)
+      GoogleAnalytics.userFriendMade(notification.user_id);
       const createFriend = axios.post('/api/friends/create', {
         friend_id: notification.user_id,
       })

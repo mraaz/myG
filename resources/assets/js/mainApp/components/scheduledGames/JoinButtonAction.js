@@ -3,15 +3,15 @@
  * github  : https://github.com/realinit
  * Email : nitin.1992tyagi@gmail.com
  */
-import React, { Fragment, useState, useEffect, useRef } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import axios from 'axios'
 import { Toast_style } from '../Utility_Function'
 import { toast } from 'react-toastify'
 import Select from 'react-select'
-import { withRouter } from 'react-router-dom'
 
 import { exitGameGroup } from '../../../common/group'
 import { openChatForGame } from '../../../common/chat'
+import { GoogleAnalytics } from '../../../common/analytics'
 
 const buttonStatus = {
   '0': 'Join',
@@ -103,6 +103,7 @@ const JoinStatus = (props) => {
     }
     if (get_stats.data == 'Joined') {
       toast.success(<Toast_style text={'Gratz, you are in!'} />)
+      GoogleAnalytics.gameAccepted();
       setJoinButtonText(buttonStatus['1'])
     }
     if (get_stats.data == 'Pending') {

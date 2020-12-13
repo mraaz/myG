@@ -4,6 +4,7 @@ import { setAsFriendRedux } from './../../../common/friend'
 import { joinGameGroup } from './../../../common/game'
 
 import { logToElasticsearch } from '../../../integration/http/logger'
+import { GoogleAnalytics } from '../../../common/analytics'
 
 export const clickedAccept_myInvitations = (invitation) => {
   try {
@@ -14,6 +15,7 @@ export const clickedAccept_myInvitations = (invitation) => {
 
   try {
     setAsFriendRedux(invitation.user_id)
+    GoogleAnalytics.userFriendMade(invitation.user_id);
     const createFriend = axios.post('/api/friends/create', {
       friend_id: invitation.user_id,
     })
@@ -61,6 +63,7 @@ export const clickedAccept_game = (invitation) => {
       content: str,
       schedule_games_id: invitation.schedule_games_id,
     })
+    GoogleAnalytics.gameAccepted();
   } catch (error) {
     logToElasticsearch('error', 'Notification HelperFunction', 'Failed clickedAccept_/api/comments:' + ' ' + error)
   }
