@@ -71,7 +71,7 @@
     padding: 16px;
     background-color: #1d2326;
     border-radius: 12px;
-    margin-left: 20px;
+    margin: 20px 0 20px 20px;
 
     .name {
       color: white;
@@ -331,6 +331,8 @@
       .level-progress {
         display: flex;
         height: 100%;
+        width: 96px;
+        color: white;
         margin: 0 8px;
         background-color: transparent;
         align-items: center;

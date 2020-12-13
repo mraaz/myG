@@ -11,6 +11,7 @@ class SearchRepository {
   }
 
   buildUsersQuery = (input) => {
+    if (!input) return { query: { match_all: {} } };
     const query = { query: { bool: { must: [], should: [] } } };
     const targetedQueries = [query];
     if (input.includes('alias:')) targetedQueries.push({ field: 'alias', value: input.split('alias:')[1].trim().split(' ')[0] });
@@ -35,7 +36,7 @@ class SearchRepository {
     query.query.bool.should.push({ match: { team: { query: orSearch, fuzziness: "auto" } } });
     query.query.bool.should.push({ match: { languages: { query: orSearch, fuzziness: "auto" } } });
     query.query.bool.should.push({ match: { mostPlayedGames: { query: orSearch, fuzziness: "auto" } } });
-    query.query.bool.should.push({ match: { level: parseInt(orSearch) ? parseInt(orSearch) : 0 } });
+    if (parseInt(orSearch)) query.query.bool.should.push({ match: { level: parseInt(orSearch) } });
     return query;
   }
 

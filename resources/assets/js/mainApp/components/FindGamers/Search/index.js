@@ -11,6 +11,10 @@ export default class Search extends React.Component {
     search: '',
   }
 
+  componentDidMount() {
+    this.props.onSearch('');
+  }
+
   onChange = ({ target: { value: search } }) => {
     this.setState({ search });
     if (search === ':?') showMessengerAlert(`
