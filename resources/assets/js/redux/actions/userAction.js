@@ -12,6 +12,7 @@ import {
   searchUsers,
   toggleNotificationSounds,
   toggleAutoSelfDestruct,
+  fetchStats,
 } from '../../integration/http/user'
 
 export function logoutAction() {
@@ -143,6 +144,21 @@ export function togglePushNotificationsAction(userId) {
   return {
     type: 'TOGGLE_PUSH_NOTIFICATIONS',
     payload: togglePushNotifications(userId),
+    meta: { userId },
+  }
+}
+
+export function fetchStatsAction() {
+  return {
+    type: 'FETCH_STATS',
+    payload: fetchStats(),
+  }
+}
+
+export function onStatsUpdatedAction(stats, userId) {
+  return {
+    type: 'ON_STATS_UPDATED',
+    payload: stats,
     meta: { userId },
   }
 }

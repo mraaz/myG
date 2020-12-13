@@ -5,6 +5,8 @@ const User = use('App/Models/User')
 const UserStatTransaction = use('App/Models/UserStatTransaction')
 const NotificationController = use('./NotificationController')
 const LoggingRepository = require('../../Repositories/Logging')
+const NatsChatRepository = require('../../Repositories/NatsChat');
+const WebsocketChatRepository = require('../../Repositories/WebsocketChat');
 
 const GREAT_COMMUNITY_SIZE = 100
 const CUT_OFF_FOR_ATTENDEES_FOR_GAME = 1 //2 OR MORE
@@ -489,6 +491,17 @@ class UserStatTransactionController {
     const update_xp = await User.query()
       .where({ id: my_user_id })
       .update({ level: getGamerLevels.level, experience_points: xp, xp_negative_balance: xp_neg_balance })
+
+    await this.publishStats(my_user_id);
+  }
+
+  async publishStats(userId) {
+    const channelId = 'chat:auth:*';
+    const id = `chat:auth:${userId}`;
+    const type = `chat:userStats`;
+    const data = await this.master_controller({ auth: { user: { id: userId } } })
+    await NatsChatRepository.publish({ channelId, id, type, data });
+    await WebsocketChatRepository.broadcast(channelId, id, type, data);
   }
 }
 
