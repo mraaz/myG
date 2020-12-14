@@ -319,10 +319,6 @@ class ReportController {
 
         reported_controller.update(owner.user_id, offenceInfo, report_.report_description, type)
       }
-
-      //new feature
-      //option to delete user
-      //option to ban | 24hrs || 48 hrs || 1 week
     } catch (error) {
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
