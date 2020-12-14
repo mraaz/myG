@@ -10,6 +10,7 @@ const initialState = {
   notificationSoundsDisabled: false,
   autoSelfDestruct: false,
   pushNotificationsEnabled: true,
+  userTransactionStates: {},
 }
 
 export default function reducer(
@@ -269,6 +270,22 @@ export default function reducer(
       return {
         ...state,
         pushNotificationsEnabled,
+      }
+    }
+
+    case 'FETCH_STATS_FULFILLED': {
+      logger.log('USER', `Redux -> Fetched Stats: `, action.payload)
+      return {
+        ...state,
+        userTransactionStates: action.payload,
+      }
+    }
+
+    case 'ON_STATS_UPDATED': {
+      logger.log('USER', `Redux -> Stats Updated for ${action.meta.userId}: `, action.payload)
+      return {
+        ...state,
+        userTransactionStates: action.payload,
       }
     }
 

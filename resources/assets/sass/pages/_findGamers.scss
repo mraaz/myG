@@ -71,7 +71,7 @@
     padding: 16px;
     background-color: #1d2326;
     border-radius: 12px;
-    margin-left: 20px;
+    margin: 20px 0 20px 20px;
 
     .name {
       color: white;
@@ -305,6 +305,23 @@
     padding: 0 64px;
   }
 
+  #find-gamers-online {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    padding: 16px 48px;
+    margin: 0;
+    .hint {
+      margin: 0 8px;
+      padding: 0;
+      color: #F0F0F0;
+      font-size: 14px;
+      font-weight: normal;
+    }
+  }
+
   #find-gamers-results {
     display: flex;
     flex-direction: column;
@@ -331,6 +348,8 @@
       .level-progress {
         display: flex;
         height: 100%;
+        width: 96px;
+        color: white;
         margin: 0 8px;
         background-color: transparent;
         align-items: center;

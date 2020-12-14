@@ -1,21 +1,16 @@
-/*
- * Author : nitin Tyagi
- * github  : https://github.com/realinit
- * Email : nitin.1992tyagi@gmail.com
- */
-import React, { Component } from 'react'
-import axios from 'axios'
+import React from 'react'
+import { connect } from 'react-redux'
 import Progress from './common/ProgressCircle/progress'
+import { fetchStatsAction } from '../../redux/actions/userAction'
 
-export default class AnalyticsBox extends Component {
+class AnalyticsBox extends React.Component {
   state = {
-    userTransactionStates: {},
     counter: 1,
   }
 
   async componentDidMount() {
-    const get_stats = await axios.get('/api/userStatTransaction/master_controller')
-    this.setState({ userTransactionStates: { ...get_stats.data } })
+    const hasStats = Object.keys(this.props.userTransactionStates).length;
+    if (!hasStats) this.props.fetchStats();
   }
 
   renderLevel = () => {
@@ -25,7 +20,7 @@ export default class AnalyticsBox extends Component {
       start_of_level_xp = 0,
       user_xp_negative_balance = 0,
       level_max_points = 0,
-    } = this.state.userTransactionStates
+    } = this.props.userTransactionStates
     const progress = Math.floor(((user_experience - start_of_level_xp) / level_max_points) * 100)
     return (
       <div className='level-container'>
@@ -51,7 +46,7 @@ export default class AnalyticsBox extends Component {
   }
 
   renderConnections = () => {
-    const { connections = 0, last_month_connections = 0 } = this.state.userTransactionStates
+    const { connections = 0, last_month_connections = 0 } = this.props.userTransactionStates
     return (
       <div className='social-box'>
         <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Network.svg' className='social-box-img' />
@@ -64,7 +59,7 @@ export default class AnalyticsBox extends Component {
 
   renderFollowers = () => {
     if (this.props.onlyConnections) return null
-    const { followers = 0, last_month_followers = 0 } = this.state.userTransactionStates
+    const { followers = 0, last_month_followers = 0 } = this.props.userTransactionStates
     return (
       <div className='social-box'>
         <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_followers.svg' className='social-box-img' />
@@ -77,7 +72,7 @@ export default class AnalyticsBox extends Component {
 
   renderGames = () => {
     if (this.props.onlyConnections) return null
-    const { games = 0, last_month_games = 0 } = this.state.userTransactionStates
+    const { games = 0, last_month_games = 0 } = this.props.userTransactionStates
     return (
       <div className='social-box'>
         <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_games.svg' className='social-box-img' />
@@ -90,7 +85,7 @@ export default class AnalyticsBox extends Component {
 
   renderLikes = () => {
     if (this.props.onlyConnections) return null
-    const { likes = 0, last_month_likes = 0 } = this.state.userTransactionStates
+    const { likes = 0, last_month_likes = 0 } = this.props.userTransactionStates
     return (
       <div className='social-box'>
         <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Header_btn_likes.svg' className='social-box-img' />
@@ -103,7 +98,7 @@ export default class AnalyticsBox extends Component {
 
   renderReviews = () => {
     if (this.props.onlyConnections) return null
-    const { commendations = 0, last_month_commendations = 0 } = this.state.userTransactionStates
+    const { commendations = 0, last_month_commendations = 0 } = this.props.userTransactionStates
     return (
       <div className='social-box'>
         <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_reviews.svg' className='social-box-img' />
@@ -116,7 +111,7 @@ export default class AnalyticsBox extends Component {
 
   render() {
     return (
-      <section className={`social-main ${this.props.containerStyle ? this.props.containerStyle : ''}`}>
+      <section className={`social-main ${this.props.containerStyle ? this.props.containerStyle : ''}`} onClick={(event) => event.stopPropagation()}>
         <div className='social-content'>
           {this.renderLevel()}
           {this.renderConnections()}
@@ -129,3 +124,17 @@ export default class AnalyticsBox extends Component {
     )
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    userTransactionStates: state.user.userTransactionStates || {},
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    fetchStats: () => dispatch(fetchStatsAction()),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AnalyticsBox);

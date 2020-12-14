@@ -1,6 +1,6 @@
 'use strict'
 
-const cryptico = require('cryptico');
+const cryptico = require('cryptico')
 const { validate } = use('Validator')
 const User = use('App/Models/User')
 const SeatsAvailable = use('App/Models/SeatsAvailable')
@@ -8,6 +8,8 @@ const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
 const axios = use('axios')
 const querystring = use('querystring')
 const Env = use('Env')
+const ProfileRepository = require('../../Repositories/Profile')
+const ElasticsearchRepository = require('../../Repositories/Elasticsearch')
 const LoggingRepository = require('../../Repositories/Logging')
 
 class CommonSaveController {
@@ -18,7 +20,7 @@ class CommonSaveController {
     })
   }
 
-  async saveuser({ ally, auth, request, session, response, view }) {
+  async saveuser({ auth, request, session, response }) {
     if (auth.user != null) {
       session.put('alias', null)
       session.put('email', null)
@@ -27,16 +29,6 @@ class CommonSaveController {
       session.put('provider_id', null)
       await auth.logout()
     }
-
-    // if (session.get('provider_id') == null) {
-    //   console.log('Security Error! Unable to authenticate against your social.')
-    //   session
-    //     .withErrors([
-    //       { field: 'alias', message: 'Security Error! Unable to authenticate against your social. Please clear cache and try again.' },
-    //     ])
-    //     .flashAll()
-    //   return response.redirect('back')
-    // }
 
     const rules = {
       alias: 'required|unique:users,alias|min:4|max:30',
@@ -96,22 +88,23 @@ class CommonSaveController {
           }
         }
       } catch (error) {
-        LoggingRepository.log({ environment: process.env.NODE_ENV, type: 'error', source: 'backend', context: __filename, message: error && error.message || error })
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
         session.withErrors(validation.messages()).flashAll()
         return response.redirect('back')
       }
-      // await Mail.send('emails.welcome', user.toJSON(), (message) => {
-      //   message
-      //     .to(user.email)
-      //     .from('admin@mygame.com')
-      //     .subject('Welcome to My Game')
-      // })
+
       const token = request.input('g-recaptcha-response')
       const data_request = await axios.post(
         'https://www.google.com/recaptcha/api/siteverify',
         querystring.stringify({ secret: Env.get('SECRET_KEY'), response: token })
       )
-      if (false) {
+      if (!data_request.data.success) {
         console.log('Google Recaptcha Verification Failed: ' + data_request.data)
         return response.redirect('/?error=google-recaptcha')
       } else {
@@ -133,47 +126,17 @@ class CommonSaveController {
         user.provider = session.get('provider')
         await user.save()
 
+        const { profile } = await ProfileRepository.fetchProfileInfo({ requestingUserId: user.id, id: user.id })
+        await ElasticsearchRepository.storeUser({ user: profile })
+
         // Decrease Seats Available upon Registration
         seatsAvailable.seats_available = (seatsAvailable.seats_available || 1) - 1
         seatsAvailable.save()
 
         // Mark Extra Seat Code as Used
         if (extraSeatsCode) {
-          await ExtraSeatsCodes.query()
-            .where('code', extraSeatsCode)
-            .update({ user_id: user.id })
+          await ExtraSeatsCodes.query().where('code', extraSeatsCode).update({ user_id: user.id })
         }
-
-        // var transporter = nodemailer.createTransport({
-        //   host: '',
-        //   port: 465,
-        //   secure: true, // use TLS
-        //   auth: {
-        //     user: '',
-        //     pass: '',
-        //   },
-        //   tls: {
-        //     // do not fail on invalid certs
-        //     rejectUnauthorized: false,
-        //   },
-        // })
-        //
-        // const mailOptions = {
-        //   from: 'levelup@myG.gg', // sender address
-        //   to: request.input('email'), // list of receivers
-        //   subject: 'myG - Welcome Email', // Subject line
-        //   html:
-        //     '<h1>Hello,' +
-        //     request.input('firstName') +
-        //     ' ' +
-        //     request.input('lastName') +
-        //     ' .</h1><p>Welcome to the myG, here is your getting started guide</p>',
-        // }
-        //
-        // transporter.sendMail(mailOptions, function(err, info) {
-        //   if (err) console.log(err)
-        //   else console.log(info)
-        // })
 
         session.forget('provider')
         session.forget('provider_id')
@@ -184,20 +147,20 @@ class CommonSaveController {
   }
 
   getEncryptionKeyPair() {
-    const pin = process.env.PROFILE_ENCRYPTION_PIN | 123456;
-    this.privateKey = cryptico.generateRSAKey(`${pin}`, 1024);
-    this.publicKey = cryptico.publicKeyString(this.privateKey);
+    const pin = process.env.PROFILE_ENCRYPTION_PIN | 123456
+    this.privateKey = cryptico.generateRSAKey(`${pin}`, 1024)
+    this.publicKey = cryptico.publicKeyString(this.privateKey)
     return { privateKey: this.privateKey, publicKey: this.publicKey }
   }
 
   encryptField(field) {
-    if (!field) return field;
+    if (!field) return field
     try {
-      const { privateKey, publicKey } = this.getEncryptionKeyPair();
-      return cryptico.encrypt(field, publicKey, privateKey).cipher;
-    } catch(error) {
-      console.error(`Failed to Encrypt: ${field}`, this.privateKey, this.publicKey);
-      return null;
+      const { privateKey, publicKey } = this.getEncryptionKeyPair()
+      return cryptico.encrypt(field, publicKey, privateKey).cipher
+    } catch (error) {
+      console.error(`Failed to Encrypt: ${field}`, this.privateKey, this.publicKey)
+      return null
     }
   }
 }

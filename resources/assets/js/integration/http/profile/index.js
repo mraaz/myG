@@ -2,6 +2,7 @@ import axios from 'axios';
 import logger from '../../../common/logger';
 import notifyToast from '../../../common/toast';
 import { setAsFriendRedux, removeFriendRedux } from '../../../common/friend';
+import { GoogleAnalytics } from '../../../common/analytics';
 
 export function fetchProfileInfo(alias) {
   logger.log('PROFILE', 'HTTP', `Fetching profile info`);
@@ -15,6 +16,7 @@ export function sendFriendRequest(alias, id) {
 
 export function confirmFriendRequest(alias, id, notificationId) {
   logger.log('PROFILE', 'HTTP', `Confirming friend request from ${alias}`);
+  GoogleAnalytics.userFriendMade(id, alias);
   setAsFriendRedux(id)
   return Promise.all([
     axios.get(`/api/notifications/delete/${notificationId}`),

@@ -87,7 +87,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    searchGamers: (input) => dispatch(searchGamersAction(input)),
+    searchGamers: (input, online) => dispatch(searchGamersAction(input, online)),
     fetchProfileInfo: (alias) => dispatch(fetchProfileInfoAction(alias)),
     sendFriendRequest: (alias, id) => dispatch(sendFriendRequestAction(alias, id)),
     follow: (alias, id) => dispatch(followAction(alias, id)),

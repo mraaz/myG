@@ -57,4 +57,20 @@ export const GoogleAnalytics = {
       chatId,
     })
   },
+
+  // An user was accepted into a game
+  gameAccepted() {
+    pushEvent({
+      event: 'gameAccepted',
+    })
+  },
+
+  // An user made a friend
+  userFriendMade(userId, alias) {
+    pushEvent({
+      event: 'userFriendMade',
+      userId,
+      alias,
+    })
+  },
 }

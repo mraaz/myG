@@ -100,3 +100,8 @@ export function emailEncryptionKey(pin) {
   logger.log('USER', 'HTTP', `Requesting Email for Pin: ${pin}`);
   return axios.post(`/api/encryption`, { pin }).then((response => response.data));
 }
+
+export function fetchStats() {
+  logger.log('USER', 'HTTP', `Requesting Stats`);
+  return axios.get('/api/userStatTransaction/master_controller').then((response) => response.data);
+}

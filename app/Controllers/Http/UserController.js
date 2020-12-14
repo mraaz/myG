@@ -1,12 +1,14 @@
 'use strict'
 
-const cryptico = require('cryptico');
+const cryptico = require('cryptico')
 const Database = use('Database')
 const User = use('App/Models/User')
 const AwsKeyController = use('./AwsKeyController')
 const FollowerController = use('./FollowerController')
 
 const UserStatTransactionController = use('./UserStatTransactionController')
+const ProfileRepository = require('../../Repositories/Profile')
+const ElasticsearchRepository = require('../../Repositories/Elasticsearch')
 const LoggingRepository = require('../../Repositories/Logging')
 
 class UserController {
@@ -86,6 +88,8 @@ class UserController {
             contact_info: request.input('contact_info'),
             relationship_status: request.input('relationship_status'),
           })
+        const { profile } = await ProfileRepository.fetchProfileInfo({ requestingUserId: auth.user.id, id: auth.user.id })
+        await ElasticsearchRepository.storeUser({ user: profile })
         return 'Saved successfully'
       } catch (error) {
         LoggingRepository.log({
@@ -350,20 +354,20 @@ class UserController {
   }
 
   getEncryptionKeyPair() {
-    const pin = process.env.PROFILE_ENCRYPTION_PIN | 123456;
-    this.privateKey = cryptico.generateRSAKey(`${pin}`, 1024);
-    this.publicKey = cryptico.publicKeyString(this.privateKey);
+    const pin = process.env.PROFILE_ENCRYPTION_PIN | 123456
+    this.privateKey = cryptico.generateRSAKey(`${pin}`, 1024)
+    this.publicKey = cryptico.publicKeyString(this.privateKey)
     return { privateKey: this.privateKey, publicKey: this.publicKey }
   }
 
   encryptField(field) {
-    if (!field) return field;
+    if (!field) return field
     try {
-      const { privateKey, publicKey } = this.getEncryptionKeyPair();
-      return cryptico.encrypt(field, publicKey, privateKey).cipher;
-    } catch(error) {
-      console.error(`Failed to Encrypt: ${field}`, this.privateKey, this.publicKey);
-      return null;
+      const { privateKey, publicKey } = this.getEncryptionKeyPair()
+      return cryptico.encrypt(field, publicKey, privateKey).cipher
+    } catch (error) {
+      console.error(`Failed to Encrypt: ${field}`, this.privateKey, this.publicKey)
+      return null
     }
   }
 }

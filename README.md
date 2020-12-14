@@ -29,3 +29,6 @@ Run the following command to run startup migrations.
 ```js
 adonis migration:run
 ```
+
+### Elasticsearch Mappings
+Check the README_ES_MAPPINGS.md file for instructions.

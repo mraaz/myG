@@ -1,3 +1,4 @@
+const User = use('App/Models/User');
 const ElasticsearchRepository = require('../Elasticsearch');
 
 class SearchRepository {
@@ -11,6 +12,7 @@ class SearchRepository {
   }
 
   buildUsersQuery = (input) => {
+    if (!input) return { query: { match_all: {} } };
     const query = { query: { bool: { must: [], should: [] } } };
     const targetedQueries = [query];
     if (input.includes('alias:')) targetedQueries.push({ field: 'alias', value: input.split('alias:')[1].trim().split(' ')[0] });
@@ -35,7 +37,7 @@ class SearchRepository {
     query.query.bool.should.push({ match: { team: { query: orSearch, fuzziness: "auto" } } });
     query.query.bool.should.push({ match: { languages: { query: orSearch, fuzziness: "auto" } } });
     query.query.bool.should.push({ match: { mostPlayedGames: { query: orSearch, fuzziness: "auto" } } });
-    query.query.bool.should.push({ match: { level: parseInt(orSearch) ? parseInt(orSearch) : 0 } });
+    if (parseInt(orSearch)) query.query.bool.should.push({ match: { level: parseInt(orSearch) } });
     return query;
   }
 
@@ -62,12 +64,23 @@ class SearchRepository {
     return query;
   }
 
-  async searchGamers({ requestingUserId, query }) {
+  async searchGamers({ requestingUserId, query, online }) {
     console.log('Preparing Gamers Search for', query);
     const cleanUser = (user) => ({ ...user, profileId: parseInt(user.profileId), firstName: '', lastName: '', email: '' });
     const result = await ElasticsearchRepository.searchUser({ query: this.buildUsersQuery(query) });
-    const gamers = result.hits.hits.map((hit) => cleanUser(hit._source)).filter(({ profileId }) => profileId !== requestingUserId);
+    const parsedResults = result.hits.hits.map((hit) => cleanUser(hit._source)).filter(({ profileId }) => profileId !== requestingUserId);
+    const gamers = await this.filterOnlineGamers(parsedResults, online === 'true');
     return { gamers };
+  }
+
+  async filterOnlineGamers(gamers, online) {
+    if (!online) return Promise.resolve(gamers);
+    const onlineUsers = await User.query().select('id')
+      .where('id', 'in', gamers.map((gamer) => gamer.profileId))
+      .andWhere('status', 'online')
+      .fetch();
+    const onlineUsersIds = onlineUsers ? onlineUsers.toJSON().map((user) => user.id) : [];
+    return gamers.filter((gamer) => onlineUsersIds.includes(gamer.profileId));
   }
 
   async searchGames({ query }) {
