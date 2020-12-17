@@ -5,8 +5,8 @@ const User = use('App/Models/User')
 const UserStatTransaction = use('App/Models/UserStatTransaction')
 const NotificationController = use('./NotificationController')
 const LoggingRepository = require('../../Repositories/Logging')
-const NatsChatRepository = require('../../Repositories/NatsChat');
-const WebsocketChatRepository = require('../../Repositories/WebsocketChat');
+const NatsChatRepository = require('../../Repositories/NatsChat')
+const WebsocketChatRepository = require('../../Repositories/WebsocketChat')
 
 const GREAT_COMMUNITY_SIZE = 100
 const CUT_OFF_FOR_ATTENDEES_FOR_GAME = 1 //2 OR MORE
@@ -434,9 +434,8 @@ class UserStatTransactionController {
 
     let xp_neg_balance = false
 
-    if (xp < parseInt(getGamerLevels.experience_points)) {
-      xp_neg_balance = true
-      if (parseInt(getGamerLevels.level) == 1) {
+    if (xp < parseInt(getGamerLevels.experience_points) && parseInt(getGamerLevels.level) != 1) {
+      if (xp < 0) {
         xp = 0
       } else {
         const getprevLevel = await Database.from('user_levels')
@@ -445,13 +444,10 @@ class UserStatTransactionController {
           .first()
 
         if (getprevLevel == undefined) {
-          const get1stLevel = await Database.from('user_levels')
-            .where({ level: 1 })
-            .select('max_points')
-            .first()
-          xp = parseInt(get1stLevel.max_points) + 1
+          xp = 0
         } else {
           if (xp <= parseInt(getprevLevel.max_points)) {
+            xp_neg_balance = true
             xp = parseInt(getprevLevel.max_points) + 1
           }
         }
@@ -492,16 +488,17 @@ class UserStatTransactionController {
       .where({ id: my_user_id })
       .update({ level: getGamerLevels.level, experience_points: xp, xp_negative_balance: xp_neg_balance })
 
-    await this.publishStats(my_user_id);
+    await this.publishStats(my_user_id)
   }
 
   async publishStats(userId) {
-    const channelId = 'chat:auth:*';
-    const id = `chat:auth:${userId}`;
-    const type = `chat:userStats`;
+    const channelId = 'chat:auth:*'
+    const id = `chat:auth:${userId}`
+    const type = `chat:userStats`
     const data = await this.master_controller({ auth: { user: { id: userId } } })
-    await NatsChatRepository.publish({ channelId, id, type, data });
-    await WebsocketChatRepository.broadcast(channelId, id, type, data);
+    //console.log(data, '<<<<DATRA')
+    await NatsChatRepository.publish({ channelId, id, type, data })
+    await WebsocketChatRepository.broadcast(channelId, id, type, data)
   }
 }
 
