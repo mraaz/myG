@@ -217,7 +217,7 @@ export default class IndividualPost extends Component {
     var post_id = this.props.post.id
     const self = this
 
-    const getComments = async function() {
+    const getComments = async function () {
       try {
         const myComments = await axios.get(`/api/comments/${post_id}`)
         self.setState({
@@ -363,7 +363,7 @@ export default class IndividualPost extends Component {
     const self = this
     var post_id = this.props.post.id
 
-    const editPost = async function() {
+    const editPost = async function () {
       try {
         const myEditPost = await axios.post(`/api/post/update/${post_id}`, {
           content: self.state.value2,
@@ -474,7 +474,7 @@ export default class IndividualPost extends Component {
       dropdown: false,
     })
     setTimeout(
-      function() {
+      function () {
         //Start the timer
         this.focusTextInput2()
       }.bind(this),
@@ -518,6 +518,7 @@ export default class IndividualPost extends Component {
     })
   }
   showReportAlert(id) {
+    this.clickedGamePostExtraOption()
     const getAlert = () => <ReportPost post_id={id} hideModal={this.hideAlert} />
 
     this.setState({
