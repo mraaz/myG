@@ -125,7 +125,7 @@
   .headers {
     display: flex;
     flex-direction: row;
-    margin: 0px 32px;
+    margin: 0px 150px;
     padding: 12px;
     font-size: 18px;
     color: white;
@@ -156,6 +156,7 @@
     font-size: 16px;
     height: 40px;
     width: 100%;
+    margin-left: 160px;
   }
 
   .input {
@@ -303,6 +304,7 @@
 
   #find-gamers-search {
     padding: 0 64px;
+    max-width: 1800px;
   }
 
   #find-gamers-online {
@@ -316,7 +318,7 @@
     .hint {
       margin: 0 8px;
       padding: 0;
-      color: #F0F0F0;
+      color: #f0f0f0;
       font-size: 14px;
       font-weight: normal;
     }
