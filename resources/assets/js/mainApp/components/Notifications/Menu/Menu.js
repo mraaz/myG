@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Button from './Button'
 import axios from 'axios'
+import { report } from 'superagent'
 
 export default class Menu extends Component {
   constructor() {
@@ -11,6 +12,7 @@ export default class Menu extends Component {
       approvals: 0,
       alerts: 0,
       chats: 0,
+      reports: 0,
     }
   }
 
@@ -43,7 +45,7 @@ export default class Menu extends Component {
 
   render() {
     const { changeContentTab, notificationsCount, activeTab } = this.props
-    const { approvals = 0, chats = 0, alerts = 0 } = this.state
+    const { approvals = 0, chats = 0, alerts = 0, reports = 0 } = this.state
 
     return (
       <div className='notifications-menu'>
@@ -81,11 +83,19 @@ export default class Menu extends Component {
             }}
           />
           <Button
-            title='Settings'
+            title={`Reports ${reports ? `(${reports})` : '(0)'}`}
             active={activeTab == 4}
             onClick={() => {
               this.changeTab(4)
               changeContentTab(4)
+            }}
+          />
+          <Button
+            title='Settings'
+            active={activeTab == 5}
+            onClick={() => {
+              this.changeTab(5)
+              changeContentTab(5)
             }}
           />
         </div>
