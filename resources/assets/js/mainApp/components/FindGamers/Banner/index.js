@@ -10,7 +10,7 @@ export default class Banner extends React.Component {
 
   renderExperiences = () => {
     const experiences = this.props.profile.gameExperiences || [];
-    if (!experiences.length) return <span className="no-experiences">Select your favourite game or the game you are currently playing.</span>;
+    if (!experiences.length) return <span className="no-experiences" onClick={() => window.location.replace('/profile')}>Select your favourite game or the game you are currently playing.</span>;
     return <Experiences alias={this.props.profile.alias} gameExperiences={experiences} />
   }
 
