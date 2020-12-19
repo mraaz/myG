@@ -70,8 +70,8 @@ export default class InviteModal extends React.Component {
 
   renderNoGames = () => (
     <div className="no-games clickable" onClick={() => window.location.replace('/addScheduleGames')}>
-      <span className="title">No games found.</span>
-      <span className="subtitle">Click here to add a game.</span>
+      <span className="title">Hmmm, you have no games to invite to :(</span>
+      <span className="subtitle">Never fear, we can create a new game!</span>
     </div>
   )
 
