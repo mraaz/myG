@@ -73,11 +73,9 @@ class Layout extends Component {
           window.location.href = '/'
         }
 
-        self.setState({
-          initialData: initialData.data,
-        })
-
+        self.setState({ initialData: initialData.data })
         loadUserInfoToReduxStore(initialData.data.userInfo)
+        if (window.location.pathname === '/profile') window.location.replace(`/profile/${initialData.data.userInfo.alias}`)
       } catch (error) {
         console.log(error)
       }
