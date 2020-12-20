@@ -620,8 +620,11 @@
         display: none;
       }
       img {
-        margin: auto;
         background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        margin: auto;
+        height: 100%;
       }
       .image__uploading {
         position: absolute;
