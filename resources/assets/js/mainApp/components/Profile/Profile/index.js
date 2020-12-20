@@ -11,6 +11,7 @@ import Sponsors from '../Sponsors';
 import GameExperiences from '../GameExperiences';
 import GamerSuggestions from '../GamerSuggestions';
 import MyPosts from '../../MyPosts'
+import PostsFromUser from '../../PostsFromUser'
 
 export class Profile extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -44,6 +45,7 @@ export class Profile extends React.Component {
 
   render() {
     if (this.props.profile.error) return <Redirect push to={`/profile/${this.props.userAlias}`} />;
+    if (!this.props.foundProfile || this.props.profile.loading) return null;
     const profileSponsors = this.props.profile.sponsors || [];
     const sponsorsIndexes = this.props.profile.isSelf ? [{ id: 'empty-1' }, { id: 'empty-2' }] : null;
     const sponsors = sponsorsIndexes ? sponsorsIndexes.map((sponsor, index) => profileSponsors[index] || sponsor) : profileSponsors;
@@ -55,6 +57,7 @@ export class Profile extends React.Component {
         <GameExperiences userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
         {!!this.props.profile.isSelf && <GamerSuggestions /> }
         {!!this.props.profile.isSelf && <MyPosts initialData={this.props.initialData} /> }
+        {!this.props.profile.isSelf && <PostsFromUser initialData={this.props.initialData} profile={this.props.profile} /> }
       </div>
     );
   }
