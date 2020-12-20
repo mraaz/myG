@@ -172,6 +172,7 @@ class ProfileRepository {
   }
 
   async fetchFriendsForGamer({ requestingUserId, alias }) {
+    const friendRequests = await this.fetchFriendRequests({ isSelf: true, requestingUserId });
     const myFriends = await this.fetchFriends({ isSelf: true, requestingUserId });
     const profileId = await this.fetchProfileId({ alias });
     const response = await Database.table('friends')
@@ -184,7 +185,8 @@ class ProfileRepository {
       background: profile.profile_bg,
       level: profile.level,
       isFriend: myFriends.includes(profile.alias),
-    }));
+      hasSentFriendRequest: friendRequests.includes(profile.alias),
+    })).filter((profile) => profile.profileId !== requestingUserId);
     return { friends };
   }
 

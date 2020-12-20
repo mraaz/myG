@@ -560,21 +560,21 @@
               .input-container-row {
                 display: flex;
                 align-items: center;
-                width: 33%;
+                width: 50%;
                 font-size: 16px;
                 height: 36px;
-                margin: 16px 0 4px 0;
+                margin: 16px auto 4px auto;
                 .input {
-                  display: flex;
-                  flex: 1;
-                  height: 100%;
+                  width: 100%;
+                  background: #171a1c 0% 0% no-repeat padding-box;
                   border: none;
-                  background-color: #4d6366;
-                  color: #1d2326;
-                  padding: 0 0 0 12px;
-                  border-radius: 4px;
-                  font-size: 16px;
+                  padding: 12px 12px;
+                  border-radius: 25px;
                   outline: none;
+                  margin: 0;
+                  font: italic normal normal 12px/14px Montserrat;
+                  letter-spacing: -0.65px;
+                  color: #93a4a5;
                 }
                 .input::placeholder {
                   color: #1d2326;
