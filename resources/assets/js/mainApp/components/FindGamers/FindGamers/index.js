@@ -37,7 +37,7 @@ export class FindGamers extends React.Component {
         <div 
           className={`header clickable ${this.isInSearch() && 'selected'}`}
           onClick={() => {
-            window.history.replaceState({}, 'myG - Find Gamers', '/find-gamers/search')
+            window.history.pushState({}, 'myG - Find Gamers', '/find-gamers/search')
             this.setState({ tab: 'search' })
           }}
         >
@@ -46,7 +46,7 @@ export class FindGamers extends React.Component {
         <div 
           className={`header clickable ${this.isInSuggestions() && 'selected'}`}
           onClick={() => {
-            window.history.replaceState({}, 'myG - Find Gamers', '/find-gamers/suggestions')
+            window.history.pushState({}, 'myG - Find Gamers', '/find-gamers/suggestions')
             this.setState({ tab: 'suggestions' })
           }}
         >
