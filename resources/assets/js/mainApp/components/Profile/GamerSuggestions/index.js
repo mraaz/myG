@@ -32,7 +32,6 @@ export class GamerSuggestions extends React.Component {
     const isHovering = this.state.hovering === profile.alias;
     return(
       <div className="game-experience clickable" 
-      style={{ minWidth: '40%' }}
       onClick={() => window.location.href = `/profile/${profile.alias}`}
       onMouseEnter={() => this.setState({ hovering: profile.alias })}
       onMouseLeave={() => this.setState({ hovering: null })}
