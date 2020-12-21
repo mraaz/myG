@@ -58,10 +58,10 @@ export class GamerSuggestions extends React.Component {
       <div className="hover-bar">
         <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); window.location.href = `/profile/${gamer.alias}`}}>Profile</div>
         {this.props.profile && !isFriend && !hasSentRequest && <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.sendFriendRequest(gamer.alias, gamer.profileId)}}>Request Connection</div>}
-        {this.props.profile && !isFriend && hasSentRequest && <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); }}>Request Sent</div>}
+        {this.props.profile && !isFriend && hasSentRequest && <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.cancelFriendRequest(gamer.alias, gamer.profileId)}}>Request Sent</div>}
         {this.props.profile && <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); }}>Invite</div>}
         {this.props.profile && !isFollower && <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.follow(gamer.alias, gamer.profileId)}}>Follow</div>}
-        {this.props.profile && isFollower && <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); }}>Following</div>}
+        {this.props.profile && isFollower && <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.unfollow(gamer.alias, gamer.profileId)}}>Unfollow</div>}
       </div>
     );
   }
@@ -71,9 +71,19 @@ export class GamerSuggestions extends React.Component {
     this.props.follow(alias, profileId)
   }
 
+  unfollow = (alias, profileId) => {
+    notifyToast(`Got it mate! You have unfollowed ${alias}!`)
+    this.props.unfollow(alias, profileId)
+  }
+
   sendFriendRequest = (alias, profileId) => {
     notifyToast(`Got it mate! Friend request sent to ${alias}!`)
     this.props.sendFriendRequest(alias, profileId)
+  }
+
+  cancelFriendRequest = (alias, profileId) => {
+    notifyToast(`Got it mate! Friend request removed from ${alias}!`)
+    this.props.cancelFriendRequest(alias, profileId)
   }
 
   changePage = (direction) => {
