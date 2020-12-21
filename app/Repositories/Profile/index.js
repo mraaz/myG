@@ -139,14 +139,20 @@ class ProfileRepository {
   async fetchProfileById({ id }) {
     const response = await User.query().where('id', id).fetch();
     const profile = response && response.toJSON()[0];
-    if (!profile) throw new Error("PROFILE_NOT_FOUND");
+    if (!profile) {
+      // Remove from ES if it exists.
+      throw new Error("PROFILE_NOT_FOUND");
+    }
     return profile;
   }
 
   async fetchProfileByAlias({ alias }) {
     const response = await User.query().where('alias', alias).fetch();
     const profile = response && response.toJSON()[0];
-    if (!profile) throw new Error("PROFILE_NOT_FOUND");
+    if (!profile) {
+      // Remove from ES if it exists.
+      throw new Error("PROFILE_NOT_FOUND");
+    }
     return profile;
   }
 
