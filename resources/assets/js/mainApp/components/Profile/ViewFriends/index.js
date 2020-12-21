@@ -74,7 +74,8 @@ export default class ViewFriendsModal extends React.Component {
   }
 
   renderFriend = (friend) => {
-    const canAddFriend = !friend.isFriend && !this.state.sentRequest.includes(friend.profileId);
+    const canAddFriend = !friend.isFriend && !friend.hasSentFriendRequest && !this.state.sentRequest.includes(friend.profileId);
+    const hasSentFriendRequest = !friend.isFriend && (friend.hasSentFriendRequest || this.state.sentRequest.includes(friend.profileId));
     return (
       <div key={friend.alias} className="friend clickable" onClick={() => window.location.replace(`/profile/${friend.alias}`)}>
         <div className="background"
@@ -93,9 +94,8 @@ export default class ViewFriendsModal extends React.Component {
         <div className="info">
           <span className="alias">{friend.alias}</span>
           <span className="level">level {friend.level}</span>
-          {canAddFriend && (
-            <div className="add-friend clickable" onClick={(event) => this.addFriend(event, friend)}>Add Friend</div>
-          )}
+          {canAddFriend && <div className="add-friend clickable" onClick={(event) => this.addFriend(event, friend)}>Add Friend</div>}
+          {hasSentFriendRequest && <div className="add-friend">Request Pending</div>}
         </div>
       </div>
     )

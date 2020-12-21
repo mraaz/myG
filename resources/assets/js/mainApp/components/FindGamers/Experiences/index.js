@@ -41,7 +41,7 @@ export default class Experiences extends React.Component {
   render() {
     if (!this.props.gameExperiences.length) return null;
     return(
-      <div className="row">
+      <div className="row gamer-row">
         {this.props.gameExperiences.slice(0, 3).map(this.renderGame)}
       </div>
     );

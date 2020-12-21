@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import { getAssetUrl } from '../../../../common/assets'
 import { ignoreFunctions } from '../../../../common/render'
 import { fetchGamerSuggestionsAction } from '../../../../redux/actions/profileAction';
-import notifyToast from '../../../../common/toast'
+import InviteModal from '../../FindGamers/Invite';
+import notifyToast from '../../../../common/toast';
 
 export class GamerSuggestions extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -12,6 +13,7 @@ export class GamerSuggestions extends React.Component {
 
   state = {
     page: 0,
+    inviting: null,
   }
 
   componentDidMount() {
@@ -28,10 +30,9 @@ export class GamerSuggestions extends React.Component {
 
   renderGamerSuggestion = (profile) => {
     const isHovering = this.state.hovering === profile.alias;
-    const style = this.props.profile ? { minWidth: '40%' } : {};
     return(
       <div className="game-experience clickable" 
-      style={style}
+      style={{ minWidth: '40%' }}
       onClick={() => window.location.href = `/profile/${profile.alias}`}
       onMouseEnter={() => this.setState({ hovering: profile.alias })}
       onMouseLeave={() => this.setState({ hovering: null })}
@@ -58,10 +59,10 @@ export class GamerSuggestions extends React.Component {
       <div className="hover-bar">
         <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); window.location.href = `/profile/${gamer.alias}`}}>Profile</div>
         {this.props.profile && !isFriend && !hasSentRequest && <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.sendFriendRequest(gamer.alias, gamer.profileId)}}>Request Connection</div>}
-        {this.props.profile && !isFriend && hasSentRequest && <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); }}>Request Sent</div>}
-        {this.props.profile && <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); }}>Invite</div>}
+        {this.props.profile && !isFriend && hasSentRequest && <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.cancelFriendRequest(gamer.alias, gamer.profileId)}}>Request Sent</div>}
+        {this.props.profile && <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.invite(gamer) }}>Invite</div>}
         {this.props.profile && !isFollower && <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.follow(gamer.alias, gamer.profileId)}}>Follow</div>}
-        {this.props.profile && isFollower && <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); }}>Following</div>}
+        {this.props.profile && isFollower && <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.unfollow(gamer.alias, gamer.profileId)}}>Unfollow</div>}
       </div>
     );
   }
@@ -71,9 +72,21 @@ export class GamerSuggestions extends React.Component {
     this.props.follow(alias, profileId)
   }
 
+  unfollow = (alias, profileId) => {
+    notifyToast(`Got it mate! You have unfollowed ${alias}!`)
+    this.props.unfollow(alias, profileId)
+  }
+  
+  invite = (gamer) => this.setState({ inviting: gamer });
+
   sendFriendRequest = (alias, profileId) => {
     notifyToast(`Got it mate! Friend request sent to ${alias}!`)
     this.props.sendFriendRequest(alias, profileId)
+  }
+
+  cancelFriendRequest = (alias, profileId) => {
+    notifyToast(`Got it mate! Friend request removed from ${alias}!`)
+    this.props.cancelFriendRequest(alias, profileId)
   }
 
   changePage = (direction) => {
@@ -106,11 +119,24 @@ export class GamerSuggestions extends React.Component {
     );
   }
 
+  renderInviteModal = () => {
+    if (!this.state.inviting) return null;
+    return(
+     <div id="find-gamers">
+        <InviteModal 
+          gamer={this.state.inviting}
+          onClose={() => this.setState({ inviting: null })}
+        />
+     </div>
+    );
+  }
+
   render() {
     if (!this.props.gamerSuggestions.length) return null;
     return(
       <div id="profile">
         <div id="profile-game-experiences">
+          {this.renderInviteModal()}
           {!this.props.noTitle && this.renderHeaders()}
           <div className="scroll">
             {this.renderPageButtons()}

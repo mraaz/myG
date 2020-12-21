@@ -320,6 +320,12 @@ class PostController {
     }
   }
 
+
+  async postsFromUser({ auth, request }) {
+    if (!auth.user.id) return 'You are not Logged In!'
+    return this.showmyposts({ auth: { user: { id: request.params.userId } }, request });
+  }
+
   async showmyposts({ auth, request, response }) {
     try {
       let myPosts = await Database.from('posts')

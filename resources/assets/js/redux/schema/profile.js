@@ -49,22 +49,18 @@ export default class ProfileSchema {
   }
 
   addFollower(alias) {
-    this.followers = forceArray(this.followers)
-    this.followers.push(alias)
-  }
-
-  addFriendRequest(alias) {
-    this.friendRequests = forceArray(this.friendRequests)
-    this.friendRequests.push(alias)
+    this.followers = JSON.parse(JSON.stringify([...forceArray(this.followers), alias]))
   }
 
   removeFollower(alias) {
-    this.followers = forceArray(this.followers)
-    this.followers.filter((follower) => follower !== alias)
+    this.followers = JSON.parse(JSON.stringify(forceArray(this.followers.filter((follower) => follower !== alias))))
+  }
+
+  addFriendRequest(alias) {
+    this.friendRequests = JSON.parse(JSON.stringify([...forceArray(this.friendRequests), alias]))
   }
 
   removeFriendRequest(alias) {
-    this.friendRequests = forceArray(this.friendRequests)
-    this.friendRequests.filter((request) => request !== alias)
+    this.friendRequests = JSON.parse(JSON.stringify(forceArray(this.friendRequests.filter((request) => request !== alias))))
   }
 }

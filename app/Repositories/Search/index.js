@@ -86,7 +86,11 @@ class SearchRepository {
   async searchGames({ query }) {
     console.log('Preparing Games Search for', query);
     const result = await ElasticsearchRepository.searchGame({ query: this.buildGamesQuery(query) });
-    const latestScheduledGames = result.hits.hits.map((hit) => ({ ...hit._source, no_of_gamers: hit._source.attendees }));
+    const latestScheduledGames = result.hits.hits.map((hit) => ({ 
+      ...hit._source, 
+      no_of_gamers: hit._source.attendees,
+      tags: (hit._source.tags || []).map((content) => ({ content }))
+    }));
     return { latestScheduledGames };
   }
 }

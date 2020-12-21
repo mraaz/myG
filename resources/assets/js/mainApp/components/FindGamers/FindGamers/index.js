@@ -3,7 +3,7 @@ import get from 'lodash.get'
 import { connect } from 'react-redux'
 import { ignoreFunctions } from '../../../../common/render'
 import { searchGamersAction } from '../../../../redux/actions/searchAction'
-import { fetchProfileInfoAction, sendFriendRequestAction, followAction } from '../../../../redux/actions/profileAction'
+import { fetchProfileInfoAction, sendFriendRequestAction, cancelFriendRequestAction, followAction, unfollowAction } from '../../../../redux/actions/profileAction'
 import Banner from '../Banner';
 import Search from '../Search';
 import Results from '../Results';
@@ -37,7 +37,7 @@ export class FindGamers extends React.Component {
         <div 
           className={`header clickable ${this.isInSearch() && 'selected'}`}
           onClick={() => {
-            window.history.replaceState({}, 'myG - Find Gamers', '/find-gamers/search')
+            window.history.pushState({}, 'myG - Find Gamers', '/find-gamers/search')
             this.setState({ tab: 'search' })
           }}
         >
@@ -46,7 +46,7 @@ export class FindGamers extends React.Component {
         <div 
           className={`header clickable ${this.isInSuggestions() && 'selected'}`}
           onClick={() => {
-            window.history.replaceState({}, 'myG - Find Gamers', '/find-gamers/suggestions')
+            window.history.pushState({}, 'myG - Find Gamers', '/find-gamers/suggestions')
             this.setState({ tab: 'suggestions' })
           }}
         >
@@ -65,8 +65,8 @@ export class FindGamers extends React.Component {
         <Banner profile={this.props.profile} />
         <Headers />
         {this.isInSearch() && <Search onSearch={this.props.searchGamers} />}
-        {this.isInSearch() && <Results gamers={this.props.gamers} loading={this.props.loading} profile={this.props.profile} sendFriendRequest={this.props.sendFriendRequest} follow={this.props.follow}/>}
-        {this.isInSuggestions() && <GamerSuggestions noTitle gamers={this.props.gamers} loading={this.props.loading} profile={this.props.profile} sendFriendRequest={this.props.sendFriendRequest} follow={this.props.follow} />}
+        {this.isInSearch() && <Results gamers={this.props.gamers} loading={this.props.loading} profile={this.props.profile} sendFriendRequest={this.props.sendFriendRequest} cancelFriendRequest={this.props.cancelFriendRequest} follow={this.props.follow} unfollow={this.props.unfollow}/>}
+        {this.isInSuggestions() && <GamerSuggestions noTitle profile={this.props.profile} sendFriendRequest={this.props.sendFriendRequest} cancelFriendRequest={this.props.cancelFriendRequest} follow={this.props.follow} unfollow={this.props.unfollow} />}
       </div>
     );
   }
@@ -90,7 +90,9 @@ function mapDispatchToProps(dispatch) {
     searchGamers: (input, online) => dispatch(searchGamersAction(input, online)),
     fetchProfileInfo: (alias) => dispatch(fetchProfileInfoAction(alias)),
     sendFriendRequest: (alias, id) => dispatch(sendFriendRequestAction(alias, id)),
+    cancelFriendRequest: (alias, id) => dispatch(cancelFriendRequestAction(alias, id)),
     follow: (alias, id) => dispatch(followAction(alias, id)),
+    unfollow: (alias, id) => dispatch(unfollowAction(alias, id)),
   }
 }
 

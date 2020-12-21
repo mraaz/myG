@@ -139,14 +139,20 @@ class ProfileRepository {
   async fetchProfileById({ id }) {
     const response = await User.query().where('id', id).fetch();
     const profile = response && response.toJSON()[0];
-    if (!profile) throw new Error("PROFILE_NOT_FOUND");
+    if (!profile) {
+      // Remove from ES if it exists.
+      throw new Error("PROFILE_NOT_FOUND");
+    }
     return profile;
   }
 
   async fetchProfileByAlias({ alias }) {
     const response = await User.query().where('alias', alias).fetch();
     const profile = response && response.toJSON()[0];
-    if (!profile) throw new Error("PROFILE_NOT_FOUND");
+    if (!profile) {
+      // Remove from ES if it exists.
+      throw new Error("PROFILE_NOT_FOUND");
+    }
     return profile;
   }
 
@@ -172,6 +178,7 @@ class ProfileRepository {
   }
 
   async fetchFriendsForGamer({ requestingUserId, alias }) {
+    const friendRequests = await this.fetchFriendRequests({ isSelf: true, requestingUserId });
     const myFriends = await this.fetchFriends({ isSelf: true, requestingUserId });
     const profileId = await this.fetchProfileId({ alias });
     const response = await Database.table('friends')
@@ -184,7 +191,8 @@ class ProfileRepository {
       background: profile.profile_bg,
       level: profile.level,
       isFriend: myFriends.includes(profile.alias),
-    }));
+      hasSentFriendRequest: friendRequests.includes(profile.alias),
+    })).filter((profile) => profile.profileId !== requestingUserId);
     return { friends };
   }
 

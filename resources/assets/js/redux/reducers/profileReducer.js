@@ -37,6 +37,7 @@ export default function reducer(state = initialState, action) {
       const profiles = addProfile(state, alias)
       profiles[alias].set(get(action, 'payload.profile'))
       profiles[alias].set({ error: get(action, 'payload.error') })
+      profiles[alias].set({ loading: false })
       return {
         ...state,
         profiles,
@@ -49,6 +50,7 @@ export default function reducer(state = initialState, action) {
       const alias = action.meta.alias
       const profiles = addProfile(state, alias)
       profiles[alias].set({ error: error || action.payload })
+      profiles[alias].set({ loading: false })
       return {
         ...state,
         profiles,
@@ -105,8 +107,9 @@ export default function reducer(state = initialState, action) {
     case 'CANCEL_FRIEND_REQUEST_FULFILLED': {
       logger.log('PROFILE', `Redux -> Cancelled Friend Request ${action.meta.alias}`)
       const alias = action.meta.alias
-      const profiles = addProfile(state, alias)
+      const profiles = checkProfile(addProfile(state, alias), state.ownAlias);
       profiles[alias].set({ isFriend: false, hasSentFriendRequest: false })
+      profiles[state.ownAlias].removeFriendRequest(action.meta.alias)
       return {
         ...state,
         profiles,

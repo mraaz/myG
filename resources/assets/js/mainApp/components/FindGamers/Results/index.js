@@ -13,7 +13,10 @@ export default class Results extends React.Component {
 
   state = {
     hovering: null,
+    inviting: null,
   }
+
+  cancelFriendRequest = () => this.props.cancelFriendRequest(this.props.profile.alias, this.props.profile.profileId)
 
   renderLoading = () => {
     if (!this.props.loading) return null;
@@ -72,19 +75,31 @@ export default class Results extends React.Component {
     );
   }
 
+  renderButton = (action, title) => <div className="small-button clickable" onClick={action}>{title}</div>
+
   renderHoverBar = (gamer, isHovering) => {
     if (!isHovering) return null;
-    const isFriend = (this.props.profile.friends || []).includes(gamer.alias);
-    const isFollower = (this.props.profile.followers || []).includes(gamer.alias);
-    const hasSentRequest = (this.props.profile.friendRequests || []).includes(gamer.alias);
+
+    const canSendFriendRequest = !(this.props.profile.friends || []).includes(gamer.alias) && !(this.props.profile.friendRequests || []).includes(gamer.alias);
+    const canCancelFriendRequest = !(this.props.profile.friends || []).includes(gamer.alias) && (this.props.profile.friendRequests || []).includes(gamer.alias);
+    const canFollow = !(this.props.profile.followers || []).includes(gamer.alias);
+    const canUnfollow = (this.props.profile.followers || []).includes(gamer.alias);
+
+    const openProfile = () => window.location.href = `/profile/${gamer.alias}`;
+    const sendFriendRequest = () => this.sendFriendRequest(gamer.alias, gamer.profileId);
+    const cancelFriendRequest = () => this.cancelFriendRequest(gamer.alias, gamer.profileId);
+    const invite = () => this.setState({ inviting: gamer });
+    const follow = () => this.follow(gamer.alias, gamer.profileId);
+    const unfollow = () => this.unfollow(gamer.alias, gamer.profileId);
+
     return(
       <div className="hover-bar">
-        <div className="small-button clickable" onClick={() => window.location.href = `/profile/${gamer.alias}`}>Profile</div>
-        {!isFriend && !hasSentRequest && <div className="small-button clickable" onClick={() => this.sendFriendRequest(gamer.alias, gamer.profileId)}>Request Connection</div>}
-        {!isFriend && hasSentRequest && <div className="small-button">Request Sent</div>}
-        <div className="small-button clickable" onClick={() => this.setState({ inviting: gamer })}>Invite</div>
-        {!isFollower && <div className="small-button clickable" onClick={() => this.follow(gamer.alias, gamer.profileId)}>Follow</div>}
-        {isFollower && <div className="small-button">Following</div>}
+        {this.renderButton(openProfile, 'Profile')}
+        {canSendFriendRequest && this.renderButton(sendFriendRequest, 'Request Connection')}
+        {canCancelFriendRequest && this.renderButton(cancelFriendRequest, 'Request Sent')}
+        {this.renderButton(invite, 'Invite')}
+        {canFollow && this.renderButton(follow, 'Follow')}
+        {canUnfollow && this.renderButton(unfollow, 'Unfollow')}
       </div>
     );
   }
@@ -104,14 +119,24 @@ export default class Results extends React.Component {
     this.props.follow(alias, profileId)
   }
 
+  unfollow = (alias, profileId) => {
+    notifyToast(`Got it mate! You have unfollowed ${alias}!`)
+    this.props.unfollow(alias, profileId)
+  }
+
   sendFriendRequest = (alias, profileId) => {
     notifyToast(`Got it mate! Friend request sent to ${alias}!`)
     this.props.sendFriendRequest(alias, profileId)
   }
 
+  cancelFriendRequest = (alias, profileId) => {
+    notifyToast(`Got it mate! Friend request removed from ${alias}!`)
+    this.props.cancelFriendRequest(alias, profileId)
+  }
+
   render() {
     return(
-      <div id="find-gamers-results">
+      <div className="find-gamers-results">
         {this.renderLoading()}
         {this.renderGamers()}
         {this.renderInviteModal()}
