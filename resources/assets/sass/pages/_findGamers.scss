@@ -40,6 +40,15 @@
     }
   }
 
+  .help {
+    font-weight: bold;
+    font-size: 24px;
+    color: #E5C746;
+    position: absolute;
+    right: 12px;
+    padding: 4px;
+  }
+
   .gamer-row {
     width: 100%;
   }
@@ -159,10 +168,10 @@
 
   .input-container {
     display: flex;
+    position: relative;
     font-size: 16px;
     height: 40px;
     width: 100%;
-    margin-left: 160px;
   }
 
   .input {
