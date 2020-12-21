@@ -4,7 +4,7 @@ import get from 'lodash.get';
 import { Redirect } from 'react-router'
 import { connect } from 'react-redux'
 import { ignoreFunctions } from '../../../../common/render'
-import { fetchProfileInfoAction, updateProfileInfoAction, updateProfileGameAction, commendUserAction, deleteExperienceAction } from '../../../../redux/actions/profileAction';
+import { fetchProfileInfoAction, updateProfileInfoAction, updateProfileGameAction, commendUserAction, deleteExperienceAction, sendFriendRequestAction, cancelFriendRequestAction, followAction, unfollowAction } from '../../../../redux/actions/profileAction';
 import Banner from '../Banner';
 import ProfileInfo from '../Info';
 import Sponsors from '../Sponsors';
@@ -55,7 +55,7 @@ export class Profile extends React.Component {
         <ProfileInfo alias={this.props.alias} profile={this.props.profile} updateProfile={this.props.updateProfile} />
         {!!sponsors.length && <Sponsors alias={this.props.alias} profile={this.props.profile} sponsors={sponsors} refetchSponsors={() => this.props.fetchProfile(this.props.alias)} />}
         <GameExperiences userId={this.props.userId} selectedGame={this.props.gameId} commendUser={this.commendUser} deleteExperience={this.deleteExperience} alias={this.props.alias} profile={this.props.profile} updateGame={this.props.updateGame} />
-        {!!this.props.profile.isSelf && <GamerSuggestions /> }
+        {!!this.props.profile.isSelf && <GamerSuggestions profile={this.props.profile} sendFriendRequest={this.props.sendFriendRequest} cancelFriendRequest={this.props.cancelFriendRequest} follow={this.props.follow} unfollow={this.props.unfollow}  /> }
         {!!this.props.profile.isSelf && <MyPosts initialData={this.props.initialData} /> }
         {!this.props.profile.isSelf && <PostsFromUser initialData={this.props.initialData} profile={this.props.profile} /> }
       </div>
@@ -79,6 +79,10 @@ function mapDispatchToProps(dispatch) {
     updateGame: (alias, updates) => dispatch(updateProfileGameAction(alias, updates)),
     commendUser: (alias, gameExperienceId) => dispatch(commendUserAction(alias, gameExperienceId)),
     deleteExperience: (alias, gameExperienceId) => dispatch(deleteExperienceAction(alias, gameExperienceId)),
+    sendFriendRequest: (alias, id) => dispatch(sendFriendRequestAction(alias, id)),
+    cancelFriendRequest: (alias, id) => dispatch(cancelFriendRequestAction(alias, id)),
+    follow: (alias, id) => dispatch(followAction(alias, id)),
+    unfollow: (alias, id) => dispatch(unfollowAction(alias, id)),
   }
 }
 

@@ -227,7 +227,11 @@
   }
 
   .small-button {
-    @extend .base-button;
+    background-color: #e5c746;
+    border-radius: 2px;
+    font-weight: 600;
+    color: black;
+    text-decoration: none;
     padding: 4px 12px;
     font-size: 12px;
     margin: 12px 4px;
