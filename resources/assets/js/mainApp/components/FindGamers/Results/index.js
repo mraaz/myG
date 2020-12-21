@@ -13,6 +13,7 @@ export default class Results extends React.Component {
 
   state = {
     hovering: null,
+    inviting: null,
   }
 
   cancelFriendRequest = () => this.props.cancelFriendRequest(this.props.profile.alias, this.props.profile.profileId)
@@ -135,7 +136,7 @@ export default class Results extends React.Component {
 
   render() {
     return(
-      <div id="find-gamers-results">
+      <div className="find-gamers-results">
         {this.renderLoading()}
         {this.renderGamers()}
         {this.renderInviteModal()}

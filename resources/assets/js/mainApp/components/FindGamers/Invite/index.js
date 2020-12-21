@@ -104,7 +104,7 @@ export default class InviteModal extends React.Component {
             <div className='row'>
               <div className='count'>
                 <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Notifications/little_green_man.svg' />
-                <span>
+                <span className="gamer-count">
                   {game.no_of_gamers} / {game.limit == 0 ? <span>&#8734;</span> : game.limit} Gamers
                 </span>
               </div>
@@ -157,10 +157,12 @@ export default class InviteModal extends React.Component {
   render() {
     return(
       <div id="invite-modal" onClick={this.props.onClose}>
-        <div className="container">
-          {this.renderClose()}
-          {this.renderGamer(this.props.gamer)}
-          {this.renderGames()}
+        <div className="container" onClick={(event) => event.stopPropagation()}>
+          <div className="find-gamers-results">
+            {this.renderClose()}
+            {this.renderGamer(this.props.gamer)}
+            {this.renderGames()}
+          </div>
         </div>
       </div>
     );
