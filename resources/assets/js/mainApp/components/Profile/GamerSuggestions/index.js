@@ -55,13 +55,13 @@ export class GamerSuggestions extends React.Component {
     const isFollower = (this.props.profile && this.props.profile.followers || []).includes(gamer.alias);
     const hasSentRequest = (this.props.profile && this.props.profile.friendRequests || []).includes(gamer.alias);
     return(
-      <div className="hover-bar">
-        <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); window.location.href = `/profile/${gamer.alias}`}}>Profile</div>
-        {this.props.profile && !isFriend && !hasSentRequest && <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.sendFriendRequest(gamer.alias, gamer.profileId)}}>Request Connection</div>}
-        {this.props.profile && !isFriend && hasSentRequest && <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.cancelFriendRequest(gamer.alias, gamer.profileId)}}>Request Sent</div>}
-        {this.props.profile && <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.invite(gamer) }}>Invite</div>}
-        {this.props.profile && !isFollower && <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.follow(gamer.alias, gamer.profileId)}}>Follow</div>}
-        {this.props.profile && isFollower && <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.unfollow(gamer.alias, gamer.profileId)}}>Unfollow</div>}
+      <div className="hover-bar suggestion-bar">
+        <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); window.location.href = `/profile/${gamer.alias}`}}>Profile</div>
+        {this.props.profile && !isFriend && !hasSentRequest && <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); this.sendFriendRequest(gamer.alias, gamer.profileId)}}>Connect</div>}
+        {this.props.profile && !isFriend && hasSentRequest && <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); this.cancelFriendRequest(gamer.alias, gamer.profileId)}}>Requested</div>}
+        {this.props.profile && <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); this.invite(gamer) }}>Invite</div>}
+        {this.props.profile && !isFollower && <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); this.follow(gamer.alias, gamer.profileId)}}>Follow</div>}
+        {this.props.profile && isFollower && <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); this.unfollow(gamer.alias, gamer.profileId)}}>Unfollow</div>}
       </div>
     );
   }

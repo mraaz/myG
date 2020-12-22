@@ -40,13 +40,24 @@
     }
   }
 
+  .suggestion-bar {
+    flex-wrap: wrap;
+    min-height: 4em;
+    .suggestion-button {
+      min-width: 45%;
+      max-width: 45%;
+      margin: 2px;
+      text-align: center;
+    }
+  }
+
   .hover-bar {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     position: absolute;
-    bottom: -25px;
+    bottom: -30px;
     left: 0;
     right: 0;
   }

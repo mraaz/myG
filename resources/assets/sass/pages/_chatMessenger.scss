@@ -1,6 +1,7 @@
 #messenger {
   position: relative;
-  width: 24vw;
+  width: 16vw;
+  min-width: 300px;
   background-color: #151b26;
   border-left: 2px solid #222b37;
 
@@ -17,7 +18,8 @@
 
   .messenger-content {
     position: fixed;
-    width: 24vw;
+    width: 16vw;
+    min-width: 300px;
     right: 0;
     top: 0;
     bottom: 0;
@@ -870,15 +872,6 @@
     display: inherit;
     outline: none;
     box-shadow: 0 0 1pt 1pt #1515ff;
-  }
-}
-
-@media (max-width: 1440px) {
-  #messenger {
-    width: 300px;
-    .messenger-content {
-      width: 300px;
-    }
   }
 }
 
