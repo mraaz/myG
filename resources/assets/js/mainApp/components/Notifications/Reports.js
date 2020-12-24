@@ -89,7 +89,7 @@ export default class Reports extends Component {
     let activity_name = ''
     return (
       <div className='notification__text'>
-        {`${props.first_user_alias} has reported.`}{' '}
+        {` has reported.`}{' '}
         <Link to={`/post/${props.post_id}`}>
           <span className='notification-type'>{props.name}</span>
         </Link>
@@ -152,11 +152,19 @@ export default class Reports extends Component {
                         report.read == undefined ? (report.read_status == 0 ? 'unread' : '') : report.read == false ? 'unread' : ''
                       }`}>
                       <div className='username__link'>
-                        <Link to={`/profile/${report.alias}`}>
+                        <Link to={`/profile/${report.first_user_alias}`}>
                           <div className='notification-username'>
-                            <span> @{report.alias}</span>
+                            <span> @{report.first_user_alias}</span>
                           </div>
                         </Link>
+                        {report.second_user_alias && ` and `}
+                        {report.second_user_alias && (
+                          <Link to={`/profile/${report.second_user_alias}`}>
+                            <div className='notification-username'>
+                              <span> @{report.second_user_alias}</span>
+                            </div>
+                          </Link>
+                        )}
                       </div>
                       {this.renderActivityText(report)}
                     </div>
