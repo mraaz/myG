@@ -3,16 +3,7 @@ import axios from 'axios'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
 import TopTabs from './TopTabs'
-import {
-  clickedAccept_myInvitations,
-  clickedDenied_myInvitations,
-  clickedAccept_community,
-  clickedDenied_community,
-  clickedAccept_game,
-  clickedDenied_game,
-  handleTime,
-  mark_read_status,
-} from './helperFunction'
+import { clickedDeletePost, clickedDeleteReport, handleTime } from './helperFunction'
 import { Toast_style } from '../Utility_Function'
 import { toast } from 'react-toastify'
 import NoRecord from './NoRecord'
@@ -81,22 +72,10 @@ export default class Reports extends Component {
 
   handleActionClick = (type, data) => {
     const { reports } = this.state
-    if (type == 'accept') {
-      if (data.activity_type == 1) {
-        clickedAccept_myInvitations(data)
-      } else if (data.activity_type == 12) {
-        clickedAccept_community(data)
-      } else {
-        clickedAccept_game(data)
-      }
+    if (type == 'post') {
+      clickedDeletePost(data)
     } else {
-      if (data.activity_type == 1) {
-        clickedDenied_myInvitations(data)
-      } else if (data.activity_type == 12) {
-        clickedDenied_community(data)
-      } else {
-        clickedDenied_game(data)
-      }
+      clickedDeleteReport(data)
     }
     const filterReports = reports.filter((report) => report.id != data.id)
     this.setState({ reports: filterReports }, () => {
@@ -108,39 +87,14 @@ export default class Reports extends Component {
   renderActivityText = (props) => {
     const { activity_type } = props
     let activity_name = ''
-    switch (activity_type) {
-      case 12:
-        activity_name = 'Group'
-        return (
-          <div className='notification__text'>
-            {`wants to join this group `}{' '}
-            <Link to={`/community/${props.group_id}`}>
-              <span className='notification-type'>{props.name}</span>
-            </Link>
-            {`. What ya reckon? `}
-          </div>
-        )
-        break
-      case 1:
-        activity_name = 'Friendship'
-        return <div className='notification__text'>{` wants to connect with you `}</div>
-        break
-      case 11:
-        activity_name = 'Game'
-        return (
-          <div className='notification__text'>
-            {`wants to join  `}{' '}
-            <Link to={`/scheduledGames/${props.schedule_games_GUID}`}>
-              <span className='notification-type'>{props.game_name}</span>
-            </Link>
-            {`starting on ${moment(props.start_time).format('DD-MMM-YYYY')}`}
-          </div>
-        )
-        break
-
-      default:
-        break
-    }
+    return (
+      <div className='notification__text'>
+        {`${props.first_user_alias} has reported.`}{' '}
+        <Link to={`/post/${props.post_id}`}>
+          <span className='notification-type'>{props.name}</span>
+        </Link>
+      </div>
+    )
   }
 
   addDefaultSrc(ev) {
@@ -177,47 +131,47 @@ export default class Reports extends Component {
 
         <div className='gameList__box' style={{ padding: '15px' }} onScroll={this.handleScroll} ref={this.myRef}>
           {reports.length > 0 &&
-            reports.map((approval, index) => {
-              const time = handleTime(approval.created_at)
+            reports.map((report, index) => {
+              const time = handleTime(report.created_at)
               return (
                 <div
                   className={`notification ${
-                    approval.read == undefined ? (approval.read_status == 0 ? 'unread' : '') : approval.read == false ? 'unread' : ''
+                    report.read == undefined ? (report.read_status == 0 ? 'unread' : '') : report.read == false ? 'unread' : ''
                   }`}
-                  key={approval.id}
-                  onClick={(e) => this.handleClickNotiFication(approval.id, index)}>
+                  key={report.id}
+                  onClick={(e) => this.handleClickNotiFication(report.id, index)}>
                   >
                   <div className='notification-user-avatar'>
-                    <Link to={`/profile/${approval.alias}`}>
-                      <img onError={this.addDefaultSrc} src={approval.profile_img ? approval.profile_img : defaultUserImage} />
+                    <Link to={`/profile/${report.alias}`}>
+                      <img onError={this.addDefaultSrc} src={report.profile_img ? report.profile_img : defaultUserImage} />
                     </Link>
                   </div>
                   <div className='notification-content'>
                     <div
                       className={`notification-description ${
-                        approval.read == undefined ? (approval.read_status == 0 ? 'unread' : '') : approval.read == false ? 'unread' : ''
+                        report.read == undefined ? (report.read_status == 0 ? 'unread' : '') : report.read == false ? 'unread' : ''
                       }`}>
                       <div className='username__link'>
-                        <Link to={`/profile/${approval.alias}`}>
+                        <Link to={`/profile/${report.alias}`}>
                           <div className='notification-username'>
-                            <span> @{approval.alias}</span>
+                            <span> @{report.alias}</span>
                           </div>
                         </Link>
                       </div>
-                      {this.renderActivityText(approval)}
+                      {this.renderActivityText(report)}
                     </div>
                     <div className='notification-options'>
                       <span className='notification-time'>
                         {time.countdown} {time.countdown_label} ago
                       </span>
                       <div className='notification-actions'>
-                        <button className='action accept' onClick={(e) => this.handleActionClick('accept', approval)}>
-                          <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' />
-                          {` Accept`}
+                        <button className='action decline' onClick={(e) => this.handleActionClick('report', report)}>
+                          {/* <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' /> */}
+                          {` Delete Report `}
                         </button>
-                        <button className='action decline' onClick={(e) => this.handleActionClick('decline', approval)}>
-                          <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' />
-                          {` Decline`}
+                        <button className='action decline' onClick={(e) => this.handleActionClick('post', report)}>
+                          {/* <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' /> */}
+                          {` Delete Post `}
                         </button>
                       </div>
                     </div>
