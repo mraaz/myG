@@ -15,7 +15,7 @@ export const clickedAccept_myInvitations = (invitation) => {
 
   try {
     setAsFriendRedux(invitation.user_id)
-    GoogleAnalytics.userFriendMade(invitation.user_id);
+    GoogleAnalytics.userFriendMade(invitation.user_id)
     const createFriend = axios.post('/api/friends/create', {
       friend_id: invitation.user_id,
     })
@@ -63,7 +63,7 @@ export const clickedAccept_game = (invitation) => {
       content: str,
       schedule_games_id: invitation.schedule_games_id,
     })
-    GoogleAnalytics.gameAccepted();
+    GoogleAnalytics.gameAccepted()
   } catch (error) {
     logToElasticsearch('error', 'Notification HelperFunction', 'Failed clickedAccept_/api/comments:' + ' ' + error)
   }
@@ -143,5 +143,19 @@ export const markread_chatNotification = (id) => {
     const read_all = axios.put('/api/chat_notifications', { id })
   } catch (error) {
     logToElasticsearch('error', 'Notification HelperFunction', 'Failed markread_chatNotification:' + ' ' + error)
+  }
+}
+export const deleteReportedPost = (id) => {
+  try {
+    const deletePost = axios.delete(`/api/report/delete/${id}`)
+  } catch (error) {
+    logToElasticsearch('error', 'Notification HelperFunction', 'Failed deleteReportedPost:' + ' ' + error)
+  }
+}
+export const deleteReportNotification = (id) => {
+  try {
+    const reportNotification = axios.post('/api/report/destroy_source/delete', { id })
+  } catch (error) {
+    logToElasticsearch('error', 'Notification HelperFunction', 'Failed deleteReportNotification:' + ' ' + error)
   }
 }
