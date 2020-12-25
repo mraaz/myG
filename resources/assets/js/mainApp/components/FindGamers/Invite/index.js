@@ -4,6 +4,7 @@ import axios from 'axios';
 import Progress from '../../common/ProgressCircle/progress';
 import LoadingIndicator from '../../LoadingIndicator';
 import { ignoreFunctions } from '../../../../common/render';
+import notifyToast from '../../../../common/toast';
 import { getAssetUrl } from '../../../../common/assets';
 import { WithTooltip } from '../../Tooltip';
 import fetchGames from './fetch';
@@ -89,6 +90,8 @@ export default class InviteModal extends React.Component {
     const profile = <img onError={addDefaultSrc} src={game.profile_img} />;
     const title = game.game_name;
     const owner = game.alias;
+    const experienceText = game.experience === 'Professional' ? 'Pro' : game.experience === 'Casual' ? 'Casual' : 'Semi-Pro';
+    const experienceStyle = game.experience === 'Professional' ? 'pro' : game.experience === 'Casual' ? 'casual' : 'semi-pro';
     return (
       <div key={game.id} className="game-container">
          <div className='game'>
@@ -129,6 +132,7 @@ export default class InviteModal extends React.Component {
                   })}
                 {game.tags && game.tags.length > 7 && ` ...`}
               </div>
+              {!!game.experience && <div className={experienceStyle}>{experienceText}</div>}
             </div>
           </div>
         </div>
@@ -148,6 +152,7 @@ export default class InviteModal extends React.Component {
   }
 
   invite = (game) => {
+    notifyToast('Got it mate, your invite has been sent!');
     return axios.post('/api/invited_users_for_schedule_games/invite', {
       schedule_games_id: game.id,
       user_id: this.props.gamer.profileId
