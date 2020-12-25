@@ -3,18 +3,18 @@ import axios from 'axios'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
 import TopTabs from './TopTabs'
-import { clickedDeletePost, clickedDeleteReport, handleTime } from './helperFunction'
+import { deleteGamer, banGamer, handleTime } from './helperFunction'
 import { Toast_style } from '../Utility_Function'
 import { toast } from 'react-toastify'
 import NoRecord from './NoRecord'
 const defaultUserImage = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
 
-export default class Reports extends Component {
+export default class ReportedUsers extends Component {
   constructor() {
     super()
     this.state = {
       fetching: false,
-      reports: [],
+      reportedUsers: [],
       moreplease: true,
       counter: 1,
       tab: 0,
@@ -27,11 +27,11 @@ export default class Reports extends Component {
     const { counter } = this.state
     window.scrollTo(0, 0)
     this.setState({ fetching: true })
-    const getReports = await axios.get(`/api/report/${counter}`)
+    const getReportedUsers = await axios.get(`/api/reported/${counter}`)
 
-    if (getReports.data.length > 0) {
-      this.setState({ reports: getReports.data, fetching: false }, () => {
-        this.props.setNotificationsCount(this.state.reports.length)
+    if (getReportedUsers.data.length > 0) {
+      this.setState({ reportedUsers: getReportedUsers.data, fetching: false }, () => {
+        this.props.setNotificationsCount(this.state.reportedUsers.length)
       })
     }
   }
@@ -40,23 +40,23 @@ export default class Reports extends Component {
     const { counter, reports = [] } = this.state
     let count = counter + 1
     this.setState({ fetching: true })
-    const getReports = await axios.get(`/api/report/${counter}`)
+    const getReportedUsers = await axios.get(`/api/reported/${counter}`)
 
-    if (getReports.data && getReports.data.length == 0) {
+    if (getReportedUsers.data && getReportedUsers.data.length == 0) {
       this.setState({
         moreplease: false,
         fetching: false,
       })
       return
     }
-    if (getReports.data && getReports.data.length > 0) {
+    if (getReportedUsers.data && getReportedUsers.data.length > 0) {
       if (count > 1) {
-        this.setState({ reports: [...reports, ...getReports.data], counter: count, fetching: false }, () => {
-          this.props.setNotificationsCount(this.state.reports.length)
+        this.setState({ reportedUsers: [...reportedUsers, ...getReportedUsers.data], counter: count, fetching: false }, () => {
+          this.props.setNotificationsCount(this.state.reportedUsers.length)
         })
       } else {
-        this.setState({ reports: getReports.data, fetching: false }, () => {
-          this.props.setNotificationsCount(this.state.reports.length)
+        this.setState({ reportedUsers: getReportedUsers.data, fetching: false }, () => {
+          this.props.setNotificationsCount(this.state.reportedUsers.length)
         })
       }
     }
@@ -71,26 +71,27 @@ export default class Reports extends Component {
   }
 
   handleActionClick = (type, data) => {
-    const { reports } = this.state
-    if (type == 'post') {
-      clickedDeletePost(data)
+    const { reportedUsers } = this.state
+    if (type == 'deleteGamer') {
+      deleteGamer(data)
     } else {
-      clickedDeleteReport(data)
+      banGamer(data)
     }
-    const filterReports = reports.filter((report) => report.id != data.id)
-    this.setState({ reports: filterReports }, () => {
-      this.props.setNotificationsCount(this.state.reports.length)
+    const filterReports = reportedUsers.filter((report) => report.id != data.id)
+    this.setState({ reportedUsers: filterReports }, () => {
+      this.props.setNotificationsCount(this.state.reportedUsers.length)
     })
     toast.success(<Toast_style text={`Yeah! you have successfully ${type} the request.`} />)
   }
 
   renderReportedText = (props) => {
+    const { first_offence, second_offence, third_offence, first_offence_date, second_offence_date, third_offence_date, counter } = props
     return (
       <div className='notification__text'>
-        {` has reported.`}{' '}
-        <Link to={`/post/${props.post_id}`}>
-          <span className='notification-type'>{'post'}</span>
-        </Link>
+        {`${counter} time${counter > 1 ? '(s)' : ''}`}
+        {first_offence && <div className='notification-type'>{`${first_offence} | ${moment(first_offence_date).format('lll')}`}</div>}
+        {second_offence && <div className='notification-type'>{`${second_offence} | ${moment(second_offence_date).format('lll')}`}</div>}
+        {third_offence && <div className='notification-type'>{`${third_offence} | ${moment(third_offence_date).format('lll')}`}</div>}
       </div>
     )
   }
@@ -100,13 +101,13 @@ export default class Reports extends Component {
   }
 
   handleClickNotiFication = (id, index) => {
-    let { reports = [] } = this.state
+    let { reportedUsers = [] } = this.state
 
-    if (reports.length > 0 && reports[index].read_status != 1) {
-      if (reports[index].read == undefined || reports[index].read == false) {
-        reports[index].read = true
+    if (reportedUsers.length > 0 && reportedUsers[index].read_status != 1) {
+      if (reportedUsers[index].read == undefined || reportedUsers[index].read == false) {
+        reportedUsers[index].read = true
         mark_read_status(id)
-        this.setState({ reports })
+        this.setState({ reportedUsers })
       } else {
         return
       }
@@ -117,19 +118,19 @@ export default class Reports extends Component {
 
   render() {
     const { active } = this.props
-    const { fetching, reports } = this.state
+    const { fetching, reportedUsers } = this.state
 
     const isActive = active == true ? { display: 'block' } : { display: 'none' }
 
     return (
-      <div style={isActive} className='game__report'>
+      <div style={isActive} className='game__reportedUser'>
         <TopTabs tabs={['All']} changeTab={this.changeTab} />
 
-        {!reports.length && <NoRecord title='No more updates.' linkvisible={false} />}
+        {!reportedUsers.length && <NoRecord title='No more updates.' linkvisible={false} />}
 
         <div className='gameList__box' style={{ padding: '15px' }} onScroll={this.handleScroll} ref={this.myRef}>
-          {reports.length > 0 &&
-            reports.map((report, index) => {
+          {reportedUsers.length > 0 &&
+            reportedUsers.map((report, index) => {
               const time = handleTime(report.created_at)
               return (
                 <div
@@ -138,7 +139,6 @@ export default class Reports extends Component {
                   }`}
                   key={report.id}
                   onClick={(e) => this.handleClickNotiFication(report.id, index)}>
-                  >
                   <div className='notification-user-avatar'>
                     <Link to={`/profile/${report.alias}`}>
                       <img onError={this.addDefaultSrc} src={report.profile_img ? report.profile_img : defaultUserImage} />
@@ -152,17 +152,9 @@ export default class Reports extends Component {
                       <div className='username__link'>
                         <Link to={`/profile/${report.first_user_alias}`}>
                           <div className='notification-username'>
-                            <span> @{report.first_user_alias}</span>
+                            <span> @{report.alias}</span>
                           </div>
                         </Link>
-                        {report.second_user_alias && ` and `}
-                        {report.second_user_alias && (
-                          <Link to={`/profile/${report.second_user_alias}`}>
-                            <div className='notification-username'>
-                              <span> @{report.second_user_alias}</span>
-                            </div>
-                          </Link>
-                        )}
                       </div>
                       {this.renderReportedText(report)}
                     </div>
@@ -171,13 +163,13 @@ export default class Reports extends Component {
                         {time.countdown} {time.countdown_label} ago
                       </span>
                       <div className='notification-actions'>
-                        <button className='action decline' onClick={(e) => this.handleActionClick('report', report)}>
+                        <button className='action decline' onClick={(e) => this.handleActionClick('deleteGamer', report)}>
                           {/* <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' /> */}
-                          {` Delete Report `}
+                          {` Delete Gamer `}
                         </button>
-                        <button className='action decline' onClick={(e) => this.handleActionClick('post', report)}>
+                        <button className='action decline' onClick={(e) => this.handleActionClick('banGamer', report)}>
                           {/* <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' /> */}
-                          {` Delete Post `}
+                          {` Ban Gamer `}
                         </button>
                       </div>
                     </div>
@@ -185,7 +177,7 @@ export default class Reports extends Component {
                 </div>
               )
             })}
-          {reports.length > 0 && <div className='endline'>No more updates</div>}
+          {reportedUsers.length > 0 && <div className='endline'>No more updates</div>}
         </div>
       </div>
     )
