@@ -140,7 +140,7 @@ export default class Reports extends Component {
                   onClick={(e) => this.handleClickNotiFication(report.id, index)}>
                   >
                   <div className='notification-user-avatar'>
-                    <Link to={`/profile/${report.alias}`}>
+                    <Link to={`/profile/${report.owner_alias}`}>
                       <img onError={this.addDefaultSrc} src={report.profile_img ? report.profile_img : defaultUserImage} />
                     </Link>
                   </div>
@@ -155,7 +155,7 @@ export default class Reports extends Component {
                             <span> @{report.first_user_alias}</span>
                           </div>
                         </Link>
-                        {report.second_user_alias && ` and `}
+                        {report.second_user_alias && ' and '}
                         {report.second_user_alias && (
                           <Link to={`/profile/${report.second_user_alias}`}>
                             <div className='notification-username'>
