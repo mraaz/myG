@@ -13,6 +13,7 @@ const buckectBaseUrl = 'https://mygame-media.s3.amazonaws.com/platform_images/'
 import { Upload_to_S3, Remove_file } from './AWS_utilities'
 
 import { logToElasticsearch } from '../../integration/http/logger'
+import ReportPost from './common/ReportPost'
 
 export default class IndividualComment extends Component {
   constructor() {
@@ -69,7 +70,7 @@ export default class IndividualComment extends Component {
     const self = this
     let comment = this.props
 
-    const getCommentReplies = async function() {
+    const getCommentReplies = async function () {
       try {
         const myCommentReplies = await axios.get(`/api/replies/${comment.comment.id}`)
 
@@ -124,7 +125,7 @@ export default class IndividualComment extends Component {
     var comment_id = this.props.comment.id
     const self = this
 
-    const getComments = async function() {
+    const getComments = async function () {
       try {
         const myCommentReplies = await axios.get(`/api/replies/${comment_id}`)
         self.setState({
@@ -194,7 +195,7 @@ export default class IndividualComment extends Component {
 
     if (!this.state.show_add_reply) {
       setTimeout(
-        function() {
+        function () {
           //Start the timer
           this.focusTextInput()
         }.bind(this),
@@ -222,9 +223,9 @@ export default class IndividualComment extends Component {
             user={this.props.user}
             schedule_game_id={this.props.comment.schedule_games_id}
             onDelete={(deleted) => {
-              this.setState(previous => ({ 
-                myReplies: previous.myReplies.filter((reply) => reply.id !== deleted)
-              }));
+              this.setState((previous) => ({
+                myReplies: previous.myReplies.filter((reply) => reply.id !== deleted),
+              }))
             }}
           />
         )
@@ -244,9 +245,9 @@ export default class IndividualComment extends Component {
             user={this.props.user}
             schedule_game_id={this.props.comment.schedule_games_id}
             onDelete={(deleted) => {
-              this.setState(previous => ({ 
-                myReplies: previous.myReplies.filter((reply) => reply.id !== deleted)
-              }));
+              this.setState((previous) => ({
+                myReplies: previous.myReplies.filter((reply) => reply.id !== deleted),
+              }))
             }}
           />
         )
@@ -303,7 +304,7 @@ export default class IndividualComment extends Component {
     const self = this
     var comment_id = this.props.comment.id
 
-    const saveComment = async function() {
+    const saveComment = async function () {
       try {
         const mysaveComment = await axios.post(`/api/comments/update/${comment_id}`, {
           content: self.state.value2,
@@ -390,10 +391,18 @@ export default class IndividualComment extends Component {
       this.setState({
         comment_deleted: true,
       })
-      this.props.onDelete(comment_id);
+      this.props.onDelete(comment_id)
     } catch (error) {
       logToElasticsearch('error', 'IndividualComment', 'Failed delete_exp:' + ' ' + error)
     }
+  }
+  showReportAlert = (id) => {
+    this.clickedDropdown()
+    const getAlert = () => <ReportPost comment_id={id} hideModal={this.hideAlert} />
+
+    this.setState({
+      alert: getAlert(),
+    })
   }
 
   showAlert() {
@@ -423,7 +432,7 @@ export default class IndividualComment extends Component {
     })
   }
 
-  hideAlert(text) {
+  hideAlert = (text) => {
     this.setState({
       alert: null,
       dropdown: false,
@@ -513,28 +522,33 @@ export default class IndividualComment extends Component {
               )}
             </div>
             <div className='comment__shape'></div>
-
             {/* comment option start  */}
-            {user.id == comment.user_id && (
-              <div className='gamePostExtraOption'>
-                <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}>
-                  ...
-                </i>
-                <div className={`dropdown ${this.state.dropdown ? 'active' : ''}`}>
-                  <nav>
+            <div className='gamePostExtraOption'>
+              <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}>
+                ...
+              </i>
+              <div className={`dropdown ${this.state.dropdown ? 'active' : ''}`}>
+                <nav>
+                  {user.id != comment.user_id && (
+                    <div className='option' onClick={(e) => this.showReportAlert(comment.id)}>
+                      Report
+                    </div>
+                  )}
+                  {user.id == comment.user_id && (
                     <div className='edit' onClick={this.clickedEdit}>
                       Edit &nbsp;
                     </div>
+                  )}
+                  {user.id == comment.user_id && (
                     <div className='delete' onClick={() => this.showAlert()}>
                       Delete
                     </div>
-                    &nbsp;
-                  </nav>
-                </div>
+                  )}
+                  &nbsp;
+                </nav>
               </div>
-            )}
+            </div>
             {/* comment option end  */}
-
             {this.state.show_edit_comment && (
               <div className='edit__comment__input'>
                 <input
@@ -548,7 +562,6 @@ export default class IndividualComment extends Component {
                 />
               </div>
             )}
-
             {/* profile section start  */}
             <Link to={`/profile/${comment.alias}`} className='user-img'>
               <div
