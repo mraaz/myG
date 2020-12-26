@@ -517,7 +517,7 @@ export default class IndividualPost extends Component {
       alert: getAlert(),
     })
   }
-  showReportAlert(id) {
+  showReportAlert = (id) => {
     this.clickedGamePostExtraOption()
     const getAlert = () => <ReportPost post_id={id} hideModal={this.hideAlert} />
 

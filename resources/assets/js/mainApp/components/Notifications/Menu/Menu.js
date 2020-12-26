@@ -13,6 +13,7 @@ export default class Menu extends Component {
       alerts: 0,
       chats: 0,
       reports: 0,
+      reportedUser: 0,
     }
   }
 
@@ -45,7 +46,7 @@ export default class Menu extends Component {
 
   render() {
     const { changeContentTab, notificationsCount, activeTab } = this.props
-    const { approvals = 0, chats = 0, alerts = 0, reports = 0 } = this.state
+    const { approvals = 0, chats = 0, alerts = 0, reports = 0, reportedUser } = this.state
 
     return (
       <div className='notifications-menu'>
@@ -88,6 +89,14 @@ export default class Menu extends Component {
             onClick={() => {
               this.changeTab(4)
               changeContentTab(4)
+            }}
+          />
+          <Button
+            title={`Reported Users ${reportedUser ? `(${reportedUser})` : '(0)'}`}
+            active={activeTab == 6}
+            onClick={() => {
+              this.changeTab(6)
+              changeContentTab(6)
             }}
           />
           <Button

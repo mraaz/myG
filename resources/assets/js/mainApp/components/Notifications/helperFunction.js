@@ -159,3 +159,17 @@ export const deleteReportNotification = (id) => {
     logToElasticsearch('error', 'Notification HelperFunction', 'Failed deleteReportNotification:' + ' ' + error)
   }
 }
+export const deleteGamer = (id) => {
+  try {
+    const deleteGamer = axios.delete(`/api/user/delete/${id}`)
+  } catch (error) {
+    logToElasticsearch('error', 'Notification HelperFunction', 'Failed clickedDeleteGamer:' + ' ' + error)
+  }
+}
+export const banGamer = (id) => {
+  try {
+    const deleteGamer = axios.delete(`/api/user/delete/${id}`)
+  } catch (error) {
+    logToElasticsearch('error', 'Notification HelperFunction', 'Failed banGamer:' + ' ' + error)
+  }
+}

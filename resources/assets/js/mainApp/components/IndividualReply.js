@@ -5,6 +5,7 @@ import moment from 'moment'
 
 import SweetAlert from './common/MyGSweetAlert'
 import { logToElasticsearch } from '../../integration/http/logger'
+import ReportPost from './common/ReportPost'
 
 export default class IndividualReply extends Component {
   constructor() {
@@ -51,7 +52,7 @@ export default class IndividualReply extends Component {
     const self = this
     let reply = this.props
 
-    const getCommentReplies = async function() {
+    const getCommentReplies = async function () {
       try {
         const myReplyLikes = await axios.get(`/api/likes/reply/${reply.reply.id}`)
 
@@ -207,7 +208,7 @@ export default class IndividualReply extends Component {
     const self = this
     var reply_id = this.props.reply.id
 
-    const saveReply = async function() {
+    const saveReply = async function () {
       try {
         const mysaveReply = await axios.post(`/api/replies/update/${reply_id}`, {
           content: self.state.value,
@@ -224,6 +225,15 @@ export default class IndividualReply extends Component {
       }
     }
     saveReply()
+  }
+
+  showReportAlert = (id) => {
+    this.clickedDropdown()
+    const getAlert = () => <ReportPost reply_id={id} hideModal={this.hideAlert} />
+
+    this.setState({
+      alert: getAlert(),
+    })
   }
 
   showAlert() {
@@ -254,7 +264,7 @@ export default class IndividualReply extends Component {
     })
   }
 
-  hideAlert(text) {
+  hideAlert = (text) => {
     this.setState({
       alert: null,
       dropdown: false,
@@ -291,27 +301,32 @@ export default class IndividualReply extends Component {
               )}
             </div>
             <div className='comment__shape'></div>
-
             {/* reply option start  */}
-            {user.id == reply.user_id && (
-              <div className='gamePostExtraOption'>
-                <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}>
-                  ...
-                </i>
-                <div className={`dropdown ${this.state.dropdown ? 'active' : ''}`}>
-                  <nav>
+            <div className='gamePostExtraOption'>
+              <i className='fas fa-ellipsis-h' onClick={this.clickedDropdown}>
+                ...
+              </i>
+              <div className={`dropdown ${this.state.dropdown ? 'active' : ''}`}>
+                <nav>
+                  {user.id != reply.user_id && (
+                    <div className='option' onClick={(e) => this.showReportAlert(reply.id)}>
+                      Report
+                    </div>
+                  )}
+                  {user.id == reply.user_id && (
                     <div className='edit' onClick={this.clickedEdit}>
                       Edit &nbsp;
                     </div>
+                  )}
+                  {user.id == reply.user_id && (
                     <div className='delete' onClick={() => this.showAlert()}>
                       Delete
                     </div>
-                    &nbsp;
-                  </nav>
-                </div>
+                  )}
+                  &nbsp;
+                </nav>
               </div>
-            )}
-
+            </div>
             {/* reply option end  */}
             {this.state.show_edit_reply && (
               <div className='edit__comment__input'>
@@ -326,7 +341,6 @@ export default class IndividualReply extends Component {
                 />
               </div>
             )}
-
             {/* profile section start  */}
             <Link to={`/profile/${reply.alias}`} className='user-img'>
               <div

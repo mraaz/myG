@@ -64,6 +64,22 @@ $main-font: 'Montserrat';
             margin: 0 12px 0 0;
           }
         }
+        &:nth-of-type(5n) {
+          &::before {
+            content: url('https://mygame-media.s3.amazonaws.com/platform_images/Notifications/Alerts.svg');
+            top: 5px;
+            position: relative;
+            margin: 0 12px 0 0;
+          }
+        }
+        &:nth-of-type(6n) {
+          &::before {
+            content: url('https://mygame-media.s3.amazonaws.com/platform_images/Notifications/Approvals.svg');
+            top: 5px;
+            position: relative;
+            margin: 0 12px 0 0;
+          }
+        }
 
         &:nth-of-type(3n) {
           &::before {
@@ -83,7 +99,7 @@ $main-font: 'Montserrat';
           }
         }
 
-        &:nth-of-type(5n) {
+        &:nth-of-type(7n) {
           &::before {
             content: url('https://mygame-media.s3.amazonaws.com/platform_images/Notifications/Settings.svg');
             top: 5px;
@@ -103,7 +119,8 @@ $main-font: 'Montserrat';
     }
     .upcoming__game,
     .game__approval,
-    .notification__container {
+    .game__report,
+    .game__reportedUser .notification__container {
       .noRecordFound__wraper {
         background: #181a1c;
         .noRecordFound__body {
@@ -116,6 +133,7 @@ $main-font: 'Montserrat';
         }
       }
     }
+
     .gameList__box {
       position: relative;
       max-height: 100vh;
@@ -352,6 +370,30 @@ $main-font: 'Montserrat';
       }
       .notification-content {
         margin-left: 0;
+      }
+    }
+    .game__report {
+      .decline {
+        width: 140px !important;
+        margin-right: 10px;
+      }
+    }
+    .game__reportedUser {
+      .notification-description {
+        max-width: inherit !important;
+      }
+      .notification {
+        min-height: 90px !important;
+        height: auto !important;
+        .notification-actions {
+          position: absolute;
+          right: 0;
+          bottom: -15px;
+          .decline {
+            width: 140px !important;
+            margin-right: 10px;
+          }
+        }
       }
     }
     .notification__container {
@@ -612,6 +654,10 @@ $main-font: 'Montserrat';
 
         .username__link {
           display: inline-flex;
+          .gapfill {
+            margin-left: 5px;
+            margin-right: 5px;
+          }
         }
         .notification__text {
           display: inline;

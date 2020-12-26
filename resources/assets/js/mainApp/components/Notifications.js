@@ -7,6 +7,7 @@ import Alerts from './Notifications/Alerts'
 import Chat from './Notifications/Chat'
 import Settings from './Notifications/Settings'
 import Reports from './Notifications/Reports'
+import ReportedUser from './Notifications/ReportedUser'
 
 export default class Notifications extends Component {
   constructor() {
@@ -65,6 +66,7 @@ export default class Notifications extends Component {
             {activeTab == 2 && <Alerts active={activeTab == 2} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
             {activeTab == 3 && <Chat active={activeTab == 3} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
             {activeTab == 4 && <Reports active={activeTab == 4} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
+            {activeTab == 6 && <ReportedUser active={activeTab == 6} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
             {activeTab == 5 && <Settings active={activeTab == 5} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
           </div>
         </div>
