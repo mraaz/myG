@@ -10,10 +10,12 @@ const ReportPost = (props) => {
   const [reasonId, SetShowReasonId] = useState('')
   const [sub__content, SetSub__content] = useState('')
   const [requesting, SetRequesting] = useState(false)
+  const [isDisabled, SetDisabled] = useState(true)
 
   const handleBackButton = () => {
     SetShowReason(false)
     SetShowReasonId('')
+    SetDisabled(true)
   }
   const handleSubmit = async () => {
     SetRequesting(true)
@@ -38,6 +40,7 @@ const ReportPost = (props) => {
     SetShowReasonId(msgId)
   }
   const handleSubReasonClick = (msg) => {
+    SetDisabled(false)
     SetSub__content(msg)
   }
 
@@ -97,7 +100,7 @@ const ReportPost = (props) => {
               Back
             </button>
           )}
-          <button type='button' onClick={handleSubmit} disabled={requesting}>
+          <button type='button' onClick={handleSubmit} disabled={requesting || isDisabled}>
             Submit
           </button>
         </div>
