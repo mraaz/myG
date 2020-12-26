@@ -155,7 +155,7 @@ export default class Reports extends Component {
                             <span> @{report.first_user_alias}</span>
                           </div>
                         </Link>
-                        {report.second_user_alias && ' and '}
+                        {report.second_user_alias && <span className='gapfill'> and </span>}
                         {report.second_user_alias && (
                           <Link to={`/profile/${report.second_user_alias}`}>
                             <div className='notification-username'>

@@ -654,6 +654,10 @@ $main-font: 'Montserrat';
 
         .username__link {
           display: inline-flex;
+          .gapfill {
+            margin-left: 5px;
+            margin-right: 5px;
+          }
         }
         .notification__text {
           display: inline;
