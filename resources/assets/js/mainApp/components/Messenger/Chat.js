@@ -401,7 +401,7 @@ export class Chat extends React.Component {
         className='chat-component-empty-chat-message clickable'
         onClick={() =>
           showMessengerAlert(
-            'End to End Encryption (E2E) means that no one outside of the chat can read your messages (not even myG). Most E2E apps store a secret key on a device. This means you need a device to access your messages. myG emails you this secret key which we call chat password. This allows you to get E2E without additional gadgets. With great power, comes great responsibility. If you lose your key unfortunately, you will also lose your chat history, not even the god-like nerds @ myG can recover your key.'
+            'End to End Encryption (E2E) means that no one outside of the chat can read your messages (not even myG). Most E2E apps store a secret key on a device. This means you need a device to access your messages. myG emails you this secret key which we call chat password. This allows you to get E2E without additional gadgets. With great power, comes great responsibility. If you lose your chat password unfortunately, you will also lose your chat history, not even the god-like nerds @ myG can recover your chat password.'
           )
         }>
         <p>Messages you send to this chat are secured with end-to-end encryption.</p>
