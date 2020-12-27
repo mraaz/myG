@@ -1,6 +1,6 @@
 import React from 'react'
 import { ignoreFunctions } from '../../../../common/render'
-import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
+import AsyncCreatableSelect from 'react-select/async-creatable';
 import MyGSelect from '../../common/MyGSelect'
 import { Disable_keys, Schedule_Game_Skills } from '../../Utility_Function'
 import { WithTooltip } from '../../Tooltip'
