@@ -38,7 +38,7 @@ const ContactSchema = require('../../Schemas/Contact');
 const ChatPrivateKeyRequestSchema = require('../../Schemas/ChatPrivateKeyRequest');
 const ChatNotificationSchema = require('../../Schemas/ChatNotification');
 
-const uuidv4 = require('uuid/v4');
+const { v4: uuidv4 } = require('uuid');;
 const { log } = require('../../Common/logger');
 
 const MAXIMUM_GROUP_SIZE = 37;

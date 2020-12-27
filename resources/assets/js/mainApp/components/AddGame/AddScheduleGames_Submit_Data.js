@@ -1,9 +1,6 @@
 import { Convert_to_comma_delimited_value } from '../Utility_Function'
-
 import axios from 'axios'
 import moment from 'moment'
-import uuid from 'uuid'
-
 import { logToElasticsearch } from '../../../integration/http/logger'
 
 const MAX_GAME_TAGS = 9
@@ -84,7 +81,7 @@ export async function SubmitDataFunction(myG) {
     autoJoin = myG.autoJoin
   }
 
-  const uuidv1 = require('uuid/v1')
+  const { v1: uuidv1 } = require('uuid');
   var tmp = uuidv1()
 
   try {

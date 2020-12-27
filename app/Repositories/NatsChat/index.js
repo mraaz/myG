@@ -1,5 +1,5 @@
 
-const uuidv4 = require('uuid/v4');
+const { v4: uuidv4 } = require('uuid');;
 const { subscribe, unsubscribe, publish } = require('../../Common/nats');
 const { log } = require('../../Common/logger');
 const WebsocketChatRepository = require('../../Repositories/WebsocketChat');

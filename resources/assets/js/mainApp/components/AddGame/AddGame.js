@@ -1,14 +1,13 @@
 import React, { Fragment, useEffect } from 'react'
 import classNames from 'classnames'
-import Slider, { Range } from 'rc-slider'
+import Slider from 'rc-slider'
 import moment from 'moment'
 import CustomCron from '../common/Cron/MyGCron'
 import axios from 'axios'
 
-import 'rc-slider/assets/index.css'
 import { toast } from 'react-toastify'
-
 import { Toast_style } from '../Utility_Function'
+import 'rc-slider/assets/index.css'
 import '../../styles/AddGame/AddGameStyles.scss'
 
 import { SETTINGS_ENUMS, styles, EXPERIENCE_OPTIONS, REGION_OPTIONS, PLATFORM_OPTIONS, LANGUAGE_OPTIONS } from '../../static/AddGame'
@@ -17,7 +16,6 @@ import { Game_name_values, Schedule_Game_Tags, Disable_keys } from '../Utility_F
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
 import { FeatureEnabled, REPEAT_SCHEDULE } from '../../../common/flags'
 import { logToElasticsearch } from '../../../integration/http/logger'
-import AsyncSelect from 'react-select/lib/Async'
 
 const SliderWithTooltip = Slider.createSliderWithTooltip(Slider)
 
