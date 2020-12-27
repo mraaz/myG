@@ -147,14 +147,14 @@ export const markread_chatNotification = (id) => {
 }
 export const deleteReportedPost = (data) => {
   try {
-    const deletePost = axios.delete(`/api/report/delete/${data.report_id}`)
+    const deletePost = axios.delete(`/api/report/delete/${data.id}`)
   } catch (error) {
     logToElasticsearch('error', 'Notification HelperFunction', 'Failed deleteReportedPost:' + ' ' + error)
   }
 }
 export const deleteReportNotification = (data) => {
   try {
-    const reportNotification = axios.post('/api/report/destroy_source/delete', { id: data.report_id })
+    const reportNotification = axios.delete(`/api/report/delete_source/${data.id}`)
   } catch (error) {
     logToElasticsearch('error', 'Notification HelperFunction', 'Failed deleteReportNotification:' + ' ' + error)
   }
