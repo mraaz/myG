@@ -41,7 +41,7 @@ pipeline {
                     sh "npm run production"
                     sh "tar -zcvf frontend.tar.gz ./public/"
                     sh "mv frontend.tar.gz ./public/"
-                    sh "aws s3 cp ./public/ s3://myg-frontend/ --recursive"
+                    sh "npx aws s3 cp ./public/ s3://myg-frontend/ --recursive"
                 }
             }
         }
