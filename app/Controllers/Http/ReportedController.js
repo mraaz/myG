@@ -121,7 +121,6 @@ class ReportedController {
         // if (!check) {
         //   return
         // }
-
         const byebyebye = await Database.table('users')
           .where({
             id: request.params.id,

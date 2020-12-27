@@ -114,7 +114,6 @@ class ReportController {
         .groupBy('reports.post_id')
         .orderBy('reports.created_at', 'desc')
         .paginate(request.params.counter, 10)
-
       let allReports_comments = await Database.from('reports')
         .groupBy('reports.comment_id')
         .whereNot('comment_id', '=', '')
@@ -171,7 +170,6 @@ class ReportController {
         .select('users.alias')
         .orderBy('reports.created_at', 'desc')
         .limit(2)
-
       const total_post_count = await Database.from('reports')
         .where((builder) => {
           if (type == 1) builder.where({ post_id: allReports[i].post_id })
@@ -188,10 +186,27 @@ class ReportController {
         })
         .count('* as no_of_my_unread')
 
-      const getOwner = await Database.from('posts')
-        .innerJoin('users', 'users.id', 'posts.user_id')
-        .where('posts.id', '=', allReports[i].post_id)
-        .select('users.alias', 'users.profile_img')
+      let getOwner
+      switch (type) {
+        case 1:
+          getOwner = await Database.from('posts')
+            .innerJoin('users', 'users.id', 'posts.user_id')
+            .where('posts.id', '=', allReports[i].post_id)
+            .select('users.alias', 'users.profile_img')
+          break
+        case 2:
+          getOwner = await Database.from('comments')
+            .innerJoin('users', 'users.id', 'comments.user_id')
+            .where('comments.id', '=', allReports[i].comment_id)
+            .select('users.alias', 'users.profile_img')
+          break
+        case 3:
+          getOwner = await Database.from('replies')
+            .innerJoin('users', 'users.id', 'replies.user_id')
+            .where('replies.id', '=', allReports[i].reply_id)
+            .select('users.alias', 'users.profile_img')
+          break
+      }
 
       if (first_two_users != undefined) {
         if (first_two_users.length == 2) {
