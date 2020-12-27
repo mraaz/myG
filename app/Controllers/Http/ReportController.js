@@ -72,10 +72,10 @@ class ReportController {
     if (auth.user) {
       try {
         const check = await this.security_check({ auth })
-        //RAAZ UNDO THIS LATER
-        // if (!check) {
-        //   return
-        // }
+
+        if (!check) {
+          return
+        }
 
         const delete_report = await Database.table('reports')
           .where({
@@ -101,15 +101,15 @@ class ReportController {
   async show({ auth, request, response }) {
     try {
       const check = await this.security_check({ auth })
-      //RAAZ UNDO THIS LATER
-      // if (!check) {
-      //   return
-      // }
+
+      if (!check) {
+        return
+      }
 
       let singleArr = []
 
       let allReports_posts = await Database.from('reports')
-        .select('reports.id as report_id', 'reports.post_id', 'reports.created_at')
+        .select('reports.id as report_id', 'reports.post_id', 'reports.created_at', 'reports.report_description')
         .whereNot('post_id', '=', '')
         .groupBy('reports.post_id')
         .orderBy('reports.created_at', 'desc')
@@ -117,14 +117,14 @@ class ReportController {
       let allReports_comments = await Database.from('reports')
         .groupBy('reports.comment_id')
         .whereNot('comment_id', '=', '')
-        .select('reports.id', 'reports.comment_id', 'reports.created_at')
+        .select('reports.id', 'reports.comment_id', 'reports.created_at', 'reports.report_description')
         .orderBy('reports.created_at', 'desc')
         .paginate(request.params.counter, 10)
 
       let allReports_replies = await Database.from('reports')
         .groupBy('reports.reply_id')
         .whereNot('reply_id', '=', '')
-        .select('reports.id', 'reports.reply_id', 'reports.created_at')
+        .select('reports.id', 'reports.reply_id', 'reports.created_at', 'reports.report_description')
         .orderBy('reports.created_at', 'desc')
         .paginate(request.params.counter, 10)
 
@@ -198,13 +198,14 @@ class ReportController {
           getOwner = await Database.from('comments')
             .innerJoin('users', 'users.id', 'comments.user_id')
             .where('comments.id', '=', allReports[i].comment_id)
-            .select('users.alias', 'users.profile_img')
+            .select('users.alias', 'users.profile_img', 'comments.post_id')
           break
         case 3:
           getOwner = await Database.from('replies')
             .innerJoin('users', 'users.id', 'replies.user_id')
+            .innerJoin('comments', 'comments.id', 'replies.comment_id')
             .where('replies.id', '=', allReports[i].reply_id)
-            .select('users.alias', 'users.profile_img')
+            .select('users.alias', 'users.profile_img', 'comments.post_id')
           break
       }
 
@@ -228,6 +229,7 @@ class ReportController {
       allReports[i].read_status = getAllNotiLike_unreadCount[0].no_of_my_unread > 0 ? 0 : 1
       allReports[i].owner_alias = getOwner[0].alias
       allReports[i].owner_profile_img = getOwner[0].profile_img
+      allReports[i].post_id = allReports[i].post_id ? allReports[i].post_id : getOwner[0].post_id
     }
     return allReports
   }
@@ -247,10 +249,10 @@ class ReportController {
   async destroy_source({ auth, request, response }) {
     try {
       const check = await this.security_check({ auth })
-      //RAAZ UNDO THIS LATER
-      // if (!check) {
-      //   return
-      // }
+
+      if (!check) {
+        return
+      }
       const report_ = await Database.table('reports')
         .where({
           id: request.params.id,

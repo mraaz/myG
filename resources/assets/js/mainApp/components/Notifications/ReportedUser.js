@@ -108,17 +108,19 @@ export default class ReportedUsers extends Component {
   }
 
   handleActionClick = (type, data) => {
-    const { reportedUsers } = this.state
-    if (type == 'deleteGamer') {
-      deleteGamer(data)
-    } else {
-      banGamer(data)
+    if (window.confirm('Are you REALLY sure you wish to delete/ban your Account?')) {
+      const { reportedUsers } = this.state
+      if (type == 'deleteGamer') {
+        deleteGamer(data)
+      } else {
+        banGamer(data)
+      }
+      const filterReports = reportedUsers.filter((report) => report.id != data.id)
+      this.setState({ reportedUsers: filterReports }, () => {
+        this.props.setNotificationsCount(this.state.reportedUsers.length)
+      })
+      toast.success(<Toast_style text={`Yeah! you have successfully ${type} the request.`} />)
     }
-    const filterReports = reportedUsers.filter((report) => report.id != data.id)
-    this.setState({ reportedUsers: filterReports }, () => {
-      this.props.setNotificationsCount(this.state.reportedUsers.length)
-    })
-    toast.success(<Toast_style text={`Yeah! you have successfully ${type} the request.`} />)
   }
 
   renderReportedText = (props) => {
@@ -187,7 +189,7 @@ export default class ReportedUsers extends Component {
                         report.read == undefined ? (report.read_status == 0 ? 'unread' : '') : report.read == false ? 'unread' : ''
                       }`}>
                       <div className='username__link'>
-                        <Link to={`/profile/${report.first_user_alias}`}>
+                        <Link to={`/profile/${report.alias}`}>
                           <div className='notification-username'>
                             <span> @{report.alias}</span>
                           </div>

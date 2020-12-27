@@ -140,35 +140,36 @@ export const delete_chatNotification_all = () => {
 
 export const markread_chatNotification = (id) => {
   try {
-    const read_all = axios.put('/api/chat_notifications', { id })
+    axios.put('/api/chat_notifications', { id })
   } catch (error) {
     logToElasticsearch('error', 'Notification HelperFunction', 'Failed markread_chatNotification:' + ' ' + error)
   }
 }
 export const deleteReportedPost = (data) => {
   try {
-    const deletePost = axios.delete(`/api/report/delete/${data.id}`)
+    axios.delete(`/api/report/delete_source/${data.report_id}`)
   } catch (error) {
     logToElasticsearch('error', 'Notification HelperFunction', 'Failed deleteReportedPost:' + ' ' + error)
   }
 }
 export const deleteReportNotification = (data) => {
   try {
-    const reportNotification = axios.delete(`/api/report/delete_source/${data.id}`)
+    axios.delete(`/api/report/delete/${data.report_id}`)
   } catch (error) {
     logToElasticsearch('error', 'Notification HelperFunction', 'Failed deleteReportNotification:' + ' ' + error)
   }
 }
 export const deleteGamer = (data) => {
   try {
-    const deleteGamer = axios.delete(`/api/user/delete/${data.id}`)
+    axios.delete(`/api/user/delete/${data.user_id}`)
+    //axios.delete(`/api/report/delete/${data.report_id}`)
   } catch (error) {
     logToElasticsearch('error', 'Notification HelperFunction', 'Failed clickedDeleteGamer:' + ' ' + error)
   }
 }
 export const banGamer = (data) => {
   try {
-    const deleteGamer = axios.delete(`/api/user/delete/${data.id}`)
+    //axios.delete(`/api/user/delete/${data.id}`)
   } catch (error) {
     logToElasticsearch('error', 'Notification HelperFunction', 'Failed banGamer:' + ' ' + error)
   }

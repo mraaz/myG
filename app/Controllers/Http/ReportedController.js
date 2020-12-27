@@ -90,10 +90,10 @@ class ReportedController {
   async show({ auth, request, response }) {
     try {
       const check = await this.security_check({ auth })
-      //RAAZ UNDO THIS LATER
-      // if (!check) {
-      //   return
-      // }
+
+      if (!check) {
+        return
+      }
 
       let allReports_gamers = await Database.from('reported')
         .innerJoin('users', 'users.id', 'reported.user_id')
@@ -117,10 +117,10 @@ class ReportedController {
     if (auth.user) {
       try {
         const check = await this.security_check({ auth })
-        //RAAZ UNDO THIS LATER
-        // if (!check) {
-        //   return
-        // }
+
+        if (!check) {
+          return
+        }
         const byebyebye = await Database.table('users')
           .where({
             id: request.params.id,

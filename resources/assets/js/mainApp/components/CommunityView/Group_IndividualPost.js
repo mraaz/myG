@@ -605,11 +605,7 @@ export default class Group_IndividualPost extends Component {
     if (text == 'true') {
       const reportData = axios.get(`/api/post/report/${post_id}`)
       this.setState({ alert: '' })
-      toast.success(
-        <Toast_style
-          text={`Thanks for reporting! You're helping to make this is a better place. If we deem this an inappropriate post, you'll be reward!`}
-        />
-      )
+      toast.success(<Toast_style text={`Thanks for reporting! You're helping to make this is a better place.`} />)
     } else {
       this.setState({ alert: '' })
     }

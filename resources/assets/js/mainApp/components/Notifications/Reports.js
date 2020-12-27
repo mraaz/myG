@@ -129,17 +129,17 @@ export default class Reports extends Component {
         {` has reported.`}{' '}
         {props.post_id && (
           <Link to={`/post/${props.post_id}`}>
-            <span className='notification-type'>{'Post'}</span>
+            <span className='notification-type'>{`Post - ${props.report_description} `}</span>
           </Link>
         )}
         {props.comment_id && (
           <Link to={`/post/${props.post_id}`}>
-            <span className='notification-type'>{'Comment'}</span>
+            <span className='notification-type'>{`Comment - ${props.report_description} `}</span>
           </Link>
         )}
         {props.reply_id && (
           <Link to={`/post/${props.post_id}`}>
-            <span className='notification-type'>{'Reply'}</span>
+            <span className='notification-type'>{`Reply - ${props.report_description} `}</span>
           </Link>
         )}
       </div>
