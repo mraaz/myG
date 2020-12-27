@@ -115,8 +115,8 @@ export default class Reports extends Component {
     } else {
       deleteReportNotification(data)
     }
-    mark_read_status(data.id)
-    const filterReports = reports.filter((report) => report.id != data.id)
+    mark_read_status(data.report_id)
+    const filterReports = reports.filter((report) => report.report_id != data.report_id)
     this.setState({ reports: filterReports }, () => {
       this.props.setNotificationsCount(this.state.reports.length)
     })
