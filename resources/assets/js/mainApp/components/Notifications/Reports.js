@@ -3,7 +3,7 @@ import axios from 'axios'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
 import TopTabs from './TopTabs'
-import { clickedDeletePost, clickedDeleteReport, handleTime } from './helperFunction'
+import { deleteReportedPost, deleteReportNotification, handleTime, mark_read_status } from './helperFunction'
 import { Toast_style } from '../Utility_Function'
 import { toast } from 'react-toastify'
 import NoRecord from './NoRecord'
@@ -73,9 +73,9 @@ export default class Reports extends Component {
   handleActionClick = (type, data) => {
     const { reports } = this.state
     if (type == 'post') {
-      clickedDeletePost(data)
+      deleteReportedPost(data)
     } else {
-      clickedDeleteReport(data)
+      deleteReportNotification(data)
     }
     const filterReports = reports.filter((report) => report.id != data.id)
     this.setState({ reports: filterReports }, () => {
