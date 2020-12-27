@@ -35,7 +35,7 @@ pipeline {
         stage('Publish Frontend') {
             steps {
                 withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
-                    node('myg-pipeline_162-6jbbr') {
+                    nodejs {
                         sh "npm run production"
                         sh "tar -zcvf frontend.tar.gz ./public/"
                         sh "mv frontend.tar.gz ./public/"
