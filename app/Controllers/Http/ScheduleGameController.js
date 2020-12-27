@@ -241,11 +241,11 @@ class ScheduleGameController {
             }
           }
         }
-        const profileInfo = await this.getProfileInfo(gameInfo.user_id);
-        gameInfo.alias = profileInfo.alias;
-        gameInfo.profile_img = profileInfo.image;
-        gameInfo.attendees = await this.getAttendees(gameInfo.id);
-        gameInfo.game_artwork = await this.getGameImage(gameInfo.game_names_id);
+        const profileInfo = await this.getProfileInfo(gameInfo.user_id)
+        gameInfo.alias = profileInfo.alias
+        gameInfo.profile_img = profileInfo.image
+        gameInfo.attendees = await this.getAttendees(gameInfo.id)
+        gameInfo.game_artwork = await this.getGameImage(gameInfo.game_names_id)
         await ElasticsearchRepository.storeGame({ gameInfo })
         return newScheduleGame
       } catch (error) {
@@ -261,8 +261,10 @@ class ScheduleGameController {
   }
 
   async getProfileInfo(id) {
-    const response = await User.query().where('id', id).fetch();
-    const profile = response && response.toJSON()[0];
+    const response = await User.query()
+      .where('id', id)
+      .fetch()
+    const profile = response && response.toJSON()[0]
     return {
       alias: profile ? profile.alias : '',
       image: profile ? profile.profile_img : '',
@@ -271,17 +273,25 @@ class ScheduleGameController {
 
   async getAttendees(schedule_games_id) {
     try {
-      return (await Database.from('attendees').where({ schedule_games_id, type: 1 }).count('* as no_of_gamers'))[0].no_of_gamers;
-    } catch(error) {
-      return 0;
+      return (
+        await Database.from('attendees')
+          .where({ schedule_games_id, type: 1 })
+          .count('* as no_of_gamers')
+      )[0].no_of_gamers
+    } catch (error) {
+      return 0
     }
   }
 
   async getGameImage(game_names_id) {
     try {
-      return (await Database.from('game_names').where('game_names.id', game_names_id).select('game_names.game_artwork'))[0].game_artwork
-    } catch(error) {
-      return null;
+      return (
+        await Database.from('game_names')
+          .where('game_names.id', game_names_id)
+          .select('game_names.game_artwork')
+      )[0].game_artwork
+    } catch (error) {
+      return null
     }
   }
 
@@ -517,11 +527,11 @@ class ScheduleGameController {
             }
           }
         }
-        const profileInfo = await this.getProfileInfo(gameInfo.user_id);
-        gameInfo.alias = profileInfo.alias;
-        gameInfo.profile_img = profileInfo.image;
-        gameInfo.attendees = await this.getAttendees(gameInfo.id);
-        gameInfo.image = await this.getGameImage(gameInfo.game_names_id);
+        const profileInfo = await this.getProfileInfo(gameInfo.user_id)
+        gameInfo.alias = profileInfo.alias
+        gameInfo.profile_img = profileInfo.image
+        gameInfo.attendees = await this.getAttendees(gameInfo.id)
+        gameInfo.image = await this.getGameImage(gameInfo.game_names_id)
         await ElasticsearchRepository.storeGame({ gameInfo })
         return updateScheduleGame
       } catch (error) {
@@ -924,12 +934,14 @@ class ScheduleGameController {
         .where({ user_id: auth.user.id, permission_level: 1 })
         .first()
 
+      let isAdmin = false
       if (security_check != undefined) {
-        myScheduledGames.isAdmin = true
+        isAdmin = true
       }
 
       return {
         myScheduledGames,
+        isAdmin,
       }
     } catch (error) {
       LoggingRepository.log({
@@ -1031,7 +1043,7 @@ class ScheduleGameController {
   }
 
   async scheduleSearchResults({ auth, request, response }) {
-    return this.searchElasticsearch({ request });
+    return this.searchElasticsearch({ request })
   }
 
   async get_labels_for_game_fields({ auth }, game_id) {
