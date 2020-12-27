@@ -68,7 +68,7 @@ export default class ReportedUsers extends Component {
       <SweetAlert
         danger
         showCancel
-        title='Are you sure you wish to delete this comment?'
+        title='Are you sure you wish to delete this ?'
         confirmBtnText='Make it so!'
         focusCancelBtn={true}
         focusConfirmBtn={false}
