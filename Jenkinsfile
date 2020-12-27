@@ -34,10 +34,8 @@ pipeline {
         }
         stage('Publish Frontend') {
             steps {
-                withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
-                    node {
-                        sh "npm run production && tar -zcvf frontend.tar.gz ./public/ && mv frontend.tar.gz ./public/ && aws s3 cp ./public/ s3://myg-frontend/ --recursive"
-                    }
+                node {
+                    sh "npm run production && tar -zcvf frontend.tar.gz ./public/ && mv frontend.tar.gz ./public/ && aws s3 cp ./public/ s3://myg-frontend/ --recursive"
                 }
             }
         }
