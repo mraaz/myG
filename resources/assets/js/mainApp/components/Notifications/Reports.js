@@ -8,6 +8,7 @@ import { Toast_style } from '../Utility_Function'
 import { toast } from 'react-toastify'
 import NoRecord from './NoRecord'
 const defaultUserImage = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
+import SweetAlert from '../common/MyGSweetAlert'
 
 export default class Reports extends Component {
   constructor() {
@@ -18,6 +19,7 @@ export default class Reports extends Component {
       moreplease: true,
       counter: 1,
       tab: 0,
+      alert: null,
     }
     this.myRef = React.createRef()
   }
@@ -33,6 +35,42 @@ export default class Reports extends Component {
       this.setState({ reports: getReports.data, fetching: false }, () => {
         this.props.setNotificationsCount(this.state.reports.length)
       })
+    }
+  }
+
+  showAlert = (type, data) => {
+    const getAlert = (type, data) => (
+      <SweetAlert
+        danger
+        showCancel
+        title='Are you sure you wish to delete this comment?'
+        confirmBtnText='Make it so!'
+        focusCancelBtn={true}
+        focusConfirmBtn={false}
+        showCloseButton={false}
+        btnSize='lg'
+        style={{
+          display: 'flex',
+          whiteSpace: 'pre',
+          width: '41%',
+        }}
+        onConfirm={() => this.hideAlert(type, data, 'true')}
+        onCancel={() => this.hideAlert(type, data, 'false')}>
+        You will not be able to recover this entry!
+      </SweetAlert>
+    )
+
+    this.setState({
+      alert: getAlert(type, data),
+    })
+  }
+
+  hideAlert = (type, data, text) => {
+    this.setState({
+      alert: null,
+    })
+    if (text == 'true') {
+      this.handleActionClick(type, data)
     }
   }
 
@@ -77,6 +115,7 @@ export default class Reports extends Component {
     } else {
       deleteReportNotification(data)
     }
+    mark_read_status(data.id)
     const filterReports = reports.filter((report) => report.id != data.id)
     this.setState({ reports: filterReports }, () => {
       this.props.setNotificationsCount(this.state.reports.length)
@@ -88,9 +127,21 @@ export default class Reports extends Component {
     return (
       <div className='notification__text'>
         {` has reported.`}{' '}
-        <Link to={`/post/${props.post_id}`}>
-          <span className='notification-type'>{'post'}</span>
-        </Link>
+        {props.post_id && (
+          <Link to={`/post/${props.post_id}`}>
+            <span className='notification-type'>{'Post'}</span>
+          </Link>
+        )}
+        {props.comment_id && (
+          <Link to={`/post/${props.post_id}`}>
+            <span className='notification-type'>{'Comment'}</span>
+          </Link>
+        )}
+        {props.reply_id && (
+          <Link to={`/post/${props.post_id}`}>
+            <span className='notification-type'>{'Reply'}</span>
+          </Link>
+        )}
       </div>
     )
   }
@@ -124,7 +175,7 @@ export default class Reports extends Component {
     return (
       <div style={isActive} className='game__report'>
         <TopTabs tabs={['All']} changeTab={this.changeTab} />
-
+        {this.state.alert}
         {!reports.length && <NoRecord title='No more updates.' linkvisible={false} />}
 
         <div className='gameList__box' style={{ padding: '15px' }} onScroll={this.handleScroll} ref={this.myRef}>
@@ -171,11 +222,11 @@ export default class Reports extends Component {
                         {time.countdown} {time.countdown_label} ago
                       </span>
                       <div className='notification-actions'>
-                        <button className='action decline' onClick={(e) => this.handleActionClick('report', report)}>
+                        <button className='action decline' onClick={(e) => this.showAlert('report', report)}>
                           {/* <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' /> */}
                           {` Delete Report `}
                         </button>
-                        <button className='action decline' onClick={(e) => this.handleActionClick('post', report)}>
+                        <button className='action decline' onClick={(e) => this.showAlert('post', report)}>
                           {/* <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' /> */}
                           {` Delete Post `}
                         </button>

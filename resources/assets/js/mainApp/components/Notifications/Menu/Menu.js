@@ -22,10 +22,16 @@ export default class Menu extends Component {
     const getnoti = await axios.post('/api/notifications_v2/getUnread_count', {
       notification_type: -1,
     })
+    const getUpcomingGames = await axios.post('/api/ScheduleGame/myScheduledGames_Upcoming_Games', {
+      counter: 1,
+    })
 
     const chat_noti = await axios.get('/api/chat/message/unread?count=true')
     if (chat_noti.data) {
       this.setState({ chats: chat_noti.data.unreadMessages ? chat_noti.data.unreadMessages : 0 })
+    }
+    if (getUpcomingGames.data) {
+      this.setState({ isAdmin: getUpcomingGames.data.isAdmin })
     }
 
     if (getnoti.data) {
@@ -46,8 +52,7 @@ export default class Menu extends Component {
 
   render() {
     const { changeContentTab, notificationsCount, activeTab } = this.props
-    const { approvals = 0, chats = 0, alerts = 0, reports = 0, reportedUser } = this.state
-
+    const { approvals = 0, chats = 0, alerts = 0, reports = 0, reportedUser, isAdmin } = this.state
     return (
       <div className='notifications-menu'>
         <div className='button-list'>
@@ -83,22 +88,26 @@ export default class Menu extends Component {
               changeContentTab(3)
             }}
           />
-          <Button
-            title={`Reports ${reports ? `(${reports})` : '(0)'}`}
-            active={activeTab == 4}
-            onClick={() => {
-              this.changeTab(4)
-              changeContentTab(4)
-            }}
-          />
-          <Button
-            title={`Reported Users ${reportedUser ? `(${reportedUser})` : '(0)'}`}
-            active={activeTab == 6}
-            onClick={() => {
-              this.changeTab(6)
-              changeContentTab(6)
-            }}
-          />
+          {isAdmin && (
+            <Button
+              title={`Reports ${reports ? `(${reports})` : '(0)'}`}
+              active={activeTab == 4}
+              onClick={() => {
+                this.changeTab(4)
+                changeContentTab(4)
+              }}
+            />
+          )}
+          {isAdmin && (
+            <Button
+              title={`Reported Users ${reportedUser ? `(${reportedUser})` : '(0)'}`}
+              active={activeTab == 6}
+              onClick={() => {
+                this.changeTab(6)
+                changeContentTab(6)
+              }}
+            />
+          )}
           <Button
             title='Settings'
             active={activeTab == 5}
