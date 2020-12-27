@@ -41,7 +41,9 @@ pipeline {
                     sh "npm run production"
                     sh "tar -zcvf frontend.tar.gz ./public/"
                     sh "mv frontend.tar.gz ./public/"
-                    sh "npx aws s3 cp ./public/ s3://myg-frontend/ --recursive"
+                }
+                withAWS(credentials: "Username:$AWS_KEY,Password:$AWS_SECRET") {
+                    s3Upload(file:'public', bucket:'myg-frontend', path:'./public/')
                 }
             }
         }
