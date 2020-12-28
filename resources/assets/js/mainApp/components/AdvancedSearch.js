@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import Select from 'react-select'
 import axios from 'axios'
-import AsyncSelect from 'react-select/lib/Async'
-import CreatableSelect from 'react-select/lib/Creatable'
+import AsyncSelect from 'react-select/async';
+import CreatableSelect from 'react-select/creatable';
 import AdvancedSearchPost from './AdvancedSearchPost'
 import { CountryDropdown } from 'react-country-region-selector'
 import InfiniteScroll from 'react-infinite-scroll-component'

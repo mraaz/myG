@@ -1,7 +1,7 @@
 import React from 'react'
 import get from 'lodash.get'
 import scriptLoader from 'react-async-script-loader'
-import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
+import AsyncCreatableSelect from 'react-select/async-creatable';
 import PlacesAutocomplete from 'react-places-autocomplete'
 import { Game_name_values, Disable_keys } from '../../Utility_Function'
 import { getAssetUrl } from '../../../../common/assets'

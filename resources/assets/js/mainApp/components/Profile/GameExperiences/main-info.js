@@ -3,7 +3,7 @@ import Dropzone from 'react-dropzone'
 import get from 'lodash.get'
 import { getAssetUrl } from '../../../../common/assets'
 import { ignoreFunctions } from '../../../../common/render'
-import AsyncCreatableSelect from 'react-select/lib/AsyncCreatable'
+import AsyncCreatableSelect from 'react-select/async-creatable';
 import MyGSelect from '../../common/MyGSelect'
 import MyGRateSlider from '../../common/MyGRateSlider'
 import { Game_name_values, Disable_keys, Schedule_Game_Tags } from '../../Utility_Function'

@@ -1,4 +1,5 @@
 const elasticsearch = use('elasticsearch');
+const { log } = require('../../Common/logger')
 
 class ElasticsearchRepository {
 
@@ -16,12 +17,20 @@ class ElasticsearchRepository {
   }
 
   async searchUser({ query }) {
-    if (process.env.DEBUG_ELASTICSEARCH) console.log('Elasticsearch Query:', JSON.stringify(query, null, 2));
+    if (process.env.DEBUG_ELASTICSEARCH) log('ELASTICSEARCH', 'Elasticsearch Query:', JSON.stringify(query, null, 2));
     return this.getElasticsearchClient().search({ index: 'users', body: query });
   }
 
+  // TODO: Paginate this using the scroll API:
+  // https://www.elastic.co/guide/en/elasticsearch/reference/6.8/search-request-scroll.html
+  async fetchAllUsersIds() {
+    return this.getElasticsearchClient().search({ index: 'users', body: {
+      _source: "",  query: { match_all: {} }, size: 10000,
+    }}).then((result) => result.hits.hits.map((hit) => hit._id));
+  }
+
   async storeUser({ user }) {
-    console.log(`Storing user in Elasticsearch:`, user);
+    log('ELASTICSEARCH', `Storing user in Elasticsearch: ${user.alias}`);
     const gameExperiences = (user.gameExperiences || []).map((experience) => ({ 
       id: experience.game, 
       level: experience.level, 
@@ -38,13 +47,21 @@ class ElasticsearchRepository {
     }).then(() => ({ success: true, error: null })).catch(error => ({ success: false, error }));
   }
 
+  async removeUser({ id }) {
+    log('ELASTICSEARCH', `Removing user from Elasticsearch: ${id}`);
+    return this.getElasticsearchClient().delete({
+      id,
+      index: 'users',
+    }).then(() => ({ success: true, error: null })).catch(error => ({ success: false, error }));
+  }
+
   async searchGame({ query }) {
-    if (process.env.DEBUG_ELASTICSEARCH) console.log('Elasticsearch Query:', JSON.stringify(query, null, 2));
+    if (process.env.DEBUG_ELASTICSEARCH) log('ELASTICSEARCH', 'Elasticsearch Query:', JSON.stringify(query, null, 2));
     return this.getElasticsearchClient().search({ index: 'games', body: query });
   }
 
   async storeGame({ gameInfo }) {
-    console.log(`Storing game in Elasticsearch:`, gameInfo);
+    log('ELASTICSEARCH', `Storing game in Elasticsearch:`, gameInfo);
     return this.getElasticsearchClient().update({
       index: 'games',
       id: gameInfo.id,
@@ -56,7 +73,7 @@ class ElasticsearchRepository {
   }
 
   async updateAttendees({ id, no_of_gamers }) {
-    console.log(`Updating Attendees in Game:`, id, no_of_gamers);
+    log('ELASTICSEARCH', `Updating Attendees in Game:`, id, no_of_gamers);
     return this.getElasticsearchClient().update({
       index: 'games',
       id: id,
@@ -68,7 +85,7 @@ class ElasticsearchRepository {
   }
 
   async removeGame({ id }) {
-    console.log(`Removing game from Elasticsearch:`, id);
+    log('ELASTICSEARCH', `Removing game from Elasticsearch:`, id);
     return this.getElasticsearchClient().delete({
       id,
       index: 'games',
