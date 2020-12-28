@@ -122,6 +122,7 @@ export default class Alerts extends Component {
   renderActivityText = (props) => {
     const { activity_type: v } = props
     let activity_name = ''
+
     switch (v) {
       case 2:
       case 3:
@@ -212,8 +213,8 @@ export default class Alerts extends Component {
         return (
           <div className='notification__text'>
             {`Epic! You have been accepted to group: `}
-            <Link to={`/community/${props.group_id}`}>
-              <span className='notification-type'>{props.game_name}</span>
+            <Link to={`/community/${props.name}`}>
+              <span className='notification-type'>{props.name}</span>
             </Link>
           </div>
         )

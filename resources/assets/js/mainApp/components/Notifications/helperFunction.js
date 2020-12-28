@@ -85,7 +85,7 @@ export const mark_all = () => {
 }
 export const mark_read_status = (id) => {
   try {
-    const mark_read_status = axios.post('/api/notifications_v2/mark_read_status', {
+    axios.post('/api/notifications_v2/mark_read_status', {
       id,
       read_status: 1,
     })
@@ -95,14 +95,14 @@ export const mark_read_status = (id) => {
 }
 export const delete_all = () => {
   try {
-    const delete_all = axios.get('/api/notifications_v2/deleteAllNoti')
+    axios.get('/api/notifications_v2/deleteAllNoti')
   } catch (error) {
     logToElasticsearch('error', 'Notification HelperFunction', 'Failed delete_all:' + ' ' + error)
   }
 }
 
 export const handleSingleNotificationReadStatus = (id, status, activity_type) => {
-  const readstatus = axios.post('/api/notifications_v2/mark_read_status', {
+  axios.post('/api/notifications_v2/mark_read_status', {
     id,
     read_status: status == true ? 1 : 0,
     activity_type,

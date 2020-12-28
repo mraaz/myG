@@ -332,7 +332,6 @@ class NotificationController_v2 {
 
   async getAllNotifications({ auth, request, response }) {
     // P.S 7, 8 & 9 don't exist, just have them as placeholder atm.
-
     // Activity_types:
     // Feed = -1
     // Games: 10
@@ -600,7 +599,7 @@ class NotificationController_v2 {
 
         const commendations = await Database.from('notifications')
           .innerJoin('users', 'users.id', 'notifications.other_user_id')
-          .where({ user_id: auth.user.id, activity_type: 23 })
+          .where({ other_user_id: auth.user.id, activity_type: 23 })
           .select('notifications.id', 'notifications.activity_type', 'notifications.read_status', 'users.alias')
           .orderBy('notifications.created_at', 'desc')
           .paginate(request.input('counter'), set_limit)
@@ -1415,6 +1414,16 @@ class NotificationController_v2 {
   async getUnread_count({ auth, request, response }) {
     if (auth.user) {
       let checking = false
+
+      const security_check = await Database.from('admins')
+        .where({ user_id: auth.user.id, permission_level: 1 })
+        .first()
+
+      let isAdmin = false
+      if (security_check != undefined) {
+        isAdmin = true
+      }
+
       try {
         let arr = []
         switch (request.input('notification_type')) {
@@ -1470,6 +1479,7 @@ class NotificationController_v2 {
           return {
             getUnread_count_Approvals: getUnread_count_Approvals[0].no_of_my_unread_approvals,
             getUnread_count_Alerts: getUnread_count_Alerts,
+            isAdmin,
           }
         } else {
           const getUnread_count = await Database.from('notifications')
@@ -1477,7 +1487,7 @@ class NotificationController_v2 {
             .whereIn('activity_type', arr)
             .count('* as no_of_my_unread')
 
-          return getUnread_count
+          return getUnread_count, isAdmin
         }
       } catch (error) {
         LoggingRepository.log({

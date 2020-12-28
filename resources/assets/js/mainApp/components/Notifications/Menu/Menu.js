@@ -22,21 +22,15 @@ export default class Menu extends Component {
     const getnoti = await axios.post('/api/notifications_v2/getUnread_count', {
       notification_type: -1,
     })
-    const getUpcomingGames = await axios.post('/api/ScheduleGame/myScheduledGames_Upcoming_Games', {
-      counter: 1,
-    })
 
     const chat_noti = await axios.get('/api/chat/message/unread?count=true')
     if (chat_noti.data) {
       this.setState({ chats: chat_noti.data.unreadMessages ? chat_noti.data.unreadMessages : 0 })
     }
-    if (getUpcomingGames.data) {
-      this.setState({ isAdmin: getUpcomingGames.data.isAdmin })
-    }
 
     if (getnoti.data) {
       const { getUnread_count_Alerts = 0, getUnread_count_Approvals = 0 } = getnoti.data
-      this.setState({ alerts: getUnread_count_Alerts, approvals: getUnread_count_Approvals })
+      this.setState({ alerts: getUnread_count_Alerts, approvals: getUnread_count_Approvals, isAdmin: getnoti.data.isAdmin })
     }
   }
 

@@ -19,17 +19,22 @@ export default class Upcoming extends Component {
   async componentDidMount() {
     document.title = 'myG - Notification'
 
-    try {
-      const getUpcomingGames = await axios.post('/api/ScheduleGame/myScheduledGames_Upcoming_Games', {
-        counter: 1,
-      })
-      if (getUpcomingGames.data && getUpcomingGames.data.myScheduledGames.length > 0) {
-        this.setState({ upcomingGames: getUpcomingGames.data.myScheduledGames }, () => {
-          this.props.setNotificationsCount(this.state.upcomingGames.length)
+    let id = window.location.href
+    let lastChar = id.substr(id.length - 1)
+
+    if (lastChar == '0') {
+      try {
+        const getUpcomingGames = await axios.post('/api/ScheduleGame/myScheduledGames_Upcoming_Games', {
+          counter: 1,
         })
+        if (getUpcomingGames.data && getUpcomingGames.data.myScheduledGames.length > 0) {
+          this.setState({ upcomingGames: getUpcomingGames.data.myScheduledGames }, () => {
+            this.props.setNotificationsCount(this.state.upcomingGames.length)
+          })
+        }
+      } catch (error) {
+        console.log(error)
       }
-    } catch (error) {
-      console.log(error)
     }
   }
   getUpcomingGamesData = async () => {

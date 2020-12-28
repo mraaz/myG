@@ -930,18 +930,8 @@ class ScheduleGameController {
       }
       myScheduledGames = myScheduledGames.data
 
-      const security_check = await Database.from('admins')
-        .where({ user_id: auth.user.id, permission_level: 1 })
-        .first()
-
-      let isAdmin = false
-      if (security_check != undefined) {
-        isAdmin = true
-      }
-
       return {
         myScheduledGames,
-        isAdmin,
       }
     } catch (error) {
       LoggingRepository.log({
