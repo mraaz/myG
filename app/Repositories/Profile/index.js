@@ -490,12 +490,18 @@ class ProfileRepository {
     }
   }
 
-  async loadProfilesIntoElastisearch() {
-    const users = await Database.from('users').select('alias');
+  async syncToElasticsearch() {
+    const users = await Database.from('users').select('id', 'alias');
     await Promise.all(users.map((user) => {
       return this.fetchProfileInfo({ requestingUserId: 0, alias: user.alias }).then((profile) => {
-        return ElasticsearchRepository.storeUser({ user: profile.profile }).then(() => console.log(`Loaded User ${user.alias} into Elasticsearch`))
+        return ElasticsearchRepository.storeUser({ user: profile.profile });
       });
+    }));
+    const elasticsearchUserIds = await ElasticsearchRepository.fetchAllUsersIds();
+    const mysqlUserIds = users.map((user) => `${user.id}`);
+    await Promise.all(elasticsearchUserIds.map((userId) => {
+      if (mysqlUserIds.includes(userId)) return;
+      return ElasticsearchRepository.removeUser({ id: userId });
     }));
   }
 }

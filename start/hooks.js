@@ -1,6 +1,6 @@
 'use strict'
 const { hooks } = require('@adonisjs/ignitor')
-const { scheduleAutomaticGameMessages, scheduleAttachmentExpiration, scheduleEmails } = require('../app/Common/scheduler')
+const setupBull = require('../app/Common/bull')
 const NatsChatRepository = require('../app/Repositories/NatsChat')
 
 hooks.after.providersBooted(() => {
@@ -19,7 +19,5 @@ hooks.after.providersBooted(() => {
 })
 
 hooks.after.httpServer(() => {
-  scheduleAutomaticGameMessages()
-  scheduleAttachmentExpiration()
-  scheduleEmails()
+  setupBull()
 })
