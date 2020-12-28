@@ -146,6 +146,7 @@ export const markread_chatNotification = (id) => {
   }
 }
 export const deleteReportedPost = (data) => {
+  console.log(data, '<<<<DATA')
   try {
     axios.delete(`/api/report/delete_source/${data.report_id}`)
   } catch (error) {
@@ -153,6 +154,7 @@ export const deleteReportedPost = (data) => {
   }
 }
 export const deleteReportNotification = (data) => {
+  console.log(data, '<<<<DATA@@#@')
   try {
     axios.delete(`/api/report/delete/${data.report_id}`)
   } catch (error) {

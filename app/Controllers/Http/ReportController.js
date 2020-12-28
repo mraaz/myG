@@ -117,14 +117,14 @@ class ReportController {
       let allReports_comments = await Database.from('reports')
         .groupBy('reports.comment_id')
         .whereNot('comment_id', '=', '')
-        .select('reports.id', 'reports.comment_id', 'reports.created_at', 'reports.report_description')
+        .select('reports.id as report_id', 'reports.comment_id', 'reports.created_at', 'reports.report_description')
         .orderBy('reports.created_at', 'desc')
         .paginate(request.params.counter, 10)
 
       let allReports_replies = await Database.from('reports')
         .groupBy('reports.reply_id')
         .whereNot('reply_id', '=', '')
-        .select('reports.id', 'reports.reply_id', 'reports.created_at', 'reports.report_description')
+        .select('reports.id as report_id', 'reports.reply_id', 'reports.created_at', 'reports.report_description')
         .orderBy('reports.created_at', 'desc')
         .paginate(request.params.counter, 10)
 
@@ -314,6 +314,12 @@ class ReportController {
         default:
           return
       }
+
+      await Database.table('reports')
+        .where({
+          id: request.params.id,
+        })
+        .delete()
 
       //noti the owner: bad content
       const _reported = await Database.from('reported')
