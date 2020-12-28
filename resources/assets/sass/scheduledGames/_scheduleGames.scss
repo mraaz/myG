@@ -90,11 +90,13 @@
         border-radius: 4px;
         font-size: 16px;
         font-weight: 500;
+        max-width: 450px;
         &::placeholder {
           color: #fff;
         }
       }
       .viewGame__name {
+        max-width: 450px;
         &:focus {
           margin: 0;
         }
