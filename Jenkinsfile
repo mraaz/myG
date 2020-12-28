@@ -42,7 +42,7 @@ pipeline {
                     sh "tar -zcvf frontend.tar.gz ./public/"
                     sh "mv frontend.tar.gz ./public/"
                 }
-                withAWS(credentials: "Username:$AWS_KEY,Password:$AWS_SECRET") {
+                withAWS(credentials: "myg-aws-credentials") {
                     s3Upload(file:'public', bucket:'myg-frontend', path:'./public/')
                 }
             }
