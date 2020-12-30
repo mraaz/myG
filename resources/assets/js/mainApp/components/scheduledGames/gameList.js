@@ -10,9 +10,9 @@ import { Toast_style } from '../Utility_Function'
 import { toast } from 'react-toastify'
 import { WithTooltip } from '../Tooltip'
 import Select from 'react-select'
-const defaultUserImage = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
+const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
 
-const defaultThumbnails = 'https://mygame-media.s3.amazonaws.com/platform_images/Notifications/myG_icon.svg'
+const defaultThumbnails = 'https://myG.gg/platform_images/Notifications/myG_icon.svg'
 const statusMapping = { 1: 'Approved. you are in!', 3: 'Pending Approval by Host' }
 
 export default class GameList extends Component {
@@ -59,7 +59,7 @@ export default class GameList extends Component {
   }
 
   addDefaultSrc(ev) {
-    ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
+    ev.target.src = 'https://myG.gg/default_user/new-user-profile-picture.png'
   }
 
   render() {
@@ -119,20 +119,20 @@ export default class GameList extends Component {
                     </div>
                     <div className='second__row'>
                       <div className='gamer__count'>
-                        <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Notifications/little_green_man.svg' />
+                        <img src='https://myG.gg/platform_images/Dashboard/Notifications/little_green_man.svg' />
                         <span>
                           {game.no_of_gamers} / {game.limit == 0 ? <span>&#8734;</span> : game.limit} Gamers
                         </span>
                       </div>
                       <div className='game__timestamp'>
-                        <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Notifications/clock.svg' />
+                        <img src='https://myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
                         <span>{moment(game.start_date_time).format('LL')}</span>
                       </div>
                     </div>
                     {copyClipboardEnable && (
                       <div className='copy__clipboard'>
                         <div className='copy__clipboard__action' onClick={(e) => this.handleCopyToClipBoard(e, game.schedule_games_GUID)}>
-                          <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Link.svg' />
+                          <img src='https://myG.gg/platform_images/Dashboard/Link.svg' />
                         </div>
                       </div>
                     )}
@@ -166,13 +166,13 @@ export default class GameList extends Component {
                     <div className='fourth__row'>
                       {statusMapping[myStatus] && (
                         <div className='my__status'>
-                          <img src='https://mygame-media.s3.amazonaws.com/platform_images/View+Game/tick.svg' />
+                          <img src='https://myG.gg/platform_images/View+Game/tick.svg' />
                           <span>{statusMapping[myStatus]}</span>
                         </div>
                       )}
                       {no_of_Approval_Pending ? (
                         <div className='no__of__approval' onClick={this.handlePendingApproval}>
-                          <img src='https://mygame-media.s3.amazonaws.com/platform_images/View+Game/warning.svg' />
+                          <img src='https://myG.gg/platform_images/View+Game/warning.svg' />
                           <span>{no_of_Approval_Pending} Approval Pending</span>
                         </div>
                       ) : (

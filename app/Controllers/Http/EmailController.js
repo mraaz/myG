@@ -46,7 +46,7 @@ class EmailController {
 <p>Code 1: ${tmp_code[0]}</p>
 <p>Code 2: ${tmp_code[1]}</p>
 <p>Code 3:&nbsp;${tmp_code[2]}</p>
-<p><br /><br />GLHF<br /><br />Raaz<br /><br /><img src="https://mygame-media.s3.amazonaws.com/logos/myGame_Logo_black_text.png" alt="myG Logo" width="119" height="67" /></p>`
+<p><br /><br />GLHF<br /><br />Raaz<br /><br /><img src="https://myG.gg/logos/myGame_Logo_black_text.png" alt="myG Logo" width="119" height="67" /></p>`
     email.createEmailnSend(toAddress, subject, body)
   }
 

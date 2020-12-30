@@ -16,7 +16,7 @@ import {
 import { Toast_style } from './../Utility_Function'
 import { toast } from 'react-toastify'
 import NoRecord from './NoRecord'
-const defaultUserImage = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
+const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
 const tabObj = {
   0: 0,
   1: 1,
@@ -170,7 +170,7 @@ export default class Approvals extends Component {
   }
 
   addDefaultSrc(ev) {
-    ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
+    ev.target.src = 'https://myG.gg/default_user/new-user-profile-picture.png'
   }
 
   handleClickNotiFication = (id, index) => {
@@ -238,11 +238,11 @@ export default class Approvals extends Component {
                       </span>
                       <div className='notification-actions'>
                         <button className='action accept' onClick={(e) => this.handleActionClick('accept', approval)}>
-                          <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' />
+                          <img src='https://myG.gg/platform_images/Dashboard/btn_Like_Feed.svg' />
                           {` Accept`}
                         </button>
                         <button className='action decline' onClick={(e) => this.handleActionClick('decline', approval)}>
-                          <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' />
+                          <img src='https://myG.gg/platform_images/Dashboard/btn_Like_Feed.svg' />
                           {` Decline`}
                         </button>
                       </div>

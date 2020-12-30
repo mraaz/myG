@@ -16,7 +16,7 @@ import { Upload_to_S3, Remove_file } from './AWS_utilities'
 import { toast } from 'react-toastify'
 import { logToElasticsearch } from '../../integration/http/logger'
 
-const buckectBaseUrl = 'https://mygame-media.s3.amazonaws.com/platform_images/'
+const buckectBaseUrl = 'https://myG.gg/platform_images/'
 
 import ImageGallery from './common/ImageGallery/ImageGallery'
 import ReportPost from './common/ReportPost'
@@ -590,7 +590,7 @@ export default class IndividualPost extends Component {
       var show_media = false
 
       let { post, current_user_permission = null, user = {} } = this.props //destructing of object
-      let { profile_img = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png', hash_tags = [] } = post //destructing of object
+      let { profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png', hash_tags = [] } = post //destructing of object
 
       if (media_urls != [] && media_urls != null) {
         show_media = true
@@ -685,13 +685,13 @@ export default class IndividualPost extends Component {
             <div className='update-stats'>
               {this.state.like && (
                 <div className='like-btn' onClick={() => this.click_unlike_btn(post.id)}>
-                  <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Like_Feed.svg' className='img-fluid' />
+                  <img src='https://myG.gg/platform_images/Dashboard/btn_Like_Feed.svg' className='img-fluid' />
                   &nbsp;Liked
                 </div>
               )}
               {!this.state.like && (
                 <div className='like-btn' onClick={() => this.click_like_btn(post.id)}>
-                  <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_unLike_Feed.svg' className='img-fluid' />
+                  <img src='https://myG.gg/platform_images/Dashboard/btn_unLike_Feed.svg' className='img-fluid' />
                   &nbsp;Like
                 </div>
               )}

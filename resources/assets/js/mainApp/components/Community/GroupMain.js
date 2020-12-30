@@ -305,14 +305,14 @@ export default class GroupMain extends Component {
           {this.state.yourCommunityTab && (
             <div className='arrow__right' onClick={this.next_data}>
               {this.state.more_data && (
-                <img src='https://mygame-media.s3.amazonaws.com/platform_images/Communities/Group+971.svg' alt='arrow-right' />
+                <img src='https://myG.gg/platform_images/Communities/Group+971.svg' alt='arrow-right' />
               )}
             </div>
           )}
           {this.state.yourCommunityTab && (
             <div className='arrow__left' onClick={this.prev_data}>
               {this.state.less_data && (
-                <img src='https://mygame-media.s3.amazonaws.com/platform_images/Communities/Group+971.svg' alt='arrow-left' />
+                <img src='https://myG.gg/platform_images/Communities/Group+971.svg' alt='arrow-left' />
               )}
             </div>
           )}
@@ -320,14 +320,14 @@ export default class GroupMain extends Component {
           {!this.state.yourCommunityTab && (
             <div className='arrow__right' onClick={this.next_data_suggested}>
               {this.state.suggested_more_data && (
-                <img src='https://mygame-media.s3.amazonaws.com/platform_images/Communities/Group+971.svg' alt='arrow-right' />
+                <img src='https://myG.gg/platform_images/Communities/Group+971.svg' alt='arrow-right' />
               )}
             </div>
           )}
           {!this.state.yourCommunityTab && (
             <div className='arrow__left' onClick={this.prev_data_suggested}>
               {this.state.suggested_less_data && (
-                <img src='https://mygame-media.s3.amazonaws.com/platform_images/Communities/Group+971.svg' alt='arrow-left' />
+                <img src='https://myG.gg/platform_images/Communities/Group+971.svg' alt='arrow-left' />
               )}
             </div>
           )}
@@ -354,7 +354,7 @@ export default class GroupMain extends Component {
                 onChange={this.getSearchGroup}
                 value={this.state.searchText}
               />
-              <img src='https://mygame-media.s3.amazonaws.com/platform_images/Communities/btn_Search.png' />
+              <img src='https://myG.gg/platform_images/Communities/btn_Search.png' />
             </div>
           </div>
           {open_compose_textTab && (

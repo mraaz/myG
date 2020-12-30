@@ -364,7 +364,7 @@ export default class MainInfo extends React.Component {
         {showLink && (
           <div
             className='icon-button clickable'
-            style={{ backgroundImage: `url(https://mygame-media.s3.amazonaws.com/platform_images/Profile/newWindow-icon.svg)` }}
+            style={{ backgroundImage: `url(https://myG.gg/platform_images/Profile/newWindow-icon.svg)` }}
             onClick={() => window.open(field.profile_placeholder, '_blank')}
           />
         )}
@@ -410,7 +410,7 @@ export default class MainInfo extends React.Component {
             <div className='text'>Drop your game image</div>
             <div className='images community-images-container'>
               <span className=' button photo-btn'>
-                <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/BTN_Attach_Image.svg' />
+                <img src='https://myG.gg/platform_images/Dashboard/BTN_Attach_Image.svg' />
               </span>
             </div>
             <div className='text'>
