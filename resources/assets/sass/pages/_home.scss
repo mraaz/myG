@@ -2370,7 +2370,7 @@ section#content-container {
   }
 
   .mobile-top-menu-dropdown {
-    position: absolute;
+    position: fixed;
     background: #1d2326;
     z-index: 999;
     width: 100%;
