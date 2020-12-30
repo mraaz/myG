@@ -73,7 +73,7 @@ export default class General extends React.Component {
             <div
               className='messenger-game-icon'
               style={{
-                backgroundImage: `url('https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/logo.svg')`,
+                backgroundImage: `url('https://myG.gg/platform_images/Dashboard/logo.svg')`,
                 backgroundSize: 'inherit',
                 backgroundColor: '#000',
               }}

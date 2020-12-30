@@ -16,26 +16,26 @@ const MobileMenuTop = (props) => {
   return (
     <Fragment>
       <div class={hide ? 'menu-tab hide' : 'menu-tab show'}>
-        <img onClick={() => setHideSideMenu(true)} src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/logo.svg' class='img-fluid logo-img' />
+        <img onClick={() => setHideSideMenu(true)} src='https://myG.gg/platform_images/Dashboard/logo.svg' class='img-fluid logo-img' />
         <div class='toggle-menu-btn'>
-          <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/toggle_menu_collapsed.svg' class='img-fluid' />
+          <img src='https://myG.gg/platform_images/Dashboard/toggle_menu_collapsed.svg' class='img-fluid' />
         </div>
         <div className={'notification-expanded'}>
           <Link to='/?at=notifications&submenu=1'>
             <div className='notification-container'>
-              <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/ntfo_Friendship_Icon.svg' height='22' width='22' />
+              <img src='https://myG.gg/platform_images/Dashboard/ntfo_Friendship_Icon.svg' height='22' width='22' />
               <div className='notification-box'>{notifications.approvals}</div>
             </div>
           </Link>
           <Link to='/?at=notifications&submenu=2'>
             <div className='notification-container'>
-              <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Bell_Icon.svg' height='22' width='22' />
+              <img src='https://myG.gg/platform_images/Dashboard/Bell_Icon.svg' height='22' width='22' />
               <div className='notification-box'>{notifications.alerts}</div>
             </div>
           </Link>
           <Link to='/?at=notifications&submenu=3'>
             <div className='notification-container'>
-              <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Chat_Icon.svg' height='22' width='22' />
+              <img src='https://myG.gg/platform_images/Dashboard/Chat_Icon.svg' height='22' width='22' />
               <div className='notification-box'>{notifications.chats}</div>
             </div>
           </Link>
@@ -48,7 +48,7 @@ const MobileMenuTop = (props) => {
               <div className='mobile-side-menu-top'>
                 <div className='back-btn'>
                   <img
-                    src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/btn_Uncollapse_Menu.svg'
+                    src='https://myG.gg/platform_images/Dashboard/btn_Uncollapse_Menu.svg'
                     onClick={() => setHideSideMenu(false)}
                   />
                 </div>
@@ -57,7 +57,7 @@ const MobileMenuTop = (props) => {
                     <div className='user-icon'>
                       <img
                         onError={(ev) => {
-                          ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
+                          ev.target.src = 'https://myG.gg/default_user/new-user-profile-picture.png'
                         }}
                         src={profileImage}
                         className='img-fluid'
@@ -108,12 +108,12 @@ const MobileMenuTop = (props) => {
                   dispatch(logoutAction())
                   window.location.href = '/logout'
                 }}>
-                <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Logout_Icon.svg' />
+                <img src='https://myG.gg/platform_images/Dashboard/Logout_Icon.svg' />
                 <span>Logout</span>
               </div>
               <div className='setting-btn'>
                 <Link to='/mySettings' onClick={() => setHideSideMenu(false)}>
-                  <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Settings_Chat_Window.svg' />
+                  <img src='https://myG.gg/platform_images/Dashboard/Settings_Chat_Window.svg' />
                 </Link>
               </div>
             </div>

@@ -22,7 +22,7 @@ const SuggestedCommunityBox = (props) => {
   }
 
   const addDefaultSrc = (ev) => {
-    ev.target.src = 'https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/logo.svg'
+    ev.target.src = 'https://myG.gg/platform_images/Dashboard/logo.svg'
   }
 
   const joinGroup = () => {

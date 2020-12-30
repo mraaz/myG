@@ -4,7 +4,7 @@ import { ignoreFunctions } from '../../../../common/render'
 import notifyToast from '../../../../common/toast'
 import ManageSponsors from '../../CommunityView/MangeSponsors'
 
-const defaultSponsorImage = 'https://mygame-media.s3.amazonaws.com/platform_images/Communities/myG_logo.jpg';
+const defaultSponsorImage = 'https://myG.gg/platform_images/Communities/myG_logo.jpg';
 export default class Sponsors extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)

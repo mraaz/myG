@@ -42,7 +42,7 @@ export default class Results extends React.Component {
           onMouseLeave={() => this.setState({ hovering: null })}
         >
           {this.renderHoverBar(gamer, isHovering)}
-          <div className='icon' style={{ backgroundImage: `url('${gamer.image}'), url('https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png')` }} />
+          <div className='icon' style={{ backgroundImage: `url('${gamer.image}'), url('https://myG.gg/default_user/new-user-profile-picture.png')` }} />
           <div className="info">
             {gamer.alias && <span className="alias">@{gamer.alias}</span>}
             {gamer.country && <span className="title">Country</span>}

@@ -248,7 +248,7 @@ export default class AdvancedSearchPost extends Component {
                       to={`/profile/${game_experience.alias}`}
                       className='user-img'
                       style={{
-                        backgroundImage: `url('https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png')`,
+                        backgroundImage: `url('https://myG.gg/default_user/new-user-profile-picture.png')`,
                       }}></Link>
                   )}
                   <div className='info'>
@@ -295,7 +295,7 @@ export default class AdvancedSearchPost extends Component {
                       to={`/profile/${game_experience.alias}`}
                       className='user-img'
                       style={{
-                        backgroundImage: `url('https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png')`,
+                        backgroundImage: `url('https://myG.gg/default_user/new-user-profile-picture.png')`,
                       }}></Link>
                   )}
                   <div className='info'>

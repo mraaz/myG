@@ -23,7 +23,7 @@ export default class MangeSponsors extends React.Component {
   }
 
   addDefaultSrc = (ev) => {
-    ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/universe.jpg'
+    ev.target.src = 'https://myG.gg/default_user/universe.jpg'
   }
 
   onKeyDown = (event) => {
@@ -153,7 +153,7 @@ export default class MangeSponsors extends React.Component {
               <span className={`setting__tab  notHand`}>Edit Media</span>
             </div>
             <div className='modal__close' onClick={(e) => this.handleClose()}>
-              <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/X_icon.svg' />
+              <img src='https://myG.gg/platform_images/Dashboard/X_icon.svg' />
             </div>
           </div>
           <div className='modal__body Sponsor__edit'>
@@ -169,7 +169,7 @@ export default class MangeSponsors extends React.Component {
               <img
                 src={
                   media_url == ''
-                    ? sponsor.media_url || 'https://mygame-media.s3.amazonaws.com/platform_images/Communities/upload_image.png'
+                    ? sponsor.media_url || 'https://myG.gg/platform_images/Communities/upload_image.png'
                     : media_url
                 }
                 onError={this.addDefaultSrc}

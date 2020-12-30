@@ -123,6 +123,8 @@ class ApiController {
 
         let data = await uploadFile(bucket, buffer, tmpfilename, type)
         fs.unlinkSync(tmpfilepath)
+        data.Location = data.Location.replace('mygame-media.s3.amazonaws.com', 'myG.gg')
+
         data.aws_key_id = await this.create_aws_keys_entry({ auth }, data.Key, request.input('type'), request.input('id'), data.Location)
 
         return response.status(200).json(data)

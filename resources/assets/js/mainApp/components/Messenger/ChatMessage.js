@@ -267,7 +267,7 @@ export default class ChatMessage extends React.Component {
             <div
               className='chat-component-read-indicator-icon-image'
               style={{
-                backgroundImage: `url(${icon}), url(https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png)`,
+                backgroundImage: `url(${icon}), url(https://myG.gg/default_user/new-user-profile-picture.png)`,
               }}
             />
           </div>

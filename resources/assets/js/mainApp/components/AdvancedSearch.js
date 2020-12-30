@@ -514,7 +514,7 @@ export default class AdvancedSearch extends Component<*, State> {
         <section id='posts'>
           <div className='content-area advancedSearch-page'>
             <div id='header-2'>
-              <img src='https://mygame-media.s3.amazonaws.com/headers/headers_v1-12.png' />
+              <img src='https://myG.gg/headers/headers_v1-12.png' />
             </div>
             <div className='filterMenu'>
               <div className='row-one'>

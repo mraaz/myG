@@ -122,7 +122,7 @@ class CommonSaveController {
         user.email = request.input('email')
         user.provider_id = session.get('provider_id')
         user.profile_img = session.get('profile_img')
-        user.profile_bg = 'https://mygame-media.s3.amazonaws.com/default_user/universe.jpg'
+        user.profile_bg = 'https://myG.gg/default_user/universe.jpg'
         user.provider = session.get('provider')
         await user.save()
 
