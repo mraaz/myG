@@ -36,7 +36,9 @@ export default class GameList extends Component {
   handleCopyToClipBoard = (e, guid) => {
     e.preventDefault()
     e.stopPropagation()
-    const link = `${window.location.protocol}//${window.location.hostname}/scheduledGames/${guid}`
+    let hostname = window.location.hostname
+    if (hostname == 'localhost') hostname = 'localhost:3333'
+    const link = `${window.location.protocol}//${hostname}/scheduledGames/${guid}`
     navigator.clipboard.writeText(link)
     toast.error(<Toast_style text={'Link copied mate!'} />)
   }
@@ -49,8 +51,11 @@ export default class GameList extends Component {
   }
   handlePendingApproval = (e) => {
     e.stopPropagation()
-    window.location.href = `/notifications`
-    //this.props.routeProps.history.push('/notifications')
+    console.log(this.props, '<<<RAAAZ')
+    console.log(window.location.href, '<<<window.location.href')
+    //http://localhost:3333/?at=notifications&submenu=1
+    //window.location.href = `/notifications`
+    this.props.routeProps.routeProps.history.push('/?at=notifications&submenu=1')
   }
 
   addDefaultSrc(ev) {
