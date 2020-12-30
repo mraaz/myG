@@ -16,13 +16,18 @@ const MobileMenu = ({ initialData }) => {
   const direction = useScrollDirection()
   const alias = initialData === 'loading' ? '' : initialData.userInfo.alias
 
+  // First useEffect is called every time direction changes, required to hide menus on scroll
   useEffect(() => {
+    console.log(direction);
     if (direction === 'down') {
       setHideNav(true)
     } else {
       setHideNav(false)
     }
+  }, [direction])
 
+  // Second useEffect is called only once, required so the API is only called once
+  useEffect(() => {
     const getNotis = async function() {
       let _chats = 0
       try {
