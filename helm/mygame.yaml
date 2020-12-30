@@ -75,15 +75,11 @@ ingress:
              add_header Cache-Control "public";
              break;
        }
-    cert-manager.io/cluster-issuer: myg
     #kubernetes.io/tls-acme: "true"
   paths: []
   path: /
-  hostName: myg.gg
+  hostName:
   tls:
-    - secretName: myg.gg
-      hosts:
-        - myg.gg
 
 ingress2:
   enabled: true
@@ -97,15 +93,12 @@ ingress2:
              add_header Cache-Control "public";
              break;
        }
-    cert-manager.io/cluster-issuer: myg-www
     #kubernetes.io/tls-acme: "true"
   paths: []
   path: /
-  hostName: www.myg.gg
+  hostName: 
   tls:
-    - secretName: www.myg.gg
-      hosts:
-        - www.myg.gg
+        
 
 tls:
   enabled: false
