@@ -2379,18 +2379,18 @@ section#content-container {
     border: 1px solid #384952;
     border-radius: 50px;
     display: flex;
-    position: absolute;
+    position: fixed;
     z-index: 999;
     transition: top 0.6s;
 
     &.hide {
-      top: -110vh;
+      top: -20vh;
     }
   }
 
   .mobile-top-menu-dropdown,
   .menu-tab {
-    top: -100vh;
+    top: 0vh;
   }
 
   .top-menu > .logo-img {
