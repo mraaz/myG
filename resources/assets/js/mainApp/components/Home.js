@@ -49,28 +49,30 @@ export default class Home extends Component {
       offsetWidth = this.contentAreaRef.current.offsetWidth ? 0 : this.contentAreaRef.current.offsetWidth
     }
     window.requestAnimationFrame(() => {
-      if (this.lastScrollY > 300) {
-        if (this.navRef.current && this.navRef.current.style) {
-          this.navRef.current.style.top = '0px'
-          this.navRef.current.style.position = 'fixed'
-          this.navRef.current.style.zIndex = '1001'
+      if (this.lastScrollY > 300 && this.navRef.current && this.navRef.current.style) {
+        this.navRef.current.style.top = '0'
+        this.navRef.current.style.position = 'fixed'
+        this.navRef.current.style.zIndex = '1001'
+        this.navRef.current.style.padding = '10px'
+        this.navRef.current.style.height = '60px'
+        this.navRef.current.style.margin = '0 auto'
+        this.navRef.current.style.paddingBottom = 0
+        this.navRef.current.style.width = '74%'
 
-          if (offsetWidth < 1200) {
-            this.navRef.current.style.width = '72%'
-            this.navRef.current.style.height = '60px'
-            this.navRef.current.style.padding = '10px'
-            this.navRef.current.style.paddingBottom = 0
-            this.navRef.current.style.margin = '0 auto'
-          } else {
-            this.navRef.current.style.width = '74%'
-            this.navRef.current.style.height = '60px'
-            this.navRef.current.style.padding = '10px'
-            this.navRef.current.style.paddingBottom = 0
-            this.navRef.current.style.margin = '0 auto'
-          }
+        // Required padding to prevent infinite loop of styling
+        this.contentAreaRef.current.style.paddingTop = '170px'
+
+        if (offsetWidth < 1200) {
+          this.navRef.current.style.width = '71%'
         }
-      } else {
-        if (this.navRef.current) this.navRef.current.removeAttribute('style')
+
+        // Exit early to make this less confusing
+        return
+      }
+
+
+      if (this.navRef.current) {
+        this.navRef.current.removeAttribute('style')
       }
     })
   }
