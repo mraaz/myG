@@ -74,6 +74,10 @@ export default class Home extends Component {
       if (this.navRef.current) {
         this.navRef.current.removeAttribute('style')
       }
+
+      if (this.contentAreaRef.current) {
+        this.contentAreaRef.current.removeAttribute('style')
+      }
     })
   }
 
