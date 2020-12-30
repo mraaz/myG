@@ -2561,3 +2561,10 @@ section#content-container {
     margin: 50px;
   }
 }
+
+// Mobile CSS to be applied for extra small screens
+@media screen and (max-width: 350px) {
+  .level-information {
+    margin-left: 20px;
+  }
+}
