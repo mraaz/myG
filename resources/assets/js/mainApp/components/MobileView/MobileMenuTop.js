@@ -1,13 +1,13 @@
 import React, { Fragment, useState } from 'react'
 import { Link } from 'react-router-dom'
-// import { useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
-// import { logoutAction } from '../../../redux/actions/userAction'
+import { logoutAction } from '../../../redux/actions/userAction'
 
 const MobileMenuTop = (props) => {
   const { initialData, notifications, hide } = props
   const [hideSideMenu, setHideSideMenu] = useState(false)
-  // const dispatch = useDispatch()
+  const dispatch = useDispatch()
 
   const alias = initialData === 'loading' ? '' : initialData.userInfo.alias
   const profileImage = initialData === 'loading' ? '' : initialData.userInfo.profile_img
@@ -15,8 +15,8 @@ const MobileMenuTop = (props) => {
 
   return (
     <Fragment>
-      <div class={hide ? 'menu-tab hide' : 'menu-tab show'} onClick={() => setHideSideMenu(true)}>
-        <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/logo.svg' class='img-fluid logo-img' />
+      <div class={hide ? 'menu-tab hide' : 'menu-tab show'}>
+        <img onClick={() => setHideSideMenu(true)} src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/logo.svg' class='img-fluid logo-img' />
         <div class='toggle-menu-btn'>
           <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/toggle_menu_collapsed.svg' class='img-fluid' />
         </div>
@@ -53,7 +53,7 @@ const MobileMenuTop = (props) => {
                   />
                 </div>
                 <div className='user-name-icon'>
-                  <Link to={`/profile/${alias}`}>
+                  <Link to={`/profile/${alias}`} onClick={() => setHideSideMenu(false)}>
                     <div className='user-icon'>
                       <img
                         onError={(ev) => {
@@ -105,7 +105,7 @@ const MobileMenuTop = (props) => {
                 className='logout-btn'
                 onClick={() => {
                   setHideSideMenu(false)
-                  // dispatch(logoutAction())
+                  dispatch(logoutAction())
                   window.location.href = '/logout'
                 }}>
                 <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Logout_Icon.svg' />
