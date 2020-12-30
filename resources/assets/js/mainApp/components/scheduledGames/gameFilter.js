@@ -6,7 +6,7 @@
 import React, { Component, Fragment } from 'react'
 import axios from 'axios'
 
-import AsyncSelect from 'react-select/async';
+import AsyncSelect from 'react-select/async'
 import Select from 'react-select'
 import { Game_name_values, Disable_keys, Schedule_Game_Tags, Toast_style, Game_name_Tags } from '../Utility_Function'
 import { toast } from 'react-toastify'
@@ -374,7 +374,6 @@ export default class ScheduleGames extends Component {
         region: '',
         game_name: '',
         value_tags: '',
-        filterValueArray: {},
         extraFields: {},
         filterValueArray: {},
         tags: [],

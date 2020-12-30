@@ -217,7 +217,7 @@ export default class IndividualPost extends Component {
     var post_id = this.props.post.id
     const self = this
 
-    const getComments = async function () {
+    const getComments = async function() {
       try {
         const myComments = await axios.get(`/api/comments/${post_id}`)
         self.setState({
@@ -363,7 +363,7 @@ export default class IndividualPost extends Component {
     const self = this
     var post_id = this.props.post.id
 
-    const editPost = async function () {
+    const editPost = async function() {
       try {
         const myEditPost = await axios.post(`/api/post/update/${post_id}`, {
           content: self.state.value2,
@@ -474,7 +474,7 @@ export default class IndividualPost extends Component {
       dropdown: false,
     })
     setTimeout(
-      function () {
+      function() {
         //Start the timer
         this.focusTextInput2()
       }.bind(this),
@@ -645,7 +645,7 @@ export default class IndividualPost extends Component {
               <div className='post__content'>
                 {!this.state.edit_post && this.state.showmore && (
                   <Fragment>
-                    <p>
+                    <p style={{ whiteSpace: 'pre-line' }}>
                       {`${this.state.content}  `}
                       {this.renderHashTags(hash_tags)}
                       <strong onClick={this.toggleShowmore}>{' ... '}See less</strong>
@@ -654,7 +654,7 @@ export default class IndividualPost extends Component {
                 )}
                 {!this.state.edit_post && !this.state.showmore && (
                   <Fragment>
-                    <p>
+                    <p style={{ whiteSpace: 'pre-line' }}>
                       {`${this.state.content.slice(0, 254)}  `} {this.renderHashTags(hash_tags)}
                       {this.state.content.length > 254 && <strong onClick={this.toggleShowmore}> {' ... '} See more</strong>}
                     </p>

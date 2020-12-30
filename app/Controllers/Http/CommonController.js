@@ -53,6 +53,9 @@ class CommonController {
         })
         return 'Saved item'
       } catch (error) {
+        if (error.code == 'ER_DUP_ENTRY') {
+          return
+        }
         LoggingRepository.log({
           environment: process.env.NODE_ENV,
           type: 'error',
