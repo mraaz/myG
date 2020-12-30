@@ -18,7 +18,6 @@ const MobileMenu = ({ initialData }) => {
 
   // First useEffect is called every time direction changes, required to hide menus on scroll
   useEffect(() => {
-    console.log(direction);
     if (direction === 'down') {
       setHideNav(true)
       setHideSearch(false)
