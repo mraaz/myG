@@ -199,15 +199,15 @@ export default class ComposeSection extends Component {
   }
 
   detectKey = (e) => {
-    if (e.key === 'Enter') {
+    // if (e.key === 'Enter') {
+    //
+    // }
+
+    if (e.key === 'Enter' && e.shiftKey) {
       e.preventDefault()
       e.stopPropagation()
       this.submitForm()
       return false
-    }
-
-    if (e.key === 'Enter' && e.shiftKey) {
-      return
     }
 
     if (e.key === 'Escape') {
