@@ -21,6 +21,8 @@ const MobileMenu = ({ initialData }) => {
     console.log(direction);
     if (direction === 'down') {
       setHideNav(true)
+      setHideSearch(false)
+      setHideCreate(false)
     } else {
       setHideNav(false)
     }
