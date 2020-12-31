@@ -40,6 +40,7 @@ $main-font: 'Montserrat';
         text-align: left;
         font-size: 12px;
         font-family: $main-font;
+        line-height: 1.5;
         font-weight: 700;
         color: #fff;
         padding: 15px 0 18px 20px;
@@ -49,9 +50,7 @@ $main-font: 'Montserrat';
 
         &:focus {
           margin: 0;
-          height: 60px !important;
-          font-size: 16px/14px !important;
-          padding: 0 0 0 20px !important;
+          padding: 0 0 0 20px;
           text-decoration: none;
           outline: none;
         }
