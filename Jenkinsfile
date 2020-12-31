@@ -18,7 +18,7 @@ pipeline {
         TAG = sh(script: "echo `date +'%d.%m.%Y..%H.%M.%S'`", returnStdout: true).trim()
     }
     tools {
-        nodejs "14.15.3"
+        nodejs "default"
     }
     agent {
         kubernetes {
