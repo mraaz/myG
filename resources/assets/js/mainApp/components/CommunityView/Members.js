@@ -9,10 +9,10 @@ import { Toast_style } from '../Utility_Function'
 import { PageHeader, MyGButton, MyGModal, MyGInput } from '../common'
 
 const IconMap = {
-  0: 'https://mygame-media.s3.amazonaws.com/platform_images/Communities/btn_Moderator_gold.svg',
-  1: 'https://mygame-media.s3.amazonaws.com/platform_images/Communities/btn_Moderator_gold.svg',
-  2: ' https://mygame-media.s3.amazonaws.com/platform_images/Communities/btn_Moderator_silver.svg',
-  3: 'https://mygame-media.s3.amazonaws.com/platform_images/Communities/btn_Moderator_clear.svg',
+  0: 'https://myG.gg/platform_images/Communities/btn_Moderator_gold.svg',
+  1: 'https://myG.gg/platform_images/Communities/btn_Moderator_gold.svg',
+  2: ' https://myG.gg/platform_images/Communities/btn_Moderator_silver.svg',
+  3: 'https://myG.gg/platform_images/Communities/btn_Moderator_clear.svg',
 }
 const PermissionMap = {
   0: 'Owner',
@@ -61,10 +61,10 @@ export default class Members extends React.Component {
     })
   }
   addDefaultSrc = (ev) => {
-    ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/universe.jpg'
+    ev.target.src = 'https://myG.gg/default_user/universe.jpg'
   }
   addProfileDefaultSrc = (ev) => {
-    ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
+    ev.target.src = 'https://myG.gg/default_user/new-user-profile-picture.png'
   }
 
   handleSettingTab = (isActive) => {
@@ -329,7 +329,7 @@ export default class Members extends React.Component {
               </span>
             </div>
             <div className='modal__close' onClick={(e) => this.props.handleModalStatus()}>
-              <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/X_icon.svg' />
+              <img src='https://myG.gg/platform_images/Dashboard/X_icon.svg' />
             </div>
           </div>
           {isActive != 'setting' && (

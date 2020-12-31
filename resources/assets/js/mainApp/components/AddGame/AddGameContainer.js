@@ -226,7 +226,7 @@ const AddGameContainer = () => {
             }}
             readOnly>
             <div style={{ marginTop: '9px', marginLeft: '15px', cursor: 'pointer' }} onClick={copyToClipboard}>
-              <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Link.svg' height='18' width='18' />
+              <img src='https://myG.gg/platform_images/Dashboard/Link.svg' height='18' width='18' />
             </div>
           </MyGInput>
           <div className={styles.listedOrText}>OR</div>

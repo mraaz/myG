@@ -107,8 +107,8 @@ class AuthController {
           alias: request.input('alias'),
           first_name: request.input('firstName'),
           last_name: request.input('lastName'),
-          profile_img: 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png',
-          profile_bg: 'https://mygame-media.s3.amazonaws.com/default_user/universe.jpg',
+          profile_img: 'https://myG.gg/default_user/new-user-profile-picture.png',
+          profile_bg: 'https://myG.gg/default_user/universe.jpg',
         })
 
         // Decrease Seats Available upon Registration

@@ -9,7 +9,7 @@ import axios from 'axios'
 import IndividualReply from './IndividualReply'
 import moment from 'moment'
 import SweetAlert from './common/MyGSweetAlert'
-const buckectBaseUrl = 'https://mygame-media.s3.amazonaws.com/platform_images/'
+const buckectBaseUrl = 'https://myG.gg/platform_images/'
 import { Upload_to_S3, Remove_file } from './AWS_utilities'
 
 import { logToElasticsearch } from '../../integration/http/logger'
@@ -496,7 +496,7 @@ export default class IndividualComment extends Component {
 
   render() {
     let { comment, user } = this.props
-    let { profile_img = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png', media_url = '' } = comment
+    let { profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png', media_url = '' } = comment
     const { myReplies = [], show_more_replies = true, hideReplies = false } = this.state
     const media_urls = media_url && media_url.length > 0 ? JSON.parse(media_url) : ''
 

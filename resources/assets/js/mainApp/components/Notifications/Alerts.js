@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { mark_all, delete_all, handleSingleNotificationReadStatus } from './helperFunction'
 
 import TopTabs from './TopTabs'
-const defaultUserImage = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
+const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
 const tabObj = {
   0: 0,
   1: -1,
@@ -310,7 +310,7 @@ export default class Alerts extends Component {
   }
 
   addDefaultSrc(ev) {
-    ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
+    ev.target.src = 'https://myG.gg/default_user/new-user-profile-picture.png'
   }
 
   render() {

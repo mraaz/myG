@@ -38,7 +38,7 @@ export default class InviteModal extends React.Component {
   renderGamer = (gamer) => (
     <div className="find-gamer-result" key={gamer.profileId}>
       <div className='gamer'>
-        <div className='icon' style={{ backgroundImage: `url('${gamer.image}'), url('https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png')` }} />
+        <div className='icon' style={{ backgroundImage: `url('${gamer.image}'), url('https://myG.gg/default_user/new-user-profile-picture.png')` }} />
         <div className="info">
           {gamer.alias && <span className="alias">@{gamer.alias}</span>}
           {gamer.country && <span className="title">Country</span>}
@@ -84,8 +84,8 @@ export default class InviteModal extends React.Component {
   )
 
   renderGame = (game) => {
-    const addDefaultSrc = (event) => event.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png';
-    const defaultThumbnails = 'https://mygame-media.s3.amazonaws.com/platform_images/Notifications/myG_icon.svg';
+    const addDefaultSrc = (event) => event.target.src = 'https://myG.gg/default_user/new-user-profile-picture.png';
+    const defaultThumbnails = 'https://myG.gg/platform_images/Notifications/myG_icon.svg';
     const picture = <img src={game.game_artwork || defaultThumbnails} className={game.game_artwork ? 'image' : 'default'} />;
     const profile = <img onError={addDefaultSrc} src={game.profile_img} />;
     const title = game.game_name;
@@ -106,13 +106,13 @@ export default class InviteModal extends React.Component {
             </div>
             <div className='row'>
               <div className='count'>
-                <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Notifications/little_green_man.svg' />
+                <img src='https://myG.gg/platform_images/Dashboard/Notifications/little_green_man.svg' />
                 <span className="gamer-count">
                   {game.no_of_gamers} / {game.limit == 0 ? <span>&#8734;</span> : game.limit} Gamers
                 </span>
               </div>
               <div className='timestamp'>
-                <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Notifications/clock.svg' />
+                <img src='https://myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
                 <span>{moment(game.start_date_time).format('LL')}</span>
               </div>
             </div>

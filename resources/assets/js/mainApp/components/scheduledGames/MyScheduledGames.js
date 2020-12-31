@@ -182,8 +182,9 @@ export default class MyScheduledGames extends Component {
                     next={this.getScheduleGamesData}
                     hasMore={this.state.moreplease}
                     fetching={fetching}
-                    copyClipboardEnable={false}
+                    copyClipboardEnable={true}
                     showPrefilledFilter={true}
+                    {...this.props}
                   />
                 </div>
                 <div style={{ flex: 1 }}>

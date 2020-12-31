@@ -185,7 +185,7 @@ export default class PostFileModal extends Component {
   }
 
   addDefaultSrc(ev) {
-    ev.target.src = 'https://mygame-media.s3.amazonaws.com/default_user/new-user-profile-picture.png'
+    ev.target.src = 'https://myG.gg/default_user/new-user-profile-picture.png'
   }
 
   render() {

@@ -1,4 +1,4 @@
-const ASSETS_PATH = 'https://mygame-media.s3.amazonaws.com/platform_icons/'
+const ASSETS_PATH = 'https://myG.gg/platform_icons/'
 
 const assets = {
   background_guest: 'guest_background.jpg',
