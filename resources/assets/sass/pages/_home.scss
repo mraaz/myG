@@ -41,6 +41,7 @@ section#content-container {
 }
 .dashboard-main-container {
   display: flex;
+  min-height: 100vh;
 }
 .app-container.home-page {
   position: relative;

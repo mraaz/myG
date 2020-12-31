@@ -83,12 +83,12 @@ const MobileMenu = ({ initialData }) => {
             {hideSearch && (
               <div className='mobile-sub-menu-items'>
                 <div className='find-matches'>
-                  <Link to='/scheduledGames'>
+                  <Link to='/scheduledGames' onClick={() => {setHideSearch(false); setHideNav(true)}}>
                     Find <b>Matches</b>
                   </Link>
                 </div>
                 <div className='find-gamers'>
-                  <a href='#'>
+                  <a href='#' onClick={() => {setHideSearch(false); setHideNav(true)}}>
                     Find <b>Gamers</b>
                   </a>
                 </div>
