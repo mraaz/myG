@@ -100,7 +100,7 @@ export default class ScheduleGames extends Component {
       return
     }
 
-    if (scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length > 0) {
+    if (scheduleGamesRes && scheduleGamesRes.data && scheduleGamesRes.data.latestScheduledGames.length > 0) {
       const { latestScheduledGames = [] } = scheduleGamesRes.data
       this.setState({ scheduleGames: latestScheduledGames })
     }
