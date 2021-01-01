@@ -380,6 +380,7 @@ export default class ScheduleGames extends Component {
         eighteen_plus: null,
         mic: null,
         language: null,
+        game_name_box: null,
       },
       () => {
         this.filterGroup = this.constantFilterGroup
@@ -664,6 +665,8 @@ export default class ScheduleGames extends Component {
       game_name_box,
     } = this.state
 
+    console.log('game_name_value   ', filterValueArray)
+
     if (this.props.initialData == 'loading') {
       return <h1>Loading</h1>
     }
@@ -676,7 +679,7 @@ export default class ScheduleGames extends Component {
               {filterTypeArray.map((k) => {
                 if (k == 'game_name') {
                   // const value = game_name_box ? game_name_box : filterValueArray[k] ? filterValueArray[k] : null
-                  //const value = filterValueArray[k] ? { value: filterValueArray[k], label: filterValueArray[k] } : null
+                  const value = filterValueArray[k] ? { value: filterValueArray[k], label: filterValueArray[k] } : null
                   return (
                     <div className='col-md-6'>
                       <div className='viewGame__gameName'>
@@ -688,7 +691,7 @@ export default class ScheduleGames extends Component {
                           loadOptions={this.getOptions}
                           onChange={(data) => this.handleDropDownChange(data, k)}
                           isClearable
-                          value={filterValueArray['game_name_value']}
+                          value={value}
                           className='viewGame__name'
                           placeholder='Search or Select Game Title'
                           onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
@@ -964,10 +967,7 @@ export default class ScheduleGames extends Component {
             <div className='filter__header' onClick={this.handleSavedFilterChange}>
               Saved Filter
             </div>
-            <img
-              src={' https://myG.gg/platform_images/View+Game/Down+Carrot.svg'}
-              onClick={this.handleSavedFilterChange}
-            />
+            <img src={' https://myG.gg/platform_images/View+Game/Down+Carrot.svg'} onClick={this.handleSavedFilterChange} />
             {showFilters && (
               <div className='filterType__group'>
                 <div className='filterType__head'>Saved Filters</div>
@@ -1018,10 +1018,7 @@ export default class ScheduleGames extends Component {
             <div className='filter__header' onClick={this.handleAddFilterChange}>
               Add Filter
             </div>
-            <img
-              src={' https://myG.gg/platform_images/View+Game/Down+Carrot.svg'}
-              onClick={this.handleAddFilterChange}
-            />
+            <img src={' https://myG.gg/platform_images/View+Game/Down+Carrot.svg'} onClick={this.handleAddFilterChange} />
             {showFilterType && (
               <div className='filterType__group'>
                 <div className='filterType__head'>Add Filters</div>

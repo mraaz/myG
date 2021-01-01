@@ -444,6 +444,15 @@
 .media__container {
   background: rgb(39, 49, 55);
   border: none !important;
+  .dropzone-thumb {
+    position: relative;
+    width: 200px;
+    min-height: 200px;
+    border-width: 2px;
+    border-color: rgb(102, 102, 102);
+    border-style: dashed;
+    border-radius: 5px;
+  }
 }
 
 .media__container div {
