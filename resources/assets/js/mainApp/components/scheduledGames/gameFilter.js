@@ -665,8 +665,6 @@ export default class ScheduleGames extends Component {
       game_name_box,
     } = this.state
 
-    console.log('game_name_value   ', filterValueArray)
-
     if (this.props.initialData == 'loading') {
       return <h1>Loading</h1>
     }
