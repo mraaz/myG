@@ -31,6 +31,12 @@ class NotificationsSchema extends Schema {
       table.unique(['user_id', 'activity_type', 'reply_id']);
       table.unique(['user_id', 'activity_type', 'group_id']);
       table.unique(['user_id', 'activity_type', 'chat_id']);
+      table.unique(['user_id', 'other_user_id', 'activity_type', 'schedule_games_id'], 'noti_index_1');
+      table.unique(['user_id', 'other_user_id', 'activity_type', 'post_id'], 'noti_index_2');
+      table.unique(['user_id', 'other_user_id', 'activity_type', 'comment_id'], 'noti_index_3');
+      table.unique(['user_id', 'other_user_id', 'activity_type', 'reply_id'], 'noti_index_4');
+      table.unique(['user_id', 'other_user_id', 'activity_type', 'group_id'], 'noti_index_5');
+      table.unique(['user_id', 'other_user_id', 'activity_type', 'chat_id'], 'noti_index_6');
       table.timestamps(true,true)
     })
   }

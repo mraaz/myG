@@ -141,6 +141,32 @@ class CommonController {
       return 'You are not Logged In!'
     }
   }
+
+  async remove_schedule_game_individual_attendees({ auth }, schedule_games_id, activity_type, user_id) {
+    if (auth.user) {
+      try {
+        const remove_schedule_game_attendees = await Database.table('notifications')
+          .where({
+            schedule_games_id: schedule_games_id,
+            activity_type: activity_type,
+            user_id: user_id,
+          })
+          .delete()
+
+        return 'Deleted'
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
+      }
+    } else {
+      return 'You are not Logged In!'
+    }
+  }
 }
 
 module.exports = CommonController

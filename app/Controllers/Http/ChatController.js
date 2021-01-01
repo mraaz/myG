@@ -444,7 +444,7 @@ class ChatController {
     try {
       const requestingUserId = auth.user.id
       if (!requestingUserId) throw new Error('Auth Error')
-      const count = !!request._qs.count;
+      const count = !!request._qs.count
       log('CHAT', `User ${requestingUserId} requesting Unread Messages ${count ? 'Count' : ''}`)
       const { unreadMessages } = await ChatRepository.fetchUnreadMessages({ requestingUserId, count })
       return response.send({ unreadMessages })
