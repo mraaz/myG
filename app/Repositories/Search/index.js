@@ -65,7 +65,6 @@ class SearchRepository {
   }
 
   async searchGamers({ requestingUserId, query, online }) {
-    console.log('Preparing Gamers Search for', query);
     const cleanUser = (user) => ({ ...user, profileId: parseInt(user.profileId), firstName: '', lastName: '', email: '' });
     const result = await ElasticsearchRepository.searchUser({ query: this.buildUsersQuery(query) });
     const parsedResults = result.hits.hits.map((hit) => cleanUser(hit._source)).filter(({ profileId }) => profileId !== requestingUserId);
@@ -84,7 +83,6 @@ class SearchRepository {
   }
 
   async searchGames({ query }) {
-    console.log('Preparing Games Search for', query);
     const result = await ElasticsearchRepository.searchGame({ query: this.buildGamesQuery(query) });
     const latestScheduledGames = result.hits.hits.map((hit) => ({ 
       ...hit._source, 
