@@ -95,7 +95,7 @@ export default class Results extends React.Component {
     return(
       <div className="hover-bar">
         {this.renderButton(openProfile, 'Profile')}
-        {canSendFriendRequest && this.renderButton(sendFriendRequest, 'Request Connection')}
+        {canSendFriendRequest && this.renderButton(sendFriendRequest, 'Connect')}
         {canCancelFriendRequest && this.renderButton(cancelFriendRequest, 'Request Sent')}
         {this.renderButton(invite, 'Invite')}
         {canFollow && this.renderButton(follow, 'Follow')}
