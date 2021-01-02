@@ -32,7 +32,8 @@ class ElasticsearchRepository {
   async storeUser({ user }) {
     log('ELASTICSEARCH', `Storing user in Elasticsearch: ${user.alias}`);
     const gameExperiences = (user.gameExperiences || []).map((experience) => ({ 
-      id: experience.game, 
+      id: experience.game,
+      experienceId: experience.id,
       level: experience.level, 
       experience: experience.experience,
       name: experience.gameName,

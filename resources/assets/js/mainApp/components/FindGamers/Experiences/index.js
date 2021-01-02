@@ -11,7 +11,7 @@ export default class Experiences extends React.Component {
   }
 
   openGame = (game) => {
-    window.location.href = `/profile/${this.props.alias}/game/${game.id}`;
+    window.location.href = `/profile/${this.props.alias}/game/${game.experienceId || game.id}`;
   }
 
   renderGame = (game) => {
