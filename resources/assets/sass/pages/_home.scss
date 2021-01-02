@@ -1325,8 +1325,11 @@ section#content-container {
         background: #171a1c;
         padding-top: 20px;
         .show-individual-comments {
-          padding-left: 100px;
-          padding-right: 50px;
+          padding: 0px 50px;
+          padding-right: 5px;
+          @media screen and (min-width: $tablet) {
+            padding: 0px 50px;
+          }
           .individual-comment-container {
             margin-bottom: 20px;
             .comment__shape {
@@ -2600,10 +2603,6 @@ section#content-container {
 
   .app-container.home-page {
     display: block;
-  }
-
-  .show-individual-comments {
-    padding: 0px 50px !important;
   }
 
   .postCompose__container {
