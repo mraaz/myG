@@ -1643,6 +1643,26 @@ class ScheduleGameController {
       })
     }
   }
+
+  syncGameToElasticsearch = async (gameInfo) => {
+    const profileInfo = await this.getProfileInfo(gameInfo.user_id)
+    gameInfo.alias = profileInfo.alias
+    gameInfo.profile_img = profileInfo.image
+    gameInfo.attendees = await this.getAttendees(gameInfo.id)
+    gameInfo.game_artwork = await this.getGameImage(gameInfo.game_names_id)
+    await ElasticsearchRepository.storeGame({ gameInfo })
+  }
+
+  syncToElasticsearch = async () => {
+    const games = await Database.from('schedule_games');
+    await Promise.all(games.map(this.syncGameToElasticsearch));
+    const elasticsearchGameIds = await ElasticsearchRepository.fetchAllGamesIds();
+    const mysqlGameIds = games.map((game) => `${game.id}`);
+    await Promise.all(elasticsearchGameIds.map((gameId) => {
+      if (mysqlGameIds.includes(gameId)) return;
+      return ElasticsearchRepository.removeGame({ id: gameId });
+    }));
+  }
 }
 
 module.exports = ScheduleGameController

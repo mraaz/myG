@@ -63,6 +63,17 @@ function getJobs(Queue, bullConfig) {
       enabled: true,
     },
     {
+      name: 'Game Sync To Elasticsearch',
+      queue: new Queue('game-syncToElasticsearch', bullConfig),
+      action: require('./tasks/game-syncToElasticsearch'),
+      options: {},
+      payload: {},
+      schedule: { repeat: { cron: '0 0 * * *' } },
+      runOnSchedule: true,
+      runOnStart: true,
+      enabled: true,
+    },
+    {
       name: 'Delete Invalid S3 Files',
       queue: new Queue('s3-deleteFiles', bullConfig),
       action: require('./tasks/s3-deleteFiles'),

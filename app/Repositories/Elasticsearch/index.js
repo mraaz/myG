@@ -29,6 +29,14 @@ class ElasticsearchRepository {
     }}).then((result) => result.hits.hits.map((hit) => hit._id));
   }
 
+  // TODO: Paginate this using the scroll API:
+  // https://www.elastic.co/guide/en/elasticsearch/reference/6.8/search-request-scroll.html
+  async fetchAllGamesIds() {
+    return this.getElasticsearchClient().search({ index: 'games', body: {
+      _source: "",  query: { match_all: {} }, size: 10000,
+    }}).then((result) => result.hits.hits.map((hit) => hit._id));
+  }
+
   async storeUser({ user }) {
     log('ELASTICSEARCH', `Storing user in Elasticsearch: ${user.alias}`);
     const gameExperiences = (user.gameExperiences || []).map((experience) => ({ 
@@ -62,7 +70,7 @@ class ElasticsearchRepository {
   }
 
   async storeGame({ gameInfo }) {
-    log('ELASTICSEARCH', `Storing game in Elasticsearch:`, gameInfo);
+    log('ELASTICSEARCH', `Storing game in Elasticsearch: ${gameInfo.id}`);
     return this.getElasticsearchClient().update({
       index: 'games',
       id: gameInfo.id,
