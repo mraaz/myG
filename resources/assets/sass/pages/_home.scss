@@ -880,11 +880,16 @@ section#content-container {
       }
     }
     .post__container {
-      margin: 10px 110px;
-      margin-top: 0;
-      padding: 27px 0;
-      padding-left: 80px;
+      margin: 40px 25px;
       font-family: 'Montserrat';
+
+      @media screen and (min-width: $desktop) {
+        margin: 10px 110px;
+        margin-top: 0;
+        padding: 27px 0;
+        padding-left: 80px;
+      }
+
       .post__content {
         font: 12px/18px Montserrat;
         letter-spacing: 0px;
@@ -957,6 +962,9 @@ section#content-container {
         max-width: 1200px;
         margin-left: auto;
         margin-right: auto;
+        @media screen and (min-height: $tablet) {
+          padding: 0 5px;
+        }
         .media {
           .image-gallery {
             margin-bottom: 20px;
@@ -1360,6 +1368,10 @@ section#content-container {
                   margin-right: 10px;
                   font-weight: bold;
                   color: #fff;
+                  width: 100%;
+                  display: inline-block;
+                  text-overflow: ellipsis;
+                  overflow: hidden;
                 }
                 .comment-content {
                   color: #93a4a5;
@@ -1600,7 +1612,7 @@ section#content-container {
         border-bottom: 1px solid #e5c746;
       }
 
-      @media screen and (max-width: 575px) {
+      @media screen and (max-width: $tablet) {
         margin: 0;
         font-size: 12px;
       }
@@ -1622,7 +1634,7 @@ section#content-container {
         border-bottom: 1px solid #e5c746;
       }
 
-      @media screen and (max-width: 575px) {
+      @media screen and (max-width: $tablet) {
         margin: 0;
         font-size: 12px;
       }
@@ -2340,7 +2352,7 @@ section#content-container {
 
 // Mobile CSS
 
-@media screen and (max-width: 575px) {
+@media screen and (max-width: $tablet) {
   #main-sidebar,
   #messenger,
   .social-main,
@@ -2600,7 +2612,7 @@ section#content-container {
 }
 
 // Mobile CSS to be applied for extra small screens
-@media screen and (max-width: 350px) {
+@media screen and (max-width: $mobile) {
   .level-information {
     margin-left: 20px;
   }

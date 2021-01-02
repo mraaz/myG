@@ -18,3 +18,8 @@ $title-font: 'Montserrat Alternates', sans-serif;
 $primarybuttonBG: linear-gradient(135deg, rgba(183, 222, 237, 1) 0%, rgba(33, 180, 226, 1) 9%, rgba(183, 222, 237, 1) 100%);
 $primarybuttonBG: #151b26;
 $myG-black: #3c3c3c;
+
+// Device break points
+$mobile: 350px;
+$tablet: 575px;
+$desktop: 1200px;
