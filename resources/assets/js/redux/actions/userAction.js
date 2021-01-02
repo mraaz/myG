@@ -148,10 +148,11 @@ export function togglePushNotificationsAction(userId) {
   }
 }
 
-export function fetchStatsAction() {
+export function fetchStatsAction(alias) {
   return {
     type: 'FETCH_STATS',
-    payload: fetchStats(),
+    payload: fetchStats(alias),
+    meta: { alias },
   }
 }
 

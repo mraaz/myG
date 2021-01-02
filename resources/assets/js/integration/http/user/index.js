@@ -101,7 +101,7 @@ export function emailEncryptionKey(pin) {
   return axios.post(`/api/encryption`, { pin }).then((response => response.data));
 }
 
-export function fetchStats() {
+export function fetchStats(alias) {
   logger.log('USER', 'HTTP', `Requesting Stats`);
-  return axios.get('/api/userStatTransaction/master_controller').then((response) => response.data);
+  return axios.get(`/api/userStatTransaction/master_controller${alias ? `?alias=${alias}` : ''}`).then((response) => response.data);
 }
