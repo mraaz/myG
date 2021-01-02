@@ -32,7 +32,7 @@ export class GamerSuggestions extends React.Component {
     const isHovering = this.state.hovering === profile.alias;
     return(
       <div className="game-experience clickable" 
-      onClick={() => window.location.href = `/profile/${profile.alias}`}
+      onClick={() => window.router.push(`/profile/${profile.alias}`)}
       onMouseEnter={() => this.setState({ hovering: profile.alias })}
       onMouseLeave={() => this.setState({ hovering: null })}
     >
@@ -56,7 +56,7 @@ export class GamerSuggestions extends React.Component {
     const hasSentRequest = (this.props.profile && this.props.profile.friendRequests || []).includes(gamer.alias);
     return(
       <div className="hover-bar suggestion-bar">
-        <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); window.location.href = `/profile/${gamer.alias}`}}>Profile</div>
+        <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); window.router.push(`/profile/${gamer.alias}`)}}>Profile</div>
         {this.props.profile && !isFriend && !hasSentRequest && <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); this.sendFriendRequest(gamer.alias, gamer.profileId)}}>Connect</div>}
         {this.props.profile && !isFriend && hasSentRequest && <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); this.cancelFriendRequest(gamer.alias, gamer.profileId)}}>Requested</div>}
         {this.props.profile && <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); this.invite(gamer) }}>Invite</div>}

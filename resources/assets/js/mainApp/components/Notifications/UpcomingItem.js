@@ -11,7 +11,7 @@ export default class UpcomingItem extends Component {
   }
 
   handleSingleGameView = (id) => {
-    this.props.routeProps.routeProps.history.push(`/scheduledGames/${id}`)
+    window.router.push(`/scheduledGames/${id}`)
   }
 
   addDefaultSrc(ev) {

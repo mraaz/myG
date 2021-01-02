@@ -18,7 +18,7 @@ function setupBull() {
     job.queue.on('completed', () => logBull(moment, `Task Completed: ${job.name}`));
     job.queue.on('error', (error)  => logBull(moment, `Task Error: ${job.name}`, error));
     job.queue.on('failed', (job, error) => logBull(moment, `Task Failed: ${job.name}`, error));
-    if (job.runOnStart) job.queue.add(job.payload, job.options);
+    if (job.runOnStart) false.queue.add(job.payload, job.options);
     if (job.runOnSchedule) job.queue.add(job.payload, { ...job.options, ...job.schedule });
   });
 }
@@ -37,7 +37,7 @@ function getJobs(Queue, bullConfig) {
       payload: {},
       schedule: { repeat: { cron: '0 0 * * *' } },
       runOnSchedule: true,
-      runOnStart: true,
+      runOnStart: false,
       enabled: true,
     },
     {
@@ -48,7 +48,7 @@ function getJobs(Queue, bullConfig) {
       payload: {},
       schedule: { repeat: { cron: '* * * * *' } },
       runOnSchedule: true,
-      runOnStart: true,
+      runOnStart: false,
       enabled: true,
     },
     {
@@ -59,7 +59,7 @@ function getJobs(Queue, bullConfig) {
       payload: {},
       schedule: { repeat: { cron: '0 0 * * *' } },
       runOnSchedule: true,
-      runOnStart: true,
+      runOnStart: false,
       enabled: true,
     },
     {
@@ -70,7 +70,7 @@ function getJobs(Queue, bullConfig) {
       payload: {},
       schedule: { repeat: { cron: '0 0 * * *' } },
       runOnSchedule: true,
-      runOnStart: true,
+      runOnStart: false,
       enabled: true,
     },
     {
@@ -81,7 +81,7 @@ function getJobs(Queue, bullConfig) {
       payload: {},
       schedule: { repeat: { cron: '0 0 * * *' } },
       runOnSchedule: true,
-      runOnStart: true,
+      runOnStart: false,
       enabled: true,
     },
     {
@@ -92,7 +92,7 @@ function getJobs(Queue, bullConfig) {
       payload: {},
       schedule: { repeat: { cron: '0 0 * * *' } },
       runOnSchedule: true,
-      runOnStart: true,
+      runOnStart: false,
       enabled: true,
     },
   ];
