@@ -37,11 +37,13 @@ export function deserializeKey(key) {
 
 export function encryptMessage(message, publicKey, privateKey) {
   if (!message || !publicKey || !privateKey) return null;
+  if (!privateKey.decrypt) privateKey = deserializeKey(privateKey);
   return cryptico.encrypt(message, publicKey, privateKey).cipher;
 }
 
 export function decryptMessage(message, privateKey) {
   if (!message || !privateKey) return null;
+  if (!privateKey.decrypt) privateKey = deserializeKey(privateKey);
   return cryptico.decrypt(message, privateKey).plaintext;
 }
 
