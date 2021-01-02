@@ -239,6 +239,32 @@ class GameNameController {
       })
     }
   }
+
+  // Delete games with counter as 0 if 24hrs have passed.
+  async deleteUnusedGames() {
+    const oneDayAgo = new Date()
+    oneDayAgo.setDate(oneDayAgo.getDate() - 1)
+    const gamesToDelete = await Database.from('game_names').where('counter', '=', 0).andWhere('created_at', '<', oneDayAgo)
+    if (!gamesToDelete.length) return
+    const apiController = new ApiController()
+    const auth = { user: { id: 'myg' } }
+    for await (let gameToDelete of gamesToDelete) {
+      await apiController.internal_deleteFile({ auth }, '9', gameToDelete.id)
+      await Database.table('game_names').where({ id: gameToDelete.id }).delete()
+    }
+    const report = gamesToDelete.map((gameToDelete) => ({
+      id: gameToDelete.id,
+      userId: gameToDelete.user_id,
+      name: gameToDelete.game_name,
+    }))
+    LoggingRepository.log({
+      environment: process.env.NODE_ENV,
+      type: 'task',
+      source: 'backend',
+      context: 'delete unused games',
+      message: JSON.stringify(report),
+    })
+  }
 }
 
 module.exports = GameNameController

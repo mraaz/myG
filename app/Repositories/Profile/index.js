@@ -454,8 +454,10 @@ class ProfileRepository {
   async deleteGameExperience({ requestingUserId, gameExperienceId }) {
     const gameExperience = await GameExperience.find(gameExperienceId);
     if (!gameExperience) return this.fetchProfileInfo({ requestingUserId, id: requestingUserId })
-    await Database.table('game_experiences').where({ id: gameExperienceId }).delete()
-    await Database.table('user_most_played_games').where({ user_id: requestingUserId }).andWhere({ game_name_id: gameExperience.game_names_id }).delete()
+    const gameController = new GameNameController();
+    await Database.table('game_experiences').where({ id: gameExperienceId }).delete();
+    await Database.table('user_most_played_games').where({ user_id: requestingUserId }).andWhere({ game_name_id: gameExperience.game_names_id }).delete();
+    await gameController.decrementGameCounter({ auth: { user: { id: requestingUserId } } }, gameExperience.game_names_id);
     const { profile } = await this.fetchProfileInfo({ requestingUserId, id: requestingUserId });
     await ElasticsearchRepository.storeUser({ user: profile });
     return { profile };
