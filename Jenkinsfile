@@ -45,7 +45,7 @@ pipeline {
                 }
                 withAWS(credentials: "myg-aws-credentials") {
                     s3Upload(file:'public', bucket:'myg-frontend', path:'')
-                    cfInvalidate(distribution:"E1H01H67HGUDTU", paths:['/*'], waitForCompletion: true)
+                    cfInvalidate(distribution:"E1H01H67HGUDTU", paths:['/*'])
                 }
             }
         }
