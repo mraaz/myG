@@ -54,11 +54,11 @@ class SearchRepository {
     if (input.platform) query.query.bool.must.push({ match: { 'platform.keyword': input.platform } });
     if (input.region) query.query.bool.must.push({ match: { 'region.keyword': input.region } });
     if (input.game_languages) query.query.bool.must.push({ match: { 'game_languages.keyword': input.game_languages } });
-    if (input.value_one) query.query.bool.must.push({ match: { 'dynamic_fields.value_one.keyword': input.value_one } });
-    if (input.value_two) query.query.bool.must.push({ match: { 'dynamic_fields.value_two.keyword': input.value_two } });
-    if (input.value_three) query.query.bool.must.push({ match: { 'dynamic_fields.value_three.keyword': input.value_three } });
-    if (input.value_four) query.query.bool.must.push({ match: { 'dynamic_fields.value_four.keyword': input.value_four } });
-    if (input.value_five) query.query.bool.must.push({ match: { 'dynamic_fields.value_five.keyword': input.value_five } });
+    if (input.value_one) query.query.bool.must.push({ match: { 'dynamic_fields.value_one.keyword': typeof input.value_one === 'string' ? input.value_one : input.value_one[Object.keys(input.value_one)[0]] } });
+    if (input.value_two) query.query.bool.must.push({ match: { 'dynamic_fields.value_two.keyword': typeof input.value_two === 'string' ? input.value_two : input.value_two[Object.keys(input.value_two)[0]] } });
+    if (input.value_three) query.query.bool.must.push({ match: { 'dynamic_fields.value_three.keyword': typeof input.value_three === 'string' ? input.value_three : input.value_three[Object.keys(input.value_three)[0]] } });
+    if (input.value_four) query.query.bool.must.push({ match: { 'dynamic_fields.value_four.keyword': typeof input.value_four === 'string' ? input.value_four : input.value_four[Object.keys(input.value_four)[0]] } });
+    if (input.value_five) query.query.bool.must.push({ match: { 'dynamic_fields.value_five.keyword': typeof input.value_five === 'string' ? input.value_five : input.value_five[Object.keys(input.value_five)[0]] } });
     if (input.mic !== null) query.query.bool.must.push({ match: { mic: input.mic } });
     if (input.eighteen_plus !== null) query.query.bool.must.push({ match: { eighteen_plus: input.eighteen_plus } });
     return query;

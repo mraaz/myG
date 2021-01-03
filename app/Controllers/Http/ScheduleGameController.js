@@ -1011,6 +1011,11 @@ class ScheduleGameController {
         .first()
       const wrongMappings = JSON.parse(JSON.stringify(query))
       const correctMappings = JSON.parse(gameFields.in_game_fields)
+      delete query.value_one;
+      delete query.value_two;
+      delete query.value_three;
+      delete query.value_four;
+      delete query.value_five;
       const findValue = (mapping) => {
         const value_one = wrongMappings.value_one || {}
         if (mapping === Object.keys(value_one)[0]) return value_one[Object.keys(value_one)[0]]

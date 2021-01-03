@@ -17,7 +17,7 @@ class ElasticsearchRepository {
   }
 
   async searchUser({ query }) {
-    if (process.env.DEBUG_ELASTICSEARCH) log('ELASTICSEARCH', 'Elasticsearch Query:', JSON.stringify(query, null, 2));
+    if (process.env.DEBUG_ELASTICSEARCH) log('ELASTICSEARCH', `Elasticsearch Query: ${JSON.stringify(query, null, 2)}`);
     return this.getElasticsearchClient().search({ index: 'users', body: query });
   }
 
@@ -72,7 +72,7 @@ class ElasticsearchRepository {
   }
 
   async searchGame({ query }) {
-    if (process.env.DEBUG_ELASTICSEARCH) log('ELASTICSEARCH', 'Elasticsearch Query:', JSON.stringify(query, null, 2));
+    if (process.env.DEBUG_ELASTICSEARCH) log('ELASTICSEARCH', `Elasticsearch Query: ${JSON.stringify(query, null, 2)}`);
     return this.getElasticsearchClient().search({ index: 'games', body: query });
   }
 
