@@ -101,7 +101,7 @@ class ElasticsearchRepository {
   }
 
   async removeGame({ id }) {
-    log('ELASTICSEARCH', `Removing game from Elasticsearch:`, id);
+    log('ELASTICSEARCH', `Removing game from Elasticsearch: ${id}`);
     return this.getElasticsearchClient().delete({
       id,
       index: 'games',
