@@ -64,6 +64,13 @@ class ElasticsearchRepository {
     }).then(() => ({ success: true, error: null })).catch(error => ({ success: false, error }));
   }
 
+  async removeByAlias({ alias }) {
+    log('ELASTICSEARCH', `Removing user from Elasticsearch: ${alias}`);
+    const result = await this.searchUser({ query: { query: { match: { alias } } } });
+    const user = result.hits.hits.map(entry => entry._source).find((entry) => entry.alias === alias);
+    if (user) await this.removeUser({ id: user.profileId });
+  }
+
   async searchGame({ query }) {
     if (process.env.DEBUG_ELASTICSEARCH) log('ELASTICSEARCH', 'Elasticsearch Query:', JSON.stringify(query, null, 2));
     return this.getElasticsearchClient().search({ index: 'games', body: query });

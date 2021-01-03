@@ -140,7 +140,7 @@ class ProfileRepository {
     const response = await User.query().where('id', id).fetch();
     const profile = response && response.toJSON()[0];
     if (!profile) {
-      // Remove from ES if it exists.
+      await ElasticsearchRepository.removeUser({ id });
       throw new Error("PROFILE_NOT_FOUND");
     }
     return profile;
@@ -150,7 +150,7 @@ class ProfileRepository {
     const response = await User.query().where('alias', alias).fetch();
     const profile = response && response.toJSON()[0];
     if (!profile) {
-      // Remove from ES if it exists.
+      await ElasticsearchRepository.removeByAlias({ alias });
       throw new Error("PROFILE_NOT_FOUND");
     }
     return profile;
