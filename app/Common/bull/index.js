@@ -2,11 +2,20 @@ function setupBull() {
 
   const Queue = require('bull');
   const moment = require('moment')();
+  const LoggingRepository = require('../../Repositories/Logging')
   const Env = use('Env')
   const hasRedis = Env.get('REDIS_ENABLED');
   const host = Env.get('REDIS_HOST');
   const port = Env.get('REDIS_PORT');
   const bullConfig = { redis: { host, port } };
+  
+  LoggingRepository.log({
+    environment: process.env.NODE_ENV,
+    type: 'startup',
+    source: 'backend',
+    context: "bull",
+    message: `Getting ready to start bull -> ${JSON.stringify({ hasRedis, bullConfig })}`
+  });
 
   if (!hasRedis) return logBull(moment, 'Redis Disabled, no Bull Queues will be run.');
 
