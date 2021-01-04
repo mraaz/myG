@@ -237,11 +237,11 @@ const AddCommunity = ({
     }
     if (file.length > 0) {
       updateAdvancedSettings({ uploading: true })
-      // let post = await Upload_to_S3(file[0], file[0].name, 0, null)
-      // if (!post) {
-      //   updateAdvancedSettings({ uploading: false })
-      //   return
-      // }
+      let post = await Upload_to_S3(file[0], file[0].name, 0, null)
+      if (!post) {
+        updateAdvancedSettings({ uploading: false })
+        return
+      }
       let new_preview_files = []
       new_preview_files.push({
         src: post.data.Location,
