@@ -84,8 +84,8 @@ class SearchRepository {
 
   async searchGames({ query }) {
     const result = await ElasticsearchRepository.searchGame({ query: this.buildGamesQuery(query) });
-    const latestScheduledGames = result.hits.hits.map((hit) => ({ 
-      ...hit._source, 
+    const latestScheduledGames = result.hits.hits.map((hit) => ({
+      ...hit._source,
       no_of_gamers: hit._source.attendees,
       tags: (hit._source.tags || []).map((content) => ({ content }))
     }));
@@ -94,4 +94,3 @@ class SearchRepository {
 }
 
 module.exports = new SearchRepository();
- 
