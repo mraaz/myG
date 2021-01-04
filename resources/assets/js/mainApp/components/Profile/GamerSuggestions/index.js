@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { getAssetUrl } from '../../../../common/assets'
 import { ignoreFunctions } from '../../../../common/render'
 import { fetchGamerSuggestionsAction } from '../../../../redux/actions/profileAction';
+import { searchGamersAction } from '../../../../redux/actions/searchAction';
 import InviteModal from '../../FindGamers/Invite';
 import notifyToast from '../../../../common/toast';
 
@@ -14,10 +15,12 @@ export class GamerSuggestions extends React.Component {
   state = {
     page: 0,
     inviting: null,
+    search: '',
   }
 
   componentDidMount() {
-    this.props.fetchGamerSuggestions();
+    if (this.props.onboarding) return this.props.searchGamers('', false);
+    return this.props.fetchGamerSuggestions();
   }
 
   renderHeaders = () => {
@@ -30,6 +33,7 @@ export class GamerSuggestions extends React.Component {
 
   renderGamerSuggestion = (profile) => {
     const isHovering = this.state.hovering === profile.alias;
+    const games = profile.mostPlayedGames.length ? profile.mostPlayedGames : profile.gameExperiences.map(({ name }) => name);
     return(
       <div className="game-experience clickable" 
       onClick={() => window.router.push(`/profile/${profile.alias}`)}
@@ -44,7 +48,7 @@ export class GamerSuggestions extends React.Component {
           <span className="field-title space-right">Level</span>
           <span className="field-value">{profile.level}</span>
       </div>
-      {profile.mostPlayedGames.map(game => <div className="field center"><span className="field-value">{game}</span></div>)}
+      {games.map(game => <div className="field center"><span className="field-value">{game}</span></div>)}
     </div>
     );
   }
@@ -56,12 +60,12 @@ export class GamerSuggestions extends React.Component {
     const hasSentRequest = (this.props.profile && this.props.profile.friendRequests || []).includes(gamer.alias);
     return(
       <div className="hover-bar suggestion-bar">
-        <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); window.router.push(`/profile/${gamer.alias}`)}}>Profile</div>
+        {!this.props.onboarding && <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); window.router.push(`/profile/${gamer.alias}`)}}>Profile</div>}
         {this.props.profile && !isFriend && !hasSentRequest && <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); this.sendFriendRequest(gamer.alias, gamer.profileId)}}>Connect</div>}
         {this.props.profile && !isFriend && hasSentRequest && <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); this.cancelFriendRequest(gamer.alias, gamer.profileId)}}>Requested</div>}
-        {this.props.profile && <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); this.invite(gamer) }}>Invite</div>}
-        {this.props.profile && !isFollower && <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); this.follow(gamer.alias, gamer.profileId)}}>Follow</div>}
-        {this.props.profile && isFollower && <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); this.unfollow(gamer.alias, gamer.profileId)}}>Unfollow</div>}
+        {!this.props.onboarding && this.props.profile && <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); this.invite(gamer) }}>Invite</div>}
+        {!this.props.onboarding && this.props.profile && !isFollower && <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); this.follow(gamer.alias, gamer.profileId)}}>Follow</div>}
+        {!this.props.onboarding && this.props.profile && isFollower && <div className="small-button suggestion-button clickable" onClick={(event) => { event.stopPropagation(); this.unfollow(gamer.alias, gamer.profileId)}}>Unfollow</div>}
       </div>
     );
   }
@@ -130,12 +134,23 @@ export class GamerSuggestions extends React.Component {
     );
   }
 
+  renderOnboardingButtons() {
+    if (!this.props.onboarding) return null;
+    return (
+      <div className="onboarding-buttons">
+        <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.props.skipOnboarding()}}>Skip</div>
+        <div className="small-button clickable" onClick={(event) => { event.stopPropagation(); this.props.setOnboardingStep(4)}}>Next 2/2</div>
+      </div>
+    );
+  }
+
   render() {
     if (!this.props.gamerSuggestions.length) return null;
     return(
       <div id="profile">
         <div id="profile-game-experiences">
           {this.renderInviteModal()}
+          {this.renderOnboardingButtons()}
           {!this.props.noTitle && this.renderHeaders()}
           <div className="scroll">
             {this.renderPageButtons()}
@@ -147,15 +162,17 @@ export class GamerSuggestions extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    gamerSuggestions: state.profile.gamerSuggestions || [],
-  }
+function mapStateToProps(state, props) {
+  const gamerSuggestions = state.profile.gamerSuggestions || [];
+  const gamersFound = state.search.gamers || [];
+  if (props.onboarding) return { gamerSuggestions: gamersFound };
+  return { gamerSuggestions };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     fetchGamerSuggestions: () => dispatch(fetchGamerSuggestionsAction()),
+    searchGamers: (input, online) => dispatch(searchGamersAction(input, online)),
   }
 }
 

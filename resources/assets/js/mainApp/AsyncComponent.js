@@ -136,8 +136,16 @@ const EditScheduleGames = Loadable({
     return null
   },
 })
+
 const CommunityView = Loadable({
   loader: () => import('./components/CommunityView/CommunityView'),
+  loading: function() {
+    return null
+  },
+})
+
+const Onboarding = Loadable({
+  loader: () => import('./components/Onboarding'),
   loading: function() {
     return null
   },
@@ -165,6 +173,7 @@ export {
   EditScheduleGames,
   MobileMenu,
   CommunityView,
+  Onboarding,
 }
 function newFunction() {
   return './components/MobileView/MobileMenuTop'

@@ -12,6 +12,7 @@ import encryption from './reducers/encryptionReducer'
 import socket from './reducers/socketReducer'
 import profile from './reducers/profileReducer'
 import search from './reducers/searchReducer'
+import onboarding from './reducers/onboardingReducer'
 
 const appReducer = combineReducers({
   alert,
@@ -24,6 +25,7 @@ const appReducer = combineReducers({
   socket,
   profile,
   search,
+  onboarding,
 })
 
 const rootReducer = (state, action) => {

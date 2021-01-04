@@ -39,6 +39,7 @@ class UserSchema extends Schema {
       table.boolean('notification_sounds_disabled').notNullable().defaultTo(false)
       table.boolean('chat_auto_self_destruct').notNullable().defaultTo(false)
       table.integer('level').unsigned().defaultTo(1)
+      table.integer('onboarding').unsigned().defaultTo(0)
       table.integer('experience_points').notNullable().defaultTo(0)
       table.integer('stashed_experience_points').nullable().defaultTo(0)
       table.boolean('xp_negative_balance').notNullable().defaultTo(false)

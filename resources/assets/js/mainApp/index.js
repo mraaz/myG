@@ -21,7 +21,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import ErrorHandler from './components/ErrorHandler'
 import { store, persistor } from '../redux/Store'
 import { loadUserInfoToReduxStore } from '../common/user'
-import { FeatureEnabled, FeatureDisabled, PROFILE_V2 } from '../common/flags'
+import { FeatureEnabled, PROFILE_V2 } from '../common/flags'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 import {
@@ -46,6 +46,7 @@ import {
   EditScheduleGames,
   MobileMenu,
   CommunityView,
+  Onboarding,
 } from './AsyncComponent'
 
 class Layout extends Component {
@@ -368,6 +369,7 @@ class Layout extends Component {
       <ErrorHandler>
         <Provider store={store}>
           <PersistGate persistor={persistor}>
+            <Onboarding />
             <ToastContainer
               autoClose={8000}
               draggablePercent={60}
