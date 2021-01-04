@@ -453,4 +453,8 @@ Route.get('/api/report/:counter', 'ReportController.show')
 Route.get('/api/reported/:counter', 'ReportedController.show')
 Route.delete('/api/user/delete/:id', 'ReportedController.destroy')
 
+// Onboarding
+Route.get('/api/onboarding/', 'OnboardingController.getOnboardingStep')
+Route.put('/api/onboarding/:step', 'OnboardingController.setOnboardingStep')
+
 Route.any('*', ({ view }) => view.render('pages/react'))

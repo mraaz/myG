@@ -89,7 +89,7 @@ export default class Header extends React.Component {
       <div
         className='button clickable'
         onClick={() => this.props.sendFriendRequest(this.props.profile.alias, this.props.profile.profileId)}>
-        Request Connection
+        Connect
       </div>
     )
   }

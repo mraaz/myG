@@ -26,7 +26,7 @@ export default class Notifications extends Component {
         notificationsCount: 0,
       },
       () => {
-        this.props.routeProps.routeProps.history.push(`/?at=notifications&submenu=${tab}`)
+        window.router.push(`/?at=notifications&submenu=${tab}`)
       }
     )
   }

@@ -18,7 +18,6 @@ export default class Experiences extends React.Component {
     notifyToast('Sorry mate! Required fields not filled in.')
   }
 
-
   onAddExperience = () => {
     const background = [...this.props.experience.background]
     background.push({ id: `temporary-${Date.now()}`, team: null, role: null, experience: null, skills: [] })
@@ -64,18 +63,24 @@ export default class Experiences extends React.Component {
   renderSave = () => {
     if (!this.props.isSelf) return null
     const { game, level, experience } = this.props.experience
-    const canSave = !!game && !!level && !!experience & !this.props.hasInvalidDynamicFields;
+    const canSave = !!game && !!level && !!experience & !this.props.hasInvalidDynamicFields
     const buttonState = canSave ? '' : 'disabled'
     return (
       <div className='save-container'>
+        {!!this.props.onboarding && (
+          <div className={`save-button clickable`} onClick={this.props.skipOnboarding}>
+            Skip
+          </div>
+        )}
         <div className={`save-button clickable ${buttonState}`} onClick={() => this.onSave(canSave)}>
-          Save
+          {this.props.onboarding ? 'Next 1/2' : 'Save'}
         </div>
       </div>
     )
   }
 
   renderClose = () => {
+    if (this.props.onboarding) return null
     return (
       <div
         className='close-button clickable'

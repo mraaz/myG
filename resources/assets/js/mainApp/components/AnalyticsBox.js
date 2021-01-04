@@ -10,7 +10,7 @@ class AnalyticsBox extends React.Component {
 
   async componentDidMount() {
     const hasStats = Object.keys(this.props.userTransactionStates).length;
-    if (!hasStats) this.props.fetchStats();
+    if (!hasStats) this.props.fetchStats(this.props.alias);
   }
 
   renderLevel = () => {
@@ -125,15 +125,17 @@ class AnalyticsBox extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    userTransactionStates: state.user.userTransactionStates || {},
-  }
+function mapStateToProps(state, props) {
+  const isStatsForCurrentUser = !props.alias || props.alias === state.user.alias;
+  const statsForCurrentUser = (state.user.userTransactionStates || {}) || {};
+  const statsForOtherUser = (state.user.statsForAlias || {})[props.alias] || {};
+  const userTransactionStates = isStatsForCurrentUser ? statsForCurrentUser : statsForOtherUser;
+  return { userTransactionStates };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    fetchStats: () => dispatch(fetchStatsAction()),
+    fetchStats: (alias) => dispatch(fetchStatsAction(alias)),
   }
 }
 

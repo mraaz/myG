@@ -53,9 +53,7 @@ export default class GameList extends Component {
     e.stopPropagation()
     console.log(this.props, '<<<RAAAZ')
     console.log(window.location.href, '<<<window.location.href')
-    //http://localhost:3333/?at=notifications&submenu=1
-    //window.location.href = `/notifications`
-    this.props.routeProps.routeProps.history.push('/?at=notifications&submenu=1')
+    window.router.push('/?at=notifications&submenu=1')
   }
 
   addDefaultSrc(ev) {

@@ -9,6 +9,7 @@ import { handleTime, delete_chatNotification_all, markread_chatNotification } fr
 
 import NoRecord from './NoRecord'
 
+const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
 const tabObj = {
   0: '',
   1: 'MESSAGE',

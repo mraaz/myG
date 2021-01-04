@@ -46,7 +46,7 @@ function getJobs(Queue, bullConfig) {
       payload: {},
       schedule: { repeat: { cron: '0 0 * * *' } },
       runOnSchedule: true,
-      runOnStart: true,
+      runOnStart: false,
       enabled: true,
     },
     {
@@ -57,7 +57,7 @@ function getJobs(Queue, bullConfig) {
       payload: {},
       schedule: { repeat: { cron: '* * * * *' } },
       runOnSchedule: true,
-      runOnStart: true,
+      runOnStart: false,
       enabled: true,
     },
     {
@@ -68,7 +68,18 @@ function getJobs(Queue, bullConfig) {
       payload: {},
       schedule: { repeat: { cron: '0 0 * * *' } },
       runOnSchedule: true,
-      runOnStart: true,
+      runOnStart: false,
+      enabled: true,
+    },
+    {
+      name: 'Game Sync To Elasticsearch',
+      queue: new Queue('game-syncToElasticsearch', bullConfig),
+      action: require('./tasks/game-syncToElasticsearch'),
+      options: {},
+      payload: {},
+      schedule: { repeat: { cron: '0 0 * * *' } },
+      runOnSchedule: true,
+      runOnStart: false,
       enabled: true,
     },
     {
@@ -79,7 +90,7 @@ function getJobs(Queue, bullConfig) {
       payload: {},
       schedule: { repeat: { cron: '0 0 * * *' } },
       runOnSchedule: true,
-      runOnStart: true,
+      runOnStart: false,
       enabled: true,
     },
     {
@@ -90,7 +101,7 @@ function getJobs(Queue, bullConfig) {
       payload: {},
       schedule: { repeat: { cron: '0 0 * * *' } },
       runOnSchedule: true,
-      runOnStart: true,
+      runOnStart: false,
       enabled: true,
     },
   ];
