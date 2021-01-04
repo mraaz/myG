@@ -237,11 +237,11 @@ const AddCommunity = ({
     }
     if (file.length > 0) {
       updateAdvancedSettings({ uploading: true })
-      let post = await Upload_to_S3(file[0], file[0].name, 0, null)
-      if (!post) {
-        updateAdvancedSettings({ uploading: false })
-        return
-      }
+      // let post = await Upload_to_S3(file[0], file[0].name, 0, null)
+      // if (!post) {
+      //   updateAdvancedSettings({ uploading: false })
+      //   return
+      // }
       let new_preview_files = []
       new_preview_files.push({
         src: post.data.Location,
@@ -298,48 +298,50 @@ const AddCommunity = ({
             <p>Featured Image</p>
           </div>
           <div className='media__container'>
-            <Dropzone
-              onDrop={(acceptedFiles, rejectedFiles) => handleAcceptedFiles(acceptedFiles, rejectedFiles)}
-              maxFiles={1}
-              minSize={0}
-              maxSizeBytes={11185350}
-              accept='image/jpeg,image/jpg,image/png,image/gif'
-              disabled={advancedSettingsState.uploading}
-              className='dropzone-thumb'>
-              {(props) => {
-                return (
-                  <section className='custom__html dropzone-section'>
-                    <div className='text'>Drop your image</div>
-                    <div className='images community-images-container'>
-                      <span className=' button photo-btn'>
-                        <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
-                      </span>
-                    </div>
-                    <div className='text'>
-                      Or <span>click here </span> to select
-                    </div>
-                    {advancedSettingsState.uploading && (
-                      <div className='text'>
-                        <span>Uploading... </span>
-                      </div>
-                    )}
-                    {advancedSettingsState.preview_files.length > 0 && (
-                      <div className='files__preview'>
-                        <span className='image' key={advancedSettingsState.preview_files[0].src}>
-                          <img src={advancedSettingsState.preview_files[0].src} key={advancedSettingsState.preview_files[0].src} />
-                          <span
-                            className='remove__image'
-                            onClick={(e) => handlePreviewRemove(e, advancedSettingsState.preview_files[0].src)}>
-                            X
-                          </span>
+            {advancedSettingsState.preview_files.length == 0 && (
+              <Dropzone
+                onDrop={(acceptedFiles, rejectedFiles) => handleAcceptedFiles(acceptedFiles, rejectedFiles)}
+                maxFiles={1}
+                minSize={0}
+                maxSizeBytes={11185350}
+                accept='image/jpeg,image/jpg,image/png,image/gif'
+                disabled={advancedSettingsState.uploading}
+                className='dropzone-thumb'>
+                {(props) => {
+                  return (
+                    <section className='custom__html dropzone-section'>
+                      <div className='text'>Drop your image</div>
+                      <div className='images community-images-container'>
+                        <span className=' button photo-btn'>
+                          <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
                         </span>
-                        {advancedSettingsState.preview_files.length > 3 ? `(${advancedSettingsState.preview_files.length})...` : ''}
                       </div>
-                    )}
-                  </section>
-                )
-              }}
-            </Dropzone>
+                      <div className='text'>
+                        Or <span>click here </span> to select
+                      </div>
+                      {advancedSettingsState.uploading && (
+                        <div className='text'>
+                          <span>Uploading... </span>
+                        </div>
+                      )}
+                    </section>
+                  )
+                }}
+              </Dropzone>
+            )}
+            <section>
+              {advancedSettingsState.preview_files.length > 0 && (
+                <div className='files__preview'>
+                  <span className='image' key={advancedSettingsState.preview_files[0].src}>
+                    <img src={advancedSettingsState.preview_files[0].src} key={advancedSettingsState.preview_files[0].src} />
+                    <span className='remove__image' onClick={(e) => handlePreviewRemove(e, advancedSettingsState.preview_files[0].src)}>
+                      X
+                    </span>
+                  </span>
+                  {advancedSettingsState.preview_files.length > 3 ? `(${advancedSettingsState.preview_files.length})...` : ''}
+                </div>
+              )}
+            </section>
           </div>
           <div className='field-title hash-tags'>
             <p>Community Tags</p>
