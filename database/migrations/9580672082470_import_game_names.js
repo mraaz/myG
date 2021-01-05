@@ -1086,6 +1086,11 @@ class Import_game_names_Schema extends Schema {
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Baldurs Gate 3', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("update game_names set game_img = \"https://steamcdn-a.akamaihd.net/steam/apps/1086940/header.jpg?t=1600938252\", game_artwork = \"https://steamcdn-a.akamaihd.net/steam/apps/1086940/header.jpg?t=1600938252\", game_name_fields_img = \"https://steamcdn-a.akamaihd.net/steam/apps/1086940/header.jpg?t=1600938252\" where game_name = \"Baldurs Gate 3\"")
 
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Among Us', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Cyberpunk 2077', 1, 1, '1988-08-08', '1988-08-08')")
+
+    .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Among%20Us-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Among%20Us-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Among%20Us-390x520.jpg\" where game_name = \"Among Us\"")
+    .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Cyberpunk%202077-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Cyberpunk%202077-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Cyberpunk%202077-390x520.jpg\" where game_name = \"Cyberpunk 2077\"")
 
 
     // .raw("update game_names set game_name_fields = 1 where game_name = \"Dota 2\"")
