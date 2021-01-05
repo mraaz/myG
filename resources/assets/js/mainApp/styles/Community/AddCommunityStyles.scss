@@ -405,20 +405,32 @@
   display: flex;
   justify-content: center;
   margin: 0;
+  height: 200px;
+  border: 2px dashed #666666;
   .image {
     position: relative;
+    width: 100%;
+    height: 100%;
   }
   img {
     background: #ff00ff 0% 0% no-repeat padding-box;
     margin-right: 10px;
-    width: 160px;
-    height: 120px;
+    width: 100%;
+    height: 100%;
   }
   .remove__image {
     position: absolute;
-    top: 2px;
-    right: 12px;
+    top: 5px;
+    right: 6px;
     cursor: pointer;
+    color: #fff;
+    background: #000;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
@@ -452,6 +464,7 @@
     border-color: rgb(102, 102, 102);
     border-style: dashed;
     border-radius: 5px;
+    cursor: pointer;
   }
 }
 
