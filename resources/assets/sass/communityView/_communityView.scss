@@ -52,10 +52,14 @@
       width: 100%;
       height: 100%;
       cursor: pointer;
+      border-radius: 8px;
+
       &.nothand {
         cursor: default;
+        border-radius: 8px;
       }
     }
+
     .community__option {
       position: absolute;
       bottom: 0;
