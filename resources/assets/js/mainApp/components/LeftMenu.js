@@ -240,7 +240,8 @@ class LeftMenu extends Component {
           <div
             onClick={() => {
               this.props.logout()
-              window.router.push('/logout');
+              //window.router.push('/logout');
+              window.location.href = '/logout'
             }}
             className='logout-text'>
             <img src={logoutButton.icon} className='img-fluid' />
