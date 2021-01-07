@@ -33,6 +33,11 @@ class Import_dummy_data_Schema extends Schema {
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Pokemon HeartGold/SoulSilver', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Magic: The Gathering', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Madden NFL 21', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('DayZ', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Gang Beasts', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Raft', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Golf It!', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('League of Legends: Wild Rift', 1, 1, '1988-08-08', '1988-08-08')")
 
 
 
@@ -67,7 +72,14 @@ class Import_dummy_data_Schema extends Schema {
     .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/FINAL%20FANTASY%20XIV%20Online-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/FINAL%20FANTASY%20XIV%20Online-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/FINAL%20FANTASY%20XIV%20Online-390x520.jpg\" where game_name = \"FINAL FANTASY XIV Online\"")
     .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Pok%C3%A9mon%20HeartGold/SoulSilver-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Pok%C3%A9mon%20HeartGold/SoulSilver-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Pok%C3%A9mon%20HeartGold/SoulSilver-390x520.jpg\" where game_name = \"Pokemon HeartGold/SoulSilver\"")
     .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Magic:%20The%20Gathering-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Magic:%20The%20Gathering-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Magic:%20The%20Gathering-390x520.jpg\" where game_name = \"Magic: The Gathering\"")
-    .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Magic:%20The%20Gathering-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Magic:%20The%20Gathering-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Magic:%20The%20Gathering-390x520.jpg\" where game_name = \"Madden NFL 21\"")
+    .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Madden%20NFL%2021-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Madden%20NFL%2021-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Madden%20NFL%2021-390x520.jpg\" where game_name = \"Madden NFL 21\"")
+    .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/DayZ-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/DayZ-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/DayZ-390x520.jpg\" where game_name = \"DayZ\"")
+    .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Phoenix%20Wright:%20Ace%20Attorney-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Phoenix%20Wright:%20Ace%20Attorney-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Phoenix%20Wright:%20Ace%20Attorney-390x520.jpg\" where game_name = \"Phoenix Wright: Ace Attorney\"")
+    .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Gang%20Beasts-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Gang%20Beasts-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Gang%20Beasts-390x520.jpg\" where game_name = \"Gang Beasts\"")
+    .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Raft-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Raft-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Raft-390x520.jpg\" where game_name = \"Raft\"")
+    .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Golf%20It%21-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Golf%20It%21-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Golf%20It%21-390x520.jpg\" where game_name = \"Golf It!\"")
+    .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/League%20of%20Legends:%20Wild%20Rift-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/League%20of%20Legends:%20Wild%20Rift-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/League%20of%20Legends:%20Wild%20Rift-390x520.jpg\" where game_name = \"League of Legends: Wild Rift\"")
+
 
   }
 
