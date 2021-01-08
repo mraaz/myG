@@ -68,10 +68,17 @@
 }
 
 .add-game {
+  &__container {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    height: 100%;
+  }
   &__main-container {
     margin: 0 40px;
     border: none;
     display: flex;
+    flex: 1;
   }
   &__field-title {
     color: #fff;
