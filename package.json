@@ -5,7 +5,7 @@
   "description": "myG - Gamer's platform",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node server.js >> myG.log",
     "start:1": "PORT=3331 node server.js",
     "start:2": "PORT=3332 node server.js",
     "start:3": "PORT=3333 node server.js",
