@@ -40,10 +40,7 @@ class Import_dummy_data_Schema extends Schema {
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('League of Legends: Wild Rift', 1, 1, '1988-08-08', '1988-08-08')")
 
 
-
-
-
-
+//---
     .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/StarCraft-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/StarCraft-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/StarCraft-390x520.jpg\" where game_name = \"StarCraft\"")
     .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/StarCraft%20II-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/StarCraft%20II-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/StarCraft%20II-390x520.jpg\" where game_name = \"StarCraft II\"")
     .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Escape%20From%20Tarkov-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Escape%20From%20Tarkov-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Escape%20From%20Tarkov-390x520.jpg\" where game_name = \"Escape From Tarkov\"")

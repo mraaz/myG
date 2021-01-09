@@ -412,7 +412,7 @@
   display: flex;
   justify-content: center;
   margin: 0;
-  height: 200px;
+  height: 320px;
   border: 2px dashed #666666;
   .image {
     position: relative;
@@ -420,10 +420,11 @@
     height: 100%;
   }
   img {
-    background: #ff00ff 0% 0% no-repeat padding-box;
+    background: 0% 0% no-repeat padding-box;
     margin-right: 10px;
     width: 100%;
     height: 100%;
+    object-fit: cover;
   }
   .remove__image {
     position: absolute;

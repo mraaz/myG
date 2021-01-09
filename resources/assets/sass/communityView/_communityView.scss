@@ -4,10 +4,9 @@
     overflow: scroll;
   }
   .coverImage__container {
-    height: 477px;
+    height: 100%;
     width: 100%;
     position: relative;
-    opacity: 1;
     margin-bottom: 1em;
     max-width: 1200px;
     margin-left: auto;
@@ -53,6 +52,8 @@
       height: 100%;
       cursor: pointer;
       border-radius: 8px;
+      max-height: 320px;
+      object-fit: cover;
 
       &.nothand {
         cursor: default;
