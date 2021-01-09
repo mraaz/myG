@@ -62,22 +62,28 @@
   text-align: center;
   border-top: 1px solid #384952;
   border-bottom: 1px solid #384952;
+  a:hover {
+    color: #e5c746;
+    text-decoration: none;
+  }
+  a {
+    color: #ffffff;
+  }
 }
 
-.user-info-main {
+.lm-user-info-main {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
 }
 
-.user-info-main img {
+.lm-user-info-main img {
   width: 40px;
   height: 40px;
   border-radius: 50px;
 }
 
-.username {
-  color: #fff;
+.lm-username {
   padding-left: 10px;
 }
 

@@ -130,9 +130,9 @@ class LeftMenu extends Component {
       <div className={classNames([isExpanded ? 'user-detail-box-expanded' : 'user-detail-box-collapsed'])}>
         {isExpanded && (
           <Link to={`/profile/${alias}`}>
-            <div className='user-info-main'>
+            <div className='lm-user-info-main'>
               <img onError={this.addDefaultSrc} src={profileImage} className='img-fluid' alt='user-picture' />
-              <div className='username'>@{alias}</div>
+              <div className='lm-username'>@{alias}</div>
             </div>
           </Link>
         )}
