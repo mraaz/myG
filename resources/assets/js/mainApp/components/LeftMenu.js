@@ -123,7 +123,7 @@ class LeftMenu extends Component {
 
   getUserSection = () => {
     const alias = this.props.initialData === 'loading' ? '' : this.props.initialData.userInfo.alias
-    const profileImage = this.props.initialData === 'loading' ? '' : this.props.initialData.userInfo.profile_img
+    const profileImage = this.props.initialData === 'loading' ? 'invalid_link' : this.props.initialData.userInfo.profile_img
     const { isExpanded, approvals = 0, chats = 0, alerts = 0 } = this.state
 
     return (
