@@ -1017,7 +1017,8 @@ section#content-container {
               color: #ffffff;
             }
             a:hover {
-              color: #0178ff;
+              color: #e5c746;
+              text-decoration: none;
             }
             .shared__group {
               font: Bold 12px/14px Montserrat;
@@ -1376,6 +1377,10 @@ section#content-container {
                   text-overflow: ellipsis;
                   overflow: hidden;
                 }
+                a:hover {
+                  color: #e5c746;
+                  text-decoration: none;
+                }
                 .comment-content {
                   color: #93a4a5;
                   font-size: 12px;
@@ -1388,6 +1393,7 @@ section#content-container {
                     img {
                       max-width: 100%;
                       max-height: 100%;
+                      border-radius: 18px;
                     }
                   }
                 }
