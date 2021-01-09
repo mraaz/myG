@@ -117,7 +117,7 @@ class LeftMenu extends Component {
     )
   }
 
-  addDefaultSrc(ev) {
+  addDefaultSrc = (ev) => {
     ev.target.src = 'https://myG.gg/default_user/new-user-profile-picture.png'
   }
 
