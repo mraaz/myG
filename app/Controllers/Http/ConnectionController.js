@@ -9,18 +9,6 @@ const LoggingRepository = require('../../Repositories/Logging')
 class ConnectionController {
   async master_controller({ auth }) {
     if (auth.user) {
-      //if we ran this in the last 24 hours, DONT run again!!!!
-
-      //RAAZ fix up this!!!
-
-      this.check_if_same_games_in_profile({ auth })
-      this.check_if_in_same_communities({ auth })
-      this.check_if_in_same_location({ auth })
-      this.myCommon_friends({ auth })
-      this.calc_communities_you_might_know({ auth })
-      this.have_we_played_together({ auth })
-
-      return
 
       const getRunTime = await Database.from('settings')
         .select('gamer_connection_last_runtime', 'id')
