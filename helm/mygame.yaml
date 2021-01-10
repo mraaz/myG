@@ -22,8 +22,8 @@ mygame:
   features_on: PROFILE_V2
   awsSesRegion: us-east-1
   facebookID: '522599251611585'
-  elasticSearch2: https://search-myg-w3ljhffsecbtpleuia2d4w2v3q.ap-southeast-2.es.amazonaws.com
-  elasticSearch: https://search-mygdev-rrk3x3fxnryjzqhfe3jeqrz6oe.us-east-1.es.amazonaws.com
+  elasticSearch2: http//:elasticsearch-master:9200
+  elasticSearch: http//:elasticsearch-master:9200
 
 
 image:
