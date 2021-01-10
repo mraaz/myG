@@ -95,10 +95,10 @@ class GuestLink extends React.Component {
     return (
       <div className='alias-container'>
         <p className='kicked-hint'>Sorry mate! This link has expired. :(</p>
-        <div className='join clickable' onClick={() => window.location.replace('/')}>
+        <div className='join clickable' onClick={() => window.router.replace('/')}>
           Login
         </div>
-        <div className='register clickable' onClick={() => window.location.replace('/')}>
+        <div className='register clickable' onClick={() => window.router.replace('/')}>
           Create a new Account
         </div>
       </div>
@@ -110,10 +110,10 @@ class GuestLink extends React.Component {
     return (
       <div className='alias-container'>
         <p className='kicked-hint'>Crikey! You have been kicked from this group :(</p>
-        <div className='join clickable' onClick={() => window.location.replace('/')}>
+        <div className='join clickable' onClick={() => window.router.replace('/')}>
           Login
         </div>
-        <div className='register clickable' onClick={() => window.location.replace('/')}>
+        <div className='register clickable' onClick={() => window.router.replace('/')}>
           Create a new Account
         </div>
       </div>
@@ -135,7 +135,7 @@ class GuestLink extends React.Component {
         <div className='join clickable' onClick={this.registerGuest}>
           JOIN CHAT
         </div>
-        <div className='register clickable' onClick={() => window.location.replace('/')}>
+        <div className='register clickable' onClick={() => window.router.replace('/')}>
           <div
             className='myg-icon'
             style={{
@@ -146,7 +146,7 @@ class GuestLink extends React.Component {
           />
           Login
         </div>
-        <div className='register clickable' onClick={() => window.location.replace('/')}>
+        <div className='register clickable' onClick={() => window.router.replace('/')}>
           Create a new Account
         </div>
       </div>

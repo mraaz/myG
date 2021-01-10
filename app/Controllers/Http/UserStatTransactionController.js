@@ -505,7 +505,6 @@ class UserStatTransactionController {
     const id = `chat:auth:${userId}`
     const type = `chat:userStats`
     const data = await this.master_controller({ auth: { user: { id: userId } } })
-    //console.log(data, '<<<<DATRA')
     await NatsChatRepository.publish({ channelId, id, type, data })
     await WebsocketChatRepository.broadcast(channelId, id, type, data)
   }

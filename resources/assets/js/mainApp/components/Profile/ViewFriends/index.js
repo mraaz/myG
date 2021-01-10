@@ -77,7 +77,7 @@ export default class ViewFriendsModal extends React.Component {
     const canAddFriend = !friend.isFriend && !friend.hasSentFriendRequest && !this.state.sentRequest.includes(friend.profileId);
     const hasSentFriendRequest = !friend.isFriend && (friend.hasSentFriendRequest || this.state.sentRequest.includes(friend.profileId));
     return (
-      <div key={friend.alias} className="friend clickable" onClick={() => window.location.replace(`/profile/${friend.alias}`)}>
+      <div key={friend.alias} className="friend clickable" onClick={() => window.router.replace(`/profile/${friend.alias}`)}>
         <div className="background"
           style={{
             backgroundImage: friend.background ? `url('${friend.background}')` : '',

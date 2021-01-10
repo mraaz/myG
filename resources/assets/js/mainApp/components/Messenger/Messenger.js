@@ -31,7 +31,7 @@ import {
   toggleAutoSelfDestructAction,
   togglePushNotificationsAction,
 } from '../../../redux/actions/userAction'
-import { generateKeysAction, validatePinAction } from '../../../redux/actions/encryptionAction'
+import { generateKeysAction, validatePinAction, togglePersistEncryptionAction } from '../../../redux/actions/encryptionAction'
 import { searchPaginatedAction } from '../../../redux/actions/paginationAction'
 import { uploadGameIcon } from '../../../integration/http/chat'
 import logger from '../../../common/logger'
@@ -122,6 +122,7 @@ class Messenger extends React.Component {
         notificationSoundsDisabled={this.props.notificationSoundsDisabled}
         pushNotificationsEnabled={this.props.pushNotificationsEnabled}
         autoSelfDestruct={this.props.autoSelfDestruct}
+        persistEncryption={this.props.persistEncryption}
         blockedUsers={this.props.blockedUsers}
         blockUser={this.props.blockUser}
         unblockUser={this.props.unblockUser}
@@ -130,6 +131,7 @@ class Messenger extends React.Component {
         clearChat={this.props.clearChat}
         toggleNotificationSounds={this.props.toggleNotificationSounds}
         toggleAutoSelfDestruct={this.props.toggleAutoSelfDestruct}
+        togglePersistEncryption={this.props.togglePersistEncryption}
         togglePushNotifications={this.props.togglePushNotifications}
         toggleSettings={() => this.setState((previous) => ({ blockSettings: !previous.blockSettings }))}
         onUploadPhoto={this.onUploadPhoto}
@@ -281,6 +283,7 @@ function mapStateToProps(state) {
   return {
     alert: state.alert.show,
     autoSelfDestruct: state.user.autoSelfDestruct,
+    persistEncryption: state.encryption.persist,
     notificationSoundsDisabled: state.user.notificationSoundsDisabled,
     pushNotificationsEnabled: state.user.pushNotificationsEnabled,
     status: state.user.status,
@@ -319,6 +322,7 @@ function mapDispatchToProps(dispatch) {
     searchPaginated: (page, search, refresh) => dispatch(searchPaginatedAction(page, search, refresh)),
     toggleNotificationSounds: (disabled) => dispatch(toggleNotificationSoundsAction(disabled)),
     toggleAutoSelfDestruct: (enabled) => dispatch(toggleAutoSelfDestructAction(enabled)),
+    togglePersistEncryption: (persist) => dispatch(togglePersistEncryptionAction(persist)),
     togglePushNotifications: (userId) => dispatch(togglePushNotificationsAction(userId)),
   }
 }

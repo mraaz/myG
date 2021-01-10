@@ -130,7 +130,6 @@ class LeftMenu extends Component {
         ? this.props.initialData.userInfo.profile_img
         : 'invalid_link'
     const { isExpanded, approvals = 0, chats = 0, alerts = 0 } = this.state
-    console.log(profileImage, '<<<<<<<<profileImage')
     return (
       <div className={classNames([isExpanded ? 'user-detail-box-expanded' : 'user-detail-box-collapsed'])}>
         {isExpanded && (
