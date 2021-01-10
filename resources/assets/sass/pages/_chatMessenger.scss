@@ -4,6 +4,18 @@
   min-width: 300px;
   background-color: #151b26;
   border-left: 2px solid #222b37;
+  z-index: 999;
+
+  .locked-chat {
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 14px;
+    padding: 64px;
+  }
 
   .text-muted {
     margin-bottom: 12px !important;

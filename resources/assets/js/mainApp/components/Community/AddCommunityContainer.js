@@ -1,4 +1,7 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
+import axios from 'axios'
+import get from 'lodash.get'
+import { connect } from 'react-redux'
 import { toast } from 'react-toastify'
 import classNames from 'classnames'
 
@@ -14,8 +17,9 @@ import { Link } from 'react-router-dom'
 const MAX_GAME_TAGS = 9
 const MAX_CO_HOSTS = 5
 
-const AddCommunityContainer = ({ routeProps }) => {
+const AddCommunityContainer = ({ level }) => {
   // State
+  const [communities, setCommunities] = useState([])
   const [isGameListedModalOpen, updateIsGameListedModalOpen] = useState(false)
   const [isInviteModalOpen, updateIsInviteModalOpen] = useState(false)
   const [isInvitesSentsModalOpen, updateIsInvitesSentsModalOpen] = useState(false)
@@ -40,6 +44,18 @@ const AddCommunityContainer = ({ routeProps }) => {
 
   const [gameLink, updateGameLink] = useState('')
   const gameLinkRef = useRef(null)
+
+  useEffect(() => {
+    const fetchCommunities = async function () {
+      try {
+        const response = await axios.get('/api/groups/get_my_communities/1')
+        return get(response, 'data.all_my_communities', [])
+      } catch (_error) {
+        return []
+      }
+    }
+    fetchCommunities().then((response) => setCommunities(response))
+  }, [])
 
   // Handlers
   const isButtonDisabled = () => {
@@ -181,6 +197,20 @@ const AddCommunityContainer = ({ routeProps }) => {
     )
   }
 
+  const locked = (reason) => (
+    <div className={styles.container}>
+      <PageHeader headerText='Create Community' />
+      <div className='locked-create-community'>
+        <p>Sorry mate!</p>
+        <p>{reason}</p>
+      </div>
+    </div>
+  )
+  if (level < 10) return locked('You need to reach level 10 to create a community.')
+  if (level < 15 && communities.length >= 1) return locked('You need to reach level 15 to create to create two communities.')
+  if (level < 20 && communities.length >= 2) return locked('You need to reach level 20 to create to create three communities.')
+  if (level < 25 && communities.length >= 3) return locked('You need to reach level 25 to create to create four communities.')
+
   return (
     <div className={styles.container}>
       <PageHeader headerText='Create Community' />
@@ -207,4 +237,10 @@ const AddCommunityContainer = ({ routeProps }) => {
   )
 }
 
-export default AddCommunityContainer
+function mapStateToProps(state) {
+  return {
+    level: state.user.userTransactionStates.user_level,
+  }
+}
+
+export default connect(mapStateToProps)(AddCommunityContainer)

@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react'
+import { connect } from 'react-redux'
 import { toast } from 'react-toastify'
 import moment from 'moment'
 import classNames from 'classnames'
@@ -15,7 +16,7 @@ import { Link } from 'react-router-dom'
 const MAX_GAME_TAGS = 9
 const MAX_CO_HOSTS = 5
 
-const AddGameContainer = () => {
+const AddGameContainer = ({ level }) => {
   // State
   const [isGameListedModalOpen, updateIsGameListedModalOpen] = useState(false)
   const [isInviteModalOpen, updateIsInviteModalOpen] = useState(false)
@@ -260,6 +261,18 @@ const AddGameContainer = () => {
     )
   }
 
+  if (level < 2) {
+    return (
+      <div className={styles.container}>
+        <PageHeader headerText='Create Match' />
+        <div className='locked-create-match'>
+          <p>Sorry mate!</p>
+          <p>You need to reach level 2 to create a match.</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className={styles.container}>
       <PageHeader headerText='Create Match' />
@@ -293,4 +306,10 @@ const AddGameContainer = () => {
   )
 }
 
-export default AddGameContainer
+function mapStateToProps(state) {
+  return {
+    level: state.user.userTransactionStates.user_level,
+  }
+}
+
+export default connect(mapStateToProps)(AddGameContainer)
