@@ -78,6 +78,13 @@ export default class MainInfo extends React.Component {
     })
   }
 
+  scrollToBottom = () => {
+    console.log('scroll to bottom', document.getElementById("profile-game-main-info"))
+    setTimeout(() => {
+      document.getElementById("profile-game-main-info").scrollTop = 9999;
+    }, 0);
+  }
+
   onSave = (canSave) => {
     if (canSave) return this.props.onUpdate()
     notifyToast('Sorry mate! Required fields not filled in.')
@@ -309,6 +316,7 @@ export default class MainInfo extends React.Component {
       <React.Fragment>
         <span className='hint'>{field.label}</span>
         <MyGSelect
+          onFocus={this.scrollToBottom}
           width={'75%'}
           innerWidth={'100%'}
           options={field.values.map((value) => ({ value, label: value }))}
@@ -332,6 +340,7 @@ export default class MainInfo extends React.Component {
       <React.Fragment>
         <span className='hint'>{field.label}</span>
         <MyGSelect
+          onFocus={this.scrollToBottom}
           width={'75%'}
           innerWidth={'100%'}
           options={(field.values || []).map((value) => ({ value, label: value }))}
