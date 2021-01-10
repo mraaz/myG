@@ -38,6 +38,11 @@ class Import_dummy_data_Schema extends Schema {
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Raft', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Golf It!', 1, 1, '1988-08-08', '1988-08-08')")
     .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('League of Legends: Wild Rift', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Heroes of the Storm', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Tom Clancys Rainbow Six Siege', 1, 1, '1988-08-08', '1988-08-08')")
+    .raw("insert into game_names (game_name, user_id, verified, created_at, updated_at) values ('Warhammer: Vermintide 2', 1, 1, '1988-08-08', '1988-08-08')")
+
+
 
 
 //---
@@ -76,6 +81,9 @@ class Import_dummy_data_Schema extends Schema {
     .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Raft-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Raft-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Raft-390x520.jpg\" where game_name = \"Raft\"")
     .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Golf%20It%21-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Golf%20It%21-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Golf%20It%21-390x520.jpg\" where game_name = \"Golf It!\"")
     .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/League%20of%20Legends:%20Wild%20Rift-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/League%20of%20Legends:%20Wild%20Rift-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/League%20of%20Legends:%20Wild%20Rift-390x520.jpg\" where game_name = \"League of Legends: Wild Rift\"")
+    .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Heroes%20of%20the%20Storm-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Heroes%20of%20the%20Storm-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Heroes%20of%20the%20Storm-390x520.jpg\" where game_name = \"Heroes of the Storm\"")
+    .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Tom%20Clancy%27s%20Rainbow%20Six%20Siege-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Tom%20Clancy%27s%20Rainbow%20Six%20Siege-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Tom%20Clancy%27s%20Rainbow%20Six%20Siege-390x520.jpg\" where game_name = \"Tom Clancys Rainbow Six Siege\"")
+    .raw("update game_names set game_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Warhammer:%20Vermintide%202-170x90.jpg\", game_artwork = \"https://static-cdn.jtvnw.net/ttv-boxart/Warhammer:%20Vermintide%202-90x120.jpg\", game_name_fields_img = \"https://static-cdn.jtvnw.net/ttv-boxart/Warhammer:%20Vermintide%202-390x520.jpg\" where game_name = \"Warhammer: Vermintide 2\"")
 
 
   }
