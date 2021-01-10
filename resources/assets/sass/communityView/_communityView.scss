@@ -53,7 +53,7 @@
       cursor: pointer;
       border-radius: 8px;
       max-height: 320px;
-      object-fit: cover;
+      object-fit: contain;
 
       &.nothand {
         cursor: default;
@@ -62,7 +62,6 @@
 
     .community__option {
       position: absolute;
-      bottom: 0;
       right: 0;
       left: 0;
       display: flex;
@@ -74,7 +73,6 @@
         font: normal normal bold 36px/14px Montserrat;
         letter-spacing: 0px;
         color: #ffffff;
-        opacity: 1;
         text-transform: uppercase;
       }
       .option {
@@ -84,7 +82,6 @@
           width: 121px;
           padding: 12px 12px;
           background: #e5c746 0% 0% no-repeat padding-box;
-          opacity: 1;
           text-align: center;
           font: normal normal bold 12px/14px Montserrat;
           letter-spacing: 0px;
@@ -129,8 +126,8 @@
     font: normal normal normal 14px/20px Montserrat;
     letter-spacing: 0px;
     color: #ffffff;
-    margin-bottom: 1em;
-    padding: 20px 50px;
+    padding-top: 80px;
+    padding-right: 50px;
     margin-left: 6em;
     margin-right: 6em;
   }
@@ -183,7 +180,6 @@
     .modal-wrap {
       border: 1px solid #273137;
       border-radius: 4px;
-      opacity: 1;
       z-index: 2;
       position: relative;
       background: #171a1c 0% 0% no-repeat padding-box;
@@ -377,7 +373,6 @@
         height: 90px;
         background: #1d2326 0% 0% no-repeat padding-box;
         border-radius: 0px 0px 10px 10px;
-        opacity: 1;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -386,7 +381,6 @@
           height: 39px;
           background: #e5c746 0% 0% no-repeat padding-box;
           border-radius: 8px;
-          opacity: 1;
           font-weight: bold;
           font-size: 16px;
           line-height: 14px;
