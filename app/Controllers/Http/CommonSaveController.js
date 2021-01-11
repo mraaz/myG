@@ -141,7 +141,7 @@ class CommonSaveController {
         session.forget('provider')
         session.forget('provider_id')
         await auth.loginViaId(user.id)
-        return response.redirect(`/setEncryptionParaphrase/${request.input('encryption')}`)
+        return response.redirect(`/setEncryptionParaphrase/${request.input('encryption')}?persist=${request.input('persist-password') === 'on'}`)
       }
     }
   }

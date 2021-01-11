@@ -86,13 +86,27 @@ class Groups extends React.Component {
     if (key) await uploadGroupIcon(chatId, key)
   }
 
+  renderCreateGroupButton = () => {
+    if (this.props.level < 3) {
+      return (
+        <div className='messenger-new-group-button'>
+          <div className='messenger-new-group-button-icon' style={{ backgroundImage: `url(${getAssetUrl('ic_chat_group_create')})` }} />
+          Unlock Create a Group at Level 3
+        </div>
+      )
+    }
+    return (
+      <div className='messenger-new-group-button clickable' onClick={() => this.setState({ showingGroupCreation: true })}>
+        <div className='messenger-new-group-button-icon' style={{ backgroundImage: `url(${getAssetUrl('ic_chat_group_create')})` }} />
+        Create Group
+      </div>
+    )
+  }
+
   renderGroupButton = () => {
     return (
       <div>
-        <div className='messenger-new-group-button clickable' onClick={() => this.setState({ showingGroupCreation: true })}>
-          <div className='messenger-new-group-button-icon' style={{ backgroundImage: `url(${getAssetUrl('ic_chat_group_create')})` }} />
-          Create Group
-        </div>
+        {this.renderCreateGroupButton()}
         {!this.props.loading && !this.props.groups.length && (
           <div className='messenger-empty-message-container'>
             <p className='messenger-empty-message'>You aren't part of any group{this.props.inGame ? ' for this game' : ''} yet :(</p>
@@ -168,6 +182,7 @@ export function mapStateToProps(state) {
     group.privateKey = chat.privateKey
   })
   return {
+    level: state.user.userTransactionStates.user_level,
     loading: state.pagination.groupsLoading,
     loadingMore: state.pagination.groupsLoadingMore,
     groups: groups.sort(compareLastMessages),

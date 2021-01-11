@@ -813,7 +813,7 @@ export default function reducer(state = initialState, action) {
     }
 
     case 'GENERATE_KEYS_FULFILLED': {
-      if (state.guestLink) setTimeout(() => window.location.replace(state.guestLink))
+      if (state.guestLink) setTimeout(() => window.router.replace(state.guestLink))
       return {
         ...state,
         guestLink: null,
@@ -823,7 +823,7 @@ export default function reducer(state = initialState, action) {
     }
 
     case 'VALIDATE_PIN_FULFILLED': {
-      if (state.guestLink) setTimeout(() => window.location.replace(state.guestLink))
+      if (state.guestLink) setTimeout(() => window.router.replace(state.guestLink))
       return {
         ...state,
         guestLink: null,

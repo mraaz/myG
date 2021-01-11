@@ -163,7 +163,6 @@ export default class EditGameExperience extends React.Component {
   }
 
   render() {
-    console.log(this.state)
     if (!this.state.loaded) return null;
     return (
       <div id='profile-edit-game-experience'>

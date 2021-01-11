@@ -31,7 +31,7 @@ import {
   toggleAutoSelfDestructAction,
   togglePushNotificationsAction,
 } from '../../../redux/actions/userAction'
-import { generateKeysAction, validatePinAction } from '../../../redux/actions/encryptionAction'
+import { generateKeysAction, validatePinAction, togglePersistEncryptionAction } from '../../../redux/actions/encryptionAction'
 import { searchPaginatedAction } from '../../../redux/actions/paginationAction'
 import { uploadGameIcon } from '../../../integration/http/chat'
 import logger from '../../../common/logger'
@@ -78,6 +78,18 @@ class Messenger extends React.Component {
     return <ConnectionWarning />
   }
 
+  renderLockedChat = () => {
+    return (
+      <section id='messenger'>
+        {this.renderSweetAlert()}
+        <div className='locked-chat'>
+          <p>Sorry mate!</p>
+          <p>You need to reach level 2 to use the chat.</p>
+        </div>
+      </section>
+    )
+  }
+
   renderBody = () => {
     if (!this.props.pin) return null
     if (this.state.showingSettings) return null
@@ -122,6 +134,7 @@ class Messenger extends React.Component {
         notificationSoundsDisabled={this.props.notificationSoundsDisabled}
         pushNotificationsEnabled={this.props.pushNotificationsEnabled}
         autoSelfDestruct={this.props.autoSelfDestruct}
+        persistEncryption={this.props.persistEncryption}
         blockedUsers={this.props.blockedUsers}
         blockUser={this.props.blockUser}
         unblockUser={this.props.unblockUser}
@@ -130,6 +143,7 @@ class Messenger extends React.Component {
         clearChat={this.props.clearChat}
         toggleNotificationSounds={this.props.toggleNotificationSounds}
         toggleAutoSelfDestruct={this.props.toggleAutoSelfDestruct}
+        togglePersistEncryption={this.props.togglePersistEncryption}
         togglePushNotifications={this.props.togglePushNotifications}
         toggleSettings={() => this.setState((previous) => ({ blockSettings: !previous.blockSettings }))}
         onUploadPhoto={this.onUploadPhoto}
@@ -250,6 +264,7 @@ class Messenger extends React.Component {
 
   render() {
     logger.log('RENDER', 'Messenger')
+    if (parseInt(this.props.level) < 2) return this.renderLockedChat()
     return (
       <section id='messenger'>
         <div className='messenger-content'>
@@ -279,8 +294,10 @@ function mapStateToProps(state) {
   })
   contacts.forEach((contact) => (contact.chat = contactsWithChats[contact.contactId] || {}))
   return {
+    level: state.user.userTransactionStates.user_level,
     alert: state.alert.show,
     autoSelfDestruct: state.user.autoSelfDestruct,
+    persistEncryption: state.encryption.persist,
     notificationSoundsDisabled: state.user.notificationSoundsDisabled,
     pushNotificationsEnabled: state.user.pushNotificationsEnabled,
     status: state.user.status,
@@ -319,6 +336,7 @@ function mapDispatchToProps(dispatch) {
     searchPaginated: (page, search, refresh) => dispatch(searchPaginatedAction(page, search, refresh)),
     toggleNotificationSounds: (disabled) => dispatch(toggleNotificationSoundsAction(disabled)),
     toggleAutoSelfDestruct: (enabled) => dispatch(toggleAutoSelfDestructAction(enabled)),
+    togglePersistEncryption: (persist) => dispatch(togglePersistEncryptionAction(persist)),
     togglePushNotifications: (userId) => dispatch(togglePushNotificationsAction(userId)),
   }
 }

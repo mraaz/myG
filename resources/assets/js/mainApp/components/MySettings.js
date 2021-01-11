@@ -194,7 +194,7 @@ class MySettings extends Component {
   render() {
     if (this.state.redirect_) {
       this.props.logout()
-      window.location.replace('/logout')
+      window.router.replace('/logout')
       return null
     }
     return (

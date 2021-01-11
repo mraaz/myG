@@ -37,6 +37,7 @@ class SearchRepository {
     query.query.bool.should.push({ match: { team: { query: orSearch, fuzziness: "auto" } } });
     query.query.bool.should.push({ match: { languages: { query: orSearch, fuzziness: "auto" } } });
     query.query.bool.should.push({ match: { mostPlayedGames: { query: orSearch, fuzziness: "auto" } } });
+    query.query.bool.should.push({ match: { 'gameExperiences.name': { query: orSearch, fuzziness: "auto" } } });
     if (parseInt(orSearch)) query.query.bool.should.push({ match: { level: parseInt(orSearch) } });
     return query;
   }

@@ -1,7 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react'
-import moment from 'moment'
+import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
 import axios from 'axios'
-import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 import GamePosts from './GamePosts'
@@ -83,6 +82,8 @@ const CommunityView = (props) => {
   }
 
   const renderSponsors = (Sponsors = []) => {
+    if (props.level < 15) return <p className='locked-sponsors'>Community Sponsors are unlocked at Lvl. 15</p>
+    if (props.level < 25) Sponsors = Sponsors.slice ? Sponsors.slice(0, 1) : []
     const { current_user_permission } = communityDetails
     return (
       <div className='Sponsors__container'>
@@ -110,7 +111,7 @@ const CommunityView = (props) => {
             )
           })}
         {Sponsors.length < 2 &&
-          [...new Array(2 - Sponsors.length)].map((Sponsor, index) => {
+          [...new Array((props.level < 25 ? 1 : 2) - Sponsors.length)].map((Sponsor, index) => {
             return (
               <div className='Sponsors' key={index}>
                 <a href={`/`} target='_blank'>
@@ -167,4 +168,10 @@ const CommunityView = (props) => {
   )
 }
 
-export default CommunityView
+function mapStateToProps(state) {
+  return {
+    level: state.user.userTransactionStates.user_level,
+  }
+}
+
+export default connect(mapStateToProps)(CommunityView)

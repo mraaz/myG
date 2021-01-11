@@ -16,9 +16,16 @@ export function validatePinAction(pin, publicKey) {
   }
 }
 
-export function setEncryptionPinAction(pin) {
+export function setEncryptionPinAction(pin, persist) {
   return {
     type: 'SET_ENCRYPTION_PIN',
-    payload: pin,
+    payload: { pin, persist },
+  }
+}
+
+export function togglePersistEncryptionAction(persist) {
+  return {
+    type: 'SET_PERSIST_ENCRYPTION',
+    payload: persist,
   }
 }

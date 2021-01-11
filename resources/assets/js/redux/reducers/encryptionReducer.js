@@ -2,28 +2,33 @@ import logger from '../../common/logger'
 import notifyToast from '../../common/toast'
 import { storePublicKey, sendEncryptionEmail } from '../../integration/http/user'
 
+const initialState = {
+  userId: null,
+  pin: null,
+  publicKey: null,
+  privateKey: null,
+  invalidPin: false,
+  persist: false,
+};
+
 export default function reducer(
-  state = {
-    userId: null,
-    pin: null,
-    publicKey: null,
-    privateKey: null,
-    invalidPin: false,
-  },
+  state = initialState,
   action
 ) {
   switch (action.type) {
     case 'LOAD_USER_INFO': {
-      logger.log('USER', `Redux -> Loading User Info (Encryption): `, action.payload)
+      logger.log('USER', `Redux -> Loading User Info (Encryption): `, state, action.payload)
+      const userId = action.payload.id;
+      if (state.userId && state.userId !== userId) return { ...initialState, userId }
       return {
         ...state,
-        userId: action.payload.id,
+        userId,
       }
     }
 
     case 'PREPARE_MESSENGER_FULFILLED': {
       if (!action.payload.encryption) return state
-      logger.log('USER', `Redux -> Messenger Ready (Encryption): `, action.payload)
+      logger.log('USER', `Redux -> Messenger Ready (Encryption): `, state, action.payload)
       const { pin, publicKey, privateKey } = action.payload.encryption
       storePublicKey(publicKey)
       sendEncryptionEmail(publicKey, pin)
@@ -78,9 +83,19 @@ export default function reducer(
     }
 
     case 'SET_ENCRYPTION_PIN': {
+      logger.log('USER', `Redux -> Set Encryption Pin `, action.payload, action.meta)
       return {
         ...state,
-        pin: action.payload,
+        pin: action.payload.pin,
+        persist: action.payload.persist,
+      }
+    }
+    
+    case 'SET_PERSIST_ENCRYPTION': {
+      logger.log('USER', `Redux -> Set Persist Encryption `, action.payload, action.meta)
+      return {
+        ...state,
+        persist: action.payload,
       }
     }
 

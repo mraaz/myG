@@ -13,7 +13,6 @@ import GamerSuggestions from '../GamerSuggestions';
 import MyPosts from '../../MyPosts'
 import PostsFromUser from '../../PostsFromUser'
 import EditGameExperience from '../GameExperiences/edit';
-import ViewFriends from '../ViewFriends';
 
 export class Profile extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -49,7 +48,9 @@ export class Profile extends React.Component {
     if (this.props.profile.error) return <Redirect push to={`/profile/${this.props.userAlias}`} />;
     if (!this.props.foundProfile || this.props.profile.loading) return null;
     const profileSponsors = this.props.profile.sponsors || [];
-    const sponsorsIndexes = this.props.profile.isSelf ? [{ id: 'empty-1' }, { id: 'empty-2' }] : null;
+    const sponsorsPositions = [{ id: 'empty-1' }];
+    sponsorsPositions.push({ id: this.props.level >= 5 ? 'empty-2' : 'empty-locked-2' });
+    const sponsorsIndexes = this.props.profile.isSelf ? sponsorsPositions : null;
     const sponsors = sponsorsIndexes ? sponsorsIndexes.map((sponsor, index) => profileSponsors[index] || sponsor) : profileSponsors;
     if (this.props.onboarding) {
       if (this.props.step === 1) {
@@ -103,6 +104,7 @@ function mapStateToProps(state, props) {
   const profile = get(state, `profile.profiles[${props.alias}]`, {});
   return {
     userId: state.user.userId,
+    level: state.user.userTransactionStates.user_level,
     profile,
     foundProfile: !!Object.keys(profile).length,
   }

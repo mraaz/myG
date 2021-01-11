@@ -230,7 +230,7 @@ export class Chat extends React.Component {
       <div className={`chat-component-header ${selfDestructStyle}`}>
         <div
           className={`chat-component-header-icon ${iconClickableStyle}`}
-          onClick={() => !this.props.isGroup && window.location.replace(`/profile/${this.props.title}`)}
+          onClick={() => !this.props.isGroup && window.router.replace(`/profile/${this.props.title}`)}
           style={{ backgroundImage: `url('${this.props.icon}')` }}
         />
 

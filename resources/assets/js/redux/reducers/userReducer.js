@@ -10,7 +10,7 @@ const initialState = {
   notificationSoundsDisabled: false,
   autoSelfDestruct: false,
   pushNotificationsEnabled: true,
-  userTransactionStates: {},
+  userTransactionStates: { user_level: 1 },
   statsForAlias: {},
 }
 

@@ -29,7 +29,13 @@ const appReducer = combineReducers({
 })
 
 const rootReducer = (state, action) => {
-  if (action.type === 'USER_LOGOUT') state = undefined
+  if (action.type === 'USER_LOGOUT') {
+    console.log('logout', state.encryption);
+    if (state.encryption.persist) {
+      state = { encryption: state.encryption }
+    }
+    else state = undefined
+  }
   return appReducer(state, action)
 }
 
