@@ -367,9 +367,11 @@ const AddCommunity = ({
               }}
               value={advancedSettingsState.tags}
               placeholder='Search, Select or create Community Tags'
-              options={advancedSettingsState.tags.length === MAX_GAME_TAGS ? [] : advancedSettingsState.optionTags}
+              options={
+                advancedSettingsState.tags && advancedSettingsState.tags.length === MAX_GAME_TAGS ? [] : advancedSettingsState.optionTags
+              }
               noOptionsMessage={() => {
-                return advancedSettingsState.optionTags.length === MAX_GAME_TAGS
+                return advancedSettingsState.optionTags && advancedSettingsState.optionTags.length === MAX_GAME_TAGS
                   ? 'You have reached the max options value'
                   : 'Yo! Either nothing to display or you need to type in something'
               }}

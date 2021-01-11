@@ -3,7 +3,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import { Toast_style, Disable_keys, Hash_Tags } from '../Utility_Function'
 
-import { MyGTextarea, MyGCreateableSelect } from '../common'
+import { MyGTextarea, MyGCreateableSelect, MyGAsyncSelect } from '../common'
 import CreatableSelect from 'react-select/creatable'
 
 const MAX_GAME_TAGS = 3
@@ -32,13 +32,19 @@ export default class Manage extends React.Component {
   componentDidMount() {
     const { routeProps = {}, community_Membership_Approval, community_type, community_grp_description, community_allGrpTags } = this.props
     const { match } = this.props.routeProps
-    console.log(community_allGrpTags, '<<<<<community_allGrpTags')
+
+    let tmpArr = []
+    for (let i = 0; i < community_allGrpTags.length; i++) {
+      tmpArr.push(createOption(community_allGrpTags[i], -1))
+    }
+
     this.setState({
       communityName: match.params.name,
       privacy: community_type,
       approval: community_Membership_Approval == 1 ? 'true' : 'false',
       description: community_grp_description,
-      tags: community_allGrpTags,
+      tags: tmpArr,
+      options_tags: tmpArr,
     })
   }
 
@@ -88,7 +94,7 @@ export default class Manage extends React.Component {
         logToElasticsearch('error', 'Community-View_Manage', 'getOptions_tags:' + ' ' + error)
       }
     }
-    getInitialData(inputValue)
+    if (inputValue.trim() != '') getInitialData(inputValue)
   }
 
   handleCommunityNameChange = (e) => {
@@ -297,23 +303,6 @@ export default class Manage extends React.Component {
           </div>
         </div>
         <div className='group__privacy row'>
-          <div className='label col-sm-4'>Community Description</div>
-          <div className='options col-sm-8'>
-            <div>
-              <div className='description-text-area'>
-                <MyGTextarea
-                  onChange={(e) => {
-                    this.updateAdvancedSettings(e)
-                  }}
-                  value={this.state.description}
-                  placeholder='Description for your community'
-                  maxLength={250}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className='group__privacy row'>
           <div className='label col-sm-4'>Community Tags</div>
           <div className='options col-sm-8'>
             <div>
@@ -327,13 +316,62 @@ export default class Manage extends React.Component {
                   getNewOptionData={this.getNewOptionData}
                   value={this.state.tags}
                   placeholder='Search, Select or create Community Tags'
-                  options={this.state.tags.length === MAX_GAME_TAGS ? [] : this.state.options_tags}
+                  options={this.state.tags && this.state.tags.length === MAX_GAME_TAGS ? [] : this.state.options_tags}
                   noOptionsMessage={() => {
-                    return this.state.options_tags.length === MAX_GAME_TAGS
+                    return this.state.options_tags && this.state.options_tags.length === MAX_GAME_TAGS
                       ? 'You have reached the max options value'
                       : 'Yo! Either nothing to display or you need to type in something'
                   }}
                   onKeyDown={Disable_keys}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='group__privacy row'>
+          <div className='label col-sm-4'>Moderators</div>
+          <div className='options col-sm-8'>
+            <div>
+              <div className='game-title-select'>
+                <MyGAsyncSelect
+                  isClearable
+                  isMulti
+                  isValidNewOption={() => {
+                    return
+                  }}
+                  loadOptions={
+                    advancedSettingsState.coHosts && advancedSettingsState.coHosts.length === MAX_CO_HOSTS
+                      ? onPlayersSuggestionFetch2
+                      : onPlayersSuggestionFetch
+                  }
+                  onChange={(value) => {
+                    updateAdvancedSettings({ coHosts: value })
+                  }}
+                  value={advancedSettingsState.coHosts}
+                  noOptionsMessage={() => {
+                    return advancedSettingsState.coHosts && advancedSettingsState.coHosts.length === MAX_CO_HOSTS
+                      ? 'Bam! Max number of moderators reached'
+                      : 'Yo! Either nothing to display or you need to type in something'
+                  }}
+                  placeholder='Enter your friend’s name to set them as a moderators'
+                  className='test'
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='group__privacy row'>
+          <div className='label col-sm-4'>Community Description</div>
+          <div className='options col-sm-8'>
+            <div>
+              <div className='description-text-area'>
+                <MyGTextarea
+                  onChange={(e) => {
+                    this.updateAdvancedSettings(e)
+                  }}
+                  value={this.state.description}
+                  placeholder='Description for your community'
+                  maxLength={250}
                 />
               </div>
             </div>

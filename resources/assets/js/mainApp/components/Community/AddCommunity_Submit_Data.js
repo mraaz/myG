@@ -17,7 +17,7 @@ export async function SubmitDataFunction(myG) {
   if (myG.tags != undefined && myG.tags.length != 0 && myG.tags != null) {
     for (var i = 0; i < MAX_GAME_TAGS && i < myG.tags.length; i++) {
       if (/['/.%#$,;`\\]/.test(myG.tags[i].value)) {
-        toast.success(<Toast_style text={'Sorry mate! Game tags can not have invalid fields'} />)
+        toast.success(<Toast_style text={'Sorry mate! Community tags can not have invalid fields'} />)
         return
       }
 
