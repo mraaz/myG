@@ -1,7 +1,18 @@
 import React from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { Toast_style } from '../Utility_Function'
+import { Toast_style, Disable_keys, Hash_Tags } from '../Utility_Function'
+
+import { MyGTextarea, MyGCreateableSelect } from '../common'
+import CreatableSelect from 'react-select/creatable'
+
+const MAX_GAME_TAGS = 3
+
+const createOption = (label, hash_tag_id) => ({
+  label,
+  value: label,
+  hash_tag_id,
+})
 
 export default class Manage extends React.Component {
   constructor() {
@@ -12,26 +23,83 @@ export default class Manage extends React.Component {
       saveButtonDisabled: true,
       privacy: 1,
       approval: 'true',
+      description: '',
+      tags: '',
+      options_tags: '',
     }
   }
 
   componentDidMount() {
-    const { routeProps = {}, community_Membership_Approval, community_type } = this.props
+    const { routeProps = {}, community_Membership_Approval, community_type, community_grp_description, community_allGrpTags } = this.props
     const { match } = this.props.routeProps
+    console.log(community_allGrpTags, '<<<<<community_allGrpTags')
     this.setState({
       communityName: match.params.name,
       privacy: community_type,
       approval: community_Membership_Approval == 1 ? 'true' : 'false',
+      description: community_grp_description,
+      tags: community_allGrpTags,
     })
   }
+
+  //https://github.com/JedWatson/react-select/issues/3988 :RAAZ remove once fixed
+  getNewOptionData = (inputValue, optionLabel) => ({
+    value: inputValue,
+    label: optionLabel,
+    __isNew__: true,
+    isEqual: () => false,
+  })
+
+  handleCreateHashTags = (inputValue) => {
+    if (inputValue.length > 88) {
+      toast.success(<Toast_style text={'Sorry mate! Tag length is tooo long.'} />)
+      return
+    }
+    const { options_tags, tags } = this.state
+    const newOption = createOption(inputValue, null)
+    this.setState({ options_tags: [...options_tags, newOption] })
+    this.setState({ tags: [...tags, newOption] })
+
+    this.props.onSettingsChange({ tags: [...tags, newOption] })
+  }
+
+  updateAdvancedSettings = (e) => {
+    const description = e.target.value
+
+    this.setState({ description }, () => {
+      this.props.onSettingsChange({ description })
+    })
+  }
+
+  updateAdvancedSettings2 = (tags) => {
+    this.setState({ tags }, () => {
+      this.props.onSettingsChange({ tags })
+    })
+  }
+
+  getOptions_tags = (inputValue) => {
+    const self = this
+
+    const getInitialData = async function(inputValue) {
+      try {
+        var results = await Hash_Tags(inputValue)
+        self.setState({ options_tags: results })
+      } catch (error) {
+        logToElasticsearch('error', 'Community-View_Manage', 'getOptions_tags:' + ' ' + error)
+      }
+    }
+    getInitialData(inputValue)
+  }
+
   handleCommunityNameChange = (e) => {
     const communityName = e.target.value
     this.setState({ communityName }, () => {
       this.props.onSettingsChange({ communityName })
     })
   }
+
   handleCommunityNameSave = async () => {
-    const { communityName } = this.state
+    const { communityName, description } = this.state
     if (communityName.trim() == this.props.routeProps.match.params.name.trim()) {
       return
     }
@@ -67,16 +135,19 @@ export default class Manage extends React.Component {
       this.setState({ isunique: false })
     }
   }
+
   handlePrivacyChange = (e, privacy) => {
     this.setState({ privacy }, () => {
       this.props.onSettingsChange({ privacy })
     })
   }
+
   handlePermissionsChange = (e, permissions) => {
     this.setState({ permissions }, () => {
       this.props.onSettingsChange({ permissions })
     })
   }
+
   handleApprovalChange = (e, approval) => {
     this.setState({ approval }, () => {
       this.props.onSettingsChange({ approval })
@@ -182,7 +253,7 @@ export default class Manage extends React.Component {
           </div>
         </div> */}
         <div className='group__privacy row'>
-          <div className='label col-sm-4'>Membership Approval</div>
+          <div className='label col-sm-4'>Membership approvals done by...</div>
           <div className='options col-sm-8'>
             <div>
               <label className='container'>
@@ -222,6 +293,49 @@ export default class Manage extends React.Component {
                 />
                 <span className='checkmark'></span>
               </label>
+            </div>
+          </div>
+        </div>
+        <div className='group__privacy row'>
+          <div className='label col-sm-4'>Community Description</div>
+          <div className='options col-sm-8'>
+            <div>
+              <div className='description-text-area'>
+                <MyGTextarea
+                  onChange={(e) => {
+                    this.updateAdvancedSettings(e)
+                  }}
+                  value={this.state.description}
+                  placeholder='Description for your community'
+                  maxLength={250}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='group__privacy row'>
+          <div className='label col-sm-4'>Community Tags</div>
+          <div className='options col-sm-8'>
+            <div>
+              <div className='game-title-select'>
+                <MyGCreateableSelect
+                  isClearable
+                  isMulti
+                  onCreateOption={this.handleCreateHashTags}
+                  onInputChange={this.getOptions_tags}
+                  onChange={this.updateAdvancedSettings2}
+                  getNewOptionData={this.getNewOptionData}
+                  value={this.state.tags}
+                  placeholder='Search, Select or create Community Tags'
+                  options={this.state.tags.length === MAX_GAME_TAGS ? [] : this.state.options_tags}
+                  noOptionsMessage={() => {
+                    return this.state.options_tags.length === MAX_GAME_TAGS
+                      ? 'You have reached the max options value'
+                      : 'Yo! Either nothing to display or you need to type in something'
+                  }}
+                  onKeyDown={Disable_keys}
+                />
+              </div>
             </div>
           </div>
         </div>

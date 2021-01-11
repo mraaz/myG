@@ -29,7 +29,7 @@ const AddCommunity = ({
 }) => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    const getInitialData_Tags = async function () {
+    const getInitialData_Tags = async function() {
       try {
         let results = await Group_Hash_Tags()
         updateAdvancedSettings({ optionTags: results })
@@ -38,7 +38,7 @@ const AddCommunity = ({
       }
     }
 
-    const getInitialData_GameName = async function () {
+    const getInitialData_GameName = async function() {
       try {
         let results = await Game_name_values()
         updateMainSettings({ gameTitlesList: results })
@@ -140,9 +140,17 @@ const AddCommunity = ({
     updateMainSettings({ gameTitlesList: [...gameTitlesList, newOption], gameTitle: newOption })
   }
 
+  //https://github.com/JedWatson/react-select/issues/3988 :RAAZ remove once fixed
+  const getNewOptionData = (inputValue, optionLabel) => ({
+    value: inputValue,
+    label: optionLabel,
+    __isNew__: true,
+    isEqual: () => false,
+  })
+
   // api calls
   const getOptionsTags = (inputValue) => {
-    const getInitialData = async function (inputValue) {
+    const getInitialData = async function(inputValue) {
       try {
         let results = await Group_Hash_Tags(inputValue)
         updateAdvancedSettings({ optionTags: results })
@@ -159,7 +167,7 @@ const AddCommunity = ({
   }
 
   const getOptionsGames = (inputValue) => {
-    const getInitialData = async function (inputValue) {
+    const getInitialData = async function(inputValue) {
       try {
         let results = await Game_name_values(inputValue)
         updateMainSettings({ gameTitlesList: results })
@@ -284,6 +292,7 @@ const AddCommunity = ({
             <MyGCreateableSelect
               isClearable
               onCreateOption={handleCreateGame}
+              getNewOptionData={getNewOptionData}
               onInputChange={getOptionsGames}
               onChange={(value) => {
                 updateMainSettings({ gameTitle: value })
@@ -351,6 +360,7 @@ const AddCommunity = ({
               isClearable
               isMulti
               onCreateOption={handleCreateTags}
+              getNewOptionData={getNewOptionData}
               onInputChange={getOptionsTags}
               onChange={(value) => {
                 updateAdvancedSettings({ tags: value })

@@ -312,11 +312,19 @@ export default class ComposeSection extends Component {
       toast.success(<Toast_style text={'Sorry mate! Tag length is tooo long.'} />)
       return
     }
-    const { options_tags, value_tags, newValueCreated_tags } = this.state
+    const { options_tags, value_tags } = this.state
     const newOption = createOption(inputValue, null)
     this.setState({ options_tags: [...options_tags, newOption] })
     this.setState({ value_tags: [...value_tags, newOption] })
   }
+
+  //https://github.com/JedWatson/react-select/issues/3988 :RAAZ remove once fixed
+  getNewOptionData = (inputValue, optionLabel) => ({
+    value: inputValue,
+    label: optionLabel,
+    __isNew__: true,
+    isEqual: () => false,
+  })
 
   getOptions_tags = (inputValue) => {
     const self = this
@@ -495,6 +503,7 @@ export default class ComposeSection extends Component {
                   isMulti
                   onKeyDown={Disable_keys}
                   onCreateOption={this.handleCreateHashTags}
+                  getNewOptionData={this.getNewOptionData}
                   options={this.state.options_tags}
                   value={this.state.value_tags}
                   onChange={this.handleChange_Hash_tags}

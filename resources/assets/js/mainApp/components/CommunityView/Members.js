@@ -76,7 +76,9 @@ export default class Members extends React.Component {
   }
 
   handleSave = async (e) => {
-    const { communityName, approval, privacy } = this.state
+    const { communityName, approval, privacy, description, tags } = this.state
+    console.log(tags, '<<<<<<<TAGGS')
+    return
     const sendInvite = await axios.post('/api/groups/update_settings', {
       group_id: this.props.group_id,
       group_name: communityName,
@@ -321,7 +323,7 @@ export default class Members extends React.Component {
             <div className='tabs___header'>
               {[0, 1, 2].includes(current_user_permission) && (
                 <span className={`setting__tab ${isActive == 'setting' ? 'active' : ''}`} onClick={(e) => this.handleSettingTab('setting')}>
-                  Setting
+                  Settings
                 </span>
               )}
               <span className={`setting__tab ${isActive == 'members' ? 'active' : ''}`} onClick={(e) => this.handleSettingTab('members')}>
