@@ -70,7 +70,7 @@ export default class Results extends React.Component {
             <span className="value">{gamer.experience}</span>
           </div>
         </div>
-        <Experiences alias={gamer.alias} gameExperiences={(gamer.gameExperiences || []).filter((experience) => gamer.mostPlayedGames.includes(experience.name))} />
+        <Experiences alias={gamer.alias} gameExperiences={gamer.gameExperiences || []} />
       </div>
     );
   }

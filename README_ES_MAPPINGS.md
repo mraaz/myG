@@ -74,6 +74,11 @@ PUT users
         "type": "text",
         "analyzer": "autocomplete",
         "search_analyzer": "standard"
+      },
+      "gameExperiences.name": {
+        "type": "text",
+        "analyzer": "autocomplete",
+        "search_analyzer": "standard"
       }
     }
   }
