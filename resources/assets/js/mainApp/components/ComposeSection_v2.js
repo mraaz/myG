@@ -230,7 +230,7 @@ export default class ComposeSection extends Component {
       }
     }
 
-    const getGamers_you_might_know = async function() {
+    const getGamers_you_might_know = async function () {
       try {
         const gamers_you_might_know = await axios.get('/api/user/gamers_you_might_know')
 
@@ -250,7 +250,7 @@ export default class ComposeSection extends Component {
       open_compose_textTab = false
     }
     if (label == 'text') {
-      setTimeout(function() {
+      setTimeout(function () {
         document.getElementById('composeTextarea').focus()
       }, 0)
     }
@@ -329,7 +329,7 @@ export default class ComposeSection extends Component {
   getOptions_tags = (inputValue) => {
     const self = this
 
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         var results = await Hash_Tags(inputValue)
         self.setState({ options_tags: results })
@@ -497,7 +497,7 @@ export default class ComposeSection extends Component {
           {open_compose_textTab && !communityBox && (
             <div className='hashTag_section'>
               <div className='hashtag_label'>Add Hashtags</div>
-              <div className='hashtag_input'>
+              <div className='hashtag_input game-title-select'>
                 <MyGCreateableSelect
                   isClearable
                   isMulti
@@ -508,6 +508,7 @@ export default class ComposeSection extends Component {
                   value={this.state.value_tags}
                   onChange={this.handleChange_Hash_tags}
                   onInputChange={this.getOptions_tags}
+                  classNamePrefix='filter'
                   className='hash_tag_name_box'
                   placeholder='Search, Select or create Hash Tags'
                 />

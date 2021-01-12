@@ -750,6 +750,7 @@ const AddGame = ({
                     ? 'You have reached the max options value'
                     : 'Yo! Either nothing to display or you need to type in something'
                 }}
+                classNamePrefix='filter'
               />
             </div>
           </div>
