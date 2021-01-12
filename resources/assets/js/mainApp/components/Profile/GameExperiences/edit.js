@@ -92,6 +92,7 @@ export default class EditGameExperience extends React.Component {
   }
 
   onClose = () => {
+    if (this.props.onboarding) return;
     const originalValues =  this.getUpdates(this.prepareExperience())
     const updates = this.getUpdates(this.state)
     const hasPendingChanges = JSON.stringify(originalValues) !== JSON.stringify(updates);
@@ -101,6 +102,7 @@ export default class EditGameExperience extends React.Component {
 
   onUpdate = () => {
     this.props.updateGame(this.props.alias, this.getUpdates(this.state))
+    if (this.props.onboarding) return this.props.setOnboardingStep(2);
     this.props.onClose()
   }
 
@@ -132,6 +134,8 @@ export default class EditGameExperience extends React.Component {
     if (this.state.selectedTab === 'main') {
       return (
         <MainInfo
+          onboarding={this.props.onboarding} 
+          skipOnboarding={this.props.skipOnboarding} 
           profile={this.props.profile}
           isSelf={this.props.isSelf}
           onClose={this.onClose}
@@ -145,6 +149,8 @@ export default class EditGameExperience extends React.Component {
     }
     return (
       <Experiences
+        onboarding={this.props.onboarding} 
+        skipOnboarding={this.props.skipOnboarding} 
         profile={this.props.profile}
         isSelf={this.props.isSelf}
         onClose={this.onClose}
@@ -157,7 +163,6 @@ export default class EditGameExperience extends React.Component {
   }
 
   render() {
-    console.log(this.state)
     if (!this.state.loaded) return null;
     return (
       <div id='profile-edit-game-experience'>

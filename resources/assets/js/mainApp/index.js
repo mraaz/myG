@@ -11,16 +11,17 @@ window.console = console
 import '@babel/polyfill'
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { Router, Route, Switch } from 'react-router-dom'
+import { createBrowserHistory } from 'history'
 import axios from 'axios'
-import { ToastContainer, toast } from 'react-toastify'
+import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import ErrorHandler from './components/ErrorHandler'
 import { store, persistor } from '../redux/Store'
 import { loadUserInfoToReduxStore } from '../common/user'
-import { FeatureEnabled, FeatureDisabled, PROFILE_V2 } from '../common/flags'
+import { FeatureEnabled, PROFILE_V2 } from '../common/flags'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 import {
@@ -38,13 +39,13 @@ import {
   MySettings,
   SinglePost,
   IndividualEsportsExperience,
-  AdvancedSearch,
   ScheduledGamesApprovals,
   ScheduleGamesView,
   CreateCommunity,
   EditScheduleGames,
   MobileMenu,
   CommunityView,
+  Onboarding,
 } from './AsyncComponent'
 
 class Layout extends Component {
@@ -55,8 +56,8 @@ class Layout extends Component {
     }
   }
   componentDidMount() {
-    const self = this
-    const getInitialData = async function() {
+    if (!window.router) window.router = createBrowserHistory();
+    const getInitialData = async () => {
       try {
         const initialData = await axios.get('/api/initialApp')
         window.PORT = initialData.data.port
@@ -70,20 +71,20 @@ class Layout extends Component {
         }
 
         if (initialData.data.userInfo == 1981 && !window.location.href.includes('/link')) {
-          window.location.href = '/'
+          window.router.push('/');
         }
 
-        self.setState({ initialData: initialData.data })
+        this.setState({ initialData: initialData.data })
         loadUserInfoToReduxStore(initialData.data.userInfo)
-        if (window.location.pathname === '/profile') window.location.replace(`/profile/${initialData.data.userInfo.alias}`)
+        const needsToRedirectToProfile = ['/profile', '/profile/'].includes(window.location.pathname);
+        if (needsToRedirectToProfile) window.router.push(`/profile/${initialData.data.userInfo.alias}`);
       } catch (error) {
         console.log(error)
       }
     }
-    getInitialData()
-
-    window.addEventListener('focus', this.onFocus)
-    this.registerServiceWorker()
+    getInitialData();
+    window.addEventListener('focus', this.onFocus);
+    this.registerServiceWorker();
   }
 
   componentWilUnmount() {
@@ -104,8 +105,9 @@ class Layout extends Component {
   }
 
   renderRouter = () => {
+    if (!window.router) window.router = createBrowserHistory();
     return (
-      <Router>
+      <Router history={window.router}>
         <div className='app-container home-page'>
           <div className='dashboard-main-container'>
             <LeftMenu initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData} />
@@ -277,30 +279,6 @@ class Layout extends Component {
 
                 <Route
                   exact
-                  path='/advancedSearch'
-                  component={(props) => (
-                    <AdvancedSearch
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/advancedSearch/:id/:table'
-                  component={(props) => (
-                    <AdvancedSearch
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
                   path='/setEncryptionParaphrase/:encryption'
                   component={(props) => <EncryptionParaphraseRegistration routeProps={props} key={Math.random()} />}
                 />
@@ -366,6 +344,7 @@ class Layout extends Component {
       <ErrorHandler>
         <Provider store={store}>
           <PersistGate persistor={persistor}>
+            <Onboarding />
             <ToastContainer
               autoClose={8000}
               draggablePercent={60}

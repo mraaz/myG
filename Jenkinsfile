@@ -16,6 +16,7 @@ pipeline {
         SECRET_KEY = credentials('secret_key')
         SITE_KEY = credentials('site_key')
         TAG = sh(script: "echo `date +'%d.%m.%Y..%H.%M.%S'`", returnStdout: true).trim()
+        DISTRIBUTION = credentials('cloud_front_distribution_id_myG')
     }
     tools {
         nodejs "default"
@@ -45,6 +46,7 @@ pipeline {
                 }
                 withAWS(credentials: "myg-aws-credentials") {
                     s3Upload(file:'public', bucket:'myg-frontend', path:'')
+                    cfInvalidate(distribution:"${DISTRIBUTION}", paths:['/*'])
                 }
             }
         }

@@ -24,12 +24,15 @@ class UserStatTransactionController {
     let start_of_level_xp = 0
 
     if (auth.user) {
+      const alias = request && request.only('alias').alias;
+      const userId = !alias ? auth.user.id : (await this.fetchUserId({ alias }))
+
       const getmyStats = await Database.from('user_stat_transactions')
         .innerJoin('user_stats', 'user_stats.id', 'user_stat_transactions.user_stat_id')
-        .where({ user_id: auth.user.id })
+        .where({ user_id: userId })
 
       const getGamerLevels = await Database.from('users')
-        .where({ id: auth.user.id })
+        .where({ id: userId })
         .select('level', 'experience_points', 'xp_negative_balance')
         .first()
 
@@ -144,6 +147,12 @@ class UserStatTransactionController {
     } else {
       return 'You are not Logged In!'
     }
+  }
+
+  async fetchUserId({ alias }) {
+    const response = await User.query().where('alias', alias).fetch();
+    const profile = response && response.toJSON()[0];
+    return profile && profile.id;
   }
 
   async update_total_number_of(my_user_id, criteria) {
@@ -496,7 +505,6 @@ class UserStatTransactionController {
     const id = `chat:auth:${userId}`
     const type = `chat:userStats`
     const data = await this.master_controller({ auth: { user: { id: userId } } })
-    //console.log(data, '<<<<DATRA')
     await NatsChatRepository.publish({ channelId, id, type, data })
     await WebsocketChatRepository.broadcast(channelId, id, type, data)
   }

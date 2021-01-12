@@ -16,8 +16,8 @@ import { Game_name_values, Group_Hash_Tags, Disable_keys } from '../Utility_Func
 import { Upload_to_S3, Remove_file } from '../AWS_utilities'
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
 
-const MAX_GAME_TAGS = 3
-const MAX_CO_HOSTS = 8
+const MAX_GAME_TAGS = 4
+const MAX_INVITEES = 8
 
 const AddCommunity = ({
   updateComponentState,
@@ -29,7 +29,7 @@ const AddCommunity = ({
 }) => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    const getInitialData_Tags = async function () {
+    const getInitialData_Tags = async function() {
       try {
         let results = await Group_Hash_Tags()
         updateAdvancedSettings({ optionTags: results })
@@ -38,7 +38,7 @@ const AddCommunity = ({
       }
     }
 
-    const getInitialData_GameName = async function () {
+    const getInitialData_GameName = async function() {
       try {
         let results = await Game_name_values()
         updateMainSettings({ gameTitlesList: results })
@@ -140,9 +140,17 @@ const AddCommunity = ({
     updateMainSettings({ gameTitlesList: [...gameTitlesList, newOption], gameTitle: newOption })
   }
 
+  //https://github.com/JedWatson/react-select/issues/3988 :RAAZ remove once fixed
+  const getNewOptionData = (inputValue, optionLabel) => ({
+    value: inputValue,
+    label: optionLabel,
+    __isNew__: true,
+    isEqual: () => false,
+  })
+
   // api calls
   const getOptionsTags = (inputValue) => {
-    const getInitialData = async function (inputValue) {
+    const getInitialData = async function(inputValue) {
       try {
         let results = await Group_Hash_Tags(inputValue)
         updateAdvancedSettings({ optionTags: results })
@@ -159,7 +167,7 @@ const AddCommunity = ({
   }
 
   const getOptionsGames = (inputValue) => {
-    const getInitialData = async function (inputValue) {
+    const getInitialData = async function(inputValue) {
       try {
         let results = await Game_name_values(inputValue)
         updateMainSettings({ gameTitlesList: results })
@@ -284,6 +292,7 @@ const AddCommunity = ({
             <MyGCreateableSelect
               isClearable
               onCreateOption={handleCreateGame}
+              getNewOptionData={getNewOptionData}
               onInputChange={getOptionsGames}
               onChange={(value) => {
                 updateMainSettings({ gameTitle: value })
@@ -352,15 +361,18 @@ const AddCommunity = ({
               isClearable
               isMulti
               onCreateOption={handleCreateTags}
+              getNewOptionData={getNewOptionData}
               onInputChange={getOptionsTags}
               onChange={(value) => {
                 updateAdvancedSettings({ tags: value })
               }}
               value={advancedSettingsState.tags}
               placeholder='Search, Select or create Community Tags'
-              options={advancedSettingsState.tags.length === MAX_GAME_TAGS ? [] : advancedSettingsState.optionTags}
+              options={
+                advancedSettingsState.tags && advancedSettingsState.tags.length >= MAX_GAME_TAGS ? [] : advancedSettingsState.optionTags
+              }
               noOptionsMessage={() => {
-                return advancedSettingsState.optionTags.length === MAX_GAME_TAGS
+                return advancedSettingsState.optionTags && advancedSettingsState.optionTags.length >= MAX_GAME_TAGS
                   ? 'You have reached the max options value'
                   : 'Yo! Either nothing to display or you need to type in something'
               }}
@@ -391,7 +403,7 @@ const AddCommunity = ({
               maxLength={250}
             />
           </div>
-          <div className='field-title'>Moderators</div>
+          <div className='field-title'>Invite Friends</div>
           <div className='experience-select'>
             <MyGAsyncSelect
               isClearable
@@ -400,7 +412,7 @@ const AddCommunity = ({
                 return
               }}
               loadOptions={
-                advancedSettingsState.coHosts && advancedSettingsState.coHosts.length === MAX_CO_HOSTS
+                advancedSettingsState.coHosts && advancedSettingsState.coHosts.length >= MAX_INVITEES
                   ? onPlayersSuggestionFetch2
                   : onPlayersSuggestionFetch
               }
@@ -409,12 +421,11 @@ const AddCommunity = ({
               }}
               value={advancedSettingsState.coHosts}
               noOptionsMessage={() => {
-                return advancedSettingsState.coHosts && advancedSettingsState.coHosts.length === MAX_CO_HOSTS
-                  ? 'Bam! Max number of moderators reached'
+                return advancedSettingsState.coHosts && advancedSettingsState.coHosts.length >= MAX_INVITEES
+                  ? 'Bam! Max number of Invitees reached'
                   : 'Yo! Either nothing to display or you need to type in something'
               }}
-              placeholder='Enter your friend’s name to set them as a moderators'
-              className='test'
+              placeholder='Enter your friend’s name to invite them to this community'
             />
           </div>
           <div className='comment-section'>{getCommentPrivaryView()}</div>

@@ -1,5 +1,4 @@
 module.exports = (job, done) => {
-  // TODO: Implement deleteUnusedGames
-  const deleteUnusedGames = () => Promise.resolve();
-  deleteUnusedGames(job).then(done);
+  const GameNameController = require('../../../Controllers/Http/GameNameController')
+  new GameNameController().deleteUnusedGames(job).then(done);
 }

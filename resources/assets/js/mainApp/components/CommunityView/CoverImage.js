@@ -17,8 +17,6 @@ const labelMap = {
   42: 'Pending',
 }
 
-import AnalyticsBox from '../AnalyticsBox'
-
 const CoverImage = (props) => {
   const inputEl = useRef(null)
   const [joinlabel, setJoinlabel] = useState(labelMap[props.current_user_permission])
@@ -97,10 +95,6 @@ const CoverImage = (props) => {
           Add/Edit Cover Image
         </div>
       )}
-
-      <div className='analyticsBox__container'>
-        <AnalyticsBox />
-      </div>
       <div className='community__option'>
         <div className='name'>{props.name}</div>
         <div className='option'>

@@ -116,13 +116,6 @@ const SinglePost = Loadable({
   },
 })
 
-const AdvancedSearch = Loadable({
-  loader: () => import('./components/AdvancedSearch'),
-  loading: function() {
-    return null
-  },
-})
-
 const MobileMenu = Loadable({
   loader: () => import('./components/MobileView/MobileMenu'),
   loading: function() {
@@ -136,8 +129,16 @@ const EditScheduleGames = Loadable({
     return null
   },
 })
+
 const CommunityView = Loadable({
   loader: () => import('./components/CommunityView/CommunityView'),
+  loading: function() {
+    return null
+  },
+})
+
+const Onboarding = Loadable({
+  loader: () => import('./components/Onboarding'),
   loading: function() {
     return null
   },
@@ -159,12 +160,12 @@ export {
   MyPosts,
   MySettings,
   SinglePost,
-  AdvancedSearch,
   ScheduleGamesView,
   CreateCommunity,
   EditScheduleGames,
   MobileMenu,
   CommunityView,
+  Onboarding,
 }
 function newFunction() {
   return './components/MobileView/MobileMenuTop'

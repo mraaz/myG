@@ -36,7 +36,7 @@ const AddGame = ({
 }) => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    const getInitialData_Tags = async function () {
+    const getInitialData_Tags = async function() {
       try {
         let results = await Schedule_Game_Tags()
         updateAdvancedSettings({ optionTags: results })
@@ -45,7 +45,7 @@ const AddGame = ({
       }
     }
 
-    const getInitialData_GameName = async function () {
+    const getInitialData_GameName = async function() {
       try {
         let results = await Game_name_values()
         updateMainSettings({ gameTitlesList: results })
@@ -128,9 +128,17 @@ const AddGame = ({
     updateMainSettings({ gameTitlesList: [...gameTitlesList, newOption], gameTitle: newOption })
   }
 
+  //https://github.com/JedWatson/react-select/issues/3988 :RAAZ remove once fixed
+  const getNewOptionData = (inputValue, optionLabel) => ({
+    value: inputValue,
+    label: optionLabel,
+    __isNew__: true,
+    isEqual: () => false,
+  })
+
   // api calls
   const getOptionsTags = (inputValue) => {
-    const getInitialData = async function (inputValue) {
+    const getInitialData = async function(inputValue) {
       try {
         let results = await Schedule_Game_Tags(inputValue)
         updateAdvancedSettings({ optionTags: results })
@@ -147,7 +155,7 @@ const AddGame = ({
   }
 
   const getOptionsGames = (inputValue) => {
-    const getInitialData = async function (inputValue) {
+    const getInitialData = async function(inputValue) {
       try {
         let results = await Game_name_values(inputValue)
         updateMainSettings({ gameTitlesList: results })
@@ -642,6 +650,7 @@ const AddGame = ({
                 onCreateOption={handleCreateGame}
                 onInputChange={getOptionsGames}
                 onChange={handleChange_game_title}
+                getNewOptionData={getNewOptionData}
                 value={mainSettingsState.gameTitle}
                 placeholder='Search, Select or create Game Title'
                 options={mainSettingsState.gameTitlesList}
@@ -725,6 +734,7 @@ const AddGame = ({
                 isClearable
                 isMulti
                 onCreateOption={handleCreateTags}
+                getNewOptionData={getNewOptionData}
                 onInputChange={getOptionsTags}
                 onChange={(value) => {
                   updateAdvancedSettings({ tags: value })
@@ -732,9 +742,11 @@ const AddGame = ({
                 value={advancedSettingsState.tags}
                 placeholder='Search, Select or create Game Tags'
                 onKeyDown={Disable_keys}
-                options={advancedSettingsState.tags.length === MAX_GAME_TAGS ? [] : advancedSettingsState.optionTags}
+                options={
+                  advancedSettingsState.tags && advancedSettingsState.tags.length === MAX_GAME_TAGS ? [] : advancedSettingsState.optionTags
+                }
                 noOptionsMessage={() => {
-                  return advancedSettingsState.optionTags.length === MAX_GAME_TAGS
+                  return advancedSettingsState.optionTags && advancedSettingsState.optionTags.length === MAX_GAME_TAGS
                     ? 'You have reached the max options value'
                     : 'Yo! Either nothing to display or you need to type in something'
                 }}

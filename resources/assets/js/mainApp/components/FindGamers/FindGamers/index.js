@@ -79,7 +79,7 @@ function mapStateToProps(state) {
     userId,
     alias,
     profile,
-    gamers: state.search.gamers,
+    gamers: state.search.gamers || [],
     loading: state.search.gamersLoading,
     error: state.search.gamersError,
   }

@@ -11,8 +11,9 @@ class EncryptionParaphraseRegistration extends React.Component {
 
   componentDidMount() {
     const pin = this.props.routeProps.match.params.encryption
-    if (!this.props.pin) this.props.setEncryptionPin(pin)
-    window.location.replace('/')
+    const persist = this.props.routeProps.location.search.split('?persist=')[1] === 'true'
+    this.props.setEncryptionPin(pin, persist)
+    window.router.replace('/')
   }
 
   render() {
@@ -28,7 +29,7 @@ export function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    setEncryptionPin: (pin) => dispatch(setEncryptionPinAction(pin)),
+    setEncryptionPin: (pin, persist) => dispatch(setEncryptionPinAction(pin, persist)),
   }
 }
 

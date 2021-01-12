@@ -10,7 +10,8 @@ const initialState = {
   notificationSoundsDisabled: false,
   autoSelfDestruct: false,
   pushNotificationsEnabled: true,
-  userTransactionStates: {},
+  userTransactionStates: { user_level: 1 },
+  statsForAlias: {},
 }
 
 export default function reducer(
@@ -274,10 +275,19 @@ export default function reducer(
     }
 
     case 'FETCH_STATS_FULFILLED': {
-      logger.log('USER', `Redux -> Fetched Stats: `, action.payload)
+      logger.log('USER', `Redux -> Fetched Stats for ${action.meta.alias}: `, action.payload)
+      const userTransactionStates = action.payload;
+      const statsForAlias = JSON.parse(JSON.stringify(state.statsForAlias || {}));
+      if (action.meta.alias && action.meta.alias !== state.alias) {
+        statsForAlias[action.meta.alias] = userTransactionStates;
+        return {
+          ...state,
+          statsForAlias,
+        }
+      }
       return {
         ...state,
-        userTransactionStates: action.payload,
+        userTransactionStates,
       }
     }
 

@@ -194,7 +194,7 @@ class MySettings extends Component {
   render() {
     if (this.state.redirect_) {
       this.props.logout()
-      window.location.replace('/logout')
+      window.router.replace('/logout')
       return null
     }
     return (
@@ -243,9 +243,7 @@ class MySettings extends Component {
                   <div className='change-toggle'>
                     <ToggleButton
                       value={this.state.value_password || false}
-                      onToggle={(value_password) => {
-                        window.location.href = '/changepwd'
-                      }}
+                      onToggle={() => window.router.push('/changepwd')}
                     />
                   </div>
                 </div>

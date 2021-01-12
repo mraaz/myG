@@ -1,7 +1,7 @@
 import axios from 'axios'
 import moment from 'moment'
 import { setAsFriendRedux } from './../../../common/friend'
-import { joinGameGroup } from './../../../common/game'
+import { joinGameGroup } from './../../../common/group'
 
 import { logToElasticsearch } from '../../../integration/http/logger'
 import { GoogleAnalytics } from '../../../common/analytics'
@@ -56,7 +56,6 @@ export const clickedAccept_game = (invitation) => {
     })
 
     joinGameGroup(invitation.schedule_games_id, invitation.user_id)
-
     const str = invitation.alias + ' was approved'
 
     const post = axios.post('/api/comments/', {
@@ -146,7 +145,6 @@ export const markread_chatNotification = (id) => {
   }
 }
 export const deleteReportedPost = (data) => {
-  console.log(data, '<<<<DATA')
   try {
     axios.delete(`/api/report/delete_source/${data.report_id}`)
   } catch (error) {
@@ -154,7 +152,6 @@ export const deleteReportedPost = (data) => {
   }
 }
 export const deleteReportNotification = (data) => {
-  console.log(data, '<<<<DATA@@#@')
   try {
     axios.delete(`/api/report/delete/${data.report_id}`)
   } catch (error) {

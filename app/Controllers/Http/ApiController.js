@@ -364,10 +364,9 @@ class ApiController {
         },
         function(err, data) {
           if (data) {
-            return response.status(200).json({ success: true })
-          } else {
-            return response.status(400).send(err)
-          }
+            return response ? response.status(200).json({ success: true }) : Promise.resolve({ success: true });
+          } 
+          return response ? response.status(400).send(err) : Promise.reject(err);
         }
       )
     }

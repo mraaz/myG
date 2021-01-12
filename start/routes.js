@@ -296,6 +296,8 @@ Route.post('/api/groups/update_name', 'GroupController.update_name')
 
 Route.get('/api/groups/get_my_communities/:counter', 'GroupController.get_my_communities')
 
+Route.post('/api/groups/groupInvites', 'GroupController.groupInvites')
+
 Route.get('/api/usergroup/get_all_my_group_approvals/:group_id', 'UsergroupController.get_all_my_group_approvals')
 Route.post('/api/usergroup/create', 'UsergroupController.store')
 Route.get('/api/usergroup/view/:counter', 'UsergroupController.myshow')
@@ -452,5 +454,9 @@ Route.get('/api/report/:counter', 'ReportController.show')
 //Reported
 Route.get('/api/reported/:counter', 'ReportedController.show')
 Route.delete('/api/user/delete/:id', 'ReportedController.destroy')
+
+// Onboarding
+Route.get('/api/onboarding/', 'OnboardingController.getOnboardingStep')
+Route.put('/api/onboarding/:step', 'OnboardingController.setOnboardingStep')
 
 Route.any('*', ({ view }) => view.render('pages/react'))

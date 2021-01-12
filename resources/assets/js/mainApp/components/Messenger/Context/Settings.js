@@ -55,8 +55,19 @@ export default class Settings extends React.Component {
     )
   }
 
-  renderGamesSettings = () => {
-    return <GameSettings {...this.props} />
+  renderEncryptionPersistSettings = () => {
+    return (
+      <div className='messenger-settings-toggle'>
+        <div className='messenger-settings-toggle-hint'>
+          <div className='messenger-settings-toggle-title'>Remember Encryption</div>
+          <div className='messenger-settings-toggle-subtitle'>Your chat encryption key will be stored in this computer even if you log out.</div>
+        </div>
+        <ToggleButton
+          value={this.props.persistEncryption}
+          onToggle={(persistEncryption) => this.props.togglePersistEncryption(!persistEncryption)}
+        />
+      </div>
+    )
   }
 
   renderEncryptionSettings() {
@@ -76,6 +87,10 @@ export default class Settings extends React.Component {
     )
   }
 
+  renderGamesSettings = () => {
+    return <GameSettings {...this.props} />
+  }
+
   renderBlockedUsers() {
     return <BlockedUsers blockedUsers={this.props.blockedUsers} blockUser={this.props.blockUser} unblockUser={this.props.unblockUser} />
   }
@@ -87,6 +102,7 @@ export default class Settings extends React.Component {
         {this.renderNotificationSoundSettings()}
         {this.renderPushNotificationsSettings()}
         {this.renderAutoSelfDestructSettings()}
+        {this.renderEncryptionPersistSettings()}
         {this.renderEncryptionSettings()}
         {this.renderGamesSettings()}
         {this.renderBlockedUsers()}

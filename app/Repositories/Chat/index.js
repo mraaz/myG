@@ -318,7 +318,7 @@ class ChatRepository {
     chat.self_destruct = !!forceSelfDestruct || !!individualGameId;
     await chat.save();
 
-    const { contacts: fullContacts } = await this.fetchChatContacts({ requestingUserId, requestedChatId: chat.id })
+    const { contacts: fullContacts } = await this.fetchChatContactsByIds({ requestingUserId, contactIds: contacts });
     const chatSchema = new ChatSchema({
       chatId: chat.id,
       contacts,
@@ -466,6 +466,21 @@ class ChatRepository {
       .from('users')
       .where('id', 'in', contactsQuery)
     );
+    const contacts = rawContacts.map(contact => new ContactSchema({
+      contactId: contact.id,
+      icon: contact.profile_img,
+      name: contact.alias,
+      status: contact.status,
+      lastSeen: contact.last_seen,
+      publicKey: contact.public_key,
+    }));
+    return { contacts };
+  }
+
+  async fetchChatContactsByIds({ requestingUserId, contactIds }) {
+    if (!Array.isArray(contactIds)) return { contacts: [] };
+    const contactsQuery = contactIds.filter(contactId => contactId !== requestingUserId);
+    const rawContacts = await Database.from('users').where('id', 'in', contactsQuery);
     const contacts = rawContacts.map(contact => new ContactSchema({
       contactId: contact.id,
       icon: contact.profile_img,

@@ -30,6 +30,7 @@
 @import 'scheduledGames/scheduleGames';
 @import 'communityView/communityView';
 @import 'pages/reportPost';
+@import 'pages/onboarding';
 
 * {
   box-sizing: border-box;
@@ -114,6 +115,17 @@ a:visited {
   font-family: Montserrat Alternates;
   border-width: 0;
   cursor: pointer;
+}
+
+.persist-password {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.persist-password-checkbox {
+  margin-right: 8px;
 }
 
 .default-form {

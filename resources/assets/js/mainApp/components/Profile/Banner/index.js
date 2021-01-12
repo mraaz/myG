@@ -34,7 +34,7 @@ export class Banner extends React.Component {
         onMouseLeave={() => this.setState({ hoveringBanner: false })}
       >
         <Uploader background onUpload={this.onUpload}>
-            <AnalyticsBox containerStyle='analytics' />
+            <AnalyticsBox alias={this.props.profile.alias} containerStyle='analytics' />
         </Uploader>
         {this.renderBannerUploader()}
         <Header

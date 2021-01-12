@@ -12,7 +12,7 @@ export default class CustomCron extends Component {
     this.onAtHourChange = this.onAtHourChange.bind(this)
     this.onAtMinuteChange = this.onAtMinuteChange.bind(this)
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.state.value = this.props.value
     if (this.state.value[3] === '?') {
       this.state.every = false

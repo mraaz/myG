@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import SweetAlert from '../common/MyGSweetAlert'
 import Manage from './Manage'
 import { toast } from 'react-toastify'
-import { Toast_style } from '../Utility_Function'
+import { Toast_style, Convert_to_comma_delimited_value } from '../Utility_Function'
 import { PageHeader, MyGButton, MyGModal, MyGInput } from '../common'
 
 const IconMap = {
@@ -20,6 +20,8 @@ const PermissionMap = {
   2: 'Moderator',
   3: 'Users',
 }
+
+const MAX_GAME_TAGS = 4
 
 export default class Members extends React.Component {
   constructor(props) {
@@ -75,28 +77,47 @@ export default class Members extends React.Component {
     this.setState({ saveButtonDisabled: false, ...data })
   }
 
-  handleSave = async (e) => {
-    const { communityName, approval, privacy } = this.state
-    const sendInvite = await axios.post('/api/groups/update_settings', {
+  handleSave = (e) => {
+    let { communityName, approval, privacy, description, tags, coHosts } = this.state
+
+    if (coHosts) {
+      coHosts = Convert_to_comma_delimited_value(coHosts)
+    }
+
+    if (tags != undefined && tags.length != 0 && tags != null) {
+      for (var i = 0; i < MAX_GAME_TAGS && i < tags.length; i++) {
+        if (/['/.%#$,;`\\]/.test(tags[i].value)) {
+          toast.success(<Toast_style text={'Sorry mate! Community tags can not have invalid fields'} />)
+          return
+        }
+
+        delete tags[i].label
+      }
+
+      tags = JSON.stringify(tags)
+    }
+
+    axios.post('/api/groups/update_settings', {
       group_id: this.props.group_id,
       group_name: communityName,
       privacy: privacy,
       mApprovals: approval,
+      description: description,
+      tags: tags,
     })
-    if (sendInvite) {
-      toast.success(<Toast_style text={'Nice! Setting has been successfully saved.'} />)
-      this.props.handleModalStatus(true)
-      // this.props.routeProps.match.params.name = communityName
-      // this.props.routeProps.history.push(`/community/${communityName}`)
-    }
+    toast.success(<Toast_style text={'Nice! Setting has been successfully saved.'} />)
+    this.props.handleModalStatus(true)
+    // this.props.routeProps.match.params.name = communityName
+    // this.props.routeProps.history.push(`/community/${communityName}`)
   }
+
   handleDelete = async (text) => {
     this.setState({
       alert: null,
       dropdown: false,
     })
     if (text == 'true') {
-      const delete_group = axios.post('/api/groups/delete', {
+      const delete_group = await axios.post('/api/groups/delete', {
         group_id: this.props.group_id,
       })
       if (delete_group) {
@@ -104,6 +125,7 @@ export default class Members extends React.Component {
       } else {
         toast.error(<Toast_style text={'Hmmmm, Something went wrong. Please try again.'} />)
       }
+      this.props.routeProps.history.push('/?at=communities')
     }
   }
 
@@ -321,7 +343,7 @@ export default class Members extends React.Component {
             <div className='tabs___header'>
               {[0, 1, 2].includes(current_user_permission) && (
                 <span className={`setting__tab ${isActive == 'setting' ? 'active' : ''}`} onClick={(e) => this.handleSettingTab('setting')}>
-                  Setting
+                  Settings
                 </span>
               )}
               <span className={`setting__tab ${isActive == 'members' ? 'active' : ''}`} onClick={(e) => this.handleSettingTab('members')}>

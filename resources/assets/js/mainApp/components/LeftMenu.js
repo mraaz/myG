@@ -117,22 +117,26 @@ class LeftMenu extends Component {
     )
   }
 
-  addDefaultSrc(ev) {
+  addDefaultSrc = (ev) => {
     ev.target.src = 'https://myG.gg/default_user/new-user-profile-picture.png'
   }
 
   getUserSection = () => {
     const alias = this.props.initialData === 'loading' ? '' : this.props.initialData.userInfo.alias
-    const profileImage = this.props.initialData === 'loading' ? '' : this.props.initialData.userInfo.profile_img
+    const profileImage =
+      this.props.initialData === 'loading'
+        ? 'invalid_link'
+        : this.props.initialData.userInfo.profile_img
+        ? this.props.initialData.userInfo.profile_img
+        : 'invalid_link'
     const { isExpanded, approvals = 0, chats = 0, alerts = 0 } = this.state
-
     return (
       <div className={classNames([isExpanded ? 'user-detail-box-expanded' : 'user-detail-box-collapsed'])}>
         {isExpanded && (
           <Link to={`/profile/${alias}`}>
-            <div className='user-info-main'>
+            <div className='lm-user-info-main'>
               <img onError={this.addDefaultSrc} src={profileImage} className='img-fluid' alt='user-picture' />
-              <div className='username'>@{alias}</div>
+              <div className='lm-username'>@{alias}</div>
             </div>
           </Link>
         )}
@@ -240,6 +244,7 @@ class LeftMenu extends Component {
           <div
             onClick={() => {
               this.props.logout()
+              //window.router.push('/logout');
               window.location.href = '/logout'
             }}
             className='logout-text'>

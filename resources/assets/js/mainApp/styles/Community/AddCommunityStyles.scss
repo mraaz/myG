@@ -1,4 +1,17 @@
-// Add Game CSS
+// Add Community CSS
+
+.locked-create-community {
+  display: flex;
+  height: 80vh;
+  color: white;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 18px;
+  width: 16em;
+  margin: auto;
+}
 
 .tab-heading {
   font-size: 16px;
@@ -68,10 +81,17 @@
 }
 
 .add-game {
+  &__container {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    height: 100%;
+  }
   &__main-container {
     margin: 0 40px;
     border: none;
     display: flex;
+    flex: 1;
   }
   &__field-title {
     color: #fff;
@@ -405,7 +425,7 @@
   display: flex;
   justify-content: center;
   margin: 0;
-  height: 200px;
+  height: 320px;
   border: 2px dashed #666666;
   .image {
     position: relative;
@@ -413,10 +433,11 @@
     height: 100%;
   }
   img {
-    background: #ff00ff 0% 0% no-repeat padding-box;
+    background: 0% 0% no-repeat padding-box;
     margin-right: 10px;
     width: 100%;
     height: 100%;
+    object-fit: contain;
   }
   .remove__image {
     position: absolute;

@@ -2,11 +2,20 @@ function setupBull() {
 
   const Queue = require('bull');
   const moment = require('moment')();
+  const LoggingRepository = require('../../Repositories/Logging')
   const Env = use('Env')
   const hasRedis = Env.get('REDIS_ENABLED');
   const host = Env.get('REDIS_HOST');
   const port = Env.get('REDIS_PORT');
   const bullConfig = { redis: { host, port } };
+  
+  LoggingRepository.log({
+    environment: process.env.NODE_ENV,
+    type: 'startup',
+    source: 'backend',
+    context: "bull",
+    message: `Getting ready to start bull -> ${JSON.stringify({ hasRedis, bullConfig })}`
+  });
 
   if (!hasRedis) return logBull(moment, 'Redis Disabled, no Bull Queues will be run.');
 
@@ -37,7 +46,7 @@ function getJobs(Queue, bullConfig) {
       payload: {},
       schedule: { repeat: { cron: '0 0 * * *' } },
       runOnSchedule: true,
-      runOnStart: true,
+      runOnStart: false,
       enabled: true,
     },
     {
@@ -48,7 +57,7 @@ function getJobs(Queue, bullConfig) {
       payload: {},
       schedule: { repeat: { cron: '* * * * *' } },
       runOnSchedule: true,
-      runOnStart: true,
+      runOnStart: false,
       enabled: true,
     },
     {
@@ -59,7 +68,18 @@ function getJobs(Queue, bullConfig) {
       payload: {},
       schedule: { repeat: { cron: '0 0 * * *' } },
       runOnSchedule: true,
-      runOnStart: true,
+      runOnStart: false,
+      enabled: true,
+    },
+    {
+      name: 'Game Sync To Elasticsearch',
+      queue: new Queue('game-syncToElasticsearch', bullConfig),
+      action: require('./tasks/game-syncToElasticsearch'),
+      options: {},
+      payload: {},
+      schedule: { repeat: { cron: '0 0 * * *' } },
+      runOnSchedule: true,
+      runOnStart: false,
       enabled: true,
     },
     {
@@ -70,7 +90,7 @@ function getJobs(Queue, bullConfig) {
       payload: {},
       schedule: { repeat: { cron: '0 0 * * *' } },
       runOnSchedule: true,
-      runOnStart: true,
+      runOnStart: false,
       enabled: true,
     },
     {
@@ -81,7 +101,7 @@ function getJobs(Queue, bullConfig) {
       payload: {},
       schedule: { repeat: { cron: '0 0 * * *' } },
       runOnSchedule: true,
-      runOnStart: true,
+      runOnStart: false,
       enabled: true,
     },
   ];

@@ -320,6 +320,33 @@ class AwsKeyController {
       return Promise.resolve()
     }
   }
+
+  // Delete files with type as 0 from AWS if 24hrs have passed.
+  async deleteFilesFromS3() {
+    const oneDayAgo = new Date()
+    oneDayAgo.setDate(oneDayAgo.getDate() - 1)
+    const filesToDelete = await Database.from('aws_keys').where('type', '=', 0).andWhere('created_at', '<', oneDayAgo)
+    if (!filesToDelete.length) return
+    const apiController = new ApiController()
+    const auth = { user: { id: 'myg' } }
+    for await (let fileToDelete of filesToDelete) {
+      const request = { params: { key: fileToDelete.aws_key } }
+      await apiController.deleteFile_server({ auth, request })
+      await Database.table('aws_keys').where({ id: fileToDelete.id }).delete()
+    }
+    const report = filesToDelete.map((fileToDelete) => ({
+      id: fileToDelete.id,
+      userId: fileToDelete.user_id,
+      key: fileToDelete.aws_key,
+    }))
+    LoggingRepository.log({
+      environment: process.env.NODE_ENV,
+      type: 'task',
+      source: 'backend',
+      context: 'delete files from s3',
+      message: JSON.stringify(report),
+    })
+  }
 }
 
 module.exports = AwsKeyController

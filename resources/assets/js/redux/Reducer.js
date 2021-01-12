@@ -12,6 +12,7 @@ import encryption from './reducers/encryptionReducer'
 import socket from './reducers/socketReducer'
 import profile from './reducers/profileReducer'
 import search from './reducers/searchReducer'
+import onboarding from './reducers/onboardingReducer'
 
 const appReducer = combineReducers({
   alert,
@@ -24,10 +25,17 @@ const appReducer = combineReducers({
   socket,
   profile,
   search,
+  onboarding,
 })
 
 const rootReducer = (state, action) => {
-  if (action.type === 'USER_LOGOUT') state = undefined
+  if (action.type === 'USER_LOGOUT') {
+    console.log('logout', state.encryption);
+    if (state.encryption.persist) {
+      state = { encryption: state.encryption }
+    }
+    else state = undefined
+  }
   return appReducer(state, action)
 }
 

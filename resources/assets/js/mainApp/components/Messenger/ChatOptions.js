@@ -18,7 +18,7 @@ class ChatOptions extends React.Component {
       <div className='chat-component-options-container'>
         <div
           className={`chat-component-options-option clickable`}
-          onClick={() => window.location.replace(`/profile/${this.props.contactAlias}`)}>
+          onClick={() => window.router.replace(`/profile/${this.props.contactAlias}`)}>
           <div className='chat-component-options-option-icon' style={{ backgroundImage: `url(${getAssetUrl('ic_chat_profile')})` }} />
           {this.props.contactAlias} profile
         </div>

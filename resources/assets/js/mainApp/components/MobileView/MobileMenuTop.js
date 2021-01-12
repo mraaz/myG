@@ -106,7 +106,7 @@ const MobileMenuTop = (props) => {
                 onClick={() => {
                   setHideSideMenu(false)
                   dispatch(logoutAction())
-                  window.location.href = '/logout'
+                  window.router.push('/logout');
                 }}>
                 <img src='https://myG.gg/platform_images/Dashboard/Logout_Icon.svg' />
                 <span>Logout</span>

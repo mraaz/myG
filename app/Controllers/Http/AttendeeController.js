@@ -523,6 +523,9 @@ class AttendeeController {
           })
           .delete()
 
+        const noti = new CommonController()
+        noti.remove_schedule_game_individual_attendees({ auth }, request.params.schedule_game_id, 11, request.params.id)
+
         return 'Remove entry'
       } catch (error) {
         LoggingRepository.log({
@@ -598,8 +601,10 @@ class AttendeeController {
         for (let i = 0; i < get_all_attendees.length; i++) {
           userStatController.update_total_number_of(get_all_attendees[i].user_id, 'total_number_of_games_played')
         }
-        let noti = new CommonController()
+        const noti = new CommonController()
         noti.addGameApproved({ auth }, request.input('schedule_game_id'), request.input('user_id'))
+
+        noti.remove_schedule_game_individual_attendees({ auth }, request.input('schedule_game_id'), 11, request.input('user_id'))
 
         for (let i = 0; i < co_hosts.length; i++) {
           noti.addGameApproved({ auth }, request.input('schedule_game_id'), co_hosts[i].user_id)

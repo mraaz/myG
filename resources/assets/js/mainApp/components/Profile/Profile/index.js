@@ -12,6 +12,7 @@ import GameExperiences from '../GameExperiences';
 import GamerSuggestions from '../GamerSuggestions';
 import MyPosts from '../../MyPosts'
 import PostsFromUser from '../../PostsFromUser'
+import EditGameExperience from '../GameExperiences/edit';
 
 export class Profile extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -19,7 +20,7 @@ export class Profile extends React.Component {
   }
 
   componentDidMount() {
-    document.title = `myG - ${this.props.alias}`;
+    if (!this.props.onboarding) document.title = `myG - ${this.props.alias}`;
     this.props.fetchProfile(this.props.alias);
   }
 
@@ -47,8 +48,44 @@ export class Profile extends React.Component {
     if (this.props.profile.error) return <Redirect push to={`/profile/${this.props.userAlias}`} />;
     if (!this.props.foundProfile || this.props.profile.loading) return null;
     const profileSponsors = this.props.profile.sponsors || [];
-    const sponsorsIndexes = this.props.profile.isSelf ? [{ id: 'empty-1' }, { id: 'empty-2' }] : null;
+    const sponsorsPositions = [{ id: 'empty-1' }];
+    sponsorsPositions.push({ id: this.props.level >= 5 ? 'empty-2' : 'empty-locked-2' });
+    const sponsorsIndexes = this.props.profile.isSelf ? sponsorsPositions : null;
     const sponsors = sponsorsIndexes ? sponsorsIndexes.map((sponsor, index) => profileSponsors[index] || sponsor) : profileSponsors;
+    if (this.props.onboarding) {
+      if (this.props.step === 1) {
+        return(
+          <div id="profile">
+            <EditGameExperience
+              onboarding={this.props.onboarding} 
+              alias={this.props.alias}
+              profile={this.props.profile}
+              isSelf={this.props.profile.isSelf}
+              updateGame={this.props.updateGame}
+              setOnboardingStep={this.props.setOnboardingStep} 
+              skipOnboarding={this.props.skipOnboarding} 
+            />
+          </div>
+        );
+      }
+      if (this.props.step === 3) {
+        return(
+          <div id="profile">
+            <GamerSuggestions 
+              onboarding={this.props.onboarding} 
+              noTitle profile={this.props.profile}
+              sendFriendRequest={this.props.sendFriendRequest}
+              cancelFriendRequest={this.props.cancelFriendRequest}
+              follow={this.props.follow}
+              unfollow={this.props.unfollow}
+              setOnboardingStep={this.props.setOnboardingStep} 
+              skipOnboarding={this.props.skipOnboarding} 
+            />
+          </div>
+        );
+      }
+      return null;
+    }
     return(
       <div id="profile">
         <Banner profile={this.props.profile} updateProfile={this.props.updateProfile} />
@@ -67,6 +104,7 @@ function mapStateToProps(state, props) {
   const profile = get(state, `profile.profiles[${props.alias}]`, {});
   return {
     userId: state.user.userId,
+    level: state.user.userTransactionStates.user_level,
     profile,
     foundProfile: !!Object.keys(profile).length,
   }
