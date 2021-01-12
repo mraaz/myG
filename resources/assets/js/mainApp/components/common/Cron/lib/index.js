@@ -37,7 +37,7 @@ export default class CustomCron extends Component {
         };
         tabs = props.tabs || defaultTabs;
     }
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if(!this.props.value || this.props.value.split(' ').length !== 7 ) {
             this.state.value = defaultTabsVal[tabs[0]];
             this.state.selectedTab = tabs[0];
