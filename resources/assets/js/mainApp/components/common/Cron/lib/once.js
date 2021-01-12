@@ -17,7 +17,7 @@ export default class CustomCron extends Component {
     }
     return new Date()
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.state.value = this.props.value
   }
   onDayChange(date) {

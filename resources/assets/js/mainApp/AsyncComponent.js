@@ -116,13 +116,6 @@ const SinglePost = Loadable({
   },
 })
 
-const AdvancedSearch = Loadable({
-  loader: () => import('./components/AdvancedSearch'),
-  loading: function() {
-    return null
-  },
-})
-
 const MobileMenu = Loadable({
   loader: () => import('./components/MobileView/MobileMenu'),
   loading: function() {
@@ -167,7 +160,6 @@ export {
   MyPosts,
   MySettings,
   SinglePost,
-  AdvancedSearch,
   ScheduleGamesView,
   CreateCommunity,
   EditScheduleGames,

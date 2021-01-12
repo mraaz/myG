@@ -39,7 +39,6 @@ import {
   MySettings,
   SinglePost,
   IndividualEsportsExperience,
-  AdvancedSearch,
   ScheduledGamesApprovals,
   ScheduleGamesView,
   CreateCommunity,
@@ -271,30 +270,6 @@ class Layout extends Component {
                   path='/mySettings'
                   component={(props) => (
                     <MySettings
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/advancedSearch'
-                  component={(props) => (
-                    <AdvancedSearch
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/advancedSearch/:id/:table'
-                  component={(props) => (
-                    <AdvancedSearch
                       routeProps={props}
                       initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
                       key={Math.random()}
