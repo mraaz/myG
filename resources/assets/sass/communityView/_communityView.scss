@@ -434,6 +434,7 @@
       }
     }
   }
+
   .setting__container {
     width: 100%;
     .communityName__section {
@@ -482,6 +483,26 @@
     }
     .group__privacy {
       margin-top: 20px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+
+      .button-invite {
+        width: 62px;
+        height: 30px;
+        background: #e5c746 0% 0% no-repeat padding-box;
+        font: normal normal bold 12px/14px Montserrat;
+        letter-spacing: 0px;
+        color: #000000;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        &:focus {
+          margin: 0;
+        }
+      }
+
       .options,
       .label {
         text-align: left;
@@ -492,6 +513,7 @@
       .options {
         display: flex;
         justify-content: flex-end;
+        padding-bottom: 8px;
       }
       .container {
         display: block;

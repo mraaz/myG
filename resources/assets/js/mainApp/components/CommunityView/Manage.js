@@ -1,12 +1,14 @@
 import React from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { Toast_style, Disable_keys, Hash_Tags } from '../Utility_Function'
 
-import { MyGTextarea, MyGCreateableSelect, MyGAsyncSelect } from '../common'
-import CreatableSelect from 'react-select/creatable'
+import { Toast_style, Disable_keys, Group_Hash_Tags, Convert_to_comma_delimited_value } from '../Utility_Function'
+import { MyGTextarea, MyGAsyncSelect, MyGCreateableSelect } from '../common'
 
-const MAX_GAME_TAGS = 3
+import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
+
+const MAX_GAME_TAGS = 4
+const MAX_INVITEES = 8
 
 const createOption = (label, hash_tag_id) => ({
   label,
@@ -26,6 +28,7 @@ export default class Manage extends React.Component {
       description: '',
       tags: '',
       options_tags: '',
+      coHosts: null,
     }
   }
 
@@ -44,8 +47,27 @@ export default class Manage extends React.Component {
       approval: community_Membership_Approval == 1 ? 'true' : 'false',
       description: community_grp_description,
       tags: tmpArr,
-      options_tags: tmpArr,
     })
+
+    this.getOptions_tags()
+  }
+
+  onPlayersSuggestionFetch = async (value) => {
+    try {
+      const {
+        data: { playerSearchResults },
+      } = await axios.post(`/api/user/playerSearchResults`, {
+        alias: value,
+      })
+      const parsedData = parsePlayersToSelectData(playerSearchResults)
+      return parsedData
+    } catch (error) {
+      // error player suggestion fetch
+    }
+  }
+
+  onPlayersSuggestionFetch2 = async (value) => {
+    return []
   }
 
   //https://github.com/JedWatson/react-select/issues/3988 :RAAZ remove once fixed
@@ -61,6 +83,11 @@ export default class Manage extends React.Component {
       toast.success(<Toast_style text={'Sorry mate! Tag length is tooo long.'} />)
       return
     }
+
+    if (this.state.tags && this.state.tags.length >= MAX_GAME_TAGS) {
+      return
+    }
+
     const { options_tags, tags } = this.state
     const newOption = createOption(inputValue, null)
     this.setState({ options_tags: [...options_tags, newOption] })
@@ -83,18 +110,23 @@ export default class Manage extends React.Component {
     })
   }
 
+  updateAdvanced_coHosts = (coHosts) => {
+    this.setState({ coHosts })
+  }
+
   getOptions_tags = (inputValue) => {
     const self = this
 
     const getInitialData = async function(inputValue) {
       try {
-        var results = await Hash_Tags(inputValue)
+        const results = await Group_Hash_Tags(inputValue)
         self.setState({ options_tags: results })
       } catch (error) {
         logToElasticsearch('error', 'Community-View_Manage', 'getOptions_tags:' + ' ' + error)
       }
     }
-    if (inputValue.trim() != '') getInitialData(inputValue)
+
+    getInitialData(inputValue)
   }
 
   handleCommunityNameChange = (e) => {
@@ -121,6 +153,19 @@ export default class Manage extends React.Component {
       }
     } else {
       toast.error(<Toast_style text={'Opps, minimum four characters required.'} />)
+    }
+  }
+
+  handleInviteFriends = () => {
+    if (this.state.coHosts != undefined && this.state.coHosts != null && this.state.coHosts != '') {
+      const co_hosts = Convert_to_comma_delimited_value(this.state.coHosts)
+
+      axios.post('/api/groups/groupInvites', {
+        group_id: this.props.group_id,
+        invitees: co_hosts,
+      })
+      toast.success(<Toast_style text={'Now been sent!! Bon voyage invites have.'} />)
+      this.setState({ coHosts: null })
     }
   }
 
@@ -316,9 +361,9 @@ export default class Manage extends React.Component {
                   getNewOptionData={this.getNewOptionData}
                   value={this.state.tags}
                   placeholder='Search, Select or create Community Tags'
-                  options={this.state.tags && this.state.tags.length === MAX_GAME_TAGS ? [] : this.state.options_tags}
+                  options={this.state.tags && this.state.tags.length >= MAX_GAME_TAGS ? [] : this.state.options_tags}
                   noOptionsMessage={() => {
-                    return this.state.options_tags && this.state.options_tags.length === MAX_GAME_TAGS
+                    return this.state.options_tags && this.state.options_tags.length >= MAX_GAME_TAGS
                       ? 'You have reached the max options value'
                       : 'Yo! Either nothing to display or you need to type in something'
                   }}
@@ -329,36 +374,34 @@ export default class Manage extends React.Component {
           </div>
         </div>
         <div className='group__privacy row'>
-          <div className='label col-sm-4'>Moderators</div>
+          <div className='label col-sm-4'>Invite friends</div>
           <div className='options col-sm-8'>
-            <div>
-              <div className='game-title-select'>
-                <MyGAsyncSelect
-                  isClearable
-                  isMulti
-                  isValidNewOption={() => {
-                    return
-                  }}
-                  loadOptions={
-                    advancedSettingsState.coHosts && advancedSettingsState.coHosts.length === MAX_CO_HOSTS
-                      ? onPlayersSuggestionFetch2
-                      : onPlayersSuggestionFetch
-                  }
-                  onChange={(value) => {
-                    updateAdvancedSettings({ coHosts: value })
-                  }}
-                  value={advancedSettingsState.coHosts}
-                  noOptionsMessage={() => {
-                    return advancedSettingsState.coHosts && advancedSettingsState.coHosts.length === MAX_CO_HOSTS
-                      ? 'Bam! Max number of moderators reached'
-                      : 'Yo! Either nothing to display or you need to type in something'
-                  }}
-                  placeholder='Enter your friend’s name to set them as a moderators'
-                  className='test'
-                />
-              </div>
-            </div>
+            <MyGAsyncSelect
+              isClearable
+              isMulti
+              isValidNewOption={() => {
+                return
+              }}
+              loadOptions={
+                this.state.coHosts && this.state.coHosts.length >= MAX_INVITEES
+                  ? this.onPlayersSuggestionFetch2
+                  : this.onPlayersSuggestionFetch
+              }
+              onChange={(e) => {
+                this.updateAdvanced_coHosts(e)
+              }}
+              value={this.state.coHosts}
+              noOptionsMessage={() => {
+                return this.state.coHosts && this.state.coHosts.length >= MAX_INVITEES
+                  ? 'Bam! Max number of Invitees reached'
+                  : 'Yo! Either nothing to display or you need to type in something'
+              }}
+              placeholder='Enter your friend’s name to invite them to this community'
+            />
           </div>
+          <button disabled={false} className='button-invite' onClick={this.handleInviteFriends}>
+            Invite
+          </button>
         </div>
         <div className='group__privacy row'>
           <div className='label col-sm-4'>Community Description</div>

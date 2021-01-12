@@ -16,8 +16,8 @@ import { Game_name_values, Group_Hash_Tags, Disable_keys } from '../Utility_Func
 import { Upload_to_S3, Remove_file } from '../AWS_utilities'
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
 
-const MAX_GAME_TAGS = 3
-const MAX_CO_HOSTS = 8
+const MAX_GAME_TAGS = 4
+const MAX_INVITEES = 8
 
 const AddCommunity = ({
   updateComponentState,
@@ -368,10 +368,10 @@ const AddCommunity = ({
               value={advancedSettingsState.tags}
               placeholder='Search, Select or create Community Tags'
               options={
-                advancedSettingsState.tags && advancedSettingsState.tags.length === MAX_GAME_TAGS ? [] : advancedSettingsState.optionTags
+                advancedSettingsState.tags && advancedSettingsState.tags.length >= MAX_GAME_TAGS ? [] : advancedSettingsState.optionTags
               }
               noOptionsMessage={() => {
-                return advancedSettingsState.optionTags && advancedSettingsState.optionTags.length === MAX_GAME_TAGS
+                return advancedSettingsState.optionTags && advancedSettingsState.optionTags.length >= MAX_GAME_TAGS
                   ? 'You have reached the max options value'
                   : 'Yo! Either nothing to display or you need to type in something'
               }}
@@ -401,7 +401,7 @@ const AddCommunity = ({
               maxLength={250}
             />
           </div>
-          <div className='field-title'>Moderators</div>
+          <div className='field-title'>Invite Friends</div>
           <div className='experience-select'>
             <MyGAsyncSelect
               isClearable
@@ -410,7 +410,7 @@ const AddCommunity = ({
                 return
               }}
               loadOptions={
-                advancedSettingsState.coHosts && advancedSettingsState.coHosts.length === MAX_CO_HOSTS
+                advancedSettingsState.coHosts && advancedSettingsState.coHosts.length >= MAX_INVITEES
                   ? onPlayersSuggestionFetch2
                   : onPlayersSuggestionFetch
               }
@@ -419,12 +419,11 @@ const AddCommunity = ({
               }}
               value={advancedSettingsState.coHosts}
               noOptionsMessage={() => {
-                return advancedSettingsState.coHosts && advancedSettingsState.coHosts.length === MAX_CO_HOSTS
-                  ? 'Bam! Max number of moderators reached'
+                return advancedSettingsState.coHosts && advancedSettingsState.coHosts.length >= MAX_INVITEES
+                  ? 'Bam! Max number of Invitees reached'
                   : 'Yo! Either nothing to display or you need to type in something'
               }}
-              placeholder='Enter your friend’s name to set them as a moderators'
-              className='test'
+              placeholder='Enter your friend’s name to invite them to this community'
             />
           </div>
           <div className='comment-section'>{getCommentPrivaryView()}</div>

@@ -79,7 +79,6 @@ export default class Members extends React.Component {
 
   handleSave = (e) => {
     let { communityName, approval, privacy, description, tags, coHosts } = this.state
-    console.log(tags, '<<<<<<<TAGGS')
 
     if (coHosts) {
       coHosts = Convert_to_comma_delimited_value(coHosts)

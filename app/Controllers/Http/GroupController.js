@@ -3,7 +3,6 @@
 const Group = use('App/Models/Group')
 const GroupHashTag = use('App/Models/GroupHashTag')
 const Database = use('Database')
-const CoHost = use('App/Models/CoHost')
 
 const UserStatTransactionController = use('./UserStatTransactionController')
 const GroupHashTagController = use('./GroupHashTagController')
@@ -18,7 +17,7 @@ const PostController = use('./PostController')
 const LoggingRepository = require('../../Repositories/Logging')
 
 const MAX_HASH_TAGS = 4
-const MAX_CO_HOSTS = 9
+const MAX_INVITEES = 9
 
 class GroupController {
   async store({ auth, request, response }) {
@@ -115,11 +114,7 @@ class GroupController {
 
           if (arrCo_hosts != '') {
             const noti = new NotificationController_v2()
-            for (var i = 0; i < MAX_CO_HOSTS && i < arrCo_hosts.length; i++) {
-              const create_co_hosts = await CoHost.create({
-                group_id: newGroup.id,
-                user_id: arrCo_hosts[i],
-              })
+            for (var i = 0; i < MAX_INVITEES && i < arrCo_hosts.length; i++) {
               noti.addGenericNoti_({ auth }, newGroup.id, arrCo_hosts[i], 22)
             }
           }
@@ -197,6 +192,21 @@ class GroupController {
         context: __filename,
         message: (error && error.message) || error,
       })
+    }
+  }
+
+  async groupInvites({ auth, request, response }) {
+    if (auth.user) {
+      if (request.input('invitees') != undefined && request.input('invitees') != null) {
+        let arrCo_hosts = request.input('invitees').split(',')
+
+        if (arrCo_hosts != '') {
+          const noti = new NotificationController_v2()
+          for (var i = 0; i < MAX_INVITEES && i < arrCo_hosts.length; i++) {
+            noti.addGenericNoti_({ auth }, request.input('group_id'), arrCo_hosts[i], 22)
+          }
+        }
+      }
     }
   }
 
@@ -511,7 +521,54 @@ class GroupController {
         }
         const update_group_type = await Group.query()
           .where({ id: request.input('group_id') })
-          .update({ type: request.input('privacy'), all_accept: request.input('mApprovals') == 'true' ? 1 : 0 })
+          .update({
+            type: request.input('privacy'),
+            all_accept: request.input('mApprovals') == 'true' ? 1 : 0,
+            grp_description: request.input('description'),
+          })
+
+        const group_GroupHashTag_details = await Database.from('group_hash_tag_trans')
+          .select('id')
+          .where({
+            group_id: request.input('group_id'),
+          })
+
+        for (let i = 0; i < group_GroupHashTag_details.length; i++) {
+          const update_counter = await GroupHashTag.query()
+            .where({ id: group_GroupHashTag_details[i] })
+            .decrement('counter', 1)
+        }
+
+        const delete_like = await Database.table('group_hash_tag_trans')
+          .where({
+            group_id: request.input('group_id'),
+          })
+          .delete()
+
+        if (request.input('tags') != null && request.input('tags').length > 0) {
+          const grp_tags_TRANS_Controller = new GroupHashTagTranController()
+          var arrTags = JSON.parse(request.input('tags'))
+
+          //Max of three tags per Group.
+          for (var i = 0; i < MAX_HASH_TAGS && i < arrTags.length; i++) {
+            if (arrTags[i].group_hash_tag_id == null) {
+              if (/['/.%#$;`\\]/.test(arrTags[i].value)) {
+                continue
+              }
+              let grp_tags_Controller = new GroupHashTagController()
+
+              const grp_tag_id = await grp_tags_Controller.store({ auth }, arrTags[i].value)
+              await grp_tags_TRANS_Controller.store({ auth }, request.input('group_id'), grp_tag_id)
+            } else {
+              await grp_tags_TRANS_Controller.store({ auth }, request.input('group_id'), arrTags[i].group_hash_tag_id)
+
+              const update_counter = await GroupHashTag.query()
+                .where({ id: arrTags[i].group_hash_tag_id })
+                .increment('counter', 1)
+            }
+          }
+        }
+
         return 'Saved successfully'
       } catch (error) {
         LoggingRepository.log({

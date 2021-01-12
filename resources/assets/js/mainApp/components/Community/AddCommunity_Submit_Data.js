@@ -10,6 +10,7 @@ export async function SubmitDataFunction(myG) {
     group_img = null,
     aws_key_id = null
 
+  //Some background, this variable was initially called coHosts but later we changed it to friends
   if (myG.coHosts) {
     co_hosts = Convert_to_comma_delimited_value(myG.coHosts)
   }
