@@ -95,7 +95,7 @@ const AddCommunityContainer = ({ level }) => {
     }
 
     if (advancedSettingsState.coHosts != null && advancedSettingsState.coHosts.length >= MAX_CO_HOSTS) {
-      toast.success(<Toast_style text={'Alot of co-hosts, that is. Only process 4 co-hosts, I can. Try again. Yeesssssss.'} />)
+      toast.success(<Toast_style text={'Alot of friends, that is. Only process 4 friends, I can. Try again. Yeesssssss.'} />)
       return
     }
 

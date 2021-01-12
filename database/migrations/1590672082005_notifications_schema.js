@@ -25,12 +25,6 @@ class NotificationsSchema extends Schema {
       table.integer('chat_id').unsigned().nullable()
       table.foreign('chat_id').references('chats.id').onDelete('cascade')
       table.integer('read_status').unsigned().nullable().defaultTo(0).index()
-      table.unique(['user_id', 'activity_type', 'schedule_games_id']);
-      table.unique(['user_id', 'activity_type', 'post_id']);
-      table.unique(['user_id', 'activity_type', 'comment_id']);
-      table.unique(['user_id', 'activity_type', 'reply_id']);
-      table.unique(['user_id', 'activity_type', 'group_id']);
-      table.unique(['user_id', 'activity_type', 'chat_id']);
       table.unique(['user_id', 'other_user_id', 'activity_type', 'schedule_games_id'], 'noti_index_1');
       table.unique(['user_id', 'other_user_id', 'activity_type', 'post_id'], 'noti_index_2');
       table.unique(['user_id', 'other_user_id', 'activity_type', 'comment_id'], 'noti_index_3');

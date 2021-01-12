@@ -136,6 +136,14 @@ const EditGame = ({
     updateMainSettings({ gameTitlesList: [...gameTitlesList, newOption], gameTitle: newOption })
   }
 
+  //https://github.com/JedWatson/react-select/issues/3988 :RAAZ remove once fixed
+  const getNewOptionData = (inputValue, optionLabel) => ({
+    value: inputValue,
+    label: optionLabel,
+    __isNew__: true,
+    isEqual: () => false,
+  })
+
   // api calls
   const getOptionsTags = (inputValue) => {
     const getInitialData = async function(inputValue) {
@@ -622,6 +630,7 @@ const EditGame = ({
           <MyGCreateableSelect
             isClearable
             onCreateOption={handleCreateGame}
+            getNewOptionData={getNewOptionData}
             onInputChange={getOptionsGames}
             onChange={handleChange_game_title}
             value={mainSettingsState.gameTitle}
@@ -693,6 +702,7 @@ const EditGame = ({
             isClearable
             isMulti
             onCreateOption={handleCreateTags}
+            getNewOptionData={getNewOptionData}
             onInputChange={getOptionsTags}
             onChange={(value) => {
               updateAdvancedSettings({ tags: value })

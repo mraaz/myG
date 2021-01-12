@@ -160,6 +160,8 @@ const CommunityView = (props) => {
           group_id={communityDetails.id}
           community_type={communityDetails.type}
           community_Membership_Approval={communityDetails.all_accept}
+          community_grp_description={communityDetails.grp_description}
+          community_allGrpTags={communityDetails.allGrpTags}
         />
       ) : (
         ''

@@ -10,6 +10,7 @@ export async function SubmitDataFunction(myG) {
     group_img = null,
     aws_key_id = null
 
+  //Some background, this variable was initially called coHosts but later we changed it to friends
   if (myG.coHosts) {
     co_hosts = Convert_to_comma_delimited_value(myG.coHosts)
   }
@@ -17,7 +18,7 @@ export async function SubmitDataFunction(myG) {
   if (myG.tags != undefined && myG.tags.length != 0 && myG.tags != null) {
     for (var i = 0; i < MAX_GAME_TAGS && i < myG.tags.length; i++) {
       if (/['/.%#$,;`\\]/.test(myG.tags[i].value)) {
-        toast.success(<Toast_style text={'Sorry mate! Game tags can not have invalid fields'} />)
+        toast.success(<Toast_style text={'Sorry mate! Community tags can not have invalid fields'} />)
         return
       }
 
