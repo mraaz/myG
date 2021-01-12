@@ -291,6 +291,7 @@ const AddCommunity = ({
               value={mainSettingsState.gameTitle}
               placeholder='Search, Select or create Game Title'
               options={mainSettingsState.gameTitlesList}
+              classNamePrefix='filter'
               onKeyDown={Disable_keys}
             />
           </div>
@@ -364,6 +365,7 @@ const AddCommunity = ({
                   : 'Yo! Either nothing to display or you need to type in something'
               }}
               onKeyDown={Disable_keys}
+              classNamePrefix='filter'
             />
           </div>
         </div>

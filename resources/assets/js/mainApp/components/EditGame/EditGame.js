@@ -34,7 +34,7 @@ const EditGame = ({
 }) => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    const getInitialData_Tags = async function() {
+    const getInitialData_Tags = async function () {
       try {
         let results = await Schedule_Game_Tags()
         updateAdvancedSettings({ optionTags: results })
@@ -43,7 +43,7 @@ const EditGame = ({
       }
     }
 
-    const getInitialData_GameName = async function() {
+    const getInitialData_GameName = async function () {
       try {
         let results = await Game_name_values(mainSettingsState.gameTitle.value)
         updateMainSettings({ gameTitle: results })
@@ -138,7 +138,7 @@ const EditGame = ({
 
   // api calls
   const getOptionsTags = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         let results = await Schedule_Game_Tags(inputValue)
         updateAdvancedSettings({ optionTags: results })
@@ -155,7 +155,7 @@ const EditGame = ({
   }
 
   const getOptionsGames = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         let results = await Game_name_values(inputValue)
         updateMainSettings({ gameTitlesList: results })
@@ -619,16 +619,19 @@ const EditGame = ({
         </div>
         <div>
           <div className={styles.fieldTitle}>Game Title</div>
-          <MyGCreateableSelect
-            isClearable
-            onCreateOption={handleCreateGame}
-            onInputChange={getOptionsGames}
-            onChange={handleChange_game_title}
-            value={mainSettingsState.gameTitle}
-            placeholder='Search, Select or create Game Title'
-            options={mainSettingsState.gameTitlesList}
-            onKeyDown={Disable_keys}
-          />
+          <div className='game-title-select'>
+            <MyGCreateableSelect
+              isClearable
+              onCreateOption={handleCreateGame}
+              onInputChange={getOptionsGames}
+              onChange={handleChange_game_title}
+              value={mainSettingsState.gameTitle}
+              placeholder='Search, Select or create Game Title'
+              options={mainSettingsState.gameTitlesList}
+              onKeyDown={Disable_keys}
+              classNamePrefix='filter'
+            />
+          </div>
           <div className={styles.fieldTitle}>Start Time</div>
           <MyGDatePicker
             onChange={(value) => {
@@ -689,19 +692,22 @@ const EditGame = ({
             />
           )}
           <div className={styles.fieldTitle}>Game Tags</div>
-          <MyGCreateableSelect
-            isClearable
-            isMulti
-            onCreateOption={handleCreateTags}
-            onInputChange={getOptionsTags}
-            onChange={(value) => {
-              updateAdvancedSettings({ tags: value })
-            }}
-            value={advancedSettingsState.tags}
-            placeholder='Search, Select or create Game Tags'
-            options={advancedSettingsState.optionTags}
-            onKeyDown={Disable_keys}
-          />
+          <div className='game-title-select'>
+            <MyGCreateableSelect
+              isClearable
+              isMulti
+              onCreateOption={handleCreateTags}
+              onInputChange={getOptionsTags}
+              onChange={(value) => {
+                updateAdvancedSettings({ tags: value })
+              }}
+              value={advancedSettingsState.tags}
+              placeholder='Search, Select or create Game Tags'
+              options={advancedSettingsState.optionTags}
+              onKeyDown={Disable_keys}
+              classNamePrefix='filter'
+            />
+          </div>
           {advancedSettingsState.show_platform && <div className={styles.fieldTitle}>Platform</div>}
           {advancedSettingsState.show_platform && (
             <MyGSelect
