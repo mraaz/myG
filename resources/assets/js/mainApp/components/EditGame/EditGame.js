@@ -34,7 +34,7 @@ const EditGame = ({
 }) => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    const getInitialData_Tags = async function () {
+    const getInitialData_Tags = async function() {
       try {
         let results = await Schedule_Game_Tags()
         updateAdvancedSettings({ optionTags: results })
@@ -43,7 +43,7 @@ const EditGame = ({
       }
     }
 
-    const getInitialData_GameName = async function () {
+    const getInitialData_GameName = async function() {
       try {
         let results = await Game_name_values(mainSettingsState.gameTitle.value)
         updateMainSettings({ gameTitle: results })
@@ -131,7 +131,9 @@ const EditGame = ({
       return
     }
 
-    const { gameTitlesList, gameTitle } = mainSettingsState
+    let { gameTitlesList, gameTitle } = mainSettingsState
+    if (gameTitlesList == null) gameTitlesList = ''
+
     const newOption = createOption(inputValue, null)
     updateMainSettings({ gameTitlesList: [...gameTitlesList, newOption], gameTitle: newOption })
   }
@@ -146,7 +148,7 @@ const EditGame = ({
 
   // api calls
   const getOptionsTags = (inputValue) => {
-    const getInitialData = async function (inputValue) {
+    const getInitialData = async function(inputValue) {
       try {
         let results = await Schedule_Game_Tags(inputValue)
         updateAdvancedSettings({ optionTags: results })
@@ -163,7 +165,7 @@ const EditGame = ({
   }
 
   const getOptionsGames = (inputValue) => {
-    const getInitialData = async function (inputValue) {
+    const getInitialData = async function(inputValue) {
       try {
         let results = await Game_name_values(inputValue)
         updateMainSettings({ gameTitlesList: results })

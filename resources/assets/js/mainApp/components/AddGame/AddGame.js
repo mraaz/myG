@@ -95,7 +95,7 @@ const AddGame = ({
   })
 
   const handleCreateTags = (inputValue) => {
-    if (advancedSettingsState.tags.length >= MAX_GAME_TAGS) {
+    if (advancedSettingsState.tags && advancedSettingsState.tags.length >= MAX_GAME_TAGS) {
       toast.success(<Toast_style text={'Sorry mate! Max of 8 tags.'} />)
       return
     }
@@ -109,7 +109,9 @@ const AddGame = ({
       return
     }
 
-    const { optionTags, tags } = advancedSettingsState
+    let { optionTags, tags } = advancedSettingsState
+    if (tags == null) tags = ''
+
     const newOption = createOption(inputValue, null)
     updateAdvancedSettings({
       optionTags: [...optionTags, newOption],
@@ -123,7 +125,9 @@ const AddGame = ({
       return
     }
 
-    const { gameTitlesList, gameTitle } = mainSettingsState
+    let { gameTitlesList, gameTitle } = mainSettingsState
+    if (gameTitlesList == null) gameTitlesList = ''
+
     const newOption = createOption(inputValue, null)
     updateMainSettings({ gameTitlesList: [...gameTitlesList, newOption], gameTitle: newOption })
   }

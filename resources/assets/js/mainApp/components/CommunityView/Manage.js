@@ -88,7 +88,9 @@ export default class Manage extends React.Component {
       return
     }
 
-    const { options_tags, tags } = this.state
+    let { options_tags, tags } = this.state
+    if (tags == null) tags = ''
+
     const newOption = createOption(inputValue, null)
     this.setState({ options_tags: [...options_tags, newOption] })
     this.setState({ tags: [...tags, newOption] })
