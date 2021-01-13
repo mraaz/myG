@@ -59,19 +59,22 @@ const MyGCreateableSelect = ({
     }),
   }
   return (
-    <CreatableSelect
-      styles={customStyles}
-      defaultValue={defaultValue}
-      value={value}
-      isSearchable={isSearchable}
-      options={options}
-      onChange={onChange}
-      placeholder={placeholder}
-      onInputChange={onInputChange}
-      onCreateOption={onCreateOption}
-      noOptionsMessage={noOptionsMessage}
-      {...otherProps}
-    />
+    <div className='game-title-select'>
+      <CreatableSelect
+        styles={customStyles}
+        defaultValue={defaultValue}
+        value={value}
+        isSearchable={isSearchable}
+        options={options}
+        onChange={onChange}
+        placeholder={placeholder}
+        onInputChange={onInputChange}
+        onCreateOption={onCreateOption}
+        noOptionsMessage={noOptionsMessage}
+        classNamePrefix='filter'
+        {...otherProps}
+      />
+    </div>
   )
 }
 

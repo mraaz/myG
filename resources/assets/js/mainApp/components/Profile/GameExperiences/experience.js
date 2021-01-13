@@ -1,6 +1,6 @@
 import React from 'react'
 import { ignoreFunctions } from '../../../../common/render'
-import AsyncCreatableSelect from 'react-select/async-creatable';
+import AsyncCreatableSelect from 'react-select/async-creatable'
 import MyGSelect from '../../common/MyGSelect'
 import { Disable_keys, Schedule_Game_Skills } from '../../Utility_Function'
 import { WithTooltip } from '../../Tooltip'
@@ -81,14 +81,14 @@ export default class Experience extends React.Component {
 
   renderSkillsInput = () => {
     if (!this.props.isSelf)
-    return this.renderDisabledFieldList(
-      'Skills',
-      this.props.experience.skills.map((skill) => skill.value)
-    )
+      return this.renderDisabledFieldList(
+        'Skills',
+        this.props.experience.skills.map((skill) => skill.value)
+      )
     return (
       <div className='row'>
         <span className='hint'>Skills</span>
-        <div className='input-container-row viewGame__gameName'>
+        <div className='input-container-row viewGame__gameName game-title-select'>
           <AsyncCreatableSelect
             defaultOptions
             cacheOptions
@@ -142,8 +142,10 @@ export default class Experience extends React.Component {
           <span className='hint'>{title}</span>
           <div className='input-container-row'>
             {values.map((value) => (
-              <WithTooltip text={value} position={{ bottom: "80px", left: '-80px' }} disabled={value.length <= 9}>
-                <span className="tag" key={value}>{value.slice(0, 9) + (value.length > 9 ? '...' : '')}</span>
+              <WithTooltip text={value} position={{ bottom: '80px', left: '-80px' }} disabled={value.length <= 9}>
+                <span className='tag' key={value}>
+                  {value.slice(0, 9) + (value.length > 9 ? '...' : '')}
+                </span>
               </WithTooltip>
             ))}
           </div>

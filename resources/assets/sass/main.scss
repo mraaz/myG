@@ -455,10 +455,11 @@ a:visited {
   }
 
   .filter__placeholder {
-    color: #ffffff;
+    color: #808080;
   }
 
   .filter {
+    background-color: #0b0f14;
     &__menu {
       top: 50px;
       background-color: #4d565a;
@@ -470,6 +471,11 @@ a:visited {
       width: 100%;
       z-index: 1;
       box-sizing: border-box;
+      .css-1ouli63-MenuList {
+        background-color: #0b0f14;
+        border: 1px solid #e5c746;
+        padding: 0;
+      }
     }
 
     &__option {

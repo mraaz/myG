@@ -682,22 +682,24 @@ export default class ScheduleGames extends Component {
                     <div className='col-md-6'>
                       <div className='viewGame__gameName'>
                         <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                        <AsyncSelect
-                          cacheOptions
-                          defaultOptions
-                          isValidNewOption={() => false}
-                          loadOptions={this.getOptions}
-                          onChange={(data) => this.handleDropDownChange(data, k)}
-                          isClearable
-                          value={value}
-                          className='viewGame__name'
-                          placeholder='Search or Select Game Title'
-                          onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
-                          onKeyDown={this.onKeyDown}
-                          isSearchable={true}
-                          classNamePrefix='filter'
-                          styles='background: red;'
-                        />
+                        <div className='game-title-select'>
+                          <AsyncSelect
+                            cacheOptions
+                            defaultOptions
+                            isValidNewOption={() => false}
+                            loadOptions={this.getOptions}
+                            onChange={(data) => this.handleDropDownChange(data, k)}
+                            isClearable
+                            value={value}
+                            className='viewGame__name'
+                            placeholder='Search or Select Game Title'
+                            onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
+                            onKeyDown={this.onKeyDown}
+                            isSearchable={true}
+                            classNamePrefix='filter'
+                            styles='background: red;'
+                          />
+                        </div>
                       </div>
                     </div>
                   )
@@ -707,19 +709,21 @@ export default class ScheduleGames extends Component {
                     <div className='col-md-6'>
                       <div className='viewGame__gameName'>
                         <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                        <Select
-                          onChange={(data) => this.handleTagsChange(data, k)}
-                          options={this.state.options_tags}
-                          isClearable
-                          value={value}
-                          className='viewGame__name'
-                          isMulti
-                          onKeyDown={this.onKeyDown}
-                          onInputChange={this.getOptions_tags}
-                          placeholder='Search or Select Tags'
-                          classNamePrefix='filter'
-                          menuColor='red'
-                        />
+                        <div className='game-title-select'>
+                          <Select
+                            onChange={(data) => this.handleTagsChange(data, k)}
+                            options={this.state.options_tags}
+                            isClearable
+                            value={value}
+                            className='viewGame__name'
+                            isMulti
+                            onKeyDown={this.onKeyDown}
+                            onInputChange={this.getOptions_tags}
+                            placeholder='Search or Select Tags'
+                            classNamePrefix='filter'
+                            menuColor='red'
+                          />
+                        </div>
                       </div>
                     </div>
                   )
@@ -728,16 +732,18 @@ export default class ScheduleGames extends Component {
                     <div className='col-md-6'>
                       <div className='viewGame__gameName'>
                         <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                        <Select
-                          onChange={(data) => this.handleChange_region(data, 'region')}
-                          options={region_options}
-                          placeholder='Select your region'
-                          name='region-box'
-                          isClearable
-                          className='viewGame__name'
-                          classNamePrefix='filter'
-                          value={filterValueArray['region']}
-                        />
+                        <div className='game-title-select'>
+                          <Select
+                            onChange={(data) => this.handleChange_region(data, 'region')}
+                            options={region_options}
+                            placeholder='Select your region'
+                            name='region-box'
+                            isClearable
+                            className='viewGame__name'
+                            classNamePrefix='filter'
+                            value={filterValueArray['region']}
+                          />
+                        </div>
                       </div>
                     </div>
                   )
@@ -746,16 +752,18 @@ export default class ScheduleGames extends Component {
                     <div className='col-md-6'>
                       <div className='viewGame__gameName'>
                         <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                        <Select
-                          onChange={this.handleChange_experience}
-                          options={experience_options}
-                          placeholder='Select experience level'
-                          name='experience-box'
-                          isClearable
-                          className='viewGame__name'
-                          classNamePrefix='filter'
-                          value={filterValueArray['experience']}
-                        />
+                        <div className='game-title-select'>
+                          <Select
+                            onChange={this.handleChange_experience}
+                            options={experience_options}
+                            placeholder='Select experience level'
+                            name='experience-box'
+                            isClearable
+                            className='viewGame__name'
+                            classNamePrefix='filter'
+                            value={filterValueArray['experience']}
+                          />
+                        </div>
                       </div>
                     </div>
                   )
@@ -764,16 +772,18 @@ export default class ScheduleGames extends Component {
                     <div className='col-md-6'>
                       <div className='viewGame__gameName'>
                         <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                        <Select
-                          onChange={this.handleChange_platform}
-                          options={platform_options}
-                          placeholder='Select which platform'
-                          name='platform-box'
-                          isClearable
-                          className='viewGame__name'
-                          classNamePrefix='filter'
-                          value={filterValueArray['platform']}
-                        />
+                        <div className='game-title-select'>
+                          <Select
+                            onChange={this.handleChange_platform}
+                            options={platform_options}
+                            placeholder='Select which platform'
+                            name='platform-box'
+                            isClearable
+                            className='viewGame__name'
+                            classNamePrefix='filter'
+                            value={filterValueArray['platform']}
+                          />
+                        </div>
                       </div>
                     </div>
                   )
@@ -782,16 +792,18 @@ export default class ScheduleGames extends Component {
                     <div className='col-md-6'>
                       <div className='viewGame__gameName'>
                         <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                        <Select
-                          onChange={this.handleChange_time}
-                          options={date_options}
-                          placeholder='Start Date?'
-                          name='date-time-box'
-                          isClearable
-                          className='viewGame__name'
-                          classNamePrefix='filter'
-                          value={filterValueArray['start_date']}
-                        />
+                        <div className='game-title-select'>
+                          <Select
+                            onChange={this.handleChange_time}
+                            options={date_options}
+                            placeholder='Start Date?'
+                            name='date-time-box'
+                            isClearable
+                            className='viewGame__name'
+                            classNamePrefix='filter'
+                            value={filterValueArray['start_date']}
+                          />
+                        </div>
                       </div>
                     </div>
                   )
@@ -815,16 +827,18 @@ export default class ScheduleGames extends Component {
                     <div className='col-md-6'>
                       <div className='viewGame__gameName'>
                         <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                        <Select
-                          onChange={this.handleChange_mic}
-                          options={yes_no_options}
-                          placeholder='Mic required?'
-                          name='platform-box'
-                          isClearable
-                          className='viewGame__name'
-                          classNamePrefix='filter'
-                          value={filterValueArray['mic']}
-                        />
+                        <div className='game-title-select'>
+                          <Select
+                            onChange={this.handleChange_mic}
+                            options={yes_no_options}
+                            placeholder='Mic required?'
+                            name='platform-box'
+                            isClearable
+                            className='viewGame__name'
+                            classNamePrefix='filter'
+                            value={filterValueArray['mic']}
+                          />
+                        </div>
                       </div>
                     </div>
                   )
@@ -833,16 +847,18 @@ export default class ScheduleGames extends Component {
                     <div className='col-md-6'>
                       <div className='viewGame__gameName'>
                         <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                        <Select
-                          onChange={this.handleChange_eighteen_plus}
-                          options={yes_no_options}
-                          placeholder='18+ event?'
-                          name='platform-box'
-                          isClearable
-                          className='viewGame__name'
-                          classNamePrefix='filter'
-                          value={filterValueArray['eighteen_plus']}
-                        />
+                        <div className='game-title-select'>
+                          <Select
+                            onChange={this.handleChange_eighteen_plus}
+                            options={yes_no_options}
+                            placeholder='18+ event?'
+                            name='platform-box'
+                            isClearable
+                            className='viewGame__name'
+                            classNamePrefix='filter'
+                            value={filterValueArray['eighteen_plus']}
+                          />
+                        </div>
                       </div>
                     </div>
                   )
@@ -851,16 +867,18 @@ export default class ScheduleGames extends Component {
                     <div className='col-md-6'>
                       <div className='viewGame__gameName'>
                         <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                        <Select
-                          onChange={this.handleChange_language}
-                          options={language_options}
-                          placeholder='Search which language/s'
-                          name='platform-box'
-                          isClearable
-                          className='viewGame__name'
-                          classNamePrefix='filter'
-                          value={filterValueArray['language']}
-                        />
+                        <div className='game-title-select'>
+                          <Select
+                            onChange={this.handleChange_language}
+                            options={language_options}
+                            placeholder='Search which language/s'
+                            name='platform-box'
+                            isClearable
+                            className='viewGame__name'
+                            classNamePrefix='filter'
+                            value={filterValueArray['language']}
+                          />
+                        </div>
                       </div>
                     </div>
                   )
@@ -884,16 +902,18 @@ export default class ScheduleGames extends Component {
                     <div className='col-md-6'>
                       <div className='viewGame__gameName'>
                         <div className='viewGame__label'>{this.filterGroup[k]}</div>
-                        <Select
-                          onChange={this.handleChange_visibility}
-                          options={visibility_options}
-                          placeholder='Select visibility'
-                          name='visibility-box'
-                          isClearable
-                          className='viewGame__name'
-                          classNamePrefix='filter'
-                          value={this.state.visibility || filterValueArray['visibility']}
-                        />
+                        <div className='game-title-select'>
+                          <Select
+                            onChange={this.handleChange_visibility}
+                            options={visibility_options}
+                            placeholder='Select visibility'
+                            name='visibility-box'
+                            isClearable
+                            className='viewGame__name'
+                            classNamePrefix='filter'
+                            value={this.state.visibility || filterValueArray['visibility']}
+                          />
+                        </div>
                       </div>
                     </div>
                   )
@@ -903,17 +923,19 @@ export default class ScheduleGames extends Component {
                     <div className='col-md-6'>
                       <div className='viewGame__gameName'>
                         <div className='viewGame__label'>{field_data.label || ''}</div>
-                        <Select
-                          onChange={(data) => this.handleAdditionalInfoChange(data, k, field_data.type)}
-                          options={getExtraFilterOprion(field_data.value)}
-                          isClearable
-                          value={extraFields[k] || ''}
-                          className='viewGame__name'
-                          isMulti={field_data.type == 'Single' ? false : true}
-                          onKeyDown={this.onKeyDown}
-                          placeholder={`${field_data.placeholder || ''}`}
-                          classNamePrefix='filter'
-                        />
+                        <div className='game-title-select'>
+                          <Select
+                            onChange={(data) => this.handleAdditionalInfoChange(data, k, field_data.type)}
+                            options={getExtraFilterOprion(field_data.value)}
+                            isClearable
+                            value={extraFields[k] || ''}
+                            className='viewGame__name'
+                            isMulti={field_data.type == 'Single' ? false : true}
+                            onKeyDown={this.onKeyDown}
+                            placeholder={`${field_data.placeholder || ''}`}
+                            classNamePrefix='filter'
+                          />
+                        </div>
                       </div>
                     </div>
                   )
