@@ -100,7 +100,9 @@ const AddCommunity = ({
       return
     }
 
-    const { optionTags, tags } = advancedSettingsState
+    let { optionTags, tags } = advancedSettingsState
+    if (tags == null) tags = ''
+
     const newOption = createOption(inputValue, null)
     updateAdvancedSettings({
       optionTags: [...optionTags, newOption],
@@ -135,7 +137,9 @@ const AddCommunity = ({
       return
     }
 
-    const { gameTitlesList, gameTitle } = mainSettingsState
+    let { gameTitlesList, gameTitle } = mainSettingsState
+    if (gameTitlesList == null) gameTitlesList = ''
+
     const newOption = createOption(inputValue, null)
     updateMainSettings({ gameTitlesList: [...gameTitlesList, newOption], gameTitle: newOption })
   }

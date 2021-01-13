@@ -230,7 +230,7 @@ export default class ComposeSection extends Component {
       }
     }
 
-    const getGamers_you_might_know = async function () {
+    const getGamers_you_might_know = async function() {
       try {
         const gamers_you_might_know = await axios.get('/api/user/gamers_you_might_know')
 
@@ -250,7 +250,7 @@ export default class ComposeSection extends Component {
       open_compose_textTab = false
     }
     if (label == 'text') {
-      setTimeout(function () {
+      setTimeout(function() {
         document.getElementById('composeTextarea').focus()
       }, 0)
     }
@@ -312,7 +312,9 @@ export default class ComposeSection extends Component {
       toast.success(<Toast_style text={'Sorry mate! Tag length is tooo long.'} />)
       return
     }
-    const { options_tags, value_tags } = this.state
+    let { options_tags, value_tags } = this.state
+    if (value_tags == null) value_tags = ''
+
     const newOption = createOption(inputValue, null)
     this.setState({ options_tags: [...options_tags, newOption] })
     this.setState({ value_tags: [...value_tags, newOption] })
@@ -329,7 +331,7 @@ export default class ComposeSection extends Component {
   getOptions_tags = (inputValue) => {
     const self = this
 
-    const getInitialData = async function (inputValue) {
+    const getInitialData = async function(inputValue) {
       try {
         var results = await Hash_Tags(inputValue)
         self.setState({ options_tags: results })

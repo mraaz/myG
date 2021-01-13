@@ -6,11 +6,17 @@ import { fetchStatsAction } from '../../redux/actions/userAction'
 class AnalyticsBox extends React.Component {
   state = {
     counter: 1,
+    loading: true,
   }
 
   async componentDidMount() {
-    const hasStats = Object.keys(this.props.userTransactionStates).length;
-    if (!hasStats) this.props.fetchStats(this.props.alias);
+    const hasStats = Object.keys(this.props.userTransactionStates).length
+    if (parseInt(hasStats) < 10) {
+      await this.props.fetchStats(this.props.alias)
+    }
+    this.setState({
+      loading: false,
+    })
   }
 
   renderLevel = () => {
@@ -21,6 +27,7 @@ class AnalyticsBox extends React.Component {
       user_xp_negative_balance = 0,
       level_max_points = 0,
     } = this.props.userTransactionStates
+
     const progress = Math.floor(((user_experience - start_of_level_xp) / level_max_points) * 100)
     return (
       <div className='level-container'>
@@ -110,8 +117,14 @@ class AnalyticsBox extends React.Component {
   }
 
   render() {
+    if (this.state.loading) {
+      return <div />
+    }
+
     return (
-      <section className={`social-main ${this.props.containerStyle ? this.props.containerStyle : ''}`} onClick={(event) => event.stopPropagation()}>
+      <section
+        className={`social-main ${this.props.containerStyle ? this.props.containerStyle : ''}`}
+        onClick={(event) => event.stopPropagation()}>
         <div className='social-content'>
           {this.renderLevel()}
           {this.renderConnections()}
@@ -126,11 +139,11 @@ class AnalyticsBox extends React.Component {
 }
 
 function mapStateToProps(state, props) {
-  const isStatsForCurrentUser = !props.alias || props.alias === state.user.alias;
-  const statsForCurrentUser = (state.user.userTransactionStates || {}) || {};
-  const statsForOtherUser = (state.user.statsForAlias || {})[props.alias] || {};
-  const userTransactionStates = isStatsForCurrentUser ? statsForCurrentUser : statsForOtherUser;
-  return { userTransactionStates };
+  const isStatsForCurrentUser = !props.alias || props.alias === state.user.alias
+  const statsForCurrentUser = state.user.userTransactionStates || {} || {}
+  const statsForOtherUser = (state.user.statsForAlias || {})[props.alias] || {}
+  const userTransactionStates = isStatsForCurrentUser ? statsForCurrentUser : statsForOtherUser
+  return { userTransactionStates }
 }
 
 function mapDispatchToProps(dispatch) {
@@ -139,4 +152,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AnalyticsBox);
+export default connect(mapStateToProps, mapDispatchToProps)(AnalyticsBox)
