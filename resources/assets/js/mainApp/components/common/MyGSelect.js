@@ -1,17 +1,30 @@
 import React from 'react'
 import Select from 'react-select'
 
-const MyGSelect = ({ defaultValue, isSearchable, options, onChange, onFocus, value, width, innerWidth, placeholder, onInputChange, disabled, ...props }) => {
+const MyGSelect = ({
+  defaultValue,
+  isSearchable,
+  options,
+  onChange,
+  onFocus,
+  value,
+  width,
+  innerWidth,
+  placeholder,
+  onInputChange,
+  disabled,
+  ...props
+}) => {
   const customStyles = {
     container: (provided) => ({
       ...provided,
-      width:  width || '422px',
+      width: width || '422px',
     }),
     control: (provided) => ({
       ...provided,
       backgroundColor: '#2D363A',
       border: 'none',
-      width:  innerWidth || '422px',
+      width: innerWidth || '422px',
       minHeight: '38px',
       color: '#fff',
     }),
@@ -35,18 +48,21 @@ const MyGSelect = ({ defaultValue, isSearchable, options, onChange, onFocus, val
   }
 
   return (
-    <Select
-      styles={customStyles}
-      defaultValue={defaultValue}
-      value={value}
-      isSearchable={isSearchable}
-      options={options}
-      onFocus={onFocus}
-      onChange={onChange}
-      placeholder={placeholder}
-      onInputChange={onInputChange}
-      {...props}
-    />
+    <div className='game-title-select'>
+      <Select
+        styles={customStyles}
+        defaultValue={defaultValue}
+        value={value}
+        isSearchable={isSearchable}
+        options={options}
+        onFocus={onFocus}
+        onChange={onChange}
+        placeholder={placeholder}
+        onInputChange={onInputChange}
+        classNamePrefix='filter'
+        {...props}
+      />
+    </div>
   )
 }
 

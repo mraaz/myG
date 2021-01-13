@@ -79,10 +79,10 @@ export default class MainInfo extends React.Component {
   }
 
   scrollToBottom = () => {
-    console.log('scroll to bottom', document.getElementById("profile-game-main-info"))
+    console.log('scroll to bottom', document.getElementById('profile-game-main-info'))
     setTimeout(() => {
-      document.getElementById("profile-game-main-info").scrollTop = 9999;
-    }, 0);
+      document.getElementById('profile-game-main-info').scrollTop = 9999
+    }, 0)
   }
 
   onSave = (canSave) => {
@@ -135,7 +135,7 @@ export default class MainInfo extends React.Component {
     return (
       <div className='row'>
         <span className='hint'>Game Title</span>
-        <div className='input-container-row viewGame__gameName'>
+        <div className='input-container-row viewGame__gameName game-title-select'>
           <AsyncCreatableSelect
             cacheOptions
             defaultOptions
@@ -258,7 +258,7 @@ export default class MainInfo extends React.Component {
     return (
       <div className='row'>
         <span className='hint'>Tags</span>
-        <div className='input-container-row viewGame__gameName'>
+        <div className='input-container-row viewGame__gameName game-title-select'>
           <AsyncCreatableSelect
             cacheOptions
             defaultOptions

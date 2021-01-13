@@ -36,7 +36,7 @@ const AddGame = ({
 }) => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    const getInitialData_Tags = async function() {
+    const getInitialData_Tags = async function () {
       try {
         let results = await Schedule_Game_Tags()
         updateAdvancedSettings({ optionTags: results })
@@ -45,7 +45,7 @@ const AddGame = ({
       }
     }
 
-    const getInitialData_GameName = async function() {
+    const getInitialData_GameName = async function () {
       try {
         let results = await Game_name_values()
         updateMainSettings({ gameTitlesList: results })
@@ -142,7 +142,7 @@ const AddGame = ({
 
   // api calls
   const getOptionsTags = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         let results = await Schedule_Game_Tags(inputValue)
         updateAdvancedSettings({ optionTags: results })
@@ -159,7 +159,7 @@ const AddGame = ({
   }
 
   const getOptionsGames = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         let results = await Game_name_values(inputValue)
         updateMainSettings({ gameTitlesList: results })
@@ -648,21 +648,19 @@ const AddGame = ({
             <p>Game Title</p>
           </div>
           <div className='game-title-select'>
-            <div>
-              <MyGCreateableSelect
-                isClearable
-                onCreateOption={handleCreateGame}
-                onInputChange={getOptionsGames}
-                onChange={handleChange_game_title}
-                getNewOptionData={getNewOptionData}
-                value={mainSettingsState.gameTitle}
-                placeholder='Search, Select or create Game Title'
-                options={mainSettingsState.gameTitlesList}
-                onKeyDown={Disable_keys}
-                classNamePrefix='filter'
-                className='viewGame__name'
-              />
-            </div>
+            <MyGCreateableSelect
+              isClearable
+              onCreateOption={handleCreateGame}
+              onInputChange={getOptionsGames}
+              onChange={handleChange_game_title}
+              getNewOptionData={getNewOptionData}
+              value={mainSettingsState.gameTitle}
+              placeholder='Search, Select or create Game Title'
+              options={mainSettingsState.gameTitlesList}
+              onKeyDown={Disable_keys}
+              classNamePrefix='filter'
+              className='viewGame__name'
+            />
           </div>
           <div className='field-title'>
             <p>Start Time</p>

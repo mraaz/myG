@@ -157,7 +157,7 @@ export default class MyScheduledGames extends Component {
           className={`gameList__section ${singleView ? 'singleGameView__container' : 'GameView__container'}`}
           style={{ display: 'block' }}>
           <div className='myGame__filter-section'>
-            <div className='viewGame__gameName'>
+            <div className='viewGame__gameName game-title-select'>
               <Select
                 onChange={(data) => this.handleChangeFilter(data)}
                 options={prefilledFilter_option}

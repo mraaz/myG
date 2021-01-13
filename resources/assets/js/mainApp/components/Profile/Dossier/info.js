@@ -1,7 +1,7 @@
 import React from 'react'
 import get from 'lodash.get'
 import scriptLoader from 'react-async-script-loader'
-import AsyncCreatableSelect from 'react-select/async-creatable';
+import AsyncCreatableSelect from 'react-select/async-creatable'
 import PlacesAutocomplete from 'react-places-autocomplete'
 import { Game_name_values, Disable_keys } from '../../Utility_Function'
 import { getAssetUrl } from '../../../../common/assets'
@@ -99,7 +99,8 @@ export class DossierInfo extends React.Component {
   onClose = () => {
     const updates = this.getUpdates()
     const hasPendingChanges = Object.keys(updates).length
-    if (hasPendingChanges) showMessengerAlert('You have unsaved changes, are you sure you want to close?', this.props.onClose, null, 'Make it so')
+    if (hasPendingChanges)
+      showMessengerAlert('You have unsaved changes, are you sure you want to close?', this.props.onClose, null, 'Make it so')
     else this.props.onClose()
   }
 
@@ -219,7 +220,7 @@ export class DossierInfo extends React.Component {
     return (
       <div className='row'>
         <span className='hint'>Game #{index + 1}</span>
-        <div className='input-container-row'>
+        <div className='input-container-row game-title-select'>
           <AsyncCreatableSelect
             defaultOptions
             isValidNewOption={() => false}
@@ -336,7 +337,7 @@ export class DossierInfo extends React.Component {
   }
 
   render() {
-    if (!this.props.isScriptLoadSucceed) return null;
+    if (!this.props.isScriptLoadSucceed) return null
     return (
       <React.Fragment>
         <div className='content'>
