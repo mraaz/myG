@@ -24,8 +24,8 @@ class UserStatTransactionController {
     let start_of_level_xp = 0
 
     if (auth.user) {
-      const alias = request && request.only('alias').alias;
-      const userId = !alias ? auth.user.id : (await this.fetchUserId({ alias }))
+      const alias = request && request.only('alias').alias
+      const userId = !alias ? auth.user.id : await this.fetchUserId({ alias })
 
       const getmyStats = await Database.from('user_stat_transactions')
         .innerJoin('user_stats', 'user_stats.id', 'user_stat_transactions.user_stat_id')
@@ -150,9 +150,11 @@ class UserStatTransactionController {
   }
 
   async fetchUserId({ alias }) {
-    const response = await User.query().where('alias', alias).fetch();
-    const profile = response && response.toJSON()[0];
-    return profile && profile.id;
+    const response = await User.query()
+      .where('alias', alias)
+      .fetch()
+    const profile = response && response.toJSON()[0]
+    return profile && profile.id
   }
 
   async update_total_number_of(my_user_id, criteria) {
