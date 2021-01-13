@@ -162,6 +162,7 @@ const CommunityView = (props) => {
           community_Membership_Approval={communityDetails.all_accept}
           community_grp_description={communityDetails.grp_description}
           community_allGrpTags={communityDetails.allGrpTags}
+          community_Name={decodeURIComponent(props.routeProps.match.params.name)}
         />
       ) : (
         ''

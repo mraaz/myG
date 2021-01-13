@@ -42,6 +42,8 @@ export default class Members extends React.Component {
 
   componentDidMount() {
     const { activeTab } = this.props
+    console.log(this.props.community_Name, '<<<console.log(this.props.community_Name);')
+
     this.getInitialData()
     this.setState({ isActive: activeTab })
   }
@@ -78,7 +80,7 @@ export default class Members extends React.Component {
   }
 
   handleSave = (e) => {
-    let { communityName, approval, privacy, description, tags, coHosts } = this.state
+    let { approval, privacy, description, tags, coHosts } = this.state
 
     if (coHosts) {
       coHosts = Convert_to_comma_delimited_value(coHosts)
@@ -99,16 +101,22 @@ export default class Members extends React.Component {
 
     axios.post('/api/groups/update_settings', {
       group_id: this.props.group_id,
-      group_name: communityName,
       privacy: privacy,
       mApprovals: approval,
       description: description,
       tags: tags,
     })
-    toast.success(<Toast_style text={'Nice! Setting has been successfully saved.'} />)
-    this.props.handleModalStatus(true)
+
+    if (this.props.community_Name == '') {
+      toast.success(<Toast_style text={'Nice! Setting has been successfully saved.'} />)
+      this.props.handleModalStatus(true)
+    } else {
+      //Too many changes to the settings, can be name, tags, etc
+      window.location.href = `/community/${this.props.community_Name}`
+    }
+
     // this.props.routeProps.match.params.name = communityName
-    // this.props.routeProps.history.push(`/community/${communityName}`)
+    // this.props.routeProps.history.push(`/community/${decodeURIComponent(communityName)}`)
   }
 
   handleDelete = async (text) => {
