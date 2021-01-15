@@ -24,6 +24,15 @@ class GroupController {
     if (auth.user) {
       try {
         if (
+          request
+            .input('name')
+            .toUpperCase()
+            .includes('MYG OFFICIAL')
+        ) {
+          return false
+        }
+
+        if (
           request.input('name').length > 75 ||
           request.input('name') == undefined ||
           request.input('name') == null ||
@@ -218,10 +227,10 @@ class GroupController {
 
       const groupSearchResults = await Database.from('groups')
         .select('name', 'group_img', 'id')
-        .where('name', 'like', '%' + request.params.str + '%')
+        .where('name', 'like', '%' + decodeURI(request.params.str) + '%')
         .whereIn('id', all_groups_im_in_but_dont_own)
         .orWhere('groups.user_id', '=', auth.user.id)
-        .andWhere('name', 'like', '%' + request.params.str + '%')
+        .andWhere('name', 'like', '%' + decodeURI(request.params.str) + '%')
         .limit(24)
 
       return {
@@ -248,7 +257,7 @@ class GroupController {
 
       const groupSearchResults_im_not_in = await Database.from('groups')
         .select('name', 'group_img', 'id as group_id', 'type')
-        .where('name', 'like', '%' + request.params.str + '%')
+        .where('name', 'like', '%' + decodeURI(request.params.str) + '%')
         .whereNot('type', 2)
         .whereNotIn('id', all_groups_im_in_ish)
         .limit(24)
@@ -283,13 +292,13 @@ class GroupController {
         .select('group_id')
 
       const myGroupSearchResults = await Database.from('groups')
-        .where('name', 'like', '%' + request.params.str + '%')
+        .where('name', 'like', '%' + decodeURI(request.params.str) + '%')
         .select('name', 'group_img', 'id', 'type')
         .whereIn('id', all_groups_im_in)
         .limit(88)
 
       const groupSearchResults_im_not_in = await Database.from('groups')
-        .where('name', 'like', '%' + request.params.str + '%')
+        .where('name', 'like', '%' + decodeURI(request.params.str) + '%')
         .whereNot('type', 2)
         .select('name', 'group_img', 'id', 'type')
         .whereNotIn('id', all_groups_im_in_ish)

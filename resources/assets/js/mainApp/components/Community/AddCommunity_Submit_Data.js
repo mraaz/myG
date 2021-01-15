@@ -1,4 +1,6 @@
-import { Convert_to_comma_delimited_value } from '../Utility_Function'
+import React from 'react'
+import { Convert_to_comma_delimited_value, Toast_style } from '../Utility_Function'
+import { toast } from 'react-toastify'
 
 import axios from 'axios'
 
@@ -31,6 +33,11 @@ export async function SubmitDataFunction(myG) {
   if (myG.preview_files && myG.preview_files[0]) {
     group_img = myG.preview_files[0].src
     aws_key_id = myG.preview_files[0].id
+  }
+
+  if (myG.community_name.toUpperCase().includes('MYG OFFICIAL')) {
+    toast.success(<Toast_style text={'Whhaatttt! Community name can not have myG official'} />)
+    return
   }
 
   try {
