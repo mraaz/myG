@@ -40,6 +40,10 @@ export default class GroupMain extends Component {
           all_my_communities: getmyGroups.data.all_my_communities,
           more_data: getmyGroups.data.all_my_communities ? (getmyGroups.data.all_my_communities.length > 10 ? true : false) : false,
         })
+
+        if (getmyGroups.data.all_my_communities.length == 0) {
+          this.togglePostTypeTab('suggestedCommunityTab')
+        }
       } catch (error) {
         logToElasticsearch('error', 'List_Community', 'Failed getGroups in Mount:' + ' ' + error)
       }
@@ -267,7 +271,7 @@ export default class GroupMain extends Component {
           })
         }
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'Group Main', 'Failed getSearchInfoCommunity:' + ' ' + error)
       }
     }
 
@@ -291,7 +295,7 @@ export default class GroupMain extends Component {
           })
         }
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'Group Main', 'Failed getSearchInfoSuggestedCommunity:' + ' ' + error)
       }
     }
   }
@@ -304,31 +308,23 @@ export default class GroupMain extends Component {
         <section className={`postCompose__container ${overlay_active ? 'zI1000' : ''}`}>
           {this.state.yourCommunityTab && (
             <div className='arrow__right' onClick={this.next_data}>
-              {this.state.more_data && (
-                <img src='https://myG.gg/platform_images/Communities/Group+971.svg' alt='arrow-right' />
-              )}
+              {this.state.more_data && <img src='https://myG.gg/platform_images/Communities/Group+971.svg' alt='arrow-right' />}
             </div>
           )}
           {this.state.yourCommunityTab && (
             <div className='arrow__left' onClick={this.prev_data}>
-              {this.state.less_data && (
-                <img src='https://myG.gg/platform_images/Communities/Group+971.svg' alt='arrow-left' />
-              )}
+              {this.state.less_data && <img src='https://myG.gg/platform_images/Communities/Group+971.svg' alt='arrow-left' />}
             </div>
           )}
 
           {!this.state.yourCommunityTab && (
             <div className='arrow__right' onClick={this.next_data_suggested}>
-              {this.state.suggested_more_data && (
-                <img src='https://myG.gg/platform_images/Communities/Group+971.svg' alt='arrow-right' />
-              )}
+              {this.state.suggested_more_data && <img src='https://myG.gg/platform_images/Communities/Group+971.svg' alt='arrow-right' />}
             </div>
           )}
           {!this.state.yourCommunityTab && (
             <div className='arrow__left' onClick={this.prev_data_suggested}>
-              {this.state.suggested_less_data && (
-                <img src='https://myG.gg/platform_images/Communities/Group+971.svg' alt='arrow-left' />
-              )}
+              {this.state.suggested_less_data && <img src='https://myG.gg/platform_images/Communities/Group+971.svg' alt='arrow-left' />}
             </div>
           )}
 

@@ -8,8 +8,9 @@ const LoggingRepository = require('../../Repositories/Logging')
 
 class ConnectionController {
   async master_controller({ auth }) {
-    if (auth.user) {
+    this.calc_communities_you_might_know({ auth })
 
+    if (auth.user) {
       const getRunTime = await Database.from('settings')
         .select('gamer_connection_last_runtime', 'id')
         .where({ user_id: auth.user.id })
@@ -157,6 +158,10 @@ class ConnectionController {
           .where({ user_id: auth.user.id })
           .select('friends.friend_id as user_id')
 
+        const get_my_games = Database.from('game_experiences')
+          .where('user_id', '=', auth.user.id)
+          .select('game_names_id')
+
         let groups_my_friends_are_in = await Database.from('usergroups')
           .innerJoin('groups', 'groups.id', 'usergroups.group_id')
           .where('groups.type', '=', 1)
@@ -182,10 +187,18 @@ class ConnectionController {
           .orderBy('no_of_members', 'desc')
           .limit(288)
 
+        let my_gaming_grps = await Database.from('groups')
+          .leftJoin('usergroups', 'usergroups.group_id', 'groups.id')
+          .whereNot('groups.user_id', auth.user.id)
+          .whereNotIn('usergroups.group_id', subquery_2)
+          .whereIn('groups.game_names_id', get_my_games)
+          .select('groups.id as group_id')
+          .limit(20)
+
         let tmp_popin_groups = popin_groups
         let popin_groups_size = 0
 
-        //Let's do 80/20 split groups_my_friends_are_in for 80.
+        //Let's do 60/20 split groups_my_friends_are_in for 80.
 
         if (groups_my_friends_are_in.length > 200) {
           let tmpVal = 0
@@ -204,7 +217,7 @@ class ConnectionController {
           popin_groups_size = 250 - groups_my_friends_are_in.length
         }
 
-        const _1stpass = [...groups_my_friends_are_in, ...popin_groups]
+        const _1stpass = [...groups_my_friends_are_in, ...popin_groups, ...my_gaming_grps]
 
         var mySet = new Set()
         for (var i = 0; i < _1stpass.length; i++) {
@@ -224,9 +237,20 @@ class ConnectionController {
         let myArr = [...mySet]
         myArr = await this.shuffle(myArr)
 
-        let groupConnectionController = new GroupConnectionController()
+        if (myArr.length < 10) {
+          let random_grps = await Database.from('groups')
+            .leftJoin('usergroups', 'usergroups.group_id', 'groups.id')
+            .whereNot('groups.user_id', auth.user.id)
+            .whereNotIn('usergroups.group_id', subquery_2)
+            .select('groups.id as group_id')
+            .orderBy('groups.created_at', 'asc')
+            .limit(88)
 
-        for (var i = 0; i < myArr.length; i++) {
+          myArr = [...myArr, ...random_grps]
+        }
+        const groupConnectionController = new GroupConnectionController()
+
+        for (let i = 0; i < myArr.length; i++) {
           groupConnectionController.store({ auth }, myArr[i].group_id, myArr[i].no_of_members)
         }
       } catch (error) {

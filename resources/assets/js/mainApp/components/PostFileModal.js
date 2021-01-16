@@ -35,6 +35,7 @@ export default class PostFileModal extends Component {
     const getmyGroups = async () => {
       try {
         const getmyGroups = await axios.get('/api/groups/view/1')
+        console.log(getmyGroups,"<<<<getmyGroups");
         this.setState({
           myGroups: getmyGroups.data.myGroups,
         })
@@ -138,12 +139,14 @@ export default class PostFileModal extends Component {
           if (groups_im_not_in.length > 0) {
             groups_im_in = self.getMergedGroupData(groups_im_in, groups_im_not_in)
           }
+          console.log(groups_im_in,"<<<<groups_im_in");
           self.setState({ groups_im_in })
         } else {
           const getGroups_im_in = await axios.get('/api/usergroup/view/1')
           self.setState({
             groups_im_in: getGroups_im_in.data.groups_im_in,
           })
+          console.log(getGroups_im_in.data.groups_im_in,"<<<getGroups_im_in.data.groups_im_in");
         }
       } catch (error) {
         logToElasticsearch('error', 'PostFileModal', 'Failed getSearchInfo:' + ' ' + error)
