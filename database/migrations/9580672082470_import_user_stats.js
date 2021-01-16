@@ -18,8 +18,8 @@ class Import_user_stats_Schema extends Schema {
     .raw(" insert into user_stats (criteria, xp_per_tick, created_at, updated_at) values ('total_number_of_likes', '1', '1981-03-19', '1981-03-19')")
     .raw(" insert into user_stats (criteria, xp_per_tick, created_at, updated_at) values ('total_number_of_commendations', '30', '1981-03-19', '1981-03-19')")
 
-    .raw(" insert into user_levels (level, max_points, created_at, updated_at) values (1, 68,  '1981-03-19', '1981-03-19')")
-    .raw(" insert into user_levels (level, max_points, created_at, updated_at) values (2, 135,  '1981-03-19', '1981-03-19')")
+    .raw(" insert into user_levels (level, max_points, created_at, updated_at) values (1, 15,  '1981-03-19', '1981-03-19')")
+    .raw(" insert into user_levels (level, max_points, created_at, updated_at) values (2, 68,  '1981-03-19', '1981-03-19')")
     .raw(" insert into user_levels (level, max_points, created_at, updated_at) values (3, 270,  '1981-03-19', '1981-03-19')")
     .raw(" insert into user_levels (level, max_points, created_at, updated_at) values (4, 405,  '1981-03-19', '1981-03-19')")
     .raw(" insert into user_levels (level, max_points, created_at, updated_at) values (5, 608,  '1981-03-19', '1981-03-19')")
