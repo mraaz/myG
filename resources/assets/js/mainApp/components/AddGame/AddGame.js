@@ -699,22 +699,20 @@ const AddGame = ({
         </div>
         <div className='advance-settings-content'>
           <div className='field-title'>Co-host</div>
-          <div className='friend-name-select'>
-            <MyGAsyncSelect
-              isClearable
-              isMulti
-              isValidNewOption={() => {
-                return
-              }}
-              loadOptions={onPlayersSuggestionFetch}
-              onChange={(value) => {
-                updateAdvancedSettings({ coHosts: value })
-              }}
-              value={advancedSettingsState.coHosts}
-              placeholder='Enter your friend’s name to set them as a co-host'
-              className='test'
-            />
-          </div>
+          <MyGAsyncSelect
+            isClearable
+            isMulti
+            isValidNewOption={() => {
+              return
+            }}
+            loadOptions={onPlayersSuggestionFetch}
+            onChange={(value) => {
+              updateAdvancedSettings({ coHosts: value })
+            }}
+            value={advancedSettingsState.coHosts}
+            placeholder='Enter your friend’s name to set them as a co-host'
+            className='test'
+          />
           {advancedSettingsState.show_experience && <div className='field-title'>Experience</div>}
           {advancedSettingsState.show_experience && (
             <div className='experience-select'>

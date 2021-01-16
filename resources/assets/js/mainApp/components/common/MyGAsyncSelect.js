@@ -1,6 +1,6 @@
 import React from 'react'
 //import AsyncSelect from 'react-select'
-import AsyncSelect from 'react-select/async';
+import AsyncSelect from 'react-select/async'
 
 const MyGAsyncSelect = ({
   defaultValue,
@@ -62,19 +62,22 @@ const MyGAsyncSelect = ({
   }
 
   return (
-    <AsyncSelect
-      styles={customStyles}
-      defaultValue={defaultValue}
-      value={value}
-      isSearchable={isSearchable}
-      options={options}
-      onChange={onChange}
-      placeholder={placeholder}
-      onInputChange={onInputChange}
-      noOptionsMessage={noOptionsMessage}
-      loadOptions={loadOptions}
-      {...otherProps}
-    />
+    <div className='game-title-select'>
+      <AsyncSelect
+        styles={customStyles}
+        defaultValue={defaultValue}
+        value={value}
+        isSearchable={isSearchable}
+        options={options}
+        onChange={onChange}
+        placeholder={placeholder}
+        onInputChange={onInputChange}
+        noOptionsMessage={noOptionsMessage}
+        loadOptions={loadOptions}
+        classNamePrefix='filter'
+        {...otherProps}
+      />
+    </div>
   )
 }
 
