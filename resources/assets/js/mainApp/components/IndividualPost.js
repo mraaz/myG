@@ -628,7 +628,7 @@ export default class IndividualPost extends Component {
               <div
                 className='profile__image'
                 style={{
-                  backgroundImage: `url('${profile_img}')`,
+                  backgroundImage: `url('${profile_img}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`,
                   backgroundSize: 'cover',
                 }}>
                 <Link to={`/profile/${post.alias}`} className='user-img'></Link>
