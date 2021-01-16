@@ -1921,7 +1921,6 @@ section#content-container {
         width: 32px;
         height: 32px;
         cursor: pointer;
-        padding: 7px;
         &:focus {
           margin: 0;
           outline: none;
@@ -2012,6 +2011,7 @@ section#content-container {
     .postCompose__container {
       margin: 0 auto;
       width: 100% !important;
+      border-radius: 10px;
     }
     .people_group_list {
       &.active {
