@@ -39,6 +39,8 @@
   position: relative;
   border-left: 1px solid #384952;
   padding: 0px 30px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .social-box:last-child:after {
@@ -47,8 +49,9 @@
 }
 
 .social-box-img {
-  width: 32px;
+  width: auto;
   margin-bottom: 15px;
+  padding: 10px 0 0;
 }
 
 .social-box-count {
