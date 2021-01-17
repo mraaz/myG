@@ -11,7 +11,7 @@ const NoRecordFound = (props) => {
   return (
     <div className='noRecordFound__wraper'>
       <h1 className='noRecordFound__header'>Cannot find any games</h1>
-      <div className='noRecordFound__body'>
+      <div className='noRecordFound__body' style={{ color: '#fff' }}>
         Try searching for another title or{' '}
         <Link to='/addScheduleGames'>
           {' '}

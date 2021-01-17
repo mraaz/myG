@@ -383,56 +383,17 @@ class GroupController {
   async get_my_communities({ auth, request, response }) {
     if (auth.user) {
       try {
-        let myGroups = await Database.from('groups')
-          .where({
-            user_id: auth.user.id,
-          })
-          .select('id', 'name')
-          .paginate(request.params.counter, 6)
-
-        myGroups = myGroups.data
-
-        let variable = 6
-        switch (myGroups.length) {
-          case 6:
-            variable = 6
-            break
-          case 5:
-            variable = 7
-            break
-          case 4:
-            variable = 8
-            break
-          case 3:
-            variable = 9
-            break
-          case 2:
-            variable = 10
-            break
-          case 1:
-            variable = 11
-            break
-          case 0:
-            variable = 12
-            break
-        }
-
-        const subquery = Database.select('id')
-          .from('groups')
-          .where({ user_id: auth.user.id })
-
-        let groups_im_in = await Database.from('usergroups')
-          .innerJoin('groups', 'groups.id', 'usergroups.group_id')
+        let groups_im_in = await Database.from('groups')
+          .leftJoin('usergroups', 'usergroups.group_id', 'groups.id')
           .where('usergroups.user_id', '=', auth.user.id)
           .whereNot('usergroups.permission_level', 42)
-          .whereNotIn('usergroups.group_id', subquery)
-          .groupBy('usergroups.group_id')
+          .orWhere('groups.user_id', '=', auth.user.id)
           .select('groups.id', 'groups.name')
-          .paginate(request.params.counter, variable)
+          .paginate(request.params.counter, 11)
 
         groups_im_in = groups_im_in.data
 
-        let all_my_communities = [...myGroups, ...groups_im_in]
+        let all_my_communities = [...groups_im_in]
 
         for (var i = 0; i < all_my_communities.length; i++) {
           const myPeeps = await Database.from('usergroups')
