@@ -102,7 +102,6 @@
     "react": "^17.0.1",
     "react-async-script-loader": "^0.3.0",
     "react-autosuggest": "^9.4.3",
-    "react-bootstrap": "^1.1.1",
     "react-bootstrap-sweetalert": "^5.1.8",
     "react-circular-progressbar": "^2.0.3",
     "react-country-region-selector": "^1.4.5",

@@ -22,7 +22,7 @@ export default class EncryptionLogin extends React.Component {
   }
 
   validateKey = () => {
-    fetchUser(this.props.userId).then((response) => this.props.validatePin(this.state.pin, response.user[0].public_key));
+    fetchUser(this.props.userId).then((response) => this.props.validatePin(this.state.pin, response.user[0].public_key))
   }
 
   render() {
@@ -37,15 +37,13 @@ export default class EncryptionLogin extends React.Component {
         <p className='messenger-encryption-login-title'>Enter Chat Password</p>
         <input
           className='messenger-encryption-login-input'
-          type='text'
+          type='password'
           placeholder='Chat Password'
           value={this.state.pin}
           onKeyPress={this.onKeyPressed}
           onChange={(event) => this.setState({ pin: event.target.value })}
         />
-        <div
-          className='messenger-encryption-login-validate-button clickable'
-          onClick={this.validateKey}>
+        <div className='messenger-encryption-login-validate-button clickable' onClick={this.validateKey}>
           LOGIN
         </div>
         <div
