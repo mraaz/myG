@@ -4,6 +4,10 @@ import MobileMenuTop from './MobileMenuTop'
 
 import { useScrollDirection } from '../../hooks'
 import { logToElasticsearch } from '../../../integration/http/logger'
+import Modal from '../common/Modal'
+import ComposeSection from '../ComposeSection_v2'
+
+import useModal from '../../hooks/useModal'
 
 import axios from 'axios'
 
@@ -12,6 +16,7 @@ const MobileMenu = ({ initialData }) => {
   const [hideCreate, setHideCreate] = useState(false)
   const [hideNav, setHideNav] = useState(false)
   const [notifications, setNotifications] = useState({ alerts: 0, approvals: 0, chats: 0 })
+  const { isShowing, toggle } = useModal()
 
   const direction = useScrollDirection()
   const alias = initialData === 'loading' ? '' : initialData.userInfo.alias
@@ -29,7 +34,7 @@ const MobileMenu = ({ initialData }) => {
 
   // Second useEffect is called only once, required so the API is only called once
   useEffect(() => {
-    const getNotis = async function() {
+    const getNotis = async function () {
       let _chats = 0
       try {
         const getnoti = await axios.post('/api/notifications_v2/getUnread_count', {
@@ -68,6 +73,9 @@ const MobileMenu = ({ initialData }) => {
 
   return (
     <Fragment>
+      <Modal isShowing={isShowing} hide={toggle}>
+        <ComposeSection initialData={initialData} />
+      </Modal>
       <MobileMenuTop initialData={initialData} notifications={{ ...notifications }} hide={hideNav} />
       <section className='main-mobile-menu'>
         <div className={hideNav ? 'menu-bottom hide' : 'menu-bottom show'}>
@@ -81,14 +89,24 @@ const MobileMenu = ({ initialData }) => {
           {/* Hide and Show Search */}
           <div className='mobile-search'>
             {hideSearch && (
-              <div className='mobile-sub-menu-items'>
-                <div className='find-matches'>
-                  <Link to='/scheduledGames' onClick={() => {setHideSearch(false); setHideNav(true)}}>
+              <div className='mobile-sub-menu-items single-row'>
+                <div className='small-tile'>
+                  <Link
+                    to='/scheduledGames'
+                    onClick={() => {
+                      setHideSearch(false)
+                      setHideNav(true)
+                    }}>
                     Find <b>Matches</b>
                   </Link>
                 </div>
-                <div className='find-gamers'>
-                  <a href='#' onClick={() => {setHideSearch(false); setHideNav(true)}}>
+                <div className='small-tile'>
+                  <a
+                    href='#'
+                    onClick={() => {
+                      setHideSearch(false)
+                      setHideNav(true)
+                    }}>
                     Find <b>Gamers</b>
                   </a>
                 </div>
@@ -104,12 +122,17 @@ const MobileMenu = ({ initialData }) => {
             <div className='mobile-search'>
               {hideCreate && (
                 <div className='mobile-sub-menu-items'>
-                  <div className='find-matches'>
+                  <div className='large-tile'>
+                    <a href='#' onClick={() => toggle()}>
+                      <b>Post</b> on your Feed
+                    </a>
+                  </div>
+                  <div className='small-tile'>
                     <a href='#' onClick={() => setHideCreate(!hideCreate)}>
                       New <b>Matches</b>
                     </a>
                   </div>
-                  <div className='find-gamers'>
+                  <div className='small-tile'>
                     <a href='#' onClick={() => setHideCreate(!hideCreate)}>
                       New <b>Community</b>
                     </a>
