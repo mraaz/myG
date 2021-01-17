@@ -8,10 +8,11 @@ const Modal = ({ isShowing, hide, children }) =>
           <div className='modal-overlay' />
           <div className='modal-wrapper' aria-modal aria-hidden tabIndex={-1} role='dialog'>
             <div className='modal-content'>
-              <button type='button' className='modal-close-button' data-dismiss='modal' aria-label='Close' onClick={hide}>
-                <span aria-hidden='true'>&times;</span>
-              </button>
-              <p>Hello, I'm a modal.</p>
+              <div className='modal-button-container'>
+                <button type='button' className='modal-close-button' data-dismiss='modal' aria-label='Close' onClick={hide}>
+                  <span aria-hidden='true'>&times;</span>
+                </button>
+              </div>
               {children}
             </div>
           </div>

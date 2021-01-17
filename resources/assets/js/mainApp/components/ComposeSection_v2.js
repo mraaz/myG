@@ -561,7 +561,6 @@ export default class ComposeSection extends Component {
             </div>
           )}
           <div className='compose__button'>
-            {overlay_active && <button type='button' className='cancel' onClick={this.handleClear}></button>}
             <button type='button' disabled={!isButtonDisable} className='add__post' onClick={this.submitForm}>
               Post
             </button>

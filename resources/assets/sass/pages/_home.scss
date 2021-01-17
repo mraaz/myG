@@ -1590,7 +1590,6 @@ section#content-container {
 .postCompose__container {
   background-color: #1d2326;
   border: 1px solid #273137;
-  margin: 0 100px;
   margin-bottom: 24px;
   position: relative;
   &.zI1000 {
@@ -1733,6 +1732,11 @@ section#content-container {
     align-items: center;
     padding: 6px 20px;
     color: #657172;
+    @media screen and (max-width: $tablet) {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 30px;
+    }
     .hashtag_label {
       font-weight: bold;
       font-size: 16px;
@@ -1740,11 +1744,12 @@ section#content-container {
       font-family: Montserrat, sans-serif;
       letter-spacing: 0px;
       margin-right: 10px;
+      height: 100%;
     }
     .hashtag_input {
       background: #171a1c 0% 0% no-repeat padding-box;
       border: 1px solid #273137;
-      height: 36px;
+      // height: 36px;
       width: 100%;
       flex: 12;
       .hash_tag_name_box {
@@ -2624,10 +2629,6 @@ section#content-container {
 
   .app-container.home-page {
     display: block;
-  }
-
-  .postCompose__container {
-    margin: 50px;
   }
 }
 

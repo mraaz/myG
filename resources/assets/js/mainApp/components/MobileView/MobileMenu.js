@@ -17,6 +17,7 @@ const MobileMenu = ({ initialData }) => {
   const [hideNav, setHideNav] = useState(false)
   const [notifications, setNotifications] = useState({ alerts: 0, approvals: 0, chats: 0 })
   const { isShowing, toggle } = useModal()
+  const [component, useComponent] = useState(null)
 
   const direction = useScrollDirection()
   const alias = initialData === 'loading' ? '' : initialData.userInfo.alias
@@ -71,10 +72,20 @@ const MobileMenu = ({ initialData }) => {
     getNotis()
   }, [])
 
+  const ModalContentSwitch = (props) => {
+    const { component } = props
+    switch (component) {
+      case 'ComposeSection':
+        return <ComposeSection initialData={initialData} successCallback={toggle} />
+      default:
+        return <p> Not a Valid Component</p>
+    }
+  }
+
   return (
     <Fragment>
       <Modal isShowing={isShowing} hide={toggle}>
-        <ComposeSection initialData={initialData} />
+        <ModalContentSwitch component={component} />
       </Modal>
       <MobileMenuTop initialData={initialData} notifications={{ ...notifications }} hide={hideNav} />
       <section className='main-mobile-menu'>
@@ -123,7 +134,12 @@ const MobileMenu = ({ initialData }) => {
               {hideCreate && (
                 <div className='mobile-sub-menu-items'>
                   <div className='large-tile'>
-                    <a href='#' onClick={() => toggle()}>
+                    <a
+                      href='#'
+                      onClick={() => {
+                        useComponent('ComposeSection')
+                        toggle()
+                      }}>
                       <b>Post</b> on your Feed
                     </a>
                   </div>
