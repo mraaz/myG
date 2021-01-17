@@ -212,6 +212,8 @@
     backdrop-filter: blur(10px);
     background-color: rgba(0, 0, 0, 0.4);
     margin-top: 255px;
+    border: 1px solid #707070;
+    border-radius: 18px;
   }
   &__listed {
     &__header {
@@ -359,21 +361,21 @@
             padding: 2px;
             padding-left: 10px;
             .css-151xaom-placeholder {
-              color: #ffffff;
+              color: #fff;
             }
             .css-1uccc91-singleValue {
-              color: #ffffff;
+              color: #fff;
             }
             .css-1g6gooi {
               margin: 0;
               padding: 2px;
-              color: #ffffff;
+              color: #fff;
             }
             .css-1uccc91-singleValue {
-              color: #ffffff;
+              color: #fff;
             }
             .css-16pqwjk-indicatorContainer {
-              color: #ffffff;
+              color: #fff;
             }
           }
 
@@ -389,7 +391,7 @@
             &__menu {
               top: 50px;
               background-color: #4d565a;
-              color: #ffffff;
+              color: #fff;
               border-radius: 4px;
               margin-bottom: 8px;
               margin-top: 8px;
