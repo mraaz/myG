@@ -1,0 +1,25 @@
+#achievements {
+  .headers {
+    display: flex;
+    flex-direction: row;
+    margin: 16px 48px 0 48px;
+    padding: 12px;
+    font-size: 18px;
+    color: white;
+    align-items: center;
+    justify-content: space-around;
+
+    .header {
+      border-bottom: 2px solid #1e2326;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 8px;
+      flex: 1;
+    }
+
+    .selected {
+      border-bottom: 2px solid #e5c746 !important;
+    }
+  }
+}

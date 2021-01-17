@@ -66,6 +66,7 @@ export default class Header extends React.Component {
   cancelFriendRequest = () => this.props.cancelFriendRequest(this.props.profile.alias, this.props.profile.profileId)
 
   renderConnectionButton = () => {
+    if (this.props.onlyProfile) return null;
     if (this.props.profile.isSelf) return null
     if (this.props.profile.isFriend) {
       return (
@@ -95,6 +96,7 @@ export default class Header extends React.Component {
   }
 
   renderSendMessageButton = () => {
+    if (this.props.onlyProfile) return null;
     if (this.props.profile.isSelf) return null
     if (!this.props.profile.isFriend) return null
     return (
@@ -109,6 +111,7 @@ export default class Header extends React.Component {
   }
 
   renderFollowButton = () => {
+    if (this.props.onlyProfile) return null;
     if (this.props.profile.isSelf) return null
     if (this.props.profile.isFollower) {
       return (
@@ -125,15 +128,28 @@ export default class Header extends React.Component {
   }
 
   renderViewFriendsButton = () => {
+    if (this.props.onlyProfile) return null;
     if (this.props.profile.isSelf) return null
     return <div className='button clickable' onClick={() => this.setState({ viewingFriends: true })}>View Friends</div>
   }
 
   renderSocialHubButton = () => {
+    if (this.props.onlyProfile) return null;
     return <div className='button clickable' onClick={() => this.setState({ editing: 'social-view' })}>Social Hub</div>
   }
 
+  renderAchievementsButton = () => {
+    if (this.props.onlyProfile) return null;
+    return <div className='button clickable' onClick={() => window.router.push('/achievements')}>Achievements</div>
+  }
+
+  renderProfileButton = () => {
+    if (!this.props.onlyProfile) return null;
+    return <div className='button clickable' onClick={() => window.router.push(`/profile/${this.props.alias}`)}>Go To Profile</div>
+  }
+
   renderSocialHub = () => {
+    if (this.props.onlyProfile) return null;
     if (!this.state.editing) return;
     return (
       <Dossier
@@ -147,6 +163,7 @@ export default class Header extends React.Component {
   }
 
   renderViewFriends = () => {
+    if (this.props.onlyProfile) return null;
     if (!this.state.viewingFriends) return;
     return (
       <ViewFriends
@@ -167,6 +184,8 @@ export default class Header extends React.Component {
           {this.renderFollowButton()}
           {this.renderViewFriendsButton()}
           {this.renderSocialHubButton()}
+          {this.renderAchievementsButton()}
+          {this.renderProfileButton()}
           {this.renderSocialHub()}
           {this.renderViewFriends()}
         </div>
