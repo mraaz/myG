@@ -26,28 +26,25 @@ export default class PostFileModal extends Component {
       groups_im_in: [],
       visibility: 1,
       gid_request: {},
+      initial_data: [],
     }
 
     this.closeModal = this.closeModal.bind(this)
   }
 
   componentDidMount() {
-    const getmyGroups = async () => {
-      try {
-        const getmyGroups = await axios.get('/api/groups/view/1')
-        this.setState({
-          myGroups: getmyGroups.data.myGroups,
-        })
-      } catch (error) {
-        logToElasticsearch('error', 'PostFileModal', 'Failed componentDidMount:' + ' ' + error)
-      }
-    }
+    const self = this
 
     const getGroups_im_in = async () => {
       try {
+        const getmyGroups = await axios.get('/api/groups/view/1')
         const getGroups_im_in = await axios.get('/api/usergroup/view/1')
+
+        const groups_im_in = [...getGroups_im_in.data.groups_im_in, ...getmyGroups.data.myGroups]
+
         this.setState({
-          groups_im_in: getGroups_im_in.data.groups_im_in,
+          groups_im_in,
+          initial_data: groups_im_in,
         })
       } catch (error) {
         logToElasticsearch('error', 'PostFileModal', 'Failed getGroups_im_in:' + ' ' + error)
@@ -56,7 +53,7 @@ export default class PostFileModal extends Component {
     const { selected_group = [], selected_group_data = [], visibility } = this.props
 
     getGroups_im_in()
-    getmyGroups()
+
     this.setState({
       selected_group,
       selected_group_data,
@@ -122,7 +119,13 @@ export default class PostFileModal extends Component {
     const self = this
 
     const searchText = e.target.value
-    this.setState({ searchText })
+    if (searchText == undefined || searchText == null || searchText.trim().length == 0) {
+      if (this.timeout) clearTimeout(this.timeout)
+      this.setState({ searchText: searchText.trim(), groups_im_in: this.state.initial_data })
+      return
+    } else {
+      this.setState({ searchText })
+    }
 
     if (this.timeout) clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
@@ -131,20 +134,14 @@ export default class PostFileModal extends Component {
 
     const getSearchInfo = async function() {
       try {
-        if (searchText != '') {
-          const gd = await axios.get(`/api/groups/${searchText}/groupSearchResults_Post`)
-          let groups_im_in = gd.data.myGroupSearchResults
-          const groups_im_not_in = gd.data.groupSearchResults_im_not_in
-          if (groups_im_not_in.length > 0) {
-            groups_im_in = self.getMergedGroupData(groups_im_in, groups_im_not_in)
-          }
-          self.setState({ groups_im_in })
-        } else {
-          const getGroups_im_in = await axios.get('/api/usergroup/view/1')
-          self.setState({
-            groups_im_in: getGroups_im_in.data.groups_im_in,
-          })
+        const gd = await axios.get(`/api/groups/${searchText}/groupSearchResults_Post`)
+        let groups_im_in = gd.data.myGroupSearchResults
+        const groups_im_not_in = gd.data.groupSearchResults_im_not_in
+
+        if (groups_im_not_in && groups_im_not_in.length > 0) {
+          groups_im_in = self.getMergedGroupData(groups_im_in, groups_im_not_in)
         }
+        self.setState({ groups_im_in })
       } catch (error) {
         logToElasticsearch('error', 'PostFileModal', 'Failed getSearchInfo:' + ' ' + error)
       }
@@ -185,7 +182,7 @@ export default class PostFileModal extends Component {
   }
 
   addDefaultSrc(ev) {
-    ev.target.src = 'https://myG.gg/default_user/new-user-profile-picture.png'
+    ev.target.src = 'https://myG.gg/platform_images/Dashboard/logo.svg'
   }
 
   render() {
@@ -210,10 +207,17 @@ export default class PostFileModal extends Component {
                 {groups_im_in &&
                   groups_im_in.length > 0 &&
                   groups_im_in.map((group_in, index) => {
+                    if (group_in.im_not_in == undefined) {
+                      group_in.im_not_in = false
+                    }
                     return (
                       <div className='list__item' key={`${group_in.name}_${group_in.id}_${index}`}>
                         <div className='default_circle'>
-                          <img onError={this.addDefaultSrc} src={group_in.group_img} className='groupImage' />
+                          <img
+                            onError={this.addDefaultSrc}
+                            src={group_in.group_img ? group_in.group_img : 'invalid link'}
+                            className='groupImage'
+                          />
                         </div>
                         <div className='groupName'>{group_in.name}</div>
                         <div className='action'>
@@ -242,7 +246,7 @@ export default class PostFileModal extends Component {
                   })}
               </div>
               <div className='people_group_actions'>
-                <h1>Who can see this post</h1>
+                <h1>Who can see this post:</h1>
                 <div className='post__privacy_select'>
                   <div>
                     <label className='container'>

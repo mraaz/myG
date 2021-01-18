@@ -1726,6 +1726,7 @@ section#content-container {
       font-size: 16px;
       line-height: 14px;
       font-family: Montserrat, sans-serif;
+      line-height: unset;
     }
   }
   .hashTag_section {
@@ -1857,7 +1858,6 @@ section#content-container {
         line-height: 14px;
         font-family: Montserrat, sans-serif;
         .default_circle {
-          background: #ff00ff 0% 0% no-repeat padding-box;
           width: 30px;
           height: 30px;
           border-radius: 50%;
@@ -1921,7 +1921,6 @@ section#content-container {
         width: 32px;
         height: 32px;
         cursor: pointer;
-        padding: 7px;
         &:focus {
           margin: 0;
           outline: none;
@@ -1973,14 +1972,12 @@ section#content-container {
         .image {
           position: relative;
           .post-video {
-            background: #ff00ff 0% 0% no-repeat padding-box;
             margin-right: 10px;
             width: 160px;
             height: 120px;
           }
         }
         img {
-          background: #ff00ff 0% 0% no-repeat padding-box;
           margin-right: 10px;
           width: 160px;
           height: 120px;
@@ -2012,6 +2009,7 @@ section#content-container {
     .postCompose__container {
       margin: 0 auto;
       width: 100% !important;
+      border-radius: 10px;
     }
     .people_group_list {
       &.active {
@@ -2038,6 +2036,7 @@ section#content-container {
       color: #ffffff;
       background: #1d2326;
       border: 1px solid #273137;
+      border-radius: 10px;
       .search__box {
         padding: 30px;
         display: flex;
@@ -2076,7 +2075,6 @@ section#content-container {
             width: 30px;
             height: 30px;
             border-radius: 50%;
-            background: #ff00ff;
             margin-right: 10px;
             img {
               height: 100%;
@@ -2182,6 +2180,7 @@ section#content-container {
 
       .people_group_actions {
         background: #1d2326;
+        border-radius: 10px;
 
         h1 {
           font-weight: bold;
@@ -2192,7 +2191,7 @@ section#content-container {
           color: #ffffff;
           opacity: 1;
           margin-bottom: 10px;
-          padding: 20px;
+          padding: 20px 0px 2px 20px;
         }
         .post__privacy_select {
           display: flex;

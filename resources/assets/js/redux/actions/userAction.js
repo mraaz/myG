@@ -13,6 +13,8 @@ import {
   toggleNotificationSounds,
   toggleAutoSelfDestruct,
   fetchStats,
+  fetchBadges,
+  redeemBadge,
 } from '../../integration/http/user'
 
 export function logoutAction() {
@@ -153,6 +155,22 @@ export function fetchStatsAction(alias) {
     type: 'FETCH_STATS',
     payload: fetchStats(alias),
     meta: { alias },
+  }
+}
+
+export function fetchBadgesAction(alias) {
+  return {
+    type: 'FETCH_BADGES',
+    payload: fetchBadges(alias),
+    meta: { alias },
+  }
+}
+
+export function redeemBadgeAction(alias, type, value) {
+  return {
+    type: 'REDEEM_BADGE',
+    payload: redeemBadge(alias, type, value),
+    meta: { alias, type, value },
   }
 }
 

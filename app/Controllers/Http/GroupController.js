@@ -24,6 +24,15 @@ class GroupController {
     if (auth.user) {
       try {
         if (
+          request
+            .input('name')
+            .toUpperCase()
+            .includes('MYG OFFICIAL')
+        ) {
+          return false
+        }
+
+        if (
           request.input('name').length > 75 ||
           request.input('name') == undefined ||
           request.input('name') == null ||
@@ -218,10 +227,10 @@ class GroupController {
 
       const groupSearchResults = await Database.from('groups')
         .select('name', 'group_img', 'id')
-        .where('name', 'like', '%' + request.params.str + '%')
+        .where('name', 'like', '%' + decodeURI(request.params.str) + '%')
         .whereIn('id', all_groups_im_in_but_dont_own)
         .orWhere('groups.user_id', '=', auth.user.id)
-        .andWhere('name', 'like', '%' + request.params.str + '%')
+        .andWhere('name', 'like', '%' + decodeURI(request.params.str) + '%')
         .limit(24)
 
       return {
@@ -248,7 +257,7 @@ class GroupController {
 
       const groupSearchResults_im_not_in = await Database.from('groups')
         .select('name', 'group_img', 'id as group_id', 'type')
-        .where('name', 'like', '%' + request.params.str + '%')
+        .where('name', 'like', '%' + decodeURI(request.params.str) + '%')
         .whereNot('type', 2)
         .whereNotIn('id', all_groups_im_in_ish)
         .limit(24)
@@ -269,32 +278,38 @@ class GroupController {
 
   async groupSearchResults_Post({ auth, request, response }) {
     try {
-      const all_groups_im_in = Database.from('usergroups')
-        .innerJoin('groups', 'groups.id', 'usergroups.group_id')
+      const myGroupSearchResults = await Database.from('groups')
+        .leftJoin('usergroups', 'usergroups.group_id', 'groups.id')
         .where('usergroups.user_id', '=', auth.user.id)
         .whereNot('usergroups.permission_level', 42)
         .orWhere('groups.user_id', '=', auth.user.id)
-        .select('group_id')
-
-      const all_groups_im_in_ish = Database.from('usergroups')
-        .leftJoin('groups', 'groups.id', 'usergroups.group_id')
-        .where('usergroups.user_id', '=', auth.user.id)
-        .orWhere('groups.user_id', '=', auth.user.id)
-        .select('group_id')
-
-      const myGroupSearchResults = await Database.from('groups')
-        .where('name', 'like', '%' + request.params.str + '%')
-        .select('name', 'group_img', 'id', 'type')
-        .whereIn('id', all_groups_im_in)
+        .select('groups.name', 'groups.group_img', 'groups.id', 'groups.type')
+        .andWhere('groups.name', 'like', '%' + decodeURI(request.params.str) + '%')
         .limit(88)
 
       const groupSearchResults_im_not_in = await Database.from('groups')
-        .where('name', 'like', '%' + request.params.str + '%')
+        .leftJoin('usergroups', 'usergroups.group_id', 'groups.id')
+        .where('usergroups.user_id', '!=', auth.user.id)
         .whereNot('type', 2)
-        .select('name', 'group_img', 'id', 'type')
-        .whereNotIn('id', all_groups_im_in_ish)
+        .orWhere('groups.user_id', '!=', auth.user.id)
+        .select('groups.name', 'groups.group_img', 'groups.id', 'groups.type')
+        .andWhere('groups.name', 'like', '%' + decodeURI(request.params.str) + '%')
         .limit(18)
 
+      // const myGroupSearchResults = await Database.from('groups')
+      //   .where('name', 'like', '%' + decodeURI(request.params.str) + '%')
+      //   .select('name', 'group_img', 'id', 'type')
+      //   //.whereIn('id', all_groups_im_in)
+      //   .limit(88)
+      //
+      // const groupSearchResults_im_not_in = await Database.from('groups')
+      //   .where('name', 'like', '%' + decodeURI(request.params.str) + '%')
+      //   .whereNot('type', 2)
+      //   .select('name', 'group_img', 'id', 'type')
+      //   //.whereNotIn('id', all_groups_im_in_ish)
+      //   .limit(18)
+
+      //console.log(myGroupSearchResults, '<<<<myGroupSearchResults')
       return {
         myGroupSearchResults,
         groupSearchResults_im_not_in,
@@ -368,56 +383,17 @@ class GroupController {
   async get_my_communities({ auth, request, response }) {
     if (auth.user) {
       try {
-        let myGroups = await Database.from('groups')
-          .where({
-            user_id: auth.user.id,
-          })
-          .select('id', 'name')
-          .paginate(request.params.counter, 6)
-
-        myGroups = myGroups.data
-
-        let variable = 6
-        switch (myGroups.length) {
-          case 6:
-            variable = 6
-            break
-          case 5:
-            variable = 7
-            break
-          case 4:
-            variable = 8
-            break
-          case 3:
-            variable = 9
-            break
-          case 2:
-            variable = 10
-            break
-          case 1:
-            variable = 11
-            break
-          case 0:
-            variable = 12
-            break
-        }
-
-        const subquery = Database.select('id')
-          .from('groups')
-          .where({ user_id: auth.user.id })
-
-        let groups_im_in = await Database.from('usergroups')
-          .innerJoin('groups', 'groups.id', 'usergroups.group_id')
+        let groups_im_in = await Database.from('groups')
+          .leftJoin('usergroups', 'usergroups.group_id', 'groups.id')
           .where('usergroups.user_id', '=', auth.user.id)
           .whereNot('usergroups.permission_level', 42)
-          .whereNotIn('usergroups.group_id', subquery)
-          .groupBy('usergroups.group_id')
+          .orWhere('groups.user_id', '=', auth.user.id)
           .select('groups.id', 'groups.name')
-          .paginate(request.params.counter, variable)
+          .paginate(request.params.counter, 11)
 
         groups_im_in = groups_im_in.data
 
-        let all_my_communities = [...myGroups, ...groups_im_in]
+        let all_my_communities = [...groups_im_in]
 
         for (var i = 0; i < all_my_communities.length; i++) {
           const myPeeps = await Database.from('usergroups')

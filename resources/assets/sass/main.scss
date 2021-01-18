@@ -8,6 +8,7 @@
 @import 'pages/welcome';
 @import 'pages/home';
 @import 'pages/profileV2';
+@import 'pages/achievements';
 @import 'pages/findGamers';
 @import 'pages/inviteGamer';
 @import 'pages/notificationsMenu';
@@ -455,7 +456,7 @@ a:visited {
   }
 
   .filter__placeholder {
-    color: #808080;
+    color: #fff;
   }
 
   .filter {
@@ -476,6 +477,15 @@ a:visited {
         border: 1px solid #e5c746;
         padding: 0;
       }
+      padding: 0;
+    }
+    &__multi-value {
+      background-color: #0b0f14;
+      color: #ffffff;
+      border: 1px solid;
+    }
+    &__multi-value__label {
+      color: #ffffff;
     }
 
     &__option {
@@ -493,10 +503,12 @@ a:visited {
       -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
       box-sizing: border-box;
       &:hover {
-        background-color: rgba(0, 0, 0, 0);
+        background-color: #e5c746 !important;
         color: #0b0f14;
       }
-
+      &:active {
+        background-color: #e5c746 !important;
+      }
       &--is-focused {
         background-color: #e5c746 !important;
         color: #0b0f14;

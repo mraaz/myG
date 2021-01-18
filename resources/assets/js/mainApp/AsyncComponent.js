@@ -80,7 +80,12 @@ const EncryptionParaphraseRegistration = Loadable({
     return null
   },
 })
-
+const AchievementsContainer = Loadable({
+  loader: () => import('./components/Achievements/Container'),
+  loading: function() {
+    return null
+  },
+})
 const Posts = Loadable({
   loader: () => import('./components/Posts'),
   loading: function() {
@@ -149,6 +154,7 @@ export {
   ProfileContainer,
   ChatLinkContainer,
   FindGamersContainer,
+  AchievementsContainer,
   LeftMenu,
   MessengerLoader,
   ChatUnreadMessages,

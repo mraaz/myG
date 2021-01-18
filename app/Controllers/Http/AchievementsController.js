@@ -1,17 +1,16 @@
 'use strict'
 
-const User = use('App/Models/User')
+const AchievementsRepository = require('../../Repositories/Achievements')
 const LoggingRepository = require('../../Repositories/Logging')
 
-class OnboardingController {
-  async getOnboardingStep({ auth, response }) {
+class AchievementsController {
+  async fetchBadges({ auth, request, response }) {
     try {
       const requestingUserId = auth.user.id
       if (!requestingUserId) throw new Error('Auth Error')
-      const user = await User.query().where({ id: requestingUserId }).first()
-      if (!user) throw new Error('User not Found')
-      const step = user.toJSON().onboarding || 0
-      return response.send({ step })
+      const alias = request.params.alias;
+      const { badges, redeemedTotal, badgesTotal } = await AchievementsRepository.fetchBadges({ requestingUserId, alias });
+      return response.send({ badges, redeemedTotal, badgesTotal })
     } catch (error) {
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
@@ -23,14 +22,14 @@ class OnboardingController {
     }
   }
 
-  async setOnboardingStep({ auth, request, response }) {
+  async redeemBadge({ auth, request, response }) {
     try {
       const requestingUserId = auth.user.id
       if (!requestingUserId) throw new Error('Auth Error')
-      const step = parseInt(request.params.step)
-      if (![0, 1, 2, 3, 4, 5].includes(step)) throw new Error('Invalid Step')
-      await User.query().where({ id: requestingUserId }).update({ onboarding: step })
-      return response.send({ step })
+      const alias = request.params.alias;
+      const { type, value } = request.only(["type", "value"]);
+      const { badges, redeemedTotal, badgesTotal } = await AchievementsRepository.redeemBadge({ requestingUserId, alias, type, value });
+      return response.send({ badges, redeemedTotal, badgesTotal })
     } catch (error) {
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
@@ -43,4 +42,4 @@ class OnboardingController {
   }
 }
 
-module.exports = OnboardingController
+module.exports = AchievementsController

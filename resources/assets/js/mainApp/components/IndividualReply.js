@@ -52,7 +52,7 @@ export default class IndividualReply extends Component {
     const self = this
     let reply = this.props
 
-    const getCommentReplies = async function () {
+    const getCommentReplies = async function() {
       try {
         const myReplyLikes = await axios.get(`/api/likes/reply/${reply.reply.id}`)
 
@@ -208,7 +208,7 @@ export default class IndividualReply extends Component {
     const self = this
     var reply_id = this.props.reply.id
 
-    const saveReply = async function () {
+    const saveReply = async function() {
       try {
         const mysaveReply = await axios.post(`/api/replies/update/${reply_id}`, {
           content: self.state.value,
@@ -346,7 +346,7 @@ export default class IndividualReply extends Component {
               <div
                 className='profile__image'
                 style={{
-                  backgroundImage: `url('${profile_img}')`,
+                  backgroundImage: `url('${profile_img}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`,
                   backgroundSize: 'cover',
                 }}>
                 <div className='online__status'></div>

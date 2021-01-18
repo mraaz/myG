@@ -36,7 +36,7 @@ const AddGame = ({
 }) => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    const getInitialData_Tags = async function () {
+    const getInitialData_Tags = async function() {
       try {
         let results = await Schedule_Game_Tags()
         updateAdvancedSettings({ optionTags: results })
@@ -45,7 +45,7 @@ const AddGame = ({
       }
     }
 
-    const getInitialData_GameName = async function () {
+    const getInitialData_GameName = async function() {
       try {
         let results = await Game_name_values()
         updateMainSettings({ gameTitlesList: results })
@@ -142,7 +142,7 @@ const AddGame = ({
 
   // api calls
   const getOptionsTags = (inputValue) => {
-    const getInitialData = async function (inputValue) {
+    const getInitialData = async function(inputValue) {
       try {
         let results = await Schedule_Game_Tags(inputValue)
         updateAdvancedSettings({ optionTags: results })
@@ -159,7 +159,7 @@ const AddGame = ({
   }
 
   const getOptionsGames = (inputValue) => {
-    const getInitialData = async function (inputValue) {
+    const getInitialData = async function(inputValue) {
       try {
         let results = await Game_name_values(inputValue)
         updateMainSettings({ gameTitlesList: results })
@@ -699,22 +699,20 @@ const AddGame = ({
         </div>
         <div className='advance-settings-content'>
           <div className='field-title'>Co-host</div>
-          <div className='friend-name-select'>
-            <MyGAsyncSelect
-              isClearable
-              isMulti
-              isValidNewOption={() => {
-                return
-              }}
-              loadOptions={onPlayersSuggestionFetch}
-              onChange={(value) => {
-                updateAdvancedSettings({ coHosts: value })
-              }}
-              value={advancedSettingsState.coHosts}
-              placeholder='Enter your friend’s name to set them as a co-host'
-              className='test'
-            />
-          </div>
+          <MyGAsyncSelect
+            isClearable
+            isMulti
+            isValidNewOption={() => {
+              return
+            }}
+            loadOptions={onPlayersSuggestionFetch}
+            onChange={(value) => {
+              updateAdvancedSettings({ coHosts: value })
+            }}
+            value={advancedSettingsState.coHosts}
+            placeholder='Enter your friend’s name to set them as a co-host'
+            className='test'
+          />
           {advancedSettingsState.show_experience && <div className='field-title'>Experience</div>}
           {advancedSettingsState.show_experience && (
             <div className='experience-select'>
@@ -846,7 +844,6 @@ const AddGame = ({
 
   // ToDo: update modal rank and roles needs options
   const getOptionalGameFieldsView = () => {
-    //'https://myG.gg/platform_images/Game+Images/DOTA2.png'
     return (
       <div
         style={{
