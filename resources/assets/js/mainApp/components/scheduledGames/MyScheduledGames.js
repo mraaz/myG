@@ -31,6 +31,7 @@ export default class MyScheduledGames extends Component {
       showAllComment: false,
       fetching: false,
       exclude_expired: false,
+      slideOptionText: 'Exclude expired games',
     }
   }
 
@@ -108,6 +109,8 @@ export default class MyScheduledGames extends Component {
       filter,
     })
 
+    this.setState({ slideOptionText: checked ? 'Show expired games': 'Exclude expired games' })
+
     if (scheduleGamesRes.data && scheduleGamesRes.data.myScheduledGames.length > 0) {
       this.setState({ scheduleGames: scheduleGamesRes.data.myScheduledGames, fetching: false, exclude_expired: checked, filter })
     } else {
@@ -169,15 +172,15 @@ export default class MyScheduledGames extends Component {
               />
             </div>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className='gamesListContainer'>
             {scheduleGames.length > 0 ? (
               <Fragment>
-                <div style={{ flex: 1 }}>
+                <div className='gameCard'>
                   <GameList
                     scheduleGames={scheduleGames}
                     show_full_games={show_full_games}
                     handleExcludesFullGames={this.handleExcludesFullGames}
-                    slideOptionLabel={`Exclude Expired Games`}
+                    slideOptionLabel={this.state.slideOptionText}
                     getSingleGameData={this.getSingleGameData}
                     next={this.getScheduleGamesData}
                     hasMore={this.state.moreplease}
@@ -187,7 +190,7 @@ export default class MyScheduledGames extends Component {
                     {...this.props}
                   />
                 </div>
-                <div style={{ flex: 1 }}>
+                <div className='gameDetailSection'>
                   <GameDetails
                     singleScheduleGamesPayload={singleScheduleGamesPayload}
                     selected_game={selected_game}

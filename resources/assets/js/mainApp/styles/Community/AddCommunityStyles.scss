@@ -42,7 +42,12 @@
 .platform-select,
 .description-text-area,
 .media__container {
+  display: none;
   font-size: 13px;
+
+  @media screen and (min-width: 575px) {
+    display: block;
+  }
 }
 
 .game-title-select input {

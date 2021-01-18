@@ -32,7 +32,6 @@ export default class GameList extends Component {
       this.props.next()
     }
   }
-
   handleCopyToClipBoard = (e, guid) => {
     e.preventDefault()
     e.stopPropagation()
@@ -80,11 +79,24 @@ export default class GameList extends Component {
           </div>
         </div>
         <div className='gameList__box' onScroll={this.handleScroll} ref={this.myRef}>
-          {/* My game list start here */}
           {scheduleGames.length > 0 &&
             scheduleGames.map((game) => {
+              const transformPlayerLevelTitle = (title) => {
+                switch (title) {
+                  case 'Semi Pro':
+                    return 'Semi-Pro'
+                  case 'Professional':
+                    return 'Pro';
+                  case 'Casual':
+                    return 'Casual';
+                  default:
+                    // Unknown level, go with it
+                    return title;
+                }
+              }
+
               const { myStatus = '', no_of_Approval_Pending = '', game_artwork = '', experience = '' } = game
-              const experience_split = experience ? experience.split(',') : []
+              const experience_split = experience ? experience.split(',').map(level => transformPlayerLevelTitle(level)) : []
               const scheduledGamePicture = (
                 <img src={game_artwork ? game_artwork : defaultThumbnails} className={game_artwork ? 'image' : 'default-image'} />
               )
@@ -94,37 +106,11 @@ export default class GameList extends Component {
               }
 
               return (
-                <div
-                  className={`mygames ${activeItemId == game.id ? 'active' : ''}`}
-                  key={game.id}
-                  onClick={(e) => this.handleSingleGameDetails(e, game.id, game)}>
-                  <div className='gameImage'>{scheduledGamePicture}</div>
-                  <div className='game__attributes'>
-                    <div className='first__row'>
-                      <h1 className='game__name' title={game.game_name}>
-                        {game.game_name}
-                      </h1>
-                      <div className='game__playerList'>
-                        <Link to={`/profile/${game.alias}`}>
-                          <div className='playerName'>
-                            <img onError={this.addDefaultSrc} src={game.profile_img ? game.profile_img : defaultUserImage} />
-                            <span> {game.alias}</span>
-                          </div>
-                        </Link>
-                      </div>
-                    </div>
-                    <div className='second__row'>
-                      <div className='gamer__count'>
-                        <img src='https://myG.gg/platform_images/Dashboard/Notifications/little_green_man.svg' />
-                        <span>
-                          {game.no_of_gamers} / {game.limit == 0 ? <span>&#8734;</span> : game.limit} Gamers
-                        </span>
-                      </div>
-                      <div className='game__timestamp'>
-                        <img src='https://myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
-                        <span>{moment(game.start_date_time).format('LL')}</span>
-                      </div>
-                    </div>
+                <div className={`gameTile${activeItemId == game.id ? ' active' : ''}`}
+                     key={game.id}
+                     onClick={(e) => this.handleSingleGameDetails(e, game.id, game)}>
+                  <div className='gameTileImage'>{scheduledGamePicture}</div>
+                  <div className='gameTileDetails'>
                     {copyClipboardEnable && (
                       <div className='copy__clipboard'>
                         <div className='copy__clipboard__action' onClick={(e) => this.handleCopyToClipBoard(e, game.schedule_games_GUID)}>
@@ -132,49 +118,107 @@ export default class GameList extends Component {
                         </div>
                       </div>
                     )}
-                    <div className='third__row'>
-                      <div className='game__tags'>
-                        {game.tags &&
-                          game.tags.length > 0 &&
-                          game.tags.slice(0, 7).map((tag) => {
-                            return (
-                              <WithTooltip
-                                position={{ bottom: '24px', left: '-12px' }}
-                                style={{ height: '24px', display: 'inline-block' }}
-                                text={tag.content}>
-                                <p className='game__tag'>{tag.content}</p>
-                              </WithTooltip>
-                            )
-                          })}
-                        {game.tags && game.tags.length > 7 && ` ...`}
+                    <div className='rowOne'>
+                      <h1 className='gameName' title={game.game_name}>
+                        {game.game_name}
+                      </h1>
+                      <div className='gamePlayerList'>
+                        <Link to={`/profile/${game.alias}`}>
+                          <div className='playerName'>
+                            <img onError={this.addDefaultSrc} src={game.profile_img ? game.profile_img : defaultUserImage} />
+                            <span> {game.alias}</span>
+                          </div>
+                        </Link>
                       </div>
-                      <div className='game__level__wrap'>
+                      <div className='gameLevelWrap'>
                         {experience_split.length > 0 &&
                           experience_split.map((ex, index) => {
                             return (
-                              <div className={`game__level game__level_${ex}`} key={ex}>
+                              <div className={`gameLevel gameLevel${ex}`} key={ex}>
                                 {ex}
                               </div>
                             )
                           })}
                       </div>
                     </div>
-                    <div className='fourth__row'>
-                      {statusMapping[myStatus] && (
-                        <div className='my__status'>
-                          <img src='https://myG.gg/platform_images/View+Game/tick.svg' />
-                          <span>{statusMapping[myStatus]}</span>
-                        </div>
-                      )}
-                      {no_of_Approval_Pending ? (
-                        <div className='no__of__approval' onClick={this.handlePendingApproval}>
-                          <img src='https://myG.gg/platform_images/View+Game/warning.svg' />
-                          <span>{no_of_Approval_Pending} Approval Pending</span>
-                        </div>
-                      ) : (
-                        ''
-                      )}
+                    <div className='rowTwo'>
+                      <div className='gamePlayerList'>
+                        <Link to={`/profile/${game.alias}`}>
+                          <div className='playerName'>
+                            <img onError={this.addDefaultSrc} src={game.profile_img ? game.profile_img : defaultUserImage} />
+                            <span> {game.alias}</span>
+                          </div>
+                        </Link>
+                      </div>
+                      <div className='gamerCount'>
+                        <img src='https://myG.gg/platform_images/Dashboard/Notifications/little_green_man.svg' />
+                        <span>
+                          {game.no_of_gamers} / {game.limit == 0 ? <span>&#8734;</span> : game.limit} Gamers
+                        </span>
+                      </div>
+                      <div className='gameTimestamp'>
+                        <img src='https://myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
+                        <span>{moment(game.start_date_time).format('LL')}</span>
+                      </div>
                     </div>
+                    <div className='rowThree'>
+                      <div className='gamerCount'>
+                        <img src='https://myG.gg/platform_images/Dashboard/Notifications/little_green_man.svg' />
+                        <span>
+                          {game.no_of_gamers} / {game.limit == 0 ? <span>&#8734;</span> : game.limit} Gamers
+                        </span>
+                      </div>
+                      <div className='gameTimestamp'>
+                        <img src='https://myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
+                        <span>{moment(game.start_date_time).format('LL')}</span>
+                      </div>
+
+                      {(game.tags && game.tags.length > 0) ? (
+                        <div className='gameTags'>
+                          {game.tags.slice(0, 7).map((tag) => {
+                            return (
+                              <WithTooltip
+                                position={{ bottom: '24px', left: '-12px' }}
+                                style={{ height: '24px', display: 'inline-block' }}
+                                text={tag.content}>
+                                <p className='gameTag'>{tag.content}</p>
+                              </WithTooltip>
+                            )
+                          })}
+                          {game.tags.length > 7 && ` ...`}
+                        </div>
+                      ) : ''}
+                      <div className='gameLevelWrap'>
+                        {experience_split.length > 0 &&
+                          experience_split.map((ex, index) => {
+                            return (
+                              <div className={`gameLevel gameLevel${ex}`} key={`${ex}_row2`}>
+                                {ex}
+                              </div>
+                            )
+                          })}
+                      </div>
+                    </div>
+                    {(statusMapping[myStatus] || no_of_Approval_Pending) ? (
+                      <div className='rowFour'>
+                        <div className='rowFourWrapper'>
+                          {statusMapping[myStatus] && (
+                            <div className='myStatus'>
+                              <img src='https://myG.gg/platform_images/View+Game/tick.svg' />
+                              <span>{statusMapping[myStatus]}</span>
+                            </div>
+                          )}
+                          {no_of_Approval_Pending ? (
+                            <div className='numberOfApprovals' onClick={this.handlePendingApproval}>
+                              <img src='https://myG.gg/platform_images/View+Game/warning.svg' />
+                              <span>{no_of_Approval_Pending} Approval Pending</span>
+                            </div>
+                          ) : (
+                            ''
+                          )}
+                        </div>
+                      </div>
+                    ) : '' }
                   </div>
                 </div>
               )

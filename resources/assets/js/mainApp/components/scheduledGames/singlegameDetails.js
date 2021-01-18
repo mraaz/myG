@@ -12,11 +12,16 @@ import { Link } from 'react-router-dom'
 import { WithTooltip } from '../Tooltip'
 import axios from 'axios'
 const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
+const buckectBaseUrl = 'https://myG.gg/platform_images/'
 
 export default class SingleGameDetails extends Component {
   constructor() {
     super()
-    this.state = {}
+    this.state = {
+      preview_file: '',
+      file_keys: '',
+      aws_key_id: [],
+    }
   }
 
   async componentDidMount() {
@@ -45,6 +50,31 @@ export default class SingleGameDetails extends Component {
       await this.setState({ commentData: { ...allComments.data } })
     }
     this.props.handleShowAllComments()
+  }
+
+  doUploadS3 = async (file, name) => {
+    this.setState({
+      uploading: true,
+    })
+
+    try {
+      const post = await Upload_to_S3(file, name, 0, null)
+
+      this.setState({
+        preview_file: [post.data.Location],
+        file_keys: post.data.Key,
+        aws_key_id: [post.data.aws_key_id],
+      })
+    } catch (error) {
+      toast.success(<Toast_style text={'Opps, something went wrong. Unable to upload your file.'} />)
+    }
+    this.setState({
+      uploading: false,
+    })
+
+    this.setState({
+      uploading: false,
+    })
   }
 
   render() {
@@ -214,8 +244,53 @@ export default class SingleGameDetails extends Component {
                 ) : (
                   ''
                 )}
+                {allow_comments == 1 && (
+                  <div className='compose__comment__wrapper'>
+                    <div className='compose-comment'>
+                      <textarea
+                        name='name'
+                        placeholder='Write a comment...'
+                        value={this.state.value}
+                        onChange={this.handleChange}
+                        maxLength='254'
+                        onKeyDown={this.detectKey}
+                        ref={this.setTextInputRef}
+                      />
+                      <div className='insert__images' onClick={this.insert_image_comment}>
+                        <input
+                          type='file'
+                          accept='image/jpeg,image/jpg,image/png,image/gif'
+                          ref={this.fileInputRef}
+                          onChange={this.handleSelectFile}
+                          name='insert__images'
+                        />
+                        <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
+                      </div>
+                      <Link to={`/profile/${this.props.initialData.alias}`} className='user-img'>
+                        <div
+                          className='profile__image'
+                          style={{
+                            backgroundImage: `url('${this.props.initialData.profile_img ? this.props.initialData.profile_img : defaultUserImage}')`,
+                            backgroundSize: 'cover',
+                          }}>
+                          <div className='online__status'></div>
+                        </div>
+                      </Link>
+                    </div>
+                    {this.state.uploading && <div className='uploadImage_loading'>Uploading ...</div>}
+                    {this.state.preview_file.length > 0 && (
+                      <div className='preview__image'>
+                        <img src={`${this.state.preview_file[0]}`} />
+                        <div className='clear__preview__image' onClick={this.clearPreviewImage}>
+                          X
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
+            
           </Fragment>
         )}
         {showAllComment && (

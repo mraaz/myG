@@ -67,7 +67,7 @@ export default class GameDetails extends Component {
     const experience_split = experience ? experience.split(',') : []
 
     return (
-      <div className='gameDetails'>
+      <div id='selectedGameDetailsBox' className='gameDetails'>
         {showRightSideInfo && !showAllComment ? (
           <Fragment>
             <div className='gameDetails__header'>
