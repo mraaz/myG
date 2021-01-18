@@ -461,5 +461,6 @@ Route.put('/api/onboarding/:step', 'OnboardingController.setOnboardingStep')
 
 // Achievements
 Route.get('/api/achievements/badges/:alias', 'AchievementsController.fetchBadges')
+Route.post('/api/achievements/badges/:alias', 'AchievementsController.redeemBadge')
 
 Route.any('*', ({ view }) => view.render('pages/react'))

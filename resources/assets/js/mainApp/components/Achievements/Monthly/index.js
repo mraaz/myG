@@ -10,7 +10,7 @@ class Monthly extends React.Component {
   render() {
     return(
       <div id="quests">
-        Monthly
+        Monthly - Not Implemented Yet
       </div>
     );
   }

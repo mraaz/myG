@@ -3,6 +3,7 @@
 const Database = use('Database')
 const User = use('App/Models/User')
 const UserStatTransaction = use('App/Models/UserStatTransaction')
+const UserAchievements = use('App/Models/UserAchievements');
 const NotificationController = use('./NotificationController')
 const LoggingRepository = require('../../Repositories/Logging')
 const NatsChatRepository = require('../../Repositories/NatsChat')
@@ -124,6 +125,10 @@ class UserStatTransactionController {
       }
 
       return {
+        userId,
+        alias,
+        total_number_of_friends,
+        total_number_of_communities,
         connections: total_number_of_friends + total_number_of_communities + total_number_of_great_communities,
         last_month_connections:
           last_months_total_number_of_friends + last_months_total_number_of_communities + last_months_total_number_of_great_communities,
@@ -147,11 +152,11 @@ class UserStatTransactionController {
         last_month_likes: last_months_total_number_of_likes,
         commendations: total_number_of_commendations,
         last_month_commendations: last_months_total_number_of_commendations,
-        user_level: 25, //getGamerLevels.level,
-        user_experience: 438739, //getGamerLevels.experience_points,
+        user_level: getGamerLevels.level,
+        user_experience: getGamerLevels.experience_points,
         user_xp_negative_balance: getGamerLevels.xp_negative_balance,
         level_max_points: getNextLevel.max_points,
-        start_of_level_xp: 438739, //start_of_level_xp,
+        start_of_level_xp: start_of_level_xp,
       }
     } else {
       return 'You are not Logged In!'
@@ -437,7 +442,7 @@ class UserStatTransactionController {
     this.reCalculate_xp(my_user_id, criteria)
   }
 
-  async reCalculate_xp(my_user_id, criteria) {
+  async reCalculate_xp(my_user_id) {
     const getmyStats = await Database.from('user_stat_transactions')
       .innerJoin('user_stats', 'user_stats.id', 'user_stat_transactions.user_stat_id')
       .where({ user_id: my_user_id })
@@ -446,6 +451,11 @@ class UserStatTransactionController {
     for (let i = 0; i < getmyStats.length; i++) {
       xp += parseInt(getmyStats[i].values) * getmyStats[i].xp_per_tick
     }
+
+    const achievementsResponse = await UserAchievements.query().where("user_id", my_user_id).fetch();
+    const achievements = achievementsResponse && achievementsResponse.toJSON() || [];
+    const achievementsXp = achievements.map((achievement) => achievement.experience).reduce((a, b) => a + b, 0);
+    xp += achievementsXp;
 
     const getGamerLevels = await Database.from('users')
       .where({ id: my_user_id })
@@ -504,7 +514,7 @@ class UserStatTransactionController {
       }
     }
 
-    const update_xp = await User.query()
+    await User.query()
       .where({ id: my_user_id })
       .update({ level: getGamerLevels.level, experience_points: xp, xp_negative_balance: xp_neg_balance })
 

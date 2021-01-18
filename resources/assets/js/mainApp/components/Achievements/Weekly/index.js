@@ -10,7 +10,7 @@ class Weekly extends React.Component {
   render() {
     return(
       <div id="quests">
-        Weekly
+        Weekly - Not Implemented Yet
       </div>
     );
   }

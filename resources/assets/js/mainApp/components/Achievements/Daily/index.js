@@ -10,7 +10,7 @@ class Daily extends React.Component {
   render() {
     return(
       <div id="quests">
-        Daily
+        Daily - Not Implemented Yet
       </div>
     );
   }
