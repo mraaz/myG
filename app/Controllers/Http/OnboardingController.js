@@ -10,7 +10,7 @@ class OnboardingController {
       if (!requestingUserId) throw new Error('Auth Error')
       const user = await User.query().where({ id: requestingUserId }).first()
       if (!user) throw new Error('User not Found')
-      const step = user.toJSON().onboarding || 5
+      const step = user.toJSON().onboarding || 0
       return response.send({ step })
     } catch (error) {
       LoggingRepository.log({
