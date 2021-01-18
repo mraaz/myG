@@ -111,7 +111,6 @@ class AuthController {
           first_name: request.input('firstName'),
           last_name: request.input('lastName'),
           profile_img: 'https://myG.gg/default_user/new-user-profile-picture.png',
-          profile_bg: 'https://myG.gg/default_user/universe.jpg',
         })
 
         // Decrease Seats Available upon Registration
