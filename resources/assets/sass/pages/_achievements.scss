@@ -1,0 +1,160 @@
+#achievements {
+  .headers {
+    display: flex;
+    flex-direction: row;
+    margin: 16px 48px 0 48px;
+    padding: 12px;
+    font-size: 18px;
+    color: white;
+    align-items: center;
+    justify-content: space-around;
+
+    .header {
+      border-bottom: 2px solid #1e2326;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 8px;
+      flex: 1;
+    }
+
+    .selected {
+      border-bottom: 2px solid #e5c746 !important;
+    }
+  }
+
+  #badges {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 16px 48px;
+    padding: 24px 0 0 0;
+
+    .help {
+      position: absolute;
+      right: 16px;
+      top: -16px;
+      z-index: 1;
+      width: 24px;
+      height: 24px;
+      color: #171a1c;
+      background-color: #2d363a;
+      padding: 12px;
+      border-radius: 1000px;
+      font-size: 16px;
+      font-weight: bold;
+      font-family: 'Montserrat';
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .count {
+      color: white;
+      font-size: 12px;
+      font-family: 'Montserrat';
+      display: flex;
+      width: 100%;
+      margin: 16px 48px;
+      justify-content: flex-end;
+    }
+
+    .badge {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: #273137 solid 1px;
+      background-color: #1d2326;
+      border-radius: 4px;
+      padding: 16px;
+      margin: 16px;
+      width: 21%;
+
+      .icon-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #171a1c;
+        border-radius: 1000px;
+        width: 96px;
+        height: 96px;
+        .icon {
+          background-repeat: no-repeat;
+          background-position: center center;
+          background-size: cover;
+          width: 64px;
+          height: 64px;
+        }
+      }
+
+      .label {
+        font-family: 'Montserrat';
+        font-weight: bold;
+        font-size: 18px;
+        text-align: center;
+        color: white;
+        margin: 32px 12px;
+        padding: 0;
+        white-space: pre-wrap;
+      }
+
+      .hint {
+        position: absolute;
+        bottom: 4px;
+        font-family: 'Montserrat';
+        font-weight: bold;
+        font-size: 12px;
+        text-align: center;
+        color: white;
+        padding: 0;
+        white-space: pre-wrap;
+      }
+
+      .locked {
+        color: #657172 !important;
+      }
+
+      .button {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        bottom: -16px;
+        background-color: #e5c746;
+        font-family: 'Montserrat';
+        font-weight: bold;
+        font-size: 12px;
+        text-align: center;
+        padding: 8px 16px;
+        margin: 0;
+      }
+    }
+  }
+
+  #help-modal {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    .container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: fit-content;
+      padding: 0 12px;
+      margin: 0;
+      background-color: #1d2326;
+      border-radius: 12px;
+    }
+  }
+}

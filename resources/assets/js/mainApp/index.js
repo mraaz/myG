@@ -27,6 +27,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import {
   Home,
   ProfileContainer,
+  AchievementsContainer,
   ChatLinkContainer,
   FindGamersContainer,
   LeftMenu,
@@ -164,6 +165,20 @@ class Layout extends Component {
                           key={Math.random()}
                         />
                       </FeatureEnabled>
+                    </React.Fragment>
+                  )}
+                />
+
+                <Route
+                  exact
+                  path='/achievements'
+                  component={(props) => (
+                    <React.Fragment>
+                      <AchievementsContainer
+                          routeProps={props}
+                          initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
+                          key={Math.random()}
+                        />
                     </React.Fragment>
                   )}
                 />

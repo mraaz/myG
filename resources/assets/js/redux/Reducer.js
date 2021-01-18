@@ -13,6 +13,7 @@ import socket from './reducers/socketReducer'
 import profile from './reducers/profileReducer'
 import search from './reducers/searchReducer'
 import onboarding from './reducers/onboardingReducer'
+import achievements from './reducers/achievementsReducer'
 
 const appReducer = combineReducers({
   alert,
@@ -26,6 +27,7 @@ const appReducer = combineReducers({
   profile,
   search,
   onboarding,
+  achievements,
 })
 
 const rootReducer = (state, action) => {

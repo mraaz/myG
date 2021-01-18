@@ -49,6 +49,7 @@ export class Banner extends React.Component {
           cancelFriendRequest={this.props.cancelFriendRequest}
           uploadProfileImage={this.props.uploadProfileImage}
           updateProfile={this.props.updateProfile}
+          onlyProfile={this.props.onlyProfile}
         />
       </div>
     );
