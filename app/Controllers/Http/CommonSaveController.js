@@ -122,7 +122,6 @@ class CommonSaveController {
         user.email = request.input('email')
         user.provider_id = session.get('provider_id')
         user.profile_img = session.get('profile_img')
-        user.profile_bg = 'https://myG.gg/default_user/universe.jpg'
         user.provider = session.get('provider')
         await user.save()
 
@@ -135,13 +134,17 @@ class CommonSaveController {
 
         // Mark Extra Seat Code as Used
         if (extraSeatsCode) {
-          await ExtraSeatsCodes.query().where('code', extraSeatsCode).update({ user_id: user.id })
+          await ExtraSeatsCodes.query()
+            .where('code', extraSeatsCode)
+            .update({ user_id: user.id })
         }
 
         session.forget('provider')
         session.forget('provider_id')
         await auth.loginViaId(user.id)
-        return response.redirect(`/setEncryptionParaphrase/${request.input('encryption')}?persist=${request.input('persist-password') === 'on'}`)
+        return response.redirect(
+          `/setEncryptionParaphrase/${request.input('encryption')}?persist=${request.input('persist-password') === 'on'}`
+        )
       }
     }
   }
