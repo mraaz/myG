@@ -139,7 +139,7 @@ export default class Header extends React.Component {
   }
 
   renderAchievementsButton = () => {
-    if (this.props.onlyProfile) return null;
+    if (this.props.onlyProfile || !this.props.isSelf) return null;
     return <div className='button clickable' onClick={() => window.router.push('/achievements')}>Achievements</div>
   }
 

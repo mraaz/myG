@@ -105,3 +105,8 @@ export function fetchStats(alias) {
   logger.log('USER', 'HTTP', `Requesting Stats`);
   return axios.get(`/api/userStatTransaction/master_controller${alias ? `?alias=${alias}` : ''}`).then((response) => response.data);
 }
+
+export function fetchBadges(alias) {
+  logger.log('USER', 'HTTP', `Requesting Badges`);
+  return axios.get(`/api/achievements/badges/${alias}`).then((response) => response.data);
+}

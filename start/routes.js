@@ -459,4 +459,7 @@ Route.delete('/api/user/delete/:id', 'ReportedController.destroy')
 Route.get('/api/onboarding/', 'OnboardingController.getOnboardingStep')
 Route.put('/api/onboarding/:step', 'OnboardingController.setOnboardingStep')
 
+// Achievements
+Route.get('/api/achievements/badges/:alias', 'AchievementsController.fetchBadges')
+
 Route.any('*', ({ view }) => view.render('pages/react'))

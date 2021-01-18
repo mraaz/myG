@@ -77,6 +77,23 @@ const assets = {
   ic_rating_happy: 'ic_rating_happy.svg',
   ic_rating_very_happy: 'ic_rating_very_happy.svg',
 
+  ic_badge_connect_yellow: 'ic_badge_connect_yellow.svg',
+  ic_badge_connect_gra: 'ic_badge_connect_gra.svg',
+  ic_badge_like_yellow: 'ic_badge_like_yellow.svg',
+  ic_badge_like_gra: 'ic_badge_like_gra.svg',
+  ic_badge_follow_yellow: 'ic_badge_follow_yellow.svg',
+  ic_badge_follow_gra: 'ic_badge_follow_gra.svg',
+  ic_badge_community_yellow: 'ic_badge_community_yellow.svg',
+  ic_badge_community_gray: 'ic_badge_community_gray.svg',
+  ic_badge_community_yellow: 'ic_badge_community_yellow.svg',
+  ic_badge_community_gray: 'ic_badge_community_gray.svg',
+  ic_badge_game_play_yellow: 'ic_badge_game_play_yellow.svg',
+  ic_badge_game_play_gra: 'ic_badge_game_play_gra.svg',
+  ic_badge_game_create_yellow: 'ic_badge_game_create_yellow.svg',
+  ic_badge_game_create_gra: 'ic_badge_game_create_gra.svg',
+  ic_badge_age_yellow: 'ic_badge_age_yellow.svg',
+  ic_badge_age_gray: 'ic_badge_age_gray.svg',
+
 }
 
 export function getAssetUrl(asset) {

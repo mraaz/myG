@@ -1,0 +1,66 @@
+[
+  {
+    "type": "connect",
+    "label": "Connect with {value} friends",
+    "values": [100, 500, 1000],
+    "experiences": [1500, 7500, 15000],
+    "activeIcon": "ic_badge_connect_yellow",
+    "inactiveIcon": "ic_badge_connect_gray"
+  },
+  {
+    "type": "like",
+    "label": "Receive {value} likes",
+    "values": [50, 100, 200, 500, 1000],
+    "experiences": [50, 100, 200, 500, 1000],
+    "activeIcon": "ic_badge_like_yellow",
+    "inactiveIcon": "ic_badge_like_gray"
+  },
+  {
+    "type": "follow",
+    "label": "Attain {value} followers",
+    "values": [100, 1000, 2000, 5000],
+    "experiences": [1200, 12000, 24000, 60000],
+    "activeIcon": "ic_badge_follow_yellow",
+    "inactiveIcon": "ic_badge_follow_gray"
+  },
+  {
+    "type": "create-community",
+    "label": "Create a community",
+    "values": [0],
+    "experiences": [5],
+    "activeIcon": "ic_badge_community_yellow",
+    "inactiveIcon": "ic_badge_community_gray"
+  },
+  {
+    "type": "grow-community",
+    "label": "Grow your community to {value} gamers",
+    "values": [100, 200, 300, 500, 1000],
+    "experiences": [500, 1000, 1500, 2500, 5000],
+    "activeIcon": "ic_badge_community_yellow",
+    "inactiveIcon": "ic_badge_community_gray"
+  },
+  {
+    "type": "play-games",
+    "label": "Play {value} games",
+    "values": [1, 10, 20, 30, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
+    "experiences": [100, 1000, 2000, 3000, 5000, 10000, 20000, 30000, 30000, 30000, 30000, 30000, 30000, 50000],
+    "activeIcon": "ic_badge_game_play_yellow",
+    "inactiveIcon": "ic_badge_game_play_gray"
+  },
+  {
+    "type": "create-games",
+    "label": "Create {value} games",
+    "values": [1, 10, 20, 30, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
+    "experiences": [200, 2000, 3000, 5000, 7000, 10000, 20000, 30000, 30000, 30000, 50000, 50000, 50000, 80000],
+    "activeIcon": "ic_badge_game_create_yellow",
+    "inactiveIcon": "ic_badge_game_create_gray"
+  },
+  {
+    "type": "account-age",
+    "label": "On MyG for {value} years",
+    "values": [1, 2, 3, 4, 5],
+    "experiences": [50000, 100000, 100000, 100000, 200000],
+    "activeIcon": "ic_badge_age_yellow",
+    "inactiveIcon": "ic_badge_age_gray"
+  }
+]
