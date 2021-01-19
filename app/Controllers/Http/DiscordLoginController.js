@@ -11,6 +11,8 @@ const ConnectionController = use('./ConnectionController')
 const SeatsAvailable = use('App/Models/SeatsAvailable')
 const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
 
+const LoggingRepository = require('../../Repositories/Logging')
+
 class DiscordLoginController {
   async redirect({ ally, response }) {
     return response.redirect(
@@ -87,7 +89,13 @@ class DiscordLoginController {
         // await auth.loginViaId(user.id)
         // return response.redirect('/')
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
         return response.redirect('/login/discord')
       }
     }

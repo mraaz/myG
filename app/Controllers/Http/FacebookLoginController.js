@@ -2,6 +2,7 @@
 
 const User = use('App/Models/User')
 const ConnectionController = use('./ConnectionController')
+const LoggingRepository = require('../../Repositories/Logging')
 
 class FacebookLoginController {
   async redirect({ ally }) {
@@ -39,8 +40,14 @@ class FacebookLoginController {
           session.put('profile_img', userData.getAvatar())
           return response.redirect('/user/register')
         }
-      } catch (e) {
-        console.log(e)
+      } catch (error) {
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
         return response.redirect('/auth/' + provider)
       }
     }
