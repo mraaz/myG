@@ -18,8 +18,8 @@ function _Progress({ progress, reduction = 0, borderColor, value, strokeWidth = 
         textSize: '12px',
         // Colors
         pathColor: borderColor,
-        textColor: '#ffffff',
-        trailColor: '#ffffff',
+        textColor: '#fff',
+        trailColor: '#fff',
         backgroundColor: borderColor,
         strokeWidth: 2,
       })}>

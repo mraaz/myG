@@ -148,7 +148,7 @@ $main-font: 'Montserrat';
         margin-bottom: 10px;
         position: relative;
         &.active {
-          background: #ffffff0d;
+          background: #fff0d;
           &::after {
             border-bottom: 2px solid #a09770;
             content: '';
@@ -159,7 +159,7 @@ $main-font: 'Montserrat';
           }
         }
         &:hover {
-          background: #ffffff0d;
+          background: #fff0d;
           &::after {
             border-bottom: 2px solid #a09770;
             content: '';
@@ -221,7 +221,7 @@ $main-font: 'Montserrat';
               flex: auto;
               font-size: 20px;
               letter-spacing: 0px;
-              color: #ffffff;
+              color: #fff;
               white-space: nowrap;
               overflow: hidden;
               text-overflow: ellipsis;
@@ -245,7 +245,7 @@ $main-font: 'Montserrat';
                 text-align: left;
                 font: 10px/14px Montserrat;
                 letter-spacing: 0px;
-                color: #ffffff;
+                color: #fff;
                 margin-left: 5px;
                 display: flex;
                 align-items: center;
@@ -266,7 +266,7 @@ $main-font: 'Montserrat';
               display: flex;
               font: 12px/14px Montserrat;
               letter-spacing: 0px;
-              color: #ffffff;
+              color: #fff;
               img {
                 width: 15px;
                 height: 15px;
@@ -725,7 +725,7 @@ $main-font: 'Montserrat';
             text-align: center;
             font: Bold 12px/11px Montserrat;
             letter-spacing: 0px;
-            color: #ffffff;
+            color: #fff;
             background: #446f62 0% 0% no-repeat padding-box;
             border-radius: 4px 4px 0px 0px;
           }
@@ -736,7 +736,7 @@ $main-font: 'Montserrat';
             text-align: center;
             font: Bold 12px/11px Montserrat;
             letter-spacing: 0px;
-            color: #ffffff;
+            color: #fff;
             background: #804545 0% 0% no-repeat padding-box;
             border-radius: 4px 4px 0px 0px;
             img {
@@ -846,14 +846,14 @@ $main-font: 'Montserrat';
       font: 24px/18px Montserrat;
       font-weight: bold;
       letter-spacing: 0px;
-      color: #ffffff;
+      color: #fff;
       margin-bottom: 30px;
       text-align: center;
       .noRecordFound__body {
         font: 18px/16px Montserrat;
         font-weight: 400;
         letter-spacing: 0px;
-        color: #ffffff;
+        color: #fff;
         opacity: 1;
         margin-bottom: 20px;
         .addScheduleGames__link {

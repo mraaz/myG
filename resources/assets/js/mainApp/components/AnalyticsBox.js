@@ -41,7 +41,7 @@ class AnalyticsBox extends React.Component {
             reduction={0}
             hideBall
             strokeWidth={8}
-            background={'#ffffff'}
+            background={'#fff'}
           />
           <div className='ratings'>
             <p className='social-box-text'>Experience Pts.</p>

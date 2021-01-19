@@ -188,7 +188,7 @@ export default class MangeSponsors extends React.Component {
           </div>
           <div className='modal__footer'>
             <MyGButton
-              customStyles={{ color: '#FFFFFF', border: '2px solid #FFFFFF', background: '#000' }}
+              customStyles={{ color: '#fff', border: '2px solid #fff', background: '#000' }}
               onClick={() => this.handleClose()}
               text='Cancel'
             />

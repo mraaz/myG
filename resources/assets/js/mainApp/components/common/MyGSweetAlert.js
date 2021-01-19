@@ -25,7 +25,7 @@ export default class MyGSweetAlert extends React.Component {
         }}
         cancelBtnStyle={{
           backgroundColor: "#2D363A",
-          color: "#FFFFFF",
+          color: "#fff",
           paddingLeft: 16,
           paddingRight: 16,
           paddingTop: 8,

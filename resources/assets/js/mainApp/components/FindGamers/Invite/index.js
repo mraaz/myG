@@ -58,7 +58,7 @@ export default class InviteModal extends React.Component {
             reduction={0}
             hideBall
             strokeWidth={8}
-            background={'#ffffff'}
+            background={'#fff'}
           />
         </div>
         <div className="info">

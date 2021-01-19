@@ -612,21 +612,21 @@ const AddGame = ({
         // padding: 20,
         '&:hover': {
           background: '#75c5cd',
-          color: '#ffffff',
+          color: '#fff',
         },
         '&:focus': {
           background: '#75c5cd',
-          color: '#ffffff',
+          color: '#fff',
         },
         '&:active': {
           background: '#75c5cd',
-          color: '#ffffff',
+          color: '#fff',
         },
         background: state.isFocused ? '#75c5cd' : '#fff',
-        color: state.isFocused ? '#ffffff' : '#424c58',
+        color: state.isFocused ? '#fff' : '#424c58',
       }),
       control: () => ({
-        background: '#ffffff',
+        background: '#fff',
         borderRadius: '10px',
         border: '1px solid #d7d7d7',
         display: 'flex',
