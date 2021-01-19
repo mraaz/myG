@@ -472,6 +472,8 @@ a:visited {
       width: 100%;
       z-index: 1;
       box-sizing: border-box;
+      background-color: #0b0f14;
+      border: 1px solid #e5c746;
       .css-1ouli63-MenuList {
         background-color: #0b0f14;
         border: 1px solid #e5c746;
@@ -519,8 +521,4 @@ a:visited {
       padding: 0;
     }
   }
-}
-.filter__menu {
-  background-color: #0b0f14;
-  border: 1px solid #e5c746;
 }
