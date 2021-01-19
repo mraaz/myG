@@ -26,7 +26,7 @@ class FacebookLoginController {
           .first()
         if (!(authUser === null)) {
           await auth.loginViaId(authUser.id)
-          let connections = new ConnectionController()
+          const connections = new ConnectionController()
           connections.master_controller({ auth })
           return response.redirect('/')
         } else {

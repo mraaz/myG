@@ -127,7 +127,6 @@ export async function Game_name_Tags(inputValue, game_names_id) {
 
 export async function Schedule_Game_Tags(inputValue, gameId, noTopGameTags) {
   let allTags
-
   if (!noTopGameTags && (inputValue == '' || inputValue == undefined)) {
     allTags = await axios.get('/api/GameTags/getTopGameTags')
   } else {

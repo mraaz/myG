@@ -54,7 +54,7 @@ const AddGame = ({
       }
     }
 
-    document.title = 'myG - Add Match'
+    document.title = 'myG - Create Match'
     getInitialData_Tags()
     getInitialData_GameName()
   }, [])
@@ -144,7 +144,9 @@ const AddGame = ({
   const getOptionsTags = (inputValue) => {
     const getInitialData = async function(inputValue) {
       try {
-        let results = await Schedule_Game_Tags(inputValue)
+        const { gameTitle } = mainSettingsState
+
+        const results = await Schedule_Game_Tags(inputValue, gameTitle.game_names_id)
         updateAdvancedSettings({ optionTags: results })
       } catch (error) {
         // Error get option tags
@@ -161,7 +163,7 @@ const AddGame = ({
   const getOptionsGames = (inputValue) => {
     const getInitialData = async function(inputValue) {
       try {
-        let results = await Game_name_values(inputValue)
+        const results = await Game_name_values(inputValue)
         updateMainSettings({ gameTitlesList: results })
       } catch (error) {
         // Error get option tags
@@ -429,7 +431,7 @@ const AddGame = ({
 
   const handleChange_game_title = async (value) => {
     updateMainSettings({ gameTitle: value })
-    updateAdvancedSettings({ show_experience: true, show_platform: true, show_region: true })
+    updateAdvancedSettings({ show_experience: true, show_platform: true, show_region: true, show_game_tags: true })
 
     if (value == undefined || value == null) {
       updateOptionalSettings({ value_one: null, value_two: null, value_three: null, value_four: null, value_five: null })
@@ -727,33 +729,37 @@ const AddGame = ({
               />
             </div>
           )}
-          <div className='field-title'>Game Tags</div>
-          <div className='game-title-select'>
-            <div>
-              <MyGCreateableSelect
-                isClearable
-                isMulti
-                onCreateOption={handleCreateTags}
-                getNewOptionData={getNewOptionData}
-                onInputChange={getOptionsTags}
-                onChange={(value) => {
-                  updateAdvancedSettings({ tags: value })
-                }}
-                value={advancedSettingsState.tags}
-                placeholder='Search, Select or create Game Tags'
-                onKeyDown={Disable_keys}
-                options={
-                  advancedSettingsState.tags && advancedSettingsState.tags.length === MAX_GAME_TAGS ? [] : advancedSettingsState.optionTags
-                }
-                noOptionsMessage={() => {
-                  return advancedSettingsState.optionTags && advancedSettingsState.optionTags.length === MAX_GAME_TAGS
-                    ? 'You have reached the max options value'
-                    : 'Yo! Either nothing to display or you need to type in something'
-                }}
-                classNamePrefix='filter'
-              />
+          {advancedSettingsState.show_game_tags && <div className='field-title'>Game Tags</div>}
+          {advancedSettingsState.show_game_tags && (
+            <div className='game-title-select'>
+              <div>
+                <MyGCreateableSelect
+                  isClearable
+                  isMulti
+                  onCreateOption={handleCreateTags}
+                  getNewOptionData={getNewOptionData}
+                  onInputChange={getOptionsTags}
+                  onChange={(value) => {
+                    updateAdvancedSettings({ tags: value })
+                  }}
+                  value={advancedSettingsState.tags}
+                  placeholder='Search, Select or create Game Tags'
+                  onKeyDown={Disable_keys}
+                  options={
+                    advancedSettingsState.tags && advancedSettingsState.tags.length === MAX_GAME_TAGS
+                      ? []
+                      : advancedSettingsState.optionTags
+                  }
+                  noOptionsMessage={() => {
+                    return advancedSettingsState.optionTags && advancedSettingsState.optionTags.length === MAX_GAME_TAGS
+                      ? 'You have reached the max options value'
+                      : 'Yo! Either nothing to display or you need to type in something'
+                  }}
+                  classNamePrefix='filter'
+                />
+              </div>
             </div>
-          </div>
+          )}
           {advancedSettingsState.show_platform && <div className='field-title'>Platform</div>}
           {advancedSettingsState.show_platform && (
             <div className='platform-select'>

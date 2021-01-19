@@ -5,12 +5,15 @@ const { validate } = use('Validator')
 const User = use('App/Models/User')
 const SeatsAvailable = use('App/Models/SeatsAvailable')
 const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
+
 const axios = use('axios')
 const querystring = use('querystring')
 const Env = use('Env')
+
 const ProfileRepository = require('../../Repositories/Profile')
 const ElasticsearchRepository = require('../../Repositories/Elasticsearch')
 const LoggingRepository = require('../../Repositories/Logging')
+const ConnectionController = use('./ConnectionController')
 
 class CommonSaveController {
   async register({ view, session }) {
@@ -138,6 +141,9 @@ class CommonSaveController {
             .where('code', extraSeatsCode)
             .update({ user_id: user.id })
         }
+
+        const connections = new ConnectionController()
+        connections.master_controller({ auth })
 
         session.forget('provider')
         session.forget('provider_id')
