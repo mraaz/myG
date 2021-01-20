@@ -157,6 +157,7 @@ export default class MangeSponsors extends React.Component {
             </div>
           </div>
           <div className='modal__body Sponsor__edit'>
+            <div className='text'>Drop your image or video</div>
             <div className='Sponsor__media__input' onClick={this.handleImageChange}>
               <input
                 type='file'
@@ -165,16 +166,19 @@ export default class MangeSponsors extends React.Component {
                 onChange={this.handleSelectFile}
                 name='insert__images'
               />
-              {uploading && <div className='image__uploading'>Uploading...</div>}
               <img
-                src={
-                  media_url == ''
-                    ? sponsor.media_url || 'https://myG.gg/platform_images/Communities/upload_image.png'
-                    : media_url
-                }
+                src={media_url == '' ? sponsor.media_url || 'https://myG.gg/platform_images/Dashboard/BTN_Attach_Image.svg' : media_url}
                 onError={this.addDefaultSrc}
               />
             </div>
+            <div className='text'>
+              Or <span>click here</span> to select
+            </div>
+            {uploading && (
+              <div className='text'>
+                <span>Uploading... </span>
+              </div>
+            )}
             <div className='Sponsor__link__input'>
               <label>Enter Sponsor link</label>
               <input
