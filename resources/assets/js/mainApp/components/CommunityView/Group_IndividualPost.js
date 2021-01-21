@@ -717,7 +717,7 @@ export default class Group_IndividualPost extends Component {
                 )}
                 {!this.state.edit_post && !this.state.showmore && (
                   <Fragment>
-                    <p>
+                    <p style={{ whiteSpace: 'pre-line' }}>
                       {`${this.state.content.slice(0, 254)}  `} {this.renderHashTags(hash_tags)}
                       {this.state.content.length > 254 && <strong onClick={this.toggleShowmore}> {' ... '} See more</strong>}
                     </p>
