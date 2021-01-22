@@ -371,7 +371,7 @@ export default class Members extends React.Component {
           {isActive == 'setting' && (
             <div className='modal__footer'>
               <MyGButton
-                customStyles={{ color: '#FFFFFF', border: '2px solid #FFFFFF', background: '#804545' }}
+                customStyles={{ color: '#fff', border: '2px solid #fff', background: '#804545' }}
                 onClick={() => this.showAlert()}
                 text='Delete'
               />

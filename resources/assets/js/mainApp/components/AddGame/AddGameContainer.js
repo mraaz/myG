@@ -38,6 +38,7 @@ const AddGameContainer = ({ level }) => {
     show_experience: true,
     show_platform: true,
     show_region: true,
+    show_game_tags: false,
   })
   const [mainSettingsState, updateMainSettingsState] = useState({
     scheduledGameId: null,

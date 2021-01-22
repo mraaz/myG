@@ -41,10 +41,16 @@ class GameTagController {
   }
 
   async getGameTags({ auth, request, response }) {
+    let gameId = null
+    if (request.input('content') == undefined || request.input('content').trim() == '') return
+    if (request.input('game_names_id') != undefined || request.input('game_names_id').trim() != '') {
+      gameId = request.input('game_names_id')
+    }
+
     try {
       const allTags = await Database.table('game_tags')
         .where('content', 'like', '%' + request.input('content') + '%')
-        .andWhere('game_names_id', request.input('game_names_id'))
+        .andWhere('game_names_id', gameId)
         .limit(88)
 
       return {

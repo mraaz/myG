@@ -3,6 +3,8 @@
 const User = use('App/Models/User')
 const ConnectionController = use('./ConnectionController')
 
+const LoggingRepository = require('../../Repositories/Logging')
+
 class LoginController {
   async redirect({ ally }) {
     await ally
@@ -30,7 +32,7 @@ class LoginController {
         .first()
       if (!(authUser === null)) {
         await auth.loginViaId(authUser.id)
-        let connections = new ConnectionController()
+        const connections = new ConnectionController()
         connections.master_controller({ auth })
         return response.redirect('/')
       } else {
@@ -43,8 +45,14 @@ class LoginController {
         session.put('profile_img', userData.getAvatar())
         return response.redirect('/user/register')
       }
-    } catch (e) {
-      console.log(e)
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
       return response.redirect('/auth/' + provider)
     }
   }

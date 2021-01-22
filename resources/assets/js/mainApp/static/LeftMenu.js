@@ -77,16 +77,16 @@ const sideBarItems = {
     cta: '/profile',
     expanded: false,
   },
-  NETWORK: {
-    id: 'NETWORK',
-    header: 'Network',
+  ACHIEVEMENTS: {
+    id: 'ACHIEVEMENTS',
+    header: 'Achievements',
     icon: 'https://myG.gg/platform_images/Dashboard/btn_Network.svg',
-    cta: '/groups',
+    cta: '/achievements',
     expanded: false,
   },
 }
 
-const sideBarItemsOrder = ['SEARCH', 'NEW_GAME', 'FEED', 'PROFILE', 'NETWORK']
+const sideBarItemsOrder = ['SEARCH', 'NEW_GAME', 'FEED', 'PROFILE', 'ACHIEVEMENTS']
 
 const sideBarItemsList = [
   {
@@ -158,7 +158,7 @@ const sideBarItemsList = [
     ],
   },
   {
-    id: 'NETWORK',
+    id: 'ACHIEVEMENTS',
     header: 'Network',
     icon: 'https://myG.gg/platform_images/Dashboard/btn_Network.svg',
     cta: '',

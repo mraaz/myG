@@ -432,7 +432,7 @@ const EditGameContainer = (props) => {
           </div>
           <div className='modal__footer'>
             <MyGButton
-              customStyles={{ color: '#FFFFFF', border: '2px solid #FFFFFF' }}
+              customStyles={{ color: '#fff', border: '2px solid #fff' }}
               onClick={() => handleReasonSubmit(false)}
               text='Cancel'
             />

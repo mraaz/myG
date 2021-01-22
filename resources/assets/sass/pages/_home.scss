@@ -1012,9 +1012,9 @@ section#content-container {
             display: flex;
             font-size: 14px;
             font-weight: bold;
-            color: #ffffff;
+            color: #fff;
             a {
-              color: #ffffff;
+              color: #fff;
             }
             a:hover {
               color: #e5c746;
@@ -1319,7 +1319,7 @@ section#content-container {
       // .media {
       //   .image-gallery {
       //     min-height: 300px;
-      //     background: #ffffff85;`
+      //     background: #fff85;`
       //   }
       // }`
       .comments {
@@ -1436,7 +1436,7 @@ section#content-container {
                 transform: translateY(-50%);
                 font-size: 12px;
                 z-index: 10;
-                color: #ffffff;
+                color: #fff;
                 background: #1d2326;
                 transition: all 0.6s ease-in-out;
                 visibility: hidden;
@@ -1484,7 +1484,7 @@ section#content-container {
                 margin-right: 15px;
                 float: right;
                 font-size: 12px;
-                color: #ffffff;
+                color: #fff;
               }
               .comment-panel-liked {
                 padding-left: 15px;
@@ -1494,7 +1494,7 @@ section#content-container {
                 font-size: 12px;
                 padding-left: 15px;
                 border-left: 1px solid #384952;
-                color: #ffffff;
+                color: #fff;
               }
               .divider {
                 margin-left: 10px;
@@ -1590,7 +1590,6 @@ section#content-container {
 .postCompose__container {
   background-color: #1d2326;
   border: 1px solid #273137;
-  margin: 0 100px;
   margin-bottom: 24px;
   position: relative;
   &.zI1000 {
@@ -1614,6 +1613,7 @@ section#content-container {
       display: flex;
       height: 100%;
       margin: 0 50px;
+      cursor: pointer;
       &.active {
         border-bottom: 1px solid #e5c746;
       }
@@ -1636,11 +1636,14 @@ section#content-container {
       display: flex;
       height: 100%;
       margin: 0 50px;
+      cursor: pointer;
       &.active {
         border-bottom: 1px solid #e5c746;
+        cursor: pointer;
       }
       &:hover {
         border-bottom: 1px solid #e5c746;
+        cursor: pointer;
       }
 
       @media screen and (max-width: $tablet) {
@@ -1734,6 +1737,11 @@ section#content-container {
     align-items: center;
     padding: 6px 20px;
     color: #657172;
+    @media screen and (max-width: $tablet) {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 30px;
+    }
     .hashtag_label {
       font-weight: bold;
       font-size: 16px;
@@ -1741,11 +1749,12 @@ section#content-container {
       font-family: Montserrat, sans-serif;
       letter-spacing: 0px;
       margin-right: 10px;
+      height: 100%;
     }
     .hashtag_input {
       background: #171a1c 0% 0% no-repeat padding-box;
       border: 1px solid #273137;
-      height: 36px;
+      // height: 36px;
       width: 100%;
       flex: 12;
       .hash_tag_name_box {
@@ -1754,13 +1763,17 @@ section#content-container {
         .css-57pngl-control {
           width: 100%;
           background: #171a1c 0% 0% no-repeat padding-box;
-          color: #ffffff;
+          color: #fff;
           font: Regular 14px/20px Montserrat;
           letter-spacing: 0px;
         }
         .css-kj6f9i-menu {
           background: #171a1c 0% 0% no-repeat padding-box;
-          color: #ffffff;
+          color: #fff;
+        }
+        .filter__menu {
+          background-color: #0b0f14 !important;
+          border: 1px solid #e5c746;
         }
         .css-1wy0on6 {
           display: none;
@@ -1958,7 +1971,7 @@ section#content-container {
       .text {
         font: Bold 14px/20px Montserrat;
         letter-spacing: 0px;
-        color: #ffffff;
+        color: #fff;
         span {
           color: #e5c746;
         }
@@ -2022,7 +2035,7 @@ section#content-container {
         line-height: 14px;
         font-family: Montserrat, sans-serif;
         letter-spacing: 0px;
-        color: #ffffff;
+        color: #fff;
         opacity: 1;
         margin-bottom: 20px;
       }
@@ -2033,7 +2046,7 @@ section#content-container {
       font-size: 16px;
       line-height: 14px;
       font-family: Montserrat, sans-serif;
-      color: #ffffff;
+      color: #fff;
       background: #1d2326;
       border: 1px solid #273137;
       border-radius: 10px;
@@ -2085,7 +2098,7 @@ section#content-container {
           .groupName {
             font: Bold 18px/22px Montserrat;
             letter-spacing: 0px;
-            color: #ffffff;
+            color: #fff;
           }
           .action {
             margin-left: auto;
@@ -2188,7 +2201,7 @@ section#content-container {
           line-height: 14px;
           font-family: Montserrat, sans-serif;
           letter-spacing: 0px;
-          color: #ffffff;
+          color: #fff;
           opacity: 1;
           margin-bottom: 10px;
           padding: 20px 0px 2px 20px;
@@ -2401,25 +2414,40 @@ section#content-container {
   }
 
   .mobile-sub-menu-items {
+    &.single-row {
+      top: -74px;
+    }
     position: absolute;
-    top: -74px;
-    display: flex;
+    top: -150px;
+    display: grid;
     width: 100%;
     background: #171a1c;
     left: 0;
-    justify-content: space-around;
-  }
+    grid-template-columns: 1fr 1fr;
 
-  .mobile-sub-menu-items a {
-    color: #fff !important;
-  }
+    a {
+      color: #fff !important;
+    }
 
-  .mobile-sub-menu-items .find-matches {
-    padding: 25px 10px;
-  }
+    .small-tile {
+      background-color: #171a1c;
+      text-align: center;
+      padding: 15px 10px;
+      margin: 10px 0;
+      border-right: solid 1px #273137;
+      border &:last-child {
+        border: none;
+      }
+    }
 
-  .mobile-sub-menu-items .find-gamers {
-    padding: 25px 10px;
+    .large-tile {
+      background-color: #1d2326;
+      text-align: center;
+      padding: 25px 10px;
+      grid-column: span 2;
+      border-top: solid 1px #273137;
+      border-bottom: solid 1px #273137;
+    }
   }
 
   .mobile-top-menu-dropdown {
@@ -2564,7 +2592,7 @@ section#content-container {
   }
 
   .menu-list a:hover {
-    color: #ffffff;
+    color: #fff;
     text-decoration: none;
   }
 
@@ -2591,6 +2619,10 @@ section#content-container {
     margin: 20px !important;
   }
 
+  .css-1uccc91-singleValue {
+    color: #fff;
+  }
+
   .viewGame__container .viewGame__filter {
     margin: 0 !important;
   }
@@ -2610,10 +2642,6 @@ section#content-container {
 
   .app-container.home-page {
     display: block;
-  }
-
-  .postCompose__container {
-    margin: 50px;
   }
 }
 

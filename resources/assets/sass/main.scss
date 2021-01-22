@@ -32,7 +32,7 @@
 @import 'communityView/communityView';
 @import 'pages/reportPost';
 @import 'pages/onboarding';
-
+@import 'pages/_modalPortal';
 * {
   box-sizing: border-box;
 }
@@ -464,7 +464,7 @@ a:visited {
     &__menu {
       top: 50px;
       background-color: #4d565a;
-      color: #ffffff;
+      color: #fff;
       border-radius: 4px;
       margin-bottom: 8px;
       margin-top: 8px;
@@ -472,6 +472,8 @@ a:visited {
       width: 100%;
       z-index: 1;
       box-sizing: border-box;
+      background-color: #0b0f14;
+      border: 1px solid #e5c746;
       .css-1ouli63-MenuList {
         background-color: #0b0f14;
         border: 1px solid #e5c746;
@@ -481,16 +483,16 @@ a:visited {
     }
     &__multi-value {
       background-color: #0b0f14;
-      color: #ffffff;
+      color: #fff;
       border: 1px solid;
     }
     &__multi-value__label {
-      color: #ffffff;
+      color: #fff;
     }
 
     &__option {
       background-color: #0b0f14;
-      color: #ffffff;
+      color: #fff;
       cursor: pointer;
       display: block;
       font-size: inherit;
