@@ -1590,7 +1590,6 @@ section#content-container {
 .postCompose__container {
   background-color: #1d2326;
   border: 1px solid #273137;
-  margin: 0 100px;
   margin-bottom: 24px;
   position: relative;
   &.zI1000 {
@@ -1738,6 +1737,11 @@ section#content-container {
     align-items: center;
     padding: 6px 20px;
     color: #657172;
+    @media screen and (max-width: $tablet) {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 30px;
+    }
     .hashtag_label {
       font-weight: bold;
       font-size: 16px;
@@ -1745,11 +1749,12 @@ section#content-container {
       font-family: Montserrat, sans-serif;
       letter-spacing: 0px;
       margin-right: 10px;
+      height: 100%;
     }
     .hashtag_input {
       background: #171a1c 0% 0% no-repeat padding-box;
       border: 1px solid #273137;
-      height: 36px;
+      // height: 36px;
       width: 100%;
       flex: 12;
       .hash_tag_name_box {
@@ -2409,25 +2414,40 @@ section#content-container {
   }
 
   .mobile-sub-menu-items {
+    &.single-row {
+      top: -74px;
+    }
     position: absolute;
-    top: -74px;
-    display: flex;
+    top: -150px;
+    display: grid;
     width: 100%;
     background: #171a1c;
     left: 0;
-    justify-content: space-around;
-  }
+    grid-template-columns: 1fr 1fr;
 
-  .mobile-sub-menu-items a {
-    color: #fff !important;
-  }
+    a {
+      color: #fff !important;
+    }
 
-  .mobile-sub-menu-items .find-matches {
-    padding: 25px 10px;
-  }
+    .small-tile {
+      background-color: #171a1c;
+      text-align: center;
+      padding: 15px 10px;
+      margin: 10px 0;
+      border-right: solid 1px #273137;
+      border &:last-child {
+        border: none;
+      }
+    }
 
-  .mobile-sub-menu-items .find-gamers {
-    padding: 25px 10px;
+    .large-tile {
+      background-color: #1d2326;
+      text-align: center;
+      padding: 25px 10px;
+      grid-column: span 2;
+      border-top: solid 1px #273137;
+      border-bottom: solid 1px #273137;
+    }
   }
 
   .mobile-top-menu-dropdown {
@@ -2622,10 +2642,6 @@ section#content-container {
 
   .app-container.home-page {
     display: block;
-  }
-
-  .postCompose__container {
-    margin: 50px;
   }
 }
 
