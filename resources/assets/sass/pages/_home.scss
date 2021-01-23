@@ -1592,6 +1592,10 @@ section#content-container {
   border: 1px solid #273137;
   margin-bottom: 24px;
   position: relative;
+  margin-left: 18px;
+  margin-right: 18px;
+  border-radius: 8px;
+
   &.zI1000 {
     z-index: 1000;
   }
@@ -1836,6 +1840,7 @@ section#content-container {
       padding: 10px 40px;
       margin: 0;
       border: none;
+      border-radius: 8px;
       &:disabled {
         opacity: 0.5;
         cursor: not-allowed;

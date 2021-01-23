@@ -1,32 +1,56 @@
+/*
+ * Author : nitin Tyagi
+ * github  : https://github.com/realinit
+ * Email : nitin.1992tyagi@gmail.com
+ */
 import React, { Component, Fragment } from 'react'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import IndividualPost from './IndividualPost'
-import ComposeSection from './ComposeSection_v2'
-import GamerSuggestions from './Profile/GamerSuggestions'
 
 import { logToElasticsearch } from '../../integration/http/logger'
 
-export default class Posts extends Component {
+export default class HashTagList extends Component {
   constructor() {
     super()
     this.state = {
-      counter: 0,
+      counter: 1,
       myPosts: [],
       moreplease: true,
+      isFetching: false,
       post_submit_loading: false,
     }
   }
 
   componentDidMount() {
-    document.title = 'myG - Home'
+    const self = this
+    const { match } = this.props.routeProps
+
+    const getHashTags = async function() {
+      try {
+        console.log('Here')
+
+        const data = await axios.post('/api/post/showHashTagPosts/', {
+          content: decodeURIComponent(match.params.content),
+          counter: 1,
+        })
+
+        console.log(data)
+        self.setState({
+          myPosts: data.data.myPosts,
+          moreplease: data.data.myPosts ? (data.data.myPosts.length > 9 ? true : false) : false,
+          isFetching: false,
+        })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getHashTags()
 
     window.scrollTo({
       top: 500,
       behavior: 'smooth',
     })
-    //window.history.pushState('myG', 'myG', '/')
-    this.fetchMoreData()
   }
 
   showLatestPosts = () => {
@@ -38,45 +62,49 @@ export default class Posts extends Component {
         } catch (e) {
           item.media_url = ''
         }
-        return <IndividualPost post={item} key={index} user={this.props.initialData.userInfo} source={'news_feed'} />
+        return <IndividualPost post={item} key={item.id} user={this.props.initialData.userInfo} />
       })
     }
   }
 
-  fetchMoreData = () => {
-    if (this.state.myPosts.length > 0) {
-      window.scrollTo(0, document.documentElement.offsetHeight - 4000)
+  fetchMoreData = (count) => {
+    const { myPosts = [] } = this.state
+    if (myPosts.length > 0) {
+      window.scrollTo(0, document.documentElement.offsetHeight - 3000)
     }
-    const self = this
-
-    const getPosts = async function() {
+    const getPosts = async () => {
+      const { counter = '' } = this.state
+      const self = this
       try {
-        const myPosts = await axios({
+        // const data = await axios.get(`/api/getmypost/${counter}`)
+
+        const data = await axios({
           method: 'GET',
-          url: `/api/post/${self.state.counter}`,
-          onDownloadProgress: (progressEvent) => {
-            const { loaded = 0, total = 0 } = progressEvent
-          },
+          url: `/api/getmypost/${counter}`,
         })
-        if (myPosts.data.myPosts.length == 0) {
-          self.setState({
+
+        if (data.data.myPosts.length == 0) {
+          this.setState({
+            myPosts: [...myPosts],
             moreplease: false,
+            isFetching: false,
           })
           return
         }
-
-        self.setState({
-          myPosts: self.state.myPosts.concat(myPosts.data.myPosts),
+        this.setState({
+          myPosts: [...myPosts, ...data.data.myPosts],
+          isFetching: false,
         })
       } catch (error) {
-        logToElasticsearch('error', 'Posts', 'Failed at myPosts' + ' ' + error)
+        logToElasticsearch('error', 'MyPosts', 'fetchMoreData' + ' ' + error)
       }
     }
 
-    var myCounter = this.state.counter
+    const myCounter = this.state.counter
     this.setState(
       {
-        counter: this.state.counter + 1,
+        counter: count ? count : myCounter + 1,
+        isFetching: true,
       },
       () => {
         getPosts()
@@ -85,12 +113,12 @@ export default class Posts extends Component {
   }
 
   composeSuccess = async (data) => {
+    const { myPosts = [] } = this.state
     this.setState(
       {
         post_submit_loading: true,
       },
       () => {
-        const { myPosts = [] } = this.state
         this.setState({
           myPosts: [...data.data.myPosts, ...myPosts],
           moreplease: data.data.myPosts.lastPage == 1 ? false : true,
@@ -101,13 +129,9 @@ export default class Posts extends Component {
   }
 
   render() {
-    const { myPosts = [], moreplease, isFetching = false, post_submit_loading = false } = this.state
+    const { myPosts = [], moreplease, isFetching = false, post_submit_loading } = this.state
     return (
       <Fragment>
-        <ComposeSection
-          successCallback={this.composeSuccess}
-          initialData={this.props.initialData == undefined ? 'loading' : this.props.initialData}
-        />
         {post_submit_loading && (
           <div className='timeline-item'>
             <div className='animated-background'>
@@ -127,7 +151,6 @@ export default class Posts extends Component {
             </div>
           </div>
         )}
-        <GamerSuggestions />
         {myPosts.length > 0 && !post_submit_loading && (
           <section id='posts' className={isFetching ? '' : `active`}>
             <InfiniteScroll dataLength={myPosts.length} next={this.fetchMoreData} hasMore={moreplease}>

@@ -26,9 +26,7 @@ const AddCommunityContainer = ({ level }) => {
   const [isSubmitting, updateIsSubmitting] = useState(false)
   const [advancedSettingsState, updateAdvancedSettingsState] = useState({
     coHosts: null,
-    tags: '',
     description: '',
-    optionTags: '',
     grp_name_unique: true,
     type: 1,
     uploading: false,
@@ -46,7 +44,7 @@ const AddCommunityContainer = ({ level }) => {
   const gameLinkRef = useRef(null)
 
   useEffect(() => {
-    const fetchCommunities = async function () {
+    const fetchCommunities = async function() {
       try {
         const response = await axios.get('/api/groups/get_my_communities/1')
         return get(response, 'data.all_my_communities', [])
@@ -89,10 +87,10 @@ const AddCommunityContainer = ({ level }) => {
       return
     }
 
-    if (advancedSettingsState.tags.length >= MAX_GAME_TAGS) {
-      toast.success(<Toast_style text={'Alot of tags, that is. Only process 8 tags, I can. Try again. Yeesssssss.'} />)
-      return
-    }
+    // if (advancedSettingsState.tags.length >= MAX_GAME_TAGS) {
+    //   toast.success(<Toast_style text={'Alot of tags, that is. Only process 8 tags, I can. Try again. Yeesssssss.'} />)
+    //   return
+    // }
 
     if (advancedSettingsState.coHosts != null && advancedSettingsState.coHosts.length >= MAX_CO_HOSTS) {
       toast.success(<Toast_style text={'Alot of friends, that is. Only process 4 friends, I can. Try again. Yeesssssss.'} />)
@@ -103,7 +101,6 @@ const AddCommunityContainer = ({ level }) => {
       const { data } = await SubmitDataFunction({
         community_name: mainSettingsState.community_name.trim(),
         game_name_box: mainSettingsState.gameTitle,
-        tags: advancedSettingsState.tags,
         description: advancedSettingsState.description,
         coHosts: advancedSettingsState.coHosts,
         autoAccept: mainSettingsState.autoAccept,

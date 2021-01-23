@@ -47,6 +47,7 @@ import {
   MobileMenu,
   CommunityView,
   Onboarding,
+  HashTagList,
 } from './AsyncComponent'
 
 class Layout extends Component {
@@ -208,6 +209,19 @@ class Layout extends Component {
                     />
                   )}
                 />
+
+                <Route
+                  exact
+                  path='/hashtag/:content'
+                  component={(props) => (
+                    <HashTagList
+                      routeProps={props}
+                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
+                      key={Math.random()}
+                    />
+                  )}
+                />
+
 
                 <Route
                   exact
