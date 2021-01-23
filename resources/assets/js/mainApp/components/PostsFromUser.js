@@ -50,7 +50,6 @@ export default class PostsFromUser extends Component {
     }
     const myCounter = this.state.counter
     this.setState({ counter: count ? count : myCounter + 1, isFetching: true }, getPosts)
-    if (myCounter != 1) this.setState({ show_top_btn: true })
   }
 
   render() {

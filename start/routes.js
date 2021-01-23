@@ -68,6 +68,7 @@ Route.delete('/api/post/delete/:id', 'PostController.destroy')
 Route.post('/api/post/update/:id', 'PostController.update')
 Route.get('/api/getpost/:id', 'PostController.showpost')
 Route.post('/api/post/featureToggle/', 'PostController.featureToggle')
+Route.post('/api/post/showHashTagPosts/', 'PostController.showHashTagPosts')
 
 Route.post('/api/get_group_posts', 'PostController.get_group_posts')
 
@@ -142,9 +143,6 @@ Route.post('/api/GameSkills/getGameSkills', 'GameSkillController.getGameSkills')
 Route.post('/api/HashTags', 'HashTagController.store')
 Route.get('/api/HashTags/getTopHashTags', 'HashTagController.getTopHashTags')
 Route.post('/api/HashTags/getHashTags', 'HashTagController.getHashTags')
-
-Route.get('/api/GroupHashTags/getTopGameTags', 'GroupHashTagController.getTopHashTags')
-Route.post('/api/GroupHashTags/getGameTags', 'GroupHashTagController.getHashTags')
 
 Route.post('/api/likes/', 'LikeController.store')
 Route.get('/api/likes/:id', 'LikeController.show')

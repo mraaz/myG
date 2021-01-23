@@ -121,6 +121,13 @@ const SinglePost = Loadable({
   },
 })
 
+const HashTagList = Loadable({
+  loader: () => import('./components/HashTagList'),
+  loading: function() {
+    return null
+  },
+})
+
 const MobileMenu = Loadable({
   loader: () => import('./components/MobileView/MobileMenu'),
   loading: function() {
@@ -172,6 +179,7 @@ export {
   MobileMenu,
   CommunityView,
   Onboarding,
+  HashTagList,
 }
 function newFunction() {
   return './components/MobileView/MobileMenuTop'
