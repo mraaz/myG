@@ -58,7 +58,7 @@ export default class MangeSponsors extends React.Component {
     const { sponsor = {}, groups_id } = this.props
     const { linkValue, media_url } = this.state
 
-    const updateSponsor = await axios.post('/api/sponsor/update', {
+    await axios.post('/api/sponsor/update', {
       group_id: groups_id,
       id: sponsor.id,
       media_url: media_url == '' ? sponsor.media_url : media_url,
@@ -68,10 +68,10 @@ export default class MangeSponsors extends React.Component {
     this.props.handleModalStatus(true)
   }
 
-  createSponsor = () => {
+  createSponsor = async () => {
     const { sponsor = {}, group_id } = this.props
     const { linkValue, media_url, aws_key_id = '' } = this.state
-    const createSponsorData = axios.post('/api/sponsor/create', {
+    await axios.post('/api/sponsor/create', {
       group_id: group_id,
       type: 2,
       media_url: media_url == '' ? sponsor.media_url : media_url,
