@@ -1,8 +1,3 @@
-/*
- * Author : nitin Tyagi
- * github  : https://github.com/realinit
- * Email : nitin.1992tyagi@gmail.com
- */
 import React, { Component, Fragment } from 'react'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -18,7 +13,6 @@ export default class HashTagList extends Component {
       myPosts: [],
       moreplease: true,
       isFetching: false,
-      post_submit_loading: false,
     }
   }
 
@@ -28,21 +22,18 @@ export default class HashTagList extends Component {
 
     const getHashTags = async function() {
       try {
-        console.log('Here')
-
         const data = await axios.post('/api/post/showHashTagPosts/', {
           content: decodeURIComponent(match.params.content),
           counter: 1,
         })
 
-        console.log(data)
         self.setState({
           myPosts: data.data.myPosts,
           moreplease: data.data.myPosts ? (data.data.myPosts.length > 9 ? true : false) : false,
           isFetching: false,
         })
       } catch (error) {
-        console.log(error)
+        logToElasticsearch('error', 'HashTagList', 'componentDidMount' + ' ' + error)
       }
     }
     getHashTags()
@@ -69,6 +60,8 @@ export default class HashTagList extends Component {
 
   fetchMoreData = (count) => {
     const { myPosts = [] } = this.state
+    const { match } = this.props.routeProps
+
     if (myPosts.length > 0) {
       window.scrollTo(0, document.documentElement.offsetHeight - 3000)
     }
@@ -76,11 +69,9 @@ export default class HashTagList extends Component {
       const { counter = '' } = this.state
       const self = this
       try {
-        // const data = await axios.get(`/api/getmypost/${counter}`)
-
-        const data = await axios({
-          method: 'GET',
-          url: `/api/getmypost/${counter}`,
+        const data = await axios.post('/api/post/showHashTagPosts/', {
+          content: decodeURIComponent(match.params.content),
+          counter: counter,
         })
 
         if (data.data.myPosts.length == 0) {
@@ -96,7 +87,7 @@ export default class HashTagList extends Component {
           isFetching: false,
         })
       } catch (error) {
-        logToElasticsearch('error', 'MyPosts', 'fetchMoreData' + ' ' + error)
+        logToElasticsearch('error', 'HashTagList', 'fetchMoreData' + ' ' + error)
       }
     }
 
@@ -112,46 +103,16 @@ export default class HashTagList extends Component {
     )
   }
 
-  composeSuccess = async (data) => {
-    const { myPosts = [] } = this.state
-    this.setState(
-      {
-        post_submit_loading: true,
-      },
-      () => {
-        this.setState({
-          myPosts: [...data.data.myPosts, ...myPosts],
-          moreplease: data.data.myPosts.lastPage == 1 ? false : true,
-          post_submit_loading: false,
-        })
-      }
-    )
-  }
-
   render() {
-    const { myPosts = [], moreplease, isFetching = false, post_submit_loading } = this.state
+    const { myPosts = [], moreplease, isFetching = false } = this.state
+    const { match } = this.props.routeProps
+
     return (
       <Fragment>
-        {post_submit_loading && (
-          <div className='timeline-item'>
-            <div className='animated-background'>
-              <div className='background-masker header-top'></div>
-              <div className='background-masker header-left'></div>
-              <div className='background-masker header-right'></div>
-              <div className='background-masker header-bottom'></div>
-              <div className='background-masker subheader-left'></div>
-              <div className='background-masker subheader-right'></div>
-              <div className='background-masker subheader-bottom'></div>
-              <div className='background-masker content-top'></div>
-              <div className='background-masker content-first-end'></div>
-              <div className='background-masker content-second-line'></div>
-              <div className='background-masker content-second-end'></div>
-              <div className='background-masker content-third-line'></div>
-              <div className='background-masker content-third-end'></div>
-            </div>
-          </div>
-        )}
-        {myPosts.length > 0 && !post_submit_loading && (
+        <div className='viewHashTag__header'>
+          <div className='title'>Hashtags for {decodeURIComponent(match.params.content)}</div>
+        </div>
+        {myPosts.length > 0 && (
           <section id='posts' className={isFetching ? '' : `active`}>
             <InfiniteScroll dataLength={myPosts.length} next={this.fetchMoreData} hasMore={moreplease}>
               {this.showLatestPosts()}

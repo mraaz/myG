@@ -19,7 +19,13 @@ class LoginController {
     try {
       userData = await ally.driver(provider).getUser()
     } catch (e) {
-      console.log(e)
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
       return response.redirect('/')
     }
 

@@ -79,7 +79,6 @@ export default class MainInfo extends React.Component {
   }
 
   scrollToBottom = () => {
-    console.log('scroll to bottom', document.getElementById('profile-game-main-info'))
     setTimeout(() => {
       document.getElementById('profile-game-main-info').scrollTop = 9999
     }, 0)
