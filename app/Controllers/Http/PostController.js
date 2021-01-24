@@ -615,7 +615,6 @@ class PostController {
   }
 
   async showHashTagPosts({ auth, request, response }) {
-    console.log('hey YO!!!!')
     try {
       const getOne = await Database.from('hash_tags')
         .where({ content: decodeURIComponent(request.input('content')) })
@@ -624,7 +623,6 @@ class PostController {
       if (getOne == undefined) {
         return
       }
-      console.log('gate 1')
       let myPosts = await Database.from('posts')
         .innerJoin('users', 'users.id', 'posts.user_id')
         .innerJoin('post_hash_tag_transactions', 'post_hash_tag_transactions.post_id', 'posts.id')
@@ -632,9 +630,6 @@ class PostController {
         .select('*', 'posts.id', 'posts.updated_at')
         .orderBy('posts.created_at', 'desc')
         .paginate(request.input('counter'), 10)
-
-      console.log('gate 2')
-      console.log(myPosts)
 
       myPosts = await this.get_additional_info({ auth }, myPosts.data)
 

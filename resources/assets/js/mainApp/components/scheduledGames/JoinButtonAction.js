@@ -103,7 +103,7 @@ const JoinStatus = (props) => {
     }
     if (get_stats.data == 'Joined') {
       toast.success(<Toast_style text={'Gratz, you are in!'} />)
-      GoogleAnalytics.gameAccepted();
+      GoogleAnalytics.gameAccepted()
       setJoinButtonText(buttonStatus['1'])
     }
     if (get_stats.data == 'Pending') {
@@ -125,7 +125,6 @@ const JoinStatus = (props) => {
   }
 
   const handleEditGameDetails = () => {
-    console.log(props.routeProps.routeProps)
     props.routeProps.routeProps
       ? props.routeProps.routeProps.history.push(`/editScheduleGames/${props.schedule_games_id}`)
       : props.routeProps.history.push(`/editScheduleGames/${props.schedule_games_id}`)

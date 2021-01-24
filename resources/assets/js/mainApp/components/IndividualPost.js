@@ -556,7 +556,11 @@ export default class IndividualPost extends Component {
   renderHashTags = (hash_tags) => {
     if (hash_tags.length > 0) {
       return hash_tags.map((tags) => {
-        return <strong>#{tags.content}</strong>
+        return (
+          <strong>
+            <Link to={`/hashtag/${tags.content}`}>{`#${tags.content} `}</Link>
+          </strong>
+        )
       })
     } else {
       return ''
@@ -625,15 +629,16 @@ export default class IndividualPost extends Component {
                   </nav>
                 </div>
               </div>
-              <div
-                className='profile__image'
-                style={{
-                  backgroundImage: `url('${profile_img}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`,
-                  backgroundSize: 'cover',
-                }}>
-                <Link to={`/profile/${post.alias}`} className='user-img'></Link>
-                <div className='online__status'></div>
-              </div>
+              <Link to={`/profile/${post.alias}`} className='user-img'>
+                <div
+                  className='profile__image'
+                  style={{
+                    backgroundImage: `url('${profile_img}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`,
+                    backgroundSize: 'cover',
+                  }}>
+                  <div className='online__status'></div>
+                </div>
+              </Link>
               <div className='user__details'>
                 <div className='author__username'>
                   <div className='username'>
