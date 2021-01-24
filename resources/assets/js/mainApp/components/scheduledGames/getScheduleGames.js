@@ -35,7 +35,7 @@ export async function PullDataFunction(myG) {
       if (Array.isArray(extraFields[key]) && extraFields[key].length > 0) {
         value = extraFields[key].map((item) => item.value).toString()
       } else if (typeof extraFields[key] == 'object') {
-        value = extraFields[key].value
+        value = extraFields[key].value ? extraFields[key].value : null
       }
       myG[`value_${queryMapping[index]}`] = { [key]: value }
       count++

@@ -42,8 +42,9 @@ class GameTagController {
 
   async getGameTags({ auth, request, response }) {
     let gameId = null
+
     if (request.input('content') == undefined || request.input('content').trim() == '') return
-    if (request.input('game_names_id') != undefined || request.input('game_names_id').trim() != '') {
+    if (request.input('game_names_id') != undefined && request.input('game_names_id').trim() != '') {
       gameId = request.input('game_names_id')
     }
 
