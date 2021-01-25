@@ -148,7 +148,7 @@ class LeftMenu extends Component {
                 width='22'
                 className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
               />
-              <div className='notification-box'>{approvals}</div>
+              <div className={`notification-box ${approvals ? 'notification-alert' : ''}`}>{approvals}</div>
               {isExpanded && <div className={styles.line} />}
             </div>
           </Link>
@@ -160,7 +160,7 @@ class LeftMenu extends Component {
                 width='22'
                 className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
               />
-              <div className='notification-box'>{alerts}</div>
+              <div className={`notification-box ${alerts ? 'notification-alert' : ''}`}>{alerts}</div>
               {isExpanded && <div className={styles.line} />}
             </div>
           </Link>
@@ -172,7 +172,7 @@ class LeftMenu extends Component {
                 width='22'
                 className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
               />
-              <div className='notification-box'>{chats}</div>
+              <div className={`notification-box ${chats ? 'notification-alert' : ''}`}>{chats}</div>
             </div>
           </Link>
         </div>

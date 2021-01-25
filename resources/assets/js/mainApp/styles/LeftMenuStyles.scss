@@ -111,6 +111,13 @@
   text-align: center;
 }
 
+.notification-alert {
+  background-color: #FA3E3F !important;
+  color: white !important;
+  font-weight: bold !important;
+  border: 0px solid #384952 !important;
+}
+
 .notification-expanded .notification-box {
   border: 1px solid #384952;
   position: relative;
