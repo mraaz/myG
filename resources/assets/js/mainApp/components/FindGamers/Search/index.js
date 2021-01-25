@@ -1,5 +1,6 @@
 import React from 'react';
 import ToggleButton from 'react-toggle-button'
+import Filter from '../Filter';
 import { showMessengerAlert } from '../../../../common/alert'
 import { ignoreFunctions } from '../../../../common/render'
 
@@ -10,6 +11,7 @@ export default class Search extends React.Component {
 
   state = {
     search: '',
+    filter: '',
     online: false,
   }
 
@@ -28,17 +30,26 @@ export default class Search extends React.Component {
     alias: ?, country: ?, relationship: ?, commendations: ?, team: ?, languages: ?, game: ?
   `);
 
+
+  onSearch = () => {
+    const search = this.state.search.trim();
+    const filter = this.state.filter.trim();
+    if (search.length < 3 && !filter) return this.props.onSearch('', this.state.online);
+    return this.props.onSearch(search + ' ' + filter, this.state.online);
+  }
+
+
   onChange = ({ target: { value: search } }) => {
-    this.setState({ search });
+    this.setState({ search }, this.onSearch);
     if (search === ':?') this.showHelp();
-    if (search.trim().length >= 3) this.props.onSearch(search.trim(), this.state.online);
-    if (search.trim().length < 3) this.props.onSearch('', this.state.online);
+  }
+
+  onFilter = (filter) => {
+    this.setState({ filter }, this.onSearch);
   }
 
   toggleOnline = () => {
-    this.setState((previous) => ({ online: !previous.online }), () => {
-      this.props.onSearch(this.state.search.trim(), this.state.online);
-    });
+    this.setState((previous) => ({ online: !previous.online }), this.onSearch);
   }
 
   helpButton = () => {
@@ -66,6 +77,7 @@ export default class Search extends React.Component {
             onToggle={this.toggleOnline}
           />
         </div>
+        <Filter onFilter={this.onFilter} />
       </React.Fragment>
     );
   }

@@ -41,7 +41,7 @@ export class DossierInfo extends React.Component {
     const email = get(this.props, 'profile.email') || ''
     const team = get(this.props, 'profile.team') || ''
     const country = get(this.props, 'profile.country') || ''
-    const relationshipValue = get(this.props, 'profile.relationship') || 'Looking for player two'
+    const relationshipValue = get(this.props, 'profile.relationship') || ''
     const relationship = { label: relationshipValue, value: relationshipValue }
     const languages = (get(this.props, 'profile.languages') || []).map((language) => ({ label: language, value: language }))
     const mostPlayedGames = (get(this.props, 'profile.mostPlayedGames') || []).map((game) => ({
@@ -212,8 +212,15 @@ export class DossierInfo extends React.Component {
   }
 
   loadOptions = async (input) => {
+    const currentGames = (this.state.mostPlayedGames || []).map(({ gameName }) => gameName);
     const results = await Game_name_values(input)
-    return results.length ? results : [{ label: input, value: input }]
+    const validResults = results.length && results.filter((result) => !currentGames.includes(result.value));
+    return results.length ? validResults : [{ label: input, value: input, gameName: input, gameNameValue: { label: input, value: input } }]
+  }
+
+  prepareValue = (value) => {
+    if (!value || !value.gameImg) return value;
+    return { ...value, label: <img src={value.gameImg} /> };
   }
 
   renderGameInput = (index) => {
@@ -227,7 +234,7 @@ export class DossierInfo extends React.Component {
             loadOptions={this.loadOptions}
             onChange={(input) => this.handleDropDownChange(index, input)}
             isClearable
-            value={((this.state.mostPlayedGames || [])[index] || {}).gameNameValue}
+            value={this.prepareValue(((this.state.mostPlayedGames || [])[index] || {}).gameNameValue)}
             className='viewGame__name full-width'
             placeholder='Search, select or create game title'
             onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}

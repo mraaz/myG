@@ -987,6 +987,7 @@ class ScheduleGameController {
       'value_four',
       'value_five',
       'game_languages',
+      'counter',
     ])
     if (query.start_date_time) query.start_date_time = moment(query.start_date_time).format('YYYY-MM-DD HH:mm:ss')
     if (query.end_date_time) query.end_date_time = moment(query.end_date_time).format('YYYY-MM-DD HH:mm:ss')

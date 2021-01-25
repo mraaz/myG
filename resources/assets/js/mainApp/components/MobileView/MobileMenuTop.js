@@ -24,19 +24,19 @@ const MobileMenuTop = (props) => {
           <Link to='/?at=notifications&submenu=1'>
             <div className='notification-container'>
               <img src='https://myG.gg/platform_images/Dashboard/ntfo_Friendship_Icon.svg' height='22' width='22' />
-              <div className='notification-box'>{notifications.approvals}</div>
+              <div className={`notification-box ${notifications.approvals ? 'notification-alert' : ''}`}>{notifications.approvals}</div>
             </div>
           </Link>
           <Link to='/?at=notifications&submenu=2'>
             <div className='notification-container'>
               <img src='https://myG.gg/platform_images/Dashboard/Bell_Icon.svg' height='22' width='22' />
-              <div className='notification-box'>{notifications.alerts}</div>
+              <div className={`notification-box ${notifications.alerts ? 'notification-alert' : ''}`}>{notifications.alerts}</div>
             </div>
           </Link>
           <Link to='/?at=notifications&submenu=3'>
             <div className='notification-container'>
               <img src='https://myG.gg/platform_images/Dashboard/Chat_Icon.svg' height='22' width='22' />
-              <div className='notification-box'>{notifications.chats}</div>
+              <div className={`notification-box ${notifications.chats ? 'notification-alert' : ''}`}>{notifications.chats}</div>
             </div>
           </Link>
         </div>
