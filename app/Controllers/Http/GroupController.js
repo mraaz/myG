@@ -1,12 +1,9 @@
 'use strict'
 
 const Group = use('App/Models/Group')
-const GroupHashTag = use('App/Models/GroupHashTag')
 const Database = use('Database')
 
 const UserStatTransactionController = use('./UserStatTransactionController')
-const GroupHashTagController = use('./GroupHashTagController')
-const GroupHashTagTranController = use('./GroupHashTagTranController')
 const ApiController = use('./ApiController')
 const GameNameController = use('./GameNameController')
 const NotificationController_v2 = use('./NotificationController_v2')
@@ -16,7 +13,6 @@ const PostController = use('./PostController')
 
 const LoggingRepository = require('../../Repositories/Logging')
 
-const MAX_HASH_TAGS = 4
 const MAX_INVITEES = 9
 
 class GroupController {
@@ -94,29 +90,29 @@ class GroupController {
           apiController.update_aws_keys_entry({ auth }, request.input('aws_key_id'), '4', newGroup.id)
         }
 
-        if (request.input('tags') != null && request.input('tags').length > 0) {
-          const grp_tags_TRANS_Controller = new GroupHashTagTranController()
-          var arrTags = JSON.parse(request.input('tags'))
-
-          //Max of three tags per Group.
-          for (var i = 0; i < MAX_HASH_TAGS && i < arrTags.length; i++) {
-            if (arrTags[i].group_hash_tag_id == null) {
-              if (/['/.%#$;`\\]/.test(arrTags[i].value)) {
-                continue
-              }
-              let grp_tags_Controller = new GroupHashTagController()
-
-              const grp_tag_id = await grp_tags_Controller.store({ auth }, arrTags[i].value)
-              await grp_tags_TRANS_Controller.store({ auth }, newGroup.id, grp_tag_id)
-            } else {
-              await grp_tags_TRANS_Controller.store({ auth }, newGroup.id, arrTags[i].group_hash_tag_id)
-
-              const update_counter = await GroupHashTag.query()
-                .where({ id: arrTags[i].group_hash_tag_id })
-                .increment('counter', 1)
-            }
-          }
-        }
+        // if (request.input('tags') != null && request.input('tags').length > 0) {
+        //   const grp_tags_TRANS_Controller = new GroupHashTagTranController()
+        //   var arrTags = JSON.parse(request.input('tags'))
+        //
+        //   //Max of three tags per Group.
+        //   for (var i = 0; i < MAX_HASH_TAGS && i < arrTags.length; i++) {
+        //     if (arrTags[i].group_hash_tag_id == null) {
+        //       if (/['/.%#$;`\\]/.test(arrTags[i].value)) {
+        //         continue
+        //       }
+        //       let grp_tags_Controller = new GroupHashTagController()
+        //
+        //       const grp_tag_id = await grp_tags_Controller.store({ auth }, arrTags[i].value)
+        //       await grp_tags_TRANS_Controller.store({ auth }, newGroup.id, grp_tag_id)
+        //     } else {
+        //       await grp_tags_TRANS_Controller.store({ auth }, newGroup.id, arrTags[i].group_hash_tag_id)
+        //
+        //       const update_counter = await GroupHashTag.query()
+        //         .where({ id: arrTags[i].group_hash_tag_id })
+        //         .increment('counter', 1)
+        //     }
+        //   }
+        // }
 
         if (request.input('co_hosts') != undefined && request.input('co_hosts') != null) {
           var arrCo_hosts = request.input('co_hosts').split(',')
@@ -503,47 +499,29 @@ class GroupController {
             grp_description: request.input('description'),
           })
 
-        const group_GroupHashTag_details = await Database.from('group_hash_tag_trans')
-          .select('id')
-          .where({
-            group_id: request.input('group_id'),
-          })
-
-        for (let i = 0; i < group_GroupHashTag_details.length; i++) {
-          const update_counter = await GroupHashTag.query()
-            .where({ id: group_GroupHashTag_details[i] })
-            .decrement('counter', 1)
-        }
-
-        const delete_like = await Database.table('group_hash_tag_trans')
-          .where({
-            group_id: request.input('group_id'),
-          })
-          .delete()
-
-        if (request.input('tags') != null && request.input('tags').length > 0) {
-          const grp_tags_TRANS_Controller = new GroupHashTagTranController()
-          var arrTags = JSON.parse(request.input('tags'))
-
-          //Max of three tags per Group.
-          for (var i = 0; i < MAX_HASH_TAGS && i < arrTags.length; i++) {
-            if (arrTags[i].group_hash_tag_id == null) {
-              if (/['/.%#$;`\\]/.test(arrTags[i].value)) {
-                continue
-              }
-              let grp_tags_Controller = new GroupHashTagController()
-
-              const grp_tag_id = await grp_tags_Controller.store({ auth }, arrTags[i].value)
-              await grp_tags_TRANS_Controller.store({ auth }, request.input('group_id'), grp_tag_id)
-            } else {
-              await grp_tags_TRANS_Controller.store({ auth }, request.input('group_id'), arrTags[i].group_hash_tag_id)
-
-              const update_counter = await GroupHashTag.query()
-                .where({ id: arrTags[i].group_hash_tag_id })
-                .increment('counter', 1)
-            }
-          }
-        }
+        // if (request.input('tags') != null && request.input('tags').length > 0) {
+        //   const grp_tags_TRANS_Controller = new GroupHashTagTranController()
+        //   var arrTags = JSON.parse(request.input('tags'))
+        //
+        //   //Max of three tags per Group.
+        //   for (var i = 0; i < MAX_HASH_TAGS && i < arrTags.length; i++) {
+        //     if (arrTags[i].group_hash_tag_id == null) {
+        //       if (/['/.%#$;`\\]/.test(arrTags[i].value)) {
+        //         continue
+        //       }
+        //       let grp_tags_Controller = new GroupHashTagController()
+        //
+        //       const grp_tag_id = await grp_tags_Controller.store({ auth }, arrTags[i].value)
+        //       await grp_tags_TRANS_Controller.store({ auth }, request.input('group_id'), grp_tag_id)
+        //     } else {
+        //       await grp_tags_TRANS_Controller.store({ auth }, request.input('group_id'), arrTags[i].group_hash_tag_id)
+        //
+        //       const update_counter = await GroupHashTag.query()
+        //         .where({ id: arrTags[i].group_hash_tag_id })
+        //         .increment('counter', 1)
+        //     }
+        //   }
+        // }
 
         return 'Saved successfully'
       } catch (error) {

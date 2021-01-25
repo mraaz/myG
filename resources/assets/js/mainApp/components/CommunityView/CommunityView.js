@@ -81,7 +81,6 @@ const CommunityView = (props) => {
     //tmpSponsors[index].media_url = 'https://myG.gg/platform_images/Communities/myG_logo.jpg'
     //setCommunityDetails({ sponsors: tmpSponsors })
     hideSponsorModal(true)
-    //console.log(communityDetails.sponsors, '<<<<communityDetails.sponsors')
     toast.success(<Toast_style text={'Yup, yup, yup... deleted successfully!'} />)
   }
 

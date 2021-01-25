@@ -42,7 +42,6 @@ export default class Members extends React.Component {
 
   componentDidMount() {
     const { activeTab } = this.props
-    console.log(this.props.community_Name, '<<<console.log(this.props.community_Name);')
 
     this.getInitialData()
     this.setState({ isActive: activeTab })

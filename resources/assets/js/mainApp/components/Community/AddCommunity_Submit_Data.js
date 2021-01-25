@@ -8,7 +8,6 @@ const MAX_GAME_TAGS = 4
 
 export async function SubmitDataFunction(myG) {
   let co_hosts = null,
-    tags = [],
     group_img = null,
     aws_key_id = null
 
@@ -17,18 +16,18 @@ export async function SubmitDataFunction(myG) {
     co_hosts = Convert_to_comma_delimited_value(myG.coHosts)
   }
 
-  if (myG.tags != undefined && myG.tags.length != 0 && myG.tags != null) {
-    for (var i = 0; i < MAX_GAME_TAGS && i < myG.tags.length; i++) {
-      if (/['/.%#$,;`\\]/.test(myG.tags[i].value)) {
-        toast.success(<Toast_style text={'Sorry mate! Community tags can not have invalid fields'} />)
-        return
-      }
-
-      delete myG.tags[i].label
-    }
-
-    tags = JSON.stringify(myG.tags)
-  }
+  // if (myG.tags != undefined && myG.tags.length != 0 && myG.tags != null) {
+  //   for (var i = 0; i < MAX_GAME_TAGS && i < myG.tags.length; i++) {
+  //     if (/['/.%#$,;`\\]/.test(myG.tags[i].value)) {
+  //       toast.success(<Toast_style text={'Sorry mate! Community tags can not have invalid fields'} />)
+  //       return
+  //     }
+  //
+  //     delete myG.tags[i].label
+  //   }
+  //
+  //   tags = JSON.stringify(myG.tags)
+  // }
 
   if (myG.preview_files && myG.preview_files[0]) {
     group_img = myG.preview_files[0].src
@@ -47,7 +46,6 @@ export async function SubmitDataFunction(myG) {
       name: myG.community_name,
       all_accept: myG.autoAccept,
       grp_description: myG.description,
-      tags: tags,
       co_hosts: co_hosts,
       type: myG.type,
       group_img: group_img,

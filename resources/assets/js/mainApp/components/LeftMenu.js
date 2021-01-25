@@ -40,7 +40,6 @@ class LeftMenu extends Component {
 
   state = {
     dropdown: false,
-    show_top_btn: false,
     isExpanded: false,
     sideBarData: {
       ...sideBarItems,

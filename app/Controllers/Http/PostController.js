@@ -320,10 +320,9 @@ class PostController {
     }
   }
 
-
   async postsFromUser({ auth, request }) {
     if (!auth.user.id) return 'You are not Logged In!'
-    return this.showmyposts({ auth: { user: { id: request.params.userId } }, request });
+    return this.showmyposts({ auth: { user: { id: request.params.userId } }, request })
   }
 
   async showmyposts({ auth, request, response }) {
@@ -612,6 +611,39 @@ class PostController {
           message: (error && error.message) || error,
         })
       }
+    }
+  }
+
+  async showHashTagPosts({ auth, request, response }) {
+    try {
+      const getOne = await Database.from('hash_tags')
+        .where({ content: decodeURIComponent(request.input('content')) })
+        .first()
+
+      if (getOne == undefined) {
+        return
+      }
+      let myPosts = await Database.from('posts')
+        .innerJoin('users', 'users.id', 'posts.user_id')
+        .innerJoin('post_hash_tag_transactions', 'post_hash_tag_transactions.post_id', 'posts.id')
+        .where({ hash_tag_id: getOne.id })
+        .select('*', 'posts.id', 'posts.updated_at')
+        .orderBy('posts.created_at', 'desc')
+        .paginate(request.input('counter'), 10)
+
+      myPosts = await this.get_additional_info({ auth }, myPosts.data)
+
+      return {
+        myPosts,
+      }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 }

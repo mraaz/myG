@@ -38,6 +38,22 @@ section#content-container {
   flex: 1;
   overflow-y: scroll;
   position: relative;
+
+  .viewHashTag__header {
+    height: 77px;
+    background: #1d2326 0% 0% no-repeat padding-box;
+    opacity: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px solid #344953;
+    .title {
+      padding: 0;
+      font: Bold 20px/14px Montserrat;
+      letter-spacing: 0px;
+      color: #fff;
+    }
+  }
 }
 .dashboard-main-container {
   display: flex;
@@ -901,6 +917,16 @@ section#content-container {
           font: 12px/18px Montserrat;
           cursor: pointer;
           margin-left: 5px;
+
+          a:hover {
+            color: #e5c746;
+            text-decoration: none;
+          }
+          a {
+            color: #fff;
+            font: 12px/18px Montserrat;
+            cursor: pointer;
+          }
         }
 
         .post_content_editbox {
@@ -962,6 +988,7 @@ section#content-container {
         max-width: 1200px;
         margin-left: auto;
         margin-right: auto;
+        border-radius: 8px;
         @media screen and (min-height: $tablet) {
           padding: 0 5px;
         }
@@ -1592,6 +1619,10 @@ section#content-container {
   border: 1px solid #273137;
   margin-bottom: 24px;
   position: relative;
+  margin-left: 18px;
+  margin-right: 18px;
+  border-radius: 8px;
+
   &.zI1000 {
     z-index: 1000;
   }
@@ -1836,6 +1867,7 @@ section#content-container {
       padding: 10px 40px;
       margin: 0;
       border: none;
+      border-radius: 8px;
       &:disabled {
         opacity: 0.5;
         cursor: not-allowed;
