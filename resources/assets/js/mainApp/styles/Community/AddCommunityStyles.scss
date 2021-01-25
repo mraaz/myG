@@ -293,6 +293,9 @@
   padding-left: 30px;
   padding-right: 30px;
   min-height: 90%;
+  height: -moz-available;
+  height: -webkit-fill-available;
+  height: fill-available;
 }
 
 .community__search {

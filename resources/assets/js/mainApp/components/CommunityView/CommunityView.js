@@ -176,7 +176,7 @@ const CommunityView = (props) => {
 
 function mapStateToProps(state) {
   return {
-    level: state.user.userTransactionStates.user_level,
+    level: (state.user.userTransactionStates || {}).user_level,
   }
 }
 

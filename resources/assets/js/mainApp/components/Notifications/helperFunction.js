@@ -9,11 +9,7 @@ import { GoogleAnalytics } from '../../../common/analytics'
 export const clickedAccept_myInvitations = (invitation) => {
   try {
     const deleteNoti = axios.get(`/api/notifications_v2/delete/${invitation.id}`)
-  } catch (error) {
-    logToElasticsearch('error', 'Notification HelperFunction', 'Failed clickedAccept_myInvitations:' + ' ' + error)
-  }
 
-  try {
     setAsFriendRedux(invitation.user_id)
     GoogleAnalytics.userFriendMade(invitation.user_id)
     const createFriend = axios.post('/api/friends/create', {

@@ -943,9 +943,10 @@
             justify-content: center;
             align-items: center;
             .image {
+              max-height: 200px;
+              object-fit: cover;
+              height: 100%;
               width: 120px;
-              height: auto;
-              max-height: 163px;
             }
             .default-image {
               width: 120px;
@@ -955,25 +956,33 @@
           }
           &:nth-of-type(4n) {
             .gameImage {
-              background-color: #8d7514;
+              &.active {
+                background-color: #8d7514;
+              }
             }
           }
 
           &:nth-of-type(4n + 1) {
             .gameImage {
-              background-color: #652a2a;
+              &.active {
+                background-color: #652a2a;
+              }
             }
           }
 
           &:nth-of-type(4n + 2) {
             .gameImage {
-              background-color: #2a2a65;
+              &.active {
+                background-color: #2a2a65;
+              }
             }
           }
 
           &:nth-of-type(4n + 3) {
             .gameImage {
-              background-color: #568842;
+              &.active {
+                background-color: #568842;
+              }
             }
           }
           .game__attributes {

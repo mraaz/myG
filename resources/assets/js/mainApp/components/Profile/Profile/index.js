@@ -104,7 +104,7 @@ function mapStateToProps(state, props) {
   const profile = get(state, `profile.profiles[${props.alias}]`, {});
   return {
     userId: state.user.userId,
-    level: state.user.userTransactionStates.user_level,
+    level: (state.user.userTransactionStates || {}).user_level,
     profile,
     foundProfile: !!Object.keys(profile).length,
   }

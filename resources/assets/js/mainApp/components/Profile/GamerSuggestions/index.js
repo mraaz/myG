@@ -26,7 +26,7 @@ export class GamerSuggestions extends React.Component {
   renderHeaders = () => {
     return(
       <div className='headers'>
-        <div className='header'>Gamer Suggestions</div>
+        <div className='header suggestions-header'>Gamer Suggestions</div>
       </div>
     );
   }
@@ -152,7 +152,7 @@ export class GamerSuggestions extends React.Component {
           {this.renderInviteModal()}
           {this.renderOnboardingButtons()}
           {!this.props.noTitle && this.renderHeaders()}
-          <div className="scroll">
+          <div className="scroll suggestions-scroll">
             {this.renderPageButtons()}
             {this.props.gamerSuggestions.slice(this.state.page, this.state.page + 4).map(this.renderGamerSuggestion)}
           </div>
