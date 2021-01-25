@@ -2086,7 +2086,11 @@ $transition-default: 0.25s ease-out 0.1s;
   margin-top: 85px;
 
   &.active {
-    display: block
+    display: block;
+
+    @media (min-width: 575px) {
+      display: none;
+    }
   }
 
   &.inactive {
@@ -2096,7 +2100,6 @@ $transition-default: 0.25s ease-out 0.1s;
 
 .mGameTileList {
   padding: 0 20px;
-  // margin-top: 85px;
 }
 
 .mGameTile {
@@ -2501,6 +2504,49 @@ $transition-default: 0.25s ease-out 0.1s;
         margin-bottom: 24px;
         font-size: 12px;
         line-height: 1;
+      }
+      
+      .gamer__wraper {
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 10px;
+        .single__gamer {
+          display: inline-flex;
+          align-items: center;
+          margin-right: 20px;
+          a {
+            display: flex;
+            align-items: center;
+          }
+        }
+        .gamer__image {
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          margin-right: 10px;
+          img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+          }
+        }
+        .gamer__alias {
+          font: 10px/14px Montserrat;
+          letter-spacing: 0px;
+          color: #fff;
+          font-weight: 500;
+          max-width: 45px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .View__AllGamers {
+          font: 10px/14px Montserrat;
+          letter-spacing: 0px;
+          color: #fff;
+          font-weight: 400;
+          cursor: pointer;
+        }
       }
 
       .gameDescription {
