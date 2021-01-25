@@ -226,6 +226,7 @@ export default class MyScheduledGames extends Component {
           <MobileScheduledGames
             scheduleGames={scheduleGames}
             selectedGame={selected_game}
+            singleScheduleGamesPayload={singleScheduleGamesPayload}
             showFullGames={show_full_games}
             handleExcludesFullGames={this.handleExcludesFullGames}
             slideOptionLabel={this.state.slideOptionText}
@@ -234,7 +235,12 @@ export default class MyScheduledGames extends Component {
             getSingleGameData={this.getSingleGameData}
             deSelectGame={this.deSelectGame}
             showRightSideInfo={showRightSideInfo}
-            ></MobileScheduledGames>
+            routeProps={this.props.routeProps}
+            commentData={commentData}
+            showAllComment={showAllComment}
+            handleShowAllComments={this.handleShowAllComments}
+            user={this.props.initialData}
+          />
         </section>
       </Fragment>
     )

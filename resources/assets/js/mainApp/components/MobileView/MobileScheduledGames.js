@@ -1,8 +1,11 @@
 import React, { Fragment, useState } from 'react'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
+import JoinButtonAction from '../scheduledGames/JoinButtonAction'
+import Approved_gamers from '../scheduledGames/ApprovedGamers'
+import GameComments from '../scheduledGames/GameComments'
 
-const MobileScheduledGames = ({ scheduleGames, selectedGame, getSingleGameData, deSelectGame, slideOptionLabel, handleExcludesFullGames, showFullGames, showRightSideInfo, copyClipboardEnable = true, showPrefilledFilter = false }) => {
+const MobileScheduledGames = ({ scheduleGames, selectedGame, getSingleGameData, deSelectGame, user, handleShowAllComments, routeProps, singleScheduleGamesPayload, slideOptionLabel, handleExcludesFullGames, showFullGames, showRightSideInfo, commentData, showAllComment, showPrefilledFilter = false }) => {
   const defaultThumbnails = 'https://myG.gg/platform_images/Notifications/myG_icon.svg'
 
   const transformPlayerLevelTitle = (title) => {
@@ -30,11 +33,80 @@ const MobileScheduledGames = ({ scheduleGames, selectedGame, getSingleGameData, 
   
   const statusMapping = { 1: 'Approved. you are in!', 3: 'Pending Approval by Host' }
 
+  const {
+    additional_game_info = {},
+    approved_gamers = [],
+    join_status = '',
+    additional_submit_info = false,
+    additional_submit_info_fields = [],
+    myStatus = 0,
+  } = singleScheduleGamesPayload
+
+  const { id = '', game_name = '', experience = '', no_of_gamers = '', tags = [] } = selectedGame
+  const {
+    start_date_time = '',
+    end_date_time = '',
+    limit,
+    description = '',
+    platform = '',
+    region = '',
+    allow_comments = 0,
+    schedule_games_GUID,
+    accept_msg = '',
+  } = additional_game_info
+
+  const experience_split = experience ? experience.split(',').map(level => transformPlayerLevelTitle(level)) : []
+
+  let mic = additional_game_info.mic
+  let eighteen_plus = additional_game_info.eighteen_plus
+  if (mic) {
+    mic = true
+  } else {
+    mic = false
+  }
+  if (eighteen_plus) {
+    eighteen_plus = true
+  } else {
+    eighteen_plus = false
+  }
+
+  const { no_of_comments = [], lastComment = '' } = commentData
+  const { no_of_my_comments = 0 } = no_of_comments[0] || {}
+
   return (
     <Fragment>
-      <div className={`mGameDetails${showRightSideInfo ? ' active' : ' inactive'}`}>
+      <div className={`mGameAllComments${showRightSideInfo && showAllComment ? ' active' : ' inactive'}`}>
+        {showAllComment && (
+          <GameComments
+            game_id={id}
+            scheduleGames_data={selectedGame}
+            user={user}
+            toggleBack={(e) => handleShowAllComments(id)}
+            allow_comments={allow_comments}
+          />
+        )}
+      </div>
+
+      <div className={`mGameDetails${showRightSideInfo && !showAllComment ? ' active' : ' inactive'}`}>
         <div className="mGameDetailsRowOne">
-          <button onClick={(e) => deSelectGame(e)}>{'< Full List'}</button>
+          <div className="rowOneWrapper">
+            <a className="mGameDetailsBackButton" onClick={(e) => deSelectGame(e)}>
+              <img className="mGameDetailsCaretImg" src='https://myG.gg/platform_images/View+Game/Down+Carrot.svg' />
+              <span>
+                {` Full List `}
+              </span>
+            </a>
+
+            <JoinButtonAction
+              join_status={join_status}
+              schedule_games_id={id}
+              additional_submit_info={additional_submit_info}
+              additional_submit_info_fields={additional_submit_info_fields}
+              schedule_games_GUID={schedule_games_GUID}
+              myStatus={myStatus}
+              routeProps={routeProps}
+            />
+            </div>
         </div>
 
         <div className="mGameDetailsRowTwo">
@@ -42,12 +114,126 @@ const MobileScheduledGames = ({ scheduleGames, selectedGame, getSingleGameData, 
             {selectedGame && selectedGame.game_name}
           </h1>
         </div>
+
+        <div className="mGameDetailsRowThree">
+          <div className='mGamerCount'>
+            <img src='https://myG.gg/platform_images/Dashboard/Notifications/little_green_man.svg' />
+            <span>
+              {no_of_gamers} / {limit == 0 ? <span>&#8734;</span> : limit} Gamers
+            </span>
+          </div>
+          <div className='mGameTimestamp'>
+            <img src='https://myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
+            <span>{moment(start_date_time).format('LL')}</span>
+          </div>
+          <div className='gameLevelWrap'>
+            {experience_split.length > 0 &&
+              experience_split.map((ex, index) => {
+                return (
+                  <div className={`gameLevel gameLevel${ex}`} key={ex}>
+                    {ex}
+                  </div>
+                )
+              })}
+          </div>
+        </div>
+      
+        <div className="mGameDetailsRowFour">
+          <div className="mGameDetailsRowWrapper">
+            <div className='gameDescription'>Game Details</div>
+            {mic && <div className='gameDescription__body'>Mic required!</div>}
+            {eighteen_plus && <div className='gameDescription__body'>18+ event boies n gurls</div>}
+            {description && <div className='filter__label'>Description</div>}
+            {description && <div className='gameDescription__body'>{description}</div>}
+            <div className='gameTime__label'>End Time</div>
+            <div className='gameTime__value'>{moment(end_date_time).format('LLLL')}</div>
+
+            {platform && <div className='gameTime__label'>Platform</div>}
+            {platform && <div className='gameTime__value'>{platform.split(',').join(',  ')}</div>}
+            {region && <div className='gameTime__label'>Region</div>}
+            {region && <div className='gameTime__value'>{region.split(',').join(', ')}</div>}
+            {accept_msg && <div className='gameTime__label'>Accept Message</div>}
+            {accept_msg && <div className='gameTime__value'>{accept_msg}</div>}
+            {additional_submit_info_fields.length > 0 &&
+              additional_submit_info_fields.map((fields) => {
+                let values = ''
+                const Obj = fields[0]
+
+                if (Obj != null) {
+                  values = Object.values(Obj)[0]
+                  if (values == undefined || values == null) {
+                    values = ''
+                  }
+                }
+                return (
+                  <Fragment>
+                    <div className='gameTime__label'>{Obj.label}</div>
+                    <div className='gameTime__value'>{values.split(',').join(', ')}</div>
+                  </Fragment>
+                )
+              })}
+            <Approved_gamers approved_gamers={approved_gamers} schedule_games_id={id} />
+            {tags && tags.length > 7 && <div className='gameTags__label'>Tags</div>}
+            <div className='gameTags__value'>
+              {tags &&
+                tags.length > 7 &&
+                tags.map((tag) => {
+                  return (
+                    <WithTooltip
+                      position={{ bottom: '24px', left: '-12px' }}
+                      style={{ height: '24px', display: 'inline-block', marginBottom: '5px' }}
+                      text={tag.content}>
+                      <p className='singleTags' title={tag.content}>
+                        {tag.content}
+                      </p>
+                    </WithTooltip>
+                  )
+                })}
+            </div>
+          </div>
+        </div>
+
+        {(lastComment.content || !showAllComment) && (
+          <div className='gameDetaiils__footer'>
+            {no_of_my_comments > 0 && (
+              <Fragment>
+                <div className='view__all__comments' onClick={(e) => handleShowAllComments(id)}>
+                  {`View all (${no_of_my_comments}) comments`}
+                </div>
+
+                <div className='game__comment'>
+                  <Link to={`/profile/${lastComment.alias}`} className='user-img'>
+                    {' '}
+                    <div>
+                      <img
+                        onError={addDefaultSrc}
+                        src={lastComment.profile_img ? lastComment.profile_img : defaultUserImage}
+                        className='profile__image'
+                      />
+                    </div>
+                  </Link>
+
+                  <div className='arrow'></div>
+                  <span className='author'>{`${lastComment.alias}`}</span>
+                  <span>{lastComment.content || ''}</span>
+                </div>
+              </Fragment>
+            )}
+            {no_of_my_comments == 0 && allow_comments ? (
+              <div className='noComments'>
+                No comments yet. <span onClick={(e) => handleShowAllComments(id)}>Be the first to leave a comment.</span>
+              </div>
+            ) : (
+              ''
+            )}
+            {allow_comments == 0 && <div className='noComments disabled'>Comments disabled.</div>}
+          </div>
+        )}
       </div>
 
       <div className={`mGameTileList${!showRightSideInfo ? ' active' : ' inactive'}`}>
         
         <div className='mGameTileListHeader'>
-          <div className='mGameResultsCount'> {scheduleGames.length} Results</div>
           <div className='mGameResultsFillView'>
             <span>{slideOptionLabel} </span>{' '}
             <div className='button-switch-m'>
