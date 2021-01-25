@@ -1,3 +1,5 @@
+@import '../variables';
+
 @function random_element($elements...) {
   @return nth($elements, random(length($elements)));
 }
@@ -39,6 +41,14 @@
 
 .viewGame__container {
   margin: 0px 100px;
+
+  &.desktopView {
+    display: none;
+
+    @media (min-width: 575px) {
+      display: block;
+    }
+  }
 
   .viewGame__filter {
     margin: 20px;
@@ -1969,12 +1979,18 @@
   }
 }
 
+.viewGame__container__mobile {
+  height: 100%;
+  position: relative;
+}
+
 $height: 15 / 16 * 1em;
 $width: 35 / 16 * 1em;
 $color-silver: #ffe98b;
 $color-peter-river: #ffe98b;
 $color-carrot: #ffe98b;
 $transition-default: 0.25s ease-out 0.1s;
+.button-switch-m,
 .button-switch {
   font-size: 1.5em;
   height: $height;
@@ -2028,5 +2044,298 @@ $transition-default: 0.25s ease-out 0.1s;
         transform: translate(20 / 18 * 1em, 0);
       }
     }
+  }
+}
+
+.button-switch-m {
+  font-size: 1em;
+
+  .switch {
+    top: 3px;
+
+    &:after {
+      top: -1.5px;
+    }
+  }
+}
+
+.mobileView {
+  display: block;
+
+  @media (min-width: 575px) {
+    display: block;
+  }
+}
+
+.mGameDetails,
+.mGameTileList {
+  &.active {
+    display: block
+  }
+
+  &.inactive {
+    display: none;
+  }
+}
+
+.mGameTileList {
+  padding: 0 20px;
+  margin-top: 85px;
+}
+
+.mGameTile {
+  background-color: #1D2326;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 20px;
+
+  .mGameTileImage {
+    width: 96px;
+    $num-colors: 1000;
+    border-radius: 4px 0px 0px 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .image {
+      width: 96px;
+      height: auto;
+      max-height: 163px;
+    }
+
+    .default-image {
+      width: 96px;
+      position: relative;
+      height: 75px;
+    }
+  }
+
+  .mGameTileDescription {
+    padding: 15px 0;
+    width: 100%;
+
+    .mGameName {
+      font-size: 20px;
+      font-weight: bold;
+      font-family: $montserrat;
+      line-height: 1;
+      color: #ffffff;
+      overflow: hidden;
+      margin: 0;
+      padding: 0 5px 0 0;
+      text-transform: uppercase;
+      text-overflow: ellipsis;
+    }
+
+    .gameLevelWrap {
+      .gameLevel {
+        border: 1px solid #b9b9b9;
+        border-radius: 23px;
+        font-size: 12px;
+        font-weight: bold;
+        font-family: $montserrat;
+        line-height: 1;
+        letter-spacing: 0px;
+        color: #b9b9b9;
+        padding: 6px 15px;
+        white-space: nowrap;
+        overflow: hidden;
+  
+        &.gameLevelPro {
+          color: #ffd9b9;
+          border: 1px solid #ffd9b9;
+        }
+        &.gameLevelSemi-Pro {
+          color: #d6b9ff;
+          border: 1px solid #d6b9ff;
+        }
+        &.gameLevelCasual {
+          color: #9dceff;
+          border: 1px solid #9dceff;
+        }
+      }
+    }
+
+    .mGamePlayerList {
+      flex: auto;
+      justify-content: flex-end;
+      align-items: center;
+
+      .playerName {
+        display: inline;
+        text-align: left;
+        font-size: 10px;
+        font-weight: bold;
+        font-family: $montserrat;
+        line-height: 1;
+        letter-spacing: 0px;
+        color: #ffffff;
+        margin-left: 5px;
+        align-items: center;
+        font-weight: 600;
+        cursor: pointer;
+
+        span {
+          margin-left: 5px;
+        }
+
+        img {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          background: #fff;
+        }
+      }
+    }
+
+    .mGamerCount,
+    .mGameTimestamp {
+      display: flex;
+      font: 12px/14px Montserrat;
+      letter-spacing: 0px;
+      color: #ffffff;
+
+      img {
+        width: 15px;
+        height: 15px;
+        margin-right: 5px;
+      }
+    }
+
+    .mGameTimestamp {
+      padding: 10px 0 0;
+    }
+
+    .mGameTags {
+      padding-top: 22px;
+      color: #b9b9b9;
+
+      .mGameTag {
+        border: 1px solid #b9b9b9;
+        border-radius: 4px;
+        font-size: 14px;
+        line-height: 1;
+        font-family: $montserrat;
+        letter-spacing: 0;
+        color: #b9b9b9;
+        padding: 5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-right: 10px !important;
+        font-weight: 600;
+      }
+    }
+    
+    .mGameTileRowOne {
+      align-items: center;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .mGameTileRowTwo {
+      padding: 22px 0 18px;
+    }
+
+    .mGameTileRowFour {
+      border-top: 1px solid #283034;
+      margin-top: 18px;
+
+      .rowFourWrapper {
+        padding-top: 11px;
+
+        .myStatus {
+          display: flex;
+          align-items: center;
+          font-size: 12px;
+          line-height: 1;
+          font-family: $montserrat;
+          font-weight: 500;
+          letter-spacing: 0;
+
+          span {
+            color: #9dffac;
+          }
+        }
+        .numberOfApprovals {
+          display: flex;
+          align-items: center;
+          font-size: 12px;
+          line-height: 1;
+          font-family: $montserrat;
+          font-weight: 500;
+          letter-spacing: 0;
+          cursor: pointer;
+
+          img {
+            width: 15px;
+            height: 15px;
+            margin-right: 5px;
+          }
+          span {
+            color: #e5c746;
+          }
+        }
+      }
+    }
+
+    .mGameTileRowOne,
+    .mGameTileRowTwo,
+    .mGameTileRowThree,
+    .rowFourWrapper {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  }
+
+  &:nth-of-type(4n) {
+    .mGameTileImage {
+      background-color: #8d7514;
+    }
+  }
+
+  &:nth-of-type(4n + 1) {
+    .mGameTileImage {
+      background-color: #652a2a;
+    }
+  }
+
+  &:nth-of-type(4n + 2) {
+    .mGameTileImage {
+      background-color: #2a2a65;
+    }
+  }
+
+  &:nth-of-type(4n + 3) {
+    .mGameTileImage {
+      background-color: #568842;
+    }
+  }
+}
+
+.mGameTileListHeader {
+  display: flex;
+  height: 40px;
+  width: 100%;
+
+  .mGameResultsFillView {
+    flex: 1;
+    justify-content: flex-start;
+    display: flex;
+    font: 20px/14px Montserrat;
+    letter-spacing: 0px;
+    color: #fff;
+  }
+
+  .mGameResultsFillView {
+    justify-content: flex-end;
+    font-family: Montserrat, sans-serif;
+    font-size: 14px;
+    line-height: 14.4px;
+    letter-spacing: 0px;
+    color: #fff;
   }
 }

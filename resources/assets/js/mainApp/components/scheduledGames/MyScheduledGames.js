@@ -13,6 +13,7 @@ import { PullDataFunction as getScheduleGames } from './getScheduleGames'
 import axios from 'axios'
 import Select from 'react-select'
 import { prefilledFilter_option } from './option'
+import MobileScheduledGames from '../MobileView/MobileScheduledGames'
 
 export default class MyScheduledGames extends Component {
   constructor() {
@@ -31,6 +32,7 @@ export default class MyScheduledGames extends Component {
       showAllComment: false,
       fetching: false,
       exclude_expired: false,
+      slideOptionText: 'Exclude expired games',
     }
   }
 
@@ -75,6 +77,18 @@ export default class MyScheduledGames extends Component {
     }
   }
 
+  deSelectGame = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    this.setState({
+      singleScheduleGamesPayload: {},
+      selected_game: {},
+      showRightSideInfo: false,
+      showAllComment: false,
+    })
+  }
+
   getScheduleGamesData = async (data = {}) => {
     const { counter, scheduleGames = [], exclude_expired, filter } = this.state
     let count = counter + 1
@@ -107,6 +121,8 @@ export default class MyScheduledGames extends Component {
       exclude_expired: checked,
       filter,
     })
+
+    this.setState({ slideOptionText: checked ? 'Show expired games': 'Exclude expired games' })
 
     if (scheduleGamesRes.data && scheduleGamesRes.data.myScheduledGames.length > 0) {
       this.setState({ scheduleGames: scheduleGamesRes.data.myScheduledGames, fetching: false, exclude_expired: checked, filter })
@@ -152,59 +168,75 @@ export default class MyScheduledGames extends Component {
       return <h1>Loading</h1>
     }
     return (
-      <section className='viewGame__container'>
-        <div
-          className={`gameList__section ${singleView ? 'singleGameView__container' : 'GameView__container'}`}
-          style={{ display: 'block' }}>
-          <div className='myGame__filter-section'>
-            <div className='viewGame__gameName game-title-select'>
-              <Select
-                onChange={(data) => this.handleChangeFilter(data)}
-                options={prefilledFilter_option}
-                placeholder='Select your filter'
-                name='prefilledFilter'
-                className='viewGame__name'
-                classNamePrefix='filter'
-                value={prefilledFilter}
-              />
+      <Fragment>
+        <section className='viewGame__container desktopView'>
+          <div
+            className={`gameList__section ${singleView ? 'singleGameView__container' : 'GameView__container'}`}
+            style={{ display: 'block' }}>
+            <div className='myGame__filter-section'>
+              <div className='viewGame__gameName game-title-select'>
+                <Select
+                  onChange={(data) => this.handleChangeFilter(data)}
+                  options={prefilledFilter_option}
+                  placeholder='Select your filter'
+                  name='prefilledFilter'
+                  className='viewGame__name'
+                  classNamePrefix='filter'
+                  value={prefilledFilter}
+                />
+              </div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              {scheduleGames.length > 0 ? (
+                <Fragment>
+                  <div style={{ flex: 1 }}>
+                    <GameList
+                      scheduleGames={scheduleGames}
+                      show_full_games={show_full_games}
+                      handleExcludesFullGames={this.handleExcludesFullGames}
+                      slideOptionLabel={this.state.slideOptionText}
+                      getSingleGameData={this.getSingleGameData}
+                      next={this.getScheduleGamesData}
+                      hasMore={this.state.moreplease}
+                      fetching={fetching}
+                      copyClipboardEnable={true}
+                      showPrefilledFilter={true}
+                      {...this.props}
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <GameDetails
+                      singleScheduleGamesPayload={singleScheduleGamesPayload}
+                      selected_game={selected_game}
+                      showRightSideInfo={showRightSideInfo}
+                      commentData={commentData}
+                      handleShowAllComments={this.handleShowAllComments}
+                      showAllComment={showAllComment}
+                      {...this.props}
+                    />
+                  </div>
+                </Fragment>
+              ) : (
+                <NoRecord />
+              )}
             </div>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            {scheduleGames.length > 0 ? (
-              <Fragment>
-                <div style={{ flex: 1 }}>
-                  <GameList
-                    scheduleGames={scheduleGames}
-                    show_full_games={show_full_games}
-                    handleExcludesFullGames={this.handleExcludesFullGames}
-                    slideOptionLabel={`Exclude Expired Games`}
-                    getSingleGameData={this.getSingleGameData}
-                    next={this.getScheduleGamesData}
-                    hasMore={this.state.moreplease}
-                    fetching={fetching}
-                    copyClipboardEnable={true}
-                    showPrefilledFilter={true}
-                    {...this.props}
-                  />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <GameDetails
-                    singleScheduleGamesPayload={singleScheduleGamesPayload}
-                    selected_game={selected_game}
-                    showRightSideInfo={showRightSideInfo}
-                    commentData={commentData}
-                    handleShowAllComments={this.handleShowAllComments}
-                    showAllComment={showAllComment}
-                    {...this.props}
-                  />
-                </div>
-              </Fragment>
-            ) : (
-              <NoRecord />
-            )}
-          </div>
-        </div>
-      </section>
+        </section>
+        <section className='viewGame__container__mobile mobileView'>
+          <MobileScheduledGames
+            scheduleGames={scheduleGames}
+            selectedGame={selected_game}
+            showFullGames={show_full_games}
+            handleExcludesFullGames={this.handleExcludesFullGames}
+            slideOptionLabel={this.state.slideOptionText}
+            copyClipboardEnable={true}
+            showPrefilledFilter={true}
+            getSingleGameData={this.getSingleGameData}
+            deSelectGame={this.deSelectGame}
+            showRightSideInfo={showRightSideInfo}
+            ></MobileScheduledGames>
+        </section>
+      </Fragment>
     )
   }
 }
