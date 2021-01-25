@@ -41,7 +41,7 @@ export class DossierInfo extends React.Component {
     const email = get(this.props, 'profile.email') || ''
     const team = get(this.props, 'profile.team') || ''
     const country = get(this.props, 'profile.country') || ''
-    const relationshipValue = get(this.props, 'profile.relationship') || 'Looking for player two'
+    const relationshipValue = get(this.props, 'profile.relationship') || ''
     const relationship = { label: relationshipValue, value: relationshipValue }
     const languages = (get(this.props, 'profile.languages') || []).map((language) => ({ label: language, value: language }))
     const mostPlayedGames = (get(this.props, 'profile.mostPlayedGames') || []).map((game) => ({

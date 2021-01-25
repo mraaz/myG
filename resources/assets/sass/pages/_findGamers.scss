@@ -43,7 +43,7 @@
   .help {
     font-weight: bold;
     font-size: 24px;
-    color: #E5C746;
+    color: #e5c746;
     position: absolute;
     right: 12px;
     padding: 4px;
@@ -327,6 +327,135 @@
   #find-gamers-search {
     padding: 0 64px;
     max-width: 1800px;
+  }
+
+  #find-gamers-filter {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 0 16px;
+    margin: -32px 64px 0 64px;
+    max-width: 1800px;
+    border-left: 2px solid #344953;
+
+    .filter-row {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 8px;
+
+      .filter-label {
+        font-size: 16px;
+        font-family: 'Montserrat';
+        color: #fff;
+        margin: 8px 0 2px 0;
+      }
+
+      .filter-text {
+        width: 100%;
+        margin: 0;
+        background-color: #4d565a;
+        border: none;
+        padding: 0;
+        color: #fff;
+        padding: 8px;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: 500;
+        max-width: 450px;
+        &::placeholder {
+          color: #fff;
+        }
+      }
+
+      .filter-select {
+        width: 100%;
+        margin: 0;
+        background-color: #4d565a;
+        border: none;
+        padding: 0;
+        color: #fff;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: 500;
+        max-width: 450px;
+        &::placeholder {
+          color: #fff;
+        }
+      }
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -5px;
+      width: 8px;
+      height: 8px;
+      background-color: #e6c846;
+    }
+    .label {
+      font-size: 20px;
+      font-family: 'Montserrat';
+      color: #fff;
+    }
+    .add-filter {
+      display: flex;
+      flex-direction: column;
+      .header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: fit-content;
+        padding: 8px 0;
+        color: #e6c846;
+        font-size: 14px;
+        font-family: 'Montserrat';
+        cursor: pointer;
+        .text {
+          margin-right: 8px;
+        }
+      }
+      .add-filter-menu {
+        .title {
+          width: 180px;
+          height: 32px;
+          background-color: #1d2326;
+          border-bottom: 1px solid #384952;
+          border-radius: 4px 4px 0px 0px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 12px;
+          font-family: 'Montserrat';
+          text-align: center;
+          color: #fff;
+          font-weight: bold;
+          margin: 0;
+          padding: 0;
+        }
+        .content {
+          width: 180px;
+          min-height: 180px;
+          background-color: #171a1c;
+          border: 1px solid #384952;
+          opacity: 1;
+          .option {
+            text-align: left;
+            font-size: 12px;
+            font-family: 'Montserrat';
+            color: #fff;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+          .selected {
+            background-color: #4d565a !important;
+          }
+        }
+      }
+    }
   }
 
   #find-gamers-online {

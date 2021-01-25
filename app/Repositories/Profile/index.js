@@ -430,7 +430,9 @@ class ProfileRepository {
     notificationController.commend({ commendedId, commenderId: requestingUserId });
     userStatController.update_total_number_of(commendedId, 'total_number_of_commendations')
 
-    return this.fetchProfileInfo({ requestingUserId, id: commendedId, alias });
+    const { profile } = await this.fetchProfileInfo({ requestingUserId, id: commendedId, alias });
+    await ElasticsearchRepository.storeUser({ user: profile });
+    return { profile };
   }
 
   getCommendations({ commended }) {
