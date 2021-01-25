@@ -294,7 +294,7 @@ function mapStateToProps(state) {
   })
   contacts.forEach((contact) => (contact.chat = contactsWithChats[contact.contactId] || {}))
   return {
-    level: state.user.userTransactionStates.user_level,
+    level: (state.user.userTransactionStates || {}).user_level,
     alert: state.alert.show,
     autoSelfDestruct: state.user.autoSelfDestruct,
     persistEncryption: state.encryption.persist,
