@@ -958,6 +958,23 @@
       }
     }
 
+    .suggestions-header {
+      background-color: #1e2326 !important;
+      border-radius: 10px !important;
+      border-bottom: none !important;
+      border: 1px solid #2d363a !important;
+      border-bottom-left-radius: 0 !important;
+      border-bottom-right-radius: 0 !important;
+      padding: 12px !important;
+      margin: 0px -12px -14px -12px !important;
+    }
+
+    .suggestions-scroll {
+      border-top: none !important;
+      border-top-right-radius: 0 !important;
+      border-top-left-radius: 0 !important;
+    }
+
     .scroll {
       position: relative;
       display: flex;
