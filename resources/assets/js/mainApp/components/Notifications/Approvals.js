@@ -237,11 +237,21 @@ export default class Approvals extends Component {
                         {time.countdown} {time.countdown_label} ago
                       </span>
                       <div className='notification-actions'>
-                        <button className='action accept' onClick={(e) => this.handleActionClick('accept', approval)}>
+                        <button
+                          className='action accept'
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            this.handleActionClick('accept', approval)
+                          }}>
                           <img src='https://myG.gg/platform_images/Dashboard/btn_Like_Feed.svg' />
                           {` Accept`}
                         </button>
-                        <button className='action decline' onClick={(e) => this.handleActionClick('decline', approval)}>
+                        <button
+                          className='action decline'
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            this.handleActionClick('decline', approval)
+                          }}>
                           <img src='https://myG.gg/platform_images/Dashboard/btn_Like_Feed.svg' />
                           {` Decline`}
                         </button>

@@ -98,7 +98,7 @@ export default class GameList extends Component {
                   className={`mygames ${activeItemId == game.id ? 'active' : ''}`}
                   key={game.id}
                   onClick={(e) => this.handleSingleGameDetails(e, game.id, game)}>
-                  <div className='gameImage'>{scheduledGamePicture}</div>
+                  <div className={`gameImage ${game_artwork ? '' : 'active'}`}>{scheduledGamePicture}</div>
                   <div className='game__attributes'>
                     <div className='first__row'>
                       <h1 className='game__name' title={game.game_name}>
