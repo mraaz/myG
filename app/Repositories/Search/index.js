@@ -45,6 +45,8 @@ class SearchRepository {
   buildGamesQuery = (input) => {
     const hasEndDate = input.end_date_time && input.end_date_time !== input.start_date_time;
     const query = { query: { bool: { must: [] } } };
+    query.size = 10;
+    query.from = ((parseInt(input.counter) || 1) - 1) * 10;
     query.query.bool.must.push({ match: { visibility: true } });
     if (input.game_name) query.query.bool.must.push({ match: { 'game_name.keyword': input.game_name } });
     if (input.experience) query.query.bool.must.push({ match: { 'experience.keyword': input.experience } });
