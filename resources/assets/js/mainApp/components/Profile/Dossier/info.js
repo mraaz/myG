@@ -212,8 +212,15 @@ export class DossierInfo extends React.Component {
   }
 
   loadOptions = async (input) => {
+    const currentGames = (this.state.mostPlayedGames || []).map(({ gameName }) => gameName);
     const results = await Game_name_values(input)
-    return results.length ? results : [{ label: input, value: input }]
+    const validResults = results.length && results.filter((result) => !currentGames.includes(result.value));
+    return results.length ? validResults : [{ label: input, value: input, gameName: input, gameNameValue: { label: input, value: input } }]
+  }
+
+  prepareValue = (value) => {
+    if (!value || !value.gameImg) return value;
+    return { ...value, label: <img src={value.gameImg} /> };
   }
 
   renderGameInput = (index) => {
@@ -227,7 +234,7 @@ export class DossierInfo extends React.Component {
             loadOptions={this.loadOptions}
             onChange={(input) => this.handleDropDownChange(index, input)}
             isClearable
-            value={((this.state.mostPlayedGames || [])[index] || {}).gameNameValue}
+            value={this.prepareValue(((this.state.mostPlayedGames || [])[index] || {}).gameNameValue)}
             className='viewGame__name full-width'
             placeholder='Search, select or create game title'
             onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
