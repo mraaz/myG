@@ -597,7 +597,7 @@
           .game__level__wrap {
             display: flex;
             flex-direction: row;
-            margin-top: 50px;
+            margin-top: 5px;
             .game__level {
               border: 1px solid #d6b9ff;
               border-radius: 23px;
@@ -690,7 +690,8 @@
 
         .gameDescription {
           font-size: 16px;
-          line-height: 14px;
+          line-height: 1;
+          margin-bottom: 5px;
           font-family: Montserrat, sans-serif;
           letter-spacing: 0px;
           font-weight: 600;
@@ -705,12 +706,13 @@
           letter-spacing: 0px;
           color: #fff;
           opacity: 1;
-          margin-bottom: 10px;
+          margin-bottom: 30px;
         }
 
         .gameTime__label {
           font-size: 16px;
-          line-height: 14px;
+          line-height: 1;
+          margin-bottom: 5px;
           font-family: Montserrat, sans-serif;
           letter-spacing: 0px;
           font-weight: bold;
@@ -725,7 +727,7 @@
           letter-spacing: 0px;
           color: #fff;
           opacity: 1;
-          margin-bottom: 10px;
+          margin-bottom: 30px;
         }
 
         .gameTags__label {
@@ -810,6 +812,15 @@
         position: absolute;
         bottom: 0;
         width: 100%;
+
+        .flexyBox {
+          display: flex;
+    
+          :first-child {
+            margin-right: 10px;
+          }
+        }
+
         .noComments {
           font: Bold 12px/14px Montserrat;
           letter-spacing: 0px;
@@ -875,6 +886,7 @@
       flex: 1;
       border: 1px solid #384952;
       padding: 20px;
+
       .gameList_head__option {
         display: flex;
         height: 40px;
@@ -1213,7 +1225,7 @@
         padding-left: 100px;
         padding-right: 50px;
         margin-bottom: 30px;
-        max-height: 550px;
+        min-height: 600px;
         overflow: scroll;
         .individual-comment-container {
           .comment__shape {
@@ -2562,6 +2574,14 @@ $transition-default: 0.25s ease-out 0.1s;
     padding: 15px 30px;
     width: 100%;
 
+    .flexyBox {
+      display: flex;
+
+      :first-child {
+        margin-right: 10px;
+      }
+    }
+
     .noComments {
       font: Bold 12px/14px Montserrat;
       letter-spacing: 0px;
@@ -2624,8 +2644,8 @@ $transition-default: 0.25s ease-out 0.1s;
   }
 }
 
+.gameDetails,
 .mGameAllComments {
-
   .desktopView {
     display: none;
 
@@ -2641,7 +2661,9 @@ $transition-default: 0.25s ease-out 0.1s;
       display: none;
     }
   }
+}
 
+.mGameAllComments {
   .gameComments__header {
     min-height: 56px;
     display: flex;

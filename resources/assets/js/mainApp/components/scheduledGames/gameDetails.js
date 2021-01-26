@@ -161,8 +161,11 @@ export default class GameDetails extends Component {
               <div className='gameDetaiils__footer'>
                 {no_of_my_comments > 0 && (
                   <Fragment>
-                    <div className='view__all__comments' onClick={(e) => this.handleShowAllComments(id)}>
-                      {`View all (${no_of_my_comments}) comments`}
+                    <div className="flexyBox">
+                      <div className='view__all__comments' onClick={(e) => this.handleShowAllComments(id)}>
+                        {`View all (${no_of_my_comments}) comments`}
+                      </div>
+                      {allow_comments == 0 && <div className='noComments disabled'>Comments disabled.</div>}
                     </div>
 
                     <div className='game__comment'>
@@ -183,6 +186,7 @@ export default class GameDetails extends Component {
                     </div>
                   </Fragment>
                 )}
+                {allow_comments == 0 && no_of_my_comments == 0 && <div className='noComments disabled'>Comments disabled.</div>}
                 {no_of_my_comments == 0 && allow_comments ? (
                   <div className='noComments'>
                     No comments yet. <span onClick={(e) => this.handleShowAllComments(id)}>Be the first to leave a comment.</span>
@@ -190,7 +194,6 @@ export default class GameDetails extends Component {
                 ) : (
                   ''
                 )}
-                {allow_comments == 0 && <div className='noComments disabled'>Comments disabled.</div>}
               </div>
             )}
           </Fragment>
