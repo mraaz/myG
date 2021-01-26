@@ -4,6 +4,7 @@ import MobileMenuTop from './MobileMenuTop'
 
 import { useScrollDirection } from '../../hooks'
 import { logToElasticsearch } from '../../../integration/http/logger'
+import { CreateCommunity, AddScheduleGames } from '../../AsyncComponent'
 import Modal from '../common/Modal'
 import ComposeSection from '../ComposeSection_v2'
 
@@ -77,6 +78,10 @@ const MobileMenu = ({ initialData }) => {
     switch (component) {
       case 'ComposeSection':
         return <ComposeSection initialData={initialData} successCallback={toggle} />
+      case 'CreateCommunity':
+        return <CreateCommunity routeProps={props} initialData={initialData == undefined ? 'loading' : initialData} key={Math.random()} />
+      case 'AddScheduleGames':
+        return <AddScheduleGames routeProps={props} initialData={initialData == undefined ? 'loading' : initialData} key={Math.random()} />
       default:
         return <p> Not a Valid Component</p>
     }
@@ -144,12 +149,23 @@ const MobileMenu = ({ initialData }) => {
                     </a>
                   </div>
                   <div className='small-tile'>
-                    <a href='#' onClick={() => setHideCreate(!hideCreate)}>
+                    <a
+                      href='#'
+                      href='#'
+                      onClick={() => {
+                        useComponent('AddScheduleGames')
+                        toggle()
+                      }}>
                       New <b>Matches</b>
                     </a>
                   </div>
                   <div className='small-tile'>
-                    <a href='#' onClick={() => setHideCreate(!hideCreate)}>
+                    <a
+                      href='#'
+                      onClick={() => {
+                        useComponent('CreateCommunity')
+                        toggle()
+                      }}>
                       New <b>Community</b>
                     </a>
                   </div>

@@ -11,13 +11,14 @@
 
 .modal-wrapper {
   position: fixed;
-  display: flex;
+  display: grid;
   justify-content: center;
   z-index: 1050;
   width: 100%;
   max-height: 100%;
   top: 0;
   left: 0;
+  grid-template-columns: 1fr;
 
   .modal-content {
     justify-content: space-between;
