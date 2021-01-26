@@ -1262,12 +1262,18 @@ section#content-container {
         }
         .clear__preview__image {
           position: absolute;
-          right: 4px;
-          top: 4px;
+          top: 0px;
+          margin-left: 110px;
           font-size: 10px;
           cursor: pointer;
           z-index: 5;
           color: #fff;
+          border-radius: 10px;
+          padding: 2px;
+          &:hover {
+            background-color: #000;
+            color: #fff;
+          }
         }
       }
       .compose-comment {
@@ -1597,12 +1603,19 @@ section#content-container {
                   }
                   .clear__preview__image {
                     position: absolute;
-                    right: 4px;
-                    top: 4px;
+                    top: 0;
+                    margin-left: 110px;
                     font-size: 10px;
                     cursor: pointer;
                     z-index: 5;
                     color: #fff;
+                    border-radius: 10px;
+                    padding: 2px;
+
+                    &:hover {
+                      background-color: #000;
+                      color: #fff;
+                    }
                   }
                 }
               }
