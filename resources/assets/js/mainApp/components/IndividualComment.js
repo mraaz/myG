@@ -506,7 +506,7 @@ export default class IndividualComment extends Component {
           {this.state.alert}
           <div className='comment__section'>
             <div className='comment-info'>
-              <Link to={`/profile/${comment.alias}`}>{`${comment.first_name} ${comment.last_name}`}</Link>
+              <Link to={`/profile/${comment.alias}`}>{`@${comment.alias}`}</Link>
               {'  '}
               {!this.state.show_edit_comment && (
                 <div className='comment-content'>
