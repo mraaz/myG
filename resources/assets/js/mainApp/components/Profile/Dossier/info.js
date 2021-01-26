@@ -212,15 +212,15 @@ export class DossierInfo extends React.Component {
   }
 
   loadOptions = async (input) => {
-    const currentGames = (this.state.mostPlayedGames || []).map(({ gameName }) => gameName);
+    const currentGames = (this.state.mostPlayedGames || []).map(({ gameName }) => gameName)
     const results = await Game_name_values(input)
-    const validResults = results.length && results.filter((result) => !currentGames.includes(result.value));
+    const validResults = results.length && results.filter((result) => !currentGames.includes(result.value))
     return results.length ? validResults : [{ label: input, value: input, gameName: input, gameNameValue: { label: input, value: input } }]
   }
 
   prepareValue = (value) => {
-    if (!value || !value.gameImg) return value;
-    return { ...value, label: <img src={value.gameImg} /> };
+    if (!value || !value.gameImg) return value
+    return { ...value, label: <img src={value.gameImg} /> }
   }
 
   renderGameInput = (index) => {
@@ -322,6 +322,14 @@ export class DossierInfo extends React.Component {
     return <div className='divider' />
   }
 
+  renderGameHeader = () => {
+    return (
+      <div className='renderGameHeader'>
+        <span className='hint'>Games you are currently playing...</span>
+      </div>
+    )
+  }
+
   renderSave = () => {
     const buttonState = this.state.name ? 'clickable' : 'disabled'
     return (
@@ -358,6 +366,7 @@ export class DossierInfo extends React.Component {
             {this.renderLanguagesInput()}
             {this.renderRelationshipInput()}
             {this.renderDivider()}
+            {this.renderGameHeader()}
             {this.renderGameInput(0)}
             {this.renderGameInput(1)}
             {this.renderGameInput(2)}
