@@ -79,9 +79,17 @@ const MobileMenu = ({ initialData }) => {
       case 'ComposeSection':
         return <ComposeSection initialData={initialData} successCallback={toggle} />
       case 'CreateCommunity':
-        return <CreateCommunity routeProps={props} initialData={initialData == undefined ? 'loading' : initialData} key={Math.random()} />
+        return (
+          <div className='component-wrap'>
+            <CreateCommunity routeProps={props} initialData={initialData == undefined ? 'loading' : initialData} key={Math.random()} />{' '}
+          </div>
+        )
       case 'AddScheduleGames':
-        return <AddScheduleGames routeProps={props} initialData={initialData == undefined ? 'loading' : initialData} key={Math.random()} />
+        return (
+          <div className='component-wrap'>
+            <AddScheduleGames routeProps={props} initialData={initialData == undefined ? 'loading' : initialData} key={Math.random()} />
+          </div>
+        )
       default:
         return <p> Not a Valid Component</p>
     }
