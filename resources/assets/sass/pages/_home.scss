@@ -1380,6 +1380,7 @@ section#content-container {
               position: relative;
               background: #1d2326;
               clear: both;
+              border-radius: 8px;
               .edit__comment__input {
                 input {
                   position: relative;
@@ -1560,28 +1561,40 @@ section#content-container {
               .add-reply {
                 position: relative;
                 box-shadow: none;
-                border: none;
+                display: flex;
+                justify-content: center;
+                width: 90%;
+                align-items: center;
+                margin: 0 auto;
                 input {
-                  width: 100%;
-                  background: #1d2326 0% 0% no-repeat padding-box;
-                  color: #657172;
-                  padding: 10px;
                   border: none;
-                  margin-bottom: 10px;
-                  border-radius: 11px;
+                  position: relative;
+                  height: 40px;
+                  width: 100%;
+                  border: 1px solid #273136;
+                  border-radius: 4px;
+                  background: #1d2326 0% 0% no-repeat padding-box;
+                  resize: none;
+                  overflow: auto;
+                  color: #657172;
+                  font-size: 12px;
+                  padding: 8px 20px;
                 }
                 .insert__images {
                   position: absolute;
-                  right: -10px;
-                  top: 4px;
+                  right: 5px;
                   z-index: 2;
+                  width: 27px;
+                  height: 27px;
                   cursor: pointer;
+                  background: #171a1c;
+                  border-radius: 50px;
                   input {
                     display: none;
                   }
                   img {
                     padding-right: 18px;
-                    height: 25px;
+                    height: 27px;
                   }
                 }
                 .uploadImage_loading {
@@ -2023,7 +2036,7 @@ section#content-container {
         margin-bottom: 10px;
         cursor: pointer;
       }
-      .files__preview {
+      .files__preview_compose {
         display: flex;
         justify-content: center;
         margin: 0;
@@ -2045,6 +2058,24 @@ section#content-container {
           top: 2px;
           right: 12px;
           cursor: pointer;
+          color: #171a1c;
+          background: #fff;
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          &:hover {
+            color: #fff;
+            background: #000;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
         }
       }
     }
