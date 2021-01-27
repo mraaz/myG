@@ -2023,7 +2023,7 @@ section#content-container {
         margin-bottom: 10px;
         cursor: pointer;
       }
-      .files__preview {
+      .files__preview_compose {
         display: flex;
         justify-content: center;
         margin: 0;
@@ -2045,6 +2045,24 @@ section#content-container {
           top: 2px;
           right: 12px;
           cursor: pointer;
+          color: #171a1c;
+          background: #fff;
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          &:hover {
+            color: #fff;
+            background: #000;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
         }
       }
     }

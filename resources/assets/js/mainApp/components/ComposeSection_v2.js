@@ -450,7 +450,7 @@ export default class ComposeSection extends Component {
                         </div>
                       )}
                       {preview_filesData.length > 0 && (
-                        <div className='files__preview'>
+                        <div className='files__preview_compose'>
                           {preview_filesData.slice(0, 3).map((file) => {
                             const splitUrl = file.src.split('.')
                             let fileType = splitUrl[splitUrl.length - 1]
