@@ -123,7 +123,7 @@ class ChatRepository {
   async fetchMessages({ requestedChatId, requestedMessageIds, requestedPage }) {
     let query = ChatMessage.query()
     if (requestedMessageIds) {
-      query = query.where('chat_messages.id', 'in', requestedMessageIds).orderBy('chat_messages.id', 'desc').fetch();  
+      query = query.where('chat_messages.id', 'in', requestedMessageIds).orderBy('chat_messages.id', 'desc').fetch();
     } else {
       query = query.where('chat_messages.chat_id', requestedChatId)
       .andWhere('chat_messages.key_receiver', null)
@@ -641,7 +641,7 @@ class ChatRepository {
       .from('esports_experiences')
       .leftJoin('game_names', 'game_names.id', 'esports_experiences.game_names_id')
       .where('esports_experiences.user_id', requestingUserId)
-    
+
       let experiencesQuery = Database
       .select('game_experiences.user_id', 'game_names.user_id as owner_id', 'game_names_id', 'game_name', 'game_img')
       .from('game_experiences')
