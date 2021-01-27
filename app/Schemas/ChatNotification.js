@@ -14,8 +14,8 @@ class ChatNotification {
     this.hasRead = forceBoolean(data.hasRead) || forceBoolean(data.has_read)
     this.type = forceString(data.type)
     this.content = forceString(data.content)
-    this.createdAt = forceDate(data.createdAt)
-    this.updatedAt = forceDate(data.updatedAt)
+    this.createdAt = forceDate(data.created_at)
+    this.updatedAt = forceDate(data.updated_at)
   }
 }
 
