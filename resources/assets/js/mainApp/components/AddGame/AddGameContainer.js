@@ -55,6 +55,7 @@ const AddGameContainer = ({ level }) => {
     isPublicGame: true,
     autoAccept: true,
     autoJoinHost: true,
+    show_times: false,
   })
   const [optionalFieldsState, updateOptionalFieldsState] = useState({
     value_one: null,
@@ -171,6 +172,7 @@ const AddGameContainer = ({ level }) => {
         mic: advancedSettingsState.mic,
         eighteen_plus: advancedSettingsState.eighteen_plus,
         language: advancedSettingsState.language,
+        show_times: mainSettingsState.show_times,
       })
       updateMainSettingsState((currentState) => ({
         ...currentState,

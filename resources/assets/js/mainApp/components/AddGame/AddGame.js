@@ -9,6 +9,7 @@ import { toast } from 'react-toastify'
 import { Toast_style } from '../Utility_Function'
 import 'rc-slider/assets/index.css'
 import '../../styles/AddGame/AddGameStyles.scss'
+import ToggleButton from 'react-toggle-button'
 
 import { SETTINGS_ENUMS, styles, EXPERIENCE_OPTIONS, REGION_OPTIONS, PLATFORM_OPTIONS, LANGUAGE_OPTIONS } from '../../static/AddGame'
 import { MyGCheckbox, MyGTextarea, MyGAsyncSelect, MyGCreateableSelect, MyGSelect, MyGDatePicker } from '../common'
@@ -429,6 +430,12 @@ const AddGame = ({
     )
   }
 
+  const update_times = () => {
+    console.log('asdfdsaf')
+    const value = mainSettingsState.show_times
+    updateMainSettings({ show_times: !value })
+  }
+
   const handleChange_game_title = async (value) => {
     updateMainSettings({ gameTitle: value })
     updateAdvancedSettings({ show_experience: true, show_platform: true, show_region: true, show_game_tags: true })
@@ -606,6 +613,8 @@ const AddGame = ({
     }
   }
 
+  //onChange={(event) => this.onUserSearchRequest(event.target.value)}
+
   const getMainSettingsView = () => {
     const customStyles = {
       option: (provided, state) => ({
@@ -665,28 +674,68 @@ const AddGame = ({
             />
           </div>
           <div className='field-title'>
-            <p>Start Time</p>
+            <p>When do you wish to start?</p>
           </div>
           <div className='date-picker-select'>
-            <MyGDatePicker
-              onChange={(value) => {
-                if (!value) {
-                  updateMainSettings({
-                    isEndGameFieldSelected: false,
-                    endTime: null,
-                    startTime: value,
-                  })
-                  return
-                }
-                updateMainSettings({ startTime: value })
+            <ToggleButton
+              value={mainSettingsState.show_times}
+              onToggle={(e) => {
+                update_times()
               }}
-              selected={mainSettingsState.startTime}
-              maxDate={moment().add(14, 'days')}
+              inactiveLabel={'NOW'}
+              activeLabel={'LATER'}
+              colors={{
+                activeThumb: {
+                  base: 'rgb(0,0,0)',
+                },
+                inactiveThumb: {
+                  base: 'rgb(229,199,70,1)',
+                },
+                active: {
+                  base: 'rgb(229,199,70,1)',
+                  hover: 'rgb(177, 191, 215)',
+                },
+                inactive: {
+                  base: 'rgb(65,66,68)',
+                  hover: 'rgb(95,96,98)',
+                },
+                inactiveLabel: {
+                  base: 'rgb(0,0,0)',
+                },
+              }}
+              trackStyle={styles.trackStyle}
+              thumbStyle={styles.thumbStyle}
+              thumbAnimateRange={[0, 36]}
             />
-            {getOptionalMainSettingsView()}
-            {getPlayersNumberView()}
-            {getCommentPrivaryView()}
           </div>
+          {mainSettingsState.show_times && (
+            <div className='times'>
+              <div className='field-title'>
+                <p>Start Time</p>
+              </div>
+
+              <div className='date-picker-select'>
+                <MyGDatePicker
+                  onChange={(value) => {
+                    if (!value) {
+                      updateMainSettings({
+                        isEndGameFieldSelected: false,
+                        endTime: null,
+                        startTime: value,
+                      })
+                      return
+                    }
+                    updateMainSettings({ startTime: value })
+                  }}
+                  selected={mainSettingsState.startTime}
+                  maxDate={moment().add(14, 'days')}
+                />
+                {getOptionalMainSettingsView()}
+              </div>
+            </div>
+          )}
+          {getPlayersNumberView()}
+          {getCommentPrivaryView()}
         </div>
       </div>
     )

@@ -113,7 +113,7 @@ export default class InviteModal extends React.Component {
               </div>
               <div className='timestamp'>
                 <img src='https://myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
-                <span>{moment(game.start_date_time).format('LL')}</span>
+                <span>{moment(game.start_date_time).format('LLL')}</span>
               </div>
             </div>
             <div className="row">

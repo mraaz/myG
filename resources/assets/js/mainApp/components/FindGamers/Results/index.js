@@ -32,7 +32,7 @@ export default class Results extends React.Component {
     if (this.props.loading) return null;
     return this.props.gamers.map(this.renderGamer);
   }
-  
+
   renderGamer = (gamer) => {
     const isHovering = this.state.hovering === gamer.profileId;
     return(
@@ -107,7 +107,7 @@ export default class Results extends React.Component {
   renderInviteModal = () => {
     if (!this.state.inviting) return null;
     return(
-      <InviteModal 
+      <InviteModal
         gamer={this.state.inviting}
         onClose={() => this.setState({ inviting: null })}
       />
@@ -115,7 +115,7 @@ export default class Results extends React.Component {
   }
 
   follow = (alias, profileId) => {
-    notifyToast(`Got it mate! You have followed ${alias}!`)
+    notifyToast(`Got it mate! You are following ${alias}!`)
     this.props.follow(alias, profileId)
   }
 
