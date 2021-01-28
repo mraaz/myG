@@ -1222,7 +1222,6 @@ class ChatRepository {
   async _addChatGroupNotificationMessage({ requestingUserId, requestedChatId, chat, content }) {
     const otherUsersIds = chat.contacts.filter(contactId => contactId !== requestingUserId);
     const user = (await User.query().where('id', '=', requestingUserId).first()).toJSON();
-    console.log(user)
     for (const otherUserId of otherUsersIds) {
       const status = (await User.query().where('id', '=', otherUserId).first()).toJSON().status;
       if (status === "offline") {
