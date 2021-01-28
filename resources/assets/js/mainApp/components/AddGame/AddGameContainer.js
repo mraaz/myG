@@ -55,6 +55,7 @@ const AddGameContainer = ({ level }) => {
     isPublicGame: true,
     autoAccept: true,
     autoJoinHost: true,
+    show_times: false,
   })
   const [optionalFieldsState, updateOptionalFieldsState] = useState({
     value_one: null,

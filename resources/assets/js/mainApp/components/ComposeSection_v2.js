@@ -496,7 +496,7 @@ export default class ComposeSection extends Component {
           {open_compose_textTab && (
             <div className='hashTag_section'>
               <div className='hashtag_label'>Add Hashtags</div>
-              <div className='hashtag_input game-title-select'>
+              <div className='hashtag_input'>
                 <MyGCreateableSelect
                   isClearable
                   isMulti
