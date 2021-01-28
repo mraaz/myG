@@ -14,11 +14,11 @@ const NoRecordFound = (props) => {
       <h1 className='noRecordFound__header'>{title}</h1>
       {linkvisible && (
         <div className='noRecordFound__body'>
-          Wait for notification or{' '}
+          No upcoming games;{' '}
           <Link to='/addScheduleGames'>
             {' '}
             <span className='addScheduleGames__link' style={{ color: '#e5c746', cursor: 'pointer' }}>
-              add your own game
+              let's create our own game
             </span>
           </Link>
         </div>

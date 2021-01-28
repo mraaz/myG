@@ -36,7 +36,6 @@ export default class Chat extends Component {
     window.scrollTo(0, 0)
     this.setState({ fetching: true })
     const chatNotifications = await axios.get(`/api/chat_notifications?page=1`)
-    console.log(chatNotifications, '<<<chatNotifications')
 
     if (chatNotifications.data && chatNotifications.data.notifications.length > 0) {
       this.setState({ chatNotifications: chatNotifications.data.notifications, fetching: false }, () => {
@@ -91,7 +90,7 @@ export default class Chat extends Component {
   }
 
   renderActivityText = (props) => {
-    const { type, senderAlias = '', groupTitle = '', count } = props
+    const { type, senderAlias = '', groupTitle = '', count, content } = props
     let singular_msg = 'message'
     if (count > 1) singular_msg = 'messages'
 
@@ -100,16 +99,16 @@ export default class Chat extends Component {
         return <div className='notification__text'>{`has sent you ${count} ${singular_msg} `} </div>
         break
       case 'GROUP_MESSAGE':
-        return <div className='notification__text'>{`You got mail in ${groupTitle} `}</div>
+        return <div className='notification__text'>{`You got mail! Ahem well a chat msg in ${groupTitle} `}</div>
         break
       case 'PROMOTED':
-        return <div className='notification__text'>{`You got promoted in ${groupTitle} `}</div>
+        return <div className='notification__text'>{`Matey!!! You got promoted in ${content} `}</div>
         break
       case 'DEMOTED':
-        return <div className='notification__text'>{`You got demoted in ${groupTitle} `}</div>
+        return <div className='notification__text'>{`Sigh!!! You got demoted in ${content} `}</div>
         break
       case 'KICKED':
-        return <div className='notification__text'>{`You got KICKED from ${groupTitle} `}</div>
+        return <div className='notification__text'>{`Strewth!!! You got kicked from ${content} `}</div>
         break
       default:
         break
