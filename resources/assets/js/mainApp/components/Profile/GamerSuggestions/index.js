@@ -35,7 +35,7 @@ export class GamerSuggestions extends React.Component {
     const isHovering = this.state.hovering === profile.alias;
     const games = profile.mostPlayedGames.length ? profile.mostPlayedGames : profile.gameExperiences.map(({ name }) => name);
     return(
-      <div className="game-experience clickable" 
+      <div className="game-experience clickable"
       onClick={() => window.router.push(`/profile/${profile.alias}`)}
       onMouseEnter={() => this.setState({ hovering: profile.alias })}
       onMouseLeave={() => this.setState({ hovering: null })}
@@ -71,7 +71,7 @@ export class GamerSuggestions extends React.Component {
   }
 
   follow = (alias, profileId) => {
-    notifyToast(`Got it mate! You have followed ${alias}!`)
+    notifyToast(`Got it mate! You are following ${alias}!`)
     this.props.follow(alias, profileId)
   }
 
@@ -79,7 +79,7 @@ export class GamerSuggestions extends React.Component {
     notifyToast(`Got it mate! You have unfollowed ${alias}!`)
     this.props.unfollow(alias, profileId)
   }
-  
+
   invite = (gamer) => this.setState({ inviting: gamer });
 
   sendFriendRequest = (alias, profileId) => {
@@ -126,7 +126,7 @@ export class GamerSuggestions extends React.Component {
     if (!this.state.inviting) return null;
     return(
      <div id="find-gamers">
-        <InviteModal 
+        <InviteModal
           gamer={this.state.inviting}
           onClose={() => this.setState({ inviting: null })}
         />

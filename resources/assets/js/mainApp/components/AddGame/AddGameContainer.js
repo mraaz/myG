@@ -172,6 +172,7 @@ const AddGameContainer = ({ level }) => {
         mic: advancedSettingsState.mic,
         eighteen_plus: advancedSettingsState.eighteen_plus,
         language: advancedSettingsState.language,
+        show_times: mainSettingsState.show_times,
       })
       updateMainSettingsState((currentState) => ({
         ...currentState,

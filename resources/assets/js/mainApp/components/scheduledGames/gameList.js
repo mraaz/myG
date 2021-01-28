@@ -122,7 +122,7 @@ export default class GameList extends Component {
                       </div>
                       <div className='game__timestamp'>
                         <img src='https://myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
-                        <span>{moment(game.start_date_time).format('LL')}</span>
+                        <span>{moment(game.start_date_time).format('LLL')}</span>
                       </div>
                     </div>
                     {copyClipboardEnable && (

@@ -81,7 +81,7 @@ export default class GameDetails extends Component {
                 </div>
                 <div className='game__timestamp'>
                   <img src='https://myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
-                  <span>{moment(start_date_time).format('LL')}</span>
+                  <span>{moment(start_date_time).format('LLL')}</span>
                 </div>
                 <div className='game__level__wrap'>
                   {experience_split.length > 0 &&
@@ -161,7 +161,7 @@ export default class GameDetails extends Component {
               <div className='gameDetaiils__footer'>
                 {no_of_my_comments > 0 && (
                   <Fragment>
-                    <div className="flexyBox">
+                    <div className='flexyBox'>
                       <div className='view__all__comments' onClick={(e) => this.handleShowAllComments(id)}>
                         {`View all (${no_of_my_comments}) comments`}
                       </div>
