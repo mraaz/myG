@@ -431,7 +431,6 @@ const AddGame = ({
   }
 
   const update_times = () => {
-    console.log('asdfdsaf')
     const value = mainSettingsState.show_times
     updateMainSettings({ show_times: !value })
   }
