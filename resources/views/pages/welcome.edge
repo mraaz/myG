@@ -38,10 +38,12 @@
                 <img src="https://myG.gg/platform_images/Login+Screen/Discord_SSO.svg" class="sso-logo" height="25" width="25"/>
                 <div class="sso-text">Log in with Discord</div>
               </a>
-              <a href="/login/" class="button discord-btn">
-                <img src="https://myG.gg/platform_images/Login+Screen/Discord_SSO.svg" class="sso-logo" height="25" width="25"/>
-                <div class="sso-text">Log in with Email (Will remove later)</div>
-              </a>
+              <div id="cfiblinks">
+                <a href="/login/" class="button discord-btn">
+                  <img src="https://myG.gg/platform_images/Login+Screen/Discord_SSO.svg" class="sso-logo" height="25" width="25"/>
+                  <div class="sso-text">Log in with Email</div>
+                </a>
+              </div>
       </div>
       <div class="card-round">
         <div class="seats-header">
@@ -84,6 +86,16 @@
       document.getElementsByClassName('register-message')[0].innerText = "Only Invitation Codes can get you in now!";
       injectInvitationCodeInput();
       injectInvitationEmailInput();
+    }
+  }
+
+  function checkDevEnvironment() {
+    const url = window.location.href;
+    if(url.includes("localhost")) {
+      console.log("HERE");
+      document.getElementById('cfiblinks').setAttribute("style", "display:block");
+    } else {
+      document.getElementById('cfiblinks').setAttribute("style", "display:none");
     }
   }
 
@@ -195,6 +207,7 @@
   }
 
   setSeatsAvailable()
+  checkDevEnvironment()
   setTimeout(checkErrors, 500)
 </script>
 @endsection

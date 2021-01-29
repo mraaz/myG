@@ -14,45 +14,57 @@
 
 @section('content')
 <div class="auth-form">
-  <h1>myGame</h1>
-  <form action="/login" method="POST" class="default-form">
-    {{csrfField()}}
-    <div class="error-box
-      @if(hasErrorFor('email') || hasErrorFor('password'))
-        active
-      @endif
-    ">
-      @if(hasErrorFor('email'))
-        {{getErrorFor('email')}}
-      @endif
-      @if(hasErrorFor('password'))
-        {{getErrorFor('password')}}
-      @endif
-    </div>
-    <div class="form-group">
-      <label for="email">Email:</label>
-      <input type="email" name="email" value="{{ old ('email', '')}}" class="text
+  <div id="cfiblinks">
+    <h1>myGame</h1>
+    <form action="/login" method="POST" class="default-form">
+      {{csrfField()}}
+      <div class="error-box
+        @if(hasErrorFor('email') || hasErrorFor('password'))
+          active
+        @endif
+      ">
         @if(hasErrorFor('email'))
-          error
+          {{getErrorFor('email')}}
         @endif
-      " >
-    </div>
-    <div class="form-group">
-      <label for="password">Password:</label>
-      <input type="password" name="password" value="" class="text
         @if(hasErrorFor('password'))
-          error
+          {{getErrorFor('password')}}
         @endif
-      " >
-    </div>
-    <div class="form-group">
-      <button type="submit">Login</button>
-    </div>
-    <hr>
-    <a href="/register" class="register-btn">Register</a>
-    <a href="/forgot-password">I forgot my password</a>
-  </form>
+      </div>
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" name="email" value="{{ old ('email', '')}}" class="text
+          @if(hasErrorFor('email'))
+            error
+          @endif
+        " >
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" name="password" value="" class="text
+          @if(hasErrorFor('password'))
+            error
+          @endif
+        " >
+      </div>
+      <div class="form-group">
+        <button type="submit">Login</button>
+      </div>
+      <hr>
+    </form>
+  </div>
 </div>
 <div class="side-image">
 </div>
+<script>
+  function removeIntruders() {
+    const url = window.location.href;
+    if(url.includes("localhost")) {
+      document.getElementById('cfiblinks').setAttribute("style", "display:block");
+    } else {
+      document.getElementById('cfiblinks').setAttribute("style", "display:none");
+      window.location.replace("https://myG.gg");
+    }
+  }
+  removeIntruders()
+</script>
 @endsection
