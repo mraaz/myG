@@ -19,14 +19,14 @@ const MyGAsyncSelect = ({
   const customStyles = {
     container: (provided) => ({
       ...provided,
-      width: '422px',
+      width: '100%',
       ...styles.container,
     }),
     control: (provided) => ({
       ...provided,
       backgroundColor: '#2D363A',
       border: 'none',
-      width: '422px',
+      width: '100%',
       minHeight: '38px',
       color: '#fff',
       ...styles.control,

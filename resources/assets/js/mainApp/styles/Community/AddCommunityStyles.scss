@@ -43,6 +43,7 @@
 .platform-select,
 .description-text-area,
 .media__container {
+  width: 100%;
   font-size: 13px;
   .css-1uccc91-singleValue {
     color: #fff;
@@ -92,10 +93,13 @@
     height: 100%;
   }
   &__main-container {
-    margin: 0 40px;
+    margin: 10px;
     border: none;
     display: flex;
     flex: 1;
+    @media screen and (min-width: 575px) {
+      margin: 40px;
+    }
   }
   &__field-title {
     color: #fff;
@@ -263,7 +267,6 @@
   @media screen and (max-width: 575px) {
     &__main-container {
       flex-direction: column;
-      margin: 40px;
     }
   }
 }

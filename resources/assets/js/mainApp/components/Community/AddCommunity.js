@@ -38,7 +38,7 @@ const AddCommunity = ({
     //   }
     // }
 
-    const getInitialData_GameName = async function() {
+    const getInitialData_GameName = async function () {
       try {
         let results = await Game_name_values()
         updateMainSettings({ gameTitlesList: results })
@@ -182,7 +182,7 @@ const AddCommunity = ({
 
   // api calls
   const getOptionsTags = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         let results = await Group_Hash_Tags(inputValue)
         updateAdvancedSettings({ optionTags: results })
@@ -199,7 +199,7 @@ const AddCommunity = ({
   }
 
   const getOptionsGames = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         let results = await Game_name_values(inputValue)
         updateMainSettings({ gameTitlesList: results })
@@ -313,6 +313,7 @@ const AddCommunity = ({
               minLength={3}
               onKeyDown={Disable_keys}
               onBlur={onBlur_group_name}
+              containerStyles={{ width: '100%' }}
               onChange={(value) => {
                 updateMainSettings({ community_name: value.target.value })
               }}></MyGInput>
@@ -397,7 +398,9 @@ const AddCommunity = ({
           <div className={styles.sideLine} />
         </div>
         <div className='advance-settings-content'>
-          <div className='field-title'>Description</div>
+          <div className='field-title'>
+            <p>Description</p>
+          </div>
           <div className='description-text-area'>
             <MyGTextarea
               onChange={(event) => {
@@ -408,7 +411,9 @@ const AddCommunity = ({
               maxLength={250}
             />
           </div>
-          <div className='field-title'>Invite Friends</div>
+          <div className='field-title'>
+            <p>Invite Friends</p>
+          </div>
           <div className='experience-select'>
             <MyGAsyncSelect
               isClearable
