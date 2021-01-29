@@ -17,8 +17,6 @@ const MobileMenu = ({ initialData }) => {
   const [hideCreate, setHideCreate] = useState(false)
   const [hideNav, setHideNav] = useState(false)
   const [notifications, setNotifications] = useState({ alerts: 0, approvals: 0, chats: 0 })
-  const { isShowing, toggle } = useModal()
-  const [component, useComponent] = useState(null)
 
   const direction = useScrollDirection()
   const alias = initialData === 'loading' ? '' : initialData.userInfo.alias
@@ -73,33 +71,8 @@ const MobileMenu = ({ initialData }) => {
     getNotis()
   }, [])
 
-  const ModalContentSwitch = (props) => {
-    const { component } = props
-    switch (component) {
-      case 'ComposeSection':
-        return <ComposeSection initialData={initialData} successCallback={toggle} />
-      case 'CreateCommunity':
-        return (
-          <div className='component-wrap'>
-            <CreateCommunity routeProps={props} initialData={initialData == undefined ? 'loading' : initialData} key={Math.random()} />{' '}
-          </div>
-        )
-      case 'AddScheduleGames':
-        return (
-          <div className='component-wrap'>
-            <AddScheduleGames routeProps={props} initialData={initialData == undefined ? 'loading' : initialData} key={Math.random()} />
-          </div>
-        )
-      default:
-        return <p> Not a Valid Component</p>
-    }
-  }
-
   return (
     <Fragment>
-      <Modal isShowing={isShowing} hide={toggle}>
-        <ModalContentSwitch component={component} />
-      </Modal>
       <MobileMenuTop initialData={initialData} notifications={{ ...notifications }} hide={hideNav} />
       <section className='main-mobile-menu'>
         <div className={hideNav ? 'menu-bottom hide' : 'menu-bottom show'}>
@@ -147,35 +120,34 @@ const MobileMenu = ({ initialData }) => {
               {hideCreate && (
                 <div className='mobile-sub-menu-items'>
                   <div className='large-tile'>
-                    <a
-                      href='#'
+                    <Link
+                      to='/'
                       onClick={() => {
-                        useComponent('ComposeSection')
-                        toggle()
+                        setHideSearch(false)
+                        setHideNav(true)
                       }}>
                       <b>Post</b> on your Feed
-                    </a>
+                    </Link>
                   </div>
                   <div className='small-tile'>
-                    <a
-                      href='#'
-                      href='#'
+                    <Link
+                      to='/addScheduleGames'
                       onClick={() => {
-                        useComponent('AddScheduleGames')
-                        toggle()
+                        setHideSearch(false)
+                        setHideNav(true)
                       }}>
                       New <b>Matches</b>
-                    </a>
+                    </Link>
                   </div>
                   <div className='small-tile'>
-                    <a
-                      href='#'
+                    <Link
+                      to='/community/create'
                       onClick={() => {
-                        useComponent('CreateCommunity')
-                        toggle()
+                        setHideSearch(false)
+                        setHideNav(true)
                       }}>
                       New <b>Community</b>
-                    </a>
+                    </Link>
                   </div>
                 </div>
               )}
