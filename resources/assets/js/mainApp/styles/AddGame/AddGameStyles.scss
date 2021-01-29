@@ -89,14 +89,15 @@
     height: 100%;
   }
   &__main-container {
+    margin: 10px;
     display: flex;
     flex: 1;
-    margin-left: 40px;
-    margin-right: 40px;
-    padding-top: 30px;
-    margin-bottom: 20px;
     overflow: scroll;
     scrollbar-width: none;
+    @media screen and (min-width: 575px) {
+      padding-top: 30px;
+      margin: 40px;
+    }
   }
   &__field-title {
     color: #fff;

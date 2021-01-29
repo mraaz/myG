@@ -97,6 +97,7 @@
     border: none;
     display: flex;
     flex: 1;
+    scrollbar-width: none;
     @media screen and (min-width: 575px) {
       margin: 40px;
     }
