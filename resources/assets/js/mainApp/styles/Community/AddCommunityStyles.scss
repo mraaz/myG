@@ -29,21 +29,27 @@
   font-size: 14px;
 }
 
-.main-settings-content,
-.advance-settings-content {
+.community-main-settings-content,
+.community-advance-settings-content {
   margin-right: 30px;
   margin-top: 30px;
   width: 100%;
+  .game-title-select {
+    width: 70%;
+    font-size: 13px;
+    .css-1uccc91-singleValue {
+      color: #fff;
+    }
+  }
 }
 
-.game-title-select,
 .date-picker-select,
 .friend-name-select,
 .experience-select,
 .platform-select,
-.description-text-area,
+.community-description-text-area,
 .media__container {
-  width: 100%;
+  width: 70%;
   font-size: 13px;
   .css-1uccc91-singleValue {
     color: #fff;
@@ -546,7 +552,7 @@
 //   width: 100% !important;
 // }
 
-.flexBox {
+.community-flexBox {
   display: flex;
   flex: 1 0 0%;
 }

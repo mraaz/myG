@@ -38,7 +38,7 @@ const AddCommunity = ({
     //   }
     // }
 
-    const getInitialData_GameName = async function () {
+    const getInitialData_GameName = async function() {
       try {
         let results = await Game_name_values()
         updateMainSettings({ gameTitlesList: results })
@@ -182,7 +182,7 @@ const AddCommunity = ({
 
   // api calls
   const getOptionsTags = (inputValue) => {
-    const getInitialData = async function (inputValue) {
+    const getInitialData = async function(inputValue) {
       try {
         let results = await Group_Hash_Tags(inputValue)
         updateAdvancedSettings({ optionTags: results })
@@ -199,7 +199,7 @@ const AddCommunity = ({
   }
 
   const getOptionsGames = (inputValue) => {
-    const getInitialData = async function (inputValue) {
+    const getInitialData = async function(inputValue) {
       try {
         let results = await Game_name_values(inputValue)
         updateMainSettings({ gameTitlesList: results })
@@ -295,12 +295,12 @@ const AddCommunity = ({
 
   const getCommunityleftView = () => {
     return (
-      <div className='flexBox'>
+      <div className='community-flexBox'>
         <div className={styles.sideLineContainer}>
           <div className={styles.sideBall} />
           <div className={styles.sideLine} />
         </div>
-        <div className='main-settings-content'>
+        <div className='community-main-settings-content'>
           <div className='field-title'>
             <p>Community Name (Be, unique it must)</p>
           </div>
@@ -392,16 +392,16 @@ const AddCommunity = ({
   }
   const getCommunityrightView = () => {
     return (
-      <div className='flexBox'>
+      <div className='community-flexBox'>
         <div className={styles.sideLineContainer}>
           <div className={styles.sideBall} />
           <div className={styles.sideLine} />
         </div>
-        <div className='advance-settings-content'>
+        <div className='community-advance-settings-content'>
           <div className='field-title'>
             <p>Description</p>
           </div>
-          <div className='description-text-area'>
+          <div className='community-description-text-area'>
             <MyGTextarea
               onChange={(event) => {
                 updateAdvancedSettings({ description: event.target.value })
