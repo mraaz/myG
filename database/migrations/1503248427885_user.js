@@ -38,6 +38,8 @@ class UserSchema extends Schema {
       table.string('public_key', 172).nullable()
       table.boolean('notification_sounds_disabled').notNullable().defaultTo(false)
       table.boolean('chat_auto_self_destruct').notNullable().defaultTo(false)
+      table.boolean('underage').notNullable().defaultTo(true)
+      table.boolean('has_mic').notNullable().defaultTo(false)
       table.integer('level').unsigned().defaultTo(1)
       table.integer('onboarding').unsigned().defaultTo(0)
       table.integer('experience_points').notNullable().defaultTo(0)

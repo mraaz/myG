@@ -79,6 +79,12 @@ PUT users
         "type": "text",
         "analyzer": "autocomplete",
         "search_analyzer": "standard"
+      },
+      "underage" : {
+        "type" : "boolean"
+      },
+      "has_mic" : {
+        "type" : "boolean"
       }
     }
   }

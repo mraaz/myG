@@ -55,6 +55,8 @@ class ProfileRepository {
     const steam = profile.steam;
     const youtube = profile.youtube;
     const facebook = profile.facebook;
+    const underage = profile.underage;
+    const hasMic = profile.has_mic;
     const visibilityName = profile.name_visibility;
     const visibilityEmail = profile.email_visibility;
     const lookingForWork = profile.looking_for_work;
@@ -112,6 +114,8 @@ class ProfileRepository {
       steam,
       youtube,
       facebook,
+      underage,
+      hasMic,
       visibilityName,
       visibilityEmail,
       lookingForWork,
@@ -267,7 +271,7 @@ class ProfileRepository {
     return { commended, commender };
   }
 
-  async updateProfile({ requestingUserId, firstName, lastName, team, country, relationship, visibilityName, visibilityEmail, lookingForWork, languages, twitch, discord, steam, youtube, facebook, mostPlayedGames }) {
+  async updateProfile({ requestingUserId, firstName, lastName, team, country, relationship, visibilityName, visibilityEmail, lookingForWork, hasMic, underage, languages, twitch, discord, steam, youtube, facebook, mostPlayedGames }) {
     const updates = {};
     if (firstName !== undefined) updates.first_name = await this.encryptField(firstName.trim());
     if (lastName !== undefined) updates.last_name = await this.encryptField(lastName.trim());
@@ -282,6 +286,8 @@ class ProfileRepository {
     if (steam !== undefined) updates.steam = steam;
     if (youtube !== undefined) updates.youtube = youtube;
     if (facebook !== undefined) updates.facebook = facebook;
+    if (hasMic !== undefined) updates.has_mic = hasMic;
+    if (underage !== undefined) updates.underage = underage;
     if (languages !== undefined) {
       await UserLanguage.query().where('user_id', requestingUserId).delete();
       const languagesRequests = languages.map(language => {
