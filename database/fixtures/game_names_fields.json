@@ -13,7 +13,9 @@
       "dota2_roles": "Select the role/s you wish to apply for"
     },
     "profile_placeholders": {
-      "stats_link": "https://www.dotabuff.com"
+      "dota2_server_regions": "Select what region/s you can play",
+      "dota2_medal_ranks": "Select your Highest Medal Rank",
+      "dota2_roles": "Select which role/s you like to play"
     },
     "types": {
       "dota2_server_regions": "Multi",
@@ -48,7 +50,9 @@
       "lol_roles": "Select the role/s you wish to apply for"
     },
     "profile_placeholders": {
-      "stats_link": "https://www.leagueofgraphs.com"
+      "lol_server_regions": "Select what region/s you can play",
+      "lol_ranks": "Select your Highest Rank",
+      "lol_roles": "Select which role/s you like to play"
     },
     "types": {
       "lol_server_regions": "Multi",
@@ -79,9 +83,13 @@
     "placeholders": {
       "mlbb_ranks": "Please advise what Rank/s you are looking for?",
       "mlbb_classes": "Select the class/es you wish to apply for",
-      "mlbb_levels": "Please select your what level "
+      "mlbb_levels": "Please select your level"
     },
-    "profile_placeholders": {},
+    "profile_placeholders": {
+      "mlbb_ranks": "Select your Highest Rank",
+      "mlbb_classes": "Select which class/es you like to play",
+      "mlbb_levels": "Please select your level"
+    },
     "types": {
       "mlbb_ranks": "Multi",
       "mlbb_classes": "Multi",
@@ -108,7 +116,7 @@
       "clash_royale_trophies": "Please select your trophy range"
     },
     "profile_placeholders": {
-      "stats_link": "https://statsroyale.com"
+      "clash_royale_trophies": "Select your Highest trophies"
     },
     "types": {
       "clash_royale_trophies": "Single",
@@ -141,7 +149,11 @@
       "overw_levels": "Please select which levels"
     },
     "profile_placeholders": {
-      "stats_link": "https://www.overbuff.com"
+      "overw_server_regions": "Select what region/s you can play",
+      "overw_game_modes": "Select which game mode/s you like to play",
+      "overw_ranks": "Please select what ranks?",
+      "overw_roles": "Select which role/s you like to play",
+      "overw_levels": "Please select which levels"
     },
     "types": {
       "overw_server_regions": "Multi",
@@ -184,7 +196,10 @@
       "cod_warzone_wins": "Please select how many wins"
     },
     "profile_placeholders": {
-      "stats_link": "https://cod.tracker.gg/warzone"
+      "cod_warzone_server_regions": "Select what region/s you can play",
+      "cod_warzone_game_modes": "Select which game mode/s you like to play",
+      "cod_warzone_kd_ratio": "Please select your KD range",
+      "cod_warzone_wins": "Please select how many wins"
     },
     "types": {
       "cod_warzone_server_regions": "Multi",
@@ -224,7 +239,10 @@
       "apex_legends_kills": "Please select how many kills"
     },
     "profile_placeholders": {
-      "stats_link": "https://tracker.gg/apex"
+      "apex_legends_game_modes": "Select which game mode/s you like to play",
+      "apex_legends_level": "Please select your levels",
+      "apex_legends_wins": "Please select your wins",
+      "apex_legends_kills": "Please select your kills"
     },
     "types": {
       "apex_legends_game_modes": "Multi",
@@ -266,7 +284,11 @@
       "csgo_kd_ratio": "Please select KD range"
     },
     "profile_placeholders": {
-      "stats_link": "https://csgo-stats.com"
+      "csgo_server_regions": "Select what region/s you can play",
+      "csgo_server_rank": "Please select your rank",
+      "csgo_server_roles": "Select which role/s you like to play",
+      "csgo_game_modes": "Please select your game modes",
+      "csgo_kd_ratio": "Please select your KD range"
     },
     "types": {
       "csgo_server_regions": "Multi",
@@ -307,11 +329,15 @@
       "fortnite_server_regions": "Select what region/s you can play",
       "fortnite_game_modes": "Please select your game modes",
       "fortnite_kd_ratio": "Please select KD range",
-      "fortnite_wins": "Please select your how many wins",
+      "fortnite_wins": "Please select how many wins",
       "fortnite_kills": "Please select how many kills"
     },
     "profile_placeholders": {
-      "stats_link": "https://fortnitetracker.com"
+      "fortnite_server_regions": "Select what region/s you can play",
+      "fortnite_game_modes": "Please select your game modes",
+      "fortnite_kd_ratio": "Please select your KD range",
+      "fortnite_wins": "Please select your wins",
+      "fortnite_kills": "Please select your kills"
     },
     "types": {
       "fortnite_server_regions": "Multi",
@@ -354,7 +380,10 @@
       "pubg_ranks": "Please select what rank"
     },
     "profile_placeholders": {
-      "stats_link": "https://pubglookup.com"
+      "pubg_platform": "Select your platform",
+      "pubg_server_regions": "Select what region/s you can play",
+      "pubg_game_modes": "Please select your game modes",
+      "pubg_ranks": "Select your Highest Rank"
     },
     "types": {
       "pubg_platform": "Single",
