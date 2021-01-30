@@ -174,7 +174,12 @@ class ChatRepository {
   }
 
   async fetchUnreadMessages({ requestingUserId, count }) {
-    if (count) return this.countLastMessages({ requestingUserId });
+    if (count) {
+      const unreadMessages = await this.countLastMessages({ requestingUserId });
+      const unreadNotifications = await this.countNotifications({ requestingUserId });
+      const unreadSum = (parseInt(unreadMessages) || 0) + (parseInt(unreadNotifications) || 0);
+      return { unreadMessages: unreadSum };
+    }
     const { chats } = await this.fetchChats({ requestingUserId });
     const lastReadsRaw = await ChatLastRead.query().where('user_id', requestingUserId).fetch();
     if (!lastReadsRaw) return { unreadMessages: [] };
@@ -213,6 +218,15 @@ class ChatRepository {
     return { unreadMessages };
   }
 
+  async countNotifications({ requestingUserId }) {
+    const response = await Database
+      .from('user_chat_notifications')
+      .where({ 'user_id': requestingUserId })
+      .andWhere({ 'has_read': 0 })
+      .count();
+    return response[0]['count(*)'];
+  }
+  
   async countLastMessages({ requestingUserId }) {
     const response = await Database.raw(`
       select (
@@ -225,7 +239,7 @@ class ChatRepository {
       where user_id = ?
    `, requestingUserId);
    const unreadMessages = response[0].map((result) => result.unread_count);
-    return { unreadMessages: !!unreadMessages ? unreadMessages.reduce((prv, cur) => prv + cur, 0) : 0 };
+    return !!unreadMessages ? unreadMessages.reduce((prv, cur) => prv + cur, 0) : 0;
   }
 
   async fetchLastMessage({ requestedChatId }) {
