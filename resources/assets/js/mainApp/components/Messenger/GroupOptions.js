@@ -12,6 +12,7 @@ import { uploadGroupIcon } from '../../../integration/http/chat'
 import { getAssetUrl } from '../../../common/assets'
 import { showMessengerAlert } from '../../../common/alert'
 import { ignoreFunctions } from '../../../common/render'
+import logger from '../../../common/logger'
 
 class GroupOptions extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -52,7 +53,7 @@ class GroupOptions extends React.Component {
 
   exitOrDeleteGroup = () => {
     this.setState({ exitingGroup: false })
-    const isGroupOwner = this.props.group.owners.length && this.props.group.owners.includes(this.props.userId)
+    const isGroupOwner = this.props.owners.length && this.props.owners.includes(this.props.userId)
     if (!isGroupOwner) return this.props.exitGroup(this.props.group.chatId)
     return this.props.deleteChat(this.props.group.chatId)
   }
@@ -63,6 +64,7 @@ class GroupOptions extends React.Component {
       <div className='chat-group-members-container'>
         <GroupMemberOptions
           userId={this.props.userId}
+          chatId={this.props.chatId}
           group={this.props.group}
           groupContacts={this.props.groupContacts}
           expireLink={(uuid) => this.props.updateLink(this.props.group.chatId, uuid, undefined, true)}
@@ -87,10 +89,11 @@ class GroupOptions extends React.Component {
   }
 
   render() {
+    logger.log('RENDER', 'GroupOptions')
     const mainLink =
       !!this.props.group.links.length && window.location.protocol + '//' + window.location.host + '/link/' + this.props.group.links[0].uuid
-    const isGroupOwner = this.props.group.owners.length && this.props.group.owners.includes(this.props.userId)
-    const isGroupModerator = this.props.group.moderators.length && this.props.group.moderators.includes(this.props.userId)
+    const isGroupOwner = this.props.owners.length && this.props.owners.includes(this.props.userId)
+    const isGroupModerator = this.props.moderators.length && this.props.moderators.includes(this.props.userId)
     const canShareLink = !this.props.group.isPrivate || isGroupModerator || isGroupOwner
     const inactiveStyle = 'chat-component-options-option-inactive'
     return (

@@ -204,8 +204,11 @@ export class Chat extends React.Component {
       return (
         <GroupOptions
           userId={this.props.userId}
+          chatId={this.props.chatId}
           messages={this.props.messages}
           group={this.props.group}
+          moderators={this.props.moderators}
+          owners={this.props.owners}
           groupContacts={this.props.contacts}
         />
       )
@@ -602,6 +605,8 @@ export function mapStateToProps(state, props) {
     isGroup,
     isGroupOwner,
     group: chat,
+    moderators: chat.moderators || [],
+    owners: chat.owners || [],
     gameMessage: chat.gameMessage || '',
     icon: chat.icon || contact.icon || '',
     title: chat.title || contact.name || '',
