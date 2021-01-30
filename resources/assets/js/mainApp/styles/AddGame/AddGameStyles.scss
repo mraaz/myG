@@ -32,9 +32,13 @@
 .advance-settings-content {
   margin: 30px 0px;
   width: 30%;
+  .game-title-select {
+    padding-bottom: 15px;
+    font-size: 13px;
+    width: 90%;
+  }
 }
 
-.game-title-select,
 .date-picker-select,
 .friend-name-select,
 .experience-select,
@@ -195,6 +199,11 @@
   &__footer-submit-button-light {
     opacity: 40%;
   }
+
+  &__main-view-container {
+    flex: 1;
+  }
+
   &__optional-view-container {
     margin-left: 30px;
     height: fit-content;
