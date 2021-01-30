@@ -419,7 +419,11 @@
       "nba2k_positions": "Please select which positions?",
       "nba2k_ovr_rating": "Please select the what OVR rating range"
     },
-    "profile_placeholders": {},
+    "profile_placeholders": {
+      "nba2k_game_modes": "Please select your game modes",
+      "nba2k_positions": "Select which position/s you like to play?",
+      "nba2k_ovr_rating": "Please select your OVR rating range"
+    },
     "types": {
       "nba2k_game_modes": "Multi",
       "nba2k_positions": "Multi",
@@ -452,7 +456,10 @@
       "rocket_league_ranks": "Please select what rank"
     },
     "profile_placeholders": {
-      "stats_link": "https://rocketleague.tracker.network"
+      "rocket_league_server_regions": "Select what region/s you can play",
+      "rocket_league_playlists": "Please select your playlists",
+      "rocket_league_competitive": "Please select your competitive mode/s",
+      "rocket_league_ranks": "Please select your Highest rank"
     },
     "types": {
       "rocket_league_server_regions": "Multi",
