@@ -41,6 +41,7 @@
 
 .viewGame__container {
   margin: 0px 100px;
+  overflow-y: scroll;
 
   &.desktopView {
     display: none;
@@ -550,6 +551,15 @@
     border-top: 1px solid #384952;
     align-items: flex-start;
     justify-content: center;
+
+    .gameList__fragment {
+      display: flex;
+      flex-direction: row;
+      height: 100%;
+      width: 55%;
+      justify-content: center;
+    }
+  
     .viewRightInfo {
       display: flex;
       align-items: center;
@@ -909,7 +919,7 @@
       }
       .gameList__box {
         position: relative;
-        height: 120vh;
+        // height: 120vh;
         overflow: scroll;
         .mygames {
           display: flex;
@@ -1194,8 +1204,9 @@
       background: #171a1c;
       margin-left: 10px;
       width: 100%;
-      position: relative;
-      height: 125vh;
+      position: absolute;
+      max-width: 470px;
+      // height: 125vh;
       overflow: hidden;
       .gameDetails__header {
         background: #1d2326;

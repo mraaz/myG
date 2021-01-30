@@ -234,6 +234,12 @@ section#content-container {
     //height: 900px; Hide the scroll bars, decided against it
     .content-area {
       overflow: scroll;
+      display: flex;
+      flex-direction: column;
+
+      @media (min-width: 575px) {
+        max-height: 100vh;
+      }
     }
     .search-header {
       position: relative;

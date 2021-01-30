@@ -186,7 +186,7 @@ export default class MyScheduledGames extends Component {
                 />
               </div>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div className='gameList__fragment'>
               {scheduleGames.length > 0 ? (
                 <Fragment>
                   <div style={{ flex: 1 }}>
