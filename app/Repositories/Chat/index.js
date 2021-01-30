@@ -1196,7 +1196,7 @@ class ChatRepository {
     const type = added[0] ? "PROMOTED" : "DEMOTED";
     this._addChatNotification({
       chatId: requestedChatId,
-      userId: added[0] || removed[0],
+      userId: added[0] || removed[0] || requestingUserId,
       senderId: requestingUserId,
       senderAlias: alias,
       type,
