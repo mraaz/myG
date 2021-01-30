@@ -83,8 +83,18 @@ class Messenger extends React.Component {
       <section id='messenger'>
         {this.renderSweetAlert()}
         <div className='locked-chat'>
-          <p>Sorry mate!</p>
-          <p>You need to reach level 2 to use the chat.</p>
+          <div className='locked-image'>
+            <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
+          </div>
+          <p>Your Chat is locked</p>
+          <p>Reach level 2 to unlock it.</p>
+          <div className='rectangle'>
+            <img src='https://myg.gg/platform_images/Dashboard/btn_Network.svg' className='img-network' />
+            <div className='body-of-text'>
+              <p>Go to Achievements</p>
+              <p>to learn how to progress</p>
+            </div>
+          </div>
         </div>
       </section>
     )
