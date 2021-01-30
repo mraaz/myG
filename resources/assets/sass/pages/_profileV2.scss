@@ -382,6 +382,7 @@
       flex-direction: column;
       min-height: 40px;
       z-index: 1;
+      align-items: unset !important;
     }
 
     .input {
