@@ -305,6 +305,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderMultiField = (field) => {
+    console.log(field, '<<<<field')
     if (!this.props.isSelf)
       return this.renderDisabledField(
         field.label,
