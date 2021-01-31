@@ -1278,7 +1278,6 @@
                   font-size: 16px;
                 }
               }
-
               a:hover {
                 color: #e5c746;
                 text-decoration: none;
@@ -2412,13 +2411,19 @@ $transition-default: 0.25s ease-out 0.1s;
 
 .mGameTileListHeader {
   display: flex;
-  height: 40px;
+  flex-direction: column;
+  height: 75px;
   width: 100%;
+
+  .css-1uccc91-singleValue {
+    color: #fff;
+  }
 
   .mGameResultsFillView {
     flex: 1;
     justify-content: flex-start;
     display: flex;
+    align-items: center;
     font: 20px/14px Montserrat;
     letter-spacing: 0px;
     color: #fff;

@@ -227,6 +227,7 @@ export default class MyScheduledGames extends Component {
             handleExcludesFullGames={this.handleExcludesFullGames}
             slideOptionLabel={this.state.slideOptionText}
             copyClipboardEnable={true}
+            prefilledFilter={prefilledFilter}
             showPrefilledFilter={true}
             getSingleGameData={this.getSingleGameData}
             deSelectGame={this.deSelectGame}
@@ -236,6 +237,7 @@ export default class MyScheduledGames extends Component {
             showAllComment={showAllComment}
             handleShowAllComments={this.handleShowAllComments}
             user={this.props.initialData}
+            handleChangeFilter={this.handleChangeFilter}
           />
         </section>
       </Fragment>
