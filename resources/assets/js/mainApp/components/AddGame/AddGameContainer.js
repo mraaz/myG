@@ -269,8 +269,30 @@ const AddGameContainer = ({ level }) => {
       <div className={styles.container}>
         <PageHeader headerText='Create Match' />
         <div className='locked-create-match'>
-          <p>Sorry mate!</p>
-          <p>You need to reach level 2 to create a match.</p>
+          <div className='locked-image'>
+            <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
+          </div>
+          <span>Create Match is locked</span>
+          <span>
+            Reach{' '}
+            <span style={{ color: '#E6C846' }}>
+              {' '}
+              <strong>level 2</strong>
+            </span>{' '}
+            to unlock it.
+          </span>
+          <div className='rectangle'>
+            <img src='https://myg.gg/platform_images/Dashboard/btn_Network.svg' className='img-network' />
+            <div className='body-of-text'>
+              <p>
+                Go to{' '}
+                <Link to={'/achievements'}>
+                  &nbsp;<strong> Achievements</strong>{' '}
+                </Link>
+              </p>
+              <p>to learn how to progress</p>
+            </div>
+          </div>
         </div>
       </div>
     )

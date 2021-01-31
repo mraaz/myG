@@ -194,19 +194,41 @@ const AddCommunityContainer = ({ level }) => {
     )
   }
 
-  const locked = (reason) => (
+  const locked = (reason, amount) => (
     <div className={styles.container}>
       <PageHeader headerText='Create Community' />
       <div className='locked-create-community'>
-        <p>Sorry mate!</p>
-        <p>{reason}</p>
+        <div className='locked-image'>
+          <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
+        </div>
+        <span>Create Community is locked</span>
+        <span>
+          Reach{' '}
+          <span style={{ color: '#E6C846' }}>
+            {' '}
+            <strong>{reason}</strong>
+          </span>{' '}
+          to unlock {amount}.
+        </span>
+        <div className='rectangle'>
+          <img src='https://myg.gg/platform_images/Dashboard/btn_Network.svg' className='img-network' />
+          <div className='body-of-text'>
+            <p>
+              Go to{' '}
+              <Link to={'/achievements'}>
+                &nbsp;<strong> Achievements</strong>{' '}
+              </Link>
+            </p>
+            <p>to learn how to progress</p>
+          </div>
+        </div>
       </div>
     </div>
   )
-  if (level < 10) return locked('You need to reach level 10 to create a community.')
-  if (level < 15 && communities.length >= 1) return locked('You need to reach level 15 to create to create two communities.')
-  if (level < 20 && communities.length >= 2) return locked('You need to reach level 20 to create to create three communities.')
-  if (level < 25 && communities.length >= 3) return locked('You need to reach level 25 to create to create four communities.')
+  if (level < 10) return locked('level 10', 'one community')
+  if (level < 15 && communities.length >= 1) return locked('level 15', 'two communities')
+  if (level < 20 && communities.length >= 2) return locked('level 20', 'three communities')
+  if (level < 25 && communities.length >= 3) return locked('level 25', 'four communities')
 
   return (
     <div className={styles.container}>
