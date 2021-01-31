@@ -41,6 +41,9 @@
 
 .viewGame__container {
   margin: 0px 100px;
+  overflow-y: scroll;
+  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
 
   &.desktopView {
     display: none;
@@ -550,6 +553,7 @@
     border-top: 1px solid #384952;
     align-items: flex-start;
     justify-content: center;
+  
     .viewRightInfo {
       display: flex;
       align-items: center;
@@ -666,7 +670,9 @@
         border-left: 2px solid #344953;
         position: relative;
         padding-left: 20px;
-        margin: 20px 20px 0px 20px;
+        margin: 20px;
+        min-height: 35vh;
+        overflow: scroll;
         &::before {
           content: '';
           width: 7px;
@@ -809,7 +815,7 @@
         background: #1d2326;
         padding: 24px;
         border-top: 2px solid #384952;
-        position: absolute;
+        // position: absolute;
         bottom: 0;
         width: 100%;
 
@@ -884,8 +890,12 @@
     }
     .gameList {
       flex: 1;
-      border: 1px solid #384952;
+      border-top: 1px solid #384952;
       padding: 20px;
+      max-height: 65vh;
+      overflow: scroll;
+      scrollbar-width: none;  /* Firefox */
+      -ms-overflow-style: none;  /* IE and Edge */
 
       .gameList_head__option {
         display: flex;
@@ -909,8 +919,9 @@
       }
       .gameList__box {
         position: relative;
-        height: 120vh;
         overflow: scroll;
+        scrollbar-width: none;  /* Firefox */
+        -ms-overflow-style: none;  /* IE and Edge */
         .mygames {
           display: flex;
           justify-content: start;
@@ -1194,9 +1205,6 @@
       background: #171a1c;
       margin-left: 10px;
       width: 100%;
-      position: relative;
-      height: 125vh;
-      overflow: hidden;
       .gameDetails__header {
         background: #1d2326;
         border-top-left-radius: 8px;
@@ -1224,7 +1232,8 @@
       .show-individual-comments {
         padding-left: 100px;
         padding-right: 50px;
-        min-height: 600px;
+        min-height: 450px;
+        max-height: 450px;
         overflow: scroll;
         .individual-comment-container {
           .comment__shape {
@@ -2137,7 +2146,7 @@ $transition-default: 0.25s ease-out 0.1s;
   display: block;
 
   @media (min-width: 575px) {
-    display: block;
+    display: none;
   }
 }
 
@@ -2692,22 +2701,19 @@ $transition-default: 0.25s ease-out 0.1s;
   }
 }
 
-.gameDetails,
-.mGameAllComments {
-  .desktopView {
-    display: none;
+.desktopView {
+  display: none;
 
-    @media (min-width: 575px) {
-      display: block;
-    }
-  }
-
-  .mobileView {
+  @media (min-width: 575px) {
     display: block;
+  }
+}
 
-    @media (min-width: 575px) {
-      display: none;
-    }
+.mobileView {
+  display: block;
+
+  @media (min-width: 575px) {
+    display: none;
   }
 }
 
