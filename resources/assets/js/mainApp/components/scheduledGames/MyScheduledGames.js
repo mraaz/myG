@@ -170,56 +170,52 @@ export default class MyScheduledGames extends Component {
     return (
       <Fragment>
         <section className='viewGame__container desktopView'>
-          <div
-            className={`gameList__section ${singleView ? 'singleGameView__container' : 'GameView__container'}`}
-            style={{ display: 'block' }}>
-            <div className='myGame__filter-section'>
-              <div className='viewGame__gameName game-title-select'>
-                <Select
-                  onChange={(data) => this.handleChangeFilter(data)}
-                  options={prefilledFilter_option}
-                  placeholder='Select your filter'
-                  name='prefilledFilter'
-                  className='viewGame__name'
-                  classNamePrefix='filter'
-                  value={prefilledFilter}
-                />
-              </div>
+          <div className='myGame__filter-section'>
+            <div className='viewGame__gameName game-title-select'>
+              <Select
+                onChange={(data) => this.handleChangeFilter(data)}
+                options={prefilledFilter_option}
+                placeholder='Select your filter'
+                name='prefilledFilter'
+                className='viewGame__name'
+                classNamePrefix='filter'
+                value={prefilledFilter}
+              />
             </div>
-            <div className='gameList__fragment'>
-              {scheduleGames.length > 0 ? (
-                <Fragment>
-                  <div style={{ flex: 1 }}>
-                    <GameList
-                      scheduleGames={scheduleGames}
-                      show_full_games={show_full_games}
-                      handleExcludesFullGames={this.handleExcludesFullGames}
-                      slideOptionLabel={this.state.slideOptionText}
-                      getSingleGameData={this.getSingleGameData}
-                      next={this.getScheduleGamesData}
-                      hasMore={this.state.moreplease}
-                      fetching={fetching}
-                      copyClipboardEnable={true}
-                      showPrefilledFilter={true}
-                      {...this.props}
-                    />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <GameDetails
-                      singleScheduleGamesPayload={singleScheduleGamesPayload}
-                      selected_game={selected_game}
-                      showRightSideInfo={showRightSideInfo}
-                      commentData={commentData}
-                      handleShowAllComments={this.handleShowAllComments}
-                      showAllComment={showAllComment}
-                      {...this.props}
-                    />
-                  </div>
-                </Fragment>
-              ) : (
-                <NoRecord />
-              )}
-            </div>
+          </div>
+          <div className={`gameList__section ${singleView ? 'singleGameView__container' : 'GameView__container'}`}>
+            {scheduleGames.length > 0 ? (
+              <Fragment>
+                <div style={{ flex: 1 }}>
+                  <GameList
+                    scheduleGames={scheduleGames}
+                    show_full_games={show_full_games}
+                    handleExcludesFullGames={this.handleExcludesFullGames}
+                    slideOptionLabel={this.state.slideOptionText}
+                    getSingleGameData={this.getSingleGameData}
+                    next={this.getScheduleGamesData}
+                    hasMore={this.state.moreplease}
+                    fetching={fetching}
+                    copyClipboardEnable={true}
+                    showPrefilledFilter={true}
+                    {...this.props}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <GameDetails
+                    singleScheduleGamesPayload={singleScheduleGamesPayload}
+                    selected_game={selected_game}
+                    showRightSideInfo={showRightSideInfo}
+                    commentData={commentData}
+                    handleShowAllComments={this.handleShowAllComments}
+                    showAllComment={showAllComment}
+                    {...this.props}
+                  />
+                </div>
+              </Fragment>
+            ) : (
+              <NoRecord />
+            )}
           </div>
         </section>
         <section className='viewGame__container__mobile mobileView'>

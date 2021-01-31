@@ -212,7 +212,6 @@ class LeftMenu extends Component {
 
   getSideBarItems = () => {
     const { sideBarData, isExpanded, activePage } = this.state
-    
 
     const item = (icon, expanded, subItems, header, activePageId) => (
       <Fragment>
