@@ -338,48 +338,56 @@
     max-width: 1800px;
     border-left: 2px solid #344953;
 
-    .filter-row {
+    .filter-container {
       display: flex;
-      flex-direction: column;
-      margin-bottom: 8px;
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin: 8px 0;
 
-      .filter-label {
-        font-size: 16px;
-        font-family: 'Montserrat';
-        color: #fff;
-        margin: 8px 0 2px 0;
-      }
-
-      .filter-text {
-        width: 100%;
-        margin: 0;
-        background-color: #4d565a;
-        border: none;
-        padding: 0;
-        color: #fff;
-        padding: 8px;
-        border-radius: 4px;
-        font-size: 16px;
-        font-weight: 500;
-        max-width: 450px;
-        &::placeholder {
+      .filter-row {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 8px;
+        width: 50%;
+  
+        .filter-label {
+          font-size: 16px;
+          font-family: 'Montserrat';
           color: #fff;
+          margin: 8px 0 2px 0;
         }
-      }
-
-      .filter-select {
-        width: 100%;
-        margin: 0;
-        background-color: #4d565a;
-        border: none;
-        padding: 0;
-        color: #fff;
-        border-radius: 4px;
-        font-size: 16px;
-        font-weight: 500;
-        max-width: 450px;
-        &::placeholder {
+  
+        .filter-text {
+          width: 100%;
+          margin: 0;
+          background-color: #4d565a;
+          border: none;
+          padding: 0;
           color: #fff;
+          padding: 8px;
+          border-radius: 4px;
+          font-size: 16px;
+          font-weight: 500;
+          max-width: 450px;
+          &::placeholder {
+            color: #808080;
+          }
+        }
+  
+        .filter-select {
+          width: 100%;
+          margin: 0;
+          background-color: #4d565a;
+          border: none;
+          padding: 0;
+          color: #fff;
+          border-radius: 4px;
+          font-size: 16px;
+          font-weight: 500;
+          max-width: 450px;
+          &::placeholder {
+            color: #fff;
+          }
         }
       }
     }

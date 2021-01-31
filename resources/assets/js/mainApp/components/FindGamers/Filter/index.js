@@ -106,7 +106,11 @@ export default class Filter extends React.Component {
   );
 
   renderFilters = () => {
-    return this.state.selectedFilters.map(this.selectFilter);
+    return(
+      <div className="filter-container">
+        {this.state.selectedFilters.map(this.selectFilter)}
+      </div>
+    );
   }
 
   selectFilter = (filter) => {
