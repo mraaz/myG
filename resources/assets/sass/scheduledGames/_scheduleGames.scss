@@ -891,7 +891,7 @@
     .gameList {
       flex: 1;
       border-top: 1px solid #384952;
-      padding: 20px;
+      padding: 20px 20px 0 20px;
       max-height: 65vh;
       overflow: scroll;
       scrollbar-width: none;  /* Firefox */
@@ -2709,6 +2709,55 @@ $transition-default: 0.25s ease-out 0.1s;
         height: 37px;
         border-radius: 50%;
         z-index: 2;
+      }
+    }
+  }
+
+  .game__action__buttton {
+    position: relative;
+    display: inline-block;
+    button {
+      width: 102px;
+      height: 39px;
+      background: #e5c746 0% 0% no-repeat padding-box;
+      border-radius: 8px;
+      font-size: 16px;
+      line-height: 14px;
+      font-family: Montserrat, sans-serif;
+      letter-spacing: 0px;
+      font-weight: bold;
+      color: #000000;
+      border: none;
+      cursor: pointer;
+      outline: none;
+      margin: 0;
+      img {
+        width: 15px;
+        margin-left: 2px;
+      }
+      &.open {
+        background: #b9b9b9;
+      }
+    }
+    .dropDown--option {
+      position: absolute;
+      top: 40px;
+      right: 0;
+      background: #171a1c 0% 0% no-repeat padding-box;
+      border: 1px solid #384952;
+      width: 125px;
+      padding: 4px;
+      border-radius: 4px;
+      z-index: 1;
+      .leaveGame__button {
+        width: auto;
+        height: 20px;
+        background: #171a1c 0% 0% no-repeat padding-box;
+        font: 10px/12px Montserrat;
+        letter-spacing: 0px;
+        color: #fff;
+        font-weight: bold;
+        margin: 0;
       }
     }
   }
