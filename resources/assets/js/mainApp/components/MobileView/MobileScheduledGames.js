@@ -267,16 +267,19 @@ const MobileScheduledGames = ({
             </div>
           </div>
 
-          <div className='mGameResultsFillView'>
-            <span>{slideOptionLabel} </span>{' '}
-            <div className='button-switch-m'>
-              <input
-                type='checkbox'
-                defaultChecked={showFullGames}
-                id='switch-orange'
-                onChange={handleExcludesFullGames}
-                className='switch'
-              />
+          <div class="mGameResultsFiltersRowTwo">
+            <div className='mGameResultsCount'> {scheduleGames.length} Results</div>
+            <div className='mGameResultsFillView'>
+              <span>{slideOptionLabel} </span>{' '}
+              <div className='button-switch-m'>
+                <input
+                  type='checkbox'
+                  defaultChecked={showFullGames}
+                  id='switch-orange'
+                  onChange={handleExcludesFullGames}
+                  className='switch'
+                />
+              </div>
             </div>
           </div>
         </div>

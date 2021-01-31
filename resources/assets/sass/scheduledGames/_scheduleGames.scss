@@ -2419,21 +2419,24 @@ $transition-default: 0.25s ease-out 0.1s;
     color: #fff;
   }
 
-  .mGameResultsFillView {
-    flex: 1;
-    justify-content: flex-start;
+  .mGameResultsFiltersRowTwo {
     display: flex;
     align-items: center;
-    font: 20px/14px Montserrat;
-    letter-spacing: 0px;
+    flex: 1;
+  }
+
+  .mGameResultsCount {
     color: #fff;
   }
 
   .mGameResultsFillView {
+    flex: 1;
     justify-content: flex-end;
+    display: flex;
+    align-items: center;
     font-family: Montserrat, sans-serif;
     font-size: 14px;
-    line-height: 14.4px;
+    line-height: 1;
     letter-spacing: 0px;
     color: #fff;
   }
