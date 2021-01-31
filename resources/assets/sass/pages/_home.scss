@@ -708,6 +708,10 @@ section#content-container {
                 a {
                   width: 100%;
                 }
+                a:hover {
+                  color: #e5c746;
+                  text-decoration: none;
+                }
               }
               .comment-options {
                 width: 100%;
