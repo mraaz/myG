@@ -11,6 +11,7 @@ import SingleGameDetails from './singlegameDetails.js'
 import NoRecord from './NoRecord.js'
 import { PullDataFunction as getScheduleGames } from './getScheduleGames'
 import axios from 'axios'
+import MobileScheduledGames from '../MobileView/MobileScheduledGames'
 
 export default class ScheduleGames extends Component {
   constructor() {
@@ -28,6 +29,7 @@ export default class ScheduleGames extends Component {
       scheduleGamesView: {},
       showAllComment: false,
       fetching: false,
+      slideOptionText: 'Exclude expired games',
     }
   }
 
@@ -73,6 +75,18 @@ export default class ScheduleGames extends Component {
         showAllComment: false,
       })
     }
+  }
+
+  deSelectGame = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    this.setState({
+      singleScheduleGamesPayload: {},
+      selected_game: {},
+      showRightSideInfo: false,
+      showAllComment: false,
+    })
   }
 
   handleChange = async (data, name) => {
@@ -127,6 +141,8 @@ export default class ScheduleGames extends Component {
   }
   handleExcludesFullGames = (e) => {
     const checked = e.target.checked
+    this.setState({ slideOptionText: checked ? 'Show expired games': 'Exclude expired games' })
+
     this.setState({ show_full_games: checked }, () => {
       this.getScheduleGamesChangeCall({ show_full_games: checked })
     })
@@ -156,55 +172,78 @@ export default class ScheduleGames extends Component {
     }
     return (
       <Fragment>
-        <div className='viewGame__header'>
-          <div className='title'>Find Matches</div>
-        </div>
-        <section className='viewGame__container'>
-          {id == '' && <GameFilter handleChange={this.handleChange} />}
-          <div className={`gameList__section ${singleView ? 'singleGameView__container' : 'GameView__container'}`}>
-            {!singleView && scheduleGames.length > 0 ? (
-              <Fragment>
-                <div style={{ flex: 1 }}>
-                  <GameList
-                    scheduleGames={scheduleGames}
-                    show_full_games={show_full_games}
-                    handleExcludesFullGames={this.handleExcludesFullGames}
-                    slideOptionLabel={`Show full games `}
-                    getSingleGameData={this.getSingleGameData}
-                    next={this.getScheduleGamesData}
-                    hasMore={this.state.moreplease}
-                    fetching={fetching}
-                  />
-                </div>
-                <div style={{ flex: '1', borderLeft: '1px solid #384952', padding: '8px', borderTop: '1px solid #384952' }}>
-                  <GameDetails
-                    singleScheduleGamesPayload={singleScheduleGamesPayload}
-                    selected_game={selected_game}
-                    showRightSideInfo={showRightSideInfo}
-                    commentData={commentData}
-                    handleShowAllComments={this.handleShowAllComments}
-                    showAllComment={showAllComment}
-                    {...this.props}
-                  />
-                </div>
-              </Fragment>
-            ) : (
-              <Fragment>
-                {latestScheduledGames.length > 0 ? (
-                  <SingleGameDetails
-                    scheduleGames={scheduleGamesView}
-                    showRightSideInfo={showRightSideInfo}
-                    handleShowAllComments={this.handleShowAllComments}
-                    commentData={commentData}
-                    showAllComment={showAllComment}
-                    {...this.props}
-                  />
-                ) : (
-                  <NoRecord />
-                )}
-              </Fragment>
-            )}
+        <section className="desktopView">
+          <div className='viewGame__header'>
+            <div className='title'>Find Matches</div>
           </div>
+          <section className='viewGame__container'>
+            {id == '' && <GameFilter handleChange={this.handleChange} />}
+            <div className={`gameList__section ${singleView ? 'singleGameView__container' : 'GameView__container'}`}>
+              {!singleView && scheduleGames.length > 0 ? (
+                <Fragment>
+                  <div style={{ flex: 1 }}>
+                    <GameList
+                      scheduleGames={scheduleGames}
+                      show_full_games={show_full_games}
+                      handleExcludesFullGames={this.handleExcludesFullGames}
+                      slideOptionLabel={this.state.slideOptionText}
+                      getSingleGameData={this.getSingleGameData}
+                      next={this.getScheduleGamesData}
+                      hasMore={this.state.moreplease}
+                      fetching={fetching}
+                    />
+                  </div>
+                  <div style={{ flex: '1', borderLeft: '1px solid #384952', padding: '8px', borderTop: '1px solid #384952' }}>
+                    <GameDetails
+                      singleScheduleGamesPayload={singleScheduleGamesPayload}
+                      selected_game={selected_game}
+                      showRightSideInfo={showRightSideInfo}
+                      commentData={commentData}
+                      handleShowAllComments={this.handleShowAllComments}
+                      showAllComment={showAllComment}
+                      {...this.props}
+                    />
+                  </div>
+                </Fragment>
+              ) : (
+                <Fragment>
+                  {latestScheduledGames.length > 0 ? (
+                    <SingleGameDetails
+                      scheduleGames={scheduleGamesView}
+                      showRightSideInfo={showRightSideInfo}
+                      handleShowAllComments={this.handleShowAllComments}
+                      commentData={commentData}
+                      showAllComment={showAllComment}
+                      {...this.props}
+                    />
+                  ) : (
+                    <NoRecord />
+                  )}
+                </Fragment>
+              )}
+            </div>
+          </section>
+        </section>
+                    
+        <section className="viewGame__container__mobile mobileView">
+          <MobileScheduledGames
+              scheduleGames={scheduleGames}
+              selectedGame={selected_game}
+              singleScheduleGamesPayload={singleScheduleGamesPayload}
+              showFullGames={show_full_games}
+              handleExcludesFullGames={this.handleExcludesFullGames}
+              slideOptionLabel={this.state.slideOptionText}
+              copyClipboardEnable={true}
+              showPrefilledFilter={true}
+              getSingleGameData={this.getSingleGameData}
+              deSelectGame={this.deSelectGame}
+              showRightSideInfo={showRightSideInfo}
+              routeProps={this.props.routeProps}
+              commentData={commentData}
+              showAllComment={showAllComment}
+              handleShowAllComments={this.handleShowAllComments}
+              user={this.props.initialData}
+            />
         </section>
       </Fragment>
     )
