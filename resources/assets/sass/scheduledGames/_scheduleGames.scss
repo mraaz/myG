@@ -1227,7 +1227,8 @@
       .show-individual-comments {
         padding-left: 100px;
         padding-right: 50px;
-        min-height: 600px;
+        min-height: 450px;
+        max-height: 450px;
         overflow: scroll;
         .individual-comment-container {
           .comment__shape {
