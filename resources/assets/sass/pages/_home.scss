@@ -238,11 +238,13 @@ section#content-container {
       overflow: scroll;
       display: flex;
       flex-direction: column;
+      min-height: 400px; // For mobile, ensures filter dropdown is not cut off when no games appear in search
       scrollbar-width: none;  /* Firefox */
       -ms-overflow-style: none;  /* IE and Edge */
 
       @media (min-width: 575px) {
         max-height: 100vh;
+        min-height: unset; // remove min-height as not needed for desktop
       }
     }
     .search-header {
@@ -707,6 +709,10 @@ section#content-container {
                 justify-content: flex-start;
                 a {
                   width: 100%;
+                }
+                a:hover {
+                  color: #e5c746;
+                  text-decoration: none;
                 }
               }
               .comment-options {

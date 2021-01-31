@@ -891,7 +891,7 @@
     .gameList {
       flex: 1;
       border-top: 1px solid #384952;
-      padding: 20px;
+      padding: 20px 20px 0 20px;
       max-height: 65vh;
       overflow: scroll;
       scrollbar-width: none;  /* Firefox */
@@ -1277,6 +1277,10 @@
                 @media (min-width: 575px) {
                   font-size: 16px;
                 }
+              }
+              a:hover {
+                color: #e5c746;
+                text-decoration: none;
               }
               .comment-content {
                 padding-top: 3px;
@@ -2407,23 +2411,32 @@ $transition-default: 0.25s ease-out 0.1s;
 
 .mGameTileListHeader {
   display: flex;
-  height: 40px;
+  flex-direction: column;
+  height: 75px;
   width: 100%;
 
-  .mGameResultsFillView {
-    flex: 1;
-    justify-content: flex-start;
+  .css-1uccc91-singleValue {
+    color: #fff;
+  }
+
+  .mGameResultsFiltersRowTwo {
     display: flex;
-    font: 20px/14px Montserrat;
-    letter-spacing: 0px;
+    align-items: center;
+    flex: 1;
+  }
+
+  .mGameResultsCount {
     color: #fff;
   }
 
   .mGameResultsFillView {
+    flex: 1;
     justify-content: flex-end;
+    display: flex;
+    align-items: center;
     font-family: Montserrat, sans-serif;
     font-size: 14px;
-    line-height: 14.4px;
+    line-height: 1;
     letter-spacing: 0px;
     color: #fff;
   }
@@ -2699,6 +2712,55 @@ $transition-default: 0.25s ease-out 0.1s;
       }
     }
   }
+
+  .game__action__buttton {
+    position: relative;
+    display: inline-block;
+    button {
+      width: 102px;
+      height: 39px;
+      background: #e5c746 0% 0% no-repeat padding-box;
+      border-radius: 8px;
+      font-size: 16px;
+      line-height: 14px;
+      font-family: Montserrat, sans-serif;
+      letter-spacing: 0px;
+      font-weight: bold;
+      color: #000000;
+      border: none;
+      cursor: pointer;
+      outline: none;
+      margin: 0;
+      img {
+        width: 15px;
+        margin-left: 2px;
+      }
+      &.open {
+        background: #b9b9b9;
+      }
+    }
+    .dropDown--option {
+      position: absolute;
+      top: 40px;
+      right: 0;
+      background: #171a1c 0% 0% no-repeat padding-box;
+      border: 1px solid #384952;
+      width: 125px;
+      padding: 4px;
+      border-radius: 4px;
+      z-index: 1;
+      .leaveGame__button {
+        width: auto;
+        height: 20px;
+        background: #171a1c 0% 0% no-repeat padding-box;
+        font: 10px/12px Montserrat;
+        letter-spacing: 0px;
+        color: #fff;
+        font-weight: bold;
+        margin: 0;
+      }
+    }
+  }
 }
 
 .desktopView {
@@ -2904,6 +2966,10 @@ $transition-default: 0.25s ease-out 0.1s;
             @media (min-width: 575px) {
               font-size: 16px;
             }
+          }
+          a:hover {
+            color: #e5c746;
+            text-decoration: none;
           }
           .comment-content {
             padding-top: 3px;

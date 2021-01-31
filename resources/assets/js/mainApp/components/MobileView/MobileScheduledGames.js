@@ -1,11 +1,13 @@
 import React, { Fragment, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { WithTooltip } from '../Tooltip'
-
 import moment from 'moment'
+import Select from 'react-select'
+
+import { WithTooltip } from '../Tooltip'
 import JoinButtonAction from '../scheduledGames/JoinButtonAction'
 import Approved_gamers from '../scheduledGames/ApprovedGamers'
 import GameComments from '../scheduledGames/GameComments'
+import { prefilledFilter_option } from '../scheduledGames/option'
 
 const MobileScheduledGames = ({
   scheduleGames,
@@ -23,6 +25,8 @@ const MobileScheduledGames = ({
   commentData,
   showAllComment,
   showPrefilledFilter = false,
+  prefilledFilter,
+  handleChangeFilter,
 }) => {
   const defaultThumbnails = 'https://myG.gg/platform_images/Notifications/myG_icon.svg'
 
@@ -249,16 +253,33 @@ const MobileScheduledGames = ({
 
       <div className={`mGameTileList${!showRightSideInfo ? ' active' : ' inactive'}`}>
         <div className='mGameTileListHeader'>
-          <div className='mGameResultsFillView'>
-            <span>{slideOptionLabel} </span>{' '}
-            <div className='button-switch-m'>
-              <input
-                type='checkbox'
-                defaultChecked={showFullGames}
-                id='switch-orange'
-                onChange={handleExcludesFullGames}
-                className='switch'
+          <div className='myGame__filter-section'>
+            <div className='viewGame__gameName game-title-select'>
+              <Select
+                onChange={(data) => handleChangeFilter(data)}
+                options={prefilledFilter_option}
+                placeholder='Select your filter'
+                name='prefilledFilter'
+                className='viewGame__name'
+                classNamePrefix='filter'
+                value={prefilledFilter}
               />
+            </div>
+          </div>
+
+          <div class="mGameResultsFiltersRowTwo">
+            <div className='mGameResultsCount'> {scheduleGames.length} Results</div>
+            <div className='mGameResultsFillView'>
+              <span>{slideOptionLabel} </span>{' '}
+              <div className='button-switch-m'>
+                <input
+                  type='checkbox'
+                  defaultChecked={showFullGames}
+                  id='switch-orange'
+                  onChange={handleExcludesFullGames}
+                  className='switch'
+                />
+              </div>
             </div>
           </div>
         </div>
