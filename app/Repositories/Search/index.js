@@ -50,8 +50,8 @@ class SearchRepository {
     query.query.bool.must.push({ match: { visibility: true } });
     if (input.game_name) query.query.bool.must.push({ match: { 'game_name.keyword': input.game_name } });
     if (input.experience) query.query.bool.must.push({ match: { 'experience.keyword': input.experience } });
-    if (input.start_date_time) query.query.bool.must.push({ range: { start_date_time: { gte: input.start_date_time } } });
-    if (hasEndDate) query.query.bool.must.push({ range: { end_date_time: { lte: input.end_date_time } } });
+    if (input.start_date_time) query.query.bool.must.push({ range: { start_date_time: { gte: input.start_date_time.replace(' ', 'T') } } });
+    if (hasEndDate) query.query.bool.must.push({ range: { end_date_time: { lte: input.end_date_time.replace(' ', 'T') } } });
     if (input.description) query.query.bool.must.push({ match: { description: { query: input.description, fuzziness: 'auto' } } });
     if (input.tags) input.tags.forEach((tag) => query.query.bool.must.push({ match: { ['tags.keyword']: tag } }));
     if (input.platform) query.query.bool.must.push({ match: { 'platform.keyword': input.platform } });
@@ -90,7 +90,10 @@ class SearchRepository {
     const latestScheduledGames = result.hits.hits.map((hit) => ({
       ...hit._source,
       no_of_gamers: hit._source.attendees,
-      tags: (hit._source.tags || []).map((content) => ({ content }))
+      tags: (hit._source.tags || []).map((content) => ({ content })),
+      start_date_time: hit._source.start_date_time.replace('T', ' '),
+      end_date_time: hit._source.end_date_time.replace('T', ' '),
+      expiry: hit._source.expiry.replace('T', ' '),
     }));
     return { latestScheduledGames };
   }

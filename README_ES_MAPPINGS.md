@@ -120,6 +120,15 @@ PUT /games/
         "type": "text",
         "analyzer": "autocomplete",
         "search_analyzer": "standard"
+      },
+      "start_date_time": {
+        "type": "date" 
+      },
+      "end_date_time": {
+        "type": "date" 
+      },
+      "expiry": {
+        "type": "date" 
       }
     }
   }

@@ -53,7 +53,10 @@ class ElasticsearchRepository {
         doc: { ...user, gameExperiences },
         doc_as_upsert: true,
       }
-    }).then(() => ({ success: true, error: null })).catch(error => ({ success: false, error }));
+    }).then(() => ({ success: true, error: null })).catch(error => {
+      console.error('Failed to Update Elasticsearch: ', error);
+      return ({ success: false, error });
+    });
   }
 
   async removeUser({ id }) {
@@ -61,7 +64,10 @@ class ElasticsearchRepository {
     return this.getElasticsearchClient().delete({
       id,
       index: 'users',
-    }).then(() => ({ success: true, error: null })).catch(error => ({ success: false, error }));
+    }).then(() => ({ success: true, error: null })).catch(error => {
+      console.error('Failed to Update Elasticsearch: ', error);
+      return ({ success: false, error });
+    });
   }
 
   async removeByAlias({ alias }) {
@@ -82,10 +88,27 @@ class ElasticsearchRepository {
       index: 'games',
       id: gameInfo.id,
       body: {
-        doc: gameInfo,
+        doc: {
+          ...gameInfo,
+          visibility: !!gameInfo.visibility,
+          vacancy: !!gameInfo.vacancy,
+          autoJoin: !!gameInfo.autoJoin,
+          autoJoinHost: !!gameInfo.autoJoinHost,
+          mic: !!gameInfo.mic,
+          eighteen_plus: !!gameInfo.eighteen_plus,
+          marked_as_deleted: !!gameInfo.marked_as_deleted,
+          allow_comments: !!gameInfo.allow_comments,
+          visibility: !!gameInfo.visibility,
+          start_date_time: gameInfo.start_date_time.replace ? gameInfo.start_date_time.replace(' ', 'T') : gameInfo.start_date_time,
+          end_date_time: gameInfo.end_date_time.replace ? gameInfo.end_date_time.replace(' ', 'T') : gameInfo.end_date_time,
+          expiry: gameInfo.expiry.replace ? gameInfo.expiry.replace(' ', 'T') : gameInfo.expiry,
+        },
         doc_as_upsert: true,
       }
-    }).then(() => ({ success: true, error: null })).catch(error => ({ success: false, error }));
+    }).then(() => ({ success: true, error: null })).catch(error => {
+      console.error('Failed to Update Elasticsearch: ', error);
+      return ({ success: false, error });
+    });
   }
 
   async updateAttendees({ id, no_of_gamers }) {
@@ -97,7 +120,10 @@ class ElasticsearchRepository {
         doc: { attendees: no_of_gamers },
         doc_as_upsert: true,
       }
-    }).then(() => ({ success: true, error: null })).catch(error => ({ success: false, error }));
+    }).then(() => ({ success: true, error: null })).catch(error => {
+      console.error('Failed to Update Elasticsearch: ', error);
+      return ({ success: false, error });
+    });
   }
 
   async removeGame({ id }) {
@@ -105,7 +131,10 @@ class ElasticsearchRepository {
     return this.getElasticsearchClient().delete({
       id,
       index: 'games',
-    }).then(() => ({ success: true, error: null })).catch(error => ({ success: false, error }));
+    }).then(() => ({ success: true, error: null })).catch(error => {
+      console.error('Failed to Update Elasticsearch: ', error);
+      return ({ success: false, error });
+    });
   }
 }
 
