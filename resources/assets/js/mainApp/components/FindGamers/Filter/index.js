@@ -73,10 +73,10 @@ export default class Filter extends React.Component {
 
   handleAddFilter = () => this.setState(previous => ({ showAddFilter: !previous.showAddFilter }));
   handleAddedFilter = (filter) => this.setState(previous => {
-    if (previous.selectedFilters.includes(filter)) {
-      return { selectedFilters: JSON.parse(JSON.stringify(previous.selectedFilters.filter((element) => element !== filter))) };
-    }
-    return { selectedFilters: [...previous.selectedFilters, filter] };
+    const selectedFilters = previous.selectedFilters.includes(filter) ?
+      JSON.parse(JSON.stringify(previous.selectedFilters.filter((element) => element !== filter))) :
+      JSON.parse(JSON.stringify([...previous.selectedFilters, filter]));
+    return { selectedFilters, showAddFilter: false };
   })
   renderAddFilter = () => (
     <div className="add-filter">
