@@ -6,13 +6,13 @@ import { ignoreFunctions } from "../../../../common/render"
 import { LANGUAGE_OPTIONS } from '../../../static/AddGame'
 
 const filterOptions = {
+  game: 'Game',
   alias: 'Alias',
   country: 'Country',
   relationship: 'Relationship',
   commendation: 'Commendations',
   team: 'Team',
   languages: 'Languages',
-  game: 'Game',
 };
 
 const relationshipOptions = [
@@ -38,13 +38,13 @@ export default class Filter extends React.Component {
   state = {
     showAddFilter: false,
     selectedFilters: [],
+    game: '',
     alias: '',
     country: '',
     relationship: '',
     commendation: '',
     team: '',
     languages: '',
-    game: '',
   }
 
   componentDidUpdate(_, previousState) {
@@ -59,13 +59,13 @@ export default class Filter extends React.Component {
   getFilters = (state) => {
     const hasFilter = (filter) => state.selectedFilters.includes(filter);
     return {
+      game: hasFilter('game') ? state.game : '',
       alias: hasFilter('alias') ? state.alias : '',
       country: hasFilter('country') ? state.country : '',
       relationship: hasFilter('relationship') ? state.relationship ? state.relationship.value : '' : '',
       commendations: hasFilter('commendation') ? state.commendation ? state.commendation.map(({ value }) => value).join('|') : '' : '',
       team: hasFilter('team') ? state.team : '',
       languages: hasFilter('languages') ? state.languages ? state.languages.map(({ value }) => value).join('|') : '' : '',
-      game: hasFilter('game') ? state.game : '',
     };
   }
 
@@ -111,13 +111,13 @@ export default class Filter extends React.Component {
 
   selectFilter = (filter) => {
     switch(filter) {
+      case 'game': return this.renderGameFilter();
       case 'alias': return this.renderTextFilter(filter);
       case 'country': return this.renderTextFilter(filter);
       case 'relationship': return this.renderOptionsFilter(filter, relationshipOptions, false);
       case 'commendation': return this.renderOptionsFilter(filter, commendationOptions, true);
       case 'team': return this.renderTextFilter(filter);
       case 'languages': return this.renderOptionsFilter(filter, LANGUAGE_OPTIONS, true);
-      case 'game': return this.renderGameFilter();
       default: return null;
     }
   }
