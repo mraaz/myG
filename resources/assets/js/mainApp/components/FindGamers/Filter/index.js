@@ -166,7 +166,7 @@ export default class Filter extends React.Component {
             defaultOptions
             isValidNewOption={() => false}
             loadOptions={(value) => Game_name_values(value)}
-            onChange={(data) => this.setState({ game: data.value })}
+            onChange={(data) => this.setState({ game: data ? data.value: '' })}
             isClearable
             value={value}
             className='filter-select'
