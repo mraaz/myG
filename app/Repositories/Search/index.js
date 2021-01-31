@@ -7,8 +7,10 @@ class SearchRepository {
     if (!previous) previous = { query: { bool: { must: [] } } };
     if (!field || !value) return previous;
     if (previous.field) previous = this.buildTargetedUsersQuery(null, previous.field, previous.value);
-    const hasFuzziness = field !== 'languages';
-    previous.query.bool.must.push({ match: { [field]: { query: value, fuzziness: hasFuzziness ? "auto" : "0" } } });
+    const hasFuzziness = !['languages', 'hasMic', 'underage'].includes(field);
+    const query = { query: value };
+    if (hasFuzziness) query.fuzziness = "auto";
+    previous.query.bool.must.push({ match: { [field]: query } });
     return previous;
   }
 
@@ -27,6 +29,8 @@ class SearchRepository {
     if (input.includes('mostPlayedGames:')) targetedQueries.push({ field: 'mostPlayedGames', value: input.split('mostPlayedGames:')[1].trim().split(' ')[0] });
     if (input.includes('games:')) targetedQueries.push({ field: 'mostPlayedGames', value: input.split('games:')[1].trim().split(' ')[0] });
     if (input.includes('game:')) targetedQueries.push({ field: 'mostPlayedGames', value: input.split('game:')[1].trim().split(' ')[0] });
+    if (input.includes('underage:')) targetedQueries.push({ field: 'underage', value: input.split('underage:')[1].trim().split(' ')[0] });
+    if (input.includes('hasMic:')) targetedQueries.push({ field: 'hasMic', value: input.split('hasMic:')[1].trim().split(' ')[0] });
     if (targetedQueries.length === 1) this.buildTargetedUsersQuery(query, targetedQueries[0].field, targetedQueries[0].value);
     if (targetedQueries.length > 1) targetedQueries.reduce((a, b) => this.buildTargetedUsersQuery(a, b.field, b.value));
     const values = targetedQueries.map((field) => field.value).filter((value) => !!value);

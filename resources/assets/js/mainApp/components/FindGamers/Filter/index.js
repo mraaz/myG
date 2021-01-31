@@ -15,12 +15,19 @@ const filterOptions = {
   commendation: 'Commendations',
   team: 'Team',
   languages: 'Languages',
+  underage: '18+',
+  hasMic: 'Mic',
 };
 
 const relationshipOptions = [
   { label: 'Waiting for Player 2', value: 'Waiting for Player 2' },
   { label: 'Game in progress', value: 'Game in progress' },
 ];
+
+const yesNoOptions = [
+  { label: 'Yes', value: 'Yes' },
+  { label: 'No', value: 'No' },
+]
 
 const commendationOptions = [
   { label: 'Apprentice', value: 'Apprentice' },
@@ -42,6 +49,8 @@ const initialFilters = {
   commendation: '',
   team: '',
   languages: '',
+  underage: '',
+  hasMic: '',
 };
 
 export default class Filter extends React.Component {
@@ -58,12 +67,14 @@ export default class Filter extends React.Component {
     const filters = this.getFilters(this.state);
     const hasFiltersChanged = JSON.stringify(filters) !== JSON.stringify(previousFilters);
     if (!hasFiltersChanged) return;
-    const query = Object.keys(filters).filter((filter) => !!filters[filter]).map((filter) => `${filter}: ${filters[filter]}`).join(' ');
+    const hasFilter = (filter) => filters[filter] !== undefined && filters[filter] !== '';
+    const getFilter = (filter) => `${filter}: ${filters[filter]}`;
+    const query = Object.keys(filters).filter(hasFilter).map(getFilter).join(' ');
     this.props.onFilter(query);
   }
 
   getFilters = (state) => {
-    const hasFilter = (filter) => state.selectedFilters.includes(filter);
+    const hasFilter = (filter) => state.selectedFilters.includes(filter) && state[filter] !== '';
     return {
       game: hasFilter('game') ? state.game : '',
       alias: hasFilter('alias') ? state.alias : '',
@@ -72,6 +83,8 @@ export default class Filter extends React.Component {
       commendations: hasFilter('commendation') ? state.commendation ? state.commendation.map(({ value }) => value).join('|') : '' : '',
       team: hasFilter('team') ? state.team : '',
       languages: hasFilter('languages') ? state.languages ? state.languages.map(({ value }) => value).join('|') : '' : '',
+      underage: hasFilter('underage') ? state.underage.value === 'No' : '',
+      hasMic: hasFilter('hasMic') ? state.hasMic.value === 'Yes' : '',
     };
   }
 
@@ -130,6 +143,8 @@ export default class Filter extends React.Component {
       case 'commendation': return this.renderOptionsFilter(filter, commendationOptions, true);
       case 'team': return this.renderTextFilter(filter);
       case 'languages': return this.renderOptionsFilter(filter, LANGUAGE_OPTIONS, true);
+      case 'underage': return this.renderOptionsFilter(filter, yesNoOptions, false, 'Must be 18?');
+      case 'hasMic': return this.renderOptionsFilter(filter, yesNoOptions, false, 'Must have Mic?');
       default: return null;
     }
   }
@@ -149,16 +164,16 @@ export default class Filter extends React.Component {
     );
   }
 
-  renderOptionsFilter = (filter, options, isMulti) => {
+  renderOptionsFilter = (filter, options, isMulti, placeholder) => {
     return(
       <div className='filter-row'>
         <div className='filter-label'>{filterOptions[filter]}</div>
         <Select
           className='filter-select'
-          placeholder={`Select the ${filter} you want to search`}
+          placeholder={placeholder || `Select the ${filter} you want to search`}
           name={`${filter}-select`}
           value={this.state[filter]}
-          onChange={(value) => this.setState({ [filter]: value })}
+          onChange={(value) => this.setState({ [filter]: value || '' })}
           options={options}
           isClearable
           isMulti={isMulti}
