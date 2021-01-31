@@ -37,7 +37,7 @@ export default class Filter extends React.Component {
 
   state = {
     showAddFilter: false,
-    selectedFilters: [Object.keys(filterOptions)[0]],
+    selectedFilters: [],
     alias: '',
     country: '',
     relationship: '',
