@@ -7,7 +7,8 @@ class SearchRepository {
     if (!previous) previous = { query: { bool: { must: [] } } };
     if (!field || !value) return previous;
     if (previous.field) previous = this.buildTargetedUsersQuery(null, previous.field, previous.value);
-    previous.query.bool.must.push({ match: { [field]: { query: value, fuzziness: "auto" } } });
+    const hasFuzziness = field !== 'languages';
+    previous.query.bool.must.push({ match: { [field]: { query: value, fuzziness: hasFuzziness ? "auto" : "0" } } });
     return previous;
   }
 
