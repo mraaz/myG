@@ -5,6 +5,8 @@ import { Game_name_values, Disable_keys } from '../../Utility_Function'
 import { ignoreFunctions } from "../../../../common/render"
 import { LANGUAGE_OPTIONS } from '../../../static/AddGame'
 
+const dropdownIcon = 'https://myG.gg/platform_images/View+Game/Down+Carrot.svg';
+
 const filterOptions = {
   game: 'Game',
   alias: 'Alias',
@@ -30,21 +32,25 @@ const commendationOptions = [
   { label: 'Ultimate Master', value: 'Ultimate Master' },
 ];
 
+const initialFilters = {
+  showAddFilter: false,
+  selectedFilters: [],
+  game: '',
+  alias: '',
+  country: '',
+  relationship: '',
+  commendation: '',
+  team: '',
+  languages: '',
+};
+
 export default class Filter extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
   }
 
   state = {
-    showAddFilter: false,
-    selectedFilters: [],
-    game: '',
-    alias: '',
-    country: '',
-    relationship: '',
-    commendation: '',
-    team: '',
-    languages: '',
+    ...initialFilters,
   }
 
   componentDidUpdate(_, previousState) {
@@ -72,6 +78,7 @@ export default class Filter extends React.Component {
   renderTitle = () => <div className="label">Filter by</div>;
 
   handleAddFilter = () => this.setState(previous => ({ showAddFilter: !previous.showAddFilter }));
+  handleClearFilters = () => this.setState(initialFilters);
   handleAddedFilter = (filter) => this.setState(previous => {
     const selectedFilters = previous.selectedFilters.includes(filter) ?
       JSON.parse(JSON.stringify(previous.selectedFilters.filter((element) => element !== filter))) :
@@ -80,9 +87,10 @@ export default class Filter extends React.Component {
   })
   renderAddFilter = () => (
     <div className="add-filter">
-      <div className='header' onClick={this.handleAddFilter}>
-        <span className="text">Add Filter</span>
-        <img src={' https://myG.gg/platform_images/View+Game/Down+Carrot.svg'} onClick={this.handleAddFilter} />
+      <div className='header'>
+        <span className="text clickable" onClick={this.handleClearFilters}>Clear</span>
+        <span className="text clickable" onClick={this.handleAddFilter}>Add Filter</span>
+        <img className="clickable" src={dropdownIcon} onClick={this.handleAddFilter} />
       </div>
       {this.state.showAddFilter && (
         <div className='add-filter-menu'>
