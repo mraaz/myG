@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import SweetAlert from '../common/MyGSweetAlert'
 import General from './Context/General'
@@ -86,12 +87,24 @@ class Messenger extends React.Component {
           <div className='locked-image'>
             <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
           </div>
-          <p>Your Chat is locked</p>
-          <p>Reach level 2 to unlock it.</p>
+          <span>Your Chat is locked</span>
+          <span>
+            Reach{' '}
+            <span style={{ color: '#E6C846' }}>
+              {' '}
+              <strong>level 2</strong>
+            </span>{' '}
+            to unlock it.
+          </span>
           <div className='rectangle'>
             <img src='https://myg.gg/platform_images/Dashboard/btn_Network.svg' className='img-network' />
             <div className='body-of-text'>
-              <p>Go to Achievements</p>
+              <p>
+                Go to{' '}
+                <Link to={'/achievements'}>
+                  &nbsp;<strong> Achievements</strong>{' '}
+                </Link>
+              </p>
               <p>to learn how to progress</p>
             </div>
           </div>

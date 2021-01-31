@@ -6,7 +6,7 @@ import SweetAlert from '../common/MyGSweetAlert'
 import Manage from './Manage'
 import { toast } from 'react-toastify'
 import { Toast_style, Convert_to_comma_delimited_value } from '../Utility_Function'
-import { PageHeader, MyGButton, MyGModal, MyGInput } from '../common'
+import { MyGButton } from '../common'
 
 const IconMap = {
   0: 'https://myG.gg/platform_images/Communities/btn_Moderator_gold.svg',
