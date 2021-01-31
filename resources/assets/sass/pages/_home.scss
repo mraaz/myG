@@ -38,6 +38,8 @@ section#content-container {
   flex: 1;
   overflow-y: scroll;
   position: relative;
+  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
 
   .viewHashTag__header {
     height: 77px;
@@ -236,6 +238,8 @@ section#content-container {
       overflow: scroll;
       display: flex;
       flex-direction: column;
+      scrollbar-width: none;  /* Firefox */
+      -ms-overflow-style: none;  /* IE and Edge */
 
       @media (min-width: 575px) {
         max-height: 100vh;
@@ -1793,6 +1797,8 @@ section#content-container {
       line-height: 14px;
       font-family: Montserrat, sans-serif;
       line-height: unset;
+      scrollbar-width: none;  /* Firefox */
+      -ms-overflow-style: none;  /* IE and Edge */
     }
   }
   .hashTag_section {

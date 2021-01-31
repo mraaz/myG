@@ -42,6 +42,8 @@
 .viewGame__container {
   margin: 0px 100px;
   overflow-y: scroll;
+  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
 
   &.desktopView {
     display: none;
@@ -892,6 +894,8 @@
       padding: 20px;
       max-height: 65vh;
       overflow: scroll;
+      scrollbar-width: none;  /* Firefox */
+      -ms-overflow-style: none;  /* IE and Edge */
 
       .gameList_head__option {
         display: flex;
@@ -915,8 +919,9 @@
       }
       .gameList__box {
         position: relative;
-        // height: 120vh;
         overflow: scroll;
+        scrollbar-width: none;  /* Firefox */
+        -ms-overflow-style: none;  /* IE and Edge */
         .mygames {
           display: flex;
           justify-content: start;
