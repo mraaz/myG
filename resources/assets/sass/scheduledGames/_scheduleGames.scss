@@ -41,6 +41,9 @@
 
 .viewGame__container {
   margin: 0px 100px;
+  overflow-y: scroll;
+  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
 
   &.desktopView {
     display: none;
@@ -550,6 +553,7 @@
     border-top: 1px solid #384952;
     align-items: flex-start;
     justify-content: center;
+  
     .viewRightInfo {
       display: flex;
       align-items: center;
@@ -666,7 +670,9 @@
         border-left: 2px solid #344953;
         position: relative;
         padding-left: 20px;
-        margin: 20px 20px 0px 20px;
+        margin: 20px;
+        min-height: 35vh;
+        overflow: scroll;
         &::before {
           content: '';
           width: 7px;
@@ -809,7 +815,7 @@
         background: #1d2326;
         padding: 24px;
         border-top: 2px solid #384952;
-        position: absolute;
+        // position: absolute;
         bottom: 0;
         width: 100%;
 
@@ -884,8 +890,12 @@
     }
     .gameList {
       flex: 1;
-      border: 1px solid #384952;
-      padding: 20px;
+      border-top: 1px solid #384952;
+      padding: 20px 20px 0 20px;
+      max-height: 65vh;
+      overflow: scroll;
+      scrollbar-width: none;  /* Firefox */
+      -ms-overflow-style: none;  /* IE and Edge */
 
       .gameList_head__option {
         display: flex;
@@ -909,8 +919,9 @@
       }
       .gameList__box {
         position: relative;
-        height: 120vh;
         overflow: scroll;
+        scrollbar-width: none;  /* Firefox */
+        -ms-overflow-style: none;  /* IE and Edge */
         .mygames {
           display: flex;
           justify-content: start;
@@ -1194,9 +1205,6 @@
       background: #171a1c;
       margin-left: 10px;
       width: 100%;
-      position: relative;
-      height: 125vh;
-      overflow: hidden;
       .gameDetails__header {
         background: #1d2326;
         border-top-left-radius: 8px;
@@ -1224,7 +1232,8 @@
       .show-individual-comments {
         padding-left: 100px;
         padding-right: 50px;
-        min-height: 600px;
+        min-height: 450px;
+        max-height: 450px;
         overflow: scroll;
         .individual-comment-container {
           .comment__shape {
@@ -1268,6 +1277,10 @@
                 @media (min-width: 575px) {
                   font-size: 16px;
                 }
+              }
+              a:hover {
+                color: #e5c746;
+                text-decoration: none;
               }
               .comment-content {
                 padding-top: 3px;
@@ -2137,7 +2150,7 @@ $transition-default: 0.25s ease-out 0.1s;
   display: block;
 
   @media (min-width: 575px) {
-    display: block;
+    display: none;
   }
 }
 
@@ -2398,23 +2411,32 @@ $transition-default: 0.25s ease-out 0.1s;
 
 .mGameTileListHeader {
   display: flex;
-  height: 40px;
+  flex-direction: column;
+  height: 75px;
   width: 100%;
 
-  .mGameResultsFillView {
-    flex: 1;
-    justify-content: flex-start;
+  .css-1uccc91-singleValue {
+    color: #fff;
+  }
+
+  .mGameResultsFiltersRowTwo {
     display: flex;
-    font: 20px/14px Montserrat;
-    letter-spacing: 0px;
+    align-items: center;
+    flex: 1;
+  }
+
+  .mGameResultsCount {
     color: #fff;
   }
 
   .mGameResultsFillView {
+    flex: 1;
     justify-content: flex-end;
+    display: flex;
+    align-items: center;
     font-family: Montserrat, sans-serif;
     font-size: 14px;
-    line-height: 14.4px;
+    line-height: 1;
     letter-spacing: 0px;
     color: #fff;
   }
@@ -2690,24 +2712,70 @@ $transition-default: 0.25s ease-out 0.1s;
       }
     }
   }
-}
 
-.gameDetails,
-.mGameAllComments {
-  .desktopView {
-    display: none;
-
-    @media (min-width: 575px) {
-      display: block;
+  .game__action__buttton {
+    position: relative;
+    display: inline-block;
+    button {
+      width: 102px;
+      height: 39px;
+      background: #e5c746 0% 0% no-repeat padding-box;
+      border-radius: 8px;
+      font-size: 16px;
+      line-height: 14px;
+      font-family: Montserrat, sans-serif;
+      letter-spacing: 0px;
+      font-weight: bold;
+      color: #000000;
+      border: none;
+      cursor: pointer;
+      outline: none;
+      margin: 0;
+      img {
+        width: 15px;
+        margin-left: 2px;
+      }
+      &.open {
+        background: #b9b9b9;
+      }
+    }
+    .dropDown--option {
+      position: absolute;
+      top: 40px;
+      right: 0;
+      background: #171a1c 0% 0% no-repeat padding-box;
+      border: 1px solid #384952;
+      width: 125px;
+      padding: 4px;
+      border-radius: 4px;
+      z-index: 1;
+      .leaveGame__button {
+        width: auto;
+        height: 20px;
+        background: #171a1c 0% 0% no-repeat padding-box;
+        font: 10px/12px Montserrat;
+        letter-spacing: 0px;
+        color: #fff;
+        font-weight: bold;
+        margin: 0;
+      }
     }
   }
+}
 
-  .mobileView {
+.desktopView {
+  display: none;
+
+  @media (min-width: 575px) {
     display: block;
+  }
+}
 
-    @media (min-width: 575px) {
-      display: none;
-    }
+.mobileView {
+  display: block;
+
+  @media (min-width: 575px) {
+    display: none;
   }
 }
 
@@ -2898,6 +2966,10 @@ $transition-default: 0.25s ease-out 0.1s;
             @media (min-width: 575px) {
               font-size: 16px;
             }
+          }
+          a:hover {
+            color: #e5c746;
+            text-decoration: none;
           }
           .comment-content {
             padding-top: 3px;

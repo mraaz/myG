@@ -40,7 +40,7 @@ function getJobs(Queue, bullConfig) {
   return [
     {
       name: 'Chat Expired Attachments',
-      queue: new Queue('chat-expiredAttachments', bullConfig),
+      queue: new Queue('{chat-expiredAttachments}', bullConfig),
       action: require('./tasks/chat-expiredAttachments'),
       options: {},
       payload: {},
@@ -51,7 +51,7 @@ function getJobs(Queue, bullConfig) {
     },
     {
       name: 'Chat Game Messages',
-      queue: new Queue('chat-gameMessages', bullConfig),
+      queue: new Queue('{chat-gameMessages}', bullConfig),
       action: require('./tasks/chat-gameMessages'),
       options: {},
       payload: {},
@@ -62,7 +62,7 @@ function getJobs(Queue, bullConfig) {
     },
     {
       name: 'Profile Sync To Elasticsearch',
-      queue: new Queue('profile-syncToElasticsearch', bullConfig),
+      queue: new Queue('{profile-syncToElasticsearch}', bullConfig),
       action: require('./tasks/profile-syncToElasticsearch'),
       options: {},
       payload: {},
@@ -73,7 +73,7 @@ function getJobs(Queue, bullConfig) {
     },
     {
       name: 'Game Sync To Elasticsearch',
-      queue: new Queue('game-syncToElasticsearch', bullConfig),
+      queue: new Queue('{game-syncToElasticsearch}', bullConfig),
       action: require('./tasks/game-syncToElasticsearch'),
       options: {},
       payload: {},
@@ -84,7 +84,7 @@ function getJobs(Queue, bullConfig) {
     },
     {
       name: 'Delete Invalid S3 Files',
-      queue: new Queue('s3-deleteFiles', bullConfig),
+      queue: new Queue('{s3-deleteFiles}', bullConfig),
       action: require('./tasks/s3-deleteFiles'),
       options: {},
       payload: {},
@@ -95,7 +95,7 @@ function getJobs(Queue, bullConfig) {
     },
     {
       name: 'Delete Unused Games',
-      queue: new Queue('game-deleteUnused', bullConfig),
+      queue: new Queue('{game-deleteUnused}', bullConfig),
       action: require('./tasks/game-deleteUnused'),
       options: {},
       payload: {},

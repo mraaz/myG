@@ -6,7 +6,7 @@ import SweetAlert from '../common/MyGSweetAlert'
 import { toast } from 'react-toastify'
 import { Toast_style } from '../Utility_Function'
 import { Upload_to_S3, Remove_file } from '../AWS_utilities'
-import { PageHeader, MyGButton, MyGModal, MyGInput } from '../common'
+import { MyGButton } from '../common'
 
 export default class MangeSponsors extends React.Component {
   constructor(props) {

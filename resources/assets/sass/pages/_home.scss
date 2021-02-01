@@ -38,6 +38,8 @@ section#content-container {
   flex: 1;
   overflow-y: scroll;
   position: relative;
+  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
 
   .viewHashTag__header {
     height: 77px;
@@ -234,6 +236,16 @@ section#content-container {
     //height: 900px; Hide the scroll bars, decided against it
     .content-area {
       overflow: scroll;
+      display: flex;
+      flex-direction: column;
+      min-height: 400px; // For mobile, ensures filter dropdown is not cut off when no games appear in search
+      scrollbar-width: none;  /* Firefox */
+      -ms-overflow-style: none;  /* IE and Edge */
+
+      @media (min-width: 575px) {
+        max-height: 100vh;
+        min-height: unset; // remove min-height as not needed for desktop
+      }
     }
     .search-header {
       position: relative;
@@ -697,6 +709,10 @@ section#content-container {
                 justify-content: flex-start;
                 a {
                   width: 100%;
+                }
+                a:hover {
+                  color: #e5c746;
+                  text-decoration: none;
                 }
               }
               .comment-options {
@@ -1787,6 +1803,8 @@ section#content-container {
       line-height: 14px;
       font-family: Montserrat, sans-serif;
       line-height: unset;
+      scrollbar-width: none;  /* Firefox */
+      -ms-overflow-style: none;  /* IE and Edge */
     }
   }
   .hashTag_section {
