@@ -1,4 +1,5 @@
 import React from 'react';
+import debounce from 'lodash.debounce';
 import ToggleButton from 'react-toggle-button'
 import Filter from '../Filter';
 import { showMessengerAlert } from '../../../../common/alert'
@@ -31,15 +32,14 @@ export default class Search extends React.Component {
   `);
 
 
-  onSearch = () => {
+  onSearch = debounce(() => {
     const search = this.state.search.trim();
     const filter = this.state.filter.trim();
     if (search.length < 3 && !filter) return this.props.onSearch('', this.state.online);
     return this.props.onSearch(search + ' ' + filter, this.state.online);
-  }
+  }, 300)
 
-
-  onChange = ({ target: { value: search } }) => {
+  onChange = (search) => {
     this.setState({ search }, this.onSearch);
     if (search === ':?') this.showHelp();
   }
@@ -65,7 +65,7 @@ export default class Search extends React.Component {
               className='input'
               placeholder='Search Gamers'
               value={this.state.search} 
-              onChange={this.onChange}
+              onChange={(event) => this.onChange(event.target.value)}
             ></input>
             {this.helpButton()}
           </div>

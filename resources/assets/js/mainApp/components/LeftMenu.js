@@ -8,7 +8,7 @@ import axios from 'axios'
 import { logoutAction } from '../../redux/actions/userAction'
 import '../styles/LeftMenuStyles.scss'
 import { styles, sideBarItems, sideBarItemsOrder, logoutButton } from '../static/LeftMenu'
-import { throws } from 'assert'
+import NotificationIcon from './Notifications/Icon'
 
 class LeftMenu extends Component {
   static propTypes = {
@@ -166,7 +166,7 @@ class LeftMenu extends Component {
                 width='22'
                 className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
               />
-              <div className={`notification-box ${approvals ? 'notification-alert' : ''}`}>{approvals}</div>
+              <NotificationIcon type="approvals" />
               {isExpanded && <div className={styles.line} />}
             </div>
           </Link>
@@ -178,7 +178,7 @@ class LeftMenu extends Component {
                 width='22'
                 className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
               />
-              <div className={`notification-box ${alerts ? 'notification-alert' : ''}`}>{alerts}</div>
+              <NotificationIcon type="alerts" />
               {isExpanded && <div className={styles.line} />}
             </div>
           </Link>
@@ -190,7 +190,7 @@ class LeftMenu extends Component {
                 width='22'
                 className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
               />
-              <div className={`notification-box ${chats ? 'notification-alert' : ''}`}>{chats}</div>
+              <NotificationIcon type="chats" />
             </div>
           </Link>
         </div>

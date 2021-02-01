@@ -23,6 +23,8 @@ class Profile {
     this.status = forceStatus(data.status)
     this.level = forceInt(data.level)
     this.experience = forceInt(data.experience)
+    this.underage = forceBoolean(data.underage)
+    this.hasMic = forceBoolean(data.hasMic || data.has_mic)
     this.visibilityName = forceString(data.visibilityName)
     this.visibilityEmail = forceString(data.visibilityEmail)
     this.lookingForWork = forceBoolean(data.lookingForWork)

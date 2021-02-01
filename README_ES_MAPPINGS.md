@@ -79,6 +79,12 @@ PUT users
         "type": "text",
         "analyzer": "autocomplete",
         "search_analyzer": "standard"
+      },
+      "underage" : {
+        "type" : "boolean"
+      },
+      "has_mic" : {
+        "type" : "boolean"
       }
     }
   }
@@ -114,6 +120,15 @@ PUT /games/
         "type": "text",
         "analyzer": "autocomplete",
         "search_analyzer": "standard"
+      },
+      "start_date_time": {
+        "type": "date" 
+      },
+      "end_date_time": {
+        "type": "date" 
+      },
+      "expiry": {
+        "type": "date" 
       }
     }
   }

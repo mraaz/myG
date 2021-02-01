@@ -21,8 +21,8 @@ class Message {
     this.replyBackup = forceString(data.replyBackup)
     this.selfDestruct = forceBoolean(data.selfDestruct)
     this.isAttachment = forceBoolean(data.isAttachment)
-    this.createdAt = forceDate(data.createdAt)
-    this.updatedAt = forceDate(data.updatedAt)
+    this.createdAt = forceDate(data.createdAt || data.created_at)
+    this.updatedAt = forceDate(data.updatedAt || data.updated_at)
   }
 }
 
