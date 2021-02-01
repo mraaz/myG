@@ -699,11 +699,15 @@ class ChatRepository {
   async markChatNotificationAsRead({ requestingUserId, id }) {
     if (id === 'ALL') await UserChatNotification.query().where('user_id', requestingUserId).update({ has_read: true });
     await UserChatNotification.query().where('id', id).update({ has_read: true });
+    const { unreadMessages: chats } = await this.fetchUnreadMessages({ requestingUserId, count: true })
+    await this.publishNotifications({ userId: requestingUserId, notifications: { chats } })
     return new DefaultSchema({ success: true });
   }
 
   async deleteChatNotifications({ requestingUserId }) {
     await UserChatNotification.query().where('user_id', requestingUserId).delete();
+    const { unreadMessages: chats } = await this.fetchUnreadMessages({ requestingUserId, count: true })
+    await this.publishNotifications({ userId: requestingUserId, notifications: { chats } })
     return new DefaultSchema({ success: true });
   }
 
@@ -1271,6 +1275,8 @@ class ChatRepository {
     const payload = new ChatNotificationSchema(notification);
     log('CHAT', `Adding Chat Notification: ${JSON.stringify(payload)}`);
     await this._notifyChatEvent(({ userId, action: 'chatNotification', payload }));
+    const { unreadMessages: chats } = await this.fetchUnreadMessages({ requestingUserId: userId, count: true })
+    await this.publishNotifications({ userId, notifications: { chats } })
   }
 
   async _getChatNotificationCount({ chatId, userId, type }) {
@@ -1382,6 +1388,11 @@ class ChatRepository {
       const contacts = (await Database.from('friends').where({ user_id: contactId })).map(contact => contact.friend_id);
       contacts.forEach(contactId => this.broadcast('chat:auth:*', `chat:auth:${contactId}`, `chat:${action}`, payload));
     }
+  }
+
+  async publishNotifications({ userId, notifications }) {
+    console.log(`publishNotifications for ${userId}: `, notifications);
+    return this.broadcast('chat:auth:*', `chat:auth:${userId}`, `chat:notification`, notifications);
   }
 
   async broadcastWebsocket(channelId, id, type, data) {

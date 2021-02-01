@@ -146,13 +146,14 @@ export class GamerSuggestions extends React.Component {
 
   render() {
     if (!this.props.gamerSuggestions.length) return null;
+    const extraStyle = this.props.onboarding ? 'contained' : '';
     return(
       <div id="profile">
         <div id="profile-game-experiences">
           {this.renderInviteModal()}
           {this.renderOnboardingButtons()}
           {!this.props.noTitle && this.renderHeaders()}
-          <div className="scroll suggestions-scroll">
+          <div className={`scroll suggestions-scroll ${extraStyle}`}>
             {this.renderPageButtons()}
             {this.props.gamerSuggestions.slice(this.state.page, this.state.page + 4).map(this.renderGamerSuggestion)}
           </div>

@@ -6,6 +6,8 @@ const Friends = use('App/Models/Friend')
 const UserStatTransactionController = use('./UserStatTransactionController')
 const FollowerController = use('./FollowerController')
 
+const ChatRepository = require('../../Repositories/Chat')
+const NotificationsRepository = require('../../Repositories/Notifications')
 const LoggingRepository = require('../../Repositories/Logging')
 
 class FriendController {
@@ -28,6 +30,10 @@ class FriendController {
             activity_type: 1,
           })
           .delete()
+
+        const userId = auth.user.id
+        const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
 
         let myFollowerController = new FollowerController()
         myFollowerController.store2({ auth }, request.input('friend_id'), auth.user.id)
@@ -60,9 +66,7 @@ class FriendController {
         .select('friends.friend_id', 'users.alias', 'users.profile_img')
         .paginate(request.input('counter'), 50)
 
-      const showCountallMyFriends = await Database.from('friends')
-        .where({ user_id: auth.user.id })
-        .count('id as total_friends')
+      const showCountallMyFriends = await Database.from('friends').where({ user_id: auth.user.id }).count('id as total_friends')
 
       return {
         showallMyFriends: showallMyFriends,

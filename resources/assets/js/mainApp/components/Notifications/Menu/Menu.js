@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import Button from './Button'
-import axios from 'axios'
-import { report } from 'superagent'
 
-export default class Menu extends Component {
+class Menu extends Component {
   constructor() {
     super()
 
@@ -19,19 +18,6 @@ export default class Menu extends Component {
 
   async componentDidMount() {
     window.scrollTo(0, 0)
-    const getnoti = await axios.post('/api/notifications_v2/getUnread_count', {
-      notification_type: -1,
-    })
-
-    const chat_noti = await axios.get('/api/chat/message/unread?count=true')
-    if (chat_noti.data) {
-      this.setState({ chats: chat_noti.data.unreadMessages ? chat_noti.data.unreadMessages : 0 })
-    }
-
-    if (getnoti.data) {
-      const { getUnread_count_Alerts = 0, getUnread_count_Approvals = 0 } = getnoti.data
-      this.setState({ alerts: getUnread_count_Alerts, approvals: getUnread_count_Approvals, isAdmin: getnoti.data.isAdmin })
-    }
   }
 
   changeTab = (tab) => {
@@ -45,8 +31,8 @@ export default class Menu extends Component {
   }
 
   render() {
-    const { changeContentTab, notificationsCount, activeTab } = this.props
-    const { approvals = 0, chats = 0, alerts = 0, reports = 0, reportedUser, isAdmin } = this.state
+    const { changeContentTab, notificationsCount, activeTab, approvals, alerts, chats } = this.props
+    const { reports = 0, reportedUser, isAdmin } = this.state
     return (
       <div className='notifications-menu'>
         <div className='button-list'>
@@ -115,3 +101,14 @@ export default class Menu extends Component {
     )
   }
 }
+
+
+function mapStateToProps(state) {
+  return {
+    approvals: state.notifications.approvals,
+    alerts: state.notifications.alerts,
+    chats: state.notifications.chats,
+  }
+}
+
+export default connect(mapStateToProps)(Menu)

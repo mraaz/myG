@@ -9,6 +9,8 @@ const CommonController = use('./CommonController')
 
 const UserStatTransactionController = use('./UserStatTransactionController')
 const GroupConnectionController = use('./GroupConnectionController')
+const ChatRepository = require('../../Repositories/Chat')
+const NotificationsRepository = require('../../Repositories/Notifications')
 const LoggingRepository = require('../../Repositories/Logging')
 
 class UsergroupController {
@@ -46,9 +48,7 @@ class UsergroupController {
 
   async myshow({ auth, request, response }) {
     try {
-      const subquery = Database.select('id')
-        .from('groups')
-        .where({ user_id: auth.user.id })
+      const subquery = Database.select('id').from('groups').where({ user_id: auth.user.id })
 
       let groups_im_in = await Database.from('usergroups')
         .innerJoin('groups', 'groups.id', 'usergroups.group_id')
@@ -258,6 +258,9 @@ class UsergroupController {
               activity_type: 12,
             })
             .delete()
+          const userId = auth.user.id
+          const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
+          await ChatRepository.publishNotifications({ userId, notifications })
         }
       } catch (error) {
         LoggingRepository.log({
