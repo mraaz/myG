@@ -16,6 +16,7 @@ $main-font: 'Montserrat';
     margin-bottom: 20px;
     box-sizing: border-box;
     overflow: hidden;
+    display: flex;
 
     .notifications-menu {
       width: 180px;
@@ -860,6 +861,27 @@ $main-font: 'Montserrat';
           color: #e5c746 !important;
           cursor: pointer !important;
         }
+      }
+    }
+  }
+}
+
+@media (max-width: 575px) {
+  .postCompose__container {
+    border: none !important;
+  }
+  .notification__container {
+    background: #0b0f14;
+    border: none !important;
+  }
+  .notifications-content {
+    width: 100% !important;
+    background: #0b0f14 !important;
+    .noRecordFound__wraper {
+      background: #0b0f14 !important;
+      .noRecordFound__body {
+        flex-direction: column;
+        align-items: center;
       }
     }
   }

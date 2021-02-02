@@ -59,7 +59,9 @@ export default class Notifications extends Component {
     return (
       <section className='notifications-page'>
         <div className='notifications-container postCompose__container'>
-          <Menu changeContentTab={this.changeContentTab} notificationsCount={notificationsCount} activeTab={activeTab} />
+          <div className='NotificationmobileView'>
+            <Menu changeContentTab={this.changeContentTab} notificationsCount={notificationsCount} activeTab={activeTab} />
+          </div>
           <div className='notifications-content'>
             {activeTab == 0 && <Upcoming active={activeTab == 0} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
             {activeTab == 1 && <Approvals active={activeTab == 1} setNotificationsCount={this.setNotificationsCount} {...this.props} />}

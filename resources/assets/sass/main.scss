@@ -534,3 +534,10 @@ a:visited {
     }
   }
 }
+.NotificationmobileView {
+  display: none;
+
+  @media (min-width: 575px) {
+    display: block;
+  }
+}
