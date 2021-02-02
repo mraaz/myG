@@ -64,7 +64,6 @@ const MyGAsyncSelect = ({
   return (
     <div className='game-title-select'>
       <AsyncSelect
-        styles={customStyles}
         defaultValue={defaultValue}
         value={value}
         isSearchable={isSearchable}

@@ -50,7 +50,6 @@ const MyGSelect = ({
   return (
     <div className='game-title-select'>
       <Select
-        styles={customStyles}
         defaultValue={defaultValue}
         value={value}
         isSearchable={isSearchable}

@@ -61,7 +61,6 @@ const MyGCreateableSelect = ({
   return (
     <div className='game-title-select'>
       <CreatableSelect
-        styles={customStyles}
         defaultValue={defaultValue}
         value={value}
         isSearchable={isSearchable}
