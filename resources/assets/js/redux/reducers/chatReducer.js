@@ -470,13 +470,17 @@ export default function reducer(state = initialState, action) {
 
     case 'UPDATE_CHAT_FULFILLED': {
       logger.log('CHAT', `Redux -> Chat Updated: `, action.meta, action.payload)
-      const { chatId, muted, isPrivate, title, icon, selfDestruct, publicKey, privateKey } = action.meta
+      const { chatId, muted, isPrivate, title, icon, selfDestruct, publicKey, privateKey, guests, moderators, owners } = action.meta
       const chats = JSON.parse(JSON.stringify(state.chats)).sort((a, b) => a.lastOpened - b.lastOpened)
       const chat = chats.find((candidate) => candidate.chatId === chatId)
       if (muted !== undefined) chat.muted = muted
       if (title !== undefined) chat.title = title
       if (icon !== undefined) chat.icon = icon
       if (selfDestruct !== undefined && action.payload.success) chat.selfDestruct = selfDestruct
+      if (isPrivate !== undefined) chat.isPrivate = isPrivate
+      if (owners !== undefined) chat.owners = owners
+      if (moderators !== undefined) chat.moderators = moderators
+      if (guests !== undefined) chat.guests = guests
       if (isPrivate !== undefined) chat.isPrivate = isPrivate
       if (publicKey !== undefined) chat.publicKey = publicKey
       if (privateKey !== undefined) chat.privateKey = deserializeKey(privateKey)

@@ -2,7 +2,8 @@
 
 const Database = use('Database')
 const Notification = use('App/Models/Notification')
-
+const NotificationsRepository = require('../../Repositories/Notifications')
+const ChatRepository = require('../../Repositories/Chat')
 const LoggingRepository = require('../../Repositories/Logging')
 
 //Noti methods in this component....fuck a duck!!! - mraaz
@@ -51,6 +52,9 @@ class CommonController {
           activity_type: 16,
           schedule_games_id: schedule_games_id,
         })
+        const userId = other_user_id
+        const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Saved item'
       } catch (error) {
         if (error.code == 'ER_DUP_ENTRY') {
@@ -78,6 +82,9 @@ class CommonController {
           activity_type: activity_type,
           schedule_games_id: schedule_games_id,
         })
+        const userId = other_user_id
+        const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Saved item'
       } catch (error) {
         LoggingRepository.log({
@@ -102,6 +109,9 @@ class CommonController {
           activity_type: 14,
           schedule_games_id: schedule_games_id,
         })
+        const userId = other_user_id
+        const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Saved item'
       } catch (error) {
         LoggingRepository.log({
@@ -126,7 +136,9 @@ class CommonController {
             activity_type: activity_type,
           })
           .delete()
-
+        const userId = auth.user.id
+        const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Deleted'
       } catch (error) {
         LoggingRepository.log({
@@ -152,7 +164,9 @@ class CommonController {
             user_id: user_id,
           })
           .delete()
-
+        const userId = auth.user.id
+        const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Deleted'
       } catch (error) {
         LoggingRepository.log({

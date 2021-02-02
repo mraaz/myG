@@ -21,7 +21,6 @@ const assets = {
   ic_chat_group_invite: 'ic_chat_group_invite.svg',
   ic_chat_group_member: 'ic_chat_group_member.png',
   ic_chat_group_members: 'ic_chat_group_members.svg',
-  ic_chat_group_moderator: 'ic_chat_group_moderator.png',
   ic_chat_group_moderator: 'ic_chat_group_moderator.svg',
   ic_chat_group_muted: 'ic_chat_group_muted.png',
   ic_chat_group_not_moderator: 'ic_chat_group_not_moderator.svg',

@@ -25,8 +25,8 @@ class Chat {
     this.messages = forceArray(data.messages)
     this.links = forceArray(data.links)
     this.entryLogs = forceArray(data.entryLogs)
-    this.createdAt = forceDate(data.createdAt)
-    this.updatedAt = forceDate(data.updatedAt)
+    this.createdAt = forceDate(data.createdAt || data.created_at)
+    this.updatedAt = forceDate(data.updatedAt || data.updated_at)
   }
 }
 

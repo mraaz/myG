@@ -17,6 +17,7 @@ import { searchUsersAction, addAsFriendAction, fetchFriendRequestsAction } from 
 import { getAssetUrl } from '../../../common/assets'
 import { showMessengerAlert } from '../../../common/alert'
 import { ignoreFunctions } from '../../../common/render'
+import logger from '../../../common/logger'
 
 class GroupMemberOptions extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -50,8 +51,8 @@ class GroupMemberOptions extends React.Component {
   changeOwnership = () => {
     this.setState({ settingAsOwner: false })
     const contactId = this.props.groupContacts.find((contact) => contact.name === this.state.ownerInput).contactId
-    const owners = this.props.group.owners
-    const moderators = this.props.group.moderators
+    const owners = JSON.parse(JSON.stringify(this.props.owners))
+    const moderators = JSON.parse(JSON.stringify(this.props.moderators))
     if (moderators.indexOf(contactId) === -1) moderators.push(contactId)
     owners.splice(owners.indexOf(this.props.userId), 1)
     owners.push(contactId)
@@ -62,7 +63,7 @@ class GroupMemberOptions extends React.Component {
   }
 
   toggleModerator = (contactId) => {
-    const moderators = this.props.group.moderators
+    const moderators = JSON.parse(JSON.stringify(this.props.moderators))
     const contact = this.props.groupContacts.find((contact) => contact.contactId === contactId) || {}
     if (contact.name)
       notifyToast(
@@ -168,8 +169,8 @@ class GroupMemberOptions extends React.Component {
     const guestAlias = `Guest #${guestId}`
     const isAdded = this.props.contacts.map((contact) => contact.contactId).includes(contact.contactId)
     const isRequested = this.props.friendRequests.includes(contact.contactId) || this.state.friendRequests.includes(contact.contactId)
-    const isContactOwner = this.props.group.owners.length && this.props.group.owners.includes(contact.contactId)
-    const isContactModerator = this.props.group.moderators.length && this.props.group.moderators.includes(contact.contactId)
+    const isContactOwner = this.props.owners.includes(contact.contactId)
+    const isContactModerator = this.props.moderators.includes(contact.contactId)
     const isContactBlocked =
       this.props.blockedUsers.length && this.props.blockedUsers.map((user) => user.userId).includes(contact.contactId)
     return (
@@ -337,8 +338,9 @@ class GroupMemberOptions extends React.Component {
   }
 
   render() {
-    const isGroupOwner = this.props.group.owners.length && this.props.group.owners.includes(this.props.userId)
-    const isGroupModerator = this.props.group.moderators.length && this.props.group.moderators.includes(this.props.userId)
+    logger.log('RENDER', 'GroupMemberOptions')
+    const isGroupOwner = this.props.owners.length && this.props.owners.includes(this.props.userId)
+    const isGroupModerator = this.props.moderators.length && this.props.moderators.includes(this.props.userId)
     return (
       <div className='chat-group-members'>
         <Popup
@@ -358,8 +360,11 @@ class GroupMemberOptions extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, props) {
+  const chat = state.chat.chats.find((chat) => chat.chatId === props.chatId) || { moderators: [], owners: [] };
   return {
+    moderators: chat.moderators || [],
+    owners: chat.owners || [],
     contacts: state.user.contacts || [],
     friendRequests: state.user.friendRequests || [],
     foundUsers: state.user.foundUsers || [],

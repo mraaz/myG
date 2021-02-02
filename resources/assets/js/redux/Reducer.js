@@ -14,6 +14,7 @@ import profile from './reducers/profileReducer'
 import search from './reducers/searchReducer'
 import onboarding from './reducers/onboardingReducer'
 import achievements from './reducers/achievementsReducer'
+import notifications from './reducers/notificationsReducer'
 
 const appReducer = combineReducers({
   alert,
@@ -28,6 +29,7 @@ const appReducer = combineReducers({
   search,
   onboarding,
   achievements,
+  notifications,
 })
 
 const rootReducer = (state, action) => {

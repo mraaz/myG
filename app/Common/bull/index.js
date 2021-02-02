@@ -37,10 +37,11 @@ function logBull(moment, content) {
 }
 
 function getJobs(Queue, bullConfig) {
+  const prefixedConfig = (prefix) => ({ ...bullConfig, prefix });
   return [
     {
       name: 'Chat Expired Attachments',
-      queue: new Queue('chat-expiredAttachments', bullConfig),
+      queue: new Queue('bull', prefixedConfig('{chat-expiredAttachments}')),
       action: require('./tasks/chat-expiredAttachments'),
       options: {},
       payload: {},
@@ -51,7 +52,7 @@ function getJobs(Queue, bullConfig) {
     },
     {
       name: 'Chat Game Messages',
-      queue: new Queue('chat-gameMessages', bullConfig),
+      queue: new Queue('bull', prefixedConfig('{chat-gameMessages}')),
       action: require('./tasks/chat-gameMessages'),
       options: {},
       payload: {},
@@ -62,7 +63,7 @@ function getJobs(Queue, bullConfig) {
     },
     {
       name: 'Profile Sync To Elasticsearch',
-      queue: new Queue('profile-syncToElasticsearch', bullConfig),
+      queue: new Queue('bull', prefixedConfig('{profile-syncToElasticsearch}')),
       action: require('./tasks/profile-syncToElasticsearch'),
       options: {},
       payload: {},
@@ -73,7 +74,7 @@ function getJobs(Queue, bullConfig) {
     },
     {
       name: 'Game Sync To Elasticsearch',
-      queue: new Queue('game-syncToElasticsearch', bullConfig),
+      queue: new Queue('bull', prefixedConfig('{game-syncToElasticsearch}')),
       action: require('./tasks/game-syncToElasticsearch'),
       options: {},
       payload: {},
@@ -84,7 +85,7 @@ function getJobs(Queue, bullConfig) {
     },
     {
       name: 'Delete Invalid S3 Files',
-      queue: new Queue('s3-deleteFiles', bullConfig),
+      queue: new Queue('bull', prefixedConfig('{s3-deleteFiles}')),
       action: require('./tasks/s3-deleteFiles'),
       options: {},
       payload: {},
@@ -95,7 +96,7 @@ function getJobs(Queue, bullConfig) {
     },
     {
       name: 'Delete Unused Games',
-      queue: new Queue('game-deleteUnused', bullConfig),
+      queue: new Queue('bull', prefixedConfig('{game-deleteUnused}')),
       action: require('./tasks/game-deleteUnused'),
       options: {},
       payload: {},

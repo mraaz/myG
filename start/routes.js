@@ -220,6 +220,7 @@ Route.put('/api/notifications/inviteToGroup', 'NotificationController.inviteToGr
 Route.get('/api/notifications/getunread_dings', 'NotificationController.getunread_dings')
 
 //-----------------------------------------
+Route.get('/api/notifications_v2/count', 'NotificationController_v2.count')
 Route.post('/api/notifications_v2/getApprovals_Dashboard', 'NotificationController_v2.getApprovals_Dashboard')
 Route.delete('/api/notifications_v2/delete/:id', 'NotificationController_v2.destroy')
 Route.delete('/api/notifications_v2/delete_community/:id/:group_id/:user_id', 'NotificationController_v2.destroy_community')

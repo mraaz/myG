@@ -115,3 +115,8 @@ export function redeemBadge(alias, type, value) {
   logger.log('USER', 'HTTP', `Redeeming Badge ${type}/${value}`);
   return axios.post(`/api/achievements/badges/${alias}`, { type, value }).then((response) => response.data);
 }
+
+export function fetchNotifications() {
+  logger.log('USER', 'HTTP', `Fetching Notifications`);
+  return axios.get(`/api/notifications_v2/count`).then((response) => response.data);
+}

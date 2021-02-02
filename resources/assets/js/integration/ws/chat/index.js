@@ -2,6 +2,7 @@ import { store } from '../../../redux/Store';
 import { onNewChatAction, onChatUpdatedAction, onGameStartingAction, onNewMessageAction, onUpdateMessageAction, onDeleteMessagesAction, onChatNotification, onReactionAddedAction, onReactionRemovedAction, onTypingAction, onDeleteChatAction, onUserJoinedGroupAction, onUserLeftGroupAction, onGuestJoinedGroupAction, onGuestLeftGroupAction, onMarkAsReadAction, onSelfDestructAction, onPublicKeyUpdatedAction } from '../../../redux/actions/chatAction';
 import { onStatusChangedAction, onStatsUpdatedAction } from '../../../redux/actions/userAction';
 import { onConnectionStateChangedAction } from '../../../redux/actions/socketAction';
+import { onNotificationAction } from '../../../redux/actions/notificationAction';
 import socket from '../../../common/socket';
 import logger from '../../../common/logger';
 
@@ -75,4 +76,5 @@ function handleEvent(event, userId) {
   if (event.type.includes("encryption")) return store.dispatch(onPublicKeyUpdatedAction(event.data, userId));
   if (event.type.includes("status")) return store.dispatch(onStatusChangedAction(event.data, userId));
   if (event.type.includes("userStats")) return store.dispatch(onStatsUpdatedAction(event.data, userId));
+  if (event.type.includes("notification")) return store.dispatch(onNotificationAction(event.data, userId));
 }

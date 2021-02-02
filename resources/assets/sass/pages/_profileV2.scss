@@ -229,6 +229,12 @@
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
 
+    .css-1g6gooi {
+      margin: 0;
+      padding: 2px;
+      color: #fff;
+    }
+
     .banner {
       background-repeat: no-repeat;
       background-size: contain;
@@ -382,6 +388,7 @@
       flex-direction: column;
       min-height: 40px;
       z-index: 1;
+      align-items: unset !important;
     }
 
     .input {
@@ -935,6 +942,13 @@
     margin-bottom: 24px;
     position: relative;
 
+    .game-title-select {
+      min-width: 60%;
+      .css-b8ldur-Input {
+        color: white !important;
+      }
+    }
+
     .onboarding-buttons {
       display: flex;
       flex-direction: row;
@@ -986,6 +1000,10 @@
       border-top: none !important;
       border-top-right-radius: 0 !important;
       border-top-left-radius: 0 !important;
+    }
+
+    .contained {
+      margin: 0px 20vw !important;
     }
 
     .scroll {
@@ -1338,6 +1356,9 @@
 
     .game-title-select {
       min-width: 60%;
+      .css-b8ldur-Input {
+        color: white !important;
+      }
     }
   }
 

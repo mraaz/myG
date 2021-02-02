@@ -27,6 +27,8 @@ export class DossierInfo extends React.Component {
     visibilityName: 'secret',
     visibilityEmail: 'secret',
     lookingForWork: false,
+    hasMic: false,
+    underage: true,
   }
 
   componentDidMount() {
@@ -41,6 +43,8 @@ export class DossierInfo extends React.Component {
     const email = get(this.props, 'profile.email') || ''
     const team = get(this.props, 'profile.team') || ''
     const country = get(this.props, 'profile.country') || ''
+    const hasMic = get(this.props, 'profile.hasMic')
+    const underage = get(this.props, 'profile.underage')
     const relationshipValue = get(this.props, 'profile.relationship') || ''
     const relationship = { label: relationshipValue, value: relationshipValue }
     const languages = (get(this.props, 'profile.languages') || []).map((language) => ({ label: language, value: language }))
@@ -57,6 +61,8 @@ export class DossierInfo extends React.Component {
       email,
       team,
       country,
+      hasMic,
+      underage,
       mostPlayedGames,
       relationship,
       languages,
@@ -76,6 +82,8 @@ export class DossierInfo extends React.Component {
     }
     if (profile.team !== this.state.team) updates.team = this.state.team
     if (profile.country !== this.state.country) updates.country = this.state.country
+    if (profile.hasMic !== this.state.hasMic) updates.hasMic = this.state.hasMic
+    if (profile.underage !== this.state.underage) updates.underage = this.state.underage
     if (JSON.stringify(profile.languages) !== JSON.stringify(this.state.languages))
       updates.languages = this.state.languages.map((language) => language.value)
     if (JSON.stringify(profile.mostPlayedGames) !== JSON.stringify(this.state.mostPlayedGames.map((game) => game.gameName)))
@@ -318,6 +326,32 @@ export class DossierInfo extends React.Component {
     )
   }
 
+  renderHasMicInput = () => {
+    return (
+      <div className='row'>
+        <span className='hint'>I have Mic?</span>
+        <MyGCheckbox
+          checked={this.state.hasMic}
+          onClick={() => this.setState((previous) => ({ hasMic: !previous.hasMic }))}
+          labelText=''
+        />
+      </div>
+    )
+  }
+
+  rendeUnderageInput = () => {
+    return (
+      <div className='row'>
+        <span className='hint'>18+</span>
+        <MyGCheckbox
+          checked={!this.state.underage}
+          onClick={() => this.setState((previous) => ({ underage: !previous.underage }))}
+          labelText=''
+        />
+      </div>
+    )
+  }
+
   renderDivider = () => {
     return <div className='divider' />
   }
@@ -365,6 +399,8 @@ export class DossierInfo extends React.Component {
             {this.renderCountryInput()}
             {this.renderLanguagesInput()}
             {this.renderRelationshipInput()}
+            {this.renderHasMicInput()}
+            {this.rendeUnderageInput()}
             {this.renderDivider()}
             {this.renderGameHeader()}
             {this.renderGameInput(0)}
