@@ -3,6 +3,45 @@ $secondary-shade: #1d2326;
 $third-shade: #2d363a;
 $main-font: 'Montserrat';
 
+@media (max-width: 768px) {
+  .notification {
+    height: auto !important;
+    background-color: #1d2326 !important;
+  }
+  .notification-content {
+    flex-direction: column !important;
+    .notification-description {
+      max-width: 100% !important;
+    }
+    .notification-options {
+      width: 100% !important;
+      .notification-actions {
+        align-items: center !important;
+        justify-content: center !important;
+      }
+    }
+  }
+
+  .postCompose__container {
+    border: none !important;
+  }
+  .notification__container {
+    background: #0b0f14;
+    border: none !important;
+  }
+  .notifications-content {
+    width: 100% !important;
+    background: #0b0f14 !important;
+    .noRecordFound__wraper {
+      background: #0b0f14 !important;
+      .noRecordFound__body {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  }
+}
+
 .app-container.home-page .notifications-page {
   .postCompose__container {
     width: inherit !important;
@@ -149,7 +188,7 @@ $main-font: 'Montserrat';
         margin-bottom: 10px;
         position: relative;
         &.active {
-          background: #fff0d;
+          background: #fff0dd;
           &::after {
             border-bottom: 2px solid #a09770;
             content: '';
@@ -160,7 +199,7 @@ $main-font: 'Montserrat';
           }
         }
         &:hover {
-          background: #fff0d;
+          background: #fff0dd;
           &::after {
             border-bottom: 2px solid #a09770;
             content: '';
@@ -866,7 +905,25 @@ $main-font: 'Montserrat';
   }
 }
 
-@media (max-width: 575px) {
+@media (max-width: 768px) {
+  .notification {
+    height: auto;
+    background-color: #1d2326;
+  }
+  .notification-content {
+    flex-direction: column;
+    .notification-description {
+      max-width: 100%;
+      .notification-options {
+        width: 100%;
+        .notification-actions {
+          align-items: center;
+          justify-content: center;
+        }
+      }
+    }
+  }
+
   .postCompose__container {
     border: none !important;
   }
