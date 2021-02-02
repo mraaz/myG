@@ -270,7 +270,7 @@ const AddGameContainer = ({ level }) => {
         <PageHeader headerText='Create Match' />
         <div className='locked-create-match'>
           <div className='locked-image'>
-            <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
+            <img src='https://myG.gg/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
           </div>
           <span>Create Match is locked</span>
           <span>

@@ -152,18 +152,6 @@ class GroupController {
         const sponsorController = new SponsorController()
         getOne.sponsors = await sponsorController.show({ auth }, getOne.id, null)
 
-        const allGrpTags = await Database.table('group_hash_tag_trans')
-          .innerJoin('group_hash_tags', 'group_hash_tags.id', 'group_hash_tag_trans.group_hash_tag_id')
-          .where({ group_id: getOne.id })
-          .select('content')
-
-        let tmpArr = []
-        for (let i = 0; i < allGrpTags.length; i++) {
-          tmpArr.push(allGrpTags[i].content)
-        }
-
-        getOne.allGrpTags = tmpArr
-
         const commonController = new CommonController()
 
         let current_user_permission = await commonController.get_permission({ auth }, getOne.id)

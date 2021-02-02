@@ -239,8 +239,8 @@ section#content-container {
       display: flex;
       flex-direction: column;
       min-height: 400px; // For mobile, ensures filter dropdown is not cut off when no games appear in search
-      scrollbar-width: none;  /* Firefox */
-      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
 
       @media (min-width: 575px) {
         max-height: 100vh;
@@ -1117,6 +1117,10 @@ section#content-container {
         display: block;
         .post-video {
           width: 100%;
+          max-height: 800px;
+        }
+        .image-gallery-image {
+          max-height: 800px;
         }
       }
       .update-stats {
@@ -2032,6 +2036,7 @@ section#content-container {
     min-height: 160px;
     padding: 30px;
     background: #171a1c;
+    width: 100%;
     div {
       border: none !important;
       width: 100% !important;

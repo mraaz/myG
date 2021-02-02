@@ -29,6 +29,7 @@ const MobileScheduledGames = ({
   handleChangeFilter,
 }) => {
   const defaultThumbnails = 'https://myG.gg/platform_images/Notifications/myG_icon.svg'
+  const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
 
   const transformPlayerLevelTitle = (title) => {
     switch (title) {
@@ -267,7 +268,7 @@ const MobileScheduledGames = ({
             </div>
           </div>
 
-          <div class="mGameResultsFiltersRowTwo">
+          <div class='mGameResultsFiltersRowTwo'>
             <div className='mGameResultsCount'> {scheduleGames.length} Results</div>
             <div className='mGameResultsFillView'>
               <span>{slideOptionLabel} </span>{' '}

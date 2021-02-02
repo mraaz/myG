@@ -199,7 +199,7 @@ const AddCommunityContainer = ({ level }) => {
       <PageHeader headerText='Create Community' />
       <div className='locked-create-community'>
         <div className='locked-image'>
-          <img src='https://mygame-media.s3.amazonaws.com/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
+          <img src='https://myG.gg/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
         </div>
         <span>Create Community is locked</span>
         <span>
