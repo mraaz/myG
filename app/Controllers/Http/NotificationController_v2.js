@@ -6,6 +6,7 @@ const Post = use('App/Models/Post')
 const Database = use('Database')
 
 const ScheduleGameController = use('./ScheduleGameController')
+const NotificationsRepository = require('../../Repositories/Notifications')
 const LoggingRepository = require('../../Repositories/Logging')
 
 const ChatRepository = require('../../Repositories/Chat')
@@ -211,17 +212,16 @@ class NotificationController_v2 {
   async notify_owner_new_grp_request({ auth }, grp_id) {
     if (auth.user) {
       try {
-        const getOwner = await Database.from('groups')
-          .where({ id: grp_id })
-          .select('user_id')
-          .first()
-
+        const getOwner = await Database.from('groups').where({ id: grp_id }).select('user_id').first()
         const addGroup = await Notification.create({
           other_user_id: getOwner.user_id,
           user_id: auth.user.id,
           activity_type: 12,
           group_id: grp_id,
         })
+        const userId = getOwner.user_id
+        const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Saved item'
       } catch (error) {
         LoggingRepository.log({
@@ -238,18 +238,13 @@ class NotificationController_v2 {
   }
 
   //Notify all groupies there is a new request to join this group
-  async new_grp_request({ auth }, grp_id) {
+  async new_grp_request({ auth, request }, grp_id) {
     if (auth.user) {
       try {
         let mygroups
-        const getAccept = await Database.from('groups')
-          .where({ id: grp_id })
-          .select('all_accept')
-          .first()
+        const getAccept = await Database.from('groups').where({ id: grp_id }).select('all_accept').first()
         if (getAccept.all_accept) {
-          mygroups = await Database.from('usergroups')
-            .where({ group_id: grp_id })
-            .whereNot({ permission_level: 42 })
+          mygroups = await Database.from('usergroups').where({ group_id: grp_id }).whereNot({ permission_level: 42 })
         } else {
           mygroups = await Database.from('usergroups')
             .where({ group_id: grp_id, permission_level: 1 })
@@ -263,8 +258,10 @@ class NotificationController_v2 {
             activity_type: 12,
             group_id: grp_id,
           })
+          const userId = mygroups[i].user_id
+          const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+          await ChatRepository.publishNotifications({ userId, notifications })
         }
-
         return 'Saved'
       } catch (error) {
         LoggingRepository.log({
@@ -315,6 +312,9 @@ class NotificationController_v2 {
           activity_type: 17,
           group_id: grp_id,
         })
+        const userId = other_user_id
+        const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Saved item'
       } catch (error) {
         LoggingRepository.log({
@@ -684,6 +684,9 @@ class NotificationController_v2 {
           activity_type: 14,
           schedule_games_id: schedule_games_id,
         })
+        const userId = other_user_id
+        const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Saved item'
       } catch (error) {
         LoggingRepository.log({
@@ -725,7 +728,9 @@ class NotificationController_v2 {
         })
         .whereIn('activity_type', [2, 3, 4, 5, 6, 10, 14, 15, 16, 17, 19, 20, 21, 22, 23])
         .delete()
-
+      const userId = auth.user.id
+      const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+      await ChatRepository.publishNotifications({ userId, notifications })
       return 'Saved successfully'
     } catch (error) {
       LoggingRepository.log({
@@ -747,6 +752,9 @@ class NotificationController_v2 {
           activity_type: activity_type,
           schedule_games_id: schedule_games_id,
         })
+        const userId = other_user_id
+        const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Saved item'
       } catch (error) {
         LoggingRepository.log({
@@ -771,7 +779,9 @@ class NotificationController_v2 {
             activity_type: activity_type,
           })
           .delete()
-
+        const userId = auth.user.id
+        const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Deleted'
       } catch (error) {
         LoggingRepository.log({
@@ -795,6 +805,9 @@ class NotificationController_v2 {
           activity_type: 16,
           schedule_games_id: schedule_games_id,
         })
+        const userId = other_user_id
+        const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Saved item'
       } catch (error) {
         LoggingRepository.log({
@@ -820,6 +833,9 @@ class NotificationController_v2 {
           post_id: post_id,
           comment_id: comment_id,
         })
+        const userId = other_user_id
+        const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Saved item'
       } catch (error) {
         LoggingRepository.log({
@@ -845,6 +861,9 @@ class NotificationController_v2 {
           post_id: post_id,
           reply_id: reply_id,
         })
+        const userId = other_user_id
+        const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Saved item'
       } catch (error) {
         LoggingRepository.log({
@@ -871,6 +890,9 @@ class NotificationController_v2 {
           comment_id: comment_id,
           schedule_games_id: schedule_games_id,
         })
+        const userId = other_user_id
+        const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Saved item'
       } catch (error) {
         LoggingRepository.log({
@@ -896,7 +918,9 @@ class NotificationController_v2 {
             activity_type: 3,
           })
           .delete()
-
+        const userId = auth.user.id
+        const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return deleteCommentLike
       } catch (error) {
         LoggingRepository.log({
@@ -923,6 +947,9 @@ class NotificationController_v2 {
           reply_id: reply_id,
           schedule_games_id: schedule_games_id,
         })
+        const userId = other_user_id
+        const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Saved item'
       } catch (error) {
         LoggingRepository.log({
@@ -948,7 +975,9 @@ class NotificationController_v2 {
             activity_type: 4,
           })
           .delete()
-
+        const userId = auth.user.id
+        const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return deleteReplyLike
       } catch (error) {
         LoggingRepository.log({
@@ -973,6 +1002,9 @@ class NotificationController_v2 {
           activity_type: 2,
           post_id: post_id,
         })
+        const userId = other_user_id
+        const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Saved item'
       } catch (error) {
         LoggingRepository.log({
@@ -998,7 +1030,9 @@ class NotificationController_v2 {
             activity_type: 2,
           })
           .delete()
-
+        const userId = auth.user.id
+        const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return deletePostLike
       } catch (error) {
         LoggingRepository.log({
@@ -1022,6 +1056,9 @@ class NotificationController_v2 {
           user_id: auth.user.id,
           activity_type: 1,
         })
+        const userId = request.input('other_user_id')
+        const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Saved item'
       } catch (error) {
         LoggingRepository.log({
@@ -1044,6 +1081,10 @@ class NotificationController_v2 {
         other_user_id: commenderId,
         activity_type: 23,
       })
+      const userId = commenderId
+      const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+      await ChatRepository.publishNotifications({ userId, notifications })
+      return 'Saved item'
     } catch (error) {
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
@@ -1063,7 +1104,9 @@ class NotificationController_v2 {
             id: request.params.id,
           })
           .delete()
-
+        const userId = auth.user.id
+        const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Done'
       } catch (error) {
         LoggingRepository.log({
@@ -1095,7 +1138,9 @@ class NotificationController_v2 {
             permission_level: 42,
           })
           .delete()
-
+        const userId = auth.user.id
+        const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Done'
       } catch (error) {
         LoggingRepository.log({
@@ -1192,9 +1237,9 @@ class NotificationController_v2 {
               activity_type: 10,
               schedule_games_id: scheduledGameId,
             })
-
-            // const requestedUserId = findUser[0].id
-            // await ChatRepository.sendMessageFromMyGToUser({ requestingUserId, requestedUserId, content })
+            const userId = findUser[0].id
+            const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+            await ChatRepository.publishNotifications({ userId, notifications })
           }
         }
 
@@ -1303,6 +1348,9 @@ class NotificationController_v2 {
               activity_type: 22,
               group_id: group_id,
             })
+            const userId = findUser[0].id
+            const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+            await ChatRepository.publishNotifications({ userId, notifications })
           }
         }
 
@@ -1418,9 +1466,7 @@ class NotificationController_v2 {
     if (auth.user) {
       let checking = false
 
-      const security_check = await Database.from('admins')
-        .where({ user_id: auth.user.id, permission_level: 1 })
-        .first()
+      const security_check = await Database.from('admins').where({ user_id: auth.user.id, permission_level: 1 }).first()
 
       let isAdmin = false
       if (security_check != undefined) {
@@ -1524,6 +1570,9 @@ class NotificationController_v2 {
               await Notification.query()
                 .where({ post_id: get_info.post_id, activity_type: request.input('activity_type'), other_user_id: auth.user.id })
                 .update({ read_status: request.input('read_status') })
+              const userId = auth.user.id
+              const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+              await ChatRepository.publishNotifications({ userId, notifications })
             }
             break
           case 16:
@@ -1535,6 +1584,9 @@ class NotificationController_v2 {
                 await Notification.query()
                   .where({ schedule_games_id: get_sweet_16.schedule_games_id, activity_type: 16, other_user_id: auth.user.id })
                   .update({ read_status: request.input('read_status') })
+                const userId = auth.user.id
+                const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+                await ChatRepository.publishNotifications({ userId, notifications })
               }
             }
 
@@ -1543,6 +1595,9 @@ class NotificationController_v2 {
             await Notification.query()
               .where({ id: parseInt(request.input('id')) })
               .update({ read_status: request.input('read_status') })
+            const userId = auth.user.id
+            const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
+            await ChatRepository.publishNotifications({ userId, notifications })
         }
 
         return 'Saved successfully'
@@ -1556,6 +1611,10 @@ class NotificationController_v2 {
         })
       }
     }
+  }
+
+  async count({ auth, request }) {
+    return NotificationsRepository.count({ auth, request })
   }
 }
 

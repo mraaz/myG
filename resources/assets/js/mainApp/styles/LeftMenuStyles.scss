@@ -16,6 +16,8 @@
   flex-direction: column;
   transition: 0.5s;
   overflow-y: scroll;
+  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
 }
 
 .sidebar-container-collapsed {
@@ -63,6 +65,7 @@
   text-align: center;
   border-top: 1px solid #384952;
   border-bottom: 1px solid #384952;
+  background-color: #171a1c;
   a:hover {
     color: #e5c746;
     text-decoration: none;
@@ -111,6 +114,13 @@
   text-align: center;
 }
 
+.notification-alert {
+  background-color: #FA3E3F !important;
+  color: white !important;
+  font-weight: bold !important;
+  border: 0px solid #384952 !important;
+}
+
 .notification-expanded .notification-box {
   border: 1px solid #384952;
   position: relative;
@@ -143,6 +153,10 @@
   flex-wrap: wrap;
   align-items: center;
   cursor: pointer;
+
+  &.active {
+    background-color: #171a1c;
+  }
 }
 
 .sidebar-sub-items p,

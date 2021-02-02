@@ -64,7 +64,6 @@ const CommunityView = (props) => {
         toast.error(<Toast_style text={`Sorry mate, can't find that`} />)
         props.routeProps.history.push('/?at=communities')
       }
-
       document.title = 'myG - ' + getOne.name
       setCommunityDetails({ ...getOne })
     }
@@ -75,8 +74,12 @@ const CommunityView = (props) => {
     ev.target.src = 'https://myG.gg/platform_images/Communities/myG_logo.jpg'
   }
 
-  const handleDeleteSponsor = (id) => {
-    const sponsorData = axios.delete(`/api/sponsor/delete/${id}`)
+  const handleDeleteSponsor = async (id, index) => {
+    await axios.delete(`/api/sponsor/delete/${id}`)
+    // let tmpSponsors = communityDetails.sponsors
+    // delete tmpSponsors[index]
+    //tmpSponsors[index].media_url = 'https://myG.gg/platform_images/Communities/myG_logo.jpg'
+    //setCommunityDetails({ sponsors: tmpSponsors })
     hideSponsorModal(true)
     toast.success(<Toast_style text={'Yup, yup, yup... deleted successfully!'} />)
   }
@@ -173,7 +176,7 @@ const CommunityView = (props) => {
 
 function mapStateToProps(state) {
   return {
-    level: state.user.userTransactionStates.user_level,
+    level: (state.user.userTransactionStates || {}).user_level,
   }
 }
 

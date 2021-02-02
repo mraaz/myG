@@ -55,6 +55,7 @@ const AddGameContainer = ({ level }) => {
     isPublicGame: true,
     autoAccept: true,
     autoJoinHost: true,
+    show_times: false,
   })
   const [optionalFieldsState, updateOptionalFieldsState] = useState({
     value_one: null,
@@ -171,6 +172,7 @@ const AddGameContainer = ({ level }) => {
         mic: advancedSettingsState.mic,
         eighteen_plus: advancedSettingsState.eighteen_plus,
         language: advancedSettingsState.language,
+        show_times: mainSettingsState.show_times,
       })
       updateMainSettingsState((currentState) => ({
         ...currentState,
@@ -267,8 +269,30 @@ const AddGameContainer = ({ level }) => {
       <div className={styles.container}>
         <PageHeader headerText='Create Match' />
         <div className='locked-create-match'>
-          <p>Sorry mate!</p>
-          <p>You need to reach level 2 to create a match.</p>
+          <div className='locked-image'>
+            <img src='https://myG.gg/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
+          </div>
+          <span>Create Match is locked</span>
+          <span>
+            Reach{' '}
+            <span style={{ color: '#E6C846' }}>
+              {' '}
+              <strong>level 2</strong>
+            </span>{' '}
+            to unlock it.
+          </span>
+          <div className='rectangle'>
+            <img src='https://myg.gg/platform_images/Dashboard/btn_Network.svg' className='img-network' />
+            <div className='body-of-text'>
+              <p>
+                Go to{' '}
+                <Link to={'/achievements'}>
+                  &nbsp;<strong> Achievements</strong>{' '}
+                </Link>
+              </p>
+              <p>to learn how to progress</p>
+            </div>
+          </div>
         </div>
       </div>
     )
@@ -309,7 +333,7 @@ const AddGameContainer = ({ level }) => {
 
 function mapStateToProps(state) {
   return {
-    level: state.user.userTransactionStates.user_level,
+    level: (state.user.userTransactionStates || {}).user_level,
   }
 }
 

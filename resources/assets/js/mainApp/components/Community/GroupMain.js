@@ -42,7 +42,7 @@ export default class GroupMain extends Component {
         })
 
         if (getmyGroups.data.all_my_communities.length == 0) {
-          this.togglePostTypeTab('suggestedCommunityTab')
+          self.togglePostTypeTab('suggestedCommunityTab')
         }
       } catch (error) {
         logToElasticsearch('error', 'List_Community', 'Failed getGroups in Mount:' + ' ' + error)
@@ -54,19 +54,21 @@ export default class GroupMain extends Component {
   }
 
   togglePostTypeTab = (label) => {
-    let open_compose_textTab = true
+    let open_compose_textTab = true,
+      yourCommunityTab = true
+
     if (label == 'suggestedCommunityTab') {
       this.next_data_suggested()
       open_compose_textTab = false
-      this.setState({ yourCommunityTab: false })
+      yourCommunityTab = false
     }
-    if (label == 'yourCommunityTab') {
-      this.setState({ yourCommunityTab: true })
-      // setTimeout(function() {
-      //   document.getElementById('composeTextarea').focus()
-      // }, 0)
-    }
-    this.setState({ open_compose_textTab, overlay_active: true })
+    // if (label == 'yourCommunityTab') {
+    //   this.setState({ yourCommunityTab: true })
+    //   // setTimeout(function() {
+    //   //   document.getElementById('composeTextarea').focus()
+    //   // }, 0)
+    // }
+    this.setState({ open_compose_textTab, overlay_active: true, yourCommunityTab })
   }
 
   toggleShowAllGroup = () => {
@@ -302,7 +304,6 @@ export default class GroupMain extends Component {
 
   render() {
     const { open_compose_textTab, overlay_active } = this.state
-
     return (
       <Fragment>
         <section className={`postCompose__container ${overlay_active ? 'zI1000' : ''}`}>

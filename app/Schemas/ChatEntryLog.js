@@ -9,8 +9,8 @@ class ChatEntryLog {
     this.left = forceBoolean(data.left)
     this.invited = forceBoolean(data.invited)
     this.link = forceBoolean(data.link)
-    this.createdAt = forceDate(data.createdAt)
-    this.updatedAt = forceDate(data.updatedAt)
+    this.createdAt = forceDate(data.createdAt || data.created_at)
+    this.updatedAt = forceDate(data.updatedAt || data.updated_at)
   }
 }
 

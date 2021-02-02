@@ -90,22 +90,25 @@ export default class Chat extends Component {
   }
 
   renderActivityText = (props) => {
-    const { type, senderAlias = '', groupTitle = '' } = props
+    const { type, senderAlias = '', groupTitle = '', count, content } = props
+    let singular_msg = 'message'
+    if (count > 1) singular_msg = 'messages'
+
     switch (type) {
       case 'MESSAGE':
-        return <div className='notification__text'>{`${senderAlias} has sent you a message `} </div>
+        return <div className='notification__text'>{`has sent you ${count} ${singular_msg} `} </div>
         break
       case 'GROUP_MESSAGE':
-        return <div className='notification__text'>{`You got mail in ${groupTitle} `}</div>
+        return <div className='notification__text'>{`You got mail! Ahem well a chat msg in ${groupTitle} `}</div>
         break
       case 'PROMOTED':
-        return <div className='notification__text'>{`You got promoted in ${groupTitle} `}</div>
+        return <div className='notification__text'>{`Matey!!! You got promoted in ${content} `}</div>
         break
       case 'DEMOTED':
-        return <div className='notification__text'>{`You got demoted in ${groupTitle} `}</div>
+        return <div className='notification__text'>{`Sigh!!! You got demoted in ${content} `}</div>
         break
       case 'KICKED':
-        return <div className='notification__text'>{`You got KICKED from ${groupTitle} `}</div>
+        return <div className='notification__text'>{`Strewth!!! You got kicked from ${content} `}</div>
         break
       default:
         break
@@ -131,17 +134,35 @@ export default class Chat extends Component {
       this.props.setNotificationsCount(0)
     })
   }
-  handleClickNotiFication = (id, type) => {
-    const { chatNotifications = [] } = this.state
-    const notify = chatNotifications.map((noti) => {
-      return {
-        ...noti,
-        hasRead: noti.id == id ? !noti.hasRead : noti.hasRead,
+  handleClickNotiFication = (id, index, type) => {
+    // console.log('HEya')
+    // console.log(id, '<<<ID')
+    // const { chatNotifications = [] } = this.state
+    // console.log(chatNotifications, '<<<chatNotifications')
+    // const notify = chatNotifications.map((noti) => {
+    //   return {
+    //     ...noti,
+    //     hasRead: noti.id == id ? !noti.hasRead : noti.hasRead,
+    //   }
+    // })
+    // this.setState({ chatNotifications: notify })
+    // markread_chatNotification(id)
+
+    let { chatNotifications = [] } = this.state
+
+    openChatById(chatNotifications[index].chatId)
+
+    if (chatNotifications.length > 0 && chatNotifications[index].hasRead != true) {
+      if (chatNotifications[index].hasRead == undefined || chatNotifications[index].hasRead == false) {
+        chatNotifications[index].hasRead = true
+        markread_chatNotification(chatNotifications[index].id)
+        this.setState({ chatNotifications })
+      } else {
+        return
       }
-    })
-    this.setState({ chatNotifications: notify })
-    markread_chatNotification(id)
-    openChatById(id)
+    } else {
+      return
+    }
   }
 
   render() {
@@ -151,7 +172,7 @@ export default class Chat extends Component {
     const isActive = active == true ? { display: 'block' } : { display: 'none' }
 
     return (
-      <div style={isActive} className='game__approval'>
+      <div style={isActive} className='notification__container'>
         <TopTabs tabs={['All', 'Messages', 'Groups', 'Misc']} changeTab={this.changeTab} />
         {chatNotifications.length && tab == 0 && (
           <div className='top-actions'>
@@ -168,14 +189,14 @@ export default class Chat extends Component {
         {chatNotifications.length == 0 && <NoRecord title='No more updates.' linkvisible={false} />}
         <div className='gameList__box' style={{ padding: '15px' }} onScroll={this.handleScroll} ref={this.myRef}>
           {chatNotifications.length > 0 &&
-            chatNotifications.map((chatNoti) => {
+            chatNotifications.map((chatNoti, index) => {
               const time = handleTime(chatNoti.createdAt)
 
               return (
                 <div
                   className={`notification ${chatNoti.hasRead == false ? 'unread' : ''}`}
                   key={chatNoti.id}
-                  onClick={(e) => this.handleClickNotiFication(chatNoti.id, chatNoti.type)}>
+                  onClick={(e) => this.handleClickNotiFication(chatNoti.chatId, index, chatNoti.type)}>
                   <div className='notification-user-avatar'>
                     <Link to={`/profile/${chatNoti.senderAlias}`}>
                       <img onError={this.addDefaultSrc} src={chatNoti.senderIcon ? chatNoti.senderIcon : defaultUserImage} />

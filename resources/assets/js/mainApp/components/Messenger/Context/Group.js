@@ -47,9 +47,11 @@ export default class Group extends React.Component {
     const lastMessage = messages[messages.length - 1]
     const unreadCount = 0
     const titleTooLong = group.title.length > 20
+    const profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png'
+
     return (
       <div key={`group-${group.chatId}`} className='messenger-contact' onClick={this.openChat}>
-        <div className='messenger-contact-icon' style={{ backgroundImage: `url('${group.icon}')` }} />
+        <div className='messenger-contact-icon' style={{ backgroundImage: `url('${group.icon}'), url('${profile_img}')` }} />
         <div className='messenger-contact-body'>
           {titleTooLong ? (
             <WithTooltip position={{ bottom: '24px', left: '-12px' }} text={group.title}>

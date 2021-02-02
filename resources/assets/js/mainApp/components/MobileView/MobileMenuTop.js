@@ -1,8 +1,8 @@
 import React, { Fragment, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-
 import { logoutAction } from '../../../redux/actions/userAction'
+import NotificationIcon from '../Notifications/Icon'
 
 const MobileMenuTop = (props) => {
   const { initialData, notifications, hide } = props
@@ -10,8 +10,15 @@ const MobileMenuTop = (props) => {
   const dispatch = useDispatch()
 
   const alias = initialData === 'loading' ? '' : initialData.userInfo.alias
-  const profileImage = initialData === 'loading' ? '' : initialData.userInfo.profile_img
+
+  const profileImage =
+    initialData === 'loading' ? 'invalid_link' : initialData.userInfo.profile_img ? initialData.userInfo.profile_img : 'invalid_link'
+
   const level = initialData === 'loading' ? 0 : initialData.userInfo.level
+
+  const addDefaultSrc = (ev) => {
+    ev.target.src = 'https://myG.gg/platform_images/Dashboard/logo.svg'
+  }
 
   return (
     <Fragment>
@@ -24,19 +31,19 @@ const MobileMenuTop = (props) => {
           <Link to='/?at=notifications&submenu=1'>
             <div className='notification-container'>
               <img src='https://myG.gg/platform_images/Dashboard/ntfo_Friendship_Icon.svg' height='22' width='22' />
-              <div className='notification-box'>{notifications.approvals}</div>
+              <NotificationIcon type='approvals' />
             </div>
           </Link>
           <Link to='/?at=notifications&submenu=2'>
             <div className='notification-container'>
               <img src='https://myG.gg/platform_images/Dashboard/Bell_Icon.svg' height='22' width='22' />
-              <div className='notification-box'>{notifications.alerts}</div>
+              <NotificationIcon type='alerts' />
             </div>
           </Link>
           <Link to='/?at=notifications&submenu=3'>
             <div className='notification-container'>
               <img src='https://myG.gg/platform_images/Dashboard/Chat_Icon.svg' height='22' width='22' />
-              <div className='notification-box'>{notifications.chats}</div>
+              <NotificationIcon type='chats' />
             </div>
           </Link>
         </div>
@@ -47,22 +54,12 @@ const MobileMenuTop = (props) => {
             <div className='mobile-side-menu'>
               <div className='mobile-side-menu-top'>
                 <div className='back-btn'>
-                  <img
-                    src='https://myG.gg/platform_images/Dashboard/btn_Uncollapse_Menu.svg'
-                    onClick={() => setHideSideMenu(false)}
-                  />
+                  <img src='https://myG.gg/platform_images/Dashboard/btn_Uncollapse_Menu.svg' onClick={() => setHideSideMenu(false)} />
                 </div>
                 <div className='user-name-icon'>
                   <Link to={`/profile/${alias}`} onClick={() => setHideSideMenu(false)}>
                     <div className='user-icon'>
-                      <img
-                        onError={(ev) => {
-                          ev.target.src = 'https://myG.gg/default_user/new-user-profile-picture.png'
-                        }}
-                        src={profileImage}
-                        className='img-fluid'
-                        alt='user-picture'
-                      />
+                      <img onError={addDefaultSrc} src={profileImage} className='img-fluid' alt='user-picture' />
                     </div>
                     <div className='user-name'>@{alias}</div>
                   </Link>
@@ -98,6 +95,11 @@ const MobileMenuTop = (props) => {
                     My Games
                   </Link>
                 </li>
+                <li>
+                  <Link to='/achievements' onClick={() => setHideSideMenu(false)}>
+                    Achievements
+                  </Link>
+                </li>
               </ul>
             </div>
             <div className='logout-setting-section'>
@@ -106,7 +108,7 @@ const MobileMenuTop = (props) => {
                 onClick={() => {
                   setHideSideMenu(false)
                   dispatch(logoutAction())
-                  window.router.push('/logout');
+                  window.location.href = '/logout'
                 }}>
                 <img src='https://myG.gg/platform_images/Dashboard/Logout_Icon.svg' />
                 <span>Logout</span>

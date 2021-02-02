@@ -82,12 +82,6 @@ export default class Posts extends Component {
         getPosts()
       }
     )
-
-    if (myCounter != 1) {
-      this.setState({
-        show_top_btn: true,
-      })
-    }
   }
 
   composeSuccess = async (data) => {

@@ -59,14 +59,21 @@ export async function SubmitDataFunction(myG) {
     tags = JSON.stringify(myG.tags)
   }
 
-  if (myG.endDate != null || myG.endDate != undefined) {
+  if (myG.show_times == false) {
+    myG.startDate = moment()
+    end_date = moment()
+    end_date.add(4, 'hour')
+    now.add(4, 'hour')
+  }
+
+  if (myG.show_times == true && (myG.endDate != undefined || myG.endDate != null)) {
     now = moment(myG.endDate)
     now.add(8, 'hour')
   } else {
     now = moment(myG.startDate)
     end_date = moment(now)
-    end_date.add(18, 'hour')
-    now.add(18, 'hour')
+    end_date.add(4, 'hour')
+    now.add(4, 'hour')
   }
 
   if (myG.selected_limit != null || myG.selected_limit != undefined) {
@@ -81,7 +88,7 @@ export async function SubmitDataFunction(myG) {
     autoJoin = myG.autoJoin
   }
 
-  const { v1: uuidv1 } = require('uuid');
+  const { v1: uuidv1 } = require('uuid')
   var tmp = uuidv1()
 
   try {

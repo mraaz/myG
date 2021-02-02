@@ -59,9 +59,11 @@ export default class Contact extends React.Component {
     const lastMessage = messages[messages.length - 1]
     const receivedMessages = messages.filter((message) => message.senderId !== this.props.userId)
     const unreadCount = this.countUnreadMessages(contact.chat && contact.chat.lastRead, receivedMessages)
+    const profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png'
+
     return (
       <div key={contact.contactId} className='messenger-contact' onClick={() => this.openChat(contact)}>
-        <div className='messenger-contact-icon' style={{ backgroundImage: `url('${contact.icon}')` }}>
+        <div className='messenger-contact-icon' style={{ backgroundImage: `url('${contact.icon}'), url('${profile_img}')` }}>
           <div className={`messenger-contact-online-indicator chat-component-header-status-indicator-${contact.status}`} />
         </div>
         <div className='messenger-contact-body'>

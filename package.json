@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js >> myG.log",
+    "start:dev": "node server.js",
     "start:1": "PORT=3331 node server.js",
     "start:2": "PORT=3332 node server.js",
     "start:3": "PORT=3333 node server.js",
@@ -86,6 +87,7 @@
     "gulp-uglify": "^2.0.0",
     "gulp-watch": "^4.3.9",
     "html-webpack-plugin": "^2.30.1",
+    "lodash.debounce": "^4.0.8",
     "lodash.get": "^4.4.2",
     "lodash.isfunction": "^3.0.9",
     "moment": "^2.22.2",

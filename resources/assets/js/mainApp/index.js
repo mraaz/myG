@@ -22,6 +22,7 @@ import ErrorHandler from './components/ErrorHandler'
 import { store, persistor } from '../redux/Store'
 import { loadUserInfoToReduxStore } from '../common/user'
 import { FeatureEnabled, PROFILE_V2 } from '../common/flags'
+import { fetchNotifications } from '../common/notifications'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 import {
@@ -47,6 +48,7 @@ import {
   MobileMenu,
   CommunityView,
   Onboarding,
+  HashTagList,
 } from './AsyncComponent'
 
 class Layout extends Component {
@@ -77,6 +79,7 @@ class Layout extends Component {
 
         this.setState({ initialData: initialData.data })
         loadUserInfoToReduxStore(initialData.data.userInfo)
+        fetchNotifications()
         const needsToRedirectToProfile = ['/profile', '/profile/'].includes(window.location.pathname);
         if (needsToRedirectToProfile) window.router.push(`/profile/${initialData.data.userInfo.alias}`);
       } catch (error) {
@@ -208,6 +211,19 @@ class Layout extends Component {
                     />
                   )}
                 />
+
+                <Route
+                  exact
+                  path='/hashtag/:content'
+                  component={(props) => (
+                    <HashTagList
+                      routeProps={props}
+                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
+                      key={Math.random()}
+                    />
+                  )}
+                />
+
 
                 <Route
                   exact

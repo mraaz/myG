@@ -12,7 +12,7 @@ import '../../styles/Community/AddCommunityStyles.scss'
 import { styles } from '../../static/AddCommunity'
 
 import { MyGCheckbox, MyGTextarea, MyGAsyncSelect, MyGCreateableSelect, MyGInput, MyGSelect } from '../common'
-import { Game_name_values, Group_Hash_Tags, Disable_keys } from '../Utility_Function'
+import { Game_name_values, Disable_keys } from '../Utility_Function'
 import { Upload_to_S3, Remove_file } from '../AWS_utilities'
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
 
@@ -29,14 +29,14 @@ const AddCommunity = ({
 }) => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    const getInitialData_Tags = async function() {
-      try {
-        let results = await Group_Hash_Tags()
-        updateAdvancedSettings({ optionTags: results })
-      } catch (error) {
-        console.log(error)
-      }
-    }
+    // const getInitialData_Tags = async function() {
+    //   try {
+    //     let results = await Group_Hash_Tags()
+    //     updateAdvancedSettings({ optionTags: results })
+    //   } catch (error) {
+    //     console.log(error)
+    //   }
+    // }
 
     const getInitialData_GameName = async function() {
       try {
@@ -47,7 +47,7 @@ const AddCommunity = ({
       }
     }
     document.title = 'myG - Add Community'
-    getInitialData_Tags()
+
     getInitialData_GameName()
   }, [])
 
@@ -80,35 +80,63 @@ const AddCommunity = ({
     }))
   }
 
-  const createOption = (label, game_names_id) => ({
-    label,
-    value: label,
-    game_names_id,
-  })
+  // const createOption = (label, game_names_id) => ({
+  //   label,
+  //   value: label,
+  //   game_names_id,
+  // })
 
-  const handleCreateTags = (inputValue) => {
-    if (advancedSettingsState.tags.length >= MAX_GAME_TAGS) {
-      toast.success(<Toast_style text={'Of 3 tags max. Herh herh herh.'} />)
-      return
-    }
-    if (inputValue.length > 88) {
-      toast.success(<Toast_style text={'Too long, game tags length is.'} />)
-      return
-    }
-    if (/['/.%#$,;`\\]/.test(inputValue)) {
-      toast.success(<Toast_style text={'Game tags can have invalid characters not.'} />)
-      return
-    }
+  // const handleCreateTags = (inputValue) => {
+  //   if (advancedSettingsState.tags.length >= MAX_GAME_TAGS) {
+  //     toast.success(<Toast_style text={'Of 3 tags max. Herh herh herh.'} />)
+  //     return
+  //   }
+  //   if (inputValue.length > 88) {
+  //     toast.success(<Toast_style text={'Too long, game tags length is.'} />)
+  //     return
+  //   }
+  //   if (/['/.%#$,;`\\]/.test(inputValue)) {
+  //     toast.success(<Toast_style text={'Game tags can have invalid characters not.'} />)
+  //     return
+  //   }
+  //
+  //   let { optionTags, tags } = advancedSettingsState
+  //   if (tags == null) tags = ''
+  //
+  //   const newOption = createOption(inputValue, null)
+  //   updateAdvancedSettings({
+  //     optionTags: [...optionTags, newOption],
+  //     tags: [...tags, newOption],
+  //   })
+  // }
 
-    let { optionTags, tags } = advancedSettingsState
-    if (tags == null) tags = ''
-
-    const newOption = createOption(inputValue, null)
-    updateAdvancedSettings({
-      optionTags: [...optionTags, newOption],
-      tags: [...tags, newOption],
-    })
-  }
+  // <div className='field-title hash-tags'>
+  //   <p>Community Tags</p>
+  // </div>
+  // <div className='game-title-select'>
+  //   <MyGCreateableSelect
+  //     isClearable
+  //     isMulti
+  //     onCreateOption={handleCreateTags}
+  //     getNewOptionData={getNewOptionData}
+  //     onInputChange={getOptionsTags}
+  //     onChange={(value) => {
+  //       updateAdvancedSettings({ tags: value })
+  //     }}
+  //     value={advancedSettingsState.tags}
+  //     placeholder='Search, Select or create Community Tags'
+  //     options={
+  //       advancedSettingsState.tags && advancedSettingsState.tags.length >= MAX_GAME_TAGS ? [] : advancedSettingsState.optionTags
+  //     }
+  //     noOptionsMessage={() => {
+  //       return advancedSettingsState.optionTags && advancedSettingsState.optionTags.length >= MAX_GAME_TAGS
+  //         ? 'You have reached the max options value'
+  //         : 'Yo! Either nothing to display or you need to type in something'
+  //     }}
+  //     onKeyDown={Disable_keys}
+  //     classNamePrefix='filter'
+  //   />
+  // </div>
 
   const onBlur_group_name = async (inputValue) => {
     if (mainSettingsState.community_name.trim() == '' || mainSettingsState.community_name.trim() == null) {
@@ -267,12 +295,12 @@ const AddCommunity = ({
 
   const getCommunityleftView = () => {
     return (
-      <div className='flexBox'>
+      <div className='community-flexBox'>
         <div className={styles.sideLineContainer}>
           <div className={styles.sideBall} />
           <div className={styles.sideLine} />
         </div>
-        <div className='main-settings-content'>
+        <div className='community-main-settings-content'>
           <div className='field-title'>
             <p>Community Name (Be, unique it must)</p>
           </div>
@@ -285,6 +313,7 @@ const AddCommunity = ({
               minLength={3}
               onKeyDown={Disable_keys}
               onBlur={onBlur_group_name}
+              containerStyles={{ width: '100%' }}
               onChange={(value) => {
                 updateMainSettings({ community_name: value.target.value })
               }}></MyGInput>
@@ -357,47 +386,22 @@ const AddCommunity = ({
               )}
             </section>
           </div>
-          <div className='field-title hash-tags'>
-            <p>Community Tags</p>
-          </div>
-          <div className='game-title-select'>
-            <MyGCreateableSelect
-              isClearable
-              isMulti
-              onCreateOption={handleCreateTags}
-              getNewOptionData={getNewOptionData}
-              onInputChange={getOptionsTags}
-              onChange={(value) => {
-                updateAdvancedSettings({ tags: value })
-              }}
-              value={advancedSettingsState.tags}
-              placeholder='Search, Select or create Community Tags'
-              options={
-                advancedSettingsState.tags && advancedSettingsState.tags.length >= MAX_GAME_TAGS ? [] : advancedSettingsState.optionTags
-              }
-              noOptionsMessage={() => {
-                return advancedSettingsState.optionTags && advancedSettingsState.optionTags.length >= MAX_GAME_TAGS
-                  ? 'You have reached the max options value'
-                  : 'Yo! Either nothing to display or you need to type in something'
-              }}
-              onKeyDown={Disable_keys}
-              classNamePrefix='filter'
-            />
-          </div>
         </div>
       </div>
     )
   }
   const getCommunityrightView = () => {
     return (
-      <div className='flexBox'>
+      <div className='community-flexBox'>
         <div className={styles.sideLineContainer}>
           <div className={styles.sideBall} />
           <div className={styles.sideLine} />
         </div>
-        <div className='advance-settings-content'>
-          <div className='field-title'>Description</div>
-          <div className='description-text-area'>
+        <div className='community-advance-settings-content'>
+          <div className='field-title'>
+            <p>Description</p>
+          </div>
+          <div className='community-description-text-area'>
             <MyGTextarea
               onChange={(event) => {
                 updateAdvancedSettings({ description: event.target.value })
@@ -407,7 +411,9 @@ const AddCommunity = ({
               maxLength={250}
             />
           </div>
-          <div className='field-title'>Invite Friends</div>
+          <div className='field-title'>
+            <p>Invite Friends</p>
+          </div>
           <div className='experience-select'>
             <MyGAsyncSelect
               isClearable

@@ -34,7 +34,7 @@ export default class ProfileInfo extends React.Component {
       <div className={`pod ${alignment}`}>
         {this.state.hovering === title && value.length > 25 && <div className="hover-value">{value}</div>}
         <p className="title">{title}</p>
-        <p className="value" 
+        <p className="value"
           onMouseOver={() => this.setState({ hovering: title })}
           onMouseLeave={() => this.setState({ hovering: null })}
         >
@@ -68,7 +68,7 @@ export default class ProfileInfo extends React.Component {
         <div className="row">
           <div className="column left">
             {this.renderPod('Country', this.state.country, 'left')}
-            {this.renderPod('Most played games', this.state.mostPlayedGames, 'left')}
+            {this.renderPod('Games currently playing', this.state.mostPlayedGames, 'left')}
           </div>
           <div className="column center">
             {this.renderPod('Professional Team', this.state.team, 'center')}
@@ -85,4 +85,3 @@ export default class ProfileInfo extends React.Component {
     );
   }
 }
-

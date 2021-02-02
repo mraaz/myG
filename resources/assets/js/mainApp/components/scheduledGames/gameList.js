@@ -98,7 +98,7 @@ export default class GameList extends Component {
                   className={`mygames ${activeItemId == game.id ? 'active' : ''}`}
                   key={game.id}
                   onClick={(e) => this.handleSingleGameDetails(e, game.id, game)}>
-                  <div className='gameImage'>{scheduledGamePicture}</div>
+                  <div className={`gameImage ${game_artwork ? '' : 'active'}`}>{scheduledGamePicture}</div>
                   <div className='game__attributes'>
                     <div className='first__row'>
                       <h1 className='game__name' title={game.game_name}>
@@ -122,7 +122,7 @@ export default class GameList extends Component {
                       </div>
                       <div className='game__timestamp'>
                         <img src='https://myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
-                        <span>{moment(game.start_date_time).format('LL')}</span>
+                        <span>{moment(game.start_date_time).format('LLL')}</span>
                       </div>
                     </div>
                     {copyClipboardEnable && (

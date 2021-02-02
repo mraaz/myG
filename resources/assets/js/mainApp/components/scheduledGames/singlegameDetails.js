@@ -100,7 +100,7 @@ export default class SingleGameDetails extends Component {
                 </div>
                 <div className='game__timestamp'>
                   <img src='https://myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
-                  <span>{moment(start_date_time).format('LL')}</span>
+                  <span>{moment(start_date_time).format('LLL')}</span>
                 </div>
                 <div className='game__level__wrap'>
                   {experience_split.length > 0 &&

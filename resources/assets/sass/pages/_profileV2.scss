@@ -37,6 +37,9 @@
   .filter__control--is-focused {
     .filter__value-container {
       height: 45px;
+      .css-b8ldur-Input {
+        color: white !important;
+      }
     }
   }
 
@@ -226,6 +229,12 @@
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
 
+    .css-1g6gooi {
+      margin: 0;
+      padding: 2px;
+      color: #fff;
+    }
+
     .banner {
       background-repeat: no-repeat;
       background-size: contain;
@@ -309,6 +318,12 @@
       border-top: 1px solid #657172;
     }
 
+    .renderGameHeader {
+      color: #b8b8b8;
+      font-weight: bold;
+      margin-left: 8px;
+    }
+
     .spacer {
       margin: 8px 0;
       width: 100%;
@@ -373,6 +388,7 @@
       flex-direction: column;
       min-height: 40px;
       z-index: 1;
+      align-items: unset !important;
     }
 
     .input {
@@ -451,9 +467,13 @@
     justify-content: space-between;
     padding: 4px 24px;
     width: 100%;
-    height: 320px;
+    height: 130px;
     z-index: 2;
     font-family: 'Montserrat Alternates', sans-serif;
+
+    @media (min-width: 575px){
+      height: 320px;
+    }
 
     #header {
       display: flex;
@@ -922,6 +942,13 @@
     margin-bottom: 24px;
     position: relative;
 
+    .game-title-select {
+      min-width: 60%;
+      .css-b8ldur-Input {
+        color: white !important;
+      }
+    }
+
     .onboarding-buttons {
       display: flex;
       flex-direction: row;
@@ -956,6 +983,27 @@
       .selected {
         border-bottom: 2px solid #e5c746 !important;
       }
+    }
+
+    .suggestions-header {
+      background-color: #1e2326 !important;
+      border-radius: 10px !important;
+      border-bottom: none !important;
+      border: 1px solid #2d363a !important;
+      border-bottom-left-radius: 0 !important;
+      border-bottom-right-radius: 0 !important;
+      padding: 12px !important;
+      margin: 0px -12px -14px -12px !important;
+    }
+
+    .suggestions-scroll {
+      border-top: none !important;
+      border-top-right-radius: 0 !important;
+      border-top-left-radius: 0 !important;
+    }
+
+    .contained {
+      margin: 0px 20vw !important;
     }
 
     .scroll {
@@ -1305,6 +1353,13 @@
     .input-container-row {
       width: 75%;
     }
+
+    .game-title-select {
+      min-width: 60%;
+      .css-b8ldur-Input {
+        color: white !important;
+      }
+    }
   }
 
   #profile-social-hub {
@@ -1344,6 +1399,7 @@
       width: 96px;
       height: 64px;
       margin-right: 1.5rem;
+      cursor: pointer;
 
       .image {
         display: flex;

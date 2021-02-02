@@ -182,7 +182,7 @@ export function mapStateToProps(state) {
     group.privateKey = chat.privateKey
   })
   return {
-    level: state.user.userTransactionStates.user_level,
+    level: (state.user.userTransactionStates || {}).user_level,
     loading: state.pagination.groupsLoading,
     loadingMore: state.pagination.groupsLoadingMore,
     groups: groups.sort(compareLastMessages),

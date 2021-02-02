@@ -123,7 +123,7 @@ class ChatRepository {
   async fetchMessages({ requestedChatId, requestedMessageIds, requestedPage }) {
     let query = ChatMessage.query()
     if (requestedMessageIds) {
-      query = query.where('chat_messages.id', 'in', requestedMessageIds).orderBy('chat_messages.id', 'desc').fetch();  
+      query = query.where('chat_messages.id', 'in', requestedMessageIds).orderBy('chat_messages.id', 'desc').fetch();
     } else {
       query = query.where('chat_messages.chat_id', requestedChatId)
       .andWhere('chat_messages.key_receiver', null)
@@ -174,7 +174,12 @@ class ChatRepository {
   }
 
   async fetchUnreadMessages({ requestingUserId, count }) {
-    if (count) return this.countLastMessages({ requestingUserId });
+    if (count) {
+      const unreadMessages = await this.countLastMessages({ requestingUserId });
+      const unreadNotifications = await this.countNotifications({ requestingUserId });
+      const unreadSum = (parseInt(unreadMessages) || 0) + (parseInt(unreadNotifications) || 0);
+      return { unreadMessages: unreadSum };
+    }
     const { chats } = await this.fetchChats({ requestingUserId });
     const lastReadsRaw = await ChatLastRead.query().where('user_id', requestingUserId).fetch();
     if (!lastReadsRaw) return { unreadMessages: [] };
@@ -213,6 +218,15 @@ class ChatRepository {
     return { unreadMessages };
   }
 
+  async countNotifications({ requestingUserId }) {
+    const response = await Database
+      .from('user_chat_notifications')
+      .where({ 'user_id': requestingUserId })
+      .andWhere({ 'has_read': 0 })
+      .count();
+    return response[0]['count(*)'];
+  }
+  
   async countLastMessages({ requestingUserId }) {
     const response = await Database.raw(`
       select (
@@ -225,7 +239,7 @@ class ChatRepository {
       where user_id = ?
    `, requestingUserId);
    const unreadMessages = response[0].map((result) => result.unread_count);
-    return { unreadMessages: !!unreadMessages ? unreadMessages.reduce((prv, cur) => prv + cur, 0) : 0 };
+    return !!unreadMessages ? unreadMessages.reduce((prv, cur) => prv + cur, 0) : 0;
   }
 
   async fetchLastMessage({ requestedChatId }) {
@@ -641,7 +655,7 @@ class ChatRepository {
       .from('esports_experiences')
       .leftJoin('game_names', 'game_names.id', 'esports_experiences.game_names_id')
       .where('esports_experiences.user_id', requestingUserId)
-    
+
       let experiencesQuery = Database
       .select('game_experiences.user_id', 'game_names.user_id as owner_id', 'game_names_id', 'game_name', 'game_img')
       .from('game_experiences')
@@ -685,11 +699,15 @@ class ChatRepository {
   async markChatNotificationAsRead({ requestingUserId, id }) {
     if (id === 'ALL') await UserChatNotification.query().where('user_id', requestingUserId).update({ has_read: true });
     await UserChatNotification.query().where('id', id).update({ has_read: true });
+    const { unreadMessages: chats } = await this.fetchUnreadMessages({ requestingUserId, count: true })
+    await this.publishNotifications({ userId: requestingUserId, notifications: { chats } })
     return new DefaultSchema({ success: true });
   }
 
   async deleteChatNotifications({ requestingUserId }) {
     await UserChatNotification.query().where('user_id', requestingUserId).delete();
+    const { unreadMessages: chats } = await this.fetchUnreadMessages({ requestingUserId, count: true })
+    await this.publishNotifications({ userId: requestingUserId, notifications: { chats } })
     return new DefaultSchema({ success: true });
   }
 
@@ -1182,7 +1200,7 @@ class ChatRepository {
     const type = added[0] ? "PROMOTED" : "DEMOTED";
     this._addChatNotification({
       chatId: requestedChatId,
-      userId: added[0] || removed[0],
+      userId: added[0] || removed[0] || requestingUserId,
       senderId: requestingUserId,
       senderAlias: alias,
       type,
@@ -1222,7 +1240,6 @@ class ChatRepository {
   async _addChatGroupNotificationMessage({ requestingUserId, requestedChatId, chat, content }) {
     const otherUsersIds = chat.contacts.filter(contactId => contactId !== requestingUserId);
     const user = (await User.query().where('id', '=', requestingUserId).first()).toJSON();
-    console.log(user)
     for (const otherUserId of otherUsersIds) {
       const status = (await User.query().where('id', '=', otherUserId).first()).toJSON().status;
       if (status === "offline") {
@@ -1258,6 +1275,8 @@ class ChatRepository {
     const payload = new ChatNotificationSchema(notification);
     log('CHAT', `Adding Chat Notification: ${JSON.stringify(payload)}`);
     await this._notifyChatEvent(({ userId, action: 'chatNotification', payload }));
+    const { unreadMessages: chats } = await this.fetchUnreadMessages({ requestingUserId: userId, count: true })
+    await this.publishNotifications({ userId, notifications: { chats } })
   }
 
   async _getChatNotificationCount({ chatId, userId, type }) {
@@ -1369,6 +1388,11 @@ class ChatRepository {
       const contacts = (await Database.from('friends').where({ user_id: contactId })).map(contact => contact.friend_id);
       contacts.forEach(contactId => this.broadcast('chat:auth:*', `chat:auth:${contactId}`, `chat:${action}`, payload));
     }
+  }
+
+  async publishNotifications({ userId, notifications }) {
+    console.log(`publishNotifications for ${userId}: `, notifications);
+    return this.broadcast('chat:auth:*', `chat:auth:${userId}`, `chat:notification`, notifications);
   }
 
   async broadcastWebsocket(channelId, id, type, data) {

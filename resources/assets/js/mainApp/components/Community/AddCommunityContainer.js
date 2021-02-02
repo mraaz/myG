@@ -26,9 +26,7 @@ const AddCommunityContainer = ({ level }) => {
   const [isSubmitting, updateIsSubmitting] = useState(false)
   const [advancedSettingsState, updateAdvancedSettingsState] = useState({
     coHosts: null,
-    tags: '',
     description: '',
-    optionTags: '',
     grp_name_unique: true,
     type: 1,
     uploading: false,
@@ -46,7 +44,7 @@ const AddCommunityContainer = ({ level }) => {
   const gameLinkRef = useRef(null)
 
   useEffect(() => {
-    const fetchCommunities = async function () {
+    const fetchCommunities = async function() {
       try {
         const response = await axios.get('/api/groups/get_my_communities/1')
         return get(response, 'data.all_my_communities', [])
@@ -89,10 +87,10 @@ const AddCommunityContainer = ({ level }) => {
       return
     }
 
-    if (advancedSettingsState.tags.length >= MAX_GAME_TAGS) {
-      toast.success(<Toast_style text={'Alot of tags, that is. Only process 8 tags, I can. Try again. Yeesssssss.'} />)
-      return
-    }
+    // if (advancedSettingsState.tags.length >= MAX_GAME_TAGS) {
+    //   toast.success(<Toast_style text={'Alot of tags, that is. Only process 8 tags, I can. Try again. Yeesssssss.'} />)
+    //   return
+    // }
 
     if (advancedSettingsState.coHosts != null && advancedSettingsState.coHosts.length >= MAX_CO_HOSTS) {
       toast.success(<Toast_style text={'Alot of friends, that is. Only process 4 friends, I can. Try again. Yeesssssss.'} />)
@@ -103,7 +101,6 @@ const AddCommunityContainer = ({ level }) => {
       const { data } = await SubmitDataFunction({
         community_name: mainSettingsState.community_name.trim(),
         game_name_box: mainSettingsState.gameTitle,
-        tags: advancedSettingsState.tags,
         description: advancedSettingsState.description,
         coHosts: advancedSettingsState.coHosts,
         autoAccept: mainSettingsState.autoAccept,
@@ -197,19 +194,41 @@ const AddCommunityContainer = ({ level }) => {
     )
   }
 
-  const locked = (reason) => (
+  const locked = (reason, amount) => (
     <div className={styles.container}>
       <PageHeader headerText='Create Community' />
       <div className='locked-create-community'>
-        <p>Sorry mate!</p>
-        <p>{reason}</p>
+        <div className='locked-image'>
+          <img src='https://myG.gg/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
+        </div>
+        <span>Create Community is locked</span>
+        <span>
+          Reach{' '}
+          <span style={{ color: '#E6C846' }}>
+            {' '}
+            <strong>{reason}</strong>
+          </span>{' '}
+          to unlock {amount}.
+        </span>
+        <div className='rectangle'>
+          <img src='https://myg.gg/platform_images/Dashboard/btn_Network.svg' className='img-network' />
+          <div className='body-of-text'>
+            <p>
+              Go to{' '}
+              <Link to={'/achievements'}>
+                &nbsp;<strong> Achievements</strong>{' '}
+              </Link>
+            </p>
+            <p>to learn how to progress</p>
+          </div>
+        </div>
       </div>
     </div>
   )
-  if (level < 10) return locked('You need to reach level 10 to create a community.')
-  if (level < 15 && communities.length >= 1) return locked('You need to reach level 15 to create to create two communities.')
-  if (level < 20 && communities.length >= 2) return locked('You need to reach level 20 to create to create three communities.')
-  if (level < 25 && communities.length >= 3) return locked('You need to reach level 25 to create to create four communities.')
+  if (level < 10) return locked('level 10', 'one community')
+  if (level < 15 && communities.length >= 1) return locked('level 15', 'two communities')
+  if (level < 20 && communities.length >= 2) return locked('level 20', 'three communities')
+  if (level < 25 && communities.length >= 3) return locked('level 25', 'four communities')
 
   return (
     <div className={styles.container}>
@@ -239,7 +258,7 @@ const AddCommunityContainer = ({ level }) => {
 
 function mapStateToProps(state) {
   return {
-    level: state.user.userTransactionStates.user_level,
+    level: (state.user.userTransactionStates || {}).user_level,
   }
 }
 

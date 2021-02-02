@@ -9,6 +9,8 @@ const FollowerController = use('./FollowerController')
 const UserStatTransactionController = use('./UserStatTransactionController')
 const ProfileRepository = require('../../Repositories/Profile')
 const ElasticsearchRepository = require('../../Repositories/Elasticsearch')
+const ChatRepository = require('../../Repositories/Chat')
+const NotificationsRepository = require('../../Repositories/Notifications')
 const LoggingRepository = require('../../Repositories/Logging')
 
 class UserController {
@@ -20,9 +22,7 @@ class UserController {
     var friend = undefined,
       following = undefined
     try {
-      const user = await User.query()
-        .where('id', '=', request.params.id)
-        .fetch()
+      const user = await User.query().where('id', '=', request.params.id).fetch()
       if (auth.user.id != request.params.id) {
         friend = await Database.from('friends').where({
           user_id: auth.user.id,
@@ -53,9 +53,7 @@ class UserController {
 
   async profile_with_alias({ auth, request, response }) {
     try {
-      const user = await Database.from('users')
-        .where('alias', '=', request.params.alias)
-        .first()
+      const user = await Database.from('users').where('alias', '=', request.params.alias).first()
       const friend = await Database.from('friends').where({
         user_id: auth.user.id,
         friend_id: user.id,
@@ -159,6 +157,9 @@ class UserController {
             activity_type: 1,
           })
           .delete()
+        const userId = request.params.id
+        const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Cancelled successfully'
       } catch (error) {
         LoggingRepository.log({

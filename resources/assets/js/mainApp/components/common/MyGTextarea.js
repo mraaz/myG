@@ -4,12 +4,12 @@ const MyGTextarea = ({ placeholder, value, onChange, ...props }) => {
   const styles = {
     container: {
       backgroundColor: '#2D363A',
-      width: 'fit-content',
+      width: '100%',
       borderRadius: '4px',
       padding: '10px 10px',
     },
     inputContainer: {
-      width: '400px',
+      width: '100%',
       height: '120px',
       border: '1px #273137',
       backgroundColor: '#2D363A',

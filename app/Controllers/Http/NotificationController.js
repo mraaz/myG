@@ -3,8 +3,8 @@
 const Notification = use('App/Models/Notification')
 const Post = use('App/Models/Post')
 const Database = use('Database')
+const NotificationsRepository = require('../../Repositories/Notifications')
 const ChatRepository = require('../../Repositories/Chat')
-const { formatDateTimeFromNow } = require('../../Common/date')
 const LoggingRepository = require('../../Repositories/Logging')
 
 // Split the array into halves and merge them recursively
@@ -50,6 +50,9 @@ class NotificationController {
           activity_type: 12,
           group_id: request.input('group_id'),
         })
+        const userId = request.input('other_user_id')
+        const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Saved item'
       } catch (error) {
         LoggingRepository.log({
@@ -74,6 +77,9 @@ class NotificationController {
           activity_type: 17,
           group_id: request.params.group_id,
         })
+        const userId = request.params.other_user_id
+        const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Saved item'
       } catch (error) {
         LoggingRepository.log({
@@ -98,6 +104,9 @@ class NotificationController {
           activity_type: 18,
           chat_id: request.input('chatId'),
         })
+        const userId = request.input('userId')
+        const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Saved item'
       } catch (error) {
         LoggingRepository.log({
@@ -805,7 +814,9 @@ class NotificationController {
         })
         .whereIn('activity_type', [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20])
         .delete()
-
+      const userId = auth.user.id
+      const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
+      await ChatRepository.publishNotifications({ userId, notifications })
       return 'Saved successfully'
     } catch (error) {
       LoggingRepository.log({
@@ -926,6 +937,9 @@ class NotificationController {
           activity_type: 10,
           schedule_games_id: request.params.schedule_games_id,
         })
+        const userId = request.params.other_user_id
+        const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Saved item'
       } catch (error) {
         LoggingRepository.log({
@@ -954,6 +968,9 @@ class NotificationController {
             activity_type: 12,
             group_id: request.input('group_id'),
           })
+          const userId = mygroups[i].user_id
+          const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
+          await ChatRepository.publishNotifications({ userId, notifications })
         }
 
         return 'Saved'
@@ -984,6 +1001,9 @@ class NotificationController {
             activity_type: 12,
             group_id: request.input('group_id'),
           })
+          const userId = mygroups[i].user_id
+          const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
+          await ChatRepository.publishNotifications({ userId, notifications })
         }
 
         return 'Saved'
@@ -1011,7 +1031,9 @@ class NotificationController {
             activity_type: 12,
           })
           .delete()
-
+        const userId = auth.user.id
+        const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'deleted'
       } catch (error) {
         LoggingRepository.log({
@@ -1036,6 +1058,9 @@ class NotificationController {
           activity_type: 14,
           schedule_games_id: request.input('schedule_games_id'),
         })
+        const userId = request.input('other_user_id')
+        const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Saved item'
       } catch (error) {
         LoggingRepository.log({
@@ -1078,6 +1103,9 @@ class NotificationController {
           activity_type: 19,
           group_id: request.params.group_id,
         })
+        const userId = request.params.other_user_id
+        const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
+        await ChatRepository.publishNotifications({ userId, notifications })
         return 'Saved item'
       } catch (error) {
         LoggingRepository.log({
@@ -1100,6 +1128,9 @@ class NotificationController {
         user_id: my_user_id,
         activity_type: 20,
       })
+      const userId = my_user_id
+      const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })
+      await ChatRepository.publishNotifications({ userId, notifications })
       return 'Saved item'
     } catch (error) {
       LoggingRepository.log({

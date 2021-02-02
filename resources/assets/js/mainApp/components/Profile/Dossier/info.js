@@ -27,6 +27,8 @@ export class DossierInfo extends React.Component {
     visibilityName: 'secret',
     visibilityEmail: 'secret',
     lookingForWork: false,
+    hasMic: false,
+    underage: true,
   }
 
   componentDidMount() {
@@ -41,7 +43,9 @@ export class DossierInfo extends React.Component {
     const email = get(this.props, 'profile.email') || ''
     const team = get(this.props, 'profile.team') || ''
     const country = get(this.props, 'profile.country') || ''
-    const relationshipValue = get(this.props, 'profile.relationship') || 'Looking for player two'
+    const hasMic = get(this.props, 'profile.hasMic')
+    const underage = get(this.props, 'profile.underage')
+    const relationshipValue = get(this.props, 'profile.relationship') || ''
     const relationship = { label: relationshipValue, value: relationshipValue }
     const languages = (get(this.props, 'profile.languages') || []).map((language) => ({ label: language, value: language }))
     const mostPlayedGames = (get(this.props, 'profile.mostPlayedGames') || []).map((game) => ({
@@ -57,6 +61,8 @@ export class DossierInfo extends React.Component {
       email,
       team,
       country,
+      hasMic,
+      underage,
       mostPlayedGames,
       relationship,
       languages,
@@ -76,6 +82,8 @@ export class DossierInfo extends React.Component {
     }
     if (profile.team !== this.state.team) updates.team = this.state.team
     if (profile.country !== this.state.country) updates.country = this.state.country
+    if (profile.hasMic !== this.state.hasMic) updates.hasMic = this.state.hasMic
+    if (profile.underage !== this.state.underage) updates.underage = this.state.underage
     if (JSON.stringify(profile.languages) !== JSON.stringify(this.state.languages))
       updates.languages = this.state.languages.map((language) => language.value)
     if (JSON.stringify(profile.mostPlayedGames) !== JSON.stringify(this.state.mostPlayedGames.map((game) => game.gameName)))
@@ -212,8 +220,15 @@ export class DossierInfo extends React.Component {
   }
 
   loadOptions = async (input) => {
+    const currentGames = (this.state.mostPlayedGames || []).map(({ gameName }) => gameName)
     const results = await Game_name_values(input)
-    return results.length ? results : [{ label: input, value: input }]
+    const validResults = results.length && results.filter((result) => !currentGames.includes(result.value))
+    return results.length ? validResults : [{ label: input, value: input, gameName: input, gameNameValue: { label: input, value: input } }]
+  }
+
+  prepareValue = (value) => {
+    if (!value || !value.gameImg) return value
+    return { ...value, label: <img src={value.gameImg} /> }
   }
 
   renderGameInput = (index) => {
@@ -227,7 +242,7 @@ export class DossierInfo extends React.Component {
             loadOptions={this.loadOptions}
             onChange={(input) => this.handleDropDownChange(index, input)}
             isClearable
-            value={((this.state.mostPlayedGames || [])[index] || {}).gameNameValue}
+            value={this.prepareValue(((this.state.mostPlayedGames || [])[index] || {}).gameNameValue)}
             className='viewGame__name full-width'
             placeholder='Search, select or create game title'
             onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
@@ -311,8 +326,42 @@ export class DossierInfo extends React.Component {
     )
   }
 
+  renderHasMicInput = () => {
+    return (
+      <div className='row'>
+        <span className='hint'>I have Mic?</span>
+        <MyGCheckbox
+          checked={this.state.hasMic}
+          onClick={() => this.setState((previous) => ({ hasMic: !previous.hasMic }))}
+          labelText=''
+        />
+      </div>
+    )
+  }
+
+  rendeUnderageInput = () => {
+    return (
+      <div className='row'>
+        <span className='hint'>18+</span>
+        <MyGCheckbox
+          checked={!this.state.underage}
+          onClick={() => this.setState((previous) => ({ underage: !previous.underage }))}
+          labelText=''
+        />
+      </div>
+    )
+  }
+
   renderDivider = () => {
     return <div className='divider' />
+  }
+
+  renderGameHeader = () => {
+    return (
+      <div className='renderGameHeader'>
+        <span className='hint'>Games you are currently playing...</span>
+      </div>
+    )
   }
 
   renderSave = () => {
@@ -350,7 +399,10 @@ export class DossierInfo extends React.Component {
             {this.renderCountryInput()}
             {this.renderLanguagesInput()}
             {this.renderRelationshipInput()}
+            {this.renderHasMicInput()}
+            {this.rendeUnderageInput()}
             {this.renderDivider()}
+            {this.renderGameHeader()}
             {this.renderGameInput(0)}
             {this.renderGameInput(1)}
             {this.renderGameInput(2)}

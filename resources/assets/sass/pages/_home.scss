@@ -38,6 +38,24 @@ section#content-container {
   flex: 1;
   overflow-y: scroll;
   position: relative;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+
+  .viewHashTag__header {
+    height: 77px;
+    background: #1d2326 0% 0% no-repeat padding-box;
+    opacity: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px solid #344953;
+    .title {
+      padding: 0;
+      font: Bold 20px/14px Montserrat;
+      letter-spacing: 0px;
+      color: #fff;
+    }
+  }
 }
 .dashboard-main-container {
   display: flex;
@@ -218,6 +236,16 @@ section#content-container {
     //height: 900px; Hide the scroll bars, decided against it
     .content-area {
       overflow: scroll;
+      display: flex;
+      flex-direction: column;
+      min-height: 400px; // For mobile, ensures filter dropdown is not cut off when no games appear in search
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
+
+      @media (min-width: 575px) {
+        max-height: 100vh;
+        min-height: unset; // remove min-height as not needed for desktop
+      }
     }
     .search-header {
       position: relative;
@@ -682,6 +710,10 @@ section#content-container {
                 a {
                   width: 100%;
                 }
+                a:hover {
+                  color: #e5c746;
+                  text-decoration: none;
+                }
               }
               .comment-options {
                 width: 100%;
@@ -901,6 +933,16 @@ section#content-container {
           font: 12px/18px Montserrat;
           cursor: pointer;
           margin-left: 5px;
+
+          a:hover {
+            color: #e5c746;
+            text-decoration: none;
+          }
+          a {
+            color: #fff;
+            font: 12px/18px Montserrat;
+            cursor: pointer;
+          }
         }
 
         .post_content_editbox {
@@ -962,6 +1004,7 @@ section#content-container {
         max-width: 1200px;
         margin-left: auto;
         margin-right: auto;
+        border-radius: 8px;
         @media screen and (min-height: $tablet) {
           padding: 0 5px;
         }
@@ -1074,6 +1117,10 @@ section#content-container {
         display: block;
         .post-video {
           width: 100%;
+          max-height: 800px;
+        }
+        .image-gallery-image {
+          max-height: 800px;
         }
       }
       .update-stats {
@@ -1235,12 +1282,18 @@ section#content-container {
         }
         .clear__preview__image {
           position: absolute;
-          right: 4px;
-          top: 4px;
+          top: 0px;
+          margin-left: 110px;
           font-size: 10px;
           cursor: pointer;
           z-index: 5;
           color: #fff;
+          border-radius: 10px;
+          padding: 2px;
+          &:hover {
+            background-color: #000;
+            color: #fff;
+          }
         }
       }
       .compose-comment {
@@ -1347,6 +1400,7 @@ section#content-container {
               position: relative;
               background: #1d2326;
               clear: both;
+              border-radius: 8px;
               .edit__comment__input {
                 input {
                   position: relative;
@@ -1527,28 +1581,40 @@ section#content-container {
               .add-reply {
                 position: relative;
                 box-shadow: none;
-                border: none;
+                display: flex;
+                justify-content: center;
+                width: 90%;
+                align-items: center;
+                margin: 0 auto;
                 input {
-                  width: 100%;
-                  background: #1d2326 0% 0% no-repeat padding-box;
-                  color: #657172;
-                  padding: 10px;
                   border: none;
-                  margin-bottom: 10px;
-                  border-radius: 11px;
+                  position: relative;
+                  height: 40px;
+                  width: 100%;
+                  border: 1px solid #273136;
+                  border-radius: 4px;
+                  background: #1d2326 0% 0% no-repeat padding-box;
+                  resize: none;
+                  overflow: auto;
+                  color: #657172;
+                  font-size: 12px;
+                  padding: 8px 20px;
                 }
                 .insert__images {
                   position: absolute;
-                  right: -10px;
-                  top: 4px;
+                  right: 5px;
                   z-index: 2;
+                  width: 27px;
+                  height: 27px;
                   cursor: pointer;
+                  background: #171a1c;
+                  border-radius: 50px;
                   input {
                     display: none;
                   }
                   img {
                     padding-right: 18px;
-                    height: 25px;
+                    height: 27px;
                   }
                 }
                 .uploadImage_loading {
@@ -1570,12 +1636,19 @@ section#content-container {
                   }
                   .clear__preview__image {
                     position: absolute;
-                    right: 4px;
-                    top: 4px;
+                    top: 0;
+                    margin-left: 110px;
                     font-size: 10px;
                     cursor: pointer;
                     z-index: 5;
                     color: #fff;
+                    border-radius: 10px;
+                    padding: 2px;
+
+                    &:hover {
+                      background-color: #000;
+                      color: #fff;
+                    }
                   }
                 }
               }
@@ -1590,11 +1663,14 @@ section#content-container {
 .postCompose__container {
   background-color: #1d2326;
   border: 1px solid #273137;
-  margin: 0 100px;
-  margin-bottom: 24px;
+  margin-top: 78px;
   position: relative;
+  margin-left: 18px;
+  margin-right: 18px;
+  border-radius: 8px;
+
   &.zI1000 {
-    z-index: 1000;
+    z-index: 988;
   }
   .compose__type__section {
     display: flex;
@@ -1614,6 +1690,7 @@ section#content-container {
       display: flex;
       height: 100%;
       margin: 0 50px;
+      cursor: pointer;
       &.active {
         border-bottom: 1px solid #e5c746;
       }
@@ -1636,11 +1713,14 @@ section#content-container {
       display: flex;
       height: 100%;
       margin: 0 50px;
+      cursor: pointer;
       &.active {
         border-bottom: 1px solid #e5c746;
+        cursor: pointer;
       }
       &:hover {
         border-bottom: 1px solid #e5c746;
+        cursor: pointer;
       }
 
       @media screen and (max-width: $tablet) {
@@ -1727,6 +1807,8 @@ section#content-container {
       line-height: 14px;
       font-family: Montserrat, sans-serif;
       line-height: unset;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
     }
   }
   .hashTag_section {
@@ -1734,6 +1816,11 @@ section#content-container {
     align-items: center;
     padding: 6px 20px;
     color: #657172;
+    @media screen and (max-width: $tablet) {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 30px;
+    }
     .hashtag_label {
       font-weight: bold;
       font-size: 16px;
@@ -1741,11 +1828,13 @@ section#content-container {
       font-family: Montserrat, sans-serif;
       letter-spacing: 0px;
       margin-right: 10px;
+      height: 100%;
     }
     .hashtag_input {
+      font-size: 14px;
       background: #171a1c 0% 0% no-repeat padding-box;
       border: 1px solid #273137;
-      height: 36px;
+      // height: 36px;
       width: 100%;
       flex: 12;
       .hash_tag_name_box {
@@ -1827,6 +1916,7 @@ section#content-container {
       padding: 10px 40px;
       margin: 0;
       border: none;
+      border-radius: 8px;
       &:disabled {
         opacity: 0.5;
         cursor: not-allowed;
@@ -1946,6 +2036,7 @@ section#content-container {
     min-height: 160px;
     padding: 30px;
     background: #171a1c;
+    width: 100%;
     div {
       border: none !important;
       width: 100% !important;
@@ -1969,7 +2060,7 @@ section#content-container {
         margin-bottom: 10px;
         cursor: pointer;
       }
-      .files__preview {
+      .files__preview_compose {
         display: flex;
         justify-content: center;
         margin: 0;
@@ -1983,14 +2074,32 @@ section#content-container {
         }
         img {
           margin-right: 10px;
-          width: 160px;
-          height: 120px;
+          max-width: 320px;
+          max-height: 180px;
         }
         .remove__image {
           position: absolute;
           top: 2px;
           right: 12px;
           cursor: pointer;
+          color: #171a1c;
+          background: #fff;
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          &:hover {
+            color: #fff;
+            background: #000;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
         }
       }
     }
@@ -2010,9 +2119,10 @@ section#content-container {
     background: none !important;
     z-index: 10;
     transition: 1s all ease;
+    margin: 5px;
     .postCompose__container {
       margin: 0 auto;
-      width: 100% !important;
+      width: 90% !important;
       border-radius: 10px;
     }
     .people_group_list {
@@ -2060,7 +2170,7 @@ section#content-container {
           color: #93a4a5;
           padding: 0 14px;
           height: 28px;
-          width: 330px;
+          width: 100%;
           border: none;
           margin: 0;
         }
@@ -2198,9 +2308,13 @@ section#content-container {
           padding: 20px 0px 2px 20px;
         }
         .post__privacy_select {
-          display: flex;
+          display: grid;
           justify-content: center;
           margin: 20px 20px;
+          grid-template-columns: 1fr 1fr;
+          @media screen and (min-width: 460px) {
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+          }
           div {
             flex-grow: 2;
             display: flex;
@@ -2377,7 +2491,7 @@ section#content-container {
   .mobile-main-container {
     display: block;
     background: #0b0f14;
-    z-index: 999;
+    z-index: 9999;
     position: fixed;
     bottom: 0;
     width: 100%;
@@ -2393,7 +2507,7 @@ section#content-container {
     transition: bottom 0.6s;
     bottom: 0;
     width: 100%;
-    z-index: 999;
+    z-index: 9999;
 
     &.hide {
       bottom: -60px;
@@ -2405,31 +2519,46 @@ section#content-container {
   }
 
   .mobile-sub-menu-items {
+    &.single-row {
+      top: -74px;
+    }
     position: absolute;
-    top: -74px;
-    display: flex;
+    top: -150px;
+    display: grid;
     width: 100%;
     background: #171a1c;
     left: 0;
-    justify-content: space-around;
-  }
+    grid-template-columns: 1fr 1fr;
 
-  .mobile-sub-menu-items a {
-    color: #fff !important;
-  }
+    a {
+      color: #fff !important;
+    }
 
-  .mobile-sub-menu-items .find-matches {
-    padding: 25px 10px;
-  }
+    .small-tile {
+      background-color: #171a1c;
+      text-align: center;
+      padding: 15px 10px;
+      margin: 10px 0;
+      border-right: solid 1px #273137;
+      border &:last-child {
+        border: none;
+      }
+    }
 
-  .mobile-sub-menu-items .find-gamers {
-    padding: 25px 10px;
+    .large-tile {
+      background-color: #1d2326;
+      text-align: center;
+      padding: 25px 10px;
+      grid-column: span 2;
+      border-top: solid 1px #273137;
+      border-bottom: solid 1px #273137;
+    }
   }
 
   .mobile-top-menu-dropdown {
     position: fixed;
     background: #1d2326;
-    z-index: 999;
+    z-index: 9999;
     width: 100%;
   }
 
@@ -2443,7 +2572,7 @@ section#content-container {
     border-radius: 50px;
     display: flex;
     position: fixed;
-    z-index: 999;
+    z-index: 9999;
     transition: top 0.6s;
 
     &.hide {
@@ -2595,6 +2724,10 @@ section#content-container {
     margin: 20px !important;
   }
 
+  .css-1uccc91-singleValue {
+    color: #fff;
+  }
+
   .viewGame__container .viewGame__filter {
     margin: 0 !important;
   }
@@ -2614,10 +2747,6 @@ section#content-container {
 
   .app-container.home-page {
     display: block;
-  }
-
-  .postCompose__container {
-    margin: 50px;
   }
 }
 

@@ -18,14 +18,14 @@ const MyGCreateableSelect = ({
   const customStyles = {
     container: (provided) => ({
       ...provided,
-      width: '422px',
+      // width: '422px',
       ...styles.container,
     }),
     control: (provided) => ({
       ...provided,
       backgroundColor: '#2D363A',
       border: 'none',
-      width: '422px',
+      width: '100%',
       minHeight: '38px',
       color: '#fff',
       ...styles.control,
@@ -59,21 +59,19 @@ const MyGCreateableSelect = ({
     }),
   }
   return (
-    <div className='game-title-select'>
-      <CreatableSelect
-        defaultValue={defaultValue}
-        value={value}
-        isSearchable={isSearchable}
-        options={options}
-        onChange={onChange}
-        placeholder={placeholder}
-        onInputChange={onInputChange}
-        onCreateOption={onCreateOption}
-        noOptionsMessage={noOptionsMessage}
-        classNamePrefix='filter'
-        {...otherProps}
-      />
-    </div>
+    <CreatableSelect
+      defaultValue={defaultValue}
+      value={value}
+      isSearchable={isSearchable}
+      options={options}
+      onChange={onChange}
+      placeholder={placeholder}
+      onInputChange={onInputChange}
+      onCreateOption={onCreateOption}
+      noOptionsMessage={noOptionsMessage}
+      classNamePrefix='filter'
+      {...otherProps}
+    />
   )
 }
 

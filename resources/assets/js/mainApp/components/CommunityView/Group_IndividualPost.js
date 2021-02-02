@@ -571,7 +571,11 @@ export default class Group_IndividualPost extends Component {
   renderHashTags = (hash_tags) => {
     if (hash_tags.length > 0) {
       return hash_tags.map((tags) => {
-        return <strong>#{tags.content}</strong>
+        return (
+          <strong>
+            <Link to={`/hashtag/${tags.content}`}>{`#${tags.content} `}</Link>
+          </strong>
+        )
       })
     } else {
       return ''
@@ -679,15 +683,16 @@ export default class Group_IndividualPost extends Component {
                   </div>
                 </div>
               )}
-              <div
-                className='profile__image'
-                style={{
-                  backgroundImage: `url('${profile_img}')`,
-                  backgroundSize: 'cover',
-                }}>
-                <Link to={`/profile/${post.alias}`} className='user-img'></Link>
-                <div className='online__status'></div>
-              </div>
+              <Link to={`/profile/${post.alias}`} className='user-img'>
+                <div
+                  className='profile__image'
+                  style={{
+                    backgroundImage: `url('${profile_img}')`,
+                    backgroundSize: 'cover',
+                  }}>
+                  <div className='online__status'></div>
+                </div>
+              </Link>
               <div className='user__details'>
                 <div className='author__username'>
                   <div className='username'>
@@ -708,7 +713,7 @@ export default class Group_IndividualPost extends Component {
               <div className='post__content'>
                 {!this.state.edit_post && this.state.showmore && (
                   <Fragment>
-                    <p>
+                    <p style={{ whiteSpace: 'pre-line' }}>
                       {`${this.state.content}  `}
                       {this.renderHashTags(hash_tags)}
                       <strong onClick={this.toggleShowmore}>{' ... '}See less</strong>
@@ -717,7 +722,7 @@ export default class Group_IndividualPost extends Component {
                 )}
                 {!this.state.edit_post && !this.state.showmore && (
                   <Fragment>
-                    <p>
+                    <p style={{ whiteSpace: 'pre-line' }}>
                       {`${this.state.content.slice(0, 254)}  `} {this.renderHashTags(hash_tags)}
                       {this.state.content.length > 254 && <strong onClick={this.toggleShowmore}> {' ... '} See more</strong>}
                     </p>

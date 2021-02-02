@@ -179,28 +179,29 @@ export async function Schedule_Game_Skills(inputValue) {
 
 export async function Group_Hash_Tags(inputValue) {
   let allTags
+  return null
 
-  if (inputValue == '' || inputValue == undefined) {
-    allTags = await axios.get('/api/GroupHashTags/getTopGameTags')
-  } else {
-    allTags = await axios.post('/api/GroupHashTags/getGameTags', {
-      content: inputValue,
-    })
-  }
-  try {
-    var newArr = []
-    var i, newOption
-
-    if (allTags.data && allTags.data.allTags) {
-      for (i = 0; i < allTags.data.allTags.length; i++) {
-        newOption = createOption_GrpHashTags(allTags.data.allTags[i].content, allTags.data.allTags[i].id)
-        newArr.push(newOption)
-      }
-    }
-    return newArr
-  } catch (error) {
-    logToElasticsearch('error', 'Utility_Function', 'Failed Group_Hash_Tags:' + ' ' + error)
-  }
+  // if (inputValue == '' || inputValue == undefined) {
+  //   allTags = await axios.get('/api/GroupHashTags/getTopGameTags')
+  // } else {
+  //   allTags = await axios.post('/api/GroupHashTags/getGameTags', {
+  //     content: inputValue,
+  //   })
+  // }
+  // try {
+  //   var newArr = []
+  //   var i, newOption
+  //
+  //   if (allTags.data && allTags.data.allTags) {
+  //     for (i = 0; i < allTags.data.allTags.length; i++) {
+  //       newOption = createOption_GrpHashTags(allTags.data.allTags[i].content, allTags.data.allTags[i].id)
+  //       newArr.push(newOption)
+  //     }
+  //   }
+  //   return newArr
+  // } catch (error) {
+  //   logToElasticsearch('error', 'Utility_Function', 'Failed Group_Hash_Tags:' + ' ' + error)
+  // }
 }
 
 export async function Hash_Tags(inputValue) {

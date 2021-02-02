@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import SweetAlert from '../common/MyGSweetAlert'
 import General from './Context/General'
@@ -83,8 +84,30 @@ class Messenger extends React.Component {
       <section id='messenger'>
         {this.renderSweetAlert()}
         <div className='locked-chat'>
-          <p>Sorry mate!</p>
-          <p>You need to reach level 2 to use the chat.</p>
+          <div className='locked-image'>
+            <img src='https://myG.gg/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
+          </div>
+          <span>Your Chat is locked</span>
+          <span>
+            Reach{' '}
+            <span style={{ color: '#E6C846' }}>
+              {' '}
+              <strong>level 2</strong>
+            </span>{' '}
+            to unlock it.
+          </span>
+          <div className='rectangle'>
+            <img src='https://myg.gg/platform_images/Dashboard/btn_Network.svg' className='img-network' />
+            <div className='body-of-text'>
+              <p>
+                Go to{' '}
+                <Link to={'/achievements'}>
+                  &nbsp;<strong> Achievements</strong>{' '}
+                </Link>
+              </p>
+              <p>to learn how to progress</p>
+            </div>
+          </div>
         </div>
       </section>
     )
@@ -294,7 +317,7 @@ function mapStateToProps(state) {
   })
   contacts.forEach((contact) => (contact.chat = contactsWithChats[contact.contactId] || {}))
   return {
-    level: state.user.userTransactionStates.user_level,
+    level: (state.user.userTransactionStates || {}).user_level,
     alert: state.alert.show,
     autoSelfDestruct: state.user.autoSelfDestruct,
     persistEncryption: state.encryption.persist,

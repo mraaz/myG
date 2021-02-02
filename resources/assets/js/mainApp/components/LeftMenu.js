@@ -8,7 +8,7 @@ import axios from 'axios'
 import { logoutAction } from '../../redux/actions/userAction'
 import '../styles/LeftMenuStyles.scss'
 import { styles, sideBarItems, sideBarItemsOrder, logoutButton } from '../static/LeftMenu'
-import { throws } from 'assert'
+import NotificationIcon from './Notifications/Icon'
 
 class LeftMenu extends Component {
   static propTypes = {
@@ -40,7 +40,6 @@ class LeftMenu extends Component {
 
   state = {
     dropdown: false,
-    show_top_btn: false,
     isExpanded: false,
     sideBarData: {
       ...sideBarItems,
@@ -48,6 +47,23 @@ class LeftMenu extends Component {
     approvals: 0,
     alerts: 0,
     chats: 0,
+    activePage: ''
+  }
+
+  updateActivePage = (page) => {
+    switch (page) {
+      case 'FEED':
+        this.setState({ activePage: 'Dashboard'});
+        break;
+      case 'ACHIEVEMENTS':
+        this.setState({ activePage: 'Achievements'});
+        break;
+      case 'PROFILE':
+        this.setState({ activePage: 'Profile'});
+        break;
+      default:
+        this.setState({ activePage: '' });
+    }
   }
 
   onMenuToggle = () => {
@@ -75,6 +91,7 @@ class LeftMenu extends Component {
 
   onSubItemClick = (e) => {
     e.stopPropagation()
+    this.updateActivePage('')
     let expanded = localStorage.getItem('isExpanded')
     if (expanded == 'true') {
       expanded = true
@@ -149,7 +166,7 @@ class LeftMenu extends Component {
                 width='22'
                 className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
               />
-              <div className='notification-box'>{approvals}</div>
+              <NotificationIcon type="approvals" />
               {isExpanded && <div className={styles.line} />}
             </div>
           </Link>
@@ -161,7 +178,7 @@ class LeftMenu extends Component {
                 width='22'
                 className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
               />
-              <div className='notification-box'>{alerts}</div>
+              <NotificationIcon type="alerts" />
               {isExpanded && <div className={styles.line} />}
             </div>
           </Link>
@@ -173,7 +190,7 @@ class LeftMenu extends Component {
                 width='22'
                 className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
               />
-              <div className='notification-box'>{chats}</div>
+              <NotificationIcon type="chats" />
             </div>
           </Link>
         </div>
@@ -194,11 +211,11 @@ class LeftMenu extends Component {
   }
 
   getSideBarItems = () => {
-    const { sideBarData, isExpanded } = this.state
+    const { sideBarData, isExpanded, activePage } = this.state
 
-    const item = (icon, expanded, subItems, header) => (
+    const item = (icon, expanded, subItems, header, activePageId) => (
       <Fragment>
-        <div className='sidebar-sub-items'>
+        <div className={`sidebar-sub-items${activePageId === header ? ' active': ''}`}>
           <img src={icon} className='img-fluid' />
           {isExpanded && <p>{header}</p>}
         </div>
@@ -210,6 +227,7 @@ class LeftMenu extends Component {
       <Fragment>
         {sideBarItemsOrder.map((itemKey) => {
           const { icon, header, expanded, subItems, cta } = sideBarData[itemKey]
+          const activePageId = activePage;
           let tileCta = cta
           if (header === 'Profile') {
             const alias = this.props.initialData === 'loading' ? '' : this.props.initialData.userInfo.alias
@@ -219,17 +237,21 @@ class LeftMenu extends Component {
             return (
               <div
                 key={itemKey}
-                onClick={() => {
-                  this.onItemClick(itemKey)
-                }}>
-                {item(icon, expanded, subItems, header)}
+                onClick={() => this.onItemClick(itemKey)}>
+                {item(icon, expanded, subItems, header, activePageId)}
               </div>
             )
           } else {
             return (
-              <Link key={itemKey} to={tileCta} className='side-menu-anchor'>
-                {item(icon, expanded, subItems, header)}
-              </Link>
+              <div 
+                key={itemKey}
+                onClick={() => this.updateActivePage(itemKey)}>
+                <Link
+                  to={tileCta}
+                  className='side-menu-anchor'>
+                  {item(icon, expanded, subItems, header, activePageId )}
+                </Link>
+              </div>
             )
           }
         })}

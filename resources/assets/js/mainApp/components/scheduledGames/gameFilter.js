@@ -630,8 +630,8 @@ export default class ScheduleGames extends Component {
 
   handleAdditionalInfoChange = (data, key, type) => {
     const { filterValueArray = {}, extraFields = {} } = this.state
-    filterValueArray[key] = data
-    extraFields[key] = data
+    filterValueArray[key] = data ? data : ''
+    extraFields[key] = data ? data : ''
 
     this.setState(
       {

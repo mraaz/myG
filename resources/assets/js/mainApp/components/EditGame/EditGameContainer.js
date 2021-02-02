@@ -3,6 +3,7 @@ import { toast } from 'react-toastify'
 import moment from 'moment'
 import classNames from 'classnames'
 import Select from 'react-select'
+import axios from 'axios'
 
 import { withRouter } from 'react-router-dom'
 
@@ -14,8 +15,7 @@ import { Toast_style, Convert_to_comma_delimited_value } from '../Utility_Functi
 import { SubmitDataFunction } from './UpdateScheduleGames'
 import InvitePlayers from './InvitePlayers'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
-import SweetAlert from 'react-bootstrap-sweetalert'
+import SweetAlert from '../common/MyGSweetAlert'
 
 const EditGameContainer = (props) => {
   const { params = {} } = props.routeProps.match
@@ -431,11 +431,7 @@ const EditGameContainer = (props) => {
             </div>
           </div>
           <div className='modal__footer'>
-            <MyGButton
-              customStyles={{ color: '#fff', border: '2px solid #fff' }}
-              onClick={() => handleReasonSubmit(false)}
-              text='Cancel'
-            />
+            <MyGButton customStyles={{ color: '#fff', border: '2px solid #fff' }} onClick={() => handleReasonSubmit(false)} text='Cancel' />
             <button type='button' disabled={reason == ''} onClick={() => handleReasonSubmit(true)}>
               Submit
             </button>

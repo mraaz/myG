@@ -230,7 +230,7 @@ export default class ComposeSection extends Component {
       }
     }
 
-    const getGamers_you_might_know = async function() {
+    const getGamers_you_might_know = async function () {
       try {
         const gamers_you_might_know = await axios.get('/api/user/gamers_you_might_know')
 
@@ -250,7 +250,7 @@ export default class ComposeSection extends Component {
       open_compose_textTab = false
     }
     if (label == 'text') {
-      setTimeout(function() {
+      setTimeout(function () {
         document.getElementById('composeTextarea').focus()
       }, 0)
     }
@@ -331,7 +331,7 @@ export default class ComposeSection extends Component {
   getOptions_tags = (inputValue) => {
     const self = this
 
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         var results = await Hash_Tags(inputValue)
         self.setState({ options_tags: results })
@@ -440,9 +440,6 @@ export default class ComposeSection extends Component {
                         <span className='button video-btn'>
                           <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Video.svg`} />
                         </span>
-                        {/* <span className='button video-btn'>
-                            <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Audio.svg`} />
-                          </span> */}
                       </div>
                       <div className='text'>
                         Or <span>click here </span> to select
@@ -453,7 +450,7 @@ export default class ComposeSection extends Component {
                         </div>
                       )}
                       {preview_filesData.length > 0 && (
-                        <div className='files__preview'>
+                        <div className='files__preview_compose'>
                           {preview_filesData.slice(0, 3).map((file) => {
                             const splitUrl = file.src.split('.')
                             let fileType = splitUrl[splitUrl.length - 1]
@@ -496,10 +493,10 @@ export default class ComposeSection extends Component {
             </div> */}
             </div>
           )}
-          {open_compose_textTab && !communityBox && (
+          {open_compose_textTab && (
             <div className='hashTag_section'>
               <div className='hashtag_label'>Add Hashtags</div>
-              <div className='hashtag_input game-title-select'>
+              <div className='hashtag_input'>
                 <MyGCreateableSelect
                   isClearable
                   isMulti
@@ -560,10 +557,10 @@ export default class ComposeSection extends Component {
                 )}
               </div>
               <div className='post_for'>
-                {visibility == 1 && '( Everyone )'}
-                {visibility == 2 && '( Friends )'}
-                {visibility == 3 && '( Followers )'}
-                {visibility == 0 && '( Private )'}
+                {visibility == 1 && '(Everyone)'}
+                {visibility == 2 && '(Friends)'}
+                {visibility == 3 && '(Followers)'}
+                {visibility == 0 && '(Private)'}
               </div>
               <div className='add_more_people'>
                 <button type='button' className='add__people' onClick={this.addGroupToggle}>
@@ -573,7 +570,6 @@ export default class ComposeSection extends Component {
             </div>
           )}
           <div className='compose__button'>
-            {overlay_active && <button type='button' className='cancel' onClick={this.handleClear}></button>}
             <button type='button' disabled={!isButtonDisable} className='add__post' onClick={this.submitForm}>
               Post
             </button>

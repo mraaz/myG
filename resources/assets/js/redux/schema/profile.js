@@ -29,6 +29,8 @@ export default class ProfileSchema {
     if (data.status !== undefined) this.status = forceStatus(data.status)
     if (data.level !== undefined) this.level = forceInt(data.level)
     if (data.experience !== undefined) this.experience = forceInt(data.experience)
+    if (data.underage !== undefined) this.underage = forceBoolean(data.underage)
+    if (data.hasMic !== undefined) this.hasMic = forceBoolean(data.hasMic || data.has_mic)
     if (data.visibilityName !== undefined) this.visibilityName = forceString(data.visibilityName)
     if (data.visibilityEmail !== undefined) this.visibilityEmail = forceString(data.visibilityEmail)
     if (data.lookingForWork !== undefined) this.lookingForWork = forceBoolean(data.lookingForWork)

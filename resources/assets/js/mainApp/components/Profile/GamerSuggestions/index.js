@@ -26,7 +26,7 @@ export class GamerSuggestions extends React.Component {
   renderHeaders = () => {
     return(
       <div className='headers'>
-        <div className='header'>Gamer Suggestions</div>
+        <div className='header suggestions-header'>Gamer Suggestions</div>
       </div>
     );
   }
@@ -35,7 +35,7 @@ export class GamerSuggestions extends React.Component {
     const isHovering = this.state.hovering === profile.alias;
     const games = profile.mostPlayedGames.length ? profile.mostPlayedGames : profile.gameExperiences.map(({ name }) => name);
     return(
-      <div className="game-experience clickable" 
+      <div className="game-experience clickable"
       onClick={() => window.router.push(`/profile/${profile.alias}`)}
       onMouseEnter={() => this.setState({ hovering: profile.alias })}
       onMouseLeave={() => this.setState({ hovering: null })}
@@ -71,7 +71,7 @@ export class GamerSuggestions extends React.Component {
   }
 
   follow = (alias, profileId) => {
-    notifyToast(`Got it mate! You have followed ${alias}!`)
+    notifyToast(`Got it mate! You are following ${alias}!`)
     this.props.follow(alias, profileId)
   }
 
@@ -79,7 +79,7 @@ export class GamerSuggestions extends React.Component {
     notifyToast(`Got it mate! You have unfollowed ${alias}!`)
     this.props.unfollow(alias, profileId)
   }
-  
+
   invite = (gamer) => this.setState({ inviting: gamer });
 
   sendFriendRequest = (alias, profileId) => {
@@ -126,7 +126,7 @@ export class GamerSuggestions extends React.Component {
     if (!this.state.inviting) return null;
     return(
      <div id="find-gamers">
-        <InviteModal 
+        <InviteModal
           gamer={this.state.inviting}
           onClose={() => this.setState({ inviting: null })}
         />
@@ -146,13 +146,14 @@ export class GamerSuggestions extends React.Component {
 
   render() {
     if (!this.props.gamerSuggestions.length) return null;
+    const extraStyle = this.props.onboarding ? 'contained' : '';
     return(
       <div id="profile">
         <div id="profile-game-experiences">
           {this.renderInviteModal()}
           {this.renderOnboardingButtons()}
           {!this.props.noTitle && this.renderHeaders()}
-          <div className="scroll">
+          <div className={`scroll suggestions-scroll ${extraStyle}`}>
             {this.renderPageButtons()}
             {this.props.gamerSuggestions.slice(this.state.page, this.state.page + 4).map(this.renderGamerSuggestion)}
           </div>
