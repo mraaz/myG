@@ -286,7 +286,7 @@
       align-items: center;
       display: flex;
       flex-direction: column;
-      padding: 22px 76px;
+      padding: 22px 0;
     }
     &__bottom-content-container {
       display: flex;
@@ -314,7 +314,9 @@
   }
 }
 .ReactModal__Content {
-  min-width: 450px;
+  max-width: 450px;
+  width: 100%;
+  margin: 5px;
 }
 .View__JoinBUtton__modal {
   z-index: 9999;
