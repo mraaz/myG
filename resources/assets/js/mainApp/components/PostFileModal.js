@@ -132,7 +132,7 @@ export default class PostFileModal extends Component {
       getSearchInfo()
     }, 300)
 
-    const getSearchInfo = async function() {
+    const getSearchInfo = async function () {
       try {
         const gd = await axios.get(`/api/groups/${searchText}/groupSearchResults_Post`)
         let groups_im_in = gd.data.myGroupSearchResults
@@ -198,7 +198,7 @@ export default class PostFileModal extends Component {
             <div className={`people_group_list  active`}>
               <div className='search__box'>
                 <h1>Add communities feed</h1>
-                <div style={{ display: 'flex' }}>
+                <div style={{ display: 'flex', width: '100%' }}>
                   <label htmlFor='searchInput'>Search</label>
                   <input type='text' id='searchInput' onChange={this.getSearchGroup} value={searchText} placeholder='Search here ...' />
                 </div>
