@@ -2108,9 +2108,10 @@ section#content-container {
     background: none !important;
     z-index: 10;
     transition: 1s all ease;
+    margin: 5px;
     .postCompose__container {
       margin: 0 auto;
-      width: 100% !important;
+      width: 90% !important;
       border-radius: 10px;
     }
     .people_group_list {
@@ -2158,7 +2159,7 @@ section#content-container {
           color: #93a4a5;
           padding: 0 14px;
           height: 28px;
-          width: 330px;
+          width: 100%;
           border: none;
           margin: 0;
         }
@@ -2296,9 +2297,13 @@ section#content-container {
           padding: 20px 0px 2px 20px;
         }
         .post__privacy_select {
-          display: flex;
+          display: grid;
           justify-content: center;
           margin: 20px 20px;
+          grid-template-columns: 1fr 1fr;
+          @media screen and (min-width: 460px) {
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+          }
           div {
             flex-grow: 2;
             display: flex;
