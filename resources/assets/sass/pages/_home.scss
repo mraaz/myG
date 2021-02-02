@@ -1670,7 +1670,7 @@ section#content-container {
   border-radius: 8px;
 
   &.zI1000 {
-    z-index: 1000;
+    z-index: 988;
   }
   .compose__type__section {
     display: flex;
@@ -2491,7 +2491,7 @@ section#content-container {
   .mobile-main-container {
     display: block;
     background: #0b0f14;
-    z-index: 999;
+    z-index: 9999;
     position: fixed;
     bottom: 0;
     width: 100%;
@@ -2507,7 +2507,7 @@ section#content-container {
     transition: bottom 0.6s;
     bottom: 0;
     width: 100%;
-    z-index: 999;
+    z-index: 9999;
 
     &.hide {
       bottom: -60px;
@@ -2558,7 +2558,7 @@ section#content-container {
   .mobile-top-menu-dropdown {
     position: fixed;
     background: #1d2326;
-    z-index: 999;
+    z-index: 9999;
     width: 100%;
   }
 
@@ -2572,7 +2572,7 @@ section#content-container {
     border-radius: 50px;
     display: flex;
     position: fixed;
-    z-index: 999;
+    z-index: 9999;
     transition: top 0.6s;
 
     &.hide {
