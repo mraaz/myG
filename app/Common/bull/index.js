@@ -9,14 +9,14 @@ function setupBull() {
   const host = Env.get('REDIS_HOST');
   const port = Env.get('REDIS_PORT');
   const bullConfig = { redis: { host, port } };
-  const ioCluster = new Redis.Cluster([bullConfig.redis]);
+  const ioCluster = hasRedis && new Redis.Cluster([bullConfig.redis]);
   
   LoggingRepository.log({
     environment: process.env.NODE_ENV,
     type: 'startup',
     source: 'backend',
     context: "bull",
-    message: `Getting ready to start bull -> ${JSON.stringify({ hasRedis, bullConfig })}`
+    message: hasRedis ? `Getting ready to start bull -> ${JSON.stringify({ bullConfig })}` : 'Redis/Bull Disabled',
   });
 
   if (!hasRedis) return logBull(moment, 'Redis Disabled, no Bull Queues will be run.');

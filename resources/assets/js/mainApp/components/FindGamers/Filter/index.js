@@ -3,6 +3,7 @@ import Select from 'react-select'
 import AsyncSelect from 'react-select/async'
 import { Game_name_values, Disable_keys } from '../../Utility_Function'
 import { ignoreFunctions } from "../../../../common/render"
+import { fetchGameInfo } from "../../../../common/game"
 import { LANGUAGE_OPTIONS } from '../../../static/AddGame'
 
 const dropdownIcon = 'https://myG.gg/platform_images/View+Game/Down+Carrot.svg';
@@ -51,6 +52,8 @@ const initialFilters = {
   languages: '',
   underage: '',
   hasMic: '',
+  extraFields: [],
+  extraFieldsValues: [],
 };
 
 export default class Filter extends React.Component {
@@ -68,7 +71,7 @@ export default class Filter extends React.Component {
     const hasFiltersChanged = JSON.stringify(filters) !== JSON.stringify(previousFilters);
     if (!hasFiltersChanged) return;
     const hasFilter = (filter) => filters[filter] !== undefined && filters[filter] !== '';
-    const getFilter = (filter) => `${filter}: ${filters[filter]}`;
+    const getFilter = (filter) => `${filter.split(' ').join('_')}: ${filters[filter].split(' ').join('_')}`;
     const query = Object.keys(filters).filter(hasFilter).map(getFilter).join(' ');
     this.props.onFilter(query);
   }
@@ -85,7 +88,18 @@ export default class Filter extends React.Component {
       languages: hasFilter('languages') ? state.languages ? state.languages.map(({ value }) => value).join('|') : '' : '',
       underage: hasFilter('underage') ? state.underage.value === 'No' : '',
       hasMic: hasFilter('hasMic') ? state.hasMic.value === 'Yes' : '',
+      ...this.getExtraFilters(state),
     };
+  }
+
+  getExtraFilters = (state) => {
+    const extraFields = {};
+    Object.keys(state.extraFieldsValues).forEach((filter) => {
+      if (state.extraFieldsValues[filter]) {
+        extraFields[filter] = state.extraFieldsValues[filter].map(({ value }) => !!value && `${value}`.trim()).filter((value => !!value)).join('|');
+      }
+    });
+    return extraFields;
   }
 
   renderTitle = () => <div className="label">Filter by</div>;
@@ -120,6 +134,17 @@ export default class Filter extends React.Component {
                 </div>
               )
             })}
+            {this.state.extraFields.map(({ label: filter }) => {
+              return (
+                <div
+                  key={filter}
+                  className={`option clickable ${this.state.selectedFilters.includes(filter) ? 'selected' : ''}`}
+                  style={{ padding: '8px' }}
+                  onClick={() => this.handleAddedFilter(filter)}>
+                  {filter}
+                </div>
+              )
+            })}
           </div>
         </div>
       )}
@@ -127,11 +152,7 @@ export default class Filter extends React.Component {
   );
 
   renderFilters = () => {
-    return(
-      <div className="filter-container">
-        {this.state.selectedFilters.map(this.selectFilter)}
-      </div>
-    );
+    return this.state.selectedFilters.map(this.selectFilter);
   }
 
   selectFilter = (filter) => {
@@ -193,7 +214,7 @@ export default class Filter extends React.Component {
             defaultOptions
             isValidNewOption={() => false}
             loadOptions={(value) => Game_name_values(value)}
-            onChange={(data) => this.setState({ game: data ? data.value: '' })}
+            onChange={this.onGameSelected}
             isClearable
             value={value}
             className='filter-select'
@@ -208,11 +229,86 @@ export default class Filter extends React.Component {
     );
   }
 
+  onGameSelected = (data) => {
+    this.setState({ game: data ? data.value : '', extraFields: [], extraFieldsValues: [] });
+    if (!data || !data.game_names_id) return;
+    fetchGameInfo(data.game_names_id).then(this.onGameFetched)
+  }
+
+  onGameFetched = (data) => {
+    const extraFields = [];
+    Object.keys(data).forEach((field) => extraFields.push(data[field]));
+    this.setState({ extraFields });
+  }
+
+  renderDynamicFilters = () => {
+    if (!this.state.game) return null;
+    if (!this.state.extraFields || !this.state.extraFields.length) return null
+    return this.state.extraFields.filter((filter) => this.state.selectedFilters.includes(filter.label)).map((filter) => {
+      return (
+        <React.Fragment>
+          {filter.type === 'Multi' && this.renderMultiField(filter)}
+          {filter.type === 'Single' && this.renderSingleField(filter)}
+        </React.Fragment>
+      )
+    })
+  }
+
+  renderMultiField = (filter) => {
+    return (
+      <div className="filter-row" key={filter.label}>
+        <span className='filter-label'>{filter.label}</span>
+        <Select
+          className='filter-select'
+          placeholder={filter.placeholder}
+          name={`${filter}-select`}
+          value={this.state.extraFieldsValues[filter.label]}
+          onChange={(value) => this.setState(previous => ({ 
+            extraFieldsValues: { 
+              ...previous.extraFieldsValues,
+              [filter.label]: value,
+            } 
+          }))}
+          options={filter.value.split(',').map((option) => ({ label: option, value: option }))}
+          isClearable
+          isMulti={true}
+          classNamePrefix='filter'
+        />
+      </div>
+    )
+  }
+
+  renderSingleField = (filter) => {
+    return (
+      <div className="filter-row" key={filter.label}>
+        <span className='filter-label'>{filter.label}</span>
+        <Select
+          className='filter-select'
+          placeholder={filter.placeholder}
+          name={`${filter}-select`}
+          value={this.state.extraFieldsValues[filter.label]}
+          onChange={(value) => this.setState(previous => ({ 
+            extraFieldsValues: { 
+              ...previous.extraFieldsValues,
+              [filter.label]: value,
+            } 
+          }))}
+          options={filter.value.split(',').map((option) => ({ label: option, value: option }))}
+          isClearable
+          classNamePrefix='filter'
+        />
+      </div>
+    )
+  }
+
   render() {
     return(
       <div id="find-gamers-filter">
         <div className="label">Filter by</div>
-        {this.renderFilters()}
+        <div className="filter-container">
+          {this.renderFilters()}
+          {this.renderDynamicFilters()}
+        </div>
         {this.renderAddFilter()}
       </div>
     );
