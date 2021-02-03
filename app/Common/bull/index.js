@@ -1,6 +1,7 @@
 function setupBull() {
 
   const Queue = require('bull');
+  const Redis = require('ioredis');
   const moment = require('moment')();
   const LoggingRepository = require('../../Repositories/Logging')
   const Env = use('Env')
@@ -8,6 +9,7 @@ function setupBull() {
   const host = Env.get('REDIS_HOST');
   const port = Env.get('REDIS_PORT');
   const bullConfig = { redis: { host, port } };
+  const ioCluster = new Redis.Cluster([bullConfig.redis]);
   
   LoggingRepository.log({
     environment: process.env.NODE_ENV,
@@ -37,7 +39,7 @@ function logBull(moment, content) {
 }
 
 function getJobs(Queue, bullConfig) {
-  const prefixedConfig = (prefix) => ({ ...bullConfig, prefix });
+  const prefixedConfig = (prefix) => ({ ...bullConfig, prefix, createClient: () => ioCluster });
   return [
     {
       name: 'Chat Expired Attachments',
