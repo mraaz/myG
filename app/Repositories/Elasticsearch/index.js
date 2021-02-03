@@ -39,13 +39,24 @@ class ElasticsearchRepository {
 
   async storeUser({ user }) {
     log('ELASTICSEARCH', `Storing user in Elasticsearch: ${user.alias}`);
-    const gameExperiences = (user.gameExperiences || []).map((experience) => ({ 
-      id: experience.game,
-      experienceId: experience.id,
-      level: experience.level, 
-      experience: experience.experience,
-      name: experience.gameName,
-    }));
+    const gameExperiences = (user.gameExperiences || []).map((experience) => {
+      const dynamic = experience.dynamic || {};
+      const extraFields = {};
+      Object.keys(dynamic).forEach((field) => {
+        if (dynamic[field].text) extraFields[dynamic[field].text] = this.forceArray(dynamic[field].value)
+          .map(({ value }) => value)
+          .filter((value => !!value))
+          .join('|');
+      });
+      return { 
+        id: experience.game,
+        experienceId: experience.id,
+        level: experience.level, 
+        experience: experience.experience,
+        name: experience.gameName,
+        ...extraFields,
+      };
+    });
     return this.getElasticsearchClient().update({
       index: 'users',
       id: user.profileId,
@@ -135,6 +146,21 @@ class ElasticsearchRepository {
       console.error('Failed to Update Elasticsearch: ', error);
       return ({ success: false, error });
     });
+  }
+
+  forceArray(value) {
+    if (Array.isArray(value)) return value
+    const parsed = this.forceJson(value)
+    if (Array.isArray(parsed)) return parsed
+    return []
+  }
+
+  forceJson(value) {
+    try {
+      return JSON.parse(value)
+    } catch (_) {
+      return {}
+    }
   }
 }
 

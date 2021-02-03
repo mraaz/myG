@@ -1,5 +1,10 @@
+const uniq = require('lodash.uniq');
 const User = use('App/Models/User');
 const ElasticsearchRepository = require('../Elasticsearch');
+const gameNameFields = require('../../../database/fixtures/game_names_fields.json');
+const dynamicFields = uniq([].concat.apply([], 
+  gameNameFields.map((field) => Object.keys(field.labels).map((key) => field.labels[key].split(' ').join('_')))
+));
 
 class SearchRepository {
 
@@ -26,15 +31,23 @@ class SearchRepository {
     if (input.includes('team:')) targetedQueries.push({ field: 'team', value: input.split('team:')[1].trim().split(' ')[0] });
     if (input.includes('languages:')) targetedQueries.push({ field: 'languages', value: input.split('languages:')[1].trim().split(' ')[0] });
     if (input.includes('language:')) targetedQueries.push({ field: 'languages', value: input.split('language:')[1].trim().split(' ')[0] });
-    if (input.includes('mostPlayedGames:')) targetedQueries.push({ field: 'mostPlayedGames', value: input.split('mostPlayedGames:')[1].trim().split(' ')[0] });
-    if (input.includes('games:')) targetedQueries.push({ field: 'mostPlayedGames', value: input.split('games:')[1].trim().split(' ')[0] });
-    if (input.includes('game:')) targetedQueries.push({ field: 'mostPlayedGames', value: input.split('game:')[1].trim().split(' ')[0] });
+    if (input.includes('mostPlayedGames:')) targetedQueries.push({ field: 'gameExperiences.name', value: input.split('mostPlayedGames:')[1].trim()[1].trim().split(' ')[0].split('_').join(' ') });
+    if (input.includes('games:')) targetedQueries.push({ field: 'gameExperiences.name', value: input.split('games:')[1].trim().split(' ')[0].split('_').join(' ') });
+    if (input.includes('game:')) targetedQueries.push({ field: 'gameExperiences.name', value: input.split('game:')[1].trim().split(' ')[0].split('_').join(' ') });
     if (input.includes('underage:')) targetedQueries.push({ field: 'underage', value: input.split('underage:')[1].trim().split(' ')[0] });
     if (input.includes('hasMic:')) targetedQueries.push({ field: 'hasMic', value: input.split('hasMic:')[1].trim().split(' ')[0] });
+    dynamicFields.forEach((field) => {
+      if (input.includes(`${field}:`)) {
+        targetedQueries.push({ 
+          field: `gameExperiences.${field.split('_').join(' ')}.keyword`, 
+          value: input.split(`${field}:`)[1].trim().split(' ')[0].split('_').join(' '),
+        });
+      }
+    });
     if (targetedQueries.length === 1) this.buildTargetedUsersQuery(query, targetedQueries[0].field, targetedQueries[0].value);
     if (targetedQueries.length > 1) targetedQueries.reduce((a, b) => this.buildTargetedUsersQuery(a, b.field, b.value));
     const values = targetedQueries.map((field) => field.value).filter((value) => !!value);
-    const orSearch = input.split(' ').filter((value) => !value.includes(':')).filter((value) => !values.includes(value)).join(' ');
+    const orSearch = input.split(' ').filter((value) => !value.includes(':')).filter((value) => !values.includes(value)).join(' ').split('_').join(' ').trim();
     query.query.bool.should.push({ match: { alias: { query: orSearch, fuzziness: "auto" } } });
     query.query.bool.should.push({ match: { country: { query: orSearch, fuzziness: "auto" } } });
     query.query.bool.should.push({ match: { relationship: { query: orSearch, fuzziness: "auto" } } });

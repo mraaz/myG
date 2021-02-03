@@ -293,7 +293,7 @@ export default class MainInfo extends React.Component {
   renderDynamicFields = () => {
     if (!this.state.dynamicFields || !this.state.dynamicFields.length) return null
     return this.state.dynamicFields.map((field) => {
-      if (!this.props.isSelf && !get(this.props, `experience.dynamic.${field.id}`)) return null
+      if (!this.props.isSelf && !get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`))) return null
       return (
         <div className='row'>
           {field.type === 'Multi' && this.renderMultiField(field)}
@@ -320,8 +320,8 @@ export default class MainInfo extends React.Component {
           innerWidth={'100%'}
           options={field.values.map((value) => ({ value, label: value }))}
           placeholder={field.profile_placeholder}
-          onChange={(value) => this.props.storeDynamicExperience({ [field.id]: value })}
-          value={get(this.props, `experience.dynamic.${field.id}`)}
+          onChange={(value) => this.props.storeDynamicExperience({ [field.id]: { value, text: field.label } })}
+          value={get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`))}
           isMulti
         />
       </React.Fragment>
@@ -344,8 +344,8 @@ export default class MainInfo extends React.Component {
           innerWidth={'100%'}
           options={(field.values || []).map((value) => ({ value, label: value }))}
           placeholder={field.profile_placeholder}
-          onChange={(value) => this.props.storeDynamicExperience({ [field.id]: value })}
-          value={get(this.props, `experience.dynamic.${field.id}`)}
+          onChange={(value) => this.props.storeDynamicExperience({ [field.id]: { value, text: field.label } })}
+          value={get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`))}
         />
       </React.Fragment>
     )
@@ -353,10 +353,10 @@ export default class MainInfo extends React.Component {
 
   renderInputField = (field) => {
     if (!get(this.props, 'experience.game.value') || !this.props.isSelf)
-      return this.renderDisabledField(field.label, get(this.props, `experience.dynamic.${field.id}`), true)
+      return this.renderDisabledField(field.label, get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`)), true)
     const validation = field.values && field.values[0] && new RegExp(field.values[0])
     const required = field.values && field.values[1]
-    const isValid = validation ? validation.test(get(this.props, `experience.dynamic.${field.id}`)) : true
+    const isValid = validation ? validation.test(get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`))) : true
     const showLink = field.id === 'stats_link'
     return (
       <React.Fragment>
@@ -365,9 +365,9 @@ export default class MainInfo extends React.Component {
         <div className='input-container-row'>
           <input
             className={`input${isValid ? '' : ' input-error'}`}
-            value={get(this.props, `experience.dynamic.${field.id}`)}
+            value={get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`))}
             placeholder={field.profile_placeholder}
-            onChange={(event) => this.props.storeDynamicExperience({ [field.id]: event.target.value })}></input>
+            onChange={(event) => this.props.storeDynamicExperience({ [field.id]: { value: event.target.value, text: field.label } })}></input>
         </div>
         {showLink && (
           <div
@@ -454,7 +454,7 @@ export default class MainInfo extends React.Component {
     const { game, level, experience } = this.props.experience
     const hasInvalidDynamicFields = this.state.dynamicFields.some((field) => {
       if (field.type !== 'Input') return false
-      const value = get(this.props, `experience.dynamic.${field.id}`)
+      const value = get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`))
       const validation = field.values && field.values[0] && new RegExp(field.values[0])
       const isRequiredAndMissing = field.values && field.values[1] && !value
       const isValid = validation ? validation.test(value) : true
