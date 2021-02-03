@@ -176,6 +176,7 @@ export default class ScheduleGames extends Component {
   }
   handleTagsChange = (value_tags = [], name) => {
     const { filterValueArray = {} } = this.state
+    if (value_tags == null) value_tags = []
     filterValueArray['tags'] = value_tags
     this.setState({ value_tags, filterValueArray }, () => {
       const tags = this.getTagsValue([...value_tags])
