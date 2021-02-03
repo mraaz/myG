@@ -21,7 +21,7 @@ function setupBull() {
 
   if (!hasRedis) return logBull(moment, 'Redis Disabled, no Bull Queues will be run.');
 
-  getJobs(Queue, bullConfig).forEach((job) => {
+  getJobs(Queue, bullConfig, ioCluster).forEach((job) => {
     if (!job.enabled) return logBull(moment, `Skipping Disabled Job ${job.name}`);
     logBull(moment, `Setting up Bull Job: ${job.name}`);
     job.queue.process(job.action);
@@ -38,7 +38,7 @@ function logBull(moment, content) {
   console.log('\x1b[36m', 'BULL', moment.format('D MMM HH:mm:ss'), '-', content, '\x1b[0m');
 }
 
-function getJobs(Queue, bullConfig) {
+function getJobs(Queue, bullConfig, ioCluster) {
   const prefixedConfig = (prefix) => ({ ...bullConfig, prefix, createClient: () => ioCluster });
   return [
     {
