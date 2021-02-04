@@ -42,8 +42,8 @@
 .viewGame__container {
   margin: 0px 100px;
   overflow-y: scroll;
-  scrollbar-width: none;  /* Firefox */
-  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
 
   &.desktopView {
     display: none;
@@ -553,7 +553,7 @@
     border-top: 1px solid #384952;
     align-items: flex-start;
     justify-content: center;
-  
+
     .viewRightInfo {
       display: flex;
       align-items: center;
@@ -894,8 +894,8 @@
       padding: 20px 20px 0 20px;
       max-height: 65vh;
       overflow: scroll;
-      scrollbar-width: none;  /* Firefox */
-      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
 
       .gameList_head__option {
         display: flex;
@@ -920,8 +920,8 @@
       .gameList__box {
         position: relative;
         overflow: scroll;
-        scrollbar-width: none;  /* Firefox */
-        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
         .mygames {
           display: flex;
           justify-content: start;
@@ -1502,13 +1502,28 @@
                 }
                 .clear__preview__image {
                   position: absolute;
-                  right: 4px;
-                  top: 4px;
+                  top: 0px;
+                  margin-left: 110px;
                   font-size: 10px;
                   cursor: pointer;
                   z-index: 5;
                   color: #fff;
+                  border-radius: 10px;
+                  padding: 2px;
+                  &:hover {
+                    background-color: #000;
+                    color: #fff;
+                  }
                 }
+                // .clear__preview__image {
+                //   position: absolute;
+                //   right: 4px;
+                //   top: 4px;
+                //   font-size: 10px;
+                //   cursor: pointer;
+                //   z-index: 5;
+                //   color: #fff;
+                // }
               }
             }
           }
@@ -1629,13 +1644,28 @@
         }
         .clear__preview__image {
           position: absolute;
-          right: 4px;
-          top: 4px;
+          top: 0px;
+          margin-left: 110px;
           font-size: 10px;
           cursor: pointer;
           z-index: 5;
           color: #fff;
+          border-radius: 10px;
+          padding: 2px;
+          &:hover {
+            background-color: #000;
+            color: #fff;
+          }
         }
+        // .clear__preview__image {
+        //   position: absolute;
+        //   right: 4px;
+        //   top: 4px;
+        //   font-size: 10px;
+        //   cursor: pointer;
+        //   z-index: 5;
+        //   color: #fff;
+        // }
       }
     }
     .gamer__count,
@@ -2911,13 +2941,29 @@ $transition-default: 0.25s ease-out 0.1s;
 
       .clear__preview__image {
         position: absolute;
-        right: 4px;
-        top: 4px;
+        top: 0px;
+        margin-left: 110px;
         font-size: 10px;
         cursor: pointer;
         z-index: 5;
         color: #fff;
+        border-radius: 10px;
+        padding: 2px;
+        &:hover {
+          background-color: #000;
+          color: #fff;
+        }
       }
+
+      // .clear__preview__image {
+      //   position: absolute;
+      //   right: 4px;
+      //   top: 4px;
+      //   font-size: 10px;
+      //   cursor: pointer;
+      //   z-index: 5;
+      //   color: #fff;
+      // }
     }
   }
 

@@ -134,9 +134,16 @@
     -ms-user-select: none;
     user-select: none;
   }
-  @media only screen and (max-width: 1000px) {
-    .card-round {
-      width: 743px;
+
+  /* For desktop: */
+  [class*='col-'] {
+    width: 430px;
+  }
+
+  @media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    .col-3 {
+      width: 78%;
     }
   }
 }
