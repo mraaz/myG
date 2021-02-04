@@ -71,7 +71,7 @@
       </div>
   </div>
 </div>
-<script data-ad-client="ca-pub-2796266741567282" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+<script>
   function fetchSeatsAvailable() {
     const xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "GET", '/api/seats_available', false );
@@ -92,7 +92,6 @@
   function checkDevEnvironment() {
     const url = window.location.href;
     if(url.includes("localhost")) {
-      console.log("HERE");
       document.getElementById('cfiblinks').setAttribute("style", "display:block");
     } else {
       document.getElementById('cfiblinks').setAttribute("style", "display:none");
@@ -209,5 +208,8 @@
   setSeatsAvailable()
   checkDevEnvironment()
   setTimeout(checkErrors, 500)
+</script>
+
+<script data-ad-client="ca-pub-2796266741567282" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
 </script>
 @endsection
