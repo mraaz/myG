@@ -64,6 +64,10 @@ $main-font: 'Montserrat';
       margin-right: 5px;
     }
   }
+  .app-container.home-page .notifications-page .notifications-container .gameList__box .mygames .game__attributes .first__row .game__name {
+    width: auto !important;
+    max-width: 200px !important;
+  }
 }
 
 .app-container.home-page .notifications-page {

@@ -52,11 +52,11 @@ class MobileMenu extends Component {
       },
       {
         title: `Reported Users ${reportedUser ? `(${reportedUser})` : '(0)'}`, //isadmin
-        activeTab: 6,
+        activeTab: 5,
       },
       {
         title: 'Settings',
-        activeTab: 5,
+        activeTab: 6,
       },
     ]
     const prevCount = Number(activeTab) == 0 ? 0 : Number(activeTab) - 1
