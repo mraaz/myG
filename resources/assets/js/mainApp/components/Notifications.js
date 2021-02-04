@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
 import Menu from './Notifications/Menu/Menu'
+import MobileMenu from './Notifications/Menu/MobileMenu'
 import Upcoming from './Notifications/Upcoming'
 import Approvals from './Notifications/Approvals'
 import Alerts from './Notifications/Alerts'
@@ -61,6 +62,9 @@ export default class Notifications extends Component {
         <div className='notifications-container postCompose__container'>
           <div className='NotificationmobileView'>
             <Menu changeContentTab={this.changeContentTab} notificationsCount={notificationsCount} activeTab={activeTab} />
+          </div>
+          <div className='NotificationDesktopView'>
+            <MobileMenu changeContentTab={this.changeContentTab} notificationsCount={notificationsCount} activeTab={activeTab} />
           </div>
           <div className='notifications-content'>
             {activeTab == 0 && <Upcoming active={activeTab == 0} setNotificationsCount={this.setNotificationsCount} {...this.props} />}

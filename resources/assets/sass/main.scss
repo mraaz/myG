@@ -541,3 +541,10 @@ a:visited {
     display: block;
   }
 }
+.NotificationDesktopView {
+  display: block;
+
+  @media (min-width: 575px) {
+    display: none;
+  }
+}
