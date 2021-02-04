@@ -70,7 +70,7 @@ class MobileMenu extends Component {
             this.changeTab(Number(prevCount))
             changeContentTab(Number(prevCount))
           }}>
-          {`Prev`}
+          <img src='https://myG.gg/platform_images/View+Game/Down+Carrot.svg' />
         </div>
         <div className='activeTab__label'>{dummyData[activeTab].title}</div>
         <div
@@ -79,7 +79,7 @@ class MobileMenu extends Component {
             this.changeTab(Number(nextCount))
             changeContentTab(Number(nextCount))
           }}>
-          {`Next`}
+          <img src='https://myG.gg/platform_images/View+Game/Down+Carrot.svg' />
         </div>
       </div>
     )
