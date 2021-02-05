@@ -18,6 +18,12 @@ export default class Settings extends Component {
       viaEmail: value,
     })
   }
+  disableAcccount = () => {
+    console.log('disableAcccount click')
+  }
+  deleteAcccount = () => {
+    console.log('disableAcccount click')
+  }
 
   render() {
     const { active } = this.props
@@ -81,6 +87,14 @@ export default class Settings extends Component {
               </label>
             </div>
           </div>
+        </div>
+        <div className='setting_actions'>
+          <button type='button' className='disableAcccount' onClick={this.disableAcccount}>
+            Disable Account
+          </button>
+          <button type='button' className='deleteAcccount' onClick={this.deleteAcccount}>
+            Delete Account
+          </button>
         </div>
       </div>
     )
