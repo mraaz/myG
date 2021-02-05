@@ -3,12 +3,20 @@ import React, { Component } from 'react'
 export default class Settings extends Component {
   constructor() {
     super()
+    this.state = {
+      viaEmail: '',
+    }
   }
 
   componentDidMount = () => {
     document.title = 'myG - Notification'
 
     window.scrollTo(0, 0)
+  }
+  handleNotifyViaEmailChange = (event, value) => {
+    this.setState({
+      viaEmail: value,
+    })
   }
 
   render() {
@@ -30,8 +38,49 @@ export default class Settings extends Component {
             <input type='checkbox' defaultChecked={true} id='switch-orange' onChange={() => {}} className='switch' />
           </div>
         </div>
-        <div className='option'>
+        <div className='option via__email-container'>
           <div className='title'>Notify via E-mail</div>
+          <div className='via__email'>
+            <div>
+              <label className='container'>
+                Minimal
+                <input
+                  type='checkbox'
+                  name='minimal'
+                  checked={this.state.viaEmail == 'minimal'}
+                  onChange={(e) => this.handleNotifyViaEmailChange(e, 'minimal')}
+                  value={'minimal'}
+                />
+                <span className='checkmark'></span>
+              </label>
+            </div>
+            <div>
+              <label className='container'>
+                Always
+                <input
+                  type='checkbox'
+                  name='always'
+                  checked={this.state.viaEmail == 'always'}
+                  onChange={(e) => this.handleNotifyViaEmailChange(e, 'always')}
+                  value={'always'}
+                />
+                <span className='checkmark'></span>
+              </label>
+            </div>
+            <div>
+              <label className='container'>
+                Never
+                <input
+                  type='checkbox'
+                  name='never'
+                  checked={this.state.viaEmail == 'never'}
+                  onChange={(e) => this.handleNotifyViaEmailChange(e, 'never')}
+                  value={'never'}
+                />
+                <span className='checkmark'></span>
+              </label>
+            </div>
+          </div>
         </div>
       </div>
     )
