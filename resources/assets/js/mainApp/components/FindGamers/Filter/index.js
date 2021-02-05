@@ -71,7 +71,7 @@ export default class Filter extends React.Component {
     const hasFiltersChanged = JSON.stringify(filters) !== JSON.stringify(previousFilters);
     if (!hasFiltersChanged) return;
     const hasFilter = (filter) => filters[filter] !== undefined && filters[filter] !== '';
-    const getFilter = (filter) => `${filter.split(' ').join('_')}: ${filters[filter].split(' ').join('_')}`;
+    const getFilter = (filter) => `${filter.split(' ').join('_')}`
     const query = Object.keys(filters).filter(hasFilter).map(getFilter).join(' ');
     this.props.onFilter(query);
   }
@@ -263,11 +263,11 @@ export default class Filter extends React.Component {
           placeholder={filter.placeholder}
           name={`${filter}-select`}
           value={this.state.extraFieldsValues[filter.label]}
-          onChange={(value) => this.setState(previous => ({ 
-            extraFieldsValues: { 
+          onChange={(value) => this.setState(previous => ({
+            extraFieldsValues: {
               ...previous.extraFieldsValues,
               [filter.label]: value,
-            } 
+            }
           }))}
           options={filter.value.split(',').map((option) => ({ label: option, value: option }))}
           isClearable
@@ -287,11 +287,11 @@ export default class Filter extends React.Component {
           placeholder={filter.placeholder}
           name={`${filter}-select`}
           value={this.state.extraFieldsValues[filter.label]}
-          onChange={(value) => this.setState(previous => ({ 
-            extraFieldsValues: { 
+          onChange={(value) => this.setState(previous => ({
+            extraFieldsValues: {
               ...previous.extraFieldsValues,
               [filter.label]: value,
-            } 
+            }
           }))}
           options={filter.value.split(',').map((option) => ({ label: option, value: option }))}
           isClearable
