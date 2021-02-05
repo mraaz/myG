@@ -2,6 +2,12 @@ $main-shade: #171a1c;
 $secondary-shade: #1d2326;
 $third-shade: #2d363a;
 $main-font: 'Montserrat';
+$height: 15 / 16 * 1em;
+$width: 35 / 16 * 1em;
+$color-silver: #ffe98b;
+$color-peter-river: #ffe98b;
+$color-carrot: #ffe98b;
+$transition-default: 0.25s ease-out 0.1s;
 
 @media (max-width: 768px) {
   .notification {
@@ -45,23 +51,45 @@ $main-font: 'Montserrat';
   }
   .menu__scroll {
     display: flex;
+    -ms-flex-pack: center;
     justify-content: center;
     color: #fff;
+    background: #1d2326;
+    border-radius: 30px;
+    width: 90%;
+    padding: 15px;
+    position: relative;
     .previous {
       cursor: pointer;
       transform: rotate(90deg);
       display: flex;
       align-items: center;
+      position: absolute;
+      left: -12px;
+      top: 21px;
+      img {
+        height: 14px;
+      }
     }
+
     .next {
       cursor: pointer;
       transform: rotate(270deg);
       display: flex;
       align-items: center;
+      position: absolute;
+      right: -12px;
+      top: 21px;
+      img {
+        height: 14px;
+      }
     }
     .activeTab__label {
       margin-left: 5px;
       margin-right: 5px;
+      font-size: 20px;
+      font-weight: 700;
+      font-family: 'Montserrat';
     }
   }
   .app-container.home-page .notifications-page .notifications-container .gameList__box .mygames .game__attributes .first__row .game__name {
@@ -889,7 +917,8 @@ $main-font: 'Montserrat';
       height: 70px;
       padding: 20px;
       border-bottom: 1px #384952 solid;
-      display: block;
+      display: flex;
+      align-items: center;
 
       .title {
         font-family: $main-font;
@@ -967,6 +996,78 @@ $main-font: 'Montserrat';
       .noRecordFound__body {
         flex-direction: column;
         align-items: center;
+      }
+    }
+  }
+}
+.settings {
+  .button__switch {
+    font-size: 2.2em;
+    height: $height;
+    position: relative;
+    width: $width;
+    margin-left: auto;
+    .switch {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      // --
+      height: 0;
+      font-size: 1em;
+      left: 0;
+      line-height: 0;
+      outline: none;
+      position: absolute;
+      top: -2px;
+      width: 0;
+      cursor: pointer;
+
+      &:before,
+      &:after {
+        content: '';
+        font-size: 1em;
+        position: absolute;
+      }
+
+      &:before {
+        border-radius: 20 / 16 * 1em;
+        background: #1d2326;
+        height: $height;
+        left: 4 / 16 * -1em;
+        top: 3 / 16 * -1em;
+        transition: background-color $transition-default;
+        width: $width;
+      }
+
+      &:after {
+        border-radius: 50%;
+        background: #1d2326;
+        height: 14 / 18 * 1em;
+        transform: translate(0, 0);
+        transition: transform $transition-default;
+        width: 14 / 18 * 1em;
+        top: -5px;
+        left: -2px;
+      }
+
+      &:checked {
+        &:after {
+          transform: translate(20 / 18 * 1em, 0);
+        }
+      }
+    }
+  }
+  .browser__notification {
+    .switch {
+      &:after {
+        background: #446f62;
+      }
+    }
+  }
+  .sound__notification {
+    .switch {
+      &:after {
+        background: #804545;
       }
     }
   }

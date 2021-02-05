@@ -542,7 +542,9 @@ a:visited {
   }
 }
 .NotificationDesktopView {
-  display: block;
+  display: flex;
+  background: #0b0f14;
+  justify-content: center;
 
   @media (min-width: 575px) {
     display: none;

@@ -83,17 +83,17 @@ class Menu extends Component {
               title={`Reported Users ${reportedUser ? `(${reportedUser})` : '(0)'}`}
               active={activeTab == 6}
               onClick={() => {
-                this.changeTab(6)
-                changeContentTab(6)
+                this.changeTab(5)
+                changeContentTab(5)
               }}
             />
           )}
           <Button
             title='Settings'
-            active={activeTab == 5}
+            active={activeTab == 6}
             onClick={() => {
-              this.changeTab(5)
-              changeContentTab(5)
+              this.changeTab(6)
+              changeContentTab(6)
             }}
           />
         </div>
@@ -101,7 +101,6 @@ class Menu extends Component {
     )
   }
 }
-
 
 function mapStateToProps(state) {
   return {
