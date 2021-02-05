@@ -71,7 +71,7 @@ export default class Filter extends React.Component {
     const hasFiltersChanged = JSON.stringify(filters) !== JSON.stringify(previousFilters);
     if (!hasFiltersChanged) return;
     const hasFilter = (filter) => filters[filter] !== undefined && filters[filter] !== '';
-    const getFilter = (filter) => `${filter.split(' ').join('_')}`
+    const getFilter = (filter) => `${filter.split(' ').join('_')}: ${filters[filter].split(' ').join('_')}`
     const query = Object.keys(filters).filter(hasFilter).map(getFilter).join(' ');
     this.props.onFilter(query);
   }
