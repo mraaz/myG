@@ -246,74 +246,74 @@ class AuthController {
     return view.render('auth/changepwd')
   }
 
-  async updatepwd({ response, request, view, auth, session }) {
-    // const rules = {
-    //   currpassword: 'required|min:6|max:40',
-    //   password: 'required|min:6|max:40',
-    //   confirm_password: 'required',
-    // }
-    //
-    // const validation = await validate(request.all(), rules)
-    // if (request.input('password') == request.input('confirm_password')) {
-    //   if (validation.fails()) {
-    //     session.withErrors(validation.messages()).flashExcept(['password'])
-    //
-    //     return response.redirect('back')
-    //   } else {
-    //     const postData = request.post()
-    //     const passwordVerified = await Hash.verify(postData.currpassword, auth.user.password)
-    //
-    //     if (passwordVerified) {
-    //       try {
-    //         auth.user.password = await Hash.make(request.input('password'))
-    //         var updateUser = await User.query()
-    //           .where('id', '=', auth.user.id)
-    //           .update({ password: auth.user.password })
-    //         session.flash({ notification: 'Password Updated' })
-    //         return response.redirect('/')
-    //       } catch (error) {
-    //         console.log('error')
-    //         session
-    //           .withErrors([
-    //             {
-    //               field: 'alias',
-    //               message: 'Opps, there was an error with the Database, please try again later',
-    //             },
-    //           ])
-    //
-    //           .flashExcept(['password'])
-    //
-    //         return response.redirect('back')
-    //       }
-    //     } else {
-    //       session
-    //         .withErrors([
-    //           {
-    //             field: 'currpassword',
-    //             message: 'Opps, Incorrect Password',
-    //           },
-    //         ])
-    //
-    //         .flashExcept(['password'])
-    //
-    //       return response.redirect('back')
-    //     }
-    //
-    //     return response.redirect('/')
-    //   }
-    // } else {
-    //   session
-    //     .withErrors([
-    //       { field: 'password', message: 'Need to confirm password' },
-    //       { field: 'confirm_password', message: 'Need to confirm password' },
-    //     ])
-    //
-    //     .flashExcept(['password'])
-    //
-    //   return response.redirect('back')
-    // }
-    return response.redirect('/')
-  } //updatepwd
+  //async updatepwd({ response, request, view, auth, session }) {
+  // const rules = {
+  //   currpassword: 'required|min:6|max:40',
+  //   password: 'required|min:6|max:40',
+  //   confirm_password: 'required',
+  // }
+  //
+  // const validation = await validate(request.all(), rules)
+  // if (request.input('password') == request.input('confirm_password')) {
+  //   if (validation.fails()) {
+  //     session.withErrors(validation.messages()).flashExcept(['password'])
+  //
+  //     return response.redirect('back')
+  //   } else {
+  //     const postData = request.post()
+  //     const passwordVerified = await Hash.verify(postData.currpassword, auth.user.password)
+  //
+  //     if (passwordVerified) {
+  //       try {
+  //         auth.user.password = await Hash.make(request.input('password'))
+  //         var updateUser = await User.query()
+  //           .where('id', '=', auth.user.id)
+  //           .update({ password: auth.user.password })
+  //         session.flash({ notification: 'Password Updated' })
+  //         return response.redirect('/')
+  //       } catch (error) {
+  //         console.log('error')
+  //         session
+  //           .withErrors([
+  //             {
+  //               field: 'alias',
+  //               message: 'Opps, there was an error with the Database, please try again later',
+  //             },
+  //           ])
+  //
+  //           .flashExcept(['password'])
+  //
+  //         return response.redirect('back')
+  //       }
+  //     } else {
+  //       session
+  //         .withErrors([
+  //           {
+  //             field: 'currpassword',
+  //             message: 'Opps, Incorrect Password',
+  //           },
+  //         ])
+  //
+  //         .flashExcept(['password'])
+  //
+  //       return response.redirect('back')
+  //     }
+  //
+  //     return response.redirect('/')
+  //   }
+  // } else {
+  //   session
+  //     .withErrors([
+  //       { field: 'password', message: 'Need to confirm password' },
+  //       { field: 'confirm_password', message: 'Need to confirm password' },
+  //     ])
+  //
+  //     .flashExcept(['password'])
+  //
+  //   return response.redirect('back')
+  // }
+  //  return response.redirect('/')
+  //} //updatepwd
 }
 
 module.exports = AuthController

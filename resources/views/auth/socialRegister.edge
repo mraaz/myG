@@ -33,12 +33,12 @@
           </div>
 
           <form action="/user/save" method="POST" class="default-form">
-        {{ csrfField() }}
-        <div class="error-box
-        @if( hasErrorFor('email') || hasErrorFor('password') || hasErrorFor('alias') || hasErrorFor('firstName') || hasErrorFor('lastName') || hasErrorFor('database')|| hasErrorFor('encryption') )
-          active
-        @endif
-      ">
+            {{ csrfField() }}
+            <div class="error-box
+            @if( hasErrorFor('email') || hasErrorFor('password') || hasErrorFor('alias') || hasErrorFor('firstName') || hasErrorFor('lastName') || hasErrorFor('database')|| hasErrorFor('encryption') )
+              active
+            @endif
+            ">
             @if(hasErrorFor('alias'))
               {{getErrorFor('alias')}}
             @endif
@@ -66,79 +66,79 @@
             @if(hasErrorFor('database'))
               {{getErrorFor('database')}}
             @endif
-        </div>
-        <div class="form-group">
-            <input placeholder="ALIAS *" type="text" name="alias" value="{{alias}}" class="input-common
+          </div>
+          <div class="form-group">
+              <input placeholder="ALIAS *" type="text" name="alias" value="{{alias}}" class="input-common
 
-          @if(hasErrorFor('alias'))
-            error
-          @endif
-        " required="" onkeypress="return checkKeyPress(this)">
-        </div>
-        <div class="form-group">
-          <input placeholder="Chat password for End to End Encryption (Min:7 Max:30)" type="password" name="encryption" value="{{encryption}}" class="input-common
+            @if(hasErrorFor('alias'))
+              error
+            @endif
+          " required="" onkeypress="return checkKeyPress(this)">
+          </div>
+          <div class="form-group">
+            <input placeholder="Chat password for End to End Encryption (Min:7 Max:30)" type="password" name="encryption" value="{{encryption}}" class="input-common
 
-          @if(hasErrorFor('encryption'))
-            error
-          @endif
-        " required="" onkeypress="return checkKeyPress(this)">
-        </div>
-        <div class="form-group">
-            @if(email === '')
-            <input placeholder="EMAIL *" type="text" name="email" value="{{email}}" class="input-common
-        @if(hasErrorFor('email'))
-          error
-        @endif
-        " required="">
-            @else
-            <input placeholder="EMAIL" type="text" name="email" value="{{email}}" class="input-common
-
+            @if(hasErrorFor('encryption'))
+              error
+            @endif
+          " required="" onkeypress="return checkKeyPress(this)">
+          </div>
+          <div class="form-group">
+              @if(email === '')
+              <input placeholder="EMAIL *" type="text" name="email" value="{{email}}" class="input-common
           @if(hasErrorFor('email'))
             error
           @endif
-          " required="" readonly>
+          " required="">
+              @else
+              <input placeholder="EMAIL" type="text" name="email" value="{{email}}" class="input-common
+
+            @if(hasErrorFor('email'))
+              error
             @endif
-        </div>
-        <div class="form-group">
-            <input placeholder="FIRST NAME" type="text" name="firstName" value="{{ old ('firstName', '')}}" class="input-common
-
-          @if(hasErrorFor('firstName'))
-            error
-          @endif
-        " required="">
-        </div>
-        <div class="form-group">
-            <input placeholder="LAST NAME" type="text" name="lastName" value="{{ old ('lastName', '')}}" class="input-common
-
-          @if(hasErrorFor('lastName'))
-            error
-          @endif
-        " required="">
-        </div>
-        <input type='hidden' id='extra-seats-code' name='extraSeatsCode' value="" />
-        <div class="persist-password">
-          <input class="persist-password-checkbox" type="checkbox" id="persist-password" name="persist-password" checked/>
-          <p>Remember this computer</p>
-        </div>
-        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
-      </form>
-        <div class="registration-disclaimer">
-        * ALIAS must be unique. Choose carefully, it can not be changed later! <br>Alias can only contain letters (a-z), numbers (0-9), and full stop (.). Alias can not begin with a full stop and they can not have multiple full stops.
-        </div>
-        </div>
-        <div class="col-3 card-round">
-          <div class="register-message">
-          <span style="font-weight: 400; color: #e7bb30;"> By clicking Agree & Register, you agree to our <a href="/terms" style="text-decoration: underline">
-              Terms of Use
-            </a>and <a href="/privacy_policy" style="text-decoration: underline">
-              Privacy Policy.
-            </a></span>
+            " required="" readonly>
+              @endif
           </div>
-          <br>
           <div class="form-group">
-              <button class="button-common" type="submit">AGREE & REGISTER</button>
+              <input placeholder="FIRST NAME" type="text" name="firstName" value="{{ old ('firstName', '')}}" class="input-common
+
+            @if(hasErrorFor('firstName'))
+              error
+            @endif
+          " required="">
           </div>
-        </div>
+          <div class="form-group">
+              <input placeholder="LAST NAME" type="text" name="lastName" value="{{ old ('lastName', '')}}" class="input-common
+
+            @if(hasErrorFor('lastName'))
+              error
+            @endif
+          " required="">
+          </div>
+          <input type='hidden' id='extra-seats-code' name='extraSeatsCode' value="" />
+          <div class="persist-password">
+            <input class="persist-password-checkbox" type="checkbox" id="persist-password" name="persist-password" checked/>
+            <p>Remember this computer</p>
+          </div>
+          <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
+          <div class="registration-disclaimer">
+          * ALIAS must be unique. Choose carefully, it can not be changed later! <br>Alias can only contain letters (a-z), numbers (0-9), and full stop (.). Alias can not begin with a full stop and they can not have multiple full stops.
+          </div>
+          </div>
+          <div class="col-3 card-round">
+            <div class="register-message">
+            <span style="font-weight: 400; color: #e7bb30;"> By clicking Agree & Register, you agree to our <a href="/terms" style="text-decoration: underline">
+                Terms of Use
+              </a>and <a href="/privacy_policy" style="text-decoration: underline">
+                Privacy Policy.
+              </a></span>
+            </div>
+            <br>
+            <div class="form-group">
+                <button class="button-common" type="submit">AGREE & REGISTER</button>
+            </div>
+          </div>
+        </form>
         <div class="col-3 card-round">
             <div class="seats-header">
                 <b>We have currently</b>
