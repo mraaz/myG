@@ -1,5 +1,4 @@
 
-const moment = require('moment');
 const redis = require("redis");
 const Redlock = require('redlock');
 const keys = require("./keys");

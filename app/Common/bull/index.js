@@ -1,6 +1,7 @@
 function setupBull() {
 
   const Queue = require('bull');
+  const Redis = require('ioredis');
   const moment = require('moment')();
   const LoggingRepository = require('../../Repositories/Logging')
   const Env = use('Env')
@@ -8,18 +9,19 @@ function setupBull() {
   const host = Env.get('REDIS_HOST');
   const port = Env.get('REDIS_PORT');
   const bullConfig = { redis: { host, port } };
+  const ioCluster = hasRedis && new Redis.Cluster([bullConfig.redis]);
   
   LoggingRepository.log({
     environment: process.env.NODE_ENV,
     type: 'startup',
     source: 'backend',
     context: "bull",
-    message: `Getting ready to start bull -> ${JSON.stringify({ hasRedis, bullConfig })}`
+    message: hasRedis ? `Getting ready to start bull -> ${JSON.stringify({ bullConfig })}` : 'Redis/Bull Disabled',
   });
 
   if (!hasRedis) return logBull(moment, 'Redis Disabled, no Bull Queues will be run.');
 
-  getJobs(Queue, bullConfig).forEach((job) => {
+  getJobs(Queue, bullConfig, ioCluster).forEach((job) => {
     if (!job.enabled) return logBull(moment, `Skipping Disabled Job ${job.name}`);
     logBull(moment, `Setting up Bull Job: ${job.name}`);
     job.queue.process(job.action);
@@ -36,8 +38,8 @@ function logBull(moment, content) {
   console.log('\x1b[36m', 'BULL', moment.format('D MMM HH:mm:ss'), '-', content, '\x1b[0m');
 }
 
-function getJobs(Queue, bullConfig) {
-  const prefixedConfig = (prefix) => ({ ...bullConfig, prefix });
+function getJobs(Queue, bullConfig, ioCluster) {
+  const prefixedConfig = (prefix) => ({ ...bullConfig, prefix, createClient: () => ioCluster });
   return [
     {
       name: 'Chat Expired Attachments',

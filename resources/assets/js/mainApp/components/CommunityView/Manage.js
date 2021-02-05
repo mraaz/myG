@@ -2,12 +2,11 @@ import React from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 
-import { Toast_style, Disable_keys, Group_Hash_Tags, Convert_to_comma_delimited_value } from '../Utility_Function'
+import { Toast_style, Disable_keys, Convert_to_comma_delimited_value } from '../Utility_Function'
 import { MyGTextarea, MyGAsyncSelect, MyGCreateableSelect } from '../common'
 
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
 
-const MAX_GAME_TAGS = 4
 const MAX_INVITEES = 8
 
 const createOption = (label, hash_tag_id) => ({
@@ -26,30 +25,20 @@ export default class Manage extends React.Component {
       privacy: 1,
       approval: 'true',
       description: '',
-      tags: '',
-      options_tags: '',
       coHosts: null,
     }
   }
 
   componentDidMount() {
-    const { routeProps = {}, community_Membership_Approval, community_type, community_grp_description, community_allGrpTags } = this.props
+    const { routeProps = {}, community_Membership_Approval, community_type, community_grp_description } = this.props
     const { match } = this.props.routeProps
-
-    let tmpArr = []
-    for (let i = 0; i < community_allGrpTags.length; i++) {
-      tmpArr.push(createOption(community_allGrpTags[i], -1))
-    }
 
     this.setState({
       communityName: match.params.name,
       privacy: community_type,
       approval: community_Membership_Approval == 1 ? 'true' : 'false',
       description: community_grp_description,
-      tags: tmpArr,
     })
-
-    this.getOptions_tags()
   }
 
   onPlayersSuggestionFetch = async (value) => {
@@ -70,34 +59,6 @@ export default class Manage extends React.Component {
     return []
   }
 
-  //https://github.com/JedWatson/react-select/issues/3988 :RAAZ remove once fixed
-  getNewOptionData = (inputValue, optionLabel) => ({
-    value: inputValue,
-    label: optionLabel,
-    __isNew__: true,
-    isEqual: () => false,
-  })
-
-  handleCreateHashTags = (inputValue) => {
-    if (inputValue.length > 88) {
-      toast.success(<Toast_style text={'Sorry mate! Tag length is tooo long.'} />)
-      return
-    }
-
-    if (this.state.tags && this.state.tags.length >= MAX_GAME_TAGS) {
-      return
-    }
-
-    let { options_tags, tags } = this.state
-    if (tags == null) tags = ''
-
-    const newOption = createOption(inputValue, null)
-    this.setState({ options_tags: [...options_tags, newOption] })
-    this.setState({ tags: [...tags, newOption] })
-
-    this.props.onSettingsChange({ tags: [...tags, newOption] })
-  }
-
   updateAdvancedSettings = (e) => {
     const description = e.target.value
 
@@ -106,29 +67,8 @@ export default class Manage extends React.Component {
     })
   }
 
-  updateAdvancedSettings2 = (tags) => {
-    this.setState({ tags }, () => {
-      this.props.onSettingsChange({ tags })
-    })
-  }
-
   updateAdvanced_coHosts = (coHosts) => {
     this.setState({ coHosts })
-  }
-
-  getOptions_tags = (inputValue) => {
-    const self = this
-
-    const getInitialData = async function(inputValue) {
-      try {
-        const results = await Group_Hash_Tags(inputValue)
-        self.setState({ options_tags: results })
-      } catch (error) {
-        logToElasticsearch('error', 'Community-View_Manage', 'getOptions_tags:' + ' ' + error)
-      }
-    }
-
-    getInitialData(inputValue)
   }
 
   handleCommunityNameChange = (e) => {
@@ -350,34 +290,8 @@ export default class Manage extends React.Component {
           </div>
         </div>
         <div className='group__privacy row'>
-          <div className='label col-sm-4'>Community Tags</div>
-          <div className='options col-sm-8'>
-            <div>
-              <div className='game-title-select'>
-                <MyGCreateableSelect
-                  isClearable
-                  isMulti
-                  onCreateOption={this.handleCreateHashTags}
-                  onInputChange={this.getOptions_tags}
-                  onChange={this.updateAdvancedSettings2}
-                  getNewOptionData={this.getNewOptionData}
-                  value={this.state.tags}
-                  placeholder='Search, Select or create Community Tags'
-                  options={this.state.tags && this.state.tags.length >= MAX_GAME_TAGS ? [] : this.state.options_tags}
-                  noOptionsMessage={() => {
-                    return this.state.options_tags && this.state.options_tags.length >= MAX_GAME_TAGS
-                      ? 'You have reached the max options value'
-                      : 'Yo! Either nothing to display or you need to type in something'
-                  }}
-                  onKeyDown={Disable_keys}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className='group__privacy row'>
           <div className='label col-sm-4'>Invite friends</div>
-          <div className='options col-sm-8'>
+          <div className='options col-sm-8 game-title-select'>
             <MyGAsyncSelect
               isClearable
               isMulti
@@ -408,7 +322,7 @@ export default class Manage extends React.Component {
         <div className='group__privacy row'>
           <div className='label col-sm-4'>Community Description</div>
           <div className='options col-sm-8'>
-            <div>
+            <div className='text-box'>
               <div className='description-text-area'>
                 <MyGTextarea
                   onChange={(e) => {

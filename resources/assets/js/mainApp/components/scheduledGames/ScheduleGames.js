@@ -53,7 +53,9 @@ export default class ScheduleGames extends Component {
       }
     } else {
       const scheduleGames = await getScheduleGames({ counter: 1 })
-      if (scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
+      if (scheduleGames == undefined) return
+      console.log(scheduleGames, '<<<scheduleGames')
+      if (scheduleGames && scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
         this.setState({ scheduleGames: scheduleGames.data.latestScheduledGames })
       }
     }
@@ -141,7 +143,7 @@ export default class ScheduleGames extends Component {
   }
   handleExcludesFullGames = (e) => {
     const checked = e.target.checked
-    this.setState({ slideOptionText: checked ? 'Show expired games': 'Exclude expired games' })
+    this.setState({ slideOptionText: checked ? 'Show expired games' : 'Exclude expired games' })
 
     this.setState({ show_full_games: checked }, () => {
       this.getScheduleGamesChangeCall({ show_full_games: checked })
@@ -172,7 +174,7 @@ export default class ScheduleGames extends Component {
     }
     return (
       <Fragment>
-        <section className="desktopView">
+        <section className='desktopView'>
           <div className='viewGame__header'>
             <div className='title'>Find Matches</div>
           </div>
@@ -224,26 +226,26 @@ export default class ScheduleGames extends Component {
             </div>
           </section>
         </section>
-                    
-        <section className="viewGame__container__mobile mobileView">
+
+        <section className='viewGame__container__mobile mobileView'>
           <MobileScheduledGames
-              scheduleGames={scheduleGames}
-              selectedGame={selected_game}
-              singleScheduleGamesPayload={singleScheduleGamesPayload}
-              showFullGames={show_full_games}
-              handleExcludesFullGames={this.handleExcludesFullGames}
-              slideOptionLabel={this.state.slideOptionText}
-              copyClipboardEnable={true}
-              showPrefilledFilter={true}
-              getSingleGameData={this.getSingleGameData}
-              deSelectGame={this.deSelectGame}
-              showRightSideInfo={showRightSideInfo}
-              routeProps={this.props.routeProps}
-              commentData={commentData}
-              showAllComment={showAllComment}
-              handleShowAllComments={this.handleShowAllComments}
-              user={this.props.initialData}
-            />
+            scheduleGames={scheduleGames}
+            selectedGame={selected_game}
+            singleScheduleGamesPayload={singleScheduleGamesPayload}
+            showFullGames={show_full_games}
+            handleExcludesFullGames={this.handleExcludesFullGames}
+            slideOptionLabel={this.state.slideOptionText}
+            copyClipboardEnable={true}
+            showPrefilledFilter={true}
+            getSingleGameData={this.getSingleGameData}
+            deSelectGame={this.deSelectGame}
+            showRightSideInfo={showRightSideInfo}
+            routeProps={this.props.routeProps}
+            commentData={commentData}
+            showAllComment={showAllComment}
+            handleShowAllComments={this.handleShowAllComments}
+            user={this.props.initialData}
+          />
         </section>
       </Fragment>
     )
