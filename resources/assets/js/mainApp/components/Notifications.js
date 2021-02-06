@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
 import Menu from './Notifications/Menu/Menu'
+import MobileMenu from './Notifications/Menu/MobileMenu'
 import Upcoming from './Notifications/Upcoming'
 import Approvals from './Notifications/Approvals'
 import Alerts from './Notifications/Alerts'
@@ -59,15 +60,20 @@ export default class Notifications extends Component {
     return (
       <section className='notifications-page'>
         <div className='notifications-container postCompose__container'>
-          <Menu changeContentTab={this.changeContentTab} notificationsCount={notificationsCount} activeTab={activeTab} />
+          <div className='NotificationmobileView'>
+            <Menu changeContentTab={this.changeContentTab} notificationsCount={notificationsCount} activeTab={activeTab} />
+          </div>
+          <div className='NotificationDesktopView'>
+            <MobileMenu changeContentTab={this.changeContentTab} notificationsCount={notificationsCount} activeTab={activeTab} />
+          </div>
           <div className='notifications-content'>
             {activeTab == 0 && <Upcoming active={activeTab == 0} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
             {activeTab == 1 && <Approvals active={activeTab == 1} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
             {activeTab == 2 && <Alerts active={activeTab == 2} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
             {activeTab == 3 && <Chat active={activeTab == 3} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
             {activeTab == 4 && <Reports active={activeTab == 4} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
-            {activeTab == 6 && <ReportedUser active={activeTab == 6} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
-            {activeTab == 5 && <Settings active={activeTab == 5} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
+            {activeTab == 5 && <ReportedUser active={activeTab == 5} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
+            {activeTab == 6 && <Settings active={activeTab == 6} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
           </div>
         </div>
       </section>
