@@ -98,17 +98,6 @@ export default class Group_IndividualPost extends Component {
       const mylike = await axios.post('/api/likes', {
         post_id: post_id,
       })
-      // let { post, user } = this.props
-      // if (this.props != undefined) {
-      //   if (user.userInfo != undefined) {
-      //     if (post.user_id != user.userInfo.id) {
-      //       const addPostLike = axios.post('/api/notifications/addPostLike', {
-      //         other_user_id: post.user_id,
-      //         post_id: post_id,
-      //       })
-      //     }
-      //   }
-      // }
     } catch (error) {
       logToElasticsearch('error', 'IndividualComment', 'Failed click_like_btn:' + ' ' + error)
     }
@@ -152,6 +141,7 @@ export default class Group_IndividualPost extends Component {
 
   componentDidMount() {
     let { post } = this.props
+    console.log(this.props, '<<<PSOPGROUPS')
     let media_url = ''
     const self = this
     if (post.media_url) {
@@ -195,46 +185,6 @@ export default class Group_IndividualPost extends Component {
 
     var post_id = this.props.post.id
 
-    // const getmyPostCount = async function() {
-    //   try {
-    //     var i
-    //
-    //     const myPostCount = await axios.get(`/api/post/my_count/${post_id}`)
-    //
-    //     if (myPostCount.data.no_of_my_posts[0].no_of_my_posts != 0) {
-    //       self.setState({
-    //         show_post_options: true,
-    //       })
-    //     }
-    //   } catch (error) {
-    //     logToElasticsearch('error', 'IndividualComment', 'Failed getmyPostCount:' + ' ' + error)
-    //   }
-    // }
-
-    const getGroup_info = async function() {
-      try {
-        var i
-
-        const myPostCount = await axios.get(`/api/groups/${post.group_id}`)
-
-        if (myPostCount.data && myPostCount.data.group && myPostCount.data.group.length != 0) {
-          self.setState({
-            group_name: myPostCount.data.group[0].name,
-          })
-        }
-      } catch (error) {
-        logToElasticsearch('error', 'IndividualComment', 'Failed getGroup_info:' + ' ' + error)
-      }
-    }
-
-    //getmyPostCount()
-
-    if (post.group_id != null && post.group_id != '') {
-      if ((post.source = 'news_feed')) {
-        this.state.show_group_name = true
-        getGroup_info()
-      }
-    }
     this.pullComments()
   }
 
