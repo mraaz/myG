@@ -151,7 +151,7 @@ class AuthController {
       await auth.login(user)
 
       const connections = new ConnectionController()
-      await connections.master_controller({ auth })
+      connections.master_controller({ auth })
 
       return response.redirect(`/setEncryptionParaphrase/${request.input('encryption')}`)
     }

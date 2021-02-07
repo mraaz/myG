@@ -147,6 +147,8 @@ class ConnectionController {
     //ToDO: https://github.com/mraaz/myGame/issues/241
 
     console.log("Dioing");
+    console.log(auth.user, "<<<<AuthUser");
+    console.log(auth.user.id);
 
     if (auth.user) {
       try {
