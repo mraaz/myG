@@ -462,6 +462,11 @@ a:visited {
     background-color: #e5c746 !important;
     border: 1px solid #e5c746;
     padding: 0 !important;
+
+    & > * {
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
+    }
   }
 
   .filter {

@@ -1755,6 +1755,8 @@
         .people_group_list_box {
           height: 370px;
           overflow: scroll;
+          scrollbar-width: none; /* Firefox */
+          -ms-overflow-style: none; /* IE and Edge */
           transition: 1s all ease;
           .list__item {
             display: flex;

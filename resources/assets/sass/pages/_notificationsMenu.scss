@@ -216,6 +216,9 @@ $transition-default: 0.25s ease-out 0.1s;
     .game__approval,
     .game__report,
     .game__reportedUser .notification__container {
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
+
       .noRecordFound__wraper {
         background: #181a1c;
         .noRecordFound__body {
@@ -505,6 +508,8 @@ $transition-default: 0.25s ease-out 0.1s;
       box-sizing: border-box;
       overflow-y: scroll;
       height: 100vh;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
     }
   }
 
