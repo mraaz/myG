@@ -34,7 +34,7 @@ export default class ErrorHandler extends React.PureComponent {
   }
 
   handleError = (error, reload) => {
-    // originalErrorHandler(error)
+    originalErrorHandler(error)
 
     const stack = (error && error.stack && error.stack.split('at ')[1]) || null
     const message = (error && error.message) || 'Unknown'
@@ -49,7 +49,7 @@ export default class ErrorHandler extends React.PureComponent {
       const hasReloadedOnError = window.localStorage.getItem('hasReloadedOnError', 0)
       if (!window.PREVENT_RELOAD && Date.now() - hasReloadedOnError > 5000) {
         window.localStorage.setItem('hasReloadedOnError', Date.now())
-        // window.location.reload(true)
+        window.location.reload(true)
       }
     }
   }
