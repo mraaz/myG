@@ -113,8 +113,6 @@ class AuthController {
           profile_img: 'https://myG.gg/default_user/new-user-profile-picture.png',
         })
 
-        auth.user = newUser
-
         // Decrease Seats Available upon Registration
         seatsAvailable.seats_available = (seatsAvailable.seats_available || 1) - 1
         seatsAvailable.save()
@@ -149,9 +147,6 @@ class AuthController {
         .where('email', request.input('email'))
         .first()
       await auth.login(user)
-
-      const connections = new ConnectionController()
-      connections.master_controller({ auth })
 
       return response.redirect(`/setEncryptionParaphrase/${request.input('encryption')}`)
     }
