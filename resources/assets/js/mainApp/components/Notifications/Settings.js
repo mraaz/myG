@@ -32,6 +32,32 @@ export default class Settings extends Component {
 
     return (
       <div className='settings' style={isActive}>
+        <div className='cred__container'>
+          <div className='cred__row'>
+            <div className='cred__label'>UserName</div>
+            <div className='cred__details'>
+              <div className='cred__image'>
+                <img src='https://myG.gg/platform_images/Dashboard/logo.svg' />
+              </div>
+              <div className='cred__username'>@bruno</div>
+              <div className='cred__action'>
+                <button type='button'>Change</button>
+              </div>
+            </div>
+          </div>
+          <div className='cred__row'>
+            <div className='cred__label'>Logged Using</div>
+            <div className='cred__details'>
+              <div className='cred__image'>
+                <img src='https://myG.gg/platform_images/Dashboard/logo.svg' />
+              </div>
+              <div className='cred__username'>@bruno</div>
+              <div className='cred__action'>
+                <button type='button'>Change</button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='option'>
           <div className='title'>Browser notifications</div>
           <div className='button__switch browser__notification'>

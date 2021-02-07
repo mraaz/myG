@@ -59,8 +59,16 @@ class MobileMenu extends Component {
         activeTab: 6,
       },
     ]
-    const prevCount = Number(activeTab) == 0 ? 0 : Number(activeTab) - 1
-    const nextCount = Number(activeTab) > 5 ? 0 : Number(activeTab) + 1
+    let prevCount = Number(activeTab) == 0 ? 0 : Number(activeTab) - 1
+    let nextCount = Number(activeTab) > 5 ? 0 : Number(activeTab) + 1
+
+    if (isAdmin && nextCount == 4) {
+      prevCount = 3
+      nextCount = 6
+    }
+    if (isAdmin && nextCount == 0) {
+      prevCount = 3
+    }
 
     return (
       <div className='menu__scroll'>
