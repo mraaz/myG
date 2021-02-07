@@ -20,15 +20,9 @@ class MobileMenu extends Component {
     window.scrollTo(0, 0)
   }
 
-  changeTab = (tab) => {
-    this.setState({
-      active: tab,
-    })
-  }
-
   render() {
     const { changeContentTab, notificationsCount, activeTab, approvals, alerts, chats } = this.props
-    const { reports = 0, reportedUser, isAdmin } = this.state
+    const { reports = 0, reportedUser } = this.state
     const dummyData = [
       {
         title: `Upcoming Games  ${activeTab == 0 ? `(${notificationsCount})` : '(0)'}`,
@@ -60,23 +54,18 @@ class MobileMenu extends Component {
       },
     ]
     let prevCount = Number(activeTab) == 0 ? 0 : Number(activeTab) - 1
-    let nextCount = Number(activeTab) > 5 ? 0 : Number(activeTab) + 1
+    let nextCount = Number(activeTab) > 6 ? 0 : Number(activeTab) + 1
 
-    if (isAdmin && nextCount == 4) {
-      prevCount = 3
-      nextCount = 6
-    }
-    if (isAdmin && nextCount == 0) {
-      prevCount = 3
-    }
+    console.log('activeTab', activeTab)
 
     return (
       <div className='menu__scroll'>
         <div
           className='previous'
           onClick={() => {
-            this.changeTab(Number(prevCount))
-            changeContentTab(Number(prevCount))
+            if (activeTab > 0) {
+              changeContentTab(Number(activeTab) - 1)
+            }
           }}>
           <img src='https://myG.gg/platform_images/View+Game/Down+Carrot.svg' />
         </div>
@@ -84,8 +73,9 @@ class MobileMenu extends Component {
         <div
           className='next'
           onClick={() => {
-            this.changeTab(Number(nextCount))
-            changeContentTab(Number(nextCount))
+            if (activeTab < 6) {
+              changeContentTab(Number(activeTab) + 1)
+            }
           }}>
           <img src='https://myG.gg/platform_images/View+Game/Down+Carrot.svg' />
         </div>

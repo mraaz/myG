@@ -17,6 +17,7 @@ export default class Notifications extends Component {
     this.state = {
       activeTab: 0,
       notificationsCount: 0,
+      isAdmin: false,
     }
   }
 
@@ -44,7 +45,7 @@ export default class Notifications extends Component {
   componentDidMount() {
     window.scrollTo(0, 0)
     let params = new URLSearchParams(window.location.search)
-    const activeTab = params.get('submenu')
+    let activeTab = params.get('submenu')
     if (activeTab == null || activeTab == 0) {
       window.history.pushState('myG', 'myG', '/?at=notifications&submenu=0')
     }
@@ -55,25 +56,43 @@ export default class Notifications extends Component {
   }
 
   render() {
-    const { activeTab = 0, notificationsCount } = this.state
+    const { activeTab = 0, notificationsCount, isAdmin } = this.state
 
     return (
       <section className='notifications-page'>
         <div className='notifications-container postCompose__container'>
           <div className='NotificationmobileView'>
-            <Menu changeContentTab={this.changeContentTab} notificationsCount={notificationsCount} activeTab={activeTab} />
+            <Menu
+              changeContentTab={this.changeContentTab}
+              isAdmin={isAdmin}
+              notificationsCount={notificationsCount}
+              activeTab={activeTab}
+            />
           </div>
           <div className='NotificationDesktopView'>
-            <MobileMenu changeContentTab={this.changeContentTab} notificationsCount={notificationsCount} activeTab={activeTab} />
+            <MobileMenu
+              changeContentTab={this.changeContentTab}
+              isAdmin={isAdmin}
+              notificationsCount={notificationsCount}
+              activeTab={activeTab}
+              prevCount={this.prevCount}
+              nextCount={this.nextCount}
+            />
           </div>
           <div className='notifications-content'>
             {activeTab == 0 && <Upcoming active={activeTab == 0} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
             {activeTab == 1 && <Approvals active={activeTab == 1} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
             {activeTab == 2 && <Alerts active={activeTab == 2} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
             {activeTab == 3 && <Chat active={activeTab == 3} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
-            {activeTab == 4 && <Reports active={activeTab == 4} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
-            {activeTab == 5 && <ReportedUser active={activeTab == 5} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
-            {activeTab == 6 && <Settings active={activeTab == 6} setNotificationsCount={this.setNotificationsCount} {...this.props} />}
+            {activeTab == 4 && isAdmin && (
+              <Reports active={activeTab == 4} setNotificationsCount={this.setNotificationsCount} {...this.props} />
+            )}
+            {activeTab == 5 && isAdmin && (
+              <ReportedUser active={activeTab == 5} setNotificationsCount={this.setNotificationsCount} {...this.props} />
+            )}
+            {activeTab == 6 && (
+              <Settings active={activeTab == 6} isAdmin={isAdmin} setNotificationsCount={this.setNotificationsCount} {...this.props} />
+            )}
           </div>
         </div>
       </section>
