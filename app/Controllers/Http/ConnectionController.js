@@ -10,7 +10,6 @@ const CommonController = use('./CommonController')
 
 class ConnectionController {
   async master_controller({ auth }) {
-    this.calc_communities_you_might_know({ auth })
 
     if (auth.user) {
       const getRunTime = await Database.from('settings')
