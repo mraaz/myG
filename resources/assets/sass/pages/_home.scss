@@ -2179,6 +2179,8 @@ section#content-container {
         background: #171a1c;
         height: 250px;
         overflow: scroll;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
         transition: 1s all ease;
         .list__item {
           display: flex;

@@ -563,6 +563,8 @@
         justify-content: center;
         width: 120px;
         overflow-x: scroll;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
 
         .alias {
           color: white;

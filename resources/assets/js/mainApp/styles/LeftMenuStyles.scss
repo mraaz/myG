@@ -27,6 +27,8 @@
   flex-direction: column;
   transition: 0.5s;
   overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
 }
 
 .sidebar-sub-items img {
