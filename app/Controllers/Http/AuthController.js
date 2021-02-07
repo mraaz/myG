@@ -115,9 +115,6 @@ class AuthController {
 
         auth.user = newUser
 
-        const connections = new ConnectionController()
-        connections.master_controller({ auth })
-
         // Decrease Seats Available upon Registration
         seatsAvailable.seats_available = (seatsAvailable.seats_available || 1) - 1
         seatsAvailable.save()
@@ -152,6 +149,9 @@ class AuthController {
         .where('email', request.input('email'))
         .first()
       await auth.login(user)
+
+      const connections = new ConnectionController()
+      await connections.master_controller({ auth })
 
       return response.redirect(`/setEncryptionParaphrase/${request.input('encryption')}`)
     }

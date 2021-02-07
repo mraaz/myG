@@ -10,6 +10,7 @@ const CommonController = use('./CommonController')
 
 class ConnectionController {
   async master_controller({ auth }) {
+    this.calc_communities_you_might_know({ auth })
 
     if (auth.user) {
       const getRunTime = await Database.from('settings')
@@ -145,8 +146,12 @@ class ConnectionController {
 
     //ToDO: https://github.com/mraaz/myGame/issues/241
 
+    console.log("Dioing");
+
     if (auth.user) {
       try {
+
+        console.log("Going in soonINSDIDW");
         const subquery = Database.select('id')
           .from('groups')
           .where({ user_id: auth.user.id })
@@ -220,13 +225,13 @@ class ConnectionController {
 
         const _1stpass = [...groups_my_friends_are_in, ...popin_groups, ...my_gaming_grps]
 
-        var mySet = new Set()
+        let mySet = new Set()
         for (var i = 0; i < _1stpass.length; i++) {
           mySet.add(_1stpass[i])
         }
 
         if (mySet.size < 250) {
-          for (var x = popin_groups_size; mySet.size < 250; x++) {
+          for (let x = popin_groups_size; mySet.size < 250; x++) {
             if (x < tmp_popin_groups.length) {
               mySet.add(tmp_popin_groups[x])
             } else {
@@ -240,6 +245,8 @@ class ConnectionController {
         const common_Controller = new CommonController()
         myArr = await common_Controller.shuffle(myArr)
 
+        console.log("Going in soon");
+
         if (myArr.length < 10) {
           let random_grps = await Database.from('groups')
             .leftJoin('usergroups', 'usergroups.group_id', 'groups.id')
@@ -250,6 +257,9 @@ class ConnectionController {
             .limit(88)
 
           myArr = [...myArr, ...random_grps]
+          console.log("IN here");
+          console.log(random_grps.length);
+          console.log(myArr.length);
         }
         const groupConnectionController = new GroupConnectionController()
 
