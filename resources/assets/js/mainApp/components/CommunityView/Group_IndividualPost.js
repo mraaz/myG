@@ -48,8 +48,6 @@ export default class Group_IndividualPost extends Component {
       autoPlay: false,
       isRTL: false,
       disableSwipe: false,
-      show_group_name: false,
-      group_name: '',
       show_more_comments: true,
       preview_file: '',
       aws_key_id: [],
@@ -141,7 +139,6 @@ export default class Group_IndividualPost extends Component {
 
   componentDidMount() {
     let { post } = this.props
-    console.log(this.props, '<<<PSOPGROUPS')
     let media_url = ''
     const self = this
     if (post.media_url) {
@@ -648,15 +645,6 @@ export default class Group_IndividualPost extends Component {
                   <div className='username'>
                     <Link to={`/profile/${post.alias}`}>{`@${post.alias} `}</Link>
                   </div>
-                  {this.state.group_name && (
-                    <div className='shared__group'>
-                      {`shared `}
-                      <div className='arrow'></div>
-                      {this.state.show_group_name && this.state.group_name && (
-                        <Link to={`/groups/${post.group_id}`}>{this.state.group_name}</Link>
-                      )}
-                    </div>
-                  )}
                 </div>
                 <div className='post__time'>{this.state.post_time}</div>
               </div>

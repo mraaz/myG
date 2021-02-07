@@ -9,6 +9,7 @@ const PostHashTagTransactionController = use('./PostHashTagTransactionController
 const HashTagController = use('./HashTagController')
 const LoggingRepository = require('../../Repositories/Logging')
 const ApiController = use('./ApiController')
+const CommonController = use('./CommonController')
 
 const MAX_HASH_TAGS = 21
 
@@ -197,6 +198,8 @@ class PostController {
 
   async show({ auth, request, response }) {
     try {
+      let grp_limit = 3
+
       let ppl_im_following_Posts = await Database.from('followers')
         .innerJoin('posts', 'posts.user_id', 'followers.follower_id')
         .innerJoin('users', 'users.id', 'posts.user_id')
@@ -206,7 +209,16 @@ class PostController {
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.counter, 10)
 
-      switch (ppl_im_following_Posts.data.length) {
+      switch (parseInt(ppl_im_following_Posts.data.length)) {
+        case 11:
+          grp_limit = 2
+          break
+        case 10:
+          grp_limit = 3
+          break
+        case 9:
+          grp_limit = 4
+          break
         case 8:
           grp_limit = 5
           break
@@ -234,6 +246,8 @@ class PostController {
         case 0:
           grp_limit = 13
           break
+        default:
+          grp_limit = 13
       }
 
       const all_groups_im_in_ish = Database.from('groups')
@@ -252,11 +266,15 @@ class PostController {
         .whereIn('posts.group_id', all_groups_im_in_ish)
         .where('posts.visibility', '=', 1)
         .where('posts.created_at', '>', cutOff_date)
+        .whereNot('posts.user_id', '=', auth.user.id)
         .select('*', 'posts.id', 'posts.updated_at')
         .orderBy('posts.created_at', 'desc')
-        .paginate(request.params.counter, 10)
+        .paginate(request.params.counter, grp_limit)
 
-      const _1stpass = [...ppl_im_following_Posts.data, ...groups_im_in_Posts.data]
+      let _1stpass = [...ppl_im_following_Posts.data, ...groups_im_in_Posts.data]
+
+      const common_Controller = new CommonController()
+      _1stpass = await common_Controller.shuffle(_1stpass)
 
       const myPosts = await this.get_additional_info({ auth }, _1stpass)
       return {

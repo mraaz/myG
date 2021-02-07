@@ -194,7 +194,7 @@ export default class IndividualPost extends Component {
 
     var post_id = this.props.post.id
 
-    if (post.group_id != null && post.group_id != '') {
+    if (post.group_id != null && post.group_id != '' && post.name != '') {
       if ((source = 'news_feed')) {
         this.state.show_group_name = true
       }
@@ -634,6 +634,13 @@ export default class IndividualPost extends Component {
                   <div className='username'>
                     <Link to={`/profile/${post.alias}`}>{`@${post.alias} `}</Link>
                   </div>
+                  {this.state.show_group_name && (
+                    <div className='shared__group'>
+                      {`shared `}
+                      <div className='arrow'></div>
+                      <Link to={`/community/${decodeURI(post.name)}`}>{decodeURI(post.name)}</Link>
+                    </div>
+                  )}
                 </div>
                 <div className='post__time'>{this.state.post_time}</div>
               </div>
