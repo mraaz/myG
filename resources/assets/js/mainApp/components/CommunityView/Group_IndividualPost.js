@@ -48,8 +48,6 @@ export default class Group_IndividualPost extends Component {
       autoPlay: false,
       isRTL: false,
       disableSwipe: false,
-      show_group_name: false,
-      group_name: '',
       show_more_comments: true,
       preview_file: '',
       aws_key_id: [],
@@ -98,17 +96,6 @@ export default class Group_IndividualPost extends Component {
       const mylike = await axios.post('/api/likes', {
         post_id: post_id,
       })
-      // let { post, user } = this.props
-      // if (this.props != undefined) {
-      //   if (user.userInfo != undefined) {
-      //     if (post.user_id != user.userInfo.id) {
-      //       const addPostLike = axios.post('/api/notifications/addPostLike', {
-      //         other_user_id: post.user_id,
-      //         post_id: post_id,
-      //       })
-      //     }
-      //   }
-      // }
     } catch (error) {
       logToElasticsearch('error', 'IndividualComment', 'Failed click_like_btn:' + ' ' + error)
     }
@@ -195,46 +182,6 @@ export default class Group_IndividualPost extends Component {
 
     var post_id = this.props.post.id
 
-    // const getmyPostCount = async function() {
-    //   try {
-    //     var i
-    //
-    //     const myPostCount = await axios.get(`/api/post/my_count/${post_id}`)
-    //
-    //     if (myPostCount.data.no_of_my_posts[0].no_of_my_posts != 0) {
-    //       self.setState({
-    //         show_post_options: true,
-    //       })
-    //     }
-    //   } catch (error) {
-    //     logToElasticsearch('error', 'IndividualComment', 'Failed getmyPostCount:' + ' ' + error)
-    //   }
-    // }
-
-    const getGroup_info = async function() {
-      try {
-        var i
-
-        const myPostCount = await axios.get(`/api/groups/${post.group_id}`)
-
-        if (myPostCount.data && myPostCount.data.group && myPostCount.data.group.length != 0) {
-          self.setState({
-            group_name: myPostCount.data.group[0].name,
-          })
-        }
-      } catch (error) {
-        logToElasticsearch('error', 'IndividualComment', 'Failed getGroup_info:' + ' ' + error)
-      }
-    }
-
-    //getmyPostCount()
-
-    if (post.group_id != null && post.group_id != '') {
-      if ((post.source = 'news_feed')) {
-        this.state.show_group_name = true
-        getGroup_info()
-      }
-    }
     this.pullComments()
   }
 
@@ -698,15 +645,6 @@ export default class Group_IndividualPost extends Component {
                   <div className='username'>
                     <Link to={`/profile/${post.alias}`}>{`@${post.alias} `}</Link>
                   </div>
-                  {this.state.group_name && (
-                    <div className='shared__group'>
-                      {`shared `}
-                      <div className='arrow'></div>
-                      {this.state.show_group_name && this.state.group_name && (
-                        <Link to={`/groups/${post.group_id}`}>{this.state.group_name}</Link>
-                      )}
-                    </div>
-                  )}
                 </div>
                 <div className='post__time'>{this.state.post_time}</div>
               </div>

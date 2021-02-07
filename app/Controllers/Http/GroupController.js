@@ -233,11 +233,11 @@ class GroupController {
 
   async groupSearchResults_notMygrps({ auth, request, response }) {
     try {
-      const all_groups_im_in_ish = Database.from('usergroups')
-        .leftJoin('groups', 'groups.id', 'usergroups.group_id')
+      const all_groups_im_in_ish = Database.from('groups')
+        .leftJoin('usergroups', 'usergroups.group_id', 'groups.id')
         .where('usergroups.user_id', '=', auth.user.id)
         .orWhere('groups.user_id', '=', auth.user.id)
-        .select('group_id')
+        .select('groups.id')
 
       const groupSearchResults_im_not_in = await Database.from('groups')
         .select('name', 'group_img', 'id as group_id', 'type')

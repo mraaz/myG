@@ -58,6 +58,7 @@ export default class IndividualPost extends Component {
       hideComments: false,
       commentShowCount: 2,
       showPostExtraOption: false,
+      show_group_name: false,
     }
     this.imageFileType = ['jpeg', 'jpg', 'png', 'gif']
     this.videoFileType = ['mov', 'webm', 'mpg', 'mp4', 'avi', 'ogg']
@@ -149,7 +150,8 @@ export default class IndividualPost extends Component {
   }
 
   componentDidMount() {
-    let { post } = this.props
+    let { post, source } = this.props
+    console.log(this.props, '<<<<PROPSA')
     let media_url = ''
     const self = this
     if (post.media_url) {
@@ -192,23 +194,11 @@ export default class IndividualPost extends Component {
 
     var post_id = this.props.post.id
 
-    // const getmyPostCount = async function() {
-    //   try {
-    //     var i
-    //
-    //     const myPostCount = await axios.get(`/api/post/my_count/${post_id}`)
-    //
-    //     if (myPostCount.data.no_of_my_posts[0].no_of_my_posts != 0) {
-    //       self.setState({
-    //         show_post_options: true,
-    //       })
-    //     }
-    //   } catch (error) {
-    //     logToElasticsearch('error', 'IndividualPost', 'Failed getmyPostCount:' + ' ' + error)
-    //   }
-    // }
-    //
-    // getmyPostCount()
+    if (post.group_id != null && post.group_id != '' && post.name != '') {
+      if ((source = 'news_feed')) {
+        this.state.show_group_name = true
+      }
+    }
 
     this.pullComments()
   }
@@ -644,6 +634,13 @@ export default class IndividualPost extends Component {
                   <div className='username'>
                     <Link to={`/profile/${post.alias}`}>{`@${post.alias} `}</Link>
                   </div>
+                  {this.state.show_group_name && (
+                    <div className='shared__group'>
+                      {`shared `}
+                      <div className='arrow'></div>
+                      <Link to={`/community/${decodeURI(post.name)}`}>{decodeURI(post.name)}</Link>
+                    </div>
+                  )}
                 </div>
                 <div className='post__time'>{this.state.post_time}</div>
               </div>

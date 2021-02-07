@@ -9,6 +9,7 @@ const PostHashTagTransactionController = use('./PostHashTagTransactionController
 const HashTagController = use('./HashTagController')
 const LoggingRepository = require('../../Repositories/Logging')
 const ApiController = use('./ApiController')
+const CommonController = use('./CommonController')
 
 const MAX_HASH_TAGS = 21
 
@@ -197,14 +198,6 @@ class PostController {
 
   async show({ auth, request, response }) {
     try {
-      // const myFriendsPosts = await Database.select('*', 'posts.id', 'posts.updated_at')
-      //   .from('friends')
-      //   .innerJoin('posts', 'posts.user_id', 'friends.friend_id')
-      //   .innerJoin('users', 'users.id', 'posts.user_id')
-      //   .where('friends.user_id', '=', auth.user.id)
-      //   .whereNot('posts.visibility', '=', 0)
-      //   .orderBy('posts.created_at', 'desc')
-      //   .paginate(request.params.paginateNo, 10)
       let grp_limit = 3
 
       let ppl_im_following_Posts = await Database.from('followers')
@@ -214,9 +207,18 @@ class PostController {
         .where('posts.visibility', '=', 1)
         .select('*', 'posts.id', 'posts.updated_at')
         .orderBy('posts.created_at', 'desc')
-        .paginate(request.params.paginateNo, 10)
+        .paginate(request.params.counter, 10)
 
-      switch (ppl_im_following_Posts.data.length) {
+      switch (parseInt(ppl_im_following_Posts.data.length)) {
+        case 11:
+          grp_limit = 2
+          break
+        case 10:
+          grp_limit = 3
+          break
+        case 9:
+          grp_limit = 4
+          break
         case 8:
           grp_limit = 5
           break
@@ -244,20 +246,37 @@ class PostController {
         case 0:
           grp_limit = 13
           break
+        default:
+          grp_limit = 13
       }
 
-      let groups_im_following_Posts = await Database.from('followers')
-        .innerJoin('posts', 'posts.group_id', 'followers.group_id')
+      const all_groups_im_in_ish = Database.from('groups')
+        .leftJoin('usergroups', 'usergroups.group_id', 'groups.id')
+        .where('usergroups.user_id', '=', auth.user.id)
+        .orWhere('groups.user_id', '=', auth.user.id)
+        .select('groups.id')
+
+      var today = new Date()
+      var priorDate = new Date().setDate(today.getDate() - 7)
+      const cutOff_date = new Date(priorDate)
+
+      let groups_im_in_Posts = await Database.from('posts')
         .innerJoin('users', 'users.id', 'posts.user_id')
-        .where('followers.user_id', '=', auth.user.id)
+        .innerJoin('groups', 'groups.id', 'posts.group_id')
+        .whereIn('posts.group_id', all_groups_im_in_ish)
         .where('posts.visibility', '=', 1)
+        .where('posts.created_at', '>', cutOff_date)
+        .whereNot('posts.user_id', '=', auth.user.id)
         .select('*', 'posts.id', 'posts.updated_at')
         .orderBy('posts.created_at', 'desc')
-        .paginate(request.params.paginateNo, grp_limit)
+        .paginate(request.params.counter, grp_limit)
 
-      const _1stpass = [...ppl_im_following_Posts.data, ...groups_im_following_Posts.data]
+      let _1stpass = [...ppl_im_following_Posts.data, ...groups_im_in_Posts.data]
 
-      let myPosts = await this.get_additional_info({ auth }, _1stpass)
+      const common_Controller = new CommonController()
+      _1stpass = await common_Controller.shuffle(_1stpass)
+
+      const myPosts = await this.get_additional_info({ auth }, _1stpass)
       return {
         myPosts,
       }

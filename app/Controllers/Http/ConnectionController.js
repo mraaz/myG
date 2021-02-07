@@ -6,6 +6,8 @@ const Settings = use('App/Models/Setting')
 const GroupConnectionController = use('./GroupConnectionController')
 const LoggingRepository = require('../../Repositories/Logging')
 
+const CommonController = use('./CommonController')
+
 class ConnectionController {
   async master_controller({ auth }) {
     this.calc_communities_you_might_know({ auth })
@@ -235,7 +237,9 @@ class ConnectionController {
         }
 
         let myArr = [...mySet]
-        myArr = await this.shuffle(myArr)
+
+        const common_Controller = new CommonController()
+        myArr = await common_Controller.shuffle(myArr)
 
         if (myArr.length < 10) {
           let random_grps = await Database.from('groups')
@@ -265,26 +269,6 @@ class ConnectionController {
     } else {
       return 'You are not Logged In!'
     }
-  }
-
-  async shuffle(array) {
-    var currentIndex = array.length,
-      temporaryValue,
-      randomIndex
-
-    // While there remain elements to shuffle...
-    while (0 != currentIndex) {
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex)
-      currentIndex -= 1
-
-      // And swap it with the current element.
-      temporaryValue = array[currentIndex]
-      array[currentIndex] = array[randomIndex]
-      array[randomIndex] = temporaryValue
-    }
-
-    return array
   }
 
   async calculate_score(gamerA_id, gamerB_id, attr) {
