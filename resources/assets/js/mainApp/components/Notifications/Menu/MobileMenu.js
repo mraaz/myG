@@ -64,7 +64,7 @@ class MobileMenu extends Component {
           className='previous'
           onClick={() => {
             if (activeTab > 0) {
-              changeContentTab(Number(activeTab) - 1)
+              changeContentTab('previous', Number(activeTab) - 1)
             }
           }}>
           <img src='https://myG.gg/platform_images/View+Game/Down+Carrot.svg' />
@@ -74,7 +74,7 @@ class MobileMenu extends Component {
           className='next'
           onClick={() => {
             if (activeTab < 6) {
-              changeContentTab(Number(activeTab) + 1)
+              changeContentTab('next', Number(activeTab) + 1)
             }
           }}>
           <img src='https://myG.gg/platform_images/View+Game/Down+Carrot.svg' />

@@ -21,14 +21,22 @@ export default class Notifications extends Component {
     }
   }
 
-  changeContentTab = (tab) => {
+  changeContentTab = (type, tab) => {
+    const { isAdmin } = this.state
+    let activeTab = tab
+    if (!isAdmin && type == 'next') {
+      activeTab = tab == 4 || tab == 5 ? 6 : activeTab
+    }
+    if (!isAdmin && type == 'previous') {
+      activeTab = tab == 4 || tab == 5 ? 3 : activeTab
+    }
     this.setState(
       {
-        activeTab: tab,
+        activeTab: activeTab,
         notificationsCount: 0,
       },
       () => {
-        window.router.push(`/?at=notifications&submenu=${tab}`)
+        window.router.push(`/?at=notifications&submenu=${activeTab}`)
       }
     )
   }
