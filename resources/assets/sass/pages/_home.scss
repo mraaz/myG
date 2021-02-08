@@ -243,7 +243,7 @@ section#content-container {
       -ms-overflow-style: none; /* IE and Edge */
 
       @media (min-width: 575px) {
-        max-height: 100vh;
+        max-height: unset;
         min-height: unset; // remove min-height as not needed for desktop
       }
     }
