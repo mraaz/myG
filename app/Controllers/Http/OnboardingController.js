@@ -2,10 +2,14 @@
 
 const User = use('App/Models/User')
 const LoggingRepository = require('../../Repositories/Logging')
+const ConnectionController = use('./ConnectionController')
 
 class OnboardingController {
   async getOnboardingStep({ auth, response }) {
     try {
+      const connections = new ConnectionController()
+      connections.master_controller({ auth })
+      
       const requestingUserId = auth.user.id
       if (!requestingUserId) throw new Error('Auth Error')
       const user = await User.query().where({ id: requestingUserId }).first()

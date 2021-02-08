@@ -31,8 +31,8 @@ class Menu extends Component {
   }
 
   render() {
-    const { changeContentTab, notificationsCount, activeTab, approvals, alerts, chats } = this.props
-    const { reports = 0, reportedUser, isAdmin } = this.state
+    const { changeContentTab, notificationsCount, activeTab, approvals, alerts, chats, isAdmin } = this.props
+    const { reports = 0, reportedUser } = this.state
     return (
       <div className='notifications-menu'>
         <div className='button-list'>

@@ -113,9 +113,6 @@ class AuthController {
           profile_img: 'https://myG.gg/default_user/new-user-profile-picture.png',
         })
 
-        const connections = new ConnectionController()
-        connections.master_controller({ auth })
-
         // Decrease Seats Available upon Registration
         seatsAvailable.seats_available = (seatsAvailable.seats_available || 1) - 1
         seatsAvailable.save()
