@@ -205,6 +205,7 @@ class PostController {
         .innerJoin('users', 'users.id', 'posts.user_id')
         .where('followers.user_id', '=', auth.user.id)
         .where('posts.visibility', '=', 1)
+        .where('posts.group_id', 'is', null)
         .select('*', 'posts.id', 'posts.updated_at')
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.counter, 10)

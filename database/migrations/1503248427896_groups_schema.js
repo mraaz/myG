@@ -16,6 +16,7 @@ class GroupsSchema extends Schema {
       table.integer('game_names_id').unsigned().nullable()
       table.foreign('game_names_id').references('game_names.id')
       table.string('grp_description', 254).nullable()
+      table.integer('verified').unsigned().notNullable().defaultTo(0)
       table.timestamps(true,true)
     })
   }

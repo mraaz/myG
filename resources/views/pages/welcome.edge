@@ -38,7 +38,7 @@
                 <img src="https://myG.gg/platform_images/Login+Screen/Discord_SSO.svg" class="sso-logo" height="25" width="25"/>
                 <div class="sso-text">Log in with Discord</div>
               </a>
-              <div id="cfiblinks">
+              <div id="cfiblinks" style="display:none">
                 <a href="/login/" class="button discord-btn">
                   <img src="https://myG.gg/platform_images/Login+Screen/Discord_SSO.svg" class="sso-logo" height="25" width="25"/>
                   <div class="sso-text">Log in with Email (Dev use ONLY)</div>
@@ -91,7 +91,7 @@
 
   function checkDevEnvironment() {
     const url = window.location.href;
-    if(url.includes("localhost")) {
+    if(url.includes("localhost") || url.includes("127.0.0.1") || url.includes("172.")) {
       document.getElementById('cfiblinks').setAttribute("style", "display:block");
     } else {
       document.getElementById('cfiblinks').setAttribute("style", "display:none");

@@ -151,7 +151,6 @@ export default class IndividualPost extends Component {
 
   componentDidMount() {
     let { post, source } = this.props
-    console.log(this.props, '<<<<PROPSA')
     let media_url = ''
     const self = this
     if (post.media_url) {
@@ -194,7 +193,7 @@ export default class IndividualPost extends Component {
 
     var post_id = this.props.post.id
 
-    if (post.group_id != null && post.group_id != '' && post.name != '') {
+    if (post.group_id != null && post.group_id != '' && post.name != undefined && post.name != '') {
       if ((source = 'news_feed')) {
         this.state.show_group_name = true
       }
