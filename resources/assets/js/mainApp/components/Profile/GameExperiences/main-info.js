@@ -133,8 +133,7 @@ export default class MainInfo extends React.Component {
     if (!this.props.isSelf) return this.renderDisabledField('Game Title', (this.props.experience.game || {}).value)
     return (
       <div className='row'>
-        <span className='hint'>Game Title</span>
-        {!!this.props.onboarding && <span className='required'>*</span>}
+        <span className='hint'>Game Title {!!this.props.onboarding && <span className='required onboarding'>*</span>}</span>
         <div className='input-container-row viewGame__gameName game-title-select'>
           <AsyncCreatableSelect
             cacheOptions
@@ -194,8 +193,7 @@ export default class MainInfo extends React.Component {
       return this.renderDisabledField('Level', (this.props.experience.level || {}).value, false, !!this.props.onboarding)
     return (
       <div className='row'>
-        <span className='hint'>Level</span>
-        {!!this.props.onboarding && <span className='required'>*</span>}
+        <span className='hint'>Level {!!this.props.onboarding && <span className='required onboarding'>*</span>}</span>
         <MyGSelect
           width={'75%'}
           innerWidth={'100%'}
@@ -212,8 +210,7 @@ export default class MainInfo extends React.Component {
       return this.renderDisabledField('Experience', (this.props.experience.experience || {}).value, false, !!this.props.onboarding)
     return (
       <div className='row'>
-        <span className='hint'>Experience</span>
-        {!!this.props.onboarding && <span className='required'>*</span>}
+        <span className='hint'>Experience {!!this.props.onboarding && <span className='required onboarding'>*</span>}</span>
         <MyGSelect
           width={'75%'}
           innerWidth={'100%'}
@@ -308,11 +305,23 @@ export default class MainInfo extends React.Component {
     })
   }
 
+  unnestDynamicField = (field) => {
+    let dynamicField = get(this.props, `experience.dynamic.${field.id}`) || {};
+    if (dynamicField.map) dynamicField = dynamicField[0]
+    if (dynamicField.value) dynamicField = dynamicField.value
+    if (dynamicField.map) dynamicField = dynamicField[0]
+    if (dynamicField.value) dynamicField = dynamicField.value
+    if (dynamicField.map) dynamicField = dynamicField[0]
+    if (dynamicField.value) dynamicField = dynamicField.value
+    return dynamicField;
+  }
+
   renderMultiField = (field) => {
+    const dynamicField = this.unnestDynamicField(field);
     if (!this.props.isSelf)
       return this.renderDisabledField(
         field.label,
-        get(this.props, `experience.dynamic.${field.id}`, []).map(({ value }) => value),
+        dynamicField,
         true
       )
     return (
@@ -333,10 +342,11 @@ export default class MainInfo extends React.Component {
   }
 
   renderSingleField = (field) => {
+    const dynamicField = this.unnestDynamicField(field);
     if (!this.props.isSelf)
       return this.renderDisabledField(
         field.label,
-        (get(this.props, `experience.dynamic.${field.id}`, []) || []).map(({ value }) => value),
+        dynamicField,
         true
       )
     return (
@@ -356,10 +366,11 @@ export default class MainInfo extends React.Component {
   }
 
   renderInputField = (field) => {
+    const dynamicField = this.unnestDynamicField(field);
     if (!get(this.props, 'experience.game.value') || !this.props.isSelf)
       return this.renderDisabledField(
         field.label,
-        get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`)),
+        dynamicField,
         true
       )
     const validation = field.values && field.values[0] && new RegExp(field.values[0])
@@ -508,8 +519,7 @@ export default class MainInfo extends React.Component {
     const disabledValue = Array.isArray(displayValue) ? displayValue.join(', ') : displayValue
     const disabledField = (
       <React.Fragment>
-        <span className='hint'>{title}</span>
-        {!!required && <span className='required'>*</span>}
+        <span className='hint'>{title} {!!required && <span className='required onboarding'>*</span>}</span>
         <div className='input-container-row'>
           <input className='input' value={disabledValue} disabled={true}></input>
         </div>
