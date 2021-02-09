@@ -76,7 +76,7 @@ export class DossierInfo extends React.Component {
     const updates = {}
     const profile = this.getProfile()
     if (profile.name !== this.state.name) {
-      const nameParts = this.state.name.split(' ')
+      const nameParts = this.state.name.split(' ') || []
       updates.firstName = nameParts.length > 2 ? nameParts.slice(0, nameParts.length - 1).join(' ') : nameParts[0]
       updates.lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : ''
     }
@@ -98,14 +98,14 @@ export class DossierInfo extends React.Component {
 
   onSave = () => {
     if (!this.state.name) return
-    const updates = this.getUpdates()
+    const updates = this.getUpdates() || {}
     const hasPendingChanges = Object.keys(updates).length
     if (hasPendingChanges) this.props.updateProfile(this.state.alias, updates)
     this.props.onClose()
   }
 
   onClose = () => {
-    const updates = this.getUpdates()
+    const updates = this.getUpdates() || {}
     const hasPendingChanges = Object.keys(updates).length
     if (hasPendingChanges)
       showMessengerAlert('You have unsaved changes, are you sure you want to close?', this.props.onClose, null, 'Make it so')
@@ -207,8 +207,9 @@ export class DossierInfo extends React.Component {
 
   handleDropDownChange = async (index, input) => {
     const results = !!input && !!input.value && (await Game_name_values(input.value))
-    const gameName = results && results[0] ? results[0].value : input && input.value
-    const gameNameValue = results && results[0] ? results[0] : input
+    if (!results) return
+    const gameName = results[0] ? results[0].value : input && input.value
+    const gameNameValue = results[0] ? results[0] : input
     return this.setState((previous) => {
       const mostPlayedGames = JSON.parse(JSON.stringify(previous.mostPlayedGames))
       if (!mostPlayedGames[0]) mostPlayedGames.push({})
@@ -220,10 +221,11 @@ export class DossierInfo extends React.Component {
   }
 
   loadOptions = async (input) => {
-    const currentGames = (this.state.mostPlayedGames || []).map(({ gameName }) => gameName)
+    const defaultResponse = [{ label: input, value: input, gameName: input, gameNameValue: { label: input, value: input } }]
     const results = await Game_name_values(input)
-    const validResults = results.length && results.filter((result) => !currentGames.includes(result.value))
-    return results.length ? validResults : [{ label: input, value: input, gameName: input, gameNameValue: { label: input, value: input } }]
+    if (!results || !results.length) return defaultResponse
+    const currentGames = (this.state.mostPlayedGames || []).map(({ gameName }) => gameName)
+    return results.filter((result) => !currentGames.includes(result.value))
   }
 
   prepareValue = (value) => {
@@ -245,7 +247,7 @@ export class DossierInfo extends React.Component {
             value={this.prepareValue(((this.state.mostPlayedGames || [])[index] || {}).gameNameValue)}
             className='viewGame__name full-width'
             placeholder='Search, select or create game title'
-            onInputChange={(inputValue) => (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88))}
+            onInputChange={(inputValue) => (inputValue ? (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88)) : '')}
             onKeyDown={(e) => Disable_keys(e)}
             isSearchable={true}
             classNamePrefix='filter'
@@ -273,7 +275,7 @@ export class DossierInfo extends React.Component {
                   className: 'input',
                 })}
               />
-              {suggestions.length > 0 && (
+              {!!suggestions && suggestions.length > 0 && (
                 <div className='autocomplete-dropdown-container'>
                   {loading && <div>Loading...</div>}
                   {suggestions.map((suggestion) => {
@@ -330,11 +332,7 @@ export class DossierInfo extends React.Component {
     return (
       <div className='row'>
         <span className='hint'>I have Mic?</span>
-        <MyGCheckbox
-          checked={this.state.hasMic}
-          onClick={() => this.setState((previous) => ({ hasMic: !previous.hasMic }))}
-          labelText=''
-        />
+        <MyGCheckbox checked={this.state.hasMic} onClick={() => this.setState((previous) => ({ hasMic: !previous.hasMic }))} labelText='' />
       </div>
     )
   }

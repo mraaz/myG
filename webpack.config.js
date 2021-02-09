@@ -1,8 +1,7 @@
 const path = require('path')
 const webpack = require('webpack')
 const TerserPlugin = require('terser-webpack-plugin')
-const CompressionPlugin = require('compression-webpack-plugin')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const BrotliPlugin = require('brotli-webpack-plugin')
 
 const mode = process.env.NODE_ENV == 'production' ? process.env.NODE_ENV : 'development'
 const VENDOR_LIBS = [
@@ -88,19 +87,36 @@ module.exports = {
   },
   plugins: [
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new CompressionPlugin({
+    new BrotliPlugin({
       include: ['mainApp', 'vendor'],
-      algorithm: 'gzip',
       test: /\.js$|\.jsx$|\.css$|\.html$|\.eot?.+$|\.ttf?.+$|\.woff?.+$|\.svg?.+$/,
       threshold: 10240,
-      minRatio: 0.8,
-      compressionOptions: { level: 9 },
+      minRatio: 0.7,
+    }),
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+    }),
+    new webpack.DefinePlugin({
+      process: {
+        version: JSON.stringify(''),
+        env: {
+          NODE_ENV: JSON.stringify(mode),
+        },
+      },
     }),
   ],
+  resolve: {
+    fallback: {
+      crypto: require.resolve('crypto-browserify'),
+      stream: require.resolve('stream-browserify'),
+      path: require.resolve('path-browserify'),
+    },
+  },
   optimization: {
     moduleIds: 'hashed',
     runtimeChunk: 'single',
-    occurrenceOrder: true,
+    chunkIds: 'size',
+    moduleIds: 'size',
     splitChunks: {
       cacheGroups: {
         vendor: {
