@@ -20,6 +20,9 @@ const VENDOR_LIBS = [
 ]
 const outputPath = path.resolve(__dirname, 'public/js/components')
 
+console.log('NODE_ENV: ', process.env.NODE_ENV) // 'local'
+console.log('Production: ', process.env.production) // true
+
 module.exports = {
   entry: {
     mainApp: './resources/assets/js/mainApp/index.js',

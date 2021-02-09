@@ -10,7 +10,7 @@ mygame:
   databasePassword: password
   databaseHost: proxysql-proxysql-cluste
   databasePort: 6033
-  nodeEnvironment: development
+  nodeEnvironment: production
   appKey: ""
   orgUrl: https://myg.gg
   smtpHost: smtp.gmail.com
@@ -62,7 +62,7 @@ service:
   #portName: http
   #port: 80
   #targetPort: 3333
-  
+
 
 ingress:
   enabled: true
