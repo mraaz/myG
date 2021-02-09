@@ -15,7 +15,7 @@
     "dev": "npm run build && node server.js",
     "style": "npm run sass && node server.js",
     "reset": "adonis migration:reset && adonis migration:run && python ./scripts/database.py",
-    "production": "./node_modules/.bin/webpack -p",
+    "production": "./node_modules/.bin/webpack --mode=production",
     "watch": "gulp",
     "server": "adonis serve",
     "watch-server": "adonis serve --dev",
