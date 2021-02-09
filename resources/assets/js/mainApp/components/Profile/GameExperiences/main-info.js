@@ -134,6 +134,7 @@ export default class MainInfo extends React.Component {
     return (
       <div className='row'>
         <span className='hint'>Game Title</span>
+        {!!this.props.onboarding && <span className='required'>*</span>}
         <div className='input-container-row viewGame__gameName game-title-select'>
           <AsyncCreatableSelect
             cacheOptions
@@ -190,10 +191,11 @@ export default class MainInfo extends React.Component {
 
   renderLevelInput = () => {
     if (!get(this.props, 'experience.game.value') || !this.props.isSelf)
-      return this.renderDisabledField('Level', (this.props.experience.level || {}).value)
+      return this.renderDisabledField('Level', (this.props.experience.level || {}).value, false, !!this.props.onboarding)
     return (
       <div className='row'>
         <span className='hint'>Level</span>
+        {!!this.props.onboarding && <span className='required'>*</span>}
         <MyGSelect
           width={'75%'}
           innerWidth={'100%'}
@@ -207,10 +209,11 @@ export default class MainInfo extends React.Component {
 
   renderExperienceInput = () => {
     if (!get(this.props, 'experience.game.value') || !this.props.isSelf)
-      return this.renderDisabledField('Experience', (this.props.experience.experience || {}).value)
+      return this.renderDisabledField('Experience', (this.props.experience.experience || {}).value, false, !!this.props.onboarding)
     return (
       <div className='row'>
         <span className='hint'>Experience</span>
+        {!!this.props.onboarding && <span className='required'>*</span>}
         <MyGSelect
           width={'75%'}
           innerWidth={'100%'}
@@ -293,7 +296,8 @@ export default class MainInfo extends React.Component {
   renderDynamicFields = () => {
     if (!this.state.dynamicFields || !this.state.dynamicFields.length) return null
     return this.state.dynamicFields.map((field) => {
-      if (!this.props.isSelf && !get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`))) return null
+      if (!this.props.isSelf && !get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`)))
+        return null
       return (
         <div className='row'>
           {field.type === 'Multi' && this.renderMultiField(field)}
@@ -353,10 +357,16 @@ export default class MainInfo extends React.Component {
 
   renderInputField = (field) => {
     if (!get(this.props, 'experience.game.value') || !this.props.isSelf)
-      return this.renderDisabledField(field.label, get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`)), true)
+      return this.renderDisabledField(
+        field.label,
+        get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`)),
+        true
+      )
     const validation = field.values && field.values[0] && new RegExp(field.values[0])
-    const required = field.values && field.values[1]
-    const isValid = validation ? validation.test(get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`))) : true
+    const required = !this.props.onboarding && field.values && field.values[1]
+    const isValid = validation
+      ? validation.test(get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`)))
+      : true
     const showLink = field.id === 'stats_link'
     return (
       <React.Fragment>
@@ -367,7 +377,9 @@ export default class MainInfo extends React.Component {
             className={`input${isValid ? '' : ' input-error'}`}
             value={get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`))}
             placeholder={field.profile_placeholder}
-            onChange={(event) => this.props.storeDynamicExperience({ [field.id]: { value: event.target.value, text: field.label } })}></input>
+            onChange={(event) =>
+              this.props.storeDynamicExperience({ [field.id]: { value: event.target.value, text: field.label } })
+            }></input>
         </div>
         {showLink && (
           <div
@@ -456,8 +468,9 @@ export default class MainInfo extends React.Component {
       if (field.type !== 'Input') return false
       const value = get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`))
       const validation = field.values && field.values[0] && new RegExp(field.values[0])
-      const isRequiredAndMissing = field.values && field.values[1] && !value
-      const isValid = validation ? validation.test(value) : true
+      const isOnboarding = !!this.props.onboarding;
+      const isRequiredAndMissing = !isOnboarding && field.values && field.values[1] && !value
+      const isValid = validation && value ? validation.test(value) : true
       return isRequiredAndMissing || !isValid
     })
     this.props.hasInvalidDynamicFields(hasInvalidDynamicFields)
@@ -488,7 +501,7 @@ export default class MainInfo extends React.Component {
     )
   }
 
-  renderDisabledField(title, value, skipRow) {
+  renderDisabledField(title, value, skipRow, required) {
     let displayValue = 'Requires Game Title'
     if (!this.props.isSelf) displayValue = value
     if (!displayValue) return null
@@ -496,6 +509,7 @@ export default class MainInfo extends React.Component {
     const disabledField = (
       <React.Fragment>
         <span className='hint'>{title}</span>
+        {!!required && <span className='required'>*</span>}
         <div className='input-container-row'>
           <input className='input' value={disabledValue} disabled={true}></input>
         </div>
