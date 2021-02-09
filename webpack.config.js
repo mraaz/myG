@@ -115,8 +115,8 @@ module.exports = {
   optimization: {
     moduleIds: 'hashed',
     runtimeChunk: 'single',
-    chunkIds: 'size',
-    moduleIds: 'size',
+    chunkIds: 'deterministic',
+    moduleIds: 'deterministic',
     splitChunks: {
       cacheGroups: {
         vendor: {
