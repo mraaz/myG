@@ -456,7 +456,9 @@ class ProfileRepository {
       if (!commendations[commendation.gameExperienceId]) commendations[commendation.gameExperienceId] = 1;
       else commendations[commendation.gameExperienceId] = commendations[commendation.gameExperienceId] + 1;
     });
-    return Object.keys(commendations).map((gameExperienceId) => commendationLevel(commendations[gameExperienceId]));
+    const commendationsList = Object.keys(commendations).map((gameExperienceId) => commendationLevel(commendations[gameExperienceId]));
+    if (!commendationsList.includes('Apprentice')) return ['Apprentice', ...commendationsList];
+    return commendationsList;
   }
 
   async deleteGameExperience({ requestingUserId, gameExperienceId }) {
