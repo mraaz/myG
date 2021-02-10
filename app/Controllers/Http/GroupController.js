@@ -565,6 +565,9 @@ class GroupController {
           id: request.input('group_id'),
         })
         if (owner_query.length > 0) {
+          if (owner_query[0].verified == 1) {
+            return
+          }
           const apiController = new ApiController()
           await apiController.internal_deleteFile({ auth }, '4', request.input('group_id'))
 

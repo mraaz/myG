@@ -212,7 +212,10 @@ class NotificationController_v2 {
   async notify_owner_new_grp_request({ auth }, grp_id) {
     if (auth.user) {
       try {
-        const getOwner = await Database.from('groups').where({ id: grp_id }).select('user_id').first()
+        const getOwner = await Database.from('groups')
+          .where({ id: grp_id })
+          .select('user_id')
+          .first()
         const addGroup = await Notification.create({
           other_user_id: getOwner.user_id,
           user_id: auth.user.id,
@@ -242,9 +245,14 @@ class NotificationController_v2 {
     if (auth.user) {
       try {
         let mygroups
-        const getAccept = await Database.from('groups').where({ id: grp_id }).select('all_accept').first()
+        const getAccept = await Database.from('groups')
+          .where({ id: grp_id })
+          .select('all_accept')
+          .first()
         if (getAccept.all_accept) {
-          mygroups = await Database.from('usergroups').where({ group_id: grp_id }).whereNot({ permission_level: 42 })
+          mygroups = await Database.from('usergroups')
+            .where({ group_id: grp_id })
+            .whereNot({ permission_level: 42 })
         } else {
           mygroups = await Database.from('usergroups')
             .where({ group_id: grp_id, permission_level: 1 })
@@ -1466,7 +1474,9 @@ class NotificationController_v2 {
     if (auth.user) {
       let checking = false
 
-      const security_check = await Database.from('admins').where({ user_id: auth.user.id, permission_level: 1 }).first()
+      const security_check = await Database.from('admins')
+        .where({ user_id: auth.user.id, permission_level: 1 })
+        .first()
 
       let isAdmin = false
       if (security_check != undefined) {
