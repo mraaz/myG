@@ -50,7 +50,7 @@ export default class Notifications extends Component {
     return this.state.activeTab === tab
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     window.scrollTo(0, 0)
     let adminStatus = false
     let params = new URLSearchParams(window.location.search)
