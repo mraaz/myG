@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-
+import axios from 'axios'
 import Menu from './Notifications/Menu/Menu'
 import MobileMenu from './Notifications/Menu/MobileMenu'
 import Upcoming from './Notifications/Upcoming'
@@ -36,30 +36,38 @@ export default class Notifications extends Component {
         notificationsCount: 0,
       },
       () => {
-        window.router.push(`/?at=notifications&submenu=${activeTab}`)
+        window.history.pushState('myG', 'myG', `/?at=notifications&submenu=${activeTab}`)
       }
     )
   }
   setNotificationsCount = (notificationsCount) => {
-    // this.setState({
-    //   notificationsCount,
-    // })
+    this.setState({
+      notificationsCount,
+    })
   }
 
   isActive = (tab) => {
     return this.state.activeTab === tab
   }
 
-  componentDidMount() {
+  async componentWillMount() {
     window.scrollTo(0, 0)
+    let adminStatus = false
     let params = new URLSearchParams(window.location.search)
     let activeTab = params.get('submenu')
     if (activeTab == null || activeTab == 0) {
       window.history.pushState('myG', 'myG', '/?at=notifications&submenu=0')
     }
-
+    const getnoti = await axios.post('/api/notifications_v2/getUnread_count', {
+      notification_type: -1,
+    })
+    if (getnoti.data) {
+      const { isAdmin = false } = getnoti.data
+      adminStatus = isAdmin
+    }
     this.setState({
       activeTab: activeTab ? activeTab : 0,
+      isAdmin: adminStatus,
     })
   }
 

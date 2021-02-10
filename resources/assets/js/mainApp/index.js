@@ -375,7 +375,7 @@ class Layout extends Component {
       <ErrorHandler>
         <Provider store={store}>
           <PersistGate persistor={persistor}>
-            <Onboarding />
+            {/* <Onboarding /> */}
             <ToastContainer
               autoClose={8000}
               draggablePercent={60}
