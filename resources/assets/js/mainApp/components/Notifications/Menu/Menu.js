@@ -40,32 +40,28 @@ class Menu extends Component {
             title={`Upcoming Games  ${activeTab == 0 ? `(${notificationsCount})` : '(0)'}`}
             active={activeTab == 0}
             onClick={() => {
-              this.changeTab(0)
-              changeContentTab(0)
+              changeContentTab('', 0)
             }}
           />
           <Button
             title={`Approvals ${approvals ? `(${approvals})` : '(0)'}`}
             active={activeTab == 1}
             onClick={() => {
-              this.changeTab(1)
-              changeContentTab(1)
+              changeContentTab('', 1)
             }}
           />
           <Button
             title={`Alerts ${alerts ? `(${alerts})` : '(0)'}`}
             active={activeTab == 2}
             onClick={() => {
-              this.changeTab(2)
-              changeContentTab(2)
+              changeContentTab('', 2)
             }}
           />
           <Button
             title={`Chat ${chats ? `(${chats})` : '(0)'}`}
             active={activeTab == 3}
             onClick={() => {
-              this.changeTab(3)
-              changeContentTab(3)
+              changeContentTab('', 3)
             }}
           />
           {isAdmin && (
@@ -73,8 +69,7 @@ class Menu extends Component {
               title={`Reports ${reports ? `(${reports})` : '(0)'}`}
               active={activeTab == 4}
               onClick={() => {
-                this.changeTab(4)
-                changeContentTab(4)
+                changeContentTab('', 4)
               }}
             />
           )}
@@ -83,8 +78,7 @@ class Menu extends Component {
               title={`Reported Users ${reportedUser ? `(${reportedUser})` : '(0)'}`}
               active={activeTab == 6}
               onClick={() => {
-                this.changeTab(5)
-                changeContentTab(5)
+                changeContentTab('', 5)
               }}
             />
           )}
@@ -92,8 +86,7 @@ class Menu extends Component {
             title='Settings'
             active={activeTab == 6}
             onClick={() => {
-              this.changeTab(6)
-              changeContentTab(6)
+              changeContentTab('', 6)
             }}
           />
         </div>
