@@ -4,7 +4,7 @@ const AWS = require('aws-sdk')
 const Env = use('Env')
 const fs = require('fs')
 const Helpers = use('Helpers')
-const fileType = require('file-type')
+const FileType = require('file-type')
 const bluebird = require('bluebird')
 const User = use('App/Models/User')
 const Group = use('App/Models/Group')
@@ -115,10 +115,9 @@ class ApiController {
 
       const isFileInfected = await this.isFileInfected(tmpfilepath)
       if (isFileInfected) return response.status(500).json('FILE_INFECTED')
-
       try {
         const buffer = fs.readFileSync(tmpfilepath)
-        const type = fileType(buffer)
+        const type = await FileType.fromBuffer(buffer)
         const timestamp = Date.now().toString()
 
         let data = await uploadFile(bucket, buffer, tmpfilename, type)
@@ -364,9 +363,9 @@ class ApiController {
         },
         function(err, data) {
           if (data) {
-            return response ? response.status(200).json({ success: true }) : Promise.resolve({ success: true });
-          } 
-          return response ? response.status(400).send(err) : Promise.reject(err);
+            return response ? response.status(200).json({ success: true }) : Promise.resolve({ success: true })
+          }
+          return response ? response.status(400).send(err) : Promise.reject(err)
         }
       )
     }
