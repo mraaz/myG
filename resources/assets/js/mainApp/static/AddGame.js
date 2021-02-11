@@ -44,6 +44,15 @@ const EXPERIENCE_OPTIONS = [
   { value: 'Professional', label: 'Professional' },
 ]
 
+const TIME_EXPERIENCE_OPTIONS = [
+  { value: 'Less than 1 year', label: 'Less than 1 year' },
+  { value: 'Less than 2 years', label: 'Less than 2 years' },
+  { value: 'Less than 3 years', label: 'Less than 3 years' },
+  { value: 'Less than 4 years', label: 'Less than 4 years' },
+  { value: 'Less than 5 years', label: 'Less than 5 years' },
+  { value: '5+ years', label: '5+ years' },
+]
+
 const REGION_OPTIONS = [
   { value: 'North America', label: 'North America' },
   { value: 'Europe', label: 'Europe' },
@@ -128,4 +137,14 @@ const LANGUAGE_OPTIONS = [
   { value: 'Vietnamese', label: 'Vietnamese' },
 ]
 
-export { styles, SETTINGS_ENUMS, EXPERIENCE_OPTIONS, REGION_OPTIONS, PLATFORM_OPTIONS, VISIBILITY_OPTIONS, LIMIT_OPTIONS, LANGUAGE_OPTIONS }
+export {
+  styles,
+  SETTINGS_ENUMS,
+  EXPERIENCE_OPTIONS,
+  TIME_EXPERIENCE_OPTIONS,
+  REGION_OPTIONS,
+  PLATFORM_OPTIONS,
+  VISIBILITY_OPTIONS,
+  LIMIT_OPTIONS,
+  LANGUAGE_OPTIONS,
+}
