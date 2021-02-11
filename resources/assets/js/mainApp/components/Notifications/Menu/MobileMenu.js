@@ -56,12 +56,10 @@ class MobileMenu extends Component {
     let prevCount = Number(activeTab) == 0 ? 0 : Number(activeTab) - 1
     let nextCount = Number(activeTab) > 6 ? 0 : Number(activeTab) + 1
 
-    console.log('activeTab', activeTab)
-
     return (
       <div className='menu__scroll'>
         <div
-          className='previous'
+          className={`previous ${activeTab > 0 ? '' : 'hideArrow'}`}
           onClick={() => {
             if (activeTab > 0) {
               changeContentTab('previous', Number(activeTab) - 1)
@@ -71,7 +69,7 @@ class MobileMenu extends Component {
         </div>
         <div className='activeTab__label'>{dummyData[activeTab].title}</div>
         <div
-          className='next'
+          className={`next ${activeTab < 6 ? '' : 'hideArrow'}`}
           onClick={() => {
             if (activeTab < 6) {
               changeContentTab('next', Number(activeTab) + 1)

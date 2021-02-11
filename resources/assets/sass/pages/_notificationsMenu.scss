@@ -92,6 +92,9 @@ $transition-default: 0.25s ease-out 0.1s;
       img {
         height: 14px;
       }
+      &.hideArrow {
+        display: none;
+      }
     }
 
     .next {
@@ -104,6 +107,9 @@ $transition-default: 0.25s ease-out 0.1s;
       top: 21px;
       img {
         height: 14px;
+      }
+      &.hideArrow {
+        display: none;
       }
     }
     .activeTab__label {
