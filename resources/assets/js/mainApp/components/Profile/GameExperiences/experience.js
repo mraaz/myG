@@ -4,15 +4,7 @@ import AsyncCreatableSelect from 'react-select/async-creatable'
 import MyGSelect from '../../common/MyGSelect'
 import { Disable_keys, Schedule_Game_Skills } from '../../Utility_Function'
 import { WithTooltip } from '../../Tooltip'
-
-const EXPERIENCE_OPTIONS = [
-  { value: 'Less than 1 year', label: 'Less than 1 year' },
-  { value: 'Less than 2 years', label: 'Less than 2 years' },
-  { value: 'Less than 3 years', label: 'Less than 3 years' },
-  { value: 'Less than 4 years', label: 'Less than 4 years' },
-  { value: 'Less than 5 years', label: 'Less than 5 years' },
-  { value: '5+ years', label: '5+ years' },
-]
+import { TIME_EXPERIENCE_OPTIONS } from '../../../static/AddGame'
 
 export default class Experience extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -57,7 +49,7 @@ export default class Experience extends React.Component {
         <MyGSelect
           width={'75%'}
           innerWidth={'100%'}
-          options={EXPERIENCE_OPTIONS}
+          options={TIME_EXPERIENCE_OPTIONS}
           onChange={(experience) => this.props.storeExperience(this.props.experience.id, { experience })}
           value={this.props.experience.experience}
           disabled={!this.props.isSelf}

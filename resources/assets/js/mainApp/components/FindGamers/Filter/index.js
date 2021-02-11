@@ -4,7 +4,7 @@ import AsyncSelect from 'react-select/async'
 import { Game_name_values, Disable_keys } from '../../Utility_Function'
 import { ignoreFunctions } from "../../../../common/render"
 import { fetchGameInfo } from "../../../../common/game"
-import { LANGUAGE_OPTIONS } from '../../../static/AddGame'
+import { TIME_EXPERIENCE_OPTIONS, LANGUAGE_OPTIONS } from '../../../static/AddGame'
 
 const dropdownIcon = 'https://myG.gg/platform_images/View+Game/Down+Carrot.svg';
 
@@ -16,6 +16,7 @@ const filterOptions = {
   commendation: 'Commendations',
   team: 'Team',
   languages: 'Languages',
+  level: 'Level',
   underage: '18+',
   hasMic: 'Mic',
 };
@@ -52,6 +53,8 @@ const initialFilters = {
   languages: '',
   underage: '',
   hasMic: '',
+  experience: '',
+  level: '',
   extraFields: [],
   extraFieldsValues: [],
 };
@@ -85,9 +88,11 @@ export default class Filter extends React.Component {
       relationship: hasFilter('relationship') ? state.relationship ? state.relationship.value : '' : '',
       commendations: hasFilter('commendation') ? state.commendation ? state.commendation.map(({ value }) => value).join('|') : '' : '',
       team: hasFilter('team') ? state.team : '',
+      level: hasFilter('level') ? state.level : '',
       languages: hasFilter('languages') ? state.languages ? state.languages.map(({ value }) => value).join('|') : '' : '',
       underage: hasFilter('underage') ? state.underage.value === 'No' : '',
       hasMic: hasFilter('hasMic') ? state.hasMic.value === 'Yes' : '',
+      experience: hasFilter('experience') ? state.experience ? state.experience.value : '' : '',
       ...this.getExtraFilters(state),
     };
   }
@@ -95,8 +100,14 @@ export default class Filter extends React.Component {
   getExtraFilters = (state) => {
     const extraFields = {};
     Object.keys(state.extraFieldsValues).forEach((filter) => {
-      if (state.extraFieldsValues[filter]) {
-        extraFields[filter] = state.extraFieldsValues[filter].map(({ value }) => !!value && `${value}`.trim()).filter((value => !!value)).join('|');
+      const filterValue = state.extraFieldsValues[filter];
+      if (filterValue) {
+        if (filterValue.map) {
+          extraFields[filter] = state.extraFieldsValues[filter].map(({ value }) => !!value && `${value}`.trim()).filter((value => !!value)).join('|');
+        }
+        else {
+          extraFields[filter] = `${filterValue.value || filterValue || ''}`.trim()
+        }
       }
     });
     return extraFields;
@@ -134,6 +145,15 @@ export default class Filter extends React.Component {
                 </div>
               )
             })}
+            {!!this.state.game && (
+              <div
+                key={'experience'}
+                className={`option clickable ${this.state.selectedFilters.includes('experience') ? 'selected' : ''}`}
+                style={{ padding: '8px' }}
+                onClick={() => this.handleAddedFilter('experience')}>
+                Experience
+              </div>
+            )}
             {this.state.extraFields.map(({ label: filter }) => {
               return (
                 <div
@@ -163,6 +183,7 @@ export default class Filter extends React.Component {
       case 'relationship': return this.renderOptionsFilter(filter, relationshipOptions, false);
       case 'commendation': return this.renderOptionsFilter(filter, commendationOptions, true);
       case 'team': return this.renderTextFilter(filter);
+      case 'level': return this.renderTextFilter(filter);
       case 'languages': return this.renderOptionsFilter(filter, LANGUAGE_OPTIONS, true);
       case 'underage': return this.renderOptionsFilter(filter, yesNoOptions, false, 'Must be 18?');
       case 'hasMic': return this.renderOptionsFilter(filter, yesNoOptions, false, 'Must have Mic?');
@@ -175,6 +196,7 @@ export default class Filter extends React.Component {
       <div className='filter-row'>
           <div className='filter-label'>{filterOptions[filter]}</div>
           <input
+            autoFocus
             type='text'
             className='filter-text'
             onChange={(event) => this.setState({ [filter]: event.target.value })}
@@ -190,6 +212,7 @@ export default class Filter extends React.Component {
       <div className='filter-row'>
         <div className='filter-label'>{filterOptions[filter]}</div>
         <Select
+          autoFocus
           className='filter-select'
           placeholder={placeholder || `Select the ${filter} you want to search`}
           name={`${filter}-select`}
@@ -210,6 +233,7 @@ export default class Filter extends React.Component {
       <div className='filter-row'>
         <div className='filter-label'>Game</div>
           <AsyncSelect
+            autoFocus
             cacheOptions
             defaultOptions
             isValidNewOption={() => false}
@@ -241,6 +265,26 @@ export default class Filter extends React.Component {
     this.setState({ extraFields });
   }
 
+  renderExperienceFilter = () => {
+    if (!this.state.game || !this.state.selectedFilters.includes('experience')) return null;
+    return(
+      <div className='filter-row'>
+        <div className='filter-label'>Experience</div>
+        <Select
+          autoFocus
+          className='filter-select'
+          placeholder='Select the Experience for this game'
+          name='experience-select'
+          value={this.state.experience}
+          onChange={(value) => this.setState({ experience: value || '' })}
+          options={TIME_EXPERIENCE_OPTIONS}
+          isClearable
+          classNamePrefix='filter'
+        />
+      </div>
+    );
+  }
+
   renderDynamicFilters = () => {
     if (!this.state.game) return null;
     if (!this.state.extraFields || !this.state.extraFields.length) return null
@@ -259,6 +303,7 @@ export default class Filter extends React.Component {
       <div className="filter-row" key={filter.label}>
         <span className='filter-label'>{filter.label}</span>
         <Select
+          autoFocus
           className='filter-select'
           placeholder={filter.placeholder}
           name={`${filter}-select`}
@@ -283,6 +328,7 @@ export default class Filter extends React.Component {
       <div className="filter-row" key={filter.label}>
         <span className='filter-label'>{filter.label}</span>
         <Select
+          autoFocus
           className='filter-select'
           placeholder={filter.placeholder}
           name={`${filter}-select`}
@@ -307,6 +353,7 @@ export default class Filter extends React.Component {
         <div className="label">Filter by</div>
         <div className="filter-container">
           {this.renderFilters()}
+          {this.renderExperienceFilter()}
           {this.renderDynamicFilters()}
         </div>
         {this.renderAddFilter()}

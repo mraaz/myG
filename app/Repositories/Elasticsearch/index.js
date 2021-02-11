@@ -44,11 +44,11 @@ class ElasticsearchRepository {
       const extraFields = {};
       Object.keys(dynamic).forEach((field) => {
         if (dynamic[field].text) extraFields[dynamic[field].text] = this.forceArray(dynamic[field].value)
-          .map(({ value }) => value)
+          .map(({ value }) => `${value}`.trim())
           .filter((value => !!value))
           .join('|');
       });
-      return { 
+      const userToStore = { 
         id: experience.game,
         experienceId: experience.id,
         level: experience.level, 
@@ -56,6 +56,8 @@ class ElasticsearchRepository {
         name: experience.gameName,
         ...extraFields,
       };
+      log('ELASTICSEARCH', `User To Store: ${JSON.stringify(userToStore)}`);
+      return userToStore;
     });
     return this.getElasticsearchClient().update({
       index: 'users',
@@ -152,14 +154,14 @@ class ElasticsearchRepository {
     if (Array.isArray(value)) return value
     const parsed = this.forceJson(value)
     if (Array.isArray(parsed)) return parsed
-    return []
+    return [parsed].filter(parsed => !!parsed);
   }
 
   forceJson(value) {
     try {
       return JSON.parse(value)
     } catch (_) {
-      return {}
+      return (typeof value === 'object' && value !== null) ? value : {}
     }
   }
 }
