@@ -58,16 +58,13 @@ export default class Notifications extends Component {
     if (activeTab == null || activeTab == 0) {
       window.history.pushState('myG', 'myG', '/?at=notifications&submenu=0')
     }
-    const getnoti = await axios.post('/api/notifications_v2/getUnread_count', {
-      notification_type: -1,
-    })
+    const getnoti = await axios.get('/api/notifications_v2/getCheck')
     if (getnoti.data) {
-      const { isAdmin = false } = getnoti.data
-      adminStatus = isAdmin
+      adminStatus = getnoti.data
     }
     this.setState({
       activeTab: activeTab ? activeTab : 0,
-      isAdmin: adminStatus,
+      isAdmin: adminStatus == true ? true : false,
     })
   }
 
