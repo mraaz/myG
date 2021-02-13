@@ -1,3 +1,8 @@
+/*
+ * Author : Nitin Tyagi
+ * Github  : https://github.com/realinit
+ * Email : nitin.1992tyagi@gmail.com
+ */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Button from './Button'

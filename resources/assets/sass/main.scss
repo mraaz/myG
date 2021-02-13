@@ -476,6 +476,9 @@ a:visited {
     }
     &__single-value {
       color: #fff;
+      img {
+        max-width: 100px;
+      }
     }
     &__menu {
       top: 50px;
@@ -494,6 +497,9 @@ a:visited {
         background-color: #0b0f14;
         border: 1px solid #e5c746;
         padding: 0;
+        img {
+          max-width: 100px;
+        }
       }
       padding: 0;
     }
@@ -521,6 +527,9 @@ a:visited {
       user-select: none;
       -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
       box-sizing: border-box;
+      img {
+        max-width: 100px;
+      }
       &:hover {
         background-color: #e5c746 !important;
         color: #0b0f14;

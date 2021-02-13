@@ -1,3 +1,8 @@
+/*
+ * Author : Nitin Tyagi
+ * Github  : https://github.com/realinit
+ * Email : nitin.1992tyagi@gmail.com
+ */
 import axios from 'axios'
 import moment from 'moment'
 import { setAsFriendRedux } from './../../../common/friend'
