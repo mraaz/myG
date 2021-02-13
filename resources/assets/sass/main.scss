@@ -37,6 +37,11 @@
   box-sizing: border-box;
 }
 
+html {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
 body {
   display: flex;
   align-items: center;

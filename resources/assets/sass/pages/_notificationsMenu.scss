@@ -264,6 +264,8 @@ $transition-default: 0.25s ease-out 0.1s;
       position: relative;
       max-height: 100vh;
       overflow: scroll;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
       .mygames {
         display: flex;
         justify-content: start;
