@@ -69,9 +69,9 @@
       border: #273137 solid 1px;
       background-color: #1d2326;
       border-radius: 4px;
-      padding: 16px;
-      margin: 16px;
-      width: 21%;
+      padding: 16px 1%;
+      margin: 16px 1%;
+      width: 22%;
 
       .icon-container {
         display: flex;
@@ -145,16 +145,87 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    
+
     .container {
       position: relative;
       display: flex;
       flex-direction: column;
-      width: fit-content;
+      height: -moz-available;
+      height: -webkit-fill-available;
+      height: fill-available;
       padding: 0 12px;
       margin: 0;
       background-color: #1d2326;
       border-radius: 12px;
+
+      .xp-table {
+        display: flex;
+        flex-direction: column;
+        background-color: #181a1c;
+        margin-bottom: 16px;
+
+        .entry {
+          color: white;
+          font-family: 'Montserrat';
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          border: 1px solid #1d2326;
+        }
+
+        .criteria {
+          display: flex;
+          flex: 4;
+          padding: 0 2em;
+          align-items: center;
+        }
+
+        .xp {
+          display: flex;
+          flex: 1;
+          padding: 0 2em;
+          align-items: center;
+          border-left: 1px solid #1d2326;
+        }
+
+        .value {
+          margin-left: auto;
+          font-size: 42px;
+        }
+      }
+
+      .level-benefits {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 16px;
+
+        .entry {
+          display: flex;
+          flex-direction: column;
+          color: white;
+          font-family: 'Montserrat';
+        }
+
+        .level {
+          background-color: #2d363a;
+          font-size: 20px;
+          padding: 4px 12px;
+          display: flex;
+          align-items: center;
+
+          .icon {
+            width: 24px;
+            height: 24px;
+            margin-left: auto;
+          }
+        }
+
+        .benefit {
+          background-color: #181a1c;
+          padding: 8px 12px;
+          border: 1px solid #1d2326;
+        }
+      }
     }
   }
 }

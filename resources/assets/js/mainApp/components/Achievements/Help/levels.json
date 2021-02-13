@@ -1,0 +1,30 @@
+[
+  {
+    "benefits": ["Access to chat", "Access to create a match"],
+    "value": 2
+  },
+  {
+    "benefits": ["Create chat group"],
+    "value": 3
+  },
+  {
+    "benefits": ["Two profile sponsors"],
+    "value": 5
+  },
+  {
+    "benefits": ["Create a community without sponsors"],
+    "value": 10
+  },
+  {
+    "benefits": ["Create two communities with one sponsor each"],
+    "value": 15
+  },
+  {
+    "benefits": ["Create three communities"],
+    "value": 20
+  },
+  {
+    "benefits": ["Create four communities with two sponsors each"],
+    "value": 25
+  }
+]
