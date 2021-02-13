@@ -289,18 +289,20 @@ class Messenger extends React.Component {
     logger.log('RENDER', 'Messenger')
     if (parseInt(this.props.level) < 2) return this.renderLockedChat()
     return (
-      <section id='messenger'>
-        <div className='messenger-content'>
-          {this.renderBody()}
-          {this.renderSettings()}
-          {this.renderFooter()}
-          {this.renderEncryptionLogin()}
-        </div>
-        {this.renderChats()}
-        {this.renderStatusMonitor()}
-        {this.renderFocusMonitor()}
+      <React.Fragment>
         {this.renderSweetAlert()}
-      </section>
+        <section id='messenger'>
+          <div className='messenger-content'>
+            {this.renderBody()}
+            {this.renderSettings()}
+            {this.renderFooter()}
+            {this.renderEncryptionLogin()}
+          </div>
+          {this.renderChats()}
+          {this.renderStatusMonitor()}
+          {this.renderFocusMonitor()}
+        </section>
+      </React.Fragment>
     )
   }
 }
