@@ -23,7 +23,8 @@
     "js": "gulp webpack --watch",
     "build": "npm run sass && npm run js",
     "foreverstart": "forever start --minUptime 500 --spinSleepTime 1000 server.js",
-    "foreverstop": "forever stopall"
+    "foreverstop": "forever stopall",
+    "db:refresh": "adonis migration:refresh"
   },
   "keywords": [
     "adonisjs",
