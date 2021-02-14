@@ -129,6 +129,9 @@
   }
 }
 @media (max-width: 1024px) {
+  .tab-heading {
+    font-size: 13px !important;
+  }
   .invite-players {
     &__container {
       width: auto;

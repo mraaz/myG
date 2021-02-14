@@ -17,6 +17,7 @@ import { Game_name_values, Schedule_Game_Tags, Disable_keys } from '../Utility_F
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
 import { FeatureEnabled, REPEAT_SCHEDULE } from '../../../common/flags'
 import { logToElasticsearch } from '../../../integration/http/logger'
+import { detectMob } from '../../utils/utils'
 
 const SliderWithTooltip = Slider.createSliderWithTooltip(Slider)
 
@@ -608,7 +609,11 @@ const AddGame = ({
         value_five: null,
         game_name_fields_img: value.game_name_fields_img,
       })
-      updateState({ additional_info: value ? value.additional_info : false })
+      const additional_infos = value ? value.additional_info : false
+      updateState({ additional_info: additional_infos })
+      if (detectMob() == true && additional_infos == true) {
+        updateState({ selectedSettings: SETTINGS_ENUMS.INGAMEFIELD })
+      }
     }
   }
 
@@ -1025,7 +1030,7 @@ const AddGame = ({
             ])}
           />
         </div>
-        {state.additional_info && (
+        {state.additional_info && detectMob() && (
           <div onClick={() => updateState({ selectedSettings: SETTINGS_ENUMS.INGAMEFIELD })}>
             <div className='tab-heading'>In Game Feilds</div>
             <div
@@ -1039,13 +1044,13 @@ const AddGame = ({
       </div>
     )
   }
-
   return (
     <div className={styles.mainContainer}>
       <div className={styles.mainViewContainer}>
         {getSettingsMenu()}
         {getGameSettingsView()}
       </div>
+      {state.additional_info && !detectMob() && getOptionalGameFieldsView()}
     </div>
   )
 }

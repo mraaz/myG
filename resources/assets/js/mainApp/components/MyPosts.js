@@ -136,7 +136,7 @@ export default class MyPosts extends Component {
         )}
         {myPosts.length > 0 && !post_submit_loading && (
           // <section id='posts' className={isFetching ? '' : `active`}>
-          <section id='posts'>
+          <section id='posts' className='active'>
             <InfiniteScroll dataLength={myPosts.length} next={this.fetchMoreData} hasMore={moreplease}>
               {this.showLatestPosts()}
             </InfiniteScroll>

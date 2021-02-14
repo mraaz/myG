@@ -467,6 +467,7 @@ a:visited {
     background-color: #e5c746 !important;
     border: 1px solid #e5c746;
     padding: 0 !important;
+    z-index: 11;
 
     & > * {
       scrollbar-width: none; /* Firefox */
@@ -476,6 +477,7 @@ a:visited {
 
   .filter {
     background-color: #0b0f14;
+    z-index: 11;
     &__input {
       color: #fff;
     }
@@ -484,6 +486,7 @@ a:visited {
       img {
         max-width: 100px;
       }
+      z-index: 11;
     }
     &__menu {
       top: 50px;
@@ -507,6 +510,7 @@ a:visited {
         }
       }
       padding: 0;
+      z-index: 11;
     }
 
     &__multi-value {
