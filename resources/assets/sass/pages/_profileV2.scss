@@ -823,6 +823,8 @@
       flex-direction: column;
       width: 33.333%;
       overflow-x: scroll;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
     }
 
     .left {
@@ -1407,8 +1409,8 @@
     .sponsor {
       display: flex;
       position: relative;
-      width: 96px;
-      height: 64px;
+      width: 320px;
+      height: 100px;
       margin-right: 1.5rem;
       cursor: pointer;
 

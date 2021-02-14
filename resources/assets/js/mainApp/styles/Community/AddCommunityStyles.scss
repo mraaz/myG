@@ -354,10 +354,13 @@
   text-align: center;
   background: #171a1c;
   border-radius: 50px;
-  width: 100%;
+  width: 38%;
   margin: 0 auto;
   display: flex;
   align-items: center;
+  @media screen and (max-width: 575px) {
+    width: 90%;
+  }
 }
 
 .community__search_container {
