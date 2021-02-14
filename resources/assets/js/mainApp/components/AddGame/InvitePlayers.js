@@ -16,6 +16,7 @@ import {
 import '../../styles/AddGame/InvitePlayersStyles.scss'
 import '../../styles/AddGame/AddGameStyles.scss'
 import SelectedInvites from './SelectedInvites'
+import { detectMob } from '../../utils/utils'
 
 const MENU_OPTIONS = {
   PLAYERS: 'PLAYERS',
@@ -526,17 +527,37 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
     )
   }
 
+  const getDesktopVersion = () => {
+    return (
+      <MyGModal isOpen ariaHideApp={false}>
+        <div className='invite-players__container'>
+          {getHeader()}
+          {getContent()}
+          {getFooter()}
+          <div className='modal__close' onClick={onCancelInviteClick}>
+            <img src='https://myG.gg/platform_images/Dashboard/X_icon.svg' />
+          </div>
+        </div>
+      </MyGModal>
+    )
+  }
+
   return (
     <div>
-      <div className='invite-players__container'>
-        {getHeader()}
-        {getContent()}
-        {getFooter()}
-        <div className='modal__close' onClick={onCancelInviteClick}>
-          <img src='https://myG.gg/platform_images/Dashboard/X_icon.svg' />
+      {detectMob() == true && (
+        <div>
+          <div className='invite-players__container'>
+            {getHeader()}
+            {getContent()}
+            {getFooter()}
+            <div className='modal__close' onClick={onCancelInviteClick}>
+              <img src='https://myG.gg/platform_images/Dashboard/X_icon.svg' />
+            </div>
+          </div>
+          <div className='modal-overlay' onClick={onCancelInviteClick}></div>
         </div>
-      </div>
-      <div className='modal-overlay' onClick={onCancelInviteClick}></div>
+      )}
+      {detectMob() == false && getDesktopVersion()}
     </div>
   )
 }
