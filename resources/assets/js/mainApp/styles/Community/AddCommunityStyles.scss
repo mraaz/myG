@@ -50,7 +50,7 @@
 
 .tab-heading {
   font-size: 16px;
-  padding: 0 32px;
+  padding: 0 28px;
   cursor: pointer;
   color: #fff;
   font-weight: 600;
@@ -251,6 +251,7 @@
     height: min-content;
     border: 1px solid #707070;
     border-radius: 18px;
+    overflow: scroll;
   }
   &__optional-header-container {
     text-align: center;
@@ -353,10 +354,13 @@
   text-align: center;
   background: #171a1c;
   border-radius: 50px;
-  width: 100%;
+  width: 38%;
   margin: 0 auto;
   display: flex;
   align-items: center;
+  @media screen and (max-width: 575px) {
+    width: 90%;
+  }
 }
 
 .community__search_container {

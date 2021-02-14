@@ -46,7 +46,7 @@ export default class Home extends Component {
     this.lastScrollY = window.scrollY
     let offsetWidth = 0
     if (this.contentAreaRef.current && this.contentAreaRef.current.offsetWidth) {
-      offsetWidth = this.contentAreaRef.current.offsetWidth ? 0 : this.contentAreaRef.current.offsetWidth
+      offsetWidth = this.contentAreaRef.current.offsetWidth ? this.contentAreaRef.current.offsetWidth : 0
     }
     window.requestAnimationFrame(() => {
       if (this.lastScrollY > 300 && this.navRef.current && this.navRef.current.style) {
@@ -62,14 +62,15 @@ export default class Home extends Component {
         // Required padding to prevent infinite loop of styling
         this.contentAreaRef.current.style.paddingTop = '170px'
 
-        if (offsetWidth < 1200) {
-          this.navRef.current.style.width = '71%'
+        if (window.innerWidth < 1198) {
+          this.navRef.current.style.width = '100%'
         }
-
+        if (window.innerWidth > 1198) {
+          this.navRef.current.style.width = '72%'
+        }
         // Exit early to make this less confusing
         return
       }
-
 
       if (this.navRef.current) {
         this.navRef.current.removeAttribute('style')

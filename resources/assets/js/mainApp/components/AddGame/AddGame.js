@@ -17,6 +17,7 @@ import { Game_name_values, Schedule_Game_Tags, Disable_keys } from '../Utility_F
 import { parsePlayersToSelectData } from '../../utils/InvitePlayersUtils'
 import { FeatureEnabled, REPEAT_SCHEDULE } from '../../../common/flags'
 import { logToElasticsearch } from '../../../integration/http/logger'
+import { detectMob } from '../../utils/utils'
 
 const SliderWithTooltip = Slider.createSliderWithTooltip(Slider)
 
@@ -37,7 +38,7 @@ const AddGame = ({
 }) => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    const getInitialData_Tags = async function() {
+    const getInitialData_Tags = async function () {
       try {
         let results = await Schedule_Game_Tags()
         updateAdvancedSettings({ optionTags: results })
@@ -46,7 +47,7 @@ const AddGame = ({
       }
     }
 
-    const getInitialData_GameName = async function() {
+    const getInitialData_GameName = async function () {
       try {
         let results = await Game_name_values()
         updateMainSettings({ gameTitlesList: results })
@@ -143,7 +144,7 @@ const AddGame = ({
 
   // api calls
   const getOptionsTags = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         const { gameTitle } = mainSettingsState
 
@@ -162,7 +163,7 @@ const AddGame = ({
   }
 
   const getOptionsGames = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         const results = await Game_name_values(inputValue)
         updateMainSettings({ gameTitlesList: results })
@@ -608,7 +609,11 @@ const AddGame = ({
         value_five: null,
         game_name_fields_img: value.game_name_fields_img,
       })
-      updateState({ additional_info: value ? value.additional_info : false })
+      const additional_infos = value ? value.additional_info : false
+      updateState({ additional_info: additional_infos })
+      if (detectMob() == true && additional_infos == true) {
+        updateState({ selectedSettings: SETTINGS_ENUMS.INGAMEFIELD })
+      }
     }
   }
 
@@ -1000,7 +1005,9 @@ const AddGame = ({
     return (
       <div>
         <div />
-        {state.selectedSettings === SETTINGS_ENUMS.MAIN ? getMainSettingsView() : getAdvancedSettingsView()}
+        {state.selectedSettings === SETTINGS_ENUMS.MAIN && getMainSettingsView()}
+        {state.selectedSettings === SETTINGS_ENUMS.ADVANCED && getAdvancedSettingsView()}
+        {state.selectedSettings === SETTINGS_ENUMS.INGAMEFIELD && getOptionalGameFieldsView()}
       </div>
     )
   }
@@ -1023,17 +1030,27 @@ const AddGame = ({
             ])}
           />
         </div>
+        {state.additional_info && detectMob() && (
+          <div onClick={() => updateState({ selectedSettings: SETTINGS_ENUMS.INGAMEFIELD })}>
+            <div className='tab-heading'>In Game Feilds</div>
+            <div
+              className={classNames([
+                styles.menuLine,
+                state.selectedSettings === SETTINGS_ENUMS.INGAMEFIELD ? styles.menuLineHighlighted : null,
+              ])}
+            />
+          </div>
+        )}
       </div>
     )
   }
-
   return (
     <div className={styles.mainContainer}>
       <div className={styles.mainViewContainer}>
         {getSettingsMenu()}
         {getGameSettingsView()}
       </div>
-      {state.additional_info && getOptionalGameFieldsView()}
+      {state.additional_info && !detectMob() && getOptionalGameFieldsView()}
     </div>
   )
 }

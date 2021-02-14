@@ -16,6 +16,7 @@ import {
 import '../../styles/AddGame/InvitePlayersStyles.scss'
 import '../../styles/AddGame/AddGameStyles.scss'
 import SelectedInvites from './SelectedInvites'
+import { detectMob } from '../../utils/utils'
 
 const MENU_OPTIONS = {
   PLAYERS: 'PLAYERS',
@@ -124,7 +125,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
     return (
       <div className='invite-players__footer-container'>
         <MyGButton customStyles={{ color: '#000', backgroundColor: '#E5C746' }} text='Invite' onClick={submitInvitation} />
-        <MyGButton customStyles={{ color: '#E5C746', border: '2px solid' }} text='Cancel' onClick={onCancelInviteClick} />
+        {!detectMob() && <MyGButton customStyles={{ color: '#E5C746', border: '2px solid' }} text='Cancel' onClick={onCancelInviteClick} />}
       </div>
     )
   }
@@ -159,7 +160,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
 
   const fetchMoreData = async () => {
     await updateCounter(counter + 1)
-    const getKeywordSearchResults = async function() {
+    const getKeywordSearchResults = async function () {
       try {
         const response = await axios.post('/api/friends/allmyFriends', {
           counter,
@@ -183,7 +184,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
 
   const fetchCommunitiesData = async () => {
     await updateCommunitiesCounter(counterCommunities + 1)
-    const getmyGroups = async function() {
+    const getmyGroups = async function () {
       try {
         const {
           data: { myGroups },
@@ -195,7 +196,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
       }
     }
 
-    const getGroups_im_in = async function() {
+    const getGroups_im_in = async function () {
       try {
         const {
           data: { groups_im_in },
@@ -303,7 +304,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
 
   const getPlayersList = () => {
     return (
-      <div>
+      <div className='invite-players__player-list'>
         <InfiniteScroll
           dataLength={keywordSearchResults.friendsList.length}
           next={fetchMoreData}
@@ -439,7 +440,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
 
   const getGroupsList = () => {
     return (
-      <div>
+      <div className='invite-players__player-list'>
         <InfiniteScroll
           dataLength={groupsKeywordSearchResults.groupsList.length}
           next={fetchGroupsData}
@@ -459,7 +460,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
 
   const getCommunitiesList = () => {
     return (
-      <div>
+      <div className='invite-players__player-list'>
         <InfiniteScroll
           dataLength={communitiesKeywordSearchResults.communitiesList.length}
           next={fetchCommunitiesData}
@@ -502,7 +503,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
   const getSearchArea = () => {
     return (
       <div className='invite-players__search-area-container'>
-        <div>{getGroupsMenu()}</div>
+        {getGroupsMenu()}
         {getResultsList()}
       </div>
     )
@@ -526,14 +527,35 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
     )
   }
 
+  const getDesktopVersion = () => {
+    return (
+      <MyGModal isOpen ariaHideApp={false}>
+        <div className='invite-players__container'>
+          {getHeader()}
+          {getContent()}
+          {getFooter()}
+        </div>
+      </MyGModal>
+    )
+  }
+
   return (
-    <MyGModal isOpen ariaHideApp={false}>
-      <div className='invite-players__container'>
-        {getHeader()}
-        {getContent()}
-        {getFooter()}
-      </div>
-    </MyGModal>
+    <div>
+      {detectMob() == true && (
+        <div>
+          <div className='invite-players__container'>
+            {getHeader()}
+            {getContent()}
+            {getFooter()}
+            <div className='modal__close' onClick={onCancelInviteClick}>
+              <img src='https://myG.gg/platform_images/Dashboard/X_icon.svg' />
+            </div>
+          </div>
+          <div className='modal-overlay' onClick={onCancelInviteClick}></div>
+        </div>
+      )}
+      {detectMob() == false && getDesktopVersion()}
+    </div>
   )
 }
 

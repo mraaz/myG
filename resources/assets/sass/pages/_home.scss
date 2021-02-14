@@ -233,7 +233,7 @@ section#content-container {
   }
   #content-container {
     //overflow: hidden;
-    //height: 900px; Hide the scroll bars, decided against it
+    height: 100vh; //Hide the scroll bars, decided against it
     .content-area {
       overflow: scroll;
       display: flex;
@@ -1670,7 +1670,7 @@ section#content-container {
   border-radius: 8px;
 
   &.zI1000 {
-    z-index: 9988;
+    z-index: 1000;
   }
   .compose__type__section {
     display: flex;

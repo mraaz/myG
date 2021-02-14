@@ -1,6 +1,7 @@
 const SETTINGS_ENUMS = {
   MAIN: 'MAIN',
   ADVANCED: 'ADVANCED',
+  INGAMEFIELD: 'INGAMEFIELD',
 }
 
 const styles = {
