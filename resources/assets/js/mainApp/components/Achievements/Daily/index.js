@@ -2,11 +2,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { ignoreFunctions } from '../../../../common/render'
 import { getAssetUrl } from '../../../../common/assets';
+import { fetchDailyQuestsAction } from '../../../../redux/actions/questsAction';
 import MyGProgressBar from '../../common/MyGProgressBar';
 
 class Daily extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
+  componentDidMount() {
+    this.props.fetchDailyQuests();
   }
 
   collect = () => {
@@ -20,13 +25,13 @@ class Daily extends React.Component {
         <span className="hint">Complete 3 out of 6 Daily Quests</span>
         <div className="progress">
           <div className="progress-hint">
-            <span className="completed">1/</span>
+            <span className="completed">{this.props.completed}/</span>
             <span className="total">3</span>
           </div>
           <span className="progress-bar">
-            <MyGProgressBar completed={85} />
+            <MyGProgressBar completed={this.props.collectable ? 100 : (this.props.completed / 3) * 100} />
           </span>
-          <div className="button clickable" onClick={this.collect}>Collect 250xp</div>
+          <div className={`button ${this.props.collectable ? 'clickable' : 'opaque'}`} onClick={this.collect}>Collect 250xp</div>
         </div>
       </div>
     </div>
@@ -54,9 +59,7 @@ class Daily extends React.Component {
     return(
       <div id="quests">
         {this.renderHeader()}
-        {this.renderQuest({ label: 'Add new Friends', completed: 1, total: 2, progress: 50, url: '/find-gamers/search' })}
-        {this.renderQuest({ label: 'Give Likes', completed: 14, total: 35, progress: 63, url: '/find-gamers/search' })}
-        {this.renderQuest({ label: 'Completed', completed: 1, total: 1, progress: 100, url: '/find-gamers/search' })}
+        {this.props.quests.map(this.renderQuest)}
       </div>
     );
   }
@@ -64,15 +67,17 @@ class Daily extends React.Component {
 
 function mapStateToProps(state) {
   return { 
-    
+    quests: state.quests.daily.quests,
+    collected: state.quests.daily.collected,
+    collectable: state.quests.daily.collectable,
+    completed: state.quests.daily.completed,
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    
+    fetchDailyQuests: () => dispatch(fetchDailyQuestsAction()),
   }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Daily)
-

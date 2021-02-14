@@ -1,0 +1,38 @@
+[
+  {
+    "label": "Connect to a friend",
+    "type": "friend",
+    "total": 1,
+    "url": "/find-gamers/search"
+  },
+  {
+    "label": "Commend a gamer",
+    "type": "commend",
+    "total": 1,
+    "url": "/find-gamers/search"
+  },
+  {
+    "label": "Play a game",
+    "type": "play",
+    "total": 1,
+    "url": "/scheduledGames"
+  },
+  {
+    "label": "Like 5 posts, comments or replies",
+    "type": "like",
+    "total": 5,
+    "url": "/"
+  },
+  {
+    "label": "Create a post, comment or reply",
+    "type": "post",
+    "total": 1,
+    "url": "/"
+  },
+  {
+    "label": "Click on a sponsor link",
+    "type": "sponsor",
+    "total": 1,
+    "url": "/?at=communities"
+  }
+]

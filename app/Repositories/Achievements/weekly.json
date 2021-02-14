@@ -1,0 +1,44 @@
+[
+  {
+    "label": "Connect to 7 friends",
+    "type": "friend",
+    "total": 7,
+    "url": "/find-gamers/search"
+  },
+  {
+    "label": "Commend 7 gamers",
+    "type": "commend",
+    "total": 7,
+    "url": "/find-gamers/search"
+  },
+  {
+    "label": "Play 7 games",
+    "type": "play",
+    "total": 7,
+    "url": "/scheduledGames"
+  },
+  {
+    "label": "Like 35 posts, comments or replies",
+    "type": "like",
+    "total": 35,
+    "url": "/"
+  },
+  {
+    "label": "Create 7 posts, comments or replies",
+    "type": "post",
+    "total": 7,
+    "url": "/"
+  },
+  {
+    "label": "Click on 7 sponsor links",
+    "type": "sponsor",
+    "total": 7,
+    "url": "/?at=communities"
+  },
+  {
+    "label": "Access myG every day",
+    "type": "login",
+    "total": 7,
+    "url": "/"
+  }
+]

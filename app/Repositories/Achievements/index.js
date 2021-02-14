@@ -1,8 +1,10 @@
-
-
+const Database = use('Database');
 const UserStatTransactionController = use('App/Controllers/Http/UserStatTransactionController')
 const UserAchievements = use('App/Models/UserAchievements');
 const BADGES = require('./badges.json');
+const DAILYS = require('./daily.json');
+const WEEKLYS = require('./weekly.json');
+const MONTHLYS = require('./monthly.json');
 
 class AchievementsRepository {
   async fetchBadges({ alias }) {
@@ -67,6 +69,34 @@ class AchievementsRepository {
     delete parsedBadge.activeIcon;
     delete parsedBadge.inactiveIcon;
     return parsedBadge;
+  }
+
+  async fetchDailyQuests({ requestingUserId }) {
+    return this.fetchQuests({ requestingUserId, template: DAILYS, table: 'user_daily_quests' });
+  }
+
+  async fetchWeeklyQuests({ requestingUserId }) {
+    return this.fetchQuests({ requestingUserId, template: WEEKLYS, table: 'user_weekly_quests' });
+  }
+
+  async fetchMonthlyQuests({ requestingUserId }) {
+    return this.fetchQuests({ requestingUserId, template: MONTHLYS, table: 'user_monthly_quests' });
+  }
+
+  async fetchQuests({ requestingUserId, template, table }) {
+    const response = await Database.table(table).where('user_id', requestingUserId);
+    const quests = template.map((entry) => {
+      const quest = {
+        ...entry,
+        ...(response.find(({ type }) => entry.type === type) || { completed: 0 }),
+      };
+      const progress = (quest.completed / quest.total) * 100;
+      quest.progress = progress > 100 ? 100 : progress;
+      return quest;
+    });
+    const completed = quests.filter(({ completed, total }) => completed >= total).length;
+    const collected = response.some(({ type }) => type === 'collect');
+    return { collected, quests, completed, collectable: completed >= 3 };
   }
 }
 
