@@ -462,6 +462,8 @@ Route.put('/api/onboarding/:step', 'OnboardingController.setOnboardingStep')
 // Achievements
 Route.get('/api/achievements/badges/:alias', 'AchievementsController.fetchBadges')
 Route.post('/api/achievements/badges/:alias', 'AchievementsController.redeemBadge')
+Route.post('/api/achievements/registerSponsorClick', 'AchievementsController.registerSponsorClick')
+Route.post('/api/achievements/registerAccess', 'AchievementsController.registerAccess')
 Route.get('/api/achievements/daily', 'AchievementsController.fetchDailyQuests')
 Route.get('/api/achievements/weekly', 'AchievementsController.fetchWeeklyQuests')
 Route.get('/api/achievements/monthly', 'AchievementsController.fetchMonthlyQuests')

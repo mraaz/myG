@@ -7,6 +7,7 @@ import GamePosts from './GamePosts'
 import CoverImage from './CoverImage'
 import Members from './Members'
 import MangeSponsors from './MangeSponsors'
+import { registerSponsorClick } from '../../../integration/http/quests'
 
 import { Toast_style } from '../Utility_Function'
 
@@ -97,7 +98,7 @@ const CommunityView = (props) => {
           Sponsors.map((Sponsor) => {
             return (
               <div className='Sponsors' key={Sponsor.id}>
-                <a href={`//${Sponsor.link}`} target='_blank'>
+                <a href={`//${Sponsor.link}`} target='_blank' onClick={registerSponsorClick}>
                   <img className='Sponsors__image' onError={addDefaultSrc} src={`${Sponsor.media_url}`} />
                 </a>
                 {[0, 1].includes(current_user_permission) && (

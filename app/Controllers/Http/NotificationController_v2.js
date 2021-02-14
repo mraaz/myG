@@ -1085,11 +1085,11 @@ class NotificationController_v2 {
   async commend({ commendedId, commenderId }) {
     try {
       await Notification.create({
-        user_id: commendedId,
-        other_user_id: commenderId,
+        user_id: commenderId,
+        other_user_id: commendedId,
         activity_type: 23,
       })
-      const userId = commenderId
+      const userId = commendedId
       const notifications = await this.count({ auth: { user: { id: userId } }, request: null })
       await ChatRepository.publishNotifications({ userId, notifications })
       return 'Saved item'

@@ -1,5 +1,6 @@
 'use strict'
 
+const uniq = require('lodash.uniq');
 const Database = use('Database')
 
 const User = use('App/Models/User')
@@ -16,6 +17,7 @@ const GameTagController = use('./GameTagController')
 const AttendeeController = use('./AttendeeController')
 const LoggingRepository = require('../../Repositories/Logging')
 const ElasticsearchRepository = require('../../Repositories/Elasticsearch')
+const AchievementsRepository = require('../../Repositories/Achievements')
 const SearchRepository = require('../../Repositories/Search')
 
 const UserStatTransactionController = use('./UserStatTransactionController')
@@ -1637,6 +1639,45 @@ class ScheduleGameController {
         return ElasticsearchRepository.removeGame({ id: gameId })
       })
     )
+  }
+
+  registerPlays = async () => {
+    const newGames = await this.fetchNewGamesPlayedInTheLastSixMins();
+    const validNewGames = this.filterGamesWithOnlyOneAttendee(newGames);
+    const oldGames = await this.fetchOldGamesPlayedInTheLastSixMins();
+    const oldGamesIds = oldGames.map(({ schedule_games_id }) => schedule_games_id);
+    const deltaGames = newGames.filter(({ schedule_games_id }) => !oldGamesIds.includes(schedule_games_id) && validNewGames.includes(schedule_games_id));
+    if (!deltaGames.length) return Promise.resolve(); 
+    console.log('\x1b[36m', 'BULL', '-', `${deltaGames.length} games played in the last 5mins`, '\x1b[0m');
+    const deltaGamesId = uniq(deltaGames.map(({ schedule_games_id }) => schedule_games_id)).filter((id) => !!id);
+    const questRequests = deltaGames.map(({ user_id }) => AchievementsRepository.registerQuestStep({ user_id, type: 'play' }));
+    const logRequests = deltaGamesId.map((schedule_games_id) => Database.from('played_games').insert({ schedule_games_id }));
+    return Promise.all([...questRequests, ...logRequests]);
+  }
+
+  filterGamesWithOnlyOneAttendee = (games) => {
+    const gamesMap = {};
+    games.forEach((game) => {
+      if (!gamesMap[game.schedule_games_id]) gamesMap[game.schedule_games_id] = 1;
+      else gamesMap[game.schedule_games_id] = gamesMap[game.schedule_games_id] + 1;
+    });
+    return Object.keys(gamesMap).filter((gameId) => gamesMap[gameId] >= 2);
+  }
+
+  fetchOldGamesPlayedInTheLastSixMins = async () => {
+    const sixMinsAgo = new Date(new Date().getTime() - 6 * 60000);
+    return Database.from('played_games')
+      .where('created_at', '>', sixMinsAgo)
+      .andWhere('created_at', '<', new Date());
+  }
+
+  fetchNewGamesPlayedInTheLastSixMins = async () => {
+    const sixMinsAgo = new Date(new Date().getTime() - 6 * 60000);
+    return Database.from('attendees')
+      .leftJoin('schedule_games', 'schedule_games.id', 'attendees.schedule_games_id')
+      .where('schedule_games.end_date_time', '>', sixMinsAgo)
+      .andWhere('schedule_games.end_date_time', '<', new Date())
+      .select(['attendees.schedule_games_id', 'attendees.user_id']);
   }
 }
 

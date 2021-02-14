@@ -91,6 +91,40 @@ class AchievementsController {
       })
     }
   }
+
+  async registerSponsorClick({ auth, response }) {
+    try {
+      const requestingUserId = auth.user.id
+      if (!requestingUserId) throw new Error('Auth Error')
+      await AchievementsRepository.registerQuestStep({ user_id: requestingUserId, type: 'sponsor' })
+      return response.send('Success')
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+    }
+  }
+
+  async registerAccess({ auth, response }) {
+    try {
+      const requestingUserId = auth.user.id
+      if (!requestingUserId) throw new Error('Auth Error')
+      await AchievementsRepository.registerAccess({ requestingUserId })
+      return response.send('Success')
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+    }
+  }
 }
 
 module.exports = AchievementsController

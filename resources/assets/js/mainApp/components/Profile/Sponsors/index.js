@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { ignoreFunctions } from '../../../../common/render'
 import notifyToast from '../../../../common/toast'
+import { registerSponsorClick } from '../../../../integration/http/quests'
 import ManageSponsors from '../../CommunityView/MangeSponsors'
 
 const defaultSponsorImage = 'https://myG.gg/platform_images/Communities/myG_logo.jpg';
@@ -25,6 +26,8 @@ export default class Sponsors extends React.Component {
     const isHovering = this.state.hovering === sponsor.id;
     const isLocked = `${sponsor.id}`.includes('locked');
     const isEmpty = `${sponsor.id}`.includes('empty');
+    const hasSponsor = !!sponsor.link;
+    const sponsorLink = hasSponsor && sponsor.link.includes('http') ? sponsor.link : `https://${sponsor.link}`;
     return(
       <div className='sponsor' key={sponsor.id}
         onMouseEnter={() => this.setState({ hovering: this.props.profile.isSelf && sponsor.id })}
@@ -33,7 +36,11 @@ export default class Sponsors extends React.Component {
         <div
           className='image'
           style={{ backgroundImage: `url(${sponsor.media_url}), url(${defaultSponsorImage})` }}
-          onClick={() => sponsor.link && window.open(sponsor.link.includes('http') ? sponsor.link : `https://${sponsor.link}`, '_blank')}
+          onClick={() => {
+            if (!hasSponsor) return;
+            registerSponsorClick();
+            window.open(sponsorLink, '_blank');
+          }}
         />
         <div className="hover-bar">
           {!!isHovering && <div className={`tiny-button ${!isLocked && 'clickable'}`} onClick={() => !isLocked && this.editSponsor(sponsor.id)}>{isLocked ? 'Unlock at Lvl 5' : 'Edit'}</div>}

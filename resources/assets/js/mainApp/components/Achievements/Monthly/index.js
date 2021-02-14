@@ -1,4 +1,5 @@
 import React from 'react';
+import get from 'lodash.get';
 import { connect } from 'react-redux';
 import { ignoreFunctions } from '../../../../common/render'
 import { getAssetUrl } from '../../../../common/assets';
@@ -67,10 +68,10 @@ class Monthly extends React.Component {
 
 function mapStateToProps(state) {
   return { 
-    quests: state.quests.monthly.quests,
-    collected: state.quests.monthly.collected,
-    collectable: state.quests.monthly.collectable,
-    completed: state.quests.monthly.completed,
+    quests: get(state, 'quests.monthly.quests') || [],
+    collected: get(state, 'quests.monthly.collected') || false,
+    collectable: get(state, 'quests.monthly.collectable') || false,
+    completed: get(state, 'quests.monthly.completed') || 0,
   }
 }
 

@@ -10,7 +10,6 @@ class UserDailyQuestsSchema extends Schema {
       table.integer('user_id').unsigned().notNullable().index()
       table.foreign('user_id').references('id').inTable('users').onDelete('CASCADE')
       table.text('type').notNullable()
-      table.integer('completed').notNullable()
       table.timestamps(true,true)
     })
   }

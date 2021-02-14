@@ -6,6 +6,7 @@ const Reply = use('App/Models/Reply')
 const ApiController = use('./ApiController')
 const NotificationController_v2 = use('./NotificationController_v2')
 const LoggingRepository = require('../../Repositories/Logging')
+const AchievementsRepository = require('../../Repositories/Achievements')
 
 class ReplyController {
   async store({ auth, request, response }) {
@@ -44,6 +45,7 @@ class ReplyController {
           .where('replies.id', '=', newReply.id)
           .select('replies.*', 'users.alias', 'users.profile_img')
 
+        await AchievementsRepository.registerQuestStep({ user_id: auth.user.id, type: 'post' })
         return newReply
       } catch (error) {
         LoggingRepository.log({
@@ -173,6 +175,7 @@ class ReplyController {
           })
           .delete()
 
+        await AchievementsRepository.unregisterQuestStep({ user_id: auth.user.id, type: 'post' })
         return 'Done'
       } catch (error) {
         LoggingRepository.log({

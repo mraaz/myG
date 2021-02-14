@@ -1,4 +1,5 @@
 import React from 'react';
+import get from 'lodash.get';
 import { connect } from 'react-redux';
 import { ignoreFunctions } from '../../../../common/render'
 import { getAssetUrl } from '../../../../common/assets';
@@ -67,10 +68,10 @@ class Daily extends React.Component {
 
 function mapStateToProps(state) {
   return { 
-    quests: state.quests.daily.quests,
-    collected: state.quests.daily.collected,
-    collectable: state.quests.daily.collectable,
-    completed: state.quests.daily.completed,
+    quests: get(state, 'quests.daily.quests') || [],
+    collected: get(state, 'quests.daily.collected') || false,
+    collectable: get(state, 'quests.daily.collectable') || false,
+    completed: get(state, 'quests.daily.completed') || 0,
   }
 }
 

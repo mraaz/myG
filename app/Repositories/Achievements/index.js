@@ -86,10 +86,8 @@ class AchievementsRepository {
   async fetchQuests({ requestingUserId, template, table }) {
     const response = await Database.table(table).where('user_id', requestingUserId);
     const quests = template.map((entry) => {
-      const quest = {
-        ...entry,
-        ...(response.find(({ type }) => entry.type === type) || { completed: 0 }),
-      };
+      const quest = { ...entry };
+      quest.completed = response.filter(({ type }) => entry.type === type).length;
       const progress = (quest.completed / quest.total) * 100;
       quest.progress = progress > 100 ? 100 : progress;
       return quest;
@@ -97,6 +95,47 @@ class AchievementsRepository {
     const completed = quests.filter(({ completed, total }) => completed >= total).length;
     const collected = response.some(({ type }) => type === 'collect');
     return { collected, quests, completed, collectable: completed >= 3 };
+  }
+
+  async registerQuestStep({ user_id, type }) {
+    return Promise.all([
+      'user_daily_quests',
+      'user_weekly_quests',
+      'user_monthly_quests',
+    ].map((table) => Database.table(table).insert({ user_id, type })));
+  }
+
+  async unregisterQuestStep({ user_id, type }) {
+    return Promise.all([
+      'user_daily_quests',
+      'user_weekly_quests',
+      'user_monthly_quests',
+    ].map(async (table) => {
+      const results = await Database.table(table).where({ user_id, type });
+      const resultId = results && results[0] && results[0].id;
+      if (resultId) await Database.table(table).where({ id: resultId }).delete();
+    }));
+  }
+
+  async registerAccess({ requestingUserId }) {
+    const user = await Database.from('users').where('id', requestingUserId).select(['last_seen']);
+    const datesAreOnSameDay = (first, second) => first.getFullYear() === second.getFullYear() && first.getMonth() === second.getMonth() && first.getDate() === second.getDate();
+    const hasAccessedToday = datesAreOnSameDay(new Date(), user[0].last_seen);
+    console.log(user, hasAccessedToday, new Date())
+    if (hasAccessedToday) return;
+    await this.registerQuestStep({ user_id: requestingUserId, type: 'login' });
+  }
+
+  async clearDailys() {
+    await Database.table('user_daily_quests').delete();
+  }
+  
+  async clearWeeklys() {
+    await Database.table('user_weekly_quests').delete();
+  }
+
+  async clearMonthlys() {
+    await Database.table('user_monthly_quests').delete();
   }
 }
 
