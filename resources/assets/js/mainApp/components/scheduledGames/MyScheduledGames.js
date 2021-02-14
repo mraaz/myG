@@ -238,6 +238,7 @@ export default class MyScheduledGames extends Component {
             handleShowAllComments={this.handleShowAllComments}
             user={this.props.initialData}
             handleChangeFilter={this.handleChangeFilter}
+            myGamesMenu={true}
           />
         </section>
       </Fragment>
