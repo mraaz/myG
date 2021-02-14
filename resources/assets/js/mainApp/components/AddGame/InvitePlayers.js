@@ -125,7 +125,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
     return (
       <div className='invite-players__footer-container'>
         <MyGButton customStyles={{ color: '#000', backgroundColor: '#E5C746' }} text='Invite' onClick={submitInvitation} />
-        {/* <MyGButton customStyles={{ color: '#E5C746', border: '2px solid' }} text='Cancel' onClick={onCancelInviteClick} /> */}
+        {!detectMob() && <MyGButton customStyles={{ color: '#E5C746', border: '2px solid' }} text='Cancel' onClick={onCancelInviteClick} />}
       </div>
     )
   }
@@ -534,9 +534,6 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
           {getHeader()}
           {getContent()}
           {getFooter()}
-          <div className='modal__close' onClick={onCancelInviteClick}>
-            <img src='https://myG.gg/platform_images/Dashboard/X_icon.svg' />
-          </div>
         </div>
       </MyGModal>
     )

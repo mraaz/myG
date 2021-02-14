@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import classNames from 'classnames'
+import { detectMob } from '../../utils/utils'
 
 const SelectedInvites = ({
   selectedPlayers,
@@ -110,14 +111,15 @@ const SelectedInvites = ({
 
   return (
     <div className='invite-players__invites-area-container'>
-      {/* {GROUP_LIST.map((group) => {
-        return (
-          <div className='invite-players__invites-area-tile-container' key={group}>
-            {getHeaderView(group)}
-            {getInvitesListView(group)}
-          </div>
-        )
-      })} */}
+      {!detectMob() &&
+        GROUP_LIST.map((group) => {
+          return (
+            <div className='invite-players__invites-area-tile-container' key={group}>
+              {getHeaderView(group)}
+              {getInvitesListView(group)}
+            </div>
+          )
+        })}
     </div>
   )
 }
