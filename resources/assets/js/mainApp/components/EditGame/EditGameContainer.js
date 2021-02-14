@@ -1,3 +1,8 @@
+/*
+ * Author : Nitin Tyagi
+ * Github  : https://github.com/realinit
+ * Email : nitin.1992tyagi@gmail.com
+ */
 import React, { useState, useRef, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import moment from 'moment'

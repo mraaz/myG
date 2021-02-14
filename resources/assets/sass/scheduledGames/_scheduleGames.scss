@@ -1,3 +1,8 @@
+/*
+ * Author : Nitin Tyagi
+ * Github  : https://github.com/realinit
+ * Email : nitin.1992tyagi@gmail.com
+ */
 @import '../variables';
 
 @function random_element($elements...) {
@@ -895,10 +900,13 @@
       flex: 1;
       border-top: 1px solid #384952;
       padding: 20px 20px 0 20px;
-      max-height: 65vh;
+      max-height: 100vh;
       overflow: scroll;
       scrollbar-width: none; /* Firefox */
       -ms-overflow-style: none; /* IE and Edge */
+      // @media (min-width: 1024px) {
+      //   max-height: 80vh;
+      // }
 
       .gameList_head__option {
         display: flex;
