@@ -81,7 +81,7 @@ const sideBarItems = {
     id: 'ACHIEVEMENTS',
     header: 'Achievements',
     icon: 'https://myG.gg/platform_images/Dashboard/btn_Network.svg',
-    cta: '/achievements',
+    cta: '/achievements/badges',
     expanded: false,
   },
 }

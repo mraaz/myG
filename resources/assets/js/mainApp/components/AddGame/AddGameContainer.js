@@ -286,7 +286,7 @@ const AddGameContainer = ({ level }) => {
             <div className='body-of-text'>
               <p>
                 Go to{' '}
-                <Link to={'/achievements'}>
+                <Link to={'/achievements/badges'}>
                   &nbsp;<strong> Achievements</strong>{' '}
                 </Link>
               </p>

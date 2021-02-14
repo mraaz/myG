@@ -174,7 +174,7 @@ class Layout extends Component {
 
                 <Route
                   exact
-                  path='/achievements'
+                  path='/achievements/:route'
                   component={(props) => (
                     <React.Fragment>
                       <AchievementsContainer
