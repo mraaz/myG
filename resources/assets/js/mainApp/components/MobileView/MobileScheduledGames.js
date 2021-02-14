@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import moment from 'moment'
 import Select from 'react-select'
 
+import GameFilter from '../scheduledGames/gameFilter'
 import { WithTooltip } from '../Tooltip'
 import JoinButtonAction from '../scheduledGames/JoinButtonAction'
 import Approved_gamers from '../scheduledGames/ApprovedGamers'
@@ -27,6 +28,7 @@ const MobileScheduledGames = ({
   showPrefilledFilter = false,
   prefilledFilter,
   handleChangeFilter,
+  myGamesMenu = false
 }) => {
   const defaultThumbnails = 'https://myG.gg/platform_images/Notifications/myG_icon.svg'
   const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
@@ -255,19 +257,21 @@ const MobileScheduledGames = ({
       <div className={`mGameTileList${!showRightSideInfo ? ' active' : ' inactive'}`}>
         <div className='mGameTileListHeader'>
           <div className='myGame__filter-section'>
-            <div className='viewGame__gameName game-title-select'>
-              <Select
-                onChange={(data) => handleChangeFilter(data)}
-                options={prefilledFilter_option}
-                placeholder='Select your filter'
-                name='prefilledFilter'
-                className='viewGame__name'
-                classNamePrefix='filter'
-                value={prefilledFilter}
-              />
-            </div>
+            {id == '' && myGamesMenu && 
+              <div className='viewGame__gameName game-title-select'>
+                <Select
+                  onChange={(data) => handleChangeFilter(data)}
+                  options={prefilledFilter_option}
+                  placeholder='Select your filter'
+                  name='prefilledFilter'
+                  className='viewGame__name'
+                  classNamePrefix='filter'
+                  value={prefilledFilter}
+                />
+              </div>
+            }
+            {id == '' && !myGamesMenu && <GameFilter handleChange={handleChangeFilter} />}
           </div>
-
           <div class='mGameResultsFiltersRowTwo'>
             <div className='mGameResultsCount'> {scheduleGames.length} Results</div>
             <div className='mGameResultsFillView'>

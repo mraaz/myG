@@ -426,10 +426,13 @@
     }
   }
   .viewGame__addMoreFilter {
-    display: flex;
+    display: none;
     justify-content: start;
     align-items: baseline;
     padding: 20px 40px;
+    @media screen and (min-width: 575px) {
+      display: flex;
+    }
     .savedFilter__option,
     .addFilter__option {
       width: 120px;
@@ -2446,6 +2449,15 @@ $transition-default: 0.25s ease-out 0.1s;
   flex-direction: column;
   height: 75px;
   width: 100%;
+
+  .viewGame__addMoreFilter,
+  .viewGame__label,
+  .filter__label {
+    display: none;  
+    @media screen and (min-width: 575px) {
+      display: unset;
+    }
+  }
 
   .css-1uccc91-singleValue {
     color: #fff;
