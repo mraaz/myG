@@ -676,6 +676,8 @@
         margin: 20px;
         min-height: 35vh;
         overflow: scroll;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
         &::before {
           content: '';
           width: 7px;
