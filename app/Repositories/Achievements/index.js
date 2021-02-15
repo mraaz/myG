@@ -1,5 +1,7 @@
+const get = require('lodash.get');
 const Database = use('Database');
 const UserStatTransactionController = use('App/Controllers/Http/UserStatTransactionController')
+const UserStatTransaction = use('App/Models/UserStatTransaction')
 const UserAchievements = use('App/Models/UserAchievements');
 const BADGES = require('./badges.json');
 const DAILYS = require('./daily.json');
@@ -71,15 +73,15 @@ class AchievementsRepository {
     return parsedBadge;
   }
 
-  async fetchDailyQuests({ requestingUserId }) {
+  fetchDailyQuests = async ({ requestingUserId }) => {
     return this.fetchQuests({ requestingUserId, template: DAILYS, table: 'user_daily_quests' });
   }
 
-  async fetchWeeklyQuests({ requestingUserId }) {
+  fetchWeeklyQuests = async ({ requestingUserId }) =>  {
     return this.fetchQuests({ requestingUserId, template: WEEKLYS, table: 'user_weekly_quests' });
   }
 
-  async fetchMonthlyQuests({ requestingUserId }) {
+  fetchMonthlyQuests = async ({ requestingUserId }) =>  {
     return this.fetchQuests({ requestingUserId, template: MONTHLYS, table: 'user_monthly_quests' });
   }
 
@@ -121,7 +123,6 @@ class AchievementsRepository {
     const user = await Database.from('users').where('id', requestingUserId).select(['last_seen']);
     const datesAreOnSameDay = (first, second) => first.getFullYear() === second.getFullYear() && first.getMonth() === second.getMonth() && first.getDate() === second.getDate();
     const hasAccessedToday = datesAreOnSameDay(new Date(), user[0].last_seen);
-    console.log(user, hasAccessedToday, new Date())
     if (hasAccessedToday) return;
     await this.registerQuestStep({ user_id: requestingUserId, type: 'login' });
   }
@@ -136,6 +137,45 @@ class AchievementsRepository {
 
   async clearMonthlys() {
     await Database.table('user_monthly_quests').delete();
+  }
+
+  async redeemDaily({ requestingUserId }) {
+    return this.redeemQuests({ requestingUserId, table: 'user_daily_quests', fetchFunction: this.fetchDailyQuests });
+  }
+
+  async redeemWeekly({ requestingUserId }) {
+    return this.redeemQuests({ requestingUserId, table: 'user_weekly_quests', fetchFunction: this.fetchWeeklyQuests });
+  }
+
+  async redeemMonthly({ requestingUserId }) {
+    return this.redeemQuests({ requestingUserId, table: 'user_monthly_quests', fetchFunction: this.fetchMonthlyQuests });
+  }
+
+  async redeemQuests({ requestingUserId, table, fetchFunction }) {
+    const { collected, collectable } = await fetchFunction({ requestingUserId });
+    if (collected) throw new Error(`Gamer ${requestingUserId} tried to collect quest reward which is already collected.`);
+    if (!collectable) throw new Error(`Gamer ${requestingUserId} tried to collect quest reward which is not collectable.`);
+
+    const controller = new UserStatTransactionController();
+    const criteria = await Database.from('user_stats').where('criteria', 'total_number_of_quests').select('id');
+    const criteriaId = get(criteria, '[0].id');
+    const current = await Database.from('user_stat_transactions')
+      .where('user_stat_id', criteriaId)
+      .andWhere('user_id', requestingUserId)
+      .select('values');
+    const newValue = (get(current, '[0].values') || 0) + 1;
+    const newTransaction = {
+      user_id: requestingUserId,
+      user_stat_id: criteriaId,
+      values: newValue,
+      last_month_values: '0',
+    };
+
+    await UserStatTransaction.create(newTransaction);
+    await controller.reCalculate_xp(requestingUserId);
+    await Database.table(table).insert({ user_id: requestingUserId, type: 'collect' });
+    
+    return fetchFunction({ requestingUserId });
   }
 }
 

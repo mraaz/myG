@@ -3,7 +3,7 @@ import get from 'lodash.get';
 import { connect } from 'react-redux';
 import { ignoreFunctions } from '../../../../common/render'
 import { getAssetUrl } from '../../../../common/assets';
-import { fetchMonthlyQuestsAction } from '../../../../redux/actions/questsAction';
+import { fetchMonthlyQuestsAction, redeemMonthlyQuestsAction } from '../../../../redux/actions/questsAction';
 import MyGProgressBar from '../../common/MyGProgressBar';
 
 class Monthly extends React.Component {
@@ -16,7 +16,8 @@ class Monthly extends React.Component {
   }
 
   collect = () => {
-    console.log('collect');
+    if (!this.props.collectable || this.props.collected) return;
+    this.props.redeemMonthlyQuests();
   }
 
   renderHeader = () => (
@@ -78,6 +79,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     fetchMonthlyQuests: () => dispatch(fetchMonthlyQuestsAction()),
+    redeemMonthlyQuests: () => dispatch(redeemMonthlyQuestsAction()),
   }
 }
 

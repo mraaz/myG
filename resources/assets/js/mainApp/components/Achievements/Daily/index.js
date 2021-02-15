@@ -3,7 +3,7 @@ import get from 'lodash.get';
 import { connect } from 'react-redux';
 import { ignoreFunctions } from '../../../../common/render'
 import { getAssetUrl } from '../../../../common/assets';
-import { fetchDailyQuestsAction } from '../../../../redux/actions/questsAction';
+import { fetchDailyQuestsAction, redeemDailyQuestsAction } from '../../../../redux/actions/questsAction';
 import MyGProgressBar from '../../common/MyGProgressBar';
 
 class Daily extends React.Component {
@@ -16,7 +16,8 @@ class Daily extends React.Component {
   }
 
   collect = () => {
-    console.log('collect');
+    if (!this.props.collectable || this.props.collected) return;
+    this.props.redeemDailyQuests();
   }
 
   renderHeader = () => (
@@ -32,7 +33,7 @@ class Daily extends React.Component {
           <span className="progress-bar">
             <MyGProgressBar completed={this.props.collectable ? 100 : (this.props.completed / 3) * 100} />
           </span>
-          <div className={`button ${this.props.collectable ? 'clickable' : 'opaque'}`} onClick={this.collect}>Collect 250xp</div>
+          <div className={`button ${(this.props.collectable && !this.props.collected) ? 'clickable' : 'opaque'}`} onClick={this.collect}>Collect 250xp</div>
         </div>
       </div>
     </div>
@@ -78,6 +79,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     fetchDailyQuests: () => dispatch(fetchDailyQuestsAction()),
+    redeemDailyQuests: () => dispatch(redeemDailyQuestsAction()),
   }
 }
 

@@ -467,5 +467,8 @@ Route.post('/api/achievements/registerAccess', 'AchievementsController.registerA
 Route.get('/api/achievements/daily', 'AchievementsController.fetchDailyQuests')
 Route.get('/api/achievements/weekly', 'AchievementsController.fetchWeeklyQuests')
 Route.get('/api/achievements/monthly', 'AchievementsController.fetchMonthlyQuests')
+Route.post('/api/achievements/daily', 'AchievementsController.redeemDaily')
+Route.post('/api/achievements/weekly', 'AchievementsController.redeemWeekly')
+Route.post('/api/achievements/monthly', 'AchievementsController.redeemMonthly')
 
 Route.any('*', ({ view }) => view.render('pages/react'))
