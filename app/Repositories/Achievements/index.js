@@ -7,6 +7,7 @@ const BADGES = require('./badges.json');
 const DAILYS = require('./daily.json');
 const WEEKLYS = require('./weekly.json');
 const MONTHLYS = require('./monthly.json');
+const uniq = require('lodash.uniq');
 
 class AchievementsRepository {
   async fetchBadges({ alias }) {
@@ -128,26 +129,35 @@ class AchievementsRepository {
   }
 
   async clearDailys() {
-    await Database.table('user_daily_quests').delete();
+    return this.clearQuests({ fetchFunction: this.fetchDailyQuests, redeemFunction: this.redeemDaily, table: 'user_daily_quests' })
   }
   
   async clearWeeklys() {
-    await Database.table('user_weekly_quests').delete();
+    return this.clearQuests({ fetchFunction: this.fetchWeeklyQuests, redeemFunction: this.redeemWeekly, table: 'user_weekly_quests' })
   }
 
   async clearMonthlys() {
-    await Database.table('user_monthly_quests').delete();
+    return this.clearQuests({ fetchFunction: this.fetchMonthlyQuests, redeemFunction: this.redeemMonthly, table: 'user_monthly_quests' })
   }
 
-  async redeemDaily({ requestingUserId }) {
+  async clearQuests({ fetchFunction, redeemFunction, table }) {
+    const users = await Database.table(table).select('user_id');
+    const userIds = uniq(users.map(({ user_id }) => user_id));
+    await Promise.all(userIds.map((userId) => fetchFunction({ requestingUserId: userId }).then(({ collected, collectable }) => {
+      if (!collected && collectable) return redeemFunction({ requestingUserId: userId });
+    })));
+    await Database.table(table).delete();
+  }
+
+  redeemDaily = ({ requestingUserId }) => {
     return this.redeemQuests({ requestingUserId, table: 'user_daily_quests', fetchFunction: this.fetchDailyQuests });
   }
 
-  async redeemWeekly({ requestingUserId }) {
+  redeemWeekly = ({ requestingUserId }) => {
     return this.redeemQuests({ requestingUserId, table: 'user_weekly_quests', fetchFunction: this.fetchWeeklyQuests });
   }
 
-  async redeemMonthly({ requestingUserId }) {
+  redeemMonthly = ({ requestingUserId }) => {
     return this.redeemQuests({ requestingUserId, table: 'user_monthly_quests', fetchFunction: this.fetchMonthlyQuests });
   }
 

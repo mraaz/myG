@@ -60,7 +60,7 @@ function getJobs(Queue, bullConfig, ioCluster, runEveryJobOnStart) {
     },
     {
       name: 'Chat Game Messages',
-      queue: new Queue('Chat Game Messagesull', prefixedConfig('{chat-gameMessages}')),
+      queue: new Queue('Chat Game Messages', prefixedConfig('{chat-gameMessages}')),
       action: require('./tasks/chat-gameMessages'),
       options: { jobId: Date.now() },
       payload: {},
@@ -103,7 +103,7 @@ function getJobs(Queue, bullConfig, ioCluster, runEveryJobOnStart) {
       enabled: true,
     },
     {
-      name: 'Delete Invalid S3 Files',
+      name: 'Delete Invalid S3 FilDes',
       queue: new Queue('Delete Invalid S3 Files', prefixedConfig('{s3-deleteFiles}')),
       action: require('./tasks/s3-deleteFiles'),
       options: { jobId: Date.now() },
@@ -132,7 +132,7 @@ function getJobs(Queue, bullConfig, ioCluster, runEveryJobOnStart) {
       payload: {},
       schedule: { repeat: { cron: '0 0 * * *' } },
       runOnSchedule: true,
-      runOnStart: runEveryJobOnStart ? true : false,
+      runOnStart: true,
       enabled: true,
     },
     {
