@@ -291,7 +291,8 @@ class PostController {
           .first()
       }
 
-      get_sponsored_posts.sponsored_post = true
+      if (get_sponsored_posts != undefined) get_sponsored_posts.sponsored_post = true
+
       let _1stpass = [...ppl_im_following_Posts.data, ...groups_im_in_Posts.data]
 
       const common_Controller = new CommonController()
@@ -599,6 +600,12 @@ class PostController {
     try {
       const likeController = new LikeController()
       for (let i = 0; i < post.length; i++) {
+        if (post[i].id) {
+          console.log('RASSDS')
+        } else {
+          console.log('YOYOOYOY')
+          continue
+        }
         if (post[i].id == undefined || post[i].id == null) {
           continue
         }
@@ -635,6 +642,7 @@ class PostController {
         context: __filename,
         message: (error && error.message) || error,
       })
+      return post
     }
   }
 

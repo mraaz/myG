@@ -1,7 +1,9 @@
 const path = require('path')
 const webpack = require('webpack')
 const TerserPlugin = require('terser-webpack-plugin')
-const BrotliPlugin = require('brotli-webpack-plugin')
+const CompressionPlugin = require('compression-webpack-plugin')
+const zlib = require('zlib')
+//const BrotliPlugin = require('brotli-webpack-plugin')
 
 const VENDOR_LIBS = [
   'redux',
@@ -34,8 +36,9 @@ module.exports = (env) => {
       filename: '[name].js',
       path: outputPath,
       publicPath: `/js/components/`,
+      pathinfo: false,
     },
-    devtool: mode == 'development' ? 'source-map' : false,
+    devtool: false, //mode == 'development' ? 'source-map' : false,
     module: {
       rules: [
         {
@@ -90,14 +93,27 @@ module.exports = (env) => {
         },
       ],
     },
+    plugins:
+      mode == 'production'
+        ? [
+            new CompressionPlugin({
+              filename: '[path][base].br',
+              algorithm: 'brotliCompress',
+              test: /\.js$|\.jsx$|\.css$|\.html$|\.eot?.+$|\.ttf?.+$|\.woff?.+$|\.svg?.+$/,
+              compressionOptions: {
+                params: {
+                  [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
+                },
+              },
+              threshold: 10240,
+              minRatio: 0.8,
+              deleteOriginalAssets: false,
+            }),
+          ]
+        : [],
     plugins: [
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-      new BrotliPlugin({
-        include: ['mainApp', 'vendor'],
-        test: /\.js$|\.jsx$|\.css$|\.html$|\.eot?.+$|\.ttf?.+$|\.woff?.+$|\.svg?.+$/,
-        threshold: 10240,
-        minRatio: 0.7,
-      }),
+
       new webpack.ProvidePlugin({
         Buffer: ['buffer', 'Buffer'],
       }),
@@ -122,24 +138,41 @@ module.exports = (env) => {
       runtimeChunk: 'single',
       chunkIds: 'deterministic',
       moduleIds: 'deterministic',
+      removeAvailableModules: false,
+      removeEmptyChunks: false,
       splitChunks: {
+        chunks: 'async',
+        minSize: 20000,
+        minRemainingSize: 0,
+        maxSize: 0,
+        minChunks: 1,
+        maxAsyncRequests: 30,
+        maxInitialRequests: 30,
+        enforceSizeThreshold: 50000,
         cacheGroups: {
-          vendor: {
+          defaultVendors: {
             test: 'vendor',
-            chunks: 'all',
-            priority: 1,
-            name: 'vendor',
+            priority: -10,
+            reuseExistingChunk: true,
+          },
+          default: {
+            minChunks: 2,
+            priority: -20,
+            reuseExistingChunk: true,
           },
         },
       },
-      minimizer: [
-        new TerserPlugin({
-          parallel: true,
-          terserOptions: {
-            ecma: 6,
-          },
-        }),
-      ],
+      minimizer:
+        mode == 'production'
+          ? [
+              new TerserPlugin({
+                parallel: true,
+                terserOptions: {
+                  ecma: 6,
+                },
+              }),
+            ]
+          : [],
       removeAvailableModules: true,
     },
     mode,

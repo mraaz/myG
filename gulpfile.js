@@ -15,7 +15,7 @@ function styles() {
     )
     .pipe(
       autoprefixer({
-        browsers: ['last 2 versions'],
+        overrideBrowserslist: ['defaults', 'not IE 11', 'maintained node versions'],
       })
     )
     .pipe(gulp.dest('./public/css'))
