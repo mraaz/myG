@@ -12,8 +12,8 @@ class SponsorsSchema extends Schema {
       table.integer('group_id').unsigned().nullable()
       table.foreign('group_id').references('groups.id').onDelete('cascade')
       table.integer('type').unsigned().notNullable().defaultTo(1)
-      table.string('link', 400).nullable()
-      table.string('media_url', 6000).nullable()
+      table.string('link', 2048).nullable()
+      table.string('media_url', 2048).nullable()
       table.timestamps(true,true)
     })
   }

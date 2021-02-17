@@ -9,7 +9,7 @@ class PostsSchema extends Schema {
       table.increments()
       table.text('content').collate('utf8mb4_unicode_ci')
       table.string('type').notNullable()
-      table.string('media_url', 6000).nullable()
+      table.string('media_url', 2048).nullable()
       table.integer('user_id').unsigned().notNullable()
       table.foreign('user_id').references('users.id').onDelete('cascade')
       table.integer('group_id').unsigned().nullable()

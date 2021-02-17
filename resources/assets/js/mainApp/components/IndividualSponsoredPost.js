@@ -1,14 +1,8 @@
-/*
- * Author : nitin Tyagi
- * github  : https://github.com/realinit
- * Email : nitin.1992tyagi@gmail.com
- */
 import React, { Component, Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import moment from 'moment'
 
-import IndividualComment from './IndividualComment'
 import SweetAlert from './common/MyGSweetAlert'
 import { Toast_style } from './Utility_Function'
 import { Upload_to_S3, Remove_file } from './AWS_utilities'
@@ -153,12 +147,12 @@ export default class IndividualPost extends Component {
     let { post, source } = this.props
     let media_url = ''
     const self = this
-    try {
-      if (post.media_url != null && post.media_url) {
+    if (post.media_url) {
+      try {
         media_url = post.media_url.length > 0 ? JSON.parse(post.media_url) : ''
+      } catch (e) {
+        media_url = post.media_url ? post.media_url : ''
       }
-    } catch (e) {
-      media_url = ''
     }
     const galleryItems = []
     if (media_url.length > 0) {
@@ -168,50 +162,42 @@ export default class IndividualPost extends Component {
         }
       }
     }
-    let post_timestamp = moment()
-    try {
-      if (this.props.post.updated_at) {
-        post_timestamp = moment(this.props.post.updated_at, 'YYYY-MM-DD HH:mm:ssZ')
-      }
+    let post_timestamp = moment(this.props.post.updated_at, 'YYYY-MM-DD HH:mm:ssZ')
 
-      if (this.props.post.total == 0) {
-        this.setState({ show_like: false })
-      }
-      if (this.props.post.profile_img != null) {
-        this.setState({ show_profile_img: true })
-      }
+    if (this.props.post.total == 0) {
+      this.setState({ show_like: false })
+    }
+    if (this.props.post.profile_img != null) {
+      this.setState({ show_profile_img: true })
+    }
+    this.setState({
+      like: this.props.post.do_I_like_it,
+      total: this.props.post.total,
+      admirer_first_name: this.props.post.admirer_first_name,
+      post_time: post_timestamp.local().fromNow(),
+      content: this.props.post.content,
+      galleryItems,
+    })
+    if (this.props.post.no_of_comments != 0) {
       this.setState({
-        like: this.props.post.do_I_like_it,
-        total: this.props.post.total,
-        admirer_first_name: this.props.post.admirer_first_name,
-        post_time: post_timestamp.local().fromNow(),
-        content: this.props.post.content,
-        galleryItems,
+        zero_comments: true,
+        comment_total: this.props.post.no_of_comments,
       })
-      if (this.props.post.no_of_comments != 0) {
-        this.setState({
-          zero_comments: true,
-          comment_total: this.props.post.no_of_comments,
-        })
-      }
+    }
 
-      var post_id = this.props.post.id
+    var post_id = this.props.post.id
 
-      if (post.group_id != null && post.group_id != '' && post.name != undefined && post.name != '') {
-        if ((source = 'news_feed')) {
-          this.state.show_group_name = true
-        }
+    if (post.group_id != null && post.group_id != '' && post.name != undefined && post.name != '') {
+      if ((source = 'news_feed')) {
+        this.state.show_group_name = true
       }
-    } catch (e) {}
+    }
 
     this.pullComments()
   }
 
   pullComments = () => {
-    let post_id = ''
-    try {
-      post_id = this.props.post.id
-    } catch (e) {}
+    var post_id = this.props.post.id
     const self = this
 
     const getComments = async function() {
@@ -226,7 +212,7 @@ export default class IndividualPost extends Component {
         logToElasticsearch('error', 'IndividualPost', 'Failed pullComments:' + ' ' + error)
       }
     }
-    if (post_id != '') getComments()
+    getComments()
   }
 
   handleChange = (e) => {
@@ -591,19 +577,10 @@ export default class IndividualPost extends Component {
       var show_media = false
 
       let { post, current_user_permission = null, user = {} } = this.props //destructing of object
-      let profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png',
-        hash_tags = ''
-      if (post != undefined) {
-        profile_img = post.profile_img
-        hash_tags = post.hash_tags
-      }
+      let { profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png', hash_tags = [] } = post //destructing of object
 
       if (media_urls != [] && media_urls != null) {
         show_media = true
-      }
-      if (hash_tags == undefined) hash_tags = ''
-      if (post == undefined || !post.user_id) {
-        return <div className='update-container'></div>
       }
 
       return (

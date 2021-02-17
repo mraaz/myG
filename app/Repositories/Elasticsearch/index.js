@@ -48,10 +48,10 @@ class ElasticsearchRepository {
           .filter((value => !!value))
           .join('|');
       });
-      const userToStore = { 
+      const userToStore = {
         id: experience.game,
         experienceId: experience.id,
-        level: experience.level, 
+        level: experience.level,
         experience: experience.experience,
         name: experience.gameName,
         ...extraFields,

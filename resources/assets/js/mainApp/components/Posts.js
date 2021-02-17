@@ -30,17 +30,14 @@ export default class Posts extends Component {
   }
 
   showLatestPosts = () => {
+    console.log('In herer')
     const { myPosts = [] } = this.state
-    if (myPosts.length > 0) {
-      return myPosts.map((item, index) => {
-        try {
-          let media_url = item.media_url.length > 0 ? JSON.parse(item.media_url) : ''
-        } catch (e) {
-          item.media_url = ''
-        }
-        return <IndividualPost post={item} key={index} user={this.props.initialData.userInfo} source={'news_feed'} />
-      })
-    }
+    console.log(myPosts, '<<<myPosts')
+    return myPosts.map(this.showthis_Post)
+  }
+
+  showthis_Post = (item, index) => {
+    return <IndividualPost post={item} key={index} user={this.props.initialData.userInfo} source={'news_feed'} />
   }
 
   fetchMoreData = () => {

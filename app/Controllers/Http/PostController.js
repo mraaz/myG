@@ -272,10 +272,35 @@ class PostController {
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.counter, grp_limit)
 
+      const category = request.params.counter % 5
+
+      //Great 1st Attempt but will SUX once we get more data in this table.
+      let get_sponsored_posts = await Database.from('sponsored_posts')
+        .where('visibility', '=', 1)
+        .where('category', '=', category)
+        .select('*')
+
+      if (get_sponsored_posts != undefined && get_sponsored_posts.length > 0) {
+        const randValue = Math.floor(Math.random() * (get_sponsored_posts.length - 0 + 1)) + 0
+        get_sponsored_posts = get_sponsored_posts[randValue]
+      } else {
+        get_sponsored_posts = await Database.from('sponsored_posts')
+          .where('visibility', '=', 1)
+          .select('*')
+          .orderBy('times_clicked', 'desc')
+          .first()
+      }
+
+      if (get_sponsored_posts != undefined) get_sponsored_posts.sponsored_post = true
+
       let _1stpass = [...ppl_im_following_Posts.data, ...groups_im_in_Posts.data]
 
       const common_Controller = new CommonController()
       _1stpass = await common_Controller.shuffle(_1stpass)
+
+      if (_1stpass.length > 2) {
+        _1stpass.splice(1, 0, get_sponsored_posts)
+      }
 
       const myPosts = await this.get_additional_info({ auth }, _1stpass)
       return {
@@ -575,6 +600,12 @@ class PostController {
     try {
       const likeController = new LikeController()
       for (let i = 0; i < post.length; i++) {
+        if (post[i].id) {
+          console.log('RASSDS')
+        } else {
+          console.log('YOYOOYOY')
+          continue
+        }
         if (post[i].id == undefined || post[i].id == null) {
           continue
         }
@@ -611,6 +642,7 @@ class PostController {
         context: __filename,
         message: (error && error.message) || error,
       })
+      return post
     }
   }
 
