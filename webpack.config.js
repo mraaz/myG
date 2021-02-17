@@ -1,7 +1,10 @@
 const path = require('path')
 const webpack = require('webpack')
+const zlib = require('zlib')
+
 const TerserPlugin = require('terser-webpack-plugin')
-const BrotliPlugin = require('brotli-webpack-plugin')
+const CompressionPlugin = require('compression-webpack-plugin')
+//const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 const VENDOR_LIBS = [
   'redux',
@@ -24,18 +27,22 @@ module.exports = (env) => {
   console.log('Production: ', env.production) // true
 
   const mode = env.NODE_ENV == 'production' ? env.NODE_ENV : 'development'
+  //const mode = 'production'
 
   return {
     entry: {
       mainApp: './resources/assets/js/mainApp/index.js',
       vendor: VENDOR_LIBS,
+      //stlyes: './resources/assets/sass/main.scss', COULDNT MAKE THIS WORK
     },
     output: {
       filename: '[name].js',
       path: outputPath,
       publicPath: `/js/components/`,
+      pathinfo: false,
     },
-    devtool: mode == 'development' ? 'source-map' : false,
+    devtool: mode == 'development' ? 'inline-source-map' : false,
+    mode: mode,
     module: {
       rules: [
         {
@@ -90,14 +97,29 @@ module.exports = (env) => {
         },
       ],
     },
+    plugins:
+      mode == 'production'
+        ? [
+            new CompressionPlugin({
+              filename: '[path][base].br',
+              algorithm: 'brotliCompress',
+              test: /\.js$|\.jsx$|\.css$|\.html$|\.eot?.+$|\.ttf?.+$|\.woff?.+$|\.svg?.+$/,
+              compressionOptions: {
+                params: {
+                  [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
+                },
+              },
+              threshold: 10240,
+              minRatio: 0.8,
+              deleteOriginalAssets: false,
+            }),
+          ]
+        : [],
     plugins: [
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-      new BrotliPlugin({
-        include: ['mainApp', 'vendor'],
-        test: /\.js$|\.jsx$|\.css$|\.html$|\.eot?.+$|\.ttf?.+$|\.woff?.+$|\.svg?.+$/,
-        threshold: 10240,
-        minRatio: 0.7,
-      }),
+
+      //new BundleAnalyzerPlugin(),
+
       new webpack.ProvidePlugin({
         Buffer: ['buffer', 'Buffer'],
       }),
@@ -111,6 +133,7 @@ module.exports = (env) => {
       }),
     ],
     resolve: {
+      symlinks: false,
       fallback: {
         crypto: require.resolve('crypto-browserify'),
         stream: require.resolve('stream-browserify'),
@@ -118,10 +141,15 @@ module.exports = (env) => {
       },
     },
     optimization: {
-      moduleIds: 'hashed',
+      moduleIds: 'deterministic',
       runtimeChunk: 'single',
       chunkIds: 'deterministic',
       moduleIds: 'deterministic',
+      removeAvailableModules: mode == 'production' ? true : false,
+      removeEmptyChunks: mode == 'production' ? true : false,
+      mergeDuplicateChunks: mode == 'production' ? true : false,
+      nodeEnv: mode,
+      mangleWasmImports: true,
       splitChunks: {
         cacheGroups: {
           vendor: {
@@ -132,14 +160,17 @@ module.exports = (env) => {
           },
         },
       },
-      minimizer: [
-        new TerserPlugin({
-          parallel: true,
-          terserOptions: {
-            ecma: 6,
-          },
-        }),
-      ],
+      minimizer:
+        mode == 'production'
+          ? [
+              new TerserPlugin({
+                parallel: true,
+                terserOptions: {
+                  ecma: 6,
+                },
+              }),
+            ]
+          : [],
       removeAvailableModules: true,
     },
     mode,

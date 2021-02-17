@@ -303,7 +303,7 @@ CREATE TABLE `posts` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `content` text,
   `type` varchar(255) NOT NULL,
-  `media_url` varchar(600) DEFAULT NULL,
+  `media_url` varchar(2048) DEFAULT NULL,
   `user_id` int(10) unsigned NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
