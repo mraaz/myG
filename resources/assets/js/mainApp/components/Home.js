@@ -58,6 +58,8 @@ export default class Home extends Component {
         this.navRef.current.style.margin = '0 auto'
         this.navRef.current.style.paddingBottom = 0
         this.navRef.current.style.width = '74%'
+        document.getElementById('main-sidebar').style.position = 'fixed'
+        document.getElementById('content-container').style.marginLeft = '80px'
 
         // Required padding to prevent infinite loop of styling
         this.contentAreaRef.current.style.paddingTop = '170px'
@@ -79,6 +81,8 @@ export default class Home extends Component {
       if (this.contentAreaRef.current) {
         this.contentAreaRef.current.removeAttribute('style')
       }
+      document.getElementById('main-sidebar').removeAttribute('style')
+      document.getElementById('content-container').removeAttribute('style')
     })
   }
 
