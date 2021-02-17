@@ -1,9 +1,10 @@
 const path = require('path')
 const webpack = require('webpack')
+const zlib = require('zlib')
+
 const TerserPlugin = require('terser-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
-const zlib = require('zlib')
-//const BrotliPlugin = require('brotli-webpack-plugin')
+//const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 const VENDOR_LIBS = [
   'redux',
@@ -26,11 +27,13 @@ module.exports = (env) => {
   console.log('Production: ', env.production) // true
 
   const mode = env.NODE_ENV == 'production' ? env.NODE_ENV : 'development'
+  //const mode = 'production'
 
   return {
     entry: {
       mainApp: './resources/assets/js/mainApp/index.js',
       vendor: VENDOR_LIBS,
+      //stlyes: './resources/assets/sass/main.scss', COULDNT MAKE THIS WORK
     },
     output: {
       filename: '[name].js',
@@ -38,7 +41,8 @@ module.exports = (env) => {
       publicPath: `/js/components/`,
       pathinfo: false,
     },
-    devtool: false, //mode == 'development' ? 'source-map' : false,
+    devtool: mode == 'development' ? 'inline-source-map' : false,
+    mode: mode,
     module: {
       rules: [
         {
@@ -114,6 +118,8 @@ module.exports = (env) => {
     plugins: [
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
 
+      //new BundleAnalyzerPlugin(),
+
       new webpack.ProvidePlugin({
         Buffer: ['buffer', 'Buffer'],
       }),
@@ -127,6 +133,7 @@ module.exports = (env) => {
       }),
     ],
     resolve: {
+      symlinks: false,
       fallback: {
         crypto: require.resolve('crypto-browserify'),
         stream: require.resolve('stream-browserify'),
@@ -134,31 +141,22 @@ module.exports = (env) => {
       },
     },
     optimization: {
-      moduleIds: 'hashed',
+      moduleIds: 'deterministic',
       runtimeChunk: 'single',
       chunkIds: 'deterministic',
       moduleIds: 'deterministic',
-      removeAvailableModules: false,
-      removeEmptyChunks: false,
+      removeAvailableModules: mode == 'production' ? true : false,
+      removeEmptyChunks: mode == 'production' ? true : false,
+      mergeDuplicateChunks: mode == 'production' ? true : false,
+      nodeEnv: mode,
+      mangleWasmImports: true,
       splitChunks: {
-        chunks: 'async',
-        minSize: 20000,
-        minRemainingSize: 0,
-        maxSize: 0,
-        minChunks: 1,
-        maxAsyncRequests: 30,
-        maxInitialRequests: 30,
-        enforceSizeThreshold: 50000,
         cacheGroups: {
-          defaultVendors: {
+          vendor: {
             test: 'vendor',
-            priority: -10,
-            reuseExistingChunk: true,
-          },
-          default: {
-            minChunks: 2,
-            priority: -20,
-            reuseExistingChunk: true,
+            chunks: 'all',
+            priority: 1,
+            name: 'vendor',
           },
         },
       },

@@ -52,16 +52,16 @@ exports.webpack = webpack
 
 function watch(done) {
   gulp.watch('./resources/assets/sass/**/*', gulp.series('styles'))
-  gulp.watch('./resources/assets/js/**/*', gulp.series('webpack'))
-  gulp.watch('./public/**/*').on('change', reload)
-  gulp.watch('./public/*').on('change', reload)
-  gulp.watch('!public/js/**/.#*js').on('change', reload)
+  //gulp.watch('./resources/assets/js/**/*', gulp.series('webpack'))
+  //gulp.watch('./public/**/*').on('change', reload)
+  //gulp.watch('./public/*').on('change', reload)
+  //gulp.watch('!public/js/**/.#*js').on('change', reload)
   gulp.watch('!public/css/**/.#*css').on('change', reload)
   gulp.watch('./resources/views/*').on('change', reload)
   gulp.watch('./resources/views/**').on('change', reload)
   gulp.watch('./resources/assets/sass/pages/*').on('change', reload)
   gulp.watch('./resources/assets/sass/pages/**').on('change', reload)
-  gulp.watch('./resources/**').on('change', reload)
+  //gulp.watch('./resources/**').on('change', reload)
   gulp.watch('./resources/assets/sass/auth/*').on('change', reload)
   gulp.watch('./resources/views/auth/*').on('change', reload)
 
