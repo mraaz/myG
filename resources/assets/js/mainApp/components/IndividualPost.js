@@ -30,7 +30,6 @@ export default class IndividualPost extends Component {
       comment_total: 0,
       show_like: true,
       show_comments: false,
-      show_profile_img: false,
       admirer_first_name: '',
       pull_once: true,
       value: '',
@@ -46,9 +45,6 @@ export default class IndividualPost extends Component {
       media_urls: [],
       images: [],
       showBullets: true,
-      autoPlay: false,
-      isRTL: false,
-      disableSwipe: false,
       show_more_comments: true,
       preview_file: '',
       aws_key_id: [],
@@ -97,17 +93,6 @@ export default class IndividualPost extends Component {
       const mylike = await axios.post('/api/likes', {
         post_id: post_id,
       })
-      // let { post, user } = this.props
-      // if (this.props != undefined) {
-      //   if (user.userInfo != undefined) {
-      //     if (post.user_id != user.userInfo.id) {
-      //       const addPostLike = axios.post('/api/notifications/addPostLike', {
-      //         other_user_id: post.user_id,
-      //         post_id: post_id,
-      //       })
-      //     }
-      //   }
-      // }
     } catch (error) {
       logToElasticsearch('error', 'IndividualPost', 'Failed click_like_btn:' + ' ' + error)
     }
@@ -133,7 +118,6 @@ export default class IndividualPost extends Component {
 
     try {
       const unlike = await axios.get(`/api/likes/delete/${post_id}`)
-      //const deletePostLike = axios.get(`/api/notifications/deletePostLike/${post_id}`)
     } catch (error) {
       logToElasticsearch('error', 'IndividualPost', 'Failed click_unlike_btn:' + ' ' + error)
     }
@@ -177,9 +161,7 @@ export default class IndividualPost extends Component {
       if (this.props.post.total == 0) {
         this.setState({ show_like: false })
       }
-      if (this.props.post.profile_img != null) {
-        this.setState({ show_profile_img: true })
-      }
+
       this.setState({
         like: this.props.post.do_I_like_it,
         total: this.props.post.total,
@@ -580,7 +562,6 @@ export default class IndividualPost extends Component {
       media_urls,
       post_deleted,
       alert,
-      show_profile_img,
       show_comments,
       show_more_comments = false,
       galleryItems = [],
@@ -588,8 +569,6 @@ export default class IndividualPost extends Component {
       showPostExtraOption,
     } = this.state
     if (post_deleted != true) {
-      var show_media = false
-
       let { post, current_user_permission = null, user = {} } = this.props //destructing of object
       let profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png',
         hash_tags = ''
@@ -598,9 +577,6 @@ export default class IndividualPost extends Component {
         hash_tags = post.hash_tags
       }
 
-      if (media_urls != [] && media_urls != null) {
-        show_media = true
-      }
       if (hash_tags == undefined) hash_tags = ''
       if (post == undefined || !post.user_id) {
         return <div className='update-container'></div>
@@ -642,7 +618,7 @@ export default class IndividualPost extends Component {
                     backgroundImage: `url('${profile_img}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`,
                     backgroundSize: 'cover',
                   }}>
-                  <div className='online__status'></div>
+                  {/* <div className='online__status'></div>*/}
                 </div>
               </Link>
               <div className='user__details'>

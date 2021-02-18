@@ -281,7 +281,7 @@ class PostController {
         .select('*')
 
       if (get_sponsored_posts != undefined && get_sponsored_posts.length > 0) {
-        const randValue = Math.floor(Math.random() * (get_sponsored_posts.length - 0 + 1)) + 0
+        const randValue = Math.floor(Math.random() * (get_sponsored_posts.length - 1 + 1)) + 0
         get_sponsored_posts = get_sponsored_posts[randValue]
       } else {
         get_sponsored_posts = await Database.from('sponsored_posts')
@@ -303,6 +303,7 @@ class PostController {
       }
 
       const myPosts = await this.get_additional_info({ auth }, _1stpass)
+
       return {
         myPosts,
       }
@@ -597,18 +598,19 @@ class PostController {
   }
 
   async get_additional_info({ auth }, post) {
+    if (post == undefined) {
+      return post
+    }
     try {
       const likeController = new LikeController()
       for (let i = 0; i < post.length; i++) {
-        if (post[i].id) {
-          console.log('RASSDS')
-        } else {
-          console.log('YOYOOYOY')
+        if (post[i] == undefined) {
           continue
         }
-        if (post[i].id == undefined || post[i].id == null) {
+        if (post[i].id == undefined || post[i].id == null || post[i].id == '' || post[i].sponsored_post == true) {
           continue
         }
+
         let myLikes = await likeController.show({ auth }, post[i].id)
         if (myLikes) {
           post[i].total = myLikes.number_of_likes[0].total
