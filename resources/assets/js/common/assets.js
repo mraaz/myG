@@ -90,6 +90,7 @@ const assets = {
   ic_badge_game_create_gray: 'ic_badge_game_create_gray.svg',
   ic_badge_age_yellow: 'ic_badge_age_yellow.svg',
   ic_badge_age_gray: 'ic_badge_age_gray.svg',
+  ic_achievements_clock: 'ic_achievements_clock.svg',
 
 }
 

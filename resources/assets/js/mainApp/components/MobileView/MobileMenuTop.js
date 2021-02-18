@@ -96,7 +96,7 @@ const MobileMenuTop = (props) => {
                   </Link>
                 </li>
                 <li>
-                  <Link to='/achievements' onClick={() => setHideSideMenu(false)}>
+                  <Link to='/achievements/badges' onClick={() => setHideSideMenu(false)}>
                     Achievements
                   </Link>
                 </li>

@@ -1,4 +1,5 @@
 import React from 'react';
+import get from 'lodash.get';
 import { connect } from 'react-redux';
 import { ignoreFunctions } from '../../../../common/render'
 import Banner from '../../Profile/Banner';
@@ -13,30 +14,41 @@ class Achievements extends React.Component {
   }
 
   state = {
-    selected: 'badges',
+    selected: '',
+  }
+
+  componentDidMount() {
+    document.title = 'myG - Achievements'
+  }
+
+  selectTab = (tab) => {
+    this.setState({ selected: tab });
+    window.history.pushState({}, 'myG - Achievements', `/achievements/${tab}`);
   }
 
   renderHeaders = () => {
+    const selected = this.state.selected || get(this.props, 'routeProps.match.params.route') || 'badges';
     return(
       <div className='headers'>
-        <div className={`header clickable ${this.state.selected === 'badges' && 'selected'}`} onClick={() => this.setState({ selected: 'badges' })}>Badges</div>
-        <div className={`header clickable ${this.state.selected === 'daily' && 'selected'}`} onClick={() => this.setState({ selected: 'daily' })}>Daily</div>
-        <div className={`header clickable ${this.state.selected === 'weekly' && 'selected'}`} onClick={() => this.setState({ selected: 'weekly' })}>Weekly</div>
-        <div className={`header clickable ${this.state.selected === 'monthly' && 'selected'}`} onClick={() => this.setState({ selected: 'monthly' })}>Monthly</div>
+        <div className={`header clickable ${selected === 'badges' && 'selected'}`} onClick={() => this.selectTab('badges')}>Badges</div>
+        <div className={`header clickable ${selected === 'daily' && 'selected'}`} onClick={() => this.selectTab('daily')}>Daily</div>
+        <div className={`header clickable ${selected === 'weekly' && 'selected'}`} onClick={() => this.selectTab('weekly')}>Weekly</div>
+        <div className={`header clickable ${selected === 'monthly' && 'selected'}`} onClick={() => this.selectTab('monthly')}>Monthly</div>
       </div>
     );
   }
 
   render() {
+    const selected = this.state.selected || get(this.props, 'routeProps.match.params.route') || 'badges';
     return(
       <div id="profile">
         <Banner onlyProfile profile={this.props.profile} updateProfile={this.props.updateProfile} />
         <div id="achievements">
           {this.renderHeaders()}
-          {this.state.selected === 'badges' && <Badges {...this.props} />}
-          {this.state.selected === 'daily' && <Daily {...this.props} />}
-          {this.state.selected === 'weekly' && <Weekly {...this.props} />}
-          {this.state.selected === 'monthly' && <Monthly {...this.props} />}
+          {selected === 'badges' && <Badges {...this.props} />}
+          {selected === 'daily' && <Daily {...this.props} />}
+          {selected === 'weekly' && <Weekly {...this.props} />}
+          {selected === 'monthly' && <Monthly {...this.props} />}
         </div>
       </div>
     );

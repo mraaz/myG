@@ -1,0 +1,44 @@
+[
+  {
+    "label": "Connect to 30 friends",
+    "type": "friend",
+    "total": 30,
+    "url": "/find-gamers/search"
+  },
+  {
+    "label": "Commend 30 gamers",
+    "type": "commend",
+    "total": 30,
+    "url": "/find-gamers/search"
+  },
+  {
+    "label": "Play 30 games",
+    "type": "play",
+    "total": 30,
+    "url": "/scheduledGames"
+  },
+  {
+    "label": "Like 150 posts, comments or replies",
+    "type": "like",
+    "total": 150,
+    "url": "/"
+  },
+  {
+    "label": "Create 30 posts, comments or replies",
+    "type": "post",
+    "total": 30,
+    "url": "/"
+  },
+  {
+    "label": "Click on 30 sponsor links",
+    "type": "sponsor",
+    "total": 30,
+    "url": "/?at=communities"
+  },
+  {
+    "label": "Access myG every day",
+    "type": "login",
+    "total": 30,
+    "url": "/"
+  }
+]

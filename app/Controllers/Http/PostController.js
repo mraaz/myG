@@ -10,6 +10,7 @@ const HashTagController = use('./HashTagController')
 const LoggingRepository = require('../../Repositories/Logging')
 const ApiController = use('./ApiController')
 const CommonController = use('./CommonController')
+const AchievementsRepository = require('../../Repositories/Achievements')
 
 const MAX_HASH_TAGS = 21
 
@@ -64,6 +65,7 @@ class PostController {
         request.params.id = newPost.id
         newPost = this.myshow({ auth, request, response })
 
+        await AchievementsRepository.registerQuestStep({ user_id: auth.user.id, type: 'post' })
         return newPost
       }
     } catch (error) {
@@ -553,6 +555,7 @@ class PostController {
           })
           .delete()
 
+        await AchievementsRepository.unregisterQuestStep({ user_id: auth.user.id, type: 'post' })
         return 'Deleted successfully'
       } catch (error) {
         LoggingRepository.log({

@@ -6,6 +6,7 @@ const Database = use('Database')
 const ApiController = use('./ApiController')
 const NotificationController_v2 = use('./NotificationController_v2')
 const LoggingRepository = require('../../Repositories/Logging')
+const AchievementsRepository = require('../../Repositories/Achievements')
 
 class CommentController {
   async store({ auth, request, response }) {
@@ -59,6 +60,7 @@ class CommentController {
           .where('comments.id', '=', newComment.id)
           .select('comments.*', 'users.alias', 'users.profile_img')
 
+        await AchievementsRepository.registerQuestStep({ user_id: auth.user.id, type: 'post' })
         return newComment
       } catch (error) {
         LoggingRepository.log({
@@ -201,6 +203,7 @@ class CommentController {
           })
           .delete()
 
+        await AchievementsRepository.unregisterQuestStep({ user_id: auth.user.id, type: 'post' })
         return
       } catch (error) {
         LoggingRepository.log({

@@ -8,6 +8,7 @@ const FollowerController = use('./FollowerController')
 
 const ChatRepository = require('../../Repositories/Chat')
 const NotificationsRepository = require('../../Repositories/Notifications')
+const AchievementsRepository = require('../../Repositories/Achievements')
 const LoggingRepository = require('../../Repositories/Logging')
 
 class FriendController {
@@ -30,6 +31,9 @@ class FriendController {
             activity_type: 1,
           })
           .delete()
+
+        await AchievementsRepository.registerQuestStep({ user_id: auth.user.id, type: 'friend' })
+        await AchievementsRepository.registerQuestStep({ user_id: request.input('friend_id'), type: 'friend' })
 
         const userId = auth.user.id
         const notifications = await NotificationsRepository.count({ auth: { user: { id: userId } }, request: null })

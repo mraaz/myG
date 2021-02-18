@@ -37,6 +37,7 @@ class AchievementsContainer extends React.Component {
     const { alias, stats, profile } = this.props;
     if (!this.state.loaded) return null;
     return <Achievements 
+      {...this.props}
       alias={alias}
       profile={profile}
       stats={stats}
