@@ -4,6 +4,7 @@ const zlib = require('zlib')
 
 const TerserPlugin = require('terser-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 //const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 const VENDOR_LIBS = [
@@ -28,7 +29,7 @@ module.exports = (env) => {
 
   const mode = env.NODE_ENV == 'production' ? env.NODE_ENV : 'development'
   //const mode = 'production'
-
+  console.log(mode, 'MODE')
   return {
     entry: {
       mainApp: './resources/assets/js/mainApp/index.js',
@@ -97,24 +98,21 @@ module.exports = (env) => {
         },
       ],
     },
-    plugins:
-      mode == 'production'
-        ? [
-            new CompressionPlugin({
-              filename: '[path][base].br',
-              algorithm: 'brotliCompress',
-              test: /\.js$|\.jsx$|\.css$|\.html$|\.eot?.+$|\.ttf?.+$|\.woff?.+$|\.svg?.+$/,
-              compressionOptions: {
-                params: {
-                  [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
-                },
-              },
-              threshold: 10240,
-              minRatio: 0.8,
-              deleteOriginalAssets: false,
-            }),
-          ]
-        : [],
+    plugins: [
+      new CompressionPlugin({
+        filename: '[path][base].br',
+        algorithm: 'brotliCompress',
+        test: /\.js$|\.jsx$|\.css$|\.html$|\.eot?.+$|\.ttf?.+$|\.woff?.+$|\.svg?.+$/,
+        compressionOptions: {
+          params: {
+            [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
+          },
+        },
+        threshold: 10240,
+        minRatio: 0.8,
+        deleteOriginalAssets: false,
+      }),
+    ],
     plugins: [
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
 
@@ -160,17 +158,17 @@ module.exports = (env) => {
           },
         },
       },
-      minimizer:
-        mode == 'production'
-          ? [
-              new TerserPlugin({
-                parallel: true,
-                terserOptions: {
-                  ecma: 6,
-                },
-              }),
-            ]
-          : [],
+      minimizer: [
+        new TerserPlugin({
+          parallel: true,
+          terserOptions: {
+            ecma: 6,
+          },
+        }),
+        new UglifyJsPlugin({
+          test: /\.js(\?.*)?$/i,
+        }),
+      ],
       removeAvailableModules: true,
     },
     mode,
