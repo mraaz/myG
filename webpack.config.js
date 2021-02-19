@@ -165,9 +165,6 @@ module.exports = (env) => {
             ecma: 6,
           },
         }),
-        new UglifyJsPlugin({
-          test: /\.js(\?.*)?$/i,
-        }),
       ],
       removeAvailableModules: true,
     },
