@@ -673,7 +673,12 @@ export default class IndividualPost extends Component {
             </div>
             <div className='media'>
               {galleryItems.length > 0 && (
-                <ImageGallery items={[...galleryItems]} showFullscreenButton={true} showGalleryFullscreenButton={true} />
+                <ImageGallery
+                  items={[...galleryItems]}
+                  showBullets={galleryItems.length > 1 ? true : false}
+                  showFullscreenButton={true}
+                  showGalleryFullscreenButton={true}
+                />
               )}
             </div>
             <div className='update-stats'>

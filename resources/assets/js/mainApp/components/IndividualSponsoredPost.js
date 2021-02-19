@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
-import moment from 'moment'
 
 import SweetAlert from './common/MyGSweetAlert'
 import { Toast_style } from './Utility_Function'
@@ -9,8 +8,6 @@ import { Toast_style } from './Utility_Function'
 import { toast } from 'react-toastify'
 import { logToElasticsearch } from '../../integration/http/logger'
 import { MyGButton } from './common'
-
-const buckectBaseUrl = 'https://myG.gg/platform_images/'
 
 import ImageGallery from './common/ImageGallery/ImageGallery'
 import ReportPost from './common/ReportPost'
@@ -21,7 +18,6 @@ export default class IndividualSponsoredPost extends Component {
     this.state = {
       dropdown: false,
       content: '',
-      post_time: '',
       alert: null,
       media_urls: [],
       galleryItems: [],
@@ -51,10 +47,8 @@ export default class IndividualSponsoredPost extends Component {
         }
       }
     }
-    let post_timestamp = moment(this.props.post.updated_at, 'YYYY-MM-DD HH:mm:ssZ')
 
     this.setState({
-      post_time: post_timestamp.local().fromNow(),
       content: this.props.post.content,
       galleryItems,
     })
@@ -116,7 +110,7 @@ export default class IndividualSponsoredPost extends Component {
   render() {
     const { media_urls, alert, galleryItems = [], showPostExtraOption } = this.state
 
-    const profile_img = 'https://myg.gg/platform_images/Dashboard/logo.svg'
+    const profile_img = 'https://myG.gg/logos/myG_transparent.svg'
 
     let { post } = this.props //destructing of object
     let { hash_tags = [] } = post //destructing of object
@@ -138,11 +132,11 @@ export default class IndividualSponsoredPost extends Component {
                 </nav>
               </div>
             </div>
-            <div className='user-img' onClick={() => this.follow_link(post.click_url)}>
+            <div className='user-img' onClick={(e) => this.follow_link(post.click_url)}>
               <div
                 className='profile__image__sponsored'
                 style={{
-                  backgroundImage: `url('${profile_img}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`,
+                  backgroundImage: `url('${profile_img}'), url('https://myG.gg/logos/myG_transparent.svg')`,
                   backgroundSize: 'cover',
                 }}>
                 {/* <div className='online__status'></div>*/}
@@ -150,11 +144,14 @@ export default class IndividualSponsoredPost extends Component {
             </div>
             <div className='user__details'>
               <div className='author__username'>
-                <div className='username' onClick={() => this.follow_link(post.click_url)}>
+                <div className='username' onClick={(e) => this.follow_link(post.click_url)}>
                   {`@${post.alias} `}
                 </div>
+                <div className='arrow' onClick={(e) => this.follow_link(post.click_url)}></div>
+                <div className='promoted' onClick={(e) => this.follow_link(post.click_url)}>
+                  Promoted
+                </div>
               </div>
-              <div className='post__time'>{this.state.post_time}</div>
             </div>
             <div className='post__content'>
               {this.state.showmore && (
@@ -176,20 +173,23 @@ export default class IndividualSponsoredPost extends Component {
               )}
             </div>
           </div>
-          <div className='media' onClick={() => this.follow_link(post.click_url)}>
-            {galleryItems.length > 0 && (
-              <ImageGallery items={[...galleryItems]} showFullscreenButton={true} showGalleryFullscreenButton={true} />
-            )}
+          <div className='media' onClick={(e) => this.follow_link(post.click_url)}>
+            {galleryItems.length > 0 && <ImageGallery items={[...galleryItems]} showBullets={galleryItems.length > 1 ? true : false} />}
           </div>
           <div className='update-stats'>
-            <div className='sponsor-section' onClick={() => this.follow_link(post.click_url)}>
-              {post.caption}
+            <div className='update-stats2'>
+              <div className='sponsor-section' onClick={(e) => this.follow_link(post.click_url)}>
+                {post.caption}
+              </div>
+              <div className='sponsor-url' onClick={(e) => this.follow_link(post.click_url)}>
+                {post.url}
+              </div>
             </div>
-            <div className='sponsor-button' onClick={() => this.follow_link(post.click_url)}>
+            <div className='sponsor-button' onClick={(e) => this.follow_link(post.click_url)}>
               <MyGButton
                 customStyles={{ color: '#000', backgroundColor: '#E5C746' }}
                 text='More deets'
-                onClick={this.follow_link(post.click_url)}
+                onClick={(e) => this.follow_link(post.click_url)}
               />
             </div>
           </div>

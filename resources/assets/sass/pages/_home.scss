@@ -1068,6 +1068,7 @@ section#content-container {
             font-weight: bold;
             color: #fff;
             cursor: pointer;
+            align-items: center;
             a {
               color: #fff;
             }
@@ -1086,6 +1087,8 @@ section#content-container {
               border-left: 8px solid #707070;
               margin-left: 10px;
               margin-right: 10px;
+              display: flex;
+              align-items: center;
             }
             .shared__group {
               font: Bold 12px/14px Montserrat;
@@ -1119,6 +1122,7 @@ section#content-container {
           font-size: 20px;
           cursor: pointer;
           color: #fff;
+          padding-top: 4px;
           .post-dropdown {
             position: absolute;
             z-index: 2;
@@ -1191,7 +1195,7 @@ section#content-container {
             font-weight: bold;
             color: #fff;
             a:hover {
-              color: #0178ff;
+              color: #e5c746;
             }
           }
           .post__time {
@@ -1215,6 +1219,14 @@ section#content-container {
         .sponsor-button {
           display: block;
           margin-left: auto;
+          font-weight: bold;
+        }
+        .sponsor-url {
+          padding-top: 10px;
+          cursor: pointer;
+          &:hover {
+            color: #e5c746;
+          }
         }
         .like-btn {
           cursor: pointer;

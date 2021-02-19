@@ -65,22 +65,24 @@ export default class CustomImageGallery extends React.Component {
   render() {
     if (this.props.items && this.props.items.length > 0) {
       const images = this.getPreviewImageGallery(this.props.items)
+
       return (
         <section className='app'>
           <ImageGallery
             ref={(i) => (this._imageGallery = i)}
             onImageLoad={this._onImageLoad}
-            lazyLoad={true}
-            showThumbnails={false}
-            showPlayButton={false}
+            lazyLoad={this.props.lazyLoad ? this.props.lazyLoad : true}
+            showThumbnails={this.props.showThumbnails ? this.props.showThumbnails : false}
+            showPlayButton={this.props.showPlayButton ? this.props.showPlayButton : false}
             items={images}
-            showBullets={true}
-            autoPlay={false}
-            isRTL={false}
-            disableSwipe={false}
-            showNav={true}
-            showFullscreenButton={this.props.showFullscreenButton}
-            showGalleryFullscreenButton={this.props.showGalleryFullscreenButton}
+            showBullets={this.props.showBullets ? this.props.showBullets : false}
+            autoPlay={this.props.autoPlay ? this.props.autoPlay : false}
+            isRTL={this.props.isRTL ? this.props.isRTL : false}
+            disableSwipe={this.props.disableSwipe ? this.props.disableSwipe : true}
+            showNav={this.props.showNav ? this.props.showNav : true}
+            showFullscreenButton={this.props.showFullscreenButton ? this.props.showFullscreenButton : false}
+            showGalleryFullscreenButton={this.props.showGalleryFullscreenButton ? this.props.showGalleryFullscreenButton : false}
+            useBrowserFullscreen={true}
           />
         </section>
       )
