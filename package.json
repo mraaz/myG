@@ -139,7 +139,6 @@
     "gulp-sass": "^4.1.0",
     "gulp-shell": "^0.6.3",
     "gulp-watch": "^4.3.9",
-    "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack-bundle-analyzer": "^4.4.0"
   },
   "autoload": {
