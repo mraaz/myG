@@ -10,9 +10,11 @@ function setupBull() {
   const port = Env.get('REDIS_PORT');
   const disableCluster = Env.get('REDIS_DISABLE_CLUSTER');
   const runEveryJobOnStart = Env.get('BULL_RUN_EVERY_JOB_ON_START');
+  const disableBull = Env.get('BULL_LOGGING_DISABLE');
   const bullConfig = { redis: { host, port } };
   const ioCluster = !disableCluster && hasRedis && new Redis.Cluster([bullConfig.redis]);
-  
+
+if (!disableBull){
   LoggingRepository.log({
     environment: process.env.NODE_ENV,
     type: 'startup',
@@ -20,6 +22,8 @@ function setupBull() {
     context: "bull",
     message: hasRedis ? `Getting ready to start bull -> ${JSON.stringify({ bullConfig })}` : 'Redis/Bull Disabled',
   });
+}
+
 
   if (!hasRedis) return logBull(moment, 'Redis Disabled, no Bull Queues will be run.');
 
@@ -155,6 +159,17 @@ function getJobs(Queue, bullConfig, ioCluster, runEveryJobOnStart) {
       schedule: { repeat: { cron: '0 0 1 * *' } },
       runOnSchedule: true,
       runOnStart: runEveryJobOnStart ? true : false,
+      enabled: true,
+    },
+    {
+      name: 'Shuffle Sponsored Posts',
+      queue: new Queue('Shuffle Sponsored Posts', prefixedConfig('{sponsored-post-shuffle}')),
+      action: require('./tasks/sponsored-post-shuffle'),
+      options: { jobId: Date.now() },
+      payload: {},
+      schedule: { repeat: { cron: '0 0 23 * *' } },
+      runOnSchedule: true,
+      runOnStart: true,
       enabled: true,
     },
   ];
