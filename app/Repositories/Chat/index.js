@@ -1123,9 +1123,31 @@ class ChatRepository {
   }
 
   async fetchChatByIndividualGameId({ requestedGameId }) {
+    let chat = null;
     const response = (await Chat.query().where('individual_game_id', requestedGameId).first());
-    if (!response) return { chat: null };
-    const chat = response.toJSON();
+    if (!response) {
+      const attendees = await Database.from('attendees').where('schedule_games_id', requestedGameId).select(['user_id']);
+      const userIds = attendees.map(({ user_id }) => user_id);
+      const games = await Database
+        .from('schedule_games')
+        .leftJoin('game_names', 'schedule_games.game_names_id', 'game_names.id')
+        .where('schedule_games.id', requestedGameId)
+        .select(['schedule_games.user_id', 'game_names.game_name', 'game_names.game_name_fields_img', 'game_names.id', 'schedule_games.start_date_time']);
+      const game = games[0];
+      const requestingUserId = game.user_id;
+      const title = game.game_name;
+      const icon = game.game_name_fields_img;
+      const contacts = userIds;
+      const owners = [requestingUserId];
+      const isGroup = true;
+      const individualGameId = requestedGameId;
+      const gameId = game.id;
+      const gameSchedule = game.start_date_time;
+      const created = await this.createChat({ requestingUserId, contacts, owners, title, icon, isGroup, individualGameId, gameId, gameSchedule });
+      chat = created.chat;
+    } else {
+      chat = response.toJSON();
+    }
     const chatSchema = new ChatSchema({
       chatId: chat.id,
       isPrivate: chat.isPrivate,
