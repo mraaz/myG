@@ -1087,6 +1087,10 @@
         margin: 10px 0;
       }
 
+      .game-image {
+        background-size: contain !important;
+      }
+
       .absolute-top {
         position: absolute;
         top: -10px;
