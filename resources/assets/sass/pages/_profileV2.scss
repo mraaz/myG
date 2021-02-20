@@ -36,8 +36,9 @@
     font-family: 'Montserrat Alternates', sans-serif !important;
   }
 
-  .filter__control--is-focused {
+  .filter__control {
     .filter__value-container {
+      overflow-y: scroll;
       height: 45px;
       .css-b8ldur-Input {
         color: white !important;
