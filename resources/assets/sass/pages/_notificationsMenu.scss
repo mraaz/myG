@@ -753,13 +753,14 @@ $transition-default: 0.25s ease-out 0.1s;
       position: absolute;
       top: -10px;
       left: -10px;
-      width: 30px;
-      height: 30px;
+      width: 35px;
+      height: 35px;
       border-radius: 50%;
       background-color: #fff;
       box-sizing: border-box;
       img {
         width: 100%;
+        height: 100%;
         border-radius: 50%;
       }
     }
