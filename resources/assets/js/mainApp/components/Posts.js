@@ -32,7 +32,6 @@ export default class Posts extends Component {
 
   showLatestPosts = () => {
     const { myPosts = [] } = this.state
-    console.log(myPosts, '<<<myPosts')
     return myPosts.map(this.showthis_Post)
   }
 
@@ -40,7 +39,6 @@ export default class Posts extends Component {
     if (item == null) return
     const { sponsored_post = false } = item
     if (sponsored_post) {
-      console.log('asdf23')
       return <IndividualSponsoredPost post={item} key={index} source={'news_feed'} />
     } else {
       return <IndividualPost post={item} key={index} user={this.props.initialData.userInfo} source={'news_feed'} />
@@ -58,10 +56,8 @@ export default class Posts extends Component {
         const myPosts = await axios({
           method: 'GET',
           url: `/api/post/${self.state.counter}`,
-          onDownloadProgress: (progressEvent) => {
-            const { loaded = 0, total = 0 } = progressEvent
-          },
         })
+
         if (myPosts.data == '' || myPosts.data == {} || (myPosts.data.myPosts && myPosts.data.myPosts.length == 0)) {
           self.setState({
             moreplease: false,

@@ -16,8 +16,8 @@
   flex-direction: column;
   transition: 0.5s;
   overflow-y: scroll;
-  scrollbar-width: none;  /* Firefox */
-  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
 }
 
 .sidebar-container-collapsed {
@@ -84,8 +84,8 @@
 }
 
 .lm-user-info-main img {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   border-radius: 50px;
 }
 
@@ -117,7 +117,7 @@
 }
 
 .notification-alert {
-  background-color: #FA3E3F !important;
+  background-color: #fa3e3f !important;
   color: white !important;
   font-weight: bold !important;
   border: 0px solid #384952 !important;
