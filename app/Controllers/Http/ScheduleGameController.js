@@ -49,7 +49,6 @@ class ScheduleGameController {
 
     if (request.input('end_date_time') != undefined && request.input('end_date_time') != null) {
       end_date_time = new Date(request.input('end_date_time')) //.toISOString().replace('T', ' ')
-      console.log(end_date_time, '<<<end_date_time')
 
       let newEnddate = new Date(request.input('end_date_time'))
       let extendedDate = new Date(new Date(request.input('start_date_time')).getTime() + 15 * 60 * 60 * 24 * 1000)
