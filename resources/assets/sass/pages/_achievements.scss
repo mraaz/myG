@@ -55,6 +55,36 @@
     margin: 16px 48px;
     padding: 24px 0 0 0;
 
+    .level-indicators {
+      display: flex;
+      flex-direction: row;
+      padding: 24px 48px;
+      background-color: #1D2326;
+      border-radius: 1000px;
+
+      .level-indicator {
+        margin: 0 12px;
+        color: white;
+
+        .circle-wrap {
+          width: 130px;
+          height: 130px;
+          background: #1d2326;
+          border-radius: 50%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column;
+          &.yellow {
+            border-color: #9b8b3a;
+          }
+          &.red {
+            border-color: #d70f46;
+          }
+        }
+      }
+    }
+
     .count {
       color: white;
       font-size: 12px;
