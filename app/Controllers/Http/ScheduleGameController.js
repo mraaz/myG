@@ -1,6 +1,6 @@
 'use strict'
 
-const uniq = require('lodash.uniq');
+const uniq = require('lodash.uniq')
 const Database = use('Database')
 
 const User = use('App/Models/User')
@@ -48,7 +48,8 @@ class ScheduleGameController {
     let end_date_time
 
     if (request.input('end_date_time') != undefined && request.input('end_date_time') != null) {
-      end_date_time = new Date(request.input('end_date_time')).toISOString().replace('T', ' ')
+      end_date_time = new Date(request.input('end_date_time')) //.toISOString().replace('T', ' ')
+      console.log(end_date_time, '<<<end_date_time')
 
       let newEnddate = new Date(request.input('end_date_time'))
       let extendedDate = new Date(new Date(request.input('start_date_time')).getTime() + 15 * 60 * 60 * 24 * 1000)
@@ -235,7 +236,9 @@ class ScheduleGameController {
                 schedule_games_id: newScheduleGame.id,
                 game_tag_id: arrTags[i].game_tag_id,
               })
-              await GameTags.query().where({ id: arrTags[i].game_tag_id }).increment('counter', 1)
+              await GameTags.query()
+                .where({ id: arrTags[i].game_tag_id })
+                .increment('counter', 1)
             }
           }
         }
@@ -259,7 +262,9 @@ class ScheduleGameController {
   }
 
   async getProfileInfo(id) {
-    const response = await User.query().where('id', id).fetch()
+    const response = await User.query()
+      .where('id', id)
+      .fetch()
     const profile = response && response.toJSON()[0]
     return {
       alias: profile ? profile.alias : '',
@@ -269,7 +274,11 @@ class ScheduleGameController {
 
   async getAttendees(schedule_games_id) {
     try {
-      return (await Database.from('attendees').where({ schedule_games_id, type: 1 }).count('* as no_of_gamers'))[0].no_of_gamers
+      return (
+        await Database.from('attendees')
+          .where({ schedule_games_id, type: 1 })
+          .count('* as no_of_gamers')
+      )[0].no_of_gamers
     } catch (error) {
       return 0
     }
@@ -277,7 +286,11 @@ class ScheduleGameController {
 
   async fetchGameImage(game_names_id) {
     try {
-      return (await Database.from('game_names').where('game_names.id', game_names_id).select('game_names.game_artwork'))[0].game_artwork
+      return (
+        await Database.from('game_names')
+          .where('game_names.id', game_names_id)
+          .select('game_names.game_artwork')
+      )[0].game_artwork
     } catch (error) {
       return null
     }
@@ -287,12 +300,17 @@ class ScheduleGameController {
     return Database.from('schedule_games_tags')
       .innerJoin('game_tags', 'game_tags.id', 'schedule_games_tags.game_tag_id')
       .where({ schedule_games_id })
-      .select('content').then((tags) => tags.map((tag) => tag.content))
+      .select('content')
+      .then((tags) => tags.map((tag) => tag.content))
   }
 
   async fetchGameName(game_names_id) {
     try {
-      return (await Database.from('game_names').where('game_names.id', game_names_id).select('game_names.game_name'))[0].game_name
+      return (
+        await Database.from('game_names')
+          .where('game_names.id', game_names_id)
+          .select('game_names.game_name')
+      )[0].game_name
     } catch (error) {
       return null
     }
@@ -524,7 +542,9 @@ class ScheduleGameController {
                 game_tag_id: arrTags[i].game_tag_id,
               })
 
-              const update_counter = await GameTags.query().where({ id: arrTags[i].game_tag_id }).increment('counter', 1)
+              const update_counter = await GameTags.query()
+                .where({ id: arrTags[i].game_tag_id })
+                .increment('counter', 1)
             }
           }
         }
@@ -658,7 +678,9 @@ class ScheduleGameController {
     try {
       switch (filter) {
         case 0:
-          subquery = Database.from('attendees').select('schedule_games_id').where({ user_id: auth.user.id })
+          subquery = Database.from('attendees')
+            .select('schedule_games_id')
+            .where({ user_id: auth.user.id })
 
           myScheduledGames = await Database.from('schedule_games')
             .innerJoin('users', 'users.id', 'schedule_games.user_id')
@@ -736,7 +758,9 @@ class ScheduleGameController {
           number_of_records = count_myScheduledGames[0].no_of_records
           break
         case 2:
-          subquery = Database.from('attendees').select('schedule_games_id').where({ user_id: auth.user.id, type: 1 })
+          subquery = Database.from('attendees')
+            .select('schedule_games_id')
+            .where({ user_id: auth.user.id, type: 1 })
 
           myScheduledGames = await Database.from('schedule_games')
             .innerJoin('users', 'users.id', 'schedule_games.user_id')
@@ -773,7 +797,9 @@ class ScheduleGameController {
           number_of_records = count_myScheduledGames[0].no_of_records
           break
         case 3:
-          subquery = Database.from('attendees').select('schedule_games_id').where({ user_id: auth.user.id, type: 3 })
+          subquery = Database.from('attendees')
+            .select('schedule_games_id')
+            .where({ user_id: auth.user.id, type: 3 })
 
           myScheduledGames = await Database.from('schedule_games')
             .innerJoin('users', 'users.id', 'schedule_games.user_id')
@@ -866,9 +892,15 @@ class ScheduleGameController {
   async myScheduledGames_Upcoming_Games({ auth, request, response }) {
     var myScheduledGames = ''
 
-    let next24hours = new Date(new Date(Date.now()).getTime() + 60 * 60 * 24 * 1000).toISOString().slice(0, 19).replace('T', ' ')
+    let next24hours = new Date(new Date(Date.now()).getTime() + 60 * 60 * 24 * 1000)
+      .toISOString()
+      .slice(0, 19)
+      .replace('T', ' ')
 
-    let last4hours = new Date(new Date(Date.now()).getTime() - 60 * 60 * 4 * 1000).toISOString().slice(0, 19).replace('T', ' ')
+    let last4hours = new Date(new Date(Date.now()).getTime() - 60 * 60 * 4 * 1000)
+      .toISOString()
+      .slice(0, 19)
+      .replace('T', ' ')
 
     try {
       const subquery = Database.from('attendees')
@@ -1036,14 +1068,18 @@ class ScheduleGameController {
       additional_game_info = []
 
     try {
-      additional_game_info = await Database.from('schedule_games').where('schedule_games.id', '=', game_id).first()
+      additional_game_info = await Database.from('schedule_games')
+        .where('schedule_games.id', '=', game_id)
+        .first()
 
       if (additional_game_info == undefined) {
         return
       }
 
       //Figure out what fields to return, create the key value pair.
-      const getGameFields = await Database.from('game_name_fields').where({ game_names_id: additional_game_info.game_names_id }).first()
+      const getGameFields = await Database.from('game_name_fields')
+        .where({ game_names_id: additional_game_info.game_names_id })
+        .first()
 
       if (getGameFields == undefined) {
         return
@@ -1102,7 +1138,9 @@ class ScheduleGameController {
       getAllGamers = []
 
     try {
-      additional_game_info = await Database.from('schedule_games').where('schedule_games.id', '=', request.params.id).first()
+      additional_game_info = await Database.from('schedule_games')
+        .where('schedule_games.id', '=', request.params.id)
+        .first()
 
       if (additional_game_info != undefined) {
         approved_gamers = await Database.from('attendees')
@@ -1136,7 +1174,9 @@ class ScheduleGameController {
         }
 
         //Figure out what fields to return, create the key value pair.
-        const getGameFields = await Database.from('game_name_fields').where({ game_names_id: additional_game_info.game_names_id }).first()
+        const getGameFields = await Database.from('game_name_fields')
+          .where({ game_names_id: additional_game_info.game_names_id })
+          .first()
 
         if (getGameFields != undefined) {
           let obj = '',
@@ -1200,7 +1240,9 @@ class ScheduleGameController {
           additional_game_info.accept_msg = ''
         }
 
-        getAllGamers = await Database.from('attendees').where({ schedule_games_id: request.params.id, type: 1 }).count('* as no_of_gamers')
+        getAllGamers = await Database.from('attendees')
+          .where({ schedule_games_id: request.params.id, type: 1 })
+          .count('* as no_of_gamers')
       }
 
       return {
@@ -1293,7 +1335,9 @@ class ScheduleGameController {
       }
 
       //Figure out what fields to return, create the key value pair.
-      const getGameFields = await Database.from('game_name_fields').where({ game_names_id: latestScheduledGames[0].game_names_id }).first()
+      const getGameFields = await Database.from('game_name_fields')
+        .where({ game_names_id: latestScheduledGames[0].game_names_id })
+        .first()
 
       if (getGameFields != undefined) {
         let obj = '',
@@ -1404,7 +1448,9 @@ class ScheduleGameController {
       latestScheduledGames[0].tags = getAllTags
 
       //Figure out what fields to return, create the key value pair.
-      const getGameFields = await Database.from('game_name_fields').where({ game_names_id: latestScheduledGames[0].game_names_id }).first()
+      const getGameFields = await Database.from('game_name_fields')
+        .where({ game_names_id: latestScheduledGames[0].game_names_id })
+        .first()
 
       if (getGameFields != undefined) {
         additional_submit_info = true
@@ -1496,7 +1542,9 @@ class ScheduleGameController {
 
   async update_vacany({ auth }, schedule_game_id, vacancy) {
     try {
-      const update_vacany = await ScheduleGame.query().where({ id: schedule_game_id }).update({ vacancy: vacancy })
+      const update_vacany = await ScheduleGame.query()
+        .where({ id: schedule_game_id })
+        .update({ vacancy: vacancy })
       return
     } catch (error) {
       LoggingRepository.log({
@@ -1526,7 +1574,9 @@ class ScheduleGameController {
           return isAdmin
         }
 
-        const checkCo_host = await Database.from('co_hosts').where({ schedule_games_id: getID.id, user_id: auth.user.id }).select('id')
+        const checkCo_host = await Database.from('co_hosts')
+          .where({ schedule_games_id: getID.id, user_id: auth.user.id })
+          .select('id')
 
         if (checkCo_host.length > 0) {
           isAdmin = true
@@ -1556,12 +1606,16 @@ class ScheduleGameController {
     // additional_info_values = {}
 
     try {
-      const game_info = await Database.from('game_names').where({ id: request.params.game_names_id }).first()
+      const game_info = await Database.from('game_names')
+        .where({ id: request.params.game_names_id })
+        .first()
 
       if (game_info == undefined) {
         return
       }
-      const getGameFields = await Database.from('game_name_fields').where({ game_names_id: game_info.id }).first()
+      const getGameFields = await Database.from('game_name_fields')
+        .where({ game_names_id: game_info.id })
+        .first()
 
       if (getGameFields != undefined) {
         let obj = '',
@@ -1642,42 +1696,44 @@ class ScheduleGameController {
   }
 
   registerPlays = async () => {
-    const newGames = await this.fetchNewGamesPlayedInTheLastSixMins();
-    const validNewGames = this.filterGamesWithOnlyOneAttendee(newGames);
-    const oldGames = await this.fetchOldGamesPlayedInTheLastSixMins();
-    const oldGamesIds = oldGames.map(({ schedule_games_id }) => schedule_games_id);
-    const deltaGames = newGames.filter(({ schedule_games_id }) => !oldGamesIds.includes(schedule_games_id) && validNewGames.includes(schedule_games_id));
-    if (!deltaGames.length) return Promise.resolve(); 
-    console.log('\x1b[36m', 'BULL', '-', `${deltaGames.length} games played in the last 5mins`, '\x1b[0m');
-    const deltaGamesId = uniq(deltaGames.map(({ schedule_games_id }) => schedule_games_id)).filter((id) => !!id);
-    const questRequests = deltaGames.map(({ user_id }) => AchievementsRepository.registerQuestStep({ user_id, type: 'play' }));
-    const logRequests = deltaGamesId.map((schedule_games_id) => Database.from('played_games').insert({ schedule_games_id }));
-    return Promise.all([...questRequests, ...logRequests]);
+    const newGames = await this.fetchNewGamesPlayedInTheLastSixMins()
+    const validNewGames = this.filterGamesWithOnlyOneAttendee(newGames)
+    const oldGames = await this.fetchOldGamesPlayedInTheLastSixMins()
+    const oldGamesIds = oldGames.map(({ schedule_games_id }) => schedule_games_id)
+    const deltaGames = newGames.filter(
+      ({ schedule_games_id }) => !oldGamesIds.includes(schedule_games_id) && validNewGames.includes(schedule_games_id)
+    )
+    if (!deltaGames.length) return Promise.resolve()
+    console.log('\x1b[36m', 'BULL', '-', `${deltaGames.length} games played in the last 5mins`, '\x1b[0m')
+    const deltaGamesId = uniq(deltaGames.map(({ schedule_games_id }) => schedule_games_id)).filter((id) => !!id)
+    const questRequests = deltaGames.map(({ user_id }) => AchievementsRepository.registerQuestStep({ user_id, type: 'play' }))
+    const logRequests = deltaGamesId.map((schedule_games_id) => Database.from('played_games').insert({ schedule_games_id }))
+    return Promise.all([...questRequests, ...logRequests])
   }
 
   filterGamesWithOnlyOneAttendee = (games) => {
-    const gamesMap = {};
+    const gamesMap = {}
     games.forEach((game) => {
-      if (!gamesMap[game.schedule_games_id]) gamesMap[game.schedule_games_id] = 1;
-      else gamesMap[game.schedule_games_id] = gamesMap[game.schedule_games_id] + 1;
-    });
-    return Object.keys(gamesMap).filter((gameId) => gamesMap[gameId] >= 2);
+      if (!gamesMap[game.schedule_games_id]) gamesMap[game.schedule_games_id] = 1
+      else gamesMap[game.schedule_games_id] = gamesMap[game.schedule_games_id] + 1
+    })
+    return Object.keys(gamesMap).filter((gameId) => gamesMap[gameId] >= 2)
   }
 
   fetchOldGamesPlayedInTheLastSixMins = async () => {
-    const sixMinsAgo = new Date(new Date().getTime() - 6 * 60000);
+    const sixMinsAgo = new Date(new Date().getTime() - 6 * 60000)
     return Database.from('played_games')
       .where('created_at', '>', sixMinsAgo)
-      .andWhere('created_at', '<', new Date());
+      .andWhere('created_at', '<', new Date())
   }
 
   fetchNewGamesPlayedInTheLastSixMins = async () => {
-    const sixMinsAgo = new Date(new Date().getTime() - 6 * 60000);
+    const sixMinsAgo = new Date(new Date().getTime() - 6 * 60000)
     return Database.from('attendees')
       .leftJoin('schedule_games', 'schedule_games.id', 'attendees.schedule_games_id')
       .where('schedule_games.end_date_time', '>', sixMinsAgo)
       .andWhere('schedule_games.end_date_time', '<', new Date())
-      .select(['attendees.schedule_games_id', 'attendees.user_id']);
+      .select(['attendees.schedule_games_id', 'attendees.user_id'])
   }
 }
 

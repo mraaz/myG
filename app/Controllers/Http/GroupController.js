@@ -145,7 +145,9 @@ class GroupController {
     try {
       let following = false
       const getOne = await Database.from('groups')
+        .leftJoin('game_names', 'game_names.id', 'groups.game_names_id')
         .where({ name: decodeURIComponent(request.params.name) })
+        .select('groups.*', 'game_names.game_name')
         .first()
 
       if (getOne != undefined) {
