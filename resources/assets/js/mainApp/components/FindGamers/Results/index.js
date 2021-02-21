@@ -1,11 +1,13 @@
 import React from 'react';
-import debounce from 'lodash.debounce';
 import Progress from '../../common/ProgressCircle/progress'
 import LoadingIndicator from '../../LoadingIndicator'
 import Experiences from '../Experiences'
 import InviteModal from '../Invite'
 import { ignoreFunctions } from '../../../../common/render'
 import notifyToast from '../../../../common/toast'
+import { WithTooltip } from '../../Tooltip';
+
+let lastScrollPosition = null;
 
 export default class Results extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -30,15 +32,19 @@ export default class Results extends React.Component {
     document.removeEventListener('wheel', this.handleScroll, false);
   }
 
-  handleScroll = debounce(() => {
-    if (this.props.loading || !this.props.gamers.length) return;
+  handleScroll = () => {
     const scroll = document.scrollingElement || {};
-    const listHeight = document.getElementsByClassName("find-gamers-results")[0].offsetHeight;
+    const windowHeight = window.innerHeight;
+    const listHeight = (document.getElementsByClassName("find-gamers-results")[0] || {}).offsetHeight;
+    const elementHeight = (document.getElementsByClassName('find-gamer-result')[0] || {}).offsetHeight;
     const scrollPosition = scroll.scrollTop
-    const hasScrolledEnough = (listHeight - scrollPosition) < 200;
-    if (!hasScrolledEnough) return;
+    const listFitsInScreen = windowHeight > listHeight
+    const scrolledToBottom = (scrollPosition + elementHeight) > windowHeight
+    if (this.props.loading || !this.props.gamers.length) return;
+    if ((!listFitsInScreen && !scrolledToBottom) || lastScrollPosition === scrollPosition) return;
+    lastScrollPosition = scrollPosition;
     this.props.showMore();
-  }, 50)
+  }
   
   cancelFriendRequest = () => this.props.cancelFriendRequest(this.props.profile.alias, this.props.profile.profileId)
 
@@ -58,6 +64,7 @@ export default class Results extends React.Component {
 
   renderGamer = (gamer) => {
     const isHovering = this.state.hovering === gamer.profileId;
+    const aliasTooLong = gamer.alias && gamer.alias.length > 10;
     return(
       <div className="find-gamer-result" key={gamer.profileId}>
         <div className={`gamer ${isHovering ? 'hover' : ''}`}
@@ -67,7 +74,15 @@ export default class Results extends React.Component {
           {this.renderHoverBar(gamer, isHovering)}
           <div className='icon' style={{ backgroundImage: `url('${gamer.image}'), url('https://myG.gg/default_user/new-user-profile-picture.png')` }} />
           <div className="info">
-            {gamer.alias && <span className="alias">@{gamer.alias}</span>}
+            {gamer.alias && (
+              aliasTooLong ? (
+                <WithTooltip position={{ bottom: '24px', left: '-12px' }} text={`@${gamer.alias}`}>
+                  <span className="alias">{`@${gamer.alias}`.slice(0, 8) + '...'}</span>
+                </WithTooltip>
+              ) : (
+                <span className="alias">@{gamer.alias}</span>
+              )
+            )}
             {gamer.country && <span className="title">Country</span>}
             {gamer.country && <span className="value">{gamer.country}</span>}
             {gamer.team && <span className="title">Professional Team</span>}

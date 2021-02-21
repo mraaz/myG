@@ -41,6 +41,11 @@ export default class Search extends React.Component {
     return this.props.onSearch(search + ' ' + filter, this.state.online, this.state.from);
   }, 300)
 
+  showMore = debounce(() => {
+    if (this.props.gamers.length >= this.props.total || this.props.loading) return;
+    this.setState(previous => ({ from: previous.from + 3 }), this.onSearch);
+  }, 300)
+
   onChange = (search) => {
     this.setState({ search }, this.onSearch);
     if (search === ':?') this.showHelp();
@@ -48,11 +53,6 @@ export default class Search extends React.Component {
 
   onFilter = (filter) => {
     this.setState({ filter }, this.onSearch);
-  }
-
-  showMore = () => {
-    if (this.props.gamers.length >= this.props.total) return;
-    this.setState(previous => ({ from: previous.from + 10 }), this.onSearch);
   }
 
   toggleOnline = () => {
