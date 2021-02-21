@@ -20,24 +20,27 @@ class Monthly extends React.Component {
     this.props.redeemMonthlyQuests();
   }
 
-  renderHeader = () => (
-    <div className="header">
-      <div className="icon" style={{ backgroundImage: `url(${getAssetUrl('ic_achievements_clock')})` }}/>
-      <div className="content">
-        <span className="hint">Complete 3 out of 7 Monthly Quests</span>
-        <div className="progress">
-          <div className="progress-hint">          
-            <span className="completed">{this.props.completed}/</span>
-            <span className="total">3</span>
+  renderHeader = () => {
+    if (this.props.collected) return null;
+    return(
+      <div className="header">
+        <div className="icon" style={{ backgroundImage: `url(${getAssetUrl('ic_achievements_clock')})` }}/>
+        <div className="content">
+          <span className="hint">Complete 3 out of 7 Monthly Quests</span>
+          <div className="progress">
+            <div className="progress-hint">          
+              <span className="completed">{this.props.completed}/</span>
+              <span className="total">3</span>
+            </div>
+            <span className="progress-bar">
+              <MyGProgressBar completed={this.props.collectable ? 100 : (this.props.completed / 3) * 100} />
+            </span>
+            <div className={`button ${this.props.collectable ? 'clickable' : 'opaque'}`} onClick={this.collect}>Collect 250xp</div>
           </div>
-          <span className="progress-bar">
-            <MyGProgressBar completed={this.props.collectable ? 100 : (this.props.completed / 3) * 100} />
-          </span>
-          <div className={`button ${this.props.collectable ? 'clickable' : 'opaque'}`} onClick={this.collect}>Collect 250xp</div>
         </div>
       </div>
-    </div>
-  )
+    )
+  }
 
   renderQuest = ({ label, completed, total, progress, url }) => (
     <div className={`header header-row ${progress === 100 ? 'opaque' : ''}`}>
@@ -57,11 +60,24 @@ class Monthly extends React.Component {
     </div>
   )
 
+  renderQuests = () => {
+    if (this.props.collected) return null;
+    return this.props.quests.map(this.renderQuest);
+  }
+
+  renderCompleted = () => {
+    if (!this.props.collected) return null;
+    return(
+      <div className="completed-message">Epic! You've completed all your quests. Roger roger, I'll be back first thing next month...</div>
+    );
+  }
+
   render() {
     return(
       <div id="quests">
         {this.renderHeader()}
-        {this.props.quests.map(this.renderQuest)}
+        {this.renderQuests()}
+        {this.renderCompleted()}
       </div>
     );
   }

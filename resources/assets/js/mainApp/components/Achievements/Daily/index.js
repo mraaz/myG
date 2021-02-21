@@ -20,8 +20,10 @@ class Daily extends React.Component {
     this.props.redeemDailyQuests();
   }
 
-  renderHeader = () => (
-    <div className="header">
+  renderHeader = () => {
+    if (this.props.collected) return null;
+    return(
+      <div className="header">
       <div className="icon" style={{ backgroundImage: `url(${getAssetUrl('ic_achievements_clock')})` }}/>
       <div className="content">
         <span className="hint">Complete 3 out of 6 Daily Quests</span>
@@ -37,7 +39,13 @@ class Daily extends React.Component {
         </div>
       </div>
     </div>
-  )
+    );
+  }
+
+  renderQuests = () => {
+    if (this.props.collected) return null;
+    return this.props.quests.map(this.renderQuest);
+  }
 
   renderQuest = ({ label, completed, total, progress, url }) => (
     <div className={`header header-row ${progress === 100 ? 'opaque' : ''}`}>
@@ -57,11 +65,19 @@ class Daily extends React.Component {
     </div>
   )
 
+  renderCompleted = () => {
+    if (!this.props.collected) return null;
+    return(
+      <div className="completed-message">Epic! You've completed all your quests. Y'all come back tomorrow ya hear!</div>
+    );
+  }
+
   render() {
     return(
       <div id="quests">
         {this.renderHeader()}
-        {this.props.quests.map(this.renderQuest)}
+        {this.renderQuests()}
+        {this.renderCompleted()}
       </div>
     );
   }
