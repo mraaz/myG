@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import IndividualPost from './IndividualPost'
+import IndividualSponsoredPost from './IndividualSponsoredPost'
 import ComposeSection from './ComposeSection_v2'
 import GamerSuggestions from './Profile/GamerSuggestions'
 
@@ -30,14 +31,18 @@ export default class Posts extends Component {
   }
 
   showLatestPosts = () => {
-    console.log('In herer')
     const { myPosts = [] } = this.state
-    console.log(myPosts, '<<<myPosts')
     return myPosts.map(this.showthis_Post)
   }
 
   showthis_Post = (item, index) => {
-    return <IndividualPost post={item} key={index} user={this.props.initialData.userInfo} source={'news_feed'} />
+    if (item == null) return
+    const { sponsored_post = false } = item
+    if (sponsored_post) {
+      return <IndividualSponsoredPost post={item} key={index} source={'news_feed'} />
+    } else {
+      return <IndividualPost post={item} key={index} user={this.props.initialData.userInfo} source={'news_feed'} />
+    }
   }
 
   fetchMoreData = () => {
@@ -51,20 +56,25 @@ export default class Posts extends Component {
         const myPosts = await axios({
           method: 'GET',
           url: `/api/post/${self.state.counter}`,
-          onDownloadProgress: (progressEvent) => {
-            const { loaded = 0, total = 0 } = progressEvent
-          },
         })
-        if (myPosts.data.myPosts.length == 0) {
+
+        if (myPosts.data == '' || myPosts.data == {} || (myPosts.data.myPosts && myPosts.data.myPosts.length == 0)) {
           self.setState({
             moreplease: false,
           })
           return
         }
 
-        self.setState({
-          myPosts: self.state.myPosts.concat(myPosts.data.myPosts),
-        })
+        if (myPosts.data.myPosts) {
+          self.setState({
+            myPosts: self.state.myPosts.concat(myPosts.data.myPosts),
+          })
+        } else {
+          self.setState({
+            moreplease: false,
+          })
+          return
+        }
       } catch (error) {
         logToElasticsearch('error', 'Posts', 'Failed at myPosts' + ' ' + error)
       }

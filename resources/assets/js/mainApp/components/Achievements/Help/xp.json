@@ -1,0 +1,30 @@
+[
+  {
+    "criteria": "Receive a like",
+    "value": 1
+  },
+  {
+    "criteria": "Create a community",
+    "value": 5
+  },
+  {
+    "criteria": "Play a game",
+    "value": 10
+  },
+  {
+    "criteria": "Gain a follower",
+    "value": 12
+  },
+  {
+    "criteria": "Connect to a friend",
+    "value": 15
+  },
+  {
+    "criteria": "Host a game",
+    "value": 15
+  },
+  {
+    "criteria": "Gain a commendation",
+    "value": 30
+  }
+]

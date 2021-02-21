@@ -26,6 +26,7 @@ const GameBackgroundSchema = require('../../Schemas/GameBackground');
 const CommendationSchema = require('../../Schemas/Commendation');
 
 const ElasticsearchRepository = require('../Elasticsearch');
+const AchievementsRepository = require('../Achievements')
 
 class ProfileRepository {
 
@@ -434,7 +435,8 @@ class ProfileRepository {
     await commendation.save();
 
     notificationController.commend({ commendedId, commenderId: requestingUserId });
-    userStatController.update_total_number_of(commendedId, 'total_number_of_commendations')
+    userStatController.update_total_number_of(commendedId, 'total_number_of_commendations');
+    await AchievementsRepository.registerQuestStep({ user_id: requestingUserId, type: 'commend' });
 
     const { profile } = await this.fetchProfileInfo({ requestingUserId, id: commendedId, alias });
     await ElasticsearchRepository.storeUser({ user: profile });

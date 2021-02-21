@@ -2,6 +2,7 @@
 
 const Post = use('App/Models/Post')
 const HashTags = use('App/Models/HashTag')
+const SponsoredPost = use('App/Models/SponsoredPost')
 const Database = use('Database')
 
 const LikeController = use('./LikeController')
@@ -10,6 +11,7 @@ const HashTagController = use('./HashTagController')
 const LoggingRepository = require('../../Repositories/Logging')
 const ApiController = use('./ApiController')
 const CommonController = use('./CommonController')
+const AchievementsRepository = require('../../Repositories/Achievements')
 
 const MAX_HASH_TAGS = 21
 
@@ -64,6 +66,7 @@ class PostController {
         request.params.id = newPost.id
         newPost = this.myshow({ auth, request, response })
 
+        await AchievementsRepository.registerQuestStep({ user_id: auth.user.id, type: 'post' })
         return newPost
       }
     } catch (error) {
@@ -273,36 +276,39 @@ class PostController {
         .paginate(request.params.counter, grp_limit)
 
       const category = request.params.counter % 5
+      let get_sponsored_posts = undefined
 
-      //Great 1st Attempt but will SUX once we get more data in this table.
-      let get_sponsored_posts = await Database.from('sponsored_posts')
-        .where('visibility', '=', 1)
-        .where('category', '=', category)
-        .select('*')
-
-      if (get_sponsored_posts != undefined && get_sponsored_posts.length > 0) {
-        const randValue = Math.floor(Math.random() * (get_sponsored_posts.length - 0 + 1)) + 0
-        get_sponsored_posts = get_sponsored_posts[randValue]
-      } else {
+      if (!isNaN(category)) {
+        //Great 1st Attempt but will SUX once we get more data in this table.
         get_sponsored_posts = await Database.from('sponsored_posts')
           .where('visibility', '=', 1)
+          .where('category', '=', category)
           .select('*')
-          .orderBy('times_clicked', 'desc')
-          .first()
-      }
 
-      if (get_sponsored_posts != undefined) get_sponsored_posts.sponsored_post = true
+        if (get_sponsored_posts != undefined && get_sponsored_posts.length > 0) {
+          const randValue = Math.floor(Math.random() * (get_sponsored_posts.length - 1 + 1)) + 0
+          get_sponsored_posts = get_sponsored_posts[randValue]
+        } else {
+          get_sponsored_posts = await Database.from('sponsored_posts')
+            .where('visibility', '=', 1)
+            .select('*')
+            .orderBy('times_clicked', 'desc')
+            .first()
+        }
+
+        if (get_sponsored_posts != undefined) get_sponsored_posts.sponsored_post = true
+      }
 
       let _1stpass = [...ppl_im_following_Posts.data, ...groups_im_in_Posts.data]
 
       const common_Controller = new CommonController()
       _1stpass = await common_Controller.shuffle(_1stpass)
 
-      if (_1stpass.length > 2) {
+      if (_1stpass.length > 2 && get_sponsored_posts != undefined) {
         _1stpass.splice(1, 0, get_sponsored_posts)
       }
-
       const myPosts = await this.get_additional_info({ auth }, _1stpass)
+
       return {
         myPosts,
       }
@@ -553,6 +559,7 @@ class PostController {
           })
           .delete()
 
+        await AchievementsRepository.unregisterQuestStep({ user_id: auth.user.id, type: 'post' })
         return 'Deleted successfully'
       } catch (error) {
         LoggingRepository.log({
@@ -597,18 +604,19 @@ class PostController {
   }
 
   async get_additional_info({ auth }, post) {
+    if (post == undefined) {
+      return post
+    }
     try {
       const likeController = new LikeController()
       for (let i = 0; i < post.length; i++) {
-        if (post[i].id) {
-          console.log('RASSDS')
-        } else {
-          console.log('YOYOOYOY')
+        if (post[i] == undefined) {
           continue
         }
-        if (post[i].id == undefined || post[i].id == null) {
+        if (post[i].id == undefined || post[i].id == null || post[i].id == '' || post[i].sponsored_post == true) {
           continue
         }
+
         let myLikes = await likeController.show({ auth }, post[i].id)
         if (myLikes) {
           post[i].total = myLikes.number_of_likes[0].total
@@ -697,6 +705,56 @@ class PostController {
         message: (error && error.message) || error,
       })
     }
+  }
+
+  async shuffle_sponsored_posts() {
+    try {
+      /*
+       Get all records
+       order them by times clicked
+       divide them equally
+       update the categories
+      */
+
+      let get_sponsored_posts = await Database.from('sponsored_posts')
+        .where('visibility', '=', 1)
+        .select('id')
+        .orderBy('times_clicked', 'desc')
+
+      let arr = []
+      if (get_sponsored_posts == undefined) return
+      for (let i = 0; i < get_sponsored_posts.length; i++) {
+        arr.push(get_sponsored_posts[i].id)
+      }
+
+      const myGroups = this.splitArrayEvenly(arr, 5)
+
+      //Nested for loop OK cause this table will be >~100 records
+      for (var i = 0; i < myGroups.length; i++) {
+        for (var j = 0; j < myGroups[i].length; j++) {
+          const updateSponsoredPost = await SponsoredPost.query()
+            .where({ id: myGroups[i][j] })
+            .update({ category: i + 1 })
+        }
+      }
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
+    }
+  }
+
+  splitArrayEvenly(array, n) {
+    array = array.slice()
+    let result = []
+    while (array.length) {
+      result.push(array.splice(0, Math.ceil(array.length / n--)))
+    }
+    return result
   }
 }
 

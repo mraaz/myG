@@ -59,7 +59,7 @@
     "type": "account-age",
     "label": "On myG for {value} years",
     "values": [1, 2, 3, 4, 5],
-    "experiences": [50000, 100000, 100000, 100000, 200000],
+    "experiences": [25000, 25000, 25000, 25000, 25000],
     "activeIcon": "ic_badge_age_yellow",
     "inactiveIcon": "ic_badge_age_gray"
   }

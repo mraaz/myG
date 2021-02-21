@@ -48,13 +48,13 @@
     "placeholders": {
       "lol_server_regions": "Select what region/s you can play",
       "lol_ranks": "Please advise what Rank/s you are looking for?",
-      "lol_roles": "Select the role/s you wish to apply for",
-      "stats_link": "https://www.leagueofgraphs.com"
+      "lol_roles": "Select the role/s you wish to apply for"
     },
     "profile_placeholders": {
       "lol_server_regions": "Select what region/s you can play",
       "lol_ranks": "Select your Highest Rank",
-      "lol_roles": "Select which role/s you like to play"
+      "lol_roles": "Select which role/s you like to play",
+      "stats_link": "https://www.leagueofgraphs.com"
     },
     "types": {
       "lol_server_regions": "Multi",

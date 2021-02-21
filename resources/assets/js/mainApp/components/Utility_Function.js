@@ -67,7 +67,12 @@ export async function Game_name_values(inputValue) {
             false,
             results[i].game_headers
           )
-          newOption.label = <img src={results[i].game_img} />
+          newOption.label = (
+            <div style={{ fontWeight: 'bold', fontSize: '14px' }}>
+              <img src={results[i].game_img} />
+              &nbsp;&nbsp;&nbsp;&nbsp;{results[i].game_name}
+            </div>
+          )
         } else {
           newOption = createOption(
             results[i].game_name,

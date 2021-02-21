@@ -7,6 +7,7 @@ import GamePosts from './GamePosts'
 import CoverImage from './CoverImage'
 import Members from './Members'
 import MangeSponsors from './MangeSponsors'
+import { registerSponsorClick } from '../../../integration/http/quests'
 
 import { Toast_style } from '../Utility_Function'
 
@@ -24,7 +25,6 @@ const CommunityView = (props) => {
       const {
         data: { getOne = {} },
       } = await axios.get(`/api/groups/getGroupDetails/${groupName}`)
-
       if (Object.keys(getOne).length == 0) {
         toast.error(<Toast_style text={`Sorry mate, can't find that`} />)
         props.routeProps.history.push('/?at=communities')
@@ -97,7 +97,7 @@ const CommunityView = (props) => {
           Sponsors.map((Sponsor) => {
             return (
               <div className='Sponsors' key={Sponsor.id}>
-                <a href={`//${Sponsor.link}`} target='_blank'>
+                <a href={`//${Sponsor.link}`} target='_blank' onClick={registerSponsorClick}>
                   <img className='Sponsors__image' onError={addDefaultSrc} src={`${Sponsor.media_url}`} />
                 </a>
                 {[0, 1].includes(current_user_permission) && (
@@ -136,17 +136,12 @@ const CommunityView = (props) => {
     <div className='communityName__container '>
       <CoverImage {...communityDetails} handleModalStatus={handleModalStatus} {...props} />
       <div className='community__description'>{communityDetails.grp_description}</div>
-      {communityDetails.allGrpTags && communityDetails.allGrpTags.length > 0 && (
+      {communityDetails.game_names_id && communityDetails.game_names_id != null && (
         <div className='community__tags'>
-          <div className='label'>Tags :</div>
-          {communityDetails.allGrpTags.map((tag) => {
-            return (
-              <div>
-                <span className='tags'>{tag}</span>
-                <span className='dot'>{'.'}</span>
-              </div>
-            )
-          })}
+          <div className='label'>Game: </div>
+          <div>
+            <span className='tags'>{communityDetails.game_name}</span>
+          </div>
         </div>
       )}
       {renderSponsors(communityDetails.sponsors)}

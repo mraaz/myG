@@ -431,6 +431,7 @@ section#content-container {
         position: absolute;
         top: 20px;
         left: -15px;
+        cursor: pointer;
       }
       .buttons {
         position: absolute;
@@ -506,6 +507,7 @@ section#content-container {
             height: 40px;
             width: 40px;
             border: 5px solid white;
+            cursor: pointer;
           }
           .info {
             display: flex;
@@ -1046,6 +1048,15 @@ section#content-container {
             bottom: 0px;
             left: 0px;
           }
+          cursor: pointer;
+        }
+        .profile__image__sponsored {
+          position: absolute;
+          left: -20px;
+          top: -10px;
+          width: 50px;
+          height: 50px;
+          cursor: pointer;
         }
         .user__details {
           margin-bottom: 20px;
@@ -1056,12 +1067,28 @@ section#content-container {
             font-size: 14px;
             font-weight: bold;
             color: #fff;
+            cursor: pointer;
+            align-items: center;
             a {
               color: #fff;
             }
             a:hover {
               color: #e5c746;
               text-decoration: none;
+            }
+            &:hover {
+              color: #e5c746;
+            }
+            .arrow {
+              width: 0px;
+              height: 0px;
+              border-top: 5px solid transparent;
+              border-bottom: 5px solid transparent;
+              border-left: 8px solid #707070;
+              margin-left: 10px;
+              margin-right: 10px;
+              display: flex;
+              align-items: center;
             }
             .shared__group {
               font: Bold 12px/14px Montserrat;
@@ -1095,6 +1122,7 @@ section#content-container {
           font-size: 20px;
           cursor: pointer;
           color: #fff;
+          padding-top: 4px;
           .post-dropdown {
             position: absolute;
             z-index: 2;
@@ -1167,7 +1195,7 @@ section#content-container {
             font-weight: bold;
             color: #fff;
             a:hover {
-              color: #0178ff;
+              color: #e5c746;
             }
           }
           .post__time {
@@ -1175,6 +1203,29 @@ section#content-container {
             font-weight: bold;
             color: #fff;
             margin-left: auto;
+          }
+        }
+        .sponsor-section {
+          cursor: pointer;
+          font-weight: bold;
+          color: #fff;
+          font-weight: bold;
+          font-size: 16px;
+          line-height: 14px;
+          font-family: Montserrat, sans-serif;
+          display: flex;
+          align-items: center;
+        }
+        .sponsor-button {
+          display: block;
+          margin-left: auto;
+          font-weight: bold;
+        }
+        .sponsor-url {
+          padding-top: 10px;
+          cursor: pointer;
+          &:hover {
+            color: #e5c746;
           }
         }
         .like-btn {

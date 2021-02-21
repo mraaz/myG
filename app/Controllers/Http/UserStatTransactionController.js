@@ -152,11 +152,11 @@ class UserStatTransactionController {
         last_month_likes: last_months_total_number_of_likes,
         commendations: total_number_of_commendations,
         last_month_commendations: last_months_total_number_of_commendations,
-        user_level: 25, //getGamerLevels.level, //25,
-        user_experience: 438739, //getGamerLevels.experience_points,
+        user_level: getGamerLevels.level, //25,
+        user_experience: getGamerLevels.experience_points,
         user_xp_negative_balance: getGamerLevels.xp_negative_balance,
         level_max_points: getNextLevel.max_points,
-        start_of_level_xp: 438739, //start_of_level_xp,
+        start_of_level_xp: start_of_level_xp,
       }
     } else {
       return 'You are not Logged In!'

@@ -4,6 +4,7 @@ const Database = use('Database')
 const Like = use('App/Models/Like')
 const UserStatTransactionController = use('./UserStatTransactionController')
 const NotificationController_v2 = use('./NotificationController_v2')
+const AchievementsRepository = require('../../Repositories/Achievements')
 const LoggingRepository = require('../../Repositories/Logging')
 
 class LikeController {
@@ -16,6 +17,7 @@ class LikeController {
           comment_id: request.input('comment_id'),
           reply_id: request.input('reply_id'),
         })
+        await AchievementsRepository.registerQuestStep({ user_id: auth.user.id, type: 'like' })
 
         const userStatController = new UserStatTransactionController()
 
@@ -194,6 +196,9 @@ class LikeController {
             user_id: auth.user.id,
           })
           .delete()
+
+
+        await AchievementsRepository.unregisterQuestStep({ user_id: auth.user.id, type: 'like' })
 
         const userStatController = new UserStatTransactionController()
 

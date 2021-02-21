@@ -4,6 +4,7 @@ const autoprefixer = require('gulp-autoprefixer')
 const browserSync = require('browser-sync')
 const reload = browserSync.reload
 var exec = require('child_process').exec
+const cleanCSS = require('gulp-clean-css')
 
 function styles() {
   return gulp
@@ -18,6 +19,7 @@ function styles() {
         overrideBrowserslist: ['defaults', 'not IE 11', 'maintained node versions'],
       })
     )
+    .pipe(cleanCSS({ compatibility: '*' }))
     .pipe(gulp.dest('./public/css'))
     .pipe(browserSync.stream())
 }
