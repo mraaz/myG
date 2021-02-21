@@ -43,7 +43,7 @@ export default class Search extends React.Component {
 
   showMore = debounce(() => {
     if (this.props.gamers.length >= this.props.total || this.props.loading) return;
-    this.setState(previous => ({ from: previous.from + 3 }), this.onSearch);
+    this.setState(previous => ({ from: previous.from + 10 }), this.onSearch);
   }, 300)
 
   onChange = (search) => {
