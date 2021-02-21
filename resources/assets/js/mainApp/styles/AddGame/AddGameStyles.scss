@@ -135,7 +135,6 @@
     margin: 10px;
     display: flex;
     flex: 1;
-    overflow: scroll;
     scrollbar-width: none;
     @media screen and (min-width: 575px) {
       padding-top: 30px;
@@ -247,9 +246,9 @@
     border: 1px solid #707070;
     border-radius: 18px;
     overflow: scroll;
-    @media screen and (min-width: 998px) {
-      width: 30%;
-    }
+    // @media screen and (min-width: 998px) {
+    //   max-width: 30%;
+    // }
   }
   &__optional-header-container {
     text-align: center;
