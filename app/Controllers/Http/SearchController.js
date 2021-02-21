@@ -9,10 +9,10 @@ class SearchController {
     try {
       const requestingUserId = auth.user.id
       if (!requestingUserId) throw new Error('Auth Error')
-      const { query, online } = request.only(['query', 'online'])
+      const { query, online, from, size } = request.only(['query', 'online', 'from', 'size'])
       log('PROFILE', `User ${requestingUserId} searching gamer with ${query}`)
-      const { gamers } = await SearchRepository.searchGamers({ requestingUserId, query, online })
-      return response.send({ gamers })
+      const { gamers, total } = await SearchRepository.searchGamers({ requestingUserId, query, online, from, size })
+      return response.send({ gamers, total })
     } catch (error) {
       LoggingRepository.log({
         environment: process.env.NODE_ENV,

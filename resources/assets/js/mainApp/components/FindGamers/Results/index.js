@@ -1,4 +1,5 @@
 import React from 'react';
+import debounce from 'lodash.debounce';
 import Progress from '../../common/ProgressCircle/progress'
 import LoadingIndicator from '../../LoadingIndicator'
 import Experiences from '../Experiences'
@@ -11,11 +12,34 @@ export default class Results extends React.Component {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
   }
 
-  state = {
-    hovering: null,
-    inviting: null,
+  constructor(props) {
+    super(props);
+    this.state = {
+      hovering: null,
+      inviting: null,
+    };
   }
 
+  componentDidMount() {
+    document.addEventListener('scroll', this.handleScroll, { passive: true });
+    document.addEventListener('wheel', this.handleScroll, { passive: true });
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('scroll', this.handleScroll, false);
+    document.removeEventListener('wheel', this.handleScroll, false);
+  }
+
+  handleScroll = debounce(() => {
+    if (this.props.loading || !this.props.gamers.length) return;
+    const scroll = document.scrollingElement || {};
+    const listHeight = document.getElementsByClassName("find-gamers-results")[0].offsetHeight;
+    const scrollPosition = scroll.scrollTop
+    const hasScrolledEnough = (listHeight - scrollPosition) < 200;
+    if (!hasScrolledEnough) return;
+    this.props.showMore();
+  }, 50)
+  
   cancelFriendRequest = () => this.props.cancelFriendRequest(this.props.profile.alias, this.props.profile.profileId)
 
   renderLoading = () => {
@@ -29,7 +53,6 @@ export default class Results extends React.Component {
   }
 
   renderGamers = () => {
-    if (this.props.loading) return null;
     return this.props.gamers.map(this.renderGamer);
   }
 
@@ -137,9 +160,9 @@ export default class Results extends React.Component {
   render() {
     return(
       <div className="find-gamers-results">
-        {this.renderLoading()}
         {this.renderGamers()}
         {this.renderInviteModal()}
+        {this.renderLoading()}
       </div>
     );
   }
