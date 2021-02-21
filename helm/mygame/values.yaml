@@ -10,12 +10,11 @@ mygame:
   databasePassword: password
   databaseHost: proxysql-proxysql-cluste
   databasePort: 6033
-  nodeEnvironment: development
-  appKey: ""
+  appKey: ''
   orgUrl: https://myg.gg
   smtpHost: smtp.gmail.com
   smtpPort: 587
-  smtpFromAddress: ""
+  smtpFromAddress: ''
   nodeEnvironment: production
   redisHost: 'redis-redis-cluster-headless'
   redisPort: '"6379"'
@@ -25,19 +24,16 @@ mygame:
   timezone: UTC
   features_on: PROFILE_V2
   awsSesRegion: us-east-1
-  elasticSearch2: https://search-myg-w3ljhffsecbtpleuia2d4w2v3q.ap-southeast-2.es.amazonaws.com
   elasticSearch: https://search-mygdev-rrk3x3fxnryjzqhfe3jeqrz6oe.us-east-1.es.amazonaws.com
 
-
-
 image:
-  repository: ""
+  repository: ''
   tag: latest
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+nameOverride: ''
+fullnameOverride: ''
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -46,10 +42,12 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -63,10 +61,10 @@ service:
   #port: 80
   #targetPort: 3333
 
-
 ingress:
   enabled: true
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
@@ -78,7 +76,8 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: {}
+resources:
+  {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
