@@ -5,10 +5,15 @@ import { ignoreFunctions } from '../../../../common/render'
 import { getAssetUrl } from '../../../../common/assets';
 import { fetchDailyQuestsAction, redeemDailyQuestsAction } from '../../../../redux/actions/questsAction';
 import MyGProgressBar from '../../common/MyGProgressBar';
+import Help from '../Help';
 
 class Daily extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
+  }
+
+  state = {
+    help: false,
   }
 
   componentDidMount() {
@@ -72,9 +77,22 @@ class Daily extends React.Component {
     );
   }
 
+  renderHelpButton = () => {
+    return(
+      <div className="help quests-help clickable" onClick={() => this.setState({ help: true })}>?</div>
+    );
+  }
+
+  renderHelp = () => {
+    if (!this.state.help) return;
+    return <Help {...this.props} onClose={() => this.setState({ help: false })}/>;
+  }
+
   render() {
     return(
       <div id="quests">
+        {this.renderHelp()}
+        {this.renderHelpButton()}
         {this.renderHeader()}
         {this.renderQuests()}
         {this.renderCompleted()}
