@@ -91,6 +91,9 @@ export async function SubmitDataFunction(myG) {
   const { v1: uuidv1 } = require('uuid')
   var tmp = uuidv1()
 
+  console.log(myG.startDate.format('YYYY-MM-DD HH:mm:ss ZZ'), "<<myG.startDate.format('YYYY-MM-DD HH:mm:ss ZZ')")
+  console.log(end_date.format('YYYY-MM-DD HH:mm:ss ZZ'), "<<end_date.format('YYYY-MM-DD HH:mm:ss ZZ')")
+
   try {
     const post = await axios.post('/api/ScheduleGame', {
       game_name_box: myG.game_name_box.value,

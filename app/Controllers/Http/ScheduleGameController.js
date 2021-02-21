@@ -46,19 +46,24 @@ class ScheduleGameController {
     }
 
     let end_date_time
+    console.log(request.input('end_date_time'), "<<<request.input('end_date_time')")
 
     if (request.input('end_date_time') != undefined && request.input('end_date_time') != null) {
       end_date_time = new Date(request.input('end_date_time')) //.toISOString().replace('T', ' ')
 
-      let newEnddate = new Date(request.input('end_date_time'))
+      //let newEnddate = new Date(request.input('end_date_time'))
       let extendedDate = new Date(new Date(request.input('start_date_time')).getTime() + 15 * 60 * 60 * 24 * 1000)
-      if (newEnddate > extendedDate) {
+      if (end_date_time > extendedDate) {
         return response.send('invalid end date - end date greater than maximum allowed')
       }
       end_date_time = request.input('end_date_time')
     } else {
-      end_date_time = new Date(new Date(request.input('start_date_time')).getTime() + 60 * 60 * 18 * 1000)
+      console.log('Sick and tired')
+      end_date_time = new Date(new Date(request.input('start_date_time')).getTime() + 60 * 60 * 4 * 1000)
+      end_date_time = end_date_time.format('YYYY-MM-DD HH:mm:ss ZZ')
     }
+    console.log(end_date_time, '<<<end_date_time')
+    console.log(request.input('start_date_time'), "<<<request.input('start_date_time')")
 
     if (auth.user) {
       try {
