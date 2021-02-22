@@ -49,6 +49,7 @@ function getJobs(Queue, bullConfig, ioCluster, runEveryJobOnStart) {
   const prefixedConfig = (prefix) => {
     const config = { ...bullConfig, prefix };
     if (ioCluster) config.createClient = () => ioCluster;
+    return config
   };
   return [
     {
