@@ -114,7 +114,7 @@ export default class GameExperiences extends React.Component {
             </WithTooltip>
           ): <span className="name">{gameName}</span>
         }
-        {gameImage && <div className="image" style={{ backgroundImage: `url(${gameImage})` }} />}
+        {gameImage && <div className="image game-image" style={{ backgroundImage: `url(${gameImage})` }} />}
         <div
           className={`link clickable`}
           onClick={(event) => { event.stopPropagation(); this.copyLink(id); }}

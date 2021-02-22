@@ -52,6 +52,7 @@ export default class MyScheduledGames extends Component {
       exclude_expired: false,
       filter: 0,
     })
+    console.log(scheduleGames, '<<scheduleGames')
 
     if (scheduleGames.data && scheduleGames.data.myScheduledGames && scheduleGames.data.myScheduledGames.length > 0) {
       this.setState({ scheduleGames: scheduleGames.data.myScheduledGames })
@@ -122,7 +123,7 @@ export default class MyScheduledGames extends Component {
       filter,
     })
 
-    this.setState({ slideOptionText: checked ? 'Show expired games': 'Exclude expired games' })
+    this.setState({ slideOptionText: checked ? 'Show expired games' : 'Exclude expired games' })
 
     if (scheduleGamesRes.data && scheduleGamesRes.data.myScheduledGames.length > 0) {
       this.setState({ scheduleGames: scheduleGamesRes.data.myScheduledGames, fetching: false, exclude_expired: checked, filter })

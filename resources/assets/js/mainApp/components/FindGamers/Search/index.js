@@ -2,6 +2,7 @@ import React from 'react';
 import debounce from 'lodash.debounce';
 import ToggleButton from 'react-toggle-button'
 import Filter from '../Filter';
+import Results from '../Results';
 import { showMessengerAlert } from '../../../../common/alert'
 import { ignoreFunctions } from '../../../../common/render'
 
@@ -13,11 +14,12 @@ export default class Search extends React.Component {
   state = {
     search: '',
     filter: '',
+    from: 0,
     online: false,
   }
 
   componentDidMount() {
-    this.props.onSearch('', this.state.online);
+    this.props.onSearch('', this.state.online, this.state.from);
   }
 
   showHelp = () => showMessengerAlert(`
@@ -35,8 +37,13 @@ export default class Search extends React.Component {
   onSearch = debounce(() => {
     const search = this.state.search.trim();
     const filter = this.state.filter.trim();
-    if (search.length < 3 && !filter) return this.props.onSearch('', this.state.online);
-    return this.props.onSearch(search + ' ' + filter, this.state.online);
+    if (search.length < 3 && !filter) return this.props.onSearch('', this.state.online, this.state.from);
+    return this.props.onSearch(search + ' ' + filter, this.state.online, this.state.from);
+  }, 300)
+
+  showMore = debounce(() => {
+    if (this.props.gamers.length >= this.props.total || this.props.loading) return;
+    this.setState(previous => ({ from: previous.from + 10 }), this.onSearch);
   }, 300)
 
   onChange = (search) => {
@@ -78,6 +85,7 @@ export default class Search extends React.Component {
           />
         </div>
         <Filter onFilter={this.onFilter} />
+        <Results showMore={this.showMore} gamers={this.props.gamers} total={this.props.total} loading={this.props.loading} profile={this.props.profile} sendFriendRequest={this.props.sendFriendRequest} cancelFriendRequest={this.props.cancelFriendRequest} follow={this.props.follow} unfollow={this.props.unfollow}/>
       </React.Fragment>
     );
   }

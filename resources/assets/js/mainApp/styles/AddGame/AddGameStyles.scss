@@ -73,7 +73,8 @@
   .game-title-select {
     padding-bottom: 15px;
     font-size: 13px;
-    width: 90%;
+    width: 100%;
+    max-width: 388px;
   }
 }
 
@@ -84,7 +85,8 @@
 .description-text-area {
   padding-bottom: 15px;
   font-size: 13px;
-  width: 90%;
+  width: 100%;
+  max-width: 388px;
 }
 
 .time-text-container {
@@ -246,6 +248,7 @@
     border: 1px solid #707070;
     border-radius: 18px;
     overflow: scroll;
+    width: 100%;
     @media screen and (min-width: 998px) {
       width: 40%;
     }

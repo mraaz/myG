@@ -157,11 +157,9 @@ class GameNameController {
 
   async show_one({ auth, request, response }) {
     try {
-      var inputValue = request.params.name.replace(/%20/g, ' ')
-
       const getOne = await Database.select('id')
         .from('game_names')
-        .where({ game_name: inputValue })
+        .where({ game_name: decodeURIComponent(request.params.name) })
 
       return {
         getOne,
@@ -179,14 +177,9 @@ class GameNameController {
 
   async gameSearchResults({ auth, request, response }) {
     try {
-      var inputValue = request.params.int.replace(/%20/g, '%')
-      inputValue = inputValue.replace(/%25/g, '\\')
-      // inputValue = "'%" + inputValue + "%'"
-      //
-      // const gameSearchResults = await Database.schema.raw('select * from game_names WHERE game_name LIKE ' + inputValue)
       const gameSearchResults = await Database.table('game_names')
         .leftJoin('game_name_fields', 'game_name_fields.game_names_id', 'game_names.id')
-        .where('game_name', 'like', '%' + inputValue + '%')
+        .where('game_name', 'like', '%' + decodeURIComponent(request.params.int) + '%')
         .select('game_names.*', 'game_name_fields.game_names_id as more_data')
         .limit(25)
 
@@ -244,13 +237,17 @@ class GameNameController {
   async deleteUnusedGames() {
     const oneDayAgo = new Date()
     oneDayAgo.setDate(oneDayAgo.getDate() - 1)
-    const gamesToDelete = await Database.from('game_names').where('counter', '=', 0).andWhere('created_at', '<', oneDayAgo)
+    const gamesToDelete = await Database.from('game_names')
+      .where('counter', '=', 0)
+      .andWhere('created_at', '<', oneDayAgo)
     if (!gamesToDelete.length) return
     const apiController = new ApiController()
     const auth = { user: { id: 'myg' } }
     for await (let gameToDelete of gamesToDelete) {
       await apiController.internal_deleteFile({ auth }, '9', gameToDelete.id)
-      await Database.table('game_names').where({ id: gameToDelete.id }).delete()
+      await Database.table('game_names')
+        .where({ id: gameToDelete.id })
+        .delete()
     }
     const report = gamesToDelete.map((gameToDelete) => ({
       id: gameToDelete.id,

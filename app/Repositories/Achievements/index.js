@@ -15,12 +15,22 @@ class AchievementsRepository {
     const stats = await controller.master_controller({ requestedAlias: alias });
     const redeemed = await this.fetchRedeemedBadges({ userId: stats.userId });
     const badges = this.getBadges(stats, redeemed);
-    return { badges, stats, controller, redeemedTotal: redeemed.length, badgesTotal: BADGES.map(({ values }) => values.length).reduce((a, b) => a + b, 0) };
+    const joinedBadges = [...badges, ...redeemed];
+    return { badges: joinedBadges, stats, controller, redeemedTotal: redeemed.length, badgesTotal: BADGES.map(({ values }) => values.length).reduce((a, b) => a + b, 0) };
   }
 
   async fetchRedeemedBadges({ userId }) {
     const achievementsResponse = await UserAchievements.query().where("user_id", userId).fetch();
-    return achievementsResponse && achievementsResponse.toJSON() || [];
+    const redeemed = achievementsResponse && achievementsResponse.toJSON() || [];
+    return redeemed.map((badge) => {
+      const template = BADGES.find((template) => template.type === badge.type);
+      return {
+        ...badge,
+        label: template.label.replace('{value}', badge.value),
+        icon: template.inactiveIcon,
+        collected: true,
+      };
+    });
   }
 
   async redeemBadge({ requestingUserId, alias, type, value }) {

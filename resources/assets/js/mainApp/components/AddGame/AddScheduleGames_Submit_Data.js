@@ -91,17 +91,20 @@ export async function SubmitDataFunction(myG) {
   const { v1: uuidv1 } = require('uuid')
   var tmp = uuidv1()
 
+  console.log(myG.startDate.format('YYYY-MM-DD HH:mm:ss ZZ'), "<<myG.startDate.format('YYYY-MM-DD HH:mm:ss ZZ')")
+  console.log(end_date.format('YYYY-MM-DD HH:mm:ss ZZ'), "<<end_date.format('YYYY-MM-DD HH:mm:ss ZZ')")
+
   try {
     const post = await axios.post('/api/ScheduleGame', {
       game_name_box: myG.game_name_box.value,
       game_names_id: myG.game_name_box.game_names_id,
       selected_region: myRegion,
       selected_experience: myExperience,
-      start_date_time: myG.startDate.format('YYYY-MM-DD HH:mm:ss'),
-      end_date_time: end_date.format('YYYY-MM-DD HH:mm:ss'),
+      start_date_time: myG.startDate.format('YYYY-MM-DD HH:mm:ss ZZ'),
+      end_date_time: end_date.format('YYYY-MM-DD HH:mm:ss ZZ'),
       selected_platform: myPlatform,
       description_box: myG.description_box,
-      selected_expiry: now.format('YYYY-MM-DD HH:mm:ss'),
+      selected_expiry: now.format('YYYY-MM-DD HH:mm:ss ZZ'),
       visibility: myG.selected_visibility,
       limit: myLimit,
       accept_msg: myG.txtAreaValue.trim(),

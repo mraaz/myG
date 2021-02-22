@@ -22,6 +22,7 @@
     // background-color: #4d565a !important;
     // color: #fff !important;
     font-family: 'Montserrat Alternates', sans-serif !important;
+    z-index: 1000;
   }
 
   .filter__option {
@@ -36,8 +37,9 @@
     font-family: 'Montserrat Alternates', sans-serif !important;
   }
 
-  .filter__control--is-focused {
+  .filter__control {
     .filter__value-container {
+      overflow-y: scroll;
       height: 45px;
       .css-b8ldur-Input {
         color: white !important;
@@ -1085,6 +1087,10 @@
         width: 100%;
         height: 80px;
         margin: 10px 0;
+      }
+
+      .game-image {
+        background-size: contain !important;
       }
 
       .absolute-top {

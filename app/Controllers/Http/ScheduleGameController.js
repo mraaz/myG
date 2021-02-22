@@ -45,21 +45,28 @@ class ScheduleGameController {
       return response.send('invalid start date - now greater than date')
     }
 
-    let end_date_time
+    let end_date_time, start_date_time, expiry
+    console.log(request.input('end_date_time'), "<<<request.input('end_date_time')")
 
     if (request.input('end_date_time') != undefined && request.input('end_date_time') != null) {
       end_date_time = new Date(request.input('end_date_time')) //.toISOString().replace('T', ' ')
-      console.log(end_date_time, '<<<end_date_time')
 
-      let newEnddate = new Date(request.input('end_date_time'))
+      //let newEnddate = new Date(request.input('end_date_time'))
       let extendedDate = new Date(new Date(request.input('start_date_time')).getTime() + 15 * 60 * 60 * 24 * 1000)
-      if (newEnddate > extendedDate) {
+      if (end_date_time > extendedDate) {
         return response.send('invalid end date - end date greater than maximum allowed')
       }
-      end_date_time = request.input('end_date_time')
+      //end_date_time = request.input('end_date_time')
     } else {
-      end_date_time = new Date(new Date(request.input('start_date_time')).getTime() + 60 * 60 * 18 * 1000)
+      console.log('Sick and tired')
+      end_date_time = new Date(new Date(request.input('start_date_time')).getTime() + 60 * 60 * 4 * 1000)
+      //end_date_time = end_date_time.format('YYYY-MM-DD HH:mm:ss')
     }
+    start_date_time = new Date(request.input('start_date_time'))
+    expiry = new Date(request.input('selected_expiry'))
+
+    console.log(end_date_time, '<<<end_date_time')
+    console.log(request.input('start_date_time'), "<<<request.input('start_date_time')")
 
     if (auth.user) {
       try {
@@ -85,12 +92,12 @@ class ScheduleGameController {
           user_id: auth.user.id,
           region: request.input('selected_region'),
           experience: request.input('selected_experience'),
-          start_date_time: request.input('start_date_time'),
-          end_date_time: end_date_time,
+          start_date_time: moment(start_date_time).format('YYYY-MM-DD HH:mm:ss'),
+          end_date_time: moment(end_date_time).format('YYYY-MM-DD HH:mm:ss'),
           platform: request.input('selected_platform'),
           description: request.input('description_box'),
           other: request.input('other_box'),
-          expiry: request.input('selected_expiry'),
+          expiry: moment(expiry).format('YYYY-MM-DD HH:mm:ss'),
           visibility: request.input('visibility'),
           limit: request.input('limit'),
           accept_msg: request.input('accept_msg'),
