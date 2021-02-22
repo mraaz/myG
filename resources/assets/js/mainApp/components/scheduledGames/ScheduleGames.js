@@ -54,7 +54,6 @@ export default class ScheduleGames extends Component {
     } else {
       const scheduleGames = await getScheduleGames({ counter: 1 })
       if (scheduleGames == undefined) return
-      console.log(scheduleGames, '<<<scheduleGames')
       if (scheduleGames && scheduleGames.data && scheduleGames.data.latestScheduledGames.length > 0) {
         this.setState({ scheduleGames: scheduleGames.data.latestScheduledGames })
       }
@@ -84,7 +83,7 @@ export default class ScheduleGames extends Component {
     e.stopPropagation()
 
     this.setState({
-      singleScheduleGamesPayload: {},
+      scheduleGamesView: {},
       selected_game: {},
       showRightSideInfo: false,
       showAllComment: false,
@@ -229,9 +228,7 @@ export default class ScheduleGames extends Component {
 
         <section className='viewGame__container__mobile mobileView'>
           <MobileScheduledGames
-            scheduleGames={scheduleGames}
-            selectedGame={selected_game}
-            singleScheduleGamesPayload={singleScheduleGamesPayload}
+            scheduleGames={scheduleGamesView}
             showFullGames={show_full_games}
             handleExcludesFullGames={this.handleExcludesFullGames}
             slideOptionLabel={this.state.slideOptionText}

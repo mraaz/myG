@@ -18,7 +18,6 @@ const MobileScheduledGames = ({
   user,
   handleShowAllComments,
   routeProps,
-  singleScheduleGamesPayload,
   slideOptionLabel,
   handleExcludesFullGames,
   showFullGames,
@@ -28,7 +27,7 @@ const MobileScheduledGames = ({
   showPrefilledFilter = false,
   prefilledFilter,
   handleChangeFilter,
-  myGamesMenu = false
+  myGamesMenu = false,
 }) => {
   const defaultThumbnails = 'https://myG.gg/platform_images/Notifications/myG_icon.svg'
   const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
@@ -65,9 +64,10 @@ const MobileScheduledGames = ({
     additional_submit_info = false,
     additional_submit_info_fields = [],
     myStatus = 0,
-  } = singleScheduleGamesPayload
-
-  const { id = '', game_name = '', experience = '', no_of_gamers = '', tags = [] } = selectedGame
+    latestScheduledGames = [],
+    getAllGamers = [],
+  } = scheduleGames || {}
+  const [firstGame = {}] = latestScheduledGames
   const {
     start_date_time = '',
     end_date_time = '',
@@ -78,7 +78,12 @@ const MobileScheduledGames = ({
     allow_comments = 0,
     schedule_games_GUID,
     accept_msg = '',
-  } = additional_game_info
+    id = '',
+    game_name = '',
+    experience = '',
+    tags = [],
+  } = firstGame
+  const { no_of_gamers = 0 } = getAllGamers[0] || {}
 
   const experience_split = experience ? experience.split(',').map((level) => transformPlayerLevelTitle(level)) : []
 
@@ -257,7 +262,7 @@ const MobileScheduledGames = ({
       <div className={`mGameTileList${!showRightSideInfo ? ' active' : ' inactive'}`}>
         <div className='mGameTileListHeader'>
           <div className='myGame__filter-section'>
-            {id == '' && myGamesMenu && 
+            {id == '' && myGamesMenu && (
               <div className='viewGame__gameName game-title-select'>
                 <Select
                   onChange={(data) => handleChangeFilter(data)}
@@ -269,7 +274,7 @@ const MobileScheduledGames = ({
                   value={prefilledFilter}
                 />
               </div>
-            }
+            )}
             {id == '' && !myGamesMenu && <GameFilter handleChange={handleChangeFilter} />}
           </div>
           <div class='mGameResultsFiltersRowTwo'>
