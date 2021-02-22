@@ -124,6 +124,20 @@ class UserStatTransactionController {
         }
       }
 
+      const maxLevel = {
+        user_level: 25,
+        user_experience: 438739,
+        start_of_level_xp: 438739,
+      };
+
+      const currentLevel = {
+        user_level: getGamerLevels.level,
+        user_experience: getGamerLevels.experience_points,
+        start_of_level_xp: start_of_level_xp,
+      };
+
+      const level = process.env.MOCK_MAX_LEVEL ? maxLevel : currentLevel;
+
       return {
         userId,
         alias,
@@ -152,11 +166,9 @@ class UserStatTransactionController {
         last_month_likes: last_months_total_number_of_likes,
         commendations: total_number_of_commendations,
         last_month_commendations: last_months_total_number_of_commendations,
-        user_level: getGamerLevels.level, //25,
-        user_experience: getGamerLevels.experience_points,
         user_xp_negative_balance: getGamerLevels.xp_negative_balance,
         level_max_points: getNextLevel.max_points,
-        start_of_level_xp: start_of_level_xp,
+        ...level,
       }
     } else {
       return 'You are not Logged In!'

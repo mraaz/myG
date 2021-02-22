@@ -3,7 +3,7 @@ import styles from './progress.module.css'
 import { CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
 
-function _Progress({ progress, reduction = 0, borderColor, value, strokeWidth = 4 }) {
+function _Progress({ progress, reduction = 0, borderColor, value, label, labelStyle, valueStyle, strokeWidth = 4 }) {
   let __progress = Math.round(progress * 100) / 100
 
   return (
@@ -23,10 +23,10 @@ function _Progress({ progress, reduction = 0, borderColor, value, strokeWidth = 
         backgroundColor: borderColor,
         strokeWidth: 2,
       })}>
-      <div style={{ fontSize: 12, marginTop: -5 }}>
-        <strong>{`Level`}</strong>
+      <div style={{ fontSize: 12, marginTop: -5, ...(labelStyle || {}) }}>
+        <strong>{label || `Level`}</strong>
       </div>
-      <div style={{ fontSize: 12, marginTop: -5 }}>
+      <div style={{ fontSize: 12, marginTop: -5, ...(valueStyle || {}) }}>
         <strong>{value}</strong>
       </div>
     </CircularProgressbarWithChildren>

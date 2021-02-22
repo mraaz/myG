@@ -4,7 +4,7 @@ import AsyncSelect from 'react-select/async'
 import { Game_name_values, Disable_keys } from '../../Utility_Function'
 import { ignoreFunctions } from "../../../../common/render"
 import { fetchGameInfo } from "../../../../common/game"
-import { TIME_EXPERIENCE_OPTIONS, LANGUAGE_OPTIONS } from '../../../static/AddGame'
+import { TIME_EXPERIENCE_OPTIONS, LANGUAGE_OPTIONS, LEVEL_OPTIONS } from '../../../static/AddGame'
 
 const dropdownIcon = 'https://myG.gg/platform_images/View+Game/Down+Carrot.svg';
 
@@ -88,7 +88,7 @@ export default class Filter extends React.Component {
       relationship: hasFilter('relationship') ? state.relationship ? state.relationship.value : '' : '',
       commendations: hasFilter('commendation') ? state.commendation ? state.commendation.map(({ value }) => value).join('|') : '' : '',
       team: hasFilter('team') ? state.team : '',
-      level: hasFilter('level') ? state.level : '',
+      level: hasFilter('level') ? state.level ? state.level.value : '' : '',
       languages: hasFilter('languages') ? state.languages ? state.languages.map(({ value }) => value).join('|') : '' : '',
       underage: hasFilter('underage') ? state.underage.value === 'No' : '',
       hasMic: hasFilter('hasMic') ? state.hasMic.value === 'Yes' : '',
@@ -183,7 +183,7 @@ export default class Filter extends React.Component {
       case 'relationship': return this.renderOptionsFilter(filter, relationshipOptions, false);
       case 'commendation': return this.renderOptionsFilter(filter, commendationOptions, true);
       case 'team': return this.renderTextFilter(filter);
-      case 'level': return this.renderTextFilter(filter);
+      case 'level': return this.renderOptionsFilter(filter, LEVEL_OPTIONS, false);
       case 'languages': return this.renderOptionsFilter(filter, LANGUAGE_OPTIONS, true);
       case 'underage': return this.renderOptionsFilter(filter, yesNoOptions, false, 'Must be 18?');
       case 'hasMic': return this.renderOptionsFilter(filter, yesNoOptions, false, 'Must have Mic?');
