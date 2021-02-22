@@ -113,12 +113,15 @@ export default class ScheduleGames extends Component {
       results = await Game_name_values(entered_name.value)
     }
 
-    if (results) {
+    if (results && !results[0]) {
+      results = null
+    }
+    if (results && results != null) {
       filterValueArray['game_name'] = results[0].value
       filterValueArray['game_name_value'] = results[0]
     } else {
-      filterValueArray['game_name'] = entered_name
-      filterValueArray['game_name_value'] = entered_name
+      filterValueArray['game_name'] = entered_name && entered_name.value != null ? entered_name.value : ''
+      filterValueArray['game_name_value'] = entered_name ? entered_name : ''
       this.filterGroup = this.constantFilterGroup
     }
 
