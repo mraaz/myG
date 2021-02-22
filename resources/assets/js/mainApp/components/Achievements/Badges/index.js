@@ -34,11 +34,14 @@ class Badges extends React.Component {
           <div className="icon" style={{ backgroundImage: `url(${getAssetUrl(badge.icon)})` }}/>
         </div>
         <span className={`label ${lockedStyle}`}>{badge.label}</span>
-        {!!badge.unlocked && (
+        {!badge.collected && !!badge.unlocked && (
           <div className="button clickable" onClick={() => this.redeemBadge(badge)}>Collect {badge.experience}xp</div>
         )}
-        {!badge.unlocked && (
+        {!badge.collected && !badge.unlocked && (
           <div className={`hint ${lockedStyle}`}>Not Achieved</div>
+        )}
+        {!!badge.collected && (
+          <div className={`hint ${lockedStyle}`}>Achieved</div>
         )}
       </div>
     );
