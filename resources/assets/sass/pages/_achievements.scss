@@ -185,9 +185,7 @@
       position: relative;
       display: flex;
       flex-direction: column;
-      height: -moz-available;
-      height: -webkit-fill-available;
-      height: fill-available;
+      width: 50vw;
       padding: 0 12px;
       margin: 0;
       background-color: #1d2326;
@@ -210,7 +208,7 @@
 
         .criteria {
           display: flex;
-          flex: 4;
+          flex: 3;
           padding: 0 2em;
           align-items: center;
         }
