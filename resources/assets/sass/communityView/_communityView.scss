@@ -74,12 +74,20 @@
       margin-right: 6em;
       padding: 1.5em 0;
       align-items: center;
+      @media screen and (max-width: 998px) {
+        margin-left: 1em !important;
+        margin-right: 1em !important;
+        padding: 0.8em 0 !important;
+      }
       .name {
         font: normal normal bold 36px/14px Montserrat;
         letter-spacing: 0px;
         color: #fff;
         text-transform: uppercase;
         display: contents;
+        @media screen and (max-width: 998px) {
+          font: normal normal bold 12px/8px Montserrat;
+        }
       }
       .option {
         margin-left: auto;
@@ -99,6 +107,10 @@
           border: 1px solid transparent;
           cursor: pointer;
           outline: none;
+          @media screen and (max-width: 998px) {
+            padding: 3px 6px;
+            width: 80px;
+          }
           img {
             width: 15px;
             margin-left: 15px;
@@ -106,6 +118,10 @@
         }
         .btn__option {
           position: relative;
+          @media screen and (max-width: 998px) {
+            padding: 3px 6px;
+            width: 80px;
+          }
           .btn__option__dropdown {
             position: absolute;
             background: #1d2426;
@@ -137,6 +153,11 @@
     padding-bottom: 18px;
     margin-left: 6em;
     margin-right: 6em;
+    @media screen and (max-width: 998px) {
+      margin-left: 1em;
+      margin-right: 1em;
+      padding-top: 40px;
+    }
   }
   .community__tags {
     margin-bottom: 1em;
@@ -172,6 +193,10 @@
     font: normal normal medium 14px/14px Montserrat;
     letter-spacing: 0px;
     border-bottom: 1px solid #1d2326;
+    @media screen and (max-width: 998px) {
+      margin-left: 1em;
+      margin-right: 1em;
+    }
     span {
       width: 220px;
       text-align: center;
@@ -601,6 +626,11 @@
     border: 1px solid #1d2326;
     border-radius: 4px;
     overflow: scroll;
+    @media screen and (max-width: 998px) {
+      margin-left: 1em;
+      margin-right: 1em;
+      margin-bottom: 1em;
+    }
     .Sponsors {
       display: flex;
       position: relative;
