@@ -19,9 +19,12 @@ class SearchRepository {
     return previous;
   }
 
-  buildUsersQuery = (input) => {
-    if (!input) return { query: { match_all: {} } };
-    const query = { query: { bool: { must: [], should: [] } } };
+  buildUsersQuery = ({ input, from, size, requestingUserId }) => {
+    const must_not = [{ match: { profileId: requestingUserId } }];
+    if (!size) size = 10;
+    if (!from) from = 0;
+    if (!input) return { query: { bool: { must_not } }, size, from };
+    const query = { query: { bool: { must: [], must_not, should: [] } }, size, from };
     const targetedQueries = [query];
     if (input.includes('alias:')) targetedQueries.push({ field: 'alias', value: input.split('alias:')[1].trim().split(' ')[0] });
     if (input.includes('country:')) targetedQueries.push({ field: 'country', value: input.split('country:')[1].trim().split(' ')[0] });
@@ -86,12 +89,12 @@ class SearchRepository {
     return query;
   }
 
-  async searchGamers({ requestingUserId, query, online }) {
+  async searchGamers({ requestingUserId, query, online, from, size }) {
     const cleanUser = (user) => ({ ...user, profileId: parseInt(user.profileId), firstName: '', lastName: '', email: '' });
-    const result = await ElasticsearchRepository.searchUser({ query: this.buildUsersQuery(query) });
-    const parsedResults = result.hits.hits.map((hit) => cleanUser(hit._source)).filter(({ profileId }) => profileId !== requestingUserId);
+    const result = await ElasticsearchRepository.searchUser({ query: this.buildUsersQuery({ input: query, from, size, requestingUserId }) });
+    const parsedResults = result.hits.hits.map((hit) => cleanUser(hit._source));
     const gamers = await this.filterOnlineGamers(parsedResults, online === 'true');
-    return { gamers };
+    return { gamers, total: result.hits.total.value };
   }
 
   async filterOnlineGamers(gamers, online) {

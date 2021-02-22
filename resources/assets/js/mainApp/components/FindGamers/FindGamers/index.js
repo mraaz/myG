@@ -6,7 +6,6 @@ import { searchGamersAction } from '../../../../redux/actions/searchAction'
 import { fetchProfileInfoAction, sendFriendRequestAction, cancelFriendRequestAction, followAction, unfollowAction } from '../../../../redux/actions/profileAction'
 import Banner from '../Banner';
 import Search from '../Search';
-import Results from '../Results';
 import GamerSuggestions from '../../Profile/GamerSuggestions';
 
 export class FindGamers extends React.Component {
@@ -64,8 +63,7 @@ export class FindGamers extends React.Component {
         <TopBar />
         <Banner profile={this.props.profile} />
         <Headers />
-        {this.isInSearch() && <Search onSearch={this.props.searchGamers} />}
-        {this.isInSearch() && <Results gamers={this.props.gamers} loading={this.props.loading} profile={this.props.profile} sendFriendRequest={this.props.sendFriendRequest} cancelFriendRequest={this.props.cancelFriendRequest} follow={this.props.follow} unfollow={this.props.unfollow}/>}
+        {this.isInSearch() && <Search {...this.props} onSearch={this.props.searchGamers} />}
         {this.isInSuggestions() && <GamerSuggestions noTitle profile={this.props.profile} sendFriendRequest={this.props.sendFriendRequest} cancelFriendRequest={this.props.cancelFriendRequest} follow={this.props.follow} unfollow={this.props.unfollow} />}
       </div>
     );
@@ -80,6 +78,7 @@ function mapStateToProps(state) {
     alias,
     profile,
     gamers: state.search.gamers || [],
+    total: state.search.total || 0,
     loading: state.search.gamersLoading,
     error: state.search.gamersError,
   }
@@ -87,7 +86,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    searchGamers: (input, online) => dispatch(searchGamersAction(input, online)),
+    searchGamers: (input, online, from) => dispatch(searchGamersAction(input, online, from)),
     fetchProfileInfo: (alias) => dispatch(fetchProfileInfoAction(alias)),
     sendFriendRequest: (alias, id) => dispatch(sendFriendRequestAction(alias, id)),
     cancelFriendRequest: (alias, id) => dispatch(cancelFriendRequestAction(alias, id)),
