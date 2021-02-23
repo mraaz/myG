@@ -250,7 +250,7 @@
     overflow: scroll;
     width: 100%;
     @media screen and (min-width: 998px) {
-      max-width: 40%;
+      width: 40%;
     }
   }
   &__optional-header-container {

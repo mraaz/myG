@@ -62,7 +62,9 @@ export default class Home extends Component {
         document.getElementById('content-container').style.marginLeft = '80px'
 
         // Required padding to prevent infinite loop of styling
+        const w = document.getElementById('main-sidebar').offsetWidth - 80
         this.contentAreaRef.current.style.paddingTop = '170px'
+        this.contentAreaRef.current.style.paddingLeft = `${w}px`
 
         if (window.innerWidth < 1198) {
           this.navRef.current.style.width = '100%'
