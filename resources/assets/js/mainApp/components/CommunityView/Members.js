@@ -9,10 +9,10 @@ import { Toast_style, Convert_to_comma_delimited_value } from '../Utility_Functi
 import { MyGButton } from '../common'
 
 const IconMap = {
-  0: 'https://myG.gg/platform_images/Communities/btn_Moderator_gold.svg',
-  1: 'https://myG.gg/platform_images/Communities/btn_Moderator_gold.svg',
-  2: ' https://myG.gg/platform_images/Communities/btn_Moderator_silver.svg',
-  3: 'https://myG.gg/platform_images/Communities/btn_Moderator_clear.svg',
+  0: 'https://myG.gg/platform_icons/btn_Moderator_on.svg',
+  1: 'https://myG.gg/platform_icons/btn_Moderator_on.svg',
+  2: 'https://myG.gg/platform_icons/ic_chat_group_moderator.svg',
+  3: 'https://myG.gg/platform_icons/btn_Moderator_off.svg',
 }
 const PermissionMap = {
   0: 'Owner',
