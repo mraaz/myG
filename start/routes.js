@@ -70,6 +70,8 @@ Route.get('/api/getpost/:id', 'PostController.showpost')
 Route.post('/api/post/featureToggle/', 'PostController.featureToggle')
 Route.post('/api/post/showHashTagPosts/', 'PostController.showHashTagPosts')
 
+Route.post('/api/sponsoredPost/update_clicks/', 'SponsoredPostController.update_clicks')
+
 Route.post('/api/get_group_posts', 'PostController.get_group_posts')
 
 Route.post('/api/user', 'UserController.store')

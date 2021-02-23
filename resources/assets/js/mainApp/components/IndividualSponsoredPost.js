@@ -30,7 +30,7 @@ export default class IndividualSponsoredPost extends Component {
     let { post } = this.props
     let media_url = ''
     const self = this
-
+    console.log(post, '<<<POST')
     this.props.post.alias = 'myG'
     try {
       if (post.media_url != null && post.media_url) {
@@ -99,12 +99,26 @@ export default class IndividualSponsoredPost extends Component {
     this.setState({ showPostExtraOption: !showPostExtraOption })
   }
 
+  follow_link_stop = (e, url) => {
+    e.preventDefault()
+    e.stopPropagation()
+    this.follow_link(url)
+  }
+
   follow_link = (url) => {
     if (!url.match(/^https?:\/\//i)) {
       url = 'http://' + url
     }
     const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
     if (newWindow) newWindow.opener = null
+
+    try {
+      axios.post('/api/sponsoredPost/update_clicks/', {
+        sponsoredPost_id: this.props.post.id,
+      })
+    } catch (error) {
+      logToElasticsearch('error', 'IndividualSponsoredPost', 'Failed follow_link:' + ' ' + error)
+    }
   }
 
   render() {
@@ -189,7 +203,7 @@ export default class IndividualSponsoredPost extends Component {
               <MyGButton
                 customStyles={{ color: '#000', backgroundColor: '#E5C746' }}
                 text='More deets'
-                onClick={(e) => this.follow_link(post.click_url)}
+                onClick={(e) => this.follow_link_stop(e, post.click_url)}
               />
             </div>
           </div>

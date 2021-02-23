@@ -279,11 +279,19 @@ class PostController {
       let get_sponsored_posts = undefined
 
       if (!isNaN(category)) {
-        //Great 1st Attempt but will SUX once we get more data in this table.
-        get_sponsored_posts = await Database.from('sponsored_posts')
+        const get_sponsored_posts_total = await Database.from('sponsored_posts')
           .where('visibility', '=', 1)
           .where('category', '=', category)
-          .select('*')
+          .count('* as total')
+
+        get_sponsored_posts = await Database.from('sponsored_posts')
+          .leftJoin('sponsored_posts_transactions', 'sponsored_posts_transactions.sponsored_posts_id', 'sponsored_posts.id')
+          .where('visibility', '=', 1)
+          .where('category', '=', category)
+          .where('sponsored_posts_transactions.id', 'is', null)
+          .select('sponsored_posts.*')
+          .orderBy('updated_at', 'desc')
+          .limit(Math.floor(Math.random() * parseInt(get_sponsored_posts_total[0].total)))
 
         if (get_sponsored_posts != undefined && get_sponsored_posts.length > 0) {
           const randValue = Math.floor(Math.random() * (get_sponsored_posts.length - 1 + 1)) + 0
@@ -292,8 +300,10 @@ class PostController {
           get_sponsored_posts = await Database.from('sponsored_posts')
             .where('visibility', '=', 1)
             .select('*')
-            .orderBy('times_clicked', 'desc')
-            .first()
+            .orderBy('updated_at', 'desc')
+            .limit(88)
+          const randValue = Math.floor(Math.random() * (get_sponsored_posts.length - 1 + 1)) + 0
+          get_sponsored_posts = get_sponsored_posts[randValue]
         }
 
         if (get_sponsored_posts != undefined) get_sponsored_posts.sponsored_post = true
