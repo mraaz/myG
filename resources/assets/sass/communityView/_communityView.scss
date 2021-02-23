@@ -16,6 +16,9 @@
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
+    @media screen and (max-width: 998px) {
+      padding-top: 40px;
+    }
     .addCoverImage__button {
       color: #fff;
       position: absolute;
@@ -27,6 +30,10 @@
       cursor: pointer;
       box-shadow: 1px 2px 5px #e5c745;
       display: none;
+      @media screen and (max-width: 998px) {
+        right: 5px;
+        left: auto;
+      }
     }
     .featuredImageInput {
       display: none;
@@ -78,6 +85,9 @@
         margin-left: 1em !important;
         margin-right: 1em !important;
         padding: 0.8em 0 !important;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
       }
       .name {
         font: normal normal bold 36px/14px Montserrat;
@@ -92,6 +102,9 @@
       .option {
         margin-left: auto;
         display: flex;
+        @media screen and (max-width: 998px) {
+          margin-left: 0;
+        }
         .btnWarning {
           width: 121px;
           padding: 12px 12px;
@@ -157,6 +170,8 @@
       margin-left: 1em;
       margin-right: 1em;
       padding-top: 40px;
+      padding-right: 0;
+      margin-top: 3em;
     }
   }
   .community__tags {
@@ -164,6 +179,11 @@
     padding: 20px 50px;
     display: flex;
     align-items: center;
+    @media screen and (max-width: 998px) {
+      margin-left: 1em;
+      margin-right: 1em;
+      padding: 10px;
+    }
     .label {
       font: normal normal bold 14px/14px Montserrat;
       letter-spacing: 0px;
@@ -223,6 +243,9 @@
         justify-content: center;
         align-items: center;
         position: relative;
+        @media screen and (max-width: 998px) {
+          height: 60px;
+        }
         .tabs___header {
           width: 375px;
           height: 35px;
@@ -269,6 +292,9 @@
         justify-content: center;
         padding: 1em 0px;
         background: #1d2326;
+        @media screen and (max-width: 998px) {
+          padding: 0.5em 0;
+        }
         input {
           width: 50%;
           background: #171a1c 0% 0% no-repeat padding-box;
@@ -284,6 +310,9 @@
           font: italic normal normal 12px/14px Montserrat;
           letter-spacing: -0.65px;
           color: #93a4a5;
+          @media screen and (max-width: 998px) {
+            width: 80%;
+          }
         }
       }
       .modal__body {
@@ -294,6 +323,11 @@
         padding: 2em 5em;
         display: inline-flex;
         flex-wrap: wrap;
+        @media screen and (max-width: 998px) {
+          padding: 1em 0.5em;
+          min-height: 100px;
+          max-height: 350px;
+        }
         .GroupMember_list {
           display: inline-flex;
           flex-wrap: wrap;
@@ -319,11 +353,21 @@
             margin-right: 2em;
             margin-bottom: 2em;
             position: relative;
+            @media screen and (max-width: 998px) {
+              margin-right: 1em;
+              margin-bottom: 1em;
+              width: 142px;
+              height: 200px;
+            }
             .GroupMember__image {
               height: 5em;
               width: 100%;
               margin-bottom: 3.5em;
               position: relative;
+              @media screen and (max-width: 998px) {
+                height: 4em;
+                margin-bottom: 2.5em;
+              }
               img {
                 height: 100%;
                 width: 100%;
@@ -336,6 +380,12 @@
                 position: absolute;
                 bottom: -40px;
                 left: 25%;
+                @media screen and (max-width: 998px) {
+                  width: 50px;
+                  height: 50px;
+                  left: 30%;
+                  bottom: -25px;
+                }
                 img {
                   height: 100%;
                   width: 100%;
@@ -346,6 +396,10 @@
                   cursor: pointer;
                   bottom: -10px;
                   left: 28px;
+                  @media screen and (max-width: 998px) {
+                    bottom: -8px;
+                    left: 13px;
+                  }
                 }
               }
             }
@@ -356,6 +410,9 @@
               color: #fff;
               margin-bottom: 0.6em;
               word-break: break-all;
+              @media screen and (max-width: 998px) {
+                font: normal normal bold 12px/14px Montserrat;
+              }
             }
             .GroupMember__level {
               font: normal normal normal 14px/18px Montserrat;
@@ -364,9 +421,15 @@
               display: flex;
               justify-content: center;
               align-items: center;
+              @media screen and (max-width: 998px) {
+                font: normal normal bold 10px/14px Montserrat;
+              }
               .level__value {
                 margin-left: 5px;
                 font: normal normal normal 28px/18px Montserrat;
+                @media screen and (max-width: 998px) {
+                  font: normal normal normal 16px/12px Montserrat;
+                }
               }
               margin-bottom: 3.5em;
             }
@@ -471,6 +534,10 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      @media screen and (max-width: 998px) {
+        justify-content: flex-start;
+        margin: 0;
+      }
       .community___button {
         width: 62px;
         height: 30px;
@@ -484,6 +551,10 @@
         cursor: pointer;
         &:focus {
           margin: 0;
+        }
+        @media screen and (max-width: 998px) {
+          margin-left: 15px;
+          margin-top: 10px;
         }
       }
       .community___input {
@@ -509,6 +580,12 @@
         font: normal normal normal 14px/22px Montserrat;
         letter-spacing: 0px;
         color: #fff;
+        @media screen and (max-width: 998px) {
+          justify-content: flex-start;
+          margin: 0;
+          margin-top: 10px;
+          margin-bottom: 10px;
+        }
       }
     }
     .group__privacy {
@@ -516,6 +593,11 @@
       display: flex;
       justify-content: flex-end;
       align-items: center;
+      @media screen and (max-width: 998px) {
+        justify-content: flex-start;
+        margin: 0;
+        margin-top: 10px;
+      }
 
       .game-title-select {
         width: 100%;
@@ -538,6 +620,12 @@
         &:focus {
           margin: 0;
         }
+        @media screen and (max-width: 998px) {
+          margin-left: 20px;
+          &:focus {
+            margin-left: 20px;
+          }
+        }
       }
 
       .options,
@@ -546,11 +634,19 @@
         font: normal normal normal 14px/22px Montserrat;
         letter-spacing: 0px;
         color: #fff;
+        @media screen and (max-width: 998px) {
+          margin-bottom: 10px;
+          justify-content: flex-start;
+        }
       }
       .options {
         display: flex;
         justify-content: flex-end;
         padding-bottom: 8px;
+        @media screen and (max-width: 998px) {
+          margin-bottom: 10px;
+          justify-content: flex-start;
+        }
       }
       .container {
         display: block;
