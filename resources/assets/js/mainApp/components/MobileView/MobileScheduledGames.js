@@ -30,6 +30,7 @@ const MobileScheduledGames = (props) => {
     handleChangeFilter,
     myGamesMenu = false,
   } = props
+  console.log(props, '  <<<MobileScheduledGames ')
   const defaultThumbnails = 'https://myG.gg/platform_images/Notifications/myG_icon.svg'
   const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
   const myRef = React.createRef()
@@ -59,6 +60,8 @@ const MobileScheduledGames = (props) => {
   const handleScroll = (event) => {
     const _event = event.currentTarget,
       _current = myRef.current
+    console.log(props, '  <<<props   >>>_current  ', _current)
+
     if (_event.scrollTop + (3 / 2) * _current.offsetHeight > _event.scrollHeight && props.hasMore && !props.fetching) {
       props.next()
     }

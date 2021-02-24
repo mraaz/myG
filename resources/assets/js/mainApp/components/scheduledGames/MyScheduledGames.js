@@ -240,6 +240,9 @@ export default class MyScheduledGames extends Component {
             user={this.props.initialData}
             handleChangeFilter={this.handleChangeFilter}
             myGamesMenu={true}
+            next={this.getScheduleGamesData}
+            hasMore={this.state.moreplease}
+            fetching={fetching}
           />
         </section>
       </Fragment>
