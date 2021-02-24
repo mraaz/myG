@@ -122,7 +122,8 @@
           outline: none;
           @media screen and (max-width: 998px) {
             padding: 3px 6px;
-            width: 80px;
+            width: 100px;
+            height: 35px;
           }
           img {
             width: 15px;
@@ -133,7 +134,7 @@
           position: relative;
           @media screen and (max-width: 998px) {
             padding: 3px 6px;
-            width: 80px;
+            width: 90px;
           }
           .btn__option__dropdown {
             position: absolute;
@@ -710,6 +711,9 @@
     color: white;
     margin-left: 6em !important;
     margin-bottom: 1em !important;
+    @media screen and (max-width: 998px) {
+      margin-left: 1em !important;
+    }
   }
   .Sponsors__container {
     margin-bottom: 2.5em;
