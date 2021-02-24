@@ -234,6 +234,10 @@ section#content-container {
   #content-container {
     //overflow: hidden;
     // height: 100vh; //Hide the scroll bars, decided against it
+    padding-left: 80px;
+    @media screen and (max-width: 998px) {
+      padding-left: 0;
+    }
     .content-area {
       overflow: scroll;
       display: flex;

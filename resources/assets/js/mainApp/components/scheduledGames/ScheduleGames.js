@@ -243,6 +243,9 @@ export default class ScheduleGames extends Component {
             handleShowAllComments={this.handleShowAllComments}
             user={this.props.initialData}
             handleChangeFilter={this.handleChange}
+            next={this.getScheduleGamesData}
+            hasMore={this.state.moreplease}
+            fetching={fetching}
           />
         </section>
       </Fragment>

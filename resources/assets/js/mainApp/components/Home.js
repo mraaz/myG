@@ -59,12 +59,16 @@ export default class Home extends Component {
         this.navRef.current.style.paddingBottom = 0
         this.navRef.current.style.width = '74%'
         document.getElementById('main-sidebar').style.position = 'fixed'
-        document.getElementById('content-container').style.marginLeft = '80px'
 
         // Required padding to prevent infinite loop of styling
+
         const w = document.getElementById('main-sidebar').offsetWidth - 80
-        this.contentAreaRef.current.style.paddingTop = '170px'
-        this.contentAreaRef.current.style.paddingLeft = `${w}px`
+        if (window.innerWidth > 768) {
+          this.contentAreaRef.current.style.paddingTop = '170px'
+          document.getElementById('content-container').style.marginLeft = '80px'
+          document.getElementById('content-container').style.paddingLeft = '80px'
+          this.contentAreaRef.current.style.paddingLeft = `${w}px`
+        }
 
         if (window.innerWidth < 1198) {
           this.navRef.current.style.width = '100%'
