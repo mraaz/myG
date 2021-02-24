@@ -47,23 +47,32 @@ class LeftMenu extends Component {
     approvals: 0,
     alerts: 0,
     chats: 0,
-    activePage: ''
+    activePage: '',
+  }
+  setExpandedDefault = function (data) {
+    Object.keys(data).forEach(function (key) {
+      data[key]['expanded'] = false
+    })
+    return data
   }
 
   updateActivePage = (page) => {
+    const { sideBarData = {} } = this.state
     switch (page) {
       case 'FEED':
-        this.setState({ activePage: 'Dashboard'});
-        break;
+        this.setState({ activePage: 'Dashboard' })
+        break
       case 'ACHIEVEMENTS':
-        this.setState({ activePage: 'Achievements'});
-        break;
+        this.setState({ activePage: 'Achievements' })
+        break
       case 'PROFILE':
-        this.setState({ activePage: 'Profile'});
-        break;
+        this.setState({ activePage: 'Profile' })
+        break
       default:
-        this.setState({ activePage: '' });
+        this.setState({ activePage: '' })
     }
+    const sideBar = this.setExpandedDefault(sideBarData)
+    this.setState({ sideBarData: sideBar })
   }
 
   onMenuToggle = () => {
@@ -110,7 +119,7 @@ class LeftMenu extends Component {
   getLogoSection = () => {
     const children = this.state.isExpanded ? (
       <Fragment>
-        <Link to='/'>
+        <Link to='/' onClick={(e) => this.updateActivePage('')}>
           <img src='https://myG.gg/platform_images/Login+Screen/Logo_FINAL%402x.png' className='img-fluid' />
         </Link>
         <div className='sidebar-menu-toggle' onClick={this.onMenuToggle}>
@@ -118,7 +127,7 @@ class LeftMenu extends Component {
         </div>
       </Fragment>
     ) : (
-      <Link to='/'>
+      <Link to='/' onClick={(e) => this.updateActivePage('')}>
         <img src='https://myG.gg/platform_images/Dashboard/logo.svg' height='32' width='32' />
       </Link>
     )
@@ -166,7 +175,7 @@ class LeftMenu extends Component {
                 width='22'
                 className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
               />
-              <NotificationIcon type="approvals" />
+              <NotificationIcon type='approvals' />
               {isExpanded && <div className={styles.line} />}
             </div>
           </Link>
@@ -178,7 +187,7 @@ class LeftMenu extends Component {
                 width='22'
                 className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
               />
-              <NotificationIcon type="alerts" />
+              <NotificationIcon type='alerts' />
               {isExpanded && <div className={styles.line} />}
             </div>
           </Link>
@@ -190,7 +199,7 @@ class LeftMenu extends Component {
                 width='22'
                 className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
               />
-              <NotificationIcon type="chats" />
+              <NotificationIcon type='chats' />
             </div>
           </Link>
         </div>
@@ -215,7 +224,7 @@ class LeftMenu extends Component {
 
     const item = (icon, expanded, subItems, header, activePageId) => (
       <Fragment>
-        <div className={`sidebar-sub-items${activePageId === header ? ' active': ''}`}>
+        <div className={`sidebar-sub-items${activePageId === header ? ' active' : ''}`}>
           <img src={icon} className='img-fluid' />
           {isExpanded && <p>{header}</p>}
         </div>
@@ -227,7 +236,7 @@ class LeftMenu extends Component {
       <Fragment>
         {sideBarItemsOrder.map((itemKey) => {
           const { icon, header, expanded, subItems, cta } = sideBarData[itemKey]
-          const activePageId = activePage;
+          const activePageId = activePage
           let tileCta = cta
           if (header === 'Profile') {
             const alias = this.props.initialData === 'loading' ? '' : this.props.initialData.userInfo.alias
@@ -235,21 +244,15 @@ class LeftMenu extends Component {
           }
           if (subItems) {
             return (
-              <div
-                key={itemKey}
-                onClick={() => this.onItemClick(itemKey)}>
+              <div key={itemKey} onClick={() => this.onItemClick(itemKey)}>
                 {item(icon, expanded, subItems, header, activePageId)}
               </div>
             )
           } else {
             return (
-              <div 
-                key={itemKey}
-                onClick={() => this.updateActivePage(itemKey)}>
-                <Link
-                  to={tileCta}
-                  className='side-menu-anchor'>
-                  {item(icon, expanded, subItems, header, activePageId )}
+              <div key={itemKey} onClick={() => this.updateActivePage(itemKey)}>
+                <Link to={tileCta} className='side-menu-anchor'>
+                  {item(icon, expanded, subItems, header, activePageId)}
                 </Link>
               </div>
             )
