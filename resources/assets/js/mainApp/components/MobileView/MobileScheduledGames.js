@@ -29,8 +29,9 @@ const MobileScheduledGames = (props) => {
     prefilledFilter,
     handleChangeFilter,
     myGamesMenu = false,
+    singleScheduleGamesPayload,
   } = props
-  console.log(props, '  <<<MobileScheduledGames ')
+
   const defaultThumbnails = 'https://myG.gg/platform_images/Notifications/myG_icon.svg'
   const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
   const myRef = React.createRef()
@@ -60,8 +61,6 @@ const MobileScheduledGames = (props) => {
   const handleScroll = (event) => {
     const _event = event.currentTarget,
       _current = myRef.current
-    console.log(props, '  <<<props   >>>_current  ', _current)
-
     if (_event.scrollTop + (3 / 2) * _current.offsetHeight > _event.scrollHeight && props.hasMore && !props.fetching) {
       props.next()
     }
@@ -78,8 +77,9 @@ const MobileScheduledGames = (props) => {
     myStatus = 0,
     latestScheduledGames = [],
     getAllGamers = [],
-  } = scheduleGames || {}
+  } = singleScheduleGamesPayload || scheduleGames || {}
   const [firstGame = {}] = latestScheduledGames
+
   const {
     start_date_time = '',
     end_date_time = '',
@@ -87,15 +87,15 @@ const MobileScheduledGames = (props) => {
     description = '',
     platform = '',
     region = '',
-    allow_comments = 0,
     schedule_games_GUID,
     accept_msg = '',
     id = '',
     game_name = '',
     experience = '',
     tags = [],
-  } = firstGame
+  } = selectedGame || firstGame
   const { no_of_gamers = 0 } = getAllGamers[0] || {}
+  const { allow_comments = 0 } = additional_game_info
 
   const experience_split = experience ? experience.split(',').map((level) => transformPlayerLevelTitle(level)) : []
 
@@ -185,8 +185,8 @@ const MobileScheduledGames = (props) => {
             {eighteen_plus && <div className='gameDescription__body'>18+ event boies n gurls</div>}
             {description && <div className='filter__label'>Description</div>}
             {description && <div className='gameDescription__body'>{description}</div>}
-            <div className='gameTime__label'>End Time</div>
-            <div className='gameTime__value'>{moment(end_date_time).format('LLLL')}</div>
+            {end_date_time && <div className='gameTime__label'>End Time</div>}
+            {end_date_time && <div className='gameTime__value'>{moment(end_date_time).format('LLLL')}</div>}
 
             {platform && <div className='gameTime__label'>Platform</div>}
             {platform && <div className='gameTime__value'>{platform.split(',').join(',  ')}</div>}
