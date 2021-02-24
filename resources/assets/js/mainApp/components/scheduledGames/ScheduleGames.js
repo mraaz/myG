@@ -228,9 +228,10 @@ export default class ScheduleGames extends Component {
 
         <section className='viewGame__container__mobile mobileView'>
           <MobileScheduledGames
-            scheduleGames={scheduleGamesView}
+            scheduleGames={scheduleGames}
             showFullGames={show_full_games}
             selectedGame={selected_game}
+            singleScheduleGamesPayload={singleScheduleGamesPayload}
             handleExcludesFullGames={this.handleExcludesFullGames}
             slideOptionLabel={this.state.slideOptionText}
             copyClipboardEnable={true}
