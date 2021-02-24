@@ -1835,12 +1835,24 @@ section#content-container {
         min-width: 350px;
         min-height: 200px;
         max-width: 500px;
+        @media screen and (max-width: $tablet) {
+          min-width: inherit;
+          min-height: inherit;
+          max-width: 350px;
+          max-height: 210px;
+        }
         .image-gallery-image {
           max-height: 800px;
           max-width: 700px;
         }
         .post-video {
           max-width: 500px;
+          max-height: 200px;
+          width: 100%;
+          @media screen and (max-width: $tablet) {
+            max-width: 100%;
+            max-height: 100%;
+          }
         }
       }
     }

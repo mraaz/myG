@@ -171,8 +171,8 @@ export default class Manage extends React.Component {
           </div>
         )}
         <div className='group__privacy row'>
-          <div className='label col-sm-4'>Privacy</div>
-          <div className='options col-sm-8'>
+          <div className='label col-sm-4 col-xs-4'>Privacy</div>
+          <div className='options col-sm-8 col-xs-8'>
             <div>
               <label className='container'>
                 Public
