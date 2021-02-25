@@ -24,6 +24,7 @@ const UserStatTransactionController = use('./UserStatTransactionController')
 const CommonController = use('./CommonController')
 
 const moment = require('moment')
+const { v1: uuidv1 } = require('uuid')
 
 const MAX_GAME_TAGS = 9
 const MAX_CO_HOSTS = 5
@@ -88,21 +89,21 @@ class ScheduleGameController {
           region: request.input('selected_region'),
           experience: request.input('selected_experience'),
           start_date_time: moment(start_date_time)
-            .format('YYYY-MM-DD HH:mm:ss')
-            .utc(),
+            .utc()
+            .format('YYYY-MM-DD HH:mm:ss'),
           end_date_time: moment(end_date_time)
-            .format('YYYY-MM-DD HH:mm:ss')
-            .utc(),
+            .utc()
+            .format('YYYY-MM-DD HH:mm:ss'),
           platform: request.input('selected_platform'),
           description: request.input('description_box'),
           other: request.input('other_box'),
           expiry: moment(expiry)
-            .format('YYYY-MM-DD HH:mm:ss')
-            .utc(),
+            .utc()
+            .format('YYYY-MM-DD HH:mm:ss'),
           visibility: request.input('visibility'),
           limit: request.input('limit'),
           accept_msg: request.input('accept_msg'),
-          schedule_games_GUID: request.input('schedule_games_GUID'),
+          schedule_games_GUID: uuidv1(),
           allow_comments: request.input('allow_comments'),
           autoJoin: request.input('autoJoin'),
           cron: request.input('cron'),
@@ -391,7 +392,6 @@ class ScheduleGameController {
           visibility: request.input('visibility'),
           limit: request.input('limit'),
           accept_msg: request.input('accept_msg'),
-          schedule_games_GUID: request.input('schedule_games_GUID'),
           allow_comments: request.input('allow_comments'),
           autoJoin: request.input('autoJoin'),
           cron: request.input('cron'),

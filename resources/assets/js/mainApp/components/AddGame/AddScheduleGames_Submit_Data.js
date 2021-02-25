@@ -88,12 +88,6 @@ export async function SubmitDataFunction(myG) {
     autoJoin = myG.autoJoin
   }
 
-  const { v1: uuidv1 } = require('uuid')
-  var tmp = uuidv1()
-
-  console.log(myG.startDate.format('YYYY-MM-DD HH:mm:ss ZZ'), "<<myG.startDate.format('YYYY-MM-DD HH:mm:ss ZZ')")
-  console.log(end_date.format('YYYY-MM-DD HH:mm:ss ZZ'), "<<end_date.format('YYYY-MM-DD HH:mm:ss ZZ')")
-
   try {
     const post = await axios.post('/api/ScheduleGame', {
       game_name_box: myG.game_name_box.value,
@@ -108,7 +102,7 @@ export async function SubmitDataFunction(myG) {
       visibility: myG.selected_visibility,
       limit: myLimit,
       accept_msg: myG.txtAreaValue.trim(),
-      schedule_games_GUID: tmp,
+      //schedule_games_GUID: tmp,
       allow_comments: myG.allow_comments,
       autoJoin: autoJoin,
       co_hosts: co_hosts,
@@ -132,6 +126,7 @@ export async function SubmitDataFunction(myG) {
     // dota2_medal_ranks: myDota2_medal_ranks,
     // dota2_server_regions: myDota2_server_regions,
     // dota2_roles: myDota2_roles,
+    console.log(post, '<<<POST')
     return post
   } catch (error) {
     logToElasticsearch('error', 'Add Game - SubmitDataFunction', 'Failed Add Game - SubmitDataFunction ' + ' ' + error)
