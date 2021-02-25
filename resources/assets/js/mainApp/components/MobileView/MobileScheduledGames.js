@@ -79,7 +79,7 @@ const MobileScheduledGames = (props) => {
     getAllGamers = [],
   } = singleScheduleGamesPayload || scheduleGames || {}
   const [firstGame = {}] = latestScheduledGames
-
+  const gameData = { ...additional_game_info, ...selectedGame, ...firstGame }
   const {
     start_date_time = '',
     end_date_time = '',
@@ -93,7 +93,7 @@ const MobileScheduledGames = (props) => {
     game_name = '',
     experience = '',
     tags = [],
-  } = additional_game_info || selectedGame || firstGame
+  } = gameData
   const { no_of_gamers = 0 } = getAllGamers[0] || {}
   const { allow_comments = 0 } = additional_game_info
 
