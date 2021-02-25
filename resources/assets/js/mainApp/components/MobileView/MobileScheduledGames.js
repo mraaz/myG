@@ -93,7 +93,7 @@ const MobileScheduledGames = (props) => {
     game_name = '',
     experience = '',
     tags = [],
-  } = selectedGame || firstGame
+  } = additional_game_info || selectedGame || firstGame
   const { no_of_gamers = 0 } = getAllGamers[0] || {}
   const { allow_comments = 0 } = additional_game_info
 
