@@ -46,15 +46,6 @@ export async function SubmitDataFunction(myG) {
       }
 
       delete myG.tags[i].label
-
-      // if (myG.tags[i].game_tag_id == null) {
-      //   const new_GameTags = await axios.post('/api/GameTags', {
-      //     content: myG.tags[i].value,
-      //   })
-      //   tags.push(new_GameTags.data)
-      // } else {
-      //   tags.push(myG.tags[i].game_tag_id)
-      // }
     }
     tags = JSON.stringify(myG.tags)
   }
@@ -121,12 +112,6 @@ export async function SubmitDataFunction(myG) {
       eighteen_plus: myG.eighteen_plus,
       game_languages: myLanguages,
     })
-
-    // clash_royale_trophies: myClash_royale_trophies,
-    // dota2_medal_ranks: myDota2_medal_ranks,
-    // dota2_server_regions: myDota2_server_regions,
-    // dota2_roles: myDota2_roles,
-    console.log(post, '<<<POST')
     return post
   } catch (error) {
     logToElasticsearch('error', 'Add Game - SubmitDataFunction', 'Failed Add Game - SubmitDataFunction ' + ' ' + error)
