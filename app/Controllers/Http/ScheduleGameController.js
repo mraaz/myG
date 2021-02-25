@@ -46,7 +46,6 @@ class ScheduleGameController {
     }
 
     let end_date_time, start_date_time, expiry
-    console.log(request.input('end_date_time'), "<<<request.input('end_date_time')")
 
     if (request.input('end_date_time') != undefined && request.input('end_date_time') != null) {
       end_date_time = new Date(request.input('end_date_time')) //.toISOString().replace('T', ' ')
@@ -58,15 +57,11 @@ class ScheduleGameController {
       }
       //end_date_time = request.input('end_date_time')
     } else {
-      console.log('Sick and tired')
       end_date_time = new Date(new Date(request.input('start_date_time')).getTime() + 60 * 60 * 4 * 1000)
       //end_date_time = end_date_time.format('YYYY-MM-DD HH:mm:ss')
     }
     start_date_time = new Date(request.input('start_date_time'))
     expiry = new Date(request.input('selected_expiry'))
-
-    console.log(end_date_time, '<<<end_date_time')
-    console.log(request.input('start_date_time'), "<<<request.input('start_date_time')")
 
     if (auth.user) {
       try {
@@ -92,12 +87,18 @@ class ScheduleGameController {
           user_id: auth.user.id,
           region: request.input('selected_region'),
           experience: request.input('selected_experience'),
-          start_date_time: moment(start_date_time).format('YYYY-MM-DD HH:mm:ss'),
-          end_date_time: moment(end_date_time).format('YYYY-MM-DD HH:mm:ss'),
+          start_date_time: moment(start_date_time)
+            .format('YYYY-MM-DD HH:mm:ss')
+            .utc(),
+          end_date_time: moment(end_date_time)
+            .format('YYYY-MM-DD HH:mm:ss')
+            .utc(),
           platform: request.input('selected_platform'),
           description: request.input('description_box'),
           other: request.input('other_box'),
-          expiry: moment(expiry).format('YYYY-MM-DD HH:mm:ss'),
+          expiry: moment(expiry)
+            .format('YYYY-MM-DD HH:mm:ss')
+            .utc(),
           visibility: request.input('visibility'),
           limit: request.input('limit'),
           accept_msg: request.input('accept_msg'),
@@ -1711,7 +1712,6 @@ class ScheduleGameController {
       ({ schedule_games_id }) => !oldGamesIds.includes(schedule_games_id) && validNewGames.includes(schedule_games_id)
     )
     if (!deltaGames.length) return Promise.resolve()
-    console.log('\x1b[36m', 'BULL', '-', `${deltaGames.length} games played in the last 5mins`, '\x1b[0m')
     const deltaGamesId = uniq(deltaGames.map(({ schedule_games_id }) => schedule_games_id)).filter((id) => !!id)
     const questRequests = deltaGames.map(({ user_id }) => AchievementsRepository.registerQuestStep({ user_id, type: 'play' }))
     const logRequests = deltaGamesId.map((schedule_games_id) => Database.from('played_games').insert({ schedule_games_id }))
