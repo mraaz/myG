@@ -65,7 +65,7 @@ export default class Home extends Component {
         const w = document.getElementById('main-sidebar').offsetWidth - 80
         if (window.innerWidth > 768) {
           this.contentAreaRef.current.style.paddingTop = '170px'
-          document.getElementById('content-container').style.marginLeft = '80px'
+          // document.getElementById('content-container').style.marginLeft = '80px'
           document.getElementById('content-container').style.paddingLeft = '80px'
           this.contentAreaRef.current.style.paddingLeft = `${w}px`
         }

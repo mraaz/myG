@@ -367,6 +367,24 @@ export default class Members extends React.Component {
             </div>
           )}
           <div className='modal__body'>{isActive == 'setting' ? this.renderSettingComponent() : this.renderGroupMember()}</div>
+          {isActive != 'setting' && (
+            <div className='modal__footer'>
+              <div className='legends'>
+                <div className='permission_label'>
+                  <img src={IconMap[1]} />
+                  <span>Admin</span>
+                </div>
+                <div className='permission_label'>
+                  <img src={IconMap[2]} />
+                  <span>Admin</span>
+                </div>
+                <div className='permission_label'>
+                  <img src={IconMap[3]} />
+                  <span>Member</span>
+                </div>
+              </div>
+            </div>
+          )}
           {isActive == 'setting' && (
             <div className='modal__footer'>
               <MyGButton
