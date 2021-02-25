@@ -472,6 +472,33 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        .legends {
+          display: flex;
+          color: #fff;
+          justify-content: flex-end;
+          width: 100%;
+          padding: 25px;
+          @media screen and (max-width: 568px) {
+            padding: 0px;
+          }
+          .permission_label {
+            margin-right: 14px;
+            font: normal normal bold 12px/17px Montserrat;
+            letter-spacing: 0;
+            color: #fff;
+            border-right: 1px solid #425156;
+            padding: 0 20px;
+            @media screen and (max-width: 568px) {
+              margin-right: 2px;
+              display: flex;
+              align-items: center;
+            }
+            img {
+              width: 22px;
+              margin-right: 5px;
+            }
+          }
+        }
         button {
           width: 93px;
           height: 39px;
