@@ -52,7 +52,6 @@ export default class MyScheduledGames extends Component {
       exclude_expired: false,
       filter: 0,
     })
-    console.log(scheduleGames, '<<scheduleGames')
 
     if (scheduleGames.data && scheduleGames.data.myScheduledGames && scheduleGames.data.myScheduledGames.length > 0) {
       this.setState({ scheduleGames: scheduleGames.data.myScheduledGames })

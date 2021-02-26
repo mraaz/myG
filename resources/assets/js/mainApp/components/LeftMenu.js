@@ -58,6 +58,8 @@ class LeftMenu extends Component {
 
   updateActivePage = (page) => {
     const { sideBarData = {} } = this.state
+    console.log('page', page)
+
     switch (page) {
       case 'FEED':
         this.setState({ activePage: 'Dashboard' })
@@ -86,6 +88,7 @@ class LeftMenu extends Component {
   }
 
   onItemClick = (itemKey) => {
+    this.updateActivePage(itemKey)
     this.setState((prevState) => ({
       isExpanded: true,
       sideBarData: {

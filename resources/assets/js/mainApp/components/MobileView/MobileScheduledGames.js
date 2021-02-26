@@ -12,7 +12,7 @@ import { prefilledFilter_option } from '../scheduledGames/option'
 
 const MobileScheduledGames = (props) => {
   const {
-    scheduleGames,
+    scheduleGames = {},
     selectedGame,
     getSingleGameData,
     deSelectGame,
@@ -29,7 +29,7 @@ const MobileScheduledGames = (props) => {
     prefilledFilter,
     handleChangeFilter,
     myGamesMenu = false,
-    singleScheduleGamesPayload,
+    singleScheduleGamesPayload = {},
   } = props
 
   const defaultThumbnails = 'https://myG.gg/platform_images/Notifications/myG_icon.svg'
@@ -68,6 +68,7 @@ const MobileScheduledGames = (props) => {
 
   const statusMapping = { 1: 'Approved. you are in!', 3: 'Pending Approval by Host' }
 
+  const combineGameData = { ...singleScheduleGamesPayload, ...scheduleGames }
   const {
     additional_game_info = {},
     approved_gamers = [],
@@ -77,9 +78,9 @@ const MobileScheduledGames = (props) => {
     myStatus = 0,
     latestScheduledGames = [],
     getAllGamers = [],
-  } = singleScheduleGamesPayload || scheduleGames || {}
+  } = combineGameData
   const [firstGame = {}] = latestScheduledGames
-
+  const gameData = { ...additional_game_info, ...selectedGame, ...firstGame }
   const {
     start_date_time = '',
     end_date_time = '',
@@ -93,7 +94,7 @@ const MobileScheduledGames = (props) => {
     game_name = '',
     experience = '',
     tags = [],
-  } = selectedGame || firstGame
+  } = gameData
   const { no_of_gamers = 0 } = getAllGamers[0] || {}
   const { allow_comments = 0 } = additional_game_info
 
