@@ -376,7 +376,7 @@ export default class Members extends React.Component {
                 </div>
                 <div className='permission_label'>
                   <img src={IconMap[2]} />
-                  <span>Admin</span>
+                  <span>Moderator</span>
                 </div>
                 <div className='permission_label'>
                   <img src={IconMap[3]} />
