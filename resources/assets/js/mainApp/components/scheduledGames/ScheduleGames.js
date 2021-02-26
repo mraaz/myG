@@ -228,7 +228,7 @@ export default class ScheduleGames extends Component {
 
         <section className='viewGame__container__mobile mobileView'>
           <MobileScheduledGames
-            scheduleGames={scheduleGames}
+            scheduleGames={{ ...scheduleGamesView, ...scheduleGames }}
             showFullGames={show_full_games}
             selectedGame={selected_game}
             singleScheduleGamesPayload={singleScheduleGamesPayload}
