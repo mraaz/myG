@@ -18,7 +18,7 @@ class LoginController {
     var userData
     try {
       userData = await ally.driver(provider).getUser()
-    } catch (e) {
+    } catch (error) {
       LoggingRepository.log({
         environment: process.env.NODE_ENV,
         type: 'error',
