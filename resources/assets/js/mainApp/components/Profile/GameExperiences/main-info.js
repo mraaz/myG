@@ -14,7 +14,7 @@ import { WithTooltip } from '../../Tooltip'
 
 const MAIN_FIELDS_OPTIONS = [
   { value: 'Nickname', label: 'Nickname' },
-  { value: 'Level', label: 'Level' },
+  { value: 'Level', label: 'Career' },
   { value: 'Experience', label: 'Experience' },
   { value: 'Team', label: 'Team' },
 ]
@@ -190,10 +190,10 @@ export default class MainInfo extends React.Component {
 
   renderLevelInput = () => {
     if (!get(this.props, 'experience.game.value') || !this.props.isSelf)
-      return this.renderDisabledField('Level', (this.props.experience.level || {}).value, false, !!this.props.onboarding)
+      return this.renderDisabledField('Career', (this.props.experience.level || {}).value, false, !!this.props.onboarding)
     return (
       <div className='row'>
-        <span className='hint'>Level {!!this.props.onboarding && <span className='required onboarding'>*</span>}</span>
+        <span className='hint'>Career {!!this.props.onboarding && <span className='required onboarding'>*</span>}</span>
         <MyGSelect
           width={'75%'}
           innerWidth={'100%'}
