@@ -104,7 +104,7 @@ class MySettings extends Component {
     //const post = axios.get('/api/email/summary_email')
     const getGamers_you_might_know = async function() {
       try {
-        const master_controller = await axios.get('/api/connection/master_controller')
+        const master_controller = await axios.get('/api/email/welcome_email')
         console.log(master_controller)
       } catch (error) {
         console.log(error)
@@ -241,10 +241,7 @@ class MySettings extends Component {
                 <div className='change-password'>
                   Change Password:
                   <div className='change-toggle'>
-                    <ToggleButton
-                      value={this.state.value_password || false}
-                      onToggle={() => window.router.push('/changepwd')}
-                    />
+                    <ToggleButton value={this.state.value_password || false} onToggle={() => window.router.push('/changepwd')} />
                   </div>
                 </div>
               </div>

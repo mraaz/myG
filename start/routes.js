@@ -320,7 +320,7 @@ Route.post('/api/followers/create', 'FollowerController.store')
 Route.delete('/api/followers/:follower_id/delete', 'FollowerController.delete')
 Route.delete('/api/followers/:follower_id/delete_group', 'FollowerController.delete_group')
 
-Route.get('/api/email/summary_email', 'EmailController.summary_email')
+Route.get('/api/email/welcome_email', 'EmailController.welcome_email')
 
 Route.post('/api/connections/gamers_you_might_know', 'ConnectionController.gamers_you_might_know')
 Route.get('/api/connections/i_am_viewing_this_profile/:other_user_id', 'ConnectionController.have_I_viewed_this_profile')

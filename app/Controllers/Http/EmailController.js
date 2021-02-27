@@ -6,11 +6,11 @@ const Database = use('Database')
 
 const AWSEmailController = use('./AWSEmailController')
 const NotificationController_v2 = use('./NotificationController_v2')
+const Email_body = use('./EmailBodyController')
 
 const ChatRepository = require('../../Repositories/Chat')
-const Email_welcome_body = require('../../Common/email/welcome_body')
 
-//https://html-online.com/editor/
+//https://html5-editor.net/
 
 const generateRandomString = (length) => {
   var result = ''
@@ -24,8 +24,11 @@ const generateRandomString = (length) => {
 
 class EmailController {
   async welcome_email(toAddress, pin, alias) {
+    toAddress = 'mnraaz@gmail.com'
+    pin = 123456
+    alias = 'RAaz'
     const email = new AWSEmailController()
-    const email_welcome_body = new Email_welcome_body()
+    const email_welcome_body = new Email_body()
 
     let tmp_code = []
     tmp_code[0] = 'MYG:' + alias.substring(0, 4) + generateRandomString(6) + toAddress.substring(0, 1)
@@ -44,6 +47,7 @@ class EmailController {
     const subject = "Welcome to myG - The Gamer's platform"
     const body = await email_welcome_body.welcome_body(pin, alias, tmp_code[0], tmp_code[1], tmp_code[2])
     email.createEmailnSend(toAddress, subject, body)
+    return
   }
 
   async dailyEmails(toAddress) {
