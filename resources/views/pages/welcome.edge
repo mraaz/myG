@@ -98,12 +98,13 @@
   }
 
   function checkDevEnvironment() {
+    document.getElementById('cfiblinks').setAttribute("style", "display:block");
     const url = window.location.href;
-    if(url.includes("localhost") || url.includes("127.0.0.1") || url.includes("172.")) {
-      document.getElementById('cfiblinks').setAttribute("style", "display:block");
-    } else {
-      document.getElementById('cfiblinks').setAttribute("style", "display:none");
-    }
+    // if(url.includes("localhost") || url.includes("127.0.0.1") || url.includes("172.")) {
+    //   document.getElementById('cfiblinks').setAttribute("style", "display:block");
+    // } else {
+    //   document.getElementById('cfiblinks').setAttribute("style", "display:none");
+    // }
   }
 
   function injectInvitationCodeInput() {
