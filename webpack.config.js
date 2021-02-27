@@ -3,7 +3,7 @@ const webpack = require('webpack')
 const zlib = require('zlib')
 
 const TerserPlugin = require('terser-webpack-plugin')
-//const CompressionPlugin = require('compression-webpack-plugin')
+const CompressionPlugin = require('compression-webpack-plugin')
 //const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 const VENDOR_LIBS = [
@@ -97,21 +97,21 @@ module.exports = (env) => {
         },
       ],
     },
-    // plugins: [
-    //   new CompressionPlugin({
-    //     filename: '[path][base].br',
-    //     algorithm: 'brotliCompress',
-    //     test: /\.js$|\.jsx$|\.css$|\.html$|\.eot?.+$|\.ttf?.+$|\.woff?.+$|\.svg?.+$/,
-    //     compressionOptions: {
-    //       params: {
-    //         [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
-    //       },
-    //     },
-    //     threshold: 10240,
-    //     minRatio: 0.8,
-    //     deleteOriginalAssets: false,
-    //   }),
-    // ],
+    plugins: [
+      new CompressionPlugin({
+        filename: '[path][base].br',
+        algorithm: 'brotliCompress',
+        test: /\.js$|\.jsx$|\.css$|\.html$|\.eot?.+$|\.ttf?.+$|\.woff?.+$|\.svg?.+$/,
+        compressionOptions: {
+          params: {
+            [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
+          },
+        },
+        threshold: 10240,
+        minRatio: 0.8,
+        deleteOriginalAssets: false,
+      }),
+    ],
     plugins: [
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
 
