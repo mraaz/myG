@@ -1,6 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { useSwipeable } from 'react-swipeable'
 import MobileMenuTop from './MobileMenuTop'
 
 import { useScrollDirection } from '../../hooks'
@@ -17,19 +16,14 @@ const MobileMenu = ({ initialData }) => {
   const [hideSearch, setHideSearch] = useState(false)
   const [hideCreate, setHideCreate] = useState(false)
   const [hideNav, setHideNav] = useState(false)
-  const [swipeDirection, setSwipeDirection] = useState(null)
   const [notifications, setNotifications] = useState({ alerts: 0, approvals: 0, chats: 0 })
 
   const direction = useScrollDirection()
-  const { ref } = useSwipeable({
-    onSwipedUp: () => setSwipeDirection('up'),
-    onSwipedDown: () => setSwipeDirection('down'),
-  })
   const alias = initialData === 'loading' ? '' : initialData.userInfo.alias
 
   // First useEffect is called every time direction changes, required to hide menus on scroll
   useEffect(() => {
-    if (direction === 'down' || swipeDirection === 'down') {
+    if (direction === 'down') {
       setHideNav(true)
       setHideSearch(false)
       setHideCreate(false)
@@ -40,7 +34,6 @@ const MobileMenu = ({ initialData }) => {
 
   // Second useEffect is called only once, required so the API is only called once
   useEffect(() => {
-    ref(window)
     const getNotis = async function () {
       let _chats = 0
       try {
@@ -99,7 +92,7 @@ const MobileMenu = ({ initialData }) => {
                     to='/scheduledGames'
                     onClick={() => {
                       setHideSearch(false)
-                      setHideNav(false)
+                      setHideNav(true)
                     }}>
                     Find <b>Matches</b>
                   </Link>
