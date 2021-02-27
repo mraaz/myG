@@ -82,12 +82,21 @@ export default class ScheduleGames extends Component {
     e.preventDefault()
     e.stopPropagation()
 
-    this.setState({
-      scheduleGamesView: {},
-      selected_game: {},
-      showRightSideInfo: false,
-      showAllComment: false,
-    })
+    this.setState(
+      {
+        scheduleGamesView: {},
+        selected_game: {},
+        showRightSideInfo: false,
+        showAllComment: false,
+      },
+      () => {
+        let params = new URLSearchParams(window.location.search)
+        const activeTab = params.get('at')
+        if (this.props.routeProps && activeTab != 'mygames') {
+          this.props.routeProps.history.push(`/scheduledGames`)
+        }
+      }
+    )
   }
 
   handleChange = async (data, name) => {
