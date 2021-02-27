@@ -30,7 +30,7 @@ function setupBull() {
 }
 
 function logBull(moment, content) {
-  console.log('\x1b[36m', 'BULL', moment.format('D MMM HH:mm:ss'), '-', content, '\x1b[0m');
+  //console.log('\x1b[36m', 'BULL', moment.format('D MMM HH:mm:ss'), '-', content, '\x1b[0m');
 }
 
 function getJobs(Queue, bullConfig, ioCluster, uuidv4, runEveryJobOnStart) {
