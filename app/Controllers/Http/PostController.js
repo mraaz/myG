@@ -278,7 +278,16 @@ class PostController {
       const category = request.params.counter % 5
       let get_sponsored_posts = undefined
 
-      if (!isNaN(category)) {
+      let _1stpass = [...ppl_im_following_Posts.data, ...groups_im_in_Posts.data]
+
+      const common_Controller = new CommonController()
+      _1stpass = await common_Controller.shuffle(_1stpass)
+
+      if (_1stpass.length == 0) {
+        console.log('asdfd')
+      }
+
+      if (!isNaN(category) && _1stpass.length > 2) {
         const get_sponsored_posts_total = await Database.from('sponsored_posts')
           .where('visibility', '=', 1)
           .where('category', '=', category)
@@ -306,17 +315,12 @@ class PostController {
           get_sponsored_posts = get_sponsored_posts[randValue]
         }
 
-        if (get_sponsored_posts != undefined) get_sponsored_posts.sponsored_post = true
+        if (get_sponsored_posts != undefined) {
+          get_sponsored_posts.sponsored_post = true
+          _1stpass.splice(1, 0, get_sponsored_posts)
+        }
       }
 
-      let _1stpass = [...ppl_im_following_Posts.data, ...groups_im_in_Posts.data]
-
-      const common_Controller = new CommonController()
-      _1stpass = await common_Controller.shuffle(_1stpass)
-
-      if (_1stpass.length > 2 && get_sponsored_posts != undefined) {
-        _1stpass.splice(1, 0, get_sponsored_posts)
-      }
       const myPosts = await this.get_additional_info({ auth }, _1stpass)
 
       return {
