@@ -21,8 +21,8 @@ class SearchRepository {
 
   buildUsersQuery = ({ input, from, size, requestingUserId }) => {
     const must_not = [{ match: { profileId: requestingUserId } }];
-    if (!size) size = 10;
-    if (!from) from = 0;
+    if (!parseInt(size, 10)) size = 10;
+    if (!parseInt(from, 10)) from = 0;
     if (!input) return { query: { bool: { must_not } }, size, from };
     const query = { query: { bool: { must: [], must_not, should: [] } }, size, from };
     const targetedQueries = [query];
