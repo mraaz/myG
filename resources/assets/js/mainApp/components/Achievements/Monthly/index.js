@@ -28,7 +28,7 @@ class Monthly extends React.Component {
   renderHeader = () => {
     if (this.props.collected) return null;
     return(
-      <div className="header">
+      <div className="header header-top">
         <div className="icon" style={{ backgroundImage: `url(${getAssetUrl('ic_achievements_clock')})` }}/>
         <div className="content">
           <span className="hint">Complete all Monthly Quests</span>

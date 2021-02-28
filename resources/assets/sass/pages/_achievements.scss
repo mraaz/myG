@@ -19,8 +19,8 @@
   }
 
   .quests-help {
-    right: 64px!important;
-    top: 0px!important;
+    right: 64px !important;
+    top: 0px !important;
   }
 
   .headers {
@@ -57,17 +57,45 @@
 
     .level-indicators {
       display: flex;
+      position: relative;
       flex-direction: row;
       align-items: center;
       justify-content: center;
       width: 100%;
       padding: 16px 0px;
-      background-color: #1D2326;
-      border-radius: 1000px;
+      background-color: #1d2326;
+      border-radius: 8px;
       margin: 0 auto;
 
+      .button-icon {
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: unset;
+        background-color: #657172;
+        border-radius: 1000px;
+      }
+
+      .page-button {
+        @extend .button-icon;
+        position: absolute;
+        top: 45%;
+        width: 30px;
+        height: 30px;
+        z-index: 1;
+      }
+
+      .go-left {
+        @extend .page-button;
+        left: -15px;
+      }
+
+      .go-right {
+        @extend .page-button;
+        right: -15px;
+      }
+
       .level-indicator {
-        margin: 0 auto;
+        margin: 0 8px;
         color: white;
 
         .level-indicator-circle {
@@ -113,7 +141,8 @@
       background-color: #1d2326;
       border-radius: 4px;
       padding: 16px 1%;
-      margin: 16px 1%;
+      margin: 16px auto;
+      min-width: 164px;
       width: 22%;
 
       .icon-container {
@@ -293,20 +322,27 @@
     }
 
     .header-row {
-      margin: 0 48px !important;
-      background-color: #181A1C !important;
+      display: flex;
+      flex-direction: row;
+      margin: 0 48px;
+      padding: 12px;
+      align-items: center;
+      justify-content: center;
+      background-color: #181a1c;
       border-bottom: 1px solid #1d2326;
     }
 
-    .header {
+    .header-top {
       display: flex;
       flex-direction: row;
       margin: 48px 48px 0 48px;
       padding: 12px;
       align-items: center;
       justify-content: center;
-      background-color: #1D2326;
+      background-color: #1d2326;
+    }
 
+    .header {
       .icon {
         width: 64px;
         height: 64px;
@@ -315,7 +351,7 @@
         background-position: center;
         margin-right: 12px;
       }
-      
+
       .content {
         all: unset;
         display: flex;
@@ -323,7 +359,7 @@
         flex: 1;
         justify-content: center;
       }
-      
+
       .hint {
         color: white;
         font-size: 14px;
@@ -331,7 +367,7 @@
         white-space: nowrap;
         margin: 4px 12px;
       }
-      
+
       .progress {
         all: unset;
         display: flex;
@@ -344,7 +380,7 @@
         display: flex;
         flex: 8;
         margin: 0 16px;
-        background-color: rgb(15,15,15);
+        background-color: rgb(15, 15, 15);
       }
 
       .progress-hint {
@@ -353,9 +389,9 @@
         margin-left: 4px;
         margin-right: 12px;
       }
-      
+
       .completed {
-        color: #93A4A5;
+        color: #93a4a5;
         font-size: 14px;
         font-family: 'Montserrat';
       }
@@ -382,8 +418,54 @@
         height: 24px;
         font-size: 12px;
         border: none;
+        min-width: 110px;
         font-weight: bold;
         font-family: 'Montserrat';
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 575px) {
+  #achievements {
+    #help-modal .container {
+      width: 90vw !important;
+      padding: 0 !important;
+
+      .xp-table {
+        .criteria {
+          padding: 0 1em !important;
+        }
+
+        .xp {
+          padding: 0 1em !important;
+        }
+
+        .value {
+          margin-left: 12px !important;
+          font-size: 24px !important;
+        }
+      }
+    }
+    .quests-help {
+      margin-right: -48px;
+    }
+    .headers {
+      margin: 16px 0 0 0 !important;
+    }
+    .header-row {
+      margin: 0 4px !important;
+      margin-top: 0px !important;
+    }
+    .header-top {
+      margin: 0 4px !important;
+      margin-top: 48px !important;
+    }
+    .header {
+      .icon {
+        width: 24px !important;
+        height: 24px !important;
+        margin-right: 0 !important;
       }
     }
   }

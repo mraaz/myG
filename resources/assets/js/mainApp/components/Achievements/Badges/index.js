@@ -14,6 +14,8 @@ class Badges extends React.Component {
     super()
     this.state = {
       help: false,
+      page: 0,
+      changingPage: false,
     }
     this.contentAreaRef = React.createRef()
     window.addEventListener('scroll', this.handleScroll, true)
@@ -101,10 +103,43 @@ class Badges extends React.Component {
     );
   }
 
+  getBadgesPerPage = () => Math.floor((window.innerWidth - 96) / (96 + 8))
+
+  changePage = (direction) => {
+    const page = this.state.page;
+    const newPage = direction === 'left' ? (page - 1) < 0 ? page : page - 1 : (page + 1) > (levelIndicators.length - this.getBadgesPerPage()) ? page : page + 1;
+    this.setState({ changingPage: true }, () => setTimeout(() => this.setState({ page: newPage, changingPage: false }), 100));
+  }
+
+  renderPageButtons = () => {
+    const fitsAllInScreen = levelIndicators.length <= this.getBadgesPerPage();
+    const contentToTheLeft = !fitsAllInScreen && this.state.page > 0;
+    const contentToTheRight = !fitsAllInScreen && this.state.page < (levelIndicators.length - this.getBadgesPerPage());
+    return(
+      <React.Fragment>
+        {contentToTheLeft && (
+          <div
+            className={`go-left clickable`}
+            onClick={() => this.changePage('left')}
+            style={{ backgroundImage: `url(${getAssetUrl('ic_profile_chevron_left')})` }}
+          />
+        )}
+        {contentToTheRight && (
+          <div
+            className={`go-right clickable`}
+            onClick={() => this.changePage('right')}
+            style={{ backgroundImage: `url(${getAssetUrl('ic_profile_chevron_right')})` }}
+          />
+        )}
+      </React.Fragment>
+    );
+  }
+
   renderLevelIndicators = () => {
     return(
-      <div className="level-indicators">
-        {levelIndicators.map(this.renderLevelIndicator)}
+      <div className="level-indicators" style={{ opacity: this.state.changingPage ? 0.3 : 1 }}>
+        {this.renderPageButtons()}
+        {levelIndicators.slice(this.state.page, this.state.page + this.getBadgesPerPage()).map(this.renderLevelIndicator)}
       </div>
     );
   }
