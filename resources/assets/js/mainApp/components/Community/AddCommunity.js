@@ -38,7 +38,7 @@ const AddCommunity = ({
     //   }
     // }
 
-    const getInitialData_GameName = async function() {
+    const getInitialData_GameName = async function () {
       try {
         let results = await Game_name_values()
         updateMainSettings({ gameTitlesList: results })
@@ -182,7 +182,7 @@ const AddCommunity = ({
 
   // api calls
   const getOptionsTags = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         let results = await Group_Hash_Tags(inputValue)
         updateAdvancedSettings({ optionTags: results })
@@ -199,7 +199,7 @@ const AddCommunity = ({
   }
 
   const getOptionsGames = (inputValue) => {
-    const getInitialData = async function(inputValue) {
+    const getInitialData = async function (inputValue) {
       try {
         let results = await Game_name_values(inputValue)
         updateMainSettings({ gameTitlesList: results })

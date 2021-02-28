@@ -49,7 +49,7 @@ export default class Home extends Component {
       offsetWidth = this.contentAreaRef.current.offsetWidth ? this.contentAreaRef.current.offsetWidth : 0
     }
     window.requestAnimationFrame(() => {
-      if (this.lastScrollY > 300 && this.navRef.current && this.navRef.current.style) {
+      if (this.lastScrollY > 200 && this.navRef.current && this.navRef.current.style) {
         this.navRef.current.style.top = '0'
         this.navRef.current.style.position = 'fixed'
         this.navRef.current.style.zIndex = '1001'

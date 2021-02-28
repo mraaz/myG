@@ -15,6 +15,12 @@ import PostsFromUser from '../../PostsFromUser'
 import EditGameExperience from '../GameExperiences/edit';
 
 export class Profile extends React.Component {
+  constructor(){
+    super()
+    this.contentAreaRef = React.createRef()
+    window.addEventListener('scroll', this.handleScroll, true)
+    this.lastScrollY = 0
+  }
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
   }
@@ -44,6 +50,36 @@ export class Profile extends React.Component {
     this.props.deleteExperience(this.props.alias, gameExperienceId);
   }
 
+  handleScroll = () => {
+    this.lastScrollY = window.scrollY
+    let offsetWidth = 0
+    if (this.contentAreaRef.current && this.contentAreaRef.current.offsetWidth) {
+      offsetWidth = this.contentAreaRef.current.offsetWidth ? this.contentAreaRef.current.offsetWidth : 0
+    }
+    window.requestAnimationFrame(() => {
+      if (this.lastScrollY > 200 && this.contentAreaRef.current && this.contentAreaRef.current.style) {
+        document.getElementById('main-sidebar').style.position = 'fixed'
+        // Required padding to prevent infinite loop of styling
+
+        const w = document.getElementById('main-sidebar').offsetWidth - 80
+        if (window.innerWidth > 768) {
+          this.contentAreaRef.current.style.paddingTop = '170px'
+          // document.getElementById('content-container').style.marginLeft = '80px'
+          document.getElementById('content-container').style.paddingLeft = '80px'
+          this.contentAreaRef.current.style.paddingLeft = `${w}px`
+        }
+        // Exit early to make this less confusing
+        return
+      }
+
+      if (this.contentAreaRef.current) {
+        this.contentAreaRef.current.removeAttribute('style')
+      }
+      document.getElementById('main-sidebar').removeAttribute('style')
+      document.getElementById('content-container').removeAttribute('style')
+    })
+  }
+
   render() {
     if (this.props.profile.error) return <Redirect push to={`/profile/${this.props.userAlias}`} />;
     if (!this.props.foundProfile || this.props.profile.loading) return null;
@@ -55,7 +91,7 @@ export class Profile extends React.Component {
     if (this.props.onboarding) {
       if (this.props.step === 1) {
         return(
-          <div id="profile">
+          <div id="profile" ref={this.contentAreaRef}>
             <EditGameExperience
               onboarding={this.props.onboarding} 
               alias={this.props.alias}
@@ -70,7 +106,7 @@ export class Profile extends React.Component {
       }
       if (this.props.step === 3) {
         return(
-          <div id="profile">
+          <div id="profile" ref={this.contentAreaRef}>
             <GamerSuggestions 
               onboarding={this.props.onboarding} 
               noTitle profile={this.props.profile}
@@ -87,7 +123,7 @@ export class Profile extends React.Component {
       return null;
     }
     return(
-      <div id="profile">
+      <div id="profile" ref={this.contentAreaRef}> 
         <Banner profile={this.props.profile} updateProfile={this.props.updateProfile} />
         <ProfileInfo alias={this.props.alias} profile={this.props.profile} updateProfile={this.props.updateProfile} />
         {!!sponsors.length && <Sponsors alias={this.props.alias} profile={this.props.profile} sponsors={sponsors} refetchSponsors={() => this.props.fetchProfile(this.props.alias)} />}
@@ -97,6 +133,9 @@ export class Profile extends React.Component {
         {!this.props.profile.isSelf && <PostsFromUser initialData={this.props.initialData} profile={this.props.profile} /> }
       </div>
     );
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.handleScroll)
   }
 }
 

@@ -58,14 +58,13 @@
 <script>
   function removeIntruders() {
     const url = window.location.href;
-    document.getElementById('cfiblinks').setAttribute("style", "display:block");
-    // if(url.includes("localhost") || url.includes("127.0.0.1") || url.includes("172.")) {
-    //   document.getElementById('cfiblinks').setAttribute("style", "display:block");
-    // } else {
-    //   //document.getElementById('cfiblinks').setAttribute("style", "display:block");
-    //   document.getElementById('cfiblinks').setAttribute("style", "display:none");
-    //   window.location.replace("https://myG.gg");
-    // }
+    if(url.includes("localhost") || url.includes("127.0.0.1") || url.includes("172.")) {
+      document.getElementById('cfiblinks').setAttribute("style", "display:block");
+    } else {
+      //document.getElementById('cfiblinks').setAttribute("style", "display:block");
+      document.getElementById('cfiblinks').setAttribute("style", "display:none");
+      window.location.replace("https://myG.gg");
+    }
   }
   removeIntruders()
 </script>

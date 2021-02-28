@@ -40,11 +40,14 @@ const AddCommunityContainer = ({ level }) => {
     community_id: '',
   })
 
+  const contentAreaRef = useRef()
+  let lastScrollY = 0
+
   const [gameLink, updateGameLink] = useState('')
   const gameLinkRef = useRef(null)
 
   useEffect(() => {
-    const fetchCommunities = async function() {
+    const fetchCommunities = async function () {
       try {
         const response = await axios.get('/api/groups/get_my_communities/1')
         return get(response, 'data.all_my_communities', [])
@@ -53,7 +56,37 @@ const AddCommunityContainer = ({ level }) => {
       }
     }
     fetchCommunities().then((response) => setCommunities(response))
+    window.addEventListener('scroll', handleScroll, true)
   }, [])
+  const handleScroll = () => {
+    lastScrollY = window.scrollY
+    let offsetWidth = 0
+    if (contentAreaRef.current && contentAreaRef.current.offsetWidth) {
+      offsetWidth = contentAreaRef.current.offsetWidth ? contentAreaRef.current.offsetWidth : 0
+    }
+    window.requestAnimationFrame(() => {
+      if (lastScrollY > 200 && contentAreaRef.current && contentAreaRef.current.style) {
+        document.getElementById('main-sidebar').style.position = 'fixed'
+        // Required padding to prevent infinite loop of styling
+
+        const w = document.getElementById('main-sidebar').offsetWidth - 80
+        if (window.innerWidth > 768) {
+          contentAreaRef.current.style.paddingTop = '170px'
+          // document.getElementById('content-container').style.marginLeft = '80px'
+          document.getElementById('content-container').style.paddingLeft = '80px'
+          contentAreaRef.current.style.paddingLeft = `${w}px`
+        }
+        // Exit early to make this less confusing
+        return
+      }
+
+      if (contentAreaRef.current) {
+        contentAreaRef.current.removeAttribute('style')
+      }
+      document.getElementById('main-sidebar').removeAttribute('style')
+      document.getElementById('content-container').removeAttribute('style')
+    })
+  }
 
   // Handlers
   const isButtonDisabled = () => {
@@ -231,7 +264,7 @@ const AddCommunityContainer = ({ level }) => {
   if (level < 25 && communities.length >= 3) return locked('level 25', 'four communities')
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} ref={contentAreaRef}>
       <PageHeader headerText='Create Community' />
       <AddCommunity
         advancedSettingsState={advancedSettingsState}

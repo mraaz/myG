@@ -958,6 +958,9 @@
     flex-direction: column;
     margin-bottom: 24px;
     position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    width: 95%;
 
     .game-title-select {
       min-width: 60%;
