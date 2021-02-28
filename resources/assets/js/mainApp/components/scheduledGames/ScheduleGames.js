@@ -31,6 +31,37 @@ export default class ScheduleGames extends Component {
       fetching: false,
       slideOptionText: 'Exclude expired games',
     }
+    this.contentAreaRef = React.createRef()
+    window.addEventListener('scroll', this.handleScroll, true)
+    this.lastScrollY = 0
+  }
+  handleScroll = () => {
+    this.lastScrollY = window.scrollY
+    let offsetWidth = 0
+    if (this.contentAreaRef.current && this.contentAreaRef.current.offsetWidth) {
+      offsetWidth = this.contentAreaRef.current.offsetWidth ? this.contentAreaRef.current.offsetWidth : 0
+    }
+    window.requestAnimationFrame(() => {
+      if (this.lastScrollY > 200 && this.contentAreaRef.current && this.contentAreaRef.current.style) {
+        document.getElementById('main-sidebar').style.position = 'fixed'
+        // Required padding to prevent infinite loop of styling
+
+        const w = document.getElementById('main-sidebar').offsetWidth - 80
+        if (window.innerWidth > 768) {
+          this.contentAreaRef.current.style.paddingTop = '170px'
+          document.getElementById('content-container').style.paddingLeft = '80px'
+          this.contentAreaRef.current.style.paddingLeft = `${w}px`
+        }
+        // Exit early to make this less confusing
+        return
+      }
+
+      if (this.contentAreaRef.current) {
+        this.contentAreaRef.current.removeAttribute('style')
+      }
+      document.getElementById('main-sidebar').removeAttribute('style')
+      document.getElementById('content-container').removeAttribute('style')
+    })
   }
 
   handleShowAllComments = async (id) => {
@@ -182,7 +213,7 @@ export default class ScheduleGames extends Component {
     }
     return (
       <Fragment>
-        <section className='desktopView'>
+        <section className='desktopView' ref={this.contentAreaRef}>
           <div className='viewGame__header'>
             <div className='title'>Find Matches</div>
           </div>
