@@ -61,10 +61,15 @@
       padding: 24px 48px;
       background-color: #1D2326;
       border-radius: 1000px;
+      margin: 0 auto;
 
       .level-indicator {
         margin: 0 12px;
         color: white;
+
+        .level-indicator-circle {
+          height: 96px !important;
+        }
 
         .circle-wrap {
           width: 130px;

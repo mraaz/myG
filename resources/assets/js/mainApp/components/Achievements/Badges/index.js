@@ -80,12 +80,13 @@ class Badges extends React.Component {
     return(
       <div className="level-indicator" style={{ opacity: locked ? 0.3 : 1 }}>
         <Progress
+          rootClass="level-indicator-circle"
           className='circle-wrap'
           borderColor='#E5C746'
           progress={progress}
           value={unlocked ? 'unlocked' : subtitle}
           label={label}
-          labelStyle={{ color: unlocked ? '#e5c746' : '#fff', fontSize: 14, marginTop: 0, marginBottom: 0 }}
+          labelStyle={{ color: unlocked ? '#e5c746' : '#fff', fontSize: label === 'Baby Dragon' ? 10 : 14, marginTop: 0, marginBottom: 0 }}
           valueStyle={{ fontSize: 12, marginTop: 0, marginBottom: 0 }}
           reduction={0}
           hideBall
