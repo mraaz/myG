@@ -114,6 +114,6 @@ export async function SubmitDataFunction(myG) {
     })
     return post
   } catch (error) {
-    logToElasticsearch('error', 'Add Game - SubmitDataFunction', 'Failed Add Game - SubmitDataFunction ' + ' ' + error)
+    logToElasticsearch('error', 'AddScheduleGames_Submit_Data', 'Failed Add Game - SubmitDataFunction ' + ' ' + error)
   }
 }
