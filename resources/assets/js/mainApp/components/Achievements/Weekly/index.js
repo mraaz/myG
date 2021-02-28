@@ -31,7 +31,7 @@ class Weekly extends React.Component {
       <div className="header">
         <div className="icon" style={{ backgroundImage: `url(${getAssetUrl('ic_achievements_clock')})` }}/>
         <div className="content">
-          <span className="hint">Complete 3 out of 7 Weekly Quests</span>
+          <span className="hint">Complete all Weekly Quests</span>
           <div className="progress">
             <div className="progress-hint">
               <span className="completed">{this.props.completed}/</span>

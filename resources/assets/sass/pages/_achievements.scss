@@ -58,13 +58,16 @@
     .level-indicators {
       display: flex;
       flex-direction: row;
-      padding: 24px 48px;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 16px 0px;
       background-color: #1D2326;
       border-radius: 1000px;
       margin: 0 auto;
 
       .level-indicator {
-        margin: 0 12px;
+        margin: 0 auto;
         color: white;
 
         .level-indicator-circle {
