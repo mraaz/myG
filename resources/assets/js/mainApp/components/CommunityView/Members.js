@@ -9,7 +9,6 @@ import { Toast_style, Convert_to_comma_delimited_value } from '../Utility_Functi
 import { MyGButton } from '../common'
 import { logToElasticsearch } from '../../../integration/http/logger'
 
-
 const IconMap = {
   0: 'https://myG.gg/platform_icons/btn_Moderator_on.svg',
   1: 'https://myG.gg/platform_icons/btn_Moderator_on.svg',
@@ -327,12 +326,13 @@ export default class Members extends React.Component {
     this.setState({ searchMemberValue })
 
     if (searchMemberValue == '') {
-      this.getInitialData()
+      this.setState({ counter: 1, group_members: [] }, () => {
+        this.getInitialData()
+      })
       return
     }
 
-
-    const getSearchInfo = async function () {
+    const getSearchInfo = async function() {
       try {
         const group_members = await axios.post('/api/usergroup/usergroupSearchResults/', {
           group_id,
@@ -343,18 +343,15 @@ export default class Members extends React.Component {
         } else {
           self.setState({ group_members: [] })
         }
-
       } catch (error) {
         logToElasticsearch('error', 'CommunityView/Members.js', 'Failed handleMemberSearch:' + ' ' + error)
       }
     }
 
-
     if (this.timeout) clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
       getSearchInfo()
     }, 30)
-
   }
 
   render() {

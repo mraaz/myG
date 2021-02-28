@@ -414,6 +414,11 @@
               @media screen and (max-width: 998px) {
                 font: normal normal bold 12px/14px Montserrat;
               }
+
+              a:hover {
+                color: #e5c746;
+                text-decoration: none;
+              }
             }
             .GroupMember__level {
               font: normal normal normal 14px/18px Montserrat;

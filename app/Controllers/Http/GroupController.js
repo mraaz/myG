@@ -239,6 +239,7 @@ class GroupController {
         .leftJoin('usergroups', 'usergroups.group_id', 'groups.id')
         .where('usergroups.user_id', '=', auth.user.id)
         .orWhere('groups.user_id', '=', auth.user.id)
+        .distinct('groups.id')
         .select('groups.id')
 
       const groupSearchResults_im_not_in = await Database.from('groups')
@@ -271,6 +272,7 @@ class GroupController {
         .orWhere('groups.user_id', '=', auth.user.id)
         .select('groups.name', 'groups.group_img', 'groups.id', 'groups.type')
         .andWhere('groups.name', 'like', '%' + decodeURI(request.params.str) + '%')
+        .distinct('groups.id')
         .limit(88)
 
       const groupSearchResults_im_not_in = await Database.from('groups')
@@ -280,6 +282,7 @@ class GroupController {
         .orWhere('groups.user_id', '!=', auth.user.id)
         .select('groups.name', 'groups.group_img', 'groups.id', 'groups.type')
         .andWhere('groups.name', 'like', '%' + decodeURI(request.params.str) + '%')
+        .distinct('groups.id')
         .limit(18)
 
       // const myGroupSearchResults = await Database.from('groups')
@@ -339,32 +342,33 @@ class GroupController {
     }
   }
 
-  async all_myGrps({ auth, request, response }) {
-    try {
-      const subquery = Database.select('id')
-        .from('groups')
-        .where({ user_id: auth.user.id })
-
-      let groups_im_in = await Database.from('usergroups')
-        .innerJoin('groups', 'groups.id', 'usergroups.group_id')
-        .where('usergroups.user_id', '=', auth.user.id)
-        .whereNot('usergroups.permission_level', 42)
-        .orWhereIn('usergroups.group_id', subquery)
-        .paginate(request.params.counter, 25)
-
-      return {
-        groups_im_in,
-      }
-    } catch (error) {
-      LoggingRepository.log({
-        environment: process.env.NODE_ENV,
-        type: 'error',
-        source: 'backend',
-        context: __filename,
-        message: (error && error.message) || error,
-      })
-    }
-  }
+  // async all_myGrps({ auth, request, response }) {
+  //   try {
+  //     const subquery = Database.select('id')
+  //       .from('groups')
+  //       .where({ user_id: auth.user.id })
+  //
+  //     let groups_im_in = await Database.from('usergroups')
+  //       .innerJoin('groups', 'groups.id', 'usergroups.group_id')
+  //       .where('usergroups.user_id', '=', auth.user.id)
+  //       .whereNot('usergroups.permission_level', 42)
+  //       .orWhereIn('usergroups.group_id', subquery)
+  //       .distinct('groups.id')
+  //       .paginate(request.params.counter, 25)
+  //
+  //     return {
+  //       groups_im_in,
+  //     }
+  //   } catch (error) {
+  //     LoggingRepository.log({
+  //       environment: process.env.NODE_ENV,
+  //       type: 'error',
+  //       source: 'backend',
+  //       context: __filename,
+  //       message: (error && error.message) || error,
+  //     })
+  //   }
+  // }
 
   async get_my_communities({ auth, request, response }) {
     if (auth.user) {
@@ -375,6 +379,7 @@ class GroupController {
           .whereNot('usergroups.permission_level', 42)
           .orWhere('groups.user_id', '=', auth.user.id)
           .select('groups.id', 'groups.name')
+          .distinct('groups.id')
           .paginate(request.params.counter, 11)
 
         groups_im_in = groups_im_in.data
