@@ -192,7 +192,7 @@ const AddGameContainer = ({ level }) => {
         <div
           className={classNames([styles.footerSubmitButton, isButtonDisabled() ? styles.footerSubmitButtonLight : ''])}
           onClick={isSubmitting ? null : onAddGameSubmit}>
-          Add Game
+          Create Match
         </div>
       </div>
     )
@@ -201,6 +201,7 @@ const AddGameContainer = ({ level }) => {
   const copyToClipboard = (e) => {
     gameLinkRef.current.select()
     document.execCommand('copy')
+    toast.success(<Toast_style text={'Fair dinkum mate! Link is copied now'} />)
   }
 
   const onInviteFriendsClick = () => {

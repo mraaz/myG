@@ -7,6 +7,7 @@ import Manage from './Manage'
 import { toast } from 'react-toastify'
 import { Toast_style, Convert_to_comma_delimited_value } from '../Utility_Function'
 import { MyGButton } from '../common'
+import { logToElasticsearch } from '../../../integration/http/logger'
 
 const IconMap = {
   0: 'https://myG.gg/platform_icons/btn_Moderator_on.svg',
@@ -247,7 +248,7 @@ export default class Members extends React.Component {
         toast.error(<Toast_style text={'Nope, nope and nope, unable to demote/promote'} />)
       }
     } catch (error) {
-      console.log('error   ', error)
+      logToElasticsearch('error', 'CommunityView/Members.js', 'Failed handleGroupMemberRole:' + ' ' + error)
     }
   }
 
@@ -321,21 +322,36 @@ export default class Members extends React.Component {
   handleMemberSearch = async (e) => {
     const { group_id = '' } = this.props
     const searchMemberValue = e.target.value
-    this.setState({ searchMemberValue }, async () => {
-      if (searchMemberValue == '') {
+    const self = this
+    this.setState({ searchMemberValue })
+
+    if (searchMemberValue == '') {
+      this.setState({ counter: 1, group_members: [] }, () => {
         this.getInitialData()
-        return
-      }
-      const group_members = await axios.post('/api/usergroup/usergroupSearchResults/', {
-        group_id,
-        alias: this.state.searchMemberValue,
       })
-      if (group_members.data && group_members.data.all_group_members.length > 0) {
-        this.setState({ group_members: group_members.data.all_group_members })
-      } else {
-        this.setState({ group_members: [] })
+      return
+    }
+
+    const getSearchInfo = async function() {
+      try {
+        const group_members = await axios.post('/api/usergroup/usergroupSearchResults/', {
+          group_id,
+          alias: self.state.searchMemberValue,
+        })
+        if (group_members.data && group_members.data.all_group_members.length > 0) {
+          self.setState({ group_members: group_members.data.all_group_members })
+        } else {
+          self.setState({ group_members: [] })
+        }
+      } catch (error) {
+        logToElasticsearch('error', 'CommunityView/Members.js', 'Failed handleMemberSearch:' + ' ' + error)
       }
-    })
+    }
+
+    if (this.timeout) clearTimeout(this.timeout)
+    this.timeout = setTimeout(() => {
+      getSearchInfo()
+    }, 30)
   }
 
   render() {
@@ -363,7 +379,7 @@ export default class Members extends React.Component {
           </div>
           {isActive != 'setting' && (
             <div className='manage__searchBar'>
-              <input type='text' value={searchMemberValue} onChange={(e) => this.handleMemberSearch(e)} placeholder='Search menbers here' />
+              <input type='text' value={searchMemberValue} onChange={(e) => this.handleMemberSearch(e)} placeholder='Search members here' />
             </div>
           )}
           <div className='modal__body'>{isActive == 'setting' ? this.renderSettingComponent() : this.renderGroupMember()}</div>
