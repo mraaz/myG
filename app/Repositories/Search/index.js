@@ -89,14 +89,6 @@ class SearchRepository {
     return query;
   }
 
-  async searchGamers({ requestingUserId, query, online, from, size }) {
-    const cleanUser = (user) => ({ ...user, profileId: parseInt(user.profileId), firstName: '', lastName: '', email: '' });
-    const result = await ElasticsearchRepository.searchUser({ query: this.buildUsersQuery({ input: query, from, size, requestingUserId }) });
-    const parsedResults = result.hits.hits.map((hit) => cleanUser(hit._source));
-    const gamers = await this.filterOnlineGamers(parsedResults, online === 'true');
-    return { gamers, total: result.hits.total.value };
-  }
-
   async filterOnlineGamers(gamers, online) {
     if (!online) return Promise.resolve(gamers);
     const onlineUsers = await User.query().select('id')
@@ -105,6 +97,14 @@ class SearchRepository {
       .fetch();
     const onlineUsersIds = onlineUsers ? onlineUsers.toJSON().map((user) => user.id) : [];
     return gamers.filter((gamer) => onlineUsersIds.includes(gamer.profileId));
+  }
+
+  async searchGamers({ requestingUserId, query, online, from, size }) {
+    const cleanUser = (user) => ({ ...user, profileId: parseInt(user.profileId), firstName: '', lastName: '', email: '' });
+    const result = await ElasticsearchRepository.searchUser({ query: this.buildUsersQuery({ input: query, from, size, requestingUserId }) });
+    const parsedResults = result.hits.hits.map((hit) => cleanUser(hit._source));
+    const gamers = await this.filterOnlineGamers(parsedResults, online === 'true');
+    return { gamers, total: result.hits.total.value };
   }
 
   async searchGames({ query }) {
