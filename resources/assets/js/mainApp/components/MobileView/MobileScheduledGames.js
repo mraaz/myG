@@ -12,7 +12,7 @@ import { prefilledFilter_option } from '../scheduledGames/option'
 
 const MobileScheduledGames = (props) => {
   const {
-    scheduleGames = {},
+    scheduleGames = [],
     selectedGame,
     getSingleGameData,
     deSelectGame,
@@ -31,6 +31,7 @@ const MobileScheduledGames = (props) => {
     myGamesMenu = false,
     singleScheduleGamesPayload = {},
   } = props
+  console.log('scheduleGames  ', scheduleGames)
 
   const defaultThumbnails = 'https://myG.gg/platform_images/Notifications/myG_icon.svg'
   const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'

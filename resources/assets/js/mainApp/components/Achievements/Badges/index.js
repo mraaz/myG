@@ -9,13 +9,50 @@ import notifyToast from '../../../../common/toast';
 import levelIndicators from '../../../static/LevelIndicators';
 
 class Badges extends React.Component {
+
+  constructor(){
+    super()
+    this.state = {
+      help: false,
+    }
+    this.contentAreaRef = React.createRef()
+    window.addEventListener('scroll', this.handleScroll, true)
+    this.lastScrollY = 0
+  }
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)
   }
+  handleScroll = () => {
+    this.lastScrollY = window.scrollY
+    let offsetWidth = 0
+    if (this.contentAreaRef.current && this.contentAreaRef.current.offsetWidth) {
+      offsetWidth = this.contentAreaRef.current.offsetWidth ? this.contentAreaRef.current.offsetWidth : 0
+    }
+    window.requestAnimationFrame(() => {
+      if (this.lastScrollY > 200 && this.contentAreaRef.current && this.contentAreaRef.current.style) {
+        document.getElementById('main-sidebar').style.position = 'fixed'
+        // Required padding to prevent infinite loop of styling
 
-  state = {
-    help: false,
+        const w = document.getElementById('main-sidebar').offsetWidth - 80
+        if (window.innerWidth > 768) {
+          this.contentAreaRef.current.style.paddingTop = '170px'
+          // document.getElementById('content-container').style.marginLeft = '80px'
+          document.getElementById('content-container').style.paddingLeft = '80px'
+          this.contentAreaRef.current.style.paddingLeft = `${w}px`
+        }
+        // Exit early to make this less confusing
+        return
+      }
+
+      if (this.contentAreaRef.current) {
+        this.contentAreaRef.current.removeAttribute('style')
+      }
+      document.getElementById('main-sidebar').removeAttribute('style')
+      document.getElementById('content-container').removeAttribute('style')
+    })
   }
+
+  
 
   componentDidMount() {
     this.props.fetchBadges(this.props.alias);
@@ -98,7 +135,7 @@ class Badges extends React.Component {
 
   render() {
     return(
-      <div id="badges">
+      <div id="badges" ref={this.contentAreaRef}>
         {this.renderHelp()}
         {this.renderHelpButton()}
         {this.renderLevelIndicators()}
