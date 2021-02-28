@@ -239,7 +239,6 @@ class GroupController {
         .leftJoin('usergroups', 'usergroups.group_id', 'groups.id')
         .where('usergroups.user_id', '=', auth.user.id)
         .orWhere('groups.user_id', '=', auth.user.id)
-        .distinct('groups.id')
         .select('groups.id')
 
       const groupSearchResults_im_not_in = await Database.from('groups')
