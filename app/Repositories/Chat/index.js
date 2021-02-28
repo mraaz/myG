@@ -1413,7 +1413,6 @@ class ChatRepository {
   }
 
   async publishNotifications({ userId, notifications }) {
-    console.log(`publishNotifications for ${userId}: `, notifications);
     return this.broadcast('chat:auth:*', `chat:auth:${userId}`, `chat:notification`, notifications);
   }
 
