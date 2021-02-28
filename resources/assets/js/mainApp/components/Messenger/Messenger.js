@@ -81,35 +81,37 @@ class Messenger extends React.Component {
 
   renderLockedChat = () => {
     return (
-      <section id='messenger'>
+      <React.Fragment>
         {this.renderSweetAlert()}
-        <div className='locked-chat'>
-          <div className='locked-image'>
-            <img src='https://myG.gg/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
-          </div>
-          <span>Your Chat is locked</span>
-          <span>
-            Reach{' '}
-            <span style={{ color: '#E6C846' }}>
-              {' '}
-              <strong>level 2</strong>
-            </span>{' '}
-            to unlock it.
-          </span>
-          <div className='rectangle'>
-            <img src='https://myg.gg/platform_images/Dashboard/btn_Network.svg' className='img-network' />
-            <div className='body-of-text'>
-              <p>
-                Go to{' '}
-                <Link to={'/achievements/badges'}>
-                  &nbsp;<strong> Achievements</strong>{' '}
-                </Link>
-              </p>
-              <p>to learn how to progress</p>
+        <section id='messenger'>
+          <div className='locked-chat'>
+            <div className='locked-image'>
+              <img src='https://myG.gg/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
+            </div>
+            <span>Your Chat is locked</span>
+            <span>
+              Reach{' '}
+              <span style={{ color: '#E6C846' }}>
+                {' '}
+                <strong>level 2</strong>
+              </span>{' '}
+              to unlock it.
+            </span>
+            <div className='rectangle'>
+              <img src='https://myg.gg/platform_images/Dashboard/btn_Network.svg' className='img-network' />
+              <div className='body-of-text'>
+                <p>
+                  Go to{' '}
+                  <Link to={'/achievements/badges'}>
+                    &nbsp;<strong> Achievements</strong>{' '}
+                  </Link>
+                </p>
+                <p>to learn how to progress</p>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </React.Fragment>
     )
   }
 
