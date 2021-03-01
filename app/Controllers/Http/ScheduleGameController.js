@@ -1018,11 +1018,11 @@ class ScheduleGameController {
       'game_languages',
       'counter',
     ])
-    if (query.start_date_time) query.start_date_time = moment(query.start_date_time).format('YYYY-MM-DD HH:mm:ss')
+    if (query.start_date_time === query.end_date_time) delete query.end_date_time;
+    if (query.start_date_time) query.start_date_time = moment(query.start_date_time).subtract(15, 'minutes').format('YYYY-MM-DD HH:mm:ss')
     if (query.end_date_time) query.end_date_time = moment(query.end_date_time).format('YYYY-MM-DD HH:mm:ss')
     if (query.mic) query.mic = !!query.mic
     if (query.eighteen_plus) query.eighteen_plus = !!query.eighteen_plus
-    if (query.end_date_time) query.end_date_time = moment(query.end_date_time).format('YYYY-MM-DD HH:mm:ss')
     if (query.tags && query.tags.length > 0) {
       query.tags = query.tags.split(',')
       const tagNames = await Database.from('schedule_games_tags')

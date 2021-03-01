@@ -3,12 +3,13 @@ import styles from './progress.module.css'
 import { CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
 
-function _Progress({ progress, reduction = 0, borderColor, value, label, labelStyle, valueStyle, strokeWidth = 4 }) {
+function _Progress({ progress, reduction = 0, borderColor, value, label, labelStyle, valueStyle, rootClass, strokeWidth = 4 }) {
   let __progress = Math.round(progress * 100) / 100
 
   return (
     <CircularProgressbarWithChildren
       value={__progress}
+      classes={{ root: rootClass || '' }}
       styles={buildStyles({
         // Rotation of path and trail, in number of turns (0-1)
         rotation: 0,

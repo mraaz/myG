@@ -3,7 +3,7 @@ import get from 'lodash.get'
 import scriptLoader from 'react-async-script-loader'
 import AsyncCreatableSelect from 'react-select/async-creatable'
 import PlacesAutocomplete from 'react-places-autocomplete'
-import { Game_name_values, Disable_keys } from '../../Utility_Function'
+import { Game_name_values, Disable_keys, getGameLabel } from '../../Utility_Function'
 import { getAssetUrl } from '../../../../common/assets'
 import MyGCheckbox from '../../common/MyGCheckbox'
 import MyGSelect from '../../common/MyGSelect'
@@ -228,23 +228,19 @@ export class DossierInfo extends React.Component {
     return results.filter((result) => !currentGames.includes(result.value))
   }
 
-  prepareValue = (value) => {
-    if (!value || !value.gameImg) return value
-    return { ...value, label: <img src={value.gameImg} /> }
-  }
-
   renderGameInput = (index) => {
     return (
       <div className='row'>
         <span className='hint'>Game #{index + 1}</span>
         <div className='input-container-row game-title-select'>
           <AsyncCreatableSelect
+            cacheOptions
             defaultOptions
             isValidNewOption={() => false}
             loadOptions={this.loadOptions}
             onChange={(input) => this.handleDropDownChange(index, input)}
             isClearable
-            value={this.prepareValue(((this.state.mostPlayedGames || [])[index] || {}).gameNameValue)}
+            value={getGameLabel(((this.state.mostPlayedGames || [])[index] || {}).gameNameValue || {})}
             className='viewGame__name full-width'
             placeholder='Search, select or create game title'
             onInputChange={(inputValue) => (inputValue ? (inputValue.length <= 88 ? inputValue : inputValue.substr(0, 88)) : '')}

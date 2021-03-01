@@ -30,15 +30,22 @@ export default class ProfileInfo extends React.Component {
   }
 
   renderPod = (title, value, alignment) => {
+    const breakPoint = window.innerWidth <= 575 ? 10 : 25;
     return(
       <div className={`pod ${alignment}`}>
-        {this.state.hovering === title && value.length > 25 && <div className="hover-value">{value}</div>}
-        <p className="title">{title}</p>
-        <p className="value"
-          onMouseOver={() => this.setState({ hovering: title })}
-          onMouseLeave={() => this.setState({ hovering: null })}
+        {this.state.hoveringTitle === title && title.length > breakPoint && <div className="hover-value">{title}</div>}
+        {this.state.hoveringValue === value && value.length > breakPoint && <div className="hover-value">{value}</div>}
+        <p className="title"
+          onMouseOver={() => this.setState({ hoveringTitle: title })}
+          onMouseLeave={() => this.setState({ hoveringTitle: null })}
         >
-          {value.slice(0, 25)}{value.length > 25 ? '...' : ''}
+          {title.slice(0, breakPoint)}{title.length > breakPoint ? '...' : ''}
+        </p>
+        <p className="value"
+          onMouseOver={() => this.setState({ hoveringValue: value })}
+          onMouseLeave={() => this.setState({ hoveringValue: null })}
+        >
+          {value.slice(0, breakPoint)}{value.length > breakPoint ? '...' : ''}
         </p>
       </div>
     )

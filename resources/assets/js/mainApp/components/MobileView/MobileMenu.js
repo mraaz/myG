@@ -106,7 +106,7 @@ const MobileMenu = ({ initialData }) => {
                 </div>
                 <div className='small-tile'>
                   <a
-                    href='#'
+                    href='/find-gamers/search'
                     onClick={() => {
                       setHideSearch(false)
                       setHideNav(true)

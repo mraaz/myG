@@ -69,7 +69,7 @@ export default class Search extends React.Component {
         <div id="find-gamers-search" className='row'>
           <div className='input-container'>
             <input 
-              className='input'
+              className='input search-gamers-input'
               placeholder='Search Gamers'
               value={this.state.search} 
               onChange={(event) => this.onChange(event.target.value)}

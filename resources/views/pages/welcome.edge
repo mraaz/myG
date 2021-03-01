@@ -54,10 +54,10 @@
         </div>
       </div>
       <div class="col-3 card-round">
-        <div class="seats-header">
+        <div id="seats-header" class="seats-header">
           <b>We currently have</b>
         </div>
-        <div class="seats-desc">
+        <div id="seats-desc" class="seats-desc">
           <div class="card-seats">
             <b id="seats-available"> Loading... </b>
           </div>
@@ -88,6 +88,12 @@
   }
 
   function setSeatsAvailable() {
+    const unlocked = window.localStorage.getItem('unlockedByCheatCode');
+    if (unlocked) {
+      document.getElementById('seats-header').innerText = "Unlocked by cheat code!";
+      document.getElementById('seats-desc').innerHTML = null;
+      return;
+    }
     const seatsAvailable = parseInt(fetchSeatsAvailable());
     document.getElementById('seats-available').innerText = seatsAvailable || 0;
     if (!seatsAvailable) {
@@ -123,6 +129,27 @@
         + '</div>'
       + '</div>';
     document.getElementById('extra-seats-code-container').innerHTML = inputHtml;
+  }
+
+  function setupCheatCode() {
+    const cheatCode = ['ARROWRIGHT', 'ARROWDOWN', 'ARROWRIGHT', 'H', 'P']
+    document.onkeydown = ({ key }) => {
+      if (window.unlockedByCheatCode) return;
+      if (!window.cheatCode) window.cheatCode = [];
+      window.cheatCode.push(key ? key.toUpperCase() : '');
+      if (JSON.stringify(window.cheatCode) !== JSON.stringify(cheatCode.slice(0, window.cheatCode.length))) {
+        window.cheatCode = [];
+        return;
+      }
+      if (JSON.stringify(window.cheatCode) === JSON.stringify(cheatCode)) {
+        document.getElementById('extra-seats-code-container').innerHTML = null;
+        document.getElementById('extra-seats-email-container').innerHTML = null;
+        document.getElementsByClassName('register-message')[0].innerText = "Nice one! You're granted access, come on down!";
+        document.getElementsByClassName('register-message')[0].style = "color: #FFF";
+        window.unlockedByCheatCode = true;
+        window.localStorage.setItem('unlockedByCheatCode', true);
+      }
+    };
   }
 
   function checkExtraSeatsCode() {
@@ -213,6 +240,7 @@
     }
   }
 
+  setupCheatCode();
   setSeatsAvailable()
   checkDevEnvironment()
   setTimeout(checkErrors, 500)

@@ -116,6 +116,7 @@
           " required="">
           </div>
           <input type='hidden' id='extra-seats-code' name='extraSeatsCode' value="" />
+          <input type='hidden' id='unlocked-by-cheat-code' name='unlockedByCheatCode' value="" />
           <div class="persist-password">
             <input class="persist-password-checkbox" type="checkbox" id="persist-password" name="persist-password" checked/>
             <p>Remember this computer</p>
@@ -140,10 +141,10 @@
           </div>
         </form>
         <div class="col-3 card-round">
-            <div class="seats-header">
+            <div id="seats-header" class="seats-header">
                 <b>We have currently</b>
             </div>
-            <div class="seats-desc">
+            <div id="seats-desc" class="seats-desc">
                 <div class="card-seats">
                     <b id="seats-available"> Loading... </b>
                 </div>
@@ -158,6 +159,30 @@
 <script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_sitekey() }}" ></script>
 <script>
 
+function setupCheatCode() {
+    const unlocked = window.localStorage.getItem('unlockedByCheatCode');
+    document.getElementById('unlocked-by-cheat-code').value = unlocked;
+    const cheatCode = ['ARROWRIGHT', 'ARROWDOWN', 'ARROWRIGHT', 'H', 'P']
+    document.onkeydown = ({ key }) => {
+      if (window.unlockedByCheatCode) return;
+      if (!window.cheatCode) window.cheatCode = [];
+      window.cheatCode.push(key ? key.toUpperCase() : '');
+      if (JSON.stringify(window.cheatCode) !== JSON.stringify(cheatCode.slice(0, window.cheatCode.length))) {
+        window.cheatCode = [];
+        return;
+      }
+      if (JSON.stringify(window.cheatCode) === JSON.stringify(cheatCode)) {
+        document.getElementById('extra-seats-code-container').innerHTML = null;
+        document.getElementById('extra-seats-email-container').innerHTML = null;
+        document.getElementsByClassName('register-message')[0].innerText = "Nice one! You're granted access, come on down!";
+        document.getElementsByClassName('register-message')[0].style = "color: #FFF";
+        window.unlockedByCheatCode = true;
+        window.localStorage.setItem('unlockedByCheatCode', true);
+        document.getElementById('unlocked-by-cheat-code').value = true;
+      }
+    };
+  }
+
 function fetchSeatsAvailable() {
     const xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "GET", '/api/seats_available', false );
@@ -166,6 +191,12 @@ function fetchSeatsAvailable() {
   }
 
   function setSeatsAvailable() {
+    const unlocked = window.localStorage.getItem('unlockedByCheatCode');
+    if (unlocked) {
+      document.getElementById('seats-header').innerText = "Unlocked by cheat code!";
+      document.getElementById('seats-desc').innerHTML = null;
+      return;
+    }
     const seatsAvailable = parseInt(fetchSeatsAvailable());
     document.getElementById('seats-available').innerText = seatsAvailable || 0;
     if (!seatsAvailable) {
@@ -248,6 +279,7 @@ function fetchSeatsAvailable() {
     alert('We will be in touch when the next round of seats is available.')
   }
 
+  setupCheatCode();
   setSeatsAvailable()
 
   function checkKeyPress(ele){

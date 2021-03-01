@@ -3,6 +3,7 @@ const Database = use('Database');
 const UserStatTransactionController = use('App/Controllers/Http/UserStatTransactionController')
 const UserStatTransaction = use('App/Models/UserStatTransaction')
 const UserAchievements = use('App/Models/UserAchievements');
+const UserQuestsSelection = use('App/Models/UserQuestsSelection');
 const BADGES = require('./badges.json');
 const DAILYS = require('./daily.json');
 const WEEKLYS = require('./weekly.json');
@@ -85,18 +86,20 @@ class AchievementsRepository {
   }
 
   fetchDailyQuests = async ({ requestingUserId }) => {
-    return this.fetchQuests({ requestingUserId, template: DAILYS, table: 'user_daily_quests' });
+    return this.fetchQuests({ requestingUserId, template: DAILYS, table: 'user_daily_quests', type: 'daily' });
   }
 
   fetchWeeklyQuests = async ({ requestingUserId }) =>  {
-    return this.fetchQuests({ requestingUserId, template: WEEKLYS, table: 'user_weekly_quests' });
+    return this.fetchQuests({ requestingUserId, template: WEEKLYS, table: 'user_weekly_quests', type: 'weekly' });
   }
 
   fetchMonthlyQuests = async ({ requestingUserId }) =>  {
-    return this.fetchQuests({ requestingUserId, template: MONTHLYS, table: 'user_monthly_quests' });
+    return this.fetchQuests({ requestingUserId, template: MONTHLYS, table: 'user_monthly_quests', type: 'monthly' });
   }
 
-  async fetchQuests({ requestingUserId, template, table }) {
+  async fetchQuests({ requestingUserId, template, table, type }) {
+    const questsSelection = await Database.table('user_quests_selection').where('type', type);
+    const availableQuests = get(questsSelection, '[0].quests', '').split('|');
     const response = await Database.table(table).where('user_id', requestingUserId);
     const quests = template.map((entry) => {
       const quest = { ...entry };
@@ -104,7 +107,7 @@ class AchievementsRepository {
       const progress = (quest.completed / quest.total) * 100;
       quest.progress = progress > 100 ? 100 : progress;
       return quest;
-    });
+    }).filter(({ type }) => availableQuests.includes(type));
     const completed = quests.filter(({ completed, total }) => completed >= total).length;
     const collected = response.some(({ type }) => type === 'collect');
     return { collected, quests, completed, collectable: completed >= 3 };
@@ -139,16 +142,33 @@ class AchievementsRepository {
   }
 
   async clearDailys() {
+    await Database.table('user_quests_selection').where('type', 'daily').delete();
+    const selection = new UserQuestsSelection();
+    selection.type = 'daily';
+    selection.quests = this.getThreeRandomQuests(DAILYS);
+    await selection.save();
     return this.clearQuests({ fetchFunction: this.fetchDailyQuests, redeemFunction: this.redeemDaily, table: 'user_daily_quests' })
   }
   
   async clearWeeklys() {
+    await Database.table('user_quests_selection').where('type', 'weekly').delete();
+    const selection = new UserQuestsSelection();
+    selection.type = 'weekly';
+    selection.quests = this.getThreeRandomQuests(WEEKLYS);
+    await selection.save();
     return this.clearQuests({ fetchFunction: this.fetchWeeklyQuests, redeemFunction: this.redeemWeekly, table: 'user_weekly_quests' })
   }
 
   async clearMonthlys() {
-    return this.clearQuests({ fetchFunction: this.fetchMonthlyQuests, redeemFunction: this.redeemMonthly, table: 'user_monthly_quests' })
+    await Database.table('user_quests_selection').where('type', 'monthly').delete();
+    const selection = new UserQuestsSelection();
+    selection.type = 'monthly';
+    selection.quests = this.getThreeRandomQuests(MONTHLYS);
+    await selection.save();
+    return this.clearQuests({ fetchFunction: this.fetchMonthlyQuests, redeemFunction: this.redeemMonthly, table: 'user_monthly_quests' });
   }
+
+  getThreeRandomQuests = (type) => type.map(({ type }) => type).sort(() => .5 - Math.random()).slice(0, 3).join('|');
 
   async clearQuests({ fetchFunction, redeemFunction, table }) {
     const users = await Database.table(table).select('user_id');

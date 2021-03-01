@@ -150,6 +150,53 @@ class ElasticsearchRepository {
     });
   }
 
+  // TODO: Paginate this using the scroll API:
+  // https://www.elastic.co/guide/en/elasticsearch/reference/6.8/search-request-scroll.html
+  async fetchAllGameNameIds() {
+    return this.getElasticsearchClient().search({ index: 'game_names', body: {
+      _source: "",  query: { match_all: {} }, size: 10000,
+    }}).then((result) => result.hits.hits.map((hit) => hit._id));
+  }
+
+  async fetchTopGameNames() {
+    return this.getElasticsearchClient().search({ index: 'game_names', body: {
+      query: { match_all: {} },
+      sort: [{ counter: { order: "desc" } }],
+    }}).then((result) => result.hits.hits.map((hit) => hit._source));
+  }
+
+  async searchGameNames(input) {
+    return this.getElasticsearchClient().search({ index: 'game_names', body: {
+      query: { match: { game_name: { query: input, fuzziness: "auto" } } },
+    }}).then((result) => result.hits.hits.map((hit) => hit._source));
+  }
+
+  async storeGameName(gameName) {
+    log('ELASTICSEARCH', `Storing game name in Elasticsearch: ${gameName.id}`);
+    return this.getElasticsearchClient().update({
+      index: 'game_names',
+      id: gameName.id,
+      body: {
+        doc: gameName,
+        doc_as_upsert: true,
+      }
+    }).then(() => ({ success: true, error: null })).catch(error => {
+      console.error('Failed to Update Elasticsearch: ', error);
+      return ({ success: false, error });
+    });
+  }
+
+  async removeGameName({ id }) {
+    log('ELASTICSEARCH', `Removing game from Elasticsearch: ${id}`);
+    return this.getElasticsearchClient().delete({
+      id,
+      index: 'game_names',
+    }).then(() => ({ success: true, error: null })).catch(error => {
+      console.error('Failed to Update Elasticsearch: ', error);
+      return ({ success: false, error });
+    });
+  }
+
   forceArray(value) {
     if (Array.isArray(value)) return value
     const parsed = this.forceJson(value)
