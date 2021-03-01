@@ -16,11 +16,11 @@ export default class MyGSweetAlert extends React.Component {
     props.warning = null;
     props.success = null;
     return (
-      <SweetAlert {...props} custom customIcon={customIcon}
+      <SweetAlert {...props} custom customIcon={window.innerWidth <= 575 ? null : customIcon}
         style={{
           backgroundColor: "#181A1C",
           color: "#425156",
-          padding: 20,
+          padding: window.innerWidth <= 575 ? '64px 12px' : 20,
           whiteSpace: 'pre-wrap',
         }}
         cancelBtnStyle={{

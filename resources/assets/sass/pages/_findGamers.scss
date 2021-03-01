@@ -590,3 +590,63 @@
     }
   }
 }
+
+@media screen and (max-width: 575px) {
+  #find-gamers {
+    #find-gamers-search {
+      padding: 0;
+      margin: 0 8px;
+      .search-gamers-input {
+        border-radius: 1000px;
+      }
+    }
+    #find-gamers-online {
+      display: none;
+    }
+    .top-bar {
+      margin-top: 96px;
+      background-color: transparent;
+      border: none;
+    }
+    .headers {
+      display: none;
+    }
+    #find-gamers-banner {
+      display: none;
+    }
+    #find-gamers-filter {    
+      margin: 24px 8px;
+      .filter-row {
+        width: 100%;
+      }
+    }
+    .find-gamers-results {
+      padding: 0 !important;
+      .game-experience-row {
+        display: none !important;
+      }
+      .find-gamer-result {
+        margin: 12px !important;
+        max-width: 100% !important;
+        .gamer {
+          width: 100% !important;
+        }
+        .info {
+          width: 50% !important;
+        }
+        .alias-info {
+          margin-left: 24px !important;
+        }
+        .icon {
+          left: 8px!important;
+          top: 8px!important;
+          width: 48px !important;
+          height: 48px !important;
+          margin: 0 !important;
+          bottom: unset !important;
+        }
+      }
+    }
+  }
+}
+
