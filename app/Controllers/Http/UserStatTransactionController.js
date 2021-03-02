@@ -128,15 +128,15 @@ class UserStatTransactionController {
         user_level: 25,
         user_experience: 438739,
         start_of_level_xp: 438739,
-      };
+      }
 
       const currentLevel = {
         user_level: getGamerLevels.level,
         user_experience: getGamerLevels.experience_points,
         start_of_level_xp: start_of_level_xp,
-      };
+      }
 
-      const level = process.env.MOCK_MAX_LEVEL ? maxLevel : currentLevel;
+      const level = process.env.MOCK_MAX_LEVEL ? maxLevel : currentLevel
 
       return {
         userId,

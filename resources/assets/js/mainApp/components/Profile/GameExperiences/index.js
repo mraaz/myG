@@ -122,7 +122,7 @@ export default class GameExperiences extends React.Component {
         />
         {fields.map((field) => (
           <div className="field">
-            <span className="field-title">{field.charAt(0).toUpperCase() + field.slice(1)}</span>
+            <span className="field-title">{field.replace('Level', 'Career').charAt(0).toUpperCase() + field.replace('Level', 'Career').slice(1)}</span>
             <span className="field-value">{game[field.toLowerCase()] || 'N/A'}</span>
           </div>
         ))}

@@ -72,8 +72,8 @@ export default class Results extends React.Component {
           onMouseLeave={() => this.setState({ hovering: null })}
         >
           {this.renderHoverBar(gamer, isHovering)}
-          <div className='icon' style={{ backgroundImage: `url('${gamer.image}'), url('https://myG.gg/default_user/new-user-profile-picture.png')` }} />
-          <div className="info">
+          <div className='icon' style={{ backgroundImage: `url('${gamer.image}'), url('https://cdn.myG.gg/default_user/new-user-profile-picture.png')` }} />
+          <div className="alias-info info">
             {gamer.alias && (
               aliasTooLong ? (
                 <WithTooltip position={{ bottom: '24px', left: '-12px' }} text={`@${gamer.alias}`}>
@@ -83,6 +83,8 @@ export default class Results extends React.Component {
                 <span className="alias">@{gamer.alias}</span>
               )
             )}
+            {window.innerWidth <= 575 && <span className="title">Level</span>}
+            {window.innerWidth <= 575 && <span className="value">{gamer.level}</span>}
             {gamer.country && <span className="title">Country</span>}
             {gamer.country && <span className="value">{gamer.country}</span>}
             {gamer.team && <span className="title">Professional Team</span>}
@@ -90,19 +92,21 @@ export default class Results extends React.Component {
             {gamer.languages.length && <span className="title">Languages</span>}
             {gamer.languages.length && <span className="value">{gamer.languages.join(', ')}</span>}
           </div>
-          <div className="level-progress">
-            <Progress
-              className={`circle-wrap`}
-              borderColor={'#E5C746'}
-              progress={0}
-              value={gamer.level}
-              subtitle={'Level'}
-              reduction={0}
-              hideBall
-              strokeWidth={8}
-              background={'#fff'}
-            />
-          </div>
+          {window.innerWidth > 575 && (
+            <div className="level-progress">
+              <Progress
+                className={`circle-wrap`}
+                borderColor={'#E5C746'}
+                progress={0}
+                value={gamer.level}
+                subtitle={'Level'}
+                reduction={0}
+                hideBall
+                strokeWidth={8}
+                background={'#fff'}
+              />
+            </div>
+          )}
           <div className="info">
             <span className="title">Experience Pts.</span>
             <span className="value">{gamer.experience}</span>

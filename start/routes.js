@@ -70,6 +70,8 @@ Route.get('/api/getpost/:id', 'PostController.showpost')
 Route.post('/api/post/featureToggle/', 'PostController.featureToggle')
 Route.post('/api/post/showHashTagPosts/', 'PostController.showHashTagPosts')
 
+Route.post('/api/sponsoredPost/update_clicks/', 'SponsoredPostController.update_clicks')
+
 Route.post('/api/get_group_posts', 'PostController.get_group_posts')
 
 Route.post('/api/user', 'UserController.store')
@@ -283,7 +285,7 @@ Route.get('/api/groups/:str/groupSearchResults_notMygrps', 'GroupController.grou
 Route.get('/api/groups/groupName/:group_name', 'GroupController.groupName')
 
 Route.get('/api/groups/view/:counter', 'GroupController.myshow')
-Route.get('/api/groups/all_myGrps/:counter', 'GroupController.all_myGrps')
+//Route.get('/api/groups/all_myGrps/:counter', 'GroupController.all_myGrps')
 
 Route.post('/api/groups/update_img', 'GroupController.update_img')
 Route.post('/api/groups/update_settings/', 'GroupController.update_settings')
@@ -318,7 +320,7 @@ Route.post('/api/followers/create', 'FollowerController.store')
 Route.delete('/api/followers/:follower_id/delete', 'FollowerController.delete')
 Route.delete('/api/followers/:follower_id/delete_group', 'FollowerController.delete_group')
 
-Route.get('/api/email/summary_email', 'EmailController.summary_email')
+Route.get('/api/email/welcome_email', 'EmailController.welcome_email')
 
 Route.post('/api/connections/gamers_you_might_know', 'ConnectionController.gamers_you_might_know')
 Route.get('/api/connections/i_am_viewing_this_profile/:other_user_id', 'ConnectionController.have_I_viewed_this_profile')

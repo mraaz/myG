@@ -102,7 +102,8 @@
         @endif
       ">
     </div>
-    <input type='hidden' id='extra-seats-code' name='extraSeatsCode' value="" />"
+    <input type='hidden' id='extra-seats-code' name='extraSeatsCode' value="" />
+    <input type='hidden' id='unlocked-by-cheat-code' name='unlockedByCheatCode' value="" />
     <div class="form-group">
       <button type="submit">Register</button>
     </div>
@@ -115,5 +116,7 @@
 <script>
   const extraSeatsCodeField = document.getElementById('extra-seats-code');
   extraSeatsCodeField.value = window.localStorage.getItem("extraSeatsCode");
+  const unlockedByCheatCodeField = document.getElementById('unlocked-by-cheat-code');
+  unlockedByCheatCodeField.value = window.localStorage.getItem("unlockedByCheatCode");
 </script>
 @endsection

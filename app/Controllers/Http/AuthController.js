@@ -51,7 +51,7 @@ class AuthController {
     const messages = {
       required: 'Required field',
       email: 'Enter valid email address',
-      min: 'Not enough characters - Min 4 for Alias, 6 for Password and 7 for Encryption Paraphrase',
+      min: 'Not enough characters - Min 4 for Alias, 7 for Chat Password',
       max: 'Wow! Too many characters - Max 30',
       unique: 'Sorry, this field is not unique. Try again please.',
     }
@@ -100,7 +100,8 @@ class AuthController {
         // Seats Availability
         const seatsAvailable = await SeatsAvailable.query().first()
         const extraSeatsCode = request.input('extraSeatsCode')
-        if (!seatsAvailable.seats_available && !extraSeatsCode) {
+        const unlockedByCheatCode = request.input('unlockedByCheatCode')
+        if (!seatsAvailable.seats_available && !extraSeatsCode && !unlockedByCheatCode) {
           return response.redirect('/?error=seats')
         }
 
@@ -110,7 +111,7 @@ class AuthController {
           alias: request.input('alias'),
           first_name: request.input('firstName'),
           last_name: request.input('lastName'),
-          profile_img: 'https://myG.gg/default_user/new-user-profile-picture.png',
+          profile_img: 'https://cdn.myG.gg/default_user/new-user-profile-picture.png',
         })
 
         // Decrease Seats Available upon Registration

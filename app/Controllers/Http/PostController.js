@@ -102,103 +102,6 @@ class PostController {
     }
   }
 
-  // async storephoto({ auth, request, response }) {
-  //   let arrGroups_id = [],
-  //     newPost = ''
-  //
-  //   if (request.input('groups_id') != null) {
-  //     arrGroups_id = request.input('groups_id').split(',')
-  //   }
-  //   if (auth.user) {
-  //     try {
-  //       if (arrGroups_id.length == 0) {
-  //         newPost = await Post.create({
-  //           content: request.input('content'),
-  //           user_id: auth.user.id,
-  //           type: 'photo',
-  //           group_id: request.input('groups_id'),
-  //           visibility: request.input('visibility'),
-  //           media_url: request.input('media_url'),
-  //         })
-  //       } else {
-  //         for (var i = 0; i < arrGroups_id.length; i++) {
-  //           newPost = await Post.create({
-  //             content: request.input('content'),
-  //             user_id: auth.user.id,
-  //             type: 'photo',
-  //             group_id: arrGroups_id[i],
-  //             visibility: request.input('visibility'),
-  //             media_url: request.input('media_url'),
-  //           })
-  //         }
-  //       }
-  //
-  //       // let update_key = new AwsKeyController()
-  //       // request.params.post_id = newPost.id
-  //       // update_key.addPostKey({ auth, request, response })
-  //
-  //       return newPost
-  //     } catch (error) {
-  //       LoggingRepository.log({
-  //         environment: process.env.NODE_ENV,
-  //         type: 'error',
-  //         source: 'backend',
-  //         context: __filename,
-  //         message: (error && error.message) || error,
-  //       })
-  //     }
-  //   }
-  // }
-  //
-  // async storevideo({ auth, request, response }) {
-  //   let arrGroups_id = [],
-  //     newPost = ''
-  //
-  //   if (request.input('groups_id') != null) {
-  //     arrGroups_id = request.input('groups_id').split(',')
-  //   }
-  //
-  //   if (auth.user) {
-  //     try {
-  //       if (arrGroups_id.length == 0) {
-  //         newPost = await Post.create({
-  //           content: request.input('content'),
-  //           user_id: auth.user.id,
-  //           type: 'video',
-  //           group_id: request.input('groups_id'),
-  //           visibility: request.input('visibility'),
-  //           media_url: request.input('media_url'),
-  //         })
-  //       } else {
-  //         for (var i = 0; i < arrGroups_id.length; i++) {
-  //           newPost = await Post.create({
-  //             content: request.input('content'),
-  //             user_id: auth.user.id,
-  //             type: 'video',
-  //             group_id: arrGroups_id[i],
-  //             visibility: request.input('visibility'),
-  //             media_url: request.input('media_url'),
-  //           })
-  //         }
-  //       }
-  //
-  //       // let update_key = new AwsKeyController()
-  //       // request.params.post_id = newPost.id
-  //       // update_key.addPostKey({ auth, request, response })
-  //
-  //       return newPost
-  //     } catch (error) {
-  //       LoggingRepository.log({
-  //         environment: process.env.NODE_ENV,
-  //         type: 'error',
-  //         source: 'backend',
-  //         context: __filename,
-  //         message: (error && error.message) || error,
-  //       })
-  //     }
-  //   }
-  // }
-
   async show({ auth, request, response }) {
     try {
       let grp_limit = 3
@@ -278,12 +181,35 @@ class PostController {
       const category = request.params.counter % 5
       let get_sponsored_posts = undefined
 
-      if (!isNaN(category)) {
-        //Great 1st Attempt but will SUX once we get more data in this table.
-        get_sponsored_posts = await Database.from('sponsored_posts')
+      let _1stpass = [...ppl_im_following_Posts.data, ...groups_im_in_Posts.data]
+
+      const common_Controller = new CommonController()
+      _1stpass = await common_Controller.shuffle(_1stpass)
+
+      if (_1stpass.length == 0) {
+        let welcome_Posts = await Database.from('posts')
+          .innerJoin('users', 'users.id', 'posts.user_id')
+          .whereBetween('posts.id', [1, 3])
+          .orderBy('posts.id', 'asc')
+          .select('*', 'posts.id', 'posts.updated_at')
+
+        _1stpass = [..._1stpass, ...welcome_Posts]
+      }
+
+      if (!isNaN(category) && _1stpass.length > 2) {
+        const get_sponsored_posts_total = await Database.from('sponsored_posts')
           .where('visibility', '=', 1)
           .where('category', '=', category)
-          .select('*')
+          .count('* as total')
+
+        get_sponsored_posts = await Database.from('sponsored_posts')
+          .leftJoin('sponsored_posts_transactions', 'sponsored_posts_transactions.sponsored_posts_id', 'sponsored_posts.id')
+          .where('visibility', '=', 1)
+          .where('category', '=', category)
+          .where('sponsored_posts_transactions.id', 'is', null)
+          .select('sponsored_posts.*')
+          .orderBy('updated_at', 'desc')
+          .limit(Math.floor(Math.random() * parseInt(get_sponsored_posts_total[0].total)))
 
         if (get_sponsored_posts != undefined && get_sponsored_posts.length > 0) {
           const randValue = Math.floor(Math.random() * (get_sponsored_posts.length - 1 + 1)) + 0
@@ -292,21 +218,18 @@ class PostController {
           get_sponsored_posts = await Database.from('sponsored_posts')
             .where('visibility', '=', 1)
             .select('*')
-            .orderBy('times_clicked', 'desc')
-            .first()
+            .orderBy('updated_at', 'desc')
+            .limit(88)
+          const randValue = Math.floor(Math.random() * (get_sponsored_posts.length - 1 + 1)) + 0
+          get_sponsored_posts = get_sponsored_posts[randValue]
         }
 
-        if (get_sponsored_posts != undefined) get_sponsored_posts.sponsored_post = true
+        if (get_sponsored_posts != undefined) {
+          get_sponsored_posts.sponsored_post = true
+          _1stpass.splice(1, 0, get_sponsored_posts)
+        }
       }
 
-      let _1stpass = [...ppl_im_following_Posts.data, ...groups_im_in_Posts.data]
-
-      const common_Controller = new CommonController()
-      _1stpass = await common_Controller.shuffle(_1stpass)
-
-      if (_1stpass.length > 2 && get_sponsored_posts != undefined) {
-        _1stpass.splice(1, 0, get_sponsored_posts)
-      }
       const myPosts = await this.get_additional_info({ auth }, _1stpass)
 
       return {
@@ -328,6 +251,7 @@ class PostController {
       let myPosts = await Database.from('posts')
         .innerJoin('users', 'users.id', 'posts.user_id')
         .where('posts.id', '=', request.params.id)
+        .where('visibility', '=', 1)
         .select('*', 'posts.id', 'posts.created_at', 'posts.updated_at')
         .orderBy('posts.created_at', 'desc')
         .limit(1)
@@ -380,7 +304,7 @@ class PostController {
     try {
       let myPosts = await Database.from('posts')
         .innerJoin('users', 'users.id', 'posts.user_id')
-        .where({ user_id: auth.user.id })
+        .where({ user_id: auth.user.id, visibility: 1 })
         .select('*', 'posts.id', 'posts.updated_at')
         .orderBy('posts.created_at', 'desc')
         .paginate(request.params.paginateNo, 10)
@@ -405,7 +329,7 @@ class PostController {
     try {
       let groupPosts = await Database.from('posts')
         .innerJoin('users', 'users.id', 'posts.user_id')
-        .where({ group_id: group_id })
+        .where({ group_id: group_id, visibility: 1 })
         .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
         .orderBy('posts.created_at', 'desc')
         .paginate(counter, 10)
@@ -435,7 +359,7 @@ class PostController {
         case 'Recents':
           groupPosts = await Database.from('posts')
             .innerJoin('users', 'users.id', 'posts.user_id')
-            .where({ group_id: request.input('group_id') })
+            .where({ group_id: request.input('group_id'), visibility: 1 })
             .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
             .orderBy('posts.created_at', 'desc')
             .paginate(request.input('counter'), 10)
@@ -444,7 +368,7 @@ class PostController {
         case 'Featured':
           groupPosts = await Database.from('posts')
             .innerJoin('users', 'users.id', 'posts.user_id')
-            .where({ group_id: request.input('group_id'), featured: true })
+            .where({ group_id: request.input('group_id'), featured: true, visibility: 1 })
             .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
             .orderBy('posts.created_at', 'desc')
             .paginate(request.input('counter'), 10)
@@ -453,7 +377,7 @@ class PostController {
         default:
           groupPosts = await Database.from('posts')
             .innerJoin('users', 'users.id', 'posts.user_id')
-            .where({ group_id: request.input('group_id') })
+            .where({ group_id: request.input('group_id'), visibility: 1 })
             .select('posts.*', 'posts.id', 'posts.updated_at', 'users.alias', 'users.profile_img')
             .orderBy('posts.created_at', 'desc')
             .paginate(request.input('counter'), 10)
@@ -522,7 +446,7 @@ class PostController {
   async posts_count({ auth, request, response }) {
     try {
       const no_of_my_posts = await Database.from('posts')
-        .where({ id: request.params.id, user_id: auth.user.id })
+        .where({ id: request.params.id, user_id: auth.user.id, visibility: 1 })
         .count('* as no_of_my_posts')
 
       return {

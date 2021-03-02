@@ -70,7 +70,7 @@ const ReportPost = (props) => {
           <h1>
             {showReason && (
               <img
-                src='https://myG.gg/platform_images/Communities/Group+971.svg'
+                src='https://cdn.myG.gg/platform_images/Communities/Group+971.svg'
                 onClick={handleBackButton}
                 alt='arrow-left'
               />
@@ -79,7 +79,7 @@ const ReportPost = (props) => {
             <span>Why are you reporting this?</span>
           </h1>
           <div className='modal__close' onClick={(e) => hideModal(false)}>
-            <img src='https://myG.gg/platform_images/Dashboard/X_icon.svg' />
+            <img src='https://cdn.myG.gg/platform_images/Dashboard/X_icon.svg' />
           </div>
         </div>
         <div className='modal__body'>

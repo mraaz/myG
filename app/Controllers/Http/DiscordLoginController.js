@@ -127,7 +127,8 @@ class DiscordLoginController {
       // Seats Availability
       const seatsAvailable = await SeatsAvailable.query().first()
       const extraSeatsCode = request.input('extraSeatsCode')
-      if (!seatsAvailable.seats_available && !extraSeatsCode) {
+      const unlockedByCheatCode = request.input('unlockedByCheatCode')
+      if (!seatsAvailable.seats_available && !extraSeatsCode && !unlockedByCheatCode) {
         return response.redirect('/?error=seats')
       }
 

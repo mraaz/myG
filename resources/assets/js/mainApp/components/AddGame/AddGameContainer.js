@@ -192,7 +192,7 @@ const AddGameContainer = ({ level }) => {
         <div
           className={classNames([styles.footerSubmitButton, isButtonDisabled() ? styles.footerSubmitButtonLight : ''])}
           onClick={isSubmitting ? null : onAddGameSubmit}>
-          Add Game
+          Create Match
         </div>
       </div>
     )
@@ -201,6 +201,7 @@ const AddGameContainer = ({ level }) => {
   const copyToClipboard = (e) => {
     gameLinkRef.current.select()
     document.execCommand('copy')
+    toast.success(<Toast_style text={'Fair dinkum mate! Link is copied now'} />)
   }
 
   const onInviteFriendsClick = () => {
@@ -230,7 +231,7 @@ const AddGameContainer = ({ level }) => {
             }}
             readOnly>
             <div style={{ marginTop: '9px', marginLeft: '15px', cursor: 'pointer' }} onClick={copyToClipboard}>
-              <img src='https://myG.gg/platform_images/Dashboard/Link.svg' height='18' width='18' />
+              <img src='https://cdn.myG.gg/platform_images/Dashboard/Link.svg' height='18' width='18' />
             </div>
           </MyGInput>
           <div className={styles.listedOrText}>OR</div>
@@ -270,7 +271,7 @@ const AddGameContainer = ({ level }) => {
         <PageHeader headerText='Create Match' />
         <div className='locked-create-match'>
           <div className='locked-image'>
-            <img src='https://myG.gg/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
+            <img src='https://cdn.myG.gg/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
           </div>
           <span>Create Match is locked</span>
           <span>
@@ -282,7 +283,7 @@ const AddGameContainer = ({ level }) => {
             to unlock it.
           </span>
           <div className='rectangle'>
-            <img src='https://myg.gg/platform_images/Dashboard/btn_Network.svg' className='img-network' />
+            <img src='https://cdn.myG.gg/platform_images/Dashboard/btn_Network.svg' className='img-network' />
             <div className='body-of-text'>
               <p>
                 Go to{' '}

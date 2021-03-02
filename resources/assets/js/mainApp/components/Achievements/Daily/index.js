@@ -28,10 +28,10 @@ class Daily extends React.Component {
   renderHeader = () => {
     if (this.props.collected) return null;
     return(
-      <div className="header">
+      <div className="header header-top">
       <div className="icon" style={{ backgroundImage: `url(${getAssetUrl('ic_achievements_clock')})` }}/>
       <div className="content">
-        <span className="hint">Complete 3 out of 6 Daily Quests</span>
+        <span className="hint">Complete all Daily Quests</span>
         <div className="progress">
           <div className="progress-hint">
             <span className="completed">{this.props.completed}/</span>

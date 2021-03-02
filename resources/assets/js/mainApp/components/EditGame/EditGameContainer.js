@@ -384,7 +384,7 @@ const EditGameContainer = (props) => {
             }}
             readOnly>
             <div style={{ marginTop: '9px', marginLeft: '15px', cursor: 'pointer' }} onClick={copyToClipboard}>
-              <img src='https://myG.gg/platform_images/Dashboard/Link.svg' height='18' width='18' />
+              <img src='https://cdn.myG.gg/platform_images/Dashboard/Link.svg' height='18' width='18' />
             </div>
           </MyGInput>
           <div className={styles.listedOrText}>OR</div>
@@ -432,7 +432,7 @@ const EditGameContainer = (props) => {
               />
             </div>
             <div className='modal__close' onClick={() => handleReasonSubmit(false)}>
-              <img src='https://myG.gg/platform_images/Dashboard/X_icon.svg' />
+              <img src='https://cdn.myG.gg/platform_images/Dashboard/X_icon.svg' />
             </div>
           </div>
           <div className='modal__footer'>

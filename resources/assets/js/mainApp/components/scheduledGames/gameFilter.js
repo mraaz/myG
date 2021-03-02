@@ -991,7 +991,7 @@ export default class ScheduleGames extends Component {
             <div className='filter__header' onClick={this.handleSavedFilterChange}>
               Saved Filter
             </div>
-            <img src={' https://myG.gg/platform_images/View+Game/Down+Carrot.svg'} onClick={this.handleSavedFilterChange} />
+            <img src={' https://cdn.myG.gg/platform_images/View+Game/Down+Carrot.svg'} onClick={this.handleSavedFilterChange} />
             {showFilters && (
               <div className='filterType__group'>
                 <div className='filterType__head'>Saved Filters</div>
@@ -1022,12 +1022,12 @@ export default class ScheduleGames extends Component {
 
                           {!showFilterTypeInput[k.id] && (
                             <div className='deleteFilter' onClick={(e) => this.handleDeleteFilterType(e, k.id)}>
-                              <img src='https://myG.gg/platform_images/View+Game/X+icon.svg' />
+                              <img src='https://cdn.myG.gg/platform_images/View+Game/X+icon.svg' />
                             </div>
                           )}
                           {!showFilterTypeInput[k.id] && (
                             <div className='editFilter' onClick={(e) => this.handleEditFilterType(e, k.id, k.name)}>
-                              <img src='https://myG.gg/platform_images/View+Game/edit-tools.svg' />
+                              <img src='https://cdn.myG.gg/platform_images/View+Game/edit-tools.svg' />
                             </div>
                           )}
                         </div>
@@ -1042,7 +1042,7 @@ export default class ScheduleGames extends Component {
             <div className='filter__header' onClick={this.handleAddFilterChange}>
               Add Filter
             </div>
-            <img src={' https://myG.gg/platform_images/View+Game/Down+Carrot.svg'} onClick={this.handleAddFilterChange} />
+            <img src={' https://cdn.myG.gg/platform_images/View+Game/Down+Carrot.svg'} onClick={this.handleAddFilterChange} />
             {showFilterType && (
               <div className='filterType__group'>
                 <div className='filterType__head'>Add Filters</div>

@@ -26,7 +26,6 @@ export default function reducer(state = initialState, action) {
     case 'SEARCH_GAMERS_FULFILLED': {
       logger.log('SEARCH', `Redux -> Searched Gamers for ${action.meta.input}: `, action.payload)
       const gamers = JSON.parse(JSON.stringify(uniqBy(!action.meta.from ? action.payload.gamers : [...state.gamers, ...action.payload.gamers], 'profileId'))); 
-      console.log({ previousGamers: state.gamers, newGamers: action.payload.gamers, currentGamers: gamers });
       return {
         ...state,
         gamers,

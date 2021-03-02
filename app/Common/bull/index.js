@@ -8,29 +8,35 @@ function setupBull() {
   const hasRedis = Env.get('REDIS_ENABLED');
   const host = Env.get('REDIS_HOST');
   const port = Env.get('REDIS_PORT');
+  const bullLogs = Env.get('BULL_LOGS');
   const disableCluster = Env.get('REDIS_DISABLE_CLUSTER');
-  const runEveryJobOnStart = Env.get('BULL_RUN_EVERY_JOB_ON_START');
+  const runEveryJobOnStart = false//Env.get('BULL_RUN_EVERY_JOB_ON_START');
   const bullConfig = { redis: { host, port } };
   const ioCluster = !disableCluster && hasRedis && new Redis.Cluster([bullConfig.redis]);
 
-  if (!hasRedis) return logBull(moment, 'Redis Disabled, no Bull Queues will be run.');
+  if (!hasRedis) return logBull(bullLogs, moment, 'Redis Disabled, no Bull Queues will be run.');
 
   getJobs(Queue, bullConfig, ioCluster, uuidv4, runEveryJobOnStart).forEach((job) => {
-    if (!job.enabled) return logBull(moment, `Skipping Disabled Job ${job.name}`);
-    logBull(moment, `Setting up Bull Job: ${job.name}`);
+    if (!job.enabled) return logBull(bullLogs, moment, `Skipping Disabled Job ${job.name}`);
+    logBull(bullLogs, moment, `Setting up Bull Job: ${job.name}`);
     job.queue.process(job.action);
-    job.queue.on('waiting', () => logBull(moment, `Task Started: ${job.name}`));
-    job.queue.on('completed', () => logBull(moment, `Task Completed: ${job.name}`));
-    job.queue.on('error', (error)  => logBull(moment, `Task Error: ${job.name}`, error));
-    job.queue.on('failed', (job, error) => logBull(moment, `Task Failed: ${job.name}`, error));
+    job.queue.on('waiting', () => logBull(bullLogs, moment, `Task Started: ${job.name}`));
+    job.queue.on('completed', () => logBull(bullLogs, moment, `Task Completed: ${job.name}`));
+    job.queue.on('error', (error)  => logBull(bullLogs, moment, `Task Error: ${job.name}`, error));
+    job.queue.on('failed', (job, error) => logBull(bullLogs, moment, `Task Failed: ${job.name}`, error));
     job.queue.clean(0);
     if (job.runOnStart) job.queue.add(job.payload, job.options);
     if (job.runOnSchedule) job.queue.add(job.payload, { ...job.options, ...job.schedule });
   });
+
+  console.log(Env.get('BULL_RUN_EVERY_JOB_ON_START'),"<<BULL_RUN_EVERY_JOB_ON_START");
+  let tmp = Env.get('BULL_RUN_EVERY_JOB_ON_START') ? true : false
+  console.log(tmp,"<<<tmp");
 }
 
-function logBull(moment, content) {
-  console.log('\x1b[36m', 'BULL', moment.format('D MMM HH:mm:ss'), '-', content, '\x1b[0m');
+
+function logBull(bullLogs, moment, content) {
+  if (bullLogs) console.log('\x1b[36m', 'BULL', moment.format('D MMM HH:mm:ss'), '-', content, '\x1b[0m');
 }
 
 function getJobs(Queue, bullConfig, ioCluster, uuidv4, runEveryJobOnStart) {
@@ -77,6 +83,17 @@ function getJobs(Queue, bullConfig, ioCluster, uuidv4, runEveryJobOnStart) {
       name: 'Game Sync To Elasticsearch',
       queue: new Queue('Game Sync To Elasticsearch', prefixedConfig('{game-syncToElasticsearch}')),
       action: require('./tasks/game-syncToElasticsearch'),
+      options: { jobId: uuidv4() },
+      payload: {},
+      schedule: { repeat: { cron: '0 0 * * *' } },
+      runOnSchedule: true,
+      runOnStart: runEveryJobOnStart ? true : false,
+      enabled: true,
+    },
+    {
+      name: 'Game Name Sync To Elasticsearch',
+      queue: new Queue('Game Name Sync To Elasticsearch', prefixedConfig('{gameName-syncToElasticsearch}')),
+      action: require('./tasks/gameName-syncToElasticsearch'),
       options: { jobId: uuidv4() },
       payload: {},
       schedule: { repeat: { cron: '0 0 * * *' } },

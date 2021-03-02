@@ -1,5 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { useSwipeable } from 'react-swipeable'
 import MobileMenuTop from './MobileMenuTop'
 
 import { useScrollDirection } from '../../hooks'
@@ -16,14 +17,19 @@ const MobileMenu = ({ initialData }) => {
   const [hideSearch, setHideSearch] = useState(false)
   const [hideCreate, setHideCreate] = useState(false)
   const [hideNav, setHideNav] = useState(false)
+  const [swipeDirection, setSwipeDirection] = useState(null)
   const [notifications, setNotifications] = useState({ alerts: 0, approvals: 0, chats: 0 })
 
   const direction = useScrollDirection()
+  const { ref } = useSwipeable({
+    onSwipedUp: () => setSwipeDirection('up'),
+    onSwipedDown: () => setSwipeDirection('down'),
+  })
   const alias = initialData === 'loading' ? '' : initialData.userInfo.alias
 
   // First useEffect is called every time direction changes, required to hide menus on scroll
   useEffect(() => {
-    if (direction === 'down') {
+    if (direction === 'down' || swipeDirection === 'down') {
       setHideNav(true)
       setHideSearch(false)
       setHideCreate(false)
@@ -34,6 +40,7 @@ const MobileMenu = ({ initialData }) => {
 
   // Second useEffect is called only once, required so the API is only called once
   useEffect(() => {
+    ref(window)
     const getNotis = async function () {
       let _chats = 0
       try {
@@ -79,7 +86,7 @@ const MobileMenu = ({ initialData }) => {
           <div className='mobile-sub-menu'>
             <div className='mobile-feed-img'>
               <Link to='/'>
-                <img src='https://myG.gg/platform_images/Dashboard/btn_Feed.svg' class='img-fluid' />
+                <img src='https://cdn.myG.gg/platform_images/Dashboard/btn_Feed.svg' class='img-fluid' />
               </Link>
             </div>
           </div>
@@ -92,14 +99,14 @@ const MobileMenu = ({ initialData }) => {
                     to='/scheduledGames'
                     onClick={() => {
                       setHideSearch(false)
-                      setHideNav(true)
+                      setHideNav(false)
                     }}>
                     Find <b>Matches</b>
                   </Link>
                 </div>
                 <div className='small-tile'>
                   <a
-                    href='#'
+                    href='/find-gamers/search'
                     onClick={() => {
                       setHideSearch(false)
                       setHideNav(true)
@@ -110,7 +117,7 @@ const MobileMenu = ({ initialData }) => {
               </div>
             )}
             <div className='mobile-search-img' onClick={() => setHideSearch(!hideSearch)}>
-              <img src='https://myG.gg/platform_images/Dashboard/btn_Search.svg' class='img-fluid' />
+              <img src='https://cdn.myG.gg/platform_images/Dashboard/btn_Search.svg' class='img-fluid' />
             </div>
           </div>
           <div className='mobile-sub-menu'>
@@ -152,7 +159,7 @@ const MobileMenu = ({ initialData }) => {
                 </div>
               )}
               <div className='mobile-search-img' onClick={() => setHideCreate(!hideCreate)}>
-                <img src='https://myG.gg/platform_images/Dashboard/btn_New_Game.svg' class='img-fluid' />
+                <img src='https://cdn.myG.gg/platform_images/Dashboard/btn_New_Game.svg' class='img-fluid' />
               </div>
             </div>
             <div className='mobile-create-img'></div>
@@ -160,14 +167,14 @@ const MobileMenu = ({ initialData }) => {
           <div className='mobile-sub-menu'>
             <div className='mobile-profile-img'>
               <Link to={`/profile/${alias}`}>
-                <img src='https://myG.gg/platform_images/Dashboard/btn_Profile.svg' class='img-fluid' />
+                <img src='https://cdn.myG.gg/platform_images/Dashboard/btn_Profile.svg' class='img-fluid' />
               </Link>
             </div>
           </div>
           <div className='mobile-sub-menu'>
             <div className='mobile-notification-img'>
               <Link to='?at=notifications&submenu=0'>
-                <img src='https://myG.gg/platform_images/Dashboard/Bell_Icon.svg' class='img-fluid' />
+                <img src='https://cdn.myG.gg/platform_images/Dashboard/Bell_Icon.svg' class='img-fluid' />
               </Link>
             </div>
           </div>

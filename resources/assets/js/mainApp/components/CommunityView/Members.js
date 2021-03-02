@@ -7,12 +7,13 @@ import Manage from './Manage'
 import { toast } from 'react-toastify'
 import { Toast_style, Convert_to_comma_delimited_value } from '../Utility_Function'
 import { MyGButton } from '../common'
+import { logToElasticsearch } from '../../../integration/http/logger'
 
 const IconMap = {
-  0: 'https://myG.gg/platform_icons/btn_Moderator_on.svg',
-  1: 'https://myG.gg/platform_icons/btn_Moderator_on.svg',
-  2: 'https://myG.gg/platform_icons/ic_chat_group_moderator.svg',
-  3: 'https://myG.gg/platform_icons/btn_Moderator_off.svg',
+  0: 'https://cdn.myG.gg/platform_icons/btn_Moderator_on.svg',
+  1: 'https://cdn.myG.gg/platform_icons/btn_Moderator_on.svg',
+  2: 'https://cdn.myG.gg/platform_icons/ic_chat_group_moderator.svg',
+  3: 'https://cdn.myG.gg/platform_icons/btn_Moderator_off.svg',
 }
 const PermissionMap = {
   0: 'Owner',
@@ -64,10 +65,10 @@ export default class Members extends React.Component {
     })
   }
   addDefaultSrc = (ev) => {
-    ev.target.src = 'https://myG.gg/default_user/universe.jpg'
+    ev.target.src = 'https://cdn.myG.gg/default_user/universe.jpg'
   }
   addProfileDefaultSrc = (ev) => {
-    ev.target.src = 'https://myG.gg/default_user/new-user-profile-picture.png'
+    ev.target.src = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png'
   }
 
   handleSettingTab = (isActive) => {
@@ -247,7 +248,7 @@ export default class Members extends React.Component {
         toast.error(<Toast_style text={'Nope, nope and nope, unable to demote/promote'} />)
       }
     } catch (error) {
-      console.log('error   ', error)
+      logToElasticsearch('error', 'CommunityView/Members.js', 'Failed handleGroupMemberRole:' + ' ' + error)
     }
   }
 
@@ -321,21 +322,36 @@ export default class Members extends React.Component {
   handleMemberSearch = async (e) => {
     const { group_id = '' } = this.props
     const searchMemberValue = e.target.value
-    this.setState({ searchMemberValue }, async () => {
-      if (searchMemberValue == '') {
+    const self = this
+    this.setState({ searchMemberValue })
+
+    if (searchMemberValue == '') {
+      this.setState({ counter: 1, group_members: [] }, () => {
         this.getInitialData()
-        return
-      }
-      const group_members = await axios.post('/api/usergroup/usergroupSearchResults/', {
-        group_id,
-        alias: this.state.searchMemberValue,
       })
-      if (group_members.data && group_members.data.all_group_members.length > 0) {
-        this.setState({ group_members: group_members.data.all_group_members })
-      } else {
-        this.setState({ group_members: [] })
+      return
+    }
+
+    const getSearchInfo = async function() {
+      try {
+        const group_members = await axios.post('/api/usergroup/usergroupSearchResults/', {
+          group_id,
+          alias: self.state.searchMemberValue,
+        })
+        if (group_members.data && group_members.data.all_group_members.length > 0) {
+          self.setState({ group_members: group_members.data.all_group_members })
+        } else {
+          self.setState({ group_members: [] })
+        }
+      } catch (error) {
+        logToElasticsearch('error', 'CommunityView/Members.js', 'Failed handleMemberSearch:' + ' ' + error)
       }
-    })
+    }
+
+    if (this.timeout) clearTimeout(this.timeout)
+    this.timeout = setTimeout(() => {
+      getSearchInfo()
+    }, 30)
   }
 
   render() {
@@ -358,12 +374,12 @@ export default class Members extends React.Component {
               </span>
             </div>
             <div className='modal__close' onClick={(e) => this.props.handleModalStatus()}>
-              <img src='https://myG.gg/platform_images/Dashboard/X_icon.svg' />
+              <img src='https://cdn.myG.gg/platform_images/Dashboard/X_icon.svg' />
             </div>
           </div>
           {isActive != 'setting' && (
             <div className='manage__searchBar'>
-              <input type='text' value={searchMemberValue} onChange={(e) => this.handleMemberSearch(e)} placeholder='Search menbers here' />
+              <input type='text' value={searchMemberValue} onChange={(e) => this.handleMemberSearch(e)} placeholder='Search members here' />
             </div>
           )}
           <div className='modal__body'>{isActive == 'setting' ? this.renderSettingComponent() : this.renderGroupMember()}</div>

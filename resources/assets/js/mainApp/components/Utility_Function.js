@@ -37,6 +37,16 @@ const createOption_GrpHashTags = (label, group_hash_tag_id) => ({
   group_hash_tag_id,
 })
 
+export const getGameLabel = ({ game_img, game_name }) =>
+  !!game_img ? (
+    <div style={{ fontWeight: 'bold', fontSize: '14px' }}>
+      <img src={game_img} />
+      &nbsp;&nbsp;&nbsp;&nbsp;{game_name}
+    </div>
+  ) : (
+    game_name
+  )
+
 export async function Game_name_values(inputValue) {
   let getGameName = ''
 
@@ -67,12 +77,7 @@ export async function Game_name_values(inputValue) {
             false,
             results[i].game_headers
           )
-          newOption.label = (
-            <div style={{ fontWeight: 'bold', fontSize: '14px' }}>
-              <img src={results[i].game_img} />
-              &nbsp;&nbsp;&nbsp;&nbsp;{results[i].game_name}
-            </div>
-          )
+          newOption.label = getGameLabel(results[i])
         } else {
           newOption = createOption(
             results[i].game_name,
@@ -277,7 +282,7 @@ export function Disable_keys(e) {
 
 export const Toast_style = (props) => (
   <div className='individual-toasts'>
-    <img width={48} src={'https://myG.gg/logos/Logo.png'}></img>
+    <img width={48} src={'https://cdn.myG.gg/logos/Logo.png'}></img>
     <div>{props.text}</div>
   </div>
 )

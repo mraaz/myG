@@ -958,6 +958,9 @@
     flex-direction: column;
     margin-bottom: 24px;
     position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    width: 95%;
 
     .game-title-select {
       min-width: 60%;
@@ -1249,8 +1252,17 @@
       flex-direction: row;
 
       .left-menu {
-        display: flex;
         flex-direction: column;
+      }
+
+      .bottom-menu {
+        flex-direction: row;
+        width: unset !important;
+        height: unset !important;
+      }
+
+      .options-menu {
+        display: flex;
         align-items: center;
         justify-content: center;
         background-color: #1d2326;
@@ -1434,6 +1446,142 @@
 }
 
 @media screen and (max-width: 575px) {
+  #profile {
+    #profile-edit-game-experience .container .game-experience-content {
+      width: 100%;
+    }
+    #profile-game-background {
+      width: 100%;
+    }
+    #profile-game-experience {
+      width: 100%;
+    }
+    #profile-game-experiences .game-title-select {
+      min-width: 100%;
+    }
+    .rate-slider .slider .rating-container {
+      width: 24px;
+    }
+    #profile-game-main-info {
+      width: 100%;
+    }
+    #profile-game-main-info .input-container-row {
+      width: 100%;
+    }
+    #profile-edit-game-experience .container .left-menu {
+      display: none;
+    }
+    .content .remove-experience-container .remove-experience-button {
+      margin-top: 16px;
+    }
+    .share-button {
+      top: 64px;
+    }
+    .close-button {
+      top: 12px;
+      right: 12px;
+    }
+    .aligned-button {
+      width: auto;
+    }
+    #profile-banner {
+      padding: 4px 8px;
+      #header .info .alias {
+        font-size: 20px;
+      }
+    }
+    #profile-info {
+      margin: 24px 16px;
+    }
+    #profile-game-experiences .headers {
+      margin: 0;
+      padding: 12px 0;
+      font-size: 14px;
+    }
+    #profile-game-experiences .scroll {
+      margin: 8px 4px;
+    }
+    #profile-game-experiences .game-experience {
+      width: 90%;
+    }
+    #profile-info .row {
+      margin: 4px 12px;
+    }
+    .content {
+      padding-bottom: 132px;
+      .flow-hint {
+        margin-left: 10px;
+        margin-bottom: 4px;
+      }
+      .row-center {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        color: silver;
+        width: 100%;
+        margin: 0;
+        padding: 8px;
+      }
+      .post-hint {
+        display: none;
+      }
+      .game-title-select {
+        width: 100%;
+      }
+      .hint {
+        width: 100%;
+      }
+      .input-container {
+        width: 100%;
+      }
+      .options {
+        width: 100%;
+        margin-top: 8px;
+      }
+    }
+    #profile-edit-game-experience {
+      .container {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-radius: 8px;
+        z-index: 901;
+        margin: 0;
+        padding: 0;
+        width: 100vw;
+        height: 100vh;
+        max-width: 100vw;
+        max-height: 100vh;
+        .game-experience-content {
+          display: flex;
+          flex-direction: column;
+        }
+      }
+    }
+    #profile-dossier {
+      .tabs {
+        padding-top: 96px;
+      }
+      .container {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-radius: 8px;
+        z-index: 901;
+        margin: 0;
+        padding: 0;
+        width: 100vw;
+        height: 100vh;
+        max-width: 100vw;
+        max-height: 100vh;
+      }
+    }
+  }
   .scroll {
     flex-direction: column;
     text-align: center;

@@ -46,15 +46,6 @@ export async function SubmitDataFunction(myG) {
       }
 
       delete myG.tags[i].label
-
-      // if (myG.tags[i].game_tag_id == null) {
-      //   const new_GameTags = await axios.post('/api/GameTags', {
-      //     content: myG.tags[i].value,
-      //   })
-      //   tags.push(new_GameTags.data)
-      // } else {
-      //   tags.push(myG.tags[i].game_tag_id)
-      // }
     }
     tags = JSON.stringify(myG.tags)
   }
@@ -88,12 +79,6 @@ export async function SubmitDataFunction(myG) {
     autoJoin = myG.autoJoin
   }
 
-  const { v1: uuidv1 } = require('uuid')
-  var tmp = uuidv1()
-
-  console.log(myG.startDate.format('YYYY-MM-DD HH:mm:ss ZZ'), "<<myG.startDate.format('YYYY-MM-DD HH:mm:ss ZZ')")
-  console.log(end_date.format('YYYY-MM-DD HH:mm:ss ZZ'), "<<end_date.format('YYYY-MM-DD HH:mm:ss ZZ')")
-
   try {
     const post = await axios.post('/api/ScheduleGame', {
       game_name_box: myG.game_name_box.value,
@@ -108,7 +93,7 @@ export async function SubmitDataFunction(myG) {
       visibility: myG.selected_visibility,
       limit: myLimit,
       accept_msg: myG.txtAreaValue.trim(),
-      schedule_games_GUID: tmp,
+      //schedule_games_GUID: tmp,
       allow_comments: myG.allow_comments,
       autoJoin: autoJoin,
       co_hosts: co_hosts,
@@ -127,13 +112,8 @@ export async function SubmitDataFunction(myG) {
       eighteen_plus: myG.eighteen_plus,
       game_languages: myLanguages,
     })
-
-    // clash_royale_trophies: myClash_royale_trophies,
-    // dota2_medal_ranks: myDota2_medal_ranks,
-    // dota2_server_regions: myDota2_server_regions,
-    // dota2_roles: myDota2_roles,
     return post
   } catch (error) {
-    logToElasticsearch('error', 'Add Game - SubmitDataFunction', 'Failed Add Game - SubmitDataFunction ' + ' ' + error)
+    logToElasticsearch('error', 'AddScheduleGames_Submit_Data', 'Failed Add Game - SubmitDataFunction ' + ' ' + error)
   }
 }

@@ -57,12 +57,21 @@ export default class Posts extends Component {
           method: 'GET',
           url: `/api/post/${self.state.counter}`,
         })
+        console.log(myPosts.data.myPosts.length, '<<<myPosts.data.myPosts.length')
 
         if (myPosts.data == '' || myPosts.data == {} || (myPosts.data.myPosts && myPosts.data.myPosts.length == 0)) {
           self.setState({
             moreplease: false,
           })
           return
+        } else if (myPosts.data.myPosts.length == 3) {
+          if (myPosts.data.myPosts[0].id == 1) {
+            self.setState({
+              myPosts: self.state.myPosts.concat(myPosts.data.myPosts),
+              moreplease: false,
+            })
+            return
+          }
         }
 
         if (myPosts.data.myPosts) {

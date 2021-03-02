@@ -139,7 +139,7 @@ class GuestLink extends React.Component {
           <div
             className='myg-icon'
             style={{
-              backgroundImage: `url('https://myG.gg/platform_images/Dashboard/logo.svg')`,
+              backgroundImage: `url('https://cdn.myG.gg/platform_images/Dashboard/logo.svg')`,
               backgroundSize: 'inherit',
               backgroundColor: '#000',
             }}

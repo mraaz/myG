@@ -44,7 +44,7 @@ class CommonSaveController {
     const messages = {
       required: 'Required field',
       email: 'Enter valid email address',
-      min: 'Not enough characters - Min 4 for Alias, 6 for Chat Password and 7 for Encryption Paraphrase',
+      min: 'Not enough characters - Min 4 for Alias, 7 for Chat Password',
       max: 'Wow! Too many characters - Max 30',
       unique: 'Sorry, this field is not unique. Try again please.',
     }
@@ -114,7 +114,8 @@ class CommonSaveController {
         // Seats Availability
         const seatsAvailable = await SeatsAvailable.query().first()
         const extraSeatsCode = request.input('extraSeatsCode')
-        if (!seatsAvailable.seats_available && !extraSeatsCode) {
+        const unlockedByCheatCode = request.input('unlockedByCheatCode')
+        if (!seatsAvailable.seats_available && !extraSeatsCode && !unlockedByCheatCode) {
           return response.redirect('/?error=seats')
         }
 

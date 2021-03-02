@@ -48,7 +48,9 @@ class UsergroupController {
 
   async myshow({ auth, request, response }) {
     try {
-      const subquery = Database.select('id').from('groups').where({ user_id: auth.user.id })
+      const subquery = Database.select('id')
+        .from('groups')
+        .where({ user_id: auth.user.id })
 
       let groups_im_in = await Database.from('usergroups')
         .innerJoin('groups', 'groups.id', 'usergroups.group_id')
@@ -557,6 +559,7 @@ class UsergroupController {
         .where('usergroups.group_id', '=', request.input('group_id'))
         .whereNot('usergroups.permission_level', 42)
         .select('usergroups.*', 'usergroups.id', 'users.profile_img', 'users.alias', 'users.level', 'users.profile_bg')
+        .distinct('usergroups.user_id')
         .paginate(request.input('counter'), 10)
 
       all_group_members = all_group_members.data

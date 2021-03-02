@@ -14,7 +14,7 @@ import { WithTooltip } from '../../Tooltip'
 
 const MAIN_FIELDS_OPTIONS = [
   { value: 'Nickname', label: 'Nickname' },
-  { value: 'Level', label: 'Level' },
+  { value: 'Level', label: 'Career' },
   { value: 'Experience', label: 'Experience' },
   { value: 'Team', label: 'Team' },
 ]
@@ -190,10 +190,10 @@ export default class MainInfo extends React.Component {
 
   renderLevelInput = () => {
     if (!get(this.props, 'experience.game.value') || !this.props.isSelf)
-      return this.renderDisabledField('Level', (this.props.experience.level || {}).value, false, !!this.props.onboarding)
+      return this.renderDisabledField('Career', (this.props.experience.level || {}).value, false, !!this.props.onboarding)
     return (
       <div className='row'>
-        <span className='hint'>Level {!!this.props.onboarding && <span className='required onboarding'>*</span>}</span>
+        <span className='hint'>Career {!!this.props.onboarding && <span className='required onboarding'>*</span>}</span>
         <MyGSelect
           width={'75%'}
           innerWidth={'100%'}
@@ -395,7 +395,7 @@ export default class MainInfo extends React.Component {
         {showLink && (
           <div
             className='icon-button clickable'
-            style={{ backgroundImage: `url(https://myG.gg/platform_images/Profile/newWindow-icon.svg)` }}
+            style={{ backgroundImage: `url(https://cdn.myG.gg/platform_images/Profile/newWindow-icon.svg)` }}
             onClick={() => window.open(field.profile_placeholder, '_blank')}
           />
         )}
@@ -441,7 +441,7 @@ export default class MainInfo extends React.Component {
             <div className='text'>Drop your game image</div>
             <div className='images community-images-container'>
               <span className=' button photo-btn'>
-                <img src='https://myG.gg/platform_images/Dashboard/BTN_Attach_Image.svg' />
+                <img src='https://cdn.myG.gg/platform_images/Dashboard/BTN_Attach_Image.svg' />
               </span>
             </div>
             <div className='text'>

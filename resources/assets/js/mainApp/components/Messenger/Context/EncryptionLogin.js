@@ -31,7 +31,7 @@ export default class EncryptionLogin extends React.Component {
         <div className='messenger-encryption-login-icon-container'>
           <div
             className='messenger-encryption-login-icon'
-            style={{ backgroundImage: `url("https://myG.gg/platform_images/Dashboard/logo.svg")` }}
+            style={{ backgroundImage: `url("https://cdn.myG.gg/platform_images/Dashboard/logo.svg")` }}
           />
         </div>
         <p className='messenger-encryption-login-title'>Enter Chat Password</p>
