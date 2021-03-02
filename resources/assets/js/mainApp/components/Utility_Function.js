@@ -282,7 +282,7 @@ export function Disable_keys(e) {
 
 export const Toast_style = (props) => (
   <div className='individual-toasts'>
-    <img width={48} src={'https://myG.gg/logos/Logo.png'}></img>
+    <img width={48} src={'https://cdn.myG.gg/logos/Logo.png'}></img>
     <div>{props.text}</div>
   </div>
 )

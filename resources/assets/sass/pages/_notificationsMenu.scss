@@ -181,7 +181,7 @@ $transition-default: 0.25s ease-out 0.1s;
 
         &:nth-of-type(2n) {
           &::before {
-            content: url('https://myG.gg/platform_images/Notifications/Approvals.svg');
+            content: url('https://cdn.myG.gg/platform_images/Notifications/Approvals.svg');
             top: 5px;
             position: relative;
             margin: 0 12px 0 0;
@@ -189,7 +189,7 @@ $transition-default: 0.25s ease-out 0.1s;
         }
         &:nth-of-type(5n) {
           &::before {
-            content: url('https://myG.gg/platform_images/Notifications/Alerts.svg');
+            content: url('https://cdn.myG.gg/platform_images/Notifications/Alerts.svg');
             top: 5px;
             position: relative;
             margin: 0 12px 0 0;
@@ -197,7 +197,7 @@ $transition-default: 0.25s ease-out 0.1s;
         }
         &:nth-of-type(6n) {
           &::before {
-            content: url('https://myG.gg/platform_images/Notifications/Approvals.svg');
+            content: url('https://cdn.myG.gg/platform_images/Notifications/Approvals.svg');
             top: 5px;
             position: relative;
             margin: 0 12px 0 0;
@@ -206,7 +206,7 @@ $transition-default: 0.25s ease-out 0.1s;
 
         &:nth-of-type(3n) {
           &::before {
-            content: url('https://myG.gg/platform_images/Notifications/Alerts.svg');
+            content: url('https://cdn.myG.gg/platform_images/Notifications/Alerts.svg');
             top: 5px;
             position: relative;
             margin: 0 12px 0 0;
@@ -215,7 +215,7 @@ $transition-default: 0.25s ease-out 0.1s;
 
         &:nth-of-type(4n) {
           &::before {
-            content: url('https://myG.gg/platform_images/Notifications/Chat.svg');
+            content: url('https://cdn.myG.gg/platform_images/Notifications/Chat.svg');
             top: 5px;
             position: relative;
             margin: 0 12px 0 0;
@@ -224,7 +224,7 @@ $transition-default: 0.25s ease-out 0.1s;
 
         &:nth-of-type(7n) {
           &::before {
-            content: url('https://myG.gg/platform_images/Notifications/Settings.svg');
+            content: url('https://cdn.myG.gg/platform_images/Notifications/Settings.svg');
             top: 5px;
             position: relative;
             margin: 0 12px 0 0;
@@ -655,7 +655,7 @@ $transition-default: 0.25s ease-out 0.1s;
             color: #fff;
 
             &:before {
-              content: url('https://myG.gg/platform_images/Dashboard/Notifications/little_green_man.svg');
+              content: url('https://cdn.myG.gg/platform_images/Dashboard/Notifications/little_green_man.svg');
               margin-right: 5px;
             }
           }
@@ -667,7 +667,7 @@ $transition-default: 0.25s ease-out 0.1s;
             color: #fff;
 
             &:before {
-              content: url('https://myG.gg/platform_images/Dashboard/Notifications/clock.svg');
+              content: url('https://cdn.myG.gg/platform_images/Dashboard/Notifications/clock.svg');
               margin-right: 5px;
             }
           }

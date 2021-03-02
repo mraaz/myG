@@ -87,7 +87,7 @@ export default class ViewFriendsModal extends React.Component {
           <div
             className='picture'
             style={{
-              backgroundImage: `url('${friend.image}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`,
+              backgroundImage: `url('${friend.image}'), url('https://cdn.myG.gg/default_user/new-user-profile-picture.png')`,
             }}
           />
         </div>

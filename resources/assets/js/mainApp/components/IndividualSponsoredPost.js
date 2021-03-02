@@ -124,7 +124,7 @@ export default class IndividualSponsoredPost extends Component {
   render() {
     const { media_urls, alert, galleryItems = [], showPostExtraOption } = this.state
 
-    const profile_img = 'https://myG.gg/logos/myG_transparent.svg'
+    const profile_img = 'https://cdn.myG.gg/logos/myG_transparent.svg'
 
     let { post } = this.props //destructing of object
     let { hash_tags = [] } = post //destructing of object
@@ -150,7 +150,7 @@ export default class IndividualSponsoredPost extends Component {
               <div
                 className='profile__image__sponsored'
                 style={{
-                  backgroundImage: `url('${profile_img}'), url('https://myG.gg/logos/myG_transparent.svg')`,
+                  backgroundImage: `url('${profile_img}'), url('https://cdn.myG.gg/logos/myG_transparent.svg')`,
                   backgroundSize: 'cover',
                 }}>
                 {/* <div className='online__status'></div>*/}

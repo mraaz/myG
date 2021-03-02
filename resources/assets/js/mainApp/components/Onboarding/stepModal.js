@@ -77,7 +77,7 @@ export default class OnboardingStepModal extends React.Component {
     if (![0, 2, 4].includes(this.props.step)) return null
     return (
       <div className='onboarding-step-modal'>
-        <div className='image' style={{ backgroundImage: 'url(https://myg.gg/platform_images/Dashboard/logo.svg)' }} />
+        <div className='image' style={{ backgroundImage: 'url(https://cdn.myG.gg/platform_images/Dashboard/logo.svg)' }} />
         <span className='label'>{this.getLabelText()}</span>
         <div className='options'>{this.getOptions()}</div>
       </div>

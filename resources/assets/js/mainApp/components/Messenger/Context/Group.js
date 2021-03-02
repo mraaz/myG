@@ -47,7 +47,7 @@ export default class Group extends React.Component {
     const lastMessage = messages[messages.length - 1]
     const unreadCount = 0
     const titleTooLong = group.title.length > 20
-    const profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png'
+    const profile_img = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png'
 
     return (
       <div key={`group-${group.chatId}`} className='messenger-contact' onClick={this.openChat}>

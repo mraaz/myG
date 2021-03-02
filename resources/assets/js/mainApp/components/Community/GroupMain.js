@@ -309,23 +309,23 @@ export default class GroupMain extends Component {
         <section className={`postCompose__container ${overlay_active ? 'zI1000' : ''}`}>
           {this.state.yourCommunityTab && (
             <div className='arrow__right' onClick={this.next_data}>
-              {this.state.more_data && <img src='https://myG.gg/platform_images/Communities/Group+971.svg' alt='arrow-right' />}
+              {this.state.more_data && <img src='https://cdn.myG.gg/platform_images/Communities/Group+971.svg' alt='arrow-right' />}
             </div>
           )}
           {this.state.yourCommunityTab && (
             <div className='arrow__left' onClick={this.prev_data}>
-              {this.state.less_data && <img src='https://myG.gg/platform_images/Communities/Group+971.svg' alt='arrow-left' />}
+              {this.state.less_data && <img src='https://cdn.myG.gg/platform_images/Communities/Group+971.svg' alt='arrow-left' />}
             </div>
           )}
 
           {!this.state.yourCommunityTab && (
             <div className='arrow__right' onClick={this.next_data_suggested}>
-              {this.state.suggested_more_data && <img src='https://myG.gg/platform_images/Communities/Group+971.svg' alt='arrow-right' />}
+              {this.state.suggested_more_data && <img src='https://cdn.myG.gg/platform_images/Communities/Group+971.svg' alt='arrow-right' />}
             </div>
           )}
           {!this.state.yourCommunityTab && (
             <div className='arrow__left' onClick={this.prev_data_suggested}>
-              {this.state.suggested_less_data && <img src='https://myG.gg/platform_images/Communities/Group+971.svg' alt='arrow-left' />}
+              {this.state.suggested_less_data && <img src='https://cdn.myG.gg/platform_images/Communities/Group+971.svg' alt='arrow-left' />}
             </div>
           )}
 
@@ -351,7 +351,7 @@ export default class GroupMain extends Component {
                 onChange={this.getSearchGroup}
                 value={this.state.searchText}
               />
-              <img src='https://myG.gg/platform_images/Communities/btn_Search.png' />
+              <img src='https://cdn.myG.gg/platform_images/Communities/btn_Search.png' />
             </div>
           </div>
           {open_compose_textTab && (

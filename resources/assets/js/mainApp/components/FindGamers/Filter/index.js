@@ -6,7 +6,7 @@ import { ignoreFunctions } from "../../../../common/render"
 import { fetchGameInfo } from "../../../../common/game"
 import { TIME_EXPERIENCE_OPTIONS, LANGUAGE_OPTIONS, LEVEL_OPTIONS } from '../../../static/AddGame'
 
-const dropdownIcon = 'https://myG.gg/platform_images/View+Game/Down+Carrot.svg';
+const dropdownIcon = 'https://cdn.myG.gg/platform_images/View+Game/Down+Carrot.svg';
 
 const filterOptions = {
   game: 'Game',

@@ -346,7 +346,7 @@ export default class IndividualReply extends Component {
               <div
                 className='profile__image'
                 style={{
-                  backgroundImage: `url('${profile_img}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`,
+                  backgroundImage: `url('${profile_img}'), url('https://cdn.myG.gg/default_user/new-user-profile-picture.png')`,
                   backgroundSize: 'cover',
                 }}>
                 <div className='online__status'></div>

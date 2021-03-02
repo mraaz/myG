@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react'
-const buckectBaseUrl = 'https://myG.gg/platform_images/'
+const buckectBaseUrl = 'https://cdn.myG.gg/platform_images/'
 
 import { toast } from 'react-toastify'
 import axios from 'axios'

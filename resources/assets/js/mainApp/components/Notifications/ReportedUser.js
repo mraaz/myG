@@ -12,7 +12,7 @@ import { deleteGamer, banGamer, handleTime, mark_read_status } from './helperFun
 import { Toast_style } from '../Utility_Function'
 import { toast } from 'react-toastify'
 import NoRecord from './NoRecord'
-const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
+const defaultUserImage = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png'
 import SweetAlert from '../common/MyGSweetAlert'
 
 export default class ReportedUsers extends Component {
@@ -141,7 +141,7 @@ export default class ReportedUsers extends Component {
   }
 
   addDefaultSrc(ev) {
-    ev.target.src = 'https://myG.gg/default_user/new-user-profile-picture.png'
+    ev.target.src = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png'
   }
 
   handleClickNotiFication = (id, index) => {
@@ -208,11 +208,11 @@ export default class ReportedUsers extends Component {
                       </span>
                       <div className='notification-actions'>
                         <button className='action decline' onClick={(e) => this.showAlert('deleteGamer', report)}>
-                          {/* <img src='https://myG.gg/platform_images/Dashboard/btn_Like_Feed.svg' /> */}
+                          {/* <img src='https://cdn.myG.gg/platform_images/Dashboard/btn_Like_Feed.svg' /> */}
                           {` Delete Gamer `}
                         </button>
                         <button className='action decline' onClick={(e) => this.showAlert('banGamer', report)}>
-                          {/* <img src='https://myG.gg/platform_images/Dashboard/btn_Like_Feed.svg' /> */}
+                          {/* <img src='https://cdn.myG.gg/platform_images/Dashboard/btn_Like_Feed.svg' /> */}
                           {` Ban Gamer `}
                         </button>
                       </div>

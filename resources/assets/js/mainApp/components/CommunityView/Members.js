@@ -10,10 +10,10 @@ import { MyGButton } from '../common'
 import { logToElasticsearch } from '../../../integration/http/logger'
 
 const IconMap = {
-  0: 'https://myG.gg/platform_icons/btn_Moderator_on.svg',
-  1: 'https://myG.gg/platform_icons/btn_Moderator_on.svg',
-  2: 'https://myG.gg/platform_icons/ic_chat_group_moderator.svg',
-  3: 'https://myG.gg/platform_icons/btn_Moderator_off.svg',
+  0: 'https://cdn.myG.gg/platform_icons/btn_Moderator_on.svg',
+  1: 'https://cdn.myG.gg/platform_icons/btn_Moderator_on.svg',
+  2: 'https://cdn.myG.gg/platform_icons/ic_chat_group_moderator.svg',
+  3: 'https://cdn.myG.gg/platform_icons/btn_Moderator_off.svg',
 }
 const PermissionMap = {
   0: 'Owner',
@@ -65,10 +65,10 @@ export default class Members extends React.Component {
     })
   }
   addDefaultSrc = (ev) => {
-    ev.target.src = 'https://myG.gg/default_user/universe.jpg'
+    ev.target.src = 'https://cdn.myG.gg/default_user/universe.jpg'
   }
   addProfileDefaultSrc = (ev) => {
-    ev.target.src = 'https://myG.gg/default_user/new-user-profile-picture.png'
+    ev.target.src = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png'
   }
 
   handleSettingTab = (isActive) => {
@@ -374,7 +374,7 @@ export default class Members extends React.Component {
               </span>
             </div>
             <div className='modal__close' onClick={(e) => this.props.handleModalStatus()}>
-              <img src='https://myG.gg/platform_images/Dashboard/X_icon.svg' />
+              <img src='https://cdn.myG.gg/platform_images/Dashboard/X_icon.svg' />
             </div>
           </div>
           {isActive != 'setting' && (

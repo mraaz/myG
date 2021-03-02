@@ -548,7 +548,7 @@ const InvitePlayers = ({ onInvitationSent, onCancelInviteClick, scheduledGameId,
             {getContent()}
             {getFooter()}
             <div className='modal__close' onClick={onCancelInviteClick}>
-              <img src='https://myG.gg/platform_images/Dashboard/X_icon.svg' />
+              <img src='https://cdn.myG.gg/platform_images/Dashboard/X_icon.svg' />
             </div>
           </div>
           <div className='modal-overlay' onClick={onCancelInviteClick}></div>
