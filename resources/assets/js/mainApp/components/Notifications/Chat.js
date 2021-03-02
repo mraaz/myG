@@ -14,7 +14,7 @@ import { handleTime, delete_chatNotification_all, markread_chatNotification } fr
 
 import NoRecord from './NoRecord'
 
-const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
+const defaultUserImage = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png'
 const tabObj = {
   0: '',
   1: 'MESSAGE',
@@ -120,7 +120,7 @@ export default class Chat extends Component {
     }
   }
   addDefaultSrc(ev) {
-    ev.target.src = 'https://myG.gg/default_user/new-user-profile-picture.png'
+    ev.target.src = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png'
   }
   markAllRead = () => {
     const { chatNotifications = [] } = this.state

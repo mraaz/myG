@@ -7,7 +7,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import axios from 'axios'
 import Modal from 'react-modal'
 import { Link } from 'react-router-dom'
-const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
+const defaultUserImage = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png'
 
 const Approved_gamers = (props) => {
   const [attendees, setAttendees] = useState([])
@@ -50,7 +50,7 @@ const Approved_gamers = (props) => {
   }
 
   const addDefaultSrc = (ev) => {
-    ev.target.src = 'https://myG.gg/default_user/new-user-profile-picture.png'
+    ev.target.src = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png'
   }
 
   return (
@@ -85,7 +85,7 @@ const Approved_gamers = (props) => {
           <div className='modal__header'>
             Joined Gamers
             <div className='modal__close' onClick={showModal}>
-              <img src='https://myG.gg/platform_images/Dashboard/X_icon.svg' />
+              <img src='https://cdn.myG.gg/platform_images/Dashboard/X_icon.svg' />
             </div>
           </div>
           <div className='modal__body'>

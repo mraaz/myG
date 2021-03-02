@@ -204,7 +204,7 @@ const JoinStatus = (props) => {
         <div className='game__action__buttton'>
           <button type='button' onClick={handleJoindButtonClick} className={`${leaveButtonStatus ? 'open' : 'open'}`}>
             {`${joinButtonText}`}
-            <img src='https://myG.gg/platform_images/View+Game/Down+Carrot_black.svg' />
+            <img src='https://cdn.myG.gg/platform_images/View+Game/Down+Carrot_black.svg' />
           </button>
           {leaveButtonStatus && (
             <div className='dropDown--option'>
@@ -273,7 +273,7 @@ const JoinStatus = (props) => {
               })}
             </div>
             <div className='modal__close' onClick={showModal}>
-              <img src='https://myG.gg/platform_images/Dashboard/X_icon.svg' />
+              <img src='https://cdn.myG.gg/platform_images/Dashboard/X_icon.svg' />
             </div>
           </div>
           <div className='modal__footer'>

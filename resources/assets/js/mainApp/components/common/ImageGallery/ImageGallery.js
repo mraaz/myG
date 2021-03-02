@@ -7,7 +7,7 @@ export default class CustomImageGallery extends React.Component {
     super()
     this.state = {
       showVideo: {},
-      videoPreviewIcon: 'https://myg.gg/platform_images/Dashboard/BTN_Attach_Video.svg',
+      videoPreviewIcon: 'https://cdn.myG.gg/platform_images/Dashboard/BTN_Attach_Video.svg',
     }
 
     this.imageFileType = ['jpeg', 'jpg', 'png', 'gif']

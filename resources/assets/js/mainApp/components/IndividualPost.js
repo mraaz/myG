@@ -16,7 +16,7 @@ import { Upload_to_S3, Remove_file } from './AWS_utilities'
 import { toast } from 'react-toastify'
 import { logToElasticsearch } from '../../integration/http/logger'
 
-const buckectBaseUrl = 'https://myG.gg/platform_images/'
+const buckectBaseUrl = 'https://cdn.myG.gg/platform_images/'
 
 import ImageGallery from './common/ImageGallery/ImageGallery'
 import ReportPost from './common/ReportPost'
@@ -570,7 +570,7 @@ export default class IndividualPost extends Component {
     } = this.state
     if (post_deleted != true) {
       let { post, current_user_permission = null, user = {} } = this.props //destructing of object
-      let profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png',
+      let profile_img = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png',
         hash_tags = ''
       if (post != undefined) {
         profile_img = post.profile_img
@@ -615,7 +615,7 @@ export default class IndividualPost extends Component {
                 <div
                   className='profile__image'
                   style={{
-                    backgroundImage: `url('${profile_img}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`,
+                    backgroundImage: `url('${profile_img}'), url('https://cdn.myG.gg/default_user/new-user-profile-picture.png')`,
                     backgroundSize: 'cover',
                   }}>
                   {/* <div className='online__status'></div>*/}
@@ -684,13 +684,13 @@ export default class IndividualPost extends Component {
             <div className='update-stats'>
               {this.state.like && (
                 <div className='like-btn' onClick={() => this.click_unlike_btn(post.id)}>
-                  <img src='https://myG.gg/platform_images/Dashboard/btn_Like_Feed.svg' className='img-fluid' />
+                  <img src='https://cdn.myG.gg/platform_images/Dashboard/btn_Like_Feed.svg' className='img-fluid' />
                   &nbsp;Liked
                 </div>
               )}
               {!this.state.like && (
                 <div className='like-btn' onClick={() => this.click_like_btn(post.id)}>
-                  <img src='https://myG.gg/platform_images/Dashboard/btn_unLike_Feed.svg' className='img-fluid' />
+                  <img src='https://cdn.myG.gg/platform_images/Dashboard/btn_unLike_Feed.svg' className='img-fluid' />
                   &nbsp;Like
                 </div>
               )}
