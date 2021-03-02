@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { toast } from 'react-toastify'
@@ -17,6 +17,7 @@ const CommunityView = (props) => {
   const [activeModalTab, setActiveModalTab] = useState('settings')
   const [showSponsorModal, setShowSponsorModal] = useState(false)
   const [singleSponsor, setSingleSponsor] = useState({})
+  const contentAreaRef = useRef()
 
   useEffect(() => {
     const getcommunityDetails = async () => {
@@ -35,10 +36,41 @@ const CommunityView = (props) => {
     }
 
     getcommunityDetails()
+    window.addEventListener('scroll', handleScroll, true)
     return () => {
       setCommunityDetails({})
     }
   }, [])
+
+  const handleScroll = () => {
+    let lastScrollY = window.scrollY
+    let offsetWidth = 0
+    if (contentAreaRef.current && contentAreaRef.current.offsetWidth) {
+      offsetWidth = contentAreaRef.current.offsetWidth ? contentAreaRef.current.offsetWidth : 0
+    }
+    window.requestAnimationFrame(() => {
+      if (lastScrollY > 200 && contentAreaRef.current && contentAreaRef.current.style) {
+        document.getElementById('main-sidebar').style.position = 'fixed'
+        // Required padding to prevent infinite loop of styling
+
+        const w = document.getElementById('main-sidebar').offsetWidth - 80
+        if (window.innerWidth > 768) {
+          contentAreaRef.current.style.paddingTop = '170px'
+          // document.getElementById('content-container').style.marginLeft = '80px'
+          document.getElementById('content-container').style.paddingLeft = '80px'
+          contentAreaRef.current.style.paddingLeft = `${w}px`
+        }
+        // Exit early to make this less confusing
+        return
+      }
+
+      if (contentAreaRef.current) {
+        contentAreaRef.current.removeAttribute('style')
+      }
+      document.getElementById('main-sidebar').removeAttribute('style')
+      document.getElementById('content-container').removeAttribute('style')
+    })
+  }
 
   const handleModalStatus = (label) => {
     setActiveModalTab(label)
@@ -133,7 +165,7 @@ const CommunityView = (props) => {
   }
 
   return (
-    <div className='communityName__container '>
+    <div className='communityName__container' ref={contentAreaRef}>
       <CoverImage {...communityDetails} handleModalStatus={handleModalStatus} {...props} />
       <div className='community__description'>{communityDetails.grp_description}</div>
       {communityDetails.game_names_id && communityDetails.game_names_id != null && (
