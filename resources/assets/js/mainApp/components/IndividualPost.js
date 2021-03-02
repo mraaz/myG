@@ -155,7 +155,9 @@ export default class IndividualPost extends Component {
     let post_timestamp = moment()
     try {
       if (this.props.post.updated_at) {
+        console.log(this.props.post.updated_at, '<<<this.props.post.updated_at')
         post_timestamp = moment(this.props.post.updated_at, 'YYYY-MM-DD HH:mm:ssZ')
+        console.log(post_timestamp, '<<<post_timestamp')
       }
 
       if (this.props.post.total == 0) {

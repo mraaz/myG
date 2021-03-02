@@ -84,7 +84,9 @@ class GameNameController {
   async incrementGameCounter({ auth }, game_name) {
     if (auth.user) {
       try {
-        const incrementGameCounter = await GameNames.query().where({ id: game_name }).increment('counter', 1)
+        const incrementGameCounter = await GameNames.query()
+          .where({ id: game_name })
+          .increment('counter', 1)
         const gameSearchResults = await Database.table('game_names')
           .leftJoin('game_name_fields', 'game_name_fields.game_names_id', 'game_names.id')
           .where('game_names.id', game_name)
@@ -110,7 +112,9 @@ class GameNameController {
   async decrementGameCounter({ auth }, game_id) {
     if (auth.user) {
       try {
-        const decrementGameCounter = await GameNames.query().where({ id: game_id }).decrement('counter', 1)
+        const decrementGameCounter = await GameNames.query()
+          .where({ id: game_id })
+          .decrement('counter', 1)
         const game_name = await Database.table('game_names')
           .where({
             id: game_id,
@@ -194,7 +198,7 @@ class GameNameController {
 
   async gameSearchResults({ request }) {
     try {
-      const gameName = decodeURIComponent(request.params.int);
+      const gameName = decodeURIComponent(request.params.int)
       const gameSearchResults = await ElasticsearchRepository.searchGameNames(gameName)
       for (const game of gameSearchResults) {
         game.game_headers = this.getGameHeaders(game.game_name)
@@ -250,13 +254,17 @@ class GameNameController {
   async deleteUnusedGames() {
     const oneDayAgo = new Date()
     oneDayAgo.setDate(oneDayAgo.getDate() - 1)
-    const gamesToDelete = await Database.from('game_names').where('counter', '=', 0).andWhere('created_at', '<', oneDayAgo)
+    const gamesToDelete = await Database.from('game_names')
+      .where('counter', '=', 0)
+      .andWhere('created_at', '<', oneDayAgo)
     if (!gamesToDelete.length) return
     const apiController = new ApiController()
     const auth = { user: { id: 'myg' } }
     for await (let gameToDelete of gamesToDelete) {
       await apiController.internal_deleteFile({ auth }, '9', gameToDelete.id)
-      await Database.table('game_names').where({ id: gameToDelete.id }).delete()
+      await Database.table('game_names')
+        .where({ id: gameToDelete.id })
+        .delete()
     }
     const report = gamesToDelete.map((gameToDelete) => ({
       id: gameToDelete.id,
