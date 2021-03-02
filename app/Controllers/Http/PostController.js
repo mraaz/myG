@@ -189,7 +189,9 @@ class PostController {
       if (_1stpass.length == 0) {
         let welcome_Posts = await Database.from('posts')
           .innerJoin('users', 'users.id', 'posts.user_id')
-          .where('posts.id', '=', 1)
+          .whereBetween('posts.id', [1, 3])
+          .orderBy('posts.id', 'asc')
+          .select('*', 'posts.id', 'posts.updated_at')
 
         _1stpass = [..._1stpass, ...welcome_Posts]
       }

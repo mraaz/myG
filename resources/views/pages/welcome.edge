@@ -61,7 +61,7 @@
           <div class="card-seats">
             <b id="seats-available"> Loading... </b>
           </div>
-          <b>seats available</b>
+          <b>accounts available</b>
         </div>
         <div class="register-message"><b>Register</b> while there's still time!</div>
         <div id="extra-seats-code-container"></div>
@@ -236,7 +236,7 @@
     if (searchParams) {
       const error = searchParams.split("?error=")[1];
       if (error === "google-recaptcha") alert("Crikey! Google captcha validation FAILED! If you're a bot, please stop (pretty pls), otherwise try again.");
-      if (error === "seats") alert("There are no seats available, only an invitation can get you in now! Ask a friend for codes or sign up");
+      if (error === "seats") alert("There are no accounts available, only an invitation can get you in now! Ask a friend for codes or sign up");
     }
   }
 

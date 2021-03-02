@@ -10,7 +10,7 @@ function setupBull() {
   const port = Env.get('REDIS_PORT');
   const bullLogs = Env.get('BULL_LOGS');
   const disableCluster = Env.get('REDIS_DISABLE_CLUSTER');
-  const runEveryJobOnStart = Env.get('BULL_RUN_EVERY_JOB_ON_START');
+  const runEveryJobOnStart = false//Env.get('BULL_RUN_EVERY_JOB_ON_START');
   const bullConfig = { redis: { host, port } };
   const ioCluster = !disableCluster && hasRedis && new Redis.Cluster([bullConfig.redis]);
 
@@ -28,7 +28,12 @@ function setupBull() {
     if (job.runOnStart) job.queue.add(job.payload, job.options);
     if (job.runOnSchedule) job.queue.add(job.payload, { ...job.options, ...job.schedule });
   });
+
+  console.log(Env.get('BULL_RUN_EVERY_JOB_ON_START'),"<<BULL_RUN_EVERY_JOB_ON_START");
+  let tmp = Env.get('BULL_RUN_EVERY_JOB_ON_START') ? true : false
+  console.log(tmp,"<<<tmp");
 }
+
 
 function logBull(bullLogs, moment, content) {
   if (bullLogs) console.log('\x1b[36m', 'BULL', moment.format('D MMM HH:mm:ss'), '-', content, '\x1b[0m');

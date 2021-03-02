@@ -68,7 +68,7 @@
             @endif
           </div>
           <div class="form-group">
-              <input placeholder="ALIAS *" type="text" name="alias" value="{{alias}}" class="input-common
+              <input placeholder="ALIAS (Min: 4 Max: 30)" type="text" name="alias" value="{{alias}}" class="input-common
 
             @if(hasErrorFor('alias'))
               error
@@ -85,7 +85,7 @@
           </div>
           <div class="form-group">
               @if(email === '')
-              <input placeholder="EMAIL *" type="text" name="email" value="{{email}}" class="input-common
+              <input placeholder="EMAIL" type="text" name="email" value="{{email}}" class="input-common
           @if(hasErrorFor('email'))
             error
           @endif
@@ -148,7 +148,7 @@
                 <div class="card-seats">
                     <b id="seats-available"> Loading... </b>
                 </div>
-                <b>seats available</b>
+                <b>accounts available</b>
             </div>
             <div class="register-message"><b>Register</b> while there's still time!</div>
             <div id="extra-seats-code-container"></div>
@@ -276,7 +276,7 @@ function fetchSeatsAvailable() {
     const xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "GET", '/api/seats_available_email/' + email.trim().toLowerCase(), false );
     xmlHttp.send( null );
-    alert('We will be in touch when the next round of seats is available.')
+    alert('We will be in touch when the next round of accounts are available.')
   }
 
   setupCheatCode();
