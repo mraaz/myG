@@ -1,8 +1,10 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useSwipeable } from 'react-swipeable'
+import { useDispatch, useSelector } from 'react-redux'
 import MobileMenuTop from './MobileMenuTop'
 
+import { mobileMenuAction } from '../../../redux/actions/mobileMenuAction'
 import { useScrollDirection } from '../../hooks'
 import { logToElasticsearch } from '../../../integration/http/logger'
 import { CreateCommunity, AddScheduleGames } from '../../AsyncComponent'
@@ -16,10 +18,12 @@ import axios from 'axios'
 const MobileMenu = ({ initialData }) => {
   const [hideSearch, setHideSearch] = useState(false)
   const [hideCreate, setHideCreate] = useState(false)
-  const [hideNav, setHideNav] = useState(false)
+  const [hideNav, setHideNav] = useState(true)
   const [swipeDirection, setSwipeDirection] = useState(null)
   const [notifications, setNotifications] = useState({ alerts: 0, approvals: 0, chats: 0 })
 
+  const dispatch = useDispatch()
+  const showMobileMenu = useSelector(state => state.mobileMenu.showMobileMenu)
   const direction = useScrollDirection()
   const { ref } = useSwipeable({
     onSwipedUp: () => setSwipeDirection('up'),
@@ -30,13 +34,16 @@ const MobileMenu = ({ initialData }) => {
   // First useEffect is called every time direction changes, required to hide menus on scroll
   useEffect(() => {
     if (direction === 'down' || swipeDirection === 'down') {
+      dispatch(mobileMenuAction(true))
       setHideNav(true)
       setHideSearch(false)
       setHideCreate(false)
     } else {
-      setHideNav(false)
+      if (showMobileMenu) {
+        setHideNav(false)
+      }
     }
-  }, [direction])
+  }, [direction, showMobileMenu])
 
   // Second useEffect is called only once, required so the API is only called once
   useEffect(() => {
@@ -99,7 +106,8 @@ const MobileMenu = ({ initialData }) => {
                     to='/scheduledGames'
                     onClick={() => {
                       setHideSearch(false)
-                      setHideNav(false)
+                      setHideNav(true)
+                      dispatch(mobileMenuAction(false))
                     }}>
                     Find <b>Matches</b>
                   </Link>

@@ -2,6 +2,7 @@ import React, { Fragment, useState } from 'react'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import Select from 'react-select'
+import { useDispatch, useSelector } from 'react-redux'
 
 import GameFilter from '../scheduledGames/gameFilter'
 import { WithTooltip } from '../Tooltip'
@@ -9,6 +10,7 @@ import JoinButtonAction from '../scheduledGames/JoinButtonAction'
 import Approved_gamers from '../scheduledGames/ApprovedGamers'
 import GameComments from '../scheduledGames/GameComments'
 import { prefilledFilter_option } from '../scheduledGames/option'
+import { mobileMenuAction } from '../../../redux/actions/mobileMenuAction'
 
 const MobileScheduledGames = (props) => {
   const {
@@ -32,7 +34,8 @@ const MobileScheduledGames = (props) => {
     singleScheduleGamesPayload = {},
   } = props
   console.log('scheduleGames  ', scheduleGames)
-
+  
+  const dispatch = useDispatch()
   const defaultThumbnails = 'https://cdn.myG.gg/platform_images/Notifications/myG_icon.svg'
   const defaultUserImage = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png'
   const defaultSwipeDownImage = 'https://cdn.myg.gg/platform_icons/swipe-down-3-xxl+(myG-yellow).png'
@@ -61,7 +64,6 @@ const MobileScheduledGames = (props) => {
     window.router.push('/?at=notifications&submenu=1')
   }
   const handleScroll = (event) => {
-    console.log('scrolling')
     const _event = event.currentTarget,
       _current = myRef.current
     if (_event.scrollTop + (3 / 2) * _current.offsetHeight > _event.scrollHeight && props.hasMore && !props.fetching) {
@@ -118,7 +120,7 @@ const MobileScheduledGames = (props) => {
 
   const { no_of_comments = [], lastComment = '' } = commentData
   const { no_of_my_comments = 0 } = no_of_comments[0] || {}
-  console.log(scheduleGames.length)
+  const showMobileMenu = useSelector(state => state.mobileMenu.showMobileMenu)
   return (
     <Fragment>
       <div className={`mGameAllComments${showRightSideInfo && showAllComment ? ' active' : ' inactive'}`}>
@@ -275,7 +277,7 @@ const MobileScheduledGames = (props) => {
         )}
       </div>
 
-      <div className={`mGameTileList${!showRightSideInfo ? ' active' : ' inactive'}`} onScroll={() => console.log('lol')}>
+      <div className={`mGameTileList${showMobileMenu ? ' showMobileMenu' : ' hideMobileMenu'}${!showRightSideInfo ? ' active' : ' inactive'}`}>
         <div className='mGameTileListHeader'>
           <div className='myGame__filter-section'>
             {id == '' && myGamesMenu && (
@@ -414,10 +416,10 @@ const MobileScheduledGames = (props) => {
             })}
 
           {
-            scheduleGames.length == 0 || scheduleGames.length == undefined &&
+            scheduleGames.length == 0 &&
             <div className="mNoResultsFound">
-              <img src={defaultSwipeDownImage} alt='swipe-down-icon-svg' />
-              <p>No results found.</p>
+              <p>No results found mate.... click to see menu</p>
+              <img onClick={() => dispatch(mobileMenuAction(true))} src={defaultSwipeDownImage} alt='swipe-down-icon-svg' />
             </div>
           }
         </div>

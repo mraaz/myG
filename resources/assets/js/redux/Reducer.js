@@ -14,6 +14,7 @@ import profile from './reducers/profileReducer'
 import search from './reducers/searchReducer'
 import onboarding from './reducers/onboardingReducer'
 import achievements from './reducers/achievementsReducer'
+import mobileMenu from './reducers/mobileMenuReducer'
 import notifications from './reducers/notificationsReducer'
 import quests from './reducers/questsReducer'
 
@@ -30,6 +31,7 @@ const appReducer = combineReducers({
   search,
   onboarding,
   achievements,
+  mobileMenu,
   notifications,
   quests,
 })

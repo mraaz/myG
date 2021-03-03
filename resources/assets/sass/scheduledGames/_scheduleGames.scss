@@ -937,10 +937,6 @@
         -ms-overflow-style: none; /* IE and Edge */
         max-height: 100vh;
         padding: 10px;
-        @media screen and (max-width: 998px) {
-          height: 70vh;
-          overflow: scroll;
-        }
         .mygames {
           display: flex;
           justify-content: start;
@@ -2118,7 +2114,6 @@
 }
 
 .viewGame__container__mobile {
-  height: 100%;
   position: relative;
 }
 
@@ -2208,8 +2203,6 @@ $transition-default: 0.25s ease-out 0.1s;
 .mGameAllComments,
 .mGameDetails,
 .mGameTileList {
-  margin-top: 85px;
-
   &.active {
     display: block;
 
@@ -2224,7 +2217,13 @@ $transition-default: 0.25s ease-out 0.1s;
 }
 
 .mGameTileList {
-  padding: 0 20px;
+  padding: 20px;
+  transition: .6s padding ease-in-out;
+
+  &.showMobileMenu {
+    padding: 85px 20px 0;
+  }
+
   .gameList__box {
     .mNoResultsFound {
       color: #fff;
@@ -2234,12 +2233,8 @@ $transition-default: 0.25s ease-out 0.1s;
         max-width: 60px;
       }
       p {
-        padding-top: 20px;
+        padding-bottom: 20px;
       }
-    }
-    @media screen and (max-width: 998px) {
-      height: 70vh;
-      overflow: scroll;
     }
   }
 }
