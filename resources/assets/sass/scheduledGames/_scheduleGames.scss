@@ -2226,6 +2226,17 @@ $transition-default: 0.25s ease-out 0.1s;
 .mGameTileList {
   padding: 0 20px;
   .gameList__box {
+    .mNoResultsFound {
+      color: #fff;
+      text-align: center;
+      margin: 100px 0;
+      img {
+        max-width: 60px;
+      }
+      p {
+        padding-top: 20px;
+      }
+    }
     @media screen and (max-width: 998px) {
       height: 70vh;
       overflow: scroll;

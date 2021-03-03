@@ -35,6 +35,7 @@ const MobileScheduledGames = (props) => {
 
   const defaultThumbnails = 'https://cdn.myG.gg/platform_images/Notifications/myG_icon.svg'
   const defaultUserImage = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png'
+  const defaultSwipeDownImage = 'https://cdn.myg.gg/platform_icons/swipe-down-3-xxl+(myG-yellow).png'
   const myRef = React.createRef()
 
   const transformPlayerLevelTitle = (title) => {
@@ -60,6 +61,7 @@ const MobileScheduledGames = (props) => {
     window.router.push('/?at=notifications&submenu=1')
   }
   const handleScroll = (event) => {
+    console.log('scrolling')
     const _event = event.currentTarget,
       _current = myRef.current
     if (_event.scrollTop + (3 / 2) * _current.offsetHeight > _event.scrollHeight && props.hasMore && !props.fetching) {
@@ -116,7 +118,7 @@ const MobileScheduledGames = (props) => {
 
   const { no_of_comments = [], lastComment = '' } = commentData
   const { no_of_my_comments = 0 } = no_of_comments[0] || {}
-
+  console.log(scheduleGames.length)
   return (
     <Fragment>
       <div className={`mGameAllComments${showRightSideInfo && showAllComment ? ' active' : ' inactive'}`}>
@@ -273,7 +275,7 @@ const MobileScheduledGames = (props) => {
         )}
       </div>
 
-      <div className={`mGameTileList${!showRightSideInfo ? ' active' : ' inactive'}`}>
+      <div className={`mGameTileList${!showRightSideInfo ? ' active' : ' inactive'}`} onScroll={() => console.log('lol')}>
         <div className='mGameTileListHeader'>
           <div className='myGame__filter-section'>
             {id == '' && myGamesMenu && (
@@ -410,6 +412,14 @@ const MobileScheduledGames = (props) => {
                 </div>
               )
             })}
+
+          {
+            scheduleGames.length == 0 || scheduleGames.length == undefined &&
+            <div className="mNoResultsFound">
+              <img src={defaultSwipeDownImage} alt='swipe-down-icon-svg' />
+              <p>No results found.</p>
+            </div>
+          }
         </div>
       </div>
     </Fragment>
