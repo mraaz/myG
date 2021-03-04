@@ -16,7 +16,7 @@ pipeline {
         SECRET_KEY = credentials('secret_key')
         SITE_KEY = credentials('site_key')
         TAG = sh(script: "echo `date +'%d.%m.%Y..%H.%M.%S'`", returnStdout: true).trim()
-        DISTRIBUTION = credentials('cloud_front_distribution_id_myG')
+        DISTRIBUTION = 'E1H01H67HGUDTU'
     }
     tools {
         nodejs "default"
