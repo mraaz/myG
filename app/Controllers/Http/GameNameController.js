@@ -23,6 +23,7 @@ class GameNameController {
           game_name: request.input('game_name').trim(),
           user_id: auth.user.id,
         })
+
         const gameSearchResults = await Database.table('game_names')
           .leftJoin('game_name_fields', 'game_name_fields.game_names_id', 'game_names.id')
           .where('game_names.id', newGameName.id)
@@ -257,6 +258,7 @@ class GameNameController {
     const gamesToDelete = await Database.from('game_names')
       .where('counter', '=', 0)
       .andWhere('created_at', '<', oneDayAgo)
+
     if (!gamesToDelete.length) return
     const apiController = new ApiController()
     const auth = { user: { id: 'myg' } }
