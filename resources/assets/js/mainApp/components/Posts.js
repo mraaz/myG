@@ -64,7 +64,7 @@ export default class Posts extends Component {
             moreplease: false,
           })
           return
-        } else if (myPosts.data.myPosts.length == 3) {
+        } else if (myPosts.data.myPosts.length < 5) {
           if (myPosts.data.myPosts[0].id == 1) {
             self.setState({
               myPosts: self.state.myPosts.concat(myPosts.data.myPosts),

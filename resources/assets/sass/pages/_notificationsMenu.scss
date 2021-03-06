@@ -127,6 +127,9 @@ $transition-default: 0.25s ease-out 0.1s;
 }
 
 .app-container.home-page .notifications-page {
+  margin-left: auto;
+  margin-right: auto;
+  width: 97%;
   .postCompose__container {
     width: inherit !important;
     padding: 0;
