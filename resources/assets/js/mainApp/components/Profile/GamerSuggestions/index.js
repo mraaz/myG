@@ -41,8 +41,8 @@ export class GamerSuggestions extends React.Component {
       onMouseLeave={() => this.setState({ hovering: null })}
     >
       {this.renderHoverBar(profile, isHovering)}
-      <div className="image absolute-top" style={{ backgroundImage: `url(${profile.background}), url(https://cdn.myG.gg/default_user/myG_bg.png)` }} />
-      <div className='icon' style={{ backgroundImage: `url(${profile.image}), url(https://cdn.myG.gg/default_user/new-user-profile-picture.png)` }} />
+      <div className="image absolute-top" style={{ backgroundImage: `url(${profile.background}), url(https://myG.gg/default_user/myG_bg.png)` }} />
+      <div className='icon' style={{ backgroundImage: `url(${profile.image}), url(https://myG.gg/default_user/new-user-profile-picture.png)` }} />
       <span className="name">{profile.alias}</span>
       <div className="field center">
           <span className="field-title space-right">Level</span>

@@ -5,7 +5,7 @@ import notifyToast from '../../../../common/toast'
 import { registerSponsorClick } from '../../../../integration/http/quests'
 import ManageSponsors from '../../CommunityView/MangeSponsors'
 
-const defaultSponsorImage = 'https://cdn.myG.gg/platform_images/Communities/myG_logo.jpg';
+const defaultSponsorImage = 'https://myG.gg/platform_images/Communities/myG_logo.jpg';
 export default class Sponsors extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return ignoreFunctions(nextProps, nextState, this.props, this.state)

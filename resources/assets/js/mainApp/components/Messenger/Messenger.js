@@ -86,7 +86,7 @@ class Messenger extends React.Component {
         <section id='messenger'>
           <div className='locked-chat'>
             <div className='locked-image'>
-              <img src='https://cdn.myG.gg/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
+              <img src='https://myG.gg/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
             </div>
             <span>Your Chat is locked</span>
             <span>
@@ -98,7 +98,7 @@ class Messenger extends React.Component {
               to unlock it.
             </span>
             <div className='rectangle'>
-              <img src='https://cdn.myG.gg/platform_images/Dashboard/btn_Network.svg' className='img-network' />
+              <img src='https://myG.gg/platform_images/Dashboard/btn_Network.svg' className='img-network' />
               <div className='body-of-text'>
                 <p>
                   Go to{' '}

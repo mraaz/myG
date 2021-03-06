@@ -9,7 +9,7 @@ const MobileGameComments = ({ toggleBack,comments, allowComments, showComment, v
       <div className="mGameCommentsRowOne">
         <div className='rowOneWrapper' onClick={toggleBack}>
           <a className="mGameCommentsBackButton" onClick={toggleBack}>
-            <img className="mGameCommentsCaretImg" src='https://cdn.myG.gg/platform_images/View+Game/Down+Carrot.svg' />
+            <img className="mGameCommentsCaretImg" src='https://myG.gg/platform_images/View+Game/Down+Carrot.svg' />
             <span>
               {` Comments `}
             </span>

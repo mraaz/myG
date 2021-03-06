@@ -33,8 +33,8 @@ const MobileScheduledGames = (props) => {
   } = props
   console.log('scheduleGames  ', scheduleGames)
 
-  const defaultThumbnails = 'https://cdn.myG.gg/platform_images/Notifications/myG_icon.svg'
-  const defaultUserImage = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png'
+  const defaultThumbnails = 'https://myG.gg/platform_images/Notifications/myG_icon.svg'
+  const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
   const myRef = React.createRef()
 
   const transformPlayerLevelTitle = (title) => {
@@ -52,7 +52,7 @@ const MobileScheduledGames = (props) => {
   }
 
   const addDefaultSrc = (ev) => {
-    ev.target.src = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png'
+    ev.target.src = 'https://myG.gg/default_user/new-user-profile-picture.png'
   }
 
   const handlePendingApproval = (e) => {
@@ -135,7 +135,7 @@ const MobileScheduledGames = (props) => {
         <div className='mGameDetailsRowOne'>
           <div className='rowOneWrapper'>
             <a className='mGameDetailsBackButton' onClick={(e) => deSelectGame(e)}>
-              <img className='mGameDetailsCaretImg' src='https://cdn.myG.gg/platform_images/View+Game/Down+Carrot.svg' />
+              <img className='mGameDetailsCaretImg' src='https://myG.gg/platform_images/View+Game/Down+Carrot.svg' />
               <span>{` Full List `}</span>
             </a>
 
@@ -159,13 +159,13 @@ const MobileScheduledGames = (props) => {
 
         <div className='mGameDetailsRowThree'>
           <div className='mGamerCount'>
-            <img src='https://cdn.myG.gg/platform_images/Dashboard/Notifications/little_green_man.svg' />
+            <img src='https://myG.gg/platform_images/Dashboard/Notifications/little_green_man.svg' />
             <span>
               {no_of_gamers} / {limit == 0 ? <span>&#8734;</span> : limit} Gamers
             </span>
           </div>
           <div className='mGameTimestamp'>
-            <img src='https://cdn.myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
+            <img src='https://myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
             <span>{moment(start_date_time).format('LLL')}</span>
           </div>
           <div className='gameLevelWrap'>
@@ -354,14 +354,14 @@ const MobileScheduledGames = (props) => {
 
                     <div className='mGameTileRowThree'>
                       <div className='mGamerCount'>
-                        <img src='https://cdn.myG.gg/platform_images/Dashboard/Notifications/little_green_man.svg' />
+                        <img src='https://myG.gg/platform_images/Dashboard/Notifications/little_green_man.svg' />
                         <span>
                           {game.no_of_gamers} / {game.limit == 0 ? <span>&#8734;</span> : game.limit} Gamers
                         </span>
                       </div>
 
                       <div className='mGameTimestamp'>
-                        <img src='https://cdn.myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
+                        <img src='https://myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
                         <span>{moment(game.start_date_time).format('LLL')}</span>
                       </div>
 
@@ -389,13 +389,13 @@ const MobileScheduledGames = (props) => {
                         <div className='rowFourWrapper'>
                           {statusMapping[myStatus] && (
                             <div className='myStatus'>
-                              <img src='https://cdn.myG.gg/platform_images/View+Game/tick.svg' />
+                              <img src='https://myG.gg/platform_images/View+Game/tick.svg' />
                               <span>{statusMapping[myStatus]}</span>
                             </div>
                           )}
                           {no_of_Approval_Pending ? (
                             <div className='numberOfApprovals' onClick={handlePendingApproval}>
-                              <img src='https://cdn.myG.gg/platform_images/View+Game/warning.svg' />
+                              <img src='https://myG.gg/platform_images/View+Game/warning.svg' />
                               <span>{no_of_Approval_Pending} Approval Pending</span>
                             </div>
                           ) : (
