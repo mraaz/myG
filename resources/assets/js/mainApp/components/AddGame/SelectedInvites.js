@@ -63,7 +63,7 @@ const SelectedInvites = ({
   }
 
   const addDefaultSrc = (ev) => {
-    ev.target.src = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png'
+    ev.target.src = 'https://myG.gg/default_user/new-user-profile-picture.png'
   }
 
   const getInvitesListView = (group) => {
@@ -97,7 +97,7 @@ const SelectedInvites = ({
                     ? 'invite-players__player-list-element-delete-hoverred'
                     : 'invite-players__player-list-element-delete'
                 }
-                src='https://cdn.myG.gg/platform_images/Dashboard/X+icon.svg'
+                src='https://myG.gg/platform_images/Dashboard/X+icon.svg'
                 height={20}
                 width={20}
                 onClick={() => onClickHandler(key)}

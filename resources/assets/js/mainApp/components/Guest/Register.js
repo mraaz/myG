@@ -11,7 +11,7 @@ export default class GuestRegister extends React.Component {
       <div className='card-container'>
         <div className='logo-on-card'>
           <img
-            src='https://cdn.myG.gg/platform_images/Login+Screen/Card_Logo.svg'
+            src='https://myG.gg/platform_images/Login+Screen/Card_Logo.svg'
             height='90'
             width='90'
           />
@@ -23,7 +23,7 @@ export default class GuestRegister extends React.Component {
           </div>
           <a href='/login/facebook' className='button facebook-btn'>
             <img
-              src='https://cdn.myG.gg/platform_images/Login+Screen/Facebook_SSO.svg'
+              src='https://myG.gg/platform_images/Login+Screen/Facebook_SSO.svg'
               className='sso-logo'
               height='25'
               width='25'
@@ -32,7 +32,7 @@ export default class GuestRegister extends React.Component {
           </a>
           <a href='/login/google' className='button google-btn'>
             <img
-              src='https://cdn.myG.gg/platform_images/Login+Screen/Google_SSO.svg'
+              src='https://myG.gg/platform_images/Login+Screen/Google_SSO.svg'
               className='sso-logo'
               height='25'
               width='25'
@@ -41,7 +41,7 @@ export default class GuestRegister extends React.Component {
           </a>
           <a href='/login/steam' className='button steam-btn'>
             <img
-              src='https://cdn.myG.gg/platform_images/Login+Screen/Steam_SSO.svg'
+              src='https://myG.gg/platform_images/Login+Screen/Steam_SSO.svg'
               className='sso-logo'
               height='25'
               width='25'
@@ -50,7 +50,7 @@ export default class GuestRegister extends React.Component {
           </a>
           <a href='/login/discord' className='button discord-btn'>
             <img
-              src='https://cdn.myG.gg/platform_images/Login+Screen/Discord_SSO.svg'
+              src='https://myG.gg/platform_images/Login+Screen/Discord_SSO.svg'
               className='sso-logo'
               height='25'
               width='25'

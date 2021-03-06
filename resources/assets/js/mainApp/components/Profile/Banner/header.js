@@ -38,7 +38,7 @@ export default class Header extends React.Component {
       <div
         className='icon'
         style={{
-          backgroundImage: `url('${this.props.profile.image}'), url('https://cdn.myG.gg/default_user/new-user-profile-picture.png')`,
+          backgroundImage: `url('${this.props.profile.image}'), url('https://myG.gg/default_user/new-user-profile-picture.png')`,
         }}
       />
     )
@@ -103,7 +103,7 @@ export default class Header extends React.Component {
       <div className='send-message-button clickable' onClick={() => openChatByContact(this.props.profile.profileId)}>
         <div
           className='send-message-button-icon'
-          style={{ backgroundImage: `url('https://cdn.myG.gg/platform_images/Dashboard/logo.svg')` }}
+          style={{ backgroundImage: `url('https://myG.gg/platform_images/Dashboard/logo.svg')` }}
         />
         Send Message
       </div>

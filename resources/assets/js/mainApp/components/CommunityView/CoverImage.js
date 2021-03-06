@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 import { Toast_style } from '../Utility_Function'
 
 const addDefaultSrc = (ev) => {
-  ev.target.src = 'https://cdn.myG.gg/default_user/universe.jpg'
+  ev.target.src = 'https://myG.gg/default_user/universe.jpg'
 }
 
 const labelMap = {
@@ -100,7 +100,7 @@ const CoverImage = (props) => {
         <div className='option'>
           <button type='button' className='btnWarning btn__option'>
             <span onClick={(e) => handleJoinButton(e, props.id)}>{joinlabel || labelMap[props.current_user_permission]}</span>
-            <img src='https://cdn.myG.gg/platform_images/View+Game/Down+Carrot_black.svg' onClick={(e) => setToggleOption(!toggle)}></img>
+            <img src='https://myG.gg/platform_images/View+Game/Down+Carrot_black.svg' onClick={(e) => setToggleOption(!toggle)}></img>
             {toggle &&
               (labelMap[props.current_user_permission] == 'Joined' ||
                 labelMap[props.current_user_permission] == 'Pending' ||

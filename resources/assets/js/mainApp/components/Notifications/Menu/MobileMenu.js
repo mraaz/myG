@@ -70,7 +70,7 @@ class MobileMenu extends Component {
               changeContentTab('previous', Number(activeTab) - 1)
             }
           }}>
-          <img src='https://cdn.myG.gg/platform_images/View+Game/Down+Carrot.svg' />
+          <img src='https://myG.gg/platform_images/View+Game/Down+Carrot.svg' />
         </div>
         <div className='activeTab__label'>{dummyData[activeTab].title}</div>
         <div
@@ -80,7 +80,7 @@ class MobileMenu extends Component {
               changeContentTab('next', Number(activeTab) + 1)
             }
           }}>
-          <img src='https://cdn.myG.gg/platform_images/View+Game/Down+Carrot.svg' />
+          <img src='https://myG.gg/platform_images/View+Game/Down+Carrot.svg' />
         </div>
       </div>
     )

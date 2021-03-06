@@ -149,7 +149,7 @@ class EmailBodyController {
                   <tr>
                     <td>
                       <img
-                        src="https://cdn.myg.gg/welcome-email/Welcome-to-myG_3_01.jpg"
+                        src="https://myG.gg/welcome-email/Welcome-to-myG_3_01.jpg"
                         align="left"
                         style="display:block; margin:0px;"
                       />
@@ -160,7 +160,7 @@ class EmailBodyController {
                       height="39"
                       width="600"
                       align="left"
-                      style="display:block; margin:0px;background-image:url('https://cdn.myg.gg/welcome-email/Welcome-to-myG_3_02.jpg')"
+                      style="display:block; margin:0px;background-image:url('https://myG.gg/welcome-email/Welcome-to-myG_3_02.jpg')"
                     >
                       <p
                         style="font-family: 'Montserrat Alternates', sans-serif;font-style: normal;font-weight: 700;font-size: 20px;color: rgba(255, 255, 255, 1);margin: 0;text-align: center;"
@@ -174,7 +174,7 @@ class EmailBodyController {
                       height="71"
                       width="600"
                       align="left"
-                      style="display:block; margin:0px;background-image:url('https://cdn.myg.gg/welcome-email/Welcome-to-myG_3_03.jpg')"
+                      style="display:block; margin:0px;background-image:url('https://myG.gg/welcome-email/Welcome-to-myG_3_03.jpg')"
                     >
                       <p
                         style="width: 352px;font-family: 'Montserrat Alternates', sans-serif;font-style: normal;font-weight: 400;font-size: 12px;color: rgba(255, 255, 255, 1);margin: 0 auto; padding-top:10px;text-align: center;"
@@ -187,7 +187,7 @@ class EmailBodyController {
                   <tr>
                     <td>
                       <img
-                        src="https://cdn.myg.gg/welcome-email/Welcome-to-myG_3_04.jpg"
+                        src="https://myG.gg/welcome-email/Welcome-to-myG_3_04.jpg"
                         align="left"
                         style="display:block; margin:0px;"
                       />
@@ -198,7 +198,7 @@ class EmailBodyController {
                       height="62"
                       width="600"
                       align="left"
-                      style="display:block; margin:0px;background-image:url('https://cdn.myg.gg/welcome-email/Welcome-to-myG_3_05.jpg')"
+                      style="display:block; margin:0px;background-image:url('https://myG.gg/welcome-email/Welcome-to-myG_3_05.jpg')"
                     >
                       <p
                         style="width: 280px;font-family: 'Montserrat Alternates', sans-serif;font-style: normal;font-weight: 400;font-size: 12px;color: rgba(255, 255, 255, 1);margin: 0 auto; padding-top:5px;text-align: center;"
@@ -214,7 +214,7 @@ class EmailBodyController {
                       height="117"
                       width="600"
                       align="left"
-                      style="display:block; margin:0px;background-image:url('https://cdn.myg.gg/welcome-email/Welcome-to-myG_3_06.jpg');background-repeat: no-repeat;"
+                      style="display:block; margin:0px;background-image:url('https://myG.gg/welcome-email/Welcome-to-myG_3_06.jpg');background-repeat: no-repeat;"
                     >
                       <p
                         style="font-family: 'Montserrat Alternates', sans-serif;font-style: normal;font-weight: 700;font-size: 16px;color: #000000;margin: 0 auto;padding-top: 26px;text-align: center;"
@@ -227,7 +227,7 @@ class EmailBodyController {
                     height="33"
                     width="600"
                     align="left"
-                    style="display:block; margin:0px;background-image:url('https://cdn.myg.gg/welcome-email/Welcome-to-myG_3_07.jpg');background-repeat: no-repeat;"
+                    style="display:block; margin:0px;background-image:url('https://myG.gg/welcome-email/Welcome-to-myG_3_07.jpg');background-repeat: no-repeat;"
                   >
                     <p
                       style="font-family: 'Montserrat', sans-serif;font-style: normal;font-weight: 400;font-size: 20px;color: #000000;margin: 0 auto;padding-top: 5px;text-align: center;"
@@ -240,7 +240,7 @@ class EmailBodyController {
                       height="29"
                       width="600"
                       align="left"
-                      style="display:block; margin:0px;background-image:url('https://cdn.myg.gg/welcome-email/Welcome-to-myG_3_08.jpg');background-repeat: no-repeat;"
+                      style="display:block; margin:0px;background-image:url('https://myG.gg/welcome-email/Welcome-to-myG_3_08.jpg');background-repeat: no-repeat;"
                     >
                       <p
                         style="font-family: 'Montserrat', sans-serif;font-style: normal;font-weight: 400;font-size: 12px;color: #000000;margin: 0 auto;padding-top: 5px;text-align: center;"
@@ -253,7 +253,7 @@ class EmailBodyController {
                   <tr>
                     <td>
                       <img
-                        src="https://cdn.myg.gg/welcome-email/Welcome-to-myG_3_09.jpg"
+                        src="https://myG.gg/welcome-email/Welcome-to-myG_3_09.jpg"
                         align="left"
                         style="display:block; margin:0px;"
                       />
@@ -268,7 +268,7 @@ class EmailBodyController {
                     height="76"
                     width="210"
                     align="left"
-                    style="margin:0px;background-image:url('https://cdn.myg.gg/welcome-email/Welcome-to-myG_3_10.jpg');background-repeat: no-repeat;vertical-align: top;"
+                    style="margin:0px;background-image:url('https://myG.gg/welcome-email/Welcome-to-myG_3_10.jpg');background-repeat: no-repeat;vertical-align: top;"
                   >
                     <p
                       style="font-family: 'Montserrat Alternates', sans-serif;font-style: normal;font-weight: 400;font-size: 12px;color: rgba(231, 187, 48, 1);margin: 14px 0px 10px 50px;"
@@ -280,7 +280,7 @@ class EmailBodyController {
                     height="76"
                     width="190"
                     align="left"
-                    style="margin:0px;background-image:url('https://cdn.myg.gg/welcome-email/Welcome-to-myG_3_11.jpg');background-repeat: no-repeat;vertical-align: top;"
+                    style="margin:0px;background-image:url('https://myG.gg/welcome-email/Welcome-to-myG_3_11.jpg');background-repeat: no-repeat;vertical-align: top;"
                   >
                     <p
                       style="font-family: 'Montserrat Alternates', sans-serif;font-style: normal;font-weight: 400;font-size: 12px;color: rgba(231, 187, 48, 1);margin: 14px 0px 0px 32px;"
@@ -292,7 +292,7 @@ class EmailBodyController {
                     height="76"
                     width="200"
                     align="left"
-                    style="margin:0px;background-image:url('https://cdn.myg.gg/welcome-email/Welcome-to-myG_3_12.jpg');background-repeat: no-repeat;vertical-align: top;"
+                    style="margin:0px;background-image:url('https://myG.gg/welcome-email/Welcome-to-myG_3_12.jpg');background-repeat: no-repeat;vertical-align: top;"
                   >
                     <p
                       style="font-family: 'Montserrat Alternates', sans-serif;font-style: normal;font-weight: 400;font-size: 12px;color: rgba(231, 187, 48, 1);margin: 14px 0px 0px 34px;"
@@ -309,7 +309,7 @@ class EmailBodyController {
                     height="136"
                     width="600"
                     align="center"
-                    style="margin:0px;background-image:url('https://cdn.myg.gg/welcome-email/Welcome-to-myG_3_13.jpg');background-repeat: no-repeat;vertical-align: top;"
+                    style="margin:0px;background-image:url('https://myG.gg/welcome-email/Welcome-to-myG_3_13.jpg');background-repeat: no-repeat;vertical-align: top;"
                   >
                     <p
                       style="width: 468px;text-align: center;font-family: 'Montserrat', sans-serif;font-style: normal;font-weight: 400;font-size: 12px;color: #000000;margin: 24px 0px 0px 34px;"
@@ -329,7 +329,7 @@ class EmailBodyController {
                     height="273"
                     width="267"
                     align="left"
-                    style="margin:0px;background-image:url('https://cdn.myg.gg/welcome-email/Welcome-to-myG_3_14.jpg');background-repeat: no-repeat;"
+                    style="margin:0px;background-image:url('https://myG.gg/welcome-email/Welcome-to-myG_3_14.jpg');background-repeat: no-repeat;"
                   >
                     <p
                       style="text-align: left;font-family: 'Montserrat', sans-serif;font-style: normal;font-weight: 700;font-size: 24px;color: #000000;margin: 0px 0px 0px 24px;"
@@ -350,7 +350,7 @@ class EmailBodyController {
                   </td>
                   <td>
                     <img
-                      src="https://cdn.myg.gg/welcome-email/Welcome-to-myG_3_15.jpg"
+                      src="https://myG.gg/welcome-email/Welcome-to-myG_3_15.jpg"
                       align="left"
                       style="display:block; margin:0px;"
                     />
@@ -364,7 +364,7 @@ class EmailBodyController {
                     height="118"
                     width="600"
                     align="left"
-                    style="margin:0px;background-image:url('https://cdn.myg.gg/welcome-email/Welcome-to-myG_3_16.jpg');background-repeat: no-repeat; vertical-align:middle;"
+                    style="margin:0px;background-image:url('https://myG.gg/welcome-email/Welcome-to-myG_3_16.jpg');background-repeat: no-repeat; vertical-align:middle;"
                   >
                     <a style="text-decoration:none" href="https://myG.gg">
                       <p
@@ -402,7 +402,7 @@ class EmailBodyController {
                     height="172"
                     width="600"
                     align="left"
-                    style="margin:0px;padding: 20px 0px 0px 30px;background-image:url('https://cdn.myg.gg/welcome-email/Welcome-to-myG_3_18.jpg');background-color: #1e2327;background-repeat: no-repeat; vertical-align:top; line-height: 18px;"
+                    style="margin:0px;padding: 20px 0px 0px 30px;background-image:url('https://myG.gg/welcome-email/Welcome-to-myG_3_18.jpg');background-color: #1e2327;background-repeat: no-repeat; vertical-align:top; line-height: 18px;"
                   >
                     <a style="text-decoration:none" href="https://myG.gg">
                       <p
