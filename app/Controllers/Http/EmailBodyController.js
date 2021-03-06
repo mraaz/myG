@@ -180,9 +180,8 @@ class EmailBodyController {
                       <p
                         style="width: 352px;font-family: 'Montserrat Alternates', sans-serif;font-style: normal;font-weight: 400;font-size: 12px;color: rgba(255, 255, 255, 1);margin: 0 auto; padding-top:10px;text-align: center;"
                       >
-                        This will most likely be the first and last email from myG.
-                        That's because email is turned off by default.
-                      <br />Of course you can update this in the <b>Settings</b>.
+                        Glad to have you onboard mate! Have a look around, try to find some friends, use the Find match feature to get better games.
+                      <br />Also if you wish, update your email <a style="text-decoration:none;color: #FFFFFF" href="https://myG.gg/mySettings"><b>settings</b> here</a>.
                       </p>
                     </td>
                   </tr>
@@ -197,7 +196,7 @@ class EmailBodyController {
                   </tr>
                   <tr>
                     <td
-                      height="41"
+                      height="62"
                       width="600"
                       align="left"
                       style="display:block; margin:0px;background-image:url('https://cdn.myg.gg/welcome-email/Welcome-to-myG_3_05.jpg')"
@@ -205,8 +204,9 @@ class EmailBodyController {
                       <p
                         style="width: 280px;font-family: 'Montserrat Alternates', sans-serif;font-style: normal;font-weight: 400;font-size: 12px;color: rgba(255, 255, 255, 1);margin: 0 auto; padding-top:5px;text-align: center;"
                       >
-                        Your key is below and it will be used to access your
-                        <b>Chat History</b>
+                        myG has end to end encryption for all chats (groups + 1:1).
+                        Your chat password is below and it is the only way to gain access to your
+                        <b>Chat History</b>.
                       </p>
                     </td>
                   </tr>
@@ -340,13 +340,13 @@ class EmailBodyController {
                     <p
                       style="text-align: left;font-family: 'Montserrat', sans-serif;font-style: normal;font-weight: 400;font-size: 12px;color: #000000;margin: 10px 0px 0px 24px;line-height: 16px;"
                     >
-                      Everytime you log off, you key is cleared and when you log
-                      back in, you will need to RE-ENTER this key. Failure to do so
-                      will disable chat and if a new key is generated, you will lose
+                      Everytime you log off, you chat password is cleared and when you log
+                      back in, you will need to RE-ENTER this chat password. Failure to do so
+                      will disable chat and if a new chat password is generated, you will lose
                       all your previous chat history. This is a true End to End
                       encryption chat, meaning myG doesn't have any visibility of
-                      your messages or your key. Therefore we cannot retrieve
-                      messages or key if they are lost.
+                      your messages or your chat password. Therefore we cannot retrieve
+                      messages or chat password if they are lost.
                     </p>
                   </td>
                   <td>
@@ -388,12 +388,14 @@ class EmailBodyController {
                     align="left"
                     style="margin:0px;background-color: #fff; vertical-align:top;"
                   >
+                  <a style="text-decoration:none" href="https://github.com/mraaz/myG.gg">
                     <p
                       style="text-align: center;font-family: 'Montserrat', sans-serif;font-style: normal;font-weight: 400;font-size: 12px;color: #000000;margin: 0 auto;"
                     >
                       If you wish to report bugs or make feature requests you
-                      <b>do it here.</b>
+                      <b>can do this here.</b>
                     </p>
+                    </a>
                   </td>
                 </tr>
                 <tr>
@@ -403,20 +405,21 @@ class EmailBodyController {
                     align="left"
                     style="margin:0px;padding: 20px 0px 0px 30px;background-image:url('https://cdn.myg.gg/welcome-email/Welcome-to-myG_3_18.jpg');background-color: #1e2327;background-repeat: no-repeat; vertical-align:top; line-height: 18px;"
                   >
-                    <p
-                      style="width:500px;text-align: left;font-family: 'Montserrat', sans-serif;font-size:16px;font-weight: 700;color: rgba(255, 255, 255, 1)"
-                    >
-                      For more information, please visit our <b>Help Centre</b>.
-                    </p>
+                    <a style="text-decoration:none" href="https://myG.gg">
+                      <p
+                        style="width:500px;text-align: left;font-family: 'Montserrat', sans-serif;font-size:16px;font-weight: 700;color: rgba(255, 255, 255, 1)"
+                      >
+                        For more information, please visit <b>myG</b>.
+                      </p>
+                    </a>
                     <p
                       style="width:500px;text-align: left;font-family: 'Montserrat', sans-serif;font-style: normal;font-weight: 400;font-size: 12px;color: rgba(255, 255, 255, 1);"
                     >
-                      This e-mail was sent to: bru****@gmail.com.<br />
                       Please do not reply to this email as this address is not
                       monitored.<br />
-                      This email was sent by: myG LLC, Brisbane, Australia, 4058.<br />
-                      Manage all email preferences within <b>myG Settings</b>
-                      <br /><a href="" style="color:white;"><b>Terms of Use</a> &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="" style="color:white;">Privacy Policy</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="" style="color:white;">Contact Us</a></b> <br />
+                      This email was sent by: myG LLC, Brisbane, Australia, 4000.<br />
+                      Manage all email preferences within <a href="https://myG.gg/mySettings" style="color:white;text-decoration: none;"> <b>myG Settings</b> </a>
+                      <br /><a href="https://myg.gg/terms" style="color:white;"><b>Terms of Use</a> &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="https://myg.gg/privacy_policy" style="color:white;">Privacy Policy</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="mailto:levelup@myG.gg?subject=Email - Contact us" style="color:white;">Contact Us</a></b> <br />
                       © 2021 myG LLC. All Rights Reserved.
                     </p>
                   </td>
