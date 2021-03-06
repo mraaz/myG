@@ -1,18 +1,35 @@
 import logger from '../../common/logger'
 
 const initialState = {
-  showMobileMenu: false,
+  mobileMenuIsActive: false,
+  mobileMenuIsTop: true,
 }
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case 'REACT_ERROR': return initialState
 
-    case 'SHOW_MENU': {
-      logger.log('Mobile Menu', `Redux -> Force show/hide mobile menu `, action.payload, action.meta)
+    case 'SHOW_MOBILE_MENU': {
+      logger.log('Mobile Menu', `Redux -> Show the mobile menu `, action.meta)
       return {
         ...state,
-        showMobileMenu: action.payload,
+        mobileMenuIsActive: true,
+      }
+    }
+
+    case 'CLOSE_MOBILE_MENU': {
+      logger.log('Mobile Menu', `Redux -> Hide the mobile menu `, action.meta)
+      return {
+        ...state,
+        mobileMenuIsActive: false,
+      }
+    }
+
+    case 'TOP_OF_SCREEN_MOBILE_MENU': {
+      logger.log('Mobile Menu', `Redux -> Indicates if ScrollY is position 0 `, action.payload, action.meta)
+      return {
+        ...state,
+        mobileMenuIsTop: action.payload,
       }
     }
 

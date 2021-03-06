@@ -10,7 +10,7 @@ import JoinButtonAction from '../scheduledGames/JoinButtonAction'
 import Approved_gamers from '../scheduledGames/ApprovedGamers'
 import GameComments from '../scheduledGames/GameComments'
 import { prefilledFilter_option } from '../scheduledGames/option'
-import { mobileMenuAction } from '../../../redux/actions/mobileMenuAction'
+import { openMobileMenuAction } from '../../../redux/actions/mobileMenuAction'
 
 const MobileScheduledGames = (props) => {
   const {
@@ -33,7 +33,6 @@ const MobileScheduledGames = (props) => {
     myGamesMenu = false,
     singleScheduleGamesPayload = {},
   } = props
-  console.log('scheduleGames  ', scheduleGames)
   
   const dispatch = useDispatch()
   const defaultThumbnails = 'https://cdn.myG.gg/platform_images/Notifications/myG_icon.svg'
@@ -120,7 +119,9 @@ const MobileScheduledGames = (props) => {
 
   const { no_of_comments = [], lastComment = '' } = commentData
   const { no_of_my_comments = 0 } = no_of_comments[0] || {}
-  const showMobileMenu = useSelector(state => state.mobileMenu.showMobileMenu)
+  const mobileMenuIsActive = useSelector(state => state.mobileMenu.mobileMenuIsActive)
+  const mobileMenuIsTop = useSelector(state => state.mobileMenu.mobileMenuIsTop)
+
   return (
     <Fragment>
       <div className={`mGameAllComments${showRightSideInfo && showAllComment ? ' active' : ' inactive'}`}>
@@ -277,7 +278,7 @@ const MobileScheduledGames = (props) => {
         )}
       </div>
 
-      <div className={`mGameTileList${showMobileMenu ? ' showMobileMenu' : ' hideMobileMenu'}${!showRightSideInfo ? ' active' : ' inactive'}`}>
+      <div className={`mGameTileList ${mobileMenuIsTop && mobileMenuIsActive ? 'menuAtTop' : ''}`}>
         <div className='mGameTileListHeader'>
           <div className='myGame__filter-section'>
             {id == '' && myGamesMenu && (
@@ -418,8 +419,8 @@ const MobileScheduledGames = (props) => {
           {
             scheduleGames.length == 0 &&
             <div className="mNoResultsFound">
-              <p>No results found mate.... click to see menu</p>
-              <img onClick={() => dispatch(mobileMenuAction(true))} src={defaultSwipeDownImage} alt='swipe-down-icon-svg' />
+              <p>No results found mate.... click/swipe down to see menu</p>
+              <img onClick={() => dispatch(openMobileMenuAction(true))} src={defaultSwipeDownImage} alt='swipe-down-icon-svg' />
             </div>
           }
         </div>

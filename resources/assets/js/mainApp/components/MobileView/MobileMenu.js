@@ -1,10 +1,10 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { useSwipeable } from 'react-swipeable'
 import { useDispatch, useSelector } from 'react-redux'
-import MobileMenuTop from './MobileMenuTop'
+import { useSwipeable } from 'react-swipeable'
 
-import { mobileMenuAction } from '../../../redux/actions/mobileMenuAction'
+import MobileMenuTop from './MobileMenuTop'
+import { openMobileMenuAction, closeMobileMenuAction, topOfScreenMobileMenuAction } from '../../../redux/actions/mobileMenuAction'
 import { useScrollDirection } from '../../hooks'
 import { logToElasticsearch } from '../../../integration/http/logger'
 import { CreateCommunity, AddScheduleGames } from '../../AsyncComponent'
@@ -15,35 +15,67 @@ import useModal from '../../hooks/useModal'
 
 import axios from 'axios'
 
+/**
+ * The mobile menu is controlled by the redux store state. Specifically swiping and scrolling under certain
+ * circumstance constrolls when and how to show the mobile menu.
+ */
 const MobileMenu = ({ initialData }) => {
   const [hideSearch, setHideSearch] = useState(false)
   const [hideCreate, setHideCreate] = useState(false)
-  const [hideNav, setHideNav] = useState(true)
-  const [swipeDirection, setSwipeDirection] = useState(null)
   const [notifications, setNotifications] = useState({ alerts: 0, approvals: 0, chats: 0 })
 
   const dispatch = useDispatch()
-  const showMobileMenu = useSelector(state => state.mobileMenu.showMobileMenu)
+  const mobileMenuIsActive = useSelector(state => state.mobileMenu.mobileMenuIsActive)
+  const mobileMenuIsTop = useSelector(state => state.mobileMenu.mobileMenuIsTop)
   const direction = useScrollDirection()
-  const { ref } = useSwipeable({
-    onSwipedUp: () => setSwipeDirection('up'),
-    onSwipedDown: () => setSwipeDirection('down'),
-  })
+
   const alias = initialData === 'loading' ? '' : initialData.userInfo.alias
 
-  // First useEffect is called every time direction changes, required to hide menus on scroll
-  useEffect(() => {
-    if (direction === 'down' || swipeDirection === 'down') {
-      dispatch(mobileMenuAction(true))
-      setHideNav(true)
-      setHideSearch(false)
-      setHideCreate(false)
-    } else {
-      if (showMobileMenu) {
-        setHideNav(false)
+  const { ref } = useSwipeable({
+    onSwipedUp: () => {
+      if (mobileMenuIsActive) {
+        dispatch(closeMobileMenuAction())
+      }
+    },
+    onSwipedDown: () => {
+      if (!mobileMenuIsActive) {
+        dispatch(openMobileMenuAction())
       }
     }
-  }, [direction, showMobileMenu])
+  })
+
+  // This effect is used to control the mobile menus based on scroll events.
+  // It relies on redux actions and events open / close events can be triggered from parent and sibling components, not just children.
+  useEffect(() => {
+    if (direction === 'top') {
+      // If the direction is top when this effect is triggered, its previous state must have been false, so trigger it.
+      // We always want to open the menu if this is the case
+      dispatch(openMobileMenuAction())
+      dispatch(topOfScreenMobileMenuAction(true))
+      return
+    }
+
+    if (mobileMenuIsTop) {
+      // If the mobile menus top state is already true, we know it must now be false.
+      // If false, don't waste a Action.
+      // Do NOT early return yet as direction is important for flow of menu now.
+      dispatch(topOfScreenMobileMenuAction(false))
+    }
+
+    if (direction === 'up' && !mobileMenuIsActive) {
+      // If scrolling up, open the menu, if not already open.
+      dispatch(openMobileMenuAction())
+      return
+    }
+
+    if (direction === 'down' && mobileMenuIsActive) {
+      // If scrolling down, close the menu(s), if not already closed.
+      dispatch(closeMobileMenuAction())
+      setHideSearch(false)
+      setHideCreate(false)
+      return
+    }
+  }, [direction])
 
   // Second useEffect is called only once, required so the API is only called once
   useEffect(() => {
@@ -87,9 +119,9 @@ const MobileMenu = ({ initialData }) => {
 
   return (
     <Fragment>
-      <MobileMenuTop initialData={initialData} notifications={{ ...notifications }} hide={hideNav} />
+      <MobileMenuTop initialData={initialData} notifications={{ ...notifications }} />
       <section className='main-mobile-menu'>
-        <div className={hideNav ? 'menu-bottom hide' : 'menu-bottom show'}>
+        <div className={mobileMenuIsActive ? 'menu-bottom show' : 'menu-bottom hide'}>
           <div className='mobile-sub-menu'>
             <div className='mobile-feed-img'>
               <Link to='/'>
@@ -106,8 +138,7 @@ const MobileMenu = ({ initialData }) => {
                     to='/scheduledGames'
                     onClick={() => {
                       setHideSearch(false)
-                      setHideNav(true)
-                      dispatch(mobileMenuAction(false))
+                      dispatch(closeMobileMenuAction())
                     }}>
                     Find <b>Matches</b>
                   </Link>
@@ -117,7 +148,7 @@ const MobileMenu = ({ initialData }) => {
                     href='/find-gamers/search'
                     onClick={() => {
                       setHideSearch(false)
-                      setHideNav(true)
+                      dispatch(closeMobileMenuAction())
                     }}>
                     Find <b>Gamers</b>
                   </a>
@@ -139,7 +170,7 @@ const MobileMenu = ({ initialData }) => {
                       to='/'
                       onClick={() => {
                         setHideSearch(false)
-                        setHideNav(true)
+                        dispatch(closeMobileMenuAction())
                       }}>
                       <b>Post</b> on your Feed
                     </Link>
@@ -149,7 +180,7 @@ const MobileMenu = ({ initialData }) => {
                       to='/addScheduleGames'
                       onClick={() => {
                         setHideSearch(false)
-                        setHideNav(true)
+                        dispatch(closeMobileMenuAction())
                       }}>
                       New <b>Matches</b>
                     </Link>
@@ -159,7 +190,7 @@ const MobileMenu = ({ initialData }) => {
                       to='/community/create'
                       onClick={() => {
                         setHideSearch(false)
-                        setHideNav(true)
+                        dispatch(closeMobileMenuAction())
                       }}>
                       New <b>Community</b>
                     </Link>

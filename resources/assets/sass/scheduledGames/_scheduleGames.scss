@@ -2218,9 +2218,9 @@ $transition-default: 0.25s ease-out 0.1s;
 
 .mGameTileList {
   padding: 20px;
-  transition: .6s padding ease-in-out;
+  transition: .1s padding ease-in-out;
 
-  &.showMobileMenu {
+  &.menuAtTop {
     padding: 85px 20px 0;
   }
 
