@@ -111,7 +111,7 @@ class AuthController {
           alias: request.input('alias'),
           first_name: request.input('firstName'),
           last_name: request.input('lastName'),
-          profile_img: 'https://cdn.myG.gg/default_user/new-user-profile-picture.png',
+          profile_img: 'https://myG.gg/default_user/new-user-profile-picture.png',
         })
 
         // Decrease Seats Available upon Registration

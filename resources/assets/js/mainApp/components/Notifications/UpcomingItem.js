@@ -7,8 +7,8 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 
-const defaultThumbnails = 'https://cdn.myG.gg/platform_images/Notifications/myG_icon.svg'
-const defaultUserImage = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png'
+const defaultThumbnails = 'https://myG.gg/platform_images/Notifications/myG_icon.svg'
+const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
 
 export default class UpcomingItem extends Component {
   constructor() {
@@ -20,7 +20,7 @@ export default class UpcomingItem extends Component {
   }
 
   addDefaultSrc(ev) {
-    ev.target.src = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png'
+    ev.target.src = 'https://myG.gg/default_user/new-user-profile-picture.png'
   }
 
   render() {
@@ -80,13 +80,13 @@ export default class UpcomingItem extends Component {
           </div>
           <div className='second__row'>
             <div className='gamer__count'>
-              <img src='https://cdn.myG.gg/platform_images/Dashboard/Notifications/little_green_man.svg' />
+              <img src='https://myG.gg/platform_images/Dashboard/Notifications/little_green_man.svg' />
               <span>
                 {this.props.no_of_gamers} / {this.props.limit == 0 ? <span>&#8734;</span> : this.props.limit} Gamers
               </span>
             </div>
             <div className='game__timestamp'>
-              <img src='https://cdn.myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
+              <img src='https://myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
               <span>{moment(this.props.start_date_time).format('LL')}</span>
             </div>
           </div>

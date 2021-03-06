@@ -193,7 +193,7 @@ const AddCommunityContainer = ({ level }) => {
             }}
             readOnly>
             <div style={{ marginTop: '9px', marginLeft: '15px', cursor: 'pointer' }} onClick={copyToClipboard}>
-              <img src='https://cdn.myG.gg/platform_images/Dashboard/Link.svg' height='18' width='18' />
+              <img src='https://myG.gg/platform_images/Dashboard/Link.svg' height='18' width='18' />
             </div>
           </MyGInput>
           <div className={styles.listedOrText}>OR</div>
@@ -232,7 +232,7 @@ const AddCommunityContainer = ({ level }) => {
       <PageHeader headerText='Create Community' />
       <div className='locked-create-community'>
         <div className='locked-image'>
-          <img src='https://cdn.myG.gg/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
+          <img src='https://myG.gg/platform_images/Dashboard/Lock_Icon_Mobile.svg' className='img-locked' />
         </div>
         <span>Create Community is locked</span>
         <span>
@@ -244,7 +244,7 @@ const AddCommunityContainer = ({ level }) => {
           to unlock {amount}.
         </span>
         <div className='rectangle'>
-          <img src='https://cdn.myG.gg/platform_images/Dashboard/btn_Network.svg' className='img-network' />
+          <img src='https://myG.gg/platform_images/Dashboard/btn_Network.svg' className='img-network' />
           <div className='body-of-text'>
             <p>
               Go to{' '}

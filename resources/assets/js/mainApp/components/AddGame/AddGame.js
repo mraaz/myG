@@ -357,7 +357,7 @@ const AddGame = ({
           selected={mainSettingsState.endTime}>
           <img
             style={{ margin: '0 10px' }}
-            src='https://cdn.myG.gg/platform_images/Dashboard/X+icon.svg'
+            src='https://myG.gg/platform_images/Dashboard/X+icon.svg'
             height='20'
             width='20'
             onClick={() => {
@@ -436,7 +436,7 @@ const AddGame = ({
             />
             <img
               style={{ margin: '0 10px' }}
-              src='https://cdn.myG.gg/platform_images/Dashboard/X+icon.svg'
+              src='https://myG.gg/platform_images/Dashboard/X+icon.svg'
               height='20'
               width='20'
               onClick={() => {

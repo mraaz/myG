@@ -10,8 +10,6 @@ const MobileMenuTop = (props) => {
   const [hideSideMenu, setHideSideMenu] = useState(false)
   const dispatch = useDispatch()
   const mobileMenuIsActive = useSelector(state => state.mobileMenu.mobileMenuIsActive)
-  const MobileMenuTop = useSelector(state => state.mobileMenu.MobileMenuTop)
-
 
   const alias = initialData === 'loading' ? '' : initialData.userInfo.alias
 
@@ -21,7 +19,7 @@ const MobileMenuTop = (props) => {
   const level = initialData === 'loading' ? 0 : initialData.userInfo.level
 
   const addDefaultSrc = (ev) => {
-    ev.target.src = 'https://cdn.myG.gg/platform_images/Dashboard/logo.svg'
+    ev.target.src = 'https://myG.gg/platform_images/Dashboard/logo.svg'
   }
 
   const hideMenus = () => {
@@ -34,24 +32,24 @@ const MobileMenuTop = (props) => {
       <div class={mobileMenuIsActive ? 'menu-tab show' : 'menu-tab hide'}>
         <img onClick={() => setHideSideMenu(true)} src='https://cdn.myG.gg/platform_images/Dashboard/logo.svg' class='img-fluid logo-img' />
         <div class='toggle-menu-btn'>
-          <img src='https://cdn.myG.gg/platform_images/Dashboard/toggle_menu_collapsed.svg' class='img-fluid' />
+          <img src='https://myG.gg/platform_images/Dashboard/toggle_menu_collapsed.svg' class='img-fluid' />
         </div>
         <div className={'notification-expanded'}>
           <Link to='/?at=notifications&submenu=1'>
             <div className='notification-container'>
-              <img src='https://cdn.myG.gg/platform_images/Dashboard/ntfo_Friendship_Icon.svg' height='22' width='22' />
+              <img src='https://myG.gg/platform_images/Dashboard/ntfo_Friendship_Icon.svg' height='22' width='22' />
               <NotificationIcon type='approvals' />
             </div>
           </Link>
           <Link to='/?at=notifications&submenu=2'>
             <div className='notification-container'>
-              <img src='https://cdn.myG.gg/platform_images/Dashboard/Bell_Icon.svg' height='22' width='22' />
+              <img src='https://myG.gg/platform_images/Dashboard/Bell_Icon.svg' height='22' width='22' />
               <NotificationIcon type='alerts' />
             </div>
           </Link>
           <Link to='/?at=notifications&submenu=3'>
             <div className='notification-container'>
-              <img src='https://cdn.myG.gg/platform_images/Dashboard/Chat_Icon.svg' height='22' width='22' />
+              <img src='https://myG.gg/platform_images/Dashboard/Chat_Icon.svg' height='22' width='22' />
               <NotificationIcon type='chats' />
             </div>
           </Link>
@@ -63,7 +61,7 @@ const MobileMenuTop = (props) => {
             <div className='mobile-side-menu'>
               <div className='mobile-side-menu-top'>
                 <div className='back-btn'>
-                  <img src='https://cdn.myG.gg/platform_images/Dashboard/btn_Uncollapse_Menu.svg' onClick={() => setHideSideMenu(false)} />
+                  <img src='https://myG.gg/platform_images/Dashboard/btn_Uncollapse_Menu.svg' onClick={() => setHideSideMenu(false)} />
                 </div>
                 <div className='user-name-icon'>
                   <Link to={`/profile/${alias}`} onClick={() => setHideSideMenu(false)}>
@@ -119,12 +117,12 @@ const MobileMenuTop = (props) => {
                   dispatch(logoutAction())
                   window.location.href = '/logout'
                 }}>
-                <img src='https://cdn.myG.gg/platform_images/Dashboard/Logout_Icon.svg' />
+                <img src='https://myG.gg/platform_images/Dashboard/Logout_Icon.svg' />
                 <span>Logout</span>
               </div>
               <div className='setting-btn'>
                 <Link to='/mySettings' onClick={() => setHideSideMenu(false)}>
-                  <img src='https://cdn.myG.gg/platform_images/Dashboard/Settings_Chat_Window.svg' />
+                  <img src='https://myG.gg/platform_images/Dashboard/Settings_Chat_Window.svg' />
                 </Link>
               </div>
             </div>

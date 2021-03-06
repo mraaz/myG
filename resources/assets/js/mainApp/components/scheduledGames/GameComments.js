@@ -15,8 +15,8 @@ import { Toast_style } from '../Utility_Function'
 import { Upload_to_S3, Remove_file } from '../AWS_utilities'
 import MobileGameComments from '../MobileView/MobileGameComments'
 
-const buckectBaseUrl = 'https://cdn.myG.gg/platform_images/'
-const defaultUserImage = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png'
+const buckectBaseUrl = 'https://myG.gg/platform_images/'
+const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
 
 export default class GameComments extends Component {
   constructor() {
@@ -179,7 +179,7 @@ export default class GameComments extends Component {
     let { userInfo = {} } = user //destructing of object
 
     let {
-      profile_img = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png',
+      profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png',
       hash_tags = [],
     } = scheduleGames_data
     return (
@@ -188,7 +188,7 @@ export default class GameComments extends Component {
           <div className='gameComments__header '>
             <div className='gameName' onClick={this.props.toggleBack}>
               <h1 className='game__name'>
-                <img src='https://cdn.myG.gg/platform_images/View+Game/Down+Carrot.svg' /> Comments{' '}
+                <img src='https://myG.gg/platform_images/View+Game/Down+Carrot.svg' /> Comments{' '}
                 {` (${comments.length})`}{' '}
               </h1>
             </div>
