@@ -3,6 +3,8 @@
 const cryptico = require('cryptico')
 const Database = use('Database')
 const User = use('App/Models/User')
+const GameName = use('App/Models/GameName')
+
 const AwsKeyController = use('./AwsKeyController')
 const FollowerController = use('./FollowerController')
 
@@ -22,7 +24,9 @@ class UserController {
     var friend = undefined,
       following = undefined
     try {
-      const user = await User.query().where('id', '=', request.params.id).fetch()
+      const user = await User.query()
+        .where('id', '=', request.params.id)
+        .fetch()
       if (auth.user.id != request.params.id) {
         friend = await Database.from('friends').where({
           user_id: auth.user.id,
@@ -53,7 +57,9 @@ class UserController {
 
   async profile_with_alias({ auth, request, response }) {
     try {
-      const user = await Database.from('users').where('alias', '=', request.params.alias).first()
+      const user = await Database.from('users')
+        .where('alias', '=', request.params.alias)
+        .first()
       const friend = await Database.from('friends').where({
         user_id: auth.user.id,
         friend_id: user.id,
@@ -233,6 +239,10 @@ class UserController {
         if (auth.user.id == 1 || auth.user.id == '1') {
           return
         }
+
+        const transferGames = await GameName.query()
+          .where('user_id', '=', auth.user.id)
+          .update({ user_id: 1 })
 
         const byebyebye = await Database.table('users')
           .where({
