@@ -103,14 +103,14 @@ const CommunityView = (props) => {
     setShowSponsorModal(false)
   }
   const addDefaultSrc = (ev) => {
-    ev.target.src = 'https://cdn.myG.gg/platform_images/Communities/myG_logo.jpg'
+    ev.target.src = 'https://myG.gg/platform_images/Communities/myG_logo.jpg'
   }
 
   const handleDeleteSponsor = async (id, index) => {
     await axios.delete(`/api/sponsor/delete/${id}`)
     // let tmpSponsors = communityDetails.sponsors
     // delete tmpSponsors[index]
-    //tmpSponsors[index].media_url = 'https://cdn.myG.gg/platform_images/Communities/myG_logo.jpg'
+    //tmpSponsors[index].media_url = 'https://myG.gg/platform_images/Communities/myG_logo.jpg'
     //setCommunityDetails({ sponsors: tmpSponsors })
     hideSponsorModal(true)
     toast.success(<Toast_style text={'Yup, yup, yup... deleted successfully!'} />)

@@ -86,7 +86,7 @@ const MobileMenu = ({ initialData }) => {
           <div className='mobile-sub-menu'>
             <div className='mobile-feed-img'>
               <Link to='/'>
-                <img src='https://cdn.myG.gg/platform_images/Dashboard/btn_Feed.svg' class='img-fluid' />
+                <img src='https://myG.gg/platform_images/Dashboard/btn_Feed.svg' class='img-fluid' />
               </Link>
             </div>
           </div>
@@ -117,7 +117,7 @@ const MobileMenu = ({ initialData }) => {
               </div>
             )}
             <div className='mobile-search-img' onClick={() => setHideSearch(!hideSearch)}>
-              <img src='https://cdn.myG.gg/platform_images/Dashboard/btn_Search.svg' class='img-fluid' />
+              <img src='https://myG.gg/platform_images/Dashboard/btn_Search.svg' class='img-fluid' />
             </div>
           </div>
           <div className='mobile-sub-menu'>
@@ -159,7 +159,7 @@ const MobileMenu = ({ initialData }) => {
                 </div>
               )}
               <div className='mobile-search-img' onClick={() => setHideCreate(!hideCreate)}>
-                <img src='https://cdn.myG.gg/platform_images/Dashboard/btn_New_Game.svg' class='img-fluid' />
+                <img src='https://myG.gg/platform_images/Dashboard/btn_New_Game.svg' class='img-fluid' />
               </div>
             </div>
             <div className='mobile-create-img'></div>
@@ -167,14 +167,14 @@ const MobileMenu = ({ initialData }) => {
           <div className='mobile-sub-menu'>
             <div className='mobile-profile-img'>
               <Link to={`/profile/${alias}`}>
-                <img src='https://cdn.myG.gg/platform_images/Dashboard/btn_Profile.svg' class='img-fluid' />
+                <img src='https://myG.gg/platform_images/Dashboard/btn_Profile.svg' class='img-fluid' />
               </Link>
             </div>
           </div>
           <div className='mobile-sub-menu'>
             <div className='mobile-notification-img'>
               <Link to='?at=notifications&submenu=0'>
-                <img src='https://cdn.myG.gg/platform_images/Dashboard/Bell_Icon.svg' class='img-fluid' />
+                <img src='https://myG.gg/platform_images/Dashboard/Bell_Icon.svg' class='img-fluid' />
               </Link>
             </div>
           </div>

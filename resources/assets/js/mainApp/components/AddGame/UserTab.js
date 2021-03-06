@@ -8,7 +8,7 @@ const UserTab = ({ dataList, dataObject, selectedItemsObject, onClick }) => {
   }
 
   const addDefaultSrc = (ev) => {
-    ev.target.src = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png'
+    ev.target.src = 'https://myG.gg/default_user/new-user-profile-picture.png'
   }
 
   const getIndividualSearchTab = (item, index, selectedItemsObject, onClick) => {

@@ -53,7 +53,7 @@ class AnalyticsBox extends React.Component {
     const { connections = 0, last_month_connections = 0 } = this.props.userTransactionStates
     return (
       <div className='social-box'>
-        <img src='https://cdn.myG.gg/platform_images/Dashboard/btn_Network.svg' className='social-box-img' />
+        <img src='https://myG.gg/platform_images/Dashboard/btn_Network.svg' className='social-box-img' />
         <p className='social-box-count'>{connections}</p>
         <p className='social-box-text'>connections</p>
         <p className='social-box-month'>Last month: {last_month_connections}</p>
@@ -66,7 +66,7 @@ class AnalyticsBox extends React.Component {
     const { followers = 0, last_month_followers = 0 } = this.props.userTransactionStates
     return (
       <div className='social-box'>
-        <img src='https://cdn.myG.gg/platform_images/Dashboard/btn_followers.svg' className='social-box-img' />
+        <img src='https://myG.gg/platform_images/Dashboard/btn_followers.svg' className='social-box-img' />
         <p className='social-box-count'>{followers}</p>
         <p className='social-box-text'>followers</p>
         <p className='social-box-month'>Last month: {last_month_followers}</p>
@@ -79,7 +79,7 @@ class AnalyticsBox extends React.Component {
     const { games = 0, last_month_games = 0 } = this.props.userTransactionStates
     return (
       <div className='social-box'>
-        <img src='https://cdn.myG.gg/platform_images/Dashboard/btn_games.svg' className='social-box-img' />
+        <img src='https://myG.gg/platform_images/Dashboard/btn_games.svg' className='social-box-img' />
         <p className='social-box-count'>{games}</p>
         <p className='social-box-text'>games</p>
         <p className='social-box-month'>Last month: {last_month_games}</p>
@@ -92,7 +92,7 @@ class AnalyticsBox extends React.Component {
     const { likes = 0, last_month_likes = 0 } = this.props.userTransactionStates
     return (
       <div className='social-box'>
-        <img src='https://cdn.myG.gg/platform_images/Dashboard/Header_btn_likes.svg' className='social-box-img' />
+        <img src='https://myG.gg/platform_images/Dashboard/Header_btn_likes.svg' className='social-box-img' />
         <p className='social-box-count'>{likes}</p>
         <p className='social-box-text'>likes</p>
         <p className='social-box-month'>Last month: {last_month_likes}</p>
@@ -105,7 +105,7 @@ class AnalyticsBox extends React.Component {
     const { commendations = 0, last_month_commendations = 0 } = this.props.userTransactionStates
     return (
       <div className='social-box'>
-        <img src='https://cdn.myG.gg/platform_images/Dashboard/btn_reviews.svg' className='social-box-img' />
+        <img src='https://myG.gg/platform_images/Dashboard/btn_reviews.svg' className='social-box-img' />
         <p className='social-box-count'>{commendations}</p>
         <p className='social-box-text'>reviews</p>
         <p className='social-box-month'>Last month: {last_month_commendations}</p>

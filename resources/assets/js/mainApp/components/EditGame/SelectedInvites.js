@@ -94,7 +94,7 @@ const SelectedInvites = ({
                     ? 'invite-players__player-list-element-delete-hoverred'
                     : 'invite-players__player-list-element-delete'
                 }
-                src='https://cdn.myG.gg/platform_images/Dashboard/X+icon.svg'
+                src='https://myG.gg/platform_images/Dashboard/X+icon.svg'
                 height={20}
                 width={20}
                 onClick={() => onClickHandler(key)}

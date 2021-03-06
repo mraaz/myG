@@ -167,15 +167,15 @@ class LeftMenu extends Component {
     const children = this.state.isExpanded ? (
       <Fragment>
         <Link to='/' onClick={(e) => this.updateActivePage('')}>
-          <img src='https://cdn.myG.gg/platform_images/Login+Screen/Logo_FINAL%402x.png' className='img-fluid' />
+          <img src='https://myG.gg/platform_images/Login+Screen/Logo_FINAL%402x.png' className='img-fluid' />
         </Link>
         <div className='sidebar-menu-toggle' onClick={this.onMenuToggle}>
-          <img src='https://cdn.myG.gg/platform_images/Dashboard/btn_Uncollapse_Menu.svg' className='img-fluid' />
+          <img src='https://myG.gg/platform_images/Dashboard/btn_Uncollapse_Menu.svg' className='img-fluid' />
         </div>
       </Fragment>
     ) : (
       <Link to='/' onClick={(e) => this.updateActivePage('')}>
-        <img src='https://cdn.myG.gg/platform_images/Dashboard/logo.svg' height='32' width='32' />
+        <img src='https://myG.gg/platform_images/Dashboard/logo.svg' height='32' width='32' />
       </Link>
     )
 
@@ -185,13 +185,13 @@ class LeftMenu extends Component {
   getToggleButton = () => {
     return this.state.isExpanded ? null : (
       <div className='toggle-menu' onClick={this.onMenuToggle}>
-        <img src='https://cdn.myG.gg/platform_images/Dashboard/toggle_menu_collapsed.svg' height='24' width='24' />
+        <img src='https://myG.gg/platform_images/Dashboard/toggle_menu_collapsed.svg' height='24' width='24' />
       </div>
     )
   }
 
   addDefaultSrc = (ev) => {
-    ev.target.src = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png'
+    ev.target.src = 'https://myG.gg/default_user/new-user-profile-picture.png'
   }
 
   getUserSection = () => {
@@ -217,7 +217,7 @@ class LeftMenu extends Component {
           <Link to='/?at=notifications&submenu=1'>
             <div className='notification-container'>
               <img
-                src='https://cdn.myG.gg/platform_images/Dashboard/ntfo_Friendship_Icon.svg'
+                src='https://myG.gg/platform_images/Dashboard/ntfo_Friendship_Icon.svg'
                 height='22'
                 width='22'
                 className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
@@ -229,7 +229,7 @@ class LeftMenu extends Component {
           <Link to='/?at=notifications&submenu=2'>
             <div className='notification-container'>
               <img
-                src='https://cdn.myG.gg/platform_images/Dashboard/Bell_Icon.svg'
+                src='https://myG.gg/platform_images/Dashboard/Bell_Icon.svg'
                 height='22'
                 width='22'
                 className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
@@ -241,7 +241,7 @@ class LeftMenu extends Component {
           <Link to='/?at=notifications&submenu=3'>
             <div className='notification-container'>
               <img
-                src='https://cdn.myG.gg/platform_images/Dashboard/Chat_Icon.svg'
+                src='https://myG.gg/platform_images/Dashboard/Chat_Icon.svg'
                 height='22'
                 width='22'
                 className={classNames([isExpanded ? '' : styles.notificationIconCollapsed])}
@@ -325,7 +325,7 @@ class LeftMenu extends Component {
           </div>
           {this.state.isExpanded && (
             <Link to='/mySettings'>
-              <img src='https://cdn.myG.gg/platform_images/Dashboard/Settings_Chat_Window.svg' className='img-fluid' />
+              <img src='https://myG.gg/platform_images/Dashboard/Settings_Chat_Window.svg' className='img-fluid' />
             </Link>
           )}
         </div>
