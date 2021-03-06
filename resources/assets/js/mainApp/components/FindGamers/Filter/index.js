@@ -212,6 +212,7 @@ export default class Filter extends React.Component {
       <div className='filter-row'>
         <div className='filter-label'>{filterOptions[filter]}</div>
         <Select
+          menuPlacement="top"
           autoFocus
           className='filter-select'
           placeholder={placeholder || `Select the ${filter} you want to search`}
@@ -233,6 +234,7 @@ export default class Filter extends React.Component {
       <div className='filter-row'>
         <div className='filter-label'>Game</div>
           <AsyncSelect
+            menuPlacement="top"
             autoFocus
             cacheOptions
             defaultOptions
@@ -271,6 +273,7 @@ export default class Filter extends React.Component {
       <div className='filter-row'>
         <div className='filter-label'>Experience</div>
         <Select
+          menuPlacement="top"
           autoFocus
           className='filter-select'
           placeholder='Select the Experience for this game'
@@ -303,6 +306,7 @@ export default class Filter extends React.Component {
       <div className="filter-row" key={filter.label}>
         <span className='filter-label'>{filter.label}</span>
         <Select
+          menuPlacement="top"
           autoFocus
           className='filter-select'
           placeholder={filter.placeholder}
@@ -328,6 +332,7 @@ export default class Filter extends React.Component {
       <div className="filter-row" key={filter.label}>
         <span className='filter-label'>{filter.label}</span>
         <Select
+          menuPlacement="top"
           autoFocus
           className='filter-select'
           placeholder={filter.placeholder}
