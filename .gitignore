@@ -22,3 +22,4 @@ scripts/small_data
 mygame_backup.sql
 myG.log
 .tags
+.tags_swap
