@@ -56,7 +56,7 @@ class ElasticsearchRepository {
         name: experience.gameName,
         ...extraFields,
       };
-      log('ELASTICSEARCH', `User To Store: ${JSON.stringify(userToStore)}`);
+      //log('ELASTICSEARCH', `User To Store: ${JSON.stringify(userToStore)}`);
       return userToStore;
     });
     return this.getElasticsearchClient().update({
@@ -96,7 +96,7 @@ class ElasticsearchRepository {
   }
 
   async storeGame({ gameInfo }) {
-    log('ELASTICSEARCH', `Storing game in Elasticsearch: ${gameInfo.id}`);
+    //log('ELASTICSEARCH', `Storing game in Elasticsearch: ${gameInfo.id}`);
     return this.getElasticsearchClient().update({
       index: 'games',
       id: gameInfo.id,
@@ -172,7 +172,7 @@ class ElasticsearchRepository {
   }
 
   async storeGameName(gameName) {
-    log('ELASTICSEARCH', `Storing game name in Elasticsearch: ${gameName.id}`);
+    //log('ELASTICSEARCH', `Storing game name in Elasticsearch: ${gameName.id}`);
     return this.getElasticsearchClient().update({
       index: 'game_names',
       id: gameName.id,

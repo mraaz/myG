@@ -51,6 +51,7 @@ class EmailController {
   }
 
   async dailyEmails() {
+    console.log('RAAAZ')
     const userList = await Database.from('settings')
       .select('user_id')
       .where('email_notification', '=', 2)
@@ -71,46 +72,35 @@ class EmailController {
   }
 
   async summary_email(user_id) {
+    console.log('GOT here1')
     let email = new AWSEmailController()
     let noti = new NotificationController_v2()
 
     let myFriendRequests = await noti.getmyFriendRequests(user_id)
     //console.log(myFriendRequests.checkMyFriends[0].no_of_my_notiFriends)
 
-    var auth = { user: { id: user_id } }
-    let myRequests = await noti.myRequests({ auth })
-    //console.log(myRequests.number_of_notis)
+    let auth = { user: { id: user_id } }
+    let myRequests = await noti.count({ auth })
 
-    const requestingUserId = user_id
-    const { unreadMessages } = await ChatRepository.fetchUnreadMessages({ requestingUserId })
+    // const requestingUserId = user_id
+    // const { unreadMessages } = await ChatRepository.fetchUnreadMessages({ requestingUserId })
     //console.log(unreadMessages.length)
 
-    const user_email = await Database.from('users')
-      .select('email', 'alias')
+    const user_deets = await Database.from('users')
       .where('id', '=', user_id)
+      .select('email', 'alias')
+      .first()
 
-    //console.log(user_email[0].email)
-
-    if (
-      parseInt(myFriendRequests.checkMyFriends[0].no_of_my_notiFriends) == 0 &&
-      parseInt(myRequests.number_of_notis) == 0 &&
-      unreadMessages.length == 0
-    ) {
-      return
-    }
-
+    console.log('GOT here2')
+    // if (parseInt(myRequests.approvals) == 0 && parseInt(myRequests.alerts) == 0 && parseInt(myRequests.chats) == 0) {
+    //   return
+    // }
+    console.log('GOT here3')
     const email_summary_email = new Email_body()
 
-    let subject = "myG - The Gamer's platform - Summary: " + new Date(Date.now()).toDateString()
-    let body =
-      "<p>Hi mate,</p><p>Here is what you've missed:</p><p>Number of friend <a title='myG' href='https://myG.gg/invitation' target='_blank' rel='noopener'>requests</a>:&nbsp;" +
-      myFriendRequests.checkMyFriends[0].no_of_my_notiFriends +
-      "</p><p>Number of <a title='notifications' href='https://myG.gg/notifications' target='_blank' rel='noopener'>notifications</a>:&nbsp;" +
-      myRequests.number_of_notis +
-      "</p><p>Number of unread <a title='messages' href='https://myG.gg/messages' target='_blank' rel='noopener'>messages</a>:&nbsp;" +
-      unreadMessages.length +
-      '</p>'
-
+    const subject = "myG - The Gamer's platform - Summary: " + new Date(Date.now()).toDateString()
+    let body = await email_summary_email.summary_body(user_deets.alias, myRequests.approvals, myRequests.alerts, myRequests.chats)
+    console.log('GOT here')
     email.createEmailnSend('mnraaz@gmail.com', subject, body)
   }
 
