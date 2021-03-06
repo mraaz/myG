@@ -593,6 +593,11 @@
 
 @media screen and (max-width: 575px) {
   #find-gamers {
+    
+    &.menuAtTop {
+      padding: 85px 0 0;
+    }
+    
     #find-gamers-search {
       padding: 0;
       margin: 0 8px;
@@ -604,7 +609,6 @@
       display: none;
     }
     .top-bar {
-      margin-top: 96px;
       background-color: transparent;
       border: none;
     }
