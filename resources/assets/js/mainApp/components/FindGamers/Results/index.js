@@ -76,7 +76,13 @@ export default class Results extends React.Component {
           <div className="alias-info info">
             {gamer.alias && (
               aliasTooLong ? (
-                <WithTooltip position={{ bottom: '24px', left: '-12px' }} text={`@${gamer.alias}`}>
+                <WithTooltip position={{ 
+                  width: '120px',
+                  padding: '4px 8px',
+                  bottom: '-12px',
+                  left: '-12px',
+                  fontSize: '12px',
+                 }} text={`@${gamer.alias}`}>
                   <span className="alias">{`@${gamer.alias}`.slice(0, 8) + '...'}</span>
                 </WithTooltip>
               ) : (
@@ -85,12 +91,12 @@ export default class Results extends React.Component {
             )}
             {window.innerWidth <= 575 && <span className="title">Level</span>}
             {window.innerWidth <= 575 && <span className="value">{gamer.level}</span>}
-            {gamer.country && <span className="title">Country</span>}
-            {gamer.country && <span className="value">{gamer.country}</span>}
-            {gamer.team && <span className="title">Professional Team</span>}
-            {gamer.team && <span className="value">{gamer.team}</span>}
-            {gamer.languages.length && <span className="title">Languages</span>}
-            {gamer.languages.length && <span className="value">{gamer.languages.join(', ')}</span>}
+            {!!gamer.country && <span className="title">Country</span>}
+            {!!gamer.country && <span className="value">{gamer.country}</span>}
+            {!!gamer.team && <span className="title">Professional Team</span>}
+            {!!gamer.team && <span className="value">{gamer.team}</span>}
+            {!!gamer.languages.length && <span className="title">Languages</span>}
+            {!!gamer.languages.length && <span className="value">{gamer.languages.join(', ')}</span>}
           </div>
           {window.innerWidth > 575 && (
             <div className="level-progress">
