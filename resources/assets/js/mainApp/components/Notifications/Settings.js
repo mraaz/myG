@@ -167,6 +167,17 @@ class Settings extends Component {
             <input type='checkbox' defaultChecked={true} id='switch-orange' onChange={() => {}} className='switch' />
           </div>
         </div>
+        <div className='option'>
+          <div className='title'>
+            <a
+              style={{ 'text-decoration': 'none', color: '#FFFFFF' }}
+              rel='noopener noreferrer'
+              href='https://github.com/mraaz/myG_RoadMap'
+              target='_blank'>
+              Report bugs or request features{' '}
+            </a>
+          </div>
+        </div>
         <div className='option via__email-container'>
           <div className='title'>Notify via E-mail</div>
           <div className='via__email'>

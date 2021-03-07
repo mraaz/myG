@@ -39,7 +39,6 @@ import {
   GuestLink,
   Posts,
   AddScheduleGames,
-  MySettings,
   SinglePost,
   IndividualEsportsExperience,
   ScheduledGamesApprovals,
@@ -64,6 +63,16 @@ class Layout extends Component {
     const getInitialData = async () => {
       try {
         const initialData = await axios.get('/api/initialApp')
+
+        if (initialData.data.userInfo == 1981 && !window.location.href.includes('/link')) {
+          //window.router.push('/');
+          window.location.href = '/logout'
+        }
+
+        const country = await axios.get('https://ipapi.co/json/')
+        console.log(country,"<<<<RAAAZ!");
+
+
         window.PORT = initialData.data.port
         window.LOGS_ON = initialData.data.logsOn || ''
         window.FEATURES_ON = initialData.data.featuresOn || ''
@@ -72,10 +81,6 @@ class Layout extends Component {
         if (window.LOGS_ON.includes('EXPLAIN')) {
           const whyDidYouRender = require('@welldone-software/why-did-you-render')
           whyDidYouRender(React)
-        }
-
-        if (initialData.data.userInfo == 1981 && !window.location.href.includes('/link')) {
-          window.router.push('/');
         }
 
         this.setState({ initialData: initialData.data })
@@ -91,6 +96,7 @@ class Layout extends Component {
     getInitialData();
     window.addEventListener('focus', this.onFocus);
     this.registerServiceWorker();
+
   }
 
   componentWilUnmount() {
@@ -291,18 +297,6 @@ class Layout extends Component {
                   path='/messages'
                   component={(props) => (
                     <ChatUnreadMessages
-                      routeProps={props}
-                      initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
-                      key={Math.random()}
-                    />
-                  )}
-                />
-
-                <Route
-                  exact
-                  path='/mySettings'
-                  component={(props) => (
-                    <MySettings
                       routeProps={props}
                       initialData={this.state.initialData == undefined ? 'loading' : this.state.initialData}
                       key={Math.random()}
