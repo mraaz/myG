@@ -133,7 +133,7 @@ export default class MainInfo extends React.Component {
     if (!this.props.isSelf) return this.renderDisabledField('Game Title', (this.props.experience.game || {}).value)
     return (
       <div className='row'>
-        <span className='hint'>Game Title {!!this.props.onboarding && <span className='required onboarding'>*</span>}</span>
+        <span className='hint'>Game Title</span>
         <div className='input-container-row viewGame__gameName game-title-select'>
           <AsyncCreatableSelect
             cacheOptions
@@ -152,6 +152,7 @@ export default class MainInfo extends React.Component {
             disabled={!this.props.isSelf}
           />
         </div>
+        {!!this.props.onboarding && <span className='required onboarding'>*</span>}
       </div>
     )
   }
@@ -193,7 +194,7 @@ export default class MainInfo extends React.Component {
       return this.renderDisabledField('Career', (this.props.experience.level || {}).value, false, !!this.props.onboarding)
     return (
       <div className='row'>
-        <span className='hint'>Career {!!this.props.onboarding && <span className='required onboarding'>*</span>}</span>
+        <span className='hint'>Career</span>
         <MyGSelect
           width={'75%'}
           innerWidth={'100%'}
@@ -201,6 +202,7 @@ export default class MainInfo extends React.Component {
           onChange={(level) => this.props.storeExperience({ level })}
           value={this.props.experience.level}
         />
+        {!!this.props.onboarding && <span className='required onboarding'>*</span>}
       </div>
     )
   }
@@ -210,7 +212,7 @@ export default class MainInfo extends React.Component {
       return this.renderDisabledField('Experience', (this.props.experience.experience || {}).value, false, !!this.props.onboarding)
     return (
       <div className='row'>
-        <span className='hint'>Experience {!!this.props.onboarding && <span className='required onboarding'>*</span>}</span>
+        <span className='hint'>Experience</span>
         <MyGSelect
           width={'75%'}
           innerWidth={'100%'}
@@ -218,6 +220,7 @@ export default class MainInfo extends React.Component {
           onChange={(experience) => this.props.storeExperience({ experience })}
           value={this.props.experience.experience}
         />
+        {!!this.props.onboarding && <span className='required onboarding'>*</span>}
       </div>
     )
   }
@@ -519,10 +522,11 @@ export default class MainInfo extends React.Component {
     const disabledValue = Array.isArray(displayValue) ? displayValue.join(', ') : displayValue
     const disabledField = (
       <React.Fragment>
-        <span className='hint'>{title} {!!required && <span className='required onboarding'>*</span>}</span>
+        <span className='hint'>{title}</span>
         <div className='input-container-row'>
           <input className='input' value={disabledValue} disabled={true}></input>
         </div>
+        {!!required && <span className='required onboarding'>*</span>}
       </React.Fragment>
     )
     if (skipRow) return disabledField
