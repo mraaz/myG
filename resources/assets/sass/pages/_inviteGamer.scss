@@ -9,6 +9,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0 16px;
+
+  .find-gamers-results .find-gamer-result .icon {
+    left: -26px !important;
+    top: -36px !important;
+  }
 
   .container {
     position: relative;
@@ -196,5 +202,12 @@
         }
       }
     }
+  }
+}
+
+@media screen and (max-width: 575px) {
+  #invite-modal .find-gamers-results .find-gamer-result .icon {
+    left: -12px !important;
+    top: 8px !important;
   }
 }
