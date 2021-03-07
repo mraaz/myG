@@ -135,7 +135,7 @@ class GameNameController {
               id: game_name.id,
             })
             .delete()
-          await ElasticsearchRepository.removeGameName(game_name.id)
+          await ElasticsearchRepository.removeGameName({ id: game_name.id })
         } else {
           const gameSearchResults = await Database.table('game_names')
             .leftJoin('game_name_fields', 'game_name_fields.game_names_id', 'game_names.id')
