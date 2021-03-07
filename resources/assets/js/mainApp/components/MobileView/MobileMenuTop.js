@@ -30,7 +30,7 @@ const MobileMenuTop = (props) => {
   return (
     <Fragment>
       <div class={mobileMenuIsActive ? 'menu-tab show' : 'menu-tab hide'}>
-        <img onClick={() => setHideSideMenu(true)} src='https://cdn.myG.gg/platform_images/Dashboard/logo.svg' class='img-fluid logo-img' />
+        <img onClick={() => setHideSideMenu(true)} src='https://myG.gg/platform_images/Dashboard/logo.svg' class='img-fluid logo-img' />
         <div class='toggle-menu-btn'>
           <img src='https://myG.gg/platform_images/Dashboard/toggle_menu_collapsed.svg' class='img-fluid' />
         </div>

@@ -35,9 +35,9 @@ const MobileScheduledGames = (props) => {
   } = props
   
   const dispatch = useDispatch()
-  const defaultThumbnails = 'https://cdn.myG.gg/platform_images/Notifications/myG_icon.svg'
-  const defaultUserImage = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png'
-  const defaultSwipeDownImage = 'https://cdn.myg.gg/platform_icons/swipe-down-3-xxl+(myG-yellow).png'
+  const defaultThumbnails = 'https://myG.gg/platform_images/Notifications/myG_icon.svg'
+  const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
+  const defaultSwipeDownImage = 'https://myG.gg/platform_icons/swipe-down-3-xxl+(myG-yellow).png'
   const myRef = React.createRef()
 
   const transformPlayerLevelTitle = (title) => {
