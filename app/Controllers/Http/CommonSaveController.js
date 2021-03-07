@@ -44,7 +44,7 @@ class CommonSaveController {
     const messages = {
       required: 'Required field',
       email: 'Enter valid email address',
-      min: 'Not enough characters - Min 4 for Alias, 7 for Chat Password',
+      min: 'Not enough characters - Minimum 4 for Alias & 7 for Chat Password',
       max: 'Wow! Too many characters - Max 30',
       unique: 'Sorry, this field is not unique. Try again please.',
     }
