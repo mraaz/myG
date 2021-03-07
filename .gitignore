@@ -1,6 +1,9 @@
 # Node modules
 node_modules
 
+# MacOS file manager file
+.DS_Store
+
 # Adonis directory for storing tmp files
 tmp
 

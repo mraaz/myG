@@ -1,6 +1,6 @@
 function setupBull() {
 
-  const { v4: uuidv4 } = require('uuid');;
+  const { v4: uuidv4 } = require('uuid');
   const Queue = require('bull');
   const Redis = require('ioredis');
   const moment = require('moment')();
