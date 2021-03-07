@@ -52,7 +52,7 @@ export default class IndividualReply extends Component {
     const self = this
     let reply = this.props
 
-    const getCommentReplies = async function() {
+    const getCommentReplies = async function () {
       try {
         const myReplyLikes = await axios.get(`/api/likes/reply/${reply.reply.id}`)
 
@@ -208,7 +208,7 @@ export default class IndividualReply extends Component {
     const self = this
     var reply_id = this.props.reply.id
 
-    const saveReply = async function() {
+    const saveReply = async function () {
       try {
         const mysaveReply = await axios.post(`/api/replies/update/${reply_id}`, {
           content: self.state.value,
@@ -371,6 +371,7 @@ export default class IndividualReply extends Component {
               </div>
             )}
           </div>
+          {this.state.dropdown == true && <div onClick={this.clickedDropdown} className='threedots__backdrop'></div>}
         </div>
       )
     } else {

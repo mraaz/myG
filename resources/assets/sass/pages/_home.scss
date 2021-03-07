@@ -920,6 +920,16 @@ section#content-container {
     .post__container {
       margin: 40px 25px;
       font-family: 'Montserrat';
+      position: relative;
+      .threedots__backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0);
+        z-index: 0;
+      }
 
       @media screen and (min-width: $desktop) {
         margin: 10px 110px;
@@ -1363,8 +1373,8 @@ section#content-container {
           border: none;
           height: 40px;
           width: 100%;
-          border: 1px solid #273136;
-          border-radius: 4px;
+          border: 1px solid hsl(200, 16%, 18%);
+          border-radius: 4px 0 0 4px;
           background: #1d2326 0% 0% no-repeat padding-box;
           resize: none;
           overflow: auto;
@@ -1373,10 +1383,13 @@ section#content-container {
           padding: 8px 20px;
           top: 20px;
           outline: none;
+          @media screen and (max-width: $tablet) {
+            height: 36px;
+          }
         }
         .insert__images {
           position: absolute;
-          right: 5px;
+          right: 48px;
           top: 22px;
           z-index: 2;
           background: #171a1c;
@@ -1388,6 +1401,15 @@ section#content-container {
           img {
             width: 35px;
             padding: 5px;
+          }
+        }
+        .send__btn {
+          position: relative;
+          top: 18px;
+          height: 40px;
+          cursor: pointer;
+          img {
+            height: 44px;
           }
         }
         .profile__image {

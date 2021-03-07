@@ -198,7 +198,7 @@ export default class IndividualPost extends Component {
     } catch (e) {}
     const self = this
 
-    const getComments = async function() {
+    const getComments = async function () {
       try {
         const myComments = await axios.get(`/api/comments/${post_id}`)
         self.setState({
@@ -344,7 +344,7 @@ export default class IndividualPost extends Component {
     const self = this
     var post_id = this.props.post.id
 
-    const editPost = async function() {
+    const editPost = async function () {
       try {
         const myEditPost = await axios.post(`/api/post/update/${post_id}`, {
           content: self.state.value2,
@@ -361,7 +361,16 @@ export default class IndividualPost extends Component {
     editPost()
   }
 
-  detectKey = (e) => {
+  detectKey = (e, key) => {
+    if (!key) {
+      e.preventDefault()
+      e.stopPropagation()
+      if (!this.state.uploading) {
+        this.insert_comment()
+      } else {
+        toast.warn(<Toast_style text={'Opps,Image is uploading Please Wait...'} />)
+      }
+    }
     if (e.key === 'Enter' && e.shiftKey) {
       return
     }
@@ -455,7 +464,7 @@ export default class IndividualPost extends Component {
       dropdown: false,
     })
     setTimeout(
-      function() {
+      function () {
         //Start the timer
         this.focusTextInput2()
       }.bind(this),
@@ -726,7 +735,7 @@ export default class IndividualPost extends Component {
                 value={this.state.value}
                 onChange={this.handleChange}
                 maxLength='254'
-                onKeyDown={this.detectKey}
+                onKeyDown={(e) => this.detectKey(e, true)}
                 ref={this.setTextInputRef}
               />
               <div className='insert__images' onClick={this.insert_image_comment}>
@@ -738,6 +747,9 @@ export default class IndividualPost extends Component {
                   name='insert__images'
                 />
                 <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} className='img-fluid' />
+              </div>
+              <div className='send__btn' onClick={(e) => this.detectKey(e, false)}>
+                <img src={`${buckectBaseUrl}Dashboard/BTN_Send_Post.svg`} className='img-fluid' />
               </div>
 
               <div
@@ -760,6 +772,7 @@ export default class IndividualPost extends Component {
               </div>
             )}
           </div>
+          {showPostExtraOption == true && <div onClick={this.clickedGamePostExtraOption} className='threedots__backdrop'></div>}
         </div>
       )
     } else {
