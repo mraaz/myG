@@ -43,7 +43,7 @@ export default class Sponsors extends React.Component {
           }}
         />
         <div className="hover-bar">
-          {!!isHovering && <div className={`tiny-button ${!isLocked && 'clickable'}`} onClick={() => !isLocked && this.editSponsor(sponsor.id)}>{isLocked ? 'Unlock at Lvl 5' : 'Edit'}</div>}
+          {/* {!!isHovering && <div className={`tiny-button ${!isLocked && 'clickable'}`} onClick={() => !isLocked && this.editSponsor(sponsor.id)}>{isLocked ? 'Unlock at Lvl 5' : 'Edit'}</div>} */}
           {!!isHovering && !isEmpty && <div className="tiny-button clickable" onClick={() => this.deleteSponsor(sponsor.id)}>Delete</div>}
         </div>
       </div>
@@ -64,12 +64,12 @@ export default class Sponsors extends React.Component {
   }
 
   render() {
-    return(
-      <div id="profile-sponsors">
-        {/* {this.renderEditSponsor()} */}
-        {/* <span className="title">Sponsors</span> */}
-        {/* <div className="vertical-divider" /> */}
-        {this.props.sponsors.map(this.renderSponsor)}
+    return(<div className="profile__sponsors-container">
+        {this.props.isSelf &&<button type="button" className="sponsors__btn">Manage your Sponsors</button>}
+        <div id="profile-sponsors">
+          {/* {this.renderEditSponsor()} */}
+          {this.props.sponsors.map(this.renderSponsor)}
+        </div>
       </div>
     );
   }
