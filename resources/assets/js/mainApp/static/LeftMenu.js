@@ -32,7 +32,7 @@ const sideBarItems = {
   SEARCH: {
     id: 'SEARCH',
     header: 'Search',
-    icon: 'https://cdn.myG.gg/platform_images/Dashboard/btn_Search.svg',
+    icon: 'https://myG.gg/platform_images/Dashboard/btn_Search.svg',
     cta: '/advancedSearch',
     expanded: false,
     subItems: [
@@ -49,7 +49,7 @@ const sideBarItems = {
   NEW_GAME: {
     id: 'NEW_GAME',
     header: 'Create',
-    icon: 'https://cdn.myG.gg/platform_images/Dashboard/btn_New_Game.svg',
+    icon: 'https://myG.gg/platform_images/Dashboard/btn_New_Game.svg',
     cta: '/addScheduleGames',
     expanded: false,
     subItems: [
@@ -66,21 +66,21 @@ const sideBarItems = {
   FEED: {
     id: 'FEED',
     header: 'Dashboard',
-    icon: 'https://cdn.myG.gg/platform_images/Dashboard/btn_Feed.svg',
+    icon: 'https://myG.gg/platform_images/Dashboard/btn_Feed.svg',
     cta: '/',
     expanded: false,
   },
   PROFILE: {
     id: 'PROFILE',
     header: 'Profile',
-    icon: 'https://cdn.myG.gg/platform_images/Dashboard/btn_Profile.svg',
+    icon: 'https://myG.gg/platform_images/Dashboard/btn_Profile.svg',
     cta: '/profile',
     expanded: false,
   },
   ACHIEVEMENTS: {
     id: 'ACHIEVEMENTS',
     header: 'Achievements',
-    icon: 'https://cdn.myG.gg/platform_images/Dashboard/btn_Network.svg',
+    icon: 'https://myG.gg/platform_images/Dashboard/btn_Network.svg',
     cta: '/achievements/badges',
     expanded: false,
   },
@@ -92,7 +92,7 @@ const sideBarItemsList = [
   {
     id: 'SEARCH',
     header: 'Search',
-    icon: 'https://cdn.myG.gg/platform_images/Dashboard/btn_Search.svg',
+    icon: 'https://myG.gg/platform_images/Dashboard/btn_Search.svg',
     cta: '',
     isExpandable: true,
     subItems: [
@@ -109,7 +109,7 @@ const sideBarItemsList = [
   {
     id: 'NEW_GAME',
     header: 'New Game',
-    icon: 'https://cdn.myG.gg/platform_images/Dashboard/btn_New_Game.svg',
+    icon: 'https://myG.gg/platform_images/Dashboard/btn_New_Game.svg',
     cta: '',
     isExpandable: true,
     subItems: [
@@ -126,7 +126,7 @@ const sideBarItemsList = [
   {
     id: 'FEED',
     header: 'Feed',
-    icon: 'https://cdn.myG.gg/platform_images/Dashboard/btn_Feed.svg',
+    icon: 'https://myG.gg/platform_images/Dashboard/btn_Feed.svg',
     cta: '',
     isExpandable: false,
     subItems: [
@@ -143,7 +143,7 @@ const sideBarItemsList = [
   {
     id: 'PROFILE',
     header: 'Profile',
-    icon: 'https://cdn.myG.gg/platform_images/Dashboard/btn_Profile.svg',
+    icon: 'https://myG.gg/platform_images/Dashboard/btn_Profile.svg',
     cta: '',
     isExpandable: false,
     subItems: [
@@ -160,7 +160,7 @@ const sideBarItemsList = [
   {
     id: 'ACHIEVEMENTS',
     header: 'Network',
-    icon: 'https://cdn.myG.gg/platform_images/Dashboard/btn_Network.svg',
+    icon: 'https://myG.gg/platform_images/Dashboard/btn_Network.svg',
     cta: '',
     isExpandable: false,
     subItems: [
@@ -179,7 +179,7 @@ const sideBarItemsList = [
 const logoutButton = {
   header: 'Logout',
   cta: '',
-  icon: 'https://cdn.myG.gg/platform_images/Dashboard/Logout_Icon.svg',
+  icon: 'https://myG.gg/platform_images/Dashboard/Logout_Icon.svg',
   isExpandable: false,
   subItems: [
     {

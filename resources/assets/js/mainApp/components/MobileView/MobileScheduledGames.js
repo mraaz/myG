@@ -2,6 +2,7 @@ import React, { Fragment, useState } from 'react'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import Select from 'react-select'
+import { useDispatch, useSelector } from 'react-redux'
 
 import GameFilter from '../scheduledGames/gameFilter'
 import { WithTooltip } from '../Tooltip'
@@ -9,6 +10,7 @@ import JoinButtonAction from '../scheduledGames/JoinButtonAction'
 import Approved_gamers from '../scheduledGames/ApprovedGamers'
 import GameComments from '../scheduledGames/GameComments'
 import { prefilledFilter_option } from '../scheduledGames/option'
+import { openMobileMenuAction } from '../../../redux/actions/mobileMenuAction'
 
 const MobileScheduledGames = (props) => {
   const {
@@ -31,10 +33,11 @@ const MobileScheduledGames = (props) => {
     myGamesMenu = false,
     singleScheduleGamesPayload = {},
   } = props
-  console.log('scheduleGames  ', scheduleGames)
-
-  const defaultThumbnails = 'https://cdn.myG.gg/platform_images/Notifications/myG_icon.svg'
-  const defaultUserImage = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png'
+  
+  const dispatch = useDispatch()
+  const defaultThumbnails = 'https://myG.gg/platform_images/Notifications/myG_icon.svg'
+  const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
+  const defaultSwipeDownImage = 'https://myG.gg/platform_icons/swipe-down-3-xxl+(myG-yellow).png'
   const myRef = React.createRef()
 
   const transformPlayerLevelTitle = (title) => {
@@ -52,7 +55,7 @@ const MobileScheduledGames = (props) => {
   }
 
   const addDefaultSrc = (ev) => {
-    ev.target.src = 'https://cdn.myG.gg/default_user/new-user-profile-picture.png'
+    ev.target.src = 'https://myG.gg/default_user/new-user-profile-picture.png'
   }
 
   const handlePendingApproval = (e) => {
@@ -116,6 +119,8 @@ const MobileScheduledGames = (props) => {
 
   const { no_of_comments = [], lastComment = '' } = commentData
   const { no_of_my_comments = 0 } = no_of_comments[0] || {}
+  const mobileMenuIsActive = useSelector(state => state.mobileMenu.mobileMenuIsActive)
+  const mobileMenuIsTop = useSelector(state => state.mobileMenu.mobileMenuIsTop)
 
   return (
     <Fragment>
@@ -135,7 +140,7 @@ const MobileScheduledGames = (props) => {
         <div className='mGameDetailsRowOne'>
           <div className='rowOneWrapper'>
             <a className='mGameDetailsBackButton' onClick={(e) => deSelectGame(e)}>
-              <img className='mGameDetailsCaretImg' src='https://cdn.myG.gg/platform_images/View+Game/Down+Carrot.svg' />
+              <img className='mGameDetailsCaretImg' src='https://myG.gg/platform_images/View+Game/Down+Carrot.svg' />
               <span>{` Full List `}</span>
             </a>
 
@@ -159,13 +164,13 @@ const MobileScheduledGames = (props) => {
 
         <div className='mGameDetailsRowThree'>
           <div className='mGamerCount'>
-            <img src='https://cdn.myG.gg/platform_images/Dashboard/Notifications/little_green_man.svg' />
+            <img src='https://myG.gg/platform_images/Dashboard/Notifications/little_green_man.svg' />
             <span>
               {no_of_gamers} / {limit == 0 ? <span>&#8734;</span> : limit} Gamers
             </span>
           </div>
           <div className='mGameTimestamp'>
-            <img src='https://cdn.myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
+            <img src='https://myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
             <span>{moment(start_date_time).format('LLL')}</span>
           </div>
           <div className='gameLevelWrap'>
@@ -273,7 +278,7 @@ const MobileScheduledGames = (props) => {
         )}
       </div>
 
-      <div className={`mGameTileList${!showRightSideInfo ? ' active' : ' inactive'}`}>
+      <div className={`mGameTileList ${mobileMenuIsTop && mobileMenuIsActive ? 'menuAtTop' : ''}`}>
         <div className='mGameTileListHeader'>
           <div className='myGame__filter-section'>
             {id == '' && myGamesMenu && (
@@ -354,14 +359,14 @@ const MobileScheduledGames = (props) => {
 
                     <div className='mGameTileRowThree'>
                       <div className='mGamerCount'>
-                        <img src='https://cdn.myG.gg/platform_images/Dashboard/Notifications/little_green_man.svg' />
+                        <img src='https://myG.gg/platform_images/Dashboard/Notifications/little_green_man.svg' />
                         <span>
                           {game.no_of_gamers} / {game.limit == 0 ? <span>&#8734;</span> : game.limit} Gamers
                         </span>
                       </div>
 
                       <div className='mGameTimestamp'>
-                        <img src='https://cdn.myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
+                        <img src='https://myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
                         <span>{moment(game.start_date_time).format('LLL')}</span>
                       </div>
 
@@ -389,13 +394,13 @@ const MobileScheduledGames = (props) => {
                         <div className='rowFourWrapper'>
                           {statusMapping[myStatus] && (
                             <div className='myStatus'>
-                              <img src='https://cdn.myG.gg/platform_images/View+Game/tick.svg' />
+                              <img src='https://myG.gg/platform_images/View+Game/tick.svg' />
                               <span>{statusMapping[myStatus]}</span>
                             </div>
                           )}
                           {no_of_Approval_Pending ? (
                             <div className='numberOfApprovals' onClick={handlePendingApproval}>
-                              <img src='https://cdn.myG.gg/platform_images/View+Game/warning.svg' />
+                              <img src='https://myG.gg/platform_images/View+Game/warning.svg' />
                               <span>{no_of_Approval_Pending} Approval Pending</span>
                             </div>
                           ) : (
@@ -410,6 +415,14 @@ const MobileScheduledGames = (props) => {
                 </div>
               )
             })}
+
+          {
+            scheduleGames.length == 0 &&
+            <div className="mNoResultsFound">
+              <p>No results found mate.... click/swipe down to see menu</p>
+              <img onClick={() => dispatch(openMobileMenuAction(true))} src={defaultSwipeDownImage} alt='swipe-down-icon-svg' />
+            </div>
+          }
         </div>
       </div>
     </Fragment>

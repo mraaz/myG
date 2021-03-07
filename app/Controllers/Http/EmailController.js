@@ -24,9 +24,9 @@ const generateRandomString = (length) => {
 
 class EmailController {
   async welcome_email(toAddress, pin, alias) {
-    toAddress = 'mnraaz@gmail.com'
-    pin = 123456
-    alias = 'RAaz'
+    // toAddress = 'mnraaz@gmail.com'
+    // pin = 123456
+    // alias = 'RAaz'
     const email = new AWSEmailController()
     const email_welcome_body = new Email_body()
 
@@ -50,27 +50,24 @@ class EmailController {
     return
   }
 
-  async dailyEmails(toAddress) {
+  async dailyEmails() {
     const userList = await Database.from('settings')
       .select('user_id')
-      .where('email_daily', '=', 1)
+      .where('email_notification', '=', 2)
 
-    for (var i = 0; i < userList.length; i++) {
-      this.summary_email(userList[0].user_id)
+    for (let i = 0; i < userList.length; i++) {
+      this.summary_email(userList[i].user_id)
     }
-    //console.log('Number of Daily emails: ' + userList.length)
   }
 
-  async weeklyEmails(toAddress) {
-    return
+  async weeklyEmails() {
     const userList = await Database.from('settings')
       .select('user_id')
-      .where('email_weekly', '=', 1)
+      .where('email_notification', '=', 1)
 
-    for (var i = 0; i < userList.length; i++) {
-      this.summary_email(userList[0].user_id)
+    for (let i = 0; i < userList.length; i++) {
+      this.summary_email(userList[i].user_id)
     }
-    //console.log('Number of Weekly emails: ' + userList.length)
   }
 
   async summary_email(user_id) {
@@ -89,7 +86,7 @@ class EmailController {
     //console.log(unreadMessages.length)
 
     const user_email = await Database.from('users')
-      .select('email')
+      .select('email', 'alias')
       .where('id', '=', user_id)
 
     //console.log(user_email[0].email)
@@ -101,6 +98,8 @@ class EmailController {
     ) {
       return
     }
+
+    const email_summary_email = new Email_body()
 
     let subject = "myG - The Gamer's platform - Summary: " + new Date(Date.now()).toDateString()
     let body =
