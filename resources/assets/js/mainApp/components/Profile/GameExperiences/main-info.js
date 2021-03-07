@@ -90,6 +90,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderMainFields = () => {
+    if (this.props.onboarding) return null;
     if (!get(this.props, 'experience.game.value')) return this.renderDisabledField('Main Fields', null)
     if (!this.props.isSelf) return null
     return (
@@ -112,6 +113,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderDivider = () => {
+    if (this.props.onboarding) return null;
     if (!this.props.isSelf) return null
     return <div className='divider' />
   }
@@ -158,6 +160,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderTeamInput = () => {
+    if (this.props.onboarding) return null;
     if (!get(this.props, 'experience.game.value') || !this.props.isSelf)
       return this.renderDisabledField('Team', (this.props.experience.team || {}).value)
     return (
@@ -174,6 +177,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderNicknameInput = () => {
+    if (this.props.onboarding) return null;
     if (!get(this.props, 'experience.game.value') || !this.props.isSelf)
       return this.renderDisabledField('Nickname', (this.props.experience.nickname || {}).value)
     return (
@@ -226,6 +230,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderCommendationLabel = () => {
+    if (this.props.onboarding) return null;
     if (this.props.isSelf) return null
     return (
       <div className='row'>
@@ -251,6 +256,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderTagsInput = () => {
+    if (this.props.onboarding) return null;
     if (!get(this.props, 'experience.game.value')) return this.renderDisabledField('Tags', null)
     if (!this.props.isSelf)
       return this.renderDisabledFieldList(
@@ -284,6 +290,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderRateSlider = () => {
+    if (this.props.onboarding) return null;
     if (!this.props.isSelf) return null
     return (
       <div className='row'>
@@ -296,6 +303,7 @@ export default class MainInfo extends React.Component {
   renderDynamicFields = () => {
     if (!this.state.dynamicFields || !this.state.dynamicFields.length) return null
     return this.state.dynamicFields.map((field) => {
+      if (this.props.onboarding && field.id === "stats_link") return null;
       if (!this.props.isSelf && !get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`)))
         return null
       return (

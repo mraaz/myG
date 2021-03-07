@@ -115,6 +115,7 @@ export default class EditGameExperience extends React.Component {
   }
 
   renderOptionsMenu = (bottom) => {
+    if (this.props.onboarding) return null;
     if (bottom && window.innerWidth > 575) return null
     const baseStyle = 'option'
     const experienceTabEnabled = this.state.level && this.state.level.value !== 'Casual'
