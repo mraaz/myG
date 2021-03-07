@@ -35,7 +35,7 @@ export default class Sponsors extends React.Component {
       >
         <div
           className='image'
-          style={{ backgroundImage: `url(${sponsor.media_url}), url(${defaultSponsorImage})` }}
+          // style={{ backgroundImage: `url(${sponsor.media_url}), url(${defaultSponsorImage})` }}
           onClick={() => {
             if (!hasSponsor) return;
             registerSponsorClick();
@@ -66,9 +66,9 @@ export default class Sponsors extends React.Component {
   render() {
     return(
       <div id="profile-sponsors">
-        {this.renderEditSponsor()}
-        <span className="title">Sponsors</span>
-        <div className="vertical-divider" />
+        {/* {this.renderEditSponsor()} */}
+        {/* <span className="title">Sponsors</span> */}
+        {/* <div className="vertical-divider" /> */}
         {this.props.sponsors.map(this.renderSponsor)}
       </div>
     );
