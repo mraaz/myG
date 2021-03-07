@@ -932,7 +932,6 @@ section#content-container {
         font: 12px/18px Montserrat;
         letter-spacing: 0px;
         color: #93a4a5;
-        border-bottom: 1px solid #4d565a;
         padding-bottom: 10px;
         strong {
           color: #fff;
@@ -1877,6 +1876,10 @@ section#content-container {
       line-height: unset;
       scrollbar-width: none; /* Firefox */
       -ms-overflow-style: none; /* IE and Edge */
+      @media screen and (max-width: $tablet) {
+        font-size: 12px;
+        padding: 10px;
+      }
     }
   }
   .hashTag_section {
