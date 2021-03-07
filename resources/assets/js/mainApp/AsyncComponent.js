@@ -107,13 +107,6 @@ const MyPosts = Loadable({
   },
 })
 
-const MySettings = Loadable({
-  loader: () => import('./components/MySettings'),
-  loading: function() {
-    return null
-  },
-})
-
 const SinglePost = Loadable({
   loader: () => import('./components/SinglePost'),
   loading: function() {
@@ -171,7 +164,6 @@ export {
   AddScheduleGames,
   IndividualPost,
   MyPosts,
-  MySettings,
   SinglePost,
   ScheduleGamesView,
   CreateCommunity,

@@ -84,7 +84,7 @@ const MobileMenuTop = (props) => {
               <ul>
                 <li>
                   <Link to='/' onClick={() => setHideSideMenu(false)}>
-                    Home
+                    Dashboard
                   </Link>
                 </li>
                 <li>
@@ -100,6 +100,11 @@ const MobileMenuTop = (props) => {
                 <li>
                   <Link to='/?at=mygames' onClick={() => hideMenus()}>
                     My Games
+                  </Link>
+                </li>
+                <li>
+                  <Link to={`/profile/${alias}`} onClick={() => setHideSideMenu(false)}>
+                    Profile
                   </Link>
                 </li>
                 <li>
@@ -121,7 +126,7 @@ const MobileMenuTop = (props) => {
                 <span>Logout</span>
               </div>
               <div className='setting-btn'>
-                <Link to='/mySettings' onClick={() => setHideSideMenu(false)}>
+                <Link to='/?at=notifications&submenu=6' onClick={() => setHideSideMenu(false)}>
                   <img src='https://myG.gg/platform_images/Dashboard/Settings_Chat_Window.svg' />
                 </Link>
               </div>

@@ -24,9 +24,6 @@ const generateRandomString = (length) => {
 
 class EmailController {
   async welcome_email(toAddress, pin, alias) {
-    // toAddress = 'mnraaz@gmail.com'
-    // pin = 123456
-    // alias = 'RAaz'
     const email = new AWSEmailController()
     const email_welcome_body = new Email_body()
 
@@ -71,53 +68,35 @@ class EmailController {
   }
 
   async summary_email(user_id) {
-    let email = new AWSEmailController()
-    let noti = new NotificationController_v2()
+    const noti = new NotificationController_v2()
 
-    let myFriendRequests = await noti.getmyFriendRequests(user_id)
-    //console.log(myFriendRequests.checkMyFriends[0].no_of_my_notiFriends)
+    const auth = { user: { id: user_id } }
+    const myRequests = await noti.count({ auth })
 
-    var auth = { user: { id: user_id } }
-    let myRequests = await noti.myRequests({ auth })
-    //console.log(myRequests.number_of_notis)
-
-    const requestingUserId = user_id
-    const { unreadMessages } = await ChatRepository.fetchUnreadMessages({ requestingUserId })
-    //console.log(unreadMessages.length)
-
-    const user_email = await Database.from('users')
-      .select('email', 'alias')
-      .where('id', '=', user_id)
-
-    //console.log(user_email[0].email)
-
-    if (
-      parseInt(myFriendRequests.checkMyFriends[0].no_of_my_notiFriends) == 0 &&
-      parseInt(myRequests.number_of_notis) == 0 &&
-      unreadMessages.length == 0
-    ) {
+    if (parseInt(myRequests.approvals) == 0 && parseInt(myRequests.alerts) == 0 && parseInt(myRequests.chats) == 0) {
       return
     }
 
+    const user_deets = await Database.from('users')
+      .where('id', '=', user_id)
+      .select('email', 'alias')
+      .first()
+
     const email_summary_email = new Email_body()
+    const email = new AWSEmailController()
 
-    let subject = "myG - The Gamer's platform - Summary: " + new Date(Date.now()).toDateString()
-    let body =
-      "<p>Hi mate,</p><p>Here is what you've missed:</p><p>Number of friend <a title='myG' href='https://myG.gg/invitation' target='_blank' rel='noopener'>requests</a>:&nbsp;" +
-      myFriendRequests.checkMyFriends[0].no_of_my_notiFriends +
-      "</p><p>Number of <a title='notifications' href='https://myG.gg/notifications' target='_blank' rel='noopener'>notifications</a>:&nbsp;" +
-      myRequests.number_of_notis +
-      "</p><p>Number of unread <a title='messages' href='https://myG.gg/messages' target='_blank' rel='noopener'>messages</a>:&nbsp;" +
-      unreadMessages.length +
-      '</p>'
-
-    email.createEmailnSend('mnraaz@gmail.com', subject, body)
+    const subject = "myG - The Gamer's platform - Summary: " + new Date(Date.now()).toDateString()
+    const body = await email_summary_email.summary_body(user_deets.alias, myRequests.approvals, myRequests.alerts, myRequests.chats)
+    email.createEmailnSend(user_deets.email, subject, body)
   }
 
   async encryption_email(email, pin) {
     const awsEmailController = new AWSEmailController()
+    const email_summary_email = new Email_body()
+
     const subject = 'myG Chat password - CONFIDENTIAL COMMUNICATION'
-    const body = `Hi, <br> This password will be used to access your chat history.<br><strong>${pin}</strong><br><br> Everytime you log off, your password is cleared and when you log back in, you will need to RE-ENTER this password. Failure to do so will disable chat and if a new password is generated, you will LOSE all your previous chat history. <br><br> This is a true End to End encryption chat, meaning myG doesn't have any visibility of your messages or your password. Therefore we cannot retrieve messages or key if they are lost <br><br> Cheers, <br><br> myG`
+    const body = await email_summary_email.encryption_body(pin)
+
     return awsEmailController.createEmailnSend(email, subject, body)
   }
 }
