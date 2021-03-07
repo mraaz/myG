@@ -1,13 +1,15 @@
 import React, { Fragment, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { logoutAction } from '../../../redux/actions/userAction'
+import { closeMobileMenuAction } from '../../../redux/actions/mobileMenuAction'
 import NotificationIcon from '../Notifications/Icon'
 
 const MobileMenuTop = (props) => {
-  const { initialData, notifications, hide } = props
+  const { initialData, notifications } = props
   const [hideSideMenu, setHideSideMenu] = useState(false)
   const dispatch = useDispatch()
+  const mobileMenuIsActive = useSelector(state => state.mobileMenu.mobileMenuIsActive)
 
   const alias = initialData === 'loading' ? '' : initialData.userInfo.alias
 
@@ -20,9 +22,14 @@ const MobileMenuTop = (props) => {
     ev.target.src = 'https://myG.gg/platform_images/Dashboard/logo.svg'
   }
 
+  const hideMenus = () => {
+    setHideSideMenu(false)
+    dispatch(closeMobileMenuAction())
+  }
+
   return (
     <Fragment>
-      <div class={hide ? 'menu-tab hide' : 'menu-tab show'}>
+      <div class={mobileMenuIsActive ? 'menu-tab show' : 'menu-tab hide'}>
         <img onClick={() => setHideSideMenu(true)} src='https://myG.gg/platform_images/Dashboard/logo.svg' class='img-fluid logo-img' />
         <div class='toggle-menu-btn'>
           <img src='https://myG.gg/platform_images/Dashboard/toggle_menu_collapsed.svg' class='img-fluid' />
@@ -77,7 +84,7 @@ const MobileMenuTop = (props) => {
               <ul>
                 <li>
                   <Link to='/' onClick={() => setHideSideMenu(false)}>
-                    Home
+                    Dashboard
                   </Link>
                 </li>
                 <li>
@@ -91,8 +98,13 @@ const MobileMenuTop = (props) => {
                   </Link>
                 </li>
                 <li>
-                  <Link to='/?at=mygames' onClick={() => setHideSideMenu(false)}>
+                  <Link to='/?at=mygames' onClick={() => hideMenus()}>
                     My Games
+                  </Link>
+                </li>
+                <li>
+                  <Link to={`/profile/${alias}`} onClick={() => setHideSideMenu(false)}>
+                    Profile
                   </Link>
                 </li>
                 <li>
@@ -114,7 +126,7 @@ const MobileMenuTop = (props) => {
                 <span>Logout</span>
               </div>
               <div className='setting-btn'>
-                <Link to='/mySettings' onClick={() => setHideSideMenu(false)}>
+                <Link to='/?at=notifications&submenu=6' onClick={() => setHideSideMenu(false)}>
                   <img src='https://myG.gg/platform_images/Dashboard/Settings_Chat_Window.svg' />
                 </Link>
               </div>

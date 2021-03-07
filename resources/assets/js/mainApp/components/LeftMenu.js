@@ -93,8 +93,8 @@ class LeftMenu extends Component {
     })
   }
 
-  setExpandedDefault = function (data) {
-    Object.keys(data).forEach(function (key) {
+  setExpandedDefault = function(data) {
+    Object.keys(data).forEach(function(key) {
       data[key]['expanded'] = false
     })
     return data
@@ -324,7 +324,7 @@ class LeftMenu extends Component {
             {this.state.isExpanded && <p>{logoutButton.header}</p>}
           </div>
           {this.state.isExpanded && (
-            <Link to='/mySettings'>
+            <Link to='/?at=notifications&submenu=6'>
               <img src='https://myG.gg/platform_images/Dashboard/Settings_Chat_Window.svg' className='img-fluid' />
             </Link>
           )}

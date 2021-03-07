@@ -59,7 +59,7 @@ export class FindGamers extends React.Component {
     const TopBar = () => <div className="top-bar">Find Gamers</div>;
     const Headers = () => this.renderHeaders();
     return(
-      <div id="find-gamers">
+      <div id="find-gamers" className={ this.props.mobileMenuIsActive && this.props.mobileMenuIsTop ? 'menuAtTop' : '' }>
         <TopBar />
         <Banner profile={this.props.profile} />
         <Headers />
@@ -72,6 +72,7 @@ export class FindGamers extends React.Component {
 
 function mapStateToProps(state) {
   const { userId, alias } = state.user;
+  const { mobileMenuIsActive, mobileMenuIsTop } = state.mobileMenu;
   const profile = get(state, `profile.profiles[${alias}]`, {});
   return {
     userId,
@@ -81,6 +82,8 @@ function mapStateToProps(state) {
     total: state.search.total || 0,
     loading: state.search.gamersLoading,
     error: state.search.gamersError,
+    mobileMenuIsActive,
+    mobileMenuIsTop
   }
 }
 
