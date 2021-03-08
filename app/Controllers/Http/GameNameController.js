@@ -257,6 +257,7 @@ class GameNameController {
     oneDayAgo.setDate(oneDayAgo.getDate() - 1)
     const gamesToDelete = await Database.from('game_names')
       .where('counter', '=', 0)
+      .andWhere('verified', '=', 0)
       .andWhere('created_at', '<', oneDayAgo)
 
     if (!gamesToDelete.length) return
@@ -264,6 +265,7 @@ class GameNameController {
     const auth = { user: { id: 'myg' } }
     for await (let gameToDelete of gamesToDelete) {
       await apiController.internal_deleteFile({ auth }, '9', gameToDelete.id)
+      await ElasticsearchRepository.removeGameName({ id: gameToDelete.id })
       await Database.table('game_names')
         .where({ id: gameToDelete.id })
         .delete()
