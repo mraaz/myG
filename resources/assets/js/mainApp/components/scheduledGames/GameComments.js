@@ -70,7 +70,16 @@ export default class GameComments extends Component {
   setTextInputRef = (element) => {
     this.textInput = element
   }
-  detectKey = (e) => {
+  detectKey = (e, key) => {
+    if (!key) {
+      e.preventDefault()
+      e.stopPropagation()
+      if (!this.state.uploading) {
+        this.insert_comment()
+      } else {
+        toast.warn(<Toast_style text={'Opps,Image is uploading Please Wait...'} />)
+      }
+    }
     if (e.key === 'Enter' && e.shiftKey) {
       return
     }
@@ -178,18 +187,14 @@ export default class GameComments extends Component {
     let { comments = [] } = this.state //destructing of object
     let { userInfo = {} } = user //destructing of object
 
-    let {
-      profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png',
-      hash_tags = [],
-    } = scheduleGames_data
+    let { profile_img = 'https://myG.gg/default_user/new-user-profile-picture.png', hash_tags = [] } = scheduleGames_data
     return (
       <Fragment>
-        <div className="desktopView">
+        <div className='desktopView'>
           <div className='gameComments__header '>
             <div className='gameName' onClick={this.props.toggleBack}>
               <h1 className='game__name'>
-                <img src='https://myG.gg/platform_images/View+Game/Down+Carrot.svg' /> Comments{' '}
-                {` (${comments.length})`}{' '}
+                <img src='https://myG.gg/platform_images/View+Game/Down+Carrot.svg' /> Comments {` (${comments.length})`}{' '}
               </h1>
             </div>
           </div>
@@ -203,7 +208,7 @@ export default class GameComments extends Component {
                   value={this.state.value}
                   onChange={this.handleChange}
                   maxLength='254'
-                  onKeyDown={this.detectKey}
+                  onKeyDown={(e) => this.detectKey(e, true)}
                   ref={this.setTextInputRef}
                 />
                 <div className='insert__images' onClick={this.insert_image_comment}>
@@ -215,6 +220,9 @@ export default class GameComments extends Component {
                     name='insert__images'
                   />
                   <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
+                </div>
+                <div className='send__btn' onClick={(e) => this.detectKey(e, false)}>
+                  <img src={`${buckectBaseUrl}Dashboard/BTN_Send_Post.svg`} className='img-fluid' />
                 </div>
                 <Link to={`/profile/${userInfo.alias}`} className='user-img'>
                   <div
@@ -240,7 +248,7 @@ export default class GameComments extends Component {
           )}
         </div>
 
-        <div className="mobileView">
+        <div className='mobileView'>
           <MobileGameComments
             toggleBack={this.props.toggleBack}
             comments={comments}
@@ -257,7 +265,8 @@ export default class GameComments extends Component {
             defaultUserImage={defaultUserImage}
             uploading={this.state.uploading}
             previewFile={this.state.preview_file}
-            clearPreviewImage={this.clearPreviewImage}/>
+            clearPreviewImage={this.clearPreviewImage}
+          />
         </div>
       </Fragment>
     )

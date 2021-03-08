@@ -1,18 +1,33 @@
 import React, { Fragment, useRef } from 'react'
 import { Link } from 'react-router-dom'
 
-const MobileGameComments = ({ toggleBack,comments, allowComments, showComment, value, handleChange, detectKey, insertImageComment, fileInputRef, handleSelectFile, buckectBaseUrl, userInfo, defaultUserImage, uploading, previewFile, clearPreviewImage }) => {
-  const textInput = useRef(null);
+const MobileGameComments = ({
+  toggleBack,
+  comments,
+  allowComments,
+  showComment,
+  value,
+  handleChange,
+  detectKey,
+  insertImageComment,
+  fileInputRef,
+  handleSelectFile,
+  buckectBaseUrl,
+  userInfo,
+  defaultUserImage,
+  uploading,
+  previewFile,
+  clearPreviewImage,
+}) => {
+  const textInput = useRef(null)
 
   return (
     <Fragment>
-      <div className="mGameCommentsRowOne">
+      <div className='mGameCommentsRowOne'>
         <div className='rowOneWrapper' onClick={toggleBack}>
-          <a className="mGameCommentsBackButton" onClick={toggleBack}>
-            <img className="mGameCommentsCaretImg" src='https://myG.gg/platform_images/View+Game/Down+Carrot.svg' />
-            <span>
-              {` Comments `}
-            </span>
+          <a className='mGameCommentsBackButton' onClick={toggleBack}>
+            <img className='mGameCommentsCaretImg' src='https://myG.gg/platform_images/View+Game/Down+Carrot.svg' />
+            <span>{` Comments `}</span>
           </a>
         </div>
       </div>
@@ -26,7 +41,7 @@ const MobileGameComments = ({ toggleBack,comments, allowComments, showComment, v
               value={value}
               onChange={handleChange}
               maxLength='254'
-              onKeyDown={detectKey}
+              onKeyDown={(e) => detectKey(e, true)}
               ref={textInput}
             />
             <div className='insert__images' onClick={insertImageComment}>
@@ -38,6 +53,9 @@ const MobileGameComments = ({ toggleBack,comments, allowComments, showComment, v
                 name='insert__images'
               />
               <img src={`${buckectBaseUrl}Dashboard/BTN_Attach_Image.svg`} />
+            </div>
+            <div className='send__btn' onClick={(e) => detectKey(e, false)}>
+              <img src={`${buckectBaseUrl}Dashboard/BTN_Send_Post.svg`} className='img-fluid' />
             </div>
             <Link to={`/profile/${userInfo.alias}`} className='user-img'>
               <div
@@ -63,6 +81,6 @@ const MobileGameComments = ({ toggleBack,comments, allowComments, showComment, v
       )}
     </Fragment>
   )
-};
+}
 
 export default MobileGameComments
