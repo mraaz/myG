@@ -1028,10 +1028,6 @@
       border-top-left-radius: 0 !important;
     }
 
-    .contained {
-      margin: 0px 20vw !important;
-    }
-
     .scroll {
       position: relative;
       display: flex;
@@ -1591,5 +1587,11 @@
   .scroll {
     flex-direction: column;
     text-align: center;
+  }
+}
+
+@media screen and (max-width: 575px) {
+  .game-title-select {
+    width: 100% !important;
   }
 }
