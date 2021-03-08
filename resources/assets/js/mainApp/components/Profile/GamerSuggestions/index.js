@@ -5,6 +5,7 @@ import { ignoreFunctions } from '../../../../common/render'
 import { fetchGamerSuggestionsAction } from '../../../../redux/actions/profileAction';
 import { searchGamersAction } from '../../../../redux/actions/searchAction';
 import InviteModal from '../../FindGamers/Invite';
+import { WithTooltip } from '../../../components/Tooltip';
 import notifyToast from '../../../../common/toast';
 
 export class GamerSuggestions extends React.Component {
@@ -36,7 +37,7 @@ export class GamerSuggestions extends React.Component {
     const games = profile.mostPlayedGames.length ? profile.mostPlayedGames : profile.gameExperiences.map(({ name }) => name);
     return(
       <div className="game-experience clickable"
-      onClick={() => window.router.push(`/profile/${profile.alias}`)}
+      onClick={() => this.props.onboarding ? this.sendFriendRequest(gamer.alias, gamer.profileId) : window.router.push(`/profile/${profile.alias}`)}
       onMouseEnter={() => this.setState({ hovering: profile.alias })}
       onMouseLeave={() => this.setState({ hovering: null })}
     >
@@ -48,7 +49,15 @@ export class GamerSuggestions extends React.Component {
           <span className="field-title space-right">Level</span>
           <span className="field-value">{profile.level}</span>
       </div>
-      {games.map(game => <div className="field center"><span className="field-value">{game}</span></div>)}
+      {games.filter(game => !!game).slice(0, 3).map(game => (
+        <div className="field center">
+          <WithTooltip text={game} position={{}} disabled={game.length <= 12}>
+            <span className='field-value' key={game}>
+              {game.slice(0, 12) + (game.length > 12 ? '...' : '')}
+            </span>
+          </WithTooltip>
+        </div>
+      ))}
     </div>
     );
   }
@@ -145,17 +154,18 @@ export class GamerSuggestions extends React.Component {
   }
 
   render() {
-    const extraStyle = this.props.onboarding ? 'contained' : '';
+    const isNotFriend = (gamer) => !(this.props.profile && this.props.profile.friends || []).includes(gamer.alias);
+    const suggestions = this.props.gamerSuggestions.filter(isNotFriend);
     return(
       <div id="profile">
         <div id="profile-game-experiences">
           {this.renderInviteModal()}
           {this.renderOnboardingButtons()}
           {!this.props.noTitle && this.renderHeaders()}
-          <div className={`scroll suggestions-scroll ${extraStyle}`}>
+          <div className="scroll suggestions-scroll">
             {this.renderPageButtons()}
-            {this.props.gamerSuggestions.slice(this.state.page, this.state.page + 4).map(this.renderGamerSuggestion)}
-            {!this.props.gamerSuggestions.length && <span className="no-users">Sorry mate, no suggestions found for you at this moment :(</span>}
+            {suggestions.slice(this.state.page, this.state.page + 4).map(this.renderGamerSuggestion)}
+            {!suggestions.length && <span className="no-users">Sorry mate, no suggestions found for you at this moment :(</span>}
           </div>
         </div>
       </div>

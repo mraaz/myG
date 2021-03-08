@@ -1,5 +1,6 @@
 import React from 'react';
 import { ignoreFunctions } from '../../../../common/render'
+import { WithTooltip } from '../../Tooltip';
 
 export default class Experiences extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -16,13 +17,16 @@ export default class Experiences extends React.Component {
 
   renderGame = (game) => {
     const style = game.level === 'Pro Gamer' ? 'pro' : game.level === 'Semi Pro' ? 'semi-pro' : 'casual';
+    const gameName = game.gameName || game.name;
     return(
       <div className={`game clickable ${this.state.hovering === game.id ? 'hover' : ''}`} onClick={() => this.openGame(game)}
         onMouseEnter={() => this.setState({ hovering: game.id })}
         onMouseLeave={() => this.setState({ hovering: null })}
       >
         {this.renderHoverBar(game, this.state.hovering === game.id)}
-        <div className="name">{game.gameName || game.name}</div>
+        <WithTooltip text={gameName} position={{}} disabled={gameName.length <= 12}>
+          <div className="name">{gameName.slice(0, 12) + (gameName.length > 12 ? '...' : '')}</div>
+        </WithTooltip>
         <div className="experience">{game.experience}</div>
         <div className={style}>{game.level}</div>
       </div>

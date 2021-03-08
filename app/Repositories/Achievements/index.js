@@ -35,7 +35,7 @@ class AchievementsRepository {
   }
 
   async redeemBadge({ requestingUserId, alias, type, value }) {
-    const { badges, stats, controller, redeemedTotal, badgesTotal } = await this.fetchBadges({ alias });
+    const { badges, controller } = await this.fetchBadges({ alias });
     const badge = badges.find((badge) => badge.type === type);
     if (badge.value !== value) throw new Error(`Gamer ${alias} tried to redeem Badge ${type}/${value}, not allowed.`);
     const newRedeemed = new UserAchievements();
@@ -45,9 +45,7 @@ class AchievementsRepository {
     newRedeemed.experience = badge.experience;
     await newRedeemed.save();
     await controller.reCalculate_xp(requestingUserId);
-    const redeemed = await this.fetchRedeemedBadges({ userId: requestingUserId });
-    const updatedBadges = this.getBadges(stats, redeemed);
-    return { badges: updatedBadges, badgesTotal, redeemedTotal: redeemedTotal + 1 };
+    return this.fetchBadges({ alias });
   }
 
   getBadges(stats, redeemed) {

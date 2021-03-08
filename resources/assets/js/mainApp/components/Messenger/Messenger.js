@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import SweetAlert from '../common/MyGSweetAlert'
 import General from './Context/General'
 import Games from './Context/Games'
 import SearchResults from './Context/SearchResults'
@@ -82,7 +81,6 @@ class Messenger extends React.Component {
   renderLockedChat = () => {
     return (
       <React.Fragment>
-        {this.renderSweetAlert()}
         <section id='messenger'>
           <div className='locked-chat'>
             <div className='locked-image'>
@@ -269,30 +267,11 @@ class Messenger extends React.Component {
     )
   }
 
-  renderSweetAlert = () => {
-    if (!this.props.alert) return
-    return (
-      <SweetAlert
-        info
-        showCancel
-        confirmBtnText={window.messengerSweetAlert.confirmText}
-        confirmBtnBsStyle='info'
-        focusCancelBtn={true}
-        focusConfirmBtn={false}
-        showCloseButton={true}
-        onConfirm={() => window.messengerSweetAlert.onConfirm()}
-        onCancel={() => window.messengerSweetAlert.onCancel()}>
-        {window.messengerSweetAlert.label}
-      </SweetAlert>
-    )
-  }
-
   render() {
     logger.log('RENDER', 'Messenger')
     if (parseInt(this.props.level) < 2) return this.renderLockedChat()
     return (
       <React.Fragment>
-        {this.renderSweetAlert()}
         <section id='messenger'>
           <div className='messenger-content'>
             {this.renderBody()}

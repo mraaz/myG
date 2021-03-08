@@ -54,8 +54,6 @@ class Badges extends React.Component {
     })
   }
 
-  
-
   componentDidMount() {
     this.props.fetchBadges(this.props.alias);
   }
@@ -66,22 +64,19 @@ class Badges extends React.Component {
   }
 
   renderBadge = (badge) => {
-    const lockedStyle = !badge.unlocked ? 'locked' : '';
+    const isCollectable = !badge.collected && !!badge.unlocked;
+    const isLocked = !badge.collected && !badge.unlocked ;
+    const isCollected = !!badge.collected;
+    const labelStyle = isLocked ? 'locked' : isCollected ? 'collected' : '';
     return(
       <div className="badge">
         <div className="icon-container">
           <div className="icon" style={{ backgroundImage: `url(${getAssetUrl(badge.icon)})` }}/>
         </div>
-        <span className={`label ${lockedStyle}`}>{badge.label}</span>
-        {!badge.collected && !!badge.unlocked && (
-          <div className="button clickable" onClick={() => this.redeemBadge(badge)}>Collect {badge.experience}xp</div>
-        )}
-        {!badge.collected && !badge.unlocked && (
-          <div className={`hint ${lockedStyle}`}>Not Achieved</div>
-        )}
-        {!!badge.collected && (
-          <div className={`hint ${lockedStyle}`}>Achieved</div>
-        )}
+        <span className={`label ${labelStyle}`}>{badge.label}</span>
+        {isCollectable && <div className="button clickable" onClick={() => this.redeemBadge(badge)}>Collect {badge.experience}xp</div>}
+        {isLocked && <div className="hint locked">Not Achieved</div>}
+        {isCollected && <div className="hint collected">Achieved</div>}
       </div>
     );
   }

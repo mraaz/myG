@@ -24,7 +24,11 @@ export default class OnboardingStepModal extends React.Component {
           <a href='/?at=communities' className='link clickable' onClick={() => this.props.setOnboardingStep(5)}>
             Join Communities
           </a>
-          <p>Hint: Check out the Daily</p>
+          <p>
+            <a href='/achievements/daily' className='link clickable' onClick={() => this.props.setOnboardingStep(5)}>
+              Hint: Check out the Daily
+            </a>
+          </p>
           <p />
           <p>GLHF</p>
         </span>

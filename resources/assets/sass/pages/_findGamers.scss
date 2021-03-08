@@ -53,6 +53,10 @@
     width: 100%;
   }
 
+  .game-experience-row {
+    flex-wrap: nowrap;
+  }
+
   .hover-bar {
     display: flex;
     flex-direction: row;
@@ -289,7 +293,7 @@
     border-radius: 1000px;
     position: absolute;
     top: -12px;
-    right: -12px;
+    right: -8px;
     width: 28px;
     height: 28px;
   }
