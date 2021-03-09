@@ -33,7 +33,7 @@ class Settings extends Component {
 
     const self = this
 
-    const getSettings = async function() {
+    const getSettings = async function () {
       try {
         const getSettings = await axios.get('/api/settings')
         self.setState({
@@ -64,9 +64,9 @@ class Settings extends Component {
     console.log('disableAcccount click')
   }
 
-  // deleteAcccount = () => {
-  //   console.log('disableAcccount click')
-  // }
+  sponsorsAction = () => {
+    console.log('sponsorsAction click')
+  }
 
   deleteAcccount() {
     const getAlert = () => (
@@ -155,6 +155,11 @@ class Settings extends Component {
             </div>
           </div>
         )}
+        <div className='sponsors__action'>
+          <button type='button' className='sponsors__action-btn' onClick={() => this.sponsorsAction()}>
+            Manage your Sponsors
+          </button>
+        </div>
         <div className='option'>
           <div className='title'>Browser notifications</div>
           <div className='button__switch browser__notification'>
