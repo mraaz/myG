@@ -122,26 +122,34 @@ const CommunityView = (props) => {
     const { current_user_permission } = communityDetails
     return (
       <div className='Sponsors__container'>
-        <div className='Sponsors sponsors__label'>
-          <span>Sponsors</span>
-        </div>
+        {[0, 1].includes(current_user_permission) && (
+          <button type='button' class='sponsors__btn' onClick={(e) => handleSponsorClick(Sponsors)}>
+            Manage your Sponsors
+          </button>
+        )}
         {Sponsors.length > 0 &&
           Sponsors.map((Sponsor) => {
+            const hasSponsor = !!sponsor.link
             return (
               <div className='Sponsors' key={Sponsor.id}>
-                <a href={`//${Sponsor.link}`} target='_blank' onClick={registerSponsorClick}>
-                  <img className='Sponsors__image' onError={addDefaultSrc} src={`${Sponsor.media_url}`} />
-                </a>
-                {[0, 1].includes(current_user_permission) && (
+                <div
+                  className='Sponsors__image'
+                  // style={{ backgroundImage: `url(${sponsor.media_url}), url(${defaultSponsorImage})` }}
+                  onClick={() => {
+                    if (!hasSponsor) return
+                    window.open(sponsorLink, '_blank')
+                  }}
+                />
+                {/* {[0, 1].includes(current_user_permission) && (
                   <div className='Sponsors__edit' onClick={(e) => handleSponsorClick(Sponsor)}>
                     Edit
                   </div>
-                )}
-                {[0, 1].includes(current_user_permission) && (
+                )} */}
+                {/* {[0, 1].includes(current_user_permission) && (
                   <div className='Sponsors__delete' onClick={(e) => handleDeleteSponsor(Sponsor.id)}>
                     Delete
                   </div>
-                )}
+                )} */}
               </div>
             )
           })}
@@ -149,14 +157,18 @@ const CommunityView = (props) => {
           [...new Array((props.level < 25 ? 1 : 2) - Sponsors.length)].map((Sponsor, index) => {
             return (
               <div className='Sponsors' key={index}>
-                <a href={`/`} target='_blank'>
-                  <img className='Sponsors__image' onError={addDefaultSrc} src={``} />
-                </a>
-                {[0, 1].includes(current_user_permission) && (
+                <div
+                  className='Sponsors__image'
+                  // style={{ backgroundImage: `url(${sponsor.media_url}), url(${defaultSponsorImage})` }}
+                  onClick={() => {
+                    return
+                  }}
+                />
+                {/* {[0, 1].includes(current_user_permission) && (
                   <div className='Sponsors__edit' onClick={(e) => handleSponsorClick({})}>
                     Edit
                   </div>
-                )}
+                )} */}
               </div>
             )
           })}
@@ -177,7 +189,7 @@ const CommunityView = (props) => {
         </div>
       )}
       {renderSponsors(communityDetails.sponsors)}
-      {showSponsorModal && <MangeSponsors sponsor={singleSponsor} handleModalStatus={hideSponsorModal} group_id={communityDetails.id} />}
+      {showSponsorModal && <MangeSponsors sponsors={singleSponsor} handleModalStatus={hideSponsorModal} group_id={communityDetails.id} />}
       {communityDetails.id && (
         <GamePosts {...props} group_id={communityDetails.id} current_user_permission={communityDetails.current_user_permission} />
       )}
