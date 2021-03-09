@@ -196,6 +196,17 @@ function getJobs(Queue, bullConfig, ioCluster, uuidv4, runEveryJobOnStart) {
       runOnStart: false,
       enabled: true,
     },
+    {
+      name: 'Update has_additional Field',
+      queue: new Queue('Update has_additional Field', prefixedConfig('{update-has-additional-field}')),
+      action: require('./tasks/update-has-additional-field'),
+      options: { jobId: uuidv4() },
+      payload: {},
+      schedule: { repeat: { cron: '0 12 */15 * *' } },
+      runOnSchedule: true,
+      runOnStart: runEveryJobOnStart ? true : false,
+      enabled: true,
+    },
   ];
 }
 

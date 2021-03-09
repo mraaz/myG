@@ -197,6 +197,16 @@ class PostController {
       }
 
       if (!isNaN(category) && _1stpass.length > 2) {
+        let get_Origin_info = await Database.from('users_additional_infos')
+          .where('user_id', '=', auth.user.id)
+          .first()
+
+        if (get_Origin_info == undefined) {
+          get_Origin_info = { logged_in_country_code: null }
+        }
+
+        if (get_Origin_info.in_eu == true) get_Origin_info.logged_in_country_code = 'EU'
+
         const get_sponsored_posts_total = await Database.from('sponsored_posts')
           .where('visibility', '=', 1)
           .where('category', '=', category)
@@ -207,6 +217,9 @@ class PostController {
           .where('visibility', '=', 1)
           .where('category', '=', category)
           .where('sponsored_posts_transactions.id', 'is', null)
+          .where((bd) => {
+            bd.orWhere({ country_code: get_Origin_info.logged_in_country_code }).orWhere('country_code', 'is', null)
+          })
           .select('sponsored_posts.*')
           .orderBy('updated_at', 'desc')
           .limit(Math.floor(Math.random() * parseInt(get_sponsored_posts_total[0].total)))

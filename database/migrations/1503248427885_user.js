@@ -45,6 +45,7 @@ class UserSchema extends Schema {
       table.integer('experience_points').notNullable().defaultTo(0)
       table.integer('stashed_experience_points').nullable().defaultTo(0)
       table.boolean('xp_negative_balance').notNullable().defaultTo(false)
+      table.boolean('has_additional').notNullable().defaultTo(false)
       table.timestamps(true,true)
     })
   }

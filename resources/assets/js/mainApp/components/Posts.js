@@ -57,7 +57,6 @@ export default class Posts extends Component {
           method: 'GET',
           url: `/api/post/${self.state.counter}`,
         })
-        console.log(myPosts.data.myPosts.length, '<<<myPosts.data.myPosts.length')
 
         if (myPosts.data == '' || myPosts.data == {} || (myPosts.data.myPosts && myPosts.data.myPosts.length == 0)) {
           self.setState({

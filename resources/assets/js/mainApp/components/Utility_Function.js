@@ -288,9 +288,80 @@ export const Toast_style = (props) => (
 )
 
 export function Convert_to_comma_delimited_value(array_to_convert) {
-  var newArr = []
-  for (var i = 0; i < array_to_convert.length; i++) {
+  let newArr = []
+  for (let i = 0; i < array_to_convert.length; i++) {
     newArr.push(array_to_convert[i].value)
   }
   return newArr.toString()
+}
+
+export async function Update_ip_settings() {
+  //https://app.nuclino.com/myG/codebase/getting-clients-location-c3e14fd4-d2ed-4033-b298-4f18bc98f0d3
+
+  const fowardslash_Roll = Math.floor(Math.random() * 5) + 1
+  let country
+
+  try {
+    switch (fowardslash_Roll) {
+      case 1:
+        country = await axios.get('https://ipapi.co/json/')
+
+        axios.post('/api/users_additional_infos', {
+          logged_in_country_code_code: country.data.country_code,
+          in_eu: country.data.in_eu,
+          last_logged_in_ip: country.data.ip,
+          logged_in_regional: country.data.city,
+        })
+        break
+      case 2:
+        country = await axios.get('https://api.ipregistry.co/?key=of2bu80vcjh2it')
+
+        axios.post('/api/users_additional_infos', {
+          logged_in_country_code_code: country.data.location.country.code,
+          in_eu: country.data.location.in_eu,
+          last_logged_in_ip: country.data.ip,
+          logged_in_regional: country.data.location.city,
+        })
+        break
+      case 3:
+        country = await axios.get('http://api.ipstack.com/check?access_key=10120187d278d72df281fc19ebdc3070')
+
+        axios.post('/api/users_additional_infos', {
+          logged_in_country_code: country.data.country_code,
+          in_eu: country.data.location.in_eu,
+          last_logged_in_ip: country.data.ip,
+        })
+        break
+      case 4:
+        country = await axios.get('http://api.ipstack.com/check?access_key=f959edb7af1876fcd09362548c19ffaf')
+
+        axios.post('/api/users_additional_infos', {
+          logged_in_country_code: country.data.country_code,
+          in_eu: country.data.location.in_eu,
+          last_logged_in_ip: country.data.ip,
+        })
+        break
+      case 5:
+        country = await axios.get('http://api.ipstack.com/check?access_key=0dbf12e7eb6cb8247151a32e1c27c0a7')
+
+        axios.post('/api/users_additional_infos', {
+          logged_in_country_code: country.data.country_code,
+          in_eu: country.data.location.in_eu,
+          last_logged_in_ip: country.data.ip,
+        })
+        break
+
+      default:
+        country = await axios.get('https://ipapi.co/json/')
+
+        axios.post('/api/users_additional_infos', {
+          logged_in_country_code: country.data.country_code,
+          in_eu: country.data.in_eu,
+          last_logged_in_ip: country.data.ip,
+          logged_in_regional: country.data.city,
+        })
+    }
+  } catch (error) {
+    logToElasticsearch('error', 'Utility_Function', 'Failed Update_ip_settings:' + ' ' + error)
+  }
 }
