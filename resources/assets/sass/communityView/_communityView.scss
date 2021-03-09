@@ -319,11 +319,12 @@
       .modal__body {
         background: #171a1c 0% 0% no-repeat padding-box;
         min-height: 400px;
+        max-height: 400px;
         overflow: scroll;
         width: 100%;
         padding: 2em 5em;
-        display: inline-flex;
-        flex-wrap: wrap;
+        display: flex;
+        flex-direction: column;
         @media screen and (max-width: 998px) {
           padding: 1em 0.5em;
           min-height: 100px;
@@ -833,6 +834,9 @@
       }
     }
   }
+  .Sponsor__edit-list {
+    margin-bottom: 20px;
+  }
   .Sponsor__edit {
     padding: 2em 2em !important;
     .text {
@@ -849,11 +853,12 @@
     }
     .Sponsor__media__input {
       width: 100%;
-      height: 150px;
       display: flex;
       margin-bottom: 1em;
       position: relative;
       cursor: pointer;
+      background: #2d363a;
+      height: 120px;
       input {
         display: none;
       }
@@ -862,8 +867,8 @@
         object-fit: contain;
         width: fit-content;
         height: fit-content;
-        max-width: 250px;
-        max-height: 150px;
+        max-width: 100%;
+        height: 100%;
       }
       .image__uploading {
         position: absolute;

@@ -142,7 +142,7 @@ export default class MangeSponsors extends React.Component {
   }
 
   render() {
-    const { sponsor = {} } = this.props
+    const { sponsors = [] } = this.props
     const { saveButtonDisabled = true, linkValue = '', media_url = '', modalStatus = true, uploading = false } = this.state
 
     return (
@@ -156,40 +156,49 @@ export default class MangeSponsors extends React.Component {
               <img src='https://myG.gg/platform_images/Dashboard/X_icon.svg' />
             </div>
           </div>
+
           <div className='modal__body Sponsor__edit'>
-            <div className='text'>Drop your image or video</div>
-            <div className='Sponsor__media__input' onClick={this.handleImageChange}>
-              <input
-                type='file'
-                accept='image/jpeg,image/jpg,image/png,image/gif'
-                ref={this.fileInputRef}
-                onChange={this.handleSelectFile}
-                name='insert__images'
-              />
-              <img
-                src={media_url == '' ? sponsor.media_url || 'https://myG.gg/platform_images/Dashboard/BTN_Attach_Image.svg' : media_url}
-                onError={this.addDefaultSrc}
-              />
-            </div>
-            <div className='text'>
-              Or <span>click here</span> to select
-            </div>
-            {uploading && (
-              <div className='text'>
-                <span>Uploading... </span>
-              </div>
-            )}
-            <div className='Sponsor__link__input'>
-              <label>Enter Sponsor link</label>
-              <input
-                type='text'
-                onChange={this.handleLinkChange}
-                value={linkValue == '' ? sponsor.link : linkValue}
-                placeholder='Enter link here'
-                onKeyDown={this.onKeyDown}
-              />
-            </div>
+            {sponsors.map((sponsor) => {
+              return (
+                <div className='Sponsor__edit-list'>
+                  <div className='Sponsor__media__input' onClick={this.handleImageChange}>
+                    <input
+                      type='file'
+                      accept='image/jpeg,image/jpg,image/png,image/gif'
+                      ref={this.fileInputRef}
+                      onChange={this.handleSelectFile}
+                      name='insert__images'
+                    />
+                    <img
+                      src={
+                        media_url == '' ? sponsor.media_url || 'https://myG.gg/platform_images/Dashboard/BTN_Attach_Image.svg' : media_url
+                      }
+                      onError={this.addDefaultSrc}
+                    />
+                  </div>
+                  <div className='text'>
+                    Or <span>Click/Tap here</span> to select
+                  </div>
+                  {uploading && (
+                    <div className='text'>
+                      <span>Uploading... </span>
+                    </div>
+                  )}
+                  <div className='Sponsor__link__input'>
+                    <label>Enter Sponsor link</label>
+                    <input
+                      type='text'
+                      onChange={this.handleLinkChange}
+                      value={linkValue == '' ? sponsor.link : linkValue}
+                      placeholder='Enter link here'
+                      onKeyDown={this.onKeyDown}
+                    />
+                  </div>
+                </div>
+              )
+            })}
           </div>
+
           <div className='modal__footer'>
             <MyGButton
               customStyles={{ color: '#fff', border: '2px solid #fff', background: '#000' }}
