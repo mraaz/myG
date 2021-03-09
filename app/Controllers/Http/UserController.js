@@ -9,6 +9,8 @@ const AwsKeyController = use('./AwsKeyController')
 const FollowerController = use('./FollowerController')
 
 const UserStatTransactionController = use('./UserStatTransactionController')
+const UsersAdditionalInfoController = use('./UsersAdditionalInfoController')
+
 const ProfileRepository = require('../../Repositories/Profile')
 const ElasticsearchRepository = require('../../Repositories/Elasticsearch')
 const ChatRepository = require('../../Repositories/Chat')
@@ -98,6 +100,7 @@ class UserController {
           })
         const { profile } = await ProfileRepository.fetchProfileInfo({ requestingUserId: auth.user.id, id: auth.user.id })
         await ElasticsearchRepository.storeUser({ user: profile })
+
         return 'Saved successfully'
       } catch (error) {
         LoggingRepository.log({
@@ -387,6 +390,23 @@ class UserController {
     } catch (error) {
       console.error(`Failed to Encrypt: ${field}`, this.privateKey, this.publicKey)
       return null
+    }
+  }
+
+  async update_has_additional() {
+    console.log('TEst')
+    try {
+      await User.query().update({
+        has_additional: false,
+      })
+    } catch (error) {
+      LoggingRepository.log({
+        environment: process.env.NODE_ENV,
+        type: 'error',
+        source: 'backend',
+        context: __filename,
+        message: (error && error.message) || error,
+      })
     }
   }
 }

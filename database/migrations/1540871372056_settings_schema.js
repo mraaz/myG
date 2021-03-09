@@ -14,6 +14,7 @@ class SettingsSchema extends Schema {
       table.boolean('push_notification').defaultTo(0)
       table.datetime('gamer_connection_last_runtime').defaultTo(Database.raw("CURRENT_TIMESTAMP"))
       table.timestamps(true,true)
+      table.unique(['user_id']);
     })
   }
 

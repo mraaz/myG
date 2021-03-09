@@ -19,6 +19,9 @@ import 'react-toastify/dist/ReactToastify.css'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import ErrorHandler from './components/ErrorHandler'
+import Utility_Function from './components/Utility_Function'
+import { Update_ip_settings } from './components/Utility_Function'
+
 import { store, persistor } from '../redux/Store'
 import { loadUserInfoToReduxStore } from '../common/user'
 import { FeatureEnabled, PROFILE_V2 } from '../common/flags'
@@ -65,13 +68,12 @@ class Layout extends Component {
         const initialData = await axios.get('/api/initialApp')
 
         if (initialData.data.userInfo == 1981 && !window.location.href.includes('/link')) {
-          //window.router.push('/');
           window.location.href = '/logout'
         }
 
-        const country = await axios.get('https://ipapi.co/json/')
-        console.log(country,"<<<<RAAAZ!");
-
+        if (initialData.data.userInfo.has_additional != '1'){
+          Update_ip_settings()
+        }
 
         window.PORT = initialData.data.port
         window.LOGS_ON = initialData.data.logsOn || ''

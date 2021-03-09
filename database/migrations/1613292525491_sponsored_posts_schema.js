@@ -16,6 +16,7 @@ class SponsoredPostsSchema extends Schema {
       table.integer('visibility').defaultTo(0).index()
       table.integer('category').defaultTo(1).index()
       table.integer('times_clicked').defaultTo(0).index()
+      table.string('country_code', 2048).nullable().index()
       table.timestamps(true,true)
     })
   }
