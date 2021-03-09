@@ -840,13 +840,31 @@
   .Sponsor__edit {
     padding: 2em 2em !important;
     .text {
-      font: Bold 14px/20px Montserrat;
+      font-size: 14px/20px;
+      font-family: 'Montserrat';
+      font-weight: Bold;
+      color: #fff;
+      width: 100%;
+      letter-spacing: 0px;
+      display: flex;
+      justify-content: flex-start;
+      white-space: pre-wrap;
+      margin-bottom: 10px;
+      span {
+        color: #e5c746;
+      }
+    }
+    .text__tap {
+      font-size: 14px/20px;
+      font-family: 'Montserrat';
+      font-weight: Bold;
       color: #fff;
       width: 100%;
       letter-spacing: 0px;
       display: flex;
       justify-content: center;
       white-space: pre-wrap;
+      margin-bottom: 10px;
       span {
         color: #e5c746;
       }

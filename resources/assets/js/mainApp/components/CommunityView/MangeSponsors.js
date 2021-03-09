@@ -158,9 +158,10 @@ export default class MangeSponsors extends React.Component {
           </div>
 
           <div className='modal__body Sponsor__edit'>
-            {sponsors.map((sponsor) => {
+            {sponsors.map((sponsor, index) => {
               return (
                 <div className='Sponsor__edit-list'>
+                  <div className='text'>Custom Sponsor {index + 1}</div>
                   <div className='Sponsor__media__input' onClick={this.handleImageChange}>
                     <input
                       type='file'
@@ -176,7 +177,7 @@ export default class MangeSponsors extends React.Component {
                       onError={this.addDefaultSrc}
                     />
                   </div>
-                  <div className='text'>
+                  <div className='text__tap'>
                     Or <span>Click/Tap here</span> to select
                   </div>
                   {uploading && (
@@ -185,7 +186,6 @@ export default class MangeSponsors extends React.Component {
                     </div>
                   )}
                   <div className='Sponsor__link__input'>
-                    <label>Enter Sponsor link</label>
                     <input
                       type='text'
                       onChange={this.handleLinkChange}
