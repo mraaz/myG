@@ -20,6 +20,10 @@ import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import ErrorHandler from './components/ErrorHandler'
 
+import PopupAlert from './components/PopupAlert'
+import Bubbles from './components/Bubbles'
+import LevelUp from './components/LevelUp'
+
 import Utility_Function from './components/Utility_Function'
 import { Update_ip_settings } from './components/Utility_Function'
 
