@@ -207,6 +207,7 @@ export default class IndividualSponsoredPost extends Component {
             </div>
           </div>
         </div>
+        {showPostExtraOption == true && <div onClick={this.clickedGamePostExtraOption} className='threedots__backdrop'></div>}
       </div>
     )
   }

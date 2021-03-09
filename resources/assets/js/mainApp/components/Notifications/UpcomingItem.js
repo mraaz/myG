@@ -87,7 +87,7 @@ export default class UpcomingItem extends Component {
             </div>
             <div className='game__timestamp'>
               <img src='https://myG.gg/platform_images/Dashboard/Notifications/clock.svg' />
-              <span>{moment(this.props.start_date_time).format('LL')}</span>
+              <span>{moment.utc(this.props.start_date_time).local().format('LL')}</span>
             </div>
           </div>
           <div className='third__row'>

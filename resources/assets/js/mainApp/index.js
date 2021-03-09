@@ -19,6 +19,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import ErrorHandler from './components/ErrorHandler'
+
 import Utility_Function from './components/Utility_Function'
 import { Update_ip_settings } from './components/Utility_Function'
 
@@ -374,6 +375,9 @@ class Layout extends Component {
         <Provider store={store}>
           <PersistGate persistor={persistor}>
             <Onboarding />
+            <PopupAlert />
+            <Bubbles />
+            <LevelUp />
             <ToastContainer
               autoClose={8000}
               draggablePercent={60}

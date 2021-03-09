@@ -70,7 +70,7 @@ export default class IndividualComment extends Component {
     const self = this
     let comment = this.props
 
-    const getCommentReplies = async function() {
+    const getCommentReplies = async function () {
       try {
         const myCommentReplies = await axios.get(`/api/replies/${comment.comment.id}`)
 
@@ -125,7 +125,7 @@ export default class IndividualComment extends Component {
     var comment_id = this.props.comment.id
     const self = this
 
-    const getComments = async function() {
+    const getComments = async function () {
       try {
         const myCommentReplies = await axios.get(`/api/replies/${comment_id}`)
         self.setState({
@@ -195,7 +195,7 @@ export default class IndividualComment extends Component {
 
     if (!this.state.show_add_reply) {
       setTimeout(
-        function() {
+        function () {
           //Start the timer
           this.focusTextInput()
         }.bind(this),
@@ -304,7 +304,7 @@ export default class IndividualComment extends Component {
     const self = this
     var comment_id = this.props.comment.id
 
-    const saveComment = async function() {
+    const saveComment = async function () {
       try {
         const mysaveComment = await axios.post(`/api/comments/update/${comment_id}`, {
           content: self.state.value2,
@@ -641,6 +641,8 @@ export default class IndividualComment extends Component {
               </div>
             )}
           </div>
+
+          {this.state.dropdown == true && <div onClick={this.clickedDropdown} className='threedots__backdrop'></div>}
         </div>
       )
     } else {

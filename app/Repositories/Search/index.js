@@ -35,11 +35,12 @@ class SearchRepository {
     if (input.includes('languages:')) targetedQueries.push({ field: 'languages', value: input.split('languages:')[1].trim().split(' ')[0] });
     if (input.includes('language:')) targetedQueries.push({ field: 'languages', value: input.split('language:')[1].trim().split(' ')[0] });
     if (input.includes('mostPlayedGames:')) targetedQueries.push({ field: 'gameExperiences.name', value: input.split('mostPlayedGames:')[1].trim()[1].trim().split(' ')[0].split('_').join(' ') });
-    if (input.includes('games:')) targetedQueries.push({ field: 'gameExperiences.name', value: input.split('games:')[1].trim().split(' ')[0].split('_').join(' ') });
-    if (input.includes('game:')) targetedQueries.push({ field: 'gameExperiences.name', value: input.split('game:')[1].trim().split(' ')[0].split('_').join(' ') });
+    if (input.includes('games:')) targetedQueries.push({ field: 'gameExperiences.name.keyword', value: input.split('games:')[1].trim().split(' ')[0].split('_').join(' ') });
+    if (input.includes('game:')) targetedQueries.push({ field: 'gameExperiences.name.keyword', value: input.split('game:')[1].trim().split(' ')[0].split('_').join(' ') });
     if (input.includes('underage:')) targetedQueries.push({ field: 'underage', value: input.split('underage:')[1].trim().split(' ')[0] });
     if (input.includes('hasMic:')) targetedQueries.push({ field: 'hasMic', value: input.split('hasMic:')[1].trim().split(' ')[0] });
     if (input.includes('experience:')) targetedQueries.push({ field: 'gameExperiences.experience.keyword', value: input.split('experience:')[1].trim().split(' ')[0].split('_').join(' ') });
+    if (input.includes('career:')) targetedQueries.push({ field: 'gameExperiences.level.keyword', value: input.split('career:')[1].trim().split(' ')[0].split('_').join(' ').replace('Professional', 'Pro Gamer') });
     dynamicFields.forEach((field) => {
       if (input.includes(`${field}:`)) {
         targetedQueries.push({ 

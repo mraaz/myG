@@ -90,6 +90,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderMainFields = () => {
+    if (this.props.onboarding) return null;
     if (!get(this.props, 'experience.game.value')) return this.renderDisabledField('Main Fields', null)
     if (!this.props.isSelf) return null
     return (
@@ -112,6 +113,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderDivider = () => {
+    if (this.props.onboarding) return null;
     if (!this.props.isSelf) return null
     return <div className='divider' />
   }
@@ -133,7 +135,7 @@ export default class MainInfo extends React.Component {
     if (!this.props.isSelf) return this.renderDisabledField('Game Title', (this.props.experience.game || {}).value)
     return (
       <div className='row'>
-        <span className='hint'>Game Title {!!this.props.onboarding && <span className='required onboarding'>*</span>}</span>
+        <span className='hint'>Game Title</span>
         <div className='input-container-row viewGame__gameName game-title-select'>
           <AsyncCreatableSelect
             cacheOptions
@@ -152,11 +154,13 @@ export default class MainInfo extends React.Component {
             disabled={!this.props.isSelf}
           />
         </div>
+        {!!this.props.onboarding && <span className='required onboarding'>*</span>}
       </div>
     )
   }
 
   renderTeamInput = () => {
+    if (this.props.onboarding) return null;
     if (!get(this.props, 'experience.game.value') || !this.props.isSelf)
       return this.renderDisabledField('Team', (this.props.experience.team || {}).value)
     return (
@@ -173,6 +177,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderNicknameInput = () => {
+    if (this.props.onboarding) return null;
     if (!get(this.props, 'experience.game.value') || !this.props.isSelf)
       return this.renderDisabledField('Nickname', (this.props.experience.nickname || {}).value)
     return (
@@ -193,7 +198,7 @@ export default class MainInfo extends React.Component {
       return this.renderDisabledField('Career', (this.props.experience.level || {}).value, false, !!this.props.onboarding)
     return (
       <div className='row'>
-        <span className='hint'>Career {!!this.props.onboarding && <span className='required onboarding'>*</span>}</span>
+        <span className='hint'>Career</span>
         <MyGSelect
           width={'75%'}
           innerWidth={'100%'}
@@ -201,6 +206,7 @@ export default class MainInfo extends React.Component {
           onChange={(level) => this.props.storeExperience({ level })}
           value={this.props.experience.level}
         />
+        {!!this.props.onboarding && <span className='required onboarding'>*</span>}
       </div>
     )
   }
@@ -210,7 +216,7 @@ export default class MainInfo extends React.Component {
       return this.renderDisabledField('Experience', (this.props.experience.experience || {}).value, false, !!this.props.onboarding)
     return (
       <div className='row'>
-        <span className='hint'>Experience {!!this.props.onboarding && <span className='required onboarding'>*</span>}</span>
+        <span className='hint'>Experience</span>
         <MyGSelect
           width={'75%'}
           innerWidth={'100%'}
@@ -218,11 +224,13 @@ export default class MainInfo extends React.Component {
           onChange={(experience) => this.props.storeExperience({ experience })}
           value={this.props.experience.experience}
         />
+        {!!this.props.onboarding && <span className='required onboarding'>*</span>}
       </div>
     )
   }
 
   renderCommendationLabel = () => {
+    if (this.props.onboarding) return null;
     if (this.props.isSelf) return null
     return (
       <div className='row'>
@@ -248,6 +256,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderTagsInput = () => {
+    if (this.props.onboarding) return null;
     if (!get(this.props, 'experience.game.value')) return this.renderDisabledField('Tags', null)
     if (!this.props.isSelf)
       return this.renderDisabledFieldList(
@@ -281,6 +290,7 @@ export default class MainInfo extends React.Component {
   }
 
   renderRateSlider = () => {
+    if (this.props.onboarding) return null;
     if (!this.props.isSelf) return null
     return (
       <div className='row'>
@@ -293,6 +303,7 @@ export default class MainInfo extends React.Component {
   renderDynamicFields = () => {
     if (!this.state.dynamicFields || !this.state.dynamicFields.length) return null
     return this.state.dynamicFields.map((field) => {
+      if (this.props.onboarding && field.id === "stats_link") return null;
       if (!this.props.isSelf && !get(this.props, `experience.dynamic.${field.id}.value`, get(this.props, `experience.dynamic.${field.id}`)))
         return null
       return (
@@ -519,10 +530,11 @@ export default class MainInfo extends React.Component {
     const disabledValue = Array.isArray(displayValue) ? displayValue.join(', ') : displayValue
     const disabledField = (
       <React.Fragment>
-        <span className='hint'>{title} {!!required && <span className='required onboarding'>*</span>}</span>
+        <span className='hint'>{title}</span>
         <div className='input-container-row'>
           <input className='input' value={disabledValue} disabled={true}></input>
         </div>
+        {!!required && <span className='required onboarding'>*</span>}
       </React.Fragment>
     )
     if (skipRow) return disabledField

@@ -2,6 +2,7 @@ import React, { Fragment, useState } from 'react'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import Select from 'react-select'
+import { useDispatch, useSelector } from 'react-redux'
 
 import GameFilter from '../scheduledGames/gameFilter'
 import { WithTooltip } from '../Tooltip'
@@ -9,6 +10,7 @@ import JoinButtonAction from '../scheduledGames/JoinButtonAction'
 import Approved_gamers from '../scheduledGames/ApprovedGamers'
 import GameComments from '../scheduledGames/GameComments'
 import { prefilledFilter_option } from '../scheduledGames/option'
+import { openMobileMenuAction } from '../../../redux/actions/mobileMenuAction'
 
 const MobileScheduledGames = (props) => {
   const {
@@ -31,10 +33,11 @@ const MobileScheduledGames = (props) => {
     myGamesMenu = false,
     singleScheduleGamesPayload = {},
   } = props
-  console.log('scheduleGames  ', scheduleGames)
-
+  
+  const dispatch = useDispatch()
   const defaultThumbnails = 'https://myG.gg/platform_images/Notifications/myG_icon.svg'
   const defaultUserImage = 'https://myG.gg/default_user/new-user-profile-picture.png'
+  const defaultSwipeDownImage = 'https://myG.gg/platform_icons/swipe-down-3-xxl+(myG-yellow).png'
   const myRef = React.createRef()
 
   const transformPlayerLevelTitle = (title) => {
@@ -116,6 +119,8 @@ const MobileScheduledGames = (props) => {
 
   const { no_of_comments = [], lastComment = '' } = commentData
   const { no_of_my_comments = 0 } = no_of_comments[0] || {}
+  const mobileMenuIsActive = useSelector(state => state.mobileMenu.mobileMenuIsActive)
+  const mobileMenuIsTop = useSelector(state => state.mobileMenu.mobileMenuIsTop)
 
   return (
     <Fragment>
@@ -273,7 +278,7 @@ const MobileScheduledGames = (props) => {
         )}
       </div>
 
-      <div className={`mGameTileList${!showRightSideInfo ? ' active' : ' inactive'}`}>
+      <div className={`mGameTileList ${mobileMenuIsTop && mobileMenuIsActive ? 'menuAtTop' : ''}`}>
         <div className='mGameTileListHeader'>
           <div className='myGame__filter-section'>
             {id == '' && myGamesMenu && (
@@ -410,6 +415,14 @@ const MobileScheduledGames = (props) => {
                 </div>
               )
             })}
+
+          {
+            scheduleGames.length == 0 &&
+            <div className="mNoResultsFound">
+              <p>No results found mate.... click/swipe down to see menu</p>
+              <img onClick={() => dispatch(openMobileMenuAction(true))} src={defaultSwipeDownImage} alt='swipe-down-icon-svg' />
+            </div>
+          }
         </div>
       </div>
     </Fragment>

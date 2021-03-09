@@ -53,6 +53,10 @@
     width: 100%;
   }
 
+  .game-experience-row {
+    flex-wrap: nowrap;
+  }
+
   .hover-bar {
     display: flex;
     flex-direction: row;
@@ -289,7 +293,7 @@
     border-radius: 1000px;
     position: absolute;
     top: -12px;
-    right: -12px;
+    right: -8px;
     width: 28px;
     height: 28px;
   }
@@ -593,6 +597,11 @@
 
 @media screen and (max-width: 575px) {
   #find-gamers {
+    
+    &.menuAtTop {
+      padding: 85px 0 0;
+    }
+    
     #find-gamers-search {
       padding: 0;
       margin: 0 8px;
@@ -604,7 +613,6 @@
       display: none;
     }
     .top-bar {
-      margin-top: 96px;
       background-color: transparent;
       border: none;
     }

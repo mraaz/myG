@@ -937,10 +937,6 @@
         -ms-overflow-style: none; /* IE and Edge */
         max-height: 100vh;
         padding: 10px;
-        @media screen and (max-width: 998px) {
-          height: 70vh;
-          overflow: scroll;
-        }
         .mygames {
           display: flex;
           justify-content: start;
@@ -1593,7 +1589,7 @@
           width: 100%;
           background: #2d363a 0% 0% no-repeat padding-box;
           border: 1px solid #273136;
-          border-radius: 4px;
+          border-radius: 4px 0 0 4px;
           resize: none;
           overflow: auto;
           color: #657172;
@@ -1603,7 +1599,7 @@
         }
         .insert__images {
           position: absolute;
-          right: 5px;
+          right: 48px;
           z-index: 2;
           width: 27px;
           height: 27px;
@@ -1614,6 +1610,15 @@
           img {
             padding-right: 18px;
             height: 27px;
+          }
+        }
+        .send__btn {
+          position: relative;
+          top: 18px;
+          height: 40px;
+          cursor: pointer;
+          img {
+            height: 44px;
           }
         }
         .profile__image {
@@ -1712,7 +1717,7 @@
   }
 
   .View__AllGamers__modal {
-    z-index: 9999;
+    z-index: 9998;
     background: none;
     .modal-wrap {
       border: 1px solid #273137;
@@ -1876,7 +1881,7 @@
     }
   }
   .View__JoinBUtton__modal {
-    z-index: 9999;
+    z-index: 9998;
     background: none;
     .modal-wrap {
       border: 1px solid #273137;
@@ -2118,7 +2123,6 @@
 }
 
 .viewGame__container__mobile {
-  height: 100%;
   position: relative;
 }
 
@@ -2208,8 +2212,6 @@ $transition-default: 0.25s ease-out 0.1s;
 .mGameAllComments,
 .mGameDetails,
 .mGameTileList {
-  margin-top: 85px;
-
   &.active {
     display: block;
 
@@ -2224,11 +2226,24 @@ $transition-default: 0.25s ease-out 0.1s;
 }
 
 .mGameTileList {
-  padding: 0 20px;
+  padding: 20px;
+  transition: 0.1s padding ease-in-out;
+
+  &.menuAtTop {
+    padding: 85px 20px 0;
+  }
+
   .gameList__box {
-    @media screen and (max-width: 998px) {
-      height: 70vh;
-      overflow: scroll;
+    .mNoResultsFound {
+      color: #fff;
+      text-align: center;
+      margin: 100px 0;
+      img {
+        max-width: 60px;
+      }
+      p {
+        padding-bottom: 20px;
+      }
     }
   }
 }
@@ -3061,7 +3076,7 @@ $transition-default: 0.25s ease-out 0.1s;
         width: 100%;
         background: #2d363a 0% 0% no-repeat padding-box;
         border: 1px solid #273136;
-        border-radius: 4px;
+        border-radius: 4px 0 0 4px;
         resize: none;
         overflow: auto;
         color: #657172;
@@ -3072,7 +3087,7 @@ $transition-default: 0.25s ease-out 0.1s;
 
       .insert__images {
         position: absolute;
-        right: 5px;
+        right: 48px;
         z-index: 2;
         width: 27px;
         height: 27px;
@@ -3085,6 +3100,15 @@ $transition-default: 0.25s ease-out 0.1s;
         img {
           padding-right: 18px;
           height: 27px;
+        }
+      }
+      .send__btn {
+        position: relative;
+        top: 18px;
+        height: 40px;
+        cursor: pointer;
+        img {
+          height: 44px;
         }
       }
 
