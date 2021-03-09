@@ -576,6 +576,10 @@
       .buttons {
         display: flex;
         flex-direction: row;
+        .button {
+          border-radius: unset !important;
+          font-family: Montserrat, sans-serif;
+        }
 
         #view-friends-modal {
           position: fixed;
@@ -1407,7 +1411,7 @@
     }
   }
   .profile__sponsors-container1 {
-    width: 80%;
+    width: 90%;
     margin: 10px 5%;
     padding: 12px 24px;
     .sponsors__btn {

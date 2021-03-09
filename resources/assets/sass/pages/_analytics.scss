@@ -14,6 +14,7 @@
   padding: 15px;
   border: 1px solid #273137;
   justify-content: space-between;
+  box-shadow: 4px 5px 17px #000000;
 }
 
 .level-container {
@@ -21,6 +22,7 @@
   justify-content: space-between;
   align-items: center;
   color: #fff;
+  padding-right: 50px;
 
   .level-container-img {
     display: flex;
@@ -34,13 +36,17 @@
 }
 
 .social-box {
-  text-align: center;
   color: #fff;
   position: relative;
+  display: flex;
   border-left: 1px solid #384952;
-  padding: 0px 30px;
-  margin-left: auto;
-  margin-right: auto;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 20%;
+  &:nth-child(2) {
+    border: none;
+  }
 }
 
 .social-box:last-child:after {
@@ -55,14 +61,16 @@
 }
 
 .social-box-count {
-  font: 24px/14px Montserrat;
+  font-size: 24px/14px;
+  font-family: Montserrat, sans-serif;
   letter-spacing: 0px;
   color: #fff;
   margin-bottom: 5px !important;
 }
 
 .social-box-text {
-  font: 10px/14px Montserrat;
+  font-size: 10px/14px;
+  font-family: Montserrat, sans-serif;
   letter-spacing: 0px;
   color: #fff;
   position: relative;
@@ -89,7 +97,8 @@
   color: #555e5f;
   padding: 10px 0 0;
   position: relative;
-  font: 10px/14px Montserrat;
+  font-size: 10px/14px;
+  font-family: Montserrat, sans-serif;
   letter-spacing: 0px;
 }
 .social-box-month::before {
