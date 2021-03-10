@@ -44,7 +44,7 @@ export default class Sponsors extends React.Component {
         />
         <div className="hover-bar">
           {/* {!!isHovering && <div className={`tiny-button ${!isLocked && 'clickable'}`} onClick={() => !isLocked && this.editSponsor(sponsor.id)}>{isLocked ? 'Unlock at Lvl 5' : 'Edit'}</div>} */}
-          {!!isHovering && !isEmpty && <div className="tiny-button clickable" onClick={() => this.deleteSponsor(sponsor.id)}>Delete</div>}
+          {/* {!!isHovering && !isEmpty && <div className="tiny-button clickable" onClick={() => this.deleteSponsor(sponsor.id)}>Delete</div>} */}
         </div>
       </div>
     );
@@ -55,7 +55,7 @@ export default class Sponsors extends React.Component {
     return(
       <div className="communityName__container">
         <ManageSponsors 
-          sponsor={!`${this.state.editing}`.includes('empty') && this.props.sponsors.find((sponsor) => sponsor.id === this.state.editing)}
+          sponsors={this.props.sponsors}
           userId={this.props.profile.id}
           handleModalStatus={this.onEdit}
         />
@@ -64,11 +64,14 @@ export default class Sponsors extends React.Component {
   }
 
   render() {
-    return(<div className="profile__sponsors-container">
-        {this.props.isSelf &&<button type="button" className="sponsors__btn">Manage your Sponsors</button>}
-        <div id="profile-sponsors">
-          {/* {this.renderEditSponsor()} */}
-          {this.props.sponsors.map(this.renderSponsor)}
+    const {sponsors=[]} = this.props;
+    return(<div className="profile__sponsors-container1">
+        {this.props.isSelf &&<button type="button" className="sponsors__btn" onClick={() =>this.editSponsor(sponsors)}>Manage your Sponsors</button>}
+        <div className="profile__sponsors-container">
+        <div id="profile-sponsors"> 
+          {this.renderEditSponsor(sponsors)}
+          {sponsors.map(this.renderSponsor)}
+        </div>
         </div>
       </div>
     );

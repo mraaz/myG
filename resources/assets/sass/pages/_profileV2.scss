@@ -496,6 +496,9 @@
       align-items: center;
       z-index: 1;
       justify-content: space-between;
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
 
       .info {
         display: flex;
@@ -576,6 +579,10 @@
       .buttons {
         display: flex;
         flex-direction: row;
+        .button {
+          border-radius: unset !important;
+          font-family: Montserrat, sans-serif;
+        }
 
         #view-friends-modal {
           position: fixed;
@@ -960,7 +967,7 @@
     position: relative;
     margin-left: auto;
     margin-right: auto;
-    width: 95%;
+    width: 80%;
 
     .no-users {
       color: #fff;
@@ -990,7 +997,7 @@
     .headers {
       display: flex;
       flex-direction: row;
-      margin: 0px 32px;
+      // margin: 0px 32px;
       padding: 12px;
       font-size: 18px;
       color: white;
@@ -1034,7 +1041,7 @@
       flex-wrap: wrap;
       align-content: center;
       justify-content: center;
-      margin: 0px 32px;
+      // margin: 0px 32px;
       padding: 8px;
       border: 1px solid #2d363a;
       border-radius: 10px;
@@ -1402,19 +1409,10 @@
       @extend .base-container;
     }
   }
-  .profile__sponsors-container {
-    display: flex;
-    width: 90%;
-    margin: 10px 5%;
-    padding: 12px 24px;
-    align-items: flex-end;
-    flex-direction: column;
-    @media screen and (max-width: $tablet) {
-      padding: inherit;
-      align-items: flex-end;
-      margin: 0 auto;
-      width: auto;
-    }
+  .profile__sponsors-container1 {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
     .sponsors__btn {
       width: 144px;
       text-align: center;
@@ -1429,6 +1427,7 @@
       padding: 4px 8px;
       margin: 0;
       border: 0;
+      float: right;
       cursor: pointer;
       &:focus {
         margin: 0;
@@ -1439,12 +1438,23 @@
       }
     }
   }
+  .profile__sponsors-container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    flex-direction: column;
+    @media screen and (max-width: $tablet) {
+      padding: inherit;
+      margin: 0 auto;
+      width: auto;
+    }
+  }
 
   #profile-sponsors {
     display: flex;
     align-items: center;
     flex-direction: column;
-    width: 90%;
+    width: 100%;
     margin: 10px 0;
     padding: 12px 0;
     border-radius: 8px;
