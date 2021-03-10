@@ -496,6 +496,9 @@
       align-items: center;
       z-index: 1;
       justify-content: space-between;
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
 
       .info {
         display: flex;
@@ -964,7 +967,7 @@
     position: relative;
     margin-left: auto;
     margin-right: auto;
-    width: 95%;
+    width: 80%;
 
     .no-users {
       color: #fff;
@@ -994,7 +997,7 @@
     .headers {
       display: flex;
       flex-direction: row;
-      margin: 0px 32px;
+      // margin: 0px 32px;
       padding: 12px;
       font-size: 18px;
       color: white;
@@ -1042,7 +1045,7 @@
       flex-wrap: wrap;
       align-content: center;
       justify-content: center;
-      margin: 0px 32px;
+      // margin: 0px 32px;
       padding: 8px;
       border: 1px solid #2d363a;
       border-radius: 10px;
@@ -1411,9 +1414,9 @@
     }
   }
   .profile__sponsors-container1 {
-    width: 90%;
-    margin: 10px 5%;
-    padding: 12px 24px;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
     .sponsors__btn {
       width: 144px;
       text-align: center;

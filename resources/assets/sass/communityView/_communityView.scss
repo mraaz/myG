@@ -794,9 +794,6 @@
         margin: 0;
         border: 0;
       }
-      @media screen and (max-width: $tablet) {
-        padding: inherit;
-      }
     }
     .Sponsors {
       display: flex;
@@ -807,7 +804,6 @@
       margin-bottom: 10px;
       @media screen and (max-width: 998px) {
         margin-right: 1em;
-        width: 80px;
         height: 50px;
       }
       &.sponsors__label {

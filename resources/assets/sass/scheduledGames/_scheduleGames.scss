@@ -1468,10 +1468,10 @@
               input {
                 border: none;
                 position: relative;
-                height: 40px;
+                height: 36px;
                 width: 100%;
                 border: 1px solid #273136;
-                border-radius: 4px;
+                border-radius: 4px 0 0 4px;
                 background: #1d2326 0% 0% no-repeat padding-box;
                 resize: none;
                 overflow: auto;
@@ -1482,7 +1482,7 @@
               }
               .insert__images {
                 position: absolute;
-                right: 5px;
+                right: 48px;
                 z-index: 2;
                 width: 27px;
                 height: 27px;
@@ -3391,10 +3391,10 @@ $transition-default: 0.25s ease-out 0.1s;
           input {
             border: none;
             position: relative;
-            height: 40px;
+            height: 36px;
             width: 100%;
             border: 1px solid #273136;
-            border-radius: 4px;
+            border-radius: 4px 0 0 4px;
             background: #1d2326 0% 0% no-repeat padding-box;
             resize: none;
             overflow: auto;
@@ -3404,7 +3404,7 @@ $transition-default: 0.25s ease-out 0.1s;
           }
           .insert__images {
             position: absolute;
-            right: 5px;
+            right: 48px;
             z-index: 2;
             width: 27px;
             height: 27px;

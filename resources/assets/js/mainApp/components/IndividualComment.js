@@ -255,7 +255,16 @@ export default class IndividualComment extends Component {
     }
   }
 
-  detectKey = (e) => {
+  detectKey = (e, key) => {
+    if (!key) {
+      e.preventDefault()
+      e.stopPropagation()
+      if (!this.state.uploading) {
+        this.insert_reply()
+      } else {
+        toast.warn(<Toast_style text={'Opps,An image is uploading. Please Wait...'} />)
+      }
+    }
     if (e.key === 'Enter' && e.shiftKey) {
       return
     }
@@ -614,7 +623,7 @@ export default class IndividualComment extends Component {
                   id='reply_name_box'
                   className='reply-name-box'
                   placeholder='Add a reply...'
-                  onKeyDown={this.detectKey}
+                  onKeyDown={(e) => this.detectKey(e, true)}
                   ref={this.setTextInputRef}
                   onChange={this.handleChange}
                   value={this.state.value}
@@ -638,6 +647,9 @@ export default class IndividualComment extends Component {
                     </div>
                   </div>
                 )}
+                <div className='send__btn' onClick={(e) => this.detectKey(e, false)}>
+                  <img src={`${buckectBaseUrl}Dashboard/BTN_Send_Post.svg`} className='img-fluid' />
+                </div>
               </div>
             )}
           </div>

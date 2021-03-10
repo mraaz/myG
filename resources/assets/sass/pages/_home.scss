@@ -932,7 +932,7 @@ section#content-container {
       }
 
       @media screen and (min-width: $desktop) {
-        margin: 10px 110px;
+        // margin: 10px 110px;
         margin-top: 0;
         padding: 27px 0;
       }
@@ -1020,6 +1020,7 @@ section#content-container {
         margin-left: auto;
         margin-right: auto;
         border-radius: 8px;
+        width: 80%;
         @media screen and (min-height: $tablet) {
           padding: 0 5px;
         }
@@ -1035,6 +1036,9 @@ section#content-container {
         font-size: 12px;
         color: #93a4a5;
         position: relative;
+        @media (min-width: 575px) {
+          padding: 12px;
+        }
         .clearfix:after {
           visibility: hidden;
           display: block;
@@ -1173,6 +1177,10 @@ section#content-container {
         color: #93a4a5;
         position: relative;
         margin-left: 60px;
+        @media (min-width: 575px) {
+          margin: 0;
+          padding: 0;
+        }
         .clearfix:after {
           visibility: hidden;
           display: block;
@@ -1258,9 +1266,11 @@ section#content-container {
             height: 16px;
           }
         }
-        // .other-users {
-        //   margin-left: 55px;
-        // }
+        .other-users {
+          @media (min-width: 575px) {
+            margin-left: 55px;
+          }
+        }
       }
       .show__comments_count {
         background: #171a1c;
@@ -1666,10 +1676,10 @@ section#content-container {
                 input {
                   border: none;
                   position: relative;
-                  height: 40px;
+                  height: 36px;
                   width: 100%;
                   border: 1px solid #273136;
-                  border-radius: 4px;
+                  border-radius: 4px 0 0 4px;
                   background: #1d2326 0% 0% no-repeat padding-box;
                   resize: none;
                   overflow: auto;
@@ -1679,7 +1689,7 @@ section#content-container {
                 }
                 .insert__images {
                   position: absolute;
-                  right: 5px;
+                  right: 48px;
                   z-index: 2;
                   width: 27px;
                   height: 27px;
@@ -1745,7 +1755,7 @@ section#content-container {
   margin-left: auto;
   margin-right: auto;
   border-radius: 8px;
-  width: 95%;
+  width: 80%;
 
   &.zI1000 {
     z-index: 1000;
