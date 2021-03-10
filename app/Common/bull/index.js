@@ -10,7 +10,7 @@ function setupBull() {
   const port = Env.get('REDIS_PORT');
   const bullLogs = Env.get('BULL_LOGS');
   const disableCluster = Env.get('REDIS_DISABLE_CLUSTER');
-  const runEveryJobOnStart = Env.get('BULL_RUN_EVERY_JOB_ON_START');
+  const runEveryJobOnStart = Env.get('BULL_RUN_EVERY_JOB_ON_START') == 'true' ? true : false;
   const bullConfig = { redis: { host, port } };
   const ioCluster = !disableCluster && hasRedis && new Redis.Cluster([bullConfig.redis]);
 

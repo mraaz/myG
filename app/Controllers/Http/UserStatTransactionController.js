@@ -136,7 +136,7 @@ class UserStatTransactionController {
         start_of_level_xp: start_of_level_xp,
       }
 
-      const level = process.env.MOCK_MAX_LEVEL ? maxLevel : currentLevel
+      const level = process.env.MOCK_MAX_LEVEL == 'true' ? maxLevel : currentLevel
 
       return {
         userId,

@@ -34,14 +34,14 @@ class Bubbles extends React.Component {
 
   componentDidUpdate(previous) {
     const experienceDelta = parseInt(this.props.experience, 10) - parseInt(previous.experience, 10)
-    if (experienceDelta >= 100) return this.animateXpGain('/animations/experienceBubble100.json')
-    if (experienceDelta >= 30) return this.animateXpGain('/animations/experienceBubble30json')
-    if (experienceDelta >= 20) return this.animateXpGain('/animations/experienceBubble20.json')
-    if (experienceDelta >= 15) return this.animateXpGain('/animations/experienceBubble15.json')
-    if (experienceDelta >= 12) return this.animateXpGain('/animations/experienceBubble12.json')
-    if (experienceDelta >= 10) return this.animateXpGain('/animations/experienceBubble10.json')
-    if (experienceDelta >= 5) return this.animateXpGain('/animations/experienceBubble5.json')
-    if (experienceDelta >= 1) return this.animateXpGain('/animations/experienceBubble1.json')
+    if (experienceDelta >= 100) return this.animateXpGain('https://myg.gg/animations/xp/Frame_Exp_Yellow_100xp.json')
+    if (experienceDelta >= 30) return this.animateXpGain('https://myg.gg/animations/xp/Frame_Exp_Purple_30xp.json')
+    if (experienceDelta >= 20) return this.animateXpGain('https://myg.gg/animations/xp/Frame_Exp_Blue_20xp.json')
+    if (experienceDelta >= 15) return this.animateXpGain('https://myg.gg/animations/xp/Frame_Exp_Blue_15xp.json')
+    if (experienceDelta >= 12) return this.animateXpGain('https://myg.gg/animations/xp/Frame_Exp_Blue_12xp.json')
+    if (experienceDelta >= 10) return this.animateXpGain('https://myg.gg/animations/xp/Frame_Exp_Green_10xp.json')
+    if (experienceDelta >= 5) return this.animateXpGain('https://myg.gg/animations/xp/Frame_Exp_Green_5xp.json')
+    if (experienceDelta >= 1) return this.animateXpGain('https://myg.gg/animations/xp/Like.json')
   }
 
   animateXpGain = (path) => {

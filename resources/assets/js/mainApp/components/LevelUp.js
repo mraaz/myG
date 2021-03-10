@@ -10,7 +10,9 @@ class LevelUp extends React.Component {
   componentDidUpdate(previous) {
     const hasLeveledUp = this.props.level > previous.level
     if (!hasLeveledUp) return
-    this.setState({ leveledUp: true }, () => this.loadLevelUpAnimation(`/animations/myG_Level-up_${this.props.level}.json`))
+    this.setState({ leveledUp: true }, () =>
+      this.loadLevelUpAnimation(`https://myg.gg/animations/lvl_up/myG_Level-up_${this.props.level}.json`)
+    )
   }
 
   loadLevelUpAnimation = (path) => {
