@@ -27,12 +27,10 @@ pipeline {
             yamlFile 'build.yaml'
         }
     }
-    stages {
+     stages {
         stage('Code Checkout') {
             steps {
-              sh 'echo env.BRANCH_NAME'
-            }
-            steps {
+                  sh 'echo env.BRANCH_NAME'
                   git branch: 'stage',
                       credentialsId: 'git-private-key',
                       url: 'https://github.com/mraaz/myG'
