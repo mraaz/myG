@@ -33,6 +33,7 @@ pipeline {
                 expression {
                     env.BRANCH_NAME.contains("stage")
                 }
+            }
             steps {
                   git branch: 'stage',
                       credentialsId: 'git-private-key',
