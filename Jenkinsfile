@@ -30,7 +30,7 @@ pipeline {
     stages {
         stage('Code Checkout') {
            when {
-              expression { return env.BRANCH_NAME ==~ 'stage' }
+              branch 'stage' }
             }
             steps {
                   git branch: 'stage',
