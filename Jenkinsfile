@@ -31,7 +31,7 @@ pipeline {
         stage('Code Checkout') {
             when {
                 expression {
-                    env.BRANCH_NAME.contains("stage")
+                   return env.BRANCH_NAME == "stage"
                 }
             }
             steps {
