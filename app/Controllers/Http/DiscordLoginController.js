@@ -10,6 +10,7 @@ const FormData = require('form-data')
 const ConnectionController = use('./ConnectionController')
 const SeatsAvailable = use('App/Models/SeatsAvailable')
 const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
+const ExtraSeatsCodesTran = use('App/Models/ExtraSeatsCodesTran')
 
 const LoggingRepository = require('../../Repositories/Logging')
 
@@ -152,9 +153,14 @@ class DiscordLoginController {
 
       // Mark Extra Seat Code as Used
       if (extraSeatsCode) {
-        await ExtraSeatsCodes.query()
+        const extraSeatsCodes = await ExtraSeatsCodes.query()
           .where('code', extraSeatsCode)
-          .update({ user_id: newUser.id })
+          .increment('counter', 1)
+
+        await ExtraSeatsCodesTran.create({
+          extra_seats_codes_id: extraSeatsCodes.id,
+          user_id: user.id,
+        })
       }
 
       await auth.loginViaId(user.id)

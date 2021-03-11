@@ -133,14 +133,21 @@ class CommonSaveController {
         await ElasticsearchRepository.storeUser({ user: profile })
 
         // Decrease Seats Available upon Registration
-        seatsAvailable.seats_available = (seatsAvailable.seats_available || 1) - 1
-        seatsAvailable.save()
+        if (seatsAvailable.seats_available > 0) {
+          seatsAvailable.seats_available = (seatsAvailable.seats_available || 1) - 1
+          seatsAvailable.save()
+        }
 
         // Mark Extra Seat Code as Used
         if (extraSeatsCode) {
-          await ExtraSeatsCodes.query()
+          const extraSeatsCodes = await ExtraSeatsCodes.query()
             .where('code', extraSeatsCode)
-            .update({ user_id: user.id })
+            .increment('counter', 1)
+
+          await ExtraSeatsCodesTran.create({
+            extra_seats_codes_id: extraSeatsCodes.id,
+            user_id: user.id,
+          })
         }
 
         const connections = new ConnectionController()

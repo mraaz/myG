@@ -62,7 +62,6 @@ class EmailController {
     for (let i = 0; i < userList.length; i++) {
       await this.summary_email(userList[i].user_id)
       console.log('summary_email')
-      if (i > 5) return
     }
   }
 

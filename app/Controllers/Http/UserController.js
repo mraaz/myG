@@ -17,6 +17,8 @@ const ChatRepository = require('../../Repositories/Chat')
 const NotificationsRepository = require('../../Repositories/Notifications')
 const LoggingRepository = require('../../Repositories/Logging')
 
+const RedisRepository = require('../../Repositories/Redis')
+
 class UserController {
   async profile({ auth, request, response }) {
     if (!auth.user) {
@@ -394,7 +396,9 @@ class UserController {
   }
 
   async update_has_additional() {
-    console.log('TEst')
+    const lock = await RedisRepository.lock('Update has_additional Field', 1000 * 60 * 5)
+    if (!lock) return
+
     try {
       await User.query().update({
         has_additional: false,
