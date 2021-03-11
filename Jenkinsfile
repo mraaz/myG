@@ -29,7 +29,9 @@ pipeline {
     }
      stages {
         stage('Setup environment variables') {
+          steps {
            sh(script: 'env')
+          }
         }
         stage('Code Checkout') {
             when {
