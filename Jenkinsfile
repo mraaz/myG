@@ -30,17 +30,17 @@ pipeline {
     stages {
         stage('Code Checkout') {
             when {
-              branch 'branch'
+              branch 'stage'
             }
             steps {
-                  git branch: 'master',
+                  git branch: 'stage',
                       credentialsId: 'git-private-key',
                       url: 'https://github.com/mraaz/myG'
             }
         }
         stage('Publish Frontend') {
             when {
-              branch 'branch'
+              branch 'stage'
             }
             steps {
                 withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
@@ -58,7 +58,7 @@ pipeline {
         }
         stage('Docker Build') {
             when {
-              branch 'branch'
+              branch 'stage'
             }
             steps {
                 container('docker') {
@@ -69,7 +69,7 @@ pipeline {
         }
         stage('Docker Publish') {
             when {
-              branch 'branch'
+              branch 'stage'
             }
             steps {
                 container('docker') {
@@ -82,7 +82,7 @@ pipeline {
         }
         stage('Deploy image') {
             when {
-              branch 'branch'
+              branch 'stage'
             }
             steps {
                 container('helm') {
