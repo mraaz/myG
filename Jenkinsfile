@@ -22,6 +22,9 @@ pipeline {
         nodejs "default"
     }
     agent {
+        triggers {
+          githubPush()
+        }
         kubernetes {
             defaultContainer 'jnlp'
             yamlFile 'build.yaml'
