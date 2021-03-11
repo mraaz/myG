@@ -29,9 +29,11 @@ pipeline {
     }
     stages {
         stage('Code Checkout') {
-           when (BRANCH_NAME == 'stage') {
-              echo 'Checking out stage branch.'
-           }
+           when {
+             expression {
+               return env.BRANCH_NAME != 'master';
+              }
+            }
             steps {
                   git branch: 'stage',
                       credentialsId: 'git-private-key',
