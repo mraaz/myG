@@ -46,9 +46,12 @@ pipeline {
             }
         }
         stage('Publish Frontend') {
+          when {
+                expression {
+                   return env.GIT_BRANCH == "origin/stage"
+                }
+            }
             steps {
-              script {
-                if (env.BRANCH_NAME == 'stage') {
                 withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
                     sh "npm install"
                     sh "npm run build"
@@ -61,39 +64,44 @@ pipeline {
                     cfInvalidate(distribution:"${DISTRIBUTION}", paths:['/*'])
                 }
               }
-             }
-            }
         }
         stage('Docker Build') {
+            when {
+                expression {
+                   return env.GIT_BRANCH == "origin/stage"
+                }
+            }
             steps {
-              script {
-                if (env.BRANCH_NAME == 'stage') {
                 container('docker') {
                     sh "docker build -t ${REGISTRY}:$TAG ."
                     sh "docker tag myg2020/myg:$TAG myg2020/myg:latest"
                 }
-              }
-             }
             }
         }
         stage('Docker Publish') {
+            when {
+                expression {
+                   return env.GIT_BRANCH == "origin/stage"
+                }
+            }
             steps {
-              script {
-                if (env.BRANCH_NAME == 'stage') {
                 container('docker') {
                     withDockerRegistry([credentialsId: "${REGISTRY_CREDENTIAL}", url: ""]) {
                         sh "docker push ${REGISTRY}:$TAG"
                         sh "docker push ${REGISTRY}:latest"
                     }
                 }
-              }
-             }
+              
+             
             }
         }
         stage('Deploy image') {
+            when {
+                expression {
+                   return env.GIT_BRANCH == "origin/stage"
+                }
+            }
             steps {
-              script {
-                if (env.BRANCH_NAME == 'stage') {
                 container('helm') {
                      withCredentials([file(credentialsId: 'kubernetes-stage-redential', variable: 'config')]) {
                        sh """
@@ -103,8 +111,6 @@ pipeline {
                      }
                 }
                }
-             }
-            }
         }
     }
 }
