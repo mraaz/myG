@@ -48,8 +48,8 @@ class EmailController {
   }
 
   async dailyEmails() {
-    const lock = await RedisRepository.lock('SEND_DAILY_EMAILS', 1000 * 60 * 5);
-    if (!lock) return console.warn('CRON', 'Failed to Acquire SEND_DAILY_EMAILS lock');
+    const lock = await RedisRepository.lock('SEND_DAILY_EMAILS', 1000 * 60 * 5)
+    if (!lock) return console.warn('CRON', 'Failed to Acquire SEND_DAILY_EMAILS lock')
 
     const userList = await Database.from('settings')
       .select('user_id')
@@ -57,12 +57,13 @@ class EmailController {
 
     for (let i = 0; i < userList.length; i++) {
       await this.summary_email(userList[i].user_id)
+      if (i > 5) return
     }
   }
 
   async weeklyEmails() {
-    const lock = await RedisRepository.lock('SEND_WEEKLY_EMAILS', 1000 * 60 * 5);
-    if (!lock) return console.warn('CRON', 'Failed to Acquire SEND_WEEKLY_EMAILS lock');
+    const lock = await RedisRepository.lock('SEND_WEEKLY_EMAILS', 1000 * 60 * 5)
+    if (!lock) return console.warn('CRON', 'Failed to Acquire SEND_WEEKLY_EMAILS lock')
 
     const userList = await Database.from('settings')
       .select('user_id')
