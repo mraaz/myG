@@ -29,6 +29,9 @@ pipeline {
     }
     stages {
         stage('Code Checkout') {
+            when {
+              branch 'branch'
+            }
             steps {
                   git branch: 'master',
                       credentialsId: 'git-private-key',
@@ -36,6 +39,9 @@ pipeline {
             }
         }
         stage('Publish Frontend') {
+            when {
+              branch 'branch'
+            }
             steps {
                 withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
                     sh "npm install"
@@ -51,6 +57,9 @@ pipeline {
             }
         }
         stage('Docker Build') {
+            when {
+              branch 'branch'
+            }
             steps {
                 container('docker') {
                     sh "docker build -t ${REGISTRY}:$TAG ."
@@ -59,6 +68,9 @@ pipeline {
             }
         }
         stage('Docker Publish') {
+            when {
+              branch 'branch'
+            }
             steps {
                 container('docker') {
                     withDockerRegistry([credentialsId: "${REGISTRY_CREDENTIAL}", url: ""]) {
@@ -69,9 +81,12 @@ pipeline {
             }
         }
         stage('Deploy image') {
+            when {
+              branch 'branch'
+            }
             steps {
                 container('helm') {
-                     withCredentials([file(credentialsId: 'kubernetes-credential', variable: 'config')]) {
+                     withCredentials([file(credentialsId: 'kubernetes-stage-redential', variable: 'config')]) {
                        sh """
                        export KUBECONFIG=\${config}
                        helm upgrade myg ./helm/mygame -f ./helm/mygame.yaml -n mygame --set image.tag=$TAG --set mygame.dataseUser=$DB_USER --set mygame.databasePassword=$DB_PASS --set mygame.appKey=$APP_KEY --set mygame.awsKey=$AWS_KEY --set mygame.awsSecret=$AWS_SECRET --set mygame.googleID=$GOOGLE_ID --set mygame.googleSecret=$GOOGLE_SECRET --set mygame.facebookSecret=$FACEBOOK_SECRET --set mygame.mixGoogleMapsKey=$MIX_GOOGLE_MAPS_KEY --set mygame.secretKey=$SECRET_KEY --set mygame.siteKey=$SITE_KEY
