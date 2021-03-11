@@ -67,6 +67,7 @@ class Layout extends Component {
     }
   }
   componentDidMount() {
+    window.localStorage.removeItem("unlockedByCheatCode");
     if (!window.router) window.router = createBrowserHistory();
     const getInitialData = async () => {
       try {

@@ -62,6 +62,7 @@ export default class Results extends React.Component {
     return this.props.gamers.map(this.renderGamer);
   }
 
+
   renderGamer = (gamer) => {
     const isHovering = this.state.hovering === gamer.profileId;
     const aliasTooLong = gamer.alias && gamer.alias.length > 10;
@@ -89,33 +90,22 @@ export default class Results extends React.Component {
                 <span className="alias">@{gamer.alias}</span>
               )
             )}
-            {window.innerWidth <= 575 && <span className="title">Level</span>}
-            {window.innerWidth <= 575 && <span className="value">{gamer.level}</span>}
-            {!!gamer.country && <span className="title">Country</span>}
-            {!!gamer.country && <span className="value">{gamer.country}</span>}
-            {!!gamer.team && <span className="title">Professional Team</span>}
-            {!!gamer.team && <span className="value">{gamer.team}</span>}
-            {!!gamer.languages.length && <span className="title">Languages</span>}
-            {!!gamer.languages.length && <span className="value">{gamer.languages.join(', ')}</span>}
           </div>
-          {window.innerWidth > 575 && (
-            <div className="level-progress">
-              <Progress
-                className={`circle-wrap`}
-                borderColor={'#E5C746'}
-                progress={0}
-                value={gamer.level}
-                subtitle={'Level'}
-                reduction={0}
-                hideBall
-                strokeWidth={8}
-                background={'#fff'}
-              />
-            </div>
-          )}
           <div className="info">
+            <span className="title">Level</span>
+            <span className="value">Lv. {gamer.level || 1}</span>
             <span className="title">Experience Pts.</span>
-            <span className="value">{gamer.experience}</span>
+            <span className="value">{gamer.experience || 0} pts</span>
+            <span className="title">Country</span>
+            <span className="value">{gamer.country || 'None'}</span>
+          </div>
+          <div className="info">
+            <span className="title">Professional Team</span>
+            <span className="value">{gamer.team || 'None'}</span>
+            <span className="title">Looking for Work</span>
+            <span className="value">{gamer.lookingForWork ? 'Yes' : 'No'}</span>
+            <span className="title">Languages</span>
+            <span className="value">{(gamer.languages || []).join(', ') || 'None'}</span>
           </div>
         </div>
         <Experiences alias={gamer.alias} gameExperiences={gamer.gameExperiences || []} />
