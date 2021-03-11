@@ -29,8 +29,8 @@ pipeline {
     }
      stages {
         stage('Code Checkout') {
-            sh(script: 'env')
             when {
+                sh(script: 'env')
                 expression {
                    return env.BRANCH_NAME == "stage"
                 }
