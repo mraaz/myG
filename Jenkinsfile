@@ -82,7 +82,7 @@ pipeline {
         }
         stage('Deploy image') {
             when {
-              branch 'stage'
+               branch 'stage'
             }
             steps {
                 container('helm') {
