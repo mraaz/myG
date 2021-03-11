@@ -276,7 +276,7 @@ class LeftMenu extends Component {
               //window.router.push('/logout');
               window.location.href = '/logout'
             }}
-            className='logout-text'>
+            className={`logout-text${this.state.isExpanded ? ' margin-right' : ''}`}>
             <img src={logoutButton.icon} className='img-fluid' />
             {this.state.isExpanded && <p>{logoutButton.header}</p>}
           </div>
