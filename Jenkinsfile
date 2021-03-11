@@ -29,9 +29,9 @@ pipeline {
     }
     stages {
         stage('Code Checkout') {
-            when {
-              branch '*/stage'
-            }
+           when (BRANCH_NAME == 'stage') {
+              echo 'Checking out stage branch.'
+           }
             steps {
                   git branch: 'stage',
                       credentialsId: 'git-private-key',
