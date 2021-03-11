@@ -145,8 +145,10 @@ class DiscordLoginController {
       await user.save()
 
       // Decrease Seats Available upon Registration
-      seatsAvailable.seats_available = (seatsAvailable.seats_available || 1) - 1
-      seatsAvailable.save()
+      if (seatsAvailable.seats_available > 0) {
+        seatsAvailable.seats_available = (seatsAvailable.seats_available || 1) - 1
+        seatsAvailable.save()
+      }
 
       // Mark Extra Seat Code as Used
       if (extraSeatsCode) {
