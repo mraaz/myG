@@ -36,7 +36,7 @@ pipeline {
         stage('Code Checkout') {
             when {
                 expression {
-                   return env.BRANCH_NAME == "stage"
+                   return env.GIT_BRANCH == "origin/stage"
                 }
             }
             steps {
