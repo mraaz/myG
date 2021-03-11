@@ -22,9 +22,6 @@ pipeline {
         nodejs "default"
     }
     agent {
-        triggers {
-          githubPush()
-        }
         kubernetes {
             defaultContainer 'jnlp'
             yamlFile 'build.yaml'
@@ -32,8 +29,8 @@ pipeline {
     }
     stages {
         stage('Code Checkout') {
-           when {
-              branch 'stage' }
+            steps {
+              sh 'echo env.BRANCH_NAME'
             }
             steps {
                   git branch: 'stage',
