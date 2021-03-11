@@ -26,6 +26,7 @@ export class DossierInfo extends React.Component {
     languages: [],
     visibilityName: 'secret',
     visibilityEmail: 'secret',
+    visibilityCountry: 'secret',
     lookingForWork: false,
     hasMic: false,
     underage: true,
@@ -54,6 +55,7 @@ export class DossierInfo extends React.Component {
     }))
     const visibilityName = get(this.props, 'profile.visibilityName') || 'secret'
     const visibilityEmail = get(this.props, 'profile.visibilityEmail') || 'secret'
+    const visibilityCountry = get(this.props, 'profile.visibilityCountry') || 'secret'
     const lookingForWork = get(this.props, 'profile.lookingForWork') || false
     return {
       name,
@@ -68,6 +70,7 @@ export class DossierInfo extends React.Component {
       languages,
       visibilityName,
       visibilityEmail,
+      visibilityCountry,
       lookingForWork,
     }
   }
@@ -92,6 +95,7 @@ export class DossierInfo extends React.Component {
       updates.relationship = this.state.relationship.value || this.state.relationship
     if (profile.visibilityName !== this.state.visibilityName) updates.visibilityName = this.state.visibilityName
     if (profile.visibilityEmail !== this.state.visibilityEmail) updates.visibilityEmail = this.state.visibilityEmail
+    if (profile.visibilityCountry !== this.state.visibilityCountry) updates.visibilityCountry = this.state.visibilityCountry
     if (profile.lookingForWork !== this.state.lookingForWork) updates.lookingForWork = this.state.lookingForWork
     return updates
   }
@@ -288,6 +292,23 @@ export class DossierInfo extends React.Component {
             </div>
           )}
         </PlacesAutocomplete>
+        <div className='options'>
+          <MyGCheckbox
+            checked={this.state.visibilityCountry === 'public'}
+            onClick={() => this.setState({ visibilityCountry: 'public' })}
+            labelText='Public'
+          />
+          <MyGCheckbox
+            checked={this.state.visibilityCountry === 'friends'}
+            onClick={() => this.setState({ visibilityCountry: 'friends' })}
+            labelText='Friends'
+          />
+          <MyGCheckbox
+            checked={this.state.visibilityCountry === 'secret'}
+            onClick={() => this.setState({ visibilityCountry: 'secret' })}
+            labelText='Secret'
+          />
+        </div>
       </div>
     )
   }

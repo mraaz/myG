@@ -17,8 +17,10 @@ export default class ProfileInfo extends React.Component {
     const isFriend = get(props, 'profile.isFriend') || false;
     const isSelf = get(props, 'profile.isSelf') || false;
     const visibilityEmail = get(props, 'profile.visibilityEmail') || 'secret'
+    const visibilityCountry = get(props, 'profile.visibilityCountry') || 'secret'
     const canShowEmail = visibilityEmail === 'public' || (visibilityEmail === 'friends' && (isFriend || isSelf));
-    const country = get(props, 'profile.country') || 'N/A';
+    const canShowCountry = visibilityCountry === 'public' || (visibilityCountry === 'friends' && (isFriend || isSelf));
+    const country = canShowCountry ? get(props, 'profile.country') || 'N/A' : 'Hidden';
     const team = get(props, 'profile.team') || 'N/A';
     const email = canShowEmail ? get(props, 'profile.email') || 'N/A' : 'Hidden';
     const relationship = get(props, 'profile.relationship') || 'N/A';

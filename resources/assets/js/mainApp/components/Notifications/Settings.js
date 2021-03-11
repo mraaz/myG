@@ -10,7 +10,7 @@ import SweetAlert from '../common/MyGSweetAlert'
 import axios from 'axios'
 
 import { logToElasticsearch } from '../../../integration/http/logger'
-import { logoutAction } from '../../../redux/actions/userAction'
+import { logoutAction, toggleNotificationSoundsAction, togglePushNotificationsAction } from '../../../redux/actions/userAction'
 
 import { toast } from 'react-toastify'
 import { connect } from 'react-redux'
@@ -163,13 +163,27 @@ class Settings extends Component {
         <div className='option'>
           <div className='title'>Browser notifications</div>
           <div className='button__switch browser__notification'>
-            <input type='checkbox' defaultChecked={true} id='switch-orange' onChange={() => {}} className='switch' />
+            <input 
+              id='switch-orange'
+              type='checkbox'
+              className='switch' 
+              value={this.props.pushNotificationsEnabled}
+              defaultChecked={this.props.pushNotificationsEnabled}
+              onChange={() => this.props.togglePushNotifications(this.props.userId)}
+            />
           </div>
         </div>
         <div className='option'>
           <div className='title'>Sound notifications</div>
           <div className='button__switch sound__notification'>
-            <input type='checkbox' defaultChecked={true} id='switch-orange' onChange={() => {}} className='switch' />
+            <input 
+              id='switch-orange'
+              type='checkbox'
+              className='switch' 
+              value={!this.props.notificationSoundsDisabled}
+              defaultChecked={!this.props.notificationSoundsDisabled}
+              onClick={() => this.props.toggleNotificationSounds(!this.props.notificationSoundsDisabled)}
+            />
           </div>
         </div>
         <div className='option'>
@@ -242,10 +256,22 @@ class Settings extends Component {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+
+function mapStateToProps(state) {
   return {
-    logout: () => dispatch(logoutAction()),
+    userId: state.user.userId,
+    notificationSoundsDisabled: state.user.notificationSoundsDisabled,
+    pushNotificationsEnabled: state.user.pushNotificationsEnabled,
   }
 }
 
-export default connect(null, mapDispatchToProps)(Settings)
+
+function mapDispatchToProps(dispatch) {
+  return {
+    logout: () => dispatch(logoutAction()),
+    togglePushNotifications: (userId) => dispatch(togglePushNotificationsAction(userId)),
+    toggleNotificationSounds: (disabled) => dispatch(toggleNotificationSoundsAction(disabled)),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Settings)

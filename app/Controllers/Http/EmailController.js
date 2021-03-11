@@ -8,7 +8,7 @@ const AWSEmailController = use('./AWSEmailController')
 const NotificationController_v2 = use('./NotificationController_v2')
 const Email_body = use('./EmailBodyController')
 
-const ChatRepository = require('../../Repositories/Chat')
+const RedisRepository = require('../../Repositories/Redis')
 
 //https://html5-editor.net/
 
@@ -48,22 +48,28 @@ class EmailController {
   }
 
   async dailyEmails() {
+    const lock = await RedisRepository.lock('SEND_DAILY_EMAILS', 1000 * 60 * 5);
+    if (!lock) return console.warn('CRON', 'Failed to Acquire SEND_DAILY_EMAILS lock');
+
     const userList = await Database.from('settings')
       .select('user_id')
       .where('email_notification', '=', 2)
 
     for (let i = 0; i < userList.length; i++) {
-      this.summary_email(userList[i].user_id)
+      await this.summary_email(userList[i].user_id)
     }
   }
 
   async weeklyEmails() {
+    const lock = await RedisRepository.lock('SEND_WEEKLY_EMAILS', 1000 * 60 * 5);
+    if (!lock) return console.warn('CRON', 'Failed to Acquire SEND_WEEKLY_EMAILS lock');
+
     const userList = await Database.from('settings')
       .select('user_id')
       .where('email_notification', '=', 1)
 
     for (let i = 0; i < userList.length; i++) {
-      this.summary_email(userList[i].user_id)
+      await this.summary_email(userList[i].user_id)
     }
   }
 
