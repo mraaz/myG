@@ -30,7 +30,7 @@ pipeline {
     stages {
         stage('Code Checkout') {
             when {
-              branch 'stage'
+              branch 'stage/*'
             }
             steps {
                   git branch: 'stage',
@@ -40,7 +40,7 @@ pipeline {
         }
         stage('Publish Frontend') {
             when {
-              branch 'stage'
+              branch 'stage/*'
             }
             steps {
                 withNPM(npmrcConfig: 'ee91dee8-05da-4b62-88ba-174a08a3fba4') {
@@ -58,7 +58,7 @@ pipeline {
         }
         stage('Docker Build') {
             when {
-              branch 'stage'
+              branch 'stage/*'
             }
             steps {
                 container('docker') {
@@ -69,7 +69,7 @@ pipeline {
         }
         stage('Docker Publish') {
             when {
-              branch 'stage'
+              branch 'stage/*'
             }
             steps {
                 container('docker') {
@@ -82,7 +82,7 @@ pipeline {
         }
         stage('Deploy image') {
             when {
-              branch 'stage'
+              branch 'stage/*'
             }
             steps {
                 container('helm') {
