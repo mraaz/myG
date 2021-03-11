@@ -31,7 +31,7 @@ pipeline {
         stage('Code Checkout') {
            when {
              expression {
-               return env.BRANCH_NAME == 'stage';
+               BRANCH_NAME ==~ /stage/
               }
             }
             steps {
