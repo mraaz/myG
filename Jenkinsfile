@@ -30,12 +30,14 @@ pipeline {
      stages {
         stage('Code Checkout') {
             steps {
-              if (env.BRANCH_NAME == 'stage') {
+              script {
+                if (env.BRANCH_NAME == 'stage') {
                   git branch: 'stage',
                       credentialsId: 'git-private-key',
                       url: 'https://github.com/mraaz/myG'
               }
             }
+          }
         }
         stage('Publish Frontend') {
             when {
