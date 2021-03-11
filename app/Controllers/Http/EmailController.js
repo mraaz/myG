@@ -50,6 +50,7 @@ class EmailController {
   async dailyEmails() {
     console.log('Going IN!!!')
     const lock = await RedisRepository.lock('SEND_DAILY_EMAILS', 1000 * 60 * 5)
+    console.log(lock, '<<<lock!!!')
     if (!lock) return console.warn('CRON', 'Failed to Acquire SEND_DAILY_EMAILS lock')
 
     console.log('Passed Lock')
