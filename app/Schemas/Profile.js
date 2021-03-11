@@ -27,6 +27,7 @@ class Profile {
     this.hasMic = forceBoolean(data.hasMic || data.has_mic)
     this.visibilityName = forceString(data.visibilityName)
     this.visibilityEmail = forceString(data.visibilityEmail)
+    this.visibilityCountry = forceString(data.visibilityCountry)
     this.lookingForWork = forceBoolean(data.lookingForWork)
     this.isSelf = forceBoolean(data.isSelf)
     this.isFriend = forceBoolean(data.isFriend)

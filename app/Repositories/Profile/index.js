@@ -47,7 +47,8 @@ class ProfileRepository {
     const image = profile.profile_img;
     const background = profile.profile_bg;
     const team = profile.team;
-    const country = profile.country;
+    const regional = await this.decryptField(profile.regional);
+    const country = await this.decryptField(profile.country);
     const relationship = profile.relationship_status;
     const status = profile.status;
     const level = profile.level;
@@ -60,6 +61,7 @@ class ProfileRepository {
     const hasMic = profile.has_mic;
     const visibilityName = profile.name_visibility;
     const visibilityEmail = profile.email_visibility;
+    const visibilityCountry = profile.country_visibility;
     const lookingForWork = profile.looking_for_work;
     const experience = profile.experience_points;
     const isSelf = requestingUserId === profileId;
@@ -105,7 +107,7 @@ class ProfileRepository {
       background,
       languages,
       team,
-      country,
+      country: isSelf || visibilityCountry === 'public' || (visibilityCountry === 'friends' && isFriend) ? regional ? regional + ',' + country : country : '',
       relationship,
       status,
       level,
@@ -119,6 +121,7 @@ class ProfileRepository {
       hasMic,
       visibilityName,
       visibilityEmail,
+      visibilityCountry,
       lookingForWork,
       isSelf,
       isFriend,
@@ -272,15 +275,17 @@ class ProfileRepository {
     return { commended, commender };
   }
 
-  async updateProfile({ requestingUserId, firstName, lastName, team, country, relationship, visibilityName, visibilityEmail, lookingForWork, hasMic, underage, languages, twitch, discord, steam, youtube, facebook, mostPlayedGames }) {
+  async updateProfile({ requestingUserId, firstName, lastName, team, country, relationship, visibilityName, visibilityEmail, visibilityCountry, lookingForWork, hasMic, underage, languages, twitch, discord, steam, youtube, facebook, mostPlayedGames }) {
     const updates = {};
     if (firstName !== undefined) updates.first_name = await this.encryptField(firstName.trim());
     if (lastName !== undefined) updates.last_name = await this.encryptField(lastName.trim());
     if (team !== undefined) updates.team = team.trim();
-    if (country !== undefined) updates.country = country;
+    if (country !== undefined) updates.country = await this.encryptField(country.split(',').slice(-1)[0].trim());
+    if (country !== undefined && country.split(',').length >= 2) updates.regional = await this.encryptField(country.split(',')[0].trim());
     if (relationship !== undefined) updates.relationship_status = relationship;
     if (visibilityName !== undefined) updates.name_visibility = visibilityName;
     if (visibilityEmail !== undefined) updates.email_visibility = visibilityEmail;
+    if (visibilityCountry !== undefined) updates.country_visibility = visibilityCountry;
     if (lookingForWork !== undefined) updates.looking_for_work = lookingForWork;
     if (twitch !== undefined) updates.twitch = twitch;
     if (discord !== undefined) updates.discord = discord;
