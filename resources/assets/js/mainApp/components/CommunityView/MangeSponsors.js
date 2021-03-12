@@ -158,46 +158,46 @@ export default class MangeSponsors extends React.Component {
           </div>
 
           <div className='modal__body Sponsor__edit'>
-            {sponsors.map((sponsor, index) => {
-              if (!sponsor.media_url) return null
-              return (
-                <div className='Sponsor__edit-list'>
-                  <div className='text'>Custom Sponsor {index + 1}</div>
-                  <div className='Sponsor__media__input' onClick={this.handleImageChange}>
-                    <input
-                      type='file'
-                      accept='image/jpeg,image/jpg,image/png,image/gif'
-                      ref={this.fileInputRef}
-                      onChange={this.handleSelectFile}
-                      name='insert__images'
-                    />
-                    <img
-                      src={
-                        media_url == '' ? sponsor.media_url || 'https://myG.gg/platform_images/Dashboard/BTN_Attach_Image.svg' : media_url
-                      }
-                      onError={this.addDefaultSrc}
-                    />
-                  </div>
-                  <div className='text__tap'>
-                    Or <span>Click/Tap here</span> to select
-                  </div>
-                  {uploading && (
-                    <div className='text'>
-                      <span>Uploading... </span>
+            {sponsors.length > 0 &&
+              sponsors.map((sponsor, index) => {
+                return (
+                  <div className='Sponsor__edit-list'>
+                    <div className='text'>Custom Sponsor {index + 1}</div>
+                    <div className='Sponsor__media__input' onClick={this.handleImageChange}>
+                      <input
+                        type='file'
+                        accept='image/jpeg,image/jpg,image/png,image/gif'
+                        ref={this.fileInputRef}
+                        onChange={this.handleSelectFile}
+                        name='insert__images'
+                      />
+                      <img
+                        src={
+                          media_url == '' ? sponsor.media_url || 'https://myG.gg/platform_images/Dashboard/BTN_Attach_Image.svg' : media_url
+                        }
+                        onError={this.addDefaultSrc}
+                      />
                     </div>
-                  )}
-                  <div className='Sponsor__link__input'>
-                    <input
-                      type='text'
-                      onChange={this.handleLinkChange}
-                      value={linkValue == '' ? sponsor.link : linkValue}
-                      placeholder='Enter link here'
-                      onKeyDown={this.onKeyDown}
-                    />
+                    <div className='text__tap'>
+                      Or <span>Click/Tap here</span> to select
+                    </div>
+                    {uploading && (
+                      <div className='text'>
+                        <span>Uploading... </span>
+                      </div>
+                    )}
+                    <div className='Sponsor__link__input'>
+                      <input
+                        type='text'
+                        onChange={this.handleLinkChange}
+                        value={linkValue == '' ? sponsor.link : linkValue}
+                        placeholder='Enter link here'
+                        onKeyDown={this.onKeyDown}
+                      />
+                    </div>
                   </div>
-                </div>
-              )
-            })}
+                )
+              })}
             {sponsors.length < 2 &&
               [...new Array((this.props.level < 25 ? 1 : 2) - sponsors.length)].map((sponsor, index) => {
                 return (
