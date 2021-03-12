@@ -158,7 +158,7 @@ class DiscordLoginController {
           .first()
 
         if (extraSeatsCodes != undefined) {
-          ExtraSeatsCodes.query()
+          await ExtraSeatsCodes.query()
             .where('code', extraSeatsCode)
             .increment('counter', 1)
 
