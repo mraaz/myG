@@ -27,7 +27,7 @@ export class Banner extends React.Component {
   }
 
   render() {
-    const background = this.props.profile.background ? { backgroundImage: `url('${this.props.profile.background}')` } : {};
+    const background =  { backgroundImage: `url('https://www.talkwalker.com/images/2020/blog-headers/image-analysis.png')` } //this.props.profile.background ? { backgroundImage: `url('${this.props.profile.background}')` } : {};
     return(
       <div id="profile-banner" className={`background ${this.props.isSelf && 'clickable'}`} style={background}  
         onMouseEnter={() => this.setState({ hoveringBanner: true })}
@@ -51,6 +51,7 @@ export class Banner extends React.Component {
           updateProfile={this.props.updateProfile}
           onlyProfile={this.props.onlyProfile}
         />
+        <div className="profile-banner-shadow"></div>
       </div>
     );
   }
