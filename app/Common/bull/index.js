@@ -136,7 +136,7 @@ function getJobs(Queue, bullConfig, ioCluster, uuidv4, runEveryJobOnStart) {
       action: require('./tasks/quests-clearDailys'),
       options: { jobId: uuidv4() },
       payload: {},
-      schedule: { repeat: { cron: '0 0 * * *' } },
+      schedule: { repeat: { cron: '0 23 * * *' } },
       runOnSchedule: true,
       runOnStart: runEveryJobOnStart ? true : false,
       enabled: true,
