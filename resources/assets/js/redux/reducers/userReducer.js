@@ -11,6 +11,7 @@ const initialState = {
   autoSelfDestruct: false,
   pushNotificationsEnabled: true,
   userTransactionStates: { user_level: 1 },
+  statsUpdatedFromWebsocket: false,
   statsForAlias: {},
 }
 
@@ -289,6 +290,7 @@ export default function reducer(
       return {
         ...state,
         userTransactionStates,
+        statsUpdatedFromWebsocket: false,
       }
     }
 
@@ -305,6 +307,7 @@ export default function reducer(
       return {
         ...state,
         userTransactionStates: action.payload,
+        statsUpdatedFromWebsocket: true,
       }
     }
 
