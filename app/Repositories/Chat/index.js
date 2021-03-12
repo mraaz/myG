@@ -1122,7 +1122,7 @@ class ChatRepository {
     return { chat: chatSchema };
   }
 
-  async fetchChatByIndividualGameId({ requestedGameId }) {
+  async fetchChatByIndividualGameId({ requestingUserId, requestedGameId }) {
     let chat = null;
     const response = (await Chat.query().where('individual_game_id', requestedGameId).first());
     if (!response) {
@@ -1134,19 +1134,22 @@ class ChatRepository {
         .where('schedule_games.id', requestedGameId)
         .select(['schedule_games.user_id', 'game_names.game_name', 'game_names.game_name_fields_img', 'game_names.id', 'schedule_games.start_date_time']);
       const game = games[0];
-      const requestingUserId = game.user_id;
+      const owner = game.user_id;
       const title = game.game_name;
       const icon = game.game_name_fields_img;
       const contacts = userIds;
-      const owners = [requestingUserId];
+      const owners = [owner];
       const isGroup = true;
       const individualGameId = requestedGameId;
       const gameId = game.id;
       const gameSchedule = game.start_date_time;
-      const created = await this.createChat({ requestingUserId, contacts, owners, title, icon, isGroup, individualGameId, gameId, gameSchedule });
+      const created = await this.createChat({ requestingUserId: owner, contacts, owners, title, icon, isGroup, individualGameId, gameId, gameSchedule });
       chat = created.chat;
     } else {
       chat = response.toJSON();
+      if (!chat.contacts.includes(requestingUserId)) {
+        await this.addContactsToChat({ requestedChatId: chat.id, contacts: [requestingUserId] });
+      }
     }
     const chatSchema = new ChatSchema({
       chatId: chat.id,

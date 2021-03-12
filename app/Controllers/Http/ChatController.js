@@ -67,7 +67,7 @@ class ChatController {
       if (!requestingUserId) throw new Error('Auth Error')
       const requestedGameId = params.requestedGameId
       log('CHAT', `User ${requestingUserId} requesting Chat for Game ${requestedGameId}`)
-      const { chat } = await ChatRepository.fetchChatByIndividualGameId({ requestedGameId })
+      const { chat } = await ChatRepository.fetchChatByIndividualGameId({ requestingUserId, requestedGameId })
       return response.send({ chat })
     } catch (error) {
       LoggingRepository.log({
