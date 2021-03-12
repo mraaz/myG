@@ -106,7 +106,7 @@ pipeline {
                      withCredentials([file(credentialsId: 'kubernetes-stage-credential', variable: 'config')]) {
                        sh """
                        export KUBECONFIG=\${config}
-                       helm upgrade myg ./helm/mygame -f ./helm/mygame-stage.yaml -n mygame --set image.tag=$TAG --set mygame.dataseUser=$DB_USER --set mygame.databasePassword=$DB_PASS --set mygame.appKey=$APP_KEY --set mygame.awsKey=$AWS_KEY --set mygame.awsSecret=$AWS_SECRET --set mygame.googleID=$GOOGLE_ID --set mygame.googleSecret=$GOOGLE_SECRET --set mygame.facebookSecret=$FACEBOOK_SECRET --set mygame.mixGoogleMapsKey=$MIX_GOOGLE_MAPS_KEY --set mygame.secretKey=$SECRET_KEY --set mygame.siteKey=$SITE_KEY
+                       helm upgrade myg ./helm/mygame -f ./helm/mygame-stage.yaml -n mygame --set image.tag=latest --set mygame.dataseUser=$DB_USER --set mygame.databasePassword=$DB_PASS --set mygame.appKey=$APP_KEY --set mygame.awsKey=$AWS_KEY --set mygame.awsSecret=$AWS_SECRET --set mygame.googleID=$GOOGLE_ID --set mygame.googleSecret=$GOOGLE_SECRET --set mygame.facebookSecret=$FACEBOOK_SECRET --set mygame.mixGoogleMapsKey=$MIX_GOOGLE_MAPS_KEY --set mygame.secretKey=$SECRET_KEY --set mygame.siteKey=$SITE_KEY
                        """
                      }
                 }
@@ -123,7 +123,7 @@ pipeline {
                      withCredentials([file(credentialsId: 'kubernetes-credential', variable: 'config')]) {
                        sh """
                        export KUBECONFIG=\${config}
-                       helm upgrade myg ./helm/mygame -f ./helm/mygame.yaml -n mygame --set image.tag=$TAG --set mygame.dataseUser=$DB_USER --set mygame.databasePassword=$DB_PASS --set mygame.appKey=$APP_KEY --set mygame.awsKey=$AWS_KEY --set mygame.awsSecret=$AWS_SECRET --set mygame.googleID=$GOOGLE_ID --set mygame.googleSecret=$GOOGLE_SECRET --set mygame.facebookSecret=$FACEBOOK_SECRET --set mygame.mixGoogleMapsKey=$MIX_GOOGLE_MAPS_KEY --set mygame.secretKey=$SECRET_KEY --set mygame.siteKey=$SITE_KEY
+                       helm upgrade myg ./helm/mygame -f ./helm/mygame.yaml -n mygame --set image.tag=latest --set mygame.dataseUser=$DB_USER --set mygame.databasePassword=$DB_PASS --set mygame.appKey=$APP_KEY --set mygame.awsKey=$AWS_KEY --set mygame.awsSecret=$AWS_SECRET --set mygame.googleID=$GOOGLE_ID --set mygame.googleSecret=$GOOGLE_SECRET --set mygame.facebookSecret=$FACEBOOK_SECRET --set mygame.mixGoogleMapsKey=$MIX_GOOGLE_MAPS_KEY --set mygame.secretKey=$SECRET_KEY --set mygame.siteKey=$SITE_KEY
                        """
                      }
                 }
