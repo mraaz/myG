@@ -332,6 +332,7 @@ Route.post('/api/invited_users_for_schedule_games/create', 'InvitedUsersForSched
 Route.post('/api/invited_users_for_schedule_games/invite', 'InvitedUsersForScheduleGameController.invite')
 
 Route.get('/api/userStatTransaction/master_controller', 'UserStatTransactionController.master_controller')
+Route.post('/api/userStatTransaction/checkedLevel', 'UserStatTransactionController.checkedLevel')
 
 Route.post('/api/SavedFiltersScheduleGameController', 'SavedFiltersScheduleGameController.store')
 Route.post('/api/SavedFiltersScheduleGameController/updateFilter', 'SavedFiltersScheduleGameController.updateFilter')

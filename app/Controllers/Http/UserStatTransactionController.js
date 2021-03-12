@@ -528,9 +528,16 @@ class UserStatTransactionController {
       }
     }
 
-    await User.query()
-      .where({ id: my_user_id })
-      .update({ level: getGamerLevels.level, experience_points: xp, xp_negative_balance: xp_neg_balance })
+    const currentStats = await Database.from('users').where({ id: my_user_id }).select('level', 'status').first()
+    const currentLevel = currentStats.level;
+    const currentStatus = currentStats.status;
+    const nextLevel = getGamerLevels.level;
+    const leveled_up_offline = nextLevel > currentLevel && currentStatus === 'offline';
+
+    const updates = { level: getGamerLevels.level, experience_points: xp, xp_negative_balance: xp_neg_balance };
+    if (leveled_up_offline) updates.leveled_up_offline = true;
+
+    await User.query().where({ id: my_user_id }).update(updates)
 
     await this.publishStats(my_user_id)
   }
@@ -543,6 +550,11 @@ class UserStatTransactionController {
     await NatsChatRepository.publish({ channelId, id, type, data })
     await WebsocketChatRepository.broadcast(channelId, id, type, data)
   }
+
+  async checkedLevel({ auth }) {
+    if (!auth.user.id) return 'You are not logged in!'
+    await User.query().where({ id: auth.user.id }).update({ leveled_up_offline: false })
+  }  
 }
 
 module.exports = UserStatTransactionController
