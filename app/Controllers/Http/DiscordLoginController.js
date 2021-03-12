@@ -155,12 +155,20 @@ class DiscordLoginController {
       if (extraSeatsCode) {
         const extraSeatsCodes = await ExtraSeatsCodes.query()
           .where('code', extraSeatsCode)
-          .increment('counter', 1)
+          .first()
 
-        await ExtraSeatsCodesTran.create({
-          extra_seats_codes_id: extraSeatsCodes.id,
-          user_id: user.id,
-        })
+        if (extraSeatsCodes != undefined) {
+          ExtraSeatsCodes.query()
+            .where('code', extraSeatsCode)
+            .increment('counter', 1)
+
+          if (extraSeatsCodes.id) {
+            await ExtraSeatsCodesTran.create({
+              extra_seats_codes_id: extraSeatsCodes.id,
+              user_id: user.id,
+            })
+          }
+        }
       }
 
       await auth.loginViaId(user.id)
