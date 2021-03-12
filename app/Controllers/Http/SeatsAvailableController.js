@@ -33,6 +33,7 @@ class SeatsAvailableController {
         await RedisRepository.registerFailedLoginAttempt(ip)
         return response.send('false')
       } else {
+        console.log('Inside')
         const counter = parseInt(hasCode.counter)
         const max_counter = parseInt(hasCode.max_counter)
         if (counter > max_counter) {
