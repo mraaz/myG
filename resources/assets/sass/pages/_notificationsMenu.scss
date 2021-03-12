@@ -1295,7 +1295,7 @@ $transition-default: 0.25s ease-out 0.1s;
     margin-right: 6em;
     display: flex;
     flex-wrap: wrap;
-    background: #171a1c 0% 0% no-repeat padding-box;
+    background: #1d2326 0% 0% no-repeat padding-box;
     // border: 1px solid #1d2326;
     border-radius: 4px;
     overflow: scroll;
@@ -1421,6 +1421,9 @@ $transition-default: 0.25s ease-out 0.1s;
     .Sponsor__edit {
       padding: 2em 2em !important;
       width: 100%;
+      @media screen and (max-width: 998px) {
+        padding: 2em 0em !important;
+      }
       .text {
         font-size: 14px/20px;
         font-family: 'Montserrat';
