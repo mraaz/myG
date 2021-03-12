@@ -101,7 +101,7 @@ class EmailController {
     const body = await email_summary_email.summary_body(user_deets.alias, myRequests.approvals, myRequests.alerts, myRequests.chats)
     console.log('EMailing')
     console.log(user_deets.email)
-    email.createEmailnSend(user_deets.email, subject, body)
+    await email.createEmailnSend(user_deets.email, subject, body)
   }
 
   async encryption_email(email, pin) {

@@ -1,4 +1,6 @@
-module.exports = (job, done) => {
+module.exports = async (job, done) => {
+  const guardExecution = require('./execution-guard');
+  await guardExecution(job.queue.name, job.data.delay);
   const EmailController = require('../../../Controllers/Http/EmailController')
-  new EmailController().dailyEmails(job).then(done)
+  await new EmailController().dailyEmails(job).then(done)
 }
