@@ -1291,14 +1291,9 @@ $transition-default: 0.25s ease-out 0.1s;
   .Sponsors__container {
     margin-bottom: 2.5em;
     padding: 10px 15px;
-    margin-left: 6em;
-    margin-right: 6em;
-    display: flex;
     flex-wrap: wrap;
     background: #1d2326 0% 0% no-repeat padding-box;
-    // border: 1px solid #1d2326;
     border-radius: 4px;
-    overflow: scroll;
     display: flex;
     align-items: flex-start;
     flex-direction: column;
@@ -1310,14 +1305,17 @@ $transition-default: 0.25s ease-out 0.1s;
     a.mGameDetailsBackButton,
     a.mGameCommentsBackButton {
       margin-left: 5px;
-      color: #ffffff;
+      color: #fff;
       font-size: 20px;
-      font-weight: bold;
+      font-weight: 700;
       display: flex;
       align-items: center;
       justify-content: center;
       text-decoration: none;
       cursor: pointer;
+      padding: 20px 0;
+      width: 100%;
+      position: relative;
 
       span {
         padding-left: 10px;
@@ -1326,6 +1324,8 @@ $transition-default: 0.25s ease-out 0.1s;
       .mGameDetailsCaretImg,
       .mGameCommentsCaretImg {
         transform: rotate(90deg);
+        position: absolute;
+        left: 0;
       }
     }
     .sponsors__btn {
@@ -1421,6 +1421,8 @@ $transition-default: 0.25s ease-out 0.1s;
     .Sponsor__edit {
       padding: 2em 2em !important;
       width: 100%;
+      overflow: scroll;
+      height: 600px;
       @media screen and (max-width: 998px) {
         padding: 2em 0em !important;
       }
