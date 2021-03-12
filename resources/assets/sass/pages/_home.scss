@@ -938,7 +938,6 @@ section#content-container {
       }
 
       .post__content {
-        font-size: 12px/18px;
         font-family: Montserrat;
         letter-spacing: 0px;
         color: #93a4a5;
@@ -1025,9 +1024,10 @@ section#content-container {
           padding: 0 5px;
         }
         .media {
-          .image-gallery {
-            margin-bottom: 20px;
-          }
+          margin-bottom: 20px;
+          // .image-gallery {
+          //   margin-bottom: 20px;
+          // }
         }
       }
       .post__body {
