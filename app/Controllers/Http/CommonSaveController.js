@@ -5,6 +5,7 @@ const { validate } = use('Validator')
 const User = use('App/Models/User')
 const SeatsAvailable = use('App/Models/SeatsAvailable')
 const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
+const ExtraSeatsCodesTran = use('App/Models/ExtraSeatsCodesTran')
 
 const axios = use('axios')
 const querystring = use('querystring')
