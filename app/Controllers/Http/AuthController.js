@@ -7,6 +7,7 @@ const User = use('App/Models/User')
 const Settings = use('App/Models/Setting')
 const SeatsAvailable = use('App/Models/SeatsAvailable')
 const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
+const ExtraSeatsCodesTran = use('App/Models/ExtraSeatsCodesTran')
 
 const ConnectionController = use('./ConnectionController')
 
@@ -94,7 +95,6 @@ class AuthController {
         session.withErrors(validation.messages()).flashAll()
         return response.redirect('back')
       }
-      var newUser
 
       try {
         // Seats Availability
@@ -105,7 +105,7 @@ class AuthController {
           return response.redirect('/?error=seats')
         }
 
-        newUser = await User.create({
+        const newUser = await User.create({
           email: request.input('email'),
           password: request.input('password'),
           alias: request.input('alias'),
@@ -115,14 +115,21 @@ class AuthController {
         })
 
         // Decrease Seats Available upon Registration
-        seatsAvailable.seats_available = (seatsAvailable.seats_available || 1) - 1
-        seatsAvailable.save()
+        if (seatsAvailable.seats_available > 0) {
+          seatsAvailable.seats_available = (seatsAvailable.seats_available || 1) - 1
+          seatsAvailable.save()
+        }
 
         // Mark Extra Seat Code as Used
         if (extraSeatsCode) {
-          await ExtraSeatsCodes.query()
+          const extraSeatsCodes = await ExtraSeatsCodes.query()
             .where('code', extraSeatsCode)
-            .update({ user_id: newUser.id })
+            .increment('counter', 1)
+
+          await ExtraSeatsCodesTran.create({
+            extra_seats_codes_id: extraSeatsCodes.id,
+            user_id: newUser.id,
+          })
         }
 
         var newUserSettings = await Settings.create({

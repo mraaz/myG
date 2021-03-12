@@ -246,17 +246,23 @@ function fetchSeatsAvailable() {
       window.localStorage.setItem('extraSeatsCode', code);
     } else {
       if (xmlHttp.responseText === "LIMIT_EXCEEED") {
-        document.getElementById('extra-seats-code-hint').innerText = "Hey bro, limit exceeded, please try again in five minutes.";
+        document.getElementById('extra-seats-code-hint').innerText = "Hey mate, number of code attempts exceeded, please try again in five minutes.";
       }
-      else document.getElementById('extra-seats-code-hint').innerText = "The code " + code.toUpperCase() + " is not valid!";
-      document.getElementById('extra-seats-code-hint').style = "color: #ce2b35";
+      else if (xmlHttp.responseText === "COUNTER_EXCEEED") {
+        document.getElementById('extra-seats-code-hint').innerText = "Sorry! This code " + code.toUpperCase() + " has reached its limit. Please try a new code";
+        document.getElementById('extra-seats-code-hint').style = "color: #ce2b35";
+      }
+      else{
+        document.getElementById('extra-seats-code-hint').innerText = "This code " + code.toUpperCase() + " is not valid!";
+        document.getElementById('extra-seats-code-hint').style = "color: #ce2b35";
+      }
     }
   }
 
   function injectInvitationEmailInput() {
     const inputHtml = ''
       + '<div class="extra-seats-code-container">'
-        + '<p id="extra-seats-code-hint" class="extra-seats-code-hint">Enter email address to be notified for next round of open seats.</p>'
+        + '<p id="extra-seats-code-hint" class="extra-seats-code-hint">Or... enter email address to be notified for next round of open seats.</p>'
         + '<input class="input-common extra-seats-code-input"'
         + 'id="extra-seats-email-input"'
         + 'placeholder="EMAIL"'

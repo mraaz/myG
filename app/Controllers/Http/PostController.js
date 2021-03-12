@@ -13,6 +13,8 @@ const ApiController = use('./ApiController')
 const CommonController = use('./CommonController')
 const AchievementsRepository = require('../../Repositories/Achievements')
 
+const RedisRepository = require('../../Repositories/Redis')
+
 const MAX_HASH_TAGS = 21
 
 class PostController {
@@ -645,6 +647,9 @@ class PostController {
   }
 
   async shuffle_sponsored_posts() {
+    const lock = await RedisRepository.lock('Shuffle Sponsored Posts', 1000 * 60 * 5)
+    if (!lock) return
+
     try {
       /*
        Get all records
