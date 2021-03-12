@@ -120,7 +120,7 @@
         + 'id="extra-seats-code-input"'
         + 'placeholder="e.g. A1B2C3"'
         + 'type="text"'
-        + 'maxlength="20"'
+        + 'maxlength="23"'
         + 'name="extra-seats-code"'
         + 'style="text-transform:uppercase"'
         + '></input>'
@@ -243,7 +243,7 @@
     if (searchParams) {
       const error = searchParams.split("?error=")[1];
       if (error === "google-recaptcha") alert("Crikey! Google captcha validation FAILED! If you're a bot, please stop (pretty pls), otherwise try again.");
-      if (error === "seats") alert("There are no accounts available, only an invitation can get you in now! Ask a friend for codes or sign up");
+      if (error === "seats") alert("There are no accounts available, only an invitation can get you in now! Check out myG.games");
     }
   }
 
