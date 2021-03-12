@@ -41,7 +41,7 @@ class AuthController {
 
     const rules = {
       alias: 'required|unique:users,alias|min:4|max:30',
-      email: 'required|email|unique:users',
+      email: 'required|email|unique:users|min:3|max:320',
       password: 'required|min:6|max:40',
       confirm_password: 'required',
       encryption: 'required|min:7|max:30',
@@ -124,12 +124,20 @@ class AuthController {
         if (extraSeatsCode) {
           const extraSeatsCodes = await ExtraSeatsCodes.query()
             .where('code', extraSeatsCode)
-            .increment('counter', 1)
+            .first()
 
-          await ExtraSeatsCodesTran.create({
-            extra_seats_codes_id: extraSeatsCodes.id,
-            user_id: newUser.id,
-          })
+          if (extraSeatsCodes != undefined) {
+            ExtraSeatsCodes.query()
+              .where('code', extraSeatsCode)
+              .increment('counter', 1)
+
+            if (extraSeatsCodes.id) {
+              await ExtraSeatsCodesTran.create({
+                extra_seats_codes_id: extraSeatsCodes.id,
+                user_id: user.id,
+              })
+            }
+          }
         }
 
         var newUserSettings = await Settings.create({
