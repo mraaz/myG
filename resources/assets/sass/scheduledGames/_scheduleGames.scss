@@ -1585,7 +1585,7 @@
           position: relative;
           z-index: 2;
           border: none;
-          height: 40px;
+          height: 36px;
           width: 100%;
           background: #2d363a 0% 0% no-repeat padding-box;
           border: 1px solid #273136;
@@ -1614,7 +1614,7 @@
         }
         .send__btn {
           position: relative;
-          top: 18px;
+          top: -2;
           height: 40px;
           cursor: pointer;
           img {
@@ -3072,7 +3072,7 @@ $transition-default: 0.25s ease-out 0.1s;
         position: relative;
         z-index: 2;
         border: none;
-        height: 40px;
+        height: 36px;
         width: 100%;
         background: #2d363a 0% 0% no-repeat padding-box;
         border: 1px solid #273136;
@@ -3104,7 +3104,7 @@ $transition-default: 0.25s ease-out 0.1s;
       }
       .send__btn {
         position: relative;
-        top: 18px;
+        top: -2;
         height: 40px;
         cursor: pointer;
         img {

@@ -24,10 +24,10 @@ function _Progress({ progress, reduction = 0, borderColor, value, label, labelSt
         backgroundColor: borderColor,
         strokeWidth: 2,
       })}>
-      <div style={{ fontSize: 12, marginTop: -5, ...(labelStyle || {}) }}>
+      <div style={{ fontSize: 14, marginTop: 0, ...(labelStyle || {}) }}>
         <strong>{label || `Level`}</strong>
       </div>
-      <div style={{ fontSize: 12, marginTop: -5, ...(valueStyle || {}) }}>
+      <div style={{ fontSize: 14, marginTop: 0, ...(valueStyle || {}) }}>
         <strong>{value}</strong>
       </div>
     </CircularProgressbarWithChildren>
