@@ -235,6 +235,29 @@ function fetchSeatsAvailable() {
 
   function checkExtraSeatsCode() {
     const code = document.getElementById('extra-seats-code-input').value;
+
+
+    if (!code){
+      document.getElementById('extra-seats-code-hint').innerText = "Fair dinkum, this code is beyond garbage (◔_◔)";
+      document.getElementById('extra-seats-code-hint').style = "color: #ce2b35";
+      return
+    }
+
+    if (code.length < 15 || code.length > 15){
+      document.getElementById('extra-seats-code-hint').innerText = "Fair dinkum, this code " + code.toUpperCase() + " is garbage :(";
+      document.getElementById('extra-seats-code-hint').style = "color: #ce2b35";
+      return
+    }
+
+    var strFirstThree = code.substring(0,4);
+
+    if (strFirstThree.toUpperCase() != "MYG-"){
+      document.getElementById('extra-seats-code-hint').innerText = "Fair dinkum, this code " + code.toUpperCase() + " is garbage :(";
+      document.getElementById('extra-seats-code-hint').style = "color: #ce2b35";
+      alert("Smells like a bot! If you're a bot, please stop... pretty pls, otherwise try again")
+      return
+    }
+
     const xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "GET", '/api/seats_available/' + code, false );
     xmlHttp.send( null );

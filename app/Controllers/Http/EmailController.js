@@ -28,9 +28,9 @@ class EmailController {
     const email_welcome_body = new Email_body()
 
     let tmp_code = []
-    tmp_code[0] = 'MYG:' + alias.substring(0, 4) + generateRandomString(6) + toAddress.substring(0, 1)
-    tmp_code[1] = 'MYG:' + alias.substring(0, 4) + generateRandomString(5) + toAddress.substring(0, 2)
-    tmp_code[2] = 'MYG:' + alias.substring(0, 4) + generateRandomString(6) + toAddress.substring(0, 1)
+    tmp_code[0] = 'MYG-' + alias.substring(0, 4) + generateRandomString(6) + toAddress.substring(0, 1)
+    tmp_code[1] = 'MYG-' + alias.substring(0, 4) + generateRandomString(5) + toAddress.substring(0, 2)
+    tmp_code[2] = 'MYG-' + alias.substring(0, 4) + generateRandomString(6) + toAddress.substring(0, 1)
 
     var fortnightAway = new Date(Date.now() + 12096e5)
 
