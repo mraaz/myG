@@ -15,6 +15,8 @@ import { logoutAction } from '../../../redux/actions/userAction'
 import { toast } from 'react-toastify'
 import { connect } from 'react-redux'
 
+import MangeSponsors from './MangeSponsors'
+
 class Settings extends Component {
   constructor() {
     super()
@@ -23,6 +25,7 @@ class Settings extends Component {
       feature_on: false,
       alert: null,
       redirect_: false,
+      modalStatus: false,
     }
   }
 
@@ -65,7 +68,11 @@ class Settings extends Component {
   }
 
   sponsorsAction = () => {
-    console.log('sponsorsAction click')
+    this.setState({ modalStatus: true })
+  }
+
+  handleModalStatus = (label) => {
+    this.setState({ modalStatus: !this.state.modalStatus })
   }
 
   deleteAcccount() {
@@ -125,118 +132,131 @@ class Settings extends Component {
     const isActive = active == true ? { display: 'block' } : { display: 'none' }
 
     return (
-      <div className='settings' style={isActive}>
-        {this.state.alert}
-        {this.state.feature_on && (
-          <div className='cred__container'>
-            <div className='cred__row'>
-              <div className='cred__label'>UserName</div>
-              <div className='cred__details'>
-                <div className='cred__image'>
-                  <img src='https://myG.gg/platform_images/Dashboard/logo.svg' />
+      <div className='settings__container'>
+        {this.state.modalStatus && (
+          <div className='Sponsors__container'>
+            <a className='mGameDetailsBackButton' onClick={this.handleModalStatus}>
+              <img className='mGameDetailsCaretImg' src='https://myG.gg/platform_images/View+Game/Down+Carrot.svg' />
+              <span>{` Sponsors `}</span>
+            </a>
+            <MangeSponsors handleModalStatus={this.handleModalStatus} />
+          </div>
+        )}
+        {!this.state.modalStatus && (
+          <div className='settings' style={isActive}>
+            {this.state.alert}
+            {this.state.feature_on && (
+              <div className='cred__container'>
+                <div className='cred__row'>
+                  <div className='cred__label'>UserName</div>
+                  <div className='cred__details'>
+                    <div className='cred__image'>
+                      <img src='https://myG.gg/platform_images/Dashboard/logo.svg' />
+                    </div>
+                    <div className='cred__username'>@bruno</div>
+                    <div className='cred__action'>
+                      <button type='button'>Change</button>
+                    </div>
+                  </div>
                 </div>
-                <div className='cred__username'>@bruno</div>
-                <div className='cred__action'>
-                  <button type='button'>Change</button>
+                <div className='cred__row'>
+                  <div className='cred__label'>Logged Using</div>
+                  <div className='cred__details'>
+                    <div className='cred__image'>
+                      <img src='https://myG.gg/platform_images/Dashboard/logo.svg' />
+                    </div>
+                    <div className='cred__username'>@bruno</div>
+                    <div className='cred__action'>
+                      <button type='button'>Change</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div className='sponsors__action'>
+              <button type='button' className='sponsors__action-btn' onClick={() => this.sponsorsAction()}>
+                Manage your Sponsors
+              </button>
+            </div>
+            <div className='option'>
+              <div className='title'>Browser notifications</div>
+              <div className='button__switch browser__notification'>
+                <input type='checkbox' defaultChecked={true} id='switch-orange' onChange={() => {}} className='switch' />
+              </div>
+            </div>
+            <div className='option'>
+              <div className='title'>Sound notifications</div>
+              <div className='button__switch sound__notification'>
+                <input type='checkbox' defaultChecked={true} id='switch-orange' onChange={() => {}} className='switch' />
+              </div>
+            </div>
+            <div className='option'>
+              <div className='title'>
+                <a
+                  style={{ 'text-decoration': 'none', color: '#FFFFFF' }}
+                  rel='noopener noreferrer'
+                  href='https://github.com/mraaz/myG_RoadMap'
+                  target='_blank'>
+                  Report bugs or request features{' '}
+                </a>
+              </div>
+            </div>
+            <div className='option via__email-container'>
+              <div className='title'>Notify via E-mail</div>
+              <div className='via__email'>
+                <div>
+                  <label className='container'>
+                    Nay, Nope, Never
+                    <input
+                      type='checkbox'
+                      name='never'
+                      checked={this.state.viaEmail == 0}
+                      onChange={(e) => this.handleNotifyViaEmailChange(e, 0)}
+                      value={0}
+                    />
+                    <span className='checkmark'></span>
+                  </label>
+                </div>
+                <div>
+                  <label className='container'>
+                    Mnimalist (Weekly)
+                    <input
+                      type='checkbox'
+                      name='minimal'
+                      checked={this.state.viaEmail == 1}
+                      onChange={(e) => this.handleNotifyViaEmailChange(e, 1)}
+                      value={1}
+                    />
+                    <span className='checkmark'></span>
+                  </label>
+                </div>
+                <div>
+                  <label className='container'>
+                    Maximalist (Daily)
+                    <input
+                      type='checkbox'
+                      name='always'
+                      checked={this.state.viaEmail == 2}
+                      onChange={(e) => this.handleNotifyViaEmailChange(e, 2)}
+                      value={2}
+                    />
+                    <span className='checkmark'></span>
+                  </label>
                 </div>
               </div>
             </div>
-            <div className='cred__row'>
-              <div className='cred__label'>Logged Using</div>
-              <div className='cred__details'>
-                <div className='cred__image'>
-                  <img src='https://myG.gg/platform_images/Dashboard/logo.svg' />
-                </div>
-                <div className='cred__username'>@bruno</div>
-                <div className='cred__action'>
-                  <button type='button'>Change</button>
-                </div>
-              </div>
+            <div className='setting_actions'>
+              {this.state.feature_on && (
+                <button type='button' className='disableAcccount' onClick={this.disableAcccount}>
+                  Disable Account
+                </button>
+              )}
+              <button type='button' className='deleteAcccount' onClick={() => this.deleteAcccount()}>
+                Delete Account
+              </button>
             </div>
           </div>
         )}
-        <div className='sponsors__action'>
-          <button type='button' className='sponsors__action-btn' onClick={() => this.sponsorsAction()}>
-            Manage your Sponsors
-          </button>
-        </div>
-        <div className='option'>
-          <div className='title'>Browser notifications</div>
-          <div className='button__switch browser__notification'>
-            <input type='checkbox' defaultChecked={true} id='switch-orange' onChange={() => {}} className='switch' />
-          </div>
-        </div>
-        <div className='option'>
-          <div className='title'>Sound notifications</div>
-          <div className='button__switch sound__notification'>
-            <input type='checkbox' defaultChecked={true} id='switch-orange' onChange={() => {}} className='switch' />
-          </div>
-        </div>
-        <div className='option'>
-          <div className='title'>
-            <a
-              style={{ 'text-decoration': 'none', color: '#FFFFFF' }}
-              rel='noopener noreferrer'
-              href='https://github.com/mraaz/myG_RoadMap'
-              target='_blank'>
-              Report bugs or request features{' '}
-            </a>
-          </div>
-        </div>
-        <div className='option via__email-container'>
-          <div className='title'>Notify via E-mail</div>
-          <div className='via__email'>
-            <div>
-              <label className='container'>
-                Nay, Nope, Never
-                <input
-                  type='checkbox'
-                  name='never'
-                  checked={this.state.viaEmail == 0}
-                  onChange={(e) => this.handleNotifyViaEmailChange(e, 0)}
-                  value={0}
-                />
-                <span className='checkmark'></span>
-              </label>
-            </div>
-            <div>
-              <label className='container'>
-                Mnimalist (Weekly)
-                <input
-                  type='checkbox'
-                  name='minimal'
-                  checked={this.state.viaEmail == 1}
-                  onChange={(e) => this.handleNotifyViaEmailChange(e, 1)}
-                  value={1}
-                />
-                <span className='checkmark'></span>
-              </label>
-            </div>
-            <div>
-              <label className='container'>
-                Maximalist (Daily)
-                <input
-                  type='checkbox'
-                  name='always'
-                  checked={this.state.viaEmail == 2}
-                  onChange={(e) => this.handleNotifyViaEmailChange(e, 2)}
-                  value={2}
-                />
-                <span className='checkmark'></span>
-              </label>
-            </div>
-          </div>
-        </div>
-        <div className='setting_actions'>
-          {this.state.feature_on && (
-            <button type='button' className='disableAcccount' onClick={this.disableAcccount}>
-              Disable Account
-            </button>
-          )}
-          <button type='button' className='deleteAcccount' onClick={() => this.deleteAcccount()}>
-            Delete Account
-          </button>
-        </div>
       </div>
     )
   }

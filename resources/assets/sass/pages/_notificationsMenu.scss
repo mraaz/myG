@@ -1287,3 +1287,219 @@ $transition-default: 0.25s ease-out 0.1s;
     margin: 20px;
   }
 }
+.settings__container {
+  .Sponsors__container {
+    margin-bottom: 2.5em;
+    padding: 10px 15px;
+    margin-left: 6em;
+    margin-right: 6em;
+    display: flex;
+    flex-wrap: wrap;
+    background: #171a1c 0% 0% no-repeat padding-box;
+    // border: 1px solid #1d2326;
+    border-radius: 4px;
+    overflow: scroll;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    @media screen and (max-width: 998px) {
+      margin-left: 1em;
+      margin-right: 1em;
+      margin-bottom: 1em;
+    }
+    a.mGameDetailsBackButton,
+    a.mGameCommentsBackButton {
+      margin-left: 5px;
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      cursor: pointer;
+
+      span {
+        padding-left: 10px;
+      }
+
+      .mGameDetailsCaretImg,
+      .mGameCommentsCaretImg {
+        transform: rotate(90deg);
+      }
+    }
+    .sponsors__btn {
+      width: 144px;
+      text-align: center;
+      letter-spacing: 0px;
+      color: #000000;
+      opacity: 1;
+      font-family: 'Montserrat';
+      font-size: 0.65em;
+      font-weight: 500;
+      color: #000;
+      background: #e5c746;
+      padding: 4px 8px;
+      margin: 0;
+      border: 0;
+      float: right;
+      cursor: pointer;
+      margin-bottom: 10px;
+      &:focus {
+        margin: 0;
+        border: 0;
+      }
+    }
+    .Sponsors {
+      display: flex;
+      position: relative;
+      width: 100%;
+      height: 120px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      @media screen and (max-width: 998px) {
+        margin-right: 1em;
+        height: 50px;
+      }
+      &.sponsors__label {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font: normal normal normal 20px/14px Montserrat;
+        letter-spacing: 0px;
+        color: #fff;
+        @media screen and (max-width: 998px) {
+          font: normal normal normal 14px/10px Montserrat;
+        }
+        span {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-right: 2px solid #1d2326;
+        }
+      }
+      .Sponsors__image {
+        width: 100%;
+        height: 100%;
+        background: #fff;
+      }
+      .Sponsors__edit {
+        position: absolute;
+        background: #e7c947;
+        cursor: pointer;
+        left: 45px;
+        top: -10px;
+        padding: 6px;
+        font-size: 11px;
+        border-radius: 4px;
+        display: none;
+      }
+      .Sponsors__delete {
+        position: absolute;
+        background: #e7c947;
+        cursor: pointer;
+        left: 40px;
+        bottom: -10px;
+        padding: 6px;
+        font-size: 11px;
+        border-radius: 4px;
+        display: none;
+      }
+      &:hover {
+        .Sponsors__delete,
+        .Sponsors__edit {
+          display: block;
+        }
+      }
+    }
+
+    .Sponsor__edit-list {
+      margin-bottom: 20px;
+    }
+    .Sponsor__edit {
+      padding: 2em 2em !important;
+      width: 100%;
+      .text {
+        font-size: 14px/20px;
+        font-family: 'Montserrat';
+        font-weight: Bold;
+        color: #fff;
+        width: 100%;
+        letter-spacing: 0px;
+        display: flex;
+        justify-content: flex-start;
+        white-space: pre-wrap;
+        margin-bottom: 10px;
+        span {
+          color: #e5c746;
+        }
+      }
+      .text__tap {
+        font-size: 14px/20px;
+        font-family: 'Montserrat';
+        font-weight: Bold;
+        color: #fff;
+        width: 100%;
+        letter-spacing: 0px;
+        display: flex;
+        justify-content: center;
+        white-space: pre-wrap;
+        margin-bottom: 10px;
+        span {
+          color: #e5c746;
+        }
+      }
+      .Sponsor__media__input {
+        width: 100%;
+        display: flex;
+        margin-bottom: 1em;
+        position: relative;
+        cursor: pointer;
+        background: #2d363a;
+        height: 120px;
+        input {
+          display: none;
+        }
+        img {
+          margin: auto;
+          object-fit: contain;
+          width: fit-content;
+          height: fit-content;
+          max-width: 100%;
+          height: 100%;
+        }
+        .image__uploading {
+          position: absolute;
+          color: #fff;
+        }
+      }
+      .Sponsor__link__input {
+        width: 100%;
+        label {
+          font: normal normal normal 16px/12px Montserrat;
+          letter-spacing: 0px;
+          color: #fff;
+          margin-bottom: 10px;
+        }
+        input {
+          width: 100%;
+          background: #1d2326;
+          border: none;
+          padding: 12px 12px;
+          border-radius: 25px;
+          outline: none;
+          margin: 0;
+          &:active,
+          &:focus {
+            padding: 12px 12px;
+          }
+          font: italic normal normal 12px/14px Montserrat;
+          letter-spacing: -0.65px;
+          color: #93a4a5;
+        }
+      }
+    }
+  }
+}
