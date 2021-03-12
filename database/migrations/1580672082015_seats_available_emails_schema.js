@@ -8,6 +8,7 @@ class SeatsAvailableEmailsSchema extends Schema {
     this.create('seats_available_emails', (table) => {
       table.increments()
       table.text('email')
+      table.integer('actioned').unsigned().defaultTo(0)
       table.timestamps(true,true)
     })
   }

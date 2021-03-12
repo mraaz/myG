@@ -155,6 +155,11 @@ class MangeSponsors extends React.Component {
 
     return (
       <div className={`Sponsor__edit`}>
+        <div className='SponsorSave__action'>
+          <button type='button' onClick={this.handleSave}>
+            Save
+          </button>
+        </div>
         {sponsors.map((sponsor, index) => {
           return (
             <div className='Sponsor__edit-list'>

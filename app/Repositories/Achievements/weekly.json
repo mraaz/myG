@@ -1,20 +1,20 @@
 [
   {
-    "label": "Connect to 7 friends",
+    "label": "Connect to 8 friends",
     "type": "friend",
-    "total": 7,
+    "total": 8,
     "url": "/find-gamers/search"
   },
   {
-    "label": "Commend 7 gamers",
+    "label": "Commend 8 gamers",
     "type": "commend",
-    "total": 7,
+    "total": 8,
     "url": "/find-gamers/search"
   },
   {
-    "label": "Play 7 games",
+    "label": "Play 8 games",
     "type": "play",
-    "total": 7,
+    "total": 8,
     "url": "/scheduledGames"
   },
   {
@@ -24,15 +24,15 @@
     "url": "/"
   },
   {
-    "label": "Create 7 posts, comments or replies",
+    "label": "Create 8 posts, comments or replies",
     "type": "post",
-    "total": 7,
+    "total": 8,
     "url": "/"
   },
   {
-    "label": "Click on 7 sponsor links",
+    "label": "Click on 8 sponsor links",
     "type": "sponsor",
-    "total": 7,
+    "total": 8,
     "url": "/?at=communities"
   },
   {

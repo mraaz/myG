@@ -15,6 +15,7 @@ import {
   fetchStats,
   fetchBadges,
   redeemBadge,
+  checkedLevel,
 } from '../../integration/http/user'
 
 export function logoutAction() {
@@ -179,5 +180,12 @@ export function onStatsUpdatedAction(stats, userId) {
     type: 'ON_STATS_UPDATED',
     payload: stats,
     meta: { userId },
+  }
+}
+
+export function checkedLevelAction() {
+  return {
+    type: 'CHECKED_LEVEL',
+    payload: checkedLevel(),
   }
 }

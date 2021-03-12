@@ -43,7 +43,13 @@ class SettingController {
           .update({ email_notification: request.input('email_notification') })
         return 'Saved successfully'
       } catch (error) {
-        console.log(error)
+        LoggingRepository.log({
+          environment: process.env.NODE_ENV,
+          type: 'error',
+          source: 'backend',
+          context: __filename,
+          message: (error && error.message) || error,
+        })
       }
     } else {
       return 'You are not Logged In!'

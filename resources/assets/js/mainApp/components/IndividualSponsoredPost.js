@@ -30,7 +30,6 @@ export default class IndividualSponsoredPost extends Component {
     let { post } = this.props
     let media_url = ''
     const self = this
-    console.log(post, '<<<POST')
     this.props.post.alias = 'myG'
     try {
       if (post.media_url != null && post.media_url) {

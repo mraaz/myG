@@ -1,7 +1,5 @@
 import React, { Component, Fragment } from 'react'
 import { withRouter, Link } from 'react-router-dom'
-import { loadAnimation } from 'lottie-web'
-import styled, { keyframes } from 'styled-components'
 import { connect } from 'react-redux'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
@@ -50,47 +48,6 @@ class LeftMenu extends Component {
     alerts: 0,
     chats: 0,
     activePage: '',
-    animating: false,
-  }
-
-  componentDidUpdate(previous) {
-    const receivedLike = previous.likes < this.props.likes
-    if (receivedLike) {
-      this.setState({ animating: true }, () => this.animateXpGain('/animations/Like.json'))
-      setTimeout(() => this.setState({ animating: false }), 5000)
-    }
-  }
-
-  getAnimationContainer = () => {
-    const first = Math.floor(Math.random() * 96) + 1
-    const second = Math.floor(Math.random() * 96) + 1
-    const third = Math.floor(Math.random() * 96) + 1
-    const fourth = Math.floor(Math.random() * 96) + 1
-    const animation = keyframes`
-      0% { transform: translateX(${first}px) translateY(0); };
-      33% { transform: translateX(${second}px) translateY(-50px); };
-      66% { transform: translateX(${third}px) translateY(-100px); };
-      100% { transform: translateX(${fourth}px) translateY(-150px); };
-    `
-    const AnimationContainer = styled.div`
-      width: 164px;
-      height: 164px;
-      position: fixed;
-      left: -64px;
-      bottom: 0;
-      animation: ${animation} 5s linear;
-    `
-    return <AnimationContainer id='xp-animation-container' />
-  }
-
-  animateXpGain = (path) => {
-    loadAnimation({
-      container: document.getElementById('xp-animation-container'),
-      renderer: 'svg',
-      loop: false,
-      autoplay: true,
-      path: path,
-    })
   }
 
   setExpandedDefault = function(data) {
@@ -319,7 +276,7 @@ class LeftMenu extends Component {
               //window.router.push('/logout');
               window.location.href = '/logout'
             }}
-            className='logout-text'>
+            className={`logout-text${this.state.isExpanded ? ' margin-right' : ''}`}>
             <img src={logoutButton.icon} className='img-fluid' />
             {this.state.isExpanded && <p>{logoutButton.header}</p>}
           </div>
@@ -343,17 +300,10 @@ class LeftMenu extends Component {
             {this.getUserSection()}
             {this.getSideBarItems()}
             {this.getLogout()}
-            {!!this.state.animating && this.getAnimationContainer()}
           </div>
         </section>
       </Fragment>
     )
-  }
-}
-
-function mapStateToProps(state) {
-  return {
-    likes: (state.user.userTransactionStates || {}).likes,
   }
 }
 
@@ -363,4 +313,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(LeftMenu))
+export default connect(null, mapDispatchToProps)(withRouter(LeftMenu))

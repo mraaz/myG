@@ -10,6 +10,7 @@ const FormData = require('form-data')
 const ConnectionController = use('./ConnectionController')
 const SeatsAvailable = use('App/Models/SeatsAvailable')
 const ExtraSeatsCodes = use('App/Models/ExtraSeatsCodes')
+const ExtraSeatsCodesTran = use('App/Models/ExtraSeatsCodesTran')
 
 const LoggingRepository = require('../../Repositories/Logging')
 
@@ -145,14 +146,29 @@ class DiscordLoginController {
       await user.save()
 
       // Decrease Seats Available upon Registration
-      seatsAvailable.seats_available = (seatsAvailable.seats_available || 1) - 1
-      seatsAvailable.save()
+      if (seatsAvailable.seats_available > 0) {
+        seatsAvailable.seats_available = (seatsAvailable.seats_available || 1) - 1
+        seatsAvailable.save()
+      }
 
       // Mark Extra Seat Code as Used
       if (extraSeatsCode) {
-        await ExtraSeatsCodes.query()
+        const extraSeatsCodes = await ExtraSeatsCodes.query()
           .where('code', extraSeatsCode)
-          .update({ user_id: newUser.id })
+          .first()
+
+        if (extraSeatsCodes != undefined) {
+          await ExtraSeatsCodes.query()
+            .where('code', extraSeatsCode)
+            .increment('counter', 1)
+
+          if (extraSeatsCodes.id) {
+            await ExtraSeatsCodesTran.create({
+              extra_seats_codes_id: extraSeatsCodes.id,
+              user_id: user.id,
+            })
+          }
+        }
       }
 
       await auth.loginViaId(user.id)

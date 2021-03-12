@@ -8,7 +8,6 @@ const LoggingRepository = require('../../Repositories/Logging')
 
 class SponsoredPostController {
   async update_clicks({ auth, request, response }) {
-    console.log('Made it here')
     if (auth.user) {
       try {
         const updatePost = await SponsoredPost.query()

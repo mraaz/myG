@@ -99,8 +99,6 @@ export default class Settings extends React.Component {
     return (
       <div className='messenger-settings-container'>
         <p className='messenger-settings-title'>Settings</p>
-        {this.renderNotificationSoundSettings()}
-        {this.renderPushNotificationsSettings()}
         {this.renderAutoSelfDestructSettings()}
         {this.renderEncryptionPersistSettings()}
         {this.renderEncryptionSettings()}

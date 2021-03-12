@@ -89,6 +89,8 @@ Route.post('/api/user/keywordSearchResults', 'UserController.keywordSearchResult
 Route.put('/api/user/notification_sounds', 'UserController.toggleNotificationSounds')
 Route.put('/api/user/auto_self_destruct', 'UserController.toggleAutoSelfDestruct')
 
+Route.post('/api/users_additional_infos/', 'UsersAdditionalInfoController.store')
+
 Route.post('/api/GameExperiences/commend/:game_exp_id', 'GameExperienceController.updateCommend')
 Route.get('/api/GameExperiences/exp/:id', 'GameExperienceController.myShow')
 Route.get('/api/GameExperiences/:id', 'GameExperienceController.show')
@@ -330,6 +332,7 @@ Route.post('/api/invited_users_for_schedule_games/create', 'InvitedUsersForSched
 Route.post('/api/invited_users_for_schedule_games/invite', 'InvitedUsersForScheduleGameController.invite')
 
 Route.get('/api/userStatTransaction/master_controller', 'UserStatTransactionController.master_controller')
+Route.post('/api/userStatTransaction/checkedLevel', 'UserStatTransactionController.checkedLevel')
 
 Route.post('/api/SavedFiltersScheduleGameController', 'SavedFiltersScheduleGameController.store')
 Route.post('/api/SavedFiltersScheduleGameController/updateFilter', 'SavedFiltersScheduleGameController.updateFilter')

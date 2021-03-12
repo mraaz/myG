@@ -8,6 +8,7 @@ class PostsSchema extends Schema {
     this.create('posts', (table) => {
       table.increments()
       table.text('content').collate('utf8mb4_unicode_ci')
+      table.text('video').nullable()
       table.string('type').notNullable()
       table.string('media_url', 2048).nullable()
       table.integer('user_id').unsigned().notNullable()

@@ -8,7 +8,7 @@ const AWSEmailController = use('./AWSEmailController')
 const NotificationController_v2 = use('./NotificationController_v2')
 const Email_body = use('./EmailBodyController')
 
-const ChatRepository = require('../../Repositories/Chat')
+const RedisRepository = require('../../Repositories/Redis')
 
 //https://html5-editor.net/
 
@@ -48,26 +48,38 @@ class EmailController {
   }
 
   async dailyEmails() {
+    console.log('Going IN!!!')
+    const lock = await RedisRepository.lock('SEND_DAILY_EMAILS', 1000 * 60 * 5)
+    console.log(lock, '<<<lock!!!')
+    if (!lock) return console.warn('CRON', 'Failed to Acquire SEND_DAILY_EMAILS lock')
+
+    console.log('Passed Lock')
     const userList = await Database.from('settings')
       .select('user_id')
       .where('email_notification', '=', 2)
 
+    console.log(userList.length, '<<<<userList.length')
     for (let i = 0; i < userList.length; i++) {
-      this.summary_email(userList[i].user_id)
+      await this.summary_email(userList[i].user_id)
+      console.log('summary_email')
     }
   }
 
   async weeklyEmails() {
+    const lock = await RedisRepository.lock('SEND_WEEKLY_EMAILS', 1000 * 60 * 5)
+    if (!lock) return console.warn('CRON', 'Failed to Acquire SEND_WEEKLY_EMAILS lock')
+
     const userList = await Database.from('settings')
       .select('user_id')
       .where('email_notification', '=', 1)
 
     for (let i = 0; i < userList.length; i++) {
-      this.summary_email(userList[i].user_id)
+      await this.summary_email(userList[i].user_id)
     }
   }
 
   async summary_email(user_id) {
+    console.log('Going IN summary_email!!!')
     const noti = new NotificationController_v2()
 
     const auth = { user: { id: user_id } }
@@ -87,6 +99,8 @@ class EmailController {
 
     const subject = "myG - The Gamer's platform - Summary: " + new Date(Date.now()).toDateString()
     const body = await email_summary_email.summary_body(user_deets.alias, myRequests.approvals, myRequests.alerts, myRequests.chats)
+    console.log('EMailing')
+    console.log(user_deets.email)
     email.createEmailnSend(user_deets.email, subject, body)
   }
 

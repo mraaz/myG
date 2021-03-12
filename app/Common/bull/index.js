@@ -1,6 +1,6 @@
 function setupBull() {
 
-  const { v4: uuidv4 } = require('uuid');;
+  const { v4: uuidv4 } = require('uuid');
   const Queue = require('bull');
   const Redis = require('ioredis');
   const moment = require('moment')();
@@ -10,7 +10,7 @@ function setupBull() {
   const port = Env.get('REDIS_PORT');
   const bullLogs = Env.get('BULL_LOGS');
   const disableCluster = Env.get('REDIS_DISABLE_CLUSTER');
-  const runEveryJobOnStart = false//Env.get('BULL_RUN_EVERY_JOB_ON_START');
+  const runEveryJobOnStart = Env.get('BULL_RUN_EVERY_JOB_ON_START') == 'true' ? true : false;
   const bullConfig = { redis: { host, port } };
   const ioCluster = !disableCluster && hasRedis && new Redis.Cluster([bullConfig.redis]);
 
@@ -28,10 +28,6 @@ function setupBull() {
     if (job.runOnStart) job.queue.add(job.payload, job.options);
     if (job.runOnSchedule) job.queue.add(job.payload, { ...job.options, ...job.schedule });
   });
-
-  console.log(Env.get('BULL_RUN_EVERY_JOB_ON_START'),"<<BULL_RUN_EVERY_JOB_ON_START");
-  let tmp = Env.get('BULL_RUN_EVERY_JOB_ON_START') ? true : false
-  console.log(tmp,"<<<tmp");
 }
 
 
@@ -184,7 +180,7 @@ function getJobs(Queue, bullConfig, ioCluster, uuidv4, runEveryJobOnStart) {
       action: require('./tasks/send-daily-emails'),
       options: { jobId: uuidv4() },
       payload: {},
-      schedule: { repeat: { cron: '0 0 * * *' } },
+      schedule: { repeat: { cron: '50 4 * * *' } },
       runOnSchedule: true,
       runOnStart: false,
       enabled: true,
@@ -198,6 +194,28 @@ function getJobs(Queue, bullConfig, ioCluster, uuidv4, runEveryJobOnStart) {
       schedule: { repeat: { cron: '0 0 * * 0' } },
       runOnSchedule: true,
       runOnStart: false,
+      enabled: true,
+    },
+    {
+      name: 'Update has_additional Field',
+      queue: new Queue('Update has_additional Field', prefixedConfig('{update-has-additional-field}')),
+      action: require('./tasks/update-has-additional-field'),
+      options: { jobId: uuidv4() },
+      payload: {},
+      schedule: { repeat: { cron: '0 12 */15 * *' } },
+      runOnSchedule: true,
+      runOnStart: runEveryJobOnStart ? true : false,
+      enabled: true,
+    },
+    {
+      name: 'Delete expired Codes',
+      queue: new Queue('Delete expired Codes', prefixedConfig('{delete-expired-codes}')),
+      action: require('./tasks/delete-expired-codes'),
+      options: { jobId: uuidv4() },
+      payload: {},
+      schedule: { repeat: { cron: '0 0 * * *' } },
+      runOnSchedule: true,
+      runOnStart: runEveryJobOnStart ? true : false,
       enabled: true,
     },
   ];

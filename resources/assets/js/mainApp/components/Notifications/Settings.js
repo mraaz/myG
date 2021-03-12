@@ -10,7 +10,7 @@ import SweetAlert from '../common/MyGSweetAlert'
 import axios from 'axios'
 
 import { logToElasticsearch } from '../../../integration/http/logger'
-import { logoutAction } from '../../../redux/actions/userAction'
+import { logoutAction, toggleNotificationSoundsAction, togglePushNotificationsAction } from '../../../redux/actions/userAction'
 
 import { toast } from 'react-toastify'
 import { connect } from 'react-redux'
@@ -184,11 +184,65 @@ class Settings extends Component {
                 <input type='checkbox' defaultChecked={true} id='switch-orange' onChange={() => {}} className='switch' />
               </div>
             </div>
-            <div className='option'>
-              <div className='title'>Sound notifications</div>
-              <div className='button__switch sound__notification'>
-                <input type='checkbox' defaultChecked={true} id='switch-orange' onChange={() => {}} className='switch' />
-              </div>
+          </div>
+        )}
+        <div className='sponsors__action'>
+          <button type='button' className='sponsors__action-btn' onClick={() => this.sponsorsAction()}>
+            Manage your Sponsors
+          </button>
+        </div>
+        <div className='option'>
+          <div className='title'>Browser notifications</div>
+          <div className='button__switch browser__notification'>
+            <input 
+              id='switch-orange'
+              type='checkbox'
+              className='switch' 
+              value={this.props.pushNotificationsEnabled}
+              defaultChecked={this.props.pushNotificationsEnabled}
+              onChange={() => this.props.togglePushNotifications(this.props.userId)}
+            />
+          </div>
+        </div>
+        <div className='option'>
+          <div className='title'>Sound notifications</div>
+          <div className='button__switch sound__notification'>
+            <input 
+              id='switch-orange'
+              type='checkbox'
+              className='switch' 
+              value={!this.props.notificationSoundsDisabled}
+              defaultChecked={!this.props.notificationSoundsDisabled}
+              onClick={() => this.props.toggleNotificationSounds(!this.props.notificationSoundsDisabled)}
+            />
+          </div>
+        </div>
+        <div className='option'>
+          <div className='title'>
+            <a
+              style={{ 'text-decoration': 'none', color: '#FFFFFF' }}
+              rel='noopener noreferrer'
+              href='https://github.com/mraaz/myG_RoadMap'
+              target='_blank'>
+              Report bugs or request features{' '}
+            </a>
+          </div>
+        </div>
+        <div className='option via__email-container'>
+          <div className='title'>Notify via E-mail</div>
+          <div className='via__email'>
+            <div>
+              <label className='container'>
+                Nay, Nope, Never
+                <input
+                  type='checkbox'
+                  name='never'
+                  checked={this.state.viaEmail == 0}
+                  onChange={(e) => this.handleNotifyViaEmailChange(e, 0)}
+                  value={0}
+                />
+                <span className='checkmark'></span>
+              </label>
             </div>
             <div className='option'>
               <div className='title'>
@@ -262,10 +316,22 @@ class Settings extends Component {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+
+function mapStateToProps(state) {
   return {
-    logout: () => dispatch(logoutAction()),
+    userId: state.user.userId,
+    notificationSoundsDisabled: state.user.notificationSoundsDisabled,
+    pushNotificationsEnabled: state.user.pushNotificationsEnabled,
   }
 }
 
-export default connect(null, mapDispatchToProps)(Settings)
+
+function mapDispatchToProps(dispatch) {
+  return {
+    logout: () => dispatch(logoutAction()),
+    togglePushNotifications: (userId) => dispatch(togglePushNotificationsAction(userId)),
+    toggleNotificationSounds: (disabled) => dispatch(toggleNotificationSoundsAction(disabled)),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Settings)

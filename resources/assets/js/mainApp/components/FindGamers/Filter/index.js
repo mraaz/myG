@@ -4,7 +4,7 @@ import AsyncSelect from 'react-select/async'
 import { Game_name_values, Disable_keys } from '../../Utility_Function'
 import { ignoreFunctions } from "../../../../common/render"
 import { fetchGameInfo } from "../../../../common/game"
-import { TIME_EXPERIENCE_OPTIONS, LANGUAGE_OPTIONS, LEVEL_OPTIONS } from '../../../static/AddGame'
+import { TIME_EXPERIENCE_OPTIONS, EXPERIENCE_OPTIONS, LANGUAGE_OPTIONS, LEVEL_OPTIONS } from '../../../static/AddGame'
 
 const dropdownIcon = 'https://myG.gg/platform_images/View+Game/Down+Carrot.svg';
 
@@ -54,6 +54,7 @@ const initialFilters = {
   underage: '',
   hasMic: '',
   experience: '',
+  career: '',
   level: '',
   extraFields: [],
   extraFieldsValues: [],
@@ -93,6 +94,7 @@ export default class Filter extends React.Component {
       underage: hasFilter('underage') ? state.underage.value === 'No' : '',
       hasMic: hasFilter('hasMic') ? state.hasMic.value === 'Yes' : '',
       experience: hasFilter('experience') ? state.experience ? state.experience.value : '' : '',
+      career: hasFilter('career') ? state.career ? state.career.value : '' : '',
       ...this.getExtraFilters(state),
     };
   }
@@ -154,6 +156,15 @@ export default class Filter extends React.Component {
                 Experience
               </div>
             )}
+            {!!this.state.game && (
+              <div
+                key={'career'}
+                className={`option clickable ${this.state.selectedFilters.includes('career') ? 'selected' : ''}`}
+                style={{ padding: '8px' }}
+                onClick={() => this.handleAddedFilter('career')}>
+                Career
+              </div>
+            )}
             {this.state.extraFields.map(({ label: filter }) => {
               return (
                 <div
@@ -212,6 +223,7 @@ export default class Filter extends React.Component {
       <div className='filter-row'>
         <div className='filter-label'>{filterOptions[filter]}</div>
         <Select
+          menuPlacement="top"
           autoFocus
           className='filter-select'
           placeholder={placeholder || `Select the ${filter} you want to search`}
@@ -233,6 +245,7 @@ export default class Filter extends React.Component {
       <div className='filter-row'>
         <div className='filter-label'>Game</div>
           <AsyncSelect
+            menuPlacement="top"
             autoFocus
             cacheOptions
             defaultOptions
@@ -271,6 +284,7 @@ export default class Filter extends React.Component {
       <div className='filter-row'>
         <div className='filter-label'>Experience</div>
         <Select
+          menuPlacement="top"
           autoFocus
           className='filter-select'
           placeholder='Select the Experience for this game'
@@ -278,6 +292,27 @@ export default class Filter extends React.Component {
           value={this.state.experience}
           onChange={(value) => this.setState({ experience: value || '' })}
           options={TIME_EXPERIENCE_OPTIONS}
+          isClearable
+          classNamePrefix='filter'
+        />
+      </div>
+    );
+  }
+
+  renderCareerFilter = () => {
+    if (!this.state.game || !this.state.selectedFilters.includes('career')) return null;
+    return(
+      <div className='filter-row'>
+        <div className='filter-label'>Career</div>
+        <Select
+          menuPlacement="top"
+          autoFocus
+          className='filter-select'
+          placeholder='Select the Career requirements for this game'
+          name='career-select'
+          value={this.state.career}
+          onChange={(value) => this.setState({ career: value || '' })}
+          options={EXPERIENCE_OPTIONS}
           isClearable
           classNamePrefix='filter'
         />
@@ -303,6 +338,7 @@ export default class Filter extends React.Component {
       <div className="filter-row" key={filter.label}>
         <span className='filter-label'>{filter.label}</span>
         <Select
+          menuPlacement="top"
           autoFocus
           className='filter-select'
           placeholder={filter.placeholder}
@@ -328,6 +364,7 @@ export default class Filter extends React.Component {
       <div className="filter-row" key={filter.label}>
         <span className='filter-label'>{filter.label}</span>
         <Select
+          menuPlacement="top"
           autoFocus
           className='filter-select'
           placeholder={filter.placeholder}
@@ -354,6 +391,7 @@ export default class Filter extends React.Component {
         <div className="filter-container">
           {this.renderFilters()}
           {this.renderExperienceFilter()}
+          {this.renderCareerFilter()}
           {this.renderDynamicFilters()}
         </div>
         {this.renderAddFilter()}

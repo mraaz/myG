@@ -33,6 +33,7 @@ export default class ProfileSchema {
     if (data.hasMic !== undefined) this.hasMic = forceBoolean(data.hasMic || data.has_mic)
     if (data.visibilityName !== undefined) this.visibilityName = forceString(data.visibilityName)
     if (data.visibilityEmail !== undefined) this.visibilityEmail = forceString(data.visibilityEmail)
+    if (data.visibilityCountry !== undefined) this.visibilityCountry = forceString(data.visibilityCountry)
     if (data.lookingForWork !== undefined) this.lookingForWork = forceBoolean(data.lookingForWork)
     if (data.isSelf !== undefined) this.isSelf = forceBoolean(data.isSelf)
     if (data.isFriend !== undefined) this.isFriend = forceBoolean(data.isFriend)

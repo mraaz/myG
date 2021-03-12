@@ -4,6 +4,7 @@
  * Email : nitin.1992tyagi@gmail.com
  */
 import React, { Component, Fragment } from 'react'
+import ReactPlayer from 'react-player'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import moment from 'moment'
@@ -155,9 +156,7 @@ export default class IndividualPost extends Component {
     let post_timestamp = moment()
     try {
       if (this.props.post.updated_at) {
-        console.log(this.props.post.updated_at, '<<<this.props.post.updated_at')
         post_timestamp = moment(this.props.post.updated_at, 'YYYY-MM-DD HH:mm:ssZ')
-        console.log(post_timestamp, '<<<post_timestamp')
       }
 
       if (this.props.post.total == 0) {
@@ -198,7 +197,7 @@ export default class IndividualPost extends Component {
     } catch (e) {}
     const self = this
 
-    const getComments = async function () {
+    const getComments = async function() {
       try {
         const myComments = await axios.get(`/api/comments/${post_id}`)
         self.setState({
@@ -344,7 +343,7 @@ export default class IndividualPost extends Component {
     const self = this
     var post_id = this.props.post.id
 
-    const editPost = async function () {
+    const editPost = async function() {
       try {
         const myEditPost = await axios.post(`/api/post/update/${post_id}`, {
           content: self.state.value2,
@@ -464,7 +463,7 @@ export default class IndividualPost extends Component {
       dropdown: false,
     })
     setTimeout(
-      function () {
+      function() {
         //Start the timer
         this.focusTextInput2()
       }.bind(this),
@@ -665,7 +664,6 @@ export default class IndividualPost extends Component {
                     </p>
                   </Fragment>
                 )}
-
                 {this.state.edit_post && (
                   <div className='post_content_editbox'>
                     <textarea
@@ -683,6 +681,7 @@ export default class IndividualPost extends Component {
               </div>
             </div>
             <div className='media'>
+              {!!this.props.post.video && <ReactPlayer width={'100%'} height={360} url={this.props.post.video} controls={true} />}
               {galleryItems.length > 0 && (
                 <ImageGallery
                   items={[...galleryItems]}

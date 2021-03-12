@@ -13,6 +13,8 @@ const ApiController = use('./ApiController')
 const CommonController = use('./CommonController')
 const AchievementsRepository = require('../../Repositories/Achievements')
 
+const RedisRepository = require('../../Repositories/Redis')
+
 const MAX_HASH_TAGS = 21
 
 class PostController {
@@ -29,6 +31,7 @@ class PostController {
         if (arrGroups_id.length == 0) {
           newPost = await Post.create({
             content: request.input('content'),
+            video: request.input('video'),
             user_id: auth.user.id,
             type: 'text',
             group_id: null,
@@ -43,6 +46,7 @@ class PostController {
           for (var i = 0; i < arrGroups_id.length; i++) {
             newPost = await Post.create({
               content: request.input('content'),
+              video: request.input('video'),
               user_id: auth.user.id,
               type: 'text',
               group_id: arrGroups_id[i],
@@ -197,6 +201,16 @@ class PostController {
       }
 
       if (!isNaN(category) && _1stpass.length > 2) {
+        let get_Origin_info = await Database.from('users_additional_infos')
+          .where('user_id', '=', auth.user.id)
+          .first()
+
+        if (get_Origin_info == undefined) {
+          get_Origin_info = { logged_in_country_code: null }
+        }
+
+        if (get_Origin_info.in_eu == true) get_Origin_info.logged_in_country_code = 'EU'
+
         const get_sponsored_posts_total = await Database.from('sponsored_posts')
           .where('visibility', '=', 1)
           .where('category', '=', category)
@@ -207,6 +221,9 @@ class PostController {
           .where('visibility', '=', 1)
           .where('category', '=', category)
           .where('sponsored_posts_transactions.id', 'is', null)
+          .where((bd) => {
+            bd.orWhere({ country_code: get_Origin_info.logged_in_country_code }).orWhere('country_code', 'is', null)
+          })
           .select('sponsored_posts.*')
           .orderBy('updated_at', 'desc')
           .limit(Math.floor(Math.random() * parseInt(get_sponsored_posts_total[0].total)))
@@ -632,6 +649,9 @@ class PostController {
   }
 
   async shuffle_sponsored_posts() {
+    const lock = await RedisRepository.lock('Shuffle Sponsored Posts', 1000 * 60 * 5)
+    if (!lock) return
+
     try {
       /*
        Get all records
