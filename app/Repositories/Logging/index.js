@@ -1,7 +1,7 @@
 const elasticsearch = use('elasticsearch');
 
 class LoggingRepository {
-  async log({ environment, type, source, context, browser, system, message, error }) {
+  async log({ type, source, context, browser, system, message, error }) {
     if (!error) error = '';
     return new elasticsearch.Client({
       host: process.env.ELASTICSEARCH,
@@ -11,7 +11,7 @@ class LoggingRepository {
       index: 'log',
       type: '_doc',
       body: {
-        environment,
+        environment: process.env.KIBANA_ENVIRONMENT || 'production',
         type,
         source,
         context,

@@ -120,3 +120,7 @@ export function fetchNotifications() {
   logger.log('USER', 'HTTP', `Fetching Notifications`);
   return axios.get(`/api/notifications_v2/count`).then((response) => response.data);
 }
+
+export function checkedLevel() {
+  return axios.post('/api/userStatTransaction/checkedLevel').then((response) => response.data);
+}

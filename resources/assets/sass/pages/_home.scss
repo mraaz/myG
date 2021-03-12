@@ -1819,7 +1819,15 @@ section#content-container {
   }
   .text__editor__section {
     display: flex;
+    flex-direction: column;
     padding-bottom: 10px;
+    .video-input {
+      background: #171a1c 0 0 no-repeat padding-box;
+      border: .5px solid #273137;
+      padding: 1em;
+      color: #657172;
+      font-size: 12px;
+    }
     .media {
       padding: 0.5px;
       .image-gallery-fullscreen-button {

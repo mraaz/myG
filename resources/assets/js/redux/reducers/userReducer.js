@@ -29,7 +29,7 @@ export default function reducer(
       return { ...state, ...initialState }
 
     case 'LOAD_USER_INFO': {
-      logger.log('User', `Redux -> Loading User Info (User): `, action.payload)
+      logger.log('USER', `Redux -> Loading User Info (User): `, action.payload)
       return {
         ...state,
         userId: action.payload.id,
@@ -37,6 +37,7 @@ export default function reducer(
         icon: action.payload.profile_img,
         notificationSoundsDisabled: !!action.payload.notification_sounds_disabled,
         autoSelfDestruct: !!action.payload.chat_auto_self_destruct,
+        ...action.payload,
       }
     }
 
@@ -288,6 +289,14 @@ export default function reducer(
       return {
         ...state,
         userTransactionStates,
+      }
+    }
+
+    case 'CHECKED_LEVEL_FULFILLED': {
+      logger.log('USER', 'Redux -> Checked Level');
+      return {
+        ...state,
+        leveled_up_offline: false,
       }
     }
 
