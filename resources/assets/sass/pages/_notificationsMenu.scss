@@ -1424,6 +1424,19 @@ $transition-default: 0.25s ease-out 0.1s;
       @media screen and (max-width: 998px) {
         padding: 2em 0em !important;
       }
+      .SponsorSave__action {
+        float: right;
+        .Sponsoraction {
+          border: 0;
+          padding: 6px 12px;
+          background: #e5c745;
+          color: #000;
+          font-size: 14px;
+          font-weight: bold;
+          cursor: pointer;
+          margin-bottom: 10px;
+        }
+      }
       .text {
         font-size: 14px/20px;
         font-family: 'Montserrat';
