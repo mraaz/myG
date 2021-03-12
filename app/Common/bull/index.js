@@ -180,7 +180,7 @@ function getJobs(Queue, bullConfig, ioCluster, uuidv4, runEveryJobOnStart) {
       action: require('./tasks/send-daily-emails'),
       options: { jobId: uuidv4() },
       payload: { delay: 60000 },
-      schedule: { repeat: { cron: '25 23 * * *' } },
+      schedule: { repeat: { cron: '45 23 * * *' } },
       runOnSchedule: true,
       runOnStart: false,
       enabled: true,
