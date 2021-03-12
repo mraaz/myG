@@ -31,6 +31,7 @@ class PostController {
         if (arrGroups_id.length == 0) {
           newPost = await Post.create({
             content: request.input('content'),
+            video: request.input('video'),
             user_id: auth.user.id,
             type: 'text',
             group_id: null,
@@ -45,6 +46,7 @@ class PostController {
           for (var i = 0; i < arrGroups_id.length; i++) {
             newPost = await Post.create({
               content: request.input('content'),
+              video: request.input('video'),
               user_id: auth.user.id,
               type: 'text',
               group_id: arrGroups_id[i],

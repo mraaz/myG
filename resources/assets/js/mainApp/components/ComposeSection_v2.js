@@ -32,6 +32,7 @@ export default class ComposeSection extends Component {
       show_post: false,
       profile_img: '',
       post_content: '',
+      video: '',
       bFileModalOpen: false,
       fileType: 'photo',
       masterList: [],
@@ -144,6 +145,7 @@ export default class ComposeSection extends Component {
     try {
       const post = await axios.post('/api/post', {
         content: content,
+        video: this.state.video,
         user_id: this.props.initialData.userInfo.id,
         type: 'text',
         visibility: this.state.visibility,
@@ -416,6 +418,12 @@ export default class ComposeSection extends Component {
                 value={post_content}
                 placeholder="What's up... "
                 id={`composeTextarea`}
+              />
+              <input
+                className="video-input"
+                placeholder="Enter a video URL here"
+                value={this.state.video}
+                onChange={(event) => this.setState({ video: event.target.value })}
               />
             </div>
           )}
